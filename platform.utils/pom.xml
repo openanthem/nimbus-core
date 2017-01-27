@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.anthem.nimbus.platform</groupId>
+		<artifactId>com.anthem.nimbus.platform.parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>com.anthem.nimbus.platform.utils</artifactId>
+	<packaging>pom</packaging>
+	<dependencies>
+  	<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.anthem.nimbus.platform</groupId>
+			<artifactId>com.anthem.nimbus.platform.spec.model</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+  </dependencies>
+	
+	<modules>
+	    <module>platform.utils.converter</module>
+	    <module>platform.utils.rest.client</module>
+		<module>platform.utils.reference.data</module>
+	</modules>
+</project>

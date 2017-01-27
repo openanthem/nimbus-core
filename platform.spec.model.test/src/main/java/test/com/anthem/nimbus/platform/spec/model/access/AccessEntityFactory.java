@@ -1,0 +1,210 @@
+/**
+ * 
+ */
+package test.com.anthem.nimbus.platform.spec.model.access;
+
+import java.util.Arrays;
+
+import com.anthem.nimbus.platform.spec.model.access.Permission;
+import com.anthem.nimbus.platform.spec.model.access.PlatformAccessEntity;
+import com.anthem.nimbus.platform.spec.model.access.PlatformAccessEntity.Feature;
+
+import lombok.Getter;
+
+/**
+ * @author Soham Chakravarti
+ *
+ */
+public class AccessEntityFactory {
+
+	public static Builder builder() {
+		return new Builder();
+	}
+
+	@Getter 
+	public static class Builder {
+		
+		public interface Callback {
+			public void visit(PlatformAccessEntity ae);
+		}
+		
+		private Builder root;
+		
+		private Builder parent;
+		private PlatformAccessEntity current;
+		
+		private Builder() {
+			this.root = this;
+		}
+		
+		public Builder push(PlatformAccessEntity current) {
+			Builder c = (this.current==null) ? this : new Builder();	//handle root node
+			c.root = this.root;
+			c.current = current;
+			c.parent = this;	//root node points back to itself for parent
+			return c;
+		}
+		
+		private Builder addAndPush(PlatformAccessEntity ae) {
+			if(this.current != null) {
+				this.current.addNestedAccess(ae);
+			}
+			return this.push(ae);
+		}
+		
+		public Builder pop() {
+			return this.parent;
+		}
+		
+		public static void buildEntity(PlatformAccessEntity ae, String code, String name) {
+			ae.setCode(code);
+			ae.setName(name);
+		}
+		
+		public Builder buildCurrent(Callback cb) {
+			cb.visit(this.current);
+			return this;
+		}
+
+		private Builder buildCurrentWithCodeAndName(String code, String name, String domainURI) {
+			return buildCurrent((ae) -> ae.setCode(code))
+					.buildCurrent((ae) -> ae.setName(name))
+					.buildCurrent((ae) -> ae.setDomainUri(domainURI));
+					
+		}
+		
+		public Builder createPlatform() {
+			PlatformAccessEntity platform = new PlatformAccessEntity.Platform();
+			return addAndPush(platform);
+		}
+		
+		public Builder createPlatform(String code, String name) {
+			return createPlatform()
+					.buildCurrentWithCodeAndName(code, name,null);
+		}
+		
+
+		public Builder createApplication() {
+			PlatformAccessEntity app = new PlatformAccessEntity.Application();
+			return addAndPush(app);
+		}
+		
+		public Builder createApplication(String code, String name, String domainURI) {
+			return createApplication()
+					.buildCurrentWithCodeAndName(code, name, domainURI);	
+		}
+
+		public Builder createFeature() {
+			PlatformAccessEntity feature = new PlatformAccessEntity.Feature();
+			return addAndPush(feature);
+		}
+		
+		public Builder createFeature(String code, String name, String domainURI) {
+			return createFeature()
+					.buildCurrentWithCodeAndName(code, name,domainURI);
+		}
+		
+		public Builder createModule() {
+			PlatformAccessEntity module = new PlatformAccessEntity.Module();
+			return addAndPush(module);
+		}
+		
+		public Builder createModule(String code, String name, String domainURI) {
+			return createModule()
+					.buildCurrentWithCodeAndName(code, name,domainURI);
+		}
+		
+		public Builder addPermission(Permission...permissions) {
+			Arrays.asList(permissions).forEach((p) -> this.current.addAvailablePermission(p));
+			return this;
+		}
+
+		
+	}
+
+	public static String getApp1_code() {
+		//return "provider-app";
+		return "HRS";
+	}
+	
+	public static String getApp2_code() {
+		//return "um-app";
+		return "ICR";
+	}
+	
+	public static String getApp3_code() {
+		return "dm-app";
+	}
+	
+	public static String getApp4_code() {
+		return "cm-app";
+	}
+	
+	public static PlatformAccessEntity createPlatformAndSubTree() {
+
+		return
+		AccessEntityFactory.builder()
+		.createPlatform("nimbus", "Nimbus")
+			.createApplication(getApp1_code(), "um-web-provider",getApp1_code())
+				.addPermission(new Permission.Access())
+				.createFeature("dashboard", "Member Dashboard","member/dashboard")
+					.addPermission(new Permission.Access(), new Permission.Read(), new Permission.Update())
+				.pop()
+				.createFeature("search", "Search Member","member/search")
+					.addPermission(new Permission.Create())
+				.pop()
+			.pop()
+			.createApplication(getApp2_code(), "um-web-clinician",getApp2_code())
+				.createFeature("pcr-review", "Internal Physican Review","pcr-review")
+					.addPermission(new Permission.Access(), new Permission.Update())
+				.pop()
+			.pop()	
+			.createApplication(getApp3_code(), "um-web-intake",getApp3_code())
+			.pop()
+			.createApplication(getApp4_code(), "cm-web-clinician",getApp4_code())
+			
+		.getRoot()
+		.getCurrent();
+	}
+	
+	public static PlatformAccessEntity createPlatformAndSubTree1() {
+
+		return
+		AccessEntityFactory.builder()
+		.createPlatform("nimbus", "Nimbus")
+			.createApplication("HRS", "HRS",null)
+				.createModule("Member", "Member module", "member")
+					.addPermission(new Permission.Create(), new Permission.Read(), new Permission.Update())
+						.createFeature("CreateMember", "CreateMember", "member/_new")
+							.addPermission(new Permission.Create(), new Permission.Read())
+						.pop()
+						.createFeature("SearchMember", "SearchMember", "member/_search")
+							.addPermission(new Permission.Read())
+						.pop()
+				.pop()
+				.createModule("UMCase", "UM Case management", "umCase")
+					.addPermission(new Permission.Create(), new Permission.Read(), new Permission.Update())
+						.createFeature("CreateCase","create UM Case","um-case/_new")
+							.addPermission(new Permission.Create(), new Permission.Read())
+						.pop()
+						.createFeature("UpdateCase","update UM Case","um-case/_update")
+							.addPermission(new Permission.Update(), new Permission.Read())
+						.pop()
+				.pop()
+			.pop()
+			.createApplication("ICR", "ICR",null)
+				.createModule("Provider", "Manage provider", "provider")
+					.addPermission(new Permission.Create(), new Permission.Read(), new Permission.Update(),new Permission.Delete())
+						.createFeature("SearchProvider", "SearchProvider","provider/_search")
+							.addPermission(new Permission.Read())
+						.pop()
+						.createFeature("DeleteProvider", "DeleteProvider","provider/_delete")
+							.addPermission( new Permission.Read(), new Permission.Delete())
+						.pop()
+				.pop()
+			.pop()
+		.getRoot()
+		.getCurrent();
+	}
+
+}

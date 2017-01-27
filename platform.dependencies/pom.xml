@@ -1,0 +1,100 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.anthem.nimbus.platform</groupId>
+	<artifactId>com.anthem.nimbus.platform.dependencies</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>platform.dependencies</name>
+	<description>Nimbus Bill of materials</description>
+	<url>http://maven.apache.org</url>
+	<organization>
+		<name>Anthem Inc.</name>
+		<url>https://www.anthem.com</url>
+	</organization>
+
+	<developers>
+	</developers>
+
+	<licenses>
+	</licenses>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+	</properties>
+
+	<dependencyManagement>
+
+		<dependencies>
+			<!-- Import dependency management from Spring Cloud -->
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>Camden.RELEASE</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			
+			<!--  Check here for compatible boot dependencies :
+			https://repo.spring.io/release/org/springframework/cloud/spring-cloud-starter-parent/Camden.RELEASE/ -->
+			<dependency>
+				<!-- Import dependency management from Spring Boot -->
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>1.4.0.RELEASE</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+            
+            <dependency>
+				<groupId>io.springfox</groupId>
+				<artifactId>springfox-swagger2</artifactId>
+				<version>2.4.0</version>
+			</dependency>
+			<dependency>
+				<groupId>io.springfox</groupId>
+				<artifactId>springfox-swagger-ui</artifactId>
+				<version>2.4.0</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>2.4</version>
+			</dependency>
+			
+			<dependency> 
+				<groupId>com.anthem.nimbus.platform</groupId> 
+				<artifactId>com.anthem.nimbus.platform.core.extension</artifactId> 
+				<version>${project.version}</version> 
+			</dependency>
+			<dependency> 
+				<groupId>com.anthem.nimbus.platform</groupId> 
+				<artifactId>com.anthem.nimbus.platform.starter-spec-model</artifactId> 
+				<version>${project.version}</version> 
+				<type>pom</type>
+			</dependency>
+			<dependency> 
+				<groupId>com.anthem.nimbus.platform</groupId> 
+				<artifactId>com.anthem.nimbus.platform.starterclient-mgmt</artifactId> 
+				<version>${project.version}</version> 
+				<type>pom</type>
+			</dependency>
+			<dependency> 
+				<groupId>com.anthem.nimbus.platform</groupId> 
+				<artifactId>com.anthem.nimbus.platform.starter-auth-server</artifactId> 
+				<version>${project.version}</version> 
+				<type>pom</type>
+			</dependency>
+			<dependency> 
+				<groupId>com.anthem.nimbus.platform</groupId> 
+				<artifactId>com.anthem.nimbus.platform.starter-core-process</artifactId> 
+				<version>${project.version}</version> 
+				<type>pom</type>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+
+</project>

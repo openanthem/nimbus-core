@@ -1,0 +1,10 @@
+*.DS_Store
+*/**/*.log
+*/target/
+*/bin/
+/.metadata/
+/.swp
+*/.settings
+.factorypath
+.idea/
+*.iml
