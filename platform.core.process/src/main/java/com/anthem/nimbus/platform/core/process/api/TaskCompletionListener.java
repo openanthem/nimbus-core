@@ -3,16 +3,15 @@
  */
 package com.anthem.nimbus.platform.core.process.api;
 
+import com.anthem.nimbus.platform.core.process.api.cache.session.PlatformSession;
+import com.anthem.nimbus.platform.spec.model.dsl.binder.AssignmentTask;
+import com.anthem.nimbus.platform.spec.model.dsl.binder.AssignmentTask.TaskStatus;
+import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadModel;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import com.anthem.nimbus.platform.core.process.api.cache.session.PlatformSession;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.AssignmentTask;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.AssignmentTask.TaskStatus;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadModel;
 
 /**
  * @author Jayant Chaudhuri
@@ -36,7 +35,7 @@ public class TaskCompletionListener implements ExecutionListener {
 		AssignmentTask assignmentTask = (AssignmentTask)quadModel.getCore().getState();
 		String taskId = assignmentTask.getTaskId();
 		taskService.complete(taskId);
-		assignmentTask.setInternalStatus(TaskStatus.COMPLETED);
-	}
+        assignmentTask.setStatus(TaskStatus.COMPLETED);
+    }
 
 }
