@@ -7,18 +7,22 @@
 		<artifactId>com.anthem.nimbus.platform.parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-
+	<url></url>
 	<artifactId>com.anthem.nimbus.platform.core.process</artifactId>
 	<packaging>jar</packaging>
 
 	<name>platform.core.process</name>
 	<description>Yo process</description>
-
+	
+	<organization>
+		<name>Anthem Inc.</name>
+		<url>https://www.anthem.com</url>
+	</organization>
+	
 	<dependencies>
 		<dependency>
 			<groupId>com.anthem.nimbus.platform</groupId>
 			<artifactId>com.anthem.nimbus.platform.spec.model.test</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.ws</groupId>
@@ -37,15 +41,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-redis</artifactId>
 		</dependency>
-		<!-- <dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-config-client</artifactId>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-config</artifactId>
-		</dependency>-->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-bus-amqp</artifactId>
@@ -82,17 +77,14 @@
 		<dependency>
 			<groupId>org.eclipse.jdt.core.compiler</groupId>
 			<artifactId>ecj</artifactId>
-			<version>4.5.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.drools</groupId>
 			<artifactId>drools-core</artifactId>
-			<version>5.6.0.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>org.drools</groupId>
 			<artifactId>drools-compiler</artifactId>
-			<version>5.6.0.Final</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.eclipse.jdt.core.compiler</groupId>
@@ -103,22 +95,18 @@
 		<dependency>
 			<groupId>com.anthem.nimbus.platform</groupId>
 			<artifactId>com.anthem.nimbus.platform.spec.model</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.anthem.nimbus.platform</groupId>
 			<artifactId>com.anthem.nimbus.platform.utils.converter</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.anthem.nimbus.platform</groupId>
 			<artifactId>com.anthem.nimbus.platform.utils.rest.client</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.anthem.nimbus.platform</groupId>
 			<artifactId>com.anthem.nimbus.platform.utils.reference.data</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -135,9 +123,7 @@
 		<dependency>
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-spring-boot-starter-basic</artifactId>
-			<version>6.0.0.Beta4</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-configuration-processor</artifactId>
@@ -174,32 +160,31 @@
 		<dependency>
 			<groupId>io.netty</groupId>
 			<artifactId>netty-all</artifactId>
-			<version>4.1.2.Final</version>
 		</dependency>
 	</dependencies>
-	
+
 	<build>
-    <plugins>
-     <plugin>
-       <groupId>org.apache.maven.plugins</groupId>
-       <artifactId>maven-jar-plugin</artifactId>
-       <executions>
-         <execution>
-           <goals>
-             <goal>test-jar</goal>
-           </goals>
-         </execution>
-       </executions>
-     </plugin>
-     <plugin>
-  		<groupId>org.apache.maven.plugins</groupId>
-  		<artifactId>maven-resources-plugin</artifactId>
-  		<configuration>
-    		<includeEmptyDirs>true</includeEmptyDirs>
-  		</configuration>
-	</plugin>
-    </plugins>
-  </build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>test-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<configuration>
+					<includeEmptyDirs>true</includeEmptyDirs>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 
 </project>
