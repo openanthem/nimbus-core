@@ -6,14 +6,17 @@
 		<groupId>com.anthem.nimbus.platform</groupId>
 		<artifactId>com.anthem.nimbus.platform.parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../parent</relativePath>
 	</parent>
 
 	<artifactId>com.anthem.nimbus.platform.spec.model.test</artifactId>
 	<packaging>jar</packaging>
-
 	<name>platform.spec.model.test</name>
-
+	<url></url>
+	<organization>
+		<name>Anthem Inc.</name>
+		<url>https://www.anthem.com</url>
+	</organization>
+	
 	<dependencies>
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
@@ -23,9 +26,6 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 		</dependency>
-
-		<!-- <dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-test</artifactId> 
-			<scope>test</scope> </dependency> -->
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-commons</artifactId>
@@ -33,24 +33,18 @@
 		<dependency>
 			<groupId>org.neo4j</groupId>
 			<artifactId>neo4j-ogm-api</artifactId>
-			<version>2.0.0-M02</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.3.2</version>
 		</dependency>
 		<dependency>
 			<groupId>com.anthem.nimbus.platform</groupId>
-			<artifactId>
-				com.anthem.nimbus.platform.spec.model
-			</artifactId>
-			<version>${project.version}</version>
+			<artifactId>com.anthem.nimbus.platform.spec.model</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>net.bytebuddy</groupId>
 			<artifactId>byte-buddy</artifactId>
-			<version>1.4.17</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -64,7 +58,6 @@
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
 		</dependency>
-		
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
