@@ -10,8 +10,12 @@
 	</parent>
 	<artifactId>com.anthem.nimbus.platform.utils.rest.client</artifactId>
 	<name>platform.rest.client</name>
-	<url>http://maven.apache.org</url>
-
+	<url></url>
+	<description>Nimbus Utility library for generic rest clients</description>
+	<organization>
+		<name>Anthem Inc.</name>
+		<url>https://www.anthem.com</url>
+  	</organization>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>

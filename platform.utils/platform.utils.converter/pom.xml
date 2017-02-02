@@ -10,8 +10,12 @@
 	</parent>
 	<artifactId>com.anthem.nimbus.platform.utils.converter</artifactId>
 	<name>platform.utils.converter</name>
-	<url>http://maven.apache.org</url>
-	
+	<url></url>
+	<description>Nimbus Utility library for data format conversions</description>
+	<organization>
+		<name>Anthem Inc.</name>
+		<url>https://www.anthem.com</url>
+  	</organization>
 	<dependencies>
 		<dependency>
 			<groupId>javax.servlet</groupId>

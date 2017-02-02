@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
@@ -10,8 +9,14 @@
 	</parent>
 	<artifactId>com.anthem.nimbus.platform.utils</artifactId>
 	<packaging>pom</packaging>
+	<url></url>
+	<description>Nimbus Utility library</description>
+	<organization>
+		<name>Anthem Inc.</name>
+		<url>https://www.anthem.com</url>
+  	</organization>
 	<dependencies>
-  	<dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
@@ -27,13 +32,12 @@
 		<dependency>
 			<groupId>com.anthem.nimbus.platform</groupId>
 			<artifactId>com.anthem.nimbus.platform.spec.model</artifactId>
-			<version>${project.version}</version>
 		</dependency>
-  </dependencies>
-	
+	</dependencies>
+
 	<modules>
-	    <module>platform.utils.converter</module>
-	    <module>platform.utils.rest.client</module>
+		<module>platform.utils.converter</module>
+		<module>platform.utils.rest.client</module>
 		<module>platform.utils.reference.data</module>
 	</modules>
 </project>
