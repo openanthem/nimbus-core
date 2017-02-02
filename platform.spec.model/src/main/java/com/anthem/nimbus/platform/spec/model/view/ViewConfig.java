@@ -20,8 +20,6 @@ import com.anthem.nimbus.platform.spec.model.dsl.Model;
 @Model
 @Inherited
 public @interface ViewConfig {
-
-	
 	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.TYPE})
@@ -30,16 +28,12 @@ public @interface ViewConfig {
 		String value();
 	}
 
-	
-	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(value={ElementType.ANNOTATION_TYPE})
 	@Inherited
 	public @interface ViewParamBehavior {
 		
 	}
-
-	
 	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(value={ElementType.ANNOTATION_TYPE})
@@ -48,43 +42,30 @@ public @interface ViewConfig {
 		
 	}
 
-	
-	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewParamBehavior
 	public @interface Hints {
-
 		public enum AlignOptions {
 			Left,
 			Right,
 			Center,
 			Inherit;
 		}
-
-		
 		AlignOptions align() default AlignOptions.Inherit;
 	}
 
-	
-	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewParamBehavior
 	public @interface Mode {
-
-		
 		public enum Options {
 			ReadOnly,
 			Hidden,
 			Inherit
 		}
-
-		
 		Options value() default Options.Inherit;
 	}
-
-	
 	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
@@ -96,17 +77,11 @@ public @interface ViewConfig {
 			Form,
 			Static
 		}
-
 		String alias() default "page";
-		
 		Type type() default Type.Home;
-		
 		String route() default "";
-
 		String breadCrumb() default "none";
-		
 		String imgSrc() default "";
-		
 		String styleClass() default "";
 	}
 	
@@ -120,16 +95,56 @@ public @interface ViewConfig {
 			Medium,
 			Large
 		}
-
 		String alias() default "Card";
-		
 		String imgSrc() default "";
-		
 		String title() default "";
-		
 		Size size() default Size.Large;
 	}
 	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface CardContentGrid {
+		String alias() default "CardContentGrid";
+	}
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface CardContent {
+		String alias() default "CardContent";
+	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface CardHeader {
+		String alias() default "CardHeader";
+		String url() default "";
+	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface CardBody {
+		String alias() default "CardBody";
+	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface CardFooter {
+		String alias() default "CardFooter";
+	}
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface FieldValue {
+		String alias() default "FieldValue";
+	}
+
+
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
@@ -142,179 +157,100 @@ public @interface ViewConfig {
 	@ViewStyle
 	public @interface Section {
 		String alias() default "Section";
-		
 		String imgSrc() default "";
-		
 		String styleClass() default "";
 	}
-	
-	
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.FIELD})
-	@ViewStyle
-	public @interface GlobalSection {
-		String alias() default "globalSection";
 		
-		String imgSrc() default "";
-		
-		String styleClass() default "";
-	}
-	
-	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
 	public @interface Form {
 		String alias() default "Form";
-		
 		String submitUrl() default "";
-		
 		String b() default "";
-	}
-
-	
-	
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.FIELD})
-	@ViewStyle
-	public @interface Summary {
-		String alias() default "summary";
-		
-		String imgSrc() default "";
-	}
-
-	
+	}	
 	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
 	public @interface Button {	
-
 		String alias() default "Button";
-
 		String url() default "";
-
 		String b() default "";
-
 		String method() default "GET";
-		
 		String imgSrc() default "";
-		
 		String type() default "submit";
 	}
 
-	
-	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
 	public @interface Link {
-
 		String url() default "";
-
 		String method() default "GET";
-
 		String b() default "$executeAnd$nav";
-		
 		String imgSrc() default "";
-		
 		String styleClass() default "";
 	}
-
-	
 	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
 	public @interface TextBox {
-
 		String alias() default "TextBox";
-				
 		boolean hidden() default false;
-		
 		boolean readOnly() default false;
-		
 		String help() default "";
-		
 		String labelClass() default "anthem-label";
-		
 		String type() default "text";
-		
 		boolean postEventOnChange() default false;
-		
 	}
 
-	
-	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
 	public @interface ComboBox {
 		String alias() default "ComboBox";
 		boolean readOnly() default false;
-		
 		String labelClass() default "anthem-label";
-		
 		boolean postEventOnChange() default false;
 	}
 
-	
-	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
-	public @interface BreadCrumb {
-
-		String label();
-
-		int order();
-
-		String alias() default "breadCrumb";
-		
-		boolean postEventOnChange() default false;
+	public @interface StaticText {
+		String alias() default "StaticText";
+		String contentId() default "";
 	}	
-
-	
 	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
 	public @interface MultiSelect {
 		String alias() default "MultiSelect";
-		
 		String labelClass() default "anthem-label";
-		
 		boolean postEventOnChange() default false;
 	}
 
-	
-	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
 	public @interface InputDate {
 		String alias() default "InputDate";
-		
+		boolean readOnly() default false;	
 		String labelClass() default "anthem-label";
-				
 		String type() default "date";
-		
 		boolean postEventOnChange() default false;
 	}
 
-	
-	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
 	public @interface Grid {
-
 		String alias() default "Grid";
-
 		boolean onLoad() default false;
-
 		String url() default "";
-		
 		boolean postEventOnChange() default false;
 	}
 	
@@ -358,6 +294,33 @@ public @interface ViewConfig {
 		boolean postEventOnChange() default false;
 	}
 	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface GlobalSection {
+		String alias() default "globalSection";
+		String imgSrc() default "";
+		String styleClass() default "";
+	}
+		
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface Summary {
+		String alias() default "summary";
+		String imgSrc() default "";
+	}
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface BreadCrumb {
+		String label();
+		int order();
+		String alias() default "breadCrumb";
+		boolean postEventOnChange() default false;
+	}	
+
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle

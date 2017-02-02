@@ -1,21 +1,20 @@
 package com.anthem.nimbus.platform.spec.serializer;
 
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import com.anthem.nimbus.platform.spec.model.exception.JSonParsingException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 /**
  * @Author Cheikh Niass on 12/2/16.
  */
 public class CustomLocalDateSerializer extends StdSerializer<LocalDate> {
     private static DateTimeFormatter formatter =
-            DateTimeFormatter.ofPattern("M/d/yyyy");
+            DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public CustomLocalDateSerializer() {
         this(null);
