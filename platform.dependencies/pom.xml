@@ -25,9 +25,8 @@
 		<spring.boot.version>1.4.0.RELEASE</spring.boot.version>
 		<spring.cloud.version>Camden.RELEASE</spring.cloud.version>
 		<sdn.version>4.1.0.M1</sdn.version>
-		<neo4j.ogm.version>1.1.6</neo4j.ogm.version>
-		<neo4j.ogm-api.version>2.0.0-M02</neo4j.ogm-api.version>
-		<neo4j.version>2.2.5</neo4j.version>
+		<neo4j.ogm.version>2.0.0-M02</neo4j.ogm.version>
+		<neo4j.version>2.3.2</neo4j.version>
 		<neo4j-cypher-compiler.version>2.3.2</neo4j-cypher-compiler.version>
 		<swagger.version>2.4.0</swagger.version>
 		<commons-io.version>2.4</commons-io.version>
@@ -62,7 +61,7 @@
 		<nimbus.utils.refdata.version>0.0.1-SNAPSHOT</nimbus.utils.refdata.version>
 		<nimbus.process.version>0.0.1-SNAPSHOT</nimbus.process.version>
 		<nimbus.model.starter.version>0.0.1-SNAPSHOT</nimbus.model.starter.version>
-		<nimbus.process.starter.version>0.0.1-SNAPSHOT</nimbus.process.starter.version>	
+		<nimbus.process.starter.version>0.0.1-SNAPSHOT</nimbus.process.starter.version>
 	</properties>
 
 	<developers>
@@ -114,7 +113,7 @@
 	</developers>
 
 	<licenses>
-	 <license>
+		<license>
 			<name>Apache License, Version 2.0</name>
 			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
 		</license>
@@ -261,10 +260,27 @@
 				<type>test-jar</type>
 				<scope>test</scope>
 			</dependency>
+			<!-- Added these overrides over spring-boot-dependencies for spring-data-neoj 
+				to work -->
 			<dependency>
 				<groupId>org.neo4j</groupId>
 				<artifactId>neo4j-ogm-api</artifactId>
-				<version>${neo4j.ogm-api.version}</version>
+				<version>${neo4j.ogm.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.neo4j</groupId>
+				<artifactId>neo4j-ogm-compiler</artifactId>
+				<version>${neo4j.ogm.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.neo4j</groupId>
+				<artifactId>neo4j-ogm-core</artifactId>
+				<version>${neo4j.ogm.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.neo4j</groupId>
+				<artifactId>neo4j-ogm-http-driver</artifactId>
+				<version>${neo4j.ogm.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.neo4j</groupId>
