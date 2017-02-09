@@ -14,8 +14,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.anthem.nimbus.platform.core.process.api.domain.ExecutionInputConfigHandler;
-import com.anthem.nimbus.platform.core.process.api.domain.ExecutionOutputConfigHandler;
 import com.anthem.nimbus.platform.core.process.api.domain.ModelConfigBuilder;
 import com.anthem.nimbus.platform.core.process.api.domain.ModelConfigFactory;
 import com.anthem.nimbus.platform.spec.model.dsl.CoreDomain;
@@ -25,6 +23,8 @@ import com.anthem.nimbus.platform.spec.model.dsl.config.ModelConfig;
 import com.anthem.nimbus.platform.spec.model.dsl.config.ParamConfig;
 import com.anthem.nimbus.platform.spec.model.dsl.config.ParamType;
 import com.anthem.nimbus.platform.spec.model.person.Address;
+import com.anthem.oss.nimbus.core.api.domain.state.ExecutionInputConfigHandler;
+import com.anthem.oss.nimbus.core.api.domain.state.ExecutionOutputConfigHandler;
 
 import lombok.Getter;
 import lombok.Setter;

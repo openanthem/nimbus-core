@@ -3,11 +3,8 @@
  */
 package com.anthem.nimbus.platform.spec.model.util;
 
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
 import com.anthem.nimbus.platform.spec.contract.event.EventPublisher;
-import com.anthem.nimbus.platform.spec.model.client.user.ClientUser;
+import com.anthem.nimbus.platform.spec.contract.repository.ParamStateGateway;
 import com.anthem.nimbus.platform.spec.model.validation.ValidatorProvider;
 
 import lombok.Getter;
@@ -23,12 +20,10 @@ public class StateAndConfigSupportProvider {
 	
 	private final EventPublisher eventPublisher;
 	
-	private final ClientUser clientUser;
-	
-	//private final Supplier<ClientUser> getter;
-	
-	//private final Consumer<ClientUser> setter;
+	//private final ClientUser clientUser;
 	
 	private final ValidatorProvider validatorProvider;
-
+	
+	private final ParamStateGateway paramStateGateway;
 }
+ 

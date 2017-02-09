@@ -6,10 +6,6 @@ package com.anthem.nimbus.platform.spec.model;
  */
 public interface HierarchyMatch {
 
-	/**
-	 * 
-	 * @return
-	 */
 	public String getUri();
 	
 }

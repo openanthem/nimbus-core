@@ -10,7 +10,7 @@ import org.apache.commons.collections.CollectionUtils;
 import com.anthem.nimbus.platform.spec.contract.event.StateAndConfigEventPublisher;
 import com.anthem.nimbus.platform.spec.model.AbstractEvent.SuppressMode;
 import com.anthem.nimbus.platform.spec.model.dsl.ModelEvent;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig.Param;
+import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainState.Param;
 import com.anthem.nimbus.platform.spec.model.util.JustLogit;
 
 import lombok.Getter;
@@ -43,7 +43,7 @@ public class QuadScopedEventPublisher implements StateAndConfigEventPublisher {
 	 * 
 	 */
 	@Override
-	public boolean publish(ModelEvent<StateAndConfig<?,?>> modelEvent) {
+	public boolean publish(ModelEvent<Param<?>> modelEvent) {
 		if(CollectionUtils.isEmpty(getParamEventPublishers())) return false;
 		
 		getParamEventPublishers()

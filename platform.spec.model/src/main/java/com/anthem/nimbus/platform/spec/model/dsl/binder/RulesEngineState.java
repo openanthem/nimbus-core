@@ -7,9 +7,9 @@ import java.io.Serializable;
 
 import org.drools.KnowledgeBase;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.rule.AgendaFilter;
 import org.drools.runtime.rule.FactHandle;
 
+import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainState.Model;
 import com.anthem.nimbus.platform.spec.model.util.JustLogit;
 
 import lombok.Getter;
@@ -33,7 +33,7 @@ public class RulesEngineState implements Serializable{
 	private FactHandle sacFactHandle;
 	
 	
-	public RulesEngineState(KnowledgeBase rulesContainer, StateAndConfig<?,?> sac){
+	public RulesEngineState(KnowledgeBase rulesContainer, Model<?> sac){
 		ruleSession = rulesContainer.newStatefulKnowledgeSession();
 		stateFactHandle = ruleSession.insert(sac.getState());
 		sacFactHandle = ruleSession.insert(sac);
@@ -43,16 +43,13 @@ public class RulesEngineState implements Serializable{
 	
 	/**
 	 * 
-	 * @param sac
-	 * @param agendaFilter
+	 * @param state
+	 * @param config
 	 */
-	public void fireAllRules(StateAndConfig<?,?> sac, AgendaFilter agendaFilter){
+	public void fireAllRules(Model<?> sac){
 		ruleSession.update(stateFactHandle, sac.getState());
 		ruleSession.update(sacFactHandle, sac);
-		if(agendaFilter != null)
-			ruleSession.fireAllRules(agendaFilter);
-		else
-			ruleSession.fireAllRules();
+		ruleSession.fireAllRules();
 	}
 	
 	/**

@@ -8,9 +8,9 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import com.anthem.nimbus.platform.spec.model.dsl.config.MappedDomainModelConfig;
 import com.anthem.nimbus.platform.spec.model.dsl.config.ModelConfig;
 import com.anthem.nimbus.platform.spec.model.util.ModelsTemplate;
-import com.anthem.nimbus.platform.spec.model.view.dsl.config.ViewModelConfig;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -90,9 +90,9 @@ public class StateAndConfigMeta<T> {
 	public static class View<V, C> extends StateAndConfigMeta<V> {
 		final private Flow<C> flow;
 		final private StateAndConfigMeta<C> core;
-		final private ViewModelConfig<V, C> config; 
+		final private MappedDomainModelConfig<V, C> config; 
 		
-		public View(Flow<C> flow, ViewModelConfig<V, C> viewConfig) {
+		public View(Flow<C> flow, MappedDomainModelConfig<V, C> viewConfig) {
 			super(viewConfig);
 			this.config = viewConfig;
 			
@@ -101,7 +101,7 @@ public class StateAndConfigMeta<T> {
 			this.core = flow.getCore();
 		}
 		
-		public View(Flow<C> flow, ViewModelConfig<V, C> viewConfig, Function<ModelConfig<V>, V> viewStateCreator) {
+		public View(Flow<C> flow, MappedDomainModelConfig<V, C> viewConfig, Function<ModelConfig<V>, V> viewStateCreator) {
 			super(viewConfig, viewStateCreator);
 			this.config = viewConfig;
 			
@@ -110,7 +110,7 @@ public class StateAndConfigMeta<T> {
 			this.core = flow.getCore();
 		}
 		
-		public View(Flow<C> flow, ViewModelConfig<V, C> viewConfig, Supplier<V> stateGetter, Consumer<V> stateSetter) {
+		public View(Flow<C> flow, MappedDomainModelConfig<V, C> viewConfig, Supplier<V> stateGetter, Consumer<V> stateSetter) {
 			super(viewConfig, stateGetter, stateSetter);
 			this.config = viewConfig;
 			
@@ -119,7 +119,7 @@ public class StateAndConfigMeta<T> {
 			this.core = flow.getCore();	
 		}
 		
-		public static <V, C> View<V, C> getInstance(ModelConfig<C> coreConfig, ViewModelConfig<V, C> viewConfig, ModelConfig<FlowState> flowConfig,
+		public static <V, C> View<V, C> getInstance(ModelConfig<C> coreConfig, MappedDomainModelConfig<V, C> viewConfig, ModelConfig<FlowState> flowConfig,
 				Function<ModelConfig<C>, C> coreStateCreator, Function<ModelConfig<V>, V> viewStateCreator, Function<ModelConfig<FlowState>, FlowState> flowStateCreator) {
 			
 			StateAndConfigMeta<C> core = new StateAndConfigMeta<>(coreConfig, coreStateCreator);
@@ -128,6 +128,10 @@ public class StateAndConfigMeta<T> {
 				
 			View<V, C> view = (viewStateCreator==null) ? new View<>(flow, viewConfig) : new View<>(flow, viewConfig, viewStateCreator);
 			return view;
+		}
+		
+		public ExecutionState.Config<V, C> getExecutionConfig() {
+			return new ExecutionState.Config<>(getCore().getConfig(), getConfig(), getFlow().getConfig());
 		}
 	}
 	

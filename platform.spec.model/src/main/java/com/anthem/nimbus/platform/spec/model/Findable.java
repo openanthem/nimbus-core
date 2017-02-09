@@ -9,11 +9,6 @@ package com.anthem.nimbus.platform.spec.model;
  */
 public interface Findable<T> {
 
-	/**
-	 * 
-	 * @param by
-	 * @return
-	 */
 	public boolean isFound(T by);
 	
 }

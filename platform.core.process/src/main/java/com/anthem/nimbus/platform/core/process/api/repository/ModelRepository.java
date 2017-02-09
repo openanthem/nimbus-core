@@ -6,7 +6,7 @@ package com.anthem.nimbus.platform.core.process.api.repository;
 import java.io.Serializable;
 import java.util.List;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig;
+import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainState.Param;
 
 /**
  * @author Soham Chakravarti
@@ -33,8 +33,8 @@ public interface ModelRepository {
 	public <T> T _update(String alias, String id, String path, T state);
 	
 	//Action._replace: complete update
-	public void _replace(StateAndConfig.Param<?> param);
-	public void _replace(List<StateAndConfig.Param<?>> params);
+	public void _replace(Param<?> param);
+	public void _replace(List<Param<?>> params);
 	public <T> T _replace(String alias, T state);
 	
 	//Action._delete

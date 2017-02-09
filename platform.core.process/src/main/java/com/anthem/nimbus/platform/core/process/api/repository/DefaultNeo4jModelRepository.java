@@ -8,7 +8,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig.Param;
+import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainState.Param;
+
 
 /**
  * @author Soham Chakravarti

@@ -1,7 +1,7 @@
 package com.anthem.nimbus.platform.core.process.api;
 
-import com.anthem.nimbus.platform.core.process.api.domain.TemplateDefinition;
 import com.anthem.nimbus.platform.core.process.api.exec.EmailTaskExecutor;
+import com.anthem.oss.nimbus.core.api.domain.state.TemplateDefinition;
 
 import lombok.Getter;
 import lombok.Setter;

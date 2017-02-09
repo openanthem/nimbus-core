@@ -3,15 +3,15 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.anthem.nimbus.platform</groupId>
-		<artifactId>com.anthem.nimbus.platform.parent</artifactId>
+		<groupId>com.anthem.oss.nimbus.core</groupId>
+		<artifactId>com.anthem.oss.nimbus.core.parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<url></url>
-	<artifactId>com.anthem.nimbus.platform.core.process</artifactId>
+	<artifactId>com.anthem.oss.nimbus.core.api</artifactId>
 	<packaging>jar</packaging>
 
-	<name>platform.core.process</name>
+	<name>nimbus-core-api</name>
 	<description>Yo process</description>
 	
 	<organization>
@@ -20,10 +20,6 @@
 	</organization>
 	
 	<dependencies>
-		<dependency>
-			<groupId>com.anthem.nimbus.platform</groupId>
-			<artifactId>com.anthem.nimbus.platform.spec.model.test</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>org.springframework.ws</groupId>
 			<artifactId>spring-ws-core</artifactId>
@@ -93,22 +89,6 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>com.anthem.nimbus.platform</groupId>
-			<artifactId>com.anthem.nimbus.platform.spec.model</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.anthem.nimbus.platform</groupId>
-			<artifactId>com.anthem.nimbus.platform.utils.converter</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.anthem.nimbus.platform</groupId>
-			<artifactId>com.anthem.nimbus.platform.utils.rest.client</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.anthem.nimbus.platform</groupId>
-			<artifactId>com.anthem.nimbus.platform.utils.reference.data</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-ws</artifactId>
 		</dependency>
@@ -160,6 +140,17 @@
 		<dependency>
 			<groupId>io.netty</groupId>
 			<artifactId>netty-all</artifactId>
+		</dependency>
+		
+		<!-- nimbus-core -->
+		<dependency>
+			<groupId>com.anthem.oss.nimbus.core</groupId>
+			<artifactId>com.anthem.oss.nimbus.core.spec</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.anthem.oss.nimbus.core</groupId>
+			<artifactId>com.anthem.oss.nimbus.core.test</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 

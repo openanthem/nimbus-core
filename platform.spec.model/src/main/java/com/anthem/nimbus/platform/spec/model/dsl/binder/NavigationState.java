@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.anthem.nimbus.platform.spec.model.dsl.CoreDomain;
+import com.anthem.nimbus.platform.spec.model.dsl.Domain;
 import com.anthem.nimbus.platform.spec.model.dsl.Execution;
 
 import lombok.Getter;
@@ -19,7 +19,7 @@ import lombok.ToString;
  *
  */
 
-@CoreDomain("navigationstate")
+@Domain("navigationstate")
 @Execution.Input.Default @Execution.Output.Default
 @ToString
 @Getter @Setter

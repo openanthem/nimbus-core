@@ -5,13 +5,12 @@ package com.anthem.nimbus.platform.spec.model.dsl.binder;
 
 import java.io.Serializable;
 
-import org.drools.runtime.rule.AgendaFilter;
 import org.springframework.data.annotation.Transient;
 
 import com.anthem.nimbus.platform.spec.model.AbstractModel;
-import com.anthem.nimbus.platform.spec.model.dsl.CoreDomain;
+import com.anthem.nimbus.platform.spec.model.dsl.Domain;
 import com.anthem.nimbus.platform.spec.model.dsl.Repo;
-import com.anthem.nimbus.platform.spec.model.dsl.Repo.Option;
+import com.anthem.nimbus.platform.spec.model.dsl.Repo.Database;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,8 +19,8 @@ import lombok.Setter;
  * @author Jayant Chaudhuru
  *
  */
-@CoreDomain(value="flowstate")
-@Repo(Option.rep_mongodb)
+@Domain(value="flowstate")
+@Repo(Database.rep_mongodb)
 @Getter @Setter
 public class FlowState extends AbstractModel.IdString implements Serializable{
 	
@@ -50,7 +49,7 @@ public class FlowState extends AbstractModel.IdString implements Serializable{
 		
 		if(processConfiguration.getViewRulesContainer() != null){
 			viewRulesEngineState = new RulesEngineState(processConfiguration.getViewRulesContainer(), quadModel.getView());
-		}
+		} 
 		if(quadModel.getFlow().findModelByPath("/navigationState").getState()== null){
 			navigationState = new NavigationState();
 			PageHolder pageHolder = new PageHolder();
@@ -60,21 +59,19 @@ public class FlowState extends AbstractModel.IdString implements Serializable{
 		}
 	}
 	
-	
 	/**
-	 * 		
-	 * @param quadModel
-	 * @param agendaFilter
+	 * 
+	 * @param model
 	 */
-	public void fireAllRules(QuadModel<?, ?> quadModel, AgendaFilter agendaFilter){
+	public void fireAllRules(QuadModel<?, ?> quadModel){
 		if(coreRulesEngineState != null){
-			coreRulesEngineState.fireAllRules(quadModel.getCore(),agendaFilter);
+			coreRulesEngineState.fireAllRules(quadModel.getCore());
 		}
 		
 		if(viewRulesEngineState != null){
-			viewRulesEngineState.fireAllRules(quadModel.getView(),agendaFilter);
+			viewRulesEngineState.fireAllRules(quadModel.getView());
 		}
-	}	
+	}
 	
 	/**
 	 * 

@@ -5,41 +5,44 @@ package com.anthem.nimbus.platform.spec.model.dsl.binder;
 
 import java.io.Serializable;
 
-import org.drools.base.RuleNameEqualsAgendaFilter;
-import org.drools.runtime.rule.AgendaFilter;
-
 import com.anthem.nimbus.platform.spec.model.command.Command;
 import com.anthem.nimbus.platform.spec.model.command.CommandElement;
-import com.anthem.nimbus.platform.spec.model.dsl.config.ModelConfig;
-import com.anthem.nimbus.platform.spec.model.view.dsl.config.ViewModelConfig;
+import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainState.Model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 /**
  * @author Soham Chakravarti
  *
  */
-@Getter @Setter @RequiredArgsConstructor
+@Getter @Setter
 public class QuadModel<V, C> implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-
 	private final CommandElement key;
 	
-	private final StateAndConfig.Model<C, ModelConfig<C>> core;
+	private ExecutionState<V, C>.ExModel root;
 	
-	private final StateAndConfig.Model<V, ViewModelConfig<V, C>> view;
+	@JsonIgnore transient private final Model<C> core;
 	
-	private final StateAndConfig.Model<FlowState, ModelConfig<FlowState>> flow;
+	@JsonIgnore transient private final Model<V> view;
 	
-	@JsonIgnore private transient QuadScopedEventPublisher eventPublisher;
+	@JsonIgnore transient private final Model<FlowState> flow;
 	
+	@JsonIgnore transient private QuadScopedEventPublisher eventPublisher;
 	
-	public StateAndConfig.Model<?, ?> resolveStateAndConfig(Command cmd) {
+	public QuadModel(CommandElement key, ExecutionState<V, C>.ExModel root) {
+		this.key = key;
+		this.root = root;
+		this.core = getRoot().findModelByPath("/c");
+		this.view = getRoot().findModelByPath("/v");
+		this.flow = getRoot().findModelByPath("/f");
+	}
+	
+	public Model<?> resolveStateAndConfig(Command cmd) {
 		return cmd.isView() ? view : core;
 	}
 	
@@ -47,28 +50,20 @@ public class QuadModel<V, C> implements Serializable {
 		flow.getState().init(processConfiguration, this);
 	}
 	
-	
-	/**
-	 * 
-	 */
 	public void fireAllRules(){
-		fireAllRules(null);
-	}
-	
-	/**
-	 * 
-	 * @param agendaFilter
-	 */
-	public void fireAllRules(AgendaFilter agendaFilter){
-		flow.getState().fireAllRules(this,agendaFilter);
+		flow.getState().fireAllRules(this);
 	}
 	
 	
 	@Override
 	protected void finalize() throws Throwable {
+		
+		getRoot().getExecutionRuntime().stop();
+		
 		if(flow.getState() != null){
 			flow.getState().dispose();
 		}
+		
 		super.finalize();
 	}
 		

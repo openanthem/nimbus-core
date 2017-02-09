@@ -8,7 +8,6 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 
 import com.anthem.nimbus.platform.core.process.api.cache.session.PlatformSession;
-import com.anthem.nimbus.platform.core.process.api.domain.DomainConfigAPI;
 import com.anthem.nimbus.platform.core.process.api.repository.ModelRepository;
 import com.anthem.nimbus.platform.core.process.api.repository.ModelRepositoryFactory;
 import com.anthem.nimbus.platform.spec.contract.process.ProcessExecutorEvents;
@@ -21,6 +20,7 @@ import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig.Param;
 import com.anthem.nimbus.platform.spec.model.dsl.config.ActionExecuteConfig;
 import com.anthem.nimbus.platform.spec.model.dsl.config.ModelConfig;
+import com.anthem.oss.nimbus.core.api.domain.state.DomainConfigAPI;
 
 /**
  * @author Soham Chakravarti

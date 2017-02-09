@@ -38,9 +38,7 @@ public @interface Model {
 				public List<ParamValue> getValues(String paramCode);
 			}
 			
-			Class<? extends Source> value() default com.anthem.nimbus.platform.spec.model.client.Values.Status.class;
-			
-			String url() default "staticCodeValue";
+			Class<? extends Source> value();
 		}
 		
 		@Retention(RetentionPolicy.RUNTIME)

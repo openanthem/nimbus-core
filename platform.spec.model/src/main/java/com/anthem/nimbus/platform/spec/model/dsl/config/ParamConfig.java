@@ -4,28 +4,25 @@
 package com.anthem.nimbus.platform.spec.model.dsl.config;
 
 import java.io.Serializable;
-import java.lang.annotation.Annotation;
 import java.util.List;
-import java.util.Map;
 
 import com.anthem.nimbus.platform.spec.model.Findable;
 import com.anthem.nimbus.platform.spec.model.dsl.MapsTo;
+import com.anthem.nimbus.platform.spec.model.dsl.MapsTo.Mode;
+import com.anthem.nimbus.platform.spec.model.dsl.MapsTo.Path;
 
 /**
  * @author Soham Chakravarti
  *
  */
-public interface ParamConfig<P> extends Config<P>, Findable<String>, Serializable {
+public interface ParamConfig<P> extends Config<P>, Findable<String> {
 
 	@lombok.Data
 	public static class Desc implements Serializable {
-		
 		private static final long serialVersionUID = 1L;
 
 		private String label;
-		
 		private String hint;
-		
 		private String help;
 	}
 	
@@ -33,32 +30,85 @@ public interface ParamConfig<P> extends Config<P>, Findable<String>, Serializabl
 	
 	public ParamType getType();
 	
-	public boolean isActive();
-	
-	public boolean isRequired();
-	
 	public boolean isLeaf();
-	
-	public boolean isView();
-	
-	public boolean isMapped();
-	
-	public MapsTo.Path getMapsTo();
-	
-	/**
-	 * Applies for nested param model for scenarios when current param's parent model is mapped and is same as 
-	 * nested param model's mapped class value
-	 * */
-	public boolean isImplicitlyMapped();
 	
 	public Desc getDesc();
 	
 	public List<AnnotationConfig> getValidations();
 	
-	public <T> ParamConfig<P> clone(Class<? extends Annotation> ignore[], Map<Class<T>, ModelConfig<T>> visitedModels);
+	default MapsTo.Mode getMappingMode() {
+		return MapsTo.Mode.UnMapped;
+	}
 	
-	public List<ParamValue> getValues();
+	@Override
+	default MappedParamConfig<P, ?> findIfMapped() {
+		return null;
+	}
 	
-	public String getValuesUrl();
+	public interface MappedParamConfig<P, M> extends ParamConfig<P>, MappedConfig<P, M> {
+
+		@Override
+		default MappedParamConfig<P, M> findIfMapped() {
+			return this;
+		}
+		
+		public Path getPath();
+
+		public boolean isLinked();
+		
+		default public MappedParamConfigLinked<P, M> findIfLinked() {
+			return null;
+		}
+		
+		default public MappedParamConfigDelinked<P, M> findIfDelinked() {
+			return null;
+		}
+		
+		@Override
+		default Mode getMappingMode() {
+			return MapsTo.getMode(getPath());
+		}
+	}
 	
+	public interface MappedParamConfigLinked<P, M> extends MappedParamConfig<P, M> {
+
+		@Override
+		default MappedParamConfigLinked<P, M> findIfMapped() {
+			return this;
+		}
+		
+		@Override
+		default boolean isLinked() {
+			return true;
+		}
+		
+		@Override
+		default MappedParamConfigLinked<P, M> findIfLinked() {
+			return this;
+		}
+		
+		@Override
+		public ParamConfig<M> getMapsTo();
+	}
+	
+	public interface MappedParamConfigDelinked<P, M> extends MappedParamConfig<P, M> {
+
+		@Override
+		default MappedParamConfigDelinked<P, M> findIfMapped() {
+			return this;
+		}
+		
+		@Override
+		default boolean isLinked() {
+			return false;
+		}
+		
+		@Override
+		default MappedParamConfigDelinked<P, M> findIfDelinked() {
+			return this;
+		}
+		
+		@Override
+		public ModelConfig<M> getMapsTo();
+	}
 }

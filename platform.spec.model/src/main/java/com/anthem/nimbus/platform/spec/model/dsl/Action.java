@@ -30,17 +30,3 @@ public enum Action {
 
 	public static final Action DEFAULT = _get;
 }
-
-/**
- * Process:
- * 	- has endpoint url
- * 		- it can end with action: _search or inferred from HTTP methods
- * 		- GET & DELETE no input, but expected output
- * 		- POST & PUT will have input and expected output
- * 
- * Config:
- * 	- has endpoint url of a Process that ends with "config"
- * 		- returns 
- * 			- input
- * 			- output
- * */

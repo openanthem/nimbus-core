@@ -9,25 +9,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.anthem.nimbus.platform.spec.model.dsl.Model;
-
 /**
  * @author Soham Chakravarti
  *
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(value={ElementType.TYPE, ElementType.ANNOTATION_TYPE})
-@Model
-@Inherited
-public @interface ViewConfig {
+public class ViewConfig {
 	
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.TYPE})
-	@ViewConfig 
-	public @interface ViewDomain {
-		String value();
-	}
-
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(value={ElementType.ANNOTATION_TYPE})
 	@Inherited

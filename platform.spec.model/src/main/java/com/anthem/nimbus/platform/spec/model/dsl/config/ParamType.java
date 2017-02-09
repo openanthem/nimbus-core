@@ -4,8 +4,7 @@
 package com.anthem.nimbus.platform.spec.model.dsl.config;
 
 import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.util.Map;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -34,29 +33,24 @@ public class ParamType implements Serializable {
 	
 	final private Class<?> referredClass;
 	
-	private CollectionType collection;
-	
-	
 	public <T> Nested<T> findIfNested() {
 		return null;
 	}
 	
-	protected ParamType newInstance(boolean nested, String name) {
-		return newInstance(nested, name);
+	public <T> NestedCollection<T> findIfCollection() {
+		return null;
 	}
 	
-	public <T> ParamType clone(Class<? extends Annotation> ignore[], Map<Class<T>, ModelConfig<T>> visitedModels) {
-		return this;
+	public boolean isCollection() {
+		return false;
 	}
 	
 	
 	
 	@Getter @Setter @ToString(callSuper=true) 
 	public static class Field extends ParamType implements Serializable {
-
 		private static final long serialVersionUID = 1L;
 
-		
 		public Field(String name, Class<?> referredClass) {
 			super(false, name, referredClass);
 		}
@@ -66,11 +60,9 @@ public class ParamType implements Serializable {
 	
 	@Getter @Setter @ToString(callSuper=true)
 	public static class Nested<T> extends ParamType implements Serializable {
-
 		private static final long serialVersionUID = 1L;
 
 		private ModelConfig<T> model;
-		
 		
 		public Nested(String name, Class<?> referredClass) {
 			super(true, name, referredClass);
@@ -78,30 +70,44 @@ public class ParamType implements Serializable {
 		
 		@SuppressWarnings("unchecked")
 		@Override
+		public Class<T> getReferredClass() {
+			return (Class<T>)super.getReferredClass();
+		}
+		
+		@SuppressWarnings("unchecked")
+		@Override
 		public Nested<T> findIfNested() {
+			return this;
+		}
+	}
+
+	@Getter @Setter @ToString(callSuper=true)
+	public static class NestedCollection<T> extends Nested<List<T>> implements Serializable {
+		private static final long serialVersionUID = 1L;
+		
+		final private CollectionType collectionType;
+		
+		private ParamConfig<T> elementConfig;
+		
+		public NestedCollection(String name, Class<?> referredClass, CollectionType collectionType) {
+			super(name, referredClass);
+			this.collectionType = collectionType;
+		}
+		
+		@Override
+		public boolean isCollection() {
+			return true;
+		}
+		
+		@SuppressWarnings("unchecked")
+		@Override
+		public NestedCollection<T> findIfCollection() {
 			return this;
 		}
 		
 		@Override
-		protected Nested<T> newInstance(boolean nested, String name) {
-			return new Nested<>(name, getReferredClass());
-		}
-		
-		/**
-		 * 
-		 */
-		@SuppressWarnings("unchecked")
-		@Override
-		public <M> Nested<T> clone(Class<? extends Annotation> ignore[], Map<Class<M>, ModelConfig<M>> visitedModels) {
-			Nested<T> cloned = newInstance(true, getName());
-			cloned.setCollection(getCollection());
-
-			cloned.model = (model == null) ? null
-					: (visitedModels.containsKey(model.getReferredClass())
-							? (ModelConfig<T>) visitedModels.get(model.getReferredClass()) : model.clone(ignore));
-
-			return cloned;
+		public Class<List<T>> getReferredClass() {
+			return super.getReferredClass();
 		}
 	}
-
 }

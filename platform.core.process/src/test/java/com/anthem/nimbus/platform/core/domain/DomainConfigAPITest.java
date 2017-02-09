@@ -9,12 +9,8 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.anthem.nimbus.platform.core.process.api.domain.DomainConfigAPI;
-import com.anthem.nimbus.platform.core.process.api.domain.ExecutionInputConfigHandler;
-import com.anthem.nimbus.platform.core.process.api.domain.ExecutionOutputConfigHandler;
 import com.anthem.nimbus.platform.core.process.api.domain.ModelConfigBuilder;
 import com.anthem.nimbus.platform.core.process.api.domain.ModelConfigFactory;
-import com.anthem.nimbus.platform.core.process.api.domain.ModelConfigVistor;
 import com.anthem.nimbus.platform.core.process.api.domain.StateAndConfigBuilder;
 import com.anthem.nimbus.platform.spec.model.client.access.ClientUserRole;
 import com.anthem.nimbus.platform.spec.model.client.user.ClientUser;
@@ -32,6 +28,10 @@ import com.anthem.nimbus.platform.spec.model.user.role.flow.UserRoleManagementFl
 import com.anthem.nimbus.platform.spec.model.util.StateAndConfigSupportProvider;
 import com.anthem.nimbus.platform.spec.model.view.dsl.config.ViewModelConfig;
 import com.anthem.nimbus.platform.spec.model.view.dsl.config.ViewParamConfig;
+import com.anthem.oss.nimbus.core.api.domain.state.DomainConfigAPI;
+import com.anthem.oss.nimbus.core.api.domain.state.ExecutionInputConfigHandler;
+import com.anthem.oss.nimbus.core.api.domain.state.ExecutionOutputConfigHandler;
+import com.anthem.oss.nimbus.core.api.domain.state.ModelConfigVistor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import test.com.anthem.nimbus.platform.spec.contract.event.ObservableEventPublisher;

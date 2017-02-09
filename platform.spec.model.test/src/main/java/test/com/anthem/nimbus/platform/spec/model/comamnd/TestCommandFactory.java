@@ -45,13 +45,13 @@ public class TestCommandFactory {
 	
 	public static Command create_view_icr_UMCaseFlow() {
 
-		Command c = new Command("/anthem/comm/icr/p/flow_umcase/_new");
+		Command c = new Command("/anthem/comm/icr/p/view_umcase/_new");
 
 		c.createRoot(Type.ClientAlias, "anthem")
 			.createNext(Type.ClientOrgAlias, "comm")
 			.createNext(Type.AppAlias, "icr")
 			.createNext(Type.PlatformMarker, "p")
-			.createNext(Type.DomainAlias, "flow_umcase")
+			.createNext(Type.DomainAlias, "view_umcase")
 			;//.createNext(Type.Action, Action._new.name());
 		c.setAction(Action._new);
 		return c;

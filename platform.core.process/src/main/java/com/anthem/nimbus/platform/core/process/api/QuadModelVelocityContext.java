@@ -2,8 +2,8 @@ package com.anthem.nimbus.platform.core.process.api;
 
 import org.apache.velocity.context.Context;
 
+import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainState.Model;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadModel;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,7 +26,7 @@ public class QuadModelVelocityContext implements Context {
     public Object get(String s) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("/").append(s.replaceAll("-","/"));
-        StateAndConfig.Model viewSAC = quadModel.getView();
+        Model viewSAC = quadModel.getView();
         return viewSAC.findParamByPath(stringBuilder.toString()).getState();
     }
 

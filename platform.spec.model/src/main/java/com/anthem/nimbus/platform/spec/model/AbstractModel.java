@@ -14,11 +14,10 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Version;
 
-import com.anthem.nimbus.platform.spec.model.dsl.ConfigNature;
+import com.anthem.nimbus.platform.spec.model.dsl.ConfigNature.Ignore;
 import com.anthem.nimbus.platform.spec.model.exception.PlatformRuntimeException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,23 +28,16 @@ import lombok.Setter;
  */
 @Getter
 public abstract class AbstractModel<ID extends Serializable> implements Model {
-
 	private static final long serialVersionUID = 1L;
 
-	
-	
 	public static abstract class IdLong extends AbstractModel<Long> {
-		
 		private static final long serialVersionUID = 1L;
 		
 		@Id @Getter @Setter 
 		private Long id;
 	}
 	
-	
-	
     public static abstract class IdString extends AbstractModel<String> {
-		
 		private static final long serialVersionUID = 1L;
 
 		@Id @Getter @Setter
@@ -56,20 +48,20 @@ public abstract class AbstractModel<ID extends Serializable> implements Model {
     public abstract ID getId();
 
 
-	@ConfigNature.Ignore @CreatedBy
+	@Ignore @CreatedBy
 	private Long createdBy;
 	
-    @ConfigNature.Ignore @CreatedDate
+    @Ignore @CreatedDate
 	private LocalDateTime createdDateTime;
 	
-    @ConfigNature.Ignore @LastModifiedBy
+    @Ignore @LastModifiedBy
 	private Long lastModifiedBy;
 	
-    @ConfigNature.Ignore @LastModifiedDate
+    @Ignore @LastModifiedDate
 	private LocalDateTime lastModifiedDate;
 	
     @Version
-	private long version;
+	@Setter private long version;
 	
 	
 	/**

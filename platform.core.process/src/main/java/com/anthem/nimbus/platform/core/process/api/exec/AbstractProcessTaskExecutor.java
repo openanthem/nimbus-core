@@ -15,7 +15,6 @@ import com.anthem.nimbus.platform.core.process.api.ActivitiProcessGateway;
 import com.anthem.nimbus.platform.core.process.api.ActivitiProcessResponse;
 import com.anthem.nimbus.platform.core.process.api.ProcessKeyIdentifier;
 import com.anthem.nimbus.platform.core.process.api.cache.session.PlatformSession;
-import com.anthem.nimbus.platform.core.process.api.domain.QuadModelBuilder;
 import com.anthem.nimbus.platform.core.process.api.repository.ModelRepositoryFactory;
 import com.anthem.nimbus.platform.spec.contract.process.ProcessExecutorEvents;
 import com.anthem.nimbus.platform.spec.contract.process.ProcessTaskExecutor;
@@ -28,6 +27,7 @@ import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig.Param;
 import com.anthem.nimbus.platform.spec.model.exception.PlatformRuntimeException;
 import com.anthem.nimbus.platform.spec.model.util.JustLogit;
 import com.anthem.nimbus.platform.utils.converter.CommandMessageConverter;
+import com.anthem.oss.nimbus.core.api.domain.state.QuadModelBuilder;
 
 import lombok.Setter;
 

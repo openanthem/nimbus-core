@@ -16,17 +16,12 @@ public class ParamValue implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
-	private Object code;
+	final private Object code;
 	
 	private String label;
 	
-	private String desc;
-	
 	private boolean isActive = true;
 	
-	public ParamValue(){
-		
-	}
 	
 	public ParamValue(Object code) {
 		this.code = code;
@@ -36,9 +31,5 @@ public class ParamValue implements Serializable {
 		this(code);
 		this.label = label;
 	}
-	
-	public ParamValue(Object code, String label, String desc) {
-		this(code, label);
-		this.desc = desc;
-	}
+
 }

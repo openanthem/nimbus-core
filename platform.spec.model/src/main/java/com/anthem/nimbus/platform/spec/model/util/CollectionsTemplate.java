@@ -52,6 +52,10 @@ public class CollectionsTemplate<T extends Collection<E>, E> {
 	}
 	
 	
+	public int size() {
+		return isNullOrEmpty() ? 0 : get().size();
+	}
+	
 	/**
 	 * 
 	 * @return
@@ -95,22 +99,23 @@ public class CollectionsTemplate<T extends Collection<E>, E> {
 		return add;
 	}
 	
-	/**
-	 * 
-	 * @param clazz
-	 * @param o
-	 * @return
-	 */
 	@SuppressWarnings("unchecked")
 	public <M extends E> M find(Class<M> clazz, Object o) {
 		return (M) find(o);
 	}
 	
-	/**
-	 * 
-	 * @param o
-	 * @return
-	 */
+	@SuppressWarnings("unchecked")
+	public E getElem(int i) {
+		if(isNullOrEmpty() || i>=size()) return null;
+		
+		T col = get();
+		if(col instanceof List) {
+			return ((List<E>)col).get(i);
+		} else {
+			return (E)get().toArray(new Object[size()])[i];
+		}
+	}
+	
 	@SuppressWarnings("unchecked")
 	public E find(Object o) {
 		T col = getter.get();

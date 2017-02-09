@@ -4,6 +4,7 @@
 package com.anthem.nimbus.platform.spec.model.dsl;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -14,11 +15,24 @@ import java.lang.annotation.Target;
  */
 public class MapsTo {
 
-	
+	public enum Mode {
+		UnMapped,
+		MappedAttached,
+		MappedDetached;
+	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.TYPE})
-	public @interface Model {
+	@Model
+	@Inherited
+	public @interface Mapped {
+		
+	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.TYPE})
+	@Mapped
+	public @interface Type {
 		
 		Class<?> value();
 
@@ -28,8 +42,6 @@ public class MapsTo {
 		boolean silent() default true;
 	}
 	
-	
-	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	public @interface Path {
@@ -37,7 +49,22 @@ public class MapsTo {
 		String value() default "";
 		
 		boolean linked() default true;
+		
+		KeyValue[] kv() default @KeyValue(k="default",v="default");
+		
+		public @interface KeyValue {
+			String k();
+			String v();
+			boolean quad() default true;
+		}
 	}
+
+	
+	public static Mode getMode(Path path) {
+		if(path==null) return Mode.UnMapped;
+		return path.linked() ? Mode.MappedAttached : Mode.MappedDetached;
+	}
+
 	
 	
 	@Path

@@ -4,9 +4,8 @@
 package com.anthem.nimbus.platform.spec.model.task;
 
 import com.anthem.nimbus.platform.spec.model.AbstractModel;
-import com.anthem.nimbus.platform.spec.model.task.Values;
 import com.anthem.nimbus.platform.spec.model.dsl.Action;
-import com.anthem.nimbus.platform.spec.model.dsl.CoreDomain;
+import com.anthem.nimbus.platform.spec.model.dsl.Domain;
 import com.anthem.nimbus.platform.spec.model.dsl.Execution;
 import com.anthem.nimbus.platform.spec.model.dsl.Model;
 
@@ -17,7 +16,7 @@ import lombok.Setter;
  * @author Sandeep Mantha
  *
  */
-@CoreDomain(value="taskDetail")
+@Domain(value="taskDetail")
 @Execution.Input.Default @Execution.Output.Default @Execution.Output(Action._new)
 @Getter @Setter
 public class TaskDetail extends AbstractModel.IdLong  {

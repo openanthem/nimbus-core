@@ -12,8 +12,8 @@ import java.util.Map;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig.Model;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig.Param;
+import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainState.Model;
+import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainState.Param;
 
 /**
  * @author Jayant Chaudhuri
@@ -66,7 +66,7 @@ public class ExecutionStateTree implements Serializable {
 		String triggerParamPath = triggerParam.getPath();
 		List<ExecutionStateTreeNode> executionNodes = executionStateTreeNodes.get(triggerParamPath);
 		if(executionNodes != null){
-			Model<?,?> parentModel = triggerParam.getRootParent();
+			Model<?> parentModel = triggerParam.getRootModel();
 			for(ExecutionStateTreeNode en: executionNodes){
 				Param<Object> param = parentModel.findParamByPath(en.getParamPath());
 				Object currentState = param.getState();

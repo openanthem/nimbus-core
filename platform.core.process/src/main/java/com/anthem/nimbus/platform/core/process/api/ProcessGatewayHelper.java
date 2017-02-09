@@ -13,8 +13,8 @@ import com.anthem.nimbus.platform.spec.model.command.Command;
 import com.anthem.nimbus.platform.spec.model.command.CommandElement.Type;
 import com.anthem.nimbus.platform.spec.model.command.CommandMessage;
 import com.anthem.nimbus.platform.spec.model.command.ExecuteOutput;
+import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainState.Model;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadModel;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -118,7 +118,7 @@ public class ProcessGatewayHelper implements Serializable{
 		QuadModel<?, ?> quadModel = PlatformSession.getOrThrowEx(getCommand());
 		if(quadModel == null)
 			return;
-		StateAndConfig.Model viewSAC = quadModel.getView();
+		Model viewSAC = quadModel.getView();
 		viewSAC.findParamByPath(path).setState(state);		
 		
 	}

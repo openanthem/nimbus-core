@@ -4,18 +4,17 @@
 package com.anthem.nimbus.platform.spec.model.dsl.binder;
 
 import com.anthem.nimbus.platform.spec.model.AbstractModel;
-import com.anthem.nimbus.platform.spec.model.client.user.ClientUser;
-import com.anthem.nimbus.platform.spec.model.dsl.CoreDomain;
+import com.anthem.nimbus.platform.spec.model.dsl.Domain;
 import com.anthem.nimbus.platform.spec.model.dsl.Execution;
 import com.anthem.nimbus.platform.spec.model.dsl.Repo;
-import com.anthem.nimbus.platform.spec.model.dsl.Repo.Option;
+import com.anthem.nimbus.platform.spec.model.dsl.Repo.Database;
 
 /**
  * @author Rakesh Patel
  *
  */
-@CoreDomain("taskuserassociation")
-@Repo(Option.rep_mongodb)
+@Domain("taskuserassociation")
+@Repo(Database.rep_mongodb)
 @Execution.Input.Default @Execution.Output.Default
 public class TaskUserAssociation extends AbstractModel.IdString {
 

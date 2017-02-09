@@ -13,9 +13,8 @@ import org.springframework.stereotype.Component;
 import com.anthem.nimbus.platform.core.process.api.cache.session.PlatformSession;
 import com.anthem.nimbus.platform.spec.model.command.Command;
 import com.anthem.nimbus.platform.spec.model.dsl.ModelEvent;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.ExecutionState;
+import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainState.Param;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadModel;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig.Param;
 import com.anthem.nimbus.platform.spec.model.util.JustLogit;
 
 import lombok.Getter;
