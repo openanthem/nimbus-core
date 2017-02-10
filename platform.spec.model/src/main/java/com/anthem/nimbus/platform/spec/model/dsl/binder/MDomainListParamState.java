@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.anthem.nimbus.platform.spec.model.dsl.config.ParamConfig;
 import com.anthem.nimbus.platform.spec.model.util.StateAndConfigSupportProvider;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
 
@@ -19,9 +20,9 @@ public class MDomainListParamState<T, M> extends DomainListParamState<T> impleme
 
 	private static final long serialVersionUID = 1L;
 
-	private final ListParam<M> mapsTo;
+	@JsonIgnore private final ListParam<M> mapsTo;
 	
-	private final Notification.Consumer<List<M>> delegate;
+	@JsonIgnore private final Notification.Consumer<List<M>> delegate;
 	
 	public MDomainListParamState(ListParam<M> mapsTo, Model<?> parentModel, ParamConfig<List<T>> config, StateAndConfigSupportProvider provider) {
 		super(parentModel, config, provider);

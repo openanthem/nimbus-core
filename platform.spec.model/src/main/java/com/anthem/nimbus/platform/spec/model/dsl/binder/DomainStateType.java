@@ -6,7 +6,6 @@ package com.anthem.nimbus.platform.spec.model.dsl.binder;
 import java.io.Serializable;
 import java.util.List;
 
-import com.anthem.nimbus.platform.spec.model.dsl.config.ModelConfig;
 import com.anthem.nimbus.platform.spec.model.dsl.config.ParamType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -19,13 +18,12 @@ import lombok.ToString;
  * @author Soham Chakravarti
  *
  */
-@RequiredArgsConstructor @ToString(of="config")
+@Getter @RequiredArgsConstructor @ToString(of="config")
 public class DomainStateType implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-
-	@JsonIgnore @Getter private final ParamType config;
+	@JsonIgnore private final ParamType config;
 	
 	public String getName() {
 		return config.getName();

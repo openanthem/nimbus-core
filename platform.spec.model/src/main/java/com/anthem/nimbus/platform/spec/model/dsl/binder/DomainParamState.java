@@ -23,8 +23,8 @@ import com.anthem.nimbus.platform.spec.model.command.ValidationResult;
 import com.anthem.nimbus.platform.spec.model.dsl.Action;
 import com.anthem.nimbus.platform.spec.model.dsl.Constants;
 import com.anthem.nimbus.platform.spec.model.dsl.ModelEvent;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.Notification.ActionType;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainState.Param;
+import com.anthem.nimbus.platform.spec.model.dsl.binder.Notification.ActionType;
 import com.anthem.nimbus.platform.spec.model.dsl.config.ModelConfig;
 import com.anthem.nimbus.platform.spec.model.dsl.config.ParamConfig;
 import com.anthem.nimbus.platform.spec.model.exception.InvalidConfigException;
@@ -47,7 +47,7 @@ public class DomainParamState<T> extends AbstractDomainState<T> implements Param
 
 	private DomainStateType type;
 	
-	private transient ValidationResult validationResult;
+	private ValidationResult validationResult;
 	
 	final private Model<?> parentModel;
 	
@@ -59,8 +59,7 @@ public class DomainParamState<T> extends AbstractDomainState<T> implements Param
 	final private WeakReference<List<MappedParam<?, T>>> eventSubscribersRef = new WeakReference<List<MappedParam<?, T>>>(new ArrayList<>());
 	
 	
-	@JsonIgnore 
-	final transient private PropertyDescriptor propertyDescriptor;
+	@JsonIgnore final private PropertyDescriptor propertyDescriptor;
 	
 	public DomainParamState(Model<?> parentModel, ParamConfig<T> config, StateAndConfigSupportProvider provider) {
 		super(config, provider);

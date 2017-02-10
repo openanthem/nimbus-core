@@ -11,11 +11,10 @@ import java.util.Objects;
 import org.springframework.data.annotation.Transient;
 
 import com.anthem.nimbus.platform.spec.model.command.ValidationResult;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.Notification.ActionType;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainState.Model;
+import com.anthem.nimbus.platform.spec.model.dsl.binder.Notification.ActionType;
 import com.anthem.nimbus.platform.spec.model.dsl.config.ModelConfig;
 import com.anthem.nimbus.platform.spec.model.util.CollectionsTemplate;
-import com.anthem.nimbus.platform.spec.model.util.JustLogit;
 import com.anthem.nimbus.platform.spec.model.util.StateAndConfigSupportProvider;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -27,22 +26,18 @@ import lombok.Setter;
  * @author Soham Chakravarti
  *
  */
+@Getter @Setter
 public class DomainModelState<T> extends AbstractDomainState<T> implements Model<T>, Serializable {
 	
     private static final long serialVersionUID = 1L;
 
-    @Getter final private Param<T> associatedParam;
+    @JsonIgnore final private Param<T> associatedParam;
     
-    @Getter @Setter private List<Param<? extends Object>> params;
+    private List<Param<? extends Object>> params;
 
-	@JsonIgnore
-	@Getter @Setter private transient ValidationResult validationResult;
+	@JsonIgnore private transient ValidationResult validationResult;
 	
-	@JsonIgnore 
-	@Getter @Setter private ExecutionStateTree executionStateTree;
-	
-	
-	protected JustLogit logit = new JustLogit(getClass());
+	@JsonIgnore private ExecutionStateTree executionStateTree;
 	
 	public DomainModelState(Param<T> associatedParam, ModelConfig<T> config, StateAndConfigSupportProvider provider/*, Model<?> backingCoreModel*/) {
 		super(config, provider);

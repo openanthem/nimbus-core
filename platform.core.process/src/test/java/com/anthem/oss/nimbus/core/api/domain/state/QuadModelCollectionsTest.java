@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -717,12 +718,17 @@ public class QuadModelCollectionsTest {
 	}
 
 	
-	@Test
+	@After
 	public void z_print() {
 		QuadModel<UMCaseFlow, UMCase> q = PlatformSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
-		String json = JsonUtils.get().convert(q.getView());
-					
-		System.out.println(json);
+		printJson(q);
 		//System.out.println("### Counter: "+ DomainConfigAPITest.eventPublisher.counter);
+	}
+	
+	public void printJson(QuadModel<?, ?> q) {
+		String json = JsonUtils.get().convert(q.getView());
+		System.out.println("@@@  ");
+		System.out.println("@@@  "+ json);
+		System.out.println("@@@  ");
 	}
 }

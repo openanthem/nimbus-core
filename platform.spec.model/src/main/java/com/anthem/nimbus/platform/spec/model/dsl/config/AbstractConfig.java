@@ -16,12 +16,11 @@ import lombok.Setter;
  * @author Soham Chakravarti
  *
  */
-@Getter
+@Getter @Setter
 abstract public class AbstractConfig<T> implements Config<T> {
 
-	protected JustLogit logit = new JustLogit(getClass());
+	@JsonIgnore final protected JustLogit logit = new JustLogit(getClass());
 
-	@JsonIgnore
-	@Setter private List<Annotation> annotations;
+	@JsonIgnore private List<Annotation> annotations;
 
 }

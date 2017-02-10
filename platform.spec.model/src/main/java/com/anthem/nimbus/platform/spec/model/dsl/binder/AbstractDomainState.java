@@ -30,19 +30,20 @@ import lombok.Setter;
  * @author Soham Chakravarti
  *
  */
+@Getter @Setter
 public abstract class AbstractDomainState<T> implements DomainState<T> {
 
-	@Getter private final Config<T> config;
+	final private Config<T> config;
 	
-	@Getter @Setter(AccessLevel.PROTECTED) private String path;
+	@Setter(AccessLevel.PROTECTED) private String path;
 	
-	@Getter private String rootDomainUri;
+	private String rootDomainUri;
 	
-	@Getter @JsonIgnore private transient final StateAndConfigSupportProvider provider;
+	@JsonIgnore final private StateAndConfigSupportProvider provider;
 	
-	@JsonIgnore private transient final Lock lock = new ReentrantLock();
+	@JsonIgnore final private Lock lock = new ReentrantLock();
 	
-	protected JustLogit logit = new JustLogit(getClass());
+	@JsonIgnore final protected JustLogit logit = new JustLogit(getClass());
 	
 	
 	@FunctionalInterface
