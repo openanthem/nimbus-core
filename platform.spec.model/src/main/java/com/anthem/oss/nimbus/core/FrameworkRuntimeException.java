@@ -5,7 +5,7 @@ package com.anthem.oss.nimbus.core;
 
 import java.util.UUID;
 
-import com.anthem.oss.nimbus.core.domain.execution.ExecuteError;
+import com.anthem.oss.nimbus.core.domain.command.execution.ExecuteError;
 
 /**
  * @author Soham Chakravarti

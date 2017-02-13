@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.data.annotation.Id;
 
-import com.anthem.oss.nimbus.core.domain.Model;
+import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 import com.anthem.oss.nimbus.core.entity.person.Values;
 

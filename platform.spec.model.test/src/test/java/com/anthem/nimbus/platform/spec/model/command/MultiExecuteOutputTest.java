@@ -7,8 +7,8 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
-import com.anthem.oss.nimbus.core.domain.Behavior;
-import com.anthem.oss.nimbus.core.domain.execution.ExecuteOutput.BehaviorExecute;
+import com.anthem.oss.nimbus.core.domain.command.Behavior;
+import com.anthem.oss.nimbus.core.domain.command.execution.ExecuteOutput.BehaviorExecute;
 
 import test.com.anthem.nimbus.platform.utils.JsonUtils;
 

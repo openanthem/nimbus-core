@@ -8,13 +8,12 @@ import java.util.List;
 import java.util.Optional;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.ExecutionStateTree;
-import com.anthem.nimbus.platform.spec.model.util.CollectionsTemplate;
-import com.anthem.nimbus.platform.spec.model.util.StateAndConfigSupportProvider;
-import com.anthem.oss.nimbus.core.domain.Command;
-import com.anthem.oss.nimbus.core.domain.model.Config;
-import com.anthem.oss.nimbus.core.domain.model.ModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.ParamConfig;
-import com.anthem.oss.nimbus.core.domain.model.ParamType;
+import com.anthem.oss.nimbus.core.domain.command.Command;
+import com.anthem.oss.nimbus.core.domain.model.config.Config;
+import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
+import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
+import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
+import com.anthem.oss.nimbus.core.util.CollectionsTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -38,7 +37,7 @@ public interface DomainState<T> {
 
 	public void init();
 	
-	public StateAndConfigSupportProvider getProvider();
+	public StateBuilderSupport getProvider();
 	
 	public RootModel<?> getRootModel();
 	

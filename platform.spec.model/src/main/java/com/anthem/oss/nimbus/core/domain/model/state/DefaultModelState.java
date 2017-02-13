@@ -11,12 +11,11 @@ import java.util.Objects;
 import org.springframework.data.annotation.Transient;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.ExecutionStateTree;
-import com.anthem.nimbus.platform.spec.model.util.CollectionsTemplate;
-import com.anthem.nimbus.platform.spec.model.util.StateAndConfigSupportProvider;
-import com.anthem.oss.nimbus.core.domain.execution.ValidationResult;
-import com.anthem.oss.nimbus.core.domain.model.ModelConfig;
+import com.anthem.oss.nimbus.core.domain.command.execution.ValidationResult;
+import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification.ActionType;
+import com.anthem.oss.nimbus.core.util.CollectionsTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AccessLevel;
@@ -40,7 +39,7 @@ public class DefaultModelState<T> extends AbstractDomainState<T> implements Mode
 	
 	@JsonIgnore private ExecutionStateTree executionStateTree;
 	
-	public DefaultModelState(Param<T> associatedParam, ModelConfig<T> config, StateAndConfigSupportProvider provider/*, Model<?> backingCoreModel*/) {
+	public DefaultModelState(Param<T> associatedParam, ModelConfig<T> config, StateBuilderSupport provider/*, Model<?> backingCoreModel*/) {
 		super(config, provider);
 		
 		Objects.requireNonNull(associatedParam, "Associated Param for Model must not be null.");

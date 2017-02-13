@@ -13,11 +13,11 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.anthem.oss.nimbus.core.domain.Action;
-import com.anthem.oss.nimbus.core.domain.Behavior;
-import com.anthem.oss.nimbus.core.domain.Command;
-import com.anthem.oss.nimbus.core.domain.CommandBuilder;
-import com.anthem.oss.nimbus.core.domain.Constants;
+import com.anthem.oss.nimbus.core.domain.command.Action;
+import com.anthem.oss.nimbus.core.domain.command.Behavior;
+import com.anthem.oss.nimbus.core.domain.command.Command;
+import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
+import com.anthem.oss.nimbus.core.domain.definition.Constants;
 
 /**
  * @author Soham Chakravarti

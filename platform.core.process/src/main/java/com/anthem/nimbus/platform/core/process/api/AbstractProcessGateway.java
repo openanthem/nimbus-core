@@ -3,9 +3,9 @@
  */
 package com.anthem.nimbus.platform.core.process.api;
 
-import com.anthem.nimbus.platform.spec.contract.process.ProcessGateway;
-import com.anthem.nimbus.platform.spec.contract.process.ProcessResponse;
-import com.anthem.oss.nimbus.core.domain.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.command.execution.ProcessGateway;
+import com.anthem.oss.nimbus.core.domain.command.execution.ProcessResponse;
 
 /**
  * @author Soham Chakravarti

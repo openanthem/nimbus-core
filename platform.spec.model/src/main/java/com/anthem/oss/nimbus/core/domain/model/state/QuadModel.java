@@ -8,8 +8,8 @@ import java.io.Serializable;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.FlowState;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.ProcessConfiguration;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadScopedEventPublisher;
-import com.anthem.oss.nimbus.core.domain.Command;
-import com.anthem.oss.nimbus.core.domain.CommandElement;
+import com.anthem.oss.nimbus.core.domain.command.Command;
+import com.anthem.oss.nimbus.core.domain.command.CommandElement;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

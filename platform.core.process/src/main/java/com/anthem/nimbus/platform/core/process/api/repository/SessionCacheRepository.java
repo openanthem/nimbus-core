@@ -15,11 +15,11 @@ import org.springframework.web.context.request.RequestContextHolder;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig.Model;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig.Param;
-import com.anthem.nimbus.platform.spec.model.util.ModelsTemplate;
 import com.anthem.nimbus.platform.spec.session.ModelHolder;
-import com.anthem.oss.nimbus.core.domain.Constants;
-import com.anthem.oss.nimbus.core.domain.model.ModelConfig;
+import com.anthem.oss.nimbus.core.domain.definition.Constants;
+import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.ParamStateRepository;
+import com.anthem.oss.nimbus.core.util.ClassLoadUtils;
 
 /**
  * @author Jayant Chaudhuri
@@ -49,7 +49,7 @@ public class SessionCacheRepository implements ParamStateRepository {
 		Object state = hashOps.get(sessionId, path);
 		if(state instanceof ModelHolder){
 			ModelHolder modelHolder = (ModelHolder)state;
-			return (P) ModelsTemplate.newInstance(modelHolder.getReferredClass());
+			return (P) ClassLoadUtils.newInstance(modelHolder.getReferredClass());
 		}
 		return (P)state;
 	}

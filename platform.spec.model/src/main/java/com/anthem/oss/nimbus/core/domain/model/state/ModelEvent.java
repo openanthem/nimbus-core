@@ -3,7 +3,7 @@
  */
 package com.anthem.oss.nimbus.core.domain.model.state;
 
-import com.anthem.oss.nimbus.core.domain.Action;
+import com.anthem.oss.nimbus.core.domain.command.Action;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -8,7 +8,7 @@ import java.util.Set;
 
 import org.springframework.data.annotation.Id;
 
-import com.anthem.oss.nimbus.core.domain.ConfigNature.Ignore;
+import com.anthem.oss.nimbus.core.domain.definition.ConfigNature.Ignore;
 import com.anthem.oss.nimbus.core.entity.access.AccessEntity;
 import com.anthem.oss.nimbus.core.entity.access.Role;
 import com.anthem.oss.nimbus.core.entity.person.Address;

@@ -2,11 +2,11 @@ package com.anthem.oss.nimbus.test.sample.um.model;
 
 import java.util.List;
 
-import com.anthem.oss.nimbus.core.domain.Domain;
-import com.anthem.oss.nimbus.core.domain.Execution;
-import com.anthem.oss.nimbus.core.domain.Model;
-import com.anthem.oss.nimbus.core.domain.Repo;
-import com.anthem.oss.nimbus.core.domain.Repo.Database;
+import com.anthem.oss.nimbus.core.domain.definition.Domain;
+import com.anthem.oss.nimbus.core.domain.definition.Execution;
+import com.anthem.oss.nimbus.core.domain.definition.Model;
+import com.anthem.oss.nimbus.core.domain.definition.Repo;
+import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 import com.anthem.oss.nimbus.core.entity.DateRange;
 

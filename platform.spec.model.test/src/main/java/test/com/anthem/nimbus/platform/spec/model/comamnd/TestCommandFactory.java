@@ -5,10 +5,10 @@ package test.com.anthem.nimbus.platform.spec.model.comamnd;
 
 import java.util.LinkedList;
 
-import com.anthem.oss.nimbus.core.domain.Action;
-import com.anthem.oss.nimbus.core.domain.Behavior;
-import com.anthem.oss.nimbus.core.domain.Command;
-import com.anthem.oss.nimbus.core.domain.CommandElement.Type;
+import com.anthem.oss.nimbus.core.domain.command.Action;
+import com.anthem.oss.nimbus.core.domain.command.Behavior;
+import com.anthem.oss.nimbus.core.domain.command.Command;
+import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
 
 /**
  * @author Soham Chakravarti

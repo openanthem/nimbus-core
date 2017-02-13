@@ -26,9 +26,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
-import com.anthem.oss.nimbus.core.domain.Behavior;
-import com.anthem.oss.nimbus.core.domain.Command;
-import com.anthem.oss.nimbus.core.domain.Constants;
+import com.anthem.oss.nimbus.core.domain.command.Behavior;
+import com.anthem.oss.nimbus.core.domain.command.Command;
+import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.model.state.HierarchyMatch;
 
 import lombok.Getter;

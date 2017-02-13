@@ -11,16 +11,16 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-import com.anthem.nimbus.platform.core.process.api.repository.ModelPersistenceHandler;
-import com.anthem.nimbus.platform.core.process.api.repository.ModelRepositoryFactory;
 import com.anthem.nimbus.platform.spec.contract.event.StateAndConfigEventPublisher;
-import com.anthem.oss.nimbus.core.domain.InvalidConfigException;
-import com.anthem.oss.nimbus.core.domain.Repo;
+import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
+import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.AbstractEvent.PersistenceMode;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelPersistenceHandler;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFactory;
 
 import lombok.Getter;
 import lombok.Setter;

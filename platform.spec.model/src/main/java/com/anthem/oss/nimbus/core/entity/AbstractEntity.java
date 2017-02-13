@@ -15,8 +15,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Version;
 
 import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
-import com.anthem.oss.nimbus.core.domain.Model;
-import com.anthem.oss.nimbus.core.domain.ConfigNature.Ignore;
+import com.anthem.oss.nimbus.core.domain.definition.Model;
+import com.anthem.oss.nimbus.core.domain.definition.ConfigNature.Ignore;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;

@@ -6,7 +6,7 @@ package com.anthem.oss.nimbus.core.domain.model.state;
 import java.io.Serializable;
 import java.util.List;
 
-import com.anthem.oss.nimbus.core.domain.model.ParamType;
+import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState.ListModel;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Model;
 import com.fasterxml.jackson.annotation.JsonIgnore;

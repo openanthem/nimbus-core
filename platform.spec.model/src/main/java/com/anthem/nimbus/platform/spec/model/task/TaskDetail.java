@@ -3,11 +3,11 @@
  */
 package com.anthem.nimbus.platform.spec.model.task;
 
-import com.anthem.oss.nimbus.core.domain.Action;
-import com.anthem.oss.nimbus.core.domain.Domain;
-import com.anthem.oss.nimbus.core.domain.Execution;
-import com.anthem.oss.nimbus.core.domain.Model;
-import com.anthem.oss.nimbus.core.domain.model.StaticValues;
+import com.anthem.oss.nimbus.core.domain.command.Action;
+import com.anthem.oss.nimbus.core.domain.definition.Domain;
+import com.anthem.oss.nimbus.core.domain.definition.Execution;
+import com.anthem.oss.nimbus.core.domain.definition.Model;
+import com.anthem.oss.nimbus.core.domain.model.config.StaticValues;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 
 import lombok.Getter;

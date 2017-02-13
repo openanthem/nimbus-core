@@ -5,8 +5,7 @@ package com.anthem.oss.nimbus.core.domain.model.state;
 
 import java.util.List;
 
-import com.anthem.nimbus.platform.spec.model.util.StateAndConfigSupportProvider;
-import com.anthem.oss.nimbus.core.domain.model.ModelConfig;
+import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState.ListModel;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification.ActionType;
 
@@ -23,7 +22,7 @@ public class DefaultListModelState<T> extends DefaultModelState<List<T>> impleme
 	
 	final private DefaultListElemParamState.Creator<T> elemCreator;
 	
-	public DefaultListModelState(ListParam<T> associatedParam, ModelConfig<List<T>> config, StateAndConfigSupportProvider provider, DefaultListElemParamState.Creator<T> elemCreator) {
+	public DefaultListModelState(ListParam<T> associatedParam, ModelConfig<List<T>> config, StateBuilderSupport provider, DefaultListElemParamState.Creator<T> elemCreator) {
 		super(associatedParam, config, provider);
 		this.elemCreator = elemCreator;
 	}

@@ -7,8 +7,7 @@ import java.util.Observable;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import com.anthem.nimbus.platform.spec.model.util.StateAndConfigSupportProvider;
-import com.anthem.oss.nimbus.core.domain.Action;
+import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AccessLevel;
@@ -30,7 +29,7 @@ public abstract class AbstractState<T> extends Observable implements State<T> {
 //	
 //	@JsonIgnore @Setter(AccessLevel.PROTECTED) private transient Consumer<T> setter;
 
-	@JsonIgnore private transient final StateAndConfigSupportProvider provider;
+	@JsonIgnore private transient final StateBuilderSupport provider;
 
 //	@Override
 //	public T getState() {

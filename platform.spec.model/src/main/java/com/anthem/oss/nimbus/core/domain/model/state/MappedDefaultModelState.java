@@ -5,8 +5,7 @@ package com.anthem.oss.nimbus.core.domain.model.state;
 
 import java.util.Objects;
 
-import com.anthem.nimbus.platform.spec.model.util.StateAndConfigSupportProvider;
-import com.anthem.oss.nimbus.core.domain.model.ModelConfig;
+import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState.MappedModel;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -23,7 +22,7 @@ public class MappedDefaultModelState<T, M> extends DefaultModelState<T> implemen
 
     @JsonIgnore private final Model<M> mapsTo;
 
-	public MappedDefaultModelState(Model<M> mapsTo, Param<T> associatedParam, ModelConfig<T> config, StateAndConfigSupportProvider provider) {
+	public MappedDefaultModelState(Model<M> mapsTo, Param<T> associatedParam, ModelConfig<T> config, StateBuilderSupport provider) {
     	super(associatedParam, config, provider);
     	
     	Objects.requireNonNull(mapsTo, "MapsTo model must not be null.");

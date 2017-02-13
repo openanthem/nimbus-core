@@ -3,8 +3,8 @@
  */
 package com.anthem.oss.nimbus.core.domain.model.state;
 
-import com.anthem.oss.nimbus.core.domain.Action;
-import com.anthem.oss.nimbus.core.domain.execution.ValidationException;
+import com.anthem.oss.nimbus.core.domain.command.Action;
+import com.anthem.oss.nimbus.core.domain.command.execution.ValidationException;
 
 /**
  * @author Soham Chakravarti

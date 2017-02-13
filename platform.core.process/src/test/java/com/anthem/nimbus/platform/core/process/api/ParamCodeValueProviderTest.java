@@ -11,15 +11,15 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.Assert;
 
-import com.anthem.nimbus.platform.spec.contract.process.ProcessGateway;
-import com.anthem.oss.nimbus.core.domain.Action;
-import com.anthem.oss.nimbus.core.domain.Behavior;
-import com.anthem.oss.nimbus.core.domain.Command;
-import com.anthem.oss.nimbus.core.domain.CommandBuilder;
-import com.anthem.oss.nimbus.core.domain.CommandMessage;
-import com.anthem.oss.nimbus.core.domain.Constants;
-import com.anthem.oss.nimbus.core.domain.execution.MultiExecuteOutput;
-import com.anthem.oss.nimbus.core.domain.model.ParamValue;
+import com.anthem.oss.nimbus.core.domain.command.Action;
+import com.anthem.oss.nimbus.core.domain.command.Behavior;
+import com.anthem.oss.nimbus.core.domain.command.Command;
+import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
+import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
+import com.anthem.oss.nimbus.core.domain.command.execution.ProcessGateway;
+import com.anthem.oss.nimbus.core.domain.definition.Constants;
+import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
 
 /**
  * @author Rakesh Patel
@@ -73,8 +73,8 @@ public class ParamCodeValueProviderTest {
 	}
 	
 	private CommandMessage build(String uri, String staticParamPath) {
-		String[] uriWithPayload = uri.split(com.anthem.oss.nimbus.core.domain.CODE_VALUE_CONFIG_DELIMITER.code);
-		Command cmd = CommandBuilder.withUri(com.anthem.oss.nimbus.core.domain.PARAM_VALUES_URI_PREFIX.code+uriWithPayload[0]+com.anthem.oss.nimbus.core.domain.PARAM_VALUES_URI_SUFFIX.code).getCommand();
+		String[] uriWithPayload = uri.split(com.anthem.oss.nimbus.core.domain.definition.CODE_VALUE_CONFIG_DELIMITER.code);
+		Command cmd = CommandBuilder.withUri(com.anthem.oss.nimbus.core.domain.definition.PARAM_VALUES_URI_PREFIX.code+uriWithPayload[0]+com.anthem.oss.nimbus.core.domain.definition.PARAM_VALUES_URI_SUFFIX.code).getCommand();
 		cmd.setAction(Action._search);
 		cmd.templateBehaviors().add(Behavior.$execute);
 		

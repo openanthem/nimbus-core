@@ -18,11 +18,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
-import com.anthem.nimbus.platform.core.process.api.sa.ProcessExecutionCtxHelper;
-import com.anthem.nimbus.platform.core.process.api.sa.ServiceActivatorException;
 import com.anthem.nimbus.platform.spec.model.process.ProcessEngineContext;
-import com.anthem.oss.nimbus.core.domain.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
+import com.anthem.oss.nimbus.core.integration.sa.ProcessExecutionCtxHelper;
+import com.anthem.oss.nimbus.core.integration.sa.ServiceActivatorException;
 
 /**
  * @author Rakesh Patel

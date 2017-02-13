@@ -6,11 +6,11 @@ package com.anthem.nimbus.platform.core.process.api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import com.anthem.nimbus.platform.spec.contract.process.ProcessGateway;
-import com.anthem.nimbus.platform.spec.contract.process.ProcessResponse;
-import com.anthem.oss.nimbus.core.domain.CommandMessage;
-import com.anthem.oss.nimbus.core.domain.Constants;
-import com.anthem.oss.nimbus.core.domain.CommandElement.Type;
+import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
+import com.anthem.oss.nimbus.core.domain.command.execution.ProcessGateway;
+import com.anthem.oss.nimbus.core.domain.command.execution.ProcessResponse;
+import com.anthem.oss.nimbus.core.domain.definition.Constants;
 
 /**
  * @author Jayant.Chaudhuri

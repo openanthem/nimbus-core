@@ -7,9 +7,8 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
 
-import com.anthem.nimbus.platform.spec.model.util.JustLogit;
-import com.anthem.oss.nimbus.core.api.task.TaskRouter;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
+import com.anthem.oss.nimbus.core.util.JustLogit;
 
 /**
  * @author Rakesh Patel

@@ -5,8 +5,7 @@ package com.anthem.oss.nimbus.core.domain.model.state;
 
 import java.util.List;
 
-import com.anthem.nimbus.platform.spec.model.util.StateAndConfigSupportProvider;
-import com.anthem.oss.nimbus.core.domain.model.ParamConfig;
+import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState.ListParam;
 
 
@@ -17,7 +16,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.DomainState.ListParam;
 public class DefaultListParamState<T> extends DefaultParamState<List<T>> implements ListParam<T> {
 	private static final long serialVersionUID = 1L;
 	
-	public DefaultListParamState(Model<?> parentModel, ParamConfig<List<T>> config, StateAndConfigSupportProvider provider) {
+	public DefaultListParamState(Model<?> parentModel, ParamConfig<List<T>> config, StateBuilderSupport provider) {
 		super(parentModel, config, provider);
 	}
 	

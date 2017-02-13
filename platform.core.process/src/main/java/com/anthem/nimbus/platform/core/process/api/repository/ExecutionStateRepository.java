@@ -10,12 +10,14 @@ import java.util.function.Supplier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.anthem.nimbus.platform.core.process.api.cache.session.PlatformSession;
-import com.anthem.nimbus.platform.spec.model.util.JustLogit;
-import com.anthem.oss.nimbus.core.domain.Command;
+import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFactory;
+import com.anthem.oss.nimbus.core.session.UserEndpointSession;
+import com.anthem.oss.nimbus.core.util.JustLogit;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -53,8 +55,8 @@ public class ExecutionStateRepository<V, C> {
 			this.rootDomainCmd = cmd.getRootDomainCommand();
 			this.rep = rep;
 			
-			this.quadGetter = () -> PlatformSession.getAttribute(getRootDomainCmd());
-			this.quadSetter = s -> PlatformSession.setAttribute(getRootDomainCmd(), s);
+			this.quadGetter = () -> UserEndpointSession.getAttribute(getRootDomainCmd());
+			this.quadSetter = s -> UserEndpointSession.setAttribute(getRootDomainCmd(), s);
 		}
 		
 		/**

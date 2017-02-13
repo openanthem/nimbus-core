@@ -9,10 +9,10 @@ import static org.junit.Assert.assertSame;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.anthem.nimbus.platform.core.process.api.command.CommandTransactionInterceptor;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
-import com.anthem.oss.nimbus.core.domain.execution.ExecuteOutput;
-import com.anthem.oss.nimbus.core.domain.execution.MultiExecuteOutput;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandTransactionInterceptor;
+import com.anthem.oss.nimbus.core.domain.command.execution.ExecuteOutput;
+import com.anthem.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
 
 /**
  * @author Soham Chakravarti

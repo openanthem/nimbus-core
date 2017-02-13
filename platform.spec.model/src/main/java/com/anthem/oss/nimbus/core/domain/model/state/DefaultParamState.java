@@ -19,15 +19,14 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 
-import com.anthem.nimbus.platform.spec.model.util.StateAndConfigSupportProvider;
 import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
-import com.anthem.oss.nimbus.core.domain.Action;
-import com.anthem.oss.nimbus.core.domain.Constants;
-import com.anthem.oss.nimbus.core.domain.InvalidConfigException;
-import com.anthem.oss.nimbus.core.domain.execution.ValidationException;
-import com.anthem.oss.nimbus.core.domain.execution.ValidationResult;
-import com.anthem.oss.nimbus.core.domain.model.ModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.ParamConfig;
+import com.anthem.oss.nimbus.core.domain.command.Action;
+import com.anthem.oss.nimbus.core.domain.command.execution.ValidationException;
+import com.anthem.oss.nimbus.core.domain.command.execution.ValidationResult;
+import com.anthem.oss.nimbus.core.domain.definition.Constants;
+import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
+import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
+import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification.ActionType;
 import com.anthem.oss.nimbus.core.entity.Findable;
@@ -63,7 +62,7 @@ public class DefaultParamState<T> extends AbstractDomainState<T> implements Para
 	
 	@JsonIgnore final private PropertyDescriptor propertyDescriptor;
 	
-	public DefaultParamState(Model<?> parentModel, ParamConfig<T> config, StateAndConfigSupportProvider provider) {
+	public DefaultParamState(Model<?> parentModel, ParamConfig<T> config, StateBuilderSupport provider) {
 		super(config, provider);
 
 		if(!isRoot()) Objects.requireNonNull(parentModel, "Parent model must not be null with code: "+getConfig().getCode());

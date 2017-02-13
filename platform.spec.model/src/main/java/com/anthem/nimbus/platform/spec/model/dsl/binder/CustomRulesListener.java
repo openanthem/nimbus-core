@@ -14,7 +14,7 @@ import org.drools.event.rule.RuleFlowGroupActivatedEvent;
 import org.drools.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.drools.runtime.StatefulKnowledgeSession;
 
-import com.anthem.nimbus.platform.spec.model.util.JustLogit;
+import com.anthem.oss.nimbus.core.util.JustLogit;
 
 /**
  * @author Rakesh Patel

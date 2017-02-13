@@ -5,7 +5,7 @@ package com.anthem.nimbus.platform.spec.model.process;
 
 import java.io.Serializable;
 
-import com.anthem.oss.nimbus.core.domain.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 
 import lombok.Getter;
 import lombok.Setter;

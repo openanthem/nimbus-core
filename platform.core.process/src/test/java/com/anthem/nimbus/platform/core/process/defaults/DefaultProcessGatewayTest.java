@@ -16,7 +16,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.anthem.nimbus.platform.core.process.PlatformProcessEngineConfiguration;
 import com.anthem.nimbus.platform.core.process.api.ActivitiProcessGateway;
-import com.anthem.nimbus.platform.core.process.api.DefaultProcessGateway;
+import com.anthem.oss.nimbus.core.domain.command.execution.DefaultProcessGateway;
 
 /**
  * @author Soham Chakravarti

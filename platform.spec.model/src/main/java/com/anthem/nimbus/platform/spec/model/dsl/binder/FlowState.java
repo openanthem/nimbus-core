@@ -7,9 +7,9 @@ import java.io.Serializable;
 
 import org.springframework.data.annotation.Transient;
 
-import com.anthem.oss.nimbus.core.domain.Domain;
-import com.anthem.oss.nimbus.core.domain.Repo;
-import com.anthem.oss.nimbus.core.domain.Repo.Database;
+import com.anthem.oss.nimbus.core.domain.definition.Domain;
+import com.anthem.oss.nimbus.core.domain.definition.Repo;
+import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 

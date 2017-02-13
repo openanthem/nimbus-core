@@ -16,15 +16,15 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 
-import com.anthem.nimbus.platform.core.process.api.exec.AbstractProcessTaskExecutor;
-import com.anthem.nimbus.platform.core.process.api.exec.DefaultActionExecutorSearch;
-import com.anthem.nimbus.platform.spec.contract.process.HierarchyMatchProcessTaskExecutor;
-import com.anthem.nimbus.platform.spec.contract.process.ProcessExecutorEvents;
 import com.anthem.nimbus.platform.utils.reference.data.StaticCodeValue;
 import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
-import com.anthem.oss.nimbus.core.domain.CommandMessage;
-import com.anthem.oss.nimbus.core.domain.CommandElement.Type;
-import com.anthem.oss.nimbus.core.domain.model.ParamValue;
+import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
+import com.anthem.oss.nimbus.core.domain.command.execution.AbstractProcessTaskExecutor;
+import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutorSearch;
+import com.anthem.oss.nimbus.core.domain.command.execution.HierarchyMatchProcessTaskExecutor;
+import com.anthem.oss.nimbus.core.domain.command.execution.ProcessExecutorEvents;
+import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 
 import lombok.Getter;

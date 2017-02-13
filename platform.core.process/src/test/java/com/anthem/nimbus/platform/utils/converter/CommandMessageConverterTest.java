@@ -8,6 +8,8 @@ import static org.junit.Assert.assertEquals;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandMessageConverter;
+
 /**
  * @author Soham Chakravarti
  *

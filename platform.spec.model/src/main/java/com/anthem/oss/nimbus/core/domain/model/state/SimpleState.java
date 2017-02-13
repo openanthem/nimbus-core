@@ -8,8 +8,7 @@ import java.util.Observer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import com.anthem.nimbus.platform.spec.model.util.StateAndConfigSupportProvider;
-import com.anthem.oss.nimbus.core.domain.Action;
+import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -26,7 +25,7 @@ public class SimpleState<T> extends AbstractState<T> implements Observer {
 	@JsonIgnore @Setter(AccessLevel.PROTECTED) private transient Supplier<T> getter;
 	@JsonIgnore @Setter(AccessLevel.PROTECTED) private transient Consumer<T> setter;
 	
-	public SimpleState(Param<?> parent, Supplier<T> getter, Consumer<T> setter, StateAndConfigSupportProvider provider) {
+	public SimpleState(Param<?> parent, Supplier<T> getter, Consumer<T> setter, StateBuilderSupport provider) {
 		super(provider);
 		this.parent = parent;
 		setGetter(getter);

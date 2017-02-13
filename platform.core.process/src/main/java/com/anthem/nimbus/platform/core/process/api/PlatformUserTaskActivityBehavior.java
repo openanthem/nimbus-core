@@ -21,21 +21,21 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import com.anthem.nimbus.platform.core.process.api.cache.session.PlatformSession;
-import com.anthem.nimbus.platform.spec.contract.process.ProcessGateway;
+import com.anthem.nimbus.platform.core.process.api.exec.TaskInitializer;
+import com.anthem.nimbus.platform.core.process.api.exec.TaskRouter;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.PageHolder;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig.Param;
 import com.anthem.nimbus.platform.spec.model.view.dsl.config.ViewParamConfig;
 import com.anthem.nimbus.platform.utils.converter.NavigationStateHelper;
-import com.anthem.oss.nimbus.core.api.task.TaskInitializer;
-import com.anthem.oss.nimbus.core.api.task.TaskRouter;
-import com.anthem.oss.nimbus.core.domain.Action;
-import com.anthem.oss.nimbus.core.domain.Behavior;
-import com.anthem.oss.nimbus.core.domain.Command;
-import com.anthem.oss.nimbus.core.domain.CommandMessage;
-import com.anthem.oss.nimbus.core.domain.CommandElement.Type;
+import com.anthem.oss.nimbus.core.domain.command.Action;
+import com.anthem.oss.nimbus.core.domain.command.Behavior;
+import com.anthem.oss.nimbus.core.domain.command.Command;
+import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
+import com.anthem.oss.nimbus.core.domain.command.execution.ProcessGateway;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
+import com.anthem.oss.nimbus.core.session.UserEndpointSession;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -83,7 +83,7 @@ public class PlatformUserTaskActivityBehavior extends UserTaskActivityBehavior {
 	 */
 	private void createPageTask(DelegateExecution execution) {
         ActivitiContext aCtx = (ActivitiContext) execution.getVariable(ActivitiProcessGateway.PROCESS_ENGINE_GTWY_KEY);
-        QuadModel<?, ?> quadModel = PlatformSession.getOrThrowEx(aCtx.getProcessEngineContext().getCommandMsg().getCommand());
+        QuadModel<?, ?> quadModel = UserEndpointSession.getOrThrowEx(aCtx.getProcessEngineContext().getCommandMsg().getCommand());
         Param<?> param = quadModel.getFlow().findParamByPath("/navigationState/pageHolder");
         PageHolder pageHolder = (PageHolder)param.getState();
         UID uid = new UID();
@@ -113,7 +113,7 @@ public class PlatformUserTaskActivityBehavior extends UserTaskActivityBehavior {
 		
 		/* Create assignment task */
 		ActivitiContext aCtx = (ActivitiContext) execution.getVariable(ActivitiProcessGateway.PROCESS_ENGINE_GTWY_KEY);
-		QuadModel<?,?> quadModel = PlatformSession.getOrThrowEx(aCtx.getProcessEngineContext().getCommandMsg().getCommand());
+		QuadModel<?,?> quadModel = UserEndpointSession.getOrThrowEx(aCtx.getProcessEngineContext().getCommandMsg().getCommand());
 		LinkedList<Behavior> behavior = new LinkedList<Behavior>();
 		behavior.add(Behavior.$execute);
 		Command cmd = aCtx.getProcessEngineContext().getCommandMsg().getCommand().createNewCommandForCurrentUser(assignmentTaskType,Action._new,behavior);
@@ -128,14 +128,14 @@ public class PlatformUserTaskActivityBehavior extends UserTaskActivityBehavior {
 		//QuadModel<?, ?> q = retrieveResponse(processGateway.startProcess(cmdMsg));
 		//AssignmentTask assignmentTask = (AssignmentTask)q.getCore().getState();
 		processGateway.startProcess(cmdMsg);
-		QuadModel<?, ?> q = PlatformSession.getOrThrowEx(cmdMsg.getCommand());
+		QuadModel<?, ?> q = UserEndpointSession.getOrThrowEx(cmdMsg.getCommand());
 		
 		Object coreModel = quadModel.getCore().getState();
 		q.getCore().findStateByPath("/taskId").setState(findMatchingTaskInstanceId(execution));
 		q.getCore().findModelByPath("/entity").setState(coreModel);
 		AbstractEntity.IdString model = (AbstractEntity.IdString)q.getCore().getState();
 		cmd.getElement(Type.DomainAlias).get().setRefId(model.getId());
-		PlatformSession.setAttribute(cmd, q);
+		UserEndpointSession.setAttribute(cmd, q);
 		execution.setVariable("assignmentTask", q.getCore().getState());
 		
 		/* Initialize assignment task */

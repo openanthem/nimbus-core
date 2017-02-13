@@ -17,15 +17,16 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
-import com.anthem.nimbus.platform.spec.contract.process.HierarchyMatchProcessTaskExecutor;
-import com.anthem.nimbus.platform.spec.contract.process.ProcessExecutorEvents;
 import com.anthem.nimbus.platform.spec.model.client.ClientEntity;
 import com.anthem.nimbus.platform.spec.model.process.ResponsePageRest;
-import com.anthem.oss.nimbus.core.api.domain.state.QuadModelBuilder;
-import com.anthem.oss.nimbus.core.domain.CommandMessage;
-import com.anthem.oss.nimbus.core.domain.CommandElement.Type;
-import com.anthem.oss.nimbus.core.domain.execution.ExecuteOutput;
+import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
+import com.anthem.oss.nimbus.core.domain.command.execution.AbstractProcessTaskExecutor;
+import com.anthem.oss.nimbus.core.domain.command.execution.ExecuteOutput;
+import com.anthem.oss.nimbus.core.domain.command.execution.HierarchyMatchProcessTaskExecutor;
+import com.anthem.oss.nimbus.core.domain.command.execution.ProcessExecutorEvents;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
+import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**

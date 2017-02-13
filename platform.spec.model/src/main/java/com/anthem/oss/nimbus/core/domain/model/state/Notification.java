@@ -5,7 +5,7 @@ package com.anthem.oss.nimbus.core.domain.model.state;
 
 import java.util.List;
 
-import com.anthem.oss.nimbus.core.domain.Action;
+import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState.MappedParam;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
 

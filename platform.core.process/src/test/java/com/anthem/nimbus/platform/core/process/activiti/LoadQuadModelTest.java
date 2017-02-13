@@ -7,10 +7,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.Assert;
 
 import com.anthem.nimbus.platform.core.process.PlatformProcessEngineConfiguration;
-import com.anthem.nimbus.platform.core.process.api.cache.session.PlatformSession;
-import com.anthem.oss.nimbus.core.domain.Command;
-import com.anthem.oss.nimbus.core.domain.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.command.Command;
+import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
+import com.anthem.oss.nimbus.core.session.UserEndpointSession;
 
 import test.com.anthem.nimbus.platform.spec.model.comamnd.TestCommandFactory;
 
@@ -21,7 +21,7 @@ public class LoadQuadModelTest {
 	@Test
 	public void testLoad() {
 		CommandMessage cmsg = create_view_icr_UMCaseFlow();
-		QuadModel<?, ?> quadModel = PlatformSession.getOrThrowEx(cmsg.getCommand());
+		QuadModel<?, ?> quadModel = UserEndpointSession.getOrThrowEx(cmsg.getCommand());
 		Assert.notNull(quadModel);
 	}
 	

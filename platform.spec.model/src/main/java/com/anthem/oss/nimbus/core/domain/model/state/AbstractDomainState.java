@@ -12,12 +12,11 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 
-import com.anthem.nimbus.platform.spec.model.util.JustLogit;
-import com.anthem.nimbus.platform.spec.model.util.StateAndConfigSupportProvider;
 import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
-import com.anthem.oss.nimbus.core.domain.Constants;
-import com.anthem.oss.nimbus.core.domain.InvalidConfigException;
-import com.anthem.oss.nimbus.core.domain.model.Config;
+import com.anthem.oss.nimbus.core.domain.definition.Constants;
+import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
+import com.anthem.oss.nimbus.core.domain.model.config.Config;
+import com.anthem.oss.nimbus.core.util.JustLogit;
 import com.anthem.oss.nimbus.core.util.LockTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -38,14 +37,14 @@ public abstract class AbstractDomainState<T> implements DomainState<T> {
 	
 	private String rootDomainUri;
 	
-	@JsonIgnore final private StateAndConfigSupportProvider provider;
+	@JsonIgnore final private StateBuilderSupport provider;
 	
 	@JsonIgnore final protected LockTemplate lockTemplate = new LockTemplate();
 	
 	@JsonIgnore final protected JustLogit logit = new JustLogit(getClass());
 	
 	
-	public AbstractDomainState(Config<T> config, StateAndConfigSupportProvider provider) {
+	public AbstractDomainState(Config<T> config, StateBuilderSupport provider) {
 		Objects.requireNonNull(config, "Config must not be null while instantiating StateAndConfig.");
 		Objects.requireNonNull(provider, "Provider must not be null while instantiating StateAndConfig.");
 		

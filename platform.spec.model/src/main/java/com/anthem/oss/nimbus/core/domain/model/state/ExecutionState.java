@@ -23,19 +23,18 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ClassUtils;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.FlowState;
-import com.anthem.nimbus.platform.spec.model.util.StateAndConfigSupportProvider;
 import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
-import com.anthem.oss.nimbus.core.domain.Command;
-import com.anthem.oss.nimbus.core.domain.MapsTo;
-import com.anthem.oss.nimbus.core.domain.MapsTo.Path;
-import com.anthem.oss.nimbus.core.domain.Repo;
-import com.anthem.oss.nimbus.core.domain.Repo.Database;
-import com.anthem.oss.nimbus.core.domain.model.DefaultModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.DefaultParamConfig;
-import com.anthem.oss.nimbus.core.domain.model.MappedDefaultParamConfigAttached;
-import com.anthem.oss.nimbus.core.domain.model.ModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.ParamConfig;
-import com.anthem.oss.nimbus.core.domain.model.ParamType;
+import com.anthem.oss.nimbus.core.domain.command.Command;
+import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
+import com.anthem.oss.nimbus.core.domain.definition.Repo;
+import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
+import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
+import com.anthem.oss.nimbus.core.domain.model.config.DefaultModelConfig;
+import com.anthem.oss.nimbus.core.domain.model.config.DefaultParamConfig;
+import com.anthem.oss.nimbus.core.domain.model.config.MappedDefaultParamConfigAttached;
+import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
+import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
+import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState.MappedParam;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState.RootModel;
@@ -153,7 +152,7 @@ public class ExecutionState<V, C> extends AbstractEntity.IdString implements Ser
 		
 		final private RootModel<ExecutionState<V, C>> rootModel;
 		
-		public ExParam(Command cmd, StateAndConfigSupportProvider provider, Config<V, C> exConfig) {
+		public ExParam(Command cmd, StateBuilderSupport provider, Config<V, C> exConfig) {
 			super(null, new ExParamConfig(exConfig), provider);
 			ExParamConfig pConfig = ((ExParamConfig)getConfig());
 			
@@ -162,7 +161,7 @@ public class ExecutionState<V, C> extends AbstractEntity.IdString implements Ser
 			this.setType(new StateType.Nested<>(getConfig().getType().findIfNested(), getRootModel()));
 		}
 
-		public ExParam(Command cmd, StateAndConfigSupportProvider provider, ParamConfig<ExecutionState<V, C>> rootParamConfig, RootModel<ExecutionState<V, C>> rootModel) {
+		public ExParam(Command cmd, StateBuilderSupport provider, ParamConfig<ExecutionState<V, C>> rootParamConfig, RootModel<ExecutionState<V, C>> rootModel) {
 			super(null, rootParamConfig, provider);
 			this.rootModel = rootModel;
 		}
@@ -189,11 +188,11 @@ public class ExecutionState<V, C> extends AbstractEntity.IdString implements Ser
 		@JsonIgnore
 		final private ExecutionRuntime executionRuntime;
 		
-		public ExModel(Command command, ExParam associatedParam, ModelConfig<ExecutionState<V, C>> modelConfig, StateAndConfigSupportProvider provider) {
+		public ExModel(Command command, ExParam associatedParam, ModelConfig<ExecutionState<V, C>> modelConfig, StateBuilderSupport provider) {
 			this(command, associatedParam, modelConfig, provider, new InternalExecutionRuntime(command));
 		}
 		
-		public ExModel(Command command, ExParam associatedParam, ModelConfig<ExecutionState<V, C>> modelConfig, StateAndConfigSupportProvider provider, ExecutionRuntime executionRuntime) {
+		public ExModel(Command command, ExParam associatedParam, ModelConfig<ExecutionState<V, C>> modelConfig, StateBuilderSupport provider, ExecutionRuntime executionRuntime) {
 			super(associatedParam, modelConfig, provider);
 			this.command = command;
 			this.executionRuntime = executionRuntime;

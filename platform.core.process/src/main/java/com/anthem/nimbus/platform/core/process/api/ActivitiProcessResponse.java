@@ -9,7 +9,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.runtime.ProcessInstance;
 
-import com.anthem.nimbus.platform.spec.contract.process.ProcessResponse;
+import com.anthem.oss.nimbus.core.domain.command.execution.ProcessResponse;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -11,9 +11,9 @@ import java.util.List;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.apache.commons.lang3.StringUtils;
 
-import com.anthem.nimbus.platform.core.process.api.sa.ServiceActivatorDefinition;
 import com.anthem.nimbus.platform.spec.model.process.ProcessEngineContext;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
+import com.anthem.oss.nimbus.core.integration.sa.ServiceActivatorDefinition;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

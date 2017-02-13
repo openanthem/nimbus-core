@@ -5,8 +5,7 @@ package com.anthem.oss.nimbus.core.domain.model.state;
 
 import java.util.List;
 
-import com.anthem.nimbus.platform.spec.model.util.StateAndConfigSupportProvider;
-import com.anthem.oss.nimbus.core.domain.model.ParamConfig;
+import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
@@ -24,7 +23,7 @@ public class MappedDefaultListParamState<T, M> extends DefaultListParamState<T> 
 	
 	@JsonIgnore private final Notification.Consumer<List<M>> delegate;
 	
-	public MappedDefaultListParamState(ListParam<M> mapsTo, Model<?> parentModel, ParamConfig<List<T>> config, StateAndConfigSupportProvider provider) {
+	public MappedDefaultListParamState(ListParam<M> mapsTo, Model<?> parentModel, ParamConfig<List<T>> config, StateBuilderSupport provider) {
 		super(parentModel, config, provider);
 		this.mapsTo = mapsTo;
 		

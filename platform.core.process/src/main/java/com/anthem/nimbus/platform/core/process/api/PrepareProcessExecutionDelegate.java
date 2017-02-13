@@ -5,9 +5,9 @@ import org.activiti.engine.delegate.JavaDelegate;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import com.anthem.nimbus.platform.core.process.api.cache.session.PlatformSession;
 import com.anthem.nimbus.platform.spec.model.process.ProcessEngineContext;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
+import com.anthem.oss.nimbus.core.session.UserEndpointSession;
 
 /**
  * @author Rakesh Patel
@@ -25,7 +25,7 @@ public class PrepareProcessExecutionDelegate implements JavaDelegate {
 		ActivitiContext aCtx = (ActivitiContext) execution.getVariable(PROCESS_ENGINE_GTWY_KEY);
 
 		ProcessEngineContext pCtx = aCtx.getProcessEngineContext();
-		QuadModel<?,?> quad = PlatformSession.getOrThrowEx(pCtx.getCommandMsg().getCommand());
+		QuadModel<?,?> quad = UserEndpointSession.getOrThrowEx(pCtx.getCommandMsg().getCommand());
 		pCtx.setInput(quad.getView());
 
 	}

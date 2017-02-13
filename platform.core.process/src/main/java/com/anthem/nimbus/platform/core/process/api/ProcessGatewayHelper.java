@@ -8,13 +8,13 @@ import java.io.Serializable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import com.anthem.nimbus.platform.core.process.api.cache.session.PlatformSession;
-import com.anthem.oss.nimbus.core.domain.Command;
-import com.anthem.oss.nimbus.core.domain.CommandMessage;
-import com.anthem.oss.nimbus.core.domain.CommandElement.Type;
-import com.anthem.oss.nimbus.core.domain.execution.ExecuteOutput;
+import com.anthem.oss.nimbus.core.domain.command.Command;
+import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
+import com.anthem.oss.nimbus.core.domain.command.execution.ExecuteOutput;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Model;
+import com.anthem.oss.nimbus.core.session.UserEndpointSession;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -88,7 +88,7 @@ public class ProcessGatewayHelper implements Serializable{
 	 * @param model
 	 */
 	public void setBackingCoreModel(String path, Object model){
-		QuadModel<?, ?> quadModel = PlatformSession.getOrThrowEx(getCommand());
+		QuadModel<?, ?> quadModel = UserEndpointSession.getOrThrowEx(getCommand());
 		if(quadModel == null)
 			return;
 		quadModel.getView().findParamByPath(path).getType().findIfNested().getBackingCoreModel().setState(model);
@@ -101,7 +101,7 @@ public class ProcessGatewayHelper implements Serializable{
 	 * @param message
 	 */
 	public void setMessageOnModel(String path, String message){
-		QuadModel<?, ?> quadModel = PlatformSession.getOrThrowEx(getCommand());
+		QuadModel<?, ?> quadModel = UserEndpointSession.getOrThrowEx(getCommand());
 		if(quadModel == null)
 			return;
 		StringBuilder modelPath = new StringBuilder();
@@ -115,7 +115,7 @@ public class ProcessGatewayHelper implements Serializable{
 	 * @param state
 	 */
 	public void setStateByPath(String path, Object state){
-		QuadModel<?, ?> quadModel = PlatformSession.getOrThrowEx(getCommand());
+		QuadModel<?, ?> quadModel = UserEndpointSession.getOrThrowEx(getCommand());
 		if(quadModel == null)
 			return;
 		Model viewSAC = quadModel.getView();
@@ -124,7 +124,7 @@ public class ProcessGatewayHelper implements Serializable{
 	}
 	
 	public void setExceptionMessageOnModel(String path){
-		QuadModel<?, ?> quadModel = PlatformSession.getOrThrowEx(getCommand());
+		QuadModel<?, ?> quadModel = UserEndpointSession.getOrThrowEx(getCommand());
 		if(quadModel == null)
 			return;
 		StringBuilder modelPath = new StringBuilder();

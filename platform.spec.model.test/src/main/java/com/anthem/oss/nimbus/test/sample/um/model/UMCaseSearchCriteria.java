@@ -7,9 +7,9 @@ import java.time.LocalDate;
 
 import javax.validation.constraints.NotNull;
 
-import com.anthem.oss.nimbus.core.domain.Action;
-import com.anthem.oss.nimbus.core.domain.Domain;
-import com.anthem.oss.nimbus.core.domain.Execution;
+import com.anthem.oss.nimbus.core.domain.command.Action;
+import com.anthem.oss.nimbus.core.domain.definition.Domain;
+import com.anthem.oss.nimbus.core.domain.definition.Execution;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Data;

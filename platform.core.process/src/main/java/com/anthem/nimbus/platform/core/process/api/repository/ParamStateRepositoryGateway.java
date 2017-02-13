@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.ExecutionStateTree;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig.Param;
-import com.anthem.oss.nimbus.core.domain.Action;
+import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.ParamStateRepository;
 
 import lombok.Getter;
