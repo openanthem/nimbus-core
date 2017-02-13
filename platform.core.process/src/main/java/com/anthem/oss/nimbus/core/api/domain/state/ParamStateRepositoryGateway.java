@@ -11,17 +11,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import com.anthem.nimbus.platform.spec.contract.repository.ParamStateGateway;
-import com.anthem.nimbus.platform.spec.contract.repository.ParamStateRepository;
-import com.anthem.nimbus.platform.spec.model.dsl.Action;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.ExecutionStateTree;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainState.ListParam;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainState.MappedParam;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainState.Model;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainState.Param;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainStateType;
-import com.anthem.nimbus.platform.spec.model.exception.InvalidArgumentException;
 import com.anthem.nimbus.platform.spec.model.util.JustLogit;
+import com.anthem.oss.nimbus.core.InvalidArgumentException;
+import com.anthem.oss.nimbus.core.domain.Action;
+import com.anthem.oss.nimbus.core.domain.model.state.StateType;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState.ListParam;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState.MappedParam;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Model;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.ParamStateGateway;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.ParamStateRepository;
 
 import lombok.Getter;
 
@@ -234,7 +234,7 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		} 
 		
 		// mapped nested: ..handling..  <TypeStateAndConfig.Nested<P>>
-		DomainStateType.Nested<P> nestedType = param.getType().findIfNested(); 
+		StateType.Nested<P> nestedType = param.getType().findIfNested(); 
 		Model<P> nestedModel = nestedType.getModel();
 		if(nestedModel.templateParams().isNullOrEmpty()) return null;
 		

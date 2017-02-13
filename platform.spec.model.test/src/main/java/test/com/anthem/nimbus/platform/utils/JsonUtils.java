@@ -6,8 +6,8 @@ package test.com.anthem.nimbus.platform.utils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
-import com.anthem.nimbus.platform.spec.model.command.CommandMessage;
-import com.anthem.nimbus.platform.spec.model.exception.PlatformRuntimeException;
+import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
+import com.anthem.oss.nimbus.core.domain.CommandMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 
@@ -47,7 +47,7 @@ public final class JsonUtils {
 			T model = om.readValue(json, clazz);
 			return model;
 		} catch (Exception ex) {
-			throw new PlatformRuntimeException("Failed to convert from JSON to instance of "+clazz
+			throw new FrameworkRuntimeException("Failed to convert from JSON to instance of "+clazz
 					+"\n json:\n"+json, ex);
 		}
 	}
@@ -60,7 +60,7 @@ public final class JsonUtils {
 			String json = om.writeValueAsString(model);
 			return json;
 		} catch (Exception ex) {
-			throw new PlatformRuntimeException("Failed to convert from model to JSON, modelClass: "+ model.getClass()
+			throw new FrameworkRuntimeException("Failed to convert from model to JSON, modelClass: "+ model.getClass()
 					+ "\n modelInstance: "+model, ex);
 		}
 	}

@@ -8,17 +8,17 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
 import com.anthem.nimbus.platform.core.process.api.ProcessBeanResolver;
-import com.anthem.nimbus.platform.spec.model.command.Command;
-import com.anthem.nimbus.platform.spec.model.command.CommandElement.Type;
-import com.anthem.nimbus.platform.spec.model.dsl.Constants;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.FlowState;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadModel;
-import com.anthem.nimbus.platform.spec.model.dsl.config.ActionExecuteConfig;
-import com.anthem.nimbus.platform.spec.model.dsl.config.ModelConfig;
-import com.anthem.nimbus.platform.spec.model.exception.PlatformRuntimeException;
 import com.anthem.nimbus.platform.spec.model.util.ModelsTemplate;
+import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
 import com.anthem.oss.nimbus.core.api.domain.state.DomainConfigAPI;
 import com.anthem.oss.nimbus.core.api.domain.state.QuadModelBuilder;
+import com.anthem.oss.nimbus.core.domain.Command;
+import com.anthem.oss.nimbus.core.domain.Constants;
+import com.anthem.oss.nimbus.core.domain.CommandElement.Type;
+import com.anthem.oss.nimbus.core.domain.model.ActionExecuteConfig;
+import com.anthem.oss.nimbus.core.domain.model.ModelConfig;
+import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 
 /**
  * @author Jayant Chaudhuri
@@ -96,7 +96,7 @@ public class PlatformSession2 {
 		R value = getAttribute(key);
 		if(value != null) return value;
 		
-		throw new PlatformRuntimeException("Required value not found with provided key: "+key);
+		throw new FrameworkRuntimeException("Required value not found with provided key: "+key);
 	}
 	
 	

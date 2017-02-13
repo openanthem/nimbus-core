@@ -11,16 +11,16 @@ import com.anthem.nimbus.platform.core.process.api.cache.session.PlatformSession
 import com.anthem.nimbus.platform.core.process.api.repository.ModelRepository;
 import com.anthem.nimbus.platform.core.process.api.repository.ModelRepositoryFactory;
 import com.anthem.nimbus.platform.spec.contract.process.ProcessExecutorEvents;
-import com.anthem.nimbus.platform.spec.model.command.Command;
-import com.anthem.nimbus.platform.spec.model.command.CommandElement.Type;
-import com.anthem.nimbus.platform.spec.model.command.CommandMessage;
 import com.anthem.nimbus.platform.spec.model.dsl.CoreDomain;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadModel;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig.Param;
-import com.anthem.nimbus.platform.spec.model.dsl.config.ActionExecuteConfig;
-import com.anthem.nimbus.platform.spec.model.dsl.config.ModelConfig;
 import com.anthem.oss.nimbus.core.api.domain.state.DomainConfigAPI;
+import com.anthem.oss.nimbus.core.domain.Command;
+import com.anthem.oss.nimbus.core.domain.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.CommandElement.Type;
+import com.anthem.oss.nimbus.core.domain.model.ActionExecuteConfig;
+import com.anthem.oss.nimbus.core.domain.model.ModelConfig;
+import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 
 /**
  * @author Soham Chakravarti

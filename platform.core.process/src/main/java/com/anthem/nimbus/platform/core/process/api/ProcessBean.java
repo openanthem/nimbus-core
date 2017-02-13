@@ -2,7 +2,7 @@ package com.anthem.nimbus.platform.core.process.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.anthem.nimbus.platform.spec.model.HierarchyMatch;
+import com.anthem.oss.nimbus.core.domain.model.state.HierarchyMatch;
 
 import lombok.Getter;
 import lombok.Setter;

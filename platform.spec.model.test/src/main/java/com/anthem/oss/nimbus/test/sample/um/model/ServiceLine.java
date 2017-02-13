@@ -6,9 +6,9 @@ package com.anthem.oss.nimbus.test.sample.um.model;
 import java.util.Date;
 import java.util.List;
 
-import com.anthem.nimbus.platform.spec.model.AbstractModel;
-import com.anthem.nimbus.platform.spec.model.dsl.ConfigNature.Ignore;
-import com.anthem.nimbus.platform.spec.model.dsl.Model;
+import com.anthem.oss.nimbus.core.domain.Model;
+import com.anthem.oss.nimbus.core.domain.ConfigNature.Ignore;
+import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -17,7 +17,7 @@ import lombok.Setter;
  * @author Soham Chakravarti
  */
 @Getter @Setter
-public class ServiceLine extends AbstractModel.IdString {
+public class ServiceLine extends AbstractEntity.IdString {
 	@Ignore
 	private static final long serialVersionUID = 1L;
 	

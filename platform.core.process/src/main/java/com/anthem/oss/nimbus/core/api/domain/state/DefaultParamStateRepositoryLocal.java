@@ -9,12 +9,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.anthem.nimbus.platform.spec.contract.repository.ParamStateRepository;
-import com.anthem.nimbus.platform.spec.model.dsl.Action;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainState;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainState.ListElemParam;
-import com.anthem.nimbus.platform.spec.model.exception.InvalidOperationAttemptedException;
-import com.anthem.nimbus.platform.spec.model.exception.PlatformRuntimeException;
+import com.anthem.oss.nimbus.core.InvalidOperationAttemptedException;
+import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
+import com.anthem.oss.nimbus.core.domain.Action;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState.ListElemParam;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.ParamStateRepository;
 
 /**
  * @author Soham Chakravarti
@@ -76,7 +76,7 @@ public class DefaultParamStateRepositoryLocal implements ParamStateRepository {
 			
 			//ensure that the target parent model is instantiated
 			Object target = param.getParentModel().instantiateOrGet();
-			if(target==null) throw new PlatformRuntimeException("Target must not be null for setting in property: "+pd+" with value: "+ newState);
+			if(target==null) throw new FrameworkRuntimeException("Target must not be null for setting in property: "+pd+" with value: "+ newState);
 			
 			javaBeanHandler.setValue(pd, target, newState);
 			

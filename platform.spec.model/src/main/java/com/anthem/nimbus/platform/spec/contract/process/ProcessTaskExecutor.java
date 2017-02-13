@@ -3,7 +3,7 @@
  */
 package com.anthem.nimbus.platform.spec.contract.process;
 
-import com.anthem.nimbus.platform.spec.model.command.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.CommandMessage;
 
 /**
  * @author Soham Chakravarti

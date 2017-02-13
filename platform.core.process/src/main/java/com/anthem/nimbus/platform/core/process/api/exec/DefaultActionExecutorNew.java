@@ -9,14 +9,14 @@ import org.springframework.stereotype.Component;
 
 import com.anthem.nimbus.platform.core.process.api.cache.session.PlatformSession;
 import com.anthem.nimbus.platform.spec.contract.process.ProcessExecutorEvents;
-import com.anthem.nimbus.platform.spec.model.command.Command;
-import com.anthem.nimbus.platform.spec.model.command.CommandMessage;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadModel;
-import com.anthem.nimbus.platform.spec.model.dsl.config.ActionExecuteConfig;
-import com.anthem.nimbus.platform.spec.model.dsl.config.ModelConfig;
 import com.anthem.nimbus.platform.spec.model.util.ModelsTemplate;
 import com.anthem.oss.nimbus.core.api.domain.state.DomainConfigAPI;
 import com.anthem.oss.nimbus.core.api.domain.state.QuadModelBuilder;
+import com.anthem.oss.nimbus.core.domain.Command;
+import com.anthem.oss.nimbus.core.domain.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.model.ActionExecuteConfig;
+import com.anthem.oss.nimbus.core.domain.model.ModelConfig;
+import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 
 /**
  * @author Soham Chakravarti

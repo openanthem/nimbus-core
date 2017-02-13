@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import com.anthem.nimbus.platform.spec.model.exception.JSonParsingException;
+import com.anthem.oss.nimbus.core.util.JsonParsingException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
@@ -29,7 +29,7 @@ public class CustomLocalDateSerializer extends StdSerializer<LocalDate> {
         try {
             gen.writeString(formatter.format(value));
         } catch (IOException e) {
-            throw new JSonParsingException(e);
+            throw new JsonParsingException(e);
         }
     }
 

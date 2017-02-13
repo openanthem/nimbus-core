@@ -9,12 +9,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 import com.anthem.nimbus.platform.spec.contract.event.StateAndConfigEventPublisher;
-import com.anthem.nimbus.platform.spec.model.AbstractEvent.SuppressMode;
-import com.anthem.nimbus.platform.spec.model.dsl.ModelEvent;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig.Model;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig.Param;
-import com.anthem.nimbus.platform.spec.model.exception.PlatformRuntimeException;
+import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
+import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
+import com.anthem.oss.nimbus.core.domain.model.state.AbstractEvent.SuppressMode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 
@@ -74,7 +74,7 @@ public class ObservableEventPublisher extends Observable implements StateAndConf
 			String json = om.writeValueAsString(model);
 			return json;
 		} catch (Exception ex) {
-			throw new PlatformRuntimeException("Failed to convert from model to JSON, modelClass: "+ model.getClass()
+			throw new FrameworkRuntimeException("Failed to convert from model to JSON, modelClass: "+ model.getClass()
 					+ "\n modelInstance: "+model, ex);
 		}
 	}

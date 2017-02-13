@@ -3,8 +3,8 @@
  */
 package com.anthem.nimbus.platform.spec.contract.event;
 
-import com.anthem.nimbus.platform.spec.model.AbstractEvent;
-import com.anthem.nimbus.platform.spec.model.AbstractEvent.SuppressMode;
+import com.anthem.oss.nimbus.core.domain.model.state.AbstractEvent;
+import com.anthem.oss.nimbus.core.domain.model.state.AbstractEvent.SuppressMode;
 
 /**
  * @author Rakesh Patel

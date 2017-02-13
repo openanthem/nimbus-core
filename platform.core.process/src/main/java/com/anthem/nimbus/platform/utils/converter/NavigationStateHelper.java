@@ -5,11 +5,11 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
-import com.anthem.nimbus.platform.spec.model.dsl.Constants;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainParamState;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadModel;
-import com.anthem.nimbus.platform.spec.model.dsl.config.MappedDomainParamConfigLinked;
-import com.anthem.nimbus.platform.spec.model.dsl.config.ParamConfig;
+import com.anthem.oss.nimbus.core.domain.Constants;
+import com.anthem.oss.nimbus.core.domain.model.MappedDefaultParamConfigAttached;
+import com.anthem.oss.nimbus.core.domain.model.ParamConfig;
+import com.anthem.oss.nimbus.core.domain.model.state.DefaultParamState;
+import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 
 /**
  * @Author Cheikh Niass on 10/11/16.
@@ -37,8 +37,8 @@ public class NavigationStateHelper {
 	public void initializeBreadCrumbs(QuadModel<?, ?> quadModel){
 		List<? extends ParamConfig<?>> params = quadModel.getView().getConfig().getParams();
 		for(ParamConfig<?> param : params){
-			updateBreadCrumbState(quadModel, (MappedDomainParamConfigLinked<?, ?>)param, VISIBLE_ATTRIBUTE, Boolean.FALSE);
-			updateBreadCrumbState(quadModel, (MappedDomainParamConfigLinked<?, ?>)param, ACTIVATE_ATTRIBUTE, Boolean.FALSE);
+			updateBreadCrumbState(quadModel, (MappedDefaultParamConfigAttached<?, ?>)param, VISIBLE_ATTRIBUTE, Boolean.FALSE);
+			updateBreadCrumbState(quadModel, (MappedDefaultParamConfigAttached<?, ?>)param, ACTIVATE_ATTRIBUTE, Boolean.FALSE);
 		}		
 	}
 	
@@ -47,7 +47,7 @@ public class NavigationStateHelper {
 	 * @param quadModel
 	 * @param currentPage
 	 */
-	public void activateBreadCrumbForPage(QuadModel<?, ?> quadModel, MappedDomainParamConfigLinked<?, ?> currentPage){
+	public void activateBreadCrumbForPage(QuadModel<?, ?> quadModel, MappedDefaultParamConfigAttached<?, ?> currentPage){
 		updateBreadCrumbState(quadModel,currentPage,VISIBLE_ATTRIBUTE,Boolean.TRUE);
 	}
 	
@@ -57,7 +57,7 @@ public class NavigationStateHelper {
 	 * @param quadModel
 	 * @param currentPage
 	 */
-	public void displayBreadCrumbForPage(QuadModel<?, ?> quadModel, MappedDomainParamConfigLinked<?, ?> currentPage){
+	public void displayBreadCrumbForPage(QuadModel<?, ?> quadModel, MappedDefaultParamConfigAttached<?, ?> currentPage){
 		hideAllBreadCrumbs(quadModel);
 		updateBreadCrumbState(quadModel,currentPage,ACTIVATE_ATTRIBUTE,Boolean.TRUE);
 	}
@@ -67,7 +67,7 @@ public class NavigationStateHelper {
 	 * @param currentPage
 	 * @return
 	 */
-	public String getAssociatedBreadCrumbForPage(MappedDomainParamConfigLinked<?, ?> currentPage){
+	public String getAssociatedBreadCrumbForPage(MappedDefaultParamConfigAttached<?, ?> currentPage){
 		if(currentPage.getUiStyles() == null)
 			return null;
 		String associatedBreadCrumb = (String)currentPage.getUiStyles().getAttributes().get(BREADCRUMB_ATTRIBUTE);
@@ -81,7 +81,7 @@ public class NavigationStateHelper {
 	private void hideAllBreadCrumbs(QuadModel<?, ?> quadModel){
 		List<? extends ParamConfig<?>> params = quadModel.getView().getConfig().getParams();
 		for(ParamConfig<?> param : params){
-			updateBreadCrumbState(quadModel, (MappedDomainParamConfigLinked<?, ?>)param, ACTIVATE_ATTRIBUTE, Boolean.FALSE);
+			updateBreadCrumbState(quadModel, (MappedDefaultParamConfigAttached<?, ?>)param, ACTIVATE_ATTRIBUTE, Boolean.FALSE);
 		}			
 	}
 
@@ -92,7 +92,7 @@ public class NavigationStateHelper {
 	 * @param currentPage
 	 * @param attribute
 	 */
-    private void updateBreadCrumbState(QuadModel<?, ?> quadModel, MappedDomainParamConfigLinked<?, ?> currentPage, String attribute, Boolean state) {
+    private void updateBreadCrumbState(QuadModel<?, ?> quadModel, MappedDefaultParamConfigAttached<?, ?> currentPage, String attribute, Boolean state) {
     	if(currentPage == null){
     		return;
     	}
@@ -100,7 +100,7 @@ public class NavigationStateHelper {
         if(breadCrumbPath == null)
         	return;
         String[] breadCrumbs = breadCrumbPath.split(Constants.SEPARATOR_URI.code);
-        DomainParamState<?> currentSAC = null;
+        DefaultParamState<?> currentSAC = null;
         boolean rootNode = true;
         for(String breadCrumb: breadCrumbs){
         	if(StringUtils.isEmpty(breadCrumb)|| breadCrumbPath.equals("none"))
@@ -114,7 +114,7 @@ public class NavigationStateHelper {
         	}else{
         		currentSAC.findStateByPath(statePath.toString()).setState(state);
         	}
-            currentSAC = (DomainParamState<?>)quadModel.getView().findStateByPath(Constants.SEPARATOR_URI.code+breadCrumb);
+            currentSAC = (DefaultParamState<?>)quadModel.getView().findStateByPath(Constants.SEPARATOR_URI.code+breadCrumb);
         	rootNode = false;
         }
     }
@@ -124,7 +124,7 @@ public class NavigationStateHelper {
      * @param currentPage
      * @return
      */
-    private boolean containsBreadCrumb(MappedDomainParamConfigLinked<?, ?> currentPage){
+    private boolean containsBreadCrumb(MappedDefaultParamConfigAttached<?, ?> currentPage){
     	return (getAssociatedBreadCrumbForPage(currentPage) != null);
     }
 

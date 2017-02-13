@@ -12,14 +12,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.Assert;
 
 import com.anthem.nimbus.platform.spec.contract.process.ProcessGateway;
-import com.anthem.nimbus.platform.spec.model.command.Command;
-import com.anthem.nimbus.platform.spec.model.command.CommandBuilder;
-import com.anthem.nimbus.platform.spec.model.command.CommandMessage;
-import com.anthem.nimbus.platform.spec.model.command.MultiExecuteOutput;
-import com.anthem.nimbus.platform.spec.model.dsl.Action;
-import com.anthem.nimbus.platform.spec.model.dsl.Behavior;
-import com.anthem.nimbus.platform.spec.model.dsl.Constants;
-import com.anthem.nimbus.platform.spec.model.dsl.config.ParamValue;
+import com.anthem.oss.nimbus.core.domain.Action;
+import com.anthem.oss.nimbus.core.domain.Behavior;
+import com.anthem.oss.nimbus.core.domain.Command;
+import com.anthem.oss.nimbus.core.domain.CommandBuilder;
+import com.anthem.oss.nimbus.core.domain.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.Constants;
+import com.anthem.oss.nimbus.core.domain.execution.MultiExecuteOutput;
+import com.anthem.oss.nimbus.core.domain.model.ParamValue;
 
 /**
  * @author Rakesh Patel
@@ -73,8 +73,8 @@ public class ParamCodeValueProviderTest {
 	}
 	
 	private CommandMessage build(String uri, String staticParamPath) {
-		String[] uriWithPayload = uri.split(Constants.CODE_VALUE_CONFIG_DELIMITER.code);
-		Command cmd = CommandBuilder.withUri(Constants.PARAM_VALUES_URI_PREFIX.code+uriWithPayload[0]+Constants.PARAM_VALUES_URI_SUFFIX.code).getCommand();
+		String[] uriWithPayload = uri.split(com.anthem.oss.nimbus.core.domain.CODE_VALUE_CONFIG_DELIMITER.code);
+		Command cmd = CommandBuilder.withUri(com.anthem.oss.nimbus.core.domain.PARAM_VALUES_URI_PREFIX.code+uriWithPayload[0]+com.anthem.oss.nimbus.core.domain.PARAM_VALUES_URI_SUFFIX.code).getCommand();
 		cmd.setAction(Action._search);
 		cmd.templateBehaviors().add(Behavior.$execute);
 		

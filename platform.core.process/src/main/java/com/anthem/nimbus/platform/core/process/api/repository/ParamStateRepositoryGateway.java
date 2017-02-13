@@ -7,10 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import com.anthem.nimbus.platform.spec.contract.repository.ParamStateRepository;
-import com.anthem.nimbus.platform.spec.model.dsl.Action;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.ExecutionStateTree;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig.Param;
+import com.anthem.oss.nimbus.core.domain.Action;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.ParamStateRepository;
 
 import lombok.Getter;
 

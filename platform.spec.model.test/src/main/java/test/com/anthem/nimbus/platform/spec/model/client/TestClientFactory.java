@@ -8,13 +8,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.anthem.nimbus.platform.spec.model.access.Permission;
-import com.anthem.nimbus.platform.spec.model.access.PlatformAccessEntity;
 import com.anthem.nimbus.platform.spec.model.client.Client;
 import com.anthem.nimbus.platform.spec.model.client.ClientEntity;
 import com.anthem.nimbus.platform.spec.model.client.ClientEntity.Type;
 import com.anthem.nimbus.platform.spec.model.client.access.ClientAccessEntity;
 import com.anthem.nimbus.platform.spec.model.client.access.ClientUserRole;
+import com.anthem.oss.nimbus.core.entity.access.DefaultAccessEntity;
+import com.anthem.oss.nimbus.core.entity.access.Permission;
 
 import test.com.anthem.nimbus.platform.spec.model.access.AccessEntityFactory;
 
@@ -105,7 +105,7 @@ public class TestClientFactory {
 //	}
 	
 	public interface Callback {
-		public PlatformAccessEntity find(String code);
+		public DefaultAccessEntity find(String code);
 	}
 	
 	public static void createSelectedAccesses(ClientEntity org, Callback cb) {
@@ -113,18 +113,18 @@ public class TestClientFactory {
 		
 		for(int i=0; i<appCodes.size(); i++) {
 			
-			PlatformAccessEntity app = cb.find(appCodes.get(i));
+			DefaultAccessEntity app = cb.find(appCodes.get(i));
 			ClientAccessEntity cae = new ClientAccessEntity(app);
 			org.addSelectedAccess(cae);
 			addAccessAndPermissionRecursively(app, cae, i);
 		}
 	}
 	
-	private static void addAccessAndPermissionRecursively(PlatformAccessEntity pae, ClientAccessEntity cae, int i) {
+	private static void addAccessAndPermissionRecursively(DefaultAccessEntity pae, ClientAccessEntity cae, int i) {
 		if(pae==null) return;
 		
 		if(pae.getAvailableAccesses()!=null) {
-			for(PlatformAccessEntity availableAe : pae.getAvailableAccesses()) {
+			for(DefaultAccessEntity availableAe : pae.getAvailableAccesses()) {
 				
 				ClientAccessEntity caeNew = cae.addSelectedAccess(availableAe);	
 				addAccessAndPermissionRecursively(availableAe, caeNew, i);

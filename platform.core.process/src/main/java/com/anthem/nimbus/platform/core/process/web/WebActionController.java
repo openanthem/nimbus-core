@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.anthem.nimbus.platform.core.process.api.cache.session.PlatformSession;
-import com.anthem.nimbus.platform.spec.model.dsl.Behavior;
-import com.anthem.nimbus.platform.spec.model.dsl.ModelEvent;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
+import com.anthem.oss.nimbus.core.domain.Behavior;
+import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 
 /**
  * STEPS to follow with examples. <br>

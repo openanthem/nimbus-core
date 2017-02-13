@@ -28,15 +28,15 @@ import com.anthem.nimbus.platform.spec.contract.process.HierarchyMatchProcessTas
 import com.anthem.nimbus.platform.spec.contract.process.ProcessGateway;
 import com.anthem.nimbus.platform.spec.contract.process.ProcessResponse;
 import com.anthem.nimbus.platform.spec.contract.process.ProcessTaskExecutor;
-import com.anthem.nimbus.platform.spec.model.command.Command;
-import com.anthem.nimbus.platform.spec.model.command.CommandMessage;
-import com.anthem.nimbus.platform.spec.model.command.ExecuteOutput;
-import com.anthem.nimbus.platform.spec.model.command.MultiExecuteOutput;
-import com.anthem.nimbus.platform.spec.model.dsl.Action;
-import com.anthem.nimbus.platform.spec.model.dsl.Behavior;
-import com.anthem.nimbus.platform.spec.model.dsl.Constants;
-import com.anthem.nimbus.platform.spec.model.exception.InvalidConfigException;
 import com.anthem.nimbus.platform.spec.model.util.JustLogit;
+import com.anthem.oss.nimbus.core.domain.Action;
+import com.anthem.oss.nimbus.core.domain.Behavior;
+import com.anthem.oss.nimbus.core.domain.Command;
+import com.anthem.oss.nimbus.core.domain.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.Constants;
+import com.anthem.oss.nimbus.core.domain.InvalidConfigException;
+import com.anthem.oss.nimbus.core.domain.execution.ExecuteOutput;
+import com.anthem.oss.nimbus.core.domain.execution.MultiExecuteOutput;
 
 import lombok.Getter;
 import lombok.Setter;

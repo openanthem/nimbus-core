@@ -20,10 +20,9 @@ import org.springframework.stereotype.Component;
 
 import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.*;
 
-
-import com.anthem.nimbus.platform.spec.model.dsl.SearchNature.StartsWith;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig.Param;
 import com.anthem.nimbus.platform.spec.model.util.ModelsTemplate;
+import com.anthem.oss.nimbus.core.domain.SearchNature.StartsWith;
 
 import lombok.Getter;
 import lombok.Setter;

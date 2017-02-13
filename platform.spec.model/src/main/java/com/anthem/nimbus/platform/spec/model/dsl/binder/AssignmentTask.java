@@ -5,7 +5,7 @@ package com.anthem.nimbus.platform.spec.model.dsl.binder;
 
 import java.util.Date;
 
-import com.anthem.nimbus.platform.spec.model.AbstractModel;
+import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -15,7 +15,7 @@ import lombok.Setter;
  *
  */
 @Getter @Setter
-abstract public class AssignmentTask extends AbstractModel.IdString{
+abstract public class AssignmentTask extends AbstractEntity.IdString{
 	
 	private static final long serialVersionUID = 1L;
 	

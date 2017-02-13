@@ -7,30 +7,30 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.anthem.nimbus.platform.spec.model.command.Command;
-import com.anthem.nimbus.platform.spec.model.command.CommandBuilder;
-import com.anthem.nimbus.platform.spec.model.dsl.Constants;
-import com.anthem.nimbus.platform.spec.model.dsl.MapsTo;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainListElemParamState;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainListModelState;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainListParamState;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainModelState;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainParamState;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.ExecutionState;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.MDomainListElemParamState;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.MDomainListModelState;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.MDomainListParamState;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.MDomainModelState;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.MDomainParamState;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainState.ListParam;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainState.Model;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainState.Param;
-import com.anthem.nimbus.platform.spec.model.dsl.config.ModelConfig;
-import com.anthem.nimbus.platform.spec.model.dsl.config.ParamConfig;
-import com.anthem.nimbus.platform.spec.model.dsl.config.ParamConfig.MappedParamConfig;
-import com.anthem.nimbus.platform.spec.model.exception.InvalidConfigException;
 import com.anthem.nimbus.platform.spec.model.util.JustLogit;
 import com.anthem.nimbus.platform.spec.model.util.StateAndConfigSupportProvider;
+import com.anthem.oss.nimbus.core.domain.Command;
+import com.anthem.oss.nimbus.core.domain.CommandBuilder;
+import com.anthem.oss.nimbus.core.domain.Constants;
+import com.anthem.oss.nimbus.core.domain.InvalidConfigException;
+import com.anthem.oss.nimbus.core.domain.MapsTo;
+import com.anthem.oss.nimbus.core.domain.model.ModelConfig;
+import com.anthem.oss.nimbus.core.domain.model.ParamConfig;
+import com.anthem.oss.nimbus.core.domain.model.ParamConfig.MappedParamConfig;
+import com.anthem.oss.nimbus.core.domain.model.state.ExecutionState;
+import com.anthem.oss.nimbus.core.domain.model.state.DefaultListElemParamState;
+import com.anthem.oss.nimbus.core.domain.model.state.DefaultListModelState;
+import com.anthem.oss.nimbus.core.domain.model.state.DefaultListParamState;
+import com.anthem.oss.nimbus.core.domain.model.state.MappedDefaultListElemParamState;
+import com.anthem.oss.nimbus.core.domain.model.state.MappedDefaultListModelState;
+import com.anthem.oss.nimbus.core.domain.model.state.MappedDefaultListParamState;
+import com.anthem.oss.nimbus.core.domain.model.state.MappedDefaultModelState;
+import com.anthem.oss.nimbus.core.domain.model.state.MappedDefaultParamState;
+import com.anthem.oss.nimbus.core.domain.model.state.DefaultModelState;
+import com.anthem.oss.nimbus.core.domain.model.state.DefaultParamState;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState.ListParam;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Model;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
 
 import lombok.Getter;
 
@@ -43,21 +43,21 @@ abstract public class AbstractDomainStateBuilder {
 
 	protected JustLogit logit = new JustLogit(getClass());
 	
-	abstract public <T, P> DomainParamState<P> buildParam(StateAndConfigSupportProvider provider, DomainModelState<T> mState, ParamConfig<P> mpConfig, Model<?> mapsToSAC);
+	abstract public <T, P> DefaultParamState<P> buildParam(StateAndConfigSupportProvider provider, DefaultModelState<T> mState, ParamConfig<P> mpConfig, Model<?> mapsToSAC);
 
-	protected <T> DomainModelState<T> createModel(Param<T> associatedParam, ModelConfig<T> config, StateAndConfigSupportProvider provider, Model<?> mapsToSAC) {
-		DomainModelState<T> mState = associatedParam.isMapped() ? //(mapsToSAC!=null) ? 
-				new MDomainModelState<>(mapsToSAC, associatedParam, config, provider) : 
-					new DomainModelState<>(associatedParam, config, provider);
+	protected <T> DefaultModelState<T> createModel(Param<T> associatedParam, ModelConfig<T> config, StateAndConfigSupportProvider provider, Model<?> mapsToSAC) {
+		DefaultModelState<T> mState = associatedParam.isMapped() ? //(mapsToSAC!=null) ? 
+				new MappedDefaultModelState<>(mapsToSAC, associatedParam, config, provider) : 
+					new DefaultModelState<>(associatedParam, config, provider);
 		
 		mState.init();
 		return mState;
 	}
 	
-	protected <T> DomainListModelState<T> createCollectionModel(ListParam<T> associatedParam, ModelConfig<List<T>> config, StateAndConfigSupportProvider provider, DomainListElemParamState.Creator<T> elemCreator) {
-		DomainListModelState<T> mState = (associatedParam.isMapped()) ? 
-				new MDomainListModelState<>(associatedParam.findIfMapped().getMapsTo().getType().findIfCollection().getModel(), associatedParam, config, provider, elemCreator) :
-				new DomainListModelState<>(associatedParam, config, provider, elemCreator);					
+	protected <T> DefaultListModelState<T> createCollectionModel(ListParam<T> associatedParam, ModelConfig<List<T>> config, StateAndConfigSupportProvider provider, DefaultListElemParamState.Creator<T> elemCreator) {
+		DefaultListModelState<T> mState = (associatedParam.isMapped()) ? 
+				new MappedDefaultListModelState<>(associatedParam.findIfMapped().getMapsTo().getType().findIfCollection().getModel(), associatedParam, config, provider, elemCreator) :
+				new DefaultListModelState<>(associatedParam, config, provider, elemCreator);					
 		
 		mState.init();
 		return mState;
@@ -66,26 +66,26 @@ abstract public class AbstractDomainStateBuilder {
 	/**
 	 * Add in mapsTo model first, then in mapped
 	 */
-	protected <E> DomainListElemParamState<E> createElemParam(StateAndConfigSupportProvider provider, DomainListModelState<E> parentModel, ParamConfig<E> mpConfig, String elemId) {
+	protected <E> DefaultListElemParamState<E> createElemParam(StateAndConfigSupportProvider provider, DefaultListModelState<E> parentModel, ParamConfig<E> mpConfig, String elemId) {
 		/* if param is mapped then model must be mapped - in case of collection, its the model enclosing the collection param */
 		Model<?> colParamParentModel = parentModel.getAssociatedParam().getParentModel();
 		if(mpConfig.getMappingMode()==MapsTo.Mode.MappedAttached && !colParamParentModel.getConfig().isMapped() && !colParamParentModel.isRoot())
 				throw new InvalidConfigException("Model class: "+colParamParentModel.getConfig().getReferredClass()+" must be mapped to load mapped param: "+mpConfig.findIfMapped().getPath());
 		
-		final DomainListElemParamState<E> mpState;
+		final DefaultListElemParamState<E> mpState;
 		if(parentModel.isMapped()) {
-			mpState = new MDomainListElemParamState<>(parentModel, mpConfig, provider, elemId);
+			mpState = new MappedDefaultListElemParamState<>(parentModel, mpConfig, provider, elemId);
 			
 		} else {
-			mpState = new DomainListElemParamState<>(parentModel, mpConfig, provider, elemId);
+			mpState = new DefaultListElemParamState<>(parentModel, mpConfig, provider, elemId);
 		}
 		
 		mpState.init();
 		return mpState;
 	}
 	
-	protected <P> DomainParamState<P> createParam(StateAndConfigSupportProvider provider, DomainModelState<?> parentModel, Model<?> mapsToSAC, ParamConfig<P> mpConfig) {
-		final DomainParamState<P> p;
+	protected <P> DefaultParamState<P> createParam(StateAndConfigSupportProvider provider, DefaultModelState<?> parentModel, Model<?> mapsToSAC, ParamConfig<P> mpConfig) {
+		final DefaultParamState<P> p;
 		if(mpConfig.isMapped())
 			p = createParamMapped(provider, parentModel, mapsToSAC, mpConfig.findIfMapped());
 		else
@@ -95,16 +95,16 @@ abstract public class AbstractDomainStateBuilder {
 		return p;
 	}
 	
-	private <P, V, C> DomainParamState<P> createParamMapped(StateAndConfigSupportProvider provider, DomainModelState<?> parentModel, Model<?> mapsToSAC, MappedParamConfig<P, ?> mappedParamConfig) {
+	private <P, V, C> DefaultParamState<P> createParamMapped(StateAndConfigSupportProvider provider, DefaultModelState<?> parentModel, Model<?> mapsToSAC, MappedParamConfig<P, ?> mappedParamConfig) {
 		if(mappedParamConfig.isLinked()) {
 			// find mapped param's state
 			final Param<?> mapsToParam = findMapsToParam(mappedParamConfig, mapsToSAC);
 			
 			if(mappedParamConfig.getType().isCollection()) {
-				return new MDomainListParamState(mapsToParam.findIfCollection(), parentModel, mappedParamConfig, provider);
+				return new MappedDefaultListParamState(mapsToParam.findIfCollection(), parentModel, mappedParamConfig, provider);
 			}
 				
-			return new MDomainParamState<>(mapsToParam, parentModel, mappedParamConfig, provider);
+			return new MappedDefaultParamState<>(mapsToParam, parentModel, mappedParamConfig, provider);
 		}
 		
 		// delinked: find mapsTo model and create ExState.ExParam for it
@@ -115,16 +115,16 @@ abstract public class AbstractDomainStateBuilder {
 		ExecutionState<V, C>.ExModel execModelSAC = eState.new ExParam(cmdDelinked, provider, exConfig).getRootModel().unwrap(ExecutionState.ExModel.class);
 		
 		// mapsTo core param
-		DomainParamState<C> mapsToParam = buildParam(provider, execModelSAC, execModelSAC.getConfig().getCoreParam(), null);
+		DefaultParamState<C> mapsToParam = buildParam(provider, execModelSAC, execModelSAC.getConfig().getCoreParam(), null);
 		
-		return new MDomainParamState<>(mapsToParam, parentModel, mappedParamConfig, provider);
+		return new MappedDefaultParamState<>(mapsToParam, parentModel, mappedParamConfig, provider);
 	}
 
-	private <P> DomainParamState<P> createParamUnmapped(StateAndConfigSupportProvider provider, DomainModelState<?> parentModel, Model<?> mapsToSAC, ParamConfig<P> paramConfig) {
+	private <P> DefaultParamState<P> createParamUnmapped(StateAndConfigSupportProvider provider, DefaultModelState<?> parentModel, Model<?> mapsToSAC, ParamConfig<P> paramConfig) {
 		if(paramConfig.getType().isCollection())
-			return new DomainListParamState(parentModel, paramConfig, provider);
+			return new DefaultListParamState(parentModel, paramConfig, provider);
 		
-		return new DomainParamState<>(parentModel, paramConfig, provider);
+		return new DefaultParamState<>(parentModel, paramConfig, provider);
 	}
 	
 	private <T, M> Param<M> findMapsToParam(ParamConfig<T> pConfig, Model<?> mapsToStateAndConfig) {

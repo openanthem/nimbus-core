@@ -7,8 +7,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.anthem.nimbus.platform.spec.model.dsl.Domain;
-import com.anthem.nimbus.platform.spec.model.dsl.Execution;
+import com.anthem.oss.nimbus.core.domain.Domain;
+import com.anthem.oss.nimbus.core.domain.Execution;
 
 import lombok.Getter;
 import lombok.Setter;

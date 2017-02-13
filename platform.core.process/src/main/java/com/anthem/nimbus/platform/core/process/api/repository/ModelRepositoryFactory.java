@@ -3,8 +3,8 @@
  */
 package com.anthem.nimbus.platform.core.process.api.repository;
 
-import com.anthem.nimbus.platform.spec.model.command.Command;
-import com.anthem.nimbus.platform.spec.model.dsl.Repo;
+import com.anthem.oss.nimbus.core.domain.Command;
+import com.anthem.oss.nimbus.core.domain.Repo;
 
 /**
  * @author Soham Chakravarti

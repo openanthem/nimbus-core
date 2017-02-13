@@ -18,16 +18,16 @@ import com.anthem.nimbus.platform.core.process.api.cache.session.PlatformSession
 import com.anthem.nimbus.platform.core.process.api.repository.ModelRepositoryFactory;
 import com.anthem.nimbus.platform.spec.contract.process.ProcessExecutorEvents;
 import com.anthem.nimbus.platform.spec.contract.process.ProcessTaskExecutor;
-import com.anthem.nimbus.platform.spec.model.command.Command;
-import com.anthem.nimbus.platform.spec.model.command.CommandMessage;
-import com.anthem.nimbus.platform.spec.model.dsl.Action;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.FlowState;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadModel;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig.Param;
-import com.anthem.nimbus.platform.spec.model.exception.PlatformRuntimeException;
 import com.anthem.nimbus.platform.spec.model.util.JustLogit;
 import com.anthem.nimbus.platform.utils.converter.CommandMessageConverter;
+import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
 import com.anthem.oss.nimbus.core.api.domain.state.QuadModelBuilder;
+import com.anthem.oss.nimbus.core.domain.Action;
+import com.anthem.oss.nimbus.core.domain.Command;
+import com.anthem.oss.nimbus.core.domain.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 
 import lombok.Setter;
 
@@ -103,12 +103,12 @@ public abstract class AbstractProcessTaskExecutor implements ProcessTaskExecutor
 	}
 	
 	protected <R> R onError(CommandMessage cmdMsg, Exception ex) 
-	throws PlatformRuntimeException {
-		if(ex instanceof PlatformRuntimeException) {
-			throw (PlatformRuntimeException)ex;
+	throws FrameworkRuntimeException {
+		if(ex instanceof FrameworkRuntimeException) {
+			throw (FrameworkRuntimeException)ex;
 		}
 		
-		PlatformRuntimeException prtEx = new PlatformRuntimeException("Failed to execute cmdMsg: "+ cmdMsg, ex);
+		FrameworkRuntimeException prtEx = new FrameworkRuntimeException("Failed to execute cmdMsg: "+ cmdMsg, ex);
 		throw prtEx;
 	}
 

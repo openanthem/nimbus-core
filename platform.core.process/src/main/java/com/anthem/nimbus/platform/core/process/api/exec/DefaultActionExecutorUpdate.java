@@ -9,16 +9,16 @@ import org.springframework.web.context.request.RequestContextHolder;
 
 import com.anthem.nimbus.platform.core.process.api.cache.session.PlatformSession;
 import com.anthem.nimbus.platform.spec.contract.process.ProcessExecutorEvents;
-import com.anthem.nimbus.platform.spec.model.AbstractEvent.SuppressMode;
-import com.anthem.nimbus.platform.spec.model.command.Command;
-import com.anthem.nimbus.platform.spec.model.command.CommandElement.Type;
-import com.anthem.nimbus.platform.spec.model.command.CommandMessage;
-import com.anthem.nimbus.platform.spec.model.dsl.EnableParamStateTree;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.ExecutionStateTree;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.ModelStateAndConfig;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadModel;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig.Param;
+import com.anthem.oss.nimbus.core.domain.Command;
+import com.anthem.oss.nimbus.core.domain.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.EnableParamStateTree;
+import com.anthem.oss.nimbus.core.domain.CommandElement.Type;
+import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
+import com.anthem.oss.nimbus.core.domain.model.state.AbstractEvent.SuppressMode;
 
 /**
  * @author Soham Chakravarti

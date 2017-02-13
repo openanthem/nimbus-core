@@ -13,13 +13,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
-import com.anthem.nimbus.platform.spec.contract.repository.ParamStateRepository;
-import com.anthem.nimbus.platform.spec.model.dsl.Constants;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig.Model;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig.Param;
-import com.anthem.nimbus.platform.spec.model.dsl.config.ModelConfig;
 import com.anthem.nimbus.platform.spec.model.util.ModelsTemplate;
 import com.anthem.nimbus.platform.spec.session.ModelHolder;
+import com.anthem.oss.nimbus.core.domain.Constants;
+import com.anthem.oss.nimbus.core.domain.model.ModelConfig;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.ParamStateRepository;
 
 /**
  * @author Jayant Chaudhuri

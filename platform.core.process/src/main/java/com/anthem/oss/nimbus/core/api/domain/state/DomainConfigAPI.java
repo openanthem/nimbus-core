@@ -19,16 +19,16 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.stereotype.Component;
 
-import com.anthem.nimbus.platform.spec.model.command.Command;
-import com.anthem.nimbus.platform.spec.model.dsl.Domain;
-import com.anthem.nimbus.platform.spec.model.dsl.Execution;
-import com.anthem.nimbus.platform.spec.model.dsl.config.ActionExecuteConfig;
-import com.anthem.nimbus.platform.spec.model.dsl.config.DomainConfig;
-import com.anthem.nimbus.platform.spec.model.dsl.config.ModelConfig;
-import com.anthem.nimbus.platform.spec.model.exception.InvalidConfigException;
 import com.anthem.nimbus.platform.spec.model.util.CollectionsTemplate;
 import com.anthem.nimbus.platform.spec.model.util.JustLogit;
 import com.anthem.nimbus.platform.spec.model.util.ModelsTemplate;
+import com.anthem.oss.nimbus.core.domain.Command;
+import com.anthem.oss.nimbus.core.domain.Domain;
+import com.anthem.oss.nimbus.core.domain.DomainConfig;
+import com.anthem.oss.nimbus.core.domain.Execution;
+import com.anthem.oss.nimbus.core.domain.InvalidConfigException;
+import com.anthem.oss.nimbus.core.domain.model.ActionExecuteConfig;
+import com.anthem.oss.nimbus.core.domain.model.ModelConfig;
 
 import lombok.Getter;
 import lombok.Setter;

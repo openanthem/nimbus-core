@@ -12,7 +12,7 @@ import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import com.anthem.nimbus.platform.spec.model.dsl.config.ModelConfig;
+import com.anthem.oss.nimbus.core.domain.model.ModelConfig;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

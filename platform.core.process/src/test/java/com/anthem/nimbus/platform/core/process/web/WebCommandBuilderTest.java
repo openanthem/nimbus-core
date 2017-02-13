@@ -15,12 +15,12 @@ import org.springframework.http.HttpMethod;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.anthem.nimbus.platform.spec.contract.process.ProcessExecutorEvents;
-import com.anthem.nimbus.platform.spec.model.command.Command;
-import com.anthem.nimbus.platform.spec.model.command.CommandElement.Type;
-import com.anthem.nimbus.platform.spec.model.dsl.Action;
-import com.anthem.nimbus.platform.spec.model.dsl.Behavior;
-import com.anthem.nimbus.platform.spec.model.dsl.ModelEvent;
 import com.anthem.nimbus.platform.utils.converter.WebCommandBuilder;
+import com.anthem.oss.nimbus.core.domain.Action;
+import com.anthem.oss.nimbus.core.domain.Behavior;
+import com.anthem.oss.nimbus.core.domain.Command;
+import com.anthem.oss.nimbus.core.domain.CommandElement.Type;
+import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 
 /**
  * @author Soham Chakravarti

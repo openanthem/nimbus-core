@@ -10,9 +10,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.anthem.nimbus.platform.core.process.api.command.CommandTransactionInterceptor;
-import com.anthem.nimbus.platform.spec.model.command.ExecuteOutput;
-import com.anthem.nimbus.platform.spec.model.command.MultiExecuteOutput;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
+import com.anthem.oss.nimbus.core.domain.execution.ExecuteOutput;
+import com.anthem.oss.nimbus.core.domain.execution.MultiExecuteOutput;
 
 /**
  * @author Soham Chakravarti

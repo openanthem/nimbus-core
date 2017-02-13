@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.anthem.nimbus.platform.core.api.repository.ModelRepository;
 import com.anthem.nimbus.platform.core.api.repository.ModelRepositoryFactory;
-import com.anthem.nimbus.platform.spec.model.command.Command;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.ExecutionState;
+import com.anthem.oss.nimbus.core.domain.Command;
+import com.anthem.oss.nimbus.core.domain.model.state.ExecutionState;
 
 /**
  * View is a perspective of Core. It can be used in presentation layer or can be part of web service integration.<br>

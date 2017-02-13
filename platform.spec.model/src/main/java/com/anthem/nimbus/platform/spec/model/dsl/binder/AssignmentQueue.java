@@ -3,7 +3,7 @@
  */
 package com.anthem.nimbus.platform.spec.model.dsl.binder;
 
-import com.anthem.nimbus.platform.spec.model.AbstractModel;
+import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +13,7 @@ import lombok.Setter;
  *
  */
 @Getter @Setter
-public abstract class AssignmentQueue extends AbstractModel.IdString {
+public abstract class AssignmentQueue extends AbstractEntity.IdString {
 	
 	private static final long serialVersionUID = 1L;
 

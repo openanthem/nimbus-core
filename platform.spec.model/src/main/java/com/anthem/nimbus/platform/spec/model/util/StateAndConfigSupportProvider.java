@@ -4,8 +4,8 @@
 package com.anthem.nimbus.platform.spec.model.util;
 
 import com.anthem.nimbus.platform.spec.contract.event.EventPublisher;
-import com.anthem.nimbus.platform.spec.contract.repository.ParamStateGateway;
 import com.anthem.nimbus.platform.spec.model.validation.ValidatorProvider;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.ParamStateGateway;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

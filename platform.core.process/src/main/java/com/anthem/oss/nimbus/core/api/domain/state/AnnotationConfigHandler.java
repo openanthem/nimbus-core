@@ -16,8 +16,8 @@ import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ClassUtils;
 
-import com.anthem.nimbus.platform.spec.model.dsl.config.AnnotationConfig;
-import com.anthem.nimbus.platform.spec.model.exception.InvalidConfigException;
+import com.anthem.oss.nimbus.core.domain.InvalidConfigException;
+import com.anthem.oss.nimbus.core.domain.model.AnnotationConfig;
 
 /**
  * @author Soham Chakravarti

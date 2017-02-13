@@ -20,12 +20,12 @@ import com.anthem.nimbus.platform.core.process.api.exec.AbstractProcessTaskExecu
 import com.anthem.nimbus.platform.core.process.api.exec.DefaultActionExecutorSearch;
 import com.anthem.nimbus.platform.spec.contract.process.HierarchyMatchProcessTaskExecutor;
 import com.anthem.nimbus.platform.spec.contract.process.ProcessExecutorEvents;
-import com.anthem.nimbus.platform.spec.model.AbstractModel;
-import com.anthem.nimbus.platform.spec.model.command.CommandElement.Type;
-import com.anthem.nimbus.platform.spec.model.command.CommandMessage;
-import com.anthem.nimbus.platform.spec.model.dsl.config.ParamValue;
-import com.anthem.nimbus.platform.spec.model.exception.PlatformRuntimeException;
 import com.anthem.nimbus.platform.utils.reference.data.StaticCodeValue;
+import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
+import com.anthem.oss.nimbus.core.domain.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.CommandElement.Type;
+import com.anthem.oss.nimbus.core.domain.model.ParamValue;
+import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -116,7 +116,7 @@ public class ParamCodeValueProvider extends AbstractProcessTaskExecutor implemen
 		// 2.2 DB lookup
 		String[] keyValuePayload = cmdMsg.getRawPayload().split(KEY_VALUE_SEPERATOR);
 		cmdMsg.setRawPayload(null); // Clearing rawpayload as the payload for this command message is specific for key/value lookup and not supported by search executor
-		List<AbstractModel<?>> modelList = searchExecutor.doExecute(cmdMsg);
+		List<AbstractEntity<?>> modelList = searchExecutor.doExecute(cmdMsg);
 		
 		if(CollectionUtils.isNotEmpty(modelList)) {
 			String nestedDomainAlias = StringUtils.stripStart(cmdMsg.getCommand().getAbsoluteDomainAlias(), "/");
@@ -137,24 +137,24 @@ public class ParamCodeValueProvider extends AbstractProcessTaskExecutor implemen
 						}
 					}
 					catch(Exception ex) {
-						throw new PlatformRuntimeException("Failed to execute read on property: "+currentPd, ex);
+						throw new FrameworkRuntimeException("Failed to execute read on property: "+currentPd, ex);
 					}
 				}
 			}
 			
-			Collection<AbstractModel<?>> coll = null;
+			Collection<AbstractEntity<?>> coll = null;
 			if(currentObject instanceof Collection<?>) {
-				coll = (Collection<AbstractModel<?>>) currentObject;
+				coll = (Collection<AbstractEntity<?>>) currentObject;
 			}
 			else{
 				coll = new ArrayList<>();
-				coll.add((AbstractModel<?>)currentObject);
+				coll.add((AbstractEntity<?>)currentObject);
 			}
 			if (CollectionUtils.isEmpty(coll)) {
 				List<ParamValue> paramValues = new ArrayList<>();
 				return (R)paramValues;
 			}
-			Class<? extends AbstractModel> codeValueClass = coll.iterator().next().getClass();
+			Class<? extends AbstractEntity> codeValueClass = coll.iterator().next().getClass();
 			
 			
 			PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(codeValueClass, DEFAULT_KEY_ATTRIBUTE);
@@ -169,7 +169,7 @@ public class ParamCodeValueProvider extends AbstractProcessTaskExecutor implemen
 				return (R)paramValues;
 			}
 			catch(Exception ex) {
-				throw new PlatformRuntimeException("Failed to execute read on property: "+pd, ex);
+				throw new FrameworkRuntimeException("Failed to execute read on property: "+pd, ex);
 			}
 		}
 		return null;

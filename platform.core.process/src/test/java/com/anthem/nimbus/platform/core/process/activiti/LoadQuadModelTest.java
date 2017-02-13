@@ -8,9 +8,9 @@ import org.springframework.util.Assert;
 
 import com.anthem.nimbus.platform.core.process.PlatformProcessEngineConfiguration;
 import com.anthem.nimbus.platform.core.process.api.cache.session.PlatformSession;
-import com.anthem.nimbus.platform.spec.model.command.Command;
-import com.anthem.nimbus.platform.spec.model.command.CommandMessage;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadModel;
+import com.anthem.oss.nimbus.core.domain.Command;
+import com.anthem.oss.nimbus.core.domain.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 
 import test.com.anthem.nimbus.platform.spec.model.comamnd.TestCommandFactory;
 

@@ -17,14 +17,14 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.stereotype.Component;
 
-import com.anthem.nimbus.platform.spec.model.dsl.ConfigNature;
-import com.anthem.nimbus.platform.spec.model.dsl.config.DomainConfig;
-import com.anthem.nimbus.platform.spec.model.dsl.config.DomainModelConfig;
-import com.anthem.nimbus.platform.spec.model.dsl.config.DomainParamConfig;
-import com.anthem.nimbus.platform.spec.model.dsl.config.ModelConfig;
-import com.anthem.nimbus.platform.spec.model.dsl.config.ParamConfig;
-import com.anthem.nimbus.platform.spec.model.dsl.config.ParamType;
 import com.anthem.nimbus.platform.spec.model.util.GenericUtils;
+import com.anthem.oss.nimbus.core.domain.ConfigNature;
+import com.anthem.oss.nimbus.core.domain.DomainConfig;
+import com.anthem.oss.nimbus.core.domain.model.DefaultModelConfig;
+import com.anthem.oss.nimbus.core.domain.model.DefaultParamConfig;
+import com.anthem.oss.nimbus.core.domain.model.ModelConfig;
+import com.anthem.oss.nimbus.core.domain.model.ParamConfig;
+import com.anthem.oss.nimbus.core.domain.model.ParamType;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -100,7 +100,7 @@ public class DomainConfigBuilder extends AbstractDomainConfigBuilder {
 		if(AnnotatedElementUtils.isAnnotated(f, ConfigNature.Ignore.class)) return null;
 		if("serialVersionUID".equals(f.getName())) return null;
 
-		final DomainParamConfig<?> pConfig = createParam(mConfig, f, visitedModels);
+		final DefaultParamConfig<?> pConfig = createParam(mConfig, f, visitedModels);
 		
 
 		// handle type
@@ -133,11 +133,11 @@ public class DomainConfigBuilder extends AbstractDomainConfigBuilder {
 			ParamType.NestedCollection<P> colModelType = createNestedCollectionType(colType);
 			
 			//create collection config model
-			DomainModelConfig<List<P>> colModelConfig = createCollectionModel(colModelType.getReferredClass(), pConfig);
+			DefaultModelConfig<List<P>> colModelConfig = createCollectionModel(colModelType.getReferredClass(), pConfig);
 			colModelType.setModel(colModelConfig);
 			 
 			//create collection element param config
-			DomainParamConfig<P> colElemParamConfig = createParamCollectionElement(mConfig, f, pConfig, colModelConfig, visitedModels, determinedType);
+			DefaultParamConfig<P> colElemParamConfig = createParamCollectionElement(mConfig, f, pConfig, colModelConfig, visitedModels, determinedType);
 			colModelType.setElementConfig(colElemParamConfig);
 
 			//create collection element type (and element model config)

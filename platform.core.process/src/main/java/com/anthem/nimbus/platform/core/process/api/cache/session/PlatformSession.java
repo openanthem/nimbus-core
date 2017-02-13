@@ -9,9 +9,9 @@ import java.util.Map;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
-import com.anthem.nimbus.platform.spec.model.command.Command;
-import com.anthem.nimbus.platform.spec.model.exception.PlatformRuntimeException;
 import com.anthem.nimbus.platform.spec.session.PlatformContext;
+import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
+import com.anthem.oss.nimbus.core.domain.Command;
 
 /**
  * @author Jayant Chaudhuri
@@ -78,7 +78,7 @@ public class PlatformSession {
 		R value = getAttribute(key);
 		if(value != null) return value;
 		
-		throw new PlatformRuntimeException("Required value not found with provided key: "+key);
+		throw new FrameworkRuntimeException("Required value not found with provided key: "+key);
 	}
 	
     /**

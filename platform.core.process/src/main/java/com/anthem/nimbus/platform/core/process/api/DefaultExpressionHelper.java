@@ -9,14 +9,14 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.anthem.nimbus.platform.spec.model.command.Command;
-import com.anthem.nimbus.platform.spec.model.command.CommandBuilder;
-import com.anthem.nimbus.platform.spec.model.command.CommandMessage;
-import com.anthem.nimbus.platform.spec.model.command.ExecuteOutput.BehaviorExecute;
-import com.anthem.nimbus.platform.spec.model.command.MultiExecuteOutput;
-import com.anthem.nimbus.platform.spec.model.dsl.Action;
-import com.anthem.nimbus.platform.spec.model.dsl.Behavior;
 import com.anthem.nimbus.platform.utils.converter.CommandMessageConverter;
+import com.anthem.oss.nimbus.core.domain.Action;
+import com.anthem.oss.nimbus.core.domain.Behavior;
+import com.anthem.oss.nimbus.core.domain.Command;
+import com.anthem.oss.nimbus.core.domain.CommandBuilder;
+import com.anthem.oss.nimbus.core.domain.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.execution.MultiExecuteOutput;
+import com.anthem.oss.nimbus.core.domain.execution.ExecuteOutput.BehaviorExecute;
 
 /**
  * @author Jayant Chaudhuri

@@ -5,9 +5,9 @@ package test.com.anthem.nimbus.platform.spec.model.access;
 
 import java.util.Arrays;
 
-import com.anthem.nimbus.platform.spec.model.access.Permission;
-import com.anthem.nimbus.platform.spec.model.access.PlatformAccessEntity;
-import com.anthem.nimbus.platform.spec.model.access.PlatformAccessEntity.Feature;
+import com.anthem.oss.nimbus.core.entity.access.DefaultAccessEntity;
+import com.anthem.oss.nimbus.core.entity.access.Permission;
+import com.anthem.oss.nimbus.core.entity.access.DefaultAccessEntity.Feature;
 
 import lombok.Getter;
 
@@ -25,19 +25,19 @@ public class AccessEntityFactory {
 	public static class Builder {
 		
 		public interface Callback {
-			public void visit(PlatformAccessEntity ae);
+			public void visit(DefaultAccessEntity ae);
 		}
 		
 		private Builder root;
 		
 		private Builder parent;
-		private PlatformAccessEntity current;
+		private DefaultAccessEntity current;
 		
 		private Builder() {
 			this.root = this;
 		}
 		
-		public Builder push(PlatformAccessEntity current) {
+		public Builder push(DefaultAccessEntity current) {
 			Builder c = (this.current==null) ? this : new Builder();	//handle root node
 			c.root = this.root;
 			c.current = current;
@@ -45,7 +45,7 @@ public class AccessEntityFactory {
 			return c;
 		}
 		
-		private Builder addAndPush(PlatformAccessEntity ae) {
+		private Builder addAndPush(DefaultAccessEntity ae) {
 			if(this.current != null) {
 				this.current.addNestedAccess(ae);
 			}
@@ -56,7 +56,7 @@ public class AccessEntityFactory {
 			return this.parent;
 		}
 		
-		public static void buildEntity(PlatformAccessEntity ae, String code, String name) {
+		public static void buildEntity(DefaultAccessEntity ae, String code, String name) {
 			ae.setCode(code);
 			ae.setName(name);
 		}
@@ -74,7 +74,7 @@ public class AccessEntityFactory {
 		}
 		
 		public Builder createPlatform() {
-			PlatformAccessEntity platform = new PlatformAccessEntity.Platform();
+			DefaultAccessEntity platform = new DefaultAccessEntity.Platform();
 			return addAndPush(platform);
 		}
 		
@@ -85,7 +85,7 @@ public class AccessEntityFactory {
 		
 
 		public Builder createApplication() {
-			PlatformAccessEntity app = new PlatformAccessEntity.Application();
+			DefaultAccessEntity app = new DefaultAccessEntity.Application();
 			return addAndPush(app);
 		}
 		
@@ -95,7 +95,7 @@ public class AccessEntityFactory {
 		}
 
 		public Builder createFeature() {
-			PlatformAccessEntity feature = new PlatformAccessEntity.Feature();
+			DefaultAccessEntity feature = new DefaultAccessEntity.Feature();
 			return addAndPush(feature);
 		}
 		
@@ -105,7 +105,7 @@ public class AccessEntityFactory {
 		}
 		
 		public Builder createModule() {
-			PlatformAccessEntity module = new PlatformAccessEntity.Module();
+			DefaultAccessEntity module = new DefaultAccessEntity.Module();
 			return addAndPush(module);
 		}
 		
@@ -140,7 +140,7 @@ public class AccessEntityFactory {
 		return "cm-app";
 	}
 	
-	public static PlatformAccessEntity createPlatformAndSubTree() {
+	public static DefaultAccessEntity createPlatformAndSubTree() {
 
 		return
 		AccessEntityFactory.builder()
@@ -167,7 +167,7 @@ public class AccessEntityFactory {
 		.getCurrent();
 	}
 	
-	public static PlatformAccessEntity createPlatformAndSubTree1() {
+	public static DefaultAccessEntity createPlatformAndSubTree1() {
 
 		return
 		AccessEntityFactory.builder()

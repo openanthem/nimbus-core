@@ -9,12 +9,12 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.anthem.nimbus.platform.core.process.api.cache.session.PlatformSession;
-import com.anthem.nimbus.platform.spec.model.command.Command;
-import com.anthem.nimbus.platform.spec.model.command.CommandElement.Type;
-import com.anthem.nimbus.platform.spec.model.command.CommandMessage;
-import com.anthem.nimbus.platform.spec.model.command.ExecuteOutput;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainState.Model;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadModel;
+import com.anthem.oss.nimbus.core.domain.Command;
+import com.anthem.oss.nimbus.core.domain.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.CommandElement.Type;
+import com.anthem.oss.nimbus.core.domain.execution.ExecuteOutput;
+import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Model;
 
 import lombok.Getter;
 import lombok.Setter;

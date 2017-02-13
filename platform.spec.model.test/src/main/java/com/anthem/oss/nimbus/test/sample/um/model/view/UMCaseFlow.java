@@ -3,11 +3,11 @@
  */
 package com.anthem.oss.nimbus.test.sample.um.model.view;
 
-import com.anthem.nimbus.platform.spec.model.dsl.Action;
-import com.anthem.nimbus.platform.spec.model.dsl.Domain;
-import com.anthem.nimbus.platform.spec.model.dsl.Execution;
-import com.anthem.nimbus.platform.spec.model.dsl.MapsTo;
 import com.anthem.nimbus.platform.spec.model.view.ViewConfig.Page;
+import com.anthem.oss.nimbus.core.domain.Action;
+import com.anthem.oss.nimbus.core.domain.Domain;
+import com.anthem.oss.nimbus.core.domain.Execution;
+import com.anthem.oss.nimbus.core.domain.MapsTo;
 import com.anthem.oss.nimbus.test.sample.um.model.UMCase;
 
 import lombok.Getter;

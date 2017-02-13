@@ -20,12 +20,12 @@ import org.springframework.web.client.RestTemplate;
 import com.anthem.nimbus.platform.spec.contract.process.HierarchyMatchProcessTaskExecutor;
 import com.anthem.nimbus.platform.spec.contract.process.ProcessExecutorEvents;
 import com.anthem.nimbus.platform.spec.model.client.ClientEntity;
-import com.anthem.nimbus.platform.spec.model.command.CommandMessage;
-import com.anthem.nimbus.platform.spec.model.command.ExecuteOutput;
-import com.anthem.nimbus.platform.spec.model.command.CommandElement.Type;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadModel;
 import com.anthem.nimbus.platform.spec.model.process.ResponsePageRest;
 import com.anthem.oss.nimbus.core.api.domain.state.QuadModelBuilder;
+import com.anthem.oss.nimbus.core.domain.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.CommandElement.Type;
+import com.anthem.oss.nimbus.core.domain.execution.ExecuteOutput;
+import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**

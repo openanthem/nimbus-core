@@ -10,14 +10,14 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 
-import com.anthem.nimbus.platform.spec.model.command.Command;
-import com.anthem.nimbus.platform.spec.model.dsl.Action;
-import com.anthem.nimbus.platform.spec.model.dsl.Repo;
-import com.anthem.nimbus.platform.spec.model.dsl.config.ActionExecuteConfig;
-import com.anthem.nimbus.platform.spec.model.dsl.config.DomainConfig;
-import com.anthem.nimbus.platform.spec.model.dsl.config.ModelConfig;
-import com.anthem.nimbus.platform.spec.model.exception.InvalidConfigException;
 import com.anthem.oss.nimbus.core.api.domain.state.DomainConfigAPI;
+import com.anthem.oss.nimbus.core.domain.Action;
+import com.anthem.oss.nimbus.core.domain.Command;
+import com.anthem.oss.nimbus.core.domain.DomainConfig;
+import com.anthem.oss.nimbus.core.domain.InvalidConfigException;
+import com.anthem.oss.nimbus.core.domain.Repo;
+import com.anthem.oss.nimbus.core.domain.model.ActionExecuteConfig;
+import com.anthem.oss.nimbus.core.domain.model.ModelConfig;
 
 
 /**

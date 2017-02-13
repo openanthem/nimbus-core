@@ -11,11 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.anthem.nimbus.platform.core.process.api.cache.session.PlatformSession;
-import com.anthem.nimbus.platform.spec.model.command.Command;
-import com.anthem.nimbus.platform.spec.model.dsl.ModelEvent;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainState.Param;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadModel;
 import com.anthem.nimbus.platform.spec.model.util.JustLogit;
+import com.anthem.oss.nimbus.core.domain.Command;
+import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
+import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

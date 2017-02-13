@@ -17,11 +17,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.anthem.nimbus.platform.core.process.PlatformProcessEngineConfiguration;
 import com.anthem.nimbus.platform.core.process.api.ActivitiProcessGateway;
 import com.anthem.nimbus.platform.core.process.api.ProcessKeyIdentifier;
-import com.anthem.nimbus.platform.spec.model.HierarchyMatch;
-import com.anthem.nimbus.platform.spec.model.command.Command;
-import com.anthem.nimbus.platform.spec.model.command.CommandMessage;
-import com.anthem.nimbus.platform.spec.model.dsl.Action;
-import com.anthem.nimbus.platform.spec.model.dsl.Behavior;
+import com.anthem.oss.nimbus.core.domain.Action;
+import com.anthem.oss.nimbus.core.domain.Behavior;
+import com.anthem.oss.nimbus.core.domain.Command;
+import com.anthem.oss.nimbus.core.domain.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.model.state.HierarchyMatch;
 
 import test.com.anthem.nimbus.platform.spec.model.comamnd.TestCommandFactory;
 

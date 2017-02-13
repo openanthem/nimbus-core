@@ -13,13 +13,13 @@ import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 import org.springframework.stereotype.Component;
 
-import com.anthem.nimbus.platform.spec.model.command.Command;
-import com.anthem.nimbus.platform.spec.model.dsl.Domain;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.ProcessConfiguration;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadModel;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainState.Model;
 import com.anthem.nimbus.platform.spec.model.util.JustLogit;
 import com.anthem.nimbus.platform.spec.model.view.ViewConfig.ViewDomain;
+import com.anthem.oss.nimbus.core.domain.Command;
+import com.anthem.oss.nimbus.core.domain.Domain;
+import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Model;
 
 /**
  * @author Jayant Chaudhuri

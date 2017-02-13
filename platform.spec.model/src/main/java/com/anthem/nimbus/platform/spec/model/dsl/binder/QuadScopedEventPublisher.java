@@ -8,10 +8,10 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
 import com.anthem.nimbus.platform.spec.contract.event.StateAndConfigEventPublisher;
-import com.anthem.nimbus.platform.spec.model.AbstractEvent.SuppressMode;
-import com.anthem.nimbus.platform.spec.model.dsl.ModelEvent;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainState.Param;
 import com.anthem.nimbus.platform.spec.model.util.JustLogit;
+import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
+import com.anthem.oss.nimbus.core.domain.model.state.AbstractEvent.SuppressMode;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

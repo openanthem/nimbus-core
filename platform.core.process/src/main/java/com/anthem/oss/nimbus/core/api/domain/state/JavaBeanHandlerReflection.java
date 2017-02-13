@@ -7,8 +7,8 @@ import java.lang.reflect.Method;
 
 import org.springframework.stereotype.Component;
 
-import com.anthem.nimbus.platform.spec.model.exception.InvalidConfigException;
-import com.anthem.nimbus.platform.spec.model.exception.PlatformRuntimeException;
+import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
+import com.anthem.oss.nimbus.core.domain.InvalidConfigException;
 
 /**
  * @author Soham Chakravarti
@@ -24,7 +24,7 @@ public class JavaBeanHandlerReflection implements JavaBeanHandler {
 			return (target == null) ? null : (T)readMethod.invoke(target);
 		}
 		catch (Exception ex) {
-			throw new PlatformRuntimeException("Failed to execute read on : "+readMethod, ex);
+			throw new FrameworkRuntimeException("Failed to execute read on : "+readMethod, ex);
 		}
 	}
 	
@@ -33,7 +33,7 @@ public class JavaBeanHandlerReflection implements JavaBeanHandler {
 		try {
 			writeMethod.invoke(target, value);
 		} catch (Exception ex) {
-			throw new PlatformRuntimeException("Failed to execute write on : "+writeMethod+" with value: "+value, ex);
+			throw new FrameworkRuntimeException("Failed to execute write on : "+writeMethod+" with value: "+value, ex);
 		}
 	}
 	

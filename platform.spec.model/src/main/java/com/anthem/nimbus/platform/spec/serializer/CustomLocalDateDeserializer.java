@@ -1,6 +1,6 @@
 package com.anthem.nimbus.platform.spec.serializer;
 
-import com.anthem.nimbus.platform.spec.model.exception.JSonParsingException;
+import com.anthem.oss.nimbus.core.util.JsonParsingException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
@@ -31,7 +31,7 @@ public class CustomLocalDateDeserializer extends StdDeserializer<LocalDate> {
             date = jsonparser.getText();
             return !StringUtils.isEmpty(date) ? LocalDate.parse(date, formatter) : null;
         } catch (IOException e) {
-            throw new JSonParsingException(e);
+            throw new JsonParsingException(e);
         }
 
     }

@@ -3,7 +3,7 @@
  */
 package com.anthem.nimbus.platform.spec.model.util;
 
-import com.anthem.nimbus.platform.spec.model.exception.InvalidConfigException;
+import com.anthem.oss.nimbus.core.domain.InvalidConfigException;
 
 /**
  * @author Soham Chakravarti

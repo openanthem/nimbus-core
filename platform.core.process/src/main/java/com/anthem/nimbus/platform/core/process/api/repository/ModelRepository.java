@@ -6,7 +6,7 @@ package com.anthem.nimbus.platform.core.process.api.repository;
 import java.io.Serializable;
 import java.util.List;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
 
 /**
  * @author Soham Chakravarti

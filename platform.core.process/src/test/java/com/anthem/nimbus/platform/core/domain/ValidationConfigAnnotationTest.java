@@ -10,8 +10,7 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.Test;
 
 import com.anthem.nimbus.platform.core.process.api.domain.ModelConfigBuilder;
-import com.anthem.nimbus.platform.spec.model.dsl.config.AnnotationConfig;
-//import com.anthem.nimbus.platform.spec.model.sample.member.MemberSearchCriteria;
+import com.anthem.oss.nimbus.core.domain.model.AnnotationConfig;
 
 
 /**

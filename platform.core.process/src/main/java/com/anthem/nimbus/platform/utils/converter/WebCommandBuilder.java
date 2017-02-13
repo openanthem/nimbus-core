@@ -10,11 +10,11 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
-import com.anthem.nimbus.platform.spec.model.command.Command;
-import com.anthem.nimbus.platform.spec.model.command.CommandBuilder;
-import com.anthem.nimbus.platform.spec.model.dsl.Constants;
-import com.anthem.nimbus.platform.spec.model.dsl.ModelEvent;
 import com.anthem.nimbus.platform.spec.model.util.JustLogit;
+import com.anthem.oss.nimbus.core.domain.Command;
+import com.anthem.oss.nimbus.core.domain.CommandBuilder;
+import com.anthem.oss.nimbus.core.domain.Constants;
+import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 
 /**
  * @author Soham Chakravarti

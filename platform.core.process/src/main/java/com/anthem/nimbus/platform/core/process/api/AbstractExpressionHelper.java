@@ -8,9 +8,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.anthem.nimbus.platform.spec.contract.process.ProcessGateway;
 import com.anthem.nimbus.platform.spec.contract.process.ProcessResponse;
-import com.anthem.nimbus.platform.spec.model.command.CommandMessage;
-import com.anthem.nimbus.platform.spec.model.command.CommandElement.Type;
-import com.anthem.nimbus.platform.spec.model.dsl.Constants;
+import com.anthem.oss.nimbus.core.domain.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.Constants;
+import com.anthem.oss.nimbus.core.domain.CommandElement.Type;
 
 /**
  * @author Jayant.Chaudhuri

@@ -14,14 +14,14 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 
-import com.anthem.nimbus.platform.spec.model.dsl.Action;
-import com.anthem.nimbus.platform.spec.model.dsl.Execution;
-import com.anthem.nimbus.platform.spec.model.dsl.Executions;
-import com.anthem.nimbus.platform.spec.model.dsl.config.ActionExecuteConfig;
-import com.anthem.nimbus.platform.spec.model.dsl.config.ActionExecuteConfig.Input;
-import com.anthem.nimbus.platform.spec.model.dsl.config.DomainConfig;
-import com.anthem.nimbus.platform.spec.model.dsl.config.ModelConfig;
-import com.anthem.nimbus.platform.spec.model.exception.InvalidConfigException;
+import com.anthem.oss.nimbus.core.domain.Action;
+import com.anthem.oss.nimbus.core.domain.DomainConfig;
+import com.anthem.oss.nimbus.core.domain.Execution;
+import com.anthem.oss.nimbus.core.domain.Executions;
+import com.anthem.oss.nimbus.core.domain.InvalidConfigException;
+import com.anthem.oss.nimbus.core.domain.model.ActionExecuteConfig;
+import com.anthem.oss.nimbus.core.domain.model.ModelConfig;
+import com.anthem.oss.nimbus.core.domain.model.ActionExecuteConfig.Input;
 
 /**
  * @author Soham Chakravarti

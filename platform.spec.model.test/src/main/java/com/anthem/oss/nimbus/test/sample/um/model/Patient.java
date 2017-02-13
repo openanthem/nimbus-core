@@ -5,13 +5,13 @@ package com.anthem.oss.nimbus.test.sample.um.model;
 
 import java.time.LocalDate;
 
-import com.anthem.nimbus.platform.spec.model.AbstractModel;
-import com.anthem.nimbus.platform.spec.model.dsl.Action;
-import com.anthem.nimbus.platform.spec.model.dsl.ConfigNature.Ignore;
-import com.anthem.nimbus.platform.spec.model.dsl.Domain;
-import com.anthem.nimbus.platform.spec.model.dsl.Execution;
-import com.anthem.nimbus.platform.spec.model.dsl.Repo;
-import com.anthem.nimbus.platform.spec.model.dsl.Repo.Database;
+import com.anthem.oss.nimbus.core.domain.Action;
+import com.anthem.oss.nimbus.core.domain.Domain;
+import com.anthem.oss.nimbus.core.domain.Execution;
+import com.anthem.oss.nimbus.core.domain.Repo;
+import com.anthem.oss.nimbus.core.domain.ConfigNature.Ignore;
+import com.anthem.oss.nimbus.core.domain.Repo.Database;
+import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -26,7 +26,7 @@ import lombok.ToString;
 @Repo(Database.rep_mongodb)
 @Execution.Input.Default @Execution.Output.Default  @Execution.Output(Action._delete)
 @ToString
-public class Patient extends AbstractModel.IdString {
+public class Patient extends AbstractEntity.IdString {
     
 	@Ignore
 	private static final long serialVersionUID = 1L;

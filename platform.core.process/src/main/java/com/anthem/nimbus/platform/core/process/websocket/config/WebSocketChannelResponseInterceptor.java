@@ -10,7 +10,7 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.support.ChannelInterceptorAdapter;
 
 import com.anthem.nimbus.platform.core.process.api.command.CommandTransactionInterceptor;
-import com.anthem.nimbus.platform.spec.model.command.MultiExecuteOutput;
+import com.anthem.oss.nimbus.core.domain.execution.MultiExecuteOutput;
 
 /**
  * @author Soham Chakravarti

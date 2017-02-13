@@ -16,20 +16,20 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import com.anthem.nimbus.platform.spec.contract.event.StateAndConfigEventPublisher;
-import com.anthem.nimbus.platform.spec.contract.repository.ParamStateGateway;
-import com.anthem.nimbus.platform.spec.model.command.Command;
-import com.anthem.nimbus.platform.spec.model.dsl.Action;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.ExecutionState;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.FlowState;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadModel;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfigMeta;
-import com.anthem.nimbus.platform.spec.model.dsl.config.ActionExecuteConfig;
-import com.anthem.nimbus.platform.spec.model.dsl.config.MappedDomainModelConfig;
-import com.anthem.nimbus.platform.spec.model.dsl.config.ModelConfig;
 import com.anthem.nimbus.platform.spec.model.util.JustLogit;
 import com.anthem.nimbus.platform.spec.model.util.StateAndConfigSupportProvider;
 import com.anthem.nimbus.platform.spec.model.validation.ValidatorProvider;
 import com.anthem.nimbus.platform.utils.converter.NavigationStateHelper;
+import com.anthem.oss.nimbus.core.domain.Action;
+import com.anthem.oss.nimbus.core.domain.Command;
+import com.anthem.oss.nimbus.core.domain.model.ActionExecuteConfig;
+import com.anthem.oss.nimbus.core.domain.model.MappedDefaultModelConfig;
+import com.anthem.oss.nimbus.core.domain.model.ModelConfig;
+import com.anthem.oss.nimbus.core.domain.model.state.ExecutionState;
+import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
+import com.anthem.oss.nimbus.core.domain.model.state.StateAndConfigMeta;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.ParamStateGateway;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -130,7 +130,7 @@ public class QuadModelBuilder {
 	}
 	
 	public <V, C> QuadModel<V, C> build2(Command cmd, ExecutionState<V, C> eState) {
-		final MappedDomainModelConfig<V, C> viewConfig = findViewConfig(cmd);
+		final MappedDefaultModelConfig<V, C> viewConfig = findViewConfig(cmd);
 		ModelConfig<C> coreConfig = (ModelConfig<C>)domainConfigApi.getVisitedModels().get(viewConfig.findIfMapped().getMapsTo().getReferredClass());
 		ModelConfig<FlowState> flowConfig = (ModelConfig<FlowState>)domainConfigApi.getVisitedModels().get(FlowState.class);
 		
@@ -188,12 +188,12 @@ public class QuadModelBuilder {
 		return mConfig;
 	}
 	
-	public <V, C> MappedDomainModelConfig<V, C> findViewConfig(Command cmd) {
+	public <V, C> MappedDefaultModelConfig<V, C> findViewConfig(Command cmd) {
 		ActionExecuteConfig<?, ?> aec = domainConfigApi.getActionExecuteConfig(cmd);
 		
 		/* use input model if new, otherwise from output */
 		@SuppressWarnings("unchecked")
-		final MappedDomainModelConfig<V, C> viewConfig = (MappedDomainModelConfig<V, C>)((Action._new == cmd.getAction()) ? aec.getInput().getModel() : aec.getOutput().getModel());
+		final MappedDefaultModelConfig<V, C> viewConfig = (MappedDefaultModelConfig<V, C>)((Action._new == cmd.getAction()) ? aec.getInput().getModel() : aec.getOutput().getModel());
 		return viewConfig;
 	}
 	

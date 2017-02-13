@@ -9,17 +9,17 @@ import org.springframework.util.ClassUtils;
 
 import com.anthem.nimbus.platform.core.process.api.command.CommandTransactionInterceptor;
 import com.anthem.nimbus.platform.spec.contract.event.StateAndConfigEventPublisher;
-import com.anthem.nimbus.platform.spec.model.AbstractEvent.SuppressMode;
-import com.anthem.nimbus.platform.spec.model.command.ExecuteOutput;
-import com.anthem.nimbus.platform.spec.model.command.MultiExecuteOutput;
-import com.anthem.nimbus.platform.spec.model.dsl.Action;
-import com.anthem.nimbus.platform.spec.model.dsl.ModelEvent;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig.Model;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig.Param;
-import com.anthem.nimbus.platform.spec.model.dsl.config.AnnotationConfig;
 import com.anthem.nimbus.platform.spec.model.view.ViewConfig.Grid;
 import com.anthem.nimbus.platform.spec.model.view.dsl.config.ViewParamConfig;
+import com.anthem.oss.nimbus.core.domain.Action;
+import com.anthem.oss.nimbus.core.domain.execution.ExecuteOutput;
+import com.anthem.oss.nimbus.core.domain.execution.MultiExecuteOutput;
+import com.anthem.oss.nimbus.core.domain.model.AnnotationConfig;
+import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
+import com.anthem.oss.nimbus.core.domain.model.state.AbstractEvent.SuppressMode;
 
 /**
  * @author Rakesh Patel

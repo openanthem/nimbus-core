@@ -12,13 +12,13 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 
 import com.anthem.nimbus.platform.spec.model.dsl.CoreDomain;
-import com.anthem.nimbus.platform.spec.model.dsl.ModelEvent;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig.Model;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig.Param;
-import com.anthem.nimbus.platform.spec.model.dsl.config.Config;
-import com.anthem.nimbus.platform.spec.model.exception.InvalidConfigException;
 import com.anthem.nimbus.platform.spec.model.util.JustLogit;
+import com.anthem.oss.nimbus.core.domain.InvalidConfigException;
+import com.anthem.oss.nimbus.core.domain.model.Config;
+import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 
 /**
  * @author Rakesh Patel

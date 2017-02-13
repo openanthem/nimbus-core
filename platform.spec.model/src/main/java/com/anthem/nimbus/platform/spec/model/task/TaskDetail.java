@@ -3,11 +3,12 @@
  */
 package com.anthem.nimbus.platform.spec.model.task;
 
-import com.anthem.nimbus.platform.spec.model.AbstractModel;
-import com.anthem.nimbus.platform.spec.model.dsl.Action;
-import com.anthem.nimbus.platform.spec.model.dsl.Domain;
-import com.anthem.nimbus.platform.spec.model.dsl.Execution;
-import com.anthem.nimbus.platform.spec.model.dsl.Model;
+import com.anthem.oss.nimbus.core.domain.Action;
+import com.anthem.oss.nimbus.core.domain.Domain;
+import com.anthem.oss.nimbus.core.domain.Execution;
+import com.anthem.oss.nimbus.core.domain.Model;
+import com.anthem.oss.nimbus.core.domain.model.StaticValues;
+import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -19,19 +20,19 @@ import lombok.Setter;
 @Domain(value="taskDetail")
 @Execution.Input.Default @Execution.Output.Default @Execution.Output(Action._new)
 @Getter @Setter
-public class TaskDetail extends AbstractModel.IdLong  {
+public class TaskDetail extends AbstractEntity.IdLong  {
 	
 	private static final long serialVersionUID = 1L;
 	
 
-	@Model.Param.Values(Values.YesNo.class)
+	@Model.Param.Values(StaticValues.YesNo.class)
 	private String hipaaVerified;
 
 	private String attemptNo;
 
 	private String attemptDate;
 
-	@Model.Param.Values(Values.YesNo.class)
+	@Model.Param.Values(StaticValues.YesNo.class)
 	private String patientConsent;
 
 }

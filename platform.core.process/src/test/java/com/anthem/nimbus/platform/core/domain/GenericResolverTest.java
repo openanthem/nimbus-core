@@ -13,8 +13,8 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.anthem.nimbus.platform.spec.model.person.Address;
 import com.anthem.nimbus.platform.spec.model.util.GenericUtils;
+import com.anthem.oss.nimbus.core.entity.person.Address;
 
 import lombok.Getter;
 import lombok.Setter;

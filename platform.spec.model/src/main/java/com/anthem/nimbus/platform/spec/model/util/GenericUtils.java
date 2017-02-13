@@ -15,7 +15,7 @@ import org.springframework.core.GenericTypeResolver;
 import org.springframework.core.ResolvableType;
 import org.springframework.data.domain.Page;
 
-import com.anthem.nimbus.platform.spec.model.exception.InvalidConfigException;
+import com.anthem.oss.nimbus.core.domain.InvalidConfigException;
 
 /**
  * @author Soham Chakravarti

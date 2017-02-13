@@ -3,7 +3,7 @@
  */
 package com.anthem.nimbus.platform.spec.contract.process;
 
-import com.anthem.nimbus.platform.spec.model.dsl.Constants;
+import com.anthem.oss.nimbus.core.domain.Constants;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

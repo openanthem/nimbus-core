@@ -3,13 +3,13 @@
  */
 package com.anthem.nimbus.platform.core.process.api.sa;
 
-import com.anthem.nimbus.platform.spec.model.exception.PlatformRuntimeException;
+import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
 
 /**
  * @author AC67870
  *
  */
-public class ServiceActivatorException extends PlatformRuntimeException {
+public class ServiceActivatorException extends FrameworkRuntimeException {
 
 	private static final long serialVersionUID = 1L;
 

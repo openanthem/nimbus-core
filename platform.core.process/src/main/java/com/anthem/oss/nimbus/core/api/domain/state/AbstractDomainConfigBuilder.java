@@ -18,26 +18,26 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.util.ClassUtils;
 
-import com.anthem.nimbus.platform.spec.model.dsl.Constants;
-import com.anthem.nimbus.platform.spec.model.dsl.MapsTo;
-import com.anthem.nimbus.platform.spec.model.dsl.Model;
-import com.anthem.nimbus.platform.spec.model.dsl.Repo;
-import com.anthem.nimbus.platform.spec.model.dsl.config.AnnotationConfig;
-import com.anthem.nimbus.platform.spec.model.dsl.config.DomainModelConfig;
-import com.anthem.nimbus.platform.spec.model.dsl.config.DomainParamConfig;
-import com.anthem.nimbus.platform.spec.model.dsl.config.MappedDomainModelConfig;
-import com.anthem.nimbus.platform.spec.model.dsl.config.MappedDomainParamConfigDelinked;
-import com.anthem.nimbus.platform.spec.model.dsl.config.MappedDomainParamConfigLinked;
-import com.anthem.nimbus.platform.spec.model.dsl.config.ModelConfig;
-import com.anthem.nimbus.platform.spec.model.dsl.config.ParamConfig;
-import com.anthem.nimbus.platform.spec.model.dsl.config.ParamType;
-import com.anthem.nimbus.platform.spec.model.dsl.config.ParamValue;
-import com.anthem.nimbus.platform.spec.model.exception.ConfigLoadException;
-import com.anthem.nimbus.platform.spec.model.exception.InvalidConfigException;
 import com.anthem.nimbus.platform.spec.model.util.JustLogit;
 import com.anthem.nimbus.platform.spec.model.util.ModelsTemplate;
 import com.anthem.nimbus.platform.spec.model.view.ViewConfig.ViewParamBehavior;
 import com.anthem.nimbus.platform.spec.model.view.ViewConfig.ViewStyle;
+import com.anthem.oss.nimbus.core.domain.ConfigLoadException;
+import com.anthem.oss.nimbus.core.domain.Constants;
+import com.anthem.oss.nimbus.core.domain.InvalidConfigException;
+import com.anthem.oss.nimbus.core.domain.MapsTo;
+import com.anthem.oss.nimbus.core.domain.Model;
+import com.anthem.oss.nimbus.core.domain.Repo;
+import com.anthem.oss.nimbus.core.domain.model.AnnotationConfig;
+import com.anthem.oss.nimbus.core.domain.model.DefaultModelConfig;
+import com.anthem.oss.nimbus.core.domain.model.DefaultParamConfig;
+import com.anthem.oss.nimbus.core.domain.model.MappedDefaultModelConfig;
+import com.anthem.oss.nimbus.core.domain.model.MappedDefaultParamConfigAttached;
+import com.anthem.oss.nimbus.core.domain.model.MappedDefaultParamConfigDetached;
+import com.anthem.oss.nimbus.core.domain.model.ModelConfig;
+import com.anthem.oss.nimbus.core.domain.model.ParamConfig;
+import com.anthem.oss.nimbus.core.domain.model.ParamType;
+import com.anthem.oss.nimbus.core.domain.model.ParamValue;
 
 /**
  * @author Soham Chakravarti
@@ -55,20 +55,20 @@ abstract public class AbstractDomainConfigBuilder {
 		return ClassUtils.isPrimitiveOrWrapper(determinedType) || String.class==determinedType;
 	}
 	
-	public <T> DomainModelConfig<T> createModel(Class<T> referredClass, ModelConfigVistor visitedModels) {
+	public <T> DefaultModelConfig<T> createModel(Class<T> referredClass, ModelConfigVistor visitedModels) {
 		MapsTo.Type mapsToType = AnnotationUtils.findAnnotation(referredClass, MapsTo.Type.class);
 		
-		final DomainModelConfig<T> created;
+		final DefaultModelConfig<T> created;
 		if(mapsToType!=null) {
 			
 			ModelConfig<?> mapsTo = visitedModels.get(mapsToType.value());
 			if(mapsTo==null)
 				throw new InvalidConfigException(MapsTo.Type.class.getSimpleName()+" not found: "+mapsToType);
 			
-			created = new MappedDomainModelConfig<>(mapsTo, referredClass);
+			created = new MappedDefaultModelConfig<>(mapsTo, referredClass);
 			
 		} else {
-			created = new DomainModelConfig<>(referredClass);
+			created = new DefaultModelConfig<>(referredClass);
 		}
 		
 		// handle repo
@@ -80,24 +80,24 @@ abstract public class AbstractDomainConfigBuilder {
 	
 	
 	
-	public <T> DomainModelConfig<List<T>> createCollectionModel(Class<List<T>> referredClass, ParamConfig<?> associatedParamConfig) {
+	public <T> DefaultModelConfig<List<T>> createCollectionModel(Class<List<T>> referredClass, ParamConfig<?> associatedParamConfig) {
 		//mapsTo is null when the model itself is a java List implementation (ArrayList, etc)
 		
-		DomainModelConfig<List<T>> coreConfig = new DomainModelConfig<>(referredClass);
+		DefaultModelConfig<List<T>> coreConfig = new DefaultModelConfig<>(referredClass);
 		
 		if(associatedParamConfig.isMapped()) {
-			return new MappedDomainModelConfig<>(coreConfig, referredClass);
+			return new MappedDefaultModelConfig<>(coreConfig, referredClass);
 		} else {
 			return coreConfig;
 		}
 	}
 	
-	public DomainParamConfig<?> createParam(ModelConfig<?> mConfig, Field f, ModelConfigVistor visitedModels) {
+	public DefaultParamConfig<?> createParam(ModelConfig<?> mConfig, Field f, ModelConfigVistor visitedModels) {
 		MapsTo.Path mapsToPath = AnnotationUtils.findAnnotation(f, MapsTo.Path.class);
 		
 		// no path specified
 		if(mapsToPath==null)
-			return decorateParam(f, new DomainParamConfig<>(f.getName())); 
+			return decorateParam(f, new DefaultParamConfig<>(f.getName())); 
 			
 		// check if field is mapped with linked=true: which would require parent model to also be mapped
 		if(mapsToPath.linked())
@@ -106,7 +106,7 @@ abstract public class AbstractDomainConfigBuilder {
 			return createMappedParamDelinked(mConfig, f, visitedModels, mapsToPath);
 	}
 	
-	private DomainParamConfig<?> createMappedParamLinked(ModelConfig<?> mConfig, Field f, ModelConfigVistor visitedModels, MapsTo.Path mapsToPath) {
+	private DefaultParamConfig<?> createMappedParamLinked(ModelConfig<?> mConfig, Field f, ModelConfigVistor visitedModels, MapsTo.Path mapsToPath) {
 		// param field is linked: enclosing model must be mapped
 		if(!mConfig.isMapped())
 			throw new InvalidConfigException("Mapped param field: "+f.getName()+" is mapped with linked=true. Enclosing model: "+mConfig.getReferredClass()+" must be mapped, but was not.");
@@ -123,10 +123,10 @@ abstract public class AbstractDomainConfigBuilder {
 		if(mapsToParam==null)
 			throw new InvalidConfigException("No mapsTo param found for mapped param field: "+f.getName()+" in enclosing model:"+mConfig.getReferredClass()+" with mapsToPath: "+mapsToPath);
 		
-		return decorateParam(f, new MappedDomainParamConfigLinked<>(f.getName(), mapsToParam, mapsToPath));
+		return decorateParam(f, new MappedDefaultParamConfigAttached<>(f.getName(), mapsToParam, mapsToPath));
 	}
 	
-	private DomainParamConfig<?> createMappedParamDelinked(ModelConfig<?> mConfig, Field f, ModelConfigVistor visitedModels, MapsTo.Path mapsToPath) {
+	private DefaultParamConfig<?> createMappedParamDelinked(ModelConfig<?> mConfig, Field f, ModelConfigVistor visitedModels, MapsTo.Path mapsToPath) {
 		Class<?> mappedParamClass = f.getType();
 		
 		ModelConfig<?> mapsToModel;
@@ -150,17 +150,17 @@ abstract public class AbstractDomainConfigBuilder {
 		
 		// detached collection
 		if(mapsToModel==null) {
-			DomainModelConfig<?> coreConfig = new DomainModelConfig<>(mappedParamClass);
+			DefaultModelConfig<?> coreConfig = new DefaultModelConfig<>(mappedParamClass);
 			
-			mapsToModel = new MappedDomainModelConfig<>(coreConfig, mappedParamClass);
+			mapsToModel = new MappedDefaultModelConfig<>(coreConfig, mappedParamClass);
 		}
 		
-		return decorateParam(f, new MappedDomainParamConfigDelinked<>(f.getName(), mapsToModel, mapsToPath));
+		return decorateParam(f, new MappedDefaultParamConfigDetached<>(f.getName(), mapsToModel, mapsToPath));
 	}
 	
 		
 	
-	public <T, P> DomainParamConfig<P> createParamCollectionElement(ModelConfig<T> mConfig, Field pColField, ParamConfig<P> pConfig, ModelConfig<List<P>> colModelConfig, ModelConfigVistor visitedModels, Class<P> colElemClass) {
+	public <T, P> DefaultParamConfig<P> createParamCollectionElement(ModelConfig<T> mConfig, Field pColField, ParamConfig<P> pConfig, ModelConfig<List<P>> colModelConfig, ModelConfigVistor visitedModels, Class<P> colElemClass) {
 		logit.trace(()->"[create.pColElem] starting to process colElemClass: "+colElemClass+" with pColField :"+pColField);
 		
 		MapsTo.Path mapsToPathColParam = AnnotationUtils.findAnnotation(pColField, MapsTo.Path.class);
@@ -173,7 +173,7 @@ abstract public class AbstractDomainConfigBuilder {
 		
 		
 		if(mapsToModeColParam==MapsTo.Mode.UnMapped) { //unmapped
-			DomainParamConfig<P> pCoreElemConfig = createParamCollectionElementInternal(colModelConfig, null, null, colParamCode);
+			DefaultParamConfig<P> pCoreElemConfig = createParamCollectionElementInternal(colModelConfig, null, null, colParamCode);
 		
 			logit.trace(()->"[create.pColElem] [colParam is UnMapped] returning core pColElem Config as colElem is UnMapped.");
 			return pCoreElemConfig;
@@ -198,7 +198,7 @@ abstract public class AbstractDomainConfigBuilder {
 		logit.debug(()->"[create.pColElem] [colParam is mapped] [elemClass same] [Attached] Found mapsToColParamConfig for "+pConfig.getCode()+" with mapsToPath of colParam: "+mapsToPathColParam+" -> "+mapsToColParamConfig);
 		
 		@SuppressWarnings("unchecked")
-		DomainParamConfig<P> mapsToColElemParamConfig = (DomainParamConfig<P>)mapsToColParamConfig.getType().findIfCollection().getElementConfig();
+		DefaultParamConfig<P> mapsToColElemParamConfig = (DefaultParamConfig<P>)mapsToColParamConfig.getType().findIfCollection().getElementConfig();
 
 		
 		// colParam is mapped: colElemModel is NOT explicitly mapped BUT colElemClass is NOT SAME as mappedElemClass :- throw Ex
@@ -233,17 +233,17 @@ abstract public class AbstractDomainConfigBuilder {
 		//throw new UnsupportedOperationException("Mapped collection param not yet implemented...ParamConfig");
 	}
 	
-	private <P> DomainParamConfig<P> createParamCollectionElementInternal(ModelConfig<List<P>> mConfig, DomainParamConfig<P> mapsToElemParamConfig, MapsTo.Path mapsToColParam, String colParamCode) {
+	private <P> DefaultParamConfig<P> createParamCollectionElementInternal(ModelConfig<List<P>> mConfig, DefaultParamConfig<P> mapsToElemParamConfig, MapsTo.Path mapsToColParam, String colParamCode) {
 		final String collectionElemPath = createCollectionElementPath(colParamCode);
 		
 		final MapsTo.Path mapsToColElemParam = mapsToColParam==null ? null : createNewImplicitMapping(collectionElemPath, mapsToColParam.linked());
 		
-		final DomainParamConfig<P> created;
-		if(mConfig instanceof MappedDomainModelConfig) {
-			created = new MappedDomainParamConfigLinked<>(collectionElemPath, mapsToElemParamConfig, mapsToColElemParam);
+		final DefaultParamConfig<P> created;
+		if(mConfig instanceof MappedDefaultModelConfig) {
+			created = new MappedDefaultParamConfigAttached<>(collectionElemPath, mapsToElemParamConfig, mapsToColElemParam);
 
 		} else if(mapsToElemParamConfig==null) {
-			created = new DomainParamConfig<>(collectionElemPath);
+			created = new DefaultParamConfig<>(collectionElemPath);
 			
 		} else {
 			created = mapsToElemParamConfig;
@@ -260,7 +260,7 @@ abstract public class AbstractDomainConfigBuilder {
 				.toString();
 	}
 	
-	private DomainParamConfig<?> decorateParam(Field f, DomainParamConfig<?> created) {
+	private DefaultParamConfig<?> decorateParam(Field f, DefaultParamConfig<?> created) {
 		List<AnnotationConfig> aConfigs = AnnotationConfigHandler.handle(f, ViewParamBehavior.class);
 		created.setUiNatures(aConfigs);
 
@@ -373,9 +373,7 @@ abstract public class AbstractDomainConfigBuilder {
 			String name = lookUpTypeClassMapping(determinedType);
 			pType = new ParamType.Field(name, determinedType);
 			
-		} else if(AnnotationUtils.findAnnotation(determinedType, Model.class)!=null ||	//Classes annotated with @Model 
-					com.anthem.nimbus.platform.spec.model.Model.class.isAssignableFrom(determinedType)) {	//Classes implementing Model interface
-
+		} else if(AnnotationUtils.findAnnotation(determinedType, Model.class)!=null) { 
 			String name = ClassUtils.getShortName(determinedType);
 			
 			final ParamType.Nested<P> model; 

@@ -5,12 +5,12 @@ package com.anthem.oss.nimbus.test.sample.um.model.view;
 
 import java.util.List;
 
-import com.anthem.nimbus.platform.spec.model.dsl.MapsTo;
-import com.anthem.nimbus.platform.spec.model.dsl.MapsTo.Path;
 import com.anthem.nimbus.platform.spec.model.view.ViewConfig.Button;
 import com.anthem.nimbus.platform.spec.model.view.ViewConfig.Hints;
 import com.anthem.nimbus.platform.spec.model.view.ViewConfig.Hints.AlignOptions;
 import com.anthem.nimbus.platform.spec.model.view.ViewConfig.TextBox;
+import com.anthem.oss.nimbus.core.domain.MapsTo;
+import com.anthem.oss.nimbus.core.domain.MapsTo.Path;
 import com.anthem.oss.nimbus.test.sample.um.model.ServiceLine;
 import com.anthem.oss.nimbus.test.sample.um.model.UMCase;
 

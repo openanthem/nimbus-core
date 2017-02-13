@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 import com.anthem.nimbus.platform.core.process.api.ActivitiContext;
 import com.anthem.nimbus.platform.core.process.api.cache.session.PlatformSession;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadModel;
+import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 
 import lombok.Getter;
 import lombok.Setter;

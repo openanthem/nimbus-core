@@ -7,22 +7,23 @@ import java.io.Serializable;
 
 import org.springframework.data.annotation.Transient;
 
-import com.anthem.nimbus.platform.spec.model.AbstractModel;
-import com.anthem.nimbus.platform.spec.model.dsl.Domain;
-import com.anthem.nimbus.platform.spec.model.dsl.Repo;
-import com.anthem.nimbus.platform.spec.model.dsl.Repo.Database;
+import com.anthem.oss.nimbus.core.domain.Domain;
+import com.anthem.oss.nimbus.core.domain.Repo;
+import com.anthem.oss.nimbus.core.domain.Repo.Database;
+import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
+import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * @author Jayant Chaudhuru
+ * @author Jayant Chaudhuri
  *
  */
 @Domain(value="flowstate")
 @Repo(Database.rep_mongodb)
 @Getter @Setter
-public class FlowState extends AbstractModel.IdString implements Serializable{
+public class FlowState extends AbstractEntity.IdString implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	

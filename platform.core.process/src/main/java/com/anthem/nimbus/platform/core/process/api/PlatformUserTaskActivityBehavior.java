@@ -23,19 +23,19 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.anthem.nimbus.platform.core.process.api.cache.session.PlatformSession;
 import com.anthem.nimbus.platform.spec.contract.process.ProcessGateway;
-import com.anthem.nimbus.platform.spec.contract.task.TaskInitializer;
-import com.anthem.nimbus.platform.spec.contract.task.TaskRouter;
-import com.anthem.nimbus.platform.spec.model.AbstractModel;
-import com.anthem.nimbus.platform.spec.model.command.Command;
-import com.anthem.nimbus.platform.spec.model.command.CommandElement.Type;
-import com.anthem.nimbus.platform.spec.model.command.CommandMessage;
-import com.anthem.nimbus.platform.spec.model.dsl.Action;
-import com.anthem.nimbus.platform.spec.model.dsl.Behavior;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.PageHolder;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadModel;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig.Param;
 import com.anthem.nimbus.platform.spec.model.view.dsl.config.ViewParamConfig;
 import com.anthem.nimbus.platform.utils.converter.NavigationStateHelper;
+import com.anthem.oss.nimbus.core.api.task.TaskInitializer;
+import com.anthem.oss.nimbus.core.api.task.TaskRouter;
+import com.anthem.oss.nimbus.core.domain.Action;
+import com.anthem.oss.nimbus.core.domain.Behavior;
+import com.anthem.oss.nimbus.core.domain.Command;
+import com.anthem.oss.nimbus.core.domain.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.CommandElement.Type;
+import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
+import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -133,7 +133,7 @@ public class PlatformUserTaskActivityBehavior extends UserTaskActivityBehavior {
 		Object coreModel = quadModel.getCore().getState();
 		q.getCore().findStateByPath("/taskId").setState(findMatchingTaskInstanceId(execution));
 		q.getCore().findModelByPath("/entity").setState(coreModel);
-		AbstractModel.IdString model = (AbstractModel.IdString)q.getCore().getState();
+		AbstractEntity.IdString model = (AbstractEntity.IdString)q.getCore().getState();
 		cmd.getElement(Type.DomainAlias).get().setRefId(model.getId());
 		PlatformSession.setAttribute(cmd, q);
 		execution.setVariable("assignmentTask", q.getCore().getState());

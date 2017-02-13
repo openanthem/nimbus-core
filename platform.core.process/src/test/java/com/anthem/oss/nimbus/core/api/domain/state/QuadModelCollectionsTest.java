@@ -35,20 +35,20 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.anthem.nimbus.platform.core.process.api.cache.session.PlatformSession;
-import com.anthem.nimbus.platform.spec.model.command.Command;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainState.ListElemParam;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainState.ListModel;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainState.ListParam;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainState.Model;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainState.Param;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainStateType;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.FlowState;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadModel;
-import com.anthem.nimbus.platform.spec.model.dsl.config.ModelConfig;
-import com.anthem.nimbus.platform.spec.model.dsl.config.ParamConfig;
-import com.anthem.nimbus.platform.spec.model.dsl.config.ParamType;
-import com.anthem.nimbus.platform.spec.model.dsl.config.ParamType.CollectionType;
 import com.anthem.nimbus.platform.utils.converter.NavigationStateHelper;
+import com.anthem.oss.nimbus.core.domain.Command;
+import com.anthem.oss.nimbus.core.domain.model.ModelConfig;
+import com.anthem.oss.nimbus.core.domain.model.ParamConfig;
+import com.anthem.oss.nimbus.core.domain.model.ParamType;
+import com.anthem.oss.nimbus.core.domain.model.ParamType.CollectionType;
+import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
+import com.anthem.oss.nimbus.core.domain.model.state.StateType;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState.ListElemParam;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState.ListModel;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState.ListParam;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Model;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
 import com.anthem.oss.nimbus.test.sample.um.model.ServiceLine;
 import com.anthem.oss.nimbus.test.sample.um.model.ServiceLine.AuditInfo;
 import com.anthem.oss.nimbus.test.sample.um.model.UMCase;
@@ -107,10 +107,10 @@ public class QuadModelCollectionsTest {
 		
 		assertTrue(pSAC_col.getType().isNested());
 		assertTrue(pSAC_col.getType().isCollection());
-		assertTrue(pSAC_col.getType() instanceof DomainStateType.NestedCollection);
+		assertTrue(pSAC_col.getType() instanceof StateType.NestedCollection);
 		
 		// ParamSAC: TypeSAC
-		DomainStateType.NestedCollection<ServiceLine> pSAC_col_type = pSAC_col.getType().findIfCollection(); 
+		StateType.NestedCollection<ServiceLine> pSAC_col_type = pSAC_col.getType().findIfCollection(); 
 		
 		// ParamSAC: TypeSAC.NestedCollection => SAC Type for List<ServiceLine>
 		ListModel<ServiceLine> mSAC_col = pSAC_col_type.getModel();

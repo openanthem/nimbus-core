@@ -6,8 +6,8 @@ package com.anthem.nimbus.platform.core.process.api.exec;
 import org.springframework.stereotype.Component;
 
 import com.anthem.nimbus.platform.spec.contract.process.ProcessTaskExecutor;
-import com.anthem.nimbus.platform.spec.model.command.CommandMessage;
 import com.anthem.nimbus.platform.spec.model.util.JustLogit;
+import com.anthem.oss.nimbus.core.domain.CommandMessage;
 
 /**
  * @author Soham Chakravarti

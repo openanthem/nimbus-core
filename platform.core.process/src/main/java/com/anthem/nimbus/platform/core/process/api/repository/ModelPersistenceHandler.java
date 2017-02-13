@@ -5,8 +5,8 @@ package com.anthem.nimbus.platform.core.process.api.repository;
 
 import java.util.List;
 
-import com.anthem.nimbus.platform.spec.model.dsl.ModelEvent;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainState;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState;
+import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 
 
 /**

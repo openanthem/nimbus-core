@@ -3,10 +3,10 @@
  */
 package com.anthem.nimbus.platform.spec.contract.event;
 
-import com.anthem.nimbus.platform.spec.model.AbstractEvent.SuppressMode;
-import com.anthem.nimbus.platform.spec.model.dsl.ModelEvent;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainState;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState;
+import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
+import com.anthem.oss.nimbus.core.domain.model.state.AbstractEvent.SuppressMode;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
 
 /**
  * @author Soham Chakravarti

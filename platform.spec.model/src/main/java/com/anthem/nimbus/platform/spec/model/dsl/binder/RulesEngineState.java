@@ -9,8 +9,8 @@ import org.drools.KnowledgeBase;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.DomainState.Model;
 import com.anthem.nimbus.platform.spec.model.util.JustLogit;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Model;
 
 import lombok.Getter;
 import lombok.Setter;

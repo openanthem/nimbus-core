@@ -22,12 +22,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import com.anthem.nimbus.platform.core.process.api.command.CommandTransactionInterceptor;
-import com.anthem.nimbus.platform.spec.model.command.ExecuteOutput;
-import com.anthem.nimbus.platform.spec.model.command.MultiExecuteOutput;
-import com.anthem.nimbus.platform.spec.model.command.ValidationError;
-import com.anthem.nimbus.platform.spec.model.command.ValidationException;
-import com.anthem.nimbus.platform.spec.model.command.ValidationResult;
-import com.anthem.nimbus.platform.spec.model.exception.PlatformRuntimeException;
+import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
+import com.anthem.oss.nimbus.core.domain.execution.ExecuteOutput;
+import com.anthem.oss.nimbus.core.domain.execution.MultiExecuteOutput;
+import com.anthem.oss.nimbus.core.domain.execution.ValidationError;
+import com.anthem.oss.nimbus.core.domain.execution.ValidationException;
+import com.anthem.oss.nimbus.core.domain.execution.ValidationResult;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -61,9 +61,9 @@ public class WebActionControllerAdvice implements ResponseBodyAdvice<Object> {
 	}
 	
 	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-	@ExceptionHandler(PlatformRuntimeException.class)
+	@ExceptionHandler(FrameworkRuntimeException.class)
 	@ResponseBody
-	public MultiExecuteOutput exception(PlatformRuntimeException pEx){
+	public MultiExecuteOutput exception(FrameworkRuntimeException pEx){
 		log.error("Logging backing execute exception...", pEx);
 		
 		ExecuteOutput<?> resp = new ExecuteOutput<>();

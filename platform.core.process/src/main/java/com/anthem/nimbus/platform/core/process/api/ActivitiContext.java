@@ -12,8 +12,8 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.apache.commons.lang3.StringUtils;
 
 import com.anthem.nimbus.platform.core.process.api.sa.ServiceActivatorDefinition;
-import com.anthem.nimbus.platform.spec.model.AbstractModel;
 import com.anthem.nimbus.platform.spec.model.process.ProcessEngineContext;
+import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -88,7 +88,7 @@ public class ActivitiContext implements Serializable {
 	
 	private List<ServiceActivatorContext> serviceActivatorContexts = new LinkedList<>();
 	
-	private transient Class<? extends AbstractModel<? extends Serializable>> outputClass; 
+	private transient Class<? extends AbstractEntity<? extends Serializable>> outputClass; 
 	
 	private ActivitiContext getThis() {
 		return this;

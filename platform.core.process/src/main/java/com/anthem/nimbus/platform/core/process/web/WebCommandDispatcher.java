@@ -4,11 +4,11 @@
 package com.anthem.nimbus.platform.core.process.web;
 
 import com.anthem.nimbus.platform.spec.contract.process.ProcessGateway;
-import com.anthem.nimbus.platform.spec.model.command.Command;
-import com.anthem.nimbus.platform.spec.model.command.CommandMessage;
-import com.anthem.nimbus.platform.spec.model.dsl.ModelEvent;
-import com.anthem.nimbus.platform.spec.model.exception.PlatformRuntimeException;
 import com.anthem.nimbus.platform.utils.converter.WebCommandBuilder;
+import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
+import com.anthem.oss.nimbus.core.domain.Command;
+import com.anthem.oss.nimbus.core.domain.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -65,7 +65,7 @@ public class WebCommandDispatcher {
 			Object resp = processGateway.startProcess(cmdMsg);
 			return resp;
 		} catch (Exception ex) {
-			throw new PlatformRuntimeException(ex);
+			throw new FrameworkRuntimeException(ex);
 		}
 	}
 

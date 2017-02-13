@@ -3,7 +3,7 @@
  */
 package com.anthem.nimbus.platform.spec.contract.process;
 
-import com.anthem.nimbus.platform.spec.model.HierarchyMatch;
+import com.anthem.oss.nimbus.core.domain.model.state.HierarchyMatch;
 
 /**
  * @author Soham Chakravarti

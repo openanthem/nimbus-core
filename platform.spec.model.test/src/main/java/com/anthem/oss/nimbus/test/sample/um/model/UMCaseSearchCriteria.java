@@ -7,9 +7,9 @@ import java.time.LocalDate;
 
 import javax.validation.constraints.NotNull;
 
-import com.anthem.nimbus.platform.spec.model.dsl.Action;
-import com.anthem.nimbus.platform.spec.model.dsl.Domain;
-import com.anthem.nimbus.platform.spec.model.dsl.Execution;
+import com.anthem.oss.nimbus.core.domain.Action;
+import com.anthem.oss.nimbus.core.domain.Domain;
+import com.anthem.oss.nimbus.core.domain.Execution;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Data;

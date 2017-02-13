@@ -6,8 +6,8 @@ package com.anthem.oss.nimbus.test.sample.um.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.anthem.nimbus.platform.spec.model.dsl.Model.Param.Values.Source;
-import com.anthem.nimbus.platform.spec.model.dsl.config.ParamValue;
+import com.anthem.oss.nimbus.core.domain.Model.Param.Values.Source;
+import com.anthem.oss.nimbus.core.domain.model.ParamValue;
 
 /**
  * @author AC12974

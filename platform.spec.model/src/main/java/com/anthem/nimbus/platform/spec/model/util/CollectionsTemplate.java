@@ -12,7 +12,7 @@ import java.util.function.Supplier;
 
 import org.springframework.util.CollectionUtils;
 
-import com.anthem.nimbus.platform.spec.model.Findable;
+import com.anthem.oss.nimbus.core.entity.Findable;
 
 import lombok.RequiredArgsConstructor;
 
