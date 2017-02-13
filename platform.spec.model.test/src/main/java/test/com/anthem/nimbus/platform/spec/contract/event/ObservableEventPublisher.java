@@ -9,12 +9,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 import com.anthem.nimbus.platform.spec.contract.event.StateAndConfigEventPublisher;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig.Model;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig.Param;
 import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
-import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.AbstractEvent.SuppressMode;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 
@@ -44,26 +43,19 @@ public class ObservableEventPublisher extends Observable implements StateAndConf
 	}	
 	
 	@Override
-	public boolean shouldAllow(StateAndConfig<?,?> p) {
-		if(p instanceof Param<?>) {
-			Param<?> param = (Param<?>) p;
-			return !param.getConfig().isView();
-		}
-		else {
-			Model<?,?> param = (Model<?,?>) p;
-			return !param.getConfig().isView();
-		}
+	public boolean shouldAllow(DomainState<?> p) {
+		return !p.isMapped();
 	}
 	
 	@Override
-	public boolean publish(ModelEvent<StateAndConfig<?,?>> modelEvent) {
+	public boolean publish(ModelEvent<Param<?>> event) {
 		setChanged();
 		int curr = counter.incrementAndGet();
 		
-		String json = convert(modelEvent);
+		String json = convert(event);
 		
 		System.out.println("@@TEST-> Counter: "+curr+" modelEvent: "+json);
-		notifyObservers(modelEvent);
+		notifyObservers(event);
 		return true;
 	}
 

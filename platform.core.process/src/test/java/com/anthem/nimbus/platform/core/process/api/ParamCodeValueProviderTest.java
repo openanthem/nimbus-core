@@ -73,8 +73,8 @@ public class ParamCodeValueProviderTest {
 	}
 	
 	private CommandMessage build(String uri, String staticParamPath) {
-		String[] uriWithPayload = uri.split(com.anthem.oss.nimbus.core.domain.definition.CODE_VALUE_CONFIG_DELIMITER.code);
-		Command cmd = CommandBuilder.withUri(com.anthem.oss.nimbus.core.domain.definition.PARAM_VALUES_URI_PREFIX.code+uriWithPayload[0]+com.anthem.oss.nimbus.core.domain.definition.PARAM_VALUES_URI_SUFFIX.code).getCommand();
+		String[] uriWithPayload = uri.split(Constants.CODE_VALUE_CONFIG_DELIMITER.code);
+		Command cmd = CommandBuilder.withUri(Constants.PARAM_VALUES_URI_PREFIX.code+uriWithPayload[0]+Constants.PARAM_VALUES_URI_SUFFIX.code).getCommand();
 		cmd.setAction(Action._search);
 		cmd.templateBehaviors().add(Behavior.$execute);
 		

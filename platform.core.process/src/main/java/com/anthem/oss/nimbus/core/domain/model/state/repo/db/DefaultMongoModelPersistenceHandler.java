@@ -11,12 +11,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 
-import com.anthem.nimbus.platform.spec.model.dsl.CoreDomain;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig.Model;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig.Param;
+import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
-import com.anthem.oss.nimbus.core.domain.model.config.Config;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Model;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 
@@ -34,33 +33,33 @@ public class DefaultMongoModelPersistenceHandler implements ModelPersistenceHand
 	ModelRepository rep;
 	
 	@Override
-	public boolean handle(List<ModelEvent<StateAndConfig<?,?>>> modelEvents) {
+	public boolean handle(List<ModelEvent<DomainState<?>>> modelEvents) {
 		
 		if(CollectionUtils.isEmpty(modelEvents)) 
 			return false;
 		
-		for(ModelEvent<StateAndConfig<?,?>> event: modelEvents) {
+		for(ModelEvent<DomainState<?>> event: modelEvents) {
 			
-			logit.info(()->"path: "+event.getPath()+ " action: "+event.getType()+" state: "+event.getPayload().getState());
+			logit.info(()->"path: "+event.getPath()+ " action: "+event.getType()+" state: "+event.getPayload());
 			
-			StateAndConfig<?,?> param = event.getPayload();
+			DomainState<?> param = event.getPayload();
 			
-			StateAndConfig.Model<?, ?> mRoot = null;
+			Model<?> mRoot = null;
 			
 			if(param instanceof Param<?>) {
 				Param<?> p = (Param<?>) param;
-				mRoot = p.getRootParent();
+				mRoot = p.getRootModel();
 			}
 			else{
-				Model<?,?> p = (Model<?,?>) param;
-				mRoot = p.getRootParent();
+				Model<?> p = (Model<?>) param;
+				mRoot = p.getRootModel();
 			}
 			//StateAndConfig<?, ?> mRoot = param.getRootParent();
 			Class<Object> mRootClass = (Class<Object>)mRoot.getConfig().getReferredClass();
 			
-			CoreDomain coreRoot = AnnotationUtils.findAnnotation(mRootClass, CoreDomain.class);
+			Domain coreRoot = AnnotationUtils.findAnnotation(mRootClass, Domain.class);
 			if(coreRoot==null) {
-				throw new InvalidConfigException("Core Persistent entity must be configured with "+CoreDomain.class.getSimpleName()+" annotation. Not found for root model: "+mRoot);
+				throw new InvalidConfigException("Core Persistent entity must be configured with "+Domain.class.getSimpleName()+" annotation. Not found for root model: "+mRoot);
 			} 
 				
 			String coreRootAlias = coreRoot.value();
@@ -84,7 +83,7 @@ public class DefaultMongoModelPersistenceHandler implements ModelPersistenceHand
 				return true;
 			}
 			else {
-				Model<?,?> p = (Model<?,?>) param;
+				Model<?> p = (Model<?>) param;
 				String pPath = p.getPath();
 				Object pState = p.getState();
 				

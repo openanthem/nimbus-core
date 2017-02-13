@@ -30,6 +30,9 @@ public enum Constants {
 	
 	SUFFIX_PROPERTY_STATE("State"),
 	
+	CODE_VALUE_CONFIG_DELIMITER("-"),
+	PARAM_VALUES_URI_PREFIX("*/*/*/p/"),
+	PARAM_VALUES_URI_SUFFIX("/_search")
 	;
 	
 	

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.config.builder;
+package com.anthem.oss.nimbus.core.domain.model.config.builder;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
@@ -18,14 +18,14 @@ import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.stereotype.Component;
 
 import com.anthem.oss.nimbus.core.domain.config.DomainConfig;
+import com.anthem.oss.nimbus.core.domain.config.builder.ExecutionInputConfigHandler;
+import com.anthem.oss.nimbus.core.domain.config.builder.ExecutionOutputConfigHandler;
 import com.anthem.oss.nimbus.core.domain.definition.ConfigNature;
 import com.anthem.oss.nimbus.core.domain.model.config.DefaultModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.DefaultParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
-import com.anthem.oss.nimbus.core.domain.model.config.builder.AbstractModelConfigBuilder;
-import com.anthem.oss.nimbus.core.domain.model.config.builder.ModelConfigVistor;
 import com.anthem.oss.nimbus.core.util.GenericUtils;
 
 import lombok.Getter;
@@ -37,7 +37,7 @@ import lombok.Setter;
  */ 
 @Component
 @ConfigurationProperties(exceptionIfInvalid=true, prefix="domain.model")
-public class DomainConfigBuilder extends AbstractModelConfigBuilder {
+public class ModelConfigBuilder extends AbstractModelConfigBuilder {
 
 	@Autowired @Getter @Setter ExecutionInputConfigHandler execInputHandler;
 	@Autowired @Getter @Setter ExecutionOutputConfigHandler execOutputHandler;

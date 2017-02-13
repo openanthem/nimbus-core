@@ -8,16 +8,14 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.ExecutionStateTree;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.ModelStateAndConfig;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig.Param;
 import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
-import com.anthem.oss.nimbus.core.domain.command.execution.ProcessExecutorEvents;
+import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.definition.EnableParamStateTree;
-import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.AbstractEvent.SuppressMode;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Model;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.session.UserEndpointSession;
 
 /**
@@ -38,7 +36,7 @@ public class DefaultActionExecutorUpdate extends AbstractProcessTaskExecutor {
 		Command cmd = cmdMsg.getCommand();
 		QuadModel<?, ?> q = UserEndpointSession.getOrThrowEx(cmd);
 		
-		StateAndConfig.Model<?, ?> sac = cmd.isView() ? q.getView() : q.getCore();
+		Model<?> sac = cmd.isView() ? q.getView() : q.getCore();
 		
 		String path = cmd.buildUri(cmd.root().findFirstMatch(Type.DomainAlias).next());
 		
@@ -78,7 +76,7 @@ public class DefaultActionExecutorUpdate extends AbstractProcessTaskExecutor {
 	 * @return
 	 */
 	private boolean useParamStateTree(Param<Object> param){	
-		Class<?> mapsToClass = param.getRootParent().getConfig().getReferredClass();
+		Class<?> mapsToClass = param.getRootModel().getConfig().getReferredClass();
 		if( mapsToClass.getAnnotation(EnableParamStateTree.class) != null){
 			return true;
 		}
@@ -91,7 +89,7 @@ public class DefaultActionExecutorUpdate extends AbstractProcessTaskExecutor {
 	 * @param param
 	 */
 	private void loadParamStateTree(Param<Object> param){
-		ModelStateAndConfig<?,?> parent = (ModelStateAndConfig<?,?>)param.getRootParent();
+		Model<?> parent = param.getRootModel();
 		ExecutionStateTree stateTree = parent.getExecutionStateTree();
 		if(stateTree == null){
 			stateTree = new ExecutionStateTree();

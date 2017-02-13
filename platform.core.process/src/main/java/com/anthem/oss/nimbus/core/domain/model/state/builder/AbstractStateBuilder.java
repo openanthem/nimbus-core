@@ -39,7 +39,7 @@ import lombok.Getter;
  *
  */
 @Getter
-abstract public class AbstractDomainStateBuilder {
+abstract public class AbstractStateBuilder {
 
 	protected JustLogit logit = new JustLogit(getClass());
 	

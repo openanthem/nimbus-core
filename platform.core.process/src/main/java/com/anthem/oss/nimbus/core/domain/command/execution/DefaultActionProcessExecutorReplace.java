@@ -7,14 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 
-import com.anthem.nimbus.platform.spec.model.dsl.CoreDomain;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig.Param;
 import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
+import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigAPI;
+import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository;
@@ -60,7 +59,7 @@ public class DefaultActionProcessExecutorReplace extends AbstractProcessTaskExec
 		Object state = convert(cmdMsg, param);
 		
 		if(q.getCore() != null) {
-			rep._replace(AnnotationUtils.findAnnotation(q.getCore().getConfig().getReferredClass(), CoreDomain.class).value(), state);
+			rep._replace(AnnotationUtils.findAnnotation(q.getCore().getConfig().getReferredClass(), Domain.class).value(), state);
 			
 			// replace : refId, payload
 		}

@@ -3,39 +3,6 @@
  */
 package com.anthem.nimbus.platform.core.domain;
 
-import java.util.Arrays;
-
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import com.anthem.nimbus.platform.core.process.api.domain.ModelConfigBuilder;
-import com.anthem.nimbus.platform.core.process.api.domain.ModelConfigFactory;
-import com.anthem.nimbus.platform.core.process.api.domain.StateAndConfigBuilder;
-import com.anthem.nimbus.platform.spec.model.client.access.ClientUserRole;
-import com.anthem.nimbus.platform.spec.model.client.user.ClientUser;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.ModelStateAndConfig;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.ParamStateAndConfig;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig.Param;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.TypeStateAndConfig;
-import com.anthem.nimbus.platform.spec.model.dsl.config.CoreModelConfig;
-import com.anthem.nimbus.platform.spec.model.view.dsl.config.ViewModelConfig;
-import com.anthem.nimbus.platform.spec.model.view.dsl.config.ViewParamConfig;
-import com.anthem.oss.nimbus.core.domain.config.DomainConfig;
-import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigAPI;
-import com.anthem.oss.nimbus.core.domain.config.builder.ExecutionInputConfigHandler;
-import com.anthem.oss.nimbus.core.domain.config.builder.ExecutionOutputConfigHandler;
-import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
-import com.anthem.oss.nimbus.core.domain.model.config.builder.ModelConfigVistor;
-import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderSupport;
-import com.anthem.oss.nimbus.core.entity.user.flow.ClientUserManagementFlow;
-import com.anthem.oss.nimbus.core.entity.user.role.flow.UserRoleManagementFlow;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import test.com.anthem.nimbus.platform.spec.contract.event.ObservableEventPublisher;
-
 /**
  * @author Soham Chakravarti
  *

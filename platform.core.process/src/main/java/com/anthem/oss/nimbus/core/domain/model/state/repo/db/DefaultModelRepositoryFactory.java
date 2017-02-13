@@ -91,7 +91,7 @@ public class DefaultModelRepositoryFactory implements ModelRepositoryFactory, Ap
 		ActionExecuteConfig<?, ?> aec = dc.templateActionConfigs().find(Action._new);
 		ModelConfig<?> mConfig = aec.getInput().getModel();
 		
-		Class<?> coreClass = mConfig.isMapped() ? mConfig.getMapsTo().value() : mConfig.getReferredClass();
+		Class<?> coreClass = mConfig.isMapped() ? mConfig.findIfMapped().getMapsTo().getReferredClass() : mConfig.getReferredClass();
 		Repo repoType = AnnotationUtils.findAnnotation(coreClass, Repo.class);
 		
 		String beanAlias = repoType.value().name();

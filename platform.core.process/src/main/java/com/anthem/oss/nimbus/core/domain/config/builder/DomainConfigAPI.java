@@ -26,6 +26,7 @@ import com.anthem.oss.nimbus.core.domain.definition.Execution;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.model.config.ActionExecuteConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
+import com.anthem.oss.nimbus.core.domain.model.config.builder.ModelConfigBuilder;
 import com.anthem.oss.nimbus.core.domain.model.config.builder.ModelConfigVistor;
 import com.anthem.oss.nimbus.core.util.ClassLoadUtils;
 import com.anthem.oss.nimbus.core.util.CollectionsTemplate;
@@ -47,7 +48,7 @@ public class DomainConfigAPI {
 	protected JustLogit logit = new JustLogit(this.getClass());
 	
 	@Autowired @Getter @Setter
-	private DomainConfigBuilder modelConfigBuilder;
+	private ModelConfigBuilder modelConfigBuilder;
 	
 	@Getter @Setter
 	private List<String> basePackages = new ArrayList<String>();

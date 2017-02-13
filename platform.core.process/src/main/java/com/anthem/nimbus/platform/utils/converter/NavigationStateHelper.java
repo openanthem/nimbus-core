@@ -6,7 +6,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
-import com.anthem.oss.nimbus.core.domain.model.config.MappedDefaultParamConfigAttached;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.DefaultParamState;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
@@ -37,8 +36,8 @@ public class NavigationStateHelper {
 	public void initializeBreadCrumbs(QuadModel<?, ?> quadModel){
 		List<? extends ParamConfig<?>> params = quadModel.getView().getConfig().getParams();
 		for(ParamConfig<?> param : params){
-			updateBreadCrumbState(quadModel, (MappedDefaultParamConfigAttached<?, ?>)param, VISIBLE_ATTRIBUTE, Boolean.FALSE);
-			updateBreadCrumbState(quadModel, (MappedDefaultParamConfigAttached<?, ?>)param, ACTIVATE_ATTRIBUTE, Boolean.FALSE);
+			updateBreadCrumbState(quadModel, param, VISIBLE_ATTRIBUTE, Boolean.FALSE);
+			updateBreadCrumbState(quadModel, param, ACTIVATE_ATTRIBUTE, Boolean.FALSE);
 		}		
 	}
 	
@@ -47,7 +46,7 @@ public class NavigationStateHelper {
 	 * @param quadModel
 	 * @param currentPage
 	 */
-	public void activateBreadCrumbForPage(QuadModel<?, ?> quadModel, MappedDefaultParamConfigAttached<?, ?> currentPage){
+	public void activateBreadCrumbForPage(QuadModel<?, ?> quadModel, ParamConfig<?> currentPage){
 		updateBreadCrumbState(quadModel,currentPage,VISIBLE_ATTRIBUTE,Boolean.TRUE);
 	}
 	
@@ -57,7 +56,7 @@ public class NavigationStateHelper {
 	 * @param quadModel
 	 * @param currentPage
 	 */
-	public void displayBreadCrumbForPage(QuadModel<?, ?> quadModel, MappedDefaultParamConfigAttached<?, ?> currentPage){
+	public void displayBreadCrumbForPage(QuadModel<?, ?> quadModel, ParamConfig<?> currentPage){
 		hideAllBreadCrumbs(quadModel);
 		updateBreadCrumbState(quadModel,currentPage,ACTIVATE_ATTRIBUTE,Boolean.TRUE);
 	}
@@ -67,7 +66,7 @@ public class NavigationStateHelper {
 	 * @param currentPage
 	 * @return
 	 */
-	public String getAssociatedBreadCrumbForPage(MappedDefaultParamConfigAttached<?, ?> currentPage){
+	public String getAssociatedBreadCrumbForPage(ParamConfig<?> currentPage){
 		if(currentPage.getUiStyles() == null)
 			return null;
 		String associatedBreadCrumb = (String)currentPage.getUiStyles().getAttributes().get(BREADCRUMB_ATTRIBUTE);
@@ -81,7 +80,7 @@ public class NavigationStateHelper {
 	private void hideAllBreadCrumbs(QuadModel<?, ?> quadModel){
 		List<? extends ParamConfig<?>> params = quadModel.getView().getConfig().getParams();
 		for(ParamConfig<?> param : params){
-			updateBreadCrumbState(quadModel, (MappedDefaultParamConfigAttached<?, ?>)param, ACTIVATE_ATTRIBUTE, Boolean.FALSE);
+			updateBreadCrumbState(quadModel, param, ACTIVATE_ATTRIBUTE, Boolean.FALSE);
 		}			
 	}
 
@@ -92,7 +91,7 @@ public class NavigationStateHelper {
 	 * @param currentPage
 	 * @param attribute
 	 */
-    private void updateBreadCrumbState(QuadModel<?, ?> quadModel, MappedDefaultParamConfigAttached<?, ?> currentPage, String attribute, Boolean state) {
+    private void updateBreadCrumbState(QuadModel<?, ?> quadModel, ParamConfig<?> currentPage, String attribute, Boolean state) {
     	if(currentPage == null){
     		return;
     	}
@@ -118,15 +117,5 @@ public class NavigationStateHelper {
         	rootNode = false;
         }
     }
-    
-    /**
-     * 
-     * @param currentPage
-     * @return
-     */
-    private boolean containsBreadCrumb(MappedDefaultParamConfigAttached<?, ?> currentPage){
-    	return (getAssociatedBreadCrumbForPage(currentPage) != null);
-    }
-
 }
 

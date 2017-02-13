@@ -7,12 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 
-import com.anthem.nimbus.platform.spec.model.dsl.CoreDomain;
 import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
-import com.anthem.oss.nimbus.core.domain.command.execution.ProcessExecutorEvents;
+import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigAPI;
+import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.model.config.ActionExecuteConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository;
@@ -53,8 +52,8 @@ public class DefaultActionProcessExecutorDelete extends AbstractProcessTaskExecu
 		ActionExecuteConfig<?, ?> aec = domainConfigApi.getActionExecuteConfig(cmd);
 		ModelConfig<?> mConfig = aec.getOutput().getModel();
 		
-		Class<?> coreClass = mConfig.isMapped() ? mConfig.getMapsTo().value() : mConfig.getReferredClass();
-		CoreDomain coreDomain = AnnotationUtils.findAnnotation(coreClass, CoreDomain.class);
+		Class<?> coreClass = mConfig.isMapped() ? mConfig.findIfMapped().getMapsTo().getReferredClass() : mConfig.getReferredClass();
+		Domain coreDomain = AnnotationUtils.findAnnotation(coreClass, Domain.class);
 		
 		return (R)rep._delete(refId, coreClass, coreDomain.value());
 		

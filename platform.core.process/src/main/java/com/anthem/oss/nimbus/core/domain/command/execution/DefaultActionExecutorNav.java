@@ -15,10 +15,10 @@ import org.springframework.stereotype.Component;
 import com.anthem.nimbus.platform.core.process.api.PlatformProcessDAO;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.PageHolder;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.PageNode;
-import com.anthem.nimbus.platform.spec.model.view.dsl.config.ViewParamConfig;
 import com.anthem.nimbus.platform.utils.converter.NavigationStateHelper;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
+import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 
 /**
@@ -42,6 +42,7 @@ public class DefaultActionExecutorNav extends AbstractProcessTaskExecutor {
 	
 	public static final String BREADCRUMB_SEPARATOR_P = "breadCrumb$"; // to separate the breadCrumb path from normal payload
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected <R> R doExecuteInternal(CommandMessage cmdMsg) {
 		QuadModel<?, ?> q = findQuad(cmdMsg);
@@ -72,7 +73,7 @@ public class DefaultActionExecutorNav extends AbstractProcessTaskExecutor {
 				}
 			}
 		}
-		ViewParamConfig<?> currentPage = (ViewParamConfig<?>) quadModel.getView().getConfig().findParamByPath(Constants.SEPARATOR_URI.code + nextPage.getPageId());
+		ParamConfig<?> currentPage = quadModel.getView().getConfig().findParamByPath(Constants.SEPARATOR_URI.code + nextPage.getPageId());
 		navigationStateHelper.displayBreadCrumbForPage(quadModel, currentPage);
 		quadModel.getFlow().findStateByPath("/navigationState/pageHolder").setState(pageHolder);
 		return nextPage.getPageId();
@@ -87,7 +88,7 @@ public class DefaultActionExecutorNav extends AbstractProcessTaskExecutor {
 	private PageNode findNavigationPageForBreadCrumb(QuadModel<?, ?> quadModel, String breadCrumbPath) {
 		PageHolder pageHolder = (PageHolder)quadModel.getFlow().findStateByPath("/navigationState/pageHolder").getState();
 		for(PageNode pageNode : pageHolder.getPageReferences()){			
-			ViewParamConfig<?> currentPage = (ViewParamConfig<?>) quadModel.getView().getConfig().findParamByPath(Constants.SEPARATOR_URI.code + pageNode.getPageId());
+			ParamConfig<?> currentPage = quadModel.getView().getConfig().findParamByPath(Constants.SEPARATOR_URI.code + pageNode.getPageId());
 			String associatedBreadCrumb = navigationStateHelper.getAssociatedBreadCrumbForPage(currentPage);
 			if(associatedBreadCrumb != null && associatedBreadCrumb.startsWith(breadCrumbPath)){
 				return pageNode;

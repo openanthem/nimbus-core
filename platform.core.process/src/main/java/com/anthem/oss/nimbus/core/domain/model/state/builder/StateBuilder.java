@@ -29,7 +29,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Model;
  *
  */
 @Component
-public class DomainStateBuilder extends AbstractDomainStateBuilder {
+public class StateBuilder extends AbstractStateBuilder {
 
 	public <V, C> ExecutionState<V, C>.ExModel buildExec(Command cmd, StateBuilderSupport provider, ExecutionState<V, C> eState, StateMeta.View<V, C> viewMeta) {
 		return buildExec(cmd, provider, eState, viewMeta.getExecutionConfig());

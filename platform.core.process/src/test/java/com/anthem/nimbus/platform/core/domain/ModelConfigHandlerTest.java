@@ -14,16 +14,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.anthem.nimbus.platform.core.process.api.domain.ModelConfigBuilder;
-import com.anthem.nimbus.platform.core.process.api.domain.ModelConfigFactory;
-import com.anthem.nimbus.platform.spec.model.dsl.CoreDomain;
 import com.anthem.oss.nimbus.core.domain.config.DomainConfig;
 import com.anthem.oss.nimbus.core.domain.config.builder.ExecutionInputConfigHandler;
 import com.anthem.oss.nimbus.core.domain.config.builder.ExecutionOutputConfigHandler;
+import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
+import com.anthem.oss.nimbus.core.domain.model.config.builder.ModelConfigBuilder;
 import com.anthem.oss.nimbus.core.entity.person.Address;
 
 import lombok.Getter;
@@ -51,7 +50,7 @@ public class ModelConfigHandlerTest {
 		private Set<A> addresses;
 	}
 	
-	@CoreDomain("test") @Getter @Setter
+	@Domain("test") @Getter @Setter
 	public static class TestModel extends TestBaseModel {
 		
 		private int primitive_int;
@@ -76,8 +75,6 @@ public class ModelConfigHandlerTest {
 		handler.setTypeClassMappings(new HashMap<String, String>());
 		handler.getTypeClassMappings().put(LocalDate.class.getName(), "date");
 		
-		handler.setFactory(new ModelConfigFactory());
-		
 		//mConfig = handler.load(TestModel.class, dc, DomainConfigAPITest.visitedModels);
 		Assert.assertNotNull(mConfig);
 	}
@@ -89,7 +86,7 @@ public class ModelConfigHandlerTest {
 		Assert.assertEquals("id", p.getCode());
 		Assert.assertFalse(p.getType().isNested());
 		Assert.assertEquals("string", p.getType().getName());
-		Assert.assertNull(p.getType().getCollection());
+		Assert.assertNull(p.getType().findIfCollection());
 	}
 	
 	@Test
@@ -98,7 +95,7 @@ public class ModelConfigHandlerTest {
 		Assert.assertNotNull(p);
 		Assert.assertFalse(p.getType().isNested());
 		Assert.assertEquals("integer", p.getType().getName());
-		Assert.assertNull(p.getType().getCollection());
+		Assert.assertNull(p.getType().findIfCollection());
 	}
 	
 	@Test
@@ -107,7 +104,7 @@ public class ModelConfigHandlerTest {
 		Assert.assertNotNull(p);
 		Assert.assertFalse(p.getType().isNested());
 		Assert.assertEquals("integer", p.getType().getName());
-		Assert.assertNull(p.getType().getCollection());
+		Assert.assertNull(p.getType().findIfCollection());
 	}
 	
 	@Test 
@@ -116,7 +113,7 @@ public class ModelConfigHandlerTest {
 		Assert.assertNotNull(p);
 		Assert.assertFalse(p.getType().isNested());
 		Assert.assertEquals("long", p.getType().getName());
-		Assert.assertSame(ParamType.CollectionType.list, p.getType().getCollection());
+		Assert.assertSame(ParamType.CollectionType.list, p.getType().findIfCollection().getCollectionType());
 	}
 	
 	@Test
@@ -125,7 +122,7 @@ public class ModelConfigHandlerTest {
 		Assert.assertNotNull(p);
 		Assert.assertFalse(p.getType().isNested());
 		Assert.assertEquals("date", p.getType().getName());
-		Assert.assertNull(p.getType().getCollection());
+		Assert.assertNull(p.getType().findIfCollection());
 	}
 	
 	//==@Test
@@ -134,7 +131,7 @@ public class ModelConfigHandlerTest {
 		Assert.assertNotNull(p);
 		Assert.assertTrue(p.getType().isNested());
 		Assert.assertEquals(TestNestedModel.class.getSimpleName(), p.getType().getName());
-		Assert.assertNull(p.getType().getCollection());
+		Assert.assertNull(p.getType().findIfCollection());
 		
 		ModelConfig nmNested = ((ParamType.Nested)p.getType()).getModel();
 		Assert.assertNotNull(nmNested);

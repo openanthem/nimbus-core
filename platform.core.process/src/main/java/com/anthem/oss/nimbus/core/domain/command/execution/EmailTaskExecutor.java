@@ -8,17 +8,14 @@ import java.io.StringWriter;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
-import org.apache.velocity.Template;
 import org.apache.velocity.app.VelocityEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
 import com.anthem.nimbus.platform.core.process.api.QuadModelVelocityContext;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
-import com.anthem.oss.nimbus.core.domain.command.execution.HierarchyMatchProcessTaskExecutor;
-import com.anthem.oss.nimbus.core.domain.command.execution.ProcessExecutorEvents;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.TemplateDefinition;
 
 import lombok.Getter;
@@ -41,14 +38,13 @@ public class EmailTaskExecutor extends AbstractProcessTaskExecutor implements Hi
 	//@Autowired
     private JavaMailSender javaMailSender;	
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-	@Override
+    @Override
 	protected <R> R doExecuteInternal(CommandMessage cmdMsg) {
     	
     	MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
     	
-		StateAndConfig.Model viewSAC = this.findQuad(cmdMsg).getView();
+		Model<?> viewSAC = this.findQuad(cmdMsg).getView();
 		
 		// below is a test sample for test.vm. for actual flow quad model would be set with appropriate models
         viewSAC.findParamByPath("/pg1/patientInfo/patientInfoEntry/subscriberId").setState("123456789"); 

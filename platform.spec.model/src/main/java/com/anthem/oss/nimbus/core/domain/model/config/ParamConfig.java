@@ -36,6 +36,8 @@ public interface ParamConfig<P> extends Config<P>, Findable<String> {
 	
 	public List<AnnotationConfig> getValidations();
 	
+	public AnnotationConfig getUiStyles();
+	
 	default MapsTo.Mode getMappingMode() {
 		return MapsTo.Mode.UnMapped;
 	}
@@ -46,7 +48,6 @@ public interface ParamConfig<P> extends Config<P>, Findable<String> {
 	}
 	
 	public interface MappedParamConfig<P, M> extends ParamConfig<P>, MappedConfig<P, M> {
-
 		@Override
 		default MappedParamConfig<P, M> findIfMapped() {
 			return this;

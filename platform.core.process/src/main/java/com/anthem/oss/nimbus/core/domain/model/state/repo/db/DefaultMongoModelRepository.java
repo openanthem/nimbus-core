@@ -3,6 +3,8 @@
  */
 package com.anthem.oss.nimbus.core.domain.model.state.repo.db;
 
+import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.startsWith;
+
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.List;
@@ -18,10 +20,8 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
-import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.*;
-
-import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig.Param;
 import com.anthem.oss.nimbus.core.domain.definition.SearchNature.StartsWith;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
 import com.anthem.oss.nimbus.core.util.ClassLoadUtils;
 
 import lombok.Getter;
