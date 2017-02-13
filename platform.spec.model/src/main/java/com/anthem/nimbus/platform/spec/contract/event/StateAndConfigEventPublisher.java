@@ -5,8 +5,8 @@ package com.anthem.nimbus.platform.spec.contract.event;
 
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
-import com.anthem.oss.nimbus.core.domain.model.state.AbstractEvent.SuppressMode;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.AbstractEvent.SuppressMode;
 
 /**
  * @author Soham Chakravarti

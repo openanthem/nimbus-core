@@ -10,9 +10,9 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 import com.anthem.nimbus.platform.spec.contract.event.StateAndConfigEventPublisher;
 import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
-import com.anthem.oss.nimbus.core.domain.model.state.AbstractEvent.SuppressMode;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.AbstractEvent.SuppressMode;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;

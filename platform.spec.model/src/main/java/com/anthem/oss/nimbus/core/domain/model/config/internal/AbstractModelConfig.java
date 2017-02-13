@@ -1,10 +1,11 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.config;
+package com.anthem.oss.nimbus.core.domain.model.config.internal;
 
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
+import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;

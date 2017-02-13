@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state;
+package com.anthem.oss.nimbus.core.domain.model.state.internal;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

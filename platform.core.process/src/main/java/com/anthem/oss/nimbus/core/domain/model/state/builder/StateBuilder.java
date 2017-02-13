@@ -9,20 +9,20 @@ import java.util.Optional;
 import org.springframework.stereotype.Component;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.FlowState;
-import com.anthem.oss.nimbus.core.domain.model.state.ExecutionState;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
-import com.anthem.oss.nimbus.core.domain.model.state.DefaultListElemParamState;
-import com.anthem.oss.nimbus.core.domain.model.state.DefaultListModelState;
-import com.anthem.oss.nimbus.core.domain.model.state.DefaultModelState;
-import com.anthem.oss.nimbus.core.domain.model.state.DefaultParamState;
 import com.anthem.oss.nimbus.core.domain.model.state.StateMeta;
 import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderSupport;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Model;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultListElemParamState;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultListModelState;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultModelState;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultParamState;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionState;
 
 /**
  * @author Soham Chakravarti

@@ -19,7 +19,7 @@ import com.anthem.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Grid;
 import com.anthem.oss.nimbus.core.domain.model.config.AnnotationConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
-import com.anthem.oss.nimbus.core.domain.model.state.AbstractEvent.SuppressMode;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.AbstractEvent.SuppressMode;
 
 /**
  * @author Rakesh Patel

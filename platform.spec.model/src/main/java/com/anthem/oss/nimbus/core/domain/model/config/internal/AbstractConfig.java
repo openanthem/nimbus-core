@@ -1,11 +1,12 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.config;
+package com.anthem.oss.nimbus.core.domain.model.config.internal;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
 
+import com.anthem.oss.nimbus.core.domain.model.config.Config;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

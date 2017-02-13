@@ -10,8 +10,9 @@ import java.util.function.Supplier;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.FlowState;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
-import com.anthem.oss.nimbus.core.domain.model.config.MappedDefaultModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
+import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultModelConfig;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionState;
 import com.anthem.oss.nimbus.core.util.ClassLoadUtils;
 
 import lombok.Getter;

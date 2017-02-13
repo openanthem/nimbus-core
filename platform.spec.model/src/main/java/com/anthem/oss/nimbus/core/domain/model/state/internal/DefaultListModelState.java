@@ -1,12 +1,18 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state;
+package com.anthem.oss.nimbus.core.domain.model.state.internal;
 
 import java.util.List;
 
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState;
+import com.anthem.oss.nimbus.core.domain.model.state.Notification;
+import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderSupport;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState.ListElemParam;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState.ListModel;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState.ListParam;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification.ActionType;
 
 import lombok.Getter;

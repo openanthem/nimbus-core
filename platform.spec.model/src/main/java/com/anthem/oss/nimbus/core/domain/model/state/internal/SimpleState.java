@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state;
+package com.anthem.oss.nimbus.core.domain.model.state.internal;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -9,6 +9,8 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import com.anthem.oss.nimbus.core.domain.command.Action;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState;
+import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderSupport;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

@@ -1,11 +1,12 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.config;
+package com.anthem.oss.nimbus.core.domain.model.config.internal;
 
 import java.io.Serializable;
 
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
+import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig.MappedParamConfigLinked;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.DefaultParamState;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultParamState;
 
 /**
  * @Author Cheikh Niass on 10/11/16.

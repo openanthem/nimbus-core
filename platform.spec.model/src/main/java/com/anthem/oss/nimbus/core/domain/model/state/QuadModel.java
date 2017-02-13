@@ -11,6 +11,7 @@ import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadScopedEventPublisher
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandElement;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Model;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionState;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;

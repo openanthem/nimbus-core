@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.config;
+package com.anthem.oss.nimbus.core.domain.model.config.internal;
 
 import java.io.Serializable;
 import java.util.List;
@@ -10,6 +10,12 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
+import com.anthem.oss.nimbus.core.domain.model.config.AnnotationConfig;
+import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
+import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
+import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
+import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig.Desc;
+import com.anthem.oss.nimbus.core.domain.model.config.ParamType.Nested;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
