@@ -6,7 +6,7 @@ package com.anthem.oss.nimbus.core.domain.model.state.internal;
 import java.util.Objects;
 
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.MappedModel;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.MappedModel;
 import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderSupport;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

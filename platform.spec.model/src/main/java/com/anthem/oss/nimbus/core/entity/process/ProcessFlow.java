@@ -1,12 +1,14 @@
 /**
  * 
  */
-package com.anthem.nimbus.platform.spec.model.dsl.binder;
+package com.anthem.oss.nimbus.core.entity.process;
 
 import java.io.Serializable;
 
 import org.springframework.data.annotation.Transient;
 
+import com.anthem.nimbus.platform.spec.model.dsl.binder.ProcessConfiguration;
+import com.anthem.nimbus.platform.spec.model.dsl.binder.RulesEngineRuntime;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
@@ -20,22 +22,22 @@ import lombok.Setter;
  * @author Jayant Chaudhuri
  *
  */
-@Domain(value="flowstate")
+@Domain(value="flow")
 @Repo(Database.rep_mongodb)
 @Getter @Setter
-public class FlowState extends AbstractEntity.IdString implements Serializable{
+public class ProcessFlow extends AbstractEntity.IdString implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
 	@Transient
-	private transient RulesEngineState coreRulesEngineState;
+	private transient RulesEngineRuntime coreRulesEngineState;
 	
 	@Transient
-	private transient RulesEngineState viewRulesEngineState;
+	private transient RulesEngineRuntime viewRulesEngineState;
 	
 	private String processExecutionId;
 	
-	private NavigationState navigationState;
+	private PageNavigation navigationState;
 	
 
 	/**
@@ -45,14 +47,14 @@ public class FlowState extends AbstractEntity.IdString implements Serializable{
 	 */
 	public void init(ProcessConfiguration processConfiguration, QuadModel<?, ?> quadModel){
 		if(processConfiguration.getCoreRulesContainer() != null){
-			coreRulesEngineState = new RulesEngineState(processConfiguration.getCoreRulesContainer(), quadModel.getCore());
+			coreRulesEngineState = new RulesEngineRuntime(processConfiguration.getCoreRulesContainer(), quadModel.getCore());
 		}
 		
 		if(processConfiguration.getViewRulesContainer() != null){
-			viewRulesEngineState = new RulesEngineState(processConfiguration.getViewRulesContainer(), quadModel.getView());
+			viewRulesEngineState = new RulesEngineRuntime(processConfiguration.getViewRulesContainer(), quadModel.getView());
 		} 
 		if(quadModel.getFlow().findModelByPath("/navigationState").getState()== null){
-			navigationState = new NavigationState();
+			navigationState = new PageNavigation();
 			PageHolder pageHolder = new PageHolder();
 			navigationState.setPageHolder(pageHolder);
 			quadModel.getFlow().findModelByPath("/navigationState").setState(navigationState);

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.nimbus.platform.spec.model.dsl.binder;
+package com.anthem.oss.nimbus.core.entity.process;
 
 import java.io.Serializable;
 
@@ -21,7 +21,7 @@ import lombok.ToString;
 @Execution.Input.Default @Execution.Output.Default
 @ToString
 @Getter @Setter
-public class NavigationState implements Serializable{
+public class PageNavigation implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private PageHolder pageHolder;
 }

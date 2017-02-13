@@ -6,7 +6,7 @@ package com.anthem.oss.nimbus.core.domain.model.state.internal;
 import java.util.Objects;
 
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification;
 import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderSupport;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -18,7 +18,7 @@ import lombok.Getter;
  *
  */
 @Getter
-public class MappedDefaultParamState<T, M> extends DefaultParamState<T> implements DomainState.MappedParam<T, M>, NotificationConsumerDelegate<M> {
+public class MappedDefaultParamState<T, M> extends DefaultParamState<T> implements EntityState.MappedParam<T, M>, NotificationConsumerDelegate<M> {
 
 	private static final long serialVersionUID = 1L;
 

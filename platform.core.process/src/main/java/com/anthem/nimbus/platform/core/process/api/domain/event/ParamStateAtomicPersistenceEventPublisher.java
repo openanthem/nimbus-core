@@ -14,9 +14,9 @@ import org.springframework.stereotype.Component;
 import com.anthem.nimbus.platform.spec.contract.event.StateAndConfigEventPublisher;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Model;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.AbstractEvent.PersistenceMode;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelPersistenceHandler;
@@ -45,7 +45,7 @@ public class ParamStateAtomicPersistenceEventPublisher implements StateAndConfig
 //	ModelPersistenceHandler handler;
 
 	@Override
-	public boolean shouldAllow(DomainState<?> p) {
+	public boolean shouldAllow(EntityState<?> p) {
 		if(p instanceof Param<?>) {
 			Param<?> param = (Param<?>) p;
 			return !param.getConfig().isView() && PersistenceMode.ATOMIC == mode;
@@ -57,11 +57,11 @@ public class ParamStateAtomicPersistenceEventPublisher implements StateAndConfig
 	}
 	
 	@Override
-	public boolean publish(ModelEvent<DomainState<?>> event) {
-		List<ModelEvent<DomainState<?>>> events = new ArrayList<>();
+	public boolean publish(ModelEvent<EntityState<?>> event) {
+		List<ModelEvent<EntityState<?>>> events = new ArrayList<>();
 		events.add(event);
 		
-		DomainState<?> param = event.getPayload();
+		EntityState<?> param = event.getPayload();
 		
 		if(param instanceof Param<?>) {
 			Param<?> p = (Param<?>) param;

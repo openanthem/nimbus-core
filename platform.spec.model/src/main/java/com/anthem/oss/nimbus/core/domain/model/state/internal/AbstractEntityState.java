@@ -6,6 +6,7 @@ package com.anthem.oss.nimbus.core.domain.model.state.internal;
 
 import java.beans.PropertyDescriptor;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -15,8 +16,9 @@ import org.springframework.beans.BeanUtils;
 import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
-import com.anthem.oss.nimbus.core.domain.model.config.Config;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState;
+import com.anthem.oss.nimbus.core.domain.model.config.EntityConfig;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
+import com.anthem.oss.nimbus.core.domain.model.state.RulesRuntime;
 import com.anthem.oss.nimbus.core.domain.model.state.State;
 import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderSupport;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
@@ -33,9 +35,9 @@ import lombok.Setter;
  *
  */
 @Getter @Setter
-public abstract class AbstractDomainState<T> implements DomainState<T> {
+public abstract class AbstractEntityState<T> implements EntityState<T> {
 
-	final private Config<T> config;
+	final private EntityConfig<T> config;
 	
 	@Setter(AccessLevel.PROTECTED) private String path;
 	
@@ -47,8 +49,9 @@ public abstract class AbstractDomainState<T> implements DomainState<T> {
 	
 	@JsonIgnore final protected JustLogit logit = new JustLogit(getClass());
 	
+	@JsonIgnore private RulesRuntime rulesRuntime;
 	
-	public AbstractDomainState(Config<T> config, StateBuilderSupport provider) {
+	public AbstractEntityState(EntityConfig<T> config, StateBuilderSupport provider) {
 		Objects.requireNonNull(config, "Config must not be null while instantiating StateAndConfig.");
 		Objects.requireNonNull(provider, "Provider must not be null while instantiating StateAndConfig.");
 		
@@ -59,6 +62,10 @@ public abstract class AbstractDomainState<T> implements DomainState<T> {
 	@Override
 	final public void init() {
 		initInternal();
+		
+		// start rules runtime/session
+		Optional.ofNullable(getRulesRuntime())
+			.ifPresent(rt->rt.start());
 	}
 	
 	protected void initInternal() {} 
@@ -168,4 +175,12 @@ public abstract class AbstractDomainState<T> implements DomainState<T> {
 		}
 	}
 	
+	@Override
+	protected void finalize() throws Throwable {
+		// stop rules runtime/session
+		Optional.ofNullable(getRulesRuntime())
+			.ifPresent(rt->rt.shutdown());
+		
+		super.finalize();
+	}
 }

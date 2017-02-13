@@ -14,7 +14,7 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 
 import com.anthem.oss.nimbus.core.domain.command.Action;
-import com.anthem.oss.nimbus.core.domain.config.DomainConfig;
+import com.anthem.oss.nimbus.core.domain.config.DefaultDomainConfig;
 import com.anthem.oss.nimbus.core.domain.definition.Execution;
 import com.anthem.oss.nimbus.core.domain.definition.Executions;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
@@ -29,7 +29,7 @@ import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 @Component
 public class ExecutionOutputConfigHandler {
 
-	public <T> List<ActionExecuteConfig<?, T>> loadClassConfigs(DomainConfig dc, ModelConfig<T> mConfig) {
+	public <T> List<ActionExecuteConfig<?, T>> loadClassConfigs(DefaultDomainConfig dc, ModelConfig<T> mConfig) {
 		/* look for annotation with Execution.Input */
 		Set<Execution.Output> outputs = new HashSet<>(AnnotationUtils.getRepeatableAnnotations(mConfig.getReferredClass(), Execution.Output.class, Executions.Outputs.class));
 		Execution.Output.Default outputDefault = AnnotationUtils.findAnnotation(mConfig.getReferredClass(), Execution.Output.Default.class);
@@ -58,7 +58,7 @@ public class ExecutionOutputConfigHandler {
 		return aecs;
 	}
 	
-	public <T> ActionExecuteConfig<?, T> handleActionConfig(DomainConfig dc, ModelConfig<T> mConfig, Action a, Execution.Output o) {
+	public <T> ActionExecuteConfig<?, T> handleActionConfig(DefaultDomainConfig dc, ModelConfig<T> mConfig, Action a, Execution.Output o) {
 		@SuppressWarnings("unchecked")
 		ActionExecuteConfig<?, T> aec = (ActionExecuteConfig<?, T>) dc.templateActionConfigs().getOrAdd(a, ()->new ActionExecuteConfig<>(a));
 		

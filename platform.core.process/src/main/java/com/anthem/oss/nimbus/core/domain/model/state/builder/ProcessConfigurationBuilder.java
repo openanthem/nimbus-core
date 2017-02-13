@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.ProcessConfiguration;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Model;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 
@@ -36,7 +36,7 @@ public class ProcessConfigurationBuilder {
 	 * @param command
 	 * @return
 	 */
-	public ProcessConfiguration getProcessConfiguration(Command command,QuadModel<?,?> quadModel){
+	public ProcessConfiguration getProcessConfiguration(Command command,QuadModel<?,?> quadModel2){
 		String commandUri = command.getAbsoluteDomainAlias(); 
 		commandUri = commandUri.substring(1);
 		commandUri = commandUri.replaceAll("/", SEPARATOR);
@@ -58,11 +58,11 @@ public class ProcessConfigurationBuilder {
 	 * @param uri
 	 * @return
 	 */
-	private ProcessConfiguration findMatchingProcessConfiguration(QuadModel<?,?> quadModel){
+	private ProcessConfiguration findMatchingProcessConfiguration(QuadModel<?,?> quadModel2){
 		Model<?> coreModel = quadModel.getCore();
 		Model<?> viewModel = quadModel.getView();
 		String coreModelName = coreModel.getState().getClass().getAnnotation(Domain.class).value();
-		String viewModelName = viewModel.getState().getClass().getAnnotation(ViewDomain.class).value();
+		String viewModelName = viewModel.getState().getClass().getAnnotation(Domain.class).value();
 		StringBuilder coreModelSearchString = new StringBuilder();
 		coreModelSearchString.append("rules-sample/").append(coreModelName).append(".drl");
 		StringBuilder viewModelSearchString = new StringBuilder();

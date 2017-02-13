@@ -24,8 +24,8 @@ import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification;
@@ -43,7 +43,7 @@ import lombok.Setter;
  *
  */
 @Getter @Setter
-public class DefaultParamState<T> extends AbstractDomainState<T> implements Param<T>, Findable<String>, Serializable {
+public class DefaultParamState<T> extends AbstractEntityState<T> implements Param<T>, Findable<String>, Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -101,6 +101,11 @@ public class DefaultParamState<T> extends AbstractDomainState<T> implements Para
 		return pd;
 	}
 
+	@Override
+	public void fireRules() {
+		Optional.ofNullable(getRulesRuntime())
+			.ifPresent(rt->rt.fireRules(this));
+	}
 	
 	@Override
 	final public T getState() {
@@ -119,11 +124,18 @@ public class DefaultParamState<T> extends AbstractDomainState<T> implements Para
 				notifySubscribers(new Notification<>(this, ActionType._updateState, this));
 			
 			postSetState(a, state);
+			
+			// fire rules if available at this param level
+			fireRules();
+			
 			return a;
 		} finally {
 			if(execRt.isLocked(lockId)) {
 				// await completion of notification events
 				execRt.awaitCompletion();
+				
+				// fire rules at root level upon completion of all set actions
+				getRootModel().fireRules();
 				
 				// unlock
 				boolean b = execRt.tryUnlock(lockId);
@@ -362,7 +374,7 @@ public class DefaultParamState<T> extends AbstractDomainState<T> implements Para
 //			
 //	}
 	
-	protected void emitEvent(DomainState<?> p) {
+	protected void emitEvent(EntityState<?> p) {
 		if(getProvider().getEventPublisher() == null) return;
 		if(p instanceof DefaultParamState<?>) {
 			DefaultParamState<?> param = (DefaultParamState<?>)p;

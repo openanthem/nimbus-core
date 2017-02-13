@@ -15,9 +15,9 @@ import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig.MappedParamConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.ListParam;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Model;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderSupport;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultListElemParamState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultListModelState;
@@ -109,7 +109,7 @@ abstract public class AbstractStateBuilder {
 		
 		// delinked: find mapsTo model and create ExState.ExParam for it
 		ExecutionState<V, C> eState = new ExecutionState<>();
-		ExecutionState.Config<V, C> exConfig = new ExecutionState.Config<>((ModelConfig<C>)mappedParamConfig.findIfDelinked().getMapsTo(), null, null);
+		ExecutionState.ExConfig<V, C> exConfig = new ExecutionState.ExConfig<>((ModelConfig<C>)mappedParamConfig.findIfDelinked().getMapsTo(), null, null);
 		
 		Command cmdDelinked = CommandBuilder.withUri(parentModel.getRootModel().getCommand().getAbsoluteUri()+Constants.SEPARATOR_URI.code+mappedParamConfig.getPath().value()).getCommand();
 		ExecutionState<V, C>.ExModel execModelSAC = eState.new ExParam(cmdDelinked, provider, exConfig).getRootModel().unwrap(ExecutionState.ExModel.class);

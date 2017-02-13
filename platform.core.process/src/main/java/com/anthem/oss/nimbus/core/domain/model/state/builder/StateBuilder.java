@@ -8,13 +8,12 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.FlowState;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Model;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderSupport;
 import com.anthem.oss.nimbus.core.domain.model.state.StateMeta;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
@@ -23,6 +22,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultListModelSt
 import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultModelState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultParamState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionState;
+import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
 
 /**
  * @author Soham Chakravarti
@@ -35,7 +35,7 @@ public class StateBuilder extends AbstractStateBuilder {
 		return buildExec(cmd, provider, eState, viewMeta.getExecutionConfig());
 	}
 	
-	public <V, C> ExecutionState<V, C>.ExModel buildExec(Command cmd, StateBuilderSupport provider, ExecutionState<V, C> eState, ExecutionState.Config<V, C> exConfig) {
+	public <V, C> ExecutionState<V, C>.ExModel buildExec(Command cmd, StateBuilderSupport provider, ExecutionState<V, C> eState, ExecutionState.ExConfig<V, C> exConfig) {
 		ExecutionState<V, C>.ExModel execModelSAC = eState.new ExParam(cmd, provider, exConfig).getRootModel().unwrap(ExecutionState.ExModel.class);
 		
 		// core param sac
@@ -50,9 +50,11 @@ public class StateBuilder extends AbstractStateBuilder {
 		
 		// flow param sac
 		if(exConfig.getFlow()!=null) {
-			DefaultParamState<FlowState> flowParamSAC = buildParam(provider, execModelSAC, execModelSAC.getConfig().getFlowParam(), null);
+			DefaultParamState<ProcessFlow> flowParamSAC = buildParam(provider, execModelSAC, execModelSAC.getConfig().getFlowParam(), null);
 			execModelSAC.templateParams().add(flowParamSAC);
 		}
+		
+		execModelSAC.init();
 		
 		return execModelSAC;
 	}

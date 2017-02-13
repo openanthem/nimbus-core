@@ -23,7 +23,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.anthem.nimbus.platform.core.process.api.exec.TaskInitializer;
 import com.anthem.nimbus.platform.core.process.api.exec.TaskRouter;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.PageHolder;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.StateAndConfig.Param;
 import com.anthem.nimbus.platform.spec.model.view.dsl.config.ViewParamConfig;
 import com.anthem.nimbus.platform.utils.converter.NavigationStateHelper;
@@ -35,6 +34,7 @@ import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.command.execution.ProcessGateway;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
+import com.anthem.oss.nimbus.core.entity.process.PageHolder;
 import com.anthem.oss.nimbus.core.session.UserEndpointSession;
 
 import lombok.Getter;

@@ -12,8 +12,8 @@ import java.util.Map;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Model;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 
 /**
  * @author Jayant Chaudhuri

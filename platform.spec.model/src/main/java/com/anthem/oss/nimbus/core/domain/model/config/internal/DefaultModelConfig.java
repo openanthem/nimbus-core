@@ -27,7 +27,7 @@ import lombok.ToString;
  *
  */
 @Getter @ToString @RequiredArgsConstructor
-public class DefaultModelConfig<T> extends AbstractConfig<T> implements ModelConfig<T>, Serializable {
+public class DefaultModelConfig<T> extends AbstractEntityConfig<T> implements ModelConfig<T>, Serializable {
 
 	private static final long serialVersionUID = 1L;
 

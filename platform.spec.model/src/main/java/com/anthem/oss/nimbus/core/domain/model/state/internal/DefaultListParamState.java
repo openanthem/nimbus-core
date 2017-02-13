@@ -6,8 +6,8 @@ package com.anthem.oss.nimbus.core.domain.model.state.internal;
 import java.util.List;
 
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.ListParam;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
 import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderSupport;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 
@@ -28,7 +28,7 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 		return super.getType().findIfCollection();
 	}
 	
-	protected DomainState.ListModel<T> getNestedCollectionModel() {
+	protected EntityState.ListModel<T> getNestedCollectionModel() {
 		return getType().getModel();
 	}
 	

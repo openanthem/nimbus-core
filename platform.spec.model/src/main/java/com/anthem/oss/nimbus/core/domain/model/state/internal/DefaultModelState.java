@@ -7,14 +7,15 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.data.annotation.Transient;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.ExecutionStateTree;
 import com.anthem.oss.nimbus.core.domain.command.execution.ValidationResult;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Model;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification.ActionType;
 import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderSupport;
@@ -30,7 +31,7 @@ import lombok.Setter;
  *
  */
 @Getter @Setter
-public class DefaultModelState<T> extends AbstractDomainState<T> implements Model<T>, Serializable {
+public class DefaultModelState<T> extends AbstractEntityState<T> implements Model<T>, Serializable {
 	
     private static final long serialVersionUID = 1L;
 
@@ -57,14 +58,19 @@ public class DefaultModelState<T> extends AbstractDomainState<T> implements Mode
 	
 	
 	@Transient @JsonIgnore @Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
-	private final transient CollectionsTemplate<List<DomainState.Param<? extends Object>>, DomainState.Param<? extends Object>> templateParams = new CollectionsTemplate<>(
+	private final transient CollectionsTemplate<List<EntityState.Param<? extends Object>>, EntityState.Param<? extends Object>> templateParams = new CollectionsTemplate<>(
 			() -> getParams(), (p) -> setParams(p), () -> new LinkedList<>());
 
 	@JsonIgnore @Override
-	public CollectionsTemplate<List<DomainState.Param<?>>, DomainState.Param<?>> templateParams() {
+	public CollectionsTemplate<List<EntityState.Param<?>>, EntityState.Param<?>> templateParams() {
 		return templateParams;
 	}
 	
+	@Override
+	public void fireRules() {
+		Optional.ofNullable(getRulesRuntime())
+			.ifPresent(rt->rt.fireRules(getAssociatedParam()));
+	}
 	
 	@JsonIgnore @Override
 	public RootModel<?> getRootModel() {

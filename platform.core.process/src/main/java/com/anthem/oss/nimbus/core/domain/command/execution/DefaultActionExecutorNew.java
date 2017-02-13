@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
-import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigAPI;
+import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
 import com.anthem.oss.nimbus.core.domain.model.config.ActionExecuteConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
@@ -26,7 +26,7 @@ public class DefaultActionExecutorNew extends AbstractProcessTaskExecutor {
 	private QuadModelBuilder quadModelBuilder; 
 	
 	@Autowired
-	DomainConfigAPI domainConfigApi;
+	DomainConfigBuilder domainConfigApi;
 	
 	/**
 	 * 1. If the command is domain root only, then create new instance <br>

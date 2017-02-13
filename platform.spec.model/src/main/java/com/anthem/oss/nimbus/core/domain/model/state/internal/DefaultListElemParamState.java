@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
 import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderSupport;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -21,7 +21,7 @@ import lombok.Setter;
  *
  */
 @Getter @Setter
-public class DefaultListElemParamState<E> extends DefaultParamState<E> implements DomainState.ListElemParam<E> {
+public class DefaultListElemParamState<E> extends DefaultParamState<E> implements EntityState.ListElemParam<E> {
 	
 	private static final long serialVersionUID = 1L;	
 	

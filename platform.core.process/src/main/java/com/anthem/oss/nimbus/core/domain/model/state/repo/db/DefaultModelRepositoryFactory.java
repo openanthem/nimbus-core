@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.config.DomainConfig;
-import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigAPI;
+import com.anthem.oss.nimbus.core.domain.config.DefaultDomainConfig;
+import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.model.config.ActionExecuteConfig;
@@ -28,7 +28,7 @@ import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 @Component("default.modelRepositoryFactory")
 public class DefaultModelRepositoryFactory implements ModelRepositoryFactory, ApplicationContextAware {
 
-	@Autowired DomainConfigAPI domainConfigApi;
+	@Autowired DomainConfigBuilder domainConfigApi;
 	
 	private ApplicationContext ctx;
 	
@@ -40,7 +40,7 @@ public class DefaultModelRepositoryFactory implements ModelRepositoryFactory, Ap
 	}
 	
 	/**
-	 * Finds {@linkplain DomainConfig} for given {@linkplain Command#getRootDomainAlias()}. <br>
+	 * Finds {@linkplain DefaultDomainConfig} for given {@linkplain Command#getRootDomainAlias()}. <br>
 	 * Default input {@linkplain Action#_new} is used to determine database type. <br>
 	 * Checks if the input model config is mapped and obtains mapped model's referred class, otherwise uses input model's referred class. <br>
 	 */
@@ -87,7 +87,7 @@ public class DefaultModelRepositoryFactory implements ModelRepositoryFactory, Ap
 	}
 	
 	private String getBeanAlias(Command cmd) {
-		DomainConfig dc = domainConfigApi.getDomain(cmd.getRootDomainAlias());
+		DefaultDomainConfig dc = domainConfigApi.getDomain(cmd.getRootDomainAlias());
 		ActionExecuteConfig<?, ?> aec = dc.templateActionConfigs().find(Action._new);
 		ModelConfig<?> mConfig = aec.getInput().getModel();
 		

@@ -16,11 +16,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import com.anthem.nimbus.platform.spec.contract.event.StateAndConfigEventPublisher;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.FlowState;
 import com.anthem.nimbus.platform.utils.converter.NavigationStateHelper;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigAPI;
+import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
 import com.anthem.oss.nimbus.core.domain.model.config.ActionExecuteConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ValidatorProvider;
@@ -30,6 +29,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderSupport;
 import com.anthem.oss.nimbus.core.domain.model.state.StateMeta;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionState;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.ParamStateGateway;
+import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 
 import lombok.Getter;
@@ -44,7 +44,7 @@ import lombok.Setter;
 @RefreshScope
 public class QuadModelBuilder {
 
-	@Autowired DomainConfigAPI domainConfigApi;
+	@Autowired DomainConfigBuilder domainConfigApi;
 	@Autowired StateBuilder stateAndConfigBuilder;
 	@Autowired ProcessConfigurationBuilder processConfigurationBuilder;
 	
@@ -110,9 +110,9 @@ public class QuadModelBuilder {
 		// if mapped set domain config to view, other use it as core
 		ModelConfig<V> viewConfig = modelConfig.isMapped() ? (ModelConfig<V>)modelConfig : null;
 		ModelConfig<C> coreConfig = modelConfig.isMapped() ? (ModelConfig<C>)modelConfig.findIfMapped().getMapsTo() : (ModelConfig<C>)modelConfig;
-		ModelConfig<FlowState> flowConfig = (ModelConfig<FlowState>)domainConfigApi.getVisitedModels().get(FlowState.class);
+		ModelConfig<ProcessFlow> flowConfig = (ModelConfig<ProcessFlow>)domainConfigApi.getVisitedModels().get(ProcessFlow.class);
 		
-		ExecutionState.Config<V, C> exConfig = new ExecutionState.Config<>(coreConfig, viewConfig, flowConfig);
+		ExecutionState.ExConfig<V, C> exConfig = new ExecutionState.ExConfig<>(coreConfig, viewConfig, flowConfig);
 		
 
 		//create event publisher
@@ -133,11 +133,11 @@ public class QuadModelBuilder {
 	public <V, C> QuadModel<V, C> build2(Command cmd, ExecutionState<V, C> eState) {
 		final MappedDefaultModelConfig<V, C> viewConfig = findViewConfig(cmd);
 		ModelConfig<C> coreConfig = (ModelConfig<C>)domainConfigApi.getVisitedModels().get(viewConfig.findIfMapped().getMapsTo().getReferredClass());
-		ModelConfig<FlowState> flowConfig = (ModelConfig<FlowState>)domainConfigApi.getVisitedModels().get(FlowState.class);
+		ModelConfig<ProcessFlow> flowConfig = (ModelConfig<ProcessFlow>)domainConfigApi.getVisitedModels().get(ProcessFlow.class);
 		
 		
 		StateMeta<C> coreMeta = new StateMeta<>(coreConfig, ()->eState.getCore(), c->eState.setCore(c));
-		StateMeta.Flow<C> flowMeta = new StateMeta.Flow<>(coreMeta, flowConfig, ()->eState.getFlow(), f->eState.setFlow(f));
+		StateMeta.FlowMeta<C> flowMeta = new StateMeta.FlowMeta<>(coreMeta, flowConfig, ()->eState.getFlow(), f->eState.setFlow(f));
 		StateMeta.View<V, C> viewMeta = new StateMeta.View<>(flowMeta, viewConfig, ()->eState.getView(), v->eState.setView(v));
 		
 		

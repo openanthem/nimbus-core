@@ -7,8 +7,8 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.ListModel;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Model;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListModel;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
@@ -53,7 +53,7 @@ public class StateType implements Serializable {
 
 		private static final long serialVersionUID = 1L;
 
-		final private DomainState.Model<P> model;
+		final private EntityState.Model<P> model;
 		
 		public Nested(ParamType.Nested<P> config, Model<P> model) {
 			super(config);
@@ -87,7 +87,7 @@ public class StateType implements Serializable {
 		
 		@Override
 		public ListModel<P> getModel() {
-			return (DomainState.ListModel<P>)super.getModel();
+			return (EntityState.ListModel<P>)super.getModel();
 		}
 	}
 	

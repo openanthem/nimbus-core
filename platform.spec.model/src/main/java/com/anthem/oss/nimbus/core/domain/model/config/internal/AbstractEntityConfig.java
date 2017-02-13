@@ -6,7 +6,8 @@ package com.anthem.oss.nimbus.core.domain.model.config.internal;
 import java.lang.annotation.Annotation;
 import java.util.List;
 
-import com.anthem.oss.nimbus.core.domain.model.config.Config;
+import com.anthem.oss.nimbus.core.domain.model.config.EntityConfig;
+import com.anthem.oss.nimbus.core.domain.model.config.RulesConfig;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -18,10 +19,11 @@ import lombok.Setter;
  *
  */
 @Getter @Setter
-abstract public class AbstractConfig<T> implements Config<T> {
+abstract public class AbstractEntityConfig<T> implements EntityConfig<T> {
 
 	@JsonIgnore final protected JustLogit logit = new JustLogit(getClass());
 
 	@JsonIgnore private List<Annotation> annotations;
 
+	@JsonIgnore private RulesConfig rulesConfig; 
 }

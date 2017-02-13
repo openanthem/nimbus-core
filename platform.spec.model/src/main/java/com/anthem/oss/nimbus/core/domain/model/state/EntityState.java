@@ -9,7 +9,7 @@ import java.util.Optional;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.ExecutionStateTree;
 import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.model.config.Config;
+import com.anthem.oss.nimbus.core.domain.model.config.EntityConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
@@ -20,11 +20,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @author Soham Chakravarti
  *
  */
-public interface DomainState<T> {
+public interface EntityState<T> {
 
 	public String getPath();
 	
-	public Config<T> getConfig();
+	public EntityConfig<T> getConfig();
 
 	public <S> Model<S> findModelByPath(String path);
 	public <S> Model<S> findModelByPath(String[] pathArr);
@@ -38,6 +38,8 @@ public interface DomainState<T> {
 	public void init();
 	
 	public StateBuilderSupport getProvider();
+	
+	public void fireRules();
 	
 	public RootModel<?> getRootModel();
 	
@@ -53,7 +55,7 @@ public interface DomainState<T> {
 	}
 	
 	
-	public interface Mapped<T, M> extends DomainState<T> {
+	public interface Mapped<T, M> extends EntityState<T> {
 		@Override
 		default boolean isMapped() {
 			return true;
@@ -62,7 +64,7 @@ public interface DomainState<T> {
 		default public Mapped<T, M> findIfMapped() {
 			return this;
 		}
-		public DomainState<M> getMapsTo();
+		public EntityState<M> getMapsTo();
 	}
 	
 
@@ -91,7 +93,7 @@ public interface DomainState<T> {
 		}
 	}
 	
-	public interface Model<T> extends DomainState<T> { //Notification.ObserveOn<MappedModel<?, T>, Model<T>> {
+	public interface Model<T> extends EntityState<T> { //Notification.ObserveOn<MappedModel<?, T>, Model<T>> {
 		@Override
 		public ModelConfig<T> getConfig();
 		
@@ -175,7 +177,7 @@ public interface DomainState<T> {
 		public ListModel<M> getMapsTo();
 	}
 	
-	public interface Param<T> extends DomainState<T>, State<T>, Notification.Producer<T> {//, Notification.ObserveOn<MappedParam<?, T>, Param<T>> {
+	public interface Param<T> extends EntityState<T>, State<T>, Notification.Producer<T> {//, Notification.ObserveOn<MappedParam<?, T>, Param<T>> {
 		@Override
 		public ParamConfig<T> getConfig();
 		

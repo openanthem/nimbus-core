@@ -15,7 +15,7 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 
 import com.anthem.oss.nimbus.core.domain.command.Action;
-import com.anthem.oss.nimbus.core.domain.config.DomainConfig;
+import com.anthem.oss.nimbus.core.domain.config.DefaultDomainConfig;
 import com.anthem.oss.nimbus.core.domain.definition.Execution;
 import com.anthem.oss.nimbus.core.domain.definition.Executions;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
@@ -30,11 +30,11 @@ import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 @Component
 public class ExecutionInputConfigHandler {
 	
-	public void applyDefaults(DomainConfig dc) {
+	public void applyDefaults(DefaultDomainConfig dc) {
 		
 	}
 
-	public <T> List<ActionExecuteConfig<T, ?>> loadClassConfigs(DomainConfig dc, ModelConfig<T> mConfig) {
+	public <T> List<ActionExecuteConfig<T, ?>> loadClassConfigs(DefaultDomainConfig dc, ModelConfig<T> mConfig) {
 		/* look for annotation with Execution.Input */
 		Set<Execution.Input> inputs = new HashSet<>(AnnotationUtils.getRepeatableAnnotations(mConfig.getReferredClass(), Execution.Input.class, Executions.Inputs.class));
 		Execution.Input.Default inputDefault = AnnotationUtils.findAnnotation(mConfig.getReferredClass(), Execution.Input.Default.class);
@@ -63,7 +63,7 @@ public class ExecutionInputConfigHandler {
 		return aecs;
 	}
 	
-	public <T> ActionExecuteConfig<T, ?> handleActionConfig(DomainConfig dc, ModelConfig<T> mConfig, Action a, Class<? extends Annotation> ignore[]) {
+	public <T> ActionExecuteConfig<T, ?> handleActionConfig(DefaultDomainConfig dc, ModelConfig<T> mConfig, Action a, Class<? extends Annotation> ignore[]) {
 		@SuppressWarnings("unchecked")
 		ActionExecuteConfig<T, ?> aec = (ActionExecuteConfig<T, ?>)dc.templateActionConfigs().getOrAdd(a, ()->new ActionExecuteConfig<>(a));
 		

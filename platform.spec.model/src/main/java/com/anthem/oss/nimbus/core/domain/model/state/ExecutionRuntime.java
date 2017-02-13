@@ -16,6 +16,7 @@ public interface ExecutionRuntime extends Notification.Dispatcher<Object> {
 	
 	public boolean isLocked();
 	public boolean isLocked(String lockId);
+	
 	public String tryLock();
 	public boolean tryUnlock(String lockId);
 }

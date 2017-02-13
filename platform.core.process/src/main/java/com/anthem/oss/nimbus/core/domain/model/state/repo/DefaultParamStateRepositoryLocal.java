@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
 import com.anthem.oss.nimbus.core.InvalidOperationAttemptedException;
 import com.anthem.oss.nimbus.core.domain.command.Action;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.ListElemParam;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListElemParam;
 import com.anthem.oss.nimbus.core.utils.JavaBeanHandler;
 
 /**
@@ -26,7 +26,7 @@ public class DefaultParamStateRepositoryLocal implements ParamStateRepository {
 	@Autowired JavaBeanHandler javaBeanHandler;
 	
 	@Override
-	public <P> P _get(DomainState.Param<P> param) {
+	public <P> P _get(EntityState.Param<P> param) {
 		if(param.isCollectionElem()) {
 			ListElemParam<P> pElem = param.findIfCollectionElem();
 			
@@ -44,9 +44,9 @@ public class DefaultParamStateRepositoryLocal implements ParamStateRepository {
 	}
 	
 	@Override
-	public <P> Action _set(DomainState.Param<P> param, P newState) {
+	public <P> Action _set(EntityState.Param<P> param, P newState) {
 		if(param.isCollectionElem()) {
-			DomainState.ListElemParam<P> pElem = param.findIfCollectionElem();
+			EntityState.ListElemParam<P> pElem = param.findIfCollectionElem();
 			
 			// instantiate collection if needed
 			List<P> coreList = pElem.getParentModel().instantiateOrGet();

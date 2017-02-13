@@ -15,7 +15,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 
 import com.anthem.nimbus.platform.core.process.api.QuadModelVelocityContext;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Model;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.TemplateDefinition;
 
 import lombok.Getter;

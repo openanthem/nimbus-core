@@ -9,8 +9,8 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import com.anthem.oss.nimbus.core.domain.command.Action;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderSupport;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -23,7 +23,7 @@ import lombok.Setter;
  */
 public class SimpleState<T> extends AbstractState<T> implements Observer {
 
-	@JsonIgnore final private DomainState<?> parent;
+	@JsonIgnore final private EntityState<?> parent;
 	@JsonIgnore @Setter(AccessLevel.PROTECTED) private transient Supplier<T> getter;
 	@JsonIgnore @Setter(AccessLevel.PROTECTED) private transient Consumer<T> setter;
 	

@@ -17,7 +17,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.stereotype.Component;
 
-import com.anthem.oss.nimbus.core.domain.config.DomainConfig;
+import com.anthem.oss.nimbus.core.domain.config.DefaultDomainConfig;
 import com.anthem.oss.nimbus.core.domain.config.builder.ExecutionInputConfigHandler;
 import com.anthem.oss.nimbus.core.domain.config.builder.ExecutionOutputConfigHandler;
 import com.anthem.oss.nimbus.core.domain.definition.ConfigNature;
@@ -37,7 +37,7 @@ import lombok.Setter;
  */ 
 @Component
 @ConfigurationProperties(exceptionIfInvalid=true, prefix="domain.model")
-public class ModelConfigBuilder extends AbstractModelConfigBuilder {
+public class EntityConfigBuilder extends AbstractEntityConfigBuilder {
 
 	@Autowired @Getter @Setter ExecutionInputConfigHandler execInputHandler;
 	@Autowired @Getter @Setter ExecutionOutputConfigHandler execOutputHandler;
@@ -52,7 +52,7 @@ public class ModelConfigBuilder extends AbstractModelConfigBuilder {
 	/**
 	 * Load available configuration for the domain entities
 	 * */
-	public <T> ModelConfig<T> load(Class<T> clazz, DomainConfig dc, ModelConfigVistor visitedModels) {
+	public <T> ModelConfig<T> load(Class<T> clazz, DefaultDomainConfig dc, EntityConfigVistor visitedModels) {
 		logit.trace(()->"Loading config from class: "+clazz);
 		
 		/* 1. Skip if class was already visited, otherwise handle model */
@@ -74,7 +74,7 @@ public class ModelConfigBuilder extends AbstractModelConfigBuilder {
 	}
 	
 	@Override
-	public <T> ModelConfig<T> buildModel(Class<T> clazz, ModelConfigVistor visitedModels) {
+	public <T> ModelConfig<T> buildModel(Class<T> clazz, EntityConfigVistor visitedModels) {
 		ModelConfig<T> mConfig = createModel(clazz, visitedModels);
 		
 		//look if the model is marked with MapsTo
@@ -96,7 +96,7 @@ public class ModelConfigBuilder extends AbstractModelConfigBuilder {
 	}
 
 	@Override
-	public <T> ParamConfig<?> buildParam(ModelConfig<T> mConfig, Field f, ModelConfigVistor visitedModels) {
+	public <T> ParamConfig<?> buildParam(ModelConfig<T> mConfig, Field f, EntityConfigVistor visitedModels) {
 		
 		/* handle ignore field */
 		if(AnnotatedElementUtils.isAnnotated(f, ConfigNature.Ignore.class)) return null;
@@ -124,7 +124,7 @@ public class ModelConfigBuilder extends AbstractModelConfigBuilder {
 	
 	
 	@SuppressWarnings("unchecked")
-	protected <T, P> ParamType buildParamType(ModelConfig<T> mConfig, ParamConfig<P> pConfig, Field f, ModelConfigVistor visitedModels) {
+	protected <T, P> ParamType buildParamType(ModelConfig<T> mConfig, ParamConfig<P> pConfig, Field f, EntityConfigVistor visitedModels) {
 		
 		final ParamType.CollectionType colType = determineCollectionType(f.getType());	
 

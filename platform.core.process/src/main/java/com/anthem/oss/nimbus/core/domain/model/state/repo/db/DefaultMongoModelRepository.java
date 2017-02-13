@@ -21,7 +21,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
 import com.anthem.oss.nimbus.core.domain.definition.SearchNature.StartsWith;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.util.ClassLoadUtils;
 
 import lombok.Getter;

@@ -20,14 +20,14 @@ import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.stereotype.Component;
 
 import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.config.DomainConfig;
+import com.anthem.oss.nimbus.core.domain.config.DefaultDomainConfig;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Execution;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.model.config.ActionExecuteConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.builder.ModelConfigBuilder;
-import com.anthem.oss.nimbus.core.domain.model.config.builder.ModelConfigVistor;
+import com.anthem.oss.nimbus.core.domain.model.config.builder.EntityConfigBuilder;
+import com.anthem.oss.nimbus.core.domain.model.config.builder.EntityConfigVistor;
 import com.anthem.oss.nimbus.core.util.ClassLoadUtils;
 import com.anthem.oss.nimbus.core.util.CollectionsTemplate;
 import com.anthem.oss.nimbus.core.util.JustLogit;
@@ -41,30 +41,30 @@ import lombok.Setter;
  */
 @Component
 @ConfigurationProperties(exceptionIfInvalid=true, prefix="domain.model")
-public class DomainConfigAPI {
+public class DomainConfigBuilder {
 	
 	private static boolean skip = false;
 	
 	protected JustLogit logit = new JustLogit(this.getClass());
 	
 	@Autowired @Getter @Setter
-	private ModelConfigBuilder modelConfigBuilder;
+	private EntityConfigBuilder modelConfigBuilder;
 	
 	@Getter @Setter
 	private List<String> basePackages = new ArrayList<String>();
 	
 	@Getter @Setter
-	private List<DomainConfig> configs;
+	private List<DefaultDomainConfig> configs;
 	
 	@Getter @Setter 
-	private ModelConfigVistor visitedModels;
+	private EntityConfigVistor visitedModels;
 
 	
 	@Getter
-	private final transient CollectionsTemplate<List<DomainConfig>, DomainConfig> templateConfigs = CollectionsTemplate.array(()->getConfigs(), (c)->setConfigs(c));
+	private final transient CollectionsTemplate<List<DefaultDomainConfig>, DefaultDomainConfig> templateConfigs = CollectionsTemplate.array(()->getConfigs(), (c)->setConfigs(c));
 	
-	public DomainConfig getDomain(String rootAlias) {
-		DomainConfig dc = templateConfigs.find(rootAlias);
+	public DefaultDomainConfig getDomain(String rootAlias) {
+		DefaultDomainConfig dc = templateConfigs.find(rootAlias);
 		return dc;
 	}
 	
@@ -74,8 +74,8 @@ public class DomainConfigAPI {
 	 */
 	@PostConstruct
 	public void load() {
-		if(!DomainConfigAPI.skip) {
-			DomainConfigAPI.skip = true;
+		if(!DomainConfigBuilder.skip) {
+			DomainConfigBuilder.skip = true;
 			
 			reload();
 		}
@@ -89,9 +89,9 @@ public class DomainConfigAPI {
 		setVisitedModels(null);
 		setConfigs(null);
 		
-		List<String> rootBasePackages = ModelConfigVistor.determineRootPackages(getBasePackages());
+		List<String> rootBasePackages = EntityConfigVistor.determineRootPackages(getBasePackages());
 		
-		if(getVisitedModels()==null) setVisitedModels(new ModelConfigVistor());
+		if(getVisitedModels()==null) setVisitedModels(new EntityConfigVistor());
 		
 		rootBasePackages.forEach((basePkg) -> handlePackage(basePkg, getVisitedModels()));
 		
@@ -100,7 +100,7 @@ public class DomainConfigAPI {
 		
 	}
 	
-	public void handlePackage(String basePackage, ModelConfigVistor visitedModels) {
+	public void handlePackage(String basePackage, EntityConfigVistor visitedModels) {
 		handlePackage(
 				basePackage, Domain.class, 
 				(clazz)->AnnotationUtils.findAnnotation(clazz, Domain.class).value(), 
@@ -113,7 +113,7 @@ public class DomainConfigAPI {
 		*/		
 	}
 	 
-	public <T> void handlePackage(String basePackage, Class<? extends Annotation> annotationClass, Function<Class<T>, String> aliasCb, ModelConfigVistor visitedModels) {
+	public <T> void handlePackage(String basePackage, Class<? extends Annotation> annotationClass, Function<Class<T>, String> aliasCb, EntityConfigVistor visitedModels) {
 		ClassPathScanningCandidateComponentProvider scanner = new ClassPathScanningCandidateComponentProvider(false);
 		scanner.addIncludeFilter(new AnnotationTypeFilter(annotationClass));
 		
@@ -126,19 +126,19 @@ public class DomainConfigAPI {
 	}
 	
 	
-	private <T> DomainConfig handleDomainConfig(Class<T> clazz, Function<Class<T>, String> aliasCb, ModelConfigVistor visitedModels) {
+	private <T> DefaultDomainConfig handleDomainConfig(Class<T> clazz, Function<Class<T>, String> aliasCb, EntityConfigVistor visitedModels) {
 		String alias = aliasCb.apply(clazz);
 		logit.trace(()->"Processing domain with alias: "+alias);
 		
 		
-		DomainConfig dc = templateConfigs.getOrAdd(alias, ()->new DomainConfig(alias));
+		DefaultDomainConfig dc = templateConfigs.getOrAdd(alias, ()->new DefaultDomainConfig(alias));
 		modelConfigBuilder.load(clazz, dc, visitedModels);
 		
 		return dc;
 	}
 	
 	public ActionExecuteConfig<?, ?> getActionExecuteConfig(Command cmd) {
-		DomainConfig dc = getDomain(cmd.getRootDomainAlias());
+		DefaultDomainConfig dc = getDomain(cmd.getRootDomainAlias());
 		logit.debug(()->"[build] DomainConfig for domainRoot: "+cmd.getRootDomainAlias());
 		
 		if(dc==null) throw new InvalidConfigException("DomainConfig not found for domainRoot: "+cmd.getRootDomainAlias()+" with Command: "+cmd);
@@ -159,7 +159,7 @@ public class DomainConfigAPI {
 	 * 
 	 * @param dc
 	 */
-	public void applyDefaults(DomainConfig dc) {
+	public void applyDefaults(DefaultDomainConfig dc) {
 		for(ActionExecuteConfig<?, ?> aec : dc.getActionExecuteConfigs()) {
 			//00
 			if(!aec.hasInput() && !aec.hasOutput()) {	//eg: _delete
@@ -182,7 +182,7 @@ public class DomainConfigAPI {
 		//==modelConfigHandler.findDefaultId(aec_get.getOutput().getModel());
 	}
 	
-	protected <T> ModelConfig<T> handleInputDefaults(DomainConfig dc, ModelConfig<T> otherModelConfig, ActionExecuteConfig<?, ?> aec) {
+	protected <T> ModelConfig<T> handleInputDefaults(DefaultDomainConfig dc, ModelConfig<T> otherModelConfig, ActionExecuteConfig<?, ?> aec) {
 		if(!ArrayUtils.contains(Execution.InputParam.ID_DEFAULT, aec.getAction())) { 	//1.
 			throw throwDefaultNotFoundEx(aec, Execution.Input.class);
 		} 

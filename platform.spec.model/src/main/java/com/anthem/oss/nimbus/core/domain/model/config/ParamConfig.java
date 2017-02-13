@@ -15,7 +15,7 @@ import com.anthem.oss.nimbus.core.entity.Findable;
  * @author Soham Chakravarti
  *
  */
-public interface ParamConfig<P> extends Config<P>, Findable<String> {
+public interface ParamConfig<P> extends EntityConfig<P>, Findable<String> {
 
 	@lombok.Data
 	public static class Desc implements Serializable {

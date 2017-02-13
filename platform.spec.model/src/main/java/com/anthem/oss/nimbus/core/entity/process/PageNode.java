@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.nimbus.platform.spec.model.dsl.binder;
+package com.anthem.oss.nimbus.core.entity.process;
 
 import java.io.Serializable;
 

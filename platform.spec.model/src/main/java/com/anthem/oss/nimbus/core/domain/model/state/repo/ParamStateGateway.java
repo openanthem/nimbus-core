@@ -3,7 +3,7 @@
  */
 package com.anthem.oss.nimbus.core.domain.model.state.repo;
 
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 
 /**
  * @author Soham Chakravarti

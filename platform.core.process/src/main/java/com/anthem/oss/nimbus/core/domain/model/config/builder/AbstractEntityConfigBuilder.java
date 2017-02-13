@@ -44,19 +44,19 @@ import com.anthem.oss.nimbus.core.util.JustLogit;
  * @author Soham Chakravarti
  *
  */
-abstract public class AbstractModelConfigBuilder {
+abstract public class AbstractEntityConfigBuilder {
 
 	protected JustLogit logit = new JustLogit(getClass());
 	
-	abstract public <T> ModelConfig<T> buildModel(Class<T> clazz, ModelConfigVistor visitedModels);
+	abstract public <T> ModelConfig<T> buildModel(Class<T> clazz, EntityConfigVistor visitedModels);
 	
-	abstract public <T> ParamConfig<?> buildParam(ModelConfig<T> mConfig, Field f, ModelConfigVistor visitedModels);
+	abstract public <T> ParamConfig<?> buildParam(ModelConfig<T> mConfig, Field f, EntityConfigVistor visitedModels);
 	
 	public boolean isPrimitive(Class<?> determinedType) {
 		return ClassUtils.isPrimitiveOrWrapper(determinedType) || String.class==determinedType;
 	}
 	
-	public <T> DefaultModelConfig<T> createModel(Class<T> referredClass, ModelConfigVistor visitedModels) {
+	public <T> DefaultModelConfig<T> createModel(Class<T> referredClass, EntityConfigVistor visitedModels) {
 		MapsTo.Type mapsToType = AnnotationUtils.findAnnotation(referredClass, MapsTo.Type.class);
 		
 		final DefaultModelConfig<T> created;
@@ -93,7 +93,7 @@ abstract public class AbstractModelConfigBuilder {
 		}
 	}
 	
-	public DefaultParamConfig<?> createParam(ModelConfig<?> mConfig, Field f, ModelConfigVistor visitedModels) {
+	public DefaultParamConfig<?> createParam(ModelConfig<?> mConfig, Field f, EntityConfigVistor visitedModels) {
 		MapsTo.Path mapsToPath = AnnotationUtils.findAnnotation(f, MapsTo.Path.class);
 		
 		// no path specified
@@ -107,7 +107,7 @@ abstract public class AbstractModelConfigBuilder {
 			return createMappedParamDelinked(mConfig, f, visitedModels, mapsToPath);
 	}
 	
-	private DefaultParamConfig<?> createMappedParamLinked(ModelConfig<?> mConfig, Field f, ModelConfigVistor visitedModels, MapsTo.Path mapsToPath) {
+	private DefaultParamConfig<?> createMappedParamLinked(ModelConfig<?> mConfig, Field f, EntityConfigVistor visitedModels, MapsTo.Path mapsToPath) {
 		// param field is linked: enclosing model must be mapped
 		if(!mConfig.isMapped())
 			throw new InvalidConfigException("Mapped param field: "+f.getName()+" is mapped with linked=true. Enclosing model: "+mConfig.getReferredClass()+" must be mapped, but was not.");
@@ -127,7 +127,7 @@ abstract public class AbstractModelConfigBuilder {
 		return decorateParam(f, new MappedDefaultParamConfigAttached<>(f.getName(), mapsToParam, mapsToPath));
 	}
 	
-	private DefaultParamConfig<?> createMappedParamDelinked(ModelConfig<?> mConfig, Field f, ModelConfigVistor visitedModels, MapsTo.Path mapsToPath) {
+	private DefaultParamConfig<?> createMappedParamDelinked(ModelConfig<?> mConfig, Field f, EntityConfigVistor visitedModels, MapsTo.Path mapsToPath) {
 		Class<?> mappedParamClass = f.getType();
 		
 		ModelConfig<?> mapsToModel;
@@ -161,7 +161,7 @@ abstract public class AbstractModelConfigBuilder {
 	
 		
 	
-	public <T, P> DefaultParamConfig<P> createParamCollectionElement(ModelConfig<T> mConfig, Field pColField, ParamConfig<P> pConfig, ModelConfig<List<P>> colModelConfig, ModelConfigVistor visitedModels, Class<P> colElemClass) {
+	public <T, P> DefaultParamConfig<P> createParamCollectionElement(ModelConfig<T> mConfig, Field pColField, ParamConfig<P> pConfig, ModelConfig<List<P>> colModelConfig, EntityConfigVistor visitedModels, Class<P> colElemClass) {
 		logit.trace(()->"[create.pColElem] starting to process colElemClass: "+colElemClass+" with pColField :"+pColField);
 		
 		MapsTo.Path mapsToPathColParam = AnnotationUtils.findAnnotation(pColField, MapsTo.Path.class);
@@ -364,7 +364,7 @@ abstract public class AbstractModelConfigBuilder {
 		return nestedColType;
 	}
 	
-	protected <T, P> ParamType createParamType(Class<P> determinedType, ModelConfig<?> mConfig, ModelConfigVistor visitedModels) {
+	protected <T, P> ParamType createParamType(Class<P> determinedType, ModelConfig<?> mConfig, EntityConfigVistor visitedModels) {
 		final ParamType pType;
 		if(isPrimitive(determinedType)) {	//Primitives bare or with wrapper & String
 			String name = ClassUtils.getShortNameAsProperty(ClassUtils.resolvePrimitiveIfNecessary(determinedType));

@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -21,7 +22,6 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ClassUtils;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.FlowState;
 import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
@@ -34,13 +34,14 @@ import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
 import com.anthem.oss.nimbus.core.domain.model.config.internal.DefaultModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.internal.DefaultParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultParamConfigAttached;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.RootModel;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.RootModel;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification;
 import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderSupport;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
+import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
 import com.anthem.oss.nimbus.core.util.LockTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -65,7 +66,7 @@ public class ExecutionState<V, C> extends AbstractEntity.IdString implements Ser
 
 	@Path("/c") private V v;
 	
-	private FlowState f;
+	private ProcessFlow f;
 	
 	private Map<String, DetachedState<?, ?>> detachedStates;
 	
@@ -75,18 +76,18 @@ public class ExecutionState<V, C> extends AbstractEntity.IdString implements Ser
 	public V getView() {return getV();}
 	public void setView(V v) {setV(v);}
 	
-	public FlowState getFlow() {return getF();}
-	public void setFlow(FlowState f) {setF(f);}
+	public ProcessFlow getFlow() {return getF();}
+	public void setFlow(ProcessFlow f) {setF(f);}
 	
 	private ExecutionState<V, C> _this() {
 		return this;
 	}
 	
 	@Getter @Setter @RequiredArgsConstructor
-	public static class Config<V, C> {
+	public static class ExConfig<V, C> {
 		final private ModelConfig<C> core;
 		final private ModelConfig<V> view;
-		final private ModelConfig<FlowState> flow;
+		final private ModelConfig<ProcessFlow> flow;
 	}
 	
 	@Getter @Setter 
@@ -95,7 +96,7 @@ public class ExecutionState<V, C> extends AbstractEntity.IdString implements Ser
 		
 		final private ModelConfig<ExecutionState<V, C>> rootParent;
 		
-		public ExParamConfig(Config<V, C> exConfig) {
+		public ExParamConfig(ExConfig<V, C> exConfig) {
 			super("root");
 			this.rootParent = new ExModelConfig(exConfig); 
 			
@@ -111,10 +112,10 @@ public class ExecutionState<V, C> extends AbstractEntity.IdString implements Ser
 		
 		final private ParamConfig<C> coreParam;
 		final private ParamConfig<V> viewParam;
-		final private ParamConfig<FlowState> flowParam;
+		final private ParamConfig<ProcessFlow> flowParam;
 		
 		@SuppressWarnings("unchecked")
-		public ExModelConfig(Config<V, C> exConfig) {
+		public ExModelConfig(ExConfig<V, C> exConfig) {
 			super((Class<ExecutionState<V, C>>)_this().getClass());
 			
 			//TODO: change to client default 
@@ -154,12 +155,11 @@ public class ExecutionState<V, C> extends AbstractEntity.IdString implements Ser
 		
 		final private RootModel<ExecutionState<V, C>> rootModel;
 		
-		public ExParam(Command cmd, StateBuilderSupport provider, Config<V, C> exConfig) {
+		public ExParam(Command cmd, StateBuilderSupport provider, ExConfig<V, C> exConfig) {
 			super(null, new ExParamConfig(exConfig), provider);
 			ExParamConfig pConfig = ((ExParamConfig)getConfig());
 			
 			this.rootModel = new ExModel(cmd, this, pConfig.getRootParent(), provider);
-			this.rootModel.init();
 			this.setType(new StateType.Nested<>(getConfig().getType().findIfNested(), getRootModel()));
 		}
 
@@ -176,6 +176,12 @@ public class ExecutionState<V, C> extends AbstractEntity.IdString implements Ser
 		@Override
 		public RootModel<ExecutionState<V, C>> getRootModel() {
 			return rootModel;
+		}
+		
+		@Override
+		public void fireRules() {
+			findParamByPath("/c").fireRules();
+			Optional.ofNullable(findParamByPath("/v")).ifPresent(v->v.fireRules());
 		}
 	}
 	
@@ -317,7 +323,7 @@ public class ExecutionState<V, C> extends AbstractEntity.IdString implements Ser
 			e.shutdown();
 			
 			// wait on lock condition for completion of all tasks
-			// TODO: this is overkill, can be simplified by waiting on ExecutorServive.awaitTermination()
+			// TODO: this is overkill, can be simplified by waiting on ExecutorServive.awaitTermination() but kept for future enhancement
 			getNotificationLock().execute(()-> {
 				try {
 					while(getNotificationQueue().size()!=0)

@@ -9,7 +9,7 @@ import org.drools.KnowledgeBase;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Model;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 
 import lombok.Getter;
@@ -20,7 +20,7 @@ import lombok.Setter;
  *
  */
 @Getter @Setter
-public class RulesEngineState implements Serializable{
+public class RulesEngineRuntime implements Serializable{
 	
 	protected JustLogit logit = new JustLogit(this.getClass());
 	
@@ -33,7 +33,7 @@ public class RulesEngineState implements Serializable{
 	private FactHandle sacFactHandle;
 	
 	
-	public RulesEngineState(KnowledgeBase rulesContainer, Model<?> sac){
+	public RulesEngineRuntime(KnowledgeBase rulesContainer, Model<?> sac){
 		ruleSession = rulesContainer.newStatefulKnowledgeSession();
 		stateFactHandle = ruleSession.insert(sac.getState());
 		sacFactHandle = ruleSession.insert(sac);

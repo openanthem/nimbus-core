@@ -5,13 +5,13 @@ package com.anthem.oss.nimbus.core.domain.model.state;
 
 import java.io.Serializable;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.FlowState;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.ProcessConfiguration;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadScopedEventPublisher;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandElement;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Model;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionState;
+import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
@@ -34,7 +34,7 @@ public class QuadModel<V, C> implements Serializable {
 	
 	@JsonIgnore transient private final Model<V> view;
 	
-	@JsonIgnore transient private final Model<FlowState> flow;
+	@JsonIgnore transient private final Model<ProcessFlow> flow;
 	
 	@JsonIgnore transient private QuadScopedEventPublisher eventPublisher;
 	

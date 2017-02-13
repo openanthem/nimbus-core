@@ -25,7 +25,7 @@ import lombok.ToString;
  *
  */
 @Getter @RequiredArgsConstructor @ToString(callSuper=true, of={"type", "validations", "values"})
-public class DefaultParamConfig<P> extends AbstractConfig<P> implements ParamConfig<P>, Serializable {
+public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements ParamConfig<P>, Serializable {
 
 	private static final long serialVersionUID = 1L;
 

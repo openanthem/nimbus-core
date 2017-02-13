@@ -4,7 +4,7 @@
 package com.anthem.oss.nimbus.core.domain.model.state.repo;
 
 import com.anthem.oss.nimbus.core.domain.command.Action;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
 
 /**
  * @author Soham Chakravarti
@@ -12,7 +12,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.DomainState;
  */
 public interface ParamStateRepository {
 
-	public <P> P _get(DomainState.Param<P> param);
+	public <P> P _get(EntityState.Param<P> param);
 	
-	public <P> Action _set(DomainState.Param<P> param, P newState);
+	public <P> Action _set(EntityState.Param<P> param, P newState);
 }

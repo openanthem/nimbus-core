@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
-import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigAPI;
+import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
 import com.anthem.oss.nimbus.core.domain.model.config.ActionExecuteConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFactory;
@@ -22,7 +22,7 @@ public class DefaultActionExecutorSearch extends AbstractProcessTaskExecutor {
 
 	@Autowired ModelRepositoryFactory repFactory;
 	
-	@Autowired DomainConfigAPI domainConfigApi;
+	@Autowired DomainConfigBuilder domainConfigApi;
 	
 	@Autowired CommandMessageConverter converter;
 	

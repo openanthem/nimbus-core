@@ -7,13 +7,20 @@ package com.anthem.oss.nimbus.core.domain.model.config;
  * @author Soham Chakravarti
  *
  */
-public interface Config<T> {
+public interface EntityConfig<T> {
 
 	public Class<T> getReferredClass();
 	
 	public <K> ParamConfig<K> findParamByPath(String path);
 	public <K> ParamConfig<K> findParamByPath(String[] pathArr);
 
+	
+	default public boolean hasRules() {
+		return getRulesConfig()!=null;
+	}
+	
+	public RulesConfig getRulesConfig();
+	
 	default boolean isMapped() {
 		return false;
 	}
@@ -22,7 +29,7 @@ public interface Config<T> {
 		return null;
 	}
 
-	public interface MappedConfig<T, M> extends Config<T> {
+	public interface MappedConfig<T, M> extends EntityConfig<T> {
 		@Override
 		default boolean isMapped() {
 			return true;
@@ -33,6 +40,6 @@ public interface Config<T> {
 			return this;
 		}
 		
-		public Config<M> getMapsTo();
+		public EntityConfig<M> getMapsTo();
 	}
 }

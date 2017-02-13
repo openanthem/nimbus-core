@@ -34,7 +34,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.FlowState;
 import com.anthem.nimbus.platform.utils.converter.NavigationStateHelper;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
@@ -43,12 +42,13 @@ import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType.CollectionType;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.ListElemParam;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.ListModel;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.ListParam;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Model;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListElemParam;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListModel;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
+import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
 import com.anthem.oss.nimbus.core.session.UserEndpointSession;
 import com.anthem.oss.nimbus.test.sample.um.model.ServiceLine;
 import com.anthem.oss.nimbus.test.sample.um.model.ServiceLine.AuditInfo;
@@ -81,7 +81,7 @@ public class QuadModelCollectionsTest {
 		if(!done) {
 			quadModelBuilder.getDomainConfigApi().setBasePackages(
 					Arrays.asList(
-							FlowState.class.getPackage().getName(),
+							ProcessFlow.class.getPackage().getName(),
 							UMCase.class.getPackage().getName(),
 							UMCaseFlow.class.getPackage().getName()
 							));

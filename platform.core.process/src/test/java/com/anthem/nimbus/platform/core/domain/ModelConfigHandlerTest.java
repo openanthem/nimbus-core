@@ -14,7 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.anthem.oss.nimbus.core.domain.config.DomainConfig;
+import com.anthem.oss.nimbus.core.domain.config.DefaultDomainConfig;
 import com.anthem.oss.nimbus.core.domain.config.builder.ExecutionInputConfigHandler;
 import com.anthem.oss.nimbus.core.domain.config.builder.ExecutionOutputConfigHandler;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
@@ -22,7 +22,7 @@ import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
-import com.anthem.oss.nimbus.core.domain.model.config.builder.ModelConfigBuilder;
+import com.anthem.oss.nimbus.core.domain.model.config.builder.EntityConfigBuilder;
 import com.anthem.oss.nimbus.core.entity.person.Address;
 
 import lombok.Getter;
@@ -36,7 +36,7 @@ import lombok.Setter;
 //@SpringApplicationConfiguration(classes = {ModelConfigHandler.class, ExecutionInputConfigHandler.class, ExecutionOutputConfigHandler.class})
 public class ModelConfigHandlerTest {
 
-	@Autowired ModelConfigBuilder handler;
+	@Autowired EntityConfigBuilder handler;
 	
 	@Model @Getter @Setter
 	public static class TestBaseModel {
@@ -67,8 +67,8 @@ public class ModelConfigHandlerTest {
 	
 	@Before
 	public void before() {
-		handler = new ModelConfigBuilder();
-		DomainConfig dc = new DomainConfig("test");
+		handler = new EntityConfigBuilder();
+		DefaultDomainConfig dc = new DefaultDomainConfig("test");
 		handler.setExecInputHandler(new ExecutionInputConfigHandler());
 		handler.setExecOutputHandler(new ExecutionOutputConfigHandler());
 		

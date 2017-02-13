@@ -13,13 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.anthem.nimbus.platform.core.process.api.PlatformProcessDAO;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.PageHolder;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.PageNode;
 import com.anthem.nimbus.platform.utils.converter.NavigationStateHelper;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
+import com.anthem.oss.nimbus.core.entity.process.PageHolder;
+import com.anthem.oss.nimbus.core.entity.process.PageNode;
 
 /**
  * @author Soham Chakravarti

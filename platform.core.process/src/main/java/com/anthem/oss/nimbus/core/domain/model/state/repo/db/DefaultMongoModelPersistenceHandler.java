@@ -13,9 +13,9 @@ import org.springframework.stereotype.Component;
 
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Model;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 
@@ -33,16 +33,16 @@ public class DefaultMongoModelPersistenceHandler implements ModelPersistenceHand
 	ModelRepository rep;
 	
 	@Override
-	public boolean handle(List<ModelEvent<DomainState<?>>> modelEvents) {
+	public boolean handle(List<ModelEvent<EntityState<?>>> modelEvents) {
 		
 		if(CollectionUtils.isEmpty(modelEvents)) 
 			return false;
 		
-		for(ModelEvent<DomainState<?>> event: modelEvents) {
+		for(ModelEvent<EntityState<?>> event: modelEvents) {
 			
 			logit.info(()->"path: "+event.getPath()+ " action: "+event.getType()+" state: "+event.getPayload());
 			
-			DomainState<?> param = event.getPayload();
+			EntityState<?> param = event.getPayload();
 			
 			Model<?> mRoot = null;
 			

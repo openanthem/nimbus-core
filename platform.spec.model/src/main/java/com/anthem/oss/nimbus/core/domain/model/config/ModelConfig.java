@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @author Soham Chakravarti
  *
  */
-public interface ModelConfig<T> extends Config<T> {
+public interface ModelConfig<T> extends EntityConfig<T> {
 	
 	public Repo getRepo();
 
@@ -21,6 +21,9 @@ public interface ModelConfig<T> extends Config<T> {
 	
 	@JsonIgnore
 	public CollectionsTemplate<List<ParamConfig<?>>, ParamConfig<?>> templateParams();
+	
+	@JsonIgnore
+	public RulesConfig getRulesConfig();
 
 	@Override
 	default MappedModelConfig<T, ?> findIfMapped() {
