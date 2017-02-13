@@ -9,12 +9,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.anthem.oss.nimbus.core.InvalidOperationAttemptedException;
 import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
+import com.anthem.oss.nimbus.core.InvalidOperationAttemptedException;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState.ListElemParam;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.ParamStateRepository;
 import com.anthem.oss.nimbus.core.utils.JavaBeanHandler;
 
 /**

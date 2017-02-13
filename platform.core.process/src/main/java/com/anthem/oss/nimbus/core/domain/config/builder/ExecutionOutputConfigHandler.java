@@ -19,8 +19,8 @@ import com.anthem.oss.nimbus.core.domain.definition.Execution;
 import com.anthem.oss.nimbus.core.domain.definition.Executions;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.model.config.ActionExecuteConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ActionExecuteConfig.Output;
+import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 
 /**
  * @author Soham Chakravarti

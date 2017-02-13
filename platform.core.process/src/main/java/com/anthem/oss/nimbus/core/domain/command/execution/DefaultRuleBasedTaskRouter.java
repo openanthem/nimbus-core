@@ -2,7 +2,6 @@ package com.anthem.oss.nimbus.core.domain.command.execution;
 
 import org.activiti.engine.impl.rules.RulesAgendaFilter;
 import org.activiti.engine.impl.rules.RulesHelper;
-import org.apache.commons.lang.StringUtils;
 import org.drools.KnowledgeBase;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.springframework.stereotype.Component;

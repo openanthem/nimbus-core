@@ -6,7 +6,6 @@ package com.anthem.oss.nimbus.core.domain.command.execution;
 import org.springframework.stereotype.Component;
 
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
-import com.anthem.oss.nimbus.core.domain.command.execution.ProcessTaskExecutor;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 
 /**

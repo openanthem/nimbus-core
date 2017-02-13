@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
-import com.anthem.oss.nimbus.core.domain.command.execution.ProcessExecutorEvents;
 import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigAPI;
 import com.anthem.oss.nimbus.core.domain.model.config.ActionExecuteConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;

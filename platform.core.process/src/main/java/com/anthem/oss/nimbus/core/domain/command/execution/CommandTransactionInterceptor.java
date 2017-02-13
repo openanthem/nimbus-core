@@ -7,8 +7,6 @@ import org.springframework.stereotype.Component;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
 import com.anthem.oss.nimbus.core.domain.command.Behavior;
-import com.anthem.oss.nimbus.core.domain.command.execution.ExecuteOutput;
-import com.anthem.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
 
 /**
  * @author Soham Chakravarti

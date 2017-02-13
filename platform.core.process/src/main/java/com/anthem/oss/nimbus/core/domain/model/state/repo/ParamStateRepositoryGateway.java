@@ -14,13 +14,11 @@ import org.springframework.stereotype.Component;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.ExecutionStateTree;
 import com.anthem.oss.nimbus.core.InvalidArgumentException;
 import com.anthem.oss.nimbus.core.domain.command.Action;
-import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState.ListParam;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState.MappedParam;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.ParamStateGateway;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.ParamStateRepository;
+import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 import com.anthem.oss.nimbus.core.utils.JavaBeanHandler;
 

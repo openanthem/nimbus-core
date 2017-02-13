@@ -16,8 +16,8 @@ import org.springframework.stereotype.Component;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.ProcessConfiguration;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
-import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Model;
+import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 
 /**

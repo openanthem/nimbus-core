@@ -14,8 +14,6 @@ import com.anthem.oss.nimbus.core.domain.model.config.AnnotationConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig.Desc;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamType.Nested;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

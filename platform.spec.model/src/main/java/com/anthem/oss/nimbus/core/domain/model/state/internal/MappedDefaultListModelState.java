@@ -7,11 +7,8 @@ import java.util.List;
 import java.util.Objects;
 
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState;
-import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderSupport;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.ListModel;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.ListParam;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState.MappedListModel;
+import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderSupport;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;

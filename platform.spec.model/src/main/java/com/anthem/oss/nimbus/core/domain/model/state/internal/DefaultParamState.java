@@ -6,13 +6,10 @@ package com.anthem.oss.nimbus.core.domain.model.state.internal;
 
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -28,21 +25,16 @@ import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification;
+import com.anthem.oss.nimbus.core.domain.model.state.Notification.ActionType;
 import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderSupport;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.MappedParam;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Model;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.RootModel;
-import com.anthem.oss.nimbus.core.domain.model.state.Notification.ActionType;
-import com.anthem.oss.nimbus.core.domain.model.state.Notification.Consumer;
 import com.anthem.oss.nimbus.core.entity.Findable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 

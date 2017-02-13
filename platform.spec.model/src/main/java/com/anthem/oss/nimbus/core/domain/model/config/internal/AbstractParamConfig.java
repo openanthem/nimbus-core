@@ -10,7 +10,6 @@ import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.model.config.AnnotationConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig.Desc;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -22,8 +21,6 @@ import lombok.ToString;
  */
 @Getter @Setter @ToString
 public abstract class AbstractParamConfig<P> implements ParamConfig<P> {
-
-	private static final long serialVersionUID = 1L;
 
 	final private String code;
 

@@ -10,8 +10,8 @@ import java.util.function.Supplier;
 
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState;
-import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderSupport;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderSupport;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AccessLevel;

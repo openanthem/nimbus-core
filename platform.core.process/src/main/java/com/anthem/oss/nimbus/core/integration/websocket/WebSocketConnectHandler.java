@@ -1,8 +1,6 @@
 
 package com.anthem.oss.nimbus.core.integration.websocket;
 
-import java.security.Principal;
-
 import org.springframework.context.ApplicationListener;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;

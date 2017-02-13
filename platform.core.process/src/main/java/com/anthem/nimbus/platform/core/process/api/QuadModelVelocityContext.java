@@ -2,8 +2,8 @@ package com.anthem.nimbus.platform.core.process.api;
 
 import org.apache.velocity.context.Context;
 
-import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Model;
+import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 
 import lombok.RequiredArgsConstructor;
 

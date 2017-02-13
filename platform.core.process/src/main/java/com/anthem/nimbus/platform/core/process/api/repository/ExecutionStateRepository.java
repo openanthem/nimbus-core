@@ -11,9 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.anthem.oss.nimbus.core.domain.command.Command;
+import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFactory;
 import com.anthem.oss.nimbus.core.session.UserEndpointSession;

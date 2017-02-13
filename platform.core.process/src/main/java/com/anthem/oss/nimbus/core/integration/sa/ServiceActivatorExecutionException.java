@@ -3,10 +3,6 @@
  */
 package com.anthem.oss.nimbus.core.integration.sa;
 
-
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * @author AC67870
  *

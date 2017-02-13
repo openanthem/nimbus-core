@@ -7,7 +7,6 @@ import java.io.Serializable;
 
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig.MappedParamConfigDelinked;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

@@ -26,9 +26,9 @@ import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ValidatorProvider;
 import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
+import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderSupport;
 import com.anthem.oss.nimbus.core.domain.model.state.StateMeta;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionState;
-import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderSupport;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.ParamStateGateway;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 

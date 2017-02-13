@@ -3,8 +3,6 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
-import java.text.SimpleDateFormat;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.stereotype.Component;

@@ -15,8 +15,8 @@ import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandMessageConverter;
-import com.anthem.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
 import com.anthem.oss.nimbus.core.domain.command.execution.ExecuteOutput.BehaviorExecute;
+import com.anthem.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
 
 /**
  * @author Jayant Chaudhuri

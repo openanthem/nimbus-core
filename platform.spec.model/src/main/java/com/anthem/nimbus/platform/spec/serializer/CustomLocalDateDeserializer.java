@@ -1,14 +1,15 @@
 package com.anthem.nimbus.platform.spec.serializer;
 
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+import org.springframework.util.StringUtils;
+
 import com.anthem.oss.nimbus.core.util.JsonParsingException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import org.springframework.util.StringUtils;
-
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 /**
  * @Author Cheikh Niass on 12/2/16.

@@ -9,13 +9,6 @@ import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.DomainState;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification;
 import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderSupport;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.ListElemParam;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.ListParam;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.MappedListParam;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.MappedParam;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Model;
-import com.anthem.oss.nimbus.core.domain.model.state.DomainState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.Notification.Consumer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;

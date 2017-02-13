@@ -4,8 +4,6 @@
 package com.anthem.nimbus.platform.spec.model.dsl.binder;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Execution;

@@ -5,8 +5,8 @@ package com.anthem.nimbus.platform.core.process.api;
 
 import org.springframework.stereotype.Component;
 
-import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
+import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 
 /**
  * Added Optional using map. 

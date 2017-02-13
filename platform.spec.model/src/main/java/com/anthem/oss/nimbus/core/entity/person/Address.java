@@ -11,7 +11,6 @@ import org.springframework.data.annotation.Id;
 
 import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
-import com.anthem.oss.nimbus.core.entity.person.Values;
 
 import lombok.AccessLevel;
 import lombok.Getter;
