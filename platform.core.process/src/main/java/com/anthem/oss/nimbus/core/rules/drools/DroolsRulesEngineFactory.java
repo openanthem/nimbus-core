@@ -3,13 +3,14 @@
  */
 package com.anthem.oss.nimbus.core.rules.drools;
 
+import java.net.URL;
+
 import org.drools.KnowledgeBase;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ResourceUtils;
 
 import com.anthem.oss.nimbus.core.domain.model.config.RulesConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.RulesRuntime;
@@ -30,16 +31,13 @@ public class DroolsRulesEngineFactory implements RulesEngineFactory {
 	public RulesConfig createConfig(String alias) {
 		String path = alias + ".drl";
 		
-		String verifyUrl = ResourceUtils.CLASSPATH_URL_PREFIX + path;
-		if(!ResourceUtils.isUrl(verifyUrl)) {
+		URL verifyUrl = getClass().getClassLoader().getResource(path);
+		if(verifyUrl==null) {
 			logit.info(()->"No rules file found at location: "+verifyUrl);
 			return null;
 			
 		} else { 
 			logit.info(()->"Rules file found at location: "+verifyUrl);
-			//TODO change
-			if(true)
-				return null;
 		}
 		
 		KnowledgeBuilder kbBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
