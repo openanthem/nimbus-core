@@ -21,6 +21,13 @@ import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
 @Inherited
 public @interface Model {
 	
+	/**
+	 * alias
+	 */
+	String value() default "";
+	
+	String rules() default "drools";
+	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	public @interface Param {

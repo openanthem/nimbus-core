@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state.builder;
+package com.anthem.oss.nimbus.core.domain.model.config.builder;
 
 import java.util.HashMap;
 import java.util.Map;

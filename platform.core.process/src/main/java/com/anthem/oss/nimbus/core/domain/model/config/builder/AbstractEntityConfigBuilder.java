@@ -8,11 +8,13 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Constraint;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.data.domain.Page;
@@ -21,6 +23,7 @@ import org.springframework.util.ClassUtils;
 import com.anthem.oss.nimbus.core.domain.config.builder.AnnotationConfigHandler;
 import com.anthem.oss.nimbus.core.domain.definition.ConfigLoadException;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
+import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.definition.Model;
@@ -37,6 +40,7 @@ import com.anthem.oss.nimbus.core.domain.model.config.internal.DefaultParamConfi
 import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultParamConfigAttached;
 import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultParamConfigDetached;
+import com.anthem.oss.nimbus.core.rules.RulesEngineFactoryProducer;
 import com.anthem.oss.nimbus.core.util.ClassLoadUtils;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 
@@ -47,6 +51,9 @@ import com.anthem.oss.nimbus.core.util.JustLogit;
 abstract public class AbstractEntityConfigBuilder {
 
 	protected JustLogit logit = new JustLogit(getClass());
+	
+	@Autowired RulesEngineFactoryProducer rulesEngineFactoryProducer;
+
 	
 	abstract public <T> ModelConfig<T> buildModel(Class<T> clazz, EntityConfigVistor visitedModels);
 	
@@ -75,6 +82,14 @@ abstract public class AbstractEntityConfigBuilder {
 		// handle repo
 		Repo rep = AnnotationUtils.findAnnotation(referredClass, Repo.class);
 		created.setRepo(rep);
+		
+		// rules
+		Domain domain = AnnotationUtils.findAnnotation(referredClass, Domain.class);
+		Optional.ofNullable(domain)
+			.map(d->rulesEngineFactoryProducer.getFactory(referredClass))
+			.map(f->f.createConfig(domain.value()))
+				.ifPresent(c->created.setRulesConfig(c));
+		
 		
 		return created;
 	}

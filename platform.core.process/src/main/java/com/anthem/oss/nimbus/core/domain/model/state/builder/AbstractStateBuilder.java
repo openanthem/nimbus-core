@@ -4,8 +4,10 @@
 package com.anthem.oss.nimbus.core.domain.model.state.builder;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
@@ -30,6 +32,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultListM
 import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultListParamState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultModelState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultParamState;
+import com.anthem.oss.nimbus.core.rules.RulesEngineFactoryProducer;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 
 import lombok.Getter;
@@ -41,6 +44,8 @@ import lombok.Getter;
 @Getter
 abstract public class AbstractStateBuilder {
 
+	@Autowired RulesEngineFactoryProducer rulesEngineFactoryProducer;
+	
 	protected JustLogit logit = new JustLogit(getClass());
 	
 	abstract public <T, P> DefaultParamState<P> buildParam(StateBuilderSupport provider, DefaultModelState<T> mState, ParamConfig<P> mpConfig, Model<?> mapsToSAC);
@@ -50,6 +55,12 @@ abstract public class AbstractStateBuilder {
 				new MappedDefaultModelState<>(mapsToSAC, associatedParam, config, provider) : 
 					new DefaultModelState<>(associatedParam, config, provider);
 		
+		// rules
+		Optional.ofNullable(config.getRulesConfig())
+			.map(rulesConfig->rulesEngineFactoryProducer.getFactory(config.getReferredClass()))
+			.map(f->f.createRuntime(config.getRulesConfig()))
+				.ifPresent(rt->mState.setRulesRuntime(rt));		
+				
 		mState.init();
 		return mState;
 	}

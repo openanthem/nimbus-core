@@ -315,35 +315,6 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		return getConfig().isFound(resolvedPath);
 	}
 	
-//	public boolean isImplicitlyMapped() {
-//		if(getConfig().getMapsToMode()!=MapsTo.Mode.UnMapped) return true;
-//		
-//		/* still considered mapped, if parent model is mapped and current param's nested model is mapped with same class */
-//		ModelConfig<?> mConfig = getParentModel().getConfig();
-//		
-//		if(getParentModel().isMapped() && getConfig().getType().isNested()) {	//check if parent model is mapped AND current param is nested
-//			
-//			ModelConfig<?> mpNmConfig = getConfig().getType().findIfNested().getModel();
-//			
-//			if(mpNmConfig.isMapped()) {	//check if param.nestedModel is mapped AND is same parent's mapsTo model
-//				
-//				Class<?> mappedParamNmMapsToClass = mpNmConfig.getMapsTo().value();	//param.nestedModel mapsTo
-//				Class<?> mMapsToClass = mConfig.getMapsTo().value();	//parent's mapsTo
-//				
-//				return mappedParamNmMapsToClass == mMapsToClass;
-//			}
-//		}
-//			
-//		return false;
-//	}	
-	
-//	@Override
-//	public void update(Observable o, Object arg) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-
-	
 	
 //	@Override
 //	public void setState(T state) {

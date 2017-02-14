@@ -10,6 +10,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
+import com.anthem.oss.nimbus.core.rules.drools.CustomRulesListener;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 
 import lombok.Getter;
