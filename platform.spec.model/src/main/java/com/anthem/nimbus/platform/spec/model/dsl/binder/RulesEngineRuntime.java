@@ -10,7 +10,6 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
-import com.anthem.oss.nimbus.core.rules.drools.CustomRulesListener;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 
 import lombok.Getter;
@@ -38,7 +37,7 @@ public class RulesEngineRuntime implements Serializable{
 		ruleSession = rulesContainer.newStatefulKnowledgeSession();
 		stateFactHandle = ruleSession.insert(sac.getState());
 		sacFactHandle = ruleSession.insert(sac);
-		ruleSession.addEventListener(new CustomRulesListener(ruleSession));
+		//ruleSession.addEventListener(new CustomRulesListener(ruleSession));
 	}
 	
 	

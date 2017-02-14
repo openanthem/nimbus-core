@@ -5,7 +5,6 @@ package com.anthem.oss.nimbus.core.domain.model.state;
 
 import java.io.Serializable;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.ProcessConfiguration;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadScopedEventPublisher;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandElement;
@@ -50,23 +49,9 @@ public class QuadModel<V, C> implements Serializable {
 		return cmd.isView() ? view : core;
 	}
 	
-	public void loadProcessState(ProcessConfiguration processConfiguration){
-		flow.getState().init(processConfiguration, this);
-	}
-	
-	public void fireAllRules(){
-		flow.getState().fireAllRules(this);
-	}
-	
-	
 	@Override
 	protected void finalize() throws Throwable {
-		
 		getRoot().getExecutionRuntime().stop();
-		
-		if(flow.getState() != null){
-			flow.getState().dispose();
-		}
 		
 		super.finalize();
 	}

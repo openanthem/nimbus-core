@@ -57,7 +57,7 @@ public class DefaultActionExecutorUpdate extends AbstractProcessTaskExecutor {
 		q.getEventPublisher().apply(null); // should be persist only
 		
 		//fire rules post update
-		q.fireAllRules();
+		q.getRoot().fireRules();
 		// clear the apply on event publisher
 	
 		

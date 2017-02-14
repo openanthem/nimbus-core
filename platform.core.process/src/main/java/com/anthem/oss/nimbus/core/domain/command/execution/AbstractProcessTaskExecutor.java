@@ -179,7 +179,7 @@ public abstract class AbstractProcessTaskExecutor implements ProcessTaskExecutor
 		}
 		
 		UserEndpointSession.setAttribute(qLoadCmdMsg.getCommand(), q);
-		q.fireAllRules(); //TODO verify if it is ok to run rules in defaultGet ??
+		q.getRoot().fireRules(); //TODO verify if it is ok to run rules in defaultGet ??
 		
 		if(StringUtils.isBlank(q.getFlow().getState().getProcessExecutionId())){
 			initiateProcessExecution(qLoadCmdMsg, q);
