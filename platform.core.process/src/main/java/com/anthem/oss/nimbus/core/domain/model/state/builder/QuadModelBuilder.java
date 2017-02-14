@@ -22,7 +22,6 @@ import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
 import com.anthem.oss.nimbus.core.domain.model.config.ActionExecuteConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ValidatorProvider;
-import com.anthem.oss.nimbus.core.domain.model.config.builder.ProcessConfigurationBuilder;
 import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderSupport;
@@ -46,7 +45,6 @@ public class QuadModelBuilder {
 
 	@Autowired DomainConfigBuilder domainConfigApi;
 	@Autowired StateBuilder stateAndConfigBuilder;
-	@Autowired ProcessConfigurationBuilder processConfigurationBuilder;
 	
 	@Autowired ApplicationContext appCtx;
 	
@@ -205,7 +203,7 @@ public class QuadModelBuilder {
 	 * @param quadModel
 	 */
 	public void initializeFlowState(Command command,QuadModel<?,?> quadModel){
-		quadModel.loadProcessState(processConfigurationBuilder.getProcessConfiguration(command,quadModel));
+		//quadModel.loadProcessState(processConfigurationBuilder.getProcessConfiguration(command,quadModel));
 		navigationStateHelper.init(quadModel);
 	}
 	

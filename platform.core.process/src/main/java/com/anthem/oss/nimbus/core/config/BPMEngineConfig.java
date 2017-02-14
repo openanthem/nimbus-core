@@ -31,7 +31,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiDAO;
 import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiExpressionManager;
-import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiUserTaskActivityBehavior;
 
 
 @Configuration

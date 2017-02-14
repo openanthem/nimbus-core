@@ -24,7 +24,7 @@ import com.anthem.oss.nimbus.core.util.JustLogit;
  * @author Jayant Chaudhuri
  *
  */
-@Component
+//@Component
 public class ProcessConfigurationBuilder {
 
 	private Map<String,ProcessConfiguration> domainRootToProcessConfiguration = new HashMap<String,ProcessConfiguration>();

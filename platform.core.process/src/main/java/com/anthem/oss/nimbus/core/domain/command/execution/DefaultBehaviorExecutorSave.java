@@ -16,7 +16,7 @@ import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 @Component("default.$save")
 public class DefaultBehaviorExecutorSave extends AbstractProcessTaskExecutor {
 
-	@Autowired
+	//@Autowired
 	ParamStateBatchPersistenceEventPublisher publisher;
 	
 	@Override
