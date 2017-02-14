@@ -12,7 +12,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
-import com.anthem.nimbus.platform.core.process.api.ActivitiContext.ServiceActivatorContext;
+import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiContext.ServiceActivatorContext;
 
 /**
  * @author Rakesh Patel

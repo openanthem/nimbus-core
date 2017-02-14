@@ -6,8 +6,7 @@ package com.anthem.oss.nimbus.core.domain.command.execution;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.anthem.nimbus.platform.core.process.api.ActivitiProcessGateway;
-import com.anthem.nimbus.platform.core.process.api.ProcessKeyIdentifier;
+import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiGateway;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 
@@ -19,10 +18,10 @@ import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 public class DefaultActionExecutorProcess extends AbstractProcessTaskExecutor {
 	
 	@Autowired
-	ActivitiProcessGateway activitiProcessGateway;
+	ActivitiGateway activitiProcessGateway;
 	
 	@Autowired
-	ProcessKeyIdentifier hierarchyMatchBeanLoader;
+	HierarchyMatchBasedBeanFinder hierarchyMatchBeanLoader;
 	
 	public static final String QUAD_MODEL_KEY = "quadModel";
 	

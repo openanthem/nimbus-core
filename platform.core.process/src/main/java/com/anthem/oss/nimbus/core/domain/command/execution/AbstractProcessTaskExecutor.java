@@ -11,10 +11,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationEventPublisher;
 
-import com.anthem.nimbus.platform.core.process.api.ActivitiProcessGateway;
-import com.anthem.nimbus.platform.core.process.api.ActivitiProcessResponse;
-import com.anthem.nimbus.platform.core.process.api.ProcessKeyIdentifier;
 import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
+import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiGateway;
+import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiResponse;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
@@ -46,10 +45,10 @@ public abstract class AbstractProcessTaskExecutor implements ProcessTaskExecutor
 	@Autowired CommandMessageConverter converter;
 	
 	@Autowired
-	ProcessKeyIdentifier hierarchyMatchBeanLoader;
+	HierarchyMatchBasedBeanFinder hierarchyMatchBeanLoader;
 	
 	@Autowired
-	ActivitiProcessGateway activitiProcessGateway;
+	ActivitiGateway activitiProcessGateway;
 	
 	@Autowired 
 	QuadModelBuilder qBuilder;
@@ -130,7 +129,7 @@ public abstract class AbstractProcessTaskExecutor implements ProcessTaskExecutor
 	}
 	
 	protected Object initiateProcessExecution(CommandMessage cmdMsg, QuadModel<?,?> quadModel){
-		ActivitiProcessResponse response = activitiProcessGateway.executeProcess(cmdMsg, cmdMsg.getCommand().getRootDomainAlias());
+		ActivitiResponse response = activitiProcessGateway.executeProcess(cmdMsg, cmdMsg.getCommand().getRootDomainAlias());
 		if(response == null)
 			return null; 
 		//quadModel.getFlow().getState().setProcessExecutionId(response.getExecutionId());

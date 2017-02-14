@@ -14,8 +14,8 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.anthem.nimbus.platform.core.process.PlatformProcessEngineConfiguration;
-import com.anthem.nimbus.platform.core.process.api.ActivitiProcessGateway;
+import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiGateway;
+import com.anthem.oss.nimbus.core.config.BPMEngineConfig;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultProcessGateway;
 
 /**
@@ -23,7 +23,7 @@ import com.anthem.oss.nimbus.core.domain.command.execution.DefaultProcessGateway
  *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {PlatformProcessEngineConfiguration.class})
+@SpringApplicationConfiguration(classes = {BPMEngineConfig.class})
 @ActiveProfiles("local")
 public class DefaultProcessGatewayTest {
 
@@ -31,7 +31,7 @@ public class DefaultProcessGatewayTest {
 	DefaultProcessGateway processGateway;
 	
 	@Autowired
-	ActivitiProcessGateway activitiProcessGateway;
+	ActivitiGateway activitiProcessGateway;
 	
 	@Test
 	public void t_() {

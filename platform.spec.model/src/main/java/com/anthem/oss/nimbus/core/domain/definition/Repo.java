@@ -14,6 +14,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value=ElementType.TYPE)
+@Model
 public @interface Repo {
 
 	/* 3rd level repository: persistent stores */

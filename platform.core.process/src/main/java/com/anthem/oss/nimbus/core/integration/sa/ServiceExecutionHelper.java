@@ -3,8 +3,8 @@ package com.anthem.oss.nimbus.core.integration.sa;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
-import com.anthem.nimbus.platform.core.process.api.ActivitiContext;
-import com.anthem.nimbus.platform.core.process.api.ActivitiContext.ServiceActivatorContext;
+import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiContext;
+import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiContext.ServiceActivatorContext;
 
 import lombok.Getter;
 import lombok.Setter;

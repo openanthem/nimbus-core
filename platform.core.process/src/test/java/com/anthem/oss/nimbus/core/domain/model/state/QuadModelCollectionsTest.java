@@ -34,7 +34,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.anthem.nimbus.platform.utils.converter.NavigationStateHelper;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
@@ -49,6 +48,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListModel;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.builder.PageNavigationInitializer;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.DefaultParamStateRepositoryLocal;
 import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
@@ -71,7 +71,7 @@ import test.com.anthem.nimbus.platform.utils.JsonUtils;
 @RunWith(SpringRunner.class)
 @EnableConfigurationProperties
 @ComponentScan(basePackageClasses={
-		DomainConfigBuilder.class, EntityConfigBuilder.class, QuadModelBuilder.class, NavigationStateHelper.class, DefaultRulesEngineFactoryProducer.class,
+		DomainConfigBuilder.class, EntityConfigBuilder.class, QuadModelBuilder.class, PageNavigationInitializer.class, DefaultRulesEngineFactoryProducer.class,
 		DefaultParamStateRepositoryLocal.class, JavaBeanHandler.class})
 @ContextConfiguration(initializers=ConfigFileApplicationContextInitializer.class)
 @ImportAutoConfiguration(RefreshAutoConfiguration.class)

@@ -5,6 +5,9 @@ package com.anthem.oss.nimbus.core.entity.process;
 
 import java.io.Serializable;
 
+import com.anthem.oss.nimbus.core.domain.definition.Model;
+import com.anthem.oss.nimbus.core.entity.Findable;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,8 +15,9 @@ import lombok.Setter;
  * @author Jayant Chaudhuri
  *
  */
+@Model
 @Getter @Setter
-public class PageNode implements Serializable{
+public class PageNode implements Findable<PageNode>, Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -22,16 +26,17 @@ public class PageNode implements Serializable{
 	private String pageId;
 	
 	private String pageName;
-	
-//	private PageNode parent;
-//	
-//	private PageNode child;
-	
+		
 	@Override
 	public String toString() {
-		StringBuilder page = new StringBuilder(id);
-		page.append(".").append(pageId).append(".").append(pageName);
-		return page.toString();
+		return new StringBuilder(id)
+				.append(".").append(getPageId()).append(".").append(getPageName())
+				.toString();
+	}
+	
+	@Override
+	public boolean isFound(PageNode by) {
+		return equals(by);
 	}
 	
 	@Override

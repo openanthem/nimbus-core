@@ -9,7 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.anthem.nimbus.platform.core.process.PlatformProcessEngineConfiguration;
+import com.anthem.oss.nimbus.core.config.BPMEngineConfig;
 
 
 /**
@@ -18,7 +18,7 @@ import com.anthem.nimbus.platform.core.process.PlatformProcessEngineConfiguratio
  */
 @RunWith(SpringRunner.class)
 @ComponentScan(basePackages={"com.anthem.nimbus.platform.utils.converter", "com.anthem.nimbus.platform.core.process", "com.anthem.nimbus.platform.client.extension.cm"})
-@SpringBootTest(classes=PlatformProcessEngineConfiguration.class)
+@SpringBootTest(classes=BPMEngineConfig.class)
 @ActiveProfiles("test")
 public abstract class AbstractPlatformSpringTests {
 	

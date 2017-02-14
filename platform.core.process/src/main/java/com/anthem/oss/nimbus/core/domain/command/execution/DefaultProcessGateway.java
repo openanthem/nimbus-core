@@ -23,8 +23,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import com.anthem.nimbus.platform.core.process.api.AbstractProcessGateway;
-import com.anthem.nimbus.platform.core.process.api.ProcessKeyIdentifier;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Behavior;
 import com.anthem.oss.nimbus.core.domain.command.Command;
@@ -60,7 +58,7 @@ public class DefaultProcessGateway extends AbstractProcessGateway implements App
 	private ApplicationContext ctx;
 	
 	@Autowired
-	private ProcessKeyIdentifier hierarchyMatchBeanLoader;
+	private HierarchyMatchBasedBeanFinder hierarchyMatchBeanLoader;
 	
 	private JustLogit logit = new JustLogit(this.getClass());
 	

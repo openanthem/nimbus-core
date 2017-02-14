@@ -13,6 +13,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.AnnotationUtils;
 
 import com.anthem.oss.nimbus.core.domain.config.DefaultDomainConfig;
 import com.anthem.oss.nimbus.core.domain.config.builder.ExecutionInputConfigHandler;
@@ -68,7 +69,9 @@ public class ModelConfigHandlerTest {
 	@Before
 	public void before() {
 		handler = new EntityConfigBuilder();
-		DefaultDomainConfig dc = new DefaultDomainConfig("test");
+		Domain domain = AnnotationUtils.findAnnotation(TestModel.class, Domain.class);
+		DefaultDomainConfig dc = new DefaultDomainConfig(domain);
+		
 		handler.setExecInputHandler(new ExecutionInputConfigHandler());
 		handler.setExecOutputHandler(new ExecutionOutputConfigHandler());
 		

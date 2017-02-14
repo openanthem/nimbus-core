@@ -16,8 +16,8 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import com.anthem.nimbus.platform.core.process.api.ActivitiContext;
-import com.anthem.nimbus.platform.core.process.api.ActivitiContext.ServiceActivatorContext;
+import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiContext;
+import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiContext.ServiceActivatorContext;
 
 import lombok.extern.slf4j.Slf4j;
 

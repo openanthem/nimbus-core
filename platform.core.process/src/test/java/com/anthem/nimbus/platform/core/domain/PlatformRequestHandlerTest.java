@@ -14,23 +14,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.anthem.nimbus.platform.core.process.PlatformProcessEngineConfiguration;
-import com.anthem.nimbus.platform.core.process.api.ActivitiProcessGateway;
-import com.anthem.nimbus.platform.core.process.api.ProcessKeyIdentifier;
+import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiGateway;
+import com.anthem.oss.nimbus.core.config.BPMEngineConfig;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Behavior;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.command.execution.HierarchyMatchBasedBeanFinder;
 import com.anthem.oss.nimbus.core.domain.model.state.HierarchyMatch;
 
 import test.com.anthem.nimbus.platform.spec.model.comamnd.TestCommandFactory;
 
-@SpringApplicationConfiguration(classes = {PlatformProcessEngineConfiguration.class})
+@SpringApplicationConfiguration(classes = {BPMEngineConfig.class})
 @RunWith(SpringJUnit4ClassRunner.class)
 public class PlatformRequestHandlerTest {
 	
 	@Autowired
-	ActivitiProcessGateway processGateway;
+	ActivitiGateway processGateway;
 	
 	@Autowired
 	RuntimeService runtimeService;
@@ -45,7 +45,7 @@ public class PlatformRequestHandlerTest {
 	RepositoryService repositoryService;
 	
 	@Autowired
-	private ProcessKeyIdentifier processKeyIdentifier;
+	private HierarchyMatchBasedBeanFinder processKeyIdentifier;
 	
 	//@Test
 	public void testFindPatient() {

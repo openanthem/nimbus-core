@@ -56,10 +56,6 @@ public class CollectionsTemplate<T extends Collection<E>, E> {
 		return isNullOrEmpty() ? 0 : get().size();
 	}
 	
-	/**
-	 * 
-	 * @return
-	 */
 	protected Collection<E> createOrGet() {
 		if(get() == null) {
 			set(creator.get());
@@ -68,11 +64,6 @@ public class CollectionsTemplate<T extends Collection<E>, E> {
 		return get();
 	}
 	
-	/**
-	 * 
-	 * @param elem
-	 * @return
-	 */
 	public CollectionsTemplate<T, E> add(E elem) {
 		if(elem != null) {
 			createOrGet().add(elem);
@@ -81,12 +72,6 @@ public class CollectionsTemplate<T extends Collection<E>, E> {
 		return this;
 	}
 	
-	/**
-	 * 
-	 * @param o
-	 * @param toAdd
-	 * @return
-	 */
 	public E getOrAdd(Object o, Supplier<E> toAdd) {
 		E exists = find(o);
 		if(exists != null) return exists;
@@ -116,6 +101,18 @@ public class CollectionsTemplate<T extends Collection<E>, E> {
 		}
 	}
 	
+	public int indexOf(E elem) {
+		if(isNullOrEmpty())
+			return -1;
+		
+		if(getter.get() instanceof List) {
+			return ((List<E>)getter.get()).indexOf(elem);
+		} 
+		
+		ArrayList<E> col = new ArrayList<>(getter.get());
+		return col.indexOf(elem);
+	}
+	
 	@SuppressWarnings("unchecked")
 	public E find(Object o) {
 		T col = getter.get();
@@ -138,11 +135,6 @@ public class CollectionsTemplate<T extends Collection<E>, E> {
 		return null;
 	}
 	
-	/**
-	 * 
-	 * @param other
-	 * @return
-	 */
 	public boolean contains(E other) {
 		T col = get();
 		if(CollectionUtils.isEmpty(col)) return false;

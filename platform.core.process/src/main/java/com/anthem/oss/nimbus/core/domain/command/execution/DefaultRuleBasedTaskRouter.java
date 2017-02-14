@@ -6,8 +6,8 @@ import org.drools.KnowledgeBase;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.springframework.stereotype.Component;
 
-import com.anthem.nimbus.platform.core.process.api.exec.TaskInitializer;
-import com.anthem.nimbus.platform.core.process.api.exec.TaskRouter;
+import com.anthem.oss.nimbus.core.bpm.TaskInitializer;
+import com.anthem.oss.nimbus.core.bpm.TaskRouter;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 
 /**

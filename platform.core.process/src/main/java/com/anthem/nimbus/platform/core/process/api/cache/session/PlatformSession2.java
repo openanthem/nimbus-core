@@ -7,7 +7,6 @@ package com.anthem.nimbus.platform.core.process.api.cache.session;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
-import com.anthem.nimbus.platform.core.process.api.ProcessBeanResolver;
 import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
@@ -19,6 +18,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
 import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
 import com.anthem.oss.nimbus.core.util.ClassLoadUtils;
+import com.anthem.oss.nimbus.core.utils.ProcessBeanResolver;
 
 /**
  * @author Jayant Chaudhuri

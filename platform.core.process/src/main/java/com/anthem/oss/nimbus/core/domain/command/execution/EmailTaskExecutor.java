@@ -13,10 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
-import com.anthem.nimbus.platform.core.process.api.QuadModelVelocityContext;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.TemplateDefinition;
+import com.anthem.oss.nimbus.core.template.velocity.QuadModelVelocityContext;
 
 import lombok.Getter;
 import lombok.Setter;

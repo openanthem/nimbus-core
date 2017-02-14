@@ -4,7 +4,7 @@
 package com.anthem.oss.nimbus.core.integration.sa;
 
 
-import com.anthem.nimbus.platform.core.process.api.ActivitiContext.ServiceActivatorContext;
+import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiContext.ServiceActivatorContext;
 
 /**
  * @author AC67870

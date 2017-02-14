@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import com.anthem.nimbus.platform.spec.contract.event.StateAndConfigEventPublisher;
-import com.anthem.nimbus.platform.utils.converter.NavigationStateHelper;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
@@ -51,7 +50,7 @@ public class QuadModelBuilder {
 	
 	@Autowired ApplicationContext appCtx;
 	
-	@Autowired NavigationStateHelper navigationStateHelper;
+	@Autowired PageNavigationInitializer navigationStateHelper;
 	
 	@Autowired ValidatorProvider validatorProvider;
 	

@@ -20,16 +20,22 @@ public class ParamValue implements Serializable {
 	
 	private String label;
 	
+	private String desc;
+	
 	private boolean isActive = true;
 	
 	
 	public ParamValue(Object code) {
-		this.code = code;
+		this(code, null, null);
 	}
 	
 	public ParamValue(Object code, String label) {
-		this(code);
-		this.label = label;
+		this(code, label, null);
 	}
 
+	public ParamValue(Object code, String label, String desc) {
+		this.code = code;
+		setLabel(label);
+		setDesc(desc);
+	}
 }
