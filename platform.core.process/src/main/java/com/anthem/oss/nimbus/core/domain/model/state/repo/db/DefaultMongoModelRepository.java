@@ -35,7 +35,8 @@ import lombok.Setter;
 @Getter @Setter 
 public class DefaultMongoModelRepository implements ModelRepository {
 
-	@Autowired MongoOperations mongoOps;
+	//@Autowired 
+	MongoOperations mongoOps;
 	
 	@Override
 	public <T> T _new(Class<T> referredClass, String alias) {

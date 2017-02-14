@@ -36,10 +36,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.anthem.nimbus.platform.utils.converter.NavigationStateHelper;
 import com.anthem.oss.nimbus.core.domain.command.Command;
+import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType.CollectionType;
+import com.anthem.oss.nimbus.core.domain.model.config.builder.EntityConfigBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListElemParam;
@@ -48,8 +50,11 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.DefaultParamStateRepositoryLocal;
 import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
+import com.anthem.oss.nimbus.core.rules.DefaultRulesEngineFactoryProducer;
 import com.anthem.oss.nimbus.core.session.UserEndpointSession;
+import com.anthem.oss.nimbus.core.utils.JavaBeanHandler;
 import com.anthem.oss.nimbus.test.sample.um.model.ServiceLine;
 import com.anthem.oss.nimbus.test.sample.um.model.ServiceLine.AuditInfo;
 import com.anthem.oss.nimbus.test.sample.um.model.UMCase;
@@ -65,7 +70,9 @@ import test.com.anthem.nimbus.platform.utils.JsonUtils;
  */
 @RunWith(SpringRunner.class)
 @EnableConfigurationProperties
-@ComponentScan(basePackageClasses={QuadModelBuilder.class, NavigationStateHelper.class})
+@ComponentScan(basePackageClasses={
+		DomainConfigBuilder.class, EntityConfigBuilder.class, QuadModelBuilder.class, NavigationStateHelper.class, DefaultRulesEngineFactoryProducer.class,
+		DefaultParamStateRepositoryLocal.class, JavaBeanHandler.class})
 @ContextConfiguration(initializers=ConfigFileApplicationContextInitializer.class)
 @ImportAutoConfiguration(RefreshAutoConfiguration.class)
 @ActiveProfiles("local")

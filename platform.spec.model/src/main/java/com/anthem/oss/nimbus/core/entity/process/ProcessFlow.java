@@ -9,7 +9,6 @@ import org.springframework.data.annotation.Transient;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.ProcessConfiguration;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.RulesEngineRuntime;
-import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
@@ -22,7 +21,7 @@ import lombok.Setter;
  * @author Jayant Chaudhuri
  *
  */
-@Domain(value="flow")
+//@Domain(value="flow")
 @Repo(Database.rep_mongodb)
 @Getter @Setter
 public class ProcessFlow extends AbstractEntity.IdString implements Serializable{

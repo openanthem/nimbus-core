@@ -37,6 +37,9 @@ public class DroolsRulesEngineFactory implements RulesEngineFactory {
 			
 		} else { 
 			logit.info(()->"Rules file found at location: "+verifyUrl);
+			//TODO change
+			if(true)
+				return null;
 		}
 		
 		KnowledgeBuilder kbBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();

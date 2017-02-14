@@ -3,10 +3,8 @@
  */
 package com.anthem.oss.nimbus.core.domain.config.builder;
 
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 import javax.annotation.PostConstruct;
 
@@ -100,38 +98,25 @@ public class DomainConfigBuilder {
 		
 	}
 	
-	public void handlePackage(String basePackage, EntityConfigVistor visitedModels) {
-		handlePackage(
-				basePackage, Domain.class, 
-				(clazz)->AnnotationUtils.findAnnotation(clazz, Domain.class).value(), 
-				visitedModels);
-		/*
-		handlePackage(
-				basePackage, Domain.class, 
-				(clazz)->Constants.PREFIX_FLOW.code + AnnotationUtils.findAnnotation(clazz, ViewDomain.class).value(), 
-				visitedModels);
-		*/		
-	}
-	 
-	public <T> void handlePackage(String basePackage, Class<? extends Annotation> annotationClass, Function<Class<T>, String> aliasCb, EntityConfigVistor visitedModels) {
+	public <T> void handlePackage(String basePackage, EntityConfigVistor visitedModels) {
 		ClassPathScanningCandidateComponentProvider scanner = new ClassPathScanningCandidateComponentProvider(false);
-		scanner.addIncludeFilter(new AnnotationTypeFilter(annotationClass));
+		scanner.addIncludeFilter(new AnnotationTypeFilter(Domain.class));
 		
 		for (BeanDefinition bd : scanner.findCandidateComponents(basePackage)) {
 			String classNm = bd.getBeanClassName();
 			
 			Class<T> clazz = ClassLoadUtils.loadClass(classNm);
-			handleDomainConfig(clazz, aliasCb, visitedModels);
+			Domain domain = AnnotationUtils.findAnnotation(clazz, Domain.class);
+			
+			handleDomainConfig(clazz, domain, visitedModels);
 		}
 	}
 	
 	
-	private <T> DefaultDomainConfig handleDomainConfig(Class<T> clazz, Function<Class<T>, String> aliasCb, EntityConfigVistor visitedModels) {
-		String alias = aliasCb.apply(clazz);
-		logit.trace(()->"Processing domain with alias: "+alias);
+	private <T> DefaultDomainConfig handleDomainConfig(Class<T> clazz, Domain domain, EntityConfigVistor visitedModels) {
+		logit.trace(()->"Processing domain: "+domain);
 		
-		
-		DefaultDomainConfig dc = templateConfigs.getOrAdd(alias, ()->new DefaultDomainConfig(alias));
+		DefaultDomainConfig dc = templateConfigs.getOrAdd(domain.value(), ()->new DefaultDomainConfig(domain));
 		modelConfigBuilder.load(clazz, dc, visitedModels);
 		
 		return dc;
