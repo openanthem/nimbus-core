@@ -65,7 +65,7 @@ abstract public class AbstractStateBuilder {
 		return mState;
 	}
 	
-	protected <T> DefaultListModelState<T> createCollectionModel(ListParam<T> associatedParam, ModelConfig<List<T>> config, StateBuilderSupport provider, DefaultListElemParamState.Creator<T> elemCreator) {
+	protected <T> DefaultListModelState<T> createCollectionModel(ListParam associatedParam, ModelConfig<List<T>> config, StateBuilderSupport provider, DefaultListElemParamState.Creator<T> elemCreator) {
 		DefaultListModelState<T> mState = (associatedParam.isMapped()) ? 
 				new MappedDefaultListModelState<>(associatedParam.findIfMapped().getMapsTo().getType().findIfCollection().getModel(), associatedParam, config, provider, elemCreator) :
 				new DefaultListModelState<>(associatedParam, config, provider, elemCreator);					

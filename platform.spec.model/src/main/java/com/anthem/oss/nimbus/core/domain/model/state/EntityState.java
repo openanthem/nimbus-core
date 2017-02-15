@@ -112,7 +112,7 @@ public interface EntityState<T> {
 		
 		public List<Param<? extends Object>> getParams();
 		
-		default public <K> ListModel<K> findIfListModel() {
+		default public ListModel<?> findIfListModel() {
 			return null;
 		}
 		
@@ -148,7 +148,7 @@ public interface EntityState<T> {
 		}
 		
 		@SuppressWarnings("unchecked")
-		@Override
+		//@Override
 		default ListModel<T> findIfListModel() {
 			return this;
 		}
@@ -182,7 +182,7 @@ public interface EntityState<T> {
 		public ParamConfig<T> getConfig();
 		
 		@JsonIgnore
-		public <M> Model<M> getParentModel();
+		public Model<?> getParentModel();
 		
 		public StateType getType();
 		
@@ -206,7 +206,7 @@ public interface EntityState<T> {
 			return false;
 		}
 		
-		default public <K> ListParam<K> findIfCollection() {
+		default public ListParam findIfCollection() {
 			return null;
 		}
 		

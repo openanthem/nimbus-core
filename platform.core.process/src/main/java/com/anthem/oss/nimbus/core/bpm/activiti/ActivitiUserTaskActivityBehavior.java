@@ -77,7 +77,7 @@ public class ActivitiUserTaskActivityBehavior extends UserTaskActivityBehavior {
         ActivitiContext aCtx = (ActivitiContext) execution.getVariable(ActivitiGateway.PROCESS_ENGINE_GTWY_KEY);
         QuadModel<?, ?> quadModel = UserEndpointSession.getOrThrowEx(aCtx.getProcessEngineContext().getCommandMsg().getCommand());
         
-        ListParam<PageNode> param = quadModel.getFlow().findParamByPath("/pageNavigation/pageNodes").findIfCollection();
+        ListParam<PageNode> param = (ListParam<PageNode>)quadModel.getFlow().findParamByPath("/pageNavigation/pageNodes").findIfCollection();
         
         PageNode pageNode = new PageNode();
         pageNode.setId(UUID.randomUUID().toString());

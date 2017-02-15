@@ -3,7 +3,7 @@
  */
 package com.anthem.nimbus.platform.spec.model.dsl.binder;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 
@@ -28,7 +28,7 @@ abstract public class AssignmentTask extends AbstractEntity.IdString{
 	// (e.g. patientEnrollmentTask... so this will help us avoid check for instance of, abstract method)
 	private String taskType;
 	
-	private Date dueDate;
+	private LocalDate dueDate;
 	
 	private String priority;
 	
