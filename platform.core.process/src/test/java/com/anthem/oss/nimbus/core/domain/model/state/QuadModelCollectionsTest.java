@@ -279,7 +279,7 @@ public class QuadModelCollectionsTest {
 	@Test
 	public void tv01_sanity_check_view_builders() {
 		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
-		Model<UMCaseFlow> vUMCase = q.getView();
+		Model<UMCaseFlow> vUMCase = ((Model<UMCaseFlow>)q.getView());
 		assertNotNull(vUMCase);
 		
 		assertNull(vUMCase.getState());
@@ -330,8 +330,8 @@ public class QuadModelCollectionsTest {
 		q.getView().findParamByPath("/pg3/aloha").setState(_ALOHA);
 		
 		assertSame(_ALOHA, q.getCore().getState().getCaseType());
-		assertNotNull(q.getView().getState().getPg3());
-		assertNull(q.getView().getState().getPg3().getAloha());		//coz view leaf param is mapped
+		assertNotNull(((Model<UMCaseFlow>)q.getView()).getState().getPg3());
+		assertNull(((Model<UMCaseFlow>)q.getView()).getState().getPg3().getAloha());		//coz view leaf param is mapped
 		assertSame(_ALOHA, q.getCore().findParamByPath("/caseType").getState());
 	}
 	
@@ -343,7 +343,7 @@ public class QuadModelCollectionsTest {
 		q.getCore().findParamByPath("/caseType").setState(_ALOHA);
 		//Thread.sleep(1000);
 		assertSame(_ALOHA, q.getCore().getState().getCaseType());
-		assertNull(q.getView().getState().getPg3().getAloha());		//coz view leaf param is mapped
+		assertNull(((Model<UMCaseFlow>)q.getView()).getState().getPg3().getAloha());		//coz view leaf param is mapped
 		assertSame(_ALOHA, q.getView().findParamByPath("/pg3/aloha").getState());
 	}
 	
@@ -390,7 +390,7 @@ public class QuadModelCollectionsTest {
 	@Test
 	public void tv05_col_v2c_noConversion() {
 		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
-		Model<UMCaseFlow> vUMCase = q.getView();
+		Model<UMCaseFlow> vUMCase = ((Model<UMCaseFlow>)q.getView());
 		assertNotNull(vUMCase);
 		
 		assertNull(vUMCase.getState());
@@ -405,7 +405,7 @@ public class QuadModelCollectionsTest {
 		
 		
 		// ensure view models have been initialized
-		UMCaseFlow view = q.getView().getState();
+		UMCaseFlow view = ((Model<UMCaseFlow>)q.getView()).getState();
 		assertNotNull(view.getPg3());
 		assertNotNull(view.getPg3().getNoConversionAttachedColServiceLines());
 		//==?? assertNull(view.getPg3().getCoreAttachedServiceLines().get(0));	//mapped direct would not set value into view, only onto mappedCore
@@ -472,7 +472,7 @@ public class QuadModelCollectionsTest {
 	@Test
 	public void tv07_col_v2c_conversion() {
 		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
-		Model<UMCaseFlow> vUMCase = q.getView();
+		Model<UMCaseFlow> vUMCase = ((Model<UMCaseFlow>)q.getView());
 		assertNotNull(vUMCase);
 		
 		assertNull(vUMCase.getState());
@@ -528,7 +528,7 @@ public class QuadModelCollectionsTest {
 		
 		q.getRoot().findParamByPath("/v/pg3/viewAttachedOneServiceLineConverted").setState(coreSingle);
 		assertNotSame(coreSingle, q.getRoot().findParamByPath("/v/pg3/viewAttachedOneServiceLineConverted").getState());
-		assertSame(q.getView().getState().getPg3().getViewAttachedOneServiceLineConverted(), q.getRoot().findParamByPath("/v/pg3/viewAttachedOneServiceLineConverted").getState());
+		assertSame(((Model<UMCaseFlow>)q.getView()).getState().getPg3().getViewAttachedOneServiceLineConverted(), q.getRoot().findParamByPath("/v/pg3/viewAttachedOneServiceLineConverted").getState());
 		//Thread.sleep(1000);
 		assertNotNull(q.getRoot().findParamByPath("/c/oneServiceLineConverted").getState());
 		assertNotSame(coreSingle, q.getRoot().findParamByPath("/c/oneServiceLineConverted").getState());
@@ -538,7 +538,7 @@ public class QuadModelCollectionsTest {
 	@Test
 	public void tv10_col_c2v_noConversion() {
 		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
-		Model<UMCaseFlow> vUMCase = q.getView();
+		Model<UMCaseFlow> vUMCase = ((Model<UMCaseFlow>)q.getView());
 		assertNotNull(vUMCase);
 		
 		assertNull(vUMCase.getState());
@@ -574,7 +574,7 @@ public class QuadModelCollectionsTest {
 	@Test
 	public void tv11_col_c2v_converted() {
 		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
-		Model<UMCaseFlow> vUMCase = q.getView();
+		Model<UMCaseFlow> vUMCase = ((Model<UMCaseFlow>)q.getView());
 		assertNotNull(vUMCase);
 		
 		assertNull(vUMCase.getState());
@@ -658,7 +658,7 @@ public class QuadModelCollectionsTest {
 		
 		q.getRoot().findParamByPath("/v/pg3/convertedDetachedOneServiceLine").setState(viewModel);
 		assertNotSame(viewModel, q.getRoot().findParamByPath("/v/pg3/convertedDetachedOneServiceLine").getState());
-		assertSame(q.getRoot().findParamByPath("/v/pg3/convertedDetachedOneServiceLine").getState(), q.getView().getState().getPg3().getConvertedDetachedOneServiceLine());
+		assertSame(q.getRoot().findParamByPath("/v/pg3/convertedDetachedOneServiceLine").getState(), ((Model<UMCaseFlow>)q.getView()).getState().getPg3().getConvertedDetachedOneServiceLine());
 
 		assertNotNull(q.getRoot().findParamByPath("/v/pg3/convertedDetachedOneServiceLine.m").getState());
 		assertNotSame(viewModel, q.getRoot().findParamByPath("/v/pg3/convertedDetachedOneServiceLine.m").getState());
@@ -675,7 +675,7 @@ public class QuadModelCollectionsTest {
 	@Test
 	public void tv16_col_detached_c2v_noConversion() {
 		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
-		Model<UMCaseFlow> vUMCase = q.getView();
+		Model<UMCaseFlow> vUMCase = ((Model<UMCaseFlow>)q.getView());
 		assertNotNull(vUMCase);
 		
 		assertNull(vUMCase.getState());
