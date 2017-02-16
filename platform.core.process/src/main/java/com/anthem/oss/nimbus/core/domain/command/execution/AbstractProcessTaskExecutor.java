@@ -192,6 +192,7 @@ public abstract class AbstractProcessTaskExecutor implements ProcessTaskExecutor
 
 		return (R)q;
 		
+		
 		//check if new instance is required
 //		if(StringUtils.isEmpty(cmd.getDomainElement().getRefId())) {
 //			ViewModelConfig<?, ?> vmConfig = quadModelBuilder.findViewConfig(cmd);
