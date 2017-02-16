@@ -93,7 +93,7 @@ public interface EntityState<T> {
 		}
 	}
 	
-	public interface Model<T> extends EntityState<T> { //Notification.ObserveOn<MappedModel<?, T>, Model<T>> {
+	public interface Model<T> extends EntityState<T> { 
 		@Override
 		public ModelConfig<T> getConfig();
 		
@@ -131,7 +131,7 @@ public interface EntityState<T> {
 		public ExecutionStateTree getExecutionStateTree();
 	}
 	
-	public interface MappedModel<T, M> extends Model<T>, Mapped<T, M> {//, Notification.Subscriber<Model<M>> {
+	public interface MappedModel<T, M> extends Model<T>, Mapped<T, M> {
 		@Override
 		default public MappedModel<T, M> findIfMapped() {
 			return this;

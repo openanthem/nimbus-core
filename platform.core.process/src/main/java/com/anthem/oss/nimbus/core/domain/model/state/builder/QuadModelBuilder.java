@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import com.anthem.nimbus.platform.spec.contract.event.StateAndConfigEventPublisher;
+import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadScopedEventPublisher;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
@@ -72,31 +73,6 @@ public class QuadModelBuilder {
 	}
 	
 	
-//	public <V, C> QuadModel<V, C> build_old(Command cmd, Function<ModelConfig<C>, C> coreStateCreator) {
-//		return build(cmd, coreStateCreator, null, null);
-//	}
-//
-//	public <V, C> QuadModel<V, C> build(Command cmd, Function<ModelConfig<C>, C> coreStateCreator, Function<ModelConfig<V>, V> viewStateCreator, Function<ModelConfig<FlowState>, FlowState> flowStateCreator) {
-//		logit.trace(()->"[build] Start with "+cmd);
-//		
-//		final ViewModelConfig<V, C> viewConfig = findViewConfig(cmd);
-//		
-//		if(!viewConfig.isMapped())
-//			throw new InvalidConfigException("View model must be mapped to Core model. View: "+viewConfig.getReferredClass());
-//		
-//		
-//		ModelConfig<C> coreConfig = domainConfigApi.getVisitedModels().mapsToModel(viewConfig.getMapsTo());
-//		ModelConfig<FlowState> flowConfig = domainConfigApi.getVisitedModels().get(FlowState.class);
-//		
-//		//C coreState = coreStateGetterFunction.apply(coreConfig);
-//		StateAndConfigMeta.View<V, C> viewMeta = StateAndConfigMeta.View.getInstance(coreConfig, viewConfig, flowConfig, coreStateCreator, viewStateCreator, flowStateCreator);
-//		
-//		QuadModel<V, C> q = build(cmd, viewMeta);
-//		
-//		logit.trace(()->"[build] End with "+cmd);
-//		return q;
-//	}
-	
 	public <V, C> QuadModel<V, C> build(Command cmd) {
 		ExecutionState<V, C> eState = new ExecutionState<>();
 		return build(cmd, eState);
@@ -114,7 +90,7 @@ public class QuadModelBuilder {
 		
 
 		//create event publisher
-		//QuadScopedEventPublisher qEventPublisher = new QuadScopedEventPublisher(getParamEventPublishers());
+		QuadScopedEventPublisher qEventPublisher = new QuadScopedEventPublisher(getParamEventPublishers());
 		
 		StateBuilderSupport provider = new StateBuilderSupport(null, /*getClientUserFromSession(cmd),*/ validatorProvider, paramStateGateway);
 		String rootDomainUri = cmd.getRootDomainUri();
