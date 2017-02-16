@@ -11,20 +11,17 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 
 import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
 import com.anthem.oss.nimbus.core.domain.command.Action;
-import com.anthem.oss.nimbus.core.domain.command.execution.ValidationException;
 import com.anthem.oss.nimbus.core.domain.command.execution.ValidationResult;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
@@ -120,8 +117,11 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 			state = preSetState(state);
 			
 			Action a = getProvider().getParamStateGateway()._set(this, state);
-			if(a!=null)
+			if(a!=null) {
 				notifySubscribers(new Notification<>(this, ActionType._updateState, this));
+				
+				emitEvent(a);
+			}
 			
 			postSetState(a, state);
 			
@@ -175,7 +175,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		if(!getType().isNested())
 			throw new InvalidConfigException("Found param as root which is not nested: "+ this);
 		
-		return getType().findIfNested().getModel().findIfRoot();
+		return findIfNested().findIfRoot();
 	}
 
 
@@ -229,7 +229,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		
 		protected void onEventUpdateState(Notification<M> event) {
 			if(consumingParam.isNested()) {
-				consumingParam.getType().findIfNested().getModel().instantiateOrGet();
+				consumingParam.findIfNested().instantiateOrGet();
 			} else {
 				Optional.ofNullable(consumingParam.getParentModel()).ifPresent(m->m.instantiateOrGet());
 			}	
@@ -237,7 +237,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		
 	    protected void onEventNewModel(Notification<M> event) {
 	    	if(consumingParam.isNested()) {
-	    		consumingParam.getType().findIfNested().getModel().instantiateOrGet();
+	    		consumingParam.findIfNested().instantiateOrGet();
 	    	}
 	    }
 	    protected void onEventDeleteModel(Notification<M> event) {}
@@ -315,94 +315,14 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		return getConfig().isFound(resolvedPath);
 	}
 	
+
 	
-//	@Override
-//	public void setState(T state) {
-//		ClientUser cu = this.getProvider().getClientUser();
-//		
-//		// delegate to model.setState if of type nested model
-////		if(getType().isNested()) {
-////			getType().findIfNested().getModel().setState(state);
-////			return;
-////		}
-//		
-//		Action a = setStateInternal(state);
-//		
-//		
-//		boolean hasAccess = true;
-//		if(a != null){
-//			ClientUserAccessBehavior clientUserAccessBehavior = cu.newBehaviorInstance(ClientUserAccessBehavior.class);			
-//			hasAccess = clientUserAccessBehavior.canUserPerformAction(getPath(),a.name());
-//		}
-//		
-//		if(hasAccess){		
-//			setStateAndNotifyObservers(state);
-//			emitEvent(this);
-//		}else{
-//			log.debug("User does not have access to set state on ["+getPath()+"] for action : ["+a.name()+"]");
-//			throw new UserNotAuthorizedException("User not authorized to set state on ["+getPath()+"] for action : ["+a.name()+"] " +this);
-//		}
-//			
-//	}
-	
-	protected void emitEvent(EntityState<?> p) {
+	protected void emitEvent(Action a) {
 		if(getProvider().getEventPublisher() == null) return;
-		if(p instanceof DefaultParamState<?>) {
-			DefaultParamState<?> param = (DefaultParamState<?>)p;
-			ModelEvent<DefaultParamState<?>> e = new ModelEvent<DefaultParamState<?>>(Action._replace, param.getPath(), param);
-			getProvider().getEventPublisher().publish(e);
-		}
-		else if(p instanceof DefaultModelState<?>){
-			DefaultModelState<?> param = (DefaultModelState<?>)p;
-			ModelEvent<DefaultModelState<?>> e = new ModelEvent<DefaultModelState<?>>(Action._replace, param.getPath(), param);
-			getProvider().getEventPublisher().publish(e);
-		}
-		//ModelEvent<ParamStateAndConfig<?>> e = new ModelEvent<ParamStateAndConfig<?>>(Action._replace, p.getPath(), p);
 		
+		ModelEvent<DefaultParamState<?>> e = new ModelEvent<DefaultParamState<?>>(a, getPath(), this);
+		getProvider().getEventPublisher().publish(e);
 	}
 	
-	/**
-	 * 
-	 */
-	@Override
-	public void validateAndSetState(T state) {
-		validate(state);
-		
-		if(CollectionUtils.isNotEmpty(this.validationResult.getErrors())) {
-			emitEvent(this);
-	    	throw new ValidationException(this.validationResult);
-	    } 
-		else {
-	    	setState(state);
-	    }
-	}
-	
-	/**
-	 * 
-	 * @param state
-	 */
-	private void validate(T state) {
-		this.validationResult = new ValidationResult();
-	    //TODO change the hard coded bean class and property with the respective getter methods once available
-		if(isMapped()) { 
-			//for view mapped param
-			Class<?> mappedParamClass = getConfig().getReferredClass();
-			String mappedParamCode = getConfig().getCode();
-			
-			//for core mapsTo param
-			Class<?> mapsToParamClass = findIfMapped().getConfig().getReferredClass();
-			String mapsToParamCode = findIfMapped().getConfig().getCode();
-			
-			this.validationResult.addValidationErrors(getProvider().getValidatorProvider().getValidator().validateValue(mappedParamClass, mappedParamCode, state));
-		    this.validationResult.addValidationErrors(getProvider().getValidatorProvider().getValidator().validateValue(mapsToParamClass, mapsToParamCode, state)); 
-			
-		} 
-		else {
-			Class<?> paramClass = getConfig().getReferredClass();
-			String paramCode = getConfig().getCode();
-			
-			this.validationResult.addValidationErrors(getProvider().getValidatorProvider().getValidator().validateValue(paramClass, paramCode, state)); 
-		} 
-	}
 	
 }

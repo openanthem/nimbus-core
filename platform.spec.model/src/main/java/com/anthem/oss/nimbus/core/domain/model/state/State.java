@@ -4,7 +4,6 @@
 package com.anthem.oss.nimbus.core.domain.model.state;
 
 import com.anthem.oss.nimbus.core.domain.command.Action;
-import com.anthem.oss.nimbus.core.domain.command.execution.ValidationException;
 
 /**
  * @author Soham Chakravarti
@@ -16,5 +15,5 @@ public interface State<T> {
 	
 	public Action setState(T state);
 	
-	public void validateAndSetState(T state) throws ValidationException;
+	//public void validateAndSetState(T state) throws ValidationException;
 }

@@ -282,13 +282,13 @@ abstract public class AbstractEntityConfigBuilder {
 
 		created.setUiStyles(AnnotationConfigHandler.handleSingle(f, ViewStyle.class));
 
-		
 		if(AnnotatedElementUtils.isAnnotated(f, Model.Param.Values.class)) {
 			Model.Param.Values aVal = AnnotationUtils.getAnnotation(f, Model.Param.Values.class);
 			
-			Model.Param.Values.Source srcValues = ClassLoadUtils.newInstance(aVal.value());
-			List<ParamValue> values = srcValues.getValues(created.getCode());
-			created.setValues(values);
+			//Model.Param.Values.Source srcValues = ClassLoadUtils.newInstance(aVal.value());
+			//List<ParamValue> values = srcValues.getValues(created.getCode());
+			created.setValuesUrl(aVal.url());
+			//created.setValues(values);
 		}
 		
 		String value ="";

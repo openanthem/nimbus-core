@@ -8,15 +8,22 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
+import com.anthem.oss.nimbus.core.domain.command.Action;
+import com.anthem.oss.nimbus.core.domain.command.Behavior;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
+import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
+import com.anthem.oss.nimbus.core.domain.command.execution.ProcessGateway;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig.MappedParamConfig;
+import com.anthem.oss.nimbus.core.domain.model.config.internal.DefaultParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
@@ -45,6 +52,10 @@ import lombok.Getter;
 abstract public class AbstractStateBuilder {
 
 	@Autowired RulesEngineFactoryProducer rulesEngineFactoryProducer;
+	
+	@Autowired
+	@Qualifier("default.processGateway")
+	ProcessGateway processGateway;
 	
 	protected JustLogit logit = new JustLogit(getClass());
 	
@@ -103,6 +114,10 @@ abstract public class AbstractStateBuilder {
 			p = createParamUnmapped(provider, parentModel, mapsToSAC, mpConfig);
 		
 		p.init();
+		
+		/* setting param values if applicable */
+		createParamValues(mpConfig, p.getPath());
+		
 		return p;
 	}
 	
@@ -158,5 +173,34 @@ abstract public class AbstractStateBuilder {
 				+ "Mapped Param: "+mapped.getCode()+" with mapsTo: "+mapped.getPath().value()+" mapped model: "+mapsToStateAndConfig.getPath());
 			
 		return mapsToParam;	
+	}
+	
+	private <P> void createParamValues(ParamConfig<P> mpConfig, String paramPath) {
+		
+		if(StringUtils.isNotBlank(mpConfig.getValuesUrl())) {
+			//Source src = ProcessBeanResolver.getBean(mpConfig.getValuesUrl(),Source.class);
+			//List<ParamValue> values = src.getValues(mpState.getPath());
+			DefaultParamConfig<P> config = (DefaultParamConfig<P>) mpConfig;
+			
+			if(config.getValuesGetter() == null) {
+				config.setValuesGetter(() -> {
+					String[] uriWithPayload = config.getValuesUrl().split(Constants.CODE_VALUE_CONFIG_DELIMITER.code);
+					Command cmd = CommandBuilder.withUri(Constants.PARAM_VALUES_URI_PREFIX.code+uriWithPayload[0]+Constants.PARAM_VALUES_URI_SUFFIX.code).getCommand();
+					cmd.setAction(Action._search);
+					cmd.templateBehaviors().add(Behavior.$execute);
+					CommandMessage cmdMsg = new CommandMessage();
+					cmdMsg.setCommand(cmd);
+					if(uriWithPayload.length > 1) {
+						cmdMsg.setRawPayload(uriWithPayload[1]); // domain model lookup
+					}
+					else{
+						cmdMsg.setRawPayload(paramPath); // static code value lookup
+					}
+					
+					MultiExecuteOutput output = (MultiExecuteOutput) processGateway.startProcess(cmdMsg);
+					return output.getSingleResult();
+				});
+			}
+		}
 	}
 }

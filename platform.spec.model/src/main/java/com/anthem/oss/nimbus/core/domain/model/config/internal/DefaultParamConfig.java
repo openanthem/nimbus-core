@@ -5,6 +5,7 @@ package com.anthem.oss.nimbus.core.domain.model.config.internal;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -14,6 +15,7 @@ import com.anthem.oss.nimbus.core.domain.model.config.AnnotationConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +44,8 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	@Setter private List<AnnotationConfig> uiNatures;
 
 	@Setter private AnnotationConfig uiStyles;
+	
+	@Setter @JsonIgnore private transient Supplier<List<ParamValue>> valuesGetter;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -83,6 +87,15 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 		/* param is leaf node */
 		ParamConfig<K> p = isFound(pathArr[0]) ? (ParamConfig<K>) this : null;
 		return p;
+	}
+	
+	public List<ParamValue> getValues() {
+		if(getValuesGetter() != null) {
+			List<ParamValue> values = getValuesGetter().get();
+			if(values != null) 
+				this.values = values;
+		}
+		return values;
 	}
 	
 }

@@ -64,9 +64,9 @@ public class SimpleState<T> extends AbstractState<T> implements Observer {
 //		}
 //	}
 	
-	@Override
-	public void validateAndSetState(T state)  {
-		//throw new OperationNotSupportedException("Cannot validate and set state for SimplateState type: "+state);
-	}
+//	@Override
+//	public void validateAndSetState(T state)  {
+//		//throw new OperationNotSupportedException("Cannot validate and set state for SimplateState type: "+state);
+//	}
 	
 }

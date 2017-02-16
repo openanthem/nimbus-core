@@ -38,6 +38,10 @@ public interface ParamConfig<P> extends EntityConfig<P>, Findable<String> {
 	
 	public AnnotationConfig getUiStyles();
 	
+	public List<ParamValue> getValues();
+	
+	public String getValuesUrl();
+	
 	default MapsTo.Mode getMappingMode() {
 		return MapsTo.Mode.UnMapped;
 	}

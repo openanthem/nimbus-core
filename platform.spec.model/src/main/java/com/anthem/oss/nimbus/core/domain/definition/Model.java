@@ -40,7 +40,9 @@ public @interface Model {
 				public List<ParamValue> getValues(String paramCode);
 			}
 			
-			Class<? extends Source> value();
+			Class<? extends Source> value() default Source.class;
+			
+			String url() default "staticCodeValue";
 		}
 		
 		@Retention(RetentionPolicy.RUNTIME)
