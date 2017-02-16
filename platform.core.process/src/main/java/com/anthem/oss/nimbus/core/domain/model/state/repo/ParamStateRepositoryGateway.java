@@ -181,7 +181,7 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 				if(!(newState instanceof Collection))
 					throw new InvalidArgumentException("Collection param with path: "+param.getPath()+" must have argument of type "+Collection.class);
 				
-				ListParam<P> listParam = param.findIfCollection();
+				ListParam<P> listParam = (ListParam<P>)param.findIfCollection();
 				Collection<P> state = (Collection<P>)newState;
 				// add element parameters
 				Optional.ofNullable(state)
@@ -220,7 +220,7 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 			if(!(newState instanceof Collection))
 				throw new InvalidArgumentException("Collection param with path: "+param.getPath()+" must have argument of type "+Collection.class);
 			
-			ListParam<P> listParam = param.findIfCollection();
+			ListParam<P> listParam = (ListParam<P>)param.findIfCollection();
 			Collection<P> state = (Collection<P>)newState;
 			// add element parameters
 			Optional.ofNullable(state)

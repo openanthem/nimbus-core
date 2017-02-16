@@ -16,7 +16,7 @@ public class ParamValue implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
-	final private Object code;
+	private Object code;
 	
 	private String label;
 	
@@ -24,6 +24,7 @@ public class ParamValue implements Serializable {
 	
 	private boolean isActive = true;
 	
+	public ParamValue() {}
 	
 	public ParamValue(Object code) {
 		this(code, null, null);

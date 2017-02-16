@@ -93,7 +93,7 @@ public class DefaultActionExecutorUpdate extends AbstractProcessTaskExecutor {
 		ExecutionStateTree stateTree = parent.getExecutionStateTree();
 		if(stateTree == null){
 			stateTree = new ExecutionStateTree();
-			parent.setExecutionStateTree(stateTree);
+			//parent.setExecutionStateTree(stateTree); //TODO refactor revisit commented due to framework change (Jayant ??)
 		}
 		RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
 		requestAttributes.setAttribute(ExecutionStateTree.TRIGGER_PARAM_KEY, param, RequestAttributes.SCOPE_REQUEST);

@@ -3,7 +3,6 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.anthem.nimbus.platform.core.process.api.domain.event.ParamStateBatchPersistenceEventPublisher;
@@ -22,7 +21,7 @@ public class DefaultBehaviorExecutorSave extends AbstractProcessTaskExecutor {
 	@Override
 	public <R> R doExecuteInternal(CommandMessage cmdMsg) {
 		
-		publisher.flush();
+		//publisher.flush();
 		
 		return (R)Boolean.TRUE;
 	}

@@ -116,7 +116,8 @@ public class PlatformSession2 {
 		}	
 		ActionExecuteConfig<?, ?> aec = domainConfigAPI.getActionExecuteConfig(cmd);
 		ModelConfig<?> mConfig = aec.getOutput().getModel();
-		Class<?> coreClass = mConfig.isMapped() ? mConfig.getMapsTo().value() : mConfig.getReferredClass();
+		//Class<?> coreClass = mConfig.isMapped() ? mConfig.getRe().value() : mConfig.getReferredClass();
+		Class<?> coreClass = mConfig.isMapped() ? mConfig.getReferredClass() : mConfig.getReferredClass(); //TODO commented above line during refactor test. please revisit
 		Object core = ClassLoadUtils.newInstance(coreClass);
 		
 		
@@ -125,7 +126,8 @@ public class PlatformSession2 {
 		Class<?> viewClass = mConfig.getReferredClass();
 		Object view = ClassLoadUtils.newInstance(viewClass);
 		
-		QuadModel<?,?> quadModel = quadModelBuilder.build(cmd, c-> core, v -> view, flow -> flowState);
+		//QuadModel<?,?> quadModel = quadModelBuilder.build(cmd, c-> core, v -> view, flow -> flowState);
+		QuadModel<?,?> quadModel = null; // TODO commented above line during refactor test. please revisit
 		return quadModel;		
 	}
 	

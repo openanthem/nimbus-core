@@ -155,6 +155,7 @@ public class ViewConfig {
 		String alias() default "Form";
 		String submitUrl() default "";
 		String b() default "";
+		String cssClass() default "";
 	}	
 	
 	@Retention(RetentionPolicy.RUNTIME)

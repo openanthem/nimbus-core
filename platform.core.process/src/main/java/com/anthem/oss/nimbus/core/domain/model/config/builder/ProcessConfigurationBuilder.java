@@ -46,7 +46,7 @@ public class ProcessConfigurationBuilder {
 		ProcessConfiguration processConfiguration = domainRootToProcessConfiguration.get(uri);
 		if(processConfiguration != null)
 			return processConfiguration;
-		processConfiguration = findMatchingProcessConfiguration(quadModel);
+		processConfiguration = findMatchingProcessConfiguration(quadModel2);
 		if(processConfiguration != null){
 			domainRootToProcessConfiguration.put(uri, processConfiguration);
 		}
@@ -59,14 +59,14 @@ public class ProcessConfigurationBuilder {
 	 * @return
 	 */
 	private ProcessConfiguration findMatchingProcessConfiguration(QuadModel<?,?> quadModel2){
-		Model<?> coreModel = quadModel.getCore();
-		Model<?> viewModel = quadModel.getView();
+		Model<?> coreModel = quadModel2.getCore();
+		Model<?> viewModel = quadModel2.getView();
 		String coreModelName = coreModel.getState().getClass().getAnnotation(Domain.class).value();
 		String viewModelName = viewModel.getState().getClass().getAnnotation(Domain.class).value();
 		StringBuilder coreModelSearchString = new StringBuilder();
-		coreModelSearchString.append("rules-sample/").append(coreModelName).append(".drl");
+		//coreModelSearchString.append("rules-sample/").append(coreModelName).append(".drl");
 		StringBuilder viewModelSearchString = new StringBuilder();
-		viewModelSearchString.append("rules-sample/flow_").append(viewModelName).append(".drl");
+		//viewModelSearchString.append("rules-sample/flow_").append(viewModelName).append(".drl");
 		ProcessConfiguration pc = new ProcessConfiguration();
 		KnowledgeBase corekb = loadKnowledgeBase(coreModelSearchString.toString());
 		KnowledgeBase viewkb = loadKnowledgeBase(viewModelSearchString.toString());

@@ -181,9 +181,10 @@ public abstract class AbstractProcessTaskExecutor implements ProcessTaskExecutor
 		UserEndpointSession.setAttribute(qLoadCmdMsg.getCommand(), q);
 		q.getRoot().fireRules(); //TODO verify if it is ok to run rules in defaultGet ??
 		
-		if(StringUtils.isBlank(q.getFlow().getState().getProcessExecutionId())){
-			initiateProcessExecution(qLoadCmdMsg, q);
-		}
+		// TODO - check with Jayant to refactor the state navigation after framework update?
+//		if(StringUtils.isBlank(q.getFlow().getState().getProcessExecutionId())){
+//			initiateProcessExecution(qLoadCmdMsg, q);
+//		}
 		
 		
 		//QuadModel<?, ?> q = cmd.getRootDomainElement().hasRefId() ? defaultGetExec.doExecuteInternal(qLoadCmdMsg) : defaultNewExec.doExecuteInternal(qLoadCmdMsg);
