@@ -45,6 +45,13 @@ public class QuadModel<V, C> implements Serializable {
 		this.flow = getRoot().findModelByPath("/f");
 	}
 	
+	public Model<?> getView() {
+		if(view==null)
+			return core;
+		
+		return view;
+	}
+	
 	public Model<?> resolveStateAndConfig(Command cmd) {
 		return cmd.isView() ? view : core;
 	}
