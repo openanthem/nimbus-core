@@ -70,6 +70,13 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 	
 	protected void initInternal() {} 
 	
+	public String getPath() {
+		String p = StringUtils.removeStart(path, "/c");
+		p = StringUtils.removeStart(p, "/v");
+		p = StringUtils.removeStart(p, "/f");
+		return p;
+	}
+	
 	@Override
 	public String toString() {
 		return new StringBuilder()

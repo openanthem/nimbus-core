@@ -111,7 +111,7 @@ public class QuadModelCollectionsTest {
 		// ParamSAC
 		Param<List<ServiceLine>> pSAC_col = q.getCore().findParamByPath("/serviceLines");
 		assertNotNull(pSAC_col);
-		assertEquals("/c/serviceLines", pSAC_col.getPath());
+		assertEquals("/serviceLines", pSAC_col.getPath());
 		
 		assertTrue(pSAC_col.getType().isNested());
 		assertTrue(pSAC_col.getType().isCollection());
@@ -268,10 +268,10 @@ public class QuadModelCollectionsTest {
 		
 		ListParam<AuditInfo> p_a = q.getCore().findParamByPath("/serviceLines/0/discharge/audits").findIfCollection();
 		assertNotNull(p_a);
-		assertEquals("/c/serviceLines/0/discharge/audits", p_a.getPath());
+		assertEquals("/serviceLines/0/discharge/audits", p_a.getPath());
 		
 		p_a.add(a0);
-		assertEquals("/c/serviceLines/0/discharge/audits/0", p_a.findParamByPath("/0").getPath());
+		assertEquals("/serviceLines/0/discharge/audits/0", p_a.findParamByPath("/0").getPath());
 		
 		assertSame(a0, core.getServiceLines().get(0).getDischarge().getAudits().get(0));
 	}
