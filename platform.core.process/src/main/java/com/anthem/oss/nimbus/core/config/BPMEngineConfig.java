@@ -31,6 +31,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiDAO;
 import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiExpressionManager;
+import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiUserTaskActivityBehavior;
 
 
 @Configuration
@@ -88,7 +89,7 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
    		return new DefaultActivityBehaviorFactory() {
    			@Override
    			public UserTaskActivityBehavior createUserTaskActivityBehavior(UserTask userTask) {
-   				UserTaskActivityBehavior platformUserTaskBehavior = new UserTaskActivityBehavior(userTask);
+   				ActivitiUserTaskActivityBehavior platformUserTaskBehavior = new ActivitiUserTaskActivityBehavior(userTask);
    				return platformUserTaskBehavior;
    			}
    		};
