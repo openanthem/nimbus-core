@@ -91,37 +91,9 @@ public class ViewConfig {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
-	public @interface CardContentGrid {
-		String alias() default "CardContentGrid";
-	}
-
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.FIELD})
-	@ViewStyle
-	public @interface CardContent {
-		String alias() default "CardContent";
-	}
-	
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.FIELD})
-	@ViewStyle
-	public @interface CardHeader {
-		String alias() default "CardHeader";
-		String url() default "";
-	}
-	
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.FIELD})
-	@ViewStyle
-	public @interface CardBody {
-		String alias() default "CardBody";
-	}
-	
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.FIELD})
-	@ViewStyle
-	public @interface CardFooter {
-		String alias() default "CardFooter";
+	public @interface CardDetailsGrid {
+		String alias() default "CardDetailsGrid";
+		String editUrl() default "";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
@@ -192,6 +164,7 @@ public class ViewConfig {
 		String labelClass() default "anthem-label";
 		String type() default "text";
 		boolean postEventOnChange() default false;
+		String controlId() default "";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
@@ -202,6 +175,7 @@ public class ViewConfig {
 		boolean readOnly() default false;
 		String labelClass() default "anthem-label";
 		boolean postEventOnChange() default false;
+		String controlId() default "";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
@@ -230,6 +204,7 @@ public class ViewConfig {
 		String labelClass() default "anthem-label";
 		String type() default "date";
 		boolean postEventOnChange() default false;
+		String controlId() default "";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
@@ -251,6 +226,7 @@ public class ViewConfig {
 		String level() default "0";
 		String cssClass() default "";
 		boolean postEventOnChange() default false;
+		String controlId() default "";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
@@ -262,6 +238,7 @@ public class ViewConfig {
 		String cssClass() default "";
 		String labelClass() default "anthem-label";
 		boolean postEventOnChange() default false;
+		String controlId() default "";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
