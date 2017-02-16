@@ -62,11 +62,11 @@ public class ExecutionOutputConfigHandler {
 		@SuppressWarnings("unchecked")
 		ActionExecuteConfig<?, T> aec = (ActionExecuteConfig<?, T>) dc.templateActionConfigs().getOrAdd(a, ()->new ActionExecuteConfig<>(a));
 		
-		if(aec.hasOutput()) throw new InvalidConfigException("Found another config for: "+Execution.Output.class.getSimpleName()
-				+" for Action: "+ a
-				+" with referredClass: "+ aec.getOutput().getModel().getReferredClass()
-				+" while loading config for current class: "+mConfig.getReferredClass());
-		
+//		if(aec.hasOutput()) throw new InvalidConfigException("Found another config for: "+Execution.Output.class.getSimpleName()
+//				+" for Action: "+ a
+//				+" with referredClass: "+ aec.getOutput().getModel().getReferredClass()
+//				+" while loading config for current class: "+mConfig.getReferredClass());
+//		
 		//TODO REMOVED CLONING WHILE STATIC CREATING>> GIVEN THAT STATE WOULD REQUIRE CLONING ANYWAYS: ModelConfig clonedModelConfig = mConfig.clone(o.ignore());
 		aec.setOutput(new Output<>(mConfig, o.paginated(), o.fetch()));
 		return aec;

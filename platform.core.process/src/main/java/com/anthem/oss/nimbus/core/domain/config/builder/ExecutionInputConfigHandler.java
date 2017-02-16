@@ -67,10 +67,10 @@ public class ExecutionInputConfigHandler {
 		@SuppressWarnings("unchecked")
 		ActionExecuteConfig<T, ?> aec = (ActionExecuteConfig<T, ?>)dc.templateActionConfigs().getOrAdd(a, ()->new ActionExecuteConfig<>(a));
 		
-		if(aec.hasInput()) throw new InvalidConfigException("Found another config for: "+Execution.Input.class.getSimpleName()
-				+" for Action: "+ a
-				+" with referredClass: "+ aec.getInput().getModel().getReferredClass()
-				+" while loading config for current class: "+mConfig.getReferredClass());
+//		if(aec.hasInput()) throw new InvalidConfigException("Found another config for: "+Execution.Input.class.getSimpleName()
+//				+" for Action: "+ a
+//				+" with referredClass: "+ aec.getInput().getModel().getReferredClass()
+//				+" while loading config for current class: "+mConfig.getReferredClass());
 		
 		//TODO REMOVED CLONING WHILE STATIC CREATING>> GIVEN THAT STATE WOULD REQUIRE CLONING ANYWAYS: ModelConfig clonedModelConfig = mConfig.clone(ignore);
 		aec.setInput(new Input<>(mConfig));

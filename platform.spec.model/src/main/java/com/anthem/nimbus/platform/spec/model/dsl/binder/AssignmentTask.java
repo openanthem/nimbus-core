@@ -40,7 +40,8 @@ abstract public class AssignmentTask extends AbstractEntity.IdString{
 	
 	public enum TaskStatus{
 		IN_PROGRESS,	
-		COMPLETED	
+		COMPLETED,
+		OPEN
 	}
 	
 	
