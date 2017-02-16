@@ -71,7 +71,7 @@ abstract public class AbstractEntityConfigBuilder {
 			
 			ModelConfig<?> mapsTo = visitedModels.get(mapsToType.value());
 			if(mapsTo==null)
-				throw new InvalidConfigException(MapsTo.Type.class.getSimpleName()+" not found: "+mapsToType);
+				throw new InvalidConfigException(MapsTo.Type.class.getSimpleName()+" not found: "+mapsToType + " in mapped: " + referredClass);
 			
 			created = new MappedDefaultModelConfig<>(mapsTo, referredClass);
 			
