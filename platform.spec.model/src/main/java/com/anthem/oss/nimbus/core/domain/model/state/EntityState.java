@@ -202,6 +202,10 @@ public interface EntityState<T> {
 			return getType().isNested();
 		}
 		
+		default public Model<T> findIfNested() {
+			return isNested() ? getType().<T>findIfNested().getModel() : null;
+		} 
+		
 		default public boolean isCollectionElem() {
 			return false;
 		}
