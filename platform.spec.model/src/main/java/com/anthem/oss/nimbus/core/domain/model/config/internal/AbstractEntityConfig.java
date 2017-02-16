@@ -26,4 +26,6 @@ abstract public class AbstractEntityConfig<T> implements EntityConfig<T> {
 	@JsonIgnore private List<Annotation> annotations;
 
 	@JsonIgnore private RulesConfig rulesConfig; 
+	
+	private String valuesUrl;
 }
