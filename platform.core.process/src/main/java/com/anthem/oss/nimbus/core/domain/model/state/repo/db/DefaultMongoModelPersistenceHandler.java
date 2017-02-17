@@ -33,16 +33,16 @@ public class DefaultMongoModelPersistenceHandler implements ModelPersistenceHand
 	ModelRepository rep;
 	
 	@Override
-	public boolean handle(List<ModelEvent<EntityState<?>>> modelEvents) {
+	public boolean handle(List<ModelEvent<Param<?>>> modelEvents) {
 		
 		if(CollectionUtils.isEmpty(modelEvents)) 
 			return false;
 		
-		for(ModelEvent<EntityState<?>> event: modelEvents) {
+		for(ModelEvent<Param<?>> event: modelEvents) {
 			
 			logit.info(()->"path: "+event.getPath()+ " action: "+event.getType()+" state: "+event.getPayload());
 			
-			EntityState<?> param = event.getPayload();
+			Param<?> param = event.getPayload();
 			
 			Model<?> mRoot = null;
 			
