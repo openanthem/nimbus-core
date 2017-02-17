@@ -1,4 +1,4 @@
-package com.anthem.nimbus.platform.core.process.mq;
+package com.anthem.oss.nimbus.core.integration.websocket;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -6,7 +6,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.anthem.nimbus.platform.spec.contract.event.StateAndConfigEventPublisher;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandTransactionInterceptor;
 import com.anthem.oss.nimbus.core.domain.command.execution.ExecuteOutput;
 import com.anthem.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
@@ -15,6 +14,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.AbstractEvent.SuppressMode;
+import com.anthem.oss.nimbus.core.spec.contract.event.StateAndConfigEventPublisher;
 
 /**
  * @author Rakesh Patel
@@ -37,18 +37,12 @@ public class ParamEventAMQPPublisher implements StateAndConfigEventPublisher {
 	@Override
 	public boolean shouldAllow(EntityState<?> p) {
 		
-		if(p.getConfig().isMapped()){
-			return true;
-		}
-		return false;
-//		if(p instanceof Param<?>) {
-//			Param<?> param = (Param<?>) p;
-//			return param.getConfig().isView();
+//		if(p.getConfig().isMapped()){
+//			return true;
 //		}
-//		else {
-//			Model<?,?> param = (Model<?,?>) p;
-//			return param.getConfig().isView();
-//		}
+//		return false;
+		return true;
+
 	}
 	
 	@Override
