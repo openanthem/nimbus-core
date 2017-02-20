@@ -43,6 +43,8 @@ public interface EntityState<T> {
 	
 	public RootModel<?> getRootModel();
 	
+	public Model<?> getDomainRoot();
+	
 	default public boolean isRoot() {
 		return false;
 	}
@@ -100,6 +102,11 @@ public interface EntityState<T> {
 		public String getRootDomainUri();
 		
 		public Param<T> getAssociatedParam();
+		
+		@Override
+		default Model<?> getDomainRoot() {
+			return getAssociatedParam().getDomainRoot();
+		}
 		
 		default RootModel<T> findIfRoot() {
 			return null;
@@ -250,10 +257,14 @@ public interface EntityState<T> {
 		public Param<T> remove(int i);
 		public Param<T> set(int i, Param<T> p);*/
 		
+		public int size();
+		
 		public T get(int i);
+		
 		public boolean add(T elem);
 		public Param<T> add();
-		public int size();
+		
+		
 	}
 	
 	
