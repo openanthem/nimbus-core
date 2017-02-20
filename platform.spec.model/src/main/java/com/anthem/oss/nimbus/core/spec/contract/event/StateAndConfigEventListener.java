@@ -12,7 +12,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.internal.AbstractEvent.Supp
  * @author Soham Chakravarti
  *
  */
-public interface StateAndConfigEventPublisher extends EventPublisher<ModelEvent<Param<?>>> {
+public interface StateAndConfigEventListener extends EventListener<ModelEvent<Param<?>>> {
 
 	default boolean shouldSuppress(SuppressMode mode) {
 		return false;

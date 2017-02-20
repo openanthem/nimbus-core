@@ -14,24 +14,22 @@ import org.springframework.stereotype.Component;
 
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.AbstractEvent.PersistenceMode;
-import com.anthem.oss.nimbus.core.spec.contract.event.StateAndConfigEventPublisher;
 
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  * @author Soham Chakravarti
- *
+ * @author Rakesh Patel
  */
 @Component
 @EnableConfigurationProperties
 @ConfigurationProperties(exceptionIfInvalid=true,prefix="model.persistence.strategy")
-public class ParamStateAtomicPersistenceEventPublisher implements StateAndConfigEventPublisher {
+public class ParamStateAtomicPersistenceEventListener extends ParamStatePersistenceEventListener {
 
 	@Autowired
 	ModelRepositoryFactory repoFactory;
@@ -45,14 +43,11 @@ public class ParamStateAtomicPersistenceEventPublisher implements StateAndConfig
 
 	@Override
 	public boolean shouldAllow(EntityState<?> p) {
-		Repo repo = p.getRootDomain().getConfig().getRepo();
-		if(repo == null)
-			return false;
-		return true;
+		return super.shouldAllow(p) && PersistenceMode.ATOMIC == mode;
 	}
 	
 	@Override
-	public boolean publish(ModelEvent<Param<?>> event) {
+	public boolean listen(ModelEvent<Param<?>> event) {
 		List<ModelEvent<Param<?>>> events = new ArrayList<>();
 		events.add(event);
 			

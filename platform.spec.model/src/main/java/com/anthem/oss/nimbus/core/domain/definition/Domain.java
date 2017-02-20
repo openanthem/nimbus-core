@@ -19,4 +19,13 @@ import java.lang.annotation.Target;
 public @interface Domain {
 
 	String value();
+	
+	ListenerType[] includedListeners() default { };
+	
+	enum ListenerType {
+		none,
+		websocket,
+		persistence
+		
+	}
 }

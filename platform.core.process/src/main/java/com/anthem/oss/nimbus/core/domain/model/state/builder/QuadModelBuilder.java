@@ -16,7 +16,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadScopedEventPublisher;
+import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadScopedEventListener;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
@@ -30,7 +30,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.StateMeta;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.ParamStateGateway;
 import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
-import com.anthem.oss.nimbus.core.spec.contract.event.StateAndConfigEventPublisher;
+import com.anthem.oss.nimbus.core.spec.contract.event.StateAndConfigEventListener;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 
 import lombok.Getter;
@@ -57,7 +57,7 @@ public class QuadModelBuilder {
 	@Qualifier("default.param.state.repository")
 	@Autowired ParamStateGateway paramStateGateway;
 	
-	private List<StateAndConfigEventPublisher> paramEventPublishers;
+	private List<StateAndConfigEventListener> paramEventListeners;
 
 	private JustLogit logit = new JustLogit(getClass());
 	
@@ -67,11 +67,11 @@ public class QuadModelBuilder {
 	@PostConstruct
 	@RefreshScope
 	public void loadParamEventPublishers() {
-		setParamEventPublishers(new LinkedList<>());
+		setParamEventListeners(new LinkedList<>());
 		
-		Collection<StateAndConfigEventPublisher> publishers = appCtx.getBeansOfType(StateAndConfigEventPublisher.class)
+		Collection<StateAndConfigEventListener> publishers = appCtx.getBeansOfType(StateAndConfigEventListener.class)
 				.values();
-		publishers.forEach(p->getParamEventPublishers().add(p));
+		publishers.forEach(p->getParamEventListeners().add(p));
 	}
 	
 	
@@ -92,7 +92,7 @@ public class QuadModelBuilder {
 		
 
 		//create event publisher
-		QuadScopedEventPublisher qEventPublisher = new QuadScopedEventPublisher(getParamEventPublishers());
+		QuadScopedEventListener qEventPublisher = new QuadScopedEventListener(getParamEventListeners());
 		
 		StateBuilderSupport provider = new StateBuilderSupport(qEventPublisher, /*getClientUserFromSession(cmd),*/ validatorProvider, paramStateGateway);
 		String rootDomainUri = cmd.getRootDomainUri();

@@ -10,7 +10,7 @@ import org.apache.commons.collections.CollectionUtils;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.AbstractEvent.SuppressMode;
-import com.anthem.oss.nimbus.core.spec.contract.event.StateAndConfigEventPublisher;
+import com.anthem.oss.nimbus.core.spec.contract.event.StateAndConfigEventListener;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 
 import lombok.Getter;
@@ -21,9 +21,9 @@ import lombok.RequiredArgsConstructor;
  *
  */
 @Getter @RequiredArgsConstructor
-public class QuadScopedEventPublisher implements StateAndConfigEventPublisher {
+public class QuadScopedEventListener implements StateAndConfigEventListener {
 
-	private final List<StateAndConfigEventPublisher> paramEventPublishers;
+	private final List<StateAndConfigEventListener> paramEventListeners;
 	
 	private SuppressMode suppressMode;
 	
@@ -43,14 +43,14 @@ public class QuadScopedEventPublisher implements StateAndConfigEventPublisher {
 	 * 
 	 */
 	@Override
-	public boolean publish(ModelEvent<Param<?>> modelEvent) {
-		if(CollectionUtils.isEmpty(getParamEventPublishers())) return false;
+	public boolean listen(ModelEvent<Param<?>> modelEvent) {
+		if(CollectionUtils.isEmpty(getParamEventListeners())) return false;
 		
-		getParamEventPublishers()
+		getParamEventListeners()
 			.stream()
 			.filter(e-> !e.shouldSuppress(getSuppressMode()))
 			.filter(e-> e.shouldAllow(modelEvent.getPayload()))
-			.forEach(e-> e.publish(modelEvent));
+			.forEach(e-> e.listen(modelEvent));
 		
 		return true;
 	}
