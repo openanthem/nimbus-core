@@ -3,6 +3,7 @@
  */
 package com.anthem.oss.nimbus.core.domain.model.state.builder;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,7 +16,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import com.anthem.nimbus.platform.spec.contract.event.StateAndConfigEventPublisher;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadScopedEventPublisher;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Command;
@@ -30,6 +30,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.StateMeta;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionState;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.ParamStateGateway;
 import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
+import com.anthem.oss.nimbus.core.spec.contract.event.StateAndConfigEventPublisher;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 
 import lombok.Getter;
@@ -68,8 +69,9 @@ public class QuadModelBuilder {
 	public void loadParamEventPublishers() {
 		setParamEventPublishers(new LinkedList<>());
 		
-		appCtx.getBeansOfType(StateAndConfigEventPublisher.class)
-			.values().forEach(p->getParamEventPublishers().add(p));
+		Collection<StateAndConfigEventPublisher> publishers = appCtx.getBeansOfType(StateAndConfigEventPublisher.class)
+				.values();
+		publishers.forEach(p->getParamEventPublishers().add(p));
 	}
 	
 	
@@ -92,7 +94,7 @@ public class QuadModelBuilder {
 		//create event publisher
 		QuadScopedEventPublisher qEventPublisher = new QuadScopedEventPublisher(getParamEventPublishers());
 		
-		StateBuilderSupport provider = new StateBuilderSupport(null, /*getClientUserFromSession(cmd),*/ validatorProvider, paramStateGateway);
+		StateBuilderSupport provider = new StateBuilderSupport(qEventPublisher, /*getClientUserFromSession(cmd),*/ validatorProvider, paramStateGateway);
 		String rootDomainUri = cmd.getRootDomainUri();
 		
 		final ExecutionState<V, C>.ExModel execModelStateAndConfig = stateAndConfigBuilder.buildExec(cmd, provider, eState, exConfig);

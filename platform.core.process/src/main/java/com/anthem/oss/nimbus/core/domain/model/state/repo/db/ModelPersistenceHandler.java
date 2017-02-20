@@ -6,6 +6,7 @@ package com.anthem.oss.nimbus.core.domain.model.state.repo.db;
 import java.util.List;
 
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 
 
@@ -15,6 +16,6 @@ import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
  */
 public interface ModelPersistenceHandler {
 	
-	public boolean handle(List<ModelEvent<EntityState<?>>> modelEvents);
+	public boolean handle(List<ModelEvent<Param<?>>> modelEvents);
 	
 }

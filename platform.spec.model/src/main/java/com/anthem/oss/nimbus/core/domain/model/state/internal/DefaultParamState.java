@@ -30,6 +30,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.Notification.ActionType;
 import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderSupport;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.entity.Findable;
+import com.anthem.oss.nimbus.core.spec.contract.event.EventPublisher;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
@@ -329,7 +330,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		if(getProvider().getEventPublisher() == null) return;
 		
 		ModelEvent<DefaultParamState<?>> e = new ModelEvent<DefaultParamState<?>>(a, getPath(), this);
-		getProvider().getEventPublisher().publish(e);
+		EventPublisher publisher = getProvider().getEventPublisher();
+		publisher.publish(e);
 	}
 	
 	

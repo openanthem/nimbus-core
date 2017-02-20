@@ -3,9 +3,9 @@
  */
 package com.anthem.oss.nimbus.core.domain.model.state;
 
-import com.anthem.nimbus.platform.spec.contract.event.EventPublisher;
 import com.anthem.oss.nimbus.core.domain.model.config.ValidatorProvider;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.ParamStateGateway;
+import com.anthem.oss.nimbus.core.spec.contract.event.EventPublisher;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
