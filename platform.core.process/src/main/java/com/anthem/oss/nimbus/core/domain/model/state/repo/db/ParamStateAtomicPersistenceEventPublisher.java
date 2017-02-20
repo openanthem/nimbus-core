@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.nimbus.platform.core.process.api.domain.event;
+package com.anthem.oss.nimbus.core.domain.model.state.repo.db;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +19,6 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.AbstractEvent.PersistenceMode;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelPersistenceHandler;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFactory;
 import com.anthem.oss.nimbus.core.spec.contract.event.StateAndConfigEventPublisher;
 
 import lombok.Getter;
@@ -47,7 +45,10 @@ public class ParamStateAtomicPersistenceEventPublisher implements StateAndConfig
 
 	@Override
 	public boolean shouldAllow(EntityState<?> p) {
-		return !p.getConfig().isMapped();		
+		Repo repo = p.getRootDomain().getConfig().getRepo();
+		if(repo == null)
+			return false;
+		return true;
 	}
 	
 	@Override
@@ -55,16 +56,16 @@ public class ParamStateAtomicPersistenceEventPublisher implements StateAndConfig
 		List<ModelEvent<Param<?>>> events = new ArrayList<>();
 		events.add(event);
 			
-		Param<?> p = (Param<?>) event;
-		Repo repo = p.getRootModel().getConfig().getRepo();
+		Param<?> p = (Param<?>) event.getPayload();
+		Repo repo = p.getRootDomain().getConfig().getRepo();
 		if(repo==null) {
-			throw new InvalidConfigException("Core Persistent entity must be configured with "+Repo.class.getSimpleName()+" annotation. Not found for root model: "+event.getPayload().getRootModel());
+			throw new InvalidConfigException("Core Persistent entity must be configured with "+Repo.class.getSimpleName()+" annotation. Not found for root model: "+p.getRootModel());
 		} 
 			
-		ModelPersistenceHandler handler = repoFactory.getHandler(p.getRootModel().getConfig().getRepo());
+		ModelPersistenceHandler handler = repoFactory.getHandler(repo);
 		
 		if(handler == null) {
-			throw new InvalidConfigException("There is no repository handler provided for the configured repository :"+repo.value().name()+ " for root model: "+event.getPayload().getRootModel());
+			throw new InvalidConfigException("There is no repository handler provided for the configured repository :"+repo.value().name()+ " for root model: "+p.getRootModel());
 		}
 		
 		return handler.handle(events);

@@ -142,7 +142,7 @@
 		<dependency>
 			<groupId>com.anthem.oss.nimbus.core</groupId>
 			<artifactId>com.anthem.oss.nimbus.core.test</artifactId>
-			<scope>test</scope>
+			<!-- <scope>test</scope> -->
 		</dependency>
 	</dependencies>
 
