@@ -33,7 +33,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultListModelSt
 import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultListParamState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultModelState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultParamState;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionState;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultListElemParamState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultListModelState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultListParamState;
@@ -134,11 +134,11 @@ abstract public class AbstractStateBuilder {
 		}
 		
 		// delinked: find mapsTo model and create ExState.ExParam for it
-		ExecutionState<V, C> eState = new ExecutionState<>();
-		ExecutionState.ExConfig<V, C> exConfig = new ExecutionState.ExConfig<>((ModelConfig<C>)mappedParamConfig.findIfDelinked().getMapsTo(), null, null);
+		ExecutionEntity<V, C> eState = new ExecutionEntity<>();
+		ExecutionEntity.ExConfig<V, C> exConfig = new ExecutionEntity.ExConfig<>((ModelConfig<C>)mappedParamConfig.findIfDelinked().getMapsTo(), null, null);
 		
-		Command cmdDelinked = CommandBuilder.withUri(parentModel.getRootModel().getCommand().getAbsoluteUri()+Constants.SEPARATOR_URI.code+mappedParamConfig.getPath().value()).getCommand();
-		ExecutionState<V, C>.ExModel execModelSAC = eState.new ExParam(cmdDelinked, provider, exConfig).getRootModel().unwrap(ExecutionState.ExModel.class);
+		Command cmdDelinked = CommandBuilder.withUri(parentModel.getRootExecution().getCommand().getAbsoluteUri()+Constants.SEPARATOR_URI.code+mappedParamConfig.getPath().value()).getCommand();
+		ExecutionEntity<V, C>.ExModel execModelSAC = eState.new ExParam(cmdDelinked, provider, exConfig).getRootExecution().unwrap(ExecutionEntity.ExModel.class);
 		
 		// mapsTo core param
 		DefaultParamState<C> mapsToParam = buildParam(provider, execModelSAC, execModelSAC.getConfig().getCoreParam(), null);

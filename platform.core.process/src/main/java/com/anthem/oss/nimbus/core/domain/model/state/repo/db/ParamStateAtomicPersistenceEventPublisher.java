@@ -59,13 +59,13 @@ public class ParamStateAtomicPersistenceEventPublisher implements StateAndConfig
 		Param<?> p = (Param<?>) event.getPayload();
 		Repo repo = p.getRootDomain().getConfig().getRepo();
 		if(repo==null) {
-			throw new InvalidConfigException("Core Persistent entity must be configured with "+Repo.class.getSimpleName()+" annotation. Not found for root model: "+p.getRootModel());
+			throw new InvalidConfigException("Core Persistent entity must be configured with "+Repo.class.getSimpleName()+" annotation. Not found for root model: "+p.getRootExecution());
 		} 
 			
 		ModelPersistenceHandler handler = repoFactory.getHandler(repo);
 		
 		if(handler == null) {
-			throw new InvalidConfigException("There is no repository handler provided for the configured repository :"+repo.value().name()+ " for root model: "+p.getRootModel());
+			throw new InvalidConfigException("There is no repository handler provided for the configured repository :"+repo.value().name()+ " for root model: "+p.getRootExecution());
 		}
 		
 		return handler.handle(events);

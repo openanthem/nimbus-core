@@ -90,7 +90,7 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		private <P> void _updateParatmStateTree(Param<P> param, P newState){
 			if(param.getType().isNested())
 				return;
-			ExecutionStateTree executionStateTree = param.getRootModel().getExecutionStateTree();
+			ExecutionStateTree executionStateTree = param.getRootExecution().getExecutionStateTree();
 			if(executionStateTree == null)
 				return;
 			executionStateTree.addExecutionNode(param, newState);

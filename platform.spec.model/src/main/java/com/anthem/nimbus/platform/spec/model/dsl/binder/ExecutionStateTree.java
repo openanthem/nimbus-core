@@ -66,7 +66,7 @@ public class ExecutionStateTree implements Serializable {
 		String triggerParamPath = triggerParam.getPath();
 		List<ExecutionStateTreeNode> executionNodes = executionStateTreeNodes.get(triggerParamPath);
 		if(executionNodes != null){
-			Model<?> parentModel = triggerParam.getRootModel();
+			Model<?> parentModel = triggerParam.getRootExecution();
 			for(ExecutionStateTreeNode en: executionNodes){
 				Param<Object> param = parentModel.findParamByPath(en.getParamPath());
 				Object currentState = param.getState();

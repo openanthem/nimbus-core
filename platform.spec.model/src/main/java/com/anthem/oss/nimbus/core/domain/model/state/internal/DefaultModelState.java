@@ -73,10 +73,10 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 	}
 	
 	@JsonIgnore @Override
-	public RootModel<?> getRootModel() {
+	public ExecutionModel<?> getRootExecution() {
 		if(getAssociatedParam() == null) return this.findIfRoot();
 		
-		return getAssociatedParam().getRootModel();
+		return getAssociatedParam().getRootExecution();
 	}
 	
 	@Override
