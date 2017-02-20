@@ -31,6 +31,7 @@ public class MappedDefaultListParamState<T, M> extends DefaultListParamState<T> 
 		this.mapsTo = mapsTo;
 		
 		this.delegate = new InternalNotificationConsumer<List<M>>(this) {
+			
 			@Override
 			protected void onEventNewElem(Notification<List<M>> event) {
 				
@@ -50,6 +51,18 @@ public class MappedDefaultListParamState<T, M> extends DefaultListParamState<T> 
 				// add new
 				ListElemParam<T> mappedElem = add();
 				logit.trace(()->"[onEventNewElem] created new mappedElem: "+mappedElem.getPath());			
+			}
+			
+			@Override
+			protected void onEventDeleteElem(Notification<List<M>> event) {
+				logit.trace(()->"[onEventDeleteElem] received for mapsTo.ListParamElem: "+event.getEventParam().getPath());
+				
+				String elemId = event.getEventParam().findIfCollectionElem().getElemId();
+				
+				ListModel<T> mappedColModel = (ListModel<T>)getType().findIfNested().getModel().findIfListModel();
+				Param<?> mappedParamElem = mappedColModel.templateParams().remove(elemId);
+				
+				logit.trace(()->"[onEventDeleteElem] removed mapped.ListParamElem: "+mappedParamElem.getPath());
 			}
 		};
 

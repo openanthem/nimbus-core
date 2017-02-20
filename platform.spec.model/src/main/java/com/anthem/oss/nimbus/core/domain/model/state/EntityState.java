@@ -41,8 +41,10 @@ public interface EntityState<T> {
 	
 	public void fireRules();
 	
+	@JsonIgnore
 	public RootModel<?> getRootModel();
 	
+	@JsonIgnore
 	public Model<?> getRootDomain();
 	
 	default public boolean isRoot() {

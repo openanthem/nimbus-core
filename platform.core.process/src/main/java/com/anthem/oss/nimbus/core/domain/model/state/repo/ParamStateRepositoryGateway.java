@@ -174,14 +174,17 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 			
 			if(param.isLeaf()) {
 				return currRep._set(param, newState);	
+				
 			} else if(param.isCollection()) {
+				ListParam<P> listParam = (ListParam<P>)param.findIfCollection();
 				//reset collection
-				_instantiateAndSet(currRep, param);
+				//_instantiateAndSet(currRep, param);
+				listParam.getType().getModel().instantiateAndSet();
 
 				if(!(newState instanceof Collection))
 					throw new InvalidArgumentException("Collection param with path: "+param.getPath()+" must have argument of type "+Collection.class);
 				
-				ListParam<P> listParam = (ListParam<P>)param.findIfCollection();
+				
 				Collection<P> state = (Collection<P>)newState;
 				// add element parameters
 				Optional.ofNullable(state)
@@ -214,13 +217,16 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 				return mapsToParam.setState(null);
 			}
 			
-			//reset collection
-			_instantiateAndSet(currRep, param);
+
+			ListParam<P> listParam = (ListParam<P>)param.findIfCollection();
+			
+			// reset collection
+			//_instantiateAndSet(currRep, param);
+			listParam.getType().getModel().instantiateAndSet();
 
 			if(!(newState instanceof Collection))
 				throw new InvalidArgumentException("Collection param with path: "+param.getPath()+" must have argument of type "+Collection.class);
 			
-			ListParam<P> listParam = (ListParam<P>)param.findIfCollection();
 			Collection<P> state = (Collection<P>)newState;
 			// add element parameters
 			Optional.ofNullable(state)

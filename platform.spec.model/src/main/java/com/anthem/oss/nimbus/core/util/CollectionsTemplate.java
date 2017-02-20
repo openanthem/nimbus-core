@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -70,6 +71,15 @@ public class CollectionsTemplate<T extends Collection<E>, E> {
 		}
 		
 		return this;
+	}
+	
+	public E remove(Object o) {
+		E foundElem = find(o);
+		
+		Optional.ofNullable(foundElem)
+			.ifPresent(e->get().remove(e));
+		
+		return foundElem;
 	}
 	
 	public E getOrAdd(Object o, Supplier<E> toAdd) {
