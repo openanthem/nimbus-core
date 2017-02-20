@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
@@ -33,27 +32,27 @@ public class DefaultMongoModelPersistenceHandler implements ModelPersistenceHand
 	ModelRepository rep;
 	
 	@Override
-	public boolean handle(List<ModelEvent<EntityState<?>>> modelEvents) {
+	public boolean handle(List<ModelEvent<Param<?>>> modelEvents) {
 		
 		if(CollectionUtils.isEmpty(modelEvents)) 
 			return false;
 		
-		for(ModelEvent<EntityState<?>> event: modelEvents) {
+		for(ModelEvent<Param<?>> event: modelEvents) {
 			
-			logit.info(()->"path: "+event.getPath()+ " action: "+event.getType()+" state: "+event.getPayload());
+			logit.info(()->"path: "+event.getPath()+ " action: "+event.getType()+" state: "+event.getPayload().getState());
 			
-			EntityState<?> param = event.getPayload();
+			Param<?> param = event.getPayload();
 			
 			Model<?> mRoot = null;
 			
-			if(param instanceof Param<?>) {
-				Param<?> p = (Param<?>) param;
-				mRoot = p.getRootModel();
-			}
-			else{
-				Model<?> p = (Model<?>) param;
-				mRoot = p.getRootModel();
-			}
+			//if(param instanceof Param<?>) {
+				//Param<?> p = (Param<?>) param;
+				mRoot = param.getParentModel();
+			//}
+//			else{
+//				Model<?> p = (Model<?>) param;
+//				mRoot = p.getRootModel();
+//			}
 			//StateAndConfig<?, ?> mRoot = param.getRootParent();
 			Class<Object> mRootClass = (Class<Object>)mRoot.getConfig().getReferredClass();
 			
@@ -74,22 +73,22 @@ public class DefaultMongoModelPersistenceHandler implements ModelPersistenceHand
 			
 			String coreId = coreStateId.toString(); 
 			
-			if(param instanceof Param<?>) {
-				Param<?> p = (Param<?>) param;
-				String pPath = p.getPath();
-				Object pState = p.getState();
+			//if(param instanceof Param<?>) {
+				//Param<?> p = (Param<?>) param;
+				String pPath = param.getPath();
+				Object pState = param.getState();
 				
 				rep._update(coreRootAlias, coreId, pPath, pState);
 				return true;
-			}
-			else {
-				Model<?> p = (Model<?>) param;
-				String pPath = p.getPath();
-				Object pState = p.getState();
-				
-				rep._update(coreRootAlias, coreId, pPath, pState);
-				return true;
-			}
+			//}
+//			else {
+//				Model<?> p = (Model<?>) param;
+//				String pPath = p.getPath();
+//				Object pState = p.getState();
+//				
+//				rep._update(coreRootAlias, coreId, pPath, pState);
+//				return true;
+//			}
 			
 			
 		}

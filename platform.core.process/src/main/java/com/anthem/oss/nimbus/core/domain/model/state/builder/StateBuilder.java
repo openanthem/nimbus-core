@@ -21,7 +21,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultListElemPar
 import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultListModelState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultModelState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultParamState;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionState;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
 import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
 
 /**
@@ -31,12 +31,12 @@ import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
 @Component
 public class StateBuilder extends AbstractStateBuilder {
 
-	public <V, C> ExecutionState<V, C>.ExModel buildExec(Command cmd, StateBuilderSupport provider, ExecutionState<V, C> eState, StateMeta.View<V, C> viewMeta) {
+	public <V, C> ExecutionEntity<V, C>.ExModel buildExec(Command cmd, StateBuilderSupport provider, ExecutionEntity<V, C> eState, StateMeta.View<V, C> viewMeta) {
 		return buildExec(cmd, provider, eState, viewMeta.getExecutionConfig());
 	}
 	
-	public <V, C> ExecutionState<V, C>.ExModel buildExec(Command cmd, StateBuilderSupport provider, ExecutionState<V, C> eState, ExecutionState.ExConfig<V, C> exConfig) {
-		ExecutionState<V, C>.ExModel execModelSAC = eState.new ExParam(cmd, provider, exConfig).getRootModel().unwrap(ExecutionState.ExModel.class);
+	public <V, C> ExecutionEntity<V, C>.ExModel buildExec(Command cmd, StateBuilderSupport provider, ExecutionEntity<V, C> eState, ExecutionEntity.ExConfig<V, C> exConfig) {
+		ExecutionEntity<V, C>.ExModel execModelSAC = eState.new ExParam(cmd, provider, exConfig).getRootExecution().unwrap(ExecutionEntity.ExModel.class);
 		
 		// core param sac
 		DefaultParamState<C> coreParamSAC = buildParam(provider, execModelSAC, execModelSAC.getConfig().getCoreParam(), null);

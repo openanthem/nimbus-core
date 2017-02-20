@@ -73,10 +73,10 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 	}
 	
 	@JsonIgnore @Override
-	public RootModel<?> getRootModel() {
+	public ExecutionModel<?> getRootExecution() {
 		if(getAssociatedParam() == null) return this.findIfRoot();
 		
-		return getAssociatedParam().getRootModel();
+		return getAssociatedParam().getRootExecution();
 	}
 	
 	@Override
@@ -95,69 +95,6 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 	
 	@Override
 	public <P> Param<P> findParamByPath(String[] pathArr) {
-//		if(ArrayUtils.isEmpty(pathArr)) {//return null; 
-//			return (getAssociatedParam() != null) ? getAssociatedParam().findParamByPath(getPath()) : null;
-//		}
 		return getAssociatedParam()==null ? null : getAssociatedParam().findParamByPath(pathArr);
-	}
-
-	
-//	@JsonIgnore @Override
-//	public void setState(T selectedValue) {
-//		boolean hasAccess = false;
-//		ClientUser cu = this.getProvider().getClientUser();
-//		Action a = setStateInternal(selectedValue);
-//		if(a != null){
-//			ClientUserAccessBehavior clientUserAccessBehavior = cu.newBehaviorInstance(ClientUserAccessBehavior.class);
-//			hasAccess = clientUserAccessBehavior.canUserPerformAction(getPath(),a.name());
-//		}
-//		
-//		if(a != null) {
-//			rippleToMapsTo();
-//		}
-//		
-//		//safe to cast as the constructor restricts to only Param type for parent
-//		if(hasAccess){
-//			setStateAndNotifyObservers(selectedValue);
-//			if(this.getParent() == null) {
-//				emitEvent(this);
-//			}
-//			else{
-//				emitEvent(getParent());
-//			}
-//		}else{
-//			if(a != null){
-//				logit.debug(()->"User does not have access to set state on ["+getPath()+"] for action : ["+a+"]");
-//				throw new UserNotAuthorizedException("User not authorized to set state on ["+getPath()+"] for action : ["+a+"]" +this);
-//			}
-//		}
-//			
-//	}
-	
-
-	/**
-	 * 
-	 */
-//	@Override
-//	public void validateAndSetState(T state) {
-//		validate(state);
-//		
-//		if(CollectionUtils.isNotEmpty(this.validationResult.getErrors())) {
-//			throw new ValidationException(this.validationResult);
-//	    } 
-//		else {
-//	    	setState(state);
-//	    }
-//	}
-	
-	/**
-	 * 
-	 * @param state
-	 */
-//	private void validate(T state) {
-//		this.validationResult = new ValidationResult();
-//	    this.validationResult.addValidationErrors(getProvider().getValidatorProvider().getValidator().validate(state));
-//	}
-	
-	
+	}	
 }

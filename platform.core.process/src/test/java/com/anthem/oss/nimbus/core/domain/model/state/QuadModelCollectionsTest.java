@@ -41,8 +41,6 @@ import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType.CollectionType;
 import com.anthem.oss.nimbus.core.domain.model.config.builder.EntityConfigBuilder;
-import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
-import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListElemParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListModel;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
@@ -385,6 +383,11 @@ public class QuadModelCollectionsTest {
 			.peek(p->{
 				assertSame(core.getServiceLinesConverted().get(counter.getAndIncrement()), p.getState());
 			});
+		
+		// set again
+		vp_list.setState(newList);
+		assertSame(2, vp_list.getState().size());
+		assertSame(2, vp_list.getType().findIfCollection().getModel().getParams().size()); 
 	}
 
 	@Test

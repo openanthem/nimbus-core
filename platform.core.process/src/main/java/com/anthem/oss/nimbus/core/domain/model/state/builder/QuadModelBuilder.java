@@ -27,7 +27,7 @@ import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultMode
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderSupport;
 import com.anthem.oss.nimbus.core.domain.model.state.StateMeta;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionState;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.ParamStateGateway;
 import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
 import com.anthem.oss.nimbus.core.spec.contract.event.StateAndConfigEventPublisher;
@@ -76,11 +76,11 @@ public class QuadModelBuilder {
 	
 	
 	public <V, C> QuadModel<V, C> build(Command cmd) {
-		ExecutionState<V, C> eState = new ExecutionState<>();
+		ExecutionEntity<V, C> eState = new ExecutionEntity<>();
 		return build(cmd, eState);
 	}
 	
-	public <V, C> QuadModel<V, C> build(Command cmd, ExecutionState<V, C> eState) {
+	public <V, C> QuadModel<V, C> build(Command cmd, ExecutionEntity<V, C> eState) {
 		final ModelConfig<?> modelConfig = findModelConfig(cmd);
 		
 		// if mapped set domain config to view, other use it as core
@@ -88,7 +88,7 @@ public class QuadModelBuilder {
 		ModelConfig<C> coreConfig = modelConfig.isMapped() ? (ModelConfig<C>)modelConfig.findIfMapped().getMapsTo() : (ModelConfig<C>)modelConfig;
 		ModelConfig<ProcessFlow> flowConfig = (ModelConfig<ProcessFlow>)domainConfigApi.getVisitedModels().get(ProcessFlow.class);
 		
-		ExecutionState.ExConfig<V, C> exConfig = new ExecutionState.ExConfig<>(coreConfig, viewConfig, flowConfig);
+		ExecutionEntity.ExConfig<V, C> exConfig = new ExecutionEntity.ExConfig<>(coreConfig, viewConfig, flowConfig);
 		
 
 		//create event publisher
@@ -97,7 +97,7 @@ public class QuadModelBuilder {
 		StateBuilderSupport provider = new StateBuilderSupport(qEventPublisher, /*getClientUserFromSession(cmd),*/ validatorProvider, paramStateGateway);
 		String rootDomainUri = cmd.getRootDomainUri();
 		
-		final ExecutionState<V, C>.ExModel execModelStateAndConfig = stateAndConfigBuilder.buildExec(cmd, provider, eState, exConfig);
+		final ExecutionEntity<V, C>.ExModel execModelStateAndConfig = stateAndConfigBuilder.buildExec(cmd, provider, eState, exConfig);
 		
 		QuadModel<V, C> quadModel = new QuadModel<>(cmd.getRootDomainElement(), execModelStateAndConfig);
 		//quadModel.setEventPublisher(qEventPublisher);
@@ -106,7 +106,7 @@ public class QuadModelBuilder {
 		return quadModel;
 	}
 	
-	public <V, C> QuadModel<V, C> build2(Command cmd, ExecutionState<V, C> eState) {
+	public <V, C> QuadModel<V, C> build2(Command cmd, ExecutionEntity<V, C> eState) {
 		final MappedDefaultModelConfig<V, C> viewConfig = findViewConfig(cmd);
 		ModelConfig<C> coreConfig = (ModelConfig<C>)domainConfigApi.getVisitedModels().get(viewConfig.findIfMapped().getMapsTo().getReferredClass());
 		ModelConfig<ProcessFlow> flowConfig = (ModelConfig<ProcessFlow>)domainConfigApi.getVisitedModels().get(ProcessFlow.class);
@@ -123,7 +123,7 @@ public class QuadModelBuilder {
 		StateBuilderSupport provider = new StateBuilderSupport(null, /*getClientUserFromSession(cmd),*/ validatorProvider, paramStateGateway);
 		String rootDomainUri = cmd.getRootDomainUri();
 		
-		final ExecutionState<V, C>.ExModel execModelStateAndConfig = stateAndConfigBuilder.buildExec(cmd, provider, eState, viewMeta);
+		final ExecutionEntity<V, C>.ExModel execModelStateAndConfig = stateAndConfigBuilder.buildExec(cmd, provider, eState, viewMeta);
 		
 		QuadModel<V, C> quadModel = new QuadModel<>(cmd.getRootDomainElement(), execModelStateAndConfig);
 		//quadModel.setEventPublisher(qEventPublisher);

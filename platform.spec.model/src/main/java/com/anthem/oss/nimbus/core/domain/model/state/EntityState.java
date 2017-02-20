@@ -41,7 +41,11 @@ public interface EntityState<T> {
 	
 	public void fireRules();
 	
-	public RootModel<?> getRootModel();
+	@JsonIgnore
+	public ExecutionModel<?> getRootExecution();
+	
+	@JsonIgnore
+	public Model<?> getRootDomain();
 	
 	default public boolean isRoot() {
 		return false;
@@ -69,14 +73,14 @@ public interface EntityState<T> {
 	
 
 	
-	public interface RootModel<T> extends Model<T> {
+	public interface ExecutionModel<T> extends Model<T> {
 		@Override
 		default boolean isRoot() {
 			return true;
 		}
 		
 		@Override
-		default RootModel<T> findIfRoot() {
+		default ExecutionModel<T> findIfRoot() {
 			return this;
 		}
 		
@@ -101,7 +105,12 @@ public interface EntityState<T> {
 		
 		public Param<T> getAssociatedParam();
 		
-		default RootModel<T> findIfRoot() {
+		@Override
+		default Model<?> getRootDomain() {
+			return getAssociatedParam().getRootDomain();
+		}
+		
+		default ExecutionModel<T> findIfRoot() {
 			return null;
 		}
 		
@@ -250,10 +259,14 @@ public interface EntityState<T> {
 		public Param<T> remove(int i);
 		public Param<T> set(int i, Param<T> p);*/
 		
+		public int size();
+		
 		public T get(int i);
+		
 		public boolean add(T elem);
 		public Param<T> add();
-		public int size();
+		
+		
 	}
 	
 	

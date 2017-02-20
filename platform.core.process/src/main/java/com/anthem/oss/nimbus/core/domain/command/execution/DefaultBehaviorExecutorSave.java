@@ -5,8 +5,8 @@ package com.anthem.oss.nimbus.core.domain.command.execution;
 
 import org.springframework.stereotype.Component;
 
-import com.anthem.nimbus.platform.core.process.api.domain.event.ParamStateBatchPersistenceEventPublisher;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ParamStateBatchPersistenceEventPublisher;
 
 /**
  * @author Rakesh Patel

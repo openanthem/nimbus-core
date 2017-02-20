@@ -6,7 +6,7 @@ package com.anthem.oss.nimbus.core.domain.model.state.builder;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionState;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFactory;
 
@@ -55,7 +55,7 @@ public class StateFactory<V, C> {
 
 	@Autowired ModelRepositoryFactory repFactory;
 	
-	public ExecutionState<V, C> resurrect(Command cmd) {
+	public ExecutionEntity<V, C> resurrect(Command cmd) {
 		ModelRepository rep = repFactory.get(cmd);
 		
 		return null;

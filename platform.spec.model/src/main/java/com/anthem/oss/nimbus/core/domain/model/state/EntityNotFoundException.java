@@ -9,7 +9,7 @@ import lombok.Getter;
  *
  */
 @Getter
-public class EntityNotFoundException extends FrameworkRuntimeException{
+public class EntityNotFoundException extends FrameworkRuntimeException {
 	
     private static final long serialVersionUID = 1L;
 	

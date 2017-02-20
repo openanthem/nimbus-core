@@ -9,7 +9,7 @@ import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadScopedEventPublisher
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandElement;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionState;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
 import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -27,7 +27,7 @@ public class QuadModel<V, C> implements Serializable {
 	
 	private final CommandElement key;
 	
-	private ExecutionState<V, C>.ExModel root;
+	private ExecutionEntity<V, C>.ExModel root;
 	
 	@JsonIgnore transient private final Model<C> core;
 	
@@ -37,7 +37,7 @@ public class QuadModel<V, C> implements Serializable {
 	
 	@JsonIgnore transient private QuadScopedEventPublisher eventPublisher;
 	
-	public QuadModel(CommandElement key, ExecutionState<V, C>.ExModel root) {
+	public QuadModel(CommandElement key, ExecutionEntity<V, C>.ExModel root) {
 		this.key = key;
 		this.root = root;
 		this.core = getRoot().findModelByPath("/c");

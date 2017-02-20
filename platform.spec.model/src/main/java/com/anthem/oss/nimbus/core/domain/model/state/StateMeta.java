@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionState;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
 import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
 import com.anthem.oss.nimbus.core.util.ClassLoadUtils;
 
@@ -133,8 +133,8 @@ public class StateMeta<T> {
 			return view;
 		}
 		
-		public ExecutionState.ExConfig<V, C> getExecutionConfig() {
-			return new ExecutionState.ExConfig<>(getCore().getConfig(), getConfig(), getFlow().getConfig());
+		public ExecutionEntity.ExConfig<V, C> getExecutionConfig() {
+			return new ExecutionEntity.ExConfig<>(getCore().getConfig(), getConfig(), getFlow().getConfig());
 		}
 	}
 	

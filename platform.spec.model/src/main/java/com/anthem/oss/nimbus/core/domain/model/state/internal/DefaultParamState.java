@@ -112,7 +112,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	@Override
 	final public Action setState(T state) {
-		ExecutionRuntime execRt = getRootModel().getExecutionRuntime();
+		ExecutionRuntime execRt = getRootExecution().getExecutionRuntime();
 		String lockId = execRt.tryLock();
 		try {
 			state = preSetState(state);
@@ -136,7 +136,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 				execRt.awaitCompletion();
 				
 				// fire rules at root level upon completion of all set actions
-				getRootModel().fireRules();
+				getRootExecution().fireRules();
 				
 				// unlock
 				boolean b = execRt.tryUnlock(lockId);
@@ -169,8 +169,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	
 	@JsonIgnore @Override
-	public RootModel<?> getRootModel() {
-		if(getParentModel() != null) return getParentModel().getRootModel();
+	public ExecutionModel<?> getRootExecution() {
+		if(getParentModel() != null) return getParentModel().getRootExecution();
 		
 		/* if param is root, then it has to be of type nested */
 		if(!getType().isNested())
@@ -179,6 +179,14 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		return findIfNested().findIfRoot();
 	}
 
+	@JsonIgnore @Override
+	public Model<?> getRootDomain() {
+		if(getParentModel()!=null && getParentModel().isRoot()) {
+			return findIfNested();
+		}
+		
+		return getParentModel().getRootDomain();
+	}
 
 	@Override
 	public void registerSubscriber(MappedParam<?, T> subscriber) {
@@ -188,7 +196,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	@SuppressWarnings("unchecked")
 	@Override
 	final public void notifySubscribers(Notification<T> event) {
-		getRootModel().getExecutionRuntime().notifySubscribers((Notification<Object>)event);
+		getRootExecution().getExecutionRuntime().notifySubscribers((Notification<Object>)event);
 	}
 	
 	

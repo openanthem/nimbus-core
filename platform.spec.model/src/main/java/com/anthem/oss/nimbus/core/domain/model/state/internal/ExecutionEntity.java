@@ -6,7 +6,6 @@ package com.anthem.oss.nimbus.core.domain.model.state.internal;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -35,7 +34,7 @@ import com.anthem.oss.nimbus.core.domain.model.config.internal.DefaultModelConfi
 import com.anthem.oss.nimbus.core.domain.model.config.internal.DefaultParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultParamConfigAttached;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.RootModel;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ExecutionModel;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification;
 import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderSupport;
@@ -56,7 +55,7 @@ import lombok.Setter;
 
 @Repo(Database.rep_mongodb)
 @Getter @Setter
-public class ExecutionState<V, C> extends AbstractEntity.IdString implements Serializable {
+public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -68,7 +67,6 @@ public class ExecutionState<V, C> extends AbstractEntity.IdString implements Ser
 	
 	private ProcessFlow f;
 	
-	private Map<String, DetachedState<?, ?>> detachedStates;
 	
 	public C getCore() {return getC();}
 	public void setCore(C c) {setC(c);}
@@ -79,7 +77,7 @@ public class ExecutionState<V, C> extends AbstractEntity.IdString implements Ser
 	public ProcessFlow getFlow() {return getF();}
 	public void setFlow(ProcessFlow f) {setF(f);}
 	
-	private ExecutionState<V, C> _this() {
+	private ExecutionEntity<V, C> _this() {
 		return this;
 	}
 	
@@ -91,23 +89,23 @@ public class ExecutionState<V, C> extends AbstractEntity.IdString implements Ser
 	}
 	
 	@Getter @Setter 
-	public class ExParamConfig extends DefaultParamConfig<ExecutionState<V, C>> {
+	public class ExParamConfig extends DefaultParamConfig<ExecutionEntity<V, C>> {
 		private static final long serialVersionUID = 1L;
 		
-		final private ModelConfig<ExecutionState<V, C>> rootParent;
+		final private ModelConfig<ExecutionEntity<V, C>> rootParent;
 		
 		public ExParamConfig(ExConfig<V, C> exConfig) {
 			super("root");
 			this.rootParent = new ExModelConfig(exConfig); 
 			
-			ParamType.Nested<ExecutionState<V, C>> pType = new ParamType.Nested<>(_this().getClass().getSimpleName(), _this().getClass());
+			ParamType.Nested<ExecutionEntity<V, C>> pType = new ParamType.Nested<>(_this().getClass().getSimpleName(), _this().getClass());
 			pType.setModel(getRootParent());
 			this.setType(pType);
 		}
 	}
 	
 	@Getter @Setter
-	public class ExModelConfig extends DefaultModelConfig<ExecutionState<V, C>> {
+	public class ExModelConfig extends DefaultModelConfig<ExecutionEntity<V, C>> {
 		private static final long serialVersionUID = 1L;
 		
 		final private ParamConfig<C> coreParam;
@@ -116,10 +114,10 @@ public class ExecutionState<V, C> extends AbstractEntity.IdString implements Ser
 		
 		@SuppressWarnings("unchecked")
 		public ExModelConfig(ExConfig<V, C> exConfig) {
-			super((Class<ExecutionState<V, C>>)_this().getClass());
+			super((Class<ExecutionEntity<V, C>>)_this().getClass());
 			
 			//TODO: change to client default 
-			setRepo(AnnotationUtils.findAnnotation(ExecutionState.class, Repo.class));
+			setRepo(AnnotationUtils.findAnnotation(ExecutionEntity.class, Repo.class));
 			
 			Objects.requireNonNull(exConfig.getCore(), "Core ModelConfig must be provided.");
 			this.coreParam = attachParams("c", exConfig.getCore());
@@ -141,7 +139,7 @@ public class ExecutionState<V, C> extends AbstractEntity.IdString implements Ser
 		}
 		
 		private <T> DefaultParamConfig<T> createParam(String pCode) {
-			Field f = FieldUtils.getDeclaredField(ExecutionState.class, pCode, true);
+			Field f = FieldUtils.getDeclaredField(ExecutionEntity.class, pCode, true);
 			MapsTo.Path path = AnnotationUtils.findAnnotation(f, MapsTo.Path.class);
 			
 			DefaultParamConfig<T> pConfig = path==null ? new DefaultParamConfig<>(pCode) : new MappedDefaultParamConfigAttached<>(pCode, findParamByPath(path.value()), path);
@@ -150,20 +148,20 @@ public class ExecutionState<V, C> extends AbstractEntity.IdString implements Ser
 	}
 	
 	@Setter 
-	public class ExParam extends DefaultParamState<ExecutionState<V, C>> {
+	public class ExParam extends DefaultParamState<ExecutionEntity<V, C>> {
 		private static final long serialVersionUID = 1L;
 		
-		final private RootModel<ExecutionState<V, C>> rootModel;
+		final private ExecutionModel<ExecutionEntity<V, C>> rootModel;
 		
 		public ExParam(Command cmd, StateBuilderSupport provider, ExConfig<V, C> exConfig) {
 			super(null, new ExParamConfig(exConfig), provider);
 			ExParamConfig pConfig = ((ExParamConfig)getConfig());
 			
 			this.rootModel = new ExModel(cmd, this, pConfig.getRootParent(), provider);
-			this.setType(new StateType.Nested<>(getConfig().getType().findIfNested(), getRootModel()));
+			this.setType(new StateType.Nested<>(getConfig().getType().findIfNested(), getRootExecution()));
 		}
 
-		public ExParam(Command cmd, StateBuilderSupport provider, ParamConfig<ExecutionState<V, C>> rootParamConfig, RootModel<ExecutionState<V, C>> rootModel) {
+		public ExParam(Command cmd, StateBuilderSupport provider, ParamConfig<ExecutionEntity<V, C>> rootParamConfig, ExecutionModel<ExecutionEntity<V, C>> rootModel) {
 			super(null, rootParamConfig, provider);
 			this.rootModel = rootModel;
 		}
@@ -174,7 +172,7 @@ public class ExecutionState<V, C> extends AbstractEntity.IdString implements Ser
 		}
 		
 		@Override
-		public RootModel<ExecutionState<V, C>> getRootModel() {
+		public ExecutionModel<ExecutionEntity<V, C>> getRootExecution() {
 			return rootModel;
 		}
 		
@@ -186,7 +184,7 @@ public class ExecutionState<V, C> extends AbstractEntity.IdString implements Ser
 	}
 	
 	@Getter @Setter
-	public class ExModel extends DefaultModelState<ExecutionState<V, C>> implements RootModel<ExecutionState<V, C>> {
+	public class ExModel extends DefaultModelState<ExecutionEntity<V, C>> implements ExecutionModel<ExecutionEntity<V, C>> {
 		private static final long serialVersionUID = 1L;
 		
 		final private Command command;
@@ -196,11 +194,11 @@ public class ExecutionState<V, C> extends AbstractEntity.IdString implements Ser
 		@JsonIgnore
 		final private ExecutionRuntime executionRuntime;
 		
-		public ExModel(Command command, ExParam associatedParam, ModelConfig<ExecutionState<V, C>> modelConfig, StateBuilderSupport provider) {
+		public ExModel(Command command, ExParam associatedParam, ModelConfig<ExecutionEntity<V, C>> modelConfig, StateBuilderSupport provider) {
 			this(command, associatedParam, modelConfig, provider, new InternalExecutionRuntime(command));
 		}
 		
-		public ExModel(Command command, ExParam associatedParam, ModelConfig<ExecutionState<V, C>> modelConfig, StateBuilderSupport provider, ExecutionRuntime executionRuntime) {
+		public ExModel(Command command, ExParam associatedParam, ModelConfig<ExecutionEntity<V, C>> modelConfig, StateBuilderSupport provider, ExecutionRuntime executionRuntime) {
 			super(associatedParam, modelConfig, provider);
 			this.command = command;
 			this.executionRuntime = executionRuntime;
@@ -212,7 +210,7 @@ public class ExecutionState<V, C> extends AbstractEntity.IdString implements Ser
 		}
 		
 		@Override
-		public ExecutionState<V, C> instantiateOrGet() {
+		public ExecutionEntity<V, C> instantiateOrGet() {
 			return _this();
 		}
 		
@@ -227,12 +225,12 @@ public class ExecutionState<V, C> extends AbstractEntity.IdString implements Ser
 		}
 		
 		@JsonIgnore @Override
-		public ExModel getRootModel() {
+		public ExModel getRootExecution() {
 			return this;
 		}
 		
 		@Override
-		public ExecutionState<V, C> getState() {
+		public ExecutionEntity<V, C> getState() {
 			return _this();
 		}
 		

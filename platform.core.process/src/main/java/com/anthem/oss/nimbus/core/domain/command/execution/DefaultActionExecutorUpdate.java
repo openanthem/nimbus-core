@@ -76,7 +76,7 @@ public class DefaultActionExecutorUpdate extends AbstractProcessTaskExecutor {
 	 * @return
 	 */
 	private boolean useParamStateTree(Param<Object> param){	
-		Class<?> mapsToClass = param.getRootModel().getConfig().getReferredClass();
+		Class<?> mapsToClass = param.getRootExecution().getConfig().getReferredClass();
 		if( mapsToClass.getAnnotation(EnableParamStateTree.class) != null){
 			return true;
 		}
@@ -89,7 +89,7 @@ public class DefaultActionExecutorUpdate extends AbstractProcessTaskExecutor {
 	 * @param param
 	 */
 	private void loadParamStateTree(Param<Object> param){
-		Model<?> parent = param.getRootModel();
+		Model<?> parent = param.getRootExecution();
 		ExecutionStateTree stateTree = parent.getExecutionStateTree();
 		if(stateTree == null){
 			stateTree = new ExecutionStateTree();

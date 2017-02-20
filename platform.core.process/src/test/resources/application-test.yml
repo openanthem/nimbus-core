@@ -1,0 +1,246 @@
+server:
+     port: 8080
+
+loader:
+  path: /nimbus_clientextensions/com.anthem.nimbus.platform.client.extension.cm-0.0.1-SNAPSHOT.jar
+
+     
+security:
+    basic:
+      enabled: 
+              false
+
+ruleBasedRequestHandler:
+                     - defaultRuleBasedRequestHandler
+                     - defaultRuleBasedResponseHandler
+
+scriptBasedRequestHandler: defaultScriptBasedRequestHandler
+scriptBasedResponseHandler: defaultScriptBasedResponseHandler
+
+scriptHandlerType: cript
+customHandlerType: Custom
+
+stomp:
+    hostName: localhost
+    port: 61613
+
+domain:
+  model:
+    basePackages:
+      - com.anthem.oss.nimbus.core.entity
+      - com.anthem.platform.client.extension.cm.model
+      - com.anthem.platform.client.extension.cm.flow
+      - com.anthem.oss.nimbus.test.sample.um.model
+    typeClassMappings:
+      java.time.LocalDate : 
+        date
+      java.lang.String : 
+        string
+    includeFilter: ['a','b']
+    persistenceStrategy: ATOMIC
+  action: abc
+    
+  validation:
+    markerAnnotations:
+      javax.validation.Constraint
+    markerInterfaces:
+   
+#logging:
+#  file: ${HOME}/Documents/nimbuslogs/platform-core-web.log
+user:
+  permissionToActions:
+    ACCESS:
+      _get,_info,_search,_new,_replace,_update,_delete,_nav,_process
+    READ:
+      _get,_info,_search,_getAll,_nav,_process
+    CREATE:
+      _new,_nav,_process
+    UPDATE:
+      _update,_replace,_nav,_process
+    DELETE:
+      _delete,_nav,_process
+  #authenticationStrategyBeans:
+     #jwtAuthenticationStrategy,ldapAuthenticationStrategy
+
+process:
+  key:
+    regex:
+     ([A-Za-z0-9_\\-\\*~]+)
+  database:
+    driver: 
+      com.mysql.jdbc.Driver
+    url: 
+      jdbc:mysql://localhost:3306/nimbus?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false
+    username: 
+      root
+    password: 
+      NimbusNonDocker123
+    taskUpdateQuery:
+      update ACT_RU_TASK set TASK_DEF_KEY_ = ?, NAME_ = ? WHERE ID_=?
+    executionUpdateQuery:
+      update ACT_RU_EXECUTION set ACT_ID_ = ?  WHERE ID_=? AND ACT_ID_=?   
+  history:
+    level: 
+      none         
+template:
+  definitions:
+    - path: e_post/*/comm/icr/p/flow_umcase/_findPatient/_process/_execute
+      id: flow_umcase_findPatient
+      criteria:  
+model:
+  persistence:
+    strategy:
+      mode:
+        ATOMIC
+dsl:
+  behavior:
+    extensions:
+      #$execute:
+        #$save      
+static:
+  codevalue:
+    values:
+      /thisIsParentQuestion1:
+        - code: "no"
+          label: "No"
+        - code: "dnhp"
+          label: "Do not have provider"
+        - code: "yatc"
+          label: "Yes-Access to Care (e.g. getting an appointment scheduled"
+        - code: "ypr"
+          label: "Yes-Provider relationship (e.g. don't like his bedside manner)"
+        - code: "ycb"
+          label: "Yes-Communication Barrier (related to diagnosis or treatment plan)"
+        - code: "ycc"
+          label: "Yes-Coordination of Care (multiple providers)"
+        - code: "rta"
+          label: "Refuses to answer"
+        - code: "other"
+          label: "Other"  
+      /thisIsParentQuestion2:
+        - code: "no"
+          label: "No"
+        - code: "yes"
+          label: "yes"
+      /thisIsParentQuestion3:
+        - code: "dencon"
+          label: "Dental Concerns"
+        - code: "disability"
+          label: "Disability"
+        - code: "lp"
+          label: "Life Planning"
+        - code: "medcon"
+          label: "Medical, Condition"
+        - code: "medication"
+          label: "Medication"
+        - code: "psychosoc"
+          label: "PsychoSocial"
+        - code: "rerips"
+          label: "Recent ER/IP Stay"
+        - code: "smfc"
+          label: "Self-Monitoring for Conditions"     
+        - code: "symchng"
+          label: "Symptom Changes"
+        - code: "trtchng"
+          label: "Treatment Changes"
+        - code: "viscon"
+          label: "Vision Concerns"
+        - code: "unstoans"
+          label: "Unsure/Refuses to Answer"
+        - code: "other"
+          label: "Other"  
+      /category: 
+        - code: "selectOne"
+          label: "Select One"
+        - code: "Diet"
+          label: "Diet"
+        - code: "Drug"
+          label: "Drug"
+        - code: "Encounter"
+          label: "Encounter"
+        - code: "Observation"
+          label: "Observation"
+        - code: "Procedure"
+          label: "Procedure"
+        - code: "Supply"
+          label: "Supply"
+        - code: "Other"
+          label: "Other"
+      /code:
+        - code: "selectOne"
+          label: "Select One"
+        - code: "104001"
+          label: "Excision of lesion of patella (procedure)"
+        - code: "115006"
+          label: "Removable appliance therapy (procedure)"
+        - code: "119000"
+          label: "Thoracoscopic partial lobectomy of lung (procedure)"
+        - code: "121005"
+          label: "Retrobulbar injection of therapeutic agent (procedure)"
+        - code: "128004"
+          label: "Hand microscope examination of skin (procedure)"
+      /actionStatus:
+        - code: "selectOne"
+          label: "Select One"
+        - code: "not-started"
+          label: "Not Started"
+        - code: "scheduled"
+          label: "Scheduled"
+        - code: "in-progress"
+          label: "In-Progress"
+        - code: "on-hold"
+          label: "On-Hold"
+        - code: "completed"
+          label: "Completed" 
+        - code: "cancelled"
+          label: "Cancelled"  
+      /statusReason:
+        - code: "selectOne"
+          label: "Select One"
+        - code: "1"
+          label: "Member agrees to follow up with recommended action (Ex: Within next 30 days)"
+        - code: "2"
+          label: "Member assisted to locate provider/facility and APPT SCHEDULED"
+        - code: "3"
+          label: "Mbr assisted to locate a provider/facility – NO APPT SCHEDULED"
+        - code: "4"
+          label: "Member compliant with drug fill/no claim filed (Ex: generic refill, samples)"
+        - code: "5"
+          label: "Member compliant/verbalizes understanding" 
+        - code: "6"
+          label: "Member redirected to Blue Precision Provider using Provider Finder - agrees to take action"  
+        - code: "7"
+          label: "Member redirected to Blue Distinction Center using Provider Finder - agrees to take action"
+        - code: "8"
+          label: "Member redirected to High Quality/Right Cost Provider using Provider Finder - agrees to take action"
+        - code: "9"
+          label: "Member redirected to Enhanced Personal Healthcare Provider using Provider Finder - agrees to take action"
+        - code: "10"
+          label: "Provider agrees to follow up with member"
+        - code: "11"
+          label: "Member disagrees with identified gap (either no diagnosis or no gap for condition)"
+        - code: "12"
+          label: "Member disagrees with recommended action" 
+        - code: "13"
+          label: "Member not adherent due to barriers (Ex: financial/benefit issues)"  
+        - code: "14"
+          label: "Member not adherent with recommendation"
+        - code: "15"
+          label: "Member refused to discuss"
+        - code: "16"
+          label: "Member refused assistance to locate provider"
+        - code: "17"
+          label: "Provider disagrees with recommended action"
+        - code: "18"
+          label: "Provider/clinician validates clinically not indicated (Ex: med allergy)"
+        - code: "19"
+          label: "Provider validates clinical guideline contraindication" 
+        - code: "20"
+          label: "Provider/clinician validates gap is not valid (either no diagnosis or no gap for condition)"  
+        - code: "21"
+          label: "Deceased"
+        - code: "22"
+          label: "Transition to other program"
+        - code: "23"
+          label: "Unable to reach" 
+         

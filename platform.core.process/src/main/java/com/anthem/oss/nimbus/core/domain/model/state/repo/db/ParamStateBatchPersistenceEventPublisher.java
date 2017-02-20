@@ -1,14 +1,12 @@
 /**
  * 
  */
-package com.anthem.nimbus.platform.core.process.api.domain.event;
+package com.anthem.oss.nimbus.core.domain.model.state.repo.db;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
-
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFactory;
 
 /**
  * @author Rakesh Patel
