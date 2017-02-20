@@ -2,15 +2,12 @@ package com.anthem.oss.nimbus.core.integration.websocket;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandTransactionInterceptor;
 import com.anthem.oss.nimbus.core.domain.command.execution.ExecuteOutput;
 import com.anthem.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.AbstractEvent.SuppressMode;
@@ -73,7 +70,7 @@ public class ParamEventAMQPPublisher implements StateAndConfigEventPublisher {
 		
 		messageTemplate.convertAndSend("/queue/updates", multiExecOutput); // TODO get the destination name from the config server
 		
-		//messageTemplate.convertAndSendToUser(auth.getName(),"/queue/updates", executeOutput); // TODO get the destination name from the config server
+		//messageTemplate.convertAndSendToUser(auth.getName(),"/queue/updates", executeOutput);
 		
 		return true;
 	}

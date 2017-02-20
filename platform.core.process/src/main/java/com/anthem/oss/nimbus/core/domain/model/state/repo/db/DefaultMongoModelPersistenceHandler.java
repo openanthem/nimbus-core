@@ -42,18 +42,8 @@ public class DefaultMongoModelPersistenceHandler implements ModelPersistenceHand
 			logit.info(()->"path: "+event.getPath()+ " action: "+event.getType()+" state: "+event.getPayload().getState());
 			
 			Param<?> param = event.getPayload();
+			Model<?> mRoot = param.getRootDomain();
 			
-			Model<?> mRoot = null;
-			
-			//if(param instanceof Param<?>) {
-				//Param<?> p = (Param<?>) param;
-				mRoot = param.getParentModel();
-			//}
-//			else{
-//				Model<?> p = (Model<?>) param;
-//				mRoot = p.getRootModel();
-//			}
-			//StateAndConfig<?, ?> mRoot = param.getRootParent();
 			Class<Object> mRootClass = (Class<Object>)mRoot.getConfig().getReferredClass();
 			
 			Domain coreRoot = AnnotationUtils.findAnnotation(mRootClass, Domain.class);
@@ -66,30 +56,16 @@ public class DefaultMongoModelPersistenceHandler implements ModelPersistenceHand
 			Object coreState = mRoot.getState();
 			Object coreStateId = mRoot.findParamByPath("/id").getState();
 			if(coreStateId==null) {
-				//repoFactory.getPersistenceHandler(cmd).getRepo()._new(mRootClass, coreRootAlias, coreState);
 				rep._new(mRootClass, coreRootAlias, coreState);
 				return true;
 			}
 			
 			String coreId = coreStateId.toString(); 
 			
-			//if(param instanceof Param<?>) {
-				//Param<?> p = (Param<?>) param;
-				String pPath = param.getPath();
-				Object pState = param.getState();
-				
-				rep._update(coreRootAlias, coreId, pPath, pState);
-				return true;
-			//}
-//			else {
-//				Model<?> p = (Model<?>) param;
-//				String pPath = p.getPath();
-//				Object pState = p.getState();
-//				
-//				rep._update(coreRootAlias, coreId, pPath, pState);
-//				return true;
-//			}
-			
+			String pPath = param.getPath();
+			Object pState = param.getState();
+			rep._update(coreRootAlias, coreId, pPath, pState);
+			return true;
 			
 		}
 		return false;
