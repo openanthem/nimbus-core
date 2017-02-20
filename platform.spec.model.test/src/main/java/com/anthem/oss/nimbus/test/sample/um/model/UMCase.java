@@ -19,7 +19,7 @@ import lombok.ToString;
  * @author Soham Chakravarti
  *
  */
-@Domain(value="core_umcase", includedListeners={ListenerType.persistence})
+@Domain(value="core_umcase", includeListeners={ListenerType.persistence})
 @Model(value="core_umcase", excludeListeners={ListenerType.websocket})
 @Repo(Database.rep_mongodb)
 @Execution.Input.Default_Exclude_Search

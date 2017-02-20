@@ -20,7 +20,7 @@ public @interface Domain {
 
 	String value();
 	
-	ListenerType[] includedListeners() default { };
+	ListenerType[] includeListeners() default { };
 	
 	enum ListenerType {
 		none,

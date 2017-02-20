@@ -32,7 +32,7 @@ public abstract class ParamStatePersistenceEventListener implements StateAndConf
 		
 		Model pModel = AnnotationUtils.findAnnotation(p.getRootDomain().getConfig().getReferredClass(), Model.class);
 		
-		ListenerType includeListener = Arrays.asList(rootDomain.includedListeners()).stream()
+		ListenerType includeListener = Arrays.asList(rootDomain.includeListeners()).stream()
 											.filter((listener) -> !Arrays.asList(pModel.excludeListeners()).contains(listener))
 											.filter((listenerType) -> listenerType == ListenerType.persistence)
 											.findFirst()
