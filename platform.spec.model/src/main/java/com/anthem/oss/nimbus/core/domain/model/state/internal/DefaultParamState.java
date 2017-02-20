@@ -180,12 +180,12 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 
 	@JsonIgnore @Override
-	public Model<?> getDomainRoot() {
+	public Model<?> getRootDomain() {
 		if(getParentModel()!=null && getParentModel().isRoot()) {
 			return findIfNested();
 		}
 		
-		return getParentModel().getDomainRoot();
+		return getParentModel().getRootDomain();
 	}
 
 	@Override
