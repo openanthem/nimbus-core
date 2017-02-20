@@ -18,7 +18,7 @@ import lombok.Setter;
  * @author Soham Chakravarti
  *
  */
-@Domain(value="view_umcase",includedListeners={ListenerType.websocket}) @MapsTo.Type(UMCase.class)
+@Domain(value="view_umcase",includeListeners={ListenerType.websocket}) @MapsTo.Type(UMCase.class)
 @Execution.Input.Default @Execution.Output.Default @Execution.Output({Action._new, Action._nav, Action._process})
 @Getter @Setter
 public class UMCaseFlow {
