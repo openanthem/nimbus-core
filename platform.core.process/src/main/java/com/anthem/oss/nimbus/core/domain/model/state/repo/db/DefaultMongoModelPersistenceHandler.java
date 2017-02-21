@@ -3,6 +3,7 @@
  */
 package com.anthem.oss.nimbus.core.domain.model.state.repo.db;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -60,7 +61,7 @@ public class DefaultMongoModelPersistenceHandler implements ModelPersistenceHand
 				return true;
 			}
 			
-			String coreId = coreStateId.toString(); 
+			Serializable coreId = (Serializable)coreStateId; 
 			
 			String pPath = param.getPath();
 			Object pState = param.getState();
