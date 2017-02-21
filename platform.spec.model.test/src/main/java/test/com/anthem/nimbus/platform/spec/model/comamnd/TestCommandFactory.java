@@ -54,6 +54,7 @@ public class TestCommandFactory {
 			.createNext(Type.DomainAlias, "view_umcase")
 			;//.createNext(Type.Action, Action._new.name());
 		c.setAction(Action._new);
+		c.templateBehaviors().add(Behavior.$config);
 		return c;
 	}
 	
