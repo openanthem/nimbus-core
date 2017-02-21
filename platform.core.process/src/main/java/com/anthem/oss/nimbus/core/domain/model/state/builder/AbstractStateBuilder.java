@@ -53,8 +53,8 @@ abstract public class AbstractStateBuilder {
 
 	@Autowired RulesEngineFactoryProducer rulesEngineFactoryProducer;
 	
-	//@Autowired
-	//@Qualifier("default.processGateway")
+	@Autowired
+	@Qualifier("default.processGateway")
 	ProcessGateway processGateway;
 	
 	protected JustLogit logit = new JustLogit(getClass());

@@ -80,7 +80,7 @@ public class ActivitiUserTaskActivityBehavior extends UserTaskActivityBehavior {
         ListParam<PageNode> param = (ListParam<PageNode>)quadModel.getFlow().findParamByPath("/pageNavigation/pageNodes").findIfCollection();
         
         PageNode pageNode = new PageNode();
-        pageNode.setId(UUID.randomUUID().toString());
+        pageNode.setId(userTask.getId());
         pageNode.setPageId(userTask.getId());
         pageNode.setPageName(userTask.getName());
         

@@ -47,7 +47,7 @@ public class DefaultMongoModelPersistenceHandler implements ModelPersistenceHand
 			
 			//if(param instanceof Param<?>) {
 				//Param<?> p = (Param<?>) param;
-				mRoot = param.getParentModel();
+				mRoot = param.getRootDomain();//getParentModel();
 			//}
 //			else{
 //				Model<?> p = (Model<?>) param;

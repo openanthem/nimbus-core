@@ -45,7 +45,7 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 
 	@Setter private AnnotationConfig uiStyles;
 	
-	@Setter @JsonIgnore private transient Supplier<List<ParamValue>> valuesGetter;
+	@Setter private transient Supplier<List<ParamValue>> valuesGetter;
 
 	@SuppressWarnings("unchecked")
 	@Override
