@@ -72,8 +72,8 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 	
 	public String getPath() {
 		String p = StringUtils.replace(path, "/c/", "/");
-		p = StringUtils.replace(p, "/v/","/");
-		p = StringUtils.replace(p, "/f/","/");
+		p = StringUtils.replace(p, "/v/", "/");
+		p = StringUtils.replace(p, "/f/", "/");
 		return p;
 	}
 	
