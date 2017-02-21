@@ -11,6 +11,8 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.springframework.beans.PropertyAccessor;
+import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Component;
 
 import com.anthem.oss.nimbus.core.domain.definition.SearchNature.StartsWith;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.IdSequenceRepository;
 import com.anthem.oss.nimbus.core.util.ClassLoadUtils;
 
 import lombok.Getter;
@@ -38,6 +41,9 @@ public class DefaultMongoModelRepository implements ModelRepository {
 	@Autowired 
 	MongoOperations mongoOps;
 	
+	@Autowired 
+	IdSequenceRepository idSequenceRepo;
+	
 	@Override
 	public <T> T _new(Class<T> referredClass, String alias) {
 		T input = ClassLoadUtils.newInstance(referredClass);
@@ -46,6 +52,10 @@ public class DefaultMongoModelRepository implements ModelRepository {
 
 	@Override
 	public <T> T _new(Class<T> referredClass, String alias, T input) {
+		PropertyAccessor inputAccessor = PropertyAccessorFactory.forBeanPropertyAccess(input);
+		if(inputAccessor.getPropertyType("id") == Long.class) {
+			inputAccessor.setPropertyValue("id", idSequenceRepo.getNextSequenceId("global"));
+		}
 		mongoOps.insert(input, alias);
 		return input;
 	}
