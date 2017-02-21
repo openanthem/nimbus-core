@@ -17,6 +17,7 @@ import com.anthem.oss.nimbus.test.sample.um.model.UMCase;
 import com.anthem.oss.nimbus.test.sample.um.model.view.UMCaseFlow;
 
 import test.com.anthem.nimbus.platform.spec.model.comamnd.TestCommandFactory;
+import test.com.anthem.nimbus.platform.utils.JsonUtils;
 /**
  * @author Soham Chakravarti
  *
@@ -52,9 +53,9 @@ class TestRestController {
 		
 		String aloha = param.getState();
 		
-		q.getView().findParamByPath("/pg3/aloha").setState("aloha" + "_Test");
+		//q.getView().findParamByPath("/pg3/aloha").setState("aloha" + "_Test");
 		
-		return new ExecuteOutput<String>(param.getState());
+		return new ExecuteOutput<String>(JsonUtils.get().convert(q.getView()));
 		
 	}
 	

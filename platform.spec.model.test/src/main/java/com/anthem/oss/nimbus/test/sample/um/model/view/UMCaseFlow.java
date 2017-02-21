@@ -5,6 +5,7 @@ package com.anthem.oss.nimbus.test.sample.um.model.view;
 
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
+import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
 import com.anthem.oss.nimbus.core.domain.definition.Execution;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Page;
@@ -17,7 +18,7 @@ import lombok.Setter;
  * @author Soham Chakravarti
  *
  */
-@Domain("view_umcase") @MapsTo.Type(UMCase.class)
+@Domain(value="view_umcase",includeListeners={ListenerType.websocket}) @MapsTo.Type(UMCase.class)
 @Execution.Input.Default @Execution.Output.Default @Execution.Output({Action._new, Action._nav, Action._process})
 @Getter @Setter
 public class UMCaseFlow {

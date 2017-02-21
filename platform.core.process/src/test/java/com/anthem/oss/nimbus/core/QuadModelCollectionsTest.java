@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state;
+package com.anthem.oss.nimbus.core;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -13,7 +13,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -25,34 +24,24 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.context.ConfigFileApplicationContextInitializer;
-import org.springframework.cloud.autoconfigure.RefreshAutoConfiguration;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType.CollectionType;
-import com.anthem.oss.nimbus.core.domain.model.config.builder.EntityConfigBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListElemParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListModel;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.builder.PageNavigationInitializer;
+import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
+import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.DefaultParamStateRepositoryLocal;
-import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
-import com.anthem.oss.nimbus.core.rules.DefaultRulesEngineFactoryProducer;
 import com.anthem.oss.nimbus.core.session.UserEndpointSession;
-import com.anthem.oss.nimbus.core.utils.JavaBeanHandler;
 import com.anthem.oss.nimbus.test.sample.um.model.ServiceLine;
 import com.anthem.oss.nimbus.test.sample.um.model.ServiceLine.AuditInfo;
 import com.anthem.oss.nimbus.test.sample.um.model.UMCase;
@@ -67,35 +56,16 @@ import test.com.anthem.nimbus.platform.utils.JsonUtils;
  *
  */
 @RunWith(SpringRunner.class)
-@EnableConfigurationProperties
-@ComponentScan(basePackageClasses={
-		DomainConfigBuilder.class, EntityConfigBuilder.class, QuadModelBuilder.class, PageNavigationInitializer.class, DefaultRulesEngineFactoryProducer.class,
-		DefaultParamStateRepositoryLocal.class, JavaBeanHandler.class})
-@ContextConfiguration(initializers=ConfigFileApplicationContextInitializer.class)
-@ImportAutoConfiguration(RefreshAutoConfiguration.class)
-@ActiveProfiles("local")
+@SpringBootTest
+@ActiveProfiles("test")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class QuadModelCollectionsTest {
 	
 	@Autowired QuadModelBuilder quadModelBuilder;
 	
-	private static boolean done = false;
-	
 	@Before
 	public void t_init() {
-		if(!done) {
-			quadModelBuilder.getDomainConfigApi().setBasePackages(
-					Arrays.asList(
-							ProcessFlow.class.getPackage().getName(),
-							UMCase.class.getPackage().getName(),
-							UMCaseFlow.class.getPackage().getName()
-							));
-			quadModelBuilder.getDomainConfigApi().reload();
-			done = true;
-		}
-		
 		Command cmd = TestCommandFactory.create_view_icr_UMCaseFlow();
-		//QuadModel<UMCaseFlow, UMCase> q = quadModelBuilder.build(cmd, (mConfig)->ModelsTemplate.newInstance(mConfig.getReferredClass()));
 		QuadModel<UMCaseFlow, UMCase> q = quadModelBuilder.build(cmd);
 		assertNotNull(q);
 		
