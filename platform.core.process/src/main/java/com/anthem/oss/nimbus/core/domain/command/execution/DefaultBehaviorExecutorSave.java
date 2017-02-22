@@ -6,7 +6,7 @@ package com.anthem.oss.nimbus.core.domain.command.execution;
 import org.springframework.stereotype.Component;
 
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ParamStateBatchPersistenceEventPublisher;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ParamStateBatchPersistenceEventListener;
 
 /**
  * @author Rakesh Patel
@@ -16,7 +16,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ParamStateBatchPers
 public class DefaultBehaviorExecutorSave extends AbstractProcessTaskExecutor {
 
 	//@Autowired
-	ParamStateBatchPersistenceEventPublisher publisher;
+	ParamStateBatchPersistenceEventListener publisher;
 	
 	@Override
 	public <R> R doExecuteInternal(CommandMessage cmdMsg) {

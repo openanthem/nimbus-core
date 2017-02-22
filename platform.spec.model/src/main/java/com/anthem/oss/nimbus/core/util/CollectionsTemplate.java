@@ -123,6 +123,18 @@ public class CollectionsTemplate<T extends Collection<E>, E> {
 		return col.indexOf(elem);
 	}
 	
+	public int lastIndexOf(E elem) {
+		if(isNullOrEmpty())
+			return -1;
+		
+		if(getter.get() instanceof List) {
+			return ((List<E>)getter.get()).lastIndexOf(elem);
+		} 
+		
+		ArrayList<E> col = new ArrayList<>(getter.get());
+		return col.lastIndexOf(elem);
+	}
+	
 	@SuppressWarnings("unchecked")
 	public E find(Object o) {
 		T col = getter.get();

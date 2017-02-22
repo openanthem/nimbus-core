@@ -5,8 +5,10 @@ package com.anthem.oss.nimbus.core.domain.model.state.repo;
 
 import java.beans.PropertyDescriptor;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Component;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.ExecutionStateTree;
 import com.anthem.oss.nimbus.core.InvalidArgumentException;
 import com.anthem.oss.nimbus.core.domain.command.Action;
+import com.anthem.oss.nimbus.core.domain.definition.Converters.ParamConverter;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.MappedParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
@@ -139,7 +142,13 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 	 */
 	@Override
 	public <P> P _get(Param<P> param) {
-		return _get(defaultRepStrategy, param);
+		Object state = _get(defaultRepStrategy, param);
+		if(CollectionUtils.isNotEmpty(param.getConfig().getConverters())) {
+			for(ParamConverter converter: param.getConfig().getConverters()) {
+				state = converter.serialize(state);
+			}
+		}
+		return (P)state;
 	}
 	
 	public <P> P _get(ParamStateRepository currRep, Param<P> param) {
@@ -164,7 +173,7 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 	}
 	
 	public <P> Action _set(ParamStateRepository currRep, Param<P> param, P newState) {
-		logit.trace(()->"[_set] param.path: "+param.getPath()+" with paramRep: "+ currRep +" newState: "+newState);
+		//logit.trace(()->"[_set] param.path: "+param.getPath()+" with paramRep: "+ currRep +" newState: "+newState);
 		
 		// unmapped core/view - nested/leaf: set to param
 		if(!param.isMapped()) {
@@ -209,6 +218,15 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		// mapped leaf: write to mapped coreParam only if the view param is a leaf param (i.e., not a model) OR if is of same type
 		if(!param.findIfMapped().requiresConversion()) {
 			Object parentModel = param.getParentModel().instantiateOrGet();//ensure mappedFrom model is instantiated
+			
+			if(CollectionUtils.isNotEmpty(param.getConfig().getConverters())) {
+				Collections.reverse(param.getConfig().getConverters());
+				Object output = newState;
+				for(ParamConverter converter: param.getConfig().getConverters()) {
+					output = converter.deserialize(output);
+				}
+				newState = (P)output;
+			}
 			return mapsToParam.setState(newState);
 			
 		} else if(param.isCollection()) {

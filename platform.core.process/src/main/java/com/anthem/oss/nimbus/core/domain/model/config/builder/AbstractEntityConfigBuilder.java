@@ -6,6 +6,7 @@ package com.anthem.oss.nimbus.core.domain.model.config.builder;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +16,7 @@ import javax.validation.Constraint;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.data.domain.Page;
@@ -23,6 +25,8 @@ import org.springframework.util.ClassUtils;
 import com.anthem.oss.nimbus.core.domain.config.builder.AnnotationConfigHandler;
 import com.anthem.oss.nimbus.core.domain.definition.ConfigLoadException;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
+import com.anthem.oss.nimbus.core.domain.definition.Converters;
+import com.anthem.oss.nimbus.core.domain.definition.Converters.ParamConverter;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
@@ -34,14 +38,12 @@ import com.anthem.oss.nimbus.core.domain.model.config.AnnotationConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
 import com.anthem.oss.nimbus.core.domain.model.config.internal.DefaultModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.internal.DefaultParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultParamConfigAttached;
 import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultParamConfigDetached;
 import com.anthem.oss.nimbus.core.rules.RulesEngineFactoryProducer;
-import com.anthem.oss.nimbus.core.util.ClassLoadUtils;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 
 /**
@@ -53,6 +55,9 @@ abstract public class AbstractEntityConfigBuilder {
 	protected JustLogit logit = new JustLogit(getClass());
 	
 	@Autowired RulesEngineFactoryProducer rulesEngineFactoryProducer;
+	
+	@Autowired
+	ApplicationContext ctx;
 
 	
 	abstract public <T> ModelConfig<T> buildModel(Class<T> clazz, EntityConfigVistor visitedModels);
@@ -281,6 +286,16 @@ abstract public class AbstractEntityConfigBuilder {
 		created.setUiNatures(aConfigs);
 
 		created.setUiStyles(AnnotationConfigHandler.handleSingle(f, ViewStyle.class));
+		
+		if(AnnotatedElementUtils.isAnnotated(f, Converters.class)) {
+			Converters convertersAnnotation = AnnotationUtils.getAnnotation(f, Converters.class);
+			List<ParamConverter> converters = new ArrayList<>();
+			
+			Arrays.asList(convertersAnnotation.converters())
+						.forEach((converterClass)->converters.add(ctx.getBean(converterClass)));
+			
+			created.setConverters(converters);
+		}
 
 		if(AnnotatedElementUtils.isAnnotated(f, Model.Param.Values.class)) {
 			Model.Param.Values aVal = AnnotationUtils.getAnnotation(f, Model.Param.Values.class);

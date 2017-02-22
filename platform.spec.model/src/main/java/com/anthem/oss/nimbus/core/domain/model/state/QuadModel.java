@@ -5,7 +5,7 @@ package com.anthem.oss.nimbus.core.domain.model.state;
 
 import java.io.Serializable;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadScopedEventPublisher;
+import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadScopedEventListener;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandElement;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
@@ -35,7 +35,7 @@ public class QuadModel<V, C> implements Serializable {
 	
 	@JsonIgnore transient private final Model<ProcessFlow> flow;
 	
-	@JsonIgnore transient private QuadScopedEventPublisher eventPublisher;
+	@JsonIgnore transient private QuadScopedEventListener eventPublisher;
 	
 	public QuadModel(CommandElement key, ExecutionEntity<V, C>.ExModel root) {
 		this.key = key;

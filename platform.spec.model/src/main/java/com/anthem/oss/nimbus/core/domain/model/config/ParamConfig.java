@@ -6,6 +6,7 @@ package com.anthem.oss.nimbus.core.domain.model.config;
 import java.io.Serializable;
 import java.util.List;
 
+import com.anthem.oss.nimbus.core.domain.definition.Converters.ParamConverter;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Mode;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
@@ -41,6 +42,8 @@ public interface ParamConfig<P> extends EntityConfig<P>, Findable<String> {
 	public List<ParamValue> getValues();
 	
 	public String getValuesUrl();
+	
+	public List<ParamConverter> getConverters();
 	
 	default MapsTo.Mode getMappingMode() {
 		return MapsTo.Mode.UnMapped;

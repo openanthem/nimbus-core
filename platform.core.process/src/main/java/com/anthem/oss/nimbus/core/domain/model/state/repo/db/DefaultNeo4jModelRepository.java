@@ -34,7 +34,7 @@ public class DefaultNeo4jModelRepository implements ModelRepository {
 	}
 
 	@Override
-	public <T> T _update(String alias, String id, String path, T state) {
+	public <ID extends Serializable,T> T _update(String alias, ID id, String path, T state) {
 		throw new UnsupportedOperationException("neo4j repo not yet implemented");
 	}
 	

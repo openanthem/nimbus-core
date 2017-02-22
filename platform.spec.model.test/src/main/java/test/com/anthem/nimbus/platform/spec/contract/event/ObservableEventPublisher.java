@@ -12,7 +12,7 @@ import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.AbstractEvent.SuppressMode;
-import com.anthem.oss.nimbus.core.spec.contract.event.StateAndConfigEventPublisher;
+import com.anthem.oss.nimbus.core.spec.contract.event.StateAndConfigEventListener;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
@@ -21,7 +21,7 @@ import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
  * @author Soham Chakravarti
  *
  */
-public class ObservableEventPublisher extends Observable implements StateAndConfigEventPublisher {
+public class ObservableEventPublisher extends Observable implements StateAndConfigEventListener {
 
 	public AtomicInteger counter = new AtomicInteger();
 	
@@ -48,7 +48,7 @@ public class ObservableEventPublisher extends Observable implements StateAndConf
 	}
 	
 	@Override
-	public boolean publish(ModelEvent<Param<?>> event) {
+	public boolean listen(ModelEvent<Param<?>> event) {
 		setChanged();
 		int curr = counter.incrementAndGet();
 		
