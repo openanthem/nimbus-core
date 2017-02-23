@@ -41,21 +41,25 @@ class TestRestController {
 	
 	@GetMapping("/")
 	public ExecuteOutput<String> testPersistence() {
+		ExecuteOutput<String> executeOutput = null;
 		
 		Command cmd = TestCommandFactory.create_view_icr_UMCaseFlow();
 		//QuadModel<UMCaseFlow, UMCase> q = quadModelBuilder.build(cmd, (mConfig)->ModelsTemplate.newInstance(mConfig.getReferredClass()));
 		QuadModel<UMCaseFlow, UMCase> q = builder.build(cmd);
 		
-		Param<String> param = q.getView().findParamByPath("/pg3/aloha");
+		q.getView().findParamByPath("/pg3/aloha").setState("Test_Aloha");
 		
-		if(param == null)
-			 return new ExecuteOutput<String>("Failed to get /pg3/aloha");
+		Param<String> param = q.getView().findParamByPath("/umCaseDisplayId");
 		
-		String aloha = param.getState();
+		if(param != null)
+			executeOutput = new ExecuteOutput<String>(param.getState());
 		
-		//q.getView().findParamByPath("/pg3/aloha").setState("aloha" + "_Test");
+		if(executeOutput == null)
+			executeOutput = new ExecuteOutput<String>(JsonUtils.get().convert(q.getView()));
 		
-		return new ExecuteOutput<String>(JsonUtils.get().convert(q.getView()));
+		q.getView().findParamByPath("/pg3/aloha").setState("Test_Aloha_After");
+		
+		return executeOutput;
 		
 	}
 	

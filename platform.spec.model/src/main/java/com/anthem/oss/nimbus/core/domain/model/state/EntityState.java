@@ -240,6 +240,11 @@ public interface EntityState<T> {
 		@Override
 		public Param<M> getMapsTo();
 		
+		// TODO temp implementation
+		default public void setMapsTo(Param<M> mapsTo) {
+			getMapsTo().setState(mapsTo.getState());
+		} 
+		
 		default public boolean requiresConversion() {
 			if(isLeaf()) return false;
 			

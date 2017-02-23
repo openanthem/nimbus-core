@@ -67,8 +67,7 @@ public class DefaultMongoModelRepository implements ModelRepository {
 	}
 	
 	@Override
-	 
-	 public <T> T _update(String alias, String id, String path, T state) {
+	public <ID extends Serializable, T> T _update(String alias, ID id, String path, T state) {
 	 
 	  Query query = new Query(Criteria.where("_id").is(id));
 	  Update update = new Update();
@@ -76,6 +75,16 @@ public class DefaultMongoModelRepository implements ModelRepository {
 		  mongoOps.save(state, alias);
 	  }
 	  else{
+		  if(StringUtils.equals(path, "/id") || StringUtils.equals(path, "id")) { 
+		  	// if we updated the  document with path "/id", MongoDB is upserting with a new document with same _id but property field as "/id". e.g. if patient document already exist with
+		  	// all the fields populated, it would insert a new patient document with same _id like:
+		  	//	{"_id": NumberLong(1), "/id":NumberLong(1)}
+		  	// whereas there is already a correct patient document as:
+		  	//	{"_id": NumberLong(1), "firstName":"Rakesh"}
+		  	// I think this is because the "id" property gets saved in the monog as "_id" key and so when the next update comes with path="/id", for MongoDB, it would be a new field (non id),
+		  	// hence, ends up creating a new document. for now just returning from this mehtod without going to MongoDB.
+		  		return state;
+		  	}
 		   path = StringUtils.substringAfter(path, "/");
 		   path = path.replaceAll("/", "\\.");
 		   if(state == null)
