@@ -117,13 +117,5 @@ public class ParamType implements Serializable {
 		public Class<List<T>> getReferredClass() {
 			return super.getReferredClass();
 		}
-		
-		// TODO Temp till custom Serializer is implemented 
-		public List<? extends ParamConfig<?>> getElementModelParams() {
-			if (getElementConfig().getType().isNested()) {
-				return getElementConfig().getType().findIfNested().getModel().getParams();
-			}
-			return null;
-		}
 	}
 }
