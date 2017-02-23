@@ -94,6 +94,14 @@ public class ParamType implements Serializable {
 			this.collectionType = collectionType;
 		}
 		
+		// TODO Temp till custom Serializer is implemented
+		public List<? extends ParamConfig<?>> getElementModelParams() {
+			if(getElementConfig().getType().isNested()) {
+				return getElementConfig().getType().findIfNested().getModel().getParams();
+			}
+			return null;
+		}
+		
 		@Override
 		public boolean isCollection() {
 			return true;
