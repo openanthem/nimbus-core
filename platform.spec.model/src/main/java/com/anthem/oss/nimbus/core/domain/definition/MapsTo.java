@@ -21,6 +21,11 @@ public class MapsTo {
 		MappedDetached;
 	}
 	
+	public enum State {
+		External,
+		Internal;
+	}
+	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.TYPE})
 	@Model
@@ -50,7 +55,7 @@ public class MapsTo {
 		
 		boolean linked() default true;
 		
-		boolean temporal() default false;
+		State state() default State.Internal;
 		
 		KeyValue[] kv() default @KeyValue(k="default",v="default");
 		
