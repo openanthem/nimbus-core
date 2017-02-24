@@ -55,10 +55,10 @@
 			<groupId>commons-collections</groupId>
 			<artifactId>commons-collections</artifactId>
 		</dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>io.reactivex</groupId>
 			<artifactId>rxjava</artifactId>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>org.eclipse.jdt.core.compiler</groupId>
 			<artifactId>ecj</artifactId>
