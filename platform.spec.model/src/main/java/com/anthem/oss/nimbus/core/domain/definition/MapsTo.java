@@ -50,6 +50,8 @@ public class MapsTo {
 		
 		boolean linked() default true;
 		
+		boolean temporal() default false;
+		
 		KeyValue[] kv() default @KeyValue(k="default",v="default");
 		
 		public @interface KeyValue {

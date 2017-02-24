@@ -156,22 +156,6 @@ public class ViewConfig {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
-	public @interface NestedFlow {
-		Link link();
-		StateURL mapsTo();
-	}
-	
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.FIELD})
-	@ViewStyle
-	public @interface StateURL {
-		String value();
-		boolean linked() default true;
-	}
-	
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.FIELD})
-	@ViewStyle
 	public @interface TextBox {
 		String alias() default "TextBox";
 		boolean hidden() default false;
