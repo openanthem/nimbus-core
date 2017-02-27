@@ -14,12 +14,14 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import com.anthem.nimbus.platform.spec.model.process.ProcessEngineContext;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.command.execution.ProcessGateway;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.integration.sa.ProcessExecutionCtxHelper;
 import com.anthem.oss.nimbus.core.integration.sa.ServiceActivatorException;
@@ -45,6 +47,14 @@ public class ActivitiGateway implements ApplicationContextAware {
 
 	@Autowired
 	TaskService taskService;
+	
+	@Autowired
+	ActivitiDAO activitiDAO;
+	
+	@Autowired 
+	@Qualifier("default.processGateway")
+	private ProcessGateway processGateway;	
+
 	
 	/**
 	 * 
@@ -112,8 +122,6 @@ public class ActivitiGateway implements ApplicationContextAware {
 		ActivitiResponse response = executeProcess(cmdMsg, cmdMsg.getCommand().getRootDomainAlias());
 		if(response == null)
 			return null; 
-		//quadModel.getFlow().getState().setProcessExecutionId(response.getExecutionId());
-		quadModel.getFlow().findStateByPath("/processExecutionId").setState(response.getExecutionId());
 		return response.getResponse();
 	}	
 
@@ -150,11 +158,16 @@ public class ActivitiGateway implements ApplicationContextAware {
 	private Object continueProcessExecution(CommandMessage cmdMessage,QuadModel<?,?> quadModel,ProcessInstance processInstance){
 		Task pageTask = updateContextAndFindPageTask(cmdMessage,processInstance.getId());
 		if(pageTask != null){
+			String taskId = pageTask.getId();
+			String taskPageName = pageTask.getTaskDefinitionKey();
+			String passedPageId = getSourcePageIdFromCommand(cmdMessage);
+			if(passedPageId != null && !passedPageId.equals(taskPageName)){
+				activitiDAO.updatePageTaskForExecution(pageTask.getId(), pageTask.getExecutionId(), pageTask.getTaskDefinitionKey(), passedPageId, pageTask.getName());
+			}
 			Map<String, Object> executionVariables = new HashMap<String, Object>();
 			ActivitiContext actContext = prepareContext(cmdMessage);
 			executionVariables.put(ActivitiGateway.PROCESS_ENGINE_GTWY_KEY, actContext);
 			executionVariables.put(ActivitiGateway.PROCESS_ENGINE_GTWY_HELPER, actContext.getProcessGatewayHelper());
-			String taskId = pageTask.getId();
 			taskService.complete(taskId,executionVariables);
 			return actContext.getProcessEngineContext().getOutput();
 		}
@@ -189,6 +202,26 @@ public class ActivitiGateway implements ApplicationContextAware {
 		for(ProcessInstance pi: subprocessList){
 			updateContextAndAddTasksForProcess(allTasks,cmdMessage,pi.getId());
 		}
+	}
+	
+
+	/**
+	 * Retrieve passed page id from the command message. If available, then the system will move the BPM back to the page id being passed
+	 * @param cmdMessage
+	 * @return
+	 */
+	private String getSourcePageIdFromCommand(CommandMessage cmdMessage){
+		String payload = cmdMessage.getRawPayload();
+		if(payload == null)
+			return null;
+		String[] requestParameters = payload.split("&");
+		for(String requestParameter : requestParameters){
+			String[] requestParameterEntry = requestParameter.split("=");
+			if(requestParameterEntry[0].equals("cpage")){
+				return requestParameterEntry[1];
+			}
+		}
+		return null;
 	}
 	
 	/**

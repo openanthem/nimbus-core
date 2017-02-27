@@ -6,7 +6,6 @@ package com.anthem.oss.nimbus.core.bpm.activiti;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.activiti.bpmn.model.ExtensionElement;
 import org.activiti.bpmn.model.UserTask;
@@ -77,6 +76,7 @@ public class ActivitiUserTaskActivityBehavior extends UserTaskActivityBehavior {
         ActivitiContext aCtx = (ActivitiContext) execution.getVariable(ActivitiGateway.PROCESS_ENGINE_GTWY_KEY);
         QuadModel<?, ?> quadModel = UserEndpointSession.getOrThrowEx(aCtx.getProcessEngineContext().getCommandMsg().getCommand());
         
+        @SuppressWarnings("unchecked")
         ListParam<PageNode> param = (ListParam<PageNode>)quadModel.getFlow().findParamByPath("/pageNavigation/pageNodes").findIfCollection();
         
         PageNode pageNode = new PageNode();

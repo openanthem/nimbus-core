@@ -111,9 +111,9 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
     protected Resource[] processResources() { 
         try {
         	PathMatchingResourcePatternResolver pmrs = new PathMatchingResourcePatternResolver();
-        	Resource[] rules = pmrs.getResources("rules-sample1/**.drl");
+        	//Resource[] rules = pmrs.getResources("rules-sample1/**.drl");
             Resource[] processDefs = pmrs.getResources("process-defs/**.xml");
-			return ArrayUtils.addAll(processDefs, rules);
+			return ArrayUtils.addAll(processDefs);
 		} catch (IOException e) {
 			
 		}
