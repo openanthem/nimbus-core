@@ -38,6 +38,10 @@ abstract public class AssignmentTask extends AbstractEntity.IdString{
 	
 	private TaskStatus internalStatus;
 	
+	private String recurrence;
+	
+	private String reminder;
+	
 	public enum TaskStatus{
 		IN_PROGRESS,	
 		COMPLETED,

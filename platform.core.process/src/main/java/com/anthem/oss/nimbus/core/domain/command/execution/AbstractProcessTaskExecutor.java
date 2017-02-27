@@ -183,7 +183,7 @@ public abstract class AbstractProcessTaskExecutor implements ProcessTaskExecutor
 		
 		Param<String> executionIDParam = q.getFlow().findParamByPath("/processExecutionId");
 		if(StringUtils.isBlank(executionIDParam.getState())){
-			initiateProcessExecution(qLoadCmdMsg, q);
+			initiateProcessExecution(cmdMsg, q);
 		}
 		
 		

@@ -55,10 +55,10 @@
 			<groupId>commons-collections</groupId>
 			<artifactId>commons-collections</artifactId>
 		</dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>io.reactivex</groupId>
 			<artifactId>rxjava</artifactId>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>org.eclipse.jdt.core.compiler</groupId>
 			<artifactId>ecj</artifactId>
@@ -133,7 +133,27 @@
 			<artifactId>netty-all</artifactId>
 			<!-- <scope>test</scope> -->
 		</dependency>
-		
+			<!-- Embedded Mongo , Redis for integration tests only -->
+		<dependency>
+    		<groupId>de.flapdoodle.embed</groupId>
+    		<artifactId>de.flapdoodle.embed.mongo</artifactId>
+    		<scope>test</scope>
+		</dependency>
+		<dependency>
+            <groupId>redis.embedded</groupId>
+            <artifactId>embedded-redis</artifactId>
+            <scope>test</scope>
+        </dependency>
+		<!-- <dependency>
+    		<groupId>org.apache.qpid</groupId>
+    		<artifactId>qpid-broker</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+		    <groupId>org.springframework.amqp</groupId>
+		    <artifactId>spring-rabbit</artifactId>
+			<scope>test</scope>
+		</dependency> -->
 		<!-- nimbus-core -->
 		<dependency>
 			<groupId>com.anthem.oss.nimbus.core</groupId>
