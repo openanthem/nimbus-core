@@ -35,6 +35,7 @@ import lombok.Setter;
 @Getter @Setter
 public class ActivitiCallActivityBehavior extends CallActivityBehavior {
 	
+	
 	private static final long serialVersionUID = 1L;
 	private String mappedParameterPath;
 	private JustLogit logit = new JustLogit(this.getClass());

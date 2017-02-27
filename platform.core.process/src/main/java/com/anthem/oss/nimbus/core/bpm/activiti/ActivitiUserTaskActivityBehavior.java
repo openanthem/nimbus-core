@@ -47,6 +47,7 @@ import lombok.Setter;
 @Getter @Setter
 public class ActivitiUserTaskActivityBehavior extends UserTaskActivityBehavior {
 
+	
 	private static final long serialVersionUID = 1L;
 	public static final String PLATFORM_USER_TASK_TYPE= "userTaskType";
 	public static final String PLATFORM_USER_TASK_PAGE= "page";

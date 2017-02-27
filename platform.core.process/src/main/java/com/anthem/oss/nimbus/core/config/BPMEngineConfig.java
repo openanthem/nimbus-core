@@ -57,6 +57,7 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
 	@Autowired
 	private ActivitiExpressionManager platformExpressionManager;
 	
+	
     @Bean
     public SpringProcessEngineConfiguration springProcessEngineConfiguration(
             DataSource dataSource,

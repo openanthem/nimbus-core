@@ -35,8 +35,7 @@ public class ActivitiGateway implements ApplicationContextAware {
 
 	public static final String PROCESS_ENGINE_GTWY_KEY = "processGatewayContext";
 	public static final String PROCESS_ENGINE_GTWY_HELPER = "pxhelp";
-	
-	
+
 	@Autowired
 	RuntimeService runtimeService;
 	
