@@ -84,6 +84,7 @@ public class Command implements Serializable {
 		to.setClientUserId(getClientUserId());
 	}
 	
+	
 	/**
 	 * 
 	 * @param newRootDomain
