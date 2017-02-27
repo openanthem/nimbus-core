@@ -28,8 +28,7 @@ public class PageNavigation implements Serializable {
 	
 	private List<PageNode> pageNodes;
 	
-	@JsonIgnore
-	@Transient
+	@JsonIgnore @Transient
 	final private CollectionsTemplate<List<PageNode>, PageNode> template = CollectionsTemplate.array(()->getPageNodes(), s->setPageNodes(s));
 	
 	private String currentPageId;
@@ -71,7 +70,7 @@ public class PageNavigation implements Serializable {
 		PageNode currentPage = new PageNode();
 		currentPage.setId(currentPageId);
 		
-		int index = template.indexOf(currentPage);
+		int index = template.lastIndexOf(currentPage);
 		if(index != -1 && index > 0){
 			return template.getElem(index-1);
 		}
@@ -85,7 +84,7 @@ public class PageNavigation implements Serializable {
 		PageNode currentPage = new PageNode();
 		currentPage.setId(currentPageId);
 		
-		int index = template.indexOf(currentPage);
+		int index = template.lastIndexOf(currentPage);
 		int listSize = template.size();
 		if(index != -1 && index < (listSize-1)){
 			return template.getElem(index+1);
@@ -100,7 +99,7 @@ public class PageNavigation implements Serializable {
 		PageNode currentPage = new PageNode();
 		currentPage.setId(id);	
 		
-		int index = template.indexOf(currentPage);
+		int index = template.lastIndexOf(currentPage);
 		if(index != -1){
 			return template.getElem(index);
 		}

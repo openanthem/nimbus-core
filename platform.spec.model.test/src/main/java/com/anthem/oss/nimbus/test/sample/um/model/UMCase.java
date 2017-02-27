@@ -32,7 +32,7 @@ public class UMCase extends AbstractEntity.IdString {
 	@Model.Param.Values(Values.RequestType.class)
 	@Getter @Setter private String requestType;
 
-	@Model.Param.Values(Values.CaseType.class)
+	@Model.Param.Values(url="staticCodeValue-/actionCategory")
 	@Getter @Setter private String caseType;
 	
 	@Getter @Setter private DateRange serviceDate;

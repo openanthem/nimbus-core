@@ -30,7 +30,7 @@ public interface ModelRepository {
 	//Action._info
 	
 	//Action._update: partial update
-	public <T> T _update(String alias, String id, String path, T state);
+	public <ID extends Serializable,T> T _update(String alias, ID id, String path, T state);
 	
 	//Action._replace: complete update
 	public void _replace(Param<?> param);

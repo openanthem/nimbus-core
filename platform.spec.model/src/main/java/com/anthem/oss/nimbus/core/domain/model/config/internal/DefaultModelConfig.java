@@ -35,7 +35,7 @@ public class DefaultModelConfig<T> extends AbstractEntityConfig<T> implements Mo
 	
 	@JsonIgnore @Setter private Repo repo;
 	
-    @Setter private List<ParamConfig<?>> params;
+	@JsonIgnore @Setter private List<ParamConfig<?>> params;
 	
 	@JsonIgnore @Setter private transient ParamConfig<?> idParam;
 	

@@ -6,11 +6,13 @@ package com.anthem.oss.nimbus.test.sample.um.model.view;
 import java.util.List;
 
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
+import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Button;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Hints;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.TextBox;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Hints.AlignOptions;
+import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.MultiSelect;
 import com.anthem.oss.nimbus.test.sample.um.model.ServiceLine;
 import com.anthem.oss.nimbus.test.sample.um.model.UMCase;
 
@@ -36,7 +38,7 @@ public class Page_Pg3 {
 		@Path private String service;
 	}
 	
-	@Path("/caseType") private @TextBox String aloha;
+	@Path("/caseType") private @MultiSelect String aloha;
 
 	@Button(url="/_nav?a=back") @Hints(align=AlignOptions.Left)
 	private String back;

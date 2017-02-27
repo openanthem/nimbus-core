@@ -23,7 +23,9 @@ import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig.MappedParamConfig;
+import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
 import com.anthem.oss.nimbus.core.domain.model.config.internal.DefaultParamConfig;
+import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultParamConfigAttached;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
@@ -53,8 +55,8 @@ abstract public class AbstractStateBuilder {
 
 	@Autowired RulesEngineFactoryProducer rulesEngineFactoryProducer;
 	
-	//@Autowired
-	//@Qualifier("default.processGateway")
+	@Autowired
+	@Qualifier("default.processGateway")
 	ProcessGateway processGateway;
 	
 	protected JustLogit logit = new JustLogit(getClass());
@@ -108,15 +110,16 @@ abstract public class AbstractStateBuilder {
 	
 	protected <P> DefaultParamState<P> createParam(StateBuilderSupport provider, DefaultModelState<?> parentModel, Model<?> mapsToSAC, ParamConfig<P> mpConfig) {
 		final DefaultParamState<P> p;
-		if(mpConfig.isMapped())
+		if(mpConfig.isMapped()) {
 			p = createParamMapped(provider, parentModel, mapsToSAC, mpConfig.findIfMapped());
+		}	
 		else
 			p = createParamUnmapped(provider, parentModel, mapsToSAC, mpConfig);
 		
 		p.init();
 		
 		/* setting param values if applicable */
-		createParamValues(mpConfig, p.getPath());
+		createParamValues(p.getConfig(), p.getPath());
 		
 		return p;
 	}
@@ -175,32 +178,37 @@ abstract public class AbstractStateBuilder {
 		return mapsToParam;	
 	}
 	
-	private <P> void createParamValues(ParamConfig<P> mpConfig, String paramPath) {
-		
-		if(StringUtils.isNotBlank(mpConfig.getValuesUrl())) {
-			//Source src = ProcessBeanResolver.getBean(mpConfig.getValuesUrl(),Source.class);
-			//List<ParamValue> values = src.getValues(mpState.getPath());
-			DefaultParamConfig<P> config = (DefaultParamConfig<P>) mpConfig;
-			
-			if(config.getValuesGetter() == null) {
-				config.setValuesGetter(() -> {
-					String[] uriWithPayload = config.getValuesUrl().split(Constants.CODE_VALUE_CONFIG_DELIMITER.code);
-					Command cmd = CommandBuilder.withUri(Constants.PARAM_VALUES_URI_PREFIX.code+uriWithPayload[0]+Constants.PARAM_VALUES_URI_SUFFIX.code).getCommand();
-					cmd.setAction(Action._search);
-					cmd.templateBehaviors().add(Behavior.$execute);
-					CommandMessage cmdMsg = new CommandMessage();
-					cmdMsg.setCommand(cmd);
-					if(uriWithPayload.length > 1) {
-						cmdMsg.setRawPayload(uriWithPayload[1]); // domain model lookup
-					}
-					else{
-						cmdMsg.setRawPayload(paramPath); // static code value lookup
-					}
-					
-					MultiExecuteOutput output = (MultiExecuteOutput) processGateway.startProcess(cmdMsg);
-					return output.getSingleResult();
-				});
-			}
+	private <P> void createParamValues(ParamConfig<P> currentParamConfig, String paramPath) {
+		DefaultParamConfig<P> config = (DefaultParamConfig<P>) currentParamConfig;
+		if(config.getValuesGetter() == null) {
+			config.setValuesGetter(() -> valuesSupplier(currentParamConfig,paramPath));
 		}
+	}
+	
+	private <P> List<ParamValue> valuesSupplier(ParamConfig<P> currentParamConfig, String paramPath) {
+		String valuesUrl = currentParamConfig.getValuesUrl();
+		if(StringUtils.isBlank(valuesUrl) && currentParamConfig instanceof MappedDefaultParamConfigAttached) {
+			MappedDefaultParamConfigAttached<?,?> attachedConfig = (MappedDefaultParamConfigAttached) currentParamConfig;
+			valuesUrl = attachedConfig.getMapsTo().getValuesUrl();
+		}
+		if(StringUtils.isBlank(valuesUrl)) 
+			return null;
+		
+		String[] uriWithPayload = valuesUrl.split(Constants.CODE_VALUE_CONFIG_DELIMITER.code);
+		Command cmd = CommandBuilder.withUri(Constants.PARAM_VALUES_URI_PREFIX.code+uriWithPayload[0]+Constants.PARAM_VALUES_URI_SUFFIX.code).getCommand();
+		cmd.setAction(Action._search);
+		cmd.templateBehaviors().add(Behavior.$execute);
+		CommandMessage cmdMsg = new CommandMessage();
+		cmdMsg.setCommand(cmd);
+		if(uriWithPayload.length > 1) {
+			cmdMsg.setRawPayload(uriWithPayload[1]); // domain model lookup
+		}
+		else{
+			cmdMsg.setRawPayload(paramPath); // static code value lookup
+		}
+		
+		MultiExecuteOutput output = (MultiExecuteOutput) processGateway.startProcess(cmdMsg);
+		return output.getSingleResult();
+	
 	}
 }

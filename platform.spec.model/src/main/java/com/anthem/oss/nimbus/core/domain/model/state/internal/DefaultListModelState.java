@@ -71,13 +71,16 @@ public class DefaultListModelState<T> extends DefaultModelState<List<T>> impleme
 	
 	@Override
 	public ListElemParam<T> add() {
-		List<T> list = instantiateOrGet();
-		/*
-		if(list.size()!=templateParams().size())
-			throw new InvalidStateException("List entity has size: "+list.size()+" whereas ListModel.params has size: "+templateParams().size()+". "
-					+ "Must be same but found different.");
-		*/
-		//return lock(()-> {
+		return getLockTemplate().execute(()-> {
+			List<T> list = instantiateOrGet();
+			
+			if(list.size()!=templateParams().size() && (
+					isMapped() && getAssociatedParam().findIfMapped().requiresConversion()
+					))
+				throw new InvalidStateException("List entity has size: "+list.size()+" whereas ListModel.params has size: "+templateParams().size()+". "
+						+ "Must be same but found different.");
+		
+		
 			String elemId = toElemId(templateParams().size());
 			
 			Param<T> pElem = getElemCreator().apply(this, elemId);
@@ -88,7 +91,7 @@ public class DefaultListModelState<T> extends DefaultModelState<List<T>> impleme
 			getAssociatedParam().notifySubscribers(new Notification<>(this.getAssociatedParam(), ActionType._newElem, pColElem));
 			
 			return pColElem;
-		//});
+		});
 	}
 	
 	@Override

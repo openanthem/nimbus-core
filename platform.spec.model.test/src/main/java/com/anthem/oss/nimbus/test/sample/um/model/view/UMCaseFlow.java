@@ -4,11 +4,13 @@
 package com.anthem.oss.nimbus.test.sample.um.model.view;
 
 import com.anthem.oss.nimbus.core.domain.command.Action;
+import com.anthem.oss.nimbus.core.domain.definition.Converters;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
 import com.anthem.oss.nimbus.core.domain.definition.Execution;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Page;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.IdParamConverter;
 import com.anthem.oss.nimbus.test.sample.um.model.UMCase;
 
 import lombok.Getter;
@@ -31,6 +33,10 @@ public class UMCaseFlow {
 
 	private String umcaseId;
 	
+	@MapsTo.Path("id")
+	@Converters(converters={IdParamConverter.class})
+	private String umCaseDisplayId;
+	
 	@Page
 	private Page_Pg3 pg3;
 	
@@ -49,4 +55,7 @@ public class UMCaseFlow {
 //	// 4. no mapping given, will instantiate new core model initially
 //	@Page @Path(linked=false)
 //	private Page_Pg3 pg3d;
+	
+	@Page
+	private Page_Main main;
 }
