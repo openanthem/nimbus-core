@@ -30,6 +30,7 @@ import com.anthem.oss.nimbus.core.domain.definition.Converters.ParamConverter;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
+import com.anthem.oss.nimbus.core.domain.definition.MapsTo.State;
 import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.ViewParamBehavior;
@@ -257,7 +258,7 @@ abstract public class AbstractEntityConfigBuilder {
 	private <P> DefaultParamConfig<P> createParamCollectionElementInternal(ModelConfig<List<P>> mConfig, DefaultParamConfig<P> mapsToElemParamConfig, MapsTo.Path mapsToColParam, String colParamCode) {
 		final String collectionElemPath = createCollectionElementPath(colParamCode);
 		
-		final MapsTo.Path mapsToColElemParam = mapsToColParam==null ? null : createNewImplicitMapping(collectionElemPath, mapsToColParam.linked());
+		final MapsTo.Path mapsToColElemParam = mapsToColParam==null ? null : createNewImplicitMapping(collectionElemPath, mapsToColParam.linked(), mapsToColParam.state());
 		
 		final DefaultParamConfig<P> created;
 		if(mConfig instanceof MappedDefaultModelConfig) {
@@ -352,7 +353,7 @@ abstract public class AbstractEntityConfigBuilder {
 		return mapsTo;
 	}
 	
-	public static MapsTo.Path createNewImplicitMapping(String mappedPath, boolean linked) {
+	public static MapsTo.Path createNewImplicitMapping(String mappedPath, boolean linked, State state) {
 		return new MapsTo.Path() {
 			
 			@Override
@@ -381,6 +382,11 @@ abstract public class AbstractEntityConfigBuilder {
 							.append(" value: ").append(value())
 							.append(" linked: ").append(linked())
 							.toString();
+			}
+
+			@Override
+			public State state() {
+				return state;
 			}
 		};
 	}
