@@ -91,7 +91,7 @@ public class QuadModelBuilder {
 		ExecutionEntity.ExConfig<V, C> exConfig = new ExecutionEntity.ExConfig<>(coreConfig, viewConfig, flowConfig);
 		
 
-		//create event publisher
+		//create event listener
 		QuadScopedEventListener qEventListener = new QuadScopedEventListener(getParamEventListeners());
 		
 		StateBuilderSupport provider = new StateBuilderSupport(qEventListener, /*getClientUserFromSession(cmd),*/ validatorProvider, paramStateGateway);
