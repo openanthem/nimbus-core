@@ -92,9 +92,9 @@ public class QuadModelBuilder {
 		
 
 		//create event publisher
-		QuadScopedEventListener qEventPublisher = new QuadScopedEventListener(getParamEventListeners());
+		QuadScopedEventListener qEventListener = new QuadScopedEventListener(getParamEventListeners());
 		
-		StateBuilderSupport provider = new StateBuilderSupport(qEventPublisher, /*getClientUserFromSession(cmd),*/ validatorProvider, paramStateGateway);
+		StateBuilderSupport provider = new StateBuilderSupport(qEventListener, /*getClientUserFromSession(cmd),*/ validatorProvider, paramStateGateway);
 		String rootDomainUri = cmd.getRootDomainUri();
 		
 		final ExecutionEntity<V, C>.ExModel execModelStateAndConfig = stateAndConfigBuilder.buildExec(cmd, provider, eState, exConfig);
