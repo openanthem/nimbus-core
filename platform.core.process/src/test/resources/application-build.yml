@@ -1,0 +1,38 @@
+## These are the properties to be used for Integration tests during the build.
+spring:
+#  rabbitmq:
+#    host: va10dlvhrs300.wellpoint.com
+#    port: 5672
+#    username: guest
+#    password: guest
+  data:
+    mongodb:
+      uri: mongodb://va10dlvhrs300.wellpoint.com/test
+      port: 27017
+#  redis:
+#    host: va10dlvhrs300.wellpoint.com
+#    port: 6379
+stomp:
+  hostName: va10dlvhrs300.wellpoint.com
+#  port: 61613
+
+domain:
+  model:
+    basePackages:
+      - com.anthem.oss.nimbus.core.entity
+      - com.anthem.platform.client.extension.cm.model
+      - com.anthem.platform.client.extension.cm.flow
+      - com.anthem.oss.nimbus.test.sample.um.model
+    typeClassMappings:
+      java.time.LocalDate : 
+        date
+      java.lang.String : 
+        string
+    includeFilter: ['a','b']
+    persistenceStrategy: ATOMIC
+  action: abc
+    
+  validation:
+    markerAnnotations:
+      javax.validation.Constraint
+    markerInterfaces:
