@@ -2,7 +2,7 @@ server:
      port: 8080
 
 loader:
-  path: /nimbus_clientextensions/com.anthem.nimbus.platform.client.extension.cm-0.0.1-SNAPSHOT.jar
+  path: /clientextensions/com.anthem.nimbus.platform.client.extension.cm-0.0.1-SNAPSHOT.jar
 
      
 security:
@@ -243,4 +243,9 @@ static:
           label: "Transition to other program"
         - code: "23"
           label: "Unable to reach" 
+          
+spring:
+ redis:
+  host: localhost
+  port: 6379
          

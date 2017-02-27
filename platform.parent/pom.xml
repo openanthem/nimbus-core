@@ -36,6 +36,8 @@
 		<netty.version>4.1.2.Final</netty.version>
 		<jjwt.version>0.6.0</jjwt.version>
 		<sitemesh.version>2.4.2</sitemesh.version>
+		<embed-mongo.version>2.0.0</embed-mongo.version>
+		<embed-redis.version>0.4</embed-redis.version>
 	</properties>
 
 	<!-- Third party optional dependency management -->
@@ -71,6 +73,31 @@
 				<artifactId>sitemesh</artifactId>
 				<version>${sitemesh.version}</version>
 			</dependency>
+					<!-- Embedded Mongo , Redis for integration tests only -->
+			<dependency>
+	    		<groupId>de.flapdoodle.embed</groupId>
+	    		<artifactId>de.flapdoodle.embed.mongo</artifactId>
+	    		<version>${embed-mongo.version}</version>
+	    		<scope>test</scope>
+			</dependency>
+			<dependency>
+	            <groupId>redis.embedded</groupId>
+	            <artifactId>embedded-redis</artifactId>
+	            <version>${embed-redis.version}</version>
+	            <scope>test</scope>
+	        </dependency>
+			<!-- <dependency>
+	    		<groupId>org.apache.qpid</groupId>
+	    		<artifactId>qpid-broker</artifactId>
+	    		<version>${qpid-broker.version}</version>
+				<scope>test</scope>
+			</dependency> -->
+			<!-- <dependency>
+			    <groupId>org.springframework.amqp</groupId>
+			    <artifactId>spring-rabbit</artifactId>
+			    <version>${spring-rabbit.version}</version>
+				<scope>test</scope>
+			</dependency> -->
 		</dependencies>
 	</dependencyManagement>
 	<build>
