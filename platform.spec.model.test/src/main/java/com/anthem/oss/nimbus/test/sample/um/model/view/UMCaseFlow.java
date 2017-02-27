@@ -55,4 +55,7 @@ public class UMCaseFlow {
 //	// 4. no mapping given, will instantiate new core model initially
 //	@Page @Path(linked=false)
 //	private Page_Pg3 pg3d;
+	
+	@Page
+	private Page_Main main;
 }
