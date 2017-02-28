@@ -245,7 +245,9 @@ static:
           label: "Unable to reach" 
           
 spring:
- redis:
-  host: localhost
-  port: 6379
-         
+  redis:
+    port: 6379
+  data:
+    mongodb:
+      port: 0
+               
