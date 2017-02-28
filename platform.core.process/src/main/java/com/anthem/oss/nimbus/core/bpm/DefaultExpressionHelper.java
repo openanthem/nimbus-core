@@ -107,7 +107,6 @@ public class DefaultExpressionHelper extends AbstractExpressionHelper{
 		quadModel.getView().findModelByPath(targetParamPath.toString()).setState(obj);
 	}
 	
-	
 	final public Object _concat(CommandMessage cmdMsg, DelegateExecution execution, 
 			String resolvedUri, Object... args){
 		StringBuilder builder = new StringBuilder();
