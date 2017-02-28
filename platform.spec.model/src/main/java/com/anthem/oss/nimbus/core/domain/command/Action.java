@@ -25,7 +25,8 @@ public enum Action {
 	//_lifecycle,
 	
 	/* navigation */
-	_nav
+	_nav,
+	_lookup /* for code value lookup calls */
 	;
 
 	public static final Action DEFAULT = _get;
