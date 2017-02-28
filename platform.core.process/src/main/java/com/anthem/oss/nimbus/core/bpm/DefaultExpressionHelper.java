@@ -136,5 +136,19 @@ public class DefaultExpressionHelper extends AbstractExpressionHelper{
 	}
 	
 	
+	final public void _createSyncTask(CommandMessage cmdMsg, DelegateExecution execution, 
+			String resolvedUri, Object... args){
+		CommandMessage coreCmdMsg = new CommandMessage();
+		Command command = CommandBuilder.withUri(resolvedUri.toString()).getCommand();
+		coreCmdMsg.setCommand(command);
+		if(args.length > 1)
+			coreCmdMsg.setRawPayload((String)args[1]);
+		executeProcess(coreCmdMsg);
+		QuadModel<?, ?> taskQuadModel = UserEndpointSession.getOrThrowEx(coreCmdMsg.getCommand());
+		QuadModel<?, ?> entityQuadModel = UserEndpointSession.getOrThrowEx(coreCmdMsg.getCommand());
+		taskQuadModel.getCore().findModelByPath("/entity").setState(entityQuadModel.getCore().getState());
+	}	
+	
+	
 	
 }
