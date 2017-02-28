@@ -42,13 +42,13 @@ public class Execution {
 		@Retention(RetentionPolicy.RUNTIME)
 		@Target({ElementType.TYPE})
 		public @interface Default {
-			Input value() default @Input({Action._new, Action._replace, Action._update, Action._search});
+			Input value() default @Input({Action._new, Action._replace, Action._update, Action._search, Action._lookup});
 		}
 		
 		@Retention(RetentionPolicy.RUNTIME)
 		@Target({ElementType.TYPE})
 		public @interface Default_Exclude_Search {
-			Input value() default @Input({Action._new, Action._replace, Action._update});
+			Input value() default @Input({Action._new, Action._replace, Action._update, Action._lookup});
 		}
 	}
 	
@@ -62,9 +62,9 @@ public class Execution {
 		
 		Action[] value();
 		
-		public static final Action[] ID_DEFAULT = {Action._get, Action._info}; 
+		public static final Action[] ID_DEFAULT = {Action._get, Action._info, Action._lookup}; 
 		
-		public static final Action[] VER_DEFAULT = {Action._replace, Action._update, Action._delete};
+		public static final Action[] VER_DEFAULT = {Action._replace, Action._update, Action._delete, Action._lookup};
 	}
 	
 	
@@ -85,13 +85,13 @@ public class Execution {
 		@Retention(RetentionPolicy.RUNTIME)
 		@Target({ElementType.TYPE})
 		public @interface Default {
-			Output value() default @Output({Action._get, Action._update, Action._search});
+			Output value() default @Output({Action._get, Action._update, Action._search, Action._lookup});
 		} 
 		
 		@Retention(RetentionPolicy.RUNTIME)
 		@Target({ElementType.TYPE})
 		public @interface Default_Exclude_Search {
-			Input value() default @Input({Action._get, Action._update});
+			Input value() default @Input({Action._get, Action._update, Action._lookup});
 		}
 	}
 	
@@ -103,6 +103,6 @@ public class Execution {
 		
 		Action[] value();
 		
-		public static final Action[] ID_DEFAULT = {Action._new, Action._delete, Action._replace};
+		public static final Action[] ID_DEFAULT = {Action._new, Action._delete, Action._replace, Action._lookup};
 	}
 }
