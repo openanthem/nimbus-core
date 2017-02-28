@@ -109,7 +109,7 @@ public class DefaultExpressionHelper extends AbstractExpressionHelper{
 	}
 	
 	
-	final public void _executeProcess(CommandMessage cmdMsg, DelegateExecution execution, 
+	final public void _execute(CommandMessage cmdMsg, DelegateExecution execution, 
 			String resolvedUri, Object... args){
 		CommandMessage coreCmdMsg = new CommandMessage();
 		Command command = CommandBuilder.withUri(resolvedUri.toString()).getCommand();
