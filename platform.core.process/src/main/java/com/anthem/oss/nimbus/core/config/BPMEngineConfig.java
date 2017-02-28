@@ -7,8 +7,6 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.activiti.bpmn.model.UserTask;
-import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.deploy.Deployer;
@@ -29,9 +27,9 @@ import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiBehaviorFactory;
 import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiDAO;
 import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiExpressionManager;
-import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiUserTaskActivityBehavior;
 
 
 @Configuration
@@ -58,6 +56,7 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
 	
 	@Autowired
 	private ActivitiExpressionManager platformExpressionManager;
+	
 	
     @Bean
     public SpringProcessEngineConfiguration springProcessEngineConfiguration(
@@ -86,13 +85,7 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
     
     @Bean
    	public DefaultActivityBehaviorFactory platformActivityBehaviorFactory() {
-   		return new DefaultActivityBehaviorFactory() {
-   			@Override
-   			public UserTaskActivityBehavior createUserTaskActivityBehavior(UserTask userTask) {
-   				ActivitiUserTaskActivityBehavior platformUserTaskBehavior = new ActivitiUserTaskActivityBehavior(userTask);
-   				return platformUserTaskBehavior;
-   			}
-   		};
+   		return new ActivitiBehaviorFactory();
    	}
     
     @Bean
@@ -119,9 +112,9 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
     protected Resource[] processResources() { 
         try {
         	PathMatchingResourcePatternResolver pmrs = new PathMatchingResourcePatternResolver();
-        	Resource[] rules = pmrs.getResources("rules-sample1/**.drl");
+        	//Resource[] rules = pmrs.getResources("rules-sample1/**.drl");
             Resource[] processDefs = pmrs.getResources("process-defs/**.xml");
-			return ArrayUtils.addAll(processDefs, rules);
+			return ArrayUtils.addAll(processDefs);
 		} catch (IOException e) {
 			
 		}

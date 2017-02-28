@@ -25,7 +25,7 @@ import lombok.ToString;
 @Execution.Input.Default_Exclude_Search
 @Execution.Output.Default_Exclude_Search
 @ToString
-public class UMCase extends AbstractEntity.IdLong {
+public class UMCase extends AbstractEntity.IdString {
 
 	private static final long serialVersionUID = 1L;
     

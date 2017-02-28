@@ -84,6 +84,7 @@ public class Command implements Serializable {
 		to.setClientUserId(getClientUserId());
 	}
 	
+	
 	/**
 	 * 
 	 * @param newRootDomain
@@ -93,7 +94,7 @@ public class Command implements Serializable {
 	 */
 	public Command createNewCommandForCurrentUser(String newRootDomain, Action newAction, LinkedList<Behavior> newBehaviors) {
 		StringBuilder newRootDomainFlowAlias = new StringBuilder();
-		newRootDomainFlowAlias.append(Constants.PREFIX_FLOW.code).append(newRootDomain);
+		newRootDomainFlowAlias.append(newRootDomain);
 		StringBuilder absoluteUri = new StringBuilder();
 		CommandElementLinked clonedRoot = getRoot().cloneUpto(Type.DomainAlias,absoluteUri);
 		CommandElementLinked platformMarker = clonedRoot.findFirstMatch(Type.PlatformMarker);

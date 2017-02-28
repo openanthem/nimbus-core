@@ -46,7 +46,7 @@ public class ParamCodeValueProvider extends AbstractProcessTaskExecutor implemen
 
 	@Override
 	public String getUri() {
-		return "*/*/*/p/*/*/_search/_execute";
+		return "*/*/*/p/*/*/_lookup/_execute";
 	}
 	
 	

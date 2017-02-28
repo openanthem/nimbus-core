@@ -17,11 +17,15 @@ import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Behavior;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
+import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 
 /**
+ * IMP: Don't add spring context dependency in this class. If you need to test something related to command but with spring context
+ * better to find a correct test class if one exists or create new and provide necessary comments for how/when to use that class
+ * 
  * @author Soham Chakravarti
- *
+ * @author Rakesh Patel
  */
 public class CommandBuilderTest {
 	
@@ -73,5 +77,24 @@ public class CommandBuilderTest {
 		assertSame(Behavior.$save, cmd.getBehaviors().get(1));
 		
 		System.out.println(cmd.toUniqueId());
+	}
+	
+	
+	@Test
+	public void t3_linked_commandElements_are_generated() {
+		String uri = "/xyz/admin/p/flow_patientenrollment/_loadTask:58af23636de7abfa6eeb0c28/_process";
+		//?b=
+		
+		Map<String, String[]> rParams = new HashMap<>();
+		rParams.put(Constants.MARKER_URI_BEHAVIOR.code, new String[]{"$executeAnd$config"});
+		
+		Command cmd = CommandBuilder.withUri(uri).addParams(rParams).getCommand();
+		assertNotNull(cmd);
+		
+		assertNotNull(cmd.getElement(Type.ProcessAlias));
+		
+		assertNotNull(cmd.getRefId(Type.ProcessAlias));
+		
+		System.out.println(cmd.getRefId(Type.ProcessAlias));
 	}
 }
