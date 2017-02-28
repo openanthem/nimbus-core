@@ -7,6 +7,7 @@ import javax.annotation.PreDestroy;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
+import org.springframework.util.SocketUtils;
 
 import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
@@ -38,7 +39,7 @@ public class MongoIntegrationTestConfig extends AbstractMongoConfiguration {
 	private static MongoClient mongo;
 	private IMongodConfig mongodConfig;
 	private String bindIp = "localhost";
-	private int port = 12345;
+	private int port = SocketUtils.findAvailableTcpPort();
 
 	@Override
 	protected String getDatabaseName() {
