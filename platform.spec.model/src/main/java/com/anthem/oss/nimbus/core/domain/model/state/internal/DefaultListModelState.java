@@ -76,10 +76,10 @@ public class DefaultListModelState<T> extends DefaultModelState<List<T>> impleme
 			
 			if(list.size()!=templateParams().size() && (
 					isMapped() && getAssociatedParam().findIfMapped().requiresConversion()
-					))
-				throw new InvalidStateException("List entity has size: "+list.size()+" whereas ListModel.params has size: "+templateParams().size()+". "
-						+ "Must be same but found different.");
-		
+					))  {
+//				throw new InvalidStateException("List entity has size: "+list.size()+" whereas ListModel.params has size: "+templateParams().size()+". "
+//						+ "Must be same but found different.");
+			}
 		
 			String elemId = toElemId(templateParams().size());
 			

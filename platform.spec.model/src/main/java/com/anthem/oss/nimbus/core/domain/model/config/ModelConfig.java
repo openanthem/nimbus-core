@@ -32,6 +32,10 @@ public interface ModelConfig<T> extends EntityConfig<T> {
 	
 	
 	public interface MappedModelConfig<T, M> extends ModelConfig<T>, MappedConfig<T, M> {
+		@Override
+		default boolean isMapped() {
+			return true;
+		}
 		
 		@Override
 		default MappedModelConfig<T, M> findIfMapped() {

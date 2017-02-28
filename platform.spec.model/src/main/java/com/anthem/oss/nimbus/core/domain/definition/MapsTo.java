@@ -74,4 +74,6 @@ public class MapsTo {
 	@Path
 	public static final String DEFAULT_PATH = "";
 	
+	public static final String DETACHED_SIMULATED_FIELD_NAME = "detachedParam";
+	
 }

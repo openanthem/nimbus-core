@@ -71,13 +71,7 @@ public class StateBuilder extends AbstractStateBuilder {
 		return mpState;
 	}
 	
-	public <T, P> DefaultModelState<T> buildModel(StateBuilderSupport provider, DefaultParamState<T> parentState, ModelConfig<T> mConfig, DefaultModelState<?> mapsToSAC) {
-		return buildModelInternal(provider, parentState, mConfig, mapsToSAC);
-	}
-	
-
-	protected <T, P> DefaultModelState<T> buildModelInternal(StateBuilderSupport provider, DefaultParamState<T> associatedParam, ModelConfig<T> mConfig, Model<?> mapsToSAC) {
-		
+	public <T, P> DefaultModelState<T> buildModel(StateBuilderSupport provider, DefaultParamState<T> associatedParam, ModelConfig<T> mConfig, Model<?> mapsToSAC) {
 		if(mConfig==null) return null;
 
 		/* if model & param are mapped, then  mapsToSAC must not be null */
@@ -147,7 +141,7 @@ public class StateBuilder extends AbstractStateBuilder {
 			
 			
 			/* create nested model SAC */
-			DefaultModelState<P> nmState = buildModelInternal(provider, associatedParam, mpNmConfig, mpNmMapsToSAC);
+			DefaultModelState<P> nmState = buildModel(provider, associatedParam, mpNmConfig, mpNmMapsToSAC);
 			StateType.Nested<P> ntState = new StateType.Nested<>(mpNmType, nmState);
 			return ntState;
 			

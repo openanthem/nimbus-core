@@ -3,6 +3,7 @@
  */
 package com.anthem.oss.nimbus.core.util;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -24,27 +25,17 @@ import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 public final class GenericUtils {
 
 	
-	/**
-	 * 
-	 * @param clazz
-	 * @return
-	 */
 	public static boolean isEssentiallyCollection(Class<?> clazz) {
 		return Collection.class.isAssignableFrom(clazz) ||	//Collection 
 				Page.class.isAssignableFrom(clazz);			//Page
 	}
 	
 	
-	/**
-	 * 
-	 * @param leafClass
-	 * @param nodeClass
-	 * @param nodeFieldTypeClass
-	 * @param nodeFieldGenericType
-	 * @return
-	 */
-	public static Class<?> resolveGeneric(Class<?> leafClass, Class<?> nodeClass, Class<?> nodeFieldTypeClass,
-			Type nodeFieldGenericType) {
+	public static Class<?> resolveGeneric(Class<?> leafClass, Field f) {
+		return resolveGeneric(leafClass, f.getDeclaringClass(), f.getType(), f.getGenericType());
+	}
+	
+	public static Class<?> resolveGeneric(Class<?> leafClass, Class<?> nodeClass, Class<?> nodeFieldTypeClass, Type nodeFieldGenericType) {
 		
 		//handle non generic types first
 		if(nodeFieldGenericType == nodeFieldTypeClass) {
@@ -123,15 +114,6 @@ public final class GenericUtils {
 		throw throwEx("Unhandled scenario..yet. Found TypeVariable:", leafClass, nodeClass, nodeFieldTypeClass, nodeFieldGenericType);
 	}
 	
-	/**
-	 * 
-	 * @param errMsg
-	 * @param leafClass
-	 * @param nodeClass
-	 * @param nodeFieldTypeClass
-	 * @param nodeFieldGenericType
-	 * @return
-	 */
 	private static InvalidConfigException throwEx(String errMsg, Class<?> leafClass, Class<?> nodeClass,
 			Class<?> nodeFieldTypeClass, Type nodeFieldGenericType) {
 		

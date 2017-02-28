@@ -131,13 +131,15 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 			fireRules();
 			
 			return a;
-		}finally {
+		} finally {
 			if(execRt.isLocked(lockId)) {
 				// await completion of notification events
 				execRt.awaitCompletion();
+				
 				if(h.getState() != null) {
 					this.eventSubscribers.forEach((subscriber) -> emitEvent(h.getState(), subscriber));
 				}
+				
 				// fire rules at root level upon completion of all set actions
 				getRootExecution().fireRules();
 				
