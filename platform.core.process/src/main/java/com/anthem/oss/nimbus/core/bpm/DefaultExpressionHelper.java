@@ -140,9 +140,9 @@ public class DefaultExpressionHelper extends AbstractExpressionHelper{
 			String resolvedUri, Object... args){
 		CommandMessage coreCmdMsg = new CommandMessage();
 		Command command = CommandBuilder.withUri(resolvedUri.toString()).getCommand();
+		command.setAction(Action._new);
+		command.templateBehaviors().add(Behavior.$execute);
 		coreCmdMsg.setCommand(command);
-		if(args.length > 1)
-			coreCmdMsg.setRawPayload((String)args[1]);
 		executeProcess(coreCmdMsg);
 		QuadModel<?, ?> taskQuadModel = UserEndpointSession.getOrThrowEx(coreCmdMsg.getCommand());
 		QuadModel<?, ?> entityQuadModel = UserEndpointSession.getOrThrowEx(coreCmdMsg.getCommand());
