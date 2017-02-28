@@ -9,7 +9,6 @@ import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.State;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Link;
-import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.TextBox;
 import com.anthem.oss.nimbus.test.sample.um.model.ServiceLine;
 import com.anthem.oss.nimbus.test.sample.um.model.UMCase;
 
@@ -35,8 +34,8 @@ public class Page_Main {
 	@Getter @Setter
 	public static class V_CRUDServiceLine {
 		// TODO F/w change to get collection.elemId
-		@TextBox(hidden=true)
-		@Path private String elemId;
+		//@TextBox(hidden=true)
+		//==@Path private String elemId;
 		
 		@Path private String service;
 		@Path private String something;

@@ -32,7 +32,7 @@ import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
 import com.anthem.oss.nimbus.core.domain.model.config.internal.DefaultModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.internal.DefaultParamConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultParamConfigAttached;
+import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ExecutionModel;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
@@ -142,7 +142,7 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 			Field f = FieldUtils.getDeclaredField(ExecutionEntity.class, pCode, true);
 			MapsTo.Path path = AnnotationUtils.findAnnotation(f, MapsTo.Path.class);
 			
-			DefaultParamConfig<T> pConfig = path==null ? new DefaultParamConfig<>(pCode) : new MappedDefaultParamConfigAttached<>(pCode, findParamByPath(path.value()), path);
+			DefaultParamConfig<T> pConfig = path==null ? new DefaultParamConfig<>(pCode) : new MappedDefaultParamConfig<>(pCode, this, findParamByPath(path.value()), path);
 			return pConfig;
 		} 
 	}

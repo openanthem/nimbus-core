@@ -22,6 +22,7 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.util.ClassUtils;
 
+import com.anthem.oss.nimbus.core.UnsupportedScenarioException;
 import com.anthem.oss.nimbus.core.domain.config.builder.AnnotationConfigHandler;
 import com.anthem.oss.nimbus.core.domain.definition.ConfigLoadException;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
@@ -30,6 +31,7 @@ import com.anthem.oss.nimbus.core.domain.definition.Converters.ParamConverter;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
+import com.anthem.oss.nimbus.core.domain.definition.MapsTo.State;
 import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.ViewParamBehavior;
@@ -37,14 +39,18 @@ import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.ViewStyle;
 import com.anthem.oss.nimbus.core.domain.model.config.AnnotationConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
+import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig.MappedParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
 import com.anthem.oss.nimbus.core.domain.model.config.internal.DefaultModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.internal.DefaultParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultParamConfigAttached;
-import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultParamConfigDetached;
+import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultParamConfig;
 import com.anthem.oss.nimbus.core.rules.RulesEngineFactoryProducer;
+import com.anthem.oss.nimbus.core.util.GenericUtils;
 import com.anthem.oss.nimbus.core.util.JustLogit;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Soham Chakravarti
@@ -63,6 +69,9 @@ abstract public class AbstractEntityConfigBuilder {
 	abstract public <T> ModelConfig<T> buildModel(Class<T> clazz, EntityConfigVistor visitedModels);
 	
 	abstract public <T> ParamConfig<?> buildParam(ModelConfig<T> mConfig, Field f, EntityConfigVistor visitedModels);
+	
+	abstract protected <T, P> ParamType buildParamType(ModelConfig<T> mConfig, ParamConfig<P> pConfig, Field f, EntityConfigVistor visitedModels);
+	abstract protected <T, P> ParamType buildParamType(ModelConfig<T> mConfig, ParamConfig<P> pConfig, ParamType.CollectionType colType, Class<?> pDirectOrColElemType, EntityConfigVistor visitedModels); 
 	
 	public boolean isPrimitive(Class<?> determinedType) {
 		return ClassUtils.isPrimitiveOrWrapper(determinedType) || String.class==determinedType;
@@ -122,12 +131,12 @@ abstract public class AbstractEntityConfigBuilder {
 			
 		// check if field is mapped with linked=true: which would require parent model to also be mapped
 		if(mapsToPath.linked())
-			return createMappedParamLinked(mConfig, f, visitedModels, mapsToPath);
+			return createMappedParamAttached(mConfig, f, visitedModels, mapsToPath);
 		else 
-			return createMappedParamDelinked(mConfig, f, visitedModels, mapsToPath);
+			return createMappedParamDetached(mConfig, f, visitedModels, mapsToPath);
 	}
 	
-	private DefaultParamConfig<?> createMappedParamLinked(ModelConfig<?> mConfig, Field f, EntityConfigVistor visitedModels, MapsTo.Path mapsToPath) {
+	private DefaultParamConfig<?> createMappedParamAttached(ModelConfig<?> mConfig, Field f, EntityConfigVistor visitedModels, MapsTo.Path mapsToPath) {
 		// param field is linked: enclosing model must be mapped
 		if(!mConfig.isMapped())
 			throw new InvalidConfigException("Mapped param field: "+f.getName()+" is mapped with linked=true. Enclosing model: "+mConfig.getReferredClass()+" must be mapped, but was not.");
@@ -136,138 +145,173 @@ abstract public class AbstractEntityConfigBuilder {
 		Class<?> mapsToModelClass = mConfig.findIfMapped().getMapsTo().getReferredClass();
 		ModelConfig<?> mapsToModel = visitedModels.get(mapsToModelClass);
 		if(mapsToModel==null)
-			throw new ConfigLoadException("Mapped param field: "+f.getName()+" is mapped with linked=true. Enclosing model: "+mConfig.getReferredClass()+" mapsToModelClass: "+mapsToModelClass
-					+" which must have been loaded prior, but wasn't.");
+			throw new ConfigLoadException("Mapped param field: "+f.getName()+" is mapped with linked=true. Enclosing model: "+mConfig.getReferredClass()
+				+" mapsToModelClass: "+mapsToModelClass+" which must have been loaded prior, but wasn't.");
 		
 		// find mapsTo param from mapsTo model
 		ParamConfig<?> mapsToParam = findMappedParam(mapsToModel, f.getName(), mapsToPath);
 		if(mapsToParam==null)
 			throw new InvalidConfigException("No mapsTo param found for mapped param field: "+f.getName()+" in enclosing model:"+mConfig.getReferredClass()+" with mapsToPath: "+mapsToPath);
 		
-		return decorateParam(f, new MappedDefaultParamConfigAttached<>(f.getName(), mapsToParam, mapsToPath));
+		return decorateParam(f, new MappedDefaultParamConfig<>(f.getName(), mapsToModel, mapsToParam, mapsToPath));
 	}
 	
-	private DefaultParamConfig<?> createMappedParamDelinked(ModelConfig<?> mConfig, Field f, EntityConfigVistor visitedModels, MapsTo.Path mapsToPath) {
-		Class<?> mappedParamClass = f.getType();
-		
-		ModelConfig<?> mapsToModel;
-
-		// for delinked, mapped param must be of type Model with MapsTo.Type specified
-		MapsTo.Type mappedParamMapsToType = AnnotationUtils.findAnnotation(mappedParamClass, MapsTo.Type.class);
-		if(mappedParamMapsToType==null) {
-			logit.warn(()->"Mapped param field: "+f.getName()+" is mapped with linked=false in enclosing model: "+mConfig.getReferredClass()+". "
-					+ "Mapped param field of type"+mappedParamClass+" is NOT configured with: "+MapsTo.Type.class+". Taking intended config as self mapping.");
-		
-			mapsToModel = visitedModels.get(mappedParamClass);
-		} else {
-			mapsToModel = visitedModels.get(mappedParamMapsToType.value());
-		}
-		
-		
-		if(mapsToModel==null && !isCollection(mappedParamClass))
-			throw new ConfigLoadException("Mapped param field: "+f.getName()+" is mapped with linked=false in enclosing model: "+mConfig.getReferredClass()+". "
-					+ "Mapped param field of type: "+mappedParamClass+" is configured with mapsTo.Type: "+mappedParamMapsToType
-					+" which must have been loaded prior, but wasn't.");
+	private DefaultParamConfig<?> createMappedParamDetached(ModelConfig<?> mConfig, Field mappedField, EntityConfigVistor visitedModels, MapsTo.Path mapsToPath) {
+		if(!isCollection(mappedField.getType())) {
+			return createMappedParamDetachedNested(mappedField, visitedModels, mapsToPath);
+		} 
 		
 		// detached collection
-		if(mapsToModel==null) {
-			DefaultModelConfig<?> coreConfig = new DefaultModelConfig<>(mappedParamClass);
-			
-			mapsToModel = new MappedDefaultModelConfig<>(coreConfig, mappedParamClass);
-		}
-		
-		return decorateParam(f, new MappedDefaultParamConfigDetached<>(f.getName(), mapsToModel, mapsToPath));
+		return createMappedParamDetachedCollection(mConfig, mappedField, visitedModels, mapsToPath);
 	}
 	
+	/**
+	 * For detached mode, simulate mapsToParam. 
+	 * This would require creating an enclosing ModelConfig which encloses the mapsTo Param.
+	 * 
+	 * Enclosing ModelConfig's type (referredClass) is top level holder class.
+	 * 
+	 * MapsTo ParaConfig's type is same as MapsTo.Type on mappedParam's referredClass. 
+	 * If mappedParam's referredClass doesn't have MapsTo.Type defined, then mappedParam's referredClass would be used for self-detached mode simulation.
+	 */
+	private DefaultParamConfig<?> createMappedParamDetachedNested(Field mappedField, EntityConfigVistor visitedModels, MapsTo.Path mapsToPath) {
+		// create mapsToParam's enclosing ModelConfig
+		DefaultModelConfig<?> simulatedEnclosingModel = new DefaultModelConfig<>(SimulatedNestedParamEnclosingEntity.class);
 		
+		// create mapsToParam and attach to enclosing model
+		DefaultParamConfig<?> simulatedMapsToParam = new DefaultParamConfig<>(MapsTo.DETACHED_SIMULATED_FIELD_NAME);
+		simulatedEnclosingModel.templateParams().add(simulatedMapsToParam);
+		
+		// build mapsToParam's type
+		MapsTo.Type mappedParamRefClassMapsToType = AnnotationUtils.findAnnotation(mappedField.getType(), MapsTo.Type.class);
+		Class<?> mappedParamRefClassMapsToEntityClass = mappedParamRefClassMapsToType!=null ? mappedParamRefClassMapsToType.value() : mappedField.getType();
+		
+		ParamType pType = buildParamType(simulatedEnclosingModel, simulatedMapsToParam, null, mappedParamRefClassMapsToEntityClass, visitedModels);
+		simulatedMapsToParam.setType(pType);
+		
+		DefaultParamConfig<?> mappedParam = decorateParam(mappedField, new MappedDefaultParamConfig<>(mappedField.getName(), simulatedEnclosingModel, simulatedMapsToParam, mapsToPath));
+		return mappedParam;
+	}
 	
-	public <T, P> DefaultParamConfig<P> createParamCollectionElement(ModelConfig<T> mConfig, Field pColField, ParamConfig<P> pConfig, ModelConfig<List<P>> colModelConfig, EntityConfigVistor visitedModels, Class<P> colElemClass) {
-		logit.trace(()->"[create.pColElem] starting to process colElemClass: "+colElemClass+" with pColField :"+pColField);
+	public DefaultParamConfig<?> createMappedParamDetachedCollection(ModelConfig<?> mConfigOfMappedParam, Field mappedField, EntityConfigVistor visitedModels, MapsTo.Path mapsToPath) {
+		// create mapsToParam's enclosing ModelConfig
+		DefaultModelConfig<?> simulatedEnclosingModel = new DefaultModelConfig<>(SimulatedCollectionParamEnclosingEntity.class);
 		
-		MapsTo.Path mapsToPathColParam = AnnotationUtils.findAnnotation(pColField, MapsTo.Path.class);
-		MapsTo.Mode mapsToModeColParam = MapsTo.getMode(mapsToPathColParam);
-		String colParamCode = pConfig.getCode();//f.getName();
+		// create mapsToParam and attach to enclosing model
+		DefaultParamConfig<?> simulatedMapsToParam = new DefaultParamConfig<>(MapsTo.DETACHED_SIMULATED_FIELD_NAME);
+		simulatedEnclosingModel.templateParams().add(simulatedMapsToParam);
 		
-		logit.debug(()->"[create.pColElem] mapsToColParam: "+mapsToPathColParam);
-		logit.debug(()->"[create.pColElem] mtModeColParam: "+mapsToModeColParam);
-		logit.debug(()->"[create.pColElem] colParamCode: "+colParamCode);
+		// determine collection param generic element type
+		final ParamType.CollectionType colType = determineCollectionType(mappedField.getType());
+		final Class<?> determinedMappedColElemType = GenericUtils.resolveGeneric(mConfigOfMappedParam.getReferredClass(), mappedField);
 		
+		MapsTo.Type mappedParamRefClassMapsToType = AnnotationUtils.findAnnotation(determinedMappedColElemType, MapsTo.Type.class);
+		Class<?> mappedParamRefClassMapsToEntityClass = mappedParamRefClassMapsToType!=null ? mappedParamRefClassMapsToType.value() : determinedMappedColElemType;
 		
-		if(mapsToModeColParam==MapsTo.Mode.UnMapped) { //unmapped
-			DefaultParamConfig<P> pCoreElemConfig = createParamCollectionElementInternal(colModelConfig, null, null, colParamCode);
+		ParamType pType = buildParamType(simulatedEnclosingModel, simulatedMapsToParam, colType, mappedParamRefClassMapsToEntityClass, visitedModels);
+		simulatedMapsToParam.setType(pType);
 		
-			logit.trace(()->"[create.pColElem] [colParam is UnMapped] returning core pColElem Config as colElem is UnMapped.");
-			return pCoreElemConfig;
-		}
-		
-		// colParam is mapped: attached or detached
-		logit.trace(()->"[create.pColElem] [colParam is mapped: Attached/Detached] begin processing for mapped Attached/Detached colElem: "+colElemClass);
-		
+		DefaultParamConfig<?> mappedParam = decorateParam(mappedField, new MappedDefaultParamConfig<>(mappedField.getName(), simulatedEnclosingModel, simulatedMapsToParam, mapsToPath));
+		return mappedParam;
+	}
+
+	@Getter @Setter
+	public static class SimulatedNestedParamEnclosingEntity<E> {
+		private E detachedParam; 
+	}
+	
+	
+	@Getter @Setter
+	public static class SimulatedCollectionParamEnclosingEntity<E> {
+		private List<E> detachedParam;
+	}
+
+	private <T, P> DefaultParamConfig<P> createParamCollectionElemMappedAttached(ModelConfig<T> mConfig, MappedParamConfig<P, ?> pConfig, ModelConfig<List<P>> colModelConfig, EntityConfigVistor visitedModels, Class<?> colElemClass, MapsTo.Path mapsToColParamPath) {
 		// colParam is mapped as Attached, but parent enclosing Model is un-mapped :- throw Ex
-		if(mapsToModeColParam==MapsTo.Mode.MappedAttached && !mConfig.isMapped()) { 	// mapped: attached
-			throw new InvalidConfigException("Param: "+pConfig.getCode()+" has @MapsTo.Path "+mapsToPathColParam+" with resolved mode: "+mapsToModeColParam
+		if(!mConfig.isMapped()) { 	
+			throw new InvalidConfigException("Param: "+pConfig.getCode()+" has @MapsTo.Path "+mapsToColParamPath+" with resolved mode: "+MapsTo.Mode.MappedAttached
 						+" Attached Mapped Param must have Model that is mapped, but found with no @MapsTo.Model mappings for: "+mConfig.getReferredClass());
 		}
 		
-		MapsTo.Type mapsToElemModel = AnnotationUtils.findAnnotation(colElemClass, MapsTo.Type.class);
-		logit.debug(()->"[create.pColElem] colElemModel MapsTo.Model: "+mapsToElemModel);
-
-		ModelConfig<?> mapsTo = visitedModels.get(mConfig.findIfMapped().getMapsTo().getReferredClass());
-		logit.debug(()->"[create.pColElem] [colParam is mapped] [elemClass same] [Attached] Found parent mapsToModel: "+mapsTo+" from visitedMmodels using: "+mConfig.findIfMapped().getMapsTo().getReferredClass());
+		//ModelConfig<?> mapsToEnclosingModel = visitedModels.get(mConfig.findIfMapped().getMapsTo().getReferredClass());
+		//logit.debug(()->"[create.pColElem] [colParam is mapped] [elemClass same] [Attached] Found parent mapsToEnclosingModel: "+mapsToEnclosingModel+" from visitedMmodels using: "+mConfig.findIfMapped().getMapsTo().getReferredClass());
 		
-		ParamConfig<?> mapsToColParamConfig = findMappedParam(mapsTo, pConfig.getCode(), mapsToPathColParam);
-		logit.debug(()->"[create.pColElem] [colParam is mapped] [elemClass same] [Attached] Found mapsToColParamConfig for "+pConfig.getCode()+" with mapsToPath of colParam: "+mapsToPathColParam+" -> "+mapsToColParamConfig);
+		return createParamCollectionElemMapped(/*mapsToEnclosingModel, */pConfig, colModelConfig, visitedModels, colElemClass, mapsToColParamPath);
+	}
+	
+	private <T, P> DefaultParamConfig<P> createParamCollectionElemMappedDetached(ModelConfig<T> mConfig, MappedParamConfig<P, ?> pConfig, ModelConfig<List<P>> colModelConfig, EntityConfigVistor visitedModels, Class<?> colElemClass, MapsTo.Path mapsToColParamPath) {
+		
+		return createParamCollectionElemMapped(pConfig, colModelConfig, visitedModels, colElemClass, mapsToColParamPath);
+	}
+	
+	private <T, P> DefaultParamConfig<P> createParamCollectionElemMapped(MappedParamConfig<P, ?> pConfig, ModelConfig<List<P>> colModelConfig, EntityConfigVistor visitedModels, Class<?> colElemClass, MapsTo.Path mapsToColParamPath) {
+		
+		//ParamConfig<?> mapsToColParamConfig = findMappedParam(mapsToEnclosingModel, pConfig.getCode(), mapsToColParamPath);
+		ParamConfig<?> mapsToColParamConfig = pConfig.getMapsTo();
+		logit.debug(()->"[create.pColElem] [colParam is mapped] [elemClass same] [Attached] Found mapsToColParamConfig for "+pConfig.getCode()+" with mapsToPath of colParam: "+mapsToColParamPath+" -> "+mapsToColParamConfig);
 		
 		@SuppressWarnings("unchecked")
 		DefaultParamConfig<P> mapsToColElemParamConfig = (DefaultParamConfig<P>)mapsToColParamConfig.getType().findIfCollection().getElementConfig();
 
 		
 		// colParam is mapped: colElemModel is NOT explicitly mapped BUT colElemClass is NOT SAME as mappedElemClass :- throw Ex
-		if(mapsToElemModel==null && colElemClass!=mapsToColElemParamConfig.getReferredClass()) {
+		if(colElemClass!=mapsToColElemParamConfig.getReferredClass()) {
+			MapsTo.Type mapsToElemModel = AnnotationUtils.findAnnotation(colElemClass, MapsTo.Type.class);
 			
-			throw new InvalidConfigException("Mapped Elem Class is not same as MapsTo Elem Class. Must be same or an explicit MapsTo.Model mapping is required. "
-					+ " For Model: "+mConfig.getReferredClass()+" param: "+colParamCode
-					+ " Expected elemClass: "+colElemClass+" but found mapsToElemClass: "+mapsToPathColParam.getClass());
+			if(mapsToElemModel==null)
+				throw new InvalidConfigException("Mapped Elem Class is not same as MapsTo Elem Class. Must be same or an explicit MapsTo.Model mapping is required. "
+						//+ " For EnclosingModel: "+mapsToEnclosingModel.getReferredClass()
+						+" param: "+pConfig.getCode()
+						+ " Expected elemClass: "+colElemClass+" but found mapsToElemClass: "+mapsToColParamPath.getClass());
 		}
 		
-		//colParam is mapped: colElemModel is NOT explicitly mapped BUT colElemClass is SAME as mappedElemClass	:- map parameter as-is: Scenario 1, 2
-		//if(mapsToElemModel==null && colElemClass==mapsToPathColParam.getClass()) {
-			//logit.trace(()->"[create.pColElem] [colParam is mapped] [elemClass same] map parameter as-is: Scenario 1, 2, 3");
-
-			// handle Attached:
-			if(mapsToModeColParam==MapsTo.Mode.MappedAttached) {
-				logit.trace(()->"[create.pColElem] [colParam is mapped] [elemClass same] [Attached] begin processing: Scenario 1,2 ");
-				
-				logit.trace(()->"[create.pColElem] [colParam is mapped] [elemClass same] [Attached] returing  ");
-				return createParamCollectionElementInternal(colModelConfig, mapsToColElemParamConfig, mapsToPathColParam, colParamCode);
-				
-			} else {	// Scenario: 3
-				logit.trace(()->"[create.pColElem] [colParam is mapped] [elemClass same] [Attached] begin processing: Scenario: 3 ");
-				throw new UnsupportedOperationException("MapsTo.Path Mode: MappedDetached NOT yet implemented for SAME elemClass: "+colElemClass+" for colParam: "+colParamCode);
-			}
-		//}
-		
-		//colParam is mapped: colElemModel IS explicitly mapped :- Scenario 4
-		//logit.trace(()->"[create.pColElem] [colParam is mapped] [elemClass mapped] Scenario 4, 5, 6, 7 colElemModel MapsTo.Model: "+mapsToElemModel);
-		
-		
-		//throw new UnsupportedOperationException("Mapped collection param not yet implemented...ParamConfig");
+		return createParamCollectionElementInternal(colModelConfig, mapsToColElemParamConfig, mapsToColParamPath, pConfig.getCode());
 	}
 	
-	private <P> DefaultParamConfig<P> createParamCollectionElementInternal(ModelConfig<List<P>> mConfig, DefaultParamConfig<P> mapsToElemParamConfig, MapsTo.Path mapsToColParam, String colParamCode) {
+	public <T, P> DefaultParamConfig<P> createParamCollectionElement(ModelConfig<T> mConfig, /*MapsTo.Path mapsToColParamPath, */ParamConfig<P> pConfig, ModelConfig<List<P>> colModelConfig, EntityConfigVistor visitedModels, Class<?> colElemClass) {
+		logit.trace(()->"[create.pColElem] starting to process colElemClass: "+colElemClass+" with pConfig :"+pConfig.getCode());
+		
+		MapsTo.Path mapsToColParamPath = pConfig.isMapped() ? pConfig.findIfMapped().getPath() : null;
+		MapsTo.Mode mapsToColParamMode = MapsTo.getMode(mapsToColParamPath);
+		
+		logit.debug(()->"[create.pColElem] mapsToColParam: "+mapsToColParamPath);
+		logit.debug(()->"[create.pColElem] mapsToModeColParam: "+mapsToColParamMode);
+		logit.debug(()->"[create.pColElem] colParamCode: "+pConfig.getCode());
+		
+		if(mapsToColParamMode==MapsTo.Mode.UnMapped) { 
+			DefaultParamConfig<P> pCoreElemConfig = createParamCollectionElementInternal(colModelConfig, null, null, pConfig.getCode());
+		
+			logit.trace(()->"[create.pColElem] [colParam is UnMapped] returning core pColElem Config as colElem is UnMapped.");
+			return pCoreElemConfig;
+			
+		} else if(mapsToColParamMode==MapsTo.Mode.MappedAttached) {
+			DefaultParamConfig<P> pMappedAttachedElemConfig = createParamCollectionElemMappedAttached(mConfig, pConfig.findIfMapped(), colModelConfig, visitedModels, colElemClass, mapsToColParamPath);
+			return pMappedAttachedElemConfig;
+			
+		} else if(mapsToColParamMode==MapsTo.Mode.MappedDetached) {
+			DefaultParamConfig<P> pMappedDetachedElemConfig = createParamCollectionElemMappedDetached(mConfig, pConfig.findIfMapped(), colModelConfig, visitedModels, colElemClass, mapsToColParamPath);
+			return pMappedDetachedElemConfig;
+			
+		} else {
+			throw new UnsupportedScenarioException("Param: "+pConfig.getCode()+" has @MapsTo.Path "+mapsToColParamPath+" with unknown mode: "+mapsToColParamMode
+					+" in enclosing model: "+mConfig.getReferredClass());
+		}
+	}
+	
+	private <P> DefaultParamConfig<P> createParamCollectionElementInternal(ModelConfig<List<P>> colModelConfig, DefaultParamConfig<P> mapsToColElemParamConfig, MapsTo.Path mapsToColParamPath, String colParamCode) {
 		final String collectionElemPath = createCollectionElementPath(colParamCode);
 		
-		final MapsTo.Path mapsToColElemParam = mapsToColParam==null ? null : createNewImplicitMapping(collectionElemPath, mapsToColParam.linked());
-		
 		final DefaultParamConfig<P> created;
-		if(mConfig instanceof MappedDefaultModelConfig) {
-			created = new MappedDefaultParamConfigAttached<>(collectionElemPath, mapsToElemParamConfig, mapsToColElemParam);
+		if(colModelConfig.isMapped()) {
+			final MapsTo.Path mapsToColElemParamPathAnnotation = mapsToColParamPath==null ? null : createNewImplicitMapping(collectionElemPath, mapsToColParamPath.linked());
+			
+			created = new MappedDefaultParamConfig<>(collectionElemPath, colModelConfig, mapsToColElemParamConfig, mapsToColElemParamPathAnnotation);
 
-		} else if(mapsToElemParamConfig==null) {
+		} else if(mapsToColElemParamConfig==null) {
 			created = new DefaultParamConfig<>(collectionElemPath);
 			
 		} else {
-			created = mapsToElemParamConfig;
+			created = mapsToColElemParamConfig;
 			
 		}
 		return created;
@@ -363,6 +407,11 @@ abstract public class AbstractEntityConfigBuilder {
 			@Override
 			public String value() {
 				return mappedPath;
+			}
+			
+			@Override
+			public State state() {
+				return State.Internal;
 			}
 			
 			@Override

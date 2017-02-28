@@ -62,61 +62,14 @@ public interface ParamConfig<P> extends EntityConfig<P>, Findable<String> {
 		
 		public Path getPath();
 
-		public boolean isLinked();
-		
-		default public MappedParamConfigLinked<P, M> findIfLinked() {
-			return null;
-		}
-		
-		default public MappedParamConfigDelinked<P, M> findIfDelinked() {
-			return null;
-		}
-		
 		@Override
 		default Mode getMappingMode() {
 			return MapsTo.getMode(getPath());
 		}
-	}
-	
-	public interface MappedParamConfigLinked<P, M> extends MappedParamConfig<P, M> {
-
-		@Override
-		default MappedParamConfigLinked<P, M> findIfMapped() {
-			return this;
-		}
-		
-		@Override
-		default boolean isLinked() {
-			return true;
-		}
-		
-		@Override
-		default MappedParamConfigLinked<P, M> findIfLinked() {
-			return this;
-		}
 		
 		@Override
 		public ParamConfig<M> getMapsTo();
-	}
-	
-	public interface MappedParamConfigDelinked<P, M> extends MappedParamConfig<P, M> {
-
-		@Override
-		default MappedParamConfigDelinked<P, M> findIfMapped() {
-			return this;
-		}
 		
-		@Override
-		default boolean isLinked() {
-			return false;
-		}
-		
-		@Override
-		default MappedParamConfigDelinked<P, M> findIfDelinked() {
-			return this;
-		}
-		
-		@Override
-		public ModelConfig<M> getMapsTo();
+		public ModelConfig<?> getMapsToEnclosingModel();
 	}
 }
