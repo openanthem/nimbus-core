@@ -17,6 +17,8 @@ import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandMessageConverter;
 import com.anthem.oss.nimbus.core.domain.command.execution.ExecuteOutput.BehaviorExecute;
 import com.anthem.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
+import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
+import com.anthem.oss.nimbus.core.session.UserEndpointSession;
 
 /**
  * @author Jayant Chaudhuri
@@ -90,5 +92,30 @@ public class DefaultExpressionHelper extends AbstractExpressionHelper{
 		Object obj = executeProcess(coreCmdMsg);
 		return obj;
 	}
+	
+	final public void _setExternal(CommandMessage cmdMsg, DelegateExecution execution, 
+			String resolvedUri, Object... args){
+		CommandMessage coreCmdMsg = new CommandMessage();
+		Command command = CommandBuilder.withUri(resolvedUri.toString()).getCommand();
+		coreCmdMsg.setCommand(command);
+		if(args.length > 1)
+			coreCmdMsg.setRawPayload((String)args[1]);
+		Object obj =  executeProcess(coreCmdMsg);
+		QuadModel<?,?> quadModel = UserEndpointSession.getOrThrowEx(cmdMsg.getCommand());
+		StringBuilder targetParamPath = new StringBuilder((String)args[0]);
+		targetParamPath.append(".m");
+		quadModel.getView().findModelByPath(targetParamPath.toString()).setState(obj);
+	}
+	
+	final public Object _concat(CommandMessage cmdMsg, DelegateExecution execution, 
+			String resolvedUri, Object... args){
+		StringBuilder builder = new StringBuilder();
+		for(Object arg: args){
+			builder.append(arg.toString());
+		}
+		return builder.toString();
+	}
+	
+	
 	
 }
