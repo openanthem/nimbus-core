@@ -303,7 +303,7 @@ abstract public class AbstractEntityConfigBuilder {
 		
 		final DefaultParamConfig<P> created;
 		if(colModelConfig.isMapped()) {
-			final MapsTo.Path mapsToColElemParamPathAnnotation = mapsToColParamPath==null ? null : createNewImplicitMapping(collectionElemPath, mapsToColParamPath.linked());
+			final MapsTo.Path mapsToColElemParamPathAnnotation = mapsToColParamPath==null ? null : createNewImplicitMapping(collectionElemPath, mapsToColParamPath.linked(), mapsToColParamPath.state());
 			
 			created = new MappedDefaultParamConfig<>(collectionElemPath, colModelConfig, mapsToColElemParamConfig, mapsToColElemParamPathAnnotation);
 
@@ -396,7 +396,7 @@ abstract public class AbstractEntityConfigBuilder {
 		return mapsTo;
 	}
 	
-	public static MapsTo.Path createNewImplicitMapping(String mappedPath, boolean linked) {
+	public static MapsTo.Path createNewImplicitMapping(String mappedPath, boolean linked, State state) {
 		return new MapsTo.Path() {
 			
 			@Override
@@ -411,7 +411,7 @@ abstract public class AbstractEntityConfigBuilder {
 			
 			@Override
 			public State state() {
-				return State.Internal;
+				return state;
 			}
 			
 			@Override
