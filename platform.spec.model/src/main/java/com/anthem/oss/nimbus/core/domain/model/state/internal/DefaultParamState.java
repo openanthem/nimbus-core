@@ -15,6 +15,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 
+import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
 import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.execution.ValidationResult;
@@ -114,14 +115,14 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	final public Action setState(T state) {
 		ExecutionRuntime execRt = getRootExecution().getExecutionRuntime();
 		String lockId = execRt.tryLock();
+		final Holder<Action> h = new Holder<>();
 		try {
-			state = preSetState(state);
-			
-			Action a = getProvider().getParamStateGateway()._set(this, state);
+			state = preSetState(state);			
+			Action a = getProvider().getParamStateGateway()._set(this, state); 
 			if(a!=null) {
 				notifySubscribers(new Notification<>(this, ActionType._updateState, this));
-				
-				emitEvent(a);
+				h.setState(a);
+				emitEvent(a, this);
 			}
 			
 			postSetState(a, state);
@@ -130,11 +131,13 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 			fireRules();
 			
 			return a;
-		} finally {
+		}finally {
 			if(execRt.isLocked(lockId)) {
 				// await completion of notification events
 				execRt.awaitCompletion();
-				
+				if(h.getState() != null) {
+					this.eventSubscribers.forEach((subscriber) -> emitEvent(h.getState(), subscriber));
+				}
 				// fire rules at root level upon completion of all set actions
 				getRootExecution().fireRules();
 				
@@ -326,10 +329,10 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 
 	
-	protected void emitEvent(Action a) {
+	protected void emitEvent(Action a , Param p) {
 		if(getProvider().getEventListener() == null) return;
 		
-		ModelEvent<DefaultParamState<?>> e = new ModelEvent<DefaultParamState<?>>(a, getPath(), this);
+		ModelEvent<Param<?>> e = new ModelEvent<Param<?>>(a, p.getPath(), p);
 		EventListener publisher = getProvider().getEventListener();
 		publisher.listen(e);
 	}
