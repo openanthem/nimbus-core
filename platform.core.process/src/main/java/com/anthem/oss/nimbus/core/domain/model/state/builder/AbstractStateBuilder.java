@@ -196,7 +196,7 @@ abstract public class AbstractStateBuilder {
 		
 		String[] uriWithPayload = valuesUrl.split(Constants.CODE_VALUE_CONFIG_DELIMITER.code);
 		Command cmd = CommandBuilder.withUri(Constants.PARAM_VALUES_URI_PREFIX.code+uriWithPayload[0]+Constants.PARAM_VALUES_URI_SUFFIX.code).getCommand();
-		cmd.setAction(Action._search);
+		cmd.setAction(Action._lookup);
 		cmd.templateBehaviors().add(Behavior.$execute);
 		CommandMessage cmdMsg = new CommandMessage();
 		cmdMsg.setCommand(cmd);

@@ -32,7 +32,7 @@ public enum Constants {
 	
 	CODE_VALUE_CONFIG_DELIMITER("-"),
 	PARAM_VALUES_URI_PREFIX("*/*/*/p/"),
-	PARAM_VALUES_URI_SUFFIX("/_search")
+	PARAM_VALUES_URI_SUFFIX("/_lookup")
 	;
 	
 	
