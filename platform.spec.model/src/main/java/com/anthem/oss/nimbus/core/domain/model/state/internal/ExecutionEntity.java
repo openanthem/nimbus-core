@@ -37,7 +37,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ExecutionModel;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification;
-import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderSupport;
+import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderContext;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
@@ -153,7 +153,7 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 		
 		final private ExecutionModel<ExecutionEntity<V, C>> rootModel;
 		
-		public ExParam(Command cmd, StateBuilderSupport provider, ExConfig<V, C> exConfig) {
+		public ExParam(Command cmd, StateBuilderContext provider, ExConfig<V, C> exConfig) {
 			super(null, new ExParamConfig(exConfig), provider);
 			ExParamConfig pConfig = ((ExParamConfig)getConfig());
 			
@@ -161,7 +161,7 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 			this.setType(new StateType.Nested<>(getConfig().getType().findIfNested(), getRootExecution()));
 		}
 
-		public ExParam(Command cmd, StateBuilderSupport provider, ParamConfig<ExecutionEntity<V, C>> rootParamConfig, ExecutionModel<ExecutionEntity<V, C>> rootModel) {
+		public ExParam(Command cmd, StateBuilderContext provider, ParamConfig<ExecutionEntity<V, C>> rootParamConfig, ExecutionModel<ExecutionEntity<V, C>> rootModel) {
 			super(null, rootParamConfig, provider);
 			this.rootModel = rootModel;
 		}
@@ -194,11 +194,11 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 		@JsonIgnore
 		final private ExecutionRuntime executionRuntime;
 		
-		public ExModel(Command command, ExParam associatedParam, ModelConfig<ExecutionEntity<V, C>> modelConfig, StateBuilderSupport provider) {
+		public ExModel(Command command, ExParam associatedParam, ModelConfig<ExecutionEntity<V, C>> modelConfig, StateBuilderContext provider) {
 			this(command, associatedParam, modelConfig, provider, new InternalExecutionRuntime(command));
 		}
 		
-		public ExModel(Command command, ExParam associatedParam, ModelConfig<ExecutionEntity<V, C>> modelConfig, StateBuilderSupport provider, ExecutionRuntime executionRuntime) {
+		public ExModel(Command command, ExParam associatedParam, ModelConfig<ExecutionEntity<V, C>> modelConfig, StateBuilderContext provider, ExecutionRuntime executionRuntime) {
 			super(associatedParam, modelConfig, provider);
 			this.command = command;
 			this.executionRuntime = executionRuntime;

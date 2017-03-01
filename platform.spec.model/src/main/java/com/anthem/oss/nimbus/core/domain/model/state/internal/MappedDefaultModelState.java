@@ -7,7 +7,7 @@ import java.util.Objects;
 
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.MappedModel;
-import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderSupport;
+import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderContext;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
@@ -23,7 +23,7 @@ public class MappedDefaultModelState<T, M> extends DefaultModelState<T> implemen
 
     @JsonIgnore private final Model<M> mapsTo;
 
-	public MappedDefaultModelState(Model<M> mapsTo, Param<T> associatedParam, ModelConfig<T> config, StateBuilderSupport provider) {
+	public MappedDefaultModelState(Model<M> mapsTo, Param<T> associatedParam, ModelConfig<T> config, StateBuilderContext provider) {
     	super(associatedParam, config, provider);
     	
     	Objects.requireNonNull(mapsTo, "MapsTo model must not be null.");

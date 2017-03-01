@@ -8,7 +8,7 @@ import java.util.Objects;
 
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.MappedListModel;
-import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderSupport;
+import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderContext;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
@@ -24,7 +24,7 @@ public class MappedDefaultListModelState<T, M> extends DefaultListModelState<T> 
 	
 	@JsonIgnore final private ListModel<M> mapsTo; 
 	
-	public MappedDefaultListModelState(ListModel<M> mapsTo, ListParam<T> associatedParam, ModelConfig<List<T>> config, StateBuilderSupport provider, DefaultListElemParamState.Creator<T> elemCreator) {
+	public MappedDefaultListModelState(ListModel<M> mapsTo, ListParam<T> associatedParam, ModelConfig<List<T>> config, StateBuilderContext provider, DefaultListElemParamState.Creator<T> elemCreator) {
 		super(associatedParam, config, provider, elemCreator);
 		
 		Objects.requireNonNull(mapsTo, "MapsTo model must not be null.");

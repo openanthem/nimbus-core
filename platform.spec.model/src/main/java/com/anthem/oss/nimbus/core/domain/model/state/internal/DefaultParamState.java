@@ -28,7 +28,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification.ActionType;
-import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderSupport;
+import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderContext;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.entity.Findable;
 import com.anthem.oss.nimbus.core.spec.contract.event.EventListener;
@@ -63,7 +63,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	@JsonIgnore final private PropertyDescriptor propertyDescriptor;
 	
-	public DefaultParamState(Model<?> parentModel, ParamConfig<T> config, StateBuilderSupport provider) {
+	public DefaultParamState(Model<?> parentModel, ParamConfig<T> config, StateBuilderContext provider) {
 		super(config, provider);
 
 		if(!isRoot()) Objects.requireNonNull(parentModel, "Parent model must not be null with code: "+getConfig().getCode());

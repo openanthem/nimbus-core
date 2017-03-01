@@ -8,7 +8,7 @@ import java.util.Objects;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification;
-import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderSupport;
+import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderContext;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
@@ -26,7 +26,7 @@ public class MappedDefaultParamState<T, M> extends DefaultParamState<T> implemen
 	
 	@JsonIgnore private final Notification.Consumer<M> delegate;
 
-	public MappedDefaultParamState(Param<M> mapsTo, Model<?> parentModel, ParamConfig<T> config, StateBuilderSupport provider) {
+	public MappedDefaultParamState(Param<M> mapsTo, Model<?> parentModel, ParamConfig<T> config, StateBuilderContext provider) {
 		super(parentModel, config, provider);
 		
 		Objects.requireNonNull(mapsTo, "MapsTo param must not be null.");

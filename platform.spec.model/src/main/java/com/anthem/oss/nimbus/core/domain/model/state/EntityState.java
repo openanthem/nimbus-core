@@ -37,7 +37,7 @@ public interface EntityState<T> {
 
 	public void init();
 	
-	public StateBuilderSupport getProvider();
+	public StateBuilderContext getProvider();
 	
 	public void fireRules();
 	
