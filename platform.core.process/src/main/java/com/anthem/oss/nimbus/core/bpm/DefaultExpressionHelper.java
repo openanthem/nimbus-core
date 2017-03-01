@@ -9,6 +9,7 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.anthem.nimbus.platform.spec.model.dsl.binder.AssignmentTask.TaskStatus;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Behavior;
 import com.anthem.oss.nimbus.core.domain.command.Command;
@@ -17,6 +18,7 @@ import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandMessageConverter;
 import com.anthem.oss.nimbus.core.domain.command.execution.ExecuteOutput.BehaviorExecute;
 import com.anthem.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.session.UserEndpointSession;
 
@@ -100,21 +102,55 @@ public class DefaultExpressionHelper extends AbstractExpressionHelper{
 		coreCmdMsg.setCommand(command);
 		if(args.length > 1)
 			coreCmdMsg.setRawPayload((String)args[1]);
-		Object obj =  executeProcess(coreCmdMsg);
+		MultiExecuteOutput obj =  (MultiExecuteOutput)executeProcess(coreCmdMsg);
 		QuadModel<?,?> quadModel = UserEndpointSession.getOrThrowEx(cmdMsg.getCommand());
 		StringBuilder targetParamPath = new StringBuilder((String)args[0]);
 		targetParamPath.append(".m");
-		quadModel.getView().findModelByPath(targetParamPath.toString()).setState(obj);
+		quadModel.getView().findModelByPath(targetParamPath.toString()).setState(obj.getSingleResult());
 	}
+	
+	
+	final public void _execute(CommandMessage cmdMsg, DelegateExecution execution, 
+			String resolvedUri, Object... args){
+		CommandMessage coreCmdMsg = new CommandMessage();
+		Command command = CommandBuilder.withUri(resolvedUri.toString()).getCommand();
+		coreCmdMsg.setCommand(command);
+		if(args.length > 1)
+			coreCmdMsg.setRawPayload((String)args[1]);
+		executeProcess(coreCmdMsg);
+	}	
+	
+	final public Model<?> _getCore(CommandMessage cmdMsg, DelegateExecution execution, 
+			String resolvedUri, Object... args){
+		QuadModel<?,?> quadModel = UserEndpointSession.getOrThrowEx(cmdMsg.getCommand());
+		return quadModel.getCore();
+	}		
+	
 	
 	final public Object _concat(CommandMessage cmdMsg, DelegateExecution execution, 
 			String resolvedUri, Object... args){
 		StringBuilder builder = new StringBuilder();
 		for(Object arg: args){
 			builder.append(arg.toString());
-		}
+		} 
 		return builder.toString();
+		
 	}
+	
+	
+	final public void _createSyncTask(CommandMessage cmdMsg, DelegateExecution execution, 
+			String resolvedUri, Object... args){
+		CommandMessage coreCmdMsg = new CommandMessage();
+		Command command = CommandBuilder.withUri(resolvedUri.toString()).getCommand();
+		command.setAction(Action._new);
+		command.templateBehaviors().add(Behavior.$execute);
+		coreCmdMsg.setCommand(command);
+		executeProcess(coreCmdMsg);
+		QuadModel<?, ?> taskQuadModel = UserEndpointSession.getOrThrowEx(coreCmdMsg.getCommand());
+		QuadModel<?, ?> entityQuadModel = UserEndpointSession.getOrThrowEx(cmdMsg.getCommand());
+		taskQuadModel.getCore().findStateByPath("/internalStatus").setState(TaskStatus.OPEN);
+		taskQuadModel.getCore().findStateByPath("/entity").setState(entityQuadModel.getCore().getState());
+	}	
 	
 	
 	

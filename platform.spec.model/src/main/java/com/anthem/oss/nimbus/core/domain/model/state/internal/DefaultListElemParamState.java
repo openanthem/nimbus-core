@@ -10,7 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
-import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderSupport;
+import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderContext;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
@@ -33,7 +33,7 @@ public class DefaultListElemParamState<E> extends DefaultParamState<E> implement
 	
 	final private String elemId;
 	
-	public DefaultListElemParamState(ListModel<E> parentModel, ParamConfig<E> config, StateBuilderSupport provider, String elemId) {
+	public DefaultListElemParamState(ListModel<E> parentModel, ParamConfig<E> config, StateBuilderContext provider, String elemId) {
 		super(parentModel, config, provider);
 		
 		Objects.requireNonNull(elemId, "ElemId must not be null.");

@@ -126,12 +126,17 @@ public class EntityConfigBuilder extends AbstractEntityConfigBuilder {
 	
 	
 	@SuppressWarnings("unchecked")
+	@Override
 	protected <T, P> ParamType buildParamType(ModelConfig<T> mConfig, ParamConfig<P> pConfig, Field f, EntityConfigVistor visitedModels) {
+		final Class<P> determinedType = (Class<P>)GenericUtils.resolveGeneric(mConfig.getReferredClass(), f);
 		
 		final ParamType.CollectionType colType = determineCollectionType(f.getType());	
-
-		final Class<P> determinedType = (Class<P>)GenericUtils.resolveGeneric(mConfig.getReferredClass(), f.getDeclaringClass(), f.getType(), f.getGenericType());
-		
+		//MapsTo.Path mapsToPath = AnnotationUtils.findAnnotation(f, MapsTo.Path.class);
+		return buildParamType(mConfig, pConfig, colType, determinedType, /*mapsToPath, */visitedModels);
+	}
+	
+	@Override
+	protected <T, P> ParamType buildParamType(ModelConfig<T> mConfig, ParamConfig<P> pConfig, ParamType.CollectionType colType, Class<?> pDirectOrColElemType, /*MapsTo.Path mapsToPath, */EntityConfigVistor visitedModels) {
 		if(colType!=null) { //handle collections first
 			//create nested collection type
 			ParamType.NestedCollection<P> colModelType = createNestedCollectionType(colType);
@@ -141,17 +146,17 @@ public class EntityConfigBuilder extends AbstractEntityConfigBuilder {
 			colModelType.setModel(colModelConfig);
 			 
 			//create collection element param config
-			DefaultParamConfig<P> colElemParamConfig = createParamCollectionElement(mConfig, f, pConfig, colModelConfig, visitedModels, determinedType);
+			DefaultParamConfig<P> colElemParamConfig = createParamCollectionElement(mConfig, /*mapsToPath, */pConfig, colModelConfig, visitedModels, pDirectOrColElemType);
 			colModelType.setElementConfig(colElemParamConfig);
 
 			//create collection element type (and element model config)
-			ParamType colElemType = createParamType(determinedType, colModelConfig, visitedModels);
+			ParamType colElemType = createParamType(pDirectOrColElemType, colModelConfig, visitedModels);
 			colElemParamConfig.setType(colElemType);
 			
 			return colModelType;
 			
 		} else {
-			ParamType type = createParamType(determinedType, mConfig, visitedModels);
+			ParamType type = createParamType(pDirectOrColElemType, mConfig, visitedModels);
 			return type;
 		}
 	}

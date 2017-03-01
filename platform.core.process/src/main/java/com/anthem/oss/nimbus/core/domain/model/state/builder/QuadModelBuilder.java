@@ -25,7 +25,7 @@ import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ValidatorProvider;
 import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
-import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderSupport;
+import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderContext;
 import com.anthem.oss.nimbus.core.domain.model.state.StateMeta;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.ParamStateGateway;
@@ -94,7 +94,7 @@ public class QuadModelBuilder {
 		//create event listener
 		QuadScopedEventListener qEventListener = new QuadScopedEventListener(getParamEventListeners());
 		
-		StateBuilderSupport provider = new StateBuilderSupport(qEventListener, /*getClientUserFromSession(cmd),*/ validatorProvider, paramStateGateway);
+		StateBuilderContext provider = new StateBuilderContext(qEventListener, /*getClientUserFromSession(cmd),*/ validatorProvider, paramStateGateway);
 		String rootDomainUri = cmd.getRootDomainUri();
 		
 		final ExecutionEntity<V, C>.ExModel execModelStateAndConfig = stateAndConfigBuilder.buildExec(cmd, provider, eState, exConfig);
@@ -120,7 +120,7 @@ public class QuadModelBuilder {
 		//create event publisher
 		//QuadScopedEventPublisher qEventPublisher = new QuadScopedEventPublisher(getParamEventPublishers());
 		
-		StateBuilderSupport provider = new StateBuilderSupport(null, /*getClientUserFromSession(cmd),*/ validatorProvider, paramStateGateway);
+		StateBuilderContext provider = new StateBuilderContext(null, /*getClientUserFromSession(cmd),*/ validatorProvider, paramStateGateway);
 		String rootDomainUri = cmd.getRootDomainUri();
 		
 		final ExecutionEntity<V, C>.ExModel execModelStateAndConfig = stateAndConfigBuilder.buildExec(cmd, provider, eState, viewMeta);

@@ -8,13 +8,10 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
+import com.anthem.nimbus.platform.core.process.api.AbstractPlatformIntegrationTests;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
@@ -28,11 +25,8 @@ import com.anthem.oss.nimbus.test.sample.um.model.view.V_UMDashboard;
  * @author Soham Chakravarti
  *
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@ActiveProfiles("test")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class DetachedQuadModelCollectionsTest {
+public class DetachedQuadModelCollectionsTest extends AbstractPlatformIntegrationTests {
 
 	@Autowired QuadModelBuilder quadModelBuilder;
 	
