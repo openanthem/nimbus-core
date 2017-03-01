@@ -132,7 +132,7 @@ public class DefaultExpressionHelper extends AbstractExpressionHelper{
 		StringBuilder builder = new StringBuilder();
 		for(Object arg: args){
 			builder.append(arg.toString());
-		}
+		} 
 		return builder.toString();
 	}
 	

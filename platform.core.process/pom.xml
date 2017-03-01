@@ -134,7 +134,7 @@
 			<!-- <scope>test</scope> -->
 		</dependency>
 			<!-- Embedded Mongo , Redis for integration tests only -->
-		<dependency>
+		<!--  <dependency>
     		<groupId>de.flapdoodle.embed</groupId>
     		<artifactId>de.flapdoodle.embed.mongo</artifactId>
     		<scope>test</scope>
@@ -143,7 +143,7 @@
             <groupId>redis.embedded</groupId>
             <artifactId>embedded-redis</artifactId>
             <scope>test</scope>
-        </dependency>
+        </dependency> -->
 		<!-- <dependency>
     		<groupId>org.apache.qpid</groupId>
     		<artifactId>qpid-broker</artifactId>

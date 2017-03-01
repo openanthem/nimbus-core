@@ -26,7 +26,7 @@ import com.anthem.oss.nimbus.core.entity.DBSequence;
 
 @RunWith(SpringRunner.class)
 @ComponentScan(basePackages={"com.anthem.oss.nimbus.core"})
-@SpringBootTest(classes= {BPMEngineConfig.class, RedisIntegrationTestConfig.class, MongoIntegrationTestConfig.class})
+@SpringBootTest(classes= {BPMEngineConfig.class})
 @ActiveProfiles("test")
 @EnableAutoConfiguration
 public class AbstractPlatformIntegrationTests {
