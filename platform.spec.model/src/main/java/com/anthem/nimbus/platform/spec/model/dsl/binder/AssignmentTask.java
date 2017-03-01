@@ -30,6 +30,8 @@ abstract public class AssignmentTask extends AbstractEntity.IdString{
 	
 	private LocalDate dueDate;
 	
+	private LocalDate startDate;
+	
 	private String priority;
 	
 	abstract public void setEntity(Object entity);

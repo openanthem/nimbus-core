@@ -95,14 +95,46 @@ public class ViewConfig {
 		String alias() default "CardDetailsGrid";
 		String editUrl() default "";
 	}
-
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface CardDetail {
+		String alias() default "CardDetail";
+		String cssClass() default "contentBox right-gutter bg-light";
+		String imgSrc() default "";
+		
+		@Retention(RetentionPolicy.RUNTIME)
+		@Target({ElementType.FIELD})
+		@ViewStyle
+		public @interface Header {
+			String alias() default "CardDetailsHeader";
+			String cssClass() default "";
+		}
+		
+		@Retention(RetentionPolicy.RUNTIME)
+		@Target({ElementType.FIELD})
+		@ViewStyle
+		public @interface Body {
+			String alias() default "CardDetailsBody";
+			String cssClass() default "";
+		}
+		
+		@Retention(RetentionPolicy.RUNTIME)
+		@Target({ElementType.FIELD})
+		@ViewStyle
+		public @interface Footer {
+			String alias() default "CardDetailsFooter";
+			String cssClass() default "";
+		}
+	}
+	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
 	public @interface FieldValue {
 		String alias() default "FieldValue";
 	}
-
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
@@ -117,7 +149,7 @@ public class ViewConfig {
 	public @interface Section {
 		String alias() default "Section";
 		String imgSrc() default "";
-		String styleClass() default "";
+		String cssClass() default "";
 	}
 		
 	@Retention(RetentionPolicy.RUNTIME)
@@ -128,7 +160,17 @@ public class ViewConfig {
 		String submitUrl() default "";
 		String b() default "";
 		String cssClass() default "";
+		boolean submitButton() default true;
 	}	
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface ButtonGroup {	
+		String alias() default "ButtonGroup";
+		String cssClass() default "";
+	}
+	
 	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
