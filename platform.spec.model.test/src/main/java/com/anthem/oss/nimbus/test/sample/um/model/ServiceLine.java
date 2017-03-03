@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.definition.ConfigNature.Ignore;
+import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 
 import lombok.Getter;
@@ -40,4 +41,6 @@ public class ServiceLine extends AbstractEntity.IdString {
 	private String something;
 
 	private Discharge discharge;
+	
+	private String elemId;
 }

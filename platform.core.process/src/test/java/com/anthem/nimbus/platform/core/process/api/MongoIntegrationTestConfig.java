@@ -5,8 +5,9 @@ import java.net.UnknownHostException;
 
 import javax.annotation.PreDestroy;
 
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
+import org.springframework.stereotype.Component;
 import org.springframework.util.SocketUtils;
 
 import com.mongodb.Mongo;
@@ -32,8 +33,10 @@ import de.flapdoodle.embed.process.runtime.Network;
  * @author Swetha Vemuri
  *
  */
-@Configuration
-public class MongoIntegrationTestConfig extends AbstractMongoConfiguration {
+
+@Component
+@Profile({"test","build"})
+public class MongoIntegrationTestConfig extends AbstractMongoConfiguration{
 
 	private static MongodExecutable mongodExe;
 	private static MongoClient mongo;
@@ -41,9 +44,8 @@ public class MongoIntegrationTestConfig extends AbstractMongoConfiguration {
 	private String bindIp = "localhost";
 	private int port = SocketUtils.findAvailableTcpPort();
 
-	@Override
 	protected String getDatabaseName() {
-		return "test";
+		return "integrationtest";
 	}
 
 	@Override

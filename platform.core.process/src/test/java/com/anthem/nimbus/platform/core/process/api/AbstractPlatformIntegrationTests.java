@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.anthem.oss.nimbus.core.config.BPMEngineConfig;
@@ -15,10 +15,11 @@ import com.anthem.oss.nimbus.core.entity.DBSequence;
 
 /**
  * This class provides the base configuration to run Integration test cases.
- * It includes the configuration for EmbeddedMongo and Embedded Redis and a default profile of test.
+ * It includes the configuration for EmbeddedMongo.
  * The setup includes creating a collection - 'sequence' with global id starting from 0.
  * All the integration tests can extend from this base class and can override the profile.
- * Other profiles include "build" - which will connect to a remote host for mongoDb, Redis and RabbitMq.
+ * Other profiles include "build" - which will connect to a remote host for Redis and RabbitMq.
+ * When running test cases, an environment variable  - spring.profile.active needs to be provided.
  * 
  * @author Swetha Vemuri
  *
@@ -26,15 +27,16 @@ import com.anthem.oss.nimbus.core.entity.DBSequence;
 
 @RunWith(SpringRunner.class)
 @ComponentScan(basePackages={"com.anthem.oss.nimbus.core"})
-@SpringBootTest(classes= {BPMEngineConfig.class, RedisIntegrationTestConfig.class, MongoIntegrationTestConfig.class})
-@ActiveProfiles("test")
+@SpringBootTest(classes= {BPMEngineConfig.class,MongoIntegrationTestConfig.class})
 @EnableAutoConfiguration
+@Profile({"test","build"})
 public class AbstractPlatformIntegrationTests {
 	
 	@Autowired MongoOperations mongoOps;
 	
 	@Before
-	public void setup(){
+	public void setup() throws Exception{
+
 		mongoOps.dropCollection("sequence");
 		
 		DBSequence sequence = new DBSequence();
@@ -42,4 +44,5 @@ public class AbstractPlatformIntegrationTests {
     	sequence.setSeq(0);
 		mongoOps.insert(sequence,"sequence");
 	}
+    
 }
