@@ -9,6 +9,7 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.anthem.nimbus.platform.spec.model.dsl.binder.AssignmentTask.TaskStatus;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Behavior;
 import com.anthem.oss.nimbus.core.domain.command.Command;
@@ -131,8 +132,9 @@ public class DefaultExpressionHelper extends AbstractExpressionHelper{
 		StringBuilder builder = new StringBuilder();
 		for(Object arg: args){
 			builder.append(arg.toString());
-		}
+		} 
 		return builder.toString();
+		
 	}
 	
 	
@@ -145,8 +147,9 @@ public class DefaultExpressionHelper extends AbstractExpressionHelper{
 		coreCmdMsg.setCommand(command);
 		executeProcess(coreCmdMsg);
 		QuadModel<?, ?> taskQuadModel = UserEndpointSession.getOrThrowEx(coreCmdMsg.getCommand());
-		QuadModel<?, ?> entityQuadModel = UserEndpointSession.getOrThrowEx(coreCmdMsg.getCommand());
-		taskQuadModel.getCore().findModelByPath("/entity").setState(entityQuadModel.getCore().getState());
+		QuadModel<?, ?> entityQuadModel = UserEndpointSession.getOrThrowEx(cmdMsg.getCommand());
+		taskQuadModel.getCore().findStateByPath("/internalStatus").setState(TaskStatus.OPEN);
+		taskQuadModel.getCore().findStateByPath("/entity").setState(entityQuadModel.getCore().getState());
 	}	
 	
 	

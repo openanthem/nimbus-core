@@ -10,7 +10,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListModel;
 import com.anthem.oss.nimbus.core.domain.model.state.InvalidStateException;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification.ActionType;
-import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderSupport;
+import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderContext;
 
 import lombok.Getter;
 
@@ -25,7 +25,7 @@ public class DefaultListModelState<T> extends DefaultModelState<List<T>> impleme
 	
 	final private DefaultListElemParamState.Creator<T> elemCreator;
 	
-	public DefaultListModelState(ListParam<T> associatedParam, ModelConfig<List<T>> config, StateBuilderSupport provider, DefaultListElemParamState.Creator<T> elemCreator) {
+	public DefaultListModelState(ListParam<T> associatedParam, ModelConfig<List<T>> config, StateBuilderContext provider, DefaultListElemParamState.Creator<T> elemCreator) {
 		super(associatedParam, config, provider);
 		this.elemCreator = elemCreator;
 	}

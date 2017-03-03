@@ -98,6 +98,8 @@ public class EntityConfigBuilder extends AbstractEntityConfigBuilder {
 	@Override
 	public <T> ParamConfig<?> buildParam(ModelConfig<T> mConfig, Field f, EntityConfigVistor visitedModels) {
 		
+		logit.trace(()->"Building Param for config class: "+mConfig.getReferredClass()+ " field : "+f.getName());
+		
 		/* handle ignore field */
 		if(AnnotatedElementUtils.isAnnotated(f, ConfigNature.Ignore.class)) return null;
 		if("serialVersionUID".equals(f.getName())) return null;

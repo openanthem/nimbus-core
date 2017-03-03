@@ -20,7 +20,7 @@ import com.anthem.oss.nimbus.core.domain.model.config.EntityConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
 import com.anthem.oss.nimbus.core.domain.model.state.RulesRuntime;
 import com.anthem.oss.nimbus.core.domain.model.state.State;
-import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderSupport;
+import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderContext;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 import com.anthem.oss.nimbus.core.util.LockTemplate;
@@ -43,7 +43,7 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 	
 	private String rootDomainUri;
 	
-	@JsonIgnore final private StateBuilderSupport provider;
+	@JsonIgnore final private StateBuilderContext provider;
 	
 	@JsonIgnore final protected LockTemplate lockTemplate = new LockTemplate();
 	
@@ -51,7 +51,7 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 	
 	@JsonIgnore private RulesRuntime rulesRuntime;
 	
-	public AbstractEntityState(EntityConfig<T> config, StateBuilderSupport provider) {
+	public AbstractEntityState(EntityConfig<T> config, StateBuilderContext provider) {
 		Objects.requireNonNull(config, "Config must not be null while instantiating StateAndConfig.");
 		Objects.requireNonNull(provider, "Provider must not be null while instantiating StateAndConfig.");
 		

@@ -16,7 +16,7 @@ import lombok.Setter;
  *
  */
 @Getter @Setter @RequiredArgsConstructor
-public class StateBuilderSupport {
+public class StateBuilderContext {
 	
 	private final EventListener eventListener;
 	
