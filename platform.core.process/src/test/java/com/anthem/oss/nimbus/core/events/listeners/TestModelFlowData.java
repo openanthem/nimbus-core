@@ -28,7 +28,6 @@ import com.anthem.oss.nimbus.core.events.listeners.TestModelFlowData.Book.Publis
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 /**
  * Test data
@@ -42,7 +41,6 @@ abstract class TestModelFlowData {
 	@Repo(Database.rep_mongodb)
 	@Execution.Input.Default_Exclude_Search
 	@Execution.Output.Default_Exclude_Search
-	@ToString
 	public static class Book extends AbstractEntity.IdString {
 
 		private static final long serialVersionUID = 1L;
@@ -125,7 +123,6 @@ abstract class TestModelFlowData {
 	@Repo(Database.rep_mongodb)
 	@Execution.Input.Default_Exclude_Search
 	@Execution.Output.Default_Exclude_Search
-	@ToString
 	public static class BookWithoutPersistenceListener extends AbstractEntity.IdString {
 
 		private static final long serialVersionUID = 1L;
@@ -152,7 +149,6 @@ abstract class TestModelFlowData {
 	@Model(value="core_book2", excludeListeners={ListenerType.websocket})
 	@Execution.Input.Default_Exclude_Search
 	@Execution.Output.Default_Exclude_Search
-	@ToString
 	public static class BookWithoutRepo extends AbstractEntity.IdString {
 
 		private static final long serialVersionUID = 1L;
@@ -179,7 +175,6 @@ abstract class TestModelFlowData {
 	@Model(value="core_book3", excludeListeners={ListenerType.persistence,ListenerType.websocket})
 	@Execution.Input.Default_Exclude_Search
 	@Execution.Output.Default_Exclude_Search
-	@ToString
 	public static class BookWithExcludedListener extends AbstractEntity.IdString {
 
 		private static final long serialVersionUID = 1L;

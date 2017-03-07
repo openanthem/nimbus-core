@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.nimbus.platform.core.domain;
+package com.anthem.oss.nimbus.core.events.listeners;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -9,6 +9,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -17,25 +18,25 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 
 import com.anthem.nimbus.platform.core.process.api.AbstractPlatformIntegrationTests;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadScopedEventListener;
 import com.anthem.oss.nimbus.core.domain.command.Command;
+import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
+import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
+import com.anthem.oss.nimbus.core.events.listeners.TestModelFlowData.Book;
+import com.anthem.oss.nimbus.core.events.listeners.TestModelFlowData.Book.Publisher;
+import com.anthem.oss.nimbus.core.events.listeners.TestModelFlowData.OrderBookFlow;
 import com.anthem.oss.nimbus.core.session.UserEndpointSession;
 import com.anthem.oss.nimbus.core.spec.contract.event.StateAndConfigEventListener;
-import com.anthem.oss.nimbus.test.sample.um.model.ServiceLine;
-import com.anthem.oss.nimbus.test.sample.um.model.UMCase;
-import com.anthem.oss.nimbus.test.sample.um.model.view.UMCaseFlow;
 
 import test.com.anthem.nimbus.platform.spec.contract.event.MockEventListener;
-import test.com.anthem.nimbus.platform.spec.model.comamnd.TestCommandFactory;
 
 /**
  * Test class to verify the event emitting functionality on setState
@@ -50,11 +51,24 @@ public class EmitStateAndConfigEventListenerTest extends AbstractPlatformIntegra
 	@Autowired
 	QuadModelBuilder quadModelBuilder;
 	
-	private static QuadModel<UMCaseFlow, UMCase> q;
+	private static QuadModel<OrderBookFlow, Book> q;
+	
+	private static boolean done =false;
 
 	@Before
 	public void t_init() {
-		Command cmd = TestCommandFactory.create_view_icr_UMCaseFlow();
+		if(!done) {
+			quadModelBuilder.getDomainConfigApi().setBasePackages(
+					Arrays.asList(
+							ProcessFlow.class.getPackage().getName(),
+							Book.class.getPackage().getName(),
+							OrderBookFlow.class.getPackage().getName()
+							));
+			quadModelBuilder.getDomainConfigApi().reload();
+			done = true;
+		}
+			
+		Command cmd = CommandBuilder.withUri("/xyz/admin/p/view_book/_new?b=$config").getCommand();
 		q = quadModelBuilder.build(cmd);
 		assertNotNull(q);
 
@@ -76,113 +90,99 @@ public class EmitStateAndConfigEventListenerTest extends AbstractPlatformIntegra
 	
 	@Test
 	public void tc01_emitEvent_mappedentity_view() {
-		Param<String> caseType =q.getView().findParamByPath("/pg3/aloha");
-		caseType.setState("medical");
+		Param<String> genre =q.getView().findParamByPath("/pg1/genre");
+		genre.setState("fiction");
 		MockEventListener m = getMockEventListener();
 		assertEquals(2,m.getModelEvent().size());
 		
-		ModelEvent<Param<?>> me_core =retrieveModelEventByPath(m.getModelEvent(), "/caseType");	
+		ModelEvent<Param<?>> me_core =retrieveModelEventByPath(m.getModelEvent(), "/category");	
 		assertNotNull(me_core); 
-		assertTrue(StringUtils.equalsIgnoreCase("/caseType", me_core.getPath()));
+		assertTrue(StringUtils.equalsIgnoreCase("/category", me_core.getPath()));
 		
-		ModelEvent<Param<?>> me_view =retrieveModelEventByPath(m.getModelEvent(), "/pg3/aloha");	
-		assertNotNull(me_view); // there shoud be one event with /pg3/aloha
-		assertTrue(StringUtils.equalsIgnoreCase("/pg3/aloha", me_view.getPath()));
+		ModelEvent<Param<?>> me_view =retrieveModelEventByPath(m.getModelEvent(), "/pg1/genre");	
+		assertNotNull(me_view); // there shoud be one event with /pg1/genre
+		assertTrue(StringUtils.equalsIgnoreCase("/pg1/genre", me_view.getPath()));
 		assertTrue(StringUtils.equalsIgnoreCase(me_view.getType(),"_replace"));		
 	}
 	
 	@Test
 	public void tc02_emitEvent_non_mappedentity_view() {
-		Param<String> mappedCaseId =q.getView().findParamByPath("/pg3/mappedCaseId");
-		mappedCaseId.setState("CASE1");
+		Param<String> nonMappedEntity =q.getView().findParamByPath("/pg1/isbn");
+		nonMappedEntity.setState("123451abc");
 		MockEventListener m = getMockEventListener();
 		assertEquals(1,m.getModelEvent().size());
 		
-		ModelEvent<Param<?>> me_view =retrieveModelEventByPath(m.getModelEvent(), "/pg3/mappedCaseId");	
+		ModelEvent<Param<?>> me_view =retrieveModelEventByPath(m.getModelEvent(), "/pg1/isbn");	
 		assertNotNull(me_view); // there shoud be one event with /pg3/aloha
-		assertTrue(StringUtils.equalsIgnoreCase("/pg3/mappedCaseId", me_view.getPath()));
+		assertTrue(StringUtils.equalsIgnoreCase("/pg1/isbn", me_view.getPath()));
 		assertTrue(StringUtils.equalsIgnoreCase(me_view.getType(),"_replace"));		
 	}
 
 	@Test
 	public void tc03_setState_add_to_collectionEntity() {
-		Param<List<ServiceLine>> pSAC_col = q.getCore().findParamByPath("/serviceLines");
+		Param<List<Publisher>> pSAC_col = q.getCore().findParamByPath("/publishers");
 
-		List<ServiceLine> sl_list = new ArrayList<>();
-		ServiceLine sl1 = new ServiceLine();
-		sl1.setElemId("sl_1");
-		sl_list.add(sl1);
-		ServiceLine sl2 = new ServiceLine();
-		sl2.setElemId("sl_2");
-		sl_list.add(sl2);
-		pSAC_col.setState(sl_list);
+		List<Publisher> publisher_lst = new ArrayList<>();
+		Publisher p_1 = new Publisher();
+		p_1.setName("penguin");
+		publisher_lst.add(p_1);
+		Publisher p_2 = new Publisher();
+		p_2.setCode("JKB");
+		publisher_lst.add(p_2);
+		pSAC_col.setState(publisher_lst);
 
 		MockEventListener m = getMockEventListener();
-		ModelEvent<Param<?>> me_1 = retrieveModelEventByPath(m.getModelEvent(), "/serviceLines/0");
+		ModelEvent<Param<?>> me_1 = retrieveModelEventByPath(m.getModelEvent(), "/publishers/0");
 		assertNotNull(me_1);
-		assertTrue(StringUtils.equalsIgnoreCase("/serviceLines/0", me_1.getPath()));
+		assertTrue(StringUtils.equalsIgnoreCase("/publishers/0", me_1.getPath()));
 
-		ModelEvent<Param<?>> me_2 = retrieveModelEventByPath(m.getModelEvent(), "/serviceLines/1");
+		ModelEvent<Param<?>> me_2 = retrieveModelEventByPath(m.getModelEvent(), "/publishers/1");
 		assertNotNull(me_2);
-		assertTrue(StringUtils.equalsIgnoreCase("/serviceLines/1", me_2.getPath()));
+		assertTrue(StringUtils.equalsIgnoreCase("/publishers/1", me_2.getPath()));
 
-		ModelEvent<Param<?>> me_3 = retrieveModelEventByPath(m.getModelEvent(), "/serviceLines");
+		ModelEvent<Param<?>> me_3 = retrieveModelEventByPath(m.getModelEvent(), "/publishers");
 		assertNotNull(me_3);
-		assertTrue(StringUtils.equalsIgnoreCase("/serviceLines", me_3.getPath()));
+		assertTrue(StringUtils.equalsIgnoreCase("/publishers", me_3.getPath()));
 
 		ModelEvent<Param<?>> me_4 = retrieveModelEventByPath(m.getModelEvent(),
-				"/pg3/noConversionAttachedColServiceLines");
+				"/pg1/publishingHouse");
 		assertNotNull(me_4);
-		assertTrue(StringUtils.equalsIgnoreCase("/pg3/noConversionAttachedColServiceLines", me_4.getPath()));
-
-		ModelEvent<Param<?>> me_5 = retrieveModelEventByPath(m.getModelEvent(), "/main/vCardServiceLines");
-		assertNotNull(me_5);
-		assertTrue(StringUtils.equalsIgnoreCase("/main/vCardServiceLines", me_5.getPath()));
-		
-		assertEquals(5, m.getModelEvent().size());
+		assertTrue(StringUtils.equalsIgnoreCase("/pg1/publishingHouse", me_4.getPath()));
+		assertEquals(4, m.getModelEvent().size());
 	}
 
 	@Test
 	public void tc04_setState_update_from_collectionEntity() {
-		Param<List<ServiceLine>> pSAC_col = q.getCore().findParamByPath("/serviceLines");
+		Param<List<Publisher>> pSAC_col = q.getCore().findParamByPath("/publishers");
 
-		List<ServiceLine> sl_list = new ArrayList<>();
-		ServiceLine sl_1 = new ServiceLine();
-		sl_1.setElemId("sl_1");
-		sl_list.add(sl_1);
-		pSAC_col.setState(sl_list);
+		List<Publisher> publisher_lst = new ArrayList<>();
+		Publisher p_1 = new Publisher();
+		p_1.setName("penguin");
+		publisher_lst.add(p_1);
+		pSAC_col.setState(publisher_lst);
 		
-		Param<ServiceLine> pSAC_col_elem_1 = q.getCore().findParamByPath("/serviceLines/1");
+		Param<Publisher> pSAC_col_elem_1 = q.getCore().findParamByPath("/publishers/1");
 		// initially null - since it has not yet been added to the collection
 		assertNull(pSAC_col_elem_1);
-		Param<List<ServiceLine>> pSAC_col_update = q.getCore().findParamByPath("/serviceLines");
-		ListParam<ServiceLine> lpServiceLines = pSAC_col_update.findIfCollection();
-		assertNotNull(lpServiceLines);
+		Param<List<Publisher>> pSAC_col_update = q.getCore().findParamByPath("/publishers");
+		ListParam<Publisher> lp_publishers = pSAC_col_update.findIfCollection();
+		assertNotNull(lp_publishers);
 		
-		ServiceLine sl_2 = new ServiceLine();
-		sl_2.setElemId("sl_2");
-		lpServiceLines.add(sl_2);
+		Publisher p_2 = new Publisher();
+		p_2.setName("JKRowling");
+		lp_publishers.add(p_2);
 
-		/*
-		 * After selectively updating one element in a collection: Events
-		 * emitted: /serviceLines/1, /pg3/noConversionAttachedColServiceLines/1,
-		 * /main/vCardServiceLines/1
-		 */
 		MockEventListener m = getMockEventListener();
 		ModelEvent<Param<?>> me_4 = retrieveModelEventByPath(m.getModelEvent(),
-				"/pg3/noConversionAttachedColServiceLines/1");
+				"/pg1/publishingHouse/1");
 		assertNotNull(me_4);
-		assertTrue(StringUtils.equalsIgnoreCase("/pg3/noConversionAttachedColServiceLines/1", me_4.getPath()));
+		assertTrue(StringUtils.equalsIgnoreCase("/pg1/publishingHouse/1", me_4.getPath()));
 
-		ModelEvent<Param<?>> me_5 = retrieveModelEventByPath(m.getModelEvent(), "/serviceLines/1");
+		ModelEvent<Param<?>> me_5 = retrieveModelEventByPath(m.getModelEvent(), "/publishers/1");
 		assertNotNull(me_5);
-		assertTrue(StringUtils.equalsIgnoreCase("/serviceLines/1", me_5.getPath()));
-
-		ModelEvent<Param<?>> me_6 = retrieveModelEventByPath(m.getModelEvent(), "/main/vCardServiceLines");
-		assertNotNull(me_6);
-		assertTrue(StringUtils.equalsIgnoreCase("/main/vCardServiceLines", me_6.getPath()));
-
-		assertEquals(7, m.getModelEvent().size());
+		assertTrue(StringUtils.equalsIgnoreCase("/publishers/1", me_5.getPath()));
+		
+		assertEquals(5, m.getModelEvent().size());
 	}
 	
 	private ModelEvent<Param<?>> retrieveModelEventByPath(List<ModelEvent<Param<?>>> eventList, String path) {
