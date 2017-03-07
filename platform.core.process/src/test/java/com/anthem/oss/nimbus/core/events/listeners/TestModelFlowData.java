@@ -5,8 +5,6 @@ package com.anthem.oss.nimbus.core.events.listeners;
 
 import java.util.List;
 
-import org.ehcache.xml.model.ListenersType;
-
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.definition.ConfigNature.Ignore;
 import com.anthem.oss.nimbus.core.domain.definition.Converters;
