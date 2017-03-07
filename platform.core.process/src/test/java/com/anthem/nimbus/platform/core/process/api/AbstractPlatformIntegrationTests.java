@@ -1,6 +1,10 @@
 package com.anthem.nimbus.platform.core.process.api;
 
+import static org.junit.Assert.*;
+
+import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -12,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.anthem.oss.nimbus.core.config.BPMEngineConfig;
 import com.anthem.oss.nimbus.core.entity.DBSequence;
+import com.anthem.oss.nimbus.core.session.UserEndpointSession;
 
 /**
  * This class provides the base configuration to run Integration test cases.
@@ -43,6 +48,18 @@ public class AbstractPlatformIntegrationTests {
 		sequence.setId("global");
     	sequence.setSeq(0);
 		mongoOps.insert(sequence,"sequence");
+		
+		
 	}
-    
+	
+	@After
+	public void tearDown() {
+		UserEndpointSession.clearSession();
+	}  
+	
+	@Test
+	public void tc_01_sanityCheck() {
+		assertNotNull(mongoOps.getCollectionNames());
+		assertTrue(mongoOps.getCollectionNames().contains("sequence"));
+	}
 }
