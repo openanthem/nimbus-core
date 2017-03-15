@@ -11,7 +11,7 @@
 if [ $# -gt 0 ]; then
     PROJECTS=$1;
 else
-    PROJECTS=dependencies,parent,spec.model,spec.model.test,utils,core.process;
+    PROJECTS=dependencies,parent,spec.model,spec.model.test,core.process;
 fi
 IFS=',' read -ra NAMES <<< "$PROJECTS"
 
