@@ -52,8 +52,6 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	final private Model<?> parentModel;
 	
-	private RuntimeEntity runtime;
-	
 	/* TODO: Weak reference was causing the values to be GC-ed even before the builders got to building 
 	 * Allow referenced subscribers to get garbage collected in scenario when same core is referenced by multiple views. 
 	 * Life span of core may be longer than cumulative views possibly leading to memory leak.
@@ -74,22 +72,6 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		PropertyDescriptor pd = constructPropertyDescriptor();
 		this.propertyDescriptor = pd;
 	}
-	
-	@Override
-	protected void initInternal() {
-		String rPath = resolvePath();
-		setPath(rPath);
-	}
-	
-	protected String resolvePath() {
-		final String parentPath = StringUtils.trimToEmpty(getParentModel()==null ? "" : getParentModel().getPath());
-		
-		return new StringBuilder(parentPath)
-					.append(Constants.SEPARATOR_URI.code)
-					.append(getConfig().getCode())
-					.toString();
-	}
-
 	
 //	TODO: Refactor with Weak reference implementation
 //	@JsonIgnore
@@ -174,19 +156,22 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	protected void postSetState(Action change, T state) {}
 	
-	public void setVisible(Boolean visible) {
-		// set value
-		
-		// emit event for visible - primitive state: /../{paramPath}#visible = valueOf(visible)
+    
+	@Override
+	protected void initInternal() {
+		String rPath = resolvePath();
+		setPath(rPath);
 	}
 	
-	protected void emitEvent(Action a , Param p) {
-		if(getProvider().getEventListener() == null) return;
+	protected String resolvePath() {
+		final String parentPath = StringUtils.trimToEmpty(getParentModel()==null ? "" : getParentModel().getPath());
 		
-		ModelEvent<Param<?>> e = new ModelEvent<Param<?>>(a, p.getPath(), p);
-		EventListener publisher = getProvider().getEventListener();
-		publisher.listen(e);
+		return new StringBuilder(parentPath)
+					.append(Constants.SEPARATOR_URI.code)
+					.append(getConfig().getCode())
+					.toString();
 	}
+	
 	
 	@JsonIgnore @Override
 	public ExecutionModel<?> getRootExecution() {
@@ -343,4 +328,16 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		String resolvedPath = getResolvingMappedPath(path);
 		return getConfig().isFound(resolvedPath);
 	}
+	
+
+	
+	protected void emitEvent(Action a , Param p) {
+		if(getProvider().getEventListener() == null) return;
+		
+		ModelEvent<Param<?>> e = new ModelEvent<Param<?>>(a, p.getPath(), p);
+		EventListener publisher = getProvider().getEventListener();
+		publisher.listen(e);
+	}
+	
+	
 }

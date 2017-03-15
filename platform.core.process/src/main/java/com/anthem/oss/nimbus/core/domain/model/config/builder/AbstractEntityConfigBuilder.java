@@ -45,7 +45,6 @@ import com.anthem.oss.nimbus.core.domain.model.config.internal.DefaultModelConfi
 import com.anthem.oss.nimbus.core.domain.model.config.internal.DefaultParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultParamConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.RuntimeEntity;
 import com.anthem.oss.nimbus.core.rules.RulesEngineFactoryProducer;
 import com.anthem.oss.nimbus.core.util.GenericUtils;
 import com.anthem.oss.nimbus.core.util.JustLogit;
@@ -128,7 +127,7 @@ abstract public class AbstractEntityConfigBuilder {
 		
 		// no path specified
 		if(mapsToPath==null)
-			return decorateParam(f, new DefaultParamConfig<>(f.getName()), visitedModels); 
+			return decorateParam(f, new DefaultParamConfig<>(f.getName())); 
 			
 		// check if field is mapped with linked=true: which would require parent model to also be mapped
 		if(mapsToPath.linked())
@@ -154,7 +153,7 @@ abstract public class AbstractEntityConfigBuilder {
 		if(mapsToParam==null)
 			throw new InvalidConfigException("No mapsTo param found for mapped param field: "+f.getName()+" in enclosing model:"+mConfig.getReferredClass()+" with mapsToPath: "+mapsToPath);
 		
-		return decorateParam(f, new MappedDefaultParamConfig<>(f.getName(), mapsToModel, mapsToParam, mapsToPath), visitedModels);
+		return decorateParam(f, new MappedDefaultParamConfig<>(f.getName(), mapsToModel, mapsToParam, mapsToPath));
 	}
 	
 	private DefaultParamConfig<?> createMappedParamDetached(ModelConfig<?> mConfig, Field mappedField, EntityConfigVistor visitedModels, MapsTo.Path mapsToPath) {
@@ -180,7 +179,7 @@ abstract public class AbstractEntityConfigBuilder {
 		DefaultModelConfig<?> simulatedEnclosingModel = new DefaultModelConfig<>(SimulatedNestedParamEnclosingEntity.class);
 		
 		// create mapsToParam and attach to enclosing model
-		DefaultParamConfig<?> simulatedMapsToParam = decorateParam(new DefaultParamConfig<>(MapsTo.DETACHED_SIMULATED_FIELD_NAME), visitedModels);
+		DefaultParamConfig<?> simulatedMapsToParam = new DefaultParamConfig<>(MapsTo.DETACHED_SIMULATED_FIELD_NAME);
 		simulatedEnclosingModel.templateParams().add(simulatedMapsToParam);
 		
 		// build mapsToParam's type
@@ -190,7 +189,7 @@ abstract public class AbstractEntityConfigBuilder {
 		ParamType pType = buildParamType(simulatedEnclosingModel, simulatedMapsToParam, null, mappedParamRefClassMapsToEntityClass, visitedModels);
 		simulatedMapsToParam.setType(pType);
 		
-		DefaultParamConfig<?> mappedParam = decorateParam(mappedField, new MappedDefaultParamConfig<>(mappedField.getName(), simulatedEnclosingModel, simulatedMapsToParam, mapsToPath), visitedModels);
+		DefaultParamConfig<?> mappedParam = decorateParam(mappedField, new MappedDefaultParamConfig<>(mappedField.getName(), simulatedEnclosingModel, simulatedMapsToParam, mapsToPath));
 		return mappedParam;
 	}
 	
@@ -199,7 +198,7 @@ abstract public class AbstractEntityConfigBuilder {
 		DefaultModelConfig<?> simulatedEnclosingModel = new DefaultModelConfig<>(SimulatedCollectionParamEnclosingEntity.class);
 		
 		// create mapsToParam and attach to enclosing model
-		DefaultParamConfig<?> simulatedMapsToParam = decorateParam(new DefaultParamConfig<>(MapsTo.DETACHED_SIMULATED_FIELD_NAME), visitedModels);
+		DefaultParamConfig<?> simulatedMapsToParam = new DefaultParamConfig<>(MapsTo.DETACHED_SIMULATED_FIELD_NAME);
 		simulatedEnclosingModel.templateParams().add(simulatedMapsToParam);
 		
 		// determine collection param generic element type
@@ -212,7 +211,7 @@ abstract public class AbstractEntityConfigBuilder {
 		ParamType pType = buildParamType(simulatedEnclosingModel, simulatedMapsToParam, colType, mappedParamRefClassMapsToEntityClass, visitedModels);
 		simulatedMapsToParam.setType(pType);
 		
-		DefaultParamConfig<?> mappedParam = decorateParam(mappedField, new MappedDefaultParamConfig<>(mappedField.getName(), simulatedEnclosingModel, simulatedMapsToParam, mapsToPath), visitedModels);
+		DefaultParamConfig<?> mappedParam = decorateParam(mappedField, new MappedDefaultParamConfig<>(mappedField.getName(), simulatedEnclosingModel, simulatedMapsToParam, mapsToPath));
 		return mappedParam;
 	}
 
@@ -266,10 +265,10 @@ abstract public class AbstractEntityConfigBuilder {
 						+ " Expected elemClass: "+colElemClass+" but found mapsToElemClass: "+mapsToColParamPath.getClass());
 		}
 		
-		return createParamCollectionElementInternal(colModelConfig, mapsToColElemParamConfig, mapsToColParamPath, visitedModels, pConfig.getCode());
+		return createParamCollectionElementInternal(colModelConfig, mapsToColElemParamConfig, mapsToColParamPath, pConfig.getCode());
 	}
 	
-	public <T, P> DefaultParamConfig<P> createParamCollectionElement(ModelConfig<T> mConfig, ParamConfig<P> pConfig, ModelConfig<List<P>> colModelConfig, EntityConfigVistor visitedModels, Class<?> colElemClass) {
+	public <T, P> DefaultParamConfig<P> createParamCollectionElement(ModelConfig<T> mConfig, /*MapsTo.Path mapsToColParamPath, */ParamConfig<P> pConfig, ModelConfig<List<P>> colModelConfig, EntityConfigVistor visitedModels, Class<?> colElemClass) {
 		logit.trace(()->"[create.pColElem] starting to process colElemClass: "+colElemClass+" with pConfig :"+pConfig.getCode());
 		
 		MapsTo.Path mapsToColParamPath = pConfig.isMapped() ? pConfig.findIfMapped().getPath() : null;
@@ -280,7 +279,7 @@ abstract public class AbstractEntityConfigBuilder {
 		logit.debug(()->"[create.pColElem] colParamCode: "+pConfig.getCode());
 		
 		if(mapsToColParamMode==MapsTo.Mode.UnMapped) { 
-			DefaultParamConfig<P> pCoreElemConfig = createParamCollectionElementInternal(colModelConfig, null, null, visitedModels, pConfig.getCode());
+			DefaultParamConfig<P> pCoreElemConfig = createParamCollectionElementInternal(colModelConfig, null, null, pConfig.getCode());
 		
 			logit.trace(()->"[create.pColElem] [colParam is UnMapped] returning core pColElem Config as colElem is UnMapped.");
 			return pCoreElemConfig;
@@ -299,7 +298,7 @@ abstract public class AbstractEntityConfigBuilder {
 		}
 	}
 	
-	private <P> DefaultParamConfig<P> createParamCollectionElementInternal(ModelConfig<List<P>> colModelConfig, DefaultParamConfig<P> mapsToColElemParamConfig, MapsTo.Path mapsToColParamPath, EntityConfigVistor visitedModels, String colParamCode) {
+	private <P> DefaultParamConfig<P> createParamCollectionElementInternal(ModelConfig<List<P>> colModelConfig, DefaultParamConfig<P> mapsToColElemParamConfig, MapsTo.Path mapsToColParamPath, String colParamCode) {
 		final String collectionElemPath = createCollectionElementPath(colParamCode);
 		
 		final DefaultParamConfig<P> created;
@@ -309,7 +308,7 @@ abstract public class AbstractEntityConfigBuilder {
 			created = new MappedDefaultParamConfig<>(collectionElemPath, colModelConfig, mapsToColElemParamConfig, mapsToColElemParamPathAnnotation);
 
 		} else if(mapsToColElemParamConfig==null) {
-			created = decorateParam(new DefaultParamConfig<>(collectionElemPath), visitedModels);
+			created = new DefaultParamConfig<>(collectionElemPath);
 			
 		} else {
 			created = mapsToColElemParamConfig;
@@ -326,7 +325,7 @@ abstract public class AbstractEntityConfigBuilder {
 				.toString();
 	}
 	
-	private <P> DefaultParamConfig<P> decorateParam(Field f, DefaultParamConfig<P> created, EntityConfigVistor visitedModels) {
+	private DefaultParamConfig<?> decorateParam(Field f, DefaultParamConfig<?> created) {
 		List<AnnotationConfig> aConfigs = AnnotationConfigHandler.handle(f, ViewParamBehavior.class);
 		created.setUiNatures(aConfigs);
 
@@ -375,17 +374,6 @@ abstract public class AbstractEntityConfigBuilder {
 		created.setValidations(vConfig);
 		return created;
 	}
-	
-	/**
-	 * build and assign RuntimeEntity Config
-	 */
-	protected <P> DefaultParamConfig<P> decorateParam(DefaultParamConfig<P> created, EntityConfigVistor visitedModels) {
-		ModelConfig<RuntimeEntity> runtimeConfig = buildModel(RuntimeEntity.class, visitedModels);
-		created.setRuntimeConfig(runtimeConfig);
-		
-		return created;
-	}
-	
 	
 	//TODO Implement mapped param lookup given via explicit path reference
 	private <T> ParamConfig<?> findMappedParam(ModelConfig<T> mapsToModel, String fieldNm, MapsTo.Path mapsTo) {

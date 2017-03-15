@@ -6,7 +6,6 @@ package com.anthem.oss.nimbus.core.domain.model.state.internal;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -34,8 +33,8 @@ import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
 import com.anthem.oss.nimbus.core.domain.model.config.internal.DefaultModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.internal.DefaultParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultParamConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ExecutionModel;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ExecutionModel;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification;
 import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderContext;
@@ -68,7 +67,6 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 	
 	private ProcessFlow f;
 	
-	private Map<String, RuntimeEntity> paramRuntimes;
 	
 	public C getCore() {return getC();}
 	public void setCore(C c) {setC(c);}

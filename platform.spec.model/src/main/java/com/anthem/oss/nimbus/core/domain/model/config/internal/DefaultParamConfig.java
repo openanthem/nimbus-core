@@ -13,11 +13,9 @@ import org.apache.commons.lang3.StringUtils;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.Converters.ParamConverter;
 import com.anthem.oss.nimbus.core.domain.model.config.AnnotationConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.RuntimeEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
@@ -29,32 +27,28 @@ import lombok.ToString;
  * @author Soham Chakravarti
  *
  */
-@Getter @Setter @RequiredArgsConstructor @ToString(callSuper=true, of={"type", "validations", "values"})
+@Getter @RequiredArgsConstructor @ToString(callSuper=true, of={"type", "validations", "values"})
 public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements ParamConfig<P>, Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	final private String code;
 
-	private ParamType type;	
+	@Setter private ParamType type;	
 
-	private Desc desc = new Desc();
+	@Setter private Desc desc = new Desc();
 	
-	private List<AnnotationConfig> validations;
+	@Setter private List<AnnotationConfig> validations;
 	
-	private List<ParamValue> values;
+	@Setter private List<ParamValue> values;
 	
-	private List<AnnotationConfig> uiNatures;
+	@Setter private List<AnnotationConfig> uiNatures;
 
-	private AnnotationConfig uiStyles;
+	@Setter private AnnotationConfig uiStyles;
 
-	private ModelConfig<RuntimeEntity> runtimeConfig;
+	@Setter @JsonIgnore private transient Supplier<List<ParamValue>> valuesGetter;
 	
-	@JsonIgnore 
-	private transient Supplier<List<ParamValue>> valuesGetter;
-	
-	@JsonIgnore 
-	private List<ParamConverter> converters;
+	@Setter @JsonIgnore private List<ParamConverter> converters;
 
 
 	@SuppressWarnings("unchecked")

@@ -53,7 +53,7 @@ import lombok.Getter;
  *
  */
 @Getter
-abstract public class AbstractEntityStateBuilder {
+abstract public class AbstractStateBuilder {
 
 	@Autowired RulesEngineFactoryProducer rulesEngineFactoryProducer;
 	
