@@ -707,9 +707,9 @@ public class QuadModelCollectionsTest {
 	}
 	
 	public void printJson(QuadModel<?, ?> q) {
-		String json = JsonUtils.get().convert(q.getView());
-		System.out.println("@@@  ");
-		System.out.println("@@@  "+ json);
-		System.out.println("@@@  ");
+//		String json = JsonUtils.get().convert(q.getView());
+//		System.out.println("@@@  ");
+//		System.out.println("@@@  "+ json);
+//		System.out.println("@@@  ");
 	}
 }
