@@ -46,7 +46,7 @@ import lombok.Setter;
 public class QuadModelBuilder {
 
 	@Autowired DomainConfigBuilder domainConfigApi;
-	@Autowired StateBuilder stateAndConfigBuilder;
+	@Autowired EntityStateBuilder stateAndConfigBuilder;
 	
 	@Autowired ApplicationContext appCtx;
 	

@@ -29,7 +29,7 @@ import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
  *
  */
 @Component
-public class StateBuilder extends AbstractStateBuilder {
+public class EntityStateBuilder extends AbstractEntityStateBuilder {
 
 	public <V, C> ExecutionEntity<V, C>.ExModel buildExec(Command cmd, StateBuilderContext provider, ExecutionEntity<V, C> eState, StateMeta.View<V, C> viewMeta) {
 		return buildExec(cmd, provider, eState, viewMeta.getExecutionConfig());
