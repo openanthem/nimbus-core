@@ -3,6 +3,8 @@
  */
 package com.anthem.oss.nimbus.core.domain.model.state.internal;
 
+import com.anthem.oss.nimbus.core.domain.definition.Model;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +12,7 @@ import lombok.Setter;
  * @author Soham Chakravarti
  *
  */
+@Model
 @Getter @Setter
 public class RuntimeEntity {
 

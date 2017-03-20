@@ -54,6 +54,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	private RuntimeEntity runtime;
 	
+	private Model<RuntimeEntity> runtimeModel;
+	
 	/* TODO: Weak reference was causing the values to be GC-ed even before the builders got to building 
 	 * Allow referenced subscribers to get garbage collected in scenario when same core is referenced by multiple views. 
 	 * Life span of core may be longer than cumulative views possibly leading to memory leak.
@@ -173,12 +175,6 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		return state;
 	}
 	protected void postSetState(Action change, T state) {}
-	
-	public void setVisible(Boolean visible) {
-		// set value
-		
-		// emit event for visible - primitive state: /../{paramPath}#visible = valueOf(visible)
-	}
 	
 	protected void emitEvent(Action a , Param p) {
 		if(getProvider().getEventListener() == null) return;

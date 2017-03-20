@@ -56,7 +56,7 @@ public class EntityConfigBuilder extends AbstractEntityConfigBuilder {
 		logit.trace(()->"Loading config from class: "+clazz);
 		
 		/* 1. Skip if class was already visited, otherwise handle model */
-		ModelConfig<T> mConfig = (visitedModels.contains(clazz)) ? (ModelConfig<T>)visitedModels.get(clazz) : buildModel(clazz, visitedModels);
+		ModelConfig<T> mConfig = buildModel(clazz, visitedModels);
 		
 		/* 2. Add {Action} execution input config */
 		execInputHandler.loadClassConfigs(dc, mConfig);
@@ -75,15 +75,17 @@ public class EntityConfigBuilder extends AbstractEntityConfigBuilder {
 	
 	@Override
 	public <T> ModelConfig<T> buildModel(Class<T> clazz, EntityConfigVistor visitedModels) {
+		// skip if already built
+		if(visitedModels.contains(clazz)) 
+			return (ModelConfig<T>)visitedModels.get(clazz);
+		
 		ModelConfig<T> mConfig = createModel(clazz, visitedModels);
 		
 		//look if the model is marked with MapsTo
 		if(mConfig.isMapped()) {
 			
-			//load mapped class config
-			if(!visitedModels.contains(mConfig.findIfMapped().getMapsTo().getReferredClass())) {
-				buildModel(mConfig.findIfMapped().getMapsTo().getReferredClass(), visitedModels);
-			}
+			//ensure mapped class config is already loaded
+			buildModel(mConfig.findIfMapped().getMapsTo().getReferredClass(), visitedModels);
 		}
 		
 		List<Field> fields = FieldUtils.getAllFieldsList(clazz);

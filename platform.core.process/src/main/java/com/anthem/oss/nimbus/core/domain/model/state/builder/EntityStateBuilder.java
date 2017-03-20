@@ -60,17 +60,18 @@ public class EntityStateBuilder extends AbstractEntityStateBuilder {
 	}
 
 	@Override
-	public <T, P> DefaultParamState<P> buildParam(StateBuilderContext provider, DefaultModelState<T> mState, ParamConfig<P> mpConfig, Model<?> mapsToSAC) {
+	public <T, P> DefaultParamState<P> buildParam(StateBuilderContext provider, Model<T> mState, ParamConfig<P> mpConfig, Model<?> mapsToSAC) {
 		final DefaultParamState<P> mpState = createParam(provider, mState, mapsToSAC, mpConfig);
 		logit.debug(()->"[buildInternal] mpStatePath: "+ mpState.getPath());
 		
 		//handle param type
-		StateType type = buildParamType(provider, mpConfig, mState, mpState, mapsToSAC);
+		StateType type = buildParamType(provider, mState, mpState, mapsToSAC);
 		mpState.setType(type);
 		
 		return mpState;
 	}
 	
+	@Override
 	public <T, P> DefaultModelState<T> buildModel(StateBuilderContext provider, DefaultParamState<T> associatedParam, ModelConfig<T> mConfig, Model<?> mapsToSAC) {
 		if(mConfig==null) return null;
 
@@ -79,7 +80,7 @@ public class EntityStateBuilder extends AbstractEntityStateBuilder {
 			throw new InvalidConfigException("Model class: "+mConfig.getReferredClass()+" is mapped: "+mConfig.findIfMapped().getMapsTo().getReferredClass()
 						+" but mapsToSAC is not supplied for param: "+associatedParam.getPath()+". Was this model's config loaded first as part of core?");
 		
-		DefaultModelState<T> mState = createModel(associatedParam, mConfig, provider, mapsToSAC); //(provider, parentState, mConfig, mGet, mSet, mapsToSAC);
+		DefaultModelState<T> mState = createModel(associatedParam, mConfig, provider, mapsToSAC); 
 		
 		if(mConfig.getParams()==null) return mState;
 		
@@ -97,22 +98,23 @@ public class EntityStateBuilder extends AbstractEntityStateBuilder {
 		return mState;
 	}
 	
-	public <E> DefaultListElemParamState<E> buildElemParam(StateBuilderContext provider, DefaultListModelState<E> mState, ParamConfig<E> mpConfig, String elemId) {
+	private <E> DefaultListElemParamState<E> buildElemParam(StateBuilderContext provider, DefaultListModelState<E> mState, ParamConfig<E> mpConfig, String elemId) {
 		final DefaultListElemParamState<E> mpState = createElemParam(provider, mState, mpConfig, elemId);
 		logit.debug(()->"[buildInternal] mpStatePath: "+ mpState.getPath());
 		
 
 		//handle param type
-		StateType type = buildParamType(provider, mpConfig, mState, mpState, Optional.ofNullable(mState.findIfMapped()).map(m->m.getMapsTo()).orElse(null));
+		StateType type = buildParamType(provider, mState, mpState, Optional.ofNullable(mState.findIfMapped()).map(m->m.getMapsTo()).orElse(null));
 		mpState.setType(type);
 		
 		return mpState;
 	}
 	
-	protected <P> StateType buildParamType(StateBuilderContext provider, ParamConfig<P> mpConfig, DefaultModelState<?> mState, DefaultParamState<P> associatedParam, Model<?> mapsToSAC) {
+	@Override
+	protected <P> StateType buildParamType(StateBuilderContext provider, Model<?> mState, DefaultParamState<P> associatedParam, Model<?> mapsToSAC) {
 		
-		if(mpConfig.getType().isCollection()) {
-			ParamType.NestedCollection<P> nmcType = mpConfig.getType().findIfCollection();
+		if(associatedParam.getConfig().getType().isCollection()) {
+			ParamType.NestedCollection<P> nmcType = associatedParam.getConfig().getType().findIfCollection();
 			ModelConfig<List<P>> nmConfig = nmcType.getModel();
 			
 			DefaultListElemParamState.Creator<P> elemCreator = (colModelState, elemId) -> buildElemParam(provider, colModelState, colModelState.getElemConfig(), elemId);
@@ -121,10 +123,10 @@ public class EntityStateBuilder extends AbstractEntityStateBuilder {
 			StateType.NestedCollection<P> nctSAC = new StateType.NestedCollection<>(nmcType, nmcState);
 			return nctSAC;
 			
-		} else if(mpConfig.getType().isNested()) {
+		} else if(associatedParam.getConfig().getType().isNested()) {
 			//handle nested model
 			@SuppressWarnings("unchecked")
-			ParamType.Nested<P> mpNmType = ((ParamType.Nested<P>)mpConfig.getType());
+			ParamType.Nested<P> mpNmType = ((ParamType.Nested<P>)associatedParam.getConfig().getType());
 			
 			ModelConfig<P> mpNmConfig = mpNmType.getModel();
 			
@@ -147,7 +149,7 @@ public class EntityStateBuilder extends AbstractEntityStateBuilder {
 			
 		} else {
 			
-			return new StateType(mpConfig.getType());
+			return new StateType(associatedParam.getConfig().getType());
 		}
 	}
 	

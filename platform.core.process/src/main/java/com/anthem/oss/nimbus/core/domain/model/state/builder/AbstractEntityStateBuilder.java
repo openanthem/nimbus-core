@@ -25,13 +25,13 @@ import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig.MappedParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
-import com.anthem.oss.nimbus.core.domain.model.config.builder.AbstractEntityConfigBuilder.SimulatedCollectionParamEnclosingEntity;
 import com.anthem.oss.nimbus.core.domain.model.config.internal.DefaultParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderContext;
+import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultListElemParamState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultListModelState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultListParamState;
@@ -43,6 +43,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultListM
 import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultListParamState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultModelState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultParamState;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.RuntimeEntity;
 import com.anthem.oss.nimbus.core.rules.RulesEngineFactoryProducer;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 
@@ -63,8 +64,10 @@ abstract public class AbstractEntityStateBuilder {
 	
 	protected JustLogit logit = new JustLogit(getClass());
 	
-	abstract public <T, P> DefaultParamState<P> buildParam(StateBuilderContext provider, DefaultModelState<T> mState, ParamConfig<P> mpConfig, Model<?> mapsToSAC);
-
+	abstract public <T, P> DefaultModelState<T> buildModel(StateBuilderContext provider, DefaultParamState<T> associatedParam, ModelConfig<T> mConfig, Model<?> mapsToSAC);
+	abstract public <T, P> DefaultParamState<P> buildParam(StateBuilderContext provider, Model<T> mState, ParamConfig<P> mpConfig, Model<?> mapsToSAC);
+	abstract protected <P> StateType buildParamType(StateBuilderContext provider, Model<?> mState, DefaultParamState<P> associatedParam, Model<?> mapsToSAC);
+	
 	protected <T> DefaultModelState<T> createModel(Param<T> associatedParam, ModelConfig<T> config, StateBuilderContext provider, Model<?> mapsToSAC) {
 		DefaultModelState<T> mState = associatedParam.isMapped() ? //(mapsToSAC!=null) ? 
 				new MappedDefaultModelState<>(mapsToSAC, associatedParam, config, provider) : 
@@ -107,10 +110,14 @@ abstract public class AbstractEntityStateBuilder {
 		}
 		
 		mpState.init();
+		decorateParam(mpState);
+		
 		return mpState;
 	}
 	
-	protected <P> DefaultParamState<P> createParam(StateBuilderContext provider, DefaultModelState<?> parentModel, Model<?> mapsToSAC, ParamConfig<P> mpConfig) {
+	protected <P> DefaultParamState<P> createParam(StateBuilderContext provider, Model<?> parentModel, Model<?> mapsToSAC, ParamConfig<P> mpConfig) {
+		logit.trace(()->"[createParam] paramConfig: "+mpConfig.getCode()+" in model: "+parentModel.getPath());
+		
 		final DefaultParamState<P> p;
 		if(mpConfig.isMapped()) {
 			p = createParamMapped(provider, parentModel, mapsToSAC, mpConfig.findIfMapped());
@@ -119,6 +126,7 @@ abstract public class AbstractEntityStateBuilder {
 			p = createParamUnmapped(provider, parentModel, mapsToSAC, mpConfig);
 		
 		p.init();
+		decorateParam(p);
 		
 		/* setting param values if applicable */
 		createParamValues(p.getConfig(), p.getPath());
@@ -126,7 +134,20 @@ abstract public class AbstractEntityStateBuilder {
 		return p;
 	}
 	
-	private <P, V, C> DefaultParamState<P> createParamMapped(StateBuilderContext provider, DefaultModelState<?> parentModel, Model<?> mapsToSAC, MappedParamConfig<P, ?> mappedParamConfig) {
+	private <T> void decorateParam(DefaultParamState<T> created) {
+		/*
+		DefaultParamState<RuntimeEntity> pRuntime = buildParam(created.getProvider(), created.getParentModel(), created.getConfig().getRuntimeConfig(), null);
+
+		StateType type = buildParamType(created.getProvider(), created.getParentModel(), pRuntime, null);
+		pRuntime.setType(type);
+		
+		StateType.Nested<RuntimeEntity> runtimeType = type.findIfNested();
+		Model<RuntimeEntity> mRuntime = runtimeType.getModel();
+		created.setRuntimeModel(mRuntime);
+		*/
+	}
+	
+	private <P, V, C> DefaultParamState<P> createParamMapped(StateBuilderContext provider, Model<?> parentModel, Model<?> mapsToSAC, MappedParamConfig<P, ?> mappedParamConfig) {
 		if(mappedParamConfig.getMappingMode() == Mode.MappedAttached) {
 			// find mapped param's state
 			final Param<?> mapsToParam = findMapsToParam(mappedParamConfig, mapsToSAC);
@@ -162,7 +183,7 @@ abstract public class AbstractEntityStateBuilder {
 		return new MappedDefaultParamState<>(mapsToParam, parentModel, mappedParamConfig, provider);
 	}
 
-	private <P> DefaultParamState<P> createParamUnmapped(StateBuilderContext provider, DefaultModelState<?> parentModel, Model<?> mapsToSAC, ParamConfig<P> paramConfig) {
+	private <P> DefaultParamState<P> createParamUnmapped(StateBuilderContext provider, Model<?> parentModel, Model<?> mapsToSAC, ParamConfig<P> paramConfig) {
 		if(paramConfig.getType().isCollection())
 			return new DefaultListParamState(parentModel, paramConfig, provider);
 		

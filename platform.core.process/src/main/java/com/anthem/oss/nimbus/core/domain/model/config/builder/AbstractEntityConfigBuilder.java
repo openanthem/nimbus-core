@@ -373,16 +373,29 @@ abstract public class AbstractEntityConfigBuilder {
 
 		List<AnnotationConfig> vConfig = AnnotationConfigHandler.handle(f, Constraint.class);
 		created.setValidations(vConfig);
-		return created;
+		
+		return decorateParam(created, visitedModels);
 	}
+	
+	private ParamConfig<RuntimeEntity> cachedRuntimeEntityParamConfig;
 	
 	/**
 	 * build and assign RuntimeEntity Config
 	 */
 	protected <P> DefaultParamConfig<P> decorateParam(DefaultParamConfig<P> created, EntityConfigVistor visitedModels) {
-		ModelConfig<RuntimeEntity> runtimeConfig = buildModel(RuntimeEntity.class, visitedModels);
-		created.setRuntimeConfig(runtimeConfig);
+		if(cachedRuntimeEntityParamConfig==null) {
+			DefaultParamConfig<RuntimeEntity> pRuntimeConfig = new DefaultParamConfig<>("#");
+			cachedRuntimeEntityParamConfig = pRuntimeConfig;
+			
+			ModelConfig<RuntimeEntity> mRuntimeConfig = buildModel(RuntimeEntity.class, visitedModels);
+			
+			ParamType.Nested<RuntimeEntity> nestedType = new ParamType.Nested<>(RuntimeEntity.class.getSimpleName(), RuntimeEntity.class);
+			nestedType.setModel(mRuntimeConfig);
+			
+			pRuntimeConfig.setType(nestedType);
+		}
 		
+		created.setRuntimeConfig(cachedRuntimeEntityParamConfig);
 		return created;
 	}
 	
@@ -467,28 +480,32 @@ abstract public class AbstractEntityConfigBuilder {
 			
 		} else if(AnnotationUtils.findAnnotation(determinedType, Model.class)!=null) { 
 			String name = ClassUtils.getShortName(determinedType);
-			
-			final ParamType.Nested<P> model; 
-			pType = model = new ParamType.Nested<>(name, determinedType);
-			
-			final ModelConfig<P> nmConfig; 
-			if(mConfig.getReferredClass()==determinedType) { //nested reference to itself
-				nmConfig = (ModelConfig<P>)mConfig;
-				
-			} else if(visitedModels.contains(determinedType)) { //any nested model in hierarchy pointing back to any of its parents
-				nmConfig = (ModelConfig<P>)visitedModels.get(determinedType);
-				
-			} else {
-				nmConfig = buildModel(determinedType, visitedModels);
-			}
-			
-			model.setModel(nmConfig);
+			pType = createParamTypeNested(name, determinedType, mConfig, visitedModels);
 			
 		} else { //All others: Treat as field type instead of complex object that requires config traversal
 			pType = new ParamType.Field(ClassUtils.getShortName(determinedType), determinedType);
 			
 		}
 		return pType;
+	}
+	
+	protected <P> ParamType.Nested<P> createParamTypeNested(String typeName, Class<P> determinedType, ModelConfig<?> mConfig, EntityConfigVistor visitedModels) {
+		
+		final ParamType.Nested<P> nestedParamType = new ParamType.Nested<>(typeName, determinedType);
+		
+		final ModelConfig<P> nmConfig; 
+		if(mConfig.getReferredClass()==determinedType) { //nested reference to itself
+			nmConfig = (ModelConfig<P>)mConfig;
+			
+		} else if(visitedModels.contains(determinedType)) { //any nested model in hierarchy pointing back to any of its parents
+			nmConfig = (ModelConfig<P>)visitedModels.get(determinedType);
+			
+		} else {
+			nmConfig = buildModel(determinedType, visitedModels);
+		}
+		
+		nestedParamType.setModel(nmConfig);
+		return nestedParamType;
 	}
 	
 	protected boolean isCollection(Class<?> clazz) {

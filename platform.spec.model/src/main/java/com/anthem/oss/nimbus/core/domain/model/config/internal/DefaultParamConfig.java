@@ -13,7 +13,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.Converters.ParamConverter;
 import com.anthem.oss.nimbus.core.domain.model.config.AnnotationConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
@@ -21,7 +20,6 @@ import com.anthem.oss.nimbus.core.domain.model.state.internal.RuntimeEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -29,7 +27,7 @@ import lombok.ToString;
  * @author Soham Chakravarti
  *
  */
-@Getter @Setter @RequiredArgsConstructor @ToString(callSuper=true, of={"type", "validations", "values"})
+@Getter @Setter @ToString(callSuper=true, of={"type", "validations", "values"})
 public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements ParamConfig<P>, Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -48,7 +46,7 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 
 	private AnnotationConfig uiStyles;
 
-	private ModelConfig<RuntimeEntity> runtimeConfig;
+	private ParamConfig<RuntimeEntity> runtimeConfig;
 	
 	@JsonIgnore 
 	private transient Supplier<List<ParamValue>> valuesGetter;
@@ -56,6 +54,10 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	@JsonIgnore 
 	private List<ParamConverter> converters;
 
+	public DefaultParamConfig(String code) {
+		this.code = code;
+	}
+	
 
 	@SuppressWarnings("unchecked")
 	@Override

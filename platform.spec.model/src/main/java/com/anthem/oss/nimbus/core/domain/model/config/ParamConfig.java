@@ -46,7 +46,7 @@ public interface ParamConfig<P> extends EntityConfig<P>, Findable<String> {
 	
 	public List<ParamConverter> getConverters();
 	
-	public ModelConfig<RuntimeEntity> getRuntimeConfig();
+	public ParamConfig<RuntimeEntity> getRuntimeConfig();
 	
 	default MapsTo.Mode getMappingMode() {
 		return MapsTo.Mode.UnMapped;

@@ -10,6 +10,8 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.test.context.ActiveProfiles;
 
 import com.anthem.nimbus.platform.core.process.api.AbstractPlatformIntegrationTests;
 import com.anthem.oss.nimbus.core.domain.command.Command;
@@ -25,6 +27,8 @@ import com.anthem.oss.nimbus.test.sample.um.model.view.V_UMDashboard;
  * @author Soham Chakravarti
  *
  */
+@ActiveProfiles("test")
+@EnableAutoConfiguration
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class DetachedQuadModelCollectionsTest extends AbstractPlatformIntegrationTests {
 

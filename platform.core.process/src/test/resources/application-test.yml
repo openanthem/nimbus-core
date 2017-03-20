@@ -42,8 +42,8 @@ domain:
       javax.validation.Constraint
     markerInterfaces:
    
-#logging:
-#  file: ${HOME}/Documents/nimbuslogs/platform-core-web.log
+logging:
+  file: ${HOME}/Documents/nimbuslogs/test-nimbus.log
 user:
   permissionToActions:
     ACCESS:

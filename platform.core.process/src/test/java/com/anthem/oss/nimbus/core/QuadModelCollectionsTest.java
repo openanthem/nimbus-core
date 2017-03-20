@@ -49,7 +49,6 @@ import com.anthem.oss.nimbus.test.sample.um.model.view.Page_Pg3.Section_ServiceL
 import com.anthem.oss.nimbus.test.sample.um.model.view.UMCaseFlow;
 
 import test.com.anthem.nimbus.platform.spec.model.comamnd.TestCommandFactory;
-import test.com.anthem.nimbus.platform.utils.JsonUtils;
 
 /**
  * @author Soham Chakravarti
@@ -59,7 +58,7 @@ import test.com.anthem.nimbus.platform.utils.JsonUtils;
 @SpringBootTest
 @ActiveProfiles("test")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class QuadModelCollectionsTest {
+public class QuadModelCollectionsTest {//extends AbstractPlatformIntegrationTests {
 	
 	@Autowired QuadModelBuilder quadModelBuilder;
 	
