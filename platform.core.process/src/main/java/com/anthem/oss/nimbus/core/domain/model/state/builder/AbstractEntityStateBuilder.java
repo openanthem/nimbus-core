@@ -135,7 +135,12 @@ abstract public class AbstractEntityStateBuilder {
 	}
 	
 	private <T> void decorateParam(DefaultParamState<T> created) {
-		/*
+		if(created.getConfig().getRuntimeConfig()==null) return; //skip is not configured for RuntimeConfig
+		
+		// skip from creating runtime state for variables within runtime itself
+		//if(StringUtils.contains(created.getPath(), Constants.SEPARATOR_CONFIG_ATTRIB.code)) 
+		//	return; 
+		
 		DefaultParamState<RuntimeEntity> pRuntime = buildParam(created.getProvider(), created.getParentModel(), created.getConfig().getRuntimeConfig(), null);
 
 		StateType type = buildParamType(created.getProvider(), created.getParentModel(), pRuntime, null);
@@ -144,7 +149,7 @@ abstract public class AbstractEntityStateBuilder {
 		StateType.Nested<RuntimeEntity> runtimeType = type.findIfNested();
 		Model<RuntimeEntity> mRuntime = runtimeType.getModel();
 		created.setRuntimeModel(mRuntime);
-		*/
+		
 	}
 	
 	private <P, V, C> DefaultParamState<P> createParamMapped(StateBuilderContext provider, Model<?> parentModel, Model<?> mapsToSAC, MappedParamConfig<P, ?> mappedParamConfig) {

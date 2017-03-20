@@ -6,6 +6,7 @@ package com.anthem.oss.nimbus.core.domain.model.state.internal;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -68,7 +69,7 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 	
 	private ProcessFlow f;
 	
-	private Map<String, RuntimeEntity> paramRuntimes;
+	private Map<String, RuntimeEntity> paramRuntimes = new HashMap<>();
 	
 	public C getCore() {return getC();}
 	public void setCore(C c) {setC(c);}
@@ -129,7 +130,7 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 		}
 		
 		private <T> ParamConfig<T> attachParams(String pCode, ModelConfig<T> modelConfig) {
-			DefaultParamConfig<T> pConfig = createParam(pCode);
+			DefaultParamConfig<T> pConfig = createParam(modelConfig, pCode);
 			Class<T> pClass = modelConfig.getReferredClass();
 			
 			ParamType.Nested<T> pType = new ParamType.Nested<>(ClassUtils.getShortName(pClass), pClass);
@@ -140,11 +141,11 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 			return pConfig;
 		}
 		
-		private <T> DefaultParamConfig<T> createParam(String pCode) {
+		private <T> DefaultParamConfig<T> createParam(ModelConfig<T> modelConfig, String pCode) {
 			Field f = FieldUtils.getDeclaredField(ExecutionEntity.class, pCode, true);
 			MapsTo.Path path = AnnotationUtils.findAnnotation(f, MapsTo.Path.class);
 			
-			DefaultParamConfig<T> pConfig = path==null ? new DefaultParamConfig<>(pCode) : new MappedDefaultParamConfig<>(pCode, this, findParamByPath(path.value()), path);
+			DefaultParamConfig<T> pConfig = path==null ? DefaultParamConfig.instantiate(modelConfig, pCode) : new MappedDefaultParamConfig<>(pCode, this, findParamByPath(path.value()), path);
 			return pConfig;
 		} 
 	}
@@ -234,6 +235,11 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 		@Override
 		public ExecutionEntity<V, C> getState() {
 			return _this();
+		}
+		
+		@Override
+		public Map<String, RuntimeEntity> getParamRuntimes() {
+			return _this().getParamRuntimes();
 		}
 		
 		@Override

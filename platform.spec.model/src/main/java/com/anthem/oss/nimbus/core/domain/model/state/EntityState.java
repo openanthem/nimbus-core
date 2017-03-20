@@ -5,6 +5,7 @@ package com.anthem.oss.nimbus.core.domain.model.state;
 
 import java.beans.PropertyDescriptor;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.ExecutionStateTree;
@@ -13,6 +14,7 @@ import com.anthem.oss.nimbus.core.domain.model.config.EntityConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.RuntimeEntity;
 import com.anthem.oss.nimbus.core.util.CollectionsTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -88,6 +90,7 @@ public interface EntityState<T> {
 		
 		public ExecutionRuntime getExecutionRuntime();
 		
+		public Map<String, RuntimeEntity> getParamRuntimes();
 		
 		default public <U> U unwrap(Class<U> c) {
 			if(c.isInstance(this))
@@ -194,6 +197,8 @@ public interface EntityState<T> {
 		public Model<?> getParentModel();
 		
 		public StateType getType();
+		
+		public Model<RuntimeEntity> getRuntimeModel();
 		
 		default boolean isLeaf() {
 			return getConfig().isLeaf();

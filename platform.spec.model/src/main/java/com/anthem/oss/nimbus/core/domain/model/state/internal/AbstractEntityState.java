@@ -70,6 +70,13 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 	
 	protected void initInternal() {} 
 	
+	protected RuntimeEntity createOrGetRuntimeEntity() {
+		if(!getRootExecution().getParamRuntimes().containsKey(getPath()))
+			getRootExecution().getParamRuntimes().put(getPath(), new RuntimeEntity());
+		
+		return getRootExecution().getParamRuntimes().get(getPath());
+	}
+	
 	public String getPath() {
 		String p = StringUtils.replace(path, "/c/", "/");
 		p = StringUtils.replace(p, "/v/", "/");

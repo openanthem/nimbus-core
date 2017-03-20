@@ -41,6 +41,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.RuntimeEntity;
 import com.anthem.oss.nimbus.core.session.UserEndpointSession;
 import com.anthem.oss.nimbus.test.sample.um.model.ServiceLine;
 import com.anthem.oss.nimbus.test.sample.um.model.ServiceLine.AuditInfo;
@@ -69,6 +70,36 @@ public class QuadModelCollectionsTest {//extends AbstractPlatformIntegrationTest
 		assertNotNull(q);
 		
 		UserEndpointSession.setAttribute(cmd, q);
+	}
+	
+	@Test
+	public void t0_configState() {
+		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		
+		Param<String> pAloha = q.getView().findParamByPath("/pg3/aloha");
+		assertNotNull(pAloha);
+		
+		Model<RuntimeEntity> mAloha_runtime = pAloha.getRuntimeModel();
+		assertNotNull(mAloha_runtime);
+		
+		Param<Boolean> mAloha_enabled = mAloha_runtime.findParamByPath("/enabled");
+		assertNotNull(mAloha_enabled);
+		assertTrue(mAloha_enabled.getState());
+		
+		mAloha_enabled.setState(false);
+		assertFalse(mAloha_enabled.getState());
+
+		Param<RuntimeEntity> pAloha_runtime = q.getView().findParamByPath("/pg3/aloha/#");
+		assertNotNull(pAloha_runtime);
+
+		
+		Param<Boolean> pAloha_visible = q.getView().findParamByPath("/pg3/aloha/#/visible");
+		assertNotNull(pAloha_visible);
+		assertTrue(pAloha_visible.getState());
+		
+		pAloha_visible.setState(false);
+		assertFalse(pAloha_visible.getState());
+		
 	}
 	
 	@Test

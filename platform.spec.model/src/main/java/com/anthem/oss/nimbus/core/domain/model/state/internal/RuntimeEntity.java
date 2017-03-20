@@ -16,8 +16,8 @@ import lombok.Setter;
 @Getter @Setter
 public class RuntimeEntity {
 
-	private Boolean visible;
-	private Boolean enabled;
+	private Boolean visible = true;
+	private Boolean enabled = true;
 	
 	private String message;
 }

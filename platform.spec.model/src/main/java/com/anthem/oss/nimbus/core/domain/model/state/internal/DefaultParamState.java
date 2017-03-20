@@ -128,6 +128,9 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	@Override
 	final public T getState() {
+		if(getType().getConfig().getReferredClass()==RuntimeEntity.class) {
+			return (T)createOrGetRuntimeEntity();
+		}
 		return getProvider().getParamStateGateway()._get(this);
 	}
 	

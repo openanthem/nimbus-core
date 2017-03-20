@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.Converters.ParamConverter;
 import com.anthem.oss.nimbus.core.domain.model.config.AnnotationConfig;
+import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
@@ -54,9 +55,34 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	@JsonIgnore 
 	private List<ParamConverter> converters;
 
-	public DefaultParamConfig(String code) {
+	public static class Runtime<P> extends DefaultParamConfig<P> {
+		private static final long serialVersionUID = 1L;
+
+		public Runtime(String code) {
+			super(code);
+		}
+		
+		@Override
+		final public ParamConfig<RuntimeEntity> getRuntimeConfig() {
+			return null;
+		}
+		
+		@Override
+		final public void setRuntimeConfig(ParamConfig<RuntimeEntity> runtimeConfig) {
+			//do nothing
+		}
+	}
+	
+	protected DefaultParamConfig(String code) {
 		this.code = code;
 	}
+	
+	final public static <T> DefaultParamConfig<T> instantiate(ModelConfig<?> mConfig, String code) {
+		if(mConfig.getReferredClass()==RuntimeEntity.class)
+			return new DefaultParamConfig.Runtime<>(code);
+		
+		return new DefaultParamConfig<>(code);
+	} 
 	
 
 	@SuppressWarnings("unchecked")

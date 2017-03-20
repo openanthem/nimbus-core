@@ -128,7 +128,7 @@ abstract public class AbstractEntityConfigBuilder {
 		
 		// no path specified
 		if(mapsToPath==null)
-			return decorateParam(f, new DefaultParamConfig<>(f.getName()), visitedModels); 
+			return decorateParam(mConfig, f, DefaultParamConfig.instantiate(mConfig, f.getName()), visitedModels); 
 			
 		// check if field is mapped with linked=true: which would require parent model to also be mapped
 		if(mapsToPath.linked())
@@ -154,12 +154,12 @@ abstract public class AbstractEntityConfigBuilder {
 		if(mapsToParam==null)
 			throw new InvalidConfigException("No mapsTo param found for mapped param field: "+f.getName()+" in enclosing model:"+mConfig.getReferredClass()+" with mapsToPath: "+mapsToPath);
 		
-		return decorateParam(f, new MappedDefaultParamConfig<>(f.getName(), mapsToModel, mapsToParam, mapsToPath), visitedModels);
+		return decorateParam(mConfig, f, new MappedDefaultParamConfig<>(f.getName(), mapsToModel, mapsToParam, mapsToPath), visitedModels);
 	}
 	
 	private DefaultParamConfig<?> createMappedParamDetached(ModelConfig<?> mConfig, Field mappedField, EntityConfigVistor visitedModels, MapsTo.Path mapsToPath) {
 		if(!isCollection(mappedField.getType())) {
-			return createMappedParamDetachedNested(mappedField, visitedModels, mapsToPath);
+			return createMappedParamDetachedNested(mConfig, mappedField, visitedModels, mapsToPath);
 		} 
 		
 		// detached collection
@@ -175,12 +175,12 @@ abstract public class AbstractEntityConfigBuilder {
 	 * MapsTo ParaConfig's type is same as MapsTo.Type on mappedParam's referredClass. 
 	 * If mappedParam's referredClass doesn't have MapsTo.Type defined, then mappedParam's referredClass would be used for self-detached mode simulation.
 	 */
-	private DefaultParamConfig<?> createMappedParamDetachedNested(Field mappedField, EntityConfigVistor visitedModels, MapsTo.Path mapsToPath) {
+	private DefaultParamConfig<?> createMappedParamDetachedNested(ModelConfig<?> mConfig, Field mappedField, EntityConfigVistor visitedModels, MapsTo.Path mapsToPath) {
 		// create mapsToParam's enclosing ModelConfig
 		DefaultModelConfig<?> simulatedEnclosingModel = new DefaultModelConfig<>(SimulatedNestedParamEnclosingEntity.class);
 		
 		// create mapsToParam and attach to enclosing model
-		DefaultParamConfig<?> simulatedMapsToParam = decorateParam(new DefaultParamConfig<>(MapsTo.DETACHED_SIMULATED_FIELD_NAME), visitedModels);
+		DefaultParamConfig<?> simulatedMapsToParam = decorateParam(simulatedEnclosingModel, DefaultParamConfig.instantiate(simulatedEnclosingModel, MapsTo.DETACHED_SIMULATED_FIELD_NAME), visitedModels);
 		simulatedEnclosingModel.templateParams().add(simulatedMapsToParam);
 		
 		// build mapsToParam's type
@@ -190,7 +190,7 @@ abstract public class AbstractEntityConfigBuilder {
 		ParamType pType = buildParamType(simulatedEnclosingModel, simulatedMapsToParam, null, mappedParamRefClassMapsToEntityClass, visitedModels);
 		simulatedMapsToParam.setType(pType);
 		
-		DefaultParamConfig<?> mappedParam = decorateParam(mappedField, new MappedDefaultParamConfig<>(mappedField.getName(), simulatedEnclosingModel, simulatedMapsToParam, mapsToPath), visitedModels);
+		DefaultParamConfig<?> mappedParam = decorateParam(mConfig, mappedField, new MappedDefaultParamConfig<>(mappedField.getName(), simulatedEnclosingModel, simulatedMapsToParam, mapsToPath), visitedModels);
 		return mappedParam;
 	}
 	
@@ -199,7 +199,7 @@ abstract public class AbstractEntityConfigBuilder {
 		DefaultModelConfig<?> simulatedEnclosingModel = new DefaultModelConfig<>(SimulatedCollectionParamEnclosingEntity.class);
 		
 		// create mapsToParam and attach to enclosing model
-		DefaultParamConfig<?> simulatedMapsToParam = decorateParam(new DefaultParamConfig<>(MapsTo.DETACHED_SIMULATED_FIELD_NAME), visitedModels);
+		DefaultParamConfig<?> simulatedMapsToParam = decorateParam(simulatedEnclosingModel, DefaultParamConfig.instantiate(simulatedEnclosingModel, MapsTo.DETACHED_SIMULATED_FIELD_NAME), visitedModels);
 		simulatedEnclosingModel.templateParams().add(simulatedMapsToParam);
 		
 		// determine collection param generic element type
@@ -212,7 +212,7 @@ abstract public class AbstractEntityConfigBuilder {
 		ParamType pType = buildParamType(simulatedEnclosingModel, simulatedMapsToParam, colType, mappedParamRefClassMapsToEntityClass, visitedModels);
 		simulatedMapsToParam.setType(pType);
 		
-		DefaultParamConfig<?> mappedParam = decorateParam(mappedField, new MappedDefaultParamConfig<>(mappedField.getName(), simulatedEnclosingModel, simulatedMapsToParam, mapsToPath), visitedModels);
+		DefaultParamConfig<?> mappedParam = decorateParam(mConfigOfMappedParam, mappedField, new MappedDefaultParamConfig<>(mappedField.getName(), simulatedEnclosingModel, simulatedMapsToParam, mapsToPath), visitedModels);
 		return mappedParam;
 	}
 
@@ -309,7 +309,7 @@ abstract public class AbstractEntityConfigBuilder {
 			created = new MappedDefaultParamConfig<>(collectionElemPath, colModelConfig, mapsToColElemParamConfig, mapsToColElemParamPathAnnotation);
 
 		} else if(mapsToColElemParamConfig==null) {
-			created = decorateParam(new DefaultParamConfig<>(collectionElemPath), visitedModels);
+			created = decorateParam(colModelConfig, DefaultParamConfig.instantiate(colModelConfig, collectionElemPath), visitedModels);
 			
 		} else {
 			created = mapsToColElemParamConfig;
@@ -326,7 +326,7 @@ abstract public class AbstractEntityConfigBuilder {
 				.toString();
 	}
 	
-	private <P> DefaultParamConfig<P> decorateParam(Field f, DefaultParamConfig<P> created, EntityConfigVistor visitedModels) {
+	private <P> DefaultParamConfig<P> decorateParam(ModelConfig<?> mConfig, Field f, DefaultParamConfig<P> created, EntityConfigVistor visitedModels) {
 		List<AnnotationConfig> aConfigs = AnnotationConfigHandler.handle(f, ViewParamBehavior.class);
 		created.setUiNatures(aConfigs);
 
@@ -374,7 +374,7 @@ abstract public class AbstractEntityConfigBuilder {
 		List<AnnotationConfig> vConfig = AnnotationConfigHandler.handle(f, Constraint.class);
 		created.setValidations(vConfig);
 		
-		return decorateParam(created, visitedModels);
+		return decorateParam(mConfig, created, visitedModels);
 	}
 	
 	private ParamConfig<RuntimeEntity> cachedRuntimeEntityParamConfig;
@@ -382,9 +382,13 @@ abstract public class AbstractEntityConfigBuilder {
 	/**
 	 * build and assign RuntimeEntity Config
 	 */
-	protected <P> DefaultParamConfig<P> decorateParam(DefaultParamConfig<P> created, EntityConfigVistor visitedModels) {
+	protected <P> DefaultParamConfig<P> decorateParam(ModelConfig<?> mConfig, DefaultParamConfig<P> created, EntityConfigVistor visitedModels) {
+		// do not make nested runtimeConfig;
+		if(StringUtils.equals(created.getCode(), Constants.SEPARATOR_CONFIG_ATTRIB.code))
+			return created;
+		
 		if(cachedRuntimeEntityParamConfig==null) {
-			DefaultParamConfig<RuntimeEntity> pRuntimeConfig = new DefaultParamConfig<>("#");
+			DefaultParamConfig<RuntimeEntity> pRuntimeConfig = DefaultParamConfig.instantiate(mConfig, Constants.SEPARATOR_CONFIG_ATTRIB.code);
 			cachedRuntimeEntityParamConfig = pRuntimeConfig;
 			
 			ModelConfig<RuntimeEntity> mRuntimeConfig = buildModel(RuntimeEntity.class, visitedModels);
