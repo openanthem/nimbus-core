@@ -47,7 +47,7 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 
 	private AnnotationConfig uiStyles;
 
-	private ParamConfig<StateContextEntity> runtimeConfig;
+	private ParamConfig<?> contextParam;
 	
 	@JsonIgnore 
 	private transient Supplier<List<ParamValue>> valuesGetter;
@@ -63,12 +63,12 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 		}
 		
 		@Override
-		final public ParamConfig<StateContextEntity> getRuntimeConfig() {
+		final public ParamConfig<?> getContextParam() {
 			return null;
 		}
 		
 		@Override
-		final public void setRuntimeConfig(ParamConfig<StateContextEntity> runtimeConfig) {
+		final public void setContextParam(ParamConfig<?> runtimeConfig) {
 			//do nothing
 		}
 	}

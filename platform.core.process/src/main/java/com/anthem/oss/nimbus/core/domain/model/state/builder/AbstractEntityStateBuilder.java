@@ -135,13 +135,13 @@ abstract public class AbstractEntityStateBuilder {
 	}
 	
 	private <T> void decorateParam(DefaultParamState<T> created) {
-		if(created.getConfig().getRuntimeConfig()==null) return; //skip is not configured for RuntimeConfig
+		if(created.getConfig().getContextParam()==null) return; //skip is not configured for RuntimeConfig
 		
 		// skip from creating runtime state for variables within runtime itself
 		//if(StringUtils.contains(created.getPath(), Constants.SEPARATOR_CONFIG_ATTRIB.code)) 
 		//	return; 
 		
-		DefaultParamState<?> pRuntime = buildParam(created.getProvider(), created.getParentModel(), created.getConfig().getRuntimeConfig(), null);
+		DefaultParamState<?> pRuntime = buildParam(created.getProvider(), created.getParentModel(), created.getConfig().getContextParam(), null);
 
 		StateType type = buildParamType(created.getProvider(), created.getParentModel(), pRuntime, null);
 		pRuntime.setType(type);

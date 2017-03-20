@@ -94,7 +94,7 @@ public class QuadModelCollectionsTest {//extends AbstractPlatformIntegrationTest
 		assertEquals(new Integer(0), mAloha_count.getState());
 		
 
-		Param<StateContextEntity> pAloha_runtime = q.getView().findParamByPath("/pg3/aloha/#");
+		Param<?> pAloha_runtime = q.getView().findParamByPath("/pg3/aloha/#");
 		assertNotNull(pAloha_runtime);
 
 		

@@ -399,7 +399,7 @@ abstract public class AbstractEntityConfigBuilder {
 			pRuntimeConfig.setType(nestedType);
 		}
 		
-		created.setRuntimeConfig(cachedRuntimeEntityParamConfig);
+		created.setContextParam(cachedRuntimeEntityParamConfig);
 		return created;
 	}
 	

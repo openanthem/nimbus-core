@@ -10,7 +10,6 @@ import com.anthem.oss.nimbus.core.domain.definition.Converters.ParamConverter;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Mode;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.StateContextEntity;
 import com.anthem.oss.nimbus.core.entity.Findable;
 
 /**
@@ -46,7 +45,7 @@ public interface ParamConfig<P> extends EntityConfig<P>, Findable<String> {
 	
 	public List<ParamConverter> getConverters();
 	
-	public ParamConfig<StateContextEntity> getRuntimeConfig();
+	public ParamConfig<?> getContextParam();
 	
 	default MapsTo.Mode getMappingMode() {
 		return MapsTo.Mode.UnMapped;
