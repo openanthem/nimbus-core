@@ -45,7 +45,7 @@ import com.anthem.oss.nimbus.core.domain.model.config.internal.DefaultModelConfi
 import com.anthem.oss.nimbus.core.domain.model.config.internal.DefaultParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultParamConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.RuntimeEntity;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.StateContextEntity;
 import com.anthem.oss.nimbus.core.rules.RulesEngineFactoryProducer;
 import com.anthem.oss.nimbus.core.util.GenericUtils;
 import com.anthem.oss.nimbus.core.util.JustLogit;
@@ -377,7 +377,7 @@ abstract public class AbstractEntityConfigBuilder {
 		return decorateParam(mConfig, created, visitedModels);
 	}
 	
-	private ParamConfig<RuntimeEntity> cachedRuntimeEntityParamConfig;
+	private ParamConfig<StateContextEntity> cachedRuntimeEntityParamConfig;
 	
 	/**
 	 * build and assign RuntimeEntity Config
@@ -388,12 +388,12 @@ abstract public class AbstractEntityConfigBuilder {
 			return created;
 		
 		if(cachedRuntimeEntityParamConfig==null) {
-			DefaultParamConfig<RuntimeEntity> pRuntimeConfig = DefaultParamConfig.instantiate(mConfig, Constants.SEPARATOR_CONFIG_ATTRIB.code);
+			DefaultParamConfig<StateContextEntity> pRuntimeConfig = DefaultParamConfig.instantiate(mConfig, Constants.SEPARATOR_CONFIG_ATTRIB.code);
 			cachedRuntimeEntityParamConfig = pRuntimeConfig;
 			
-			ModelConfig<RuntimeEntity> mRuntimeConfig = buildModel(RuntimeEntity.class, visitedModels);
+			ModelConfig<StateContextEntity> mRuntimeConfig = buildModel(StateContextEntity.class, visitedModels);
 			
-			ParamType.Nested<RuntimeEntity> nestedType = new ParamType.Nested<>(RuntimeEntity.class.getSimpleName(), RuntimeEntity.class);
+			ParamType.Nested<StateContextEntity> nestedType = new ParamType.Nested<>(StateContextEntity.class.getSimpleName(), StateContextEntity.class);
 			nestedType.setModel(mRuntimeConfig);
 			
 			pRuntimeConfig.setType(nestedType);

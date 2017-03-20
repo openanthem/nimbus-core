@@ -14,10 +14,12 @@ import lombok.Setter;
  */
 @Model
 @Getter @Setter
-public class RuntimeEntity {
+public class StateContextEntity {
 
 	private Boolean visible = true;
 	private Boolean enabled = true;
+	
+	private int count;
 	
 	private String message;
 }

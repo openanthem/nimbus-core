@@ -41,7 +41,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.RuntimeEntity;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.StateContextEntity;
 import com.anthem.oss.nimbus.core.session.UserEndpointSession;
 import com.anthem.oss.nimbus.test.sample.um.model.ServiceLine;
 import com.anthem.oss.nimbus.test.sample.um.model.ServiceLine.AuditInfo;
@@ -79,7 +79,7 @@ public class QuadModelCollectionsTest {//extends AbstractPlatformIntegrationTest
 		Param<String> pAloha = q.getView().findParamByPath("/pg3/aloha");
 		assertNotNull(pAloha);
 		
-		Model<RuntimeEntity> mAloha_runtime = pAloha.getRuntimeModel();
+		Model<?> mAloha_runtime = pAloha.getContextModel();
 		assertNotNull(mAloha_runtime);
 		
 		Param<Boolean> mAloha_enabled = mAloha_runtime.findParamByPath("/enabled");
@@ -88,8 +88,13 @@ public class QuadModelCollectionsTest {//extends AbstractPlatformIntegrationTest
 		
 		mAloha_enabled.setState(false);
 		assertFalse(mAloha_enabled.getState());
+		
+		Param<Integer> mAloha_count = mAloha_runtime.findParamByPath("/count");
+		assertNotNull(mAloha_count);
+		assertEquals(new Integer(0), mAloha_count.getState());
+		
 
-		Param<RuntimeEntity> pAloha_runtime = q.getView().findParamByPath("/pg3/aloha/#");
+		Param<StateContextEntity> pAloha_runtime = q.getView().findParamByPath("/pg3/aloha/#");
 		assertNotNull(pAloha_runtime);
 
 		

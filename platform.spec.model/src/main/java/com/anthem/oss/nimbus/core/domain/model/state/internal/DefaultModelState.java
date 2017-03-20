@@ -81,7 +81,7 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 	
 	@Override
 	public T instantiateOrGet() {
-		if(getConfig().getReferredClass()==RuntimeEntity.class) {
+		if(getConfig().getReferredClass()==StateContextEntity.class) {
 			return (T)createOrGetRuntimeEntity();
 		}
 		

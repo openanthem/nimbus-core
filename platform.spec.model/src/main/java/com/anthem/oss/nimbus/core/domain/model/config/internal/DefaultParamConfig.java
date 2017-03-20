@@ -17,7 +17,7 @@ import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.RuntimeEntity;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.StateContextEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
@@ -47,7 +47,7 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 
 	private AnnotationConfig uiStyles;
 
-	private ParamConfig<RuntimeEntity> runtimeConfig;
+	private ParamConfig<StateContextEntity> runtimeConfig;
 	
 	@JsonIgnore 
 	private transient Supplier<List<ParamValue>> valuesGetter;
@@ -63,12 +63,12 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 		}
 		
 		@Override
-		final public ParamConfig<RuntimeEntity> getRuntimeConfig() {
+		final public ParamConfig<StateContextEntity> getRuntimeConfig() {
 			return null;
 		}
 		
 		@Override
-		final public void setRuntimeConfig(ParamConfig<RuntimeEntity> runtimeConfig) {
+		final public void setRuntimeConfig(ParamConfig<StateContextEntity> runtimeConfig) {
 			//do nothing
 		}
 	}
@@ -78,7 +78,7 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	}
 	
 	final public static <T> DefaultParamConfig<T> instantiate(ModelConfig<?> mConfig, String code) {
-		if(mConfig.getReferredClass()==RuntimeEntity.class)
+		if(mConfig.getReferredClass()==StateContextEntity.class)
 			return new DefaultParamConfig.Runtime<>(code);
 		
 		return new DefaultParamConfig<>(code);

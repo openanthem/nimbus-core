@@ -52,9 +52,9 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	final private Model<?> parentModel;
 	
-	private RuntimeEntity runtime;
+	private StateContextEntity runtime;
 	
-	private Model<RuntimeEntity> runtimeModel;
+	private Model<?> contextModel;
 	
 	/* TODO: Weak reference was causing the values to be GC-ed even before the builders got to building 
 	 * Allow referenced subscribers to get garbage collected in scenario when same core is referenced by multiple views. 
@@ -128,7 +128,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	@Override
 	final public T getState() {
-		if(getType().getConfig().getReferredClass()==RuntimeEntity.class) {
+		if(getType().getConfig().getReferredClass()==StateContextEntity.class) {
 			return (T)createOrGetRuntimeEntity();
 		}
 		return getProvider().getParamStateGateway()._get(this);

@@ -43,7 +43,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultListM
 import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultListParamState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultModelState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultParamState;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.RuntimeEntity;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.StateContextEntity;
 import com.anthem.oss.nimbus.core.rules.RulesEngineFactoryProducer;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 
@@ -141,14 +141,14 @@ abstract public class AbstractEntityStateBuilder {
 		//if(StringUtils.contains(created.getPath(), Constants.SEPARATOR_CONFIG_ATTRIB.code)) 
 		//	return; 
 		
-		DefaultParamState<RuntimeEntity> pRuntime = buildParam(created.getProvider(), created.getParentModel(), created.getConfig().getRuntimeConfig(), null);
+		DefaultParamState<?> pRuntime = buildParam(created.getProvider(), created.getParentModel(), created.getConfig().getRuntimeConfig(), null);
 
 		StateType type = buildParamType(created.getProvider(), created.getParentModel(), pRuntime, null);
 		pRuntime.setType(type);
 		
-		StateType.Nested<RuntimeEntity> runtimeType = type.findIfNested();
-		Model<RuntimeEntity> mRuntime = runtimeType.getModel();
-		created.setRuntimeModel(mRuntime);
+		StateType.Nested<?> runtimeType = type.findIfNested();
+		Model<?> mRuntime = runtimeType.getModel();
+		created.setContextModel(mRuntime);
 		
 	}
 	
