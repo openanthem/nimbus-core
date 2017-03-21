@@ -69,7 +69,7 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 	
 	private ProcessFlow f;
 	
-	private Map<String, StateContextEntity> paramRuntimes = new HashMap<>();
+	private Map<String, Object> paramRuntimes = new HashMap<>();
 	
 	public C getCore() {return getC();}
 	public void setCore(C c) {setC(c);}
@@ -238,7 +238,7 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 		}
 		
 		@Override
-		public Map<String, StateContextEntity> getParamRuntimes() {
+		public Map<String, Object> getParamRuntimes() {
 			return _this().getParamRuntimes();
 		}
 		

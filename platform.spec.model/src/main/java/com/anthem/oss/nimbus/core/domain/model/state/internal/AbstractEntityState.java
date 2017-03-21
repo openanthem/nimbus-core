@@ -70,7 +70,7 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 	
 	protected void initInternal() {} 
 	
-	protected StateContextEntity createOrGetRuntimeEntity() {
+	protected Object createOrGetRuntimeEntity() {
 		if(!getRootExecution().getParamRuntimes().containsKey(getPath()))
 			getRootExecution().getParamRuntimes().put(getPath(), new StateContextEntity());
 		
