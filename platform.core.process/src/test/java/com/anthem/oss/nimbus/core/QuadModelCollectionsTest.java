@@ -41,7 +41,6 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.StateContextEntity;
 import com.anthem.oss.nimbus.core.session.UserEndpointSession;
 import com.anthem.oss.nimbus.test.sample.um.model.ServiceLine;
 import com.anthem.oss.nimbus.test.sample.um.model.ServiceLine.AuditInfo;
@@ -725,7 +724,50 @@ public class QuadModelCollectionsTest {//extends AbstractPlatformIntegrationTest
 
 	@Test
 	public void tv18_col_detached_c2v_converted() {
-		fail("not yet implemented");
+		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		
+		ServiceLine sl_0 = new ServiceLine();
+		sl_0.setService("Batman");
+		
+		ServiceLine sl_1 = new ServiceLine();
+		sl_1.setService("Robin");
+		
+		List<ServiceLine> coreServiceLines = new ArrayList<>();
+		coreServiceLines.add(sl_0);
+		coreServiceLines.add(sl_1);
+		
+		// core
+		ListParam<ServiceLine> detachedCoreServiceLines = q.getView().findParamByPath("/pg3/viewDetachedServiceLinesConverted.m").findIfCollection();
+		assertNotNull(detachedCoreServiceLines);
+		assertNull(detachedCoreServiceLines.getState());
+		
+		// view
+		ListParam<Section_ServiceLine> detachedViewServiceLines = q.getView().findParamByPath("/pg3/viewDetachedServiceLinesConverted").findIfCollection();
+		assertNotNull(detachedViewServiceLines);
+		assertNull(detachedViewServiceLines.getState());
+		
+		// set to core
+		detachedCoreServiceLines.setState(coreServiceLines);
+		
+		// validate core
+		assertNotNull(detachedCoreServiceLines.getState());
+		assertSame(coreServiceLines.size(), detachedCoreServiceLines.size());
+		
+		for(int i=0; i<coreServiceLines.size(); i++) {
+			ServiceLine expected = coreServiceLines.get(i);
+			ServiceLine actual = detachedCoreServiceLines.get(i);
+			assertSame(expected, actual);
+		}
+		
+		// validate view
+		assertNotNull(detachedViewServiceLines.getState());
+		assertSame(coreServiceLines.size(), detachedViewServiceLines.size());
+		
+		for(int i=0; i<coreServiceLines.size(); i++) {
+			ServiceLine expected = coreServiceLines.get(i);
+			
+			assertSame(expected.getService(), detachedViewServiceLines.findParamByPath("/"+i+"/service").getState());
+		}
 	}
 
 	@Test
