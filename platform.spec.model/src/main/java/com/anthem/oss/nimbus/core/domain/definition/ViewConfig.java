@@ -361,7 +361,8 @@ public class ViewConfig {
 		boolean readOnly() default false;
 		String cssClass() default "";
 		boolean postEventOnChange() default false;
-		String controlId() default "";
+		String sourceHeader() default "SourceList";
+		String targetHeader() default "TargetList";
 	}
 	
 }
