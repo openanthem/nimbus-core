@@ -2,10 +2,9 @@
 <configuration scan="true">
     <include resource="org/springframework/boot/logging/logback/base.xml" />
     
-    <springProfile name="test,build">
+    	<logger name="org.springframework.data.neo4j.mapping" level="ERROR" additivity="true"/>
         <logger name="com.anthem" level="TRACE" additivity="true">
             <appender-ref ref="CONSOLE" />
             <appender-ref ref="FILE" />
-        </logger>>
-    </springProfile>
+        </logger>
  </configuration>
