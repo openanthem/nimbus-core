@@ -367,4 +367,16 @@ public class ViewConfig {
 		String alias() default "SubHeader";
 	}
 	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface PickList {
+		String alias() default "PickList";
+		String labelClass() default "anthem-label";
+		boolean readOnly() default false;
+		String cssClass() default "";
+		boolean postEventOnChange() default false;
+		String controlId() default "";
+	}
+	
 }
