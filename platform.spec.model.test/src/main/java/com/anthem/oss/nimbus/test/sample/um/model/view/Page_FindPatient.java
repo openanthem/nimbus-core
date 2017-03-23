@@ -56,10 +56,10 @@ public class Page_FindPatient {
 
 		@Path @InputDate private LocalDate dob;
 
-		@Button(url="{:id}/_findPatient/_process") @Hints(align=AlignOptions.Left)
+		@Button(url="{:id}/_findPatient/_process") @Hints(value=AlignOptions.Left)
 		private String action_FindPatient;
 
-		@Button(url="/_nav?a=next") @Hints(align=AlignOptions.Right)
+		@Button(url="/_nav?a=next") @Hints(value=AlignOptions.Right)
 		private String next;
 	}
     

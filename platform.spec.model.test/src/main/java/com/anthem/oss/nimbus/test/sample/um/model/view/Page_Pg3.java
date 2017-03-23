@@ -6,11 +6,9 @@ package com.anthem.oss.nimbus.test.sample.um.model.view;
 import java.util.List;
 
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
-import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Button;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Hints;
-import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.TextBox;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Hints.AlignOptions;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.MultiSelect;
 import com.anthem.oss.nimbus.test.sample.um.model.ServiceLine;
@@ -40,7 +38,7 @@ public class Page_Pg3 {
 	
 	@Path("/caseType") private @MultiSelect String aloha;
 
-	@Button(url="/_nav?a=back") @Hints(align=AlignOptions.Left)
+	@Button(url="/_nav?a=back") @Hints(value=AlignOptions.Left)
 	private String back;
 	
 	
@@ -63,7 +61,7 @@ public class Page_Pg3 {
 	@Path("/serviceLinesConverted") private List<Section_ServiceLine> viewAttachedServiceLinesConverted;
 	
 	// collection mapping 5: DEATACHED: List of ViewModel mapping to List of CoreModel: ViewModel is mapped to CoreModel
-	//@Path(linked=false) private List<Section_ServiceLine> viewDetachedServiceLines;
+	@Path(linked=false) private List<Section_ServiceLine> viewDetachedServiceLinesConverted;
 
 	// collection mapping 6: ATTACHED: List of primitive mapping to one param inside List elem of CoreModel
 	//@Path("/serviceLines/{index}/service") List<String> attachedNestedAttribServices;
