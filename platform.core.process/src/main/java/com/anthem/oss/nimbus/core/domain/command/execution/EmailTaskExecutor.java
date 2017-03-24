@@ -8,15 +8,12 @@ import java.io.StringWriter;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
-import org.apache.velocity.app.VelocityEngine;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.TemplateDefinition;
-import com.anthem.oss.nimbus.core.template.velocity.QuadModelVelocityContext;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -29,8 +26,8 @@ public class EmailTaskExecutor extends AbstractProcessTaskExecutor implements Hi
     
 	private static final String CHARSET_UTF8 = "UTF-8";
 	
-	@Autowired
-    private VelocityEngine velocityEngine;
+	//@Autowired
+    //private VelocityEngine velocityEngine;
  
 	@Setter@Getter
     private TemplateDefinition templateDefinition;
@@ -49,11 +46,11 @@ public class EmailTaskExecutor extends AbstractProcessTaskExecutor implements Hi
 		// below is a test sample for test.vm. for actual flow quad model would be set with appropriate models
         viewSAC.findParamByPath("/pg1/patientInfo/patientInfoEntry/subscriberId").setState("123456789"); 
         
-        QuadModelVelocityContext impl = new QuadModelVelocityContext(this.findQuad(cmdMsg));
+        //QuadModelVelocityContext impl = new QuadModelVelocityContext(this.findQuad(cmdMsg));
 
         StringWriter stringWriter = new StringWriter();
         
-        velocityEngine.mergeTemplate(templateDefinition.getId()+".vm", CHARSET_UTF8, impl, stringWriter);
+       // velocityEngine.mergeTemplate(templateDefinition.getId()+".vm", CHARSET_UTF8, impl, stringWriter);
         
         //TODO for Cheikh- email handler should be a seperate component 
 		try {

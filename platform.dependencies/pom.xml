@@ -22,12 +22,12 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
-		<spring.boot.version>1.4.0.RELEASE</spring.boot.version>
-		<spring.cloud.version>Camden.RELEASE</spring.cloud.version>
-		<sdn.version>4.1.0.M1</sdn.version>
+		<spring.boot.version>1.5.2.RELEASE</spring.boot.version>
+		<spring.cloud.version>Dalston.RC1</spring.cloud.version>
+		<!-- <sdn.version>4.2.0.RC1</sdn.version>
 		<neo4j.ogm.version>2.0.0-M02</neo4j.ogm.version>
-		<neo4j.version>2.3.2</neo4j.version>
-		<neo4j-cypher-compiler.version>2.3.2</neo4j-cypher-compiler.version>
+		<neo4j.version>2.3.2</neo4j.version> -->
+		<!-- <neo4j-cypher-compiler.version>2.3.2</neo4j-cypher-compiler.version> -->
 		<swagger.version>2.4.0</swagger.version>
 		<commons-io.version>2.4</commons-io.version>
 		<drools.version>5.6.0.Final</drools.version>
@@ -45,7 +45,7 @@
 		<maven-site-plugin.version>3.5.1</maven-site-plugin.version>
 		<maven-source-plugin.version>3.0.1</maven-source-plugin.version>
 		<maven-failsafe-plugin.version>2.18.1</maven-failsafe-plugin.version>
-		<maven-jar-plugin.version>3.0.0</maven-jar-plugin.version>
+		<maven-jar-plugin.version>2.6</maven-jar-plugin.version>
 		<maven-surefire-plugin.version>2.18.1</maven-surefire-plugin.version>
 		<maven-war-plugin.version>3.0</maven-war-plugin.version>
 		<maven-dependency-plugin.version>2.10</maven-dependency-plugin.version>
@@ -141,13 +141,13 @@
 				<scope>import</scope>
 			</dependency>
 
-			<dependency>
+			<!-- <dependency>
 				<groupId>org.springframework.data</groupId>
 				<artifactId>spring-data-releasetrain</artifactId>
 				<version>Hopper-SR1</version>
 				<type>pom</type>
 				<scope>import</scope>
-			</dependency>
+			</dependency> -->
 
 			<!-- Third Party must have dependencies -->
 			<dependency>
@@ -194,17 +194,17 @@
 			<dependency>
 				<groupId>org.neo4j.app</groupId>
 				<artifactId>neo4j-server</artifactId>
-				<version>${neo4j.version}</version>
+				<!-- <version>${neo4j.version}</version> -->
 			</dependency>
 			<dependency>
 				<groupId>org.neo4j</groupId>
 				<artifactId>neo4j-ogm</artifactId>
-				<version>${neo4j.ogm.version}</version>
+				<!-- <version>${neo4j.ogm.version}</version> -->
 			</dependency>
 			<dependency>
 				<groupId>org.neo4j</groupId>
 				<artifactId>neo4j-ogm</artifactId>
-				<version>${neo4j.ogm.version}</version>
+				<!-- <version>${neo4j.ogm.version}</version> -->
 				<type>test-jar</type>
 				<scope>test</scope>
 			</dependency>
@@ -213,56 +213,56 @@
 			<dependency>
 				<groupId>org.neo4j</groupId>
 				<artifactId>neo4j-ogm-api</artifactId>
-				<version>${neo4j.ogm.version}</version>
+				<!-- <version>${neo4j.ogm.version}</version> -->
 			</dependency>
 			<dependency>
 				<groupId>org.neo4j</groupId>
 				<artifactId>neo4j-ogm-compiler</artifactId>
-				<version>${neo4j.ogm.version}</version>
+				<!-- <version>${neo4j.ogm.version}</version> -->
 			</dependency>
 			<dependency>
 				<groupId>org.neo4j</groupId>
 				<artifactId>neo4j-ogm-core</artifactId>
-				<version>${neo4j.ogm.version}</version>
+				<!-- <version>${neo4j.ogm.version}</version> -->
 			</dependency>
 			<dependency>
 				<groupId>org.neo4j</groupId>
 				<artifactId>neo4j-ogm-http-driver</artifactId>
-				<version>${neo4j.ogm.version}</version>
+				<!-- <version>${neo4j.ogm.version}</version> -->
 			</dependency>
 			<dependency>
 				<groupId>org.neo4j</groupId>
 				<artifactId>neo4j-kernel</artifactId>
-				<version>${neo4j.version}</version>
+				<!-- <version>${neo4j.version}</version> -->
 				<type>test-jar</type>
 			</dependency>
 			<dependency>
 				<groupId>org.neo4j.app</groupId>
 				<artifactId>neo4j-server</artifactId>
-				<version>${neo4j.version}</version>
+				<!-- <version>${neo4j.version}</version> -->
 				<type>test-jar</type>
 			</dependency>
 			<dependency>
 				<groupId>org.neo4j.test</groupId>
 				<artifactId>neo4j-harness</artifactId>
-				<version>${neo4j.version}</version>
+				<!-- <version>${neo4j.version}</version> -->
 				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.neo4j</groupId>
 				<artifactId>neo4j-cypher-compiler-2.3</artifactId>
-				<version>${neo4j-cypher-compiler.version}</version>
+				<!-- <version>${neo4j-cypher-compiler.version}</version> -->
 			</dependency>
 			<dependency>
 				<groupId>org.springframework.data</groupId>
 				<artifactId>spring-data-neo4j</artifactId>
-				<version>${sdn.version}</version>
+				<!-- <version>${sdn.version}</version> -->
 				<type>test-jar</type>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework.data</groupId>
 				<artifactId>spring-data-neo4j</artifactId>
-				<version>${sdn.version}</version>
+				<!-- <version>${sdn.version}</version> -->
 			</dependency>
 			<dependency>
 				<groupId>org.apache.directory.server</groupId>
@@ -387,5 +387,4 @@
 
 	<profiles>
 	</profiles>
-
 </project>
