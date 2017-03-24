@@ -2,7 +2,7 @@
 <configuration scan="true">
     <include resource="org/springframework/boot/logging/logback/base.xml" />
     
-    	<logger name="org.springframework.data.neo4j.mapping" level="ERROR" additivity="true"/>
+    	<logger name="org.springframework.data.neo4j" level="TRACE" additivity="true"/>
         <logger name="com.anthem" level="INFO" additivity="true">
             <appender-ref ref="CONSOLE" />
             <appender-ref ref="FILE" />

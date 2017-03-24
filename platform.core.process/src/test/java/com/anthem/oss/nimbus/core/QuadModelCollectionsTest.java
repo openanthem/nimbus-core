@@ -58,7 +58,7 @@ import test.com.anthem.nimbus.platform.spec.model.comamnd.TestCommandFactory;
 @SpringBootTest
 @ActiveProfiles("test")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class QuadModelCollectionsTest {//extends AbstractPlatformIntegrationTests {
+public class QuadModelCollectionsTest {
 	
 	@Autowired QuadModelBuilder quadModelBuilder;
 	

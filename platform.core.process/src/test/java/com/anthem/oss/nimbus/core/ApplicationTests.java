@@ -10,7 +10,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.anthem.oss.nimbus.core.config.Neo4jConfig;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes=Neo4jConfig.class)
+@SpringBootTest
 @Profile("test")
 @EnableAutoConfiguration
 public class ApplicationTests {

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.anthem.oss.nimbus.core.entity.user;
 
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
@@ -9,11 +6,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * @author AC67870
+ * @author Rakesh Patel
  *
  */
 @Getter @Setter
-public class AbstractUserGroup extends AbstractEntity.IdLong {
+public abstract class AbstractUserGroup extends AbstractEntity.IdLong {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -23,7 +20,7 @@ public class AbstractUserGroup extends AbstractEntity.IdLong {
 	private Status status;
 	
 	
-	enum Status {
+	public enum Status {
 		ACTIVE,
 		INACTIVE
 	}
