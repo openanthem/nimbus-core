@@ -35,8 +35,7 @@ public class Neo4jConfig {
 	
 	@Bean
 	public org.neo4j.ogm.config.Configuration configuration() {
-		System.out.println("driver name:************ "+neo4jDriver);
-	   org.neo4j.ogm.config.Configuration config = new org.neo4j.ogm.config.Configuration();
+		org.neo4j.ogm.config.Configuration config = new org.neo4j.ogm.config.Configuration();
 	   config
 	       .driverConfiguration()
 	       .setDriverClassName(neo4jDriver)
