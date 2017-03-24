@@ -3,6 +3,8 @@
  */
 package com.anthem.oss.nimbus.core.repo;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.util.List;
 
 import org.junit.Assert;
@@ -12,12 +14,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Profile;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.anthem.oss.nimbus.core.config.BPMEngineConfig;
-import com.anthem.oss.nimbus.core.config.Neo4jConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement.ClientRepository;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement.ClientUserRepository;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement.ClientUserRoleRepository;
@@ -28,6 +27,7 @@ import com.anthem.oss.nimbus.core.entity.client.Client;
 import com.anthem.oss.nimbus.core.entity.client.access.ClientAccessEntity;
 import com.anthem.oss.nimbus.core.entity.client.access.ClientUserRole;
 import com.anthem.oss.nimbus.core.entity.client.user.ClientUser;
+import com.anthem.oss.nimbus.core.entity.client.user.TestClientUserFactory;
 import com.anthem.oss.nimbus.core.entity.user.DefaultUser;
 
 import test.com.anthem.nimbus.platform.spec.model.client.TestClientFactory;
@@ -39,9 +39,8 @@ import test.com.anthem.nimbus.platform.spec.model.user.TestPlatformUserFactory;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@Import(BPMEngineConfig.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-@Profile("test")
+@ActiveProfiles("test")
 public class ClientUserRepositoryTest {
 	
 	@Autowired PlatformUserRepository pRep;
@@ -52,6 +51,10 @@ public class ClientUserRepositoryTest {
 	
 	@Autowired ClientRepository cRep;
 	
+	@Test
+	public void testCreateDefaultUser() {
+		assertNotNull(TestClientUserFactory.createDefaultUser().getLoginName());
+	}
 	
 	//@Test
 	public void test_01_createClientUser1() {
