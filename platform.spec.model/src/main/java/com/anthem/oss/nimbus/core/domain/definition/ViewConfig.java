@@ -188,12 +188,11 @@ public class ViewConfig {
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.ANNOTATION_TYPE})
+	@Target({ElementType.FIELD})
 	@ViewStyle
 	public @interface Menu {
 		public enum Type {
-			CONTEXT,
-			NONE;
+			CONTEXT;
 		}
 		Type value() default Type.CONTEXT;
 		String alias() default "Menu";		
@@ -210,7 +209,7 @@ public class ViewConfig {
 		String imgSrc() default "";
 		String styleClass() default "";
 		
-		Menu menu() default @Menu(Menu.Type.NONE);
+		boolean hasMenu() default false;
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
