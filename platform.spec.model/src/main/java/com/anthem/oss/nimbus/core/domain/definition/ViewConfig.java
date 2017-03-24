@@ -139,18 +139,6 @@ public class ViewConfig {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
-	public @interface Menu {
-		public enum Type {
-			CONTEXT;
-		}
-		Type value() default Type.CONTEXT;
-		String alias() default "Menu";		
-		String cssClass() default "";
-	}
-	
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.FIELD})
-	@ViewStyle
 	public @interface Section {
 		
 		public enum Type {
@@ -200,6 +188,19 @@ public class ViewConfig {
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.ANNOTATION_TYPE})
+	@ViewStyle
+	public @interface Menu {
+		public enum Type {
+			CONTEXT,
+			NONE;
+		}
+		Type value() default Type.CONTEXT;
+		String alias() default "Menu";		
+		String cssClass() default "";
+	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
 	public @interface Link {
@@ -208,6 +209,8 @@ public class ViewConfig {
 		String b() default "$executeAnd$nav";
 		String imgSrc() default "";
 		String styleClass() default "";
+		
+		Menu menu() default @Menu(Menu.Type.NONE);
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
