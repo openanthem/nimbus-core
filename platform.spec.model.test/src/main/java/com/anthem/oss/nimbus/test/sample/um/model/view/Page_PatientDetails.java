@@ -49,10 +49,10 @@ public class Page_PatientDetails {
 	//@Summary @Mode(Mode.Options.ReadOnly) //@MapsTo.Path("/patient")
 	//@Path(linked=false) private transient Section_PatientDetailsDisplay searchedPatient;
 
-	@Button(url="/_nav?a=back") @Hints(align=AlignOptions.Left)
+	@Button(url="/_nav?a=back") @Hints(value=AlignOptions.Left)
 	private String back_FindPatient;
 
-	@Button(url="/_nav?a=next") @Hints(align=AlignOptions.Right)
+	@Button(url="/_nav?a=next") @Hints(value=AlignOptions.Right)
 	private String action_ConfirmPatient;
 	
 }

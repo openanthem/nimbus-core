@@ -23,7 +23,7 @@ import redis.embedded.RedisServer;
  *
  */
 @Configuration
-@Profile("test")
+@Profile("integrationTest")
 public class RedisIntegrationTestConfig {
 	
 	@Value("${spring.redis.port}")

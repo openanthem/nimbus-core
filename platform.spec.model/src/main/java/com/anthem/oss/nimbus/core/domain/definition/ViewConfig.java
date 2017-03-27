@@ -39,7 +39,7 @@ public class ViewConfig {
 			Center,
 			Inherit;
 		}
-		AlignOptions align() default AlignOptions.Inherit;
+		AlignOptions value() default AlignOptions.Inherit;
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
@@ -139,14 +139,17 @@ public class ViewConfig {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
-	public @interface Menu {
-		String alias() default "Menu";		
-	}
-	
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.FIELD})
-	@ViewStyle
 	public @interface Section {
+		
+		public enum Type {
+			HEADER,
+			FOOTER,
+			LEFTBAR,
+			RIGHTBAR,
+			DEFAULT;
+		}
+		
+		Type value() default Type.DEFAULT;
 		String alias() default "Section";
 		String imgSrc() default "";
 		String cssClass() default "";
@@ -187,12 +190,26 @@ public class ViewConfig {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
+	public @interface Menu {
+		public enum Type {
+			CONTEXT;
+		}
+		Type value() default Type.CONTEXT;
+		String alias() default "Menu";		
+		String cssClass() default "";
+	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
 	public @interface Link {
 		String url() default "";
 		String method() default "GET";
 		String b() default "$executeAnd$nav";
 		String imgSrc() default "";
 		String styleClass() default "";
+		
+		boolean hasMenu() default false;
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)

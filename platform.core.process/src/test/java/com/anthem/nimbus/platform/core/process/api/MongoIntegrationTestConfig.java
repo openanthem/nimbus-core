@@ -35,7 +35,7 @@ import de.flapdoodle.embed.process.runtime.Network;
  */
 
 @Component
-@Profile({"test","build"})
+@Profile({"integrationTest","build"})
 public class MongoIntegrationTestConfig extends AbstractMongoConfiguration{
 
 	private static MongodExecutable mongodExe;

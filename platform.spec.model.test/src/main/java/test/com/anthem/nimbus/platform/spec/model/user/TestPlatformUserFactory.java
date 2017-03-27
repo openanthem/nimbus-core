@@ -39,4 +39,5 @@ public class TestPlatformUserFactory {
 		pu.setEmail("walker@anthem.com");
 		return pu;
 	}
+	
 }

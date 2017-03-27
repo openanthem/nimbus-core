@@ -10,6 +10,7 @@
 	<artifactId>com.anthem.oss.nimbus.core.parent</artifactId>
 	<packaging>pom</packaging>
 	<name>nimbus-core-parent</name>
+	
 	<url></url>
 	<organization>
 		<name>Anthem Inc.</name>
@@ -27,6 +28,7 @@
 	</issueManagement>
 
 	<properties>
+		<!-- <sonar.jacoco.reportPath>target/jacoco.exec</sonar.jacoco.reportPath> -->
 		<docker.image.prefix>nimbus</docker.image.prefix>
 		<docker.plugin.version>0.3.258</docker.plugin.version>
 		<spring.boot.maven.version>1.4.0.RELEASE</spring.boot.maven.version>
@@ -73,31 +75,23 @@
 				<artifactId>sitemesh</artifactId>
 				<version>${sitemesh.version}</version>
 			</dependency>
-					<!-- Embedded Mongo , Redis for integration tests only -->
+			<!-- Embedded Mongo , Redis for integration tests only -->
 			<dependency>
-	    		<groupId>de.flapdoodle.embed</groupId>
-	    		<artifactId>de.flapdoodle.embed.mongo</artifactId>
-	    		<version>${embed-mongo.version}</version>
-	    		<scope>test</scope>
+				<groupId>de.flapdoodle.embed</groupId>
+				<artifactId>de.flapdoodle.embed.mongo</artifactId>
+				<version>${embed-mongo.version}</version>
+				<scope>test</scope>
 			</dependency>
 			<dependency>
-	            <groupId>redis.embedded</groupId>
-	            <artifactId>embedded-redis</artifactId>
-	            <version>${embed-redis.version}</version>
-	            <scope>test</scope>
-	        </dependency>
-			<!-- <dependency>
-	    		<groupId>org.apache.qpid</groupId>
-	    		<artifactId>qpid-broker</artifactId>
-	    		<version>${qpid-broker.version}</version>
+				<groupId>redis.embedded</groupId>
+				<artifactId>embedded-redis</artifactId>
+				<version>${embed-redis.version}</version>
 				<scope>test</scope>
-			</dependency> -->
-			<!-- <dependency>
-			    <groupId>org.springframework.amqp</groupId>
-			    <artifactId>spring-rabbit</artifactId>
-			    <version>${spring-rabbit.version}</version>
-				<scope>test</scope>
-			</dependency> -->
+			</dependency>
+			<!-- <dependency> <groupId>org.apache.qpid</groupId> <artifactId>qpid-broker</artifactId> 
+				<version>${qpid-broker.version}</version> <scope>test</scope> </dependency> -->
+			<!-- <dependency> <groupId>org.springframework.amqp</groupId> <artifactId>spring-rabbit</artifactId> 
+				<version>${spring-rabbit.version}</version> <scope>test</scope> </dependency> -->
 		</dependencies>
 	</dependencyManagement>
 	<build>
@@ -167,11 +161,40 @@
 					<configuration>
 						<failOnMissingWebXml>false</failOnMissingWebXml>
 					</configuration>
-				</plugin>	
+				</plugin>
 			</plugins>
 		</pluginManagement>
-		<!--  Plugins which will get executed on each project -->
+		<!-- Plugins which will get executed on each project -->
 		<plugins>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.7.7.201606060606</version>
+				<configuration>
+					<destFile>${basedir}/target/jacoco.exec</destFile>
+					<!-- <dataFile>${basedir}/target/jacoco.exec</dataFile> -->
+					<append>true</append>
+				</configuration>
+				<executions>
+					<execution>
+						<id>jacoco-initialize</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>jacoco-site</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.sonarsource.scanner.maven</groupId>
+				<artifactId>sonar-maven-plugin</artifactId>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>

@@ -5,7 +5,6 @@ package com.anthem.oss.nimbus.core.entity.person;
 
 import java.io.Serializable;
 
-import org.neo4j.ogm.annotation.NodeEntity;
 import org.springframework.data.annotation.Id;
 
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
@@ -19,7 +18,6 @@ import lombok.ToString;
  * @author Soham Chakravarti
  *
  */
-@NodeEntity
 @Getter @Setter @ToString(callSuper=true)
 public abstract class Name<ID extends Serializable> extends AbstractEntity<ID> {
 	
