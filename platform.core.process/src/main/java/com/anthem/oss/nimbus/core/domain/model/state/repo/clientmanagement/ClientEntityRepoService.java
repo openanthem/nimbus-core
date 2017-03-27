@@ -319,7 +319,7 @@ public class ClientEntityRepoService implements ClientEntityRepoAPI<ClientEntity
 			Assert.notNull(c, "ClientEntity to be added cannot be null");
 			Assert.isNull(c.getId(),"ClienEntityt to be added cannot have a pre-assigned id."+
 								"Found value :"+c.getId()+" for client code :"+c.getCode());
-			log.debug("Check for existing client:"+cRepo.findByCode(c.getCode()));
+			//log.debug("Check for existing client:"+cRepo.findByCode(c.getCode()));
 			//TODO Revisit this - UI does not have code.
 			c.setCode(c.getName());
 			

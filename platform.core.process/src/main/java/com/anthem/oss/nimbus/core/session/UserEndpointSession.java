@@ -71,6 +71,7 @@ public class UserEndpointSession {
      * @return
      */
 	public static <R> R getOrThrowEx(Command cmd) {
+		System.out.println("*****(*(*(*(*(*(* : "+cmd.getRootDomainUri());
 		return getOrThrowEx(cmd.getRootDomainUri());
 	}
 	
