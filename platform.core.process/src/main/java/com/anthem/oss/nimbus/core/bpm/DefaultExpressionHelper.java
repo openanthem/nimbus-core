@@ -19,6 +19,7 @@ import com.anthem.oss.nimbus.core.domain.command.execution.CommandMessageConvert
 import com.anthem.oss.nimbus.core.domain.command.execution.ExecuteOutput.BehaviorExecute;
 import com.anthem.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.session.UserEndpointSession;
 
@@ -108,6 +109,21 @@ public class DefaultExpressionHelper extends AbstractExpressionHelper{
 		targetParamPath.append(".m");
 		quadModel.getView().findModelByPath(targetParamPath.toString()).setState(obj.getSingleResult());
 	}
+	
+	final public void _setClientUser(CommandMessage cmdMsg, DelegateExecution execution, 
+			String resolvedUri, Object... args){
+		QuadModel<?,?> quadModel = UserEndpointSession.getOrThrowEx(cmdMsg.getCommand());
+		StringBuilder targetParamPath = new StringBuilder((String)args[0]);
+		targetParamPath.append(".m");
+		//targetParamPath.append(".m");
+		Model viewSAC = quadModel.getView();
+		Param p = viewSAC.findParamByPath(targetParamPath.toString());
+		System.out.println(p);
+		System.out.println(quadModel.getView().findParamByPath(targetParamPath.toString()).getState());
+		quadModel.getView().findParamByPath(targetParamPath.toString()).setState(UserEndpointSession.getLoggedInUser());
+		
+	}
+	
 	
 	
 	final public void _execute(CommandMessage cmdMsg, DelegateExecution execution, 

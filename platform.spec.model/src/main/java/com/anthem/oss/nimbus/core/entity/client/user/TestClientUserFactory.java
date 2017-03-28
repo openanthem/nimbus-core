@@ -19,7 +19,7 @@ public class TestClientUserFactory {
 		Name.IdLong nm = new Name.IdLong();
 		nm.setFirstName("Test_FirstName");
 		nm.setLastName("Test_LastName");
-		
+		cu.setName(nm);
 		cu.setEmail("testUser@anthem.com");
 		
 		return cu;
