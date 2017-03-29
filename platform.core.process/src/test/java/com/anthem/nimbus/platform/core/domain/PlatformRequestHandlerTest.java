@@ -11,11 +11,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiGateway;
-import com.anthem.oss.nimbus.core.config.BPMEngineConfig;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Behavior;
 import com.anthem.oss.nimbus.core.domain.command.Command;
@@ -25,7 +23,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.HierarchyMatch;
 
 import test.com.anthem.nimbus.platform.spec.model.comamnd.TestCommandFactory;
 
-@SpringApplicationConfiguration(classes = {BPMEngineConfig.class})
+//@SpringApplicationConfiguration(classes = {BPMEngineConfig.class})
 @RunWith(SpringJUnit4ClassRunner.class)
 public class PlatformRequestHandlerTest {
 	

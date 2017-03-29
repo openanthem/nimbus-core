@@ -5,7 +5,6 @@
     # platform.parent
     # platform.spec.model
     # platform.spec.model.test
-    # platform.utils
     # platfrom.core.process
    
 if [ $# -gt 0 ]; then

@@ -8,8 +8,22 @@ import com.anthem.oss.nimbus.core.entity.access.Permission;
 import com.anthem.oss.nimbus.core.entity.client.Client;
 import com.anthem.oss.nimbus.core.entity.client.access.ClientAccessEntity;
 import com.anthem.oss.nimbus.core.entity.client.access.ClientUserRole;
+import com.anthem.oss.nimbus.core.entity.person.Name;
 
 public class TestClientUserFactory {
+	
+	public static ClientUser createDefaultUser() {
+		ClientUser cu = new ClientUser();
+		cu.setLoginName("Nimbus_User");
+		
+		Name.IdLong nm = new Name.IdLong();
+		nm.setFirstName("Test_FirstName");
+		nm.setLastName("Test_LastName");
+		cu.setName(nm);
+		cu.setEmail("testUser@anthem.com");
+		
+		return cu;
+	}
 	
 	public static ClientUser createCoreClientUser(){
 		Client c = new Client();

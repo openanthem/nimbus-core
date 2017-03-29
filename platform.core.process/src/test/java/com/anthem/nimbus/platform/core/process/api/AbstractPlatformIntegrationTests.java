@@ -32,7 +32,7 @@ import com.anthem.oss.nimbus.core.session.UserEndpointSession;
 
 @RunWith(SpringRunner.class)
 @ComponentScan(basePackages={"com.anthem.oss.nimbus.core"})
-@SpringBootTest(classes= {BPMEngineConfig.class,MongoIntegrationTestConfig.class})
+@SpringBootTest(classes= {BPMEngineConfig.class/*,MongoIntegrationTestConfig.class*/})
 @EnableAutoConfiguration
 @Profile({"test","build"})
 public class AbstractPlatformIntegrationTests {

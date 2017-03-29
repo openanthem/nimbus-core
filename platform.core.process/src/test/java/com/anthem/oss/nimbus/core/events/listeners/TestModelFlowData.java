@@ -100,7 +100,7 @@ abstract class TestModelFlowData {
 			
 			private @TextBox String isbn;
 
-			@Button(url="/_nav?a=back") @Hints(align=AlignOptions.Left)
+			@Button(url="/_nav?a=back") @Hints(value=AlignOptions.Left)
 			private String back;		
 			
 			@Path("/publishers") private List<Publisher> publishingHouse;

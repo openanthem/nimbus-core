@@ -25,6 +25,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiBehaviorFactory;
@@ -33,7 +35,7 @@ import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiExpressionManager;
 
 
 @Configuration
-@AutoConfigureAfter(DataSourceAutoConfiguration.class)
+//@AutoConfigureAfter(value={DataSourceAutoConfiguration.class})
 public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
 	
 	@Value("${process.database.driver}") 
@@ -57,14 +59,32 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
 	@Autowired
 	private ActivitiExpressionManager platformExpressionManager;
 	
-	
+	@Bean
+    public JdbcTemplate jdbcTemplate(DataSource dataSource)
+    {
+        return new JdbcTemplate(dataSource);
+    }
+
+    @Bean
+    public PlatformTransactionManager jpaTransactionManager(DataSource dataSource)
+    {
+    	System.out.println("***** returning the manager with new config ********");
+        return new DataSourceTransactionManager(dataSource);
+    }
+    
+    @Bean
+    public ActivitiDAO platformProcessDAO(JdbcTemplate jdbcTemplate){
+    	return new ActivitiDAO(jdbcTemplate);
+    }
+	    
+	    
     @Bean
     public SpringProcessEngineConfiguration springProcessEngineConfiguration(
             DataSource dataSource,
-            PlatformTransactionManager transactionManager,
+            PlatformTransactionManager jpaTransactionManager,
             SpringAsyncExecutor springAsyncExecutor) throws IOException {
     	
-    	SpringProcessEngineConfiguration engineConfiguration = this.baseSpringProcessEngineConfiguration(dataSource, transactionManager, springAsyncExecutor);
+    	SpringProcessEngineConfiguration engineConfiguration = this.baseSpringProcessEngineConfiguration(dataSource, jpaTransactionManager, springAsyncExecutor);
     	engineConfiguration.setActivityBehaviorFactory(platformActivityBehaviorFactory());
     	engineConfiguration.setHistoryLevel(HistoryLevel.getHistoryLevelForKey(processHistoryLevel));
     	
@@ -93,11 +113,7 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
         return new SimpleAsyncTaskExecutor();
     }
     
-    @Bean
-    public ActivitiDAO platformProcessDAO(){
-    	return new ActivitiDAO(dataSource);
-    }
-    
+   
     
 //    @Bean
 //	public DriverManagerDataSource processDataSource() {
@@ -108,6 +124,14 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
 //		dataSource.setPassword(dbPassword);
 //		return dataSource;
 //	}  
+    
+//    @Bean
+//	public JpaTransactionManager jpaTransactionManager(EntityManagerFactory emf) {
+//		return new JpaTransactionManager(emf);
+//	}
+    
+    
+
     
     protected Resource[] processResources() { 
         try {

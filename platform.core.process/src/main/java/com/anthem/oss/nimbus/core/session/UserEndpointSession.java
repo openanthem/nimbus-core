@@ -11,6 +11,10 @@ import org.springframework.web.context.request.RequestContextHolder;
 
 import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
 import com.anthem.oss.nimbus.core.domain.command.Command;
+import com.anthem.oss.nimbus.core.entity.client.user.ClientUser;
+import com.anthem.oss.nimbus.core.entity.client.user.TestClientUserFactory;
+
+import test.com.anthem.nimbus.platform.spec.model.user.TestPlatformUserFactory;
 
 /**
  * @author Jayant Chaudhuri
@@ -25,6 +29,8 @@ public class UserEndpointSession {
 	public static final String PLATFORM_CONTEXT_KEY = "platform-context";
 
 	private static Map<String, Object> sessionMap = new HashMap<>();
+	
+	private static ClientUser clientUser;
 
 	
 	static{
@@ -65,6 +71,7 @@ public class UserEndpointSession {
      * @return
      */
 	public static <R> R getOrThrowEx(Command cmd) {
+		System.out.println("*****(*(*(*(*(*(* : "+cmd.getRootDomainUri());
 		return getOrThrowEx(cmd.getRootDomainUri());
 	}
 	
@@ -119,5 +126,14 @@ public class UserEndpointSession {
 		}
 		return pContext;
 	}
+	
+	public static ClientUser getLoggedInUser() {
+		if(clientUser == null) {
+			clientUser = TestClientUserFactory.createDefaultUser(); 
+		}
+		return clientUser;
+		
+	}
+	
 	
 }

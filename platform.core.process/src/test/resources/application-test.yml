@@ -7,6 +7,11 @@ security:
       enabled: 
               false
 
+neo4jUrl: 
+  http://neo4j:password@localhost:7474
+neo4jDriver: 
+  org.neo4j.ogm.drivers.http.driver.HttpDriver
+
 ruleBasedRequestHandler:
                      - defaultRuleBasedRequestHandler
                      - defaultRuleBasedResponseHandler
