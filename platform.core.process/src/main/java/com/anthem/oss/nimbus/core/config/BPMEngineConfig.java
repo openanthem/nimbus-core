@@ -60,20 +60,17 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
 	private ActivitiExpressionManager platformExpressionManager;
 	
 	@Bean
-    public JdbcTemplate jdbcTemplate(DataSource dataSource)
-    {
+    public JdbcTemplate jdbcTemplate(DataSource dataSource) {
         return new JdbcTemplate(dataSource);
     }
 
     @Bean
-    public PlatformTransactionManager jpaTransactionManager(DataSource dataSource)
-    {
-    	System.out.println("***** returning the manager with new config ********");
-        return new DataSourceTransactionManager(dataSource);
+    public PlatformTransactionManager jpaTransactionManager(DataSource dataSource) {
+    	return new DataSourceTransactionManager(dataSource);
     }
     
     @Bean
-    public ActivitiDAO platformProcessDAO(JdbcTemplate jdbcTemplate){
+    public ActivitiDAO platformProcessDAO(JdbcTemplate jdbcTemplate) {
     	return new ActivitiDAO(jdbcTemplate);
     }
 	    
