@@ -94,6 +94,7 @@ public class ViewConfig {
 	public @interface CardDetailsGrid {
 		String alias() default "CardDetailsGrid";
 		String editUrl() default "";
+		boolean draggable() default false;
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)

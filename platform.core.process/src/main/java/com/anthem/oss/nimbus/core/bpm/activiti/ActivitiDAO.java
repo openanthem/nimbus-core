@@ -24,8 +24,8 @@ public class ActivitiDAO {
 	private String executionUpdateQuery;
 	
 
-	public ActivitiDAO(DataSource processDataSource){
-		template = new JdbcTemplate(processDataSource);
+	public ActivitiDAO(JdbcTemplate template){
+		this.template = template;
 	}
 	
 	

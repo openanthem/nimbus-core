@@ -57,6 +57,17 @@ public interface ClientEntityRepoAPI<T extends ClientEntity> {
 	
 	/**
 	 * 
+	 * @param clientId
+	 * @param ce
+	 * @return
+	 * @throws ValidationException
+	 * @throws FrameworkRuntimeException
+	 */
+	public boolean editNestedEntity(Long clientId, ClientEntity ce) throws ValidationException, FrameworkRuntimeException;
+	
+	
+	/**
+	 * 
 	 * @param client
 	 * @return
 	 * @throws ValidationException
