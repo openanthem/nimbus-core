@@ -203,13 +203,19 @@ public class ViewConfig {
 	@Target({ElementType.FIELD})
 	@ViewStyle
 	public @interface Link {
+		public enum Type {
+			LOGO,
+			APPTITLE,
+			MENU,
+			DEFAULT;
+		}
+		Type value() default Type.DEFAULT;
 		String url() default "";
 		String method() default "GET";
 		String b() default "$executeAnd$nav";
 		String imgSrc() default "";
 		String styleClass() default "";
-		
-		boolean hasMenu() default false;
+		String altText() default "";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
