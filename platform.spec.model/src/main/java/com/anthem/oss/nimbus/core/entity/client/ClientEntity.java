@@ -3,6 +3,10 @@
  */
 package com.anthem.oss.nimbus.core.entity.client;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,6 +16,7 @@ import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.definition.ConfigNature.Ignore;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Execution;
+import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 import com.anthem.oss.nimbus.core.entity.client.access.ClientAccessEntity;
@@ -38,17 +43,34 @@ public class ClientEntity extends AbstractEntity.IdLong {
 	public enum Type {
 		
         CLIENT,
+		ORG;
+	}
+	
+	public enum Status {
 		
-        ORG;
+        INACTIVE,
+		ACTIVE;
 	}
 	
 	
+	@NotNull
+	@Model.Param.Values(url="staticCodeValue-/clientType")
     private Type type;
 	
 	private String code;
 
 	@NotNull
 	private String name;
+	
+	@NotNull
+	@Model.Param.Values(url="staticCodeValue-/orgStatus")
+	private Status status;
+	
+	private String description;
+	
+	private Date effectiveDate;
+	
+	private Date terminationDate;
 
 	@Ignore private Set<ClientEntity> nestedEntities;
 	
@@ -92,6 +114,28 @@ public class ClientEntity extends AbstractEntity.IdLong {
 			setAssociatedRoles(new HashSet<>());
 		}
 		getAssociatedRoles().add(cr);
+	}
+	
+	public void setEffectiveDate(LocalDate effectiveDate) {
+		this.effectiveDate = Date.from(effectiveDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+	}
+	
+	public LocalDate getEffectiveDate() {
+		if(this.effectiveDate != null) {
+			return Instant.ofEpochMilli(this.effectiveDate.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
+		}
+		return null;
+	}
+	
+	public void setTerminationDate(LocalDate terminationDate) {
+		this.terminationDate = Date.from(terminationDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+	}
+	
+	public LocalDate getTerminationDate() {
+		if(this.terminationDate != null) {
+			return Instant.ofEpochMilli(this.terminationDate.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
+		}
+		return null;
 	}
 	
 }
