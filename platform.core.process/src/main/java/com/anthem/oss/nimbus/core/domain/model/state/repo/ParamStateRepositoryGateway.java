@@ -4,6 +4,7 @@
 package com.anthem.oss.nimbus.core.domain.model.state.repo;
 
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
@@ -111,12 +112,27 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 	};
 	
 	@Override
+	public <T> T instantiate(Class<T> clazz) {
+		return javaBeanHandler.instantiate(clazz);
+	}
+	
+	@Override
+	public <T> T getValue(Method readMethod, Object target) {
+		return javaBeanHandler.getValue(readMethod, target);
+	}
+	
+	@Override
+	public <T> void setValue(Method readMethod, Object target, T value) {
+		javaBeanHandler.setValue(readMethod, target, value);
+	}
+	
+	@Override
 	public <M> M _instantiateAndSet(Param<M> param) {
 		return _instantiateAndSet(defaultRepStrategy, param);
 	}
 	
 	public <M> M _instantiateAndSet(ParamStateRepository currRep, Param<M> param) {
-		M newState = javaBeanHandler.instantiate(param.getConfig().getReferredClass());
+		M newState = instantiate(param.getConfig().getReferredClass());
 		_setRaw(param, newState);
 		return newState;
 	}
