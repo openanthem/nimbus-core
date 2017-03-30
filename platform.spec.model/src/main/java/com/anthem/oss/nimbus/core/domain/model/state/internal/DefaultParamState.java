@@ -7,6 +7,7 @@ package com.anthem.oss.nimbus.core.domain.model.state.internal;
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -132,9 +133,6 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	 */
 	@Override
 	final public T getLeafState() {
-		if(isCollection()) 
-			return null;
-		
 		if(!isNested())
 			return getState();
 		
@@ -142,11 +140,20 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		T entity = getProvider().getParamStateGateway().instantiate(this.getConfig().getReferredClass());
 		
 		// assign param values to entity instance attributes
-		findIfNested().getParams().stream()
-			.filter(p->!p.isNested())
+		Optional.ofNullable(findIfNested())
+			.map(nm->nm.getParams())
+			.orElse(Collections.emptyList())
+			.stream()
+			.filter(p->!p.isNested() || p.isCollectionElem())	// iterate nested only if parent param is collection
 			.forEach(p->
 				Optional.ofNullable(p.getLeafState())
-					.ifPresent(leafState->getProvider().getParamStateGateway().setValue(p.getPropertyDescriptor().getWriteMethod(), entity, leafState))
+					.ifPresent(leafState-> {
+						if(p.isCollectionElem()) 
+							((List<Object>)entity).add(leafState); 
+						else		
+							getProvider().getParamStateGateway().setValue(p.getPropertyDescriptor().getWriteMethod(), entity, leafState);
+						}
+					)
 			);
 
 		return entity;
