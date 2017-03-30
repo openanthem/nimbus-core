@@ -36,4 +36,25 @@ public class MappedDefaultParamState<T, M> extends DefaultParamState<T> implemen
 		
 		getMapsTo().registerSubscriber(this);
 	}
+	
+	
+	/**
+	 * resurrect entity pojo state from model/param state
+	 * @return
+	 */
+//	public T getState2() {
+//		if(!isNested())
+//			return getState();
+//		
+//		// create new entity instance
+//		T entity = getProvider().getParamStateGateway()._instantiate(this);
+//		
+//		// assign param values to entity instance attributes
+//		findIfNested().getParams().stream()
+//			.filter(p->!p.isNested())
+//			
+//		;
+//		
+//		return entity;
+//	}
 }
