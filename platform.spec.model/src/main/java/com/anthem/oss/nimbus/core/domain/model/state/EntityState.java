@@ -132,6 +132,10 @@ public interface EntityState<T> {
 		public T instantiateOrGet();
 		public T instantiateAndSet();
 		
+		default public T getLeafState() {
+			return Optional.ofNullable(getAssociatedParam()).map(p->p.getLeafState()).orElse(null);
+		}
+		
 		default public T getState() {
 			return Optional.ofNullable(getAssociatedParam()).map(p->p.getState()).orElse(null);
 		}
@@ -191,6 +195,8 @@ public interface EntityState<T> {
 	public interface Param<T> extends EntityState<T>, State<T>, Notification.Producer<T> {//, Notification.ObserveOn<MappedParam<?, T>, Param<T>> {
 		@Override
 		public ParamConfig<T> getConfig();
+		
+		public T getLeafState();
 		
 		@JsonIgnore
 		public Model<?> getParentModel();

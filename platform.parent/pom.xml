@@ -10,7 +10,12 @@
 	<artifactId>com.anthem.oss.nimbus.core.parent</artifactId>
 	<packaging>pom</packaging>
 	<name>nimbus-core-parent</name>
-	
+	<modules>
+		<module>../platform.spec.model</module>
+		<module>../platform.spec.model.test</module>
+		<!-- <module>../platform.utils</module> -->
+		<module>../platform.core.process</module>
+	</modules>
 	<url></url>
 	<organization>
 		<name>Anthem Inc.</name>
@@ -28,6 +33,7 @@
 	</issueManagement>
 
 	<properties>
+		<sonar.projectName>NIM-Parent</sonar.projectName>
 		<!-- <sonar.jacoco.reportPath>target/jacoco.exec</sonar.jacoco.reportPath> -->
 		<docker.image.prefix>nimbus</docker.image.prefix>
 		<docker.plugin.version>0.3.258</docker.plugin.version>
@@ -40,6 +46,8 @@
 		<sitemesh.version>2.4.2</sitemesh.version>
 		<embed-mongo.version>2.0.0</embed-mongo.version>
 		<embed-redis.version>0.4</embed-redis.version>
+		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+		<sonar.jacoco.reportPath>${project.basedir}/target/jacoco.exec</sonar.jacoco.reportPath>
 	</properties>
 
 	<!-- Third party optional dependency management -->
@@ -171,8 +179,10 @@
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.7.7.201606060606</version>
 				<configuration>
-					<destFile>${basedir}/target/jacoco.exec</destFile>
+					<!-- <destFile>${basedir}/target/jacoco.exec</destFile> -->
 					<!-- <dataFile>${basedir}/target/jacoco.exec</dataFile> -->
+					<destFile>${sonar.jacoco.reportPath}</destFile>
+					<dataFile>${sonar.jacoco.reportPath}</dataFile>
 					<append>true</append>
 				</configuration>
 				<executions>
@@ -194,6 +204,7 @@
 			<plugin>
 				<groupId>org.sonarsource.scanner.maven</groupId>
 				<artifactId>sonar-maven-plugin</artifactId>
+				<version>3.2</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

@@ -7,6 +7,7 @@ package com.anthem.oss.nimbus.core.domain.model.state.internal;
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -124,6 +125,38 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	public void fireRules() {
 		Optional.ofNullable(getRulesRuntime())
 			.ifPresent(rt->rt.fireRules(this));
+	}
+	
+	/**
+	 * resurrect entity pojo state from model/param state
+	 * @return
+	 */
+	@Override
+	final public T getLeafState() {
+		if(!isNested())
+			return getState();
+		
+		// create new entity instance
+		T entity = getProvider().getParamStateGateway().instantiate(this.getConfig().getReferredClass());
+		
+		// assign param values to entity instance attributes
+		Optional.ofNullable(findIfNested())
+			.map(nm->nm.getParams())
+			.orElse(Collections.emptyList())
+			.stream()
+			.filter(p->!p.isNested() || p.isCollectionElem())	// iterate nested only if parent param is collection
+			.forEach(p->
+				Optional.ofNullable(p.getLeafState())
+					.ifPresent(leafState-> {
+						if(p.isCollectionElem()) 
+							((List<Object>)entity).add(leafState); 
+						else		
+							getProvider().getParamStateGateway().setValue(p.getPropertyDescriptor().getWriteMethod(), entity, leafState);
+						}
+					)
+			);
+
+		return entity;
 	}
 	
 	@Override
