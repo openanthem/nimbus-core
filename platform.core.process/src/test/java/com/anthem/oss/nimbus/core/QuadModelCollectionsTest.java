@@ -106,6 +106,33 @@ public class QuadModelCollectionsTest {
 		
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void t1_leafstates() {
+		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		
+		ServiceLine sl = new ServiceLine();
+		sl.setService("Karma");
+		
+		q.getCore().findParamByPath("/serviceLines").findIfCollection().add(sl);
+		
+		UMCase core = q.getCore().getState();
+		UMCase leaf = q.getCore().getLeafState();
+		
+		assertNotNull(core);
+		assertNotNull(leaf);
+		
+		assertNotNull(core.getServiceLines());
+		assertNull(leaf.getServiceLines());
+		
+		assertSame(sl, core.getServiceLines().get(0));
+		assertSame(sl.getService(), q.getCore().findParamByPath("/serviceLines/0/service").getState());
+		assertNull(q.getCore().findParamByPath("/serviceLines").getLeafState());
+		
+		assertSame(sl.getService(), q.getCore().findParamByPath("/serviceLines/0/service").getLeafState());
+		assertSame(sl.getService(), q.getCore().<ServiceLine>findParamByPath("/serviceLines/0").getLeafState().getService());
+	}
+	
 	@Test
 	public void tc01_sanity_check_core_builders() {
 		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());

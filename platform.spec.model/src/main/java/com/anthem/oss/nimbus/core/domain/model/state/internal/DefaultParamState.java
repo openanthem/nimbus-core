@@ -126,6 +126,32 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 			.ifPresent(rt->rt.fireRules(this));
 	}
 	
+	/**
+	 * resurrect entity pojo state from model/param state
+	 * @return
+	 */
+	@Override
+	final public T getLeafState() {
+		if(isCollection()) 
+			return null;
+		
+		if(!isNested())
+			return getState();
+		
+		// create new entity instance
+		T entity = getProvider().getParamStateGateway().instantiate(this.getConfig().getReferredClass());
+		
+		// assign param values to entity instance attributes
+		findIfNested().getParams().stream()
+			.filter(p->!p.isNested())
+			.forEach(p->
+				Optional.ofNullable(p.getLeafState())
+					.ifPresent(leafState->getProvider().getParamStateGateway().setValue(p.getPropertyDescriptor().getWriteMethod(), entity, leafState))
+			);
+
+		return entity;
+	}
+	
 	@Override
 	final public T getState() {
 		if(getType().getConfig().getReferredClass()==StateContextEntity.class) {
