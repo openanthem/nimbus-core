@@ -126,8 +126,14 @@ public class QuadModelCollectionsTest {
 		assertNull(leaf.getServiceLines());
 		
 		assertSame(sl, core.getServiceLines().get(0));
+		
 		assertSame(sl.getService(), q.getCore().findParamByPath("/serviceLines/0/service").getState());
-		assertNull(q.getCore().findParamByPath("/serviceLines").getLeafState());
+		
+		List<ServiceLine> leafServiceLines = q.getCore().<List<ServiceLine>>findParamByPath("/serviceLines").getLeafState(); 
+		assertNotNull(leafServiceLines);
+		assertNotNull(leafServiceLines.get(0));
+		assertSame(sl.getService(), leafServiceLines.get(0).getService());
+		
 		
 		assertSame(sl.getService(), q.getCore().findParamByPath("/serviceLines/0/service").getLeafState());
 		assertSame(sl.getService(), q.getCore().<ServiceLine>findParamByPath("/serviceLines/0").getLeafState().getService());
