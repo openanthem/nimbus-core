@@ -30,8 +30,8 @@ public class ClientUserGroup extends AbstractUserGroup {
 	
 	private Set<ClientUser> participants;
 	
-	//private Set<ClientEntity> associatedTo;
+	private Set<ClientEntity> associatedTo;
 	
-	private ClientEntity associatedTo;
+	//private ClientEntity associatedTo;
 	
 }

@@ -34,7 +34,7 @@ public class ClientUserGroupRepoService {
 			Assert.notNull(parentClientEntity, "Parent Client Entity cannot be null");
 			
 			//associate clientusergroup to cliententity(org)
-			cu.setAssociatedTo(parentClientEntity);
+			//cu.setAssociatedTo(parentClientEntity);
 			cugRepo.save(cu);
 			
 			ClientUserGroup cug = cugRepo.findByName(cu.getName());
@@ -44,7 +44,5 @@ public class ClientUserGroupRepoService {
 		}catch(Exception e){
 			throw new FrameworkRuntimeException("Exception while adding a nested client entity - "+cu+" : "+e.getMessage());
 		}
-		
-		
 	}
 }
