@@ -154,7 +154,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		} else { // nested
 			for(Param<?> pNestedParam : findIfNested().getParams()) {
 				Object nestedParamLeafState = pNestedParam.getLeafState();
-				getProvider().getParamStateGateway().setValue(pNestedParam.getPropertyDescriptor().getWriteMethod(), entity, nestedParamLeafState);
+				if(nestedParamLeafState!=null)
+					getProvider().getParamStateGateway().setValue(pNestedParam.getPropertyDescriptor().getWriteMethod(), entity, nestedParamLeafState);
 			}
 		}
 		
