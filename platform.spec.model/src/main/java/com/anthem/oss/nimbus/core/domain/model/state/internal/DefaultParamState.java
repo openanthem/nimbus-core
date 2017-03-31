@@ -159,6 +159,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		return entity;
 	}
 	
+	@JsonIgnore
 	@Override
 	final public T getState() {
 		if(getType().getConfig().getReferredClass()==StateContextEntity.class) {
