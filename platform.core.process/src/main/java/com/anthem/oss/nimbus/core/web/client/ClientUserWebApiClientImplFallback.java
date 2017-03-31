@@ -63,4 +63,10 @@ import com.anthem.oss.nimbus.core.entity.client.user.ClientUser;
     	// TODO Auto-generated method stub
     	return null;
     }
+
+	@Override
+	public Page<ClientUser> getClientUsersByNameOrAll(String code, ClientUser user) throws FrameworkRuntimeException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

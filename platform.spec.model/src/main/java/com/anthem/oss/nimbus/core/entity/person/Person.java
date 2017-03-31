@@ -54,6 +54,8 @@ public abstract class Person<ID extends Serializable, A extends Address<ID>, P e
 	private Set<A> addresses;
 
 	private String email;
+	
+	private String displayName;
 
 	private Set<P> contactPhones;
 	

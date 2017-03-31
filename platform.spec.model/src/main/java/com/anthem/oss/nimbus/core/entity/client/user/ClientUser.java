@@ -3,12 +3,18 @@
  */
 package com.anthem.oss.nimbus.core.entity.client.user;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.definition.ConfigNature.Ignore;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
+import com.anthem.oss.nimbus.core.domain.definition.Execution;
 import com.anthem.oss.nimbus.core.entity.client.Client;
 import com.anthem.oss.nimbus.core.entity.client.access.ClientAccessEntity;
 import com.anthem.oss.nimbus.core.entity.client.access.ClientUserRole;
@@ -29,6 +35,7 @@ import lombok.ToString;
  * @author Soham Chakravarti
  */
 @Domain(value="clientuser")
+@Execution.Input.Default @Execution.Output.Default @Execution.Output(Action._new)
 @Getter @Setter @ToString(callSuper=true)
 public class ClientUser extends AbstractUser<ClientUserRole, ClientUserRole.Entry, ClientAccessEntity> {
 	
@@ -46,6 +53,8 @@ public class ClientUser extends AbstractUser<ClientUserRole, ClientUserRole.Entr
 	@Ignore
 	private Set<ClientUserIDS> clientUserIDS;
 	
+	private Date effectiveDate;
+
 	
 	@Override
 	public Set<ClientUserRole> getGrantedRoles() {
@@ -57,6 +66,16 @@ public class ClientUser extends AbstractUser<ClientUserRole, ClientUserRole.Entr
 		super.setGrantedRoles(grantedRoles);
 	}
 	
+	public void setEffectiveDate(LocalDate effectiveDate) {
+		this.effectiveDate = Date.from(effectiveDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+	}
+	
+	public LocalDate getEffectiveDate() {
+		if(this.effectiveDate != null) {
+			return Instant.ofEpochMilli(this.effectiveDate.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
+		}
+		return null;
+	}
 	
 	/**
 	 * 
@@ -78,5 +97,4 @@ public class ClientUser extends AbstractUser<ClientUserRole, ClientUserRole.Entr
 		ClientUserIDS cid = new ClientUserIDS(source, loginName, guid);
 		clientUserIDS.add(cid);
 	}
-	
 }
