@@ -3,6 +3,7 @@
  */
 package com.anthem.oss.nimbus.core.entity.user;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import com.anthem.oss.nimbus.core.domain.command.Action;
@@ -32,6 +33,15 @@ public class ClientUserGroup extends AbstractUserGroup {
 	
 	private Set<ClientEntity> associatedTo;
 	
-	//private ClientEntity associatedTo;
+	/**
+	 * 
+	 * @param ce
+	 */
+	public void addassociatedTo(ClientEntity ce) {
+		if(getAssociatedTo() == null) {
+			setAssociatedTo(new HashSet<>());
+		}
+		getAssociatedTo().add(ce);
+	}
 	
 }
