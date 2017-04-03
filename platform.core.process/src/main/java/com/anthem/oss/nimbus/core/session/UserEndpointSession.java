@@ -3,9 +3,12 @@
  */
 package com.anthem.oss.nimbus.core.session;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
@@ -22,8 +25,12 @@ import com.anthem.oss.nimbus.core.entity.client.user.TestClientUserFactory;
  * with the current thread
  *
  */
-public class UserEndpointSession {
+@Component
+@Scope(scopeName="session")
+public class UserEndpointSession implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
+
 	public static final String PLATFORM_CONTEXT_KEY = "platform-context";
 
 	private static Map<String, Object> sessionMap = new HashMap<>();
@@ -124,7 +131,7 @@ public class UserEndpointSession {
 		return pContext;
 	}
 	
-	public static ClientUser getLoggedInUser() {
+	public ClientUser getLoggedInUser() {
 		if(clientUser == null) {
 			clientUser = TestClientUserFactory.createDefaultUser(); 
 		}
