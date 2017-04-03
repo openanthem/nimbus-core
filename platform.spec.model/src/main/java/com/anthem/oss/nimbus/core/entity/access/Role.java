@@ -68,6 +68,14 @@ extends AbstractEntity.IdLong {
 	
 	private String description;
 	
+	private RoleCategory Category;
+	
+	public enum RoleCategory {
+	
+		UserRole,
+		GroupRole
+	}
+	
 	
 	public abstract Set<E> getEntries();
 

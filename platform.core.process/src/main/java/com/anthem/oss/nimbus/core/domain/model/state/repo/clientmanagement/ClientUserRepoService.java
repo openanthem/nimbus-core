@@ -172,6 +172,38 @@ public class ClientUserRepoService implements ClientUserRepoAPI<ClientUser> {
 	}
 
 
-	
+	@Override
+	public Page<ClientUser> getClientUsersByNameOrAll(String code, ClientUser user) throws FrameworkRuntimeException {
+		List<ClientUser> cuList = new ArrayList<ClientUser>();
+		List<ClientUser> cuListFinal = new ArrayList<ClientUser>();
+		PageRequest pageReq = new PageRequest(index, size);
+		try {
+			Client client = cRepo.findByCode(code);
+			if (null != user && (null!=user.getLoginName() || null != user.getId())) {
+				if (StringUtils.isNotBlank(user.getLoginName())) {
+					cuList.add(cuRepo.findByLoginName(user.getLoginName()));
+					return new PageImpl<ClientUser>(cuList, pageReq, cuList.size());
+				} else if (user.getId() != null) {
+					cuList.add(cuRepo.findOne(user.getId()));
+					return new PageImpl<ClientUser>(cuList, pageReq, cuList.size());
+				}
+			} else if (null != client) {
+				cuList = cuRepo.findByClient(client);
+				// Related entities are coming as null thus making an extra call to get complete data
+				cuList.forEach(cuser->{
+					if(null!=cuser){
+						cuListFinal.add(this.getUserById(cuser.getId()));
+					}
+				});
+				return new PageImpl<ClientUser>(cuListFinal, pageReq, cuList.size());
+			} else {
+				throw new EntityNotFoundException("Client User not found ", ClientUser.class);
+			}
+
+		} catch (Exception e) {
+			throw new FrameworkRuntimeException("Exception occured while getting the ClientUser : ", e);
+		}
+		return new PageImpl<ClientUser>(cuList, pageReq, cuList.size());
+	}
 
 }

@@ -801,6 +801,17 @@ public class QuadModelCollectionsTest {
 			
 			assertSame(expected.getService(), detachedViewServiceLines.findParamByPath("/"+i+"/service").getState());
 		}
+		
+		// validate entity as a whole using leaf-state
+		List<Section_ServiceLine> detachedViewServiceLinesState = detachedViewServiceLines.getLeafState();
+		assertNotNull(detachedViewServiceLinesState);
+		assertSame(coreServiceLines.size(), detachedViewServiceLinesState.size());
+		
+		for(int i=0; i<coreServiceLines.size(); i++) {
+			ServiceLine expected = coreServiceLines.get(i);
+			Section_ServiceLine actual = detachedViewServiceLinesState.get(i);
+			assertSame(expected.getService(), actual.getService());
+		}
 	}
 
 	@Test
