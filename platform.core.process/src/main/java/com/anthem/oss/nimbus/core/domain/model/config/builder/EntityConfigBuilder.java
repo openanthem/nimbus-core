@@ -97,7 +97,9 @@ public class EntityConfigBuilder extends AbstractEntityConfigBuilder {
 		List<Field> fields = FieldUtils.getAllFieldsList(clazz);
 		if(fields==null) return mConfig;
 		
-		fields.forEach((f) -> mConfig.templateParams().add(buildParam(mConfig, f, visitedModels)));
+		fields.stream()
+			.filter((f)-> !f.isSynthetic())
+			.forEach((f) -> mConfig.templateParams().add(buildParam(mConfig, f, visitedModels)));
 		
 		visitedModels.set(clazz, mConfig);
 		return mConfig;
