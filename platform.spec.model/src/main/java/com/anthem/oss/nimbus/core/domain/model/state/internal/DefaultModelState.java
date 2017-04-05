@@ -101,4 +101,10 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 	public <P> Param<P> findParamByPath(String[] pathArr) {
 		return getAssociatedParam()==null ? null : getAssociatedParam().findParamByPath(pathArr);
 	}	
+	
+	@JsonIgnore
+	@Override
+	public T getState() {
+		return Model.super.getState();
+	}
 }

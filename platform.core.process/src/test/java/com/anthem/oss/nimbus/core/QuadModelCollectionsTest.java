@@ -106,6 +106,39 @@ public class QuadModelCollectionsTest {
 		
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void t1_leafstates() {
+		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		
+		ServiceLine sl = new ServiceLine();
+		sl.setService("Karma");
+		
+		q.getCore().findParamByPath("/serviceLines").findIfCollection().add(sl);
+		
+		UMCase core = q.getCore().getState();
+		UMCase leaf = q.getCore().getLeafState();
+		
+		assertNotNull(core);
+		assertNotNull(leaf);
+		
+		assertNotNull(core.getServiceLines());
+		assertNull(leaf.getServiceLines());
+		
+		assertSame(sl, core.getServiceLines().get(0));
+		
+		assertSame(sl.getService(), q.getCore().findParamByPath("/serviceLines/0/service").getState());
+		
+		List<ServiceLine> leafServiceLines = q.getCore().<List<ServiceLine>>findParamByPath("/serviceLines").getLeafState(); 
+		assertNotNull(leafServiceLines);
+		assertNotNull(leafServiceLines.get(0));
+		assertSame(sl.getService(), leafServiceLines.get(0).getService());
+		
+		
+		assertSame(sl.getService(), q.getCore().findParamByPath("/serviceLines/0/service").getLeafState());
+		assertSame(sl.getService(), q.getCore().<ServiceLine>findParamByPath("/serviceLines/0").getLeafState().getService());
+	}
+	
 	@Test
 	public void tc01_sanity_check_core_builders() {
 		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
@@ -767,6 +800,17 @@ public class QuadModelCollectionsTest {
 			ServiceLine expected = coreServiceLines.get(i);
 			
 			assertSame(expected.getService(), detachedViewServiceLines.findParamByPath("/"+i+"/service").getState());
+		}
+		
+		// validate entity as a whole using leaf-state
+		List<Section_ServiceLine> detachedViewServiceLinesState = detachedViewServiceLines.getLeafState();
+		assertNotNull(detachedViewServiceLinesState);
+		assertSame(coreServiceLines.size(), detachedViewServiceLinesState.size());
+		
+		for(int i=0; i<coreServiceLines.size(); i++) {
+			ServiceLine expected = coreServiceLines.get(i);
+			Section_ServiceLine actual = detachedViewServiceLinesState.get(i);
+			assertSame(expected.getService(), actual.getService());
 		}
 	}
 

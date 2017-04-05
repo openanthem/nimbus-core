@@ -2,6 +2,8 @@ package com.anthem.oss.nimbus.core.repo;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -44,8 +46,8 @@ public class ClientEntityRepositoryTest {
 	public void testCreateClient(){
 
 		Client c = new Client();
-		c.setCode("AETNA");
-		c.setName("aetna");
+		c.setCode("Anthem");
+		c.setName("anthem");
 		c.setBusinessType("Health Payer");
 		c.setFedTaxID("1111111");
 		c.setType(Type.CLIENT);
@@ -65,15 +67,21 @@ public class ClientEntityRepositoryTest {
 	@Test
 	public void testCreateClientOrg(){
 
-		Client c = cRep.findByCode("AETNA");
+		Client c = cRep.findByCode("Anthem");
 		assertNotNull(c);
 		
 		ClientEntity org = new ClientEntity();
 		
 		org.setType(Type.ORG);
 		
-		org.setCode("AETNA_ORG1");
-		org.setName("aetna org 1");
+		org.setCode("AETNA_ORG4");
+		org.setName("aetna org 4");
+		org.setEffectiveDate(LocalDate.now());
+		org.setTerminationDate(LocalDate.now());
+		org.setDescription("test");
+		org.setStatus(com.anthem.oss.nimbus.core.entity.client.ClientEntity.Status.ACTIVE);
+		
+		
 		
 		Set<ClientEntity> orgs = new HashSet<>();
 		orgs.add(org);

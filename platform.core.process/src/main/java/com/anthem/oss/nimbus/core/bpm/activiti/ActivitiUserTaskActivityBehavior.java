@@ -66,16 +66,26 @@ public class ActivitiUserTaskActivityBehavior extends UserTaskActivityBehavior {
 	public void execute(DelegateExecution execution) {
 		super.execute(execution);
 		String userTaskType = getExtensionValue(PLATFORM_USER_TASK_TYPE);
+		String userTaskIntizializer = getExtensionValue("pageInitialization");
+		
+		
 		if(userTaskType != null && userTaskType.equals(PLATFORM_USER_TASK_PAGE)){
-			createPageTask(execution);
+			createPageTask(execution, userTaskIntizializer);
 		}else if(userTaskType != null && userTaskType.equals(PLATFORM_USER_TASK_ASSIGNMENT)){
 			createAssignmentTask(execution);
 		}
 	}
 	
-	private void createPageTask(DelegateExecution execution) {
+	private void createPageTask(DelegateExecution execution, String userTaskIntizializer) {
         ActivitiContext aCtx = (ActivitiContext) execution.getVariable(ActivitiGateway.PROCESS_ENGINE_GTWY_KEY);
         QuadModel<?, ?> quadModel = UserEndpointSession.getOrThrowEx(aCtx.getProcessEngineContext().getCommandMsg().getCommand());
+        
+        ActivitiExpressionManager platformExpressionManager = (ActivitiExpressionManager) ProcessBeanResolver.appContext.getBean(ActivitiExpressionManager.class);
+        
+        if(StringUtils.isNotBlank(userTaskIntizializer)) {	
+        	Expression pageInitExpression = platformExpressionManager.createExpression(userTaskIntizializer);
+        	pageInitExpression.getValue(execution);
+        }
         
         @SuppressWarnings("unchecked")
         ListParam<PageNode> param = (ListParam<PageNode>)quadModel.getFlow().findParamByPath("/pageNavigation/pageNodes").findIfCollection();

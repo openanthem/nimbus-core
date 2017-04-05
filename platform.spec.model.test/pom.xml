@@ -16,7 +16,11 @@
 		<name>Anthem Inc.</name>
 		<url>https://www.anthem.com</url>
 	</organization>
-	
+
+	<properties>
+		<sonar.projectName>NIM-ModelTest</sonar.projectName>
+		<sonar.jacoco.reportPath>${project.basedir}/../platform.parent/target/jacoco.exec</sonar.jacoco.reportPath>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
@@ -30,10 +34,8 @@
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-commons</artifactId>
 		</dependency>
-		<!-- <dependency>
-			<groupId>org.neo4j</groupId>
-			<artifactId>neo4j-ogm-api</artifactId>
-		</dependency> -->
+		<!-- <dependency> <groupId>org.neo4j</groupId> <artifactId>neo4j-ogm-api</artifactId> 
+			</dependency> -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>

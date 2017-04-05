@@ -27,10 +27,12 @@ import com.anthem.oss.nimbus.core.domain.command.execution.ValidationException;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityNotFoundException;
 import com.anthem.oss.nimbus.core.entity.client.Client;
 import com.anthem.oss.nimbus.core.entity.client.ClientEntity;
+import com.anthem.oss.nimbus.core.entity.client.ClientEntity.Type;
 import com.anthem.oss.nimbus.core.entity.client.access.ClientUserRole;
 import com.anthem.oss.nimbus.core.web.client.ClientEntityRepoAPI;
 
 import lombok.extern.slf4j.Slf4j;
+import scala.collection.immutable.LongMapUtils;
 
 /**
  * @author Swetha Vemuri
@@ -79,39 +81,56 @@ public class ClientEntityRepoService implements ClientEntityRepoAPI<ClientEntity
 	public Long addNestedEntity(Long clientEntityId , ClientEntity nestedEntity) throws FrameworkRuntimeException{
 		try{
 			Assert.notNull(nestedEntity, "ClientEntity to be added cannot be null");
-			Assert.isNull(nestedEntity.getId(),"Client Entity already exists: "+nestedEntity.getCode());
-			
 			Assert.notNull(clientEntityId,"Parent Client entity Id cannot be null");
-			
-			if(log.isTraceEnabled())
-				log.trace("Get the parent client entity before adding nested client entities");
 			
 			ClientEntity parentClientEntity = ceRepo.findOne(clientEntityId, CE_FETCH_DEPTH);
 			Assert.notNull(parentClientEntity,"Parent Client Entity cannot be null");
-			if(log.isInfoEnabled())
-				log.info("Retrieved Client Entity for input client entity id"+clientEntityId+" :: "+parentClientEntity);
-			if(parentClientEntity.getNestedEntities() != null){
-				for(ClientEntity ce : parentClientEntity.getNestedEntities()){
-					if(StringUtils.equalsIgnoreCase(ce.getName(), nestedEntity.getName())){
-						throw new DataIntegrityViolationExecption("Client Entity to be added : "+nestedEntity.getName() +" is a duplicate for client : "+parentClientEntity.getName(),ClientUserRole.class);					
-					}
-				}
-			}
 			
-			
+			nestedEntity.setCode(nestedEntity.getName());
+			nestedEntity.setType(Type.ORG);
 			parentClientEntity.addNestedEntities(nestedEntity);
-			
-			if(log.isTraceEnabled())
-				log.trace("SaveorUpdate the Parent Client Entity");
-			
-			ClientEntity ceparent = ceRepo.save(parentClientEntity);
-			
-			if(log.isInfoEnabled())
-				log.info("Saved parent client entity"+ceparent);
+			ceRepo.save(parentClientEntity);
 			
 			ClientEntity cenested = ceRepo.findByName(nestedEntity.getName());
-			Assert.notNull(cenested);
+			
 			return cenested.getId();
+			
+		}catch(Exception e){
+			throw new FrameworkRuntimeException("Exception while adding a nested client entity - "+nestedEntity+" : "+e.getMessage());
+		}
+		
+	}
+	
+	@Override
+	public boolean editNestedEntity(Long clientEntityId , ClientEntity nestedEntity) throws FrameworkRuntimeException{
+		try{
+			Assert.notNull(nestedEntity, "ClientEntity to be added cannot be null");
+			Assert.notNull(clientEntityId,"Parent Client entity Id cannot be null");
+			
+			ClientEntity parentClientEntity = ceRepo.findOne(clientEntityId, CE_FETCH_DEPTH);
+			
+			Assert.notNull(parentClientEntity,"Parent Client Entity cannot be null");
+			
+			if(parentClientEntity.getNestedEntities() != null){
+				ClientEntity orgToRemove = null;
+				for(ClientEntity ce : parentClientEntity.getNestedEntities()){
+					if(ce.getId().equals(nestedEntity.getId())){
+						//throw new DataIntegrityViolationExecption("Client Entity to be added : "+nestedEntity.getName() +" is a duplicate for client : "+parentClientEntity.getName(),ClientUserRole.class);
+						orgToRemove = ce;
+						break;
+					}
+				}
+				if(orgToRemove != null) {
+					parentClientEntity.getNestedEntities().remove(orgToRemove);
+				}
+			}
+			nestedEntity.setCode(nestedEntity.getName());
+			nestedEntity.setType(Type.ORG);
+			parentClientEntity.addNestedEntities(nestedEntity);
+			
+			ceRepo.save(parentClientEntity);
+			
+			return true;
 			
 		}catch(Exception e){
 			throw new FrameworkRuntimeException("Exception while adding a nested client entity - "+nestedEntity+" : "+e.getMessage());
@@ -286,16 +305,17 @@ public class ClientEntityRepoService implements ClientEntityRepoAPI<ClientEntity
 			ClientEntity ce = ceRepo.findOne(id);
 			Set<ClientEntity> clientEntitys = ce.getNestedEntities();
 			List<ClientEntity> ceList = new ArrayList<ClientEntity>();
-			if(StringUtils.isNotBlank(clientEntity.getName())){
-				ClientEntity cee = ceRepo.findByName(clientEntity.getName());
+			if(clientEntity != null && clientEntity.getId() != null) { 
+				//ClientEntity cee = ceRepo.findByName(clientEntity.getName());
+				ClientEntity cee = ceRepo.findOne(clientEntity.getId(), CE_FETCH_DEPTH);
 				if(cee != null) {
-					List<String> clientEntityNames = clientEntitys.stream()
-							.map(s -> s.getName())
-							.collect(Collectors.toList());
-					if(clientEntityNames.contains(cee.getName())){
-						ceList.add(ceRepo.findOne(cee.getId(), CE_FETCH_DEPTH));
+//					List<String> clientEntityNames = clientEntitys.stream()
+//							.map(s -> s.getName())
+//							.collect(Collectors.toList());
+//					if(clientEntityNames.contains(cee.getName())){
+						ceList.add(cee);
 						return new PageImpl<ClientEntity>(ceList,pageReq,ceList.size());
-					}
+					//}
 				} else {
 					throw new EntityNotFoundException("Client Entity not found with name "+clientEntity.getName(),ClientEntity.class);
 				}				
@@ -319,7 +339,7 @@ public class ClientEntityRepoService implements ClientEntityRepoAPI<ClientEntity
 			Assert.notNull(c, "ClientEntity to be added cannot be null");
 			Assert.isNull(c.getId(),"ClienEntityt to be added cannot have a pre-assigned id."+
 								"Found value :"+c.getId()+" for client code :"+c.getCode());
-			log.debug("Check for existing client:"+cRepo.findByCode(c.getCode()));
+			//log.debug("Check for existing client:"+cRepo.findByCode(c.getCode()));
 			//TODO Revisit this - UI does not have code.
 			c.setCode(c.getName());
 			

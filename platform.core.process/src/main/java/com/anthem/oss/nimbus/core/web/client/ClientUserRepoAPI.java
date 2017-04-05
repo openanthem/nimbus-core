@@ -74,5 +74,15 @@ public interface ClientUserRepoAPI<T extends ClientUser> {
 	 * @throws PlatformRuntimeException
 	 */
 	public Long editClientUser(String clientCode, ClientUser clientUser) throws FrameworkRuntimeException;
+	
+	/**
+	 * Gets the client users by name or all.
+	 *
+	 * @param code the code
+	 * @param user the user
+	 * @return the client users by name or all
+	 * @throws FrameworkRuntimeException the framework runtime exception
+	 */
+	public Page<ClientUser> getClientUsersByNameOrAll(String code, ClientUser user) throws FrameworkRuntimeException;
 
 }
