@@ -9,12 +9,10 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
@@ -28,18 +26,21 @@ import com.anthem.oss.nimbus.core.web.client.ClientUserRepoAPI;
  * @author AC63348
  *
  */
-@Service("clientuserrepo")
 public class ClientUserRepoService implements ClientUserRepoAPI<ClientUser> {
 
-	@Autowired
 	ClientUserRepository cuRepo;
 	
-	@Autowired
 	ClientRepository cRepo;
 	
-	@Autowired
 	PlatformUserRepository puRep;
 	
+	public ClientUserRepoService(ClientUserRepository cuRepo, ClientRepository cRepo, PlatformUserRepository puRep) {
+		this.cuRepo = cuRepo;
+		this.cRepo = cRepo;
+		this.puRep = puRep;
+	}
+
+
 	private static final int FETCH_DEPTH = 5;
 	
 	@Value("${pageIndex:0}")

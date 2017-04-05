@@ -8,17 +8,14 @@ package com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import com.anthem.oss.nimbus.core.DataIntegrityViolationExecption;
@@ -32,23 +29,27 @@ import com.anthem.oss.nimbus.core.entity.client.access.ClientUserRole;
 import com.anthem.oss.nimbus.core.web.client.ClientEntityRepoAPI;
 
 import lombok.extern.slf4j.Slf4j;
-import scala.collection.immutable.LongMapUtils;
 
 /**
  * @author Swetha Vemuri
  *
  */
-@Service("clientEntityRepo")
 @Slf4j
 @RefreshScope
 public class ClientEntityRepoService implements ClientEntityRepoAPI<ClientEntity> {
 
-	@Autowired ClientRepository cRepo;
+	ClientRepository cRepo;
 	
-	@Autowired ClientEntityRepository ceRepo;
+	ClientEntityRepository ceRepo;
 	
-	@Autowired ClientUserRoleRepository crRepo;
+	ClientUserRoleRepository crRepo;
 	
+	public ClientEntityRepoService(ClientRepository cRepo, ClientEntityRepository ceRepo, ClientUserRoleRepository crRepo) {
+		this.cRepo = cRepo;
+		this.ceRepo = ceRepo;
+		this.crRepo = crRepo;
+	}
+
 	@Value("${pageIndex:0}")
 	int index;
 	

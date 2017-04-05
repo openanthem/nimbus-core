@@ -6,13 +6,11 @@ package com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
@@ -25,13 +23,17 @@ import com.anthem.oss.nimbus.core.entity.user.ClientUserGroup;
  * @author Sriman Cherukuri
  *
  */
-@Service("clientUserGroupRepo")
 @RefreshScope
 public class ClientUserGroupRepoService {
 
-	@Autowired ClientEntityRepository ceRepo;
+	public ClientUserGroupRepoService(ClientEntityRepository ceRepo, ClientUserGroupRepository cugRepo) {
+		this.ceRepo = ceRepo;
+		this.cugRepo = cugRepo;
+	}
+
+	ClientEntityRepository ceRepo;
 	
-	@Autowired ClientUserGroupRepository cugRepo;
+	ClientUserGroupRepository cugRepo;
 	
 	private static final int FETCH_DEPTH = 5;
 	
