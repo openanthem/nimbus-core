@@ -22,7 +22,6 @@ import com.anthem.oss.nimbus.core.util.JustLogit;
  * @author Jayant Chaudhuri
  *
  */
-@Component("rules.factory.drools")
 public class DroolsRulesEngineFactory implements RulesEngineFactory {
 
 	JustLogit logit = new JustLogit(getClass());

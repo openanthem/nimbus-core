@@ -1,7 +1,5 @@
 package com.anthem.oss.nimbus.core.integration.sa;
 
-import org.springframework.stereotype.Component;
-
 import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiContext;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.session.UserEndpointSession;
@@ -13,7 +11,6 @@ import lombok.Setter;
  * @author AC67870
  *
  */
-@Component("processExecutionCtx")
 public class ProcessExecutionCtxHelper {
 	
 	@Getter @Setter 

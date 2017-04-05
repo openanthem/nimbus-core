@@ -27,7 +27,6 @@ import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
  * @author Soham Chakravarti
  *
  */
-@Component
 public class ExecutionInputConfigHandler {
 	
 	public void applyDefaults(DefaultDomainConfig dc) {

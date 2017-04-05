@@ -25,14 +25,16 @@ import com.anthem.oss.nimbus.core.session.UserEndpointSession;
  * @author Soham Chakravarti
  *
  */
-@Component("default._get$execute")
 public class DefaultActionExecutorGet extends AbstractProcessTaskExecutor {
 	
-	@Autowired
 	ModelRepositoryFactory repoFactory;
 	
-	@Autowired
 	DomainConfigBuilder domainConfigApi;
+	
+	public DefaultActionExecutorGet(ModelRepositoryFactory repoFactory, DomainConfigBuilder domainConfigApi) {
+		this.repoFactory = repoFactory;
+		this.domainConfigApi = domainConfigApi;
+	}
 	
 	@SuppressWarnings("unchecked")
 	@Override

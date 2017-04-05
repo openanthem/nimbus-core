@@ -17,7 +17,6 @@ import com.anthem.oss.nimbus.core.domain.definition.Model;
  * @author Soham Chakravarti
  *
  */
-@Component("default.rules.factory.producer")
 public class DefaultRulesEngineFactoryProducer implements RulesEngineFactoryProducer, ApplicationContextAware {
 
 	private ApplicationContext ctx;

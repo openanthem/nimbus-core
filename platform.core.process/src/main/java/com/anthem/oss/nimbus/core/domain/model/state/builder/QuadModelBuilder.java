@@ -40,22 +40,21 @@ import lombok.Setter;
  * @author Soham Chakravarti
  *
  */
-@Component("default.quadModelBuilder")
 @Getter @Setter
 @RefreshScope
 public class QuadModelBuilder {
 
-	@Autowired DomainConfigBuilder domainConfigApi;
-	@Autowired EntityStateBuilder stateAndConfigBuilder;
+	DomainConfigBuilder domainConfigApi;
 	
-	@Autowired ApplicationContext appCtx;
+	EntityStateBuilder stateAndConfigBuilder;
 	
-	@Autowired PageNavigationInitializer navigationStateHelper;
+	ApplicationContext appCtx;
 	
-	@Autowired ValidatorProvider validatorProvider;
+	PageNavigationInitializer navigationStateHelper;
 	
-	@Qualifier("default.param.state.repository")
-	@Autowired ParamStateGateway paramStateGateway;
+	ValidatorProvider validatorProvider;
+	
+	ParamStateGateway paramStateGateway;
 	
 	private List<StateAndConfigEventListener> paramEventListeners;
 
@@ -63,6 +62,16 @@ public class QuadModelBuilder {
 	
 	public RestTemplate restTemplate = new RestTemplate();
 	
+	public QuadModelBuilder(DomainConfigBuilder domainConfigApi, EntityStateBuilder stateAndConfigBuilder,
+			ApplicationContext appCtx, PageNavigationInitializer navigationStateHelper,
+			ValidatorProvider validatorProvider, ParamStateGateway paramStateGateway) {
+		this.domainConfigApi = domainConfigApi;
+		this.stateAndConfigBuilder = stateAndConfigBuilder;
+		this.appCtx = appCtx;
+		this.navigationStateHelper = navigationStateHelper;
+		this.validatorProvider = validatorProvider;
+		this.paramStateGateway = paramStateGateway;
+	}
 	
 	@PostConstruct
 	@RefreshScope

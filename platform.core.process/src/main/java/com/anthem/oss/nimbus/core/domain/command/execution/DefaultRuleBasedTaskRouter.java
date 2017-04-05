@@ -14,7 +14,6 @@ import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
  * @author Rakesh Patel
  *
  */
-@Component("ruleBasedTaskRouter")
 public class DefaultRuleBasedTaskRouter implements TaskRouter, TaskInitializer {
 
 	@Override

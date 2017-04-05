@@ -28,7 +28,6 @@ import lombok.Setter;
  *
  */
 //TODO work in progress - not yet tested after framework 2.0
-@Component
 @EnableConfigurationProperties
 @ConfigurationProperties(exceptionIfInvalid=true,prefix="model.persistence.strategy")
 public class ParamStateBatchPersistenceEventListener extends ParamStatePersistenceEventListener {
@@ -42,6 +41,9 @@ public class ParamStateBatchPersistenceEventListener extends ParamStatePersisten
 	@Getter @Setter
 	private PersistenceMode mode;
 	
+	public ParamStateBatchPersistenceEventListener(ModelRepositoryFactory repoFactory) {
+		this.repoFactory = repoFactory;
+	}
 	
 	@Override
 	public boolean shouldAllow(EntityState<?> p) {

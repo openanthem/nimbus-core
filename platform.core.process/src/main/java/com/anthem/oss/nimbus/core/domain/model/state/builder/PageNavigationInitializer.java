@@ -13,7 +13,6 @@ import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultParamState;
 /**
  * @Author Cheikh Niass on 10/11/16.
  */
-@Component
 public class PageNavigationInitializer {
 	
 	public static final String ACTIVATE_ATTRIBUTE = "active";

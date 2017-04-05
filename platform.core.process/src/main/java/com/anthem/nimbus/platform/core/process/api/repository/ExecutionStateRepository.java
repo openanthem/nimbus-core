@@ -8,7 +8,6 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
@@ -27,15 +26,18 @@ import lombok.RequiredArgsConstructor;
  *
  */
 @Getter
-@Component
 public class ExecutionStateRepository<V, C> {
 
-	@Autowired ModelRepositoryFactory repFactory;
+	ModelRepositoryFactory repFactory;
 	
 	public Template template(Command cmd) {
 		return new Template(cmd);
 	}
 	
+	public ExecutionStateRepository(ModelRepositoryFactory repFactory) {
+		this.repFactory = repFactory;
+	}
+
 	@Getter @RequiredArgsConstructor
 	public class Template  {
 		private final Command rootDomainCmd;

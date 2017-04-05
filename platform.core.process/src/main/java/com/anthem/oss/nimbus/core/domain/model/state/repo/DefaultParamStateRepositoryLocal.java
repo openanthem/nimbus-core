@@ -20,10 +20,13 @@ import com.anthem.oss.nimbus.core.utils.JavaBeanHandler;
  * @author Soham Chakravarti
  *
  */
-@Component("default.param.state.rep_local")
 public class DefaultParamStateRepositoryLocal implements ParamStateRepository {
 
 	@Autowired JavaBeanHandler javaBeanHandler;
+	
+	public DefaultParamStateRepositoryLocal(JavaBeanHandler javaBeanHandler) {
+		this.javaBeanHandler = javaBeanHandler;
+	}
 	
 	@Override
 	public <P> P _get(EntityState.Param<P> param) {

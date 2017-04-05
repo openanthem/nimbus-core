@@ -21,15 +21,16 @@ import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFact
  * @author Soham Chakravarti
  *
  */
-@Component("default._delete$execute")
 public class DefaultActionProcessExecutorDelete extends AbstractProcessTaskExecutor {
-	
-	
-	@Autowired
+
 	ModelRepositoryFactory repoFactory;
 	
-	@Autowired
 	DomainConfigBuilder domainConfigApi;
+	
+	public DefaultActionProcessExecutorDelete(ModelRepositoryFactory repoFactory, DomainConfigBuilder domainConfigApi) {
+		this.repoFactory = repoFactory;
+		this.domainConfigApi = domainConfigApi;
+	}
 	
 	@SuppressWarnings("unchecked")
 

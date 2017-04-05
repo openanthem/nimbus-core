@@ -38,14 +38,16 @@ import lombok.Setter;
  * @author Jayant Chaudhuri
  *
  */
-@Component
 @RefreshScope
 public class HierarchyMatchBasedBeanFinder implements ApplicationContextAware {
 	
-	@Autowired
 	RepositoryService repositoryService;
 	
 	ApplicationContext ctx;
+	
+	public HierarchyMatchBasedBeanFinder(RepositoryService repositoryService) {
+		this.repositoryService = repositoryService;
+	}
 	
 	@Value("${process.key.regex}") 
 	//private Pattern p;

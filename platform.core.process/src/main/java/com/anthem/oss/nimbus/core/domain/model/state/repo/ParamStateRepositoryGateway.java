@@ -32,20 +32,23 @@ import lombok.Getter;
  *
  */
 
-@Component("default.param.state.repository")
 @Getter
 public class ParamStateRepositoryGateway implements ParamStateGateway {
 
 	private JustLogit logit = new JustLogit(getClass());
 	
-	@Autowired JavaBeanHandler javaBeanHandler;
+	JavaBeanHandler javaBeanHandler;
 	
-	@Autowired	@Qualifier("default.param.state.rep_local")
 	private ParamStateRepository local;
 	
 	//@Autowired	@Qualifier("default.param.state.rep_session")
 	private ParamStateRepository session;
 
+	public ParamStateRepositoryGateway(JavaBeanHandler javaBeanHandler, ParamStateRepository local) {
+		this.javaBeanHandler = javaBeanHandler;
+		this.local = local;
+	}
+	
 	/*
 	@Autowired	@Qualifier("default.param.state.rep_db")
 	private ParamStateRepository db;

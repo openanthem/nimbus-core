@@ -17,13 +17,15 @@ import com.anthem.oss.nimbus.core.session.UserEndpointSession;
  * @author Jayant Chaudhuri
  *
  */
-@Component
 public class TaskCompletionListener implements ExecutionListener {
 
 	private static final long serialVersionUID = 1L;
 	
-	@Autowired
 	TaskService taskService;
+	
+	public TaskCompletionListener(TaskService taskService) {
+		this.taskService = taskService;
+	}
 
 	@Override
 	public void notify(DelegateExecution execution) {

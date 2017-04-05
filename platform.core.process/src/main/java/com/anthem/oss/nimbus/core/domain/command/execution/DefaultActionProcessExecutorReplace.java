@@ -24,17 +24,20 @@ import com.anthem.oss.nimbus.core.session.UserEndpointSession;
  * @author Soham Chakravarti
  *
  */
-@Component("default._replace$execute")
 public class DefaultActionProcessExecutorReplace extends AbstractProcessTaskExecutor {
 
-	@Autowired 
 	QuadModelBuilder qBuilder;
 	
-	@Autowired
 	ModelRepositoryFactory repoFactory;
 	
-	@Autowired
 	DomainConfigBuilder domainConfigApi;
+	
+	public DefaultActionProcessExecutorReplace(QuadModelBuilder qBuilder, ModelRepositoryFactory repoFactory,
+			DomainConfigBuilder domainConfigApi) {
+		this.qBuilder = qBuilder;
+		this.repoFactory = repoFactory;
+		this.domainConfigApi = domainConfigApi;
+	}
 	
 	@SuppressWarnings("unchecked")
 	@Override

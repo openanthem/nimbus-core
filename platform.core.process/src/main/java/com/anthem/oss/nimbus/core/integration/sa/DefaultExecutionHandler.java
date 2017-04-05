@@ -18,7 +18,6 @@ import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiContext.ServiceActivatorC
  * @author Rakesh Patel
  *
  */
-@Component
 public class DefaultExecutionHandler implements ServiceActivatorHandler<Object>, ApplicationContextAware {
 
 	ApplicationContext context;

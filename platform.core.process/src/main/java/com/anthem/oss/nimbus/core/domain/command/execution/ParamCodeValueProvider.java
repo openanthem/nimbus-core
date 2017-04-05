@@ -29,7 +29,6 @@ import lombok.Setter;
  * @author Rakesh Patel
  *
  */
-@Component
 @ConfigurationProperties(prefix="static.codevalue")
 @RefreshScope
 public class ParamCodeValueProvider extends AbstractProcessTaskExecutor implements HierarchyMatchProcessTaskExecutor {
@@ -37,8 +36,11 @@ public class ParamCodeValueProvider extends AbstractProcessTaskExecutor implemen
 	private static final String DEFAULT_KEY_ATTRIBUTE = "id";
 	private static final String KEY_VALUE_SEPERATOR = "&";
 	
-	@Autowired
 	DefaultActionExecutorSearch searchExecutor;
+	
+	public ParamCodeValueProvider(DefaultActionExecutorSearch searchExecutor) {
+		this.searchExecutor = searchExecutor;
+	}
 	
 	@Getter @Setter
 	private Map<String,List<ParamValue>> values;

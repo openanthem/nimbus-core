@@ -17,14 +17,21 @@ import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFact
  * @author Soham Chakravarti
  *
  */
-@Component("default._search$execute")
 public class DefaultActionExecutorSearch extends AbstractProcessTaskExecutor {
 
-	@Autowired ModelRepositoryFactory repFactory;
+	ModelRepositoryFactory repFactory;
 	
-	@Autowired DomainConfigBuilder domainConfigApi;
+	DomainConfigBuilder domainConfigApi;
 	
-	@Autowired CommandMessageConverter converter;
+	CommandMessageConverter converter;
+	
+	public DefaultActionExecutorSearch(ModelRepositoryFactory repFactory, DomainConfigBuilder domainConfigApi,
+			CommandMessageConverter converter) {
+		super();
+		this.repFactory = repFactory;
+		this.domainConfigApi = domainConfigApi;
+		this.converter = converter;
+	}
 	
 	@Override
 	protected <R> R doExecuteInternal(CommandMessage cmdMsg) {

@@ -23,7 +23,6 @@ import lombok.Setter;
  * @author Jayant Chaudhuri
  *
  */
-@Component @Scope("prototype")
 @Getter @Setter
 public class ActivitiGatewayHelper implements Serializable{
 	/**

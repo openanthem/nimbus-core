@@ -14,16 +14,19 @@ import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
  * @author Jayant Chaudhuri
  *
  */
-@Component("default._process$execute")
 public class DefaultActionExecutorProcess extends AbstractProcessTaskExecutor {
 	
-	@Autowired
 	ActivitiGateway activitiProcessGateway;
 	
-	@Autowired
 	HierarchyMatchBasedBeanFinder hierarchyMatchBeanLoader;
 	
 	public static final String QUAD_MODEL_KEY = "quadModel";
+	
+	public DefaultActionExecutorProcess(ActivitiGateway activitiProcessGateway,
+			HierarchyMatchBasedBeanFinder hierarchyMatchBeanLoader) {
+		this.activitiProcessGateway = activitiProcessGateway;
+		this.hierarchyMatchBeanLoader = hierarchyMatchBeanLoader;
+	}
 	
 	
 	@Override

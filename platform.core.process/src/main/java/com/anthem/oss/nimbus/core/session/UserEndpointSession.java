@@ -14,8 +14,6 @@ import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.entity.client.user.ClientUser;
 import com.anthem.oss.nimbus.core.entity.client.user.TestClientUserFactory;
 
-import test.com.anthem.nimbus.platform.spec.model.user.TestPlatformUserFactory;
-
 /**
  * @author Jayant Chaudhuri
  * Platform Session provides the ability for platform to access session variables. 

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
  * @author Jayant Chaudhuri
  *
  */
-@Component
 public class ProcessBeanHelper implements ApplicationContextAware{
 
 	private static ApplicationContext applicationContext;

@@ -13,7 +13,6 @@ import lombok.Setter;
  * @author AC67870
  *
  */
-@Component("executionHelper")
 public class ServiceExecutionHelper {
 	
 	@Getter @Setter private ActivitiContext aCtx;

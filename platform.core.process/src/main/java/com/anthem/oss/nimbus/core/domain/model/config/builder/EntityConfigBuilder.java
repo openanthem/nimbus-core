@@ -35,15 +35,21 @@ import lombok.Setter;
  * @author Soham Chakravarti
  *
  */ 
-@Component
+
 @ConfigurationProperties(exceptionIfInvalid=true, prefix="domain.model")
 public class EntityConfigBuilder extends AbstractEntityConfigBuilder {
 
-	@Autowired @Getter @Setter ExecutionInputConfigHandler execInputHandler;
-	@Autowired @Getter @Setter ExecutionOutputConfigHandler execOutputHandler;
+	@Getter @Setter ExecutionInputConfigHandler execInputHandler;
+	@Getter @Setter ExecutionOutputConfigHandler execOutputHandler;
 	
 	@Getter @Setter private Map<String, String> typeClassMappings = new HashMap<>();
 
+	public EntityConfigBuilder(ExecutionInputConfigHandler execInputHandler,
+			ExecutionOutputConfigHandler execOutputHandler) {
+		this.execInputHandler = execInputHandler;
+		this.execOutputHandler = execOutputHandler;
+	}
+	
 	@PostConstruct
 	public void loadMappings() {
 		typeClassMappings.put(LocalDate.class.getName(), "date");

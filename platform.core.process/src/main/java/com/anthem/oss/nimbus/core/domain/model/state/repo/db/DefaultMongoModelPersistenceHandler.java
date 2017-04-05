@@ -23,15 +23,16 @@ import com.anthem.oss.nimbus.core.util.JustLogit;
  * @author Rakesh Patel
  *
  */
-@Component("rep_mongodb_handler")
 public class DefaultMongoModelPersistenceHandler implements ModelPersistenceHandler {
 
 	JustLogit logit = new JustLogit(getClass());
 	
-	@Autowired
-	@Qualifier("rep_mongodb")
 	ModelRepository rep;
 	
+	public DefaultMongoModelPersistenceHandler(ModelRepository rep) {
+		this.rep = rep;
+	}
+
 	@Override
 	public boolean handle(List<ModelEvent<Param<?>>> modelEvents) {
 		

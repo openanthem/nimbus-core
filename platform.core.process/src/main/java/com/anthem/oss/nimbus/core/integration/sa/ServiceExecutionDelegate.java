@@ -29,7 +29,6 @@ import lombok.extern.slf4j.Slf4j;
  */
 @RefreshScope
 @Slf4j
-@Component @Scope("prototype")
 public class ServiceExecutionDelegate implements JavaDelegate, ApplicationContextAware {
 
 	private static final String PROCESS_ENGINE_GTWY_KEY = "processGatewayContext";

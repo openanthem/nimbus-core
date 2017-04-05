@@ -15,7 +15,6 @@ import com.anthem.oss.nimbus.core.util.JustLogit;
  * @author Rakesh Patel
  *
  */
-@Component("spElBasedTaskRouter")
 public class SpELBasedTaskRouter implements TaskRouter {
 
 	private JustLogit log = new JustLogit(SpELBasedTaskRouter.class);

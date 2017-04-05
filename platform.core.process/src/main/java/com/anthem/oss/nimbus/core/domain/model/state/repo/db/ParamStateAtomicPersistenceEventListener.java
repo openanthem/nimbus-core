@@ -26,21 +26,22 @@ import lombok.Setter;
  * @author Soham Chakravarti
  * @author Rakesh Patel
  */
-@Component
 @EnableConfigurationProperties
 @ConfigurationProperties(exceptionIfInvalid=true,prefix="model.persistence.strategy")
 public class ParamStateAtomicPersistenceEventListener extends ParamStatePersistenceEventListener {
 
-	@Autowired
 	ModelRepositoryFactory repoFactory;
 
 	@Getter @Setter
 	private PersistenceMode mode;
 	
-	@Autowired
-	@Qualifier("rep_mongodb_handler")
 	ModelPersistenceHandler handler;
 
+	public ParamStateAtomicPersistenceEventListener(ModelRepositoryFactory repoFactory, ModelPersistenceHandler handler) {
+		this.repoFactory = repoFactory;
+		this.handler = handler;
+	}
+	
 	@Override
 	public boolean shouldAllow(EntityState<?> p) {
 		return super.shouldAllow(p) && PersistenceMode.ATOMIC == mode;

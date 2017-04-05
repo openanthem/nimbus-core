@@ -11,7 +11,6 @@ import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
  * @author Soham Chakravarti
  *
  */
-@Component("default._lookup$execute")
 public class DefaultActionExecutorLookup extends AbstractProcessTaskExecutor {
 
 	@Override

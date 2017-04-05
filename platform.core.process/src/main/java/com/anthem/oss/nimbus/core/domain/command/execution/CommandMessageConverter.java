@@ -18,7 +18,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
  * @author Soham Chakravarti
  *
  */
-@Component
 public class CommandMessageConverter {
 	
 	private ObjectMapper om;

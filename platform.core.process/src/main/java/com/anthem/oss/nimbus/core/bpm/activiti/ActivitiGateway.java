@@ -30,30 +30,34 @@ import com.anthem.oss.nimbus.core.integration.sa.ServiceActivatorException;
  * @author Rakesh Patel
  *
  */
-@Component
 public class ActivitiGateway implements ApplicationContextAware {
 
 	public static final String PROCESS_ENGINE_GTWY_KEY = "processGatewayContext";
 	public static final String PROCESS_ENGINE_GTWY_HELPER = "pxhelp";
 
-	@Autowired
 	RuntimeService runtimeService;
 	
-	@Autowired
 	ProcessExecutionCtxHelper processExecutionCtx;
 
 	ApplicationContext applicationContext;
 
-	@Autowired
 	TaskService taskService;
-	
-	@Autowired
+
 	ActivitiDAO activitiDAO;
 	
-	@Autowired 
 	@Qualifier("default.processGateway")
 	private ProcessGateway processGateway;	
 
+	public ActivitiGateway(RuntimeService runtimeService, ProcessExecutionCtxHelper processExecutionCtx,
+			TaskService taskService, ActivitiDAO activitiDAO,
+			ProcessGateway processGateway) {
+		
+		this.runtimeService = runtimeService;
+		this.processExecutionCtx = processExecutionCtx;
+		this.taskService = taskService;
+		this.activitiDAO = activitiDAO;
+		this.processGateway = processGateway;
+	}
 	
 	/**
 	 * 

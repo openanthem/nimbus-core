@@ -25,14 +25,17 @@ import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
  * 
  * @author Soham Chakravarti
  */
-@Component("default.modelRepositoryFactory")
 public class DefaultModelRepositoryFactory implements ModelRepositoryFactory, ApplicationContextAware {
 
-	@Autowired DomainConfigBuilder domainConfigApi;
+	DomainConfigBuilder domainConfigApi;
 	
 	private ApplicationContext ctx;
 	
 	ModelPersistenceHandler persistenceHandler;
+	
+	public DefaultModelRepositoryFactory(DomainConfigBuilder domainConfigApi) {
+		this.domainConfigApi = domainConfigApi;
+	}
 	
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {

@@ -22,7 +22,6 @@ import com.anthem.oss.nimbus.core.session.UserEndpointSession;
  * @author Soham Chakravarti
  *
  */
-@Component("default._update$execute")
 public class DefaultActionExecutorUpdate extends AbstractProcessTaskExecutor {
 
 	

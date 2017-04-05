@@ -26,7 +26,6 @@ import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
  * @author Soham Chakravarti
  *
  */
-@Component
 public class ExecutionOutputConfigHandler {
 
 	public <T> List<ActionExecuteConfig<?, T>> loadClassConfigs(DefaultDomainConfig dc, ModelConfig<T> mConfig) {

@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.AssignmentTask.TaskStatus;
 import com.anthem.oss.nimbus.core.domain.command.Action;
@@ -26,10 +25,13 @@ import com.anthem.oss.nimbus.core.session.UserEndpointSession;
  * @author Jayant Chaudhuri
  *
  */
-@Component("defaultExpressionHelper")
 public class DefaultExpressionHelper extends AbstractExpressionHelper{
 	
-	@Autowired CommandMessageConverter converter;
+	CommandMessageConverter converter;
+	
+	public DefaultExpressionHelper(CommandMessageConverter converter) {
+		this.converter = converter;
+	}
 	
 	final public Object _get(CommandMessage cmdMsg, DelegateExecution execution, 
 			String resolvedUri, Object... args){

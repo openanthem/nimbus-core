@@ -39,12 +39,15 @@ import lombok.Setter;
  *
  */
 @Getter
-@Component("default.processGateway")
 @EnableConfigurationProperties
 @ConfigurationProperties(prefix="dsl.behavior")
 @RefreshScope
 public class DefaultProcessGateway extends AbstractProcessGateway implements ApplicationContextAware {
 	
+	public DefaultProcessGateway(HierarchyMatchBasedBeanFinder hierarchyMatchBeanLoader) {
+		this.hierarchyMatchBeanLoader = hierarchyMatchBeanLoader;
+	}
+
 	public static final String DEFAULT_EXECUTOR_BEAN_PREFIX = "";
 	
 	@Setter private String executorBeanPrefix = DEFAULT_EXECUTOR_BEAN_PREFIX;
@@ -57,7 +60,6 @@ public class DefaultProcessGateway extends AbstractProcessGateway implements App
 	
 	private ApplicationContext ctx;
 	
-	@Autowired
 	private HierarchyMatchBasedBeanFinder hierarchyMatchBeanLoader;
 	
 	private JustLogit logit = new JustLogit(this.getClass());

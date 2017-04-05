@@ -12,7 +12,6 @@ import com.anthem.oss.nimbus.core.util.JustLogit;
  * @author Soham Chakravarti
  *
  */
-@Component("default.e_pre")
 public class DefaultEventExecutorPre implements ProcessTaskExecutor {
 
 	JustLogit logit = new JustLogit(getClass());

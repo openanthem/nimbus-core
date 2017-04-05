@@ -11,7 +11,6 @@ import com.anthem.oss.nimbus.core.domain.definition.Converters.ParamConverter;
  * @author Rakesh Patel
  *
  */
-@Component
 public class IdParamConverter implements ParamConverter<Long, String> {
 
 	public static final String PREFIX = "ANT";

@@ -15,7 +15,6 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
  * @author Soham Chakravarti
  *
  */
-@Component("rep_neo4j")
 public class DefaultNeo4jModelRepository implements ModelRepository {
 
 	@Override

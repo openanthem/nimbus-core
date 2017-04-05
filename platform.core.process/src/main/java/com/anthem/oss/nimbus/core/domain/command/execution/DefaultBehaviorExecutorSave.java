@@ -12,7 +12,6 @@ import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ParamStateBatchPers
  * @author Rakesh Patel
  *
  */
-@Component("default.$save")
 public class DefaultBehaviorExecutorSave extends AbstractProcessTaskExecutor {
 
 	//@Autowired

@@ -37,15 +37,14 @@ import lombok.Setter;
  * @author Soham Chakravarti
  *
  */
-@Component
 @ConfigurationProperties(exceptionIfInvalid=true, prefix="domain.model")
 public class DomainConfigBuilder {
-	
+
 	private static boolean skip = false;
 	
 	protected JustLogit logit = new JustLogit(this.getClass());
 	
-	@Autowired @Getter @Setter
+	@Getter @Setter
 	private EntityConfigBuilder modelConfigBuilder;
 	
 	@Getter @Setter
@@ -60,6 +59,10 @@ public class DomainConfigBuilder {
 	
 	@Getter
 	private final transient CollectionsTemplate<List<DefaultDomainConfig>, DefaultDomainConfig> templateConfigs = CollectionsTemplate.array(()->getConfigs(), (c)->setConfigs(c));
+	
+	public DomainConfigBuilder(EntityConfigBuilder modelConfigBuilder) {
+		this.modelConfigBuilder = modelConfigBuilder;
+	}
 	
 	public DefaultDomainConfig getDomain(String rootAlias) {
 		DefaultDomainConfig dc = templateConfigs.find(rootAlias);

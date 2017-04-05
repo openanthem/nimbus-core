@@ -3,13 +3,10 @@
  */
 package com.anthem.nimbus.platform.core.process.api.repository;
 
-import org.springframework.stereotype.Component;
-
 /**
  * @author Jayant Chaudhuri
  *
  */
-@Component("default.param.state.rep_session")
 public class SessionCacheRepository { //implements ParamStateRepository {
 	
 //    @Autowired

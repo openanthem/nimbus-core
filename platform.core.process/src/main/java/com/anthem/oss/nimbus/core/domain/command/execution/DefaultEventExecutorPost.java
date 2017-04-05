@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
  * @author Soham Chakravarti
  *
  */
-@Component("default.e_post")
 public class DefaultEventExecutorPost extends DefaultEventExecutorPre {
 
 }

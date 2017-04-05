@@ -25,7 +25,6 @@ import org.activiti.spring.ApplicationContextElResolver;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Component;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -34,7 +33,6 @@ import lombok.Setter;
  * @author Jayant Chaudhuri
  *
  */
-@Component
 public class ActivitiExpressionManager extends ExpressionManager implements ApplicationContextAware{
 	
 	public static final String PLATFORM_EXP_START="!{";

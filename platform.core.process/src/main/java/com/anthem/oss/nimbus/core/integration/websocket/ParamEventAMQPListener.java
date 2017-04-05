@@ -3,7 +3,10 @@ package com.anthem.oss.nimbus.core.integration.websocket;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
@@ -22,14 +25,19 @@ import com.anthem.oss.nimbus.core.spec.contract.event.StateAndConfigEventListene
  * @author Rakesh Patel
  * 
  */
-
-@Component
 public class ParamEventAMQPListener implements StateAndConfigEventListener {
 
-	@Autowired
-	SimpMessagingTemplate messageTemplate;
 	
-	@Autowired CommandTransactionInterceptor interceptor;	
+//	@Autowired
+	SimpMessageSendingOperations messageTemplate;
+
+	CommandTransactionInterceptor interceptor;	
+	
+	
+	public ParamEventAMQPListener(SimpMessageSendingOperations messageTemplate,CommandTransactionInterceptor interceptor){
+		this.messageTemplate = messageTemplate;
+		this.interceptor = interceptor;
+	}
 	
 	@Override
 	public boolean shouldAllow(EntityState<?> p) {
@@ -82,7 +90,6 @@ public class ParamEventAMQPListener implements StateAndConfigEventListener {
 		MultiExecuteOutput multiExecOutput = interceptor.handleResponse(executeOutput);
 		
 		messageTemplate.convertAndSend("/queue/updates", multiExecOutput); // TODO get the destination name from the config server
-		
 		//messageTemplate.convertAndSendToUser(auth.getName(),"/queue/updates", executeOutput);
 		
 		return true;

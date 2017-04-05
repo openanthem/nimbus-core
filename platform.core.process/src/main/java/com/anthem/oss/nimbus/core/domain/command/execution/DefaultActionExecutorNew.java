@@ -19,14 +19,17 @@ import com.anthem.oss.nimbus.core.util.ClassLoadUtils;
  * @author Soham Chakravarti
  *
  */
-@Component("default._new$execute")
 public class DefaultActionExecutorNew extends AbstractProcessTaskExecutor {
 
-	@Autowired @Qualifier("default.quadModelBuilder")
 	private QuadModelBuilder quadModelBuilder; 
 	
-	@Autowired
 	DomainConfigBuilder domainConfigApi;
+	
+	public DefaultActionExecutorNew(QuadModelBuilder quadModelBuilder, DomainConfigBuilder domainConfigApi) {
+		super();
+		this.quadModelBuilder = quadModelBuilder;
+		this.domainConfigApi = domainConfigApi;
+	}
 	
 	/**
 	 * 1. If the command is domain root only, then create new instance <br>

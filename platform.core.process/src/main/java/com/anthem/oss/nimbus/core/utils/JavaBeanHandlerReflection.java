@@ -14,7 +14,6 @@ import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
  * @author Soham Chakravarti
  *
  */
-@Component("default.java.bean.handler")
 public class JavaBeanHandlerReflection implements JavaBeanHandler {
 
 	@SuppressWarnings("unchecked")

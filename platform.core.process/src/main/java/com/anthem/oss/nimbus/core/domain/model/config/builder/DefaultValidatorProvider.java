@@ -15,7 +15,6 @@ import com.anthem.oss.nimbus.core.domain.model.config.ValidatorProvider;
  * @author Rakesh Patel
  *
  */
-@Component
 public class DefaultValidatorProvider implements ValidatorProvider {
 
 	public static ValidatorFactory factory = Validation.buildDefaultValidatorFactory();

@@ -3,8 +3,6 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
-import org.springframework.stereotype.Component;
-
 import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
 import com.anthem.oss.nimbus.core.domain.command.Behavior;
 
@@ -12,7 +10,6 @@ import com.anthem.oss.nimbus.core.domain.command.Behavior;
  * @author Soham Chakravarti
  *
  */
-@Component
 public class CommandTransactionInterceptor {
 
 	public MultiExecuteOutput handleResponse(MultiExecuteOutput rawResult) {

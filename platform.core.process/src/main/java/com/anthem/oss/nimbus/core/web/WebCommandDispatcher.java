@@ -20,14 +20,17 @@ import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
  * @author Soham Chakravarti
  *
  */
-@Component
 public class WebCommandDispatcher {
 
-	@Autowired WebCommandBuilder builder;
+	WebCommandBuilder builder;
 
-	@Autowired @Qualifier("default.processGateway")
 	ProcessGateway processGateway;
 
+	public WebCommandDispatcher(WebCommandBuilder builder,ProcessGateway processGateway) {
+		this.builder = builder;
+		this.processGateway = processGateway;
+	}
+	
 	public Object handle(HttpServletRequest httpReq, RequestMethod httpMethod, ModelEvent<String> event) {
 		Command cmd = builder.build(httpReq, event);
 		return handle(cmd, event.getPayload());

@@ -34,15 +34,17 @@ import lombok.Setter;
  * @author Soham Chakravarti
  *
  */
-@Component("rep_mongodb")
 @Getter @Setter 
 public class DefaultMongoModelRepository implements ModelRepository {
 
-	@Autowired 
 	MongoOperations mongoOps;
 	
-	@Autowired 
 	IdSequenceRepository idSequenceRepo;
+	
+	public DefaultMongoModelRepository(MongoOperations mongoOps, IdSequenceRepository idSequenceRepo) {
+		this.mongoOps = mongoOps;
+		this.idSequenceRepo = idSequenceRepo;
+	}
 	
 	@Override
 	public <T> T _new(Class<T> referredClass, String alias) {

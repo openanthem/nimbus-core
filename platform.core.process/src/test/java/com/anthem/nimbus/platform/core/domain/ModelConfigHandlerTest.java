@@ -68,7 +68,8 @@ public class ModelConfigHandlerTest {
 	
 	@Before
 	public void before() {
-		handler = new EntityConfigBuilder();
+		//fix testcase
+		handler = new EntityConfigBuilder(null,null);
 		Domain domain = AnnotationUtils.findAnnotation(TestModel.class, Domain.class);
 		DefaultDomainConfig dc = new DefaultDomainConfig(domain);
 		

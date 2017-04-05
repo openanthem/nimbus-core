@@ -29,7 +29,6 @@ import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 import com.anthem.oss.nimbus.core.session.UserEndpointSession;
 import com.anthem.oss.nimbus.core.utils.ProcessBeanResolver;
 
-@Component @Scope("prototype")
 public class ActivitiAssignmentServiceTaskDelegate implements JavaDelegate{
 	
 	private Expression assignmentTaskType;

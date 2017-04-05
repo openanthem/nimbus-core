@@ -13,7 +13,6 @@ import com.anthem.oss.nimbus.core.session.UserEndpointSession;
  * @author Soham Chakravarti
  *
  */
-@Component("default.$config")
 public class DefaultBehaviorExecutorConfig extends AbstractProcessTaskExecutor {
 
 	@Override

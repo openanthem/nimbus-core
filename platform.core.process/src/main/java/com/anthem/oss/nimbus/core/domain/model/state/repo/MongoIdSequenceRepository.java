@@ -15,11 +15,13 @@ import com.anthem.oss.nimbus.core.entity.DBSequence;
  * @author Rakesh Patel
  *
  */
-@Repository
 public class MongoIdSequenceRepository implements IdSequenceRepository {
 
-	@Autowired
 	MongoOperations mongoOperations;
+	
+	public MongoIdSequenceRepository(MongoOperations mongoOperations) {
+		this.mongoOperations = mongoOperations;
+	}
 	
 	@Override
 	public long getNextSequenceId(String key) throws SequenceException {

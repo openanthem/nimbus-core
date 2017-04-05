@@ -20,7 +20,6 @@ import com.anthem.oss.nimbus.core.util.JustLogit;
  * @author Soham Chakravarti
  *
  */
-@Component
 public class WebCommandBuilder {
 
 	private JustLogit logit = new JustLogit(this.getClass());

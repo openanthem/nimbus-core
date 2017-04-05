@@ -15,7 +15,6 @@ import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiContext.ServiceActivatorC
  * @author Rakesh Patel
  *
  */
-@Component
 public class DefaultRuleBasedRequestHandler implements ServiceActivatorHandler<Object> {
 
 	

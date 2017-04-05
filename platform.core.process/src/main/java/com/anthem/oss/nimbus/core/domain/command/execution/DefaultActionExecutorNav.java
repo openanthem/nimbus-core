@@ -26,20 +26,23 @@ import com.anthem.oss.nimbus.core.entity.process.PageNode;
  * @author Soham Chakravarti
  *
  */
-@Component("default._nav$execute")
 public class DefaultActionExecutorNav extends AbstractProcessTaskExecutor {
 	
-	@Autowired
 	ActivitiDAO platformProcessDAO;
 	
-	@Autowired
 	RuntimeService runtimeService;
 	
-	@Autowired
 	TaskService taskService;
 	
-	@Autowired 
 	PageNavigationInitializer navigationStateHelper;
+	
+	public DefaultActionExecutorNav(ActivitiDAO platformProcessDAO, RuntimeService runtimeService,
+			TaskService taskService, PageNavigationInitializer navigationStateHelper) {
+		this.platformProcessDAO = platformProcessDAO;
+		this.runtimeService = runtimeService;
+		this.taskService = taskService;
+		this.navigationStateHelper = navigationStateHelper;
+	}
 	
 	public static final String BREADCRUMB_SEPARATOR_P = "breadCrumb$"; // to separate the breadCrumb path from normal payload
 
