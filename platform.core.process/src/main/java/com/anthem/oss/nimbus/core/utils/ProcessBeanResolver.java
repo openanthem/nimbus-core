@@ -29,7 +29,7 @@ public class ProcessBeanResolver implements ApplicationContextAware {
 		return appContext.getBean(beanName,beanType);
 	}
 	
-	public static Object getBean(Class<?> beanType) {
+	public static <T> T getBean(Class<T> beanType) {
 		return appContext.getBean(beanType);
 	}
 }
