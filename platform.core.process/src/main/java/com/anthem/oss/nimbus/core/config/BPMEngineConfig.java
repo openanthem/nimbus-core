@@ -34,7 +34,25 @@ import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiExpressionManager;
 import lombok.Getter;
 import lombok.Setter;
 
-
+/**
+ * This class configures BPM functions within the framework. Activiti BPM framework is being used to enable BPM capabilities.
+ *
+ * <p>This class provides the ability to configure/configures following BPM attributes:
+ * <ul>
+ * <li>Behavior Factory.{@link com.anthem.oss.nimbus.core.bpm.activiti.ActivitiBehaviorFactory}.
+ * The framework extends the default User task, Service Task and Call Activity available from Activiti and adds additional capabilities to support framework needs
+ * <li>Audit History level
+ * <li>Load process definition from a configured location.
+ * <li>Load process rules from a configured location.
+ * The framework makes to distinction between entity rules and process rules. This configuration only loads process rules.
+ * For definition of entity rules, please refer{@link  com.anthem.oss.nimbus.core.rules.drools.DroolsRulesEngineFactory}
+ * Process rules are defined as rules that can be defined across multiple entities and across flows. 
+ * These rules are loaded using a single KnowlegeBuilder and can be directly accesses within bpmn processes as business rules task/ service task.
+ * <li>Overrides the default expression manager to enhance expression capability. See {@link com.anthem.oss.nimbus.core.bpm.activiti.ActivitiExpressionManager}
+ * <li>Datasource
+ * @author Jayant Chaudhuri
+ * 
+ */
 @Configuration
 @ConfigurationProperties(prefix="process")
 public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
@@ -56,6 +74,9 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
 	
 	@Getter @Setter
 	private List<String> definitions = new ArrayList<String>();
+	
+	@Getter @Setter
+	private List<String> rules = new ArrayList<String>();	
 	
 	@Autowired
 	private ActivitiExpressionManager platformExpressionManager;
@@ -81,19 +102,16 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
             DataSource dataSource,
             PlatformTransactionManager jpaTransactionManager,
             SpringAsyncExecutor springAsyncExecutor) throws IOException {
-    	
     	SpringProcessEngineConfiguration engineConfiguration = this.baseSpringProcessEngineConfiguration(dataSource, jpaTransactionManager, springAsyncExecutor);
     	engineConfiguration.setActivityBehaviorFactory(platformActivityBehaviorFactory());
     	engineConfiguration.setHistoryLevel(HistoryLevel.getHistoryLevelForKey(processHistoryLevel));
-    	
     	List<Deployer> deployers = new ArrayList<>();
         deployers.add(new RulesDeployer());
         engineConfiguration.setCustomPostDeployers(deployers);
-        
         List<Resource> resources = new ArrayList<>(Arrays.asList(engineConfiguration.getDeploymentResources()));
-        Resource[] supportingResources = processResources();
+        Resource[] supportingResources = loadBPMResources();
         if(supportingResources != null && supportingResources.length > 0){
-        	resources.addAll(Arrays.asList(processResources()));
+        	resources.addAll(Arrays.asList(loadBPMResources()));
         }
         Resource[] resss = new Resource[resources.size()];
         engineConfiguration.setDeploymentResources(resources.toArray(resss)); 
@@ -128,15 +146,20 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
 //		return new JpaTransactionManager(emf);
 //	}
     
-    protected Resource[] processResources() throws IOException{ 
+    protected Resource[] loadBPMResources() throws IOException{ 
+    	List<Resource> bpmResources = new ArrayList<Resource>();
+    	addBPMResources(bpmResources,definitions);
+    	addBPMResources(bpmResources,rules);
+  		return bpmResources.toArray(new Resource[bpmResources.size()]);
+	}
+    
+    private void addBPMResources(List<Resource> bpmResources, List<String> bpmResourcePath) throws IOException{
     	PathMatchingResourcePatternResolver pmrs = new PathMatchingResourcePatternResolver();
-    	List<Resource> processDefinitions = new ArrayList<Resource>();
-    	for(String processDefinition: definitions){
-    		Resource[] processDefResources = pmrs.getResources(processDefinition);
-    		for(Resource def: processDefResources){
-    			processDefinitions.add(def);
+    	for(String path: bpmResourcePath){
+    		Resource[] resources = pmrs.getResources(path);
+    		for(Resource resource: resources){
+    			bpmResources.add(resource);
     		}
     	}
-  		return processDefinitions.toArray(new Resource[processDefinitions.size()]);
-	} 
+    }
 }
