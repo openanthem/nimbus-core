@@ -14,10 +14,9 @@ import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFacto
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * Behavior factory class to inject framework overrides to default Activiti Behavior for different tasks.
- * Currently the framework provides a custom implementation for User tasks and Call Activity
+ * <p> This class provides the ability to enhance default implementation of task behavior provided by Activiti.
+ * 
  * @author Jayant Chaudhuri
- *
  *
  */
 public class ActivitiBehaviorFactory extends DefaultActivityBehaviorFactory {
@@ -25,17 +24,20 @@ public class ActivitiBehaviorFactory extends DefaultActivityBehaviorFactory {
 	private String[] frameworkParameters = new String[]{"processGatewayContext","pxhelp"};
 	public static final String TARGET_PARAMETER_PATH = "fx_TargetParameterPath";
 
+	/**
+	 * Override the default behavior for user task. See {@link ActivitiUserTaskActivityBehavior}
+	 */
 	@Override
 	public UserTaskActivityBehavior createUserTaskActivityBehavior(UserTask userTask) {
 		ActivitiUserTaskActivityBehavior platformUserTaskBehavior = new ActivitiUserTaskActivityBehavior(userTask);
 		return platformUserTaskBehavior;
 	}
 	
+	/**
+	 * Override the default behavior for call activity. See {@link ActivitiCallActivityBehavior}
+	 */
 	@Override
 	public CallActivityBehavior createCallActivityBehavior(CallActivity callActivity) {
-		
-		//The framework adds few custom variables that needs to be passed in all sub processes. 
-		//The code below adds those standard in and out parameters
 		List<IOParameter> inParameters = callActivity.getInParameters();
 		List<IOParameter> outParameters = callActivity.getOutParameters();
 		for(String frameworkParameter: frameworkParameters){
@@ -43,7 +45,6 @@ public class ActivitiBehaviorFactory extends DefaultActivityBehaviorFactory {
 			inParameters.add(param);
 			outParameters.add(param);
 		}
-		
 	    String expressionRegex = "\\$+\\{+.+\\}";
 	    ActivitiCallActivityBehavior callActivityBehaviour = null;
 	    if (StringUtils.isNotEmpty(callActivity.getCalledElement()) && callActivity.getCalledElement().matches(expressionRegex)) {
@@ -51,7 +52,6 @@ public class ActivitiBehaviorFactory extends DefaultActivityBehaviorFactory {
 	    } else {
 	      callActivityBehaviour = new ActivitiCallActivityBehavior(callActivity.getCalledElement(), callActivity.getMapExceptions()); 
 	    }
-	    
 	    for(IOParameter outputParam: outParameters){
 	    	if(outputParam.getSource() != null && outputParam.getSource().equals(TARGET_PARAMETER_PATH)){
 	    		callActivityBehaviour.setMappedParameterPath(outputParam.getTarget());

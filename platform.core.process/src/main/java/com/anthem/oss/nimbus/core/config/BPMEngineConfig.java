@@ -30,6 +30,9 @@ import org.springframework.transaction.PlatformTransactionManager;
 import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiBehaviorFactory;
 import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiDAO;
 import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiExpressionManager;
+import com.anthem.oss.nimbus.core.bpm.activiti.AssignmentTaskExtension;
+import com.anthem.oss.nimbus.core.bpm.activiti.PageTaskExtension;
+import com.anthem.oss.nimbus.core.bpm.activiti.UserTaskExtension;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -39,8 +42,8 @@ import lombok.Setter;
  *
  * <p>This class provides the ability to configure/configures following BPM attributes:
  * <ul>
- * <li>Behavior Factory.{@link com.anthem.oss.nimbus.core.bpm.activiti.ActivitiBehaviorFactory}.
- * The framework extends the default User task, Service Task and Call Activity available from Activiti and adds additional capabilities to support framework needs
+ * <li>Behavior Factory.{@link ActivitiBehaviorFactory}.
+ * The framework extends the default User task, Service Task and Call Activity available from Activiti and adds additional capabilities to support framework needs.
  * <li>Audit History level
  * <li>Load process definition from a configured location.
  * <li>Load process rules from a configured location.
@@ -48,7 +51,7 @@ import lombok.Setter;
  * For definition of entity rules, please refer{@link  com.anthem.oss.nimbus.core.rules.drools.DroolsRulesEngineFactory}
  * Process rules are defined as rules that can be defined across multiple entities and across flows. 
  * These rules are loaded using a single KnowlegeBuilder and can be directly accesses within bpmn processes as business rules task/ service task.
- * <li>Overrides the default expression manager to enhance expression capability. See {@link com.anthem.oss.nimbus.core.bpm.activiti.ActivitiExpressionManager}
+ * <li>Overrides the default expression manager to enhance expression capability. See {@link ActivitiExpressionManager}
  * <li>Datasource
  * <li>Custom Deployers
  * </ul>
@@ -160,10 +163,6 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
     	return new ActivitiDAO(jdbcTemplate);
     }
     
-    /**
-     * 
-     * @return
-     */
     @Bean
    	public DefaultActivityBehaviorFactory platformActivityBehaviorFactory() {
    		return new ActivitiBehaviorFactory();
@@ -173,6 +172,16 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
     public TaskExecutor taskExecutor() {
         return new SimpleAsyncTaskExecutor();
     }
+    
+    @Bean
+    public UserTaskExtension pageTaskExtension() {
+        return new PageTaskExtension();
+    }
+    
+    @Bean
+    public UserTaskExtension assignmentTaskExtension() {
+        return new AssignmentTaskExtension();
+    }    
     
    
     
