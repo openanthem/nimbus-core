@@ -3,19 +3,19 @@
  */
 package com.anthem.oss.nimbus.core.bpm;
 
-import java.util.Map;
-
 import org.activiti.engine.delegate.DelegateExecution;
+import org.apache.commons.lang.StringUtils;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.AssignmentTask.TaskStatus;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Behavior;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
+import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandMessageConverter;
-import com.anthem.oss.nimbus.core.domain.command.execution.ExecuteOutput.BehaviorExecute;
 import com.anthem.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
+import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
@@ -34,19 +34,31 @@ public class DefaultExpressionHelper extends AbstractExpressionHelper {
 		this.converter = converter;
 	}
 
-	final public Object _get(CommandMessage cmdMsg, DelegateExecution execution, String resolvedUri, Object... args) {
+	final public void _get(CommandMessage cmdMsg, DelegateExecution execution, String resolvedUri, Object... args) {
 		CommandMessage coreCmdMsg = new CommandMessage();
-		Command command = CommandBuilder.withUri(resolvedUri.toString()).getCommand();
+		String refId = cmdMsg.getCommand().getRefId(Type.ProcessAlias);
+		StringBuilder domainUri = new StringBuilder(resolvedUri.toString());
+		if(refId != null){
+			domainUri.append(Constants.SEPARATOR_URI_VALUE.code).append(refId);
+		}
+		Command command = CommandBuilder.withUri(domainUri.toString()).getCommand();		
 		command.setAction(Action._get);
-		command.templateBehaviors().add(Behavior.$execute);
+		command.templateBehaviors().add(Behavior.$execute); 		
 		coreCmdMsg.setCommand(command);
 		coreCmdMsg.setRawPayload(cmdMsg.getRawPayload());
-		Object obj = executeProcess(coreCmdMsg);
-
-		if (obj instanceof MultiExecuteOutput) {
-			return ((Map<Integer, BehaviorExecute<?>>) ((MultiExecuteOutput) obj).getResult()).get(0).getResult();
+		MultiExecuteOutput obj = (MultiExecuteOutput) executeProcess(coreCmdMsg);
+		QuadModel<?, ?> quadModel = UserEndpointSession.getOrThrowEx(cmdMsg.getCommand());
+		StringBuilder targetParamPath = null;
+		if (args.length > 0) {
+			if(args[0] != null) {
+				targetParamPath = new StringBuilder((String)args[0]);
+			}
+		}		 
+		if(targetParamPath != null && !StringUtils.isEmpty(targetParamPath.toString())) {
+			quadModel.getCore().findParamByPath(targetParamPath.toString()).setState(obj.getSingleResult());
+		} else {
+			quadModel.getCore().setState(obj.getSingleResult());
 		}
-		return obj;
 	}
 
 	final public Object _update(CommandMessage cmdMsg, DelegateExecution execution, String resolvedUri, Object... args) {
@@ -67,19 +79,21 @@ public class DefaultExpressionHelper extends AbstractExpressionHelper {
 		command.setAction(Action._search);
 		command.templateBehaviors().add(Behavior.$execute);
 		coreCmdMsg.setCommand(command);
-		coreCmdMsg.setRawPayload((String) args[0]);
+		String payload = ((String)args[0]).replaceFirst("#refId", cmdMsg.getCommand().getRefId(Type.ProcessAlias));
+		coreCmdMsg.setRawPayload(payload);
 		Object obj = executeProcess(coreCmdMsg);
 		return obj;
 	}
 
-	final public Object _new(CommandMessage cmdMsg, DelegateExecution execution, String resolvedUri, Object... args) {
+	final public void _new(CommandMessage cmdMsg, DelegateExecution execution, String resolvedUri, Object... args) {
 		CommandMessage coreCmdMsg = new CommandMessage();
 		Command command = CommandBuilder.withUri(resolvedUri.toString()).getCommand();
 		command.setAction(Action._new);
 		command.templateBehaviors().add(Behavior.$execute);
 		coreCmdMsg.setCommand(command);
-		Object obj = executeProcess(coreCmdMsg);
-		return obj;
+		MultiExecuteOutput obj = (MultiExecuteOutput) executeProcess(coreCmdMsg);
+		QuadModel<?, ?> quadModel = UserEndpointSession.getOrThrowEx(cmdMsg.getCommand());
+		quadModel.getCore().setState(obj.getSingleResult());
 	}
 
 	final public Object _delete(CommandMessage cmdMsg, DelegateExecution execution, String resolvedUri, Object... args) {
@@ -98,7 +112,9 @@ public class DefaultExpressionHelper extends AbstractExpressionHelper {
 		Command command = CommandBuilder.withUri(resolvedUri.toString()).getCommand();
 		coreCmdMsg.setCommand(command);
 		if (args.length > 1)
-			coreCmdMsg.setRawPayload((String) args[1]);
+			coreCmdMsg.setRawPayload(((String)args[1]).replaceFirst("#refId", cmdMsg.getCommand().getRefId(Type.ProcessAlias)));
+		else
+			coreCmdMsg.setRawPayload(cmdMsg.getRawPayload());
 		MultiExecuteOutput obj = (MultiExecuteOutput) executeProcess(coreCmdMsg);
 		QuadModel<?, ?> quadModel = UserEndpointSession.getOrThrowEx(cmdMsg.getCommand());
 		StringBuilder targetParamPath = new StringBuilder((String) args[0]);
@@ -172,6 +188,24 @@ public class DefaultExpressionHelper extends AbstractExpressionHelper {
 		QuadModel<?, ?> entityQuadModel = UserEndpointSession.getOrThrowEx(cmdMsg.getCommand());
 		taskQuadModel.getCore().findStateByPath("/internalStatus").setState(TaskStatus.OPEN);
 		taskQuadModel.getCore().findStateByPath("/entity").setState(entityQuadModel.getCore().getState());
+	}
+	
+	final public void _setInternal(CommandMessage cmdMsg, DelegateExecution execution, 
+			String resolvedUri, Object... args){
+		CommandMessage coreCmdMsg = new CommandMessage();
+		Command command = CommandBuilder.withUri(resolvedUri.toString()).getCommand();
+		coreCmdMsg.setCommand(command);
+		command.getRootDomainElement().setRefId(cmdMsg.getCommand().getRefId(Type.ProcessAlias));
+		if(args.length > 1)
+			coreCmdMsg.setRawPayload((String)args[1]);
+		MultiExecuteOutput obj =  (MultiExecuteOutput)executeProcess(coreCmdMsg);
+		QuadModel<?,?> quadModel = UserEndpointSession.getOrThrowEx(cmdMsg.getCommand());
+		StringBuilder targetParamPath = new StringBuilder((String)args[0]);
+		if(!StringUtils.isEmpty(targetParamPath.toString())) {
+			quadModel.getCore().findParamByPath(targetParamPath.toString()).setState(obj.getSingleResult());
+		} else {
+			quadModel.getCore().setState(obj.getSingleResult());
+		}
 	}
 
 }
