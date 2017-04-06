@@ -35,7 +35,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * This class configures BPM functions within the framework. Activiti BPM framework is being used to enable BPM capabilities.
+ * <p>This class configures BPM functions within the framework. Activiti BPM framework is being used to enable BPM capabilities.
  *
  * <p>This class provides the ability to configure/configures following BPM attributes:
  * <ul>
@@ -50,6 +50,9 @@ import lombok.Setter;
  * These rules are loaded using a single KnowlegeBuilder and can be directly accesses within bpmn processes as business rules task/ service task.
  * <li>Overrides the default expression manager to enhance expression capability. See {@link com.anthem.oss.nimbus.core.bpm.activiti.ActivitiExpressionManager}
  * <li>Datasource
+ * <li>Custom Deployers
+ * </ul>
+ * 
  * @author Jayant Chaudhuri
  * 
  */
@@ -76,12 +79,73 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
 	private List<String> definitions = new ArrayList<String>();
 	
 	@Getter @Setter
-	private List<String> rules = new ArrayList<String>();	
+	private List<String> rules = new ArrayList<String>();
+	
+	@Getter @Setter
+	private List<String> customDeployers = new ArrayList<String>();	
 	
 	@Autowired
 	private ActivitiExpressionManager platformExpressionManager;
 	
-	@Bean
+    @Bean
+    public SpringProcessEngineConfiguration springProcessEngineConfiguration(
+            DataSource dataSource,
+            PlatformTransactionManager jpaTransactionManager,
+            SpringAsyncExecutor springAsyncExecutor) throws Exception {
+    	SpringProcessEngineConfiguration engineConfiguration = this.baseSpringProcessEngineConfiguration(dataSource, jpaTransactionManager, springAsyncExecutor);
+    	engineConfiguration.setActivityBehaviorFactory(platformActivityBehaviorFactory());
+    	engineConfiguration.setHistoryLevel(HistoryLevel.getHistoryLevelForKey(processHistoryLevel));
+    	addCustomDeployers(engineConfiguration);
+    	
+        List<Resource> resources = new ArrayList<>(Arrays.asList(engineConfiguration.getDeploymentResources()));
+        Resource[] supportingResources = loadBPMResources();
+        if(supportingResources != null && supportingResources.length > 0){
+        	resources.addAll(Arrays.asList(loadBPMResources()));
+        }
+        engineConfiguration.setDeploymentResources(resources.toArray(new Resource[resources.size()])); 
+        engineConfiguration.setExpressionManager(platformExpressionManager);
+        return engineConfiguration;
+    }
+    
+    /**
+     * <p>Custom deployers provide the ability for client to control how process definitions and rules can be deployed.
+     * This can come handy when a client already has the business process and/or rules defined in some other format. 
+     * The custom deployer can read custom format and convert into a structure that can be processed by the framework.
+     * 
+     * <p>The framework by default adds the custom Rules Deployer
+     * 
+     * @param engineConfiguration
+     */
+    protected void addCustomDeployers(SpringProcessEngineConfiguration engineConfiguration) throws Exception{
+    	List<Deployer> deployers = new ArrayList<>();
+        deployers.add(new RulesDeployer());
+        if(customDeployers != null){
+        	for(String customDeployerClass: customDeployers){
+        		Class<?> clazz = Class.forName(customDeployerClass);
+        		deployers.add((Deployer)clazz.newInstance());        		
+        	}
+        }
+        engineConfiguration.setCustomPostDeployers(deployers);    	
+    }
+    
+    protected Resource[] loadBPMResources() throws IOException{ 
+    	List<Resource> bpmResources = new ArrayList<Resource>();
+    	addBPMResources(bpmResources,definitions);
+    	addBPMResources(bpmResources,rules);
+  		return bpmResources.toArray(new Resource[bpmResources.size()]);
+	}
+    
+    private void addBPMResources(List<Resource> bpmResources, List<String> bpmResourcePath) throws IOException{
+    	PathMatchingResourcePatternResolver pmrs = new PathMatchingResourcePatternResolver();
+    	for(String path: bpmResourcePath){
+    		Resource[] resources = pmrs.getResources(path);
+    		for(Resource resource: resources){
+    			bpmResources.add(resource);
+    		}
+    	}
+    }
+   
+    @Bean
     public JdbcTemplate jdbcTemplate(DataSource dataSource) {
         return new JdbcTemplate(dataSource);
     }
@@ -95,30 +159,11 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
     public ActivitiDAO platformProcessDAO(JdbcTemplate jdbcTemplate) {
     	return new ActivitiDAO(jdbcTemplate);
     }
-	    
-	    
-    @Bean
-    public SpringProcessEngineConfiguration springProcessEngineConfiguration(
-            DataSource dataSource,
-            PlatformTransactionManager jpaTransactionManager,
-            SpringAsyncExecutor springAsyncExecutor) throws IOException {
-    	SpringProcessEngineConfiguration engineConfiguration = this.baseSpringProcessEngineConfiguration(dataSource, jpaTransactionManager, springAsyncExecutor);
-    	engineConfiguration.setActivityBehaviorFactory(platformActivityBehaviorFactory());
-    	engineConfiguration.setHistoryLevel(HistoryLevel.getHistoryLevelForKey(processHistoryLevel));
-    	List<Deployer> deployers = new ArrayList<>();
-        deployers.add(new RulesDeployer());
-        engineConfiguration.setCustomPostDeployers(deployers);
-        List<Resource> resources = new ArrayList<>(Arrays.asList(engineConfiguration.getDeploymentResources()));
-        Resource[] supportingResources = loadBPMResources();
-        if(supportingResources != null && supportingResources.length > 0){
-        	resources.addAll(Arrays.asList(loadBPMResources()));
-        }
-        Resource[] resss = new Resource[resources.size()];
-        engineConfiguration.setDeploymentResources(resources.toArray(resss)); 
-        engineConfiguration.setExpressionManager(platformExpressionManager);
-        return engineConfiguration;
-    }
     
+    /**
+     * 
+     * @return
+     */
     @Bean
    	public DefaultActivityBehaviorFactory platformActivityBehaviorFactory() {
    		return new ActivitiBehaviorFactory();
@@ -146,20 +191,4 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
 //		return new JpaTransactionManager(emf);
 //	}
     
-    protected Resource[] loadBPMResources() throws IOException{ 
-    	List<Resource> bpmResources = new ArrayList<Resource>();
-    	addBPMResources(bpmResources,definitions);
-    	addBPMResources(bpmResources,rules);
-  		return bpmResources.toArray(new Resource[bpmResources.size()]);
-	}
-    
-    private void addBPMResources(List<Resource> bpmResources, List<String> bpmResourcePath) throws IOException{
-    	PathMatchingResourcePatternResolver pmrs = new PathMatchingResourcePatternResolver();
-    	for(String path: bpmResourcePath){
-    		Resource[] resources = pmrs.getResources(path);
-    		for(Resource resource: resources){
-    			bpmResources.add(resource);
-    		}
-    	}
-    }
 }
