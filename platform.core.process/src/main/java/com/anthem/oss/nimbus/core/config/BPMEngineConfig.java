@@ -14,12 +14,9 @@ import org.activiti.engine.impl.rules.RulesDeployer;
 import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.activiti.spring.boot.AbstractProcessEngineAutoConfiguration;
-import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
@@ -34,9 +31,12 @@ import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiBehaviorFactory;
 import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiDAO;
 import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiExpressionManager;
 
+import lombok.Getter;
+import lombok.Setter;
+
 
 @Configuration
-//@AutoConfigureAfter(value={DataSourceAutoConfiguration.class})
+@ConfigurationProperties(prefix="process")
 public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
 	
 	@Value("${process.database.driver}") 
@@ -54,8 +54,8 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
 	@Value("${process.history.level}") 
 	private String processHistoryLevel;	
 	
-	@Autowired
-	private DataSource dataSource;
+	@Getter @Setter
+	private List<String> definitions = new ArrayList<String>();
 	
 	@Autowired
 	private ActivitiExpressionManager platformExpressionManager;
@@ -128,20 +128,15 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
 //		return new JpaTransactionManager(emf);
 //	}
     
-    
-
-    
-    protected Resource[] processResources() { 
-        try {
-        	PathMatchingResourcePatternResolver pmrs = new PathMatchingResourcePatternResolver();
-        	//Resource[] rules = pmrs.getResources("rules-sample1/**.drl");
-            Resource[] processDefs = pmrs.getResources("process-defs/**.xml");
-			return ArrayUtils.addAll(processDefs);
-		} catch (IOException e) {
-			
-		}
-		return null;
-    } 
-	
-
+    protected Resource[] processResources() throws IOException{ 
+    	PathMatchingResourcePatternResolver pmrs = new PathMatchingResourcePatternResolver();
+    	List<Resource> processDefinitions = new ArrayList<Resource>();
+    	for(String processDefinition: definitions){
+    		Resource[] processDefResources = pmrs.getResources(processDefinition);
+    		for(Resource def: processDefResources){
+    			processDefinitions.add(def);
+    		}
+    	}
+  		return processDefinitions.toArray(new Resource[processDefinitions.size()]);
+	} 
 }
