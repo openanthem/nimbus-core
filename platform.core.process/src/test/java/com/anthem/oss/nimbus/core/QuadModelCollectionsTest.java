@@ -191,6 +191,19 @@ public class QuadModelCollectionsTest {
 		// param sac : ListParam
 		assertTrue(ListParam.class.isAssignableFrom(pSAC_col.getClass()));
 		
+		// array-{primitive}
+		Param<String[]> pArrayString_types = q.getCore().findParamByPath("/types");
+		assertNotNull(pArrayString_types);
+		assertEquals("array-string", pArrayString_types.getConfig().getType().getName());
+		assertNull(pArrayString_types.getState());
+		
+		String[] types = new String[]{"ONE", "TWO"};
+		
+		// set
+		pArrayString_types.setState(types);
+		assertSame(types, pArrayString_types.getState());
+		assertSame(types, pArrayString_types.getLeafState());
+		
 	}
 	
 	@Test

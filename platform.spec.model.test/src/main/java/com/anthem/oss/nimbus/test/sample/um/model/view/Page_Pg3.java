@@ -50,7 +50,7 @@ public class Page_Pg3 {
 	
 	
 	// collection mapping 1: primitive list direct mapping
-	@Path private List<String> types;
+	@Path private String[] types;
 
 	// collection mapping 2: List of CoreModel mapping directly to List of CoreModel
 	@Path("/serviceLines") private List<ServiceLine> noConversionAttachedColServiceLines;
