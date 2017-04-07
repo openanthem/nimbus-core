@@ -3,6 +3,8 @@
  */
 package com.anthem.oss.nimbus.core.bpm;
 
+import java.util.Optional;
+
 import org.activiti.engine.delegate.DelegateExecution;
 import org.apache.commons.lang.StringUtils;
 
@@ -15,7 +17,6 @@ import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandMessageConverter;
 import com.anthem.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
-import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
@@ -27,7 +28,9 @@ import com.anthem.oss.nimbus.core.utils.ProcessBeanResolver;
  *
  */
 public class DefaultExpressionHelper extends AbstractExpressionHelper {
-
+	
+	public static final String PLATFORM_TYPE_ALIAS="#";
+	
 	CommandMessageConverter converter;
 	
 	public DefaultExpressionHelper(CommandMessageConverter converter) {
@@ -36,11 +39,7 @@ public class DefaultExpressionHelper extends AbstractExpressionHelper {
 
 	final public void _get(CommandMessage cmdMsg, DelegateExecution execution, String resolvedUri, Object... args) {
 		CommandMessage coreCmdMsg = new CommandMessage();
-		String refId = cmdMsg.getCommand().getRefId(Type.ProcessAlias);
-		StringBuilder domainUri = new StringBuilder(resolvedUri.toString());
-		if(refId != null){
-			domainUri.append(Constants.SEPARATOR_URI_VALUE.code).append(refId);
-		}
+		String domainUri = reconstructWithRefId(cmdMsg, resolvedUri);
 		Command command = CommandBuilder.withUri(domainUri.toString()).getCommand();		
 		command.setAction(Action._get);
 		command.templateBehaviors().add(Behavior.$execute); 		
@@ -111,10 +110,12 @@ public class DefaultExpressionHelper extends AbstractExpressionHelper {
 		CommandMessage coreCmdMsg = new CommandMessage();
 		Command command = CommandBuilder.withUri(resolvedUri.toString()).getCommand();
 		coreCmdMsg.setCommand(command);
-		if (args.length > 1)
-			coreCmdMsg.setRawPayload(((String)args[1]).replaceFirst("#refId", cmdMsg.getCommand().getRefId(Type.ProcessAlias)));
-		else
+		if (args.length > 1) {
+			String payload = reconstructWithRefId(cmdMsg, ((String)args[1]));
+			coreCmdMsg.setRawPayload(payload);		
+		} else {
 			coreCmdMsg.setRawPayload(cmdMsg.getRawPayload());
+		}
 		MultiExecuteOutput obj = (MultiExecuteOutput) executeProcess(coreCmdMsg);
 		QuadModel<?, ?> quadModel = UserEndpointSession.getOrThrowEx(cmdMsg.getCommand());
 		StringBuilder targetParamPath = new StringBuilder((String) args[0]);
@@ -206,6 +207,18 @@ public class DefaultExpressionHelper extends AbstractExpressionHelper {
 		} else {
 			quadModel.getCore().setState(obj.getSingleResult());
 		}
+	}
+	
+	private String reconstructWithRefId(CommandMessage cmdMsg , String uri) {
+		String refIdAlias = StringUtils.substringBetween(uri, PLATFORM_TYPE_ALIAS);
+		Type alias = Type.findByDesc(refIdAlias);		
+		String refId = cmdMsg.getCommand().getRefId(Optional.ofNullable(alias).orElse(null));
+		if(refId != null){
+			String resolvedUri = StringUtils.replace(uri, refIdAlias, refId);
+			resolvedUri = StringUtils.remove(resolvedUri, PLATFORM_TYPE_ALIAS);
+			return resolvedUri;
+		}	
+		return uri;
 	}
 
 }

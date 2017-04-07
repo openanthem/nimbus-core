@@ -27,20 +27,37 @@ abstract public class CommandElement implements Serializable {
 
 	public enum Type {
 		
-		ClientAlias,
+		ClientAlias("ClientAlias"),
 		
-		ClientOrgAlias,
+		ClientOrgAlias("ClientOrgAlias"),
 		
-		AppAlias,
+		AppAlias("AppAlias"),
 		
-		PlatformMarker,
+		PlatformMarker("PlatformMarker"),
 		
-		DomainAlias,
+		DomainAlias("DomainAlias"),
 		
-		ProcessAlias,
+		ProcessAlias("ProcessAlias"),
 		//Action,
 		
-		ParamName;
+		ParamName("ParamName");
+		
+		final private String desc;
+		
+		private Type(String desc) {
+			this.desc = desc;
+		}
+		
+		public String getDesc() {
+               return desc;
+		}
+		
+		public static Type findByDesc(String desc) {
+			for(Type a : values()) {
+                if(a.getDesc().equals(desc)) return a;
+			}
+			return null;			
+		}
 		
 		public static final List<Type> allowedRecursive = Arrays.asList(DomainAlias);
 	}
