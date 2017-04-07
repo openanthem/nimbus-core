@@ -37,7 +37,7 @@ public class DefaultExpressionHelper extends AbstractExpressionHelper {
 		this.converter = converter;
 	}
 
-	final public void _get(CommandMessage cmdMsg, DelegateExecution execution, String resolvedUri, Object... args) {
+	final public Object _get(CommandMessage cmdMsg, DelegateExecution execution, String resolvedUri, Object... args) {
 		CommandMessage coreCmdMsg = new CommandMessage();
 		String domainUri = reconstructWithRefId(cmdMsg, resolvedUri);
 		Command command = CommandBuilder.withUri(domainUri.toString()).getCommand();		
@@ -46,18 +46,7 @@ public class DefaultExpressionHelper extends AbstractExpressionHelper {
 		coreCmdMsg.setCommand(command);
 		coreCmdMsg.setRawPayload(cmdMsg.getRawPayload());
 		MultiExecuteOutput obj = (MultiExecuteOutput) executeProcess(coreCmdMsg);
-		QuadModel<?, ?> quadModel = UserEndpointSession.getOrThrowEx(cmdMsg.getCommand());
-		StringBuilder targetParamPath = null;
-		if (args.length > 0) {
-			if(args[0] != null) {
-				targetParamPath = new StringBuilder((String)args[0]);
-			}
-		}		 
-		if(targetParamPath != null && !StringUtils.isEmpty(targetParamPath.toString())) {
-			quadModel.getCore().findParamByPath(targetParamPath.toString()).setState(obj.getSingleResult());
-		} else {
-			quadModel.getCore().setState(obj.getSingleResult());
-		}
+		return obj.getSingleResult();
 	}
 
 	final public Object _update(CommandMessage cmdMsg, DelegateExecution execution, String resolvedUri, Object... args) {
@@ -154,7 +143,7 @@ public class DefaultExpressionHelper extends AbstractExpressionHelper {
 
 		quadModel.getView().findParamByPath(inputPath).setState(args[0]);
 	}
-
+	
 	final public void _execute(CommandMessage cmdMsg, DelegateExecution execution, String resolvedUri, Object... args) {
 		CommandMessage coreCmdMsg = new CommandMessage();
 		Command command = CommandBuilder.withUri(resolvedUri.toString()).getCommand();
@@ -191,22 +180,23 @@ public class DefaultExpressionHelper extends AbstractExpressionHelper {
 		taskQuadModel.getCore().findStateByPath("/entity").setState(entityQuadModel.getCore().getState());
 	}
 	
+	/**
+	 * Use this method to set the value of the resolved uri path to the internal execution variable passed in the argument
+	 * e.g. expression: {@code _setInternal('/patientReferred','patient') } will set the execution variable by name 'patient' to the path 
+	 * {@code /patientReferred} of the core model. The execution variable may be coming from the result variable of a previous service task.
+	 * 
+	 */
 	final public void _setInternal(CommandMessage cmdMsg, DelegateExecution execution, 
 			String resolvedUri, Object... args){
-		CommandMessage coreCmdMsg = new CommandMessage();
+		QuadModel<?, Object> quadModel = UserEndpointSession.getOrThrowEx(cmdMsg.getCommand());
 		Command command = CommandBuilder.withUri(resolvedUri.toString()).getCommand();
-		coreCmdMsg.setCommand(command);
-		command.getRootDomainElement().setRefId(cmdMsg.getCommand().getRefId(Type.ProcessAlias));
-		if(args.length > 1)
-			coreCmdMsg.setRawPayload((String)args[1]);
-		MultiExecuteOutput obj =  (MultiExecuteOutput)executeProcess(coreCmdMsg);
-		QuadModel<?,?> quadModel = UserEndpointSession.getOrThrowEx(cmdMsg.getCommand());
-		StringBuilder targetParamPath = new StringBuilder((String)args[0]);
-		if(!StringUtils.isEmpty(targetParamPath.toString())) {
-			quadModel.getCore().findParamByPath(targetParamPath.toString()).setState(obj.getSingleResult());
+		String inputPath = command.getAbsoluteDomainUri();		
+		Object obj = execution.getVariable((String)args[0]);
+		if(StringUtils.isEmpty(inputPath)){
+			quadModel.getCore().setState(obj);
 		} else {
-			quadModel.getCore().setState(obj.getSingleResult());
-		}
+			quadModel.getCore().findParamByPath(inputPath).setState(obj);
+		}		
 	}
 	
 	private String reconstructWithRefId(CommandMessage cmdMsg , String uri) {
