@@ -147,7 +147,11 @@ public class EntityConfigBuilder extends AbstractEntityConfigBuilder {
 	
 	@Override
 	protected <T, P> ParamType buildParamType(ModelConfig<T> mConfig, ParamConfig<P> pConfig, ParamType.CollectionType colType, Class<?> pDirectOrColElemType, /*MapsTo.Path mapsToPath, */EntityConfigVistor visitedModels) {
-		if(colType!=null) { //handle collections first
+		if(ParamType.CollectionType.array==colType && isPrimitive(pDirectOrColElemType)) { // handle primitive array first
+			ParamType type = createParamType(true, pDirectOrColElemType, mConfig, visitedModels);
+			return type;
+			
+		} else if(colType!=null) { //handle collections second
 			//create nested collection type
 			ParamType.NestedCollection<P> colModelType = createNestedCollectionType(colType);
 			
@@ -160,13 +164,13 @@ public class EntityConfigBuilder extends AbstractEntityConfigBuilder {
 			colModelType.setElementConfig(colElemParamConfig);
 
 			//create collection element type (and element model config)
-			ParamType colElemType = createParamType(pDirectOrColElemType, colModelConfig, visitedModels);
+			ParamType colElemType = createParamType(false, pDirectOrColElemType, colModelConfig, visitedModels);
 			colElemParamConfig.setType(colElemType);
 			
 			return colModelType;
 			
 		} else {
-			ParamType type = createParamType(pDirectOrColElemType, mConfig, visitedModels);
+			ParamType type = createParamType(true, pDirectOrColElemType, mConfig, visitedModels);
 			return type;
 		}
 	}
