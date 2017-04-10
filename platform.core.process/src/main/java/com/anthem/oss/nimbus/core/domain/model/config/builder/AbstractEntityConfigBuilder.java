@@ -472,22 +472,22 @@ abstract public class AbstractEntityConfigBuilder {
 		return nestedColType;
 	}
 	
-	protected <T, P> ParamType createParamType(Class<P> determinedType, ModelConfig<?> mConfig, EntityConfigVistor visitedModels) {
+	protected <T, P> ParamType createParamType(boolean isArray, Class<P> determinedType, ModelConfig<?> mConfig, EntityConfigVistor visitedModels) {
 		final ParamType pType;
 		if(isPrimitive(determinedType)) {	//Primitives bare or with wrapper & String
 			String name = ClassUtils.getShortNameAsProperty(ClassUtils.resolvePrimitiveIfNecessary(determinedType));
-			pType = new ParamType.Field(name, determinedType);
+			pType = new ParamType.Field(isArray, name, determinedType);
 
 		} else if(lookUpTypeClassMapping(determinedType)!=null) { //custom mapping overrides
 			String name = lookUpTypeClassMapping(determinedType);
-			pType = new ParamType.Field(name, determinedType);
+			pType = new ParamType.Field(isArray, name, determinedType);
 			
 		} else if(AnnotationUtils.findAnnotation(determinedType, Model.class)!=null) { 
 			String name = ClassUtils.getShortName(determinedType);
 			pType = createParamTypeNested(name, determinedType, mConfig, visitedModels);
 			
 		} else { //All others: Treat as field type instead of complex object that requires config traversal
-			pType = new ParamType.Field(ClassUtils.getShortName(determinedType), determinedType);
+			pType = new ParamType.Field(isArray, ClassUtils.getShortName(determinedType), determinedType);
 			
 		}
 		return pType;
@@ -517,13 +517,15 @@ abstract public class AbstractEntityConfigBuilder {
 	}
 	
 	protected ParamType.CollectionType determineCollectionType(Class<?> clazz) {
-		if(clazz.isArray()	||	//Array
-				Collection.class.isAssignableFrom(clazz)) { //Collection
+		if(clazz.isArray())	//Array
+			return ParamType.CollectionType.array;
+		
+		else if(Collection.class.isAssignableFrom(clazz))  //Collection
 			return ParamType.CollectionType.list;
 			
-		} else if(Page.class.isAssignableFrom(clazz)) {	//Page
+		else if(Page.class.isAssignableFrom(clazz))	//Page
 			return ParamType.CollectionType.page;
-		}
+		
 		return null;
 	}
 	

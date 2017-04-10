@@ -50,11 +50,12 @@ public class Page_Pg3 {
 	
 	
 	// collection mapping 1: primitive list direct mapping
-	@Path private List<String> types;
+	@Path private String[] types;
 
 	// collection mapping 2: List of CoreModel mapping directly to List of CoreModel
 	@Path("/serviceLines") private List<ServiceLine> noConversionAttachedColServiceLines;
-	//@Path(linked=false) private List<ServiceLine> noConversionDetachedColServiceLines;
+	
+	@Path(linked=false) private List<ServiceLine> noConversionDetachedColServiceLines;
 
 	
 	// collection mapping 4: ATTACHED: List of ViewModel mapping to List of CoreModel: ViewModel is mapped to CoreModel

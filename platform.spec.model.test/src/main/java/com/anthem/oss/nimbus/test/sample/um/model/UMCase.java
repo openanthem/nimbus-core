@@ -41,7 +41,7 @@ public class UMCase extends AbstractEntity.IdString {
 	
 	
 
-	@Getter @Setter private List<String> types;
+	@Getter @Setter private String[] types;
 	
 	@Getter @Setter private ServiceLine oneServiceLine;
 	

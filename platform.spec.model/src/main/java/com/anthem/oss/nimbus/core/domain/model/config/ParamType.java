@@ -22,6 +22,7 @@ public class ParamType implements Serializable {
 
 	
 	public enum CollectionType {
+		array,
 		list,
 		page
 	}
@@ -51,8 +52,12 @@ public class ParamType implements Serializable {
 	public static class Field extends ParamType implements Serializable {
 		private static final long serialVersionUID = 1L;
 
-		public Field(String name, Class<?> referredClass) {
-			super(false, name, referredClass);
+		public Field(boolean isArray, String name, Class<?> referredClass) {
+			super(false, resolveName(isArray, name), referredClass);
+		}
+		
+		private static String resolveName(boolean isArray, String name) {
+			return isArray ? "array-"+name : name;
 		}
 	}
 	

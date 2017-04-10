@@ -10,7 +10,6 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -123,7 +122,7 @@ public class QuadModelCollectionsTest {
 		assertNotNull(leaf);
 		
 		assertNotNull(core.getServiceLines());
-		assertNull(leaf.getServiceLines());
+		assertNotNull(leaf.getServiceLines());
 		
 		assertSame(sl, core.getServiceLines().get(0));
 		
@@ -192,6 +191,19 @@ public class QuadModelCollectionsTest {
 		// param sac : ListParam
 		assertTrue(ListParam.class.isAssignableFrom(pSAC_col.getClass()));
 		
+		// array-{primitive}
+		Param<String[]> pArrayString_types = q.getCore().findParamByPath("/types");
+		assertNotNull(pArrayString_types);
+		assertEquals("array-string", pArrayString_types.getConfig().getType().getName());
+		assertNull(pArrayString_types.getState());
+		
+		String[] types = new String[]{"ONE", "TWO"};
+		
+		// set
+		pArrayString_types.setState(types);
+		assertSame(types, pArrayString_types.getState());
+		assertSame(types, pArrayString_types.getLeafState());
+		
 	}
 	
 	@Test
@@ -227,7 +239,7 @@ public class QuadModelCollectionsTest {
 
 	
 	@Test
-	public void tc03_just_add() {
+	public void tc03_col_c_add() {
 		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		assertNotNull(q.getCore());
 
@@ -242,7 +254,7 @@ public class QuadModelCollectionsTest {
 	}
 	
 	@Test
-	public void tc04_just_get_list() {
+	public void tc04_col_c_getList() {
 		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		assertNotNull(q.getCore());
 		
@@ -251,7 +263,7 @@ public class QuadModelCollectionsTest {
 	}
 	
 	@Test
-	public void tc05_just_set_list() {
+	public void tc05_col_c_setList() {
 		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		
 		//set list
@@ -285,7 +297,7 @@ public class QuadModelCollectionsTest {
 	}
 	
 	@Test
-	public void tc06_col_nesting() {
+	public void tc06_col_c_add_nestedSet() {
 		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		
 		ServiceLine elem = new ServiceLine();
@@ -358,7 +370,7 @@ public class QuadModelCollectionsTest {
 	}
 	
 	@Test
-	public void tv02_leaf_v2c() {
+	public void tv02_leaf_attached_v2c_noConversion() {
 		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		
 		String _ALOHA = "View Says: ALOHA";
@@ -371,7 +383,7 @@ public class QuadModelCollectionsTest {
 	}
 	
 	@Test 
-	public void tv03_leaf_c2v() throws Exception{
+	public void tv03_leaf_attached_c2v_noConversion() throws Exception{
 		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		
 		String _ALOHA = "Core Says: ALOHA";
@@ -383,7 +395,7 @@ public class QuadModelCollectionsTest {
 	}
 	
 	@Test
-	public void tv04_col_v2c_just_set_noConversion() {
+	public void tv04_col_attached_v2c_set_noConversion() {
 		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		
 		//set list
@@ -428,17 +440,18 @@ public class QuadModelCollectionsTest {
 	}
 
 	@Test
-	public void tv05_col_v2c_noConversion() {
+	public void tv05_col_attached_v2c_add_noConversion() {
 		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		Model<UMCaseFlow> vUMCase = ((Model<UMCaseFlow>)q.getView());
 		assertNotNull(vUMCase);
 		
 		assertNull(vUMCase.getState());
 		
-		//if added to core via SAC, should reflect in corresponding view SAC
+		// if added to core via SAC, should reflect in corresponding view SAC
 		ListParam<ServiceLine> vpCoreAttachedServiceLines = q.getView().findParamByPath("/pg3/noConversionAttachedColServiceLines").findIfCollection();
 		assertNotNull(vpCoreAttachedServiceLines);
 		
+		// add
 		ServiceLine vp_casl_n = new ServiceLine();
 		vp_casl_n.setService("It's elementary Watson!");
 		vpCoreAttachedServiceLines.add(vp_casl_n);
@@ -464,10 +477,10 @@ public class QuadModelCollectionsTest {
 	}
 	
 	@Test
-	public void tv06_col_v2c_just_set_conversion() {
+	public void tv06_col_attached_v2c_set_conversion() {
 		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		
-		//set list
+		// set list
 		List<Section_ServiceLine> newList = new ArrayList<>();
 		
 		Section_ServiceLine sl_0 = new Section_ServiceLine();
@@ -482,7 +495,7 @@ public class QuadModelCollectionsTest {
 		assertNotNull(vp_list);
 		assertNull(vp_list.getState());
 		
-		//set
+		// set
 		vp_list.setState(newList);
 		assertNotNull(vp_list.getState());
 		
@@ -510,7 +523,7 @@ public class QuadModelCollectionsTest {
 	}
 	
 	@Test
-	public void tv07_col_v2c_conversion() {
+	public void tv07_col_attached_v2c_add_conversion() {
 		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		Model<UMCaseFlow> vUMCase = ((Model<UMCaseFlow>)q.getView());
 		assertNotNull(vUMCase);
@@ -521,6 +534,7 @@ public class QuadModelCollectionsTest {
 		assertNotNull(vpServiceLines2);
 		assertSame(0, vpServiceLines2.size());
 		
+		// add
 		Section_ServiceLine vpColElem_sl_n0 = new Section_ServiceLine();
 		vpColElem_sl_n0.setService("VIEW SAYS: It's elementary Watson!");
 		vpServiceLines2.add(vpColElem_sl_n0);
@@ -544,50 +558,52 @@ public class QuadModelCollectionsTest {
 	}
 	
 	@Test
-	public void tv08_leaf_c2v_converted() throws Exception {
+	public void tv08_leaf_attached_c2v_conversion() throws Exception {
 		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		
 		ServiceLine coreSingle = new ServiceLine();
 		coreSingle.setService("Life is Ka!");
 		
+		// set
 		q.getRoot().findParamByPath("/c/oneServiceLineConverted").setState(coreSingle);
+		
 		assertSame(coreSingle, q.getRoot().findParamByPath("/c/oneServiceLineConverted").getState());
 		assertSame(coreSingle, q.getCore().getState().getOneServiceLineConverted());
-		//Thread.sleep(1000);
 		assertNotNull(q.getRoot().findParamByPath("/v/pg3/viewAttachedOneServiceLineConverted").getState());
 		assertNotSame(coreSingle, q.getRoot().findParamByPath("/v/pg3/viewAttachedOneServiceLineConverted").getState());
 		assertSame(coreSingle.getService(), q.getRoot().findParamByPath("/v/pg3/viewAttachedOneServiceLineConverted/service").getState());
 	}
 	
 	@Test
-	public void tv09_leaf_v2c_converted() throws Exception {
+	public void tv09_leaf_attached_v2c_conversion() throws Exception {
 		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		
 		Section_ServiceLine coreSingle = new Section_ServiceLine();
 		coreSingle.setService("Life is Ka!");
 		
+		// set
 		q.getRoot().findParamByPath("/v/pg3/viewAttachedOneServiceLineConverted").setState(coreSingle);
+		
 		assertNotSame(coreSingle, q.getRoot().findParamByPath("/v/pg3/viewAttachedOneServiceLineConverted").getState());
 		assertSame(((Model<UMCaseFlow>)q.getView()).getState().getPg3().getViewAttachedOneServiceLineConverted(), q.getRoot().findParamByPath("/v/pg3/viewAttachedOneServiceLineConverted").getState());
-		//Thread.sleep(1000);
 		assertNotNull(q.getRoot().findParamByPath("/c/oneServiceLineConverted").getState());
 		assertNotSame(coreSingle, q.getRoot().findParamByPath("/c/oneServiceLineConverted").getState());
 		assertSame(coreSingle.getService(), q.getRoot().findParamByPath("/c/oneServiceLineConverted/service").getState());
 	}
 	
 	@Test
-	public void tv10_col_c2v_noConversion() {
+	public void tv10_col_attached_c2v_add_noConversion() {
 		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		Model<UMCaseFlow> vUMCase = ((Model<UMCaseFlow>)q.getView());
 		assertNotNull(vUMCase);
 		
 		assertNull(vUMCase.getState());
 		
-		//if added to core via SAC, should reflect in corresponding view SAC
-		
+		// add
 		ServiceLine sl_n = new ServiceLine();
 		sl_n.setService("It's elementary Watson!");
 		q.getCore().findParamByPath("/serviceLines").findIfCollection().add(sl_n);
+
 		UMCase core = q.getCore().getState();
 		
 		ListParam<ServiceLine> vpServiceLines = q.getView().findParamByPath("/pg3/noConversionAttachedColServiceLines").findIfCollection();
@@ -612,14 +628,12 @@ public class QuadModelCollectionsTest {
 	}
 	
 	@Test
-	public void tv11_col_c2v_converted() {
+	public void tv11_col_attached_c2v_add_conversion() {
 		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		Model<UMCaseFlow> vUMCase = ((Model<UMCaseFlow>)q.getView());
 		assertNotNull(vUMCase);
 		
 		assertNull(vUMCase.getState());
-		
-		//if added to core via SAC, should reflect in corresponding view SAC
 		
 		ServiceLine sl_n = new ServiceLine();
 		sl_n.setService("It's elementary Watson!");
@@ -674,7 +688,7 @@ public class QuadModelCollectionsTest {
 	}
 
 	@Test
-	public void tv14_leaf_detached_c2v_converted() {
+	public void tv14_leaf_detached_c2v_conversion() {
 		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		
 		ServiceLine coreSingle = new ServiceLine();
@@ -690,7 +704,7 @@ public class QuadModelCollectionsTest {
 	}
 
 	@Test
-	public void tv15_leaf_detached_v2c_converted() {
+	public void tv15_leaf_detached_v2c_conversion() {
 		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 
 		Section_ServiceLine viewModel = new Section_ServiceLine();
@@ -713,31 +727,33 @@ public class QuadModelCollectionsTest {
 
 
 	@Test
-	public void tv16_col_detached_c2v_noConversion() {
+	public void tv16_col_detached_c2v_add_noConversion() {
 		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		Model<UMCaseFlow> vUMCase = ((Model<UMCaseFlow>)q.getView());
 		assertNotNull(vUMCase);
 		
 		assertNull(vUMCase.getState());
 		
-		//if added to core via SAC, should reflect in corresponding view SAC
-		
 		ServiceLine sl_n = new ServiceLine();
 		sl_n.setService("It's elementary Watson!");
-		q.getView().findParamByPath("/pg3/noConversionDetachedColServiceLines.m").findIfCollection().add(sl_n);
 		
-		ListParam<ServiceLine> vpServiceLines = q.getView().findParamByPath("/pg3/noConversionAttachedColServiceLines").findIfCollection();
+		ListParam<ServiceLine> detachedServiceLines = q.getView().findParamByPath("/pg3/noConversionDetachedColServiceLines.m").findIfCollection();
+		assertNotNull(detachedServiceLines);
+		
+		// add
+		detachedServiceLines.add(sl_n);
+		//q.getView().findParamByPath("/pg3/noConversionDetachedColServiceLines.m").findIfCollection().add(sl_n);
+		
+		ListParam<ServiceLine> vpServiceLines = q.getView().findParamByPath("/pg3/noConversionDetachedColServiceLines").findIfCollection();
 		assertNotNull(vpServiceLines);
 		assertNotNull(vpServiceLines.getState());
 		
-		ListParam<ServiceLine> detachedServiceLines = q.getView().findParamByPath("/pg3/noConversionAttachedColServiceLines.m").findIfCollection();
-		assertNotNull(detachedServiceLines);
 		assertNotNull(detachedServiceLines.getState());
 		
 		assertSame(detachedServiceLines.size(), vpServiceLines.size());
 		assertSame(q.getView().findParamByPath("/pg3/noConversionDetachedColServiceLines.m").getState(), vpServiceLines.getState());
 		
-		Param<ServiceLine> vpServiceLine_0Param = q.getView().findParamByPath("/pg3/noConversionAttachedColServiceLines/0");
+		Param<ServiceLine> vpServiceLine_0Param = q.getView().findParamByPath("/pg3/noConversionDetachedColServiceLines/0");
 		assertNotNull(vpServiceLine_0Param);
 		
 		ListElemParam<ServiceLine> vpServiceLine_0 = vpServiceLine_0Param.findIfCollectionElem();
@@ -751,12 +767,42 @@ public class QuadModelCollectionsTest {
 	}
 
 	@Test
-	public void tv17_col_detached_v2c_noConversion() {
-		fail("not yet implemented");
+	public void tv17_col_detached_v2c_add_noConversion() {
+		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		
+		ServiceLine sl = new ServiceLine();
+		sl.setService("Its a bird..");
+		
+		// add
+		q.getView().findParamByPath("/pg3/noConversionDetachedColServiceLines").findIfCollection().add(sl);
+	
+		ListParam<ServiceLine> vpServiceLines = q.getView().findParamByPath("/pg3/noConversionDetachedColServiceLines").findIfCollection();
+		assertNotNull(vpServiceLines);
+		assertNotNull(vpServiceLines.getState());
+		
+		ListParam<ServiceLine> detachedServiceLines = q.getView().findParamByPath("/pg3/noConversionDetachedColServiceLines.m").findIfCollection();
+		assertNotNull(detachedServiceLines);
+		assertNotNull(detachedServiceLines.getState());
+		
+		assertSame(detachedServiceLines.size(), vpServiceLines.size());
+		assertSame(detachedServiceLines.getState(), vpServiceLines.getState());
+		
+		Param<ServiceLine> vpServiceLine_0Param = q.getView().findParamByPath("/pg3/noConversionDetachedColServiceLines/0");
+		assertNotNull(vpServiceLine_0Param);
+		
+		ListElemParam<ServiceLine> vpServiceLine_0 = vpServiceLine_0Param.findIfCollectionElem();
+		assertSame(sl, vpServiceLine_0Param.getState());
+		assertSame(sl, vpServiceLines.get(0));
+		assertSame(vpServiceLine_0.getState(), vpServiceLines.get(0));
+		
+		ServiceLine vp_sl_n = vpServiceLines.get(0);
+		assertNotNull(vp_sl_n);
+		assertSame(sl.getService(), vp_sl_n.getService());
+
 	}
 
 	@Test
-	public void tv18_col_detached_c2v_converted() {
+	public void tv18_col_detached_c2v_set_conversion() {
 		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		
 		ServiceLine sl_0 = new ServiceLine();
@@ -815,8 +861,62 @@ public class QuadModelCollectionsTest {
 	}
 
 	@Test
-	public void tv19_col_detached_v2c_converted() {
-		fail("not yet implemented");
+	public void tv19_col_detached_v2c_set_conversion() {
+		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		
+		Section_ServiceLine vsl1 = new Section_ServiceLine();
+		vsl1.setService("Life is Ka!");
+
+		Section_ServiceLine vsl2 = new Section_ServiceLine();
+		vsl2.setService("..and he followed the Man in the black.");
+		
+		List<Section_ServiceLine> viewServiceLinesState = new ArrayList<>();
+		viewServiceLinesState.add(vsl1);
+		viewServiceLinesState.add(vsl2);
+	
+		// core
+		ListParam<ServiceLine> detachedCoreServiceLines = q.getView().findParamByPath("/pg3/viewDetachedServiceLinesConverted.m").findIfCollection();
+		assertNotNull(detachedCoreServiceLines);
+		assertNull(detachedCoreServiceLines.getState());
+		
+		// view
+		ListParam<Section_ServiceLine> detachedViewServiceLines = q.getView().findParamByPath("/pg3/viewDetachedServiceLinesConverted").findIfCollection();
+		assertNotNull(detachedViewServiceLines);
+		assertNull(detachedViewServiceLines.getState());
+		
+		// set to view
+		detachedViewServiceLines.setState(viewServiceLinesState);
+
+		// validate core
+		assertNotNull(detachedCoreServiceLines.getState());
+		assertSame(viewServiceLinesState.size(), detachedCoreServiceLines.size());
+		
+		for(int i=0; i<viewServiceLinesState.size(); i++) {
+			Section_ServiceLine expected = viewServiceLinesState.get(i);
+			ServiceLine actual = detachedCoreServiceLines.get(i);
+			assertSame(expected.getService(), actual.getService());
+		}
+		
+		// validate view
+		assertNotNull(detachedViewServiceLines.getState());
+		assertSame(viewServiceLinesState.size(), detachedViewServiceLines.size());
+		
+		for(int i=0; i<viewServiceLinesState.size(); i++) {
+			Section_ServiceLine expected = viewServiceLinesState.get(i);
+			
+			assertSame(expected.getService(), detachedViewServiceLines.findParamByPath("/"+i+"/service").getState());
+		}
+		
+		// validate entity as a whole using leaf-state
+		List<Section_ServiceLine> detachedViewServiceLinesState = detachedViewServiceLines.getLeafState();
+		assertNotNull(detachedViewServiceLinesState);
+		assertSame(viewServiceLinesState.size(), detachedViewServiceLinesState.size());
+		
+		for(int i=0; i<viewServiceLinesState.size(); i++) {
+			Section_ServiceLine expected = viewServiceLinesState.get(i);
+			Section_ServiceLine actual = detachedViewServiceLinesState.get(i);
+			assertSame(expected.getService(), actual.getService());
+		}
 	}
 
 	
