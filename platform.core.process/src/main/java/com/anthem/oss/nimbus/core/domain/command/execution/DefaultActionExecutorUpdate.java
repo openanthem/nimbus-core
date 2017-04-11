@@ -3,7 +3,6 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
-import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
@@ -15,7 +14,6 @@ import com.anthem.oss.nimbus.core.domain.definition.EnableParamStateTree;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.AbstractEvent.SuppressMode;
 import com.anthem.oss.nimbus.core.session.UserEndpointSession;
 
 /**
@@ -51,14 +49,13 @@ public class DefaultActionExecutorUpdate extends AbstractProcessTaskExecutor {
 		}
 		
 		//Execute update with suppressMode
-		q.getEventPublisher().apply(SuppressMode.ECHO);
+		//q.getEventPublisher().apply(SuppressMode.ECHO);
 		param.setState(state);
-		q.getEventPublisher().apply(null); // should be persist only
+		//q.getEventPublisher().apply(null); // should be persist only
 		
 		//fire rules post update
 		q.getRoot().fireRules();
 		// clear the apply on event publisher
-	
 		
 		// get, new(save), replace, delete
 		return (R)Boolean.TRUE;

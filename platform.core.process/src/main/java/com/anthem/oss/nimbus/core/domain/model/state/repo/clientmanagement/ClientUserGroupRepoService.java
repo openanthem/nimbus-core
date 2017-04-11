@@ -52,8 +52,12 @@ public class ClientUserGroupRepoService {
 			Assert.notNull(parentClientEntity, "Parent Client Entity cannot be null");
 			
 			//associate clientusergroup to cliententity(org)
-			clientUserGroup.addassociatedTo(parentClientEntity);
-			cugRepo.save(clientUserGroup);
+			if(clientUserGroup.getId()!=null) {
+				cugRepo.save(clientUserGroup);
+			} else {
+				clientUserGroup.addassociatedTo(parentClientEntity);
+				cugRepo.save(clientUserGroup);
+			}
 			
 			ClientUserGroup cug = cugRepo.findByName(clientUserGroup.getName());
 			
