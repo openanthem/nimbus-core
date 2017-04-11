@@ -20,6 +20,7 @@ import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFactory;
 import com.anthem.oss.nimbus.core.session.UserEndpointSession;
 import com.anthem.oss.nimbus.core.util.JustLogit;
@@ -171,7 +172,10 @@ public abstract class AbstractProcessTaskExecutor implements ProcessTaskExecutor
 		QuadModel<?, ?> q; 
 		if(currentQModel == null) {
 			//q = qBuilder.build(cmd, (cConfig)->obj);
-			q = qBuilder.build(cmd);
+			ExecutionEntity<?, Object> e = new ExecutionEntity<>();
+			e.setCore(obj);
+			
+			q = qBuilder.build(cmd, e);
 		}
 		else{
 			//q = qBuilder.build(cmd, (cConfig)->obj,null,(fConfig)->currentQModel.getFlow().getState());
