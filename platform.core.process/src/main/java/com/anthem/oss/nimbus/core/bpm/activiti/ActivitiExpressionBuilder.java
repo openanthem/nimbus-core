@@ -33,9 +33,6 @@ public class ActivitiExpressionBuilder {
 			EXPRESSION_HELPER_PREFIX+".getResolvedUri("
 			+EXPRESSION_COMMAND_MESSAGE+",";
 	
-	public static final String PLATFORM_REQPARAM_START="<";
-	public static final String PLATFORM_REQPARAM_END=">";
-	
 	private Stack<Function> functionStack = new Stack<Function>();
 	private StringBuilder runningExpression = new StringBuilder();
 	private Map<String,String> functionToBeanMap;
