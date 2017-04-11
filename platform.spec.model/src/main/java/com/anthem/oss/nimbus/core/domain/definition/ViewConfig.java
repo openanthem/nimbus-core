@@ -280,6 +280,7 @@ public class ViewConfig {
 		String alias() default "Grid";
 		boolean onLoad() default false;
 		String url() default "";
+		boolean rowSelection() default false;
 		boolean postEventOnChange() default false;
 	}
 	

@@ -4,11 +4,15 @@
 package com.anthem.oss.nimbus.core.entity.user;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
+import javax.validation.constraints.NotNull;
 
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Execution;
+import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.entity.client.ClientEntity;
 import com.anthem.oss.nimbus.core.entity.client.user.ClientUser;
@@ -33,6 +37,9 @@ public class ClientUserGroup extends AbstractUserGroup {
 	
 	private Set<ClientEntity> associatedTo;
 	
+	@Model.Param.Values(url = "staticCodeValue-/patientGender")
+	@Getter @Setter
+	private String[] userList;
 	/**
 	 * 
 	 * @param ce
