@@ -7,13 +7,12 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.stereotype.Component;
 
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
+import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
@@ -48,17 +47,19 @@ public class DefaultMongoModelPersistenceHandler implements ModelPersistenceHand
 			
 			Class<Object> mRootClass = (Class<Object>)mRoot.getConfig().getReferredClass();
 			
-			Domain coreRoot = AnnotationUtils.findAnnotation(mRootClass, Domain.class);
-			if(coreRoot==null) {
-				throw new InvalidConfigException("Core Persistent entity must be configured with "+Domain.class.getSimpleName()+" annotation. Not found for root model: "+mRoot);
-			} 
-				
-			String coreRootAlias = coreRoot.value();
+			String alias = AnnotationUtils.findAnnotation(mRootClass, Repo.class).alias(); // TODO Move this at the repo level, so below method should only pass refId and coreClass
 			
+			if(StringUtils.isBlank(alias)) {
+				alias = AnnotationUtils.findAnnotation(mRootClass, Domain.class).value();
+				if(StringUtils.isBlank(alias)) {
+					throw new InvalidConfigException("Core Persistent entity must be configured with "+Domain.class.getSimpleName()+" annotation. Not found for root model: "+mRoot);
+				} 
+			}
+				
 			Object coreState = mRoot.getState();
 			Object coreStateId = mRoot.findParamByPath("/id").getState();
 			if(coreStateId==null) {
-				rep._new(mRootClass, coreRootAlias, coreState);
+				rep._new(mRootClass, alias, coreState);
 				return true;
 			}
 			
@@ -66,7 +67,7 @@ public class DefaultMongoModelPersistenceHandler implements ModelPersistenceHand
 			
 			String pPath = param.getPath();
 			Object pState = param.getState();
-			rep._update(coreRootAlias, coreId, pPath, pState);
+			rep._update(alias, coreId, pPath, pState);
 			return true;
 			
 		}

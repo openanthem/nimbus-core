@@ -3,12 +3,12 @@
  */
 package com.anthem.oss.nimbus.core.domain.model.state.repo.db;
 
+import java.util.List;
+
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.stereotype.Component;
 
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Command;
@@ -95,8 +95,8 @@ public class DefaultModelRepositoryFactory implements ModelRepositoryFactory, Ap
 		ModelConfig<?> mConfig = aec.getInput().getModel();
 		
 		Class<?> coreClass = mConfig.isMapped() ? mConfig.findIfMapped().getMapsTo().getReferredClass() : mConfig.getReferredClass();
-		Repo repoType = AnnotationUtils.findAnnotation(coreClass, Repo.class);
 		
+		Repo repoType = AnnotationUtils.findAnnotation(coreClass, Repo.class);
 		String beanAlias = repoType.value().name();
 		
 		return beanAlias;

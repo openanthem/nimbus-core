@@ -3,6 +3,9 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
@@ -12,6 +15,7 @@ import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
+import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.model.config.ActionExecuteConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
@@ -56,8 +60,12 @@ public class DefaultActionExecutorGet extends AbstractProcessTaskExecutor {
 		ModelConfig<?> mConfig = aec.getOutput().getModel();
 		Class<?> coreClass = mConfig.isMapped() ? mConfig.findIfMapped().getMapsTo().getReferredClass() : mConfig.getReferredClass();
 		
-		Domain coreDomain = AnnotationUtils.findAnnotation(coreClass, Domain.class);
-		return (R)rep._get(refId, coreClass, coreDomain.value());
+		String alias = AnnotationUtils.findAnnotation(coreClass, Repo.class).alias(); // TODO Move this at the repo level, so below method should only pass refId and coreClass
+		
+		if(StringUtils.isBlank(alias)) {
+			alias = AnnotationUtils.findAnnotation(coreClass, Domain.class).value();
+		}
+		return (R)rep._get(refId, coreClass, alias);
 		
 	}
 	
