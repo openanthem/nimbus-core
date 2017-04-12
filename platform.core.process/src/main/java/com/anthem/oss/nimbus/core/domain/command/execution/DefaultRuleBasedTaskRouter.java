@@ -6,7 +6,7 @@ import org.drools.KnowledgeBase;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.springframework.stereotype.Component;
 
-import com.anthem.oss.nimbus.core.bpm.TaskInitializer;
+import com.anthem.oss.nimbus.core.bpm.ModelInitializer;
 import com.anthem.oss.nimbus.core.bpm.TaskRouter;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 
@@ -14,7 +14,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
  * @author Rakesh Patel
  *
  */
-public class DefaultRuleBasedTaskRouter implements TaskRouter, TaskInitializer {
+public class DefaultRuleBasedTaskRouter implements TaskRouter, ModelInitializer {
 
 	@Override
 	public void route(QuadModel<?, ?> taskModel, String assignmentCriteria) {

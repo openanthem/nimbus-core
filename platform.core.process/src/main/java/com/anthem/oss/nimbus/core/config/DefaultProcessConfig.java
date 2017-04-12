@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
 import com.anthem.oss.nimbus.core.bpm.DefaultExpressionHelper;
-import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiAssignmentServiceTaskDelegate;
+import com.anthem.oss.nimbus.core.bpm.activiti.ModelInstantiationServiceTaskDelegate;
 import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiDAO;
 import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiExpressionManager;
 import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiGateway;
@@ -26,11 +26,10 @@ import com.anthem.oss.nimbus.core.integration.sa.ProcessExecutionCtxHelper;
 @Configuration 
 public class DefaultProcessConfig {
 	
-	//activiti	
 	@Bean
 	@Scope(value = "prototype")
-	public ActivitiAssignmentServiceTaskDelegate activitiAssignmentServiceTaskDelegate(){
-		return new ActivitiAssignmentServiceTaskDelegate();
+	public ModelInstantiationServiceTaskDelegate activitiAssignmentServiceTaskDelegate(ProcessGateway processGateway){
+		return new ModelInstantiationServiceTaskDelegate(processGateway);
 	}
 	
 	@Bean
@@ -39,7 +38,6 @@ public class DefaultProcessConfig {
 	}
 	
 	@Bean
-	@Scope(value = "prototype")
 	public ActivitiGateway activitiGateway(RuntimeService runtimeService, ProcessExecutionCtxHelper processExecutionCtx,
 			TaskService taskService, ActivitiDAO activitiDAO,
 			ProcessGateway processGateway){

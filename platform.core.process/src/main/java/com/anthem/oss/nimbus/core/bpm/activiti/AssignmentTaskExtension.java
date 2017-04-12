@@ -13,7 +13,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.apache.commons.lang3.StringUtils;
 
-import com.anthem.oss.nimbus.core.bpm.TaskInitializer;
+import com.anthem.oss.nimbus.core.bpm.ModelInitializer;
 import com.anthem.oss.nimbus.core.bpm.TaskRouter;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Behavior;
@@ -26,7 +26,15 @@ import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 import com.anthem.oss.nimbus.core.session.UserEndpointSession;
 import com.anthem.oss.nimbus.core.utils.ProcessBeanResolver;
 
-
+/**
+ * 
+ * Assignment Task is a type of human task that can be assigned to a user.
+ * The assignment task haults the business process for that fault till it
+ * has been worked up and completed by the user/system.
+ * 
+ * @author Jayant Chaudhuri
+ *
+ */
 public class AssignmentTaskExtension extends AbstractUserTaskExtension {
 
 	@Override
@@ -66,7 +74,7 @@ public class AssignmentTaskExtension extends AbstractUserTaskExtension {
 		String initiliazerType = (String)expression.getValue(execution);
 		
 		if(StringUtils.isNotBlank(initiliazerType)) {
-			TaskInitializer taskInitializer = ProcessBeanResolver.getBean(initiliazerType, TaskInitializer.class);
+			ModelInitializer taskInitializer = ProcessBeanResolver.getBean(initiliazerType, ModelInitializer.class);
 			taskInitializer.initialize(q, assignmentTaskInitializer);
 		}
 		
