@@ -67,10 +67,10 @@ public class DefaultExpressionHelper extends AbstractExpressionHelper {
 		command.setAction(Action._search);
 		command.templateBehaviors().add(Behavior.$execute);
 		coreCmdMsg.setCommand(command);
-		String payload = ((String)args[0]).replaceFirst("#refId", cmdMsg.getCommand().getRefId(Type.ProcessAlias));
+		String payload = reconstructWithRefId(cmdMsg, ((String)args[0]));
 		coreCmdMsg.setRawPayload(payload);
-		Object obj = executeProcess(coreCmdMsg);
-		return obj;
+		MultiExecuteOutput obj = (MultiExecuteOutput) executeProcess(coreCmdMsg);
+		return obj.getSingleResult();
 	}
 
 	final public void _new(CommandMessage cmdMsg, DelegateExecution execution, String resolvedUri, Object... args) {
@@ -125,7 +125,6 @@ public class DefaultExpressionHelper extends AbstractExpressionHelper {
 				.getBean(UserEndpointSession.class);
 
 		quadModel.getView().findParamByPath(targetParamPath.toString()).setState(userEndpointSession.getLoggedInUser());
-
 	}
 
 	
@@ -197,6 +196,26 @@ public class DefaultExpressionHelper extends AbstractExpressionHelper {
 		} else {
 			quadModel.getCore().findParamByPath(inputPath).setState(obj);
 		}		
+	}
+	
+	/**
+	 * Use this expression to fireAllRules for the quadmodel in session
+	 * 
+	 */
+	final public void _fireAllRules(CommandMessage cmdMsg, DelegateExecution execution){
+		QuadModel<?, Object> quadModel = UserEndpointSession.getOrThrowEx(cmdMsg.getCommand());
+		quadModel.getCore().fireRules();
+		quadModel.getView().fireRules();
+	}
+	
+	/**
+	 * Use this expression to fireRules for specific domain mentioned in the resolveduri param.
+	 * 
+	 */
+	final public void _fireRulesByPath(CommandMessage cmdMsg, DelegateExecution execution, 
+			String resolvedUri, Object... args){
+		QuadModel<?, Object> quadModel = UserEndpointSession.getOrThrowEx(cmdMsg.getCommand());
+		quadModel.getCore().findParamByPath(resolvedUri).fireRules();
 	}
 	
 	private String reconstructWithRefId(CommandMessage cmdMsg , String uri) {
