@@ -17,14 +17,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Component;
 
 import com.anthem.nimbus.platform.spec.model.process.ProcessEngineContext;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandMessageConverter;
 import com.anthem.oss.nimbus.core.domain.command.execution.ProcessGateway;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.integration.sa.ProcessExecutionCtxHelper;
 import com.anthem.oss.nimbus.core.integration.sa.ServiceActivatorException;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Rakesh Patel
@@ -44,6 +47,9 @@ public class ActivitiGateway implements ApplicationContextAware {
 	TaskService taskService;
 
 	ActivitiDAO activitiDAO;
+	
+	@Autowired
+	CommandMessageConverter converter;	
 	
 	@Qualifier("default.processGateway")
 	private ProcessGateway processGateway;	
@@ -217,12 +223,11 @@ public class ActivitiGateway implements ApplicationContextAware {
 		String payload = cmdMessage.getRawPayload();
 		if(payload == null)
 			return null;
-		String[] requestParameters = payload.split("&");
-		for(String requestParameter : requestParameters){
-			String[] requestParameterEntry = requestParameter.split("=");
-			if(requestParameterEntry[0].equals("cpage")){
-				return requestParameterEntry[1];
-			}
+		if(!payload.contains("'cpage'"))
+			return null;
+		CurrentPage cpage = converter.convert(CurrentPage.class, cmdMessage);
+		if(cpage != null && cpage.getCpage() != null){
+			return cpage.getCpage();
 		}
 		return null;
 	}
@@ -240,4 +245,9 @@ public class ActivitiGateway implements ApplicationContextAware {
 		}		
 		return null;
 	}	
+	
+	@Getter @Setter
+	public class CurrentPage{
+		private String cpage;
+	}
 }
