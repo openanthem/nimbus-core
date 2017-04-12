@@ -281,6 +281,10 @@ public class ViewConfig {
 		boolean onLoad() default false;
 		String url() default "";
 		boolean rowSelection() default false;
+		String pageSize() default "10";
+		boolean pagination() default true;
+		boolean postButton() default false;
+		String postButtonUrl() default "";
 		boolean postEventOnChange() default false;
 	}
 	

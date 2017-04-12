@@ -40,6 +40,8 @@ public class ClientUserGroup extends AbstractUserGroup {
 	@Model.Param.Values(url = "staticCodeValue-/patientGender")
 	@Getter @Setter
 	private String[] userList;
+	
+	private List<String> admins;
 	/**
 	 * 
 	 * @param ce
