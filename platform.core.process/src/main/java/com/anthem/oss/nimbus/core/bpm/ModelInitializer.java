@@ -9,7 +9,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
  * @author Rakesh Patel
  *
  */
-public interface TaskInitializer {
+public interface ModelInitializer {
 
 	public void initialize(QuadModel<?,?> taskModel, String initializeCriteria);
 }

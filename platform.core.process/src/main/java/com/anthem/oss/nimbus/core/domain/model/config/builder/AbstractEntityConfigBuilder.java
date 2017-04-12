@@ -104,9 +104,7 @@ abstract public class AbstractEntityConfigBuilder {
 			.map(d->rulesEngineFactoryProducer.getFactory(referredClass))
 			.map(f->f.createConfig(domain.value()))
 				.ifPresent(c->created.setRulesConfig(c));
-		
-		
-		return created;
+		return created; 
 	}
 	
 	
