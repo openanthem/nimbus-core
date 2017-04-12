@@ -129,15 +129,4 @@ public class QuadModelBuilder {
 		return viewConfig;
 	}
 	
-	
-	/**
-	 * 
-	 * @param command
-	 * @param quadModel
-	 */
-	public void initializeFlowState(Command command,QuadModel<?,?> quadModel){
-		//quadModel.loadProcessState(processConfigurationBuilder.getProcessConfiguration(command,quadModel));
-		navigationStateHelper.init(quadModel);
-	}
-	
 }

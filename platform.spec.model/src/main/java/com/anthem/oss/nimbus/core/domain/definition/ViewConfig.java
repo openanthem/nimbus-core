@@ -104,6 +104,7 @@ public class ViewConfig {
 		String alias() default "CardDetail";
 		String cssClass() default "contentBox right-gutter bg-light";
 		String imgSrc() default "";
+		String editUrl() default "";
 		
 		@Retention(RetentionPolicy.RUNTIME)
 		@Target({ElementType.FIELD})
@@ -165,6 +166,8 @@ public class ViewConfig {
 		String b() default "";
 		String cssClass() default "";
 		boolean submitButton() default true;
+		
+		String navLink() default "";
 	}	
 	
 	@Retention(RetentionPolicy.RUNTIME)

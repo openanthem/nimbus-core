@@ -58,7 +58,7 @@ public class DefaultMongoModelPersistenceHandler implements ModelPersistenceHand
 				
 			Object coreState = mRoot.getState();
 			Object coreStateId = mRoot.findParamByPath("/id").getState();
-			if(coreStateId==null) {
+			if(coreStateId == null) {
 				rep._new(mRootClass, alias, coreState);
 				return true;
 			}

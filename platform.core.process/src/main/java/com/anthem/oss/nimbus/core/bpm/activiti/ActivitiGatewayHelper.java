@@ -4,12 +4,13 @@
 package com.anthem.oss.nimbus.core.bpm.activiti;
 
 import java.io.Serializable;
-
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.anthem.oss.nimbus.core.domain.command.Command;
+import com.anthem.oss.nimbus.core.domain.command.CommandElement;
 import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
+import com.anthem.oss.nimbus.core.domain.command.CommandElementLinked;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.command.execution.ExecuteOutput;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
@@ -92,5 +93,31 @@ public class ActivitiGatewayHelper implements Serializable{
 		quadModel.getView().findStateByPath(modelPath.toString()).setState(output.getExecuteException().getMessage());
 	}
 	
+	public boolean isContainsAlias(String aliasType, String alias) {
+		
+		List<CommandElement> elementsWithAliasType = new ArrayList<>();
+		traverseElems(getCommandMessage().getCommand().root(), elementsWithAliasType, Type.findByDesc(aliasType));
+		
+		CommandElement cmdElem = elementsWithAliasType.stream()
+							.filter((e) -> e.getAlias().equalsIgnoreCase(alias))
+							.findFirst()
+							.orElse(null);
+		if(cmdElem != null) {
+			return true;
+		}
+			
+		
+		return false;
+		
+	}
+	
+	private void traverseElems(CommandElementLinked linked, List<CommandElement> elementsWithAliasType, Type aliasType) {
+		if(linked.getType() == aliasType) {
+			elementsWithAliasType.add(linked);
+		}
+		if(linked.hasNext()) {
+			traverseElems(linked.next(), elementsWithAliasType, aliasType);
+		}
+	}
 	
 }
