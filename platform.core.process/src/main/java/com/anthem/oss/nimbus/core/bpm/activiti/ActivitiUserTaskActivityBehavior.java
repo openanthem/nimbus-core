@@ -19,6 +19,14 @@ import lombok.Setter;
 
 
 /**
+ * This class provides framework extension for human tasks.
+ * The framework introduces two types of humand task in addition to the existing human task
+ * 
+ * <ul>
+ * <li> Page task : {@link PageTaskExtension}
+ * <li> Assignment task : {@link AssignmentTaskExtension}
+ * </ul>
+ * 
  * @author Jayant Chaudhuri
  *
  */

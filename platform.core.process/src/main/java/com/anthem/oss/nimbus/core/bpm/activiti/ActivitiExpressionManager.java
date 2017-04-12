@@ -4,7 +4,6 @@
 package com.anthem.oss.nimbus.core.bpm.activiti;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -113,20 +112,4 @@ public class ActivitiExpressionManager extends ExpressionManager implements Appl
 		this.applicationContext = applicationContext;
 		
 	}
-	
-	public static void main(String[] args){
-		ActivitiExpressionManager pm = new ActivitiExpressionManager();
-		pm.setFunctionToBeanMap(new HashMap<String,String>());
-		String result = pm.evaluate("${px.help(!{_get(\"/pg1/caseId\")!})}");
-		System.out.println(result);
-		result = pm.evaluate("${!{_get('/pg3/caseName','{caseName:name}')!}}");
-		System.out.println(result);
-		result = pm.evaluate("${!{_update('/flow_autocase/pg3/caseName','testUpdate3')!}}");
-		System.out.println(result);
-		result = pm.evaluate("${!{_get('/autocase:585c0d33967e79bb2661aa61)!}}");
-		System.out.println(result);
-		result = pm.evaluate("${!{_search('/autocase','{\"caseName\":\"Case1\"}')!}}");
-		System.out.println(result);
-	}
-
 }
