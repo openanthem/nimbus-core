@@ -73,7 +73,7 @@ public class DefaultMongoModelRepository implements ModelRepository {
 	 
 	  Query query = new Query(Criteria.where("_id").is(id));
 	  Update update = new Update();
-	  if(StringUtils.isBlank(path)) {
+	  if(StringUtils.isBlank(path) || StringUtils.equalsIgnoreCase(path, "/c")) {
 		  mongoOps.save(state, alias);
 	  }
 	  else{
