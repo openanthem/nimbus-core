@@ -175,7 +175,7 @@ public class DefaultExpressionHelper extends AbstractExpressionHelper {
 		executeProcess(coreCmdMsg);
 		QuadModel<?, ?> taskQuadModel = UserEndpointSession.getOrThrowEx(coreCmdMsg.getCommand());
 		QuadModel<?, ?> entityQuadModel = UserEndpointSession.getOrThrowEx(cmdMsg.getCommand());
-		taskQuadModel.getCore().findStateByPath("/internalStatus").setState(TaskStatus.OPEN);
+		taskQuadModel.getCore().findStateByPath("/internalStatus").setState(TaskStatus.Open);
 		taskQuadModel.getCore().findStateByPath("/entity").setState(entityQuadModel.getCore().getState());
 	}
 	
