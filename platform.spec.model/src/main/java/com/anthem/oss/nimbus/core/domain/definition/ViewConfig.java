@@ -235,6 +235,21 @@ public class ViewConfig {
 		boolean postEventOnChange() default false;
 		String controlId() default "";
 	}
+	
+	@Retention(RetentionPolicy.RUNTIME) 
+	@Target({ElementType.FIELD}) 
+	@ViewStyle 
+	public @interface TextArea { 
+		String alias() default "TextArea"; 
+		boolean hidden() default false; 
+		boolean readOnly() default false; 
+		String help() default ""; 
+		String labelClass() default "anthem-label"; 
+		String type() default "textarea"; 
+		String rows() default "5"; 
+		boolean postEventOnChange() default false; 
+		String controlId() default ""; 
+	}
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})

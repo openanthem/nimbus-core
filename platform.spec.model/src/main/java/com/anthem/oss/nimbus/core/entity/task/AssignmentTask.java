@@ -39,7 +39,10 @@ public class AssignmentTask extends AbstractEntity.IdString{
 	
 	private String taskName;
 	
-	private String status;
+	@Model.Param.Values(url="staticCodeValue-/taskStatus")
+	private TaskStatus status;
+	
+	private String description;
 	
 	// (e.g. patientEnrollmentTask... so this will help us avoid check for instance of, abstract method)
 	@NotNull
@@ -50,22 +53,28 @@ public class AssignmentTask extends AbstractEntity.IdString{
 	
 	private LocalDate startDate;
 	
-	private String priority;
+	@Model.Param.Values(url="staticCodeValue-/taskPriority")
+	private TaskPriority priority;
 	
 	private AbstractEntity.IdString entity;
 	
 	private String queueCode;
-	
-	private TaskStatus internalStatus;
 	
 	private String recurrence;
 	
 	private String reminder;
 	
 	public enum TaskStatus{
-		IN_PROGRESS,	
-		COMPLETED,
-		OPEN
+		Open,
+		Complete,
+		Cancelled,
+	}
+	
+	public enum TaskPriority{
+		Urgent,	
+		High,
+		Medium,
+		Low
 	}
 	
 	public enum TaskType {
