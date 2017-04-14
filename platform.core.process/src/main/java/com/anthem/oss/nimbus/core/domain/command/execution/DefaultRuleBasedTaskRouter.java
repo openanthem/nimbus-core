@@ -33,7 +33,7 @@ public class DefaultRuleBasedTaskRouter implements TaskRouter, ModelInitializer 
 	    KnowledgeBase knowledgeBase = RulesHelper.findKnowledgeBaseByDeploymentId("1"); //TODO get the deploymentId instead of hard coding ??
 		try {
 			session = knowledgeBase.newStatefulKnowledgeSession();
-			session.insert(taskModel.getCore()); // Assumption: Task would be created against a core model
+			session.insert(taskModel); // Assumption: Task would be created against a core model
 			
 			RulesAgendaFilter filter = new RulesAgendaFilter();
 			//filter.addSuffic(AnnotationUtils.findAnnotation(task.getState().getClass(), CoreDomain.class).value()+"_routing");

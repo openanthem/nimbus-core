@@ -175,7 +175,14 @@ abstract public class AbstractEntityStateBuilder {
 		
 		ExecutionEntity.ExConfig<V, C> exConfig = new ExecutionEntity.ExConfig<>((ModelConfig<C>)mapsToEnclosingModel, null, null);
 		
-		Command cmdDelinked = CommandBuilder.withUri(parentModel.getRootExecution().getCommand().getAbsoluteUri()+Constants.SEPARATOR_URI.code+mappedParamConfig.getPath().value()).getCommand();
+		Command cmdDelinked;
+		if(StringUtils.isBlank(mappedParamConfig.getPath().value())){
+			 cmdDelinked = CommandBuilder.withUri(parentModel.getRootExecution().getCommand().getAbsoluteUri()).getCommand();
+		}
+		else{
+			 cmdDelinked = CommandBuilder.withUri(parentModel.getRootExecution().getCommand().getAbsoluteUri()+Constants.SEPARATOR_URI.code+mappedParamConfig.getPath().value()).getCommand();
+		}
+		
 		ExecutionEntity<V, C>.ExModel execModelSAC = eState.new ExParam(cmdDelinked, provider, exConfig).getRootExecution().unwrap(ExecutionEntity.ExModel.class);
 		
 		// mapsTo core param

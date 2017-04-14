@@ -8,15 +8,13 @@ import java.time.LocalDate;
 import javax.validation.constraints.NotNull;
 
 import com.anthem.oss.nimbus.core.domain.command.Action;
+import com.anthem.oss.nimbus.core.domain.definition.AssociatedEntity;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
 import com.anthem.oss.nimbus.core.domain.definition.Execution;
 import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -30,6 +28,7 @@ import lombok.Setter;
 @Execution.Input.Default 
 @Execution.Output.Default 
 @Execution.Output(Action._new)
+@AssociatedEntity("flow_cmcase")
 @Getter @Setter
 public class AssignmentTask extends AbstractEntity.IdString{
 	
@@ -56,7 +55,7 @@ public class AssignmentTask extends AbstractEntity.IdString{
 	@Model.Param.Values(url="staticCodeValue-/taskPriority")
 	private TaskPriority priority;
 	
-	private AbstractEntity.IdString entity;
+	private Object entityId;
 	
 	private String queueCode;
 	
