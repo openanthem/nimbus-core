@@ -1,4 +1,5 @@
-package com.anthem.oss.nimbus.core.bpm.activiti;
+package com.anthem.oss.nimbus.core.expressions;
+
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -21,16 +22,16 @@ import org.springframework.test.context.ActiveProfiles;
 
 import com.anthem.nimbus.platform.core.process.api.AbstractPlatformIntegrationTests;
 import com.anthem.oss.nimbus.core.bpm.DefaultExpressionHelper;
-import com.anthem.oss.nimbus.core.bpm.activiti.ExpressionHelperTestData.Author;
-import com.anthem.oss.nimbus.core.bpm.activiti.ExpressionHelperTestData.Book;
-import com.anthem.oss.nimbus.core.bpm.activiti.ExpressionHelperTestData.Book.Publisher;
-import com.anthem.oss.nimbus.core.bpm.activiti.ExpressionHelperTestData.OrderBookFlow;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
+import com.anthem.oss.nimbus.core.expressions.ExpressionHelperTestData.Author;
+import com.anthem.oss.nimbus.core.expressions.ExpressionHelperTestData.Book;
+import com.anthem.oss.nimbus.core.expressions.ExpressionHelperTestData.Book.Publisher;
+import com.anthem.oss.nimbus.core.expressions.ExpressionHelperTestData.OrderBookFlow;
 import com.anthem.oss.nimbus.core.session.UserEndpointSession;
 
 /**

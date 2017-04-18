@@ -1,8 +1,7 @@
-package com.anthem.oss.nimbus.core.bpm.activiti;
+package com.anthem.oss.nimbus.core.expressions;
 
 import java.util.List;
 
-import com.anthem.oss.nimbus.core.bpm.activiti.ExpressionHelperTestData.Book.Publisher;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.definition.ConfigNature.Ignore;
 import com.anthem.oss.nimbus.core.domain.definition.Converters;
@@ -12,7 +11,9 @@ import com.anthem.oss.nimbus.core.domain.definition.Execution;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.State;
+import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
+import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Button;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Form;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Hints;
@@ -23,6 +24,7 @@ import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Section;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.TextBox;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.IdParamConverter;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
+import com.anthem.oss.nimbus.core.expressions.ExpressionHelperTestData.Book.Publisher;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -33,13 +35,14 @@ import lombok.ToString;
  *
  */
 abstract class ExpressionHelperTestData {
-	@Domain(value="core_book", includeListeners={ListenerType.persistence}) 
-	@Repo(Repo.Database.rep_mongodb)
-	@Execution.Input.Default 
+	
+	@Domain(value="core_book", includeListeners={ListenerType.persistence})
+	@Model(value="core_book", excludeListeners={ListenerType.websocket})
+	@Repo(Database.rep_mongodb)
+	@Execution.Input.Default
 	@Execution.Output.Default
-	@Getter @Setter @ToString(callSuper=true)
 	public static class Book extends AbstractEntity.IdString {
-	    
+		
 		@Getter @Setter private String name;
 
 		@Getter @Setter private String category;
@@ -63,8 +66,7 @@ abstract class ExpressionHelperTestData {
 			private String location;
 			
 			private String code;
-		}
-		
+		}		
 	}
 	
 	@Domain(value="author", includeListeners={ListenerType.persistence}) 

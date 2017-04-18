@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core.bpm.activiti;
+package com.anthem.oss.nimbus.core.expressions;
 
 import static org.junit.Assert.*;
 
@@ -8,6 +8,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiExpressionManager;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 public class ActivitiExpressionManagerTest {
