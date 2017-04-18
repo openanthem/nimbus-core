@@ -1,0 +1,14 @@
+package com.anthem.nimbus.platform.client.extension.cm.model.sample
+
+import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultModelState;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultParamState;
+import java.time.LocalDate;
+import java.time.Period;
+
+rule "Core Rule Test -Author"
+   when
+   	$core : DefaultParamState()
+   then
+   	   $core.findParamByPath("/firstName").setState("authorNameUpdate");      
+   end
