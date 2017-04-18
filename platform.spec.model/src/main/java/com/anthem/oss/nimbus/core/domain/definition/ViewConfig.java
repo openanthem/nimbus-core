@@ -102,9 +102,10 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface CardDetail {
 		String alias() default "CardDetail";
-		String cssClass() default "contentBox right-gutter bg-light";
+		String cssClass() default "contentBox right-gutter bg-light mt-1";
 		String imgSrc() default "";
 		String editUrl() default "";
+		String title() default "";
 		
 		@Retention(RetentionPolicy.RUNTIME)
 		@Target({ElementType.FIELD})
@@ -135,7 +136,14 @@ public class ViewConfig {
 	@Target({ElementType.FIELD})
 	@ViewStyle
 	public @interface FieldValue {
+		public enum Type {
+			Field,
+			Divider
+		}
 		String alias() default "FieldValue";
+		Type type() default Type.Field;
+		String imgSrc() default "";
+		String cols() default "1";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
