@@ -183,7 +183,7 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface ButtonGroup {	
 		String alias() default "ButtonGroup";
-		String cssClass() default "";
+		String cssClass() default "text-sm-right";
 	}
 	
 	
@@ -193,10 +193,11 @@ public class ViewConfig {
 	public @interface Button {	
 		String alias() default "Button";
 		String url() default "";
-		String b() default "";
+		String b() default "$executeAnd$nav";
 		String method() default "GET";
 		String imgSrc() default "";
 		String type() default "submit";
+		String payload() default "";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
