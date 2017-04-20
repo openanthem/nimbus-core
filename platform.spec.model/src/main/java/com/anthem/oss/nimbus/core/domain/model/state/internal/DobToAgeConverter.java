@@ -15,7 +15,11 @@ public class DobToAgeConverter implements ParamConverter<LocalDate, Long> {
 	@Override
 	public Long serialize(LocalDate birthdate) {
 		LocalDate now = LocalDate.now();
-		return ChronoUnit.YEARS.between(birthdate, now);
+		if (birthdate != null) {
+			return ChronoUnit.YEARS.between(birthdate, now);
+		} else {
+			return new Long(0);
+		}
 	}
 
 	@Override
