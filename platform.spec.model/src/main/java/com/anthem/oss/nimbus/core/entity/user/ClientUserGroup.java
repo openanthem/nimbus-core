@@ -37,7 +37,7 @@ public class ClientUserGroup extends AbstractUserGroup {
 	
 	private Set<ClientEntity> associatedTo;
 	
-	@Model.Param.Values(url = "staticCodeValue-/patientGender")
+	@Model.Param.Values(url = "staticCodeValue-/users")
 	@Getter @Setter
 	private String[] userList;
 	
