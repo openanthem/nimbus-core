@@ -94,14 +94,18 @@ abstract class ExpressionHelperTestData {
 		private String orderDisplayId;
 		
 		@Page
+		//@MapsTo.Path(linked=false,state=State.External)
 		private Page_Pg1 pg1;
 		
 		@Page
+	//	@MapsTo.Path(linked=false,state=State.External)
 		private Page_Pg2 pg2;
 		
 		@Page
+	//	@MapsTo.Path(linked=false,state=State.External)
 		private Page_Pg3 pg3;
 		
+		@Model
 		@MapsTo.Type(Book.class)
 		@Getter @Setter
 		public static class Page_Pg1 {
@@ -122,7 +126,7 @@ abstract class ExpressionHelperTestData {
 			
 			@Path("/supportingpublishers") private List<Publisher> shortListPublishers;			
 		}
-		
+		@Model
 		@MapsTo.Type(Book.class)
 		@Getter @Setter
 		public static class Page_Pg3 {
@@ -137,6 +141,7 @@ abstract class ExpressionHelperTestData {
 			}
 		}
 		
+		@Model
 		@MapsTo.Type(Author.class)
 		@Getter @Setter
 		public static class AuthorGrid {
@@ -144,6 +149,8 @@ abstract class ExpressionHelperTestData {
 			@Path("lastName") private String name;
 		}
 		
+		@Model
+		@MapsTo.Type(Book.class)
 		@Getter @Setter
 		public static class Page_Pg2 {
 			
@@ -162,6 +169,7 @@ abstract class ExpressionHelperTestData {
 			@Path("/supportingpublishers") private List<Publisher> shortListPublishers;
 		}
 		
+		@Model
 		@Getter @Setter
 		public static class Section_pg2 {
 			@Form(cssClass="threeColumn", submitUrl="/view_book:{id}/_submitOrder/_process", b="$executeAnd$config", submitButton=false)
@@ -169,6 +177,7 @@ abstract class ExpressionHelperTestData {
 			private Form_OrderBook orderBookForm;
 		}
 		
+		@Model
 		@MapsTo.Type(Book.class)
 		@Getter @Setter
 		public static class Form_OrderBook {
