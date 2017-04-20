@@ -84,8 +84,8 @@ public class DefaultExpressionHelperTest extends AbstractPlatformIntegrationTest
 	
 	@After
 	public void tear_down() {
-	//	mt.dropCollection("core_book");
-	//	mt.dropCollection("author");
+		mt.dropCollection("core_book");
+		mt.dropCollection("author");
 	}
 	
 	@Test
