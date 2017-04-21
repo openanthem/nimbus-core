@@ -82,9 +82,7 @@ process:
       update ACT_RU_EXECUTION set ACT_ID_ = ?  WHERE ID_=? AND ACT_ID_=?   
   history:
     level: 
-      none 
-  definitions:
-    - test-process-defs/**.xml        
+      none      
 template:
   definitions:
     - path: e_post/*/comm/icr/p/flow_umcase/_findPatient/_process/_execute
