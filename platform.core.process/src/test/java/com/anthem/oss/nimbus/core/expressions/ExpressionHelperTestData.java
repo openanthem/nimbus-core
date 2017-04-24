@@ -181,7 +181,7 @@ abstract class ExpressionHelperTestData {
 		@Getter @Setter
 		public static class Form_OrderBook {
 			
-			@Path("name") private String bookName;
+			@Path("/name") private String bookName;
 			
 			@Path private String category;
 			
