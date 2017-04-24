@@ -102,8 +102,10 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface CardDetail {
 		String alias() default "CardDetail";
-		String cssClass() default "contentBox right-gutter bg-light";
+		String cssClass() default "contentBox right-gutter bg-light mt-1";
 		String imgSrc() default "";
+		String editUrl() default "";
+		String title() default "";
 		
 		@Retention(RetentionPolicy.RUNTIME)
 		@Target({ElementType.FIELD})
@@ -134,7 +136,14 @@ public class ViewConfig {
 	@Target({ElementType.FIELD})
 	@ViewStyle
 	public @interface FieldValue {
+		public enum Type {
+			Field,
+			Divider
+		}
 		String alias() default "FieldValue";
+		Type type() default Type.Field;
+		String imgSrc() default "";
+		String cols() default "1";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
@@ -165,6 +174,8 @@ public class ViewConfig {
 		String b() default "";
 		String cssClass() default "";
 		boolean submitButton() default true;
+		
+		String navLink() default "";
 	}	
 	
 	@Retention(RetentionPolicy.RUNTIME)
@@ -172,7 +183,7 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface ButtonGroup {	
 		String alias() default "ButtonGroup";
-		String cssClass() default "";
+		String cssClass() default "text-sm-right";
 	}
 	
 	
@@ -182,10 +193,11 @@ public class ViewConfig {
 	public @interface Button {	
 		String alias() default "Button";
 		String url() default "";
-		String b() default "";
+		String b() default "$executeAnd$nav";
 		String method() default "GET";
 		String imgSrc() default "";
 		String type() default "submit";
+		String payload() default "";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
@@ -231,6 +243,21 @@ public class ViewConfig {
 		String type() default "text";
 		boolean postEventOnChange() default false;
 		String controlId() default "";
+	}
+	
+	@Retention(RetentionPolicy.RUNTIME) 
+	@Target({ElementType.FIELD}) 
+	@ViewStyle 
+	public @interface TextArea { 
+		String alias() default "TextArea"; 
+		boolean hidden() default false; 
+		boolean readOnly() default false; 
+		String help() default ""; 
+		String labelClass() default "anthem-label"; 
+		String type() default "textarea"; 
+		String rows() default "5"; 
+		boolean postEventOnChange() default false; 
+		String controlId() default ""; 
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)

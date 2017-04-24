@@ -9,8 +9,8 @@ import org.activiti.engine.delegate.ExecutionListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.AssignmentTask;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
+import com.anthem.oss.nimbus.core.entity.task.AssignmentTask;
 import com.anthem.oss.nimbus.core.session.UserEndpointSession;
 
 /**

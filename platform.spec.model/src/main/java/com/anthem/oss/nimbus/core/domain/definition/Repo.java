@@ -4,6 +4,7 @@
 package com.anthem.oss.nimbus.core.domain.definition;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -15,6 +16,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value=ElementType.TYPE)
 @Model
+@Inherited
 public @interface Repo {
 
 	/* 3rd level repository: persistent stores */
@@ -37,6 +39,8 @@ public @interface Repo {
 	public enum Local {
 		rep_none,
 	}
+	
+	String alias() default "";
 	
 	Database value() default Database.rep_none;	
 	

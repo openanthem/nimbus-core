@@ -1,7 +1,6 @@
 package com.anthem.oss.nimbus.core.domain.model.state.internal;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Component;
 
 import com.anthem.oss.nimbus.core.domain.definition.Converters.ParamConverter;
 

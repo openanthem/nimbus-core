@@ -3,12 +3,14 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.core.annotation.AnnotationUtils;
 
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
+import com.anthem.oss.nimbus.core.domain.definition.Domain;
+import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.model.config.ActionExecuteConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFactory;
@@ -37,7 +39,7 @@ public class DefaultActionExecutorSearch extends AbstractProcessTaskExecutor {
 	protected <R> R doExecuteInternal(CommandMessage cmdMsg) {
 		Command cmd = cmdMsg.getCommand();
 		
-		String alias = cmd.getRootDomainAlias();
+		//String alias = cmd.getRootDomainAlias();
 		
 		ActionExecuteConfig<?, ?> aec = domainConfigApi.getActionExecuteConfig(cmd);
 		Class<?> criteriaClass = aec.getInput().getModel().getReferredClass();
@@ -46,6 +48,12 @@ public class DefaultActionExecutorSearch extends AbstractProcessTaskExecutor {
 		Class<?> resultClass = aec.getOutput().getModel().getReferredClass();
 		
 		ModelRepository rep = repFactory.get(cmdMsg.getCommand());
+		
+		String alias = AnnotationUtils.findAnnotation(resultClass, Repo.class).alias(); // TODO Move this at the repo level, so below method should only pass refId and coreClass
+		
+		if(StringUtils.isBlank(alias)) {
+			alias = AnnotationUtils.findAnnotation(resultClass, Domain.class).value();
+		}
 		
 		R r = (R)rep._search(resultClass, alias, criteria);
 		return r;

@@ -3,6 +3,8 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
+import java.util.regex.Pattern;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.stereotype.Component;
@@ -19,6 +21,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
  *
  */
 public class CommandMessageConverter {
+	
+	public static final String EMPTY_JSON_REGEX = "(^\\{\\s*\\}$)";
 	
 	private ObjectMapper om;
 	
@@ -42,7 +46,7 @@ public class CommandMessageConverter {
 	public <T> T convert(Class<T> clazz, String json) {
 
 		
-		if(StringUtils.isEmpty(json)) return null;
+		if(StringUtils.isEmpty(json) || Pattern.matches(EMPTY_JSON_REGEX, json)) return null;
 		
 		try {
 			om.registerModule(new JavaTimeModule());

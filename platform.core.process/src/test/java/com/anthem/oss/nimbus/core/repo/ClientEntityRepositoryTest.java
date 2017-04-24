@@ -3,7 +3,6 @@ package com.anthem.oss.nimbus.core.repo;
 import static org.junit.Assert.assertNotNull;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 

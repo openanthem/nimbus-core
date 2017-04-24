@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import com.anthem.nimbus.platform.core.process.api.repository.SessionCacheRepository;
 import com.anthem.nimbus.platform.core.process.api.support.ProcessBeanHelper;
 import com.anthem.nimbus.platform.core.process.mq.MessageReceiver;
+import com.anthem.oss.nimbus.core.bpm.activiti.ModelInstantiationServiceTaskDelegate;
 import com.anthem.oss.nimbus.core.domain.command.execution.ProcessGateway;
 import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.ValidationConfigHandler;
@@ -162,6 +163,11 @@ public class DefaultCoreConfiguration {
 	@Scope("prototype")
 	public ServiceExecutionDelegate serviceExecutionDelegate(ServiceExecutionHelper helper){
 		return new ServiceExecutionDelegate();
+	}
+	
+	@Bean
+	ModelInstantiationServiceTaskDelegate modelInstantiationServiceTaskDelegate(@Qualifier("default.processGateway") ProcessGateway processGateway){
+		return new ModelInstantiationServiceTaskDelegate(processGateway);
 	}
 	
 	@Bean(name="executionHelper")
