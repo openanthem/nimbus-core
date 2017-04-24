@@ -173,7 +173,6 @@ abstract class ExpressionHelperTestData {
 		@Getter @Setter
 		public static class Section_pg2 {
 			@Form(cssClass="threeColumn", submitUrl="/view_book:{id}/_submitOrder/_process", b="$executeAnd$config", submitButton=false)
-			@Path(linked=false)
 			private Form_OrderBook orderBookForm;
 		}
 		
