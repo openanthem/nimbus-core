@@ -21,8 +21,8 @@ import com.anthem.oss.nimbus.core.domain.model.config.ActionExecuteConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ValidatorProvider;
 import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultModelConfig;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
-import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderContext;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.ParamStateGateway;
 import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
@@ -99,12 +99,11 @@ public class QuadModelBuilder {
 		//create event listener
 		QuadScopedEventListener qEventListener = new QuadScopedEventListener(getParamEventListeners());
 		
-		StateBuilderContext provider = new StateBuilderContext(qEventListener, validatorProvider, paramStateGateway);
-		String rootDomainUri = cmd.getRootDomainUri();
+		EntityStateAspectHandlers provider = new EntityStateAspectHandlers(qEventListener, validatorProvider, paramStateGateway);
 		
-		final ExecutionEntity<V, C>.ExModel execModelStateAndConfig = stateAndConfigBuilder.buildExec(cmd, provider, eState, exConfig);
+		final ExecutionEntity<V, C>.ExModel execModelStateAndConfig = stateAndConfigBuilder.buildExec(cmd.createRootDomainCommand(), provider, eState, exConfig);
 		
-		QuadModel<V, C> quadModel = new QuadModel<>(cmd.getRootDomainElement(), execModelStateAndConfig);
+		QuadModel<V, C> quadModel = new QuadModel<>(execModelStateAndConfig);
 		//quadModel.setEventPublisher(qEventPublisher);
 		//==initializeFlowState(cmd, quadModel);
 		

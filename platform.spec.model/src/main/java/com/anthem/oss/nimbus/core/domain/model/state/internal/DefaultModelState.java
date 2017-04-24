@@ -18,7 +18,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification.ActionType;
-import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderContext;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.util.CollectionsTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -43,7 +43,7 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 	
 	@JsonIgnore private ExecutionStateTree executionStateTree;
 	
-	public DefaultModelState(Param<T> associatedParam, ModelConfig<T> config, StateBuilderContext provider/*, Model<?> backingCoreModel*/) {
+	public DefaultModelState(Param<T> associatedParam, ModelConfig<T> config, EntityStateAspectHandlers provider/*, Model<?> backingCoreModel*/) {
 		super(config, provider);
 		
 		Objects.requireNonNull(associatedParam, "Associated Param for Model must not be null.");
@@ -85,13 +85,13 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 			return (T)createOrGetRuntimeEntity();
 		}
 		
-		T instance = getProvider().getParamStateGateway()._getRaw(this.getAssociatedParam());
+		T instance = getAspectHandlers().getParamStateGateway()._getRaw(this.getAssociatedParam());
 		return instance==null ? instantiateAndSet() : instance; 
 	}
 	
 	@Override
 	public T instantiateAndSet() {
-		T newInstance =  getProvider().getParamStateGateway()._instantiateAndSet(this.getAssociatedParam());
+		T newInstance =  getAspectHandlers().getParamStateGateway()._instantiateAndSet(this.getAssociatedParam());
 		 
 		getAssociatedParam().notifySubscribers(new Notification<>(this.getAssociatedParam(), ActionType._newModel, this.getAssociatedParam()));
 		return newInstance;

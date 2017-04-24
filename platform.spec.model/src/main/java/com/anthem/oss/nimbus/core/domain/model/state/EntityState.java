@@ -38,12 +38,20 @@ public interface EntityState<T> {
 
 	public void init();
 	
-	public StateBuilderContext getProvider();
+	public EntityStateAspectHandlers getAspectHandlers();
 	
 	public void fireRules();
 	
 	@JsonIgnore
 	public ExecutionModel<?> getRootExecution();
+//	
+//	@JsonIgnore
+//	default String getAbsolutePath() {
+//		String prefix = getRootExecution().getRootCommand().buildUri(Type.PlatformMarker);
+//		return new StringBuilder(prefix)
+//				.append(getPath())
+//				.toString();	
+//	}
 	
 	@JsonIgnore
 	public Model<?> getRootDomain();
@@ -59,7 +67,6 @@ public interface EntityState<T> {
 		return null;
 	}
 	
-	
 	public interface Mapped<T, M> extends EntityState<T> {
 		@Override
 		default boolean isMapped() {
@@ -72,8 +79,6 @@ public interface EntityState<T> {
 		public EntityState<M> getMapsTo();
 	}
 	
-
-	
 	public interface ExecutionModel<T> extends Model<T> {
 		@Override
 		default boolean isRoot() {
@@ -85,7 +90,8 @@ public interface EntityState<T> {
 			return this;
 		}
 		
-		public Command getCommand();
+		@JsonIgnore
+		public Command getRootCommand();
 		
 		public ExecutionRuntime getExecutionRuntime();
 		
@@ -102,8 +108,6 @@ public interface EntityState<T> {
 	public interface Model<T> extends EntityState<T> { 
 		@Override
 		public ModelConfig<T> getConfig();
-		
-		public String getRootDomainUri();
 		
 		public Param<T> getAssociatedParam();
 		
@@ -358,6 +362,4 @@ public interface EntityState<T> {
 			return this;
 		}
 	}
-	
-
 }

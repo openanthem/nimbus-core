@@ -30,7 +30,8 @@ import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultPara
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderContext;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultListElemParamState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultListModelState;
@@ -64,11 +65,11 @@ abstract public class AbstractEntityStateBuilder {
 	
 	protected JustLogit logit = new JustLogit(getClass());
 	
-	abstract public <T, P> DefaultModelState<T> buildModel(StateBuilderContext provider, DefaultParamState<T> associatedParam, ModelConfig<T> mConfig, Model<?> mapsToSAC);
-	abstract public <T, P> DefaultParamState<P> buildParam(StateBuilderContext provider, Model<T> mState, ParamConfig<P> mpConfig, Model<?> mapsToSAC);
-	abstract protected <P> StateType buildParamType(StateBuilderContext provider, Model<?> mState, DefaultParamState<P> associatedParam, Model<?> mapsToSAC);
+	abstract public <T, P> DefaultModelState<T> buildModel(EntityStateAspectHandlers provider, DefaultParamState<T> associatedParam, ModelConfig<T> mConfig, Model<?> mapsToSAC);
+	abstract public <T, P> DefaultParamState<P> buildParam(EntityStateAspectHandlers provider, Model<T> mState, ParamConfig<P> mpConfig, Model<?> mapsToSAC);
+	abstract protected <P> StateType buildParamType(EntityStateAspectHandlers provider, Model<?> mState, DefaultParamState<P> associatedParam, Model<?> mapsToSAC);
 	
-	protected <T> DefaultModelState<T> createModel(Param<T> associatedParam, ModelConfig<T> config, StateBuilderContext provider, Model<?> mapsToSAC) {
+	protected <T> DefaultModelState<T> createModel(Param<T> associatedParam, ModelConfig<T> config, EntityStateAspectHandlers provider, Model<?> mapsToSAC) {
 		DefaultModelState<T> mState = associatedParam.isMapped() ? //(mapsToSAC!=null) ? 
 				new MappedDefaultModelState<>(mapsToSAC, associatedParam, config, provider) : 
 					new DefaultModelState<>(associatedParam, config, provider);
@@ -83,7 +84,7 @@ abstract public class AbstractEntityStateBuilder {
 		return mState;
 	}
 	
-	protected <T> DefaultListModelState<T> createCollectionModel(ListParam associatedParam, ModelConfig<List<T>> config, StateBuilderContext provider, DefaultListElemParamState.Creator<T> elemCreator) {
+	protected <T> DefaultListModelState<T> createCollectionModel(ListParam associatedParam, ModelConfig<List<T>> config, EntityStateAspectHandlers provider, DefaultListElemParamState.Creator<T> elemCreator) {
 		DefaultListModelState<T> mState = (associatedParam.isMapped()) ? 
 				new MappedDefaultListModelState<>(associatedParam.findIfMapped().getMapsTo().getType().findIfCollection().getModel(), associatedParam, config, provider, elemCreator) :
 				new DefaultListModelState<>(associatedParam, config, provider, elemCreator);					
@@ -95,7 +96,7 @@ abstract public class AbstractEntityStateBuilder {
 	/**
 	 * Add in mapsTo model first, then in mapped
 	 */
-	protected <E> DefaultListElemParamState<E> createElemParam(StateBuilderContext provider, DefaultListModelState<E> parentModel, ParamConfig<E> mpConfig, String elemId) {
+	protected <E> DefaultListElemParamState<E> createElemParam(EntityStateAspectHandlers provider, DefaultListModelState<E> parentModel, ParamConfig<E> mpConfig, String elemId) {
 		/* if param is mapped then model must be mapped - in case of collection, its the model enclosing the collection param */
 		Model<?> colParamParentModel = parentModel.getAssociatedParam().getParentModel();
 		if(mpConfig.getMappingMode()==MapsTo.Mode.MappedAttached && !colParamParentModel.getConfig().isMapped() && !colParamParentModel.isRoot())
@@ -115,15 +116,16 @@ abstract public class AbstractEntityStateBuilder {
 		return mpState;
 	}
 	
-	protected <P> DefaultParamState<P> createParam(StateBuilderContext provider, Model<?> parentModel, Model<?> mapsToSAC, ParamConfig<P> mpConfig) {
+	protected <P> DefaultParamState<P> createParam(EntityStateAspectHandlers provider, Model<?> parentModel, Model<?> mapsToSAC, ParamConfig<P> mpConfig) {
 		logit.trace(()->"[createParam] paramConfig: "+mpConfig.getCode()+" in model: "+parentModel.getPath());
 		
 		final DefaultParamState<P> p;
 		if(mpConfig.isMapped()) {
 			p = createParamMapped(provider, parentModel, mapsToSAC, mpConfig.findIfMapped());
 		}	
-		else
+		else {
 			p = createParamUnmapped(provider, parentModel, mapsToSAC, mpConfig);
+		}
 		
 		p.init();
 		decorateParam(p);
@@ -135,15 +137,12 @@ abstract public class AbstractEntityStateBuilder {
 	}
 	
 	private <T> void decorateParam(DefaultParamState<T> created) {
-		if(created.getConfig().getContextParam()==null) return; //skip is not configured for RuntimeConfig
+		if(created.getConfig().getContextParam()==null) //skip is not configured for RuntimeConfig
+			return; 
 		
-		// skip from creating runtime state for variables within runtime itself
-		//if(StringUtils.contains(created.getPath(), Constants.SEPARATOR_CONFIG_ATTRIB.code)) 
-		//	return; 
-		
-		DefaultParamState<?> pRuntime = buildParam(created.getProvider(), created.getParentModel(), created.getConfig().getContextParam(), null);
+		DefaultParamState<?> pRuntime = buildParam(created.getAspectHandlers(), created.getParentModel(), created.getConfig().getContextParam(), null);
 
-		StateType type = buildParamType(created.getProvider(), created.getParentModel(), pRuntime, null);
+		StateType type = buildParamType(created.getAspectHandlers(), created.getParentModel(), pRuntime, null);
 		pRuntime.setType(type);
 		
 		StateType.Nested<?> runtimeType = type.findIfNested();
@@ -152,16 +151,16 @@ abstract public class AbstractEntityStateBuilder {
 		
 	}
 	
-	private <P, V, C> DefaultParamState<P> createParamMapped(StateBuilderContext provider, Model<?> parentModel, Model<?> mapsToSAC, MappedParamConfig<P, ?> mappedParamConfig) {
+	private <P, V, C> DefaultParamState<P> createParamMapped(EntityStateAspectHandlers aspectHandlers, Model<?> parentModel, Model<?> mapsToSAC, MappedParamConfig<P, ?> mappedParamConfig) {
 		if(mappedParamConfig.getMappingMode() == Mode.MappedAttached) {
 			// find mapped param's state
 			final Param<?> mapsToParam = findMapsToParam(mappedParamConfig, mapsToSAC);
 			
 			if(mappedParamConfig.getType().isCollection()) {
-				return new MappedDefaultListParamState(mapsToParam.findIfCollection(), parentModel, mappedParamConfig, provider);
+				return new MappedDefaultListParamState(mapsToParam.findIfCollection(), parentModel, mappedParamConfig, aspectHandlers);
 			}
 				
-			return new MappedDefaultParamState<>(mapsToParam, parentModel, mappedParamConfig, provider);
+			return new MappedDefaultParamState<>(mapsToParam, parentModel, mappedParamConfig, aspectHandlers);
 		}
 		
 		if(!mappedParamConfig.getMapsTo().getType().isNested()) {
@@ -170,29 +169,33 @@ abstract public class AbstractEntityStateBuilder {
 		}
 		
 		// detached nested: find mapsTo model and create ExState.ExParam for it
-		ExecutionEntity<V, C> eState = new ExecutionEntity<>();
+		
 		ModelConfig<?> mapsToEnclosingModel = mappedParamConfig.getMapsToEnclosingModel();
 		
 		ExecutionEntity.ExConfig<V, C> exConfig = new ExecutionEntity.ExConfig<>((ModelConfig<C>)mapsToEnclosingModel, null, null);
 		
-		Command cmdDelinked = CommandBuilder.withUri(parentModel.getRootExecution().getCommand().getAbsoluteUri()+Constants.SEPARATOR_URI.code+mappedParamConfig.getPath().value()).getCommand();
-		ExecutionEntity<V, C>.ExModel execModelSAC = eState.new ExParam(cmdDelinked, provider, exConfig).getRootExecution().unwrap(ExecutionEntity.ExModel.class);
+		//==String mapsToParamAbsolutePath = parentModel.getAbsolutePath() +Constants.SEPARATOR_URI.code+ mappedParamConfig.getCode();
+		String mapsToParamAbsolutePath = parentModel.getPath() +Constants.SEPARATOR_URI.code+ mappedParamConfig.getCode();
+		Command detachedRootCommand = CommandBuilder.withUri(mapsToParamAbsolutePath).getCommand();
+		
+		ExecutionEntity<V, C> eState = new ExecutionEntity<>();
+		ExecutionEntity<V, C>.ExModel execModelSAC = eState.new ExParam(detachedRootCommand, aspectHandlers, exConfig).getRootExecution().unwrap(ExecutionEntity.ExModel.class);
 		
 		// mapsTo core param
-		DefaultParamState<C> mapsToDetachedRootParam = buildParam(provider, execModelSAC, execModelSAC.getConfig().getCoreParam(), null);
+		DefaultParamState<C> mapsToDetachedRootParam = buildParam(aspectHandlers, execModelSAC, execModelSAC.getConfig().getCoreParam(), null);
 		Param<?> mapsToParam = mapsToDetachedRootParam.findParamByPath(MapsTo.DETACHED_SIMULATED_FIELD_NAME);
 		
 		if(mappedParamConfig.getType().isCollection()) {
-			return new MappedDefaultListParamState(mapsToParam.findIfCollection(), parentModel, mappedParamConfig, provider);
+			return new MappedDefaultListParamState(mapsToParam.findIfCollection(), parentModel, mappedParamConfig, aspectHandlers);
 		}
-		return new MappedDefaultParamState<>(mapsToParam, parentModel, mappedParamConfig, provider);
+		return new MappedDefaultParamState<>(mapsToParam, parentModel, mappedParamConfig, aspectHandlers);
 	}
 
-	private <P> DefaultParamState<P> createParamUnmapped(StateBuilderContext provider, Model<?> parentModel, Model<?> mapsToSAC, ParamConfig<P> paramConfig) {
+	private <P> DefaultParamState<P> createParamUnmapped(EntityStateAspectHandlers aspectHandlers, Model<?> parentModel, Model<?> mapsToSAC, ParamConfig<P> paramConfig) {
 		if(paramConfig.getType().isCollection())
-			return new DefaultListParamState(parentModel, paramConfig, provider);
+			return new DefaultListParamState(parentModel, paramConfig, aspectHandlers);
 		
-		return new DefaultParamState<>(parentModel, paramConfig, provider);
+		return new DefaultParamState<>(parentModel, paramConfig, aspectHandlers);
 	}
 	
 	private <T, M> Param<M> findMapsToParam(ParamConfig<T> pConfig, Model<?> mapsToStateAndConfig) {

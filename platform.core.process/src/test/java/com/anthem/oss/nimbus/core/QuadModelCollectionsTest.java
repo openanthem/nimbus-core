@@ -28,6 +28,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.anthem.oss.nimbus.core.domain.command.Command;
+import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
@@ -145,7 +146,7 @@ public class QuadModelCollectionsTest {
 		// ParamSAC
 		Param<List<ServiceLine>> pSAC_col = q.getCore().findParamByPath("/serviceLines");
 		assertNotNull(pSAC_col);
-		assertEquals("/serviceLines", pSAC_col.getPath());
+		assertEquals(TestCommandFactory.create_view_icr_UMCaseFlow().buildUri(Type.DomainAlias)+"/serviceLines", pSAC_col.getPath());
 		
 		assertTrue(pSAC_col.getType().isNested());
 		assertTrue(pSAC_col.getType().isCollection());
@@ -315,7 +316,7 @@ public class QuadModelCollectionsTest {
 		
 		ListParam<AuditInfo> p_a = q.getCore().findParamByPath("/serviceLines/0/discharge/audits").findIfCollection();
 		assertNotNull(p_a);
-		assertEquals("/serviceLines/0/discharge/audits", p_a.getPath());
+		assertEquals(TestCommandFactory.create_view_icr_UMCaseFlow().buildUri(Type.DomainAlias)+"/serviceLines/0/discharge/audits", p_a.getPath());
 		
 		p_a.add(a0);
 		assertEquals("/serviceLines/0/discharge/audits/0", p_a.findParamByPath("/0").getPath());

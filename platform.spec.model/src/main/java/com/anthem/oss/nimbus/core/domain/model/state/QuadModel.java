@@ -7,7 +7,6 @@ import java.io.Serializable;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadScopedEventListener;
 import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.command.CommandElement;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
 import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
@@ -25,8 +24,6 @@ public class QuadModel<V, C> implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private final CommandElement key;
-	
 	private ExecutionEntity<V, C>.ExModel root;
 	
 	@JsonIgnore transient private final Model<C> core;
@@ -37,8 +34,7 @@ public class QuadModel<V, C> implements Serializable {
 	
 	@JsonIgnore transient private QuadScopedEventListener eventPublisher;
 	
-	public QuadModel(CommandElement key, ExecutionEntity<V, C>.ExModel root) {
-		this.key = key;
+	public QuadModel(ExecutionEntity<V, C>.ExModel root) {
 		this.root = root;
 		this.core = getRoot().findModelByPath("/c");
 		this.view = getRoot().findModelByPath("/v");
@@ -52,9 +48,9 @@ public class QuadModel<V, C> implements Serializable {
 		return view;
 	}
 	
-	public Model<?> resolveStateAndConfig(Command cmd) {
-		return cmd.isView() ? view : core;
-	}
+//	public Model<?> resolveStateAndConfig(Command cmd) {
+//		return cmd.isView() ? view : core;
+//	}
 	
 	@Override
 	protected void finalize() throws Throwable {

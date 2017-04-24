@@ -37,7 +37,7 @@ abstract public class AbstractExpressionHelper {
 	 * @return
 	 */
 	final public String getResolvedUri(CommandMessage cmdMsg, String uri){
-		String platformUri = cmdMsg.getCommand().buildAliasTillType(cmdMsg.getCommand().root(), Type.PlatformMarker);
+		String platformUri = cmdMsg.getCommand().buildAlias(cmdMsg.getCommand().root(), Type.PlatformMarker);
 		StringBuilder resolvedUri = new StringBuilder(platformUri);
 		resolvedUri.append(uri);
 		return resolvedUri.toString();

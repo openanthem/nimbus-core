@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.mongodb.core.MongoOperations;
 
-import com.anthem.nimbus.platform.core.process.api.repository.ExecutionStateRepository;
 import com.anthem.nimbus.platform.core.process.api.repository.SessionCacheRepository;
 import com.anthem.nimbus.platform.core.process.api.support.ProcessBeanHelper;
 import com.anthem.nimbus.platform.core.process.mq.MessageReceiver;
@@ -64,10 +63,10 @@ import com.anthem.oss.nimbus.core.web.WebCommandDispatcher;
 //@Import({HttpSessionConfig.class,Neo4jConfig.class,DefaultCoreModelConfig.class,WebSocketConfig.class,WebSocketHandlersConfig.class,WebSecurityConfig.class,SwaggerConfig.class,EmailTaskExecutorBeanRegistrar.class,ActivitiProcessAsBeanRegistrar.class})
 public class DefaultCoreConfiguration {
 	
-	@Bean(name="default.eventStateRepository")
-	public ExecutionStateRepository<?, ?> eventStateRepository(ModelRepositoryFactory repFactory){
-		return new ExecutionStateRepository<Object, Object>(repFactory);
-	}
+//	@Bean(name="default.eventStateRepository")
+//	public ExecutionStateRepository<?, ?> eventStateRepository(ModelRepositoryFactory repFactory){
+//		return new ExecutionStateRepository<Object, Object>(repFactory);
+//	}
 	
 	//TODO - the below 2 beans are blank. should they be deleted ?
 	@Bean(name="default.param.state.rep_session")
