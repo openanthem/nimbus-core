@@ -33,6 +33,7 @@ import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandMessageConverter;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
 import com.anthem.oss.nimbus.core.expressions.ExpressionHelperTestData.Author;
@@ -42,6 +43,7 @@ import com.anthem.oss.nimbus.core.expressions.ExpressionHelperTestData.OrderBook
 import com.anthem.oss.nimbus.core.session.UserEndpointSession;
 import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
+
 
 /**
  * @author Swetha Vemuri
@@ -271,9 +273,14 @@ public class DefaultExpressionHelperTest extends AbstractPlatformIntegrationTest
 		assertNotNull(quadModel.getView().findParamByPath(inputPath).getType().findIfNested().getConfig().getReferredClass());
 		Class<?> targetClass = quadModel.getView().findParamByPath(inputPath).getType().findIfNested().getConfig().getReferredClass();
 		Object state = converter.convert(targetClass,cmdMsg.getRawPayload());
-		quadModel.getView().findParamByPath(inputPath).setState(state);
-			
-		assertEquals("non-fiction",quadModel.getCore().findParamByPath("/category").getState());
+		//quadModel.getView().findParamByPath("/pg2/section_1/orderBookForm/category").setState("test"); // Individual view element setState works fine. 
+		//assertEquals("test",quadModel.getCore().findParamByPath("/category").getState());
+		quadModel.getView().findParamByPath("/pg2/section_1/orderBookForm").setState(state);
+		Param<String> bookNameParam = quadModel.getView().findParamByPath("/pg2/section_1/orderBookForm/bookName");
+		Param<String> coreNameParam = quadModel.getCore().findParamByPath("/name");
+		assertEquals("new book",bookNameParam.getState());		
+	//	assertEquals("non-fiction",quadModel.getCore().findParamByPath("/category").getState());
+		assertEquals("new book",coreNameParam.getState());
 	}
 	
 	

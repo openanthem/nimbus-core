@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -48,6 +49,9 @@ public class Command implements Serializable {
 	
 	private List<Behavior> behaviors;
 	
+	private Map<String, String[]> requestParams;
+	
+	@JsonIgnore
 	final private Instant createdInstant = Instant.now();
 	
 	@JsonIgnore @Getter(value=AccessLevel.PRIVATE)

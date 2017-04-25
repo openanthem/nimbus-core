@@ -235,4 +235,9 @@ public class DefaultCoreConfiguration {
 	public UserEndpointSession userEndpointSession() {
 		return new UserEndpointSession();
 	}
+	
+//	@Bean
+//	BeforeSaveListener beforeSaveListener(@Qualifier("default.processGateway") ProcessGateway processGateway) {
+//		return new BeforeSaveListener();
+//	}
 }

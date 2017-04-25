@@ -227,8 +227,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		if(getAspectHandlers().getEventListener() == null) return;
 		
 		ModelEvent<Param<?>> e = new ModelEvent<Param<?>>(a, p.getPath(), p);
-		EventListener publisher = getAspectHandlers().getEventListener();
-		publisher.listen(e);
+		EventListener listener = getAspectHandlers().getEventListener();
+		listener.listen(e);
 	}
 	
 	@JsonIgnore @Override
