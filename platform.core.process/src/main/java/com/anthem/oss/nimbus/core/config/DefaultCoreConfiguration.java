@@ -216,17 +216,17 @@ public class DefaultCoreConfiguration {
 		return new MongoIdSequenceRepository(mongoOperations);
 	}
 
-	@Bean("clientEntityRepo")
+	@Bean(name="clientEntityRepo")
 	public ClientEntityRepoService clientEntityRepoService(ClientRepository cRepo, ClientEntityRepository ceRepo, ClientUserRoleRepository crRepo) {
 		return new ClientEntityRepoService(cRepo, ceRepo, crRepo);
 	}
 	
-	@Bean("clientuserrepo")
+	@Bean(name="clientuserrepo")
 	public ClientUserRepoService clientUserRepoService(ClientUserRepository cuRepo, ClientRepository cRepo, PlatformUserRepository puRepo) {
 		return new ClientUserRepoService(cuRepo, cRepo, puRepo);
 	}
 	
-	@Bean("clientUserGroupRepo")
+	@Bean(name="clientUserGroupRepo")
 	public ClientUserGroupRepoService clientUserGroupRepoService(ClientEntityRepository ceRepo, ClientUserGroupRepository cugRepo) {
 		return new ClientUserGroupRepoService(ceRepo, cugRepo);
 	}
