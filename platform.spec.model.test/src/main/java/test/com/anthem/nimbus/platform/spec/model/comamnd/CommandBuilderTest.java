@@ -45,7 +45,7 @@ public class CommandBuilderTest {
 	
 	@Test
 	public void t1_withParams() {
-		String uri = "/client_xyz/app_abc/p/domainRoot_alias/_new?b=$executeAnd$save";
+		String uri = "/client_xyz/app_abc/p/domainRoot_alias/_new?b=$executeAnd$save&criteria=customer.name.eq(\"John\")";
 		Command cmd = CommandBuilder.withUri(uri).getCommand();
 		assertNotNull(cmd);
 		
@@ -56,6 +56,9 @@ public class CommandBuilderTest {
 		assertSame(Action._new, cmd.getAction());
 		assertSame(Behavior.$execute, cmd.getBehaviors().get(0));
 		assertSame(Behavior.$save, cmd.getBehaviors().get(1));
+		
+		assertNotNull(cmd.getRequestParams().get("criteria"));
+		assertEquals(cmd.getRequestParams().get("criteria")[0], "customer.name.eq(\"John\")");
 	}
 
 	
@@ -97,4 +100,5 @@ public class CommandBuilderTest {
 		
 		System.out.println(cmd.getRefId(Type.ProcessAlias));
 	}
+
 }

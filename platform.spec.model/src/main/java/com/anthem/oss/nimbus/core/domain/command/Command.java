@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -49,17 +50,20 @@ public class Command implements Serializable {
 	
 	private List<Behavior> behaviors;
 	
+	private Map<String, String[]> requestParams;
+	
+	@JsonIgnore
 	final private Instant createdInstant = Instant.now();
 	
 	@JsonIgnore @Getter(value=AccessLevel.PRIVATE)
 	final private transient CollectionsTemplate<List<Behavior>, Behavior> templateBehaviors = CollectionsTemplate.linked(()->getBehaviors(), s->setBehaviors(s));
-	
 	
 	public CollectionsTemplate<List<Behavior>, Behavior> templateBehaviors() {
 		return templateBehaviors;
 	}
 	
 
+	//@JsonIgnore
 	public Command getRootDomainCommand() {
 		String cUri = this.getAbsoluteDomainUri();
 		Command c = CommandBuilder.withUri(cUri).getCommand();
