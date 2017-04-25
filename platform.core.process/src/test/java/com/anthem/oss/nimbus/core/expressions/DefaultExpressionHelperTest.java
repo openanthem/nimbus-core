@@ -16,16 +16,24 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 
 import com.anthem.nimbus.platform.core.process.api.AbstractPlatformIntegrationTests;
 import com.anthem.oss.nimbus.core.bpm.DefaultExpressionHelper;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandMessageConverter;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
 import com.anthem.oss.nimbus.core.expressions.ExpressionHelperTestData.Author;
@@ -33,12 +41,16 @@ import com.anthem.oss.nimbus.core.expressions.ExpressionHelperTestData.Book;
 import com.anthem.oss.nimbus.core.expressions.ExpressionHelperTestData.Book.Publisher;
 import com.anthem.oss.nimbus.core.expressions.ExpressionHelperTestData.OrderBookFlow;
 import com.anthem.oss.nimbus.core.session.UserEndpointSession;
+import com.mongodb.Mongo;
+import com.mongodb.MongoClient;
+
 
 /**
  * @author Swetha Vemuri
  *
  */
 @EnableAutoConfiguration
+@ContextConfiguration(classes=MongoConfiguration.class) // TODO Remove this after debugging the persistence set.
 @ActiveProfiles("test")
 public class DefaultExpressionHelperTest extends AbstractPlatformIntegrationTests {
 	
@@ -47,6 +59,9 @@ public class DefaultExpressionHelperTest extends AbstractPlatformIntegrationTest
 	
 	@Autowired
 	QuadModelBuilder quadModelBuilder;
+	
+	@Autowired
+	CommandMessageConverter converter;
 	
 	@Autowired private MongoTemplate mt;
 	
@@ -238,6 +253,37 @@ public class DefaultExpressionHelperTest extends AbstractPlatformIntegrationTest
 		assertEquals("authorNameUpdate",q.getCore().findParamByPath("/author/firstName").getState());
 	}
 	
+	@Test
+	public void t12_convertAndSet() {
+		assertNotNull(book1.getId());
+		DelegateExecution execution = mock(DelegateExecution.class);
+		Command cmd = CommandBuilder.withUri("/xyz/admin/p/view_book/_submitOrder:"+book1.getId()+"/_process?b=$executeAnd$config").getCommand();
+		CommandMessage cmdMsg = new CommandMessage();
+		cmdMsg.setCommand(cmd);
+		String payload = "{ \"bookName\": \"new book\", \"category\": \"non-fiction\", \"authorName\" : \"JK Rowling\"}";
+		cmdMsg.setRawPayload(payload);
+		String resolvedUri = expHlpr.getResolvedUri(cmdMsg,"/pg2/section_1/orderBookForm");	
+		
+		//expHlpr._convertAndSet(cmdMsg, execution , resolvedUri);
+		Command command = CommandBuilder.withUri(resolvedUri.toString()).getCommand();
+		String inputPath = command.getAbsoluteDomainUri();
+		QuadModel<?, Object> quadModel = UserEndpointSession.getOrThrowEx(cmdMsg.getCommand());
+		assertNotNull(quadModel.getView());
+		assertNotNull(quadModel.getView().findParamByPath(inputPath));
+		assertNotNull(quadModel.getView().findParamByPath(inputPath).getType().findIfNested().getConfig().getReferredClass());
+		Class<?> targetClass = quadModel.getView().findParamByPath(inputPath).getType().findIfNested().getConfig().getReferredClass();
+		Object state = converter.convert(targetClass,cmdMsg.getRawPayload());
+		//quadModel.getView().findParamByPath("/pg2/section_1/orderBookForm/category").setState("test"); // Individual view element setState works fine. 
+		//assertEquals("test",quadModel.getCore().findParamByPath("/category").getState());
+		quadModel.getView().findParamByPath("/pg2/section_1/orderBookForm").setState(state);
+		Param<String> bookNameParam = quadModel.getView().findParamByPath("/pg2/section_1/orderBookForm/bookName");
+		Param<String> coreNameParam = quadModel.getCore().findParamByPath("/name");
+		assertEquals("new book",bookNameParam.getState());		
+	//	assertEquals("non-fiction",quadModel.getCore().findParamByPath("/category").getState());
+		assertEquals("new book",coreNameParam.getState());
+	}
+	
+	
 	private Book createBook_1() {
 		Book book = new Book();
 		book.setName("The Prodigal Daughter");
@@ -288,4 +334,23 @@ public class DefaultExpressionHelperTest extends AbstractPlatformIntegrationTest
 		list.add(author2);
 		return list;
 	}
+}
+/*Temporary just to see if the values are being persisted. Embedded mongo works fine, will remove this class once the issue is debugged*/
+@TestConfiguration
+class MongoConfiguration extends AbstractMongoConfiguration {
+ 
+    @Override
+    protected String getDatabaseName() {
+        return "integrationtest";
+    }
+ 
+    @Override
+    public Mongo mongo() throws Exception {
+        return new MongoClient("127.0.0.1", 27017);
+    }
+ 
+    @Override
+    protected String getMappingBasePackage() {
+        return "com.anthem.nimbus.platform.client.extension.cm";
+    }
 }

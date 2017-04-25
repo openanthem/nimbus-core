@@ -183,6 +183,7 @@ public class CommandBuilder {
 			//TODO Implement client/app => heirarchy based config for default behavior
 			cmd.setBehaviors(new LinkedList<>(Arrays.asList(Behavior.DEFAULT)));
 		}
+		cmd.setRequestParams(rParams);
 		
 		return this;
 	}

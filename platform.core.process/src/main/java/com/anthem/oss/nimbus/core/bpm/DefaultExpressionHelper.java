@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.util.Assert;
 
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Behavior;
@@ -209,7 +210,8 @@ public class DefaultExpressionHelper extends AbstractExpressionHelper {
 		Command command = CommandBuilder.withUri(resolvedUri.toString()).getCommand();
 		String inputPath = command.getAbsoluteDomainUri();
 		QuadModel<?, Object> quadModel = UserEndpointSession.getOrThrowEx(cmdMsg.getCommand());
-		Class<?> targetClass = quadModel.getView().findParamByPath(inputPath).getState().getClass();
+		Assert.notNull(quadModel.getView().findParamByPath(inputPath),"cannot find quadmodel for the path");
+		Class<?> targetClass = quadModel.getView().findParamByPath(inputPath).getType().findIfNested().getConfig().getReferredClass();
 		Object state = converter.convert(targetClass,cmdMsg.getRawPayload());
 		quadModel.getView().findParamByPath(inputPath).setState(state);
 	}
