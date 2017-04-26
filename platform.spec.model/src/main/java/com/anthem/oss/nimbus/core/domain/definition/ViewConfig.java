@@ -143,7 +143,9 @@ public class ViewConfig {
 		String alias() default "FieldValue";
 		Type type() default Type.Field;
 		String imgSrc() default "";
+		boolean showName() default true;
 		String cols() default "1";
+		String iconField() default "";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
