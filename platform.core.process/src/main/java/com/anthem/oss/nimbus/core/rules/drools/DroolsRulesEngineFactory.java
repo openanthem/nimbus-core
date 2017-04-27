@@ -10,7 +10,6 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
-import org.springframework.stereotype.Component;
 
 import com.anthem.oss.nimbus.core.domain.model.config.RulesConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.RulesRuntime;

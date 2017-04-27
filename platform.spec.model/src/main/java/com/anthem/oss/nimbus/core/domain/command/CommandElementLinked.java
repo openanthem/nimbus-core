@@ -22,14 +22,10 @@ public class CommandElementLinked extends CommandElement implements Serializable
 	
 	private int seqNum;
 	
-	
 	@Getter(value=AccessLevel.PROTECTED)
 	private CommandElementLinked next;
 	
 	
-	/**
-	 * 
-	 */
 	@Override
 	public CommandElementLinked clone() {
 		CommandElementLinked cloned = new CommandElementLinked();
@@ -46,12 +42,6 @@ public class CommandElementLinked extends CommandElement implements Serializable
 		super.shallowCopy(cloned);
 	}
 	
-	/**
-	 * 
-	 * @param type
-	 * @param absoluteUri
-	 * @return
-	 */
 	public CommandElementLinked cloneUpto(Type type, StringBuilder absoluteUri) {
 		if(getType().equals(type))
 			return null;
@@ -67,40 +57,19 @@ public class CommandElementLinked extends CommandElement implements Serializable
 		return cloned;
 	}
 	
-	/**
-	 * 
-	 * @return
-	 */
 	public CommandElementLinked next() {
 		return next;
 	}
 	
-	/**
-	 * 
-	 * @return
-	 */
 	public boolean hasNext() {
 		return next() != null;
 	}
-	
-	/**
-	 * 
-	 */
+
 	@Override
 	public void detachChildElements() {
 		setNext(null);
 	}
 	
-	
-	/*public void doIfFound(Supplier<CommandElement> predicate, Supplier<>) {
-		
-	}*/
-	
-	/**
-	 * 
-	 * @param name
-	 * @return
-	 */
 	public CommandElementLinked findFirstMatch(Type name) {
 		if(getType() == null) return null;
 		
@@ -111,12 +80,6 @@ public class CommandElementLinked extends CommandElement implements Serializable
 		return next().findFirstMatch(name);
 	}
 	
-	/**
-	 * 
-	 * @param name
-	 * @param uri
-	 * @return
-	 */
 	public CommandElementLinked createNext(Type name, String uri) {
 		CommandElementLinked nextElem = new CommandElementLinked();
 		nextElem.setSeqNum(this.seqNum + 1);
@@ -127,10 +90,6 @@ public class CommandElementLinked extends CommandElement implements Serializable
 		return nextElem;
 	}
 	
-	/**
-	 * 
-	 * @param elem
-	 */
 	public void setNext(CommandElementLinked elem) {
 		if(elem == null) {
 			next = null;

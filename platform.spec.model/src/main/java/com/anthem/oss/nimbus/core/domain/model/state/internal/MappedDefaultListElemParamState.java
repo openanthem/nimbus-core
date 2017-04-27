@@ -3,12 +3,10 @@
  */
 package com.anthem.oss.nimbus.core.domain.model.state.internal;
 
-import java.util.Objects;
-
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.MappedListElemParam;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification;
-import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderContext;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
@@ -26,12 +24,13 @@ public class MappedDefaultListElemParamState<E, M> extends DefaultListElemParamS
 	
 	@JsonIgnore final private Notification.Consumer<M> delegate;
 	
-	public MappedDefaultListElemParamState(ListModel<E> parentModel, ParamConfig<E> config, StateBuilderContext provider, String elemId) {
-		super(parentModel, config, provider, elemId);
-		
-		@SuppressWarnings("unchecked")
-		ListElemParam<M> mapsTo = (ListElemParam<M>)findMapsTo(parentModel, elemId);
-		Objects.requireNonNull(mapsTo, "MapsTo param must not be null.");
+	@SuppressWarnings("unchecked")
+	public MappedDefaultListElemParamState(ListModel<E> parentModel, ParamConfig<E> config, EntityStateAspectHandlers provider, String elemId) {
+		this(parentModel, config, provider, (ListElemParam<M>)findOrCreateMapsTo(parentModel, elemId));
+	}
+	
+	public MappedDefaultListElemParamState(ListModel<E> parentModel, ParamConfig<E> config, EntityStateAspectHandlers provider, ListElemParam<M> mapsTo) {
+		super(parentModel, config, provider, mapsTo.getElemId());
 		this.mapsTo = mapsTo;		
 		
 		this.delegate = new InternalNotificationConsumer<>(this);
@@ -39,7 +38,7 @@ public class MappedDefaultListElemParamState<E, M> extends DefaultListElemParamS
 		getMapsTo().registerSubscriber(this);
 	}
 	
-	public static <E> ListElemParam<?> findMapsTo(ListModel<E> parentModel, String elemId) {
+	public static <E> ListElemParam<?> findOrCreateMapsTo(ListModel<E> parentModel, String elemId) {
 		MappedListModel<E, ?> mappedParentModel = parentModel.findIfMapped();
 		
 		//check if mapsToElem already exists

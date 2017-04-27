@@ -24,22 +24,14 @@ abstract public class CommandElement implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-
 	public enum Type {
 		
 		ClientAlias("ClientAlias"),
-		
 		ClientOrgAlias("ClientOrgAlias"),
-		
 		AppAlias("AppAlias"),
-		
 		PlatformMarker("PlatformMarker"),
-		
 		DomainAlias("DomainAlias"),
-		
 		ProcessAlias("ProcessAlias"),
-		//Action,
-		
 		ParamName("ParamName");
 		
 		final private String desc;
@@ -49,7 +41,7 @@ abstract public class CommandElement implements Serializable {
 		}
 		
 		public String getDesc() {
-               return desc;
+            return desc;
 		}
 		
 		public static Type findByDesc(String desc) {
@@ -62,7 +54,6 @@ abstract public class CommandElement implements Serializable {
 		public static final List<Type> allowedRecursive = Arrays.asList(DomainAlias);
 	}
 	
-	
 	private Type type;
 	
 	private String alias;
@@ -72,28 +63,16 @@ abstract public class CommandElement implements Serializable {
 	
 	abstract public void detachChildElements();
 	
-	/**
-	 * 
-	 * @param cloned
-	 */
 	public void shallowCopy(CommandElement cloned) {
 		cloned.setType(getType());
 		cloned.setAlias(getAlias());
 		cloned.setRefId(getRefId());
 	}
 	
-	/**
-	 * 
-	 * @return
-	 */
 	public boolean hasRefId() {
 		return StringUtils.isNotEmpty(getRefId());
 	}
 	
-	/**
-	 * 
-	 * @return
-	 */
 	public String getAliasUri() {
 		StringBuilder sb = new StringBuilder();
 		
@@ -102,10 +81,6 @@ abstract public class CommandElement implements Serializable {
 		        .toString();	
 	}
 	
-	/**
-	 * 
-	 * @return
-	 */
 	public String getUri(){
 		StringBuilder sb = new StringBuilder();
 		
@@ -115,10 +90,6 @@ abstract public class CommandElement implements Serializable {
 			: getAliasUri();
 	}
 
-	/**
-	 * 
-	 * @param uri
-	 */
 	public void setUri(String uri) {
 		int i = StringUtils.indexOf(uri, Constants.SEPARATOR_URI_VALUE.code);
 		if(i == -1) {

@@ -6,15 +6,13 @@ package com.anthem.oss.nimbus.core.domain.model.state.builder;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.stereotype.Component;
-
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
-import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderContext;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.StateMeta;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultListElemParamState;
@@ -30,26 +28,26 @@ import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
  */
 public class EntityStateBuilder extends AbstractEntityStateBuilder {
 
-	public <V, C> ExecutionEntity<V, C>.ExModel buildExec(Command cmd, StateBuilderContext provider, ExecutionEntity<V, C> eState, StateMeta.View<V, C> viewMeta) {
-		return buildExec(cmd, provider, eState, viewMeta.getExecutionConfig());
+	public <V, C> ExecutionEntity<V, C>.ExModel buildExec(Command cmd, EntityStateAspectHandlers aspectHandlers, ExecutionEntity<V, C> eState, StateMeta.View<V, C> viewMeta) {
+		return buildExec(cmd, aspectHandlers, eState, viewMeta.getExecutionConfig());
 	}
 	
-	public <V, C> ExecutionEntity<V, C>.ExModel buildExec(Command cmd, StateBuilderContext provider, ExecutionEntity<V, C> eState, ExecutionEntity.ExConfig<V, C> exConfig) {
-		ExecutionEntity<V, C>.ExModel execModelSAC = eState.new ExParam(cmd, provider, exConfig).getRootExecution().unwrap(ExecutionEntity.ExModel.class);
+	public <V, C> ExecutionEntity<V, C>.ExModel buildExec(Command rootCommand, EntityStateAspectHandlers aspectHandlers, ExecutionEntity<V, C> eState, ExecutionEntity.ExConfig<V, C> exConfig) {
+		ExecutionEntity<V, C>.ExModel execModelSAC = eState.new ExParam(rootCommand, aspectHandlers, exConfig).getRootExecution().unwrap(ExecutionEntity.ExModel.class);
 		
 		// core param sac
-		DefaultParamState<C> coreParamSAC = buildParam(provider, execModelSAC, execModelSAC.getConfig().getCoreParam(), null);
+		DefaultParamState<C> coreParamSAC = buildParam(aspectHandlers, execModelSAC, execModelSAC.getConfig().getCoreParam(), null);
 		execModelSAC.templateParams().add(coreParamSAC);
 		
 		// view param sac
 		if(exConfig.getView()!=null) {
-			DefaultParamState<V> viewParamSAC = buildParam(provider, execModelSAC, execModelSAC.getConfig().getViewParam(), execModelSAC);
+			DefaultParamState<V> viewParamSAC = buildParam(aspectHandlers, execModelSAC, execModelSAC.getConfig().getViewParam(), execModelSAC);
 			execModelSAC.templateParams().add(viewParamSAC);
 		}
 		
 		// flow param sac
 		if(exConfig.getFlow()!=null) {
-			DefaultParamState<ProcessFlow> flowParamSAC = buildParam(provider, execModelSAC, execModelSAC.getConfig().getFlowParam(), null);
+			DefaultParamState<ProcessFlow> flowParamSAC = buildParam(aspectHandlers, execModelSAC, execModelSAC.getConfig().getFlowParam(), null);
 			execModelSAC.templateParams().add(flowParamSAC);
 		}
 		
@@ -59,19 +57,19 @@ public class EntityStateBuilder extends AbstractEntityStateBuilder {
 	}
 
 	@Override
-	public <T, P> DefaultParamState<P> buildParam(StateBuilderContext provider, Model<T> mState, ParamConfig<P> mpConfig, Model<?> mapsToSAC) {
-		final DefaultParamState<P> mpState = createParam(provider, mState, mapsToSAC, mpConfig);
+	public <T, P> DefaultParamState<P> buildParam(EntityStateAspectHandlers aspectHandlers, Model<T> mState, ParamConfig<P> mpConfig, Model<?> mapsToSAC) {
+		final DefaultParamState<P> mpState = createParam(aspectHandlers, mState, mapsToSAC, mpConfig);
 		logit.debug(()->"[buildInternal] mpStatePath: "+ mpState.getPath());
 		
 		//handle param type
-		StateType type = buildParamType(provider, mState, mpState, mapsToSAC);
+		StateType type = buildParamType(aspectHandlers, mState, mpState, mapsToSAC);
 		mpState.setType(type);
 		
 		return mpState;
 	}
 	
 	@Override
-	public <T, P> DefaultModelState<T> buildModel(StateBuilderContext provider, DefaultParamState<T> associatedParam, ModelConfig<T> mConfig, Model<?> mapsToSAC) {
+	public <T, P> DefaultModelState<T> buildModel(EntityStateAspectHandlers aspectHandlers, DefaultParamState<T> associatedParam, ModelConfig<T> mConfig, Model<?> mapsToSAC) {
 		if(mConfig==null) return null;
 
 		/* if model & param are mapped, then  mapsToSAC must not be null */
@@ -79,7 +77,7 @@ public class EntityStateBuilder extends AbstractEntityStateBuilder {
 			throw new InvalidConfigException("Model class: "+mConfig.getReferredClass()+" is mapped: "+mConfig.findIfMapped().getMapsTo().getReferredClass()
 						+" but mapsToSAC is not supplied for param: "+associatedParam.getPath()+". Was this model's config loaded first as part of core?");
 		
-		DefaultModelState<T> mState = createModel(associatedParam, mConfig, provider, mapsToSAC); 
+		DefaultModelState<T> mState = createModel(associatedParam, mConfig, aspectHandlers, mapsToSAC); 
 		
 		if(mConfig.getParams()==null) return mState;
 		
@@ -88,7 +86,7 @@ public class EntityStateBuilder extends AbstractEntityStateBuilder {
 			@SuppressWarnings("unchecked")
 			final ParamConfig<P> mpConfig = (ParamConfig<P>)mpConfigRawType;
 			
-			final DefaultParamState<P> mpState = buildParam(provider, mState, mpConfig, mapsToSAC);
+			final DefaultParamState<P> mpState = buildParam(aspectHandlers, mState, mpConfig, mapsToSAC);
 			 
 			/* add param state to model state in same order */
 			mState.templateParams().add(mpState);
@@ -97,27 +95,27 @@ public class EntityStateBuilder extends AbstractEntityStateBuilder {
 		return mState;
 	}
 	
-	private <E> DefaultListElemParamState<E> buildElemParam(StateBuilderContext provider, DefaultListModelState<E> mState, ParamConfig<E> mpConfig, String elemId) {
-		final DefaultListElemParamState<E> mpState = createElemParam(provider, mState, mpConfig, elemId);
+	private <E> DefaultListElemParamState<E> buildElemParam(EntityStateAspectHandlers aspectHandlers, DefaultListModelState<E> mState, ParamConfig<E> mpConfig, String elemId) {
+		final DefaultListElemParamState<E> mpState = createElemParam(aspectHandlers, mState, mpConfig, elemId);
 		logit.debug(()->"[buildInternal] mpStatePath: "+ mpState.getPath());
 		
 
 		//handle param type
-		StateType type = buildParamType(provider, mState, mpState, Optional.ofNullable(mState.findIfMapped()).map(m->m.getMapsTo()).orElse(null));
+		StateType type = buildParamType(aspectHandlers, mState, mpState, Optional.ofNullable(mState.findIfMapped()).map(m->m.getMapsTo()).orElse(null));
 		mpState.setType(type);
 		
 		return mpState;
 	}
 	
 	@Override
-	protected <P> StateType buildParamType(StateBuilderContext provider, Model<?> mState, DefaultParamState<P> associatedParam, Model<?> mapsToSAC) {
+	protected <P> StateType buildParamType(EntityStateAspectHandlers aspectHandlers, Model<?> mState, DefaultParamState<P> associatedParam, Model<?> mapsToSAC) {
 		
 		if(associatedParam.getConfig().getType().isCollection()) {
 			ParamType.NestedCollection<P> nmcType = associatedParam.getConfig().getType().findIfCollection();
 			ModelConfig<List<P>> nmConfig = nmcType.getModel();
 			
-			DefaultListElemParamState.Creator<P> elemCreator = (colModelState, elemId) -> buildElemParam(provider, colModelState, colModelState.getElemConfig(), elemId);
-			DefaultListModelState<P> nmcState = createCollectionModel(associatedParam.findIfCollection(), nmConfig, provider, elemCreator); 
+			DefaultListElemParamState.Creator<P> elemCreator = (colModelState, elemId) -> buildElemParam(aspectHandlers, colModelState, colModelState.getElemConfig(), elemId);
+			DefaultListModelState<P> nmcState = createCollectionModel(associatedParam.findIfCollection(), nmConfig, aspectHandlers, elemCreator); 
 			
 			StateType.NestedCollection<P> nctSAC = new StateType.NestedCollection<>(nmcType, nmcState);
 			return nctSAC;
@@ -142,7 +140,7 @@ public class EntityStateBuilder extends AbstractEntityStateBuilder {
 			
 			
 			/* create nested model SAC */
-			DefaultModelState<P> nmState = buildModel(provider, associatedParam, mpNmConfig, mpNmMapsToSAC);
+			DefaultModelState<P> nmState = buildModel(aspectHandlers, associatedParam, mpNmConfig, mpNmMapsToSAC);
 			StateType.Nested<P> ntState = new StateType.Nested<>(mpNmType, nmState);
 			return ntState;
 			

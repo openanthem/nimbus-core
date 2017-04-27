@@ -8,7 +8,7 @@ import java.util.List;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
-import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderContext;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 
 
@@ -19,7 +19,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 public class DefaultListParamState<T> extends DefaultParamState<List<T>> implements ListParam<T> {
 	private static final long serialVersionUID = 1L;
 	
-	public DefaultListParamState(Model<?> parentModel, ParamConfig<List<T>> config, StateBuilderContext provider) {
+	public DefaultListParamState(Model<?> parentModel, ParamConfig<List<T>> config, EntityStateAspectHandlers provider) {
 		super(parentModel, config, provider);
 	}
 	

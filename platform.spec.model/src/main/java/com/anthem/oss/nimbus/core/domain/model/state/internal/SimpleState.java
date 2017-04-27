@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderContext;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AccessLevel;
@@ -27,7 +27,7 @@ public class SimpleState<T> extends AbstractState<T> implements Observer {
 	@JsonIgnore @Setter(AccessLevel.PROTECTED) private transient Supplier<T> getter;
 	@JsonIgnore @Setter(AccessLevel.PROTECTED) private transient Consumer<T> setter;
 	
-	public SimpleState(Param<?> parent, Supplier<T> getter, Consumer<T> setter, StateBuilderContext provider) {
+	public SimpleState(Param<?> parent, Supplier<T> getter, Consumer<T> setter, EntityStateAspectHandlers provider) {
 		super(provider);
 		this.parent = parent;
 		setGetter(getter);

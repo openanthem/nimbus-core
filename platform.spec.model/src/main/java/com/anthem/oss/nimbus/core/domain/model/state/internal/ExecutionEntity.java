@@ -12,6 +12,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -37,9 +38,9 @@ import com.anthem.oss.nimbus.core.domain.model.config.internal.DefaultParamConfi
 import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ExecutionModel;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification;
-import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderContext;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
@@ -156,15 +157,17 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 		
 		final private ExecutionModel<ExecutionEntity<V, C>> rootModel;
 		
-		public ExParam(Command cmd, StateBuilderContext provider, ExConfig<V, C> exConfig) {
+		public ExParam(Command rootCommand, EntityStateAspectHandlers provider, ExConfig<V, C> exConfig) {
 			super(null, new ExParamConfig(exConfig), provider);
+			this.setPath(rootCommand.getAbsoluteUri());
+			
 			ExParamConfig pConfig = ((ExParamConfig)getConfig());
 			
-			this.rootModel = new ExModel(cmd, this, pConfig.getRootParent(), provider);
+			this.rootModel = new ExModel(rootCommand, this, pConfig.getRootParent(), provider);
 			this.setType(new StateType.Nested<>(getConfig().getType().findIfNested(), getRootExecution()));
 		}
 
-		public ExParam(Command cmd, StateBuilderContext provider, ParamConfig<ExecutionEntity<V, C>> rootParamConfig, ExecutionModel<ExecutionEntity<V, C>> rootModel) {
+		public ExParam(Command rootCommand, EntityStateAspectHandlers provider, ParamConfig<ExecutionEntity<V, C>> rootParamConfig, ExecutionModel<ExecutionEntity<V, C>> rootModel) {
 			super(null, rootParamConfig, provider);
 			this.rootModel = rootModel;
 		}
@@ -190,20 +193,20 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 	public class ExModel extends DefaultModelState<ExecutionEntity<V, C>> implements ExecutionModel<ExecutionEntity<V, C>> {
 		private static final long serialVersionUID = 1L;
 		
-		final private Command command;
+		final private Command rootCommand;
 		
 		private String currentPage; //TODO change to state
 		
 		@JsonIgnore
 		final private ExecutionRuntime executionRuntime;
 		
-		public ExModel(Command command, ExParam associatedParam, ModelConfig<ExecutionEntity<V, C>> modelConfig, StateBuilderContext provider) {
-			this(command, associatedParam, modelConfig, provider, new InternalExecutionRuntime(command));
+		public ExModel(Command rootCommand, ExParam associatedParam, ModelConfig<ExecutionEntity<V, C>> modelConfig, EntityStateAspectHandlers provider) {
+			this(rootCommand, associatedParam, modelConfig, provider, new InternalExecutionRuntime(rootCommand));
 		}
 		
-		public ExModel(Command command, ExParam associatedParam, ModelConfig<ExecutionEntity<V, C>> modelConfig, StateBuilderContext provider, ExecutionRuntime executionRuntime) {
+		public ExModel(Command rootCommand, ExParam associatedParam, ModelConfig<ExecutionEntity<V, C>> modelConfig, EntityStateAspectHandlers provider, ExecutionRuntime executionRuntime) {
 			super(associatedParam, modelConfig, provider);
-			this.command = command;
+			this.rootCommand = rootCommand;
 			this.executionRuntime = executionRuntime;
 		}
 		
@@ -249,29 +252,34 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 			super.finalize();
 		}
 	}
+
+	private static final ConcurrentHashMap<String, AtomicInteger> rootCommandBasedExecCounters = new ConcurrentHashMap<>();
 	
 	@Getter
 	public class InternalExecutionRuntime implements ExecutionRuntime {
-
-		final private Command command;
-		final private BlockingQueue<Notification<?>> notificationQueue;
+		private final Command rootCommand;
+		private final BlockingQueue<Notification<?>> notificationQueue;
 		
 		private String lockId;
-		final private LockTemplate lock = new LockTemplate();
+		private final LockTemplate lock = new LockTemplate();
 		
-		final private LockTemplate notificationLock = new LockTemplate();
-		final private Condition notComplete = notificationLock.getLock().newCondition();
+		private final LockTemplate notificationLock = new LockTemplate();
+		private final Condition notComplete = notificationLock.getLock().newCondition();
 		
-		public InternalExecutionRuntime(Command cmd) {
-			this.command = cmd;
+		public InternalExecutionRuntime(Command rootCommand) {
+			this.rootCommand = rootCommand;
 			this.notificationQueue = new LinkedBlockingQueue<>();
 		}
 		
 		@Override
-		public void start() { }
+		public void start() {
+			rootCommandBasedExecCounters.putIfAbsent(rootCommand.getAbsoluteUri(), new AtomicInteger());
+		}
 		
 		@Override
-		public void stop() { }
+		public void stop() {
+			rootCommandBasedExecCounters.remove(rootCommand.getAbsoluteUri());
+		}
 
 		@Override
 		public String tryLock() {
@@ -322,11 +330,12 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 		@Override
 		public void awaitCompletion() {
 			// create new single thread using executor service
-			ExecutorService e = createExecutorService(getCommand());
+			ExecutorService e = createExecutorService();
 			e.execute(new InternalNotificationEventDelegator(getNotificationQueue(), getNotificationLock(), getNotComplete()));
 
 			// shutdown
 			e.shutdown();
+			
 			
 			// wait on lock condition for completion of all tasks
 			// TODO: this is overkill, can be simplified by waiting on ExecutorServive.awaitTermination() but kept for future enhancement
@@ -341,14 +350,13 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 			});
 		}
 		
-		private ExecutorService createExecutorService(Command cmd) {
+		private ExecutorService createExecutorService() {
 			return Executors.newFixedThreadPool(1, new ThreadFactory() {
-				
-				final private AtomicInteger counter = new AtomicInteger();
 				
 				@Override
 				public Thread newThread(Runnable r) {
-					return new Thread(r, "ExecState "+counter.incrementAndGet()+": "+cmd.getRootDomainElement().getUri());
+					AtomicInteger counter = rootCommandBasedExecCounters.computeIfAbsent(getRootCommand().getAbsoluteUri(), k->new AtomicInteger());
+					return new Thread(r, "ExecState "+counter.incrementAndGet()+": "+getRootCommand().getAbsoluteUri());
 				}
 			});
 		}
