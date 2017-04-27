@@ -44,14 +44,6 @@ public interface EntityState<T> {
 	
 	@JsonIgnore
 	public ExecutionModel<?> getRootExecution();
-//	
-//	@JsonIgnore
-//	default String getAbsolutePath() {
-//		String prefix = getRootExecution().getRootCommand().buildUri(Type.PlatformMarker);
-//		return new StringBuilder(prefix)
-//				.append(getPath())
-//				.toString();	
-//	}
 	
 	@JsonIgnore
 	public Model<?> getRootDomain();
