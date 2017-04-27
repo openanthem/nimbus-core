@@ -49,4 +49,10 @@ public class ActivitiExpressionManagerTest {
 			assertSame("Expression :"+ip+" is not valid", e.getMessage());
 		}
 	}	
+	
+	@Test
+	public void t05_evaluate_fail() {
+		String ip = "${!{_setExternal('/assignmenttask/_search?b=$execute&criteria=assignmenttask.taskName.eq<\"bahubali\">','/pg1/tasksCard/tasksInfo/tasks')!}}";
+		expMgr.createExpression(ip);
+	}
 }
