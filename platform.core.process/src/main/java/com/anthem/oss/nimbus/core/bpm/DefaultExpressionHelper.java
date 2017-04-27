@@ -18,11 +18,9 @@ import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandMessageConverter;
 import com.anthem.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.entity.task.AssignmentTask.TaskStatus;
 import com.anthem.oss.nimbus.core.session.UserEndpointSession;
-import com.anthem.oss.nimbus.core.utils.ProcessBeanResolver;
 
 /**
  * @author Jayant Chaudhuri
@@ -172,8 +170,7 @@ public class DefaultExpressionHelper extends AbstractExpressionHelper {
 	 * {@code /patientReferred} of the core model. The execution variable may be coming from the result variable of a previous service task.
 	 * 
 	 */
-	final public void _setInternal(CommandMessage cmdMsg, DelegateExecution execution, 
-			String resolvedUri, Object... args){
+	final public void _setInternal(CommandMessage cmdMsg, DelegateExecution execution, String resolvedUri, Object... args){
 		QuadModel<?, Object> quadModel = UserEndpointSession.getOrThrowEx(cmdMsg.getCommand());
 		Command command = CommandBuilder.withUri(resolvedUri.toString()).getCommand();
 		String inputPath = command.getAbsoluteDomainUri();		
@@ -227,5 +224,17 @@ public class DefaultExpressionHelper extends AbstractExpressionHelper {
 		}	
 		return uri;
 	}
+	
+	final public void _setInternalFromCommandPath(CommandMessage cmdMsg, DelegateExecution execution, String resolvedUri, Object... args) {
+		String targetPath = (String) args[0];
+		String sourcePath = (String) cmdMsg.getCommand().getRequestParams().get("path")[0];
+		QuadModel<?, Object> quadModel = UserEndpointSession.getOrThrowEx(cmdMsg.getCommand());
+		
+		Object sourceObj = quadModel.getCore().findParamByPath(sourcePath).getState();
+		quadModel.getView().findModelByPath(targetPath+"/.m").setState(sourceObj);
+		
+	}
+
+
 
 }
