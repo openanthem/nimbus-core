@@ -21,7 +21,7 @@
 
 	<properties>
 		<sonar.projectName>NIM-Process</sonar.projectName>
-		<sonar.jacoco.reportPath>${project.basedir}/../platform.parent/target/jacoco.exec</sonar.jacoco.reportPath>
+		<!-- <sonar.jacoco.reportPath>${project.basedir}/../platform.parent/target/jacoco.exec</sonar.jacoco.reportPath> -->
 	</properties>
 	<dependencies>
 		<dependency>
@@ -159,11 +159,11 @@
 			<artifactId>de.flapdoodle.embed.mongo</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
+  		<dependency>
 			<groupId>redis.embedded</groupId>
 			<artifactId>embedded-redis</artifactId>
 			<scope>test</scope>
-		</dependency>
+		</dependency> 
 
 		<!-- nimbus-core -->
 		<dependency>
