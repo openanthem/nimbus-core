@@ -78,7 +78,7 @@ abstract public class AbstractEntityStateBuilder {
 			.map(f->f.createRuntime(config.getRulesConfig()))
 				.ifPresent(rt->mState.setRulesRuntime(rt));		
 				
-		mState.init();
+		mState.initSetup();
 		return mState;
 	}
 	
@@ -87,7 +87,7 @@ abstract public class AbstractEntityStateBuilder {
 				new MappedDefaultListModelState<>(associatedParam.findIfMapped().getMapsTo().getType().findIfCollection().getModel(), associatedParam, config, provider, elemCreator) :
 				new DefaultListModelState<>(associatedParam, config, provider, elemCreator);					
 		
-		mState.init();
+		mState.initSetup();
 		return mState;
 	}
 	
@@ -108,7 +108,7 @@ abstract public class AbstractEntityStateBuilder {
 			mpState = new DefaultListElemParamState<>(parentModel, mpConfig, provider, elemId);
 		}
 		
-		mpState.init();
+		mpState.initSetup();
 		decorateParam(mpState);
 		
 		return mpState;
@@ -125,7 +125,7 @@ abstract public class AbstractEntityStateBuilder {
 			p = createParamUnmapped(provider, parentModel, mapsToSAC, mpConfig);
 		}
 		
-		p.init();
+		p.initSetup();
 		decorateParam(p);
 		
 		/* setting param values if applicable */

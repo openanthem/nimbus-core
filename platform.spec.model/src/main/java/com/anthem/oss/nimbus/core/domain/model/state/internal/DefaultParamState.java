@@ -78,7 +78,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	
 	@Override
-	protected void initInternal() {
+	protected void initSetupInternal() {
 		String rPath = resolvePath();
 		setPath(rPath);
 	}
@@ -98,6 +98,11 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 				.toString();	
 	}
 
+	@Override
+	protected void initStateInternal() {
+		if(!isMapped() && isNested())
+			findIfNested().initState();
+	}
 	
 //	TODO: Refactor with Weak reference implementation
 //	@JsonIgnore

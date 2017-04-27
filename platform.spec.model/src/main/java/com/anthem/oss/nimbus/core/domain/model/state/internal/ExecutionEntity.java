@@ -211,8 +211,10 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 		}
 		
 		@Override
-		protected void initInternal() {
+		protected void initSetupInternal() {
 			getExecutionRuntime().start();
+			
+			initState();
 		}
 		
 		@Override

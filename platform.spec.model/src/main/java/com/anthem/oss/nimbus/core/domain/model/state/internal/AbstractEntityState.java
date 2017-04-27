@@ -18,9 +18,10 @@ import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.model.config.EntityConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
+import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
 import com.anthem.oss.nimbus.core.domain.model.state.RulesRuntime;
 import com.anthem.oss.nimbus.core.domain.model.state.State;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 import com.anthem.oss.nimbus.core.util.LockTemplate;
@@ -60,15 +61,34 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 	}
 	
 	@Override
-	final public void init() {
-		initInternal();
+	final public void initSetup() {
+		initSetupInternal();
 		
 		// start rules runtime/session
 		Optional.ofNullable(getRulesRuntime())
 			.ifPresent(rt->rt.start());
 	}
 	
-	protected void initInternal() {} 
+	protected void initSetupInternal() {} 
+	
+	@Override
+	final public void initState() {
+		ExecutionRuntime execRt = getRootExecution().getExecutionRuntime();
+		String lockId = execRt.tryLock();
+		try {
+			initStateInternal();	
+		} finally {
+			if(execRt.isLocked(lockId)) {
+				execRt.awaitCompletion();
+				
+				boolean b = execRt.tryUnlock(lockId);
+				if(!b)
+					throw new FrameworkRuntimeException("Failed to release lock acquired during initState of: "+getPath()+" with acquired lockId: "+lockId);
+			}
+		}
+	}
+	
+	protected void initStateInternal() {}
 	
 	protected Object createOrGetRuntimeEntity() {
 		if(!getRootExecution().getParamRuntimes().containsKey(getPath()))
