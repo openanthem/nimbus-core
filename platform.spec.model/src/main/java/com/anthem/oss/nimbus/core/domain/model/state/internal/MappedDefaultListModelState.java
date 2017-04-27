@@ -29,6 +29,25 @@ public class MappedDefaultListModelState<T, M> extends DefaultListModelState<T> 
 		
 		Objects.requireNonNull(mapsTo, "MapsTo model must not be null.");
 		this.mapsTo = mapsTo;
+		
+		//createElemParamMapping();
+	}
+	
+	
+	protected void createElemParamMapping() {
+		if(getMapsTo().size()==0)
+			return;
+	
+		instantiateOrGet();
+		
+		getMapsTo().getParams().stream()
+			.map(Param::findIfCollectionElem)
+			.forEach(elem->{
+				String mapsToElemId = elem.getElemId();
+				
+				Param<?> mappedElem = getElemCreator().apply(this, mapsToElemId);
+				this.templateParams().add(mappedElem);
+			});
 	}
 	
 }

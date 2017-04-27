@@ -18,7 +18,6 @@ import org.springframework.beans.BeanUtils;
 import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
 import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
 import com.anthem.oss.nimbus.core.domain.command.Action;
-import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
 import com.anthem.oss.nimbus.core.domain.command.execution.ValidationResult;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
@@ -53,7 +52,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	final private Model<?> parentModel;
 	
-	private StateContextEntity runtime;
+	//private StateContextEntity runtime;
 	
 	private Model<?> contextModel;
 	

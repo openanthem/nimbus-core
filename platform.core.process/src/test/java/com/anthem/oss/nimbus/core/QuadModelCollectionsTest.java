@@ -41,6 +41,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
 import com.anthem.oss.nimbus.core.session.UserEndpointSession;
 import com.anthem.oss.nimbus.test.sample.um.model.ServiceLine;
 import com.anthem.oss.nimbus.test.sample.um.model.ServiceLine.AuditInfo;
@@ -63,7 +64,7 @@ public class QuadModelCollectionsTest {
 	@Autowired QuadModelBuilder quadModelBuilder;
 	
 	@Before
-	public void t_init() {
+	public void before() {
 		Command cmd = TestCommandFactory.create_view_icr_UMCaseFlow();
 		QuadModel<UMCaseFlow, UMCase> q = quadModelBuilder.build(cmd);
 		assertNotNull(q);
@@ -920,9 +921,37 @@ public class QuadModelCollectionsTest {
 		}
 	}
 
+	@Test
+	public void tv20_col_attached_v2c_set_conversion_existing() {
+		final String K_CASE_TYPE = "test case type";
+		
+		ServiceLine sl_0 = new ServiceLine();
+		sl_0.setService("Batman");
+		
+		ServiceLine sl_1 = new ServiceLine();
+		sl_1.setService("Robin");
+		
+		List<ServiceLine> coreServiceLines = new ArrayList<>();
+		coreServiceLines.add(sl_0);
+		coreServiceLines.add(sl_1);
+		
+		UMCase existingCore = new UMCase();
+		existingCore.setCaseType(K_CASE_TYPE);
+		existingCore.setServiceLinesConverted(coreServiceLines);
+		
+		ExecutionEntity<UMCaseFlow, UMCase> eState = new ExecutionEntity<>();
+		eState.setCore(existingCore);
+		
+		Command cmd = TestCommandFactory.create_view_icr_UMCaseFlow();
+		QuadModel<UMCaseFlow, UMCase> q = quadModelBuilder.build(cmd, eState);
+		
+		ListParam<Section_ServiceLine> vp_list = q.getRoot().findParamByPath("/v/pg3/viewAttachedServiceLinesConverted").findIfCollection();
+		assertNotNull(vp_list);
+		assertNotNull(vp_list.getState());
+	}
 	
 	@After
-	public void z_print() {
+	public void after() {
 		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		printJson(q);
 		//System.out.println("### Counter: "+ DomainConfigAPITest.eventPublisher.counter);

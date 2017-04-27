@@ -170,7 +170,7 @@ public class EntityConfigBuilder extends AbstractEntityConfigBuilder {
 			return colModelType;
 			
 		} else {
-			ParamType type = createParamType(true, pDirectOrColElemType, mConfig, visitedModels);
+			ParamType type = createParamType(false, pDirectOrColElemType, mConfig, visitedModels);
 			return type;
 		}
 	}
