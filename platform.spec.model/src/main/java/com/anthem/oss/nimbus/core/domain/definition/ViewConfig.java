@@ -106,6 +106,15 @@ public class ViewConfig {
 		String imgSrc() default "";
 		String editUrl() default "";
 		String title() default "";
+		boolean draggable() default false;
+		
+		@Retention(RetentionPolicy.RUNTIME)
+		@Target({ElementType.FIELD})
+		@ViewStyle
+		public @interface Tag {
+			String alias() default "CardDetailsTag";
+			String cssClass() default "";
+		}
 		
 		@Retention(RetentionPolicy.RUNTIME)
 		@Target({ElementType.FIELD})

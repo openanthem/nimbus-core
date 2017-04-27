@@ -43,7 +43,13 @@ public class DefaultActionExecutorSearch extends AbstractProcessTaskExecutor {
 		
 		ActionExecuteConfig<?, ?> aec = domainConfigApi.getActionExecuteConfig(cmd);
 		Class<?> criteriaClass = aec.getInput().getModel().getReferredClass();
-		Object criteria = converter.convert(criteriaClass, cmdMsg);
+		//TODO - add condition that Rakesh creates to get the query parameter from command
+		Object criteria = null;
+		if(cmd.getRequestParams()!=null && cmd.getRequestParams().get("criteria")!=null) {
+			criteria = cmd.getRequestParams().get("criteria")[0];
+		} else {
+			criteria = converter.convert(criteriaClass, cmdMsg);
+		}
 		
 		Class<?> resultClass = aec.getOutput().getModel().getReferredClass();
 		
