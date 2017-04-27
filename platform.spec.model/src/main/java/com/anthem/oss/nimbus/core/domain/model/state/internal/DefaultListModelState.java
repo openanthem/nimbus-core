@@ -5,12 +5,13 @@ package com.anthem.oss.nimbus.core.domain.model.state.internal;
 
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
+
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListModel;
-import com.anthem.oss.nimbus.core.domain.model.state.InvalidStateException;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification.ActionType;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 
 import lombok.Getter;
 
@@ -29,14 +30,35 @@ public class DefaultListModelState<T> extends DefaultModelState<List<T>> impleme
 		super(associatedParam, config, provider);
 		this.elemCreator = elemCreator;
 	}
+	
+	@Override
+	protected void initStateInternal() {
+		if(isMapped())
+			return;
+	
+		List<T> colEntityState = getState();
+		if(CollectionUtils.isEmpty(colEntityState))
+			return;
 		
+		colEntityState.stream()
+			.map(entityElem->add(false))
+			.forEach(Param::initState);
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
-	public T get(int i) {
+	public T getState(int i) {
 		Param<T> p = (Param<T>)templateParams().getElem(i);
 		return p.getState();
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public T getLeafState(int i) {
+		Param<T> p = (Param<T>)templateParams().getElem(i);
+		return p.getLeafState();
+	}
+	
 	@Override
 	public String toElemId(int i) {
 		return String.valueOf(i);
@@ -71,28 +93,31 @@ public class DefaultListModelState<T> extends DefaultModelState<List<T>> impleme
 	
 	@Override
 	public ListElemParam<T> add() {
-		return getLockTemplate().execute(()-> {
-			List<T> list = instantiateOrGet();
-			
-			if(list.size()!=templateParams().size() && (
-					isMapped() && getAssociatedParam().findIfMapped().requiresConversion()
-					))  {
-//				throw new InvalidStateException("List entity has size: "+list.size()+" whereas ListModel.params has size: "+templateParams().size()+". "
-//						+ "Must be same but found different.");
-			}
-		
-			String elemId = toElemId(templateParams().size());
-			
-			Param<T> pElem = getElemCreator().apply(this, elemId);
-			ListElemParam<T> pColElem = pElem.findIfCollectionElem();
-			templateParams().add(pColElem);
-			
-			// notify
-			getAssociatedParam().notifySubscribers(new Notification<>(this.getAssociatedParam(), ActionType._newElem, pColElem));
-			
-			return pColElem;
-		});
+		return getLockTemplate().execute(()->add(false));
 	}
+	
+	private ListElemParam<T> add(boolean suppressNotify) {
+		List<T> list = instantiateOrGet();
+		
+		if(list.size()!=templateParams().size() && (
+				isMapped() && getAssociatedParam().findIfMapped().requiresConversion()
+				))  {
+//			throw new InvalidStateException("List entity has size: "+list.size()+" whereas ListModel.params has size: "+templateParams().size()+". "
+//					+ "Must be same but found different.");
+		}
+	
+		String elemId = toElemId(templateParams().size());
+		
+		Param<T> pElem = getElemCreator().apply(this, elemId);
+		ListElemParam<T> pColElem = pElem.findIfCollectionElem();
+		templateParams().add(pColElem);
+		
+		// notify
+		if(!suppressNotify)
+			getAssociatedParam().notifySubscribers(new Notification<>(this.getAssociatedParam(), ActionType._newElem, pColElem));
+		
+		return pColElem;
+	} 
 	
 	@Override
 	public boolean add(T elem) {

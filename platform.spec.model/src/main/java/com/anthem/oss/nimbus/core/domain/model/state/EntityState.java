@@ -36,7 +36,8 @@ public interface EntityState<T> {
     public <S> State<S> findStateByPath(String path);
 	public <S> State<S> findStateByPath(String[] pathArr);
 
-	public void init();
+	public void initSetup();
+	public void initState();
 	
 	public EntityStateAspectHandlers getAspectHandlers();
 	
@@ -272,7 +273,9 @@ public interface EntityState<T> {
 		
 		public int size();
 		
-		public T get(int i);
+		public T getState(int i);
+		public T getLeafState(int i);
+		
 		
 		public boolean add(T elem);
 		public Param<T> add();

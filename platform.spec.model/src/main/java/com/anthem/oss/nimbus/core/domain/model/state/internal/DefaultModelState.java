@@ -16,9 +16,9 @@ import com.anthem.oss.nimbus.core.domain.command.execution.ValidationResult;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification.ActionType;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.util.CollectionsTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -51,12 +51,6 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 		super.setPath(getAssociatedParam().getPath());
 	}
 
-	@Override
-	public ModelConfig<T> getConfig() {
-		return (ModelConfig<T>)super.getConfig();
-	}
-	
-	
 	@Transient @JsonIgnore @Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
 	private final transient CollectionsTemplate<List<EntityState.Param<? extends Object>>, EntityState.Param<? extends Object>> templateParams = new CollectionsTemplate<>(
 			() -> getParams(), (p) -> setParams(p), () -> new LinkedList<>());
@@ -65,6 +59,22 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 	public CollectionsTemplate<List<EntityState.Param<?>>, EntityState.Param<?>> templateParams() {
 		return templateParams;
 	}
+	
+	@Override
+	protected void initStateInternal() {
+		if(templateParams().isNullOrEmpty())
+			return;
+		
+		getParams().stream()
+			.filter(param-> (param.isNested() || (param.isLeaf() && !param.isMapped())))
+			.forEach(Param::initState);
+	}
+	
+	@Override
+	public ModelConfig<T> getConfig() {
+		return (ModelConfig<T>)super.getConfig();
+	}
+	
 	
 	@Override
 	public void fireRules() {

@@ -51,7 +51,7 @@ public class EntityStateBuilder extends AbstractEntityStateBuilder {
 			execModelSAC.templateParams().add(flowParamSAC);
 		}
 		
-		execModelSAC.init();
+		execModelSAC.initSetup();
 		
 		return execModelSAC;
 	}

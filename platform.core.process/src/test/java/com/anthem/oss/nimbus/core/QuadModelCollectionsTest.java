@@ -464,7 +464,7 @@ public class QuadModelCollectionsTest {
 		assertNotNull(view.getPg3());
 		assertNotNull(view.getPg3().getNoConversionAttachedColServiceLines());
 		//==?? assertNull(view.getPg3().getCoreAttachedServiceLines().get(0));	//mapped direct would not set value into view, only onto mappedCore
-		assertEquals(vp_casl_n.getService(), vpCoreAttachedServiceLines.get(0).getService());
+		assertEquals(vp_casl_n.getService(), vpCoreAttachedServiceLines.getState(0).getService());
 		
 		// match with core
 		UMCase core = q.getCore().getState();
@@ -475,7 +475,7 @@ public class QuadModelCollectionsTest {
 		assertNotNull(sl_n);
 		assertSame(vp_casl_n, sl_n);
 		assertSame(vp_casl_n.getService(), sl_n.getService());
-		assertSame(vp_casl_n, q.getCore().findParamByPath("/serviceLines").findIfCollection().get(0));
+		assertSame(vp_casl_n, q.getCore().findParamByPath("/serviceLines").findIfCollection().getState(0));
 	}
 	
 	@Test
@@ -553,7 +553,7 @@ public class QuadModelCollectionsTest {
 		
 		ListParam<ServiceLine> cpServiceLines = q.getCore().findParamByPath("/serviceLinesConverted").findIfCollection();
 		
-		ServiceLine cpColElem_sl_n0 = cpServiceLines.get(0);
+		ServiceLine cpColElem_sl_n0 = cpServiceLines.getState(0);
 		assertNotNull(cpColElem_sl_n0);
 		assertSame(vpColElem_sl_n0.getService(), cpColElem_sl_n0.getService());
 		
@@ -621,10 +621,10 @@ public class QuadModelCollectionsTest {
 		
 		ListElemParam<ServiceLine> vpServiceLine_0 = vpServiceLine_0Param.findIfCollectionElem();
 		assertSame(sl_n, vpServiceLine_0Param.getState());
-		assertSame(sl_n, vpServiceLines.get(0));
-		assertSame(vpServiceLine_0.getState(), vpServiceLines.get(0));
+		assertSame(sl_n, vpServiceLines.getState(0));
+		assertSame(vpServiceLine_0.getState(), vpServiceLines.getState(0));
 		
-		ServiceLine vp_sl_n = vpServiceLines.get(0);
+		ServiceLine vp_sl_n = vpServiceLines.getState(0);
 		assertNotNull(vp_sl_n);
 		assertSame(sl_n.getService(), vp_sl_n.getService());
 	}
@@ -657,10 +657,10 @@ public class QuadModelCollectionsTest {
 		
 		ListElemParam<Section_ServiceLine> vpServiceLine_0 = vpServiceLine_0Param.findIfCollectionElem();
 		assertNotSame(sl_n, vpServiceLine_0Param.getState());
-		assertNotSame(sl_n, vpServiceLines.get(0));
-		assertSame(vpServiceLine_0.getState(), vpServiceLines.get(0));
+		assertNotSame(sl_n, vpServiceLines.getState(0));
+		assertSame(vpServiceLine_0.getState(), vpServiceLines.getState(0));
 		
-		Section_ServiceLine vp_sl_n = vpServiceLines.get(0);
+		Section_ServiceLine vp_sl_n = vpServiceLines.getState(0);
 		assertNotNull(vp_sl_n);
 		assertSame(sl_n.getService(), q.getView().findParamByPath("/pg3/viewAttachedServiceLinesConverted/0/service").getState());
 	}
@@ -760,10 +760,10 @@ public class QuadModelCollectionsTest {
 		
 		ListElemParam<ServiceLine> vpServiceLine_0 = vpServiceLine_0Param.findIfCollectionElem();
 		assertSame(sl_n, vpServiceLine_0Param.getState());
-		assertSame(sl_n, vpServiceLines.get(0));
-		assertSame(vpServiceLine_0.getState(), vpServiceLines.get(0));
+		assertSame(sl_n, vpServiceLines.getState(0));
+		assertSame(vpServiceLine_0.getState(), vpServiceLines.getState(0));
 		
-		ServiceLine vp_sl_n = vpServiceLines.get(0);
+		ServiceLine vp_sl_n = vpServiceLines.getState(0);
 		assertNotNull(vp_sl_n);
 		assertSame(sl_n.getService(), vp_sl_n.getService());
 	}
@@ -794,10 +794,10 @@ public class QuadModelCollectionsTest {
 		
 		ListElemParam<ServiceLine> vpServiceLine_0 = vpServiceLine_0Param.findIfCollectionElem();
 		assertSame(sl, vpServiceLine_0Param.getState());
-		assertSame(sl, vpServiceLines.get(0));
-		assertSame(vpServiceLine_0.getState(), vpServiceLines.get(0));
+		assertSame(sl, vpServiceLines.getState(0));
+		assertSame(vpServiceLine_0.getState(), vpServiceLines.getState(0));
 		
-		ServiceLine vp_sl_n = vpServiceLines.get(0);
+		ServiceLine vp_sl_n = vpServiceLines.getState(0);
 		assertNotNull(vp_sl_n);
 		assertSame(sl.getService(), vp_sl_n.getService());
 
@@ -836,7 +836,7 @@ public class QuadModelCollectionsTest {
 		
 		for(int i=0; i<coreServiceLines.size(); i++) {
 			ServiceLine expected = coreServiceLines.get(i);
-			ServiceLine actual = detachedCoreServiceLines.get(i);
+			ServiceLine actual = detachedCoreServiceLines.getState(i);
 			assertSame(expected, actual);
 		}
 		
@@ -895,7 +895,7 @@ public class QuadModelCollectionsTest {
 		
 		for(int i=0; i<viewServiceLinesState.size(); i++) {
 			Section_ServiceLine expected = viewServiceLinesState.get(i);
-			ServiceLine actual = detachedCoreServiceLines.get(i);
+			ServiceLine actual = detachedCoreServiceLines.getState(i);
 			assertSame(expected.getService(), actual.getService());
 		}
 		
@@ -948,6 +948,12 @@ public class QuadModelCollectionsTest {
 		ListParam<Section_ServiceLine> vp_list = q.getRoot().findParamByPath("/v/pg3/viewAttachedServiceLinesConverted").findIfCollection();
 		assertNotNull(vp_list);
 		assertNotNull(vp_list.getState());
+		
+		for(int i=0; i<coreServiceLines.size(); i++) {
+			ServiceLine expected = coreServiceLines.get(i);
+			Section_ServiceLine actual = vp_list.getLeafState(i);
+			assertSame(expected.getService(), actual.getService());
+		}
 	}
 	
 	@After
