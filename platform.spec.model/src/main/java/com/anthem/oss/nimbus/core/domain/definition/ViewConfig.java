@@ -105,6 +105,7 @@ public class ViewConfig {
 		String cssClass() default "contentBox right-gutter bg-light mt-1";
 		String imgSrc() default "";
 		String editUrl() default "";
+		String modelPath() default "";
 		String title() default "";
 		boolean draggable() default false;
 		

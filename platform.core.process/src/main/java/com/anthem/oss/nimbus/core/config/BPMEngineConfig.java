@@ -15,6 +15,7 @@ import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.activiti.spring.boot.AbstractProcessEngineAutoConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -25,6 +26,9 @@ import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiBehaviorFactory;
@@ -92,10 +96,10 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
 	
     @Bean
     public SpringProcessEngineConfiguration springProcessEngineConfiguration(
-            DataSource dataSource,
+            @Qualifier("processDataSource")DataSource processDataSource,
             PlatformTransactionManager jpaTransactionManager,
             SpringAsyncExecutor springAsyncExecutor) throws Exception {
-    	SpringProcessEngineConfiguration engineConfiguration = this.baseSpringProcessEngineConfiguration(dataSource, jpaTransactionManager, springAsyncExecutor);
+    	SpringProcessEngineConfiguration engineConfiguration = this.baseSpringProcessEngineConfiguration(processDataSource, jpaTransactionManager, springAsyncExecutor);
     	engineConfiguration.setActivityBehaviorFactory(platformActivityBehaviorFactory());
     	engineConfiguration.setHistoryLevel(HistoryLevel.getHistoryLevelForKey(processHistoryLevel));
     	addCustomDeployers(engineConfiguration);
@@ -149,13 +153,13 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
     }
    
     @Bean
-    public JdbcTemplate jdbcTemplate(DataSource dataSource) {
+    public JdbcTemplate jdbcTemplate(@Qualifier("processDataSource")DataSource dataSource) {
         return new JdbcTemplate(dataSource);
     }
 
     @Bean
-    public PlatformTransactionManager jpaTransactionManager(DataSource dataSource) {
-    	return new DataSourceTransactionManager(dataSource);
+    public PlatformTransactionManager jpaTransactionManager(@Qualifier("processDataSource")DataSource processDataSource) {
+    	return new DataSourceTransactionManager(processDataSource);
     }
     
     @Bean
@@ -185,15 +189,12 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
     
    
     
-//    @Bean
-//	public DriverManagerDataSource processDataSource() {
-//		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-//		dataSource.setDriverClassName(dbDriver);
-//		dataSource.setUrl(dbUrl);
-//		dataSource.setUsername(dbUserName);
-//		dataSource.setPassword(dbPassword);
-//		return dataSource;
-//	}  
+    @Bean
+	public DataSource processDataSource() {
+    	return new EmbeddedDatabaseBuilder().
+				setType(EmbeddedDatabaseType.H2).
+				build();
+	}  
     
 //    @Bean
 //	public JpaTransactionManager jpaTransactionManager(EntityManagerFactory emf) {
