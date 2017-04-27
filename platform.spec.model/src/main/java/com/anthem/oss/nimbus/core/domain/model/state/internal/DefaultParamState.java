@@ -24,11 +24,11 @@ import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification.ActionType;
-import com.anthem.oss.nimbus.core.domain.model.state.StateBuilderContext;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.entity.Findable;
 import com.anthem.oss.nimbus.core.spec.contract.event.EventListener;
@@ -52,7 +52,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	final private Model<?> parentModel;
 	
-	private StateContextEntity runtime;
+	//private StateContextEntity runtime;
 	
 	private Model<?> contextModel;
 	
@@ -67,8 +67,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	@JsonIgnore final private PropertyDescriptor propertyDescriptor;
 	
-	public DefaultParamState(Model<?> parentModel, ParamConfig<T> config, StateBuilderContext provider) {
-		super(config, provider);
+	public DefaultParamState(Model<?> parentModel, ParamConfig<T> config, EntityStateAspectHandlers aspectHandlers) {
+		super(config, aspectHandlers);
 
 		if(!isRoot()) Objects.requireNonNull(parentModel, "Parent model must not be null with code: "+getConfig().getCode());
 		this.parentModel = parentModel;
@@ -84,12 +84,18 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	
 	protected String resolvePath() {
-		final String parentPath = StringUtils.trimToEmpty(getParentModel()==null ? "" : getParentModel().getPath());
-		
+//		final String parentPath = StringUtils.trimToEmpty(getParentModel()==null 
+//									? getRootExecution().getRootCommand().buildUri(Type.PlatformMarker)
+//											: getParentModel().getPath());
+		final String parentPath = getParentModel().getPath();
+		return resolvePath(parentPath, getConfig().getCode());
+	}
+	
+	public static String resolvePath(String parentPath, String code) {
 		return new StringBuilder(parentPath)
-					.append(Constants.SEPARATOR_URI.code)
-					.append(getConfig().getCode())
-					.toString();
+				.append(Constants.SEPARATOR_URI.code)
+				.append(code)
+				.toString();	
 	}
 
 	
@@ -136,7 +142,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 			return getState();
 		
 		// create new entity instance
-		T entity = getProvider().getParamStateGateway().instantiate(this.getConfig().getReferredClass());
+		T entity = getAspectHandlers().getParamStateGateway().instantiate(this.getConfig().getReferredClass());
 		
 		// assign param values to entity instance attributes
 		if(findIfNested()==null)
@@ -155,7 +161,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 			for(Param<?> pNestedParam : findIfNested().getParams()) {
 				Object nestedParamLeafState = pNestedParam.getLeafState();
 				if(nestedParamLeafState!=null)
-					getProvider().getParamStateGateway().setValue(pNestedParam.getPropertyDescriptor().getWriteMethod(), entity, nestedParamLeafState);
+					getAspectHandlers().getParamStateGateway().setValue(pNestedParam.getPropertyDescriptor().getWriteMethod(), entity, nestedParamLeafState);
 			}
 		}
 		
@@ -168,7 +174,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		if(getType().getConfig().getReferredClass()==StateContextEntity.class) {
 			return (T)createOrGetRuntimeEntity();
 		}
-		return getProvider().getParamStateGateway()._get(this);
+		return getAspectHandlers().getParamStateGateway()._get(this);
 	}
 	
 	@Override
@@ -178,7 +184,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		final Holder<Action> h = new Holder<>();
 		try {
 			state = preSetState(state);			
-			Action a = getProvider().getParamStateGateway()._set(this, state); 
+			Action a = getAspectHandlers().getParamStateGateway()._set(this, state); 
 			if(a!=null) {
 				notifySubscribers(new Notification<>(this, ActionType._updateState, this));
 				h.setState(a);
@@ -217,10 +223,10 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	protected void postSetState(Action change, T state) {}
 	
 	protected void emitEvent(Action a , Param p) {
-		if(getProvider().getEventListener() == null) return;
+		if(getAspectHandlers().getEventListener() == null) return;
 		
 		ModelEvent<Param<?>> e = new ModelEvent<Param<?>>(a, p.getPath(), p);
-		EventListener listener = getProvider().getEventListener();
+		EventListener listener = getAspectHandlers().getEventListener();
 		listener.listen(e);
 	}
 	

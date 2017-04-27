@@ -38,7 +38,7 @@ public interface EntityState<T> {
 
 	public void init();
 	
-	public StateBuilderContext getProvider();
+	public EntityStateAspectHandlers getAspectHandlers();
 	
 	public void fireRules();
 	
@@ -59,7 +59,6 @@ public interface EntityState<T> {
 		return null;
 	}
 	
-	
 	public interface Mapped<T, M> extends EntityState<T> {
 		@Override
 		default boolean isMapped() {
@@ -72,8 +71,6 @@ public interface EntityState<T> {
 		public EntityState<M> getMapsTo();
 	}
 	
-
-	
 	public interface ExecutionModel<T> extends Model<T> {
 		@Override
 		default boolean isRoot() {
@@ -85,7 +82,8 @@ public interface EntityState<T> {
 			return this;
 		}
 		
-		public Command getCommand();
+		@JsonIgnore
+		public Command getRootCommand();
 		
 		public ExecutionRuntime getExecutionRuntime();
 		
@@ -102,8 +100,6 @@ public interface EntityState<T> {
 	public interface Model<T> extends EntityState<T> { 
 		@Override
 		public ModelConfig<T> getConfig();
-		
-		public String getRootDomainUri();
 		
 		public Param<T> getAssociatedParam();
 		
@@ -358,6 +354,4 @@ public interface EntityState<T> {
 			return this;
 		}
 	}
-	
-
 }

@@ -84,7 +84,7 @@ public class SessionCacheRepository implements ParamStateRepository {
 	}
 	
 	private String constructPath(Param<?> param){
-		String rootPath = param.getRootExecution().getRootDomainUri();
+		String rootPath = param.getRootExecution().getRootCommand().getAbsoluteUri();
 		String path = param.getPath();
 		StringBuilder paramPath = new StringBuilder(rootPath);
 		paramPath.append(Constants.SEPARATOR_URI.code).append(path);

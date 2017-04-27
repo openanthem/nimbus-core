@@ -29,11 +29,10 @@ import lombok.ToString;
  * @author Soham Chakravarti
  *
  */
-@Data @ToString(of={"absoluteUri", "event", "behaviors", "currentBehaviorIndex", "clientUserId"})
+@Data @ToString(of={"absoluteUri", "event", "behaviors", "currentBehaviorIndex", "clientUserId"}) 
 public class Command implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
 	
 	private final String absoluteUri;
 	
@@ -58,16 +57,28 @@ public class Command implements Serializable {
 	@JsonIgnore @Getter(value=AccessLevel.PRIVATE)
 	final private transient CollectionsTemplate<List<Behavior>, Behavior> templateBehaviors = CollectionsTemplate.linked(()->getBehaviors(), s->setBehaviors(s));
 	
+	
 	public CollectionsTemplate<List<Behavior>, Behavior> templateBehaviors() {
 		return templateBehaviors;
 	}
 	
+	public boolean isRootDomainOnly() {
+		return !root().findFirstMatch(Type.DomainAlias).hasNext();
+	}
 
-	//@JsonIgnore
-	public Command getRootDomainCommand() {
-		String cUri = this.getAbsoluteDomainUri();
+	public CommandElementLinked root() {
+		return root;
+	}
+	
+	public boolean isEvent() {
+		return StringUtils.trimToNull(getEvent()) != null;
+	}
+
+	
+	public Command createRootDomainCommand() {
+		String cUri = buildUri(getRoot(), Type.DomainAlias);
 		Command c = CommandBuilder.withUri(cUri).getCommand();
-		shallowCopy(c);
+		//shallowCopy(c);
 		return c;
 	}
 	
@@ -89,13 +100,6 @@ public class Command implements Serializable {
 	}
 	
 	
-	/**
-	 * 
-	 * @param newRootDomain
-	 * @param newAction
-	 * @param newBehaviors
-	 * @return
-	 */
 	public Command createNewCommandForCurrentUser(String newRootDomain, Action newAction, LinkedList<Behavior> newBehaviors) {
 		StringBuilder newRootDomainFlowAlias = new StringBuilder();
 		newRootDomainFlowAlias.append(newRootDomain);
@@ -115,10 +119,6 @@ public class Command implements Serializable {
 		return cloned;
 	}
 	
-	/**
-	 * 
-	 * @return
-	 */
 	public Behavior getCurrentBehavior() {
 		if(currentBehaviorIndex == -1 && CollectionUtils.isNotEmpty(getBehaviors()))
 			return incrementAndGetCurrentBehavior();
@@ -128,10 +128,6 @@ public class Command implements Serializable {
 				? getBehaviors().get(currentBehaviorIndex) : null;
 	}
 	
-	/**
-	 * 
-	 * @return
-	 */
 	public Behavior incrementAndGetCurrentBehavior() {
 		if(currentBehaviorIndex < getBehaviors().size()) 
 			currentBehaviorIndex++;
@@ -139,62 +135,45 @@ public class Command implements Serializable {
 		return getCurrentBehavior();
 	}
 	
-	public CommandElementLinked root() {
-		return root;
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public boolean isView() {
-		String domainRoot = getRootDomainAlias();
-		return StringUtils.startsWith(domainRoot, Constants.PREFIX_FLOW.code);
-	}
 
-	public boolean isEvent() {
-		return StringUtils.trimToNull(getEvent()) != null;
+	public String getAliasUri(Type type) {
+		return getElement(type).map(e -> e.getAliasUri()).orElse(null);
 	}
 	
-	public Optional<CommandElement> getElement(Type type) {
-		return Optional.ofNullable(root().findFirstMatch(type));
+	public String getRefId(Type type) {
+		return getElement(type).map(e -> e.getRefId()).orElse(null);
+	}
+	
+	public String getAbsoluteUri(Type type) {
+		return getElement(type).map(e -> e.getUri()).orElse(null);
 	}
 
 	public String getAlias(Type type) {
 		return getElement(type).map(e -> e.getAlias()).orElse(null);
 	}
 
-	public String getAliasUri(Type type) {
-		return getElement(type).map(e -> e.getAliasUri()).orElse(null);
+	public Optional<CommandElement> getElement(Type type) {
+		return Optional.ofNullable(root().findFirstMatch(type));
 	}
+
+
 	
-
-	public String getRefId(Type type) {
-		return getElement(type).map(e -> e.getRefId()).orElse(null);
-	}
-	
-
-	public String getAbsoluteUri(Type type) {
-		return getElement(type).map(e -> e.getUri()).orElse(null);
-	}
-
-	public String getRootClientAlias() {
-		return getAlias(Type.ClientAlias);
+/* TODO Refactor -- START -- */ 
+	public boolean isView() {
+		String domainRoot = getRootDomainAlias();
+		return StringUtils.startsWith(domainRoot, Constants.PREFIX_FLOW.code);
 	}
 
 	public String getAppAlias() {
 		return getAlias(Type.AppAlias);
 	}
 	
-
+	public String getRootClientAlias() {
+		return getAlias(Type.ClientAlias);
+	}
 	public CommandElement getRootDomainElement() {
 		return getElement(Type.DomainAlias).get();
 	}
-
-	public boolean isRootDomainOnly() {
-		return !root().findFirstMatch(Type.DomainAlias).hasNext();
-	}
-	
 
 	public String getRootDomainAlias() {
 		return getRootDomainElement().getAlias();
@@ -232,44 +211,38 @@ public class Command implements Serializable {
 	}
 
 	public String getAbsoluteAliasTillRootDomain() {
-		String a = buildAliasTillType(root(), Type.DomainAlias);
+		String a = buildAlias(root(), Type.DomainAlias);
 		return a;
 	}
+/* TODO Refactor -- END -- */
 	
-	
-	/**
-	 * 
-	 * @param startElem
-	 * @param type
-	 * @return
-	 */
-	public String buildAliasTillType(CommandElementLinked startElem, Type type) {
-		return traverseElements(startElem, type, (cmdElem, sb) -> sb.append(cmdElem.getAliasUri()));
-	}
-	
-	/**
-	 * 
-	 * @param startElem
-	 * @return
-	 */
 	public String buildAlias(CommandElementLinked startElem) {
 		return traverseElements(startElem, (cmdElem, sb) -> sb.append(cmdElem.getAliasUri()));
 	}
+	public String buildAlias(Type endWhentype) {
+		return traverseElements(root(), endWhentype, (cmdElem, sb) -> sb.append(cmdElem.getAliasUri()));
+	}
+	public String buildAlias(CommandElementLinked startElem, Type endWhentype) {
+		return traverseElements(startElem, endWhentype, (cmdElem, sb) -> sb.append(cmdElem.getAliasUri()));
+	}
 	
-	/**
-	 * 
-	 * @param startElem
-	 * @return
-	 */
 	public String buildUri(CommandElementLinked startElem) {
 		return traverseElements(startElem, (cmdElem, sb) -> sb.append(cmdElem.getUri()));
 	}
+	public String buildUri(Type endWhenType) {
+		return traverseElements(root(), endWhenType, (cmdElem, sb) -> sb.append(cmdElem.getUri()));
+	}
+	public String buildUri(CommandElementLinked startElem, Type endWhenType) {
+		return traverseElements(startElem, endWhenType, (cmdElem, sb) -> sb.append(cmdElem.getUri()));
+	}
 	
-	/**
-	 * 
-	 * @param startElem
-	 * @param cb
-	 */
+	
+	public String traverseElements(CommandElementLinked startElem, BiConsumer<CommandElement, StringBuilder> cb) {
+		StringBuilder sb = new StringBuilder();
+		traverseElements(startElem, (cmdElem) -> cb.accept(cmdElem, sb));
+		return sb.toString();
+	}
+	
 	public void traverseElements(CommandElementLinked startElem, Consumer<CommandElement> cb) {
 		while (startElem != null) {
 			cb.accept(startElem);
@@ -277,24 +250,12 @@ public class Command implements Serializable {
 		}
 	}
 	
-	/**
-	 * 
-	 * @param startElem
-	 * @param cb
-	 * @return
-	 */
-	public String traverseElements(CommandElementLinked startElem, BiConsumer<CommandElement, StringBuilder> cb) {
+	public String traverseElements(CommandElementLinked startElem, Type type, BiConsumer<CommandElement, StringBuilder> cb) {
 		StringBuilder sb = new StringBuilder();
-		traverseElements(startElem, (cmdElem) -> cb.accept(cmdElem, sb));
+		traverseElements(startElem, type, (cmdElem) -> cb.accept(cmdElem, sb));
 		return sb.toString();
 	}
 	
-	/**
-	 * 
-	 * @param startElem
-	 * @param type
-	 * @param cb
-	 */
 	public void traverseElements(CommandElementLinked startElem, Type type, Consumer<CommandElement> cb) {
 		while (startElem != null) {
 			cb.accept(startElem);
@@ -304,26 +265,9 @@ public class Command implements Serializable {
 			startElem = startElem.next();
 		}
 	}
+
 	
-	/**
-	 * 
-	 * @param startElem
-	 * @param type
-	 * @param cb
-	 * @return
-	 */
-	public String traverseElements(CommandElementLinked startElem, Type type, BiConsumer<CommandElement, StringBuilder> cb) {
-		StringBuilder sb = new StringBuilder();
-		traverseElements(startElem, type, (cmdElem) -> cb.accept(cmdElem, sb));
-		return sb.toString();
-	}
-	
-	/**
-	 * 
-	 * @param type
-	 * @param uri
-	 * @return
-	 */
+
 	public CommandElementLinked createRoot(Type type, String uri) {
 		CommandElementLinked root = new CommandElementLinked();
 		root.setType(type);

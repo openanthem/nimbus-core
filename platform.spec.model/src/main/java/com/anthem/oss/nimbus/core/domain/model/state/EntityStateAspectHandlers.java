@@ -16,11 +16,9 @@ import lombok.Setter;
  *
  */
 @Getter @Setter @RequiredArgsConstructor
-public class StateBuilderContext {
+public class EntityStateAspectHandlers {
 	
 	private final EventListener eventListener;
-	
-	//private final ClientUser clientUser;
 	
 	private final ValidatorProvider validatorProvider;
 	

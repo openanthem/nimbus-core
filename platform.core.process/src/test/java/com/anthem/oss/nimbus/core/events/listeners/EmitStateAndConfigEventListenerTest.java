@@ -77,8 +77,8 @@ public class EmitStateAndConfigEventListenerTest extends AbstractPlatformIntegra
 
 	@After
 	public void t_teardown() {
-		q.getRoot().getProvider().getEventListener();
-		QuadScopedEventListener qEventListener = (QuadScopedEventListener) q.getRoot().getProvider().getEventListener();
+		q.getRoot().getAspectHandlers().getEventListener();
+		QuadScopedEventListener qEventListener = (QuadScopedEventListener) q.getRoot().getAspectHandlers().getEventListener();
 		StateAndConfigEventListener e = qEventListener.getParamEventListeners().stream()
 				.filter(listener -> listener instanceof MockEventListener).findFirst().get();
 		assertTrue(e instanceof MockEventListener);
@@ -194,8 +194,8 @@ public class EmitStateAndConfigEventListenerTest extends AbstractPlatformIntegra
 	}
 	
 	private MockEventListener getMockEventListener() {
-		q.getRoot().getProvider().getEventListener();
-		QuadScopedEventListener qEventListener = (QuadScopedEventListener) q.getRoot().getProvider().getEventListener();
+		q.getRoot().getAspectHandlers().getEventListener();
+		QuadScopedEventListener qEventListener = (QuadScopedEventListener) q.getRoot().getAspectHandlers().getEventListener();
 		StateAndConfigEventListener e = qEventListener.getParamEventListeners().stream()
 				.filter(listener -> listener instanceof MockEventListener).findFirst().get();
 		assertTrue(e instanceof MockEventListener);

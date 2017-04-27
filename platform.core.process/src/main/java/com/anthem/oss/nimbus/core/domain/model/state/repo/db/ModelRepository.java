@@ -8,12 +8,28 @@ import java.util.List;
 
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 /**
  * @author Soham Chakravarti
  *
  */
 public interface ModelRepository {
 
+	@Getter @RequiredArgsConstructor
+	public enum Projection {
+		COUNT("count", Long.class);
+		
+		public final String alias;
+		public final Class<?> type;
+		
+		@SuppressWarnings("unchecked")
+		public <T> Class<T> getType() {
+			return (Class<T>)type;
+		}
+	}
+	
 	//==public <T, R> R doExecute(CommandMessage cmdMsg, T input);
 	
 	//==public <T> void doExecute(ModelEvent<ParamStateAndConfig<T>> event);
@@ -41,6 +57,14 @@ public interface ModelRepository {
 	public <ID extends Serializable, T> T _delete(ID id, Class<T> referredClass, String alias);
 		
 	//Action._search
-	public <T, C> List<T> _search(Class<T> referredClass, String alias, C criteria);
+	public <T, C> List<T> _search(Class<T> referredDomainClass, String alias, C criteria);
 	
+	default <T, C> T _search(Class<?> referredDomainClass, String alias, C criteria, Projection projection) {
+		return _search(referredDomainClass, alias, criteria, projection.getType());
+	}
+	
+	@SuppressWarnings("unchecked")
+	default <T, C> T _search(Class<?> referredDomainClass, String alias, C criteria, Class<T> projection) {
+		return (T)_search(referredDomainClass, alias, criteria);
+	}
 }

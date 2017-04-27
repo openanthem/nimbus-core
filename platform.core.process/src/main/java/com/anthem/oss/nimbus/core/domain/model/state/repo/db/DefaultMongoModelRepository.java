@@ -6,27 +6,35 @@ package com.anthem.oss.nimbus.core.domain.model.state.repo.db;
 import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.startsWith;
 
 import java.io.Serializable;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.beans.PropertyAccessor;
 import org.springframework.beans.PropertyAccessorFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.stereotype.Component;
+import org.springframework.data.mongodb.repository.support.SpringDataMongodbQuery;
 
 import com.anthem.oss.nimbus.core.domain.definition.SearchNature.StartsWith;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.IdSequenceRepository;
 import com.anthem.oss.nimbus.core.util.ClassLoadUtils;
+import com.querydsl.core.types.Predicate;
 
+import groovy.lang.Binding;
+import groovy.lang.GroovyShell;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -123,34 +131,89 @@ public class DefaultMongoModelRepository implements ModelRepository {
 		return state;
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public <T, C> List<T> _search(Class<T> referredClass, String alias, C criteria) {
-		
-		if(criteria==null) {
-			return mongoOps.findAll(referredClass, alias);
-		}
-		
-		ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreNullValues().withIgnorePaths("version");
-		for (Field field : referredClass.getDeclaredFields()) {
-			if (field.getType().isAssignableFrom(String.class)) {
-				field.setAccessible(true);
-				try {
-					String checkString = (String) FieldUtils.readField(field, criteria);
-					if (checkString != null && checkString.isEmpty())
-						matcher = matcher.withIgnorePaths(field.getName());
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				}
+			
+			if(criteria==null) {
+				return mongoOps.findAll(referredClass, alias);
 			}
-
-			if (field.isAnnotationPresent(StartsWith.class))
-				matcher = matcher.withMatcher(field.getName(), startsWith());
-		}
+			else if(criteria instanceof String) {
+				String filtercriteria = criteria.toString().replaceAll("<", "(").replace(">", ")");
+				Predicate predicate = buildPredicate(filtercriteria, referredClass, alias);
+				SpringDataMongodbQuery query = new SpringDataMongodbQuery<>(mongoOps, referredClass, alias);
+				List list = query.where(predicate).fetch();
+				return list;
+			} else {
+				// Build the query with the criteria object
+				ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreNullValues().withIgnorePaths("version");
+				for (Field field : referredClass.getDeclaredFields()) {
+					if (field.getType().isAssignableFrom(String.class)) {
+						field.setAccessible(true);
+						try {
+							String checkString = (String) FieldUtils.readField(field, criteria);
+							if (checkString != null && checkString.isEmpty())
+								matcher = matcher.withIgnorePaths(field.getName());
+						} catch (IllegalAccessException e) {
+							e.printStackTrace();
+						}
+					}
 		
-		Example<C> example =  Example.of(criteria, matcher);
-		Criteria c = Criteria.byExample(example);
-		Query query = new Query(c);
-		return mongoOps.find(query, referredClass, alias);
+					if (field.isAnnotationPresent(StartsWith.class))
+						matcher = matcher.withMatcher(field.getName(), startsWith());
+				}
+				
+				Example<C> example =  Example.of(criteria, matcher);
+				Criteria c = Criteria.byExample(example);
+				Query query = new Query(c);
+				return mongoOps.find(query, referredClass, alias);
+			}
+	}
+	
+	public Predicate buildPredicate(String groovyScript,Class<?> referredClass,String alias) {
+		final Binding binding = new Binding();
+		Object obj = createQueryDslClassInstance(referredClass);
+        binding.setProperty(alias, obj);
+        
+        LocalDate localDate = LocalDate.now();
+        LocalDateTime localDateTime = LocalDateTime.of(localDate, LocalTime.MIDNIGHT);
+        localDateTime.atZone(TimeZone.getDefault().toZoneId());
+       
+        binding.setProperty("todaydate",localDateTime);
+        final GroovyShell shell = new GroovyShell(binding); 
+        return (Predicate)shell.evaluate(groovyScript);
+	}
+	
+	public Object createQueryDslClassInstance(Class<?> referredClass) {
+		Object obj = null;
+		try {
+			String cannonicalQuerydslclass = referredClass.getCanonicalName().replace(referredClass.getSimpleName(), "Q".concat(referredClass.getSimpleName()));
+			Class cl = Class.forName(cannonicalQuerydslclass);
+			Constructor con = cl.getConstructor(String.class);
+			obj = con.newInstance(referredClass.getSimpleName());
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return obj;
 	}
 	
 }
