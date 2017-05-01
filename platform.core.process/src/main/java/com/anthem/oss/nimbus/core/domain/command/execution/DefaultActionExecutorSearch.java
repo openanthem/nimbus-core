@@ -13,6 +13,7 @@ import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.model.config.ActionExecuteConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository.Projection;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFactory;
 
 /**
@@ -60,8 +61,12 @@ public class DefaultActionExecutorSearch extends AbstractProcessTaskExecutor {
 		if(StringUtils.isBlank(alias)) {
 			alias = AnnotationUtils.findAnnotation(resultClass, Domain.class).value();
 		}
-		
-		R r = (R)rep._search(resultClass, alias, criteria);
+		R r;
+		if(cmd.getRequestParams()!=null && cmd.getRequestParams().get("projection")!=null) {
+			r = (R)rep._search(resultClass, alias, criteria,Projection.COUNT);
+		} else {
+			r = (R)rep._search(resultClass, alias, criteria);
+		}
 		return r;
 	}
 	

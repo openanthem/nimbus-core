@@ -30,6 +30,7 @@ import org.springframework.data.mongodb.repository.support.SpringDataMongodbQuer
 import com.anthem.oss.nimbus.core.domain.definition.SearchNature.StartsWith;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.IdSequenceRepository;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository.Projection;
 import com.anthem.oss.nimbus.core.util.ClassLoadUtils;
 import com.querydsl.core.types.Predicate;
 
@@ -142,35 +143,60 @@ public class DefaultMongoModelRepository implements ModelRepository {
 				String filtercriteria = criteria.toString().replaceAll("<", "(").replace(">", ")");
 				Predicate predicate = buildPredicate(filtercriteria, referredClass, alias);
 				SpringDataMongodbQuery query = new SpringDataMongodbQuery<>(mongoOps, referredClass, alias);
-				List list = query.where(predicate).fetch();
-				return list;
+				return query.where(predicate).fetch();	
 			} else {
 				// Build the query with the criteria object
-				ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreNullValues().withIgnorePaths("version");
-				for (Field field : referredClass.getDeclaredFields()) {
-					if (field.getType().isAssignableFrom(String.class)) {
-						field.setAccessible(true);
-						try {
-							String checkString = (String) FieldUtils.readField(field, criteria);
-							if (checkString != null && checkString.isEmpty())
-								matcher = matcher.withIgnorePaths(field.getName());
-						} catch (IllegalAccessException e) {
-							e.printStackTrace();
-						}
-					}
-		
-					if (field.isAnnotationPresent(StartsWith.class))
-						matcher = matcher.withMatcher(field.getName(), startsWith());
-				}
-				
-				Example<C> example =  Example.of(criteria, matcher);
-				Criteria c = Criteria.byExample(example);
-				Query query = new Query(c);
+				Query query = buildQuery(referredClass, alias, criteria);
 				return mongoOps.find(query, referredClass, alias);
 			}
 	}
 	
-	public Predicate buildPredicate(String groovyScript,Class<?> referredClass,String alias) {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
+	public <T, C> T _search(Class<?> referredClass, String alias, C criteria, Projection projection) {
+		Long count;
+		if(criteria==null) {
+			SpringDataMongodbQuery query = new SpringDataMongodbQuery<>(mongoOps, referredClass, alias);
+			 count = query.fetchCount();
+		}
+		else if(criteria instanceof String) {
+			String filtercriteria = criteria.toString().replaceAll("<", "(").replace(">", ")");
+			Predicate predicate = buildPredicate(filtercriteria, referredClass, alias);
+			SpringDataMongodbQuery query = new SpringDataMongodbQuery<>(mongoOps, referredClass, alias);
+			count = query.where(predicate).fetchCount();
+		} else {
+			// Build the query with the criteria object
+			Query query = buildQuery(referredClass, alias, criteria);
+			count = mongoOps.count(query, referredClass, alias);
+		}
+		return (T) count;
+	}
+	
+	private <C> Query buildQuery(Class<?> referredClass, String alias, C criteria) {
+		ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreNullValues().withIgnorePaths("version");
+		for (Field field : referredClass.getDeclaredFields()) {
+			if (field.getType().isAssignableFrom(String.class)) {
+				field.setAccessible(true);
+				try {
+					String checkString = (String) FieldUtils.readField(field, criteria);
+					if (checkString != null && checkString.isEmpty())
+						matcher = matcher.withIgnorePaths(field.getName());
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
+			}
+
+			if (field.isAnnotationPresent(StartsWith.class))
+				matcher = matcher.withMatcher(field.getName(), startsWith());
+		}
+		
+		Example<C> example =  Example.of(criteria, matcher);
+		Criteria c = Criteria.byExample(example);
+		Query query = new Query(c);
+		return query;
+	}
+	
+	private Predicate buildPredicate(String groovyScript,Class<?> referredClass,String alias) {
 		final Binding binding = new Binding();
 		Object obj = createQueryDslClassInstance(referredClass);
         binding.setProperty(alias, obj);
@@ -184,7 +210,7 @@ public class DefaultMongoModelRepository implements ModelRepository {
         return (Predicate)shell.evaluate(groovyScript);
 	}
 	
-	public Object createQueryDslClassInstance(Class<?> referredClass) {
+	private Object createQueryDslClassInstance(Class<?> referredClass) {
 		Object obj = null;
 		try {
 			String cannonicalQuerydslclass = referredClass.getCanonicalName().replace(referredClass.getSimpleName(), "Q".concat(referredClass.getSimpleName()));

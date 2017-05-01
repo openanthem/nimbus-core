@@ -33,6 +33,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.DefaultMongoModelRepository;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository.Projection;
 import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
 import com.anthem.oss.nimbus.core.entity.task.AssignmentTask;
 import com.anthem.oss.nimbus.core.entity.task.AssignmentTask.TaskType;
@@ -148,8 +149,15 @@ public class DefaultMongoModelPersistenceHandlerTest  extends AbstractPlatformIn
 //		List<TestDSL> list4 = newquery1.where(builder1.build()).fetch();
 //		assertEquals(list4.size(), 0);
 		
-		SpringDataMongodbQuery<TestDSL> newquery2 = new SpringDataMongodbQuery<>(mongoOps, TestDSL.class);
-		long cnt = newquery2.fetchCount();
+//		SpringDataMongodbQuery<TestDSL> newquery2 = new SpringDataMongodbQuery<>(mongoOps, TestDSL.class);
+//		long cnt = newquery2.fetchCount();
+		QTestDSL qTest = new QTestDSL("tes");
+		String criteria = "testdsl.name.startsWith('t')";
+		long cnt = rep._search(TestDSL.class, "testdsl",criteria,Projection.COUNT);
+	
+		List<TestDSL> list2 = rep._search(TestDSL.class, "testdsl", criteria);
+		assertEquals(list2.size(), 1);
+		
 		assertEquals(cnt, 1);
 	}
 	
@@ -427,5 +435,21 @@ public class DefaultMongoModelPersistenceHandlerTest  extends AbstractPlatformIn
 		List<TestDSL> list = query.where(predicate).fetch();
 		assertEquals(list.size(), 1);
 		
+	}
+	
+	@Test 
+	public void tc02_search() {
+		AssignmentTask assgnmt = new AssignmentTask();
+		assgnmt.setTaskType(TaskType.patienteligibility);
+		assgnmt.setDueDate(LocalDate.now());
+		mongoOps.insert(assgnmt);
+			    
+		final String groovyScript = "assignmenttask.dueDate.eq(todaydate)";
+		//long cnt = rep._search(AssignmentTask.class, "testdsl",groovyScript,Projection.COUNT);
+	
+		List<AssignmentTask> list2 = rep._search(AssignmentTask.class, "assignmenttask", groovyScript);
+		assertEquals(list2.size(), 1);
+		
+		//assertEquals(cnt, 1);
 	}
 }
