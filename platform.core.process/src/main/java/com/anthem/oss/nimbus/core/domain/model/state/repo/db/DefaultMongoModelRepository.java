@@ -15,7 +15,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.TimeZone;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.beans.PropertyAccessor;
 import org.springframework.beans.PropertyAccessorFactory;
@@ -30,7 +30,6 @@ import org.springframework.data.mongodb.repository.support.SpringDataMongodbQuer
 import com.anthem.oss.nimbus.core.domain.definition.SearchNature.StartsWith;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.IdSequenceRepository;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository.Projection;
 import com.anthem.oss.nimbus.core.util.ClassLoadUtils;
 import com.querydsl.core.types.Predicate;
 
