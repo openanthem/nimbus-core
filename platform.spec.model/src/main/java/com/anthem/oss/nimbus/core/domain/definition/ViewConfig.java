@@ -210,6 +210,7 @@ public class ViewConfig {
 		String imgSrc() default "";
 		String type() default "submit";
 		String payload() default "";
+		String cssClass() default "btn btn-primary";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
