@@ -257,27 +257,34 @@ public class DefaultExpressionHelperTest extends AbstractPlatformIntegrationTest
 	public void t12_convertAndSet() {
 		assertNotNull(book1.getId());
 		DelegateExecution execution = mock(DelegateExecution.class);
+		
 		Command cmd = CommandBuilder.withUri("/xyz/admin/p/view_book/_submitOrder:"+book1.getId()+"/_process?b=$executeAnd$config").getCommand();
 		CommandMessage cmdMsg = new CommandMessage();
 		cmdMsg.setCommand(cmd);
 		String payload = "{ \"bookName\": \"new book\", \"category\": \"non-fiction\", \"authorName\" : \"JK Rowling\"}";
 		cmdMsg.setRawPayload(payload);
+		
 		String resolvedUri = expHlpr.getResolvedUri(cmdMsg,"/pg2/section_1/orderBookForm");	
 		
 		//expHlpr._convertAndSet(cmdMsg, execution , resolvedUri);
 		Command command = CommandBuilder.withUri(resolvedUri.toString()).getCommand();
 		String inputPath = command.getAbsoluteDomainUri();
+		
 		QuadModel<?, Object> quadModel = UserEndpointSession.getOrThrowEx(cmdMsg.getCommand());
 		assertNotNull(quadModel.getView());
 		assertNotNull(quadModel.getView().findParamByPath(inputPath));
 		assertNotNull(quadModel.getView().findParamByPath(inputPath).getType().findIfNested().getConfig().getReferredClass());
+		
 		Class<?> targetClass = quadModel.getView().findParamByPath(inputPath).getType().findIfNested().getConfig().getReferredClass();
 		Object state = converter.convert(targetClass,cmdMsg.getRawPayload());
 		//quadModel.getView().findParamByPath("/pg2/section_1/orderBookForm/category").setState("test"); // Individual view element setState works fine. 
 		//assertEquals("test",quadModel.getCore().findParamByPath("/category").getState());
+		
 		quadModel.getView().findParamByPath("/pg2/section_1/orderBookForm").setState(state);
+		
 		Param<String> bookNameParam = quadModel.getView().findParamByPath("/pg2/section_1/orderBookForm/bookName");
 		Param<String> coreNameParam = quadModel.getCore().findParamByPath("/name");
+		
 		assertEquals("new book",bookNameParam.getState());		
 	//	assertEquals("non-fiction",quadModel.getCore().findParamByPath("/category").getState());
 		assertEquals("new book",coreNameParam.getState());

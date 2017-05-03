@@ -44,6 +44,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.Notification;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
+import com.anthem.oss.nimbus.core.util.JustLogit;
 import com.anthem.oss.nimbus.core.util.LockTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -62,7 +63,7 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 
 	private static final long serialVersionUID = 1L;
 	
-	//==private CommandElement key;
+	private JustLogit logit = new JustLogit(getClass());
 	
 	private C c;
 
@@ -125,9 +126,13 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 			
 			Objects.requireNonNull(exConfig.getCore(), "Core ModelConfig must be provided.");
 			this.coreParam = attachParams("c", exConfig.getCore());
-			
 			this.viewParam = exConfig.getView()!=null ? attachParams("v", exConfig.getView()) : null;
 			this.flowParam = exConfig.getFlow()!=null ? attachParams("f", exConfig.getFlow()) : null;
+		}
+		
+		@Override
+		public boolean isRoot() {
+			return true;
 		}
 		
 		private <T> ParamConfig<T> attachParams(String pCode, ModelConfig<T> modelConfig) {
@@ -146,32 +151,43 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 			Field f = FieldUtils.getDeclaredField(ExecutionEntity.class, pCode, true);
 			MapsTo.Path path = AnnotationUtils.findAnnotation(f, MapsTo.Path.class);
 			
-			DefaultParamConfig<T> pConfig = path==null ? DefaultParamConfig.instantiate(modelConfig, pCode) : new MappedDefaultParamConfig<>(pCode, this, findParamByPath(path.value()), path);
+			
+			String domainRootAlias = /*"/" + pCode + "/" +*/ AbstractEntityState.getDomainRootAlias(modelConfig);
+			DefaultParamConfig<T> pConfig = path==null ? DefaultParamConfig.instantiate(modelConfig, domainRootAlias, pCode) : new MappedDefaultParamConfig<>(domainRootAlias, pCode, this, findParamByPath(path.value()), path);
 			return pConfig;
 		} 
 	}
 	
-	@Setter 
+	@Getter @Setter 
 	public class ExParam extends DefaultParamState<ExecutionEntity<V, C>> {
 		private static final long serialVersionUID = 1L;
 		
-		final private ExecutionModel<ExecutionEntity<V, C>> rootModel;
+		private final ExecutionModel<ExecutionEntity<V, C>> rootModel;
+		
+		private final String rootRefId;
 		
 		public ExParam(Command rootCommand, EntityStateAspectHandlers provider, ExConfig<V, C> exConfig) {
 			super(null, new ExParamConfig(exConfig), provider);
-			this.setPath(rootCommand.getAbsoluteUri());
 			
 			ExParamConfig pConfig = ((ExParamConfig)getConfig());
+			
+			// TODO use in getPath to append refId to root domain alias
+			rootRefId = rootCommand.getRootDomainElement().getRefId();
+			
+			//String rootPath = (rootRefId==null) ? pConfig.getCode() : pConfig.getCode()+":"+rootRefId;
+			String rootPath = "";
+			String beanPath = "";
+			
+			logit.debug(()->"[ExParam] rootPath: "+rootPath+" :: with beanPath: "+beanPath);
+
+			this.setPath(rootPath);
+			this.setBeanPath(beanPath);
+			
 			
 			this.rootModel = new ExModel(rootCommand, this, pConfig.getRootParent(), provider);
 			this.setType(new StateType.Nested<>(getConfig().getType().findIfNested(), getRootExecution()));
 		}
 
-		public ExParam(Command rootCommand, EntityStateAspectHandlers provider, ParamConfig<ExecutionEntity<V, C>> rootParamConfig, ExecutionModel<ExecutionEntity<V, C>> rootModel) {
-			super(null, rootParamConfig, provider);
-			this.rootModel = rootModel;
-		}
-		
 		@Override
 		public boolean isRoot() {
 			return true;
