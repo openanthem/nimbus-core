@@ -78,7 +78,7 @@ public class DefaultMongoModelRepository implements ModelRepository {
 	
 	private String resolvePath(String path) {
 		String p = StringUtils.replace(path, "/c/", "/");
-		p = StringUtils.replace(path, "/v/", "/");
+		p = StringUtils.replace(p, "/v/", "/");
 		return p;
 	}
 	
