@@ -77,9 +77,17 @@ public class DefaultMongoModelRepository implements ModelRepository {
 		return state;
 	}
 	
+	private String resolvePath(String path) {
+		String p = StringUtils.replace(path, "/c/", "/");
+		p = StringUtils.replace(path, "/v/", "/");
+		return p;
+	}
+	
 	@Override
 	public <ID extends Serializable, T> T _update(String alias, ID id, String path, T state) {
-	 
+		// TODO Soham: Refactor
+		path = resolvePath(path);
+	  
 	  Query query = new Query(Criteria.where("_id").is(id));
 	  Update update = new Update();
 	  if(StringUtils.isBlank(path) || StringUtils.equalsIgnoreCase(path, "/c")) {

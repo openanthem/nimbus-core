@@ -65,7 +65,7 @@ public class DefaultMongoModelPersistenceHandler implements ModelPersistenceHand
 			
 			Serializable coreId = (Serializable)coreStateId; 
 			
-			String pPath = param.getPath();
+			String pPath = param.getBeanPath();
 			Object pState = param.getState();
 			rep._update(alias, coreId, pPath, pState);
 			return true;
