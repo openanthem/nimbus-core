@@ -14,6 +14,7 @@ import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Behavior;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
+import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
 import com.anthem.oss.nimbus.core.domain.command.execution.ProcessGateway;
@@ -38,6 +39,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultListParamSt
 import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultModelState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultParamState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity.ExModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultListElemParamState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultListModelState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultListParamState;
@@ -173,7 +175,7 @@ abstract public class AbstractEntityStateBuilder {
 		ExecutionEntity.ExConfig<V, C> exConfig = new ExecutionEntity.ExConfig<>((ModelConfig<C>)mapsToEnclosingModel, null, null);
 		
 		//==String mapsToParamAbsolutePath = parentModel.getAbsolutePath() +Constants.SEPARATOR_URI.code+ mappedParamConfig.getCode();
-		String mapsToParamAbsolutePath = parentModel.getPath() +Constants.SEPARATOR_URI.code+ mappedParamConfig.getCode();
+		String mapsToParamAbsolutePath = parentModel.getRootExecution().getRootCommand().buildAlias(Type.DomainAlias) +Constants.SEPARATOR_URI.code+ mappedParamConfig.getCode();
 		Command detachedRootCommand = CommandBuilder.withUri(mapsToParamAbsolutePath).getCommand();
 		
 		ExecutionEntity<V, C> eState = new ExecutionEntity<>();
@@ -203,11 +205,15 @@ abstract public class AbstractEntityStateBuilder {
 	}
 	
 	private <T, M> Param<M> findMapsToParam(MappedParamConfig<T, ?> mapped, Model<?> mapsToStateAndConfig) {
-		//MappedParamConfig<T, M> mapped = (MappedParamConfig<T, M>)pConfig.findIfMapped();
+
+		String configuredPath = StringUtils.trimToNull(mapped.getPath().value());
+
+		// handle root
+		if(mapped.getMapsToEnclosingModel().isRoot()) {
+			configuredPath = "/" + ((ExModelConfig)mapped.getMapsToEnclosingModel()).getCoreParam().getCode();
+		}
 		
-		String configuredPath = /*(pConfig.getMapsTo()==null) ? null :*/ StringUtils.trimToNull(mapped.getPath().value());
 		String resolvedPath = (configuredPath==null) ? mapped.getCode() : configuredPath;
-		
 		Param<M> mapsToParam = mapsToStateAndConfig.findParamByPath(resolvedPath);
 			
 		if(mapsToParam==null) 

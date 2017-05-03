@@ -28,6 +28,7 @@ public interface ParamConfig<P> extends EntityConfig<P>, Findable<String> {
 	}
 	
 	public String getCode();
+	public String getBeanName();
 	
 	public ParamType getType();
 	

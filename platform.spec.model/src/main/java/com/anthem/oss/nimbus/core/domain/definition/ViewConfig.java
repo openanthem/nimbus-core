@@ -156,6 +156,8 @@ public class ViewConfig {
 		boolean showName() default true;
 		String cols() default "1";
 		String iconField() default "";
+		boolean inplaceEdit() default false;
+		String inplaceEditType() default "";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
@@ -243,7 +245,15 @@ public class ViewConfig {
 		String styleClass() default "";
 		String altText() default "";
 	}
-	
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface InPlaceEdit {
+		String alias() default "InPlaceEdit";
+		String type() default "text";
+	}
+
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle

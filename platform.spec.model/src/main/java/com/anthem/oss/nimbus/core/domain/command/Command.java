@@ -152,7 +152,7 @@ public class Command implements Serializable {
 		return getElement(type).map(e -> e.getAlias()).orElse(null);
 	}
 
-	public Optional<CommandElement> getElement(Type type) {
+	public Optional<CommandElementLinked> getElement(Type type) {
 		return Optional.ofNullable(root().findFirstMatch(type));
 	}
 
