@@ -33,8 +33,13 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 	}
 	
 	@Override
-	public T get(int i) {
-		return getNestedCollectionModel().get(i);
+	public T getState(int i) {
+		return getNestedCollectionModel().getState(i);
+	}
+	
+	@Override
+	public T getLeafState(int i) {
+		return getNestedCollectionModel().getLeafState(i);
 	}
 	
 	@Override

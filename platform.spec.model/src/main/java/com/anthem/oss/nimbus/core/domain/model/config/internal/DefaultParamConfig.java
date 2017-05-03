@@ -34,6 +34,7 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	private static final long serialVersionUID = 1L;
 
 	final private String code;
+	final private String beanName;
 
 	private ParamType type;	
 
@@ -55,11 +56,11 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	@JsonIgnore 
 	private List<ParamConverter> converters;
 
-	public static class Runtime<P> extends DefaultParamConfig<P> {
+	public static class StateContextConfig<P> extends DefaultParamConfig<P> {
 		private static final long serialVersionUID = 1L;
 
-		public Runtime(String code) {
-			super(code);
+		public StateContextConfig(String code, String beanName) {
+			super(code, beanName);
 		}
 		
 		@Override
@@ -74,14 +75,23 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	}
 	
 	protected DefaultParamConfig(String code) {
+		this(code, code);
+	}
+	
+	protected DefaultParamConfig(String code, String beanName) {
 		this.code = code;
+		this.beanName = beanName;
 	}
 	
 	final public static <T> DefaultParamConfig<T> instantiate(ModelConfig<?> mConfig, String code) {
+		return instantiate(mConfig, code, code);
+	}
+	
+	final public static <T> DefaultParamConfig<T> instantiate(ModelConfig<?> mConfig, String code, String beanName) {
 		if(mConfig.getReferredClass()==StateContextEntity.class)
-			return new DefaultParamConfig.Runtime<>(code);
+			return new DefaultParamConfig.StateContextConfig<>(code, beanName);
 		
-		return new DefaultParamConfig<>(code);
+		return new DefaultParamConfig<>(code, beanName);
 	} 
 	
 

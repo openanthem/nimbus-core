@@ -30,6 +30,9 @@ public interface ModelConfig<T> extends EntityConfig<T> {
 		return null;
 	}
 	
+	default boolean isRoot() {
+		return false;
+	}
 	
 	public interface MappedModelConfig<T, M> extends ModelConfig<T>, MappedConfig<T, M> {
 		@Override

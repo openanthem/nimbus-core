@@ -30,7 +30,11 @@ public class MappedDefaultParamConfig<P, M> extends DefaultParamConfig<P> implem
 	@JsonIgnore final private Path path;
 
 	public MappedDefaultParamConfig(String code, ModelConfig<?> mapsToEnclosingModel, ParamConfig<M> mapsTo, Path path) {
-		super(code);
+		this(code, code, mapsToEnclosingModel, mapsTo, path);
+	}
+	
+	public MappedDefaultParamConfig(String code, String beanName, ModelConfig<?> mapsToEnclosingModel, ParamConfig<M> mapsTo, Path path) {
+		super(code, beanName);
 		this.mapsToEnclosingModel = mapsToEnclosingModel;
 		this.mapsTo = mapsTo;
 		this.path = path;

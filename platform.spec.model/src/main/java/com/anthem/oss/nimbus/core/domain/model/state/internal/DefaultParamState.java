@@ -52,7 +52,6 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	final private Model<?> parentModel;
 	
-	//private StateContextEntity runtime;
 	
 	private Model<?> contextModel;
 	
@@ -78,18 +77,23 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	
 	@Override
-	protected void initInternal() {
-		String rPath = resolvePath();
-		setPath(rPath);
+	protected void initSetupInternal() {
+		setPath(resolvePath());
+		
+		setBeanPath(resolveBeanPath());
 	}
 	
 	protected String resolvePath() {
-//		final String parentPath = StringUtils.trimToEmpty(getParentModel()==null 
-//									? getRootExecution().getRootCommand().buildUri(Type.PlatformMarker)
-//											: getParentModel().getPath());
-		final String parentPath = getParentModel().getPath();
+		String parentPath = getParentModel().getPath();
 		return resolvePath(parentPath, getConfig().getCode());
 	}
+	
+	protected String resolveBeanPath() {
+		String parentPath = getParentModel().getBeanPath();
+		return resolvePath(parentPath, getConfig().getBeanName());
+	}
+	
+	
 	
 	public static String resolvePath(String parentPath, String code) {
 		return new StringBuilder(parentPath)
@@ -98,6 +102,11 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 				.toString();	
 	}
 
+	@Override
+	protected void initStateInternal() {
+		if(!isMapped() && isNested())
+			findIfNested().initState();
+	}
 	
 //	TODO: Refactor with Weak reference implementation
 //	@JsonIgnore
@@ -122,7 +131,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		
 		ModelConfig<?> mConfig = getParentModel().getConfig();
 		
-		PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(mConfig.getReferredClass(), getConfig().getCode());
+		PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(mConfig.getReferredClass(), getConfig().getBeanName());
 		return pd;
 	}
 

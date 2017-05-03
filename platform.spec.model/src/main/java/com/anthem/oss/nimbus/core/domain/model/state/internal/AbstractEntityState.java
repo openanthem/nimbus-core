@@ -12,15 +12,19 @@ import java.util.function.Supplier;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.core.annotation.AnnotationUtils;
 
 import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
+import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.model.config.EntityConfig;
+import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
+import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
 import com.anthem.oss.nimbus.core.domain.model.state.RulesRuntime;
 import com.anthem.oss.nimbus.core.domain.model.state.State;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 import com.anthem.oss.nimbus.core.util.LockTemplate;
@@ -41,7 +45,7 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 	
 	@Setter(AccessLevel.PROTECTED) private String path;
 	
-//	private String rootDomainUri;
+	@Setter(AccessLevel.PROTECTED) private String beanPath;
 	
 	@JsonIgnore final private EntityStateAspectHandlers aspectHandlers;
 	
@@ -60,15 +64,34 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 	}
 	
 	@Override
-	final public void init() {
-		initInternal();
+	final public void initSetup() {
+		initSetupInternal();
 		
 		// start rules runtime/session
 		Optional.ofNullable(getRulesRuntime())
 			.ifPresent(rt->rt.start());
 	}
 	
-	protected void initInternal() {} 
+	protected void initSetupInternal() {} 
+	
+	@Override
+	final public void initState() {
+		ExecutionRuntime execRt = getRootExecution().getExecutionRuntime();
+		String lockId = execRt.tryLock();
+		try {
+			initStateInternal();	
+		} finally {
+			if(execRt.isLocked(lockId)) {
+				execRt.awaitCompletion();
+				
+				boolean b = execRt.tryUnlock(lockId);
+				if(!b)
+					throw new FrameworkRuntimeException("Failed to release lock acquired during initState of: "+getPath()+" with acquired lockId: "+lockId);
+			}
+		}
+	}
+	
+	protected void initStateInternal() {}
 	
 	protected Object createOrGetRuntimeEntity() {
 		if(!getRootExecution().getParamRuntimes().containsKey(getPath()))
@@ -77,11 +100,25 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 		return getRootExecution().getParamRuntimes().get(getPath());
 	}
 	
+	// TODO: SOHAM - need to refactor part of persistence changes
 	public String getPath() {
-		String p = StringUtils.replace(path, "/c/", "/");
+		String p = path;
+
+		p = StringUtils.replace(path, "/c/", "/");
 		p = StringUtils.replace(p, "/v/", "/");
 		p = StringUtils.replace(p, "/f/", "/");
 		return p;
+	}
+	
+	public static String getDomainRootAlias(EntityState<?> p) {
+		Model<?> mapsToRootDomain = p.getRootDomain();
+		return getDomainRootAlias(mapsToRootDomain.getConfig());
+	}
+	
+	public static String getDomainRootAlias(ModelConfig<?> m) {
+		Class<?> mapsToRootClass = m.getReferredClass();
+		Domain domainAlias = AnnotationUtils.findAnnotation(mapsToRootClass, Domain.class);
+		return domainAlias==null ? null : domainAlias.value();
 	}
 	
 	@Override

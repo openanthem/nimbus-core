@@ -214,13 +214,13 @@ abstract public class AbstractEntityConfigBuilder {
 		return mappedParam;
 	}
 
-	@Getter @Setter
+	@Getter @Setter @Domain("_simulatedDetachedNested")
 	public static class SimulatedNestedParamEnclosingEntity<E> {
 		private E detachedParam; 
 	}
 	
 	
-	@Getter @Setter
+	@Getter @Setter @Domain("_simulatedDetachedCollection")
 	public static class SimulatedCollectionParamEnclosingEntity<E> {
 		private List<E> detachedParam;
 	}

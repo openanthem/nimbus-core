@@ -15,7 +15,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.TimeZone;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.beans.PropertyAccessor;
 import org.springframework.beans.PropertyAccessorFactory;
@@ -76,9 +76,17 @@ public class DefaultMongoModelRepository implements ModelRepository {
 		return state;
 	}
 	
+	private String resolvePath(String path) {
+		String p = StringUtils.replace(path, "/c/", "/");
+		p = StringUtils.replace(p, "/v/", "/");
+		return p;
+	}
+	
 	@Override
 	public <ID extends Serializable, T> T _update(String alias, ID id, String path, T state) {
-	 
+		// TODO Soham: Refactor
+		path = resolvePath(path);
+	  
 	  Query query = new Query(Criteria.where("_id").is(id));
 	  Update update = new Update();
 	  if(StringUtils.isBlank(path) || StringUtils.equalsIgnoreCase(path, "/c")) {
@@ -142,35 +150,60 @@ public class DefaultMongoModelRepository implements ModelRepository {
 				String filtercriteria = criteria.toString().replaceAll("<", "(").replace(">", ")");
 				Predicate predicate = buildPredicate(filtercriteria, referredClass, alias);
 				SpringDataMongodbQuery query = new SpringDataMongodbQuery<>(mongoOps, referredClass, alias);
-				List list = query.where(predicate).fetch();
-				return list;
+				return query.where(predicate).fetch();	
 			} else {
 				// Build the query with the criteria object
-				ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreNullValues().withIgnorePaths("version");
-				for (Field field : referredClass.getDeclaredFields()) {
-					if (field.getType().isAssignableFrom(String.class)) {
-						field.setAccessible(true);
-						try {
-							String checkString = (String) FieldUtils.readField(field, criteria);
-							if (checkString != null && checkString.isEmpty())
-								matcher = matcher.withIgnorePaths(field.getName());
-						} catch (IllegalAccessException e) {
-							e.printStackTrace();
-						}
-					}
-		
-					if (field.isAnnotationPresent(StartsWith.class))
-						matcher = matcher.withMatcher(field.getName(), startsWith());
-				}
-				
-				Example<C> example =  Example.of(criteria, matcher);
-				Criteria c = Criteria.byExample(example);
-				Query query = new Query(c);
+				Query query = buildQuery(referredClass, alias, criteria);
 				return mongoOps.find(query, referredClass, alias);
 			}
 	}
 	
-	public Predicate buildPredicate(String groovyScript,Class<?> referredClass,String alias) {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
+	public <T, C> T _search(Class<?> referredClass, String alias, C criteria, Projection projection) {
+		Long count;
+		if(criteria==null) {
+			SpringDataMongodbQuery query = new SpringDataMongodbQuery<>(mongoOps, referredClass, alias);
+			 count = query.fetchCount();
+		}
+		else if(criteria instanceof String) {
+			String filtercriteria = criteria.toString().replaceAll("<", "(").replace(">", ")");
+			Predicate predicate = buildPredicate(filtercriteria, referredClass, alias);
+			SpringDataMongodbQuery query = new SpringDataMongodbQuery<>(mongoOps, referredClass, alias);
+			count = query.where(predicate).fetchCount();
+		} else {
+			// Build the query with the criteria object
+			Query query = buildQuery(referredClass, alias, criteria);
+			count = mongoOps.count(query, referredClass, alias);
+		}
+		return (T) count;
+	}
+	
+	private <C> Query buildQuery(Class<?> referredClass, String alias, C criteria) {
+		ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreNullValues().withIgnorePaths("version");
+		for (Field field : referredClass.getDeclaredFields()) {
+			if (field.getType().isAssignableFrom(String.class)) {
+				field.setAccessible(true);
+				try {
+					String checkString = (String) FieldUtils.readField(field, criteria);
+					if (checkString != null && checkString.isEmpty())
+						matcher = matcher.withIgnorePaths(field.getName());
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
+			}
+
+			if (field.isAnnotationPresent(StartsWith.class))
+				matcher = matcher.withMatcher(field.getName(), startsWith());
+		}
+		
+		Example<C> example =  Example.of(criteria, matcher);
+		Criteria c = Criteria.byExample(example);
+		Query query = new Query(c);
+		return query;
+	}
+	
+	private Predicate buildPredicate(String groovyScript,Class<?> referredClass,String alias) {
 		final Binding binding = new Binding();
 		Object obj = createQueryDslClassInstance(referredClass);
         binding.setProperty(alias, obj);
@@ -184,7 +217,7 @@ public class DefaultMongoModelRepository implements ModelRepository {
         return (Predicate)shell.evaluate(groovyScript);
 	}
 	
-	public Object createQueryDslClassInstance(Class<?> referredClass) {
+	private Object createQueryDslClassInstance(Class<?> referredClass) {
 		Object obj = null;
 		try {
 			String cannonicalQuerydslclass = referredClass.getCanonicalName().replace(referredClass.getSimpleName(), "Q".concat(referredClass.getSimpleName()));

@@ -235,6 +235,20 @@ public class DefaultExpressionHelper extends AbstractExpressionHelper {
 		
 	}
 
-
+	final public void _setExternalParam(CommandMessage cmdMsg, DelegateExecution execution, String resolvedUri, Object... args) {
+		CommandMessage coreCmdMsg = new CommandMessage();
+		Command command = CommandBuilder.withUri(resolvedUri.toString()).getCommand();
+		coreCmdMsg.setCommand(command);
+		if (args.length > 1) {
+			String payload = reconstructWithRefId(cmdMsg, ((String)args[1]));
+			coreCmdMsg.setRawPayload(payload);		
+		} else {
+			coreCmdMsg.setRawPayload(cmdMsg.getRawPayload());
+		}
+		MultiExecuteOutput obj = (MultiExecuteOutput) executeProcess(coreCmdMsg);
+		QuadModel<?, ?> quadModel = UserEndpointSession.getOrThrowEx(cmdMsg.getCommand());
+		StringBuilder targetParamPath = new StringBuilder((String) args[0]);
+		quadModel.getView().findParamByPath(targetParamPath.toString()).setState(obj.getSingleResult().toString());
+	}
 
 }
