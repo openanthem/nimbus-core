@@ -5,13 +5,17 @@ package com.anthem.oss.nimbus.core.domain.model.config;
 
 import java.io.Serializable;
 
-import lombok.Data;
+import com.anthem.oss.nimbus.core.domain.definition.Model;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Soham Chakravarti
  *
  */
-@Data
+@Model
+@Getter @Setter
 public class ParamValue implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -22,7 +26,7 @@ public class ParamValue implements Serializable {
 	
 	private String desc;
 	
-	private boolean isActive = true;
+	//private boolean isActive = true;
 	
 	public ParamValue() {}
 	

@@ -10,6 +10,7 @@ import com.anthem.oss.nimbus.core.domain.definition.Converters.ParamConverter;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Mode;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
+import com.anthem.oss.nimbus.core.domain.definition.Model.Param.Values;
 import com.anthem.oss.nimbus.core.entity.Findable;
 
 /**
@@ -40,9 +41,7 @@ public interface ParamConfig<P> extends EntityConfig<P>, Findable<String> {
 	
 	public AnnotationConfig getUiStyles();
 	
-	public List<ParamValue> getValues();
-	
-	public String getValuesUrl();
+	public Values getValues();
 	
 	public List<ParamConverter> getConverters();
 	

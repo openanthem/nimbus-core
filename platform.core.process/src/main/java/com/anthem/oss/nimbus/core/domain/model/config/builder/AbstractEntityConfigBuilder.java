@@ -345,7 +345,7 @@ abstract public class AbstractEntityConfigBuilder {
 			
 			//Model.Param.Values.Source srcValues = ClassLoadUtils.newInstance(aVal.value());
 			//List<ParamValue> values = srcValues.getValues(created.getCode());
-			created.setValuesUrl(aVal.url());
+			created.setValues(aVal);
 			//created.setValues(values);
 		}
 		
