@@ -67,9 +67,10 @@ public class ClientUserRepoService implements ClientUserRepoAPI<ClientUser> {
 	
 	@Override
 	public ClientUser getUsersByIDSSourceAndGuid(String source, String idsGuid) throws EntityNotFoundException {
-		ClientUser clientUser;
+		ClientUser clientUser = null;
 		try{
-			clientUser = cuRepo.findByIDSSourceAndGuid(source, idsGuid);
+			// TODO - removed this for neo4j to mongodb change - need to revisit
+			//clientUser = cuRepo.findByIDSSourceAndGuid(source, idsGuid);
 			
 		}catch(Exception e){
 			throw new EntityNotFoundException("No user found with source and guid :"+source+","+idsGuid, e, ClientUser.class);

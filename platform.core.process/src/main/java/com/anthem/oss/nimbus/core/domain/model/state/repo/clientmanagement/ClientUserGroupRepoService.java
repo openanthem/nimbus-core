@@ -73,7 +73,9 @@ public class ClientUserGroupRepoService {
 			PageRequest pageReq = new PageRequest(index,size);
 			
 			List<ClientUserGroup> cugResultList = new ArrayList<ClientUserGroup>();
-			List<ClientUserGroup> cugList = cugRepo.findAllByClientEntity(code);
+			// TODO - removed this for neo4j to mongodb change - need to revisit
+			//List<ClientUserGroup> cugList = cugRepo.findAllByClientEntity(code);
+			List<ClientUserGroup> cugList = null;
 			
 			if(cugList != null){
 				

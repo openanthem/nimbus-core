@@ -28,13 +28,13 @@ public interface ClientUserRepository extends MongoRepository<ClientUser, String
 	//@Query("MATCH(u)-[r:CLIENT]->(c) WHERE id(c)={id} RETURN u")
 	List<ClientUser> findByClient(@Param("id")Client c);
 	
-	@Query()
-	List<Role<Entry, ClientAccessEntity>> getGrantedRolesForClientUser(ClientUser cu);
+	//@Query()
+	//List<Role<Entry, ClientAccessEntity>> getGrantedRolesForClientUser(ClientUser cu);
 	
 	List<ClientUser> findByClientId(String id); //Empty Array returned
 	
-	@Query("MATCH(u)-[r:CLIENT_USER_I_D_S]->(c:ClientUserIDS {source:{0},idsGuid:{1}}) RETURN u")
-	ClientUser findByIDSSourceAndGuid(String source,String guid);
+	//@Query("MATCH(u)-[r:CLIENT_USER_I_D_S]->(c:ClientUserIDS {source:{0},idsGuid:{1}}) RETURN u")
+	//ClientUser findByIDSSourceAndGuid(String source,String guid);
 	
 	
 }

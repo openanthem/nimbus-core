@@ -164,7 +164,11 @@ public class ClientUserRepositoryTest {
 	
 	//@Test
 	public void test_07_getAllGrantedRolesforAClientUser() {
-		List<Role<com.anthem.oss.nimbus.core.entity.client.access.ClientUserRole.Entry, ClientAccessEntity>> cu = cuRep.getGrantedRolesForClientUser(cuRep.findByLoginName("AC63348"));
+		// TODO - removed this for neo4j to mongodb change - need to revisit
+		//List<Role<com.anthem.oss.nimbus.core.entity.client.access.ClientUserRole.Entry, ClientAccessEntity>> cu = cuRep.getGrantedRolesForClientUser(cuRep.findByLoginName("AC63348"));
+		List<Role<com.anthem.oss.nimbus.core.entity.client.access.ClientUserRole.Entry, ClientAccessEntity>> cu = null;
+		
+		
 		System.out.println(cu);
 		Assert.assertNotNull(cu);
 		System.out.println("Role Name::"+cu.get(0).getCode());
@@ -253,7 +257,9 @@ public class ClientUserRepositoryTest {
 	
 	@Test
 	public void tets_12_findClientUserByIDS_guid_source(){
-		ClientUser cu = cuRep.findByIDSSourceAndGuid("Google","111111111");
+		// TODO - removed this for neo4j to mongodb change - need to revisit
+		//ClientUser cu = cuRep.findByIDSSourceAndGuid("Google","111111111");
+		ClientUser cu = null;
 		Assert.assertNotNull(cu);
 		System.out.println("No of Client Users with IDS with GUID#111111111 and source 'Google'::");
 		

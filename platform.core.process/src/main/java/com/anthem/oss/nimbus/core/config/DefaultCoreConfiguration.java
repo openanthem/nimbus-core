@@ -6,6 +6,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 import com.anthem.nimbus.platform.core.process.api.repository.SessionCacheRepository;
 import com.anthem.nimbus.platform.core.process.api.support.ProcessBeanHelper;
@@ -58,9 +59,9 @@ import com.anthem.oss.nimbus.core.web.WebCommandDispatcher;
  */
 
 @Configuration
+@EnableMongoRepositories(basePackages="com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement"	)
 @ComponentScan(basePackageClasses = WebActionController.class)
 public class DefaultCoreConfiguration {
-	
 	
 	//TODO - the below 2 beans are blank. should they be deleted ?
 	@Bean(name="default.param.state.rep_session")
