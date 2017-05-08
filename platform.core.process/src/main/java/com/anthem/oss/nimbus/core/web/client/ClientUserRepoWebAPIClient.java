@@ -29,7 +29,7 @@ public interface ClientUserRepoWebAPIClient extends ClientUserRepoAPI<ClientUser
 	
 	@Override
 	@RequestMapping(method = RequestMethod.POST, value = "/{clientCode}/admin/p/clientuser/_new")
-	public Long addClientUser(@PathVariable("clientCode") String clientCode, @RequestBody ClientUser clientUser) throws ValidationException , FrameworkRuntimeException;
+	public String addClientUser(@PathVariable("clientCode") String clientCode, @RequestBody ClientUser clientUser) throws ValidationException , FrameworkRuntimeException;
 	
 	@Override
 	@RequestMapping(value ="/{clientCode}/admin/p/clientuser/_search", method = RequestMethod.POST)
@@ -45,9 +45,9 @@ public interface ClientUserRepoWebAPIClient extends ClientUserRepoAPI<ClientUser
 	
 	@Override
 	@RequestMapping(value ="/{clientCode}/admin/p/clientuser/_update", method = RequestMethod.POST)
-	public Long editClientUser(@PathVariable("clientCode") String clientCode, @RequestBody ClientUser clientUser);
+	public String editClientUser(@PathVariable("clientCode") String clientCode, @RequestBody ClientUser clientUser);
 	
 	@Override
 	@RequestMapping(value ="{clientcode}/admin/p/clientuser/{id}", method = RequestMethod.GET)
-	public ClientUser getUserById(@PathVariable("id") Long id);
+	public ClientUser getUserById(@PathVariable("id") String id);
 }

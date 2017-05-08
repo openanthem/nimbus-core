@@ -43,7 +43,7 @@ public class ClientUserGroupRepoService {
 	@Value("${pageSize:15}")
 	int size;
 	
-	public ClientUserGroup setAssociatedTo(Long clientEntityId, ClientUserGroup clientUserGroup) throws ValidationException, FrameworkRuntimeException {
+	public ClientUserGroup setAssociatedTo(String clientEntityId, ClientUserGroup clientUserGroup) throws ValidationException, FrameworkRuntimeException {
 		try{
 			Assert.notNull(clientEntityId, "Parent Client entity Id cannot be null");
 			Assert.notNull(clientUserGroup, "ClientUserGroup to be added cannot be null");
@@ -91,7 +91,7 @@ public class ClientUserGroupRepoService {
 		}
 	}
 	
-	public ClientUserGroup getUserGroupById(Long id) throws EntityNotFoundException {
-		return cugRepo.findOne(id,FETCH_DEPTH);
+	public ClientUserGroup getUserGroupById(String id) throws EntityNotFoundException {
+		return cugRepo.findOne(id);
 	}
 }

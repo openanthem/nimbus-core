@@ -28,7 +28,7 @@ public interface ClientUserRepoAPI<T extends ClientUser> {
 	 * @return
 	 * @throws EntityNotFoundException
 	 */
-	public T getUserById(Long id) throws EntityNotFoundException;
+	public T getUserById(String id) throws EntityNotFoundException;
 	
 	/**
 	 * 
@@ -47,7 +47,7 @@ public interface ClientUserRepoAPI<T extends ClientUser> {
 	 * @throws ValidationException
 	 * @throws PlatformRuntimeException
 	 */
-	public Long addClientUser(String clientCode, ClientUser clientUser) throws ValidationException, FrameworkRuntimeException;
+	public String addClientUser(String clientCode, ClientUser clientUser) throws ValidationException, FrameworkRuntimeException;
 	
 	/**
 	 * 
@@ -73,7 +73,7 @@ public interface ClientUserRepoAPI<T extends ClientUser> {
 	 * @return
 	 * @throws PlatformRuntimeException
 	 */
-	public Long editClientUser(String clientCode, ClientUser clientUser) throws FrameworkRuntimeException;
+	public String editClientUser(String clientCode, ClientUser clientUser) throws FrameworkRuntimeException;
 	
 	/**
 	 * Gets the client users by name or all.

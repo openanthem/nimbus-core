@@ -13,7 +13,7 @@ import lombok.Setter;
  *
  */
 @Getter @Setter
-class ClientUserIDS extends AbstractEntity.IdLong{
+class ClientUserIDS extends AbstractEntity.IdString {
 	
 	private static final long serialVersionUID = 1L;
 	

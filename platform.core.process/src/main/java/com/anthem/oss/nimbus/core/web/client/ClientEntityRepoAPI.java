@@ -32,7 +32,7 @@ public interface ClientEntityRepoAPI<T extends ClientEntity> {
 	 * @throws ValidationException
 	 * @throws FrameworkRuntimeException
 	 */
-	public Long addClient(Client c) throws ValidationException, FrameworkRuntimeException;
+	public String addClient(Client c) throws ValidationException, FrameworkRuntimeException;
 	
 	/**
 	 * 
@@ -41,7 +41,7 @@ public interface ClientEntityRepoAPI<T extends ClientEntity> {
 	 * @throws ValidationException
 	 * @throws FrameworkRuntimeException
 	 */
-	public Long addClientEntity(ClientEntity c) throws ValidationException, FrameworkRuntimeException;
+	public String addClientEntity(ClientEntity c) throws ValidationException, FrameworkRuntimeException;
 	
 	//public Page<Client> getAllClients() throws FrameworkRuntimeException;
 	
@@ -53,7 +53,7 @@ public interface ClientEntityRepoAPI<T extends ClientEntity> {
 	 * @throws ValidationException
 	 * @throws FrameworkRuntimeException
 	 */
-	public Long addNestedEntity(Long clientId, ClientEntity ce) throws ValidationException, FrameworkRuntimeException;
+	public String addNestedEntity(String clientId, ClientEntity ce) throws ValidationException, FrameworkRuntimeException;
 	
 	/**
 	 * 
@@ -63,7 +63,7 @@ public interface ClientEntityRepoAPI<T extends ClientEntity> {
 	 * @throws ValidationException
 	 * @throws FrameworkRuntimeException
 	 */
-	public boolean editNestedEntity(Long clientId, ClientEntity ce) throws ValidationException, FrameworkRuntimeException;
+	public boolean editNestedEntity(String clientId, ClientEntity ce) throws ValidationException, FrameworkRuntimeException;
 	
 	
 	/**
@@ -83,7 +83,7 @@ public interface ClientEntityRepoAPI<T extends ClientEntity> {
 	 * @throws ValidationException
 	 * @throws FrameworkRuntimeException
 	 */
-	public Page<ClientEntity> getClientEntityByNameOrAll(Long clientId , ClientEntity clientEntity) throws ValidationException, FrameworkRuntimeException; 
+	public Page<ClientEntity> getClientEntityByNameOrAll(String clientId , ClientEntity clientEntity) throws ValidationException, FrameworkRuntimeException; 
 	
 	/**
 	 * 
@@ -109,7 +109,7 @@ public interface ClientEntityRepoAPI<T extends ClientEntity> {
 	 * @param role
 	 * @return
 	 */
-	public Long addRoleForClient(String clientCode, ClientUserRole role);
+	public String addRoleForClient(String clientCode, ClientUserRole role);
 	
 	/**
 	 * 

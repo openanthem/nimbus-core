@@ -5,7 +5,6 @@ package com.anthem.oss.nimbus.core.entity.access;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.anthem.oss.nimbus.core.entity.AbstractEntity.IdLong;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity.IdString;
 
 import lombok.Getter;

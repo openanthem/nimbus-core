@@ -5,7 +5,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 import com.anthem.oss.nimbus.core.entity.client.ClientEntity;
 
-public interface ClientEntityRepository extends PagingAndSortingRepository<ClientEntity, Long>{
+public interface ClientEntityRepository extends PagingAndSortingRepository<ClientEntity, String>{
 	
 	ClientEntity findByCode(String code);
 	

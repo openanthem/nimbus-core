@@ -79,7 +79,7 @@ public class ClientEntity extends AbstractEntity.IdString {
 
 	@Ignore private Set<ClientAccessEntity> selectedAccesses;
 	
-	private Address.IdLong address;
+	private Address.IdString address;
 	
 	@Ignore private Set<ClientUserRole> associatedRoles;
 	

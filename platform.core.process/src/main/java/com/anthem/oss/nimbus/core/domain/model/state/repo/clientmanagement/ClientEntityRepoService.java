@@ -57,7 +57,7 @@ public class ClientEntityRepoService implements ClientEntityRepoAPI<ClientEntity
 	int size;
 
 	@Override
-	public Long addClient(Client c) throws FrameworkRuntimeException {
+	public String addClient(Client c) throws FrameworkRuntimeException {
 		try{
 			Assert.notNull(c, "Client to be added cannot be null");
 			Assert.isNull(c.getId(),"Client to be added cannot have a pre-assigned id."+
@@ -79,12 +79,12 @@ public class ClientEntityRepoService implements ClientEntityRepoAPI<ClientEntity
 	}
 
 	@Override
-	public Long addNestedEntity(Long clientEntityId , ClientEntity nestedEntity) throws FrameworkRuntimeException{
+	public String addNestedEntity(String clientEntityId , ClientEntity nestedEntity) throws FrameworkRuntimeException{
 		try{
 			Assert.notNull(nestedEntity, "ClientEntity to be added cannot be null");
 			Assert.notNull(clientEntityId,"Parent Client entity Id cannot be null");
 			
-			ClientEntity parentClientEntity = ceRepo.findOne(clientEntityId, CE_FETCH_DEPTH);
+			ClientEntity parentClientEntity = ceRepo.findOne(clientEntityId);
 			Assert.notNull(parentClientEntity,"Parent Client Entity cannot be null");
 			
 			nestedEntity.setCode(nestedEntity.getName());
@@ -103,12 +103,12 @@ public class ClientEntityRepoService implements ClientEntityRepoAPI<ClientEntity
 	}
 	
 	@Override
-	public boolean editNestedEntity(Long clientEntityId , ClientEntity nestedEntity) throws FrameworkRuntimeException{
+	public boolean editNestedEntity(String clientEntityId , ClientEntity nestedEntity) throws FrameworkRuntimeException{
 		try{
 			Assert.notNull(nestedEntity, "ClientEntity to be added cannot be null");
 			Assert.notNull(clientEntityId,"Parent Client entity Id cannot be null");
 			
-			ClientEntity parentClientEntity = ceRepo.findOne(clientEntityId, CE_FETCH_DEPTH);
+			ClientEntity parentClientEntity = ceRepo.findOne(clientEntityId);
 			
 			Assert.notNull(parentClientEntity,"Parent Client Entity cannot be null");
 			
@@ -149,18 +149,18 @@ public class ClientEntityRepoService implements ClientEntityRepoAPI<ClientEntity
 			if(StringUtils.isNotBlank(client.getName()) && client.getId() == null){
 				ClientEntity ce = ceRepo.findByName(client.getName());
 				if(ce != null) {
-					ceList.add(cRepo.findOne(ce.getId(), CE_FETCH_DEPTH));
+					ceList.add(cRepo.findOne(ce.getId()));
 					return new PageImpl<Client>(ceList,pageReq,ceList.size());
 				} else {
 					throw new EntityNotFoundException("Client Entity not found with name "+client.getName(),Client.class);
 				}
 			}
 			else if(client.getId() != null) {
-				ceList.add(cRepo.findOne(client.getId(), CE_FETCH_DEPTH));
+				ceList.add(cRepo.findOne(client.getId()));
 				return new PageImpl<Client>(ceList,pageReq,ceList.size());
 			}
 			else {
-				return cRepo.findAll(pageReq,CE_FETCH_DEPTH);
+				return cRepo.findAll(pageReq);
 			}
 			
 		}catch(Exception e) {
@@ -210,7 +210,7 @@ public class ClientEntityRepoService implements ClientEntityRepoAPI<ClientEntity
 	}
 
 	@Override
-	public Long addRoleForClient(String clientCode, ClientUserRole role) {
+	public String addRoleForClient(String clientCode, ClientUserRole role) {
 		try{
 			ClientEntity ce = ceRepo.findByCode(clientCode);
 			Assert.notNull(ce , "Client Entity cannot be null");
@@ -284,7 +284,7 @@ public class ClientEntityRepoService implements ClientEntityRepoAPI<ClientEntity
 			Assert.notNull(code, "Client Role ID cannot be null");
 			ClientUserRole cur;
 			if(NumberUtils.isDigits(code)) {
-				cur = crRepo.findOne(Long.valueOf(code), 5);
+				cur = crRepo.findOne(code);
 			}
 			else {
 				cur = crRepo.findByCode(code);
@@ -299,7 +299,7 @@ public class ClientEntityRepoService implements ClientEntityRepoAPI<ClientEntity
 	}
 	
 	@Override
-	public Page<ClientEntity> getClientEntityByNameOrAll(Long id, ClientEntity clientEntity)
+	public Page<ClientEntity> getClientEntityByNameOrAll(String id, ClientEntity clientEntity)
 			throws ValidationException, FrameworkRuntimeException {
 		try{
 			PageRequest pageReq = new PageRequest(index,size);	
@@ -308,7 +308,7 @@ public class ClientEntityRepoService implements ClientEntityRepoAPI<ClientEntity
 			List<ClientEntity> ceList = new ArrayList<ClientEntity>();
 			if(clientEntity != null && clientEntity.getId() != null) { 
 				//ClientEntity cee = ceRepo.findByName(clientEntity.getName());
-				ClientEntity cee = ceRepo.findOne(clientEntity.getId(), CE_FETCH_DEPTH);
+				ClientEntity cee = ceRepo.findOne(clientEntity.getId());
 				if(cee != null) {
 //					List<String> clientEntityNames = clientEntitys.stream()
 //							.map(s -> s.getName())
@@ -335,7 +335,7 @@ public class ClientEntityRepoService implements ClientEntityRepoAPI<ClientEntity
 	}
 
 	@Override
-	public Long addClientEntity(ClientEntity c) throws ValidationException, FrameworkRuntimeException {
+	public String addClientEntity(ClientEntity c) throws ValidationException, FrameworkRuntimeException {
 		try{
 			Assert.notNull(c, "ClientEntity to be added cannot be null");
 			Assert.isNull(c.getId(),"ClienEntityt to be added cannot have a pre-assigned id."+
@@ -361,7 +361,7 @@ public class ClientEntityRepoService implements ClientEntityRepoAPI<ClientEntity
 		try{
 			Client c;
 			if(NumberUtils.isDigits(code)) {
-				c = cRepo.findOne(Long.valueOf(code),5);
+				c = cRepo.findOne(code);
 			}
 			else{
 				c = cRepo.findByCode(code);
@@ -370,7 +370,7 @@ public class ClientEntityRepoService implements ClientEntityRepoAPI<ClientEntity
 			if(c == null){
 				throw new EntityNotFoundException("Client does not exist with code : "+code, Client.class);
 			}else
-				return cRepo.findOne(c.getId(), CE_FETCH_DEPTH);
+				return cRepo.findOne(c.getId());
 			
 		}catch(Exception e){
 			throw new FrameworkRuntimeException("Service Exception while retrieving Client with code : "+code,e);

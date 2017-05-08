@@ -16,7 +16,7 @@ public class TestClientUserFactory {
 		ClientUser cu = new ClientUser();
 		cu.setLoginName("Nimbus_User");
 		
-		Name.IdLong nm = new Name.IdLong();
+		Name.IdString nm = new Name.IdString();
 		nm.setFirstName("Test_FirstName");
 		nm.setLastName("Test_LastName");
 		cu.setName(nm);
