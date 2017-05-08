@@ -20,7 +20,7 @@ import lombok.ToString;
  *
  */
 @Domain(value="client")
-@Repo(Repo.Database.rep_neo4j)
+@Repo(Repo.Database.rep_mongodb)
 @Execution.Input.Default @Execution.Output.Default @Execution.Output(Action._new)
 @Getter @Setter @ToString(callSuper=true)
 public class Client extends ClientEntity {

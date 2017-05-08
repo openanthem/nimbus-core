@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.anthem.oss.nimbus.core.config.BPMEngineConfig;
-import com.anthem.oss.nimbus.core.config.Neo4jConfig;
 
 /**
  * @author Soham Chakravarti

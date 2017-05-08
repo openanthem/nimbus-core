@@ -31,7 +31,6 @@ import com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement.Platf
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.DefaultModelRepositoryFactory;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.DefaultMongoModelPersistenceHandler;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.DefaultMongoModelRepository;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.DefaultNeo4jModelRepository;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelPersistenceHandler;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFactory;
@@ -59,15 +58,9 @@ import com.anthem.oss.nimbus.core.web.WebCommandDispatcher;
  */
 
 @Configuration
-// With basePackageClasses we are not hardcoding a string value
 @ComponentScan(basePackageClasses = WebActionController.class)
-//@Import({HttpSessionConfig.class,Neo4jConfig.class,DefaultCoreModelConfig.class,WebSocketConfig.class,WebSocketHandlersConfig.class,WebSecurityConfig.class,SwaggerConfig.class,EmailTaskExecutorBeanRegistrar.class,ActivitiProcessAsBeanRegistrar.class})
 public class DefaultCoreConfiguration {
 	
-//	@Bean(name="default.eventStateRepository")
-//	public ExecutionStateRepository<?, ?> eventStateRepository(ModelRepositoryFactory repFactory){
-//		return new ExecutionStateRepository<Object, Object>(repFactory);
-//	}
 	
 	//TODO - the below 2 beans are blank. should they be deleted ?
 	@Bean(name="default.param.state.rep_session")
@@ -111,11 +104,6 @@ public class DefaultCoreConfiguration {
 	@Bean(name="rep_mongodb")
 	public DefaultMongoModelRepository defaultMongoModelRepository(MongoOperations mongoOps, IdSequenceRepository idSequenceRepo){
 		return new DefaultMongoModelRepository(mongoOps,idSequenceRepo);
-	}
-	
-	@Bean(name="rep_neo4j")
-	public DefaultNeo4jModelRepository defaultNeo4jModelRepository(){
-		return new DefaultNeo4jModelRepository();
 	}
 	
 	@Bean(name="default.paramStateAtomicPersistenceEventListener")

@@ -6,6 +6,7 @@ package com.anthem.oss.nimbus.core.entity.access;
 import org.apache.commons.lang3.StringUtils;
 
 import com.anthem.oss.nimbus.core.entity.AbstractEntity.IdLong;
+import com.anthem.oss.nimbus.core.entity.AbstractEntity.IdString;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +17,7 @@ import lombok.ToString;
  *
  */
 @Getter @Setter @ToString
-public class Permission extends IdLong {
+public class Permission extends IdString {
 	
     private static final long serialVersionUID = 1L;
 

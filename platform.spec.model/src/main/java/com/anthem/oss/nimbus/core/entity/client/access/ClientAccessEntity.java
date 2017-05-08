@@ -24,7 +24,7 @@ import lombok.ToString;
  *
  */
 @Getter @Setter @ToString(callSuper=true)
-public class ClientAccessEntity extends AbstractEntity.IdLong implements AccessEntity {
+public class ClientAccessEntity extends AbstractEntity.IdString implements AccessEntity {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -129,7 +129,7 @@ public class ClientAccessEntity extends AbstractEntity.IdLong implements AccessE
 		if(CollectionUtils.isEmpty(getSelectedAccesses())) return null;
 		
 		for(ClientAccessEntity clientAccess : getSelectedAccesses()) {
-			Long casId = clientAccess.getReferringAccess().getId();
+			String casId = clientAccess.getReferringAccess().getId();
 			if(casId != null && casId.equals(ae.getId())) {
 				return clientAccess;
 			}
