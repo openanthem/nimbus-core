@@ -23,6 +23,6 @@ public interface ClientUserGroupRepository extends MongoRepository<ClientUserGro
 	//ClientUserGroup findByClientEntity(String code);
 	
 	//@Query("MATCH(ug:ClientUserGroup)-[]->(ce:ClientEntity) Where ce.code = {0} return ug")
-	List<ClientUserGroup> findAllByClientEntity(String code);
+	//List<ClientUserGroup> findAllByClientEntity(String code);
 	
 }
