@@ -75,14 +75,14 @@ public class ViewConfig {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
-	public @interface Card {
+	public @interface Tile {
 		public enum Size {
 			XSmall,
 			Small,
 			Medium,
 			Large
 		}
-		String alias() default "Card";
+		String alias() default "Tile";
 		String imgSrc() default "";
 		String title() default "";
 		Size size() default Size.Large;
