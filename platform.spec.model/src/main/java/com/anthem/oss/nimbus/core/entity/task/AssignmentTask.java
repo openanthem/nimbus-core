@@ -38,21 +38,21 @@ public class AssignmentTask extends AbstractEntity.IdString{
 	
 	private String taskName;
 	
-	@Model.Param.Values(url="staticCodeValue-/taskStatus")
+	//@Model.Param.Values(url="staticCodeValue-/taskStatus")
 	private TaskStatus status;
 	
 	private String description;
 	
 	// (e.g. patientEnrollmentTask... so this will help us avoid check for instance of, abstract method)
 	@NotNull
-	@Model.Param.Values(url="staticCodeValue-/taskType")
+	//@Model.Param.Values(url="staticCodeValue-/taskType")
 	private TaskType taskType;
 	
 	private LocalDate dueDate;
 	
 	private LocalDate startDate;
 	
-	@Model.Param.Values(url="staticCodeValue-/taskPriority")
+	//@Model.Param.Values(url="staticCodeValue-/taskPriority")
 	private TaskPriority priority;
 	
 	private Object entityId;

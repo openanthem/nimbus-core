@@ -131,7 +131,7 @@ abstract public class AbstractEntityStateBuilder {
 		decorateParam(p);
 		
 		/* setting param values if applicable */
-		createParamValues(p.getConfig(), p.getPath());
+	//	createParamValues(p.getConfig(), p.getPath());
 		
 		return p;
 	}
@@ -224,37 +224,4 @@ abstract public class AbstractEntityStateBuilder {
 		return mapsToParam;	
 	}
 	
-	private <P> void createParamValues(ParamConfig<P> currentParamConfig, String paramPath) {
-		DefaultParamConfig<P> config = (DefaultParamConfig<P>) currentParamConfig;
-		if(config.getValuesGetter() == null) {
-			config.setValuesGetter(() -> valuesSupplier(currentParamConfig,paramPath));
-		}
-	}
-	
-	private <P> List<ParamValue> valuesSupplier(ParamConfig<P> currentParamConfig, String paramPath) {
-		String valuesUrl = currentParamConfig.getValuesUrl();
-		if(StringUtils.isBlank(valuesUrl) && currentParamConfig instanceof MappedDefaultParamConfig) {
-			MappedDefaultParamConfig<?,?> attachedConfig = (MappedDefaultParamConfig) currentParamConfig;
-			valuesUrl = attachedConfig.getMapsTo().getValuesUrl();
-		}
-		if(StringUtils.isBlank(valuesUrl)) 
-			return null;
-		
-		String[] uriWithPayload = valuesUrl.split(Constants.CODE_VALUE_CONFIG_DELIMITER.code);
-		Command cmd = CommandBuilder.withUri(Constants.PARAM_VALUES_URI_PREFIX.code+uriWithPayload[0]+Constants.PARAM_VALUES_URI_SUFFIX.code).getCommand();
-		cmd.setAction(Action._lookup);
-		cmd.templateBehaviors().add(Behavior.$execute);
-		CommandMessage cmdMsg = new CommandMessage();
-		cmdMsg.setCommand(cmd);
-		if(uriWithPayload.length > 1) {
-			cmdMsg.setRawPayload(uriWithPayload[1]); // domain model lookup
-		}
-		else{
-			cmdMsg.setRawPayload(paramPath); // static code value lookup
-		}
-		
-		MultiExecuteOutput output = (MultiExecuteOutput) processGateway.startProcess(cmdMsg);
-		return output.getSingleResult();
-	
-	}
 }

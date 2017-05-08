@@ -3,7 +3,7 @@
  */
 package com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement;
 
-import org.springframework.data.neo4j.repository.GraphRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.anthem.oss.nimbus.core.entity.access.DefaultAccessEntity;
 
@@ -12,7 +12,7 @@ import com.anthem.oss.nimbus.core.entity.access.DefaultAccessEntity;
  * @author Soham Chakravarti
  *
  */
-public interface AccessEntityRepository extends GraphRepository<DefaultAccessEntity> {
+public interface AccessEntityRepository extends MongoRepository<DefaultAccessEntity, String> {
 
 	public DefaultAccessEntity findByCode(String code);
 }

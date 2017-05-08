@@ -11,10 +11,12 @@ import java.lang.annotation.Target;
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(value={ElementType.TYPE})
+@Target(value={ElementType.TYPE, ElementType.FIELD})
 @Inherited
 public @interface AssociatedEntity {
 	
 	public String value() default "";
+	
+	public Class<?> clazz() default Class.class;
 	
 }

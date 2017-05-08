@@ -18,14 +18,14 @@ import lombok.ToString;
  */
 @Getter @Setter @ToString(callSuper=true)
 public abstract class Role<E extends Role.Entry<T>, T extends AccessEntity> 
-extends AbstractEntity.IdLong {
+extends AbstractEntity.IdString {
 
 	private static final long serialVersionUID = 1L;
 
 
 	
 	@Getter @Setter
-	public static abstract class Entry<T extends AccessEntity> extends AbstractEntity.IdLong 
+	public static abstract class Entry<T extends AccessEntity> extends AbstractEntity.IdString 
 	implements AccessEntity {
 
 		private static final long serialVersionUID = 1L;

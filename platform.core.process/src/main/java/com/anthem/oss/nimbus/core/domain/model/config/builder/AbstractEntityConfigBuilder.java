@@ -98,8 +98,11 @@ abstract public class AbstractEntityConfigBuilder {
 		Repo rep = AnnotationUtils.findAnnotation(referredClass, Repo.class);
 		created.setRepo(rep);
 		
-		// rules
+		// set domain
 		Domain domain = AnnotationUtils.findAnnotation(referredClass, Domain.class);
+		created.setDomain(domain);
+		
+		// rules
 		Optional.ofNullable(domain)
 			.map(d->rulesEngineFactoryProducer.getFactory(referredClass))
 			.map(f->f.createConfig(domain.value()))
@@ -345,7 +348,7 @@ abstract public class AbstractEntityConfigBuilder {
 			
 			//Model.Param.Values.Source srcValues = ClassLoadUtils.newInstance(aVal.value());
 			//List<ParamValue> values = srcValues.getValues(created.getCode());
-			created.setValuesUrl(aVal.url());
+			created.setValues(aVal);
 			//created.setValues(values);
 		}
 		

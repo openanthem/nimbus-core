@@ -5,18 +5,17 @@ package com.anthem.oss.nimbus.core.domain.model.config.internal;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.function.Supplier;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.Converters.ParamConverter;
+import com.anthem.oss.nimbus.core.domain.definition.Model.Param.Values;
 import com.anthem.oss.nimbus.core.domain.model.config.AnnotationConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.StateContextEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -42,8 +41,6 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	
 	private List<AnnotationConfig> validations;
 	
-	private List<ParamValue> values;
-	
 	private List<AnnotationConfig> uiNatures;
 
 	private AnnotationConfig uiStyles;
@@ -51,10 +48,11 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	private ParamConfig<?> contextParam;
 	
 	@JsonIgnore 
-	private transient Supplier<List<ParamValue>> valuesGetter;
-	
-	@JsonIgnore 
 	private List<ParamConverter> converters;
+	
+	@JsonIgnore
+	private Values values;
+
 
 	public static class StateContextConfig<P> extends DefaultParamConfig<P> {
 		private static final long serialVersionUID = 1L;
@@ -135,15 +133,6 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 		/* param is leaf node */
 		ParamConfig<K> p = isFound(pathArr[0]) ? (ParamConfig<K>) this : null;
 		return p;
-	}
-	
-	public List<ParamValue> getValues() {
-		if(getValuesGetter() != null) {
-			List<ParamValue> values = getValuesGetter().get();
-			if(values != null) 
-				this.values = values;
-		}
-		return values;
 	}
 	
 }

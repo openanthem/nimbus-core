@@ -17,7 +17,7 @@ import lombok.ToString;
  *
  */
 @Getter @Setter @ToString(callSuper=true)
-public class DefaultAccessEntity extends AbstractEntity.IdLong implements AccessEntity {
+public class DefaultAccessEntity extends AbstractEntity.IdString implements AccessEntity {
 	
 	private static final long serialVersionUID = 1L;
 	

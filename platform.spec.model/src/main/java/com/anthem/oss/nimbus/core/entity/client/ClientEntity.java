@@ -32,10 +32,10 @@ import lombok.ToString;
  *
  */
 @Domain(value="cliententity")
-@Repo(Repo.Database.rep_neo4j)
+@Repo(Repo.Database.rep_mongodb)
 @Execution.Input.Default @Execution.Output.Default @Execution.Output(Action._new)
 @Getter @Setter @ToString(callSuper=true)
-public class ClientEntity extends AbstractEntity.IdLong {
+public class ClientEntity extends AbstractEntity.IdString {
 
 	private static final long serialVersionUID = 1L;
 
