@@ -25,6 +25,7 @@
 		<spring.boot.version>1.5.2.RELEASE</spring.boot.version>
 		<spring.cloud.version>Dalston.RC1</spring.cloud.version>
 		<swagger.version>2.4.0</swagger.version>
+		<mongo>3.4</mongo>
 		<commons-io.version>2.4</commons-io.version>
 		<drools.version>5.6.0.Final</drools.version>
 		<commons-lang.version>3.3.2</commons-lang.version>
