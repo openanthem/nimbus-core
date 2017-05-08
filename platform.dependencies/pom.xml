@@ -24,11 +24,8 @@
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<spring.boot.version>1.5.2.RELEASE</spring.boot.version>
 		<spring.cloud.version>Dalston.RC1</spring.cloud.version>
-		<!-- <sdn.version>4.2.0.RC1</sdn.version>
-		<neo4j.ogm.version>2.0.0-M02</neo4j.ogm.version>
-		<neo4j.version>2.3.2</neo4j.version> -->
-		<!-- <neo4j-cypher-compiler.version>2.3.2</neo4j-cypher-compiler.version> -->
 		<swagger.version>2.4.0</swagger.version>
+		<mongo>3.4</mongo>
 		<commons-io.version>2.4</commons-io.version>
 		<drools.version>5.6.0.Final</drools.version>
 		<commons-lang.version>3.3.2</commons-lang.version>
@@ -196,79 +193,6 @@
     			<groupId>org.quartz-scheduler</groupId>
     			<artifactId>quartz</artifactId>
 				<version>${quartz.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.neo4j.app</groupId>
-				<artifactId>neo4j-server</artifactId>
-				<!-- <version>${neo4j.version}</version> -->
-			</dependency>
-			<dependency>
-				<groupId>org.neo4j</groupId>
-				<artifactId>neo4j-ogm</artifactId>
-				<!-- <version>${neo4j.ogm.version}</version> -->
-			</dependency>
-			<dependency>
-				<groupId>org.neo4j</groupId>
-				<artifactId>neo4j-ogm</artifactId>
-				<!-- <version>${neo4j.ogm.version}</version> -->
-				<type>test-jar</type>
-				<scope>test</scope>
-			</dependency>
-			<!-- Added these overrides over spring-boot-dependencies for spring-data-neoj 
-				to work -->
-			<dependency>
-				<groupId>org.neo4j</groupId>
-				<artifactId>neo4j-ogm-api</artifactId>
-				<!-- <version>${neo4j.ogm.version}</version> -->
-			</dependency>
-			<dependency>
-				<groupId>org.neo4j</groupId>
-				<artifactId>neo4j-ogm-compiler</artifactId>
-				<!-- <version>${neo4j.ogm.version}</version> -->
-			</dependency>
-			<dependency>
-				<groupId>org.neo4j</groupId>
-				<artifactId>neo4j-ogm-core</artifactId>
-				<!-- <version>${neo4j.ogm.version}</version> -->
-			</dependency>
-			<dependency>
-				<groupId>org.neo4j</groupId>
-				<artifactId>neo4j-ogm-http-driver</artifactId>
-				<!-- <version>${neo4j.ogm.version}</version> -->
-			</dependency>
-			<dependency>
-				<groupId>org.neo4j</groupId>
-				<artifactId>neo4j-kernel</artifactId>
-				<!-- <version>${neo4j.version}</version> -->
-				<type>test-jar</type>
-			</dependency>
-			<dependency>
-				<groupId>org.neo4j.app</groupId>
-				<artifactId>neo4j-server</artifactId>
-				<!-- <version>${neo4j.version}</version> -->
-				<type>test-jar</type>
-			</dependency>
-			<dependency>
-				<groupId>org.neo4j.test</groupId>
-				<artifactId>neo4j-harness</artifactId>
-				<!-- <version>${neo4j.version}</version> -->
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.neo4j</groupId>
-				<artifactId>neo4j-cypher-compiler-2.3</artifactId>
-				<!-- <version>${neo4j-cypher-compiler.version}</version> -->
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.data</groupId>
-				<artifactId>spring-data-neo4j</artifactId>
-				<!-- <version>${sdn.version}</version> -->
-				<type>test-jar</type>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.data</groupId>
-				<artifactId>spring-data-neo4j</artifactId>
-				<!-- <version>${sdn.version}</version> -->
 			</dependency>
 			<dependency>
 				<groupId>org.apache.directory.server</groupId>

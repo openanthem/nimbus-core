@@ -27,14 +27,14 @@ import lombok.ToString;
  */
 @Getter @Setter @ToString(callSuper=true)
 public abstract class AbstractUser<R extends Role<E, T>, E extends Role.Entry<T>, T extends AccessEntity>
-		extends Person<Long, Address.IdLong, Phone.IdLong, Name.IdLong> {
+		extends Person<String, Address.IdString, Phone.IdString, Name.IdString> {
 	
 
 	private static final long serialVersionUID = 1L;
 	
 	
 	@Id @Getter @Setter(value=AccessLevel.PROTECTED) 
-	private Long id;
+	private String id;
 
 	
 	private String loginId;
@@ -43,33 +43,33 @@ public abstract class AbstractUser<R extends Role<E, T>, E extends Role.Entry<T>
 	
 	
 	@Override
-	public Set<Address.IdLong> getAddresses() {
+	public Set<Address.IdString> getAddresses() {
 		return super.getAddresses();
 	}
 
 	@Override
-	public void setAddresses(Set<Address.IdLong> addresses) {
+	public void setAddresses(Set<Address.IdString> addresses) {
 		super.setAddresses(addresses);
 	}
 
 	@Override
-	public Set<Phone.IdLong> getContactPhones() {
+	public Set<Phone.IdString> getContactPhones() {
 		return super.getContactPhones();
 	}
 
 	@Override
-	public void setContactPhones(Set<Phone.IdLong> contactPhones) {
+	public void setContactPhones(Set<Phone.IdString> contactPhones) {
 		super.setContactPhones(contactPhones);
 	}
 	
 
 	@Override
-	public Name.IdLong getName() {
+	public Name.IdString getName() {
 		return super.getName();
 	}
 
 	@Override
-	public void setName(Name.IdLong name) {
+	public void setName(Name.IdString name) {
 		super.setName(name);
 	}
 	

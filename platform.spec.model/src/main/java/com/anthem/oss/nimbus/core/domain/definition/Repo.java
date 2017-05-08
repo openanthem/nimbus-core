@@ -23,7 +23,6 @@ public @interface Repo {
 	public enum Database {
 		rep_none,
 		rep_mongodb,
-		rep_neo4j,
 		rep_rdbms;
 	}
 

@@ -57,7 +57,7 @@ public class ClientUserRepoService implements ClientUserRepoAPI<ClientUser> {
 		try{
 			clientUser = cuRepo.findByLoginName(loginName);
 			if(clientUser != null){
-				clientUser = cuRepo.findOne(clientUser.getId(),FETCH_DEPTH);
+				clientUser = cuRepo.findOne(clientUser.getId());
 			}
 		}catch(Exception e){
 			throw new EntityNotFoundException("No user found with client user name"+loginName, e, ClientUser.class);
@@ -78,7 +78,7 @@ public class ClientUserRepoService implements ClientUserRepoAPI<ClientUser> {
 	}
 
 	@Override
-	public Long addClientUser(String clientCode,ClientUser clientUser) throws FrameworkRuntimeException {
+	public String addClientUser(String clientCode,ClientUser clientUser) throws FrameworkRuntimeException {
 		ClientUser savedUser = null;
 		try{
 			Client ce = cRepo.findByCode(clientCode);
@@ -129,7 +129,7 @@ public class ClientUserRepoService implements ClientUserRepoAPI<ClientUser> {
 				// Looping through the list, since this list is retrieved using a cypher query, hence does not take into account the depth of ClientUser
 				List<ClientUser> cuList2 = new ArrayList<ClientUser>();
 				for(ClientUser tempcu : cuList){
-					ClientUser user = cuRepo.findOne(tempcu.getId(), 5);
+					ClientUser user = cuRepo.findOne(tempcu.getId());
 					cuList2.add(user);
 				}
 				cuResultList.addAll(cuList2);
@@ -157,12 +157,12 @@ public class ClientUserRepoService implements ClientUserRepoAPI<ClientUser> {
 	}
 
 	@Override
-	public ClientUser getUserById(Long id) throws EntityNotFoundException {
-		return cuRepo.findOne(id,FETCH_DEPTH);
+	public ClientUser getUserById(String id) throws EntityNotFoundException {
+		return cuRepo.findOne(id);
 	}
 	
 	@Override
-	public Long editClientUser(String clientCode, ClientUser clientUser) throws FrameworkRuntimeException {
+	public String editClientUser(String clientCode, ClientUser clientUser) throws FrameworkRuntimeException {
 		ClientUser editUser = null;
 		try{
 			editUser = cuRepo.save(clientUser);

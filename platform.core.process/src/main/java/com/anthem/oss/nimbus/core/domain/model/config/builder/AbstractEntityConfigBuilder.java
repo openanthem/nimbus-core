@@ -98,8 +98,11 @@ abstract public class AbstractEntityConfigBuilder {
 		Repo rep = AnnotationUtils.findAnnotation(referredClass, Repo.class);
 		created.setRepo(rep);
 		
-		// rules
+		// set domain
 		Domain domain = AnnotationUtils.findAnnotation(referredClass, Domain.class);
+		created.setDomain(domain);
+		
+		// rules
 		Optional.ofNullable(domain)
 			.map(d->rulesEngineFactoryProducer.getFactory(referredClass))
 			.map(f->f.createConfig(domain.value()))

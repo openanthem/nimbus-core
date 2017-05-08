@@ -101,5 +101,3 @@ dsl:
     extensions:
       #$execute:
         #$save 
-neo4jUrl: http://neo4j:password@localhost:7474
-neo4jDriver: org.neo4j.ogm.drivers.http.driver.HttpDriver     

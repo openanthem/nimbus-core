@@ -118,7 +118,7 @@ public class ClientUserRepositoryTest {
 		ClientUser cu = new ClientUser();
 		Client c = cRep.findByCode(TestClientFactory.createClient().getCode());
 		Assert.assertNotNull(c);
-		ClientUserRole cr = crRep.findOne(crRep.findByCode(TestClientFactory.createClientRoleIntake().getCode()).getId(),10);
+		ClientUserRole cr = crRep.findOne(crRep.findByCode(TestClientFactory.createClientRoleIntake().getCode()).getId());
 		Assert.assertNotNull(cr);
 		cu.addGrantedRoles(cr);
 		System.out.println("GRanted ROles:"+cu.getGrantedRoles());
@@ -150,7 +150,7 @@ public class ClientUserRepositoryTest {
 		System.out.println("client user::"+clientUser.size());
 		Assert.assertNotNull(clientUser);
 		
-		ClientUserRole cr = crRep.findOne(crRep.findByCode(TestClientFactory.createClientRoleClinician().getCode()).getId(),5);
+		ClientUserRole cr = crRep.findOne(crRep.findByCode(TestClientFactory.createClientRoleClinician().getCode()).getId());
 		System.out.println("Clinician Role:"+cr);
 		Assert.assertNotNull(cr);
 				
@@ -189,7 +189,7 @@ public class ClientUserRepositoryTest {
 	
 //	@Test
 	public void test_09_getclientUserbyName(){
-		ClientUser cu = cuRep.findOne(cuRep.findByLoginName("AC63348").getId(),3);
+		ClientUser cu = cuRep.findOne(cuRep.findByLoginName("AC63348").getId());
 		Assert.assertNotNull(cu.getGrantedRoles());
 		Assert.assertTrue(cu.getGrantedRoles().size() > 1);
 		System.out.println(cu);

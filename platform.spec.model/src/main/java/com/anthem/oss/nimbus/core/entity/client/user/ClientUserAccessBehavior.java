@@ -34,7 +34,7 @@ import lombok.Setter;
  */
 
 @Getter @Setter
-public class ClientUserAccessBehavior extends AbstractEntityBehavior<ClientUser, Long> {
+public class ClientUserAccessBehavior extends AbstractEntityBehavior<ClientUser, String> {
 	
 	//private static final String DOMAIN_URI_EXP = "/([0-9]*)([a-zA-Z]*)([0-9]+)([a-zA-Z]*)/";
 	//private static final String DOMAIN_URI_SEPERATOR = "/";

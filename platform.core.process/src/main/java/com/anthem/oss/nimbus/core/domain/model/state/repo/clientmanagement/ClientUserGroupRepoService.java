@@ -43,7 +43,7 @@ public class ClientUserGroupRepoService {
 	@Value("${pageSize:15}")
 	int size;
 	
-	public ClientUserGroup setAssociatedTo(Long clientEntityId, ClientUserGroup clientUserGroup) throws ValidationException, FrameworkRuntimeException {
+	public ClientUserGroup setAssociatedTo(String clientEntityId, ClientUserGroup clientUserGroup) throws ValidationException, FrameworkRuntimeException {
 		try{
 			Assert.notNull(clientEntityId, "Parent Client entity Id cannot be null");
 			Assert.notNull(clientUserGroup, "ClientUserGroup to be added cannot be null");
@@ -73,17 +73,17 @@ public class ClientUserGroupRepoService {
 			PageRequest pageReq = new PageRequest(index,size);
 			
 			List<ClientUserGroup> cugResultList = new ArrayList<ClientUserGroup>();
-			List<ClientUserGroup> cugList = cugRepo.findAllByClientEntity(code);
+			//List<ClientUserGroup> cugList = cugRepo.findAllByClientEntity(code);
 			
-			if(cugList != null){
-				
-				// associated to the usergroup entities are coming as null thus making an extra call to get complete data
-				cugList.forEach(usergroup->{
-					if(null!=usergroup){
-						cugResultList.add(this.getUserGroupById(usergroup.getId()));
-					}
-				});
-			}
+//			if(cugList != null){
+//				
+//				// associated to the usergroup entities are coming as null thus making an extra call to get complete data
+//				cugList.forEach(usergroup->{
+//					if(null!=usergroup){
+//						cugResultList.add(this.getUserGroupById(usergroup.getId()));
+//					}
+//				});
+//			}
 			
 			return new PageImpl<ClientUserGroup>(cugResultList, pageReq, cugResultList.size());
 		}catch(Exception e){
@@ -91,7 +91,7 @@ public class ClientUserGroupRepoService {
 		}
 	}
 	
-	public ClientUserGroup getUserGroupById(Long id) throws EntityNotFoundException {
-		return cugRepo.findOne(id,FETCH_DEPTH);
+	public ClientUserGroup getUserGroupById(String id) throws EntityNotFoundException {
+		return cugRepo.findOne(id);
 	}
 }

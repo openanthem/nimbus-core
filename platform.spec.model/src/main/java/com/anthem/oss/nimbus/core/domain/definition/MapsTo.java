@@ -23,7 +23,8 @@ public class MapsTo {
 	
 	public enum State {
 		External,
-		Internal;
+		Internal,
+		Associated;
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
@@ -75,5 +76,12 @@ public class MapsTo {
 	public static final String DEFAULT_PATH = "";
 	
 	public static final String DETACHED_SIMULATED_FIELD_NAME = "detachedParam";
+	
+//	@Retention(RetentionPolicy.RUNTIME)
+//	@Target({ElementType.TYPE})
+//	@Mapped
+//	public @interface AssociatedEntity {
+//		Path value();
+//	}
 	
 }

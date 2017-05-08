@@ -32,7 +32,7 @@ import com.anthem.oss.nimbus.core.entity.client.user.ClientUser;
     }
 
     @Override
-    public Long addClientUser(@PathVariable("clientCode") String clientCode, @RequestBody ClientUser clientUser) throws ValidationException, ValidationException {
+    public String addClientUser(@PathVariable("clientCode") String clientCode, @RequestBody ClientUser clientUser) throws ValidationException, ValidationException {
         return null;
     }
 
@@ -53,13 +53,13 @@ import com.anthem.oss.nimbus.core.entity.client.user.ClientUser;
     }
     
     @Override
-    public Long editClientUser(String clientCode, ClientUser clientUser) throws FrameworkRuntimeException {
+    public String editClientUser(String clientCode, ClientUser clientUser) throws FrameworkRuntimeException {
     	// TODO Auto-generated method stub
     	return null;
     }
     
     @Override
-    public ClientUser getUserById(Long id) throws EntityNotFoundException {
+    public ClientUser getUserById(String id) throws EntityNotFoundException {
     	// TODO Auto-generated method stub
     	return null;
     }
