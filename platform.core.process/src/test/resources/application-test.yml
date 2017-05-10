@@ -1,7 +1,7 @@
 spring: 
   data:
     mongodb:  
-      port: 0
+      port: 27017
 security:
     basic:
       enabled: 

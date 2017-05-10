@@ -46,4 +46,7 @@ public @interface Repo {
 	Cache[] cache() default Cache.rep_none;	
 	
 	Local local() default Local.rep_none;
+	
+	boolean autoSave() default true;
+	
 }
