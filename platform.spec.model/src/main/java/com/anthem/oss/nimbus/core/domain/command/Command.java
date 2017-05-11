@@ -316,4 +316,21 @@ public class Command implements Serializable {
 		
 		return sb.toString();
 	}
+	
+	public String[] getParameterValue(String requestParameter){
+		if(requestParams != null && requestParams.containsKey(requestParameter)){
+			requestParams.get(requestParameter);
+		}
+		return null;
+	}
+	
+	public String getFirstParameterValue(String requestParameter){
+		if(requestParams != null && requestParams.containsKey(requestParameter)){
+			String[] value = requestParams.get(requestParameter);
+			if(value != null && value.length > 0){
+				return value[0];
+			}
+		}
+		return null;
+	}
 }

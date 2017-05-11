@@ -190,9 +190,4 @@ public abstract class AbstractProcessTaskExecutor implements ProcessTaskExecutor
 		
 	}
 	
-	public <T> T getHandler(CommandMessage commandMessage, Class<T> clazz){
-		String functionName = commandMessage.getCommand().getRequestParams().get("Fn")[0];
-		return appCtx.getBean(functionName, clazz);
-	}
-
 }

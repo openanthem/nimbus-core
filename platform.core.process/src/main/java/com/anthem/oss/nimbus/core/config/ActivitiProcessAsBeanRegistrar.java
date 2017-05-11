@@ -13,7 +13,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.GenericApplicationContext;
 
-import com.anthem.nimbus.platform.core.process.handler.ActivitiBPMProcessHandler;
+import com.anthem.nimbus.platform.core.function.handler.ActivitiBPMProcessHandler;
 
 /**
  * @author Sandeep Mantha
