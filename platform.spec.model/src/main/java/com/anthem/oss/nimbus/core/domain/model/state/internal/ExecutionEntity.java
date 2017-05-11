@@ -167,6 +167,10 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 		private final String rootRefId;
 		
 		public ExParam(Command rootCommand, EntityStateAspectHandlers provider, ExConfig<V, C> exConfig) {
+			this(rootCommand, provider, exConfig, "");
+		}
+		
+		public ExParam(Command rootCommand, EntityStateAspectHandlers provider, ExConfig<V, C> exConfig, String initPath) {
 			super(null, new ExParamConfig(exConfig), provider);
 			
 			ExParamConfig pConfig = ((ExParamConfig)getConfig());
@@ -175,8 +179,8 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 			rootRefId = rootCommand.getRootDomainElement().getRefId();
 			
 			//String rootPath = (rootRefId==null) ? pConfig.getCode() : pConfig.getCode()+":"+rootRefId;
-			String rootPath = "";
-			String beanPath = "";
+			String rootPath = initPath;
+			String beanPath = initPath;
 			
 			logit.debug(()->"[ExParam] rootPath: "+rootPath+" :: with beanPath: "+beanPath);
 
