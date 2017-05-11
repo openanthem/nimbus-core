@@ -53,7 +53,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	final private Model<?> parentModel;
 	
 	
-	private Model<?> contextModel;
+	private Model<StateContextEntity> contextModel;
 	
 	/* TODO: Weak reference was causing the values to be GC-ed even before the builders got to building 
 	 * Allow referenced subscribers to get garbage collected in scenario when same core is referenced by multiple views. 
