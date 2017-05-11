@@ -71,7 +71,7 @@ public class EntityStateBuilder extends AbstractEntityStateBuilder {
 		logit.debug(()->"[buildInternal] mpStatePath: "+ mpState.getPath());
 		
 		//handle param type
-		StateType type = buildParamType(aspectHandlers, mState, mpState, mapsToSAC);
+		StateType type = buildParamType(aspectHandlers, mpState, mapsToSAC);
 		mpState.setType(type);
 		
 		return mpState;
@@ -110,14 +110,14 @@ public class EntityStateBuilder extends AbstractEntityStateBuilder {
 		
 
 		//handle param type
-		StateType type = buildParamType(aspectHandlers, mState, mpState, Optional.ofNullable(mState.findIfMapped()).map(m->m.getMapsTo()).orElse(null));
+		StateType type = buildParamType(aspectHandlers, mpState, Optional.ofNullable(mState.findIfMapped()).map(m->m.getMapsTo()).orElse(null));
 		mpState.setType(type);
 		
 		return mpState;
 	}
 	
 	@Override
-	protected <P> StateType buildParamType(EntityStateAspectHandlers aspectHandlers, Model<?> mState, DefaultParamState<P> associatedParam, Model<?> mapsToSAC) {
+	protected <P> StateType buildParamType(EntityStateAspectHandlers aspectHandlers, DefaultParamState<P> associatedParam, Model<?> mapsToSAC) {
 		
 		if(associatedParam.getConfig().getType().isCollection()) {
 			ParamType.NestedCollection<P> nmcType = associatedParam.getConfig().getType().findIfCollection();

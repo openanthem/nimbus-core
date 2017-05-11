@@ -45,7 +45,7 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 
 	private AnnotationConfig uiStyles;
 
-	private ParamConfig<?> contextParam;
+	private ParamConfig<StateContextEntity> contextParam;
 	
 	@JsonIgnore 
 	private List<ParamConverter> converters;
@@ -62,12 +62,12 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 		}
 		
 		@Override
-		final public ParamConfig<?> getContextParam() {
+		final public ParamConfig<StateContextEntity> getContextParam() {
 			return null;
 		}
 		
 		@Override
-		final public void setContextParam(ParamConfig<?> runtimeConfig) {
+		final public void setContextParam(ParamConfig<StateContextEntity> runtimeConfig) {
 			//do nothing
 		}
 	}

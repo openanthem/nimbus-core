@@ -14,6 +14,7 @@ import com.anthem.oss.nimbus.core.domain.model.config.EntityConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.StateContextEntity;
 import com.anthem.oss.nimbus.core.util.CollectionsTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -201,7 +202,7 @@ public interface EntityState<T> {
 		
 		public StateType getType();
 		
-		public Model<?> getContextModel();
+		public Model<StateContextEntity> getContextModel();
 		
 		default boolean isLeaf() {
 			return getConfig().isLeaf();
