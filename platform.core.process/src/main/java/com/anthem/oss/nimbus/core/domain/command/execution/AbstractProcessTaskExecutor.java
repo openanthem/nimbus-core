@@ -3,7 +3,6 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -12,8 +11,6 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationEventPublisher;
 
 import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
-import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiGateway;
-import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiResponse;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
@@ -48,16 +45,17 @@ public abstract class AbstractProcessTaskExecutor implements ProcessTaskExecutor
 	@Autowired
 	HierarchyMatchBasedBeanFinder hierarchyMatchBeanLoader;
 	
-	@Autowired
-	ActivitiGateway activitiProcessGateway;
-	
 	@Autowired 
 	QuadModelBuilder qBuilder;
 	
 	private JustLogit logit = new JustLogit(getClass());
 	
+	ApplicationContext appCtx;
+	
+	
 	@Override
 	public void setApplicationContext(ApplicationContext appCtx) throws BeansException {
+		this.appCtx = appCtx;
 		this.defaultNewExec = appCtx.getBean("default._new$execute", AbstractProcessTaskExecutor.class);
 		this.defaultGetExec = appCtx.getBean("default._get$execute", AbstractProcessTaskExecutor.class);
 	}
@@ -129,14 +127,6 @@ public abstract class AbstractProcessTaskExecutor implements ProcessTaskExecutor
 		return model;
 	}
 	
-	protected Object initiateProcessExecution(CommandMessage cmdMsg, QuadModel<?,?> quadModel){
-		ActivitiResponse response = activitiProcessGateway.executeProcess(cmdMsg, cmdMsg.getCommand().getRootDomainAlias());
-		if(response == null)
-			return null; 
-		//quadModel.getFlow().getState().setProcessExecutionId(response.getExecutionId());
-		quadModel.getFlow().findStateByPath("/processExecutionId").setState(response.getExecutionId());
-		return response.getResponse();
-	}
 	
 	@SuppressWarnings("unchecked")
 	protected <R> R crawlCommand(CommandMessage cmdMsg) {
@@ -185,12 +175,6 @@ public abstract class AbstractProcessTaskExecutor implements ProcessTaskExecutor
 		UserEndpointSession.setAttribute(qLoadCmdMsg.getCommand(), q);
 		q.getRoot().fireRules(); //TODO verify if it is ok to run rules in defaultGet ??
 		
-		Param<String> executionIDParam = q.getFlow().findParamByPath("/processExecutionId");
-		if(StringUtils.isBlank(executionIDParam.getState())){
-			initiateProcessExecution(cmdMsg, q);
-		}
-		
-		
 		//QuadModel<?, ?> q = cmd.getRootDomainElement().hasRefId() ? defaultGetExec.doExecuteInternal(qLoadCmdMsg) : defaultNewExec.doExecuteInternal(qLoadCmdMsg);
 		UserEndpointSession.setAttribute(cmd, q);
 
@@ -204,6 +188,11 @@ public abstract class AbstractProcessTaskExecutor implements ProcessTaskExecutor
 		
 		//check what model needs to be instantiated
 		
+	}
+	
+	public <T> T getHandler(CommandMessage commandMessage, Class<T> clazz){
+		String functionName = commandMessage.getCommand().getRequestParams().get("Fn")[0];
+		return appCtx.getBean(functionName, clazz);
 	}
 
 }

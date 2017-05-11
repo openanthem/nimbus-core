@@ -13,7 +13,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.GenericApplicationContext;
 
-import com.anthem.oss.nimbus.core.bpm.BPMProcessBean;
+import com.anthem.nimbus.platform.core.process.handler.ActivitiBPMProcessHandler;
 
 /**
  * @author Sandeep Mantha
@@ -36,7 +36,7 @@ public class ActivitiProcessAsBeanRegistrar implements ApplicationContextAware {
     	
     	List<ProcessDefinition> deployedProcessDefList = repositoryService.createProcessDefinitionQuery().active().list();
     	deployedProcessDefList.forEach(processDefinition -> {
-	    	BeanDefinition def = BeanDefinitionBuilder.genericBeanDefinition(BPMProcessBean.class).getBeanDefinition();
+	    	BeanDefinition def = BeanDefinitionBuilder.genericBeanDefinition(ActivitiBPMProcessHandler.class).getBeanDefinition();
 	    	def.getPropertyValues().add("processId", processDefinition.getName());
     		appContext.registerBeanDefinition(processDefinition.getKey(), def);
 	   });

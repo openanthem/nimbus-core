@@ -1,14 +1,9 @@
 package com.anthem.oss.nimbus.core.config;
 
-import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.TaskService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiDAO;
-import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiGateway;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandMessageConverter;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandTransactionInterceptor;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutorGet;
@@ -21,16 +16,13 @@ import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutor
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionProcessExecutorDelete;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionProcessExecutorReplace;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultBehaviorExecutorConfig;
-import com.anthem.oss.nimbus.core.domain.command.execution.DefaultBehaviorExecutorNav;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultBehaviorExecutorSave;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultEventExecutorPost;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultEventExecutorPre;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultProcessGateway;
-import com.anthem.oss.nimbus.core.domain.command.execution.DefaultRuleBasedTaskRouter;
 import com.anthem.oss.nimbus.core.domain.command.execution.HierarchyMatchBasedBeanFinder;
 import com.anthem.oss.nimbus.core.domain.command.execution.ParamCodeValueProvider;
 import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
-import com.anthem.oss.nimbus.core.domain.model.state.builder.PageNavigationInitializer;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFactory;
 
@@ -64,9 +56,8 @@ public class DefaultCoreExecutorConfig {
 	}
 	
 	@Bean(name="default._nav$execute")
-	public DefaultActionExecutorNav defaultActionExecutorNav(ActivitiDAO platformProcessDAO, RuntimeService runtimeService,
-			TaskService taskService, PageNavigationInitializer navigationStateHelper){
-		return new DefaultActionExecutorNav(platformProcessDAO,runtimeService,taskService,navigationStateHelper);
+	public DefaultActionExecutorProcess defaultActionExecutorNav(){
+		return new DefaultActionExecutorProcess();
 	}
 	
 	@Bean(name="default._new$execute")
@@ -75,9 +66,8 @@ public class DefaultCoreExecutorConfig {
 	}
 	
 	@Bean(name="default._process$execute")
-	public DefaultActionExecutorProcess defaultActionExecutorProcess(ActivitiGateway activitiProcessGateway,
-			HierarchyMatchBasedBeanFinder hierarchyMatchBeanLoader){
-		return new DefaultActionExecutorProcess(activitiProcessGateway,hierarchyMatchBeanLoader);
+	public DefaultActionExecutorProcess defaultActionExecutorProcess(){
+		return new DefaultActionExecutorProcess();
 	}
 	
 	@Bean(name="default._search$execute")
@@ -108,9 +98,8 @@ public class DefaultCoreExecutorConfig {
 	}
 	
 	@Bean(name="default.$nav")
-	public DefaultBehaviorExecutorNav defaultBehaviorExecutorNav(ActivitiDAO platformProcessDAO, RuntimeService runtimeService,
-			TaskService taskService, PageNavigationInitializer navigationStateHelper) {
-		return new DefaultBehaviorExecutorNav(platformProcessDAO,runtimeService,taskService,navigationStateHelper);
+	public DefaultActionExecutorNav defaultBehaviorExecutorNav() {
+		return new DefaultActionExecutorNav();
 	}
 	
 	@Bean(name="default.$save")
@@ -130,20 +119,14 @@ public class DefaultCoreExecutorConfig {
 	}
 	
 	@Bean
-	public HierarchyMatchBasedBeanFinder hierarchyMatchBasedBeanFinder(RepositoryService repositoryService){
-		return new HierarchyMatchBasedBeanFinder(repositoryService);
+	public HierarchyMatchBasedBeanFinder hierarchyMatchBasedBeanFinder(){
+		return new HierarchyMatchBasedBeanFinder();
 	}
 	
 	@Bean(name="default.processGateway")
 	public DefaultProcessGateway defaultProcessGateway(HierarchyMatchBasedBeanFinder hierarchyMatchBasedBeanFinder){
 		return new DefaultProcessGateway(hierarchyMatchBasedBeanFinder);
 	}
-	
-	@Bean(name="ruleBasedTaskRouter")
-	public DefaultRuleBasedTaskRouter defaultRuleBasedTaskRouter(){
-		return new DefaultRuleBasedTaskRouter();
-	}
-	
 	
 	@Bean
 	public ParamCodeValueProvider paramCodeValueProvider(DefaultActionExecutorSearch searchExecutor){

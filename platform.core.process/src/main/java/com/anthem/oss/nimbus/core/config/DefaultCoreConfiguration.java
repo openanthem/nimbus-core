@@ -11,7 +11,6 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 import com.anthem.nimbus.platform.core.process.api.repository.SessionCacheRepository;
 import com.anthem.nimbus.platform.core.process.api.support.ProcessBeanHelper;
 import com.anthem.nimbus.platform.core.process.mq.MessageReceiver;
-import com.anthem.oss.nimbus.core.bpm.activiti.ModelInstantiationServiceTaskDelegate;
 import com.anthem.oss.nimbus.core.domain.command.execution.ProcessGateway;
 import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.ValidationConfigHandler;
@@ -37,12 +36,6 @@ import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFactory;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ParamStateAtomicPersistenceEventListener;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ParamStateBatchPersistenceEventListener;
-import com.anthem.oss.nimbus.core.integration.sa.DefaultExecutionHandler;
-import com.anthem.oss.nimbus.core.integration.sa.DefaultRuleBasedRequestHandler;
-import com.anthem.oss.nimbus.core.integration.sa.DefaultRuleBasedResponseHandler;
-import com.anthem.oss.nimbus.core.integration.sa.ProcessExecutionCtxHelper;
-import com.anthem.oss.nimbus.core.integration.sa.ServiceExecutionDelegate;
-import com.anthem.oss.nimbus.core.integration.sa.ServiceExecutionHelper;
 import com.anthem.oss.nimbus.core.rules.DefaultRulesEngineFactoryProducer;
 import com.anthem.oss.nimbus.core.rules.drools.DroolsRulesEngineFactory;
 import com.anthem.oss.nimbus.core.session.UserEndpointSession;
@@ -125,43 +118,6 @@ public class DefaultCoreConfiguration {
 	@Bean(name="default.param.state.repository")
 	public ParamStateRepositoryGateway paramStateRepositoryGateway(JavaBeanHandler javaBeanHandler, @Qualifier("default.param.state.rep_local") ParamStateRepository local){
 		return new ParamStateRepositoryGateway(javaBeanHandler,local);
-	}
-	
-	//integration sa
-	@Bean(name="default.executionhandler")
-	public DefaultExecutionHandler defaultExecutionHandler(){
-		return new DefaultExecutionHandler();
-	}
-	
-	@Bean(name="default.rulebasedRequesthandler")
-	public DefaultRuleBasedRequestHandler defaultRuleBasedRequestHandler(){
-		return new DefaultRuleBasedRequestHandler();
-	}
-	
-	@Bean(name="default.rulebasedResponsehandler")
-	public DefaultRuleBasedResponseHandler defaultRuleBasedResponseHandler(){
-		return new DefaultRuleBasedResponseHandler();
-	}
-	
-	@Bean(name="processExecutionCtx")
-	public ProcessExecutionCtxHelper processExecutionCtxHelper(){
-		return new ProcessExecutionCtxHelper();
-	}
-	
-	@Bean(name="default.serviceExecutionDelegate")
-	@Scope("prototype")
-	public ServiceExecutionDelegate serviceExecutionDelegate(ServiceExecutionHelper helper){
-		return new ServiceExecutionDelegate();
-	}
-	
-	@Bean
-	ModelInstantiationServiceTaskDelegate modelInstantiationServiceTaskDelegate(@Qualifier("default.processGateway") ProcessGateway processGateway){
-		return new ModelInstantiationServiceTaskDelegate(processGateway);
-	}
-	
-	@Bean(name="executionHelper")
-	public ServiceExecutionHelper serviceExecutionHelper(){
-		return new ServiceExecutionHelper();
 	}
 	
 	//web socket
