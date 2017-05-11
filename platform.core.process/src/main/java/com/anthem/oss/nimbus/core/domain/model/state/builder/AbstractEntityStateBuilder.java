@@ -150,7 +150,7 @@ abstract public class AbstractEntityStateBuilder {
 		//exParamCtx.initSetup();
 		
 		ExecutionEntity<Object, StateContextEntity>.ExModel exModelCtx = exParamCtx.getRootExecution().unwrap(ExecutionEntity.ExModel.class);
-		exModelCtx.initSetup();
+		//exModelCtx.initSetup();
 		
 		DefaultParamState<StateContextEntity> pCtx = buildParam(created.getAspectHandlers(), exModelCtx, exModelCtx.getConfig().getCoreParam(), null);
 		Model<StateContextEntity> mCtx = pCtx.findIfNested();
