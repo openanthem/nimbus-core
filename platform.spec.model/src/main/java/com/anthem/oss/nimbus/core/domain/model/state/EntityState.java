@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.ExecutionStateTree;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.model.config.EntityConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
@@ -142,7 +141,6 @@ public interface EntityState<T> {
 			Optional.ofNullable(getAssociatedParam()).ifPresent(p->p.setState(state));
 		}
 		
-		public ExecutionStateTree getExecutionStateTree();
 	}
 	
 	public interface MappedModel<T, M> extends Model<T>, Mapped<T, M> {

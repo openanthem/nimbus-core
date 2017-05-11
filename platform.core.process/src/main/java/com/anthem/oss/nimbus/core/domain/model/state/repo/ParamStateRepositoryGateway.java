@@ -11,7 +11,6 @@ import java.util.Optional;
 
 import org.apache.commons.collections.CollectionUtils;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.ExecutionStateTree;
 import com.anthem.oss.nimbus.core.InvalidArgumentException;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.definition.Converters.ParamConverter;
@@ -91,15 +90,7 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 			return false;
 		}
 		
-		private <P> void _updateParatmStateTree(Param<P> param, P newState){
-			if(param.getType().isNested())
-				return;
-			ExecutionStateTree executionStateTree = param.getRootExecution().getExecutionStateTree();
-			if(executionStateTree == null)
-				return;
-			executionStateTree.addExecutionNode(param, newState);
-			
-		}		
+	
 		
 //		public boolean isPersistable() {
 //			return true;

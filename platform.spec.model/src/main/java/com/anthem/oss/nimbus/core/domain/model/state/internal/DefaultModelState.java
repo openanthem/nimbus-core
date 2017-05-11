@@ -11,7 +11,6 @@ import java.util.Optional;
 
 import org.springframework.data.annotation.Transient;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.ExecutionStateTree;
 import com.anthem.oss.nimbus.core.domain.command.execution.ValidationResult;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
@@ -40,8 +39,6 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
     private List<Param<? extends Object>> params;
 
 	@JsonIgnore private transient ValidationResult validationResult;
-	
-	@JsonIgnore private ExecutionStateTree executionStateTree;
 	
 	public DefaultModelState(Param<T> associatedParam, ModelConfig<T> config, EntityStateAspectHandlers provider/*, Model<?> backingCoreModel*/) {
 		super(config, provider);

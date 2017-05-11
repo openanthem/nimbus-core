@@ -6,7 +6,6 @@ package com.anthem.oss.nimbus.core.domain.command.execution;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.ExecutionStateTree;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
@@ -42,12 +41,6 @@ public class DefaultActionExecutorUpdate extends AbstractProcessTaskExecutor {
 		//Convert from json payload to Object
 		Object state = convert(cmdMsg, param);
 		
-		//Check if the param is associated with a model that manintains parameter state
-		boolean useParamStateTree = useParamStateTree(param);
-		if(useParamStateTree){
-			loadParamStateTree(param);
-		}
-		
 		//Execute update with suppressMode
 		//q.getEventPublisher().apply(SuppressMode.ECHO);
 		param.setState(state);
@@ -80,21 +73,6 @@ public class DefaultActionExecutorUpdate extends AbstractProcessTaskExecutor {
 	}	
 	
 	
-	/**
-	 * 
-	 * @param param
-	 */
-	private void loadParamStateTree(Param<Object> param){
-		Model<?> parent = param.getRootExecution();
-		ExecutionStateTree stateTree = parent.getExecutionStateTree();
-		if(stateTree == null){
-			stateTree = new ExecutionStateTree();
-			//parent.setExecutionStateTree(stateTree); //TODO refactor revisit commented due to framework change (Jayant ??)
-		}
-		RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-		requestAttributes.setAttribute(ExecutionStateTree.TRIGGER_PARAM_KEY, param, RequestAttributes.SCOPE_REQUEST);
-		stateTree.resetStateForParameter();		
-	}
 	
 	
 }
