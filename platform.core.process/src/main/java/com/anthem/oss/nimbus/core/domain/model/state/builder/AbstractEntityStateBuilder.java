@@ -142,11 +142,11 @@ abstract public class AbstractEntityStateBuilder {
 		
 		// context model path
 		String ctxPath = created.getRootExecution().getRootCommand().buildAlias(Type.PlatformMarker) + //Constants.SEPARATOR_URI.code+ 
-							created.getPath() +"/"+ created.getConfig().getContextParam().getCode();
+							created.getPath();// +"/"+ created.getConfig().getContextParam().getCode();
 		Command ctxCmd = CommandBuilder.withUri(ctxPath).getCommand();
 		
 		ExecutionEntity<Object, StateContextEntity> eStateCtx = new ExecutionEntity<>();
-		ExecutionEntity<Object, StateContextEntity>.ExParam exParamCtx = eStateCtx.new ExParam(ctxCmd, created.getAspectHandlers(), exConfig);
+		ExecutionEntity<Object, StateContextEntity>.ExParam exParamCtx = eStateCtx.new ExParam(ctxCmd, created.getAspectHandlers(), exConfig, ctxPath);
 		//exParamCtx.initSetup();
 		
 		ExecutionEntity<Object, StateContextEntity>.ExModel exModelCtx = exParamCtx.getRootExecution().unwrap(ExecutionEntity.ExModel.class);
