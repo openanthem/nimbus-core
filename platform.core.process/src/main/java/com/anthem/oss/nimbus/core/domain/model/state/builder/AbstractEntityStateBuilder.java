@@ -10,13 +10,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import com.anthem.oss.nimbus.core.domain.command.Action;
-import com.anthem.oss.nimbus.core.domain.command.Behavior;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
 import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
-import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
-import com.anthem.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
 import com.anthem.oss.nimbus.core.domain.command.execution.ProcessGateway;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
@@ -25,9 +21,6 @@ import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Mode;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig.MappedParamConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
-import com.anthem.oss.nimbus.core.domain.model.config.internal.DefaultParamConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
@@ -45,6 +38,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultListM
 import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultListParamState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultModelState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultParamState;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.StateContextEntity;
 import com.anthem.oss.nimbus.core.rules.RulesEngineFactoryProducer;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 
@@ -67,7 +61,7 @@ abstract public class AbstractEntityStateBuilder {
 	
 	abstract public <T, P> DefaultModelState<T> buildModel(EntityStateAspectHandlers provider, DefaultParamState<T> associatedParam, ModelConfig<T> mConfig, Model<?> mapsToSAC);
 	abstract public <T, P> DefaultParamState<P> buildParam(EntityStateAspectHandlers provider, Model<T> mState, ParamConfig<P> mpConfig, Model<?> mapsToSAC);
-	abstract protected <P> StateType buildParamType(EntityStateAspectHandlers provider, Model<?> mState, DefaultParamState<P> associatedParam, Model<?> mapsToSAC);
+	abstract protected <P> StateType buildParamType(EntityStateAspectHandlers provider, DefaultParamState<P> associatedParam, Model<?> mapsToSAC);
 	
 	protected <T> DefaultModelState<T> createModel(Param<T> associatedParam, ModelConfig<T> config, EntityStateAspectHandlers provider, Model<?> mapsToSAC) {
 		DefaultModelState<T> mState = associatedParam.isMapped() ? //(mapsToSAC!=null) ? 
@@ -139,15 +133,29 @@ abstract public class AbstractEntityStateBuilder {
 	private <T> void decorateParam(DefaultParamState<T> created) {
 		if(created.getConfig().getContextParam()==null) //skip is not configured for RuntimeConfig
 			return; 
-		
-		DefaultParamState<?> pRuntime = buildParam(created.getAspectHandlers(), created.getParentModel(), created.getConfig().getContextParam(), null);
 
-		StateType type = buildParamType(created.getAspectHandlers(), created.getParentModel(), pRuntime, null);
-		pRuntime.setType(type);
+		ParamConfig<StateContextEntity> pCofigContext = created.getConfig().getContextParam();
+		ModelConfig<StateContextEntity> mConfigContext = pCofigContext.getType().<StateContextEntity>findIfNested().getModel();
+
+		// create model config for StateContextEntity
+		ExecutionEntity.ExConfig<Object, StateContextEntity> exConfig = new ExecutionEntity.ExConfig<>(mConfigContext, null, null);
 		
-		StateType.Nested<?> runtimeType = type.findIfNested();
-		Model<?> mRuntime = runtimeType.getModel();
-		created.setContextModel(mRuntime);
+		// context model path
+		String ctxPath = created.getRootExecution().getRootCommand().buildAlias(Type.PlatformMarker) + //Constants.SEPARATOR_URI.code+ 
+							created.getPath() +"/"+ created.getConfig().getContextParam().getCode();
+		Command ctxCmd = CommandBuilder.withUri(ctxPath).getCommand();
+		
+		ExecutionEntity<Object, StateContextEntity> eStateCtx = new ExecutionEntity<>();
+		ExecutionEntity<Object, StateContextEntity>.ExParam exParamCtx = eStateCtx.new ExParam(ctxCmd, created.getAspectHandlers(), exConfig);
+		//exParamCtx.initSetup();
+		
+		ExecutionEntity<Object, StateContextEntity>.ExModel exModelCtx = exParamCtx.getRootExecution().unwrap(ExecutionEntity.ExModel.class);
+		exModelCtx.initSetup();
+		
+		DefaultParamState<StateContextEntity> pCtx = buildParam(created.getAspectHandlers(), exModelCtx, exModelCtx.getConfig().getCoreParam(), null);
+		Model<StateContextEntity> mCtx = pCtx.findIfNested();
+		
+		created.setContextModel(mCtx);
 		
 	}
 	

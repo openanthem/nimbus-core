@@ -11,9 +11,15 @@ import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import com.anthem.oss.nimbus.core.domain.config.DefaultDomainConfig;
 import com.anthem.oss.nimbus.core.domain.config.builder.ExecutionInputConfigHandler;
@@ -33,8 +39,10 @@ import lombok.Setter;
  * @author Soham Chakravarti 
  *
  */
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@SpringApplicationConfiguration(classes = {ModelConfigHandler.class, ExecutionInputConfigHandler.class, ExecutionOutputConfigHandler.class})
+@RunWith(SpringRunner.class)
+@SpringBootTest
+@ActiveProfiles("test")
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ModelConfigHandlerTest {
 
 	@Autowired EntityConfigBuilder handler;
