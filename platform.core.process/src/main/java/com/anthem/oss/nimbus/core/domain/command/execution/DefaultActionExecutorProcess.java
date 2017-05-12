@@ -6,7 +6,6 @@ package com.anthem.oss.nimbus.core.domain.command.execution;
 import com.anthem.nimbus.platform.core.function.handler.FunctionHandler;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.ExecutionContext;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 
 /**

@@ -10,8 +10,8 @@ import org.activiti.engine.RuntimeService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.anthem.nimbus.platform.spec.model.process.ProcessEngineContext;
+import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContext;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.ExecutionContext;
 
 /**
  * @author Jayant Chaudhuri

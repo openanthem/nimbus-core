@@ -12,8 +12,8 @@ import com.anthem.oss.nimbus.core.domain.command.CommandElement;
 import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
 import com.anthem.oss.nimbus.core.domain.command.CommandElementLinked;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContext;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.ExecutionContext;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 
 import lombok.Getter;
