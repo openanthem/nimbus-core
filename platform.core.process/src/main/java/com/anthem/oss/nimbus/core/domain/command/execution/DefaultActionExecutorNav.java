@@ -3,28 +3,30 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
-import com.anthem.nimbus.platform.core.function.handler.FunctionHandler;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.command.execution.nav.NavigationHandler;
 
 /**
  * @author Soham Chakravarti
  *
  */
-public class DefaultActionExecutorNav extends DefaultActionExecutorProcess {
+public class DefaultActionExecutorNav extends AbstractProcessTaskExecutor {
+	
+	
 	
 	@Override
 	@SuppressWarnings("unchecked")
 	protected String doExecuteInternal(CommandMessage cmdMsg) {
-		String pageId = (String)super.doExecuteInternal(cmdMsg);
-		return pageId;
+		return doExecuteFunctionHandler(cmdMsg, NavigationHandler.class);
 	}
 	
 	@Override
-	public FunctionHandler getHandler(CommandMessage commandMessage) {
-		FunctionHandler functionHandler = super.getHandler(commandMessage);
-		if(functionHandler == null){
-			return appCtx.getBean("defaultNavigationHandler", FunctionHandler.class);
+	protected <T extends FunctionHandler<?, ?>> T getHandler(CommandMessage commandMessage, Class<T> handlerClass) {
+		T handler = super.getHandler(commandMessage, handlerClass);
+		if(handler == null){
+			handler = super.getHandler("default._nav$execute?fn=default",handlerClass);
 		}
-		return functionHandler;
+		return handler;
 	}
+	
 }

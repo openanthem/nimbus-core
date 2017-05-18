@@ -67,11 +67,6 @@ public class EmailTaskExecutor extends AbstractProcessTaskExecutor implements Hi
 	}
 
 	@Override
-	public String getUri() {
-		return this.templateDefinition.getPath();
-	}
-	
-	@Override
 	protected void publishEvent(CommandMessage cmdMsg, ProcessExecutorEvents e) {
 		
 	}

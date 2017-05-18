@@ -13,8 +13,8 @@ import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
 import com.anthem.oss.nimbus.core.domain.command.CommandElementLinked;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContext;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ExecutionModel;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -34,7 +34,7 @@ public class ProcessEngineContext implements Serializable {
 	
 	private transient Object input;
 
-	private transient QuadModel<?,?> quadModel;
+	private transient ExecutionModel<?> executionModel;
 	
 	private transient Param<?> actionParam;
 	
@@ -42,7 +42,7 @@ public class ProcessEngineContext implements Serializable {
 	
 	public ProcessEngineContext(ExecutionContext executionContext, Param<?> actionParam){
 		commandMessage = executionContext.getCommandMessage();
-		quadModel = executionContext.getQuadModel();
+		executionModel = executionContext.getRootModel();
 		this.actionParam = actionParam;
 	}
 	

@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,15 +47,15 @@ public class HierarchyMatchBasedBeanFinder implements ApplicationContextAware {
 		Map<String, T> beans = this.ctx.getBeansOfType(type);
 		if(MapUtils.isEmpty(beans)) return null;
 		List<String> beanNamesToMatch = new ArrayList<>();
-		beans.values().forEach((bean) -> {
-			beanNamesToMatch.add(bean.getUri());
+		beans.entrySet().forEach((entry) -> {
+			beanNamesToMatch.add(entry.getKey());
 		});
 		String matchedBeanName = findMatchingBean(cmd, beanNamesToMatch);
 		
-		return beans.values().stream().
-				filter((bean)-> bean.getUri().equals(matchedBeanName)).
+		Entry<String, T> matchedEntry = beans.entrySet().stream().
+				filter((bean)-> bean.getKey().equals(matchedBeanName)).
 				findFirst().orElse(null);
-				
+		return matchedEntry.getValue();
 	}
 	
 	public String findMatchingBean(Command command, List<String> beans) {

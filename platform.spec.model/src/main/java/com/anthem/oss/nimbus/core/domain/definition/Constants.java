@@ -32,7 +32,10 @@ public enum Constants {
 	
 	CODE_VALUE_CONFIG_DELIMITER("-"),
 	PARAM_VALUES_URI_PREFIX("*/*/*/p/"),
-	PARAM_VALUES_URI_SUFFIX("/_lookup")
+	PARAM_VALUES_URI_SUFFIX("/_lookup"),
+	KEY_FUNCTION("fn"),
+	KEY_NAV_ARG_PAGE_ID("pageId"),
+	KEY_EXECUTE_PROCESS_CTX("processContext")
 	;
 	
 	

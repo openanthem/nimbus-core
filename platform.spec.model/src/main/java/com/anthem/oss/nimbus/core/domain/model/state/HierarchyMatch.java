@@ -6,6 +6,4 @@ package com.anthem.oss.nimbus.core.domain.model.state;
  */
 public interface HierarchyMatch {
 
-	public String getUri();
-	
 }

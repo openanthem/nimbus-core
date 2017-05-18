@@ -14,6 +14,7 @@ import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
@@ -189,5 +190,25 @@ public abstract class AbstractProcessTaskExecutor implements ProcessTaskExecutor
 		//check what model needs to be instantiated
 		
 	}
+	
+	protected <T,R,H extends FunctionHandler<T,R>> R doExecuteFunctionHandler(CommandMessage cmdMsg,Class<H> handlerClass) {
+		QuadModel<?, ?> q = findQuad(cmdMsg);
+		
+		//TODO: Load action parameter based on Command
+		Param<T> actionParameter = null;
+		ExecutionContext executionContext = new ExecutionContext(cmdMsg,q);
+		
+		H processHandler = getHandler(cmdMsg, handlerClass);
+		return processHandler.execute(executionContext, actionParameter);
+	}	
+	
+	protected <T extends FunctionHandler<?, ?>> T getHandler(CommandMessage commandMessage, Class<T> handlerClass){
+		String functionName = commandMessage.getCommand().getFirstParameterValue(Constants.KEY_FUNCTION.code);
+		return getHandler(functionName, handlerClass);
+	}	
+	
+	protected <T extends FunctionHandler<?, ?>> T getHandler(String functionName, Class<T> handlerClass){
+		return appCtx.getBean(functionName, handlerClass);
+	}		
 	
 }

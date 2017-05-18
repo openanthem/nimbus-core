@@ -45,12 +45,6 @@ public class ParamCodeValueProvider extends AbstractProcessTaskExecutor implemen
 	@Getter @Setter
 	private Map<String,List<ParamValue>> values;
 
-
-	@Override
-	public String getUri() {
-		return "*/*/*/p/*/*/_lookup/_execute";
-	}
-	
 	
 	@Override
 	protected void publishEvent(CommandMessage cmdMsg, ProcessExecutorEvents e) {

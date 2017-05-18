@@ -1,0 +1,26 @@
+/**
+ * 
+ */
+package com.anthem.oss.nimbus.core.domain.command.execution.process;
+
+import org.springframework.stereotype.Component;
+
+import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContext;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+
+/**
+ * @author Jayant Chaudhuri
+ *
+ */
+@Component("_add")
+public class AddFunctionHandler<T,S> extends URLBasedAssignmentFunctionHandler<T,Void,S> {
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public Void assign(ExecutionContext executionContext, Param<T> actionParameter, Param<S> targetParameter,
+			S state) {
+		targetParameter.findIfCollection().add(state);
+		return null;
+	}
+
+}
