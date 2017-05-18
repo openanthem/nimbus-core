@@ -91,6 +91,14 @@ public class ViewConfig {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
+	public @interface TargetUrl {
+		String alias() default "TargetUrl";
+		String url() default "";
+	}
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
 	public @interface CardDetailsGrid {
 		String alias() default "CardDetailsGrid";
 		String editUrl() default "";
@@ -329,6 +337,7 @@ public class ViewConfig {
 	public @interface Grid {
 		String alias() default "Grid";
 		boolean onLoad() default false;
+		boolean isTransient() default false;
 		String url() default "";
 		boolean rowSelection() default false;
 		String pageSize() default "10";
