@@ -84,4 +84,20 @@ public class MapsTo {
 //		Path value();
 //	}
 	
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	public @interface Behavior {
+		
+		String value();	// refers to spring bean id with: domain.behavior.{value}
+		// domain.fn._process.{name}
+		// domain.fn._nav.{name}
+		
+		// canned functions
+		// or extensions which are realized as spring-bean - following a common interface
+			// @Behavior(fn="CONCAT", "/patient/name/firstName", "/patient/name/lastName") private Name name;
+			// @Behavior(fn="MASK") private String ssn;
+			// -- same as -- /../p/{domain-root}/.../_process?fn:CONCAT
+		// public void handle(ExecutionContext:{CommandMsg, ExecutionModel}, Param actionParam)
+	}
 }

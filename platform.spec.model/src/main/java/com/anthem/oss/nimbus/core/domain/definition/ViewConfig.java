@@ -5,7 +5,6 @@ package com.anthem.oss.nimbus.core.domain.definition;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
-import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -89,21 +88,6 @@ public class ViewConfig {
 		Size size() default Size.Large;
 	}
 	
-	@Repeatable(TargetUrls.class)
-	@Target({ElementType.FIELD})
-	@ViewStyle
-	public @interface TargetUrl {
-		String alias() default "TargetUrl";
-		String url() default "";
-	}
-	
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.FIELD})
-	@ViewStyle
-	public @interface TargetUrls {
-		TargetUrl[] value();
-	}	
-
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
