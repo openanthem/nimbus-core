@@ -219,7 +219,7 @@ public abstract class AbstractProcessTaskExecutor implements ProcessTaskExecutor
 		absoluteUri = absoluteUri.replaceAll(Constants.SEPARATOR_URI.code, "\\.");
 		key.append(absoluteUri).append(".").append(cmdMsg.getCommand().getAction().toString())
 		   .append(cmdMsg.getCommand().getCurrentBehavior().name())
-		   .append(Constants.REQUEST_PARAMETER_MARKER).append(Constants.KEY_FUNCTION.code).append("=").append(functionName);
+		   .append(Constants.REQUEST_PARAMETER_MARKER.code).append(Constants.KEY_FUNCTION.code).append("=").append(functionName);
 		return key.toString();
 	}
 }
