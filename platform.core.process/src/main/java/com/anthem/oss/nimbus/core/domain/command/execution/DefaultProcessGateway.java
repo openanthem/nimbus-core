@@ -12,6 +12,7 @@ import java.util.Optional;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -172,7 +173,7 @@ public class DefaultProcessGateway extends AbstractProcessGateway implements App
 		final Behavior b = cmd.getCurrentBehavior();
 		
 		ProcessTaskExecutor resolvedTaskExec = Optional
-				.ofNullable((ProcessTaskExecutor)hierarchyMatchBeanLoader.findMatchingBean(HierarchyMatchProcessTaskExecutor.class, cmd))
+				.ofNullable((ProcessTaskExecutor)hierarchyMatchBeanLoader.findMatchingBean(HierarchyMatchProcessTaskExecutor.class, buildLookupKeyFromCommand(cmd)))
 				.orElse(
 					Optional.ofNullable(lookupExecutor(executorBeanPrefix, cmd.getEvent(), cmd.getAction(), b))
 						.orElse(
@@ -198,5 +199,21 @@ public class DefaultProcessGateway extends AbstractProcessGateway implements App
 		
 		return null;
 	}
+	
+	private String buildLookupKeyFromCommand(Command command){
+		String uri = command.getAbsoluteUri();
+		String behavior = command.getCurrentBehavior().name();
+		String action = command.getAction().toString();
+		StringBuilder postFix = new StringBuilder();
+		postFix.append(action).append(Constants.SEPARATOR_URI.code).append(behavior);
+		StringBuilder processUri = new StringBuilder();
+		if(StringUtils.isNotBlank(command.getEvent())) {
+			processUri.append(command.getEvent()+Constants.SEPARATOR_URI.code);
+		}
+		processUri.append(uri);
+		processUri.append(Constants.SEPARATOR_URI.code).append(postFix.toString());
+		String processUriString = processUri.toString();
+		return processUriString;
+	}	
 
 }

@@ -21,8 +21,6 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import com.anthem.oss.nimbus.core.domain.command.Behavior;
-import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.model.state.HierarchyMatch;
 
@@ -38,11 +36,9 @@ public class HierarchyMatchBasedBeanFinder implements ApplicationContextAware {
 	
 	ApplicationContext ctx;
 	
-	
 	@Value("${process.key.regex}") 
 	private String processBeanRegex;
 	
-	public static final String SEPARATOR = "/";
 	public static final Pattern SPECIAL_REGEX_CHARS = Pattern.compile("[{}()\\[\\].+*?^$\\\\|]");
 	
 	public<T extends HierarchyMatch> T findMatchingBean(Class<T> type, String beanIdToFind) {
@@ -58,12 +54,7 @@ public class HierarchyMatchBasedBeanFinder implements ApplicationContextAware {
 				filter((bean)-> bean.getKey().equals(matchedBeanName)).
 				findFirst().orElse(null);
 		return Optional.ofNullable(matchedEntry).map(Entry::getValue).orElse(null);
-
 	}	
-	
-	public<T extends HierarchyMatch> T findMatchingBean(Class<T> type, Command cmd) {
-		return findMatchingBean(type,buildKeyFromCommand(cmd));
-	}
 	
 	public String findMatchingBean(String beanIdToFind, List<String> beans) {
 		Collections.sort(beans, (o1, o2) -> {
@@ -115,33 +106,6 @@ public class HierarchyMatchBasedBeanFinder implements ApplicationContextAware {
 		}
 		return Pattern.compile(ptrnStr.toString());
 	}
-	
-	public String buildKeyFromCommand(Command command){
-		String uri = command.getAbsoluteUri();
-		String behavior = getBehaviorKey(command.getCurrentBehavior());
-		String action = command.getAction().toString();
-		StringBuilder postFix = new StringBuilder();
-		postFix.append(action).append(SEPARATOR).append(behavior);
-		StringBuilder processUri = new StringBuilder();
-		if(StringUtils.isNotBlank(command.getEvent())) {
-			processUri.append(command.getEvent()+SEPARATOR);
-		}
-		processUri.append(uri);
-		processUri.append(SEPARATOR).append(postFix.toString());
-		String processUriString = processUri.toString();
-		return processUriString;
-	}
-	
-	private String getBehaviorKey(Behavior behavior){
-		if(behavior==Behavior.$config
-				|| behavior==Behavior.$execute
-				|| behavior==Behavior.$validate){
-			
-			return behavior.getCode();
-		}
-		return null;
-	}	
-	
 	
 	@Getter @Setter
 	class BeanKeyForMatching implements Comparator<BeanKeyForMatching>{
