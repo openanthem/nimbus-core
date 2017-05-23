@@ -203,12 +203,23 @@ public abstract class AbstractProcessTaskExecutor implements ProcessTaskExecutor
 	}	
 	
 	protected <T extends FunctionHandler<?, ?>> T getHandler(CommandMessage commandMessage, Class<T> handlerClass){
-		String functionName = commandMessage.getCommand().getFirstParameterValue(Constants.KEY_FUNCTION.code);
+		String functionName = constructFunctionHandlerKey(commandMessage);
 		return getHandler(functionName, handlerClass);
 	}	
 	
 	protected <T extends FunctionHandler<?, ?>> T getHandler(String functionName, Class<T> handlerClass){
-		return appCtx.getBean(functionName, handlerClass);
+		return hierarchyMatchBeanLoader.findMatchingBean(handlerClass, functionName);
 	}		
 	
+	
+	private String constructFunctionHandlerKey(CommandMessage cmdMsg){
+		StringBuilder key = new StringBuilder();
+		String functionName = cmdMsg.getCommand().getFirstParameterValue(Constants.KEY_FUNCTION.code);
+		String absoluteUri = cmdMsg.getCommand().getAbsoluteUri();
+		absoluteUri = absoluteUri.replaceAll(Constants.SEPARATOR_URI.code, "\\.");
+		key.append(absoluteUri).append(".").append(cmdMsg.getCommand().getAction().toString())
+		   .append(cmdMsg.getCommand().getCurrentBehavior().name())
+		   .append(Constants.REQUEST_PARAMETER_MARKER).append(Constants.KEY_FUNCTION.code).append("=").append(functionName);
+		return key.toString();
+	}
 }

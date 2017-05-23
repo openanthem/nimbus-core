@@ -42,23 +42,28 @@ public class HierarchyMatchBasedBeanFinder implements ApplicationContextAware {
 	private String processBeanRegex;
 	
 	public static final String SEPARATOR = "/";
+	public static final Pattern SPECIAL_REGEX_CHARS = Pattern.compile("[{}()\\[\\].+*?^$\\\\|]");
 	
-	public<T extends HierarchyMatch> T findMatchingBean(Class<T> type, Command cmd) {
+	public<T extends HierarchyMatch> T findMatchingBean(Class<T> type, String beanIdToFind) {
 		Map<String, T> beans = this.ctx.getBeansOfType(type);
 		if(MapUtils.isEmpty(beans)) return null;
 		List<String> beanNamesToMatch = new ArrayList<>();
 		beans.entrySet().forEach((entry) -> {
 			beanNamesToMatch.add(entry.getKey());
 		});
-		String matchedBeanName = findMatchingBean(cmd, beanNamesToMatch);
+		String matchedBeanName = findMatchingBean(beanIdToFind, beanNamesToMatch);
 		
 		Entry<String, T> matchedEntry = beans.entrySet().stream().
 				filter((bean)-> bean.getKey().equals(matchedBeanName)).
 				findFirst().orElse(null);
 		return matchedEntry.getValue();
+	}	
+	
+	public<T extends HierarchyMatch> T findMatchingBean(Class<T> type, Command cmd) {
+		return findMatchingBean(type,buildKeyFromCommand(cmd));
 	}
 	
-	public String findMatchingBean(Command command, List<String> beans) {
+	public String findMatchingBean(String beanIdToFind, List<String> beans) {
 		Collections.sort(beans, (o1, o2) -> {
 				Pattern p1 = createHierarchyMatchRegexPattern(o1);
 				Pattern p2 = createHierarchyMatchRegexPattern(o2);
@@ -83,7 +88,6 @@ public class HierarchyMatchBasedBeanFinder implements ApplicationContextAware {
 	        });
 		List<BeanKeyForMatching> deployedBeans = new ArrayList<BeanKeyForMatching>();
 		beans.forEach((bean)-> deployedBeans.add(new BeanKeyForMatching(bean)));
-		String beanIdToFind = buildKeyFromCommand(command);
 		for(BeanKeyForMatching deployedBean : deployedBeans){
 			if(deployedBean.matches(beanIdToFind)){
 				return deployedBean.getBeanId();
@@ -146,14 +150,8 @@ public class HierarchyMatchBasedBeanFinder implements ApplicationContextAware {
 		
 		public BeanKeyForMatching(String beanId){
 			this.beanId = beanId;
-			StringBuilder matchKey = new StringBuilder();
-			if(beanId.startsWith("*")) {
-				 matchKey.append(".").append(beanId.replaceAll(SEPARATOR, "."));
-			}
-			else {
-				matchKey.append(beanId.replaceAll(SEPARATOR, "."));
-			}
-			beanIdForMatching = matchKey.toString();
+			beanIdForMatching = SPECIAL_REGEX_CHARS.matcher(beanId).replaceAll("\\\\$0");
+			beanIdForMatching = beanIdForMatching.replaceAll("default\\\\.", "(.*?)\\.");
 			pattern = Pattern.compile(beanIdForMatching);
 		}
 		

@@ -3,6 +3,8 @@
  */
 package com.anthem.oss.nimbus.core.domain.definition;
 
+import java.util.regex.Pattern;
+
 /**
  * @author Soham Chakravarti
  *
@@ -35,8 +37,10 @@ public enum Constants {
 	PARAM_VALUES_URI_SUFFIX("/_lookup"),
 	KEY_FUNCTION("fn"),
 	KEY_NAV_ARG_PAGE_ID("pageId"),
-	KEY_EXECUTE_PROCESS_CTX("processContext")
+	KEY_EXECUTE_PROCESS_CTX("processContext"),
+	REQUEST_PARAMETER_MARKER("?")
 	;
+	
 	
 	
 	public final String code;
