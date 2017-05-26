@@ -18,15 +18,19 @@ public class CommandMessage implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-
 	private Command command;
 	
 	private String rawPayload;
+
+	public CommandMessage() {
 	
+	}
 	
-	/**
-	 * 
-	 */
+	public CommandMessage(Command command, String rayPayload) {
+		setCommand(command);
+		setRawPayload(rayPayload);
+	}
+	
 	@Override
 	public CommandMessage clone() {
 		CommandMessage cloned = new CommandMessage();
