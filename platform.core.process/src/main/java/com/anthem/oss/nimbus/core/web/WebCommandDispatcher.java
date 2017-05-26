@@ -7,10 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
 import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
-import com.anthem.oss.nimbus.core.domain.command.execution.ProcessGateway;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutorGateway;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutorGateway.MultiOutput;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 
 /**
@@ -21,11 +20,11 @@ public class WebCommandDispatcher {
 
 	WebCommandBuilder builder;
 
-	ProcessGateway processGateway;
+	CommandExecutorGateway gateway;
 
-	public WebCommandDispatcher(WebCommandBuilder builder,ProcessGateway processGateway) {
+	public WebCommandDispatcher(WebCommandBuilder builder, CommandExecutorGateway gateway) {
 		this.builder = builder;
-		this.processGateway = processGateway;
+		this.gateway = gateway;
 	}
 	
 	public Object handle(HttpServletRequest httpReq, RequestMethod httpMethod, ModelEvent<String> event) {
@@ -50,22 +49,8 @@ public class WebCommandDispatcher {
 
 	}
 
-	/**
-	 *
-	 * @param cmd
-	 * @param payload
-	 * @return
-	 */
-	public Object handle(Command cmd, String payload) {
-		CommandMessage cmdMsg = new CommandMessage();
-		cmdMsg.setCommand(cmd);
-		cmdMsg.setRawPayload(payload);
-		try {
-			Object resp = processGateway.startProcess(cmdMsg);
-			return resp;
-		} catch (Exception ex) {
-			throw new FrameworkRuntimeException(ex);
-		}
+	public MultiOutput handle(Command cmd, String payload) {
+		return gateway.execute(cmd, payload);
 	}
 
 }
