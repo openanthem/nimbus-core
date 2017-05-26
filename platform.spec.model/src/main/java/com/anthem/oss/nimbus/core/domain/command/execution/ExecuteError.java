@@ -37,10 +37,10 @@ public class ExecuteError implements Serializable {
 	}
 	
 	public ExecuteError(String uniqueId, Class<? extends Throwable> exClass, String message) {
-		Assert.notNull(uniqueId);
+		Assert.notNull(uniqueId, "uniqueId must not be null");
 		setUniqueId(uniqueId);
 		
-		Assert.notNull(exClass);
+		Assert.notNull(exClass, "Exception class must not be nullxs");
 		setCode(exClass.getName() + CODE_SUFFIX);
 		
 		setMessage(message);
