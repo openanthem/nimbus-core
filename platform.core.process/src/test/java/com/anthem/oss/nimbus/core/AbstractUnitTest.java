@@ -18,7 +18,7 @@ import com.anthem.oss.nimbus.core.domain.command.Behavior;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
-import com.anthem.oss.nimbus.core.domain.command.execution.DefaultProcessGateway;
+import com.anthem.oss.nimbus.core.domain.command.execution.DefaultCommandExecutorGateway;
 import com.anthem.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
 import com.anthem.oss.nimbus.core.domain.command.execution.ProcessResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,7 +39,7 @@ public abstract class AbstractUnitTest {
 	
 	@Autowired
     @Qualifier("default.processGateway")
-    DefaultProcessGateway processGateway;
+    DefaultCommandExecutorGateway processGateway;
     
     private JacksonTester<Object> json; // use this in the sub classes to validate json payload
     

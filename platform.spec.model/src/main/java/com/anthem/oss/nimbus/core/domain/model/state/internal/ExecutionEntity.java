@@ -40,6 +40,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ExecutionModel;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
+import com.anthem.oss.nimbus.core.domain.model.state.InvalidStateException;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
@@ -63,7 +64,8 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 
 	private static final long serialVersionUID = 1L;
 	
-	private JustLogit logit = new JustLogit(getClass());
+	@JsonIgnore
+	private final JustLogit logit = new JustLogit(getClass());
 	
 	private C c;
 
@@ -72,6 +74,26 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 	private ProcessFlow f;
 	
 	private Map<String, Object> paramRuntimes = new HashMap<>();
+	
+	public ExecutionEntity() { }
+	
+	public ExecutionEntity(V view, C core) {
+		setView(view);
+		setCore(core);
+	}
+	
+	public static ExecutionEntity<?, ?> resolveAndInstantiate(Object view, Object core) {
+		if(view==null && core==null)
+			throw new InvalidStateException("Both view and core cannot be null.");
+		
+		if(view==null && core!=null)
+			return new ExecutionEntity<>(view, core);
+		
+		if(view!=null && core==null)	//swap
+			return new ExecutionEntity<>(core, null);
+		
+		return new ExecutionEntity<>(view, core);	
+	}
 	
 	public C getCore() {return getC();}
 	public void setCore(C c) {setC(c);}

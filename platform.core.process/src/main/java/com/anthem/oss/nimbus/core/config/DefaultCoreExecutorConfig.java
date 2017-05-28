@@ -19,11 +19,11 @@ import com.anthem.oss.nimbus.core.domain.command.execution.DefaultBehaviorExecut
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultBehaviorExecutorSave;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultEventExecutorPost;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultEventExecutorPre;
-import com.anthem.oss.nimbus.core.domain.command.execution.DefaultProcessGateway;
+import com.anthem.oss.nimbus.core.domain.command.execution.DefaultCommandExecutorGateway;
 import com.anthem.oss.nimbus.core.domain.command.execution.HierarchyMatchBasedBeanFinder;
 import com.anthem.oss.nimbus.core.domain.command.execution.ParamCodeValueProvider;
 import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
-import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
+import com.anthem.oss.nimbus.core.domain.model.state.builder.DefaultQuadModelBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFactory;
 
 /**
@@ -61,7 +61,7 @@ public class DefaultCoreExecutorConfig {
 	}
 	
 	@Bean(name="default._new$execute")
-	public DefaultActionExecutorNew defaultActionExecutorNew(@Qualifier("default.quadModelBuilder") QuadModelBuilder quadModelBuilder, DomainConfigBuilder domainConfigApi){
+	public DefaultActionExecutorNew defaultActionExecutorNew(@Qualifier("default.quadModelBuilder") DefaultQuadModelBuilder quadModelBuilder, DomainConfigBuilder domainConfigApi){
 		return new DefaultActionExecutorNew(quadModelBuilder,domainConfigApi);
 	}
 	
@@ -87,7 +87,7 @@ public class DefaultCoreExecutorConfig {
 	}
 	
 	@Bean(name="default._replace$execute")
-	public DefaultActionProcessExecutorReplace defaultActionProcessExecutorReplace(QuadModelBuilder qBuilder, ModelRepositoryFactory repoFactory,
+	public DefaultActionProcessExecutorReplace defaultActionProcessExecutorReplace(DefaultQuadModelBuilder qBuilder, ModelRepositoryFactory repoFactory,
 			DomainConfigBuilder domainConfigApi){
 		return new DefaultActionProcessExecutorReplace(qBuilder,repoFactory,domainConfigApi);
 	}
@@ -124,8 +124,8 @@ public class DefaultCoreExecutorConfig {
 	}
 	
 	@Bean(name="default.processGateway")
-	public DefaultProcessGateway defaultProcessGateway(HierarchyMatchBasedBeanFinder hierarchyMatchBasedBeanFinder){
-		return new DefaultProcessGateway(hierarchyMatchBasedBeanFinder);
+	public DefaultCommandExecutorGateway defaultProcessGateway(HierarchyMatchBasedBeanFinder hierarchyMatchBasedBeanFinder){
+		return new DefaultCommandExecutorGateway(hierarchyMatchBasedBeanFinder);
 	}
 	
 	@Bean

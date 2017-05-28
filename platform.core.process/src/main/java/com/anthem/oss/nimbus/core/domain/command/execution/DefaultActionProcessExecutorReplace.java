@@ -15,7 +15,7 @@ import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
-import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
+import com.anthem.oss.nimbus.core.domain.model.state.builder.DefaultQuadModelBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFactory;
 import com.anthem.oss.nimbus.core.session.UserEndpointSession;
@@ -26,13 +26,13 @@ import com.anthem.oss.nimbus.core.session.UserEndpointSession;
  */
 public class DefaultActionProcessExecutorReplace extends AbstractProcessTaskExecutor {
 
-	QuadModelBuilder qBuilder;
+	DefaultQuadModelBuilder qBuilder;
 	
 	ModelRepositoryFactory repoFactory;
 	
 	DomainConfigBuilder domainConfigApi;
 	
-	public DefaultActionProcessExecutorReplace(QuadModelBuilder qBuilder, ModelRepositoryFactory repoFactory,
+	public DefaultActionProcessExecutorReplace(DefaultQuadModelBuilder qBuilder, ModelRepositoryFactory repoFactory,
 			DomainConfigBuilder domainConfigApi) {
 		this.qBuilder = qBuilder;
 		this.repoFactory = repoFactory;

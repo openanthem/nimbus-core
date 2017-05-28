@@ -1,10 +1,11 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state.repo.db;
+package com.anthem.oss.nimbus.core.domain.model.state.repo.db.mongo;
 
 import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.startsWith;
 
+import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -13,12 +14,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.TimeZone;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
-import org.springframework.beans.PropertyAccessor;
-import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.mongodb.core.MongoOperations;
@@ -27,48 +28,47 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.mongodb.repository.support.SpringDataMongodbQuery;
 
+import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.definition.SearchNature.StartsWith;
+import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
+import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.IdSequenceRepository;
-import com.anthem.oss.nimbus.core.util.ClassLoadUtils;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository;
+import com.anthem.oss.nimbus.core.utils.JavaBeanHandler;
 import com.querydsl.core.types.Predicate;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 
 /**
  * @author Soham Chakravarti
  *
  */
-@Getter @Setter 
+@RequiredArgsConstructor
 public class DefaultMongoModelRepository implements ModelRepository {
 
-	MongoOperations mongoOps;
-	
-	IdSequenceRepository idSequenceRepo;
-	
-	public DefaultMongoModelRepository(MongoOperations mongoOps, IdSequenceRepository idSequenceRepo) {
-		this.mongoOps = mongoOps;
-		this.idSequenceRepo = idSequenceRepo;
-	}
+	private final MongoOperations mongoOps;
+	private final IdSequenceRepository idSequenceRepo;
+	private final JavaBeanHandler beanHandler;
 	
 	@Override
-	public <T> T _new(Class<T> referredClass, String alias) {
-		T input = ClassLoadUtils.newInstance(referredClass);
-		return _new(referredClass, alias, input);
+	public <T> T _new(ModelConfig<T> mConfig) {
+		// detect id paramConfig
+		ParamConfig<?> pId = Optional.ofNullable(mConfig.getIdParam())
+								.orElseThrow(()->new InvalidConfigException("Persistable Entity: "+mConfig.getReferredClass()+" must be configured with @Id param."));
+		
+		T _new = beanHandler.instantiate(mConfig.getReferredClass());
+		
+		String id = String.valueOf(idSequenceRepo.getNextSequenceId(mConfig.getDomainAlias()));
+		
+		PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(mConfig.getReferredClass(), pId.getCode());
+		beanHandler.setValue(pd, _new, id);
+		
+		return _new;
 	}
-
-	@Override
-	public <T> T _new(Class<T> referredClass, String alias, T input) {
-		PropertyAccessor inputAccessor = PropertyAccessorFactory.forBeanPropertyAccess(input);
-		if(inputAccessor.getPropertyType("id") == Long.class) {
-			inputAccessor.setPropertyValue("id", idSequenceRepo.getNextSequenceId("global"));
-		}
-		mongoOps.insert(input, alias);
-		return input;
-	}
+	
 
 	@Override
 	public <ID extends Serializable, T> T _get(ID id, Class<T> referredClass, String alias) {

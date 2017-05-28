@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.anthem.oss.nimbus.core.domain.command.execution.DefaultProcessGateway;
+import com.anthem.oss.nimbus.core.domain.command.execution.DefaultCommandExecutorGateway;
 
 /**
  * @author Soham Chakravarti
@@ -24,7 +24,7 @@ import com.anthem.oss.nimbus.core.domain.command.execution.DefaultProcessGateway
 public class DefaultProcessGatewayTest {
 
 	@Autowired @Qualifier("default.processGateway")
-	DefaultProcessGateway processGateway;
+	DefaultCommandExecutorGateway processGateway;
 	
 	
 	@Test

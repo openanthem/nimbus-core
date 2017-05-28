@@ -15,7 +15,7 @@ import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.model.config.ActionExecuteConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
-import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
+import com.anthem.oss.nimbus.core.domain.model.state.builder.DefaultQuadModelBuilder;
 import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
 import com.anthem.oss.nimbus.core.util.ClassLoadUtils;
 import com.anthem.oss.nimbus.core.utils.ProcessBeanResolver;
@@ -31,7 +31,7 @@ import com.anthem.oss.nimbus.core.utils.ProcessBeanResolver;
 public class PlatformSession2 {
 	
 	private static DomainConfigBuilder domainConfigAPI;
-	private static QuadModelBuilder quadModelBuilder;
+	private static DefaultQuadModelBuilder quadModelBuilder;
 
 	@SuppressWarnings("unchecked")
 	private static <R> R getAttribute(String key){
@@ -112,7 +112,7 @@ public class PlatformSession2 {
 			domainConfigAPI = ProcessBeanResolver.appContext.getBean(DomainConfigBuilder.class);
 		}	
 		if(quadModelBuilder == null){
-			quadModelBuilder = ProcessBeanResolver.appContext.getBean(QuadModelBuilder.class);
+			quadModelBuilder = ProcessBeanResolver.appContext.getBean(DefaultQuadModelBuilder.class);
 		}	
 		ActionExecuteConfig<?, ?> aec = domainConfigAPI.getActionExecuteConfig(cmd);
 		ModelConfig<?> mConfig = aec.getOutput().getModel();

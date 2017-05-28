@@ -3,8 +3,6 @@
  */
 package com.anthem.oss.nimbus.core.domain.definition;
 
-import java.util.regex.Pattern;
-
 /**
  * @author Soham Chakravarti
  *

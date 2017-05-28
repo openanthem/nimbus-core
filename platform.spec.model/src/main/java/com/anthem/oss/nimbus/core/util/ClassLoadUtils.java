@@ -12,11 +12,6 @@ import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 public class ClassLoadUtils {
 
 	
-	/**
-	 * 
-	 * @param classNm
-	 * @return
-	 */
 	@SuppressWarnings("unchecked")
 	public static <T> Class<T> loadClass(String classNm) {
 		try {
@@ -28,18 +23,5 @@ public class ClassLoadUtils {
 		}
 	}
 	
-	/**
-	 * 
-	 * @param clazz
-	 * @return
-	 */
-	public static <T> T newInstance(Class<T> clazz) {
-		try {
-			return clazz.newInstance();
-		} 
-		catch (Exception ex) {
-			throw new InvalidConfigException("Class could not be instantiated with blank constructor: " + clazz, ex);
-		}
-	}
 	
 }

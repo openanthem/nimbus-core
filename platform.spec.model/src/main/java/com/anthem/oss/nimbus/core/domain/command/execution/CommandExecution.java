@@ -1,0 +1,105 @@
+/**
+ * 
+ */
+package com.anthem.oss.nimbus.core.domain.command.execution;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+import com.anthem.oss.nimbus.core.domain.command.Action;
+import com.anthem.oss.nimbus.core.domain.command.Behavior;
+import com.anthem.oss.nimbus.core.util.CollectionsTemplate;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+/**
+ * @author Soham Chakravarti
+ *
+ */
+public final class CommandExecution {
+
+	@RequiredArgsConstructor @ToString
+	private static class ActionBehavior {
+		
+		@Getter private final String inputCommandUri;
+		
+		@JsonIgnore	
+		@Getter(AccessLevel.PROTECTED) private final ExecutionContext context;
+
+		@Getter private final Action action;
+		private final List<Behavior> behaviors;
+
+		protected List<Behavior> getBehaviors() {
+			return Optional.ofNullable(behaviors).map(Collections::unmodifiableList).orElse(Collections.emptyList());
+		}
+	}
+	
+	@Getter @ToString(callSuper=true)
+	public static class Input extends ActionBehavior {
+		
+		public Input(String inputCommandUri, ExecutionContext context, Action action, Behavior b) {
+			super(inputCommandUri, context, action, Arrays.asList(b));
+		}
+		
+		public Behavior getBehavior() {
+			return getBehaviors().get(0);
+		}
+	}
+	
+	@Getter @Setter @ToString(callSuper=true)
+	public static class Output<T> extends ActionBehavior {
+		
+		private T value;
+		
+		private ValidationResult validation;
+		private ExecuteError error;
+		
+		public Output(String inputCommandUri, ExecutionContext context, Action action, Behavior b) {
+			this(inputCommandUri, context, action, Arrays.asList(b));
+		}
+		
+		protected Output(String inputCommandUri, ExecutionContext context, Action action, List<Behavior> behaviors) {
+			super(inputCommandUri, context, action, behaviors);
+		}
+	
+		public static <T> Output<T> instantiate(Input input) {
+			return new Output<>(input.getInputCommandUri(), input.getContext(), input.getAction(), input.getBehavior());
+		}
+		
+		@Override
+		public List<Behavior> getBehaviors() {
+			return super.getBehaviors();
+		}
+	}
+	
+	@ToString(callSuper=true)
+	public static class MultiOutput extends Output<Object> {
+		
+		@Getter @Setter 
+		private List<Output<?>> outputs;
+		
+		public MultiOutput(String inputCommandUri, ExecutionContext context, Action action, Behavior b) {
+			super(inputCommandUri, context, action, b);
+		}
+		
+		public MultiOutput(String inputCommandUri, ExecutionContext context, Action action, List<Behavior> behaviors) {
+			super(inputCommandUri, context, action, behaviors);
+		}
+		
+		@JsonIgnore
+		private final CollectionsTemplate<List<Output<?>>, Output<?>> template = CollectionsTemplate.linked(this::getOutputs, this::setOutputs);
+		
+		public CollectionsTemplate<List<Output<?>>, Output<?>> template() {
+			return template;
+		}
+		
+	}
+
+}

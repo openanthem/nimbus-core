@@ -6,6 +6,7 @@ package com.anthem.oss.nimbus.core.domain.model.state.repo.db;
 import java.io.Serializable;
 import java.util.List;
 
+import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 
 import lombok.Getter;
@@ -30,14 +31,12 @@ public interface ModelRepository {
 		}
 	}
 	
-	//==public <T, R> R doExecute(CommandMessage cmdMsg, T input);
+	/*SOHAM: f.w upgrade v0.3: START */
 	
-	//==public <T> void doExecute(ModelEvent<ParamStateAndConfig<T>> event);
+	public <T> T _new(ModelConfig<T> mConfig);
+
+	/*SOHAM: f.w upgrade v0.3: END */
 	
-	//Action._new
-	//==public <T> T _new(CommandMessage cmdMsg, T input);
-	public <T> T _new(Class<T> referredClass, String alias);
-	public <T> T _new(Class<T> referredClass, String alias, T input);
 	
 	
 	//Action._get

@@ -53,7 +53,6 @@ public class DefaultModelConfig<T> extends AbstractEntityConfig<T> implements Mo
 		return templateParams;
 	}
 
-	
 	@Override
 	public <K> ParamConfig<K> findParamByPath(String path) {
 		// handle scenario if path = "/"

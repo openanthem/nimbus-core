@@ -19,34 +19,27 @@ import java.lang.annotation.Target;
 @Inherited
 public @interface Repo {
 
-	/* 3rd level repository: persistent stores */
+	/* 2rd level repository: persistent stores */
 	public enum Database {
 		rep_none,
 		rep_mongodb,
 		rep_rdbms;
 	}
 
-	/* 2nd level repository: distributed cache */
+	/* 1nd level repository: cache (distributed session or sticky) */
 	public enum Cache {
 		rep_none,
-		rep_redis,
-		rep_thread,
-		rep_jvm;
+		rep_session,	
+		rep_user,
+		rep_db;
 	}
-	
-	/* 1st level repository: local cache */
-	public enum Local {
-		rep_none,
-	}
+
 	
 	String alias() default "";
 	
-	Database value() default Database.rep_none;	
+	Database value() default Database.rep_mongodb;	
 	
-	Cache[] cache() default Cache.rep_none;	
-	
-	Local local() default Local.rep_none;
+	Cache cache() default Cache.rep_session;	
 	
 	boolean autoSave() default true;
-	
 }

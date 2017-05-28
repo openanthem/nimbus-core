@@ -1,12 +1,10 @@
 package com.anthem.oss.nimbus.core.domain.model.state.repo;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.stereotype.Repository;
 
 import com.anthem.oss.nimbus.core.SequenceException;
 import com.anthem.oss.nimbus.core.entity.DBSequence;
@@ -35,8 +33,8 @@ public class MongoIdSequenceRepository implements IdSequenceRepository {
 		//return new increased id
 		FindAndModifyOptions options = new FindAndModifyOptions();
 		options.returnNew(true);
-
-		//DBSequence seqId = mongoOperations.findAndModify(query, update, options, DBSequence.class);
+		options.upsert(true);
+		
 		DBSequence seqId = mongoOperations.findAndModify(query, update, options, DBSequence.class, "sequence");
 
 		//if no id, throws SequenceException]

@@ -17,7 +17,7 @@ import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
-import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
+import com.anthem.oss.nimbus.core.domain.model.state.builder.DefaultQuadModelBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFactory;
 import com.anthem.oss.nimbus.core.session.UserEndpointSession;
@@ -47,7 +47,7 @@ public abstract class AbstractProcessTaskExecutor implements ProcessTaskExecutor
 	HierarchyMatchBasedBeanFinder hierarchyMatchBeanLoader;
 	
 	@Autowired 
-	QuadModelBuilder qBuilder;
+	DefaultQuadModelBuilder qBuilder;
 	
 	private JustLogit logit = new JustLogit(getClass());
 	

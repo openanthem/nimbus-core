@@ -9,13 +9,7 @@ import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
  * @author Soham Chakravarti
  *
  */
-public interface ProcessTaskExecutor {
+public interface ExecutionContextLoader {
 
-	/**
-	 * 
-	 * @param cmdMsg
-	 * @return
-	 */
-	public <R> R doExecute(CommandMessage cmdMsg);
-
+	public ExecutionContext load(CommandMessage cmdMsg);
 }

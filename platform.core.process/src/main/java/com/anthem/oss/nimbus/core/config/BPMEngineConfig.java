@@ -131,7 +131,7 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
     protected Resource[] loadBPMResources() throws IOException{ 
     	List<Resource> bpmResources = new ArrayList<Resource>();
     	addBPMResources(bpmResources,definitions);
-    	addBPMResources(bpmResources,rules);
+    	//==addBPMResources(bpmResources,rules);
   		return bpmResources.toArray(new Resource[bpmResources.size()]);
 	}
     

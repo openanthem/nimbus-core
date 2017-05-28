@@ -31,9 +31,9 @@ import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
-import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.DefaultMongoModelRepository;
+import com.anthem.oss.nimbus.core.domain.model.state.builder.DefaultQuadModelBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository.Projection;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.db.mongo.DefaultMongoModelRepository;
 import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
 import com.anthem.oss.nimbus.core.entity.task.AssignmentTask;
 import com.anthem.oss.nimbus.core.entity.task.AssignmentTask.TaskType;
@@ -61,7 +61,7 @@ public class DefaultMongoModelPersistenceHandlerTest  extends AbstractPlatformIn
 	DefaultMongoModelRepository rep;
 
 	@Autowired
-	QuadModelBuilder quadModelBuilder;
+	DefaultQuadModelBuilder quadModelBuilder;
 
 	@Autowired
 	MongoOperations mongoOps;

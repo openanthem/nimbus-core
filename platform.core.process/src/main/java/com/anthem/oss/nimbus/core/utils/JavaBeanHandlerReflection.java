@@ -5,8 +5,6 @@ package com.anthem.oss.nimbus.core.utils;
 
 import java.lang.reflect.Method;
 
-import org.springframework.stereotype.Component;
-
 import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 
