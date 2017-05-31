@@ -5,7 +5,6 @@ package com.anthem.nimbus.platform.core.domain;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -21,9 +20,6 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.anthem.oss.nimbus.core.domain.config.DefaultDomainConfig;
-import com.anthem.oss.nimbus.core.domain.config.builder.ExecutionInputConfigHandler;
-import com.anthem.oss.nimbus.core.domain.config.builder.ExecutionOutputConfigHandler;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
@@ -77,17 +73,11 @@ public class ModelConfigHandlerTest {
 	@Before
 	public void before() {
 		//fix testcase
-		handler = new EntityConfigBuilder(null,null);
+		handler = new EntityConfigBuilder(null);
 		Domain domain = AnnotationUtils.findAnnotation(TestModel.class, Domain.class);
-		DefaultDomainConfig dc = new DefaultDomainConfig(domain);
 		
-		handler.setExecInputHandler(new ExecutionInputConfigHandler());
-		handler.setExecOutputHandler(new ExecutionOutputConfigHandler());
-		
-		handler.setTypeClassMappings(new HashMap<String, String>());
 		handler.getTypeClassMappings().put(LocalDate.class.getName(), "date");
 		
-		//mConfig = handler.load(TestModel.class, dc, DomainConfigAPITest.visitedModels);
 		Assert.assertNotNull(mConfig);
 	}
 	

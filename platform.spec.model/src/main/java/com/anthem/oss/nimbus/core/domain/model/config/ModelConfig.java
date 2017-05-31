@@ -27,6 +27,9 @@ public interface ModelConfig<T> extends EntityConfig<T> {
 
 	public List<? extends ParamConfig<?>> getParams();
 	
+	public ParamConfig<?> getIdParam();
+	public ParamConfig<?> getVersionParam();
+	
 	@JsonIgnore
 	public CollectionsTemplate<List<ParamConfig<?>>, ParamConfig<?>> templateParams();
 	

@@ -3,32 +3,27 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
+import java.beans.PropertyDescriptor;
 
-import com.anthem.oss.nimbus.core.domain.command.Command;
+import org.springframework.beans.BeanUtils;
+
+import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
-import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
-import com.anthem.oss.nimbus.core.domain.model.config.ActionExecuteConfig;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Input;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
-import com.anthem.oss.nimbus.core.util.ClassLoadUtils;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
 
 /**
  * @author Soham Chakravarti
  *
  */
-public class DefaultActionExecutorNew extends AbstractProcessTaskExecutor {
+public class DefaultActionExecutorNew extends AbstractCommandExecutor<Param<?>> {
 
-	private QuadModelBuilder quadModelBuilder; 
-	
-	DomainConfigBuilder domainConfigApi;
-	
-	public DefaultActionExecutorNew(QuadModelBuilder quadModelBuilder, DomainConfigBuilder domainConfigApi) {
-		super();
-		this.quadModelBuilder = quadModelBuilder;
-		this.domainConfigApi = domainConfigApi;
+	public DefaultActionExecutorNew(BeanResolverStrategy beanResolver) {
+		super(beanResolver);
 	}
 	
 	/**
@@ -40,32 +35,63 @@ public class DefaultActionExecutorNew extends AbstractProcessTaskExecutor {
 	 * <tab>	2.1. Traverse object model path using command domain uri <br>
 	 * <tab>	2.2. Set newly instantiated object and return  	
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
-	protected <R> R doExecuteInternal(CommandMessage cmdMsg) {
-		Command cmd = cmdMsg.getCommand();
+	protected final Output<Param<?>> executeInternal(Input input) {
+		ExecutionContext eCtx = handleNewDomainRoot(input.getContext());
+	
+		Param<Object> p = findParamByCommand(eCtx);
 		
-		ActionExecuteConfig<?, ?> aec = domainConfigApi.getActionExecuteConfig(cmd);
-		ModelConfig<?> mConfig = aec.getOutput().getModel();
+		setStateNew(input.getContext().getCommandMessage(), p);
 		
-		Class<?> coreClass = mConfig.isMapped() ? mConfig.findIfMapped().getMapsTo().getReferredClass() : mConfig.getReferredClass();
+		return Output.instantiate(input, eCtx, p);
+	}
+
+	protected void setStateNew(CommandMessage cmdMsg, Param<Object> p) {
+		// skip if call is for domain-root with no payload, as the new entity state would have been instantiated by repo & set prior
+		if(!cmdMsg.hasPayload() && cmdMsg.getCommand().isRootDomainOnly())
+			return;
 		
-		return (R)ClassLoadUtils.newInstance(coreClass);
+		Object newState = cmdMsg.hasPayload()
+							? getConverter().convert(p.getConfig().getReferredClass(), cmdMsg.getRawPayload())
+									: getJavaBeanHandler().instantiate(p.getConfig().getReferredClass());
 		
-		//QuadModel<?, ?> q = quadModelBuilder.build(cmd, (mConfig)->ModelsTemplate.newInstance(mConfig.getReferredClass()));
-		//PlatformSession.setAttribute(cmd, q);
-		
-		//init rules
-		//q.fireAllRules();
-		
-		//init process
-		//initiateProcessExecution(cmdMsg, q);
-		
-		//return (R)q;
+		// for /domain-root/_new - set "id" from repo 
+		if(cmdMsg.getCommand().isRootDomainOnly()) {
+			PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(p.getConfig().getReferredClass(), p.getConfig().getCode());
+			getJavaBeanHandler().setValue(pd, newState, cmdMsg.getCommand().getRootDomainElement().getRefId());
+		}
+										
+		p.setState(newState);
 	}
 	
-	@Override
-	protected void publishEvent(CommandMessage cmdMsg, ProcessExecutorEvents e) {
+	protected ExecutionContext handleNewDomainRoot(ExecutionContext eCtx) {
+		if(eCtx.getQuadModel()!=null)
+			return eCtx;
 		
+		// create new instance of entity and quad
+		ModelConfig<?> rootDomainConfig = getRootDomainConfig(eCtx);
+		QuadModel<?, ?> q =  createNewQuad(rootDomainConfig, eCtx);
+		
+		// set to context
+		eCtx.setQuadModel(q);
+		
+		// update refId
+		String refId = String.valueOf(getRootDomainRefIdByRepoDatabase(rootDomainConfig, q));
+		eCtx.getCommandMessage().getCommand().getRootDomainElement().setRefId(refId);
+		
+		return eCtx;
 	}
+	
+	private QuadModel<?, ?> createNewQuad(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx) {
+		// create new entity instance for core & view
+		Object entity = instantiateEntity(rootDomainConfig);
+		
+		Object mapsToEntity = rootDomainConfig.isMapped() ? instantiateEntity(rootDomainConfig.findIfMapped().getMapsTo()) : null;
+		
+		// create quad-model
+		ExecutionEntity<?, ?> e = ExecutionEntity.resolveAndInstantiate(entity, mapsToEntity);
+		
+		return getQuadModelBuilder().build(eCtx.getCommandMessage().getCommand(), e);		
+	}
+	
 }

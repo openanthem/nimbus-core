@@ -7,13 +7,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
+import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
 import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
-import com.anthem.oss.nimbus.core.domain.command.execution.ProcessGateway;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
@@ -51,13 +49,13 @@ import lombok.Getter;
 @Getter
 abstract public class AbstractEntityStateBuilder {
 
-	@Autowired RulesEngineFactoryProducer rulesEngineFactoryProducer;
-	
-	@Autowired
-	@Qualifier("default.processGateway")
-	ProcessGateway processGateway;
+	protected final RulesEngineFactoryProducer rulesEngineFactoryProducer;
 	
 	protected JustLogit logit = new JustLogit(getClass());
+	
+	public AbstractEntityStateBuilder(BeanResolverStrategy beanResolver) {
+		this.rulesEngineFactoryProducer = beanResolver.get(RulesEngineFactoryProducer.class);
+	}
 	
 	abstract public <T, P> DefaultModelState<T> buildModel(EntityStateAspectHandlers provider, DefaultParamState<T> associatedParam, ModelConfig<T> mConfig, Model<?> mapsToSAC);
 	abstract public <T, P> DefaultParamState<P> buildParam(EntityStateAspectHandlers provider, Model<T> mState, ParamConfig<P> mpConfig, Model<?> mapsToSAC);

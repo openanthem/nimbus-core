@@ -33,7 +33,7 @@ public class HierarchyMatchBasedBeanFinderTest extends AbstractUnitTest{
 		String absoluteUri = command.getAbsoluteUri();
 		absoluteUri = absoluteUri.replaceAll(Constants.SEPARATOR_URI.code, "\\.");
 		key.append(absoluteUri).append(".").append(command.getAction().toString())
-		   .append(command.getCurrentBehavior().name())
+		   .append(Behavior.$execute.getCode())
 		   .append(Constants.REQUEST_PARAMETER_MARKER.code).append(Constants.KEY_FUNCTION.code).append("=").append(functionName);
 		return key.toString();
 	}	

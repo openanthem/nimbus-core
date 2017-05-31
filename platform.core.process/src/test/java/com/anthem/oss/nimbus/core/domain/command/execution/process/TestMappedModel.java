@@ -15,9 +15,8 @@ import lombok.Setter;
  * @author Jayant Chaudhuri
  *
  */
-@Domain(value="testmappedmodel") 
+//@Domain(value="testmappedmodel") 
 @MapsTo.Type(TestModel.class) 
-@Execution.Input.Default @Execution.Output.Default @Execution.Output({Action._new, Action._nav, Action._process})
 @Getter @Setter
 public class TestMappedModel {
 	

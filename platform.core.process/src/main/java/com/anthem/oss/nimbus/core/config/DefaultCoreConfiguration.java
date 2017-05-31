@@ -1,5 +1,6 @@
 package com.anthem.oss.nimbus.core.config;
 
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -11,8 +12,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 import com.anthem.nimbus.platform.core.process.api.repository.SessionCacheRepository;
 import com.anthem.nimbus.platform.core.process.api.support.ProcessBeanHelper;
 import com.anthem.nimbus.platform.core.process.mq.MessageReceiver;
-import com.anthem.oss.nimbus.core.domain.command.execution.ProcessGateway;
-import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
+import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.ValidationConfigHandler;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.DefaultParamStateRepositoryLocal;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.IdSequenceRepository;
@@ -29,13 +29,13 @@ import com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement.Clien
 import com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement.ClientUserRoleRepository;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement.PlatformUserRepository;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.DefaultModelRepositoryFactory;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.DefaultMongoModelPersistenceHandler;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.DefaultMongoModelRepository;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelPersistenceHandler;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFactory;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ParamStateAtomicPersistenceEventListener;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ParamStateBatchPersistenceEventListener;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.db.mongo.DefaultMongoModelPersistenceHandler;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.db.mongo.DefaultMongoModelRepository;
 import com.anthem.oss.nimbus.core.rules.DefaultRulesEngineFactoryProducer;
 import com.anthem.oss.nimbus.core.rules.drools.DroolsRulesEngineFactory;
 import com.anthem.oss.nimbus.core.session.UserEndpointSession;
@@ -50,7 +50,6 @@ import com.anthem.oss.nimbus.core.web.WebCommandDispatcher;
  * @author Sandeep Mantha
  *
  */
-
 @Configuration
 @EnableMongoRepositories(basePackages="com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement"	)
 @ComponentScan(basePackageClasses = WebActionController.class)
@@ -84,24 +83,23 @@ public class DefaultCoreConfiguration {
 		return new ValidationConfigHandler();
 	}
 	
-//	//repo db
-	@Bean(name="default.modelRepositoryFactory")
-	public DefaultModelRepositoryFactory defaultModelRepositoryFactory(DomainConfigBuilder domainConfigApi){
-		return new DefaultModelRepositoryFactory(domainConfigApi);
+	@Bean
+	public DefaultModelRepositoryFactory defaultModelRepositoryFactory(BeanResolverStrategy beanResolver){
+		return new DefaultModelRepositoryFactory(beanResolver);
 	}
 	
-	@Bean(name="rep_mongodb_handler")
-	public DefaultMongoModelPersistenceHandler defaultMongoModelPersistenceHandler(@Qualifier("rep_mongodb") ModelRepository rep){
+	@Bean(name="default.rep_mongodb_handler")
+	public DefaultMongoModelPersistenceHandler defaultMongoModelPersistenceHandler(@Qualifier("default.rep_mongodb") ModelRepository rep){
 		return new DefaultMongoModelPersistenceHandler(rep);
 	}
 	
-	@Bean(name="rep_mongodb")
-	public DefaultMongoModelRepository defaultMongoModelRepository(MongoOperations mongoOps, IdSequenceRepository idSequenceRepo){
-		return new DefaultMongoModelRepository(mongoOps,idSequenceRepo);
+	@Bean(name="default.rep_mongodb")
+	public DefaultMongoModelRepository defaultMongoModelRepository(MongoOperations mongoOps, IdSequenceRepository idSequenceRepo, BeanResolverStrategy beanResolver){
+		return new DefaultMongoModelRepository(mongoOps, idSequenceRepo, beanResolver);
 	}
 	
 	@Bean(name="default.paramStateAtomicPersistenceEventListener")
-	public ParamStateAtomicPersistenceEventListener paramStateAtomicPersistenceEventListener(ModelRepositoryFactory repoFactory,@Qualifier("rep_mongodb_handler") ModelPersistenceHandler handler){
+	public ParamStateAtomicPersistenceEventListener paramStateAtomicPersistenceEventListener(ModelRepositoryFactory repoFactory,@Qualifier("default.rep_mongodb_handler") ModelPersistenceHandler handler){
 		return new ParamStateAtomicPersistenceEventListener(repoFactory, handler);
 	}
 	
@@ -151,8 +149,8 @@ public class DefaultCoreConfiguration {
 	}
 	
 	@Bean
-	public WebCommandDispatcher webCommandDispatcher(WebCommandBuilder builder, @Qualifier("default.processGateway") ProcessGateway processGateway){
-		return new WebCommandDispatcher(builder,processGateway);
+	public WebCommandDispatcher webCommandDispatcher(BeanResolverStrategy beanResolver){
+		return new WebCommandDispatcher(beanResolver);
 	}
 	
 	@Bean

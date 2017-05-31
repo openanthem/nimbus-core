@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 import org.apache.commons.lang.StringUtils;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
+import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.entity.SearchCriteria.ExampleSearchCriteria;
 import com.anthem.oss.nimbus.core.entity.SearchCriteria.LookupSearchCriteria;
@@ -44,14 +45,13 @@ public interface ModelRepository {
 		}
 	}
 	
-	//==public <T, R> R doExecute(CommandMessage cmdMsg, T input);
+	/*SOHAM: f.w upgrade v0.3: START */
 	
-	//==public <T> void doExecute(ModelEvent<ParamStateAndConfig<T>> event);
+	public <T> T _new(ModelConfig<T> mConfig);
+	public <T> T _new(ModelConfig<T> mConfig, T newState);
 	
-	//Action._new
-	//==public <T> T _new(CommandMessage cmdMsg, T input);
-	public <T> T _new(Class<T> referredClass, String alias);
-	public <T> T _new(Class<T> referredClass, String alias, T input);
+	/*SOHAM: f.w upgrade v0.3: END */
+	
 	
 	
 	//Action._get

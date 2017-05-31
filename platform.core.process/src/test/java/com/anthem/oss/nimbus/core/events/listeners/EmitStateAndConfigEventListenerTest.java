@@ -28,7 +28,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
-import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
+import com.anthem.oss.nimbus.core.domain.model.state.builder.DefaultQuadModelBuilder;
 import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
 import com.anthem.oss.nimbus.core.events.listeners.TestModelFlowData.Book;
 import com.anthem.oss.nimbus.core.events.listeners.TestModelFlowData.Book.Publisher;
@@ -49,7 +49,7 @@ import test.com.anthem.nimbus.platform.spec.contract.event.MockEventListener;
 public class EmitStateAndConfigEventListenerTest extends AbstractPlatformIntegrationTests {
 
 	@Autowired
-	QuadModelBuilder quadModelBuilder;
+	DefaultQuadModelBuilder quadModelBuilder;
 	
 	private static QuadModel<OrderBookFlow, Book> q;
 	

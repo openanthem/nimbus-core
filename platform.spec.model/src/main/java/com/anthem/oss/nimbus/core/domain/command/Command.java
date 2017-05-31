@@ -12,7 +12,6 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
@@ -29,7 +28,7 @@ import lombok.ToString;
  * @author Soham Chakravarti
  *
  */
-@Data @ToString(of={"absoluteUri", "event", "behaviors", "currentBehaviorIndex", "clientUserId"}) 
+@Data @ToString(of={"absoluteUri", "event", "behaviors", "clientUserId"}) 
 public class Command implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -45,7 +44,7 @@ public class Command implements Serializable {
 	
 	private String event;
 	
-	private int currentBehaviorIndex = -1; // -1 to size()
+	
 	
 	private List<Behavior> behaviors;
 	
@@ -117,22 +116,6 @@ public class Command implements Serializable {
 		cloned.setClientUserId(getClientUserId());
 		cloned.setRoot(clonedRoot);
 		return cloned;
-	}
-	
-	public Behavior getCurrentBehavior() {
-		if(currentBehaviorIndex == -1 && CollectionUtils.isNotEmpty(getBehaviors()))
-			return incrementAndGetCurrentBehavior();
-		
-		
-		return (currentBehaviorIndex > -1 && currentBehaviorIndex < getBehaviors().size())
-				? getBehaviors().get(currentBehaviorIndex) : null;
-	}
-	
-	public Behavior incrementAndGetCurrentBehavior() {
-		if(currentBehaviorIndex < getBehaviors().size()) 
-			currentBehaviorIndex++;
-		
-		return getCurrentBehavior();
 	}
 	
 

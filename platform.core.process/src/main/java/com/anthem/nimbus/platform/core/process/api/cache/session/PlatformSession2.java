@@ -4,22 +4,6 @@
 
 package com.anthem.nimbus.platform.core.process.api.cache.session;
 
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-
-import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
-import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
-import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
-import com.anthem.oss.nimbus.core.domain.definition.Constants;
-import com.anthem.oss.nimbus.core.domain.model.config.ActionExecuteConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
-import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
-import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
-import com.anthem.oss.nimbus.core.util.ClassLoadUtils;
-import com.anthem.oss.nimbus.core.utils.ProcessBeanResolver;
-
 /**
  * @author Jayant Chaudhuri
  * Platform Session provides the ability for platform to access session variables. 
@@ -28,10 +12,10 @@ import com.anthem.oss.nimbus.core.utils.ProcessBeanResolver;
  * with the current thread
  *
  */
-public class PlatformSession2 {
+public class PlatformSession2 {} /*
 	
 	private static DomainConfigBuilder domainConfigAPI;
-	private static QuadModelBuilder quadModelBuilder;
+	private static DefaultQuadModelBuilder quadModelBuilder;
 
 	@SuppressWarnings("unchecked")
 	private static <R> R getAttribute(String key){
@@ -39,11 +23,6 @@ public class PlatformSession2 {
 		return (R)requestAttributes.getAttribute(key,RequestAttributes.SCOPE_REQUEST);
 	}
 
-	/**
-	 * 
-	 * @param cmd
-	 * @return
-	 */
 	public static <R> R getAttribute(Command cmd) {
 		String rootDomainUri = getRootDomainUri(cmd);
 		R attribute = (R)getAttribute(rootDomainUri); 
@@ -60,11 +39,6 @@ public class PlatformSession2 {
 		return null;
 	}
 
-	/**
-	 * 
-	 * @param cmd
-	 * @param quadModel
-	 */
 	public static void setAttribute(Command cmd, QuadModel<?,?> quadModel){
 		String rootDomainUri = getRootDomainUri(cmd);
 		putAttribute(rootDomainUri, quadModel, RequestAttributes.SCOPE_REQUEST);
@@ -78,20 +52,10 @@ public class PlatformSession2 {
 		}
 	}
 	
-     /**
-     * 
-     * @param cmd
-     * @return
-     */
 	public static <R> R getOrThrowEx(Command cmd) {
 		return getOrThrowEx(cmd.getRootDomainUri());
 	}
 	
-	/**
-	 * 
-	 * @param key
-	 * @return
-	 */
 	private static <R> R getOrThrowEx(String key) {
 		R value = getAttribute(key);
 		if(value != null) return value;
@@ -100,19 +64,12 @@ public class PlatformSession2 {
 	}
 	
 	
-	/**
-	 * This method creates a quad model for an execution state that exists in the session cache.
-	 * This does not populate the state values. Each individual getState call within the system would go to the session cache and 
-	 * retrieve the attribute value
-	 * @param cmd
-	 * @return
-	 */
 	private static QuadModel<?,?> buildQuadModelForStateInCache(Command cmd){
 		if(domainConfigAPI == null){
 			domainConfigAPI = ProcessBeanResolver.appContext.getBean(DomainConfigBuilder.class);
 		}	
 		if(quadModelBuilder == null){
-			quadModelBuilder = ProcessBeanResolver.appContext.getBean(QuadModelBuilder.class);
+			quadModelBuilder = ProcessBeanResolver.appContext.getBean(DefaultQuadModelBuilder.class);
 		}	
 		ActionExecuteConfig<?, ?> aec = domainConfigAPI.getActionExecuteConfig(cmd);
 		ModelConfig<?> mConfig = aec.getOutput().getModel();
@@ -131,43 +88,21 @@ public class PlatformSession2 {
 		return quadModel;		
 	}
 	
-	/**
-	 * 
-	 * @param key
-	 * @param value
-	 * @param scope
-	 */
 	private static void putAttribute(String key, Object value, int scope){
 		RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
 		requestAttributes.setAttribute(key, value, scope);
 	}
 	
-	/**
-	 * 
-	 * @param key
-	 * @param scope
-	 * @return
-	 */
 	private static Object pullAttribute(String key, int scope){
 		RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
 		return requestAttributes.getAttribute(key, scope);
 	}
 	
-	/**
-	 * 
-	 * @param key
-	 * @param scope
-	 */
 	private static void removeAttribute(String key, int scope){
 		RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
 		requestAttributes.removeAttribute(key, scope);
 	}	
 	
-	/**
-	 * 
-	 * @param rootDomainUri
-	 * @return
-	 */
 	private static String getExecutionStateExistsKey(String rootDomainUri){
 		StringBuilder executionStateExistsKey = new StringBuilder(rootDomainUri);
 		executionStateExistsKey.append(".containsExecutionState");
@@ -175,11 +110,6 @@ public class PlatformSession2 {
 		
 	}
 	
-	/**
-	 * 
-	 * @param cmd
-	 * @return
-	 */
 	private static String getRootDomainUri(Command cmd){
 		String rootDomainUri = cmd.getRootDomainUri();
 		String refId = cmd.getElement(Type.DomainAlias).get().getRefId();
@@ -190,6 +120,5 @@ public class PlatformSession2 {
 		return domainUri.toString();
 	
 	}
-	
-    
 }
+*/

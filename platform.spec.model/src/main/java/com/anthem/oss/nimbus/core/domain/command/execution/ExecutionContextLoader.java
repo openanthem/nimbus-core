@@ -1,14 +1,11 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state.builder;
+package com.anthem.oss.nimbus.core.domain.command.execution;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFactory;
+import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.definition.Repo;
+import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 
 /**
  * View is a perspective of Core. It can be used in presentation layer or can be part of web service integration.<br>
@@ -34,34 +31,22 @@ import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFact
  * <br>
  * Within a Session, each Flow for a given domain-alias can point to multiple Quad models.<br>
  * <br>
- * TODO: Flush out details based on Composite Quad implementation...............................START
+ * Example:<br>
  * flow_car has two pages. First page is for searching existing cars and second is to display details of any one unique car.<br>
  * <br>
- * flow_car				- has no backing core model<br>
- * flow_car/search		- has backing core model, but used for default search criteria. Not meant to be linked with persistent entity.<br>
- * flow_car/details		- has backing core model<br>
+ * flow_car/_new		- creates new entity and assigns unique persistence id, if configured with {@linkplain Repo}<br>
+ * flow_car:100/_get	- checks if entity exists in session, others retrieves & puts entity in session, if configured as such in {@linkplain Repo}<br>
+ * flow_car/_search		- creates {@linkplain QuadModel} in transient mode and doesn't interact with session<br>
  * <br>
  * Possible URLs:<br>
- * 		/flow_car			 _____Quad1___________________[void]
- * 		/flow_car/search	 _____Quad1___________________Car[instance level of Quad1]	
- * 		/flow_car/details:100_____Quad1___________________Car[100]
- * 		/flow_car/details:200_____Quad1___________________Car[200]
- * TODO: Flush out details based on Composite Quad implementation...............................END
- * 
+ * 		/flow_car/_new		 _____Quad1___________________new Car()
+ * 		/flow_car/search	 _____Quad2___________________Car[instance level of Quad1]	
+ * 		/flow_car/details:100_____Quad3___________________Car[100]
+ * 		/flow_car/details:200_____Quad4___________________Car[200]
  * 
  * @author Soham Chakravarti
  */
-public class StateFactory<V, C> {
+public interface ExecutionContextLoader {
 
-	@Autowired ModelRepositoryFactory repFactory;
-	
-	public ExecutionEntity<V, C> resurrect(Command cmd) {
-		ModelRepository rep = repFactory.get(cmd);
-		
-		return null;
-	}
-	
-	
+	public ExecutionContext load(CommandMessage cmdMsg);
 }
-
-

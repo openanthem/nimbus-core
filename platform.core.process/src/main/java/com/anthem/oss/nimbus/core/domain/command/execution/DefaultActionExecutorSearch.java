@@ -1,38 +1,34 @@
-/**
- * 
- */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
-import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
-import com.anthem.oss.nimbus.core.domain.command.execution.nav.NavigationHandler;
-import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFactory;
+
+import com.anthem.oss.nimbus.core.BeanResolverStrategy;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Input;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+
 
 /**
  * @author Soham Chakravarti
  *
  */
-public class DefaultActionExecutorSearch extends AbstractProcessTaskExecutor {
-
-	ModelRepositoryFactory repFactory;
+public class DefaultActionExecutorSearch extends AbstractCommandExecutor<Param<?>> {
 	
-	DomainConfigBuilder domainConfigApi;
-	
-	CommandMessageConverter converter;
-	
-	public DefaultActionExecutorSearch(ModelRepositoryFactory repFactory, DomainConfigBuilder domainConfigApi,
-			CommandMessageConverter converter) {
-		super();
-		this.repFactory = repFactory;
-		this.domainConfigApi = domainConfigApi;
-		this.converter = converter;
+	public DefaultActionExecutorSearch(BeanResolverStrategy beanResolver) {
+		super(beanResolver);
 	}
+
+	@Override
+	protected Output<Param<?>> executeInternal(Input input) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
 	
 //	@Override
-//	protected <R> R doExecuteInternal(CommandMessage cmdMsg) {
+//	protected <R> R executeInternal(CommandMessage cmdMsg) {
 //		Command cmd = cmdMsg.getCommand();
-//		
-//		//String alias = cmd.getRootDomainAlias();
 //		
 //		ActionExecuteConfig<?, ?> aec = domainConfigApi.getActionExecuteConfig(cmd);
 //		Class<?> criteriaClass = aec.getInput().getModel().getReferredClass();
@@ -60,26 +56,22 @@ public class DefaultActionExecutorSearch extends AbstractProcessTaskExecutor {
 //		}
 //		return r;
 //	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	protected <R> R doExecuteInternal(CommandMessage cmdMsg) {
-		return (R) doExecuteFunctionHandler(cmdMsg, NavigationHandler.class);
-		
-	}
-	
-	@Override
-	protected <T extends FunctionHandler<?, ?>> T getHandler(CommandMessage commandMessage, Class<T> handlerClass) {
-		T handler = super.getHandler(commandMessage, handlerClass);
-		if(handler == null){
-			handler = super.getHandler("default._nav$execute?fn=lookup",handlerClass);
-		}
-		return handler;
-	}
-	
-	@Override
-	protected void publishEvent(CommandMessage cmdMsg, ProcessExecutorEvents e) {
-		
-	}
+//	
+//	@SuppressWarnings("unchecked")
+//	@Override
+//	protected <R> R doExecuteInternal(CommandMessage cmdMsg) {
+//		return (R) doExecuteFunctionHandler(cmdMsg, NavigationHandler.class);
+//		
+//	}
+//	
+//	@Override
+//	protected <T extends FunctionHandler<?, ?>> T getHandler(CommandMessage commandMessage, Class<T> handlerClass) {
+//		T handler = super.getHandler(commandMessage, handlerClass);
+//		if(handler == null){
+//			handler = super.getHandler("default._nav$execute?fn=lookup",handlerClass);
+//		}
+//		return handler;
+//	}
+
 
 }

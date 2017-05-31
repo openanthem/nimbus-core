@@ -3,23 +3,11 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-
-import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
-import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
-import com.anthem.oss.nimbus.core.domain.definition.EnableParamStateTree;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
-import com.anthem.oss.nimbus.core.session.UserEndpointSession;
-
 /**
  * @author Soham Chakravarti
  *
  */
-public class DefaultActionExecutorUpdate extends AbstractProcessTaskExecutor {
+public class DefaultActionExecutorUpdate {} /*extends AbstractProcessTaskExecutor {
 
 	
 	@SuppressWarnings("unchecked")
@@ -54,16 +42,7 @@ public class DefaultActionExecutorUpdate extends AbstractProcessTaskExecutor {
 		return (R)Boolean.TRUE;
 	}
 	
-	@Override
-	protected void publishEvent(CommandMessage cmdMsg, ProcessExecutorEvents e) {
-		
-	}
-	
-	/**
-	 * 
-	 * @param param
-	 * @return
-	 */
+
 	private boolean useParamStateTree(Param<Object> param){	
 		Class<?> mapsToClass = param.getRootExecution().getConfig().getReferredClass();
 		if( mapsToClass.getAnnotation(EnableParamStateTree.class) != null){
@@ -71,8 +50,5 @@ public class DefaultActionExecutorUpdate extends AbstractProcessTaskExecutor {
 		}
 		return false;
 	}	
-	
-	
-	
-	
 }
+*/

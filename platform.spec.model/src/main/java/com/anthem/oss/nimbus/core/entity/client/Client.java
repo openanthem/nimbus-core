@@ -5,9 +5,7 @@ package com.anthem.oss.nimbus.core.entity.client;
 
 import javax.validation.constraints.NotNull;
 
-import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
-import com.anthem.oss.nimbus.core.domain.definition.Execution;
 import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 
@@ -19,9 +17,8 @@ import lombok.ToString;
  * @author Soham Chakravarti
  *
  */
-@Domain(value="client")
-@Repo(Repo.Database.rep_mongodb)
-@Execution.Input.Default @Execution.Output.Default @Execution.Output(Action._new)
+@Domain("client")
+@Repo
 @Getter @Setter @ToString(callSuper=true)
 public class Client extends ClientEntity {
 

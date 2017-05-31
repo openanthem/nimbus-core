@@ -3,13 +3,11 @@
  */
 package com.anthem.oss.nimbus.core.bpm;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-
+import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
-import com.anthem.oss.nimbus.core.domain.command.execution.ProcessGateway;
-import com.anthem.oss.nimbus.core.domain.command.execution.ProcessResponse;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutorGateway;
 
 /**
  * @author Jayant.Chaudhuri
@@ -17,17 +15,16 @@ import com.anthem.oss.nimbus.core.domain.command.execution.ProcessResponse;
  */
 abstract public class AbstractExpressionHelper {
 	
-	@Autowired 
-	@Qualifier("default.processGateway")
-	private ProcessGateway processGateway;
+	private final CommandExecutorGateway executorGateway;
 	
-	/**
-	 * 
-	 * @return
-	 */
+	public AbstractExpressionHelper(BeanResolverStrategy beanResolver) {
+		this.executorGateway = beanResolver.get(CommandExecutorGateway.class);
+	}
+	
+
 	final public Object executeProcess(CommandMessage cmdMsg){
-		ProcessResponse response = processGateway.executeProcess(cmdMsg);
-		return response.getResponse();
+		MultiOutput response = executorGateway.execute(cmdMsg);
+		return response.getValue();
 	}
 	
 	/**

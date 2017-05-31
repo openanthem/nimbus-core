@@ -35,7 +35,7 @@ import com.anthem.oss.nimbus.core.domain.command.execution.CommandMessageConvert
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
-import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
+import com.anthem.oss.nimbus.core.domain.model.state.builder.DefaultQuadModelBuilder;
 import com.anthem.oss.nimbus.core.expressions.ExpressionHelperTestData.Author;
 import com.anthem.oss.nimbus.core.expressions.ExpressionHelperTestData.Book;
 import com.anthem.oss.nimbus.core.expressions.ExpressionHelperTestData.Book.Publisher;
@@ -58,7 +58,7 @@ public class DefaultExpressionHelperTest extends AbstractPlatformIntegrationTest
 	DefaultExpressionHelper expHlpr;
 	
 	@Autowired
-	QuadModelBuilder quadModelBuilder;
+	DefaultQuadModelBuilder quadModelBuilder;
 	
 	@Autowired
 	CommandMessageConverter converter;

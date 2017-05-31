@@ -14,8 +14,7 @@ import lombok.Setter;
  * @author Jayant Chaudhuri
  *
  */
-@Domain(value="testmodel")
-@Execution.Input.Default @Execution.Output.Default @Execution.Output(Action._new)
+//@Domain(value="testmodel")
 @Getter @Setter
 public class TestModel {
 	

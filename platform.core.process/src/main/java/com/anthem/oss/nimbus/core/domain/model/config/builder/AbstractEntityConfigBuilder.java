@@ -29,6 +29,7 @@ import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.Converters;
 import com.anthem.oss.nimbus.core.domain.definition.Converters.ParamConverter;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
+import com.anthem.oss.nimbus.core.domain.definition.Execution;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.State;
@@ -328,10 +329,10 @@ abstract public class AbstractEntityConfigBuilder {
 	}
 	
 	private <P> DefaultParamConfig<P> decorateParam(ModelConfig<?> mConfig, Field f, DefaultParamConfig<P> created, EntityConfigVistor visitedModels) {
-		List<AnnotationConfig> aConfigs = AnnotationConfigHandler.handle(f, ViewParamBehavior.class);
-		created.setUiNatures(aConfigs);
-
+		created.setUiNatures(AnnotationConfigHandler.handle(f, ViewParamBehavior.class));
 		created.setUiStyles(AnnotationConfigHandler.handleSingle(f, ViewStyle.class));
+		created.setExecutionConfigs(new ArrayList<>(AnnotatedElementUtils.findMergedRepeatableAnnotations(f, Execution.Config.class)));
+		
 		
 		if(AnnotatedElementUtils.isAnnotated(f, Converters.class)) {
 			Converters convertersAnnotation = AnnotationUtils.getAnnotation(f, Converters.class);

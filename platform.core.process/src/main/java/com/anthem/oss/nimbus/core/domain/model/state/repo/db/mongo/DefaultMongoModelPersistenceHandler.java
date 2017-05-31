@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state.repo.db;
+package com.anthem.oss.nimbus.core.domain.model.state.repo.db.mongo;
 
 import java.io.Serializable;
 import java.util.List;
@@ -15,6 +15,8 @@ import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelPersistenceHandler;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 
@@ -43,7 +45,7 @@ public class DefaultMongoModelPersistenceHandler implements ModelPersistenceHand
 			logit.info(()->"path: "+event.getPath()+ " action: "+event.getType()+" state: "+event.getPayload().getState());
 			
 			Param<?> param = event.getPayload();
-			Model<?> mRoot = param.getRootDomain();
+			Model<Object> mRoot = (Model<Object>)param.getRootDomain();
 			
 			Class<Object> mRootClass = (Class<Object>)mRoot.getConfig().getReferredClass();
 			
@@ -59,7 +61,7 @@ public class DefaultMongoModelPersistenceHandler implements ModelPersistenceHand
 			Object coreState = mRoot.getState();
 			Object coreStateId = mRoot.findParamByPath("/id").getState();
 			if(coreStateId == null) {
-				rep._new(mRootClass, alias, coreState);
+				rep._new(mRoot.getConfig(), coreState);
 				return true;
 			}
 			

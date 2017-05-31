@@ -1,0 +1,194 @@
+package com.anthem.oss.nimbus.core.domain.model.state.repo.db;
+
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.count;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.graphLookup;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.unwind;
+
+import java.lang.reflect.Constructor;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.TimeZone;
+
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.repository.support.SpringDataMongodbQuery;
+import org.springframework.util.CollectionUtils;
+
+import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
+import com.anthem.oss.nimbus.core.BeanResolverStrategy;
+import com.anthem.oss.nimbus.core.entity.EntityAssociation;
+import com.anthem.oss.nimbus.core.entity.SearchCriteria;
+import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.dsl.PathBuilder;
+
+import groovy.lang.Binding;
+import groovy.lang.GroovyShell;
+
+/**
+ * @author Rakesh Patel
+ *
+ */
+public class MongoSearchByQuery extends MongoDBSearch {
+
+	public MongoSearchByQuery(BeanResolverStrategy beanResolver) {
+		super(beanResolver);
+	}
+
+
+	@Override
+	public <T> Object search(Class<?> referredClass, String alias, SearchCriteria<T> criteria) {
+		if(StringUtils.contains((String)criteria.getWhere(),"association")) {
+			return searchByAggregation(referredClass, alias, criteria);
+		}
+		return searchByQuery(referredClass, alias, criteria);
+	}
+	
+	
+	private <T> Object searchByQuery(Class<?> referredClass, String alias, SearchCriteria<T> criteria) {
+		
+		Class<?> outputClass = findOutputClass(criteria, referredClass);
+		
+		SpringDataMongodbQuery<?> query = new SpringDataMongodbQuery<>(getMongoOps(), outputClass, alias);
+		
+		Predicate predicate = buildPredicate((String)criteria.getWhere(), referredClass, alias);
+		
+		if(StringUtils.equalsIgnoreCase(criteria.getAggregateCriteria(), "count")) {
+			Holder<Long> holder = new Holder<>();
+			holder.setState(query.where(predicate).fetchCount());
+			return holder; // TODO refactor to support other single value aggregations ...
+		}
+		
+		if(criteria.getProjectCriteria() != null && !MapUtils.isEmpty(criteria.getProjectCriteria().getMapsTo())) {
+			Collection<String> fields = criteria.getProjectCriteria().getMapsTo().values();
+			List<PathBuilder> paths = new ArrayList<>();
+			fields.forEach((f)->paths.add(new PathBuilder(outputClass, f)));
+			
+			return query.where(predicate).fetch(paths.toArray(new PathBuilder[paths.size()]));
+		}
+		return query.where(predicate).fetch();
+		
+	}
+
+	private Predicate buildPredicate(String criteria, Class<?> referredClass, String alias) {
+		
+		if(StringUtils.isBlank(criteria)) {
+			return null;
+		}
+		
+		String groovyScript = criteria.toString().replaceAll("<", "(").replace(">", ")");
+				
+		final Binding binding = new Binding();
+		Object obj = createQueryDslClassInstance(referredClass);
+        binding.setProperty(alias, obj);
+        
+        LocalDate localDate = LocalDate.now();
+        LocalDateTime localDateTime = LocalDateTime.of(localDate, LocalTime.MIDNIGHT);
+        localDateTime.atZone(TimeZone.getDefault().toZoneId());
+       
+        binding.setProperty("todaydate",localDateTime);
+        final GroovyShell shell = new GroovyShell(binding); 
+        return (Predicate)shell.evaluate(groovyScript);
+	}
+	
+	private Object createQueryDslClassInstance(Class<?> referredClass) {
+		Object obj = null;
+		try {
+			String cannonicalQuerydslclass = referredClass.getCanonicalName().replace(referredClass.getSimpleName(), "Q".concat(referredClass.getSimpleName()));
+			Class<?> cl = Class.forName(cannonicalQuerydslclass);
+			Constructor<?> con = cl.getConstructor(String.class);
+			obj = con.newInstance(referredClass.getSimpleName());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return obj;
+	}
+		
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private  <T> Object searchByAggregation(Class<?> referredClass, String alias, SearchCriteria<T> criteria) {
+		Class<?> outputClass = findOutputClass(criteria, referredClass);
+		
+		Set<?> result = new HashSet<>();
+		EntityAssociation assoc = getConverter().convert(EntityAssociation.class, (String) criteria.getWhere());
+		
+		for(EntityAssociation entityAssociation: assoc.getAssociatedEntities()) {
+			List<AggregationOperation> aggregateOps = new ArrayList<>();
+
+			buildAggregationQuery(entityAssociation, aggregateOps);
+			
+			if(StringUtils.equalsIgnoreCase(criteria.getAggregateCriteria(), "count")) {
+				AggregationOperation countOp = count().as("state"); // TODO refactor to support other single value aggregations ...
+				aggregateOps.add(countOp);
+			}
+			
+			if(criteria.getProjectCriteria() != null && !MapUtils.isEmpty(criteria.getProjectCriteria().getMapsTo())) { 
+				String[] projectionFields = (String[])criteria.getProjectCriteria().getMapsTo().values().toArray();
+				AggregationOperation projectOps = Aggregation.project(projectionFields);
+				aggregateOps.add(projectOps);
+			}
+			
+			AggregationResults models = getMongoOps().aggregate(Aggregation.newAggregation(aggregateOps), assoc.getDomainAlias(), outputClass);
+			result.addAll(models.getMappedResults());
+		}
+		return new ArrayList<>(result);
+	}
+	
+	private void buildAggregationQuery(EntityAssociation assoc, List<AggregationOperation> aggregateOps) {
+		buildAggregationPipeline(assoc, aggregateOps);
+		
+		if(!CollectionUtils.isEmpty(assoc.getAssociatedEntities())) {
+			buildAggregationQueryNested(assoc.getAssociatedEntities(), aggregateOps);
+		}
+	}
+	
+	private void buildAggregationPipeline(EntityAssociation assoc, List<AggregationOperation> aggregateOps) {
+		aggregateOps.add(buildGraphOperation(assoc));
+		aggregateOps.add(match(Criteria.where(assoc.getAssociationAlias()).ne(Collections.EMPTY_LIST)));
+		if(assoc.isUnwind()) {
+			aggregateOps.add(unwind(assoc.getAssociationAlias()));
+		}
+	}
+	
+	private void buildAggregationQueryNested(List<EntityAssociation> associatedEntities, List<AggregationOperation> aggregateOps) {
+		associatedEntities.forEach((assoc) -> {
+			buildAggregationPipeline(assoc, aggregateOps);
+			
+			if(!CollectionUtils.isEmpty(assoc.getAssociatedEntities())) {
+				buildAggregationQueryNested(assoc.getAssociatedEntities(), aggregateOps);
+			}
+		});
+	}
+	
+	private AggregationOperation buildGraphOperation(EntityAssociation assoc) {
+		if(!CollectionUtils.isEmpty(assoc.getCriteria())) {
+			return graphLookup(assoc.getDomainAlias())
+					.startWith(assoc.getAssociationStartWith())
+					.connectFrom(assoc.getAssociationFrom())
+					.connectTo(assoc.getAssociationTo())
+					.restrict(assoc.getCriteria().stream() //TODO chaining the criteria if more than one
+							.map((restriction) -> Criteria.where(restriction.getKey()).is(restriction.getValue()))
+							.findFirst().get())
+					.as(assoc.getAssociationAlias());
+		}
+		else {
+			return graphLookup(assoc.getDomainAlias())
+					.startWith(assoc.getAssociationStartWith())
+					.connectFrom(assoc.getAssociationFrom())
+					.connectTo(assoc.getAssociationTo())
+					.as(assoc.getAssociationAlias());
+		}
+	}
+	
+}

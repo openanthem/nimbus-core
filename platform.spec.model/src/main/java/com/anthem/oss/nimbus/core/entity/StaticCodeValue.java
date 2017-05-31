@@ -5,9 +5,9 @@ package com.anthem.oss.nimbus.core.entity;
 
 import java.util.List;
 
-import com.anthem.oss.nimbus.core.domain.command.Action;
+import org.springframework.data.annotation.Id;
+
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
-import com.anthem.oss.nimbus.core.domain.definition.Execution;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
 
@@ -20,11 +20,11 @@ import lombok.Setter;
  *
  */
 @Domain("staticCodeValue")
-@Repo(Repo.Database.rep_mongodb)
-@Execution.Input.Default @Execution.Output.Default @Execution.Output(Action._delete)
+@Repo
 @Getter @Setter @RequiredArgsConstructor
 public class StaticCodeValue {
 
+	@Id
 	private final String paramCode;
 
 	private final List<ParamValue> paramValues;

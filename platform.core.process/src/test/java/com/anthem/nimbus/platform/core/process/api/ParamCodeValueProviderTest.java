@@ -24,7 +24,6 @@ import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContext;
 import com.anthem.oss.nimbus.core.domain.command.execution.FunctionHandler;
-import com.anthem.oss.nimbus.core.domain.command.execution.ProcessGateway;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
 import com.anthem.oss.nimbus.core.entity.client.Client;
 import com.anthem.oss.nimbus.core.entity.queue.MGroupMember;
@@ -42,9 +41,9 @@ import com.anthem.oss.nimbus.core.entity.queue.Queue;
 public class ParamCodeValueProviderTest extends AbstractUnitTest {
 
 
-	@Autowired
-	@Qualifier("default.processGateway")
-	ProcessGateway processGateway;
+//	@Autowired
+//	@Qualifier("default.processGateway")
+//	ProcessGateway processGateway;
 	
 	@Autowired
 	MongoOperations mongoOps;

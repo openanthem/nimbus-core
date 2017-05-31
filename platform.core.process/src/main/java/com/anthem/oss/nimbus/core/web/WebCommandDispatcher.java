@@ -7,10 +7,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
+import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
-import com.anthem.oss.nimbus.core.domain.command.execution.ProcessGateway;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutorGateway;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 
 /**
@@ -19,13 +19,13 @@ import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
  */
 public class WebCommandDispatcher {
 
-	WebCommandBuilder builder;
+	private final WebCommandBuilder builder;
 
-	ProcessGateway processGateway;
+	private final CommandExecutorGateway gateway;
 
-	public WebCommandDispatcher(WebCommandBuilder builder,ProcessGateway processGateway) {
-		this.builder = builder;
-		this.processGateway = processGateway;
+	public WebCommandDispatcher(BeanResolverStrategy beanResolver) {
+		this.builder = beanResolver.get(WebCommandBuilder.class);
+		this.gateway = beanResolver.get(CommandExecutorGateway.class);
 	}
 	
 	public Object handle(HttpServletRequest httpReq, RequestMethod httpMethod, ModelEvent<String> event) {
@@ -46,26 +46,10 @@ public class WebCommandDispatcher {
 //		}
 
 		return handle(cmd, json);
-
-
 	}
 
-	/**
-	 *
-	 * @param cmd
-	 * @param payload
-	 * @return
-	 */
-	public Object handle(Command cmd, String payload) {
-		CommandMessage cmdMsg = new CommandMessage();
-		cmdMsg.setCommand(cmd);
-		cmdMsg.setRawPayload(payload);
-		try {
-			Object resp = processGateway.startProcess(cmdMsg);
-			return resp;
-		} catch (Exception ex) {
-			throw new FrameworkRuntimeException(ex);
-		}
+	public MultiOutput handle(Command cmd, String payload) {
+		return gateway.execute(cmd, payload);
 	}
 
 }

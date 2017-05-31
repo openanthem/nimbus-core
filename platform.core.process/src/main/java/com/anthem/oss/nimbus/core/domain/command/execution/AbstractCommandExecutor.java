@@ -1,0 +1,151 @@
+/**
+ * 
+ */
+package com.anthem.oss.nimbus.core.domain.command.execution;
+
+import com.anthem.oss.nimbus.core.BeanResolverStrategy;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Input;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
+import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
+import com.anthem.oss.nimbus.core.domain.definition.Repo;
+import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
+import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
+import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFactory;
+import com.anthem.oss.nimbus.core.utils.JavaBeanHandler;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+
+/**
+ * @author Soham Chakravarti
+ *
+ */
+@Getter(AccessLevel.PROTECTED)
+public abstract class AbstractCommandExecutor<R> extends BaseCommandExecutorStrategies implements CommandExecutor<R> {
+
+	private final DomainConfigBuilder domainConfigBuilder;
+	private final QuadModelBuilder quadModelBuilder; 
+
+	private final JavaBeanHandler javaBeanHandler;
+	
+	private final ModelRepositoryFactory repositoryFactory;
+	private final CommandMessageConverter converter;
+	
+	public AbstractCommandExecutor(BeanResolverStrategy beanResolver) {
+		super(beanResolver);
+		
+		this.repositoryFactory = beanResolver.get(ModelRepositoryFactory.class);
+		this.quadModelBuilder = beanResolver.get(QuadModelBuilder.class);
+		this.javaBeanHandler = beanResolver.get(JavaBeanHandler.class);
+		
+		this.domainConfigBuilder = beanResolver.get(DomainConfigBuilder.class);
+		this.converter = beanResolver.get(CommandMessageConverter.class);
+	}
+	
+	@Override
+	final public Output<R> execute(Input input) {
+		// TODO pre/post/error event generation
+		
+		return executeInternal(input);
+	}
+	
+	protected abstract Output<R> executeInternal(Input input);
+
+	protected ModelConfig<?> getRootDomainConfig(ExecutionContext eCtx) {
+		return getDomainConfigBuilder().getRootDomainOrThrowEx(eCtx.getCommandMessage().getCommand().getRootDomainAlias());
+	}
+	
+	protected <T> T instantiateEntity(ModelConfig<T> mConfig) {
+		Repo repo = mConfig.getRepo();
+		
+		return (repo!=null && repo.value()!=Repo.Database.rep_none) ? getRepositoryFactory().get(repo)._new(mConfig) : javaBeanHandler.instantiate(mConfig.getReferredClass());
+	}
+	
+	public interface RepoDBCallback<T> {
+		public T whenRootDomainHasRepo();
+		public T whenMappedRootDomainHasRepo(ModelConfig<?> mapsToConfig); 
+	}
+	
+	protected <T> T determineByRepoDatabase(ModelConfig<?> rootDomainConfig, RepoDBCallback<T> cb) {
+		Repo repo = rootDomainConfig.getRepo();
+		
+		if(Repo.Database.exists(repo)) {
+			return cb.whenRootDomainHasRepo();
+			
+		} else if(rootDomainConfig.isMapped()) {
+			ModelConfig<?> mapsToConfig = rootDomainConfig.findIfMapped().getMapsTo();
+			Repo mapsToRepo = mapsToConfig.getRepo();
+			
+			if(Repo.Database.exists(mapsToRepo))
+				return cb.whenMappedRootDomainHasRepo(mapsToConfig);
+		}
+		return null;
+	}
+	
+	protected Object getRootDomainRefIdByRepoDatabase(ModelConfig<?> rootDomainConfig, QuadModel<?, ?> q) {
+		return determineByRepoDatabase(rootDomainConfig, new RepoDBCallback<Object>() {
+			@Override
+			public Object whenRootDomainHasRepo() {
+				if(rootDomainConfig.isMapped()) // has core
+					return q.getView().findParamByPath("/id").getState();
+				else
+					return q.getCore().findParamByPath("/id").getState();
+			}
+			
+			@Override
+			public Object whenMappedRootDomainHasRepo(ModelConfig<?> mapsToConfig) {
+				return q.getCore().findParamByPath("/id").getState();
+			}
+		});
+	}
+	
+	protected ModelConfig<?> getRootConfigByRepoDatabase(ModelConfig<?> rootDomainConfig) {
+		return determineByRepoDatabase(rootDomainConfig, new RepoDBCallback<ModelConfig<?>>() {
+			@Override
+			public ModelConfig<?> whenRootDomainHasRepo() {
+				return rootDomainConfig;
+			}
+			
+			@Override
+			public ModelConfig<?> whenMappedRootDomainHasRepo(ModelConfig<?> mapsToConfig) {
+				return mapsToConfig;
+			}
+		});
+	}
+
+
+/*	
+	protected <T,R,H extends FunctionHandler<T,R>> R doExecuteFunctionHandler(CommandMessage cmdMsg,Class<H> handlerClass) {
+		QuadModel<?, ?> q = findQuad(cmdMsg);
+		
+		//TODO: Load action parameter based on Command
+		Param<T> actionParameter = null;
+		ExecutionContext executionContext = new ExecutionContext(cmdMsg,q);
+		
+		H processHandler = getHandler(cmdMsg, handlerClass);
+		return processHandler.execute(executionContext, actionParameter);
+	}	
+	
+	protected <T extends FunctionHandler<?, ?>> T getHandler(CommandMessage commandMessage, Class<T> handlerClass){
+		String functionName = constructFunctionHandlerKey(commandMessage);
+		return getHandler(functionName, handlerClass);
+	}	
+	
+	protected <T extends FunctionHandler<?, ?>> T getHandler(String functionName, Class<T> handlerClass){
+		return hierarchyMatchBeanLoader.findMatchingBean(handlerClass, functionName);
+	}		
+	
+	
+	private String constructFunctionHandlerKey(CommandMessage cmdMsg){
+		StringBuilder key = new StringBuilder();
+		String functionName = cmdMsg.getCommand().getFirstParameterValue(Constants.KEY_FUNCTION.code);
+		String absoluteUri = cmdMsg.getCommand().getAbsoluteUri();
+		absoluteUri = absoluteUri.replaceAll(Constants.SEPARATOR_URI.code, "\\.");
+		key.append(absoluteUri).append(".").append(cmdMsg.getCommand().getAction().toString())
+		   .append(cmdMsg.getCommand().getCurrentBehavior().name())
+		   .append(Constants.REQUEST_PARAMETER_MARKER.code).append(Constants.KEY_FUNCTION.code).append("=").append(functionName);
+		return key.toString();
+	}
+*/
+}

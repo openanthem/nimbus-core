@@ -34,7 +34,7 @@ import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
-import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
+import com.anthem.oss.nimbus.core.domain.model.state.builder.DefaultQuadModelBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.AbstractEvent.PersistenceMode;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ParamStateAtomicPersistenceEventListener;
 import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
@@ -52,7 +52,7 @@ import com.anthem.oss.nimbus.core.session.UserEndpointSession;
 public class ParamStateAtomicPersistenceEventListenerTest extends TestModelFlowData{
 	
 	@Autowired
-	QuadModelBuilder quadModelBuilder;
+	DefaultQuadModelBuilder quadModelBuilder;
 	
 	private static QuadModel<OrderBookFlow, Book> q;
 	

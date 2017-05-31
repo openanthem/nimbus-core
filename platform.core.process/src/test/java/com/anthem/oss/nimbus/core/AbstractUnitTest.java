@@ -1,6 +1,7 @@
 package com.anthem.oss.nimbus.core;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -18,9 +19,9 @@ import com.anthem.oss.nimbus.core.domain.command.Behavior;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
-import com.anthem.oss.nimbus.core.domain.command.execution.DefaultProcessGateway;
-import com.anthem.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
-import com.anthem.oss.nimbus.core.domain.command.execution.ProcessResponse;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
+import com.anthem.oss.nimbus.core.domain.command.execution.DefaultCommandExecutorGateway;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.Getter;
@@ -39,7 +40,7 @@ public abstract class AbstractUnitTest {
 	
 	@Autowired
     @Qualifier("default.processGateway")
-    DefaultProcessGateway processGateway;
+    DefaultCommandExecutorGateway processGateway;
     
     private JacksonTester<Object> json; // use this in the sub classes to validate json payload
     
@@ -57,12 +58,12 @@ public abstract class AbstractUnitTest {
         return command;
     }
 
-    protected MultiExecuteOutput getMultiExecuteOutput(Command command, String rawPayload){
+    protected List<Output<?>> getMultiExecuteOutput(Command command, String rawPayload){
         CommandMessage cmdMsg = new CommandMessage();
         cmdMsg.setCommand(command);
         cmdMsg.setRawPayload(rawPayload);
-        ProcessResponse resp = processGateway.executeProcess(cmdMsg);
-        MultiExecuteOutput execop = (MultiExecuteOutput)resp.getResponse();
+        MultiOutput resp = processGateway.execute(cmdMsg);
+        List<Output<?>> execop = resp.getOutputs();
         return execop;
     }
 

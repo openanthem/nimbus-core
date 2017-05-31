@@ -29,7 +29,7 @@ import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
 import com.anthem.oss.nimbus.core.domain.model.config.builder.EntityConfigBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.PageNavigationInitializer;
-import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
+import com.anthem.oss.nimbus.core.domain.model.state.builder.DefaultQuadModelBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.DefaultParamStateRepositoryLocal;
 import com.anthem.oss.nimbus.core.entity.process.PageNode;
 import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
@@ -48,14 +48,14 @@ import test.com.anthem.nimbus.platform.spec.model.comamnd.TestCommandFactory;
 @RunWith(SpringRunner.class)
 @EnableConfigurationProperties
 @ComponentScan(basePackageClasses={
-		DomainConfigBuilder.class, EntityConfigBuilder.class, QuadModelBuilder.class, PageNavigationInitializer.class, DefaultRulesEngineFactoryProducer.class,
+		DomainConfigBuilder.class, EntityConfigBuilder.class, DefaultQuadModelBuilder.class, PageNavigationInitializer.class, DefaultRulesEngineFactoryProducer.class,
 		DefaultParamStateRepositoryLocal.class, JavaBeanHandler.class})
 @ContextConfiguration(initializers=ConfigFileApplicationContextInitializer.class)
 @ImportAutoConfiguration(RefreshAutoConfiguration.class)
 @ActiveProfiles("local")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ProcessFlowCollectionsTest {
-	@Autowired QuadModelBuilder quadModelBuilder;
+	@Autowired DefaultQuadModelBuilder quadModelBuilder;
 	
 	private static boolean done = false;
 	

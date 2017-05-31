@@ -12,10 +12,8 @@ import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 
-import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.definition.ConfigNature.Ignore;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
-import com.anthem.oss.nimbus.core.domain.definition.Execution;
 import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
@@ -31,9 +29,8 @@ import lombok.ToString;
  * @author Soham Chakravarti
  *
  */
-@Domain(value="cliententity")
-@Repo(Repo.Database.rep_mongodb)
-@Execution.Input.Default @Execution.Output.Default @Execution.Output(Action._new)
+@Domain("cliententity")
+@Repo
 @Getter @Setter @ToString(callSuper=true)
 public class ClientEntity extends AbstractEntity.IdString {
 

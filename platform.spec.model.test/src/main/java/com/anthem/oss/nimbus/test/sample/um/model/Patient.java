@@ -5,12 +5,9 @@ package com.anthem.oss.nimbus.test.sample.um.model;
 
 import java.time.LocalDate;
 
-import com.anthem.oss.nimbus.core.domain.command.Action;
-import com.anthem.oss.nimbus.core.domain.definition.Domain;
-import com.anthem.oss.nimbus.core.domain.definition.Execution;
-import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.definition.ConfigNature.Ignore;
-import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
+import com.anthem.oss.nimbus.core.domain.definition.Domain;
+import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 
 import lombok.Getter;
@@ -23,8 +20,7 @@ import lombok.ToString;
  */
 @Getter @Setter
 @Domain("patient") 
-@Repo(Database.rep_mongodb)
-@Execution.Input.Default @Execution.Output.Default  @Execution.Output(Action._delete)
+@Repo
 @ToString
 public class Patient extends AbstractEntity.IdString {
     

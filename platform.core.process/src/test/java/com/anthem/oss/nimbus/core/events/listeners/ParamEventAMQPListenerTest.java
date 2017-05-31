@@ -36,7 +36,7 @@ import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
-import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
+import com.anthem.oss.nimbus.core.domain.model.state.builder.DefaultQuadModelBuilder;
 import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
 import com.anthem.oss.nimbus.core.integration.websocket.ParamEventAMQPListener;
 import com.anthem.oss.nimbus.core.session.UserEndpointSession;
@@ -53,7 +53,7 @@ import com.anthem.oss.nimbus.core.session.UserEndpointSession;
 public class ParamEventAMQPListenerTest extends TestModelFlowData {
 	
 	@Autowired
-	QuadModelBuilder quadModelBuilder;
+	DefaultQuadModelBuilder quadModelBuilder;
 	
 	@Autowired
 	SimpMessagingTemplate messageTemplate;

@@ -3,25 +3,11 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.stereotype.Component;
-
-import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
-import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
-import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
-import com.anthem.oss.nimbus.core.domain.definition.Domain;
-import com.anthem.oss.nimbus.core.domain.model.config.ActionExecuteConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFactory;
-
 /**
  * @author Soham Chakravarti
  *
  */
-public class DefaultActionProcessExecutorDelete extends AbstractProcessTaskExecutor {
+public class DefaultActionProcessExecutorDelete {} /*extends AbstractProcessTaskExecutor {
 
 	ModelRepositoryFactory repoFactory;
 	
@@ -67,3 +53,4 @@ public class DefaultActionProcessExecutorDelete extends AbstractProcessTaskExecu
 	}
 
 }
+*/

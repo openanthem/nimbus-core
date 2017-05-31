@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.Converters.ParamConverter;
+import com.anthem.oss.nimbus.core.domain.definition.Execution;
 import com.anthem.oss.nimbus.core.domain.definition.Model.Param.Values;
 import com.anthem.oss.nimbus.core.domain.model.config.AnnotationConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
@@ -42,6 +43,9 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	private List<AnnotationConfig> validations;
 	
 	private List<AnnotationConfig> uiNatures;
+	
+	@JsonIgnore
+	private List<Execution.Config> executionConfigs;
 
 	private AnnotationConfig uiStyles;
 
