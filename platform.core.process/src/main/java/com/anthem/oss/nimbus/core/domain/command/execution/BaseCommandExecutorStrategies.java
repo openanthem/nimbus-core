@@ -12,6 +12,7 @@ import com.anthem.oss.nimbus.core.domain.command.Behavior;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
+import com.anthem.oss.nimbus.core.domain.model.state.HierarchyMatch;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 
@@ -87,6 +88,10 @@ public class BaseCommandExecutorStrategies {
 		localCache.put(name, exec);
 		return exec;
 	}
+	
+	public<T extends HierarchyMatch> T findMatchingBean(Class<T> type, String beanIdToFind) {
+		return hierarchyMatchBeanLoader.findMatchingBean(type, beanIdToFind);
+	}	
 	
 ////	(ProcessTaskExecutor)hierarchyMatchBeanLoader.findMatchingBean(HierarchyMatchProcessTaskExecutor.class, buildLookupKeyFromCommand(cmd))
 //
