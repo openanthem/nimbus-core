@@ -48,9 +48,9 @@ public class BaseCommandExecutorStrategies {
 	
 	protected <T> Param<T> findParamByCommand(ExecutionContext eCtx) {
 		Command cmd = eCtx.getCommandMessage().getCommand();
-		String path = cmd.buildUri(cmd.getElement(Type.DomainAlias).get());
+		String path = cmd.buildAlias(cmd.getElement(Type.DomainAlias).get());
 		
-		return eCtx.getRootModel().findParamByPath(path);
+		return eCtx.getQuadModel().getView().findParamByPath(path);
 	}
 	
 	protected <T> T lookupBeanOrThrowEx(Class<T> type, Map<String, T> localCache, Action a, Behavior b) {
