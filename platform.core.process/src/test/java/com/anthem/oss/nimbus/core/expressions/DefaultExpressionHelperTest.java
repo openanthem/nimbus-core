@@ -348,7 +348,7 @@ class MongoConfiguration extends AbstractMongoConfiguration {
  
     @Override
     protected String getDatabaseName() {
-        return "integrationtest";
+        return "test";
     }
  
     @Override

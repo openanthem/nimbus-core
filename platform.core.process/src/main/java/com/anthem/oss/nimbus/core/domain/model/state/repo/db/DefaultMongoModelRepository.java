@@ -8,7 +8,6 @@ import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatc
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -19,17 +18,21 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.beans.PropertyAccessor;
 import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.data.mongodb.repository.support.SpringDataMongodbQuery;
 
 import com.anthem.oss.nimbus.core.domain.definition.SearchNature.StartsWith;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.IdSequenceRepository;
+import com.anthem.oss.nimbus.core.entity.SearchCriteria.ExampleSearchCriteria;
+import com.anthem.oss.nimbus.core.entity.SearchCriteria.LookupSearchCriteria;
+import com.anthem.oss.nimbus.core.entity.SearchCriteria.QuerySearchCriteria;
 import com.anthem.oss.nimbus.core.util.ClassLoadUtils;
 import com.querydsl.core.types.Predicate;
 
@@ -48,6 +51,10 @@ public class DefaultMongoModelRepository implements ModelRepository {
 	MongoOperations mongoOps;
 	
 	IdSequenceRepository idSequenceRepo;
+	
+	@Autowired @Qualifier("searchByExample") DBSearch searchByExample;
+	
+	@Autowired @Qualifier("searchByQuery") DBSearch searchByQuery;
 	
 	public DefaultMongoModelRepository(MongoOperations mongoOps, IdSequenceRepository idSequenceRepo) {
 		this.mongoOps = mongoOps;
@@ -139,45 +146,45 @@ public class DefaultMongoModelRepository implements ModelRepository {
 		return state;
 	}
 	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Override
-	public <T, C> List<T> _search(Class<T> referredClass, String alias, C criteria) {
-			
-			if(criteria==null) {
-				return mongoOps.findAll(referredClass, alias);
-			}
-			else if(criteria instanceof String) {
-				String filtercriteria = criteria.toString().replaceAll("<", "(").replace(">", ")");
-				Predicate predicate = buildPredicate(filtercriteria, referredClass, alias);
-				SpringDataMongodbQuery query = new SpringDataMongodbQuery<>(mongoOps, referredClass, alias);
-				return query.where(predicate).fetch();	
-			} else {
-				// Build the query with the criteria object
-				Query query = buildQuery(referredClass, alias, criteria);
-				return mongoOps.find(query, referredClass, alias);
-			}
-	}
+//	@SuppressWarnings({ "rawtypes", "unchecked" })
+//	@Override
+//	public <T, C> List<T> _search(Class<T> referredClass, String alias, C criteria) {
+//			
+//			if(criteria==null) {
+//				return mongoOps.findAll(referredClass, alias);
+//			}
+//			else if(criteria instanceof String) {
+//				String filtercriteria = criteria.toString().replaceAll("<", "(").replace(">", ")");
+//				Predicate predicate = buildPredicate(filtercriteria, referredClass, alias);
+//				SpringDataMongodbQuery query = new SpringDataMongodbQuery<>(mongoOps, referredClass, alias);
+//				return query.where(predicate).fetch();	
+//			} else {
+//				// Build the query with the criteria object
+//				Query query = buildQuery(referredClass, alias, criteria);
+//				return mongoOps.find(query, referredClass, alias);
+//			}
+//	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Override
-	public <T, C> T _search(Class<?> referredClass, String alias, C criteria, Projection projection) {
-		Long count;
-		if(criteria==null) {
-			SpringDataMongodbQuery query = new SpringDataMongodbQuery<>(mongoOps, referredClass, alias);
-			 count = query.fetchCount();
-		}
-		else if(criteria instanceof String) {
-			String filtercriteria = criteria.toString().replaceAll("<", "(").replace(">", ")");
-			Predicate predicate = buildPredicate(filtercriteria, referredClass, alias);
-			SpringDataMongodbQuery query = new SpringDataMongodbQuery<>(mongoOps, referredClass, alias);
-			count = query.where(predicate).fetchCount();
-		} else {
-			// Build the query with the criteria object
-			Query query = buildQuery(referredClass, alias, criteria);
-			count = mongoOps.count(query, referredClass, alias);
-		}
-		return (T) count;
-	}
+	//@Override
+//	public <T, C> T _search(Class<?> referredClass, String alias, C criteria, Projection projection) {
+//		Long count;
+//		if(criteria==null) {
+//			SpringDataMongodbQuery query = new SpringDataMongodbQuery<>(mongoOps, referredClass, alias);
+//			 count = query.fetchCount();
+//		}
+//		else if(criteria instanceof String) {
+//			String filtercriteria = criteria.toString().replaceAll("<", "(").replace(">", ")");
+//			Predicate predicate = buildPredicate(filtercriteria, referredClass, alias);
+//			SpringDataMongodbQuery query = new SpringDataMongodbQuery<>(mongoOps, referredClass, alias);
+//			count = query.where(predicate).fetchCount();
+//		} else {
+//			// Build the query with the criteria object
+//			Query query = buildQuery(referredClass, alias, criteria);
+//			count = mongoOps.count(query, referredClass, alias);
+//		}
+//		return (T) count;
+//	}
 	
 	private <C> Query buildQuery(Class<?> referredClass, String alias, C criteria) {
 		ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreNullValues().withIgnorePaths("version");
@@ -221,32 +228,30 @@ public class DefaultMongoModelRepository implements ModelRepository {
 		Object obj = null;
 		try {
 			String cannonicalQuerydslclass = referredClass.getCanonicalName().replace(referredClass.getSimpleName(), "Q".concat(referredClass.getSimpleName()));
-			Class cl = Class.forName(cannonicalQuerydslclass);
-			Constructor con = cl.getConstructor(String.class);
+			Class<?> cl = Class.forName(cannonicalQuerydslclass);
+			Constructor<?> con = cl.getConstructor(String.class);
 			obj = con.newInstance(referredClass.getSimpleName());
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {
+			
 		}
 		return obj;
+	}
+
+	
+
+	@Override
+	public <T> Object _search(Class<T> referredDomainClass, String alias, LookupSearchCriteria criteria) {
+		return searchByQuery.search(referredDomainClass, alias, criteria);
+	}
+	
+	@Override
+	public <T> Object _search(Class<T> referredDomainClass, String alias, QuerySearchCriteria criteria) {
+		return searchByQuery.search(referredDomainClass, alias, criteria);
+	}
+
+	@Override
+	public <T> Object _search(Class<T> referredDomainClass, String alias, ExampleSearchCriteria<T> criteria) {
+		return searchByExample.search(referredDomainClass, alias, criteria);
 	}
 	
 }

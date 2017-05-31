@@ -24,7 +24,10 @@ import com.anthem.oss.nimbus.core.domain.command.execution.HierarchyMatchBasedBe
 import com.anthem.oss.nimbus.core.domain.command.execution.ParamCodeValueProvider;
 import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.db.DBSearch;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFactory;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.db.MongoSearchByExample;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.db.MongoSearchByQuery;
 
 /**
  * @author Sandeep Mantha
@@ -132,4 +135,15 @@ public class DefaultCoreExecutorConfig {
 	public ParamCodeValueProvider paramCodeValueProvider(DefaultActionExecutorSearch searchExecutor){
 		return new ParamCodeValueProvider(searchExecutor);
 	}
+	
+	@Bean(name="searchByExample")
+	public DBSearch searchByExample() {
+		return new MongoSearchByExample();
+	}
+	
+	@Bean(name="searchByQuery")
+	public DBSearch searchByQuery() {
+		return new MongoSearchByQuery();
+	}
+	
 }

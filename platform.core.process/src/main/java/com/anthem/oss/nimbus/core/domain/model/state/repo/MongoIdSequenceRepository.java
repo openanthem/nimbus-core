@@ -35,6 +35,7 @@ public class MongoIdSequenceRepository implements IdSequenceRepository {
 		//return new increased id
 		FindAndModifyOptions options = new FindAndModifyOptions();
 		options.returnNew(true);
+		options.upsert(true);
 
 		//DBSequence seqId = mongoOperations.findAndModify(query, update, options, DBSequence.class);
 		DBSequence seqId = mongoOperations.findAndModify(query, update, options, DBSequence.class, "sequence");
