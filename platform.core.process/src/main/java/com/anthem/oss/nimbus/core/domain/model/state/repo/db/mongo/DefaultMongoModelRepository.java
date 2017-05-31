@@ -28,6 +28,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.mongodb.repository.support.SpringDataMongodbQuery;
 
+import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.definition.SearchNature.StartsWith;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
@@ -40,35 +41,42 @@ import com.querydsl.core.types.Predicate;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
-import lombok.RequiredArgsConstructor;
 
 /**
  * @author Soham Chakravarti
  *
  */
-@RequiredArgsConstructor
 public class DefaultMongoModelRepository implements ModelRepository {
 
 	private final MongoOperations mongoOps;
 	private final IdSequenceRepository idSequenceRepo;
 	private final JavaBeanHandler beanHandler;
+
+	public DefaultMongoModelRepository(MongoOperations mongoOps, IdSequenceRepository idSequenceRepo, BeanResolverStrategy beanResolver) {
+		this.mongoOps = mongoOps;
+		this.idSequenceRepo = idSequenceRepo;
+		this.beanHandler = beanResolver.get(JavaBeanHandler.class);
+	}
 	
 	@Override
 	public <T> T _new(ModelConfig<T> mConfig) {
+		T newState = beanHandler.instantiate(mConfig.getReferredClass());
+		return _new(mConfig, newState);
+	}
+	
+	@Override
+	public <T> T _new(ModelConfig<T> mConfig, T newState) {
 		// detect id paramConfig
 		ParamConfig<?> pId = Optional.ofNullable(mConfig.getIdParam())
 								.orElseThrow(()->new InvalidConfigException("Persistable Entity: "+mConfig.getReferredClass()+" must be configured with @Id param."));
 		
-		T _new = beanHandler.instantiate(mConfig.getReferredClass());
-		
 		String id = String.valueOf(idSequenceRepo.getNextSequenceId(mConfig.getDomainAlias()));
 		
 		PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(mConfig.getReferredClass(), pId.getCode());
-		beanHandler.setValue(pd, _new, id);
+		beanHandler.setValue(pd, newState, id);
 		
-		return _new;
+		return newState;
 	}
-	
 
 	@Override
 	public <ID extends Serializable, T> T _get(ID id, Class<T> referredClass, String alias) {

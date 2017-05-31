@@ -3,6 +3,9 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ExecutionModel;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
@@ -32,6 +35,10 @@ public class ExecutionContext {
 	
 	public String getId() {
 		return getCommandMessage().getCommand().getRootDomainUri();
+	}
+	
+	public boolean equalsId(Command cmd) {
+		return StringUtils.equals(getId(), cmd.getRootDomainUri());
 	}
 	
 	public ExecutionModel<?> getRootModel(){

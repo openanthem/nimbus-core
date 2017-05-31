@@ -3,6 +3,7 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
+import java.util.Optional;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -30,29 +31,26 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 	private final CommandExecutor<?> executorActionNew;
 	private final CommandExecutor<?> executorActionGet;
 
+	// TODO: Temp impl till Session is rolled out
 	private final BlockingQueue<ExecutionContext> sessionCache;
 	
 	private final QuadModelBuilder quadModelBuilder;
 	
 	private final JustLogit logit = new JustLogit(this.getClass());
 	
-	public DefaultExecutionContextLoader(BeanResolverStrategy beanResolverStrategy) {
-		this.domainConfigBuilder = beanResolverStrategy.get(DomainConfigBuilder.class);
-		this.quadModelBuilder = beanResolverStrategy.get(QuadModelBuilder.class);
+	public DefaultExecutionContextLoader(BeanResolverStrategy beanResolver) {
+		this.domainConfigBuilder = beanResolver.get(DomainConfigBuilder.class);
+		this.quadModelBuilder = beanResolver.get(QuadModelBuilder.class);
 		
-		this.executorActionNew = beanResolverStrategy.get(CommandExecutor.class, Action._new.name() + Behavior.$execute.name());
-		this.executorActionGet = beanResolverStrategy.get(CommandExecutor.class, Action._get.name() + Behavior.$execute.name());
+		this.executorActionNew = beanResolver.get(CommandExecutor.class, Action._new.name() + Behavior.$execute.name());
+		this.executorActionGet = beanResolver.get(CommandExecutor.class, Action._get.name() + Behavior.$execute.name());
 		
 		// TODO: Temp impl till Session is rolled out
 		this.sessionCache = new LinkedBlockingQueue<>(100);
 	}
 	
 	@Override
-	public ExecutionContext load(CommandMessage cmdMsg) {
-		String inputCmdUri = cmdMsg.getCommand().getAbsoluteUri();
-		
-		ModelConfig<?> rootDomainConfig = domainConfigBuilder.getRootDomainOrThrowEx(cmdMsg.getCommand().getRootDomainAlias());
-		
+	public final ExecutionContext load(CommandMessage cmdMsg) {
 		ExecutionContext eCtx = new ExecutionContext(cmdMsg);
 		
 		// _search: transient - just create shell 
@@ -60,15 +58,17 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 			QuadModel<?, ?> q = quadModelBuilder.build(cmdMsg.getCommand());
 			eCtx.setQuadModel(q);
 			
-		} else {
+		} else // _new takes priority
+		if(cmdMsg.getCommand().getAction()==Action._new) {
+			eCtx = loadEntity(eCtx, executorActionNew);
 			
-			Input input = new Input(inputCmdUri, eCtx, cmdMsg.getCommand().getAction(), Behavior.$execute);
-			Output<?> output = (cmdMsg.getCommand().getAction() == Action._new) ? executorActionNew.execute(input) : executorActionGet.execute(input);
+		} else // check if already exists in session
+		if(sessionExists(eCtx)) { 
+			QuadModel<?, ?> q = sessionGet(eCtx);
+			eCtx.setQuadModel(q);
 			
-			// update context
-			eCtx = output.getContext();
-			
-			putInSessionIfApplicable(rootDomainConfig, eCtx);
+		} else { // all else requires resurrecting entity
+			eCtx = loadEntity(eCtx, executorActionGet);
 		}
 		
 		return eCtx;
@@ -78,23 +78,60 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 		return cmd.getAction()==Action._search || cmd.getAction()==Action._lookup;
 	}
 	
-	protected boolean putInSessionIfApplicable(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx) {
+	private ExecutionContext loadEntity(ExecutionContext eCtx, CommandExecutor<?> executor) {
+		CommandMessage cmdMsg = eCtx.getCommandMessage();
+		String inputCmdUri = cmdMsg.getCommand().getAbsoluteUri();
+		
+		Input input = new Input(inputCmdUri, eCtx, cmdMsg.getCommand().getAction(), Behavior.$execute);
+		Output<?> output = executor.execute(input);
+		
+		// update context
+		eCtx = output.getContext();
+		
+		ModelConfig<?> rootDomainConfig = domainConfigBuilder.getRootDomainOrThrowEx(cmdMsg.getCommand().getRootDomainAlias());
+		
+		sessionPutIfApplicable(rootDomainConfig, eCtx);
+		
+		return eCtx;
+	}
+	
+	protected boolean sessionPutIfApplicable(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx) {
 		Repo repo = rootDomainConfig.getRepo();
 		if(repo==null)
 			return false;
 		
 		if(repo.cache()==Repo.Cache.rep_session) {
-			queuePut(eCtx);
-			return true;
+			return queuePut(eCtx);
 		}
 
 		return false;
 	}
 	
-	private void queuePut(ExecutionContext eCtx) {
+	protected boolean sessionExists(ExecutionContext eCtx) {
+		return queueExists(eCtx);
+	}
+	
+	protected QuadModel<?, ?> sessionGet(ExecutionContext eCtx) {
+		return Optional.ofNullable(queueGet(eCtx.getCommandMessage().getCommand()))
+				.map(ExecutionContext::getQuadModel)
+				.orElse(null);
+	}
+	
+	private boolean queueExists(ExecutionContext eCtx) {
+		return sessionCache.contains(eCtx);
+	}
+	
+	private ExecutionContext queueGet(Command cmd) {
+		return sessionCache.stream()
+				.filter(e->e.equalsId(cmd))
+				.findFirst()
+				.orElse(null);
+	}
+	
+	private boolean queuePut(ExecutionContext eCtx) {
 		// skip if exists
-		if(sessionCache.contains(eCtx))
-			return;
+		if(queueExists(eCtx))
+			return false;
 		
 		synchronized (sessionCache) {
 			if(sessionCache.remainingCapacity()==0) { 
@@ -105,6 +142,7 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 			
 			sessionCache.add(eCtx);
 		}
+		return true;
 	}
 
 }

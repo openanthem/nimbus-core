@@ -34,7 +34,8 @@ public interface ModelRepository {
 	/*SOHAM: f.w upgrade v0.3: START */
 	
 	public <T> T _new(ModelConfig<T> mConfig);
-
+	public <T> T _new(ModelConfig<T> mConfig, T newState);
+	
 	/*SOHAM: f.w upgrade v0.3: END */
 	
 	

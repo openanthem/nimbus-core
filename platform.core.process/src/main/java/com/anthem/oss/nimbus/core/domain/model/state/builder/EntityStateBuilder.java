@@ -6,6 +6,7 @@ package com.anthem.oss.nimbus.core.domain.model.state.builder;
 import java.util.List;
 import java.util.Optional;
 
+import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
@@ -13,7 +14,6 @@ import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
-import com.anthem.oss.nimbus.core.domain.model.state.StateMeta;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultListElemParamState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultListModelState;
@@ -28,8 +28,8 @@ import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
  */
 public class EntityStateBuilder extends AbstractEntityStateBuilder {
 
-	public <V, C> ExecutionEntity<V, C>.ExModel buildExec(Command cmd, EntityStateAspectHandlers aspectHandlers, ExecutionEntity<V, C> eState, StateMeta.View<V, C> viewMeta) {
-		return buildExec(cmd, aspectHandlers, eState, viewMeta.getExecutionConfig());
+	public EntityStateBuilder(BeanResolverStrategy beanResolver) {
+		super(beanResolver);
 	}
 	
 	public <V, C> ExecutionEntity<V, C>.ExModel buildExec(Command rootCommand, EntityStateAspectHandlers aspectHandlers, ExecutionEntity<V, C> eState, ExecutionEntity.ExConfig<V, C> exConfig) {

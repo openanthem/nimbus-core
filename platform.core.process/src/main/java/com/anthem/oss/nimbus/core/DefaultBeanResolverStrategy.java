@@ -20,7 +20,7 @@ import lombok.Setter;
  *
  */
 @Getter @Setter @RequiredArgsConstructor
-public class DefaultBeanResolverStragegy implements BeanResolverStrategy {
+public class DefaultBeanResolverStrategy implements BeanResolverStrategy {
 
 	private String beanPrefix = Constants.PREFIX_DEFAULT.code;
 	
@@ -30,14 +30,13 @@ public class DefaultBeanResolverStragegy implements BeanResolverStrategy {
 		return getBeanPrefix()==null ? "" : getBeanPrefix();
 	}
 	
-	protected String resolveBeanName(Class<?> type) {
-		return resolvePrefix() + type.getSimpleName();
-	}
-	
 	protected String resolveBeanName(String qualifier) {
 		return resolvePrefix() + qualifier;
 	}
 	
+	protected String defaultBeanName(String qualifier) {
+		return Constants.PREFIX_DEFAULT.code + qualifier;
+	}
 	
 	
 	@Override
@@ -49,8 +48,7 @@ public class DefaultBeanResolverStragegy implements BeanResolverStrategy {
 			return applicationContext.getBean(bNmArr[0], type);
 		
 		// 2nd: if no bean OR multiple beans found by type, then use type's name as qualifier
-		String bNm = resolveBeanName(type);
-		return applicationContext.containsBean(bNm) ? applicationContext.getBean(bNm, type) : null;
+		return find(type, type.getSimpleName());
 	}
 
 	@Override
@@ -58,19 +56,33 @@ public class DefaultBeanResolverStragegy implements BeanResolverStrategy {
 		return Optional.ofNullable(find(type))
 				.orElseThrow(()->new InvalidConfigException("Bean of type "+type+" must be configured with bean name following pattern: "
 						+ " a) Single bean of type "+type
-						+ " b) Bean with qualifier "+resolveBeanName(type)));
+						+ " b) Bean with qualifier "+resolveBeanName(type.getSimpleName())
+						+ " c) Bean with qualifier "+defaultBeanName(type.getSimpleName())));
 	}
 
 	@Override
 	public <T> T find(Class<T> type, String qualifier) {
+		// 1: find using configured prefix
 		String bNm = resolveBeanName(qualifier);
-		return applicationContext.containsBean(bNm) ? applicationContext.getBean(bNm, type) : null;
+		if(applicationContext.containsBean(bNm)) 
+			return applicationContext.getBean(bNm, type);
+		
+		// 2: check if prefix was overridden
+		if(Constants.PREFIX_DEFAULT.code.equals(getBeanPrefix()))
+			return null;
+		
+		// 3. find using initial default when bean not found using overridden prefix
+		String defaultBeanNm = defaultBeanName(qualifier);
+		return applicationContext.containsBean(defaultBeanNm) ? applicationContext.getBean(defaultBeanNm, type) : null;
 	}
 
 	@Override
 	public <T> T get(Class<T> type, String qualifier) throws InvalidConfigException {
 		return Optional.ofNullable(find(type, qualifier))
-				.orElseThrow(()->new InvalidConfigException("Bean of type "+type+" must be configured with bean name following pattern: "+resolveBeanName(qualifier)));
+				.orElseThrow(()->new InvalidConfigException("Bean of type "+type+" must be configured with bean name following pattern: "
+						+ " a) Bean with qualifier "+resolveBeanName(qualifier)
+						+ " b) Bean with qualifier "+defaultBeanName(qualifier)));
+
 	}
 
 }

@@ -7,10 +7,10 @@ import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
 import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
-import com.anthem.oss.nimbus.core.domain.command.execution.AbstractProcessGateway;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutorGateway;
 import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContext;
 import com.anthem.oss.nimbus.core.domain.command.execution.FunctionHandler;
-import com.anthem.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 
 /**
@@ -19,7 +19,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
  */
 abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements FunctionHandler<T,R> {
 	
-	private AbstractProcessGateway processGateway; 
+	private CommandExecutorGateway executorGateway; 
 	
 	@Override
 	public R execute(ExecutionContext executionContext, Param<T> actionParameter) {
@@ -62,8 +62,9 @@ abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements Functi
 	
 	protected S getExternalState(ExecutionContext executionContext){
 		CommandMessage commandToExecute = buildCommand(executionContext.getCommandMessage());
-		MultiExecuteOutput response = (MultiExecuteOutput)processGateway.executeProcess(commandToExecute).getResponse();
-		return response.getSingleResult();
+		MultiOutput response = executorGateway.execute(commandToExecute);
+		//TODO Soham: temp fix, need to talk to Jayant
+		return (S)response.getValue();
 	}	
 
 }

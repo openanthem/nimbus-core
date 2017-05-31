@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.anthem.oss.nimbus.core.domain.definition.Converters.ParamConverter;
+import com.anthem.oss.nimbus.core.domain.definition.Execution;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Mode;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
@@ -37,6 +38,8 @@ public interface ParamConfig<P> extends EntityConfig<P>, Findable<String> {
 	public boolean isLeaf();
 	
 	public Desc getDesc();
+	
+	public List<Execution.Config> getExecutionConfigs();
 	
 	public List<AnnotationConfig> getValidations();
 	

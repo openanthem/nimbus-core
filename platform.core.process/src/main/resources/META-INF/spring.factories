@@ -6,7 +6,6 @@ com.anthem.oss.nimbus.core.config.WebSocketConfig,\
 com.anthem.oss.nimbus.core.config.WebSocketHandlersConfig,\
 com.anthem.oss.nimbus.core.config.WebSecurityConfig,\
 com.anthem.oss.nimbus.core.config.SwaggerConfig,\
-com.anthem.oss.nimbus.core.config.EmailTaskExecutorBeanRegistrar,\
 com.anthem.oss.nimbus.core.config.DefaultProcessConfig,\
 com.anthem.oss.nimbus.core.config.DefaultCoreExecutorConfig,\
 com.anthem.oss.nimbus.core.config.DefaultCoreBuilderConfig,\

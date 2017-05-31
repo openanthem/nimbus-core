@@ -7,9 +7,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.command.Command;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutorGateway;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutorGateway.MultiOutput;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 
 /**
@@ -18,13 +19,13 @@ import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
  */
 public class WebCommandDispatcher {
 
-	WebCommandBuilder builder;
+	private final WebCommandBuilder builder;
 
-	CommandExecutorGateway gateway;
+	private final CommandExecutorGateway gateway;
 
-	public WebCommandDispatcher(WebCommandBuilder builder, CommandExecutorGateway gateway) {
-		this.builder = builder;
-		this.gateway = gateway;
+	public WebCommandDispatcher(BeanResolverStrategy beanResolver) {
+		this.builder = beanResolver.get(WebCommandBuilder.class);
+		this.gateway = beanResolver.get(CommandExecutorGateway.class);
 	}
 	
 	public Object handle(HttpServletRequest httpReq, RequestMethod httpMethod, ModelEvent<String> event) {
@@ -45,8 +46,6 @@ public class WebCommandDispatcher {
 //		}
 
 		return handle(cmd, json);
-
-
 	}
 
 	public MultiOutput handle(Command cmd, String payload) {

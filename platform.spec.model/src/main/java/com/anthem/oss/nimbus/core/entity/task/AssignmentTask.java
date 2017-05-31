@@ -7,12 +7,9 @@ import java.time.LocalDate;
 
 import javax.validation.constraints.NotNull;
 
-import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.definition.AssociatedEntity;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
-import com.anthem.oss.nimbus.core.domain.definition.Execution;
-import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 
@@ -24,10 +21,7 @@ import lombok.Setter;
  *
  */
 @Domain(value="assignmenttask", includeListeners={ListenerType.persistence})
-@Repo(value=Repo.Database.rep_mongodb, alias="assignmenttask")
-@Execution.Input.Default 
-@Execution.Output.Default 
-@Execution.Output(Action._new)
+@Repo(alias="assignmenttask")
 @AssociatedEntity("flow_cmcase")
 @Getter @Setter
 public class AssignmentTask extends AbstractEntity.IdString{

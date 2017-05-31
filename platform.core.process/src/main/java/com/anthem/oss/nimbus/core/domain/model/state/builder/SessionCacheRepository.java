@@ -20,6 +20,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.ParamStateRepository;
 import com.anthem.oss.nimbus.core.util.ClassLoadUtils;
+import com.anthem.oss.nimbus.core.utils.JavaBeanHandler;
 
 /**
  * @author Jayant Chaudhuri
@@ -31,6 +32,9 @@ public class SessionCacheRepository implements ParamStateRepository {
     @Autowired
     @Qualifier("sessionRedisTemplate")
     private RedisTemplate<Object,Object> template;
+    
+    @Autowired
+    private JavaBeanHandler javaBeanHandler;
     
     private HashOperations<Object,Object,Object> hashOps;
     
@@ -49,7 +53,7 @@ public class SessionCacheRepository implements ParamStateRepository {
 		Object state = hashOps.get(sessionId, path);
 		if(state instanceof ModelHolder){
 			ModelHolder modelHolder = (ModelHolder)state;
-			return (P) ClassLoadUtils.newInstance(modelHolder.getReferredClass());
+			return (P)javaBeanHandler.instantiate(modelHolder.getReferredClass());
 		}
 		return (P)state;
 	}

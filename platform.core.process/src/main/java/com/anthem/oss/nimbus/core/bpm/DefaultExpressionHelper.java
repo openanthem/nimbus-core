@@ -9,6 +9,7 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
 
+import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Behavior;
 import com.anthem.oss.nimbus.core.domain.command.Command;
@@ -30,10 +31,12 @@ public class DefaultExpressionHelper extends AbstractExpressionHelper {
 	
 	public static final String PLATFORM_TYPE_ALIAS="#";
 	
-	CommandMessageConverter converter;
+	private final CommandMessageConverter converter;
 	
-	public DefaultExpressionHelper(CommandMessageConverter converter) {
-		this.converter = converter;
+	public DefaultExpressionHelper(BeanResolverStrategy beanResolver) {
+		super(beanResolver);
+		
+		this.converter = beanResolver.get(CommandMessageConverter.class);
 	}
 
 	final public Object _get(CommandMessage cmdMsg, DelegateExecution execution, String resolvedUri, Object... args) {

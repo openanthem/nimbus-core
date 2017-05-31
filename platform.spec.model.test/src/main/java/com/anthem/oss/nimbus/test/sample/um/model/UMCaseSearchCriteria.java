@@ -7,9 +7,7 @@ import java.time.LocalDate;
 
 import javax.validation.constraints.NotNull;
 
-import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
-import com.anthem.oss.nimbus.core.domain.definition.Execution;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Data;
@@ -19,9 +17,7 @@ import lombok.Data;
  *
  */
 @Data
-@Domain(value="umcase") 
-@Execution.Input(Action._search) 
-@Execution.Output(value=Action._search, paginated=true) 
+@Domain("umcase") 
 public class UMCaseSearchCriteria {
 
 	@NotNull

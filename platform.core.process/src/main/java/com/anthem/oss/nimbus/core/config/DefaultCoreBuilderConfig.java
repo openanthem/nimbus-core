@@ -13,6 +13,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 
+import com.anthem.oss.nimbus.core.BeanResolverStrategy;
+import com.anthem.oss.nimbus.core.DefaultBeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandTransactionInterceptor;
 import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
 import com.anthem.oss.nimbus.core.domain.model.config.ValidatorProvider;
@@ -24,6 +26,9 @@ import com.anthem.oss.nimbus.core.domain.model.state.builder.PageNavigationIniti
 import com.anthem.oss.nimbus.core.domain.model.state.repo.ParamStateGateway;
 import com.anthem.oss.nimbus.core.integration.websocket.ParamEventAMQPListener;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * @author Sandeep Mantha
  * @author Soham Chakravarti
@@ -31,11 +36,17 @@ import com.anthem.oss.nimbus.core.integration.websocket.ParamEventAMQPListener;
 @Configuration
 @EnableConfigurationProperties
 @ConfigurationProperties(prefix="domain.model")
+@Getter @Setter
 public class DefaultCoreBuilderConfig {
 	
 	private Map<String, String> typeClassMappings;
 	
 	private List<String> basePackages;
+	
+	@Bean
+	public BeanResolverStrategy defaultBeanResolver(ApplicationContext appCtx) {
+		return new DefaultBeanResolverStrategy(appCtx);
+	}
 	
 	@Bean
 	public DomainConfigBuilder domainConfigBuilder(EntityConfigBuilder configBuilder){
@@ -66,8 +77,8 @@ public class DefaultCoreBuilderConfig {
 	}
 	
 	@Bean
-	public EntityStateBuilder entityStateBuilder(){
-		return new EntityStateBuilder();
+	public EntityStateBuilder entityStateBuilder(BeanResolverStrategy beanResolver){
+		return new EntityStateBuilder(beanResolver);
 	}
 	
 	@Bean
@@ -75,7 +86,7 @@ public class DefaultCoreBuilderConfig {
 		return new PageNavigationInitializer();
 	}
 	
-	@Bean(name="default.quadModelBuilder")
+	@Bean
 	public DefaultQuadModelBuilder quadModelBuilder(DomainConfigBuilder domainConfigApi, EntityStateBuilder stateAndConfigBuilder,
 			ApplicationContext appCtx, PageNavigationInitializer navigationStateHelper,
 			ValidatorProvider validatorProvider, @Qualifier("default.param.state.repository") ParamStateGateway paramStateGateway){

@@ -45,7 +45,7 @@ public class DefaultMongoModelPersistenceHandler implements ModelPersistenceHand
 			logit.info(()->"path: "+event.getPath()+ " action: "+event.getType()+" state: "+event.getPayload().getState());
 			
 			Param<?> param = event.getPayload();
-			Model<?> mRoot = param.getRootDomain();
+			Model<Object> mRoot = (Model<Object>)param.getRootDomain();
 			
 			Class<Object> mRootClass = (Class<Object>)mRoot.getConfig().getReferredClass();
 			
@@ -61,7 +61,7 @@ public class DefaultMongoModelPersistenceHandler implements ModelPersistenceHand
 			Object coreState = mRoot.getState();
 			Object coreStateId = mRoot.findParamByPath("/id").getState();
 			if(coreStateId == null) {
-				rep._new(mRootClass, alias, coreState);
+				rep._new(mRoot.getConfig(), coreState);
 				return true;
 			}
 			

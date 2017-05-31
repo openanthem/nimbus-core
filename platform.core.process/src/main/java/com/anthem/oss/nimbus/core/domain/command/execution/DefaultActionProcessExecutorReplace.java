@@ -3,28 +3,11 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.stereotype.Component;
-
-import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
-import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
-import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
-import com.anthem.oss.nimbus.core.domain.definition.Domain;
-import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
-import com.anthem.oss.nimbus.core.domain.model.state.builder.DefaultQuadModelBuilder;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFactory;
-import com.anthem.oss.nimbus.core.session.UserEndpointSession;
-
 /**
  * @author Soham Chakravarti
  *
  */
-public class DefaultActionProcessExecutorReplace extends AbstractProcessTaskExecutor {
+public class DefaultActionProcessExecutorReplace {} /*extends AbstractProcessTaskExecutor {
 
 	DefaultQuadModelBuilder qBuilder;
 	
@@ -71,3 +54,4 @@ public class DefaultActionProcessExecutorReplace extends AbstractProcessTaskExec
 	}
 
 }
+*/

@@ -3,24 +3,22 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
-import org.apache.commons.lang.StringUtils;
-import org.springframework.core.annotation.AnnotationUtils;
-
-import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
-import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
-import com.anthem.oss.nimbus.core.domain.definition.Domain;
-import com.anthem.oss.nimbus.core.domain.definition.Repo;
-import com.anthem.oss.nimbus.core.domain.model.config.ActionExecuteConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository.Projection;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFactory;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Input;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
 
 /**
  * @author Soham Chakravarti
  *
  */
-public class DefaultActionExecutorSearch extends AbstractProcessTaskExecutor {
+public class DefaultActionExecutorSearch<R> implements CommandExecutor<R> {
+	
+	@Override
+	public Output<R> execute(Input input) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+}/* extends AbstractProcessTaskExecutor {
 
 	ModelRepositoryFactory repFactory;
 	
@@ -69,10 +67,7 @@ public class DefaultActionExecutorSearch extends AbstractProcessTaskExecutor {
 		}
 		return r;
 	}
-	
-	@Override
-	protected void publishEvent(CommandMessage cmdMsg, ProcessExecutorEvents e) {
-		
-	}
+
 
 }
+*/

@@ -24,6 +24,10 @@ public @interface Repo {
 		rep_none,
 		rep_mongodb,
 		rep_rdbms;
+		
+		public static boolean exists(Repo repo) {
+			return repo!=null && repo.value()!=Repo.Database.rep_none;
+		}
 	}
 
 	/* 1nd level repository: cache (distributed session or sticky) */
@@ -32,6 +36,10 @@ public @interface Repo {
 		rep_session,	
 		rep_user,
 		rep_db;
+		
+		public static boolean exists(Repo repo) {
+			return repo!=null && repo.cache()!=Repo.Cache.rep_none;
+		}
 	}
 
 	

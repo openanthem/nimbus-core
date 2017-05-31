@@ -5,6 +5,8 @@ package com.anthem.oss.nimbus.core.domain.command;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -29,6 +31,10 @@ public class CommandMessage implements Serializable {
 	public CommandMessage(Command command, String rayPayload) {
 		setCommand(command);
 		setRawPayload(rayPayload);
+	}
+	
+	public boolean hasPayload() {
+		return StringUtils.trimToNull(getRawPayload())!=null;
 	}
 	
 	@Override

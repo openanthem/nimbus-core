@@ -13,7 +13,6 @@ import com.anthem.oss.nimbus.core.domain.command.Behavior;
 import com.anthem.oss.nimbus.core.util.CollectionsTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -31,7 +30,7 @@ public final class CommandExecution {
 		@Getter private final String inputCommandUri;
 		
 		@JsonIgnore	
-		@Getter(AccessLevel.PROTECTED) private final ExecutionContext context;
+		@Getter private final ExecutionContext context;
 
 		@Getter private final Action action;
 		private final List<Behavior> behaviors;
@@ -69,8 +68,14 @@ public final class CommandExecution {
 			super(inputCommandUri, context, action, behaviors);
 		}
 	
-		public static <T> Output<T> instantiate(Input input) {
-			return new Output<>(input.getInputCommandUri(), input.getContext(), input.getAction(), input.getBehavior());
+		public static <T> Output<T> instantiate(Input input, ExecutionContext eCtx) {
+			return new Output<>(input.getInputCommandUri(), eCtx, input.getAction(), input.getBehavior());
+		}
+		
+		public static <T> Output<T> instantiate(Input input, ExecutionContext eCtx, T value) {
+			Output<T> output = instantiate(input, eCtx);
+			output.setValue(value);
+			return output;
 		}
 		
 		@Override

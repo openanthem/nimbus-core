@@ -7,9 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
-import com.anthem.oss.nimbus.core.domain.definition.Execution;
 import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.entity.client.ClientEntity;
@@ -23,9 +21,8 @@ import lombok.ToString;
  * @author Rakesh Patel
  *
  */
-@Domain(value="clientusergroup")
-@Repo(Repo.Database.rep_mongodb)
-@Execution.Input.Default @Execution.Output.Default @Execution.Output(Action._new)
+@Domain("clientusergroup")
+@Repo
 @Getter @Setter @ToString(callSuper=true)
 public class ClientUserGroup extends AbstractUserGroup {
 

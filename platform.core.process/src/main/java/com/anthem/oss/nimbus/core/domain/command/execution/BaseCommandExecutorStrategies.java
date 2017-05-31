@@ -9,7 +9,10 @@ import java.util.Optional;
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Behavior;
+import com.anthem.oss.nimbus.core.domain.command.Command;
+import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 
 import lombok.Getter;
@@ -42,6 +45,13 @@ public class BaseCommandExecutorStrategies {
 			.orElse(lookupExecutor(prefix+e));			//pattern: default.e#pre
 	}
 	*/
+	
+	protected <T> Param<T> findParamByCommand(ExecutionContext eCtx) {
+		Command cmd = eCtx.getCommandMessage().getCommand();
+		String path = cmd.buildUri(cmd.getElement(Type.DomainAlias).get());
+		
+		return eCtx.getRootModel().findParamByPath(path);
+	}
 	
 	protected <T> T lookupBeanOrThrowEx(Class<T> type, Map<String, T> localCache, Action a, Behavior b) {
 		return Optional.ofNullable(lookupBean(type, localCache, a, b))

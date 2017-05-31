@@ -3,11 +3,9 @@ package com.anthem.oss.nimbus.test.sample.um.model;
 import java.util.List;
 
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
-import com.anthem.oss.nimbus.core.domain.definition.Execution;
+import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
 import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
-import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
-import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 import com.anthem.oss.nimbus.core.entity.DateRange;
 
@@ -21,9 +19,7 @@ import lombok.ToString;
  */
 @Domain(value="core_umcase", includeListeners={ListenerType.persistence})
 @Model(value="core_umcase", excludeListeners={ListenerType.websocket})
-@Repo(Database.rep_mongodb)
-@Execution.Input.Default_Exclude_Search
-@Execution.Output.Default_Exclude_Search
+@Repo
 @ToString
 public class UMCase extends AbstractEntity.IdString {
 
