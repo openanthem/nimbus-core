@@ -63,7 +63,6 @@ public class DefaultCoreExecutorConfig {
 		return new DefaultActionExecutorNav(beanResolver);
 	}
 	
-	
 	@Bean(name="default._process$execute")
 	public DefaultActionExecutorProcess defaultActionExecutorProcess(BeanResolverStrategy beanResolver){
 		return new DefaultActionExecutorProcess(beanResolver);
