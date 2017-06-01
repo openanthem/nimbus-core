@@ -59,14 +59,14 @@ public class DefaultCoreExecutorConfig {
 	}
 	
 	@Bean(name="default._nav$execute")
-	public DefaultActionExecutorProcess defaultActionExecutorNav(){
-		return new DefaultActionExecutorProcess();
+	public DefaultActionExecutorNav defaultActionExecutorNav(BeanResolverStrategy beanResolver){
+		return new DefaultActionExecutorNav(beanResolver);
 	}
 	
 	
 	@Bean(name="default._process$execute")
-	public DefaultActionExecutorProcess defaultActionExecutorProcess(){
-		return new DefaultActionExecutorProcess();
+	public DefaultActionExecutorProcess defaultActionExecutorProcess(BeanResolverStrategy beanResolver){
+		return new DefaultActionExecutorProcess(beanResolver);
 	}
 	
 	@Bean(name="default._search$execute")
@@ -94,11 +94,6 @@ public class DefaultCoreExecutorConfig {
 		return new DefaultBehaviorExecutorConfig();
 	}
 	
-	@Bean(name="default.$nav")
-	public DefaultActionExecutorNav defaultBehaviorExecutorNav() {
-		return new DefaultActionExecutorNav();
-	}
-
 	@Bean
 	public HierarchyMatchBasedBeanFinder hierarchyMatchBasedBeanFinder(){
 		return new HierarchyMatchBasedBeanFinder();
