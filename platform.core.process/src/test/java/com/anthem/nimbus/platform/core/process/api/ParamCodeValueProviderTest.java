@@ -22,6 +22,8 @@ import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutorGateway;
 import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContext;
 import com.anthem.oss.nimbus.core.domain.command.execution.FunctionHandler;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
@@ -41,9 +43,9 @@ import com.anthem.oss.nimbus.core.entity.queue.Queue;
 public class ParamCodeValueProviderTest extends AbstractUnitTest {
 
 
-//	@Autowired
-//	@Qualifier("default.processGateway")
-//	ProcessGateway processGateway;
+	@Autowired
+	@Qualifier("default.processGateway")
+	CommandExecutorGateway commandGateway;
 	
 	@Autowired
 	MongoOperations mongoOps;
@@ -65,8 +67,12 @@ public class ParamCodeValueProviderTest extends AbstractUnitTest {
 	public void t1_testSearchByLookupStaticCodeValue() {
 		CommandMessage cmdMsg = build("Anthem/fep/icr/p/staticCodeValue/_search?fn=lookup&where=staticCodeValue.paramCode.eq('/status')");
 		
-		ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
-		List<ParamValue> values = lookupFunctionHandler.execute(exContext, null);
+//		ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
+//		List<ParamValue> values = lookupFunctionHandler.execute(exContext, null);
+//		
+		MultiOutput multiOp = commandGateway.execute(cmdMsg);
+		
+		List<ParamValue> values  = (List<ParamValue>)multiOp.getValue();
 		
 		assertNotNull(values);
 		assertNotEquals(0, values.size());

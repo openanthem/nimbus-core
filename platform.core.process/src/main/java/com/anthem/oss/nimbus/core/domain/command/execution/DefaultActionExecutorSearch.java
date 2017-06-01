@@ -4,23 +4,23 @@ package com.anthem.oss.nimbus.core.domain.command.execution;
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Input;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 
 
 /**
  * @author Soham Chakravarti
  *
  */
-public class DefaultActionExecutorSearch extends AbstractCommandExecutor<Param<?>> {
+public class DefaultActionExecutorSearch<T, R> extends AbstractFunctionCommandExecutor<T, R> {
 	
 	public DefaultActionExecutorSearch(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
 	}
 
 	@Override
-	protected Output<Param<?>> executeInternal(Input input) {
-		// TODO Auto-generated method stub
-		return null;
+	@SuppressWarnings("unchecked")
+	protected Output<R> executeInternal(Input input) {
+		R response = (R)executeFunctionHanlder(input, FunctionHandler.class);
+		return Output.instantiate(input, input.getContext(), response);
 	}
 
 

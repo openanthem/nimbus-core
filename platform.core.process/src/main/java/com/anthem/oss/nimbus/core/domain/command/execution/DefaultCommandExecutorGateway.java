@@ -56,7 +56,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		
 		// get execution config
 		Param<?> p = findParamByCommand(eCtx);
-		List<Execution.Config> execConfigs = p.getConfig().getExecutionConfigs();
+		List<Execution.Config> execConfigs = p != null ? p.getConfig().getExecutionConfigs() : null;
 		
 		// if present, hand-off to each command within execution config
 		if(CollectionUtils.isNotEmpty(execConfigs)) {

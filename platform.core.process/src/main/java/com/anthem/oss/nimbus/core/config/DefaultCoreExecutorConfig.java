@@ -58,15 +58,15 @@ public class DefaultCoreExecutorConfig {
 		return new DefaultActionExecutorGet(beanResolver);
 	}
 	
-	@Bean(name="default._nav$execute")
-	public DefaultActionExecutorProcess defaultActionExecutorNav(){
-		return new DefaultActionExecutorProcess();
-	}
+//	@Bean(name="default._nav$execute")
+//	public DefaultActionExecutorProcess defaultActionExecutorNav(){
+//		return new DefaultActionExecutorProcess();
+//	}
 	
 	
 	@Bean(name="default._process$execute")
-	public DefaultActionExecutorProcess defaultActionExecutorProcess(){
-		return new DefaultActionExecutorProcess();
+	public DefaultActionExecutorProcess defaultActionExecutorProcess(BeanResolverStrategy beanResolver){
+		return new DefaultActionExecutorProcess(beanResolver);
 	}
 	
 	@Bean(name="default._search$execute")
@@ -75,8 +75,8 @@ public class DefaultCoreExecutorConfig {
 	}
 	
 	@Bean(name="default._update$execute")
-	public DefaultActionExecutorUpdate defaultActionExecutorUpdate(){
-		return new DefaultActionExecutorUpdate();
+	public DefaultActionExecutorUpdate defaultActionExecutorUpdate(BeanResolverStrategy beanResolver){
+		return new DefaultActionExecutorUpdate(beanResolver);
 	}
 	
 	@Bean(name="default._delete$execute")
@@ -94,10 +94,10 @@ public class DefaultCoreExecutorConfig {
 		return new DefaultBehaviorExecutorConfig();
 	}
 	
-	@Bean(name="default.$nav")
-	public DefaultActionExecutorNav defaultBehaviorExecutorNav() {
-		return new DefaultActionExecutorNav();
-	}
+//	@Bean(name="default.$nav")
+//	public DefaultActionExecutorNav defaultBehaviorExecutorNav() {
+//		return new DefaultBehaviorExecutorNav();
+//	}
 
 	@Bean
 	public HierarchyMatchBasedBeanFinder hierarchyMatchBasedBeanFinder(){
