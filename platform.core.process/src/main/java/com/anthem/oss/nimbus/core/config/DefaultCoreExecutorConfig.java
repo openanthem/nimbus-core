@@ -14,7 +14,6 @@ import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutor
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutorUpdate;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionProcessExecutorDelete;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionProcessExecutorReplace;
-import com.anthem.oss.nimbus.core.domain.command.execution.DefaultBehaviorExecutorConfig;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultCommandExecutorGateway;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultExecutionContextLoader;
 import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContextLoader;
@@ -58,11 +57,11 @@ public class DefaultCoreExecutorConfig {
 		return new DefaultActionExecutorGet(beanResolver);
 	}
 	
+
 	@Bean(name="default._nav$execute")
 	public DefaultActionExecutorNav defaultActionExecutorNav(BeanResolverStrategy beanResolver){
 		return new DefaultActionExecutorNav(beanResolver);
 	}
-	
 	
 	@Bean(name="default._process$execute")
 	public DefaultActionExecutorProcess defaultActionExecutorProcess(BeanResolverStrategy beanResolver){
@@ -75,8 +74,8 @@ public class DefaultCoreExecutorConfig {
 	}
 	
 	@Bean(name="default._update$execute")
-	public DefaultActionExecutorUpdate defaultActionExecutorUpdate(){
-		return new DefaultActionExecutorUpdate();
+	public DefaultActionExecutorUpdate defaultActionExecutorUpdate(BeanResolverStrategy beanResolver){
+		return new DefaultActionExecutorUpdate(beanResolver);
 	}
 	
 	@Bean(name="default._delete$execute")
@@ -87,11 +86,6 @@ public class DefaultCoreExecutorConfig {
 	@Bean(name="default._replace$execute")
 	public DefaultActionProcessExecutorReplace defaultActionProcessExecutorReplace(){
 		return new DefaultActionProcessExecutorReplace();
-	}
-	
-	@Bean(name="default.$config")
-	public DefaultBehaviorExecutorConfig defaultBehaviorExecutorConfig(){
-		return new DefaultBehaviorExecutorConfig();
 	}
 	
 	@Bean

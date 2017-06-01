@@ -3,11 +3,47 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
+import com.anthem.oss.nimbus.core.BeanResolverStrategy;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Input;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
+import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
+import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+
 /**
  * @author Soham Chakravarti
  *
  */
-public class DefaultActionExecutorUpdate {} /*extends AbstractProcessTaskExecutor {
+public class DefaultActionExecutorUpdate extends AbstractCommandExecutor<Param<?>>{
+
+	public DefaultActionExecutorUpdate(BeanResolverStrategy beanResolver) {
+		super(beanResolver);
+	}
+
+	@Override
+	protected Output<Param<?>> executeInternal(Input input) {
+		ExecutionContext eCtx = handleUpdateDomainRoot(input.getContext());
+		
+		
+		return null;
+	}
+	
+	protected ExecutionContext handleUpdateDomainRoot(ExecutionContext eCtx) {
+		if(eCtx.getQuadModel()!=null)
+			return eCtx;
+		return null;
+	}
+	
+}
+
+
+
+
+
+
+
+
+/*extends AbstractProcessTaskExecutor {
 
 	
 	@SuppressWarnings("unchecked")

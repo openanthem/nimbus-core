@@ -39,7 +39,7 @@ abstract public class AbstractFunctionCommandExecutor<T,R> extends AbstractComma
 	private String constructFunctionHandlerKey(CommandMessage cmdMsg){
 		StringBuilder key = new StringBuilder();
 		String functionName = cmdMsg.getCommand().getFirstParameterValue(Constants.KEY_FUNCTION.code);
-		String absoluteUri = cmdMsg.getCommand().getAbsoluteUri();
+		String absoluteUri = cmdMsg.getCommand().getAbsoluteAlias();
 		absoluteUri = absoluteUri.replaceAll(Constants.SEPARATOR_URI.code, "\\.");
 		key.append(absoluteUri).append(".").append(cmdMsg.getCommand().getAction().toString())
 		   .append(Behavior.$execute.name())
