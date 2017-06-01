@@ -64,7 +64,7 @@ user:
 process:
   key:
     regex:
-     ([A-Za-z0-9_\\-\\*~]+)
+     ([A-Za-z0-9_\\-\\*~\\?=\\.\\$]+)
   database:
     driver: 
       com.mysql.jdbc.Driver
