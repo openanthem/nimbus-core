@@ -93,6 +93,7 @@ public class DefaultCoreExecutorConfig {
 		return new HierarchyMatchBasedBeanFinder();
 	}
 	
+	
 	@Bean(name="default.processGateway")
 	public DefaultCommandExecutorGateway defaultProcessGateway(BeanResolverStrategy beanResolver){
 		return new DefaultCommandExecutorGateway(beanResolver);
