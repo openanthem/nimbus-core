@@ -23,6 +23,7 @@ import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutorGateway;
 import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContext;
 import com.anthem.oss.nimbus.core.domain.command.execution.FunctionHandler;
@@ -64,6 +65,7 @@ public class ParamCodeValueProviderTest extends AbstractUnitTest {
 	
 	
 	@Test
+	@SuppressWarnings("unchecked")
 	public void t1_testSearchByLookupStaticCodeValue() {
 		CommandMessage cmdMsg = build("Anthem/fep/icr/p/staticCodeValue/_search?fn=lookup&where=staticCodeValue.paramCode.eq('/status')");
 		
@@ -71,26 +73,31 @@ public class ParamCodeValueProviderTest extends AbstractUnitTest {
 //		List<ParamValue> values = lookupFunctionHandler.execute(exContext, null);
 //		
 		MultiOutput multiOp = commandGateway.execute(cmdMsg);
+		List<Output<?>> ops  = multiOp.getOutputs();
 		
-		List<ParamValue> values  = (List<ParamValue>)multiOp.getValue();
+		assertNotNull(ops);
 		
-		assertNotNull(values);
+		List<ParamValue> values = (List<ParamValue>)ops.get(0).getValue(); // TODO having to cast the output, is that correct ??
 		assertNotEquals(0, values.size());
 		
 		values.forEach((v)->System.out.println(v.getCode()));
 	}
 	
 	@Test
+	@SuppressWarnings("unchecked")
 	public void t2_testSearchByLookupModel() {
+		insertClient();
 		CommandMessage cmdMsg = build("Anthem/fep/icr/p/client/_search?fn=lookup&projection.mapsTo=code:name,label:name");
 		
-//		MultiExecuteOutput output = (MultiExecuteOutput) processGateway.startProcess(cmdMsg);
-//		List<ParamValue> values = output.getSingleResult();
+		//ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
+		//List<ParamValue> values = lookupFunctionHandler.execute(exContext, null);
 		
-		ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
-		List<ParamValue> values = lookupFunctionHandler.execute(exContext, null);
+		MultiOutput multiOp = commandGateway.execute(cmdMsg);
+		List<Output<?>> ops  = multiOp.getOutputs();
 		
-		assertNotNull(values);
+		assertNotNull(ops);
+		
+		List<ParamValue> values = (List<ParamValue>)ops.get(0).getValue(); // TODO having to cast the output, is that correct ??
 		assertNotEquals(0, values.size());
 		
 		values.forEach((v)->System.out.println(v.getCode()));
@@ -98,9 +105,17 @@ public class ParamCodeValueProviderTest extends AbstractUnitTest {
 	
 	@Test
 	public void t3_testSearchByExampleCriteriaNull() {
+		insertClient();
 		CommandMessage cmdMsg = build("Anthem/fep/icr/p/client/_search?fn=example");
-		ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
-		List<?> values = (List<?>)exampleFunctionHandler.execute(exContext, null);
+//		ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
+//		List<?> values = (List<?>)exampleFunctionHandler.execute(exContext, null);
+		
+		MultiOutput multiOp = commandGateway.execute(cmdMsg);
+		List<Output<?>> ops  = multiOp.getOutputs();
+		
+		assertNotNull(ops);
+		
+		List<?> values = (List<?>)ops.get(0).getValue();
 		
 		assertNotNull(values);
 		assertEquals(2, values.size());
@@ -112,8 +127,15 @@ public class ParamCodeValueProviderTest extends AbstractUnitTest {
 		
 		CommandMessage cmdMsg = build("Anthem/fep/icr/p/client/_search?fn=example");
 		cmdMsg.setRawPayload("{\"code\":\""+c.getCode()+"\"}");
-		ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
-		List<?> values = (List<?>)exampleFunctionHandler.execute(exContext, null);
+		//ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
+		//List<?> values = (List<?>)exampleFunctionHandler.execute(exContext, null);
+		
+		MultiOutput multiOp = commandGateway.execute(cmdMsg);
+		List<Output<?>> ops  = multiOp.getOutputs();
+		
+		assertNotNull(ops);
+		
+		List<?> values = (List<?>)ops.get(0).getValue();
 		
 		assertNotNull(values);
 		assertEquals(1, values.size());

@@ -13,6 +13,8 @@ import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.model.state.HierarchyMatch;
+import com.anthem.oss.nimbus.core.domain.model.state.InvalidStateException;
+import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 
@@ -47,11 +49,27 @@ public class BaseCommandExecutorStrategies {
 	}
 	*/
 	
+	protected QuadModel<?,?> getQuadModelOrThrowEx(ExecutionContext eCtx) {
+		return Optional.ofNullable(getQuadModel(eCtx))
+				.orElseThrow(()->new InvalidStateException("QuadModel cannot be null for execution context: "+eCtx));
+	}
+
+	protected QuadModel<?,?> getQuadModel(ExecutionContext eCtx) {
+		return eCtx.getQuadModel();
+	}
+
+	@SuppressWarnings("unchecked")
+	protected <T> Param<T> findParamByCommandOrThrowEx(ExecutionContext eCtx) {
+		return (Param<T>) Optional.ofNullable(findParamByCommand(eCtx))
+				.orElseThrow(()->new InvalidConfigException("Param state not found for path: "+eCtx.getCommandMessage().getCommand().getAbsoluteAlias()+" from execution context: "+eCtx));
+		
+	}
+	
 	protected <T> Param<T> findParamByCommand(ExecutionContext eCtx) {
 		Command cmd = eCtx.getCommandMessage().getCommand();
 		String path = cmd.buildAlias(cmd.getElement(Type.DomainAlias).get());
 		
-		return eCtx.getQuadModel().getView().findParamByPath(path);
+		return getQuadModelOrThrowEx(eCtx).getView().findParamByPath(path);
 	}
 	
 	protected <T> T lookupBeanOrThrowEx(Class<T> type, Map<String, T> localCache, Action a, Behavior b) {

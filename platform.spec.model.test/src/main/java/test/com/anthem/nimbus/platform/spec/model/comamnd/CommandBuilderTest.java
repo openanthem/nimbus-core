@@ -58,9 +58,33 @@ public class CommandBuilderTest {
 		assertSame(Behavior.$save, cmd.getBehaviors().get(1));
 		
 		assertNotNull(cmd.getRequestParams().get("criteria"));
-		assertEquals(cmd.getRequestParams().get("criteria")[0], "customer.name.eq(\"John\")");
+		assertEquals(cmd.getFirstParameterValue("criteria"), "customer.name.eq(\"John\")");
 	}
 
+	@Test
+	public void t2_nestedDomainNoParams() {
+		String uri = "/client_xyz/app_abc/p/domainRoot_alias/param_alias/_new";
+		Command cmd = CommandBuilder.withUri(uri).getCommand();
+		assertNotNull(cmd);
+		
+		assertEquals("client_xyz", cmd.getRootClientAlias());
+		assertEquals("app_abc", cmd.getAppAlias());
+		assertEquals("domainRoot_alias", cmd.getRootDomainAlias());
+		
+		System.out.println("cmd.getAbsoluteAlias(): "+cmd.getAbsoluteAlias());
+		System.out.println("cmd.getAbsoluteAliasTillRootDomain(): "+cmd.getAbsoluteAliasTillRootDomain());
+		System.out.println("cmd.getAbsoluteDomainAlias(): "+cmd.getAbsoluteDomainAlias());
+		System.out.println("cmd.getAbsoluteDomainUri(): "+cmd.getAbsoluteDomainUri());
+		System.out.println("cmd.getAbsoluteUri(): "+cmd.getAbsoluteUri());
+		System.out.println("cmd.getAbsoluteUri(Type): "+cmd.getAbsoluteUri(Type.DomainAlias));
+		System.out.println("cmd.getAlias(Type): "+cmd.getAlias(Type.DomainAlias));
+		System.out.println("cmd.getAliasUri(Type): "+cmd.getAliasUri(Type.DomainAlias));
+		System.out.println("cmd.getRootDomainAlias(): "+cmd.getRootDomainAlias());
+		System.out.println("cmd.getRootDomainUri(): "+cmd.getRootDomainUri());
+		
+		assertSame(Action._new, cmd.getAction());
+		assertNull(cmd.getBehaviors());
+	}
 	
 	@Test
 	public void t2_simple_with_lazyParams() {
