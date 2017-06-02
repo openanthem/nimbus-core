@@ -14,7 +14,6 @@ import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutor
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutorUpdate;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionProcessExecutorDelete;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionProcessExecutorReplace;
-import com.anthem.oss.nimbus.core.domain.command.execution.DefaultBehaviorExecutorConfig;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultCommandExecutorGateway;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultExecutionContextLoader;
 import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContextLoader;
@@ -58,11 +57,11 @@ public class DefaultCoreExecutorConfig {
 		return new DefaultActionExecutorGet(beanResolver);
 	}
 	
-//	@Bean(name="default._nav$execute")
-//	public DefaultActionExecutorProcess defaultActionExecutorNav(){
-//		return new DefaultActionExecutorProcess();
-//	}
-	
+
+	@Bean(name="default._nav$execute")
+	public DefaultActionExecutorNav defaultActionExecutorNav(BeanResolverStrategy beanResolver){
+		return new DefaultActionExecutorNav(beanResolver);
+	}
 	
 	@Bean(name="default._process$execute")
 	public DefaultActionExecutorProcess defaultActionExecutorProcess(BeanResolverStrategy beanResolver){
@@ -89,20 +88,11 @@ public class DefaultCoreExecutorConfig {
 		return new DefaultActionProcessExecutorReplace();
 	}
 	
-	@Bean(name="default.$config")
-	public DefaultBehaviorExecutorConfig defaultBehaviorExecutorConfig(){
-		return new DefaultBehaviorExecutorConfig();
-	}
-	
-//	@Bean(name="default.$nav")
-//	public DefaultActionExecutorNav defaultBehaviorExecutorNav() {
-//		return new DefaultBehaviorExecutorNav();
-//	}
-
 	@Bean
 	public HierarchyMatchBasedBeanFinder hierarchyMatchBasedBeanFinder(){
 		return new HierarchyMatchBasedBeanFinder();
 	}
+	
 	
 	@Bean(name="default.processGateway")
 	public DefaultCommandExecutorGateway defaultProcessGateway(BeanResolverStrategy beanResolver){

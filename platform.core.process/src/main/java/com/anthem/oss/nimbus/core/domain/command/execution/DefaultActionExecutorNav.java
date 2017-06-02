@@ -15,7 +15,6 @@ import com.anthem.oss.nimbus.core.domain.command.execution.nav.NavigationHandler
  */
 public class DefaultActionExecutorNav<T> extends AbstractFunctionCommandExecutor<T,String> {
 	
-	
 	public DefaultActionExecutorNav(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
 	}

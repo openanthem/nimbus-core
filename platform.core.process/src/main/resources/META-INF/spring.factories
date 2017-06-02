@@ -3,6 +3,8 @@ com.anthem.oss.nimbus.core.config.DefaultCoreConfiguration,\
 com.anthem.oss.nimbus.core.config.HttpSessionConfig,\
 com.anthem.oss.nimbus.core.domain.model.config.DefaultModelConfig,\
 com.anthem.oss.nimbus.core.config.WebSocketConfig,\
+com.anthem.oss.nimbus.core.config.WebSocketSecurityConfig,\
+com.anthem.oss.nimbus.core.config.WebConfig,\
 com.anthem.oss.nimbus.core.config.WebSocketHandlersConfig,\
 com.anthem.oss.nimbus.core.config.WebSecurityConfig,\
 com.anthem.oss.nimbus.core.config.SwaggerConfig,\
