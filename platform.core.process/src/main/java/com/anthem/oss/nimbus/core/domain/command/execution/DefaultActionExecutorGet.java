@@ -4,7 +4,6 @@
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
-import com.anthem.oss.nimbus.core.UnsupportedScenarioException;
 import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Input;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
@@ -51,12 +50,12 @@ public class DefaultActionExecutorGet extends AbstractCommandExecutor<Param<?>> 
 		
 		final Object entity;
 		final Object mapsToEntity;
-		boolean repoDbFound = false;
+//		boolean repoDbFound = false;
 		
 		if(Repo.Database.exists(rootDomainConfig.getRepo())) { // root (view or core) is persistent
 			entity = getRepositoryFactory().get(rootDomainConfig.getRepo())
 						._get(refId, rootDomainConfig.getReferredClass(), rootDomainConfig.getDomainAlias());
-			repoDbFound = true;
+//			repoDbFound = true;
 			
 		} else {
 			entity = instantiateEntity(rootDomainConfig);
@@ -68,7 +67,7 @@ public class DefaultActionExecutorGet extends AbstractCommandExecutor<Param<?>> 
 			
 			if(Repo.Database.exists(mapsToRepo)) {
 				mapsToEntity = getRepositoryFactory().get(rootDomainConfig.getRepo())._get(refId, mapsToConfig.getReferredClass(), mapsToConfig.getDomainAlias());
-				repoDbFound = true;
+//				repoDbFound = true;
 				
 			} else {
 				mapsToEntity = instantiateEntity(mapsToConfig);
@@ -77,11 +76,11 @@ public class DefaultActionExecutorGet extends AbstractCommandExecutor<Param<?>> 
 			mapsToEntity = null;
 		}
 		
-		// ensure that only scenarios configured with persistence is handled here, other flows such as cache-only, should have been handled prior
-		if(!repoDbFound)
-			throw new UnsupportedScenarioException("Non persistence based flows should have been accounted prior to this api call,"
-					+ " Found for root-domain: "+rootDomainConfig+" with execution context: "+eCtx);
-		
+//		// ensure that only scenarios configured with persistence is handled here, other flows such as cache-only, should have been handled prior
+//		if(!repoDbFound)
+//			throw new UnsupportedScenarioException("Non persistence based flows should have been accounted prior to this api call,"
+//					+ " Found for root-domain: "+rootDomainConfig+" with execution context: "+eCtx);
+//		
 
 		// create quad-model
 		ExecutionEntity<?, ?> e = ExecutionEntity.resolveAndInstantiate(entity, mapsToEntity);

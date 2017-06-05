@@ -87,10 +87,10 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 			throw new InvalidStateException("Both view and core cannot be null.");
 		
 		if(view==null && core!=null)
-			return new ExecutionEntity<>(view, core);
+			return new ExecutionEntity<>(null, core);
 		
 		if(view!=null && core==null)	//swap
-			return new ExecutionEntity<>(core, null);
+			return new ExecutionEntity<>(null, view);
 		
 		return new ExecutionEntity<>(view, core);	
 	}

@@ -21,6 +21,11 @@ import com.anthem.oss.nimbus.core.domain.definition.Executions.Configs;
 @Inherited
 public @interface Execution {
 
+	/**
+	 * Only the first execution config would have access to supplied payload.
+	 *  
+	 * @author Soham Chakravarti
+	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@Repeatable(Configs.class)
