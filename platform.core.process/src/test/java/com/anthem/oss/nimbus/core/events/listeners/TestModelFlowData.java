@@ -39,8 +39,6 @@ abstract class TestModelFlowData {
 	@Domain(value="core_book", includeListeners={ListenerType.persistence})
 	@Model(value="core_book", excludeListeners={ListenerType.websocket})
 	@Repo(Database.rep_mongodb)
-	@Execution.Input.Default_Exclude_Search
-	@Execution.Output.Default_Exclude_Search
 	public static class Book extends AbstractEntity.IdString {
 
 		private static final long serialVersionUID = 1L;
@@ -80,7 +78,6 @@ abstract class TestModelFlowData {
 	}
 	
 	@Domain(value="view_book",includeListeners={ListenerType.websocket}) @MapsTo.Type(Book.class)
-	@Execution.Input.Default @Execution.Output.Default @Execution.Output({Action._new, Action._nav, Action._process})
 	@Getter @Setter
 	public static class OrderBookFlow {
 		private String orderId;
@@ -121,8 +118,6 @@ abstract class TestModelFlowData {
 	@Domain(value="core_book1")
 	@Model(value="core_book1", excludeListeners={ListenerType.websocket})
 	@Repo(Database.rep_mongodb)
-	@Execution.Input.Default_Exclude_Search
-	@Execution.Output.Default_Exclude_Search
 	public static class BookWithoutPersistenceListener extends AbstractEntity.IdString {
 
 		private static final long serialVersionUID = 1L;
@@ -134,7 +129,6 @@ abstract class TestModelFlowData {
 	}
 	
 	@Domain(value="view_book1") @MapsTo.Type(BookWithoutPersistenceListener.class)
-	@Execution.Input.Default @Execution.Output.Default @Execution.Output({Action._new, Action._nav, Action._process})
 	@Getter @Setter
 	public static class OrderBook1Flow {
 		private String orderId;
@@ -147,8 +141,6 @@ abstract class TestModelFlowData {
 	
 	@Domain(value="core_book2", includeListeners={ListenerType.persistence})
 	@Model(value="core_book2", excludeListeners={ListenerType.websocket})
-	@Execution.Input.Default_Exclude_Search
-	@Execution.Output.Default_Exclude_Search
 	public static class BookWithoutRepo extends AbstractEntity.IdString {
 
 		private static final long serialVersionUID = 1L;
@@ -160,7 +152,6 @@ abstract class TestModelFlowData {
 	}	
 	
 	@Domain(value="view_book2",includeListeners={ListenerType.websocket}) @MapsTo.Type(BookWithoutRepo.class)
-	@Execution.Input.Default @Execution.Output.Default @Execution.Output({Action._new, Action._nav, Action._process})
 	@Getter @Setter
 	public static class OrderBook2Flow {
 		private String orderId;
@@ -173,8 +164,6 @@ abstract class TestModelFlowData {
 	
 	@Domain(value="core_book3", includeListeners={ListenerType.persistence,ListenerType.websocket})
 	@Model(value="core_book3", excludeListeners={ListenerType.persistence,ListenerType.websocket})
-	@Execution.Input.Default_Exclude_Search
-	@Execution.Output.Default_Exclude_Search
 	public static class BookWithExcludedListener extends AbstractEntity.IdString {
 
 		private static final long serialVersionUID = 1L;
@@ -186,7 +175,6 @@ abstract class TestModelFlowData {
 	}	
 	
 	@Domain(value="view_book3",includeListeners={ListenerType.websocket}) @MapsTo.Type(BookWithExcludedListener.class)
-	@Execution.Input.Default @Execution.Output.Default @Execution.Output({Action._new, Action._nav, Action._process})
 	@Getter @Setter
 	public static class OrderBook3Flow {
 		private String orderId;

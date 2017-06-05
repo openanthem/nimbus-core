@@ -52,7 +52,6 @@ public class EntityStateBuilder extends AbstractEntityStateBuilder {
 		}
 		
 		execModelSAC.initSetup();
-		//==createParamValuesNested(execModelSAC.templateParams().get());
 		return execModelSAC;
 	}
 
@@ -149,40 +148,5 @@ public class EntityStateBuilder extends AbstractEntityStateBuilder {
 			return new StateType(associatedParam.getConfig().getType());
 		}
 	}
-	
-//	private void createParamValuesNested(List<Param<?>> params) {
-//		for(Param p: params) {
-//			if(p.getConfig().getValues() != null) {
-//				createParamValues(p);
-//			}
-//			else if(p.findIfNested() != null && CollectionUtils.isNotEmpty(p.findIfNested().getParams())) {
-//				createParamValuesNested(p.findIfNested().getParams());
-//			}
-//		}
-//	}
-//	
-//	private void createParamValues(Param param) {
-//		if(param.getConfig().getValues() != null) {
-//			String valuesUrl = param.getConfig().getValues().url();
-//
-//			String[] uriWithPayload = valuesUrl.split(Constants.CODE_VALUE_CONFIG_DELIMITER.code);
-//			Command command = CommandBuilder.withUri(Constants.PARAM_VALUES_URI_PREFIX.code+uriWithPayload[0]+Constants.PARAM_VALUES_URI_SUFFIX.code).getCommand();
-//			command.setAction(Action._lookup);
-//			command.templateBehaviors().add(Behavior.$execute);
-//			CommandMessage cmdMsg = new CommandMessage();
-//			cmdMsg.setCommand(command);
-//			if(uriWithPayload.length > 1) {
-//				cmdMsg.setRawPayload(uriWithPayload[1]); // domain model lookup
-//			}
-//			else{
-//				cmdMsg.setRawPayload(param.getPath()); // static code value lookup
-//			}
-//			
-//			MultiExecuteOutput output = (MultiExecuteOutput) processGateway.startProcess(cmdMsg);
-//			Param<Object> p = param.getContextModel().findParamByPath("/values");
-//			p.setState(output.getSingleResult());
-//			
-//		}
-//	}
 	
 }

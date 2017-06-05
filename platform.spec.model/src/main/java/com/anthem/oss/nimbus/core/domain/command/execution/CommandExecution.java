@@ -8,6 +8,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.util.CollectionUtils;
+
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Behavior;
 import com.anthem.oss.nimbus.core.util.CollectionsTemplate;
@@ -103,6 +105,16 @@ public final class CommandExecution {
 		
 		public CollectionsTemplate<List<Output<?>>, Output<?>> template() {
 			return template;
+		}
+		
+		@SuppressWarnings("unchecked")
+		@JsonIgnore
+		public Object getSingleResult() {
+			if(CollectionUtils.isEmpty(getOutputs())) return null;
+			
+			if(getOutputs().size() > 1) throw new IllegalStateException("Multi output contains more than one output elements: "+getOutputs());
+			
+			return getOutputs().get(0).getValue();
 		}
 		
 	}

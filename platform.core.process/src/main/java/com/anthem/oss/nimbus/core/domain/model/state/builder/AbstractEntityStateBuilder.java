@@ -7,17 +7,24 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.CollectionUtils;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
+import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
+import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutorGateway;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Mode;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
+import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig.MappedParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
@@ -51,10 +58,13 @@ abstract public class AbstractEntityStateBuilder {
 
 	protected final RulesEngineFactoryProducer rulesEngineFactoryProducer;
 	
+	private final CommandExecutorGateway gateway;
+	
 	protected JustLogit logit = new JustLogit(getClass());
 	
 	public AbstractEntityStateBuilder(BeanResolverStrategy beanResolver) {
 		this.rulesEngineFactoryProducer = beanResolver.get(RulesEngineFactoryProducer.class);
+		this.gateway = beanResolver.get(CommandExecutorGateway.class);
 	}
 	
 	abstract public <T, P> DefaultModelState<T> buildModel(EntityStateAspectHandlers provider, DefaultParamState<T> associatedParam, ModelConfig<T> mConfig, Model<?> mapsToSAC);
@@ -123,7 +133,7 @@ abstract public class AbstractEntityStateBuilder {
 		decorateParam(p);
 		
 		/* setting param values if applicable */
-	//	createParamValues(p.getConfig(), p.getPath());
+		createParamValues(p);
 		
 		return p;
 	}
@@ -228,6 +238,24 @@ abstract public class AbstractEntityStateBuilder {
 				+ "Mapped Param: "+mapped.getCode()+" with mapsTo: "+mapped.getPath().value()+" mapped model: "+mapsToStateAndConfig.getPath());
 			
 		return mapsToParam;	
+	}
+	
+	private void createParamValues(Param<?> param) {
+		if(param.getConfig().getValues() != null) {
+			String valuesUrl = param.getConfig().getValues().url();
+			Command cmd = CommandBuilder.withUri(valuesUrl).getCommand();
+			cmd.setAction(Action._search);
+			
+			CommandMessage cmdMsg = new CommandMessage();
+			cmdMsg.setCommand(cmd);
+			
+			MultiOutput multiOp = getGateway().execute(cmdMsg);
+			Param<Object> p = param.getContextModel().findParamByPath("/values");
+			
+			Object result = multiOp.getSingleResult();
+			if(result != null) 
+				p.setState(result);
+		}
 	}
 	
 }
