@@ -34,7 +34,7 @@ public class Client extends ClientEntity {
 	private String fedTaxID;
 	
     @NotNull
-	@Model.Param.Values(Values.BusinessType.class)
+	//@Model.Param.Values(Values.BusinessType.class)
 	@Getter @Setter private String businessType;
 	
 }

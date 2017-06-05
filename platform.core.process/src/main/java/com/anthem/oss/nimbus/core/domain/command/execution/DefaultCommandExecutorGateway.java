@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -34,14 +36,17 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 	@SuppressWarnings("rawtypes")
 	private final Map<String, CommandExecutor> executors;
 	
-	private final ExecutionContextLoader loader;
-	
+	private ExecutionContextLoader loader;
 	
 	public DefaultCommandExecutorGateway(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
 		
 		this.executors = new HashMap<>();
-		this.loader = beanResolver.get(ExecutionContextLoader.class);
+	}
+	
+	@PostConstruct
+	public void initDependencies() {
+		this.loader = getBeanResolver().get(ExecutionContextLoader.class);
 	}
 
 	

@@ -99,11 +99,6 @@ public class DefaultCoreExecutorConfig {
 		return new DefaultCommandExecutorGateway(beanResolver);
 	}
 	
-	@Bean
-	public ParamCodeValueProvider paramCodeValueProvider(DefaultActionExecutorSearch searchExecutor){
-		return new ParamCodeValueProvider(searchExecutor);
-	}
-	
 	@Bean(name="searchByExample")
 	public DBSearch searchByExample(BeanResolverStrategy beanResolver) {
 		return new MongoSearchByExample(beanResolver);

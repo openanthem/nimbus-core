@@ -55,7 +55,7 @@ public abstract class Address<ID extends Serializable> extends AbstractEntity<ID
 	
 
 	@NotNull
-	@Model.Param.Values(url="staticCodeValue-/addressType")
+	@Model.Param.Values(url="Anthem/fep/icr/p/staticCodeValue/_search?fn=lookup&where=staticCodeValue.paramCode.eq('/addressType')")
 	private Type type;
 
 	@NotNull
@@ -75,7 +75,7 @@ public abstract class Address<ID extends Serializable> extends AbstractEntity<ID
 	private String stateCd;
 
 	@NotNull
-	@Model.Param.Values(url="staticCodeValue-/country")
+	//@Model.Param.Values(url="staticCodeValue-/country")
 	private String countryCd;
 	
 }

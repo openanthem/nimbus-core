@@ -51,7 +51,7 @@ public class ClientEntity extends AbstractEntity.IdString {
 	
 	
 	@NotNull
-	@Model.Param.Values(url="staticCodeValue-/clientType")
+	//@Model.Param.Values(url="staticCodeValue-/clientType")
     private Type type;
 	
 	private String code;
@@ -60,7 +60,7 @@ public class ClientEntity extends AbstractEntity.IdString {
 	private String name;
 	
 	@NotNull
-	@Model.Param.Values(url="staticCodeValue-/orgStatus")
+	//@Model.Param.Values(url="staticCodeValue-/orgStatus")
 	private Status status;
 	
 	private String description;
@@ -113,26 +113,26 @@ public class ClientEntity extends AbstractEntity.IdString {
 		getAssociatedRoles().add(cr);
 	}
 	
-	public void setEffectiveDate(LocalDate effectiveDate) {
-		this.effectiveDate = Date.from(effectiveDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-	}
-	
-	public LocalDate getEffectiveDate() {
-		if(this.effectiveDate != null) {
-			return Instant.ofEpochMilli(this.effectiveDate.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
-		}
-		return null;
-	}
-	
-	public void setTerminationDate(LocalDate terminationDate) {
-		this.terminationDate = Date.from(terminationDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-	}
-	
-	public LocalDate getTerminationDate() {
-		if(this.terminationDate != null) {
-			return Instant.ofEpochMilli(this.terminationDate.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
-		}
-		return null;
-	}
+//	public void setEffectiveDate(LocalDate effectiveDate) {
+//		this.effectiveDate = Date.from(effectiveDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+//	}
+//	
+//	public LocalDate getEffectiveDate() {
+//		if(this.effectiveDate != null) {
+//			return Instant.ofEpochMilli(this.effectiveDate.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
+//		}
+//		return null;
+//	}
+//	
+//	public void setTerminationDate(LocalDate terminationDate) {
+//		this.terminationDate = Date.from(terminationDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+//	}
+//	
+//	public LocalDate getTerminationDate() {
+//		if(this.terminationDate != null) {
+//			return Instant.ofEpochMilli(this.terminationDate.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
+//		}
+//		return null;
+//	}
 	
 }
