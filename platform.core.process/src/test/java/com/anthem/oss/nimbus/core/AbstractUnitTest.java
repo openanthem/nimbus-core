@@ -21,6 +21,7 @@ import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutorGateway;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultCommandExecutorGateway;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -39,8 +40,8 @@ import lombok.Getter;
 public abstract class AbstractUnitTest {
 	
 	@Autowired
-    @Qualifier("default.processGateway")
-    DefaultCommandExecutorGateway processGateway;
+	@Qualifier("default.processGateway")
+	CommandExecutorGateway commandGateway;
     
     private JacksonTester<Object> json; // use this in the sub classes to validate json payload
     
@@ -62,7 +63,7 @@ public abstract class AbstractUnitTest {
         CommandMessage cmdMsg = new CommandMessage();
         cmdMsg.setCommand(command);
         cmdMsg.setRawPayload(rawPayload);
-        MultiOutput resp = processGateway.execute(cmdMsg);
+        MultiOutput resp = commandGateway.execute(cmdMsg);
         List<Output<?>> execop = resp.getOutputs();
         return execop;
     }

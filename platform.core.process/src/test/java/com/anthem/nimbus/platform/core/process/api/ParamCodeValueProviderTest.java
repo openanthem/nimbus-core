@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.FixMethodOrder;
@@ -24,10 +25,9 @@ import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutorGateway;
-import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContext;
 import com.anthem.oss.nimbus.core.domain.command.execution.FunctionHandler;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
+import com.anthem.oss.nimbus.core.entity.StaticCodeValue;
 import com.anthem.oss.nimbus.core.entity.client.Client;
 import com.anthem.oss.nimbus.core.entity.queue.MGroupMember;
 import com.anthem.oss.nimbus.core.entity.queue.MUser;
@@ -43,36 +43,17 @@ import com.anthem.oss.nimbus.core.entity.queue.Queue;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ParamCodeValueProviderTest extends AbstractUnitTest {
 
-
-	@Autowired
-	@Qualifier("default.processGateway")
-	CommandExecutorGateway commandGateway;
-	
 	@Autowired
 	MongoOperations mongoOps;
-	
-	@Autowired
-	@Qualifier("default._search$execute?fn=lookup")
-	FunctionHandler<?,List<ParamValue>> lookupFunctionHandler;
-	
-	@Autowired
-	@Qualifier("default._search$execute?fn=example")
-	FunctionHandler<?,?> exampleFunctionHandler;
-	
-	@Autowired
-	@Qualifier("default._search$execute?fn=query")
-	FunctionHandler<?,?> queryFunctionHandler;
 	
 	
 	@Test
 	@SuppressWarnings("unchecked")
 	public void t1_testSearchByLookupStaticCodeValue() {
+		
 		CommandMessage cmdMsg = build("Anthem/fep/icr/p/staticCodeValue/_search?fn=lookup&where=staticCodeValue.paramCode.eq('/status')");
 		
-//		ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
-//		List<ParamValue> values = lookupFunctionHandler.execute(exContext, null);
-//		
-		MultiOutput multiOp = commandGateway.execute(cmdMsg);
+		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
 		List<Output<?>> ops  = multiOp.getOutputs();
 		
 		assertNotNull(ops);
@@ -85,6 +66,23 @@ public class ParamCodeValueProviderTest extends AbstractUnitTest {
 	
 	@Test
 	@SuppressWarnings("unchecked")
+	public void t1_testUpdateStaticCodeValue() {
+		
+		CommandMessage cmdMsg = build("Anthem/fep/icr/p/staticCodeValue/_update");
+		
+		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
+		List<Output<?>> ops  = multiOp.getOutputs();
+		
+		assertNotNull(ops);
+		
+		List<ParamValue> values = (List<ParamValue>)ops.get(0).getValue(); // TODO having to cast the output, is that correct ??
+		assertNotEquals(0, values.size());
+		
+		values.forEach((v)->System.out.println(v.getCode()));
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
 	public void t2_testSearchByLookupModel() {
 		insertClient();
 		CommandMessage cmdMsg = build("Anthem/fep/icr/p/client/_search?fn=lookup&projection.mapsTo=code:name,label:name");
@@ -92,7 +90,7 @@ public class ParamCodeValueProviderTest extends AbstractUnitTest {
 		//ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
 		//List<ParamValue> values = lookupFunctionHandler.execute(exContext, null);
 		
-		MultiOutput multiOp = commandGateway.execute(cmdMsg);
+		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
 		List<Output<?>> ops  = multiOp.getOutputs();
 		
 		assertNotNull(ops);
@@ -110,7 +108,7 @@ public class ParamCodeValueProviderTest extends AbstractUnitTest {
 //		ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
 //		List<?> values = (List<?>)exampleFunctionHandler.execute(exContext, null);
 		
-		MultiOutput multiOp = commandGateway.execute(cmdMsg);
+		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
 		List<Output<?>> ops  = multiOp.getOutputs();
 		
 		assertNotNull(ops);
@@ -130,7 +128,7 @@ public class ParamCodeValueProviderTest extends AbstractUnitTest {
 		//ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
 		//List<?> values = (List<?>)exampleFunctionHandler.execute(exContext, null);
 		
-		MultiOutput multiOp = commandGateway.execute(cmdMsg);
+		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
 		List<Output<?>> ops  = multiOp.getOutputs();
 		
 		assertNotNull(ops);
@@ -144,8 +142,11 @@ public class ParamCodeValueProviderTest extends AbstractUnitTest {
 	@Test
 	public void t5_testSearchByQueryWithProjection() {
 		CommandMessage cmdMsg = build("Anthem/fep/icr/p/staticCodeValue/_search?fn=query&where=staticCodeValue.paramCode.eq('/status')&projection.alias=vstaticCodeValue");
-		ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
-		List<?> values = (List<?>)queryFunctionHandler.execute(exContext, null);
+		//ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
+		//List<?> values = (List<?>)queryFunctionHandler.execute(exContext, null);
+		
+		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
+		List<?> values = (List<?>)multiOp.getSingleResult();
 		
 		assertNotNull(values);
 		assertEquals(1, values.size());
@@ -155,8 +156,11 @@ public class ParamCodeValueProviderTest extends AbstractUnitTest {
 	@Test
 	public void t6_testSearchByQueryWithCountAggregation() {
 		CommandMessage cmdMsg = build("Anthem/fep/icr/p/staticCodeValue/_search?fn=query&where=staticCodeValue.paramCode.eq('/status')&aggregate=count");
-		ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
-		Holder<Long> count = (Holder<Long>)queryFunctionHandler.execute(exContext, null);
+//		ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
+//		Holder<Long> count = (Holder<Long>)queryFunctionHandler.execute(exContext, null);
+		
+		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
+		Holder<Long> count = (Holder<Long>)multiOp.getSingleResult();
 		
 		assertNotNull(count);
 		assertEquals(Long.valueOf("1"), count.getState());
@@ -168,13 +172,13 @@ public class ParamCodeValueProviderTest extends AbstractUnitTest {
 		
 		String associationString = getAssociationString();
 		
-		CommandMessage cmdMsg = build("Anthem/fep/cmapp/p/queue/_lookup?fn=query&where="+associationString);
+		CommandMessage cmdMsg = build("Anthem/fep/cmapp/p/queue/_search?fn=query&where="+associationString);
 		
-		//MultiExecuteOutput output = (MultiExecuteOutput) processGateway.startProcess(cmdMsg);
-		//List<?> values = output.getSingleResult();
+		//ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
+		//List<?> values = (List<?>)queryFunctionHandler.execute(exContext, null);
 		
-		ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
-		List<?> values = (List<?>)queryFunctionHandler.execute(exContext, null);
+		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
+		List<?> values = (List<?>)multiOp.getSingleResult();
 		
 		Assert.notEmpty(values, "values cannot be empty");
 		values.forEach(System.out::println);
@@ -188,10 +192,13 @@ public class ParamCodeValueProviderTest extends AbstractUnitTest {
 		
 		String associationString = getAssociationString();
 		
-		CommandMessage cmdMsg = build("Anthem/fep/cmapp/p/queue/_lookup?fn=query&where="+associationString+"&aggregate=count");
+		CommandMessage cmdMsg = build("Anthem/fep/cmapp/p/queue/_search?fn=query&where="+associationString+"&aggregate=count");
 		
-		ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
-		List<Holder<Integer>> values = (List<Holder<Integer>>)queryFunctionHandler.execute(exContext, null);
+		//ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
+		//List<Holder<Integer>> values = (List<Holder<Integer>>)queryFunctionHandler.execute(exContext, null);
+		
+		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
+		List<Holder<Integer>> values = (List<Holder<Integer>>)multiOp.getSingleResult();
 		
 		Assert.notEmpty(values, "values cannot be empty");
 		values.forEach(System.out::println);
@@ -199,6 +206,17 @@ public class ParamCodeValueProviderTest extends AbstractUnitTest {
 		assertEquals(Integer.valueOf("1"), values.get(0).getState());
 	}
 
+	private void createStaticCodeValues() {
+		ParamValue pv = new ParamValue(null,"OPEN","Open");
+		ParamValue pv1 = new ParamValue(null, "ACTIVE", "Active");
+		
+		List<ParamValue> pvs = new ArrayList<>();
+		pvs.add(pv);
+		pvs.add(pv1);
+		
+		StaticCodeValue scv = new StaticCodeValue("status", pvs);
+		mongoOps.insert(scv, "staticCodeValue");
+	}
 	
 	private Client insertClient() {
 		mongoOps.dropCollection("client");

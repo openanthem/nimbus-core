@@ -9,7 +9,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
  * @author Rakesh Patel
  *
  */
-public class DefaultActionExecutorUpdate extends AbstractCommandExecutor<Boolean>{
+public class DefaultActionExecutorUpdate extends AbstractCommandExecutor<Boolean> {
 
 	public DefaultActionExecutorUpdate(BeanResolverStrategy beanResolver) {
 		super(beanResolver);

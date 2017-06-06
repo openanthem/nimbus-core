@@ -65,9 +65,13 @@ public class BaseCommandExecutorStrategies {
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	protected <T> Param<T> findParamByCommand(ExecutionContext eCtx) {
 		Command cmd = eCtx.getCommandMessage().getCommand();
-		String path = cmd.buildAlias(cmd.getElement(Type.DomainAlias).get());
+		if(cmd.isRootDomainOnly()) 
+			return (Param<T>)getQuadModelOrThrowEx(eCtx).getView().getAssociatedParam();
+		
+		String path = cmd.buildAlias(cmd.getElement(Type.DomainAlias).get().next());
 		
 		return getQuadModelOrThrowEx(eCtx).getView().findParamByPath(path);
 	}

@@ -83,7 +83,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			
 			// prepare config command 
 			String configExecPath = StringUtils.contains(ec.url(), Constants.SEPARATOR_URI_PLATFORM.code+Constants.SEPARATOR_URI.code)  // check if url has "/p/" 
-										? eCtx.getCommandMessage().getCommand().buildAlias(Type.PlatformMarker) + ec.url() : ec.url();
+										? ec.url() : eCtx.getCommandMessage().getCommand().buildAlias(Type.PlatformMarker) + ec.url();
 										
 			Command configExecCmd = CommandBuilder.withUri(configExecPath).getCommand();
 			
@@ -101,7 +101,10 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		final CommandMessage cmdMsg = eCtx.getCommandMessage();
 		final String inputCommandUri = cmdMsg.getCommand().getAbsoluteUri();
 		
-		// for-each behavior: 
+		// for-each behavior:
+		if(CollectionUtils.isEmpty(cmdMsg.getCommand().getBehaviors())) {
+			cmdMsg.getCommand().templateBehaviors().add(Behavior.$execute);
+		}
 		cmdMsg.getCommand().getBehaviors().stream().forEach(b->{
 			
 			// find command executor
