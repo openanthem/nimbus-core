@@ -70,6 +70,7 @@ public class ViewConfig {
 		String breadCrumb() default "none";
 		String imgSrc() default "";
 		String styleClass() default "";
+		boolean defaultPage() default false;
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)

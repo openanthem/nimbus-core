@@ -15,10 +15,14 @@ import com.anthem.oss.nimbus.core.domain.command.execution.FunctionHandler;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * @author Jayant Chaudhuri
  *
  */
+@Getter @Setter
 public class ActivitiBPMProcessHandler<T,R> implements FunctionHandler<T,R> {
 	
 	@Autowired RuntimeService runtimeService;
