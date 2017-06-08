@@ -6,22 +6,19 @@ import org.springframework.context.annotation.Configuration;
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandMessageConverter;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandTransactionInterceptor;
+import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutorDelete;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutorGet;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutorNav;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutorNew;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutorProcess;
+import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutorReplace;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutorSearch;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutorUpdate;
-import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionProcessExecutorDelete;
-import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutorReplace;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultCommandExecutorGateway;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultExecutionContextLoader;
 import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContextLoader;
 import com.anthem.oss.nimbus.core.domain.command.execution.HierarchyMatchBasedBeanFinder;
-import com.anthem.oss.nimbus.core.domain.command.execution.ParamCodeValueProvider;
-import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.DBSearch;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFactory;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.MongoSearchByExample;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.MongoSearchByQuery;
 
@@ -79,8 +76,8 @@ public class DefaultCoreExecutorConfig {
 	}
 	
 	@Bean(name="default._delete$execute")
-	public DefaultActionProcessExecutorDelete defaultActionProcessExecutorDelete(ModelRepositoryFactory repoFactory, DomainConfigBuilder domainConfigApi){
-		return new DefaultActionProcessExecutorDelete();
+	public DefaultActionExecutorDelete defaultActionProcessExecutorDelete(BeanResolverStrategy beanResolver){
+		return new DefaultActionExecutorDelete(beanResolver);
 	}
 	
 	@Bean(name="default._replace$execute")
