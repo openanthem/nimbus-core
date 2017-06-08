@@ -28,24 +28,24 @@ public class ClientUserGroup extends AbstractUserGroup {
 
 	private static final long serialVersionUID = 1L;
 	
-	private Set<ClientUser> participants;
+//	private Set<ClientUser> participants;
 	
-	private Set<ClientEntity> associatedTo;
+//	private Set<ClientEntity> associatedTo;
 	
-	@Model.Param.Values(url = "staticCodeValue-/users")
-	@Getter @Setter
-	private String[] userList;
-	
-	private List<String> admins;
-	/**
-	 * 
-	 * @param ce
-	 */
-	public void addassociatedTo(ClientEntity ce) {
-		if(getAssociatedTo() == null) {
-			setAssociatedTo(new HashSet<>());
-		}
-		getAssociatedTo().add(ce);
-	}
+//	@Model.Param.Values(url = "staticCodeValue-/users")
+//	@Getter @Setter
+//	private String[] userList;
+//	
+//	private List<String> admins;
+//	/**
+//	 * 
+//	 * @param ce
+//	 */
+//	public void addassociatedTo(ClientEntity ce) {
+//		if(getAssociatedTo() == null) {
+//			setAssociatedTo(new HashSet<>());
+//		}
+//		getAssociatedTo().add(ce);
+//	}
 	
 }

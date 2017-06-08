@@ -431,6 +431,7 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface SubHeader {
 		String alias() default "SubHeader";
+		String cssClass() default "col-sm-12";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)

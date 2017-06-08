@@ -55,7 +55,7 @@ public class ClientUserGroupRepoService {
 			if(clientUserGroup.getId()!=null) {
 				cugRepo.save(clientUserGroup);
 			} else {
-				clientUserGroup.addassociatedTo(parentClientEntity);
+//				clientUserGroup.addassociatedTo(parentClientEntity);
 				cugRepo.save(clientUserGroup);
 			}
 			

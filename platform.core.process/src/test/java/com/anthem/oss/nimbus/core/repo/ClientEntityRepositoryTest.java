@@ -75,8 +75,8 @@ public class ClientEntityRepositoryTest {
 		
 		org.setCode("AETNA_ORG4");
 		org.setName("aetna org 4");
-		org.setEffectiveDate(LocalDate.now());
-		org.setTerminationDate(LocalDate.now());
+		//org.setEffectiveDate(LocalDate.now());
+		//org.setTerminationDate(LocalDate.now());
 		org.setDescription("test");
 		org.setStatus(com.anthem.oss.nimbus.core.entity.client.ClientEntity.Status.ACTIVE);
 		
@@ -105,8 +105,8 @@ public class ClientEntityRepositoryTest {
 		Set<ClientEntity> orgs = new HashSet<>();
 		orgs.add(org);
 		
-		group.setAssociatedTo(orgs);
-		
+//		group.setAssociatedTo(orgs);
+	
 		group.setName("Group1");
 		group.setDescription("Group1_Desc");
 		group.setDisplayName("Group1 for "+org.getCode());

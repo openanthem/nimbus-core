@@ -23,8 +23,8 @@ public abstract class AbstractUserGroup extends AbstractEntity.IdString {
 	
 	private String description;
 	
-	@NotNull
-	@Model.Param.Values(url="staticCodeValue-/orgStatus")
+	//@NotNull
+	//@Model.Param.Values(url="staticCodeValue-/orgStatus")
 	private Status status;
 	
 	public enum Status {
