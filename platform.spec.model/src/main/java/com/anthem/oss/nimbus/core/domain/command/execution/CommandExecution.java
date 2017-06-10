@@ -59,6 +59,8 @@ public final class CommandExecution {
 		
 		private T value;
 		
+		private String rootDomainId;
+		
 		private ValidationResult validation;
 		private ExecuteError error;
 		
@@ -77,6 +79,7 @@ public final class CommandExecution {
 		public static <T> Output<T> instantiate(Input input, ExecutionContext eCtx, T value) {
 			Output<T> output = instantiate(input, eCtx);
 			output.setValue(value);
+			output.setRootDomainId(eCtx.getCommandMessage().getCommand().getRootDomainElement().getRefId());
 			return output;
 		}
 		
