@@ -137,8 +137,13 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 
 	@Override
 	public void fireRules() {
+		// self
 		Optional.ofNullable(getRulesRuntime())
 			.ifPresent(rt->rt.fireRules(this));
+		
+		// nested 
+		Optional.ofNullable(findIfNested())
+			.ifPresent(Model::fireRules);
 	}
 	
 	/**
