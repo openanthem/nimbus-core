@@ -279,6 +279,11 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 		}
 		
 		@Override
+		public void fireRules() {
+			getAssociatedParam().fireRules();
+		}
+		
+		@Override
 		public ExecutionEntity<V, C> getState() {
 			return _this();
 		}
