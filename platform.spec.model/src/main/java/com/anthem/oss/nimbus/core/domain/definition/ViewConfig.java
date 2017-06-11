@@ -211,7 +211,7 @@ public class ViewConfig {
 		String b() default "$executeAnd$nav";
 		String method() default "GET";
 		String imgSrc() default "";
-		String type() default "submit";
+		String type() default "button";
 		String payload() default "";
 		String cssClass() default "btn btn-primary";
 	}

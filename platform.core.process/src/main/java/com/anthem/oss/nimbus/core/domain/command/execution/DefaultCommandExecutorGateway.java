@@ -80,10 +80,15 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		
 		// for-each config
 		execConfigs.stream().forEach(ec->{
+			String configExecPath = ec.url();
 			
+			if(cmdMsg.getCommand().getRootDomainUri().indexOf(":")>0) {
+				configExecPath = cmdMsg.getCommand().getRootDomainUri()+ec.url(); //TODO - TEMP - would not work below if the url had the /p/ prefix. need to revisit
+			}
 			// prepare config command 
-			String configExecPath = StringUtils.contains(ec.url(), Constants.SEPARATOR_URI_PLATFORM.code+Constants.SEPARATOR_URI.code)  // check if url has "/p/" 
-										? ec.url() : eCtx.getCommandMessage().getCommand().buildAlias(Type.PlatformMarker) + ec.url();
+			configExecPath = StringUtils.contains(ec.url(), Constants.SEPARATOR_URI_PLATFORM.code+Constants.SEPARATOR_URI.code)  // check if url has "/p/" 
+										? ec.url() : eCtx.getCommandMessage().getCommand().buildAlias(Type.PlatformMarker) + configExecPath;
+			
 										
 			Command configExecCmd = CommandBuilder.withUri(configExecPath).getCommand();
 			
