@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -226,8 +225,8 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 		
 		@Override
 		public void fireRules() {
-			findParamByPath("/c").fireRules();
-			Optional.ofNullable(findParamByPath("/v")).ifPresent(v->v.fireRules());
+			findIfNested().getParams().stream()
+				.forEach(Param::fireRules);
 		}
 	}
 	
