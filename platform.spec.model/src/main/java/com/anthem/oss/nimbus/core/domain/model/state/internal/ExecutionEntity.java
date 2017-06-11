@@ -227,8 +227,9 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 		@Override
 		public void fireRules() {
 			Optional.ofNullable(findIfNested())
+				.map(Model::getParams)
 				.ifPresent(
-						m->m.getParams().stream()
+						params->params.stream()
 							.forEach(Param::fireRules)
 				);
 		}
