@@ -7,7 +7,6 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import org.springframework.data.annotation.Transient;
 
@@ -77,8 +76,7 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 	
 	@Override
 	public void fireRules() {
-		Optional.ofNullable(getRulesRuntime())
-			.ifPresent(rt->rt.fireRules(getAssociatedParam()));
+		getAssociatedParam().fireRules();
 	}
 	
 	@JsonIgnore @Override
