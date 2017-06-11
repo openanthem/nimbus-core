@@ -67,6 +67,9 @@ public class DefaultMongoModelRepository implements ModelRepository {
 		PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(mConfig.getReferredClass(), pId.getCode());
 		beanHandler.setValue(pd, newState, id);
 		
+		String alias = mConfig.getRepo() != null && StringUtils.isNotBlank(mConfig.getRepo().alias()) ? mConfig.getRepo().alias():mConfig.getDomainAlias();
+		mongoOps.save(newState, alias);
+		
 		return newState;
 	}
 
