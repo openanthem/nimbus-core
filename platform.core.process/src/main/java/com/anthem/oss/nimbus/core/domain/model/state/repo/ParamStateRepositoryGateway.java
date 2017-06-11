@@ -210,6 +210,11 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 					);
 				
 				return Action._new;
+				
+			} else // scenario: when model is mapped to a type, but param is not -- needs to refer to its root param 
+			if(param.getConfig().getType().findIfNested().getModel().isMapped()){
+				return _setNestedModel(currRep, param, newState);
+				
 			} else {
 				// set nested state as is from passed in domain state
 				return currRep._set(param, newState);
@@ -264,6 +269,11 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		} 
 		
 		// mapped nested: ..handling..  <TypeStateAndConfig.Nested<P>>
+		return _setNestedModel(currRep, param, newState);
+	}
+	
+	protected <P> Action _setNestedModel(ParamStateRepository currRep, Param<P> param, P newState) {
+		
 		StateType.Nested<P> nestedType = param.getType().findIfNested(); 
 		Model<P> nestedModel = nestedType.getModel();
 		if(nestedModel.templateParams().isNullOrEmpty()) return null;
@@ -280,12 +290,6 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		
 		//TODO detect change
 		return Action._replace;
-	}
-	
-	protected <T> void handleModel(Param<T> pModel, T state) {
-		if(pModel.getParentModel().templateParams().isNullOrEmpty()) return;
-		
-		
 	}
 	
 	public static <P> Action _equals(P newState, P currState) {
