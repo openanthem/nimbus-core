@@ -379,7 +379,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	public Param<?> findParamByPathInSelf(String singlePathSegment) {
 		// blank or null returns self
-		if(StringUtils.trimToNull(singlePathSegment)==null)
+		if(StringUtils.trimToNull(singlePathSegment)==null ||  // path = null or empty 
+				Constants.SEPARATOR_URI.equals(StringUtils.trimToNull(singlePathSegment))) //  path = '/'
 			return this;
 		
 		// value is only ".m" then return mapsTo if this is a mapped param
