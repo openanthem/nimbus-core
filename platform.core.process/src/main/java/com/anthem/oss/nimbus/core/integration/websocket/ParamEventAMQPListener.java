@@ -46,7 +46,7 @@ public class ParamEventAMQPListener implements StateAndConfigEventListener {
 		if(rootDomain == null) 
 			return false;
 		
-		Model pModel = AnnotationUtils.findAnnotation(p.getRootDomain().getConfig().getReferredClass(), Model.class);
+		Model pModel = AnnotationUtils.findAnnotation(p.getRootDomain().getConfig().getReferredClass(), Model.class); // TODO - this needs to be config of p not the root domain of p.
 		
 		ListenerType includeListener = Arrays.asList(rootDomain.includeListeners()).stream()
 											.filter((listener) -> !Arrays.asList(pModel.excludeListeners()).contains(listener))
