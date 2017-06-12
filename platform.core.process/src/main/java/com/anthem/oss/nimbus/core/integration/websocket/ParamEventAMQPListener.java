@@ -37,8 +37,8 @@ public class ParamEventAMQPListener implements StateAndConfigEventListener {
 	@Override
 	public boolean shouldAllow(EntityState<?> in) {
 		final EntityState<?> p;
-		if(in.getRootDomain().getAssociatedParam().isLinked()) {
-			p = in.getRootDomain().getAssociatedParam().findIfLinked();
+		if(in.getRootExecution().getAssociatedParam().isLinked()) {
+			p = in.getRootExecution().getAssociatedParam().findIfLinked();
 		} else {
 			p = in;
 		}
