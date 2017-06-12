@@ -54,7 +54,7 @@ public class CommandBuilder {
 	 */
 	protected CommandBuilder handleUriAndParamsIfAny(String absoluteUri) {
 		logit.debug(() -> "absoluteUri: " + absoluteUri);
-		String splits[] = StringUtils.split(absoluteUri, "?", 1);	//if request params are present
+		String splits[] = StringUtils.split(absoluteUri, "?", 2);	//if request params are present
 		
 		logit.debug(() -> "splits: " + Arrays.toString(splits));
 		
