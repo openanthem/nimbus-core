@@ -2,20 +2,15 @@ package com.anthem.oss.nimbus.core.integration.websocket;
 
 import java.util.Arrays;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.messaging.Message;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Component;
 
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandTransactionInterceptor;
 import com.anthem.oss.nimbus.core.domain.command.execution.ExecuteOutput;
 import com.anthem.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
-import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
+import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
@@ -40,7 +35,13 @@ public class ParamEventAMQPListener implements StateAndConfigEventListener {
 	}
 	
 	@Override
-	public boolean shouldAllow(EntityState<?> p) {
+	public boolean shouldAllow(EntityState<?> in) {
+		final EntityState<?> p;
+		if(in.getRootDomain().getAssociatedParam().isLinked()) {
+			p = in.getRootDomain().getAssociatedParam().findIfLinked();
+		} else {
+			p = in;
+		}
 		Domain rootDomain = AnnotationUtils.findAnnotation(p.getRootDomain().getConfig().getReferredClass(), Domain.class);
 		if(rootDomain == null) 
 			return false;

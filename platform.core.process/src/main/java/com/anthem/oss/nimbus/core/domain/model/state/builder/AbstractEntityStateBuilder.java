@@ -154,7 +154,7 @@ abstract public class AbstractEntityStateBuilder {
 		Command ctxCmd = CommandBuilder.withUri(ctxPath).getCommand();
 		
 		ExecutionEntity<Object, StateContextEntity> eStateCtx = new ExecutionEntity<>();
-		ExecutionEntity<Object, StateContextEntity>.ExParam exParamCtx = eStateCtx.new ExParam(ctxCmd, created.getAspectHandlers(), exConfig, ctxPath);
+		ExecutionEntity<Object, StateContextEntity>.ExParam exParamCtx = eStateCtx.new ExParamLinked(ctxCmd, created.getAspectHandlers(), exConfig, ctxPath, created);
 		//exParamCtx.initSetup();
 		
 		ExecutionEntity<Object, StateContextEntity>.ExModel exModelCtx = exParamCtx.getRootExecution().unwrap(ExecutionEntity.ExModel.class);

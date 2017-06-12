@@ -234,6 +234,14 @@ public interface EntityState<T> {
 			return null;
 		}
 		
+		default boolean isLinked() {
+			return false;
+		}
+		
+		default Param<?> findIfLinked() {
+			return null;
+		}
+		
 		public PropertyDescriptor getPropertyDescriptor();
 
 	}

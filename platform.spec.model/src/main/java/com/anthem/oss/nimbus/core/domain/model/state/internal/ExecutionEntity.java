@@ -179,6 +179,27 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 			return pConfig;
 		} 
 	}
+
+	public class ExParamLinked extends ExParam {
+		private static final long serialVersionUID = 1L;
+		
+		private final Param<?> linkedParam;
+		
+		public ExParamLinked(Command rootCommand, EntityStateAspectHandlers provider, ExConfig<V, C> exConfig, String initPath, Param<?> linkedParam) {
+			super(rootCommand, provider, exConfig, initPath);
+			this.linkedParam = linkedParam;
+		}
+		
+		@Override
+		public boolean isLinked() {
+			return true;
+		}
+		
+		@Override
+		public Param<?> findIfLinked() {
+			return linkedParam;
+		}
+	}
 	
 	@Getter @Setter 
 	public class ExParam extends DefaultParamState<ExecutionEntity<V, C>> {
@@ -213,7 +234,7 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 			this.rootModel = new ExModel(rootCommand, this, pConfig.getRootParent(), provider);
 			this.setType(new StateType.Nested<>(getConfig().getType().findIfNested(), getRootExecution()));
 		}
-
+		
 		@Override
 		public boolean isRoot() {
 			return true;
@@ -234,6 +255,7 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 				);
 		}
 	}
+
 	
 	@Getter @Setter
 	public class ExModel extends DefaultModelState<ExecutionEntity<V, C>> implements ExecutionModel<ExecutionEntity<V, C>> {
