@@ -23,9 +23,7 @@ public class StateContextEntity {
 
 	private Boolean visible = true;
 	private Boolean enabled = true;
-	private int order;
 	
-	private int count;
 	
 	private String message;
 	
