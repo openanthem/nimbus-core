@@ -78,7 +78,7 @@ public class CommandBuilder {
 
 		String pSplits[] = StringUtils.split(splits[1], '&');
 		Arrays.asList(pSplits).forEach(kv -> {
-			String pair[] = StringUtils.split(kv, '=');
+			String pair[] = StringUtils.split(kv, "=", 2);
             String key = pair[0];
 			String val[] = (rParams.containsKey(key)) ? ArrayUtils.add(rParams.get(key), pair[1])
 					: new String[] { pair[1] };
