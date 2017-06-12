@@ -363,6 +363,9 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 
 	public Param<?> findParamByPathInModel(String singlePathSegment) {
+		if(StringUtils.equals(singlePathSegment, Constants.SEPARATOR_CONFIG_ATTRIB.code))
+			return getContextModel().getAssociatedParam();
+
 		if(getType().findIfNested()==null)
 			return null;
 
