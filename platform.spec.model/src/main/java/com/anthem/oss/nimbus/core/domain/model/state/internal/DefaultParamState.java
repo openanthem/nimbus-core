@@ -376,6 +376,10 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		if(StringUtils.equals(singlePathSegment, Constants.SEPARATOR_CONFIG_ATTRIB.code))
 			return getContextModel().getAssociatedParam();
 
+		// value is only ".m" then return mapsTo if this is a mapped param
+		if(StringUtils.equals(singlePathSegment, Constants.SEPARATOR_MAPSTO.code) && isMapped()) 
+			return findIfMapped().getMapsTo();
+		
 		if(getType().findIfNested()==null)
 			return null;
 
@@ -401,9 +405,9 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 				Constants.SEPARATOR_URI.code.equals(StringUtils.trimToNull(singlePathSegment))) //  path = '/'
 			return this;
 		
-		// value is only ".m" then return mapsTo if this is a mapped param
-		if(StringUtils.equals(singlePathSegment, Constants.SEPARATOR_MAPSTO.code)) 
-			return isMapped() ? findIfMapped().getMapsTo() : null;
+//		// value is only ".m" then return mapsTo if this is a mapped param
+//		if(StringUtils.equals(singlePathSegment, Constants.SEPARATOR_MAPSTO.code)) 
+//			return isMapped() ? findIfMapped().getMapsTo() : null;
 		
 		return null;	
 	}

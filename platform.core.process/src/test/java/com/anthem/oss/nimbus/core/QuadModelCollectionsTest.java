@@ -73,8 +73,32 @@ public class QuadModelCollectionsTest {
 	}
 	
 	@Test
+	public void t0_mapstoPath() {
+		String id = "TEST ID";
+		UMCase core = new UMCase();
+		core.setId(id);
+		
+		Command cmd = TestCommandFactory.create_view_icr_UMCaseFlow();
+		QuadModel<UMCaseFlow, UMCase> q = quadModelBuilder.build(cmd, new ExecutionEntity<>(new UMCaseFlow(), core));
+		
+		Param<String> coreId = q.getView().findParamByPath("/.m/id");
+		assertSame(id, coreId.getState());
+	}
+	
+	@Test
 	public void t0_configState() {
 		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		
+		Param<Boolean> pAloha_visible = q.getView().findParamByPath("/pg3/aloha/#/visible");
+		assertNotNull(pAloha_visible);
+		assertTrue(pAloha_visible.getState());
+		
+		String visiblePath = pAloha_visible.getPath();
+		assertEquals("/view_umcase/pg3/aloha/#/visible", visiblePath);
+
+		pAloha_visible.setState(false);
+		assertFalse(pAloha_visible.getState());
+	
 		
 		Param<String> pAloha = q.getView().findParamByPath("/pg3/aloha");
 		assertNotNull(pAloha);
@@ -89,22 +113,8 @@ public class QuadModelCollectionsTest {
 		mAloha_enabled.setState(false);
 		assertFalse(mAloha_enabled.getState());
 		
-		Param<Integer> mAloha_count = mAloha_runtime.findParamByPath("/count");
-		assertNotNull(mAloha_count);
-		assertEquals(new Integer(0), mAloha_count.getState());
-		
-
 		Param<?> pAloha_runtime = q.getView().findParamByPath("/pg3/aloha/#");
 		assertNotNull(pAloha_runtime);
-
-		
-		Param<Boolean> pAloha_visible = q.getView().findParamByPath("/pg3/aloha/#/visible");
-		assertNotNull(pAloha_visible);
-		assertTrue(pAloha_visible.getState());
-		
-		pAloha_visible.setState(false);
-		assertFalse(pAloha_visible.getState());
-		
 	}
 	
 	@SuppressWarnings("unchecked")
