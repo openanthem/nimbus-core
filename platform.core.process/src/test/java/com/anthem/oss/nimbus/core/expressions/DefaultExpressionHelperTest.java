@@ -17,12 +17,9 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -35,7 +32,7 @@ import com.anthem.oss.nimbus.core.domain.command.execution.CommandMessageConvert
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
-import com.anthem.oss.nimbus.core.domain.model.state.builder.DefaultQuadModelBuilder;
+import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
 import com.anthem.oss.nimbus.core.expressions.ExpressionHelperTestData.Author;
 import com.anthem.oss.nimbus.core.expressions.ExpressionHelperTestData.Book;
 import com.anthem.oss.nimbus.core.expressions.ExpressionHelperTestData.Book.Publisher;
@@ -58,7 +55,7 @@ public class DefaultExpressionHelperTest extends AbstractPlatformIntegrationTest
 	DefaultExpressionHelper expHlpr;
 	
 	@Autowired
-	DefaultQuadModelBuilder quadModelBuilder;
+	QuadModelBuilder quadModelBuilder;
 	
 	@Autowired
 	CommandMessageConverter converter;

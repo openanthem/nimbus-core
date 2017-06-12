@@ -3,6 +3,7 @@
  */
 package com.anthem.oss.nimbus.core;
 
+import java.util.Collection;
 import java.util.Optional;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -84,5 +85,20 @@ public class DefaultBeanResolverStrategy implements BeanResolverStrategy {
 						+ " b) Bean with qualifier "+defaultBeanName(qualifier)));
 
 	}
+	
+	@Override
+	public <T> Collection<T> findMultiple(Class<T> type) {
+		String bNmArr[] = applicationContext.getBeanNamesForType(type);
+		
+		if(ArrayUtils.isNotEmpty(bNmArr))
+			return applicationContext.getBeansOfType(type).values();
+		
+		return null;
+	}
 
+	@Override
+	public <T> Collection<T> getMultiple(Class<T> type) throws InvalidConfigException {
+		return Optional.ofNullable(findMultiple(type))
+				.orElseThrow(()->new InvalidConfigException("Beans of type "+type+" must be configured"));
+	}
 }

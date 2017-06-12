@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
@@ -17,13 +16,12 @@ import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.DefaultBeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandTransactionInterceptor;
 import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
-import com.anthem.oss.nimbus.core.domain.model.config.ValidatorProvider;
 import com.anthem.oss.nimbus.core.domain.model.config.builder.DefaultValidatorProvider;
 import com.anthem.oss.nimbus.core.domain.model.config.builder.EntityConfigBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.DefaultQuadModelBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.EntityStateBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.PageNavigationInitializer;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.ParamStateGateway;
+import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
 import com.anthem.oss.nimbus.core.integration.websocket.ParamEventAMQPListener;
 
 import lombok.Getter;
@@ -87,9 +85,14 @@ public class DefaultCoreBuilderConfig {
 	}
 	
 	@Bean
-	public DefaultQuadModelBuilder quadModelBuilder(DomainConfigBuilder domainConfigApi, EntityStateBuilder stateAndConfigBuilder,
-			ApplicationContext appCtx, PageNavigationInitializer navigationStateHelper,
-			ValidatorProvider validatorProvider, @Qualifier("default.param.state.repository") ParamStateGateway paramStateGateway){
-		return new DefaultQuadModelBuilder(domainConfigApi,stateAndConfigBuilder,appCtx,navigationStateHelper,validatorProvider,paramStateGateway);
-	}
+	public QuadModelBuilder quadModelBuilder(BeanResolverStrategy beanResolver) {
+		return new DefaultQuadModelBuilder(beanResolver);
+	} 
+	
+//	@Bean
+//	public DefaultQuadModelBuilder quadModelBuilder(DomainConfigBuilder domainConfigApi, EntityStateBuilder stateAndConfigBuilder,
+//			ApplicationContext appCtx, PageNavigationInitializer navigationStateHelper,
+//			ValidatorProvider validatorProvider, @Qualifier("default.param.state.repository") ParamStateGateway paramStateGateway){
+//		return new DefaultQuadModelBuilder(domainConfigApi,stateAndConfigBuilder,appCtx,navigationStateHelper,validatorProvider,paramStateGateway);
+//	}
 }

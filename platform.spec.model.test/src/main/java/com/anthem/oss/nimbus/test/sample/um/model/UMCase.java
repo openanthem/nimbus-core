@@ -25,10 +25,8 @@ public class UMCase extends AbstractEntity.IdString {
 
 	private static final long serialVersionUID = 1L;
     
-	@Model.Param.Values(Values.RequestType.class)
 	@Getter @Setter private String requestType;
 
-	@Model.Param.Values(url="staticCodeValue-/actionCategory")
 	@Getter @Setter private String caseType;
 	
 	@Getter @Setter private DateRange serviceDate;

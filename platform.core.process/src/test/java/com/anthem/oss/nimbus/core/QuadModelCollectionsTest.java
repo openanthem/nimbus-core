@@ -40,7 +40,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
-import com.anthem.oss.nimbus.core.domain.model.state.builder.DefaultQuadModelBuilder;
+import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
 import com.anthem.oss.nimbus.core.session.UserEndpointSession;
 import com.anthem.oss.nimbus.test.sample.um.model.ServiceLine;
@@ -61,7 +61,7 @@ import test.com.anthem.nimbus.platform.spec.model.comamnd.TestCommandFactory;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class QuadModelCollectionsTest {
 	
-	@Autowired DefaultQuadModelBuilder quadModelBuilder;
+	@Autowired QuadModelBuilder quadModelBuilder;
 	
 	@Before
 	public void before() {

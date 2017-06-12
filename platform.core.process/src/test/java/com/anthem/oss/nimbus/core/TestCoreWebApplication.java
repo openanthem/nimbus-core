@@ -12,7 +12,7 @@ import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.execution.ExecuteOutput;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
-import com.anthem.oss.nimbus.core.domain.model.state.builder.DefaultQuadModelBuilder;
+import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
 import com.anthem.oss.nimbus.test.sample.um.model.UMCase;
 import com.anthem.oss.nimbus.test.sample.um.model.view.UMCaseFlow;
 
@@ -37,7 +37,7 @@ public class TestCoreWebApplication {
 class TestRestController {
 	
 	@Autowired
-	DefaultQuadModelBuilder builder;
+	QuadModelBuilder builder;
 	
 	@GetMapping("/")
 	public ExecuteOutput<String> testPersistence() {

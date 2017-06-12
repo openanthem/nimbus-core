@@ -42,7 +42,8 @@ public class DomainConfigBuilder {
 	
 	public DomainConfigBuilder(EntityConfigBuilder configBuilder, List<String> basePackages) {
 		this.configBuilder = configBuilder;
-		this.basePackages = Optional.ofNullable(basePackages).orElseThrow(()->new InvalidConfigException("base packages must be configured for scanning domain models."));
+		this.basePackages = Optional.ofNullable(basePackages)
+								.orElseThrow(()->new InvalidConfigException("base packages must be configured for scanning domain models."));
 		
 		this.cache = new HashMap<>();
 		this.configVisitor = new EntityConfigVistor();

@@ -10,10 +10,10 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 
 import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.context.ApplicationContext;
 import org.springframework.web.client.RestTemplate;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadScopedEventListener;
+import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
@@ -36,43 +36,37 @@ import lombok.Setter;
 @RefreshScope
 public class DefaultQuadModelBuilder implements QuadModelBuilder {
 
-	DomainConfigBuilder domainConfigApi;
+	private DomainConfigBuilder domainConfigApi;
 	
-	EntityStateBuilder stateAndConfigBuilder;
+	private EntityStateBuilder stateAndConfigBuilder;
 	
-	ApplicationContext appCtx;
+	private ValidatorProvider validatorProvider;
 	
-	PageNavigationInitializer navigationStateHelper;
-	
-	ValidatorProvider validatorProvider;
-	
-	ParamStateGateway paramStateGateway;
+	private ParamStateGateway paramStateGateway;
 	
 	private List<StateAndConfigEventListener> paramEventListeners;
 
+	private final BeanResolverStrategy beanResolver;
+	
 	private JustLogit logit = new JustLogit(getClass());
 	
 	public RestTemplate restTemplate = new RestTemplate();
 	
-	public DefaultQuadModelBuilder(DomainConfigBuilder domainConfigApi, EntityStateBuilder stateAndConfigBuilder,
-			ApplicationContext appCtx, PageNavigationInitializer navigationStateHelper,
-			ValidatorProvider validatorProvider, ParamStateGateway paramStateGateway) {
-		this.domainConfigApi = domainConfigApi;
-		this.stateAndConfigBuilder = stateAndConfigBuilder;
-		this.appCtx = appCtx;
-		this.navigationStateHelper = navigationStateHelper;
-		this.validatorProvider = validatorProvider;
-		this.paramStateGateway = paramStateGateway;
+	public DefaultQuadModelBuilder(BeanResolverStrategy beanResolver) {
+		this.beanResolver = beanResolver;
 	}
+			
+	@PostConstruct		
+	public void init() {
+		this.domainConfigApi = beanResolver.get(DomainConfigBuilder.class);
+		this.stateAndConfigBuilder = beanResolver.get(EntityStateBuilder.class);
+		this.validatorProvider = beanResolver.get(ValidatorProvider.class);
+		this.paramStateGateway = beanResolver.get(ParamStateGateway.class);
 	
-	@PostConstruct
-	@RefreshScope
-	public void loadParamEventPublishers() {
 		setParamEventListeners(new LinkedList<>());
 		
-		Collection<StateAndConfigEventListener> publishers = appCtx.getBeansOfType(StateAndConfigEventListener.class)
-				.values();
-		publishers.forEach(p->getParamEventListeners().add(p));
+		Collection<StateAndConfigEventListener> publishers = beanResolver.getMultiple(StateAndConfigEventListener.class);
+		publishers.forEach(getParamEventListeners()::add);
 	}
 	
 	
