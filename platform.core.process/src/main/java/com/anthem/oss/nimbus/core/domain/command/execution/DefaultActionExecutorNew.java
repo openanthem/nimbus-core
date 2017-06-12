@@ -5,9 +5,11 @@ package com.anthem.oss.nimbus.core.domain.command.execution;
 
 import java.beans.PropertyDescriptor;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
+import com.anthem.oss.nimbus.core.bpm.BPMGateway;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Input;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
@@ -15,6 +17,8 @@ import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
+import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
+import com.anthem.oss.nimbus.core.session.UserEndpointSession;
 
 /**
  * @author Soham Chakravarti
@@ -22,8 +26,11 @@ import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
  */
 public class DefaultActionExecutorNew extends AbstractCommandExecutor<Param<?>> {
 
-	public DefaultActionExecutorNew(BeanResolverStrategy beanResolver) {
+	BPMGateway bpmGateway;
+	
+	public DefaultActionExecutorNew(BeanResolverStrategy beanResolver, BPMGateway bpmGateway) {
 		super(beanResolver);
+		this.bpmGateway = bpmGateway;
 	}
 	
 	/**
@@ -42,6 +49,8 @@ public class DefaultActionExecutorNew extends AbstractCommandExecutor<Param<?>> 
 		Param<Object> p = findParamByCommand(eCtx);
 		
 		setStateNew(input.getContext().getCommandMessage(), p);
+		
+		startBusinessProcess(input.getContext());		
 		
 		return Output.instantiate(input, eCtx, p);
 	}
@@ -92,6 +101,16 @@ public class DefaultActionExecutorNew extends AbstractCommandExecutor<Param<?>> 
 		ExecutionEntity<?, ?> e = ExecutionEntity.resolveAndInstantiate(entity, mapsToEntity);
 		
 		return getQuadModelBuilder().build(eCtx.getCommandMessage().getCommand(), e);		
+	}
+	
+	private void startBusinessProcess(ExecutionContext eCtx){
+		QuadModel<?, ?> quadModel = getQuadModel(eCtx);
+		String lifecycleKey = quadModel.getView().getConfig().getDomain().lifecycle();
+		if(StringUtils.isEmpty(lifecycleKey))
+			return;
+		ProcessFlow processFlow = quadModel.getFlow();
+		if(processFlow.getProcessExecutionId() == null)
+			processFlow.setProcessExecutionId(bpmGateway.startBusinessProcess(eCtx, lifecycleKey));
 	}
 	
 }

@@ -5,7 +5,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
+import com.anthem.oss.nimbus.core.bpm.BPMGateway;
 import com.anthem.oss.nimbus.core.bpm.DefaultExpressionHelper;
+import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiBPMGateway;
 import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiExpressionManager;
 import com.anthem.oss.nimbus.core.domain.command.execution.FunctionHandler;
 import com.anthem.oss.nimbus.core.domain.command.execution.nav.PageIdEchoNavHandler;
@@ -33,6 +35,11 @@ public class DefaultProcessConfig {
 	public DefaultExpressionHelper defaultExpressionHelper(BeanResolverStrategy beanResolver){
 		return new DefaultExpressionHelper(beanResolver);
 	}
+	
+	@Bean
+	public BPMGateway bpmGateway(){
+		return new ActivitiBPMGateway();
+	}		
 	
 	@Bean(name="default._nav$execute?fn=default")
 	public PageIdEchoNavHandler<?> pageIdEchoNavHandler(){

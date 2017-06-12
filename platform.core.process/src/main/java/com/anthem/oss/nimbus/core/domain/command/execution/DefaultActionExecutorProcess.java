@@ -4,8 +4,11 @@
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
+import com.anthem.oss.nimbus.core.bpm.BPMGateway;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Input;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
+import com.anthem.oss.nimbus.core.domain.definition.Constants;
+import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 
 /**
  * @author Jayant Chaudhuri
@@ -13,15 +16,30 @@ import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Outp
  */
 public class DefaultActionExecutorProcess<T,R> extends AbstractFunctionCommandExecutor<T,R> {
 	
-	public DefaultActionExecutorProcess(BeanResolverStrategy beanResolver) {
+	BPMGateway bpmGateway;
+	
+	public DefaultActionExecutorProcess(BeanResolverStrategy beanResolver, BPMGateway bpmGateway) {
 		super(beanResolver);
+		this.bpmGateway = bpmGateway;
 	}
 	
 	@Override
 	@SuppressWarnings("unchecked")
 	protected Output<R> executeInternal(Input input) {
-		R response = (R)executeFunctionHanlder(input, FunctionHandler.class);
+		R response = containsFunctionHandler(input) ? (R)executeFunctionHanlder(input, FunctionHandler.class) : continueBusinessProcessExceution(input.getContext());
 		return Output.instantiate(input, input.getContext(), response);
+	}
+	
+	private boolean containsFunctionHandler(Input input){
+		String functionName = input.getContext().getCommandMessage().getCommand().getFirstParameterValue(Constants.KEY_FUNCTION.code);
+		return (functionName != null);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private R continueBusinessProcessExceution(ExecutionContext eCtx){
+		QuadModel<?,?> quadModel = getQuadModel(eCtx);
+		String processExecutionId = quadModel.getFlow().getProcessExecutionId();
+		return (R)bpmGateway.continueBusinessProcessExecution(eCtx, processExecutionId);
 	}
 
 }

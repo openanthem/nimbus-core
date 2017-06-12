@@ -31,7 +31,7 @@ public class QuadModel<V, C> implements Serializable {
 	
 	@JsonIgnore transient private final Model<V> view;
 	
-	@JsonIgnore transient private final Model<ProcessFlow> flow;
+	@JsonIgnore transient private final ProcessFlow flow;
 	
 	@JsonIgnore transient private QuadScopedEventListener eventPublisher;
 	
@@ -44,7 +44,7 @@ public class QuadModel<V, C> implements Serializable {
 		
 		this.core = findChildModel(getRoot(), "/c");
 		this.view = findChildModel(getRoot(), "/v");
-		this.flow = findChildModel(getRoot(), "/f");
+		flow = new ProcessFlow();
 	}
 	
 	@SuppressWarnings("unchecked")

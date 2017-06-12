@@ -17,6 +17,7 @@ import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
 import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandMessageConverter;
+import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContext;
 import com.anthem.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
@@ -50,6 +51,8 @@ public class DefaultExpressionHelper extends AbstractExpressionHelper {
 		MultiExecuteOutput obj = (MultiExecuteOutput) executeProcess(coreCmdMsg);
 		return obj.getSingleResult();
 	}
+	
+	
 
 	final public Object _update(CommandMessage cmdMsg, DelegateExecution execution, String resolvedUri, Object... args) {
 		CommandMessage coreCmdMsg = new CommandMessage();
@@ -167,27 +170,11 @@ public class DefaultExpressionHelper extends AbstractExpressionHelper {
 		taskQuadModel.getCore().findStateByPath("/entity").setState(entityQuadModel.getCore().getState());
 	}
 	
-	/**
-	 * Use this method to set the value of the resolved uri path to the internal execution variable passed in the argument
-	 * e.g. expression: {@code _setInternal('/patientReferred','patient') } will set the execution variable by name 'patient' to the path 
-	 * {@code /patientReferred} of the core model. The execution variable may be coming from the result variable of a previous service task.
-	 * 
-	 */
-	final public void _setInternal(CommandMessage cmdMsg, DelegateExecution execution, String resolvedUri, Object... args){
-		QuadModel<?, Object> quadModel = UserEndpointSession.getOrThrowEx(cmdMsg.getCommand());
-		Command command = CommandBuilder.withUri(resolvedUri.toString()).getCommand();
-		String inputPath = command.getAbsoluteDomainUri();		
-		Object obj = execution.getVariable((String)args[0]);
-		if(StringUtils.isEmpty(inputPath)){
-			quadModel.getCore().setState(obj);
-		} else {
-			quadModel.getCore().findParamByPath(inputPath).setState(obj);
-		}		
-	}
+	
 	
 	/**
 	 * Use this expression to fireAllRules for the quadmodel in session
-	 * 
+	 * Ac
 	 */
 	final public void _fireAllRules(CommandMessage cmdMsg, DelegateExecution execution){
 		QuadModel<?, Object> quadModel = UserEndpointSession.getOrThrowEx(cmdMsg.getCommand());
@@ -253,5 +240,16 @@ public class DefaultExpressionHelper extends AbstractExpressionHelper {
 		StringBuilder targetParamPath = new StringBuilder((String) args[0]);
 		quadModel.getView().findParamByPath(targetParamPath.toString()).setState(obj.getSingleResult().toString());
 	}
+	
+	final public Object _getInternal(ExecutionContext executionContext, DelegateExecution execution, String resolvedUri, Object... args) {
+		QuadModel<?, ?> quadModel = executionContext.getQuadModel();
+		return quadModel.getCore().findStateByPath(resolvedUri).getState();
+	}	
+	
+
+	final public void _setInternal(ExecutionContext executionContext, DelegateExecution execution, String resolvedUri, Object... args){
+		QuadModel<?, ?> quadModel = executionContext.getQuadModel();
+		quadModel.getCore().findParamByPath(resolvedUri).setState(args[0]);
+	}	
 
 }

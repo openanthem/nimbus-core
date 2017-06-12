@@ -222,7 +222,7 @@ public class DefaultExpressionHelperTest extends AbstractPlatformIntegrationTest
 		String resolvedUri = expHlpr.getResolvedUri(cmdMsg,"/category");	
 		execution.setVariable("category", "new");
 		q.getCore().findParamByPath("/category").setState("Fiction");
-		expHlpr._setInternal(cmdMsg, execution, resolvedUri, "category");				
+		//expHlpr._setInternal(cmdMsg, execution, resolvedUri, "category");				
 		assertEquals("new",q.getCore().findParamByPath("/category").getState());
 	}
 	
