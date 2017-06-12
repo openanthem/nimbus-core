@@ -31,7 +31,7 @@ public class CommandBuilderTest {
 
 	@Test
 	public void t0_multiple() {
-		String uri = "/Anthem/fep/p/dashboard/landingPage/tileCreateCase/sectionCreateCase/umCaseLists.m/_process?fn=_set&url=/umcase/_search?fn=example";
+		String uri = "/Anthem/fep/p/dashboard/landingPage/tileCreateCase/sectionCreateCase/umCaseLists.m/_process?fn=_set&url=/Anthem/fep/p/umcase/_search?fn=example";
 		Command cmd = CommandBuilder.withUri(uri).getCommand();
 		assertNotNull(cmd);
 		

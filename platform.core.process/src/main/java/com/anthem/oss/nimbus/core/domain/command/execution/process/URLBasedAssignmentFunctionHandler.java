@@ -38,7 +38,7 @@ abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements Functi
 	protected CommandMessage buildCommand(CommandMessage commandMessage){
 		String url = getUrl(commandMessage);
 		Command command = CommandBuilder.withUri(url).getCommand();
-		command.setRequestParams(commandMessage.getCommand().getRequestParams());
+		
 		CommandMessage newCommandMessage = new CommandMessage();
 		newCommandMessage.setCommand(command);
 		return newCommandMessage;
