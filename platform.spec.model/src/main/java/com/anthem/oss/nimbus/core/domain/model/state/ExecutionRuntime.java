@@ -12,6 +12,8 @@ public interface ExecutionRuntime extends Notification.Dispatcher<Object> {
 	public void start();
 	public void stop();
 	
+	public boolean isStarted();
+	
 	public void awaitCompletion();
 	
 	public boolean isLocked();

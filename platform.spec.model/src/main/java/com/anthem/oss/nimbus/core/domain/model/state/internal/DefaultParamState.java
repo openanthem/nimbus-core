@@ -193,7 +193,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	@Override
 	final public Action setState(T state) {
-		ExecutionRuntime execRt = getRootExecution().getExecutionRuntime();
+		ExecutionRuntime execRt = resolveRuntime();
 		String lockId = execRt.tryLock();
 		final Holder<Action> h = new Holder<>();
 		try {
@@ -202,7 +202,9 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 			if(a!=null) {
 				notifySubscribers(new Notification<>(this, ActionType._updateState, this));
 				h.setState(a);
-				emitEvent(a, this);
+				
+				if(execRt.isStarted())
+					emitEvent(a, this);
 			}
 			
 			postSetState(a, state);
@@ -229,6 +231,14 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 					throw new FrameworkRuntimeException("Failed to release lock acquired during setState of: "+getPath()+" with acquired lockId: "+lockId); 
 			}	
 		}
+	}
+	
+	protected ExecutionRuntime resolveRuntime() {
+		if(getRootExecution().getAssociatedParam().isLinked()) {
+			return getRootExecution().getAssociatedParam().findIfLinked().getRootExecution().getExecutionRuntime();
+		}
+		
+		return getRootExecution().getExecutionRuntime();
 	}
 	
 	protected T preSetState(T state) {
@@ -366,6 +376,10 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		if(StringUtils.equals(singlePathSegment, Constants.SEPARATOR_CONFIG_ATTRIB.code))
 			return getContextModel().getAssociatedParam();
 
+		// value is only ".m" then return mapsTo if this is a mapped param
+		if(StringUtils.equals(singlePathSegment, Constants.SEPARATOR_MAPSTO.code) && isMapped()) 
+			return findIfMapped().getMapsTo();
+		
 		if(getType().findIfNested()==null)
 			return null;
 
@@ -391,9 +405,9 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 				Constants.SEPARATOR_URI.code.equals(StringUtils.trimToNull(singlePathSegment))) //  path = '/'
 			return this;
 		
-		// value is only ".m" then return mapsTo if this is a mapped param
-		if(StringUtils.equals(singlePathSegment, Constants.SEPARATOR_MAPSTO.code)) 
-			return isMapped() ? findIfMapped().getMapsTo() : null;
+//		// value is only ".m" then return mapsTo if this is a mapped param
+//		if(StringUtils.equals(singlePathSegment, Constants.SEPARATOR_MAPSTO.code)) 
+//			return isMapped() ? findIfMapped().getMapsTo() : null;
 		
 		return null;	
 	}

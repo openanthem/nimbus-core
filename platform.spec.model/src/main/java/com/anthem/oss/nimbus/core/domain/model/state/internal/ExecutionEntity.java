@@ -335,6 +335,8 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 		private final Command rootCommand;
 		private final BlockingQueue<Notification<?>> notificationQueue;
 		
+		private boolean isStarted;
+		
 		private String lockId;
 		private final LockTemplate lock = new LockTemplate();
 		
@@ -347,15 +349,17 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 		}
 		
 		@Override
-		public void start() {
+		public synchronized void start() {
 			rootCommandBasedExecCounters.putIfAbsent(rootCommand.getAbsoluteUri(), new AtomicInteger());
+			this.isStarted = true;
 		}
 		
 		@Override
-		public void stop() {
+		public synchronized void stop() {
 			rootCommandBasedExecCounters.remove(rootCommand.getAbsoluteUri());
+			this.isStarted = false;
 		}
-
+		
 		@Override
 		public String tryLock() {
 			if(isLocked()) return null;

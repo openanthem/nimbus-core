@@ -7,24 +7,22 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.util.CollectionUtils;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
-import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.command.CommandElement;
 import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutorGateway;
+import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutorGateway;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Mode;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig.MappedParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
@@ -153,8 +151,10 @@ abstract public class AbstractEntityStateBuilder {
 							created.getPath();// +"/"+ created.getConfig().getContextParam().getCode();
 		Command ctxCmd = CommandBuilder.withUri(ctxPath).getCommand();
 		
+		String ctxParamPath = created.getPath();
+		
 		ExecutionEntity<Object, StateContextEntity> eStateCtx = new ExecutionEntity<>();
-		ExecutionEntity<Object, StateContextEntity>.ExParam exParamCtx = eStateCtx.new ExParamLinked(ctxCmd, created.getAspectHandlers(), exConfig, ctxPath, created);
+		ExecutionEntity<Object, StateContextEntity>.ExParam exParamCtx = eStateCtx.new ExParamLinked(ctxCmd, created.getAspectHandlers(), exConfig, ctxParamPath, created);
 		//exParamCtx.initSetup();
 		
 		ExecutionEntity<Object, StateContextEntity>.ExModel exModelCtx = exParamCtx.getRootExecution().unwrap(ExecutionEntity.ExModel.class);
