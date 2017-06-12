@@ -3,6 +3,8 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution.process;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
 import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
@@ -19,6 +21,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
  */
 abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements FunctionHandler<T,R> {
 	
+	@Autowired
 	private CommandExecutorGateway executorGateway; 
 	
 	@Override
@@ -46,11 +49,11 @@ abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements Functi
 	
 	//TODO: Verify logic
 	protected boolean isInternal(Command command){
-		return command.getAlias(Type.PlatformMarker) == null;
+		return false;//command.getAlias(Type.PlatformMarker) == null;
 	}
 	
 	protected Param<S> findTargetParam(ExecutionContext context){
-		String parameterPath = context.getCommandMessage().getCommand().getAbsoluteUri();
+		String parameterPath = context.getCommandMessage().getCommand().getAbsoluteDomainUri();
 		return context.getRootModel().findParamByPath(parameterPath);
 	}	
 	
@@ -64,7 +67,7 @@ abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements Functi
 		CommandMessage commandToExecute = buildCommand(executionContext.getCommandMessage());
 		MultiOutput response = executorGateway.execute(commandToExecute);
 		//TODO Soham: temp fix, need to talk to Jayant
-		return (S)response.getValue();
+		return (S)response.getOutputs().get(0).getValue();
 	}	
 
 }
