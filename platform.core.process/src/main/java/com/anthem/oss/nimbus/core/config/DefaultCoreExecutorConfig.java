@@ -4,8 +4,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutor;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandMessageConverter;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandTransactionInterceptor;
+import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionBehaviorExecutorGetState;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutorDelete;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutorGet;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutorNav;
@@ -45,44 +47,49 @@ public class DefaultCoreExecutorConfig {
 	}
 	
 	@Bean(name="default._new$execute")
-	public DefaultActionExecutorNew defaultActionExecutorNew(BeanResolverStrategy beanResolver){
+	public CommandExecutor<?> defaultActionExecutorNew(BeanResolverStrategy beanResolver){
 		return new DefaultActionExecutorNew(beanResolver);
 	}
 	
 	@Bean(name="default._get$execute")
-	public DefaultActionExecutorGet defaultActionExecutorGet(BeanResolverStrategy beanResolver){
+	public CommandExecutor<?> defaultActionExecutorGet(BeanResolverStrategy beanResolver){
 		return new DefaultActionExecutorGet(beanResolver);
 	}
 	
 
 	@Bean(name="default._nav$execute")
-	public DefaultActionExecutorNav defaultActionExecutorNav(BeanResolverStrategy beanResolver){
-		return new DefaultActionExecutorNav(beanResolver);
+	public CommandExecutor<?> defaultActionExecutorNav(BeanResolverStrategy beanResolver){
+		return new DefaultActionExecutorNav<>(beanResolver);
 	}
 	
 	@Bean(name="default._process$execute")
-	public DefaultActionExecutorProcess defaultActionExecutorProcess(BeanResolverStrategy beanResolver){
-		return new DefaultActionExecutorProcess(beanResolver);
+	public CommandExecutor<?> defaultActionExecutorProcess(BeanResolverStrategy beanResolver){
+		return new DefaultActionExecutorProcess<>(beanResolver);
 	}
 	
 	@Bean(name="default._search$execute")
-	public DefaultActionExecutorSearch defaultActionExecutorSearch(BeanResolverStrategy beanResolver){
-		return new DefaultActionExecutorSearch(beanResolver);
+	public CommandExecutor<?> defaultActionExecutorSearch(BeanResolverStrategy beanResolver){
+		return new DefaultActionExecutorSearch<>(beanResolver);
 	}
 	
 	@Bean(name="default._update$execute")
-	public DefaultActionExecutorUpdate defaultActionExecutorUpdate(BeanResolverStrategy beanResolver){
+	public CommandExecutor<?> defaultActionExecutorUpdate(BeanResolverStrategy beanResolver){
 		return new DefaultActionExecutorUpdate(beanResolver);
 	}
 	
 	@Bean(name="default._delete$execute")
-	public DefaultActionExecutorDelete defaultActionProcessExecutorDelete(BeanResolverStrategy beanResolver){
+	public CommandExecutor<?> defaultActionProcessExecutorDelete(BeanResolverStrategy beanResolver){
 		return new DefaultActionExecutorDelete(beanResolver);
 	}
 	
 	@Bean(name="default._replace$execute")
-	public DefaultActionExecutorReplace defaultActionProcessExecutorReplace(BeanResolverStrategy beanResolver){
+	public CommandExecutor<?> defaultActionProcessExecutorReplace(BeanResolverStrategy beanResolver){
 		return new DefaultActionExecutorReplace(beanResolver);
+	}
+	
+	@Bean(name="default._get$state")
+	public CommandExecutor<?> defaultActionBehaviorExecutorGetState(BeanResolverStrategy beanResolver){
+		return new DefaultActionBehaviorExecutorGetState(beanResolver);
 	}
 	
 	@Bean

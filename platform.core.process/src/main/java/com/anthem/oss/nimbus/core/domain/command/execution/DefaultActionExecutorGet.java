@@ -66,7 +66,7 @@ public class DefaultActionExecutorGet extends AbstractCommandExecutor<Param<?>> 
 			Repo mapsToRepo = mapsToConfig.getRepo();
 			
 			if(Repo.Database.exists(mapsToRepo)) {
-				mapsToEntity = getRepositoryFactory().get(rootDomainConfig.getRepo())._get(refId, mapsToConfig.getReferredClass(), mapsToConfig.getDomainAlias());
+				mapsToEntity = getRepositoryFactory().get(mapsToRepo)._get(refId, mapsToConfig.getReferredClass(), mapsToConfig.getDomainAlias());
 //				repoDbFound = true;
 				
 			} else {

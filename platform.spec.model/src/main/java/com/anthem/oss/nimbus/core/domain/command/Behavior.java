@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 public enum Behavior {
 
 	$execute("_execute"),	//default if not specified
+	$state("_state"),
 	$save("_save"),
 	$nav("_nav"),
 	
