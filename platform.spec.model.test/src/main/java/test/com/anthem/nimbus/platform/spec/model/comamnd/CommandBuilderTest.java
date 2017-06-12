@@ -28,6 +28,17 @@ import com.anthem.oss.nimbus.core.domain.definition.Constants;
  * @author Rakesh Patel
  */
 public class CommandBuilderTest {
+
+	@Test
+	public void t0_multiple() {
+		String uri = "/Anthem/fep/p/dashboard/landingPage/tileCreateCase/sectionCreateCase/umCaseLists.m/_process?fn=_set&url=/umcase/_search?fn=example";
+		Command cmd = CommandBuilder.withUri(uri).getCommand();
+		assertNotNull(cmd);
+		
+		assertSame(Action._process, cmd.getAction());
+		assertNotNull(cmd.getBehaviors());
+	}
+	
 	
 	@Test
 	public void t0_noParams() {
