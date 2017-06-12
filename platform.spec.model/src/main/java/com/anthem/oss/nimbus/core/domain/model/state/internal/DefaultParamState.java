@@ -202,7 +202,9 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 			if(a!=null) {
 				notifySubscribers(new Notification<>(this, ActionType._updateState, this));
 				h.setState(a);
-				emitEvent(a, this);
+				
+				if(execRt.isStarted())
+					emitEvent(a, this);
 			}
 			
 			postSetState(a, state);
