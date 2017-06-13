@@ -105,7 +105,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		
 		String out = in;
 		for(Integer i : entries.keySet()) {
-			String path = entries.get(i);
+			String path = ParamPathExpressionParser.stripPrefixSuffix(entries.get(i));
 			
 			// look for relative path to passed in param's parent model
 			Param<?> p = cmdParam.getParentModel().findParamByPath(path);
