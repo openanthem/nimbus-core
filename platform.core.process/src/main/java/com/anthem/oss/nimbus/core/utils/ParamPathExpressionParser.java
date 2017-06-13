@@ -41,4 +41,9 @@ public class ParamPathExpressionParser {
 		
 		parse(in, iEnd, entries);
 	}
+	
+	public static String stripPrefixSuffix(String in) {
+		return StringUtils.removeEnd(
+				StringUtils.removeStart(in, KEY_PREFIX), KEY_SUFFIX);
+	}
 }

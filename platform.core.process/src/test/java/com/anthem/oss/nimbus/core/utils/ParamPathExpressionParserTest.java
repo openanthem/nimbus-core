@@ -23,5 +23,8 @@ public class ParamPathExpressionParserTest {
 		Map<Integer, String> entries = ParamPathExpressionParser.parse(in);
 		assertSame(1, entries.size());
 		assertEquals("{/id}", entries.values().iterator().next());
+		
+		String out = ParamPathExpressionParser.stripPrefixSuffix("{/id}");
+		assertEquals("/id", out);
 	}
 }
