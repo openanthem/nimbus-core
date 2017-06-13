@@ -142,7 +142,10 @@ public class Command implements Serializable {
 	
 	public String getRelativeUri(String input) {
 		// input doesn't have /p/ : prefix client/org/app/p/{domain-root} from incoming command 
-		if(!StringUtils.contains(input, Constants.SEGMENT_PLATFORM_MARKER.code)) {
+		int iFirstQ = StringUtils.indexOf(input, "?");
+		final String searchSeq = (iFirstQ != StringUtils.INDEX_NOT_FOUND) ? StringUtils.substring(input, iFirstQ) : input;
+		
+		if(!StringUtils.contains(searchSeq, Constants.SEGMENT_PLATFORM_MARKER.code)) {
 			String prefix = buildUri(Type.PlatformMarker) + getRootDomainUri();
 			return prefix + input;
 		}
