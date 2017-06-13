@@ -139,6 +139,23 @@ public class Command implements Serializable {
 		return Optional.ofNullable(root().findFirstMatch(type));
 	}
 
+	
+	public String getRelativeUri(String input) {
+		// input doesn't have /p/ : prefix client/org/app/p/{domain-root} from incoming command 
+		if(!StringUtils.contains(input, Constants.SEGMENT_PLATFORM_MARKER.code)) {
+			String prefix = buildUri(Type.PlatformMarker) + getRootDomainUri();
+			return prefix + input;
+		}
+		
+		// input starts with /p/ : prefix client/org/app from incoming command
+		if(StringUtils.startsWith(input, Constants.SEGMENT_PLATFORM_MARKER.code)) {
+			String prefix = buildUri(Type.AppAlias);
+			return prefix + input;
+		}
+		
+		// input is complete: use as is
+		return input;
+	}
 
 	
 /* TODO Refactor -- START -- */ 

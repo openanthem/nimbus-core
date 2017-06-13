@@ -38,6 +38,32 @@ public class CommandBuilderTest {
 		assertSame(Action._process, cmd.getAction());
 		assertNotNull(cmd.getBehaviors());
 	}
+
+	@Test
+	public void t0_multiple_withClient() {
+		String uri = "/Anthem/fep/p/dashboard/landingPage/tileCreateCase/sectionCreateCase/umCaseLists.m/_process?fn=_set&url=/Anthem/fep/p/umcase/_search?fn=example";
+		Command cmd = CommandBuilder.withUri(uri).getCommand();
+		assertNotNull(cmd);
+		
+		assertSame(Action._process, cmd.getAction());
+		assertNotNull(cmd.getBehaviors());
+	}
+	
+	@Test
+	public void t0_multiple_split() {
+		String uri = "/Anthem/fep/p/dashboard/landingPage/tileCreateCase/sectionCreateCase/umCaseLists.m/_process?fn=_set&url=/Anthem/fep/p/umcase/_search?fn=example";
+		Command cmd = CommandBuilder.withUri(uri).getCommand();
+		assertNotNull(cmd);
+		
+		assertSame(Action._process, cmd.getAction());
+		
+		String url = cmd.getRequestParams().get("url")[0];
+		assertEquals("/Anthem/fep/p/umcase/_search?fn=example", url);
+		
+		Command subCmd = CommandBuilder.withUri(url).getCommand();
+		assertNotNull(subCmd);
+		assertSame(Action._search, subCmd.getAction());
+	}
 	
 	
 	@Test

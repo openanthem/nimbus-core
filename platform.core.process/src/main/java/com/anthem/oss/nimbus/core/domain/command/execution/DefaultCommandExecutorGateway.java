@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 
@@ -17,14 +18,13 @@ import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.command.Behavior;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
-import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Input;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
-import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.Execution;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.anthem.oss.nimbus.core.utils.ParamPathExpressionParser;
 
 /**
  * @author Soham Chakravarti
@@ -60,40 +60,34 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		MultiOutput mOutput = new MultiOutput(inputCommandUri, eCtx, cmdMsg.getCommand().getAction(), cmdMsg.getCommand().getBehaviors());
 		
 		// get execution config
-		Param<?> p = findParamByCommand(eCtx);
-		List<Execution.Config> execConfigs = p != null ? p.getConfig().getExecutionConfigs() : null;
+		Param<?> cmdParam = findParamByCommand(eCtx);
+		List<Execution.Config> execConfigs = cmdParam != null ? cmdParam.getConfig().getExecutionConfigs() : null;
 		
 		// if present, hand-off to each command within execution config
 		if(CollectionUtils.isNotEmpty(execConfigs)) {
-			executeConfig(eCtx, mOutput, execConfigs);
+			executeConfig(eCtx, cmdParam, mOutput, execConfigs);
 
 		} else {// otherwise, execute self
-			executeSelf(eCtx, mOutput);
+			executeSelf(eCtx, cmdParam, mOutput);
 		}
 		
 		return mOutput;
 	}
 	
 
-	protected void executeConfig(ExecutionContext eCtx, MultiOutput mOutput, List<Execution.Config> execConfigs) {
+	protected void executeConfig(ExecutionContext eCtx, Param<?> cmdParam, MultiOutput mOutput, List<Execution.Config> execConfigs) {
 		final CommandMessage cmdMsg = eCtx.getCommandMessage();
+		boolean isPayloadUsed = false;
 		
 		// for-each config
 		execConfigs.stream().forEach(ec->{
-			String configExecPath = ec.url();
+			String completeConfigUri = eCtx.getCommandMessage().getCommand().getRelativeUri(ec.url());
 			
-			if(cmdMsg.getCommand().getRootDomainUri().indexOf(":")>0) {
-				configExecPath = cmdMsg.getCommand().getRootDomainUri()+ec.url(); //TODO - TEMP - would not work below if the url had the /p/ prefix. need to revisit
-			}
-			// prepare config command 
-			configExecPath = StringUtils.contains(ec.url(), Constants.SEPARATOR_URI_PLATFORM.code+Constants.SEPARATOR_URI.code)  // check if url has "/p/" 
-										? ec.url() : eCtx.getCommandMessage().getCommand().buildAlias(Type.PlatformMarker) + configExecPath;
-			
-										
-			Command configExecCmd = CommandBuilder.withUri(configExecPath).getCommand();
+			String resolvedConfigUri = replaceVariables(cmdParam, completeConfigUri); 
+			Command configExecCmd = CommandBuilder.withUri(resolvedConfigUri).getCommand();
 			
 			// TODO decide on which commands should get the payload
-			CommandMessage configCmdMsg = new CommandMessage(configExecCmd, cmdMsg.getRawPayload());
+			CommandMessage configCmdMsg = isPayloadUsed ? new CommandMessage(configExecCmd, null) : new CommandMessage(configExecCmd, cmdMsg.getRawPayload());
 			
 			// execute & add output to mOutput
 			MultiOutput configOutput = execute(configCmdMsg);
@@ -102,7 +96,29 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		});	
 	}
 	
-	protected void executeSelf(ExecutionContext eCtx, MultiOutput mOutput) {
+	
+
+	protected static String replaceVariables(Param<?> cmdParam, String in) {
+		Map<Integer, String> entries = ParamPathExpressionParser.parse(in);
+		if(MapUtils.isEmpty(entries))
+			return in;
+		
+		String out = in;
+		for(Integer i : entries.keySet()) {
+			String path = entries.get(i);
+			
+			// look for relative path to passed in param's parent model
+			Param<?> p = cmdParam.getParentModel().findParamByPath(path);
+			
+			String val = String.valueOf(p.getState());
+			
+			out = StringUtils.replace(out, path, val, 1);
+		}
+		
+		return out;
+	}
+	
+	protected void executeSelf(ExecutionContext eCtx, Param<?> cmdParam, MultiOutput mOutput) {
 		final CommandMessage cmdMsg = eCtx.getCommandMessage();
 		final String inputCommandUri = cmdMsg.getCommand().getAbsoluteUri();
 		
