@@ -36,8 +36,8 @@ public class ParamPathExpressionParser {
 		if(iEnd==StringUtils.INDEX_NOT_FOUND)
 			throw new InvalidConfigException("Found config url entry with starting '{' but no closing '}' in "+ in);
 		
-		String key = StringUtils.substring(in, iStart+1, iEnd);
-		entries.put(iStart+1, key);
+		String key = StringUtils.substring(in, iStart, iEnd+1);
+		entries.put(iStart, key);
 		
 		parse(in, iEnd, entries);
 	}
