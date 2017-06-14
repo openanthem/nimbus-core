@@ -10,6 +10,8 @@ import java.util.Set;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
+import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
+import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
 import com.anthem.oss.nimbus.core.entity.client.ClientEntity;
 import com.anthem.oss.nimbus.core.entity.client.user.ClientUser;
 
@@ -21,8 +23,8 @@ import lombok.ToString;
  * @author Rakesh Patel
  *
  */
-@Domain("clientusergroup")
-@Repo
+@Domain(value="clientusergroup", includeListeners={ListenerType.persistence})
+@Repo(Database.rep_mongodb)
 @Getter @Setter @ToString(callSuper=true)
 public class ClientUserGroup extends AbstractUserGroup {
 

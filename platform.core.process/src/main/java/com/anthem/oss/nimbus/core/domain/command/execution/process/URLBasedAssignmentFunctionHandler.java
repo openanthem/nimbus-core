@@ -54,7 +54,7 @@ abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements Functi
 	}
 	
 	protected Param<S> findTargetParam(ExecutionContext context){
-		String parameterPath = context.getCommandMessage().getCommand().getAbsoluteDomainUri();
+		String parameterPath = context.getCommandMessage().getCommand().getAbsoluteDomainAlias();
 		return context.getRootModel().findParamByPath(parameterPath);
 	}	
 	
