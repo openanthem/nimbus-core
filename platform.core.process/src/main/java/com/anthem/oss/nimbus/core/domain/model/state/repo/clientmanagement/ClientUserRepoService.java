@@ -55,7 +55,7 @@ public class ClientUserRepoService implements ClientUserRepoAPI<ClientUser> {
 	public ClientUser getUser(String loginName) throws EntityNotFoundException {
 		ClientUser clientUser;
 		try{
-			clientUser = cuRepo.findByLoginName(loginName);
+			clientUser = cuRepo.findByLoginId(loginName);
 			if(clientUser != null){
 				clientUser = cuRepo.findOne(clientUser.getId());
 			}
@@ -118,8 +118,8 @@ public class ClientUserRepoService implements ClientUserRepoAPI<ClientUser> {
 			
 			// If login name exists then search with the login name else return all the users for a client
 			if (clientUser != null && !StringUtils.isEmpty(clientUser.getLoginId())) {
-				Assert.notNull(cuRepo.findByLoginName(clientUser.getLoginId()));
-				ClientUser cuu = cuRepo.findByLoginName(clientUser.getLoginId());
+				Assert.notNull(cuRepo.findByLoginId(clientUser.getLoginId()));
+				ClientUser cuu = cuRepo.findByLoginId(clientUser.getLoginId());
 				if(cuu != null) {
 					cuResultList.add(cuu);
 				}else{
@@ -183,7 +183,7 @@ public class ClientUserRepoService implements ClientUserRepoAPI<ClientUser> {
 			Client client = cRepo.findByCode(code);
 			if (null != user && (null!=user.getLoginId() || null != user.getId())) {
 				if (StringUtils.isNotBlank(user.getLoginId())) {
-					cuList.add(cuRepo.findByLoginName(user.getLoginId()));
+					cuList.add(cuRepo.findByLoginId(user.getLoginId()));
 					return new PageImpl<ClientUser>(cuList, pageReq, cuList.size());
 				} else if (user.getId() != null) {
 					cuList.add(cuRepo.findOne(user.getId()));

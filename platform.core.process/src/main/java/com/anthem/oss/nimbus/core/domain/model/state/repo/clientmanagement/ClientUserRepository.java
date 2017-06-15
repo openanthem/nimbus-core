@@ -23,7 +23,7 @@ import com.anthem.oss.nimbus.core.entity.client.user.ClientUser;
 @Repository
 public interface ClientUserRepository extends MongoRepository<ClientUser, String> {
 	
-	ClientUser findByLoginName(String loginName);
+	ClientUser findByLoginId(String loginName);
 	
 	//@Query("MATCH(u)-[r:CLIENT]->(c) WHERE id(c)={id} RETURN u")
 	List<ClientUser> findByClient(@Param("id")Client c);

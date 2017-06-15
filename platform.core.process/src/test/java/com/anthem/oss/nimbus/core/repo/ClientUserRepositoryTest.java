@@ -193,7 +193,7 @@ public class ClientUserRepositoryTest {
 	
 //	@Test
 	public void test_09_getclientUserbyName(){
-		ClientUser cu = cuRep.findOne(cuRep.findByLoginName("AC63348").getId());
+		ClientUser cu = cuRep.findOne(cuRep.findByLoginId("AC63348").getId());
 		Assert.assertNotNull(cu.getGrantedRoles());
 		Assert.assertTrue(cu.getGrantedRoles().size() > 1);
 		System.out.println(cu);
