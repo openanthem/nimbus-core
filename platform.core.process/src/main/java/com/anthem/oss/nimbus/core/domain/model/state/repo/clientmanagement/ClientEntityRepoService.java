@@ -89,7 +89,6 @@ public class ClientEntityRepoService implements ClientEntityRepoAPI<ClientEntity
 			
 			nestedEntity.setCode(nestedEntity.getName());
 			nestedEntity.setType(Type.ORG);
-			parentClientEntity.addNestedEntities(nestedEntity);
 			ceRepo.save(parentClientEntity);
 			
 			ClientEntity cenested = ceRepo.findByName(nestedEntity.getName());
@@ -102,42 +101,6 @@ public class ClientEntityRepoService implements ClientEntityRepoAPI<ClientEntity
 		
 	}
 	
-	@Override
-	public boolean editNestedEntity(String clientEntityId , ClientEntity nestedEntity) throws FrameworkRuntimeException{
-		try{
-			Assert.notNull(nestedEntity, "ClientEntity to be added cannot be null");
-			Assert.notNull(clientEntityId,"Parent Client entity Id cannot be null");
-			
-			ClientEntity parentClientEntity = ceRepo.findOne(clientEntityId);
-			
-			Assert.notNull(parentClientEntity,"Parent Client Entity cannot be null");
-			
-			if(parentClientEntity.getNestedEntities() != null){
-				ClientEntity orgToRemove = null;
-				for(ClientEntity ce : parentClientEntity.getNestedEntities()){
-					if(ce.getId().equals(nestedEntity.getId())){
-						//throw new DataIntegrityViolationExecption("Client Entity to be added : "+nestedEntity.getName() +" is a duplicate for client : "+parentClientEntity.getName(),ClientUserRole.class);
-						orgToRemove = ce;
-						break;
-					}
-				}
-				if(orgToRemove != null) {
-					parentClientEntity.getNestedEntities().remove(orgToRemove);
-				}
-			}
-			nestedEntity.setCode(nestedEntity.getName());
-			nestedEntity.setType(Type.ORG);
-			parentClientEntity.addNestedEntities(nestedEntity);
-			
-			ceRepo.save(parentClientEntity);
-			
-			return true;
-			
-		}catch(Exception e){
-			throw new FrameworkRuntimeException("Exception while adding a nested client entity - "+nestedEntity+" : "+e.getMessage());
-		}
-		
-	}
 
 	
 	@Override
@@ -304,7 +267,6 @@ public class ClientEntityRepoService implements ClientEntityRepoAPI<ClientEntity
 		try{
 			PageRequest pageReq = new PageRequest(index,size);	
 			ClientEntity ce = ceRepo.findOne(id);
-			Set<ClientEntity> clientEntitys = ce.getNestedEntities();
 			List<ClientEntity> ceList = new ArrayList<ClientEntity>();
 			if(clientEntity != null && clientEntity.getId() != null) { 
 				//ClientEntity cee = ceRepo.findByName(clientEntity.getName());
@@ -321,11 +283,6 @@ public class ClientEntityRepoService implements ClientEntityRepoAPI<ClientEntity
 					throw new EntityNotFoundException("Client Entity not found with name "+clientEntity.getName(),ClientEntity.class);
 				}				
 
-			}else{
-
-				if(clientEntitys != null) {
-					ceList.addAll(clientEntitys);
-				}
 			}
 			return new PageImpl<ClientEntity>(ceList,pageReq,ceList.size());
 		}catch(Exception e){

@@ -53,7 +53,7 @@ public class ClientUserRepositoryTest {
 	
 	@Test
 	public void testCreateDefaultUser() {
-		assertNotNull(TestClientUserFactory.createDefaultUser().getLoginName());
+		assertNotNull(TestClientUserFactory.createDefaultUser().getLoginId());
 	}
 	
 	//@Test
@@ -70,7 +70,7 @@ public class ClientUserRepositoryTest {
 //		cuIdsSet.add(cuIds);
 		cu.setClient(c);
 		cu.setPlatformUser(pu);
-		cu.setLoginName("AC12345");
+		cu.setLoginId("AC12345");
 		//cu.setClientUserIDS(cuIdsSet);
 		cuRep.save(cu);
 		
@@ -88,7 +88,7 @@ public class ClientUserRepositoryTest {
 		//Assert.assertNotNull(cr);
 		cu.setClient(c);
 		cu.setPlatformUser(pu);
-		cu.setLoginName("AD10998");
+		cu.setLoginId("AD10998");
 		cuRep.save(cu);
 		
 	}
@@ -106,7 +106,7 @@ public class ClientUserRepositoryTest {
 		System.out.println("GRanted ROles:"+cu.getGrantedRoles());
 		cu.setClient(c);
 		cu.setPlatformUser(pu);
-		cu.setLoginName("Rakesh");
+		cu.setLoginId("Rakesh");
 		cuRep.save(cu);
 		
 	}
@@ -124,7 +124,7 @@ public class ClientUserRepositoryTest {
 		System.out.println("GRanted ROles:"+cu.getGrantedRoles());
 		cu.setClient(c);
 		cu.setPlatformUser(pu);
-		cu.setLoginName("Syed");
+		cu.setLoginId("Syed");
 		cuRep.save(cu);
 		
 	}
@@ -187,7 +187,7 @@ public class ClientUserRepositoryTest {
 		Assert.assertNotNull(cu1);
 		System.out.println("No of Client Users for Client-antm"+cu1.size());
 		System.out.println("cu1"+cu1);
-		System.out.println("CLient User"+cu1.get(0).getLoginName());
+		System.out.println("CLient User"+cu1.get(0).getLoginId());
 		System.out.println(cu1.get(0).getGrantedRoles());
 	}
 	
@@ -276,7 +276,7 @@ public class ClientUserRepositoryTest {
 		
 		cu.setClient(c);
 		cu.setPlatformUser(pu);
-		cu.setLoginName("ben");
+		cu.setLoginId("ben");
 		
 		cuRep.save(cu);
 	}
@@ -292,7 +292,7 @@ public class ClientUserRepositoryTest {
 		
 		cu.setClient(c);
 		cu.setPlatformUser(pu);
-		cu.setLoginName("jayant.chaudhuri@gmail.com");
+		cu.setLoginId("jayant.chaudhuri@gmail.com");
 		
 		cuRep.save(cu);
 	}

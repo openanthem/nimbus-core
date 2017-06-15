@@ -117,13 +117,13 @@ public class ClientUserRepoService implements ClientUserRepoAPI<ClientUser> {
 			List<ClientUser> cuList = cuRepo.findByClient(client);
 			
 			// If login name exists then search with the login name else return all the users for a client
-			if (clientUser != null && !StringUtils.isEmpty(clientUser.getLoginName())) {
-				Assert.notNull(cuRepo.findByLoginName(clientUser.getLoginName()));
-				ClientUser cuu = cuRepo.findByLoginName(clientUser.getLoginName());
+			if (clientUser != null && !StringUtils.isEmpty(clientUser.getLoginId())) {
+				Assert.notNull(cuRepo.findByLoginName(clientUser.getLoginId()));
+				ClientUser cuu = cuRepo.findByLoginName(clientUser.getLoginId());
 				if(cuu != null) {
 					cuResultList.add(cuu);
 				}else{
-					throw new EntityNotFoundException("Client does not exists with the login name - "+clientUser.getLoginName(),ClientUser.class);
+					throw new EntityNotFoundException("Client does not exists with the login name - "+clientUser.getLoginId(),ClientUser.class);
 				}
 				
 			}else{
@@ -137,7 +137,7 @@ public class ClientUserRepoService implements ClientUserRepoAPI<ClientUser> {
 			}
 			return new PageImpl<ClientUser>(cuResultList,pageReq,cuResultList.size());
 		}catch(Exception e){
-			throw new EntityNotFoundException("Service Exception while retrieving client - "+clientUser.getLoginName(),e,ClientUser.class);
+			throw new EntityNotFoundException("Service Exception while retrieving client - "+clientUser.getLoginId(),e,ClientUser.class);
 		}
 	}
 
@@ -147,12 +147,12 @@ public class ClientUserRepoService implements ClientUserRepoAPI<ClientUser> {
 			ClientUser cuDelete = cuRepo.findOne(clientUser.getId());
 			Assert.notNull(cuDelete, "Client User to be deleted cannot be null");
 			if(log.isTraceEnabled()){
-				log.trace("Deleting role : "+clientUser.getLoginName()+ " for client: " +clientCode);
+				log.trace("Deleting role : "+clientUser.getLoginId()+ " for client: " +clientCode);
 			}
 			cuRepo.delete(clientUser);
 			
 		}catch(Exception e){
-			throw new FrameworkRuntimeException("Service Exception while deleting role : "+clientUser.getLoginName()+ " for client : " +clientCode ,e);			
+			throw new FrameworkRuntimeException("Service Exception while deleting role : "+clientUser.getLoginId()+ " for client : " +clientCode ,e);			
 		}
 		
 	}
@@ -181,9 +181,9 @@ public class ClientUserRepoService implements ClientUserRepoAPI<ClientUser> {
 		PageRequest pageReq = new PageRequest(index, size);
 		try {
 			Client client = cRepo.findByCode(code);
-			if (null != user && (null!=user.getLoginName() || null != user.getId())) {
-				if (StringUtils.isNotBlank(user.getLoginName())) {
-					cuList.add(cuRepo.findByLoginName(user.getLoginName()));
+			if (null != user && (null!=user.getLoginId() || null != user.getId())) {
+				if (StringUtils.isNotBlank(user.getLoginId())) {
+					cuList.add(cuRepo.findByLoginName(user.getLoginId()));
 					return new PageImpl<ClientUser>(cuList, pageReq, cuList.size());
 				} else if (user.getId() != null) {
 					cuList.add(cuRepo.findOne(user.getId()));

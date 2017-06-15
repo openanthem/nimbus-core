@@ -84,56 +84,10 @@ public class ClientEntityRepositoryTest {
 		
 		Set<ClientEntity> orgs = new HashSet<>();
 		orgs.add(org);
-		c.setNestedEntities(orgs);
 		org = cRep.save(c);
 		System.out.println(org.getId());
 	}
 	
-	@Test
-	public void testCreateUserGroupForOrg() {
-		Client c = cRep.findByCode("AETNA");
-		
-		ClientEntity org = c.getNestedEntities().stream()
-												.filter((currentOrg) -> currentOrg.getCode().equals("AETNA_ORG1"))
-												.findFirst()
-												.orElse(null);
-		
-		assertNotNull(org);
-		
-		ClientUserGroup group = new ClientUserGroup();
-		
-		Set<ClientEntity> orgs = new HashSet<>();
-		orgs.add(org);
-		
-//		group.setAssociatedTo(orgs);
-	
-		group.setName("Group1");
-		group.setDescription("Group1_Desc");
-		group.setDisplayName("Group1 for "+org.getCode());
-		group.setStatus(Status.INACTIVE);
-		
-		cuGroupRepo.save(group);
-		
-//		ClientUserGroup group1 = cuGroupRepo.findByClientEntity(org.getCode());
-//		
-//		assertNotNull(group1.getId());
-		  
-	}
-	
-	@Test
-	public void testGetGroupForOrg() {
-		
-		Client c = cRep.findByCode("AETNA");
-		
-		ClientEntity org = c.getNestedEntities().stream()
-												.filter((currentOrg) -> currentOrg.getCode().equals("AETNA_ORG1"))
-												.findFirst()
-												.orElse(null);
-		
-//		ClientUserGroup group1 = cuGroupRepo.findByClientEntity(org.getCode());
-//		
-//		assertNotNull(group1.getId());
-	}
 	
 	//@Test
 	public void getClientByCode(){
