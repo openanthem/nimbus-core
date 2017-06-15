@@ -39,39 +39,8 @@ public abstract class AbstractUser<R extends Role<E, T>, E extends Role.Entry<T>
 	
 	private String loginId;
 
-	@Ignore private Set<R> grantedRoles;
-	
-	
-	@Override
-	public Set<Address.IdString> getAddresses() {
-		return super.getAddresses();
-	}
-
-	@Override
-	public void setAddresses(Set<Address.IdString> addresses) {
-		super.setAddresses(addresses);
-	}
-
-	@Override
-	public Set<Phone.IdString> getContactPhones() {
-		return super.getContactPhones();
-	}
-
-	@Override
-	public void setContactPhones(Set<Phone.IdString> contactPhones) {
-		super.setContactPhones(contactPhones);
-	}
-	
-
-	@Override
-	public Name.IdString getName() {
-		return super.getName();
-	}
-
-	@Override
-	public void setName(Name.IdString name) {
-		super.setName(name);
-	}
+	@Ignore 
+	private Set<R> grantedRoles;
 	
 	
 	/**
