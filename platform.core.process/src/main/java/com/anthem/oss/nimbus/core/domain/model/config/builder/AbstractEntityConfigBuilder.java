@@ -14,7 +14,6 @@ import java.util.Optional;
 import javax.validation.Constraint;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.AnnotatedElementUtils;
@@ -243,12 +242,11 @@ abstract public class AbstractEntityConfigBuilder {
 	}
 	
 	private <T, P> DefaultParamConfig<P> createParamCollectionElemMappedDetached(ModelConfig<T> mConfig, MappedParamConfig<P, ?> pConfig, ModelConfig<List<P>> colModelConfig, EntityConfigVistor visitedModels, Class<?> colElemClass, MapsTo.Path mapsToColParamPath) {
-		
 		return createParamCollectionElemMapped(pConfig, colModelConfig, visitedModels, colElemClass, mapsToColParamPath);
 	}
 	
+	
 	private <T, P> DefaultParamConfig<P> createParamCollectionElemMapped(MappedParamConfig<P, ?> pConfig, ModelConfig<List<P>> colModelConfig, EntityConfigVistor visitedModels, Class<?> colElemClass, MapsTo.Path mapsToColParamPath) {
-		
 		//ParamConfig<?> mapsToColParamConfig = findMappedParam(mapsToEnclosingModel, pConfig.getCode(), mapsToColParamPath);
 		ParamConfig<?> mapsToColParamConfig = pConfig.getMapsTo();
 		logit.debug(()->"[create.pColElem] [colParam is mapped] [elemClass same] [Attached] Found mapsToColParamConfig for "+pConfig.getCode()+" with mapsToPath of colParam: "+mapsToColParamPath+" -> "+mapsToColParamConfig);
@@ -419,13 +417,6 @@ abstract public class AbstractEntityConfigBuilder {
 		return mappedToParam;
 	}
 	
-	private MapsTo.Path defaultPath = determineDefaultPath();
-	
-	private MapsTo.Path determineDefaultPath() {
-		Field f = FieldUtils.getField(MapsTo.class, "DEFAULT_PATH");
-		MapsTo.Path mapsTo = AnnotationUtils.findAnnotation(f, MapsTo.Path.class);
-		return mapsTo;
-	}
 	
 	public static MapsTo.Path createNewImplicitMapping(String mappedPath, boolean linked, State state) {
 		return new MapsTo.Path() {
@@ -448,11 +439,6 @@ abstract public class AbstractEntityConfigBuilder {
 			@Override
 			public boolean linked() {
 				return linked;
-			}
-
-			@Override
-			public KeyValue[] kv() {
-				return null;
 			}
 			
 			@Override
