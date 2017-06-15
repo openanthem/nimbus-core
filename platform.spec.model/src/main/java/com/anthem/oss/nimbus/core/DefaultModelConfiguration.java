@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core.domain.model.config;
+package com.anthem.oss.nimbus.core;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +12,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.internal.IdParamConverter;
  */
 
 @Configuration
-public class DefaultModelConfig {
+public class DefaultModelConfiguration {
 
 	@Bean
 	public IdParamConverter idParamConverter(){

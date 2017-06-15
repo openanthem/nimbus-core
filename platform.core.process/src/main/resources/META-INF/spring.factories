@@ -1,7 +1,7 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.anthem.oss.nimbus.core.config.BPMEngineConfig,\
 com.anthem.oss.nimbus.core.config.DefaultCoreConfiguration,\
 com.anthem.oss.nimbus.core.config.HttpSessionConfig,\
-com.anthem.oss.nimbus.core.domain.model.config.DefaultModelConfig,\
+com.anthem.oss.nimbus.core.DefaultModelConfiguration,\
 com.anthem.oss.nimbus.core.config.WebSocketConfig,\
 com.anthem.oss.nimbus.core.config.WebSocketSecurityConfig,\
 com.anthem.oss.nimbus.core.config.WebConfig,\
