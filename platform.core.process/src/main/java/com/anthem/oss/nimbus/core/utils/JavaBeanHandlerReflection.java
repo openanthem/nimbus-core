@@ -18,11 +18,10 @@ public class JavaBeanHandlerReflection implements JavaBeanHandler {
 	@Override
 	public <T> T getValue(Method readMethod, Object target) {
 		try {
-			System.out.println("----target--- "+target+" method "+readMethod.getName());
 			return (target == null) ? null : (T)readMethod.invoke(target);
 		}
 		catch (Exception ex) {
-			throw new FrameworkRuntimeException("Failed to execute read on : "+readMethod, ex);
+			throw new FrameworkRuntimeException("Failed to execute read on : "+readMethod+" with target "+target, ex);
 		}
 	}
 	
