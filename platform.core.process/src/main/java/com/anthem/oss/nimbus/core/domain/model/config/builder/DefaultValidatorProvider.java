@@ -7,8 +7,6 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
-import org.springframework.stereotype.Component;
-
 import com.anthem.oss.nimbus.core.domain.model.config.ValidatorProvider;
 
 /**

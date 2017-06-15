@@ -1,7 +1,5 @@
 package com.anthem.nimbus.platform.core.process.mq;
 
-import org.springframework.stereotype.Component;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

@@ -115,7 +115,7 @@ public class TestClientFactory {
 			
 			DefaultAccessEntity app = cb.find(appCodes.get(i));
 			ClientAccessEntity cae = new ClientAccessEntity(app);
-			org.addSelectedAccess(cae);
+//			org.addSelectedAccess(cae);
 			addAccessAndPermissionRecursively(app, cae, i);
 		}
 	}

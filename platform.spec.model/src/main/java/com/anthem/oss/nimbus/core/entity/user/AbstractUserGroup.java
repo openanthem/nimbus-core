@@ -1,8 +1,5 @@
 package com.anthem.oss.nimbus.core.entity.user;
 
-import javax.validation.constraints.NotNull;
-
-import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 
 import lombok.Getter;

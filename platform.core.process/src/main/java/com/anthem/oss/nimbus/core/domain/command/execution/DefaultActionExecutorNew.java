@@ -18,7 +18,6 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
 import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
-import com.anthem.oss.nimbus.core.session.UserEndpointSession;
 
 /**
  * @author Soham Chakravarti

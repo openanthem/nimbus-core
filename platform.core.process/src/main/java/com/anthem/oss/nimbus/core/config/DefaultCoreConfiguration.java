@@ -19,15 +19,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.repo.IdSequenceRepository;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.MongoIdSequenceRepository;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.ParamStateRepository;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.ParamStateRepositoryGateway;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement.ClientEntityRepoService;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement.ClientEntityRepository;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement.ClientRepository;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement.ClientUserGroupRepoService;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement.ClientUserGroupRepository;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement.ClientUserRepoService;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement.ClientUserRepository;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement.ClientUserRoleRepository;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement.PlatformUserRepository;
+//import com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement.PlatformUserRepository;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.DefaultModelRepositoryFactory;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelPersistenceHandler;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository;
@@ -158,20 +150,20 @@ public class DefaultCoreConfiguration {
 		return new MongoIdSequenceRepository(mongoOperations);
 	}
 
-	@Bean(name="clientEntityRepo")
-	public ClientEntityRepoService clientEntityRepoService(ClientRepository cRepo, ClientEntityRepository ceRepo, ClientUserRoleRepository crRepo) {
-		return new ClientEntityRepoService(cRepo, ceRepo, crRepo);
-	}
+//	@Bean(name="clientEntityRepo")
+//	public ClientEntityRepoService clientEntityRepoService(ClientRepository cRepo, ClientEntityRepository ceRepo, ClientUserRoleRepository crRepo) {
+//		return new ClientEntityRepoService(cRepo, ceRepo, crRepo);
+//	}
 	
-	@Bean(name="clientuserrepo")
-	public ClientUserRepoService clientUserRepoService(ClientUserRepository cuRepo, ClientRepository cRepo, PlatformUserRepository puRepo) {
-		return new ClientUserRepoService(cuRepo, cRepo, puRepo);
-	}
+//	@Bean(name="clientuserrepo")
+//	public ClientUserRepoService clientUserRepoService(ClientUserRepository cuRepo, ClientRepository cRepo, PlatformUserRepository puRepo) {
+//		return new ClientUserRepoService(cuRepo, cRepo, puRepo);
+//	}
 	
-	@Bean(name="clientUserGroupRepo")
-	public ClientUserGroupRepoService clientUserGroupRepoService(ClientEntityRepository ceRepo, ClientUserGroupRepository cugRepo) {
-		return new ClientUserGroupRepoService(ceRepo, cugRepo);
-	}
+//	@Bean(name="clientUserGroupRepo")
+//	public ClientUserGroupRepoService clientUserGroupRepoService(ClientEntityRepository ceRepo, ClientUserGroupRepository cugRepo) {
+//		return new ClientUserGroupRepoService(ceRepo, cugRepo);
+//	}
 	
 	@Bean
 	@Scope(scopeName="session")

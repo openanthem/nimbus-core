@@ -17,10 +17,6 @@ import com.anthem.oss.nimbus.core.entity.client.user.ClientUser;
 public interface ClientUserRepoWebAPIClient extends ClientUserRepoAPI<ClientUser> {
 	
 	@Override
-	@RequestMapping(method = RequestMethod.GET, value = "/p/clientuser/{loginName}")
-	ClientUser getUser(@PathVariable("loginName") String loginName) throws EntityNotFoundException;
-	
-	@Override
 	@RequestMapping(method = RequestMethod.GET, value = "/p/client/user/search", params={"source","idsGuid"})
 	ClientUser getUsersByIDSSourceAndGuid(@RequestParam("source") String source, @RequestParam("idsGuid") String idsGuid);
 	

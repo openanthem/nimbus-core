@@ -34,8 +34,8 @@ public class TestClientUserFactory {
 		cu.setClient(c);
         cu.setLoginId("swetha");
        
-        c.addClientUserRole(createClientUserRole1());
-        c.addClientUserRole(createClientUserRole2());
+//        c.addClientUserRole(createClientUserRole1());
+//        c.addClientUserRole(createClientUserRole2());
        
         return cu;
 	}

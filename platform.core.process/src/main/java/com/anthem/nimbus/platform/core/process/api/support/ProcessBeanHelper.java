@@ -6,7 +6,6 @@ package com.anthem.nimbus.platform.core.process.api.support;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Component;
 
 /**
  * @author Jayant Chaudhuri

@@ -67,31 +67,31 @@ public class ClientEntity extends AbstractEntity.IdString {
 
 	@Ignore private ClientEntity parentEntity;
 	
-	@Ignore private Set<ClientAccessEntity> selectedAccesses;
+	//@Ignore private Set<ClientAccessEntity> selectedAccesses;
 	
 	private Address.IdString address;
 	
-	@Ignore private Set<ClientUserRole> associatedRoles;
+	//@Ignore private Set<ClientUserRole> associatedRoles;
 	
 	/**
 	 * 
 	 * @param cae
 	 */
-	public void addSelectedAccess(ClientAccessEntity cae) {
-		if(getSelectedAccesses() == null) {
-			setSelectedAccesses(new HashSet<>());
-		}
-		getSelectedAccesses().add(cae);
-	}
-	
-	/**
-	 * 
-	 */
-	public void addClientUserRole(ClientUserRole cr){
-		if(getAssociatedRoles() == null){
-			setAssociatedRoles(new HashSet<>());
-		}
-		getAssociatedRoles().add(cr);
-	}
+//	public void addSelectedAccess(ClientAccessEntity cae) {
+//		if(getSelectedAccesses() == null) {
+//			setSelectedAccesses(new HashSet<>());
+//		}
+//		getSelectedAccesses().add(cae);
+//	}
+//	
+//	/**
+//	 * 
+//	 */
+//	public void addClientUserRole(ClientUserRole cr){
+//		if(getAssociatedRoles() == null){
+//			setAssociatedRoles(new HashSet<>());
+//		}
+//		getAssociatedRoles().add(cr);
+//	}
 	
 }
