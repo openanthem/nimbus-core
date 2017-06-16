@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
+import com.anthem.oss.nimbus.core.InvalidArgumentException;
 import com.anthem.oss.nimbus.core.domain.command.Behavior;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
@@ -50,8 +51,18 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 	}
 
 	
+	protected void validateCommand(CommandMessage cmdMsg) {
+		if(cmdMsg==null || cmdMsg.getCommand()==null)
+			throw new InvalidArgumentException("Command must not be null for Gateway to process request");
+		
+		cmdMsg.getCommand().validate();
+	}
+	
 	@Override
 	public MultiOutput execute(CommandMessage cmdMsg) {
+		// validate
+		validateCommand(cmdMsg);
+		
 		final String inputCommandUri = cmdMsg.getCommand().getAbsoluteUri();
 		
 		// load execution context 

@@ -12,10 +12,12 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
+import com.anthem.oss.nimbus.core.domain.model.state.InvalidStateException;
 import com.anthem.oss.nimbus.core.util.CollectionsTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -44,8 +46,6 @@ public class Command implements Serializable {
 	
 	private String event;
 	
-	
-	
 	private List<Behavior> behaviors;
 	
 	private Map<String, String[]> requestParams;
@@ -59,6 +59,19 @@ public class Command implements Serializable {
 	
 	public CollectionsTemplate<List<Behavior>, Behavior> templateBehaviors() {
 		return templateBehaviors;
+	}
+
+	public void validate() throws InvalidStateException {
+		Optional.ofNullable(getAction())
+			.orElseThrow(()->new InvalidStateException("Command with uri: "+getAbsoluteUri()+" cannot have null Action"));
+		
+		if(CollectionUtils.isEmpty(getBehaviors()))
+			throw new InvalidStateException("Command with uri: "+getAbsoluteUri()+" cannot have null Behavior");
+		
+		getElement(Type.ClientAlias).orElseThrow(()->new InvalidStateException("Command with uri: "+getAbsoluteUri()+" cannot have null "+Type.ClientAlias));
+		getElement(Type.AppAlias).orElseThrow(()->new InvalidStateException("Command with uri: "+getAbsoluteUri()+" cannot have null "+Type.AppAlias));
+		getElement(Type.PlatformMarker).orElseThrow(()->new InvalidStateException("Command with uri: "+getAbsoluteUri()+" cannot have null "+Type.PlatformMarker));
+		getElement(Type.DomainAlias).orElseThrow(()->new InvalidStateException("Command with uri: "+getAbsoluteUri()+" cannot have null "+Type.DomainAlias));
 	}
 	
 	public boolean isRootDomainOnly() {
