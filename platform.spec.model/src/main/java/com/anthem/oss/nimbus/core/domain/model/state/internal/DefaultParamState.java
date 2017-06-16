@@ -377,8 +377,12 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 			return getContextModel().getAssociatedParam();
 
 		// value is only ".m" then return mapsTo if this is a mapped param
-		if(StringUtils.equals(singlePathSegment, Constants.SEPARATOR_MAPSTO.code) && isMapped()) 
-			return findIfMapped().getMapsTo();
+		if(StringUtils.equals(singlePathSegment, Constants.SEPARATOR_MAPSTO.code)) {
+			if(isMapped())
+				return findIfMapped().getMapsTo();
+			else if(getRootDomain().isMapped())
+				return getRootDomain().findIfMapped().getMapsTo().getAssociatedParam();
+		}
 		
 		if(getType().findIfNested()==null)
 			return null;
