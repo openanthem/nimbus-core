@@ -20,6 +20,8 @@ public abstract class AbstractUserGroup extends AbstractEntity.IdString {
 	
 	private String description;
 	
+	private boolean admin;
+	
 	//@NotNull
 	//@Model.Param.Values(url="staticCodeValue-/orgStatus")
 	private Status status;

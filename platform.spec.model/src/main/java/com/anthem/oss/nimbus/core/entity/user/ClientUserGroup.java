@@ -26,9 +26,9 @@ public class ClientUserGroup extends AbstractUserGroup {
 
 	private static final long serialVersionUID = 1L;
 	
-	private ClientEntity organization;
+	private String organizationId;
 	
 	private List<GroupUser> members;
 	
-	private List<String> memberUserIds;
+	private String[] memberUserIds;
 }
