@@ -44,6 +44,9 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 		if(StringUtils.startsWithIgnoreCase(pathToResolve, Constants.MARKER_SESSION_SELF.code))
 			return mapSelf(eCtx, commandParam, pathToResolve);
 		
+		if(StringUtils.startsWithIgnoreCase(pathToResolve, Constants.MARKER_COMMAND_PARAM_CURRENT_SELF.code))
+			return commandParam.getPath();
+		
 		return mapQuad(eCtx, commandParam, pathToResolve);
 	}
 	

@@ -110,7 +110,6 @@ public final class CommandExecution {
 			return template;
 		}
 		
-		@SuppressWarnings("unchecked")
 		@JsonIgnore
 		public Object getSingleResult() {
 			if(CollectionUtils.isEmpty(getOutputs())) return null;

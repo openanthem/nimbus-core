@@ -16,8 +16,8 @@ import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
  */
 public class ParamPathExpressionParser {
 
-	public static final String KEY_PREFIX = "{";
-	public static final String KEY_SUFFIX = "}";
+	public static final String KEY_PREFIX = "<!";
+	public static final String KEY_SUFFIX = "!>";
 	
 	public static Map<Integer, String> parse(String in) {
 		Map<Integer, String> entries = new LinkedHashMap<>();
@@ -34,9 +34,9 @@ public class ParamPathExpressionParser {
 		
 		int iEnd = StringUtils.indexOf(in, KEY_SUFFIX, iStart);
 		if(iEnd==StringUtils.INDEX_NOT_FOUND)
-			throw new InvalidConfigException("Found config url entry with starting '{' but no closing '}' in "+ in);
+			throw new InvalidConfigException("Found config url entry with starting '"+KEY_PREFIX+"' but no closing '"+KEY_SUFFIX+"' in "+ in);
 		
-		String key = StringUtils.substring(in, iStart, iEnd+1);
+		String key = StringUtils.substring(in, iStart, iEnd+KEY_SUFFIX.length());
 		entries.put(iStart, key);
 		
 		parse(in, iEnd, entries);
