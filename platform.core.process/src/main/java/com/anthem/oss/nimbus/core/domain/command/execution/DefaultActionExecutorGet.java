@@ -58,7 +58,7 @@ public class DefaultActionExecutorGet extends AbstractCommandExecutor<Param<?>> 
 //			repoDbFound = true;
 			
 		} else {
-			entity = instantiateEntity(rootDomainConfig);
+			entity = instantiateEntity(eCtx, rootDomainConfig);
 		}
 		
 		if(rootDomainConfig.isMapped()) {
@@ -70,7 +70,7 @@ public class DefaultActionExecutorGet extends AbstractCommandExecutor<Param<?>> 
 //				repoDbFound = true;
 				
 			} else {
-				mapsToEntity = instantiateEntity(mapsToConfig);
+				mapsToEntity = instantiateEntity(eCtx, mapsToConfig);
 			}
 		} else {
 			mapsToEntity = null;

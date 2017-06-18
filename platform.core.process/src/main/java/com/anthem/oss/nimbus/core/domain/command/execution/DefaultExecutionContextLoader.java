@@ -50,16 +50,16 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 	}
 	
 	@Override
-	public final ExecutionContext load(CommandMessage cmdMsg) {
-		ExecutionContext eCtx = new ExecutionContext(cmdMsg);
+	public final ExecutionContext load(Command rootDomainCmd) {
+		ExecutionContext eCtx = new ExecutionContext(rootDomainCmd);
 		
 		// _search: transient - just create shell 
-		if(isTransient(cmdMsg.getCommand())) {
-			QuadModel<?, ?> q = quadModelBuilder.build(cmdMsg.getCommand());
+		if(isTransient(rootDomainCmd)) {
+			QuadModel<?, ?> q = quadModelBuilder.build(rootDomainCmd);
 			eCtx.setQuadModel(q);
 			
 		} else // _new takes priority
-		if(cmdMsg.getCommand().getAction()==Action._new) {
+		if(rootDomainCmd.isRootDomainOnly() && rootDomainCmd.getAction()==Action._new) {
 			eCtx = loadEntity(eCtx, executorActionNew);
 			
 		} else // check if already exists in session

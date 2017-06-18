@@ -39,7 +39,7 @@ public final class MockHttpRequestBuilder {
 	}
 
 	public MockHttpRequestBuilder addNested(String nestedPath) {
-		String uri = httpReq.getRequestURI() + "/" + nestedPath;
+		String uri = httpReq.getRequestURI() + nestedPath;
 		httpReq.setRequestURI(uri);
 		
 		return this;

@@ -3,7 +3,7 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
-import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 
@@ -48,5 +48,5 @@ import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
  */
 public interface ExecutionContextLoader {
 
-	public ExecutionContext load(CommandMessage cmdMsg);
+	public ExecutionContext load(Command rootDomainCmd);
 }

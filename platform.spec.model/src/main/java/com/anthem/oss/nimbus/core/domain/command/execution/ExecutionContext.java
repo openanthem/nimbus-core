@@ -24,6 +24,10 @@ public class ExecutionContext {
 	
 	private QuadModel<?, ?> quadModel;
 	
+	public ExecutionContext(Command command) {
+		this(new CommandMessage(command, null));
+	}
+	
 	public ExecutionContext(CommandMessage commandMessage) {
 		this.commandMessage = commandMessage;
 	}

@@ -56,7 +56,11 @@ public abstract class AbstractCommandExecutor<R> extends BaseCommandExecutorStra
 		return getDomainConfigBuilder().getRootDomainOrThrowEx(eCtx.getCommandMessage().getCommand().getRootDomainAlias());
 	}
 	
-	protected <T> T instantiateEntity(ModelConfig<T> mConfig) {
+	protected <T> T instantiateEntity(ExecutionContext eCtx, ModelConfig<T> mConfig) {
+		/*
+		if(eCtx.getCommandMessage().hasPayload())
+			return converter.convert(mConfig.getReferredClass(), eCtx.getCommandMessage());
+		*/
 		Repo repo = mConfig.getRepo();
 		
 		return (repo!=null && repo.value()!=Repo.Database.rep_none) ? getRepositoryFactory().get(repo)._new(mConfig) : javaBeanHandler.instantiate(mConfig.getReferredClass());

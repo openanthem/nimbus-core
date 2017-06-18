@@ -18,6 +18,7 @@ import com.anthem.oss.nimbus.core.domain.command.Behavior;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Input;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
@@ -98,7 +99,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			Command configExecCmd = CommandBuilder.withUri(resolvedConfigUri).getCommand();
 			
 			// TODO decide on which commands should get the payload
-			CommandMessage configCmdMsg = isPayloadUsed ? new CommandMessage(configExecCmd, null) : new CommandMessage(configExecCmd, cmdMsg.getRawPayload());
+			CommandMessage configCmdMsg = new CommandMessage(configExecCmd, resolvePayload(cmdMsg, configExecCmd, isPayloadUsed));
 			
 			// execute & add output to mOutput
 			MultiOutput configOutput = execute(configCmdMsg);
@@ -107,6 +108,18 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		});	
 	}
 	
+	private String resolvePayload(CommandMessage cmdMsg, Command configExecCmd, boolean isPayloadUsed) {
+		String payload = null;
+		
+		if(!isPayloadUsed && cmdMsg.hasPayload())
+			payload = cmdMsg.getRawPayload();
+		else if(configExecCmd.getRequestParams()!=null && configExecCmd.getRequestParams().get("a")!=null) {
+			String a[] = configExecCmd.getRequestParams().get("a");
+			if(a!=null && a.length==1)
+				payload = a[0];
+		}
+		return payload;
+	}
 	
 	protected void executeSelf(ExecutionContext eCtx, Param<?> cmdParam, MultiOutput mOutput) {
 		final CommandMessage cmdMsg = eCtx.getCommandMessage();
@@ -129,8 +142,22 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		});
 	}
 
+	
 	protected ExecutionContext loadExecutionContext(CommandMessage cmdMsg) {
-		return loader.load(cmdMsg);
+		// create domain root if needed - for loading execution context
+		final Command domainRootCmd;
+		if(!cmdMsg.getCommand().isRootDomainOnly()) {
+			String domainRootUri = cmdMsg.getCommand().buildUri(Type.DomainAlias);
+			domainRootCmd = CommandBuilder.withUri(domainRootUri).getCommand();
+		} else {
+			domainRootCmd = cmdMsg.getCommand();
+		}
+		
+		ExecutionContext loaderCtx = loader.load(domainRootCmd);
+		
+		// create context for passed in command and payload
+		ExecutionContext eCtx = new ExecutionContext(cmdMsg, loaderCtx.getQuadModel());
+		return eCtx;
 	}
 	
 	protected CommandExecutor<?> lookupExecutor(Command cmd, Behavior b) {

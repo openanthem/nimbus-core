@@ -25,7 +25,7 @@ import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
  */
 public class DefaultActionExecutorNew extends AbstractCommandExecutor<Param<?>> {
 
-	BPMGateway bpmGateway;
+	private BPMGateway bpmGateway;
 	
 	public DefaultActionExecutorNew(BeanResolverStrategy beanResolver, BPMGateway bpmGateway) {
 		super(beanResolver);
@@ -92,9 +92,9 @@ public class DefaultActionExecutorNew extends AbstractCommandExecutor<Param<?>> 
 	
 	private QuadModel<?, ?> createNewQuad(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx) {
 		// create new entity instance for core & view
-		Object entity = instantiateEntity(rootDomainConfig);
+		Object entity = instantiateEntity(eCtx, rootDomainConfig);
 		
-		Object mapsToEntity = rootDomainConfig.isMapped() ? instantiateEntity(rootDomainConfig.findIfMapped().getMapsTo()) : null;
+		Object mapsToEntity = rootDomainConfig.isMapped() ? instantiateEntity(eCtx, rootDomainConfig.findIfMapped().getMapsTo()) : null;
 		
 		// create quad-model
 		ExecutionEntity<?, ?> e = ExecutionEntity.resolveAndInstantiate(entity, mapsToEntity);
