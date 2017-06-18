@@ -4,7 +4,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
-import com.anthem.oss.nimbus.core.bpm.BPMGateway;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutor;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandMessageConverter;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandPathVariableResolver;
@@ -55,8 +54,8 @@ public class DefaultCoreExecutorConfig {
 	}
 	
 	@Bean(name="default._new$execute")
-	public CommandExecutor<?> defaultActionExecutorNew(BeanResolverStrategy beanResolver,BPMGateway bpmGateway){
-		return new DefaultActionExecutorNew(beanResolver, bpmGateway);
+	public CommandExecutor<?> defaultActionExecutorNew(BeanResolverStrategy beanResolver){
+		return new DefaultActionExecutorNew(beanResolver);
 	}
 	
 	@Bean(name="default._get$execute")
@@ -71,8 +70,8 @@ public class DefaultCoreExecutorConfig {
 	}
 	
 	@Bean(name="default._process$execute")
-	public CommandExecutor<?> defaultActionExecutorProcess(BeanResolverStrategy beanResolver, BPMGateway bpmGateway){
-		return new DefaultActionExecutorProcess<>(beanResolver, bpmGateway);
+	public CommandExecutor<?> defaultActionExecutorProcess(BeanResolverStrategy beanResolver){
+		return new DefaultActionExecutorProcess<>(beanResolver);
 	}
 	
 	@Bean(name="default._search$execute")

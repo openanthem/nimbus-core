@@ -16,11 +16,11 @@ import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
  */
 public class DefaultActionExecutorProcess<T,R> extends AbstractFunctionCommandExecutor<T,R> {
 	
-	BPMGateway bpmGateway;
+	private BPMGateway bpmGateway;
 	
-	public DefaultActionExecutorProcess(BeanResolverStrategy beanResolver, BPMGateway bpmGateway) {
+	public DefaultActionExecutorProcess(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
-		this.bpmGateway = bpmGateway;
+		this.bpmGateway = beanResolver.get(BPMGateway.class);
 	}
 	
 	@Override

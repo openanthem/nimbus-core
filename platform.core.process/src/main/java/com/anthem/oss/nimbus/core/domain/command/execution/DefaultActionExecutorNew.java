@@ -23,13 +23,13 @@ import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
  * @author Soham Chakravarti
  *
  */
-public class DefaultActionExecutorNew extends AbstractCommandExecutor<Param<?>> {
+public class DefaultActionExecutorNew extends AbstractFunctionCommandExecutor<Object, Param<?>> {
 
 	private BPMGateway bpmGateway;
 	
-	public DefaultActionExecutorNew(BeanResolverStrategy beanResolver, BPMGateway bpmGateway) {
+	public DefaultActionExecutorNew(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
-		this.bpmGateway = bpmGateway;
+		this.bpmGateway = beanResolver.get(BPMGateway.class);
 	}
 	
 	/**

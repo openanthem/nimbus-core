@@ -17,8 +17,8 @@ import com.anthem.oss.nimbus.core.InvalidArgumentException;
 import com.anthem.oss.nimbus.core.domain.command.Behavior;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
-import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
+import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Input;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
@@ -113,11 +113,13 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		
 		if(!isPayloadUsed && cmdMsg.hasPayload())
 			payload = cmdMsg.getRawPayload();
+		/*
 		else if(configExecCmd.getRequestParams()!=null && configExecCmd.getRequestParams().get("a")!=null) {
 			String a[] = configExecCmd.getRequestParams().get("a");
 			if(a!=null && a.length==1)
 				payload = a[0];
 		}
+		*/
 		return payload;
 	}
 	
@@ -126,9 +128,6 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		final String inputCommandUri = cmdMsg.getCommand().getAbsoluteUri();
 		
 		// for-each behavior:
-		if(CollectionUtils.isEmpty(cmdMsg.getCommand().getBehaviors())) {
-			cmdMsg.getCommand().templateBehaviors().add(Behavior.$execute);
-		}
 		cmdMsg.getCommand().getBehaviors().stream().forEach(b->{
 			
 			// find command executor

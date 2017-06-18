@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -31,8 +32,10 @@ public class CommandBuilder {
 	
 	private JustLogit logit = new JustLogit(this.getClass());
 	
-	
 	public Command getCommand() {
+		if(CollectionUtils.isEmpty(cmd.getBehaviors())) 
+			cmd.templateBehaviors().add(Behavior.$execute);
+		
 		return cmd;
 	}
 	
