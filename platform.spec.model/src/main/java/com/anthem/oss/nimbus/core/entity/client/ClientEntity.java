@@ -4,8 +4,6 @@
 package com.anthem.oss.nimbus.core.entity.client;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 
@@ -13,8 +11,6 @@ import com.anthem.oss.nimbus.core.domain.definition.ConfigNature.Ignore;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
-import com.anthem.oss.nimbus.core.entity.client.access.ClientAccessEntity;
-import com.anthem.oss.nimbus.core.entity.client.access.ClientUserRole;
 import com.anthem.oss.nimbus.core.entity.person.Address;
 
 import lombok.Getter;

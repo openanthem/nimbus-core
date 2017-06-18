@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
-import com.anthem.oss.nimbus.core.session.UserEndpointSession;
 
 /**
  * STEPS to follow with examples. <br>
@@ -105,7 +104,6 @@ public class WebActionController {
 	public Object handleEventNotify(HttpServletRequest req, @RequestBody ModelEvent<String> event) {
 		Object obj = dispatcher.handle(req, RequestMethod.POST, event);
 		
-		//return dispatcher.handle(req, RequestMethod.POST, event);
 		Holder<Object> output = new Holder<>(obj);
 		return output;
 	}
@@ -117,19 +115,8 @@ public class WebActionController {
 	
 	
 	protected Object handleInternal(HttpServletRequest req, RequestMethod httpMethod, String v, String json) {
-		//return dispatcher.handle(req, httpMethod, v, json);
 		Object obj = dispatcher.handle(req, httpMethod, v, json);
 		Holder<Object> output = new Holder<>(obj);
 		return output;
 	}
-
-	@RequestMapping(value = "/hey", method = RequestMethod.GET)
-	public String hey (){
-		UserEndpointSession.clearSession();
-		return "hey";
-	}
-
-
-
-
 }

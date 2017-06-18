@@ -125,7 +125,18 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 		if(ArrayUtils.isEmpty(pathArr))
 			return null;
 
-		/* param is not leaf node */
+		/* param is not leaf node: is collection */
+		ParamType.NestedCollection<?> mpc = getType().findIfCollection();
+		if(mpc != null) {
+			// ensure that path configured contains {index} as first element for collection
+			if(!StringUtils.equals(Constants.MARKER_COLLECTION_ELEM_INDEX.code, pathArr[0])) {
+				return null;
+			}
+			
+			return mpc.getElementConfig().findParamByPath(ArrayUtils.remove(pathArr, 0));
+		}
+		
+		/* param is not leaf node: is nested */
 		ParamType.Nested<?> mp = getType().findIfNested();
 		if(mp != null) {
 			return mp.getModel().findParamByPath(pathArr);

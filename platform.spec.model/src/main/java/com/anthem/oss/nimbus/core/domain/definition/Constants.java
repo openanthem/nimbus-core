@@ -13,6 +13,8 @@ public enum Constants {
 	MARKER_URI_BEHAVIOR("b"),
 	MARKER_COLLECTION_ELEM_INDEX("{index}"),
 	
+	MARKER_SESSION_SELF("#self"),
+	
 	SEPARATOR_URI("/"),
 	
 	SEPARATOR_URI_PLATFORM(SEPARATOR_URI.code + MARKER_URI_PLATFORM.code),	/* /p */

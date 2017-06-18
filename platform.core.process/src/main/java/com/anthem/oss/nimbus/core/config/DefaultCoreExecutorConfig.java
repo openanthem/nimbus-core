@@ -7,6 +7,7 @@ import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.bpm.BPMGateway;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutor;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandMessageConverter;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandPathVariableResolver;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandTransactionInterceptor;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionBehaviorExecutorGetState;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutorDelete;
@@ -18,6 +19,7 @@ import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutor
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutorSearch;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutorUpdate;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultCommandExecutorGateway;
+import com.anthem.oss.nimbus.core.domain.command.execution.DefaultCommandPathVariableResolver;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultExecutionContextLoader;
 import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContextLoader;
 import com.anthem.oss.nimbus.core.domain.command.execution.HierarchyMatchBasedBeanFinder;
@@ -40,6 +42,11 @@ public class DefaultCoreExecutorConfig {
 	@Bean
 	public CommandTransactionInterceptor commandTransactionInterceptor(){
 		return new CommandTransactionInterceptor();
+	}
+	
+	@Bean
+	public CommandPathVariableResolver defaultCommandPathVariableResolver() {
+		return new DefaultCommandPathVariableResolver();
 	}
 	
 	@Bean

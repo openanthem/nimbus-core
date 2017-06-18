@@ -10,8 +10,6 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
@@ -25,7 +23,6 @@ import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Mult
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
 import com.anthem.oss.nimbus.core.domain.definition.Execution;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.utils.ParamPathExpressionParser;
 
 /**
  * @author Soham Chakravarti
@@ -36,6 +33,8 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 	
 	@SuppressWarnings("rawtypes")
 	private final Map<String, CommandExecutor> executors;
+	
+	private CommandPathVariableResolver pathVariableResolver;
 	
 	private ExecutionContextLoader loader;
 	
@@ -48,6 +47,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 	@PostConstruct
 	public void initDependencies() {
 		this.loader = getBeanResolver().get(ExecutionContextLoader.class);
+		this.pathVariableResolver = getBeanResolver().get(CommandPathVariableResolver.class);
 	}
 
 	
@@ -94,7 +94,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		execConfigs.stream().forEach(ec->{
 			String completeConfigUri = eCtx.getCommandMessage().getCommand().getRelativeUri(ec.url());
 			
-			String resolvedConfigUri = replaceVariables(cmdParam, completeConfigUri); 
+			String resolvedConfigUri = pathVariableResolver.resolve(eCtx, cmdParam, completeConfigUri); 
 			Command configExecCmd = CommandBuilder.withUri(resolvedConfigUri).getCommand();
 			
 			// TODO decide on which commands should get the payload
@@ -107,28 +107,6 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		});	
 	}
 	
-	
-
-	protected static String replaceVariables(Param<?> cmdParam, String in) {
-		Map<Integer, String> entries = ParamPathExpressionParser.parse(in);
-		if(MapUtils.isEmpty(entries))
-			return in;
-		
-		String out = in;
-		for(Integer i : entries.keySet()) {
-			String key = entries.get(i);
-			
-			// look for relative path to passed in param's parent model
-			String path = ParamPathExpressionParser.stripPrefixSuffix(key);
-			Param<?> p = cmdParam.getParentModel().findParamByPath(path);
-			
-			String val = String.valueOf(p.getState());
-			
-			out = StringUtils.replace(out, key, val, 1);
-		}
-		
-		return out;
-	}
 	
 	protected void executeSelf(ExecutionContext eCtx, Param<?> cmdParam, MultiOutput mOutput) {
 		final CommandMessage cmdMsg = eCtx.getCommandMessage();

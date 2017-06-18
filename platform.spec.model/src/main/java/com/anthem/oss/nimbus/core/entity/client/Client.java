@@ -6,9 +6,8 @@ package com.anthem.oss.nimbus.core.entity.client;
 import javax.validation.constraints.NotNull;
 
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
-import com.anthem.oss.nimbus.core.domain.definition.Model;
-import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
+import com.anthem.oss.nimbus.core.domain.definition.Repo;
 
 import lombok.Getter;
 import lombok.Setter;
