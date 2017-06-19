@@ -72,7 +72,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		MultiOutput mOutput = new MultiOutput(inputCommandUri, eCtx, cmdMsg.getCommand().getAction(), cmdMsg.getCommand().getBehaviors());
 		
 		// get execution config
-		Param<?> cmdParam = findParamByCommand(eCtx);
+		Param<?> cmdParam = findParamByCommandOrThrowEx(eCtx);
 		List<Execution.Config> execConfigs = cmdParam != null ? cmdParam.getConfig().getExecutionConfigs() : null;
 		
 		// if present, hand-off to each command within execution config
@@ -147,7 +147,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		final Command domainRootCmd;
 		if(!cmdMsg.getCommand().isRootDomainOnly()) {
 			String domainRootUri = cmdMsg.getCommand().buildUri(Type.DomainAlias);
-			domainRootCmd = CommandBuilder.withUri(domainRootUri).getCommand();
+			domainRootCmd = CommandBuilder.withUri(domainRootUri).stripRequestParams().getCommand();
 		} else {
 			domainRootCmd = cmdMsg.getCommand();
 		}

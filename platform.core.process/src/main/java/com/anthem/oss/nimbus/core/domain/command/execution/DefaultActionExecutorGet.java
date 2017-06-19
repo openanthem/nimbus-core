@@ -27,7 +27,7 @@ public class DefaultActionExecutorGet extends AbstractCommandExecutor<Param<?>> 
 	protected final Output<Param<?>> executeInternal(Input input) {
 		ExecutionContext eCtx = handleGetDomainRoot(input.getContext());
 	
-		Param<?> p = findParamByCommand(eCtx);
+		Param<?> p = findParamByCommandOrThrowEx(eCtx);
 		
 		return Output.instantiate(input, eCtx, p);
 	}

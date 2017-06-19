@@ -7,7 +7,6 @@ import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.bpm.BPMGateway;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Input;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
-import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 
 /**
@@ -28,11 +27,6 @@ public class DefaultActionExecutorProcess<T,R> extends AbstractFunctionCommandEx
 	protected Output<R> executeInternal(Input input) {
 		R response = containsFunctionHandler(input) ? (R)executeFunctionHanlder(input, FunctionHandler.class) : continueBusinessProcessExceution(input.getContext());
 		return Output.instantiate(input, input.getContext(), response);
-	}
-	
-	private boolean containsFunctionHandler(Input input){
-		String functionName = input.getContext().getCommandMessage().getCommand().getFirstParameterValue(Constants.KEY_FUNCTION.code);
-		return (functionName != null);
 	}
 	
 	@SuppressWarnings("unchecked")

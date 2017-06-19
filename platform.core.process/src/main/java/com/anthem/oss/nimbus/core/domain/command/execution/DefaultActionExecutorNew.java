@@ -45,13 +45,17 @@ public class DefaultActionExecutorNew extends AbstractFunctionCommandExecutor<Ob
 	protected final Output<Param<?>> executeInternal(Input input) {
 		ExecutionContext eCtx = handleNewDomainRoot(input.getContext());
 	
-		Param<Object> p = findParamByCommand(eCtx);
+		Param<Object> actionParam = findParamByCommandOrThrowEx(eCtx);
 		
-		setStateNew(input.getContext().getCommandMessage(), p);
+		final Param<?> outputParam;
+		if(containsFunctionHandler(input)) {
+			outputParam = executeFunctionHanlder(input, FunctionHandler.class);
+		} else { 
+			setStateNew(input.getContext().getCommandMessage(), actionParam);
+			outputParam = actionParam;
+		}
 		
-		startBusinessProcess(input.getContext());		
-		
-		return Output.instantiate(input, eCtx, p);
+		return Output.instantiate(input, eCtx, outputParam);
 	}
 
 	protected void setStateNew(CommandMessage cmdMsg, Param<Object> p) {
@@ -86,6 +90,9 @@ public class DefaultActionExecutorNew extends AbstractFunctionCommandExecutor<Ob
 		// update refId
 		String refId = String.valueOf(getRootDomainRefIdByRepoDatabase(rootDomainConfig, q));
 		eCtx.getCommandMessage().getCommand().getRootDomainElement().setRefId(refId);
+		
+		// hook up BPM
+		startBusinessProcess(eCtx);
 		
 		return eCtx;
 	}

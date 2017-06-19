@@ -14,15 +14,20 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
  * @author Jayant Chaudhuri
  *
  */
-abstract public class AbstractFunctionCommandExecutor<T,R> extends AbstractCommandExecutor<R> {
+public abstract class AbstractFunctionCommandExecutor<T,R> extends AbstractCommandExecutor<R> {
 
 	public AbstractFunctionCommandExecutor(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
 	}
 	
-	protected <H extends FunctionHandler<T,R>> R executeFunctionHanlder(Input input,Class<H> handlerClass) {
+	protected boolean containsFunctionHandler(Input input){
+		String functionName = input.getContext().getCommandMessage().getCommand().getFirstParameterValue(Constants.KEY_FUNCTION.code);
+		return (functionName != null);
+	}
+	
+	protected <H extends FunctionHandler<T, R>> R executeFunctionHanlder(Input input, Class<H> handlerClass) {
 		ExecutionContext eCtx = input.getContext();
-		Param<T> actionParameter = findParamByCommand(eCtx);
+		Param<T> actionParameter = findParamByCommandOrThrowEx(eCtx);
 		H processHandler = getHandler(input.getContext().getCommandMessage(), handlerClass);
 		return processHandler.execute(eCtx, actionParameter);
 	}	

@@ -50,6 +50,11 @@ public class CommandBuilder {
 		return cb;
 	}
 	
+	public CommandBuilder stripRequestParams() {
+		cmd.setRequestParams(null);
+		return this;
+	}
+	
 	/**
 	 * 
 	 * @param absoluteUri

@@ -10,6 +10,7 @@ import com.anthem.oss.nimbus.core.bpm.DefaultExpressionHelper;
 import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiBPMGateway;
 import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiExpressionManager;
 import com.anthem.oss.nimbus.core.domain.command.execution.FunctionHandler;
+import com.anthem.oss.nimbus.core.domain.command.execution.nav.DefaultActionNewInitEntityFunctionHandler;
 import com.anthem.oss.nimbus.core.domain.command.execution.nav.PageIdEchoNavHandler;
 import com.anthem.oss.nimbus.core.domain.command.execution.process.AddFunctionHandler;
 import com.anthem.oss.nimbus.core.domain.command.execution.process.EvalFunctionHandler;
@@ -22,7 +23,6 @@ import com.anthem.oss.nimbus.core.domain.command.execution.search.DefaultSearchF
  * @author Sandeep Mantha
  *
  */
-
 @Configuration 
 public class DefaultProcessConfig {
 	
@@ -40,6 +40,11 @@ public class DefaultProcessConfig {
 	public BPMGateway bpmGateway(){
 		return new ActivitiBPMGateway();
 	}		
+	
+	@Bean(name="default._new$execute?fn=_initEntity")
+	public FunctionHandler<?, ?> defaultActionNewInitFunctionHandler(BeanResolverStrategy beanResolver){
+		return new DefaultActionNewInitEntityFunctionHandler<>(beanResolver);
+	}
 	
 	@Bean(name="default._nav$execute?fn=default")
 	public PageIdEchoNavHandler<?> pageIdEchoNavHandler(){
