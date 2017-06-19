@@ -208,7 +208,7 @@ public class ViewConfig {
 	public @interface Button {	
 		String alias() default "Button";
 		String url() default "";
-		String b() default "$executeAnd$nav";
+		String b() default "$execute";
 		String method() default "GET";
 		String imgSrc() default "";
 		String type() default "button";
