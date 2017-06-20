@@ -4,7 +4,7 @@
 
 	<groupId>com.anthem.oss.nimbus.core</groupId>
 	<artifactId>com.anthem.oss.nimbus.core.dependencies</artifactId>
-	<version>1.0.0.M3</version>
+	<version>1.0.0.M3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>nimbus-core-dependencies</name>
 	<description>Nimbus Core Bill of materials</description>
