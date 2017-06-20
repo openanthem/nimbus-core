@@ -3,6 +3,7 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution.process;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.anthem.oss.nimbus.core.domain.command.Command;
@@ -33,8 +34,17 @@ abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements Functi
 	
 	abstract public R assign(ExecutionContext executionContext, Param<T> actionParameter,Param<S> targetParameter, S state);
 
+	//TODO - need to revisit the design of how to pass the where clause in a url. In the below example the _search where clause is being truncated as we are looking at only the url query parameter
+	//Ex - /pageOrgUserGroupList/tileUserGroups/sectionUserGroups/userGroupList.m/_process?fn=_set&url=/p/clientusergroup/_search?fn=query&where=clientusergroup.organizationId.eq('<!/.m/id!>')
 	protected String getUrl(CommandMessage commandMessage){
-		return commandMessage.getCommand().getRequestParams().get("url")[0];
+		String url = commandMessage.getCommand().getFirstParameterValue("url");
+		//Temporarily added the below code. Need to revisit.
+		String where = commandMessage.getCommand().getFirstParameterValue("where");
+		if(StringUtils.isNotBlank(where)) {
+			return url+"&where="+where;
+		} else {
+			return url;
+		}
 	}
 	
 	protected CommandMessage buildCommand(CommandMessage commandMessage){
