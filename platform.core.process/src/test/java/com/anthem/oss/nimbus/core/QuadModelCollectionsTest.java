@@ -990,6 +990,29 @@ public class QuadModelCollectionsTest {
 		}
 	}
 	
+	@Test
+	public void tv21_colMappedAttrib_attached_v2c_set_conversion() {
+		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		
+		ListParam<String> vp_nestedService = q.getRoot().findParamByPath("/view_umcase/pg3/attachedNestedColAttribServices").findIfCollection();
+		assertNotNull(vp_nestedService);
+		
+		ListParam<ServiceLine> cp_ServiceLines = q.getCore().findParamByPath("/serviceLines").findIfCollection();
+		assertNotNull(cp_ServiceLines);
+		
+		assertSame(0, vp_nestedService.size());
+		assertSame(0, cp_ServiceLines.size());
+		
+		String service = "some new service";
+		vp_nestedService.add(service);
+		
+		assertSame(1, vp_nestedService.size());
+		assertSame(1, cp_ServiceLines.size());
+		
+		assertSame(service, vp_nestedService.getState(0));
+		assertSame(service, cp_ServiceLines.getState(0).getService());
+	}
+	
 	@After
 	public void after() {
 		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());

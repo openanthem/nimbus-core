@@ -228,7 +228,7 @@ abstract public class AbstractEntityConfigBuilder {
 		private List<E> detachedParam;
 	}
 
-	private <T, P> DefaultParamConfig<P> createParamCollectionElemMappedAttached(ModelConfig<T> mConfig, MappedParamConfig<P, ?> pConfig, ModelConfig<List<P>> colModelConfig, EntityConfigVistor visitedModels, Class<?> colElemClass, MapsTo.Path mapsToColParamPath) {
+	private <T, P> ParamConfig<P> createParamCollectionElemMappedAttached(ModelConfig<T> mConfig, MappedParamConfig<P, ?> pConfig, ModelConfig<List<P>> colModelConfig, EntityConfigVistor visitedModels, Class<?> colElemClass, MapsTo.Path mapsToColParamPath) {
 		// colParam is mapped as Attached, but parent enclosing Model is un-mapped :- throw Ex
 		if(!mConfig.isMapped()) { 	
 			throw new InvalidConfigException("Param: "+pConfig.getCode()+" has @MapsTo.Path "+mapsToColParamPath+" with resolved mode: "+MapsTo.Mode.MappedAttached
@@ -241,35 +241,47 @@ abstract public class AbstractEntityConfigBuilder {
 		return createParamCollectionElemMapped(/*mapsToEnclosingModel, */pConfig, colModelConfig, visitedModels, colElemClass, mapsToColParamPath);
 	}
 	
-	private <T, P> DefaultParamConfig<P> createParamCollectionElemMappedDetached(ModelConfig<T> mConfig, MappedParamConfig<P, ?> pConfig, ModelConfig<List<P>> colModelConfig, EntityConfigVistor visitedModels, Class<?> colElemClass, MapsTo.Path mapsToColParamPath) {
+	private <T, P> ParamConfig<P> createParamCollectionElemMappedDetached(ModelConfig<T> mConfig, MappedParamConfig<P, ?> pConfig, ModelConfig<List<P>> colModelConfig, EntityConfigVistor visitedModels, Class<?> colElemClass, MapsTo.Path mapsToColParamPath) {
 		return createParamCollectionElemMapped(pConfig, colModelConfig, visitedModels, colElemClass, mapsToColParamPath);
 	}
 	
 	
-	private <T, P> DefaultParamConfig<P> createParamCollectionElemMapped(MappedParamConfig<P, ?> pConfig, ModelConfig<List<P>> colModelConfig, EntityConfigVistor visitedModels, Class<?> colElemClass, MapsTo.Path mapsToColParamPath) {
+	private <T, P> ParamConfig<P> createParamCollectionElemMapped(MappedParamConfig<P, ?> pConfig, ModelConfig<List<P>> colModelConfig, EntityConfigVistor visitedModels, Class<?> colElemClass, MapsTo.Path mapsToColParamPath) {
 		//ParamConfig<?> mapsToColParamConfig = findMappedParam(mapsToEnclosingModel, pConfig.getCode(), mapsToColParamPath);
 		ParamConfig<?> mapsToColParamConfig = pConfig.getMapsTo();
 		logit.debug(()->"[create.pColElem] [colParam is mapped] [elemClass same] [Attached] Found mapsToColParamConfig for "+pConfig.getCode()+" with mapsToPath of colParam: "+mapsToColParamPath+" -> "+mapsToColParamConfig);
 		
 		@SuppressWarnings("unchecked")
-		DefaultParamConfig<P> mapsToColElemParamConfig = (DefaultParamConfig<P>)mapsToColParamConfig.getType().findIfCollection().getElementConfig();
+		ParamConfig<P> mapsToColElemParamConfig = (ParamConfig<P>)mapsToColParamConfig.getType().findIfCollection().getElementConfig();
 
 		
 		// colParam is mapped: colElemModel is NOT explicitly mapped BUT colElemClass is NOT SAME as mappedElemClass :- throw Ex
 		if(colElemClass!=mapsToColElemParamConfig.getReferredClass()) {
-			MapsTo.Type mapsToElemModel = AnnotationUtils.findAnnotation(colElemClass, MapsTo.Type.class);
 			
-			if(mapsToElemModel==null)
-				throw new InvalidConfigException("Mapped Elem Class is not same as MapsTo Elem Class. Must be same or an explicit MapsTo.Model mapping is required. "
-						//+ " For EnclosingModel: "+mapsToEnclosingModel.getReferredClass()
-						+" param: "+pConfig.getCode()
-						+ " Expected elemClass: "+colElemClass+" but found mapsToElemClass: "+mapsToColParamPath.getClass());
+			// handle {index} scenario in MapsTo.Path
+			//if(StringUtils.contains(mapsToColParamPath.value(), Constants.MARKER_COLLECTION_ELEM_INDEX.code)) {
+			if(MapsTo.hasCollectionPath(mapsToColParamPath)) {
+				String colElemPathAfterIndexMarker = mapsToColParamPath.colElemPath();//StringUtils.substringAfter(mapsToColParamPath.value(), Constants.MARKER_COLLECTION_ELEM_INDEX.code);
+				ParamConfig<P> mapsToNestedColElemParamConfig = mapsToColElemParamConfig.findParamByPath(colElemPathAfterIndexMarker);
+				
+				return createParamCollectionElementInternal(colModelConfig, mapsToNestedColElemParamConfig, mapsToColParamPath, visitedModels, pConfig.getCode());
+				
+			} else {
+			
+				MapsTo.Type mapsToElemModel = AnnotationUtils.findAnnotation(colElemClass, MapsTo.Type.class);
+				
+				if(mapsToElemModel==null)
+					throw new InvalidConfigException("Mapped Elem Class is not same as MapsTo Elem Class. Must be same or an explicit MapsTo.Model mapping is required. "
+							//+ " For EnclosingModel: "+mapsToEnclosingModel.getReferredClass()
+							+" param: "+pConfig.getCode()
+							+ " Expected elemClass: "+colElemClass+" but found mapsToElemClass: "+mapsToColElemParamConfig.getReferredClass());
+			}
 		}
 		
 		return createParamCollectionElementInternal(colModelConfig, mapsToColElemParamConfig, mapsToColParamPath, visitedModels, pConfig.getCode());
 	}
 	
-	public <T, P> DefaultParamConfig<P> createParamCollectionElement(ModelConfig<T> mConfig, ParamConfig<P> pConfig, ModelConfig<List<P>> colModelConfig, EntityConfigVistor visitedModels, Class<?> colElemClass) {
+	public <T, P> ParamConfig<P> createParamCollectionElement(ModelConfig<T> mConfig, ParamConfig<P> pConfig, ModelConfig<List<P>> colModelConfig, EntityConfigVistor visitedModels, Class<?> colElemClass) {
 		logit.trace(()->"[create.pColElem] starting to process colElemClass: "+colElemClass+" with pConfig :"+pConfig.getCode());
 		
 		MapsTo.Path mapsToColParamPath = pConfig.isMapped() ? pConfig.findIfMapped().getPath() : null;
@@ -280,17 +292,17 @@ abstract public class AbstractEntityConfigBuilder {
 		logit.debug(()->"[create.pColElem] colParamCode: "+pConfig.getCode());
 		
 		if(mapsToColParamMode==MapsTo.Mode.UnMapped) { 
-			DefaultParamConfig<P> pCoreElemConfig = createParamCollectionElementInternal(colModelConfig, null, null, visitedModels, pConfig.getCode());
+			ParamConfig<P> pCoreElemConfig = createParamCollectionElementInternal(colModelConfig, null, null, visitedModels, pConfig.getCode());
 		
 			logit.trace(()->"[create.pColElem] [colParam is UnMapped] returning core pColElem Config as colElem is UnMapped.");
 			return pCoreElemConfig;
 			
 		} else if(mapsToColParamMode==MapsTo.Mode.MappedAttached) {
-			DefaultParamConfig<P> pMappedAttachedElemConfig = createParamCollectionElemMappedAttached(mConfig, pConfig.findIfMapped(), colModelConfig, visitedModels, colElemClass, mapsToColParamPath);
+			ParamConfig<P> pMappedAttachedElemConfig = createParamCollectionElemMappedAttached(mConfig, pConfig.findIfMapped(), colModelConfig, visitedModels, colElemClass, mapsToColParamPath);
 			return pMappedAttachedElemConfig;
 			
 		} else if(mapsToColParamMode==MapsTo.Mode.MappedDetached) {
-			DefaultParamConfig<P> pMappedDetachedElemConfig = createParamCollectionElemMappedDetached(mConfig, pConfig.findIfMapped(), colModelConfig, visitedModels, colElemClass, mapsToColParamPath);
+			ParamConfig<P> pMappedDetachedElemConfig = createParamCollectionElemMappedDetached(mConfig, pConfig.findIfMapped(), colModelConfig, visitedModels, colElemClass, mapsToColParamPath);
 			return pMappedDetachedElemConfig;
 			
 		} else {
@@ -299,10 +311,10 @@ abstract public class AbstractEntityConfigBuilder {
 		}
 	}
 	
-	private <P> DefaultParamConfig<P> createParamCollectionElementInternal(ModelConfig<List<P>> colModelConfig, DefaultParamConfig<P> mapsToColElemParamConfig, MapsTo.Path mapsToColParamPath, EntityConfigVistor visitedModels, String colParamCode) {
+	private <P> ParamConfig<P> createParamCollectionElementInternal(ModelConfig<List<P>> colModelConfig, ParamConfig<P> mapsToColElemParamConfig, MapsTo.Path mapsToColParamPath, EntityConfigVistor visitedModels, String colParamCode) {
 		final String collectionElemPath = createCollectionElementPath(colParamCode);
 		
-		final DefaultParamConfig<P> created;
+		final ParamConfig<P> created;
 		if(colModelConfig.isMapped()) {
 			final MapsTo.Path mapsToColElemParamPathAnnotation = mapsToColParamPath==null ? null : createNewImplicitMapping(collectionElemPath, mapsToColParamPath.linked(), mapsToColParamPath.state());
 			
@@ -417,8 +429,11 @@ abstract public class AbstractEntityConfigBuilder {
 		return mappedToParam;
 	}
 	
-	
 	public static MapsTo.Path createNewImplicitMapping(String mappedPath, boolean linked, State state) {
+		return createNewImplicitMapping(mappedPath, linked, state, "");
+	}
+	
+	public static MapsTo.Path createNewImplicitMapping(String mappedPath, boolean linked, State state, String colElemPath) {
 		return new MapsTo.Path() {
 			
 			@Override
@@ -439,6 +454,11 @@ abstract public class AbstractEntityConfigBuilder {
 			@Override
 			public boolean linked() {
 				return linked;
+			}
+			
+			@Override
+			public String colElemPath() {
+				return colElemPath;
 			}
 			
 			@Override

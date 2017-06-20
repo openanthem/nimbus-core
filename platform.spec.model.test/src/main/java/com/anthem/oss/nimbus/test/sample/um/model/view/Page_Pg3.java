@@ -65,7 +65,7 @@ public class Page_Pg3 {
 	@Path(linked=false) private List<Section_ServiceLine> viewDetachedServiceLinesConverted;
 
 	// collection mapping 6: ATTACHED: List of primitive mapping to one param inside List elem of CoreModel
-	@Path("/serviceLines/{index}/service") List<String> attachedNestedColAttribServices;
+	//@Path(value="/serviceLines", colElemPath="/service") List<String> attachedNestedColAttribServices;
 	
 	// collection mapping 7: DETACHED: List of primitive mapping to one param inside List elem of CoreModel
 	//@Path(value="/serviceLines/{index}/service", linked=false) List<String> detachedNestedAttribServices;

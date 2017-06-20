@@ -133,7 +133,7 @@ public class EntityConfigBuilder extends AbstractEntityConfigBuilder {
 			colModelType.setModel(colModelConfig);
 			 
 			//create collection element param config
-			DefaultParamConfig<P> colElemParamConfig = createParamCollectionElement(mConfig, /*mapsToPath, */pConfig, colModelConfig, visitedModels, pDirectOrColElemType);
+			DefaultParamConfig<P> colElemParamConfig = (DefaultParamConfig<P>)createParamCollectionElement(mConfig, /*mapsToPath, */pConfig, colModelConfig, visitedModels, pDirectOrColElemType);
 			colModelType.setElementConfig(colElemParamConfig);
 
 			//create collection element type (and element model config)

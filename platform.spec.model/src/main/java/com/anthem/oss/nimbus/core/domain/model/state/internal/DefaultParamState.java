@@ -405,8 +405,9 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	public Param<?> findParamByPathInSelf(String singlePathSegment) {
 		// blank or null returns self
-		if(StringUtils.trimToNull(singlePathSegment)==null ||  // path = null or empty 
-				Constants.SEPARATOR_URI.code.equals(StringUtils.trimToNull(singlePathSegment))) //  path = '/'
+		if(StringUtils.trimToNull(singlePathSegment)==null   // path = null or empty 
+				|| Constants.SEPARATOR_URI.code.equals(StringUtils.trimToNull(singlePathSegment))  //  path = '/'
+					)//|| StringUtils.contains(singlePathSegment, Constants.MARKER_COLLECTION_ELEM_INDEX.code)) // path = .../colModel/{index}/attrib
 			return this;
 		
 //		// value is only ".m" then return mapsTo if this is a mapped param

@@ -9,6 +9,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * @author Soham Chakravarti
  *
@@ -57,13 +59,21 @@ public class MapsTo {
 		boolean linked() default true;
 		
 		State state() default State.Internal;
+		
+		String colElemPath() default DEFAULT_COL_ELEM_PATH;
+
 	}
 	
 	public static Mode getMode(Path path) {
 		if(path==null) return Mode.UnMapped;
+		
 		return path.linked() ? Mode.MappedAttached : Mode.MappedDetached;
 	}
 	
-	public static final String DETACHED_SIMULATED_FIELD_NAME = "detachedParam";
+	public static boolean hasCollectionPath(Path path) {
+		return StringUtils.trimToNull(path.colElemPath())!=null;
+	}
 	
+	public static final String DETACHED_SIMULATED_FIELD_NAME = "detachedParam";
+	public static final String DEFAULT_COL_ELEM_PATH = "";
 }
