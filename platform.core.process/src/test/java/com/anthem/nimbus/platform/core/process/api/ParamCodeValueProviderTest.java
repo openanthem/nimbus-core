@@ -30,6 +30,7 @@ import com.anthem.oss.nimbus.core.domain.command.execution.FunctionHandler;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
 import com.anthem.oss.nimbus.core.entity.StaticCodeValue;
 import com.anthem.oss.nimbus.core.entity.client.Client;
+import com.anthem.oss.nimbus.core.entity.client.ClientEntity;
 import com.anthem.oss.nimbus.core.entity.client.access.ClientUserRole;
 import com.anthem.oss.nimbus.core.entity.client.access.QClientUserRole;
 import com.anthem.oss.nimbus.core.entity.queue.MGroupMember;
@@ -242,88 +243,73 @@ public class ParamCodeValueProviderTest extends AbstractUnitTest {
 	}
 	
 	@Test
-	@SuppressWarnings("rawtypes")
-	public void tc9_orderby_asc() {
-		ClientUserRole clientUserRole = new ClientUserRole();
-		clientUserRole.setName("sandeep");
-		clientUserRole.setDescription("desc1");;
-		mongoOps.insert(clientUserRole);
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public void tc9_orderby_desc() {
+inserClientUserRole();
 		
-		ClientUserRole clientUserRole2 = new ClientUserRole();
-		clientUserRole2.setName("mantha");
-		clientUserRole2.setDescription("desc2");;
-		mongoOps.insert(clientUserRole2);
-		
-		ClientUserRole clientUserRole3 = new ClientUserRole();
-		clientUserRole3.setName("rakesh");
-		clientUserRole3.setDescription("esc2");;
-		mongoOps.insert(clientUserRole3);
-		
-		ClientUserRole clientUserRole4 = new ClientUserRole();
-		clientUserRole4.setName("jayant");
-		clientUserRole4.setDescription("dsc2");;
-		mongoOps.insert(clientUserRole4);
-		
-		final String whereClause = "qClientUserRole.description.startsWith('d')";
-		final String orderByClause = "qClientUserRole.name.asc()";
-		final Binding binding = new Binding();
-		QClientUserRole qClientUserRole = new QClientUserRole("a");
-        binding.setProperty("qClientUserRole", qClientUserRole);
+		CommandMessage cmdMsg = build("Anthem/fep/p/userrole/_search?fn=query&where=userrole.status.eq('Active')&orderby=userrole.name.desc()");
 
-        final GroovyShell shell = new GroovyShell(binding); 
-        Predicate predicate = (Predicate)shell.evaluate(whereClause);
-		OrderSpecifier orderBy = (OrderSpecifier)shell.evaluate(orderByClause); 
-        assertNotNull("Not Null", predicate);
-        SpringDataMongodbQuery<ClientUserRole> query = new SpringDataMongodbQuery<>(mongoOps, ClientUserRole.class);
-		List<ClientUserRole> list = query.where(predicate).orderBy(orderBy).fetch();
-		assertEquals(list.get(0).getName(), "jayant");
-		assertEquals(list.get(1).getName(), "mantha");
-		assertEquals(list.get(2).getName(), "sandeep");
+		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
+		List<Output<?>> ops  = multiOp.getOutputs();
+		
+		assertNotNull(ops);
+		
+		List<ClientUserRole> values = (List<ClientUserRole>)ops.get(0).getValue();
+		
+		assertNotNull(values);
+		assertEquals((values.get(0)).getName(), "sandeep");
+		assertEquals(values.get(1).getName(), "mantha");
+		assertEquals(values.get(2).getName(), "jayant");
 		
 	}
 	
 	@Test
-	@SuppressWarnings("rawtypes")
-	public void tc10_orderby_desc() {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public void tc10_orderby_asc() {
+		inserClientUserRole();
+		
+		CommandMessage cmdMsg = build("Anthem/fep/p/userrole/_search?fn=query&where=userrole.status.eq('Active')&orderby=userrole.name.asc()");
+
+		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
+		List<Output<?>> ops  = multiOp.getOutputs();
+		
+		assertNotNull(ops);
+		
+		List<ClientUserRole> values = (List<ClientUserRole>)ops.get(0).getValue();
+		
+		assertNotNull(values);
+		assertEquals((values.get(0)).getName(), "jayant");
+		assertEquals(values.get(1).getName(), "mantha");
+		assertEquals(values.get(2).getName(), "sandeep");
+	}
+	
+	private void inserClientUserRole() {
+		mongoOps.dropCollection("userrole");
+		
 		ClientUserRole clientUserRole = new ClientUserRole();
 		clientUserRole.setName("sandeep");
+		clientUserRole.setStatus("Active");
 		clientUserRole.setDescription("desc1");;
-		mongoOps.insert(clientUserRole);
+		mongoOps.insert(clientUserRole,"userrole");
 		
 		ClientUserRole clientUserRole2 = new ClientUserRole();
 		clientUserRole2.setName("mantha");
+		clientUserRole2.setStatus("Active");
 		clientUserRole2.setDescription("desc2");;
-		mongoOps.insert(clientUserRole2);
+		mongoOps.insert(clientUserRole2,"userrole");
 		
 		ClientUserRole clientUserRole3 = new ClientUserRole();
 		clientUserRole3.setName("rakesh");
+		clientUserRole3.setStatus("InActive");
 		clientUserRole3.setDescription("esc2");;
-		mongoOps.insert(clientUserRole3);
+		mongoOps.insert(clientUserRole3,"userrole");
 		
 		ClientUserRole clientUserRole4 = new ClientUserRole();
 		clientUserRole4.setName("jayant");
+		clientUserRole4.setStatus("Active");
 		clientUserRole4.setDescription("dsc2");;
-		mongoOps.insert(clientUserRole4);
-		
-		final String whereClause = "qClientUserRole.description.startsWith('d')";
-		final String orderByClause = "qClientUserRole.name.desc()";
-		final Binding binding = new Binding();
-		QClientUserRole qClientUserRole = new QClientUserRole("a");
-        binding.setProperty("qClientUserRole", qClientUserRole);
-
-        final GroovyShell shell = new GroovyShell(binding); 
-        Predicate predicate = (Predicate)shell.evaluate(whereClause); 
-		OrderSpecifier orderBy = (OrderSpecifier)shell.evaluate(orderByClause); 
-        assertNotNull("Not Null", predicate);
-        SpringDataMongodbQuery<ClientUserRole> query = new SpringDataMongodbQuery<>(mongoOps, ClientUserRole.class);
-		List<ClientUserRole> list = query.where(predicate).orderBy(orderBy).fetch();
-		assertEquals(list.get(0).getName(), "sandeep");
-		assertEquals(list.get(1).getName(), "mantha");
-		assertEquals(list.get(2).getName(), "jayant");
-		
+		mongoOps.insert(clientUserRole4,"userrole");
 	}
-	
-	
 	private void insertUserAndQueue() {
 		mongoOps.dropCollection("user");
 		mongoOps.dropCollection("queue");
