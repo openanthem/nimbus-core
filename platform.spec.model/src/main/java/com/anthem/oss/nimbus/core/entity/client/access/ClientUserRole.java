@@ -10,6 +10,8 @@ import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
 import com.anthem.oss.nimbus.core.entity.access.Permission;
 import com.anthem.oss.nimbus.core.entity.access.Role;
+import com.anthem.oss.nimbus.core.entity.user.AbstractUserGroup.Status;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -30,9 +32,19 @@ public class ClientUserRole extends Role<ClientUserRole.Entry, ClientAccessEntit
     private Set<ClientUserRole.Entry> entries;
     //TODO figure out if this can stay as just id or needs to be converted to object reference
     private String clientId;
-    private String status;
-    private String roleType; // standard/customized
-    private String displayName;
+    
+    private Status status;	
+	public enum Status {
+		ACTIVE,
+		INACTIVE
+	}
+    private RoleType roleType; 
+    
+    public enum RoleType {
+		STANDARD,
+		CUSTOMIZED
+	}
+    
     private String roleCategory;
 
 	@Setter @Getter
