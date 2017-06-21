@@ -39,6 +39,8 @@ public class DefaultSearchFunctionHandlerQuery<T, R> extends DefaultSearchFuncti
 		
 		querySearchCriteria.setWhere(executionContext.getCommandMessage().getCommand().getFirstParameterValue("where"));
 		
+		querySearchCriteria.setOrderby(executionContext.getCommandMessage().getCommand().getFirstParameterValue("orderby"));
+		
 		String aggregateAs = cmd.getFirstParameterValue("aggregate");
 		querySearchCriteria.setAggregateCriteria(aggregateAs);
 		

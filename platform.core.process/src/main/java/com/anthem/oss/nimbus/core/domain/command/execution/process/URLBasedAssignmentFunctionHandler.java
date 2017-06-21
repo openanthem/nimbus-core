@@ -40,11 +40,14 @@ abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements Functi
 		String url = commandMessage.getCommand().getFirstParameterValue("url");
 		//Temporarily added the below code. Need to revisit.
 		String where = commandMessage.getCommand().getFirstParameterValue("where");
+		String orderby = commandMessage.getCommand().getFirstParameterValue("orderby");
 		if(StringUtils.isNotBlank(where)) {
-			return url+"&where="+where;
-		} else {
-			return url;
+			url = url+"&where="+where;
 		}
+		if(StringUtils.isNotBlank(orderby)) {
+			url =  url+"&orderby="+orderby;
+		}
+		return url;
 	}
 	
 	protected CommandMessage buildCommand(CommandMessage commandMessage){
