@@ -37,7 +37,7 @@ import lombok.Getter;
 @SpringBootTest(classes = { BPMEngineConfig.class })
 @ActiveProfiles("test")
 @Getter
-public abstract class AbstractUnitTest {
+public abstract class AbstractTestConfigurer {
 	
 	@Autowired
 	@Qualifier("default.processGateway")

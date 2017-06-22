@@ -19,7 +19,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.util.Assert;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
-import com.anthem.oss.nimbus.core.AbstractUnitTest;
+import com.anthem.oss.nimbus.core.AbstractTestConfigurer;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
@@ -51,7 +51,7 @@ import groovy.lang.GroovyShell;
 @EnableAutoConfiguration
 @ActiveProfiles("test")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class ParamCodeValueProviderTest extends AbstractUnitTest {
+public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 
 	@Autowired
 	MongoOperations mongoOps;
@@ -137,6 +137,23 @@ public class ParamCodeValueProviderTest extends AbstractUnitTest {
 		cmdMsg.setRawPayload("{\"code\":\""+c.getCode()+"\"}");
 		//ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
 		//List<?> values = (List<?>)exampleFunctionHandler.execute(exContext, null);
+		
+		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
+		List<Output<?>> ops  = multiOp.getOutputs();
+		
+		assertNotNull(ops);
+		
+		List<?> values = (List<?>)ops.get(0).getValue();
+		
+		assertNotNull(values);
+		assertEquals(1, values.size());
+	}
+	
+	@Test
+	public void t41_testSearchByQueryCriteriaNotNull() {
+		Client c = insertClient();
+		
+		CommandMessage cmdMsg = build("Anthem/fep/icr/p/client/_search?fn=query&where=client.code.eq('c1')");
 		
 		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
 		List<Output<?>> ops  = multiOp.getOutputs();
