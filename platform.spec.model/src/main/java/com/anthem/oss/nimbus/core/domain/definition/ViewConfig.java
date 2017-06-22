@@ -447,4 +447,15 @@ public class ViewConfig {
 		String targetHeader() default "TargetList";
 	}
 	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface GridColumn {
+		String alias() default "GridColumn";
+		boolean hidden() default false;
+		boolean sortable() default true;
+		boolean filter() default true;
+		boolean expandable() default true;
+	}
+	
 }
