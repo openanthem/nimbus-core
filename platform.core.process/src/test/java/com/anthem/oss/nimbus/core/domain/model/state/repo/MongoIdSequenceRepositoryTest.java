@@ -14,7 +14,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.anthem.oss.nimbus.core.AbstractUnitTest;
+import com.anthem.oss.nimbus.core.AbstractTestConfigurer;
 
 /**
  * @author Rakesh Patel
@@ -23,7 +23,7 @@ import com.anthem.oss.nimbus.core.AbstractUnitTest;
 @EnableAutoConfiguration
 @ActiveProfiles("test")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class MongoIdSequenceRepositoryTest extends AbstractUnitTest {
+public class MongoIdSequenceRepositoryTest extends AbstractTestConfigurer {
 
 	@Autowired
 	IdSequenceRepository seqIdRepo;

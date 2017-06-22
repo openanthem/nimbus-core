@@ -13,7 +13,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.anthem.oss.nimbus.core.AbstractUnitTest;
+import com.anthem.oss.nimbus.core.AbstractTestConfigurer;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
@@ -27,7 +27,7 @@ import com.anthem.oss.nimbus.core.entity.client.Client;
 @EnableAutoConfiguration
 @ActiveProfiles("test")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class DefaultActionExecutorDeleteTest extends AbstractUnitTest {
+public class DefaultActionExecutorDeleteTest extends AbstractTestConfigurer {
 	
 	@Autowired
 	MongoOperations mongoOps;

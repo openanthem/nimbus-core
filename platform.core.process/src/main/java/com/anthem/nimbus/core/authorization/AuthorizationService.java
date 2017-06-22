@@ -1,0 +1,13 @@
+package com.anthem.nimbus.core.authorization;
+
+import com.anthem.oss.nimbus.core.domain.command.Command;
+
+
+/**
+ * @author Rakesh Patel
+ *
+ */
+public interface AuthorizationService {
+
+	public boolean hasAccess(Command command) throws AuthorizationException;
+}

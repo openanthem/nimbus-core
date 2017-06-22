@@ -11,7 +11,7 @@ import org.junit.runners.MethodSorters;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.anthem.oss.nimbus.core.AbstractUnitTest;
+import com.anthem.oss.nimbus.core.AbstractTestConfigurer;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
@@ -24,7 +24,7 @@ import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Mult
 @EnableAutoConfiguration
 @ActiveProfiles("test")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class DefaultActionExecutorUpdateTest extends AbstractUnitTest {
+public class DefaultActionExecutorUpdateTest extends AbstractTestConfigurer {
 	
 	@Test
 	public void t0_updateParam() {
