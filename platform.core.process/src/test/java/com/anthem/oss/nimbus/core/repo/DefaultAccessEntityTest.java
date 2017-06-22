@@ -23,7 +23,7 @@ import test.com.anthem.nimbus.platform.spec.model.access.AccessEntityFactory;
 @EnableAutoConfiguration
 @ActiveProfiles("test")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class AccessEntityRepositoryTest extends AbstractTestConfigurer {
+public class DefaultAccessEntityTest extends AbstractTestConfigurer {
 
 	@Autowired
 	MongoOperations mongoOps;
