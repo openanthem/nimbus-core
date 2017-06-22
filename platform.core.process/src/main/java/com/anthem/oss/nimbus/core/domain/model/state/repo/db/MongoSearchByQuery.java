@@ -30,6 +30,7 @@ import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.entity.EntityAssociation;
 import com.anthem.oss.nimbus.core.entity.SearchCriteria;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.PathBuilder;
 
@@ -56,6 +57,7 @@ public class MongoSearchByQuery extends MongoDBSearch {
 	}
 	
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private <T> Object searchByQuery(Class<?> referredClass, String alias, SearchCriteria<T> criteria) {
 		
 		Class<?> outputClass = findOutputClass(criteria, referredClass);
@@ -64,6 +66,7 @@ public class MongoSearchByQuery extends MongoDBSearch {
 		
 		Predicate predicate = buildPredicate((String)criteria.getWhere(), referredClass, alias);
 		
+		OrderSpecifier orderBy = buildOrderSpecifier((String)criteria.getOrderby(), referredClass, alias);
 		if(StringUtils.equalsIgnoreCase(criteria.getAggregateCriteria(), "count")) {
 			Holder<Long> holder = new Holder<>();
 			holder.setState(query.where(predicate).fetchCount());
@@ -74,8 +77,13 @@ public class MongoSearchByQuery extends MongoDBSearch {
 			Collection<String> fields = criteria.getProjectCriteria().getMapsTo().values();
 			List<PathBuilder> paths = new ArrayList<>();
 			fields.forEach((f)->paths.add(new PathBuilder(outputClass, f)));
-			
+			if(orderBy!=null) {
+				return query.where(predicate).orderBy(orderBy).fetch(paths.toArray(new PathBuilder[paths.size()]));
+			}
 			return query.where(predicate).fetch(paths.toArray(new PathBuilder[paths.size()]));
+		}
+		if(orderBy!=null) {
+			return query.where(predicate).orderBy(orderBy).fetch();
 		}
 		return query.where(predicate).fetch();
 		
@@ -100,6 +108,23 @@ public class MongoSearchByQuery extends MongoDBSearch {
         binding.setProperty("todaydate",localDateTime);
         final GroovyShell shell = new GroovyShell(binding); 
         return (Predicate)shell.evaluate(groovyScript);
+	}
+	
+	@SuppressWarnings("rawtypes")
+	private OrderSpecifier buildOrderSpecifier(String criteria, Class<?> referredClass, String alias) {
+		
+		if(StringUtils.isBlank(criteria)) {
+			return null;
+		}
+		
+		String groovyScript = criteria.toString().replaceAll("<", "(").replace(">", ")");
+				
+		final Binding binding = new Binding();
+		Object obj = createQueryDslClassInstance(referredClass);
+        binding.setProperty(alias, obj);
+        
+        final GroovyShell shell = new GroovyShell(binding); 
+        return (OrderSpecifier)shell.evaluate(groovyScript);
 	}
 	
 	private Object createQueryDslClassInstance(Class<?> referredClass) {

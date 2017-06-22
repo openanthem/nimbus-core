@@ -21,11 +21,19 @@ import lombok.Setter;
 @Getter @Setter
 public class StateContextEntity {
 
+	public enum MessageType {
+		INFO,
+		WARNING,
+		DANGER,
+		SUCCESS;
+	}
+		
+	private String msgText;
+	private MessageType msgType; 
+	
 	private Boolean visible = true;
 	private Boolean enabled = true;
 	
-	
-	private String message;
 	
 	@Transient
 	private List<ParamValue> values;

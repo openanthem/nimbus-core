@@ -190,7 +190,9 @@ abstract public class AbstractEntityStateBuilder {
 		ExecutionEntity.ExConfig<V, C> exConfig = new ExecutionEntity.ExConfig<>((ModelConfig<C>)mapsToEnclosingModel, null, null);
 		
 		//==String mapsToParamAbsolutePath = parentModel.getAbsolutePath() +Constants.SEPARATOR_URI.code+ mappedParamConfig.getCode();
-		String mapsToParamAbsolutePath = parentModel.getRootExecution().getRootCommand().buildAlias(Type.DomainAlias) +Constants.SEPARATOR_URI.code+ mappedParamConfig.getCode();
+		String mapsToParamAbsolutePath = parentModel.getRootExecution().getRootCommand().buildAlias(Type.DomainAlias) 
+											+Constants.SEPARATOR_URI.code+ mappedParamConfig.getCode();
+		
 		Command detachedRootCommand = CommandBuilder.withUri(mapsToParamAbsolutePath).getCommand();
 		
 		ExecutionEntity<V, C> eState = new ExecutionEntity<>();

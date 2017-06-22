@@ -20,6 +20,7 @@ public abstract class SearchCriteria<T> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private T where;
+	private T orderby;
 	private String aggregateCriteria;
 	private ProjectCriteria projectCriteria;
 	
