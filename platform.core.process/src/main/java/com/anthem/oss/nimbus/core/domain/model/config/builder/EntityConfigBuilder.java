@@ -48,11 +48,16 @@ public class EntityConfigBuilder extends AbstractEntityConfigBuilder {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> ModelConfig<T> buildModel(Class<T> clazz, EntityConfigVistor visitedModels) {
+		logit.trace(()->"building model for class: "+clazz);
+		
 		// skip if already built
 		if(visitedModels.contains(clazz)) 
 			return (ModelConfig<T>)visitedModels.get(clazz);
 		
+		
 		DefaultModelConfig<T> mConfig = createModel(clazz, visitedModels);
+		visitedModels.set(clazz, mConfig);
+
 		
 		//look if the model is marked with MapsTo
 		if(mConfig.isMapped()) {
@@ -85,7 +90,6 @@ public class EntityConfigBuilder extends AbstractEntityConfigBuilder {
 			throw new InvalidConfigException("Persistable Entity: "+mConfig.getReferredClass()+" must be configured with @Id param which has Repo: "+mConfig.getRepo());
 		}
 		
-		visitedModels.set(clazz, mConfig);
 		return mConfig;
 	}
 
