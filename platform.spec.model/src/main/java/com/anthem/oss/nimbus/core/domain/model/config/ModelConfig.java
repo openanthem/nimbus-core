@@ -18,15 +18,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 public interface ModelConfig<T> extends EntityConfig<T> {
 	
-	public Domain getDomain();
-	
-	public Model getModel();
-	
 	default String getAlias() {
-		return (getDomain()!=null) 
-					? Optional.ofNullable(getDomain()).map(Domain::value).orElse(null)
-							: Optional.ofNullable(getModel()).map(Model::value).orElse(null);
+		return null;
+//		return (getDomain()!=null) 
+//					? Optional.ofNullable(getDomain()).map(Domain::value).orElse(null)
+//							: Optional.ofNullable(getModel()).map(Model::value).orElse(null);
 	}
+
+	public String getDomainLifecycle();
 	
 	public Repo getRepo();
 

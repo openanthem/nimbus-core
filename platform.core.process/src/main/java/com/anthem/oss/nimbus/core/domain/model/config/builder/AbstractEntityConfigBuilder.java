@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import javax.validation.Constraint;
 
@@ -98,8 +99,8 @@ abstract public class AbstractEntityConfigBuilder {
 		Repo rep = AnnotationUtils.findAnnotation(referredClass, Repo.class);
 		created.setRepo(rep);
 		
-		// set domain or model
-		assignDomainAndModel(created);
+		// set alias from domain or model
+		assignDomainAndModel(created, created::setAlias);
 				
 		// rules
 		Optional.ofNullable(created.getAlias())
@@ -109,18 +110,21 @@ abstract public class AbstractEntityConfigBuilder {
 		return created; 
 	}
 	
-	protected void assignDomainAndModel(DefaultModelConfig<?> created) {
+	protected void assignDomainAndModel(DefaultModelConfig<?> created, Consumer<String> cb) {
 		// prefer @Domain or @Model declared on current class
 		Domain domain = AnnotationUtils.findAnnotation(created.getReferredClass(), Domain.class);
+		created.setDomain(domain);
 		
 		// set model if domain is absent
 		Model model = AnnotationUtils.findAnnotation(created.getReferredClass(), Model.class);
+		created.setModel(model);
+
 		
 		if(domain==null && model!=null)
-			created.setModel(model);
+			cb.accept(model.value());
 		else
 			if(domain!=null && model==null)
-				created.setDomain(domain);
+				cb.accept(domain.value());
 		else
 			if(domain!=null && model!=null // both present with different alias entries
 					&& StringUtils.trimToNull(domain.value())!=null && StringUtils.trimToNull(model.value())!=null 
@@ -129,20 +133,19 @@ abstract public class AbstractEntityConfigBuilder {
 				// prefer annotation declared directly on class
 				if(AnnotationUtils.isAnnotationInherited(Domain.class, created.getReferredClass()) 
 						&& !AnnotationUtils.isAnnotationInherited(Model.class, created.getReferredClass()))
-					created.setModel(model);
+					cb.accept(model.value());
 				else 
 					if(!AnnotationUtils.isAnnotationInherited(Domain.class, created.getReferredClass()) 
 							&& AnnotationUtils.isAnnotationInherited(Model.class, created.getReferredClass()))	
-						created.setDomain(domain);
+						cb.accept(domain.value());
 				else
 					throw new InvalidConfigException("A model can have alias defined in either @Domain or @Model. "
 							+ "Found in both with different values for class: "+created.getReferredClass()
 							+" with @Domain: "+domain+" and @Model: "+model);
 			}
-		else {
-			created.setDomain(domain);
-			created.setModel(model);
-		}
+		else 
+			cb.accept(domain.value());
+		
 	}
 	
 	public <T> DefaultModelConfig<List<T>> createCollectionModel(Class<List<T>> referredClass, ParamConfig<?> associatedParamConfig) {

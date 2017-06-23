@@ -111,7 +111,7 @@ public class DefaultActionExecutorNew extends AbstractFunctionCommandExecutor<Ob
 	
 	private void startBusinessProcess(ExecutionContext eCtx){
 		QuadModel<?, ?> quadModel = getQuadModel(eCtx);
-		String lifecycleKey = quadModel.getView().getConfig().getDomain().lifecycle();
+		String lifecycleKey = quadModel.getView().getConfig().getDomainLifecycle();
 		if(StringUtils.isEmpty(lifecycleKey))
 			return;
 		ProcessFlow processFlow = quadModel.getFlow();
