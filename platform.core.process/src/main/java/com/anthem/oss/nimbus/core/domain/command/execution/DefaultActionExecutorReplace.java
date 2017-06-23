@@ -34,7 +34,7 @@ public class DefaultActionExecutorReplace extends AbstractCommandExecutor<Boolea
 		 * then this class would be same as _update executor
 		 */
 		//p.setState(state); 
-		getRepositoryFactory().get(rootDomainConfig.getRepo())._replace(rootDomainConfig.getDomainAlias(), state);
+		getRepositoryFactory().get(rootDomainConfig.getRepo())._replace(rootDomainConfig.getAlias(), state);
 		
 		/*
 		 *  TODO use the Action output from the setState to check if the action performed is _update to return true

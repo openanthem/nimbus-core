@@ -54,7 +54,7 @@ public class DefaultActionExecutorGet extends AbstractCommandExecutor<Param<?>> 
 		
 		if(Repo.Database.exists(rootDomainConfig.getRepo())) { // root (view or core) is persistent
 			entity = getRepositoryFactory().get(rootDomainConfig.getRepo())
-						._get(refId, rootDomainConfig.getReferredClass(), rootDomainConfig.getDomainAlias());
+						._get(refId, rootDomainConfig.getReferredClass(), rootDomainConfig.getAlias());
 //			repoDbFound = true;
 			
 		} else {
@@ -66,7 +66,7 @@ public class DefaultActionExecutorGet extends AbstractCommandExecutor<Param<?>> 
 			Repo mapsToRepo = mapsToConfig.getRepo();
 			
 			if(Repo.Database.exists(mapsToRepo)) {
-				mapsToEntity = getRepositoryFactory().get(mapsToRepo)._get(refId, mapsToConfig.getReferredClass(), mapsToConfig.getDomainAlias());
+				mapsToEntity = getRepositoryFactory().get(mapsToRepo)._get(refId, mapsToConfig.getReferredClass(), mapsToConfig.getAlias());
 //				repoDbFound = true;
 				
 			} else {

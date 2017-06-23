@@ -62,12 +62,12 @@ public class DefaultMongoModelRepository implements ModelRepository {
 		ParamConfig<?> pId = Optional.ofNullable(mConfig.getIdParam())
 								.orElseThrow(()->new InvalidConfigException("Persistable Entity: "+mConfig.getReferredClass()+" must be configured with @Id param."));
 		
-		String id = String.valueOf(idSequenceRepo.getNextSequenceId(mConfig.getDomainAlias()));
+		String id = String.valueOf(idSequenceRepo.getNextSequenceId(mConfig.getAlias()));
 		
 		PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(mConfig.getReferredClass(), pId.getCode());
 		beanHandler.setValue(pd, newState, id);
 		
-		String alias = mConfig.getRepo() != null && StringUtils.isNotBlank(mConfig.getRepo().alias()) ? mConfig.getRepo().alias():mConfig.getDomainAlias();
+		String alias = mConfig.getRepo() != null && StringUtils.isNotBlank(mConfig.getRepo().alias()) ? mConfig.getRepo().alias():mConfig.getAlias();
 		//mongoOps.save(newState, alias);
 		
 		return newState;

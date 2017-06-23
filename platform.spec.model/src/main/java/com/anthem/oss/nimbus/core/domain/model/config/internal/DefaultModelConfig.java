@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
+import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
@@ -35,6 +36,8 @@ public class DefaultModelConfig<T> extends AbstractEntityConfig<T> implements Mo
 	final private Class<T> referredClass;
 	
 	@JsonIgnore @Setter private Domain domain;
+	@JsonIgnore @Setter private Model model;
+	
 	
 	@JsonIgnore @Setter private Repo repo;
 	

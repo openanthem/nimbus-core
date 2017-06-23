@@ -98,19 +98,52 @@ abstract public class AbstractEntityConfigBuilder {
 		Repo rep = AnnotationUtils.findAnnotation(referredClass, Repo.class);
 		created.setRepo(rep);
 		
-		// set domain
-		Domain domain = AnnotationUtils.findAnnotation(referredClass, Domain.class);
-		created.setDomain(domain);
-		
+		// set domain or model
+		assignDomainAndModel(created);
+				
 		// rules
-		Optional.ofNullable(domain)
+		Optional.ofNullable(created.getAlias())
 			.map(d->rulesEngineFactoryProducer.getFactory(referredClass))
-			.map(f->f.createConfig(domain.value()))
+			.map(f->f.createConfig(created.getAlias()))
 				.ifPresent(c->created.setRulesConfig(c));
 		return created; 
 	}
 	
-	
+	protected void assignDomainAndModel(DefaultModelConfig<?> created) {
+		// prefer @Domain or @Model declared on current class
+		Domain domain = AnnotationUtils.findAnnotation(created.getReferredClass(), Domain.class);
+		
+		// set model if domain is absent
+		Model model = AnnotationUtils.findAnnotation(created.getReferredClass(), Model.class);
+		
+		if(domain==null && model!=null)
+			created.setModel(model);
+		else
+			if(domain!=null && model==null)
+				created.setDomain(domain);
+		else
+			if(domain!=null && model!=null // both present with different alias entries
+					&& StringUtils.trimToNull(domain.value())!=null && StringUtils.trimToNull(model.value())!=null 
+					&& !StringUtils.equals(domain.value(), model.value())) {
+				
+				// prefer annotation declared directly on class
+				if(AnnotationUtils.isAnnotationInherited(Domain.class, created.getReferredClass()) 
+						&& !AnnotationUtils.isAnnotationInherited(Model.class, created.getReferredClass()))
+					created.setModel(model);
+				else 
+					if(!AnnotationUtils.isAnnotationInherited(Domain.class, created.getReferredClass()) 
+							&& AnnotationUtils.isAnnotationInherited(Model.class, created.getReferredClass()))	
+						created.setDomain(domain);
+				else
+					throw new InvalidConfigException("A model can have alias defined in either @Domain or @Model. "
+							+ "Found in both with different values for class: "+created.getReferredClass()
+							+" with @Domain: "+domain+" and @Model: "+model);
+			}
+		else {
+			created.setDomain(domain);
+			created.setModel(model);
+		}
+	}
 	
 	public <T> DefaultModelConfig<List<T>> createCollectionModel(Class<List<T>> referredClass, ParamConfig<?> associatedParamConfig) {
 		//mapsTo is null when the model itself is a java List implementation (ArrayList, etc)

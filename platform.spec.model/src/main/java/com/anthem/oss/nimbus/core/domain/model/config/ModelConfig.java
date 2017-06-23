@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
+import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.util.CollectionsTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -19,8 +20,12 @@ public interface ModelConfig<T> extends EntityConfig<T> {
 	
 	public Domain getDomain();
 	
-	default String getDomainAlias() {
-		return Optional.ofNullable(getDomain()).map(Domain::value).orElse(null);
+	public Model getModel();
+	
+	default String getAlias() {
+		return (getDomain()!=null) 
+					? Optional.ofNullable(getDomain()).map(Domain::value).orElse(null)
+							: Optional.ofNullable(getModel()).map(Model::value).orElse(null);
 	}
 	
 	public Repo getRepo();

@@ -37,7 +37,7 @@ public class DefaultActionExecutorDelete extends AbstractCommandExecutor<Boolean
 		
 		if(Repo.Database.exists(repo)) {
 			 getRepositoryFactory().get(repo)
-						._delete(refId, rootDomainConfig.getReferredClass(), rootDomainConfig.getDomainAlias());
+						._delete(refId, rootDomainConfig.getReferredClass(), rootDomainConfig.getAlias());
 		} 
 		
 		if(rootDomainConfig.isMapped()) {
@@ -46,7 +46,7 @@ public class DefaultActionExecutorDelete extends AbstractCommandExecutor<Boolean
 			
 			if(Repo.Database.exists(mapsToRepo)) {
 				 getRepositoryFactory().get(mapsToRepo)
-						._delete(refId, mapsToConfig.getReferredClass(), mapsToConfig.getDomainAlias());
+						._delete(refId, mapsToConfig.getReferredClass(), mapsToConfig.getAlias());
 			}
 
 		}
