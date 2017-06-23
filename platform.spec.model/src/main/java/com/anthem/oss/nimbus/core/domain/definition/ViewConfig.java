@@ -236,6 +236,11 @@ public class ViewConfig {
 			LOGO,
 			APPTITLE,
 			MENU,
+			TOU,
+			VERSION,
+			COPYRIGHT,
+			SSLCERT,
+			PRIVACY,
 			DEFAULT;
 		}
 		Type value() default Type.DEFAULT;
