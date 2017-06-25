@@ -24,11 +24,21 @@ abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements Functi
 	@Autowired
 	private CommandExecutorGateway executorGateway; 
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public R execute(ExecutionContext executionContext, Param<T> actionParameter) {
-		CommandMessage commandFromContext =  buildCommand(executionContext.getCommandMessage());
+		CommandMessage commandFromContext = null;
+		S state = null;
+		//TODO - Expose 2 other flavors for _set. 1. Set by value 2. Set by executing rule file.
+		//TODO - When we set by value, if the value is something like Status.INACTIVE, have to use querydsl replace or come up with some other approach
 		Param<S> targetParameterState = findTargetParam(executionContext);
-		S state = isInternal(commandFromContext.getCommand()) ? getInternalState(executionContext): getExternalState(executionContext);
+		if(StringUtils.isNotBlank(executionContext.getCommandMessage().getCommand().getFirstParameterValue("value"))) {
+			commandFromContext =  executionContext.getCommandMessage();
+			state = (S) commandFromContext.getCommand().getFirstParameterValue("value");
+		} else {
+			commandFromContext =  buildCommand(executionContext.getCommandMessage());
+			state = isInternal(commandFromContext.getCommand()) ? getInternalState(executionContext): getExternalState(executionContext);
+		}
 		return assign(executionContext,actionParameter,targetParameterState,state);
 	}
 	
@@ -47,6 +57,7 @@ abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements Functi
 		if(StringUtils.isNotBlank(orderby)) {
 			url =  url+"&orderby="+orderby;
 		}
+		
 		return url;
 	}
 	
