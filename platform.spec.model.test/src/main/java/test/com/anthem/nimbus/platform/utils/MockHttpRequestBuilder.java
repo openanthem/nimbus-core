@@ -31,25 +31,25 @@ public final class MockHttpRequestBuilder {
 		return new MockHttpRequestBuilder(new MockHttpServletRequest(httpMethod.name(), uri));
 	}
 	
-//	public MockHttpRequestBuilder addRefId(String refId) {
-//		String uri = httpReq.getRequestURI() + ":" + refId;
-//		httpReq.setRequestURI(uri);
-//		
-//		return this;
-//	}
-//
-//	public MockHttpRequestBuilder addNested(String nestedPath) {
-//		String uri = httpReq.getRequestURI() + nestedPath;
-//		httpReq.setRequestURI(uri);
-//		
-//		return this;
-//	}
-//
-//	
-//	public MockHttpRequestBuilder addAction(Action a) {
-//		String uri = httpReq.getRequestURI() + "/" + a.name();
-//		httpReq.setRequestURI(uri);
-//		
-//		return this;
-//	}
+	public MockHttpRequestBuilder addRefId(String refId) {
+		String uri = httpReq.getRequestURI() + ":" + refId;
+		httpReq.setRequestURI(uri);
+		
+		return this;
+	}
+
+	public MockHttpRequestBuilder addNested(String nestedPath) {
+		String uri = httpReq.getRequestURI() + nestedPath;
+		httpReq.setRequestURI(uri);
+		
+		return this;
+	}
+
+	
+	public MockHttpRequestBuilder addAction(Action a) {
+		String uri = httpReq.getRequestURI() + "/" + a.name();
+		httpReq.setRequestURI(uri);
+		
+		return this;
+	}
 }

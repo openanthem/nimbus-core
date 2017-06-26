@@ -10,9 +10,9 @@
 	<artifactId>com.anthem.oss.nimbus.core.parent</artifactId>
 	<packaging>pom</packaging>
 	<name>nimbus-core-parent</name>
-	<modules>
+ 	<modules>
 		<module>../platform.spec.model</module>
-		<module>../platform.spec.model.test</module>
+		<!-- <module>../platform.spec.model.test</module> -->
 		<module>../platform.core.process</module>
 	</modules> 
 	<url></url>
