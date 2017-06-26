@@ -100,7 +100,7 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 		if(repo==null)
 			return false;
 		
-		if(repo.cache()==Repo.Cache.rep_session) {
+		if(repo.cache()==Repo.Cache.rep_device) {
 			return queuePut(eCtx);
 		}
 

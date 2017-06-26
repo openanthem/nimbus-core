@@ -18,30 +18,31 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		registry.addViewController("/").setViewName("forward:/index.html");
 		registry.addViewController("/ui/").setViewName("forward:/index.html");
 	}
-
+	
+    // The second argument of addResourceLocations is to tell where to look in a jar file.
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		if (!registry.hasMappingForPattern("/index.html")) {
-			registry.addResourceHandler("/index.html").addResourceLocations("file:./target/frontend/index.html");
+			registry.addResourceHandler("/index.html").addResourceLocations("file:./target/frontend/index.html", "classpath:/static/");
 		}
 		if (!registry.hasMappingForPattern("/systemjs*")) {
-			registry.addResourceHandler("/systemjs*").addResourceLocations("file:./target/frontend/");
+			registry.addResourceHandler("/systemjs*").addResourceLocations("file:./target/frontend/", "classpath:/static/");
 		}
 		if (!registry.hasMappingForPattern("/scripts/**")) {
-			registry.addResourceHandler("/scripts/**").addResourceLocations("file:./target/frontend/scripts/");
+			registry.addResourceHandler("/scripts/**").addResourceLocations("file:./target/frontend/scripts/", "classpath:/static/scripts/");
 		}
 		if (!registry.hasMappingForPattern("/styles/**")) {
-			registry.addResourceHandler("/styles/**").addResourceLocations("file:./target/frontend/styles/");
+			registry.addResourceHandler("/styles/**").addResourceLocations("file:./target/frontend/styles/", "classpath:/static/styles/");
 		}
 		if (!registry.hasMappingForPattern("/node_modules/**")) {
 			registry.addResourceHandler("/node_modules/**")
-					.addResourceLocations("file:./target/frontend/node_modules/");
+					.addResourceLocations("file:./target/frontend/node_modules/", "classpath:/static/node_modules/");
 		}
 		if (!registry.hasMappingForPattern("/utils/**")) {
-			registry.addResourceHandler("/utils/**").addResourceLocations("file:./target/frontend/utils/");
+			registry.addResourceHandler("/utils/**").addResourceLocations("file:./target/frontend/utils/", "classpath:/static/utils/" );
 		}
 		if (!registry.hasMappingForPattern("/webapp/**")) {
-			registry.addResourceHandler("/webapp/**").addResourceLocations("file:./target/frontend/webapp/");
+			registry.addResourceHandler("/webapp/**").addResourceLocations("file:./target/frontend/webapp/", "classpath:/static/webapp/");
 		}
 		if (!registry.hasMappingForPattern("/resources/**")) {
 			registry.addResourceHandler("/resources/**").addResourceLocations("classpath:./static/");

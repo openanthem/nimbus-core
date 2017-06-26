@@ -3,6 +3,7 @@
  */
 package com.anthem.oss.nimbus.core.domain.model.state.internal;
 
+import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.MappedListElemParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
@@ -20,7 +21,7 @@ public class MappedDefaultListElemParamState<E, M> extends DefaultListElemParamS
 
 	private static final long serialVersionUID = 1L;
 
-	@JsonIgnore private final ListElemParam<M> mapsTo;
+	@JsonIgnore private final Param<M> mapsTo;
 	
 	@JsonIgnore final private Notification.Consumer<M> delegate;
 	
@@ -31,7 +32,14 @@ public class MappedDefaultListElemParamState<E, M> extends DefaultListElemParamS
 	
 	public MappedDefaultListElemParamState(ListModel<E> parentModel, ParamConfig<E> config, EntityStateAspectHandlers provider, ListElemParam<M> mapsTo) {
 		super(parentModel, config, provider, mapsTo.getElemId());
-		this.mapsTo = mapsTo;		
+		
+		// check if @Path is configured to refer to nested element model's param
+		if(MapsTo.hasCollectionPath(config.findIfMapped().getPath())) {
+			Param<M> mapsToNestedParam = mapsTo.findParamByPath(config.findIfMapped().getPath().colElemPath());
+			this.mapsTo = mapsToNestedParam;
+		} else {
+			this.mapsTo = mapsTo;
+		} 
 		
 		this.delegate = new InternalNotificationConsumer<>(this);
 		

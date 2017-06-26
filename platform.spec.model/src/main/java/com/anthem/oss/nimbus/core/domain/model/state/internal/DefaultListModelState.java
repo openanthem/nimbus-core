@@ -121,8 +121,10 @@ public class DefaultListModelState<T> extends DefaultModelState<List<T>> impleme
 	
 	@Override
 	public boolean add(T elem) {
-		ListElemParam<T> pColElem = add();
-		lockTemplate.execute(()->pColElem.setState(elem));
+		lockTemplate.execute(()->{
+			ListElemParam<T> pColElem = add();
+			pColElem.setState(elem);		//lockTemplate.execute(()->pColElem.setState(elem));
+		});
 		return true;
 	}
 	

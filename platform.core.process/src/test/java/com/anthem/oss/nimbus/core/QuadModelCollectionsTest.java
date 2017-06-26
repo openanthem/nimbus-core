@@ -1009,6 +1009,8 @@ public class QuadModelCollectionsTest {
 		assertSame(1, vp_nestedService.size());
 		assertSame(1, cp_ServiceLines.size());
 		
+		Param<?> convertedAttachedList = q.getView().findParamByPath("/pg3/viewAttachedServiceLinesConverted");
+		
 		assertSame(service, vp_nestedService.getState(0));
 		assertSame(service, cp_ServiceLines.getState(0).getService());
 	}
