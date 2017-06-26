@@ -55,9 +55,9 @@
 		<npm.version>4.5.0</npm.version>
 		<frontend.plugin.version>1.4</frontend.plugin.version>
 		<!-- nimbus-core -->
-		<nimbus.core.spec.version>1.0.0.M3</nimbus.core.spec.version>
-		<nimbus.core.test.version>1.0.0.M3</nimbus.core.test.version>
-		<nimbus.core.api.version>1.0.0.M3</nimbus.core.api.version>
+		<nimbus.core.spec.version>1.0.0.M3-SNAPSHOT</nimbus.core.spec.version>
+		<nimbus.core.test.version>1.0.0.M3-SNAPSHOT</nimbus.core.test.version>
+		<nimbus.core.api.version>1.0.0.M3-SNAPSHOT</nimbus.core.api.version>
 	</properties>
 
 	<developers>
