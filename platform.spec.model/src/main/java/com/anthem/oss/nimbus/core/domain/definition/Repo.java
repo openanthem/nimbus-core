@@ -33,9 +33,9 @@ public @interface Repo {
 	/* 1nd level repository: cache (distributed session or sticky) */
 	public enum Cache {
 		rep_none,
-		rep_session,	
+		rep_device,	
 		rep_user,
-		rep_db;
+		rep_entity;
 		
 		public static boolean exists(Repo repo) {
 			return repo!=null && repo.cache()!=Repo.Cache.rep_none;
@@ -47,7 +47,7 @@ public @interface Repo {
 	
 	Database value() default Database.rep_mongodb;	
 	
-	Cache cache() default Cache.rep_session;	
+	Cache cache() default Cache.rep_device;	
 	
 	boolean autoSave() default true;
 }
