@@ -3,7 +3,7 @@
  */
 package com.anthem.oss.nimbus.core.entity.user;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
@@ -27,7 +27,10 @@ public class ClientUserGroup extends AbstractUserGroup {
 	
 	private String organizationId;
 	
-	private List<GroupUser> members;
+	private ArrayList<GroupUser> members;
 	
 	private String[] memberUserIds;
+	
+	//TODO delete this attribute once the vgusergroup.drl is triggered on setState to set the count
+	private Integer memberCount;
 }

@@ -352,7 +352,7 @@ abstract public class AbstractEntityConfigBuilder {
 		
 		final ParamConfig<P> created;
 		if(colModelConfig.isMapped()) {
-			final MapsTo.Path mapsToColElemParamPathAnnotation = mapsToColParamPath==null ? null : createNewImplicitMapping(collectionElemPath, mapsToColParamPath.linked(), mapsToColParamPath.state());
+			final MapsTo.Path mapsToColElemParamPathAnnotation = (mapsToColParamPath==null) ? null : createNewImplicitMapping(collectionElemPath, mapsToColParamPath.linked(), mapsToColParamPath.state(), mapsToColParamPath.colElemPath());
 			
 			created = new MappedDefaultParamConfig<>(collectionElemPath, colModelConfig, mapsToColElemParamConfig, mapsToColElemParamPathAnnotation);
 

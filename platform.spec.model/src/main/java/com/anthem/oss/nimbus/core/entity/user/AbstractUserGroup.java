@@ -24,7 +24,7 @@ public abstract class AbstractUserGroup extends AbstractEntity.IdString {
 	
 	//@NotNull
 	//@Model.Param.Values(url="staticCodeValue-/orgStatus")
-	private Status status;
+	private String status;
 	
 	public enum Status {
 		ACTIVE,
