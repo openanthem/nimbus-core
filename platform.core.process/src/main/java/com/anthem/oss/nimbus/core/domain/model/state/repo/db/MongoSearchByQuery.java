@@ -87,7 +87,12 @@ public class MongoSearchByQuery extends MongoDBSearch {
 		if(orderBy!=null) {
 			return query.where(predicate).orderBy(orderBy).fetch();
 		}
+		
+		if(StringUtils.equals(criteria.getFetch(),"1")) {
+			return query.where(predicate).fetchOne();
+		}
 		List<?> response = query.where(predicate).fetch();
+		
 		if(StringUtils.isNotBlank(criteria.getResponseConverter())){
 			Converter converter = getBeanResolver().get(ClientUserGrooupSearchResponseConverter.class);
 			return converter.convert(response);

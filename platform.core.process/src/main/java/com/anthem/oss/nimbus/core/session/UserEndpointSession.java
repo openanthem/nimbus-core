@@ -130,13 +130,6 @@ public class UserEndpointSession implements Serializable {
 		return pContext;
 	}
 
-	public ClientUser getLoggedInUser() {
-		if(getAttribute(sessionUserKey) instanceof ClientUser) {
-			return getAttribute(sessionUserKey);
-		} 		
-		return null;
-	}
-
 	public static ClientUser getStaticLoggedInUser() {
 		if (clientUser == null) {
 			if (getAttribute(sessionUserKey) instanceof ClientUser) {
