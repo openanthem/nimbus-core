@@ -25,7 +25,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelPersistenceHan
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFactory;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ParamStateAtomicPersistenceEventListener;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ParamStateBatchPersistenceEventListener;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ParamStateBulkPersistenceEventListener;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.mongo.DefaultMongoModelPersistenceHandler;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.mongo.DefaultMongoModelRepository;
 import com.anthem.oss.nimbus.core.rules.DefaultRulesEngineFactoryProducer;
@@ -95,10 +95,10 @@ public class DefaultCoreConfiguration {
 		return new ParamStateAtomicPersistenceEventListener(repoFactory, handler);
 	}
 	
-	@Bean(name="default.paramStateBatchPersistenceEventListener")
-	public ParamStateBatchPersistenceEventListener paramStateBatchPersistenceEventListener(ModelRepositoryFactory repoFactory){
-		return new ParamStateBatchPersistenceEventListener(repoFactory);
-	}
+//	@Bean(name="default.paramStateBatchPersistenceEventListener")
+//	public ParamStateBulkPersistenceEventListener paramStateBatchPersistenceEventListener(ModelRepositoryFactory repoFactory){
+//		return new ParamStateBulkPersistenceEventListener(repoFactory);
+//	}
 	
 	@Bean(name="default.param.state.rep_local")
 	public DefaultParamStateRepositoryLocal defaultParamStateRepositoryLocal(JavaBeanHandler javaBeanHandler){

@@ -11,6 +11,7 @@ import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadScopedEventListener;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
 import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
+import com.anthem.oss.nimbus.core.spec.contract.event.BulkEventListener;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
@@ -34,6 +35,8 @@ public class QuadModel<V, C> implements Serializable {
 	@JsonIgnore transient private final ProcessFlow flow;
 	
 	@JsonIgnore transient private QuadScopedEventListener eventPublisher;
+	
+	@JsonIgnore transient private BulkEventListener buldEventListener;
 	
 	public QuadModel(ExecutionEntity<V, C>.ExModel root) {
 		this.root = root;

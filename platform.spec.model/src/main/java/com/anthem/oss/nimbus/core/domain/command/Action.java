@@ -3,6 +3,10 @@
  */
 package com.anthem.oss.nimbus.core.domain.command;
 
+import java.util.stream.Stream;
+
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * @author Soham Chakravarti
  *
@@ -29,4 +33,11 @@ public enum Action {
 	;
 
 	public static final Action DEFAULT = _get;
+	
+	public static Action getByName(String name) {
+		return Stream.of(Action.values())
+			.filter((action) -> StringUtils.equals(action.name(), name))
+			.findFirst()
+			.orElse(null);
+	}
 }

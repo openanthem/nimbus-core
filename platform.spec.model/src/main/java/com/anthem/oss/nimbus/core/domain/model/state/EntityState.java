@@ -15,6 +15,7 @@ import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.StateContextEntity;
 import com.anthem.oss.nimbus.core.util.CollectionsTemplate;
+import com.anthem.oss.nimbus.core.util.LockTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -49,6 +50,8 @@ public interface EntityState<T> {
 	
 	@JsonIgnore
 	public Model<?> getRootDomain();
+	
+	public LockTemplate getLockTemplate();
 	
 	default public boolean isRoot() {
 		return false;

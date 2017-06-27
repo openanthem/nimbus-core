@@ -9,6 +9,7 @@ import java.util.List;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
+import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
@@ -47,7 +48,10 @@ public class ParamStateAtomicPersistenceEventListener extends ParamStatePersiste
 	@Override
 	public boolean listen(ModelEvent<Param<?>> event) {
 		List<ModelEvent<Param<?>>> events = new ArrayList<>();
-		events.add(event);
+		
+		ModelEvent<Param<?>> rootModelEvent = new ModelEvent<>(Action.getByName(event.getType()), event.getPayload().getRootDomain().getPath(), event.getPayload().getRootDomain().getAssociatedParam());
+		
+		events.add(rootModelEvent);
 			
 		Param<?> p = (Param<?>) event.getPayload();
 		Repo repo = p.getRootDomain().getConfig().getRepo();
