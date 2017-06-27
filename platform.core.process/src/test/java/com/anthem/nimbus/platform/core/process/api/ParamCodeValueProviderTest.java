@@ -183,18 +183,7 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 	public void t51_testSearchByQueryWithProjectionAndMapsTo() {
 		
 		ClientUserGroup cug = insertClientUserGroup();
-		
-		
-//		final String whereClause = "qClientUserGroup.id.eq('"+cug.getId()+"')";
-//		final Binding binding = new Binding();
-//		QClientUserGroup qClientUserGroup = new QClientUserGroup(ClientUserGroup.class.getSimpleName());
-//        binding.setProperty("qClientUserGroup", qClientUserGroup);
-//        final GroovyShell shell = new GroovyShell(binding); 
-//        Predicate predicate = (Predicate)shell.evaluate(whereClause); 
-//		assertNotNull("Not Null", predicate);
-//        SpringDataMongodbQuery<GroupUser> query = new SpringDataMongodbQuery<>(mongoOps, GroupUser.class, "clientusergroup");
-//		List<GroupUser> list = query.where(predicate).fetch(new PathBuilder(ClientUserGroup.class, "members"));
-		
+	
 		CommandMessage cmdMsg = build("Anthem/fep/icr/p/clientusergroup/_search?fn=query&where=clientusergroup.id.eq('"+cug.getId()+"')&converter=clientUserGrooupSearchResponseConverter");
 		
 		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
