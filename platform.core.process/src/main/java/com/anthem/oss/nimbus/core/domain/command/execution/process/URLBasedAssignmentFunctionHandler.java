@@ -51,12 +51,16 @@ abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements Functi
 		//Temporarily added the below code. Need to revisit.
 		String where = commandMessage.getCommand().getFirstParameterValue("where");
 		String orderby = commandMessage.getCommand().getFirstParameterValue("orderby");
+		String fetch = commandMessage.getCommand().getFirstParameterValue("fetch");
 		String converter = commandMessage.getCommand().getFirstParameterValue("converter");
 		if(StringUtils.isNotBlank(where)) {
 			url = url+"&where="+where;
 		}
 		if(StringUtils.isNotBlank(orderby)) {
 			url =  url+"&orderby="+orderby;
+		}		
+		if(StringUtils.isNotBlank(fetch)) {
+			url =  url+"&fetch="+fetch;
 		}
 		if(StringUtils.isNotBlank(converter)) {
 			url =  url+"&converter="+converter;

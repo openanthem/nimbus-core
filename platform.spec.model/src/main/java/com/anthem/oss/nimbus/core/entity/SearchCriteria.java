@@ -23,6 +23,7 @@ public abstract class SearchCriteria<T> implements Serializable {
 	private T orderby;
 	private String aggregateCriteria;
 	private ProjectCriteria projectCriteria;
+	private String fetch;
 	
 	private String responseConverter;
 	

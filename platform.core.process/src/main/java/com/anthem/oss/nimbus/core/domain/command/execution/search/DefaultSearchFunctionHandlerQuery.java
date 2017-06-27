@@ -47,6 +47,8 @@ public class DefaultSearchFunctionHandlerQuery<T, R> extends DefaultSearchFuncti
 		
 		querySearchCriteria.setOrderby(executionContext.getCommandMessage().getCommand().getFirstParameterValue("orderby"));
 		
+		querySearchCriteria.setFetch(executionContext.getCommandMessage().getCommand().getFirstParameterValue("fetch"));
+		
 		String aggregateAs = cmd.getFirstParameterValue("aggregate");
 		querySearchCriteria.setAggregateCriteria(aggregateAs);
 		
