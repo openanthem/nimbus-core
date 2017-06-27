@@ -31,16 +31,12 @@ public class ClientUserRole extends Role<ClientUserRole.Entry, ClientAccessEntit
     //TODO figure out if this can stay as just id or needs to be converted to object reference
     private String clientId;
 
-    private AllowInheritance allowInheritance;
+    private boolean allowInheritance;
     private Status status;
     private RoleType roleType;
     private String roleCategory;
+    private String displayName;
 
-    public enum AllowInheritance {
-        TRUE,
-        FALSE
-    }
-    
 	public enum Status {
 		ACTIVE,
 		INACTIVE
