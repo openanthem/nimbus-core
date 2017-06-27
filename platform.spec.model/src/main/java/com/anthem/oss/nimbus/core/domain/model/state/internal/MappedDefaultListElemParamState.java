@@ -50,16 +50,18 @@ public class MappedDefaultListElemParamState<E, M> extends DefaultListElemParamS
 		MappedListModel<E, ?> mappedParentModel = parentModel.findIfMapped();
 		
 		//check if mapsToElem already exists
-		ListModel<?> mapsToModel = mappedParentModel.getMapsTo();
+		ListModel<?> mapsToParentModel = mappedParentModel.getMapsTo();
 		
-		Param<?> maps2Param = mapsToModel.templateParams().find(elemId);
-		final ListElemParam<?> mapsToElem;
-		
-		if(maps2Param!=null) 
-			mapsToElem = maps2Param.findIfCollectionElem();
-		else 
-			mapsToElem = mapsToModel.add();
-		
-		return mapsToElem;
+		return mapsToParentModel.getLockTemplate().execute(()->{
+			Param<?> maps2Param = mapsToParentModel.templateParams().find(elemId);
+			final ListElemParam<?> mapsToElem;
+			
+			if(maps2Param!=null) 
+				mapsToElem = maps2Param.findIfCollectionElem();
+			else 
+				mapsToElem = mapsToParentModel.add();
+			
+			return mapsToElem;
+		});
 	}
 }

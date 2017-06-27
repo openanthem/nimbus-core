@@ -430,7 +430,8 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 		}
 		
 		private ExecutorService createExecutorService() {
-			return Executors.newFixedThreadPool(1, new ThreadFactory() {
+			return Executors.newSingleThreadExecutor(new ThreadFactory() {
+			//return Executors.newFixedThreadPool(1, new ThreadFactory() {
 				
 				@Override
 				public Thread newThread(Runnable r) {
