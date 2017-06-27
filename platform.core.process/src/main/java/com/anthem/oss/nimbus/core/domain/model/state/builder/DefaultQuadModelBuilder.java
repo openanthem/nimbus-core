@@ -71,7 +71,7 @@ public class DefaultQuadModelBuilder implements QuadModelBuilder {
 		Collection<StateAndConfigEventListener> publishers = beanResolver.getMultiple(StateAndConfigEventListener.class);
 		publishers.forEach(getParamEventListeners()::add);
 		
-		bulkEventListener = beanResolver.get(BulkEventListener.class);
+		//bulkEventListener = beanResolver.get(BulkEventListener.class);
 		
 	}
 	
