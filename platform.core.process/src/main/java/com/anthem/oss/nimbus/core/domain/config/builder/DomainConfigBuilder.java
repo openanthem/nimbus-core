@@ -31,7 +31,7 @@ import com.anthem.oss.nimbus.core.util.JustLogit;
 @RefreshScope
 public class DomainConfigBuilder {
 
-	private final Map<String, ModelConfig<?>> cache;
+	private final Map<String, ModelConfig<?>> cacheDomainRootModel;
 	private final EntityConfigVistor configVisitor;
 
 	private final EntityConfigBuilder configBuilder;
@@ -45,7 +45,7 @@ public class DomainConfigBuilder {
 		this.basePackages = Optional.ofNullable(basePackages)
 								.orElseThrow(()->new InvalidConfigException("base packages must be configured for scanning domain models."));
 		
-		this.cache = new HashMap<>();
+		this.cacheDomainRootModel = new HashMap<>();
 		this.configVisitor = new EntityConfigVistor();
 	}
 	
@@ -56,9 +56,12 @@ public class DomainConfigBuilder {
 
 
 	public ModelConfig<?> getRootDomain(String rootAlias) {
-		return cache.get(rootAlias);
+		return cacheDomainRootModel.get(rootAlias);
 	}
 	
+	public ModelConfig<?> getModel(String alias) {
+		return configVisitor.get(alias);
+	}
 	
 	@PostConstruct
 	public void load() {
@@ -84,7 +87,7 @@ public class DomainConfigBuilder {
 			Domain domain = AnnotationUtils.findAnnotation(clazz, Domain.class);
 			
 			ModelConfig<T> mConfig = configBuilder.load(clazz, configVisitor);
-			cache.put(domain.value(), mConfig);
+			cacheDomainRootModel.put(domain.value(), mConfig);
 		}
 	}
 

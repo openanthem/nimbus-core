@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -24,8 +25,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class EntityConfigVistor {
 
-	@Getter
+	@Getter(AccessLevel.PRIVATE)
 	private final Map<Class<?>, ModelConfig<?>> visitedModels = new HashMap<>();
+	
+	@Getter(AccessLevel.PRIVATE)
+	private final Map<String, ModelConfig<?>> visitedModelsByAlias = new HashMap<>();
 	
 	public boolean contains(Class<?> clazz) {
 		if(getVisitedModels()==null) return false;
@@ -33,13 +37,26 @@ public class EntityConfigVistor {
 		return getVisitedModels().containsKey(clazz);
 	}
 	
+	public boolean contains(String alias) {
+		if(getVisitedModelsByAlias()==null) return false;
+		
+		return getVisitedModelsByAlias().containsKey(alias);
+	}
+	
 	public void set(Class<?> clazz, ModelConfig<?> mConfig) {
 		getVisitedModels().put(clazz, mConfig);
+		
+		if(mConfig.getAlias()!=null)
+			getVisitedModelsByAlias().put(mConfig.getAlias(), mConfig);
 	}
 	
 	
 	public ModelConfig<?> get(Class<?> clazz) {
 		return getVisitedModels().get(clazz);
+	}
+	
+	public ModelConfig<?> get(String alias) {
+		return getVisitedModelsByAlias().get(alias);
 	}
 	
 	public static List<String> determineRootPackages(List<String> basePackages) {

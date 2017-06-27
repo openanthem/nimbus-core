@@ -34,7 +34,9 @@ public class MappedDefaultListParamState<T, M> extends DefaultListParamState<T> 
 			
 			@Override
 			protected void onEventNewElem(Notification<List<M>> event) {
-				//lockTemplate.execute(()->{
+				ListModel<?> mapsToListModel = event.getEventParam().findIfCollectionElem().getParentModel();
+				
+				mapsToListModel.getLockTemplate().execute(()->{
 					// check if mapped elem was already created
 					String elemId = event.getEventParam().findIfCollectionElem().getElemId();
 					Param<?> param = getType().findIfNested().getModel().templateParams().find(elemId);
@@ -51,12 +53,14 @@ public class MappedDefaultListParamState<T, M> extends DefaultListParamState<T> 
 					// add new
 					ListElemParam<T> mappedElem = add();
 					logit.trace(()->"[onEventNewElem] created new mappedElem: "+mappedElem.getPath());			
-				//});
+				});
 			}
 			
 			@Override
 			protected void onEventDeleteElem(Notification<List<M>> event) {
-				//lockTemplate.execute(()->{
+				ListModel<?> mapsToListModel = event.getEventParam().findIfCollectionElem().getParentModel();
+				
+				mapsToListModel.getLockTemplate().execute(()->{
 					logit.trace(()->"[onEventDeleteElem] received for mapsTo.ListParamElem: "+event.getEventParam().getPath());
 					
 					String elemId = event.getEventParam().findIfCollectionElem().getElemId();
@@ -65,7 +69,7 @@ public class MappedDefaultListParamState<T, M> extends DefaultListParamState<T> 
 					Param<?> mappedParamElem = mappedColModel.templateParams().remove(elemId);
 					
 					logit.trace(()->"[onEventDeleteElem] removed mapped.ListParamElem: "+mappedParamElem.getPath());
-				//});	
+				});	
 			}
 		};
 

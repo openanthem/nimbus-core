@@ -68,7 +68,7 @@ public class DefaultParamStateRepositoryLocal implements ParamStateRepository {
 			} else {
 				throw new InvalidOperationAttemptedException(
 						"Attemted to set in collection at index:"+index+" whereas size is:"+coreList.size()
-						+" fpr param.path: "+param.getPath());
+						+" for param.path: "+param.getPath());
 			}
 
 			
