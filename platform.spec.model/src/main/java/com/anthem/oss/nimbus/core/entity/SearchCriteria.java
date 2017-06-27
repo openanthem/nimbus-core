@@ -24,6 +24,8 @@ public abstract class SearchCriteria<T> implements Serializable {
 	private String aggregateCriteria;
 	private ProjectCriteria projectCriteria;
 	
+	private String responseConverter;
+	
 	public abstract void validate(ExecutionContext executionContext);
 	
 	@Data
@@ -49,11 +51,11 @@ public abstract class SearchCriteria<T> implements Serializable {
 				throw new FrameworkRuntimeException("QuerySearchCriteria does not support the raw paylaod in command: "+executionContext.getCommandMessage()); 
 			}
 			
-			String[] projectionMapping = executionContext.getCommandMessage().getCommand().getRequestParams().get("projection.mapsTo");
-			
-			if(ArrayUtils.isNotEmpty(projectionMapping)){
-				throw new FrameworkRuntimeException("QuerySearchCriteria does not support projection.mapsTo to request parameter in command: "+executionContext.getCommandMessage());
-			}
+//			String[] projectionMapping = executionContext.getCommandMessage().getCommand().getRequestParams().get("projection.mapsTo");
+//			
+//			if(ArrayUtils.isNotEmpty(projectionMapping)){
+//				throw new FrameworkRuntimeException("QuerySearchCriteria does not support projection.mapsTo to request parameter in command: "+executionContext.getCommandMessage());
+//			}
 		}
 		
 	}

@@ -27,7 +27,10 @@ public abstract class MongoDBSearch implements DBSearch {
 	
 	private final DomainConfigBuilder domainConfigBuilder;
 	
+	private final BeanResolverStrategy beanResolver;
+	
 	public MongoDBSearch(BeanResolverStrategy beanResolver) {
+		this.beanResolver = beanResolver;
 		this.mongoOps = beanResolver.get(MongoOperations.class);
 		this.domainConfigBuilder = beanResolver.get(DomainConfigBuilder.class);
 		this.converter = beanResolver.get(CommandMessageConverter.class);
@@ -36,7 +39,7 @@ public abstract class MongoDBSearch implements DBSearch {
 	
 	public <T> Class<?> findOutputClass(SearchCriteria<T> criteria, Class<?> referredClass) {
 		if(criteria.getProjectCriteria() != null && StringUtils.isNotBlank(criteria.getProjectCriteria().getAlias())) {
-			return getDomainConfigBuilder().getRootDomain(criteria.getProjectCriteria().getAlias()).getReferredClass();
+			return getDomainConfigBuilder().getModel(criteria.getProjectCriteria().getAlias()).getReferredClass();
 		}
 		else if(criteria.getAggregateCriteria() != null ) {
 			com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository.Aggregation aggByAlias = 
