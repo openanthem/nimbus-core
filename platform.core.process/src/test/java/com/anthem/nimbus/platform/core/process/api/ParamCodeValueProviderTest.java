@@ -35,6 +35,8 @@ import com.anthem.oss.nimbus.core.entity.queue.MGroupMember;
 import com.anthem.oss.nimbus.core.entity.queue.MUser;
 import com.anthem.oss.nimbus.core.entity.queue.MUserGroup;
 import com.anthem.oss.nimbus.core.entity.queue.Queue;
+import com.anthem.oss.nimbus.core.entity.user.ClientUserGroup;
+import com.anthem.oss.nimbus.core.entity.user.GroupUser;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Predicate;
 
@@ -174,6 +176,23 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 		
 		assertNotNull(values);
 		assertEquals(1, values.size());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void t51_testSearchByQueryWithProjectionAndMapsTo() {
+		
+		ClientUserGroup cug = insertClientUserGroup();
+	
+		CommandMessage cmdMsg = build("Anthem/fep/icr/p/clientusergroup/_search?fn=query&where=clientusergroup.id.eq('"+cug.getId()+"')&converter=clientUserGrooupSearchResponseConverter");
+		
+		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
+		List<GroupUser> values = (List<GroupUser>)multiOp.getSingleResult();
+		
+		assertNotNull(values);
+		assertEquals(1, values.size());
+		
+		//values.forEach((gu) -> System.out.println("&&&&&&& GroupUser: "+gu.getUserId()+" is Admin: "+gu.isAdmin()));
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -424,6 +443,28 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 		mongoOps.insert(user1,"user");
 		queue1.addUsers(user1);
 		mongoOps.insert(queue1);
+	}
+	
+	private ClientUserGroup insertClientUserGroup() {
+		mongoOps.dropCollection("clientusergroup");
+		ClientUserGroup cug = new ClientUserGroup(); 
+		cug.setId("1"); 
+		List<GroupUser> guList = new ArrayList<GroupUser>(); 
+		GroupUser gu = new GroupUser(); 
+		gu.setUserId("test1"); 
+		gu.setAdmin(false);  
+		GroupUser gu2 = new GroupUser(); 
+		gu2.setUserId("test2"); 
+		gu2.setAdmin(false);  
+		guList.add(gu);
+		guList.add(gu2);
+		
+		cug.setMembers(guList);
+		cug.setName("TTTT");
+		
+		mongoOps.save(cug, "clientusergroup");
+		
+		return cug;
 	}
 	
 	private String getAssociationString() {
