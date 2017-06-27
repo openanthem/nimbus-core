@@ -32,7 +32,6 @@ import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType.CollectionType;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListElemParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListModel;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
@@ -149,30 +148,7 @@ public class QuadModelCollectionsTest {
 		assertSame(sl.getService(), q.getCore().findParamByPath("/serviceLines/0/service").getLeafState());
 		assertSame(sl.getService(), q.getCore().<ServiceLine>findParamByPath("/serviceLines/0").getLeafState().getService());
 	}
-	
-	@Test
-	public void t2_getValues() {
-		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
-		
-		ListParam<ParamValue> pList1_Values =  validateValues(q, "/selectedValue_1");
-		assertTrue(pList1_Values.size()>0);
-		
-		ListParam<ParamValue> pList2_Values =  validateValues(q, "/selectedValue_2");
-		assertTrue(pList2_Values.size()>0);
-	}
-	
-	private ListParam<ParamValue> validateValues(QuadModel<?, ?> q, String pPath) {
-		Param<String> pSelectedValue = q.getView().findParamByPath(pPath);
-		assertNotNull(pSelectedValue);
-		
-		Param<List<ParamValue>> p_Values = pSelectedValue.getContextModel().findParamByPath("/values");
-		assertNotNull(p_Values);
-		
-		ListParam<ParamValue> pList_Values =  p_Values.findIfCollection();
-		assertNotNull(pList_Values);
-		
-		return pList_Values;
-	}
+
 	
 	@Test
 	public void tc01_sanity_check_core_builders() {

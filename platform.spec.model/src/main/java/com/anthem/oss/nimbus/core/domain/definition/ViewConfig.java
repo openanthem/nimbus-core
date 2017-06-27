@@ -67,6 +67,7 @@ public class ViewConfig {
 		String alias() default "page";
 		Type type() default Type.Home;
 		String route() default "";
+		String layout() default "";
 		String breadCrumb() default "none";
 		String imgSrc() default "";
 		String styleClass() default "";
@@ -171,6 +172,7 @@ public class ViewConfig {
 			FOOTER,
 			LEFTBAR,
 			RIGHTBAR,
+			BODY,
 			DEFAULT;
 		}
 		
@@ -178,6 +180,7 @@ public class ViewConfig {
 		String alias() default "Section";
 		String imgSrc() default "";
 		String cssClass() default "";
+		String defaultFlow() default ""; // applicable only to Section type BODY.
 	}
 		
 	@Retention(RetentionPolicy.RUNTIME)
