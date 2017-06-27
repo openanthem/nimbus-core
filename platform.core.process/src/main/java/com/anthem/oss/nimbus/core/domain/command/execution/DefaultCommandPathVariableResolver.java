@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.anthem.oss.nimbus.core.session.UserEndpointSession;
 import com.anthem.oss.nimbus.core.utils.ParamPathExpressionParser;
 
 /**
@@ -50,8 +51,11 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 		return mapQuad(eCtx, commandParam, pathToResolve);
 	}
 	
+	//TODO bean path evaluation to get value
 	protected String mapSelf(ExecutionContext eCtx, Param<?> commandParam, String pathToResolve) {
-		//TODO bean path evaluation to get value
+		if(StringUtils.endsWith(pathToResolve, "loginId"))
+			return UserEndpointSession.getStaticLoggedInUser().getLoginId();
+		
 		return eCtx.getCommandMessage().getCommand().getElement(Type.ClientAlias).get().getAlias();
 	}
 	

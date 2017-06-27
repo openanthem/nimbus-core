@@ -1,11 +1,14 @@
 package com.anthem.oss.nimbus.core.config;
 
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
@@ -19,15 +22,17 @@ import com.anthem.oss.nimbus.core.domain.model.state.repo.IdSequenceRepository;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.MongoIdSequenceRepository;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.ParamStateRepository;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.ParamStateRepositoryGateway;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ClientUserGrooupSearchResponseConverter;
 //import com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement.PlatformUserRepository;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.DefaultModelRepositoryFactory;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelPersistenceHandler;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFactory;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ParamStateAtomicPersistenceEventListener;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ParamStateBatchPersistenceEventListener;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.mongo.DefaultMongoModelPersistenceHandler;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.mongo.DefaultMongoModelRepository;
+import com.anthem.oss.nimbus.core.entity.user.ClientUserGroup;
+import com.anthem.oss.nimbus.core.entity.user.GroupUser;
 import com.anthem.oss.nimbus.core.rules.DefaultRulesEngineFactoryProducer;
 import com.anthem.oss.nimbus.core.rules.drools.DroolsRulesEngineFactory;
 import com.anthem.oss.nimbus.core.session.UserEndpointSession;
@@ -95,10 +100,10 @@ public class DefaultCoreConfiguration {
 		return new ParamStateAtomicPersistenceEventListener(repoFactory, handler);
 	}
 	
-	@Bean(name="default.paramStateBatchPersistenceEventListener")
-	public ParamStateBatchPersistenceEventListener paramStateBatchPersistenceEventListener(ModelRepositoryFactory repoFactory){
-		return new ParamStateBatchPersistenceEventListener(repoFactory);
-	}
+//	@Bean(name="default.paramStateBatchPersistenceEventListener")
+//	public ParamStateBulkPersistenceEventListener paramStateBatchPersistenceEventListener(ModelRepositoryFactory repoFactory){
+//		return new ParamStateBulkPersistenceEventListener(repoFactory);
+//	}
 	
 	@Bean(name="default.param.state.rep_local")
 	public DefaultParamStateRepositoryLocal defaultParamStateRepositoryLocal(JavaBeanHandler javaBeanHandler){
@@ -175,4 +180,9 @@ public class DefaultCoreConfiguration {
 //	BeforeSaveListener beforeSaveListener(@Qualifier("default.processGateway") ProcessGateway processGateway) {
 //		return new BeforeSaveListener();
 //	}
+	
+	@Bean(name="clientUserGrooupSearchResponseConverter")
+	Converter clientUserGroupConverter() {
+		return new ClientUserGrooupSearchResponseConverter();
+	}
 }

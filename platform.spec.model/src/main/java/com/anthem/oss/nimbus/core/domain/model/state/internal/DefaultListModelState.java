@@ -12,6 +12,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListModel;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification.ActionType;
+import com.anthem.oss.nimbus.core.util.LockTemplate;
 
 import lombok.Getter;
 
@@ -93,38 +94,43 @@ public class DefaultListModelState<T> extends DefaultModelState<List<T>> impleme
 	
 	@Override
 	public ListElemParam<T> add() {
-		return getLockTemplate().execute(()->add(false));
+		//return getLockTemplate().execute(()->add(false));
+		return add(false);
 	}
 	
 	private ListElemParam<T> add(boolean suppressNotify) {
-		List<T> list = instantiateOrGet();
+		final LockTemplate rLockTemplate = isMapped() ? findIfMapped().getMapsTo().getLockTemplate() : getLockTemplate();
 		
-		if(list.size()!=templateParams().size() && (
-				isMapped() && getAssociatedParam().findIfMapped().requiresConversion()
-				))  {
-//			throw new InvalidStateException("List entity has size: "+list.size()+" whereas ListModel.params has size: "+templateParams().size()+". "
-//					+ "Must be same but found different.");
-		}
-	
-		String elemId = toElemId(templateParams().size());
+		return rLockTemplate.execute(()->{
+			List<T> list = instantiateOrGet();
+			
+			if(list.size()!=templateParams().size() && (
+					isMapped() && getAssociatedParam().findIfMapped().requiresConversion()
+					))  {
+	//			throw new InvalidStateException("List entity has size: "+list.size()+" whereas ListModel.params has size: "+templateParams().size()+". "
+	//					+ "Must be same but found different.");
+			}
 		
-		Param<T> pElem = getElemCreator().apply(this, elemId);
-		ListElemParam<T> pColElem = pElem.findIfCollectionElem();
-		templateParams().add(pColElem);
-		
-		// notify
-		if(!suppressNotify)
-			getAssociatedParam().notifySubscribers(new Notification<>(this.getAssociatedParam(), ActionType._newElem, pColElem));
-		
-		return pColElem;
+			String elemId = toElemId(templateParams().size());
+			
+			Param<T> pElem = getElemCreator().apply(this, elemId);
+			ListElemParam<T> pColElem = pElem.findIfCollectionElem();
+			templateParams().add(pColElem);
+			
+			// notify
+			if(!suppressNotify)
+				getAssociatedParam().notifySubscribers(new Notification<>(this.getAssociatedParam(), ActionType._newElem, pColElem));
+			
+			return pColElem;
+		});
 	} 
 	
 	@Override
 	public boolean add(T elem) {
-		lockTemplate.execute(()->{
+		//lockTemplate.execute(()->{
 			ListElemParam<T> pColElem = add();
 			pColElem.setState(elem);		//lockTemplate.execute(()->pColElem.setState(elem));
-		});
+		//});
 		return true;
 	}
 	

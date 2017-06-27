@@ -430,14 +430,17 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 		}
 		
 		private ExecutorService createExecutorService() {
-			return Executors.newFixedThreadPool(1, new ThreadFactory() {
+			return Executors.unconfigurableExecutorService(
+					Executors.newSingleThreadExecutor(new ThreadFactory() {
+			//return Executors.newFixedThreadPool(1, new ThreadFactory() {
 				
 				@Override
 				public Thread newThread(Runnable r) {
 					AtomicInteger counter = rootCommandBasedExecCounters.computeIfAbsent(getRootCommand().getAbsoluteUri(), k->new AtomicInteger());
 					return new Thread(r, "ExecState "+counter.incrementAndGet()+": "+getRootCommand().getAbsoluteUri());
 				}
-			});
+			})
+					);
 		}
 	} 
 	
@@ -452,15 +455,17 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 		public void run() {
 			try {
 				while(true) {
+					
 					Notification<Object> event = (Notification<Object>)notificationQueue.take();
 					Param<Object> source =  event.getSource();
 					
-					// create new list to avoid concurrent modification of subscriber list as part of event handling
-					new ArrayList<>(source.getEventSubscribers())
-						.stream()
-						.forEach(subscribedParam->subscribedParam.handleNotification(event));
-					
 					getNotificationLock().execute(()-> {
+						// create new list to avoid concurrent modification of subscriber list as part of event handling
+						new ArrayList<>(source.getEventSubscribers())
+							.stream()
+							.forEach(subscribedParam->subscribedParam.handleNotification(event));
+					
+					
 						if(notificationQueue.size()==0)
 							notComplete.signal();
 					});

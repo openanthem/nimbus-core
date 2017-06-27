@@ -1,5 +1,11 @@
 package com.anthem.oss.nimbus.core.domain.command.execution.search;
 
+import java.util.HashMap;
+import java.util.stream.Stream;
+
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.StringUtils;
+
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContext;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
@@ -44,10 +50,27 @@ public class DefaultSearchFunctionHandlerQuery<T, R> extends DefaultSearchFuncti
 		String aggregateAs = cmd.getFirstParameterValue("aggregate");
 		querySearchCriteria.setAggregateCriteria(aggregateAs);
 		
+		String converter = cmd.getFirstParameterValue("converter");
+		querySearchCriteria.setResponseConverter(converter);
+		
+		ProjectCriteria projectCriteria = new ProjectCriteria();
+		
 		if(cmd.getRequestParams().get("projection.alias") != null) {
-			ProjectCriteria projectCriteria = new ProjectCriteria();
 			projectCriteria.setAlias(cmd.getFirstParameterValue("projection.alias"));
 			querySearchCriteria.setProjectCriteria(projectCriteria);
+		}
+		
+		if(cmd.getRequestParams().get("projection.mapsTo") != null) {
+			String projectMapping = cmd.getFirstParameterValue("projection.mapsTo");
+			String[] keyValues = StringUtils.split(projectMapping,",");
+			
+			Stream.of(keyValues).forEach((kvString) -> {
+				if(MapUtils.isEmpty(projectCriteria.getMapsTo())){
+					projectCriteria.setMapsTo(new HashMap<String, String>());
+				}
+				String[] kv = StringUtils.split(kvString,":");
+				projectCriteria.getMapsTo().put(kv[0], kv[1]);
+			});
 		}
 		
 		return querySearchCriteria;

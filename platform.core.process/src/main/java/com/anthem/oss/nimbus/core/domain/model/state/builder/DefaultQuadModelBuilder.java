@@ -22,6 +22,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.ParamStateGateway;
+import com.anthem.oss.nimbus.core.spec.contract.event.BulkEventListener;
 import com.anthem.oss.nimbus.core.spec.contract.event.StateAndConfigEventListener;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 
@@ -45,6 +46,8 @@ public class DefaultQuadModelBuilder implements QuadModelBuilder {
 	private ParamStateGateway paramStateGateway;
 	
 	private List<StateAndConfigEventListener> paramEventListeners;
+	
+	private BulkEventListener bulkEventListener;
 
 	private final BeanResolverStrategy beanResolver;
 	
@@ -67,6 +70,9 @@ public class DefaultQuadModelBuilder implements QuadModelBuilder {
 		
 		Collection<StateAndConfigEventListener> publishers = beanResolver.getMultiple(StateAndConfigEventListener.class);
 		publishers.forEach(getParamEventListeners()::add);
+		
+		//bulkEventListener = beanResolver.get(BulkEventListener.class);
+		
 	}
 	
 	
@@ -83,7 +89,7 @@ public class DefaultQuadModelBuilder implements QuadModelBuilder {
 		//create event listener
 		QuadScopedEventListener qEventListener = new QuadScopedEventListener(getParamEventListeners());
 		
-		EntityStateAspectHandlers provider = new EntityStateAspectHandlers(qEventListener, validatorProvider, paramStateGateway);
+		EntityStateAspectHandlers provider = new EntityStateAspectHandlers(qEventListener, bulkEventListener, validatorProvider, paramStateGateway);
 		
 		final ExecutionEntity<V, C>.ExModel execModelStateAndConfig = stateAndConfigBuilder.buildExec(cmd.createRootDomainCommand(), provider, eState, exConfig);
 		

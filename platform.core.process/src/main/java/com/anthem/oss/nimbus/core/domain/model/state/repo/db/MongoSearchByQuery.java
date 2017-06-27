@@ -19,6 +19,7 @@ import java.util.TimeZone;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
@@ -76,16 +77,22 @@ public class MongoSearchByQuery extends MongoDBSearch {
 		if(criteria.getProjectCriteria() != null && !MapUtils.isEmpty(criteria.getProjectCriteria().getMapsTo())) {
 			Collection<String> fields = criteria.getProjectCriteria().getMapsTo().values();
 			List<PathBuilder> paths = new ArrayList<>();
-			fields.forEach((f)->paths.add(new PathBuilder(outputClass, f)));
+			fields.forEach((f)->paths.add(new PathBuilder(referredClass, f)));
 			if(orderBy!=null) {
 				return query.where(predicate).orderBy(orderBy).fetch(paths.toArray(new PathBuilder[paths.size()]));
 			}
 			return query.where(predicate).fetch(paths.toArray(new PathBuilder[paths.size()]));
+			
 		}
 		if(orderBy!=null) {
 			return query.where(predicate).orderBy(orderBy).fetch();
 		}
-		return query.where(predicate).fetch();
+		List<?> response = query.where(predicate).fetch();
+		if(StringUtils.isNotBlank(criteria.getResponseConverter())){
+			Converter converter = getBeanResolver().get(ClientUserGrooupSearchResponseConverter.class);
+			return converter.convert(response);
+		}
+		return response;
 		
 	}
 
