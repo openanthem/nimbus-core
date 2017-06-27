@@ -362,6 +362,17 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface CheckBox {
 		String alias() default "CheckBox";
+		String cssClass() default "";
+		String labelClass() default "anthem-label";
+		boolean postEventOnChange() default false;
+		String controlId() default "";
+	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface CheckBoxGroup {
+		String alias() default "CheckBoxGroup";
 		String level() default "0";
 		String cssClass() default "";
 		String labelClass() default "anthem-label";
