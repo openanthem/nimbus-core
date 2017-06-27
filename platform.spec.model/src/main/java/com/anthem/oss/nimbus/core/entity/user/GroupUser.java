@@ -21,5 +21,5 @@ public class GroupUser {
 	@Id
 	private String userId;
 	
-	private boolean isAdmin;
+	private boolean admin;
 }
