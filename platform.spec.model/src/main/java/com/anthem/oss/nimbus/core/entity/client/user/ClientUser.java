@@ -37,4 +37,6 @@ public class ClientUser extends AbstractUser<ClientUserRole, ClientUserRole.Entr
 	@Ignore
 	private DefaultUser platformUser;
 	
+	private String roleName; // Temp for header
+	
 }
