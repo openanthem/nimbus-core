@@ -45,6 +45,13 @@ public class ViewConfig {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewParamBehavior
+	public @interface Initialize {
+		String alias() default "initialize";
+	}
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewParamBehavior
 	public @interface Mode {
 		public enum Options {
 			ReadOnly,
