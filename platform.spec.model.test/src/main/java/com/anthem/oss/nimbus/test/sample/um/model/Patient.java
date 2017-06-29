@@ -19,7 +19,7 @@ import lombok.ToString;
  *
  */
 @Getter @Setter
-@Domain("patient") 
+@Domain("testpatient") 
 @Repo
 @ToString
 public class Patient extends AbstractEntity.IdString {
