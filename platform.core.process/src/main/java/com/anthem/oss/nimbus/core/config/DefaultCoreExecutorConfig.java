@@ -44,8 +44,8 @@ public class DefaultCoreExecutorConfig {
 	}
 	
 	@Bean
-	public CommandPathVariableResolver defaultCommandPathVariableResolver() {
-		return new DefaultCommandPathVariableResolver();
+	public CommandPathVariableResolver defaultCommandPathVariableResolver(BeanResolverStrategy beanResolver) {
+		return new DefaultCommandPathVariableResolver(beanResolver);
 	}
 	
 	@Bean
