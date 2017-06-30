@@ -5,6 +5,8 @@ package com.anthem.oss.nimbus.core.entity;
 
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
+import com.anthem.oss.nimbus.core.domain.definition.Repo.Cache;
+import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity.IdString;
 
 import lombok.Getter;
@@ -16,7 +18,7 @@ import lombok.Setter;
  *
  */
 @Domain("vstaticCodeValue")
-@Repo
+@Repo(value=Database.rep_mongodb, cache=Cache.rep_device)
 @Getter @Setter @RequiredArgsConstructor
 public class VStaticCodeValue extends IdString {
 

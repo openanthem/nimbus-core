@@ -9,6 +9,8 @@ import java.util.Set;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
+import com.anthem.oss.nimbus.core.domain.definition.Repo.Cache;
+import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 
 import lombok.Getter;
@@ -20,7 +22,7 @@ import lombok.ToString;
  *
  */
 @Domain(value="defaultAccessEntity", includeListeners={ListenerType.persistence})
-@Repo
+@Repo(value=Database.rep_mongodb, cache=Cache.rep_device)
 @Getter @Setter @ToString(callSuper=true)
 public class DefaultAccessEntity extends AbstractEntity.IdString implements AccessEntity {
 	

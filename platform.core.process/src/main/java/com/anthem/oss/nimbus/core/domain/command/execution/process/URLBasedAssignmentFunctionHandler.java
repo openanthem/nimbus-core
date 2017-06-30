@@ -53,6 +53,7 @@ abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements Functi
 		String orderby = commandMessage.getCommand().getFirstParameterValue("orderby");
 		String fetch = commandMessage.getCommand().getFirstParameterValue("fetch");
 		String converter = commandMessage.getCommand().getFirstParameterValue("converter");
+		String aggregate = commandMessage.getCommand().getFirstParameterValue("aggregate");
 		if(StringUtils.isNotBlank(where)) {
 			url = url+"&where="+where;
 		}
@@ -65,7 +66,9 @@ abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements Functi
 		if(StringUtils.isNotBlank(converter)) {
 			url =  url+"&converter="+converter;
 		}
-		
+		if(StringUtils.isNotBlank(aggregate)) {
+			url =  url+"&aggregate="+aggregate;
+		}
 		return url;
 	}
 	

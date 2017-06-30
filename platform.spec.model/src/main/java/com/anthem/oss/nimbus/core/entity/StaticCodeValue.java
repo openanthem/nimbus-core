@@ -9,6 +9,8 @@ import org.springframework.data.annotation.Id;
 
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
+import com.anthem.oss.nimbus.core.domain.definition.Repo.Cache;
+import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity.IdString;
 
@@ -21,7 +23,7 @@ import lombok.Setter;
  *
  */
 @Domain("staticCodeValue")
-@Repo
+@Repo(value=Database.rep_mongodb, cache=Cache.rep_device)
 @Getter @Setter @RequiredArgsConstructor
 public class StaticCodeValue extends IdString {
 

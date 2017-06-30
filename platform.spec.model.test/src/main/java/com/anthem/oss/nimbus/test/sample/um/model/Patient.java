@@ -21,8 +21,8 @@ import lombok.ToString;
  *
  */
 @Getter @Setter
-@Domain("patient") 
 @Repo(value=Database.rep_mongodb, cache=Cache.rep_device)
+@Domain("testpatient")
 @ToString
 public class Patient extends AbstractEntity.IdString {
     
