@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
@@ -20,6 +21,13 @@ import com.anthem.oss.nimbus.core.utils.ParamPathExpressionParser;
  */
 public class DefaultCommandPathVariableResolver implements CommandPathVariableResolver {
 
+	private final CommandMessageConverter converter;
+	
+	public DefaultCommandPathVariableResolver(BeanResolverStrategy beanResolver) {
+		this.converter = beanResolver.get(CommandMessageConverter.class);
+	}
+	
+	
 	@Override
 	public String resolve(ExecutionContext eCtx, Param<?> commandParam, String urlToResolve) {
 		Map<Integer, String> entries = ParamPathExpressionParser.parse(urlToResolve);
@@ -60,7 +68,17 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 	}
 	
 	protected String mapQuad(ExecutionContext eCtx, Param<?> commandParam, String pathToResolve) {
-		Param<?> p = commandParam.getParentModel().findParamByPath(pathToResolve);
-		return String.valueOf(p.getState());
+		if(StringUtils.startsWith(pathToResolve, "json(")) {
+			String paramPath = StringUtils.substringBetween(pathToResolve, "json(", ")");
+			Param<?> p = commandParam.getParentModel().findParamByPath(paramPath);
+			
+			Object state = p.getLeafState();
+			String json = converter.convert(state);
+			return json;
+		} else {
+			Param<?> p = commandParam.getParentModel().findParamByPath(pathToResolve);
+			return String.valueOf(p.getState());
+		}
 	}
+
 }
