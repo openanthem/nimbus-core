@@ -4,6 +4,8 @@
 package com.anthem.oss.nimbus.core.entity.client.user;
 
 import com.anthem.oss.nimbus.core.domain.definition.ConfigNature.Ignore;
+import com.anthem.oss.nimbus.core.domain.definition.Repo.Cache;
+import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.entity.client.Client;
@@ -26,7 +28,7 @@ import lombok.ToString;
  * @author Soham Chakravarti
  */
 @Domain("clientuser")
-@Repo
+@Repo(value=Database.rep_mongodb, cache=Cache.rep_device)
 @Getter @Setter @ToString(callSuper=true)
 public class ClientUser extends AbstractUser<ClientUserRole, ClientUserRole.Entry, ClientAccessEntity> {
 	

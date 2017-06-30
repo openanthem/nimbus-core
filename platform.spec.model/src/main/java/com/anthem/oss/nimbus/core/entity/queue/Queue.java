@@ -7,6 +7,8 @@ import com.anthem.oss.nimbus.core.domain.definition.AssociatedEntity;
 import com.anthem.oss.nimbus.core.domain.definition.ConfigNature.Ignore;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
+import com.anthem.oss.nimbus.core.domain.definition.Repo.Cache;
+import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity.IdString;
 
@@ -19,7 +21,7 @@ import lombok.Setter;
  *
  */
 @Domain(value="queue", includeListeners={ListenerType.persistence})
-@Repo
+@Repo(value=Database.rep_mongodb, cache=Cache.rep_device)
 @Getter @Setter @EqualsAndHashCode(of={"code"},callSuper=false)
 public class Queue extends IdString {
 

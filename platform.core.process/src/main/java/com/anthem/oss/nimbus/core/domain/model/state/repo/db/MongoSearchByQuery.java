@@ -58,7 +58,7 @@ public class MongoSearchByQuery extends MongoDBSearch {
 	}
 	
 	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({ "rawtypes", "unchecked"})
 	private <T> Object searchByQuery(Class<?> referredClass, String alias, SearchCriteria<T> criteria) {
 		
 		Class<?> outputClass = findOutputClass(criteria, referredClass);
@@ -69,9 +69,10 @@ public class MongoSearchByQuery extends MongoDBSearch {
 		
 		OrderSpecifier orderBy = buildOrderSpecifier((String)criteria.getOrderby(), referredClass, alias);
 		if(StringUtils.equalsIgnoreCase(criteria.getAggregateCriteria(), "count")) {
-			Holder<Long> holder = new Holder<>();
-			holder.setState(query.where(predicate).fetchCount());
-			return holder; // TODO refactor to support other single value aggregations ...
+			//Holder<Long> holder = new Holder<>();
+			//holder.setState(query.where(predicate).fetchCount());
+			//return holder; // TODO refactor to support other single value aggregations ...
+			return (Long)query.where(predicate).fetchCount();
 		}
 		
 		if(criteria.getProjectCriteria() != null && !MapUtils.isEmpty(criteria.getProjectCriteria().getMapsTo())) {

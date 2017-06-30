@@ -9,8 +9,9 @@ import javax.validation.constraints.NotNull;
 
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
-import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
+import com.anthem.oss.nimbus.core.domain.definition.Repo.Cache;
+import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 
 import lombok.Getter;
@@ -21,8 +22,7 @@ import lombok.Setter;
  *
  */
 @Domain(value="assignmenttask", includeListeners={ListenerType.persistence})
-@Repo(alias="assignmenttask")
-//@AssociatedEntity("flow_cmcase")
+@Repo(alias="assignmenttask",value=Database.rep_mongodb, cache=Cache.rep_device)
 @Getter @Setter
 public class AssignmentTask extends AbstractEntity.IdString{
 	

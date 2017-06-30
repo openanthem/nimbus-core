@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
+import com.anthem.oss.nimbus.core.domain.definition.Repo.Cache;
+import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
 import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
@@ -19,7 +21,7 @@ import lombok.ToString;
  */
 @Domain(value="core_umcase", includeListeners={ListenerType.persistence})
 @Model(value="core_umcase", excludeListeners={ListenerType.websocket})
-@Repo
+@Repo(value=Database.rep_mongodb, cache=Cache.rep_device)
 @ToString
 public class UMCase extends AbstractEntity.IdString {
 

@@ -33,9 +33,9 @@ public @interface Repo {
 	/* 1nd level repository: cache (distributed session or sticky) */
 	public enum Cache {
 		rep_none,
-		rep_device,	
-		rep_user,
-		rep_entity;
+		rep_device;
+//		rep_user,
+//		rep_entity;
 		
 		public static boolean exists(Repo repo) {
 			return repo!=null && repo.cache()!=Repo.Cache.rep_none;
@@ -45,7 +45,7 @@ public @interface Repo {
 	
 	String alias() default "";
 	
-	Database value() default Database.rep_mongodb;	
+	Database value();	
 	
 	Cache cache() default Cache.rep_device;	
 	
