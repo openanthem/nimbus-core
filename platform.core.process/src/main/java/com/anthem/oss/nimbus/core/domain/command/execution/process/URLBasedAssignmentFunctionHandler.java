@@ -54,6 +54,8 @@ abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements Functi
 		String fetch = commandMessage.getCommand().getFirstParameterValue("fetch");
 		String converter = commandMessage.getCommand().getFirstParameterValue("converter");
 		String aggregate = commandMessage.getCommand().getFirstParameterValue("aggregate");
+		String project = commandMessage.getCommand().getFirstParameterValue("project");
+		
 		if(StringUtils.isNotBlank(where)) {
 			url = url+"&where="+where;
 		}
@@ -68,6 +70,9 @@ abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements Functi
 		}
 		if(StringUtils.isNotBlank(aggregate)) {
 			url =  url+"&aggregate="+aggregate;
+		}
+		if(StringUtils.isNotBlank(project)) {
+			url =  url+"&project="+project;
 		}
 		return url;
 	}
@@ -100,6 +105,7 @@ abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements Functi
 	
 	protected S getExternalState(ExecutionContext executionContext){
 		CommandMessage commandToExecute = buildCommand(executionContext.getCommandMessage());
+		
 		MultiOutput response = executorGateway.execute(commandToExecute);
 		//TODO Soham: temp fix, need to talk to Jayant
 		return (S)response.getOutputs().get(0).getValue();

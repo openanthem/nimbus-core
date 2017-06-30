@@ -3,6 +3,8 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Input;
@@ -66,7 +68,8 @@ public class DefaultActionExecutorGet extends AbstractCommandExecutor<Param<?>> 
 			Repo mapsToRepo = mapsToConfig.getRepo();
 			
 			if(Repo.Database.exists(mapsToRepo)) {
-				mapsToEntity = getRepositoryFactory().get(mapsToRepo)._get(refId, mapsToConfig.getReferredClass(), mapsToConfig.getAlias());
+				String alias = StringUtils.isBlank(mapsToRepo.alias()) ? mapsToConfig.getAlias() : mapsToRepo.alias();
+				mapsToEntity = getRepositoryFactory().get(mapsToRepo)._get(refId, mapsToConfig.getReferredClass(), alias);
 //				repoDbFound = true;
 				
 			} else {

@@ -184,15 +184,14 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 		
 		ClientUserGroup cug = insertClientUserGroup();
 	
-		CommandMessage cmdMsg = build("Anthem/fep/icr/p/clientusergroup/_search?fn=query&where=clientusergroup.id.eq('"+cug.getId()+"')&converter=clientUserGrooupSearchResponseConverter");
+		CommandMessage cmdMsg = build("Anthem/fep/icr/p/clientusergroup/_search?fn=query&where=clientusergroup.id.eq('"+cug.getId()+"')&project=/members");
 		
 		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
 		List<GroupUser> values = (List<GroupUser>)multiOp.getSingleResult();
 		
 		assertNotNull(values);
-		assertEquals(1, values.size());
+		assertEquals(2, values.size());
 		
-		//values.forEach((gu) -> System.out.println("&&&&&&& GroupUser: "+gu.getUserId()+" is Admin: "+gu.isAdmin()));
 	}
 	
 	@SuppressWarnings("unchecked")
