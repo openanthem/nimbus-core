@@ -43,6 +43,9 @@ public enum Constants {
 	KEY_FUNCTION("fn"),
 	KEY_NAV_ARG_PAGE_ID("pageId"),
 	
+	KEY_FN_INITSTATE_ARG_TARGET_PATH("target"),
+	KEY_FN_INITSTATE_ARG_JSON("json"),
+	
 	KEY_EXECUTE_PROCESS_CTX("processContext"),
 	KEY_EXECUTE_EVAL_ARG("eval"),
 	
