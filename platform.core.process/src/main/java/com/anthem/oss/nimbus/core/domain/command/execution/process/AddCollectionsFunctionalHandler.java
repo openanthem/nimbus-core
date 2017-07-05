@@ -28,6 +28,7 @@ public class AddCollectionsFunctionalHandler <T,S> implements FunctionHandler<T,
 		CommandMessage cmdMsg = eCtx.getCommandMessage();
 		Class<?> convertToClass = actionParameter.getConfig().getType().findIfCollection().getElementConfig().getReferredClass();
 		
+		//TODO - converter cannot convert mapsTo object. The payload has to match the object representation. Need to fix this to use mapsTo Path for convert
 		Object convertedObject = converter.convert(convertToClass, cmdMsg.getRawPayload());
 		String targetState = cmdMsg.getCommand().getFirstParameterValue("set");
 		Param<T> param = eCtx.getQuadModel().getCore().findParamByPath(targetState);
