@@ -13,6 +13,7 @@ import com.anthem.oss.nimbus.core.domain.command.execution.FunctionHandler;
 import com.anthem.oss.nimbus.core.domain.command.execution.nav.DefaultActionNewInitEntityFunctionHandler;
 import com.anthem.oss.nimbus.core.domain.command.execution.nav.PageIdEchoNavHandler;
 import com.anthem.oss.nimbus.core.domain.command.execution.process.AddFunctionHandler;
+import com.anthem.oss.nimbus.core.domain.command.execution.process.AddCollectionsFunctionalHandler;
 import com.anthem.oss.nimbus.core.domain.command.execution.process.EvalFunctionHandler;
 import com.anthem.oss.nimbus.core.domain.command.execution.process.SetFunctionHandler;
 import com.anthem.oss.nimbus.core.domain.command.execution.search.DefaultSearchFunctionHandlerExample;
@@ -79,6 +80,11 @@ public class DefaultProcessConfig {
 	@Bean(name="default._process$execute?fn=_eval")
 	public EvalFunctionHandler<?,?> evalFunctionHandler(ExpressionManager expressionManager){
 		return new EvalFunctionHandler(expressionManager);
+	}
+	
+	@Bean(name="default._process$execute?fn=_addCollection")
+	public AddCollectionsFunctionalHandler<?,?> setAddCollectionsFunctionalHandler(BeanResolverStrategy beanResolver){
+		return new AddCollectionsFunctionalHandler<>(beanResolver);
 	}
 
 }
