@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.anthem.oss.nimbus.core.domain.definition;
 
 import java.lang.annotation.ElementType;

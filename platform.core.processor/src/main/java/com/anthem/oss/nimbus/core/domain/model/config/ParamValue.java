@@ -40,7 +40,7 @@ public class ParamValue implements Serializable {
 
 	public ParamValue(Object code, String label, String desc) {
 		this.code = code;
-		setLabel(label);
-		setDesc(desc);
+        setLabel(label);
+        setDesc(desc);
 	}
 }
