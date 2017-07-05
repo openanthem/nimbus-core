@@ -6,7 +6,7 @@
     # platform.core.processor
     # platform.spec.model
     # platform.spec.model.test
-    # platfrom.core.process
+    # platform.core.process
    
 if [ $# -gt 0 ]; then
     PROJECTS=$1;
