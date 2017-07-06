@@ -17,7 +17,7 @@ public enum Behavior {
 	$state("_state"),
 	$save("_save"),
 	$nav("_nav"),
-	
+	$init("_init"),
 	$config("_config"),
 	$validate("_validate");
 	
