@@ -184,7 +184,7 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 		
 		ClientUserGroup cug = insertClientUserGroup();
 	
-		CommandMessage cmdMsg = build("Anthem/fep/icr/p/clientusergroup/_search?fn=query&where=clientusergroup.id.eq('"+cug.getId()+"')&project=/members");
+		CommandMessage cmdMsg = build("Anthem/fep/icr/p/clientusergroup/members/_search?fn=query&where=clientusergroup.id.eq('"+cug.getId()+"')");
 		
 		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
 		List<GroupUser> values = (List<GroupUser>)multiOp.getSingleResult();
