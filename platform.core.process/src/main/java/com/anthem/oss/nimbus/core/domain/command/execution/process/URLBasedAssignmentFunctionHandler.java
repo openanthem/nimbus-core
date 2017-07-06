@@ -13,6 +13,7 @@ import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Mult
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutorGateway;
 import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContext;
 import com.anthem.oss.nimbus.core.domain.command.execution.FunctionHandler;
+import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 
 /**
@@ -31,15 +32,14 @@ abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements Functi
 		S state = null;
 		//TODO - Expose 2 other flavors for _set. 1. Set by value 2. Set by executing rule file.
 		//TODO - When we set by value, if the value is something like Status.INACTIVE, have to use querydsl replace or come up with some other approach
-		Param<S> targetParameterState = findTargetParam(executionContext);
+		Param<S> targetParameter = findTargetParam(executionContext);
 		if(StringUtils.isNotBlank(executionContext.getCommandMessage().getCommand().getFirstParameterValue("value"))) {
 			commandFromContext =  executionContext.getCommandMessage();
 			state = (S) commandFromContext.getCommand().getFirstParameterValue("value");
 		} else {
-			commandFromContext =  buildCommand(executionContext.getCommandMessage());
-			state = isInternal(commandFromContext.getCommand()) ? getInternalState(executionContext): getExternalState(executionContext);
+			state = isInternal(executionContext.getCommandMessage()) ? getInternalState(executionContext): getExternalState(executionContext);
 		}
-		return assign(executionContext,actionParameter,targetParameterState,state);
+		return assign(executionContext,actionParameter,targetParameter,state);
 	}
 	
 	abstract public R assign(ExecutionContext executionContext, Param<T> actionParameter,Param<S> targetParameter, S state);
@@ -77,7 +77,7 @@ abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements Functi
 		return url;
 	}
 	
-	protected CommandMessage buildCommand(CommandMessage commandMessage){
+	protected CommandMessage buildExternalCommand(CommandMessage commandMessage){
 		String url = getUrl(commandMessage);
 		url = commandMessage.getCommand().getRelativeUri(url);
 		Command command = CommandBuilder.withUri(url).getCommand();
@@ -90,9 +90,13 @@ abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements Functi
 		return newCommandMessage;
 	}
 	
-	//TODO: Verify logic
-	protected boolean isInternal(Command command){
-		return false;//command.getAlias(Type.PlatformMarker) == null;
+
+	protected boolean isInternal(CommandMessage commandMessage){
+		String url = commandMessage.getCommand().getFirstParameterValue("url");
+		if(StringUtils.startsWith(url, Constants.SEPARATOR_URI_PLATFORM.code)) {
+			return false;
+		}
+		return true;
 	}
 	
 	protected Param<S> findTargetParam(ExecutionContext context){
@@ -107,7 +111,7 @@ abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements Functi
 	}
 	
 	protected S getExternalState(ExecutionContext executionContext){
-		CommandMessage commandToExecute = buildCommand(executionContext.getCommandMessage());
+		CommandMessage commandToExecute = buildExternalCommand(executionContext.getCommandMessage());
 		
 		MultiOutput response = executorGateway.execute(commandToExecute);
 		//TODO Soham: temp fix, need to talk to Jayant
