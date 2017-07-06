@@ -3,8 +3,6 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution.process;
 
-import java.util.Optional;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -15,7 +13,7 @@ import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Mult
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutorGateway;
 import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContext;
 import com.anthem.oss.nimbus.core.domain.command.execution.FunctionHandler;
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo.State;
+import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 
 /**
@@ -39,7 +37,7 @@ abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements Functi
 			commandFromContext =  executionContext.getCommandMessage();
 			state = (S) commandFromContext.getCommand().getFirstParameterValue("value");
 		} else {
-			state = isInternal(targetParameter) ? getInternalState(executionContext): getExternalState(executionContext);
+			state = isInternal(executionContext.getCommandMessage()) ? getInternalState(executionContext): getExternalState(executionContext);
 		}
 		return assign(executionContext,actionParameter,targetParameter,state);
 	}
@@ -92,9 +90,12 @@ abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements Functi
 	}
 	
 
-	protected boolean isInternal(Param<S> targetParameter){
-		State state = Optional.of(targetParameter.getConfig().findIfMapped().getPath().state()).orElse(State.External);
-		return (state != null && state == State.Internal);
+	protected boolean isInternal(CommandMessage commandMessage){
+		String url = commandMessage.getCommand().getFirstParameterValue("url");
+		if(StringUtils.startsWith(url, Constants.SEPARATOR_URI_PLATFORM.code)) {
+			return false;
+		}
+		return true;
 	}
 	
 	protected Param<S> findTargetParam(ExecutionContext context){
