@@ -84,8 +84,10 @@ abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements Functi
 		url = commandMessage.getCommand().getRelativeUri(url);
 		Command command = CommandBuilder.withUri(url).getCommand();
 		
-		CommandMessage newCommandMessage = new CommandMessage();
-		newCommandMessage.setCommand(command);
+		// TODO Sandeep: decide on which commands should get the payload. Scenario is - we are searching for a form based input. In the below query we are do a member search based on the variable search criteria 
+		// Ex - /pageAdvancedMemberSearch/tileAdvancedMemberSearch/sectionMemberSearchResults/patientResult.m/_process?fn=_set&url=/p/patient/_search?fn=example 
+		// To decide if we have to resolve the payload and then create the command message
+		CommandMessage newCommandMessage = new CommandMessage(command, commandMessage.getRawPayload());
 		return newCommandMessage;
 	}
 	

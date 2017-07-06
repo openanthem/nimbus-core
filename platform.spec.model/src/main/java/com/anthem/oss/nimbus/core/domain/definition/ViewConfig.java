@@ -226,6 +226,18 @@ public class ViewConfig {
 		String payload() default "";
 		String cssClass() default "btn btn-primary";
 	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface FilterButton {
+		String alias() default "FilterButton";
+		String url() default "";
+		String b() default "$execute";
+		String method() default "GET";
+		String imgSrc() default "";
+		String cssClass() default "btn btn-primary";
+	}
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
