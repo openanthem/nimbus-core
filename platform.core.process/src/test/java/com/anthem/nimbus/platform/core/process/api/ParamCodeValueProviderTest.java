@@ -381,25 +381,25 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 		
 		ClientUserRole clientUserRole = new ClientUserRole();
 		clientUserRole.setName("sandeep");
-		clientUserRole.setStatus(Status.ACTIVE);
+		//clientUserRole.setStatus(Status.ACTIVE);
 		clientUserRole.setDescription("desc1");;
 		mongoOps.insert(clientUserRole,"userrole");
 		
 		ClientUserRole clientUserRole2 = new ClientUserRole();
 		clientUserRole2.setName("mantha");
-		clientUserRole2.setStatus(Status.ACTIVE);
+		//clientUserRole2.setStatus(Status.ACTIVE);
 		clientUserRole2.setDescription("desc2");;
 		mongoOps.insert(clientUserRole2,"userrole");
 		
 		ClientUserRole clientUserRole3 = new ClientUserRole();
 		clientUserRole3.setName("rakesh");
-		clientUserRole3.setStatus(Status.INACTIVE);
+		//clientUserRole3.setStatus(Status.INACTIVE);
 		clientUserRole3.setDescription("esc2");;
 		mongoOps.insert(clientUserRole3,"userrole");
 		
 		ClientUserRole clientUserRole4 = new ClientUserRole();
 		clientUserRole4.setName("jayant");
-		clientUserRole4.setStatus(Status.ACTIVE);
+		///clientUserRole4.setStatus(Status.ACTIVE);
 		clientUserRole4.setDescription("dsc2");;
 		mongoOps.insert(clientUserRole4,"userrole");
 	}
