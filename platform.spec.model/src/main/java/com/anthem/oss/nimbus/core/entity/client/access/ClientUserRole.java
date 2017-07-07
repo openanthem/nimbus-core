@@ -32,7 +32,7 @@ public class ClientUserRole extends Role<ClientUserRole.Entry, ClientAccessEntit
     private String clientId;
 
     private boolean allowInheritance;
-    private Status status;
+    private String status;
     private RoleType roleType;
     private String roleCategory;
     private String displayName;
