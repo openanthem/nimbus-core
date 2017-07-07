@@ -24,14 +24,7 @@ public class DefaultActionBehaviorExecutorNewInit extends DefaultActionExecutorN
 		ExecutionContext eCtx = handleNewDomainRoot(input.getContext());
 	
 		Param<Object> actionParam = findParamByCommandOrThrowEx(eCtx);
-		
-		final Param<?> outputParam;
-		if(containsFunctionHandler(input)) {
-			outputParam = executeFunctionHanlder(input, FunctionHandler.class);
-		} else { 
-			setStateNew(eCtx, input.getContext().getCommandMessage(), actionParam);
-			outputParam = actionParam;
-		}
+		setStateNew(eCtx, input.getContext().getCommandMessage(), actionParam);
 		
 		return null;
 	}
