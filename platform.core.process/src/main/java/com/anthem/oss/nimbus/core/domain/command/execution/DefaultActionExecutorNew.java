@@ -42,7 +42,7 @@ public class DefaultActionExecutorNew extends AbstractFunctionCommandExecutor<Ob
 	 * <tab>	2.2. Set newly instantiated object and return  	
 	 */
 	@Override
-	protected final Output<Param<?>> executeInternal(Input input) {
+	protected Output<Param<?>> executeInternal(Input input) {
 		ExecutionContext eCtx = handleNewDomainRoot(input.getContext());
 	
 		Param<Object> actionParam = findParamByCommandOrThrowEx(eCtx);
@@ -51,14 +51,14 @@ public class DefaultActionExecutorNew extends AbstractFunctionCommandExecutor<Ob
 		if(containsFunctionHandler(input)) {
 			outputParam = executeFunctionHanlder(input, FunctionHandler.class);
 		} else { 
-			setStateNew(input.getContext().getCommandMessage(), actionParam);
+			setStateNew(eCtx, input.getContext().getCommandMessage(), actionParam);
 			outputParam = actionParam;
 		}
 		
 		return Output.instantiate(input, eCtx, outputParam);
 	}
 
-	protected void setStateNew(CommandMessage cmdMsg, Param<Object> p) {
+	protected void setStateNew(ExecutionContext eCtx, CommandMessage cmdMsg, Param<Object> p) {
 		// skip if call is for domain-root with no payload, as the new entity state would have been instantiated by repo & set prior
 		if(!cmdMsg.hasPayload() && cmdMsg.getCommand().isRootDomainOnly())
 			return;
