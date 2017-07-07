@@ -4,6 +4,7 @@
 package com.anthem.oss.nimbus.core.domain.command;
 
 import java.io.Serializable;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -17,6 +18,8 @@ import lombok.ToString;
  */
 @Getter @Setter @ToString
 public class CommandMessage implements Serializable {
+	
+	public static final String EMPTY_JSON_REGEX = "(^\\{\\s*\\}$)";
 
 	private static final long serialVersionUID = 1L;
 	
@@ -34,7 +37,7 @@ public class CommandMessage implements Serializable {
 	}
 	
 	public boolean hasPayload() {
-		return StringUtils.trimToNull(getRawPayload())!=null;
+		return StringUtils.trimToNull(getRawPayload()) != null && !Pattern.matches(EMPTY_JSON_REGEX, getRawPayload());
 	}
 	
 	@Override

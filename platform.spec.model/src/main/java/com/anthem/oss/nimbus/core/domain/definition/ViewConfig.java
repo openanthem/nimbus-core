@@ -217,13 +217,31 @@ public class ViewConfig {
 	@Target({ElementType.FIELD})
 	@ViewStyle
 	public @interface Button {	
+		public enum Type {
+			PRIMARY,
+			SECONDARY,
+			PLAIN,
+			DESTRUCTIVE;
+		}
 		String alias() default "Button";
 		String url() default "";
 		String b() default "$execute";
 		String method() default "GET";
 		String imgSrc() default "";
-		String type() default "button";
+		Type type() default Type.PLAIN;
 		String payload() default "";
+		String cssClass() default "btn btn-primary";
+	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface FilterButton {
+		String alias() default "FilterButton";
+		String url() default "";
+		String b() default "$execute";
+		String method() default "GET";
+		String imgSrc() default "";
 		String cssClass() default "btn btn-primary";
 	}
 

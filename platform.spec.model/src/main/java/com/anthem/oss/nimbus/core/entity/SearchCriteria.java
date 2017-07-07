@@ -48,14 +48,9 @@ public abstract class SearchCriteria<T> implements Serializable {
 		public void validate(ExecutionContext executionContext) {
 			String rawPayload = executionContext.getCommandMessage().getRawPayload();
 			
-			if(StringUtils.isNotBlank(rawPayload)){
-				throw new FrameworkRuntimeException("QuerySearchCriteria does not support the raw paylaod in command: "+executionContext.getCommandMessage()); 
-			}
-			
-//			String[] projectionMapping = executionContext.getCommandMessage().getCommand().getRequestParams().get("projection.mapsTo");
-//			
-//			if(ArrayUtils.isNotEmpty(projectionMapping)){
-//				throw new FrameworkRuntimeException("QuerySearchCriteria does not support projection.mapsTo to request parameter in command: "+executionContext.getCommandMessage());
+			// TODO uncomment once we know the rawpayload is not passed from once config to the other when not needed
+//			if(StringUtils.isNotBlank(rawPayload)){
+//				throw new FrameworkRuntimeException("QuerySearchCriteria does not support the raw paylaod in command: "+executionContext.getCommandMessage()); 
 //			}
 		}
 		
