@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.anthem.oss.nimbus.core.domain.definition.AssociatedEntity;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.Converters.ParamConverter;
 import com.anthem.oss.nimbus.core.domain.definition.Execution;
@@ -56,6 +57,8 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	
 	@JsonIgnore
 	private Values values;
+	
+	@JsonIgnore @Setter private List<AssociatedEntity> associatedEntities;
 
 
 	public static class StateContextConfig<P> extends DefaultParamConfig<P> {
