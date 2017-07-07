@@ -30,8 +30,7 @@ domain:
       - com.anthem.platform.extension.clientadmin.model
       - com.anthem.platform.extension.clientadmin.view
       - com.anthem.platform.client.extension.cm.model
-      - com.anthem.platform.client.extension.cm.flow
-      - com.anthem.platform.scheduler.extension.flow
+      - com.anthem.platform.client.extension.cm.view
       - com.anthem.platform.scheduler.test
       - com.anthem.platform.extension.clientadmin
     typeClassMappings:
