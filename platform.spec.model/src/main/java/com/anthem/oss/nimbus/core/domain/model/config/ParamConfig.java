@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.anthem.oss.nimbus.core.domain.definition.Converters.ParamConverter;
+import com.anthem.oss.nimbus.core.domain.definition.AssociatedEntity;
 import com.anthem.oss.nimbus.core.domain.definition.Execution;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Mode;
@@ -50,6 +51,8 @@ public interface ParamConfig<P> extends EntityConfig<P>, Findable<String> {
 	public List<ParamConverter> getConverters();
 	
 	public ParamConfig<StateContextEntity> getContextParam();
+	
+	public List<AssociatedEntity> getAssociatedEntities();
 	
 	default MapsTo.Mode getMappingMode() {
 		return MapsTo.Mode.UnMapped;

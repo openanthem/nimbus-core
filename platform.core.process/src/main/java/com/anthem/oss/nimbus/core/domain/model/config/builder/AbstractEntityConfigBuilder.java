@@ -24,6 +24,7 @@ import org.springframework.util.ClassUtils;
 
 import com.anthem.oss.nimbus.core.UnsupportedScenarioException;
 import com.anthem.oss.nimbus.core.domain.config.builder.AnnotationConfigHandler;
+import com.anthem.oss.nimbus.core.domain.definition.AssociatedEntity;
 import com.anthem.oss.nimbus.core.domain.definition.ConfigLoadException;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.Converters;
@@ -397,6 +398,11 @@ abstract public class AbstractEntityConfigBuilder {
 			//List<ParamValue> values = srcValues.getValues(created.getCode());
 			created.setValues(aVal);
 			//created.setValues(values);
+		}
+		
+		if(AnnotatedElementUtils.isAnnotated(f, AssociatedEntity.class)) {
+			AssociatedEntity[] associatedEntityAnnotationArr = f.getAnnotationsByType(AssociatedEntity.class);
+			created.setAssociatedEntities(Arrays.asList(associatedEntityAnnotationArr));
 		}
 		
 		String value ="";
