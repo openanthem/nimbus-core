@@ -100,6 +100,23 @@ public class ViewConfig {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
+	public @interface Header {
+		public enum Size {
+			H1,
+			H2,
+			H3,
+			H4,
+			H5
+		}
+		String alias() default "Header";
+		Size size() default Size.H3;
+	}
+	
+	
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
 	public @interface CardDetailsGrid {
 		String alias() default "CardDetailsGrid";
 		String editUrl() default "";
