@@ -309,6 +309,21 @@ public class ViewConfig {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
+	public @interface Label {
+		String alias() default "Label";
+	}
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface Image {
+		String alias() default "Image";
+		String imgSrc() default "";
+	}
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
 	public @interface TextBox {
 		String alias() default "TextBox";
 		boolean hidden() default false;
