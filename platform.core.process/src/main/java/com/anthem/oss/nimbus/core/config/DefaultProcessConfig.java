@@ -12,9 +12,10 @@ import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiExpressionManager;
 import com.anthem.oss.nimbus.core.domain.command.execution.FunctionHandler;
 import com.anthem.oss.nimbus.core.domain.command.execution.nav.DefaultActionNewInitEntityFunctionHandler;
 import com.anthem.oss.nimbus.core.domain.command.execution.nav.PageIdEchoNavHandler;
-import com.anthem.oss.nimbus.core.domain.command.execution.process.AddFunctionHandler;
 import com.anthem.oss.nimbus.core.domain.command.execution.process.AddCollectionsFunctionalHandler;
+import com.anthem.oss.nimbus.core.domain.command.execution.process.AddFunctionHandler;
 import com.anthem.oss.nimbus.core.domain.command.execution.process.EvalFunctionHandler;
+import com.anthem.oss.nimbus.core.domain.command.execution.process.SetByRuleFunctionalHandler;
 import com.anthem.oss.nimbus.core.domain.command.execution.process.SetFunctionHandler;
 import com.anthem.oss.nimbus.core.domain.command.execution.search.DefaultSearchFunctionHandlerExample;
 import com.anthem.oss.nimbus.core.domain.command.execution.search.DefaultSearchFunctionHandlerLookup;
@@ -55,6 +56,11 @@ public class DefaultProcessConfig {
 	@Bean(name="default._process$execute?fn=_set")
 	public SetFunctionHandler<?,?> setFunctionHandler(){
 		return new SetFunctionHandler<>();
+	}
+	
+	@Bean(name="default._process$execute?fn=_setByRule")
+	public FunctionHandler<?,?> setByRuleFunctionHandler(){
+		return new SetByRuleFunctionalHandler<>();
 	}
 	
 	@Bean(name="default._process$execute?fn=_add")
