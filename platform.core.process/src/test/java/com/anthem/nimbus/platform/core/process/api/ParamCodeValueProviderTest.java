@@ -410,7 +410,7 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 		mongoOps.dropCollection("groupmember");
 		
 		Queue queue = new Queue();
-		queue.setCode("test1");
+		//queue.setCode("test1");
 		queue.setName("test queue");
 		
 		MUser user = new MUser();
@@ -429,18 +429,18 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 		ug.addGroupMembers(grpMember);
 		mongoOps.insert(ug,"usergroup");
 		
-		queue.addUserGroups(ug);
-		queue.addUsers(user);
+		//queue.addUserGroups(ug);
+		//queue.addUsers(user);
 		mongoOps.insert(queue);
 		
 		Queue queue1 = new Queue();
-		queue1.setCode("test2");
+		//queue1.setCode("test2");
 		queue1.setName("test2 queue");
 		MUser user1 = new MUser();
 		user1.setName("user2");
 		user1.setCode("2");
 		mongoOps.insert(user1,"user");
-		queue1.addUsers(user1);
+		//queue1.addUsers(user1);
 		mongoOps.insert(queue1);
 	}
 	
