@@ -9,6 +9,7 @@ import java.util.Set;
 import org.springframework.data.annotation.Id;
 
 import com.anthem.oss.nimbus.core.domain.definition.ConfigNature.Ignore;
+import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 import com.anthem.oss.nimbus.core.entity.access.AccessEntity;
 import com.anthem.oss.nimbus.core.entity.access.Role;
 import com.anthem.oss.nimbus.core.entity.person.Address;
@@ -33,7 +34,7 @@ public abstract class AbstractUser<R extends Role<E, T>, E extends Role.Entry<T>
 	private static final long serialVersionUID = 1L;
 	
 	
-	@Id @Getter @Setter(value=AccessLevel.PROTECTED) 
+	@Id @Getter @Setter //(value=AccessLevel.PROTECTED) 
 	private String id;
 
 	

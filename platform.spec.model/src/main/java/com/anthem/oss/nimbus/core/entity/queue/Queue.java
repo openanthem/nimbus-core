@@ -3,13 +3,12 @@ package com.anthem.oss.nimbus.core.entity.queue;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.anthem.oss.nimbus.core.domain.definition.AssociatedEntity;
 import com.anthem.oss.nimbus.core.domain.definition.ConfigNature.Ignore;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
+import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.definition.Repo.Cache;
 import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
-import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity.IdString;
 
 import lombok.EqualsAndHashCode;
@@ -28,28 +27,33 @@ public class Queue extends IdString {
 	@Ignore
 	private static final long serialVersionUID = 1L;
 	
-	private String id;
-	
-	private String code;
+	private String displayName;
 	
 	private String name;
 	
-	@AssociatedEntity(clazz=MUser.class)
-	private Set<String> users;
+	private String description;
 	
-	private Set<String> userGroups;
+	private String status;
 	
-	public void addUsers(MUser usr) {
-		if(getUsers() == null) {
-			setUsers(new HashSet<>());
-		}
-		getUsers().add(usr.getName());
-	}
+	// Queue to User & UserGroup is 1-1 relation based on NIM-3656,3657
+	//@AssociatedEntity(clazz=MUser.class)
+	//private Set<String> users;
 	
-	public void addUserGroups(MUserGroup userGroup) {
-		if(getUserGroups() == null) {
-			setUserGroups(new HashSet<>());
-		}
-		getUserGroups().add(userGroup.getName());
-	}
+	//private Set<String> userGroups;
+	
+	private String entityId;
+//	
+//	public void addUsers(MUser usr) {
+//		if(getUsers() == null) {
+//			setUsers(new HashSet<>());
+//		}
+//		getUsers().add(usr.getName());
+//	}
+//	
+//	public void addUserGroups(MUserGroup userGroup) {
+//		if(getUserGroups() == null) {
+//			setUserGroups(new HashSet<>());
+//		}
+//		getUserGroups().add(userGroup.getName());
+//	}
 }
