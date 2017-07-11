@@ -310,7 +310,14 @@ public class ViewConfig {
 	@Target({ElementType.FIELD})
 	@ViewStyle
 	public @interface Label {
+		public enum Type {
+			APPTITLE,
+			VERSION,
+			COPYRIGHT,
+			DEFAULT;
+		}
 		String alias() default "Label";
+		Type value() default Type.DEFAULT;
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
