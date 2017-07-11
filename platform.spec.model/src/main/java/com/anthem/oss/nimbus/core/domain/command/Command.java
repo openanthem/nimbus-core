@@ -335,7 +335,7 @@ public class Command implements Serializable {
 	
 	public String[] getParameterValue(String requestParameter){
 		if(requestParams != null && requestParams.containsKey(requestParameter)){
-			requestParams.get(requestParameter);
+			return requestParams.get(requestParameter);
 		}
 		return null;
 	}
