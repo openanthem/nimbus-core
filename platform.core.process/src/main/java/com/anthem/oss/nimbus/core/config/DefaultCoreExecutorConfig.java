@@ -9,7 +9,6 @@ import com.anthem.oss.nimbus.core.domain.command.execution.CommandMessageConvert
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandPathVariableResolver;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandTransactionInterceptor;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionBehaviorExecutorGetState;
-import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionBehaviorExecutorNewInit;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutorDelete;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutorGet;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutorNav;
@@ -59,17 +58,11 @@ public class DefaultCoreExecutorConfig {
 		return new DefaultActionExecutorNew(beanResolver);
 	}
 	
-	@Bean(name="default._new$init")
-	public CommandExecutor<?> defaultActionBehaviorExecutorNewInit(BeanResolverStrategy beanResolver){
-		return new DefaultActionBehaviorExecutorNewInit(beanResolver);
-	}
-	
 	@Bean(name="default._get$execute")
 	public CommandExecutor<?> defaultActionExecutorGet(BeanResolverStrategy beanResolver){
 		return new DefaultActionExecutorGet(beanResolver);
 	}
 	
-
 	@Bean(name="default._nav$execute")
 	public CommandExecutor<?> defaultActionExecutorNav(BeanResolverStrategy beanResolver){
 		return new DefaultActionExecutorNav<>(beanResolver);
