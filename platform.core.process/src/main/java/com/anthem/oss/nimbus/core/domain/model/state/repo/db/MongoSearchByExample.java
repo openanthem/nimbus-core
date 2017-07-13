@@ -45,7 +45,7 @@ public class MongoSearchByExample extends MongoDBSearch {
 		if(criteria == null) 
 			return new Query();
 		
-		ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreNullValues().withIgnorePaths("version");
+		ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreCase().withIgnoreNullValues().withIgnorePaths("version");
 		for (Field field : referredClass.getDeclaredFields()) {
 			if (field.getType().isAssignableFrom(String.class)) {
 				field.setAccessible(true);
