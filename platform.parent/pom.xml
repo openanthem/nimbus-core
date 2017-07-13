@@ -206,7 +206,7 @@
 							</configuration>
 							<phase>generate-resources</phase>
 						</execution>
-						<execution>
+ 						<execution>
 							<id>gulp build</id>
 							<goals>
 								<goal>gulp</goal>
@@ -214,6 +214,16 @@
 							<phase>generate-resources</phase>
 							<configuration>
 								<arguments>build</arguments>
+							</configuration>
+						</execution> 
+						<execution>
+							<id>gulp scss</id>
+							<goals>
+								<goal>gulp</goal>
+							</goals>
+							<phase>generate-resources</phase>
+							<configuration>
+								<arguments>scss</arguments>
 							</configuration>
 						</execution>
 					</executions>
