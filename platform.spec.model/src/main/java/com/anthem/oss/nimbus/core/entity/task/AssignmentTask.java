@@ -53,6 +53,8 @@ public class AssignmentTask extends AbstractEntity.IdString{
 	
 	private String reminder;
 	
+	private String taskTypeForDisplay;
+	
 	public enum TaskStatus{
 		Open,
 		Complete,
@@ -71,5 +73,18 @@ public class AssignmentTask extends AbstractEntity.IdString{
 		patientenrollment;
 	}
 	
+	
+	public String getTaskTypeForDisplay() {
+		if(this.getTaskType() != null) {
+			if(this.getTaskType().name().equalsIgnoreCase("patienteligibility")) {
+				return "Patient Eligibility";
+			}
+			else if(this.getTaskType().name().equalsIgnoreCase("patientenrollment")) {
+				return "Patient Enrollment";
+			}
+			return this.getTaskType().name();
+		}
+		return "";
+	}
 	
 }
