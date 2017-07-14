@@ -21,11 +21,11 @@ import org.springframework.security.oauth2.provider.token.RemoteTokenServices;
 //@EnableResourceServer
 public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
 {
-	@Value("${security.oauth2.resource.tokenInfoUri}")
+//	@Value("${security.oauth2.resource.tokenInfoUri}")
 	private String tokenInfoUri;
-	@Value("${security.oauth2.client.clientId}")
+//	@Value("${security.oauth2.client.clientId}")
 	private String clientId;
-	@Value("${security.oauth2.client.clientSecret}")
+//	@Value("${security.oauth2.client.clientSecret}")
 	private String clientSecret;
 	 
 	@Override
