@@ -2,9 +2,14 @@ package com.anthem.oss.nimbus.core.integration.websocket;
 
 import java.util.Arrays;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.messaging.simp.SimpMessageType;
+import org.springframework.web.context.request.RequestContextHolder;
 
+import com.anthem.oss.nimbus.core.config.WebSocketHttpConnectHandlerDecoratorFactory;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandTransactionInterceptor;
 import com.anthem.oss.nimbus.core.domain.command.execution.ExecuteOutput;
 import com.anthem.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
@@ -27,6 +32,9 @@ public class ParamEventAMQPListener implements StateAndConfigEventListener {
 	SimpMessageSendingOperations messageTemplate;
 
 	CommandTransactionInterceptor interceptor;	
+	
+	@Autowired
+	WebSocketHttpConnectHandlerDecoratorFactory webSocketHttpConnectHandlerDecoratorFactory;
 	
 	
 	public ParamEventAMQPListener(SimpMessageSendingOperations messageTemplate,CommandTransactionInterceptor interceptor){
@@ -89,11 +97,18 @@ public class ParamEventAMQPListener implements StateAndConfigEventListener {
 		executeOutput.setResult(result);
 		
 		MultiExecuteOutput multiExecOutput = interceptor.handleResponse(executeOutput);
-		
-		messageTemplate.convertAndSend("/queue/updates", multiExecOutput); // TODO get the destination name from the config server
-		//messageTemplate.convertAndSendToUser(auth.getName(),"/queue/updates", executeOutput);
+		String webSocketSessionId = getAssociatedWebSocketSessionId();
+		SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor.create(SimpMessageType.MESSAGE);
+		headerAccessor.setSessionId(webSocketSessionId);		
+		//messageTemplate.convertAndSend("/queue/updates", multiExecOutput); // TODO get the destination name from the config server
+		messageTemplate.convertAndSendToUser(webSocketSessionId,"/queue/updates", multiExecOutput,headerAccessor.getMessageHeaders(),null);
 		
 		return true;
+	}
+	
+	private String getAssociatedWebSocketSessionId(){
+		String httpSessionId = RequestContextHolder.getRequestAttributes().getSessionId();
+		return webSocketHttpConnectHandlerDecoratorFactory.getAssociatedWebSocketSessionId(httpSessionId);
 	}
 
 }
