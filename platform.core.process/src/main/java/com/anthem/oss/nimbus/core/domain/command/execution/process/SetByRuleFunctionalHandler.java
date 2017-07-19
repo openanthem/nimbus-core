@@ -35,6 +35,9 @@ public class SetByRuleFunctionalHandler <T, R> extends AbstractFunctionHandler<T
 		
 		RulesConfig rConfig = reFactory.createConfig(eCtx.getCommandMessage().getCommand().getFirstParameterValue("rule"));
 		
+		//TODO - need to have a capability to pass array of objects that can be passed on to the drl files
+		String caseId = eCtx.getCommandMessage().getCommand().getFirstParameterValue("caseId");
+				
 		Assert.notNull(rConfig, "Rule config is null for the rule: "+eCtx.getCommandMessage().getCommand().getFirstParameterValue("rule"));
 		
 		RulesRuntime rRuntime = reFactory.createRuntime(rConfig);

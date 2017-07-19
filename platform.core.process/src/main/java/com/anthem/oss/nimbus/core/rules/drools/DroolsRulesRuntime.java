@@ -36,10 +36,14 @@ public class DroolsRulesRuntime implements RulesRuntime {
 	}
 
 	@Override
-	public void fireRules(Param<?> param) {
+	public void fireRules(Param<?> param,Object... objects) {
 		if(getSession()==null) return;
 		
 		createOrUpdateFactHandle(param);
+		
+		for (Object object : objects) {
+			createOrUpdateFactHandle(object);
+		}
 		
 		Object state = param.getState();
 		createOrUpdateFactHandle(state);
