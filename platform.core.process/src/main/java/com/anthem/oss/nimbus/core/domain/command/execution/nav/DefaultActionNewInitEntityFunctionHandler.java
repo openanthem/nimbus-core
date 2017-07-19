@@ -6,6 +6,7 @@ package com.anthem.oss.nimbus.core.domain.command.execution.nav;
 import java.util.Arrays;
 import java.util.Optional;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
@@ -55,11 +56,16 @@ public class DefaultActionNewInitEntityFunctionHandler<T> implements FunctionHan
 	protected Object resolveTargetState(Command cmd, int index,Param<Object> targetParam, Class<?> convertToClass) {
 
 		String json = Arrays.asList(cmd.getParameterValue(Constants.KEY_FN_INITSTATE_ARG_JSON.code)).get(index);
-				
-		json =	Optional.ofNullable(json)
-						.map(StringUtils::trimToNull)
-						.orElseThrow(()->new InvalidConfigException("'json' OR must be configured but found null for cmd:"+cmd));
+			
+		return resolveAsJson(cmd, convertToClass, json);
+		
+	}
 
+	private Object resolveAsJson(Command cmd, Class<?> convertToClass, String json) {
+		json =	Optional.ofNullable(json)
+				.map(StringUtils::trimToNull)
+				.orElseThrow(()->new InvalidConfigException("'json' OR must be configured but found null for cmd:"+cmd));
+		
 		Object converted = converter.convert(convertToClass, json);
 		return converted;
 	}
