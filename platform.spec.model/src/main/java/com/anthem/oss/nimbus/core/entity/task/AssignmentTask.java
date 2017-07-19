@@ -53,6 +53,8 @@ public class AssignmentTask extends AbstractEntity.IdString{
 	
 	private String reminder;
 	
+	private Source source;
+	
 	private String taskTypeForDisplay;
 	
 	public enum TaskStatus{
@@ -73,7 +75,13 @@ public class AssignmentTask extends AbstractEntity.IdString{
 		patientenrollment;
 	}
 	
+	public enum Source {
+		manual,
+		systematic
+	}
 	
+	
+	// TODO - refactor and review - Rakesh
 	public String getTaskTypeForDisplay() {
 		if(this.getTaskType() != null) {
 			if(this.getTaskType().name().equalsIgnoreCase("patienteligibility")) {
