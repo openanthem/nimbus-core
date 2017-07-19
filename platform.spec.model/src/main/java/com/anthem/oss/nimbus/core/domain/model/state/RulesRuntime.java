@@ -16,7 +16,7 @@ public interface RulesRuntime {
 	
 	public void start();
 	
-	public void fireRules(Param<?> param, Object... objects);
+	public void fireRules(Param<?> param);
 	
 	public void shutdown();
 	
