@@ -20,7 +20,7 @@ public class CustomLocalDateTimeDeserializer extends StdDeserializer<LocalDateTi
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public CustomLocalDateTimeDeserializer() {
         this(null);
