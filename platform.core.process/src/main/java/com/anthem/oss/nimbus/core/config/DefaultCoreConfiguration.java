@@ -9,6 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
@@ -49,6 +50,7 @@ import com.anthem.oss.nimbus.core.web.WebCommandDispatcher;
  */
 @Configuration
 @EnableMongoRepositories(basePackages="com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement"	)
+@EnableMongoAuditing
 @ComponentScan(basePackageClasses = WebActionController.class)
 public class DefaultCoreConfiguration {
 	
