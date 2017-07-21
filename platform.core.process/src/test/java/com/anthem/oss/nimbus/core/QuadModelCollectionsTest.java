@@ -440,14 +440,28 @@ public class QuadModelCollectionsTest {
 		AtomicInteger counter = new AtomicInteger(0);
 		q.getCore().templateParams().find("serviceLines").getType().findIfCollection().getModel().getParams()
 			.stream()
-			.sequential()
-			.peek(p->{
-				assertSame(core.getServiceLinesConverted().get(counter.getAndIncrement()), p.getState());
+			.forEach(p->{
+				int i = counter.getAndIncrement();
+				assertSame(core.getServiceLines().get(i), p.getState());
 			});
 		
 		// set again
-		vp_list.setState(newList);
-		assertSame(2, vp_list.getState().size());
+		List<ServiceLine> againList = new ArrayList<>();
+		
+		ServiceLine againsl_0 = new ServiceLine();
+		againsl_0.setService("again VIEW SAYS: 0th service");
+		againList.add(againsl_0);
+		
+		ServiceLine againsl_1 = new ServiceLine();
+		againsl_1.setService("again VIEW SAYS: 1st service");
+		againList.add(againsl_1);
+		
+		vp_list.setState(againList);
+		assertSame(2, vp_list.size());
+
+		assertSame(againsl_0.getService(), q.getRoot().findParamByPath("/view_umcase/pg3/noConversionAttachedColServiceLines/0/service").getState());
+		assertSame(againsl_1.getService(), q.getRoot().findParamByPath("/view_umcase/pg3/noConversionAttachedColServiceLines/1/service").getState());
+		
 		assertSame(2, vp_list.getType().findIfCollection().getModel().getParams().size()); 
 	}
 
@@ -991,7 +1005,7 @@ public class QuadModelCollectionsTest {
 		assertSame(service, cp_ServiceLines.getState(0).getService());
 	}
 	
-	@After
+	//@After
 	public void after() {
 		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		printJson(q);

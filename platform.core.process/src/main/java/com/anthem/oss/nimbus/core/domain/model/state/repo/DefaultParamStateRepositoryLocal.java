@@ -13,6 +13,7 @@ import com.anthem.oss.nimbus.core.InvalidOperationAttemptedException;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListElemParam;
+import com.anthem.oss.nimbus.core.util.JustLogit;
 import com.anthem.oss.nimbus.core.utils.JavaBeanHandler;
 
 /**
@@ -22,6 +23,8 @@ import com.anthem.oss.nimbus.core.utils.JavaBeanHandler;
 public class DefaultParamStateRepositoryLocal implements ParamStateRepository {
 
 	@Autowired JavaBeanHandler javaBeanHandler;
+	
+	private JustLogit logit = new JustLogit(getClass());
 	
 	public DefaultParamStateRepositoryLocal(JavaBeanHandler javaBeanHandler) {
 		this.javaBeanHandler = javaBeanHandler;
@@ -47,6 +50,8 @@ public class DefaultParamStateRepositoryLocal implements ParamStateRepository {
 	
 	@Override
 	public <P> Action _set(EntityState.Param<P> param, P newState) {
+		logit.trace(()->"_set@enter -> param.path: "+param.getPath()+" newState: "+newState);
+		
 		if(param.isCollectionElem()) {
 			EntityState.ListElemParam<P> pElem = param.findIfCollectionElem();
 			
@@ -54,6 +59,8 @@ public class DefaultParamStateRepositoryLocal implements ParamStateRepository {
 			List<P> coreList = pElem.getParentModel().instantiateOrGet();
 			
 			int index = pElem.getElemIndex();
+			logit.trace(()->"_set@colElem -> elemIndex: "+index+" colEntityState.size: "+coreList.size());
+			
 //			if(index>coreList.size()) {
 //				for(int i=coreList.size(); i<index; i++) {
 //					coreList.set(i, null);
