@@ -58,7 +58,7 @@ public abstract class AbstractEntity<ID extends Serializable> implements Seriali
     @Ignore @LastModifiedBy
 	private Long lastModifiedBy;
 	
-    @Ignore @LastModifiedDate
+    @Setter @LastModifiedDate
 	private LocalDateTime lastModifiedDate;
 	
     //@Version
