@@ -279,14 +279,7 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface Link {
 		public enum Type {
-			LOGO,
-			APPTITLE,
 			MENU,
-			TOU,
-			VERSION,
-			COPYRIGHT,
-			SSLCERT,
-			PRIVACY,
 			DEFAULT;
 		}
 		Type value() default Type.DEFAULT;
@@ -294,7 +287,7 @@ public class ViewConfig {
 		String method() default "GET";
 		String b() default "$executeAnd$nav";
 		String imgSrc() default "";
-		String styleClass() default "";
+		String cssClass() default "";
 		String altText() default "";
 	}
 
@@ -308,16 +301,39 @@ public class ViewConfig {
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
-	@ViewStyle
-	public @interface Label {
-		public enum Type {
+	@ViewParamBehavior
+	public @interface PageHeader {
+		public enum Property {
+			LOGO,
 			APPTITLE,
-			VERSION,
-			COPYRIGHT,
+			SUBTITLE,
+			USERNAME,
+			USERROLE,
 			DEFAULT;
 		}
+		Property value() default Property.DEFAULT;
+	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewParamBehavior
+	public @interface PageFooter {
+		public enum Property {
+			TOU,
+			VERSION,
+			COPYRIGHT,
+			SSLCERT,
+			PRIVACY,
+			DEFAULT
+		}
+		Property value() default Property.DEFAULT;
+	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface Label {
 		String alias() default "Label";
-		Type value() default Type.DEFAULT;
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
