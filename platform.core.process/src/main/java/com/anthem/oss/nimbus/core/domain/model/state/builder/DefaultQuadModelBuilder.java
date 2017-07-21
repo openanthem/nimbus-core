@@ -6,6 +6,7 @@ package com.anthem.oss.nimbus.core.domain.model.state.builder;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
@@ -16,6 +17,7 @@ import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadScopedEventListener;
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
+import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ValidatorProvider;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
@@ -77,7 +79,9 @@ public class DefaultQuadModelBuilder implements QuadModelBuilder {
 	
 	
 	public <V, C> QuadModel<V, C> build(Command cmd, ExecutionEntity<V, C> eState) {
-		ModelConfig<?> modelConfig = domainConfigApi.getRootDomain(cmd.getRootDomainAlias());
+		ModelConfig<?> modelConfig = Optional.ofNullable(domainConfigApi.getRootDomain(cmd.getRootDomainAlias()))
+										.orElseThrow(()->new InvalidConfigException("Root Domain ModelConfig not found for : "+cmd.getRootDomainAlias()));
+		
 		
 		// if mapped set domain config to view, other use it as core
 		ModelConfig<V> viewConfig = modelConfig.isMapped() ? (ModelConfig<V>)modelConfig : null;
