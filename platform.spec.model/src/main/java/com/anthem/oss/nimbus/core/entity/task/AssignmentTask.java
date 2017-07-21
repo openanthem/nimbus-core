@@ -59,7 +59,7 @@ public class AssignmentTask extends AbstractEntity.IdString{
 	
 	public enum TaskStatus{
 		Open,
-		Complete,
+		Completed,
 		Cancelled,
 	}
 	
