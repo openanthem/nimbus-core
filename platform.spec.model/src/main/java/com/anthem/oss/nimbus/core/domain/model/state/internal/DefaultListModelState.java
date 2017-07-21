@@ -71,25 +71,47 @@ public class DefaultListModelState<T> extends DefaultModelState<List<T>> impleme
 
 	@Override
 	public List<T> instantiateAndSet() {
-		List<T> newInstance =  super.instantiateAndSet();
-		
-		// reset collection elements
-		if(!templateParams().isNullOrEmpty()) {
-			int size = templateParams().size();
-			for(int i=size-1; i>=0; i--) {
-				
-				Param<?> pColElem = templateParams().get().remove(i);
-				
-				// notify
-				getAssociatedParam().notifySubscribers(new Notification<>(this.getAssociatedParam(), ActionType._deleteElem, pColElem));
-			}
-		}
-		
-		return newInstance;
+		return reset(false);
 	}
 	
-	public void remove(ListElemParam<T> pELem) {
+	protected List<T> reset(boolean suppressNotify) {
+		final LockTemplate rLockTemplate = isMapped() ? findIfMapped().getMapsTo().getLockTemplate() : getLockTemplate();
+		return rLockTemplate.execute(()->{
+			List<T> newInstance =  super.instantiateAndSet();
+			
+			// reset collection elements
+			if(!templateParams().isNullOrEmpty()) {
+				int size = templateParams().size();
+				for(int i=size-1; i>=0; i--) {
+					
+					Param<?> pColElem = templateParams().get().remove(i);
+					
+					// notify
+					if(!suppressNotify)
+						getAssociatedParam().notifySubscribers(new Notification<>(this.getAssociatedParam(), ActionType._deleteElem, pColElem));
+				}
+			}
+			
+			return newInstance;
+		});
+	}
+	
+	public void remove(final ListElemParam<T> pElem) {
+		final LockTemplate rLockTemplate = isMapped() ? findIfMapped().getMapsTo().getLockTemplate() : getLockTemplate();
 		
+		rLockTemplate.execute(()->{
+			List<T> currList = instantiateOrGet();
+			T elemToRemove = pElem.getState();
+			
+			// reset
+			instantiateAndSet();
+			
+			// add back remaining
+			currList.remove(elemToRemove);
+			
+			// set back
+			setState(currList);
+		});
 	}
 	
 	@Override
