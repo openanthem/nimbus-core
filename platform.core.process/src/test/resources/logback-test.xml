@@ -2,8 +2,11 @@
 <configuration scan="true">
     <include resource="org/springframework/boot/logging/logback/base.xml" />
     
-    	<logger name="com.anthem" level="TRACE" additivity="true">
+    
+   	<springProfile name="test">
+    	<logger name="com.anthem" level="INFO" additivity="true">
             <appender-ref ref="CONSOLE" />
             <appender-ref ref="FILE" />
         </logger>
+    </springProfile>
  </configuration>
