@@ -228,7 +228,7 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		Param<P> mapsToParam = (Param<P>)mappedParam.getMapsTo();
 		
 		// mapped leaf: write to mapped coreParam only if the view param is a leaf param (i.e., not a model) OR if is of same type
-		if(!param.findIfMapped().requiresConversion()) {
+		if(!param.findIfMapped().requiresConversion() && !param.isCollection()) {
 			Object parentModel = param.getParentModel().instantiateOrGet();//ensure mappedFrom model is instantiated
 			
 			if(CollectionUtils.isNotEmpty(param.getConfig().getConverters())) {
@@ -248,21 +248,21 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 			}
 			
 
-			ListParam<P> listParam = (ListParam<P>)param.findIfCollection();
+			ListParam<P> mappedListParam = (ListParam<P>)param.findIfCollection();
 			
 			// reset collection
 			//_instantiateAndSet(currRep, param);
-			listParam.getType().getModel().instantiateAndSet();
+			mappedListParam.getType().getModel().instantiateAndSet();
 
 			if(!(newState instanceof Collection))
 				throw new InvalidArgumentException("Collection param with path: "+param.getPath()+" must have argument of type "+Collection.class);
 			
-			Collection<P> state = (Collection<P>)newState;
+			Collection<P> newColState = (Collection<P>)newState;
 			// add element parameters
-			Optional.ofNullable(state)
+			Optional.ofNullable(newColState)
 				.ifPresent(list->
 					list.stream()
-						.forEach(listParam::add)
+						.forEach(mappedListParam::add)
 				);
 			return Action._new;
 			
