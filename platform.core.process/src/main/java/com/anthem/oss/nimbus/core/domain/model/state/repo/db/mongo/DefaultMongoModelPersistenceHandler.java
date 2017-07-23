@@ -42,7 +42,7 @@ public class DefaultMongoModelPersistenceHandler implements ModelPersistenceHand
 		
 		for(ModelEvent<Param<?>> event: modelEvents) {
 			
-			logit.info(()->"path: "+event.getPath()+ " action: "+event.getType()+" state: "+event.getPayload().getState());
+			logit.trace(()->"path: "+event.getPath()+ " action: "+event.getType()+" state: "+event.getPayload().getState());
 			
 			Param<?> param = event.getPayload();
 			Model<Object> mRoot = (Model<Object>)param.getRootDomain();

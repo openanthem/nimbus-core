@@ -406,27 +406,44 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 			}	
 		}
 		
+//		@Override
+//		public void awaitCompletion() {
+//			// create new single thread using executor service
+//			ExecutorService e = createExecutorService();
+//			e.execute(new InternalNotificationEventDelegator(getNotificationQueue(), getNotificationLock(), getNotComplete()));
+//
+//			// shutdown
+//			e.shutdown();
+//			
+//			
+//			// wait on lock condition for completion of all tasks
+//			// TODO: this is overkill, can be simplified by waiting on ExecutorServive.awaitTermination() but kept for future enhancement
+//			getNotificationLock().execute(()-> {
+//				try {
+//					while(getNotificationQueue().size()!=0)
+//						notComplete.await();
+//					
+//				} catch (InterruptedException ex) {
+//					throw new FrameworkRuntimeException("Failed while waiting for notification event processing to complete. queue: "+notificationQueue, ex);
+//				}
+//			});
+//		}
+		
+		@SuppressWarnings("unchecked")
 		@Override
 		public void awaitCompletion() {
-			// create new single thread using executor service
-			ExecutorService e = createExecutorService();
-			e.execute(new InternalNotificationEventDelegator(getNotificationQueue(), getNotificationLock(), getNotComplete()));
-
-			// shutdown
-			e.shutdown();
-			
-			
-			// wait on lock condition for completion of all tasks
-			// TODO: this is overkill, can be simplified by waiting on ExecutorServive.awaitTermination() but kept for future enhancement
-			getNotificationLock().execute(()-> {
-				try {
-					while(getNotificationQueue().size()!=0)
-						notComplete.await();
+			try {
+				while(!getNotificationQueue().isEmpty()) {
+					Notification<Object> event = (Notification<Object>)getNotificationQueue().take();
+					Param<Object> source =  event.getSource();
 					
-				} catch (InterruptedException ex) {
-					throw new FrameworkRuntimeException("Failed while waiting for notification event processing to complete. queue: "+notificationQueue, ex);
+					new ArrayList<>(source.getEventSubscribers())
+						.stream()
+							.forEach(subscribedParam->subscribedParam.handleNotification(event));
 				}
-			});
+			} catch (InterruptedException ex) {
+				throw new FrameworkRuntimeException("Failed to take event form queue: "+notificationQueue, ex);
+			}
 		}
 		
 		private ExecutorService createExecutorService() {
@@ -453,8 +470,8 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 		@SuppressWarnings("unchecked")
 		@Override
 		public void run() {
-			try {
-				while(true) {
+			while(true) {
+				try {
 					
 					Notification<Object> event = (Notification<Object>)notificationQueue.take();
 					Param<Object> source =  event.getSource();
@@ -469,11 +486,11 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 						if(notificationQueue.size()==0)
 							notComplete.signal();
 					});
+				} catch (InterruptedException ex) {
+					throw new FrameworkRuntimeException("Failed to take event form queue: "+notificationQueue, ex);
 				}
-				
-			} catch (InterruptedException ex) {
-				throw new FrameworkRuntimeException("Failed to take event form queue: "+notificationQueue, ex);
 			}
+
 		}
 	}
 }
