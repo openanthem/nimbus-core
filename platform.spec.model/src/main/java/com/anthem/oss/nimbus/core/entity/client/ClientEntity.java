@@ -3,19 +3,20 @@
  */
 package com.anthem.oss.nimbus.core.entity.client;
 
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDate;
 
 import javax.validation.constraints.NotNull;
 
-import com.anthem.oss.nimbus.core.domain.definition.ConfigNature.Ignore;
-import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
-import com.anthem.oss.nimbus.core.domain.definition.Model;
-import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
+import com.anthem.nimbus.platform.spec.serializer.CustomLocalDateDeserializer;
+import com.anthem.nimbus.platform.spec.serializer.CustomLocalDateSerializer;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
+import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
+import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 import com.anthem.oss.nimbus.core.entity.person.Address;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -61,9 +62,13 @@ public class ClientEntity extends AbstractEntity.IdString {
 	
 	private String description;
 	
-	private Date effectiveDate;
+	@JsonDeserialize(using = CustomLocalDateDeserializer.class) 
+	@JsonSerialize(using = CustomLocalDateSerializer.class)
+	private LocalDate effectiveDate;
 	
-	private Date terminationDate;
+	@JsonDeserialize(using = CustomLocalDateDeserializer.class) 
+	@JsonSerialize(using = CustomLocalDateSerializer.class)
+	private LocalDate terminationDate;
 
 	//@Ignore private ClientEntity parentEntity;
 	

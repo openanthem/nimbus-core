@@ -18,15 +18,16 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.WebSocketHandlerDecorator;
 import org.springframework.web.socket.handler.WebSocketHandlerDecoratorFactory;
 
+import com.anthem.oss.nimbus.core.util.JustLogit;
+
 /**
  * @author Jayant Chaudhuri
  *
  */
 public class WebSocketHttpConnectHandlerDecoratorFactory implements WebSocketHandlerDecoratorFactory {
 
-	private static final Log logger = LogFactory
-			.getLog(WebSocketConnectHandlerDecoratorFactory.class);
-
+	private JustLogit logit = new JustLogit(this.getClass());
+	
 	private final ApplicationEventPublisher eventPublisher;
 	
 	private final Map<String, String> sessions = new ConcurrentHashMap<String, String>();
@@ -73,7 +74,7 @@ public class WebSocketHttpConnectHandlerDecoratorFactory implements WebSocketHan
 						.publishEvent(event);
 			}
 			catch (Throwable ex) {
-				logger.error("Error publishing " + event + ".", ex);
+				logit.error(()->"Error publishing " + event + "."+ ex);
 			}
 		}
 		
