@@ -12,8 +12,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
 import com.anthem.oss.nimbus.core.domain.command.Command;
@@ -24,6 +22,7 @@ import com.anthem.oss.nimbus.core.entity.access.Role;
 import com.anthem.oss.nimbus.core.entity.client.access.ClientAccessEntity;
 import com.anthem.oss.nimbus.core.entity.client.access.ClientUserRole;
 import com.anthem.oss.nimbus.core.entity.client.access.ClientUserRole.Entry;
+import com.anthem.oss.nimbus.core.util.JustLogit;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -39,7 +38,7 @@ public class ClientUserAccessBehavior extends AbstractEntityBehavior<ClientUser,
 	//private static final String DOMAIN_URI_EXP = "/([0-9]*)([a-zA-Z]*)([0-9]+)([a-zA-Z]*)/";
 	//private static final String DOMAIN_URI_SEPERATOR = "/";
 	
-	private static final Logger log = LoggerFactory.getLogger(ClientUserAccessBehavior.class);
+	private JustLogit logit = new JustLogit(this.getClass());
 	
 	private static Map<String, List<String>> permissionToActions = new HashMap<>();
 	
@@ -56,7 +55,7 @@ public class ClientUserAccessBehavior extends AbstractEntityBehavior<ClientUser,
 	}
 	
 	public boolean canUserPerform(Command cmd){
-		log.debug("begin canUserPerform for : ["+cmd+"] ");
+		logit.debug(()->"begin canUserPerform for : ["+cmd+"] ");
 		String path = cmd.getAbsoluteDomainAlias() + Constants.SEPARATOR_URI.code + cmd.getAction().name();
 		return canUserPerformAction(path,cmd.getAction().name());
 	}
@@ -68,7 +67,7 @@ public class ClientUserAccessBehavior extends AbstractEntityBehavior<ClientUser,
 	 * @return
 	 */
 	public boolean canUserPerformAction(String path , String action){
-		log.debug("begin canUserPerformAction for : ["+path+"] : action : ["+action+"]");
+		logit.debug(()->"begin canUserPerformAction for : ["+path+"] : action : ["+action+"]");
 		return hasRestrictedPermissions(path,action);		
 	}
 	/**
@@ -85,14 +84,14 @@ public class ClientUserAccessBehavior extends AbstractEntityBehavior<ClientUser,
 			while (roleIt.hasNext()) {
 				Role<Entry, ClientAccessEntity> r = roleIt.next();
 				Set<ClientUserRole.Entry> entries = r.getEntries();
-				log.debug("begin getGrantedPermissionsFromRoleEntry for role: ["+r.getName()+"]");
+				logit.debug(()->"begin getGrantedPermissionsFromRoleEntry for role: ["+r.getName()+"]");
 				Set<Permission> grantedPermissions = getGrantedPermissionsFromRoleEntries(entries, path);
-				log.debug("aggregated permissions for all entries for role : ["+r.getName()+"] :: "+grantedPermissions);				
+				logit.debug(()->"aggregated permissions for all entries for role : ["+r.getName()+"] :: "+grantedPermissions);				
 				
 				if (CollectionUtils.isEmpty(grantedPermissions)){
 					canRolePerform = true;
 				}
-				log.debug("Permission to actions : "+permissionToActions);
+				logit.debug(()->"Permission to actions : "+permissionToActions);
 				boolean doesExist = false;
 				if(!CollectionUtils.isEmpty(permissionToActions) && !CollectionUtils.isEmpty(grantedPermissions)){
 					
@@ -100,9 +99,9 @@ public class ClientUserAccessBehavior extends AbstractEntityBehavior<ClientUser,
 						List<String> restrictedActions = permissionToActions.get(permission.getCode());
 						if(!CollectionUtils.isEmpty(restrictedActions)){
 							restrictedActions.forEach((restrictedAction)->restrictedAction.trim());
-							log.trace("check if permission ["+permission+"] has action ["+action+"]" );
+							logit.trace(()->"check if permission ["+permission+"] has action ["+action+"]" );
 							if(restrictedActions.contains(action)){
-								log.debug("permission ["+permission+"] contains action ["+action+"]");
+								logit.debug(()->"permission ["+permission+"] contains action ["+action+"]");
 								doesExist = true;
 							}
 						}
@@ -111,10 +110,10 @@ public class ClientUserAccessBehavior extends AbstractEntityBehavior<ClientUser,
 				}
 				
 				if(doesExist){
-					log.debug("["+r.getName()+"] has restrictive permission for performing ["+path+"] and action ["+action+"]");
+					logit.debug(()->"["+r.getName()+"] has restrictive permission for performing ["+path+"] and action ["+action+"]");
 						canRolePerform = false;
 					}else{
-					log.debug("["+r.getName()+"] does not have a restrictive permission for performing ["+path+"] and action ["+action+"]");
+						logit.debug(()->"["+r.getName()+"] does not have a restrictive permission for performing ["+path+"] and action ["+action+"]");
 					return canRolePerform;
 				}
 			}
@@ -135,7 +134,7 @@ public class ClientUserAccessBehavior extends AbstractEntityBehavior<ClientUser,
 			for(Entry e : entries) {
 				ClientAccessEntity cae = e.getReferredAccess();
 				if(StringUtils.equalsIgnoreCase(domainUri, StringUtils.prependIfMissing(cae.getDomainUri(), "/")) ){
-					log.debug("permissions for domainUri : ["+domainUri+"] : "+e.getGrantedPermissions()+" for entry "+e.getId());
+					logit.debug(()->"permissions for domainUri : ["+domainUri+"] : "+e.getGrantedPermissions()+" for entry "+e.getId());
 					entryPermissions.addAll(e.getGrantedPermissions());
 				}
 			}

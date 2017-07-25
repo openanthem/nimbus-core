@@ -24,19 +24,19 @@ import com.anthem.oss.nimbus.core.domain.command.execution.ExecuteOutput;
 import com.anthem.oss.nimbus.core.domain.command.execution.ValidationError;
 import com.anthem.oss.nimbus.core.domain.command.execution.ValidationException;
 import com.anthem.oss.nimbus.core.domain.command.execution.ValidationResult;
-
-import lombok.extern.slf4j.Slf4j;
+import com.anthem.oss.nimbus.core.util.JustLogit;
 
 @ControllerAdvice (annotations = RestController.class)
-@Slf4j
 public class PlatformExceptionHandlerAdvice implements ResponseBodyAdvice<Object>{
 
+	private JustLogit logit = new JustLogit(this.getClass());
+	
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(ValidationException.class)
 	@ResponseBody
 	public ExecuteOutput<?> exception(ValidationException e){	
-		if(log.isTraceEnabled())
-			log.trace("ValidationException handling in ResponseControllerAdvice");
+		
+		logit.trace(()->"ValidationException handling in ResponseControllerAdvice");
 		ExecuteOutput<?> r = new ExecuteOutput<>();
 		r.setValidationResult(e.getValidationResult());
 		return r;
@@ -46,19 +46,16 @@ public class PlatformExceptionHandlerAdvice implements ResponseBodyAdvice<Object
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	@ResponseBody
 	public ExecuteOutput<?> exception(MethodArgumentNotValidException e){	
-		if(log.isTraceEnabled())
-			log.trace("MethodArgumentNotValidException handling in ResponseControllerAdvice");
+		logit.trace(()->"MethodArgumentNotValidException handling in ResponseControllerAdvice");
 		ExecuteOutput<?> r = new ExecuteOutput<>();		
 		ValidationResult v = new ValidationResult();
 		List<ValidationError> errors = new ArrayList<ValidationError>();
 		
 		if(e.getBindingResult() != null && e.getBindingResult().getAllErrors() != null 
 				&& e.getBindingResult().getAllErrors().size() > 0){
-			if(log.isInfoEnabled())
-				log.info("Binding result Errors:"+e.getBindingResult().getErrorCount());
+			logit.info(()->"Binding result Errors:"+e.getBindingResult().getErrorCount());
 			for(ObjectError objErr : e.getBindingResult().getAllErrors()){
-				if(log.isTraceEnabled())
-					log.trace("Populating Validation Errors");
+				logit.trace(()->"Populating Validation Errors");
 				ValidationError err = new ValidationError(){};
 				err.setCode(objErr.getCode());
 				err.setMsg(objErr.getDefaultMessage());
@@ -75,10 +72,9 @@ public class PlatformExceptionHandlerAdvice implements ResponseBodyAdvice<Object
 	@ExceptionHandler(FrameworkRuntimeException.class)
 	@ResponseBody
 	public ExecuteOutput<?> exception(FrameworkRuntimeException p){
-		if(log.isTraceEnabled())
-			log.trace("FrameworkRuntimeException handling in ResponseControllerAdvice");
+		logit.trace(()->"FrameworkRuntimeException handling in ResponseControllerAdvice");
 		ExecuteOutput<?> resp = new ExecuteOutput<>();
-		log.debug("exception message"+p.getMessage());
+		logit.debug(()->"exception message"+p.getMessage());
 		ExecuteError err = p.getExecuteError();
 		err.setMessage(p.getCause().getMessage());
 		resp.setExecuteException(err);
@@ -94,20 +90,17 @@ public class PlatformExceptionHandlerAdvice implements ResponseBodyAdvice<Object
 	public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType,
 			Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request,
 			ServerHttpResponse response) {
-		if(log.isTraceEnabled())
-			log.trace("Enter beforeBodyWrite method of ResponseControllerAdvice");
+		logit.trace(()->"Enter beforeBodyWrite method of ResponseControllerAdvice");
 
 		
 		if(body instanceof ExecuteOutput){
-			if(log.isTraceEnabled())
-				log.trace("ResponseBody of type ExecuteResponse");
+			logit.trace(()->"ResponseBody of type ExecuteResponse");
 			return body;
 		}
 		ExecuteOutput<Object> r = new ExecuteOutput<Object>();
-		log.debug("body object:"+body);
+		logit.debug(()->"body object:"+body);
 		r.setResult(body);
-		if(log.isTraceEnabled())
-			log.trace("Setting response body object in ExecuteResponse result variable");
+		logit.trace(()->"Setting response body object in ExecuteResponse result variable");
 		return r;
 	}
 
