@@ -54,6 +54,7 @@
 		<node.version>v6.10.3</node.version>
 		<npm.version>4.5.0</npm.version>
 		<frontend.plugin.version>1.4</frontend.plugin.version>
+		<owasp-esapi.version>2.0.1</owasp-esapi.version>
 		<!-- nimbus-core -->
 		<nimbus.core.spec.version>1.0.0.M3-SNAPSHOT</nimbus.core.spec.version>
 		<nimbus.core.test.version>1.0.0.M3-SNAPSHOT</nimbus.core.test.version>
@@ -206,6 +207,17 @@
 				<groupId>org.codehaus.jackson</groupId>
 				<artifactId>jackson-mapper-asl</artifactId>
 				<version>${jackson-mapper-asl.version}</version>
+			</dependency>
+			<dependency>
+    			<groupId>org.owasp.esapi</groupId>
+    			<artifactId>esapi</artifactId>
+    			<version>${owasp-esapi.version}</version>
+    			<exclusions>
+		          <exclusion>
+		             <groupId>xerces</groupId>
+		             <artifactId>xercesImpl</artifactId>
+		          </exclusion>
+		        </exclusions>
 			</dependency>
 			<dependency>
 				<groupId>com.anthem.oss.nimbus.core</groupId>

@@ -131,7 +131,7 @@ public class ViewConfig {
 		String alias() default "CardDetail";
 		String cssClass() default "contentBox right-gutter bg-light mt-1";
 		String imgSrc() default "";
-		String editUrl() default "";
+		boolean editable() default false;
 		String modelPath() default "";
 		String title() default "";
 		boolean draggable() default false;
