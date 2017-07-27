@@ -309,6 +309,8 @@ public class ViewConfig {
 			SUBTITLE,
 			USERNAME,
 			USERROLE,
+			SUBHEADER,
+			MENU,
 			DEFAULT;
 		}
 		Property value() default Property.DEFAULT;
