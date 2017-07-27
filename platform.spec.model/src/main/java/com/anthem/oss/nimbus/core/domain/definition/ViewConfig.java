@@ -180,6 +180,7 @@ public class ViewConfig {
 		String alias() default "FieldValue";
 		Type type() default Type.Field;
 		String imgSrc() default "";
+		String cssClass() default "";
 		boolean showName() default true;
 		String cols() default "1";
 		String iconField() default "";
@@ -533,7 +534,7 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface SubHeader {
 		String alias() default "SubHeader";
-		String cssClass() default "col-sm-12";
+		String cssClass() default "col-sm-6 align-top";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
