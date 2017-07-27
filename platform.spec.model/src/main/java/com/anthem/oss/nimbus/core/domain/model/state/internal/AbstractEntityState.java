@@ -79,7 +79,8 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 		ExecutionRuntime execRt = getRootExecution().getExecutionRuntime();
 		String lockId = execRt.tryLock();
 		try {
-			initStateInternal();	
+			initStateInternal();
+			fireRules(); //TODO review with soham
 		} finally {
 			if(execRt.isLocked(lockId)) {
 				execRt.awaitCompletion();

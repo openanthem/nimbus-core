@@ -3,11 +3,23 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution.process;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
+import com.anthem.oss.nimbus.core.domain.command.Command;
+import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
+import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.command.execution.AbstractFunctionHandler;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutorGateway;
 import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContext;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.RulesConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
@@ -22,6 +34,8 @@ import com.anthem.oss.nimbus.core.rules.RulesEngineFactoryProducer;
 public class SetByRuleFunctionalHandler <T, R> extends AbstractFunctionHandler<T, R> {
 	
 	@Autowired RulesEngineFactoryProducer rulesEngineFactoryProducer;
+	
+	@Autowired CommandExecutorGateway executorGateway;
 	
 	@Override
 	public R execute(ExecutionContext eCtx, Param<T> actionParameter) {
@@ -40,7 +54,26 @@ public class SetByRuleFunctionalHandler <T, R> extends AbstractFunctionHandler<T
 		RulesRuntime rRuntime = reFactory.createRuntime(rConfig);
 		rRuntime.start();
 		
-		rRuntime.fireRules(actionParameter);
+		List<Param<T>> params = new ArrayList<>();
+		params.add(actionParameter);
+		
+		String[] associatedParamUris = eCtx.getCommandMessage().getCommand().getParameterValue("associatedParam");
+		
+		if(!ArrayUtils.isEmpty(associatedParamUris)) {
+			
+			Arrays.asList(associatedParamUris).forEach((associatedParamUri) -> {
+				associatedParamUri = eCtx.getCommandMessage().getCommand().getRelativeUri(associatedParamUri);
+				Command command = CommandBuilder.withUri(associatedParamUri).getCommand();
+				CommandMessage newCommandMessage = new CommandMessage(command, eCtx.getCommandMessage().hasPayload() ?  eCtx.getCommandMessage().getRawPayload() :null);
+				MultiOutput response = executorGateway.execute(newCommandMessage);
+				
+				Param<T> associatedParam = (Param<T>)response.getSingleResult();
+				params.add(associatedParam);
+			});
+		}
+		
+		rRuntime.fireRules(params.toArray(new Param[params.size()]));
+		
 		
 		rRuntime.shutdown();
 		

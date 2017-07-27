@@ -3,6 +3,7 @@
  */
 package com.anthem.oss.nimbus.core.rules.drools;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import org.drools.KnowledgeBase;
@@ -36,13 +37,16 @@ public class DroolsRulesRuntime implements RulesRuntime {
 	}
 
 	@Override
-	public void fireRules(Param<?> param) {
+	public void fireRules(Param<?>... params) {
 		if(getSession()==null) return;
 		
-		createOrUpdateFactHandle(param);
-		
-		Object state = param.getState();
-		createOrUpdateFactHandle(state);
+		if(params.length > 0) {
+			Arrays.asList(params).forEach((param) -> { 
+				createOrUpdateFactHandle(param);
+				Object state = param.getState();
+				createOrUpdateFactHandle(state);
+			});
+		}
 		
 		getSession().fireAllRules();
 	}
