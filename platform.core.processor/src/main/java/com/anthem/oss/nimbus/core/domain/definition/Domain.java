@@ -27,7 +27,8 @@ public @interface Domain {
 	enum ListenerType {
 		none,
 		websocket,
-		persistence
+		persistence,
+		update
 		
 	}
 }
