@@ -1,8 +1,6 @@
 package com.anthem.oss.nimbus.core.config;
 
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -34,9 +32,6 @@ import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFact
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ParamStateAtomicPersistenceEventListener;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.mongo.DefaultMongoModelPersistenceHandler;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.mongo.DefaultMongoModelRepository;
-import com.anthem.oss.nimbus.core.entity.user.AbstractUser;
-import com.anthem.oss.nimbus.core.entity.user.ClientUserGroup;
-import com.anthem.oss.nimbus.core.entity.user.GroupUser;
 import com.anthem.oss.nimbus.core.rules.DefaultRulesEngineFactoryProducer;
 import com.anthem.oss.nimbus.core.rules.drools.DroolsRulesEngineFactory;
 import com.anthem.oss.nimbus.core.session.UserEndpointSession;
