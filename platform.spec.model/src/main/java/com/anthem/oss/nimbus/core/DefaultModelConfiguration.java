@@ -27,7 +27,7 @@ public class DefaultModelConfiguration {
 	}
 	
 	@Bean
-	public RepoBasedCodeToDescriptionConverter codeToDescriptionConverter(){
+	public StaticCodeValueBasedCodeToDescConverter staticCodeValueBasedCodeToDescConverter(){
 		return new StaticCodeValueBasedCodeToDescConverter();
 	}
 }
