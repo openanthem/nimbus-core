@@ -12,6 +12,10 @@ import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Mult
  */
 public class ExtractResponseOutputUtils {
 
+	public static String extractDomainRootRefId(Object controllerResp) {
+		return MultiOutput.class.cast(Holder.class.cast(controllerResp).getState()).getOutputs().get(0).getRootDomainId();
+	}
+	
 	@SuppressWarnings("unchecked")
 	public static <T> T extractOutput(Object controllerResp) {
 		return (T)MultiOutput.class.cast(Holder.class.cast(controllerResp).getState()).getOutputs().get(0).getValue();
