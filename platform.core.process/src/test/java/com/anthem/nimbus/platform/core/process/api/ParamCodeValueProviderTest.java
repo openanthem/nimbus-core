@@ -26,6 +26,7 @@ import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.RepoBasedCodeToDescriptionConverter;
 import com.anthem.oss.nimbus.core.entity.StaticCodeValue;
 import com.anthem.oss.nimbus.core.entity.client.Client;
 import com.anthem.oss.nimbus.core.entity.client.access.ClientUserRole;
@@ -55,6 +56,9 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 	@Autowired
 	MongoOperations mongoOps;
 	
+	@Autowired
+	RepoBasedCodeToDescriptionConverter converter;
+	
 	
 	@Test
 	@SuppressWarnings("unchecked")
@@ -71,6 +75,13 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 		assertNotEquals(0, values.size());
 		
 		values.forEach((v)->System.out.println(v.getCode()));
+	}
+	
+	@Test
+	@SuppressWarnings("unchecked")
+	public void t11_testSearchByLookupStaticCodeValueElemMatch() {
+		
+		assertEquals("Anticardiolpin Antibodies",converter.serialize("ACL"));
 	}
 	
 	@Test
