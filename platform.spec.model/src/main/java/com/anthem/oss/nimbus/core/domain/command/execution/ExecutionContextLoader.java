@@ -49,4 +49,6 @@ import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 public interface ExecutionContextLoader {
 
 	public ExecutionContext load(Command rootDomainCmd);
+	
+	public void unload(ExecutionContext eCtx);
 }
