@@ -73,6 +73,14 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 		
 		return eCtx;
 	}
+	
+	@Override
+	public final void unload(ExecutionContext eCtx) {
+		sessionRemomve(eCtx);
+		
+		// also do an explicit shutdown
+		eCtx.getQuadModel().getRoot().getExecutionRuntime().stop();
+	}
 
 	private boolean isTransient(Command cmd) {
 		return cmd.getAction()==Action._search;
@@ -107,6 +115,10 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 		return false;
 	}
 	
+	protected boolean sessionRemomve(ExecutionContext eCtx) {
+		return queueRemove(eCtx);
+	}
+	
 	protected boolean sessionExists(ExecutionContext eCtx) {
 		return queueExists(eCtx);
 	}
@@ -129,20 +141,29 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 	}
 	
 	private boolean queuePut(ExecutionContext eCtx) {
-		// skip if exists
-		if(queueExists(eCtx))
-			return false;
-		
 		synchronized (sessionCache) {
 			if(sessionCache.remainingCapacity()==0) { 
 				ExecutionContext removed = sessionCache.remove();
-				logit.debug(()->"sessionCache: Found remaining capacity = 0, removed ExecutionContext: "+removed.getId()
-				);
+				
+				// also do an explicit shutdown
+				removed.getQuadModel().getRoot().getExecutionRuntime().stop();
+				
+				logit.debug(()->"sessionCache: Found remaining capacity = 0, removed ExecutionContext: "+removed.getId());
 			}
 			
+			//String sessionId = RequestContextHolder.getRequestAttributes().getSessionId();
 			sessionCache.add(eCtx);
 		}
 		return true;
 	}
 
+	private boolean queueRemove(ExecutionContext eCtx) {
+		// skip if doesn't exist
+		if(!queueExists(eCtx))
+			return false;
+		
+		synchronized (sessionCache) {
+			return sessionCache.remove(eCtx);
+		}
+	}
 }
