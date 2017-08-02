@@ -13,7 +13,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.mock.web.MockHttpServletRequest;
 
-import com.anthem.oss.nimbus.core.AbstractFrameworkIngerationTests;
+import com.anthem.oss.nimbus.core.AbstractFrameworkIngerationPersistableTests;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
 
@@ -27,26 +27,7 @@ import test.com.anthem.oss.nimbus.core.domain.model.SampleCoreNestedEntity;
  *
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngerationTests {
-	
-	private static final String CORE_DOMAIN_ALIAS = "sample_core";
-	
-	private static final String CORE_PARAM_ROOT = PLATFORM_ROOT + "/" + CORE_DOMAIN_ALIAS; // /attr_list_1_NestedEntity";
-	private static final String VIEW_PARAM_ROOT = PLATFORM_ROOT + "/sample_view"; // /page_green/tile/list_attached_noConversion_NestedEntity";
-	
-	private static String domainRoot_refId;
-	
-	public synchronized String createOrGetDomainRoot_RefId() {
-		if(domainRoot_refId!=null) 
-			return domainRoot_refId;
-		
-		MockHttpServletRequest home_newReq = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addAction(Action._new).getMock();
-		Object home_newResp = controller.handleGet(home_newReq, null);
-		assertNotNull(home_newResp);
-		
-		domainRoot_refId  = ExtractResponseOutputUtils.extractDomainRootRefId(home_newResp);
-		return domainRoot_refId;
-	}
+public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngerationPersistableTests {
 	
 	@Test
 	public void t1_colElem_add() {

@@ -318,20 +318,6 @@ public class Command implements Serializable {
 		return sb.toString();
 	}
 	
-	public String toUniqueId() {
-		String uri = toUri();
-		StringBuilder sb = new StringBuilder(uri);
-		
-		/* user id */
-		if(StringUtils.trimToNull(getClientUserId()) != null) {
-			sb.append(Constants.SEPARATOR_UNIQUE_KEYGEN.code).append(getClientUserId());
-		}
-		
-		/* created instant */
-		sb.append(Constants.SEPARATOR_UNIQUE_KEYGEN.code).append(getCreatedInstant());
-		
-		return sb.toString();
-	}
 	
 	public String[] getParameterValue(String requestParameter){
 		if(requestParams != null && requestParams.containsKey(requestParameter)){
