@@ -11,5 +11,5 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
  */
 public interface CommandPathVariableResolver {
 
-	public String resolve(ExecutionContext eCtx, Param<?> commandParam, String pathToResolve);
+	public String resolve(Param<?> commandParam, String pathToResolve);
 }

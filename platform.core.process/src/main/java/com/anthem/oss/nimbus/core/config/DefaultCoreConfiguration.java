@@ -19,6 +19,7 @@ import com.anthem.nimbus.platform.core.process.api.support.ProcessBeanHelper;
 import com.anthem.nimbus.platform.core.process.mq.MessageReceiver;
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.ValidationConfigHandler;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.DefaultParamStateRepositoryDetached;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.DefaultParamStateRepositoryLocal;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.IdSequenceRepository;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.MongoIdSequenceRepository;
@@ -115,9 +116,14 @@ public class DefaultCoreConfiguration {
 		return new DefaultParamStateRepositoryLocal(javaBeanHandler);
 	}
 	
+	@Bean(name="default.param.state.rep_detached")
+	public DefaultParamStateRepositoryDetached defaultParamStateRepositoryDetached(BeanResolverStrategy beanResolver){
+		return new DefaultParamStateRepositoryDetached(beanResolver);
+	}
+	
 	@Bean(name="default.param.state.repository")
-	public ParamStateRepositoryGateway paramStateRepositoryGateway(JavaBeanHandler javaBeanHandler, @Qualifier("default.param.state.rep_local") ParamStateRepository local){
-		return new ParamStateRepositoryGateway(javaBeanHandler,local);
+	public ParamStateRepositoryGateway paramStateRepositoryGateway(JavaBeanHandler javaBeanHandler, @Qualifier("default.param.state.rep_local") ParamStateRepository local, BeanResolverStrategy beanResolver){
+		return new ParamStateRepositoryGateway(javaBeanHandler,local, beanResolver);
 	}
 	
 	//web socket

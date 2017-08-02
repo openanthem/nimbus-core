@@ -11,6 +11,8 @@ import java.lang.annotation.Target;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.anthem.oss.nimbus.core.domain.definition.Repo.Cache;
+
 /**
  * @author Soham Chakravarti
  *
@@ -61,6 +63,8 @@ public class MapsTo {
 		State state() default State.Internal;
 		
 		String colElemPath() default DEFAULT_COL_ELEM_PATH;
+		
+		Cache cache() default Cache.rep_device;	 
 
 	}
 	
