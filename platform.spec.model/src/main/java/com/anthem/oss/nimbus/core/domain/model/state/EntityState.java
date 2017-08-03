@@ -13,6 +13,7 @@ import com.anthem.oss.nimbus.core.domain.model.config.EntityConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListElemParam;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.StateContextEntity;
 import com.anthem.oss.nimbus.core.util.CollectionsTemplate;
 import com.anthem.oss.nimbus.core.util.LockTemplate;
@@ -162,11 +163,12 @@ public interface EntityState<T> {
 			return null;
 		}
 		
-		@SuppressWarnings("unchecked")
-		//@Override
+		@Override
 		default ListModel<T> findIfListModel() {
 			return this;
 		}
+		
+		public ListElemParam<T> createElement(String elemId);
 		
 		@Override
 		public ListElemParam<T> add();
@@ -178,10 +180,6 @@ public interface EntityState<T> {
 			ParamConfig<T> elemConfig = typeConfig.getElementConfig();
 			return elemConfig;
 		}
-		
-		public String toElemId(int i);
-		public int fromElemId(String elemId);
-		
 	}
 	public interface MappedListModel<T, M> extends ListModel<T>, MappedModel<List<T>, List<M>> {
 		@Override
@@ -276,22 +274,24 @@ public interface EntityState<T> {
 	
 	public interface ListBehavior<T> {
 		/*
-		public Param<T> get(int i);
-		public boolean add(Param<T> p);
 		public boolean remove(Param<T> p);
 		public Param<T> remove(int i);
 		public Param<T> set(int i, Param<T> p);*/
+		
+		public String toElemId(int i);
+		public int fromElemId(String elemId);
 		
 		public int size();
 		
 		public T getState(int i);
 		public T getLeafState(int i);
 		
-		
 		public boolean add(T elem);
 		public Param<T> add();
 		
+		public boolean remove(ListElemParam<T> pColElem);
 		
+		public void clear();
 	}
 	
 	
@@ -308,7 +308,6 @@ public interface EntityState<T> {
 			return true;
 		}
 		
-		@SuppressWarnings("unchecked")
 		@Override
 		default ListParam<T> findIfCollection() {
 			return this;
@@ -340,7 +339,6 @@ public interface EntityState<T> {
 		public String getElemId();
 		public int getElemIndex();
 		
-		@SuppressWarnings("unchecked")
 		@Override
 		public ListModel<E> getParentModel();
 		
@@ -358,6 +356,8 @@ public interface EntityState<T> {
 		default ListElemParam<E> findIfCollectionElem() {
 			return this;
 		}
+		
+		public boolean delete();
 	}	
 	public interface MappedListElemParam<E, M> extends ListElemParam<E>, MappedParam<E, M> {
 //		@Override

@@ -16,10 +16,12 @@ import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutorGateway;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandPathVariableResolver;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Mode;
+import com.anthem.oss.nimbus.core.domain.definition.MapsTo.State;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig.MappedParamConfig;
@@ -55,13 +57,16 @@ abstract public class AbstractEntityStateBuilder {
 
 	protected final RulesEngineFactoryProducer rulesEngineFactoryProducer;
 	
-	private final CommandExecutorGateway gateway;
+	protected final CommandExecutorGateway gateway;
+	
+	protected CommandPathVariableResolver pathVariableResolver;
 	
 	protected JustLogit logit = new JustLogit(getClass());
 	
 	public AbstractEntityStateBuilder(BeanResolverStrategy beanResolver) {
 		this.rulesEngineFactoryProducer = beanResolver.get(RulesEngineFactoryProducer.class);
 		this.gateway = beanResolver.get(CommandExecutorGateway.class);
+		this.pathVariableResolver = beanResolver.get(CommandPathVariableResolver.class);
 	}
 	
 	abstract public <T, P> DefaultModelState<T> buildModel(EntityStateAspectHandlers provider, DefaultParamState<T> associatedParam, ModelConfig<T> mConfig, Model<?> mapsToSAC);
@@ -178,10 +183,10 @@ abstract public class AbstractEntityStateBuilder {
 			return new MappedDefaultParamState<>(mapsToParam, parentModel, mappedParamConfig, aspectHandlers);
 		}
 		
-		if(!mappedParamConfig.getMapsTo().getType().isNested()) {
-			throw new UnsupportedOperationException("Mapped Detached ParamType.Field is not yet supported. Supported types are Nested & NestedCollection."
-					+ " param: "+mappedParamConfig.getCode()+" in parent: "+parentModel.getPath());
-		}
+//		if(!mappedParamConfig.getMapsTo().getType().isNested()) {
+//			throw new UnsupportedOperationException("Mapped Detached ParamType.Field is not yet supported. Supported types are Nested & NestedCollection."
+//					+ " param: "+mappedParamConfig.getCode()+" in parent: "+parentModel.getPath());
+//		}
 		
 		// detached nested: find mapsTo model and create ExState.ExParam for it
 		
@@ -206,6 +211,7 @@ abstract public class AbstractEntityStateBuilder {
 			return new MappedDefaultListParamState(mapsToParam.findIfCollection(), parentModel, mappedParamConfig, aspectHandlers);
 		}
 		return new MappedDefaultParamState<>(mapsToParam, parentModel, mappedParamConfig, aspectHandlers);
+	
 	}
 
 	private <P> DefaultParamState<P> createParamUnmapped(EntityStateAspectHandlers aspectHandlers, Model<?> parentModel, Model<?> mapsToSAC, ParamConfig<P> paramConfig) {

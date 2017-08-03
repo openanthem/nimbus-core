@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.anthem.oss.nimbus.core.TestFrameworkIntegrationScenariosApplication;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
@@ -21,7 +22,7 @@ import test.com.anthem.oss.nimbus.core.domain.model.ui.VRSampleViewRootEntity;
  *
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes=TestFrameworkIntegrationScenariosApplication.class)
 @ActiveProfiles("test")
 public abstract class AbstractStateBuilderCollectionScenariosTest {
 

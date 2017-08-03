@@ -3,57 +3,87 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.mock.web.MockHttpServletRequest;
 
-import com.anthem.oss.nimbus.core.AbstractTestConfigurer;
+import com.anthem.oss.nimbus.core.AbstractFrameworkIngerationPersistableTests;
 import com.anthem.oss.nimbus.core.domain.command.Action;
-import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
-import com.anthem.oss.nimbus.core.entity.client.Client;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
+
+import test.com.anthem.nimbus.platform.utils.ExtractResponseOutputUtils;
+import test.com.anthem.nimbus.platform.utils.MockHttpRequestBuilder;
+import test.com.anthem.oss.nimbus.core.domain.model.SampleCoreEntity;
+import test.com.anthem.oss.nimbus.core.domain.model.SampleCoreNestedEntity;
 
 /**
- * @author Rakesh Patel
+ * @author Soham Chakravarti
  *
  */
-@EnableAutoConfiguration
-@ActiveProfiles("test")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class DefaultActionExecutorDeleteTest extends AbstractTestConfigurer {
-	
-	@Autowired
-	MongoOperations mongoOps;
-	
+public class DefaultActionExecutorDeleteTest extends AbstractFrameworkIngerationPersistableTests {
 	
 	@Test
-	public void t0_deleteParam() {
+	public void t1_colElem_add() {
+		String refId = createOrGetDomainRoot_RefId();
 		
-		Client c = insertClient();
+		// create new collection
+		MockHttpServletRequest colNew_Req = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
+					.addNested("/page_green/tile/list_attached_noConversion_NestedEntity").addAction(Action._new).getMock();
 		
-		Command cmd = CommandBuilder.withUri("Anthem/fep/icr/p/client:"+c.getId()+"/_delete").getCommand();
-		cmd.setAction(Action._delete);
+		SampleCoreNestedEntity colElemState_0 = new SampleCoreNestedEntity();
+		colElemState_0.setNested_attr_String("0. TEST_INTG_COL_ELEM_add "+ new Date());
 		
-		MultiOutput multiOp = getCommandGateway().execute(cmd, null);
-		Boolean b = (Boolean)multiOp.getSingleResult();
+		SampleCoreNestedEntity colElemState_1 = new SampleCoreNestedEntity();
+		colElemState_1.setNested_attr_String("1. TEST_INTG_COL_ELEM_add "+ new Date());
 		
-		assertTrue(b);
-	}
-	
-	private Client insertClient() {
+		List<SampleCoreNestedEntity> colState = new ArrayList<SampleCoreNestedEntity>();
+		colState.add(colElemState_0);
+		colState.add(colElemState_1);
 		
-		Client c = new Client();
-		c.setName("client1");
-		c.setCode("c1");
-		mongoOps.insert(c, "client");
-		return c;
+		String jsonPayload = converter.convert(colState);
+		
+		Object colNew_Resp = controller.handlePost(colNew_Req, jsonPayload);
+		assertNotNull(colNew_Resp);
+		
+		// db validation - after add new collection
+		SampleCoreEntity core = mongo.findById(refId, SampleCoreEntity.class, CORE_DOMAIN_ALIAS);
+		assertEquals(colState.size(), core.getAttr_list_1_NestedEntity().size());
+		assertEquals(colState.get(0).getNested_attr_String(), core.getAttr_list_1_NestedEntity().get(0).getNested_attr_String());
+		assertEquals(colState.get(1).getNested_attr_String(), core.getAttr_list_1_NestedEntity().get(1).getNested_attr_String());
+		
+		// do delete
+		MockHttpServletRequest colElemDelete_Req = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
+				.addNested("/page_green/tile/list_attached_noConversion_NestedEntity/0").addAction(Action._delete).getMock();
+		
+		Object colDelete_Resp = controller.handleDelete(colElemDelete_Req, null);
+		assertNotNull(colDelete_Resp);
+		
+		// object validation - after delete
+		MockHttpServletRequest colGet_Req = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(refId)
+				.addNested("/attr_list_1_NestedEntity").addAction(Action._get).getMock();
+		
+		Object colGet_Resp = controller.handleGet(colGet_Req, null);
+		ListParam<SampleCoreNestedEntity> pListNested = ExtractResponseOutputUtils.extractOutput(colGet_Resp);
+		assertNotNull(pListNested);
+		
+		assertEquals(colState.size()-1, pListNested.size());
+		assertEquals(colState.get(1).getNested_attr_String(), pListNested.findParamByPath("/1").getState());
+		
+		
+		// db validation - after delete
+		SampleCoreEntity coreAfter = mongo.findById(refId, SampleCoreEntity.class, CORE_DOMAIN_ALIAS);
+		assertEquals(colState.size()-1, core.getAttr_list_1_NestedEntity().size());
+		// validate that the earlier "index[1]" elem is now available as "index[0]"
+		assertEquals(colState.get(1).getNested_attr_String(), core.getAttr_list_1_NestedEntity().get(0).getNested_attr_String());
 	}
 
 }

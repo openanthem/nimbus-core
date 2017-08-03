@@ -6,12 +6,9 @@ package com.anthem.oss.nimbus.core.config;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.session.web.socket.events.SessionConnectEvent;
-import org.springframework.session.web.socket.handler.WebSocketConnectHandlerDecoratorFactory;
 import org.springframework.util.Assert;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.WebSocketSession;
@@ -20,10 +17,13 @@ import org.springframework.web.socket.handler.WebSocketHandlerDecoratorFactory;
 
 import com.anthem.oss.nimbus.core.util.JustLogit;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author Jayant Chaudhuri
  *
  */
+@Slf4j
 public class WebSocketHttpConnectHandlerDecoratorFactory implements WebSocketHandlerDecoratorFactory {
 
 	private JustLogit logit = new JustLogit(this.getClass());
@@ -74,7 +74,7 @@ public class WebSocketHttpConnectHandlerDecoratorFactory implements WebSocketHan
 						.publishEvent(event);
 			}
 			catch (Throwable ex) {
-				logit.error(()->"Error publishing " + event + "."+ ex);
+				log.error("Error publishing " + event + ".", ex);
 			}
 		}
 		
