@@ -72,23 +72,6 @@ public class EntityStateBuilder extends AbstractEntityStateBuilder {
 		StateType type = buildParamType(aspectHandlers, mpState, mapsToSAC);
 		mpState.setType(type);
 		
-		//TODO - review with Soham
-		if(mpState.findIfMapped() != null) {
-			if(mpState.getConfig().findIfMapped().getMappingMode() == Mode.MappedDetached 
-					&& StringUtils.isNotBlank(mpState.getConfig().findIfMapped().getPath().value())) {
-				
-				String completeUri = mpState.getRootExecution().getRootCommand().getRelativeUri(mpState.getConfig().findIfMapped().getPath().value());
-				String resolvedUri = this.pathVariableResolver.resolve(mpState, completeUri);
-				Command cmd = CommandBuilder.withUri(resolvedUri).getCommand();
-				CommandMessage cmdMsg = new CommandMessage(cmd, null);
-				MultiOutput multiOp = this.gateway.execute(cmdMsg);
-				Param<Object> pState = (Param<Object>)multiOp.getSingleResult();
-				Object value = pState.getLeafState(); 
-				mpState.setState((P)value);
-				
-			}
-		}
-		
 		return mpState;
 	}
 	

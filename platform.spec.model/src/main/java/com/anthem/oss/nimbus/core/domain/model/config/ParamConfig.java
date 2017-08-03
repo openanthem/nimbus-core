@@ -76,6 +76,8 @@ public interface ParamConfig<P> extends EntityConfig<P>, Findable<String> {
 			return MapsTo.getMode(getPath());
 		}
 		
+		public boolean isDetachedWithMapsToPath(); // e.g. @Path(value="/a/b/c/action", linked=false)
+		
 		@Override
 		public ParamConfig<M> getMapsTo();
 		
