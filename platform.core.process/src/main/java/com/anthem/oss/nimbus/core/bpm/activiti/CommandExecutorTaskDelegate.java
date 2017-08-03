@@ -66,7 +66,7 @@ public class CommandExecutorTaskDelegate implements JavaDelegate{
 		if(value == null)
 			return null;
 		commandUrl = (String)value;
-		commandUrl = pathVariableResolver.resolve(context.getExecutionContext(), context.getActionParam(), commandUrl);
+		commandUrl = pathVariableResolver.resolve(context.getActionParam(), commandUrl);
 		commandUrl = context.getExecutionContext().getCommandMessage().getCommand().getRelativeUri(commandUrl);
     	return commandUrl;
 	}
