@@ -104,25 +104,27 @@ public class ActivitiExpressionBuilder {
 		
 		public String getFunctionExpression(){
 			StringBuilder functionExpression = new StringBuilder();
-			boolean containsPlatformFunction = false;
+			boolean platformFunction = false;
 			if(functionName.startsWith(PLATFORM_FUNCTION_PREFIX)){
 				String helperBean = functionToBeanMap.get(functionName);
 				if(helperBean == null)
 					helperBean = EXPRESSION_HELPER_PREFIX;
 				functionExpression.append(helperBean).append(".");
-				containsPlatformFunction = true;
+				platformFunction = true;
 			}
 			functionExpression.append(functionName);
 			functionExpression.append(PLATFORM_FUNCTION_START);
 			if(arguments != null){
 				List<String> functionArguments = new ArrayList<String>();
-				if(containsPlatformFunction){
+				if(platformFunction)
 					functionArguments.addAll(platformDefaultArguments);
-				}
-				functionArguments.addAll(arguments);
-				if(containsPlatformFunction){
-					if(arguments.size() == 1)
-						functionArguments.add("null");
+			
+				if(arguments != null && arguments.size() > 0){
+					for(String arg: arguments){
+						if(StringUtils.isNoneEmpty(arg))
+							functionArguments.add(arg);
+					}
+					
 				}
 				functionExpression.append(StringUtils.join(functionArguments,PLATFORM_FUNCTION_ARG_SEPARATOR));
 			}

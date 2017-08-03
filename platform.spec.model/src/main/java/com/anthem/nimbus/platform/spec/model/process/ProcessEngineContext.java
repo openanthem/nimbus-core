@@ -28,11 +28,14 @@ public class ProcessEngineContext implements Serializable {
 	
 	private transient Param<?> actionParam;
 	
+	private transient Object model;
+	
 	public ProcessEngineContext(){}
 	
 	public ProcessEngineContext(ExecutionContext executionContext, Param<?> actionParam){
 		this.executionContext = executionContext;
 		this.actionParam = actionParam;
+		this.model = executionContext.getQuadModel().getView();
 	}
 	
 	public boolean isOutputAnException() {

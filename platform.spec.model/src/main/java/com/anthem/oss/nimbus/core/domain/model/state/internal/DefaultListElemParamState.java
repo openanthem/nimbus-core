@@ -71,4 +71,8 @@ public class DefaultListElemParamState<E> extends DefaultParamState<E> implement
 		return getParentModel().fromElemId(getElemId());
 	}
 
+	@Override
+	public boolean delete() {
+		return getParentModel().remove(this);
+	}
 }
