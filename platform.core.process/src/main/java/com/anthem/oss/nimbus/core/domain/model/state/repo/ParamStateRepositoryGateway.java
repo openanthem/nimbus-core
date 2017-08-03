@@ -10,14 +10,19 @@ import java.util.Collections;
 import java.util.Optional;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
+import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.InvalidArgumentException;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.definition.Converters.ParamConverter;
+import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Mode;
+import com.anthem.oss.nimbus.core.domain.definition.Repo.Cache;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.MappedParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.InvalidStateException;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 import com.anthem.oss.nimbus.core.utils.JavaBeanHandler;
@@ -40,10 +45,14 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 	
 	//@Autowired	@Qualifier("default.param.state.rep_session")
 	private ParamStateRepository session;
+	
+	private ParamStateRepository detachedStateRepository;
 
-	public ParamStateRepositoryGateway(JavaBeanHandler javaBeanHandler, ParamStateRepository local) {
+	public ParamStateRepositoryGateway(JavaBeanHandler javaBeanHandler, ParamStateRepository local, BeanResolverStrategy beanResolver) {
 		this.javaBeanHandler = javaBeanHandler;
 		this.local = local;
+		this.detachedStateRepository = beanResolver.get(ParamStateRepository.class, "param.state.rep_detached");
+		
 	}
 	
 	/*
@@ -60,18 +69,24 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		 */
 		@Override
 		public <P> P _get(Param<P> param) {
-			if(isCacheable()) {
-				P cachedState = session._get(param);
-				P localState  = local._get(param);
-				if(_equals(cachedState, localState) != null) {
-					local._set(param, cachedState);
-					localState = cachedState;
-				}
-				return localState;
-			} else {
-				P localState  = local._get(param);
-				return localState;
-			}
+			
+			ParamStateRepository paramStateRepo = findParamStateRepository(param);
+			
+			P state = paramStateRepo._get(param);
+			return state;
+		
+//			if(isCacheable()) {
+//				P cachedState = session._get(param);
+//				P localState  = local._get(param);
+//				if(_equals(cachedState, localState) != null) {
+//					local._set(param, cachedState);
+//					localState = cachedState;
+//				}
+//				return localState;
+//			} else {
+//				P localState  = local._get(param);
+//				return localState;
+//			}
 		}
 		
 		@Override
@@ -90,7 +105,19 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 			return false;
 		}
 		
-	
+		public ParamStateRepository findParamStateRepository(Param<?> param) {
+			if(!param.isMapped())
+				return local;
+			
+			MappedParam<?, ?> mappedParam = param.findIfMapped();
+			
+			if(mappedParam.getConfig().findIfMapped().getPath().cache() == Cache.rep_none 
+					&& mappedParam.getConfig().findIfMapped().getMappingMode() == Mode.MappedDetached
+					&& StringUtils.isNotBlank(mappedParam.getConfig().findIfMapped().getPath().value())) {
+				return detachedStateRepository;
+			}
+			return local;
+		}
 		
 //		public boolean isPersistable() {
 //			return true;
@@ -163,9 +190,16 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		
 		final P currState;
 		if(param.isMapped() && !param.findIfMapped().requiresConversion()) {
-			MappedParam<P, ?> mappedFromParam = param.findIfMapped();
-			Param<P> mapsToParam = (Param<P>)mappedFromParam.getMapsTo();
-			currState = currRep._get(mapsToParam);
+			if(param.getConfig().findIfMapped().getPath().cache() == Cache.rep_none 
+					&& param.getConfig().findIfMapped().getMappingMode() == Mode.MappedDetached
+					&& StringUtils.isNotBlank(param.getConfig().findIfMapped().getPath().value())) {
+				currState =  detachedStateRepository._get(param);
+			}
+			else{
+				MappedParam<P, ?> mappedFromParam = param.findIfMapped();
+				Param<P> mapsToParam = (Param<P>)mappedFromParam.getMapsTo();
+				currState = currRep._get(mapsToParam);
+			}
 
 		} else {
 			currState = currRep._get(param);
@@ -226,6 +260,14 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		
 		MappedParam<P, ?> mappedParam = param.findIfMapped();
 		Param<P> mapsToParam = (Param<P>)mappedParam.getMapsTo();
+		
+		// Throw error is trying to set a param that is mappedDetached witha value url provided in the path
+		if(param.getConfig().findIfMapped().getPath().cache() == Cache.rep_none 
+				&& param.getConfig().findIfMapped().getMappingMode() == Mode.MappedDetached
+				&& StringUtils.isNotBlank(param.getConfig().findIfMapped().getPath().value())) {
+			
+			throw new InvalidStateException("Cannot set mapsTo param for mapped detached param with a path that contains the url. Param is: "+param);
+		}
 		
 		// mapped leaf: write to mapped coreParam only if the view param is a leaf param (i.e., not a model) OR if is of same type
 		if(!param.findIfMapped().requiresConversion() && !param.isCollection()) {

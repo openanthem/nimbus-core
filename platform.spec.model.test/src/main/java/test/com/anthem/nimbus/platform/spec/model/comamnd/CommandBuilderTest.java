@@ -140,7 +140,6 @@ public class CommandBuilderTest {
 		assertSame(Behavior.$execute, cmd.getBehaviors().get(0));
 		assertSame(Behavior.$save, cmd.getBehaviors().get(1));
 		
-		System.out.println(cmd.toUniqueId());
 	}
 	
 	
