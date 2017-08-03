@@ -24,35 +24,20 @@ public class ActivitiExpressionManagerTest {
 	
 	@Test
 	public void t01_evaluate_noArgs() {
-		String expression = expMgr.evaluate("${!{_fireAllRules()!}}");
-		assertEquals("${defaultExpressionHelper._fireAllRules(processGatewayContext.processEngineContext.commandMsg,execution)}",expression);
+		String expression = expMgr.evaluate("${'/p/cmcaseview/_new?fn=_initEntity&target=/.m/patientReferred&json='}${<!_json(model.getState())!>}");
+		assertNotNull(expression);
 	}
 	
 	@Test
-	public void t02_evaluate_withArgs() {
-		String expression = expMgr.evaluate("${!{_get('/cmcase','#DomainAlias#')!}}");
-		assertEquals("${defaultExpressionHelper._get(processGatewayContext.processEngineContext.commandMsg,execution,defaultExpressionHelper.getResolvedUri(processGatewayContext.processEngineContext.commandMsg,'/cmcase'),'#DomainAlias#')}",expression);
-	}
-	
-	@Test
-	public void t03_evaluate_withPayload() {
-		String expression = expMgr.evaluate("${!{_search('/cmcase','{\"status\" : \"Active\"}')!}}");
-		assertEquals("${defaultExpressionHelper._search(processGatewayContext.processEngineContext.commandMsg,execution,defaultExpressionHelper.getResolvedUri(processGatewayContext.processEngineContext.commandMsg,'/cmcase'),'{\"status\" : \"Active\"}')}",expression);
-	}
-	
-	@Test
-	public void t04_evaluate_fail() {
-		String ip = "${_search('/cmcase','{\"status\" : \"Active\"}')}";
-		try {
-			expMgr.evaluate(ip);
-		} catch(IllegalArgumentException e) {
-			assertSame("Expression :"+ip+" is not valid", e.getMessage());
-		}
+	public void t01_evaluate_urlBuilder() {
+		String expression = expMgr.evaluate("${<!_urlbuilder('/p/cmcaseview/_new','fn','_initEntity','target','/.m/patientReferred','json',_json(processContext.model.getState()))!>}");
+		assertNotNull(expression);
 	}	
 	
 	@Test
-	public void t05_evaluate_fail() {
-		String ip = "${!{_setExternal('/assignmenttask/_search?b=$execute&criteria=assignmenttask.taskName.eq<\"bahubali\">','/pg1/tasksCard/tasksInfo/tasks')!}}";
-		expMgr.createExpression(ip);
-	}
+	public void t01_evaluate_array() {
+		String expression = expMgr.evaluate("${<!_array(_urlbuilder('/p/cmcaseview/_new','fn','_initEntity','target','/.m/patientReferred','json',_json(processContext.model.getState())),_concat('/p/cmcaseview:',_getState(processContext.output.singleResult.findParamByPath(\"/.m/id\")),'/_nav?pageId=pageCaseInfo'))!>}");
+		assertNotNull(expression);
+	}		
+	
 }

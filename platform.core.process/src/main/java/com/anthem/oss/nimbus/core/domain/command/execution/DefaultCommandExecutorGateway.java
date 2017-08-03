@@ -86,7 +86,6 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		return mOutput;
 	}
 	
-
 	protected void executeConfig(ExecutionContext eCtx, Param<?> cmdParam, MultiOutput mOutput, List<Execution.Config> execConfigs) {
 		final CommandMessage cmdMsg = eCtx.getCommandMessage();
 		boolean isPayloadUsed = false;
@@ -103,8 +102,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			
 			// execute & add output to mOutput
 			MultiOutput configOutput = execute(configCmdMsg);
-			mOutput.template().add(configOutput);
-			
+			addMultiOutput(mOutput,configOutput);
 		});	
 	}
 	
@@ -138,8 +136,29 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			Output<?> output = executor.execute(input);			
 			
 			mOutput.template().add(output);
+			//addOutput(mOutput,output);
 		});
 	}
+	
+	
+	private void addOutput(MultiOutput mOutput, Output<?> output){
+		Object outputValue = output.getValue();
+		if(outputValue instanceof MultiOutput){
+			MultiOutput mOut = (MultiOutput)outputValue;
+			for(Output<?> op: mOut.getOutputs()){
+				addOutput(mOutput,op);
+			}
+		}else{
+			mOutput.template().add(output);
+		}
+		
+	}
+	
+	private void addMultiOutput(MultiOutput mOutput, MultiOutput newOutput){
+		for(Output<?> output :newOutput.getOutputs()){
+			addOutput(mOutput,output);
+		}
+	}	
 
 	
 	protected ExecutionContext loadExecutionContext(CommandMessage cmdMsg) {

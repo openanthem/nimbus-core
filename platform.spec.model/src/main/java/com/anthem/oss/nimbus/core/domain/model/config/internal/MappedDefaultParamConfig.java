@@ -5,7 +5,11 @@ package com.anthem.oss.nimbus.core.domain.model.config.internal;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Mode;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
+import com.anthem.oss.nimbus.core.domain.definition.Repo.Cache;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig.MappedParamConfig;
@@ -28,7 +32,7 @@ public class MappedDefaultParamConfig<P, M> extends DefaultParamConfig<P> implem
 	@JsonIgnore	final private ParamConfig<M> mapsTo;
 
 	@JsonIgnore final private Path path;
-
+	
 	public MappedDefaultParamConfig(String code, ModelConfig<?> mapsToEnclosingModel, ParamConfig<M> mapsTo, Path path) {
 		this(code, code, mapsToEnclosingModel, mapsTo, path);
 	}
@@ -38,6 +42,17 @@ public class MappedDefaultParamConfig<P, M> extends DefaultParamConfig<P> implem
 		this.mapsToEnclosingModel = mapsToEnclosingModel;
 		this.mapsTo = mapsTo;
 		this.path = path;
+	}
+	
+	@JsonIgnore
+	@Override
+	public boolean isDetachedWithMapsToPath() {
+		if(getMappingMode() == Mode.MappedDetached
+				&& StringUtils.isNotBlank(getPath().value())) {
+			
+			return true;
+		}
+		return false;
 	}
 	
 }

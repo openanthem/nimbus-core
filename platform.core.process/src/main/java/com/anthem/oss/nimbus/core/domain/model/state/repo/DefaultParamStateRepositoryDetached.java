@@ -3,31 +3,19 @@
  */
 package com.anthem.oss.nimbus.core.domain.model.state.repo;
 
-import java.beans.PropertyDescriptor;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
-import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
-import com.anthem.oss.nimbus.core.InvalidOperationAttemptedException;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutorGateway;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandPathVariableResolver;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Mode;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListElemParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.util.JustLogit;
-import com.anthem.oss.nimbus.core.utils.JavaBeanHandler;
 
 /**
- * @author Soham Chakravarti
+ * @author Rakesh Patel
  *
  */
 public class DefaultParamStateRepositoryDetached implements ParamStateRepository {
@@ -43,6 +31,7 @@ public class DefaultParamStateRepositoryDetached implements ParamStateRepository
 		this.pathVariableResolver = beanResolver.get(CommandPathVariableResolver.class);
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public <P> P _get(Param<P> param) {
 		

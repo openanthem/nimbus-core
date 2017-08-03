@@ -9,6 +9,7 @@ import com.anthem.oss.nimbus.core.bpm.BPMGateway;
 import com.anthem.oss.nimbus.core.bpm.DefaultExpressionHelper;
 import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiBPMGateway;
 import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiExpressionManager;
+import com.anthem.oss.nimbus.core.bpm.activiti.CommandExecutorTaskDelegate;
 import com.anthem.oss.nimbus.core.domain.command.execution.FunctionHandler;
 import com.anthem.oss.nimbus.core.domain.command.execution.nav.DefaultActionNewInitEntityFunctionHandler;
 import com.anthem.oss.nimbus.core.domain.command.execution.nav.PageIdEchoNavHandler;
@@ -17,6 +18,7 @@ import com.anthem.oss.nimbus.core.domain.command.execution.process.AddFunctionHa
 import com.anthem.oss.nimbus.core.domain.command.execution.process.EvalFunctionHandler;
 import com.anthem.oss.nimbus.core.domain.command.execution.process.SetByRuleFunctionalHandler;
 import com.anthem.oss.nimbus.core.domain.command.execution.process.SetFunctionHandler;
+import com.anthem.oss.nimbus.core.domain.command.execution.process.StatelessBPMFunctionHanlder;
 import com.anthem.oss.nimbus.core.domain.command.execution.search.DefaultSearchFunctionHandlerExample;
 import com.anthem.oss.nimbus.core.domain.command.execution.search.DefaultSearchFunctionHandlerLookup;
 import com.anthem.oss.nimbus.core.domain.command.execution.search.DefaultSearchFunctionHandlerQuery;
@@ -67,6 +69,18 @@ public class DefaultProcessConfig {
 	public AddFunctionHandler<?,?> addFunctionHandler(){
 		return new AddFunctionHandler<>();
 	}
+	
+	@Bean(name="default._process$execute?fn=_bpm")
+	public StatelessBPMFunctionHanlder<?,?> statelessBPMFunctionHanlder(BeanResolverStrategy beanResolver){
+		return new StatelessBPMFunctionHanlder<>(beanResolver);
+	}	
+	
+	
+	
+	@Bean(name="commandExecutorTaskDelegate")
+	public CommandExecutorTaskDelegate commandExecutorTaskDelegate(BeanResolverStrategy beanResolver){
+		return new CommandExecutorTaskDelegate(beanResolver);
+	}	
 	
 	@Bean(name="default._search$execute?fn=lookup")
 	public FunctionHandler<?, ?> lookupFunctionHandler(){

@@ -18,6 +18,7 @@ import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.definition.Converters.ParamConverter;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Mode;
 import com.anthem.oss.nimbus.core.domain.definition.Repo.Cache;
+import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig.MappedParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.MappedParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
@@ -69,24 +70,18 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		 */
 		@Override
 		public <P> P _get(Param<P> param) {
-			
-			ParamStateRepository paramStateRepo = findParamStateRepository(param);
-			
-			P state = paramStateRepo._get(param);
-			return state;
-		
-//			if(isCacheable()) {
-//				P cachedState = session._get(param);
-//				P localState  = local._get(param);
-//				if(_equals(cachedState, localState) != null) {
-//					local._set(param, cachedState);
-//					localState = cachedState;
-//				}
-//				return localState;
-//			} else {
-//				P localState  = local._get(param);
-//				return localState;
-//			}
+			if(isCacheable()) {
+				P cachedState = session._get(param);
+				P localState  = local._get(param);
+				if(_equals(cachedState, localState) != null) {
+					local._set(param, cachedState);
+					localState = cachedState;
+				}
+				return localState;
+			} else {
+				P localState  = local._get(param);
+				return localState;
+			}
 		}
 		
 		@Override
@@ -103,20 +98,6 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		
 		public boolean isCacheable() {
 			return false;
-		}
-		
-		public ParamStateRepository findParamStateRepository(Param<?> param) {
-			if(!param.isMapped())
-				return local;
-			
-			MappedParam<?, ?> mappedParam = param.findIfMapped();
-			
-			if(mappedParam.getConfig().findIfMapped().getPath().cache() == Cache.rep_none 
-					&& mappedParam.getConfig().findIfMapped().getMappingMode() == Mode.MappedDetached
-					&& StringUtils.isNotBlank(mappedParam.getConfig().findIfMapped().getPath().value())) {
-				return detachedStateRepository;
-			}
-			return local;
 		}
 		
 //		public boolean isPersistable() {
@@ -190,10 +171,11 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		
 		final P currState;
 		if(param.isMapped() && !param.findIfMapped().requiresConversion()) {
-			if(param.getConfig().findIfMapped().getPath().cache() == Cache.rep_none 
-					&& param.getConfig().findIfMapped().getMappingMode() == Mode.MappedDetached
-					&& StringUtils.isNotBlank(param.getConfig().findIfMapped().getPath().value())) {
-				currState =  detachedStateRepository._get(param);
+			MappedParamConfig<P, ?> mappedParamConfig = param.getConfig().findIfMapped();
+			if(mappedParamConfig.isDetachedWithMapsToPath()) {
+				
+				currState = mappedParamConfig.getPath().cache() == Cache.rep_none 
+								|| currRep._get(param) == null ? detachedStateRepository._get(param) : currRep._get(param);
 			}
 			else{
 				MappedParam<P, ?> mappedFromParam = param.findIfMapped();

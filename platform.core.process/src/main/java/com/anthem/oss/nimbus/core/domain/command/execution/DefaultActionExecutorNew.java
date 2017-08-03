@@ -54,7 +54,8 @@ public class DefaultActionExecutorNew extends AbstractFunctionCommandExecutor<Ob
 			setStateNew(eCtx, input.getContext().getCommandMessage(), actionParam);
 			outputParam = actionParam;
 		}
-		
+		// hook up BPM
+		startBusinessProcess(eCtx, actionParam);
 		return Output.instantiate(input, eCtx, outputParam);
 	}
 
@@ -91,8 +92,7 @@ public class DefaultActionExecutorNew extends AbstractFunctionCommandExecutor<Ob
 		String refId = String.valueOf(getRootDomainRefIdByRepoDatabase(rootDomainConfig, q));
 		eCtx.getCommandMessage().getCommand().getRootDomainElement().setRefId(refId);
 		
-		// hook up BPM
-		startBusinessProcess(eCtx);
+
 		
 		return eCtx;
 	}
@@ -109,14 +109,14 @@ public class DefaultActionExecutorNew extends AbstractFunctionCommandExecutor<Ob
 		return getQuadModelBuilder().build(eCtx.getCommandMessage().getCommand(), e);		
 	}
 	
-	private void startBusinessProcess(ExecutionContext eCtx){
+	private void startBusinessProcess(ExecutionContext eCtx, Param<?> actionParam){
 		QuadModel<?, ?> quadModel = getQuadModel(eCtx);
 		String lifecycleKey = quadModel.getView().getConfig().getDomainLifecycle();
 		if(StringUtils.isEmpty(lifecycleKey))
 			return;
 		ProcessFlow processFlow = quadModel.getFlow();
 		if(processFlow.getProcessExecutionId() == null)
-			processFlow.setProcessExecutionId(bpmGateway.startBusinessProcess(eCtx, lifecycleKey));
+			processFlow.setProcessExecutionId(bpmGateway.startBusinessProcess(eCtx, lifecycleKey,actionParam).getExecutionId());
 	}
 	
 }
