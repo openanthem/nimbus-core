@@ -13,13 +13,11 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ClassUtils;
@@ -406,29 +404,6 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 			}	
 		}
 		
-//		@Override
-//		public void awaitCompletion() {
-//			// create new single thread using executor service
-//			ExecutorService e = createExecutorService();
-//			e.execute(new InternalNotificationEventDelegator(getNotificationQueue(), getNotificationLock(), getNotComplete()));
-//
-//			// shutdown
-//			e.shutdown();
-//			
-//			
-//			// wait on lock condition for completion of all tasks
-//			// TODO: this is overkill, can be simplified by waiting on ExecutorServive.awaitTermination() but kept for future enhancement
-//			getNotificationLock().execute(()-> {
-//				try {
-//					while(getNotificationQueue().size()!=0)
-//						notComplete.await();
-//					
-//				} catch (InterruptedException ex) {
-//					throw new FrameworkRuntimeException("Failed while waiting for notification event processing to complete. queue: "+notificationQueue, ex);
-//				}
-//			});
-//		}
-		
 		@SuppressWarnings("unchecked")
 		@Override
 		public void awaitCompletion() {
@@ -437,60 +412,15 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 					Notification<Object> event = (Notification<Object>)getNotificationQueue().take();
 					Param<Object> source =  event.getSource();
 					
-					new ArrayList<>(source.getEventSubscribers())
-						.stream()
-							.forEach(subscribedParam->subscribedParam.handleNotification(event));
+					if(CollectionUtils.isNotEmpty(source.getEventSubscribers()))
+						new ArrayList<>(source.getEventSubscribers())
+							.stream()
+								.forEach(subscribedParam->subscribedParam.handleNotification(event));
 				}
 			} catch (InterruptedException ex) {
 				throw new FrameworkRuntimeException("Failed to take event form queue: "+notificationQueue, ex);
 			}
 		}
 		
-		private ExecutorService createExecutorService() {
-			return Executors.unconfigurableExecutorService(
-					Executors.newSingleThreadExecutor(new ThreadFactory() {
-			//return Executors.newFixedThreadPool(1, new ThreadFactory() {
-				
-				@Override
-				public Thread newThread(Runnable r) {
-					AtomicInteger counter = rootCommandBasedExecCounters.computeIfAbsent(getRootCommand().getAbsoluteUri(), k->new AtomicInteger());
-					return new Thread(r, "ExecState "+counter.incrementAndGet()+": "+getRootCommand().getAbsoluteUri());
-				}
-			})
-					);
-		}
 	} 
-	
-	@Getter @RequiredArgsConstructor
-	public class InternalNotificationEventDelegator implements Runnable {
-		final private BlockingQueue<Notification<?>> notificationQueue;
-		final private LockTemplate notificationLock;
-		final private Condition notComplete;
-		
-		@SuppressWarnings("unchecked")
-		@Override
-		public void run() {
-			while(true) {
-				try {
-					
-					Notification<Object> event = (Notification<Object>)notificationQueue.take();
-					Param<Object> source =  event.getSource();
-					
-					getNotificationLock().execute(()-> {
-						// create new list to avoid concurrent modification of subscriber list as part of event handling
-						new ArrayList<>(source.getEventSubscribers())
-							.stream()
-							.forEach(subscribedParam->subscribedParam.handleNotification(event));
-					
-					
-						if(notificationQueue.size()==0)
-							notComplete.signal();
-					});
-				} catch (InterruptedException ex) {
-					throw new FrameworkRuntimeException("Failed to take event form queue: "+notificationQueue, ex);
-				}
-			}
-
-		}
-	}
 }

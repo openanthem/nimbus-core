@@ -53,7 +53,6 @@ import com.anthem.oss.nimbus.core.web.WebCommandDispatcher;
  *
  */
 @Configuration
-@EnableMongoRepositories(basePackages="com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement"	)
 @EnableMongoAuditing
 @ComponentScan(basePackageClasses = WebActionController.class)
 public class DefaultCoreConfiguration {

@@ -16,7 +16,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -55,7 +54,7 @@ import test.com.anthem.nimbus.platform.spec.model.comamnd.TestCommandFactory;
  *
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes=TestFrameworkIntegrationScenariosApplication.class)
 @ActiveProfiles("test")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class QuadModelCollectionsTest {

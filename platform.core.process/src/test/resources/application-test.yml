@@ -27,6 +27,7 @@ domain:
     basePackages:
       - com.anthem.oss.nimbus.core.entity
       - com.anthem.oss.nimbus.test.sample.um.model
+      - test.com.anthem.oss.nimbus.core.domain.model
     typeClassMappings:
       java.time.LocalDate : 
         date

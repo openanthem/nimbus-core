@@ -193,26 +193,40 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	@Override
 	final public Action setState(T state) {
+		return changeStateTemplate((rt, h)->affectSetStateChange(state, rt, h));
+	}
+	
+	private Action affectSetStateChange(T state, ExecutionRuntime execRt, Holder<Action> h) {
+		state = preSetState(state);			
+		Action a = getAspectHandlers().getParamStateGateway()._set(this, state); 
+		if(a!=null) {
+			notifySubscribers(new Notification<>(this, ActionType._updateState, this));
+			h.setState(a);
+			
+			if(execRt.isStarted())
+				emitEvent(a, this);
+		}
+		
+		postSetState(a, state);
+		return a;
+	}
+	
+	@FunctionalInterface
+	public static interface ChangeStateCallback<R> {
+		public R affectChange(ExecutionRuntime execRt, Holder<Action> h);
+	}
+
+	final protected <R> R changeStateTemplate(ChangeStateCallback<R> cb) {
 		ExecutionRuntime execRt = resolveRuntime();
 		String lockId = execRt.tryLock();
 		final Holder<Action> h = new Holder<>();
 		try {
-			state = preSetState(state);			
-			Action a = getAspectHandlers().getParamStateGateway()._set(this, state); 
-			if(a!=null) {
-				notifySubscribers(new Notification<>(this, ActionType._updateState, this));
-				h.setState(a);
-				
-				if(execRt.isStarted())
-					emitEvent(a, this);
-			}
-			
-			postSetState(a, state);
+			R resp = cb.affectChange(execRt, h);
 			
 			// fire rules if available at this param level
 			fireRules();
 			
-			return a;
+			return resp;
 		} finally {
 			if(execRt.isLocked(lockId)) {
 				// await completion of notification events

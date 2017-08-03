@@ -3,9 +3,11 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+
+import org.springframework.web.context.request.RequestContextHolder;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.command.Action;
@@ -32,7 +34,7 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 	private final CommandExecutor<?> executorActionGet;
 
 	// TODO: Temp impl till Session is rolled out
-	private final BlockingQueue<ExecutionContext> sessionCache;
+	private final Map<String, ExecutionContext> sessionCache;
 	
 	private final QuadModelBuilder quadModelBuilder;
 	
@@ -46,7 +48,7 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 		this.executorActionGet = beanResolver.get(CommandExecutor.class, Action._get.name() + Behavior.$execute.name());
 		
 		// TODO: Temp impl till Session is rolled out
-		this.sessionCache = new LinkedBlockingQueue<>(100);
+		this.sessionCache = new HashMap<>(100);
 	}
 	
 	@Override
@@ -72,6 +74,14 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 		}
 		
 		return eCtx;
+	}
+	
+	@Override
+	public final void unload(ExecutionContext eCtx) {
+		sessionRemomve(eCtx);
+		
+		// also do an explicit shutdown
+		eCtx.getQuadModel().getRoot().getExecutionRuntime().stop();
 	}
 
 	private boolean isTransient(Command cmd) {
@@ -107,42 +117,63 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 		return false;
 	}
 	
+	protected boolean sessionRemomve(ExecutionContext eCtx) {
+		return queueRemove(eCtx);
+	}
+	
 	protected boolean sessionExists(ExecutionContext eCtx) {
 		return queueExists(eCtx);
 	}
 	
 	protected QuadModel<?, ?> sessionGet(ExecutionContext eCtx) {
-		return Optional.ofNullable(queueGet(eCtx.getCommandMessage().getCommand()))
+		return Optional.ofNullable(queueGet(eCtx))
 				.map(ExecutionContext::getQuadModel)
 				.orElse(null);
 	}
 	
-	private boolean queueExists(ExecutionContext eCtx) {
-		return sessionCache.contains(eCtx);
+	private String getSessionKey(ExecutionContext eCtx) {
+		String sessionId = RequestContextHolder.getRequestAttributes().getSessionId();
+		String ctxId = eCtx.getId();
+		
+		String key = ctxId +"_sessionId{"+sessionId+"}";
+		return key;
 	}
 	
-	private ExecutionContext queueGet(Command cmd) {
-		return sessionCache.stream()
-				.filter(e->e.equalsId(cmd))
-				.findFirst()
-				.orElse(null);
+	private boolean queueExists(ExecutionContext eCtx) {
+		return sessionCache.containsKey(getSessionKey(eCtx));
+	}
+	
+	private ExecutionContext queueGet(ExecutionContext eCtx) {
+		return sessionCache.get(getSessionKey(eCtx));
 	}
 	
 	private boolean queuePut(ExecutionContext eCtx) {
-		// skip if exists
-		if(queueExists(eCtx))
-			return false;
-		
 		synchronized (sessionCache) {
-			if(sessionCache.remainingCapacity()==0) { 
-				ExecutionContext removed = sessionCache.remove();
-				logit.debug(()->"sessionCache: Found remaining capacity = 0, removed ExecutionContext: "+removed.getId()
-				);
+			if(sessionCache.size()>=100) { 
+				// shutdown
+				sessionCache.values().stream()
+					.forEach(e->{
+						e.getQuadModel().getRoot().getExecutionRuntime().stop();
+						logit.debug(()->"sessionCache: Found remaining capacity = 0, removed ExecutionContext: "+e.getId());
+					});
+				
+				// clear cache
+				sessionCache.clear();
 			}
 			
-			sessionCache.add(eCtx);
+			sessionCache.put(getSessionKey(eCtx), eCtx);
 		}
 		return true;
 	}
 
+	private boolean queueRemove(ExecutionContext eCtx) {
+		// skip if doesn't exist
+		if(!queueExists(eCtx))
+			return false;
+		
+		synchronized (sessionCache) {
+			ExecutionContext removed = sessionCache.remove(getSessionKey(eCtx));
+			return removed!=null;
+		}
+	}
 }
