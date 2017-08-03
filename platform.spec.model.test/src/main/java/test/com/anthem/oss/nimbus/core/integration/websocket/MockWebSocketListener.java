@@ -59,4 +59,8 @@ public class MockWebSocketListener {
 			}
 		});
 	}
+	
+	public void flushEvents() {
+		this.events.clear();
+	}
 }
