@@ -95,7 +95,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		execConfigs.stream().forEach(ec->{
 			String completeConfigUri = eCtx.getCommandMessage().getCommand().getRelativeUri(ec.url());
 			
-			String resolvedConfigUri = pathVariableResolver.resolve(eCtx, cmdParam, completeConfigUri); 
+			String resolvedConfigUri = pathVariableResolver.resolve(cmdParam, completeConfigUri); 
 			Command configExecCmd = CommandBuilder.withUri(resolvedConfigUri).getCommand();
 			
 			// TODO decide on which commands should get the payload

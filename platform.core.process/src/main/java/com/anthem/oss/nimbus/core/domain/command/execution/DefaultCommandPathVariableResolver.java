@@ -31,7 +31,7 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 	
 	
 	@Override
-	public String resolve(ExecutionContext eCtx, Param<?> commandParam, String urlToResolve) {
+	public String resolve(Param<?> param, String urlToResolve) {
 		Map<Integer, String> entries = ParamPathExpressionParser.parse(urlToResolve);
 		if(MapUtils.isEmpty(entries))
 			return urlToResolve;
@@ -43,7 +43,7 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 			// look for relative path to passed in param's parent model
 			String pathToResolve = ParamPathExpressionParser.stripPrefixSuffix(key);
 			
-			String val = map(eCtx, commandParam, pathToResolve);
+			String val = map(param, pathToResolve);
 			
 			out = StringUtils.replace(out, key, val, 1);
 		}
@@ -51,38 +51,39 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 		return out;
 	}
 	
-	protected String map(ExecutionContext eCtx, Param<?> commandParam, String pathToResolve) {
+	protected String map(Param<?> param, String pathToResolve) {
 		if(StringUtils.startsWithIgnoreCase(pathToResolve, Constants.MARKER_SESSION_SELF.code))
-			return mapSelf(eCtx, commandParam, pathToResolve);
+			return mapSelf(param, pathToResolve);
 		
 		if(StringUtils.startsWithIgnoreCase(pathToResolve, Constants.MARKER_COMMAND_PARAM_CURRENT_SELF.code))
-			return commandParam.getPath();
+			return param.getPath();
 		
 		if(StringUtils.startsWithIgnoreCase(pathToResolve, Constants.MARKER_REF_ID.code)) {
-			return eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
+			return param.getRootExecution().getRootCommand().getRefId(Type.DomainAlias);
+			//return eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
 		}
 		
-		return mapQuad(eCtx, commandParam, pathToResolve);
+		return mapQuad(param, pathToResolve);
 	}
 	
 	//TODO bean path evaluation to get value
-	protected String mapSelf(ExecutionContext eCtx, Param<?> commandParam, String pathToResolve) {
+	protected String mapSelf(Param<?> param, String pathToResolve) {
 		if(StringUtils.endsWith(pathToResolve, "loginId"))
 			return Optional.ofNullable(UserEndpointSession.getStaticLoggedInUser()).orElseGet(() -> new ClientUser()).getLoginId();
 		
-		return eCtx.getCommandMessage().getCommand().getElement(Type.ClientAlias).get().getAlias();
+		return param.getRootExecution().getRootCommand().getElement(Type.ClientAlias).get().getAlias();
 	}
 	
-	protected String mapQuad(ExecutionContext eCtx, Param<?> commandParam, String pathToResolve) {
+	protected String mapQuad(Param<?> param, String pathToResolve) {
 		if(StringUtils.startsWith(pathToResolve, "json(")) {
 			String paramPath = StringUtils.substringBetween(pathToResolve, "json(", ")");
-			Param<?> p = commandParam.getParentModel().findParamByPath(paramPath);
+			Param<?> p = param.getParentModel().findParamByPath(paramPath);
 			
 			Object state = p.getLeafState();
 			String json = converter.convert(state);
 			return json;
 		} else {
-			Param<?> p = commandParam.getParentModel().findParamByPath(pathToResolve);
+			Param<?> p = param.getParentModel().findParamByPath(pathToResolve);
 			return String.valueOf(p.getState());
 		}
 	}

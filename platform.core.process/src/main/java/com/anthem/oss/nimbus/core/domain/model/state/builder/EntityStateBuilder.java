@@ -6,13 +6,21 @@ package com.anthem.oss.nimbus.core.domain.model.state.builder;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.command.Command;
+import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
+import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
+import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Mode;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
+import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig.MappedParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultListElemParamState;
@@ -63,6 +71,23 @@ public class EntityStateBuilder extends AbstractEntityStateBuilder {
 		//handle param type
 		StateType type = buildParamType(aspectHandlers, mpState, mapsToSAC);
 		mpState.setType(type);
+		
+		//TODO - review with Soham
+		if(mpState.findIfMapped() != null) {
+			if(mpState.getConfig().findIfMapped().getMappingMode() == Mode.MappedDetached 
+					&& StringUtils.isNotBlank(mpState.getConfig().findIfMapped().getPath().value())) {
+				
+				String completeUri = mpState.getRootExecution().getRootCommand().getRelativeUri(mpState.getConfig().findIfMapped().getPath().value());
+				String resolvedUri = this.pathVariableResolver.resolve(mpState, completeUri);
+				Command cmd = CommandBuilder.withUri(resolvedUri).getCommand();
+				CommandMessage cmdMsg = new CommandMessage(cmd, null);
+				MultiOutput multiOp = this.gateway.execute(cmdMsg);
+				Param<Object> pState = (Param<Object>)multiOp.getSingleResult();
+				Object value = pState.getLeafState(); 
+				mpState.setState((P)value);
+				
+			}
+		}
 		
 		return mpState;
 	}

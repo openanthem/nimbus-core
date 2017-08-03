@@ -17,6 +17,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ClassUtils;
@@ -411,9 +412,10 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 					Notification<Object> event = (Notification<Object>)getNotificationQueue().take();
 					Param<Object> source =  event.getSource();
 					
-					new ArrayList<>(source.getEventSubscribers())
-						.stream()
-							.forEach(subscribedParam->subscribedParam.handleNotification(event));
+					if(CollectionUtils.isNotEmpty(source.getEventSubscribers()))
+						new ArrayList<>(source.getEventSubscribers())
+							.stream()
+								.forEach(subscribedParam->subscribedParam.handleNotification(event));
 				}
 			} catch (InterruptedException ex) {
 				throw new FrameworkRuntimeException("Failed to take event form queue: "+notificationQueue, ex);
