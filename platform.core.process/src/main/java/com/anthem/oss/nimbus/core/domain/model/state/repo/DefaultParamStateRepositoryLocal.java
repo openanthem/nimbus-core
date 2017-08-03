@@ -56,28 +56,49 @@ public class DefaultParamStateRepositoryLocal implements ParamStateRepository {
 			EntityState.ListElemParam<P> pElem = param.findIfCollectionElem();
 			
 			// instantiate collection if needed
-			List<P> coreList = pElem.getParentModel().instantiateOrGet();
-			
-			int index = pElem.getElemIndex();
-			logit.trace(()->"_set@colElem -> elemIndex: "+index+" colEntityState.size: "+coreList.size());
-			
-//			if(index>coreList.size()) {
-//				for(int i=coreList.size(); i<index; i++) {
-//					coreList.set(i, null);
-//				}				
-//			}
-			if(index==coreList.size()) { //add immediate next
-				coreList.add(newState);
-				return Action._new;
-			} else if(index < coreList.size()) { //replace
-				coreList.set(index, newState);
-				return Action._replace;
-			} else {
-				throw new InvalidOperationAttemptedException(
-						"Attemted to set in collection at index:"+index+" whereas size is:"+coreList.size()
-						+" for param.path: "+param.getPath());
-			}
+			List<P> entityStateList = pElem.getParentModel().instantiateOrGet();
 
+			// boundary condition check: entity-list-size cannot be more than model-list-size
+			int modelListSize = pElem.getParentModel().templateParams().size();
+			
+			if(entityStateList.size() > modelListSize) {
+				throw new InvalidOperationAttemptedException(
+						"Attemted to set in collection where entity state size :"+entityStateList.size()
+						+" is more than model list size of:"+modelListSize
+						+" for param.path: "+param.getPath());
+				
+			} /*else if(modelListSize > entityStateList.size()+1) {
+				throw new InvalidOperationAttemptedException(
+						"Attemted to set in collection where model list size :"+modelListSize
+						+" is more than entity list size of:"+entityStateList.size()+" by difference greater than 1"
+						+" for param.path: "+param.getPath());
+			}*/
+			
+			
+			logit.trace(()->"_set@colElem -> modelListSize: "+modelListSize+" entityStateList.size: "+entityStateList.size()+" with elemId: "+pElem.getElemId());
+			
+//			if(modelListSize == entityStateList.size()+1) { //add immediate next
+//				entityStateList.add(newState);
+//				return Action._new;
+//				
+//			} 
+			
+			int modelListElemIndex = pElem.getParentModel().templateParams().indexOf(pElem);
+
+			if(modelListElemIndex==-1 || modelListElemIndex == entityStateList.size()) {
+				entityStateList.add(newState);
+				return Action._new;
+				
+			} else if(modelListElemIndex < entityStateList.size()) {
+				entityStateList.set(modelListElemIndex, newState);
+				return Action._replace;
+				
+			} else {
+				throw new InvalidOperationAttemptedException("Cannot add/set to collection entity state when modelListElemIndex:"+modelListElemIndex
+						+" is greater than entityStateList.size(): "+entityStateList.size());
+			}
+			
+			
 			
 			
 		} else {
