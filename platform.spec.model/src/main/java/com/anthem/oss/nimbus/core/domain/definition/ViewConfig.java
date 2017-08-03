@@ -235,18 +235,26 @@ public class ViewConfig {
 	@Target({ElementType.FIELD})
 	@ViewStyle
 	public @interface Button {	
-		public enum Type {
+		public enum Style {
 			PRIMARY,
 			SECONDARY,
 			PLAIN,
 			DESTRUCTIVE;
 		}
+		
+		public enum Type {
+			submit,
+			reset,
+			button
+		}
+		
+		Type type() default Type.button;
 		String alias() default "Button";
 		String url() default "";
 		String b() default "$execute";
 		String method() default "GET";
 		String imgSrc() default "";
-		Type type() default Type.PLAIN;
+		Style style() default Style.PLAIN;
 		String payload() default "";
 		String cssClass() default "btn btn-primary";
 		boolean formReset() default true;
