@@ -58,9 +58,12 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 		if(StringUtils.startsWithIgnoreCase(pathToResolve, Constants.MARKER_COMMAND_PARAM_CURRENT_SELF.code))
 			return commandParam.getPath();
 		
-		if(StringUtils.startsWithIgnoreCase(pathToResolve, Constants.MARKER_REF_ID.code)) {
+		if(StringUtils.startsWithIgnoreCase(pathToResolve, Constants.MARKER_REF_ID.code)) 
 			return eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
-		}
+		
+		if(StringUtils.startsWithIgnoreCase(pathToResolve, Constants.MARKER_ELEM_ID.code)) 
+			return mapColElem(commandParam, pathToResolve);
+		
 		
 		return mapQuad(eCtx, commandParam, pathToResolve);
 	}
@@ -87,4 +90,17 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 		}
 	}
 
+	
+	protected String mapColElem(Param<?> commandParam, String pathToResolve) {
+		// check if command param is colElem
+		if(commandParam.isCollectionElem())
+			return commandParam.findIfCollectionElem().getElemId();
+		
+		// otherwise, if mapped, check if mapsTo param is colElem
+		if(commandParam.isMapped())
+			return mapColElem(commandParam.findIfMapped().getMapsTo(), pathToResolve);
+		
+		// throw ex ..or.. blank??
+		return "";
+	}
 }

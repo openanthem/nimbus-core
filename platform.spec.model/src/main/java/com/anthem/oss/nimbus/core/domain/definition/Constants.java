@@ -16,6 +16,7 @@ public enum Constants {
 	MARKER_SESSION_SELF("#self"),
 	MARKER_COMMAND_PARAM_CURRENT_SELF("#this"),
 	MARKER_REF_ID("#refId"),
+	MARKER_ELEM_ID("#elemId"),
 	
 	SEPARATOR_URI("/"),
 	
