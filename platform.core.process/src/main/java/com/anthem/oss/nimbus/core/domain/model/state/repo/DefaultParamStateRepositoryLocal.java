@@ -38,8 +38,8 @@ public class DefaultParamStateRepositoryLocal implements ParamStateRepository {
 			// instantiate collection if needed
 			List<P> coreList = pElem.getParentModel().instantiateOrGet();
 			
-			int index = pElem.getElemIndex();
-			return coreList.size()>index ? coreList.get(index) : null;
+			int index = pElem.getParentModel().templateParams().indexOf(pElem);
+			return coreList.size()>index && index!=-1 ? coreList.get(index) : null;
 			
 		} else {
 			PropertyDescriptor pd = param.getPropertyDescriptor();
