@@ -4,6 +4,7 @@
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
 import java.beans.PropertyDescriptor;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -101,11 +102,12 @@ public class DefaultActionExecutorNew extends AbstractFunctionCommandExecutor<Ob
 		ExecutionEntity<?, ?> e = ExecutionEntity.resolveAndInstantiate(entity, mapsToEntity);
 		
 		// update refId
-		Object refIdObj = getRootDomainRefIdByRepoDatabase(rootDomainConfig, e);
-		String refId = null;
-		if (refIdObj != null) {
-			refId = refIdObj.toString();
-		}
+		
+		String refId = Optional.ofNullable(getRootDomainRefIdByRepoDatabase(rootDomainConfig, e))
+				.map(String::valueOf)
+				.map(StringUtils::trimToNull)
+				.orElse(null);
+		
 		eCtx.getCommandMessage().getCommand().getRootDomainElement().setRefId(refId);
 		
 		return getQuadModelBuilder().build(eCtx.getCommandMessage().getCommand(), e);		
