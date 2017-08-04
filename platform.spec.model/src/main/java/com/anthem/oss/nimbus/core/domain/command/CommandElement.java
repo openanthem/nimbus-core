@@ -70,7 +70,7 @@ abstract public class CommandElement implements Serializable {
 	}
 	
 	public boolean hasRefId() {
-		return StringUtils.isNotEmpty(getRefId());
+		return StringUtils.trimToNull(getRefId()) != null;
 	}
 	
 	public String getAliasUri() {

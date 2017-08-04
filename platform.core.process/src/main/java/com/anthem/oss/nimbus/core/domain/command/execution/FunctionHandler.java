@@ -12,6 +12,6 @@ import com.anthem.oss.nimbus.core.domain.model.state.HierarchyMatch;
  */
 public interface FunctionHandler<T, R> extends HierarchyMatch{
 	
-	public R execute(ExecutionContext executionContext, Param<T> actionParameter);
+	public R execute(ExecutionContext eCtx, Param<T> actionParameter);
 	
 }
