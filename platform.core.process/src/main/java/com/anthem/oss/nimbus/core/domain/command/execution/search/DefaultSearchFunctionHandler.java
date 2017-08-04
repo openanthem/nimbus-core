@@ -3,8 +3,8 @@ package com.anthem.oss.nimbus.core.domain.command.execution.search;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 
-import com.anthem.oss.nimbus.core.domain.command.execution.AbstractFunctionHandler;
 import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContext;
+import com.anthem.oss.nimbus.core.domain.command.execution.fn.AbstractFunctionHandler;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
