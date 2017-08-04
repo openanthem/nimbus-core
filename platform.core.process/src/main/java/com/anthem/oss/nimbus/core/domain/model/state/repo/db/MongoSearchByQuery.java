@@ -27,7 +27,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.repository.support.SpringDataMongodbQuery;
 import org.springframework.util.CollectionUtils;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.entity.EntityAssociation;
 import com.anthem.oss.nimbus.core.entity.SearchCriteria;
