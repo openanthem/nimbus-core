@@ -99,7 +99,7 @@ public abstract class AbstractCommandExecutor<R> extends BaseCommandExecutorStra
 				if(rootDomainConfig.isMapped())  // has core
 					return getRefId(rootDomainConfig, rootDomainConfig.getIdParam(), e.getView());  //return q.getView().findParamByPath("/id").getState();
 				else
-					return getRefId(rootDomainConfig.findIfMapped().getMapsTo(), rootDomainConfig.findIfMapped().getMapsTo().getIdParam(), e.getCore());  //return q.getCore().findParamByPath("/id").getState();
+					return getRefId(rootDomainConfig, rootDomainConfig.getIdParam(), e.getCore());  //return q.getCore().findParamByPath("/id").getState();
 			}
 			
 			@Override

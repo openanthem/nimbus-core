@@ -101,7 +101,11 @@ public class DefaultActionExecutorNew extends AbstractFunctionCommandExecutor<Ob
 		ExecutionEntity<?, ?> e = ExecutionEntity.resolveAndInstantiate(entity, mapsToEntity);
 		
 		// update refId
-		String refId = String.valueOf(getRootDomainRefIdByRepoDatabase(rootDomainConfig, e));
+		Object refIdObj = getRootDomainRefIdByRepoDatabase(rootDomainConfig, e);
+		String refId = null;
+		if (refIdObj != null) {
+			refId = refIdObj.toString();
+		}
 		eCtx.getCommandMessage().getCommand().getRootDomainElement().setRefId(refId);
 		
 		return getQuadModelBuilder().build(eCtx.getCommandMessage().getCommand(), e);		
