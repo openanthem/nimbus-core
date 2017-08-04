@@ -88,12 +88,6 @@ public class DefaultActionExecutorNew extends AbstractFunctionCommandExecutor<Ob
 		// set to context
 		eCtx.setQuadModel(q);
 		
-		// update refId
-		String refId = String.valueOf(getRootDomainRefIdByRepoDatabase(rootDomainConfig, q));
-		eCtx.getCommandMessage().getCommand().getRootDomainElement().setRefId(refId);
-		
-
-		
 		return eCtx;
 	}
 	
@@ -105,6 +99,10 @@ public class DefaultActionExecutorNew extends AbstractFunctionCommandExecutor<Ob
 		
 		// create quad-model
 		ExecutionEntity<?, ?> e = ExecutionEntity.resolveAndInstantiate(entity, mapsToEntity);
+		
+		// update refId
+		String refId = String.valueOf(getRootDomainRefIdByRepoDatabase(rootDomainConfig, e));
+		eCtx.getCommandMessage().getCommand().getRootDomainElement().setRefId(refId);
 		
 		return getQuadModelBuilder().build(eCtx.getCommandMessage().getCommand(), e);		
 	}

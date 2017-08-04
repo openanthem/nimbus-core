@@ -3,14 +3,19 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
+import java.beans.PropertyDescriptor;
+
+import org.springframework.beans.BeanUtils;
+
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Input;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
 import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
+import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFactory;
 import com.anthem.oss.nimbus.core.utils.JavaBeanHandler;
 
@@ -87,19 +92,19 @@ public abstract class AbstractCommandExecutor<R> extends BaseCommandExecutorStra
 		return null;
 	}
 	
-	protected Object getRootDomainRefIdByRepoDatabase(ModelConfig<?> rootDomainConfig, QuadModel<?, ?> q) {
+	protected Object getRootDomainRefIdByRepoDatabase(ModelConfig<?> rootDomainConfig, ExecutionEntity<?, ?> e) {
 		return determineByRepoDatabase(rootDomainConfig, new RepoDBCallback<Object>() {
 			@Override
 			public Object whenRootDomainHasRepo() {
-				if(rootDomainConfig.isMapped()) // has core
-					return q.getView().findParamByPath("/id").getState();
+				if(rootDomainConfig.isMapped())  // has core
+					return getRefId(rootDomainConfig, rootDomainConfig.getIdParam(), e.getView());  //return q.getView().findParamByPath("/id").getState();
 				else
-					return q.getCore().findParamByPath("/id").getState();
+					return getRefId(rootDomainConfig.findIfMapped().getMapsTo(), rootDomainConfig.findIfMapped().getMapsTo().getIdParam(), e.getCore());  //return q.getCore().findParamByPath("/id").getState();
 			}
 			
 			@Override
 			public Object whenMappedRootDomainHasRepo(ModelConfig<?> mapsToConfig) {
-				return q.getCore().findParamByPath("/id").getState();
+				return getRefId(mapsToConfig, mapsToConfig.getIdParam(), e.getCore()); //return q.getCore().findParamByPath("/id").getState();
 			}
 		});
 	}
@@ -118,6 +123,12 @@ public abstract class AbstractCommandExecutor<R> extends BaseCommandExecutorStra
 		});
 	}
 
+	protected Object getRefId(ModelConfig<?> parentModelConfig, ParamConfig<?> pConfig, Object entity) {
+		PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(parentModelConfig.getReferredClass(), pConfig.getCode());
+		
+		Object refId = getJavaBeanHandler().getValue(pd, entity);
+		return refId;
+	}
 
 /*	
 	protected <T,R,H extends FunctionHandler<T,R>> R doExecuteFunctionHandler(CommandMessage cmdMsg,Class<H> handlerClass) {
