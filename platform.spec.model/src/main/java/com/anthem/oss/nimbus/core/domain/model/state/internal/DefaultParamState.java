@@ -293,6 +293,11 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		getEventSubscribers().add(subscriber);
 	}
 	
+	@Override
+	public boolean deregisterSubscriber(MappedParam<?, T> subscriber) {
+		return getEventSubscribers().remove(subscriber);
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	final public void notifySubscribers(Notification<T> event) {

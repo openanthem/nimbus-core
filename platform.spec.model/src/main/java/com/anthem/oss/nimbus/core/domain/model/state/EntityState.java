@@ -13,7 +13,7 @@ import com.anthem.oss.nimbus.core.domain.model.config.EntityConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListElemParam;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.StateContextEntity;
 import com.anthem.oss.nimbus.core.util.CollectionsTemplate;
 import com.anthem.oss.nimbus.core.util.LockTemplate;
@@ -243,6 +243,14 @@ public interface EntityState<T> {
 			return null;
 		}
 		
+		default public boolean isTransient() {
+			return false;
+		}
+		
+		default public MappedTransientParam<T, ?> findIfTransient() {
+			return null;
+		}
+		
 		public PropertyDescriptor getPropertyDescriptor();
 
 	}
@@ -256,11 +264,6 @@ public interface EntityState<T> {
 		@Override
 		public Param<M> getMapsTo();
 		
-		// TODO temp implementation
-		default public void setMapsTo(Param<M> mapsTo) {
-			getMapsTo().setState(mapsTo.getState());
-		} 
-		
 		default public boolean requiresConversion() {
 			if(isLeaf()) return false;
 			
@@ -270,6 +273,25 @@ public interface EntityState<T> {
 			// conversion required when mappedClass and mapsToClass are NOT same
 			return (mappedClass!=mapsToClass);
 		}
+	}
+	
+	public interface MappedTransientParam<T, M> extends MappedParam<T, M> {
+		@Override
+		default boolean isTransient() {
+			return true;
+		}
+		
+		@Override
+		default MappedTransientParam<T, ?> findIfTransient() {
+			return this;
+		}
+
+		default public boolean isAssinged() {
+			return getMapsTo() != null;
+		}
+		
+		public void assignMapsTo(Param<M> mapsToTransient);
+		public void unassignMapsTo();
 	}
 	
 	public interface ListBehavior<T> {

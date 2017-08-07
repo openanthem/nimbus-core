@@ -45,11 +45,8 @@ public class MapsTo {
 	public @interface Type {
 		
 		Class<?> value();
-
-		/**
-		 * throw exception if unmapped property is found. Defaults to silent, i.e., no exception thrown 
-		 */
-		boolean silent() default true;
+		
+		boolean isTransient() default false;
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
