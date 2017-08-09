@@ -6,6 +6,7 @@ package com.anthem.nimbus.platform.spec.model.process;
 import java.io.Serializable;
 
 import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContext;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 
 import lombok.Getter;
@@ -41,4 +42,13 @@ public class ProcessEngineContext implements Serializable {
 	public boolean isOutputAnException() {
 		return output != null && output instanceof Exception;
 	}
+
+	public Object getParamValue(String paramId){
+		return executionContext.getQuadModel().getView().findParamByPath(paramId).getState();
+	}
+	
+	public Object getParamValueFromModel(Param<?> model, String paramId){
+		return model.findParamByPath(paramId).getState();
+	}
+	
 }
