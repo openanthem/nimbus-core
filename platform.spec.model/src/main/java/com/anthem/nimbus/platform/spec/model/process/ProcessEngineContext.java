@@ -47,8 +47,8 @@ public class ProcessEngineContext implements Serializable {
 		return executionContext.getQuadModel().getView().findParamByPath(paramId).getState();
 	}
 	
-	public Object getParamValueFromModel(Param<?> model, String paramId){
-		return model.findParamByPath(paramId).getState();
+	public Object getParamValueFromParam(Param<?> param, String paramId){
+		return param.findParamByPath(paramId).getState();
 	}
 	
 }
