@@ -1,36 +1,34 @@
 package com.anthem.oss.nimbus.core.config;
 
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.TaskService;
+import org.activiti.engine.impl.el.ExpressionManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
 
+import com.anthem.oss.nimbus.core.BeanResolverStrategy;
+import com.anthem.oss.nimbus.core.bpm.BPMGateway;
 import com.anthem.oss.nimbus.core.bpm.DefaultExpressionHelper;
-import com.anthem.oss.nimbus.core.bpm.activiti.ModelInstantiationServiceTaskDelegate;
-import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiDAO;
+import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiBPMGateway;
 import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiExpressionManager;
-import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiGateway;
-import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiGatewayHelper;
-import com.anthem.oss.nimbus.core.bpm.activiti.SpELBasedTaskRouter;
-import com.anthem.oss.nimbus.core.bpm.activiti.TaskCompletionListener;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandMessageConverter;
-import com.anthem.oss.nimbus.core.domain.command.execution.ProcessGateway;
-import com.anthem.oss.nimbus.core.integration.sa.ProcessExecutionCtxHelper;
+import com.anthem.oss.nimbus.core.bpm.activiti.CommandExecutorTaskDelegate;
+import com.anthem.oss.nimbus.core.domain.command.execution.FunctionHandler;
+import com.anthem.oss.nimbus.core.domain.command.execution.nav.DefaultActionNewInitEntityFunctionHandler;
+import com.anthem.oss.nimbus.core.domain.command.execution.nav.PageIdEchoNavHandler;
+import com.anthem.oss.nimbus.core.domain.command.execution.process.AddCollectionsFunctionalHandler;
+import com.anthem.oss.nimbus.core.domain.command.execution.process.AddFunctionHandler;
+import com.anthem.oss.nimbus.core.domain.command.execution.process.EvalFunctionHandler;
+import com.anthem.oss.nimbus.core.domain.command.execution.process.SetByRuleFunctionalHandler;
+import com.anthem.oss.nimbus.core.domain.command.execution.process.SetFunctionHandler;
+import com.anthem.oss.nimbus.core.domain.command.execution.process.StatelessBPMFunctionHanlder;
+import com.anthem.oss.nimbus.core.domain.command.execution.search.DefaultSearchFunctionHandlerExample;
+import com.anthem.oss.nimbus.core.domain.command.execution.search.DefaultSearchFunctionHandlerLookup;
+import com.anthem.oss.nimbus.core.domain.command.execution.search.DefaultSearchFunctionHandlerQuery;
 
 /**
  * @author Sandeep Mantha
  *
  */
-
 @Configuration 
 public class DefaultProcessConfig {
-	
-	@Bean
-	@Scope(value = "prototype")
-	public ModelInstantiationServiceTaskDelegate activitiAssignmentServiceTaskDelegate(ProcessGateway processGateway){
-		return new ModelInstantiationServiceTaskDelegate(processGateway);
-	}
 	
 	@Bean
 	public ActivitiExpressionManager activitiExpressionManager(){
@@ -38,32 +36,75 @@ public class DefaultProcessConfig {
 	}
 	
 	@Bean
-	public ActivitiGateway activitiGateway(RuntimeService runtimeService, ProcessExecutionCtxHelper processExecutionCtx,
-			TaskService taskService, ActivitiDAO activitiDAO,
-			ProcessGateway processGateway){
-		return new ActivitiGateway(runtimeService,processExecutionCtx,taskService,activitiDAO,processGateway);
-	}
-	
-	
-	@Bean
-	@Scope(value = "prototype")
-	public ActivitiGatewayHelper activitiGatewayHelper(){
-		return new ActivitiGatewayHelper();
-	}
-	//name is redundant
-	@Bean(name="spELBasedTaskRouter")
-	public SpELBasedTaskRouter spELBasedTaskRouter(){
-		return new SpELBasedTaskRouter();
+	public DefaultExpressionHelper defaultExpressionHelper(BeanResolverStrategy beanResolver){
+		return new DefaultExpressionHelper(beanResolver);
 	}
 	
 	@Bean
-	public TaskCompletionListener taskCompletionListener(TaskService taskService){
-		return new TaskCompletionListener(taskService);
+	public BPMGateway bpmGateway(){
+		return new ActivitiBPMGateway();
+	}		
+	
+	@Bean(name="default._new$execute?fn=_initEntity")
+	public FunctionHandler<?, ?> defaultActionNewInitFunctionHandler(BeanResolverStrategy beanResolver){
+		return new DefaultActionNewInitEntityFunctionHandler<>(beanResolver);
 	}
 	
-	@Bean(name="defaultExpressionHelper")
-	public DefaultExpressionHelper defaultExpressionHelper(CommandMessageConverter converter){
-		return new DefaultExpressionHelper(converter);
+	@Bean(name="default._nav$execute?fn=default")
+	public PageIdEchoNavHandler<?> pageIdEchoNavHandler(){
+		return new PageIdEchoNavHandler<>();
 	}
 	
+	@Bean(name="default._process$execute?fn=_set")
+	public SetFunctionHandler<?,?> setFunctionHandler(){
+		return new SetFunctionHandler<>();
+	}
+	
+	@Bean(name="default._process$execute?fn=_setByRule")
+	public FunctionHandler<?,?> setByRuleFunctionHandler(){
+		return new SetByRuleFunctionalHandler<>();
+	}
+	
+	@Bean(name="default._process$execute?fn=_add")
+	public AddFunctionHandler<?,?> addFunctionHandler(){
+		return new AddFunctionHandler<>();
+	}
+	
+	@Bean(name="default._process$execute?fn=_bpm")
+	public StatelessBPMFunctionHanlder<?,?> statelessBPMFunctionHanlder(BeanResolverStrategy beanResolver){
+		return new StatelessBPMFunctionHanlder<>(beanResolver);
+	}	
+	
+	
+	
+	@Bean(name="commandExecutorTaskDelegate")
+	public CommandExecutorTaskDelegate commandExecutorTaskDelegate(BeanResolverStrategy beanResolver){
+		return new CommandExecutorTaskDelegate(beanResolver);
+	}	
+	
+	@Bean(name="default._search$execute?fn=lookup")
+	public FunctionHandler<?, ?> lookupFunctionHandler(){
+		return new DefaultSearchFunctionHandlerLookup<>();
+	}
+	
+	@Bean(name="default._search$execute?fn=example")
+	public FunctionHandler<?, ?> exampleFunctionHandler(){
+		return new DefaultSearchFunctionHandlerExample<>();
+	}
+	
+	@Bean(name="default._search$execute?fn=query")
+	public FunctionHandler<?, ?> queryFunctionHandler(){
+		return new DefaultSearchFunctionHandlerQuery<>();
+	}
+
+	@Bean(name="default._process$execute?fn=_eval")
+	public EvalFunctionHandler<?,?> evalFunctionHandler(ExpressionManager expressionManager){
+		return new EvalFunctionHandler(expressionManager);
+	}
+	
+	@Bean(name="default._process$execute?fn=_addCollection")
+	public AddCollectionsFunctionalHandler<?,?> setAddCollectionsFunctionalHandler(BeanResolverStrategy beanResolver){
+		return new AddCollectionsFunctionalHandler<>(beanResolver);
+	}
+
 }

@@ -137,8 +137,13 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 
 	@Override
 	public void fireRules() {
+		// self
 		Optional.ofNullable(getRulesRuntime())
 			.ifPresent(rt->rt.fireRules(this));
+		
+		// nested 
+		Optional.ofNullable(findIfNested())
+			.ifPresent(Model::fireRules);
 	}
 	
 	/**
@@ -188,24 +193,40 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	@Override
 	final public Action setState(T state) {
-		ExecutionRuntime execRt = getRootExecution().getExecutionRuntime();
+		return changeStateTemplate((rt, h)->affectSetStateChange(state, rt, h));
+	}
+	
+	private Action affectSetStateChange(T state, ExecutionRuntime execRt, Holder<Action> h) {
+		state = preSetState(state);			
+		Action a = getAspectHandlers().getParamStateGateway()._set(this, state); 
+		if(a!=null) {
+			notifySubscribers(new Notification<>(this, ActionType._updateState, this));
+			h.setState(a);
+			
+			if(execRt.isStarted())
+				emitEvent(a, this);
+		}
+		
+		postSetState(a, state);
+		return a;
+	}
+	
+	@FunctionalInterface
+	public static interface ChangeStateCallback<R> {
+		public R affectChange(ExecutionRuntime execRt, Holder<Action> h);
+	}
+
+	final protected <R> R changeStateTemplate(ChangeStateCallback<R> cb) {
+		ExecutionRuntime execRt = resolveRuntime();
 		String lockId = execRt.tryLock();
 		final Holder<Action> h = new Holder<>();
 		try {
-			state = preSetState(state);			
-			Action a = getAspectHandlers().getParamStateGateway()._set(this, state); 
-			if(a!=null) {
-				notifySubscribers(new Notification<>(this, ActionType._updateState, this));
-				h.setState(a);
-				emitEvent(a, this);
-			}
-			
-			postSetState(a, state);
+			R resp = cb.affectChange(execRt, h);
 			
 			// fire rules if available at this param level
 			fireRules();
 			
-			return a;
+			return resp;
 		} finally {
 			if(execRt.isLocked(lockId)) {
 				// await completion of notification events
@@ -224,6 +245,14 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 					throw new FrameworkRuntimeException("Failed to release lock acquired during setState of: "+getPath()+" with acquired lockId: "+lockId); 
 			}	
 		}
+	}
+	
+	protected ExecutionRuntime resolveRuntime() {
+		if(getRootExecution().getAssociatedParam().isLinked()) {
+			return getRootExecution().getAssociatedParam().findIfLinked().getRootExecution().getExecutionRuntime();
+		}
+		
+		return getRootExecution().getExecutionRuntime();
 	}
 	
 	protected T preSetState(T state) {
@@ -262,6 +291,11 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	@Override
 	public void registerSubscriber(MappedParam<?, T> subscriber) {
 		getEventSubscribers().add(subscriber);
+	}
+	
+	@Override
+	public boolean deregisterSubscriber(MappedParam<?, T> subscriber) {
+		return getEventSubscribers().remove(subscriber);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -358,6 +392,17 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 
 	public Param<?> findParamByPathInModel(String singlePathSegment) {
+		if(StringUtils.equals(singlePathSegment, Constants.SEPARATOR_CONFIG_ATTRIB.code))
+			return getContextModel().getAssociatedParam();
+
+		// value is only ".m" then return mapsTo if this is a mapped param
+		if(StringUtils.equals(singlePathSegment, Constants.SEPARATOR_MAPSTO.code)) {
+			if(isMapped())
+				return findIfMapped().getMapsTo();
+			else if(getRootDomain().isMapped())
+				return getRootDomain().findIfMapped().getMapsTo().getAssociatedParam();
+		}
+		
 		if(getType().findIfNested()==null)
 			return null;
 
@@ -379,12 +424,14 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	public Param<?> findParamByPathInSelf(String singlePathSegment) {
 		// blank or null returns self
-		if(StringUtils.trimToNull(singlePathSegment)==null)
+		if(StringUtils.trimToNull(singlePathSegment)==null   // path = null or empty 
+				|| Constants.SEPARATOR_URI.code.equals(StringUtils.trimToNull(singlePathSegment))  //  path = '/'
+					)//|| StringUtils.contains(singlePathSegment, Constants.MARKER_COLLECTION_ELEM_INDEX.code)) // path = .../colModel/{index}/attrib
 			return this;
 		
-		// value is only ".m" then return mapsTo if this is a mapped param
-		if(StringUtils.equals(singlePathSegment, Constants.SEPARATOR_MAPSTO.code)) 
-			return isMapped() ? findIfMapped().getMapsTo() : null;
+//		// value is only ".m" then return mapsTo if this is a mapped param
+//		if(StringUtils.equals(singlePathSegment, Constants.SEPARATOR_MAPSTO.code)) 
+//			return isMapped() ? findIfMapped().getMapsTo() : null;
 		
 		return null;	
 	}

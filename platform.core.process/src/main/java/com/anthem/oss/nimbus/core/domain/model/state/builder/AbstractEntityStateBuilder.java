@@ -7,17 +7,21 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
+import com.anthem.oss.nimbus.core.BeanResolverStrategy;
+import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
 import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
-import com.anthem.oss.nimbus.core.domain.command.execution.ProcessGateway;
+import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutorGateway;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandPathVariableResolver;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Mode;
+import com.anthem.oss.nimbus.core.domain.definition.MapsTo.State;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig.MappedParamConfig;
@@ -51,13 +55,19 @@ import lombok.Getter;
 @Getter
 abstract public class AbstractEntityStateBuilder {
 
-	@Autowired RulesEngineFactoryProducer rulesEngineFactoryProducer;
+	protected final RulesEngineFactoryProducer rulesEngineFactoryProducer;
 	
-	@Autowired
-	@Qualifier("default.processGateway")
-	ProcessGateway processGateway;
+	protected final CommandExecutorGateway gateway;
+	
+	protected CommandPathVariableResolver pathVariableResolver;
 	
 	protected JustLogit logit = new JustLogit(getClass());
+	
+	public AbstractEntityStateBuilder(BeanResolverStrategy beanResolver) {
+		this.rulesEngineFactoryProducer = beanResolver.get(RulesEngineFactoryProducer.class);
+		this.gateway = beanResolver.get(CommandExecutorGateway.class);
+		this.pathVariableResolver = beanResolver.get(CommandPathVariableResolver.class);
+	}
 	
 	abstract public <T, P> DefaultModelState<T> buildModel(EntityStateAspectHandlers provider, DefaultParamState<T> associatedParam, ModelConfig<T> mConfig, Model<?> mapsToSAC);
 	abstract public <T, P> DefaultParamState<P> buildParam(EntityStateAspectHandlers provider, Model<T> mState, ParamConfig<P> mpConfig, Model<?> mapsToSAC);
@@ -125,7 +135,7 @@ abstract public class AbstractEntityStateBuilder {
 		decorateParam(p);
 		
 		/* setting param values if applicable */
-	//	createParamValues(p.getConfig(), p.getPath());
+		createParamValues(p);
 		
 		return p;
 	}
@@ -145,8 +155,10 @@ abstract public class AbstractEntityStateBuilder {
 							created.getPath();// +"/"+ created.getConfig().getContextParam().getCode();
 		Command ctxCmd = CommandBuilder.withUri(ctxPath).getCommand();
 		
+		String ctxParamPath = created.getPath();
+		
 		ExecutionEntity<Object, StateContextEntity> eStateCtx = new ExecutionEntity<>();
-		ExecutionEntity<Object, StateContextEntity>.ExParam exParamCtx = eStateCtx.new ExParam(ctxCmd, created.getAspectHandlers(), exConfig, ctxPath);
+		ExecutionEntity<Object, StateContextEntity>.ExParam exParamCtx = eStateCtx.new ExParamLinked(ctxCmd, created.getAspectHandlers(), exConfig, ctxParamPath, created);
 		//exParamCtx.initSetup();
 		
 		ExecutionEntity<Object, StateContextEntity>.ExModel exModelCtx = exParamCtx.getRootExecution().unwrap(ExecutionEntity.ExModel.class);
@@ -171,10 +183,10 @@ abstract public class AbstractEntityStateBuilder {
 			return new MappedDefaultParamState<>(mapsToParam, parentModel, mappedParamConfig, aspectHandlers);
 		}
 		
-		if(!mappedParamConfig.getMapsTo().getType().isNested()) {
-			throw new UnsupportedOperationException("Mapped Detached ParamType.Field is not yet supported. Supported types are Nested & NestedCollection."
-					+ " param: "+mappedParamConfig.getCode()+" in parent: "+parentModel.getPath());
-		}
+//		if(!mappedParamConfig.getMapsTo().getType().isNested()) {
+//			throw new UnsupportedOperationException("Mapped Detached ParamType.Field is not yet supported. Supported types are Nested & NestedCollection."
+//					+ " param: "+mappedParamConfig.getCode()+" in parent: "+parentModel.getPath());
+//		}
 		
 		// detached nested: find mapsTo model and create ExState.ExParam for it
 		
@@ -183,7 +195,9 @@ abstract public class AbstractEntityStateBuilder {
 		ExecutionEntity.ExConfig<V, C> exConfig = new ExecutionEntity.ExConfig<>((ModelConfig<C>)mapsToEnclosingModel, null, null);
 		
 		//==String mapsToParamAbsolutePath = parentModel.getAbsolutePath() +Constants.SEPARATOR_URI.code+ mappedParamConfig.getCode();
-		String mapsToParamAbsolutePath = parentModel.getRootExecution().getRootCommand().buildAlias(Type.DomainAlias) +Constants.SEPARATOR_URI.code+ mappedParamConfig.getCode();
+		String mapsToParamAbsolutePath = parentModel.getRootExecution().getRootCommand().buildAlias(Type.DomainAlias) 
+											+Constants.SEPARATOR_URI.code+ mappedParamConfig.getCode();
+		
 		Command detachedRootCommand = CommandBuilder.withUri(mapsToParamAbsolutePath).getCommand();
 		
 		ExecutionEntity<V, C> eState = new ExecutionEntity<>();
@@ -197,6 +211,7 @@ abstract public class AbstractEntityStateBuilder {
 			return new MappedDefaultListParamState(mapsToParam.findIfCollection(), parentModel, mappedParamConfig, aspectHandlers);
 		}
 		return new MappedDefaultParamState<>(mapsToParam, parentModel, mappedParamConfig, aspectHandlers);
+	
 	}
 
 	private <P> DefaultParamState<P> createParamUnmapped(EntityStateAspectHandlers aspectHandlers, Model<?> parentModel, Model<?> mapsToSAC, ParamConfig<P> paramConfig) {
@@ -230,6 +245,24 @@ abstract public class AbstractEntityStateBuilder {
 				+ "Mapped Param: "+mapped.getCode()+" with mapsTo: "+mapped.getPath().value()+" mapped model: "+mapsToStateAndConfig.getPath());
 			
 		return mapsToParam;	
+	}
+	
+	private void createParamValues(Param<?> param) {
+		if(param.getConfig().getValues() != null) {
+			String valuesUrl = param.getConfig().getValues().url();
+			Command cmd = CommandBuilder.withUri(valuesUrl).getCommand();
+			cmd.setAction(Action._search);
+			
+			CommandMessage cmdMsg = new CommandMessage();
+			cmdMsg.setCommand(cmd);
+			
+			MultiOutput multiOp = getGateway().execute(cmdMsg);
+			Param<Object> p = param.getContextModel().findParamByPath("/values");
+			
+			Object result = multiOp.getSingleResult();
+			if(result != null) 
+				p.setState(result);
+		}
 	}
 	
 }

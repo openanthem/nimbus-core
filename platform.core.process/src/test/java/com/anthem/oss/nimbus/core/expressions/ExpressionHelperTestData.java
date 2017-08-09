@@ -39,8 +39,6 @@ abstract class ExpressionHelperTestData {
 	@Domain(value="core_book", includeListeners={ListenerType.persistence})
 	@Model(value="core_book", excludeListeners={ListenerType.websocket})
 	@Repo(Database.rep_mongodb)
-	@Execution.Input.Default
-	@Execution.Output.Default
 	public static class Book extends AbstractEntity.IdString {
 		
 		@Getter @Setter private String name;
@@ -71,8 +69,6 @@ abstract class ExpressionHelperTestData {
 	
 	@Domain(value="author", includeListeners={ListenerType.persistence}) 
 	@Repo(Repo.Database.rep_mongodb)
-	@Execution.Input.Default 
-	@Execution.Output.Default
 	@Getter @Setter @ToString(callSuper=true)
 	public static class Author extends AbstractEntity.IdString {
 		@Ignore
@@ -84,7 +80,6 @@ abstract class ExpressionHelperTestData {
 	}
 	
 	@Domain(value="view_book",includeListeners={ListenerType.websocket}) @MapsTo.Type(Book.class)
-	@Execution.Input.Default @Execution.Output.Default @Execution.Output({Action._new, Action._nav, Action._process})
 	@Getter @Setter
 	public static class OrderBookFlow {
 		private String orderId;

@@ -4,6 +4,7 @@
 package com.anthem.oss.nimbus.core.domain.model.state.internal;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -11,7 +12,6 @@ import java.util.Optional;
 
 import org.springframework.data.annotation.Transient;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.ExecutionStateTree;
 import com.anthem.oss.nimbus.core.domain.command.execution.ValidationResult;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
@@ -21,6 +21,8 @@ import com.anthem.oss.nimbus.core.domain.model.state.Notification;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification.ActionType;
 import com.anthem.oss.nimbus.core.util.CollectionsTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.util.StdConverter;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -41,8 +43,6 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 
 	@JsonIgnore private transient ValidationResult validationResult;
 	
-	@JsonIgnore private ExecutionStateTree executionStateTree;
-	
 	public DefaultModelState(Param<T> associatedParam, ModelConfig<T> config, EntityStateAspectHandlers provider/*, Model<?> backingCoreModel*/) {
 		super(config, provider);
 		
@@ -55,7 +55,7 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 
 	@Transient @JsonIgnore @Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
 	private final transient CollectionsTemplate<List<EntityState.Param<? extends Object>>, EntityState.Param<? extends Object>> templateParams = new CollectionsTemplate<>(
-			() -> getParams(), (p) -> setParams(p), () -> new LinkedList<>());
+			() -> getParams(), (p) -> setParams(p), () -> Collections.synchronizedList(new LinkedList<>()));
 
 	@JsonIgnore @Override
 	public CollectionsTemplate<List<EntityState.Param<?>>, EntityState.Param<?>> templateParams() {
@@ -118,5 +118,18 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 	@Override
 	public T getState() {
 		return Model.super.getState();
+	}
+	
+	public static class ParamsConverter extends StdConverter<List<?>, List<?>> {
+		@Override
+		public List<?> convert(List<?> in) {
+			return in==null ? null : new LinkedList<>(in);
+		}
+	}
+	
+	@JsonSerialize(converter=ParamsConverter.class)
+	@Override
+	public List<Param<? extends Object>> getParams() {
+		return params;
 	}
 }

@@ -8,14 +8,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.ExecutionStateTree;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.model.config.EntityConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.StateContextEntity;
 import com.anthem.oss.nimbus.core.util.CollectionsTemplate;
+import com.anthem.oss.nimbus.core.util.LockTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -50,6 +51,8 @@ public interface EntityState<T> {
 	
 	@JsonIgnore
 	public Model<?> getRootDomain();
+	
+	public LockTemplate getLockTemplate();
 	
 	default public boolean isRoot() {
 		return false;
@@ -142,7 +145,6 @@ public interface EntityState<T> {
 			Optional.ofNullable(getAssociatedParam()).ifPresent(p->p.setState(state));
 		}
 		
-		public ExecutionStateTree getExecutionStateTree();
 	}
 	
 	public interface MappedModel<T, M> extends Model<T>, Mapped<T, M> {
@@ -161,11 +163,12 @@ public interface EntityState<T> {
 			return null;
 		}
 		
-		@SuppressWarnings("unchecked")
-		//@Override
+		@Override
 		default ListModel<T> findIfListModel() {
 			return this;
 		}
+		
+		public ListElemParam<T> createElement(String elemId);
 		
 		@Override
 		public ListElemParam<T> add();
@@ -177,10 +180,6 @@ public interface EntityState<T> {
 			ParamConfig<T> elemConfig = typeConfig.getElementConfig();
 			return elemConfig;
 		}
-		
-		public String toElemId(int i);
-		public int fromElemId(String elemId);
-		
 	}
 	public interface MappedListModel<T, M> extends ListModel<T>, MappedModel<List<T>, List<M>> {
 		@Override
@@ -236,6 +235,22 @@ public interface EntityState<T> {
 			return null;
 		}
 		
+		default boolean isLinked() {
+			return false;
+		}
+		
+		default Param<?> findIfLinked() {
+			return null;
+		}
+		
+		default public boolean isTransient() {
+			return false;
+		}
+		
+		default public MappedTransientParam<T, ?> findIfTransient() {
+			return null;
+		}
+		
 		public PropertyDescriptor getPropertyDescriptor();
 
 	}
@@ -249,11 +264,6 @@ public interface EntityState<T> {
 		@Override
 		public Param<M> getMapsTo();
 		
-		// TODO temp implementation
-		default public void setMapsTo(Param<M> mapsTo) {
-			getMapsTo().setState(mapsTo.getState());
-		} 
-		
 		default public boolean requiresConversion() {
 			if(isLeaf()) return false;
 			
@@ -265,24 +275,45 @@ public interface EntityState<T> {
 		}
 	}
 	
+	public interface MappedTransientParam<T, M> extends MappedParam<T, M> {
+		@Override
+		default boolean isTransient() {
+			return true;
+		}
+		
+		@Override
+		default MappedTransientParam<T, ?> findIfTransient() {
+			return this;
+		}
+
+		default public boolean isAssinged() {
+			return getMapsTo() != null;
+		}
+		
+		public void assignMapsTo(Param<M> mapsToTransient);
+		public void unassignMapsTo();
+	}
+	
 	public interface ListBehavior<T> {
 		/*
-		public Param<T> get(int i);
-		public boolean add(Param<T> p);
 		public boolean remove(Param<T> p);
 		public Param<T> remove(int i);
 		public Param<T> set(int i, Param<T> p);*/
+		
+		public String toElemId(int i);
+		public int fromElemId(String elemId);
 		
 		public int size();
 		
 		public T getState(int i);
 		public T getLeafState(int i);
 		
-		
 		public boolean add(T elem);
 		public Param<T> add();
 		
+		public boolean remove(ListElemParam<T> pColElem);
 		
+		public void clear();
 	}
 	
 	
@@ -299,7 +330,6 @@ public interface EntityState<T> {
 			return true;
 		}
 		
-		@SuppressWarnings("unchecked")
 		@Override
 		default ListParam<T> findIfCollection() {
 			return this;
@@ -331,7 +361,6 @@ public interface EntityState<T> {
 		public String getElemId();
 		public int getElemIndex();
 		
-		@SuppressWarnings("unchecked")
 		@Override
 		public ListModel<E> getParentModel();
 		
@@ -349,10 +378,12 @@ public interface EntityState<T> {
 		default ListElemParam<E> findIfCollectionElem() {
 			return this;
 		}
+		
+		public boolean delete();
 	}	
 	public interface MappedListElemParam<E, M> extends ListElemParam<E>, MappedParam<E, M> {
-		@Override
-		public ListElemParam<M> getMapsTo();
+//		@Override
+//		public ListElemParam<M> getMapsTo();
 		
 		@Override
 		default public MappedListElemParam<E, M> findIfMapped() {

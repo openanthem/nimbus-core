@@ -13,8 +13,16 @@ public enum Constants {
 	MARKER_URI_BEHAVIOR("b"),
 	MARKER_COLLECTION_ELEM_INDEX("{index}"),
 	
+	MARKER_SESSION_SELF("#self"),
+	MARKER_COMMAND_PARAM_CURRENT_SELF("#this"),
+	MARKER_REF_ID("#refId"),
+	MARKER_ELEM_ID("#elemId"),
+	
 	SEPARATOR_URI("/"),
+	
 	SEPARATOR_URI_PLATFORM(SEPARATOR_URI.code + MARKER_URI_PLATFORM.code),	/* /p */
+	SEGMENT_PLATFORM_MARKER(SEPARATOR_URI_PLATFORM.code + SEPARATOR_URI.code),	/* /p/ */
+	
 	
 	SEPARATOR_URI_VALUE(":"),
 	SEPARATOR_CONFIG_ATTRIB("#"),
@@ -32,8 +40,21 @@ public enum Constants {
 	
 	CODE_VALUE_CONFIG_DELIMITER("-"),
 	PARAM_VALUES_URI_PREFIX("*/*/*/p/"),
-	PARAM_VALUES_URI_SUFFIX("/_lookup")
+	PARAM_VALUES_URI_SUFFIX("/_lookup"),
+	
+	KEY_FUNCTION("fn"),
+	KEY_NAV_ARG_PAGE_ID("pageId"),
+	
+	KEY_FN_INITSTATE_ARG_TARGET_PATH("target"),
+	KEY_FN_INITSTATE_ARG_JSON("json"),
+	
+	KEY_EXECUTE_PROCESS_CTX("processContext"),
+	KEY_EXECUTE_EVAL_ARG("eval"),
+	KEY_EXECUTE_PROCESS_ID("processId"),
+	
+	REQUEST_PARAMETER_MARKER("?")
 	;
+	
 	
 	
 	public final String code;

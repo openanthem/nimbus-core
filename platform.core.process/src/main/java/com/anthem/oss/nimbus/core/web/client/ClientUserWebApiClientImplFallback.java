@@ -16,10 +16,6 @@ import com.anthem.oss.nimbus.core.entity.client.user.ClientUser;
 //==@Component
 //==@Primary
  public   class ClientUserWebApiClientImplFallback implements ClientUserRepoWebAPIClient {
-    @Override
-    public ClientUser getUser(@PathVariable("loginName") String loginName) throws EntityNotFoundException {
-        return null;
-    }
 
     @Override
     public ClientUser getUsersByIDSSourceAndGuid(@RequestParam("source") String source, @RequestParam("idsGuid") String idsGuid) {

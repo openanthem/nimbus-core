@@ -3,13 +3,10 @@
  */
 package com.anthem.oss.nimbus.test.sample.um.model.view;
 
-import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.definition.Converters;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
-import com.anthem.oss.nimbus.core.domain.definition.Execution;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
-import com.anthem.oss.nimbus.core.domain.definition.Model.Param.Values;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Page;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.IdParamConverter;
 import com.anthem.oss.nimbus.test.sample.um.model.UMCase;
@@ -21,8 +18,8 @@ import lombok.Setter;
  * @author Soham Chakravarti
  *
  */
-@Domain(value="view_umcase",includeListeners={ListenerType.websocket}) @MapsTo.Type(UMCase.class)
-@Execution.Input.Default @Execution.Output.Default @Execution.Output({Action._new, Action._nav, Action._process})
+@Domain(value="view_umcase",includeListeners={ListenerType.websocket}) 
+@MapsTo.Type(UMCase.class)
 @Getter @Setter
 public class UMCaseFlow {
 
@@ -38,10 +35,10 @@ public class UMCaseFlow {
 	@Converters(converters={IdParamConverter.class})
 	private String umCaseDisplayId;
 	
-	@Values(url="staticCodeValue-/orgStatus")
+	//@Values(url="staticCodeValue-/orgStatus")
 	private String selectedValue_1;
 	
-	@Values(url="staticCodeValue-/orgStatus")
+	//@Values(url="staticCodeValue-/orgStatus")
 	private String selectedValue_2;
 	
 	

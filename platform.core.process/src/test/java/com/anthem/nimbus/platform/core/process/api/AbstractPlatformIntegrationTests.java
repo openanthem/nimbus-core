@@ -34,7 +34,7 @@ import com.anthem.oss.nimbus.core.session.UserEndpointSession;
 @ComponentScan(basePackages={"com.anthem.oss.nimbus.core"})
 @SpringBootTest(classes= {BPMEngineConfig.class/*,MongoIntegrationTestConfig.class*/})
 @EnableAutoConfiguration
-@Profile({"test","build"})
+@Profile({"inttest","build"})
 public class AbstractPlatformIntegrationTests {
 	
 	@Autowired MongoOperations mongoOps;

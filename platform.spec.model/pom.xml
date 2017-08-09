@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.anthem.oss.nimbus.core</groupId>
 		<artifactId>com.anthem.oss.nimbus.core.parent</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>1.0.0.M3-SNAPSHOT</version>
 	</parent>
 	<artifactId>com.anthem.oss.nimbus.core.spec</artifactId>
 	<packaging>jar</packaging>
@@ -85,6 +85,14 @@
 		    <groupId>com.querydsl</groupId>
 		    <artifactId>querydsl-apt</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.anthem.oss.nimbus.core</groupId>
+			<artifactId>com.anthem.oss.nimbus.core.processor</artifactId>	
+		</dependency>
+		<dependency>
+			<groupId>org.owasp.esapi</groupId>
+    		<artifactId>esapi</artifactId>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -99,14 +107,33 @@
 			                <goal>process</goal>
 			            </goals>
 			            <configuration>
-			                <outputDirectory>${basedir}/target/generated-sources/java</outputDirectory>
+			                <!-- outputDirectory>${basedir}/target/generated-sources/java</outputDirectory> -->
 			                <processor>
-			                  com.anthem.oss.nimbus.core.DomainAnnotationProcessor
+			                  com.anthem.oss.nimbus.core.processor.DomainAnnotationProcessor
 			                </processor>
 			            </configuration>
 			        </execution>
 			     </executions>
 			</plugin>
+			 <!-- Generated source code to be compiled to .class files -->
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>build-helper-maven-plugin</artifactId>
+					<executions>
+					  <execution>
+							<id>add-extra-source</id>
+							<phase>generate-sources</phase>
+							<goals>
+								<goal>add-source</goal>
+							</goals>
+							<configuration>
+								<sources>
+									<source>${basedir}/target/generated-sources/annotations</source>
+								</sources>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
 		</plugins>
 	</build>
 </project>

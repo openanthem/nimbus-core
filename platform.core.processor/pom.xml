@@ -1,0 +1,37 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>com.anthem.oss.nimbus.core.processor</artifactId>
+  	<parent>
+		<groupId>com.anthem.oss.nimbus.core</groupId>
+		<artifactId>com.anthem.oss.nimbus.core.parent</artifactId>
+		<version>1.0.0.M3-SNAPSHOT</version>
+	</parent>
+	<dependencies>
+		<dependency>
+			<groupId>com.querydsl</groupId>
+			<artifactId>querydsl-mongodb</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.querydsl</groupId>
+			<artifactId>querydsl-apt</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<!-- Disable annotation processing for ourselves. -->
+					<!--   <compilerArgument>-proc:none</compilerArgument> -->
+				<annotationProcessors>
+					<annotationProcessor>lombok.launch.AnnotationProcessorHider$AnnotationProcessor</annotationProcessor>
+				</annotationProcessors>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

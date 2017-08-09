@@ -3,6 +3,10 @@
  */
 package com.anthem.oss.nimbus.core.domain.command;
 
+import java.util.stream.Stream;
+
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * @author Soham Chakravarti
  *
@@ -11,13 +15,13 @@ public enum Action {
 	
 	/* CRUD */
 	_get,		//HTTP GET - defaults to _detail
-	_info,		//HTTP GET
+	_save,		//HTTP GET
 	_new,		//HTTP POST
 	_replace,	//HTTP PUT	- full update
 	_update,	//HTTP PATCH- partial update
 	_delete, 	//HTTP DELETE
 	
-	/* search, lookup */
+	/* search */
 	_search,
 	
 	/* process */
@@ -25,9 +29,15 @@ public enum Action {
 	//_lifecycle,
 	
 	/* navigation */
-	_nav,
-	_lookup /* for code value lookup calls */
+	_nav
 	;
 
 	public static final Action DEFAULT = _get;
+	
+	public static Action getByName(String name) {
+		return Stream.of(Action.values())
+			.filter((action) -> StringUtils.equals(action.name(), name))
+			.findFirst()
+			.orElse(null);
+	}
 }

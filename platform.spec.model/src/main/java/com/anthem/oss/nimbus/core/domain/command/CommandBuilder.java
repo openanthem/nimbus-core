@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -31,8 +32,10 @@ public class CommandBuilder {
 	
 	private JustLogit logit = new JustLogit(this.getClass());
 	
-	
 	public Command getCommand() {
+		if(CollectionUtils.isEmpty(cmd.getBehaviors())) 
+			cmd.templateBehaviors().add(Behavior.$execute);
+		
 		return cmd;
 	}
 	
@@ -47,6 +50,11 @@ public class CommandBuilder {
 		return cb;
 	}
 	
+	public CommandBuilder stripRequestParams() {
+		cmd.setRequestParams(null);
+		return this;
+	}
+	
 	/**
 	 * 
 	 * @param absoluteUri
@@ -54,7 +62,7 @@ public class CommandBuilder {
 	 */
 	protected CommandBuilder handleUriAndParamsIfAny(String absoluteUri) {
 		logit.debug(() -> "absoluteUri: " + absoluteUri);
-		String splits[] = StringUtils.split(absoluteUri, '?');	//if request params are present
+		String splits[] = StringUtils.split(absoluteUri, "?", 2);	//if request params are present
 		
 		logit.debug(() -> "splits: " + Arrays.toString(splits));
 		
@@ -78,7 +86,7 @@ public class CommandBuilder {
 
 		String pSplits[] = StringUtils.split(splits[1], '&');
 		Arrays.asList(pSplits).forEach(kv -> {
-			String pair[] = StringUtils.split(kv, '=');
+			String pair[] = StringUtils.split(kv, "=", 2);
             String key = pair[0];
 			String val[] = (rParams.containsKey(key)) ? ArrayUtils.add(rParams.get(key), pair[1])
 					: new String[] { pair[1] };

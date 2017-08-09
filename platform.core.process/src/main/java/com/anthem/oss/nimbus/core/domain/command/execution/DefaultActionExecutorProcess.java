@@ -3,45 +3,37 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiGateway;
-import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
+import com.anthem.oss.nimbus.core.BeanResolverStrategy;
+import com.anthem.oss.nimbus.core.bpm.BPMGateway;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Input;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 
 /**
  * @author Jayant Chaudhuri
  *
  */
-public class DefaultActionExecutorProcess extends AbstractProcessTaskExecutor {
+public class DefaultActionExecutorProcess<T,R> extends AbstractFunctionCommandExecutor<T,R> {
 	
-	ActivitiGateway activitiProcessGateway;
+	private BPMGateway bpmGateway;
 	
-	HierarchyMatchBasedBeanFinder hierarchyMatchBeanLoader;
-	
-	public static final String QUAD_MODEL_KEY = "quadModel";
-	
-	public DefaultActionExecutorProcess(ActivitiGateway activitiProcessGateway,
-			HierarchyMatchBasedBeanFinder hierarchyMatchBeanLoader) {
-		this.activitiProcessGateway = activitiProcessGateway;
-		this.hierarchyMatchBeanLoader = hierarchyMatchBeanLoader;
+	public DefaultActionExecutorProcess(BeanResolverStrategy beanResolver) {
+		super(beanResolver);
+		this.bpmGateway = beanResolver.get(BPMGateway.class);
 	}
-	
 	
 	@Override
-	protected <R> R doExecuteInternal(CommandMessage cmdMsg) {
-		QuadModel<?, ?> q = findQuad(cmdMsg);
-		
-//		FlowState processState = q.getFlow().getState();
-//		String processExecutionId = processState.getProcessExecutionId();
-		String processExecutionId = (String)q.getFlow().findStateByPath("/processExecutionId").getState();
-		if(processExecutionId != null){
-			Object resp = activitiProcessGateway.continueProcessExecution(cmdMsg,q,processExecutionId);
-			return (R)resp;
-		}
-		
-		Object resp = activitiProcessGateway.initiateProcessExecution(cmdMsg,q);
-		return (R)resp;
+	@SuppressWarnings("unchecked")
+	protected Output<R> executeInternal(Input input) {
+		R response = containsFunctionHandler(input) ? (R)executeFunctionHanlder(input, FunctionHandler.class) : continueBusinessProcessExceution(input.getContext());
+		return Output.instantiate(input, input.getContext(), response);
 	}
+	
+	@SuppressWarnings("unchecked")
+	private R continueBusinessProcessExceution(ExecutionContext eCtx){
+		QuadModel<?,?> quadModel = getQuadModel(eCtx);
+		String processExecutionId = quadModel.getFlow().getProcessExecutionId();
+		return (R)bpmGateway.continueBusinessProcessExecution(eCtx, processExecutionId, findParamByCommandOrThrowEx(eCtx));
+	}
+
 }

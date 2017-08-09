@@ -7,13 +7,11 @@ import java.time.LocalDate;
 
 import javax.validation.constraints.NotNull;
 
-import com.anthem.oss.nimbus.core.domain.command.Action;
-import com.anthem.oss.nimbus.core.domain.definition.AssociatedEntity;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
-import com.anthem.oss.nimbus.core.domain.definition.Execution;
-import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
+import com.anthem.oss.nimbus.core.domain.definition.Repo.Cache;
+import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 
 import lombok.Getter;
@@ -24,38 +22,30 @@ import lombok.Setter;
  *
  */
 @Domain(value="assignmenttask", includeListeners={ListenerType.persistence})
-@Repo(value=Repo.Database.rep_mongodb, alias="assignmenttask")
-@Execution.Input.Default 
-@Execution.Output.Default 
-@Execution.Output(Action._new)
-@AssociatedEntity("flow_cmcase")
+@Repo(alias="assignmenttask",value=Database.rep_mongodb, cache=Cache.rep_device)
 @Getter @Setter
 public class AssignmentTask extends AbstractEntity.IdString{
 	
 	private static final long serialVersionUID = 1L;
 	
-	private String taskId; //TODO change the name to bpmn id so that id is used from abstractmodel.IdString
-	
 	private String taskName;
 	
-	//@Model.Param.Values(url="staticCodeValue-/taskStatus")
 	private TaskStatus status;
 	
 	private String description;
 	
-	// (e.g. patientEnrollmentTask... so this will help us avoid check for instance of, abstract method)
 	@NotNull
-	//@Model.Param.Values(url="staticCodeValue-/taskType")
 	private TaskType taskType;
+	
+	private String testTaskType;
 	
 	private LocalDate dueDate;
 	
 	private LocalDate startDate;
 	
-	//@Model.Param.Values(url="staticCodeValue-/taskPriority")
 	private TaskPriority priority;
 	
-	private Object entityId;
+	private String entityId;
 	
 	private String queueCode;
 	
@@ -63,9 +53,13 @@ public class AssignmentTask extends AbstractEntity.IdString{
 	
 	private String reminder;
 	
+	private Source source;
+	
+	private String taskTypeForDisplay;
+	
 	public enum TaskStatus{
 		Open,
-		Complete,
+		Completed,
 		Cancelled,
 	}
 	
@@ -77,10 +71,28 @@ public class AssignmentTask extends AbstractEntity.IdString{
 	}
 	
 	public enum TaskType {
-		
-        patienteligibility,
+		patienteligibility,
 		patientenrollment;
 	}
 	
+	public enum Source {
+		manual,
+		systematic
+	}
+	
+	
+	// TODO - refactor and review - Rakesh
+	public String getTaskTypeForDisplay() {
+		if(this.getTaskType() != null) {
+			if(this.getTaskType().name().equalsIgnoreCase("patienteligibility")) {
+				return "Patient Eligibility";
+			}
+			else if(this.getTaskType().name().equalsIgnoreCase("patientenrollment")) {
+				return "Patient Enrollment";
+			}
+			return this.getTaskType().name();
+		}
+		return "";
+	}
 	
 }

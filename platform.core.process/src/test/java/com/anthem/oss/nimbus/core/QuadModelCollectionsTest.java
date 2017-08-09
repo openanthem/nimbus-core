@@ -16,7 +16,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -32,7 +31,6 @@ import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType.CollectionType;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListElemParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListModel;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
@@ -56,7 +54,7 @@ import test.com.anthem.nimbus.platform.spec.model.comamnd.TestCommandFactory;
  *
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes=TestFrameworkIntegrationScenariosApplication.class)
 @ActiveProfiles("test")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class QuadModelCollectionsTest {
@@ -73,8 +71,32 @@ public class QuadModelCollectionsTest {
 	}
 	
 	@Test
+	public void t0_mapstoPath() {
+		String id = "TEST ID";
+		UMCase core = new UMCase();
+		core.setId(id);
+		
+		Command cmd = TestCommandFactory.create_view_icr_UMCaseFlow();
+		QuadModel<UMCaseFlow, UMCase> q = quadModelBuilder.build(cmd, new ExecutionEntity<>(new UMCaseFlow(), core));
+		
+		Param<String> coreId = q.getView().findParamByPath("/.m/id");
+		assertSame(id, coreId.getState());
+	}
+	
+	@Test
 	public void t0_configState() {
 		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		
+		Param<Boolean> pAloha_visible = q.getView().findParamByPath("/pg3/aloha/#/visible");
+		assertNotNull(pAloha_visible);
+		assertTrue(pAloha_visible.getState());
+		
+		String visiblePath = pAloha_visible.getPath();
+		assertEquals("/view_umcase/pg3/aloha/#/visible", visiblePath);
+
+		pAloha_visible.setState(false);
+		assertFalse(pAloha_visible.getState());
+	
 		
 		Param<String> pAloha = q.getView().findParamByPath("/pg3/aloha");
 		assertNotNull(pAloha);
@@ -89,22 +111,8 @@ public class QuadModelCollectionsTest {
 		mAloha_enabled.setState(false);
 		assertFalse(mAloha_enabled.getState());
 		
-		Param<Integer> mAloha_count = mAloha_runtime.findParamByPath("/count");
-		assertNotNull(mAloha_count);
-		assertEquals(new Integer(0), mAloha_count.getState());
-		
-
 		Param<?> pAloha_runtime = q.getView().findParamByPath("/pg3/aloha/#");
 		assertNotNull(pAloha_runtime);
-
-		
-		Param<Boolean> pAloha_visible = q.getView().findParamByPath("/pg3/aloha/#/visible");
-		assertNotNull(pAloha_visible);
-		assertTrue(pAloha_visible.getState());
-		
-		pAloha_visible.setState(false);
-		assertFalse(pAloha_visible.getState());
-		
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -139,30 +147,7 @@ public class QuadModelCollectionsTest {
 		assertSame(sl.getService(), q.getCore().findParamByPath("/serviceLines/0/service").getLeafState());
 		assertSame(sl.getService(), q.getCore().<ServiceLine>findParamByPath("/serviceLines/0").getLeafState().getService());
 	}
-	
-	@Test
-	public void t2_getValues() {
-		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
-		
-		ListParam<ParamValue> pList1_Values =  validateValues(q, "/selectedValue_1");
-		assertTrue(pList1_Values.size()>0);
-		
-		ListParam<ParamValue> pList2_Values =  validateValues(q, "/selectedValue_2");
-		assertTrue(pList2_Values.size()>0);
-	}
-	
-	private ListParam<ParamValue> validateValues(QuadModel<?, ?> q, String pPath) {
-		Param<String> pSelectedValue = q.getView().findParamByPath(pPath);
-		assertNotNull(pSelectedValue);
-		
-		Param<List<ParamValue>> p_Values = pSelectedValue.getContextModel().findParamByPath("/values");
-		assertNotNull(p_Values);
-		
-		ListParam<ParamValue> pList_Values =  p_Values.findIfCollection();
-		assertNotNull(pList_Values);
-		
-		return pList_Values;
-	}
+
 	
 	@Test
 	public void tc01_sanity_check_core_builders() {
@@ -454,14 +439,28 @@ public class QuadModelCollectionsTest {
 		AtomicInteger counter = new AtomicInteger(0);
 		q.getCore().templateParams().find("serviceLines").getType().findIfCollection().getModel().getParams()
 			.stream()
-			.sequential()
-			.peek(p->{
-				assertSame(core.getServiceLinesConverted().get(counter.getAndIncrement()), p.getState());
+			.forEach(p->{
+				int i = counter.getAndIncrement();
+				assertSame(core.getServiceLines().get(i), p.getState());
 			});
 		
 		// set again
-		vp_list.setState(newList);
-		assertSame(2, vp_list.getState().size());
+		List<ServiceLine> againList = new ArrayList<>();
+		
+		ServiceLine againsl_0 = new ServiceLine();
+		againsl_0.setService("again VIEW SAYS: 0th service");
+		againList.add(againsl_0);
+		
+		ServiceLine againsl_1 = new ServiceLine();
+		againsl_1.setService("again VIEW SAYS: 1st service");
+		againList.add(againsl_1);
+		
+		vp_list.setState(againList);
+		assertSame(2, vp_list.size());
+
+		assertSame(againsl_0.getService(), q.getRoot().findParamByPath("/view_umcase/pg3/noConversionAttachedColServiceLines/0/service").getState());
+		assertSame(againsl_1.getService(), q.getRoot().findParamByPath("/view_umcase/pg3/noConversionAttachedColServiceLines/1/service").getState());
+		
 		assertSame(2, vp_list.getType().findIfCollection().getModel().getParams().size()); 
 	}
 
@@ -980,7 +979,32 @@ public class QuadModelCollectionsTest {
 		}
 	}
 	
-	@After
+	@Test
+	public void tv21_colMappedAttrib_attached_v2c_set_conversion() {
+		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		
+		ListParam<String> vp_nestedService = q.getRoot().findParamByPath("/view_umcase/pg3/attachedNestedColAttribServices").findIfCollection();
+		assertNotNull(vp_nestedService);
+		
+		ListParam<ServiceLine> cp_ServiceLines = q.getCore().findParamByPath("/serviceLines").findIfCollection();
+		assertNotNull(cp_ServiceLines);
+		
+		assertSame(0, vp_nestedService.size());
+		assertSame(0, cp_ServiceLines.size());
+		
+		String service = "some new service";
+		vp_nestedService.add(service);
+		
+		assertSame(1, vp_nestedService.size());
+		assertSame(1, cp_ServiceLines.size());
+		
+		Param<?> convertedAttachedList = q.getView().findParamByPath("/pg3/viewAttachedServiceLinesConverted");
+		
+		assertSame(service, vp_nestedService.getState(0));
+		assertSame(service, cp_ServiceLines.getState(0).getService());
+	}
+	
+	//@After
 	public void after() {
 		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		printJson(q);

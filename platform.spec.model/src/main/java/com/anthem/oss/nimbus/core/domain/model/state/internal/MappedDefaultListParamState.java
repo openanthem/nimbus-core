@@ -34,35 +34,42 @@ public class MappedDefaultListParamState<T, M> extends DefaultListParamState<T> 
 			
 			@Override
 			protected void onEventNewElem(Notification<List<M>> event) {
+				ListModel<?> mapsToListModel = event.getEventParam().findIfCollectionElem().getParentModel();
 				
-				// check if mapped elem was already created
-				String elemId = event.getEventParam().findIfCollectionElem().getElemId();
-				Param<?> param = getType().findIfNested().getModel().templateParams().find(elemId);
-				
-				if(param!=null) {
-					MappedParam<?, ?> mappedParam = param.findIfMapped();
+				mapsToListModel.getLockTemplate().execute(()->{
+					// check if mapped elem was already created
+					String elemId = event.getEventParam().findIfCollectionElem().getElemId();
+					Param<?> param = getType().findIfNested().getModel().templateParams().find(elemId);
 					
-					logit.trace(()->"[onEventNewElem] found existing mappedParam with path: "+mappedParam.getPath()
-						+" which mapsTo: "+mappedParam.getMapsTo().getPath()
-						+" -> Returning w/o adding another mappedElem");
-					return;
-				}
-				
-				// add new
-				ListElemParam<T> mappedElem = add();
-				logit.trace(()->"[onEventNewElem] created new mappedElem: "+mappedElem.getPath());			
+					if(param!=null) {
+						MappedParam<?, ?> mappedParam = param.findIfMapped();
+						
+						logit.trace(()->"[onEventNewElem] found existing mappedParam with path: "+mappedParam.getPath()
+							+" which mapsTo: "+mappedParam.getMapsTo().getPath()
+							+" -> Returning w/o adding another mappedElem");
+						return;
+					}
+					
+					// add new
+					ListElemParam<T> mappedElem = add();
+					logit.trace(()->"[onEventNewElem] created new mappedElem: "+mappedElem.getPath());			
+				});
 			}
 			
 			@Override
 			protected void onEventDeleteElem(Notification<List<M>> event) {
-				logit.trace(()->"[onEventDeleteElem] received for mapsTo.ListParamElem: "+event.getEventParam().getPath());
+				ListModel<?> mapsToListModel = event.getEventParam().findIfCollectionElem().getParentModel();
 				
-				String elemId = event.getEventParam().findIfCollectionElem().getElemId();
-				
-				ListModel<T> mappedColModel = (ListModel<T>)getType().findIfNested().getModel().findIfListModel();
-				Param<?> mappedParamElem = mappedColModel.templateParams().remove(elemId);
-				
-				logit.trace(()->"[onEventDeleteElem] removed mapped.ListParamElem: "+mappedParamElem.getPath());
+				mapsToListModel.getLockTemplate().execute(()->{
+					logit.trace(()->"[onEventDeleteElem] received for mapsTo.ListParamElem: "+event.getEventParam().getPath());
+					
+					String elemId = event.getEventParam().findIfCollectionElem().getElemId();
+					
+					ListModel<T> mappedColModel = (ListModel<T>)getType().findIfNested().getModel().findIfListModel();
+					Param<?> mappedParamElem = mappedColModel.templateParams().remove(elemId);
+					
+					logit.trace(()->"[onEventDeleteElem] removed mapped.ListParamElem: "+mappedParamElem.getPath());
+				});	
 			}
 		};
 

@@ -4,18 +4,17 @@
 	<parent>
 		<groupId>com.anthem.oss.nimbus.core</groupId>
 		<artifactId>com.anthem.oss.nimbus.core.dependencies</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>1.0.0.M3-SNAPSHOT</version>
 		<relativePath>../dependencies</relativePath>
 	</parent>
 	<artifactId>com.anthem.oss.nimbus.core.parent</artifactId>
 	<packaging>pom</packaging>
 	<name>nimbus-core-parent</name>
-<!-- 	<modules>
+ 	<!-- <modules>
 		<module>../platform.spec.model</module>
 		<module>../platform.spec.model.test</module>
-		<module>../platform.utils</module>
 		<module>../platform.core.process</module>
-	</modules> -->
+	</modules>  -->
 	<url></url>
 	<organization>
 		<name>Anthem Inc.</name>
@@ -150,6 +149,84 @@
 					<configuration>
 						<mainClass>${start-class}</mainClass>
 					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>com.github.eirslett</groupId>
+					<artifactId>frontend-maven-plugin</artifactId>
+					<version>${frontend.plugin.version}</version>
+					<executions>
+						<execution>
+							<id>install node and npm</id>
+							<goals>
+								<goal>install-node-and-npm</goal>
+							</goals>
+							<phase>generate-resources</phase>
+							<configuration>
+								<nodeVersion>${node.version}</nodeVersion>
+								<npmVersion>${npm.version}</npmVersion>
+							</configuration>
+						</execution>
+						<execution>
+							<id>npm cache clean</id>
+							<goals>
+								<goal>npm</goal>
+							</goals>
+							<phase>generate-resources</phase>
+							<configuration>
+								<arguments>cache clean</arguments>
+							</configuration>
+						</execution>
+						<execution>
+							<id>npm config set registry</id>
+							<goals>
+								<goal>npm</goal>
+							</goals>
+							<configuration>
+								<arguments>config set registry https://registry.npmjs.org/</arguments>
+							</configuration>
+							<phase>generate-resources</phase>
+						</execution>
+						<execution>
+							<id>npm config turn off ssl</id>
+							<goals>
+								<goal>npm</goal>
+							</goals>
+							<configuration>
+								<arguments>config set strict-ssl false</arguments>
+							</configuration>
+							<phase>generate-resources</phase>
+						</execution>
+						<execution>
+							<id>npm install dev</id>
+							<goals>
+								<goal>npm</goal>
+							</goals>
+							<configuration>
+								<arguments>install</arguments>
+							</configuration>
+							<phase>generate-resources</phase>
+						</execution>
+ 						<execution>
+							<id>gulp build</id>
+							<goals>
+								<goal>gulp</goal>
+							</goals>
+							<phase>generate-resources</phase>
+							<configuration>
+								<arguments>build</arguments>
+							</configuration>
+						</execution> 
+						<execution>
+							<id>gulp scss</id>
+							<goals>
+								<goal>gulp</goal>
+							</goals>
+							<phase>generate-resources</phase>
+							<configuration>
+								<arguments>scss</arguments>
+							</configuration>
+						</execution>
+					</executions>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>

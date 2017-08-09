@@ -9,8 +9,10 @@ import java.util.List;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.anthem.oss.nimbus.core.domain.definition.AssociatedEntity;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.Converters.ParamConverter;
+import com.anthem.oss.nimbus.core.domain.definition.Execution;
 import com.anthem.oss.nimbus.core.domain.definition.Model.Param.Values;
 import com.anthem.oss.nimbus.core.domain.model.config.AnnotationConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
@@ -42,6 +44,9 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	private List<AnnotationConfig> validations;
 	
 	private List<AnnotationConfig> uiNatures;
+	
+	@JsonIgnore
+	private List<Execution.Config> executionConfigs;
 
 	private AnnotationConfig uiStyles;
 
@@ -52,6 +57,8 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	
 	@JsonIgnore
 	private Values values;
+	
+	@JsonIgnore @Setter private List<AssociatedEntity> associatedEntities;
 
 
 	public static class StateContextConfig<P> extends DefaultParamConfig<P> {
@@ -121,7 +128,19 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 		if(ArrayUtils.isEmpty(pathArr))
 			return null;
 
-		/* param is not leaf node */
+		/* param is not leaf node: is collection 
+		ParamType.NestedCollection<?> mpc = getType().findIfCollection();
+		if(mpc != null) {
+			// ensure that path configured contains {index} as first element for collection
+			if(!StringUtils.equals(Constants.MARKER_COLLECTION_ELEM_INDEX.code, pathArr[0])) {
+				return null;
+			}
+			
+			//==return mpc.getElementConfig().findParamByPath(ArrayUtils.remove(pathArr, 0));
+			return (ParamConfig<K>)this;
+		}*/
+		
+		/* param is not leaf node: is nested */
 		ParamType.Nested<?> mp = getType().findIfNested();
 		if(mp != null) {
 			return mp.getModel().findParamByPath(pathArr);

@@ -10,11 +10,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import javax.validation.Constraint;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.AnnotatedElementUtils;
@@ -24,16 +24,19 @@ import org.springframework.util.ClassUtils;
 
 import com.anthem.oss.nimbus.core.UnsupportedScenarioException;
 import com.anthem.oss.nimbus.core.domain.config.builder.AnnotationConfigHandler;
+import com.anthem.oss.nimbus.core.domain.definition.AssociatedEntity;
 import com.anthem.oss.nimbus.core.domain.definition.ConfigLoadException;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.Converters;
 import com.anthem.oss.nimbus.core.domain.definition.Converters.ParamConverter;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
+import com.anthem.oss.nimbus.core.domain.definition.Execution;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.State;
 import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
+import com.anthem.oss.nimbus.core.domain.definition.Repo.Cache;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.ViewParamBehavior;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.ViewStyle;
 import com.anthem.oss.nimbus.core.domain.model.config.AnnotationConfig;
@@ -98,19 +101,54 @@ abstract public class AbstractEntityConfigBuilder {
 		Repo rep = AnnotationUtils.findAnnotation(referredClass, Repo.class);
 		created.setRepo(rep);
 		
-		// set domain
-		Domain domain = AnnotationUtils.findAnnotation(referredClass, Domain.class);
-		created.setDomain(domain);
-		
+		// set alias from domain or model
+		assignDomainAndModel(created, created::setAlias);
+				
 		// rules
-		Optional.ofNullable(domain)
+		Optional.ofNullable(created.getAlias())
 			.map(d->rulesEngineFactoryProducer.getFactory(referredClass))
-			.map(f->f.createConfig(domain.value()))
+			.map(f->f.createConfig(created.getAlias()))
 				.ifPresent(c->created.setRulesConfig(c));
 		return created; 
 	}
 	
-	
+	protected void assignDomainAndModel(DefaultModelConfig<?> created, Consumer<String> cb) {
+		// prefer @Domain or @Model declared on current class
+		Domain domain = AnnotationUtils.findAnnotation(created.getReferredClass(), Domain.class);
+		created.setDomain(domain);
+		
+		// set model if domain is absent
+		Model model = AnnotationUtils.findAnnotation(created.getReferredClass(), Model.class);
+		created.setModel(model);
+
+		
+		if(domain==null && model!=null)
+			cb.accept(model.value());
+		else
+			if(domain!=null && model==null)
+				cb.accept(domain.value());
+		else
+			if(domain!=null && model!=null // both present with different alias entries
+					&& StringUtils.trimToNull(domain.value())!=null && StringUtils.trimToNull(model.value())!=null 
+					&& !StringUtils.equals(domain.value(), model.value())) {
+				
+				// prefer annotation declared directly on class
+				if(AnnotationUtils.isAnnotationInherited(Domain.class, created.getReferredClass()) 
+						&& !AnnotationUtils.isAnnotationInherited(Model.class, created.getReferredClass()))
+					cb.accept(model.value());
+				else 
+					if(!AnnotationUtils.isAnnotationInherited(Domain.class, created.getReferredClass()) 
+							&& AnnotationUtils.isAnnotationInherited(Model.class, created.getReferredClass()))	
+						cb.accept(domain.value());
+				else
+					throw new InvalidConfigException("A model can have alias defined in either @Domain or @Model. "
+							+ "Found in both with different values for class: "+created.getReferredClass()
+							+" with @Domain: "+domain+" and @Model: "+model);
+			}
+		else 
+			cb.accept(domain.value());
+		
+	}
 	
 	public <T> DefaultModelConfig<List<T>> createCollectionModel(Class<List<T>> referredClass, ParamConfig<?> associatedParamConfig) {
 		//mapsTo is null when the model itself is a java List implementation (ArrayList, etc)
@@ -228,7 +266,7 @@ abstract public class AbstractEntityConfigBuilder {
 		private List<E> detachedParam;
 	}
 
-	private <T, P> DefaultParamConfig<P> createParamCollectionElemMappedAttached(ModelConfig<T> mConfig, MappedParamConfig<P, ?> pConfig, ModelConfig<List<P>> colModelConfig, EntityConfigVistor visitedModels, Class<?> colElemClass, MapsTo.Path mapsToColParamPath) {
+	private <T, P> ParamConfig<P> createParamCollectionElemMappedAttached(ModelConfig<T> mConfig, MappedParamConfig<P, ?> pConfig, ModelConfig<List<P>> colModelConfig, EntityConfigVistor visitedModels, Class<?> colElemClass, MapsTo.Path mapsToColParamPath) {
 		// colParam is mapped as Attached, but parent enclosing Model is un-mapped :- throw Ex
 		if(!mConfig.isMapped()) { 	
 			throw new InvalidConfigException("Param: "+pConfig.getCode()+" has @MapsTo.Path "+mapsToColParamPath+" with resolved mode: "+MapsTo.Mode.MappedAttached
@@ -241,36 +279,47 @@ abstract public class AbstractEntityConfigBuilder {
 		return createParamCollectionElemMapped(/*mapsToEnclosingModel, */pConfig, colModelConfig, visitedModels, colElemClass, mapsToColParamPath);
 	}
 	
-	private <T, P> DefaultParamConfig<P> createParamCollectionElemMappedDetached(ModelConfig<T> mConfig, MappedParamConfig<P, ?> pConfig, ModelConfig<List<P>> colModelConfig, EntityConfigVistor visitedModels, Class<?> colElemClass, MapsTo.Path mapsToColParamPath) {
-		
+	private <T, P> ParamConfig<P> createParamCollectionElemMappedDetached(ModelConfig<T> mConfig, MappedParamConfig<P, ?> pConfig, ModelConfig<List<P>> colModelConfig, EntityConfigVistor visitedModels, Class<?> colElemClass, MapsTo.Path mapsToColParamPath) {
 		return createParamCollectionElemMapped(pConfig, colModelConfig, visitedModels, colElemClass, mapsToColParamPath);
 	}
 	
-	private <T, P> DefaultParamConfig<P> createParamCollectionElemMapped(MappedParamConfig<P, ?> pConfig, ModelConfig<List<P>> colModelConfig, EntityConfigVistor visitedModels, Class<?> colElemClass, MapsTo.Path mapsToColParamPath) {
-		
+	
+	private <T, P> ParamConfig<P> createParamCollectionElemMapped(MappedParamConfig<P, ?> pConfig, ModelConfig<List<P>> colModelConfig, EntityConfigVistor visitedModels, Class<?> colElemClass, MapsTo.Path mapsToColParamPath) {
 		//ParamConfig<?> mapsToColParamConfig = findMappedParam(mapsToEnclosingModel, pConfig.getCode(), mapsToColParamPath);
 		ParamConfig<?> mapsToColParamConfig = pConfig.getMapsTo();
 		logit.debug(()->"[create.pColElem] [colParam is mapped] [elemClass same] [Attached] Found mapsToColParamConfig for "+pConfig.getCode()+" with mapsToPath of colParam: "+mapsToColParamPath+" -> "+mapsToColParamConfig);
 		
 		@SuppressWarnings("unchecked")
-		DefaultParamConfig<P> mapsToColElemParamConfig = (DefaultParamConfig<P>)mapsToColParamConfig.getType().findIfCollection().getElementConfig();
+		ParamConfig<P> mapsToColElemParamConfig = (ParamConfig<P>)mapsToColParamConfig.getType().findIfCollection().getElementConfig();
 
 		
 		// colParam is mapped: colElemModel is NOT explicitly mapped BUT colElemClass is NOT SAME as mappedElemClass :- throw Ex
 		if(colElemClass!=mapsToColElemParamConfig.getReferredClass()) {
-			MapsTo.Type mapsToElemModel = AnnotationUtils.findAnnotation(colElemClass, MapsTo.Type.class);
 			
-			if(mapsToElemModel==null)
-				throw new InvalidConfigException("Mapped Elem Class is not same as MapsTo Elem Class. Must be same or an explicit MapsTo.Model mapping is required. "
-						//+ " For EnclosingModel: "+mapsToEnclosingModel.getReferredClass()
-						+" param: "+pConfig.getCode()
-						+ " Expected elemClass: "+colElemClass+" but found mapsToElemClass: "+mapsToColParamPath.getClass());
+			// handle {index} scenario in MapsTo.Path
+			//if(StringUtils.contains(mapsToColParamPath.value(), Constants.MARKER_COLLECTION_ELEM_INDEX.code)) {
+			if(MapsTo.hasCollectionPath(mapsToColParamPath)) {
+				String colElemPathAfterIndexMarker = mapsToColParamPath.colElemPath();//StringUtils.substringAfter(mapsToColParamPath.value(), Constants.MARKER_COLLECTION_ELEM_INDEX.code);
+				ParamConfig<P> mapsToNestedColElemParamConfig = mapsToColElemParamConfig.findParamByPath(colElemPathAfterIndexMarker);
+				
+				return createParamCollectionElementInternal(colModelConfig, mapsToNestedColElemParamConfig, mapsToColParamPath, visitedModels, pConfig.getCode());
+				
+			} else {
+			
+				MapsTo.Type mapsToElemModel = AnnotationUtils.findAnnotation(colElemClass, MapsTo.Type.class);
+				
+				if(mapsToElemModel==null)
+					throw new InvalidConfigException("Mapped Elem Class is not same as MapsTo Elem Class. Must be same or an explicit MapsTo.Model mapping is required. "
+							//+ " For EnclosingModel: "+mapsToEnclosingModel.getReferredClass()
+							+" param: "+pConfig.getCode()
+							+ " Expected elemClass: "+colElemClass+" but found mapsToElemClass: "+mapsToColElemParamConfig.getReferredClass());
+			}
 		}
 		
 		return createParamCollectionElementInternal(colModelConfig, mapsToColElemParamConfig, mapsToColParamPath, visitedModels, pConfig.getCode());
 	}
 	
-	public <T, P> DefaultParamConfig<P> createParamCollectionElement(ModelConfig<T> mConfig, ParamConfig<P> pConfig, ModelConfig<List<P>> colModelConfig, EntityConfigVistor visitedModels, Class<?> colElemClass) {
+	public <T, P> ParamConfig<P> createParamCollectionElement(ModelConfig<T> mConfig, ParamConfig<P> pConfig, ModelConfig<List<P>> colModelConfig, EntityConfigVistor visitedModels, Class<?> colElemClass) {
 		logit.trace(()->"[create.pColElem] starting to process colElemClass: "+colElemClass+" with pConfig :"+pConfig.getCode());
 		
 		MapsTo.Path mapsToColParamPath = pConfig.isMapped() ? pConfig.findIfMapped().getPath() : null;
@@ -281,17 +330,17 @@ abstract public class AbstractEntityConfigBuilder {
 		logit.debug(()->"[create.pColElem] colParamCode: "+pConfig.getCode());
 		
 		if(mapsToColParamMode==MapsTo.Mode.UnMapped) { 
-			DefaultParamConfig<P> pCoreElemConfig = createParamCollectionElementInternal(colModelConfig, null, null, visitedModels, pConfig.getCode());
+			ParamConfig<P> pCoreElemConfig = createParamCollectionElementInternal(colModelConfig, null, null, visitedModels, pConfig.getCode());
 		
 			logit.trace(()->"[create.pColElem] [colParam is UnMapped] returning core pColElem Config as colElem is UnMapped.");
 			return pCoreElemConfig;
 			
 		} else if(mapsToColParamMode==MapsTo.Mode.MappedAttached) {
-			DefaultParamConfig<P> pMappedAttachedElemConfig = createParamCollectionElemMappedAttached(mConfig, pConfig.findIfMapped(), colModelConfig, visitedModels, colElemClass, mapsToColParamPath);
+			ParamConfig<P> pMappedAttachedElemConfig = createParamCollectionElemMappedAttached(mConfig, pConfig.findIfMapped(), colModelConfig, visitedModels, colElemClass, mapsToColParamPath);
 			return pMappedAttachedElemConfig;
 			
 		} else if(mapsToColParamMode==MapsTo.Mode.MappedDetached) {
-			DefaultParamConfig<P> pMappedDetachedElemConfig = createParamCollectionElemMappedDetached(mConfig, pConfig.findIfMapped(), colModelConfig, visitedModels, colElemClass, mapsToColParamPath);
+			ParamConfig<P> pMappedDetachedElemConfig = createParamCollectionElemMappedDetached(mConfig, pConfig.findIfMapped(), colModelConfig, visitedModels, colElemClass, mapsToColParamPath);
 			return pMappedDetachedElemConfig;
 			
 		} else {
@@ -300,12 +349,12 @@ abstract public class AbstractEntityConfigBuilder {
 		}
 	}
 	
-	private <P> DefaultParamConfig<P> createParamCollectionElementInternal(ModelConfig<List<P>> colModelConfig, DefaultParamConfig<P> mapsToColElemParamConfig, MapsTo.Path mapsToColParamPath, EntityConfigVistor visitedModels, String colParamCode) {
+	private <P> ParamConfig<P> createParamCollectionElementInternal(ModelConfig<List<P>> colModelConfig, ParamConfig<P> mapsToColElemParamConfig, MapsTo.Path mapsToColParamPath, EntityConfigVistor visitedModels, String colParamCode) {
 		final String collectionElemPath = createCollectionElementPath(colParamCode);
 		
-		final DefaultParamConfig<P> created;
+		final ParamConfig<P> created;
 		if(colModelConfig.isMapped()) {
-			final MapsTo.Path mapsToColElemParamPathAnnotation = mapsToColParamPath==null ? null : createNewImplicitMapping(collectionElemPath, mapsToColParamPath.linked(), mapsToColParamPath.state());
+			final MapsTo.Path mapsToColElemParamPathAnnotation = (mapsToColParamPath==null) ? null : createNewImplicitMapping(collectionElemPath, mapsToColParamPath.linked(), mapsToColParamPath.state(), mapsToColParamPath.colElemPath(), mapsToColParamPath.cache());
 			
 			created = new MappedDefaultParamConfig<>(collectionElemPath, colModelConfig, mapsToColElemParamConfig, mapsToColElemParamPathAnnotation);
 
@@ -328,10 +377,10 @@ abstract public class AbstractEntityConfigBuilder {
 	}
 	
 	private <P> DefaultParamConfig<P> decorateParam(ModelConfig<?> mConfig, Field f, DefaultParamConfig<P> created, EntityConfigVistor visitedModels) {
-		List<AnnotationConfig> aConfigs = AnnotationConfigHandler.handle(f, ViewParamBehavior.class);
-		created.setUiNatures(aConfigs);
-
+		created.setUiNatures(AnnotationConfigHandler.handle(f, ViewParamBehavior.class));
 		created.setUiStyles(AnnotationConfigHandler.handleSingle(f, ViewStyle.class));
+		created.setExecutionConfigs(new ArrayList<>(AnnotatedElementUtils.findMergedRepeatableAnnotations(f, Execution.Config.class)));
+		
 		
 		if(AnnotatedElementUtils.isAnnotated(f, Converters.class)) {
 			Converters convertersAnnotation = AnnotationUtils.getAnnotation(f, Converters.class);
@@ -350,6 +399,11 @@ abstract public class AbstractEntityConfigBuilder {
 			//List<ParamValue> values = srcValues.getValues(created.getCode());
 			created.setValues(aVal);
 			//created.setValues(values);
+		}
+		
+		if(AnnotatedElementUtils.isAnnotated(f, AssociatedEntity.class)) {
+			AssociatedEntity[] associatedEntityAnnotationArr = f.getAnnotationsByType(AssociatedEntity.class);
+			created.setAssociatedEntities(Arrays.asList(associatedEntityAnnotationArr));
 		}
 		
 		String value ="";
@@ -418,15 +472,11 @@ abstract public class AbstractEntityConfigBuilder {
 		return mappedToParam;
 	}
 	
-	private MapsTo.Path defaultPath = determineDefaultPath();
-	
-	private MapsTo.Path determineDefaultPath() {
-		Field f = FieldUtils.getField(MapsTo.class, "DEFAULT_PATH");
-		MapsTo.Path mapsTo = AnnotationUtils.findAnnotation(f, MapsTo.Path.class);
-		return mapsTo;
+	public static MapsTo.Path createNewImplicitMapping(String mappedPath, boolean linked, State state, Cache cache) {
+		return createNewImplicitMapping(mappedPath, linked, state, "", cache);
 	}
 	
-	public static MapsTo.Path createNewImplicitMapping(String mappedPath, boolean linked, State state) {
+	public static MapsTo.Path createNewImplicitMapping(String mappedPath, boolean linked, State state, String colElemPath, Cache cache) {
 		return new MapsTo.Path() {
 			
 			@Override
@@ -448,10 +498,15 @@ abstract public class AbstractEntityConfigBuilder {
 			public boolean linked() {
 				return linked;
 			}
-
+			
 			@Override
-			public KeyValue[] kv() {
-				return null;
+			public String colElemPath() {
+				return colElemPath;
+			}
+			
+			@Override
+			public Cache cache() {
+				return cache;
 			}
 			
 			@Override

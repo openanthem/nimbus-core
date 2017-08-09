@@ -48,8 +48,15 @@ public class DefaultListElemParamState<E> extends DefaultParamState<E> implement
 	
 	@Override
 	protected String resolvePath() {
-		String pathExpr = super.resolvePath();
-		
+		return replaceIndexConstantWithElemId(super.resolvePath());
+	}
+	
+	@Override
+	protected String resolveBeanPath() {
+		return replaceIndexConstantWithElemId(super.resolveBeanPath());
+	}
+	
+	private String replaceIndexConstantWithElemId(String pathExpr) {
 		String rPath = StringUtils.replace(pathExpr, Constants.MARKER_COLLECTION_ELEM_INDEX.code, getElemId());
 		return rPath;
 	}
@@ -64,4 +71,8 @@ public class DefaultListElemParamState<E> extends DefaultParamState<E> implement
 		return getParentModel().fromElemId(getElemId());
 	}
 
+	@Override
+	public boolean delete() {
+		return getParentModel().remove(this);
+	}
 }

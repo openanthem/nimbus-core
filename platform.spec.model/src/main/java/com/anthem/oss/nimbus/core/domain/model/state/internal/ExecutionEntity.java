@@ -13,13 +13,11 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ClassUtils;
@@ -40,6 +38,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ExecutionModel;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
+import com.anthem.oss.nimbus.core.domain.model.state.InvalidStateException;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
@@ -63,7 +62,8 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 
 	private static final long serialVersionUID = 1L;
 	
-	private JustLogit logit = new JustLogit(getClass());
+	@JsonIgnore
+	private final JustLogit logit = new JustLogit(getClass());
 	
 	private C c;
 
@@ -72,6 +72,26 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 	private ProcessFlow f;
 	
 	private Map<String, Object> paramRuntimes = new HashMap<>();
+	
+	public ExecutionEntity() { }
+	
+	public ExecutionEntity(V view, C core) {
+		setView(view);
+		setCore(core);
+	}
+	
+	public static ExecutionEntity<?, ?> resolveAndInstantiate(Object view, Object core) {
+		if(view==null && core==null)
+			throw new InvalidStateException("Both view and core cannot be null.");
+		
+		if(view==null && core!=null)
+			return new ExecutionEntity<>(null, core);
+		
+		if(view!=null && core==null)	//swap
+			return new ExecutionEntity<>(null, view);
+		
+		return new ExecutionEntity<>(view, core);	
+	}
 	
 	public C getCore() {return getC();}
 	public void setCore(C c) {setC(c);}
@@ -157,6 +177,27 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 			return pConfig;
 		} 
 	}
+
+	public class ExParamLinked extends ExParam {
+		private static final long serialVersionUID = 1L;
+		
+		private final Param<?> linkedParam;
+		
+		public ExParamLinked(Command rootCommand, EntityStateAspectHandlers provider, ExConfig<V, C> exConfig, String initPath, Param<?> linkedParam) {
+			super(rootCommand, provider, exConfig, initPath);
+			this.linkedParam = linkedParam;
+		}
+		
+		@Override
+		public boolean isLinked() {
+			return true;
+		}
+		
+		@Override
+		public Param<?> findIfLinked() {
+			return linkedParam;
+		}
+	}
 	
 	@Getter @Setter 
 	public class ExParam extends DefaultParamState<ExecutionEntity<V, C>> {
@@ -191,7 +232,7 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 			this.rootModel = new ExModel(rootCommand, this, pConfig.getRootParent(), provider);
 			this.setType(new StateType.Nested<>(getConfig().getType().findIfNested(), getRootExecution()));
 		}
-
+		
 		@Override
 		public boolean isRoot() {
 			return true;
@@ -204,10 +245,15 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 		
 		@Override
 		public void fireRules() {
-			findParamByPath("/c").fireRules();
-			Optional.ofNullable(findParamByPath("/v")).ifPresent(v->v.fireRules());
+			Optional.ofNullable(findIfNested())
+				.map(Model::getParams)
+				.ifPresent(
+						params->params.stream()
+							.forEach(Param::fireRules)
+				);
 		}
 	}
+
 	
 	@Getter @Setter
 	public class ExModel extends DefaultModelState<ExecutionEntity<V, C>> implements ExecutionModel<ExecutionEntity<V, C>> {
@@ -258,6 +304,11 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 		}
 		
 		@Override
+		public void fireRules() {
+			getAssociatedParam().fireRules();
+		}
+		
+		@Override
 		public ExecutionEntity<V, C> getState() {
 			return _this();
 		}
@@ -282,6 +333,8 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 		private final Command rootCommand;
 		private final BlockingQueue<Notification<?>> notificationQueue;
 		
+		private boolean isStarted;
+		
 		private String lockId;
 		private final LockTemplate lock = new LockTemplate();
 		
@@ -294,15 +347,17 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 		}
 		
 		@Override
-		public void start() {
+		public synchronized void start() {
 			rootCommandBasedExecCounters.putIfAbsent(rootCommand.getAbsoluteUri(), new AtomicInteger());
+			this.isStarted = true;
 		}
 		
 		@Override
-		public void stop() {
+		public synchronized void stop() {
 			rootCommandBasedExecCounters.remove(rootCommand.getAbsoluteUri());
+			this.isStarted = false;
 		}
-
+		
 		@Override
 		public String tryLock() {
 			if(isLocked()) return null;
@@ -349,69 +404,23 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 			}	
 		}
 		
-		@Override
-		public void awaitCompletion() {
-			// create new single thread using executor service
-			ExecutorService e = createExecutorService();
-			e.execute(new InternalNotificationEventDelegator(getNotificationQueue(), getNotificationLock(), getNotComplete()));
-
-			// shutdown
-			e.shutdown();
-			
-			
-			// wait on lock condition for completion of all tasks
-			// TODO: this is overkill, can be simplified by waiting on ExecutorServive.awaitTermination() but kept for future enhancement
-			getNotificationLock().execute(()-> {
-				try {
-					while(getNotificationQueue().size()!=0)
-						notComplete.await();
-					
-				} catch (InterruptedException ex) {
-					throw new FrameworkRuntimeException("Failed while waiting for notification event processing to complete. queue: "+notificationQueue, ex);
-				}
-			});
-		}
-		
-		private ExecutorService createExecutorService() {
-			return Executors.newFixedThreadPool(1, new ThreadFactory() {
-				
-				@Override
-				public Thread newThread(Runnable r) {
-					AtomicInteger counter = rootCommandBasedExecCounters.computeIfAbsent(getRootCommand().getAbsoluteUri(), k->new AtomicInteger());
-					return new Thread(r, "ExecState "+counter.incrementAndGet()+": "+getRootCommand().getAbsoluteUri());
-				}
-			});
-		}
-	} 
-	
-	@Getter @RequiredArgsConstructor
-	public class InternalNotificationEventDelegator implements Runnable {
-		final private BlockingQueue<Notification<?>> notificationQueue;
-		final private LockTemplate notificationLock;
-		final private Condition notComplete;
-		
 		@SuppressWarnings("unchecked")
 		@Override
-		public void run() {
+		public void awaitCompletion() {
 			try {
-				while(true) {
-					Notification<Object> event = (Notification<Object>)notificationQueue.take();
+				while(!getNotificationQueue().isEmpty()) {
+					Notification<Object> event = (Notification<Object>)getNotificationQueue().take();
 					Param<Object> source =  event.getSource();
 					
-					// create new list to avoid concurrent modification of subscriber list as part of event handling
-					new ArrayList<>(source.getEventSubscribers())
-						.stream()
-						.forEach(subscribedParam->subscribedParam.handleNotification(event));
-					
-					getNotificationLock().execute(()-> {
-						if(notificationQueue.size()==0)
-							notComplete.signal();
-					});
+					if(CollectionUtils.isNotEmpty(source.getEventSubscribers()))
+						new ArrayList<>(source.getEventSubscribers())
+							.stream()
+								.forEach(subscribedParam->subscribedParam.handleNotification(event));
 				}
-				
 			} catch (InterruptedException ex) {
 				throw new FrameworkRuntimeException("Failed to take event form queue: "+notificationQueue, ex);
 			}
 		}
-	}
+		
+	} 
 }

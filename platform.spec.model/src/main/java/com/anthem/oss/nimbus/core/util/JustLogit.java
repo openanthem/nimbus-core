@@ -28,28 +28,35 @@ public class JustLogit {
 	
 	public void trace(Supplier<String> msg) {
 		if(log.isTraceEnabled()) 
-			log.trace(msg.get());
+			log.trace(nuetralizeLog(msg));
 	}
 
 	public void debug(Supplier<String> msg) {
 		if(log.isDebugEnabled()) 
-			log.debug(msg.get());
+			log.debug(nuetralizeLog(msg));
 	}
 
 	public void warn(Supplier<String> msg) {
 		if(log.isWarnEnabled()) 
-			log.warn(msg.get());
+			log.warn(nuetralizeLog(msg));
 	}
 
 	
 	public void info(Supplier<String> msg) {
 		if(log.isInfoEnabled()) 
-			log.info(msg.get());
+			log.info(nuetralizeLog(msg));
 	}
 
 	public void error(Supplier<String> msg) {
 		if(log.isErrorEnabled()) 
-			log.error(msg.get());
+			log.error(nuetralizeLog(msg));
+	}
+	
+	private String nuetralizeLog(Supplier<String> msg) {
+		if(msg.get() != null) {
+			return SecurityUtils.scanObjectForSecureLogging(msg.get(), SecurityUtils.SECURE);
+		}
+			return msg.get();		                     
 	}
 	
 }

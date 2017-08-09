@@ -3,7 +3,6 @@ package com.anthem.oss.nimbus.core.domain.model.state.builder;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Component;
 
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;

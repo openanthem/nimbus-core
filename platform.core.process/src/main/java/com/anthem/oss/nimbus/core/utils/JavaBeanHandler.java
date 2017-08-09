@@ -18,11 +18,12 @@ public interface JavaBeanHandler {
 	
 	public <T> T getValue(Method readMethod, Object target);	
 	
+	
 	default public <T> void setValue(PropertyDescriptor pd, Object target, T value) {
 		setValue(pd.getWriteMethod(), target, value);
 	}
-	public <T> void setValue(Method writeMethod, Object target, T value);
 	
+	public <T> void setValue(Method writeMethod, Object target, T value);
 	
 	public <T> T instantiate(Class<T> clazz);
 }

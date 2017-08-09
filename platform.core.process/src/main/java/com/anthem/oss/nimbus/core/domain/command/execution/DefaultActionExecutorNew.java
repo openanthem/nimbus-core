@@ -3,32 +3,34 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
+import java.beans.PropertyDescriptor;
+import java.util.Optional;
 
-import com.anthem.oss.nimbus.core.domain.command.Command;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
+
+import com.anthem.oss.nimbus.core.BeanResolverStrategy;
+import com.anthem.oss.nimbus.core.bpm.BPMGateway;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
-import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
-import com.anthem.oss.nimbus.core.domain.model.config.ActionExecuteConfig;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Input;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
-import com.anthem.oss.nimbus.core.util.ClassLoadUtils;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
+import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
 
 /**
  * @author Soham Chakravarti
  *
  */
-public class DefaultActionExecutorNew extends AbstractProcessTaskExecutor {
+public class DefaultActionExecutorNew extends AbstractFunctionCommandExecutor<Object, Param<?>> {
 
-	private QuadModelBuilder quadModelBuilder; 
+	private BPMGateway bpmGateway;
 	
-	DomainConfigBuilder domainConfigApi;
-	
-	public DefaultActionExecutorNew(QuadModelBuilder quadModelBuilder, DomainConfigBuilder domainConfigApi) {
-		super();
-		this.quadModelBuilder = quadModelBuilder;
-		this.domainConfigApi = domainConfigApi;
+	public DefaultActionExecutorNew(BeanResolverStrategy beanResolver) {
+		super(beanResolver);
+		this.bpmGateway = beanResolver.get(BPMGateway.class);
 	}
 	
 	/**
@@ -40,32 +42,85 @@ public class DefaultActionExecutorNew extends AbstractProcessTaskExecutor {
 	 * <tab>	2.1. Traverse object model path using command domain uri <br>
 	 * <tab>	2.2. Set newly instantiated object and return  	
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
-	protected <R> R doExecuteInternal(CommandMessage cmdMsg) {
-		Command cmd = cmdMsg.getCommand();
+	protected Output<Param<?>> executeInternal(Input input) {
+		ExecutionContext eCtx = handleNewDomainRoot(input.getContext());
+	
+		Param<Object> actionParam = findParamByCommandOrThrowEx(eCtx);
 		
-		ActionExecuteConfig<?, ?> aec = domainConfigApi.getActionExecuteConfig(cmd);
-		ModelConfig<?> mConfig = aec.getOutput().getModel();
+		final Param<?> outputParam;
+		if(containsFunctionHandler(input)) {
+			outputParam = executeFunctionHanlder(input, FunctionHandler.class);
+		} else { 
+			setStateNew(eCtx, input.getContext().getCommandMessage(), actionParam);
+			outputParam = actionParam;
+		}
+		// hook up BPM
+		startBusinessProcess(eCtx, actionParam);
+		return Output.instantiate(input, eCtx, outputParam);
+	}
+
+	protected void setStateNew(ExecutionContext eCtx, CommandMessage cmdMsg, Param<Object> p) {
+		// skip if call is for domain-root with no payload, as the new entity state would have been instantiated by repo & set prior
+		if(!cmdMsg.hasPayload() && cmdMsg.getCommand().isRootDomainOnly())
+			return;
 		
-		Class<?> coreClass = mConfig.isMapped() ? mConfig.findIfMapped().getMapsTo().getReferredClass() : mConfig.getReferredClass();
+		Object newState = cmdMsg.hasPayload()
+							? getConverter().convert(p.getConfig().getReferredClass(), cmdMsg.getRawPayload())
+									: getJavaBeanHandler().instantiate(p.getConfig().getReferredClass());
 		
-		return (R)ClassLoadUtils.newInstance(coreClass);
-		
-		//QuadModel<?, ?> q = quadModelBuilder.build(cmd, (mConfig)->ModelsTemplate.newInstance(mConfig.getReferredClass()));
-		//PlatformSession.setAttribute(cmd, q);
-		
-		//init rules
-		//q.fireAllRules();
-		
-		//init process
-		//initiateProcessExecution(cmdMsg, q);
-		
-		//return (R)q;
+		// for /domain-root/_new - set "id" from repo 
+		if(cmdMsg.getCommand().isRootDomainOnly()) {
+			PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(p.getConfig().getReferredClass(), p.getConfig().getCode());
+			getJavaBeanHandler().setValue(pd, newState, cmdMsg.getCommand().getRootDomainElement().getRefId());
+		}
+										
+		p.setState(newState);
 	}
 	
-	@Override
-	protected void publishEvent(CommandMessage cmdMsg, ProcessExecutorEvents e) {
+	protected ExecutionContext handleNewDomainRoot(ExecutionContext eCtx) {
+		if(eCtx.getQuadModel()!=null)
+			return eCtx;
 		
+		// create new instance of entity and quad
+		ModelConfig<?> rootDomainConfig = getRootDomainConfig(eCtx);
+		QuadModel<?, ?> q =  createNewQuad(rootDomainConfig, eCtx);
+		
+		// set to context
+		eCtx.setQuadModel(q);
+		
+		return eCtx;
 	}
+	
+	private QuadModel<?, ?> createNewQuad(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx) {
+		// create new entity instance for core & view
+		Object entity = instantiateEntity(eCtx, rootDomainConfig);
+		
+		Object mapsToEntity = rootDomainConfig.isMapped() ? instantiateEntity(eCtx, rootDomainConfig.findIfMapped().getMapsTo()) : null;
+		
+		// create quad-model
+		ExecutionEntity<?, ?> e = ExecutionEntity.resolveAndInstantiate(entity, mapsToEntity);
+		
+		// update refId
+		
+		String refId = Optional.ofNullable(getRootDomainRefIdByRepoDatabase(rootDomainConfig, e))
+				.map(String::valueOf)
+				.map(StringUtils::trimToNull)
+				.orElse(null);
+		
+		eCtx.getCommandMessage().getCommand().getRootDomainElement().setRefId(refId);
+		
+		return getQuadModelBuilder().build(eCtx.getCommandMessage().getCommand(), e);		
+	}
+	
+	private void startBusinessProcess(ExecutionContext eCtx, Param<?> actionParam){
+		QuadModel<?, ?> quadModel = getQuadModel(eCtx);
+		String lifecycleKey = quadModel.getView().getConfig().getDomainLifecycle();
+		if(StringUtils.isEmpty(lifecycleKey))
+			return;
+		ProcessFlow processFlow = quadModel.getFlow();
+		if(processFlow.getProcessExecutionId() == null)
+			processFlow.setProcessExecutionId(bpmGateway.startBusinessProcess(eCtx, lifecycleKey,actionParam).getExecutionId());
+	}
+	
 }

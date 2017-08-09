@@ -6,9 +6,8 @@ package com.anthem.oss.nimbus.test.sample.um.model;
 import java.util.Date;
 import java.util.List;
 
-import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.definition.ConfigNature.Ignore;
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
+import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 
 import lombok.Getter;

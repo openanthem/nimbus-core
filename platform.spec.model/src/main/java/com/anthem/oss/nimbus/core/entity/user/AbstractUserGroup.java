@@ -1,8 +1,5 @@
 package com.anthem.oss.nimbus.core.entity.user;
 
-import javax.validation.constraints.NotNull;
-
-import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 
 import lombok.Getter;
@@ -23,9 +20,11 @@ public abstract class AbstractUserGroup extends AbstractEntity.IdString {
 	
 	private String description;
 	
-	@NotNull
-	@Model.Param.Values(url="staticCodeValue-/orgStatus")
-	private Status status;
+	private boolean admin;
+	
+	//@NotNull
+	//@Model.Param.Values(url="staticCodeValue-/orgStatus")
+	private String status;
 	
 	public enum Status {
 		ACTIVE,

@@ -32,6 +32,8 @@ public class UserEndpointSession implements Serializable {
 	private static Map<String, Object> sessionMap = new HashMap<>();
 
 	private static ClientUser clientUser;
+	
+	private static String sessionUserKey = "client-user-key";
 
 	static {
 		sessionMap.put(PLATFORM_CONTEXT_KEY, new SessionContext());
@@ -128,19 +130,8 @@ public class UserEndpointSession implements Serializable {
 		return pContext;
 	}
 
-	public ClientUser getLoggedInUser() {
-		if (clientUser == null) {
-			clientUser = TestClientUserFactory.createDefaultUser();
-		}
-		return clientUser;
-
-	}
-
-	public static ClientUser getStaticLoggedInUser() {
-		if (clientUser == null) {
-			clientUser = TestClientUserFactory.createDefaultUser();
-		}
-		return clientUser;
+	public static ClientUser getStaticLoggedInUser() {			
+		return getAttribute(sessionUserKey);			
 	}
 
 }

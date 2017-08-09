@@ -10,15 +10,20 @@ import java.util.Collections;
 import java.util.Optional;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.ExecutionStateTree;
+import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.InvalidArgumentException;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.definition.Converters.ParamConverter;
+import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Mode;
+import com.anthem.oss.nimbus.core.domain.definition.Repo.Cache;
+import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig.MappedParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.MappedParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.InvalidStateException;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 import com.anthem.oss.nimbus.core.utils.JavaBeanHandler;
@@ -41,10 +46,14 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 	
 	//@Autowired	@Qualifier("default.param.state.rep_session")
 	private ParamStateRepository session;
+	
+	private ParamStateRepository detachedStateRepository;
 
-	public ParamStateRepositoryGateway(JavaBeanHandler javaBeanHandler, ParamStateRepository local) {
+	public ParamStateRepositoryGateway(JavaBeanHandler javaBeanHandler, ParamStateRepository local, BeanResolverStrategy beanResolver) {
 		this.javaBeanHandler = javaBeanHandler;
 		this.local = local;
+		this.detachedStateRepository = beanResolver.get(ParamStateRepository.class, "param.state.rep_detached");
+		
 	}
 	
 	/*
@@ -90,16 +99,6 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		public boolean isCacheable() {
 			return false;
 		}
-		
-		private <P> void _updateParatmStateTree(Param<P> param, P newState){
-			if(param.getType().isNested())
-				return;
-			ExecutionStateTree executionStateTree = param.getRootExecution().getExecutionStateTree();
-			if(executionStateTree == null)
-				return;
-			executionStateTree.addExecutionNode(param, newState);
-			
-		}		
 		
 //		public boolean isPersistable() {
 //			return true;
@@ -172,9 +171,17 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		
 		final P currState;
 		if(param.isMapped() && !param.findIfMapped().requiresConversion()) {
-			MappedParam<P, ?> mappedFromParam = param.findIfMapped();
-			Param<P> mapsToParam = (Param<P>)mappedFromParam.getMapsTo();
-			currState = currRep._get(mapsToParam);
+			MappedParamConfig<P, ?> mappedParamConfig = param.getConfig().findIfMapped();
+			if(mappedParamConfig.isDetachedWithMapsToPath()) {
+				
+				currState = mappedParamConfig.getPath().cache() == Cache.rep_none 
+								|| currRep._get(param) == null ? detachedStateRepository._get(param) : currRep._get(param);
+			}
+			else{
+				MappedParam<P, ?> mappedFromParam = param.findIfMapped();
+				Param<P> mapsToParam = (Param<P>)mappedFromParam.getMapsTo();
+				currState = currRep._get(mapsToParam);
+			}
 
 		} else {
 			currState = currRep._get(param);
@@ -219,6 +226,11 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 					);
 				
 				return Action._new;
+				
+			} else // scenario: when model is mapped to a type, but param is not -- needs to refer to its root param 
+			if(param.getConfig().getType().findIfNested().getModel().isMapped()){
+				return _setNestedModel(currRep, param, newState);
+				
 			} else {
 				// set nested state as is from passed in domain state
 				return currRep._set(param, newState);
@@ -231,8 +243,16 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		MappedParam<P, ?> mappedParam = param.findIfMapped();
 		Param<P> mapsToParam = (Param<P>)mappedParam.getMapsTo();
 		
+		// Throw error is trying to set a param that is mappedDetached witha value url provided in the path
+		if(param.getConfig().findIfMapped().getPath().cache() == Cache.rep_none 
+				&& param.getConfig().findIfMapped().getMappingMode() == Mode.MappedDetached
+				&& StringUtils.isNotBlank(param.getConfig().findIfMapped().getPath().value())) {
+			
+			throw new InvalidStateException("Cannot set mapsTo param for mapped detached param with a path that contains the url. Param is: "+param);
+		}
+		
 		// mapped leaf: write to mapped coreParam only if the view param is a leaf param (i.e., not a model) OR if is of same type
-		if(!param.findIfMapped().requiresConversion()) {
+		if(!param.findIfMapped().requiresConversion() && !param.isCollection()) {
 			Object parentModel = param.getParentModel().instantiateOrGet();//ensure mappedFrom model is instantiated
 			
 			if(CollectionUtils.isNotEmpty(param.getConfig().getConverters())) {
@@ -252,27 +272,32 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 			}
 			
 
-			ListParam<P> listParam = (ListParam<P>)param.findIfCollection();
+			ListParam<P> mappedListParam = (ListParam<P>)param.findIfCollection();
 			
 			// reset collection
 			//_instantiateAndSet(currRep, param);
-			listParam.getType().getModel().instantiateAndSet();
+			mappedListParam.getType().getModel().instantiateAndSet();
 
 			if(!(newState instanceof Collection))
 				throw new InvalidArgumentException("Collection param with path: "+param.getPath()+" must have argument of type "+Collection.class);
 			
-			Collection<P> state = (Collection<P>)newState;
+			Collection<P> newColState = (Collection<P>)newState;
 			// add element parameters
-			Optional.ofNullable(state)
+			Optional.ofNullable(newColState)
 				.ifPresent(list->
 					list.stream()
-						.forEach(listParam::add)
+						.forEach(mappedListParam::add)
 				);
 			return Action._new;
 			
 		} 
 		
 		// mapped nested: ..handling..  <TypeStateAndConfig.Nested<P>>
+		return _setNestedModel(currRep, param, newState);
+	}
+	
+	protected <P> Action _setNestedModel(ParamStateRepository currRep, Param<P> param, P newState) {
+		
 		StateType.Nested<P> nestedType = param.getType().findIfNested(); 
 		Model<P> nestedModel = nestedType.getModel();
 		if(nestedModel.templateParams().isNullOrEmpty()) return null;
@@ -289,12 +314,6 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		
 		//TODO detect change
 		return Action._replace;
-	}
-	
-	protected <T> void handleModel(Param<T> pModel, T state) {
-		if(pModel.getParentModel().templateParams().isNullOrEmpty()) return;
-		
-		
 	}
 	
 	public static <P> Action _equals(P newState, P currState) {

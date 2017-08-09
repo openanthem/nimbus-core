@@ -9,6 +9,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.anthem.oss.nimbus.core.domain.definition.Repo.Cache;
+
 /**
  * @author Soham Chakravarti
  *
@@ -41,11 +45,8 @@ public class MapsTo {
 	public @interface Type {
 		
 		Class<?> value();
-
-		/**
-		 * throw exception if unmapped property is found. Defaults to silent, i.e., no exception thrown 
-		 */
-		boolean silent() default true;
+		
+		boolean isTransient() default false;
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
@@ -58,30 +59,22 @@ public class MapsTo {
 		
 		State state() default State.Internal;
 		
-		KeyValue[] kv() default @KeyValue(k="default",v="default");
+		String colElemPath() default DEFAULT_COL_ELEM_PATH;
 		
-		public @interface KeyValue {
-			String k();
-			String v();
-			boolean quad() default true;
-		}
+		Cache cache() default Cache.rep_device;	 
+
 	}
 	
 	public static Mode getMode(Path path) {
 		if(path==null) return Mode.UnMapped;
+		
 		return path.linked() ? Mode.MappedAttached : Mode.MappedDetached;
 	}
 	
-	@Path
-	public static final String DEFAULT_PATH = "";
+	public static boolean hasCollectionPath(Path path) {
+		return StringUtils.trimToNull(path.colElemPath())!=null;
+	}
 	
 	public static final String DETACHED_SIMULATED_FIELD_NAME = "detachedParam";
-	
-//	@Retention(RetentionPolicy.RUNTIME)
-//	@Target({ElementType.TYPE})
-//	@Mapped
-//	public @interface AssociatedEntity {
-//		Path value();
-//	}
-	
+	public static final String DEFAULT_COL_ELEM_PATH = "";
 }

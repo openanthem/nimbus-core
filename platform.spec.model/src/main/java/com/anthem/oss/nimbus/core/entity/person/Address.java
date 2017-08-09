@@ -9,7 +9,11 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.data.annotation.Id;
 
+import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Model;
+import com.anthem.oss.nimbus.core.domain.definition.Repo;
+import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
+import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 
 import lombok.AccessLevel;
@@ -21,6 +25,9 @@ import lombok.ToString;
  * @author Soham Chakravarti
  *
  */
+//@Domain(value="address", includeListeners={ListenerType.persistence})
+//@Repo(Database.rep_mongodb)
+@Model
 @Getter @Setter @ToString(callSuper=true)
 public abstract class Address<ID extends Serializable> extends AbstractEntity<ID> {
 
@@ -55,7 +62,7 @@ public abstract class Address<ID extends Serializable> extends AbstractEntity<ID
 	
 
 	@NotNull
-	@Model.Param.Values(url="staticCodeValue-/addressType")
+	//@Model.Param.Values(url="Anthem/fep/icr/p/staticCodeValue/_search?fn=lookup&where=staticCodeValue.paramCode.eq('/addressType')")
 	private Type type;
 
 	@NotNull
@@ -75,7 +82,7 @@ public abstract class Address<ID extends Serializable> extends AbstractEntity<ID
 	private String stateCd;
 
 	@NotNull
-	@Model.Param.Values(url="staticCodeValue-/country")
+	//@Model.Param.Values(url="staticCodeValue-/country")
 	private String countryCd;
 	
 }

@@ -3,17 +3,12 @@
  */
 package com.anthem.oss.nimbus.core.entity.user;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
-import com.anthem.oss.nimbus.core.domain.definition.Execution;
-import com.anthem.oss.nimbus.core.domain.definition.Model;
+import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
-import com.anthem.oss.nimbus.core.entity.client.ClientEntity;
-import com.anthem.oss.nimbus.core.entity.client.user.ClientUser;
+import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -23,32 +18,19 @@ import lombok.ToString;
  * @author Rakesh Patel
  *
  */
-@Domain(value="clientusergroup")
-@Repo(Repo.Database.rep_mongodb)
-@Execution.Input.Default @Execution.Output.Default @Execution.Output(Action._new)
+@Domain(value="clientusergroup", includeListeners={ListenerType.persistence})
+@Repo(Database.rep_mongodb)
 @Getter @Setter @ToString(callSuper=true)
 public class ClientUserGroup extends AbstractUserGroup {
 
 	private static final long serialVersionUID = 1L;
 	
-	private Set<ClientUser> participants;
+	private String organizationId;
 	
-	private Set<ClientEntity> associatedTo;
+	private List<GroupUser> members;
 	
-	@Model.Param.Values(url = "staticCodeValue-/users")
-	@Getter @Setter
-	private String[] userList;
+	private String[] memberUserIds;
 	
-	private List<String> admins;
-	/**
-	 * 
-	 * @param ce
-	 */
-	public void addassociatedTo(ClientEntity ce) {
-		if(getAssociatedTo() == null) {
-			setAssociatedTo(new HashSet<>());
-		}
-		getAssociatedTo().add(ce);
-	}
-	
+	//TODO delete this attribute once the vgusergroup.drl is triggered on setState to set the count
+	private Integer memberCount;
 }

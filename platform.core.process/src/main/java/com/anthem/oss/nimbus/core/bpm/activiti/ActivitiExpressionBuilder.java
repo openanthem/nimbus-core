@@ -25,14 +25,10 @@ public class ActivitiExpressionBuilder {
 	public static final String PLATFORM_FUNCTION_END=")";
 	public static final String PLATFORM_FUNCTION_ARG_SEPARATOR=",";
 	public static final String EXPRESSION_BEAN="platformExpressionHandler";
-	public static final String EXPRESSION_COMMAND_MESSAGE="processGatewayContext.processEngineContext.commandMsg";
+	public static final String EXPRESSION_EXECUTION_CTX="processContext.executionContext";
 	public static final String EXPRESSION_EXECUTION="execution";
 	public static final String EXPRESSION_HELPER_PREFIX="defaultExpressionHelper";
 	public static final String PLATFORM_FUNCTION_PREFIX="_";
-	public static final String PLATFORM_URI_RESOLVE_PREFIX = 
-			EXPRESSION_HELPER_PREFIX+".getResolvedUri("
-			+EXPRESSION_COMMAND_MESSAGE+",";
-	
 	private Stack<Function> functionStack = new Stack<Function>();
 	private StringBuilder runningExpression = new StringBuilder();
 	private Map<String,String> functionToBeanMap;
@@ -41,7 +37,7 @@ public class ActivitiExpressionBuilder {
 	
 	static{
 		platformDefaultArguments = new ArrayList<String>();
-		platformDefaultArguments.add(EXPRESSION_COMMAND_MESSAGE);
+		platformDefaultArguments.add(EXPRESSION_EXECUTION_CTX);
 		platformDefaultArguments.add(EXPRESSION_EXECUTION);		
 	}
 	
@@ -103,36 +99,32 @@ public class ActivitiExpressionBuilder {
 		 */
 		public void addArgument(String argument){
 			arguments = (arguments == null) ? new ArrayList<String>():arguments;
-			int currentIndex = arguments.size();
-			if(currentIndex == 0){
-				StringBuilder argumentStr =new StringBuilder();
-				argumentStr.append(PLATFORM_URI_RESOLVE_PREFIX).append(argument).append(PLATFORM_FUNCTION_END);
-				argument = argumentStr.toString();
-			}
 			arguments.add(argument);
 		}
 		
 		public String getFunctionExpression(){
 			StringBuilder functionExpression = new StringBuilder();
-			boolean containsPlatformFunction = false;
+			boolean platformFunction = false;
 			if(functionName.startsWith(PLATFORM_FUNCTION_PREFIX)){
 				String helperBean = functionToBeanMap.get(functionName);
 				if(helperBean == null)
 					helperBean = EXPRESSION_HELPER_PREFIX;
 				functionExpression.append(helperBean).append(".");
-				containsPlatformFunction = true;
+				platformFunction = true;
 			}
 			functionExpression.append(functionName);
 			functionExpression.append(PLATFORM_FUNCTION_START);
 			if(arguments != null){
 				List<String> functionArguments = new ArrayList<String>();
-				if(containsPlatformFunction){
+				if(platformFunction)
 					functionArguments.addAll(platformDefaultArguments);
-				}
-				functionArguments.addAll(arguments);
-				if(containsPlatformFunction){
-					if(arguments.size() == 1)
-						functionArguments.add("null");
+			
+				if(arguments != null && arguments.size() > 0){
+					for(String arg: arguments){
+						if(StringUtils.isNoneEmpty(arg))
+							functionArguments.add(arg);
+					}
+					
 				}
 				functionExpression.append(StringUtils.join(functionArguments,PLATFORM_FUNCTION_ARG_SEPARATOR));
 			}

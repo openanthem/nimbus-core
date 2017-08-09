@@ -10,15 +10,16 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.stereotype.Component;
 
 import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
 import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Input;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
+import com.anthem.oss.nimbus.core.domain.model.state.HierarchyMatch;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 import com.anthem.oss.nimbus.core.entity.StaticCodeValue;
 
@@ -31,7 +32,7 @@ import lombok.Setter;
  */
 @ConfigurationProperties(prefix="static.codevalue")
 @RefreshScope
-public class ParamCodeValueProvider extends AbstractProcessTaskExecutor implements HierarchyMatchProcessTaskExecutor {
+public class ParamCodeValueProvider implements HierarchyMatch, CommandExecutor<List<ParamValue>> {
 	
 	private static final String DEFAULT_KEY_ATTRIBUTE = "id";
 	private static final String KEY_VALUE_SEPERATOR = "&";
@@ -45,18 +46,6 @@ public class ParamCodeValueProvider extends AbstractProcessTaskExecutor implemen
 	@Getter @Setter
 	private Map<String,List<ParamValue>> values;
 
-
-	@Override
-	public String getUri() {
-		return "*/*/*/p/*/*/_lookup/_execute";
-	}
-	
-	
-	@Override
-	protected void publishEvent(CommandMessage cmdMsg, ProcessExecutorEvents e) {
-		// Have to override this method in the default executors to avoid the recursive call of the same method indefinitely from AbstractProcessTaskExecutor
-	}
-
 	
 	/**
 	 * Search will be in the order:
@@ -69,40 +58,44 @@ public class ParamCodeValueProvider extends AbstractProcessTaskExecutor implemen
 	 *
 	 */
 	@Override
-	protected <R> R doExecuteInternal(CommandMessage cmdMsg) {
-		R codeValues = null;
+	public Output<List<ParamValue>> execute(Input input) {
+		CommandMessage cmdMsg = input.getContext().getCommandMessage();
+		final List<ParamValue> codeValues;
 		if(StringUtils.equalsIgnoreCase(cmdMsg.getCommand().getElement(Type.DomainAlias).get().getAlias(),"staticCodeValue")) {
-			codeValues = getStaticCodeValue(cmdMsg);
+			codeValues = getStaticCodeValue(input);
 		}
 		else{
-			codeValues = getModelAsCodeValue(cmdMsg);
+			codeValues = getModelAsCodeValue(input);
 		}
 		
-		return codeValues;
+		return Output.instantiate(input, input.getContext(), codeValues);
 	}
 	
 	
 	@SuppressWarnings("unchecked")
-	private <R> R getStaticCodeValue(CommandMessage cmdMsg) {	
+	private List<ParamValue> getStaticCodeValue(Input input) {	
+		CommandMessage cmdMsg = input.getContext().getCommandMessage();
+		
 		// 1.1 config server lookup
 		if(MapUtils.isNotEmpty(values) && CollectionUtils.isNotEmpty(values.get(cmdMsg.getRawPayload()))){
-			return (R)values.get(cmdMsg.getRawPayload());
+			return values.get(cmdMsg.getRawPayload());
 		}
 		
 		// 1.2 DB lookup
 		cmdMsg.setRawPayload("{\"paramCode\":\""+cmdMsg.getRawPayload()+"\"}");
-		List<StaticCodeValue> modelList = searchExecutor.doExecute(cmdMsg);
+		List<StaticCodeValue> modelList = (List<StaticCodeValue>)searchExecutor.execute(input);
 		if(CollectionUtils.isEmpty(modelList))
 			return null;
 		
 		if(CollectionUtils.size(modelList) > 1)
 			throw new IllegalStateException("StaticCodeValue look up for a command message"+cmdMsg+" returned more than one records for paramCode");
 		
-		return (R)modelList.get(0).getParamValues();
+		return modelList.get(0).getParamValues();
 	}
 	
 	@SuppressWarnings("unchecked")
-	private <R> R getModelAsCodeValue(CommandMessage cmdMsg) {
+	private <R> R getModelAsCodeValue(Input input) {
+		CommandMessage cmdMsg = input.getContext().getCommandMessage();
 		
 		// 2.1 config server lookup
 		String domainAlias = cmdMsg.getCommand().getRootDomainAlias();
@@ -113,7 +106,7 @@ public class ParamCodeValueProvider extends AbstractProcessTaskExecutor implemen
 		// 2.2 DB lookup
 		String[] keyValuePayload = cmdMsg.getRawPayload().split(KEY_VALUE_SEPERATOR);
 		cmdMsg.setRawPayload(null); // Clearing rawpayload as the payload for this command message is specific for key/value lookup and not supported by search executor
-		List<AbstractEntity<?>> modelList = searchExecutor.doExecute(cmdMsg);
+		List<AbstractEntity<?>> modelList = (List<AbstractEntity<?>>)searchExecutor.execute(input);
 		
 		if(CollectionUtils.isNotEmpty(modelList)) {
 			String nestedDomainAlias = StringUtils.stripStart(cmdMsg.getCommand().getAbsoluteDomainAlias(), "/");

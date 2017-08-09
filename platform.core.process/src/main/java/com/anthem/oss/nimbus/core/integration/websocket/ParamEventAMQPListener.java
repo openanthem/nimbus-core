@@ -3,19 +3,19 @@ package com.anthem.oss.nimbus.core.integration.websocket;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.messaging.Message;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.messaging.simp.SimpMessageType;
+import org.springframework.web.context.request.RequestContextHolder;
 
+import com.anthem.oss.nimbus.core.config.WebSocketHttpConnectHandlerDecoratorFactory;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandTransactionInterceptor;
 import com.anthem.oss.nimbus.core.domain.command.execution.ExecuteOutput;
 import com.anthem.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
-import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
+import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
@@ -33,6 +33,9 @@ public class ParamEventAMQPListener implements StateAndConfigEventListener {
 
 	CommandTransactionInterceptor interceptor;	
 	
+	@Autowired
+	WebSocketHttpConnectHandlerDecoratorFactory webSocketHttpConnectHandlerDecoratorFactory;
+	
 	
 	public ParamEventAMQPListener(SimpMessageSendingOperations messageTemplate,CommandTransactionInterceptor interceptor){
 		this.messageTemplate = messageTemplate;
@@ -40,12 +43,18 @@ public class ParamEventAMQPListener implements StateAndConfigEventListener {
 	}
 	
 	@Override
-	public boolean shouldAllow(EntityState<?> p) {
+	public boolean shouldAllow(EntityState<?> in) {
+		final EntityState<?> p;
+		if(in.getRootExecution().getAssociatedParam().isLinked()) {
+			p = in.getRootExecution().getAssociatedParam().findIfLinked();
+		} else {
+			p = in;
+		}
 		Domain rootDomain = AnnotationUtils.findAnnotation(p.getRootDomain().getConfig().getReferredClass(), Domain.class);
 		if(rootDomain == null) 
 			return false;
 		
-		Model pModel = AnnotationUtils.findAnnotation(p.getRootDomain().getConfig().getReferredClass(), Model.class);
+		Model pModel = AnnotationUtils.findAnnotation(p.getRootDomain().getConfig().getReferredClass(), Model.class); // TODO - this needs to be config of p not the root domain of p.
 		
 		ListenerType includeListener = Arrays.asList(rootDomain.includeListeners()).stream()
 											.filter((listener) -> !Arrays.asList(pModel.excludeListeners()).contains(listener))
@@ -88,11 +97,18 @@ public class ParamEventAMQPListener implements StateAndConfigEventListener {
 		executeOutput.setResult(result);
 		
 		MultiExecuteOutput multiExecOutput = interceptor.handleResponse(executeOutput);
-		
-		messageTemplate.convertAndSend("/queue/updates", multiExecOutput); // TODO get the destination name from the config server
-		//messageTemplate.convertAndSendToUser(auth.getName(),"/queue/updates", executeOutput);
+		String webSocketSessionId = getAssociatedWebSocketSessionId();
+		SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor.create(SimpMessageType.MESSAGE);
+		headerAccessor.setSessionId(webSocketSessionId);		
+		//messageTemplate.convertAndSend("/queue/updates", multiExecOutput); // TODO get the destination name from the config server
+		messageTemplate.convertAndSendToUser(webSocketSessionId,"/queue/updates", multiExecOutput,headerAccessor.getMessageHeaders(),null);
 		
 		return true;
+	}
+	
+	private String getAssociatedWebSocketSessionId(){
+		String httpSessionId = RequestContextHolder.getRequestAttributes().getSessionId();
+		return webSocketHttpConnectHandlerDecoratorFactory.getAssociatedWebSocketSessionId(httpSessionId);
 	}
 
 }

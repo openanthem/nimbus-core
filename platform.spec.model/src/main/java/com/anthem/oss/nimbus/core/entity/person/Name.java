@@ -50,4 +50,10 @@ public abstract class Name<ID extends Serializable> extends AbstractEntity<ID> {
 
 	private String middleName;
 	
+	private String fullName;
+	
+	public String getFullName() {
+		return firstName + ' ' + lastName;		
+	}
+	
 }

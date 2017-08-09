@@ -45,6 +45,13 @@ public class ViewConfig {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewParamBehavior
+	public @interface Initialize {
+		String alias() default "initialize";
+	}
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewParamBehavior
 	public @interface Mode {
 		public enum Options {
 			ReadOnly,
@@ -67,9 +74,11 @@ public class ViewConfig {
 		String alias() default "page";
 		Type type() default Type.Home;
 		String route() default "";
+		String layout() default "";
 		String breadCrumb() default "none";
 		String imgSrc() default "";
 		String styleClass() default "";
+		boolean defaultPage() default false;
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
@@ -91,10 +100,28 @@ public class ViewConfig {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
+	public @interface Header {
+		public enum Size {
+			H1,
+			H2,
+			H3,
+			H4,
+			H5
+		}
+		String alias() default "Header";
+		Size size() default Size.H3;
+	}
+	
+	
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
 	public @interface CardDetailsGrid {
 		String alias() default "CardDetailsGrid";
 		String editUrl() default "";
 		boolean draggable() default false;
+		boolean onLoad() default false;
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
@@ -104,7 +131,7 @@ public class ViewConfig {
 		String alias() default "CardDetail";
 		String cssClass() default "contentBox right-gutter bg-light mt-1";
 		String imgSrc() default "";
-		String editUrl() default "";
+		boolean editable() default false;
 		String modelPath() default "";
 		String title() default "";
 		boolean draggable() default false;
@@ -153,6 +180,7 @@ public class ViewConfig {
 		String alias() default "FieldValue";
 		Type type() default Type.Field;
 		String imgSrc() default "";
+		String cssClass() default "";
 		boolean showName() default true;
 		String cols() default "1";
 		String iconField() default "";
@@ -170,6 +198,7 @@ public class ViewConfig {
 			FOOTER,
 			LEFTBAR,
 			RIGHTBAR,
+			BODY,
 			DEFAULT;
 		}
 		
@@ -177,6 +206,7 @@ public class ViewConfig {
 		String alias() default "Section";
 		String imgSrc() default "";
 		String cssClass() default "";
+		String defaultFlow() default ""; // applicable only to Section type BODY.
 	}
 		
 	@Retention(RetentionPolicy.RUNTIME)
@@ -205,13 +235,40 @@ public class ViewConfig {
 	@Target({ElementType.FIELD})
 	@ViewStyle
 	public @interface Button {	
+		public enum Style {
+			PRIMARY,
+			SECONDARY,
+			PLAIN,
+			DESTRUCTIVE;
+		}
+		
+		public enum Type {
+			submit,
+			reset,
+			button
+		}
+		
+		Type type() default Type.button;
 		String alias() default "Button";
 		String url() default "";
-		String b() default "$executeAnd$nav";
+		String b() default "$execute";
 		String method() default "GET";
 		String imgSrc() default "";
-		String type() default "submit";
+		Style style() default Style.PLAIN;
 		String payload() default "";
+		String cssClass() default "btn btn-primary";
+		boolean formReset() default true;
+	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface FilterButton {
+		String alias() default "FilterButton";
+		String url() default "";
+		String b() default "$execute";
+		String method() default "GET";
+		String imgSrc() default "";
 		String cssClass() default "btn btn-primary";
 	}
 
@@ -232,8 +289,6 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface Link {
 		public enum Type {
-			LOGO,
-			APPTITLE,
 			MENU,
 			DEFAULT;
 		}
@@ -242,7 +297,7 @@ public class ViewConfig {
 		String method() default "GET";
 		String b() default "$executeAnd$nav";
 		String imgSrc() default "";
-		String styleClass() default "";
+		String cssClass() default "";
 		String altText() default "";
 	}
 
@@ -252,6 +307,53 @@ public class ViewConfig {
 	public @interface InPlaceEdit {
 		String alias() default "InPlaceEdit";
 		String type() default "text";
+	}
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewParamBehavior
+	public @interface PageHeader {
+		public enum Property {
+			LOGO,
+			APPTITLE,
+			SUBTITLE,
+			USERNAME,
+			USERROLE,
+			SUBHEADER,
+			MENU,
+			DEFAULT;
+		}
+		Property value() default Property.DEFAULT;
+	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewParamBehavior
+	public @interface PageFooter {
+		public enum Property {
+			TOU,
+			VERSION,
+			COPYRIGHT,
+			SSLCERT,
+			PRIVACY,
+			DEFAULT
+		}
+		Property value() default Property.DEFAULT;
+	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface Label {
+		String alias() default "Label";
+	}
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface Image {
+		String alias() default "Image";
+		String imgSrc() default "";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
@@ -329,6 +431,7 @@ public class ViewConfig {
 	public @interface Grid {
 		String alias() default "Grid";
 		boolean onLoad() default false;
+		boolean isTransient() default false;
 		String url() default "";
 		boolean rowSelection() default false;
 		String pageSize() default "10";
@@ -355,6 +458,17 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface CheckBox {
 		String alias() default "CheckBox";
+		String cssClass() default "";
+		String labelClass() default "anthem-label";
+		boolean postEventOnChange() default false;
+		String controlId() default "";
+	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface CheckBoxGroup {
+		String alias() default "CheckBoxGroup";
 		String level() default "0";
 		String cssClass() default "";
 		String labelClass() default "anthem-label";
@@ -429,6 +543,7 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface SubHeader {
 		String alias() default "SubHeader";
+		String cssClass() default "col-sm-6 align-top";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
@@ -442,6 +557,17 @@ public class ViewConfig {
 		boolean postEventOnChange() default false;
 		String sourceHeader() default "SourceList";
 		String targetHeader() default "TargetList";
+	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface GridColumn {
+		String alias() default "GridColumn";
+		boolean hidden() default false;
+		boolean sortable() default true;
+		boolean filter() default true;
+		boolean expandable() default true;
 	}
 	
 }

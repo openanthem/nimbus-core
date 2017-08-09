@@ -1,100 +1,50 @@
-/**
- * 
- */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-
-import com.anthem.nimbus.platform.spec.model.dsl.binder.ExecutionStateTree;
-import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
-import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
-import com.anthem.oss.nimbus.core.domain.definition.EnableParamStateTree;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
+import com.anthem.oss.nimbus.core.BeanResolverStrategy;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Input;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
-import com.anthem.oss.nimbus.core.session.UserEndpointSession;
 
 /**
- * @author Soham Chakravarti
+ * @author Rakesh Patel
  *
  */
-public class DefaultActionExecutorUpdate extends AbstractProcessTaskExecutor {
+public class DefaultActionExecutorUpdate extends AbstractCommandExecutor<Boolean> {
 
-	
+	public DefaultActionExecutorUpdate(BeanResolverStrategy beanResolver) {
+		super(beanResolver);
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
-	public <R> R doExecuteInternal(CommandMessage cmdMsg) {
+	protected Output<Boolean> executeInternal(Input input) {
+		ExecutionContext eCtx = input.getContext();
 		
-		RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-		requestAttributes.setAttribute("testName","jayant",RequestAttributes.SCOPE_REQUEST);
+		Param<Object> p = findParamByCommandOrThrowEx(eCtx);
 		
-		Command cmd = cmdMsg.getCommand();
-		QuadModel<?, ?> q = UserEndpointSession.getOrThrowEx(cmd);
+		if(p.isCollection())
+			handleCollection(eCtx, p.findIfCollection());
+		else 
+			handleParam(eCtx, p);
 		
-		Model<?> sac = cmd.isView() ? q.getView() : q.getCore();
-		
-		String path = cmd.buildUri(cmd.root().findFirstMatch(Type.DomainAlias).next());
-		
-		Param<Object> param = sac.findParamByPath(path);
-		
-		//Convert from json payload to Object
-		Object state = convert(cmdMsg, param);
-		
-		//Check if the param is associated with a model that manintains parameter state
-		boolean useParamStateTree = useParamStateTree(param);
-		if(useParamStateTree){
-			loadParamStateTree(param);
-		}
-		
-		//Execute update with suppressMode
-		//q.getEventPublisher().apply(SuppressMode.ECHO);
-		param.setState(state);
-		//q.getEventPublisher().apply(null); // should be persist only
-		
-		//fire rules post update
-		q.getRoot().fireRules();
-		// clear the apply on event publisher
-		
-		// get, new(save), replace, delete
-		return (R)Boolean.TRUE;
+		// TODO use the Action output from the setState to check if the action performed is _update to return true
+		//, else false - right now it either return _new or _replace (change detection is not yet implemented)
+		return Output.instantiate(input, eCtx, Boolean.TRUE);
 	}
 	
-	@Override
-	protected void publishEvent(CommandMessage cmdMsg, ProcessExecutorEvents e) {
+	protected void handleCollection(ExecutionContext eCtx, ListParam<Object> p) {
+		// perform add on collection
+		Class<Object> refClass = p.getType().getModel().getElemConfig().getReferredClass();
+		Object colElemState = getConverter().convert(refClass, eCtx.getCommandMessage().getRawPayload());
 		
+		p.add(colElemState);
 	}
 	
-	/**
-	 * 
-	 * @param param
-	 * @return
-	 */
-	private boolean useParamStateTree(Param<Object> param){	
-		Class<?> mapsToClass = param.getRootExecution().getConfig().getReferredClass();
-		if( mapsToClass.getAnnotation(EnableParamStateTree.class) != null){
-			return true;
-		}
-		return false;
-	}	
-	
-	
-	/**
-	 * 
-	 * @param param
-	 */
-	private void loadParamStateTree(Param<Object> param){
-		Model<?> parent = param.getRootExecution();
-		ExecutionStateTree stateTree = parent.getExecutionStateTree();
-		if(stateTree == null){
-			stateTree = new ExecutionStateTree();
-			//parent.setExecutionStateTree(stateTree); //TODO refactor revisit commented due to framework change (Jayant ??)
-		}
-		RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-		requestAttributes.setAttribute(ExecutionStateTree.TRIGGER_PARAM_KEY, param, RequestAttributes.SCOPE_REQUEST);
-		stateTree.resetStateForParameter();		
+	protected void handleParam(ExecutionContext eCtx, Param<Object> p) {
+		Object state = getConverter().convert(p.getConfig().getReferredClass(), eCtx.getCommandMessage().getRawPayload());
+		
+		p.setState(state);
 	}
-	
 	
 }

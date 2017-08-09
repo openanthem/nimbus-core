@@ -14,13 +14,7 @@ public interface ClientUserRepoAPI<T extends ClientUser> {
 	 */
 	public static final int CE_FETCH_DEPTH = 5;
 	
-	/**
-	 * 
-	 * @param loginName
-	 * @return
-	 * @throws EntityNotFoundException
-	 */
-	public T getUser(String loginName) throws EntityNotFoundException;
+	
 	
 	/**
 	 * 

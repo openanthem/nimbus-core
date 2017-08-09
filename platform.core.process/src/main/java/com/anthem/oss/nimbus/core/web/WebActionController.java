@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
-import com.anthem.oss.nimbus.core.session.UserEndpointSession;
 
 /**
  * STEPS to follow with examples. <br>
@@ -68,6 +69,7 @@ import com.anthem.oss.nimbus.core.session.UserEndpointSession;
  *
  */
 @RestController
+//@EnableResourceServer
 public class WebActionController {
 	
 	public static final String URI_PATTERN_P = "/{clientCode}/**/p";
@@ -105,7 +107,6 @@ public class WebActionController {
 	public Object handleEventNotify(HttpServletRequest req, @RequestBody ModelEvent<String> event) {
 		Object obj = dispatcher.handle(req, RequestMethod.POST, event);
 		
-		//return dispatcher.handle(req, RequestMethod.POST, event);
 		Holder<Object> output = new Holder<>(obj);
 		return output;
 	}
@@ -117,19 +118,8 @@ public class WebActionController {
 	
 	
 	protected Object handleInternal(HttpServletRequest req, RequestMethod httpMethod, String v, String json) {
-		//return dispatcher.handle(req, httpMethod, v, json);
 		Object obj = dispatcher.handle(req, httpMethod, v, json);
 		Holder<Object> output = new Holder<>(obj);
 		return output;
 	}
-
-	@RequestMapping(value = "/hey", method = RequestMethod.GET)
-	public String hey (){
-		UserEndpointSession.clearSession();
-		return "hey";
-	}
-
-
-
-
 }

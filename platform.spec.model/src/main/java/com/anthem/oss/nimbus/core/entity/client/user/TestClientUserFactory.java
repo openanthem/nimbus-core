@@ -14,7 +14,7 @@ public class TestClientUserFactory {
 	
 	public static ClientUser createDefaultUser() {
 		ClientUser cu = new ClientUser();
-		cu.setLoginName("Nimbus_User");
+		cu.setLoginId("Nimbus_User");
 		
 		Name.IdString nm = new Name.IdString();
 		nm.setFirstName("Test_FirstName");
@@ -32,10 +32,10 @@ public class TestClientUserFactory {
         
 		ClientUser cu = new ClientUser();
 		cu.setClient(c);
-        cu.setLoginName("swetha");
+        cu.setLoginId("swetha");
        
-        c.addClientUserRole(createClientUserRole1());
-        c.addClientUserRole(createClientUserRole2());
+//        c.addClientUserRole(createClientUserRole1());
+//        c.addClientUserRole(createClientUserRole2());
        
         return cu;
 	}

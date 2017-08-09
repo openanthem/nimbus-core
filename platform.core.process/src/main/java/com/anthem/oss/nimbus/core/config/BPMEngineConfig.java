@@ -7,7 +7,6 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.deploy.Deployer;
 import org.activiti.engine.impl.rules.RulesDeployer;
@@ -26,17 +25,11 @@ import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiBehaviorFactory;
-import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiDAO;
 import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiExpressionManager;
-import com.anthem.oss.nimbus.core.bpm.activiti.AssignmentTaskExtension;
-import com.anthem.oss.nimbus.core.bpm.activiti.PageTaskExtension;
-import com.anthem.oss.nimbus.core.bpm.activiti.UserTaskExtension;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -100,7 +93,6 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
             PlatformTransactionManager jpaTransactionManager,
             SpringAsyncExecutor springAsyncExecutor) throws Exception {
     	SpringProcessEngineConfiguration engineConfiguration = this.baseSpringProcessEngineConfiguration(processDataSource, jpaTransactionManager, springAsyncExecutor);
-    	engineConfiguration.setActivityBehaviorFactory(platformActivityBehaviorFactory());
     	engineConfiguration.setHistoryLevel(HistoryLevel.getHistoryLevelForKey(processHistoryLevel));
     	addCustomDeployers(engineConfiguration);
     	
@@ -138,7 +130,7 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
     protected Resource[] loadBPMResources() throws IOException{ 
     	List<Resource> bpmResources = new ArrayList<Resource>();
     	addBPMResources(bpmResources,definitions);
-    	addBPMResources(bpmResources,rules);
+    	//==addBPMResources(bpmResources,rules);
   		return bpmResources.toArray(new Resource[bpmResources.size()]);
 	}
     
@@ -162,32 +154,11 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
     	return new DataSourceTransactionManager(processDataSource);
     }
     
-    @Bean
-    public ActivitiDAO platformProcessDAO(JdbcTemplate jdbcTemplate) {
-    	return new ActivitiDAO(jdbcTemplate);
-    }
-    
-    @Bean
-   	public DefaultActivityBehaviorFactory platformActivityBehaviorFactory() {
-   		return new ActivitiBehaviorFactory();
-   	}
-    
+   
     @Bean
     public TaskExecutor taskExecutor() {
         return new SimpleAsyncTaskExecutor();
     }
-    
-    @Bean
-    public UserTaskExtension pageTaskExtension() {
-        return new PageTaskExtension();
-    }
-    
-    @Bean
-    public UserTaskExtension assignmentTaskExtension() {
-        return new AssignmentTaskExtension();
-    }    
-    
-   
     
     @Bean
 	public DataSource processDataSource() {

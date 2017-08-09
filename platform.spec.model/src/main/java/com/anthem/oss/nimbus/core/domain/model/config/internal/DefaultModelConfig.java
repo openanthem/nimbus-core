@@ -6,12 +6,14 @@ package com.anthem.oss.nimbus.core.domain.model.config.internal;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
+import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
@@ -32,9 +34,12 @@ public class DefaultModelConfig<T> extends AbstractEntityConfig<T> implements Mo
 
 	private static final long serialVersionUID = 1L;
 
-	final private Class<T> referredClass;
+	private final Class<T> referredClass;
+	@Setter private String alias;
 	
 	@JsonIgnore @Setter private Domain domain;
+	@JsonIgnore @Setter private Model model;
+	
 	
 	@JsonIgnore @Setter private Repo repo;
 	
@@ -53,6 +58,10 @@ public class DefaultModelConfig<T> extends AbstractEntityConfig<T> implements Mo
 		return templateParams;
 	}
 
+	@Override
+	public String getDomainLifecycle() {
+		return Optional.ofNullable(getDomain()).map(Domain::lifecycle).orElse(null);
+	}
 	
 	@Override
 	public <K> ParamConfig<K> findParamByPath(String path) {

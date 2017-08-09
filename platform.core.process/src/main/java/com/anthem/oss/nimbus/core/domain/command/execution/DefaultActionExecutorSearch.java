@@ -1,78 +1,43 @@
-/**
- * 
- */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
-import org.apache.commons.lang.StringUtils;
-import org.springframework.core.annotation.AnnotationUtils;
 
-import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
-import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
-import com.anthem.oss.nimbus.core.domain.definition.Domain;
-import com.anthem.oss.nimbus.core.domain.definition.Repo;
-import com.anthem.oss.nimbus.core.domain.model.config.ActionExecuteConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository.Projection;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFactory;
+import java.util.Collection;
+
+import org.apache.commons.lang.StringUtils;
+
+import com.anthem.oss.nimbus.core.BeanResolverStrategy;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Input;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+
 
 /**
- * @author Soham Chakravarti
+ * @author Rakesh Patel
  *
  */
-public class DefaultActionExecutorSearch extends AbstractProcessTaskExecutor {
+public class DefaultActionExecutorSearch<T, R> extends AbstractFunctionCommandExecutor<T, R> {
+	
+	public DefaultActionExecutorSearch(BeanResolverStrategy beanResolver) {
+		super(beanResolver);
+	}
 
-	ModelRepositoryFactory repFactory;
-	
-	DomainConfigBuilder domainConfigApi;
-	
-	CommandMessageConverter converter;
-	
-	public DefaultActionExecutorSearch(ModelRepositoryFactory repFactory, DomainConfigBuilder domainConfigApi,
-			CommandMessageConverter converter) {
-		super();
-		this.repFactory = repFactory;
-		this.domainConfigApi = domainConfigApi;
-		this.converter = converter;
-	}
-	
 	@Override
-	protected <R> R doExecuteInternal(CommandMessage cmdMsg) {
-		Command cmd = cmdMsg.getCommand();
+	@SuppressWarnings("unchecked")
+	protected Output<R> executeInternal(Input input) {
+		R response = (R)executeFunctionHanlder(input, FunctionHandler.class);
 		
-		//String alias = cmd.getRootDomainAlias();
-		
-		ActionExecuteConfig<?, ?> aec = domainConfigApi.getActionExecuteConfig(cmd);
-		Class<?> criteriaClass = aec.getInput().getModel().getReferredClass();
-		//TODO - add condition that Rakesh creates to get the query parameter from command
-		Object criteria = null;
-		if(cmd.getRequestParams()!=null && cmd.getRequestParams().get("criteria")!=null) {
-			criteria = cmd.getRequestParams().get("criteria")[0];
-		} else {
-			criteria = converter.convert(criteriaClass, cmdMsg);
+		String projectPath = input.getContext().getCommandMessage().getCommand().getFirstParameterValue("project");
+		// TODO optimize for more than one connection output
+		if(StringUtils.isNotBlank(projectPath)){
+			Param<R> pRoot = findParamByCommandOrThrowEx(input.getContext());
+			if(response instanceof Collection<?>) {
+				response = (R) ((Collection<?>) response).iterator().next();
+			}
+			pRoot.setState(response);
+			response = (R)pRoot.findParamByPath(projectPath).getState();
 		}
 		
-		Class<?> resultClass = aec.getOutput().getModel().getReferredClass();
-		
-		ModelRepository rep = repFactory.get(cmdMsg.getCommand());
-		
-		String alias = AnnotationUtils.findAnnotation(resultClass, Repo.class).alias(); // TODO Move this at the repo level, so below method should only pass refId and coreClass
-		
-		if(StringUtils.isBlank(alias)) {
-			alias = AnnotationUtils.findAnnotation(resultClass, Domain.class).value();
-		}
-		R r;
-		if(cmd.getRequestParams()!=null && cmd.getRequestParams().get("projection")!=null) {
-			r = (R)rep._search(resultClass, alias, criteria,Projection.COUNT);
-		} else {
-			r = (R)rep._search(resultClass, alias, criteria);
-		}
-		return r;
-	}
-	
-	@Override
-	protected void publishEvent(CommandMessage cmdMsg, ProcessExecutorEvents e) {
-		
+		return Output.instantiate(input, input.getContext(), response);
 	}
 
 }

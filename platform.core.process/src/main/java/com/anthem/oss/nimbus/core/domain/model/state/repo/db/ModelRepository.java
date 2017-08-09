@@ -5,8 +5,16 @@ package com.anthem.oss.nimbus.core.domain.model.state.repo.db;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.stream.Stream;
 
+import org.apache.commons.lang.StringUtils;
+
+import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
+import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.anthem.oss.nimbus.core.entity.SearchCriteria.ExampleSearchCriteria;
+import com.anthem.oss.nimbus.core.entity.SearchCriteria.LookupSearchCriteria;
+import com.anthem.oss.nimbus.core.entity.SearchCriteria.QuerySearchCriteria;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +26,8 @@ import lombok.RequiredArgsConstructor;
 public interface ModelRepository {
 
 	@Getter @RequiredArgsConstructor
-	public enum Projection {
-		COUNT("count", Long.class);
+	public enum Aggregation {
+		COUNT("count", Holder.class);
 		
 		public final String alias;
 		public final Class<?> type;
@@ -28,16 +36,22 @@ public interface ModelRepository {
 		public <T> Class<T> getType() {
 			return (Class<T>)type;
 		}
+		
+		public static Aggregation getByAlias(String alias) {
+			return Stream.of(Aggregation.values())
+				.filter((aggregation) -> StringUtils.equals(aggregation.getAlias(), alias))
+				.findFirst()
+				.orElse(null);
+		}
 	}
 	
-	//==public <T, R> R doExecute(CommandMessage cmdMsg, T input);
+	/*SOHAM: f.w upgrade v0.3: START */
 	
-	//==public <T> void doExecute(ModelEvent<ParamStateAndConfig<T>> event);
+	public <T> T _new(ModelConfig<T> mConfig);
+	public <T> T _new(ModelConfig<T> mConfig, T newState);
 	
-	//Action._new
-	//==public <T> T _new(CommandMessage cmdMsg, T input);
-	public <T> T _new(Class<T> referredClass, String alias);
-	public <T> T _new(Class<T> referredClass, String alias, T input);
+	/*SOHAM: f.w upgrade v0.3: END */
+	
 	
 	
 	//Action._get
@@ -57,14 +71,20 @@ public interface ModelRepository {
 	public <ID extends Serializable, T> T _delete(ID id, Class<T> referredClass, String alias);
 		
 	//Action._search
-	public <T, C> List<T> _search(Class<T> referredDomainClass, String alias, C criteria);
+	//public <T, C> List<T> _search(Class<T> referredDomainClass, String alias, C criteria);
 	
-	default <T, C> T _search(Class<?> referredDomainClass, String alias, C criteria, Projection projection) {
-		return _search(referredDomainClass, alias, criteria, projection.getType());
-	}
+	public <T> Object _search(Class<T> referredDomainClass, String alias, LookupSearchCriteria criteria);
 	
-	@SuppressWarnings("unchecked")
-	default <T, C> T _search(Class<?> referredDomainClass, String alias, C criteria, Class<T> projection) {
-		return (T)_search(referredDomainClass, alias, criteria);
-	}
+	public <T> Object _search(Class<T> referredDomainClass, String alias, QuerySearchCriteria criteria);
+	
+	public <T> Object _search(Class<T> referredDomainClass, String alias, ExampleSearchCriteria<T> criteria);
+	
+//	default <T, C> T _search(Class<?> referredDomainClass, String alias, C criteria, Projection projection) {
+//		return _search(referredDomainClass, alias, criteria, projection.getType());
+//	}
+	
+//	@SuppressWarnings("unchecked")
+//	default <T, C> T _search(Class<?> referredDomainClass, String alias, C criteria, Class<T> projection) {
+//		return (T)_search(referredDomainClass, alias, criteria);
+//	}
 }

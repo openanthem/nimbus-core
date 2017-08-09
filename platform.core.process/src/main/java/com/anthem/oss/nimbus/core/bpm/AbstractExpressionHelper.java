@@ -3,13 +3,10 @@
  */
 package com.anthem.oss.nimbus.core.bpm;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-
-import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
+import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
-import com.anthem.oss.nimbus.core.domain.command.execution.ProcessGateway;
-import com.anthem.oss.nimbus.core.domain.command.execution.ProcessResponse;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutorGateway;
 
 /**
  * @author Jayant.Chaudhuri
@@ -17,30 +14,16 @@ import com.anthem.oss.nimbus.core.domain.command.execution.ProcessResponse;
  */
 abstract public class AbstractExpressionHelper {
 	
-	@Autowired 
-	@Qualifier("default.processGateway")
-	private ProcessGateway processGateway;
+	private final CommandExecutorGateway executorGateway;
 	
-	/**
-	 * 
-	 * @return
-	 */
-	final public Object executeProcess(CommandMessage cmdMsg){
-		ProcessResponse response = processGateway.executeProcess(cmdMsg);
-		return response.getResponse();
+	public AbstractExpressionHelper(BeanResolverStrategy beanResolver) {
+		this.executorGateway = beanResolver.get(CommandExecutorGateway.class);
 	}
 	
-	/**
-	 * 
-	 * @param cmdMsg
-	 * @param uri
-	 * @return
-	 */
-	final public String getResolvedUri(CommandMessage cmdMsg, String uri){
-		String platformUri = cmdMsg.getCommand().buildAlias(cmdMsg.getCommand().root(), Type.PlatformMarker);
-		StringBuilder resolvedUri = new StringBuilder(platformUri);
-		resolvedUri.append(uri);
-		return resolvedUri.toString();
-	}
 
+	final public Object executeProcess(CommandMessage cmdMsg){
+		MultiOutput response = executorGateway.execute(cmdMsg);
+		return response.getValue();
+	}
+	
 }

@@ -40,7 +40,10 @@ public class Notification<T> {
 	
 	public interface Producer<T> extends Dispatcher<T> {
 		public List<MappedParam<?, T>> getEventSubscribers();
+		
 		public void registerSubscriber(MappedParam<?, T> subscriber);
+		
+		public boolean deregisterSubscriber(MappedParam<?, T> subscriber);
 	}
 	
 	public interface Dispatcher<T> {

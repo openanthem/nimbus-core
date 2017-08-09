@@ -3,73 +3,93 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.stereotype.Component;
 
-import com.anthem.oss.nimbus.core.domain.command.Command;
+import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
-import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
-import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
-import com.anthem.oss.nimbus.core.domain.definition.Domain;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Input;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
-import com.anthem.oss.nimbus.core.domain.model.config.ActionExecuteConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFactory;
-import com.anthem.oss.nimbus.core.session.UserEndpointSession;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
 
 /**
  * @author Soham Chakravarti
  *
  */
-public class DefaultActionExecutorGet extends AbstractProcessTaskExecutor {
+public class DefaultActionExecutorGet extends AbstractCommandExecutor<Param<?>> {
 	
-	ModelRepositoryFactory repoFactory;
+	public DefaultActionExecutorGet(BeanResolverStrategy beanResolver) {
+		super(beanResolver);
+	}
+
+	@Override
+	protected final Output<Param<?>> executeInternal(Input input) {
+		ExecutionContext eCtx = handleGetDomainRoot(input.getContext());
 	
-	DomainConfigBuilder domainConfigApi;
-	
-	public DefaultActionExecutorGet(ModelRepositoryFactory repoFactory, DomainConfigBuilder domainConfigApi) {
-		this.repoFactory = repoFactory;
-		this.domainConfigApi = domainConfigApi;
+		Param<?> p = findParamByCommandOrThrowEx(eCtx);
+		
+		return Output.instantiate(input, eCtx, p);
 	}
 	
-	@SuppressWarnings("unchecked")
-	@Override
-	public <R> R doExecuteInternal(CommandMessage cmdMsg) {
-		Command cmd = cmdMsg.getCommand();
+	protected ExecutionContext handleGetDomainRoot(ExecutionContext eCtx) {
+		if(eCtx.getQuadModel()!=null)
+			return eCtx;
+
+		ModelConfig<?> rootDomainConfig = getRootDomainConfig(eCtx);
+		QuadModel<?, ?> q =  createNewQuad(rootDomainConfig, eCtx);
 		
-		// Check if the quad model exists in session
-		QuadModel<?, ?> quadModel = UserEndpointSession.getAttribute(cmd);
-		if(quadModel != null){
-			Model<?> sac = cmd.isView() ? quadModel.getView() : quadModel.getCore();
-			String path = cmd.buildUri(cmd.root().findFirstMatch(Type.DomainAlias).next());
-			Param<Object> param = sac.findParamByPath(path);
-			R state = (R)param.getState();
-			return state;
-		}
-		String refId = cmd.getRefId(Type.DomainAlias);
-		ModelRepository rep = repoFactory.get(cmd); 
-		ActionExecuteConfig<?, ?> aec = domainConfigApi.getActionExecuteConfig(cmd);
-		ModelConfig<?> mConfig = aec.getOutput().getModel();
-		Class<?> coreClass = mConfig.isMapped() ? mConfig.findIfMapped().getMapsTo().getReferredClass() : mConfig.getReferredClass();
+		// set to context
+		eCtx.setQuadModel(q);
 		
-		String alias = AnnotationUtils.findAnnotation(coreClass, Repo.class).alias(); // TODO Move this at the repo level, so below method should only pass refId and coreClass
-		
-		if(StringUtils.isBlank(alias)) {
-			alias = AnnotationUtils.findAnnotation(coreClass, Domain.class).value();
-		}
-		return (R)rep._get(refId, coreClass, alias);
-		
+		return eCtx;
 	}
 	
-	@Override
-	protected void publishEvent(CommandMessage cmdMsg, ProcessExecutorEvents e) {}
+	private QuadModel<?, ?> createNewQuad(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx) {
+		String refId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
+		
+		final Object entity;
+		final Object mapsToEntity;
+//		boolean repoDbFound = false;
+		
+		if(Repo.Database.exists(rootDomainConfig.getRepo())) { // root (view or core) is persistent
+			entity = getRepositoryFactory().get(rootDomainConfig.getRepo())
+						._get(refId, rootDomainConfig.getReferredClass(), rootDomainConfig.getAlias());
+//			repoDbFound = true;
+			
+		} else {
+			entity = instantiateEntity(eCtx, rootDomainConfig);
+		}
+		
+		if(rootDomainConfig.isMapped()) {
+			ModelConfig<?> mapsToConfig = rootDomainConfig.findIfMapped().getMapsTo();
+			Repo mapsToRepo = mapsToConfig.getRepo();
+			
+			if(Repo.Database.exists(mapsToRepo)) {
+				String alias = StringUtils.isBlank(mapsToRepo.alias()) ? mapsToConfig.getAlias() : mapsToRepo.alias();
+				mapsToEntity = getRepositoryFactory().get(mapsToRepo)._get(refId, mapsToConfig.getReferredClass(), alias);
+//				repoDbFound = true;
+				
+			} else {
+				mapsToEntity = instantiateEntity(eCtx, mapsToConfig);
+			}
+		} else {
+			mapsToEntity = null;
+		}
+		
+//		// ensure that only scenarios configured with persistence is handled here, other flows such as cache-only, should have been handled prior
+//		if(!repoDbFound)
+//			throw new UnsupportedScenarioException("Non persistence based flows should have been accounted prior to this api call,"
+//					+ " Found for root-domain: "+rootDomainConfig+" with execution context: "+eCtx);
+//		
+
+		// create quad-model
+		ExecutionEntity<?, ?> e = ExecutionEntity.resolveAndInstantiate(entity, mapsToEntity);
+		
+		return getQuadModelBuilder().build(eCtx.getCommandMessage().getCommand(), e);
+		
+	}
 
 }

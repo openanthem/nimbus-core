@@ -28,6 +28,7 @@ import com.anthem.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
 import com.anthem.oss.nimbus.core.domain.command.execution.ValidationError;
 import com.anthem.oss.nimbus.core.domain.command.execution.ValidationException;
 import com.anthem.oss.nimbus.core.domain.command.execution.ValidationResult;
+import com.anthem.oss.nimbus.core.util.JustLogit;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,7 +40,9 @@ import lombok.extern.slf4j.Slf4j;
 @ControllerAdvice(assignableTypes=WebActionController.class)
 @Slf4j
 public class WebActionControllerAdvice implements ResponseBodyAdvice<Object> {
-
+	
+	private JustLogit logit = new JustLogit(this.getClass());
+	
 	@Autowired CommandTransactionInterceptor interceptor;
 	
 	@Override
@@ -51,10 +54,8 @@ public class WebActionControllerAdvice implements ResponseBodyAdvice<Object> {
 	public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, 
 			Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
 		
-		if(log.isDebugEnabled()) {
-			log.debug("Processed response from "+WebActionController.class+": "
+		logit.debug(()->"Processed response from "+WebActionController.class+": "
 					+ "\n"+ body);
-		}
 		
 		MultiExecuteOutput multiOutput = interceptor.handleResponse(body);
 		return multiOutput;
@@ -64,7 +65,7 @@ public class WebActionControllerAdvice implements ResponseBodyAdvice<Object> {
 	@ExceptionHandler(FrameworkRuntimeException.class)
 	@ResponseBody
 	public MultiExecuteOutput exception(FrameworkRuntimeException pEx){
-		log.error("Logging backing execute exception...", pEx);
+		log.error("Logging backing execute exception...",pEx);
 		
 		ExecuteOutput<?> resp = new ExecuteOutput<>();
 		resp.setExecuteException(pEx.getExecuteError());
@@ -75,7 +76,7 @@ public class WebActionControllerAdvice implements ResponseBodyAdvice<Object> {
 	@ExceptionHandler(ValidationException.class)
 	@ResponseBody
 	public MultiExecuteOutput exception(ValidationException vEx){	
-		log.error("Logging backing validation exception...", vEx);
+		log.error("Logging backing validation exception...",vEx);
 		
 		ExecuteOutput<?> resp = new ExecuteOutput<>();
 		resp.setValidationResult(vEx.getValidationResult());
@@ -86,7 +87,7 @@ public class WebActionControllerAdvice implements ResponseBodyAdvice<Object> {
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	@ResponseBody
 	public MultiExecuteOutput exception(MethodArgumentNotValidException vEx){	
-		log.error("Logging backing validation exception...", vEx);
+		log.error("Logging backing validation exception...",vEx);
 		
 		List<ValidationError> errors = new ArrayList<ValidationError>();
 		if(vEx.getBindingResult()!=null && vEx.getBindingResult().getAllErrors()!=null){

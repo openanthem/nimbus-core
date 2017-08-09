@@ -1,48 +1,38 @@
 package com.anthem.oss.nimbus.core.config;
 
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 import com.anthem.nimbus.platform.core.process.api.repository.SessionCacheRepository;
 import com.anthem.nimbus.platform.core.process.api.support.ProcessBeanHelper;
 import com.anthem.nimbus.platform.core.process.mq.MessageReceiver;
-import com.anthem.oss.nimbus.core.bpm.activiti.ModelInstantiationServiceTaskDelegate;
-import com.anthem.oss.nimbus.core.domain.command.execution.ProcessGateway;
-import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
+import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.ValidationConfigHandler;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.DefaultParamStateRepositoryDetached;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.DefaultParamStateRepositoryLocal;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.IdSequenceRepository;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.MongoIdSequenceRepository;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.ParamStateRepository;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.ParamStateRepositoryGateway;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement.ClientEntityRepoService;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement.ClientEntityRepository;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement.ClientRepository;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement.ClientUserGroupRepoService;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement.ClientUserGroupRepository;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement.ClientUserRepoService;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement.ClientUserRepository;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement.ClientUserRoleRepository;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement.PlatformUserRepository;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.SpringSecurityAuditorAware;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ClientUserGrooupSearchResponseConverter;
+//import com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement.PlatformUserRepository;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.DefaultModelRepositoryFactory;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.DefaultMongoModelPersistenceHandler;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.DefaultMongoModelRepository;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelPersistenceHandler;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFactory;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ParamStateAtomicPersistenceEventListener;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ParamStateBatchPersistenceEventListener;
-import com.anthem.oss.nimbus.core.integration.sa.DefaultExecutionHandler;
-import com.anthem.oss.nimbus.core.integration.sa.DefaultRuleBasedRequestHandler;
-import com.anthem.oss.nimbus.core.integration.sa.DefaultRuleBasedResponseHandler;
-import com.anthem.oss.nimbus.core.integration.sa.ProcessExecutionCtxHelper;
-import com.anthem.oss.nimbus.core.integration.sa.ServiceExecutionDelegate;
-import com.anthem.oss.nimbus.core.integration.sa.ServiceExecutionHelper;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.db.mongo.DefaultMongoModelPersistenceHandler;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.db.mongo.DefaultMongoModelRepository;
 import com.anthem.oss.nimbus.core.rules.DefaultRulesEngineFactoryProducer;
 import com.anthem.oss.nimbus.core.rules.drools.DroolsRulesEngineFactory;
 import com.anthem.oss.nimbus.core.session.UserEndpointSession;
@@ -57,9 +47,8 @@ import com.anthem.oss.nimbus.core.web.WebCommandDispatcher;
  * @author Sandeep Mantha
  *
  */
-
 @Configuration
-@EnableMongoRepositories(basePackages="com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement"	)
+@EnableMongoAuditing
 @ComponentScan(basePackageClasses = WebActionController.class)
 public class DefaultCoreConfiguration {
 	
@@ -91,77 +80,44 @@ public class DefaultCoreConfiguration {
 		return new ValidationConfigHandler();
 	}
 	
-//	//repo db
-	@Bean(name="default.modelRepositoryFactory")
-	public DefaultModelRepositoryFactory defaultModelRepositoryFactory(DomainConfigBuilder domainConfigApi){
-		return new DefaultModelRepositoryFactory(domainConfigApi);
+	@Bean
+	public DefaultModelRepositoryFactory defaultModelRepositoryFactory(BeanResolverStrategy beanResolver){
+		return new DefaultModelRepositoryFactory(beanResolver);
 	}
 	
-	@Bean(name="rep_mongodb_handler")
-	public DefaultMongoModelPersistenceHandler defaultMongoModelPersistenceHandler(@Qualifier("rep_mongodb") ModelRepository rep){
+	@Bean(name="default.rep_mongodb_handler")
+	public DefaultMongoModelPersistenceHandler defaultMongoModelPersistenceHandler(@Qualifier("default.rep_mongodb") ModelRepository rep){
 		return new DefaultMongoModelPersistenceHandler(rep);
 	}
 	
-	@Bean(name="rep_mongodb")
-	public DefaultMongoModelRepository defaultMongoModelRepository(MongoOperations mongoOps, IdSequenceRepository idSequenceRepo){
-		return new DefaultMongoModelRepository(mongoOps,idSequenceRepo);
+	@Bean(name="default.rep_mongodb")
+	public DefaultMongoModelRepository defaultMongoModelRepository(MongoOperations mongoOps, IdSequenceRepository idSequenceRepo, BeanResolverStrategy beanResolver){
+		return new DefaultMongoModelRepository(mongoOps, idSequenceRepo, beanResolver);
 	}
 	
 	@Bean(name="default.paramStateAtomicPersistenceEventListener")
-	public ParamStateAtomicPersistenceEventListener paramStateAtomicPersistenceEventListener(ModelRepositoryFactory repoFactory,@Qualifier("rep_mongodb_handler") ModelPersistenceHandler handler){
+	public ParamStateAtomicPersistenceEventListener paramStateAtomicPersistenceEventListener(ModelRepositoryFactory repoFactory,@Qualifier("default.rep_mongodb_handler") ModelPersistenceHandler handler){
 		return new ParamStateAtomicPersistenceEventListener(repoFactory, handler);
 	}
 	
-	@Bean(name="default.paramStateBatchPersistenceEventListener")
-	public ParamStateBatchPersistenceEventListener paramStateBatchPersistenceEventListener(ModelRepositoryFactory repoFactory){
-		return new ParamStateBatchPersistenceEventListener(repoFactory);
-	}
+//	@Bean(name="default.paramStateBatchPersistenceEventListener")
+//	public ParamStateBulkPersistenceEventListener paramStateBatchPersistenceEventListener(ModelRepositoryFactory repoFactory){
+//		return new ParamStateBulkPersistenceEventListener(repoFactory);
+//	}
 	
 	@Bean(name="default.param.state.rep_local")
 	public DefaultParamStateRepositoryLocal defaultParamStateRepositoryLocal(JavaBeanHandler javaBeanHandler){
 		return new DefaultParamStateRepositoryLocal(javaBeanHandler);
 	}
 	
+	@Bean(name="default.param.state.rep_detached")
+	public DefaultParamStateRepositoryDetached defaultParamStateRepositoryDetached(BeanResolverStrategy beanResolver){
+		return new DefaultParamStateRepositoryDetached(beanResolver);
+	}
+	
 	@Bean(name="default.param.state.repository")
-	public ParamStateRepositoryGateway paramStateRepositoryGateway(JavaBeanHandler javaBeanHandler, @Qualifier("default.param.state.rep_local") ParamStateRepository local){
-		return new ParamStateRepositoryGateway(javaBeanHandler,local);
-	}
-	
-	//integration sa
-	@Bean(name="default.executionhandler")
-	public DefaultExecutionHandler defaultExecutionHandler(){
-		return new DefaultExecutionHandler();
-	}
-	
-	@Bean(name="default.rulebasedRequesthandler")
-	public DefaultRuleBasedRequestHandler defaultRuleBasedRequestHandler(){
-		return new DefaultRuleBasedRequestHandler();
-	}
-	
-	@Bean(name="default.rulebasedResponsehandler")
-	public DefaultRuleBasedResponseHandler defaultRuleBasedResponseHandler(){
-		return new DefaultRuleBasedResponseHandler();
-	}
-	
-	@Bean(name="processExecutionCtx")
-	public ProcessExecutionCtxHelper processExecutionCtxHelper(){
-		return new ProcessExecutionCtxHelper();
-	}
-	
-	@Bean(name="default.serviceExecutionDelegate")
-	@Scope("prototype")
-	public ServiceExecutionDelegate serviceExecutionDelegate(ServiceExecutionHelper helper){
-		return new ServiceExecutionDelegate();
-	}
-	
-	@Bean
-	ModelInstantiationServiceTaskDelegate modelInstantiationServiceTaskDelegate(@Qualifier("default.processGateway") ProcessGateway processGateway){
-		return new ModelInstantiationServiceTaskDelegate(processGateway);
-	}
-	
-	@Bean(name="executionHelper")
-	public ServiceExecutionHelper serviceExecutionHelper(){
-		return new ServiceExecutionHelper();
+	public ParamStateRepositoryGateway paramStateRepositoryGateway(JavaBeanHandler javaBeanHandler, @Qualifier("default.param.state.rep_local") ParamStateRepository local, BeanResolverStrategy beanResolver){
+		return new ParamStateRepositoryGateway(javaBeanHandler,local, beanResolver);
 	}
 	
 	//web socket
@@ -195,8 +151,8 @@ public class DefaultCoreConfiguration {
 	}
 	
 	@Bean
-	public WebCommandDispatcher webCommandDispatcher(WebCommandBuilder builder, @Qualifier("default.processGateway") ProcessGateway processGateway){
-		return new WebCommandDispatcher(builder,processGateway);
+	public WebCommandDispatcher webCommandDispatcher(BeanResolverStrategy beanResolver){
+		return new WebCommandDispatcher(beanResolver);
 	}
 	
 	@Bean
@@ -204,20 +160,20 @@ public class DefaultCoreConfiguration {
 		return new MongoIdSequenceRepository(mongoOperations);
 	}
 
-	@Bean(name="clientEntityRepo")
-	public ClientEntityRepoService clientEntityRepoService(ClientRepository cRepo, ClientEntityRepository ceRepo, ClientUserRoleRepository crRepo) {
-		return new ClientEntityRepoService(cRepo, ceRepo, crRepo);
-	}
+//	@Bean(name="clientEntityRepo")
+//	public ClientEntityRepoService clientEntityRepoService(ClientRepository cRepo, ClientEntityRepository ceRepo, ClientUserRoleRepository crRepo) {
+//		return new ClientEntityRepoService(cRepo, ceRepo, crRepo);
+//	}
 	
-	@Bean(name="clientuserrepo")
-	public ClientUserRepoService clientUserRepoService(ClientUserRepository cuRepo, ClientRepository cRepo, PlatformUserRepository puRepo) {
-		return new ClientUserRepoService(cuRepo, cRepo, puRepo);
-	}
+//	@Bean(name="clientuserrepo")
+//	public ClientUserRepoService clientUserRepoService(ClientUserRepository cuRepo, ClientRepository cRepo, PlatformUserRepository puRepo) {
+//		return new ClientUserRepoService(cuRepo, cRepo, puRepo);
+//	}
 	
-	@Bean(name="clientUserGroupRepo")
-	public ClientUserGroupRepoService clientUserGroupRepoService(ClientEntityRepository ceRepo, ClientUserGroupRepository cugRepo) {
-		return new ClientUserGroupRepoService(ceRepo, cugRepo);
-	}
+//	@Bean(name="clientUserGroupRepo")
+//	public ClientUserGroupRepoService clientUserGroupRepoService(ClientEntityRepository ceRepo, ClientUserGroupRepository cugRepo) {
+//		return new ClientUserGroupRepoService(ceRepo, cugRepo);
+//	}
 	
 	@Bean
 	@Scope(scopeName="session")
@@ -229,4 +185,15 @@ public class DefaultCoreConfiguration {
 //	BeforeSaveListener beforeSaveListener(@Qualifier("default.processGateway") ProcessGateway processGateway) {
 //		return new BeforeSaveListener();
 //	}
+	
+	@Bean(name="clientUserGrooupSearchResponseConverter")
+	Converter clientUserGroupConverter() {
+		return new ClientUserGrooupSearchResponseConverter();
+	}
+	
+	@Bean
+	public AuditorAware<String> auditorProvider() {
+		return new SpringSecurityAuditorAware();
+	}
+	
 }

@@ -8,3 +8,5 @@
 .factorypath
 .idea/
 *.iml
+.project
+.classpath

@@ -17,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
+import com.anthem.oss.nimbus.core.domain.model.state.InvalidStateException;
 import com.anthem.oss.nimbus.core.util.CollectionsTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -29,7 +30,7 @@ import lombok.ToString;
  * @author Soham Chakravarti
  *
  */
-@Data @ToString(of={"absoluteUri", "event", "behaviors", "currentBehaviorIndex", "clientUserId"}) 
+@Data @ToString(of={"absoluteUri", "event", "behaviors", "clientUserId"}) 
 public class Command implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -45,8 +46,6 @@ public class Command implements Serializable {
 	
 	private String event;
 	
-	private int currentBehaviorIndex = -1; // -1 to size()
-	
 	private List<Behavior> behaviors;
 	
 	private Map<String, String[]> requestParams;
@@ -60,6 +59,19 @@ public class Command implements Serializable {
 	
 	public CollectionsTemplate<List<Behavior>, Behavior> templateBehaviors() {
 		return templateBehaviors;
+	}
+
+	public void validate() throws InvalidStateException {
+		Optional.ofNullable(getAction())
+			.orElseThrow(()->new InvalidStateException("Command with uri: "+getAbsoluteUri()+" cannot have null Action"));
+		
+		if(CollectionUtils.isEmpty(getBehaviors()))
+			throw new InvalidStateException("Command with uri: "+getAbsoluteUri()+" cannot have null Behavior");
+		
+		getElement(Type.ClientAlias).orElseThrow(()->new InvalidStateException("Command with uri: "+getAbsoluteUri()+" cannot have null "+Type.ClientAlias));
+		getElement(Type.AppAlias).orElseThrow(()->new InvalidStateException("Command with uri: "+getAbsoluteUri()+" cannot have null "+Type.AppAlias));
+		getElement(Type.PlatformMarker).orElseThrow(()->new InvalidStateException("Command with uri: "+getAbsoluteUri()+" cannot have null "+Type.PlatformMarker));
+		getElement(Type.DomainAlias).orElseThrow(()->new InvalidStateException("Command with uri: "+getAbsoluteUri()+" cannot have null "+Type.DomainAlias));
 	}
 	
 	public boolean isRootDomainOnly() {
@@ -119,22 +131,6 @@ public class Command implements Serializable {
 		return cloned;
 	}
 	
-	public Behavior getCurrentBehavior() {
-		if(currentBehaviorIndex == -1 && CollectionUtils.isNotEmpty(getBehaviors()))
-			return incrementAndGetCurrentBehavior();
-		
-		
-		return (currentBehaviorIndex > -1 && currentBehaviorIndex < getBehaviors().size())
-				? getBehaviors().get(currentBehaviorIndex) : null;
-	}
-	
-	public Behavior incrementAndGetCurrentBehavior() {
-		if(currentBehaviorIndex < getBehaviors().size()) 
-			currentBehaviorIndex++;
-		
-		return getCurrentBehavior();
-	}
-	
 
 	public String getAliasUri(Type type) {
 		return getElement(type).map(e -> e.getAliasUri()).orElse(null);
@@ -156,6 +152,26 @@ public class Command implements Serializable {
 		return Optional.ofNullable(root().findFirstMatch(type));
 	}
 
+	
+	public String getRelativeUri(String input) {
+		// input doesn't have /p/ : prefix client/org/app/p/{domain-root} from incoming command 
+		int iFirstQ = StringUtils.indexOf(input, "?");
+		final String searchSeq = (iFirstQ != StringUtils.INDEX_NOT_FOUND) ? StringUtils.substring(input, 0, iFirstQ) : input;
+		
+		if(!StringUtils.contains(searchSeq, Constants.SEGMENT_PLATFORM_MARKER.code)) {
+			String prefix = buildUri(Type.PlatformMarker) + getRootDomainUri();
+			return prefix + input;
+		}
+		
+		// input starts with /p/ : prefix client/org/app from incoming command
+		if(StringUtils.startsWith(input, Constants.SEGMENT_PLATFORM_MARKER.code)) {
+			String prefix = buildUri(Type.AppAlias);
+			return prefix + input;
+		}
+		
+		// input is complete: use as is
+		return input;
+	}
 
 	
 /* TODO Refactor -- START -- */ 
@@ -302,18 +318,21 @@ public class Command implements Serializable {
 		return sb.toString();
 	}
 	
-	public String toUniqueId() {
-		String uri = toUri();
-		StringBuilder sb = new StringBuilder(uri);
-		
-		/* user id */
-		if(StringUtils.trimToNull(getClientUserId()) != null) {
-			sb.append(Constants.SEPARATOR_UNIQUE_KEYGEN.code).append(getClientUserId());
+	
+	public String[] getParameterValue(String requestParameter){
+		if(requestParams != null && requestParams.containsKey(requestParameter)){
+			return requestParams.get(requestParameter);
 		}
-		
-		/* created instant */
-		sb.append(Constants.SEPARATOR_UNIQUE_KEYGEN.code).append(getCreatedInstant());
-		
-		return sb.toString();
+		return null;
+	}
+	
+	public String getFirstParameterValue(String requestParameter){
+		if(requestParams != null && requestParams.containsKey(requestParameter)){
+			String[] value = requestParams.get(requestParameter);
+			if(value != null && value.length > 0){
+				return value[0];
+			}
+		}
+		return null;
 	}
 }
