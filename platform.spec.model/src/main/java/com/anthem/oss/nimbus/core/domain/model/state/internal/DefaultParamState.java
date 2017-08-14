@@ -327,8 +327,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
         	else if(event.getActionType()==ActionType._newModel) 
         		onEventNewModel(event);
         	
-        	else if(event.getActionType()==ActionType._deleteModel)
-        		onEventDeleteModel(event);
+        	else if(event.getActionType()==ActionType._resetModel)
+        		onEventResetModel(event);
         	
         	else if(event.getActionType()==ActionType._newElem) 
         		onEventNewElem(event);
@@ -354,7 +354,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	    		consumingParam.findIfNested().instantiateOrGet();
 	    	}
 	    }
-	    protected void onEventDeleteModel(Notification<M> event) {}
+	    protected void onEventResetModel(Notification<M> event) {}
 	    protected void onEventNewElem(Notification<M> event) {}
 	    protected void onEventDeleteElem(Notification<M> event) {}
 	}

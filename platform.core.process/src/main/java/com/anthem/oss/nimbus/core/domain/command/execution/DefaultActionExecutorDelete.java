@@ -76,7 +76,7 @@ public class DefaultActionExecutorDelete extends AbstractCommandExecutor<Boolean
 	}
 	
 	protected void handleCollectionElem(ExecutionContext eCtx, ListElemParam<Object> p) {
-		p.delete();
+		p.remove();
 	}
 	
 	protected void handleParam(ExecutionContext eCtx, Param<Object> p) {
