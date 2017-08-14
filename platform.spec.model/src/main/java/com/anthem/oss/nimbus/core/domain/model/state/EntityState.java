@@ -379,7 +379,7 @@ public interface EntityState<T> {
 			return this;
 		}
 		
-		public boolean delete();
+		public boolean remove();
 	}	
 	public interface MappedListElemParam<E, M> extends ListElemParam<E>, MappedParam<E, M> {
 //		@Override

@@ -762,20 +762,20 @@ public class QuadModelCollectionsTest {
 		ServiceLine sl_n = new ServiceLine();
 		sl_n.setService("It's elementary Watson!");
 		
-		ListParam<ServiceLine> detachedServiceLines = q.getView().findParamByPath("/pg3/noConversionDetachedColServiceLines.m").findIfCollection();
-		assertNotNull(detachedServiceLines);
+		ListParam<ServiceLine> cpDetachedServiceLines = q.getView().findParamByPath("/pg3/noConversionDetachedColServiceLines.m").findIfCollection();
+		assertNotNull(cpDetachedServiceLines);
 		
 		// add
-		detachedServiceLines.add(sl_n);
+		cpDetachedServiceLines.add(sl_n);
 		//q.getView().findParamByPath("/pg3/noConversionDetachedColServiceLines.m").findIfCollection().add(sl_n);
 		
 		ListParam<ServiceLine> vpServiceLines = q.getView().findParamByPath("/pg3/noConversionDetachedColServiceLines").findIfCollection();
 		assertNotNull(vpServiceLines);
 		assertNotNull(vpServiceLines.getState());
 		
-		assertNotNull(detachedServiceLines.getState());
+		assertNotNull(cpDetachedServiceLines.getState());
 		
-		assertSame(detachedServiceLines.size(), vpServiceLines.size());
+		assertSame(cpDetachedServiceLines.size(), vpServiceLines.size());
 		assertSame(q.getView().findParamByPath("/pg3/noConversionDetachedColServiceLines.m").getState(), vpServiceLines.getState());
 		
 		Param<ServiceLine> vpServiceLine_0Param = q.getView().findParamByPath("/pg3/noConversionDetachedColServiceLines/0");

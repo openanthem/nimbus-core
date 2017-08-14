@@ -72,7 +72,7 @@ public class DefaultListElemParamState<E> extends DefaultParamState<E> implement
 	}
 
 	@Override
-	public boolean delete() {
+	public boolean remove() {
 		return getParentModel().remove(this);
 	}
 }
