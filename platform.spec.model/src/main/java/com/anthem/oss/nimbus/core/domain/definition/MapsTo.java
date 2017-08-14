@@ -25,12 +25,6 @@ public class MapsTo {
 		MappedDetached;
 	}
 	
-	public enum State {
-		External,
-		Internal,
-		Associated;
-	}
-	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.TYPE})
 	@Model
@@ -49,6 +43,24 @@ public class MapsTo {
 		boolean isTransient() default false;
 	}
 	
+	public enum LoadState {
+		PROVIDED, // Manual loaded such as UI onload from grid or BPM or exec.config
+		AUTO;	  // Framework loaded: from within mapsTo entity or by making cmdGateway call	
+	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.ANNOTATION_TYPE})
+	public @interface DetachedState {
+		// load state provided (via Grid call, BPM or exec-config) OR via F/w making cmdGateway call 
+		LoadState loadState() default LoadState.PROVIDED;
+		
+		// once state is loaded, should it be cached or fetched each time
+		Cache cacheState() default Cache.rep_none;
+		
+		// once state is loaded, should it be managed (edits reflected) by this Quad or treated as ReadOnly
+		boolean manageState() default false;
+	}
+	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	public @interface Path {
@@ -57,12 +69,9 @@ public class MapsTo {
 		
 		boolean linked() default true;
 		
-		State state() default State.Internal;
-		
 		String colElemPath() default DEFAULT_COL_ELEM_PATH;
 		
-		Cache cache() default Cache.rep_device;	 
-
+		DetachedState detachedState() default @DetachedState;
 	}
 	
 	public static Mode getMode(Path path) {

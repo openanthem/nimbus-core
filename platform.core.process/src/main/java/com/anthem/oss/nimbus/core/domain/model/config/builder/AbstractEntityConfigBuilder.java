@@ -33,10 +33,9 @@ import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Execution;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo.State;
+import com.anthem.oss.nimbus.core.domain.definition.MapsTo.DetachedState;
 import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
-import com.anthem.oss.nimbus.core.domain.definition.Repo.Cache;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.ViewParamBehavior;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.ViewStyle;
 import com.anthem.oss.nimbus.core.domain.model.config.AnnotationConfig;
@@ -354,7 +353,9 @@ abstract public class AbstractEntityConfigBuilder {
 		
 		final ParamConfig<P> created;
 		if(colModelConfig.isMapped()) {
-			final MapsTo.Path mapsToColElemParamPathAnnotation = (mapsToColParamPath==null) ? null : createNewImplicitMapping(collectionElemPath, mapsToColParamPath.linked(), mapsToColParamPath.state(), mapsToColParamPath.colElemPath(), mapsToColParamPath.cache());
+			final MapsTo.Path mapsToColElemParamPathAnnotation = 
+					(mapsToColParamPath==null) 
+						? null : createNewImplicitMapping(collectionElemPath, mapsToColParamPath.linked(), mapsToColParamPath.colElemPath(), mapsToColParamPath.detachedState());
 			
 			created = new MappedDefaultParamConfig<>(collectionElemPath, colModelConfig, mapsToColElemParamConfig, mapsToColElemParamPathAnnotation);
 
@@ -472,11 +473,11 @@ abstract public class AbstractEntityConfigBuilder {
 		return mappedToParam;
 	}
 	
-	public static MapsTo.Path createNewImplicitMapping(String mappedPath, boolean linked, State state, Cache cache) {
-		return createNewImplicitMapping(mappedPath, linked, state, "", cache);
+	public static MapsTo.Path createNewImplicitMapping(String mappedPath, boolean linked, DetachedState detachedState) {
+		return createNewImplicitMapping(mappedPath, linked, "", detachedState);
 	}
 	
-	public static MapsTo.Path createNewImplicitMapping(String mappedPath, boolean linked, State state, String colElemPath, Cache cache) {
+	public static MapsTo.Path createNewImplicitMapping(String mappedPath, boolean linked, String colElemPath, DetachedState detachedState) {
 		return new MapsTo.Path() {
 			
 			@Override
@@ -490,11 +491,6 @@ abstract public class AbstractEntityConfigBuilder {
 			}
 			
 			@Override
-			public State state() {
-				return state;
-			}
-			
-			@Override
 			public boolean linked() {
 				return linked;
 			}
@@ -505,8 +501,8 @@ abstract public class AbstractEntityConfigBuilder {
 			}
 			
 			@Override
-			public Cache cache() {
-				return cache;
+			public DetachedState detachedState() {
+				return detachedState;
 			}
 			
 			@Override
