@@ -4,9 +4,11 @@
 package com.anthem.oss.nimbus.core.domain.model.config.internal;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.anthem.oss.nimbus.core.domain.definition.MapsTo.LoadState;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Mode;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
 import com.anthem.oss.nimbus.core.domain.definition.Repo.Cache;
@@ -46,8 +48,11 @@ public class MappedDefaultParamConfig<P, M> extends DefaultParamConfig<P> implem
 	
 	@JsonIgnore
 	@Override
-	public boolean isDetachedWithMapsToPath() {
+	public boolean isDetachedAndAutoLoad() {
+		
 		if(getMappingMode() == Mode.MappedDetached
+				&& getPath().detachedState() != null
+				&& getPath().detachedState().loadState() == LoadState.AUTO
 				&& StringUtils.isNotBlank(getPath().value())) {
 			
 			return true;

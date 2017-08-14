@@ -172,9 +172,9 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		final P currState;
 		if(param.isMapped() && !param.findIfMapped().requiresConversion()) {
 			MappedParamConfig<P, ?> mappedParamConfig = param.getConfig().findIfMapped();
-			if(mappedParamConfig.isDetachedWithMapsToPath()) {
+			if(mappedParamConfig.isDetachedAndAutoLoad()) {
 				
-				currState = mappedParamConfig.getPath().cache() == Cache.rep_none 
+				currState = mappedParamConfig.getPath().detachedState().cacheState() == Cache.rep_none 
 								|| currRep._get(param) == null ? detachedStateRepository._get(param) : currRep._get(param);
 			}
 			else{
@@ -243,13 +243,13 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		MappedParam<P, ?> mappedParam = param.findIfMapped();
 		Param<P> mapsToParam = (Param<P>)mappedParam.getMapsTo();
 		
-		// Throw error is trying to set a param that is mappedDetached witha value url provided in the path
-		if(param.getConfig().findIfMapped().getPath().cache() == Cache.rep_none 
-				&& param.getConfig().findIfMapped().getMappingMode() == Mode.MappedDetached
-				&& StringUtils.isNotBlank(param.getConfig().findIfMapped().getPath().value())) {
-			
-			throw new InvalidStateException("Cannot set mapsTo param for mapped detached param with a path that contains the url. Param is: "+param);
-		}
+//		// Throw error is trying to set a param that is mappedDetached with a value url provided in the path
+//		if(param.getConfig().findIfMapped().getPath().cache() == Cache.rep_none 
+//				&& param.getConfig().findIfMapped().getMappingMode() == Mode.MappedDetached
+//				&& StringUtils.isNotBlank(param.getConfig().findIfMapped().getPath().value())) {
+//			
+//			throw new InvalidStateException("Cannot set mapsTo param for mapped detached param with a path that contains the url. Param is: "+param);
+//		}
 		
 		// mapped leaf: write to mapped coreParam only if the view param is a leaf param (i.e., not a model) OR if is of same type
 		if(!param.findIfMapped().requiresConversion() && !param.isCollection()) {
