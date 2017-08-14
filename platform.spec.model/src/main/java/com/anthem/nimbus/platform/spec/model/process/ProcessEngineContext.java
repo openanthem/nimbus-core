@@ -42,7 +42,7 @@ public class ProcessEngineContext implements Serializable {
 	public boolean isOutputAnException() {
 		return output != null && output instanceof Exception;
 	}
-
+	
 	public Object getParamValue(String paramId){
 		return executionContext.getQuadModel().getView().findParamByPath(paramId).getState();
 	}
@@ -50,5 +50,4 @@ public class ProcessEngineContext implements Serializable {
 	public Object getParamValueFromParam(Param<?> param, String paramId){
 		return param.findParamByPath(paramId).getState();
 	}
-	
 }
