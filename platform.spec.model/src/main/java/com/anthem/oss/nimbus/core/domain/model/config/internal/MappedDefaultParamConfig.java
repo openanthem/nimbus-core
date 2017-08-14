@@ -48,7 +48,7 @@ public class MappedDefaultParamConfig<P, M> extends DefaultParamConfig<P> implem
 	
 	@JsonIgnore
 	@Override
-	public boolean isDetachedAndAutoLoad() {
+	public boolean isDetachedWithAutoLoad() {
 		
 		if(getMappingMode() == Mode.MappedDetached
 				&& getPath().detachedState() != null

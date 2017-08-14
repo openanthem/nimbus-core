@@ -172,7 +172,7 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		final P currState;
 		if(param.isMapped() && !param.findIfMapped().requiresConversion()) {
 			MappedParamConfig<P, ?> mappedParamConfig = param.getConfig().findIfMapped();
-			if(mappedParamConfig.isDetachedAndAutoLoad()) {
+			if(mappedParamConfig.isDetachedWithAutoLoad()) {
 				
 				currState = mappedParamConfig.getPath().detachedState().cacheState() == Cache.rep_none 
 								|| currRep._get(param) == null ? detachedStateRepository._get(param) : currRep._get(param);
