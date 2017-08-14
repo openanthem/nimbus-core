@@ -7,7 +7,6 @@ import java.util.List;
 
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo.State;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Link;
 import com.anthem.oss.nimbus.test.sample.um.model.ServiceLine;
 import com.anthem.oss.nimbus.test.sample.um.model.UMCase;
@@ -54,6 +53,6 @@ public class Page_Main {
 	// attached_final, attached_transient, detached  
 	// attached=true(true)/false, temporal=true/false(default)
 	
-	@Path(linked=false, state=State.Internal)
+	@Path(linked=false)
 	private V_CRUDServiceLine vCrudServiceLine;
 }

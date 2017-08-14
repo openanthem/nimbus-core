@@ -2,15 +2,12 @@ package com.anthem.oss.nimbus.core.expressions;
 
 import java.util.List;
 
-import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.definition.ConfigNature.Ignore;
 import com.anthem.oss.nimbus.core.domain.definition.Converters;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
-import com.anthem.oss.nimbus.core.domain.definition.Execution;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo.State;
 import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
@@ -116,7 +113,7 @@ abstract class ExpressionHelperTestData {
 			
 			@Path("/publishers") private List<Publisher> publishingHouse;
 			
-			@MapsTo.Path(linked=false,state=State.External)
+			@MapsTo.Path(linked=false)
 			private List<AuthorGrid> coAuthors;
 			
 			@Path("/supportingpublishers") private List<Publisher> shortListPublishers;			
