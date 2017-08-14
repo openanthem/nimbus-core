@@ -26,7 +26,7 @@ public class Notification<T> {
 		_updateState(Action._update),
 
 		_newModel(Action._new),
-		_deleteModel(Action._delete),
+		_resetModel(Action._replace),
 		
 		_newElem(Action._new),
 		_deleteElem(Action._delete)

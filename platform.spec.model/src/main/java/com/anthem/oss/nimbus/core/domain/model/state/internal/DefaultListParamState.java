@@ -5,7 +5,6 @@ package com.anthem.oss.nimbus.core.domain.model.state.internal;
 
 import java.util.List;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
@@ -94,16 +93,40 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 		final LockTemplate rLockTemplate = isMapped() ? findIfMapped().getMapsTo().getLockTemplate() : getLockTemplate();
 
 		rLockTemplate.execute(()->{
-			// reset collection elements
-			if(!getNestedCollectionModel().templateParams().isNullOrEmpty()) {
-				int size = getNestedCollectionModel().templateParams().size();
-				for(int i=size-1; i>=0; i--) {
-					
-					ListElemParam<?> pColElem = getNestedCollectionModel().getParams().get(i).findIfCollectionElem();
-					pColElem.delete();
-				}
-			}
+			if(getNestedCollectionModel().templateParams().isNullOrEmpty()) 
+				return;
+			
+			//changeStateTemplate((execRt, h) -> {
+				// change state
+				boolean result = affectClearChange();
+				
+				// notify
+				notifySubscribers(new Notification<>(this, ActionType._resetModel, this));
+				
+				// emit event
+				if(getRootExecution().getExecutionRuntime().isStarted())//if(execRt.isStarted())
+					emitEvent(Action._replace, this);
+				
+				return;// result;
+			//});
 		});
+	}
+	
+	private boolean affectClearChange() {
+		// reset collection elements
+		int size = getNestedCollectionModel().templateParams().size();
+		boolean result = true;
+		for(int i=size-1; i>=0; i--) {
+			
+			@SuppressWarnings("unchecked")
+			ListElemParam<T> pColElem = (ListElemParam<T>)getNestedCollectionModel().getParams().get(i).findIfCollectionElem();
+			boolean r = affectRemoveChange(pColElem);
+			
+			// don't change if result was marked false
+			result = result ? r : result;
+		}
+	
+		return result;
 	}
 	
 	@Override
@@ -112,11 +135,31 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 		
 		return rLockTemplate.execute(()->{
 			
-			return changeStateTemplate((rt, h) -> affectRemoveChange(pElem, rt, h));
+			//return changeStateTemplate((rt, h) -> {
+				return affectRemoveChange(pElem, getRootExecution().getExecutionRuntime());
+			//});
 		});
 	}
 	
-	private boolean affectRemoveChange(final ListElemParam<T> pElem, ExecutionRuntime execRt, Holder<Action> h) {
+	private boolean affectRemoveChange(final ListElemParam<T> pElem, ExecutionRuntime execRt) {
+		// remove from entity state and collection
+		boolean isRemoved = affectRemoveChange(pElem);
+		
+		if(isRemoved) {
+			// notify state
+			notifySubscribers(new Notification<>(this, ActionType._deleteElem, pElem));
+			
+			// emit event
+			if(execRt.isStarted())
+				emitEvent(Action._delete, pElem);
+			
+			return true;
+		}
+
+		return false;
+	}
+	
+	private boolean affectRemoveChange(ListElemParam<T> pElem) {
 		// remove from collection entity state
 		List<T> currList = getState();//instantiateOrGet();
 		T elemToRemove = pElem.getState();
@@ -132,18 +175,11 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 						+ " Removed param path: "+pRemoved.getPath()
 						+ " Intended Delete param path: "+pElem.getPath());
 			
-			// notify
-			notifySubscribers(new Notification<>(this, ActionType._deleteElem, pElem));
-
-			if(execRt.isStarted())
-				emitEvent(Action._delete, pElem);
-			
 			return true;
 		}
-		else {
-			logit.warn(()->"Attempt to remove elem from collection did not succeed. ListParam: "+this+" -> attempted elemId to remove: "+elemId);
-			return false;
-		}
+	
+		logit.warn(()->"Attempt to remove elem from collection did not succeed. ListParam: "+this+" -> attempted elemId to remove: "+elemId);
+		return false;
 	}
 	
 	@Override
