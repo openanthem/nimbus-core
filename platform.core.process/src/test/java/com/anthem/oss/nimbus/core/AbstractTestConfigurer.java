@@ -22,7 +22,6 @@ import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutorGateway;
-import com.anthem.oss.nimbus.core.domain.command.execution.DefaultCommandExecutorGateway;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.Getter;

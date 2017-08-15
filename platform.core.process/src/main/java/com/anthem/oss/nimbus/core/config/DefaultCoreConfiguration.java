@@ -10,7 +10,6 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 import com.anthem.nimbus.platform.core.process.api.repository.SessionCacheRepository;
 import com.anthem.nimbus.platform.core.process.api.support.ProcessBeanHelper;
