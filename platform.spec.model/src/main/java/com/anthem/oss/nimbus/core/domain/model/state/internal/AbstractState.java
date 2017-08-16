@@ -5,8 +5,8 @@ package com.anthem.oss.nimbus.core.domain.model.state.internal;
 
 import java.util.Observable;
 
-import com.anthem.oss.nimbus.core.domain.model.state.State;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
+import com.anthem.oss.nimbus.core.domain.model.state.State;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;

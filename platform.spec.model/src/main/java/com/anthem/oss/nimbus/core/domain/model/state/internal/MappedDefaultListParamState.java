@@ -7,9 +7,9 @@ import java.util.List;
 
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
-import com.anthem.oss.nimbus.core.domain.model.state.Notification;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.InvalidStateException;
+import com.anthem.oss.nimbus.core.domain.model.state.Notification;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;

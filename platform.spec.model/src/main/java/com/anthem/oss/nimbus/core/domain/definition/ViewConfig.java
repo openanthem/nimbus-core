@@ -257,6 +257,7 @@ public class ViewConfig {
 		Style style() default Style.PLAIN;
 		String payload() default "";
 		String cssClass() default "btn btn-primary";
+		boolean browserBack() default false;
 		boolean formReset() default true;
 	}
 	

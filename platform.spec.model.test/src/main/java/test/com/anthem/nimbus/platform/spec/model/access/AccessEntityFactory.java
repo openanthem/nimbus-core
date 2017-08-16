@@ -7,7 +7,6 @@ import java.util.Arrays;
 
 import com.anthem.oss.nimbus.core.entity.access.DefaultAccessEntity;
 import com.anthem.oss.nimbus.core.entity.access.Permission;
-import com.anthem.oss.nimbus.core.entity.access.DefaultAccessEntity.Feature;
 
 import lombok.Getter;
 

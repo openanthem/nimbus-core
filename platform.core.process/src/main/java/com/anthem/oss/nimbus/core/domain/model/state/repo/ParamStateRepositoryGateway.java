@@ -10,20 +10,17 @@ import java.util.Collections;
 import java.util.Optional;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.InvalidArgumentException;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.definition.Converters.ParamConverter;
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Mode;
 import com.anthem.oss.nimbus.core.domain.definition.Repo.Cache;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig.MappedParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.MappedParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.InvalidStateException;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 import com.anthem.oss.nimbus.core.utils.JavaBeanHandler;
@@ -172,7 +169,7 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		final P currState;
 		if(param.isMapped() && !param.findIfMapped().requiresConversion()) {
 			MappedParamConfig<P, ?> mappedParamConfig = param.getConfig().findIfMapped();
-			if(mappedParamConfig.isDetachedAndAutoLoad()) {
+			if(mappedParamConfig.isDetachedWithAutoLoad()) {
 				
 				currState = mappedParamConfig.getPath().detachedState().cacheState() == Cache.rep_none 
 								|| currRep._get(param) == null ? detachedStateRepository._get(param) : currRep._get(param);

@@ -13,7 +13,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.entity.client.user.ClientUser;
-import com.anthem.oss.nimbus.core.entity.client.user.TestClientUserFactory;
 
 /**
  * @author Jayant Chaudhuri Platform Session provides the ability for platform

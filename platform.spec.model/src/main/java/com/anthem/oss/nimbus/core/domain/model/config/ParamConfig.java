@@ -6,8 +6,8 @@ package com.anthem.oss.nimbus.core.domain.model.config;
 import java.io.Serializable;
 import java.util.List;
 
-import com.anthem.oss.nimbus.core.domain.definition.Converters.ParamConverter;
 import com.anthem.oss.nimbus.core.domain.definition.AssociatedEntity;
+import com.anthem.oss.nimbus.core.domain.definition.Converters.ParamConverter;
 import com.anthem.oss.nimbus.core.domain.definition.Execution;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Mode;
@@ -76,7 +76,7 @@ public interface ParamConfig<P> extends EntityConfig<P>, Findable<String> {
 			return MapsTo.getMode(getPath());
 		}
 		
-		public boolean isDetachedAndAutoLoad(); // e.g. @Path(value="/a/b/c/action", linked=false)
+		public boolean isDetachedWithAutoLoad(); // e.g. @Path(value="/a/b/c/action", linked=false)
 		
 		@Override
 		public ParamConfig<M> getMapsTo();

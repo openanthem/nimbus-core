@@ -12,10 +12,10 @@ import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Button;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.ComboBox;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Hints;
+import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Hints.AlignOptions;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.InputDate;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Section;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.TextBox;
-import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Hints.AlignOptions;
 import com.anthem.oss.nimbus.test.sample.um.model.Patient;
 import com.anthem.oss.nimbus.test.sample.um.model.UMCase;
 
