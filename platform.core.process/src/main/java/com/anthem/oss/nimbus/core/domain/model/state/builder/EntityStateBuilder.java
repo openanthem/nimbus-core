@@ -13,6 +13,7 @@ import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultListElemParamState;
@@ -32,27 +33,66 @@ public class EntityStateBuilder extends AbstractEntityStateBuilder {
 		super(beanResolver);
 	}
 	
+	private interface ParamStateLoaderCallback<V, C> {
+		
+		Param<C> loadCore(ExecutionEntity<V, C>.ExModel execModel);
+		
+		Param<V> loadView(ExecutionEntity<V, C>.ExModel execModel);
+	}
+	
+	public <V, C> ExecutionEntity<V, C>.ExModel buildExec(Command rootCommand, EntityStateAspectHandlers aspectHandlers, ExecutionEntity.ExConfig<V, C> exConfig, V viewEntityState, Param<C> coreParam) {
+		// create entity state shell
+		C coreEntityState = coreParam.getState();
+		ExecutionEntity<V, C> eState = (ExecutionEntity<V, C>)ExecutionEntity.resolveAndInstantiate(viewEntityState, coreEntityState);
+		
+		return buildExec(rootCommand, aspectHandlers, eState, exConfig, new ParamStateLoaderCallback<V, C>() {
+			@Override
+			public Param<C> loadCore(ExecutionEntity<V, C>.ExModel execModel) {
+				return coreParam;
+			}
+			
+			@Override
+			public Param<V> loadView(ExecutionEntity<V, C>.ExModel execModel) {
+				return buildParam(aspectHandlers, execModel, execModel.getConfig().getViewParam(), execModel);
+			}
+		});
+	}
+	
 	public <V, C> ExecutionEntity<V, C>.ExModel buildExec(Command rootCommand, EntityStateAspectHandlers aspectHandlers, ExecutionEntity<V, C> eState, ExecutionEntity.ExConfig<V, C> exConfig) {
-		ExecutionEntity<V, C>.ExModel execModelSAC = eState.new ExParam(rootCommand, aspectHandlers, exConfig).getRootExecution().unwrap(ExecutionEntity.ExModel.class);
+		return buildExec(rootCommand, aspectHandlers, eState, exConfig, new ParamStateLoaderCallback<V, C>() {
+			@Override
+			public Param<C> loadCore(ExecutionEntity<V, C>.ExModel execModel) {
+				return buildParam(aspectHandlers, execModel, execModel.getConfig().getCoreParam(), null);
+			}
+			
+			@Override
+			public Param<V> loadView(ExecutionEntity<V, C>.ExModel execModel) {
+				return buildParam(aspectHandlers, execModel, execModel.getConfig().getViewParam(), execModel);
+			}
+		});
+	}
+	
+	private <V, C> ExecutionEntity<V, C>.ExModel buildExec(Command rootCommand, EntityStateAspectHandlers aspectHandlers, ExecutionEntity<V, C> eState, ExecutionEntity.ExConfig<V, C> exConfig, ParamStateLoaderCallback<V, C> cb) {
+		ExecutionEntity<V, C>.ExModel execModel = eState.new ExParam(rootCommand, aspectHandlers, exConfig).getRootExecution().unwrap(ExecutionEntity.ExModel.class);
 		
-		// core param sac
-		DefaultParamState<C> coreParamSAC = buildParam(aspectHandlers, execModelSAC, execModelSAC.getConfig().getCoreParam(), null);
-		execModelSAC.templateParams().add(coreParamSAC);
+		// add core param
+		Param<C> coreParam = cb.loadCore(execModel);
+		execModel.templateParams().add(coreParam);
 		
-		// view param sac
+		// add view param
 		if(exConfig.getView()!=null) {
-			DefaultParamState<V> viewParamSAC = buildParam(aspectHandlers, execModelSAC, execModelSAC.getConfig().getViewParam(), execModelSAC);
-			execModelSAC.templateParams().add(viewParamSAC);
+			Param<V> viewParam = cb.loadView(execModel);
+			execModel.templateParams().add(viewParam);
 		}
 		
-		// flow param sac
+		// add flow param
 		if(exConfig.getFlow()!=null) {
-			DefaultParamState<ProcessFlow> flowParamSAC = buildParam(aspectHandlers, execModelSAC, execModelSAC.getConfig().getFlowParam(), null);
-			execModelSAC.templateParams().add(flowParamSAC);
+			DefaultParamState<ProcessFlow> flowParamSAC = buildParam(execModel.getAspectHandlers(), execModel, execModel.getConfig().getFlowParam(), null);
+			execModel.templateParams().add(flowParamSAC);
 		}
 		
-		execModelSAC.initSetup();
-		return execModelSAC;
+		execModel.initSetup();
+		return execModel;
 	}
 
 	@Override

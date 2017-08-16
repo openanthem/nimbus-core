@@ -20,6 +20,7 @@ import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ValidatorProvider;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
@@ -41,7 +42,7 @@ public class DefaultQuadModelBuilder implements QuadModelBuilder {
 
 	private DomainConfigBuilder domainConfigApi;
 	
-	private EntityStateBuilder stateAndConfigBuilder;
+	private EntityStateBuilder stateBuilder;
 	
 	private ValidatorProvider validatorProvider;
 	
@@ -64,7 +65,7 @@ public class DefaultQuadModelBuilder implements QuadModelBuilder {
 	@PostConstruct		
 	public void init() {
 		this.domainConfigApi = beanResolver.get(DomainConfigBuilder.class);
-		this.stateAndConfigBuilder = beanResolver.get(EntityStateBuilder.class);
+		this.stateBuilder = beanResolver.get(EntityStateBuilder.class);
 		this.validatorProvider = beanResolver.get(ValidatorProvider.class);
 		this.paramStateGateway = beanResolver.get(ParamStateGateway.class);
 	
@@ -77,8 +78,28 @@ public class DefaultQuadModelBuilder implements QuadModelBuilder {
 		
 	}
 	
+	public <V, C> QuadModel<V, C> build(Command cmd, V viewState, Param<C> coreParam) {
+		ExecutionEntity.ExConfig<V, C> exConfig = buildExecConfig(cmd);
+
+		ExecutionEntity<V, C>.ExModel execModel = stateBuilder.buildExec(cmd.createRootDomainCommand(), createAspectHandlers(), exConfig, viewState, coreParam);
+		
+		return build(execModel);
+	}
 	
 	public <V, C> QuadModel<V, C> build(Command cmd, ExecutionEntity<V, C> eState) {
+		ExecutionEntity.ExConfig<V, C> exConfig = buildExecConfig(cmd);
+
+		ExecutionEntity<V, C>.ExModel execModel = stateBuilder.buildExec(cmd.createRootDomainCommand(), createAspectHandlers(), eState, exConfig);
+		
+		return build(execModel);
+	}
+	
+	private <V, C> QuadModel<V, C> build(ExecutionEntity<V, C>.ExModel execModel) {
+		QuadModel<V, C> quadModel = new QuadModel<>(execModel);
+		return quadModel;
+	}
+	
+	private <V, C> ExecutionEntity.ExConfig<V, C> buildExecConfig(Command cmd) {
 		ModelConfig<?> modelConfig = Optional.ofNullable(domainConfigApi.getRootDomain(cmd.getRootDomainAlias()))
 										.orElseThrow(()->new InvalidConfigException("Root Domain ModelConfig not found for : "+cmd.getRootDomainAlias()));
 		
@@ -88,20 +109,12 @@ public class DefaultQuadModelBuilder implements QuadModelBuilder {
 		ModelConfig<C> coreConfig = modelConfig.isMapped() ? (ModelConfig<C>)modelConfig.findIfMapped().getMapsTo() : (ModelConfig<C>)modelConfig;
 		
 		ExecutionEntity.ExConfig<V, C> exConfig = new ExecutionEntity.ExConfig<>(coreConfig, viewConfig, null);
-		
-
-		//create event listener
-		QuadScopedEventListener qEventListener = new QuadScopedEventListener(getParamEventListeners());
-		
-		EntityStateAspectHandlers provider = new EntityStateAspectHandlers(qEventListener, bulkEventListener, validatorProvider, paramStateGateway);
-		
-		final ExecutionEntity<V, C>.ExModel execModelStateAndConfig = stateAndConfigBuilder.buildExec(cmd.createRootDomainCommand(), provider, eState, exConfig);
-		
-		QuadModel<V, C> quadModel = new QuadModel<>(execModelStateAndConfig);
-		//quadModel.setEventPublisher(qEventPublisher);
-		//==initializeFlowState(cmd, quadModel);
-		
-		return quadModel;
+		return exConfig;
 	}
 	
+	private EntityStateAspectHandlers createAspectHandlers() {
+		QuadScopedEventListener qEventListener = new QuadScopedEventListener(getParamEventListeners());
+		
+		return new EntityStateAspectHandlers(qEventListener, bulkEventListener, validatorProvider, paramStateGateway);
+	}
 }
