@@ -60,7 +60,7 @@ public class DefaultActionExecutorDeleteTest extends AbstractFrameworkIngeration
 		assertEquals(colState.get(0).getNested_attr_String(), core.getAttr_list_1_NestedEntity().get(0).getNested_attr_String());
 		assertEquals(colState.get(1).getNested_attr_String(), core.getAttr_list_1_NestedEntity().get(1).getNested_attr_String());
 		
-		// do delete
+		// do delete of '0'the elem so it reduces the size but elem left would have elemId of '1'
 		MockHttpServletRequest colElemDelete_Req = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
 				.addNested("/page_green/tile/list_attached_noConversion_NestedEntity/0").addAction(Action._delete).getMock();
 		

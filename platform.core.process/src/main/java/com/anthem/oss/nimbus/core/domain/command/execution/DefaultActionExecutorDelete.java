@@ -12,6 +12,7 @@ import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Outp
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListElemParam;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 
 /**
@@ -43,6 +44,8 @@ public class DefaultActionExecutorDelete extends AbstractCommandExecutor<Boolean
 			
 			loader.unload(eCtx);
 		}
+		else if(p.isCollection())
+			handleCollection(eCtx, p.findIfCollection());
 		else if(p.isCollectionElem())
 			handleCollectionElem(eCtx, p.findIfCollectionElem());
 		else
@@ -73,6 +76,10 @@ public class DefaultActionExecutorDelete extends AbstractCommandExecutor<Boolean
 			}
 
 		}
+	}
+	
+	protected void handleCollection(ExecutionContext eCtx, ListParam<Object> p) {
+		p.clear();
 	}
 	
 	protected void handleCollectionElem(ExecutionContext eCtx, ListElemParam<Object> p) {

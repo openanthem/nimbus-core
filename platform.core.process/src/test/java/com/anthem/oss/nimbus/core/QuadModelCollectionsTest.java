@@ -1004,6 +1004,45 @@ public class QuadModelCollectionsTest {
 		assertSame(service, cp_ServiceLines.getState(0).getService());
 	}
 	
+	@Test
+	public void tv22_col_attached_v2c_delete_noConversion() {
+		// setup
+		tv04_col_attached_v2c_set_noConversion();
+
+		// validate setup
+		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		
+		ListParam<ServiceLine> vp_list = q.getRoot().findParamByPath("/view_umcase/pg3/noConversionAttachedColServiceLines").findIfCollection();
+		assertNotNull(vp_list);
+		assertNotNull(vp_list.getState());
+		int oldSize = vp_list.size();
+		
+		// add another new elem
+		ServiceLine newElem = new ServiceLine();
+		newElem.setService("New elem added for Delete testing");
+		
+		vp_list.add(newElem);
+		assertEquals(oldSize+1, vp_list.size());
+		
+		ListParam<ServiceLine> cp_list = q.getRoot().findParamByPath("/core_umcase/serviceLines").findIfCollection();
+		assertEquals(oldSize+1, cp_list.size());
+		
+		assertSame(newElem, vp_list.getState(oldSize));
+		assertSame(newElem, cp_list.getState(oldSize));
+		
+		// dp delete
+		ListElemParam<?> lastElemAdded = q.getRoot().findParamByPath("/view_umcase/pg3/noConversionAttachedColServiceLines/"+oldSize).findIfCollectionElem();
+		assertNotNull(lastElemAdded);
+		assertSame(newElem, lastElemAdded.getState());
+		
+		boolean isRemoved = vp_list.remove((ListElemParam<ServiceLine>)lastElemAdded);
+		assertTrue(isRemoved);
+		
+		// validate post delete
+		assertEquals(oldSize, vp_list.size());
+		assertEquals(oldSize, cp_list.size());
+	}
+	
 	//@After
 	public void after() {
 		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());

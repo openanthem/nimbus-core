@@ -158,8 +158,53 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 
 		return false;
 	}
-	
+
+	 
 	private boolean affectRemoveChange(ListElemParam<T> pElem) {
+		// if mapped, process remove on mapsTo first
+		if(isMapped()) {
+			boolean mapsToRemoved = affectRemoveChangeIfMapped(pElem);
+			boolean mappedRemoved = affectRemoveIfMappedOrUnMapped(pElem);
+			
+			
+			boolean requiresConversion = pElem.findIfMapped().requiresConversion();
+			
+			// shouldn't have to remove if param is mapped with no-conversion
+			if(!requiresConversion && mappedRemoved)
+				throw new InvalidStateException("Mapped param doesn't require conversion and hence would necessiate removal only from mapsTo collection. "
+						+ " Found mapsToRemoved: "+mapsToRemoved+" for mapsToElem: "+pElem.findIfMapped().getMapsTo()
+						+ " Found mappedRemoved: "+mappedRemoved+" for mappedElem: "+pElem);
+			
+			if(!requiresConversion)
+				return mapsToRemoved;
+			
+			else if(((mapsToRemoved && mappedRemoved) || (!mapsToRemoved && !mappedRemoved)))
+				return true;
+			
+			throw new InvalidStateException("Both mapped & mapsTo elems in collection must be removed. "
+					+ " Found mapsToRemoved: "+mapsToRemoved+" for mapsToElem: "+pElem.findIfMapped().getMapsTo()
+					+ " Found mappedRemoved: "+mappedRemoved+" for mappedElem: "+pElem);
+		}
+
+		// handle mapped or unmapped scenarios
+		return affectRemoveIfMappedOrUnMapped(pElem);
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	private <M> boolean affectRemoveChangeIfMapped(ListElemParam<T> pElem) {
+		// elem must be mapped as well
+		if(!pElem.isMapped())
+			throw new InvalidStateException("MappedList cannot have Un-Mapped Collection Elements. "
+					+ "Found MappedList: "+findIfMapped().getMapsTo()+" for elem: "+pElem);
+		
+		ListElemParam<M> mapsToElem = (ListElemParam<M>)pElem.findIfMapped().getMapsTo().findIfCollectionElem();
+		ListParam<M> mapsToCol = (ListParam<M>)findIfMapped().getMapsTo().findIfCollection();
+		
+		return mapsToCol.remove(mapsToElem);
+	}
+	
+	private boolean affectRemoveIfMappedOrUnMapped(ListElemParam<T> pElem) {
 		// remove from collection entity state
 		List<T> currList = getState();//instantiateOrGet();
 		T elemToRemove = pElem.getState();
@@ -169,16 +214,17 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 		String elemId = pElem.getElemId();
 		Param<?> pRemoved = pElem.getParentModel().templateParams().remove(elemId);
 		
+		// handle scenario that elem may already have been removed (e.g: mapsTo.remove would trigger deleteElem notification which wont find the element in mapped
 		if(isRemoved && pRemoved!=null) {
 			if(pRemoved!=pElem)
 				throw new InvalidStateException("Colection Elem Param removed must of same instance but found different. "
 						+ " Removed param path: "+pRemoved.getPath()
-						+ " Intended Delete param path: "+pElem.getPath());
+						+ " Intended remove param path: "+pElem.getPath());
 			
 			return true;
 		}
 	
-		logit.warn(()->"Attempt to remove elem from collection did not succeed. ListParam: "+this+" -> attempted elemId to remove: "+elemId);
+		logit.warn(()->"Attempt to remove elem from collection did not succeed. ListParam: "+this.getPath()+" -> attempted elemId to remove: "+elemId);
 		return false;
 	}
 	
