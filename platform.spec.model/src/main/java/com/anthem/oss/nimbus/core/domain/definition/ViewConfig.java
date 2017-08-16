@@ -259,7 +259,6 @@ public class ViewConfig {
 		String cssClass() default "btn btn-primary";
 		boolean browserBack() default false;
 		boolean formReset() default true;
-		boolean browserBack() default false;
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
