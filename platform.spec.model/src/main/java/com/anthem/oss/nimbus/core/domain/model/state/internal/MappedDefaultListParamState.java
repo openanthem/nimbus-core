@@ -83,9 +83,9 @@ public class MappedDefaultListParamState<T, M> extends DefaultListParamState<T> 
 				
 				mapsToListModel.getLockTemplate().execute(()->{
 					// only scenario to handle here is of "clear" of list model, all other scenarios should have been handled at elem-event level
-					if(mapsToListModel.size() != 0)
-						throw new InvalidStateException("Update state event for List Model can be processed only when state is initialized or reset. "
-								+ "Invalid state found for mappedParam: "+getPath()+" with mapsTo: "+mapsToListModel.getPath());
+//					if(mapsToListModel.size() != 0)
+//						throw new InvalidStateException("Update state event for List Model can be processed only when state is initialized or reset. "
+//								+ "Invalid state found for mappedParam: "+getPath()+" with mapsTo: "+mapsToListModel.getPath());
 					
 					// clear mapped
 					clear();
