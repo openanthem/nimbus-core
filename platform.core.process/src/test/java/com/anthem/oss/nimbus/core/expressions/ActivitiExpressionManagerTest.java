@@ -1,6 +1,6 @@
 package com.anthem.oss.nimbus.core.expressions;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.HashMap;
 
