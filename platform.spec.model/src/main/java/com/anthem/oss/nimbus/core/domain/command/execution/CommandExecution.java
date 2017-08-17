@@ -89,6 +89,17 @@ public final class CommandExecution {
 		}
 	}
 	
+	public static class EventOutput<T> extends Output<T> {
+		public EventOutput(Action action, Behavior b) {
+			super(null, null, action, b);
+		}
+		public EventOutput(T value, Action action, Behavior b) {
+			this(action, b);
+			
+			setValue(value);
+		}
+	}
+	
 	@ToString(callSuper=true)
 	public static class MultiOutput extends Output<Object> {
 		
