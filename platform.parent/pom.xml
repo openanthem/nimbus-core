@@ -173,7 +173,7 @@
 							</goals>
 							<phase>generate-resources</phase>
 							<configuration>
-								<arguments>cache clean</arguments>
+								<arguments>cache clean --force</arguments>
 							</configuration>
 						</execution>
 						<execution>
