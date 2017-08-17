@@ -196,7 +196,7 @@
 							</configuration>
 							<phase>generate-resources</phase>
 						</execution>
-						<execution>
+<!-- 						<execution>
 							<id>npm rebuild sass</id>
 							<goals>
 								<goal>npm</goal>
@@ -205,7 +205,7 @@
 								<arguments>rebuild node-sass</arguments>
 							</configuration>
 							<phase>generate-resources</phase>
-						</execution>
+						</execution> -->
 						<execution>
 							<id>npm install dev</id>
 							<goals>
