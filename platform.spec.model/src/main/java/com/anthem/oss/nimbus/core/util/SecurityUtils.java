@@ -16,7 +16,7 @@ import org.owasp.esapi.codecs.HTMLEntityCodec;
 public class SecurityUtils {
 	
 	private final static JustLogit logit = new JustLogit(SecurityUtils.class);
-	protected static final String SECURE = "^[a-zA-Z0-9/: &.=?$#_-]{1,1000}";
+	protected static final String SECURE = "^[a-zA-Z0-9<>@/: &.=?$#_-]{1,1000}";
 	private static final char immune[] = {};
 	private static final HTMLEntityCodec encoder = new HTMLEntityCodec();
 
