@@ -78,6 +78,7 @@ public class DefaultQuadModelBuilder implements QuadModelBuilder {
 		
 	}
 	
+	@Override
 	public <V, C> QuadModel<V, C> build(Command cmd, V viewState, Param<C> coreParam) {
 		ExecutionEntity.ExConfig<V, C> exConfig = buildExecConfig(cmd);
 
@@ -86,6 +87,7 @@ public class DefaultQuadModelBuilder implements QuadModelBuilder {
 		return build(execModel);
 	}
 	
+	@Override
 	public <V, C> QuadModel<V, C> build(Command cmd, ExecutionEntity<V, C> eState) {
 		ExecutionEntity.ExConfig<V, C> exConfig = buildExecConfig(cmd);
 
