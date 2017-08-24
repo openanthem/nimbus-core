@@ -120,7 +120,7 @@ public class CommandBuilderTest {
 		System.out.println("cmd.getRootDomainUri(): "+cmd.getRootDomainUri());
 		
 		assertSame(Action._new, cmd.getAction());
-		assertNull(cmd.getBehaviors());
+		assertNotNull(cmd.getBehaviors());
 	}
 	
 	@Test

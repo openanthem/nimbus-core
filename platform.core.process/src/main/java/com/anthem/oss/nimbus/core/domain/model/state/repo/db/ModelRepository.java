@@ -79,6 +79,10 @@ public interface ModelRepository {
 	
 	public <T> Object _search(Class<T> referredDomainClass, String alias, ExampleSearchCriteria<T> criteria);
 	
+	public default <T> Object _search(Class<T> referredDomainClass, String alias, ExampleSearchCriteria<T> criteria, String url) {
+		return this._search(referredDomainClass, alias, criteria);
+	}
+	
 //	default <T, C> T _search(Class<?> referredDomainClass, String alias, C criteria, Projection projection) {
 //		return _search(referredDomainClass, alias, criteria, projection.getType());
 //	}

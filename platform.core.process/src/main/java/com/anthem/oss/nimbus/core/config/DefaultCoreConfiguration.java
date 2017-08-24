@@ -2,6 +2,7 @@ package com.anthem.oss.nimbus.core.config;
 
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +11,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.web.client.RestTemplate;
 
 import com.anthem.nimbus.platform.core.process.api.repository.SessionCacheRepository;
 import com.anthem.nimbus.platform.core.process.api.support.ProcessBeanHelper;
@@ -32,6 +34,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFact
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ParamStateAtomicPersistenceEventListener;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.mongo.DefaultMongoModelPersistenceHandler;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.mongo.DefaultMongoModelRepository;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.ws.DefaultWSModelRepository;
 import com.anthem.oss.nimbus.core.rules.DefaultRulesEngineFactoryProducer;
 import com.anthem.oss.nimbus.core.rules.drools.DroolsRulesEngineFactory;
 import com.anthem.oss.nimbus.core.session.UserEndpointSession;
@@ -92,6 +95,11 @@ public class DefaultCoreConfiguration {
 	@Bean(name="default.rep_mongodb")
 	public DefaultMongoModelRepository defaultMongoModelRepository(MongoOperations mongoOps, IdSequenceRepository idSequenceRepo, BeanResolverStrategy beanResolver){
 		return new DefaultMongoModelRepository(mongoOps, idSequenceRepo, beanResolver);
+	}
+	
+	@Bean(name="default.rep_ws")
+	public DefaultWSModelRepository defaultWSModelRepository(BeanResolverStrategy beanResolver){
+		return new DefaultWSModelRepository(beanResolver);
 	}
 	
 	@Bean(name="default.paramStateAtomicPersistenceEventListener")
@@ -193,6 +201,11 @@ public class DefaultCoreConfiguration {
 	@Bean
 	public AuditorAware<String> auditorProvider() {
 		return new SpringSecurityAuditorAware();
+	}
+	
+	@Bean
+	public RestTemplate restTemplate(RestTemplateBuilder builder) {
+		return builder.build();
 	}
 	
 }

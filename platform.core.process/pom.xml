@@ -185,6 +185,10 @@
 		    <artifactId>jackson-antpathfilter</artifactId>
 		    <version>1.0.2</version>
 		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
