@@ -5,11 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
@@ -24,6 +26,8 @@ import com.anthem.oss.nimbus.core.domain.model.state.builder.EntityStateBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.PageNavigationInitializer;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
 import com.anthem.oss.nimbus.core.integration.websocket.ParamEventAMQPListener;
+import com.anthem.oss.nimbus.core.util.JustLogit;
+import com.anthem.oss.nimbus.core.util.SecurityUtils;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -41,6 +45,15 @@ public class DefaultCoreBuilderConfig {
 	private Map<String, String> typeClassMappings;
 	
 	private List<String> basePackages;
+	
+	@Value("${platform.config.secure.regex}")
+	private String secureRegex;
+	
+	@Bean
+	@DependsOn("securityUtils")
+	public JustLogit justLogit() {
+		return new JustLogit();		
+	}
 	
 	@Bean
 	public BeanResolverStrategy defaultBeanResolver(ApplicationContext appCtx) {
@@ -94,6 +107,12 @@ public class DefaultCoreBuilderConfig {
 	public QuadModelBuilder quadModelBuilder(BeanResolverStrategy beanResolver) {
 		return new DefaultQuadModelBuilder(beanResolver);
 	} 
+	
+	@Bean
+	public SecurityUtils securityUtils() {
+		return new SecurityUtils(secureRegex);
+	}
+	
 	
 //	@Bean
 //	public DefaultQuadModelBuilder quadModelBuilder(DomainConfigBuilder domainConfigApi, EntityStateBuilder stateAndConfigBuilder,

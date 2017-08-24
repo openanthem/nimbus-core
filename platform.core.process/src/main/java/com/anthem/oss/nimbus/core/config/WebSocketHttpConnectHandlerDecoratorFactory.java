@@ -17,13 +17,10 @@ import org.springframework.web.socket.handler.WebSocketHandlerDecoratorFactory;
 
 import com.anthem.oss.nimbus.core.util.JustLogit;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * @author Jayant Chaudhuri
  *
  */
-@Slf4j
 public class WebSocketHttpConnectHandlerDecoratorFactory implements WebSocketHandlerDecoratorFactory {
 
 	private JustLogit logit = new JustLogit(this.getClass());
@@ -74,7 +71,7 @@ public class WebSocketHttpConnectHandlerDecoratorFactory implements WebSocketHan
 						.publishEvent(event);
 			}
 			catch (Throwable ex) {
-				log.error("Error publishing " + event + ".", ex);
+				logit.error(()->"Error publishing " + event + ".", ex);
 			}
 		}
 		
