@@ -10,6 +10,9 @@ import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.web.context.request.RequestContextHolder;
 
 import com.anthem.oss.nimbus.core.config.WebSocketHttpConnectHandlerDecoratorFactory;
+import com.anthem.oss.nimbus.core.domain.command.Action;
+import com.anthem.oss.nimbus.core.domain.command.Behavior;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.EventOutput;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandTransactionInterceptor;
 import com.anthem.oss.nimbus.core.domain.command.execution.ExecuteOutput;
 import com.anthem.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
@@ -74,7 +77,8 @@ public class ParamEventAMQPListener implements StateAndConfigEventListener {
 	
 	@Override
 	public boolean listen(ModelEvent<Param<?>> modelEvent) {
-		Param<?>  p = modelEvent.getPayload();		
+		Param<?>  p = modelEvent.getPayload();	
+		
 //		//TODO temp impl for GRID collection handling
 //		if(p.getConfig() instanceof ViewParamConfig) {
 //			AnnotationConfig uiStyle = ((ViewParamConfig)p.getConfig()).getUiStyles();
@@ -93,8 +97,9 @@ public class ParamEventAMQPListener implements StateAndConfigEventListener {
 	
 	protected boolean listenInternal(ModelEvent<Param<?>> result) {
 		//Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		ExecuteOutput<ModelEvent<?>> executeOutput = new ExecuteOutput<>();
-		executeOutput.setResult(result);
+		EventOutput<Param<?>> eventOutput = new EventOutput<Param<?>>(result.getPayload(), Action.getByName(result.getType()), Behavior.$execute);
+		ExecuteOutput<EventOutput<Param<?>>> executeOutput = new ExecuteOutput<>();
+		executeOutput.setResult(eventOutput);
 		
 		MultiExecuteOutput multiExecOutput = interceptor.handleResponse(executeOutput);
 		String webSocketSessionId = getAssociatedWebSocketSessionId();
