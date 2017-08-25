@@ -25,7 +25,7 @@ public class DefaultSearchFunctionHandlerExample<T, R> extends DefaultSearchFunc
 		
 		ModelRepository rep = getRepFactory().get(mConfig.getRepo());
 		
-		return (R)rep._search(criteriaClass, alias, exampleSearchCriteria);
+		return (R)rep._search(criteriaClass, alias, exampleSearchCriteria, executionContext.getCommandMessage().getCommand().getAbsoluteAliasWithAction());
 	}
 
 

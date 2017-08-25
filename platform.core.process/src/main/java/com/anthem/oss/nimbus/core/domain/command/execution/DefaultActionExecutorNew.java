@@ -11,11 +11,15 @@ import org.springframework.beans.BeanUtils;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.bpm.BPMGateway;
+import com.anthem.oss.nimbus.core.domain.command.Action;
+import com.anthem.oss.nimbus.core.domain.command.Command;
+import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Input;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.InvalidStateException;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
 import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
@@ -28,9 +32,13 @@ public class DefaultActionExecutorNew extends AbstractFunctionCommandExecutor<Ob
 
 	private BPMGateway bpmGateway;
 	
+	private CommandExecutorGateway commandGateway;
+	
 	public DefaultActionExecutorNew(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
+		
 		this.bpmGateway = beanResolver.get(BPMGateway.class);
+		this.commandGateway = getBeanResolver().find(CommandExecutorGateway.class);
 	}
 	
 	/**
@@ -96,21 +104,42 @@ public class DefaultActionExecutorNew extends AbstractFunctionCommandExecutor<Ob
 		// create new entity instance for core & view
 		Object entity = instantiateEntity(eCtx, rootDomainConfig);
 		
-		Object mapsToEntity = rootDomainConfig.isMapped() ? instantiateEntity(eCtx, rootDomainConfig.findIfMapped().getMapsTo()) : null;
+		// unmapped	
+		if(!rootDomainConfig.isMapped())
+			return handleUnmapped(rootDomainConfig, eCtx, entity);
 		
-		// create quad-model
-		ExecutionEntity<?, ?> e = ExecutionEntity.resolveAndInstantiate(entity, mapsToEntity);
+		// mapped
+		return handleMapped(rootDomainConfig, eCtx, entity, Action._new);
+	}
+	
+	private QuadModel<?, ?> handleUnmapped(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx, Object entity) {
+		ExecutionEntity<?, ?> e = ExecutionEntity.resolveAndInstantiate(entity, null);
 		
-		// update refId
+		updateCommandWithRefId(rootDomainConfig, eCtx, e);
 		
-		String refId = Optional.ofNullable(getRootDomainRefIdByRepoDatabase(rootDomainConfig, e))
-				.map(String::valueOf)
-				.map(StringUtils::trimToNull)
-				.orElse(null);
+		return getQuadModelBuilder().build(eCtx.getCommandMessage().getCommand(), e);
+	}
+	
+	protected QuadModel<?, ?> handleMapped(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx, Object mapped, Action action) {
+		ModelConfig<?> mapsToConfig = rootDomainConfig.findIfMapped().getMapsTo();
+
+		Command mapsToCmd = CommandBuilder.from(eCtx.getCommandMessage().getCommand(), mapsToConfig.getAlias()).getCommand();
+		mapsToCmd.setAction(action);
 		
+		Param<?> coreParam = Optional.ofNullable(commandGateway.execute(mapsToCmd, null))
+								.map(mOut->(Param<?>)mOut.getSingleResult())
+								.orElseThrow(()->new InvalidStateException(""));
+		
+		ExecutionEntity<?, ?> e = ExecutionEntity.resolveAndInstantiate(mapped, coreParam.getState());
+		updateCommandWithRefId(rootDomainConfig, eCtx, e);
+		
+		return getQuadModelBuilder().build(eCtx.getCommandMessage().getCommand(), mapped, coreParam);
+	}
+	
+	
+	private void updateCommandWithRefId(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx, ExecutionEntity<?, ?> e) {
+		String refId = getRootDomainRefIdByRepoDatabase(rootDomainConfig, e);
 		eCtx.getCommandMessage().getCommand().getRootDomainElement().setRefId(refId);
-		
-		return getQuadModelBuilder().build(eCtx.getCommandMessage().getCommand(), e);		
 	}
 	
 	private void startBusinessProcess(ExecutionContext eCtx, Param<?> actionParam){

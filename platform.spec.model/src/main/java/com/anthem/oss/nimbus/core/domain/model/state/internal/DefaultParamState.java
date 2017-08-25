@@ -17,6 +17,7 @@ import org.springframework.beans.BeanUtils;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
 import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
+import com.anthem.oss.nimbus.core.InvalidOperationAttemptedException;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.execution.ValidationResult;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
@@ -290,6 +291,10 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 
 	@Override
 	public void registerSubscriber(MappedParam<?, T> subscriber) {
+		if(this instanceof Notification.Consumer)
+			throw new InvalidOperationAttemptedException("Registering subscriber for Mapped entities are not supported. Found for: "+this.getPath()
+						+" while trying to add subscriber: "+subscriber.getPath());
+		
 		getEventSubscribers().add(subscriber);
 	}
 	

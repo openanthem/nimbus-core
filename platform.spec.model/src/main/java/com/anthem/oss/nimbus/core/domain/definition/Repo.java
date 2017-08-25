@@ -23,7 +23,8 @@ public @interface Repo {
 	public enum Database {
 		rep_none,
 		rep_mongodb,
-		rep_rdbms;
+		rep_rdbms,
+		rep_ws;
 		
 		public static boolean exists(Repo repo) {
 			return repo!=null && repo.value()!=Repo.Database.rep_none;

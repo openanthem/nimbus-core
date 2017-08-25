@@ -11,21 +11,33 @@ import org.springframework.context.ApplicationContext;
 
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
+import com.anthem.oss.nimbus.core.util.JustLogit;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 /**
+ * This class acts as BeanResolver for all the beans within the framework. 
+ * BeanResolverStrategy should be used for resolving dependent beans within the framework instead of directly 
+ * autowiring beans.
+ * 
+ * 
  * @author Soham Chakravarti
  *
  */
-@Getter @Setter @RequiredArgsConstructor
+@Getter @Setter 
 public class DefaultBeanResolverStrategy implements BeanResolverStrategy {
 
 	private String beanPrefix = Constants.PREFIX_DEFAULT.code;
 	
 	private final ApplicationContext applicationContext;
+	
+	public DefaultBeanResolverStrategy(ApplicationContext applicationContext) {
+		/* To ensure JustLogit is available in the spring context for all the beans, 
+		 * provided all the framework beans use DefaultBeanResolverStrategy for resolving dependent beans */
+		applicationContext.getBean(JustLogit.class);
+		this.applicationContext = applicationContext;
+	}
 	
 	protected String resolvePrefix() {
 		return getBeanPrefix()==null ? "" : getBeanPrefix();

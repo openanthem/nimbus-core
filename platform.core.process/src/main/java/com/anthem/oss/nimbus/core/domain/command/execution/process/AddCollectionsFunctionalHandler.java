@@ -24,7 +24,7 @@ public class AddCollectionsFunctionalHandler <T,S> implements FunctionHandler<T,
 	
 	public AddCollectionsFunctionalHandler(BeanResolverStrategy beanResolver) {
 		this.converter = beanResolver.get(CommandMessageConverter.class);
-		this.repo = beanResolver.get(ModelRepository.class);
+		this.repo = beanResolver.get(ModelRepository.class,"rep_mongodb");
 	}
 
 	

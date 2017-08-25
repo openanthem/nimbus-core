@@ -157,4 +157,8 @@ public class DefaultMongoModelRepository implements ModelRepository {
 		return searchByExample.search(referredDomainClass, alias, criteria);
 	}
 	
+	@Override
+	public <T> Object _search(Class<T> referredDomainClass, String alias, ExampleSearchCriteria<T> criteria, String url) {
+		return _search(referredDomainClass, alias, criteria);
+	}
 }

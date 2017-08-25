@@ -225,6 +225,12 @@ public class Command implements Serializable {
 		String a = buildAlias(root());
 		return a;
 	}
+	
+	public String getAbsoluteAliasWithAction() {
+		String a = buildAlias(root());
+		
+		return a + "/" + this.getAction();
+	}
 
 	public String getAbsoluteAliasTillRootDomain() {
 		String a = buildAlias(root(), Type.DomainAlias);

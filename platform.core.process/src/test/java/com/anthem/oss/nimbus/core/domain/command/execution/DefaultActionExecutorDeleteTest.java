@@ -76,7 +76,7 @@ public class DefaultActionExecutorDeleteTest extends AbstractFrameworkIngeration
 		assertNotNull(pListNested);
 		
 		assertEquals(colState.size()-1, pListNested.size());
-		assertEquals(colState.get(1).getNested_attr_String(), pListNested.findParamByPath("/1").getState());
+		assertEquals(colState.get(1).getNested_attr_String(), pListNested.findParamByPath("/1/nested_attr_String").getState());
 		
 		
 		// db validation - after delete
