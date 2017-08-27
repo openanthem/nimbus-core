@@ -25,6 +25,12 @@ public class MapsTo {
 		MappedDetached;
 	}
 	
+	public enum Nature {
+		Default,
+		TransientColElem,
+		TransientModel;
+	}
+	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.TYPE})
 	@Model
@@ -39,8 +45,6 @@ public class MapsTo {
 	public @interface Type {
 		
 		Class<?> value();
-		
-		boolean isTransient() default false;
 	}
 	
 	public enum LoadState {
@@ -70,6 +74,8 @@ public class MapsTo {
 		boolean linked() default true;
 		
 		String colElemPath() default DEFAULT_COL_ELEM_PATH;
+		
+		Nature nature() default Nature.Default;
 		
 		DetachedState detachedState() default @DetachedState;
 	}

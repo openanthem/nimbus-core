@@ -34,6 +34,7 @@ import com.anthem.oss.nimbus.core.domain.definition.Execution;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.DetachedState;
+import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Nature;
 import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.ViewParamBehavior;
@@ -47,6 +48,7 @@ import com.anthem.oss.nimbus.core.domain.model.config.internal.DefaultModelConfi
 import com.anthem.oss.nimbus.core.domain.model.config.internal.DefaultParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultParamConfig;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultTransientParamState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.StateContextEntity;
 import com.anthem.oss.nimbus.core.rules.RulesEngineFactoryProducer;
 import com.anthem.oss.nimbus.core.util.GenericUtils;
@@ -163,13 +165,14 @@ abstract public class AbstractEntityConfigBuilder {
 	
 	public DefaultParamConfig<?> createParam(ModelConfig<?> mConfig, Field f, EntityConfigVistor visitedModels) {
 		MapsTo.Path mapsToPath = AnnotationUtils.findAnnotation(f, MapsTo.Path.class);
+		MapsTo.Mode mapsToMode = MapsTo.getMode(mapsToPath);
 		
 		// no path specified
-		if(mapsToPath==null)
+		if(mapsToMode==MapsTo.Mode.UnMapped)
 			return decorateParam(mConfig, f, DefaultParamConfig.instantiate(mConfig, f.getName()), visitedModels); 
 			
 		// check if field is mapped with linked=true: which would require parent model to also be mapped
-		if(mapsToPath.linked())
+		if(mapsToMode==MapsTo.Mode.MappedAttached)
 			return createMappedParamAttached(mConfig, f, visitedModels, mapsToPath);
 		else 
 			return createMappedParamDetached(mConfig, f, visitedModels, mapsToPath);
@@ -191,6 +194,9 @@ abstract public class AbstractEntityConfigBuilder {
 		ParamConfig<?> mapsToParam = findMappedParam(mapsToModel, f.getName(), mapsToPath);
 		if(mapsToParam==null)
 			throw new InvalidConfigException("No mapsTo param found for mapped param field: "+f.getName()+" in enclosing model:"+mConfig.getReferredClass()+" with mapsToPath: "+mapsToPath);
+		
+		// handle transient
+		//DefaultParamConfig<?> mappedParamAttached = mapsToPath.nature()==MapsTo.Nature.TransientColElem ?
 		
 		return decorateParam(mConfig, f, new MappedDefaultParamConfig<>(f.getName(), mapsToModel, mapsToParam, mapsToPath), visitedModels);
 	}
@@ -503,6 +509,11 @@ abstract public class AbstractEntityConfigBuilder {
 			@Override
 			public DetachedState detachedState() {
 				return detachedState;
+			}
+			
+			@Override
+			public Nature nature() {
+				return Nature.Default;
 			}
 			
 			@Override

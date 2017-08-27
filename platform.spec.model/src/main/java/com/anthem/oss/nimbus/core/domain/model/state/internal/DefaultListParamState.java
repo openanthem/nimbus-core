@@ -8,6 +8,7 @@ import java.util.List;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListElemParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
@@ -265,6 +266,25 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 	public boolean add(T elem) {
 		ListElemParam<T> pColElem = add();
 		pColElem.setState(elem);		//lockTemplate.execute(()->pColElem.setState(elem));
+		return true;
+	}
+	
+	@Override
+	public ListElemParam<T> createElement() {
+		String elemId = toElemId(getNextElemIndex());
+		
+		ListElemParam<T> pColElem = getNestedCollectionModel().createElement(elemId);
+		return pColElem;
+	}
+	
+	@Override
+	public boolean add(ListElemParam<T> pColElem) {
+		// add
+		getNestedCollectionModel().templateParams().add(pColElem);
+		
+		// notify
+		notifySubscribers(new Notification<>(this, ActionType._newElem, pColElem));
+		
 		return true;
 	}
 	

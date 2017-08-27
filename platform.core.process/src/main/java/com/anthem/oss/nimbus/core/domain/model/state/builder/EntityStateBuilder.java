@@ -148,8 +148,14 @@ public class EntityStateBuilder extends AbstractEntityStateBuilder {
 	
 	@Override
 	protected <P> StateType buildParamType(EntityStateAspectHandlers aspectHandlers, DefaultParamState<P> associatedParam, Model<?> mapsToSAC) {
+		if(associatedParam.isTransient()) {
+			// do not create model, instead create a pointer with a new type
+			
+			StateType.MappedTransient<P> mappedTransientType = new StateType.MappedTransient<>(associatedParam.getConfig().getType().findIfNested());
+			return mappedTransientType;
+		}
 		
-		if(associatedParam.getConfig().getType().isCollection()) {
+		else if(associatedParam.getConfig().getType().isCollection()) {
 			ParamType.NestedCollection<P> nmcType = associatedParam.getConfig().getType().findIfCollection();
 			ModelConfig<List<P>> nmConfig = nmcType.getModel();
 			
@@ -159,7 +165,9 @@ public class EntityStateBuilder extends AbstractEntityStateBuilder {
 			StateType.NestedCollection<P> nctSAC = new StateType.NestedCollection<>(nmcType, nmcState);
 			return nctSAC;
 			
-		} else if(associatedParam.getConfig().getType().isNested()) {
+		} 
+		
+		else if(associatedParam.getConfig().getType().isNested()) {
 			//handle nested model
 			@SuppressWarnings("unchecked")
 			ParamType.Nested<P> mpNmType = ((ParamType.Nested<P>)associatedParam.getConfig().getType());
