@@ -55,6 +55,8 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 	
 	@JsonIgnore private RulesRuntime rulesRuntime;
 	
+	private boolean stateInitialized;
+	
 	public AbstractEntityState(EntityConfig<T> config, EntityStateAspectHandlers aspectHandlers) {
 		Objects.requireNonNull(config, "Config must not be null while instantiating StateAndConfig.");
 		Objects.requireNonNull(aspectHandlers, "Provider must not be null while instantiating StateAndConfig.");
@@ -76,11 +78,15 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 	
 	@Override
 	final public void initState() {
+		if(isStateInitialized()) 
+			return;
+		
 		ExecutionRuntime execRt = getRootExecution().getExecutionRuntime();
 		String lockId = execRt.tryLock();
 		try {
 			initStateInternal();
 			fireRules(); //TODO review with soham
+			setStateInitialized(true); // From soham
 		} finally {
 			if(execRt.isLocked(lockId)) {
 				execRt.awaitCompletion();
