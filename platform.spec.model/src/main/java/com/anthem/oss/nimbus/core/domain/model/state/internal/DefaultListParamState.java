@@ -182,9 +182,10 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 			else if(((mapsToRemoved && mappedRemoved) || (!mapsToRemoved && !mappedRemoved)))
 				return true;
 			
-			throw new InvalidStateException("Both mapped & mapsTo elems in collection must be removed. "
-					+ " Found mapsToRemoved: "+mapsToRemoved+" for mapsToElem: "+pElem.findIfMapped().getMapsTo()
-					+ " Found mappedRemoved: "+mappedRemoved+" for mappedElem: "+pElem);
+			return true;
+//			throw new InvalidStateException("Both mapped & mapsTo elems in collection must be removed. "
+//					+ " Found mapsToRemoved: "+mapsToRemoved+" for mapsToElem: "+pElem.findIfMapped().getMapsTo()
+//					+ " Found mappedRemoved: "+mappedRemoved+" for mappedElem: "+pElem);
 		}
 
 		// handle mapped or unmapped scenarios
