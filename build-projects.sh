@@ -20,7 +20,18 @@ for i in "${NAMES[@]}"; do
   echo "####################################################################"
   echo "### Starting to build: $str "
   echo "####################################################################"
-  mvn clean install -f $str/pom.xml -D skipTests=true
+  
+  BUILD_PROFILES="";
+  if [[ "$i" == "web" ]]; then
+    BUILD_PROFILES="local"
+  fi
+  
+  if [[ -z "$BUILD_PROFILES" ]]; then
+    mvn clean install -f $str/pom.xml -D skipTests=true
+  else
+    mvn clean install -f $str/pom.xml -D skipTests=true -P $BUILD_PROFILES
+  fi 
+
   echo "####################################################################"
   echo "### Finished building: $str "
   echo "####################################################################"
