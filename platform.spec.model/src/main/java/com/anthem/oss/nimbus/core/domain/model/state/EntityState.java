@@ -266,6 +266,13 @@ public interface EntityState<T> {
 		default public boolean requiresConversion() {
 			if(isLeaf()) return false;
 			
+			if(isTransient() && !findIfTransient().isAssinged()) { // when transient is not assigned
+				Class<?> mappedClass = getType().getConfig().getReferredClass();
+				Class<?> mapsToClass = getType().getConfig().findIfNested().getModel().findIfMapped().getMapsTo().getReferredClass();
+				
+				return (mappedClass!=mapsToClass);
+			}
+			
 			Class<?> mappedClass = getType().findIfNested().getModel().getConfig().getReferredClass();
 			Class<?> mapsToClass = getMapsTo().getType().findIfNested().getModel().getConfig().getReferredClass();
 
@@ -281,7 +288,7 @@ public interface EntityState<T> {
 		}
 		
 		@Override
-		default MappedTransientParam<T, ?> findIfTransient() {
+		default MappedTransientParam<T, M> findIfTransient() {
 			return this;
 		}
 
@@ -334,9 +341,14 @@ public interface EntityState<T> {
 			return this;
 		}
 		
+		public ListElemParam<T> createElement();
+		
 		@Override
 		public ListElemParam<T> add();
+		
+		public boolean add(ListElemParam<T> elem);
 	}
+	
 	public interface MappedListParam<T, M> extends ListParam<T>, MappedParam<List<T>, List<M>> {
 		@Override
 		public ListParam<M> getMapsTo();

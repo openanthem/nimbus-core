@@ -90,6 +90,10 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 
 	@Override
 	public void clear() {
+		clear(true);
+	}
+	
+	protected void clear(boolean propagateToMapsTo) {
 		final LockTemplate rLockTemplate = isMapped() ? findIfMapped().getMapsTo().getLockTemplate() : getLockTemplate();
 
 		rLockTemplate.execute(()->{
@@ -98,7 +102,7 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 			
 			//changeStateTemplate((execRt, h) -> {
 				// change state
-				boolean result = affectClearChange();
+				boolean result = affectClearChange(propagateToMapsTo);
 				
 				// notify
 				notifySubscribers(new Notification<>(this, ActionType._resetModel, this));
@@ -112,7 +116,7 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 		});
 	}
 	
-	private boolean affectClearChange() {
+	private boolean affectClearChange(boolean propagateToMapsTo) {
 		// reset collection elements
 		int size = getNestedCollectionModel().templateParams().size();
 		boolean result = true;
@@ -120,7 +124,7 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 			
 			@SuppressWarnings("unchecked")
 			ListElemParam<T> pColElem = (ListElemParam<T>)getNestedCollectionModel().getParams().get(i).findIfCollectionElem();
-			boolean r = affectRemoveChange(pColElem);
+			boolean r = affectRemoveChange(pColElem, propagateToMapsTo);
 			
 			// don't change if result was marked false
 			result = result ? r : result;
@@ -136,14 +140,14 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 		return rLockTemplate.execute(()->{
 			
 			//return changeStateTemplate((rt, h) -> {
-				return affectRemoveChange(pElem, getRootExecution().getExecutionRuntime());
+				return affectRemoveChange(pElem, getRootExecution().getExecutionRuntime(), true);
 			//});
 		});
 	}
 	
-	private boolean affectRemoveChange(final ListElemParam<T> pElem, ExecutionRuntime execRt) {
+	private boolean affectRemoveChange(final ListElemParam<T> pElem, ExecutionRuntime execRt, boolean propagateToMapsTo) {
 		// remove from entity state and collection
-		boolean isRemoved = affectRemoveChange(pElem);
+		boolean isRemoved = affectRemoveChange(pElem, propagateToMapsTo);
 		
 		if(isRemoved) {
 			// notify state
@@ -160,31 +164,37 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 	}
 
 	 
-	private boolean affectRemoveChange(ListElemParam<T> pElem) {
+	private boolean affectRemoveChange(ListElemParam<T> pElem, boolean propagateToMapsTo) {
 		// if mapped, process remove on mapsTo first
 		if(isMapped()) {
-			boolean mapsToRemoved = affectRemoveChangeIfMapped(pElem);
-			boolean mappedRemoved = affectRemoveIfMappedOrUnMapped(pElem);
 			
-			
-			boolean requiresConversion = pElem.findIfMapped().requiresConversion();
-			
-			// shouldn't have to remove if param is mapped with no-conversion
-			if(!requiresConversion && mappedRemoved)
-				throw new InvalidStateException("Mapped param doesn't require conversion and hence would necessiate removal only from mapsTo collection. "
-						+ " Found mapsToRemoved: "+mapsToRemoved+" for mapsToElem: "+pElem.findIfMapped().getMapsTo()
-						+ " Found mappedRemoved: "+mappedRemoved+" for mappedElem: "+pElem);
-			
-			if(!requiresConversion)
-				return mapsToRemoved;
-			
-			else if(((mapsToRemoved && mappedRemoved) || (!mapsToRemoved && !mappedRemoved)))
+			if(propagateToMapsTo) {
+				boolean mapsToRemoved = affectRemoveChangeIfMapped(pElem);
+				boolean mappedRemoved = affectRemoveIfMappedOrUnMapped(pElem);
+				
+				
+				boolean requiresConversion = pElem.findIfMapped().requiresConversion();
+				
+				// shouldn't have to remove if param is mapped with no-conversion
+				if(!requiresConversion && mappedRemoved)
+					throw new InvalidStateException("Mapped param doesn't require conversion and hence would necessiate removal only from mapsTo collection. "
+							+ " Found mapsToRemoved: "+mapsToRemoved+" for mapsToElem: "+pElem.findIfMapped().getMapsTo()
+							+ " Found mappedRemoved: "+mappedRemoved+" for mappedElem: "+pElem);
+				
+				if(!requiresConversion)
+					return mapsToRemoved;
+				
+				else if(((mapsToRemoved && mappedRemoved) || (!mapsToRemoved && !mappedRemoved)))
+					return true;
+				
 				return true;
-			
-			return true;
-//			throw new InvalidStateException("Both mapped & mapsTo elems in collection must be removed. "
-//					+ " Found mapsToRemoved: "+mapsToRemoved+" for mapsToElem: "+pElem.findIfMapped().getMapsTo()
-//					+ " Found mappedRemoved: "+mappedRemoved+" for mappedElem: "+pElem);
+	//			throw new InvalidStateException("Both mapped & mapsTo elems in collection must be removed. "
+	//					+ " Found mapsToRemoved: "+mapsToRemoved+" for mapsToElem: "+pElem.findIfMapped().getMapsTo()
+	//					+ " Found mappedRemoved: "+mappedRemoved+" for mappedElem: "+pElem);
+			} else {
+				boolean mappedRemoved = affectRemoveIfMappedOrUnMapped(pElem);
+				return mappedRemoved;
+			}
 		}
 
 		// handle mapped or unmapped scenarios
@@ -266,6 +276,25 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 	public boolean add(T elem) {
 		ListElemParam<T> pColElem = add();
 		pColElem.setState(elem);		//lockTemplate.execute(()->pColElem.setState(elem));
+		return true;
+	}
+	
+	@Override
+	public ListElemParam<T> createElement() {
+		String elemId = toElemId(getNextElemIndex());
+		
+		ListElemParam<T> pColElem = getNestedCollectionModel().createElement(elemId);
+		return pColElem;
+	}
+	
+	@Override
+	public boolean add(ListElemParam<T> pColElem) {
+		// add
+		getNestedCollectionModel().templateParams().add(pColElem);
+		
+		// notify
+		notifySubscribers(new Notification<>(this, ActionType._newElem, pColElem));
+		
 		return true;
 	}
 	
