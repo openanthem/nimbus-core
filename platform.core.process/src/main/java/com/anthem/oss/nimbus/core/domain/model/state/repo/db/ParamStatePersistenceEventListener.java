@@ -26,13 +26,21 @@ public abstract class ParamStatePersistenceEventListener implements StateAndConf
 
 	@Override
 	public boolean shouldAllow(EntityState<?> p) {
-		Domain rootDomain = AnnotationUtils.findAnnotation(p.getRootDomain().getConfig().getReferredClass(), Domain.class);
-		if(rootDomain == null) 
+		//Domain rootDomain = AnnotationUtils.findAnnotation(p.getRootDomain().getConfig().getReferredClass(), Domain.class);
+		//if(rootDomain == null) 
+			//return false;
+		
+		Domain currentDomain = AnnotationUtils.findAnnotation(p.getConfig().getReferredClass(), Domain.class);
+		
+		if(currentDomain == null)
+			currentDomain = AnnotationUtils.findAnnotation(p.getRootDomain().getConfig().getReferredClass(), Domain.class);
+		
+		if(currentDomain == null)
 			return false;
 		
 		Model pModel = AnnotationUtils.findAnnotation(p.getRootDomain().getConfig().getReferredClass(), Model.class);
 		
-		ListenerType includeListener = Arrays.asList(rootDomain.includeListeners()).stream()
+		ListenerType includeListener = Arrays.asList(currentDomain.includeListeners()).stream()
 											.filter((listener) -> !Arrays.asList(pModel.excludeListeners()).contains(listener))
 											.filter((listenerType) -> listenerType == ListenerType.persistence)
 											.findFirst()

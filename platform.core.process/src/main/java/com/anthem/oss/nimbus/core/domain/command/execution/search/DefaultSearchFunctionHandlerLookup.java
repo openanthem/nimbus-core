@@ -18,7 +18,7 @@ import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContext;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.ModelRepository;
 import com.anthem.oss.nimbus.core.entity.SearchCriteria.LookupSearchCriteria;
 import com.anthem.oss.nimbus.core.entity.SearchCriteria.ProjectCriteria;
 import com.anthem.oss.nimbus.core.entity.StaticCodeValue;

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.json.JacksonTester;
+import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -32,6 +33,7 @@ import lombok.Getter;
  */
 @RunWith(SpringRunner.class)
 @EnableAutoConfiguration
+@EnableFeignClients
 @ComponentScan(basePackages = { "com.anthem.oss.nimbus.core.*"})
 @SpringBootTest(classes = { BPMEngineConfig.class })
 @ActiveProfiles("test")

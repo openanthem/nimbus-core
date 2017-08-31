@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state.repo.db;
+package com.anthem.oss.nimbus.core.domain.model.state.repo;
 
 import java.util.List;
 

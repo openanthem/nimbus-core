@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state.repo.db;
+package com.anthem.oss.nimbus.core.domain.model.state.repo;
 
 import java.io.Serializable;
 import java.util.List;
@@ -22,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 /**
  * @author Soham Chakravarti
  *
+ * TODO - 08/30/2017: Refactor the methods to accept the argument which is generic enough to get the enough information needed e.g. url, alias etc..  
  */
 public interface ModelRepository {
 
@@ -52,10 +53,16 @@ public interface ModelRepository {
 	
 	/*SOHAM: f.w upgrade v0.3: END */
 	
-	
+	// internally used, not exposed as an Action
+	default public <ID extends Serializable, T> T _save(String alias, T state) {
+		return state;
+	}
 	
 	//Action._get
 	public <ID extends Serializable, T> T _get(ID id, Class<T> referredClass, String alias);
+	default public <ID extends Serializable, T> T _get(ID id, Class<T> referredClass, String alias, String url) {
+		return this._get(id, referredClass, alias);
+	}
 	
 	//Action._info
 	
@@ -70,12 +77,17 @@ public interface ModelRepository {
 	//Action._delete
 	public <ID extends Serializable, T> T _delete(ID id, Class<T> referredClass, String alias);
 		
-	//Action._search
-	//public <T, C> List<T> _search(Class<T> referredDomainClass, String alias, C criteria);
-	
 	public <T> Object _search(Class<T> referredDomainClass, String alias, LookupSearchCriteria criteria);
 	
+	public default <T> Object _search(Class<T> referredDomainClass, String alias, LookupSearchCriteria criteria, String url) {
+		return this._search(referredDomainClass, alias, criteria);
+	}
+	
 	public <T> Object _search(Class<T> referredDomainClass, String alias, QuerySearchCriteria criteria);
+	
+	public default <T> Object _search(Class<T> referredDomainClass, String alias, QuerySearchCriteria criteria, String url) {
+		return this._search(referredDomainClass, alias, criteria);
+	}
 	
 	public <T> Object _search(Class<T> referredDomainClass, String alias, ExampleSearchCriteria<T> criteria);
 	
@@ -83,12 +95,5 @@ public interface ModelRepository {
 		return this._search(referredDomainClass, alias, criteria);
 	}
 	
-//	default <T, C> T _search(Class<?> referredDomainClass, String alias, C criteria, Projection projection) {
-//		return _search(referredDomainClass, alias, criteria, projection.getType());
-//	}
-	
-//	@SuppressWarnings("unchecked")
-//	default <T, C> T _search(Class<?> referredDomainClass, String alias, C criteria, Class<T> projection) {
-//		return (T)_search(referredDomainClass, alias, criteria);
-//	}
+
 }

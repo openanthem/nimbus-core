@@ -18,12 +18,10 @@ import lombok.ToString;
  * @author Rakesh Patel
  *
  */
-@Domain(value="ex_client", includeListeners={ListenerType.persistence})
+@Domain(value="ext_client")
 @Repo(value=Database.rep_ws, cache=Cache.rep_device)
 @Getter @Setter @ToString(callSuper=true)
-public class ExClient extends AbstractEntity.IdString {
+public class ExtClient {
 
-	private static final long serialVersionUID = 1L;
-	
 	private Client client;
 }

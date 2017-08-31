@@ -85,8 +85,7 @@ public class EntityConfigBuilder extends AbstractEntityConfigBuilder {
 				}				
 			});
 		
-		if(mConfig.getRepo()!=null && mConfig.getRepo().value()!=Repo.Database.rep_none 
-				&& mConfig.getIdParam()==null) {
+		if(Repo.Database.isPersistable(mConfig.getRepo()) && mConfig.getIdParam()==null) {
 			throw new InvalidConfigException("Persistable Entity: "+mConfig.getReferredClass()+" must be configured with @Id param which has Repo: "+mConfig.getRepo());
 		}
 		
