@@ -13,6 +13,7 @@ import com.anthem.oss.nimbus.core.domain.model.config.EntityConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListElemParam;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.StateContextEntity;
 import com.anthem.oss.nimbus.core.util.CollectionsTemplate;
 import com.anthem.oss.nimbus.core.util.LockTemplate;
