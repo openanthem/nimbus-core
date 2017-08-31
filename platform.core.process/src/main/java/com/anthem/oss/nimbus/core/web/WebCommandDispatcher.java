@@ -13,10 +13,13 @@ import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Mult
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutorGateway;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 
+import lombok.Getter;
+
 /**
  * @author Soham Chakravarti
  *
  */
+@Getter
 public class WebCommandDispatcher {
 
 	private final WebCommandBuilder builder;
