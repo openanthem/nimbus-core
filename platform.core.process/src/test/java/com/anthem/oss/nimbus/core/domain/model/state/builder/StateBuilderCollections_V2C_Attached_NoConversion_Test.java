@@ -95,8 +95,13 @@ public class StateBuilderCollections_V2C_Attached_NoConversion_Test extends Abst
 		QuadModel<?, ?> q = buildQuad();
 		List<SampleCoreNestedEntity> vColEntity = createViewList(30);
 		
+		final ListParam<SampleCoreNestedEntity> viewListParam = viewListParam(q);
+		
+		// Listener addressed in separate test case
+		viewListParam.getAspectHandlers().setEventListener(null);
+		
 		// set
-		Action a = viewListParam(q).setState(vColEntity);
+		Action a = viewListParam.setState(vColEntity);
 		assertSame(Action._new, a);
 		
 		// validate

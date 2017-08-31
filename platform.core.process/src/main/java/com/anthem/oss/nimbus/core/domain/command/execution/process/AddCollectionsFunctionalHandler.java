@@ -10,7 +10,7 @@ import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContext;
 import com.anthem.oss.nimbus.core.domain.command.execution.FunctionHandler;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.ModelRepository;
 
 /**
  * @author Swetha Vemuri

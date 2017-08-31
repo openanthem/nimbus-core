@@ -30,7 +30,6 @@ import com.anthem.oss.nimbus.core.spec.contract.event.StateAndConfigEventListene
  */
 public class ParamEventAMQPListener implements StateAndConfigEventListener {
 
-	
 //	@Autowired
 	SimpMessageSendingOperations messageTemplate;
 
@@ -107,7 +106,6 @@ public class ParamEventAMQPListener implements StateAndConfigEventListener {
 		headerAccessor.setSessionId(webSocketSessionId);		
 		//messageTemplate.convertAndSend("/queue/updates", multiExecOutput); // TODO get the destination name from the config server
 		messageTemplate.convertAndSendToUser(webSocketSessionId,"/queue/updates", multiExecOutput,headerAccessor.getMessageHeaders(),null);
-		
 		return true;
 	}
 	

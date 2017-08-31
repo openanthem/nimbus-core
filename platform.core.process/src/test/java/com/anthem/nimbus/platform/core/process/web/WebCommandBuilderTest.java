@@ -18,7 +18,6 @@ import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Behavior;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
-import com.anthem.oss.nimbus.core.domain.command.execution.ProcessExecutorEvents;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 import com.anthem.oss.nimbus.core.web.WebCommandBuilder;
 
@@ -136,17 +135,5 @@ public class WebCommandBuilderTest {
 		assertSame(Action._new, cmd.getAction());
 		assertEquals("/flow_client-user", cmd.getAbsoluteDomainAlias());
 		assertTrue(cmd.isRootDomainOnly());
-	}
-	
-	@Test
-	public void t_event_Pre() {
-		String absUri = "/e#pre/platform/admin/p/flow_userrole/_new";
-		MockHttpServletRequest httpReq = new MockHttpServletRequest(HttpMethod.GET.name(), absUri);
-		httpReq.addParameter("b", Behavior.$execute.name());
-		
-		Command cmd = cmdBuilder.build(httpReq, null);
-		assertNotNull(cmd);
-		assertEquals(ProcessExecutorEvents.pre.name(), cmd.getEvent());
-		//assertEquals(absUri, cmd.getAbsoluteAlias() + "/_new");
 	}
 }

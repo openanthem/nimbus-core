@@ -18,7 +18,7 @@ import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFactory;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.ModelRepositoryFactory;
 import com.anthem.oss.nimbus.core.utils.JavaBeanHandler;
 
 import lombok.AccessLevel;

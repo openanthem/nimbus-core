@@ -27,7 +27,11 @@ public @interface Repo {
 		rep_ws;
 		
 		public static boolean exists(Repo repo) {
-			return repo!=null && repo.value()!=Repo.Database.rep_none;
+			return repo!=null && repo.value() != Repo.Database.rep_none;
+		}
+		
+		public static boolean isPersistable(Repo repo) {
+			return exists(repo) && (repo.value() == Database.rep_mongodb || repo.value() == Database.rep_rdbms);
 		}
 	}
 
@@ -51,4 +55,5 @@ public @interface Repo {
 	Cache cache() default Cache.rep_device;	
 	
 	boolean autoSave() default true;
+	
 }

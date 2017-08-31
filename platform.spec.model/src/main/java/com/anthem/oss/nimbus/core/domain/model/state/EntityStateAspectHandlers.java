@@ -8,23 +8,23 @@ import com.anthem.oss.nimbus.core.domain.model.state.repo.ParamStateGateway;
 import com.anthem.oss.nimbus.core.spec.contract.event.BulkEventListener;
 import com.anthem.oss.nimbus.core.spec.contract.event.EventListener;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 /**
  * @author Rakesh Patel
  *
  */
-@Getter @Setter @RequiredArgsConstructor
+@Getter @Setter @AllArgsConstructor
 public class EntityStateAspectHandlers {
+
+	private EventListener eventListener;
 	
-	private final EventListener eventListener;
+	private BulkEventListener bulkEventListener;
 	
-	private final BulkEventListener bulkEventListener;
+	private ValidatorProvider validatorProvider;
 	
-	private final ValidatorProvider validatorProvider;
-	
-	private final ParamStateGateway paramStateGateway;
+	private ParamStateGateway paramStateGateway;
 }
  

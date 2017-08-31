@@ -68,7 +68,7 @@ public class DefaultActionExecutorGet extends AbstractCommandExecutor<Param<?>> 
 			String resolvedRepAlias = StringUtils.isBlank(repo.alias()) ? rootDomainConfig.getAlias() : repo.alias();
 			
 			entity = getRepositoryFactory().get(rootDomainConfig.getRepo())
-						._get(refId, rootDomainConfig.getReferredClass(), resolvedRepAlias);
+						._get(refId, rootDomainConfig.getReferredClass(), resolvedRepAlias, eCtx.getCommandMessage().getCommand().getAbsoluteUri());
 			
 		} else {
 			entity = instantiateEntity(eCtx, rootDomainConfig);

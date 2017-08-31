@@ -42,8 +42,8 @@ public abstract class MongoDBSearch implements DBSearch {
 			return getDomainConfigBuilder().getModel(criteria.getProjectCriteria().getAlias()).getReferredClass();
 		}
 		else if(criteria.getAggregateCriteria() != null ) {
-			com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository.Aggregation aggByAlias = 
-					com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository.Aggregation.getByAlias(criteria.getAggregateCriteria());
+			com.anthem.oss.nimbus.core.domain.model.state.repo.ModelRepository.Aggregation aggByAlias = 
+					com.anthem.oss.nimbus.core.domain.model.state.repo.ModelRepository.Aggregation.getByAlias(criteria.getAggregateCriteria());
 			
 			Assert.notNull(aggByAlias, "Aggregation constant not found for the alias: " +criteria.getAggregateCriteria());
 			

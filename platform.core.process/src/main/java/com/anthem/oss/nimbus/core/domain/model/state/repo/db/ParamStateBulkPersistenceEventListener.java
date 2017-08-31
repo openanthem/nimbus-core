@@ -20,6 +20,8 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.AbstractEvent;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.ModelPersistenceHandler;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.ModelRepositoryFactory;
 import com.anthem.oss.nimbus.core.spec.contract.event.BulkEventListener;
 
 import lombok.Getter;
