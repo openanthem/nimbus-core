@@ -56,7 +56,7 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 	@SuppressWarnings("unchecked")
 	public void t1_testSearchByLookupStaticCodeValue() {
 		
-		CommandMessage cmdMsg = build("Anthem/fep/icr/p/staticCodeValue/_search?fn=lookup&where=staticCodeValue.paramCode.eq('/status')");
+		CommandMessage cmdMsg = build("Acme/fep/icr/p/staticCodeValue/_search?fn=lookup&where=staticCodeValue.paramCode.eq('/status')");
 		
 		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
 		List<Output<?>> ops  = multiOp.getOutputs();
@@ -80,7 +80,7 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 	@SuppressWarnings("unchecked")
 	public void t1_testUpdateStaticCodeValue() {
 		
-		CommandMessage cmdMsg = build("Anthem/fep/icr/p/staticCodeValue/_update");
+		CommandMessage cmdMsg = build("Acme/fep/icr/p/staticCodeValue/_update");
 		
 		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
 		List<Output<?>> ops  = multiOp.getOutputs();
@@ -97,7 +97,7 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 	@SuppressWarnings("unchecked")
 	public void t2_testSearchByLookupModel() {
 		insertClient();
-		CommandMessage cmdMsg = build("Anthem/fep/icr/p/client/_search?fn=lookup&projection.mapsTo=code:name,label:name");
+		CommandMessage cmdMsg = build("Acme/fep/icr/p/client/_search?fn=lookup&projection.mapsTo=code:name,label:name");
 		
 		//ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
 		//List<ParamValue> values = lookupFunctionHandler.execute(exContext, null);
@@ -116,7 +116,7 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 	@Test
 	public void t3_testSearchByExampleCriteriaNull() {
 		insertClient();
-		CommandMessage cmdMsg = build("Anthem/fep/icr/p/client/_search?fn=example");
+		CommandMessage cmdMsg = build("Acme/fep/icr/p/client/_search?fn=example");
 //		ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
 //		List<?> values = (List<?>)exampleFunctionHandler.execute(exContext, null);
 		
@@ -135,7 +135,7 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 	public void t4_testSearchByExampleCriteriaNotNull() {
 		Client c = insertClient();
 		
-		CommandMessage cmdMsg = build("Anthem/fep/icr/p/client/_search?fn=example");
+		CommandMessage cmdMsg = build("Acme/fep/icr/p/client/_search?fn=example");
 		cmdMsg.setRawPayload("{\"code\":\""+c.getCode()+"\"}");
 		//ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
 		//List<?> values = (List<?>)exampleFunctionHandler.execute(exContext, null);
@@ -155,7 +155,7 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 	public void t41_testSearchByQueryCriteriaNotNull() {
 		Client c = insertClient();
 		
-		CommandMessage cmdMsg = build("Anthem/fep/icr/p/client/_search?fn=query&where=client.code.eq('c1')");
+		CommandMessage cmdMsg = build("Acme/fep/icr/p/client/_search?fn=query&where=client.code.eq('c1')");
 		
 		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
 		List<Output<?>> ops  = multiOp.getOutputs();
@@ -170,7 +170,7 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 
 	@Test
 	public void t5_testSearchByQueryWithProjection() {
-		CommandMessage cmdMsg = build("Anthem/fep/icr/p/staticCodeValue/_search?fn=query&where=staticCodeValue.paramCode.eq('/status')&projection.alias=vstaticCodeValue");
+		CommandMessage cmdMsg = build("Acme/fep/icr/p/staticCodeValue/_search?fn=query&where=staticCodeValue.paramCode.eq('/status')&projection.alias=vstaticCodeValue");
 		//ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
 		//List<?> values = (List<?>)queryFunctionHandler.execute(exContext, null);
 		
@@ -187,7 +187,7 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 		
 		ClientUserGroup cug = insertClientUserGroup();
 	
-		CommandMessage cmdMsg = build("Anthem/fep/icr/p/clientusergroup/members/_search?fn=query&where=clientusergroup.id.eq('"+cug.getId()+"')");
+		CommandMessage cmdMsg = build("Acme/fep/icr/p/clientusergroup/members/_search?fn=query&where=clientusergroup.id.eq('"+cug.getId()+"')");
 		
 		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
 		List<GroupUser> values = (List<GroupUser>)multiOp.getSingleResult();
@@ -200,7 +200,7 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void t6_testSearchByQueryWithCountAggregation() {
-		CommandMessage cmdMsg = build("Anthem/fep/icr/p/staticCodeValue/_search?fn=query&where=staticCodeValue.paramCode.eq('/status')&aggregate=count");
+		CommandMessage cmdMsg = build("Acme/fep/icr/p/staticCodeValue/_search?fn=query&where=staticCodeValue.paramCode.eq('/status')&aggregate=count");
 //		ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
 //		Holder<Long> count = (Holder<Long>)queryFunctionHandler.execute(exContext, null);
 		
@@ -217,7 +217,7 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 		
 		String associationString = getAssociationString();
 		
-		CommandMessage cmdMsg = build("Anthem/fep/cmapp/p/queue/_search?fn=query&where="+associationString);
+		CommandMessage cmdMsg = build("Acme/fep/cmapp/p/queue/_search?fn=query&where="+associationString);
 		
 		//ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
 		//List<?> values = (List<?>)queryFunctionHandler.execute(exContext, null);
@@ -237,7 +237,7 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 		
 		String associationString = getAssociationString();
 		
-		CommandMessage cmdMsg = build("Anthem/fep/cmapp/p/queue/_search?fn=query&where="+associationString+"&aggregate=count");
+		CommandMessage cmdMsg = build("Acme/fep/cmapp/p/queue/_search?fn=query&where="+associationString+"&aggregate=count");
 		
 		//ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
 		//List<Holder<Integer>> values = (List<Holder<Integer>>)queryFunctionHandler.execute(exContext, null);
@@ -283,7 +283,7 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 	public void tc9_orderby_desc() {
 		inserClientUserRole();
 		
-		CommandMessage cmdMsg = build("Anthem/fep/p/userrole/_search?fn=query&where=userrole.status.eq('Active')&orderby=userrole.name.desc()");
+		CommandMessage cmdMsg = build("Acme/fep/p/userrole/_search?fn=query&where=userrole.status.eq('Active')&orderby=userrole.name.desc()");
 
 		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
 		List<Output<?>> ops  = multiOp.getOutputs();
@@ -344,7 +344,7 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 	public void tc10_orderby_asc() {
 		inserClientUserRole();
 		
-		CommandMessage cmdMsg = build("Anthem/fep/p/userrole/_search?fn=query&where=userrole.status.eq('Active')&orderby=userrole.name.asc()");
+		CommandMessage cmdMsg = build("Acme/fep/p/userrole/_search?fn=query&where=userrole.status.eq('Active')&orderby=userrole.name.asc()");
 
 		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
 		List<Output<?>> ops  = multiOp.getOutputs();
@@ -364,7 +364,7 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 	public void tc10_orderbywithprojection_asc() {
 		inserClientUserRole();
 		
-		CommandMessage cmdMsg = build("Anthem/fep/p/userrole/_search?fn=query&where=userrole.status.eq('Active')&orderby=userrole.name.asc()");
+		CommandMessage cmdMsg = build("Acme/fep/p/userrole/_search?fn=query&where=userrole.status.eq('Active')&orderby=userrole.name.asc()");
 
 		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
 		List<Output<?>> ops  = multiOp.getOutputs();

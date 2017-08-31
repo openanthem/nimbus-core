@@ -24,12 +24,10 @@ import org.springframework.web.client.RestTemplate;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
-import com.anthem.oss.nimbus.core.InvalidArgumentException;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.ExternalModelRepository;
 import com.anthem.oss.nimbus.core.entity.SearchCriteria.ExampleSearchCriteria;
 import com.anthem.oss.nimbus.core.entity.SearchCriteria.LookupSearchCriteria;
 import com.anthem.oss.nimbus.core.entity.SearchCriteria.QuerySearchCriteria;
-import com.querydsl.codegen.ParameterizedTypeImpl;
 
 import lombok.Getter;
 import lombok.Setter;
