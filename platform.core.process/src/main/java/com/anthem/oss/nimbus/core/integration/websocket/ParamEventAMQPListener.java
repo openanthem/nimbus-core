@@ -23,6 +23,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 import com.anthem.oss.nimbus.core.spec.contract.event.StateAndConfigEventListener;
+import com.anthem.oss.nimbus.core.util.JustLogit;
 
 /**
  * @author Rakesh Patel
@@ -30,7 +31,6 @@ import com.anthem.oss.nimbus.core.spec.contract.event.StateAndConfigEventListene
  */
 public class ParamEventAMQPListener implements StateAndConfigEventListener {
 
-	
 //	@Autowired
 	SimpMessageSendingOperations messageTemplate;
 
@@ -107,7 +107,6 @@ public class ParamEventAMQPListener implements StateAndConfigEventListener {
 		headerAccessor.setSessionId(webSocketSessionId);		
 		//messageTemplate.convertAndSend("/queue/updates", multiExecOutput); // TODO get the destination name from the config server
 		messageTemplate.convertAndSendToUser(webSocketSessionId,"/queue/updates", multiExecOutput,headerAccessor.getMessageHeaders(),null);
-		
 		return true;
 	}
 	

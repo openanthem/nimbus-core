@@ -2,6 +2,7 @@ package com.anthem.nimbus.platform.core.process.activiti;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.Assert;
@@ -16,6 +17,7 @@ import test.com.anthem.nimbus.platform.spec.model.comamnd.TestCommandFactory;
 
 @ContextConfiguration(classes = {BPMEngineConfig.class})
 @RunWith(SpringJUnit4ClassRunner.class)
+@EnableAutoConfiguration
 public class LoadQuadModelTest {
 		
 	@Test

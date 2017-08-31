@@ -2,6 +2,7 @@ package com.anthem.oss.nimbus.core.domain.command.execution;
 
 import static org.junit.Assert.assertNotNull;
 
+import org.apache.tomcat.util.file.Matcher;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -23,7 +24,7 @@ public class HierarchyMatchBasedBeanFinderTest extends AbstractTestConfigurer{
 	@Test
 	public void test() {
 		Command command = prepareCommand("/Anthem/admin/p/testmappedmodel/_process?fn=_set", Behavior.$execute);
-		SetFunctionHandler<?,?> functionHandler = hierarchyMatchBasedBeanFinder.findMatchingBean(SetFunctionHandler.class, constructFunctionHandlerKey(command));
+		SetFunctionHandler<?,?> functionHandler = hierarchyMatchBasedBeanFinder.findMatchingBean(SetFunctionHandler.class, ".Anthem.admin.p.testmappedmodel._process\\$execute\\?fn=_set");
 		assertNotNull(functionHandler);
 	}
 	

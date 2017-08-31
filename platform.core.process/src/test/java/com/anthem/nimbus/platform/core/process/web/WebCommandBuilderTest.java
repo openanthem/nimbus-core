@@ -10,6 +10,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.http.HttpMethod;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -136,17 +137,5 @@ public class WebCommandBuilderTest {
 		assertSame(Action._new, cmd.getAction());
 		assertEquals("/flow_client-user", cmd.getAbsoluteDomainAlias());
 		assertTrue(cmd.isRootDomainOnly());
-	}
-	
-	@Test
-	public void t_event_Pre() {
-		String absUri = "/e#pre/platform/admin/p/flow_userrole/_new";
-		MockHttpServletRequest httpReq = new MockHttpServletRequest(HttpMethod.GET.name(), absUri);
-		httpReq.addParameter("b", Behavior.$execute.name());
-		
-		Command cmd = cmdBuilder.build(httpReq, null);
-		assertNotNull(cmd);
-		assertEquals(ProcessExecutorEvents.pre.name(), cmd.getEvent());
-		//assertEquals(absUri, cmd.getAbsoluteAlias() + "/_new");
 	}
 }

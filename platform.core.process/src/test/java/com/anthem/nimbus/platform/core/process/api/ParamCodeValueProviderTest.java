@@ -148,7 +148,7 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 		List<?> values = (List<?>)ops.get(0).getValue();
 		
 		assertNotNull(values);
-		assertEquals(1, values.size());
+		assertEquals(2, values.size());
 	}
 	
 	@Test
