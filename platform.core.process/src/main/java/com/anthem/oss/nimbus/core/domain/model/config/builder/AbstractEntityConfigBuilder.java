@@ -97,6 +97,9 @@ abstract public class AbstractEntityConfigBuilder {
 			created = new DefaultModelConfig<>(referredClass);
 		}
 		
+		// annotation config: viewStyle
+		created.setUiStyles(AnnotationConfigHandler.handleSingle(referredClass, ViewStyle.class));
+		
 		// handle repo
 		Repo rep = AnnotationUtils.findAnnotation(referredClass, Repo.class);
 		created.setRepo(rep);

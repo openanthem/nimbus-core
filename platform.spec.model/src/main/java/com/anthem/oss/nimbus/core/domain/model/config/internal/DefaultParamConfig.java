@@ -48,8 +48,6 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	@JsonIgnore
 	private List<Execution.Config> executionConfigs;
 
-	private AnnotationConfig uiStyles;
-
 	private ParamConfig<StateContextEntity> contextParam;
 	
 	@JsonIgnore 

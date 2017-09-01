@@ -61,6 +61,15 @@ public class ViewConfig {
 		Options value() default Options.Inherit;
 	}
 	
+
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.TYPE})
+	@ViewStyle
+	public @interface ViewRoot {
+		
+	}
+	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
