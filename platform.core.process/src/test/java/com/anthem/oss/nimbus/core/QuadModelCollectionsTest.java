@@ -23,6 +23,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -42,6 +43,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultListParamState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultParamState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
+import com.anthem.oss.nimbus.core.integration.websocket.ParamEventAMQPListener;
 import com.anthem.oss.nimbus.core.session.UserEndpointSession;
 import com.anthem.oss.nimbus.test.sample.um.model.ServiceLine;
 import com.anthem.oss.nimbus.test.sample.um.model.ServiceLine.AuditInfo;
@@ -62,6 +64,8 @@ import test.com.anthem.nimbus.platform.spec.model.comamnd.TestCommandFactory;
 public class QuadModelCollectionsTest {
 	
 	@Autowired QuadModelBuilder quadModelBuilder;
+	
+	@MockBean protected ParamEventAMQPListener mockParamEventListener;
 	
 	@Before
 	public void before() {
@@ -96,9 +100,6 @@ public class QuadModelCollectionsTest {
 		String visiblePath = pAloha_visible.getPath();
 		assertEquals("/view_umcase/pg3/aloha/#/visible", visiblePath);
 		
-		// Listener handled in separate test case
-		pAloha_visible.getAspectHandlers().setEventListener(null);
-		
 		pAloha_visible.setState(false);
 		assertFalse(pAloha_visible.getState());
 	
@@ -129,10 +130,6 @@ public class QuadModelCollectionsTest {
 		sl.setService("Karma");
 		
 		final DefaultListParamState<ServiceLine> serviceLines = (DefaultListParamState<ServiceLine>) q.getCore().findParamByPath("/serviceLines").findIfCollection();
-		
-		// Listener handled in separate test case
-		serviceLines.getAspectHandlers().setEventListener(null);
-		
 		serviceLines.add(sl);
 		
 		UMCase core = q.getCore().getState();
@@ -221,8 +218,6 @@ public class QuadModelCollectionsTest {
 		String[] types = new String[]{"ONE", "TWO"};
 		
 		// set
-		// Listener handled in separate test case
-		pArrayString_types.getAspectHandlers().setEventListener(null);
 		pArrayString_types.setState(types);
 		assertSame(types, pArrayString_types.getState());
 		assertSame(types, pArrayString_types.getLeafState());
@@ -243,9 +238,6 @@ public class QuadModelCollectionsTest {
 		
 		// initially is null
 		assertNull(lpServiceLines.getState());
-		
-		// Listener handled in separate test case
-		lpServiceLines.getAspectHandlers().setEventListener(null);
 		
 		ServiceLine sl_0 = new ServiceLine();
 		lpServiceLines.add(sl_0);
@@ -274,9 +266,6 @@ public class QuadModelCollectionsTest {
 		final DefaultListParamState<ServiceLine> serviceLines = (DefaultListParamState<ServiceLine>) 
 				q.getCore().findParamByPath("/serviceLines").findIfCollection();
 				
-		// Listener handled in separate test case
-		serviceLines.getAspectHandlers().setEventListener(null);
-		
 		serviceLines.add(elem);
 		
 		assertSame(1, q.getCore().getState().getServiceLines().size());
@@ -310,9 +299,6 @@ public class QuadModelCollectionsTest {
 		//set
 		final DefaultParamState<Object> serviceLines = (DefaultParamState<Object>) q.getCore().findParamByPath("/serviceLines");
 		
-		// Listener handled in separate test case
-		serviceLines.getAspectHandlers().setEventListener(null);
-		
 		serviceLines.setState(newList);
 		UMCase core = q.getCore().getState();
 		
@@ -342,9 +328,6 @@ public class QuadModelCollectionsTest {
 		@SuppressWarnings("unchecked")
 		final DefaultListParamState<ServiceLine> serviceLines = 
 			(DefaultListParamState<ServiceLine>) q.getCore().findParamByPath("/serviceLines").findIfCollection();
-		
-		// Listener handled in separate test case
-		serviceLines.getAspectHandlers().setEventListener(null);
 		
 		serviceLines.add(elem);
 		UMCase core = q.getCore().getState();
@@ -392,9 +375,6 @@ public class QuadModelCollectionsTest {
 		ServiceLine vp_casl_n = new ServiceLine();
 		vp_casl_n.setService("It's elementary Watson!");
 		
-		// Listener handled in separate test case
-		vpOneServiceLine.getAspectHandlers().setEventListener(null);
-		
 		vpOneServiceLine.setState(vp_casl_n);
 		
 		assertSame(vp_casl_n, vpOneServiceLine.getState());
@@ -424,9 +404,6 @@ public class QuadModelCollectionsTest {
 		String _ALOHA = "View Says: ALOHA";
 		final DefaultParamState<Object>	viewParam =	(DefaultParamState<Object>) q.getView().findParamByPath("/pg3/aloha");
 		
-		// Listener handled in separate test case
-		viewParam.getAspectHandlers().setEventListener(null);
-		
 		viewParam.setState(_ALOHA);
 		
 		assertSame(_ALOHA, q.getCore().getState().getCaseType());
@@ -441,9 +418,6 @@ public class QuadModelCollectionsTest {
 		
 		String _ALOHA = "Core Says: ALOHA";
 		final DefaultParamState<Object> viewParam = (DefaultParamState<Object>) q.getCore().findParamByPath("/caseType");
-		
-		// Listener handled in separate test case
-		viewParam.getAspectHandlers().setEventListener(null);
 		
 		viewParam.setState(_ALOHA);
 		
@@ -475,10 +449,6 @@ public class QuadModelCollectionsTest {
 		assertNull(vp_list.getState());
 		
 		//set
-		
-		// Listener handled in separate test case
-		vp_list.getAspectHandlers().setEventListener(null);
-		
 		vp_list.setState(newList);
 		assertNotNull(vp_list.getState());
 		
@@ -536,9 +506,6 @@ public class QuadModelCollectionsTest {
 		ServiceLine vp_casl_n = new ServiceLine();
 		vp_casl_n.setService("It's elementary Watson!");
 		
-		// Listener handled in separate test case
-		vpCoreAttachedServiceLines.getAspectHandlers().setEventListener(null);
-		
 		vpCoreAttachedServiceLines.add(vp_casl_n);
 		
 		
@@ -583,10 +550,6 @@ public class QuadModelCollectionsTest {
 		assertNull(vp_list.getState());
 		
 		// set
-		
-		// Listener handled in separate test case
-		vp_list.getAspectHandlers().setEventListener(null);
-		
 		vp_list.setState(newList);
 		assertNotNull(vp_list.getState());
 		
@@ -631,9 +594,6 @@ public class QuadModelCollectionsTest {
 		Section_ServiceLine vpColElem_sl_n0 = new Section_ServiceLine();
 		vpColElem_sl_n0.setService("VIEW SAYS: It's elementary Watson!");
 		
-		// Listener handled in separate test case
-		vpServiceLines2.getAspectHandlers().setEventListener(null);
-		
 		vpServiceLines2.add(vpColElem_sl_n0);
 		
 		
@@ -666,9 +626,6 @@ public class QuadModelCollectionsTest {
 		// set
 		final DefaultParamState<Object> serviceLineParam = 
 				(DefaultParamState<Object>) q.getRoot().findParamByPath("/core_umcase/oneServiceLineConverted");
-				
-		// Listener handled in separate test case
-		serviceLineParam.getAspectHandlers().setEventListener(null);
 		
 		serviceLineParam.setState(coreSingle);
 		
@@ -690,9 +647,6 @@ public class QuadModelCollectionsTest {
 		
 		final DefaultParamState<Object> serviceLineParam = 
 				(DefaultParamState<Object>) q.getRoot().findParamByPath("/view_umcase/pg3/viewAttachedOneServiceLineConverted");
-		
-		// Listener handled in separate test case
-		serviceLineParam.getAspectHandlers().setEventListener(null);
 		
 		serviceLineParam.setState(coreSingle);
 		
@@ -718,9 +672,6 @@ public class QuadModelCollectionsTest {
 		@SuppressWarnings("unchecked")
 		final DefaultListParamState<ServiceLine> serviceLineParams = 
 				(DefaultListParamState<ServiceLine>) q.getCore().findParamByPath("/serviceLines").findIfCollection();
-		
-		// Listener handled in separate test case
-		serviceLineParams.getAspectHandlers().setEventListener(null);
 		
 		serviceLineParams.add(sl_n);
 
@@ -762,9 +713,6 @@ public class QuadModelCollectionsTest {
 		final DefaultListParamState<ServiceLine> serviceLineParams = 
 				(DefaultListParamState<ServiceLine>) q.getCore().findParamByPath("/serviceLinesConverted").findIfCollection();
 		
-		// Listener handled in separate test case
-		serviceLineParams.getAspectHandlers().setEventListener(null);
-		
 		serviceLineParams.add(sl_n);
 		
 		assertSame(sl_n, q.getCore().findParamByPath("/serviceLinesConverted/0").getState());
@@ -803,9 +751,6 @@ public class QuadModelCollectionsTest {
 		final DefaultParamState<Object> serviceLineParam = 
 				(DefaultParamState<Object>) q.getView().findParamByPath("/pg3/noConversionDetachedOneServiceLine.m");
 		
-		// Listener handled in separate test case
-		serviceLineParam.getAspectHandlers().setEventListener(null);
-		
 		serviceLineParam.setState(sl_n);
 		
 		assertSame(sl_n, q.getView().findParamByPath("/pg3/noConversionDetachedOneServiceLine.m").getState());
@@ -822,9 +767,6 @@ public class QuadModelCollectionsTest {
 		final DefaultParamState<Object> serviceLineParam = 
 				(DefaultParamState<Object>) q.getView().findParamByPath("/pg3/noConversionDetachedOneServiceLine");
 		
-		// Listener handled in separate test case
-		serviceLineParam.getAspectHandlers().setEventListener(null);
-		
 		serviceLineParam.setState(sl_n);
 		assertSame(sl_n, q.getView().findParamByPath("/pg3/noConversionDetachedOneServiceLine").getState());
 
@@ -840,9 +782,6 @@ public class QuadModelCollectionsTest {
 		
 		final DefaultParamState<Object> serviceLineParam = 
 				(DefaultParamState<Object>) q.getRoot().findParamByPath("/view_umcase/pg3/convertedDetachedOneServiceLine.m");
-		
-		// Listener handled in separate test case
-		serviceLineParam.getAspectHandlers().setEventListener(null);
 		
 		serviceLineParam.setState(coreSingle);
 		
@@ -863,9 +802,6 @@ public class QuadModelCollectionsTest {
 		
 		final DefaultParamState<Object> serviceLineParam = 
 				(DefaultParamState<Object>) q.getRoot().findParamByPath("/view_umcase/pg3/convertedDetachedOneServiceLine");
-		
-		// Listener handled in separate test case
-		serviceLineParam.getAspectHandlers().setEventListener(null);
 		
 		serviceLineParam.setState(viewModel);
 		
@@ -900,10 +836,6 @@ public class QuadModelCollectionsTest {
 		assertNotNull(cpDetachedServiceLines);
 		
 		// add
-		
-		// Listener handled in separate test case
-		cpDetachedServiceLines.getAspectHandlers().setEventListener(null);
-		
 		cpDetachedServiceLines.add(sl_n);
 		//q.getView().findParamByPath("/pg3/noConversionDetachedColServiceLines.m").findIfCollection().add(sl_n);
 		
@@ -940,9 +872,6 @@ public class QuadModelCollectionsTest {
 		@SuppressWarnings("unchecked")
 		final DefaultListParamState<ServiceLine> serviceLineParams = 
 				(DefaultListParamState<ServiceLine>) q.getView().findParamByPath("/pg3/noConversionDetachedColServiceLines").findIfCollection();
-		
-		// Listener handled in separate test case
-		serviceLineParams.getAspectHandlers().setEventListener(null);
 		
 		serviceLineParams.add(sl);
 	
@@ -996,9 +925,6 @@ public class QuadModelCollectionsTest {
 		ListParam<Section_ServiceLine> detachedViewServiceLines = q.getView().findParamByPath("/pg3/viewDetachedServiceLinesConverted").findIfCollection();
 		assertNotNull(detachedViewServiceLines);
 		assertNull(detachedViewServiceLines.getState());
-		
-		// Listener handled in separate test case
-		detachedCoreServiceLines.getAspectHandlers().setEventListener(null);
 		
 		// set to core
 		detachedCoreServiceLines.setState(coreServiceLines);
@@ -1060,9 +986,6 @@ public class QuadModelCollectionsTest {
 		ListParam<Section_ServiceLine> detachedViewServiceLines = q.getView().findParamByPath("/pg3/viewDetachedServiceLinesConverted").findIfCollection();
 		assertNotNull(detachedViewServiceLines);
 		assertNull(detachedViewServiceLines.getState());
-		
-		// Listener handled in separate test case
-		detachedViewServiceLines.getAspectHandlers().setEventListener(null);
 		
 		// set to view
 		detachedViewServiceLines.setState(viewServiceLinesState);
@@ -1150,9 +1073,6 @@ public class QuadModelCollectionsTest {
 		assertSame(0, vp_nestedService.size());
 		assertSame(0, cp_ServiceLines.size());
 		
-		// Listener handled in separate test case
-		vp_nestedService.getAspectHandlers().setEventListener(null);
-		
 		String service = "some new service";
 		vp_nestedService.add(service);
 		
@@ -1184,9 +1104,6 @@ public class QuadModelCollectionsTest {
 		// add another new elem
 		ServiceLine newElem = new ServiceLine();
 		newElem.setService("New elem added for Delete testing");
-		
-		// Listener handled in separate test case
-		vp_list.getAspectHandlers().setEventListener(null);
 		
 		vp_list.add(newElem);
 		assertEquals(oldSize+1, vp_list.size());
