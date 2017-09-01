@@ -316,10 +316,13 @@ public interface EntityState<T> {
 		
 		public boolean add(T elem);
 		public Param<T> add();
+		public boolean add(ListElemParam<T> pColElem);
 		
 		public boolean remove(ListElemParam<T> pColElem);
 		
 		public void clear();
+		
+		public boolean contains(Param<?> other);
 	}
 	
 	
@@ -346,7 +349,6 @@ public interface EntityState<T> {
 		@Override
 		public ListElemParam<T> add();
 		
-		public boolean add(ListElemParam<T> elem);
 	}
 	
 	public interface MappedListParam<T, M> extends ListParam<T>, MappedParam<List<T>, List<M>> {

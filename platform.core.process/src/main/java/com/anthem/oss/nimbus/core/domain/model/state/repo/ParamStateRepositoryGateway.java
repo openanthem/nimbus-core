@@ -13,14 +13,18 @@ import org.apache.commons.collections.CollectionUtils;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.InvalidArgumentException;
+import com.anthem.oss.nimbus.core.UnsupportedScenarioException;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.definition.Converters.ParamConverter;
 import com.anthem.oss.nimbus.core.domain.definition.Repo.Cache;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig.MappedParamConfig;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListModel;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.MappedParam;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.MappedTransientParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.InvalidStateException;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 import com.anthem.oss.nimbus.core.utils.JavaBeanHandler;
@@ -240,16 +244,34 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		MappedParam<P, ?> mappedParam = param.findIfMapped();
 		Param<P> mapsToParam = (Param<P>)mappedParam.getMapsTo();
 		
-//		// Throw error is trying to set a param that is mappedDetached with a value url provided in the path
-//		if(param.getConfig().findIfMapped().getPath().cache() == Cache.rep_none 
-//				&& param.getConfig().findIfMapped().getMappingMode() == Mode.MappedDetached
-//				&& StringUtils.isNotBlank(param.getConfig().findIfMapped().getPath().value())) {
-//			
-//			throw new InvalidStateException("Cannot set mapsTo param for mapped detached param with a path that contains the url. Param is: "+param);
-//		}
-		
-		// mapped leaf: write to mapped coreParam only if the view param is a leaf param (i.e., not a model) OR if is of same type
-		if(!param.findIfMapped().requiresConversion() && !param.isCollection()) {
+		if(mappedParam.isTransient()) {
+			MappedTransientParam<P, ?> mappedTransient = mappedParam.findIfTransient();
+			
+			// handle unassigned scenario
+			if(!mappedTransient.isAssinged()) 
+				throw new InvalidStateException("MappedTransientParam must be assigned prior to setting state. "
+						+ "Is config missing that needs to assign or re-assign for transientParam: "+mappedTransient);
+			
+			
+			// handle assigned..
+				
+			// set to view
+			if(mappedTransient.isNested())
+				_setNestedModel(currRep, mappedParam, newState);
+			
+			
+			Param<?> mapsTo = mappedTransient.getMapsTo();
+			
+			// handle collection element: add only, edit would be handled automatically if already assigned to an existing colElem
+			if(mapsTo.isCollectionElem() && !mapsTo.findIfCollectionElem().getParentModel().contains(mapsTo)) {
+				
+				// get mapsTo core and add to collection
+				ListModel mapsToElemParentModel = mapsTo.findIfCollectionElem().getParentModel();
+				mapsToElemParentModel.add(mapsTo.findIfCollectionElem());
+			}
+			
+			
+		} else if(!param.findIfMapped().requiresConversion() && !param.isCollection()) {
 			Object parentModel = param.getParentModel().instantiateOrGet();//ensure mappedFrom model is instantiated
 			
 			if(CollectionUtils.isNotEmpty(param.getConfig().getConverters())) {

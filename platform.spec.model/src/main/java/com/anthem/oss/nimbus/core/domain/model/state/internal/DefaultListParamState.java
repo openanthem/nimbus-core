@@ -297,5 +297,9 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 		
 		return true;
 	}
-	
+
+	@Override
+	public boolean contains(Param<?> other) {
+		return getNestedCollectionModel().templateParams().contains(other);
+	}
 }

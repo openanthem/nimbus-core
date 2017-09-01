@@ -114,7 +114,7 @@ public class EntityStateBuilder extends AbstractEntityStateBuilder {
 		/* if model & param are mapped, then  mapsToSAC must not be null */
 		if(mConfig.isMapped() && mapsToSAC==null) 
 			throw new InvalidConfigException("Model class: "+mConfig.getReferredClass()+" is mapped: "+mConfig.findIfMapped().getMapsTo().getReferredClass()
-						+" but mapsToSAC is not supplied for param: "+associatedParam.getPath()+". Was this model's config loaded first as part of core?");
+						+" but mapsToState is not supplied for param: "+associatedParam.getPath()+". Was this model's config loaded first as part of core?");
 		
 		DefaultModelState<T> mState = createModel(associatedParam, mConfig, aspectHandlers, mapsToSAC); 
 		

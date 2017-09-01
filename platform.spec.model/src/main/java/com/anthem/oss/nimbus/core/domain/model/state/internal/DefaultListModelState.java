@@ -97,6 +97,11 @@ public class DefaultListModelState<T> extends DefaultModelState<List<T>> impleme
 	}
 	
 	@Override
+	public boolean add(ListElemParam<T> pColElem) {
+		return getAssociatedParam().add(pColElem);
+	}
+	
+	@Override
 	public boolean remove(ListElemParam<T> pColElem) {
 		return getAssociatedParam().remove(pColElem);
 	}
@@ -104,5 +109,10 @@ public class DefaultListModelState<T> extends DefaultModelState<List<T>> impleme
 	@Override
 	public void clear() {
 		getAssociatedParam().clear();
+	}
+	
+	@Override
+	public boolean contains(Param<?> other) {
+		return getAssociatedParam().contains(other);
 	}
 }
