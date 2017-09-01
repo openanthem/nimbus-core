@@ -29,25 +29,24 @@ import lombok.ToString;
  * @author Soham Chakravarti
  *
  */
-@Getter @ToString @RequiredArgsConstructor
+@Getter @Setter @ToString @RequiredArgsConstructor
 public class DefaultModelConfig<T> extends AbstractEntityConfig<T> implements ModelConfig<T>, Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	private final Class<T> referredClass;
-	@Setter private String alias;
+	private String alias;
 	
-	@JsonIgnore @Setter private Domain domain;
-	@JsonIgnore @Setter private Model model;
+	@JsonIgnore private Domain domain;
+	@JsonIgnore private Model model;
 	
+	@JsonIgnore private Repo repo;
 	
-	@JsonIgnore @Setter private Repo repo;
+	@JsonIgnore private List<ParamConfig<?>> params;
 	
-	@JsonIgnore @Setter private List<ParamConfig<?>> params;
+	@JsonIgnore private transient ParamConfig<?> idParam;
 	
-	@JsonIgnore @Setter private transient ParamConfig<?> idParam;
-	
-	@JsonIgnore	@Setter private transient ParamConfig<?> versionParam;
+	@JsonIgnore	private transient ParamConfig<?> versionParam;
 	
 	@JsonIgnore
 	private final transient CollectionsTemplate<List<ParamConfig<?>>, ParamConfig<?>> templateParams = new CollectionsTemplate<>(
