@@ -14,6 +14,8 @@ import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.client.MockRestServiceServer;
+import org.springframework.web.client.RestTemplate;
 
 import com.anthem.oss.nimbus.core.config.BPMEngineConfig;
 import com.anthem.oss.nimbus.core.domain.command.Behavior;
@@ -46,10 +48,17 @@ public abstract class AbstractTestConfigurer {
     
     private JacksonTester<Object> json; // use this in the sub classes to validate json payload
     
+    private MockRestServiceServer mockServer;
+    
+    @Autowired
+	RestTemplate restTemplate;
+	
+	
     @Before
     public void setup() {
         ObjectMapper objectMapper = new ObjectMapper(); 
         JacksonTester.initFields(this, objectMapper);
+        mockServer = MockRestServiceServer.createServer(restTemplate);
     }
     
     protected Command prepareCommand(String uri, Behavior... behaviors){
