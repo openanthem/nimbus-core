@@ -230,7 +230,6 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 		
 		// user submit form data 
 		final String K_VAL_0 = "setting from form at: "+ new Date();
-		
 		Form_ConvertedNestedEntity form = new Form_ConvertedNestedEntity();
 		form.setVt_nested_attr_String(K_VAL_0);
 		String jsonFormPayload = converter.convert(form);
@@ -275,7 +274,7 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 		
 		// user clicks on edit link in grid :: assign colElem for edit
 		MockHttpServletRequest fnAssignEditReq = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
-				.addNested("/page_blue/tile/vm_attached_convertedList/0/editLink")
+				.addNested("/page_blue/tile/vm_attached_convertedList/0/editButton")
 				.addAction(Action._get)
 				.getMock();
 		

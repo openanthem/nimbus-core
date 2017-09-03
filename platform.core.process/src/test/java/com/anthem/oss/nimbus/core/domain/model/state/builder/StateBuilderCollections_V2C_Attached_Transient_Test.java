@@ -26,6 +26,7 @@ import com.anthem.oss.nimbus.core.TestFrameworkIntegrationScenariosApplication;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListModel;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.MappedTransientParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
@@ -33,6 +34,7 @@ import com.anthem.oss.nimbus.core.integration.websocket.ParamEventAMQPListener;
 
 import test.com.anthem.oss.nimbus.core.domain.model.SampleCoreEntity;
 import test.com.anthem.oss.nimbus.core.domain.model.SampleCoreNestedEntity;
+import test.com.anthem.oss.nimbus.core.domain.model.ui.VPSampleViewPageBlue.Section_ConvertedNestedEntity;
 import test.com.anthem.oss.nimbus.core.domain.model.ui.VPSampleViewPageRed.Form_ConvertedNestedEntity;
 import test.com.anthem.oss.nimbus.core.domain.model.ui.VRSampleViewRootEntity;
 
@@ -270,6 +272,39 @@ public class StateBuilderCollections_V2C_Attached_Transient_Test {
 		assertSame(K_VAL_NEXT, mapsToCol.findParamByPath("/0/nested_attr_String").getState());
 		assertSame(K_VAL_NEXT, pTransient.findParamByPath("/vt_nested_attr_String").getState());
 
+	}
+	
+	@Test
+	public void t07_assign_addForm_addCore_assignEdit_updateExisting() {
+		QuadModel<?, ?> q = buildQuad();
+
+		ListModel mapsToCol = findCoreListModel(q);
+		Param<Form_ConvertedNestedEntity> pTransient = findViewTransientParam(q);
+
+		// assign
+		pTransient.findIfTransient().assignMapsTo(mapsToCol.getAssociatedParam());
+
+		// user submit form data 
+		final String K_VAL_0 = "setting from form at: "+ new Date();
+		Form_ConvertedNestedEntity form = new Form_ConvertedNestedEntity();
+		form.setVt_nested_attr_String(K_VAL_0);
+		
+		pTransient.setState(form);
+		
+		// add value to mapsTo core to see effect in mapped transient
+		final String K_VAL_1 = "TEST_INTG_COL_ELEM_add "+ new Date();
+		SampleCoreNestedEntity colElemState = new SampleCoreNestedEntity();
+		colElemState.setNested_attr_String(K_VAL_1);
+		
+		mapsToCol.add(colElemState);
+		
+		// validate mapped view grid is updated with 2 records
+		ListParam<Section_ConvertedNestedEntity> listGridConverted = q.getView().findParamByPath("/page_blue/tile/vm_attached_convertedList").findIfCollection();
+		assertNotNull(listGridConverted);
+		assertSame(2, listGridConverted.size());
+		assertEquals(K_VAL_0, listGridConverted.getLeafState().get(0).getVm_nested_attr_String());
+		assertEquals(K_VAL_1, listGridConverted.getLeafState().get(1).getVm_nested_attr_String());
+		
 	}
 	
 	@Test

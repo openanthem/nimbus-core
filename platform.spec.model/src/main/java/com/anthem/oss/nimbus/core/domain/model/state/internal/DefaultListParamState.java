@@ -289,6 +289,8 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 	
 	@Override
 	public boolean add(ListElemParam<T> pColElem) {
+		List<T> list = getNestedCollectionModel().instantiateOrGet();
+		
 		// add
 		getNestedCollectionModel().templateParams().add(pColElem);
 		
