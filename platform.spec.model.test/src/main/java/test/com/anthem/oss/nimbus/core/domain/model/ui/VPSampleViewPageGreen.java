@@ -7,7 +7,6 @@ import java.util.List;
 
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
-import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Section;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Tile;
 
@@ -36,17 +35,15 @@ public class VPSampleViewPageGreen {
 		@Path("/attr_list_1_NestedEntity")
 		private List<SampleCoreNestedEntity> list_attached_noConversion_NestedEntity;
 		
-		@Path("/attr_list_2_NestedEntity")
-		private List<ConvertedNestedEntity> list_attached_Conversion_NestedEntity;
     }
 	
-	@Model
+	@MapsTo.Type(SampleCoreEntity.class)
 	@Getter @Setter
 	public static class SectionGrid {
 		
 		//@Config(url="/pageHealthConcerns/tileHealthConcerns/sectionConcerns/gridConcerns.m/_process?fn=_set&url=/p/cmcase/_search?fn=query&where=cmcase.id.eq('<!/.m/id!>')&project=/healthProblemsEnclosed")
-		@Path(linked=false)
-		private List<ConvertedNestedEntity> grid_detached_ConvertedItems;
+		@Path("/attr_list_2_NestedEntity")
+		private List<ConvertedNestedEntity> grid_attached_ConvertedItems;
     }
 	
 	@MapsTo.Type(SampleCoreNestedEntity.class)

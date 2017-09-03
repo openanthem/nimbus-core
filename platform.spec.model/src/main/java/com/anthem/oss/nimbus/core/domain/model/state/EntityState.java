@@ -296,6 +296,10 @@ public interface EntityState<T> {
 			return getMapsTo() != null;
 		}
 		
+		default void assignMapsTo(String rootMapsToPath) {
+			Param<M> mapsToTransient = findParamByPath(rootMapsToPath);
+			assignMapsTo(mapsToTransient);
+		}
 		public void assignMapsTo(Param<M> mapsToTransient);
 		public void unassignMapsTo();
 	}
