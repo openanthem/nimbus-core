@@ -25,7 +25,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
  * @author Soham Chakravarti
  *
  */
-public class DefaultActionExecutorGet extends AbstractCommandExecutor<Param<?>> {
+public class DefaultActionExecutorGet extends AbstractFunctionCommandExecutor<Param<Object>, Object> {
 
 	private CommandExecutorGateway commandGateway;
 	
@@ -36,13 +36,22 @@ public class DefaultActionExecutorGet extends AbstractCommandExecutor<Param<?>> 
 	}
 	
 
+	@SuppressWarnings("unchecked")
 	@Override
-	protected final Output<Param<?>> executeInternal(Input input) {
+	protected final Output<Object> executeInternal(Input input) {
 		ExecutionContext eCtx = handleGetDomainRoot(input.getContext());
 	
 		Param<?> p = findParamByCommandOrThrowEx(eCtx);
 		
-		return Output.instantiate(input, eCtx, p);
+		final Object outcome;
+		if(containsFunctionHandler(input)) {
+			outcome = executeFunctionHanlder(input, FunctionHandler.class);
+			
+		} else {
+			outcome = p;
+		}
+		
+		return Output.instantiate(input, eCtx, outcome);
 	}
 	
 	protected ExecutionContext handleGetDomainRoot(ExecutionContext eCtx) {

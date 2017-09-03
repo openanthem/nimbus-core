@@ -52,4 +52,10 @@ public final class MockHttpRequestBuilder {
 		
 		return this;
 	}
+	
+	public MockHttpRequestBuilder addParam(String name, String value) {
+		httpReq.addParameter(name, value);
+		
+		return this;
+	}
 }

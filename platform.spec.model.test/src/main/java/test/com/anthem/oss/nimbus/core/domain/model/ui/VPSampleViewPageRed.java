@@ -4,6 +4,8 @@
 package test.com.anthem.oss.nimbus.core.domain.model.ui;
 
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
+import com.anthem.oss.nimbus.core.domain.definition.Execution.Config;
+import com.anthem.oss.nimbus.core.domain.definition.Executions.Configs;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Nature;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Tile;
@@ -38,6 +40,9 @@ public class VPSampleViewPageRed {
 	public static class Form_ConvertedNestedEntity {
 		
 		// detect if in add mode vs. edit: add results in addition to collection elements whereas edit updates existing element
+		@Configs(
+			@Config(url="/sample_view/page_red/tile/vt_attached_convertedNestedEntity/_update")	
+		)
 		private String saveButton;
 		
 		@Path("/nested_attr_String")

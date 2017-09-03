@@ -6,6 +6,8 @@ package test.com.anthem.oss.nimbus.core.domain.model.ui;
 import java.util.List;
 
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
+import com.anthem.oss.nimbus.core.domain.definition.Execution.Config;
+import com.anthem.oss.nimbus.core.domain.definition.Executions.Configs;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Tile;
 
@@ -31,6 +33,9 @@ public class VPSampleViewPageBlue {
 	public static class TileBlue {
 		
 		// A. add new Nested Entity (via Form converted-A)
+		@Configs(
+			@Config(url="/sample_view/page_red/tile/vt_attached_convertedNestedEntity/_replace?fn=_assign&url=/.m/attr_list_2_NestedEntity")	
+		)
 		private String addButton;
 
 		// B. view/edit mapped collection to core (via converted-B)
@@ -47,6 +52,9 @@ public class VPSampleViewPageBlue {
 	public static class Section_ConvertedNestedEntity {
 		
 		// view/edit link to Form converted-A: by assigning collection element of core to Form
+		@Configs(
+			@Config(url="/sample_view/page_red/tile/vt_attached_convertedNestedEntity/_replace?fn=_assign&url=/.m")	
+		)
 		private String editButton;
 		
 		@Path("/nested_attr_String")

@@ -43,10 +43,14 @@ public enum Constants {
 	PARAM_VALUES_URI_SUFFIX("/_lookup"),
 	
 	KEY_FUNCTION("fn"),
+	KEY_FUNCTION_NAME("name"),
+	
 	KEY_NAV_ARG_PAGE_ID("pageId"),
 	
 	KEY_FN_INITSTATE_ARG_TARGET_PATH("target"),
 	KEY_FN_INITSTATE_ARG_JSON("json"),
+	
+	KEY_FN_PARAM_ARG_EXPR("expr"),
 	
 	KEY_EXECUTE_PROCESS_CTX("processContext"),
 	KEY_EXECUTE_EVAL_ARG("eval"),

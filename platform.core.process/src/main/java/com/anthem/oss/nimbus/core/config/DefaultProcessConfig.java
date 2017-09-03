@@ -11,6 +11,7 @@ import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiBPMGateway;
 import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiExpressionManager;
 import com.anthem.oss.nimbus.core.bpm.activiti.CommandExecutorTaskDelegate;
 import com.anthem.oss.nimbus.core.domain.command.execution.FunctionHandler;
+import com.anthem.oss.nimbus.core.domain.command.execution.fn.DefaultParamFunctionHandler;
 import com.anthem.oss.nimbus.core.domain.command.execution.nav.DefaultActionNewInitEntityFunctionHandler;
 import com.anthem.oss.nimbus.core.domain.command.execution.nav.PageIdEchoNavHandler;
 import com.anthem.oss.nimbus.core.domain.command.execution.process.AddCollectionsFunctionalHandler;
@@ -48,6 +49,11 @@ public class DefaultProcessConfig {
 	@Bean(name="default._new$execute?fn=_initEntity")
 	public FunctionHandler<?, ?> defaultActionNewInitFunctionHandler(BeanResolverStrategy beanResolver){
 		return new DefaultActionNewInitEntityFunctionHandler<>(beanResolver);
+	}
+	
+	@Bean(name="default._get$execute?fn=param")
+	public FunctionHandler<?, ?> defaultParamFunctionHandler(BeanResolverStrategy beanResolver){
+		return new DefaultParamFunctionHandler<>(beanResolver);
 	}
 	
 	@Bean(name="default._nav$execute?fn=default")
