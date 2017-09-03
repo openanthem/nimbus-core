@@ -284,13 +284,14 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 		// user submits form to update existing 
 		final String K_VAL_0_updated = "updating from form at: "+ new Date();
 		form.setVt_nested_attr_String(K_VAL_0_updated);
+		String jsonPayload_updated = converter.convert(form);
 		
 		MockHttpServletRequest submitUpdateFormReq = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
 				.addNested("/page_red/tile/vt_attached_convertedNestedEntity")
 				.addAction(Action._update)
 				.getMock();
 		
-		Object submitUpdateFormResp = controller.handlePut(submitUpdateFormReq, null, jsonFormPayload);
+		Object submitUpdateFormResp = controller.handlePut(submitUpdateFormReq, null, jsonPayload_updated);
 		assertNotNull(submitUpdateFormResp);
 		
 		// validate in db
