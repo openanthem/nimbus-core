@@ -53,7 +53,8 @@ public class VPSampleViewPageBlue {
 		
 		// view/edit link to Form converted-A: by assigning collection element of core to Form
 		@Configs(
-			@Config(url="/page_red/tile/vt_attached_convertedNestedEntity/_get?fn=param&expr=assignMapsTo('/.m')")	
+			@Config(url="/page_red/tile/vt_attached_convertedNestedEntity/_get?fn=param&expr=assignMapsTo(getRootExecution().findParamByPath('<!#this!>').getParentModel().getMapsTo().getAssociatedParam())")
+			//@Config(url="<!#this!>/_get?fn=param&expr=")	
 		)
 		private String editButton;
 		

@@ -305,6 +305,29 @@ public class StateBuilderCollections_V2C_Attached_Transient_Test {
 		assertEquals(K_VAL_0, listGridConverted.getLeafState().get(0).getVm_nested_attr_String());
 		assertEquals(K_VAL_1, listGridConverted.getLeafState().get(1).getVm_nested_attr_String());
 		
+		// user clicks on edit link in grid :: assign colElem for edit
+		Param pCore_0 = listGridConverted.findParamByPath("/0/editButton").getParentModel().findIfMapped().getMapsTo().getAssociatedParam();
+		assertNotNull(pCore_0);
+		Param<?> mappedTransient = listGridConverted.findParamByPath("/0/editButton")
+														.getRootDomain().findParamByPath("/page_red/tile/vt_attached_convertedNestedEntity");
+		
+		mappedTransient.findIfTransient().assignMapsTo(pCore_0);
+		
+		// user submits form to update existing 
+		final String K_VAL_0_updated = "updating from form at: "+ new Date();
+		form.setVt_nested_attr_String(K_VAL_0_updated);
+		
+		pTransient.setState(form);
+		
+		// validate
+		assertSame(2, listGridConverted.size());
+		assertEquals(K_VAL_0_updated, listGridConverted.getLeafState().get(0).getVm_nested_attr_String());
+		assertEquals(K_VAL_1, listGridConverted.getLeafState().get(1).getVm_nested_attr_String());
+		
+		assertSame(2, mapsToCol.size());
+		SampleCoreEntity core = (SampleCoreEntity)q.getCore().getState();
+		assertEquals(K_VAL_0_updated, core.getAttr_list_2_NestedEntity().get(0).getNested_attr_String());
+		assertEquals(K_VAL_1, core.getAttr_list_2_NestedEntity().get(1).getNested_attr_String());
 	}
 	
 	@Test
