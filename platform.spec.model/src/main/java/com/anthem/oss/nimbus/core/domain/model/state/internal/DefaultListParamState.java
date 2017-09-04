@@ -139,9 +139,9 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 		
 		return rLockTemplate.execute(()->{
 			
-			//return changeStateTemplate((rt, h) -> {
+			return changeStateTemplate((rt, h) -> {
 				return affectRemoveChange(pElem, getRootExecution().getExecutionRuntime(), true);
-			//});
+			});
 		});
 	}
 	
@@ -170,24 +170,25 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 			
 			if(propagateToMapsTo) {
 				boolean mapsToRemoved = affectRemoveChangeIfMapped(pElem);
-				boolean mappedRemoved = affectRemoveIfMappedOrUnMapped(pElem);
-				
-				
-				boolean requiresConversion = pElem.findIfMapped().requiresConversion();
-				
-				// shouldn't have to remove if param is mapped with no-conversion
-				if(!requiresConversion && mappedRemoved)
-					throw new InvalidStateException("Mapped param doesn't require conversion and hence would necessiate removal only from mapsTo collection. "
-							+ " Found mapsToRemoved: "+mapsToRemoved+" for mapsToElem: "+pElem.findIfMapped().getMapsTo()
-							+ " Found mappedRemoved: "+mappedRemoved+" for mappedElem: "+pElem);
-				
-				if(!requiresConversion)
-					return mapsToRemoved;
-				
-				else if(((mapsToRemoved && mappedRemoved) || (!mapsToRemoved && !mappedRemoved)))
-					return true;
-				
-				return true;
+				return mapsToRemoved;
+//				boolean mappedRemoved = affectRemoveIfMappedOrUnMapped(pElem);
+//				
+//				
+//				boolean requiresConversion = pElem.findIfMapped().requiresConversion();
+//				
+//				// shouldn't have to remove if param is mapped with no-conversion
+//				if(!requiresConversion && mappedRemoved)
+//					throw new InvalidStateException("Mapped param doesn't require conversion and hence would necessiate removal only from mapsTo collection. "
+//							+ " Found mapsToRemoved: "+mapsToRemoved+" for mapsToElem: "+pElem.findIfMapped().getMapsTo()
+//							+ " Found mappedRemoved: "+mappedRemoved+" for mappedElem: "+pElem);
+//				
+//				if(!requiresConversion)
+//					return mapsToRemoved;
+//				
+//				else if(((mapsToRemoved && mappedRemoved) || (!mapsToRemoved && !mappedRemoved)))
+//					return true;
+//				
+//				return true;
 	//			throw new InvalidStateException("Both mapped & mapsTo elems in collection must be removed. "
 	//					+ " Found mapsToRemoved: "+mapsToRemoved+" for mapsToElem: "+pElem.findIfMapped().getMapsTo()
 	//					+ " Found mappedRemoved: "+mappedRemoved+" for mappedElem: "+pElem);
