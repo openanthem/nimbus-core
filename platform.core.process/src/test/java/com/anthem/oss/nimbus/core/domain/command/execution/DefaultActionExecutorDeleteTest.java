@@ -67,6 +67,13 @@ public class DefaultActionExecutorDeleteTest extends AbstractFrameworkIngeration
 		Object colDelete_Resp = controller.handleDelete(colElemDelete_Req, null);
 		assertNotNull(colDelete_Resp);
 		
+		// db validation - after delete
+		SampleCoreEntity coreAfter = mongo.findById(refId, SampleCoreEntity.class, CORE_DOMAIN_ALIAS);
+		assertEquals(colState.size()-1, coreAfter.getAttr_list_1_NestedEntity().size());
+		// validate that the earlier "index[1]" elem is now available as "index[0]"
+		assertEquals(colState.get(1).getNested_attr_String(), coreAfter.getAttr_list_1_NestedEntity().get(0).getNested_attr_String());
+
+
 		// object validation - after delete
 		MockHttpServletRequest colGet_Req = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(refId)
 				.addNested("/attr_list_1_NestedEntity").addAction(Action._get).getMock();
@@ -77,13 +84,7 @@ public class DefaultActionExecutorDeleteTest extends AbstractFrameworkIngeration
 		
 		assertEquals(colState.size()-1, pListNested.size());
 		assertEquals(colState.get(1).getNested_attr_String(), pListNested.findParamByPath("/1/nested_attr_String").getState());
-		
-		
-		// db validation - after delete
-		SampleCoreEntity coreAfter = mongo.findById(refId, SampleCoreEntity.class, CORE_DOMAIN_ALIAS);
-		assertEquals(colState.size()-1, core.getAttr_list_1_NestedEntity().size());
-		// validate that the earlier "index[1]" elem is now available as "index[0]"
-		assertEquals(colState.get(1).getNested_attr_String(), core.getAttr_list_1_NestedEntity().get(0).getNested_attr_String());
+
 	}
 
 }

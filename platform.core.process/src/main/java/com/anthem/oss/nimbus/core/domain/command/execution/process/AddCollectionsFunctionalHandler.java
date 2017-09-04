@@ -30,12 +30,14 @@ public class AddCollectionsFunctionalHandler <T,S> implements FunctionHandler<T,
 	
 	@Override
 	public S execute(ExecutionContext eCtx, Param<T> actionParameter) {
-		
 		CommandMessage cmdMsg = eCtx.getCommandMessage();
-		Class<?> convertToClass = actionParameter.getConfig().getType().findIfCollection().getElementConfig().getReferredClass();
+//		Class<?> convertToClass = actionParameter.getConfig().getType().findIfCollection().getElementConfig().getReferredClass();
+		
 		ModelConfig<Object> mConfig = actionParameter.getConfig().getType().findIfCollection().getElementConfig().getType().findIfNested().getModel();
 		//TODO - converter cannot convert mapsTo object. The payload has to match the object representation. Need to fix this to use mapsTo Path for convert
-		Object convertedObject = converter.convert(convertToClass, cmdMsg.getRawPayload());	
+		
+		Object convertedObject = converter.convert(actionParameter.getConfig().getType().findIfCollection().getElementConfig(), cmdMsg.getRawPayload());	
+		
 		String targetState = cmdMsg.getCommand().getFirstParameterValue("set");
 		repo._new(mConfig, convertedObject);
 		Param<T> param = eCtx.getQuadModel().getCore().findParamByPath(targetState);

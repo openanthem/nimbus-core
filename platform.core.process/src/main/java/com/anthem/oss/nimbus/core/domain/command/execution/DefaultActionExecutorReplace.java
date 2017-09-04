@@ -27,7 +27,7 @@ public class DefaultActionExecutorReplace extends AbstractCommandExecutor<Boolea
 		
 		Param<Object> p = findParamByCommandOrThrowEx(eCtx);
 		
-		Object state = getConverter().convert(p.getConfig().getReferredClass(), eCtx.getCommandMessage().getRawPayload());
+		Object state = getConverter().convert(p.getConfig(), eCtx.getCommandMessage().getRawPayload());
 		
 		/* 
 		 * TODO setState should be used instead of below repo call once the change detection is implemented during setState. 
