@@ -45,6 +45,13 @@ public class VPSampleViewPageRed {
 		)
 		private String saveButton;
 		
+		// 1. delete mapsTo elem	2. unassign
+		@Configs({
+			@Config(url="<!#this!>/../.m/_delete"),
+			@Config(url="<!#this!>/../_get?fn=param&expr=unassignMapsTo()")	
+		})
+		private String deleteButton;
+		
 		@Path("/nested_attr_String")
 		private String vt_nested_attr_String;
 	}

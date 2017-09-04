@@ -4,11 +4,14 @@
 package com.anthem.oss.nimbus.core.domain.command.execution.fn;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -18,6 +21,8 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import com.anthem.oss.nimbus.core.AbstractFrameworkIngerationPersistableTests;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
+import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListModel;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 
@@ -287,7 +292,7 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 		String jsonPayload_updated = converter.convert(form);
 		
 		MockHttpServletRequest submitUpdateFormReq = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
-				.addNested("/page_red/tile/vt_attached_convertedNestedEntity")
+				.addNested("/page_red/tile/vt_attached_convertedNestedEntity/saveButton")
 				.addAction(Action._update)
 				.getMock();
 		
@@ -298,5 +303,67 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 		SampleCoreEntity core = mongo.findById(refId, SampleCoreEntity.class, CORE_DOMAIN_ALIAS);
 		assertEquals(K_VAL_0_updated, core.getAttr_list_2_NestedEntity().get(0).getNested_attr_String());
 		assertEquals(K_VAL_1, core.getAttr_list_2_NestedEntity().get(1).getNested_attr_String());
+	}
+	
+	@Test
+	public void t08_assign_existing_delete() {
+		String refId = createOrGetDomainRoot_RefId();
+		
+		// add value to mapsTo core
+		List<ConvertedNestedEntity> nestedCol = new ArrayList<>();
+		
+		final String K_VAL_0 = "0. TEST_INTG_COL_ELEM_add "+ new Date();
+		ConvertedNestedEntity elem0 = new ConvertedNestedEntity();
+		elem0.setNested_attr_String(K_VAL_0);
+		nestedCol.add(elem0);
+		
+		final String K_VAL_1 = "1. TEST_INTG_COL_ELEM_add "+ new Date();
+		ConvertedNestedEntity elem1 = new ConvertedNestedEntity();
+		elem1.setNested_attr_String(K_VAL_1);
+		nestedCol.add(elem1);
+		
+		MockHttpServletRequest setColReq = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
+				.addNested("/page_green/tile/section_grid/grid_attached_ConvertedItems")
+				.addAction(Action._new)
+				.getMock();
+		
+		Object setColResp = controller.handlePost(setColReq, converter.convert(nestedCol));
+		assertNotNull(setColResp);
+		
+		// assign 0th elem to transient parameter -- user clicks on edit link in grid :: assign colElem for edit
+		MockHttpServletRequest fnAssignEditReq = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
+				.addNested("/page_blue/tile/vm_attached_convertedList/0/editButton")
+				.addAction(Action._get)
+				.getMock();
+		
+		Object fnAssignEditResp = controller.handleGet(fnAssignEditReq, null);
+		assertNotNull(fnAssignEditResp);
+		
+		// simulate delete action
+		MockHttpServletRequest deleteReq = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
+				.addNested("/page_red/tile/vt_attached_convertedNestedEntity/deleteButton")
+				.addAction(Action._get)
+				.getMock();
+		
+		Object deleteResp = controller.handleGet(deleteReq, null);
+		assertNotNull(deleteResp);
+		
+		// validate
+		MockHttpServletRequest getColReq = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
+				.addNested("/page_green/tile/section_grid/grid_attached_ConvertedItems")
+				.addAction(Action._get)
+				.getMock();
+		
+		Object getColResp = controller.handleGet(getColReq, null);
+		assertNotNull(getColResp);
+		
+		ListParam<ConvertedNestedEntity> listGridConverted = ExtractResponseOutputUtils.extractOutput(getColResp);
+		assertSame(1, listGridConverted.size());
+		assertEquals(K_VAL_1, listGridConverted.findParamByPath("/1/nested_attr_String").getState());
+		
+		// validate in db
+		SampleCoreEntity core = mongo.findById(refId, SampleCoreEntity.class, CORE_DOMAIN_ALIAS);
+		assertSame(1, core.getAttr_list_2_NestedEntity().size());
+		assertEquals(K_VAL_1, core.getAttr_list_2_NestedEntity().get(0).getNested_attr_String());
 	}
 }

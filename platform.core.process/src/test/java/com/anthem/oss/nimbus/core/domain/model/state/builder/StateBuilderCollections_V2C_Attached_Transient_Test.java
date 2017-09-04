@@ -35,6 +35,7 @@ import com.anthem.oss.nimbus.core.integration.websocket.ParamEventAMQPListener;
 import test.com.anthem.oss.nimbus.core.domain.model.SampleCoreEntity;
 import test.com.anthem.oss.nimbus.core.domain.model.SampleCoreNestedEntity;
 import test.com.anthem.oss.nimbus.core.domain.model.ui.VPSampleViewPageBlue.Section_ConvertedNestedEntity;
+import test.com.anthem.oss.nimbus.core.domain.model.ui.VPSampleViewPageGreen.ConvertedNestedEntity;
 import test.com.anthem.oss.nimbus.core.domain.model.ui.VPSampleViewPageRed.Form_ConvertedNestedEntity;
 import test.com.anthem.oss.nimbus.core.domain.model.ui.VRSampleViewRootEntity;
 
@@ -331,7 +332,41 @@ public class StateBuilderCollections_V2C_Attached_Transient_Test {
 	}
 	
 	@Test
-	public void t7_assign_state_set_delete() {
+	public void t08_assign_state_set_delete() {
+		QuadModel<?, ?> q = buildQuad();
+		
+		ListModel<SampleCoreNestedEntity> mapsToCol = findCoreListModel(q);
+		Param pTransient = findViewTransientParam(q);
+		
+		// add value to mapsTo core
+		final String K_VAL_0 = "0. TEST_INTG_COL_ELEM_add "+ new Date();
+		SampleCoreNestedEntity elem0 = new SampleCoreNestedEntity();
+		elem0.setNested_attr_String(K_VAL_0);
+		mapsToCol.add(elem0);
+		
+		final String K_VAL_1 = "1. TEST_INTG_COL_ELEM_add "+ new Date();
+		SampleCoreNestedEntity elem1 = new SampleCoreNestedEntity();
+		elem1.setNested_attr_String(K_VAL_1);
+		mapsToCol.add(elem1);
+		
+		// assign 0th elem to transient parameter
+		pTransient.findIfTransient().assignMapsTo(mapsToCol.getParams().get(0));
+		
+		// simulate delete action
+		boolean removed = pTransient.findIfMapped().getMapsTo().findIfCollectionElem().remove();
+		assertTrue(removed);
+
+		// unassign
+		pTransient.findIfTransient().unassignMapsTo();
+		assertFalse(pTransient.findIfTransient().isAssinged());
+		
+		// validate
+		assertSame(1, mapsToCol.size());
+		assertEquals(K_VAL_1, mapsToCol.findParamByPath("/1/nested_attr_String").getState());
+		
+		ListParam<ConvertedNestedEntity> listGridConverted = q.getView().findParamByPath("/page_green/tile/section_grid/grid_attached_ConvertedItems").findIfCollection();
+		assertSame(1, listGridConverted.size());
+		assertEquals(K_VAL_1, listGridConverted.findParamByPath("/1/nested_attr_String").getState());
 		
 	}
 	

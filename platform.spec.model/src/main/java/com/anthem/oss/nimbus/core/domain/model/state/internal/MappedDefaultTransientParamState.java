@@ -86,5 +86,7 @@ public class MappedDefaultTransientParamState<T, M> extends DefaultParamState<T>
 		getMapsTo().deregisterSubscriber(this);
 		
 		getType().findIfTransient().unassign();
+		
+		setMapsToTransient(null);
 	}
 }
