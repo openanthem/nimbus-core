@@ -147,9 +147,9 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 		form.setVt_nested_attr_String(K_VAL);
 		String jsonPayload = converter.convert(form);
 		
-		// set to form
+		// user clicks on save button :: set to form 
 		MockHttpServletRequest updateReq = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
-				.addNested("/page_red/tile/vt_attached_convertedNestedEntity")
+				.addNested("/page_red/tile/vt_attached_convertedNestedEntity/saveButton")
 				.addAction(Action._update)
 				.getMock();
 		

@@ -365,9 +365,9 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public <P> Param<P> findParamByPath(String[] pathArr) {
-		@SuppressWarnings("unchecked")
 		final Param<P> _this = (Param<P>)this;
 		
 		// return self if no path is provided
@@ -376,6 +376,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 
 		// find param with top most array element
 		final String currTopParamPathSegment = pathArr[0];
+
 		final Param<P> currTopParam = (Param<P>)findParamByPathInSelf(currTopParamPathSegment);
 		
 		if(currTopParam!=null)
@@ -397,6 +398,19 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 
 	public Param<?> findParamByPathInModel(String singlePathSegment) {
+		// parent?
+		if(StringUtils.equals(singlePathSegment, Constants.SEPARATOR_URI_PARENT.code))
+			return getParentModel().getAssociatedParam();
+		
+		// domain root?
+		if(StringUtils.equals(singlePathSegment, Constants.SEPARATOR_URI_ROOT_DOMAIN.code))
+			return getRootDomain().getAssociatedParam();
+		
+		// execution root?
+		if(StringUtils.equals(singlePathSegment, Constants.SEPARATOR_URI_ROOT_EXEC.code))
+			return getRootExecution().getAssociatedParam();
+
+		// context model?
 		if(StringUtils.equals(singlePathSegment, Constants.SEPARATOR_CONFIG_ATTRIB.code))
 			return getContextModel().getAssociatedParam();
 

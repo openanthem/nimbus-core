@@ -34,7 +34,7 @@ public class VPSampleViewPageBlue {
 		
 		// A. add new Nested Entity (via Form converted-A)
 		@Configs(
-			@Config(url="/page_red/tile/vt_attached_convertedNestedEntity/_get?fn=param&expr=assignMapsTo(getParentModel().findParamByPath('/.m/attr_list_2_NestedEntity'))")	
+			@Config(url="/page_red/tile/vt_attached_convertedNestedEntity/_get?fn=param&expr=assignMapsTo('../.m/attr_list_2_NestedEntity')")	
 		)
 		private String addButton;
 
@@ -53,8 +53,7 @@ public class VPSampleViewPageBlue {
 		
 		// view/edit link to Form converted-A: by assigning collection element of core to Form
 		@Configs(
-			@Config(url="/page_red/tile/vt_attached_convertedNestedEntity/_get?fn=param&expr=assignMapsTo(getRootExecution().findParamByPath('<!#this!>').getParentModel().getMapsTo().getAssociatedParam())")
-			//@Config(url="<!#this!>/_get?fn=param&expr=")	
+			@Config(url="/page_red/tile/vt_attached_convertedNestedEntity/_get?fn=param&expr=assignMapsTo('/.d/<!#this!>/../.m')")
 		)
 		private String editButton;
 		

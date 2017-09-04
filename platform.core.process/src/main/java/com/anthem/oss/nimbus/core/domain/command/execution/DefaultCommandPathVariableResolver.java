@@ -56,7 +56,7 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 			return mapSelf(param, pathToResolve);
 		
 		if(StringUtils.startsWithIgnoreCase(pathToResolve, Constants.MARKER_COMMAND_PARAM_CURRENT_SELF.code))
-			return param.getPath();
+			return StringUtils.removeStart(param.getPath(), param.getRootDomain().getPath());
 		
 		if(StringUtils.startsWithIgnoreCase(pathToResolve, Constants.MARKER_REF_ID.code))
 			return param.getRootExecution().getRootCommand().getRefId(Type.DomainAlias);

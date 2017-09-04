@@ -41,7 +41,7 @@ public class VPSampleViewPageRed {
 		
 		// detect if in add mode vs. edit: add results in addition to collection elements whereas edit updates existing element
 		@Configs(
-			@Config(url="/sample_view/page_red/tile/vt_attached_convertedNestedEntity/_update")	
+			@Config(url="<!#this!>/../_update")	
 		)
 		private String saveButton;
 		
