@@ -51,4 +51,6 @@ public interface ExecutionContextLoader {
 	public ExecutionContext load(Command rootDomainCmd);
 	
 	public void unload(ExecutionContext eCtx);
+	
+	public void clear();
 }

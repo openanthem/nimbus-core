@@ -21,7 +21,6 @@ import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
-import com.anthem.oss.nimbus.core.util.JustLogit;
 
 /**
  * @author Soham Chakravarti
@@ -37,8 +36,6 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 	private final Map<String, ExecutionContext> sessionCache;
 	
 	private final QuadModelBuilder quadModelBuilder;
-	
-	private final JustLogit logit = new JustLogit(this.getClass());
 	
 	public DefaultExecutionContextLoader(BeanResolverStrategy beanResolver) {
 		this.domainConfigBuilder = beanResolver.get(DomainConfigBuilder.class);
@@ -149,18 +146,6 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 	
 	private boolean queuePut(ExecutionContext eCtx) {
 		synchronized (sessionCache) {
-			if(sessionCache.size()>=100) { 
-				// shutdown
-				sessionCache.values().stream()
-					.forEach(e->{
-						e.getQuadModel().getRoot().getExecutionRuntime().stop();
-						logit.debug(()->"sessionCache: Found remaining capacity = 0, removed ExecutionContext: "+e.getId());
-					});
-				
-				// clear cache
-				sessionCache.clear();
-			}
-			
 			sessionCache.put(getSessionKey(eCtx), eCtx);
 		}
 		return true;
@@ -174,6 +159,20 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 		synchronized (sessionCache) {
 			ExecutionContext removed = sessionCache.remove(getSessionKey(eCtx));
 			return removed!=null;
+		}
+	}
+	
+	@Override
+	public void clear() {
+		synchronized (sessionCache) {
+			// shutdown
+			sessionCache.values().stream()
+				.forEach(e->{
+					e.getQuadModel().getRoot().getExecutionRuntime().stop();
+				});
+			
+			// clear cache
+			sessionCache.clear();	
 		}
 	}
 }

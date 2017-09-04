@@ -2,6 +2,8 @@ package com.anthem.oss.nimbus.core.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutor;
@@ -48,7 +50,8 @@ public class DefaultCoreExecutorConfig {
 		return new DefaultCommandPathVariableResolver(beanResolver);
 	}
 	
-	@Bean
+	@Bean(name="default.ExecutionContextLoader", destroyMethod="clear") 
+	@Scope(proxyMode=ScopedProxyMode.TARGET_CLASS, scopeName="session")
 	public ExecutionContextLoader defaultExecutionContextLoader(BeanResolverStrategy beanResolver) {
 		return new DefaultExecutionContextLoader(beanResolver);
 	}
