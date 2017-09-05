@@ -11,17 +11,17 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.util.Assert;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
-import com.anthem.oss.nimbus.core.AbstractTestConfigurer;
+import com.anthem.oss.nimbus.core.AbstractFrameworkIntegrationTests;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutorGateway;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
@@ -40,10 +40,8 @@ import com.anthem.oss.nimbus.core.entity.user.GroupUser;
  * @author Rakesh Patel
  *
  */
-@EnableAutoConfiguration
-@ActiveProfiles("test")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
+public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTests {
 
 	@Autowired
 	MongoOperations mongoOps;
@@ -51,6 +49,9 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 	@Autowired
 	RepoBasedCodeToDescriptionConverter converter;
 	
+	@Autowired
+	@Qualifier("default.processGateway")
+	CommandExecutorGateway commandGateway;
 	
 	@Test
 	@SuppressWarnings("unchecked")
@@ -58,7 +59,7 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 		
 		CommandMessage cmdMsg = build("Acme/fep/icr/p/staticCodeValue/_search?fn=lookup&where=staticCodeValue.paramCode.eq('/status')");
 		
-		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
+		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
 		List<Output<?>> ops  = multiOp.getOutputs();
 		
 		assertNotNull(ops);
@@ -70,7 +71,6 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 	}
 	
 	@Test
-	@SuppressWarnings("unchecked")
 	public void t11_testSearchByLookupStaticCodeValueElemMatch() {
 		
 		assertEquals("Anticardiolpin Antibodies",converter.serialize("ACL"));
@@ -82,7 +82,7 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 		
 		CommandMessage cmdMsg = build("Acme/fep/icr/p/staticCodeValue/_update");
 		
-		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
+		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
 		List<Output<?>> ops  = multiOp.getOutputs();
 		
 		assertNotNull(ops);
@@ -102,7 +102,7 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 		//ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
 		//List<ParamValue> values = lookupFunctionHandler.execute(exContext, null);
 		
-		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
+		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
 		List<Output<?>> ops  = multiOp.getOutputs();
 		
 		assertNotNull(ops);
@@ -120,7 +120,7 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 //		ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
 //		List<?> values = (List<?>)exampleFunctionHandler.execute(exContext, null);
 		
-		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
+		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
 		List<Output<?>> ops  = multiOp.getOutputs();
 		
 		assertNotNull(ops);
@@ -140,7 +140,7 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 		//ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
 		//List<?> values = (List<?>)exampleFunctionHandler.execute(exContext, null);
 		
-		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
+		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
 		List<Output<?>> ops  = multiOp.getOutputs();
 		
 		assertNotNull(ops);
@@ -157,7 +157,7 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 		
 		CommandMessage cmdMsg = build("Acme/fep/icr/p/client/_search?fn=query&where=client.code.eq('c1')");
 		
-		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
+		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
 		List<Output<?>> ops  = multiOp.getOutputs();
 		
 		assertNotNull(ops);
@@ -174,7 +174,7 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 		//ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
 		//List<?> values = (List<?>)queryFunctionHandler.execute(exContext, null);
 		
-		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
+		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
 		List<?> values = (List<?>)multiOp.getSingleResult();
 		
 		assertNotNull(values);
@@ -189,7 +189,7 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 	
 		CommandMessage cmdMsg = build("Acme/fep/icr/p/clientusergroup/members/_search?fn=query&where=clientusergroup.id.eq('"+cug.getId()+"')");
 		
-		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
+		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
 		List<GroupUser> values = (List<GroupUser>)multiOp.getSingleResult();
 		
 		assertNotNull(values);
@@ -204,7 +204,7 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 //		ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
 //		Holder<Long> count = (Holder<Long>)queryFunctionHandler.execute(exContext, null);
 		
-		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
+		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
 		Holder<Long> count = (Holder<Long>)multiOp.getSingleResult();
 		
 		assertNotNull(count);
@@ -222,7 +222,7 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 		//ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
 		//List<?> values = (List<?>)queryFunctionHandler.execute(exContext, null);
 		
-		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
+		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
 		List<?> values = (List<?>)multiOp.getSingleResult();
 		
 		Assert.notEmpty(values, "values cannot be empty");
@@ -242,7 +242,7 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 		//ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
 		//List<Holder<Integer>> values = (List<Holder<Integer>>)queryFunctionHandler.execute(exContext, null);
 		
-		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
+		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
 		List<Holder<Integer>> values = (List<Holder<Integer>>)multiOp.getSingleResult();
 		
 		Assert.notEmpty(values, "values cannot be empty");
@@ -279,13 +279,13 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 	}
 	
 	@Test
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({ "unchecked" })
 	public void tc9_orderby_desc() {
 		inserClientUserRole();
 		
 		CommandMessage cmdMsg = build("Acme/fep/p/userrole/_search?fn=query&where=userrole.status.eq('Active')&orderby=userrole.name.desc()");
 
-		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
+		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
 		List<Output<?>> ops  = multiOp.getOutputs();
 		
 		assertNotNull(ops);
@@ -300,7 +300,6 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 	}
 	
 	@Test
-	@SuppressWarnings("rawtypes")
 	public void tc10_orderby_desc() {
 		ClientUserRole clientUserRole = new ClientUserRole();
 		clientUserRole.setName("sandeep");
@@ -340,13 +339,13 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 	}
 	
 	@Test
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({ "unchecked" })
 	public void tc10_orderby_asc() {
 		inserClientUserRole();
 		
 		CommandMessage cmdMsg = build("Acme/fep/p/userrole/_search?fn=query&where=userrole.status.eq('Active')&orderby=userrole.name.asc()");
 
-		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
+		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
 		List<Output<?>> ops  = multiOp.getOutputs();
 		
 		assertNotNull(ops);
@@ -360,13 +359,13 @@ public class ParamCodeValueProviderTest extends AbstractTestConfigurer {
 	}
 	
 	@Test
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({ "unchecked" })
 	public void tc10_orderbywithprojection_asc() {
 		inserClientUserRole();
 		
 		CommandMessage cmdMsg = build("Acme/fep/p/userrole/_search?fn=query&where=userrole.status.eq('Active')&orderby=userrole.name.asc()");
 
-		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
+		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
 		List<Output<?>> ops  = multiOp.getOutputs();
 		
 		assertNotNull(ops);
