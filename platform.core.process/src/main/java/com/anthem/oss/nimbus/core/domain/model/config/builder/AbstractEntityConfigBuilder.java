@@ -15,13 +15,12 @@ import java.util.function.Consumer;
 import javax.validation.Constraint;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.util.ClassUtils;
 
+import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.UnsupportedScenarioException;
 import com.anthem.oss.nimbus.core.domain.config.builder.AnnotationConfigHandler;
 import com.anthem.oss.nimbus.core.domain.definition.AssociatedEntity;
@@ -54,21 +53,25 @@ import com.anthem.oss.nimbus.core.util.GenericUtils;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 /**
  * @author Soham Chakravarti
  *
  */
+@Getter @Setter
 abstract public class AbstractEntityConfigBuilder {
 
 	protected JustLogit logit = new JustLogit(getClass());
 	
-	@Autowired RulesEngineFactoryProducer rulesEngineFactoryProducer;
+	private final BeanResolverStrategy beanResolver;
+	private final RulesEngineFactoryProducer rulesEngineFactoryProducer;
 	
-	@Autowired
-	ApplicationContext ctx;
-
+	public AbstractEntityConfigBuilder(BeanResolverStrategy beanResolver) {
+		this.beanResolver = beanResolver;
+		this.rulesEngineFactoryProducer = beanResolver.get(RulesEngineFactoryProducer.class);
+	}
 	
 	abstract public <T> ModelConfig<T> buildModel(Class<T> clazz, EntityConfigVistor visitedModels);
 	
@@ -393,10 +396,11 @@ abstract public class AbstractEntityConfigBuilder {
 		
 		if(AnnotatedElementUtils.isAnnotated(f, Converters.class)) {
 			Converters convertersAnnotation = AnnotationUtils.getAnnotation(f, Converters.class);
+			
 			List<ParamConverter> converters = new ArrayList<>();
 			
 			Arrays.asList(convertersAnnotation.converters())
-						.forEach((converterClass)->converters.add(ctx.getBean(converterClass)));
+						.forEach((converterClass)->converters.add(beanResolver.get(converterClass)));
 			
 			created.setConverters(converters);
 		}

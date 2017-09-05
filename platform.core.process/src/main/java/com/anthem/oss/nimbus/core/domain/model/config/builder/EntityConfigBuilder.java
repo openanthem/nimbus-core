@@ -13,6 +13,7 @@ import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
 
+import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.definition.ConfigNature;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
@@ -35,7 +36,9 @@ public class EntityConfigBuilder extends AbstractEntityConfigBuilder {
 
 	private final Map<String, String> typeClassMappings;
 	
-	public EntityConfigBuilder(Map<String, String> typeClassMappings) {
+	public EntityConfigBuilder(BeanResolverStrategy beanResolver, Map<String, String> typeClassMappings) {
+		super(beanResolver);
+		
 		this.typeClassMappings = typeClassMappings;
 	}
 	
