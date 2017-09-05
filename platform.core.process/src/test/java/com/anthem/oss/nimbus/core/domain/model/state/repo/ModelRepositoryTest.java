@@ -13,12 +13,8 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-//import org.springframework.test.web.client.MockRestServiceServer;
-import org.springframework.test.web.client.MockRestServiceServer;
-import org.springframework.web.client.RestTemplate;
 
 import com.anthem.oss.nimbus.core.AbstractTestConfigurer;
 import com.anthem.oss.nimbus.core.domain.command.Command;
