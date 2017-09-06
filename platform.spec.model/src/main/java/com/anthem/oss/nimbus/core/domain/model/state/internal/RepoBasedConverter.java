@@ -12,7 +12,7 @@ import com.anthem.oss.nimbus.core.domain.definition.Converters.ParamConverter;
  * @author Rakesh Patel
  *
  */
-public abstract class RepoBasedCodeToDescriptionConverter implements ParamConverter<String, String> {
+public abstract class RepoBasedConverter implements ParamConverter<String, String> {
 
 	@Autowired 
 	protected CommandExecutorGateway gateway;

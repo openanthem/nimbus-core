@@ -29,11 +29,11 @@ public class HierarchyMatchBasedBeanFinderTest extends AbstractFrameworkIntegrat
 	private String constructFunctionHandlerKey(Command command){
 		StringBuilder key = new StringBuilder();
 		String functionName = command.getFirstParameterValue(Constants.KEY_FUNCTION.code);
-		String absoluteUri = command.getAbsoluteUri();
-		absoluteUri = absoluteUri.replaceAll(Constants.SEPARATOR_URI.code, "\\.");
-		key.append(absoluteUri).append(".").append(command.getAction().toString())
-		   .append(Behavior.$execute.getCode())
-		   .append(Constants.REQUEST_PARAMETER_MARKER.code).append(Constants.KEY_FUNCTION.code).append("=").append(functionName);
+
+		final String uri = command.getAbsoluteAlias();
+		key.append(uri).append(".").append(command.getAction().toString())
+		.append(Constants.SEPARATOR_BEHAVIOR_START).append(Behavior.$execute.getCode().replaceAll("_", ""))
+		.append(Constants.REQUEST_PARAMETER_MARKER.code).append(Constants.KEY_FUNCTION.code).append("=").append(functionName);
 		return key.toString();
 	}	
 	

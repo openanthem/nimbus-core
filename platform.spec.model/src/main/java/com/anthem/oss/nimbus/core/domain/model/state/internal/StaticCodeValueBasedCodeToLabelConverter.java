@@ -19,7 +19,7 @@ import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
  * @author Rakesh Patel
  *
  */
-public class StaticCodeValueBasedCodeToDescConverter extends RepoBasedCodeToDescriptionConverter {
+public class StaticCodeValueBasedCodeToLabelConverter extends RepoBasedConverter {
 
 	
 	@SuppressWarnings("unchecked")

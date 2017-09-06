@@ -21,12 +21,13 @@ import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutorGateway;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutorGateway;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.RepoBasedCodeToDescriptionConverter;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.RepoBasedConverter;
 import com.anthem.oss.nimbus.core.entity.StaticCodeValue;
+import com.anthem.oss.nimbus.core.entity.VStaticCodeValue;
 import com.anthem.oss.nimbus.core.entity.client.Client;
 import com.anthem.oss.nimbus.core.entity.client.access.ClientUserRole;
 import com.anthem.oss.nimbus.core.entity.queue.MGroupMember;
@@ -47,7 +48,7 @@ public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTest
 	MongoOperations mongoOps;
 	
 	@Autowired
-	RepoBasedCodeToDescriptionConverter converter;
+	RepoBasedConverter converter;
 	
 	@Autowired
 	@Qualifier("default.processGateway")
@@ -57,6 +58,12 @@ public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTest
 	@SuppressWarnings("unchecked")
 	public void t1_testSearchByLookupStaticCodeValue() {
 		
+		this.mongoOps.dropCollection("staticCodeValue");
+		final List<ParamValue> expectedValues = new ArrayList<>();
+		expectedValues.add(new ParamValue("code1", "label1", "desc1"));
+		final StaticCodeValue expected = new StaticCodeValue("/status", expectedValues);
+		this.mongoOps.insert(expected, "staticCodeValue");
+		
 		CommandMessage cmdMsg = build("Acme/fep/icr/p/staticCodeValue/_search?fn=lookup&where=staticCodeValue.paramCode.eq('/status')");
 		
 		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
@@ -64,33 +71,22 @@ public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTest
 		
 		assertNotNull(ops);
 		
-		List<ParamValue> values = (List<ParamValue>)ops.get(0).getValue(); // TODO having to cast the output, is that correct ??
-		assertNotEquals(0, values.size());
-		
-		values.forEach((v)->System.out.println(v.getCode()));
+		final List<ParamValue> values = (List<ParamValue>)ops.get(0).getValue(); // TODO having to cast the output, is that correct ??
+		assertEquals(1, values.size());
+		assertEquals(expectedValues.get(0).getCode(), values.get(0).getCode());
+		assertEquals(expectedValues.get(0).getLabel(), values.get(0).getLabel());
+		assertEquals(expectedValues.get(0).getDesc(), values.get(0).getDesc());
 	}
 	
 	@Test
 	public void t11_testSearchByLookupStaticCodeValueElemMatch() {
+		this.mongoOps.dropCollection("staticCodeValue");
+		final List<ParamValue> expectedValues = new ArrayList<>();
+		expectedValues.add(new ParamValue("ACL", "Anticardiolpin Antibodies", null));
+		final StaticCodeValue expected = new StaticCodeValue("anything", expectedValues);
+		this.mongoOps.insert(expected, "staticCodeValue");
 		
-		assertEquals("Anticardiolpin Antibodies",converter.serialize("ACL"));
-	}
-	
-	@Test
-	@SuppressWarnings("unchecked")
-	public void t1_testUpdateStaticCodeValue() {
-		
-		CommandMessage cmdMsg = build("Acme/fep/icr/p/staticCodeValue/_update");
-		
-		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
-		List<Output<?>> ops  = multiOp.getOutputs();
-		
-		assertNotNull(ops);
-		
-		List<ParamValue> values = (List<ParamValue>)ops.get(0).getValue(); // TODO having to cast the output, is that correct ??
-		assertNotEquals(0, values.size());
-		
-		values.forEach((v)->System.out.println(v.getCode()));
+		assertEquals("Anticardiolpin Antibodies", this.converter.serialize("ACL"));
 	}
 
 	@Test
@@ -153,8 +149,7 @@ public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTest
 	
 	@Test
 	public void t41_testSearchByQueryCriteriaNotNull() {
-		Client c = insertClient();
-		
+		this.insertClient();
 		CommandMessage cmdMsg = build("Acme/fep/icr/p/client/_search?fn=query&where=client.code.eq('c1')");
 		
 		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
@@ -170,15 +165,24 @@ public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTest
 
 	@Test
 	public void t5_testSearchByQueryWithProjection() {
+		
+		this.mongoOps.dropCollection("staticCodeValue");
+		final List<ParamValue> expectedValues = new ArrayList<>();
+		expectedValues.add(new ParamValue("code1", "label1", "desc1"));
+		final StaticCodeValue expected = new StaticCodeValue("/status", expectedValues);
+		this.mongoOps.insert(expected, "staticCodeValue");
+		
 		CommandMessage cmdMsg = build("Acme/fep/icr/p/staticCodeValue/_search?fn=query&where=staticCodeValue.paramCode.eq('/status')&projection.alias=vstaticCodeValue");
 		//ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
 		//List<?> values = (List<?>)queryFunctionHandler.execute(exContext, null);
 		
 		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
-		List<?> values = (List<?>)multiOp.getSingleResult();
+		@SuppressWarnings("unchecked")
+		List<VStaticCodeValue> values = (List<VStaticCodeValue>) multiOp.getSingleResult();
 		
 		assertNotNull(values);
 		assertEquals(1, values.size());
+		assertEquals("/status", values.get(0).getParamCode());
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -194,21 +198,24 @@ public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTest
 		
 		assertNotNull(values);
 		assertEquals(2, values.size());
-		
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void t6_testSearchByQueryWithCountAggregation() {
+		
+		this.mongoOps.dropCollection("staticCodeValue");
+		this.mongoOps.insert(new StaticCodeValue("/status", null), "staticCodeValue");
+		this.mongoOps.insert(new StaticCodeValue("/status", null), "staticCodeValue");
+		
 		CommandMessage cmdMsg = build("Acme/fep/icr/p/staticCodeValue/_search?fn=query&where=staticCodeValue.paramCode.eq('/status')&aggregate=count");
 //		ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
 //		Holder<Long> count = (Holder<Long>)queryFunctionHandler.execute(exContext, null);
 		
 		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
-		Holder<Long> count = (Holder<Long>)multiOp.getSingleResult();
+		Long count = (Long) multiOp.getSingleResult();
 		
 		assertNotNull(count);
-		assertEquals(Long.valueOf("1"), count.getState());
+		assertEquals(Long.valueOf("2"), count);
 	}
 	
 	@Test
@@ -223,12 +230,10 @@ public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTest
 		//List<?> values = (List<?>)queryFunctionHandler.execute(exContext, null);
 		
 		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
-		List<?> values = (List<?>)multiOp.getSingleResult();
+		List<?> values = (List<?>) multiOp.getSingleResult();
 		
 		Assert.notEmpty(values, "values cannot be empty");
-		values.forEach(System.out::println);
 	}
-	
 	
 	@SuppressWarnings("unchecked")
 	@Test
@@ -246,21 +251,7 @@ public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTest
 		List<Holder<Integer>> values = (List<Holder<Integer>>)multiOp.getSingleResult();
 		
 		Assert.notEmpty(values, "values cannot be empty");
-		values.forEach(System.out::println);
-		
 		assertEquals(Integer.valueOf("1"), values.get(0).getState());
-	}
-
-	private void createStaticCodeValues() {
-		ParamValue pv = new ParamValue(null,"OPEN","Open");
-		ParamValue pv1 = new ParamValue(null, "ACTIVE", "Active");
-		
-		List<ParamValue> pvs = new ArrayList<>();
-		pvs.add(pv);
-		pvs.add(pv1);
-		
-		StaticCodeValue scv = new StaticCodeValue("status", pvs);
-		mongoOps.insert(scv, "staticCodeValue");
 	}
 	
 	private Client insertClient() {
@@ -296,7 +287,6 @@ public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTest
 		assertEquals((values.get(0)).getName(), "sandeep");
 		assertEquals(values.get(1).getName(), "mantha");
 		assertEquals(values.get(2).getName(), "jayant");
-		
 	}
 	
 	@Test
@@ -319,23 +309,7 @@ public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTest
 		ClientUserRole clientUserRole4 = new ClientUserRole();
 		clientUserRole4.setName("jayant");
 		clientUserRole4.setDescription("dsc2");;
-		mongoOps.insert(clientUserRole4);
-		
-//		final String whereClause = "qClientUserRole.description.startsWith('d')";
-//		final String orderByClause = "qClientUserRole.name.desc()";
-//		final Binding binding = new Binding();
-//		QClientUserRole qClientUserRole = new QClientUserRole("a");
-//        binding.setProperty("qClientUserRole", qClientUserRole);
-//        final GroovyShell shell = new GroovyShell(binding); 
-//        Predicate predicate = (Predicate)shell.evaluate(whereClause); 
-//		OrderSpecifier orderBy = (OrderSpecifier)shell.evaluate(orderByClause); 
-//        assertNotNull("Not Null", predicate);
-//        SpringDataMongodbQuery<ClientUserRole> query = new SpringDataMongodbQuery<>(mongoOps, ClientUserRole.class);
-//		List<ClientUserRole> list = query.where(predicate).orderBy(orderBy).fetch();
-//		assertEquals(list.get(0).getName(), "sandeep");
-//		assertEquals(list.get(1).getName(), "mantha");
-//		assertEquals(list.get(2).getName(), "jayant");
-		
+		mongoOps.insert(clientUserRole4);	
 	}
 	
 	@Test
@@ -383,25 +357,25 @@ public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTest
 		
 		ClientUserRole clientUserRole = new ClientUserRole();
 		clientUserRole.setName("sandeep");
-		//clientUserRole.setStatus(Status.ACTIVE);
+		clientUserRole.setStatus("Active");
 		clientUserRole.setDescription("desc1");;
 		mongoOps.insert(clientUserRole,"userrole");
 		
 		ClientUserRole clientUserRole2 = new ClientUserRole();
 		clientUserRole2.setName("mantha");
-		//clientUserRole2.setStatus(Status.ACTIVE);
+		clientUserRole2.setStatus("Active");
 		clientUserRole2.setDescription("desc2");;
 		mongoOps.insert(clientUserRole2,"userrole");
 		
 		ClientUserRole clientUserRole3 = new ClientUserRole();
 		clientUserRole3.setName("rakesh");
-		//clientUserRole3.setStatus(Status.INACTIVE);
+		clientUserRole3.setStatus("Inactive");
 		clientUserRole3.setDescription("esc2");;
 		mongoOps.insert(clientUserRole3,"userrole");
 		
 		ClientUserRole clientUserRole4 = new ClientUserRole();
 		clientUserRole4.setName("jayant");
-		///clientUserRole4.setStatus(Status.ACTIVE);
+		clientUserRole4.setStatus("Active");
 		clientUserRole4.setDescription("dsc2");;
 		mongoOps.insert(clientUserRole4,"userrole");
 	}

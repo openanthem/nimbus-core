@@ -3,7 +3,6 @@
  */
 package com.anthem.oss.nimbus.core.domain.model.state.repo;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 import org.junit.FixMethodOrder;

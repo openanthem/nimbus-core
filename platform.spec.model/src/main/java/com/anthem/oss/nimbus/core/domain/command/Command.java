@@ -199,11 +199,27 @@ public class Command implements Serializable {
 		return getRootDomainElement().getUri();
 	}
 
+	/**
+	 * Returns the absolute domain alias of this command.
+	 * 
+	 * <p>
+	 * <b>Examples:</b>
+	 * <p>When <b>absoluteUri</b> = <i>/Acme/ab/cd/domain/ef/gh/_process?fn=_set</i> then getAbsoluteDomainAlias() returns <i>/domain</i></li>
+	 * @return the absolute domain alias of this command.
+	 */
 	public String getAbsoluteDomainAlias() {
 		String a = buildAlias(root().findFirstMatch(Type.DomainAlias));
 		return a;
 	}
 
+	/**
+	 * Returns the absolute domain URI of this command.
+	 * 
+	 * <p>
+	 * <b>Examples:</b>
+	 * <p>When <b>absoluteUri</b> = <i>/Acme/ab/cd/domain/ef/gh/_process?fn=_set</i> then getAbsoluteDomainAlias() returns <i>/domain/ef/gh</i></li>
+	 * @return the absolute domain URI of this command.
+	 */
 	public String getAbsoluteDomainUri() {
 		String u = buildUri(root().findFirstMatch(Type.DomainAlias));
 		return u;
@@ -221,17 +237,41 @@ public class Command implements Serializable {
 		return u;
 	}
 
+	/**
+	 * Returns the absolute alias of this command.
+	 * 
+	 * <p>
+	 * <b>Examples:</b>
+	 * <p>When <b>absoluteUri</b> = <i>/Acme/ab/cd/domain/ef/gh/_process?fn=_set</i> then getAbsoluteAlias() returns <i>/Acme/ab/cd/domain/ef/gh</i></li>
+	 * @return the absolute alias of this command.
+	 */
 	public String getAbsoluteAlias() {
 		String a = buildAlias(root());
 		return a;
 	}
 	
+	/**
+	 * Returns the absolute alias with only the action included of this command.
+	 * 
+	 * <p>
+	 * <b>Examples:</b>
+	 * <p>When <b>absoluteUri</b> = <i>/Acme/ab/cd/domain/ef/gh/_process?fn=_set</i> then getAbsoluteDomainAlias() returns <i>/domain/ef/gh/_process</i></li>
+	 * @return the absolute alias with only the action included of this command.
+	 */
 	public String getAbsoluteAliasWithAction() {
 		String a = buildAlias(root());
 		
 		return a + "/" + this.getAction();
 	}
 
+	/**
+	 * Returns the absolute alias up to the root domain of this command.
+	 * 
+	 * <p>
+	 * <b>Examples:</b>
+	 * <p>When <b>absoluteUri</b> = <i>/Acme/ab/cd/domain/ef/gh/_process?fn=_set</i> then getAbsoluteAliasTillRootDomain() returns <i>/Acme/ab/cd/domain</i></li>
+	 * @return the absolute alias up to the root domain of this command.
+	 */
 	public String getAbsoluteAliasTillRootDomain() {
 		String a = buildAlias(root(), Type.DomainAlias);
 		return a;
