@@ -2,9 +2,12 @@ package com.anthem.oss.nimbus.core.domain.model.state.repo;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.queryParam;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.hamcrest.core.StringContains;
@@ -13,12 +16,10 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-//import org.springframework.test.web.client.MockRestServiceServer;
-import org.springframework.test.web.client.MockRestServiceServer;
-import org.springframework.web.client.RestTemplate;
+
 
 import com.anthem.oss.nimbus.core.AbstractTestConfigurer;
 import com.anthem.oss.nimbus.core.domain.command.Command;
@@ -40,21 +41,30 @@ public class ModelRepositoryTest extends AbstractTestConfigurer {
 	
 	
 	@Test
-	public void t1_testSearchByExample_Ext() {
+	public void t1_testSearchByExample_Ext() throws IOException {
 		Command cmd = prepareCommand("piedpiper/encryption_3.9/p/ext_client/_search?fn=example",null);
 		String jsonPayload = "{\"client\": {\"code\":\"example\"}}";
 		CommandMessage cmdMsg = new CommandMessage();
 		cmdMsg.setCommand(cmd);
 		cmdMsg.setRawPayload(jsonPayload);
 		
+		this.getMockServer().expect(requestTo(new StringContains("piedpiper/encryption_3.9/p/ext_client/_search")))
+		.andExpect(method(HttpMethod.POST))
+		.andExpect(queryParam("fn","example"))
+		.andRespond(withSuccess("[{\"client\": {\"code\": \"example\"}},{\"client\": {\"code\": \"example\" }}]", MediaType.APPLICATION_JSON));
+		
 		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
 		
 		List<ExtClient> exClient = (List<ExtClient>) multiOp.getSingleResult();
 		
 		assertNotNull("ExClient cannot be null", exClient);
-		assertNotNull("ExClient.client cannot ne null", exClient.get(0).getClient());
-		assertNotNull("ExClient.client.code cannot ne null", exClient.get(0).getClient().getCode());
 		
+		for(int i=0; i< exClient.size(); i++) {
+			assertNotNull("ExClient.client cannot ne null", exClient.get(i).getClient());
+			assertNotNull("ExClient.client.code cannot ne null", exClient.get(i).getClient().getCode());
+			assertEquals("example",exClient.get(i).getClient().getCode());
+		}
+	
 //		QuadModel<?, ?> q = quadBuilder.build(cmd);
 //		q.getCore().findParamByPath("/client").setState(exClient.getClient());
 //		assertEquals("example", q.getCore().findParamByPath("/client/code").getState());
@@ -67,6 +77,12 @@ public class ModelRepositoryTest extends AbstractTestConfigurer {
 		CommandMessage cmdMsg = new CommandMessage();
 		cmdMsg.setCommand(cmd);
 		
+		this.getMockServer().expect(requestTo(new StringContains("piedpiper/encryption_3.9/p/ext_client/_search")))
+		.andExpect(method(HttpMethod.POST))
+		.andExpect(queryParam("fn","query"))
+		.andExpect(queryParam("where","ext_client.client.code.eq('7')"))
+		.andRespond(withSuccess("[{\"client\": {\"code\": \"test ext return - using querydsl\" }}]", MediaType.APPLICATION_JSON));
+		
 		MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
 		
 		List<ExtClient> exClient = (List<ExtClient>) multiOp.getSingleResult();
@@ -74,6 +90,7 @@ public class ModelRepositoryTest extends AbstractTestConfigurer {
 		assertNotNull("ExClient cannot be null", exClient);
 		assertNotNull("ExClient.client cannot ne null", exClient.get(0).getClient());
 		assertNotNull("ExClient.client.code cannot ne null", exClient.get(0).getClient().getCode());
+		assertEquals("test ext return - using querydsl",exClient.get(0).getClient().getCode());
 		
 	}
 	
