@@ -8,12 +8,14 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.test.context.ActiveProfiles;
 
-import com.anthem.nimbus.platform.core.process.api.AbstractPlatformIntegrationTests;
+import com.anthem.oss.nimbus.core.AbstractFrameworkIntegrationTests;
 import com.anthem.oss.nimbus.test.sample.um.model.Patient;
 import com.anthem.oss.nimbus.test.sample.um.model.UMCase;
 
@@ -21,8 +23,9 @@ import com.anthem.oss.nimbus.test.sample.um.model.UMCase;
  * @author Swetha Vemuri
  *
  */
-@EnableAutoConfiguration
-public class EmbedMongoConnectionTest extends AbstractPlatformIntegrationTests {
+@ActiveProfiles("test")
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+public class EmbedMongoConnectionTest extends AbstractFrameworkIntegrationTests {
 	
 	@Autowired
 	MongoOperations mongoOps;

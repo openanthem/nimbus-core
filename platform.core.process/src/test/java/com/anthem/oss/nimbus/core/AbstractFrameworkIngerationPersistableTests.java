@@ -17,7 +17,7 @@ import test.com.anthem.nimbus.platform.utils.MockHttpRequestBuilder;
  * @author Soham Chakravarti
  *
  */
-public abstract class AbstractFrameworkIngerationPersistableTests extends AbstractFrameworkIngerationTests {
+public abstract class AbstractFrameworkIngerationPersistableTests extends AbstractFrameworkIntegrationTests {
 	
 	protected static final String CORE_DOMAIN_ALIAS = "sample_core";
 	

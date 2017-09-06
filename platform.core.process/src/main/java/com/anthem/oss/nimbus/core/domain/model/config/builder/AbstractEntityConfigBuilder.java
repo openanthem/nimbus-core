@@ -15,13 +15,12 @@ import java.util.function.Consumer;
 import javax.validation.Constraint;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.util.ClassUtils;
 
+import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.UnsupportedScenarioException;
 import com.anthem.oss.nimbus.core.domain.config.builder.AnnotationConfigHandler;
 import com.anthem.oss.nimbus.core.domain.definition.AssociatedEntity;
@@ -60,28 +59,31 @@ import lombok.Setter;
  * @author Soham Chakravarti
  *
  */
+@Getter @Setter
 abstract public class AbstractEntityConfigBuilder {
 
 	protected JustLogit logit = new JustLogit(getClass());
 	
-	@Autowired RulesEngineFactoryProducer rulesEngineFactoryProducer;
+	private final BeanResolverStrategy beanResolver;
+	private final RulesEngineFactoryProducer rulesEngineFactoryProducer;
 	
-	@Autowired
-	ApplicationContext ctx;
-
+	public AbstractEntityConfigBuilder(BeanResolverStrategy beanResolver) {
+		this.beanResolver = beanResolver;
+		this.rulesEngineFactoryProducer = beanResolver.get(RulesEngineFactoryProducer.class);
+	}
 	
-	abstract public <T> ModelConfig<T> buildModel(Class<T> clazz, EntityConfigVistor visitedModels);
+	abstract public <T> ModelConfig<T> buildModel(Class<T> clazz, EntityConfigVisitor visitedModels);
 	
-	abstract public <T> ParamConfig<?> buildParam(ModelConfig<T> mConfig, Field f, EntityConfigVistor visitedModels);
+	abstract public <T> ParamConfig<?> buildParam(ModelConfig<T> mConfig, Field f, EntityConfigVisitor visitedModels);
 	
-	abstract protected <T, P> ParamType buildParamType(ModelConfig<T> mConfig, ParamConfig<P> pConfig, Field f, EntityConfigVistor visitedModels);
-	abstract protected <T, P> ParamType buildParamType(ModelConfig<T> mConfig, ParamConfig<P> pConfig, ParamType.CollectionType colType, Class<?> pDirectOrColElemType, EntityConfigVistor visitedModels); 
+	abstract protected <T, P> ParamType buildParamType(ModelConfig<T> mConfig, ParamConfig<P> pConfig, Field f, EntityConfigVisitor visitedModels);
+	abstract protected <T, P> ParamType buildParamType(ModelConfig<T> mConfig, ParamConfig<P> pConfig, ParamType.CollectionType colType, Class<?> pDirectOrColElemType, EntityConfigVisitor visitedModels); 
 	
 	public boolean isPrimitive(Class<?> determinedType) {
 		return ClassUtils.isPrimitiveOrWrapper(determinedType) || String.class==determinedType;
 	}
 	
-	public <T> DefaultModelConfig<T> createModel(Class<T> referredClass, EntityConfigVistor visitedModels) {
+	public <T> DefaultModelConfig<T> createModel(Class<T> referredClass, EntityConfigVisitor visitedModels) {
 		MapsTo.Type mapsToType = AnnotationUtils.findAnnotation(referredClass, MapsTo.Type.class);
 		
 		final DefaultModelConfig<T> created;
@@ -165,7 +167,7 @@ abstract public class AbstractEntityConfigBuilder {
 		}
 	}
 	
-	public DefaultParamConfig<?> createParam(ModelConfig<?> mConfig, Field f, EntityConfigVistor visitedModels) {
+	public DefaultParamConfig<?> createParam(ModelConfig<?> mConfig, Field f, EntityConfigVisitor visitedModels) {
 		MapsTo.Path mapsToPath = AnnotationUtils.findAnnotation(f, MapsTo.Path.class);
 		MapsTo.Mode mapsToMode = MapsTo.getMode(mapsToPath);
 		
@@ -180,7 +182,7 @@ abstract public class AbstractEntityConfigBuilder {
 			return createMappedParamDetached(mConfig, f, visitedModels, mapsToPath);
 	}
 	
-	private DefaultParamConfig<?> createMappedParamAttached(ModelConfig<?> mConfig, Field f, EntityConfigVistor visitedModels, MapsTo.Path mapsToPath) {
+	private DefaultParamConfig<?> createMappedParamAttached(ModelConfig<?> mConfig, Field f, EntityConfigVisitor visitedModels, MapsTo.Path mapsToPath) {
 		// param field is linked: enclosing model must be mapped
 		if(!mConfig.isMapped())
 			throw new InvalidConfigException("Mapped param field: "+f.getName()+" is mapped with linked=true. Enclosing model: "+mConfig.getReferredClass()+" must be mapped, but was not.");
@@ -203,7 +205,7 @@ abstract public class AbstractEntityConfigBuilder {
 		return decorateParam(mConfig, f, new MappedDefaultParamConfig<>(f.getName(), mapsToModel, mapsToParam, mapsToPath), visitedModels);
 	}
 	
-	private DefaultParamConfig<?> createMappedParamDetached(ModelConfig<?> mConfig, Field mappedField, EntityConfigVistor visitedModels, MapsTo.Path mapsToPath) {
+	private DefaultParamConfig<?> createMappedParamDetached(ModelConfig<?> mConfig, Field mappedField, EntityConfigVisitor visitedModels, MapsTo.Path mapsToPath) {
 		if(!isCollection(mappedField.getType())) {
 			return createMappedParamDetachedNested(mConfig, mappedField, visitedModels, mapsToPath);
 		} 
@@ -221,7 +223,7 @@ abstract public class AbstractEntityConfigBuilder {
 	 * MapsTo ParaConfig's type is same as MapsTo.Type on mappedParam's referredClass. 
 	 * If mappedParam's referredClass doesn't have MapsTo.Type defined, then mappedParam's referredClass would be used for self-detached mode simulation.
 	 */
-	private DefaultParamConfig<?> createMappedParamDetachedNested(ModelConfig<?> mConfig, Field mappedField, EntityConfigVistor visitedModels, MapsTo.Path mapsToPath) {
+	private DefaultParamConfig<?> createMappedParamDetachedNested(ModelConfig<?> mConfig, Field mappedField, EntityConfigVisitor visitedModels, MapsTo.Path mapsToPath) {
 		// create mapsToParam's enclosing ModelConfig
 		DefaultModelConfig<?> simulatedEnclosingModel = new DefaultModelConfig<>(SimulatedNestedParamEnclosingEntity.class);
 		
@@ -240,7 +242,7 @@ abstract public class AbstractEntityConfigBuilder {
 		return mappedParam;
 	}
 	
-	public DefaultParamConfig<?> createMappedParamDetachedCollection(ModelConfig<?> mConfigOfMappedParam, Field mappedField, EntityConfigVistor visitedModels, MapsTo.Path mapsToPath) {
+	public DefaultParamConfig<?> createMappedParamDetachedCollection(ModelConfig<?> mConfigOfMappedParam, Field mappedField, EntityConfigVisitor visitedModels, MapsTo.Path mapsToPath) {
 		// create mapsToParam's enclosing ModelConfig
 		DefaultModelConfig<?> simulatedEnclosingModel = new DefaultModelConfig<>(SimulatedCollectionParamEnclosingEntity.class);
 		
@@ -273,7 +275,7 @@ abstract public class AbstractEntityConfigBuilder {
 		private List<E> detachedParam;
 	}
 
-	private <T, P> ParamConfig<P> createParamCollectionElemMappedAttached(ModelConfig<T> mConfig, MappedParamConfig<P, ?> pConfig, ModelConfig<List<P>> colModelConfig, EntityConfigVistor visitedModels, Class<?> colElemClass, MapsTo.Path mapsToColParamPath) {
+	private <T, P> ParamConfig<P> createParamCollectionElemMappedAttached(ModelConfig<T> mConfig, MappedParamConfig<P, ?> pConfig, ModelConfig<List<P>> colModelConfig, EntityConfigVisitor visitedModels, Class<?> colElemClass, MapsTo.Path mapsToColParamPath) {
 		// colParam is mapped as Attached, but parent enclosing Model is un-mapped :- throw Ex
 		if(!mConfig.isMapped()) { 	
 			throw new InvalidConfigException("Param: "+pConfig.getCode()+" has @MapsTo.Path "+mapsToColParamPath+" with resolved mode: "+MapsTo.Mode.MappedAttached
@@ -286,12 +288,12 @@ abstract public class AbstractEntityConfigBuilder {
 		return createParamCollectionElemMapped(/*mapsToEnclosingModel, */pConfig, colModelConfig, visitedModels, colElemClass, mapsToColParamPath);
 	}
 	
-	private <T, P> ParamConfig<P> createParamCollectionElemMappedDetached(ModelConfig<T> mConfig, MappedParamConfig<P, ?> pConfig, ModelConfig<List<P>> colModelConfig, EntityConfigVistor visitedModels, Class<?> colElemClass, MapsTo.Path mapsToColParamPath) {
+	private <T, P> ParamConfig<P> createParamCollectionElemMappedDetached(ModelConfig<T> mConfig, MappedParamConfig<P, ?> pConfig, ModelConfig<List<P>> colModelConfig, EntityConfigVisitor visitedModels, Class<?> colElemClass, MapsTo.Path mapsToColParamPath) {
 		return createParamCollectionElemMapped(pConfig, colModelConfig, visitedModels, colElemClass, mapsToColParamPath);
 	}
 	
 	
-	private <T, P> ParamConfig<P> createParamCollectionElemMapped(MappedParamConfig<P, ?> pConfig, ModelConfig<List<P>> colModelConfig, EntityConfigVistor visitedModels, Class<?> colElemClass, MapsTo.Path mapsToColParamPath) {
+	private <T, P> ParamConfig<P> createParamCollectionElemMapped(MappedParamConfig<P, ?> pConfig, ModelConfig<List<P>> colModelConfig, EntityConfigVisitor visitedModels, Class<?> colElemClass, MapsTo.Path mapsToColParamPath) {
 		//ParamConfig<?> mapsToColParamConfig = findMappedParam(mapsToEnclosingModel, pConfig.getCode(), mapsToColParamPath);
 		ParamConfig<?> mapsToColParamConfig = pConfig.getMapsTo();
 		logit.debug(()->"[create.pColElem] [colParam is mapped] [elemClass same] [Attached] Found mapsToColParamConfig for "+pConfig.getCode()+" with mapsToPath of colParam: "+mapsToColParamPath+" -> "+mapsToColParamConfig);
@@ -326,7 +328,7 @@ abstract public class AbstractEntityConfigBuilder {
 		return createParamCollectionElementInternal(colModelConfig, mapsToColElemParamConfig, mapsToColParamPath, visitedModels, pConfig.getCode());
 	}
 	
-	public <T, P> ParamConfig<P> createParamCollectionElement(ModelConfig<T> mConfig, ParamConfig<P> pConfig, ModelConfig<List<P>> colModelConfig, EntityConfigVistor visitedModels, Class<?> colElemClass) {
+	public <T, P> ParamConfig<P> createParamCollectionElement(ModelConfig<T> mConfig, ParamConfig<P> pConfig, ModelConfig<List<P>> colModelConfig, EntityConfigVisitor visitedModels, Class<?> colElemClass) {
 		logit.trace(()->"[create.pColElem] starting to process colElemClass: "+colElemClass+" with pConfig :"+pConfig.getCode());
 		
 		MapsTo.Path mapsToColParamPath = pConfig.isMapped() ? pConfig.findIfMapped().getPath() : null;
@@ -356,7 +358,7 @@ abstract public class AbstractEntityConfigBuilder {
 		}
 	}
 	
-	private <P> ParamConfig<P> createParamCollectionElementInternal(ModelConfig<List<P>> colModelConfig, ParamConfig<P> mapsToColElemParamConfig, MapsTo.Path mapsToColParamPath, EntityConfigVistor visitedModels, String colParamCode) {
+	private <P> ParamConfig<P> createParamCollectionElementInternal(ModelConfig<List<P>> colModelConfig, ParamConfig<P> mapsToColElemParamConfig, MapsTo.Path mapsToColParamPath, EntityConfigVisitor visitedModels, String colParamCode) {
 		final String collectionElemPath = createCollectionElementPath(colParamCode);
 		
 		final ParamConfig<P> created;
@@ -385,7 +387,7 @@ abstract public class AbstractEntityConfigBuilder {
 				.toString();
 	}
 	
-	private <P> DefaultParamConfig<P> decorateParam(ModelConfig<?> mConfig, Field f, DefaultParamConfig<P> created, EntityConfigVistor visitedModels) {
+	private <P> DefaultParamConfig<P> decorateParam(ModelConfig<?> mConfig, Field f, DefaultParamConfig<P> created, EntityConfigVisitor visitedModels) {
 		created.setUiNatures(AnnotationConfigHandler.handle(f, ViewParamBehavior.class));
 		created.setUiStyles(AnnotationConfigHandler.handleSingle(f, ViewStyle.class));
 		created.setExecutionConfigs(new ArrayList<>(AnnotatedElementUtils.findMergedRepeatableAnnotations(f, Execution.Config.class)));
@@ -393,10 +395,11 @@ abstract public class AbstractEntityConfigBuilder {
 		
 		if(AnnotatedElementUtils.isAnnotated(f, Converters.class)) {
 			Converters convertersAnnotation = AnnotationUtils.getAnnotation(f, Converters.class);
+			
 			List<ParamConverter> converters = new ArrayList<>();
 			
 			Arrays.asList(convertersAnnotation.converters())
-						.forEach((converterClass)->converters.add(ctx.getBean(converterClass)));
+						.forEach((converterClass)->converters.add(beanResolver.get(converterClass)));
 			
 			created.setConverters(converters);
 		}
@@ -446,7 +449,7 @@ abstract public class AbstractEntityConfigBuilder {
 	/**
 	 * build and assign RuntimeEntity Config
 	 */
-	protected <P> DefaultParamConfig<P> decorateParam(ModelConfig<?> mConfig, DefaultParamConfig<P> created, EntityConfigVistor visitedModels) {
+	protected <P> DefaultParamConfig<P> decorateParam(ModelConfig<?> mConfig, DefaultParamConfig<P> created, EntityConfigVisitor visitedModels) {
 		// do not make nested runtimeConfig;
 		if(StringUtils.equals(created.getCode(), Constants.SEPARATOR_CONFIG_ATTRIB.code))
 			return created;
@@ -537,7 +540,7 @@ abstract public class AbstractEntityConfigBuilder {
 		return nestedColType;
 	}
 	
-	protected <T, P> ParamType createParamType(boolean isArray, Class<P> determinedType, ModelConfig<?> mConfig, EntityConfigVistor visitedModels) {
+	protected <T, P> ParamType createParamType(boolean isArray, Class<P> determinedType, ModelConfig<?> mConfig, EntityConfigVisitor visitedModels) {
 		final ParamType pType;
 		if(isPrimitive(determinedType)) {	//Primitives bare or with wrapper & String
 			String name = ClassUtils.getShortNameAsProperty(ClassUtils.resolvePrimitiveIfNecessary(determinedType));
@@ -558,7 +561,7 @@ abstract public class AbstractEntityConfigBuilder {
 		return pType;
 	}
 	
-	protected <P> ParamType.Nested<P> createParamTypeNested(String typeName, Class<P> determinedType, ModelConfig<?> mConfig, EntityConfigVistor visitedModels) {
+	protected <P> ParamType.Nested<P> createParamTypeNested(String typeName, Class<P> determinedType, ModelConfig<?> mConfig, EntityConfigVisitor visitedModels) {
 		
 		final ParamType.Nested<P> nestedParamType = new ParamType.Nested<>(typeName, determinedType);
 		
