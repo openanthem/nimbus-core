@@ -98,7 +98,7 @@ dsl:
 platform:
   config:
     secure:
-      regex: "^[a-zA-Z0-9/: &.=?$#_-]{1,1000}"
+      regex: "^[a-zA-Z0-9<>()\\[\\]@/: &.=?,$#_-]{1,}"
 ext:
   repository:
     targetUrl: 
