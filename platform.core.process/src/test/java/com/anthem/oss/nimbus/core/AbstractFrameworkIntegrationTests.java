@@ -28,7 +28,7 @@ import com.anthem.oss.nimbus.core.web.WebActionController;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes=TestFrameworkIntegrationScenariosApplication.class)
 @ActiveProfiles("test")
-public abstract class AbstractFrameworkIngerationTests {
+public abstract class AbstractFrameworkIntegrationTests {
 
 	@Autowired protected WebActionController controller;
 	

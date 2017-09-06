@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
  *
  */
 @RequiredArgsConstructor
-public class EntityConfigVistor {
+public class EntityConfigVisitor {
 
 	@Getter(AccessLevel.PRIVATE)
 	private final Map<Class<?>, ModelConfig<?>> visitedModels = new HashMap<>();

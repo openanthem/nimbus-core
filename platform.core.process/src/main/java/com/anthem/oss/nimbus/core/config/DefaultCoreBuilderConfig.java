@@ -81,7 +81,7 @@ public class DefaultCoreBuilderConfig {
 	}
 	
 	@Bean
-	public EntityConfigBuilder entityConfigBuilder(){
+	public EntityConfigBuilder entityConfigBuilder(BeanResolverStrategy beanResolver){
 		if(typeClassMappings==null) {
 			typeClassMappings = new HashMap<>();
 		}
@@ -90,7 +90,7 @@ public class DefaultCoreBuilderConfig {
 			typeClassMappings.put(LocalDate.class.getName(), "date");
 		}
 		
-		return new EntityConfigBuilder(typeClassMappings);
+		return new EntityConfigBuilder(beanResolver, typeClassMappings);
 	}
 	
 	@Bean

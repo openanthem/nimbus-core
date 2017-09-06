@@ -16,7 +16,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
 import com.anthem.oss.nimbus.test.sample.um.model.UMCase;
 import com.anthem.oss.nimbus.test.sample.um.model.view.UMCaseFlow;
 
-import test.com.anthem.nimbus.platform.spec.model.comamnd.TestCommandFactory;
+import test.com.anthem.nimbus.platform.spec.model.command.TestCommandFactory;
 import test.com.anthem.nimbus.platform.utils.JsonUtils;
 /**
  * @author Soham Chakravarti

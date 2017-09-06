@@ -51,7 +51,7 @@ import com.anthem.oss.nimbus.test.sample.um.model.UMCase;
 import com.anthem.oss.nimbus.test.sample.um.model.view.Page_Pg3.Section_ServiceLine;
 import com.anthem.oss.nimbus.test.sample.um.model.view.UMCaseFlow;
 
-import test.com.anthem.nimbus.platform.spec.model.comamnd.TestCommandFactory;
+import test.com.anthem.nimbus.platform.spec.model.command.TestCommandFactory;
 
 /**
  * @author Soham Chakravarti

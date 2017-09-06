@@ -10,20 +10,16 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.test.context.ActiveProfiles;
 
-import com.anthem.oss.nimbus.core.AbstractTestConfigurer;
+import com.anthem.oss.nimbus.core.AbstractFrameworkIntegrationTests;
 
 /**
  * @author Rakesh Patel
  *
  */
-@EnableAutoConfiguration
-@ActiveProfiles("test")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class MongoIdSequenceRepositoryTest extends AbstractTestConfigurer {
+public class MongoIdSequenceRepositoryTest extends AbstractFrameworkIntegrationTests {
 
 	@Autowired
 	IdSequenceRepository seqIdRepo;
@@ -33,19 +29,8 @@ public class MongoIdSequenceRepositoryTest extends AbstractTestConfigurer {
 	
 	@Test
 	public void t1_testSequenceCollectionUpsert() {
-		
 		mongoOps.dropCollection("sequence");
-		
-		long seqId = seqIdRepo.getNextSequenceId("global");
-		
-		assertNotEquals(0, seqId);
-	}
-	
-	@Test
-	public void t2_testSequenceIdIncreament() {
-		
-		long seqId = seqIdRepo.getNextSequenceId("global");
-		
-		assertEquals(2, seqId);
+		assertNotEquals(0, seqIdRepo.getNextSequenceId("global"));
+		assertNotEquals(1, seqIdRepo.getNextSequenceId("global"));
 	}
 }
