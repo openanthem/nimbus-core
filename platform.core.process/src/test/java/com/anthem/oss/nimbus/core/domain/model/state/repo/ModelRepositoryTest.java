@@ -7,7 +7,6 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.hamcrest.core.StringContains;
@@ -72,7 +71,7 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 	public void t1_testSearchByExample_Ext() {
 		final String requestUri = "piedpiper/encryption_3.9/p/ext_client/_search?fn=example";
 		Command cmd = CommandUtils.prepareCommand(requestUri);
-		String jsonPayload = "{\"client\": {\"code\":\"example\"}}";
+		final String jsonPayload = "{\"client\": {\"code\":\"example\"}}";
 		CommandMessage cmdMsg = new CommandMessage();
 		cmdMsg.setCommand(cmd);
 		cmdMsg.setRawPayload(jsonPayload);
@@ -82,11 +81,6 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 		.andExpect(method(HttpMethod.POST))
 		.andExpect(queryParam("fn","example"))
 		.andRespond(withSuccess("[{\"client\": {\"code\": \"example\"}},{\"client\": {\"code\": \"example\" }}]", MediaType.APPLICATION_JSON));
-		
-		//MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
-
-//		this.mockServer.expect(requestTo(new StringContains(requestUri)))
-//			.andRespond(withSuccess("[" + jsonPayload + "]", MediaType.APPLICATION_JSON));
 		
 		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
 		
@@ -121,14 +115,7 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 		.andExpect(queryParam("where","ext_client.client.code.eq('7')"))
 		.andRespond(withSuccess("[{\"client\": {\"code\": \"test ext return - using querydsl\" }}]", MediaType.APPLICATION_JSON));
 		
-		//MultiOutput multiOp = getCommandGateway().execute(cmdMsg);
-
-//		final String jsonPayload = "{\"client\": {\"code\":\"example\"}}";
-//		this.mockServer.expect(requestTo(new StringContains(requestUri)))
-//			.andRespond(withSuccess("[" + jsonPayload + "]", MediaType.APPLICATION_JSON));
-		
 		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
-
 		
 		@SuppressWarnings("unchecked")
 		List<ExtClient> exClient = (List<ExtClient>) multiOp.getSingleResult();
