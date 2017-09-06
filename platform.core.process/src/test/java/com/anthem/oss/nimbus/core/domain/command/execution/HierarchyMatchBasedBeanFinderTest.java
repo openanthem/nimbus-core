@@ -32,7 +32,7 @@ public class HierarchyMatchBasedBeanFinderTest extends AbstractFrameworkIntegrat
 
 		final String uri = command.getAbsoluteAlias();
 		key.append(uri).append(".").append(command.getAction().toString())
-		.append(Constants.SEPARATOR_BEHAVIOR_START).append(Behavior.$execute.getCode().replaceAll("_", ""))
+		.append(Constants.SEPARATOR_BEHAVIOR_START.code).append(Behavior.$execute.getCode().replaceAll("_", ""))
 		.append(Constants.REQUEST_PARAMETER_MARKER.code).append(Constants.KEY_FUNCTION.code).append("=").append(functionName);
 		return key.toString();
 	}	
