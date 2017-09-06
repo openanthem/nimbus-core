@@ -105,8 +105,8 @@ public class ModelConfigHandlerTest extends AbstractFrameworkIntegrationTests {
 	public void test_collection_primitive_long() {
 		ParamConfig<?> p = mConfig.templateParams().find("collection_primitive_long");
 		Assert.assertNotNull(p);
-		Assert.assertFalse(p.getType().isNested());
-		Assert.assertEquals("long", p.getType().getName());
+		Assert.assertTrue(p.getType().isNested());
+		Assert.assertEquals("ArrayList", p.getType().getName());
 		Assert.assertSame(ParamType.CollectionType.list, p.getType().findIfCollection().getCollectionType());
 	}
 	
