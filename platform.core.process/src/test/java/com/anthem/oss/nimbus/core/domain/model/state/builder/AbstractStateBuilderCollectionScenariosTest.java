@@ -13,9 +13,8 @@ import com.anthem.oss.nimbus.core.TestFrameworkIntegrationScenariosApplication;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
-
-import test.com.anthem.oss.nimbus.core.domain.model.SampleCoreEntity;
-import test.com.anthem.oss.nimbus.core.domain.model.ui.VRSampleViewRootEntity;
+import com.anthem.oss.nimbus.test.sample.domain.model.SampleCoreEntity;
+import com.anthem.oss.nimbus.test.sample.domain.model.ui.VRSampleViewRootEntity;
 
 /**
  * @author Soham Chakravarti

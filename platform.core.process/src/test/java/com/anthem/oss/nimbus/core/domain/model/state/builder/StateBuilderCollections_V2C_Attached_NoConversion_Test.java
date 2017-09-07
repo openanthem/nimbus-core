@@ -18,10 +18,9 @@ import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
-
-import test.com.anthem.oss.nimbus.core.domain.model.SampleCoreEntity;
-import test.com.anthem.oss.nimbus.core.domain.model.SampleCoreNestedEntity;
-import test.com.anthem.oss.nimbus.core.domain.model.ui.VRSampleViewRootEntity;
+import com.anthem.oss.nimbus.test.sample.domain.model.SampleCoreEntity;
+import com.anthem.oss.nimbus.test.sample.domain.model.SampleCoreNestedEntity;
+import com.anthem.oss.nimbus.test.sample.domain.model.ui.VRSampleViewRootEntity;
 
 /**
  * @author Soham Chakravarti

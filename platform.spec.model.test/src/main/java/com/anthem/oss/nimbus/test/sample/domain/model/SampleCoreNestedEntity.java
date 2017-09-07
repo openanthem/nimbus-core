@@ -1,4 +1,4 @@
-package test.com.anthem.oss.nimbus.core.domain.model;
+package com.anthem.oss.nimbus.test.sample.domain.model;
 
 import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity.IdString;
