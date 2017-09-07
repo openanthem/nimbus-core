@@ -7,13 +7,24 @@
     # platform.spec.model
     # platform.spec.model.test
     # platform.core.process
+    # platform.web
    
-if [ $# -gt 0 ]; then
-    PROJECTS=$1;
-else
-    PROJECTS=dependencies,parent,core.processor,spec.model,spec.model.test,core.process;
-fi
+PROJECTS="dependencies,parent,core.processor,spec.model,spec.model.test,core.process";
+
+while getopts p:m: option
+do
+  case "${option}"
+  in
+  p) PROJECTS=${OPTARG};;
+  m) MVN_ARGS=${OPTARG};;
+  esac
+done
+
 IFS=',' read -ra NAMES <<< "$PROJECTS"
+
+echo "Running build-projects.sh with the following parameters..."
+echo "NAMES = $NAMES";
+echo "MVN_ARGS = $MVN_ARGS";
 
 for i in "${NAMES[@]}"; do
   str="platform."$i;
@@ -27,9 +38,9 @@ for i in "${NAMES[@]}"; do
   fi
   
   if [[ -z "$BUILD_PROFILES" ]]; then
-    mvn clean install -f $str/pom.xml -D skipTests=true
+    mvn clean install -f $str/pom.xml $MVN_ARGS
   else
-    mvn clean install -f $str/pom.xml -D skipTests=true -P $BUILD_PROFILES
+    mvn clean install -f $str/pom.xml $MVN_ARGS -P $BUILD_PROFILES
   fi 
 
   echo "####################################################################"
