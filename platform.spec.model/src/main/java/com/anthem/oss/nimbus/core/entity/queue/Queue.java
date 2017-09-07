@@ -32,6 +32,13 @@ public class Queue extends IdString {
 	
 	private String status;
 	
+	private QueueType type;
+	
+	public enum QueueType {
+		USER,
+		USERGROUP
+	}
+	
 	// Queue to User & UserGroup is 1-1 relation based on NIM-3656,3657
 	//@AssociatedEntity(clazz=MUser.class)
 	//private Set<String> users;
