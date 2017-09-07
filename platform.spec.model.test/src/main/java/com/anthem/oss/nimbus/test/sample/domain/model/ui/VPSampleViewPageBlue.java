@@ -1,7 +1,7 @@
 /**
  * 
  */
-package test.com.anthem.oss.nimbus.core.domain.model.ui;
+package com.anthem.oss.nimbus.test.sample.domain.model.ui;
 
 import java.util.List;
 
@@ -10,11 +10,11 @@ import com.anthem.oss.nimbus.core.domain.definition.Executions.Configs;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Tile;
+import com.anthem.oss.nimbus.test.sample.domain.model.SampleCoreEntity;
+import com.anthem.oss.nimbus.test.sample.domain.model.SampleCoreNestedEntity;
 
 import lombok.Getter;
 import lombok.Setter;
-import test.com.anthem.oss.nimbus.core.domain.model.SampleCoreEntity;
-import test.com.anthem.oss.nimbus.core.domain.model.SampleCoreNestedEntity;
 
 /**
  * @author Soham Chakravarti

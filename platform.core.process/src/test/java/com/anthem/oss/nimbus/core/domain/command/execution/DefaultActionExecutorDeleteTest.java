@@ -18,11 +18,11 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import com.anthem.oss.nimbus.core.AbstractFrameworkIngerationPersistableTests;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
+import com.anthem.oss.nimbus.test.sample.domain.model.SampleCoreEntity;
+import com.anthem.oss.nimbus.test.sample.domain.model.SampleCoreNestedEntity;
 
 import test.com.anthem.nimbus.platform.utils.ExtractResponseOutputUtils;
 import test.com.anthem.nimbus.platform.utils.MockHttpRequestBuilder;
-import test.com.anthem.oss.nimbus.core.domain.model.SampleCoreEntity;
-import test.com.anthem.oss.nimbus.core.domain.model.SampleCoreNestedEntity;
 
 /**
  * @author Soham Chakravarti

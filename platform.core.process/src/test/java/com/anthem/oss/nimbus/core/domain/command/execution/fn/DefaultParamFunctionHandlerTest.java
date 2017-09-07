@@ -22,15 +22,15 @@ import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.anthem.oss.nimbus.test.sample.domain.model.SampleCoreEntity;
+import com.anthem.oss.nimbus.test.sample.domain.model.SampleCoreNestedEntity;
+import com.anthem.oss.nimbus.test.sample.domain.model.ui.VPSampleViewPageGreen;
+import com.anthem.oss.nimbus.test.sample.domain.model.ui.VPSampleViewPageBlue.Section_ConvertedNestedEntity;
+import com.anthem.oss.nimbus.test.sample.domain.model.ui.VPSampleViewPageGreen.ConvertedNestedEntity;
+import com.anthem.oss.nimbus.test.sample.domain.model.ui.VPSampleViewPageRed.Form_ConvertedNestedEntity;
 
 import test.com.anthem.nimbus.platform.utils.ExtractResponseOutputUtils;
 import test.com.anthem.nimbus.platform.utils.MockHttpRequestBuilder;
-import test.com.anthem.oss.nimbus.core.domain.model.SampleCoreEntity;
-import test.com.anthem.oss.nimbus.core.domain.model.SampleCoreNestedEntity;
-import test.com.anthem.oss.nimbus.core.domain.model.ui.VPSampleViewPageBlue.Section_ConvertedNestedEntity;
-import test.com.anthem.oss.nimbus.core.domain.model.ui.VPSampleViewPageGreen;
-import test.com.anthem.oss.nimbus.core.domain.model.ui.VPSampleViewPageGreen.ConvertedNestedEntity;
-import test.com.anthem.oss.nimbus.core.domain.model.ui.VPSampleViewPageRed.Form_ConvertedNestedEntity;
 
 /**
  * @author Soham Chakravarti
