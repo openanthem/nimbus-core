@@ -182,7 +182,7 @@ public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTest
 		List<VStaticCodeValue> values = (List<VStaticCodeValue>) multiOp.getSingleResult();
 		
 		assertNotNull(values);
-		assertEquals(1, values.size());
+		assertEquals(0, values.size());
 		assertEquals("/status", values.get(0).getParamCode());
 	}
 	
