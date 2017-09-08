@@ -44,7 +44,7 @@ public class DefaultExpressionHelper extends AbstractExpressionHelper {
 	
 	public String _concat(ExecutionContext eCtx, DelegateExecution execution, String... args) {
 		StringBuilder result = new StringBuilder();
-		for(String arg:args){
+		for(String arg: args){
 			result.append(arg);
 		}
 		return result.toString();
