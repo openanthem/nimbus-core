@@ -229,6 +229,7 @@
 				<artifactId>com.anthem.oss.nimbus.core.test</artifactId>
 				<version>${nimbus.core.test.version}</version>
 				<!-- <scope>test</scope> -->
+				<!-- Triggering automatic build  -->
 			</dependency>
 			<dependency>
 				<groupId>com.anthem.oss.nimbus.core</groupId>
