@@ -67,23 +67,16 @@ public class ViewConfig {
 	@Target({ElementType.TYPE})
 	@ViewStyle
 	public @interface ViewRoot {
-		
+		String alias() default "root";
+		String layout() default "";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
 	public @interface Page {
-		public enum Type {
-			Home,
-			Details,
-			Form,
-			Static
-		}
 		String alias() default "page";
-		Type type() default Type.Home;
 		String route() default "";
-		String layout() default "";
 		String breadCrumb() default "none";
 		String imgSrc() default "";
 		String styleClass() default "";
