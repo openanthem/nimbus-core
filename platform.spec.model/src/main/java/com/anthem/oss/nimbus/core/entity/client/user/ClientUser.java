@@ -3,6 +3,8 @@
  */
 package com.anthem.oss.nimbus.core.entity.client.user;
 
+import java.util.List;
+
 import com.anthem.oss.nimbus.core.domain.definition.ConfigNature.Ignore;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
@@ -38,6 +40,8 @@ public class ClientUser extends AbstractUser<ClientUserRole, ClientUserRole.Entr
 
 	@Ignore
 	private DefaultUser platformUser;
+	
+	private List<String> roles;
 	
 	private String roleName; // Temp for header
 	
