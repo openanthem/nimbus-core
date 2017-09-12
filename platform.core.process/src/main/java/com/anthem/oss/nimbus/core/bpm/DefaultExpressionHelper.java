@@ -54,4 +54,15 @@ public class DefaultExpressionHelper extends AbstractExpressionHelper {
 	public Object _getState(ExecutionContext eCtx, DelegateExecution execution, Param<?>... args) {
 		return args[0].getState();
 	}	
+	
+	public void _setState(ExecutionContext eCtx, DelegateExecution execution, String... args) {
+		
+		if(args.length > 1) {
+			for(int i = 0; i < args.length-1; i=i+2){
+				//eCtx.getQuadModel().getRoot().findParamByPath(args[0]).setState(args[i+1]);
+				eCtx.getQuadModel().getView().findParamByPath(args[0]).setState(args[i+1]);
+			}
+		}
+		
+	}
 }

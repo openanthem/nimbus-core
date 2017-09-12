@@ -42,8 +42,6 @@ import test.com.anthem.oss.nimbus.core.testutils.CommandUtils;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 
-	@Autowired QuadModelBuilder quadBuilder;
-	
 	@Autowired
 	@Qualifier("default.processGateway")
 	CommandExecutorGateway commandGateway;
@@ -147,11 +145,6 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 		
 
 		assertEquals("example23", param.findParamByPath("/client/code").getState());
-		
-		//QuadModel<?, ?> q = quadBuilder.build(cmd);
-		//q.getCore().findParamByPath("/client").setState(param.findParamByPath("/client").getState());
-		//assertEquals("7", q.getCore().findParamByPath("/client/code").getState());
-		
 	}
 	
 	// TODO - Set client object in db.
@@ -173,7 +166,6 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 		assertNotNull("Param (Client) cannot be null", param.findParamByPath("/"));
 		assertNotNull("Param (client.code) cannot ne null", param.findParamByPath("/code"));
 		assertNotNull("ParamState (Client.code) cannot be null", param.findParamByPath("/code").getState());
-		
 		
 	}
 }

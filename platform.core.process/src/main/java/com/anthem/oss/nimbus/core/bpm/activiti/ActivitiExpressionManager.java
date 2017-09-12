@@ -34,8 +34,8 @@ import lombok.Setter;
  */
 public class ActivitiExpressionManager extends ExpressionManager implements ApplicationContextAware{
 	
-	public static final String PLATFORM_EXP_START="<!";
-	public static final String PLATFORM_EXP_END="!>";
+	public static final String PLATFORM_EXP_START="<`!";
+	public static final String PLATFORM_EXP_END="!`>";
 	protected ApplicationContext applicationContext;
 	
 	@Getter @Setter

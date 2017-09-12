@@ -17,7 +17,7 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.DefaultBeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandTransactionInterceptor;
-import com.anthem.oss.nimbus.core.domain.command.execution.process.ParamEventUpdateListener;
+import com.anthem.oss.nimbus.core.domain.command.execution.process.ParamUpdateEventListener;
 import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
 import com.anthem.oss.nimbus.core.domain.model.config.builder.DefaultValidatorProvider;
 import com.anthem.oss.nimbus.core.domain.model.config.builder.EntityConfigBuilder;
@@ -71,8 +71,8 @@ public class DefaultCoreBuilderConfig {
 	}
 	
 	@Bean
-	public ParamEventUpdateListener paramEventUpdateListener() {
-		return new ParamEventUpdateListener();
+	public ParamUpdateEventListener paramEventUpdateListener() {
+		return new ParamUpdateEventListener();
 	}
 	
 	@Bean

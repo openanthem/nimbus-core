@@ -21,6 +21,7 @@ import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
 import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.db.AbstractStateAndConfigEventListener;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 import com.anthem.oss.nimbus.core.spec.contract.event.StateAndConfigEventListener;
 
@@ -28,9 +29,8 @@ import com.anthem.oss.nimbus.core.spec.contract.event.StateAndConfigEventListene
  * @author Rakesh Patel
  * 
  */
-public class ParamEventAMQPListener implements StateAndConfigEventListener {
+public class ParamEventAMQPListener extends AbstractStateAndConfigEventListener {
 
-//	@Autowired
 	SimpMessageSendingOperations messageTemplate;
 
 	CommandTransactionInterceptor interceptor;	
@@ -39,7 +39,7 @@ public class ParamEventAMQPListener implements StateAndConfigEventListener {
 	WebSocketHttpConnectHandlerDecoratorFactory webSocketHttpConnectHandlerDecoratorFactory;
 	
 	
-	public ParamEventAMQPListener(SimpMessageSendingOperations messageTemplate,CommandTransactionInterceptor interceptor){
+	public ParamEventAMQPListener(SimpMessageSendingOperations messageTemplate, CommandTransactionInterceptor interceptor){
 		this.messageTemplate = messageTemplate;
 		this.interceptor = interceptor;
 	}
@@ -52,45 +52,13 @@ public class ParamEventAMQPListener implements StateAndConfigEventListener {
 		} else {
 			p = in;
 		}
-		Domain rootDomain = AnnotationUtils.findAnnotation(p.getRootDomain().getConfig().getReferredClass(), Domain.class);
-		if(rootDomain == null) 
-			return false;
 		
-		Model pModel = AnnotationUtils.findAnnotation(p.getRootDomain().getConfig().getReferredClass(), Model.class); // TODO - this needs to be config of p not the root domain of p.
-		
-		ListenerType includeListener = Arrays.asList(rootDomain.includeListeners()).stream()
-											.filter((listener) -> !Arrays.asList(pModel.excludeListeners()).contains(listener))
-											.filter((listenerType) -> listenerType == ListenerType.websocket)
-											.findFirst()
-											.orElse(null);
-		
-		if(includeListener == null)
-			return false;
-		
-		//Repo repo = p.getRootDomain().getConfig().getRepo();
-		//if(repo == null)
-		//		return false;
-		return true;
+		return super.shouldAllow(p);
 
 	}
 	
 	@Override
 	public boolean listen(ModelEvent<Param<?>> modelEvent) {
-		Param<?>  p = modelEvent.getPayload();	
-		
-//		//TODO temp impl for GRID collection handling
-//		if(p.getConfig() instanceof ViewParamConfig) {
-//			AnnotationConfig uiStyle = ((ViewParamConfig)p.getConfig()).getUiStyles();
-//	
-//			if(uiStyle!=null && ClassUtils.getShortName(Grid.class).equals(uiStyle.getName())) {
-//				Object state = p.getState();
-//				ModelEvent e = new ModelEvent(Action._replace, p instanceof Param<?> ?((Param<?>)p).getPath():((Model<?,?>)p).getPath(), state);
-//				publishInternal(e);
-//				return true;
-//			}
-//	
-//		}
-//
 		return listenInternal(modelEvent);
 	}
 	
@@ -112,6 +80,11 @@ public class ParamEventAMQPListener implements StateAndConfigEventListener {
 	private String getAssociatedWebSocketSessionId(){
 		String httpSessionId = RequestContextHolder.getRequestAttributes().getSessionId();
 		return webSocketHttpConnectHandlerDecoratorFactory.getAssociatedWebSocketSessionId(httpSessionId);
+	}
+
+	@Override
+	public boolean containsListener(ListenerType listenerType) {
+		return ListenerType.websocket == listenerType;
 	}
 
 }
