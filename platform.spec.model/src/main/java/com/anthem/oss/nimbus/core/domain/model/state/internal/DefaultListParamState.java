@@ -267,6 +267,17 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 		ListElemParam<T> pColElem = pElem.findIfCollectionElem();
 		getNestedCollectionModel().templateParams().add(pColElem);
 		
+		// place-holder in entity state
+		if(pColElem.isMapped()) {
+			int currMaxElemIndx = getMaxElemIndex();
+			int currEntityListSize = list.size();
+			
+			if(currEntityListSize >= currMaxElemIndx)
+				list.add(null);
+			else
+				throw new InvalidStateException("EntityList size :"+currEntityListSize+" must be greater or equal than elemParam being added, but found currMaxElemIndx: "+currMaxElemIndx+" for param: "+pColElem);
+		}
+		
 		// notify
 		notifySubscribers(new Notification<>(this, ActionType._newElem, pColElem));
 		
