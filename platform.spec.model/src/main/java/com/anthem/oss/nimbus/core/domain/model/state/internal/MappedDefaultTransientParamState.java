@@ -44,6 +44,12 @@ public class MappedDefaultTransientParamState<T, M> extends DefaultParamState<T>
 		// initialize with shell
 		//assignMapsTo(mapsTo);
 	}
+	
+	@Override
+	protected void initStateInternal() {
+		if(isAssinged())
+			super.initStateInternal();
+	}
 
 	@Override
 	public Param<M> getMapsTo() {

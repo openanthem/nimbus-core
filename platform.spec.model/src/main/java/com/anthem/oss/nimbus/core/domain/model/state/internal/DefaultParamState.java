@@ -105,7 +105,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 
 	@Override
 	protected void initStateInternal() {
-		if(!isMapped() && isNested())
+		if(isNested())
 			findIfNested().initState();
 	}
 	
