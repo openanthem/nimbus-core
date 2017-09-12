@@ -5,6 +5,7 @@ package com.anthem.oss.nimbus.core.domain.model.state.internal;
 
 import java.util.Objects;
 
+import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.MappedTransientParam;
@@ -44,7 +45,19 @@ public class MappedDefaultTransientParamState<T, M> extends DefaultParamState<T>
 		// initialize with shell
 		//assignMapsTo(mapsTo);
 	}
+	
+	@Override
+	protected void initStateInternal() {
+		if(isAssinged())
+			super.initStateInternal();
+	}
 
+	@Override
+	public void fireRules() {
+		if(isAssinged())
+			super.fireRules();
+	}
+	
 	@Override
 	public Param<M> getMapsTo() {
 		return mapsToTransient;
@@ -63,10 +76,13 @@ public class MappedDefaultTransientParamState<T, M> extends DefaultParamState<T>
 		
 		//TODO: 1. create model for this type (Mapped) based on passed in mapsTo
 		// 1.1 If passed in mapsTo is collection, then create mapsTo (shell) element which "might" get added to collection upon setState of this mapped:: createElement is not same addElement
+		final Action a;
 		if(mapsToTransient.isCollection()) {
 			resolvedMapsTo = mapsToTransient.findIfCollection().createElement();
+			a = Action._new;
 		} else {
 			resolvedMapsTo = mapsToTransient;
+			a = Action._replace;
 		}
 		
 		// 2. hook up notifications to mapsTo
@@ -76,6 +92,12 @@ public class MappedDefaultTransientParamState<T, M> extends DefaultParamState<T>
 		// 3. create new mapped model based on mapsTo
 		Model mappedModel = creator.apply(this, getMapsTo().findIfNested());
 		getType().findIfTransient().assign(mappedModel);
+		
+		// 4. fire rules
+		fireRules();
+		
+		// 5. emit event
+		emitEvent(a, this);
 	}
 	
 	@Override

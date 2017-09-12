@@ -68,7 +68,6 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 			return;
 		
 		getParams().stream()
-			.filter(param-> (param.isNested() || (param.isLeaf() && !param.isMapped())))
 			.forEach(Param::initState);
 	}
 	

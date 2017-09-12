@@ -31,10 +31,8 @@ public class DefaultListModelState<T> extends DefaultModelState<List<T>> impleme
 	
 	@Override
 	protected void initStateInternal() {
-		if(isMapped())
-			return;
-	
-		List<T> colEntityState = getState();
+		List<?> colEntityState = isMapped() ? findIfMapped().getMapsTo().getState() : getState();
+		
 		if(CollectionUtils.isEmpty(colEntityState))
 			return;
 		
