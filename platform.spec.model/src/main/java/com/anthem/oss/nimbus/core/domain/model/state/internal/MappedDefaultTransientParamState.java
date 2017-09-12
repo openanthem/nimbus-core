@@ -52,6 +52,12 @@ public class MappedDefaultTransientParamState<T, M> extends DefaultParamState<T>
 	}
 
 	@Override
+	public void fireRules() {
+		if(isAssinged())
+			super.fireRules();
+	}
+	
+	@Override
 	public Param<M> getMapsTo() {
 		return mapsToTransient;
 	}
