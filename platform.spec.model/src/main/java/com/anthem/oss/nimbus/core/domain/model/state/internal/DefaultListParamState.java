@@ -269,7 +269,8 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 		
 		// place-holder in entity state
 		if(pColElem.isMapped()) {
-			int currMaxElemIndx = getMaxElemIndex();
+			int currMaxElemIndx = getNestedCollectionModel().templateParams().isNullOrEmpty() ?
+								-1 : getNestedCollectionModel().templateParams().size()-1;//getMaxElemIndex();
 			int currEntityListSize = list.size();
 			
 			if(currEntityListSize == currMaxElemIndx) 
