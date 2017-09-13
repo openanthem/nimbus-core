@@ -3,10 +3,6 @@
  */
 package com.anthem.oss.nimbus.core.bpm.activiti;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import javax.el.ArrayELResolver;
 import javax.el.BeanELResolver;
 import javax.el.CompositeELResolver;
@@ -25,27 +21,17 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * @author Jayant Chaudhuri
  *
  */
 public class ActivitiExpressionManager extends ExpressionManager implements ApplicationContextAware{
 	
-	public static final String PLATFORM_EXP_START="<`!";
-	public static final String PLATFORM_EXP_END="!`>";
 	protected ApplicationContext applicationContext;
 	
-	@Getter @Setter
-	private Map<String,String> functionToBeanMap;
-
 	@Override
 	public Expression createExpression(String expression) {
-		if(expression.contains(PLATFORM_EXP_START)){
-			expression = evaluate(expression);
-		}
+		expression = evaluate(expression);
 		return super.createExpression(expression);
 	}
 	
@@ -55,35 +41,13 @@ public class ActivitiExpressionManager extends ExpressionManager implements Appl
 	 * @return
 	 */
 	public String evaluate(String expression){
-		StringBuilder modifiedExpression = new StringBuilder();
-		List<String> expressionChunks = new ArrayList<String>();
-		int startIndex = expression.indexOf(PLATFORM_EXP_START);
-		while(startIndex != -1){
-			String preChunk = expression.substring(0,startIndex);
-			expressionChunks.add(preChunk);
-			int endIndex = expression.indexOf(PLATFORM_EXP_END);
-			if(endIndex == -1){
-				throw new IllegalArgumentException("Expression :"+expression+" is not valid");
-			}
-			endIndex = endIndex + PLATFORM_EXP_END.length();
-			String platformExpression = expression.substring(startIndex,endIndex);
-			platformExpression = createHanlderDelegateExpression(platformExpression);
-			expressionChunks.add(platformExpression);
-			expression = expression.substring(endIndex);
-			startIndex = expression.indexOf(PLATFORM_EXP_START);
+		if(!expression.startsWith("${")){
+			StringBuilder modifiedExpression = new StringBuilder();
+			expression = expression.replaceAll("'", "\\\\'");
+			modifiedExpression.append("${expressionEvaluator.getValue('").append(expression).append("', processContext.executionContext)").append("}");
+			return modifiedExpression.toString();
 		}
-		expressionChunks.add(expression);
-		for(String chunk: expressionChunks){
-			modifiedExpression.append(chunk);
-		}
-		return modifiedExpression.toString();
-	}
-	
-
-	private String createHanlderDelegateExpression(String expression){
-		expression = expression.substring(PLATFORM_EXP_START.length(), expression.length() - PLATFORM_EXP_END.length());
-		ActivitiExpressionBuilder platformExpression = new ActivitiExpressionBuilder(expression, functionToBeanMap);
-		return platformExpression.getDerivedExpression().toString();
+		return expression;
 	}
 	
 	@Override
@@ -106,11 +70,10 @@ public class ActivitiExpressionManager extends ExpressionManager implements Appl
 	    compositeElResolver.add(new BeanELResolver());
 	    return compositeElResolver;
 	}
-	  
+	
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
-		
 	}
 	
 }

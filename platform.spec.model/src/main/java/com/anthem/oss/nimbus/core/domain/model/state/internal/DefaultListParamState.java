@@ -268,8 +268,9 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 		getNestedCollectionModel().templateParams().add(pColElem);
 		
 		// place-holder in entity state
-		if(pColElem.isMapped() && pColElem.findIfMapped().requiresConversion()) {
-			int currMaxElemIndx = getMaxElemIndex();
+		if(pColElem.isMapped()) {
+			int currMaxElemIndx = getNestedCollectionModel().templateParams().isNullOrEmpty() ?
+								-1 : getNestedCollectionModel().templateParams().size()-1;//getMaxElemIndex();
 			int currEntityListSize = list.size();
 			
 			if(currEntityListSize == currMaxElemIndx) 
@@ -278,7 +279,7 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 				logit.trace(()->"ListParam: "+this+" is being setup with ParamElem being created for existing List entity already having colElems. "
 						+ "Currently building ListElemParam: "+pElem);
 			}
-			else
+			else //if(pColElem.findIfMapped().requiresConversion())
 				throw new InvalidStateException("EntityList size :"+currEntityListSize+" must be greater or equal than elemParam being added, but found currMaxElemIndx: "+currMaxElemIndx+" for param: "+pColElem);
 		}
 		

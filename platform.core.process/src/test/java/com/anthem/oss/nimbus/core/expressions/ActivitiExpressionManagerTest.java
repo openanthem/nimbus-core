@@ -2,8 +2,6 @@ package com.anthem.oss.nimbus.core.expressions;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.util.HashMap;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +17,6 @@ public class ActivitiExpressionManagerTest {
 	@Before
 	public void setUp() {
 		expMgr = new ActivitiExpressionManager();
-		expMgr.setFunctionToBeanMap(new HashMap<String,String>());
 	}
 	
 	@Test
