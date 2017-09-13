@@ -50,5 +50,57 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		if (!registry.hasMappingForPattern("/resources/**")) {
 			registry.addResourceHandler("/resources/**").addResourceLocations("classpath:./static/");
 		}
+		if (!registry.hasMappingForPattern("/vendor**bundle*js")) {
+			registry.addResourceHandler("/vendor**bundle*js").addResourceLocations("file:./target/frontend/" , "classpath:./static/");
+		}		
+
+		if (!registry.hasMappingForPattern("/vendor**bundle*js")) {
+			registry.addResourceHandler("/vendor**bundle*js").addResourceLocations("file:./target/frontend/" , "classpath:./static/");
+		}				
+		
+		if (!registry.hasMappingForPattern("/polyfills**bundle*js")) {
+			registry.addResourceHandler("/polyfills**bundle*js").addResourceLocations("file:./target/frontend/" , "classpath:./static/");
+		}				
+		
+		if (!registry.hasMappingForPattern("/inline**bundle*js")) {
+			registry.addResourceHandler("/inline**bundle*js").addResourceLocations("file:./target/frontend/" , "classpath:./static/");
+		}		
+		
+		if (!registry.hasMappingForPattern("/scripts**bundle*js")) {
+			registry.addResourceHandler("/scripts**bundle*js").addResourceLocations("file:./target/frontend/" , "classpath:./static/");
+		}		
+		
+		if (!registry.hasMappingForPattern("/main**bundle*js")) {
+			registry.addResourceHandler("/main**bundle*js").addResourceLocations("file:./target/frontend/" , "classpath:./static/");
+		}			
+		
+		if (!registry.hasMappingForPattern("/styles**bundle*css")) {
+			registry.addResourceHandler("//styles**bundle*css").addResourceLocations("file:./target/frontend/" , "classpath:./static/");
+		}				
+	
+		if (!registry.hasMappingForPattern("/**ttf")) {
+			registry.addResourceHandler("/**ttf").addResourceLocations("file:./target/frontend/" , "classpath:./static/");
+		}			
+		
+		if (!registry.hasMappingForPattern("/**ttf")) {
+			registry.addResourceHandler("/**ttf").addResourceLocations("file:./target/frontend/" , "classpath:./static/");
+		}		
+		
+		if (!registry.hasMappingForPattern("/**woff")) {
+			registry.addResourceHandler("/**woff").addResourceLocations("file:./target/frontend/" , "classpath:./static/");
+		}		
+	
+		if (!registry.hasMappingForPattern("/**woff2")) {
+			registry.addResourceHandler("/**woff2").addResourceLocations("file:./target/frontend/" , "classpath:./static/");
+		}	
+		
+		if (!registry.hasMappingForPattern("/browser-sync*")) {
+			registry.addResourceHandler("/browser-sync*").addResourceLocations("file:./target/frontend/" , "classpath:./static/");
+		}	
+		
+		
+		if (!registry.hasMappingForPattern("/updates*")) {
+			registry.addResourceHandler("/updates*").addResourceLocations("file:./target/frontend/" , "classpath:./static/");
+		}	
 	}
 }
