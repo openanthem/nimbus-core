@@ -61,11 +61,11 @@ public class CommandExecutorTaskDelegate implements JavaDelegate{
 	
 	
 	private String resolveCommandUrl(DelegateExecution execution, String commandUrl, ProcessEngineContext context){
-		Expression expression = activitiExpressionManager.createExpression(commandUrl);
-		Object value = expression.getValue(execution);
-		if(value == null)
-			return null;
-		commandUrl = (String)value;
+		//Expression expression = activitiExpressionManager.createExpression(commandUrl);
+		//Object value = expression.getValue(execution);
+		//if(value == null)
+		//	return null;
+		//commandUrl = (String)value;
 		commandUrl = pathVariableResolver.resolve(context.getActionParam(), commandUrl);
 		commandUrl = context.getExecutionContext().getCommandMessage().getCommand().getRelativeUri(commandUrl);
     	return commandUrl;
