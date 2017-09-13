@@ -35,8 +35,10 @@ public interface EntityState<T> {
 	public <P> Param<P> findParamByPath(String path);
 	public <P> Param<P> findParamByPath(String[] pathArr);
 	
-    public <S> State<S> findStateByPath(String path);
-	public <S> State<S> findStateByPath(String[] pathArr);
+	default <P> P findStateByPath(String path) {
+		Param<P> param = findParamByPath(path);
+		return param==null ? null : param.getState();
+	}
 
 	public void initSetup();
 	public void initState();
@@ -251,7 +253,7 @@ public interface EntityState<T> {
 		}
 		
 		public PropertyDescriptor getPropertyDescriptor();
-
+		
 	}
 	
 	public interface MappedParam<T, M> extends Param<T>, Mapped<T, M>, Notification.Consumer<M> {

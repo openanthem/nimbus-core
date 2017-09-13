@@ -11,7 +11,6 @@ import java.util.function.Supplier;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 
 import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
@@ -24,8 +23,6 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
 import com.anthem.oss.nimbus.core.domain.model.state.RulesRuntime;
-import com.anthem.oss.nimbus.core.domain.model.state.State;
-import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 import com.anthem.oss.nimbus.core.util.LockTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -145,49 +142,6 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 		return containsMapsToPath(path)  ? StringUtils.stripEnd(path, Constants.SEPARATOR_MAPSTO.code) : path;
 	}
 
-	
-	@Override
-	public <S> State<S> findStateByPath(String path) {
-		String splits[] = StringUtils.split(path, Constants.SEPARATOR_URI.code);
-		return findStateByPath(splits);
-	}
-
-	@Override
-	public <S> State<S> findStateByPath(String[] pathArr) {
-		String lastElem = pathArr[pathArr.length - 1];
-		
-		/* check if the last path item has # entry */
-		if(!StringUtils.contains(lastElem, Constants.SEPARATOR_CONFIG_ATTRIB.code)) {
-			return findParamByPath(pathArr);
-		}
-		
-		/* find param excluding # entry */
-		final String lastElemArr[] = StringUtils.split(lastElem, Constants.SEPARATOR_CONFIG_ATTRIB.code);
-		pathArr[pathArr.length - 1] = lastElemArr[0];
-		
-		Param<S> p = findParamByPath(pathArr);
-		
-		/* lookup state on param's config */
-		StateType.Nested<S> pTypeNested = p.getType().findIfNested();
-		Model<S> mp = pTypeNested.getModel();
-		Object pathRefConfig = (mp != null) ? mp.getConfig() : p.getConfig();
-		
-		/* get {#configAttribName}State */
-		String propStateNm = lastElemArr[1] + Constants.SUFFIX_PROPERTY_STATE.code;
-		PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(pathRefConfig.getClass(), propStateNm);
-		
-		if(pd == null && mp != null) {
-			pd = BeanUtils.getPropertyDescriptor(p.getConfig().getClass(), propStateNm);
-		}
-		
-		if(pd == null) {
-			throw new InvalidConfigException("Property: "+ propStateNm + " not found on param: "+p);
-		}
-		
-		State<S> state = read(pd, ()->pathRefConfig);
-		return state;
-	}
-	
 	@Override
 	public <P> Param<P> findParamByPath(String path) {
 		String splits[] = StringUtils.split(path, Constants.SEPARATOR_URI.code);
