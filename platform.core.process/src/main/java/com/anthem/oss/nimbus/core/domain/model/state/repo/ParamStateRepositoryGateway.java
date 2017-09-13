@@ -192,7 +192,8 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 //		return currRep._get(param);
 		
 		if(!mappedParam.requiresConversion()) {
-			return currRep._get(mapsToParam);
+			return mapsToParam.getState();
+			//return currRep._get(mapsToParam);
 		}
 		
 		return currRep._get(param);
@@ -252,6 +253,11 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		
 		MappedParam<P, ?> mappedParam = param.findIfMapped();
 		Param<P> mapsToParam = (Param<P>)mappedParam.getMapsTo();
+		
+		// if param is mapped && requires NO conversion, then use mapsToParam
+		if(!mappedParam.requiresConversion()) {
+			return mapsToParam.setState(newState);
+		}
 		
 		if(mappedParam.isTransient()) {
 			MappedTransientParam<P, ?> mappedTransient = mappedParam.findIfTransient();
@@ -343,11 +349,12 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 	}
 	
 	protected <P> Action _setNestedModel(ParamStateRepository currRep, Param<P> param, P newState) {
-		// if param is mapped && requiresNoConversion, then use mapsToParam
-		if(param.isMapped() && !param.findIfMapped().requiresConversion()) {
-			Param<P> mapsToParam = (Param<P>)param.findIfMapped().getMapsTo();
-			return _setNestedModel(currRep, mapsToParam, newState);
-		}
+		// if param is mapped && requires NO conversion, then use mapsToParam
+//		if(param.isMapped() && !param.findIfMapped().requiresConversion()) {
+//			Param<P> mapsToParam = (Param<P>)param.findIfMapped().getMapsTo();
+//			//return _setNestedModel(currRep, mapsToParam, newState);
+//			mapsToParam.setState(newState);
+//		}
 		
 		// ensure model is instantiated
 		param.findIfNested().instantiateOrGet();
