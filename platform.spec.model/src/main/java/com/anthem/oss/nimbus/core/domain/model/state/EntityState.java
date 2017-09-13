@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.anthem.oss.nimbus.core.domain.command.Command;
+import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.model.config.EntityConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
@@ -37,7 +38,11 @@ public interface EntityState<T> {
 	
 	default <P> P findStateByPath(String path) {
 		Param<P> param = findParamByPath(path);
-		return param==null ? null : param.getState();
+		
+		if(param==null)
+			throw new InvalidConfigException("Param not found for given path: "+path+" relative to current param/model: "+this);
+		
+		return param.getState();
 	}
 
 	public void initSetup();
