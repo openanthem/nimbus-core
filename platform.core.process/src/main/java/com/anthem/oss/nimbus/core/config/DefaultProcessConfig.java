@@ -23,6 +23,8 @@ import com.anthem.oss.nimbus.core.domain.command.execution.process.StatelessBPMF
 import com.anthem.oss.nimbus.core.domain.command.execution.search.DefaultSearchFunctionHandlerExample;
 import com.anthem.oss.nimbus.core.domain.command.execution.search.DefaultSearchFunctionHandlerLookup;
 import com.anthem.oss.nimbus.core.domain.command.execution.search.DefaultSearchFunctionHandlerQuery;
+import com.anthem.oss.nimbus.core.domain.expr.ExpressionEvaluator;
+import com.anthem.oss.nimbus.core.domain.expr.SpelExpressionEvaluator;
 
 /**
  * @author Sandeep Mantha
@@ -81,7 +83,10 @@ public class DefaultProcessConfig {
 		return new StatelessBPMFunctionHanlder<>(beanResolver);
 	}	
 	
-	
+	@Bean(name="expressionEvaluator")
+	public ExpressionEvaluator expressionEvaluator(BeanResolverStrategy beanResolver){
+		return new SpelExpressionEvaluator();
+	}	
 	
 	@Bean(name="commandExecutorTaskDelegate")
 	public CommandExecutorTaskDelegate commandExecutorTaskDelegate(BeanResolverStrategy beanResolver){
