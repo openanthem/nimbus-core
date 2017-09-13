@@ -4,15 +4,12 @@
 package com.anthem.oss.nimbus.core.domain.command.execution.fn;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.expression.Expression;
-import org.springframework.expression.ExpressionParser;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
-import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContext;
 import com.anthem.oss.nimbus.core.domain.command.execution.FunctionHandler;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
+import com.anthem.oss.nimbus.core.domain.expr.ExpressionEvaluator;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 
 /**
@@ -21,8 +18,10 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
  */
 public class DefaultParamFunctionHandler<T> implements FunctionHandler<T, Object> {
 
+	private final ExpressionEvaluator exprEval;
+	
 	public DefaultParamFunctionHandler(BeanResolverStrategy beanResolver) {
-		//this.converter = beanResolver.get(CommandMessageConverter.class);
+		this.exprEval = beanResolver.get(ExpressionEvaluator.class);
 	}
 
 	@Override
@@ -34,13 +33,7 @@ public class DefaultParamFunctionHandler<T> implements FunctionHandler<T, Object
 			return actionParameter;
 		
 		// expression
-		StandardEvaluationContext context = new StandardEvaluationContext(actionParameter);
-		//==SpelParserConfiguration config = new SpelParserConfiguration(true, true);
-		ExpressionParser expressionParser = new SpelExpressionParser();
-		
-		Expression expression = expressionParser.parseExpression(exprValue);
-		Object response = expression.getValue(context);
-		
+		Object response = exprEval.getValue(exprValue, actionParameter);
 		return response;
 	}
 }
