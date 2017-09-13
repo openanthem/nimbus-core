@@ -3,40 +3,26 @@
  */
 package com.anthem.oss.nimbus.core.bpm.activiti;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.activiti.bpmn.model.ExtensionElement;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.el.ExpressionManager;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.anthem.nimbus.platform.spec.model.process.ProcessEngineContext;
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
-import com.anthem.oss.nimbus.core.domain.command.Action;
-import com.anthem.oss.nimbus.core.domain.command.Behavior;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
-import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutorGateway;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandPathVariableResolver;
+import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutorGateway;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandPathVariableResolver;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
-import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
-import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
-import com.anthem.oss.nimbus.core.utils.ProcessBeanResolver;
-
-import io.swagger.models.AbstractModel;
 
 /**
  * @author Rakesh Patel
@@ -50,14 +36,17 @@ public class PlatformUserTaskActivityBehavior extends UserTaskActivityBehavior {
 	
 	CommandExecutorGateway commandGateway;
 	CommandPathVariableResolver pathVariableResolver;
-	ActivitiExpressionManager activitiExpressionManager;
+	BeanResolverStrategy beanResolver;
 	
-	public PlatformUserTaskActivityBehavior(BeanResolverStrategy beanResolver, UserTask userTask) {
+	public PlatformUserTaskActivityBehavior(UserTask userTask) {
 		super(userTask);
-		this.commandGateway = beanResolver.find(CommandExecutorGateway.class);
-		this.pathVariableResolver = beanResolver.find(CommandPathVariableResolver.class);
-		this.activitiExpressionManager = beanResolver.find(ActivitiExpressionManager.class);
-		
+//		this.commandGateway = beanResolver.find(CommandExecutorGateway.class);
+//		this.pathVariableResolver = beanResolver.find(CommandPathVariableResolver.class);
+//		this.activitiExpressionManager = beanResolver.find(ActivitiExpressionManager.class);
+	}
+	
+	public void setBeanResolver(BeanResolverStrategy beanResolver){
+		this.beanResolver = beanResolver;
 	}
 
 	@Override
@@ -68,6 +57,7 @@ public class PlatformUserTaskActivityBehavior extends UserTaskActivityBehavior {
 	@Override
 	public void execute(DelegateExecution execution) {
 		super.execute(execution);
+		init();
 		String url = getExtensionValue(URL);
 		String[] commandUrls = url.split("\\r?\\n");
 		
@@ -105,14 +95,16 @@ public class PlatformUserTaskActivityBehavior extends UserTaskActivityBehavior {
 	}
 
 	private String resolveCommandUrl(DelegateExecution execution, String commandUrl, ProcessEngineContext context){
-//		Expression expression = activitiExpressionManager.createExpression(commandUrl);
-//		Object value = expression.getValue(execution);
-//		if(value == null)
-//			return null;
-//		commandUrl = (String)value;
 		commandUrl = pathVariableResolver.resolve(context.getActionParam(), commandUrl);
 		commandUrl = context.getExecutionContext().getCommandMessage().getCommand().getRelativeUri(commandUrl);
     	return commandUrl;
 	}	
+	
+	private void init(){
+		if(this.commandGateway == null){
+			this.commandGateway = beanResolver.find(CommandExecutorGateway.class);
+			this.pathVariableResolver = beanResolver.find(CommandPathVariableResolver.class);
+		}
+	}
 
 }

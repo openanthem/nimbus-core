@@ -114,12 +114,12 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
         return engineConfiguration;
     }
     
-	@Bean
 	public DefaultActivityBehaviorFactory platformActivityBehaviorFactory(BeanResolverStrategy beanResolver) {
 		return new DefaultActivityBehaviorFactory() {
 			@Override
 			public UserTaskActivityBehavior createUserTaskActivityBehavior(UserTask userTask) {
-				PlatformUserTaskActivityBehavior platformUserTaskBehavior = new PlatformUserTaskActivityBehavior(beanResolver, userTask);
+				PlatformUserTaskActivityBehavior platformUserTaskBehavior = new PlatformUserTaskActivityBehavior(userTask);
+				platformUserTaskBehavior.setBeanResolver(beanResolver);
 				return platformUserTaskBehavior;
 			}
 		};
