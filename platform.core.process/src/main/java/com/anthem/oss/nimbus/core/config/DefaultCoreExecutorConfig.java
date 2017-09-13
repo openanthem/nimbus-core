@@ -22,6 +22,8 @@ import com.anthem.oss.nimbus.core.domain.command.execution.DefaultCommandPathVar
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultExecutionContextLoader;
 import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContextLoader;
 import com.anthem.oss.nimbus.core.domain.command.execution.HierarchyMatchBasedBeanFinder;
+import com.anthem.oss.nimbus.core.domain.expr.ExpressionEvaluator;
+import com.anthem.oss.nimbus.core.domain.expr.SpelExpressionEvaluator;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.DBSearch;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.MongoSearchByExample;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.MongoSearchByQuery;
@@ -32,6 +34,11 @@ import com.anthem.oss.nimbus.core.domain.model.state.repo.db.MongoSearchByQuery;
  */
 @Configuration
 public class DefaultCoreExecutorConfig {
+	
+	@Bean
+	public ExpressionEvaluator expressionEvaluator() {
+		return new SpelExpressionEvaluator();
+	}
 	
 	@Bean
 	public CommandMessageConverter commandMessageConverter(){

@@ -8,27 +8,30 @@ import java.util.List;
 
 import com.anthem.oss.nimbus.core.domain.definition.ConfigNature.Ignore;
 import com.anthem.oss.nimbus.core.domain.definition.Model;
-import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  * @author Soham Chakravarti
  */
-@Getter @Setter
-public class ServiceLine extends AbstractEntity.IdString {
+@Model
+@Getter @Setter @EqualsAndHashCode(of={"service", "something", "discharge", "elemId"})
+public class ServiceLine {
 	@Ignore
 	private static final long serialVersionUID = 1L;
 	
-	@Getter @Setter @Model
+	@Model
+	@Getter @Setter @EqualsAndHashCode(of={"by", "why", "when"}) 
 	public static class AuditInfo {
 		private String by;
 		private String why;
 		private Date when;
 	}
 	
-	@Getter @Setter @Model
+	@Model
+	@Getter @Setter @EqualsAndHashCode(of={"yesNo", "audits"}) 
 	public static class Discharge {
 		private boolean yesNo;
 		
