@@ -59,6 +59,8 @@ public class PlatformUserTaskActivityBehavior extends UserTaskActivityBehavior {
 		super.execute(execution);
 		init();
 		String url = getExtensionValue(URL);
+		if(url == null)
+			return;
 		String[] commandUrls = url.split("\\r?\\n");
 		
 		ProcessEngineContext context = (ProcessEngineContext)execution.getVariable(Constants.KEY_EXECUTE_PROCESS_CTX.code);

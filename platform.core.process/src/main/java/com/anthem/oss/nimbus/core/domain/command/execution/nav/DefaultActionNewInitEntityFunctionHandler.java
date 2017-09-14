@@ -10,6 +10,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.command.Command;
+import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandMessageConverter;
 import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContext;
 import com.anthem.oss.nimbus.core.domain.command.execution.FunctionHandler;
@@ -44,17 +45,26 @@ public class DefaultActionNewInitEntityFunctionHandler<T> implements FunctionHan
 			Param<Object> targetParam = Optional.ofNullable(actionParameter.findParamByPath(targetParamPath))
 					.orElseThrow(()->new InvalidConfigException("No param for configured target path: "+targetParamPath+" for cmd: "+cmd));
 
-			Object converted = resolveTargetState(cmd, index, targetParam);
-			targetParam.setState(converted);
+			Object converted = resolveTargetState(eCtx.getCommandMessage(), index, targetParam);
+			if(converted != null)
+				targetParam.setState(converted);
 		}		
 		return actionParameter;
 	}
 	
-	protected Object resolveTargetState(Command cmd, int index, Param<Object> targetParam) {
+	protected Object resolveTargetState(CommandMessage cmdMessage, int index, Param<Object> targetParam) {
 
-		String json = Arrays.asList(cmd.getParameterValue(Constants.KEY_FN_INITSTATE_ARG_JSON.code)).get(index);
+		String json = null;
+		
+		if(cmdMessage.getCommand().getParameterValue(Constants.KEY_FN_INITSTATE_ARG_JSON.code) != null)
+			json = Arrays.asList(cmdMessage.getCommand().getParameterValue(Constants.KEY_FN_INITSTATE_ARG_JSON.code)).get(index);
+		else{
+			json = cmdMessage.getRawPayload();
+		}
 			
-		return resolveAsJson(cmd, targetParam.getConfig(), json);
+		if(json == null)
+			return null;
+		return resolveAsJson(cmdMessage.getCommand(), targetParam.getConfig(), json);
 		
 	}
 
