@@ -69,8 +69,13 @@ public class AnnotationConfigHandler {
 	}
 
 	/**
+	 * If an <tt>AnnotationAttributeHandler</tt> is registered for the provided type of
+	 * <tt>metaAnnotationType</tt> it will be returned.
+	 * 
+	 * Otherwise this instance's <tt>defaultAttributeHandler</tt> will be returned.
 	 * 
 	 * @param metaAnnotationType
+	 * @see com.anthem.oss.nimbus.core.domain.config.builder.DefaultAnnotationAttributeHandler
 	 * @return
 	 */
 	private static AnnotationAttributeHandler getAttributesHandlerForType(Class<? extends Annotation> metaAnnotationType) {
