@@ -8,12 +8,14 @@ import java.lang.reflect.AnnotatedElement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+
+import javax.validation.Constraint;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.core.annotation.AnnotatedElementUtils;
-import org.springframework.core.annotation.AnnotationAttributes;
-import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ClassUtils;
 
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
@@ -24,6 +26,17 @@ import com.anthem.oss.nimbus.core.domain.model.config.AnnotationConfig;
  *
  */
 public class AnnotationConfigHandler {
+	
+	/**
+	 * Default Handler for generating attribute values
+	 */
+	private static AnnotationAttributeHandler defaultAttributeHandler = new DefaultAnnotationAttributeHandler();
+	
+	// TODO Move to spring context
+	private static Map<Class<?>, AnnotationAttributeHandler> attributeHandlers = new HashMap<>();
+	static {
+		attributeHandlers.put(Constraint.class, new ConstraintAnnotationAttributeHandler());
+	}
 	
 	public static AnnotationConfig handleSingle(AnnotatedElement aElem, Class<? extends Annotation> metaAnnotationType) {
 		List<AnnotationConfig> aConfigs = handle(aElem, metaAnnotationType);
@@ -47,18 +60,20 @@ public class AnnotationConfigHandler {
 			if(metaTypes!=null && metaTypes.contains(metaAnnotationType.getName())) {
 				AnnotationConfig ac = new AnnotationConfig();
 				ac.setName(ClassUtils.getShortName(a.annotationType()));
-				
-				AnnotationAttributes aa = AnnotationUtils.getAnnotationAttributes(aElem, a, false, true);
-				HashMap<String, Object> map = new HashMap<>();
-				for(String k : aa.keySet()) {
-					map.put(k, aa.get(k));
-				}
-				ac.setAttributes(map);
-				
+				ac.setAttributes(getAttributesHandlerForType(metaAnnotationType).generateFrom(aElem, a));
 				aConfigs.add(ac);
 			}
 		}
 		
 		return CollectionUtils.isEmpty(aConfigs) ? null : aConfigs;
+	}
+
+	/**
+	 * 
+	 * @param metaAnnotationType
+	 * @return
+	 */
+	private static AnnotationAttributeHandler getAttributesHandlerForType(Class<? extends Annotation> metaAnnotationType) {
+		return Optional.ofNullable(attributeHandlers.get(metaAnnotationType)).orElse(defaultAttributeHandler);
 	}
 }
