@@ -36,6 +36,7 @@ public class ParamUpdateEventListener extends AbstractStateAndConfigEventListene
 			// - /p/assignmenttask/_search?fn=query&where=status.eq('open')
 					// - /p/assignemnttask/_process?fn=_set&
 		}
+		
 		return true;
 	}
 

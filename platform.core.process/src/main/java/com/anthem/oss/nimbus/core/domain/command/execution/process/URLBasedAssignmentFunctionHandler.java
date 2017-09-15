@@ -106,8 +106,8 @@ abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements Functi
 	
 	protected S getInternalState(ExecutionContext executionContext){
 		String url = getUrl(executionContext.getCommandMessage());
-		Param<S> sourceParameter = executionContext.getRootModel().findParamByPath(url);
-		return sourceParameter.getState();
+		return executionContext.findStateByPath(url);
+		
 	}
 	
 	protected S getExternalState(ExecutionContext executionContext){

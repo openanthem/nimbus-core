@@ -150,6 +150,8 @@ public class DefaultActionExecutorNew extends AbstractFunctionCommandExecutor<Ob
 		ProcessFlow processFlow = quadModel.getFlow();
 		if(processFlow.getProcessExecutionId() == null)
 			processFlow.setProcessExecutionId(bpmGateway.startBusinessProcess(eCtx, lifecycleKey,actionParam).getExecutionId());
+		else
+			bpmGateway.continueBusinessProcessExecution(eCtx, processFlow.getProcessExecutionId(), actionParam);
 	}
 	
 }
