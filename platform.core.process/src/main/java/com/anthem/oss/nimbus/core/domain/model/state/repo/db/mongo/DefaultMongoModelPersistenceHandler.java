@@ -81,10 +81,13 @@ public class DefaultMongoModelPersistenceHandler implements ModelPersistenceHand
 			Class<Object> modelClass = (Class<Object>)model.getConfig().getReferredClass();
 			
 			Repo repo = AnnotationUtils.findAnnotation(modelClass, Repo.class);
-			Domain domain = AnnotationUtils.findAnnotation(modelClass, Domain.class);
 			
-			if(repo != null && domain != null) {
-				return model;
+			if(Repo.Database.isPersistable(repo)) {
+				Domain domain = AnnotationUtils.findAnnotation(modelClass, Domain.class);
+				
+				if(repo != null && domain != null) {
+					return model;
+				}
 			}
 		}
 		return (Model<Object>)param.getRootDomain();
