@@ -52,13 +52,6 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 	}
 
 	
-	protected void validateCommand(CommandMessage cmdMsg) {
-		if(cmdMsg==null || cmdMsg.getCommand()==null)
-			throw new InvalidArgumentException("Command must not be null for Gateway to process request");
-		
-		cmdMsg.getCommand().validate();
-	}
-	
 	@Override
 	public MultiOutput execute(CommandMessage cmdMsg) {
 		// validate
@@ -84,6 +77,13 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		}
 		
 		return mOutput;
+	}
+
+	protected void validateCommand(CommandMessage cmdMsg) {
+		if(cmdMsg==null || cmdMsg.getCommand()==null)
+			throw new InvalidArgumentException("Command must not be null for Gateway to process request");
+		
+		cmdMsg.getCommand().validate();
 	}
 	
 	protected void executeConfig(ExecutionContext eCtx, Param<?> cmdParam, MultiOutput mOutput, List<Execution.Config> execConfigs) {
