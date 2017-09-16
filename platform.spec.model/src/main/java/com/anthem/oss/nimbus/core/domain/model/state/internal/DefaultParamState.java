@@ -240,6 +240,12 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 				// fire rules at root level upon completion of all set actions
 				getRootExecution().fireRules();
 				
+				// TODO [Soham 9/15/17] Temp impl related to WS updates
+				if(!contextParams.get().isEmpty()) {
+					contextParams.get().stream()
+						.forEach(p->emitEvent(Action._new, p));
+				}
+				
 				// unlock
 				boolean b = execRt.tryUnlock(lockId);
 				if(!b)
@@ -261,8 +267,24 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	protected void postSetState(Action change, T state) {}
 	
+	private static ThreadLocal<List<Param<?>>> contextParams = new ThreadLocal<List<Param<?>>>() {
+		@Override
+		protected List<Param<?>> initialValue() {
+			return new ArrayList<>();
+		}
+	};
+	
 	protected void emitEvent(Action a , Param p) {
 		if(getAspectHandlers().getEventListener() == null) return;
+		
+		// TODO [Soham 9/15/17]: Temp impl to reduce ws emits till event handler is refactored to batch up updates
+		/* START */
+		if(StringUtils.contains(p.getPath(), Constants.SEPARATOR_CONFIG_ATTRIB.code) && p.getParentModel().getConfig().getReferredClass() == StateContextEntity.class) {
+			contextParams.get().add(p.getParentModel().getAssociatedParam());
+			return;
+		}
+		
+		/* END */
 		
 		ModelEvent<Param<?>> e = new ModelEvent<Param<?>>(a, p.getPath(), p);
 		EventListener listener = getAspectHandlers().getEventListener();
