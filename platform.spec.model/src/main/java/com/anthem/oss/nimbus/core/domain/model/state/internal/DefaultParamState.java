@@ -243,7 +243,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 				// TODO [Soham 9/15/17] Temp impl related to WS updates
 				if(!contextParams.get().isEmpty()) {
 					contextParams.get().stream()
-						.forEach(p->emitEvent(Action._new, p));
+						.forEach(p->emitEvent(Action._update, p));
 				}
 				
 				// unlock
