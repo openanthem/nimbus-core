@@ -279,7 +279,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		
 		// TODO [Soham 9/15/17]: Temp impl to reduce ws emits till event handler is refactored to batch up updates
 		/* START */
-		if(StringUtils.contains(p.getPath(), Constants.SEPARATOR_CONFIG_ATTRIB.code) && p.getParentModel().getConfig().getReferredClass() == StateContextEntity.class) {
+		//if(StringUtils.contains(p.getPath(), Constants.SEPARATOR_CONFIG_ATTRIB.code) && p.getParentModel().getConfig().getReferredClass() == StateContextEntity.class) {
+		if(p.isCollectionElem()) {
 			contextParams.get().add(p.getParentModel().getAssociatedParam());
 			return;
 		}
