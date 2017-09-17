@@ -26,6 +26,7 @@ import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Mult
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
 import com.anthem.oss.nimbus.core.domain.definition.Execution;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.ParamEvent;
 
 /**
  * @author Soham Chakravarti
@@ -142,6 +143,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		Optional.ofNullable(eCtx.getRootModel().getExecutionRuntime().getEvents())
 			.orElse(Collections.emptyList())
 			.stream()
+				.filter(ParamEvent::shouldAllow)
 				.map(pe->Output.instantiate(input, pe.getAction(), eCtx, pe.getParam()))
 				.forEach(mOutput.template()::add);
 			;
