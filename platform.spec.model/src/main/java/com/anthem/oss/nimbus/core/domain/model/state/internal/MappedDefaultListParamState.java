@@ -101,6 +101,6 @@ public class MappedDefaultListParamState<T, M> extends DefaultListParamState<T> 
 			}
 		};
 
-		getMapsTo().registerSubscriber(this);
+		getMapsTo().registerConsumer(this);
 	}
 }

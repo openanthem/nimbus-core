@@ -43,7 +43,7 @@ public class MappedDefaultListElemParamState<E, M> extends DefaultListElemParamS
 		
 		this.delegate = new InternalNotificationConsumer<>(this);
 		
-		getMapsTo().registerSubscriber(this);
+		getMapsTo().registerConsumer(this);
 	}
 	
 	public static <E> ListElemParam<?> findOrCreateMapsTo(ListModel<E> parentModel, String elemId) {

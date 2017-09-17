@@ -309,7 +309,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 
 	@Override
-	public void registerSubscriber(MappedParam<?, T> subscriber) {
+	public void registerConsumer(MappedParam<?, T> subscriber) {
 		if(this instanceof Notification.Consumer)
 			throw new InvalidOperationAttemptedException("Registering subscriber for Mapped entities are not supported. Found for: "+this.getPath()
 						+" while trying to add subscriber: "+subscriber.getPath());
@@ -318,7 +318,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	
 	@Override
-	public boolean deregisterSubscriber(MappedParam<?, T> subscriber) {
+	public boolean deregisterConsumer(MappedParam<?, T> subscriber) {
 		return getEventSubscribers().remove(subscriber);
 	}
 	

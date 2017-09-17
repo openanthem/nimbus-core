@@ -86,7 +86,7 @@ public class MappedDefaultTransientParamState<T, M> extends DefaultParamState<T>
 		}
 		
 		// 2. hook up notifications to mapsTo
-		resolvedMapsTo.registerSubscriber(this);
+		resolvedMapsTo.registerConsumer(this);
 		setMapsToTransient(resolvedMapsTo);
 		
 		// 3. create new mapped model based on mapsTo
@@ -105,7 +105,7 @@ public class MappedDefaultTransientParamState<T, M> extends DefaultParamState<T>
 		if(!isAssinged()) 
 			return;
 		
-		getMapsTo().deregisterSubscriber(this);
+		getMapsTo().deregisterConsumer(this);
 		
 		getType().findIfTransient().unassign();
 		

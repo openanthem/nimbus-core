@@ -63,6 +63,7 @@ public class ParamEvent {
 		return true;
 	}
 	
+	// TODO move this to EventManager
 	public boolean containsListener(ListenerType listenerType) {
 		return ListenerType.websocket == listenerType;
 	}
