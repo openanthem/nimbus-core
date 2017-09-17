@@ -77,11 +77,17 @@ public final class CommandExecution {
 		}
 		
 		public static <T> Output<T> instantiate(Input input, ExecutionContext eCtx, T value) {
-			Output<T> output = instantiate(input, eCtx);
+			Output<T> output = instantiate(input, input.getAction(), eCtx, value);
+			return output;
+		}
+		
+		public static <T> Output<T> instantiate(Input input, Action a, ExecutionContext eCtx, T value) {
+			Output<T> output = new Output<>(input.getInputCommandUri(), eCtx, a, input.getBehavior());
 			output.setValue(value);
 			output.setRootDomainId(eCtx.getCommandMessage().getCommand().getRootDomainElement().getRefId());
 			return output;
 		}
+		
 		
 		@Override
 		public List<Behavior> getBehaviors() {
@@ -125,7 +131,8 @@ public final class CommandExecution {
 		public Object getSingleResult() {
 			if(CollectionUtils.isEmpty(getOutputs())) return null;
 			
-			if(getOutputs().size() > 1) throw new IllegalStateException("Multi output contains more than one output elements: "+getOutputs());
+//			if(getOutputs().size() > 1) 
+//				throw new IllegalStateException("Multi output contains more than one output elements: "+getOutputs());
 			
 			return getOutputs().get(0).getValue();
 		}

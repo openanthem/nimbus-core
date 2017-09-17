@@ -47,7 +47,7 @@ public class Notification<T> {
 	}
 	
 	public interface Dispatcher<T> {
-		public void notifySubscribers(Notification<T> event);
+		public void addNotification(Notification<T> event);
 	}
 	
 	public interface Consumer<T> {

@@ -29,6 +29,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification;
+import com.anthem.oss.nimbus.core.domain.model.state.ParamEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification.ActionType;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.entity.Findable;
@@ -201,7 +202,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		state = preSetState(state);			
 		Action a = getAspectHandlers().getParamStateGateway()._set(this, state); 
 		if(a!=null) {
-			notifySubscribers(new Notification<>(this, ActionType._updateState, this));
+			addNotification(new Notification<>(this, ActionType._updateState, this));
 			h.setState(a);
 			
 			if(execRt.isStarted())
@@ -241,10 +242,10 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 				getRootExecution().fireRules();
 				
 				// TODO [Soham 9/15/17] Temp impl related to WS updates
-				if(!contextParams.get().isEmpty()) {
-					contextParams.get().stream()
-						.forEach(p->emitEvent(Action._update, p));
-				}
+//				if(!contextParams.get().isEmpty()) {
+//					contextParams.get().stream()
+//						.forEach(p->emitEvent(Action._update, p));
+//				}
 				
 				// unlock
 				boolean b = execRt.tryUnlock(lockId);
@@ -267,12 +268,6 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	protected void postSetState(Action change, T state) {}
 	
-	private static ThreadLocal<List<Param<?>>> contextParams = new ThreadLocal<List<Param<?>>>() {
-		@Override
-		protected List<Param<?>> initialValue() {
-			return new ArrayList<>();
-		}
-	};
 	
 	protected void emitEvent(Action a , Param p) {
 		if(getAspectHandlers().getEventListener() == null) return;
@@ -280,10 +275,11 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		// TODO [Soham 9/15/17]: Temp impl to reduce ws emits till event handler is refactored to batch up updates
 		/* START */
 		//if(StringUtils.contains(p.getPath(), Constants.SEPARATOR_CONFIG_ATTRIB.code) && p.getParentModel().getConfig().getReferredClass() == StateContextEntity.class) {
-		if(p.isCollectionElem()) {
-			contextParams.get().add(p.getParentModel().getAssociatedParam());
-			return;
-		}
+//		if(p.isCollectionElem()) {
+//			contextParams.get().add(p.getParentModel().getAssociatedParam());
+//			return;
+//		}
+		resolveRuntime().addEvent(new ParamEvent(a, p));
 		
 		/* END */
 		
@@ -328,8 +324,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	final public void notifySubscribers(Notification<T> event) {
-		getRootExecution().getExecutionRuntime().notifySubscribers((Notification<Object>)event);
+	final public void addNotification(Notification<T> event) {
+		getRootExecution().getExecutionRuntime().addNotification((Notification<Object>)event);
 	}
 	
 	

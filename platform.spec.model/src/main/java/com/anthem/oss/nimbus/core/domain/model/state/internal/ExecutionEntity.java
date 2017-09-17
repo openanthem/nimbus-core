@@ -5,24 +5,15 @@ package com.anthem.oss.nimbus.core.domain.model.state.internal;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.Condition;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ClassUtils;
 
-import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
@@ -35,16 +26,13 @@ import com.anthem.oss.nimbus.core.domain.model.config.internal.DefaultModelConfi
 import com.anthem.oss.nimbus.core.domain.model.config.internal.DefaultParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ExecutionModel;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
 import com.anthem.oss.nimbus.core.domain.model.state.InvalidStateException;
-import com.anthem.oss.nimbus.core.domain.model.state.Notification;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
 import com.anthem.oss.nimbus.core.util.JustLogit;
-import com.anthem.oss.nimbus.core.util.LockTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
@@ -261,13 +249,11 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 		
 		final private Command rootCommand;
 		
-		private String currentPage; //TODO change to state
-		
 		@JsonIgnore
 		final private ExecutionRuntime executionRuntime;
 		
 		public ExModel(Command rootCommand, ExParam associatedParam, ModelConfig<ExecutionEntity<V, C>> modelConfig, EntityStateAspectHandlers provider) {
-			this(rootCommand, associatedParam, modelConfig, provider, new InternalExecutionRuntime(rootCommand));
+			this(rootCommand, associatedParam, modelConfig, provider, new DefaultExecutionRuntime(rootCommand));
 		}
 		
 		public ExModel(Command rootCommand, ExParam associatedParam, ModelConfig<ExecutionEntity<V, C>> modelConfig, EntityStateAspectHandlers provider, ExecutionRuntime executionRuntime) {
@@ -325,102 +311,4 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 			super.finalize();
 		}
 	}
-
-	private static final ConcurrentHashMap<String, AtomicInteger> rootCommandBasedExecCounters = new ConcurrentHashMap<>();
-	
-	@Getter
-	public class InternalExecutionRuntime implements ExecutionRuntime {
-		private final Command rootCommand;
-		private final BlockingQueue<Notification<?>> notificationQueue;
-		
-		private boolean isStarted;
-		
-		private String lockId;
-		private final LockTemplate lock = new LockTemplate();
-		
-		private final LockTemplate notificationLock = new LockTemplate();
-		private final Condition notComplete = notificationLock.getLock().newCondition();
-		
-		public InternalExecutionRuntime(Command rootCommand) {
-			this.rootCommand = rootCommand;
-			this.notificationQueue = new LinkedBlockingQueue<>();
-		}
-		
-		@Override
-		public synchronized void start() {
-			rootCommandBasedExecCounters.putIfAbsent(rootCommand.getAbsoluteUri(), new AtomicInteger());
-			this.isStarted = true;
-		}
-		
-		@Override
-		public synchronized void stop() {
-			rootCommandBasedExecCounters.remove(rootCommand.getAbsoluteUri());
-			this.isStarted = false;
-		}
-		
-		@Override
-		public String tryLock() {
-			if(isLocked()) return null;
-			
-			return getLock().execute(()-> {
-				this.lockId = UUID.randomUUID().toString();
-				return getLockId();
-			});
-		}
-
-		@Override
-		public boolean isLocked() {
-			return (getLockId()!=null);
-		}
-		
-		@Override
-		public boolean isLocked(String lockId) {
-			if(!isLocked()) return false;
-			
-			return getLockId().equals(lockId);
-		}
-		
-		@Override
-		public boolean tryUnlock(String lockId) {
-			if(!isLocked(lockId)) return true;
-			
-			return getLock().execute(()-> {
-				if(isLocked(lockId)) {
-					this.lockId = null;
-					return true;
-				}
-				
-				return false;
-			});
-			
-		}
-		
-		@Override
-		public void notifySubscribers(Notification<Object> event) {
-			try {
-				getNotificationQueue().put(event);
-			} catch (InterruptedException ex) {
-				throw new FrameworkRuntimeException("Failed to place notification event on queue. event: "+event, ex);
-			}	
-		}
-		
-		@SuppressWarnings("unchecked")
-		@Override
-		public void awaitCompletion() {
-			try {
-				while(!getNotificationQueue().isEmpty()) {
-					Notification<Object> event = (Notification<Object>)getNotificationQueue().take();
-					Param<Object> source =  event.getSource();
-					
-					if(CollectionUtils.isNotEmpty(source.getEventSubscribers()))
-						new ArrayList<>(source.getEventSubscribers())
-							.stream()
-								.forEach(subscribedParam->subscribedParam.handleNotification(event));
-				}
-			} catch (InterruptedException ex) {
-				throw new FrameworkRuntimeException("Failed to take event form queue: "+notificationQueue, ex);
-			}
-		}
-		
-	} 
 }

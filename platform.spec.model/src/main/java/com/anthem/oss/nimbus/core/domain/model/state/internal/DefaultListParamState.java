@@ -105,7 +105,7 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 				boolean result = affectClearChange(propagateToMapsTo);
 				
 				// notify
-				notifySubscribers(new Notification<>(this, ActionType._resetModel, this));
+				addNotification(new Notification<>(this, ActionType._resetModel, this));
 				
 				// emit event
 				if(getRootExecution().getExecutionRuntime().isStarted())//if(execRt.isStarted())
@@ -151,7 +151,7 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 		
 		if(isRemoved) {
 			// notify state
-			notifySubscribers(new Notification<>(this, ActionType._deleteElem, pElem));
+			addNotification(new Notification<>(this, ActionType._deleteElem, pElem));
 			
 			// emit event
 			if(execRt.isStarted())
@@ -284,7 +284,7 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 		}
 		
 		// notify
-		notifySubscribers(new Notification<>(this, ActionType._newElem, pColElem));
+		addNotification(new Notification<>(this, ActionType._newElem, pColElem));
 		
 		return pColElem;
 	}
@@ -312,7 +312,7 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 		getNestedCollectionModel().templateParams().add(pColElem);
 		
 		// notify
-		notifySubscribers(new Notification<>(this, ActionType._newElem, pColElem));
+		addNotification(new Notification<>(this, ActionType._newElem, pColElem));
 		
 		return true;
 	}

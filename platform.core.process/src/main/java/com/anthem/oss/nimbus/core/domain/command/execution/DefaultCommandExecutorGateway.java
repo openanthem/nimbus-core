@@ -3,9 +3,11 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
@@ -111,13 +113,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		
 		if(!isPayloadUsed && cmdMsg.hasPayload())
 			payload = cmdMsg.getRawPayload();
-		/*
-		else if(configExecCmd.getRequestParams()!=null && configExecCmd.getRequestParams().get("a")!=null) {
-			String a[] = configExecCmd.getRequestParams().get("a");
-			if(a!=null && a.length==1)
-				payload = a[0];
-		}
-		*/
+
 		return payload;
 	}
 	
@@ -137,9 +133,19 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			
 			mOutput.template().add(output);
 			//addOutput(mOutput,output);
+			
+			addEvents(eCtx, input, mOutput);
 		});
 	}
 	
+	protected void addEvents(ExecutionContext eCtx, Input input, MultiOutput mOutput) {
+		Optional.ofNullable(eCtx.getRootModel().getExecutionRuntime().getEvents())
+			.orElse(Collections.emptyList())
+			.stream()
+				.map(pe->Output.instantiate(input, pe.getAction(), eCtx, pe.getParam()))
+				.forEach(mOutput.template()::add);
+			;
+	}
 	
 	private void addOutput(MultiOutput mOutput, Output<?> output){
 		Object outputValue = output.getValue();
