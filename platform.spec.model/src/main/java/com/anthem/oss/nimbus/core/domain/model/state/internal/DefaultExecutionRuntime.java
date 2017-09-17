@@ -3,7 +3,6 @@
  */
 package com.anthem.oss.nimbus.core.domain.model.state.internal;
 
-import java.util.List;
 import java.util.Queue;
 
 import com.anthem.oss.nimbus.core.domain.command.Command;
@@ -39,6 +38,8 @@ public class DefaultExecutionRuntime implements ExecutionRuntime {
 	@Override
 	public synchronized void start() {
 		this.isStarted = true;
+		
+		txnContext.set(new DefaultExecutionTxnContext());
 	}
 	
 	@Override
@@ -72,7 +73,7 @@ public class DefaultExecutionRuntime implements ExecutionRuntime {
 	}
 	
 	@Override
-	public List<ParamEvent> getEvents() {
+	public Queue<ParamEvent> getEvents() {
 		return txnContext.get().getEvents();
 	}
 	
@@ -91,4 +92,8 @@ public class DefaultExecutionRuntime implements ExecutionRuntime {
 		eventManager.dispatchNotifications(txnContext.get().getNotifications());
 	}
 	
+	@Override
+	public void publishEvents() {
+		
+	}
 }

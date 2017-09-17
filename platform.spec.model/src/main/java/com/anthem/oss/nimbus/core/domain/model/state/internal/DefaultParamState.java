@@ -247,6 +247,9 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 //						.forEach(p->emitEvent(Action._update, p));
 //				}
 				
+				// coarse event
+				execRt.publishEvents();
+				
 				// unlock
 				boolean b = execRt.tryUnlock(lockId);
 				if(!b)

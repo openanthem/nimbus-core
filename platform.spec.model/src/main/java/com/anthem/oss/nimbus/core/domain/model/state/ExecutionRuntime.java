@@ -14,6 +14,13 @@ public interface ExecutionRuntime extends ExecutionTxnContext, Notification.Disp
 	
 	public boolean isStarted();
 	
+	/**
+	 * Wait till registered fine-grained state changes are notified to consumers and they have completed handling the event
+	 */
 	public void awaitCompletion();
 
+	/**
+	 * Publishes coarse events to registered subscribers
+	 */
+	public void publishEvents();
 }

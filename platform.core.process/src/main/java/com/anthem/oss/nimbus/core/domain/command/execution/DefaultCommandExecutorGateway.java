@@ -3,11 +3,12 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Queue;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
@@ -25,6 +26,7 @@ import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Inpu
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
 import com.anthem.oss.nimbus.core.domain.definition.Execution;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.ParamEvent;
 
@@ -140,13 +142,32 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 	}
 	
 	protected void addEvents(ExecutionContext eCtx, Input input, MultiOutput mOutput) {
-		Optional.ofNullable(eCtx.getRootModel().getExecutionRuntime().getEvents())
-			.orElse(Collections.emptyList())
-			.stream()
+		Queue<ParamEvent> events = eCtx.getRootModel().getExecutionRuntime().getEvents();
+		
+		if(CollectionUtils.isEmpty(events))
+			return;
+		
+		Set<Model<?>> unique = new HashSet<>(events.size());
+		
+		events.stream()
 				.filter(ParamEvent::shouldAllow)
+				.filter(pe->{
+					if(!pe.getParam().isCollectionElem())
+						return true;
+					
+					Model<?> colModel = pe.getParam().findIfCollectionElem().getParentModel();
+					if(unique.contains(colModel))
+						return false;
+					
+					unique.add(colModel);
+					return true;
+				})
+				.map(pe->pe.getParam().isCollectionElem() ? new ParamEvent(pe.getAction(), pe.getParam().getParentModel().getAssociatedParam()) : pe)
 				.map(pe->Output.instantiate(input, pe.getAction(), eCtx, pe.getParam()))
 				.forEach(mOutput.template()::add);
 			;
+			
+			
 	}
 	
 	private void addOutput(MultiOutput mOutput, Output<?> output){
