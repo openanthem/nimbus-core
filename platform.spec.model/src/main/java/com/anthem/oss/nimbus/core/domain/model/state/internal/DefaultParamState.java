@@ -253,9 +253,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	@SuppressWarnings("unchecked")
 	@Override
 	final public void emitNotification(Notification<T> event) {
-		getRootExecution().getExecutionRuntime().emitNotification((Notification<Object>)event);
+		resolveRuntime().emitNotification((Notification<Object>)event);
 	}
-	
 	
 	@Getter
 	class InternalNotificationConsumer<M> implements Notification.Consumer<M> {

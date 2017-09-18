@@ -4,9 +4,8 @@
 package com.anthem.oss.nimbus.core.domain.model.state.internal;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Queue;
+import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
 
@@ -35,104 +34,58 @@ public class DefaultExecutionRuntime implements ExecutionRuntime {
 	
 	private final StateEventDelegator eventDelegator;
 	
-	private static final ThreadLocal<RuntimeScopes> runtimeScopesInThread = new ThreadLocal<RuntimeScopes>() {
+	private static final ThreadLocal<DefaultExecutionTxnContext> txnScopeInThread = new ThreadLocal<DefaultExecutionTxnContext>() {
 		@Override
-		protected RuntimeScopes initialValue() {
-			return new RuntimeScopes();
+		protected DefaultExecutionTxnContext initialValue() {
+			return new DefaultExecutionTxnContext();
 		}
 	};
 	
-	private static class RuntimeScopes {
-		
-		private final Map<ExecutionRuntime, ExecutionTxnContext> runtimeTxnContexts = new HashMap<>();
-		
-		public ExecutionTxnContext get(ExecutionRuntime rt) {
-			return runtimeTxnContexts.get(rt);
-		}
-		
-		public boolean containsValue(ExecutionRuntime rt) {
-			if(!runtimeTxnContexts.containsKey(rt))
-				return false;
-			
-			return runtimeTxnContexts.get(rt) != null;
-		}
-		
-		public void create(ExecutionRuntime rt) {
-			if(runtimeTxnContexts.containsKey(rt))
-				throw new InvalidStateException("Remnant ExecRt found: "+rt);
-			
-			runtimeTxnContexts.put(rt, null);
-		}
-		
-		public void remove(ExecutionRuntime rt) {
-			if(!runtimeTxnContexts.containsKey(rt))
-				throw new InvalidStateException("Expected ExecRt not found: "+rt);
-			
-			runtimeTxnContexts.remove(rt);
-		}
-		
-		public void addTxnCtx(ExecutionRuntime rt, ExecutionTxnContext txnCtx) {
-			if(!runtimeTxnContexts.containsKey(rt))
-				throw new InvalidStateException("Expected ExecRt not found: "+rt);
-			
-			ExecutionTxnContext oldVal = runtimeTxnContexts.replace(rt, txnCtx);
-			
-			if(oldVal!=null)
-				throw new InvalidStateException("Expected old TxnCtx entry for ExecRt to be null, but found: "+oldVal);
-		}
-		
-		public ExecutionTxnContext removeTxnCtx(ExecutionRuntime rt) {
-			if(!runtimeTxnContexts.containsKey(rt))
-				throw new InvalidStateException("Expected ExecRt not found: "+rt);
-			
-			ExecutionTxnContext txnCtx = runtimeTxnContexts.get(rt);
-			if(txnCtx==null)
-				throw new InvalidStateException("Expected TxnCtx not found in runtime: "+rt);
-			
-			runtimeTxnContexts.replace(rt, null);
-			return txnCtx;
-		}
-	}
 	
 	@Override
 	public synchronized void start() {
-		this.isStarted = true;
-		runtimeScopesInThread.get().create(this);
+		if(isTxnStarted())
+			throw new InvalidStateException("Expected to not any trailing txn context, but found one: "+getTxnContext());
 		
+		this.isStarted = true;
 		eventDelegator.onStartRuntime(this);
 	}
 	
 	@Override
 	public synchronized void stop() {
-		this.isStarted = false;
 		eventDelegator.onStopRuntime(this);
-		
-		runtimeScopesInThread.get().remove(this);
+		this.isStarted = false;
 	}
 	
 	@Override
-	public ExecutionTxnContext getTxnContext() {
-		return runtimeScopesInThread.get().get(this);
+	public DefaultExecutionTxnContext getTxnContext() {
+		return txnScopeInThread.get();
 	}
+	
 	
 	@Override
 	public void startTxn() {
-		ExecutionTxnContext txnCtx = new DefaultExecutionTxnContext();
-		runtimeScopesInThread.get().addTxnCtx(this, txnCtx);
+		if(isTxnStarted())
+			throw new InvalidStateException("Txn already started with id: "+getTxnContext().getId());
 		
-		eventDelegator.onStartTxn(txnCtx);
+		String lockId = UUID.randomUUID().toString();
+		getTxnContext().setId(lockId);
+		
+		eventDelegator.onStartTxn(getTxnContext());
 	}
 	
 	public boolean isTxnStarted() {
-		return runtimeScopesInThread.get().containsValue(this);
+		return getTxnContext().getId() != null;
 	}
 	
 	@Override
 	public void stopTxn() {
-		ExecutionTxnContext txnCtx = runtimeScopesInThread.get().get(this);
-		eventDelegator.onStopTxn(txnCtx);
+		if(!isTxnStarted())
+			throw new InvalidStateException("Txn not started to stop.");
 		
-		runtimeScopesInThread.get().removeTxnCtx(this);
+		eventDelegator.onStopTxn(getTxnContext());
+		
+		getTxnContext().setId(null);
 	}
 	
 	
@@ -193,5 +146,24 @@ public class DefaultExecutionRuntime implements ExecutionRuntime {
 		
 		eventDelegator.onEvent(txnCtx, event);
 	}
+
+	@Override
+	public void onStartRootCommandExecution(Command cmd) {
+		eventDelegator.onStartRootCommandExecution(cmd);
+	}
 	
+	@Override
+	public void onStopRootCommandExecution(Command cmd) {
+		eventDelegator.onStopRootCommandExecution(cmd, getTxnContext());	
+	}
+	
+	@Override
+	public void onStartCommandExecution(Command cmd) {
+		eventDelegator.onStartCommandExecution(cmd);	
+	}
+	
+	@Override
+	public void onStopCommandExecution(Command cmd) {
+		eventDelegator.onStopCommandExecution(cmd, getTxnContext());	
+	}
 }

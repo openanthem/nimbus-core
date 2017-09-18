@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 
@@ -26,7 +27,6 @@ import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Outp
 import com.anthem.oss.nimbus.core.domain.definition.Execution;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ExecutionModel;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.ExecutionTxnContext;
 import com.anthem.oss.nimbus.core.domain.model.state.ParamEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.BaseStateEventListener;
 
@@ -44,6 +44,8 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 	
 	private ExecutionContextLoader loader;
 	
+	private static final ThreadLocal<String> cmdScopeInThread = new ThreadLocal<>();
+	
 	public DefaultCommandExecutorGateway(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
 		
@@ -56,16 +58,37 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		this.pathVariableResolver = getBeanResolver().get(CommandPathVariableResolver.class);
 	}
 
-	
 	@Override
-	public MultiOutput execute(CommandMessage cmdMsg) {
+	public final MultiOutput execute(CommandMessage cmdMsg) {
 		// validate
 		validateCommand(cmdMsg);
 		
-		final String inputCommandUri = cmdMsg.getCommand().getAbsoluteUri();
-		
 		// load execution context 
 		ExecutionContext eCtx = loadExecutionContext(cmdMsg);
+		
+		final String lockId;
+		
+		if(cmdScopeInThread.get()==null) {
+			lockId = UUID.randomUUID().toString();
+			cmdScopeInThread.set(lockId);
+			eCtx.getRootModel().getExecutionRuntime().onStartRootCommandExecution(cmdMsg.getCommand());
+			
+		} else {
+			lockId = null;
+		}
+		
+		try {
+			return executeInternal(eCtx, cmdMsg);
+		} finally {
+			if(lockId!=null) {
+				eCtx.getRootModel().getExecutionRuntime().onStopRootCommandExecution(cmdMsg.getCommand());
+				cmdScopeInThread.set(null);
+			}
+		}
+	}
+	
+	protected MultiOutput executeInternal(ExecutionContext eCtx, CommandMessage cmdMsg) {
+		final String inputCommandUri = cmdMsg.getCommand().getAbsoluteUri();
 		
 		MultiOutput mOutput = new MultiOutput(inputCommandUri, eCtx, cmdMsg.getCommand().getAction(), cmdMsg.getCommand().getBehaviors());
 		
@@ -143,7 +166,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			eCtx.getRootModel().getExecutionRuntime().getEventDelegator().addTxnScopedListener(new BaseStateEventListener() {
 
 				@Override
-				public void onStopTxn(ExecutionTxnContext txnCtx, Map<ExecutionModel<?>, List<ParamEvent>> aggregatedEvents) {
+				public void onStopCommandExecution(Command cmd, Map<ExecutionModel<?>, List<ParamEvent>> aggregatedEvents) {
 					for(ExecutionModel<?> rootKey : aggregatedEvents.keySet()) {
 						List<ParamEvent> rawEvents = aggregatedEvents.get(rootKey);
 						_aggregatedEvents.addAll(rawEvents);
@@ -151,10 +174,14 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 				}
 			});
 			
+			eCtx.getRootModel().getExecutionRuntime().onStartCommandExecution(cmdMsg.getCommand());
+
 			Output<?> output = executor.execute(input);
 			output.setAggregatedEvents(_aggregatedEvents);
-			
 			selfExecOutputs.add(output);
+
+			eCtx.getRootModel().getExecutionRuntime().onStopCommandExecution(cmdMsg.getCommand());
+			
 			
 //			mOutput.template().add(output);
 			//addOutput(mOutput,output);

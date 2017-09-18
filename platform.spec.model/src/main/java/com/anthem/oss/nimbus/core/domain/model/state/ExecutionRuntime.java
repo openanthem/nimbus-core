@@ -3,6 +3,8 @@
  */
 package com.anthem.oss.nimbus.core.domain.model.state;
 
+import com.anthem.oss.nimbus.core.domain.command.Command;
+
 /**
  * @author Soham Chakravarti
  *
@@ -33,4 +35,10 @@ public interface ExecutionRuntime extends Notification.Dispatcher<Object> {
 	public String tryLock();
 	public boolean tryUnlock(String lockId);
 
+	
+	public void onStartRootCommandExecution(Command cmd);
+	public void onStopRootCommandExecution(Command cmd);
+	
+	public void onStartCommandExecution(Command cmd);
+	public void onStopCommandExecution(Command cmd);
 }
