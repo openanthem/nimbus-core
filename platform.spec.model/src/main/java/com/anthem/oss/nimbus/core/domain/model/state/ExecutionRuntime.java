@@ -7,7 +7,7 @@ package com.anthem.oss.nimbus.core.domain.model.state;
  * @author Soham Chakravarti
  *
  */
-public interface ExecutionRuntime extends ExecutionTxnContext, Notification.Dispatcher<Object> {
+public interface ExecutionRuntime extends Notification.Dispatcher<Object> {
 
 	public void start();
 	public void stop();
@@ -17,10 +17,20 @@ public interface ExecutionRuntime extends ExecutionTxnContext, Notification.Disp
 	/**
 	 * Wait till registered fine-grained state changes are notified to consumers and they have completed handling the event
 	 */
-	public void awaitCompletion();
+	public void awaitNotificationsCompletion();
 
-	/**
-	 * Publishes coarse events to registered subscribers
-	 */
-	public void publishEvents();
+	public StateEventDelegator getEventDelegator();
+	
+	public void emitEvent(ParamEvent event);
+	
+	public ExecutionTxnContext getTxnContext();
+	
+	public void startTxn();
+	public void stopTxn();
+	
+	public boolean isLocked(String lockId);
+	
+	public String tryLock();
+	public boolean tryUnlock(String lockId);
+
 }

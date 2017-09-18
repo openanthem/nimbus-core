@@ -3,11 +3,11 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
@@ -26,9 +26,12 @@ import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Inpu
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
 import com.anthem.oss.nimbus.core.domain.definition.Execution;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ExecutionModel;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.ExecutionTxnContext;
 import com.anthem.oss.nimbus.core.domain.model.state.ParamEvent;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.BaseStateEventListener;
 
 /**
  * @author Soham Chakravarti
@@ -132,42 +135,39 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			
 			// execute command
 			Input input = new Input(inputCommandUri, eCtx, cmdMsg.getCommand().getAction(), b);
+			
+			List<ParamEvent> _aggregatedEvents = new ArrayList<>();
+			
+			eCtx.getRootModel().getExecutionRuntime().getEventDelegator().addTxnScopedListener(new BaseStateEventListener() {
+				@Override
+				public void onStopTxn(ExecutionTxnContext txnCtx, Map<ExecutionModel<?>, List<ParamEvent>> aggregatedEvents) {
+					aggregatedEvents.values().stream()
+						.reduce(_aggregatedEvents, (_agg, list)->{
+							_agg.addAll(list);
+							return _agg;
+						});
+				}
+			});
 			Output<?> output = executor.execute(input);			
 			
 			mOutput.template().add(output);
 			//addOutput(mOutput,output);
 			
-			addEvents(eCtx, input, mOutput);
+			addEvents(eCtx, _aggregatedEvents, input, mOutput);
 		});
 	}
 	
-	protected void addEvents(ExecutionContext eCtx, Input input, MultiOutput mOutput) {
-		Queue<ParamEvent> events = eCtx.getRootModel().getExecutionRuntime().getEvents();
-		
-		if(CollectionUtils.isEmpty(events))
+	private void addEvents(ExecutionContext eCtx, List<ParamEvent> aggregatedEvents, Input input, MultiOutput mOutput) {
+		if(CollectionUtils.isEmpty(aggregatedEvents))
 			return;
 		
-		Set<Model<?>> unique = new HashSet<>(events.size());
+		Set<Model<?>> unique = new HashSet<>(aggregatedEvents.size());
 		
-		events.stream()
-				.filter(ParamEvent::shouldAllow)
-				.filter(pe->{
-					if(!pe.getParam().isCollectionElem())
-						return true;
-					
-					Model<?> colModel = pe.getParam().findIfCollectionElem().getParentModel();
-					if(unique.contains(colModel))
-						return false;
-					
-					unique.add(colModel);
-					return true;
-				})
-				.map(pe->pe.getParam().isCollectionElem() ? new ParamEvent(pe.getAction(), pe.getParam().getParentModel().getAssociatedParam()) : pe)
+		aggregatedEvents.stream()
+				.filter(ParamEvent::shouldAllow) //TODO move to listener
 				.map(pe->Output.instantiate(input, pe.getAction(), eCtx, pe.getParam()))
 				.forEach(mOutput.template()::add);
 			;
-			
-			
 	}
 	
 	private void addOutput(MultiOutput mOutput, Output<?> output){

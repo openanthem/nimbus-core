@@ -202,7 +202,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		state = preSetState(state);			
 		Action a = getAspectHandlers().getParamStateGateway()._set(this, state); 
 		if(a!=null) {
-			addNotification(new Notification<>(this, ActionType._updateState, this));
+			emitNotification(new Notification<>(this, ActionType._updateState, this));
 			h.setState(a);
 			
 			if(execRt.isStarted())
@@ -232,7 +232,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		} finally {
 			if(execRt.isLocked(lockId)) {
 				// await completion of notification events
-				execRt.awaitCompletion();
+				execRt.awaitNotificationsCompletion();
 				
 				if(h.getState() != null) {
 					this.eventSubscribers.forEach((subscriber) -> emitEvent(h.getState(), subscriber));
@@ -240,15 +240,6 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 				
 				// fire rules at root level upon completion of all set actions
 				getRootExecution().fireRules();
-				
-				// TODO [Soham 9/15/17] Temp impl related to WS updates
-//				if(!contextParams.get().isEmpty()) {
-//					contextParams.get().stream()
-//						.forEach(p->emitEvent(Action._update, p));
-//				}
-				
-				// coarse event
-				execRt.publishEvents();
 				
 				// unlock
 				boolean b = execRt.tryUnlock(lockId);
@@ -275,16 +266,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	protected void emitEvent(Action a , Param p) {
 		if(getAspectHandlers().getEventListener() == null) return;
 		
-		// TODO [Soham 9/15/17]: Temp impl to reduce ws emits till event handler is refactored to batch up updates
-		/* START */
-		//if(StringUtils.contains(p.getPath(), Constants.SEPARATOR_CONFIG_ATTRIB.code) && p.getParentModel().getConfig().getReferredClass() == StateContextEntity.class) {
-//		if(p.isCollectionElem()) {
-//			contextParams.get().add(p.getParentModel().getAssociatedParam());
-//			return;
-//		}
-		resolveRuntime().addEvent(new ParamEvent(a, p));
-		
-		/* END */
+		resolveRuntime().emitEvent(new ParamEvent(a, p));
 		
 		ModelEvent<Param<?>> e = new ModelEvent<Param<?>>(a, p.getPath(), p);
 		EventListener listener = getAspectHandlers().getEventListener();
@@ -327,8 +309,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	final public void addNotification(Notification<T> event) {
-		getRootExecution().getExecutionRuntime().addNotification((Notification<Object>)event);
+	final public void emitNotification(Notification<T> event) {
+		getRootExecution().getExecutionRuntime().emitNotification((Notification<Object>)event);
 	}
 	
 	

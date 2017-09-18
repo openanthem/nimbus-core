@@ -86,7 +86,7 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 			setStateInitialized(true); // From soham
 		} finally {
 			if(execRt.isLocked(lockId)) {
-				execRt.awaitCompletion();
+				execRt.awaitNotificationsCompletion();
 				
 				boolean b = execRt.tryUnlock(lockId);
 				if(!b)

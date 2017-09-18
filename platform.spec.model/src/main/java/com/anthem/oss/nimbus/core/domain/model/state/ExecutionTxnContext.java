@@ -11,11 +11,7 @@ import java.util.Queue;
  */
 public interface ExecutionTxnContext {
 
-	public boolean isLocked();
-	public boolean isLocked(String lockId);
-	
-	public String tryLock();
-	public boolean tryUnlock(String lockId);
+	public String getId();
 	
 	public void addNotification(Notification<Object> notification);
 	public Queue<Notification<Object>> getNotifications();

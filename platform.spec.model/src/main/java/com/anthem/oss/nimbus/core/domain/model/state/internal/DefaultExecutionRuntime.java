@@ -3,14 +3,18 @@
  */
 package com.anthem.oss.nimbus.core.domain.model.state.internal;
 
+import java.util.ArrayList;
 import java.util.Queue;
 
+import org.apache.commons.collections.CollectionUtils;
+
 import com.anthem.oss.nimbus.core.domain.command.Command;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionTxnContext;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification;
 import com.anthem.oss.nimbus.core.domain.model.state.ParamEvent;
-import com.anthem.oss.nimbus.core.domain.model.state.StateEventManager;
+import com.anthem.oss.nimbus.core.domain.model.state.StateEventDelegator;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -26,74 +30,100 @@ public class DefaultExecutionRuntime implements ExecutionRuntime {
 	
 	private boolean isStarted;
 	
-	private final StateEventManager eventManager = new DefaultStateEventManager();
+	private final StateEventDelegator eventDelegator;
 	
-	private static final ThreadLocal<ExecutionTxnContext> txnContext = new ThreadLocal<ExecutionTxnContext>() {
-		@Override
-		protected ExecutionTxnContext initialValue() {
-			return new DefaultExecutionTxnContext();
-		}
-	};
+	private static final ThreadLocal<ExecutionTxnContext> txnContext = new ThreadLocal<ExecutionTxnContext>();
 	
 	@Override
 	public synchronized void start() {
 		this.isStarted = true;
-		
-		txnContext.set(new DefaultExecutionTxnContext());
+		eventDelegator.onStartRuntime(this);
 	}
 	
 	@Override
 	public synchronized void stop() {
 		this.isStarted = false;
+		eventDelegator.onStopRuntime(this);
 	}
 	
 	@Override
-	public boolean isLocked() {
-		return txnContext.get().isLocked();
+	public ExecutionTxnContext getTxnContext() {
+		return txnContext.get();
 	}
+	
+	@Override
+	public void startTxn() {
+		txnContext.set(new DefaultExecutionTxnContext());
+		eventDelegator.onStartTxn(txnContext.get());
+	}
+	
+	public boolean isTxnStarted() {
+		return txnContext.get()!=null;
+	}
+	
+	@Override
+	public void stopTxn() {
+		ExecutionTxnContext txnCtx = txnContext.get();
+		txnContext.set(null);
+		eventDelegator.onStopTxn(txnCtx);
+	}
+	
 	
 	@Override
 	public boolean isLocked(String lockId) {
-		return txnContext.get().isLocked(lockId);
+		if(!isTxnStarted()) 
+			return false;
+		
+		return txnContext.get().getId().equals(lockId);
 	}
 	
 	@Override
 	public String tryLock() {
-		return txnContext.get().tryLock();
+		if(isTxnStarted()) 
+			return null;
+		
+		startTxn();
+		
+		return txnContext.get().getId();
 	}
 	
 	@Override
 	public boolean tryUnlock(String lockId) {
-		return txnContext.get().tryUnlock(lockId);
+		if(isLocked(lockId)) {
+			stopTxn();
+			return true;
+		}
+		
+		return false;
 	}
 	
 	@Override
-	public void addEvent(ParamEvent event) {
-		txnContext.get().addEvent(event);
-	}
-	
-	@Override
-	public Queue<ParamEvent> getEvents() {
-		return txnContext.get().getEvents();
-	}
-	
-	@Override
-	public void addNotification(Notification<Object> notification) {
+	public void emitNotification(Notification<Object> notification) {
 		txnContext.get().addNotification(notification);
 	}
 	
 	@Override
-	public Queue<Notification<Object>> getNotifications() {
-		return txnContext.get().getNotifications();
+	public void awaitNotificationsCompletion() {
+		Queue<Notification<Object>> notifications = txnContext.get().getNotifications();
+		if(CollectionUtils.isEmpty(notifications))
+			return;
+
+		while(!notifications.isEmpty()) {
+			Notification<Object> event = notifications.poll();
+			Param<Object> source =  event.getSource();
+			
+			if(CollectionUtils.isNotEmpty(source.getEventSubscribers()))
+				new ArrayList<>(source.getEventSubscribers())
+					.stream()
+						.forEach(subscribedParam->subscribedParam.handleNotification(event));
+		}
 	}
 	
 	@Override
-	public void awaitCompletion() {
-		eventManager.dispatchNotifications(txnContext.get().getNotifications());
-	}
-	
-	@Override
-	public void publishEvents() {
+	public void emitEvent(ParamEvent event) {
+		txnContext.get().addEvent(event);
 		
+		eventDelegator.onEvent(event);
 	}
+	
 }

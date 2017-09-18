@@ -100,19 +100,19 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 			if(getNestedCollectionModel().templateParams().isNullOrEmpty()) 
 				return;
 			
-			//changeStateTemplate((execRt, h) -> {
+			changeStateTemplate((execRt, h) -> {
 				// change state
 				boolean result = affectClearChange(propagateToMapsTo);
 				
 				// notify
-				addNotification(new Notification<>(this, ActionType._resetModel, this));
+				emitNotification(new Notification<>(this, ActionType._resetModel, this));
 				
 				// emit event
 				if(getRootExecution().getExecutionRuntime().isStarted())//if(execRt.isStarted())
 					emitEvent(Action._replace, this);
 				
-				return;// result;
-			//});
+				return result;
+			});
 		});
 	}
 	
@@ -151,7 +151,7 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 		
 		if(isRemoved) {
 			// notify state
-			addNotification(new Notification<>(this, ActionType._deleteElem, pElem));
+			emitNotification(new Notification<>(this, ActionType._deleteElem, pElem));
 			
 			// emit event
 			if(execRt.isStarted())
@@ -171,27 +171,6 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 			if(propagateToMapsTo) {
 				boolean mapsToRemoved = affectRemoveChangeIfMapped(pElem);
 				return mapsToRemoved;
-//				boolean mappedRemoved = affectRemoveIfMappedOrUnMapped(pElem);
-//				
-//				
-//				boolean requiresConversion = pElem.findIfMapped().requiresConversion();
-//				
-//				// shouldn't have to remove if param is mapped with no-conversion
-//				if(!requiresConversion && mappedRemoved)
-//					throw new InvalidStateException("Mapped param doesn't require conversion and hence would necessiate removal only from mapsTo collection. "
-//							+ " Found mapsToRemoved: "+mapsToRemoved+" for mapsToElem: "+pElem.findIfMapped().getMapsTo()
-//							+ " Found mappedRemoved: "+mappedRemoved+" for mappedElem: "+pElem);
-//				
-//				if(!requiresConversion)
-//					return mapsToRemoved;
-//				
-//				else if(((mapsToRemoved && mappedRemoved) || (!mapsToRemoved && !mappedRemoved)))
-//					return true;
-//				
-//				return true;
-	//			throw new InvalidStateException("Both mapped & mapsTo elems in collection must be removed. "
-	//					+ " Found mapsToRemoved: "+mapsToRemoved+" for mapsToElem: "+pElem.findIfMapped().getMapsTo()
-	//					+ " Found mappedRemoved: "+mappedRemoved+" for mappedElem: "+pElem);
 			} else {
 				boolean mappedRemoved = affectRemoveIfMappedOrUnMapped(pElem);
 				return mappedRemoved;
@@ -245,8 +224,7 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 		final LockTemplate rLockTemplate = isMapped() ? findIfMapped().getMapsTo().getLockTemplate() : getLockTemplate();
 		
 		return rLockTemplate.execute(()->{
-			//return changeStateTemplate((rt, h)->affectAddChange());
-			return affectAddChange();
+			return changeStateTemplate((rt, h)->affectAddChange());
 		});
 	} 
 	
@@ -284,7 +262,7 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 		}
 		
 		// notify
-		addNotification(new Notification<>(this, ActionType._newElem, pColElem));
+		emitNotification(new Notification<>(this, ActionType._newElem, pColElem));
 		
 		return pColElem;
 	}
@@ -312,7 +290,7 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 		getNestedCollectionModel().templateParams().add(pColElem);
 		
 		// notify
-		addNotification(new Notification<>(this, ActionType._newElem, pColElem));
+		emitNotification(new Notification<>(this, ActionType._newElem, pColElem));
 		
 		return true;
 	}

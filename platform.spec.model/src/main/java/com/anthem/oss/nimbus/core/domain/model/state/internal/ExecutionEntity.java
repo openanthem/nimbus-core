@@ -253,7 +253,7 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 		final private ExecutionRuntime executionRuntime;
 		
 		public ExModel(Command rootCommand, ExParam associatedParam, ModelConfig<ExecutionEntity<V, C>> modelConfig, EntityStateAspectHandlers provider) {
-			this(rootCommand, associatedParam, modelConfig, provider, new DefaultExecutionRuntime(rootCommand));
+			this(rootCommand, associatedParam, modelConfig, provider, new DefaultExecutionRuntime(rootCommand, new DefaultStateEventDelegator()));
 		}
 		
 		public ExModel(Command rootCommand, ExParam associatedParam, ModelConfig<ExecutionEntity<V, C>> modelConfig, EntityStateAspectHandlers provider, ExecutionRuntime executionRuntime) {
