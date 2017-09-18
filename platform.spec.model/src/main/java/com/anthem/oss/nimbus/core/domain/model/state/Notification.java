@@ -41,13 +41,13 @@ public class Notification<T> {
 	public interface Producer<T> extends Dispatcher<T> {
 		public List<MappedParam<?, T>> getEventSubscribers();
 		
-		public void registerSubscriber(MappedParam<?, T> subscriber);
+		public void registerConsumer(MappedParam<?, T> consumer);
 		
-		public boolean deregisterSubscriber(MappedParam<?, T> subscriber);
+		public boolean deregisterConsumer(MappedParam<?, T> consumer);
 	}
 	
 	public interface Dispatcher<T> {
-		public void notifySubscribers(Notification<T> event);
+		public void emitNotification(Notification<T> event);
 	}
 	
 	public interface Consumer<T> {

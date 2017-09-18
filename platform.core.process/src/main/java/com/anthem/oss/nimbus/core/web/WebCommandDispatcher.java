@@ -38,16 +38,6 @@ public class WebCommandDispatcher {
 
 	public Object handle(HttpServletRequest httpReq, RequestMethod httpMethod, String v, String json) {
 		Command cmd = builder.build(httpReq);
-
-//		String loggedIndUser = SecurityContextHolder.getContext().getAuthentication().getName();
-//		if (StringUtils.isNotBlank(loggedIndUser)) {
-//			cmd.setClientUserId(loggedIndUser);
-//			boolean  hasAccess = authorizationApi.hasAccess(cmd);
-//			return hasAccess ? handle(cmd, json) : false;
-//		}else {
-//			throw  new UnauthorizedClientException("No logged in user  in context");
-//		}
-
 		return handle(cmd, json);
 	}
 

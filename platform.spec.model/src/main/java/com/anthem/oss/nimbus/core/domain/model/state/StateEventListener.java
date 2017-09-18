@@ -1,0 +1,19 @@
+/**
+ * 
+ */
+package com.anthem.oss.nimbus.core.domain.model.state;
+
+import java.util.List;
+import java.util.Map;
+
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ExecutionModel;
+
+/**
+ * @author Soham Chakravarti
+ *
+ */
+public interface StateEventListener extends StateEventLifeCycle {
+
+	public void onStopTxn(ExecutionTxnContext txnCtx, Map<ExecutionModel<?>, List<ParamEvent>> aggregatedEvents);
+
+}

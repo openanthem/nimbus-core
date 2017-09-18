@@ -104,7 +104,7 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 	public T instantiateAndSet() {
 		T newInstance =  getAspectHandlers().getParamStateGateway()._instantiateAndSet(this.getAssociatedParam());
 		 
-		getAssociatedParam().notifySubscribers(new Notification<>(this.getAssociatedParam(), ActionType._newModel, this.getAssociatedParam()));
+		getAssociatedParam().emitNotification(new Notification<>(this.getAssociatedParam(), ActionType._newModel, this.getAssociatedParam()));
 		return newInstance;
 	}
 	

@@ -34,6 +34,6 @@ public class MappedDefaultParamState<T, M> extends DefaultParamState<T> implemen
 		
 		this.delegate = new InternalNotificationConsumer<>(this);
 		
-		getMapsTo().registerSubscriber(this);
+		getMapsTo().registerConsumer(this);
 	}
 }

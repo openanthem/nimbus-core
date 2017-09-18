@@ -12,11 +12,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.DefaultBeanResolverStrategy;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandTransactionInterceptor;
 import com.anthem.oss.nimbus.core.domain.command.execution.process.ParamUpdateEventListener;
 import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
 import com.anthem.oss.nimbus.core.domain.model.config.builder.DefaultValidatorProvider;
@@ -25,7 +23,6 @@ import com.anthem.oss.nimbus.core.domain.model.state.builder.DefaultQuadModelBui
 import com.anthem.oss.nimbus.core.domain.model.state.builder.EntityStateBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.PageNavigationInitializer;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
-import com.anthem.oss.nimbus.core.integration.websocket.ParamEventAMQPListener;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 import com.anthem.oss.nimbus.core.util.SecurityUtils;
 
@@ -65,10 +62,10 @@ public class DefaultCoreBuilderConfig {
 		return new DomainConfigBuilder(configBuilder, basePackages);
 	}
 	
-	@Bean
-	public ParamEventAMQPListener paramEventAMQPListener(SimpMessageSendingOperations messageTemplate,CommandTransactionInterceptor interceptor) {
-		return new ParamEventAMQPListener(messageTemplate, interceptor);
-	}
+//	@Bean
+//	public ParamEventAMQPListener paramEventAMQPListener(SimpMessageSendingOperations messageTemplate,CommandTransactionInterceptor interceptor) {
+//		return new ParamEventAMQPListener(messageTemplate, interceptor);
+//	}
 	
 	@Bean
 	public ParamUpdateEventListener paramEventUpdateListener() {

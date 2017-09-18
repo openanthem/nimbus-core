@@ -72,7 +72,7 @@ public class MappedDefaultListParamState<T, M> extends DefaultListParamState<T> 
 					ListModel<T> mappedColModel = (ListModel<T>)getType().findIfNested().getModel().findIfListModel();
 					Param<?> mappedParamElem = mappedColModel.templateParams().remove(elemId);
 					
-					notifySubscribers(new Notification<>(mappedColModel.getAssociatedParam(), ActionType._deleteElem, mappedParamElem));
+					emitNotification(new Notification<>(mappedColModel.getAssociatedParam(), ActionType._deleteElem, mappedParamElem));
 					
 					if(getRootExecution().getExecutionRuntime().isStarted())
 						emitEvent(Action._delete, mappedParamElem);
@@ -101,6 +101,6 @@ public class MappedDefaultListParamState<T, M> extends DefaultListParamState<T> 
 			}
 		};
 
-		getMapsTo().registerSubscriber(this);
+		getMapsTo().registerConsumer(this);
 	}
 }

@@ -10,6 +10,7 @@ import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.MappedTransientParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
+import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -70,34 +71,41 @@ public class MappedDefaultTransientParamState<T, M> extends DefaultParamState<T>
 		if(getMapsTo()==mapsToTransient)
 			return;
 		
-		unassignMapsTo();
-		
-		final Param<M> resolvedMapsTo;
-		
-		//TODO: 1. create model for this type (Mapped) based on passed in mapsTo
-		// 1.1 If passed in mapsTo is collection, then create mapsTo (shell) element which "might" get added to collection upon setState of this mapped:: createElement is not same addElement
-		final Action a;
-		if(mapsToTransient.isCollection()) {
-			resolvedMapsTo = mapsToTransient.findIfCollection().createElement();
-			a = Action._new;
-		} else {
-			resolvedMapsTo = mapsToTransient;
-			a = Action._replace;
+		ExecutionRuntime execRt = resolveRuntime();
+		String lockId = execRt.tryLock();
+		try {
+			unassignMapsTo();
+			
+			final Param<M> resolvedMapsTo;
+			
+			//TODO: 1. create model for this type (Mapped) based on passed in mapsTo
+			// 1.1 If passed in mapsTo is collection, then create mapsTo (shell) element which "might" get added to collection upon setState of this mapped:: createElement is not same addElement
+			final Action a;
+			if(mapsToTransient.isCollection()) {
+				resolvedMapsTo = mapsToTransient.findIfCollection().createElement();
+				a = Action._new;
+			} else {
+				resolvedMapsTo = mapsToTransient;
+				a = Action._replace;
+			}
+			
+			// 2. hook up notifications to mapsTo
+			resolvedMapsTo.registerConsumer(this);
+			setMapsToTransient(resolvedMapsTo);
+			
+			// 3. create new mapped model based on mapsTo
+			Model mappedModel = creator.apply(this, getMapsTo().findIfNested());
+			getType().findIfTransient().assign(mappedModel);
+			
+			// 4. fire rules
+			fireRules();
+			
+			// 5. emit event
+			emitEvent(a, this);
+			
+		} finally {
+			execRt.tryUnlock(lockId);
 		}
-		
-		// 2. hook up notifications to mapsTo
-		resolvedMapsTo.registerSubscriber(this);
-		setMapsToTransient(resolvedMapsTo);
-		
-		// 3. create new mapped model based on mapsTo
-		Model mappedModel = creator.apply(this, getMapsTo().findIfNested());
-		getType().findIfTransient().assign(mappedModel);
-		
-		// 4. fire rules
-		fireRules();
-		
-		// 5. emit event
-		emitEvent(a, this);
 	}
 	
 	@Override
@@ -105,7 +113,7 @@ public class MappedDefaultTransientParamState<T, M> extends DefaultParamState<T>
 		if(!isAssinged()) 
 			return;
 		
-		getMapsTo().deregisterSubscriber(this);
+		getMapsTo().deregisterConsumer(this);
 		
 		getType().findIfTransient().unassign();
 		
