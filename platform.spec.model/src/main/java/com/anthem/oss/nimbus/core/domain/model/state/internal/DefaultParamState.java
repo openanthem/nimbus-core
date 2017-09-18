@@ -16,7 +16,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
-import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
 import com.anthem.oss.nimbus.core.InvalidOperationAttemptedException;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.execution.ValidationResult;
@@ -27,13 +26,10 @@ import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
-import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification;
-import com.anthem.oss.nimbus.core.domain.model.state.ParamEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification.ActionType;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.entity.Findable;
-import com.anthem.oss.nimbus.core.spec.contract.event.EventListener;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
@@ -213,65 +209,12 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		return a;
 	}
 	
-	@FunctionalInterface
-	public static interface ChangeStateCallback<R> {
-		public R affectChange(ExecutionRuntime execRt, Holder<Action> h);
-	}
-
-	final protected <R> R changeStateTemplate(ChangeStateCallback<R> cb) {
-		ExecutionRuntime execRt = resolveRuntime();
-		String lockId = execRt.tryLock();
-		final Holder<Action> h = new Holder<>();
-		try {
-			R resp = cb.affectChange(execRt, h);
-			
-			// fire rules if available at this param level
-			fireRules();
-			
-			return resp;
-		} finally {
-			if(execRt.isLocked(lockId)) {
-				// await completion of notification events
-				execRt.awaitNotificationsCompletion();
-				
-				if(h.getState() != null) {
-					this.eventSubscribers.forEach((subscriber) -> emitEvent(h.getState(), subscriber));
-				}
-				
-				// fire rules at root level upon completion of all set actions
-				getRootExecution().fireRules();
-				
-				// unlock
-				boolean b = execRt.tryUnlock(lockId);
-				if(!b)
-					throw new FrameworkRuntimeException("Failed to release lock acquired during setState of: "+getPath()+" with acquired lockId: "+lockId); 
-			}	
-		}
-	}
-	
-	protected ExecutionRuntime resolveRuntime() {
-		if(getRootExecution().getAssociatedParam().isLinked()) {
-			return getRootExecution().getAssociatedParam().findIfLinked().getRootExecution().getExecutionRuntime();
-		}
-		
-		return getRootExecution().getExecutionRuntime();
-	}
 	
 	protected T preSetState(T state) {
 		return state;
 	}
 	protected void postSetState(Action change, T state) {}
-	
-	
-	protected void emitEvent(Action a , Param p) {
-		if(getAspectHandlers().getEventListener() == null) return;
-		
-		resolveRuntime().emitEvent(new ParamEvent(a, p));
-		
-		ModelEvent<Param<?>> e = new ModelEvent<Param<?>>(a, p.getPath(), p);
-		EventListener listener = getAspectHandlers().getEventListener();
-		listener.listen(e);
-	}
+
 	
 	@JsonIgnore @Override
 	public ExecutionModel<?> getRootExecution() {
