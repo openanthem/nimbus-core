@@ -136,15 +136,13 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			// execute command
 			Input input = new Input(inputCommandUri, eCtx, cmdMsg.getCommand().getAction(), b);
 			
-			List<ParamEvent> _aggregatedEvents = new ArrayList<>();
-			
 			eCtx.getRootModel().getExecutionRuntime().getEventDelegator().addTxnScopedListener(new BaseStateEventListener() {
 
 				@Override
 				public void onStopTxn(ExecutionTxnContext txnCtx, Map<ExecutionModel<?>, List<ParamEvent>> aggregatedEvents) {
 					for(ExecutionModel<?> rootKey : aggregatedEvents.keySet()) {
 						List<ParamEvent> rawEvents = aggregatedEvents.get(rootKey);
-						_aggregatedEvents.addAll(rawEvents);
+						mOutput.getAggregatedEvents().addAll(rawEvents);
 					}
 				}
 			});
@@ -153,7 +151,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			mOutput.template().add(output);
 			//addOutput(mOutput,output);
 			
-			addEvents(eCtx, _aggregatedEvents, input, mOutput);
+			addEvents(eCtx, mOutput.getAggregatedEvents(), input, mOutput);
 		});
 	}
 	

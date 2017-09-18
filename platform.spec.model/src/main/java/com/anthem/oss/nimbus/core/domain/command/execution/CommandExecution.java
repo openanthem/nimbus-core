@@ -3,6 +3,7 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -12,6 +13,7 @@ import org.springframework.util.CollectionUtils;
 
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Behavior;
+import com.anthem.oss.nimbus.core.domain.model.state.ParamEvent;
 import com.anthem.oss.nimbus.core.util.CollectionsTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -111,6 +113,10 @@ public final class CommandExecution {
 		
 		@Getter @Setter 
 		private List<Output<?>> outputs;
+		
+		@JsonIgnore
+		@Getter @Setter 
+		private List<ParamEvent> aggregatedEvents = new ArrayList<>();
 		
 		public MultiOutput(String inputCommandUri, ExecutionContext context, Action action, Behavior b) {
 			super(inputCommandUri, context, action, b);
