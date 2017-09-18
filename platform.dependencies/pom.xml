@@ -4,7 +4,7 @@
 
 	<groupId>com.anthem.oss.nimbus.core</groupId>
 	<artifactId>com.anthem.oss.nimbus.core.dependencies</artifactId>
-	<version>1.0.0.M4-SNAPSHOT</version>
+	<version>1.0.0.M5-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>nimbus-core-dependencies</name>
 	<description>Nimbus Core Bill of materials</description>
@@ -55,11 +55,12 @@
 		<npm.version>5.3.0</npm.version>
 		<frontend.plugin.version>1.4</frontend.plugin.version>
 		<owasp-esapi.version>2.0.1</owasp-esapi.version>
+		
 		<!-- nimbus-core -->
-		<nimbus.core.spec.version>1.0.0.M4-SNAPSHOT</nimbus.core.spec.version>
-		<nimbus.core.test.version>1.0.0.M4-SNAPSHOT</nimbus.core.test.version>
-		<nimbus.core.api.version>1.0.0.M4-SNAPSHOT</nimbus.core.api.version>
-		<nimbus.core.processor.version>1.0.0.M4-SNAPSHOT</nimbus.core.processor.version>
+		<nimbus.core.spec.version>${project.version}</nimbus.core.spec.version>
+		<nimbus.core.test.version>${project.version}</nimbus.core.test.version>
+		<nimbus.core.api.version>${project.version}</nimbus.core.api.version>
+		<nimbus.core.processor.version>${project.version}</nimbus.core.processor.version>
 	</properties>
 
 	<developers>
