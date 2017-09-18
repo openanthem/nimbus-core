@@ -1,9 +1,10 @@
-package com.anthem.oss.nimbus.core.domain.config.builder;
+package com.anthem.oss.nimbus.core.domain.config.builder.attributes;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -14,7 +15,7 @@ import org.springframework.core.annotation.AnnotationUtils;
  * additional changes made.
  * 
  * @author Tony Lopez (AF42192)
- * @see com.anthem.oss.nimbus.core.domain.config.builder.AnnotationAttributeHandler
+ * @see com.anthem.oss.nimbus.core.domain.config.builder.attributes.AnnotationAttributeHandler
  *
  */
 public class DefaultAnnotationAttributeHandler implements AnnotationAttributeHandler {
@@ -28,8 +29,8 @@ public class DefaultAnnotationAttributeHandler implements AnnotationAttributeHan
 		final AnnotationAttributes annotationAttributes = AnnotationUtils.getAnnotationAttributes(annotatedElement, annotation, false, true);
 		final HashMap<String, Object> map = new HashMap<>();
 		
-		for(String annotationAttribute: annotationAttributes.keySet()) {
-			map.put(annotationAttribute, annotationAttributes.get(annotationAttribute));
+		for(final Entry<String, Object> entry: annotationAttributes.entrySet()) {
+			map.put(entry.getKey(), entry.getValue());
 		}
 		return map;
 	}

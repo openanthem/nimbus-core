@@ -1,9 +1,10 @@
-package com.anthem.oss.nimbus.core.domain.config.builder;
+package com.anthem.oss.nimbus.core.domain.config.builder.attributes;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -19,6 +20,7 @@ public class ConstraintAnnotationAttributeHandler implements AnnotationAttribute
 
 	public static final String ATTRIBUTE_MESSAGE_NAME = "message";
 	public static final String ATTRIBUTE_MESSAGE_VALUE_DEFAULT = "";
+	public static final String JSR_DEFAULT_MESSAGE_REGEX = "\\{javax.validation.constraints.(.*).message\\}";
 	
 	/*
 	 * (non-Javadoc)
@@ -29,13 +31,12 @@ public class ConstraintAnnotationAttributeHandler implements AnnotationAttribute
 		final AnnotationAttributes annotationAttributes = AnnotationUtils.getAnnotationAttributes(annotatedElement, annotation, false, true);
 		final HashMap<String, Object> map = new HashMap<>();
 		
-		for(String annotationAttribute: annotationAttributes.keySet()) {
+		for(final Entry<String, Object> entry: annotationAttributes.entrySet()) {
 			// Prefer empty-string over JSR defaults.
-			if (annotationAttribute.equals(ATTRIBUTE_MESSAGE_NAME) && 
-					((String) annotationAttributes.get(annotationAttribute)).matches("\\{javax.validation.constraints.(.*).message\\}")) {
-				map.put(annotationAttribute, ATTRIBUTE_MESSAGE_VALUE_DEFAULT);
+			if (entry.getKey().equals(ATTRIBUTE_MESSAGE_NAME) && ((String) entry.getValue()).matches(JSR_DEFAULT_MESSAGE_REGEX)) {
+				map.put(entry.getKey(), ATTRIBUTE_MESSAGE_VALUE_DEFAULT);
 			} else {
-				map.put(annotationAttribute, annotationAttributes.get(annotationAttribute));
+				map.put(entry.getKey(), entry.getValue());
 			}
 		}
 		return map;
