@@ -66,12 +66,23 @@ public final class CommandExecution {
 		private ValidationResult validation;
 		private ExecuteError error;
 		
+		@JsonIgnore
+		@Getter @Setter 
+		private List<ParamEvent> aggregatedEvents = new ArrayList<>();
+
+		
 		public Output(String inputCommandUri, ExecutionContext context, Action action, Behavior b) {
 			this(inputCommandUri, context, action, Arrays.asList(b));
 		}
 		
 		protected Output(String inputCommandUri, ExecutionContext context, Action action, List<Behavior> behaviors) {
+			this(inputCommandUri, context, action, behaviors, null);
+		}
+		
+		protected Output(String inputCommandUri, ExecutionContext context, Action action, List<Behavior> behaviors, T value) {
 			super(inputCommandUri, context, action, behaviors);
+			setValue(value);
+			setRootDomainId(context.getCommandMessage().getCommand().getRootDomainElement().getRefId());
 		}
 	
 		public static <T> Output<T> instantiate(Input input, ExecutionContext eCtx) {
@@ -113,10 +124,6 @@ public final class CommandExecution {
 		
 		@Getter @Setter 
 		private List<Output<?>> outputs;
-		
-		@JsonIgnore
-		@Getter @Setter 
-		private List<ParamEvent> aggregatedEvents = new ArrayList<>();
 		
 		public MultiOutput(String inputCommandUri, ExecutionContext context, Action action, Behavior b) {
 			super(inputCommandUri, context, action, b);

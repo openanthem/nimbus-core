@@ -5,10 +5,8 @@ package com.anthem.oss.nimbus.core.domain.command.execution;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
@@ -27,7 +25,6 @@ import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Mult
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
 import com.anthem.oss.nimbus.core.domain.definition.Execution;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ExecutionModel;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionTxnContext;
 import com.anthem.oss.nimbus.core.domain.model.state.ParamEvent;
@@ -78,10 +75,12 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		
 		// if present, hand-off to each command within execution config
 		if(CollectionUtils.isNotEmpty(execConfigs)) {
-			executeConfig(eCtx, cmdParam, mOutput, execConfigs);
+			List<MultiOutput> execConfigOutputs = executeConfig(eCtx, cmdParam, execConfigs);
+			execConfigOutputs.stream().forEach(mOut->addMultiOutput(mOutput, mOut));
 
 		} else {// otherwise, execute self
-			executeSelf(eCtx, cmdParam, mOutput);
+			List<Output<?>> selfExecOutputs = executeSelf(eCtx, cmdParam);
+			selfExecOutputs.stream().forEach(out->addOutput(mOutput, out));
 		}
 		
 		return mOutput;
@@ -94,11 +93,12 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		cmdMsg.getCommand().validate();
 	}
 	
-	protected void executeConfig(ExecutionContext eCtx, Param<?> cmdParam, MultiOutput mOutput, List<Execution.Config> execConfigs) {
+	protected List<MultiOutput> executeConfig(ExecutionContext eCtx, Param<?> cmdParam, List<Execution.Config> execConfigs) {
 		final CommandMessage cmdMsg = eCtx.getCommandMessage();
 		boolean isPayloadUsed = false;
 		
 		// for-each config
+		final List<MultiOutput> configExecOutputs = new ArrayList<>();
 		execConfigs.stream().forEach(ec->{
 			String completeConfigUri = eCtx.getCommandMessage().getCommand().getRelativeUri(ec.url());
 			
@@ -110,8 +110,10 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			
 			// execute & add output to mOutput
 			MultiOutput configOutput = execute(configCmdMsg);
-			addMultiOutput(mOutput,configOutput);
+			configExecOutputs.add(configOutput);
+//			addMultiOutput(mOutput,configOutput);
 		});	
+		return configExecOutputs;
 	}
 	
 	private String resolvePayload(CommandMessage cmdMsg, Command configExecCmd, boolean isPayloadUsed) {
@@ -123,11 +125,12 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		return payload;
 	}
 	
-	protected void executeSelf(ExecutionContext eCtx, Param<?> cmdParam, MultiOutput mOutput) {
+	protected List<Output<?>> executeSelf(ExecutionContext eCtx, Param<?> cmdParam) {
 		final CommandMessage cmdMsg = eCtx.getCommandMessage();
 		final String inputCommandUri = cmdMsg.getCommand().getAbsoluteUri();
 		
 		// for-each behavior:
+		List<Output<?>> selfExecOutputs = new ArrayList<>();
 		cmdMsg.getCommand().getBehaviors().stream().forEach(b->{
 			
 			// find command executor
@@ -136,34 +139,38 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			// execute command
 			Input input = new Input(inputCommandUri, eCtx, cmdMsg.getCommand().getAction(), b);
 			
+			final List<ParamEvent> _aggregatedEvents = new ArrayList<>();
 			eCtx.getRootModel().getExecutionRuntime().getEventDelegator().addTxnScopedListener(new BaseStateEventListener() {
 
 				@Override
 				public void onStopTxn(ExecutionTxnContext txnCtx, Map<ExecutionModel<?>, List<ParamEvent>> aggregatedEvents) {
 					for(ExecutionModel<?> rootKey : aggregatedEvents.keySet()) {
 						List<ParamEvent> rawEvents = aggregatedEvents.get(rootKey);
-						mOutput.getAggregatedEvents().addAll(rawEvents);
+						_aggregatedEvents.addAll(rawEvents);
 					}
 				}
 			});
-			Output<?> output = executor.execute(input);			
 			
-			mOutput.template().add(output);
+			Output<?> output = executor.execute(input);
+			output.setAggregatedEvents(_aggregatedEvents);
+			
+			selfExecOutputs.add(output);
+			
+//			mOutput.template().add(output);
 			//addOutput(mOutput,output);
 			
-			addEvents(eCtx, mOutput.getAggregatedEvents(), input, mOutput);
+//			addEvents(eCtx, mOutput.getAggregatedEvents(), input, mOutput);
 		});
+		return selfExecOutputs;
 	}
 	
-	private void addEvents(ExecutionContext eCtx, List<ParamEvent> aggregatedEvents, Input input, MultiOutput mOutput) {
+	private void addEvents(ExecutionContext eCtx, List<ParamEvent> aggregatedEvents, Output<?> output, MultiOutput mOutput) {
 		if(CollectionUtils.isEmpty(aggregatedEvents))
 			return;
 		
-		Set<Model<?>> unique = new HashSet<>(aggregatedEvents.size());
-		
 		aggregatedEvents.stream()
 				.filter(ParamEvent::shouldAllow) //TODO move to listener
-				.map(pe->Output.instantiate(input, pe.getAction(), eCtx, pe.getParam()))
+				.map(pe->new Output<>(output.getInputCommandUri(), eCtx, pe.getAction(), output.getBehaviors(), pe.getParam()))
 				.forEach(mOutput.template()::add);
 			;
 	}
@@ -177,6 +184,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			}
 		}else{
 			mOutput.template().add(output);
+			addEvents(output.getContext(), output.getAggregatedEvents(), output, mOutput);
 		}
 		
 	}
