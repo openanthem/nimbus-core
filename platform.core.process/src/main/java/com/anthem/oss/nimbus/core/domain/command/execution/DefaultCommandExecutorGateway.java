@@ -139,13 +139,13 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			List<ParamEvent> _aggregatedEvents = new ArrayList<>();
 			
 			eCtx.getRootModel().getExecutionRuntime().getEventDelegator().addTxnScopedListener(new BaseStateEventListener() {
+
 				@Override
 				public void onStopTxn(ExecutionTxnContext txnCtx, Map<ExecutionModel<?>, List<ParamEvent>> aggregatedEvents) {
-					aggregatedEvents.values().stream()
-						.reduce(_aggregatedEvents, (_agg, list)->{
-							_agg.addAll(list);
-							return _agg;
-						});
+					for(ExecutionModel<?> rootKey : aggregatedEvents.keySet()) {
+						List<ParamEvent> rawEvents = aggregatedEvents.get(rootKey);
+						_aggregatedEvents.addAll(rawEvents);
+					}
 				}
 			});
 			Output<?> output = executor.execute(input);			
