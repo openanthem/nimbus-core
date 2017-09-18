@@ -15,18 +15,18 @@ import java.util.function.Consumer;
 
 import org.apache.commons.collections.CollectionUtils;
 
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ExecutionModel;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionTxnContext;
-import com.anthem.oss.nimbus.core.domain.model.state.Notification;
+import com.anthem.oss.nimbus.core.domain.model.state.InvalidStateException;
 import com.anthem.oss.nimbus.core.domain.model.state.ParamEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.StateEventDelegator;
 import com.anthem.oss.nimbus.core.domain.model.state.StateEventListener;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ExecutionModel;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * @author Soham Chakravarti
@@ -37,41 +37,90 @@ public class DefaultStateEventDelegator implements StateEventDelegator {
 	
 	private List<StateEventListener> defaultScopedListeners;
 	
-	private static final ThreadLocal<List<StateEventListener>> txnScopedListeners = new ThreadLocal<List<StateEventListener>>() {
+	private static final ThreadLocal<TxnScopes> txnScopesInThread = new ThreadLocal<TxnScopes>() {
 		@Override
-		protected List<StateEventListener> initialValue() {
-			return new ArrayList<>();
+	 	protected TxnScopes initialValue() {
+			return new TxnScopes();
 		}
 	};
 
+	@ToString
+	private static class TxnScopes {
+		@Getter
+		private final List<StateEventListener> accumulatedListeners = new ArrayList<>();
+		
+		private final Map<ExecutionTxnContext, List<StateEventListener>> txnListenerCtx = new HashMap<>();
+		
+		public void throwExIfInvalidState() {
+			if(CollectionUtils.isNotEmpty(getAccumulatedListeners()))
+				throw new InvalidStateException("Accumulated listeners should have been drained, but found non-empty: "+getAccumulatedListeners());
+			
+			if(!txnListenerCtx.isEmpty())
+				throw new InvalidStateException("TxnScope listeners should have been removed, but found non-empty: "+txnListenerCtx);
+		}
+		
+		public List<StateEventListener> get(ExecutionTxnContext txnCtx) {
+			return txnListenerCtx.get(txnCtx);
+		}
+		
+		public List<StateEventListener> createAndAdd(ExecutionTxnContext txnCtx) {
+			if(txnListenerCtx.containsKey(txnCtx))
+				throw new InvalidStateException("Expected listeners for txnCtx: "+txnCtx+" to be empty, but found: "+get(txnCtx));
+			
+			// add accumulated to new txnScope
+			List<StateEventListener> txnListeners = new ArrayList<>();
+			txnListeners.addAll(getAccumulatedListeners());
+			
+			// drain accumulated
+			getAccumulatedListeners().clear();
+			
+			txnListenerCtx.put(txnCtx, txnListeners);
+			return txnListeners;
+		}
+		
+		public void remove(ExecutionTxnContext txnCtx) {
+			if(!txnListenerCtx.containsKey(txnCtx))
+				throw new InvalidStateException("Expected to find listeners for txnCtx: "+txnCtx);
+			
+			txnListenerCtx.remove(txnCtx);
+		}
+	}
+	
+	
 	@Override
 	public void addTxnScopedListener(StateEventListener listener) {
-		txnScopedListeners.get().add(listener);
+		txnScopesInThread.get().getAccumulatedListeners().add(listener);
 	}
 	
 	@Override
 	public boolean removeTxnScopedListener(StateEventListener listener) {
-		return txnScopedListeners.get().remove(listener);
+		return txnScopesInThread.get().getAccumulatedListeners().remove(listener);
 	}
 	
 	@Override
 	public void onStartRuntime(ExecutionRuntime execRt) {
-		delegate(l->l.onStartRuntime(execRt)); 
+		txnScopesInThread.get().throwExIfInvalidState();
+		
+		nullSafeGetDefault(l->l.onStartRuntime(execRt));
 	}
 	
 	@Override
 	public void onStopRuntime(ExecutionRuntime execRt) {
-		delegate(l->l.onStopRuntime(execRt));
+		nullSafeGetDefault(l->l.onStopRuntime(execRt));
+		
+		txnScopesInThread.get().throwExIfInvalidState();
 	}
 	
 	@Override
 	public void onStartTxn(ExecutionTxnContext txnCtx) {
-		delegate(l->l.onStartTxn(txnCtx));
+		List<StateEventListener> txnListeners = txnScopesInThread.get().createAndAdd(txnCtx);
+		delegate(txnListeners, l->l.onStartTxn(txnCtx));
 	}
 
 	@Override
-	public void onEvent(ParamEvent event) {
-		delegate(l->l.onEvent(event));
+	public void onEvent(ExecutionTxnContext txnCtx, ParamEvent event) {
+		List<StateEventListener> txnListeners = txnScopesInThread.get().get(txnCtx);
+		delegate(txnListeners, l->l.onEvent(txnCtx, event));
 	}
 	
 	@Override
@@ -79,10 +128,11 @@ public class DefaultStateEventDelegator implements StateEventDelegator {
 		Map<ExecutionModel<?>, List<ParamEvent>> aggregatedEvents = new HashMap<>();
 		aggregate(txnCtx, aggregatedEvents);
 		
-		delegate(l->l.onStopTxn(txnCtx, aggregatedEvents));
+		List<StateEventListener> txnListeners = txnScopesInThread.get().get(txnCtx);
+		delegate(txnListeners, l->l.onStopTxn(txnCtx, aggregatedEvents));
 		
 		// reset at stop
-		txnScopedListeners.set(new ArrayList<>());
+		txnScopesInThread.get().remove(txnCtx);
 	}
 	
 	private void aggregate(ExecutionTxnContext txnCtx, Map<ExecutionModel<?>, List<ParamEvent>> aggregatedEvents) {
@@ -121,9 +171,10 @@ public class DefaultStateEventDelegator implements StateEventDelegator {
 		return events;
 	}
 	
-	private void delegate(Consumer<StateEventListener> cb) {
+	private void delegate(List<StateEventListener> txnListeners, Consumer<StateEventListener> cb) {
 		nullSafeGetDefault(cb);
-		nullSafeGetTxn(cb);
+		
+		nullSafeGetTxn(txnListeners, cb);
 	}
 	
 	private void nullSafeGetDefault(Consumer<StateEventListener> cb) {
@@ -131,8 +182,8 @@ public class DefaultStateEventDelegator implements StateEventDelegator {
 			.ifPresent(list->list.forEach(cb));
 	}
 	
-	private void nullSafeGetTxn(Consumer<StateEventListener> cb) {
-		Optional.ofNullable(txnScopedListeners.get())
+	private void nullSafeGetTxn(List<StateEventListener> txnListeners, Consumer<StateEventListener> cb) {
+		Optional.ofNullable(txnListeners)
 			.ifPresent(list->list.forEach(cb));
 	}
 

@@ -31,7 +31,7 @@ public class BaseStateEventListener implements StateEventListener {
 	public void onStartTxn(ExecutionTxnContext txnCtx) {}
 	
 	@Override
-	public void onEvent(ParamEvent event) {}
+	public void onEvent(ExecutionTxnContext txnCtx, ParamEvent event) {}
 	
 	@Override
 	public void onStopTxn(ExecutionTxnContext txnCtx, Map<ExecutionModel<?>, List<ParamEvent>> aggregatedEvents) {}

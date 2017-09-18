@@ -14,5 +14,5 @@ interface StateEventLifeCycle {
 	
 	public void onStartTxn(ExecutionTxnContext txnCtx);
 	
-	public void onEvent(ParamEvent event);
+	public void onEvent(ExecutionTxnContext txnCtx, ParamEvent event);
 }
