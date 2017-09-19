@@ -28,6 +28,7 @@ import com.anthem.oss.nimbus.core.domain.definition.Execution;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ExecutionModel;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.ParamEvent;
+import com.anthem.oss.nimbus.core.domain.model.state.StateEventListener;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.BaseStateEventListener;
 
 /**
@@ -163,7 +164,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			Input input = new Input(inputCommandUri, eCtx, cmdMsg.getCommand().getAction(), b);
 			
 			final List<ParamEvent> _aggregatedEvents = new ArrayList<>();
-			eCtx.getRootModel().getExecutionRuntime().getEventDelegator().addTxnScopedListener(new BaseStateEventListener() {
+			StateEventListener cmdListener = new BaseStateEventListener() {
 
 				@Override
 				public void onStopCommandExecution(Command cmd, Map<ExecutionModel<?>, List<ParamEvent>> aggregatedEvents) {
@@ -172,8 +173,9 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 						_aggregatedEvents.addAll(rawEvents);
 					}
 				}
-			});
+			};
 			
+			eCtx.getRootModel().getExecutionRuntime().getEventDelegator().addTxnScopedListener(cmdListener);
 			eCtx.getRootModel().getExecutionRuntime().onStartCommandExecution(cmdMsg.getCommand());
 
 			Output<?> output = executor.execute(input);
@@ -181,7 +183,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			selfExecOutputs.add(output);
 
 			eCtx.getRootModel().getExecutionRuntime().onStopCommandExecution(cmdMsg.getCommand());
-			
+			eCtx.getRootModel().getExecutionRuntime().getEventDelegator().removeTxnScopedListener(cmdListener);
 			
 //			mOutput.template().add(output);
 			//addOutput(mOutput,output);
