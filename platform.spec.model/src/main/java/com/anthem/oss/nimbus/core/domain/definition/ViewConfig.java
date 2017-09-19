@@ -565,6 +565,14 @@ public class ViewConfig {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
+	public @interface FileUpload {
+		String alias() default "FileUpload";
+		String type() default ".pdf,.png";
+	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
 	public @interface GridColumn {
 		String alias() default "GridColumn";
 		boolean hidden() default false;
