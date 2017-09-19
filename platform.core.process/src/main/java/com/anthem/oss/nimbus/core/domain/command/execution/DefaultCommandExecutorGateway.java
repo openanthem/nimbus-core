@@ -5,8 +5,10 @@ package com.anthem.oss.nimbus.core.domain.command.execution;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.annotation.PostConstruct;
@@ -163,7 +165,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			// execute command
 			Input input = new Input(inputCommandUri, eCtx, cmdMsg.getCommand().getAction(), b);
 			
-			final List<ParamEvent> _aggregatedEvents = new ArrayList<>();
+			final Set<ParamEvent> _aggregatedEvents = new HashSet<>();
 			StateEventListener cmdListener = new BaseStateEventListener() {
 
 				@Override
@@ -193,7 +195,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		return selfExecOutputs;
 	}
 	
-	private void addEvents(ExecutionContext eCtx, List<ParamEvent> aggregatedEvents, Output<?> output, MultiOutput mOutput) {
+	private void addEvents(ExecutionContext eCtx, Set<ParamEvent> aggregatedEvents, Output<?> output, MultiOutput mOutput) {
 		if(CollectionUtils.isEmpty(aggregatedEvents))
 			return;
 		

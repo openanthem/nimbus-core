@@ -3,11 +3,12 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.util.CollectionUtils;
 
@@ -68,7 +69,7 @@ public final class CommandExecution {
 		
 		@JsonIgnore
 		@Getter @Setter 
-		private List<ParamEvent> aggregatedEvents = new ArrayList<>();
+		private Set<ParamEvent> aggregatedEvents = new HashSet<>();
 
 		
 		public Output(String inputCommandUri, ExecutionContext context, Action action, Behavior b) {

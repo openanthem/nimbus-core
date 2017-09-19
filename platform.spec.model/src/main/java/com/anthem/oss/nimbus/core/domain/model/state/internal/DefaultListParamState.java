@@ -224,11 +224,11 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 		final LockTemplate rLockTemplate = isMapped() ? findIfMapped().getMapsTo().getLockTemplate() : getLockTemplate();
 		
 		return rLockTemplate.execute(()->{
-			return changeStateTemplate((rt, h)->affectAddChange());
+			return changeStateTemplate((rt, h)->affectAddChange(rt));
 		});
 	} 
 	
-	private ListElemParam<T> affectAddChange() {
+	private ListElemParam<T> affectAddChange(ExecutionRuntime execRt) {
 		List<T> list = getNestedCollectionModel().instantiateOrGet();
 		
 		if(list.size()!=getNestedCollectionModel().templateParams().size() /*&& (
@@ -264,6 +264,9 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 		// notify
 		emitNotification(new Notification<>(this, ActionType._newElem, pColElem));
 		
+		if(execRt.isStarted())
+			emitEvent(Action._new, this);
+		
 		return pColElem;
 	}
 	
@@ -291,6 +294,10 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 		
 		// notify
 		emitNotification(new Notification<>(this, ActionType._newElem, pColElem));
+		
+		ExecutionRuntime execRt = resolveRuntime();
+		if(execRt.isStarted())
+			emitEvent(Action._new, this);
 		
 		return true;
 	}
