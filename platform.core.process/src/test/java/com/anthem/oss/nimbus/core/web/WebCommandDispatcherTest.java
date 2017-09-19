@@ -14,8 +14,10 @@ import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Behavior;
 import com.anthem.oss.nimbus.core.domain.command.Command;
+import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutorGateway;
+import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContext;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 
 /**
@@ -57,8 +59,8 @@ public class WebCommandDispatcherTest {
 		event.setPayload("{}");
 		
 		final String commandUri = "/Acme/abc/def/p/home/_new&execute";
-		final Command expectedCommand = new Command(commandUri);
-		final MultiOutput expected = new MultiOutput(commandUri, null, Action._new, Behavior.$execute);
+		final Command expectedCommand = CommandBuilder.withUri(commandUri).getCommand();
+		final MultiOutput expected = new MultiOutput(commandUri, new ExecutionContext(expectedCommand), Action._new, Behavior.$execute);
 		
 		Mockito.when(this.builder.build(request, event)).thenReturn(expectedCommand);
 		Mockito.when(this.gateway.execute(expectedCommand, event.getPayload())).thenReturn(expected);
@@ -75,8 +77,8 @@ public class WebCommandDispatcherTest {
 		final String payload = "{}";
 		
 		final String commandUri = "/Acme/abc/def/p/home/_new&execute";
-		final Command expectedCommand = new Command(commandUri);
-		final MultiOutput expected = new MultiOutput(commandUri, null, Action._new, Behavior.$execute);
+		final Command expectedCommand = CommandBuilder.withUri(commandUri).getCommand();
+		final MultiOutput expected = new MultiOutput(commandUri, new ExecutionContext(expectedCommand), Action._new, Behavior.$execute);
 		
 		Mockito.when(this.builder.build(request)).thenReturn(expectedCommand);
 		Mockito.when(this.gateway.execute(expectedCommand, payload)).thenReturn(expected);
@@ -91,8 +93,8 @@ public class WebCommandDispatcherTest {
 	public void testHandleViaJsonAndProvidedCommand() {
 		final String payload = "{}";
 		final String commandUri = "/Acme/abc/def/p/home/_new&execute";
-		final Command command = new Command(commandUri);
-		final MultiOutput expected = new MultiOutput(commandUri, null, Action._new, Behavior.$execute);
+		final Command command = CommandBuilder.withUri(commandUri).getCommand();
+		final MultiOutput expected = new MultiOutput(commandUri, new ExecutionContext(command), Action._new, Behavior.$execute);
 		
 		Mockito.when(this.gateway.execute(command, payload)).thenReturn(expected);
 		final Object actual = this.testee.handle(command, payload);
