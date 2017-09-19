@@ -3,8 +3,10 @@
  */
 package com.anthem.oss.nimbus.core.domain.model.state.internal;
 
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -29,7 +31,7 @@ public class DefaultExecutionTxnContext implements ExecutionTxnContext {
 
 	private final BlockingQueue<Notification<Object>> notifications = new LinkedBlockingQueue<>();
 	
-	private final BlockingQueue<ParamEvent> events = new LinkedBlockingQueue<>();
+	private final List<ParamEvent> events = new ArrayList<>();
 	
 	@Override
 	public void addNotification(Notification<Object> notification) {

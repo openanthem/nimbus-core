@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Queue;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -108,13 +107,13 @@ public class DefaultStateEventDelegator implements StateEventDelegator {
 	private Map<ExecutionModel<?>, List<ParamEvent>> aggregate(ExecutionTxnContext txnCtx) {
 		Map<ExecutionModel<?>, List<ParamEvent>> aggregatedEvents = new HashMap<>();
 		
-		Queue<ParamEvent> events = txnCtx.getEvents();
+		List<ParamEvent> events = txnCtx.getEvents();
 		if(CollectionUtils.isEmpty(events))
 			return aggregatedEvents;
 
 		Set<Param<?>> unique = new HashSet<>(events.size());
-		while(!events.isEmpty()) {
-			ParamEvent pe = events.poll();
+		for(ParamEvent pe : events) {
+			//ParamEvent pe = events.poll();
 			
 			List<ParamEvent> groupedEvents = createOrGet(aggregatedEvents, pe.getParam().getRootExecution());
 			

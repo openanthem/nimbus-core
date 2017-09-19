@@ -3,6 +3,7 @@
  */
 package com.anthem.oss.nimbus.core.domain.model.state;
 
+import java.util.List;
 import java.util.Queue;
 
 /**
@@ -17,5 +18,5 @@ public interface ExecutionTxnContext {
 	public Queue<Notification<Object>> getNotifications();
 	
 	public void addEvent(ParamEvent event);
-	public Queue<ParamEvent> getEvents();
+	public List<ParamEvent> getEvents();
 }
