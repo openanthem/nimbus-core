@@ -44,8 +44,8 @@ public class DefaultExecutionRuntime implements ExecutionRuntime {
 	
 	@Override
 	public synchronized void start() {
-		if(isTxnStarted())
-			throw new InvalidStateException("Expected to not any trailing txn context, but found one: "+getTxnContext());
+//		if(isTxnStarted())
+//			throw new InvalidStateException("Expected to not any trailing txn context, but found one: "+getTxnContext());
 		
 		this.isStarted = true;
 		eventDelegator.onStartRuntime(this);
@@ -149,21 +149,29 @@ public class DefaultExecutionRuntime implements ExecutionRuntime {
 
 	@Override
 	public void onStartRootCommandExecution(Command cmd) {
+		txnScopeInThread.set(new DefaultExecutionTxnContext());
 		eventDelegator.onStartRootCommandExecution(cmd);
 	}
 	
 	@Override
 	public void onStopRootCommandExecution(Command cmd) {
-		eventDelegator.onStopRootCommandExecution(cmd, getTxnContext());	
+		eventDelegator.onStopRootCommandExecution(cmd, getTxnContext());
+		txnScopeInThread.set(null);
 	}
 	
 	@Override
 	public void onStartCommandExecution(Command cmd) {
+		// TODO change events based command lifecycle
+		txnScopeInThread.get().getEvents().clear();
+		
 		eventDelegator.onStartCommandExecution(cmd);	
 	}
 	
 	@Override
 	public void onStopCommandExecution(Command cmd) {
-		eventDelegator.onStopCommandExecution(cmd, getTxnContext());	
+		eventDelegator.onStopCommandExecution(cmd, getTxnContext());
+		
+		// TODO change events based command lifecycle
+		txnScopeInThread.get().getEvents().clear();
 	}
 }

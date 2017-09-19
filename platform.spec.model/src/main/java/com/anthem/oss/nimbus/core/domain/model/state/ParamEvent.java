@@ -15,12 +15,13 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author Soham Chakravarti
  *
  */
-@Data @AllArgsConstructor
+@Data @AllArgsConstructor @EqualsAndHashCode(of="param")
 public class ParamEvent {
 
 	private Action action;
