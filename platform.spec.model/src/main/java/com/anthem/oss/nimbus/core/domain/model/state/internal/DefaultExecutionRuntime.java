@@ -149,14 +149,13 @@ public class DefaultExecutionRuntime implements ExecutionRuntime {
 
 	@Override
 	public void onStartRootCommandExecution(Command cmd) {
-		txnScopeInThread.set(new DefaultExecutionTxnContext());
 		eventDelegator.onStartRootCommandExecution(cmd);
 	}
 	
 	@Override
 	public void onStopRootCommandExecution(Command cmd) {
 		eventDelegator.onStopRootCommandExecution(cmd, getTxnContext());
-		txnScopeInThread.set(null);
+		txnScopeInThread.set(new DefaultExecutionTxnContext());
 	}
 	
 	@Override
