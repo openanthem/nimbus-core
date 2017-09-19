@@ -75,7 +75,7 @@ public class DefaultExecutionRuntime implements ExecutionRuntime {
 	}
 	
 	public boolean isTxnStarted() {
-		return getTxnContext().getId() != null;
+		return getTxnContext()!=null && getTxnContext().getId() != null;
 	}
 	
 	@Override
