@@ -132,10 +132,6 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 				// await completion of notification events
 				execRt.awaitNotificationsCompletion();
 				
-				if(h.getState()!=null && (this instanceof Notification.Producer)) {
-					((Notification.Producer<?>)this).getEventSubscribers().forEach((subscriber) -> emitEvent(h.getState(), subscriber));
-				}
-				
 				// fire rules at root level upon completion of all set actions
 				getRootExecution().fireRules();
 				
@@ -143,7 +139,12 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 				boolean b = execRt.tryUnlock(lockId);
 				if(!b)
 					throw new FrameworkRuntimeException("Failed to release lock acquired during setState of: "+getPath()+" with acquired lockId: "+lockId); 
-			}	
+			}
+			
+			if(h.getState()!=null && (this instanceof Notification.Producer)) {
+				((Notification.Producer<?>)this).getEventSubscribers().forEach((subscriber) -> emitEvent(h.getState(), subscriber));
+			}
+
 		}
 	}
 	

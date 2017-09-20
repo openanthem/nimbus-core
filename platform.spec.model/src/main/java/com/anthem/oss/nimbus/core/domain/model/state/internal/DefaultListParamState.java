@@ -192,29 +192,32 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 			throw new InvalidStateException("MappedList cannot have Un-Mapped Collection Elements. "
 					+ "Found MappedList: "+findIfMapped().getMapsTo()+" for elem: "+pElem);
 		
-		final ListElemParam<M> mapsToElem;
-		
-		// detect if mapped elem refers to colElem's attribute
 		MappedListElemParam<T, ?> mappedElem = pElem.findIfMapped();
+		Param<?> mapsToParam = mappedElem.getMapsTo();
 		
-		MapsTo.Path mapsToPath = mappedElem.getConfig().findIfMapped().getPath();
-		if(StringUtils.trimToNull(mapsToPath.colElemPath()) != null) {
-			Param<?> mapsToParam = mappedElem.getMapsTo();
-			String mapsToColElemNestedPath = mapsToParam.getPath();
-			String mapsToColElemPath = StringUtils.removeEnd(mapsToColElemNestedPath, mapsToPath.colElemPath());
-			
-			mapsToElem = (ListElemParam<M>)mapsToParam.getRootExecution().findParamByPath(mapsToColElemPath).findIfCollectionElem();
-			
-		} else{
-			mapsToElem = (ListElemParam<M>)pElem.findIfMapped().getMapsTo().findIfCollectionElem();	
-		}
+		ListElemParam<M> mapsToElem = (ListElemParam<M>)findMapsToColElemByColElemNestedPath(mapsToParam, mappedElem.getConfig());
 		
 		ListParam<M> mapsToCol = (ListParam<M>)findIfMapped().getMapsTo().findIfCollection();
 		
 		return mapsToCol.remove(mapsToElem);
 	}
 	
-	
+	protected ListElemParam<?> findMapsToColElemByColElemNestedPath(Param<?> mapsToParam, ParamConfig<?> mappedElemConfig) {
+		MapsTo.Path mapsToPath = mappedElemConfig.findIfMapped().getPath();
+		
+		// determine if @MapsTo.Path has colElem entry for nested colElem's param
+		if(StringUtils.trimToNull(mapsToPath.colElemPath()) != null) {
+			String mapsToColElemNestedPath = mapsToParam.getPath();
+			String mapsToColElemPath = StringUtils.removeEnd(mapsToColElemNestedPath, mappedElemConfig.findIfMapped().getPath().colElemPath());
+			
+			ListElemParam<?> mapsToElem = mapsToParam.getRootExecution().findParamByPath(mapsToColElemPath).findIfCollectionElem();
+			return mapsToElem;
+			
+		} 
+
+		// otherwise, treat mapping is for collection
+		return mapsToParam.findIfCollectionElem();	
+	}
 	
 	private boolean affectRemoveIfMappedOrUnMapped(ListElemParam<T> pElem) {
 		// remove from collection entity state

@@ -373,7 +373,9 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 			//PropertyDescriptor pd = (childParam.isMapped() ? childParam.findIfMapped().getMapsTo() : childParam).getPropertyDescriptor();
 			PropertyDescriptor pd = childParam.getPropertyDescriptor();
 			Object childParamState = javaBeanHandler.getValue(pd, newState);
-			_set(currRep, (Param<Object>)childParam, childParamState);
+			
+			//_set(currRep, (Param<Object>)childParam, childParamState);
+			((Param<Object>)childParam).setState(childParamState);
 		}
 		
 		//TODO detect change
