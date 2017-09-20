@@ -142,6 +142,11 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		// nested 
 		Optional.ofNullable(findIfNested())
 			.ifPresent(Model::fireRules);
+		
+		// parent
+		Optional.ofNullable(getParentModel())
+			.filter(m->!m.isRoot())
+			.ifPresent(Model::fireRules);
 	}
 	
 	/**
