@@ -21,10 +21,10 @@ import lombok.Setter;
  * Acronym: CEU
  *
  */
-@Domain(value="ceu_samplecoreassociatedentity")
+@Domain(value="ceu_sampleassociatedentity")
 @Repo(value=Database.rep_none, cache=Cache.rep_device)
 @Getter @Setter
-public class CEU_SampleCoreAssociatedEntity {
+public class CEU_SampleAssociatedEntity {
 
 	private String entityId;
     
