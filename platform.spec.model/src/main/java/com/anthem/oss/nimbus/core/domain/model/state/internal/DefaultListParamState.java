@@ -5,7 +5,10 @@ package com.anthem.oss.nimbus.core.domain.model.state.internal;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.anthem.oss.nimbus.core.domain.command.Action;
+import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
@@ -189,11 +192,29 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 			throw new InvalidStateException("MappedList cannot have Un-Mapped Collection Elements. "
 					+ "Found MappedList: "+findIfMapped().getMapsTo()+" for elem: "+pElem);
 		
-		ListElemParam<M> mapsToElem = (ListElemParam<M>)pElem.findIfMapped().getMapsTo().findIfCollectionElem();
+		final ListElemParam<M> mapsToElem;
+		
+		// detect if mapped elem refers to colElem's attribute
+		MappedListElemParam<T, ?> mappedElem = pElem.findIfMapped();
+		
+		MapsTo.Path mapsToPath = mappedElem.getConfig().findIfMapped().getPath();
+		if(StringUtils.trimToNull(mapsToPath.colElemPath()) != null) {
+			Param<?> mapsToParam = mappedElem.getMapsTo();
+			String mapsToColElemNestedPath = mapsToParam.getPath();
+			String mapsToColElemPath = StringUtils.removeEnd(mapsToColElemNestedPath, mapsToPath.colElemPath());
+			
+			mapsToElem = (ListElemParam<M>)mapsToParam.getRootExecution().findParamByPath(mapsToColElemPath).findIfCollectionElem();
+			
+		} else{
+			mapsToElem = (ListElemParam<M>)pElem.findIfMapped().getMapsTo().findIfCollectionElem();	
+		}
+		
 		ListParam<M> mapsToCol = (ListParam<M>)findIfMapped().getMapsTo().findIfCollection();
 		
 		return mapsToCol.remove(mapsToElem);
 	}
+	
+	
 	
 	private boolean affectRemoveIfMappedOrUnMapped(ListElemParam<T> pElem) {
 		// remove from collection entity state

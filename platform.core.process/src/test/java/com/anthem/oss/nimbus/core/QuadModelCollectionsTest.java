@@ -1124,6 +1124,117 @@ public class QuadModelCollectionsTest {
 		assertEquals(oldSize, vp_list.size());
 		assertEquals(oldSize, cp_list.size());
 	}
+
+	@Test
+	public void tv23_col_attached_elemNestedAttrib_v2c_delete_conversion() {
+		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		
+		final ListParam<String> vp_nestedService = q.getRoot().findParamByPath("/view_umcase/pg3/attachedNestedColAttribServices").findIfCollection();
+		assertNotNull(vp_nestedService);
+		
+		ListParam<ServiceLine> cp_ServiceLines = q.getCore().findParamByPath("/serviceLines").findIfCollection();
+		assertNotNull(cp_ServiceLines);
+
+		ListParam<?> vp_noConvertedAttachedList = q.getView().findParamByPath("/pg3/noConversionAttachedColServiceLines").findIfCollection();
+		assertNotNull(vp_noConvertedAttachedList);
+		
+		assertEquals(0, vp_nestedService.size());
+		assertEquals(0, cp_ServiceLines.size());
+		assertEquals(0, vp_noConvertedAttachedList.size());
+		
+		// add
+		final String K_SERVICE_0 = "0 - some new service "+new Date();
+		vp_nestedService.add(K_SERVICE_0);
+		
+		assertEquals(1, vp_nestedService.size());
+		assertEquals(1, cp_ServiceLines.size());
+		assertEquals(1, vp_noConvertedAttachedList.size());
+		
+		assertSame(K_SERVICE_0, vp_nestedService.getState(0));
+		assertSame(K_SERVICE_0, cp_ServiceLines.getState(0).getService());
+		assertSame(K_SERVICE_0, vp_noConvertedAttachedList.findStateByPath("/0/service"));
+		
+		// add again
+		final String K_SERVICE_1 = "1 - some new service "+new Date();
+		vp_nestedService.add(K_SERVICE_1);
+		
+		assertEquals(2, vp_nestedService.size());
+		assertEquals(2, cp_ServiceLines.size());
+		assertEquals(2, vp_noConvertedAttachedList.size());
+		
+		assertSame(K_SERVICE_0, vp_nestedService.getState(0));
+		assertSame(K_SERVICE_0, cp_ServiceLines.getState(0).getService());
+		assertSame(K_SERVICE_0, vp_noConvertedAttachedList.findStateByPath("/0/service"));
+		assertSame(K_SERVICE_1, vp_nestedService.getState(1));
+		assertSame(K_SERVICE_1, cp_ServiceLines.getState(1).getService());
+		assertSame(K_SERVICE_1, vp_noConvertedAttachedList.findStateByPath("/1/service"));
+		
+		// elemId:0 entry
+		Param<?> vp_nestedService_0 = vp_nestedService.findParamByPath("/0");
+		assertNotNull(vp_nestedService_0);
+		assertSame(K_SERVICE_0, vp_nestedService_0.getState());
+		
+		// delete elemId:0
+		assertTrue(vp_nestedService_0.findIfCollectionElem().remove());
+		
+		assertEquals(1, vp_nestedService.size());
+		assertEquals(1, cp_ServiceLines.size());
+		assertEquals(1, vp_noConvertedAttachedList.size());
+
+		assertSame(K_SERVICE_1, vp_nestedService.getState(0));
+		assertSame(K_SERVICE_1, cp_ServiceLines.getState(0).getService());
+		assertSame(K_SERVICE_1, vp_noConvertedAttachedList.findStateByPath("/1/service")); // elemId doesn't change
+		
+		// add again 
+		final String K_SERVICE_2 = "2 - some new service "+new Date();
+		vp_nestedService.add(K_SERVICE_2);
+		
+		assertEquals(2, vp_nestedService.size());
+		assertEquals(2, cp_ServiceLines.size());
+		assertEquals(2, vp_noConvertedAttachedList.size());
+		
+		assertSame(K_SERVICE_1, vp_nestedService.getState(0));
+		assertSame(K_SERVICE_1, cp_ServiceLines.getState(0).getService());
+		assertSame(K_SERVICE_1, vp_noConvertedAttachedList.findStateByPath("/1/service")); // elemId doesn't change
+		assertSame(K_SERVICE_2, vp_nestedService.getState(1));
+		assertSame(K_SERVICE_2, cp_ServiceLines.getState(1).getService());
+		assertSame(K_SERVICE_2, vp_noConvertedAttachedList.findStateByPath("/2/service")); // elemId increments from last max
+		
+		// elemId:1 entry :: CORE
+		Param<ServiceLine> cp_ServiceLines_1= cp_ServiceLines.findParamByPath("/1");
+		assertNotNull(cp_ServiceLines_1);
+		assertSame(K_SERVICE_1, cp_ServiceLines_1.getState().getService());
+		
+		// delete elemId:1 entry :: CORE
+		assertTrue(cp_ServiceLines_1.findIfCollectionElem().remove());
+
+		assertEquals(1, vp_nestedService.size());
+		assertEquals(1, cp_ServiceLines.size());
+		assertEquals(1, vp_noConvertedAttachedList.size());
+		
+		assertSame(K_SERVICE_2, vp_nestedService.getState(0));
+		assertSame(K_SERVICE_2, cp_ServiceLines.getState(0).getService());
+		assertSame(K_SERVICE_2, vp_noConvertedAttachedList.findStateByPath("/2/service")); // elemId doesn't change
+
+		// add again :: CORE (c2v)
+		final String K_SERVICE_3 = "3 - some new service "+new Date();
+		ServiceLine core_serviceLine_3 = new ServiceLine();
+		core_serviceLine_3.setService(K_SERVICE_3);
+		
+		cp_ServiceLines.add(core_serviceLine_3);
+		
+		assertEquals(2, vp_nestedService.size());
+		assertEquals(2, cp_ServiceLines.size());
+		assertEquals(2, vp_noConvertedAttachedList.size());
+		
+		assertSame(K_SERVICE_2, vp_nestedService.getState(0));
+		assertSame(K_SERVICE_2, cp_ServiceLines.getState(0).getService());
+		assertSame(K_SERVICE_2, vp_noConvertedAttachedList.findStateByPath("/2/service")); // elemId doesn't change
+		assertSame(K_SERVICE_3, vp_nestedService.getState(1));
+		assertSame(K_SERVICE_3, cp_ServiceLines.getState(1).getService());
+		assertSame(K_SERVICE_3, vp_noConvertedAttachedList.findStateByPath("/3/service")); // elemId increments from last max
+	
+	}
 	
 	//@After
 	public void after() {
