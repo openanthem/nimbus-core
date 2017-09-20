@@ -20,9 +20,13 @@ import test.com.anthem.nimbus.platform.utils.MockHttpRequestBuilder;
 public abstract class AbstractFrameworkIngerationPersistableTests extends AbstractFrameworkIntegrationTests {
 	
 	protected static final String CORE_DOMAIN_ALIAS = "sample_core";
+	protected static final String CORE_ASSOCIATED_DOMAIN_ALIAS = "sample_coreassociatedentity";
 	
 	protected static final String VIEW_PARAM_ROOT = PLATFORM_ROOT + "/sample_view";
 	protected static final String CORE_PARAM_ROOT = PLATFORM_ROOT + "/" + CORE_DOMAIN_ALIAS;
+	
+	protected static final String CORE_ASSOCIATEDPARAM_ROOT = PLATFORM_ROOT + "/" + CORE_ASSOCIATED_DOMAIN_ALIAS;
+	protected static final String VIEW_CEU_PARAM_ROOT = PLATFORM_ROOT + "/ceu_samplecoreassociatedentity";
 	
 	protected static String domainRoot_refId;
 	

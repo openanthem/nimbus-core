@@ -17,6 +17,7 @@ public enum Constants {
 	MARKER_COMMAND_PARAM_CURRENT_SELF("#this"),
 	MARKER_REF_ID("#refId"),
 	MARKER_ELEM_ID("#elemId"),
+	MARKER_COL_PARAM("col"),
 	
 	SEPARATOR_URI("/"),
 	

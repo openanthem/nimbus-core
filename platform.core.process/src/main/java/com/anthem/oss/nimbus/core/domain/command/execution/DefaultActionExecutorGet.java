@@ -73,7 +73,7 @@ public class DefaultActionExecutorGet extends AbstractFunctionCommandExecutor<Pa
 		final Object entity;
 		final Repo repo = rootDomainConfig.getRepo();
 		
-		if(Repo.Database.exists(repo)) { // root (view or core) is persistent
+		if(Repo.Database.exists(repo) && StringUtils.isNotBlank(refId)) { // root (view or core) is persistent
 			String resolvedRepAlias = StringUtils.isBlank(repo.alias()) ? rootDomainConfig.getAlias() : repo.alias();
 			
 			entity = getRepositoryFactory().get(rootDomainConfig.getRepo())

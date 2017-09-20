@@ -33,6 +33,8 @@ public @interface Execution {
 	public @interface Config {
 		
 		String url();
+		
+		String col() default "";
 	}
 
 }
