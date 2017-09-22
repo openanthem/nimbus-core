@@ -3,6 +3,7 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,6 +15,7 @@ import java.util.UUID;
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
@@ -26,12 +28,17 @@ import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Input;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
+import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.Execution;
+import com.anthem.oss.nimbus.core.domain.definition.Execution.Config;
+import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ExecutionModel;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.ParamEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.StateEventListener;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.BaseStateEventListener;
+import com.anthem.oss.nimbus.core.utils.ParamPathExpressionParser;
 
 /**
  * @author Soham Chakravarti
@@ -126,29 +133,82 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		// for-each config
 		final List<MultiOutput> configExecOutputs = new ArrayList<>();
 		execConfigs.stream().forEach(ec->{
-			String completeConfigUri = eCtx.getCommandMessage().getCommand().getRelativeUri(ec.url());
-			
-			String resolvedConfigUri = pathVariableResolver.resolve(cmdParam, completeConfigUri); 
-			Command configExecCmd = CommandBuilder.withUri(resolvedConfigUri).getCommand();
-			
-			// TODO decide on which commands should get the payload
-			CommandMessage configCmdMsg = new CommandMessage(configExecCmd, resolvePayload(cmdMsg, configExecCmd, isPayloadUsed));
-			
-			// execute & add output to mOutput
-			MultiOutput configOutput = execute(configCmdMsg);
-			configExecOutputs.add(configOutput);
-//			addMultiOutput(mOutput,configOutput);
+			if(StringUtils.isNotBlank(ec.col())) {
+				buildAndExecuteColExecConfig(eCtx, cmdParam, ec);
+			}
+			else {
+				String completeConfigUri = eCtx.getCommandMessage().getCommand().getRelativeUri(ec.url());
+				
+				String resolvedConfigUri = pathVariableResolver.resolve(cmdParam, completeConfigUri); 
+				Command configExecCmd = CommandBuilder.withUri(resolvedConfigUri).getCommand();
+				
+				// TODO decide on which commands should get the payload
+				CommandMessage configCmdMsg = new CommandMessage(configExecCmd, resolvePayload(cmdMsg, configExecCmd, isPayloadUsed));
+				
+				// execute & add output to mOutput
+				MultiOutput configOutput = execute(configCmdMsg);
+				configExecOutputs.add(configOutput);
+	//			addMultiOutput(mOutput,configOutput);
+			}
 		});	
 		return configExecOutputs;
 	}
 	
-	private String resolvePayload(CommandMessage cmdMsg, Command configExecCmd, boolean isPayloadUsed) {
-		String payload = null;
+	private void buildAndExecuteColExecConfig(ExecutionContext eCtx, Param<?> cmdParam, Config ec) {
+		List<Execution.Config> colExecConfigs = new ArrayList<>();
+		String colPath = ParamPathExpressionParser.stripPrefixSuffix(ec.col());
 		
-		if(!isPayloadUsed && cmdMsg.hasPayload())
-			payload = cmdMsg.getRawPayload();
+		ListParam listParam = findColParamByPath(cmdParam, colPath);
+		
+		for(int i=0; i < listParam.size(); i++) {
+			colExecConfigs.add(buildExecConfig(ec, colPath, i));
+		}
+		executeConfig(eCtx, cmdParam, colExecConfigs);
+	}
 
-		return payload;
+	private ListParam findColParamByPath(Param<?> cmdParam, String colPath) {
+		Param<?> p = cmdParam.findParamByPath(colPath);
+		if(p == null)
+			p = cmdParam.getParentModel().findParamByPath(colPath);
+		
+		if(p == null)
+			throw new InvalidConfigException("The param "+colPath+" not found from command: "+cmdParam);
+		
+		if(!p.isCollection())
+			throw new InvalidConfigException("The param "+colPath+" must be a collection but found to be a non collection from command: "+cmdParam);
+		
+		return p.findIfCollection();
+	}
+
+	private Config buildExecConfig(Config ec, String colPath, int i) {
+		return new Execution.Config() {
+			
+			public String url() {
+				return StringUtils.replace(ec.url(),Constants.MARKER_COL_PARAM.code,colPath+Constants.SEPARATOR_URI.code+i);
+			}
+			public String col() {
+				return "";
+			}
+			@Override
+		    public Class<? extends Annotation> annotationType() {
+		        return Execution.Config.class;
+		    }
+		};
+	}
+	
+	private String resolvePayload(CommandMessage cmdMsg, Command configExecCmd, boolean isPayloadUsed) {
+		if(!isPayloadUsed) {
+			if(configExecCmd.hasRawPayload()) {
+				return configExecCmd.getRawPayload();
+			}
+			else if(cmdMsg.getCommand().hasRawPayload()) {
+				return cmdMsg.getCommand().getRawPayload();
+			}
+			else if(cmdMsg.hasPayload()) {
+				return cmdMsg.getRawPayload();
+			}
+		}
+		return null;
 	}
 	
 	protected List<Output<?>> executeSelf(ExecutionContext eCtx, Param<?> cmdParam) {

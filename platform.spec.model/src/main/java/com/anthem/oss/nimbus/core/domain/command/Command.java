@@ -381,4 +381,12 @@ public class Command implements Serializable {
 		}
 		return null;
 	}
+	
+	public boolean hasRawPayload() {
+		return getFirstParameterValue("rawPayload") != null;
+	}
+	
+	public String getRawPayload() {
+		return getFirstParameterValue("rawPayload");
+	}
 }
