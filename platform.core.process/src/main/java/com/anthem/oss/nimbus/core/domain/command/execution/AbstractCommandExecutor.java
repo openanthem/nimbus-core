@@ -16,6 +16,7 @@ import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.ModelRepositoryFactory;
@@ -61,6 +62,18 @@ public abstract class AbstractCommandExecutor<R> extends BaseCommandExecutorStra
 
 	protected ModelConfig<?> getRootDomainConfig(ExecutionContext eCtx) {
 		return getDomainConfigBuilder().getRootDomainOrThrowEx(eCtx.getCommandMessage().getCommand().getRootDomainAlias());
+	}
+	
+	protected Param<?> getRootDomainParam(ExecutionContext eCtx) {
+		String rootDomainAlias = eCtx.getCommandMessage().getCommand().getRootDomainAlias();
+		return eCtx.getRootModel().findParamByPath(rootDomainAlias);
+	}
+	
+	protected String resolveEntityAliasByRepo(ModelConfig<?> mConfig) {
+		String alias = mConfig.getRepo() != null && StringUtils.isNotBlank(mConfig.getRepo().alias()) 
+						? mConfig.getRepo().alias() 
+								: mConfig.getAlias();
+		return alias;
 	}
 	
 	protected <T> T instantiateEntity(ExecutionContext eCtx, ModelConfig<T> mConfig) {

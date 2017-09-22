@@ -63,6 +63,10 @@ public class DomainConfigBuilder {
 		return configVisitor.get(alias);
 	}
 	
+	public ModelConfig<?> getModel(Class<?> mClass) {
+		return configVisitor.get(mClass);
+	}
+	
 	@PostConstruct
 	public void load() {
 		logit.trace(()->"Start-> Load model config...");
