@@ -44,7 +44,7 @@ public class DefaultExpressionHelper extends AbstractExpressionHelper {
 	
 	public String _concat(ExecutionContext eCtx, DelegateExecution execution, String... args) {
 		StringBuilder result = new StringBuilder();
-		for(String arg:args){
+		for(String arg: args){
 			result.append(arg);
 		}
 		return result.toString();
@@ -54,4 +54,15 @@ public class DefaultExpressionHelper extends AbstractExpressionHelper {
 	public Object _getState(ExecutionContext eCtx, DelegateExecution execution, Param<?>... args) {
 		return args[0].getState();
 	}	
+	
+	public void _setState(ExecutionContext eCtx, DelegateExecution execution, String... args) {
+		
+		if(args.length > 1) {
+			for(int i = 0; i < args.length-1; i=i+2){
+				//eCtx.getQuadModel().getRoot().findParamByPath(args[0]).setState(args[i+1]);
+				eCtx.getQuadModel().getView().findParamByPath(args[0]).setState(args[i+1]);
+			}
+		}
+		
+	}
 }

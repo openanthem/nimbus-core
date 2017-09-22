@@ -6,19 +6,12 @@ package com.anthem.oss.nimbus.core.domain.model.state.builder;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
-import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Mode;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig.MappedParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
@@ -40,27 +33,66 @@ public class EntityStateBuilder extends AbstractEntityStateBuilder {
 		super(beanResolver);
 	}
 	
+	private interface ParamStateLoaderCallback<V, C> {
+		
+		Param<C> loadCore(ExecutionEntity<V, C>.ExModel execModel);
+		
+		Param<V> loadView(ExecutionEntity<V, C>.ExModel execModel);
+	}
+	
+	public <V, C> ExecutionEntity<V, C>.ExModel buildExec(Command rootCommand, EntityStateAspectHandlers aspectHandlers, ExecutionEntity.ExConfig<V, C> exConfig, V viewEntityState, Param<C> coreParam) {
+		// create entity state shell
+		C coreEntityState = coreParam.getState();
+		ExecutionEntity<V, C> eState = (ExecutionEntity<V, C>)ExecutionEntity.resolveAndInstantiate(viewEntityState, coreEntityState);
+		
+		return buildExec(rootCommand, aspectHandlers, eState, exConfig, new ParamStateLoaderCallback<V, C>() {
+			@Override
+			public Param<C> loadCore(ExecutionEntity<V, C>.ExModel execModel) {
+				return coreParam;
+			}
+			
+			@Override
+			public Param<V> loadView(ExecutionEntity<V, C>.ExModel execModel) {
+				return buildParam(aspectHandlers, execModel, execModel.getConfig().getViewParam(), execModel);
+			}
+		});
+	}
+	
 	public <V, C> ExecutionEntity<V, C>.ExModel buildExec(Command rootCommand, EntityStateAspectHandlers aspectHandlers, ExecutionEntity<V, C> eState, ExecutionEntity.ExConfig<V, C> exConfig) {
-		ExecutionEntity<V, C>.ExModel execModelSAC = eState.new ExParam(rootCommand, aspectHandlers, exConfig).getRootExecution().unwrap(ExecutionEntity.ExModel.class);
+		return buildExec(rootCommand, aspectHandlers, eState, exConfig, new ParamStateLoaderCallback<V, C>() {
+			@Override
+			public Param<C> loadCore(ExecutionEntity<V, C>.ExModel execModel) {
+				return buildParam(aspectHandlers, execModel, execModel.getConfig().getCoreParam(), null);
+			}
+			
+			@Override
+			public Param<V> loadView(ExecutionEntity<V, C>.ExModel execModel) {
+				return buildParam(aspectHandlers, execModel, execModel.getConfig().getViewParam(), execModel);
+			}
+		});
+	}
+	
+	private <V, C> ExecutionEntity<V, C>.ExModel buildExec(Command rootCommand, EntityStateAspectHandlers aspectHandlers, ExecutionEntity<V, C> eState, ExecutionEntity.ExConfig<V, C> exConfig, ParamStateLoaderCallback<V, C> cb) {
+		ExecutionEntity<V, C>.ExModel execModel = eState.new ExParam(rootCommand, aspectHandlers, exConfig).getRootExecution().unwrap(ExecutionEntity.ExModel.class);
 		
-		// core param sac
-		DefaultParamState<C> coreParamSAC = buildParam(aspectHandlers, execModelSAC, execModelSAC.getConfig().getCoreParam(), null);
-		execModelSAC.templateParams().add(coreParamSAC);
+		// add core param
+		Param<C> coreParam = cb.loadCore(execModel);
+		execModel.templateParams().add(coreParam);
 		
-		// view param sac
+		// add view param
 		if(exConfig.getView()!=null) {
-			DefaultParamState<V> viewParamSAC = buildParam(aspectHandlers, execModelSAC, execModelSAC.getConfig().getViewParam(), execModelSAC);
-			execModelSAC.templateParams().add(viewParamSAC);
+			Param<V> viewParam = cb.loadView(execModel);
+			execModel.templateParams().add(viewParam);
 		}
 		
-		// flow param sac
+		// add flow param
 		if(exConfig.getFlow()!=null) {
-			DefaultParamState<ProcessFlow> flowParamSAC = buildParam(aspectHandlers, execModelSAC, execModelSAC.getConfig().getFlowParam(), null);
-			execModelSAC.templateParams().add(flowParamSAC);
+			DefaultParamState<ProcessFlow> flowParamSAC = buildParam(execModel.getAspectHandlers(), execModel, execModel.getConfig().getFlowParam(), null);
+			execModel.templateParams().add(flowParamSAC);
 		}
 		
-		execModelSAC.initSetup();
-		return execModelSAC;
+		execModel.initSetup();
+		return execModel;
 	}
 
 	@Override
@@ -82,7 +114,7 @@ public class EntityStateBuilder extends AbstractEntityStateBuilder {
 		/* if model & param are mapped, then  mapsToSAC must not be null */
 		if(mConfig.isMapped() && mapsToSAC==null) 
 			throw new InvalidConfigException("Model class: "+mConfig.getReferredClass()+" is mapped: "+mConfig.findIfMapped().getMapsTo().getReferredClass()
-						+" but mapsToSAC is not supplied for param: "+associatedParam.getPath()+". Was this model's config loaded first as part of core?");
+						+" but mapsToState is not supplied for param: "+associatedParam.getPath()+". Was this model's config loaded first as part of core?");
 		
 		DefaultModelState<T> mState = createModel(associatedParam, mConfig, aspectHandlers, mapsToSAC); 
 		
@@ -116,8 +148,14 @@ public class EntityStateBuilder extends AbstractEntityStateBuilder {
 	
 	@Override
 	protected <P> StateType buildParamType(EntityStateAspectHandlers aspectHandlers, DefaultParamState<P> associatedParam, Model<?> mapsToSAC) {
+		if(associatedParam.isTransient()) {
+			// do not create model, instead create a pointer with a new type
+			
+			StateType.MappedTransient<P> mappedTransientType = new StateType.MappedTransient<>(associatedParam.getConfig().getType().findIfNested());
+			return mappedTransientType;
+		}
 		
-		if(associatedParam.getConfig().getType().isCollection()) {
+		else if(associatedParam.getConfig().getType().isCollection()) {
 			ParamType.NestedCollection<P> nmcType = associatedParam.getConfig().getType().findIfCollection();
 			ModelConfig<List<P>> nmConfig = nmcType.getModel();
 			
@@ -127,7 +165,9 @@ public class EntityStateBuilder extends AbstractEntityStateBuilder {
 			StateType.NestedCollection<P> nctSAC = new StateType.NestedCollection<>(nmcType, nmcState);
 			return nctSAC;
 			
-		} else if(associatedParam.getConfig().getType().isNested()) {
+		} 
+		
+		else if(associatedParam.getConfig().getType().isNested()) {
 			//handle nested model
 			@SuppressWarnings("unchecked")
 			ParamType.Nested<P> mpNmType = ((ParamType.Nested<P>)associatedParam.getConfig().getType());

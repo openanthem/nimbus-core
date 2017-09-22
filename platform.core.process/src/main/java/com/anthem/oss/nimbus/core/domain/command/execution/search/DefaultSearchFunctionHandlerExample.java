@@ -4,7 +4,7 @@ import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContext;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.ModelRepository;
 import com.anthem.oss.nimbus.core.entity.SearchCriteria.ExampleSearchCriteria;
 import com.anthem.oss.nimbus.core.entity.SearchCriteria.ProjectCriteria;
 
@@ -25,7 +25,7 @@ public class DefaultSearchFunctionHandlerExample<T, R> extends DefaultSearchFunc
 		
 		ModelRepository rep = getRepFactory().get(mConfig.getRepo());
 		
-		return (R)rep._search(criteriaClass, alias, exampleSearchCriteria);
+		return (R)rep._search(criteriaClass, alias, exampleSearchCriteria, executionContext.getCommandMessage().getCommand().getAbsoluteUri());
 	}
 
 
@@ -38,7 +38,7 @@ public class DefaultSearchFunctionHandlerExample<T, R> extends DefaultSearchFunc
 		exampleSearchCriteria.validate(executionContext);
 				
 		Class<?> criteriaClass = mConfig.getReferredClass();
-		T criteria = (T)getConverter().convert(criteriaClass, executionContext.getCommandMessage());
+		T criteria = (T)getConverter().convert(criteriaClass, executionContext.getCommandMessage().getRawPayload());
 		
 		exampleSearchCriteria.setWhere(criteria);
 		

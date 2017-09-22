@@ -27,5 +27,4 @@ public class ProcessFlow extends AbstractEntity.IdString implements Serializable
 	//TODO should this be the "id" or separate attribute
 	private String processExecutionId;
 	
-	private PageNavigation pageNavigation;
 }

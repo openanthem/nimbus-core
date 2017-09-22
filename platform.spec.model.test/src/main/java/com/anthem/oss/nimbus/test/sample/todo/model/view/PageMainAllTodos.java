@@ -7,7 +7,6 @@ import java.util.List;
 
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo.State;
 import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Section;
 import com.anthem.oss.nimbus.test.sample.todo.model.Todo;
@@ -27,7 +26,7 @@ public class PageMainAllTodos {
 	@Getter @Setter 
 	public static class SectionMyTodos {
 		
-		@Path(linked=false, state=State.External)
+		@Path(linked=false)
 		private List<ViewTodo> viewTodos;
 	}
 	

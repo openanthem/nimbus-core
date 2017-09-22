@@ -5,13 +5,16 @@ package com.anthem.oss.nimbus.core.domain.command.execution;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.util.CollectionUtils;
 
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Behavior;
+import com.anthem.oss.nimbus.core.domain.model.state.ParamEvent;
 import com.anthem.oss.nimbus.core.util.CollectionsTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -64,12 +67,23 @@ public final class CommandExecution {
 		private ValidationResult validation;
 		private ExecuteError error;
 		
+		@JsonIgnore
+		@Getter @Setter 
+		private Set<ParamEvent> aggregatedEvents = new HashSet<>();
+
+		
 		public Output(String inputCommandUri, ExecutionContext context, Action action, Behavior b) {
 			this(inputCommandUri, context, action, Arrays.asList(b));
 		}
 		
 		protected Output(String inputCommandUri, ExecutionContext context, Action action, List<Behavior> behaviors) {
+			this(inputCommandUri, context, action, behaviors, null);
+		}
+		
+		protected Output(String inputCommandUri, ExecutionContext context, Action action, List<Behavior> behaviors, T value) {
 			super(inputCommandUri, context, action, behaviors);
+			setValue(value);
+			setRootDomainId(context.getCommandMessage().getCommand().getRootDomainElement().getRefId());
 		}
 	
 		public static <T> Output<T> instantiate(Input input, ExecutionContext eCtx) {
@@ -77,15 +91,32 @@ public final class CommandExecution {
 		}
 		
 		public static <T> Output<T> instantiate(Input input, ExecutionContext eCtx, T value) {
-			Output<T> output = instantiate(input, eCtx);
+			Output<T> output = instantiate(input, input.getAction(), eCtx, value);
+			return output;
+		}
+		
+		public static <T> Output<T> instantiate(Input input, Action a, ExecutionContext eCtx, T value) {
+			Output<T> output = new Output<>(input.getInputCommandUri(), eCtx, a, input.getBehavior());
 			output.setValue(value);
 			output.setRootDomainId(eCtx.getCommandMessage().getCommand().getRootDomainElement().getRefId());
 			return output;
 		}
 		
+		
 		@Override
 		public List<Behavior> getBehaviors() {
 			return super.getBehaviors();
+		}
+	}
+	
+	public static class EventOutput<T> extends Output<T> {
+		public EventOutput(Action action, Behavior b) {
+			super(null, null, action, b);
+		}
+		public EventOutput(T value, Action action, Behavior b) {
+			this(action, b);
+			
+			setValue(value);
 		}
 	}
 	
@@ -114,7 +145,8 @@ public final class CommandExecution {
 		public Object getSingleResult() {
 			if(CollectionUtils.isEmpty(getOutputs())) return null;
 			
-			if(getOutputs().size() > 1) throw new IllegalStateException("Multi output contains more than one output elements: "+getOutputs());
+//			if(getOutputs().size() > 1) 
+//				throw new IllegalStateException("Multi output contains more than one output elements: "+getOutputs());
 			
 			return getOutputs().get(0).getValue();
 		}

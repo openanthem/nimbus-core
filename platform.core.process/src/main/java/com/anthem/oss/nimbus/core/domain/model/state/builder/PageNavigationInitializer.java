@@ -72,9 +72,9 @@ public class PageNavigationInitializer {
 
         	if(rootNode){
 
-        		quadModel.getView().findStateByPath(statePath.toString()).setState(state);
+        		quadModel.getView().findParamByPath(statePath.toString()).setState(state);
         	}else{
-        		currentSAC.findStateByPath(statePath.toString()).setState(state);
+        		currentSAC.findParamByPath(statePath.toString()).setState(state);
         	}
             currentSAC = (DefaultParamState<?>)quadModel.getView().findStateByPath(Constants.SEPARATOR_URI.code+breadCrumb);
         	rootNode = false;

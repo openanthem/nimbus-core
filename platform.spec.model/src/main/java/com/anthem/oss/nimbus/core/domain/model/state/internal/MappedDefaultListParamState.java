@@ -5,11 +5,12 @@ package com.anthem.oss.nimbus.core.domain.model.state.internal;
 
 import java.util.List;
 
+import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
-import com.anthem.oss.nimbus.core.domain.model.state.Notification;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
-import com.anthem.oss.nimbus.core.domain.model.state.InvalidStateException;
+import com.anthem.oss.nimbus.core.domain.model.state.Notification;
+import com.anthem.oss.nimbus.core.domain.model.state.Notification.ActionType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
@@ -64,10 +65,17 @@ public class MappedDefaultListParamState<T, M> extends DefaultListParamState<T> 
 				mapsToListModel.getLockTemplate().execute(()->{
 					logit.trace(()->"[onEventDeleteElem] received for mapsTo.ListParamElem: "+event.getEventParam().getPath());
 					
+					//TODO affectRemoveChange(pElem, execRt, false);
+					
 					String elemId = event.getEventParam().findIfCollectionElem().getElemId();
 					
 					ListModel<T> mappedColModel = (ListModel<T>)getType().findIfNested().getModel().findIfListModel();
 					Param<?> mappedParamElem = mappedColModel.templateParams().remove(elemId);
+					
+					emitNotification(new Notification<>(mappedColModel.getAssociatedParam(), ActionType._deleteElem, mappedParamElem));
+					
+					if(getRootExecution().getExecutionRuntime().isStarted())
+						emitEvent(Action._delete, mappedParamElem);
 					
 					logit.trace(()->"[onEventDeleteElem] removed mapped.ListParamElem: "+mappedParamElem.getPath());
 				});	
@@ -83,16 +91,16 @@ public class MappedDefaultListParamState<T, M> extends DefaultListParamState<T> 
 				
 				mapsToListModel.getLockTemplate().execute(()->{
 					// only scenario to handle here is of "clear" of list model, all other scenarios should have been handled at elem-event level
-					if(mapsToListModel.size() != 0)
-						throw new InvalidStateException("Update state event for List Model can be processed only when state is initialized or reset. "
-								+ "Invalid state found for mappedParam: "+getPath()+" with mapsTo: "+mapsToListModel.getPath());
+//					if(mapsToListModel.size() != 0)
+//						throw new InvalidStateException("Update state event for List Model can be processed only when state is initialized or reset. "
+//								+ "Invalid state found for mappedParam: "+getPath()+" with mapsTo: "+mapsToListModel.getPath());
 					
 					// clear mapped
-					clear();
+					clear(false);
 				});
 			}
 		};
 
-		getMapsTo().registerSubscriber(this);
+		getMapsTo().registerConsumer(this);
 	}
 }

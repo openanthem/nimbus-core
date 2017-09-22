@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ExecutionModel;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 
 import lombok.Getter;
@@ -47,6 +48,14 @@ public class ExecutionContext {
 	
 	public ExecutionModel<?> getRootModel(){
 		return quadModel.getRoot();
+	}
+	
+	public <P> Param<P> findParamByPath(String path) {
+		return getRootModel().findParamByPath(path);
+	}
+	
+	public <P> P findStateByPath(String path) {
+		return getRootModel().findStateByPath(path);
 	}
 	
 	@Override

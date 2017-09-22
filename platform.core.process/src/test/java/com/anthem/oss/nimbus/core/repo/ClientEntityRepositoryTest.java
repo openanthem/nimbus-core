@@ -45,8 +45,8 @@
 //	public void testCreateClient(){
 //
 //		Client c = new Client();
-//		c.setCode("Anthem");
-//		c.setName("anthem");
+//		c.setCode("Acme");
+//		c.setName("acme");
 //		c.setBusinessType("Health Payer");
 //		c.setFedTaxID("1111111");
 //		c.setType(Type.CLIENT);
@@ -66,7 +66,7 @@
 //	@Test
 //	public void testCreateClientOrg(){
 //
-//		Client c = cRep.findByCode("Anthem");
+//		Client c = cRep.findByCode("Acme");
 //		assertNotNull(c);
 //		
 //		ClientEntity org = new ClientEntity();

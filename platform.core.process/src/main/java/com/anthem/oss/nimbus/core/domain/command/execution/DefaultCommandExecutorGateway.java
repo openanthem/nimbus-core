@@ -3,13 +3,19 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
@@ -22,8 +28,17 @@ import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Input;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
+import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.Execution;
+import com.anthem.oss.nimbus.core.domain.definition.Execution.Config;
+import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ExecutionModel;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.ParamEvent;
+import com.anthem.oss.nimbus.core.domain.model.state.StateEventListener;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.BaseStateEventListener;
+import com.anthem.oss.nimbus.core.utils.ParamPathExpressionParser;
 
 /**
  * @author Soham Chakravarti
@@ -39,6 +54,8 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 	
 	private ExecutionContextLoader loader;
 	
+	private static final ThreadLocal<String> cmdScopeInThread = new ThreadLocal<>();
+	
 	public DefaultCommandExecutorGateway(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
 		
@@ -51,23 +68,37 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		this.pathVariableResolver = getBeanResolver().get(CommandPathVariableResolver.class);
 	}
 
-	
-	protected void validateCommand(CommandMessage cmdMsg) {
-		if(cmdMsg==null || cmdMsg.getCommand()==null)
-			throw new InvalidArgumentException("Command must not be null for Gateway to process request");
-		
-		cmdMsg.getCommand().validate();
-	}
-	
 	@Override
-	public MultiOutput execute(CommandMessage cmdMsg) {
+	public final MultiOutput execute(CommandMessage cmdMsg) {
 		// validate
 		validateCommand(cmdMsg);
 		
-		final String inputCommandUri = cmdMsg.getCommand().getAbsoluteUri();
-		
 		// load execution context 
 		ExecutionContext eCtx = loadExecutionContext(cmdMsg);
+		
+		final String lockId;
+		
+		if(cmdScopeInThread.get()==null) {
+			lockId = UUID.randomUUID().toString();
+			cmdScopeInThread.set(lockId);
+			eCtx.getRootModel().getExecutionRuntime().onStartRootCommandExecution(cmdMsg.getCommand());
+			
+		} else {
+			lockId = null;
+		}
+		
+		try {
+			return executeInternal(eCtx, cmdMsg);
+		} finally {
+			if(lockId!=null) {
+				eCtx.getRootModel().getExecutionRuntime().onStopRootCommandExecution(cmdMsg.getCommand());
+				cmdScopeInThread.set(null);
+			}
+		}
+	}
+	
+	protected MultiOutput executeInternal(ExecutionContext eCtx, CommandMessage cmdMsg) {
+		final String inputCommandUri = cmdMsg.getCommand().getAbsoluteUri();
 		
 		MultiOutput mOutput = new MultiOutput(inputCommandUri, eCtx, cmdMsg.getCommand().getAction(), cmdMsg.getCommand().getBehaviors());
 		
@@ -77,55 +108,115 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		
 		// if present, hand-off to each command within execution config
 		if(CollectionUtils.isNotEmpty(execConfigs)) {
-			executeConfig(eCtx, cmdParam, mOutput, execConfigs);
+			List<MultiOutput> execConfigOutputs = executeConfig(eCtx, cmdParam, execConfigs);
+			execConfigOutputs.stream().forEach(mOut->addMultiOutput(mOutput, mOut));
 
 		} else {// otherwise, execute self
-			executeSelf(eCtx, cmdParam, mOutput);
+			List<Output<?>> selfExecOutputs = executeSelf(eCtx, cmdParam);
+			selfExecOutputs.stream().forEach(out->addOutput(mOutput, out));
 		}
 		
 		return mOutput;
 	}
+
+	protected void validateCommand(CommandMessage cmdMsg) {
+		if(cmdMsg==null || cmdMsg.getCommand()==null)
+			throw new InvalidArgumentException("Command must not be null for Gateway to process request");
+		
+		cmdMsg.getCommand().validate();
+	}
 	
-	protected void executeConfig(ExecutionContext eCtx, Param<?> cmdParam, MultiOutput mOutput, List<Execution.Config> execConfigs) {
+	protected List<MultiOutput> executeConfig(ExecutionContext eCtx, Param<?> cmdParam, List<Execution.Config> execConfigs) {
 		final CommandMessage cmdMsg = eCtx.getCommandMessage();
 		boolean isPayloadUsed = false;
 		
 		// for-each config
+		final List<MultiOutput> configExecOutputs = new ArrayList<>();
 		execConfigs.stream().forEach(ec->{
-			String completeConfigUri = eCtx.getCommandMessage().getCommand().getRelativeUri(ec.url());
-			
-			String resolvedConfigUri = pathVariableResolver.resolve(cmdParam, completeConfigUri); 
-			Command configExecCmd = CommandBuilder.withUri(resolvedConfigUri).getCommand();
-			
-			// TODO decide on which commands should get the payload
-			CommandMessage configCmdMsg = new CommandMessage(configExecCmd, resolvePayload(cmdMsg, configExecCmd, isPayloadUsed));
-			
-			// execute & add output to mOutput
-			MultiOutput configOutput = execute(configCmdMsg);
-			addMultiOutput(mOutput,configOutput);
+			if(StringUtils.isNotBlank(ec.col())) {
+				buildAndExecuteColExecConfig(eCtx, cmdParam, ec);
+			}
+			else {
+				String completeConfigUri = eCtx.getCommandMessage().getCommand().getRelativeUri(ec.url());
+				
+				String resolvedConfigUri = pathVariableResolver.resolve(cmdParam, completeConfigUri); 
+				Command configExecCmd = CommandBuilder.withUri(resolvedConfigUri).getCommand();
+				
+				// TODO decide on which commands should get the payload
+				CommandMessage configCmdMsg = new CommandMessage(configExecCmd, resolvePayload(cmdMsg, configExecCmd, isPayloadUsed));
+				
+				// execute & add output to mOutput
+				MultiOutput configOutput = execute(configCmdMsg);
+				configExecOutputs.add(configOutput);
+	//			addMultiOutput(mOutput,configOutput);
+			}
 		});	
+		return configExecOutputs;
+	}
+	
+	private void buildAndExecuteColExecConfig(ExecutionContext eCtx, Param<?> cmdParam, Config ec) {
+		List<Execution.Config> colExecConfigs = new ArrayList<>();
+		String colPath = ParamPathExpressionParser.stripPrefixSuffix(ec.col());
+		
+		ListParam listParam = findColParamByPath(cmdParam, colPath);
+		
+		for(int i=0; i < listParam.size(); i++) {
+			colExecConfigs.add(buildExecConfig(ec, colPath, i));
+		}
+		executeConfig(eCtx, cmdParam, colExecConfigs);
+	}
+
+	private ListParam findColParamByPath(Param<?> cmdParam, String colPath) {
+		Param<?> p = cmdParam.findParamByPath(colPath);
+		if(p == null)
+			p = cmdParam.getParentModel().findParamByPath(colPath);
+		
+		if(p == null)
+			throw new InvalidConfigException("The param "+colPath+" not found from command: "+cmdParam);
+		
+		if(!p.isCollection())
+			throw new InvalidConfigException("The param "+colPath+" must be a collection but found to be a non collection from command: "+cmdParam);
+		
+		return p.findIfCollection();
+	}
+
+	private Config buildExecConfig(Config ec, String colPath, int i) {
+		return new Execution.Config() {
+			
+			public String url() {
+				return StringUtils.replace(ec.url(),Constants.MARKER_COL_PARAM.code,colPath+Constants.SEPARATOR_URI.code+i);
+			}
+			public String col() {
+				return "";
+			}
+			@Override
+		    public Class<? extends Annotation> annotationType() {
+		        return Execution.Config.class;
+		    }
+		};
 	}
 	
 	private String resolvePayload(CommandMessage cmdMsg, Command configExecCmd, boolean isPayloadUsed) {
-		String payload = null;
-		
-		if(!isPayloadUsed && cmdMsg.hasPayload())
-			payload = cmdMsg.getRawPayload();
-		/*
-		else if(configExecCmd.getRequestParams()!=null && configExecCmd.getRequestParams().get("a")!=null) {
-			String a[] = configExecCmd.getRequestParams().get("a");
-			if(a!=null && a.length==1)
-				payload = a[0];
+		if(!isPayloadUsed) {
+			if(configExecCmd.hasRawPayload()) {
+				return configExecCmd.getRawPayload();
+			}
+			else if(cmdMsg.getCommand().hasRawPayload()) {
+				return cmdMsg.getCommand().getRawPayload();
+			}
+			else if(cmdMsg.hasPayload()) {
+				return cmdMsg.getRawPayload();
+			}
 		}
-		*/
-		return payload;
+		return null;
 	}
 	
-	protected void executeSelf(ExecutionContext eCtx, Param<?> cmdParam, MultiOutput mOutput) {
+	protected List<Output<?>> executeSelf(ExecutionContext eCtx, Param<?> cmdParam) {
 		final CommandMessage cmdMsg = eCtx.getCommandMessage();
 		final String inputCommandUri = cmdMsg.getCommand().getAbsoluteUri();
 		
 		// for-each behavior:
+		List<Output<?>> selfExecOutputs = new ArrayList<>();
 		cmdMsg.getCommand().getBehaviors().stream().forEach(b->{
 			
 			// find command executor
@@ -133,13 +224,47 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			
 			// execute command
 			Input input = new Input(inputCommandUri, eCtx, cmdMsg.getCommand().getAction(), b);
-			Output<?> output = executor.execute(input);			
 			
-			mOutput.template().add(output);
+			final Set<ParamEvent> _aggregatedEvents = new HashSet<>();
+			StateEventListener cmdListener = new BaseStateEventListener() {
+
+				@Override
+				public void onStopCommandExecution(Command cmd, Map<ExecutionModel<?>, List<ParamEvent>> aggregatedEvents) {
+					for(ExecutionModel<?> rootKey : aggregatedEvents.keySet()) {
+						List<ParamEvent> rawEvents = aggregatedEvents.get(rootKey);
+						_aggregatedEvents.addAll(rawEvents);
+					}
+				}
+			};
+			
+			eCtx.getRootModel().getExecutionRuntime().getEventDelegator().addTxnScopedListener(cmdListener);
+			eCtx.getRootModel().getExecutionRuntime().onStartCommandExecution(cmdMsg.getCommand());
+
+			Output<?> output = executor.execute(input);
+			output.setAggregatedEvents(_aggregatedEvents);
+			selfExecOutputs.add(output);
+
+			eCtx.getRootModel().getExecutionRuntime().onStopCommandExecution(cmdMsg.getCommand());
+			eCtx.getRootModel().getExecutionRuntime().getEventDelegator().removeTxnScopedListener(cmdListener);
+			
+//			mOutput.template().add(output);
 			//addOutput(mOutput,output);
+			
+//			addEvents(eCtx, mOutput.getAggregatedEvents(), input, mOutput);
 		});
+		return selfExecOutputs;
 	}
 	
+	private void addEvents(ExecutionContext eCtx, Set<ParamEvent> aggregatedEvents, Output<?> output, MultiOutput mOutput) {
+		if(CollectionUtils.isEmpty(aggregatedEvents))
+			return;
+		
+		aggregatedEvents.stream()
+				.filter(ParamEvent::shouldAllow) //TODO move to listener
+				.map(pe->new Output<>(output.getInputCommandUri(), eCtx, pe.getAction(), output.getBehaviors(), pe.getParam()))
+				.forEach(mOutput.template()::add);
+			;
+	}
 	
 	private void addOutput(MultiOutput mOutput, Output<?> output){
 		Object outputValue = output.getValue();
@@ -150,6 +275,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			}
 		}else{
 			mOutput.template().add(output);
+			addEvents(output.getContext(), output.getAggregatedEvents(), output, mOutput);
 		}
 		
 	}

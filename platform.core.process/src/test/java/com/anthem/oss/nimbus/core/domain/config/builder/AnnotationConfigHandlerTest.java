@@ -1,0 +1,76 @@
+package com.anthem.oss.nimbus.core.domain.config.builder;
+
+import java.lang.reflect.Field;
+import java.util.List;
+
+import javax.validation.Constraint;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
+import org.junit.Assert;
+import org.junit.FixMethodOrder;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
+import com.anthem.oss.nimbus.core.domain.model.config.AnnotationConfig;
+
+/**
+ * 
+ * @author Tony Lopez (AF42192)
+ *
+ */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@RunWith(MockitoJUnitRunner.class)
+public class AnnotationConfigHandlerTest {
+
+	private final String foo = null;
+	
+	@NotNull(message = "bar can not be null")
+	private final String bar = null;
+	
+	@NotNull(message = "baz can not be null")
+	@Pattern(regexp="foo.*bar", message = "baz must conform to standards")
+	private final String baz = null;
+	
+	@Test
+	public void t1_handle_annotationNotFound() throws Exception {
+		final Field annotatedElement = this.getClass().getDeclaredField("foo");
+		Assert.assertNull(AnnotationConfigHandler.handle(annotatedElement, Constraint.class));
+	}
+	
+	@Test
+	public void t2_handle_singleAnnotationConfig() throws Exception {
+		final Field annotatedElement = this.getClass().getDeclaredField("bar");
+		final List<AnnotationConfig> actual = AnnotationConfigHandler.handle(annotatedElement, Constraint.class);
+		Assert.assertEquals(1, actual.size());
+		Assert.assertEquals("NotNull", actual.get(0).getName());
+		Assert.assertEquals("bar can not be null", actual.get(0).getAttributes().get("message"));
+		Assert.assertEquals(0, ((Object[]) actual.get(0).getAttributes().get("groups")).length);
+		Assert.assertEquals(0, ((Object[]) actual.get(0).getAttributes().get("payload")).length);
+	}
+	
+	@Test
+	public void t3_handleSingle_annotationNotFound() throws Exception {
+		final Field annotatedElement = this.getClass().getDeclaredField("foo");
+		Assert.assertNull(AnnotationConfigHandler.handleSingle(annotatedElement, Constraint.class));
+	}
+	
+	@Test(expected = InvalidConfigException.class)
+	public void t4_handleSingle_multipleConfigsFound() throws Exception {
+		final Field annotatedElement = this.getClass().getDeclaredField("baz");
+		Assert.assertNull(AnnotationConfigHandler.handleSingle(annotatedElement, Constraint.class));
+	}
+	
+	@Test
+	public void t5_handleSingle_singleConfig() throws Exception {
+		final Field annotatedElement = this.getClass().getDeclaredField("bar");
+		final AnnotationConfig actual = AnnotationConfigHandler.handleSingle(annotatedElement, Constraint.class);
+		Assert.assertEquals("NotNull", actual.getName());
+		Assert.assertEquals("bar can not be null", actual.getAttributes().get("message"));
+		Assert.assertEquals(0, ((Object[]) actual.getAttributes().get("groups")).length);
+		Assert.assertEquals(0, ((Object[]) actual.getAttributes().get("payload")).length);
+	}
+}

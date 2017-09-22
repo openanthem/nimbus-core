@@ -13,6 +13,7 @@ import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
 
+import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.definition.ConfigNature;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
@@ -35,19 +36,21 @@ public class EntityConfigBuilder extends AbstractEntityConfigBuilder {
 
 	private final Map<String, String> typeClassMappings;
 	
-	public EntityConfigBuilder(Map<String, String> typeClassMappings) {
+	public EntityConfigBuilder(BeanResolverStrategy beanResolver, Map<String, String> typeClassMappings) {
+		super(beanResolver);
+		
 		this.typeClassMappings = typeClassMappings;
 	}
 	
 
-	public <T> ModelConfig<T> load(Class<T> clazz, EntityConfigVistor visitedModels) {
+	public <T> ModelConfig<T> load(Class<T> clazz, EntityConfigVisitor visitedModels) {
 		ModelConfig<T> mConfig = buildModel(clazz, visitedModels);
 		return mConfig;
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> ModelConfig<T> buildModel(Class<T> clazz, EntityConfigVistor visitedModels) {
+	public <T> ModelConfig<T> buildModel(Class<T> clazz, EntityConfigVisitor visitedModels) {
 		logit.trace(()->"building model for class: "+clazz);
 		
 		// skip if already built
@@ -85,8 +88,7 @@ public class EntityConfigBuilder extends AbstractEntityConfigBuilder {
 				}				
 			});
 		
-		if(mConfig.getRepo()!=null && mConfig.getRepo().value()!=Repo.Database.rep_none 
-				&& mConfig.getIdParam()==null) {
+		if(Repo.Database.isPersistable(mConfig.getRepo()) && mConfig.getIdParam()==null) {
 			throw new InvalidConfigException("Persistable Entity: "+mConfig.getReferredClass()+" must be configured with @Id param which has Repo: "+mConfig.getRepo());
 		}
 		
@@ -94,7 +96,7 @@ public class EntityConfigBuilder extends AbstractEntityConfigBuilder {
 	}
 
 	@Override
-	public <T> ParamConfig<?> buildParam(ModelConfig<T> mConfig, Field f, EntityConfigVistor visitedModels) {
+	public <T> ParamConfig<?> buildParam(ModelConfig<T> mConfig, Field f, EntityConfigVisitor visitedModels) {
 		
 		logit.trace(()->"Building Param for config class: "+mConfig.getReferredClass()+ " field : "+f.getName());
 		
@@ -114,7 +116,7 @@ public class EntityConfigBuilder extends AbstractEntityConfigBuilder {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	protected <T, P> ParamType buildParamType(ModelConfig<T> mConfig, ParamConfig<P> pConfig, Field f, EntityConfigVistor visitedModels) {
+	protected <T, P> ParamType buildParamType(ModelConfig<T> mConfig, ParamConfig<P> pConfig, Field f, EntityConfigVisitor visitedModels) {
 		Class<P> determinedType = (Class<P>)GenericUtils.resolveGeneric(mConfig.getReferredClass(), f);
 		
 		ParamType.CollectionType colType = determineCollectionType(f.getType());	
@@ -123,7 +125,7 @@ public class EntityConfigBuilder extends AbstractEntityConfigBuilder {
 	}
 	
 	@Override
-	protected <T, P> ParamType buildParamType(ModelConfig<T> mConfig, ParamConfig<P> pConfig, ParamType.CollectionType colType, Class<?> pDirectOrColElemType, /*MapsTo.Path mapsToPath, */EntityConfigVistor visitedModels) {
+	protected <T, P> ParamType buildParamType(ModelConfig<T> mConfig, ParamConfig<P> pConfig, ParamType.CollectionType colType, Class<?> pDirectOrColElemType, /*MapsTo.Path mapsToPath, */EntityConfigVisitor visitedModels) {
 		if(ParamType.CollectionType.array==colType && isPrimitive(pDirectOrColElemType)) { // handle primitive array first
 			ParamType type = createParamType(true, pDirectOrColElemType, mConfig, visitedModels);
 			return type;

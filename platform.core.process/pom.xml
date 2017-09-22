@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.anthem.oss.nimbus.core</groupId>
 		<artifactId>com.anthem.oss.nimbus.core.parent</artifactId>
-		<version>1.0.0.M3-SNAPSHOT</version>
+		<version>1.0.0.M5-SNAPSHOT</version>
 	</parent>
 	<url></url>
 	<artifactId>com.anthem.oss.nimbus.core.api</artifactId>
@@ -180,6 +180,15 @@
     		<groupId>org.springframework.security</groupId>
     		<artifactId>spring-security-jwt</artifactId>
 		</dependency>
+		<dependency>
+		    <groupId>ch.mfrey.jackson</groupId>
+		    <artifactId>jackson-antpathfilter</artifactId>
+		    <version>1.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -220,6 +229,17 @@
 			            </configuration>
 			        </execution>
 			     </executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<includes>
+						<include>**/Test*.java</include>
+						<include>**/*Tests.java</include>
+						<include>**/*Test.java</include>
+					</includes>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

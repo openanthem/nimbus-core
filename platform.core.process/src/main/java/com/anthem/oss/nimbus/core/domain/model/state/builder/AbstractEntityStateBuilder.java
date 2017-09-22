@@ -21,10 +21,10 @@ import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Mode;
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo.State;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig.MappedParamConfig;
+import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
@@ -42,6 +42,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultListM
 import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultListParamState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultModelState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultParamState;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultTransientParamState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.StateContextEntity;
 import com.anthem.oss.nimbus.core.rules.RulesEngineFactoryProducer;
 import com.anthem.oss.nimbus.core.util.JustLogit;
@@ -175,8 +176,26 @@ abstract public class AbstractEntityStateBuilder {
 		if(mappedParamConfig.getMappingMode() == Mode.MappedAttached) {
 			// find mapped param's state
 			final Param<?> mapsToParam = findMapsToParam(mappedParamConfig, mapsToSAC);
+
+			// handle transient
+			if(mappedParamConfig.getPath().nature() == MapsTo.Nature.TransientColElem) {
+				if(!mappedParamConfig.getType().isNested())
+					throw new InvalidConfigException("Non nested transient params are not supported, but found for: "+mappedParamConfig.getCode());
+				
+				@SuppressWarnings("unchecked")
+				ParamType.Nested<P> mpNmType = ((ParamType.Nested<P>)mappedParamConfig.getType());
+				
+				ModelConfig<P> mpNmConfig = mpNmType.getModel();
+				MappedDefaultTransientParamState.Creator<P> creator = (associatedParam, transientMapsTo) -> buildModel(aspectHandlers, associatedParam, mpNmConfig, transientMapsTo);
+				
+				return new MappedDefaultTransientParamState<>(mapsToParam, parentModel, mappedParamConfig, aspectHandlers, creator);
+			} 
 			
-			if(mappedParamConfig.getType().isCollection()) {
+			else if(mappedParamConfig.getPath().nature() != MapsTo.Nature.Default) {
+				throw new UnsupportedOperationException("Transient behavior for: "+mappedParamConfig.getPath().nature()+" not yet implemented, found for: "+mappedParamConfig.getCode());
+			}
+			
+			else if(mappedParamConfig.getType().isCollection()) {
 				return new MappedDefaultListParamState(mapsToParam.findIfCollection(), parentModel, mappedParamConfig, aspectHandlers);
 			}
 				

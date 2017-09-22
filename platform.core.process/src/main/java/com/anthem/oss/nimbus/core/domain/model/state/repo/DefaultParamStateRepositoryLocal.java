@@ -94,7 +94,7 @@ public class DefaultParamStateRepositoryLocal implements ParamStateRepository {
 				return Action._replace;
 				
 			} else {
-				throw new InvalidOperationAttemptedException("Cannot add/set to collection entity state when modelListElemIndex:"+modelListElemIndex
+				throw new InvalidOperationAttemptedException("Param :+"+param+"\n\tCannot add/set to collection entity state when modelListElemIndex:"+modelListElemIndex
 						+" is greater than entityStateList.size(): "+entityStateList.size());
 			}
 			

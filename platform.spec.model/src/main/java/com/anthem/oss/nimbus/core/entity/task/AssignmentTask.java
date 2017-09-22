@@ -4,8 +4,11 @@
 package com.anthem.oss.nimbus.core.entity.task;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 
 import javax.validation.constraints.NotNull;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
@@ -56,11 +59,20 @@ public class AssignmentTask extends AbstractEntity.IdString{
 	private Source source;
 	
 	private String taskTypeForDisplay;
+	private String taskStatus; // TODO - temp attr - to be removed (Rakesh)
 	
 	public enum TaskStatus{
 		Open,
 		Completed,
-		Cancelled,
+		Cancelled;
+		
+		
+		public static TaskStatus findByStatusString(String status) {
+			return Arrays.asList(TaskStatus.values()).stream()
+					.filter((taskStatus) -> StringUtils.equalsIgnoreCase(status, taskStatus.name()))
+					.findFirst()
+					.orElse(null);
+		}
 	}
 	
 	public enum TaskPriority{

@@ -7,14 +7,16 @@ package com.anthem.oss.nimbus.core.domain.model.state.internal;
 import java.beans.PropertyDescriptor;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 
+import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
 import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
+import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
@@ -23,9 +25,11 @@ import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
+import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
+import com.anthem.oss.nimbus.core.domain.model.state.Notification;
+import com.anthem.oss.nimbus.core.domain.model.state.ParamEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.RulesRuntime;
-import com.anthem.oss.nimbus.core.domain.model.state.State;
-import com.anthem.oss.nimbus.core.domain.model.state.StateType;
+import com.anthem.oss.nimbus.core.spec.contract.event.EventListener;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 import com.anthem.oss.nimbus.core.util.LockTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -55,6 +59,8 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 	
 	@JsonIgnore private RulesRuntime rulesRuntime;
 	
+	private boolean stateInitialized;
+	
 	public AbstractEntityState(EntityConfig<T> config, EntityStateAspectHandlers aspectHandlers) {
 		Objects.requireNonNull(config, "Config must not be null while instantiating StateAndConfig.");
 		Objects.requireNonNull(aspectHandlers, "Provider must not be null while instantiating StateAndConfig.");
@@ -76,14 +82,18 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 	
 	@Override
 	final public void initState() {
+		if(isStateInitialized()) 
+			return;
+		
 		ExecutionRuntime execRt = getRootExecution().getExecutionRuntime();
 		String lockId = execRt.tryLock();
 		try {
 			initStateInternal();
 			fireRules(); //TODO review with soham
+			setStateInitialized(true); // From soham
 		} finally {
 			if(execRt.isLocked(lockId)) {
-				execRt.awaitCompletion();
+				execRt.awaitNotificationsCompletion();
 				
 				boolean b = execRt.tryUnlock(lockId);
 				if(!b)
@@ -100,6 +110,78 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 		
 		return getRootExecution().getParamRuntimes().get(getPath());
 	}
+
+	@FunctionalInterface
+	public static interface ChangeStateCallback<R> {
+		public R affectChange(ExecutionRuntime execRt, Holder<Action> h);
+	}
+
+	final protected <R> R changeStateTemplate(ChangeStateCallback<R> cb) {
+		ExecutionRuntime execRt = resolveRuntime();
+		String lockId = execRt.tryLock();
+		final Holder<Action> h = new Holder<>();
+		try {
+			R resp = cb.affectChange(execRt, h);
+			
+			// fire rules if available at this param level
+			fireRules();
+			
+			return resp;
+		} finally {
+			if(execRt.isLocked(lockId)) {
+				// await completion of notification events
+				execRt.awaitNotificationsCompletion();
+				
+				// fire rules at root level upon completion of all set actions
+				getRootExecution().fireRules();
+				
+				// unlock
+				boolean b = execRt.tryUnlock(lockId);
+				if(!b)
+					throw new FrameworkRuntimeException("Failed to release lock acquired during setState of: "+getPath()+" with acquired lockId: "+lockId); 
+			}
+			
+			if(h.getState()!=null && (this instanceof Notification.Producer)) {
+				((Notification.Producer<?>)this).getEventSubscribers().forEach((subscriber) -> emitEvent(h.getState(), subscriber));
+			}
+
+		}
+	}
+	
+	final protected void txnTemplate(Consumer<String> cb) {
+		ExecutionRuntime execRt = resolveRuntime();
+		String lockId = execRt.tryLock();
+		try {
+			cb.accept(lockId);
+			
+		} finally {
+			if(execRt.isLocked(lockId)) {
+			
+				boolean b = execRt.tryUnlock(lockId);
+				if(!b)
+					throw new FrameworkRuntimeException("Failed to release lock acquired during txn execution of: "+getPath()+" with acquired lockId: "+lockId);
+			}
+		}
+	}
+	
+	protected ExecutionRuntime resolveRuntime() {
+		if(getRootExecution().getAssociatedParam().isLinked()) {
+			return getRootExecution().getAssociatedParam().findIfLinked().getRootExecution().getExecutionRuntime();
+		}
+		
+		return getRootExecution().getExecutionRuntime();
+	}
+	
+	protected void emitEvent(Action a , Param p) {
+		if(getAspectHandlers().getEventListener() == null) return;
+		
+		resolveRuntime().emitEvent(new ParamEvent(a, p));
+		
+		ModelEvent<Param<?>> e = new ModelEvent<Param<?>>(a, p.getPath(), p);
+		EventListener listener = getAspectHandlers().getEventListener();
+		listener.listen(e);
+	}
+
 	
 	// TODO: SOHAM - need to refactor part of persistence changes
 	public String getPath() {
@@ -139,49 +221,6 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 		return containsMapsToPath(path)  ? StringUtils.stripEnd(path, Constants.SEPARATOR_MAPSTO.code) : path;
 	}
 
-	
-	@Override
-	public <S> State<S> findStateByPath(String path) {
-		String splits[] = StringUtils.split(path, Constants.SEPARATOR_URI.code);
-		return findStateByPath(splits);
-	}
-
-	@Override
-	public <S> State<S> findStateByPath(String[] pathArr) {
-		String lastElem = pathArr[pathArr.length - 1];
-		
-		/* check if the last path item has # entry */
-		if(!StringUtils.contains(lastElem, Constants.SEPARATOR_CONFIG_ATTRIB.code)) {
-			return findParamByPath(pathArr);
-		}
-		
-		/* find param excluding # entry */
-		final String lastElemArr[] = StringUtils.split(lastElem, Constants.SEPARATOR_CONFIG_ATTRIB.code);
-		pathArr[pathArr.length - 1] = lastElemArr[0];
-		
-		Param<S> p = findParamByPath(pathArr);
-		
-		/* lookup state on param's config */
-		StateType.Nested<S> pTypeNested = p.getType().findIfNested();
-		Model<S> mp = pTypeNested.getModel();
-		Object pathRefConfig = (mp != null) ? mp.getConfig() : p.getConfig();
-		
-		/* get {#configAttribName}State */
-		String propStateNm = lastElemArr[1] + Constants.SUFFIX_PROPERTY_STATE.code;
-		PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(pathRefConfig.getClass(), propStateNm);
-		
-		if(pd == null && mp != null) {
-			pd = BeanUtils.getPropertyDescriptor(p.getConfig().getClass(), propStateNm);
-		}
-		
-		if(pd == null) {
-			throw new InvalidConfigException("Property: "+ propStateNm + " not found on param: "+p);
-		}
-		
-		State<S> state = read(pd, ()->pathRefConfig);
-		return state;
-	}
-	
 	@Override
 	public <P> Param<P> findParamByPath(String path) {
 		String splits[] = StringUtils.split(path, Constants.SEPARATOR_URI.code);

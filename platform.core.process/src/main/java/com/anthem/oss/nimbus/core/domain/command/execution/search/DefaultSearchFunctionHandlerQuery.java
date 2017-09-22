@@ -10,7 +10,7 @@ import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContext;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.ModelRepository;
 import com.anthem.oss.nimbus.core.entity.SearchCriteria.ProjectCriteria;
 import com.anthem.oss.nimbus.core.entity.SearchCriteria.QuerySearchCriteria;
 
@@ -31,7 +31,7 @@ public class DefaultSearchFunctionHandlerQuery<T, R> extends DefaultSearchFuncti
 		
 		ModelRepository rep = getRepFactory().get(mConfig.getRepo());
 		
-		return (R)rep._search(criteriaClass, alias, querySearchCriteria);
+		return (R)rep._search(criteriaClass, alias, querySearchCriteria, executionContext.getCommandMessage().getCommand().getAbsoluteUri());
 	}
 	
 	

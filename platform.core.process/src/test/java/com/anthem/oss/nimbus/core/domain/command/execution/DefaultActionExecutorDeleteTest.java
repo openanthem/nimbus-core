@@ -18,11 +18,11 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import com.anthem.oss.nimbus.core.AbstractFrameworkIngerationPersistableTests;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
+import com.anthem.oss.nimbus.test.sample.domain.model.SampleCoreEntity;
+import com.anthem.oss.nimbus.test.sample.domain.model.SampleCoreNestedEntity;
 
 import test.com.anthem.nimbus.platform.utils.ExtractResponseOutputUtils;
 import test.com.anthem.nimbus.platform.utils.MockHttpRequestBuilder;
-import test.com.anthem.oss.nimbus.core.domain.model.SampleCoreEntity;
-import test.com.anthem.oss.nimbus.core.domain.model.SampleCoreNestedEntity;
 
 /**
  * @author Soham Chakravarti
@@ -60,13 +60,20 @@ public class DefaultActionExecutorDeleteTest extends AbstractFrameworkIngeration
 		assertEquals(colState.get(0).getNested_attr_String(), core.getAttr_list_1_NestedEntity().get(0).getNested_attr_String());
 		assertEquals(colState.get(1).getNested_attr_String(), core.getAttr_list_1_NestedEntity().get(1).getNested_attr_String());
 		
-		// do delete
+		// do delete of '0'the elem so it reduces the size but elem left would have elemId of '1'
 		MockHttpServletRequest colElemDelete_Req = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
 				.addNested("/page_green/tile/list_attached_noConversion_NestedEntity/0").addAction(Action._delete).getMock();
 		
 		Object colDelete_Resp = controller.handleDelete(colElemDelete_Req, null);
 		assertNotNull(colDelete_Resp);
 		
+		// db validation - after delete
+		SampleCoreEntity coreAfter = mongo.findById(refId, SampleCoreEntity.class, CORE_DOMAIN_ALIAS);
+		assertEquals(colState.size()-1, coreAfter.getAttr_list_1_NestedEntity().size());
+		// validate that the earlier "index[1]" elem is now available as "index[0]"
+		assertEquals(colState.get(1).getNested_attr_String(), coreAfter.getAttr_list_1_NestedEntity().get(0).getNested_attr_String());
+
+
 		// object validation - after delete
 		MockHttpServletRequest colGet_Req = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(refId)
 				.addNested("/attr_list_1_NestedEntity").addAction(Action._get).getMock();
@@ -76,14 +83,8 @@ public class DefaultActionExecutorDeleteTest extends AbstractFrameworkIngeration
 		assertNotNull(pListNested);
 		
 		assertEquals(colState.size()-1, pListNested.size());
-		assertEquals(colState.get(1).getNested_attr_String(), pListNested.findParamByPath("/1").getState());
-		
-		
-		// db validation - after delete
-		SampleCoreEntity coreAfter = mongo.findById(refId, SampleCoreEntity.class, CORE_DOMAIN_ALIAS);
-		assertEquals(colState.size()-1, core.getAttr_list_1_NestedEntity().size());
-		// validate that the earlier "index[1]" elem is now available as "index[0]"
-		assertEquals(colState.get(1).getNested_attr_String(), core.getAttr_list_1_NestedEntity().get(0).getNested_attr_String());
+		assertEquals(colState.get(1).getNested_attr_String(), pListNested.findParamByPath("/1/nested_attr_String").getState());
+
 	}
 
 }

@@ -56,7 +56,7 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 			return mapSelf(param, pathToResolve);
 		
 		if(StringUtils.startsWithIgnoreCase(pathToResolve, Constants.MARKER_COMMAND_PARAM_CURRENT_SELF.code))
-			return param.getPath();
+			return StringUtils.removeStart(param.getPath(), param.getRootDomain().getPath());
 		
 		if(StringUtils.startsWithIgnoreCase(pathToResolve, Constants.MARKER_REF_ID.code))
 			return param.getRootExecution().getRootCommand().getRefId(Type.DomainAlias);
@@ -78,13 +78,13 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 	protected String mapQuad(Param<?> param, String pathToResolve) {
 		if(StringUtils.startsWith(pathToResolve, "json(")) {
 			String paramPath = StringUtils.substringBetween(pathToResolve, "json(", ")");
-			Param<?> p = param.getParentModel().findParamByPath(paramPath);
+			Param<?> p = param.findParamByPath(paramPath) != null? param.findParamByPath(paramPath): param.getParentModel().findParamByPath(paramPath);
 			
 			Object state = p.getLeafState();
 			String json = converter.convert(state);
 			return json;
 		} else {
-			Param<?> p = param.getParentModel().findParamByPath(pathToResolve);
+			Param<?> p = param.findParamByPath(pathToResolve) != null? param.findParamByPath(pathToResolve): param.getParentModel().findParamByPath(pathToResolve);
 			return String.valueOf(p.getState());
 		}
 	}

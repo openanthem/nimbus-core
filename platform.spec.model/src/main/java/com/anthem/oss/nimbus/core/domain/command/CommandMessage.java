@@ -31,9 +31,9 @@ public class CommandMessage implements Serializable {
 	
 	}
 	
-	public CommandMessage(Command command, String rayPayload) {
+	public CommandMessage(Command command, String rawPayload) {
 		setCommand(command);
-		setRawPayload(rayPayload);
+		setRawPayload(rawPayload);
 	}
 	
 	public boolean hasPayload() {

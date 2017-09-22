@@ -24,7 +24,7 @@ public class DefaultActionBehaviorExecutorGetState extends AbstractCommandExecut
 		ExecutionContext eCtx = input.getContext();
 		
 		Param<Object> p = findParamByCommandOrThrowEx(eCtx);
-		Object entityState = p.getState();
+		Object entityState = p.getLeafState();
 		
 		return Output.instantiate(input, eCtx, entityState);
 	}

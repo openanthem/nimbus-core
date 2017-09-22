@@ -20,7 +20,7 @@
 //	
 //	@Test
 //	public void test_Internal() {
-//		Command command = prepareCommand("/Anthem/admin/p/testmappedmodel/_new", Behavior.$execute);
+//		Command command = prepareCommand("/Acme/admin/p/testmappedmodel/_new", Behavior.$execute);
 //		MultiExecuteOutput output = getMultiExecuteOutput(command, null);
 //		ExecutionContext context = output.getSingleResult();
 //		context.getRootModel().findParamByPath("/parameter1").setState("Parameter1");

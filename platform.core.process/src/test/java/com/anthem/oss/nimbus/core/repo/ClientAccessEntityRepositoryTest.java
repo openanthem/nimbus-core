@@ -4,12 +4,9 @@
 package com.anthem.oss.nimbus.core.repo;
 
 import org.junit.FixMethodOrder;
-import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import com.anthem.oss.nimbus.core.config.BPMEngineConfig;
 
@@ -17,8 +14,8 @@ import com.anthem.oss.nimbus.core.config.BPMEngineConfig;
  * @author Soham Chakravarti
  *
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest
+//@RunWith(SpringRunner.class)
+//@SpringBootTest
 @Import(BPMEngineConfig.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @Profile("test")
@@ -110,7 +107,7 @@ public class ClientAccessEntityRepositoryTest {
 		System.out.println("Client Access Entity"+c.getSelectedAccesses());
 		ClientRole cr = TestClientFactory.createClientRoleIntake();
 	//	cr.setCode("Intake");
-	//	cr.setName("Anthem Intake");
+	//	cr.setName("Acme Intake");
 		cr.setEntries(new HashSet<>());
 		
 		

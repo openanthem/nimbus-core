@@ -39,15 +39,18 @@ public class CommandBuilder {
 		return cmd;
 	}
 	
-	/**
-	 * 
-	 * @param absoluteUri
-	 * @return
-	 */
 	public static CommandBuilder withUri(String absoluteUri) {
 		CommandBuilder cb = new CommandBuilder(new Command(absoluteUri));
 		cb.handleUriAndParamsIfAny(absoluteUri);
 		return cb;
+	}
+
+	public static CommandBuilder from(Command src, String replaceDomainRootAlias) {
+		Command tmpCmd = src.createRootDomainCommand();
+		tmpCmd.getRootDomainElement().setAlias(replaceDomainRootAlias);
+		
+		String newAbsoluteUri = tmpCmd.buildUri(Type.DomainAlias);
+		return withUri(newAbsoluteUri);
 	}
 	
 	public CommandBuilder stripRequestParams() {

@@ -20,7 +20,7 @@ import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.builder.EntityConfigBuilder;
-import com.anthem.oss.nimbus.core.domain.model.config.builder.EntityConfigVistor;
+import com.anthem.oss.nimbus.core.domain.model.config.builder.EntityConfigVisitor;
 import com.anthem.oss.nimbus.core.util.ClassLoadUtils;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 
@@ -32,7 +32,7 @@ import com.anthem.oss.nimbus.core.util.JustLogit;
 public class DomainConfigBuilder {
 
 	private final Map<String, ModelConfig<?>> cacheDomainRootModel;
-	private final EntityConfigVistor configVisitor;
+	private final EntityConfigVisitor configVisitor;
 
 	private final EntityConfigBuilder configBuilder;
 	private final List<String> basePackages;
@@ -46,7 +46,7 @@ public class DomainConfigBuilder {
 								.orElseThrow(()->new InvalidConfigException("base packages must be configured for scanning domain models."));
 		
 		this.cacheDomainRootModel = new HashMap<>();
-		this.configVisitor = new EntityConfigVistor();
+		this.configVisitor = new EntityConfigVisitor();
 	}
 	
 	public ModelConfig<?> getRootDomainOrThrowEx(String rootAlias) {
@@ -68,7 +68,7 @@ public class DomainConfigBuilder {
 		logit.trace(()->"Start-> Load model config...");
 		logit.trace(()->"Configured basePackages: "+basePackages);
 		
-		List<String> rootBasePackages = EntityConfigVistor.determineRootPackages(basePackages);
+		List<String> rootBasePackages = EntityConfigVisitor.determineRootPackages(basePackages);
 		
 		rootBasePackages.forEach(this::handlePackage);
 		

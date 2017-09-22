@@ -31,10 +31,8 @@ public class DefaultListModelState<T> extends DefaultModelState<List<T>> impleme
 	
 	@Override
 	protected void initStateInternal() {
-		if(isMapped())
-			return;
-	
-		List<T> colEntityState = getState();
+		List<?> colEntityState = isMapped() ? findIfMapped().getMapsTo().getState() : getState();
+		
 		if(CollectionUtils.isEmpty(colEntityState))
 			return;
 		
@@ -45,10 +43,12 @@ public class DefaultListModelState<T> extends DefaultModelState<List<T>> impleme
 
 	@Override
 	public List<T> instantiateAndSet() {
-		clear();
-		
-		List<T> newInstance =  super.instantiateAndSet();
-		return newInstance;
+		return changeStateTemplate((execRt, h)->{
+			clear();
+			
+			List<T> newInstance =  super.instantiateAndSet();
+			return newInstance;			
+		});
 	}
 
 	@Override
@@ -97,6 +97,11 @@ public class DefaultListModelState<T> extends DefaultModelState<List<T>> impleme
 	}
 	
 	@Override
+	public boolean add(ListElemParam<T> pColElem) {
+		return getAssociatedParam().add(pColElem);
+	}
+	
+	@Override
 	public boolean remove(ListElemParam<T> pColElem) {
 		return getAssociatedParam().remove(pColElem);
 	}
@@ -104,5 +109,10 @@ public class DefaultListModelState<T> extends DefaultModelState<List<T>> impleme
 	@Override
 	public void clear() {
 		getAssociatedParam().clear();
+	}
+	
+	@Override
+	public boolean contains(Param<?> other) {
+		return getAssociatedParam().contains(other);
 	}
 }

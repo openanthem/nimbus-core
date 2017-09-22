@@ -101,3 +101,7 @@ dsl:
     extensions:
       #$execute:
         #$save 
+platform:
+  config:
+    secure:
+      regex: "^[a-zA-Z0-9<>()\\[\\]@/: &.=?,$#_-]{1,1000}"

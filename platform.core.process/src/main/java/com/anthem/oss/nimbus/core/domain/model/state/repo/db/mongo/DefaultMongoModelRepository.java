@@ -23,8 +23,8 @@ import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.IdSequenceRepository;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.ModelRepository;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.DBSearch;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository;
 import com.anthem.oss.nimbus.core.entity.SearchCriteria.ExampleSearchCriteria;
 import com.anthem.oss.nimbus.core.entity.SearchCriteria.LookupSearchCriteria;
 import com.anthem.oss.nimbus.core.entity.SearchCriteria.QuerySearchCriteria;
@@ -73,6 +73,12 @@ public class DefaultMongoModelRepository implements ModelRepository {
 		return newState;
 	}
 
+	@Override
+	public <ID extends Serializable, T> T _save(String alias, T state) {
+		mongoOps.save(state, alias);
+		return state;
+	}
+	
 	@Override
 	public <ID extends Serializable, T> T _get(ID id, Class<T> referredClass, String alias) {
 		T state = mongoOps.findById(id, referredClass, alias);
@@ -156,5 +162,5 @@ public class DefaultMongoModelRepository implements ModelRepository {
 	public <T> Object _search(Class<T> referredDomainClass, String alias, ExampleSearchCriteria<T> criteria) {
 		return searchByExample.search(referredDomainClass, alias, criteria);
 	}
-	
+
 }

@@ -10,17 +10,18 @@ import java.util.Collections;
 import java.util.Optional;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.InvalidArgumentException;
+import com.anthem.oss.nimbus.core.UnsupportedScenarioException;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.definition.Converters.ParamConverter;
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Mode;
 import com.anthem.oss.nimbus.core.domain.definition.Repo.Cache;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig.MappedParamConfig;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListModel;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.MappedParam;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.MappedTransientParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.InvalidStateException;
@@ -157,6 +158,8 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 	 */
 	@Override
 	public <P> P _get(Param<P> param) {
+		logit.trace(()->"_get of param: "+param);
+		
 		Object state = _get(defaultRepStrategy, param);
 		if(CollectionUtils.isNotEmpty(param.getConfig().getConverters())) {
 			for(ParamConverter converter: param.getConfig().getConverters()) {
@@ -167,37 +170,43 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 	}
 	
 	public <P> P _get(ParamStateRepository currRep, Param<P> param) {
-		logit.trace(()->"[_get] param.path: "+param.getPath()+" with paramRep: "+ currRep);
+		if(!param.isMapped())
+			return currRep._get(param);
 		
-		final P currState;
-		if(param.isMapped() && !param.findIfMapped().requiresConversion()) {
-			MappedParamConfig<P, ?> mappedParamConfig = param.getConfig().findIfMapped();
-			if(mappedParamConfig.isDetachedWithMapsToPath()) {
-				
-				currState = mappedParamConfig.getPath().cache() == Cache.rep_none 
-								|| currRep._get(param) == null ? detachedStateRepository._get(param) : currRep._get(param);
-			}
-			else{
-				MappedParam<P, ?> mappedFromParam = param.findIfMapped();
-				Param<P> mapsToParam = (Param<P>)mappedFromParam.getMapsTo();
-				currState = currRep._get(mapsToParam);
-			}
+		// mapped
 
-		} else {
-			currState = currRep._get(param);
+		MappedParamConfig<P, ?> mappedParamConfig = param.getConfig().findIfMapped();
+		if(mappedParamConfig.isDetachedWithAutoLoad()) {
+			
+			return mappedParamConfig.getPath().detachedState().cacheState() == Cache.rep_none 
+							|| currRep._get(param) == null ? detachedStateRepository._get(param) : currRep._get(param);
+		}
+
+		MappedParam<P, ?> mappedParam = param.findIfMapped();
+		Param<P> mapsToParam = (Param<P>)mappedParam.getMapsTo();
+		
+//		if(param.isLeaf())
+//			return currRep._get(mapsToParam);
+//
+//		
+//		return currRep._get(param);
+		
+		if(!mappedParam.requiresConversion()) {
+			return mapsToParam.getState();
+			//return currRep._get(mapsToParam);
 		}
 		
-		return currState;
+		return currRep._get(param);
 	}
 	
 	@Override
 	public <P> Action _set(Param<P> param, P newState) {
+		logit.trace(()->"_set of param: "+param+" with entityState: "+newState);
+		
 		return _set(defaultRepStrategy, param, newState);
 	}
 	
 	public <P> Action _set(ParamStateRepository currRep, Param<P> param, P newState) {
-		//logit.trace(()->"[_set] param.path: "+param.getPath()+" with paramRep: "+ currRep +" newState: "+newState);
-		
 		// unmapped core/view - nested/leaf: set to param
 		if(!param.isMapped()) {
 			if(newState==null) {
@@ -228,13 +237,15 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 				return Action._new;
 				
 			} else // scenario: when model is mapped to a type, but param is not -- needs to refer to its root param 
-			if(param.getConfig().getType().findIfNested().getModel().isMapped()){
+			//if(param.getConfig().getType().findIfNested().getModel().isMapped())
+			{
 				return _setNestedModel(currRep, param, newState);
 				
-			} else {
-				// set nested state as is from passed in domain state
-				return currRep._set(param, newState);
-			}
+			} 
+//			else {
+//				// set nested state as is from passed in domain state
+//				return currRep._set(param, newState);
+//			}
 		}
 		
 		// set to current param
@@ -243,16 +254,39 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		MappedParam<P, ?> mappedParam = param.findIfMapped();
 		Param<P> mapsToParam = (Param<P>)mappedParam.getMapsTo();
 		
-		// Throw error is trying to set a param that is mappedDetached witha value url provided in the path
-		if(param.getConfig().findIfMapped().getPath().cache() == Cache.rep_none 
-				&& param.getConfig().findIfMapped().getMappingMode() == Mode.MappedDetached
-				&& StringUtils.isNotBlank(param.getConfig().findIfMapped().getPath().value())) {
-			
-			throw new InvalidStateException("Cannot set mapsTo param for mapped detached param with a path that contains the url. Param is: "+param);
+		// if param is mapped && requires NO conversion, then use mapsToParam
+		if(!mappedParam.requiresConversion()) {
+			return mapsToParam.setState(newState);
 		}
 		
-		// mapped leaf: write to mapped coreParam only if the view param is a leaf param (i.e., not a model) OR if is of same type
-		if(!param.findIfMapped().requiresConversion() && !param.isCollection()) {
+		if(mappedParam.isTransient()) {
+			MappedTransientParam<P, ?> mappedTransient = mappedParam.findIfTransient();
+			
+			// handle unassigned scenario
+			if(!mappedTransient.isAssinged()) 
+				throw new InvalidStateException("MappedTransientParam must be assigned prior to setting state. "
+						+ "Is config missing that needs to assign or re-assign for transientParam: "+mappedTransient);
+			
+			
+			// handle assigned..
+				
+			Param<?> mapsTo = mappedTransient.getMapsTo();
+			
+			// handle collection element: add only, edit would be handled automatically if already assigned to an existing colElem
+			if(mapsTo.isCollectionElem() && !mapsTo.findIfCollectionElem().getParentModel().contains(mapsTo)) {
+				
+				// get mapsTo core and add to collection
+				ListModel mapsToElemParentModel = mapsTo.findIfCollectionElem().getParentModel();
+				mapsToElemParentModel.add(mapsTo.findIfCollectionElem());
+			}
+
+			// set to view
+			if(mappedTransient.isNested())
+				return _setNestedModel(currRep, mappedParam, newState);
+			
+
+			
+		} /*else if(!param.findIfMapped().requiresConversion() && !param.isCollection()) {
 			Object parentModel = param.getParentModel().instantiateOrGet();//ensure mappedFrom model is instantiated
 			
 			if(CollectionUtils.isNotEmpty(param.getConfig().getConverters())) {
@@ -265,7 +299,7 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 			}
 			return mapsToParam.setState(newState);
 			
-		} else if(param.isCollection()) {
+		}*/ else if(param.isCollection()) {
 			if(newState==null) {
 				param.getParentModel().instantiateOrGet();//ensure mappedFrom model is instantiated
 				return mapsToParam.setState(null);
@@ -290,13 +324,43 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 				);
 			return Action._new;
 			
+		} else if(param.isNested()) {
+			// mapped nested: ..handling..  <TypeStateAndConfig.Nested<P>>
+			return _setNestedModel(currRep, param, newState);
+			
+		} else if(param.isLeaf()) {
+			Object parentModel = param.getParentModel().instantiateOrGet();//ensure mappedFrom model is instantiated
+			
+			if(CollectionUtils.isNotEmpty(param.getConfig().getConverters())) {
+				Collections.reverse(param.getConfig().getConverters());
+				Object output = newState;
+				for(ParamConverter converter: param.getConfig().getConverters()) {
+					output = converter.deserialize(output);
+				}
+				newState = (P)output;
+			}
+			return mapsToParam.setState(newState);
+			
 		} 
 		
-		// mapped nested: ..handling..  <TypeStateAndConfig.Nested<P>>
-		return _setNestedModel(currRep, param, newState);
+		throw new UnsupportedScenarioException("Found param: "+param+" with type that is currently not supported. "
+				+ "Follows the order: a)Transient b)Collection c)Nested d)Leaf");
+	
 	}
 	
 	protected <P> Action _setNestedModel(ParamStateRepository currRep, Param<P> param, P newState) {
+		// if param is mapped && requires NO conversion, then use mapsToParam
+//		if(param.isMapped() && !param.findIfMapped().requiresConversion()) {
+//			Param<P> mapsToParam = (Param<P>)param.findIfMapped().getMapsTo();
+//			//return _setNestedModel(currRep, mapsToParam, newState);
+//			mapsToParam.setState(newState);
+//		}
+		
+		// ensure model is instantiated
+		param.findIfNested().instantiateOrGet();
+		
+//		if(param.isMapped())
+//			param.findIfMapped().getMapsTo().findIfNested().instantiateOrGet();
 		
 		StateType.Nested<P> nestedType = param.getType().findIfNested(); 
 		Model<P> nestedModel = nestedType.getModel();
@@ -309,7 +373,9 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 			//PropertyDescriptor pd = (childParam.isMapped() ? childParam.findIfMapped().getMapsTo() : childParam).getPropertyDescriptor();
 			PropertyDescriptor pd = childParam.getPropertyDescriptor();
 			Object childParamState = javaBeanHandler.getValue(pd, newState);
-			_set(currRep, (Param<Object>)childParam, childParamState);
+			
+			//_set(currRep, (Param<Object>)childParam, childParamState);
+			((Param<Object>)childParam).setState(childParamState);
 		}
 		
 		//TODO detect change
@@ -330,4 +396,5 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		boolean isEqual = currState.equals(newState);
 		return isEqual ? null : Action._update;
 	}
+	
 }

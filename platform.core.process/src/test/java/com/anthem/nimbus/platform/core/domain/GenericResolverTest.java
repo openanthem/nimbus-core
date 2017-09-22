@@ -108,7 +108,7 @@ public class GenericResolverTest {
 	@Test
 	public void test_genericSubclassLoneRanger() {
 		Class<?> c = subClassField("genericSubclassLoneRanger");
-		Assert.assertEquals(Integer.class, c);
+		Assert.assertEquals(Set.class, c);
 	}
 	
 	private static Class<?> subClassField(String fNm) {

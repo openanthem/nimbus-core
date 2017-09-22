@@ -13,7 +13,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
 /**
@@ -29,6 +28,10 @@ public class StateType implements Serializable {
 	
 	public String getName() {
 		return config.getName();
+	}
+	
+	public boolean isTransient() {
+		return false;
 	}
 	
 	public boolean isCollection() {
@@ -47,13 +50,17 @@ public class StateType implements Serializable {
 		return null;
 	}
 	
+	public <P> MappedTransient<P> findIfTransient() {
+		return null;
+	}
 	
-	@Getter @Setter @ToString(callSuper=true, of="model")
+	
+	@Getter @ToString(callSuper=true, of="model")
 	public static class Nested<P> extends StateType implements Serializable {
 
 		private static final long serialVersionUID = 1L;
 
-		final private EntityState.Model<P> model;
+		private EntityState.Model<P> model;
 		
 		public Nested(ParamType.Nested<P> config, Model<P> model) {
 			super(config);
@@ -88,6 +95,36 @@ public class StateType implements Serializable {
 		@Override
 		public ListModel<P> getModel() {
 			return (EntityState.ListModel<P>)super.getModel();
+		}
+	}
+	
+	public static class MappedTransient<P> extends Nested<P> implements Serializable {
+		private static final long serialVersionUID = 1L;
+		
+		public MappedTransient(ParamType.Nested<P> config) {
+			super(config, null);
+		}
+		
+		@SuppressWarnings("unchecked")
+		@Override
+		public MappedTransient<P> findIfTransient() {
+			return this;
+		}
+		
+		private void setModel(EntityState.Model<P> model) {
+			super.model = model;
+		}
+		
+		public boolean isAssigned() {
+			return getModel()!=null;
+		}
+		
+		public void assign(EntityState.Model<P> mappedModel) {
+			setModel(mappedModel);
+		}
+		
+		public void unassign() {
+			setModel(null);
 		}
 	}
 	

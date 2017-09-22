@@ -2,6 +2,7 @@ package com.anthem.oss.nimbus.core.config;
 
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -10,29 +11,29 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.web.client.RestTemplate;
 
 import com.anthem.nimbus.platform.core.process.api.repository.SessionCacheRepository;
 import com.anthem.nimbus.platform.core.process.api.support.ProcessBeanHelper;
 import com.anthem.nimbus.platform.core.process.mq.MessageReceiver;
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.ValidationConfigHandler;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.DefaultModelRepositoryFactory;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.DefaultParamStateRepositoryDetached;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.DefaultParamStateRepositoryLocal;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.IdSequenceRepository;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.ModelPersistenceHandler;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.ModelRepository;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.ModelRepositoryFactory;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.MongoIdSequenceRepository;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.ParamStateRepository;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.ParamStateRepositoryGateway;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.SpringSecurityAuditorAware;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ClientUserGrooupSearchResponseConverter;
-//import com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement.PlatformUserRepository;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.DefaultModelRepositoryFactory;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelPersistenceHandler;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepository;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFactory;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ParamStateAtomicPersistenceEventListener;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.mongo.DefaultMongoModelPersistenceHandler;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.mongo.DefaultMongoModelRepository;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.ws.DefaultWSModelRepository;
 import com.anthem.oss.nimbus.core.rules.DefaultRulesEngineFactoryProducer;
 import com.anthem.oss.nimbus.core.rules.drools.DroolsRulesEngineFactory;
 import com.anthem.oss.nimbus.core.session.UserEndpointSession;
@@ -93,6 +94,11 @@ public class DefaultCoreConfiguration {
 	@Bean(name="default.rep_mongodb")
 	public DefaultMongoModelRepository defaultMongoModelRepository(MongoOperations mongoOps, IdSequenceRepository idSequenceRepo, BeanResolverStrategy beanResolver){
 		return new DefaultMongoModelRepository(mongoOps, idSequenceRepo, beanResolver);
+	}
+	
+	@Bean(name="default.rep_ws")
+	public DefaultWSModelRepository defaultWSModelRepository(BeanResolverStrategy beanResolver){
+		return new DefaultWSModelRepository(beanResolver);
 	}
 	
 	@Bean(name="default.paramStateAtomicPersistenceEventListener")
@@ -194,6 +200,11 @@ public class DefaultCoreConfiguration {
 	@Bean
 	public AuditorAware<String> auditorProvider() {
 		return new SpringSecurityAuditorAware();
+	}
+	
+	@Bean
+	public RestTemplate restTemplate(RestTemplateBuilder builder) {
+		return builder.build();
 	}
 	
 }

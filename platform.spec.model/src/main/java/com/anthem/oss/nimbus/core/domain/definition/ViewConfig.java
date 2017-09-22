@@ -61,20 +61,22 @@ public class ViewConfig {
 		Options value() default Options.Inherit;
 	}
 	
+
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.TYPE})
+	@ViewStyle
+	public @interface ViewRoot {
+		String alias() default "root";
+		String layout() default "";
+	}
+	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
 	public @interface Page {
-		public enum Type {
-			Home,
-			Details,
-			Form,
-			Static
-		}
 		String alias() default "page";
-		Type type() default Type.Home;
 		String route() default "";
-		String layout() default "";
 		String breadCrumb() default "none";
 		String imgSrc() default "";
 		String styleClass() default "";
@@ -257,6 +259,7 @@ public class ViewConfig {
 		Style style() default Style.PLAIN;
 		String payload() default "";
 		String cssClass() default "btn btn-primary";
+		boolean browserBack() default false;
 		boolean formReset() default true;
 	}
 	
@@ -557,6 +560,14 @@ public class ViewConfig {
 		boolean postEventOnChange() default false;
 		String sourceHeader() default "SourceList";
 		String targetHeader() default "TargetList";
+	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface FileUpload {
+		String alias() default "FileUpload";
+		String type() default ".pdf,.png";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)

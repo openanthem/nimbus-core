@@ -16,7 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
-import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
+import com.anthem.oss.nimbus.core.InvalidOperationAttemptedException;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.execution.ValidationResult;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
@@ -26,12 +26,10 @@ import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
-import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification.ActionType;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.entity.Findable;
-import com.anthem.oss.nimbus.core.spec.contract.event.EventListener;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
@@ -104,7 +102,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 
 	@Override
 	protected void initStateInternal() {
-		if(!isMapped() && isNested())
+		if(isNested())
 			findIfNested().initState();
 	}
 	
@@ -143,6 +141,11 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		
 		// nested 
 		Optional.ofNullable(findIfNested())
+			.ifPresent(Model::fireRules);
+		
+		// parent
+		Optional.ofNullable(getParentModel())
+			.filter(m->!m.isRoot())
 			.ifPresent(Model::fireRules);
 	}
 	
@@ -200,7 +203,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		state = preSetState(state);			
 		Action a = getAspectHandlers().getParamStateGateway()._set(this, state); 
 		if(a!=null) {
-			notifySubscribers(new Notification<>(this, ActionType._updateState, this));
+			emitNotification(new Notification<>(this, ActionType._updateState, this));
 			h.setState(a);
 			
 			if(execRt.isStarted())
@@ -211,62 +214,12 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		return a;
 	}
 	
-	@FunctionalInterface
-	public static interface ChangeStateCallback<R> {
-		public R affectChange(ExecutionRuntime execRt, Holder<Action> h);
-	}
-
-	final protected <R> R changeStateTemplate(ChangeStateCallback<R> cb) {
-		ExecutionRuntime execRt = resolveRuntime();
-		String lockId = execRt.tryLock();
-		final Holder<Action> h = new Holder<>();
-		try {
-			R resp = cb.affectChange(execRt, h);
-			
-			// fire rules if available at this param level
-			fireRules();
-			
-			return resp;
-		} finally {
-			if(execRt.isLocked(lockId)) {
-				// await completion of notification events
-				execRt.awaitCompletion();
-				
-				if(h.getState() != null) {
-					this.eventSubscribers.forEach((subscriber) -> emitEvent(h.getState(), subscriber));
-				}
-				
-				// fire rules at root level upon completion of all set actions
-				getRootExecution().fireRules();
-				
-				// unlock
-				boolean b = execRt.tryUnlock(lockId);
-				if(!b)
-					throw new FrameworkRuntimeException("Failed to release lock acquired during setState of: "+getPath()+" with acquired lockId: "+lockId); 
-			}	
-		}
-	}
-	
-	protected ExecutionRuntime resolveRuntime() {
-		if(getRootExecution().getAssociatedParam().isLinked()) {
-			return getRootExecution().getAssociatedParam().findIfLinked().getRootExecution().getExecutionRuntime();
-		}
-		
-		return getRootExecution().getExecutionRuntime();
-	}
 	
 	protected T preSetState(T state) {
 		return state;
 	}
 	protected void postSetState(Action change, T state) {}
-	
-	protected void emitEvent(Action a , Param p) {
-		if(getAspectHandlers().getEventListener() == null) return;
-		
-		ModelEvent<Param<?>> e = new ModelEvent<Param<?>>(a, p.getPath(), p);
-		EventListener listener = getAspectHandlers().getEventListener();
-		listener.listen(e);
-	}
+
 	
 	@JsonIgnore @Override
 	public ExecutionModel<?> getRootExecution() {
@@ -289,21 +242,24 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 
 	@Override
-	public void registerSubscriber(MappedParam<?, T> subscriber) {
+	public void registerConsumer(MappedParam<?, T> subscriber) {
+		if(this instanceof Notification.Consumer)
+			throw new InvalidOperationAttemptedException("Registering subscriber for Mapped entities are not supported. Found for: "+this.getPath()
+						+" while trying to add subscriber: "+subscriber.getPath());
+		
 		getEventSubscribers().add(subscriber);
 	}
 	
 	@Override
-	public boolean deregisterSubscriber(MappedParam<?, T> subscriber) {
+	public boolean deregisterConsumer(MappedParam<?, T> subscriber) {
 		return getEventSubscribers().remove(subscriber);
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	final public void notifySubscribers(Notification<T> event) {
-		getRootExecution().getExecutionRuntime().notifySubscribers((Notification<Object>)event);
+	final public void emitNotification(Notification<T> event) {
+		resolveRuntime().emitNotification((Notification<Object>)event);
 	}
-	
 	
 	@Getter
 	class InternalNotificationConsumer<M> implements Notification.Consumer<M> {
@@ -360,9 +316,9 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public <P> Param<P> findParamByPath(String[] pathArr) {
-		@SuppressWarnings("unchecked")
 		final Param<P> _this = (Param<P>)this;
 		
 		// return self if no path is provided
@@ -371,6 +327,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 
 		// find param with top most array element
 		final String currTopParamPathSegment = pathArr[0];
+
 		final Param<P> currTopParam = (Param<P>)findParamByPathInSelf(currTopParamPathSegment);
 		
 		if(currTopParam!=null)
@@ -392,6 +349,19 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 
 	public Param<?> findParamByPathInModel(String singlePathSegment) {
+		// parent?
+		if(StringUtils.equals(singlePathSegment, Constants.SEPARATOR_URI_PARENT.code))
+			return getParentModel().getAssociatedParam();
+		
+		// domain root?
+		if(StringUtils.equals(singlePathSegment, Constants.SEPARATOR_URI_ROOT_DOMAIN.code))
+			return getRootDomain().getAssociatedParam();
+		
+		// execution root?
+		if(StringUtils.equals(singlePathSegment, Constants.SEPARATOR_URI_ROOT_EXEC.code))
+			return getRootExecution().getAssociatedParam();
+
+		// context model?
 		if(StringUtils.equals(singlePathSegment, Constants.SEPARATOR_CONFIG_ATTRIB.code))
 			return getContextModel().getAssociatedParam();
 

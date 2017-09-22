@@ -36,7 +36,7 @@ public class CommandTransactionInterceptorTest {
 		MultiExecuteOutput mExecOutput = api.handleResponse(h);
 		assertNotNull(mExecOutput);
 		assertSame(MultiExecuteOutput.class, mExecOutput.getClass());
-		assertSame(ExecuteOutput.class, mExecOutput.getResult().get(0).getClass());
+		assertSame(ExecuteOutput.BehaviorExecute.class, mExecOutput.getResult().get(0).getClass());
 		assertSame(payload, mExecOutput.getResult().get(0).getResult());
 	}
 	
@@ -47,7 +47,7 @@ public class CommandTransactionInterceptorTest {
 		MultiExecuteOutput mExecOutput = api.handleResponse(payload);
 		assertNotNull(mExecOutput);
 		assertSame(MultiExecuteOutput.class, mExecOutput.getClass());
-		assertSame(ExecuteOutput.class, mExecOutput.getResult().get(0).getClass());
+		assertSame(ExecuteOutput.BehaviorExecute.class, mExecOutput.getResult().get(0).getClass());
 		assertSame(payload, mExecOutput.getResult().get(0).getResult());
 	}
 	
@@ -60,7 +60,7 @@ public class CommandTransactionInterceptorTest {
 		MultiExecuteOutput mExecOutput = api.handleResponse(e);
 		assertNotNull(mExecOutput);
 		assertSame(MultiExecuteOutput.class, mExecOutput.getClass());
-		assertSame(ExecuteOutput.class, mExecOutput.getResult().get(0).getClass());
+		assertSame(ExecuteOutput.BehaviorExecute.class, mExecOutput.getResult().get(0).getClass());
 		assertSame(payload, mExecOutput.getResult().get(0).getResult());
 	}
 }

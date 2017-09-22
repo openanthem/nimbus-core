@@ -1,8 +1,5 @@
 package com.anthem.oss.nimbus.core.entity.queue;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.anthem.oss.nimbus.core.domain.definition.ConfigNature.Ignore;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
@@ -34,6 +31,13 @@ public class Queue extends IdString {
 	private String description;
 	
 	private String status;
+	
+	private QueueType type;
+	
+	public enum QueueType {
+		USER,
+		USERGROUP
+	}
 	
 	// Queue to User & UserGroup is 1-1 relation based on NIM-3656,3657
 	//@AssociatedEntity(clazz=MUser.class)

@@ -9,11 +9,11 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.anthem.oss.nimbus.core.domain.command.Command;
+import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.model.config.EntityConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.StateContextEntity;
 import com.anthem.oss.nimbus.core.util.CollectionsTemplate;
 import com.anthem.oss.nimbus.core.util.LockTemplate;
@@ -36,8 +36,14 @@ public interface EntityState<T> {
 	public <P> Param<P> findParamByPath(String path);
 	public <P> Param<P> findParamByPath(String[] pathArr);
 	
-    public <S> State<S> findStateByPath(String path);
-	public <S> State<S> findStateByPath(String[] pathArr);
+	default <P> P findStateByPath(String path) {
+		Param<P> param = findParamByPath(path);
+		
+		if(param==null)
+			throw new InvalidConfigException("Param not found for given path: "+path+" relative to current param/model: "+this);
+		
+		return param.getState();
+	}
 
 	public void initSetup();
 	public void initState();
@@ -252,7 +258,7 @@ public interface EntityState<T> {
 		}
 		
 		public PropertyDescriptor getPropertyDescriptor();
-
+		
 	}
 	
 	public interface MappedParam<T, M> extends Param<T>, Mapped<T, M>, Notification.Consumer<M> {
@@ -266,6 +272,13 @@ public interface EntityState<T> {
 		
 		default public boolean requiresConversion() {
 			if(isLeaf()) return false;
+			
+			if(isTransient() && !findIfTransient().isAssinged()) { // when transient is not assigned
+				Class<?> mappedClass = getType().getConfig().getReferredClass();
+				Class<?> mapsToClass = getType().getConfig().findIfNested().getModel().findIfMapped().getMapsTo().getReferredClass();
+				
+				return (mappedClass!=mapsToClass);
+			}
 			
 			Class<?> mappedClass = getType().findIfNested().getModel().getConfig().getReferredClass();
 			Class<?> mapsToClass = getMapsTo().getType().findIfNested().getModel().getConfig().getReferredClass();
@@ -282,7 +295,7 @@ public interface EntityState<T> {
 		}
 		
 		@Override
-		default MappedTransientParam<T, ?> findIfTransient() {
+		default MappedTransientParam<T, M> findIfTransient() {
 			return this;
 		}
 
@@ -290,6 +303,10 @@ public interface EntityState<T> {
 			return getMapsTo() != null;
 		}
 		
+		default void assignMapsTo(String rootMapsToPath) {
+			Param<M> mapsToTransient = findParamByPath(rootMapsToPath);
+			assignMapsTo(mapsToTransient);
+		}
 		public void assignMapsTo(Param<M> mapsToTransient);
 		public void unassignMapsTo();
 	}
@@ -310,10 +327,13 @@ public interface EntityState<T> {
 		
 		public boolean add(T elem);
 		public Param<T> add();
+		public boolean add(ListElemParam<T> pColElem);
 		
 		public boolean remove(ListElemParam<T> pColElem);
 		
 		public void clear();
+		
+		public boolean contains(Param<?> other);
 	}
 	
 	
@@ -335,9 +355,13 @@ public interface EntityState<T> {
 			return this;
 		}
 		
+		public ListElemParam<T> createElement();
+		
 		@Override
 		public ListElemParam<T> add();
+		
 	}
+	
 	public interface MappedListParam<T, M> extends ListParam<T>, MappedParam<List<T>, List<M>> {
 		@Override
 		public ListParam<M> getMapsTo();

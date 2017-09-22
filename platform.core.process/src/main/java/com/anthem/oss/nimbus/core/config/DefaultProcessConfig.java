@@ -11,6 +11,7 @@ import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiBPMGateway;
 import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiExpressionManager;
 import com.anthem.oss.nimbus.core.bpm.activiti.CommandExecutorTaskDelegate;
 import com.anthem.oss.nimbus.core.domain.command.execution.FunctionHandler;
+import com.anthem.oss.nimbus.core.domain.command.execution.fn.DefaultParamFunctionHandler;
 import com.anthem.oss.nimbus.core.domain.command.execution.nav.DefaultActionNewInitEntityFunctionHandler;
 import com.anthem.oss.nimbus.core.domain.command.execution.nav.PageIdEchoNavHandler;
 import com.anthem.oss.nimbus.core.domain.command.execution.process.AddCollectionsFunctionalHandler;
@@ -22,6 +23,8 @@ import com.anthem.oss.nimbus.core.domain.command.execution.process.StatelessBPMF
 import com.anthem.oss.nimbus.core.domain.command.execution.search.DefaultSearchFunctionHandlerExample;
 import com.anthem.oss.nimbus.core.domain.command.execution.search.DefaultSearchFunctionHandlerLookup;
 import com.anthem.oss.nimbus.core.domain.command.execution.search.DefaultSearchFunctionHandlerQuery;
+import com.anthem.oss.nimbus.core.domain.expr.ExpressionEvaluator;
+import com.anthem.oss.nimbus.core.domain.expr.SpelExpressionEvaluator;
 
 /**
  * @author Sandeep Mantha
@@ -50,6 +53,11 @@ public class DefaultProcessConfig {
 		return new DefaultActionNewInitEntityFunctionHandler<>(beanResolver);
 	}
 	
+	@Bean(name="default._get$execute?fn=param")
+	public FunctionHandler<?, ?> defaultParamFunctionHandler(BeanResolverStrategy beanResolver){
+		return new DefaultParamFunctionHandler<>(beanResolver);
+	}
+	
 	@Bean(name="default._nav$execute?fn=default")
 	public PageIdEchoNavHandler<?> pageIdEchoNavHandler(){
 		return new PageIdEchoNavHandler<>();
@@ -75,7 +83,10 @@ public class DefaultProcessConfig {
 		return new StatelessBPMFunctionHanlder<>(beanResolver);
 	}	
 	
-	
+	@Bean(name="expressionEvaluator")
+	public ExpressionEvaluator expressionEvaluator(BeanResolverStrategy beanResolver){
+		return new SpelExpressionEvaluator();
+	}	
 	
 	@Bean(name="commandExecutorTaskDelegate")
 	public CommandExecutorTaskDelegate commandExecutorTaskDelegate(BeanResolverStrategy beanResolver){

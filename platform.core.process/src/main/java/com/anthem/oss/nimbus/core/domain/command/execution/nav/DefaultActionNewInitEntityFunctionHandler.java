@@ -10,11 +10,13 @@ import org.apache.commons.lang.StringUtils;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.command.Command;
+import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandMessageConverter;
 import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContext;
 import com.anthem.oss.nimbus.core.domain.command.execution.FunctionHandler;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
+import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 
 /**
@@ -43,28 +45,35 @@ public class DefaultActionNewInitEntityFunctionHandler<T> implements FunctionHan
 			Param<Object> targetParam = Optional.ofNullable(actionParameter.findParamByPath(targetParamPath))
 					.orElseThrow(()->new InvalidConfigException("No param for configured target path: "+targetParamPath+" for cmd: "+cmd));
 
-			Class<?> convertToClass = targetParam.getConfig().getReferredClass();
-
-			Object converted = resolveTargetState(cmd, index, targetParam, convertToClass);
-			targetParam.setState(converted);
+			Object converted = resolveTargetState(eCtx.getCommandMessage(), index, targetParam);
+			if(converted != null)
+				targetParam.setState(converted);
 		}		
 		return actionParameter;
 	}
 	
-	protected Object resolveTargetState(Command cmd, int index,Param<Object> targetParam, Class<?> convertToClass) {
+	protected Object resolveTargetState(CommandMessage cmdMessage, int index, Param<Object> targetParam) {
 
-		String json = Arrays.asList(cmd.getParameterValue(Constants.KEY_FN_INITSTATE_ARG_JSON.code)).get(index);
+		String json = null;
+		
+		if(cmdMessage.getCommand().getParameterValue(Constants.KEY_FN_INITSTATE_ARG_JSON.code) != null)
+			json = Arrays.asList(cmdMessage.getCommand().getParameterValue(Constants.KEY_FN_INITSTATE_ARG_JSON.code)).get(index);
+		else{
+			json = cmdMessage.getRawPayload();
+		}
 			
-		return resolveAsJson(cmd, convertToClass, json);
+		if(json == null)
+			return null;
+		return resolveAsJson(cmdMessage.getCommand(), targetParam.getConfig(), json);
 		
 	}
 
-	private Object resolveAsJson(Command cmd, Class<?> convertToClass, String json) {
+	private Object resolveAsJson(Command cmd, ParamConfig<Object> pConfig, String json) {
 		json =	Optional.ofNullable(json)
 				.map(StringUtils::trimToNull)
 				.orElseThrow(()->new InvalidConfigException("'json' OR must be configured but found null for cmd:"+cmd));
 		
-		Object converted = converter.convert(convertToClass, json);
+		Object converted = converter.convert(pConfig, json);
 		return converted;
 	}
 }

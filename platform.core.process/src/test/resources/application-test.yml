@@ -1,7 +1,10 @@
 spring: 
   data:
     mongodb:  
-      port: 27017
+      # Using 0 assigns a random port -- this is intended for testing purposes only. Some tests when run simultaneously will 
+      # attempt to use the embedded mongo instance on duplicate ports, effectively failing the tests.
+      port: 0 
+        
 security:
     basic:
       enabled: 
@@ -27,7 +30,7 @@ domain:
     basePackages:
       - com.anthem.oss.nimbus.core.entity
       - com.anthem.oss.nimbus.test.sample.um.model
-      - test.com.anthem.oss.nimbus.core.domain.model
+      - com.anthem.oss.nimbus.test.sample.domain.model
     typeClassMappings:
       java.time.LocalDate : 
         date
@@ -94,3 +97,12 @@ dsl:
     extensions:
       #$execute:
         #$save
+
+platform:
+  config:
+    secure:
+      regex: "^[a-zA-Z0-9<>()\\[\\]@/: &.=?,$#_-]{1,}"
+ext:
+  repository:
+    targetUrl: 
+      ext_client: http://localhost:9095

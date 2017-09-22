@@ -4,7 +4,9 @@
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
 import java.beans.PropertyDescriptor;
+import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
@@ -16,7 +18,7 @@ import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ModelRepositoryFactory;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.ModelRepositoryFactory;
 import com.anthem.oss.nimbus.core.utils.JavaBeanHandler;
 
 import lombok.AccessLevel;
@@ -92,8 +94,8 @@ public abstract class AbstractCommandExecutor<R> extends BaseCommandExecutorStra
 		return null;
 	}
 	
-	protected Object getRootDomainRefIdByRepoDatabase(ModelConfig<?> rootDomainConfig, ExecutionEntity<?, ?> e) {
-		return determineByRepoDatabase(rootDomainConfig, new RepoDBCallback<Object>() {
+	protected String getRootDomainRefIdByRepoDatabase(ModelConfig<?> rootDomainConfig, ExecutionEntity<?, ?> e) {
+		Object refId = determineByRepoDatabase(rootDomainConfig, new RepoDBCallback<Object>() {
 			@Override
 			public Object whenRootDomainHasRepo() {
 				if(rootDomainConfig.isMapped())  // has core
@@ -107,6 +109,11 @@ public abstract class AbstractCommandExecutor<R> extends BaseCommandExecutorStra
 				return getRefId(mapsToConfig, mapsToConfig.getIdParam(), e.getCore()); //return q.getCore().findParamByPath("/id").getState();
 			}
 		});
+		
+		return Optional.ofNullable(refId)
+				.map(String::valueOf)
+				.map(StringUtils::trimToNull)
+				.orElse(null);
 	}
 	
 	protected ModelConfig<?> getRootConfigByRepoDatabase(ModelConfig<?> rootDomainConfig) {

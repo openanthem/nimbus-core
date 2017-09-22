@@ -5,17 +5,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.context.annotation.DependsOn;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.DefaultBeanResolverStrategy;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandTransactionInterceptor;
-import com.anthem.oss.nimbus.core.domain.command.execution.process.ParamEventUpdateListener;
+import com.anthem.oss.nimbus.core.domain.command.execution.process.ParamUpdateEventListener;
 import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
 import com.anthem.oss.nimbus.core.domain.model.config.builder.DefaultValidatorProvider;
 import com.anthem.oss.nimbus.core.domain.model.config.builder.EntityConfigBuilder;
@@ -23,7 +23,8 @@ import com.anthem.oss.nimbus.core.domain.model.state.builder.DefaultQuadModelBui
 import com.anthem.oss.nimbus.core.domain.model.state.builder.EntityStateBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.PageNavigationInitializer;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
-import com.anthem.oss.nimbus.core.integration.websocket.ParamEventAMQPListener;
+import com.anthem.oss.nimbus.core.util.JustLogit;
+import com.anthem.oss.nimbus.core.util.SecurityUtils;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -42,6 +43,15 @@ public class DefaultCoreBuilderConfig {
 	
 	private List<String> basePackages;
 	
+	@Value("${platform.config.secure.regex}")
+	private String secureRegex;
+	
+	@Bean
+	@DependsOn("securityUtils")
+	public JustLogit justLogit() {
+		return new JustLogit();		
+	}
+	
 	@Bean
 	public BeanResolverStrategy defaultBeanResolver(ApplicationContext appCtx) {
 		return new DefaultBeanResolverStrategy(appCtx);
@@ -52,14 +62,14 @@ public class DefaultCoreBuilderConfig {
 		return new DomainConfigBuilder(configBuilder, basePackages);
 	}
 	
-	@Bean
-	public ParamEventAMQPListener paramEventAMQPListener(SimpMessageSendingOperations messageTemplate,CommandTransactionInterceptor interceptor) {
-		return new ParamEventAMQPListener(messageTemplate, interceptor);
-	}
+//	@Bean
+//	public ParamEventAMQPListener paramEventAMQPListener(SimpMessageSendingOperations messageTemplate,CommandTransactionInterceptor interceptor) {
+//		return new ParamEventAMQPListener(messageTemplate, interceptor);
+//	}
 	
 	@Bean
-	public ParamEventUpdateListener paramEventUpdateListener() {
-		return new ParamEventUpdateListener();
+	public ParamUpdateEventListener paramEventUpdateListener() {
+		return new ParamUpdateEventListener();
 	}
 	
 	@Bean
@@ -68,7 +78,7 @@ public class DefaultCoreBuilderConfig {
 	}
 	
 	@Bean
-	public EntityConfigBuilder entityConfigBuilder(){
+	public EntityConfigBuilder entityConfigBuilder(BeanResolverStrategy beanResolver){
 		if(typeClassMappings==null) {
 			typeClassMappings = new HashMap<>();
 		}
@@ -77,7 +87,7 @@ public class DefaultCoreBuilderConfig {
 			typeClassMappings.put(LocalDate.class.getName(), "date");
 		}
 		
-		return new EntityConfigBuilder(typeClassMappings);
+		return new EntityConfigBuilder(beanResolver, typeClassMappings);
 	}
 	
 	@Bean
@@ -94,6 +104,12 @@ public class DefaultCoreBuilderConfig {
 	public QuadModelBuilder quadModelBuilder(BeanResolverStrategy beanResolver) {
 		return new DefaultQuadModelBuilder(beanResolver);
 	} 
+	
+	@Bean
+	public SecurityUtils securityUtils() {
+		return new SecurityUtils(secureRegex);
+	}
+	
 	
 //	@Bean
 //	public DefaultQuadModelBuilder quadModelBuilder(DomainConfigBuilder domainConfigApi, EntityStateBuilder stateAndConfigBuilder,

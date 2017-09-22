@@ -7,6 +7,9 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.activiti.bpmn.model.UserTask;
+import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
+import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.deploy.Deployer;
 import org.activiti.engine.impl.rules.RulesDeployer;
@@ -29,7 +32,9 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiExpressionManager;
+import com.anthem.oss.nimbus.core.bpm.activiti.PlatformUserTaskActivityBehavior;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -91,8 +96,11 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
     public SpringProcessEngineConfiguration springProcessEngineConfiguration(
             @Qualifier("processDataSource")DataSource processDataSource,
             PlatformTransactionManager jpaTransactionManager,
-            SpringAsyncExecutor springAsyncExecutor) throws Exception {
+            SpringAsyncExecutor springAsyncExecutor, BeanResolverStrategy beanResolver) throws Exception {
     	SpringProcessEngineConfiguration engineConfiguration = this.baseSpringProcessEngineConfiguration(processDataSource, jpaTransactionManager, springAsyncExecutor);
+    	engineConfiguration.setExpressionManager(platformExpressionManager);
+    	
+    	engineConfiguration.setActivityBehaviorFactory(platformActivityBehaviorFactory(beanResolver));
     	engineConfiguration.setHistoryLevel(HistoryLevel.getHistoryLevelForKey(processHistoryLevel));
     	addCustomDeployers(engineConfiguration);
     	
@@ -102,9 +110,20 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
         	resources.addAll(Arrays.asList(loadBPMResources()));
         }
         engineConfiguration.setDeploymentResources(resources.toArray(new Resource[resources.size()])); 
-        engineConfiguration.setExpressionManager(platformExpressionManager);
+        
         return engineConfiguration;
     }
+    
+	public DefaultActivityBehaviorFactory platformActivityBehaviorFactory(BeanResolverStrategy beanResolver) {
+		return new DefaultActivityBehaviorFactory() {
+			@Override
+			public UserTaskActivityBehavior createUserTaskActivityBehavior(UserTask userTask) {
+				PlatformUserTaskActivityBehavior platformUserTaskBehavior = new PlatformUserTaskActivityBehavior(userTask);
+				platformUserTaskBehavior.setBeanResolver(beanResolver);
+				return platformUserTaskBehavior;
+			}
+		};
+	}
     
     /**
      * <p>Custom deployers provide the ability for client to control how process definitions and rules can be deployed.
