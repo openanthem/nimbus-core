@@ -16,21 +16,13 @@ import lombok.Setter;
  */
 @Getter @Setter
 public class ProcessEngineContext implements Serializable {
-    
 	private static final long serialVersionUID = 1L;
-
 	private transient Object output;
-	
 	private transient Object input;
-
 	private transient Param<?> param;
-	
-	private transient Object model;
-	
 	public ProcessEngineContext(Param<?> param){
 		this.param = param;
 	}
-	
 	public boolean isOutputAnException() {
 		return output != null && output instanceof Exception;
 	}
