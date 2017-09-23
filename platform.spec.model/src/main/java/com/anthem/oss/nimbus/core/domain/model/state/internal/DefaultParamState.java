@@ -223,7 +223,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	@JsonIgnore @Override
 	public ExecutionModel<?> getRootExecution() {
-		if(getParentModel() != null) return getParentModel().getRootExecution();
+		if(getParentModel() != null) 
+			return getParentModel().getRootExecution();
 		
 		/* if param is root, then it has to be of type nested */
 		if(!getType().isNested())

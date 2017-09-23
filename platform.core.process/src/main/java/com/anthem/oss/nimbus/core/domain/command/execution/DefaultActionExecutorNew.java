@@ -17,6 +17,9 @@ import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
 import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Input;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
+import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
+import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
+import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.InvalidStateException;
@@ -34,11 +37,14 @@ public class DefaultActionExecutorNew extends AbstractFunctionCommandExecutor<Ob
 	
 	private CommandExecutorGateway commandGateway;
 	
+	private DomainConfigBuilder domainConfigBuilder;
+	
 	public DefaultActionExecutorNew(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
 		
 		this.bpmGateway = beanResolver.get(BPMGateway.class);
 		this.commandGateway = getBeanResolver().find(CommandExecutorGateway.class);
+		this.domainConfigBuilder = getBeanResolver().find(DomainConfigBuilder.class);
 	}
 	
 	/**
@@ -63,8 +69,6 @@ public class DefaultActionExecutorNew extends AbstractFunctionCommandExecutor<Ob
 			setStateNew(eCtx, input.getContext().getCommandMessage(), actionParam);
 			outputParam = actionParam;
 		}
-		// hook up BPM
-		startBusinessProcess(eCtx, actionParam);
 		return Output.instantiate(input, eCtx, outputParam);
 	}
 
@@ -96,6 +100,21 @@ public class DefaultActionExecutorNew extends AbstractFunctionCommandExecutor<Ob
 		
 		// set to context
 		eCtx.setQuadModel(q);
+		
+		// hook up BPM
+		Param<?> rootDomainParam = getRootDomainParam(eCtx);
+		ProcessFlow processEntityState = startBusinessProcess(rootDomainParam);
+		
+		if(processEntityState==null)
+			return eCtx;
+		
+		ExecutionEntity<?, ?> e = q.getRoot().getState();
+		String refId = getRootDomainRefIdByRepoDatabase(rootDomainConfig, e);
+		processEntityState.setId(refId);
+		
+		e.setFlow(processEntityState);
+		
+		saveProcessState(resolveEntityAliasByRepo(rootDomainConfig), processEntityState);
 		
 		return eCtx;
 	}
@@ -142,18 +161,31 @@ public class DefaultActionExecutorNew extends AbstractFunctionCommandExecutor<Ob
 		eCtx.getCommandMessage().getCommand().getRootDomainElement().setRefId(refId);
 	}
 	
-	private void startBusinessProcess(ExecutionContext eCtx, Param<?> actionParam){
-		QuadModel<?, ?> quadModel = getQuadModel(eCtx);
-		String lifecycleKey = quadModel.getView().getConfig().getDomainLifecycle();
-		if(StringUtils.isEmpty(lifecycleKey))
-			return;
-		ProcessFlow processFlow = quadModel.getFlow();
+	private ProcessFlow startBusinessProcess(Param<?> rootDomainParam){
+		String lifecycleKey = rootDomainParam.findIfNested().getConfig().getDomainLifecycle();
 		
-		//TODO: Update BPM Calls
-//		if(processFlow.getProcessExecutionId() == null)
-//			processFlow.setProcessExecutionId(bpmGateway.startBusinessProcess(eCtx, lifecycleKey,actionParam).getExecutionId());
-//		else
-//			bpmGateway.continueBusinessProcessExecution(eCtx, processFlow.getProcessExecutionId(), actionParam);
+		if(StringUtils.isEmpty(lifecycleKey))
+			return null;
+		
+		String processExecId = bpmGateway.startBusinessProcess(rootDomainParam, lifecycleKey).getExecutionId();
+		
+		ProcessFlow processFlow = new ProcessFlow();
+		processFlow.setProcessExecutionId(processExecId);
+		return processFlow;
+	}
+	
+	protected void saveProcessState(String resolvedEntityAlias, ProcessFlow processEntityState) {
+		ModelConfig<?> modelConfig = domainConfigBuilder.getModel(ProcessFlow.class);
+		Repo repo = modelConfig.getRepo();
+		
+		if(!Repo.Database.exists(repo))
+			throw new InvalidConfigException(ProcessFlow.class.getSimpleName()+" must have @Repo configured for db persistence, but found none.");
+		
+		String processStateAlias = StringUtils.isBlank(repo.alias()) ? modelConfig.getAlias() : repo.alias();
+		
+		String entityProcessAlias = resolvedEntityAlias + "_" + processStateAlias;
+		
+		getRepositoryFactory().get(repo)._save(entityProcessAlias, processEntityState);
 	}
 	
 }

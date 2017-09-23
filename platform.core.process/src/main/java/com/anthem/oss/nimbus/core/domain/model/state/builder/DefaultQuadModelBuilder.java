@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiFunction;
 
 import javax.annotation.PostConstruct;
 
@@ -15,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadScopedEventListener;
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
+import com.anthem.oss.nimbus.core.bpm.BPMGateway;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
@@ -25,7 +27,6 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.ParamStateGateway;
-import com.anthem.oss.nimbus.core.spec.contract.event.BulkEventListener;
 import com.anthem.oss.nimbus.core.spec.contract.event.StateAndConfigEventListener;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 
@@ -49,9 +50,9 @@ public class DefaultQuadModelBuilder implements QuadModelBuilder {
 	private ParamStateGateway paramStateGateway;
 	
 	private List<StateAndConfigEventListener> paramEventListeners;
-	
-	private BulkEventListener bulkEventListener;
 
+	private BPMGateway bpmGateway;
+	
 	private final BeanResolverStrategy beanResolver;
 	
 	private JustLogit logit = new JustLogit(getClass());
@@ -68,14 +69,12 @@ public class DefaultQuadModelBuilder implements QuadModelBuilder {
 		this.stateBuilder = beanResolver.get(EntityStateBuilder.class);
 		this.validatorProvider = beanResolver.get(ValidatorProvider.class);
 		this.paramStateGateway = beanResolver.get(ParamStateGateway.class);
-	
+		this.bpmGateway = beanResolver.get(BPMGateway.class);
+		
 		setParamEventListeners(new LinkedList<>());
 		
 		Collection<StateAndConfigEventListener> publishers = beanResolver.getMultiple(StateAndConfigEventListener.class);
 		publishers.forEach(getParamEventListeners()::add);
-		
-		//bulkEventListener = beanResolver.get(BulkEventListener.class);
-		
 	}
 	
 	@Override
@@ -117,6 +116,7 @@ public class DefaultQuadModelBuilder implements QuadModelBuilder {
 	private EntityStateAspectHandlers createAspectHandlers() {
 		QuadScopedEventListener qEventListener = new QuadScopedEventListener(getParamEventListeners());
 		
-		return new EntityStateAspectHandlers(qEventListener, bulkEventListener, validatorProvider, paramStateGateway);
+		BiFunction<Param<?>, String, Object> bpmEvaluator = (p, pid) -> bpmGateway.continueBusinessProcessExecution(p, pid);
+		return new EntityStateAspectHandlers(qEventListener, bpmEvaluator, validatorProvider, paramStateGateway);
 	}
 }
