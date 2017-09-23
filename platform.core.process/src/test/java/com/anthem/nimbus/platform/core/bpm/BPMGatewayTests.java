@@ -29,7 +29,7 @@ public class BPMGatewayTests extends AbstractFrameworkIngerationPersistableTests
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void t01_get_core() {
+	public void t01_stateless_bpm() {
 		MockHttpServletRequest request = MockHttpRequestBuilder.withUri(BPM_CORE_PARAM_ROOT)
 					.addAction(Action._new)
 					.getMock();
