@@ -33,7 +33,7 @@ public class DefaultActionExecutorProcess<T,R> extends AbstractFunctionCommandEx
 	private R continueBusinessProcessExceution(ExecutionContext eCtx){
 		QuadModel<?,?> quadModel = getQuadModel(eCtx);
 		String processExecutionId = quadModel.getFlow().getProcessExecutionId();
-		return (R)bpmGateway.continueBusinessProcessExecution(eCtx, processExecutionId, findParamByCommandOrThrowEx(eCtx));
+		return (R)bpmGateway.continueBusinessProcessExecution(eCtx.getRootModel().getAssociatedParam(), processExecutionId);
 	}
 
 }
