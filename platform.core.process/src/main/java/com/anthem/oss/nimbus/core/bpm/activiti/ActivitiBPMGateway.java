@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.anthem.nimbus.platform.spec.model.process.ProcessEngineContext;
 import com.anthem.oss.nimbus.core.bpm.BPMGateway;
-import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContext;
 import com.anthem.oss.nimbus.core.domain.command.execution.ProcessResponse;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
@@ -28,11 +27,12 @@ public class ActivitiBPMGateway implements BPMGateway {
 	
 	@Autowired RuntimeService runtimeService;
 	
+	
 	@Autowired TaskService taskService;
-
+	
 	@Override
-	public ProcessResponse startBusinessProcess(ExecutionContext eCtx, String processId, Param<?> actionParameter) {
-		ProcessEngineContext context = new ProcessEngineContext(eCtx, actionParameter);
+	public ProcessResponse startBusinessProcess(Param<?> param, String processId) {
+		ProcessEngineContext context = new ProcessEngineContext(param);
 		Map<String, Object> executionVariables = new HashMap<String, Object>();
 		executionVariables.put(Constants.KEY_EXECUTE_PROCESS_CTX.code, context);
 		ProcessInstance pi = runtimeService.startProcessInstanceByKey(processId, executionVariables);
@@ -41,12 +41,11 @@ public class ActivitiBPMGateway implements BPMGateway {
 		response.setExecutionId(pi.getId());
 		return response;
 	}
-
-
+	
 	@Override
-	public Object continueBusinessProcessExecution(ExecutionContext eCtx, String processExecutionId, Param<?> actionParameter) {
+	public Object continueBusinessProcessExecution(Param<?> param, String processExecutionId) {
 		List<Task> pendingTasks = taskService.createTaskQuery().processInstanceId(processExecutionId).list();
-		ProcessEngineContext context = new ProcessEngineContext(eCtx, actionParameter);
+		ProcessEngineContext context = new ProcessEngineContext(param);
 		Map<String, Object> executionVariables = new HashMap<String, Object>();
 		executionVariables.put(Constants.KEY_EXECUTE_PROCESS_CTX.code, context);		
 		for(Task task: pendingTasks){

@@ -44,7 +44,7 @@ public class ActivitiExpressionManager extends ExpressionManager implements Appl
 		if(!expression.startsWith("${")){
 			StringBuilder modifiedExpression = new StringBuilder();
 			expression = expression.replaceAll("'", "\\\\'");
-			modifiedExpression.append("${expressionEvaluator.getValue('").append(expression).append("', processContext.executionContext)").append("}");
+			modifiedExpression.append("${expressionEvaluator.getValue('").append(expression).append("', processContext.param)").append("}");
 			return modifiedExpression.toString();
 		}
 		return expression;
