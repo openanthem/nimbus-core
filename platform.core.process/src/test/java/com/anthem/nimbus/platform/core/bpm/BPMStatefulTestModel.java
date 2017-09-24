@@ -22,6 +22,7 @@ import lombok.ToString;
 @Repo(value=Database.rep_mongodb, cache=Cache.rep_device)
 @Getter @Setter @ToString(callSuper=true)
 public class BPMStatefulTestModel  extends IdString {
+	private static final long serialVersionUID = 1L;
 	private String parameterBeforeHumanTask;
 	private String parameterAfterHumanTask;
 }

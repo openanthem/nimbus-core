@@ -28,7 +28,7 @@
         <omgdc:Bounds height="40.0" width="40.0" x="140.0" y="152.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="usertask1" id="BPMNShape_usertask1">
-        <omgdc:Bounds height="65.0" width="105.0" x="260.0" y="140.0"></omgdc:Bounds>
+        <omgdc:Bounds height="71.0" width="105.0" x="260.0" y="135.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="exclusivegateway2" id="BPMNShape_exclusivegateway2">
         <omgdc:Bounds height="40.0" width="40.0" x="430.0" y="152.0"></omgdc:Bounds>
@@ -45,10 +45,10 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
         <omgdi:waypoint x="180.0" y="172.0"></omgdi:waypoint>
-        <omgdi:waypoint x="260.0" y="172.0"></omgdi:waypoint>
+        <omgdi:waypoint x="260.0" y="170.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
-        <omgdi:waypoint x="365.0" y="172.0"></omgdi:waypoint>
+        <omgdi:waypoint x="365.0" y="170.0"></omgdi:waypoint>
         <omgdi:waypoint x="430.0" y="172.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
