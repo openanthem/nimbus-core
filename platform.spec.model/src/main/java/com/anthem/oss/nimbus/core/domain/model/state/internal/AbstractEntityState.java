@@ -143,7 +143,7 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 										.map(ProcessFlow::getProcessExecutionId)
 										.orElse(null);
 				if(processExecId!=null)
-					getAspectHandlers().getBpmEvaluator().apply(getRootExecution().getAssociatedParam(), processExecId);
+					getAspectHandlers().getBpmEvaluator().apply(getRootDomain().getAssociatedParam(), processExecId);
 				
 				// unlock
 				boolean b = execRt.tryUnlock(lockId);
