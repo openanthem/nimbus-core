@@ -439,23 +439,33 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	@Override
 	public void activate() {
-		toggleActive(true);
+		toggleActivate(true);
 	}
 	
 	@Override
 	public void deactivate() {
-		toggleActive(false);
+		toggleActivate(false);
 	}
 	
-	protected void toggleActive(boolean to) {
+	protected boolean toggleActivate(boolean to) {
+		return changeStateTemplate((rt, h)->{
+			boolean result = affectToggleActivate(to);
+			if(result)
+				h.setState(Action._update);
+			
+			return result;
+		});
+	}
+	
+	private boolean affectToggleActivate(boolean to) {
 		// refer to field directly, instead of getter method
 		if(active==to)
-			return;
+			return false;
 
 		// toggle
 		setActive(to);
 		findParamByPath("/#/visible").setState(to);
-		findParamByPath("/#/enable").setState(to);
+		findParamByPath("/#/enabled").setState(to);
 		
 		// notify mapped subscribers, if any
 		//==emitNotification(new Notification<>(this, ActionType._active, this));
@@ -472,10 +482,10 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		
 		// ripple to children, if applicable
 		if(!isNested())
-			return;
+			return true;
 		
 		if(findIfNested().templateParams().isNullOrEmpty())
-			return;
+			return true;
 		
 		findIfNested().getParams().stream()
 			.forEach(cp->{
@@ -484,6 +494,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 				else
 					cp.deactivate();
 			});
+		
+		return true;
 	}
 	
 	private boolean isPrimitive() {
