@@ -26,4 +26,6 @@ public class GroupUser {
 	private boolean admin;
 	
 	private LocalDate effectiveDate;
+	
+	private LocalDate retireDate;
 }
