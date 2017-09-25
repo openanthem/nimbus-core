@@ -30,7 +30,7 @@ public class ActivitiBPMProcessHandler<T,R> implements FunctionHandler<T,R> {
 	
 	@Override
 	public R execute(ExecutionContext executionContext, Param<T> actionParameter) {
-		ProcessEngineContext context = new ProcessEngineContext(executionContext, actionParameter);
+		ProcessEngineContext context = new ProcessEngineContext(executionContext.getRootModel().getAssociatedParam());
 		Map<String, Object> executionVariables = new HashMap<String, Object>();
 		executionVariables.put(Constants.KEY_EXECUTE_PROCESS_CTX.code, context);
 		runtimeService.startProcessInstanceByKey(processId, executionVariables);		

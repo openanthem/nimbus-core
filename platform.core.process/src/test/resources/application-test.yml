@@ -31,6 +31,7 @@ domain:
       - com.anthem.oss.nimbus.core.entity
       - com.anthem.oss.nimbus.test.sample.um.model
       - com.anthem.oss.nimbus.test.sample.domain.model
+      - com.anthem.nimbus.platform.core.bpm
     typeClassMappings:
       java.time.LocalDate : 
         date
@@ -81,7 +82,9 @@ process:
       update ACT_RU_EXECUTION set ACT_ID_ = ?  WHERE ID_=? AND ACT_ID_=?   
   history:
     level: 
-      none      
+      none  
+  definitions:
+   - classpath*:process-defs/**.xml          
 template:
   definitions:
     - path: e_post/*/comm/icr/p/flow_umcase/_findPatient/_process/_execute

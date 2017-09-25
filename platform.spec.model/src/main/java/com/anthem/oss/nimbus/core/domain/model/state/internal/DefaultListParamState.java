@@ -311,19 +311,21 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 	
 	@Override
 	public boolean add(ListElemParam<T> pColElem) {
-		List<T> list = getNestedCollectionModel().instantiateOrGet();
-		
-		// add
-		getNestedCollectionModel().templateParams().add(pColElem);
-		
-		// notify
-		emitNotification(new Notification<>(this, ActionType._newElem, pColElem));
-		
-		ExecutionRuntime execRt = resolveRuntime();
-		if(execRt.isStarted())
-			emitEvent(Action._new, this);
-		
-		return true;
+		return changeStateTemplate((rt, h)->{
+			List<T> list = getNestedCollectionModel().instantiateOrGet();
+			
+			// add
+			getNestedCollectionModel().templateParams().add(pColElem);
+			
+			// notify
+			emitNotification(new Notification<>(this, ActionType._newElem, pColElem));
+			
+			ExecutionRuntime execRt = resolveRuntime();
+			if(execRt.isStarted())
+				emitEvent(Action._new, this);
+			
+			return true;			
+		});
 	}
 
 	@Override

@@ -8,6 +8,7 @@ import java.lang.annotation.Target;
 import java.util.List;
 
 import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
+import com.anthem.oss.nimbus.core.domain.definition.Model.Param.Values.Source;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
 
 /**
@@ -41,7 +42,14 @@ public @interface Model {
 				public List<ParamValue> getValues(String paramCode);
 			}
 			
-			Class<? extends Source> value() default Source.class;
+			public static class EMPTY implements Source {
+				@Override
+				public List<ParamValue> getValues(String paramPath) {
+					return null;
+				}
+			}
+			
+			Class<? extends Source> value() default EMPTY.class;
 			
 			String url() default "staticCodeValue";
 		}

@@ -133,6 +133,8 @@ public class DefaultStateEventDelegator implements StateEventDelegator {
 	}
 
 	private List<ParamEvent> createOrGet(Map<ExecutionModel<?>, List<ParamEvent>> aggregatedEvents, ExecutionModel<?> root) {
+		root = resolveRoot(root);
+		
 		if(aggregatedEvents.containsKey(root))
 			return aggregatedEvents.get(root);
 		
@@ -141,6 +143,13 @@ public class DefaultStateEventDelegator implements StateEventDelegator {
 		
 		return events;
 	}
+	
+	private ExecutionModel<?> resolveRoot(ExecutionModel<?> root) {
+		if(root.getAssociatedParam().isLinked()) 
+			return root.getAssociatedParam().findIfLinked().getRootExecution();
+		
+		return root;
+	} 
 	
 	private static Param<?> findFirstCollectionParent(Param<?> currParam) {
 		if(currParam.getParentModel()==null)

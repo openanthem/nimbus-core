@@ -29,6 +29,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification;
 import com.anthem.oss.nimbus.core.domain.model.state.ParamEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.RulesRuntime;
+import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
 import com.anthem.oss.nimbus.core.spec.contract.event.EventListener;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 import com.anthem.oss.nimbus.core.util.LockTemplate;
@@ -134,6 +135,15 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 				
 				// fire rules at root level upon completion of all set actions
 				getRootExecution().fireRules();
+				
+				// evaluate BPM
+				String processExecId = Optional.ofNullable(getRootExecution().getState())
+										.map(m->(ExecutionEntity<?, ?>)m)
+										.map(ExecutionEntity::getFlow)
+										.map(ProcessFlow::getProcessExecutionId)
+										.orElse(null);
+				if(processExecId!=null)
+					getAspectHandlers().getBpmEvaluator().apply(getRootDomain().getAssociatedParam(), processExecId);
 				
 				// unlock
 				boolean b = execRt.tryUnlock(lockId);
