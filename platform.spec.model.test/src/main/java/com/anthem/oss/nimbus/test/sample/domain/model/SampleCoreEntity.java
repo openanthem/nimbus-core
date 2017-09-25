@@ -45,7 +45,9 @@ public class SampleCoreEntity extends IdString {
 	private List<SampleCoreNestedEntity> attr_list_1_NestedEntity;
 	private List<SampleCoreNestedEntity> attr_list_2_NestedEntity;
 	
-	@ActivateConditional(when="equals('Y')", targetPath="/../q1Level1")
+	@ActivateConditional(when="equals('Y')", targetPath="/../q1Level2")
 	private String q1;
 	private SampleCoreNestedEntity q1Level1;
+	
+	private SampleCoreNestedEntity q1Level2;
 }

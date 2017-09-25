@@ -10,6 +10,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +48,7 @@ public class PararmActiveTest {
 	
 	private static final String CORE_PARAM_PATH_q1 = "/sample_core/q1";
 	private static final String CORE_PARAM_PATH_q1Level1 = "/sample_core/q1Level1";
+	private static final String CORE_PARAM_PATH_q1Level1_nested_attr_String = CORE_PARAM_PATH_q1Level1 + "/nested_attr_String";
 	
 	private Command _cmd;
 	
@@ -100,7 +102,7 @@ public class PararmActiveTest {
 	}
 	
 	@Test
-	public void t01_leaf_deactivate() {
+	public void t01_leaf_deactivate_noState() {
 		Param<?> q1 = _q.getRoot().findParamByPath(CORE_PARAM_PATH_q1);
 		assertTrue(q1.isActive());
 		
@@ -132,10 +134,16 @@ public class PararmActiveTest {
 	}
 	
 	@Test
-	public void t02_leaf_reactivate() {
+	public void t02_leaf_reactivate_noState() {
 		// deactivate
-		t01_leaf_deactivate();
+		t01_leaf_deactivate_noState();
+		_q.getRoot().getExecutionRuntime().onStopCommandExecution(_cmd);
 		
+		_q.getRoot().getExecutionRuntime().onStartCommandExecution(_cmd);
+		activate_validate_leaf();
+	}
+	
+	private void activate_validate_leaf() {
 		Param<?> q1 = _q.getRoot().findParamByPath(CORE_PARAM_PATH_q1);
 		assertFalse(q1.isActive());
 		
@@ -160,5 +168,62 @@ public class PararmActiveTest {
 			.forEach(pe->expectedEventParams.remove(pe.getParam()));
 		
 		assertTrue(expectedEventParams.isEmpty());
+	}
+	
+	@Test
+	public void t03_leaf_deactivate_withState() {
+		Param<String> q1 = _q.getRoot().findParamByPath(CORE_PARAM_PATH_q1);
+		assertTrue(q1.isActive());
+		
+		Param<Boolean> q1_visible = q1.findParamByPath("/#/visible");
+		Param<Boolean> q1_enabled = q1.findParamByPath("/#/enabled");
+		
+		assertTrue(q1_visible.getState());
+		assertTrue(q1_enabled.getState());
+		
+		final String K_string = "some text @ "+ new Date();
+		q1.setState(K_string);
+		
+		addListener();
+		q1.deactivate();
+		
+		assertFalse(q1.isActive());
+		assertFalse(q1_visible.getState());
+		assertFalse(q1_enabled.getState());
+		assertNull(q1.getState());
+		
+		// validate events
+		assertNotNull(_paramEvents);
+		assertEquals(3, _paramEvents.size());
+		
+		List<Param<?>> expectedEventParams = new ArrayList<>();
+		expectedEventParams.add(q1_visible);
+		expectedEventParams.add(q1_enabled);
+		expectedEventParams.add(q1);
+		
+		_paramEvents.stream()
+			.forEach(pe->expectedEventParams.remove(pe.getParam()));
+		
+		assertTrue(expectedEventParams.isEmpty());
+	}
+	
+	@Test
+	public void t04_leaf_reactivate_withState() {
+		// deactivate 
+		t03_leaf_deactivate_withState();
+		_q.getRoot().getExecutionRuntime().onStopCommandExecution(_cmd);
+		
+		_q.getRoot().getExecutionRuntime().onStartCommandExecution(_cmd);
+		activate_validate_leaf();
+	}
+	
+	//@Test
+	public void t10_nested_init() {
+		Param<?> q1Level1 = _q.getRoot().findParamByPath(CORE_PARAM_PATH_q1Level1);
+		assertTrue(q1Level1.isActive());
+		
+		assertNull(q1Level1.getState());
+		
+		assertTrue(_q.getRoot().findParamByPath(CORE_PARAM_PATH_q1Level1_nested_attr_String).isActive());
 	}
 }
