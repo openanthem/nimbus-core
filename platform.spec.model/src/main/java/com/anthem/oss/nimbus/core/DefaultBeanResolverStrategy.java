@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.ResolvableType;
 
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
@@ -96,6 +97,12 @@ public class DefaultBeanResolverStrategy implements BeanResolverStrategy {
 						+ " a) Bean with qualifier "+resolveBeanName(qualifier)
 						+ " b) Bean with qualifier "+defaultBeanName(qualifier)));
 
+	}
+	
+	public <T> T find(Class<T> type, Class<?>...generics) {
+		applicationContext.getBeanNamesForType(ResolvableType.forClassWithGenerics(type, generics));
+		
+		return null;
 	}
 	
 	@Override

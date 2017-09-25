@@ -259,6 +259,10 @@ public interface EntityState<T> {
 		
 		public PropertyDescriptor getPropertyDescriptor();
 		
+		public boolean isActive();
+		public void activate();
+		public void deactivate();
+		
 	}
 	
 	public interface MappedParam<T, M> extends Param<T>, Mapped<T, M>, Notification.Consumer<M> {

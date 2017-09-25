@@ -207,10 +207,22 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 	}
 	
 	public <P> Action _set(ParamStateRepository currRep, Param<P> param, P newState) {
+		
 		// unmapped core/view - nested/leaf: set to param
 		if(!param.isMapped()) {
 			if(newState==null) {
-				return currRep._set(param, null);
+				// set set to null only if parent state is not null
+				Param<?> parentParam = Optional.ofNullable(param.getParentModel())
+						.map(Model::getAssociatedParam)
+						.orElse(null);
+				
+				if(parentParam==null)
+					return currRep._set(param, null);
+				
+				if(parentParam.getState()!=null)
+					return currRep._set(param, null);
+				
+				return null;
 			}
 			
 			if(param.isLeaf()) {

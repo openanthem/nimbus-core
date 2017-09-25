@@ -14,6 +14,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.util.ClassUtils;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
 import com.anthem.oss.nimbus.core.InvalidOperationAttemptedException;
@@ -155,6 +156,9 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	 */
 	@Override
 	final public T getLeafState() {
+		if(!isMapped())
+			return getState();
+		
 		if(!isNested())
 			return getState();
 		
@@ -412,4 +416,78 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		String resolvedPath = getResolvingMappedPath(path);
 		return getConfig().isFound(resolvedPath);
 	}
+	
+	private boolean active = true;
+
+	@Override
+	public boolean isActive() {
+		if(!active)
+			return active;
+		
+		Param<?> parentParam = Optional.ofNullable(getParentModel())
+			.map(Model::getAssociatedParam)
+			.orElse(null);
+			
+		if(parentParam==null)
+			return active;
+		
+		if(!parentParam.isActive())
+			return false;
+		
+		return active;
+	}
+	
+	@Override
+	public void activate() {
+		toggleActive(true);
+	}
+	
+	@Override
+	public void deactivate() {
+		toggleActive(false);
+	}
+	
+	protected void toggleActive(boolean to) {
+		// refer to field directly, instead of getter method
+		if(active==to)
+			return;
+
+		// toggle
+		setActive(to);
+		findParamByPath("/#/visible").setState(to);
+		findParamByPath("/#/enable").setState(to);
+		
+		// notify mapped subscribers, if any
+		//==emitNotification(new Notification<>(this, ActionType._active, this));
+		
+		// set state in current
+		if(!to) {
+			setStateInitialized(false);
+			
+			if(!isPrimitive())
+				setState(null);
+		} else {
+			initState(); // ensure all rules are fired, including the ones on @OnStateChange
+		}
+		
+		// ripple to children, if applicable
+		if(!isNested())
+			return;
+		
+		if(findIfNested().templateParams().isNullOrEmpty())
+			return;
+		
+		findIfNested().getParams().stream()
+			.forEach(cp->{
+				if(to)
+					cp.activate();
+				else
+					cp.deactivate();
+			});
+	}
+	
+	private boolean isPrimitive() {
+		return ClassUtils.isPrimitiveOrWrapper(getConfig().getReferredClass());
+	}
+	
 }
