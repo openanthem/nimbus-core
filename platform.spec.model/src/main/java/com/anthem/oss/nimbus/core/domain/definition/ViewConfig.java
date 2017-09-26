@@ -18,10 +18,16 @@ public class ViewConfig {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(value={ElementType.ANNOTATION_TYPE})
 	@Inherited
-	public @interface ViewParamBehavior {
+	public @interface DomainMeta {
 		
 	}
 	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(value={ElementType.ANNOTATION_TYPE})
+	@Inherited
+	public @interface ViewParamBehavior {
+		
+	}
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(value={ElementType.ANNOTATION_TYPE})
 	@Inherited
@@ -29,6 +35,13 @@ public class ViewConfig {
 		
 	}
 
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@DomainMeta
+	public @interface ConceptId {
+		String value() default "";
+	}
+	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewParamBehavior
@@ -60,8 +73,6 @@ public class ViewConfig {
 		}
 		Options value() default Options.Inherit;
 	}
-	
-
 	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.TYPE})
@@ -113,8 +124,6 @@ public class ViewConfig {
 		String alias() default "Header";
 		Size size() default Size.H3;
 	}
-	
-	
 	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
@@ -232,6 +241,13 @@ public class ViewConfig {
 		String cssClass() default "text-sm-right";
 	}
 	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface Assessment {	
+		String alias() default "Assessment";
+		String cssClass() default "text-sm-right";
+	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
@@ -479,6 +495,22 @@ public class ViewConfig {
 		String controlId() default "";
 	}
 	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface Accordion {
+		String alias() default "Accordion";
+		String cssClass() default "panel-default";
+	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface AccordionGroup {
+		String alias() default "AccordionGroup";
+		String cssClass() default "panel-default";
+	}
+
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
