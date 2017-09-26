@@ -98,7 +98,7 @@ public class PlatformUserTaskActivityBehavior extends UserTaskActivityBehavior {
 
 	private String resolveCommandUrl(DelegateExecution execution, String commandUrl, ProcessEngineContext context){
 		commandUrl = pathVariableResolver.resolve(context.getParam(), commandUrl);
-		//commandUrl = context.getExecutionContext().getCommandMessage().getCommand().getRelativeUri(commandUrl);
+		commandUrl = context.getParam().getRootExecution().getRootCommand().getRelativeUri(commandUrl);
     	return commandUrl;
 	}	
 	
