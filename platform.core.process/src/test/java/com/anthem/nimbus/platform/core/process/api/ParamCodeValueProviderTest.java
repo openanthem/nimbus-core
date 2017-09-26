@@ -52,7 +52,7 @@ import com.mongodb.MongoClient;
  *
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-@ContextConfiguration(classes = MongoConfiguration.class)
+//@ContextConfiguration(classes = MongoConfiguration.class)
 public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTests {
 
 	private static final String[] COLLECTIONS = {"queue","clientusergroup","clientuser"};
@@ -601,21 +601,21 @@ public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTest
 	}
 }
 
-@Configuration
-class MongoConfiguration extends AbstractMongoConfiguration {
- 
-    @Override
-    protected String getDatabaseName() {
-        return "test";
-    }
- 
-    @Override
-    public Mongo mongo() throws Exception {
-        return new MongoClient("127.0.0.1", 27017);
-    }
- 
-    @Override
-    protected String getMappingBasePackage() {
-        return "com.anthem.nimbus.platform.client.extension.cm";
-    }
-}
+//@Configuration
+//class MongoConfiguration extends AbstractMongoConfiguration {
+// 
+//    @Override
+//    protected String getDatabaseName() {
+//        return "test";
+//    }
+// 
+//    @Override
+//    public Mongo mongo() throws Exception {
+//        return new MongoClient("127.0.0.1", 27017);
+//    }
+// 
+//    @Override
+//    protected String getMappingBasePackage() {
+//        return "com.anthem.nimbus.platform.client.extension.cm";
+//    }
+//}

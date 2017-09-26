@@ -41,6 +41,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.anthem.oss.nimbus.core.AbstractFrameworkIntegrationTests;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity.IdString;
 import com.anthem.oss.nimbus.core.entity.client.user.ClientUser;
 import com.anthem.oss.nimbus.core.entity.queue.Queue;
@@ -57,29 +58,22 @@ import com.mongodb.MongoClient;
 /**
  * @author Rakesh Patel
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@ContextConfiguration(classes = MongoConfiguration.class)
-@ActiveProfiles("test")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class GraphSpikeUserTest3 {
+public class GraphSpikeUserTest3 extends AbstractFrameworkIntegrationTests{
 	
 	private static final String[] COLLECTIONS = {"queue","clientusergroup","clientuser"};
-
-	@Autowired
-    MongoOperations mongoOps;
-
+	
 	@Test
 	public void t1_createEntitiesWithEmbeddedEdge() {
-		Stream.of(COLLECTIONS).forEach((collection) -> mongoOps.dropCollection(collection));
-		
-		createUsers();
-		createUserGroups();
-		createQueues();
+//		Stream.of(COLLECTIONS).forEach((collection) -> mongo.dropCollection(collection));
+//		
+//		createUsers();
+//		createUserGroups();
+//		createQueues();
 		
 	}
 	
-	@Test
+	@Ignore
 	public void t2_getDirectQueuesForAUser() {
 		AggregationOperation matchOperation = matchCriteria("_id", "U1");
 		
@@ -93,7 +87,7 @@ public class GraphSpikeUserTest3 {
 		aggregateOps.add(matchOperation);
 		aggregateOps.add(graphOperation);
 		
-		AggregationResults<String> models = mongoOps.aggregate(Aggregation.newAggregation(aggregateOps), "clientuser", String.class);
+		AggregationResults<String> models = mongo.aggregate(Aggregation.newAggregation(aggregateOps), "clientuser", String.class);
 		
 		assertNotNull(models);
 		assertNotNull(models.getMappedResults());
@@ -141,13 +135,13 @@ public class GraphSpikeUserTest3 {
 				"	]\n" + 
 				"}";
 		
-		CommandResult users = mongoOps.executeCommand(query2);
+		CommandResult users = mongo.executeCommand(query2);
 		com.mongodb.BasicDBList firstOut = (com.mongodb.BasicDBList)users.get("result");
 		
 		List<Queue> queueList = new ArrayList<>();
 		
 		for(Object dbo: firstOut) {
-			queueList.addAll(mongoOps.getConverter().read(List.class,(BasicDBList)((BasicDBObject)dbo).get("queues")));
+			queueList.addAll(mongo.getConverter().read(List.class,(BasicDBList)((BasicDBObject)dbo).get("queues")));
 		}
 		
 		assertThat(queueList).isNotEmpty();
@@ -156,7 +150,7 @@ public class GraphSpikeUserTest3 {
 	}
 	
 	private void createUsers() {
-		mongoOps.dropCollection("clientuser");
+		mongo.dropCollection("clientuser");
 		
 		ClientUser clientUser = new ClientUser();
 		clientUser.setId("U1");
@@ -167,13 +161,13 @@ public class GraphSpikeUserTest3 {
 		clientUser2.setId("U2");
 		clientUser2.setDisplayName("testClientUserDisplayName_2");
 		
-		mongoOps.save(clientUser, "clientuser");
-		mongoOps.save(clientUser2, "clientuser");
+		mongo.save(clientUser, "clientuser");
+		mongo.save(clientUser2, "clientuser");
 		
 	}
 	
 	private void createUserGroups() {
-		mongoOps.dropCollection("clientusergroup");
+		mongo.dropCollection("clientusergroup");
 		
 		ClientUserGroup userGroup = new ClientUserGroup();
 		userGroup.setId("UG1");
@@ -209,20 +203,20 @@ public class GraphSpikeUserTest3 {
 		
 		userGroup3.setMembers(groupUsers3);
 		
-		mongoOps.save(userGroup, "clientusergroup");
-		mongoOps.save(userGroup2, "clientusergroup");
-		mongoOps.save(userGroup3, "clientusergroup");
+		mongo.save(userGroup, "clientusergroup");
+		mongo.save(userGroup2, "clientusergroup");
+		mongo.save(userGroup3, "clientusergroup");
 		
 	}
 	
 	private void createQueues() {
-		mongoOps.dropCollection("queue");
+		mongo.dropCollection("queue");
 		
 		Queue queue = new Queue();
 		queue.setId("Q1");
 		queue.setName("testQueue_1");
 		
-		ClientUser cu = mongoOps.findOne(new Query(Criteria.where("id").is("U1")), ClientUser.class, "clientuser");
+		ClientUser cu = mongo.findOne(new Query(Criteria.where("id").is("U1")), ClientUser.class, "clientuser");
 		
 		queue.setEntityId(cu.getId());
 		
@@ -231,7 +225,7 @@ public class GraphSpikeUserTest3 {
 		queue2.setId("Q2");
 		queue2.setName("testQueue_2");
 		
-		ClientUserGroup cug = mongoOps.findOne(new Query(Criteria.where("id").is("UG1")), ClientUserGroup.class, "clientusergroup");
+		ClientUserGroup cug = mongo.findOne(new Query(Criteria.where("id").is("UG1")), ClientUserGroup.class, "clientusergroup");
 		
 		queue2.setEntityId(cug.getId());
 		
@@ -239,7 +233,7 @@ public class GraphSpikeUserTest3 {
 		queue3.setId("Q3");
 		queue3.setName("testQueue_3");
 		
-		ClientUserGroup cug2 = mongoOps.findOne(new Query(Criteria.where("id").is("UG1")), ClientUserGroup.class, "clientusergroup");
+		ClientUserGroup cug2 = mongo.findOne(new Query(Criteria.where("id").is("UG1")), ClientUserGroup.class, "clientusergroup");
 		
 		queue3.setEntityId(cug2.getId());
 		
@@ -247,7 +241,7 @@ public class GraphSpikeUserTest3 {
 		queue4.setId("Q4");
 		queue4.setName("testQueue_4");
 		
-		ClientUserGroup cug3 = mongoOps.findOne(new Query(Criteria.where("id").is("UG2")), ClientUserGroup.class, "clientusergroup");
+		ClientUserGroup cug3 = mongo.findOne(new Query(Criteria.where("id").is("UG2")), ClientUserGroup.class, "clientusergroup");
 		
 		queue4.setEntityId(cug3.getId());
 		
@@ -255,15 +249,15 @@ public class GraphSpikeUserTest3 {
 		queue5.setId("Q5");
 		queue5.setName("testQueue_5");
 		
-		ClientUser cu2 = mongoOps.findOne(new Query(Criteria.where("id").is("U2")), ClientUser.class, "clientuser");
+		ClientUser cu2 = mongo.findOne(new Query(Criteria.where("id").is("U2")), ClientUser.class, "clientuser");
 		
 		queue5.setEntityId(cu2.getId());
 		
-		mongoOps.save(queue, "queue");
-		mongoOps.save(queue2, "queue");
-		mongoOps.save(queue3, "queue");
-		mongoOps.save(queue4, "queue");
-		mongoOps.save(queue5, "queue");
+		mongo.save(queue, "queue");
+		mongo.save(queue2, "queue");
+		mongo.save(queue3, "queue");
+		mongo.save(queue4, "queue");
+		mongo.save(queue5, "queue");
 		
 	}
 	
@@ -272,23 +266,4 @@ public class GraphSpikeUserTest3 {
 	}
 
 	
-}
-
-@Configuration
-class MongoConfiguration extends AbstractMongoConfiguration {
- 
-    @Override
-    protected String getDatabaseName() {
-        return "test";
-    }
- 
-    @Override
-    public Mongo mongo() throws Exception {
-        return new MongoClient("127.0.0.1", 27017);
-    }
- 
-    @Override
-    protected String getMappingBasePackage() {
-        return "com.anthem.nimbus.platform.client.extension.cm";
-    }
 }
