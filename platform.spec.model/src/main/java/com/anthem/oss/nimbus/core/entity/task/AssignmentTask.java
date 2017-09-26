@@ -31,22 +31,25 @@ public class AssignmentTask extends AbstractEntity.IdString{
 	
 	private static final long serialVersionUID = 1L;
 	
-	private String taskName;
-	
-	private TaskStatus status;
-	
-	private String description;
-	
+	private TaskSource source;
+
 	@NotNull
 	private TaskType taskType;
+	private String taskTypeForDisplay;
 	
-	private String testTaskType;
+	private String taskName;
 	
-	private LocalDate dueDate;
-	
+	private String description;
+
 	private LocalDate startDate;
-	
+
+	private LocalDate dueDate;
+
 	private TaskPriority priority;
+	
+	private LocalDate appointmentDate;
+
+	private TaskStatus status;
 	
 	private String entityId;
 	
@@ -55,17 +58,15 @@ public class AssignmentTask extends AbstractEntity.IdString{
 	private String recurrence;
 	
 	private String reminder;
+		
+	private String testTaskType;
 	
-	private Source source;
-	
-	private String taskTypeForDisplay;
 	private String taskStatus; // TODO - temp attr - to be removed (Rakesh)
 	
 	public enum TaskStatus{
 		Open,
 		Completed,
 		Cancelled;
-		
 		
 		public static TaskStatus findByStatusString(String status) {
 			return Arrays.asList(TaskStatus.values()).stream()
@@ -84,23 +85,24 @@ public class AssignmentTask extends AbstractEntity.IdString{
 	
 	public enum TaskType {
 		patienteligibility,
+		initialoutreach,
 		patientenrollment;
 	}
 	
-	public enum Source {
+	public enum TaskSource {
 		manual,
 		systematic
 	}
-	
 	
 	// TODO - refactor and review - Rakesh
 	public String getTaskTypeForDisplay() {
 		if(this.getTaskType() != null) {
 			if(this.getTaskType().name().equalsIgnoreCase("patienteligibility")) {
 				return "Patient Eligibility";
-			}
-			else if(this.getTaskType().name().equalsIgnoreCase("patientenrollment")) {
+			} else if(this.getTaskType().name().equalsIgnoreCase("patientenrollment")) {
 				return "Patient Enrollment";
+			} else if(this.getTaskType().name().equalsIgnoreCase("initialoutreach")) {
+				return "Initial Outreach";
 			}
 			return this.getTaskType().name();
 		}
