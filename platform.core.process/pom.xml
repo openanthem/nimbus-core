@@ -211,8 +211,11 @@
 					<includeEmptyDirs>true</includeEmptyDirs>
 				</configuration>
 			</plugin>
-				<!-- Generates the MongoDB static meta model -->
-        	<plugin>    
+				<!-- Generates the MongoDB static meta model 
+				
+				Commenting now. Will be removing this unused plugin Later.
+				-->
+ <!--        	<plugin>    
 			    <groupId>com.mysema.maven</groupId>
 			    <artifactId>apt-maven-plugin</artifactId>
 			    <version>1.1.3</version>
@@ -229,7 +232,7 @@
 			            </configuration>
 			        </execution>
 			     </executions>
-			</plugin>
+			</plugin> -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>

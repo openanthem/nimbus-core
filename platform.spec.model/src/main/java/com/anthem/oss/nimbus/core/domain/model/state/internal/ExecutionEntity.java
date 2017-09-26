@@ -290,6 +290,15 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 		}
 		
 		@Override
+		public Command getRootCommand() {
+			if(getAssociatedParam().isLinked()) {
+				return getAssociatedParam().findIfLinked().getRootExecution().getRootCommand();
+			}
+			
+			return rootCommand;
+		}
+		
+		@Override
 		public void fireRules() {
 			getAssociatedParam().fireRules();
 		}

@@ -28,4 +28,6 @@ public class GroupUser extends IdString {
 	private boolean admin;
 	
 	private LocalDate effectiveDate;
+	
+	private LocalDate retireDate;
 }

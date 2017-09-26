@@ -6,11 +6,13 @@ package com.anthem.oss.nimbus.core.domain.model.state.internal;
 
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -22,6 +24,7 @@ import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.execution.ValidationResult;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
+import com.anthem.oss.nimbus.core.domain.model.config.AnnotationConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
@@ -29,6 +32,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification.ActionType;
+import com.anthem.oss.nimbus.core.domain.model.state.StateNotificationHandler;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.entity.Findable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -105,6 +109,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	protected void initStateInternal() {
 		if(isNested())
 			findIfNested().initState();
+		
+		onStateChangeRule(Action._new);
 	}
 	
 //	TODO: Refactor with Weak reference implementation
@@ -140,6 +146,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		Optional.ofNullable(getRulesRuntime())
 			.ifPresent(rt->rt.fireRules(this));
 		
+		// self: on state change
+		
 		// nested 
 		Optional.ofNullable(findIfNested())
 			.ifPresent(Model::fireRules);
@@ -148,6 +156,20 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		Optional.ofNullable(getParentModel())
 			.filter(m->!m.isRoot())
 			.ifPresent(Model::fireRules);
+	}
+	
+	//TODO Soham: make generic based on notification event handlers
+	private void onStateChangeRule(Action action) {
+		List<AnnotationConfig> ruleAnnotations = getConfig().getRules();
+		if(CollectionUtils.isEmpty(ruleAnnotations))
+			return;
+		
+		ruleAnnotations.stream()
+			.forEach(ac->{
+				StateNotificationHandler<Annotation> handler = getAspectHandlers().getBeanResolver().find(StateNotificationHandler.class, ac.getAnnotation().annotationType());
+				handler.handle(this, action, ac.getAnnotation());
+			});
+		
 	}
 	
 	/**
@@ -207,6 +229,9 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		state = preSetState(state);			
 		Action a = getAspectHandlers().getParamStateGateway()._set(this, state); 
 		if(a!=null) {
+			// hook up on state change notifications 
+			onStateChangeRule(a);
+			
 			emitNotification(new Notification<>(this, ActionType._updateState, this));
 			h.setState(a);
 			

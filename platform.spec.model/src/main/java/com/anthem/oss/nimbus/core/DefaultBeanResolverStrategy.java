@@ -99,10 +99,15 @@ public class DefaultBeanResolverStrategy implements BeanResolverStrategy {
 
 	}
 	
+	@Override
 	public <T> T find(Class<T> type, Class<?>...generics) {
-		applicationContext.getBeanNamesForType(ResolvableType.forClassWithGenerics(type, generics));
+		String beanNames[] = applicationContext.getBeanNamesForType(ResolvableType.forClassWithGenerics(type, generics));
+		if(ArrayUtils.getLength(beanNames)!=1)
+			throw new InvalidConfigException("Only one bean expected for type+generic lookup, but found: "+beanNames.length
+					+" for type: "+type+" and generics: "+generics);
 		
-		return null;
+		T bean = applicationContext.getBean(beanNames[0], type);
+		return bean;
 	}
 	
 	@Override

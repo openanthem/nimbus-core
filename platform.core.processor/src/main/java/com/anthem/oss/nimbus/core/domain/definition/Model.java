@@ -8,7 +8,6 @@ import java.lang.annotation.Target;
 import java.util.List;
 
 import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
-import com.anthem.oss.nimbus.core.domain.definition.Model.Param.Values.Source;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
 
 /**
@@ -53,12 +52,7 @@ public @interface Model {
 			
 			String url() default "staticCodeValue";
 		}
-		
-		@Retention(RetentionPolicy.RUNTIME)
-		@Target({ElementType.FIELD})
-		public @interface Text {
-			String label();
-		}
+
 	}
 	
 }
