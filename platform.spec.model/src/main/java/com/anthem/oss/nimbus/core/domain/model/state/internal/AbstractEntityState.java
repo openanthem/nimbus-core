@@ -137,13 +137,7 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 				getRootExecution().fireRules();
 				
 				// evaluate BPM
-				String processExecId = Optional.ofNullable(getRootExecution().getState())
-										.map(m->(ExecutionEntity<?, ?>)m)
-										.map(ExecutionEntity::getFlow)
-										.map(ProcessFlow::getProcessExecutionId)
-										.orElse(null);
-				if(processExecId!=null)
-					getAspectHandlers().getBpmEvaluator().apply(getRootDomain().getAssociatedParam(), processExecId);
+				evaluateProcessFlow();
 				
 				// unlock
 				boolean b = execRt.tryUnlock(lockId);
@@ -156,6 +150,16 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 			}
 
 		}
+	}
+	
+	protected void evaluateProcessFlow() {
+		String processExecId = Optional.ofNullable(getRootExecution().getState())
+								.map(m->(ExecutionEntity<?, ?>)m)
+								.map(ExecutionEntity::getFlow)
+								.map(ProcessFlow::getProcessExecutionId)
+								.orElse(null);
+		if(processExecId!=null)
+			getAspectHandlers().getBpmEvaluator().apply(getRootDomain().getAssociatedParam(), processExecId);
 	}
 	
 	final protected void txnTemplate(Consumer<String> cb) {
