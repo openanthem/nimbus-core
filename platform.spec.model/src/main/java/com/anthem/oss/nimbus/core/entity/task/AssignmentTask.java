@@ -31,22 +31,25 @@ public class AssignmentTask extends AbstractEntity.IdString{
 	
 	private static final long serialVersionUID = 1L;
 	
-	private String taskName;
-	
-	private TaskStatus status;
-	
-	private String description;
-	
+	private TaskSource source;
+
 	@NotNull
 	private String taskType;
+	private String taskTypeForDisplay;
 	
-	private String testTaskType;
+	private String taskName;
 	
-	private LocalDate dueDate;
-	
+	private String description;
+
 	private LocalDate startDate;
-	
+
+	private LocalDate dueDate;
+
 	private TaskPriority priority;
+	
+	private LocalDate appointmentDate;
+
+	private TaskStatus status;
 	
 	private String entityId;
 	
@@ -55,17 +58,15 @@ public class AssignmentTask extends AbstractEntity.IdString{
 	private String recurrence;
 	
 	private String reminder;
+		
+	private String testTaskType;
 	
-	private Source source;
-	
-	private String taskTypeForDisplay;
 	private String taskStatus; // TODO - temp attr - to be removed (Rakesh)
 	
 	public enum TaskStatus{
 		Open,
 		Completed,
 		Cancelled;
-		
 		
 		public static TaskStatus findByStatusString(String status) {
 			return Arrays.asList(TaskStatus.values()).stream()
@@ -82,7 +83,7 @@ public class AssignmentTask extends AbstractEntity.IdString{
 		Low
 	}
 	
-	public enum Source {
+	public enum TaskSource {
 		manual,
 		systematic
 	}

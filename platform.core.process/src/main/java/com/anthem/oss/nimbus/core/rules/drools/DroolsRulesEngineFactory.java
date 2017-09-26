@@ -41,8 +41,13 @@ public class DroolsRulesEngineFactory implements RulesEngineFactory {
 		KnowledgeBuilder kbBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 		kbBuilder.add(ResourceFactory.newClassPathResource(path), ResourceType.DRL);
 		
-		KnowledgeBase kb = kbBuilder.newKnowledgeBase();
-		kb.addKnowledgePackages(kbBuilder.getKnowledgePackages());
+		KnowledgeBase kb = null;
+		try {
+			kb = kbBuilder.newKnowledgeBase();
+			kb.addKnowledgePackages(kbBuilder.getKnowledgePackages());
+		} catch (Exception e) {
+			logit.error(()->"Error parsing drool file: " + path);
+		}
 		
 		DroolsRulesConfig config = new DroolsRulesConfig(path, kb);
 		return config;
