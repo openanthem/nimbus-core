@@ -3,7 +3,6 @@
  */
 package com.anthem.oss.nimbus.core.domain.model.config.builder;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,8 +31,6 @@ import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Execution;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo.DetachedState;
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Nature;
 import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.definition.OnStateChange;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
@@ -366,7 +363,7 @@ abstract public class AbstractEntityConfigBuilder {
 		if(colModelConfig.isMapped()) {
 			final MapsTo.Path mapsToColElemParamPathAnnotation = 
 					(mapsToColParamPath==null) 
-						? null : createNewImplicitMapping(collectionElemPath, mapsToColParamPath.linked(), mapsToColParamPath.colElemPath(), mapsToColParamPath.detachedState());
+						? null : MappedDefaultParamConfig.createNewImplicitMapping(collectionElemPath, mapsToColParamPath.linked(), mapsToColParamPath.colElemPath(), mapsToColParamPath.detachedState());
 			
 			created = new MappedDefaultParamConfig<>(collectionElemPath, colModelConfig, mapsToColElemParamConfig, mapsToColElemParamPathAnnotation);
 
@@ -468,54 +465,6 @@ abstract public class AbstractEntityConfigBuilder {
 		return mappedToParam;
 	}
 	
-	public static MapsTo.Path createNewImplicitMapping(String mappedPath, boolean linked, DetachedState detachedState) {
-		return createNewImplicitMapping(mappedPath, linked, "", detachedState);
-	}
-	
-	public static MapsTo.Path createNewImplicitMapping(String mappedPath, boolean linked, String colElemPath, DetachedState detachedState) {
-		return new MapsTo.Path() {
-			
-			@Override
-			public Class<? extends Annotation> annotationType() {
-				return MapsTo.Path.class;
-			}
-			
-			@Override
-			public String value() {
-				return mappedPath;
-			}
-			
-			@Override
-			public boolean linked() {
-				return linked;
-			}
-			
-			@Override
-			public String colElemPath() {
-				return colElemPath;
-			}
-			
-			@Override
-			public DetachedState detachedState() {
-				return detachedState;
-			}
-			
-			@Override
-			public Nature nature() {
-				return Nature.Default;
-			}
-			
-			@Override
-			public String toString() {
-				return new StringBuilder().append(MapsTo.Path.class)
-							.append(" value: ").append(value())
-							.append(" linked: ").append(linked())
-							.toString();
-			}
-		};
-	}
-
-
 	protected <P> ParamType.NestedCollection<P> createNestedCollectionType(ParamType.CollectionType colType) {
 		Class<?> referredClass = ArrayList.class;
 		String name = ClassUtils.getShortName(referredClass);

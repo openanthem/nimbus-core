@@ -12,6 +12,7 @@ import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
+import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
@@ -120,18 +121,38 @@ public class EntityStateBuilder extends AbstractEntityStateBuilder {
 		
 		if(mConfig.getParams()==null) return mState;
 		
+		// check if param doesn't require conversion but logically should be treated as mapped
+		boolean isMappedNoConversion = associatedParam.isMapped() 
+										? !requiresConversion(associatedParam)
+												: false;
+		
 		/* iterate through config params and create state instances in the same order */
 		for(ParamConfig<?> mpConfigRawType : mConfig.getParams()) {
 			@SuppressWarnings("unchecked")
 			final ParamConfig<P> mpConfig = (ParamConfig<P>)mpConfigRawType;
+			final ParamConfig<P> resolvedParamConfig;
 			
-			final DefaultParamState<P> mpState = buildParam(aspectHandlers, mState, mpConfig, mapsToSAC);
+			// create Mapped ParamConfig during state build, if associated param is known to be mapped but w/o any conversion needed (simualate mapped)
+			if(isMappedNoConversion) {
+				resolvedParamConfig = new MappedDefaultParamConfig.NoConversion<>(mConfig, mpConfig);
+			} else {
+				resolvedParamConfig = mpConfig;
+			}
+			
+			final DefaultParamState<P> mpState = buildParam(aspectHandlers, mState, resolvedParamConfig, mapsToSAC);
 			 
 			/* add param state to model state in same order */
 			mState.templateParams().add(mpState);
 		}
 		
 		return mState;
+	}
+	
+	private boolean requiresConversion(Param<?> p) {
+		Class<?> mappedClass = p.getConfig().getReferredClass();
+		Class<?> mapsToClass = p.findIfMapped().getMapsTo().getConfig().getReferredClass();
+		
+		return (mappedClass!=mapsToClass);
 	}
 	
 	private <E> DefaultListElemParamState<E> buildElemParam(EntityStateAspectHandlers aspectHandlers, DefaultListModelState<E> mState, ParamConfig<E> mpConfig, String elemId) {

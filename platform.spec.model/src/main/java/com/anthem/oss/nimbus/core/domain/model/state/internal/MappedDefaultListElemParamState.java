@@ -34,7 +34,8 @@ public class MappedDefaultListElemParamState<E, M> extends DefaultListElemParamS
 		super(parentModel, config, provider, mapsTo.getElemId());
 		
 		// check if @Path is configured to refer to nested element model's param
-		if(MapsTo.hasCollectionPath(config.findIfMapped().getPath())) {
+		if(config.findIfMapped()!=null //TODO Soham: Added this check to handle mapped noConversion scenario during EntityState build  
+				&& MapsTo.hasCollectionPath(config.findIfMapped().getPath())) {
 			Param<M> mapsToNestedParam = mapsTo.findParamByPath(config.findIfMapped().getPath().colElemPath());
 			this.mapsTo = mapsToNestedParam;
 		} else {

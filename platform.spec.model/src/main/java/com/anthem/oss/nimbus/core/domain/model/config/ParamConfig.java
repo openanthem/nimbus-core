@@ -44,6 +44,8 @@ public interface ParamConfig<P> extends EntityConfig<P>, Findable<String> {
 	
 	public List<AnnotationConfig> getValidations();
 	
+	public List<AnnotationConfig> getUiNatures();
+	
 	public AnnotationConfig getUiStyles();
 	
 	// TODO Soham: change to list of notification handler annotations
