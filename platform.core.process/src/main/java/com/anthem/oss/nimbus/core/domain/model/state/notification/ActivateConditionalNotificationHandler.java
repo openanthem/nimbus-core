@@ -5,6 +5,7 @@ package com.anthem.oss.nimbus.core.domain.model.state.notification;
 
 import java.util.Optional;
 
+import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.Implementation;
 import com.anthem.oss.nimbus.core.domain.command.Action;
@@ -32,18 +33,13 @@ public class ActivateConditionalNotificationHandler implements StateNotification
 		String whenExpr = configuredAnnotation.when();
 		
 		Object entityState = onChangeParam.getLeafState();
-		Object result = expressionEvaluator.getValue(whenExpr, entityState);
+		boolean isTrue = expressionEvaluator.getValue(whenExpr, new Holder<>(entityState), Boolean.class);
 		
 		// validate target param to activate
 		String targetPath = configuredAnnotation.targetPath();
 
 		Param<?> targetParam = Optional.ofNullable(onChangeParam.findParamByPath(targetPath))
 								.orElseThrow(()->new InvalidConfigException("Target parm lookup returned null for targetPath: "+targetPath+" on param: "+onChangeParam));
-		
-		boolean isTrue = Optional.ofNullable(result)
-							.map(r->new Boolean(String.valueOf(result)))
-							.orElseThrow(()->new InvalidConfigException("Evaluation of when condition resulted in null, "
-									+ "expected boolean in configuredAnnotation: "+configuredAnnotation+" on param: "+onChangeParam));
 		
 		if(isTrue)
 			targetParam.activate();

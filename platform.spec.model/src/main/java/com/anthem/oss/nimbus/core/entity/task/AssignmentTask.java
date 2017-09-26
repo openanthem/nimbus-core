@@ -34,7 +34,7 @@ public class AssignmentTask extends AbstractEntity.IdString{
 	private TaskSource source;
 
 	@NotNull
-	private TaskType taskType;
+	private String taskType;
 	private String taskTypeForDisplay;
 	
 	private String taskName;
@@ -83,12 +83,6 @@ public class AssignmentTask extends AbstractEntity.IdString{
 		Low
 	}
 	
-	public enum TaskType {
-		patienteligibility,
-		initialoutreach,
-		patientenrollment;
-	}
-	
 	public enum TaskSource {
 		manual,
 		systematic
@@ -96,17 +90,7 @@ public class AssignmentTask extends AbstractEntity.IdString{
 	
 	// TODO - refactor and review - Rakesh
 	public String getTaskTypeForDisplay() {
-		if(this.getTaskType() != null) {
-			if(this.getTaskType().name().equalsIgnoreCase("patienteligibility")) {
-				return "Patient Eligibility";
-			} else if(this.getTaskType().name().equalsIgnoreCase("patientenrollment")) {
-				return "Patient Enrollment";
-			} else if(this.getTaskType().name().equalsIgnoreCase("initialoutreach")) {
-				return "Initial Outreach";
-			}
-			return this.getTaskType().name();
-		}
-		return "";
+		return taskType;
 	}
 	
 }
