@@ -37,7 +37,7 @@ public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunct
 		
 		LookupSearchCriteria lookupSearchCriteria = createSearchCriteria(executionContext, mConfig);
 		Class<?> criteriaClass = mConfig.getReferredClass();
-		String alias = findRepoAlias(criteriaClass);
+		String alias = findRepoAlias(mConfig);
 		
 		ModelRepository rep = getRepFactory().get(mConfig.getRepo()); //TODO what if it is a non db search like WS call for search ? 
 		

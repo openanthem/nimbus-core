@@ -5,11 +5,13 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.grap
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.unwind;
 
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -19,17 +21,30 @@ import java.util.TimeZone;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.repository.support.SpringDataMongodbQuery;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.util.CollectionUtils;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.entity.EntityAssociation;
 import com.anthem.oss.nimbus.core.entity.SearchCriteria;
+import com.anthem.oss.nimbus.core.entity.queue.Queue;
+import com.anthem.oss.nimbus.core.entity.user.GroupUser;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
+import com.mongodb.CommandResult;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.PathBuilder;
@@ -50,7 +65,7 @@ public class MongoSearchByQuery extends MongoDBSearch {
 
 	@Override
 	public <T> Object search(Class<?> referredClass, String alias, SearchCriteria<T> criteria) {
-		if(StringUtils.contains((String)criteria.getWhere(),"association")) {
+		if(StringUtils.contains((String)criteria.getWhere(),"aggregate")) {
 			return searchByAggregation(referredClass, alias, criteria);
 		}
 		return searchByQuery(referredClass, alias, criteria);
@@ -93,10 +108,6 @@ public class MongoSearchByQuery extends MongoDBSearch {
 		}
 		List<?> response = query.where(predicate).fetch();
 		
-		if(StringUtils.isNotBlank(criteria.getResponseConverter())){
-			Converter converter = getBeanResolver().get(ClientUserGrooupSearchResponseConverter.class);
-			return converter.convert(response);
-		}
 		return response;
 		
 	}
@@ -155,31 +166,46 @@ public class MongoSearchByQuery extends MongoDBSearch {
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private  <T> Object searchByAggregation(Class<?> referredClass, String alias, SearchCriteria<T> criteria) {
-		Class<?> outputClass = findOutputClass(criteria, referredClass);
+//		Class<?> outputClass = findOutputClass(criteria, referredClass);
 		
-		Set<?> result = new HashSet<>();
-		EntityAssociation assoc = getConverter().convert(EntityAssociation.class, (String) criteria.getWhere());
+//		
+//		List<?> result = new ArrayList<>();
+//		EntityAssociation assoc = getConverter().convert(EntityAssociation.class, (String) criteria.getWhere());
+//		
+//		for(EntityAssociation entityAssociation: assoc.getAssociatedEntities()) {
+//			List<AggregationOperation> aggregateOps = new ArrayList<>();
+//
+//			buildAggregationQuery(entityAssociation, aggregateOps);
+//			
+//			if(StringUtils.equalsIgnoreCase(criteria.getAggregateCriteria(), "count")) {
+//				AggregationOperation countOp = count().as("state"); // TODO refactor to support other single value aggregations ...
+//				aggregateOps.add(countOp);
+//			}
+//			
+//			if(criteria.getProjectCriteria() != null && !MapUtils.isEmpty(criteria.getProjectCriteria().getMapsTo())) { 
+//				String[] projectionFields = (String[])criteria.getProjectCriteria().getMapsTo().values().toArray();
+//				AggregationOperation projectOps = Aggregation.project(projectionFields);
+//				aggregateOps.add(projectOps);
+//			}
+//			
+//			AggregationResults models = getMongoOps().aggregate(Aggregation.newAggregation(aggregateOps), assoc.getDomainAlias(), outputClass);
+//			result.addAll(models.getMappedResults());
+//		}
 		
-		for(EntityAssociation entityAssociation: assoc.getAssociatedEntities()) {
-			List<AggregationOperation> aggregateOps = new ArrayList<>();
-
-			buildAggregationQuery(entityAssociation, aggregateOps);
-			
-			if(StringUtils.equalsIgnoreCase(criteria.getAggregateCriteria(), "count")) {
-				AggregationOperation countOp = count().as("state"); // TODO refactor to support other single value aggregations ...
-				aggregateOps.add(countOp);
+		List<?> output = new ArrayList();
+		String[] aggregationCriteria = StringUtils.split((String)criteria.getWhere(), "~~");
+		Arrays.asList(aggregationCriteria).forEach((cr) -> {
+			CommandResult commndResult = getMongoOps().executeCommand(cr);
+			BasicDBList result = (com.mongodb.BasicDBList)commndResult.get("result");
+			if(criteria.getProjectCriteria() != null && StringUtils.isNotBlank(criteria.getProjectCriteria().getAlias())){
+				result = (com.mongodb.BasicDBList)((com.mongodb.BasicDBObject)result.get(0)).get(criteria.getProjectCriteria().getAlias());
 			}
 			
-			if(criteria.getProjectCriteria() != null && !MapUtils.isEmpty(criteria.getProjectCriteria().getMapsTo())) { 
-				String[] projectionFields = (String[])criteria.getProjectCriteria().getMapsTo().values().toArray();
-				AggregationOperation projectOps = Aggregation.project(projectionFields);
-				aggregateOps.add(projectOps);
-			}
+			//output.addAll(getConverter().convertArray(outputClass, List.class, result.toString()));
 			
-			AggregationResults models = getMongoOps().aggregate(Aggregation.newAggregation(aggregateOps), assoc.getDomainAlias(), outputClass);
-			result.addAll(models.getMappedResults());
-		}
-		return new ArrayList<>(result);
+			output.addAll(getMongoOps().getConverter().read(List.class, result));
+		});
+		return output;
 	}
 	
 	private void buildAggregationQuery(EntityAssociation assoc, List<AggregationOperation> aggregateOps) {

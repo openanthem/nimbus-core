@@ -21,7 +21,7 @@ public class DefaultSearchFunctionHandlerExample<T, R> extends DefaultSearchFunc
 		
 		ExampleSearchCriteria exampleSearchCriteria = createSearchCriteria(executionContext, mConfig);
 		Class<?> criteriaClass = mConfig.getReferredClass();
-		String alias = findRepoAlias(criteriaClass);
+		String alias = findRepoAlias(mConfig);
 		
 		ModelRepository rep = getRepFactory().get(mConfig.getRepo());
 		

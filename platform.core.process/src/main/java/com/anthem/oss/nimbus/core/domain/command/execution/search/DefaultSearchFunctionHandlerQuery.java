@@ -8,6 +8,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContext;
+import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.ModelRepository;
@@ -27,7 +28,8 @@ public class DefaultSearchFunctionHandlerQuery<T, R> extends DefaultSearchFuncti
 		
 		QuerySearchCriteria querySearchCriteria = createSearchCriteria(executionContext, mConfig);
 		Class<?> criteriaClass = mConfig.getReferredClass();
-		String alias = findRepoAlias(criteriaClass);
+		
+		String alias = findRepoAlias(mConfig);
 		
 		ModelRepository rep = getRepFactory().get(mConfig.getRepo());
 		
@@ -43,7 +45,7 @@ public class DefaultSearchFunctionHandlerQuery<T, R> extends DefaultSearchFuncti
 		
 		querySearchCriteria.validate(executionContext);
 		
-		querySearchCriteria.setWhere(executionContext.getCommandMessage().getCommand().getFirstParameterValue("where"));
+		resolveNamedQueryIfApplicable(executionContext, mConfig, querySearchCriteria);
 		
 		querySearchCriteria.setOrderby(executionContext.getCommandMessage().getCommand().getFirstParameterValue("orderby"));
 		
@@ -77,7 +79,32 @@ public class DefaultSearchFunctionHandlerQuery<T, R> extends DefaultSearchFuncti
 		
 		return querySearchCriteria;
 	}
-	
-	
+
+
+	private void resolveNamedQueryIfApplicable(ExecutionContext executionContext, ModelConfig<?> mConfig, QuerySearchCriteria querySearchCriteria) {
+		String where = executionContext.getCommandMessage().getCommand().getFirstParameterValue("where");
+		
+		// find if where is a named query
+		Repo repo = mConfig.getRepo();
+		Repo.NamedNativeQuery[] namedQueries = repo.namedNativeQueries();
+		
+		if(namedQueries != null && namedQueries.length > 0) {
+			for(Repo.NamedNativeQuery query: namedQueries) {
+				if(StringUtils.equalsIgnoreCase(query.name(), where) && query.nativeQueries() != null) {
+					int i = 0;
+					for(String q: query.nativeQueries()) {
+						if(i == 0) {
+							where = q;
+						}
+						else {
+							where = where +"~~"+q;
+						}
+						i++;
+					}
+				}
+			}
+		}
+		querySearchCriteria.setWhere(where);
+	}
 
 }
