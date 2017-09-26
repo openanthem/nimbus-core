@@ -41,7 +41,7 @@ public class CommandExecutorTaskDelegate implements JavaDelegate{
 		ProcessEngineContext context = (ProcessEngineContext)execution.getVariable(Constants.KEY_EXECUTE_PROCESS_CTX.code);
 		MultiOutput output = null;
 		for(String commandUrl: commandUrls){
-			commandUrl = resolveCommandUrl(execution,commandUrl, context);
+			commandUrl = resolveCommandUrl(context,commandUrl);
 			if(StringUtils.isEmpty(commandUrl))
 				continue;			
 			Command command = CommandBuilder.withUri(commandUrl).getCommand();
@@ -60,9 +60,9 @@ public class CommandExecutorTaskDelegate implements JavaDelegate{
 	}
 	
 	
-	private String resolveCommandUrl(DelegateExecution execution, String commandUrl, ProcessEngineContext context){
+	private String resolveCommandUrl(ProcessEngineContext context, String commandUrl){
 		commandUrl = pathVariableResolver.resolve(context.getParam(), commandUrl);
-		//commandUrl = context.getExecutionContext().getCommandMessage().getCommand().getRelativeUri(commandUrl);
+		commandUrl = context.getParam().getRootExecution().getRootCommand().getRelativeUri(commandUrl);
     	return commandUrl;
 	}
 	

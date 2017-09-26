@@ -38,7 +38,7 @@ public class AssignmentTask extends AbstractEntity.IdString{
 	private String description;
 	
 	@NotNull
-	private TaskType taskType;
+	private String taskType;
 	
 	private String testTaskType;
 	
@@ -82,29 +82,14 @@ public class AssignmentTask extends AbstractEntity.IdString{
 		Low
 	}
 	
-	public enum TaskType {
-		patienteligibility,
-		patientenrollment;
-	}
-	
 	public enum Source {
 		manual,
 		systematic
 	}
 	
-	
 	// TODO - refactor and review - Rakesh
 	public String getTaskTypeForDisplay() {
-		if(this.getTaskType() != null) {
-			if(this.getTaskType().name().equalsIgnoreCase("patienteligibility")) {
-				return "Patient Eligibility";
-			}
-			else if(this.getTaskType().name().equalsIgnoreCase("patientenrollment")) {
-				return "Patient Enrollment";
-			}
-			return this.getTaskType().name();
-		}
-		return "";
+		return taskType;
 	}
 	
 }
