@@ -14,9 +14,12 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.domain.Persistable;
 
+import com.anthem.nimbus.platform.spec.serializer.CustomLocalDateTimeDeserializer;
+import com.anthem.nimbus.platform.spec.serializer.MongoDateDeserializer;
 import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
 import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -31,6 +34,8 @@ import lombok.Setter;
 @Getter
 public abstract class AbstractEntity<ID extends Serializable> implements Serializable, Persistable<ID> {
 	private static final long serialVersionUID = 1L;
+	
+	private final String _class = this.getClass().getName(); 
 
 	public static abstract class IdLong extends AbstractEntity<Long> {
 		private static final long serialVersionUID = 1L;
@@ -53,12 +58,14 @@ public abstract class AbstractEntity<ID extends Serializable> implements Seriali
 	private String createdBy;
 	
     @Setter @CreatedDate
+    @JsonDeserialize(using = CustomLocalDateTimeDeserializer.class)
 	private LocalDateTime createdDate;
 	
     @Setter @LastModifiedBy
 	private String lastModifiedBy;
 	
     @Setter @LastModifiedDate
+    @JsonDeserialize(using = CustomLocalDateTimeDeserializer.class)
 	private LocalDateTime lastModifiedDate;
 	
     //@Version

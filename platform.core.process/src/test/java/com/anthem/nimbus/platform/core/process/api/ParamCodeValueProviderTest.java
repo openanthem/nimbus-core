@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.junit.FixMethodOrder;
 import org.junit.Ignore;
@@ -13,7 +14,12 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.util.Assert;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
@@ -31,20 +37,26 @@ import com.anthem.oss.nimbus.core.entity.StaticCodeValue;
 import com.anthem.oss.nimbus.core.entity.VStaticCodeValue;
 import com.anthem.oss.nimbus.core.entity.client.Client;
 import com.anthem.oss.nimbus.core.entity.client.access.ClientUserRole;
+import com.anthem.oss.nimbus.core.entity.client.user.ClientUser;
 import com.anthem.oss.nimbus.core.entity.queue.MGroupMember;
 import com.anthem.oss.nimbus.core.entity.queue.MUser;
 import com.anthem.oss.nimbus.core.entity.queue.MUserGroup;
 import com.anthem.oss.nimbus.core.entity.queue.Queue;
 import com.anthem.oss.nimbus.core.entity.user.ClientUserGroup;
 import com.anthem.oss.nimbus.core.entity.user.GroupUser;
+import com.mongodb.Mongo;
+import com.mongodb.MongoClient;
 
 /**
  * @author Rakesh Patel
  *
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@ContextConfiguration(classes = MongoConfiguration.class)
 public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTests {
 
+	private static final String[] COLLECTIONS = {"queue","clientusergroup","clientuser"};
+	
 	@Autowired
 	MongoOperations mongoOps;
 	
@@ -221,61 +233,89 @@ public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTest
 		assertEquals(Long.valueOf("2"), count);
 	}
 	
-	// 2017/09/6 - Tony (AF42192) Ignoring test as embedded mongo instance does not support graphlookup
+	// TODO - the in-memory flapdoodle mongo does not support the graphLookup query hence @Ignore
 	@Ignore
-	@Test
-	public void t7_testSearchByQueryAssociation() {
-		insertUserAndQueue();
+	public void t9_getAllQueuesForUserByAggregation() {
+		Stream.of(COLLECTIONS).forEach((collection) -> mongoOps.dropCollection(collection));
+		createUsers();
+		createUserGroups();
+		createQueues();
+
+		String userQueues = "{ \"aggregate\": \"queue\", \"pipeline\": [ { $graphLookup: { from: \"clientuser\", startWith: \"$entityId\", connectFromField: \"entityId\", connectToField: \"_id\", as: \"users\", restrictSearchWithMatch: { \"_id\": \"U2\" } } }, { $match: { \"users\": { $ne: [] } } } ] }";
+		String userGroupQueues = "{ \"aggregate\": \"queue\", \"pipeline\": [{ $graphLookup: { from: \"clientusergroup\", startWith: \"$entityId\", connectFromField: \"entityId\", connectToField: \"_id\", as: \"usergroups\", restrictSearchWithMatch: {\"members.userId\":\"U2\"} } }, { $match: { \"usergroups\" :{ $ne: []} } } ] }";
+		String finalCriteria = userQueues+"~~"+userGroupQueues;
 		
-		String associationString = getAssociationString();
-		
-		CommandMessage cmdMsg = build("Acme/fep/cmapp/p/queue/_search?fn=query&where="+associationString);
-		
-		//ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
-		//List<?> values = (List<?>)queryFunctionHandler.execute(exContext, null);
+		CommandMessage cmdMsg = build("Acme/fep/cmapp/p/queue/_search?fn=query&where="+finalCriteria);
 		
 		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
-		List<?> values = (List<?>) multiOp.getSingleResult();
+		List<Queue> values = (List<Queue>) multiOp.getSingleResult();
 		
 		Assert.notEmpty(values, "values cannot be empty");
+		org.junit.Assert.assertEquals(4, values.size());
+		
 	}
 	
-	// 2017/09/6 - Tony (AF42192) Ignoring test as embedded mongo instance does not support graphlookup
+	// TODO - the in-memory flapdoodle mongo does not support the graphLookup query hence @Ignore
 	@Ignore
-	@SuppressWarnings("unchecked")
-	@Test
-	public void t8_testSearchByQueryAssociationWithCountAggregation() {
-		insertUserAndQueue();
+	public void t9t1_getAllQueuesForUserByNamedQueryAggregation() {
+		Stream.of(COLLECTIONS).forEach((collection) -> mongoOps.dropCollection(collection));
+		createUsers();
+		createUserGroups();
+		createQueues();
+
+		String userQueues = "{ \"aggregate\": \"queue\", \"pipeline\": [ { $graphLookup: { from: \"clientuser\", startWith: \"$entityId\", connectFromField: \"entityId\", connectToField: \"_id\", as: \"users\", restrictSearchWithMatch: { \"_id\": \"U2\" } } }, { $match: { \"users\": { $ne: [] } } } ] }";
+		String userGroupQueues = "{ \"aggregate\": \"queue\", \"pipeline\": [{ $graphLookup: { from: \"clientusergroup\", startWith: \"$entityId\", connectFromField: \"entityId\", connectToField: \"_id\", as: \"usergroups\", restrictSearchWithMatch: {\"members.userId\":\"U2\"} } }, { $match: { \"usergroups\" :{ $ne: []} } } ] }";
+		String finalCriteria = userQueues+"~~"+userGroupQueues;
 		
-		String associationString = getAssociationString();
-		
-		CommandMessage cmdMsg = build("Acme/fep/cmapp/p/queue/_search?fn=query&where="+associationString+"&aggregate=count");
-		
-		//ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
-		//List<Holder<Integer>> values = (List<Holder<Integer>>)queryFunctionHandler.execute(exContext, null);
+		CommandMessage cmdMsg = build("Acme/fep/cmapp/p/queue/_search?fn=query&where=userQueues");
 		
 		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
-		List<Holder<Integer>> values = (List<Holder<Integer>>)multiOp.getSingleResult();
+		List<Queue> values = (List<Queue>) multiOp.getSingleResult();
 		
 		Assert.notEmpty(values, "values cannot be empty");
-		assertEquals(Integer.valueOf("1"), values.get(0).getState());
+		org.junit.Assert.assertEquals(4, values.size());
+		
 	}
 	
-	private Client insertClient() {
-		mongoOps.dropCollection("client");
+	@Test
+	public void t9t2_getMembersFromUserGroupByAggregation() {
+		Stream.of(COLLECTIONS).forEach((collection) -> mongoOps.dropCollection(collection));
+		createUsers();
+		createUserGroups();
+		createQueues();
 		
-		Client c = new Client();
-		c.setName("client");
-		c.setCode("c");
-		mongoOps.insert(c, "client");
+		String query = "{\n" + 
+				"    \"aggregate\" : \"clientusergroup\",\n" + 
+				"    \"pipeline\" : [ \n" + 
+				"        {\n" + 
+				"			$match: {\n" + 
+				"                \"members.admin\": true\n" + 
+				"                }\n" + 
+				"		},\n" + 
+				"        {\n" + 
+				"        $project: {\n" + 
+				"            groupuser: {$filter: {\n" + 
+				"                input: \"$members\",\n" + 
+				"                as: \"member\",\n" + 
+				"                cond: {$eq: [\"$$member.admin\", true]}\n" + 
+				"        }},\n" + 
+				"        _id: 0\n" + 
+				"    }}\n" +  
+				"    ] \n" + 
+				"}";
 		
-		Client c1 = new Client();
-		c1.setName("client1");
-		c1.setCode("c1");
-		mongoOps.insert(c1, "client");
-		return c;
+		CommandMessage cmdMsg = build("Acme/fep/cmapp/p/clientusergroup/_search?fn=query&where="+query+"&projection.alias=groupuser");
+		
+		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
+		List<GroupUser> values = (List<GroupUser>) multiOp.getSingleResult();
+		
+		Assert.notEmpty(values, "values cannot be empty");
+		org.junit.Assert.assertEquals(2, values.size());
+		
+		System.out.println(values.get(0).getUserId());
+		
 	}
-	
+ 	
 	@Test
 	@SuppressWarnings({ "unchecked" })
 	public void tc9_orderby_desc() {
@@ -321,7 +361,7 @@ public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTest
 	
 	@Test
 	@SuppressWarnings({ "unchecked" })
-	public void tc10_orderby_asc() {
+	public void tc11_orderby_asc() {
 		inserClientUserRole();
 		
 		CommandMessage cmdMsg = build("Acme/fep/p/userrole/_search?fn=query&where=userrole.status.eq('Active')&orderby=userrole.name.asc()");
@@ -341,7 +381,7 @@ public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTest
 	
 	@Test
 	@SuppressWarnings({ "unchecked" })
-	public void tc10_orderbywithprojection_asc() {
+	public void tc12_orderbywithprojection_asc() {
 		inserClientUserRole();
 		
 		CommandMessage cmdMsg = build("Acme/fep/p/userrole/_search?fn=query&where=userrole.status.eq('Active')&orderby=userrole.name.asc()");
@@ -357,6 +397,21 @@ public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTest
 		assertEquals((values.get(0)).getName(), "jayant");
 		assertEquals(values.get(1).getName(), "mantha");
 		assertEquals(values.get(2).getName(), "sandeep");
+	}
+	
+	private Client insertClient() {
+		mongoOps.dropCollection("client");
+		
+		Client c = new Client();
+		c.setName("client");
+		c.setCode("c");
+		mongoOps.insert(c, "client");
+		
+		Client c1 = new Client();
+		c1.setName("client1");
+		c1.setCode("c1");
+		mongoOps.insert(c1, "client");
+		return c;
 	}
 	
 	private void inserClientUserRole() {
@@ -386,45 +441,132 @@ public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTest
 		clientUserRole4.setDescription("dsc2");;
 		mongoOps.insert(clientUserRole4,"userrole");
 	}
-	private void insertUserAndQueue() {
-		mongoOps.dropCollection("user");
+	
+	private void createUsers() {
+		mongoOps.dropCollection("clientuser");
+		
+		ClientUser clientUser = new ClientUser();
+		clientUser.setId("U1");
+		clientUser.setDisplayName("testClientUserDisplayName_1");
+		
+		
+		ClientUser clientUser2 = new ClientUser();
+		clientUser2.setId("U2");
+		clientUser2.setDisplayName("testClientUserDisplayName_2");
+		
+		ClientUser clientUser3 = new ClientUser();
+		clientUser3.setId("U3");
+		clientUser3.setDisplayName("testClientUserDisplayName_3");
+		
+		ClientUser clientUser4 = new ClientUser();
+		clientUser4.setId("U4");
+		clientUser4.setDisplayName("testClientUserDisplayName_4");
+		
+		mongoOps.save(clientUser, "clientuser");
+		mongoOps.save(clientUser2, "clientuser");
+		mongoOps.save(clientUser3, "clientuser");
+		mongoOps.save(clientUser4, "clientuser");
+	}
+	
+	private void createUserGroups() {
+		mongoOps.dropCollection("clientusergroup");
+		
+		ClientUserGroup userGroup = new ClientUserGroup();
+		userGroup.setId("UG1");
+		userGroup.setName("testClientUserGroupName_1");
+		
+		List<GroupUser> groupUsers = new ArrayList<>();
+		GroupUser groupUser = new GroupUser();
+		groupUser.setUserId("U2");
+		groupUsers.add(groupUser);
+		
+		GroupUser groupUser22 = new GroupUser();
+		groupUser22.setUserId("U3");
+		groupUser22.setAdmin(true);
+		groupUsers.add(groupUser22);
+		
+		GroupUser groupUser33 = new GroupUser();
+		groupUser33.setUserId("U4");
+		groupUser33.setAdmin(true);
+		groupUsers.add(groupUser33);
+		
+		userGroup.setMembers(groupUsers);
+		
+		ClientUserGroup userGroup2 = new ClientUserGroup();
+		userGroup2.setId("UG2");
+		userGroup2.setName("testClientUserGroupName_2");
+		
+		List<GroupUser> groupUsers2 = new ArrayList<>();
+		GroupUser groupUser2 = new GroupUser();
+		groupUser2.setUserId("U2");
+		groupUsers2.add(groupUser2);
+		
+		userGroup2.setMembers(groupUsers2);
+		
+		ClientUserGroup userGroup3 = new ClientUserGroup();
+		userGroup3.setId("UG3");
+		userGroup3.setName("testClientUserGroupName_3");
+		
+		List<GroupUser> groupUsers3 = new ArrayList<>();
+		GroupUser groupUser3 = new GroupUser();
+		groupUser3.setUserId("U1");
+		groupUsers3.add(groupUser3);
+		
+		userGroup3.setMembers(groupUsers3);
+		
+		mongoOps.save(userGroup, "clientusergroup");
+		mongoOps.save(userGroup2, "clientusergroup");
+		mongoOps.save(userGroup3, "clientusergroup");
+	}
+	
+	private void createQueues() {
 		mongoOps.dropCollection("queue");
-		mongoOps.dropCollection("usergroup");
-		mongoOps.dropCollection("groupmember");
 		
 		Queue queue = new Queue();
-		//queue.setCode("test1");
-		queue.setName("test queue");
+		queue.setId("Q1");
+		queue.setName("testQueue_1");
 		
-		MUser user = new MUser();
-		user.setName("user1");
-		user.setCode("1");
-		mongoOps.insert(user,"user");
+		ClientUser cu = mongoOps.findOne(new Query(Criteria.where("id").is("U1")), ClientUser.class, "clientuser");
 		
-		MGroupMember grpMember = new MGroupMember();
-		grpMember.setName("adminMembers");
-		grpMember.setAdmin(true);
-		grpMember.setUserName("user2");
-		mongoOps.insert(grpMember, "groupmember");
+		queue.setEntityId(cu.getId());
 		
-		MUserGroup ug = new MUserGroup();
-		ug.setName("group1");
-		ug.addGroupMembers(grpMember);
-		mongoOps.insert(ug,"usergroup");
+		Queue queue2 = new Queue();
+		queue2.setId("Q2");
+		queue2.setName("testQueue_2");
 		
-		//queue.addUserGroups(ug);
-		//queue.addUsers(user);
-		mongoOps.insert(queue);
+		ClientUserGroup cug = mongoOps.findOne(new Query(Criteria.where("id").is("UG1")), ClientUserGroup.class, "clientusergroup");
 		
-		Queue queue1 = new Queue();
-		//queue1.setCode("test2");
-		queue1.setName("test2 queue");
-		MUser user1 = new MUser();
-		user1.setName("user2");
-		user1.setCode("2");
-		mongoOps.insert(user1,"user");
-		//queue1.addUsers(user1);
-		mongoOps.insert(queue1);
+		queue2.setEntityId(cug.getId());
+		
+		Queue queue3 = new Queue();
+		queue3.setId("Q3");
+		queue3.setName("testQueue_3");
+		
+		ClientUserGroup cug2 = mongoOps.findOne(new Query(Criteria.where("id").is("UG1")), ClientUserGroup.class, "clientusergroup");
+		
+		queue3.setEntityId(cug2.getId());
+		
+		Queue queue4 = new Queue();
+		queue4.setId("Q4");
+		queue4.setName("testQueue_4");
+		
+		ClientUserGroup cug3 = mongoOps.findOne(new Query(Criteria.where("id").is("UG2")), ClientUserGroup.class, "clientusergroup");
+		
+		queue4.setEntityId(cug3.getId());
+		
+		Queue queue5 = new Queue();
+		queue5.setId("Q5");
+		queue5.setName("testQueue_5");
+		
+		ClientUser cu2 = mongoOps.findOne(new Query(Criteria.where("id").is("U2")), ClientUser.class, "clientuser");
+		
+		queue5.setEntityId(cu2.getId());
+		
+		mongoOps.save(queue, "queue");
+		mongoOps.save(queue2, "queue");
+		mongoOps.save(queue3, "queue");
+		mongoOps.save(queue4, "queue");
+		mongoOps.save(queue5, "queue");
 	}
 	
 	private ClientUserGroup insertClientUserGroup() {
@@ -449,52 +591,6 @@ public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTest
 		return cug;
 	}
 	
-	private String getAssociationString() {
-		return "{\n" + 
-				"  \"domainAlias\": \"queue\",\n" + 
-				"  \"associatedEntities\": [\n" + 
-				"    {\n" + 
-				"      \"domainAlias\": \"user\",\n" + 
-				"      \"associationStartWith\": \"users\",\n" + 
-				"      \"associationFrom\": \"users\",\n" + 
-				"      \"associationTo\": \"name\",\n" + 
-				"      \"criteria\": [\n" + 
-				"        {\n" + 
-				"          \"key\": \"name\",\n" + 
-				"          \"value\": \"user1\"\n" + 
-				"        }\n" + 
-				"      ],\n" + 
-				"      \"associationAlias\": \"queueToUsers\"\n" + 
-				"    },\n" + 
-				"    {\n" + 
-				"      \"domainAlias\": \"usergroup\",\n" + 
-				"      \"associationStartWith\": \"userGroups\",\n" + 
-				"      \"associationFrom\": \"userGroups\",\n" + 
-				"      \"associationTo\": \"name\",\n" + 
-				"      \"criteria\": [],\n" + 
-				"      \"associationAlias\": \"queueToGroups\",\n" + 
-				"      \"unwind\": true,\n" + 
-				"      \"associatedEntities\": [\n" + 
-				"        {\n" + 
-				"          \"domainAlias\": \"groupmember\",\n" + 
-				"          \"associationStartWith\": \"queueToGroups.groupMembers\",\n" + 
-				"          \"associationFrom\": \"queueToGroups\",\n" + 
-				"          \"associationTo\": \"name\",\n" + 
-				"          \"criteria\": [\n" + 
-				"            {\n" + 
-				"              \"key\": \"userName\",\n" + 
-				"              \"value\": \"user1\"\n" + 
-				"            }\n" + 
-				"          ],\n" + 
-				"          \"associationAlias\": \"groupToMember\"\n" + 
-				"        }\n" + 
-				"      ]\n" + 
-				"    }\n" + 
-				"  ],\n" + 
-				"  \"criteria\": []\n" +
-				"}";
-	}
-	
 	private CommandMessage build(String uri) {
 		Command cmd = CommandBuilder.withUri(uri).getCommand();
 		cmd.setAction(Action._search);
@@ -503,4 +599,23 @@ public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTest
 		cmdMsg.setCommand(cmd);
 		return cmdMsg;
 	}
+}
+
+@Configuration
+class MongoConfiguration extends AbstractMongoConfiguration {
+ 
+    @Override
+    protected String getDatabaseName() {
+        return "test";
+    }
+ 
+    @Override
+    public Mongo mongo() throws Exception {
+        return new MongoClient("127.0.0.1", 27017);
+    }
+ 
+    @Override
+    protected String getMappingBasePackage() {
+        return "com.anthem.nimbus.platform.client.extension.cm";
+    }
 }

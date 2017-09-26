@@ -17,7 +17,11 @@ import lombok.Setter;
  *
  */
 @Domain(value="queue", includeListeners={ListenerType.persistence})
-@Repo(value=Database.rep_mongodb, cache=Cache.rep_device)
+@Repo(value=Database.rep_mongodb, 
+		namedNativeQueries = { @Repo.NamedNativeQuery(name = "userQueues", nativeQueries = {
+			"{ \"aggregate\": \"queue\", \"pipeline\": [ { $graphLookup: { from: \"clientuser\", startWith: \"$entityId\", connectFromField: \"entityId\", connectToField: \"_id\", as: \"users\", restrictSearchWithMatch: { \"_id\": \"U2\" } } }, { $match: { \"users\": { $ne: [] } } } ] }",
+			"{ \"aggregate\": \"queue\", \"pipeline\": [{ $graphLookup: { from: \"clientusergroup\", startWith: \"$entityId\", connectFromField: \"entityId\", connectToField: \"_id\", as: \"usergroups\", restrictSearchWithMatch: {\"members.userId\":\"U2\"} } }, { $match: { \"usergroups\" :{ $ne: []} } } ] }" }) },
+		cache=Cache.rep_device)
 @Getter @Setter @EqualsAndHashCode(of={"code"},callSuper=false)
 public class Queue extends IdString {
 
