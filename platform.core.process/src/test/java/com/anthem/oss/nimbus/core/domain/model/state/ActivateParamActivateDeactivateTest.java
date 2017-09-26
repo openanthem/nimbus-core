@@ -12,27 +12,17 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.anthem.oss.nimbus.core.TestFrameworkIntegrationScenariosApplication;
-import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ExecutionModel;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.BaseStateEventListener;
-import com.anthem.oss.nimbus.test.sample.domain.model.SampleCoreEntity;
 
 /**
  * @author Soham Chakravarti
@@ -42,55 +32,20 @@ import com.anthem.oss.nimbus.test.sample.domain.model.SampleCoreEntity;
 @SpringBootTest(classes=TestFrameworkIntegrationScenariosApplication.class)
 @ActiveProfiles("test")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class PararmActiveTest {
+public class ActivateParamActivateDeactivateTest extends ActivateParamBaseTest {
 
-	@Autowired QuadModelBuilder quadModelBuilder;
-	
 	private static final String CORE_PARAM_PATH_q1 = "/sample_core/q1";
 	private static final String CORE_PARAM_PATH_q1Level1 = "/sample_core/q1Level1";
 	private static final String CORE_PARAM_PATH_q1Level1_nested_attr_String = CORE_PARAM_PATH_q1Level1 + "/nested_attr_String";
-	
-	private Command _cmd;
-	
-	private QuadModel<?, SampleCoreEntity> _q;
-	
-	private List<ParamEvent> _paramEvents;
-	
-	private BaseStateEventListener _stateEventListener;
-	
-	protected static Command createCommand() {
-		Command cmd = CommandBuilder.withUri("/hooli/thebox/p/sample_core/_new").getCommand();
-		return cmd;
+
+	@Override
+	protected String getSourceParamPath() {
+	 	return CORE_PARAM_PATH_q1;
 	}
 	
-	@Before
-	public void before() {
-		_cmd = createCommand();
-		_q = quadModelBuilder.build(_cmd);
-		assertNotNull(_q);
-		
-		assertNotNull(_q.getRoot().findParamByPath(CORE_PARAM_PATH_q1));
-		assertNotNull(_q.getRoot().findParamByPath(CORE_PARAM_PATH_q1Level1));
-		
-		_q.getRoot().getExecutionRuntime().onStartCommandExecution(_cmd);
-	}
-	
-	@After
-	public void after() {
-		_q.getRoot().getExecutionRuntime().onStopCommandExecution(_cmd);
-		_q.getRoot().getExecutionRuntime().getEventDelegator().removeTxnScopedListener(_stateEventListener);
-	}
-	
-	private void addListener() {
-		_stateEventListener = new BaseStateEventListener() {
-			@Override
-			public void onStopTxn(ExecutionTxnContext txnCtx, Map<ExecutionModel<?>, List<ParamEvent>> aggregatedEvents) {
-				assertEquals(1, aggregatedEvents.size());
-				_paramEvents = aggregatedEvents.values().iterator().next();
-			}
-		};
-		
-		_q.getRoot().getExecutionRuntime().getEventDelegator().addTxnScopedListener(_stateEventListener);
+	@Override
+	protected String getTargetParamPath() {
+		return CORE_PARAM_PATH_q1Level1;
 	}
 	
 	@Test
@@ -217,7 +172,7 @@ public class PararmActiveTest {
 		activate_validate_leaf();
 	}
 	
-	//@Test
+	@Test
 	public void t10_nested_init() {
 		Param<?> q1Level1 = _q.getRoot().findParamByPath(CORE_PARAM_PATH_q1Level1);
 		assertTrue(q1Level1.isActive());
@@ -226,4 +181,106 @@ public class PararmActiveTest {
 		
 		assertTrue(_q.getRoot().findParamByPath(CORE_PARAM_PATH_q1Level1_nested_attr_String).isActive());
 	}
+	
+	@Test
+	public void t11_nested_deactivate_noState() {
+		Param<?> q1Level1 = _q.getRoot().findParamByPath(CORE_PARAM_PATH_q1Level1);
+		assertTrue(q1Level1.isActive());
+		
+		Param<Boolean> q1Level1_visible = q1Level1.findParamByPath("/#/visible");
+		Param<Boolean> q1Level1_enabled = q1Level1.findParamByPath("/#/enabled");
+
+		Param<?> q1Level1Attr = _q.getRoot().findParamByPath(CORE_PARAM_PATH_q1Level1_nested_attr_String);
+		assertTrue(q1Level1Attr.isActive());
+		
+		Param<Boolean> q1Level1Attr_visible = q1Level1Attr.findParamByPath("/#/visible");
+		Param<Boolean> q1Level1Attr_enabled = q1Level1Attr.findParamByPath("/#/enabled");
+		
+		
+		assertTrue(q1Level1_visible.getState());
+		assertTrue(q1Level1_enabled.getState());
+		
+		assertTrue(q1Level1Attr_visible.getState());
+		assertTrue(q1Level1Attr_enabled.getState());
+		
+		
+		addListener();
+		q1Level1.deactivate();
+		
+		assertNull(q1Level1.getState());
+		assertFalse(q1Level1.isActive());
+		assertFalse(q1Level1_visible.getState());
+		assertFalse(q1Level1_enabled.getState());
+		
+		assertNull(q1Level1Attr.getState());
+		assertFalse(q1Level1Attr.isActive());
+		assertFalse(q1Level1Attr_visible.getState());
+		assertFalse(q1Level1Attr_enabled.getState());
+		
+		
+		// validate events
+		assertNotNull(_paramEvents);
+		//assertEquals(4, _paramEvents.size());
+		
+		List<Param<?>> expectedEventParams = new ArrayList<>();
+		expectedEventParams.add(q1Level1_visible);
+		expectedEventParams.add(q1Level1_enabled);
+		expectedEventParams.add(q1Level1Attr_visible);
+		expectedEventParams.add(q1Level1Attr_enabled);
+		
+		_paramEvents.stream()
+			.forEach(pe->expectedEventParams.remove(pe.getParam()));
+		
+		assertTrue(expectedEventParams.isEmpty());
+	}
+	
+	
+	@Test
+	public void t12_nested_reactivate_noState() {
+		// deactivate
+		t11_nested_deactivate_noState();
+		_q.getRoot().getExecutionRuntime().onStopCommandExecution(_cmd);
+		
+		_q.getRoot().getExecutionRuntime().onStartCommandExecution(_cmd);
+		activate_validate_nested();
+	}
+	
+	private void activate_validate_nested() {
+		Param<?> q1Level1 = _q.getRoot().findParamByPath(CORE_PARAM_PATH_q1Level1);
+		assertFalse(q1Level1.isActive());
+		
+		Param<Boolean> q1_visible = q1Level1.findParamByPath("/#/visible");
+		Param<Boolean> q1_enabled = q1Level1.findParamByPath("/#/enabled");
+		
+		Param<?> q1Level1Attr = _q.getRoot().findParamByPath(CORE_PARAM_PATH_q1Level1_nested_attr_String);
+		assertFalse(q1Level1Attr.isActive());
+		
+		Param<Boolean> q1Level1Attr_visible = q1Level1Attr.findParamByPath("/#/visible");
+		Param<Boolean> q1Level1Attr_enabled = q1Level1Attr.findParamByPath("/#/enabled");
+		
+		
+		q1Level1.activate();
+		
+		assertTrue(q1Level1.isActive());
+		assertTrue(q1_visible.getState());
+		assertTrue(q1_enabled.getState());
+
+		assertTrue(q1Level1Attr.isActive());
+		assertTrue(q1Level1Attr_visible.getState());
+		assertTrue(q1Level1Attr_enabled.getState());
+		
+		// validate events
+		assertNotNull(_paramEvents);
+		//assertEquals(2, _paramEvents.size());
+		
+		List<Param<?>> expectedEventParams = new ArrayList<>();
+		expectedEventParams.add(q1_visible);
+		expectedEventParams.add(q1_enabled);
+		
+		_paramEvents.stream()
+			.forEach(pe->expectedEventParams.remove(pe.getParam()));
+		
+		assertTrue(expectedEventParams.isEmpty());
+	}
+	
 }

@@ -35,6 +35,7 @@ import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.DetachedState;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Nature;
 import com.anthem.oss.nimbus.core.domain.definition.Model;
+import com.anthem.oss.nimbus.core.domain.definition.OnStateChange;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.ViewParamBehavior;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.ViewStyle;
@@ -418,26 +419,9 @@ abstract public class AbstractEntityConfigBuilder {
 			created.setAssociatedEntities(Arrays.asList(associatedEntityAnnotationArr));
 		}
 		
-		String value ="";
-		if(AnnotatedElementUtils.isAnnotated(f, Model.Param.Text.class)) {
-			Model.Param.Text aVal = AnnotationUtils.getAnnotation(f, Model.Param.Text.class);
-			
-			//Model.Param.String srcValues = ModelsTemplate.newInstance(aVal.value());
-			value = aVal.label();
-		}
-		//not mapped Param
-		ParamConfig.Desc desc = new ParamConfig.Desc();
-		desc.setHelp(created.getCode());
-		desc.setHint(created.getCode());
-		if(org.apache.commons.lang3.StringUtils.isNotEmpty(value)){
-			desc.setLabel(value);
-		}
-		else{
-			desc.setLabel(created.getCode());
-		}
+		List<AnnotationConfig> ruleAnnotations = AnnotationConfigHandler.handle(f, OnStateChange.class);
+		created.setRules(ruleAnnotations);
 		
-		created.setDesc(desc);
-
 		List<AnnotationConfig> vConfig = AnnotationConfigHandler.handle(f, Constraint.class);
 		created.setValidations(vConfig);
 		

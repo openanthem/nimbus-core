@@ -117,6 +117,6 @@ public class DefaultQuadModelBuilder implements QuadModelBuilder {
 		QuadScopedEventListener qEventListener = new QuadScopedEventListener(getParamEventListeners());
 		
 		BiFunction<Param<?>, String, Object> bpmEvaluator = (p, pid) -> bpmGateway.continueBusinessProcessExecution(p, pid);
-		return new EntityStateAspectHandlers(qEventListener, bpmEvaluator, validatorProvider, paramStateGateway);
+		return new EntityStateAspectHandlers(qEventListener, bpmEvaluator, validatorProvider, paramStateGateway, beanResolver);
 	}
 }
