@@ -14,7 +14,6 @@ import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.anthem.oss.nimbus.core.AbstractFrameworkIngerationPersistableTests;
 import com.anthem.oss.nimbus.core.domain.command.Action;
-import com.anthem.oss.nimbus.core.domain.command.Behavior;
 import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
 
 import test.com.anthem.nimbus.platform.utils.ExtractResponseOutputUtils;
@@ -25,21 +24,21 @@ import test.com.anthem.nimbus.platform.utils.MockHttpRequestBuilder;
  * 
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class DefaultBehaviorExecutorConfigTest extends AbstractFrameworkIngerationPersistableTests {
+public class DefaultActionExecutorConfigTest extends AbstractFrameworkIngerationPersistableTests {
 
 	@Autowired
 	private DomainConfigBuilder domainConfigBuilder;
 	
 	private MockHttpServletRequest createRequest(String domainPath, Action a) {
 		MockHttpServletRequest req = MockHttpRequestBuilder.withUri(domainPath)
-				.addAction(a).addBehavior(Behavior.$config).getMock();
+				.addAction(a).getMock();
 		
 		return req;
 	}
 	
 	@Test
-	public void t01_get_config_noRefId_domainRoot_action_new() {
-		Object resp = controller.handlePost(createRequest(VIEW_PARAM_ROOT, Action._new), null);
+	public void t01_get_config_noRefId_domainRoot() {
+		Object resp = controller.handlePost(createRequest(VIEW_PARAM_ROOT, Action._config), null);
 		assertNotNull(resp);
 		
 		assertSame(domainConfigBuilder.getRootDomain(VIEW_DOMAIN_ALIAS), ExtractResponseOutputUtils.extractOutput(resp));

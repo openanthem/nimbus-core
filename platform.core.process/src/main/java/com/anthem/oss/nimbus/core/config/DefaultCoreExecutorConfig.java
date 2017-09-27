@@ -102,7 +102,7 @@ public class DefaultCoreExecutorConfig {
 		return new DefaultActionExecutorReplace(beanResolver);
 	}
 	
-	@Bean(name="default.$config")
+	@Bean(name="default._config$execute")
 	public CommandExecutor<?> defaultBehaviorExecutorConfig(BeanResolverStrategy beanResolver){
 		return new DefaultBehaviorExecutorConfig(beanResolver);
 	}
