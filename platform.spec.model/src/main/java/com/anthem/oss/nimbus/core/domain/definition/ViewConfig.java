@@ -412,6 +412,7 @@ public class ViewConfig {
 		boolean readOnly() default false;
 		String labelClass() default "anthem-label";
 		boolean postEventOnChange() default false;
+		String postButtonUrl() default "";
 		String controlId() default "";
 	}
 
