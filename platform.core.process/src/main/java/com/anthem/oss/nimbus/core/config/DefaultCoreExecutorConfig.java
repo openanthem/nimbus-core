@@ -8,6 +8,7 @@ import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutor;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandMessageConverter;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandPathVariableResolver;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandTransactionInterceptor;
+import com.anthem.oss.nimbus.core.domain.command.execution.DefaultBehaviorExecutorConfig;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionBehaviorExecutorGetState;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutorDelete;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutorGet;
@@ -99,6 +100,11 @@ public class DefaultCoreExecutorConfig {
 	@Bean(name="default._replace$execute")
 	public CommandExecutor<?> defaultActionProcessExecutorReplace(BeanResolverStrategy beanResolver){
 		return new DefaultActionExecutorReplace(beanResolver);
+	}
+	
+	@Bean(name="default.$config")
+	public CommandExecutor<?> defaultBehaviorExecutorConfig(BeanResolverStrategy beanResolver){
+		return new DefaultBehaviorExecutorConfig(beanResolver);
 	}
 	
 	@Bean(name="default._get$state")
