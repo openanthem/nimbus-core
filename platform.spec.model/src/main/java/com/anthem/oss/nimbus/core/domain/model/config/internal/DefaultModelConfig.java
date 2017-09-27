@@ -29,12 +29,12 @@ import lombok.ToString;
  * @author Soham Chakravarti
  *
  */
-@Getter @Setter @ToString @RequiredArgsConstructor
+@Getter @Setter @ToString(callSuper=true, of={"alias", "referredClass"}) @RequiredArgsConstructor
 public class DefaultModelConfig<T> extends AbstractEntityConfig<T> implements ModelConfig<T>, Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private final Class<T> referredClass;
+	@JsonIgnore private final Class<T> referredClass;
 	private String alias;
 	
 	@JsonIgnore private Domain domain;
@@ -42,7 +42,7 @@ public class DefaultModelConfig<T> extends AbstractEntityConfig<T> implements Mo
 	
 	@JsonIgnore private Repo repo;
 	
-	@JsonIgnore private List<ParamConfig<?>> params;
+	private List<ParamConfig<?>> params;
 	
 	@JsonIgnore private transient ParamConfig<?> idParam;
 	
@@ -57,7 +57,7 @@ public class DefaultModelConfig<T> extends AbstractEntityConfig<T> implements Mo
 		return templateParams;
 	}
 
-	@Override
+	@Override @JsonIgnore 
 	public String getDomainLifecycle() {
 		return Optional.ofNullable(getDomain()).map(Domain::lifecycle).orElse(null);
 	}

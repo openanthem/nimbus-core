@@ -29,7 +29,7 @@ import lombok.ToString;
  * @author Soham Chakravarti
  *
  */
-@Getter @Setter @ToString(callSuper=true, of={"type", "validations", "values"})
+@Getter @Setter @ToString(callSuper=true, of={"code", "beanName", "type"})
 public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements ParamConfig<P>, Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -60,7 +60,8 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	@JsonIgnore
 	private Values values;
 	
-	@JsonIgnore @Setter private List<AssociatedEntity> associatedEntities;
+	@JsonIgnore @Setter 
+	private List<AssociatedEntity> associatedEntities;
 
 
 	public static class StateContextConfig<P> extends DefaultParamConfig<P> {
@@ -129,18 +130,6 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	public <K> ParamConfig<K> findParamByPath(String[] pathArr) {
 		if(ArrayUtils.isEmpty(pathArr))
 			return null;
-
-		/* param is not leaf node: is collection 
-		ParamType.NestedCollection<?> mpc = getType().findIfCollection();
-		if(mpc != null) {
-			// ensure that path configured contains {index} as first element for collection
-			if(!StringUtils.equals(Constants.MARKER_COLLECTION_ELEM_INDEX.code, pathArr[0])) {
-				return null;
-			}
-			
-			//==return mpc.getElementConfig().findParamByPath(ArrayUtils.remove(pathArr, 0));
-			return (ParamConfig<K>)this;
-		}*/
 		
 		/* param is not leaf node: is nested */
 		ParamType.Nested<?> mp = getType().findIfNested();

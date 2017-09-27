@@ -28,6 +28,7 @@ public interface EntityState<T> {
 	public String getPath();
 	public String getBeanPath();
 	
+	@JsonIgnore
 	public EntityConfig<T> getConfig();
 
 	public <S> Model<S> findModelByPath(String path);
@@ -110,7 +111,8 @@ public interface EntityState<T> {
 	}
 	
 	public interface Model<T> extends EntityState<T> { 
-		@Override
+		
+		@JsonIgnore @Override
 		public ModelConfig<T> getConfig();
 		
 		public Param<T> getAssociatedParam();
@@ -179,6 +181,7 @@ public interface EntityState<T> {
 		@Override
 		public ListElemParam<T> add();
 		
+		@JsonIgnore
 		default public ParamConfig<T> getElemConfig() {
 			StateType.NestedCollection<T> typeSAC = getAssociatedParam().getType().findIfCollection(); 
 			ParamType.NestedCollection<T> typeConfig = typeSAC.getConfig().findIfCollection();
@@ -197,7 +200,7 @@ public interface EntityState<T> {
 	}
 	
 	public interface Param<T> extends EntityState<T>, State<T>, Notification.Producer<T> {//, Notification.ObserveOn<MappedParam<?, T>, Param<T>> {
-		@Override
+		@JsonIgnore @Override
 		public ParamConfig<T> getConfig();
 		
 		public T getLeafState();
