@@ -7,7 +7,6 @@ package com.anthem.oss.nimbus.core.domain.model.state.internal;
 import java.beans.PropertyDescriptor;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -160,22 +159,10 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 								.orElse(null);
 		if(processExecId!=null)
 			getAspectHandlers().getBpmEvaluator().apply(getRootDomain().getAssociatedParam(), processExecId);
-	}
-	
-	final protected void txnTemplate(Consumer<String> cb) {
-		ExecutionRuntime execRt = resolveRuntime();
-		String lockId = execRt.tryLock();
-		try {
-			cb.accept(lockId);
-			
-		} finally {
-			if(execRt.isLocked(lockId)) {
-			
-				boolean b = execRt.tryUnlock(lockId);
-				if(!b)
-					throw new FrameworkRuntimeException("Failed to release lock acquired during txn execution of: "+getPath()+" with acquired lockId: "+lockId);
-			}
-		}
+		
+		// notify subscribers
+		//Param<Object> domainRootParam = (Param<Object>)getRootDomain().getAssociatedParam();
+		//resolveRuntime().emitNotification(new Notification<Object>(domainRootParam, ActionType._evalProcess, domainRootParam));
 	}
 	
 	protected ExecutionRuntime resolveRuntime() {
