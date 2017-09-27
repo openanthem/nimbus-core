@@ -11,11 +11,7 @@ import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Behavior;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
-import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
-import com.anthem.oss.nimbus.core.domain.model.config.EntityConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.HierarchyMatch;
 import com.anthem.oss.nimbus.core.domain.model.state.InvalidStateException;
@@ -34,21 +30,15 @@ public class BaseCommandExecutorStrategies {
 
 	private final BeanResolverStrategy beanResolver;
 	
-	private final DomainConfigBuilder domainConfigBuilder;
 	private final HierarchyMatchBasedBeanFinder hierarchyMatchBeanLoader;
 
 	protected final JustLogit logit = new JustLogit(this.getClass());
 
 	public BaseCommandExecutorStrategies(BeanResolverStrategy beanResolver) {
 		this.beanResolver = beanResolver;
-
-		this.domainConfigBuilder = beanResolver.get(DomainConfigBuilder.class);
 		this.hierarchyMatchBeanLoader = beanResolver.get(HierarchyMatchBasedBeanFinder.class);
 	}
 	
-	protected ModelConfig<?> getRootDomainConfig(ExecutionContext eCtx) {
-		return getDomainConfigBuilder().getRootDomainOrThrowEx(eCtx.getCommandMessage().getCommand().getRootDomainAlias());
-	}
 	
 	protected Param<?> getRootDomainParam(ExecutionContext eCtx) {
 		String rootDomainAlias = eCtx.getCommandMessage().getCommand().getRootDomainAlias();
@@ -80,19 +70,6 @@ public class BaseCommandExecutorStrategies {
 		String path = cmd.buildAlias(cmd.getElement(Type.DomainAlias).get().next());
 		
 		return getQuadModelOrThrowEx(eCtx).getView().findParamByPath(path);
-	}
-	
-	protected EntityConfig<?> findConfigByCommand(ExecutionContext eCtx) {
-		Command cmd = eCtx.getCommandMessage().getCommand();
-		
-		ModelConfig<?> domainConfig = getRootDomainConfig(eCtx);
-		if(cmd.isRootDomainOnly()) 
-			return domainConfig;
-		
-		String path = cmd.buildAlias(cmd.getElement(Type.DomainAlias).get().next());
-		
-		ParamConfig<?> nestedParamConfig = domainConfig.findParamByPath(path);
-		return nestedParamConfig;
 	}
 	
 	protected <T> T lookupBeanOrThrowEx(Class<T> type, Map<String, T> localCache, Action a, Behavior b) {

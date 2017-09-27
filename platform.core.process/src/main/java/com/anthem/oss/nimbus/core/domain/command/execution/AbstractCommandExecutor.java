@@ -10,9 +10,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
+import com.anthem.oss.nimbus.core.domain.command.Command;
+import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Input;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
+import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
+import com.anthem.oss.nimbus.core.domain.model.config.EntityConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
@@ -32,6 +36,8 @@ public abstract class AbstractCommandExecutor<R> extends BaseCommandExecutorStra
 
 	private final QuadModelBuilder quadModelBuilder; 
 
+	private final DomainConfigBuilder domainConfigBuilder;
+
 	private final JavaBeanHandler javaBeanHandler;
 	
 	private final ModelRepositoryFactory repositoryFactory;
@@ -42,6 +48,7 @@ public abstract class AbstractCommandExecutor<R> extends BaseCommandExecutorStra
 		
 		this.repositoryFactory = beanResolver.get(ModelRepositoryFactory.class);
 		this.quadModelBuilder = beanResolver.get(QuadModelBuilder.class);
+		this.domainConfigBuilder = beanResolver.get(DomainConfigBuilder.class);
 		this.javaBeanHandler = beanResolver.get(JavaBeanHandler.class);
 		this.converter = beanResolver.get(CommandMessageConverter.class);
 	}
@@ -55,6 +62,24 @@ public abstract class AbstractCommandExecutor<R> extends BaseCommandExecutorStra
 	
 	protected abstract Output<R> executeInternal(Input input);
 
+
+	protected ModelConfig<?> getRootDomainConfig(ExecutionContext eCtx) {
+		return getDomainConfigBuilder().getRootDomainOrThrowEx(eCtx.getCommandMessage().getCommand().getRootDomainAlias());
+	}
+
+	protected EntityConfig<?> findConfigByCommand(ExecutionContext eCtx) {
+		Command cmd = eCtx.getCommandMessage().getCommand();
+		
+		ModelConfig<?> domainConfig = getRootDomainConfig(eCtx);
+		if(cmd.isRootDomainOnly()) 
+			return domainConfig;
+		
+		String path = cmd.buildAlias(cmd.getElement(Type.DomainAlias).get().next());
+		
+		ParamConfig<?> nestedParamConfig = domainConfig.findParamByPath(path);
+		return nestedParamConfig;
+	}
+	
 	protected String resolveEntityAliasByRepo(ModelConfig<?> mConfig) {
 		String alias = mConfig.getRepo() != null && StringUtils.isNotBlank(mConfig.getRepo().alias()) 
 						? mConfig.getRepo().alias() 
