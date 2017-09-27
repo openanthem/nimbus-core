@@ -9,14 +9,15 @@ import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Outp
 import com.anthem.oss.nimbus.core.domain.model.config.EntityConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 
 /**
  * @author Soham Chakravarti
  *
  */
-public class DefaultBehaviorExecutorConfig extends AbstractCommandExecutor<EntityConfig<?>> {
+public class DefaultActionExecutorConfig extends AbstractCommandExecutor<EntityConfig<?>> {
 	
-	public DefaultBehaviorExecutorConfig(BeanResolverStrategy beanResolver) {
+	public DefaultActionExecutorConfig(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
 	}
 	
@@ -25,9 +26,8 @@ public class DefaultBehaviorExecutorConfig extends AbstractCommandExecutor<Entit
 	 */
 	@Override
 	protected Output<EntityConfig<?>> executeInternal(Input input) {
-		
-		EntityConfig<?> config = findConfigByCommand(input.getContext());
-		
-		return Output.instantiate(input, input.getContext(), config);
+		Param<?> p = findParamByCommandOrThrowEx(input.getContext());
+
+		return Output.instantiate(input, input.getContext(), p.getConfig());
 	}
 } 
