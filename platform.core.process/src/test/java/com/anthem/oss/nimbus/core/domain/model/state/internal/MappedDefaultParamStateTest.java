@@ -4,6 +4,10 @@
 package com.anthem.oss.nimbus.core.domain.model.state.internal;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+
+import java.util.Date;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -18,6 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.anthem.oss.nimbus.core.TestFrameworkIntegrationScenariosApplication;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
 import com.anthem.oss.nimbus.test.sample.domain.model.SampleCoreEntity;
@@ -49,6 +54,15 @@ public class MappedDefaultParamStateTest {
 	
 	@Test
 	public void t00_notification_evalProcess() {
+		Param<String> cp_unmappedAttr = _q.getCore().findParamByPath("/unmapped_attr");
+		assertNotNull(cp_unmappedAttr);
 		
+		assertNull(cp_unmappedAttr.getState());
+		
+		// set
+		final String K_val = "some value at "+new Date();
+		cp_unmappedAttr.setState(K_val);
+		
+		assertSame(K_val, cp_unmappedAttr.getState());
 	}
 }
