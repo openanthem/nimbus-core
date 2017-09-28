@@ -3,6 +3,8 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
+import java.io.Serializable;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.anthem.oss.nimbus.core.domain.command.Command;
@@ -19,7 +21,9 @@ import lombok.Setter;
  *
  */
 @Getter @Setter
-public class ExecutionContext {
+public class ExecutionContext implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	private final CommandMessage commandMessage;
 	
