@@ -11,6 +11,7 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 
+import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
 import com.anthem.oss.nimbus.core.domain.model.config.RulesConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.RulesRuntime;
 import com.anthem.oss.nimbus.core.rules.RulesEngineFactory;
@@ -46,7 +47,7 @@ public class DroolsRulesEngineFactory implements RulesEngineFactory {
 			kb = kbBuilder.newKnowledgeBase();
 			kb.addKnowledgePackages(kbBuilder.getKnowledgePackages());
 		} catch (Exception e) {
-			logit.error(()->"Error parsing drool file: " + path);
+			throw new FrameworkRuntimeException("Could not build knowledgeBase, either correct or delete the drl file :"+path+": ", e);
 		}
 		
 		DroolsRulesConfig config = new DroolsRulesConfig(path, kb);

@@ -26,7 +26,7 @@ public class DefaultSearchFunctionHandlerQuery<T, R> extends DefaultSearchFuncti
 	public R execute(ExecutionContext executionContext, Param<T> actionParameter) {
 		ModelConfig<?> mConfig = getRootDomainConfig(executionContext);
 		
-		QuerySearchCriteria querySearchCriteria = createSearchCriteria(executionContext, mConfig);
+		QuerySearchCriteria querySearchCriteria = createSearchCriteria(executionContext, mConfig, actionParameter);
 		Class<?> criteriaClass = mConfig.getReferredClass();
 		
 		String alias = findRepoAlias(mConfig);
@@ -38,14 +38,14 @@ public class DefaultSearchFunctionHandlerQuery<T, R> extends DefaultSearchFuncti
 	
 	
 	@Override
-	protected QuerySearchCriteria createSearchCriteria(ExecutionContext executionContext, ModelConfig<?> mConfig) {
+	protected QuerySearchCriteria createSearchCriteria(ExecutionContext executionContext, ModelConfig<?> mConfig, Param<T> actionParam) {
 		Command cmd = executionContext.getCommandMessage().getCommand();
 		
 		QuerySearchCriteria querySearchCriteria = new QuerySearchCriteria();
 		
 		querySearchCriteria.validate(executionContext);
 		
-		resolveNamedQueryIfApplicable(executionContext, mConfig, querySearchCriteria);
+		resolveNamedQueryIfApplicable(executionContext, mConfig, querySearchCriteria, actionParam);
 		
 		querySearchCriteria.setOrderby(executionContext.getCommandMessage().getCommand().getFirstParameterValue("orderby"));
 		
@@ -81,7 +81,7 @@ public class DefaultSearchFunctionHandlerQuery<T, R> extends DefaultSearchFuncti
 	}
 
 
-	private void resolveNamedQueryIfApplicable(ExecutionContext executionContext, ModelConfig<?> mConfig, QuerySearchCriteria querySearchCriteria) {
+	private void resolveNamedQueryIfApplicable(ExecutionContext executionContext, ModelConfig<?> mConfig, QuerySearchCriteria querySearchCriteria, Param<T> actionParam) {
 		String where = executionContext.getCommandMessage().getCommand().getFirstParameterValue("where");
 		
 		// find if where is a named query
@@ -104,6 +104,8 @@ public class DefaultSearchFunctionHandlerQuery<T, R> extends DefaultSearchFuncti
 				}
 			}
 		}
+		where = getPathVariableResolver().resolve(actionParam, where);
+		
 		querySearchCriteria.setWhere(where);
 	}
 

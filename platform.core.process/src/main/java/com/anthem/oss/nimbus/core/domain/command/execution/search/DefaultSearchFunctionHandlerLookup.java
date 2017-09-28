@@ -14,7 +14,9 @@ import org.springframework.beans.BeanUtils;
 import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
+import com.anthem.oss.nimbus.core.domain.command.execution.CommandPathVariableResolver;
 import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContext;
+import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
@@ -35,7 +37,7 @@ public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunct
 		
 		ModelConfig<?> mConfig = getRootDomainConfig(executionContext);
 		
-		LookupSearchCriteria lookupSearchCriteria = createSearchCriteria(executionContext, mConfig);
+		LookupSearchCriteria lookupSearchCriteria = createSearchCriteria(executionContext, mConfig, actionParameter);
 		Class<?> criteriaClass = mConfig.getReferredClass();
 		String alias = findRepoAlias(mConfig);
 		
@@ -51,13 +53,13 @@ public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunct
 	}
 
 	@Override
-	protected LookupSearchCriteria createSearchCriteria(ExecutionContext executionContext, ModelConfig<?> mConfig) {
+	protected LookupSearchCriteria createSearchCriteria(ExecutionContext executionContext, ModelConfig<?> mConfig, Param<T> actionParameter) {
 		Command cmd = executionContext.getCommandMessage().getCommand();
 		
 		LookupSearchCriteria lookupSearchCriteria = new LookupSearchCriteria();
 		lookupSearchCriteria.validate(executionContext);
 			
-		lookupSearchCriteria.setWhere(executionContext.getCommandMessage().getCommand().getFirstParameterValue("where"));
+		resolveNamedQueryIfApplicable(executionContext, mConfig, lookupSearchCriteria, actionParameter);
 		
 		ProjectCriteria projectCriteria = new ProjectCriteria();
 		
@@ -111,6 +113,35 @@ public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunct
 		catch(Exception ex) {
 			throw new FrameworkRuntimeException("Failed to execute read on property: "+codePd+" and "+labelPd, ex);
 		}
+	}
+	
+	private void resolveNamedQueryIfApplicable(ExecutionContext executionContext, ModelConfig<?> mConfig, LookupSearchCriteria lookupSearchCriteria, Param<T> actionParameter) {
+		String where = executionContext.getCommandMessage().getCommand().getFirstParameterValue("where");
+		
+		// find if where is a named query
+		Repo repo = mConfig.getRepo();
+		Repo.NamedNativeQuery[] namedQueries = repo.namedNativeQueries();
+		
+		if(namedQueries != null && namedQueries.length > 0) {
+			for(Repo.NamedNativeQuery query: namedQueries) {
+				if(StringUtils.equalsIgnoreCase(query.name(), where) && query.nativeQueries() != null) {
+					int i = 0;
+					for(String q: query.nativeQueries()) {
+						if(i == 0) {
+							where = q;
+						}
+						else {
+							where = where +"~~"+q;
+						}
+						i++;
+					}
+				}
+			}
+		}
+		//resolve path variables if any
+		where = getPathVariableResolver().resolve(actionParameter, where);
+		
+		lookupSearchCriteria.setWhere(where);
 	}
 	
 }
