@@ -234,7 +234,7 @@ public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTest
 	}
 	
 	// TODO - the in-memory flapdoodle mongo does not support the graphLookup query hence @Ignore
-	@Test
+	@Ignore
 	public void t9_getAllQueuesForUserByAggregation() {
 		Stream.of(COLLECTIONS).forEach((collection) -> mongoOps.dropCollection(collection));
 		createUsers();
