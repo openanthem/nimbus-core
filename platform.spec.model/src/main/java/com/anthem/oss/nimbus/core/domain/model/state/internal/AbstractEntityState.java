@@ -130,6 +130,10 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 			return resp;
 		} finally {
 			if(execRt.isLocked(lockId)) {
+				// notify subscribers to evaluate their process & rules
+				Param<Object> domainRootParam = (Param<Object>)getRootDomain().getAssociatedParam();
+				resolveRuntime().emitNotification(new Notification<Object>(domainRootParam, ActionType._evalProcess, domainRootParam));
+
 				// await completion of notification events
 				execRt.awaitNotificationsCompletion();
 				
@@ -160,10 +164,6 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 								.orElse(null);
 		if(processExecId!=null)
 			getAspectHandlers().getBpmEvaluator().apply(getRootDomain().getAssociatedParam(), processExecId);
-		
-		// notify subscribers
-		Param<Object> domainRootParam = (Param<Object>)getRootDomain().getAssociatedParam();
-		resolveRuntime().emitNotification(new Notification<Object>(domainRootParam, ActionType._evalProcess, domainRootParam));
 	}
 	
 	protected ExecutionRuntime resolveRuntime() {
