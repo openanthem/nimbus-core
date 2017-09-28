@@ -26,6 +26,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification;
+import com.anthem.oss.nimbus.core.domain.model.state.Notification.ActionType;
 import com.anthem.oss.nimbus.core.domain.model.state.ParamEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.RulesRuntime;
 import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
@@ -161,8 +162,8 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 			getAspectHandlers().getBpmEvaluator().apply(getRootDomain().getAssociatedParam(), processExecId);
 		
 		// notify subscribers
-		//Param<Object> domainRootParam = (Param<Object>)getRootDomain().getAssociatedParam();
-		//resolveRuntime().emitNotification(new Notification<Object>(domainRootParam, ActionType._evalProcess, domainRootParam));
+		Param<Object> domainRootParam = (Param<Object>)getRootDomain().getAssociatedParam();
+		resolveRuntime().emitNotification(new Notification<Object>(domainRootParam, ActionType._evalProcess, domainRootParam));
 	}
 	
 	protected ExecutionRuntime resolveRuntime() {

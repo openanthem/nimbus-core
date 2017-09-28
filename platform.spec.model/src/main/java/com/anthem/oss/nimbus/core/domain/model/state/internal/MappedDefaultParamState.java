@@ -35,7 +35,11 @@ public class MappedDefaultParamState<T, M> extends DefaultParamState<T> implemen
 		this.delegate = new InternalNotificationConsumer<M>(this) {
 			@Override
 			protected void onEventEvalProcess(Notification<M> event) {
+				// fire rules at root level upon completion of all set actions
+				getRootExecution().fireRules();
 				
+				// evaluate BPM
+				evaluateProcessFlow();
 			}
 		};
 		

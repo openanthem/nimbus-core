@@ -4,7 +4,6 @@
 package com.anthem.oss.nimbus.core.domain.model.state.internal;
 
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.Queue;
 import java.util.UUID;
 import java.util.function.BiConsumer;
@@ -16,8 +15,6 @@ import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ExecutionModel;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.Notification.ActionType;
-import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionTxnContext;
 import com.anthem.oss.nimbus.core.domain.model.state.InvalidStateException;
@@ -152,13 +149,6 @@ public class DefaultExecutionRuntime implements ExecutionRuntime {
 		} finally {
 			if(isLocked(lockId)) {
 				
-				//TODO Soham: refactor as part of eventDelegator refactor// fire rules at root level upon completion of all set actions
-				getRootExecution().fireRules();
-				
-				// evaluate BPM
-				evaluateProcessFlow();
-				//TODO: End
-				
 				boolean b = tryUnlock(lockId);
 				if(!b)
 					throw new FrameworkRuntimeException("Failed to release lock acquired during txn execution of runtime: "+this+" with acquired lockId: "+lockId);
@@ -166,16 +156,6 @@ public class DefaultExecutionRuntime implements ExecutionRuntime {
 		}
 	}
 	
-	protected void evaluateProcessFlow() {
-		String processExecId = Optional.ofNullable(getRootExecution().getState())
-								.map(m->(ExecutionEntity<?, ?>)m)
-								.map(ExecutionEntity::getFlow)
-								.map(ProcessFlow::getProcessExecutionId)
-								.orElse(null);
-		if(processExecId!=null)
-			getRootExecution().getAspectHandlers().getBpmEvaluator().apply(getRootExecution().getRootDomain().getAssociatedParam(), processExecId);
-		
-	}
 	
 	@Override
 	public void emitNotification(Notification<Object> notification) {
