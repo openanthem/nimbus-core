@@ -19,7 +19,7 @@ public class DefaultSearchFunctionHandlerExample<T, R> extends DefaultSearchFunc
 	public R execute(ExecutionContext executionContext, Param<T> actionParameter) {
 		ModelConfig<?> mConfig = getRootDomainConfig(executionContext);
 		
-		ExampleSearchCriteria exampleSearchCriteria = createSearchCriteria(executionContext, mConfig);
+		ExampleSearchCriteria exampleSearchCriteria = createSearchCriteria(executionContext, mConfig, actionParameter);
 		Class<?> criteriaClass = mConfig.getReferredClass();
 		String alias = findRepoAlias(mConfig);
 		
@@ -30,7 +30,7 @@ public class DefaultSearchFunctionHandlerExample<T, R> extends DefaultSearchFunc
 
 
 	@Override
-	protected ExampleSearchCriteria createSearchCriteria(ExecutionContext executionContext, ModelConfig<?> mConfig) {
+	protected ExampleSearchCriteria createSearchCriteria(ExecutionContext executionContext, ModelConfig<?> mConfig, Param<T> actionParam) {
 		
 		Command cmd = executionContext.getCommandMessage().getCommand();
 		

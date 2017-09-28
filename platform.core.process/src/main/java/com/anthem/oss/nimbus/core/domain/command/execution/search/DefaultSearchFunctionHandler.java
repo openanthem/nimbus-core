@@ -5,6 +5,7 @@ import org.apache.commons.lang.StringUtils;
 import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContext;
 import com.anthem.oss.nimbus.core.domain.command.execution.fn.AbstractFunctionHandler;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.entity.SearchCriteria;
 
 /**
@@ -21,6 +22,6 @@ public abstract class DefaultSearchFunctionHandler<T, R> extends AbstractFunctio
 		return alias;
 	}
 	
-	protected abstract SearchCriteria<?> createSearchCriteria(ExecutionContext executionContext, ModelConfig<?> mConfig);
+	protected abstract SearchCriteria<?> createSearchCriteria(ExecutionContext executionContext, ModelConfig<?> mConfig, Param<T> cmdParam);
 	
 }

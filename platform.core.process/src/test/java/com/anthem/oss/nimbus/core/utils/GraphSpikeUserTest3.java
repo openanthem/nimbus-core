@@ -8,6 +8,7 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.proj
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.unwind;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +46,8 @@ import com.anthem.oss.nimbus.core.AbstractFrameworkIntegrationTests;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity.IdString;
 import com.anthem.oss.nimbus.core.entity.client.user.ClientUser;
 import com.anthem.oss.nimbus.core.entity.queue.Queue;
+import com.anthem.oss.nimbus.core.entity.task.AssignmentTask;
+import com.anthem.oss.nimbus.core.entity.task.AssignmentTask.TaskStatus;
 import com.anthem.oss.nimbus.core.entity.user.ClientUserGroup;
 import com.anthem.oss.nimbus.core.entity.user.GroupUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -59,6 +62,7 @@ import com.mongodb.MongoClient;
  * @author Rakesh Patel
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+//@ContextConfiguration(classes = MongoConfiguration.class)
 public class GraphSpikeUserTest3 extends AbstractFrameworkIntegrationTests{
 	
 	private static final String[] COLLECTIONS = {"queue","clientusergroup","clientuser"};
@@ -146,7 +150,34 @@ public class GraphSpikeUserTest3 extends AbstractFrameworkIntegrationTests{
 		
 		assertThat(queueList).isNotEmpty();
 		assertThat(queueList).hasAtLeastOneElementOfType(Queue.class);
-
+	}
+	
+	@Test
+	public void t3_createTasks() {
+		
+		AssignmentTask task = new AssignmentTask();
+		task.setStatus(TaskStatus.Open);
+		task.setDueDate(LocalDate.now());
+		task.setTaskType("Patient Enrollment 1");
+		task.setQueueCode("casemanager");
+		
+		AssignmentTask task1 = new AssignmentTask();
+		task1.setStatus(TaskStatus.Open);
+		task1.setDueDate(LocalDate.now());
+		task1.setTaskType("Patient Enrollment 2");
+		task1.setQueueCode("casemanager");
+		
+		AssignmentTask task2 = new AssignmentTask();
+		task2.setStatus(TaskStatus.Open);
+		task2.setDueDate(LocalDate.now());
+		task2.setTaskType("Patient Enrollment 2");
+		task2.setQueueCode("UG1");
+		
+		mongo.save(task, "assignmenttask");
+		mongo.save(task1,"assignmenttask");
+		mongo.save(task2,"assignmenttask");
+		
+		
 	}
 	
 	private void createUsers() {
@@ -154,6 +185,7 @@ public class GraphSpikeUserTest3 extends AbstractFrameworkIntegrationTests{
 		
 		ClientUser clientUser = new ClientUser();
 		clientUser.setId("U1");
+		clientUser.setLoginId("casemanager");
 		clientUser.setDisplayName("testClientUserDisplayName_1");
 		
 		
@@ -161,9 +193,18 @@ public class GraphSpikeUserTest3 extends AbstractFrameworkIntegrationTests{
 		clientUser2.setId("U2");
 		clientUser2.setDisplayName("testClientUserDisplayName_2");
 		
+		ClientUser clientUser3 = new ClientUser();
+		clientUser3.setId("U3");
+		clientUser3.setDisplayName("testClientUserDisplayName_3");
+		
+		ClientUser clientUser4 = new ClientUser();
+		clientUser4.setId("U4");
+		clientUser4.setDisplayName("testClientUserDisplayName_4");
+		
 		mongo.save(clientUser, "clientuser");
 		mongo.save(clientUser2, "clientuser");
-		
+		mongo.save(clientUser3, "clientuser");
+		mongo.save(clientUser4, "clientuser");
 	}
 	
 	private void createUserGroups() {
@@ -175,8 +216,18 @@ public class GraphSpikeUserTest3 extends AbstractFrameworkIntegrationTests{
 		
 		List<GroupUser> groupUsers = new ArrayList<>();
 		GroupUser groupUser = new GroupUser();
-		groupUser.setUserId("U2");
+		groupUser.setUserId("casemanager");
 		groupUsers.add(groupUser);
+		
+		GroupUser groupUser22 = new GroupUser();
+		groupUser22.setUserId("U3");
+		groupUser22.setAdmin(true);
+		groupUsers.add(groupUser22);
+		
+		GroupUser groupUser33 = new GroupUser();
+		groupUser33.setUserId("U4");
+		groupUser33.setAdmin(true);
+		groupUsers.add(groupUser33);
 		
 		userGroup.setMembers(groupUsers);
 		
@@ -191,14 +242,13 @@ public class GraphSpikeUserTest3 extends AbstractFrameworkIntegrationTests{
 		
 		userGroup2.setMembers(groupUsers2);
 		
-		
 		ClientUserGroup userGroup3 = new ClientUserGroup();
 		userGroup3.setId("UG3");
 		userGroup3.setName("testClientUserGroupName_3");
 		
 		List<GroupUser> groupUsers3 = new ArrayList<>();
 		GroupUser groupUser3 = new GroupUser();
-		groupUser3.setUserId("U1");
+		groupUser3.setUserId("casemanager");
 		groupUsers3.add(groupUser3);
 		
 		userGroup3.setMembers(groupUsers3);
@@ -206,7 +256,6 @@ public class GraphSpikeUserTest3 extends AbstractFrameworkIntegrationTests{
 		mongo.save(userGroup, "clientusergroup");
 		mongo.save(userGroup2, "clientusergroup");
 		mongo.save(userGroup3, "clientusergroup");
-		
 	}
 	
 	private void createQueues() {
@@ -214,56 +263,76 @@ public class GraphSpikeUserTest3 extends AbstractFrameworkIntegrationTests{
 		
 		Queue queue = new Queue();
 		queue.setId("Q1");
-		queue.setName("testQueue_1");
 		
 		ClientUser cu = mongo.findOne(new Query(Criteria.where("id").is("U1")), ClientUser.class, "clientuser");
-		
-		queue.setEntityId(cu.getId());
-		
+		queue.setName(cu.getLoginId());
+		queue.setEntityId(cu.getLoginId());
 		
 		Queue queue2 = new Queue();
 		queue2.setId("Q2");
-		queue2.setName("testQueue_2");
+		
 		
 		ClientUserGroup cug = mongo.findOne(new Query(Criteria.where("id").is("UG1")), ClientUserGroup.class, "clientusergroup");
 		
+		queue2.setName(cug.getName());
 		queue2.setEntityId(cug.getId());
 		
 		Queue queue3 = new Queue();
 		queue3.setId("Q3");
-		queue3.setName("testQueue_3");
+		
 		
 		ClientUserGroup cug2 = mongo.findOne(new Query(Criteria.where("id").is("UG1")), ClientUserGroup.class, "clientusergroup");
-		
+		queue3.setName(cug2.getName());
 		queue3.setEntityId(cug2.getId());
 		
 		Queue queue4 = new Queue();
 		queue4.setId("Q4");
-		queue4.setName("testQueue_4");
+		
 		
 		ClientUserGroup cug3 = mongo.findOne(new Query(Criteria.where("id").is("UG2")), ClientUserGroup.class, "clientusergroup");
-		
+		queue4.setName(cug3.getName());
 		queue4.setEntityId(cug3.getId());
 		
 		Queue queue5 = new Queue();
 		queue5.setId("Q5");
-		queue5.setName("testQueue_5");
+		
 		
 		ClientUser cu2 = mongo.findOne(new Query(Criteria.where("id").is("U2")), ClientUser.class, "clientuser");
-		
-		queue5.setEntityId(cu2.getId());
+		queue5.setName(cu2.getLoginId());
+		queue5.setEntityId(cu2.getLoginId());
 		
 		mongo.save(queue, "queue");
 		mongo.save(queue2, "queue");
 		mongo.save(queue3, "queue");
 		mongo.save(queue4, "queue");
 		mongo.save(queue5, "queue");
-		
 	}
 	
 	private AggregationOperation matchCriteria(String key, String value) {
 		return match(Criteria.where(key).is(value));
 	}
+	
+	
+	
 
 	
 }
+
+//@Configuration
+//class MongoConfiguration extends AbstractMongoConfiguration {
+// 
+//    @Override
+//    protected String getDatabaseName() {
+//        return "test";
+//    }
+// 
+//    @Override
+//    public Mongo mongo() throws Exception {
+//        return new MongoClient("127.0.0.1", 27017);
+//    }
+// 
+//    @Override
+//    protected String getMappingBasePackage() {
+//        return "com.anthem.nimbus.platform.client.extension.cm";
+//    }
+//}
