@@ -82,7 +82,8 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 	}
 
 	private boolean isTransient(Command cmd) {
-		return cmd.getAction()==Action._search;
+		return cmd.getAction()==Action._search 
+				|| cmd.getAction()==Action._config;
 	}
 	
 	private ExecutionContext loadEntity(ExecutionContext eCtx, CommandExecutor<?> executor) {

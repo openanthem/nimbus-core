@@ -21,6 +21,9 @@ import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Mode;
+import com.anthem.oss.nimbus.core.domain.definition.Model.Param.Values;
+import com.anthem.oss.nimbus.core.domain.definition.Model.Param.Values.EMPTY;
+import com.anthem.oss.nimbus.core.domain.definition.Model.Param.Values.Source;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig.MappedParamConfig;
@@ -45,6 +48,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultParam
 import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultTransientParamState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.StateContextEntity;
 import com.anthem.oss.nimbus.core.rules.RulesEngineFactoryProducer;
+import com.anthem.oss.nimbus.core.util.ClassLoadUtils;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 
 import lombok.Getter;
@@ -267,18 +271,25 @@ abstract public class AbstractEntityStateBuilder {
 	}
 	
 	private void createParamValues(Param<?> param) {
-		if(param.getConfig().getValues() != null) {
-			String valuesUrl = param.getConfig().getValues().url();
-			Command cmd = CommandBuilder.withUri(valuesUrl).getCommand();
-			cmd.setAction(Action._search);
-			
-			CommandMessage cmdMsg = new CommandMessage();
-			cmdMsg.setCommand(cmd);
-			
-			MultiOutput multiOp = getGateway().execute(cmdMsg);
+		Values values = param.getConfig().getValues();
+		if(values != null) {
+			final Object result;
+			if(values.value() != EMPTY.class) {
+				Source srcValues = ClassLoadUtils.newInstance(values.value());
+				result = srcValues.getValues(param.getConfig().getCode());
+			}
+			else {
+				String valuesUrl = values.url();
+				Command cmd = CommandBuilder.withUri(valuesUrl).getCommand();
+				cmd.setAction(Action._search);
+				
+				CommandMessage cmdMsg = new CommandMessage();
+				cmdMsg.setCommand(cmd);
+				
+				MultiOutput multiOp = getGateway().execute(cmdMsg);
+				result = multiOp.getSingleResult();
+			}
 			Param<Object> p = param.getContextModel().findParamByPath("/values");
-			
-			Object result = multiOp.getSingleResult();
 			if(result != null) 
 				p.setState(result);
 		}

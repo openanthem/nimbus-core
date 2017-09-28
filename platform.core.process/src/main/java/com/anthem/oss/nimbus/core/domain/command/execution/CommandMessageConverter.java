@@ -3,6 +3,7 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -11,6 +12,7 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
+import com.anthem.oss.nimbus.core.entity.user.GroupUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
@@ -68,6 +70,20 @@ public class CommandMessageConverter {
 			
 		} catch (Exception ex) {
 			throw new FrameworkRuntimeException("Failed to convert from JSON to instance of "+clazz
+					+"\n json:\n"+json, ex);
+		}
+	}
+	
+	public List convertArray(Class<?> elemClazz, Class<? extends Collection> collClazz, String json) {
+		if(StringUtils.isEmpty(json) || Pattern.matches(EMPTY_JSON_REGEX, json)) 
+			return null;
+		
+		try {
+			List<?> model = om.readValue(json, om.getTypeFactory().constructCollectionType(collClazz, elemClazz));
+			return model;
+			
+		} catch (Exception ex) {
+			throw new FrameworkRuntimeException("Failed to convert from JSON Array to instance of "+elemClazz+" collection "+collClazz 
 					+"\n json:\n"+json, ex);
 		}
 	}

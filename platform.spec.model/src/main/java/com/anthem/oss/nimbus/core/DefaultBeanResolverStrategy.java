@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.ResolvableType;
 
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
@@ -96,6 +97,17 @@ public class DefaultBeanResolverStrategy implements BeanResolverStrategy {
 						+ " a) Bean with qualifier "+resolveBeanName(qualifier)
 						+ " b) Bean with qualifier "+defaultBeanName(qualifier)));
 
+	}
+	
+	@Override
+	public <T> T find(Class<T> type, Class<?>...generics) {
+		String beanNames[] = applicationContext.getBeanNamesForType(ResolvableType.forClassWithGenerics(type, generics));
+		if(ArrayUtils.getLength(beanNames)!=1)
+			throw new InvalidConfigException("Only one bean expected for type+generic lookup, but found: "+beanNames.length
+					+" for type: "+type+" and generics: "+generics);
+		
+		T bean = applicationContext.getBean(beanNames[0], type);
+		return bean;
 	}
 	
 	@Override

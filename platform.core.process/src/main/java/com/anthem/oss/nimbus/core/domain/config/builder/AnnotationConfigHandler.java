@@ -68,6 +68,7 @@ public class AnnotationConfigHandler {
 			
 			if (metaTypes != null && metaTypes.contains(metaAnnotationType.getName())) {
 				final AnnotationConfig ac = new AnnotationConfig();
+				ac.setAnnotation(a);
 				ac.setName(ClassUtils.getShortName(a.annotationType()));
 				ac.setAttributes(getAttributesHandlerForType(metaAnnotationType).generateFrom(aElem, a));
 				aConfigs.add(ac);

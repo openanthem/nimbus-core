@@ -7,6 +7,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.anthem.oss.nimbus.core.domain.command.Action;
+import com.anthem.oss.nimbus.core.domain.command.Behavior;
+import com.anthem.oss.nimbus.core.domain.definition.Constants;
 
 import lombok.RequiredArgsConstructor;
 
@@ -49,6 +51,12 @@ public final class MockHttpRequestBuilder {
 	public MockHttpRequestBuilder addAction(Action a) {
 		String uri = httpReq.getRequestURI() + "/" + a.name();
 		httpReq.setRequestURI(uri);
+		
+		return this;
+	}
+	
+	public MockHttpRequestBuilder addBehavior(Behavior b) {
+		httpReq.addParameter(Constants.MARKER_URI_BEHAVIOR.code, b.name());
 		
 		return this;
 	}

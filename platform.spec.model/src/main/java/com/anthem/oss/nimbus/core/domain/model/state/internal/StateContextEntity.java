@@ -34,6 +34,7 @@ public class StateContextEntity {
 	private Boolean visible = true;
 	private Boolean enabled = true;
 	
+	private Boolean active = true;
 	
 	@Transient
 	private List<ParamValue> values;

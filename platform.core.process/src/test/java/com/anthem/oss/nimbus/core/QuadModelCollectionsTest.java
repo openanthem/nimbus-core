@@ -1236,6 +1236,45 @@ public class QuadModelCollectionsTest {
 	
 	}
 	
+	@Test
+	public void tv24_nested_attached_noConversion() {
+		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		Model<UMCaseFlow> vUMCase = ((Model<UMCaseFlow>)q.getView());
+		assertNotNull(vUMCase);
+		
+		assertNull(vUMCase.getState());
+		
+		//if added to core via SAC, should reflect in corresponding view SAC
+		
+		// ensure that view collection is not initialized yet
+		assertNull(q.getView().getState());
+		
+		Param<ServiceLine> vpOneServiceLine = q.getView().findParamByPath("/pg3/coreAttachedOneServiceLine");
+		assertNotNull(vpOneServiceLine);
+		
+		Param<String> vpOneServiceLineService = q.getView().findParamByPath("/pg3/coreAttachedOneServiceLine/service");
+		assertNotNull(vpOneServiceLineService);
+		
+		final String K_service = "It's elementary Watson!";
+		assertNull(vpOneServiceLine.getState());
+		
+		vpOneServiceLineService.setState(K_service);
+		
+		assertNotNull(vpOneServiceLine.getState());
+		
+		Param<ServiceLine> cpOneServiceLine = q.getCore().findParamByPath("/oneServiceLine");
+		assertNotNull(cpOneServiceLine);
+		assertNotNull(cpOneServiceLine.getState());
+		
+		assertSame(K_service, cpOneServiceLine.getState().getService());
+		
+		Param<ServiceLine> mappedService = q.getView().findParamByPath("/pg3/coreAttachedOneServiceLine/service");
+		Param<ServiceLine> mapsToService = q.getCore().findParamByPath("/oneServiceLine/service");
+		assertNotSame(mappedService, mapsToService);
+		assertSame(mappedService.getState(), mapsToService.getState());
+		assertSame(vpOneServiceLineService.getState(), mapsToService.getState());
+	}
+	
 	//@After
 	public void after() {
 		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());

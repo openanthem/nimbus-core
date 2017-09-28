@@ -41,16 +41,18 @@ public @interface Model {
 				public List<ParamValue> getValues(String paramCode);
 			}
 			
-			Class<? extends Source> value() default Source.class;
+			public static class EMPTY implements Source {
+				@Override
+				public List<ParamValue> getValues(String paramPath) {
+					return null;
+				}
+			}
+			
+			Class<? extends Source> value() default EMPTY.class;
 			
 			String url() default "staticCodeValue";
 		}
-		
-		@Retention(RetentionPolicy.RUNTIME)
-		@Target({ElementType.FIELD})
-		public @interface Text {
-			String label();
-		}
+
 	}
 	
 }

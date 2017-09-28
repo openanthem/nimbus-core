@@ -7,7 +7,6 @@ package com.anthem.oss.nimbus.core.domain.model.state.internal;
 import java.beans.PropertyDescriptor;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -27,8 +26,10 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification;
+import com.anthem.oss.nimbus.core.domain.model.state.Notification.ActionType;
 import com.anthem.oss.nimbus.core.domain.model.state.ParamEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.RulesRuntime;
+import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
 import com.anthem.oss.nimbus.core.spec.contract.event.EventListener;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 import com.anthem.oss.nimbus.core.util.LockTemplate;
@@ -135,6 +136,9 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 				// fire rules at root level upon completion of all set actions
 				getRootExecution().fireRules();
 				
+				// evaluate BPM
+				evaluateProcessFlow();
+				
 				// unlock
 				boolean b = execRt.tryUnlock(lockId);
 				if(!b)
@@ -148,20 +152,18 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 		}
 	}
 	
-	final protected void txnTemplate(Consumer<String> cb) {
-		ExecutionRuntime execRt = resolveRuntime();
-		String lockId = execRt.tryLock();
-		try {
-			cb.accept(lockId);
-			
-		} finally {
-			if(execRt.isLocked(lockId)) {
-			
-				boolean b = execRt.tryUnlock(lockId);
-				if(!b)
-					throw new FrameworkRuntimeException("Failed to release lock acquired during txn execution of: "+getPath()+" with acquired lockId: "+lockId);
-			}
-		}
+	protected void evaluateProcessFlow() {
+		String processExecId = Optional.ofNullable(getRootExecution().getState())
+								.map(m->(ExecutionEntity<?, ?>)m)
+								.map(ExecutionEntity::getFlow)
+								.map(ProcessFlow::getProcessExecutionId)
+								.orElse(null);
+		if(processExecId!=null)
+			getAspectHandlers().getBpmEvaluator().apply(getRootDomain().getAssociatedParam(), processExecId);
+		
+		// notify subscribers
+		Param<Object> domainRootParam = (Param<Object>)getRootDomain().getAssociatedParam();
+		resolveRuntime().emitNotification(new Notification<Object>(domainRootParam, ActionType._evalProcess, domainRootParam));
 	}
 	
 	protected ExecutionRuntime resolveRuntime() {

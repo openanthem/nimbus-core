@@ -29,7 +29,9 @@ public class Notification<T> {
 		_resetModel(Action._replace),
 		
 		_newElem(Action._new),
-		_deleteElem(Action._delete)
+		_deleteElem(Action._delete),
+		
+		_evalProcess(Action._process)
 		;
 		final private Action action;
 	}

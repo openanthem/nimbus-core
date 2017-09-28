@@ -56,4 +56,23 @@ public @interface Repo {
 	
 	boolean autoSave() default true;
 	
+	NamedNativeQuery[] namedNativeQueries() default {};
+	
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(value=ElementType.TYPE)
+	@interface NamedNativeQuery {
+		
+		String name();
+		String[] nativeQueries();
+	}
+	
+	
+//	@Retention(RetentionPolicy.RUNTIME)
+//	@Target(value=ElementType.TYPE)
+//	@interface NativeQuery {
+//		
+//		String query();
+//	}
+	
 }

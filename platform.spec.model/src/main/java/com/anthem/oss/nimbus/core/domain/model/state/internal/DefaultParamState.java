@@ -6,14 +6,17 @@ package com.anthem.oss.nimbus.core.domain.model.state.internal;
 
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.util.ClassUtils;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
 import com.anthem.oss.nimbus.core.InvalidOperationAttemptedException;
@@ -21,6 +24,7 @@ import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.execution.ValidationResult;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
+import com.anthem.oss.nimbus.core.domain.model.config.AnnotationConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
@@ -28,6 +32,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification.ActionType;
+import com.anthem.oss.nimbus.core.domain.model.state.StateNotificationHandler;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.entity.Findable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -104,6 +109,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	protected void initStateInternal() {
 		if(isNested())
 			findIfNested().initState();
+		
+		onStateChangeRule(Action._new);
 	}
 	
 //	TODO: Refactor with Weak reference implementation
@@ -139,6 +146,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		Optional.ofNullable(getRulesRuntime())
 			.ifPresent(rt->rt.fireRules(this));
 		
+		// self: on state change
+		
 		// nested 
 		Optional.ofNullable(findIfNested())
 			.ifPresent(Model::fireRules);
@@ -149,12 +158,29 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 			.ifPresent(Model::fireRules);
 	}
 	
+	//TODO Soham: make generic based on notification event handlers
+	private void onStateChangeRule(Action action) {
+		List<AnnotationConfig> ruleAnnotations = getConfig().getRules();
+		if(CollectionUtils.isEmpty(ruleAnnotations))
+			return;
+		
+		ruleAnnotations.stream()
+			.forEach(ac->{
+				StateNotificationHandler<Annotation> handler = getAspectHandlers().getBeanResolver().find(StateNotificationHandler.class, ac.getAnnotation().annotationType());
+				handler.handle(this, action, ac.getAnnotation());
+			});
+		
+	}
+	
 	/**
 	 * resurrect entity pojo state from model/param state
 	 * @return
 	 */
 	@Override
 	final public T getLeafState() {
+		if(!isMapped())
+			return getState();
+		
 		if(!isNested())
 			return getState();
 		
@@ -203,6 +229,9 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		state = preSetState(state);			
 		Action a = getAspectHandlers().getParamStateGateway()._set(this, state); 
 		if(a!=null) {
+			// hook up on state change notifications 
+			onStateChangeRule(a);
+			
 			emitNotification(new Notification<>(this, ActionType._updateState, this));
 			h.setState(a);
 			
@@ -223,7 +252,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	@JsonIgnore @Override
 	public ExecutionModel<?> getRootExecution() {
-		if(getParentModel() != null) return getParentModel().getRootExecution();
+		if(getParentModel() != null) 
+			return getParentModel().getRootExecution();
 		
 		/* if param is root, then it has to be of type nested */
 		if(!getType().isNested())
@@ -291,6 +321,9 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
         	
         	else if(event.getActionType()==ActionType._deleteElem)
         		onEventDeleteElem(event);    		
+        	
+        	else if(event.getActionType()==ActionType._evalProcess)
+        		onEventEvalProcess(event);    	
 	    }
 	    
 		protected boolean shouldProcessNotification(Notification<M> event) {
@@ -313,6 +346,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	    protected void onEventResetModel(Notification<M> event) {}
 	    protected void onEventNewElem(Notification<M> event) {}
 	    protected void onEventDeleteElem(Notification<M> event) {}
+	    
+	    protected void onEventEvalProcess(Notification<M> event) {}
 	}
 	
 	
@@ -411,4 +446,90 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		String resolvedPath = getResolvingMappedPath(path);
 		return getConfig().isFound(resolvedPath);
 	}
+	
+	private boolean active = true;
+
+	@Override
+	public boolean isActive() {
+		if(!active)
+			return active;
+		
+		Param<?> parentParam = Optional.ofNullable(getParentModel())
+			.map(Model::getAssociatedParam)
+			.orElse(null);
+			
+		if(parentParam==null)
+			return active;
+		
+		if(!parentParam.isActive())
+			return false;
+		
+		return active;
+	}
+	
+	@Override
+	public void activate() {
+		toggleActivate(true);
+	}
+	
+	@Override
+	public void deactivate() {
+		toggleActivate(false);
+	}
+	
+	protected boolean toggleActivate(boolean to) {
+		return changeStateTemplate((rt, h)->{
+			boolean result = affectToggleActivate(to);
+			if(result)
+				h.setState(Action._update);
+			
+			return result;
+		});
+	}
+	
+	private boolean affectToggleActivate(boolean to) {
+		// refer to field directly, instead of getter method
+		if(active==to)
+			return false;
+
+		// toggle
+		setActive(to);
+		findParamByPath("/#/visible").setState(to);
+		findParamByPath("/#/enabled").setState(to);
+		
+		// notify mapped subscribers, if any
+		//==emitNotification(new Notification<>(this, ActionType._active, this));
+		
+		// set state in current
+		if(!to) {
+			setStateInitialized(false);
+			
+			if(!isPrimitive())
+				setState(null);
+		} else {
+			initState(); // ensure all rules are fired, including the ones on @OnStateChange
+		}
+		
+		// ripple to children, if applicable
+		if(!isNested())
+			return true;
+		
+		if(findIfNested().templateParams().isNullOrEmpty())
+			return true;
+		
+		findIfNested().getParams().stream()
+			.forEach(cp->{
+				if(to)
+					cp.activate();
+				else
+					cp.deactivate();
+			});
+		
+		return true;
+	}
+	
+	private boolean isPrimitive() {
+		return ClassUtils.isPrimitiveOrWrapper(getConfig().getReferredClass());
+	}
+	
 }

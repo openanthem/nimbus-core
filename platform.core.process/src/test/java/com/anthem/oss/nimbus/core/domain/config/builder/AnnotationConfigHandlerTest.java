@@ -73,4 +73,14 @@ public class AnnotationConfigHandlerTest {
 		Assert.assertEquals(0, ((Object[]) actual.getAttributes().get("groups")).length);
 		Assert.assertEquals(0, ((Object[]) actual.getAttributes().get("payload")).length);
 	}
+	
+	@Test
+	public void t6_handle_multiAnnotationConfig() throws Exception {
+		final Field annotatedElement = this.getClass().getDeclaredField("baz");
+		final List<AnnotationConfig> actual = AnnotationConfigHandler.handle(annotatedElement, Constraint.class);
+		Assert.assertEquals(2, actual.size());
+		Assert.assertEquals("Pattern", actual.get(1).getName());
+		Assert.assertEquals("baz must conform to standards", actual.get(1).getAttributes().get("message"));
+		Assert.assertEquals("foo.*bar", actual.get(1).getAttributes().get("regexp"));
+	}
 }

@@ -10,4 +10,6 @@ package com.anthem.oss.nimbus.core.domain.expr;
 public interface ExpressionEvaluator {
 
 	public Object getValue(String exprValue, Object rootObject);
+	
+	public <T> T getValue(String exprValue, Object rootObject, Class<T> returnType);
 }

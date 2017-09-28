@@ -27,7 +27,6 @@ import com.anthem.oss.nimbus.core.domain.model.config.internal.DefaultParamConfi
 import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ExecutionModel;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
-import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
 import com.anthem.oss.nimbus.core.domain.model.state.InvalidStateException;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
@@ -250,13 +249,15 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 		final private Command rootCommand;
 		
 		@JsonIgnore
-		final private ExecutionRuntime executionRuntime;
+		final private DefaultExecutionRuntime executionRuntime;
 		
 		public ExModel(Command rootCommand, ExParam associatedParam, ModelConfig<ExecutionEntity<V, C>> modelConfig, EntityStateAspectHandlers provider) {
 			this(rootCommand, associatedParam, modelConfig, provider, new DefaultExecutionRuntime(rootCommand, new DefaultStateEventDelegator()));
+			
+			this.executionRuntime.setRootExecution(this);
 		}
 		
-		public ExModel(Command rootCommand, ExParam associatedParam, ModelConfig<ExecutionEntity<V, C>> modelConfig, EntityStateAspectHandlers provider, ExecutionRuntime executionRuntime) {
+		private ExModel(Command rootCommand, ExParam associatedParam, ModelConfig<ExecutionEntity<V, C>> modelConfig, EntityStateAspectHandlers provider, DefaultExecutionRuntime executionRuntime) {
 			super(associatedParam, modelConfig, provider);
 			this.rootCommand = rootCommand;
 			this.executionRuntime = executionRuntime;
@@ -287,6 +288,15 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 		@JsonIgnore @Override
 		public ExModel getRootExecution() {
 			return this;
+		}
+		
+		@Override
+		public Command getRootCommand() {
+			if(getAssociatedParam().isLinked()) {
+				return getAssociatedParam().findIfLinked().getRootExecution().getRootCommand();
+			}
+			
+			return rootCommand;
 		}
 		
 		@Override

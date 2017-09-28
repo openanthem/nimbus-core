@@ -39,15 +39,11 @@ public class BaseCommandExecutorStrategies {
 		this.hierarchyMatchBeanLoader = beanResolver.get(HierarchyMatchBasedBeanFinder.class);
 	}
 	
-	/*
-	protected CommandExecutor<?> lookupExecutor(String prefix, String e, Action a, Behavior b) {
-		if(e==null) return lookupExecutor(prefix, a, b);
-		
-		return Optional
-			.ofNullable(lookupExecutor(prefix+e, a, b))	//pattern: default.e#pre_new$execute
-			.orElse(lookupExecutor(prefix+e));			//pattern: default.e#pre
+	
+	protected Param<?> getRootDomainParam(ExecutionContext eCtx) {
+		String rootDomainAlias = eCtx.getCommandMessage().getCommand().getRootDomainAlias();
+		return eCtx.getRootModel().findParamByPath(rootDomainAlias);
 	}
-	*/
 	
 	protected QuadModel<?,?> getQuadModelOrThrowEx(ExecutionContext eCtx) {
 		return Optional.ofNullable(getQuadModel(eCtx))

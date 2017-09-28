@@ -22,13 +22,21 @@ public abstract class AbstractFrameworkIngerationPersistableTests extends Abstra
 	protected static final String CORE_DOMAIN_ALIAS = "sample_core";
 	protected static final String CORE_ASSOCIATED_DOMAIN_ALIAS = "sample_coreassociatedentity";
 	
-	protected static final String VIEW_PARAM_ROOT = PLATFORM_ROOT + "/sample_view";
+	protected static final String VIEW_DOMAIN_ALIAS = "sample_view";
+	
 	protected static final String CORE_PARAM_ROOT = PLATFORM_ROOT + "/" + CORE_DOMAIN_ALIAS;
+	protected static final String VIEW_PARAM_ROOT = PLATFORM_ROOT + "/" + VIEW_DOMAIN_ALIAS;
 	
 	protected static final String CORE_ASSOCIATEDPARAM_ROOT = PLATFORM_ROOT + "/" + CORE_ASSOCIATED_DOMAIN_ALIAS;
 	protected static final String VIEW_CEU_PARAM_ROOT = PLATFORM_ROOT + "/ceu_sampleassociatedentity";
 	
 	protected static String domainRoot_refId;
+	
+	protected static final String BPM_CORE_DOMAIN_ALIAS = "bpmtestmodel";
+	protected static final String BPM_CORE_PARAM_ROOT = PLATFORM_ROOT + "/" + BPM_CORE_DOMAIN_ALIAS;
+	
+	protected static final String BPM_SF_DOMAIN_ALIAS = "bpmstatefulmodel";
+	protected static final String BPM_SF_PARAM_ROOT = PLATFORM_ROOT + "/" + BPM_SF_DOMAIN_ALIAS;	
 	
 	public synchronized String createOrGetDomainRoot_RefId() {
 		if(domainRoot_refId!=null) 

@@ -39,16 +39,13 @@ public class CommandExecutorTaskDelegate implements JavaDelegate{
 	public void execute(DelegateExecution execution) {
 		String[] commandUrls = url.getExpressionText().split("\\r?\\n");
 		ProcessEngineContext context = (ProcessEngineContext)execution.getVariable(Constants.KEY_EXECUTE_PROCESS_CTX.code);
-		
-		CommandMessage currCmdMsg = context.getExecutionContext().getCommandMessage();
-		
 		MultiOutput output = null;
 		for(String commandUrl: commandUrls){
-			commandUrl = resolveCommandUrl(execution,commandUrl, context);
+			commandUrl = resolveCommandUrl(context,commandUrl);
 			if(StringUtils.isEmpty(commandUrl))
 				continue;			
 			Command command = CommandBuilder.withUri(commandUrl).getCommand();
-			CommandMessage commandMessage = new CommandMessage(command, currCmdMsg.getRawPayload());
+			CommandMessage commandMessage = new CommandMessage(command,null);
 			//commandMessage.setCommand(command);
 			if(output == null){
 				output = commandGateway.execute(commandMessage);
@@ -63,14 +60,9 @@ public class CommandExecutorTaskDelegate implements JavaDelegate{
 	}
 	
 	
-	private String resolveCommandUrl(DelegateExecution execution, String commandUrl, ProcessEngineContext context){
-		//Expression expression = activitiExpressionManager.createExpression(commandUrl);
-		//Object value = expression.getValue(execution);
-		//if(value == null)
-		//	return null;
-		//commandUrl = (String)value;
-		commandUrl = pathVariableResolver.resolve(context.getActionParam(), commandUrl);
-		commandUrl = context.getExecutionContext().getCommandMessage().getCommand().getRelativeUri(commandUrl);
+	private String resolveCommandUrl(ProcessEngineContext context, String commandUrl){
+		commandUrl = pathVariableResolver.resolve(context.getParam(), commandUrl);
+		commandUrl = context.getParam().getRootExecution().getRootCommand().getRelativeUri(commandUrl);
     	return commandUrl;
 	}
 	
