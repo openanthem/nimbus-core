@@ -134,7 +134,6 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 				Param<Object> domainRootParam = (Param<Object>)getRootDomain().getAssociatedParam();
 				resolveRuntime().emitNotification(new Notification<Object>(domainRootParam, ActionType._evalProcess, domainRootParam));
 
-				
 				// await completion of notification events
 				execRt.awaitNotificationsCompletion();
 				
@@ -143,9 +142,6 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 				
 				// evaluate BPM
 				evaluateProcessFlow();
-				
-				// post processing
-				execRt.awaitNotificationsCompletion();
 				
 				// unlock
 				boolean b = execRt.tryUnlock(lockId);
