@@ -6,10 +6,14 @@ package com.anthem.oss.nimbus.core.domain.model.state.internal;
 import java.util.ArrayList;
 import java.util.Queue;
 import java.util.UUID;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 
 import org.apache.commons.collections.CollectionUtils;
 
+import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
 import com.anthem.oss.nimbus.core.domain.command.Command;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ExecutionModel;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionTxnContext;
@@ -20,19 +24,24 @@ import com.anthem.oss.nimbus.core.domain.model.state.StateEventDelegator;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * @author Soham Chakravarti
  *
  */
-@Getter @RequiredArgsConstructor
+@Getter @RequiredArgsConstructor @ToString(of="rootCommand")
 public class DefaultExecutionRuntime implements ExecutionRuntime {
-	
+
 	private final Command rootCommand;
+	private final StateEventDelegator eventDelegator;
+
+	@Setter
+	private ExecutionModel<?> rootExecution;
 	
 	private boolean isStarted;
 	
-	private final StateEventDelegator eventDelegator;
 	
 	private static final ThreadLocal<DefaultExecutionTxnContext> txnScopeInThread = new ThreadLocal<DefaultExecutionTxnContext>() {
 		@Override
@@ -118,12 +127,47 @@ public class DefaultExecutionRuntime implements ExecutionRuntime {
 	}
 	
 	@Override
+	public <R> R executeInLock(BiFunction<ExecutionTxnContext, String, R> cb) {
+		String lockId = tryLock();
+		try {
+			return cb.apply(getTxnContext(), lockId);
+		} finally {
+			if(isLocked(lockId)) {
+			
+				boolean b = tryUnlock(lockId);
+				if(!b)
+					throw new FrameworkRuntimeException("Failed to release lock acquired during txn execution of runtime: "+this+" with acquired lockId: "+lockId);
+			}
+		}
+	}
+	
+	@Override
+	public void executeInLock(BiConsumer<ExecutionTxnContext, String> cb) {
+		String lockId = tryLock();
+		try {
+			cb.accept(getTxnContext(), lockId);
+		} finally {
+			if(isLocked(lockId)) {
+				
+				boolean b = tryUnlock(lockId);
+				if(!b)
+					throw new FrameworkRuntimeException("Failed to release lock acquired during txn execution of runtime: "+this+" with acquired lockId: "+lockId);
+			}
+		}
+	}
+	
+	
+	@Override
 	public void emitNotification(Notification<Object> notification) {
 		getTxnContext().addNotification(notification);
 	}
 	
 	@Override
-	public void awaitNotificationsCompletion() {
+	public final void awaitNotificationsCompletion() {
+		executeInLock((txnCtx, lockId)->{awaitNotificationsCompletionInternal();});
+	}
+	
+	protected void awaitNotificationsCompletionInternal() {
 		Queue<Notification<Object>> notifications = getTxnContext().getNotifications();
 		if(CollectionUtils.isEmpty(notifications))
 			return;

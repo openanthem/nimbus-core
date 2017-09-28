@@ -321,6 +321,9 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
         	
         	else if(event.getActionType()==ActionType._deleteElem)
         		onEventDeleteElem(event);    		
+        	
+        	else if(event.getActionType()==ActionType._evalProcess)
+        		onEventEvalProcess(event);    	
 	    }
 	    
 		protected boolean shouldProcessNotification(Notification<M> event) {
@@ -343,6 +346,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	    protected void onEventResetModel(Notification<M> event) {}
 	    protected void onEventNewElem(Notification<M> event) {}
 	    protected void onEventDeleteElem(Notification<M> event) {}
+	    
+	    protected void onEventEvalProcess(Notification<M> event) {}
 	}
 	
 	

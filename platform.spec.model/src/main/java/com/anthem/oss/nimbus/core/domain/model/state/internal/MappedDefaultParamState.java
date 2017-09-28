@@ -32,7 +32,16 @@ public class MappedDefaultParamState<T, M> extends DefaultParamState<T> implemen
 		Objects.requireNonNull(mapsTo, "MapsTo param must not be null.");
 		this.mapsTo = mapsTo;
 		
-		this.delegate = new InternalNotificationConsumer<>(this);
+		this.delegate = new InternalNotificationConsumer<M>(this) {
+			@Override
+			protected void onEventEvalProcess(Notification<M> event) {
+				// fire rules at root level upon completion of all set actions
+				getRootExecution().fireRules();
+				
+				// evaluate BPM
+				evaluateProcessFlow();
+			}
+		};
 		
 		getMapsTo().registerConsumer(this);
 	}

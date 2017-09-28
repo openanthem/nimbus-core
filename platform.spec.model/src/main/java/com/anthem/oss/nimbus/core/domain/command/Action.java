@@ -21,12 +21,12 @@ public enum Action {
 	_update,	//HTTP PATCH- partial update
 	_delete, 	//HTTP DELETE
 	
-	/* search */
+	/* transient state */
 	_search,
+	_config,
 	
 	/* process */
 	_process,	//Allows for custom process/work-flow definitions
-	//_lifecycle,
 	
 	/* navigation */
 	_nav
