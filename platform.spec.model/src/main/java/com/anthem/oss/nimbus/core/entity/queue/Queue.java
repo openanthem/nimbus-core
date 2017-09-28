@@ -19,13 +19,12 @@ import lombok.Setter;
 @Domain(value="queue", includeListeners={ListenerType.persistence})
 @Repo(value=Database.rep_mongodb, 
 		namedNativeQueries = { @Repo.NamedNativeQuery(name = "userQueues", nativeQueries = {
-			"{ \"aggregate\": \"queue\", \"pipeline\": [ { $graphLookup: { from: \"clientuser\", startWith: \"$entityId\", connectFromField: \"entityId\", connectToField: \"_id\", as: \"users\", restrictSearchWithMatch: { \"_id\": \"<!#self/id!>\" } } }, { $match: { \"users\": { $ne: [] } } } ] }",
-			"{ \"aggregate\": \"queue\", \"pipeline\": [{ $graphLookup: { from: \"clientusergroup\", startWith: \"$entityId\", connectFromField: \"entityId\", connectToField: \"_id\", as: \"usergroups\", restrictSearchWithMatch: {\"members.userId\":\"<!#self/id!>\"} } }, { $match: { \"usergroups\" :{ $ne: []} } } ] }" }) },
+			"{ \"aggregate\": \"queue\", \"pipeline\": [ { $match: { \"queueType\": \"USER\" } }, { $graphLookup: { from: \"clientuser\", startWith: \"$entityId\", connectFromField: \"entityId\", connectToField: \"_id\", as: \"users\", restrictSearchWithMatch: { \"_id\": \"<!#self/id!>\" } } }, { $match: { \"users\": { $ne: [] } } } ] }",
+			"{ \"aggregate\": \"queue\", \"pipeline\": [ { $match: { \"queueType\": \"USERGROUP\" } }, { $graphLookup: { from: \"clientusergroup\", startWith: \"$entityId\", connectFromField: \"entityId\", connectToField: \"_id\", as: \"usergroups\", restrictSearchWithMatch: {\"members.userId\":\"<!#self/id!>\"} } }, { $match: { \"usergroups\" :{ $ne: []} } } ] }" }) },
 		cache=Cache.rep_device)
-@Getter @Setter @EqualsAndHashCode(of={"code"},callSuper=false)
+@Getter @Setter
 public class Queue extends IdString {
 
-	@Ignore
 	private static final long serialVersionUID = 1L;
 	
 	private String displayName;
@@ -36,11 +35,11 @@ public class Queue extends IdString {
 	
 	private String status;
 	
-	private QueueType type;
+	private QueueType queueType;
 	
 	public enum QueueType {
 		USER,
-		USERGROUP
+		USERGROUP;
 	}
 	
 	// Queue to User & UserGroup is 1-1 relation based on NIM-3656,3657
