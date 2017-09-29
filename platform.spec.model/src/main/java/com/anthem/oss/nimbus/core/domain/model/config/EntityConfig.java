@@ -3,6 +3,8 @@
  */
 package com.anthem.oss.nimbus.core.domain.model.config;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * @author Soham Chakravarti
  *
@@ -11,6 +13,7 @@ public interface EntityConfig<T> {
 
 	public String getConfigId();
 	
+	@JsonIgnore
 	public Class<T> getReferredClass();
 	
 	public <K> ParamConfig<K> findParamByPath(String path);

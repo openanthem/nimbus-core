@@ -53,11 +53,15 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	private ValidationResult validationResult;
 	
+	@JsonIgnore
 	final private Model<?> parentModel;
 	
-	
+	@JsonIgnore
 	private Model<StateContextEntity> contextModel;
 	
+	@JsonIgnore
+	private boolean active = true;
+
 	/* TODO: Weak reference was causing the values to be GC-ed even before the builders got to building 
 	 * Allow referenced subscribers to get garbage collected in scenario when same core is referenced by multiple views. 
 	 * Life span of core may be longer than cumulative views possibly leading to memory leak.
@@ -126,7 +130,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 //		return eventSubscribers==null ? Collections.emptyList() : eventSubscribers;
 //	}
 
-	@Override
+	@JsonIgnore @Override
 	public ParamConfig<T> getConfig() {
 		return (ParamConfig<T>)super.getConfig();
 	}
@@ -447,8 +451,6 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		return getConfig().isFound(resolvedPath);
 	}
 	
-	private boolean active = true;
-
 	@Override
 	public boolean isActive() {
 		if(!active)
