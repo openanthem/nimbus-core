@@ -32,7 +32,7 @@ public interface EntityState<T> {
 	public EntityConfig<T> getConfig();
 
 	default String getConfigId() {
-		return getConfig().getId();
+		return getConfig().getConfigId();
 	}
 	
 	public <S> Model<S> findModelByPath(String path);
@@ -192,6 +192,10 @@ public interface EntityState<T> {
 			
 			ParamConfig<T> elemConfig = typeConfig.getElementConfig();
 			return elemConfig;
+		}
+		
+		default String getElemConfigId() {
+			return getElemConfig().getConfigId();
 		}
 	}
 	public interface MappedListModel<T, M> extends ListModel<T>, MappedModel<List<T>, List<M>> {

@@ -9,7 +9,7 @@ package com.anthem.oss.nimbus.core.domain.model.config;
  */
 public interface EntityConfig<T> {
 
-	public String getId();
+	public String getConfigId();
 	
 	public Class<T> getReferredClass();
 	

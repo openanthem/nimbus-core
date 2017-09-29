@@ -29,6 +29,6 @@ abstract public class AbstractEntityConfig<T> implements EntityConfig<T> {
 	
 	private static final AtomicInteger counter = new AtomicInteger();
 	
-	private final String id = String.valueOf(counter.incrementAndGet());
+	private final String configId = String.valueOf(counter.incrementAndGet());
 
 }
