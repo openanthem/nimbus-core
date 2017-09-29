@@ -36,6 +36,7 @@ import com.anthem.oss.nimbus.core.entity.EntityAssociation;
 import com.anthem.oss.nimbus.core.entity.SearchCriteria;
 import com.anthem.oss.nimbus.core.entity.queue.Queue;
 import com.anthem.oss.nimbus.core.entity.user.GroupUser;
+import com.anthem.oss.nimbus.core.util.JustLogit;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -45,6 +46,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.CommandResult;
+import com.mongodb.DBObject;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.PathBuilder;
@@ -58,6 +60,8 @@ import groovy.lang.GroovyShell;
  */
 public class MongoSearchByQuery extends MongoDBSearch {
 
+	private static JustLogit logIt = new JustLogit(MongoSearchByQuery.class);
+	
 	public MongoSearchByQuery(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
 	}
@@ -192,18 +196,22 @@ public class MongoSearchByQuery extends MongoDBSearch {
 //			result.addAll(models.getMappedResults());
 //		}
 		
+		//TODO - to be refactored - added null checks for LTSS deployment
 		List<?> output = new ArrayList();
 		String[] aggregationCriteria = StringUtils.split((String)criteria.getWhere(), "~~");
 		Arrays.asList(aggregationCriteria).forEach((cr) -> {
 			CommandResult commndResult = getMongoOps().executeCommand(cr);
-			BasicDBList result = (com.mongodb.BasicDBList)commndResult.get("result");
-			if(criteria.getProjectCriteria() != null && StringUtils.isNotBlank(criteria.getProjectCriteria().getAlias())){
-				result = (com.mongodb.BasicDBList)((com.mongodb.BasicDBObject)result.get(0)).get(criteria.getProjectCriteria().getAlias());
+			System.out.println("&&& Aggregation Query: "+cr+" --- Result: "+commndResult);
+			if(commndResult != null && commndResult.get("result") != null && commndResult.get("result") instanceof BasicDBList) {
+				BasicDBList result = (BasicDBList)commndResult.get("result");
+				if(criteria.getProjectCriteria() != null && StringUtils.isNotBlank(criteria.getProjectCriteria().getAlias())) {
+					BasicDBObject dbObject = (BasicDBObject)result.get(0);
+					if(dbObject != null && dbObject.get(criteria.getProjectCriteria().getAlias()) instanceof BasicDBList) {
+						result = (BasicDBList)dbObject.get(criteria.getProjectCriteria().getAlias());
+					}
+				}
+				output.addAll(getMongoOps().getConverter().read(List.class, result));
 			}
-			
-			//output.addAll(getConverter().convertArray(outputClass, List.class, result.toString()));
-			
-			output.addAll(getMongoOps().getConverter().read(List.class, result));
 		});
 		return output;
 	}
