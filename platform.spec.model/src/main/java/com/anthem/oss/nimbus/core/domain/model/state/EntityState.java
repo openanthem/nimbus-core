@@ -31,6 +31,10 @@ public interface EntityState<T> {
 	@JsonIgnore
 	public EntityConfig<T> getConfig();
 
+	default String getConfigId() {
+		return getConfig().getId();
+	}
+	
 	public <S> Model<S> findModelByPath(String path);
 	public <S> Model<S> findModelByPath(String[] pathArr);
 

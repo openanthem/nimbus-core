@@ -9,6 +9,8 @@ package com.anthem.oss.nimbus.core.domain.model.config;
  */
 public interface EntityConfig<T> {
 
+	public String getId();
+	
 	public Class<T> getReferredClass();
 	
 	public <K> ParamConfig<K> findParamByPath(String path);
