@@ -108,6 +108,32 @@ public class BPMGatewayTests extends AbstractFrameworkIngerationPersistableTests
 		// ********************** UNVOMMENT THE LINE BELOW ****************//
 		assertEquals("Assigned", response.findStateByPath("/parameterAfterHumanTask"));	
 	}
+	
+	
+	@Test
+	@SuppressWarnings("unchecked")
+	public void t02_coretoview_bpm() {
+		MockHttpServletRequest request = MockHttpRequestBuilder.withUri(BPM_CV_PARAM_ROOT)
+					.addAction(Action._new)
+					.getMock();
+		Holder<MultiOutput> holder = (Holder<MultiOutput>)controller.handlePost(request, null);
+		String domainRoot_refId  = ExtractResponseOutputUtils.extractDomainRootRefId(holder);
+		assertNotNull(domainRoot_refId);
+		
+		String updateUri = BPM_CV_PARAM_ROOT + ":"+domainRoot_refId+"/.m/coreParameter";
+		MockHttpServletRequest request4 = MockHttpRequestBuilder.withUri(updateUri)
+				.addAction(Action._update)
+				.getMock();
+		holder = (Holder<MultiOutput>)controller.handlePost(request4, converter.convert("Assigned"));	
+		
+		MockHttpServletRequest request3 = MockHttpRequestBuilder.withUri(BPM_CV_PARAM_ROOT).addRefId(domainRoot_refId)
+				.addAction(Action._get)
+				.getMock();
+		holder = (Holder<MultiOutput>)controller.handlePost(request3, null);		
+		
+		Param<?> response = (Param<?>)holder.getState().getSingleResult();
+		assertEquals(response.findStateByPath("/viewResultParameter"),"Complete");
+	}		
 		
 	
 }
