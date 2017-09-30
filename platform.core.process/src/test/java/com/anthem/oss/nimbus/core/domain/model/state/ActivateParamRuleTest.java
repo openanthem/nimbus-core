@@ -8,6 +8,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Date;
+
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -89,7 +91,10 @@ public class ActivateParamRuleTest  extends ActivateParamBaseTest {
 		
 		Param<String> q2 = _q.getRoot().findParamByPath(getSourceParamPath());
 		Param<?> q2Level1 = _q.getRoot().findParamByPath(getTargetParamPath());
-		Param<?> q2Level1_attrib = _q.getRoot().findParamByPath(getTargetNestedAttribPath());
+		Param<String> q2Level1_attrib = _q.getRoot().findParamByPath(getTargetNestedAttribPath());
+		
+		// check for nested param reset
+		q2Level1_attrib.setState("new nested @ "+new Date());
 		
 		final String K_q2 = "N";
 		q2.setState(K_q2);
