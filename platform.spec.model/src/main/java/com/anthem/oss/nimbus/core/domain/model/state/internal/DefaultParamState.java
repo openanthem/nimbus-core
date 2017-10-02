@@ -136,7 +136,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 //		return eventSubscribers==null ? Collections.emptyList() : eventSubscribers;
 //	}
 
-	@JsonIgnore @Override
+	//@JsonIgnore 
+	@Override
 	public ParamConfig<T> getConfig() {
 		return (ParamConfig<T>)super.getConfig();
 	}
