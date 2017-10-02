@@ -459,6 +459,7 @@ public class ViewConfig {
 		boolean postButton() default false;
 		String postButtonUrl() default "";
 		String postButtonTargetPath() default "";
+		String postButtonAlias() default "";
 		boolean postEventOnChange() default false;
 	}
 	
