@@ -458,6 +458,7 @@ public class ViewConfig {
 		boolean pagination() default true;
 		boolean postButton() default false;
 		String postButtonUrl() default "";
+		String postButtonTargetPath() default "";
 		boolean postEventOnChange() default false;
 	}
 	
