@@ -15,6 +15,7 @@ import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
 import com.anthem.oss.nimbus.core.domain.definition.Model.Param.Values;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.StateContextEntity;
 import com.anthem.oss.nimbus.core.entity.Findable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author Soham Chakravarti
@@ -55,6 +56,7 @@ public interface ParamConfig<P> extends EntityConfig<P>, Findable<String> {
 	
 	public List<ParamConverter> getConverters();
 	
+	@JsonIgnore
 	public ParamConfig<StateContextEntity> getContextParam();
 	
 	public List<AssociatedEntity> getAssociatedEntities();
