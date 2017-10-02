@@ -59,6 +59,11 @@ public class MappedDefaultParamConfig<P, M> extends DefaultParamConfig<P> implem
 			setValidations(mapsTo.getValidations());
 			setValues(mapsTo.getValues());
 		}
+		
+		@Override
+		public String getConfigId() {
+			return super.getConfigId();
+		}
 	}
 	
 	public MappedDefaultParamConfig(String code, ModelConfig<?> mapsToEnclosingModel, ParamConfig<M> mapsTo, Path path) {
