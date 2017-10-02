@@ -3,6 +3,8 @@
  */
 package com.anthem.oss.nimbus.core.domain.model.config.builder;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,6 +20,7 @@ import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.util.ClassUtils;
+import org.springframework.util.CollectionUtils;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.UnsupportedScenarioException;
@@ -32,19 +35,24 @@ import com.anthem.oss.nimbus.core.domain.definition.Execution;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.definition.Model;
-import com.anthem.oss.nimbus.core.domain.definition.OnStateChange;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.ViewParamBehavior;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.ViewStyle;
+import com.anthem.oss.nimbus.core.domain.definition.event.StateEvent.OnStateChange;
+import com.anthem.oss.nimbus.core.domain.definition.event.StateEvent.OnStateLoad;
 import com.anthem.oss.nimbus.core.domain.model.config.AnnotationConfig;
+import com.anthem.oss.nimbus.core.domain.model.config.EventHandlerConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig.MappedParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
+import com.anthem.oss.nimbus.core.domain.model.config.internal.DefaultEventHandlerConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.internal.DefaultModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.internal.DefaultParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultParamConfig;
+import com.anthem.oss.nimbus.core.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
+import com.anthem.oss.nimbus.core.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.StateContextEntity;
 import com.anthem.oss.nimbus.core.rules.RulesEngineFactoryProducer;
 import com.anthem.oss.nimbus.core.util.GenericUtils;
@@ -416,14 +424,58 @@ abstract public class AbstractEntityConfigBuilder {
 			created.setAssociatedEntities(Arrays.asList(associatedEntityAnnotationArr));
 		}
 		
-		List<AnnotationConfig> ruleAnnotations = AnnotationConfigHandler.handle(f, OnStateChange.class);
-		created.setRules(ruleAnnotations);
-		
 		List<AnnotationConfig> vConfig = AnnotationConfigHandler.handle(f, Constraint.class);
 		created.setValidations(vConfig);
+
+		EventHandlerConfig eventConfig = createEventHandlerConfig(f);
+		created.setEventHandlerConfig(eventConfig);
 		
 		return decorateParam(mConfig, created, visitedModels);
 	}
+	
+	@SuppressWarnings("unchecked")
+	private EventHandlerConfig createEventHandlerConfig(AnnotatedElement aElem) {
+		final DefaultEventHandlerConfig eventConfig = new DefaultEventHandlerConfig();
+		
+//		addEventHandler(aElem, OnStateLoad.class, OnStateLoadHandler.class, (ac, handler)->{
+//			eventConfig.add(ac, (OnStateLoadHandler<Annotation>)handler);
+//		});
+		
+		List<AnnotationConfig> onStateLoadAnnotations = AnnotationConfigHandler.handle(aElem, OnStateLoad.class);
+		if(!CollectionUtils.isEmpty(onStateLoadAnnotations)) { 
+			
+			onStateLoadAnnotations.stream()
+				.forEach(ac->{
+					OnStateLoadHandler<Annotation> handler = getBeanResolver().get(OnStateLoadHandler.class, ac.getAnnotation().annotationType());
+					eventConfig.add(ac, handler);
+				});
+		}
+
+		
+		List<AnnotationConfig> onStateChangeAnnotations = AnnotationConfigHandler.handle(aElem, OnStateChange.class);
+		if(!CollectionUtils.isEmpty(onStateChangeAnnotations)) { 
+			
+			onStateChangeAnnotations.stream()
+				.forEach(ac->{
+					OnStateChangeHandler<Annotation> handler = getBeanResolver().get(OnStateChangeHandler.class, ac.getAnnotation().annotationType());
+					eventConfig.add(ac, handler);
+				});
+		}
+
+		return eventConfig.isEmpty() ? null : eventConfig;
+	}
+	
+//	private <T> void addEventHandler(AnnotatedElement aElem, Class<Annotation> aClass, Class<? extends T> handlerClass, BiConsumer<AnnotationConfig, T> cb) {
+//		List<AnnotationConfig> eventAnnotations = AnnotationConfigHandler.handle(aElem, aClass);
+//		if(!CollectionUtils.isEmpty(eventAnnotations)) { 
+//			
+//			eventAnnotations.stream()
+//				.forEach(ac->{
+//					T handler = getBeanResolver().find(handlerClass, ac.getAnnotation().annotationType());
+//					cb.accept(ac, handler);
+//				});
+//		}
+//	}
 	
 	private ParamConfig<StateContextEntity> cachedRuntimeEntityParamConfig;
 	

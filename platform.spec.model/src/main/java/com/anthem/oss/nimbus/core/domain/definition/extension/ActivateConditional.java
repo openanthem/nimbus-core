@@ -10,9 +10,8 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import com.anthem.oss.nimbus.core.domain.Implementation;
-import com.anthem.oss.nimbus.core.domain.definition.OnStateChange;
-import com.anthem.oss.nimbus.core.domain.model.state.StateNotificationHandler;
+import com.anthem.oss.nimbus.core.domain.definition.event.StateEvent.OnStateChange;
+import com.anthem.oss.nimbus.core.domain.definition.event.StateEvent.OnStateLoad;
 
 /**
  * @author Soham Chakravarti
@@ -21,19 +20,18 @@ import com.anthem.oss.nimbus.core.domain.model.state.StateNotificationHandler;
 @Documented
 @Retention(RUNTIME)
 @Target(FIELD)
-@OnStateChange
+@OnStateChange @OnStateLoad
 public @interface ActivateConditional {
 
+	/**
+	 * expression to evaluate against declared param's state 
+	 */
+	String when();
+	
 	/**
 	 * path of param to activate when condition is satisfied 
 	 */
 	String targetPath();
-	
-	/**
-	 * expression to evaluate against declared param's state, <br> 
-	 * if true would lookup implementation for {@linkplain StateNotificationHandler} annotation with {@linkplain Implementation}  
-	 */
-	String when();
 	
 	/**
 	 * condition on which param would be inactivated. <br>

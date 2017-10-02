@@ -16,6 +16,9 @@ public interface EntityConfig<T> {
 	@JsonIgnore
 	public Class<T> getReferredClass();
 	
+	@JsonIgnore
+	public EventHandlerConfig getEventHandlerConfig();
+	
 	public <K> ParamConfig<K> findParamByPath(String path);
 	public <K> ParamConfig<K> findParamByPath(String[] pathArr);
 

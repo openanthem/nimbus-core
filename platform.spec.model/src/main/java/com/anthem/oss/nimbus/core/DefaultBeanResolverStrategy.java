@@ -111,6 +111,12 @@ public class DefaultBeanResolverStrategy implements BeanResolverStrategy {
 	}
 	
 	@Override
+	public <T> T get(Class<T> type, Class<?>... generics) throws InvalidConfigException {
+		return Optional.ofNullable(find(type, generics))
+				.orElseThrow(()->new InvalidConfigException("Bean of type "+type+" must be configured but not found"));
+	}
+	
+	@Override
 	public <T> Collection<T> findMultiple(Class<T> type) {
 		String bNmArr[] = applicationContext.getBeanNamesForType(type);
 		

@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.anthem.oss.nimbus.core.domain.model.config.AnnotationConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.EntityConfig;
+import com.anthem.oss.nimbus.core.domain.model.config.EventHandlerConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.RulesConfig;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -31,4 +32,5 @@ abstract public class AbstractEntityConfig<T> implements EntityConfig<T> {
 	
 	private final String configId = String.valueOf(counter.incrementAndGet());
 
+	private EventHandlerConfig eventHandlerConfig;
 }
