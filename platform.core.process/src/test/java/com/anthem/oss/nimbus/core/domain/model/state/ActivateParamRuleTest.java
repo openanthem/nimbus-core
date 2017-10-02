@@ -5,7 +5,9 @@ package com.anthem.oss.nimbus.core.domain.model.state;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
@@ -20,6 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.anthem.oss.nimbus.core.TestFrameworkIntegrationScenariosApplication;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.anthem.oss.nimbus.test.sample.domain.model.SampleCoreNestedEntity;
 
 /**
  * @author Soham Chakravarti
@@ -106,5 +109,60 @@ public class ActivateParamRuleTest  extends ActivateParamBaseTest {
 		assertTrue(q2.isActive());
 		assertFalse(q2Level1.isActive());
 		assertFalse(q2Level1_attrib.isActive());
+	}
+	
+	@Test
+	public void t03_rule_multiple() {
+		Param<String> q3 = _q.getRoot().findParamByPath("/sample_core/q3");
+		Param<SampleCoreNestedEntity> q3Level1 = _q.getRoot().findParamByPath("/sample_core/q3Level1");
+		Param<String> q3Level1_attrib = _q.getRoot().findParamByPath("/sample_core/q3Level1/nested_attr_String");
+		Param<SampleCoreNestedEntity> q3Level2 = _q.getRoot().findParamByPath("/sample_core/q3Level2");
+		Param<String> q3Level2_attrib = _q.getRoot().findParamByPath("/sample_core/q3Level2/nested_attr_String");
+		
+		assertNotNull(q3);
+		assertNotNull(q3Level1);
+		assertNotNull(q3Level1_attrib);
+		assertNotNull(q3Level2);
+		assertNotNull(q3Level2_attrib);
+		
+		assertNull(q3Level1_attrib.getState());
+		assertNull(q3Level1.getState());
+		assertNull(q3Level2_attrib.getState());
+		assertNull(q3Level2.getState());
+		assertNull(q3.getState());
+		
+		assertTrue(q3.isActive());
+		assertFalse(q3Level1.isActive());
+		assertFalse(q3Level1_attrib.isActive());
+		assertFalse(q3Level2.isActive());
+		assertFalse(q3Level2_attrib.isActive());
+		
+		// set 'A'
+		final String K_A = "A";
+		q3.setState(K_A);
+		
+		assertTrue(q3.isActive());
+		assertTrue(q3Level1.isActive());
+		assertTrue(q3Level1_attrib.isActive());
+		assertFalse(q3Level2.isActive());
+		assertFalse(q3Level2_attrib.isActive());
+		
+		// set 'A.Level1.attrib'
+		final String K_A_Level1_Attrib = "A.Level1.attrib @" + new Date();
+		q3Level1_attrib.setState(K_A_Level1_Attrib);
+		assertSame(K_A_Level1_Attrib, q3Level1.getState().getNested_attr_String());
+		
+		// set 'B'
+		final String K_B = "B";
+		q3.setState(K_B);
+		
+		assertTrue(q3.isActive());
+		assertFalse(q3Level1.isActive());
+		assertFalse(q3Level1_attrib.isActive());
+		assertTrue(q3Level2.isActive());
+		assertTrue(q3Level2_attrib.isActive());
+		
+		assertNull(q3Level1_attrib.getState());
+		assertNull(q3Level1.getState());
 	}
 }

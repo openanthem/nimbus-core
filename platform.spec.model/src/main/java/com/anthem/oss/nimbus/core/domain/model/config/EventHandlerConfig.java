@@ -17,13 +17,13 @@ import com.anthem.oss.nimbus.core.domain.model.state.event.StateEventHandlers.On
  */
 public interface EventHandlerConfig {
 
-	public Set<AnnotationConfig> getOnStateLoadAnnotationConfigs();
-	public Optional<OnStateLoadHandler<Annotation>> findOnStateLoadHandler(AnnotationConfig ac);
-	public OnStateLoadHandler<Annotation> getOnStateLoadHandler(AnnotationConfig ac) throws InvalidConfigException;
+	public Set<Annotation> getOnStateLoadAnnotations();
+	public Optional<OnStateLoadHandler<Annotation>> findOnStateLoadHandler(Annotation a);
+	public OnStateLoadHandler<Annotation> getOnStateLoadHandler(Annotation a) throws InvalidConfigException;
 	
 	
-	public Set<AnnotationConfig> getOnStateChangeAnnotationConfigs();
-	public Optional<OnStateChangeHandler<Annotation>> findOnStateChangeHandler(AnnotationConfig ac);
-	public OnStateChangeHandler<Annotation> getOnStateChangeHandler(AnnotationConfig ac) throws InvalidConfigException;
+	public Set<Annotation> getOnStateChangeAnnotations();
+	public Optional<OnStateChangeHandler<Annotation>> findOnStateChangeHandler(Annotation a);
+	public OnStateChangeHandler<Annotation> getOnStateChangeHandler(Annotation a) throws InvalidConfigException;
 	
  }

@@ -125,11 +125,11 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		
 		// hook up on state load events
 		EventHandlerConfig eventHandlerConfig = getConfig().getEventHandlerConfig();
-		if(eventHandlerConfig!=null && eventHandlerConfig.getOnStateLoadAnnotationConfigs()!=null) {
-			eventHandlerConfig.getOnStateLoadAnnotationConfigs().stream()
+		if(eventHandlerConfig!=null && eventHandlerConfig.getOnStateLoadAnnotations()!=null) {
+			eventHandlerConfig.getOnStateLoadAnnotations().stream()
 				.forEach(ac->{
 					OnStateLoadHandler<Annotation> handler = eventHandlerConfig.getOnStateLoadHandler(ac);
-					handler.handle(ac.getAnnotation(), this);
+					handler.handle(ac, this);
 				});
 		}
 	}
@@ -254,11 +254,11 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		if(a!=null) {
 			// hook up on state change events
 			EventHandlerConfig eventHandlerConfig = getConfig().getEventHandlerConfig();
-			if(eventHandlerConfig!=null && eventHandlerConfig.getOnStateChangeAnnotationConfigs()!=null) {
-				eventHandlerConfig.getOnStateChangeAnnotationConfigs().stream()
+			if(eventHandlerConfig!=null && eventHandlerConfig.getOnStateChangeAnnotations()!=null) {
+				eventHandlerConfig.getOnStateChangeAnnotations().stream()
 					.forEach(ac->{
 						OnStateChangeHandler<Annotation> handler = eventHandlerConfig.getOnStateChangeHandler(ac);
-						handler.handle(ac.getAnnotation(), resolveRuntime().getTxnContext(), new ParamEvent(a, this));
+						handler.handle(ac, resolveRuntime().getTxnContext(), new ParamEvent(a, this));
 					});
 			}
 			

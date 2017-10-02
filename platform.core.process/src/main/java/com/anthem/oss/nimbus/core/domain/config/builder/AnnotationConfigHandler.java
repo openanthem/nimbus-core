@@ -6,6 +6,7 @@ package com.anthem.oss.nimbus.core.domain.config.builder;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import javax.validation.Constraint;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.core.annotation.AnnotatedElementUtils;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ClassUtils;
 
 import com.anthem.oss.nimbus.core.domain.config.builder.attributes.AnnotationAttributeHandler;
@@ -77,6 +79,33 @@ public class AnnotationConfigHandler {
 		
 		// TODO null may be unreachable
 		return CollectionUtils.isEmpty(aConfigs) ? null : aConfigs;
+	}
+	
+	public static List<Annotation> handle(AnnotatedElement aElem, Class<? extends Annotation> repeatableContainerMetaAnnotationType, Class<? extends Annotation> repeatableMetaAnnotationType) {
+		final List<Annotation> annotations = new ArrayList<>();
+		
+		final Annotation arr[] = aElem.getAnnotations();
+
+		for(final Annotation a : arr) {
+			final Set<String> metaTypes = AnnotatedElementUtils.getMetaAnnotationTypes(aElem, a.annotationType());
+			
+			// handle repeatable container
+			if(metaTypes!=null && metaTypes.contains(repeatableContainerMetaAnnotationType.getName())) {
+				Object value = AnnotationUtils.getValue(a);
+				if(value==null || !value.getClass().isArray())
+					throw new InvalidConfigException("Repeatable container annotation is expected to follow convention: '{RepeableAnnotationType}[] value();' but not found in: "+a);
+				
+				Annotation[] annArr = (Annotation[])value;
+				annotations.addAll(Arrays.asList(annArr));
+			}
+			
+			// handle non-repeating meta annotation
+			if(metaTypes!=null && metaTypes.contains(repeatableMetaAnnotationType.getName())) {
+				annotations.add(a);
+			}
+		}
+		
+		return annotations;
 	}
 
 	/**
