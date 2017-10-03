@@ -612,8 +612,16 @@ public class ViewConfig {
 		String alias() default "GridColumn";
 		boolean hidden() default false;
 		boolean sortable() default true;
-		boolean filter() default true;
+		boolean filter() default false;
 		boolean expandable() default true;
+		
+		public enum FilterMode {
+			equals,
+			contains,
+			endsWith,
+			in
+		}
+		FilterMode filterMode() default FilterMode.equals;
 	}
 	
 }
