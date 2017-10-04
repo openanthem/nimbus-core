@@ -12,6 +12,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.util.CollectionUtils;
 
 import com.anthem.oss.nimbus.core.AbstractFrameworkIngerationPersistableTests;
 import com.anthem.oss.nimbus.core.domain.command.Action;
@@ -53,7 +54,7 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 		
 		// create of get entry in db
 		SampleCoreEntity core = mongo.findById(refId, SampleCoreEntity.class, CORE_DOMAIN_ALIAS);
-		if(core==null) {
+		if(core==null || CollectionUtils.isEmpty(core.getAttr_list_1_NestedEntity())) {
 			t1_colElem_add();
 			
 			// get now
