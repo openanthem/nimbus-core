@@ -3,6 +3,8 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.web.context.request.RequestContextHolder;
@@ -19,8 +21,6 @@ import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
-import com.anthem.oss.nimbus.core.session.Cache;
-import com.anthem.oss.nimbus.core.session.impl.SessionCache;
 
 /**
  * @author Soham Chakravarti
@@ -32,7 +32,8 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 	private final CommandExecutor<?> executorActionNew;
 	private final CommandExecutor<?> executorActionGet;
 
-	private final Cache<String, ExecutionContext> sessionCache;
+	// TODO: Temp impl till Session is rolled out
+	private final Map<String, ExecutionContext> sessionCache;
 	
 	private final QuadModelBuilder quadModelBuilder;
 	
@@ -43,7 +44,8 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 		this.executorActionNew = beanResolver.get(CommandExecutor.class, Action._new.name() + Behavior.$execute.name());
 		this.executorActionGet = beanResolver.get(CommandExecutor.class, Action._get.name() + Behavior.$execute.name());
 		
-		this.sessionCache = beanResolver.get(SessionCache.class);
+		// TODO: Temp impl till Session is rolled out
+		this.sessionCache = new HashMap<>(100);
 	}
 	
 	@Override
@@ -136,7 +138,7 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 	}
 	
 	private boolean queueExists(ExecutionContext eCtx) {
-		return null != sessionCache.get(getSessionKey(eCtx));
+		return sessionCache.containsKey(getSessionKey(eCtx));
 	}
 	
 	private ExecutionContext queueGet(ExecutionContext eCtx) {
@@ -156,13 +158,21 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 			return false;
 		
 		synchronized (sessionCache) {
-			return sessionCache.remove(getSessionKey(eCtx));
+			ExecutionContext removed = sessionCache.remove(getSessionKey(eCtx));
+			return removed!=null;
 		}
 	}
 	
 	@Override
 	public void clear() {
 		synchronized (sessionCache) {
+			// shutdown
+			sessionCache.values().stream()
+				.forEach(e->{
+					e.getQuadModel().getRoot().getExecutionRuntime().stop();
+				});
+			
+			// clear cache
 			sessionCache.clear();	
 		}
 	}
