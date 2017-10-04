@@ -91,13 +91,13 @@ public class HttpSessionCacheTest {
 		
 		Mockito.when(eCtx1.getQuadModel()).thenReturn(qm1);
 		Mockito.when(qm1.getRoot()).thenReturn(em1);
-		Mockito.when(em1.getExecutionRuntime()).thenReturn(er1);
+		Mockito.when((ExecutionRuntime)em1.getExecutionRuntime()).thenReturn(er1);
 		Mockito.doNothing().when(er1).stop();
 		Mockito.when(eCtx1.getQuadModel()).thenReturn(qm1);
 		
 		Mockito.when(eCtx2.getQuadModel()).thenReturn(qm2);
 		Mockito.when(qm2.getRoot()).thenReturn(em2);
-		Mockito.when(em2.getExecutionRuntime()).thenReturn(er2);
+		Mockito.when((ExecutionRuntime)em2.getExecutionRuntime()).thenReturn(er2);
 		Mockito.doNothing().when(er2).stop();
 		Mockito.when(eCtx2.getQuadModel()).thenReturn(qm2);
 		
