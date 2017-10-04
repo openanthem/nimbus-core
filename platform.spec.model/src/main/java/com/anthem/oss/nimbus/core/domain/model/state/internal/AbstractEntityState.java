@@ -22,10 +22,6 @@ import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.model.config.EntityConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.internal.DefaultModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.internal.DefaultModelConfig.StateContextModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.internal.DefaultParamConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.internal.DefaultParamConfig.StateContextParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
@@ -77,13 +73,15 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 	
 	
 	public static boolean isStateContextConfig(Param<?> associatedParam, ModelConfig<?> config) {
-		return associatedParam.getConfig().getClass() == StateContextParamConfig.class ||
-				config.getClass() == StateContextModelConfig.class;
+		return false;
+//		return associatedParam.getConfig().getClass() == StateContextParamConfig.class ||
+//				config.getClass() == StateContextModelConfig.class;
 	} 
 	
 	public static boolean isStateContextConfig(Model<?> parentModel, ParamConfig<?> config) {
-		return config.getClass() == DefaultParamConfig.StateContextParamConfig.class || 
-				(parentModel!=null && parentModel.getConfig().getClass()==DefaultModelConfig.class);
+		return false;
+//		return config.getClass() == DefaultParamConfig.StateContextParamConfig.class || 
+//				(parentModel!=null && parentModel.getConfig().getClass()==DefaultModelConfig.class);
 	} 
 	
 	@Override
