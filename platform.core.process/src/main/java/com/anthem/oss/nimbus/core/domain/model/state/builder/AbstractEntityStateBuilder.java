@@ -81,7 +81,7 @@ abstract public class AbstractEntityStateBuilder {
 	protected <T> DefaultModelState<T> createModel(Param<T> associatedParam, ModelConfig<T> config, EntityStateAspectHandlers provider, Model<?> mapsToSAC) {
 		DefaultModelState<T> mState = associatedParam.isMapped() ? //(mapsToSAC!=null) ? 
 				new MappedDefaultModelState<>(mapsToSAC, associatedParam, config, provider) : 
-					new DefaultModelState<>(associatedParam, config, provider);
+					DefaultModelState.instantiate(associatedParam, config, provider);//new DefaultModelState<>(associatedParam, config, provider);
 		
 		// rules
 		Optional.ofNullable(config.getRulesConfig())
@@ -96,7 +96,7 @@ abstract public class AbstractEntityStateBuilder {
 	protected <T> DefaultListModelState<T> createCollectionModel(ListParam associatedParam, ModelConfig<List<T>> config, EntityStateAspectHandlers provider, DefaultListElemParamState.Creator<T> elemCreator) {
 		DefaultListModelState<T> mState = (associatedParam.isMapped()) ? 
 				new MappedDefaultListModelState<>(associatedParam.findIfMapped().getMapsTo().getType().findIfCollection().getModel(), associatedParam, config, provider, elemCreator) :
-				new DefaultListModelState<>(associatedParam, config, provider, elemCreator);					
+					DefaultListModelState.instantiate(associatedParam, config, provider, elemCreator); //new DefaultListModelState<>(associatedParam, config, provider, elemCreator);					
 		
 		mState.initSetup();
 		return mState;
@@ -116,7 +116,7 @@ abstract public class AbstractEntityStateBuilder {
 			mpState = new MappedDefaultListElemParamState<>(parentModel, mpConfig, provider, elemId);
 			
 		} else {
-			mpState = new DefaultListElemParamState<>(parentModel, mpConfig, provider, elemId);
+			mpState = DefaultListElemParamState.instantiate(parentModel, mpConfig, provider, elemId);//new DefaultListElemParamState<>(parentModel, mpConfig, provider, elemId);
 		}
 		
 		mpState.initSetup();
@@ -146,7 +146,7 @@ abstract public class AbstractEntityStateBuilder {
 	}
 	
 	private <T> void decorateParam(DefaultParamState<T> created) {
-		if(created.getConfig().getContextParam()==null) //skip is not configured for RuntimeConfig
+		if(created.getConfig().getContextParam()==null) //skip if not configured for RuntimeConfig
 			return; 
 
 		ParamConfig<StateContextEntity> pCofigContext = created.getConfig().getContextParam();
@@ -206,11 +206,6 @@ abstract public class AbstractEntityStateBuilder {
 			return new MappedDefaultParamState<>(mapsToParam, parentModel, mappedParamConfig, aspectHandlers);
 		}
 		
-//		if(!mappedParamConfig.getMapsTo().getType().isNested()) {
-//			throw new UnsupportedOperationException("Mapped Detached ParamType.Field is not yet supported. Supported types are Nested & NestedCollection."
-//					+ " param: "+mappedParamConfig.getCode()+" in parent: "+parentModel.getPath());
-//		}
-		
 		// detached nested: find mapsTo model and create ExState.ExParam for it
 		
 		ModelConfig<?> mapsToEnclosingModel = mappedParamConfig.getMapsToEnclosingModel();
@@ -239,9 +234,10 @@ abstract public class AbstractEntityStateBuilder {
 
 	private <P> DefaultParamState<P> createParamUnmapped(EntityStateAspectHandlers aspectHandlers, Model<?> parentModel, Model<?> mapsToSAC, ParamConfig<P> paramConfig) {
 		if(paramConfig.getType().isCollection())
-			return new DefaultListParamState(parentModel, paramConfig, aspectHandlers);
+			return DefaultListParamState.instantiateList(parentModel, paramConfig, aspectHandlers); //return new DefaultListParamState(parentModel, paramConfig, aspectHandlers);
 		
-		return new DefaultParamState<>(parentModel, paramConfig, aspectHandlers);
+		//return new DefaultParamState<>(parentModel, paramConfig, aspectHandlers);
+		return DefaultParamState.instantiate(parentModel, paramConfig, aspectHandlers);
 	}
 	
 	private <T, M> Param<M> findMapsToParam(ParamConfig<T> pConfig, Model<?> mapsToStateAndConfig) {
