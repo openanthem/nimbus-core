@@ -2,6 +2,7 @@ package com.anthem.oss.nimbus.core.config;
 
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -11,12 +12,14 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.web.client.RestTemplate;
 
 import com.anthem.nimbus.platform.core.process.api.repository.SessionCacheRepository;
 import com.anthem.nimbus.platform.core.process.api.support.ProcessBeanHelper;
 import com.anthem.nimbus.platform.core.process.mq.MessageReceiver;
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
+import com.anthem.oss.nimbus.core.domain.model.StateContextJSONFilter;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.ValidationConfigHandler;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.DefaultModelRepositoryFactory;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.DefaultParamStateRepositoryDetached;
@@ -43,6 +46,8 @@ import com.anthem.oss.nimbus.core.utils.ProcessBeanResolver;
 import com.anthem.oss.nimbus.core.web.WebActionController;
 import com.anthem.oss.nimbus.core.web.WebCommandBuilder;
 import com.anthem.oss.nimbus.core.web.WebCommandDispatcher;
+import com.fasterxml.jackson.databind.ser.FilterProvider;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
 /**
  * @author Sandeep Mantha
@@ -207,4 +212,16 @@ public class DefaultCoreConfiguration {
 		return builder.build();
 	}
 	
+	@Bean
+	public Jackson2ObjectMapperBuilderCustomizer addJsonFilters() {
+		return new Jackson2ObjectMapperBuilderCustomizer() {
+			
+			@Override
+			public void customize(Jackson2ObjectMapperBuilder jacksonObjectMapperBuilder) {
+				FilterProvider filters = new SimpleFilterProvider().addFilter("stateCtxFilter", new StateContextJSONFilter());
+				
+				jacksonObjectMapperBuilder.filters(filters);
+			}
+		};
+	}
 }

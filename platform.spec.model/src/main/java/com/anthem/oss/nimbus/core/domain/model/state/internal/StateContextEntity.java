@@ -10,6 +10,7 @@ import org.springframework.data.annotation.Transient;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,7 +19,7 @@ import lombok.Setter;
  *
  */
 @Domain("#")
-@Getter @Setter
+@Getter @Setter @EqualsAndHashCode
 public class StateContextEntity {
 
 	public enum MessageType {
@@ -33,8 +34,6 @@ public class StateContextEntity {
 	
 	private Boolean visible = true;
 	private Boolean enabled = true;
-	
-	private Boolean active = true;
 	
 	@Transient
 	private List<ParamValue> values;

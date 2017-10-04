@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
+import com.anthem.oss.nimbus.core.domain.definition.Model.Param.Values;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ActivateConditional;
@@ -51,6 +52,7 @@ public class SampleCoreEntity extends IdString {
 	private String q1;
 	private SampleCoreNestedEntity q1Level1;
 	
+	@Values(SampleValues.YesNo.class)
 	@ActivateConditional(when="state == 'Y'", targetPath="/../q2Level1")
 	private String q2;
 	private SampleCoreNestedEntity q2Level1;

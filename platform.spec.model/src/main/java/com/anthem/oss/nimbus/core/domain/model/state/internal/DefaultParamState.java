@@ -38,6 +38,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
 import com.anthem.oss.nimbus.core.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
 import com.anthem.oss.nimbus.core.entity.Findable;
+import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
@@ -47,6 +48,7 @@ import lombok.Setter;
  * @author Soham Chakravarti
  *
  */
+@JsonFilter("stateCtxFilter")
 @Getter @Setter
 public class DefaultParamState<T> extends AbstractEntityState<T> implements Param<T>, Findable<String>, Serializable {
 
@@ -59,14 +61,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	@JsonIgnore
 	final private Model<?> parentModel;
 	
-	@JsonIgnore
+	//@JsonIgnore
 	private Model<StateContextEntity> contextModel;
-	
-	public StateContextEntity getLeafContextModel() {
-		return Optional.ofNullable(getContextModel())
-					.map(Model::getLeafState)
-					.orElse(null);
-	}
 	
 	@JsonIgnore
 	private boolean active = true;
@@ -82,6 +78,19 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	@JsonIgnore final private PropertyDescriptor propertyDescriptor;
 	
+	public static class StateContextParamState<T> extends DefaultParamState<T> {
+		private static final long serialVersionUID = 1L;
+		
+		public StateContextParamState(Model<?> parentModel, ParamConfig<T> config, EntityStateAspectHandlers aspectHandlers) {
+			super(parentModel, config, aspectHandlers);
+		}
+		
+		@JsonIgnore @Override
+		public ParamConfig<T> getConfig() {
+			return super.getConfig();
+		}
+	}
+	
 	public DefaultParamState(Model<?> parentModel, ParamConfig<T> config, EntityStateAspectHandlers aspectHandlers) {
 		super(config, aspectHandlers);
 
@@ -91,6 +100,14 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		PropertyDescriptor pd = constructPropertyDescriptor();
 		this.propertyDescriptor = pd;
 	}
+	
+	public static <T> DefaultParamState<T> instantiate(Model<?> parentModel, ParamConfig<T> config, EntityStateAspectHandlers aspectHandlers) {
+		if(isStateContextConfig(parentModel, config))
+			return new StateContextParamState<>(parentModel, config, aspectHandlers);
+		
+		return new DefaultParamState<>(parentModel, config, aspectHandlers);
+	}
+	
 	
 	@Override
 	protected void initSetupInternal() {

@@ -35,7 +35,7 @@ public class DefaultActionExecutorNewTest extends AbstractFrameworkIngerationPer
 	private MockMvc mvc;
 	
 	@Test
-	public void t00_json() throws Exception {
+	public void t00_json_view() throws Exception {
 		MockHttpServletRequest req = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT)
 				.addAction(Action._new).getMock();
 		
@@ -49,5 +49,24 @@ public class DefaultActionExecutorNewTest extends AbstractFrameworkIngerationPer
 	               	.getResponse()
 	               	.getContentAsString()
 	               ;
+	}
+	
+	@Test
+	public void t01_json_core() throws Exception {
+		MockHttpServletRequest req = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT)
+				.addAction(Action._new).getMock();
+		
+		String json = mvc.perform(post(req.getRequestURI())
+				.content("{}")
+				.contentType(APPLICATION_JSON_UTF8))
+               	.andExpect(status().isOk())
+               	.andExpect(jsonPath("$.result.0.result.outputs[0].value", IsNull.notNullValue()))
+               	.andReturn()
+               	.getResponse()
+               	.getContentAsString()
+               ;
+		
+		System.out.println("@@@");
+		System.out.println(json);
 	}
 }
