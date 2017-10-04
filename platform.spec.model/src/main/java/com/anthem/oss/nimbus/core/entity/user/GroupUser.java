@@ -5,8 +5,6 @@ package com.anthem.oss.nimbus.core.entity.user;
 
 import java.time.LocalDate;
 
-import org.springframework.data.annotation.Id;
-
 import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity.IdString;
 
@@ -28,6 +26,8 @@ public class GroupUser extends IdString {
 	private boolean admin;
 	
 	private LocalDate effectiveDate;
+	
+	private boolean retired;
 	
 	private LocalDate retireDate;
 }

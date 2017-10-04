@@ -197,7 +197,8 @@ public class MongoSearchByQuery extends MongoDBSearch {
 		Arrays.asList(aggregationCriteria).forEach((cr) -> {
 			CommandResult commndResult = getMongoOps().executeCommand(cr);
 			BasicDBList result = (com.mongodb.BasicDBList)commndResult.get("result");
-			if(criteria.getProjectCriteria() != null && StringUtils.isNotBlank(criteria.getProjectCriteria().getAlias())){
+			if(result != null && result.size() >0 &&
+					criteria.getProjectCriteria() != null && StringUtils.isNotBlank(criteria.getProjectCriteria().getAlias())){
 				result = (com.mongodb.BasicDBList)((com.mongodb.BasicDBObject)result.get(0)).get(criteria.getProjectCriteria().getAlias());
 			}
 			
