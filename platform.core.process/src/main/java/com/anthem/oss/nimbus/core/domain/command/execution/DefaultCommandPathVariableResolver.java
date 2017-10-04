@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
+import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.entity.client.user.ClientUser;
 import com.anthem.oss.nimbus.core.session.UserEndpointSession;
@@ -80,15 +81,25 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 	protected String mapQuad(Param<?> param, String pathToResolve) {
 		if(StringUtils.startsWith(pathToResolve, "json(")) {
 			String paramPath = StringUtils.substringBetween(pathToResolve, "json(", ")");
-			Param<?> p = param.findParamByPath(paramPath) != null? param.findParamByPath(paramPath): param.getParentModel().findParamByPath(paramPath);
+			Param<?> p = findConfiguredParamOrEx(param, paramPath);
 			
 			Object state = p.getLeafState();
 			String json = converter.convert(state);
 			return json;
 		} else {
-			Param<?> p = param.findParamByPath(pathToResolve) != null? param.findParamByPath(pathToResolve): param.getParentModel().findParamByPath(pathToResolve);
+			
+			Param<?> p = findConfiguredParamOrEx(param, pathToResolve);
 			return String.valueOf(p.getState());
 		}
+	}
+	
+	private Param<?> findConfiguredParamOrEx(Param<?> param, String pathToResolve) {
+		Param<?> p = param.findParamByPath(pathToResolve) != null 
+				? param.findParamByPath(pathToResolve)
+						: Optional.ofNullable(param.getParentModel()).map(parent->parent.findParamByPath(pathToResolve)).orElse(null);
+
+		return Optional.ofNullable(p)
+				.orElseThrow(()->new InvalidConfigException("Param not found for configured path: "+pathToResolve+" relative to param: "+param.getPath()));
 	}
 
 	protected String mapColElem(Param<?> commandParam, String pathToResolve) {
