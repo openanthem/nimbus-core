@@ -19,19 +19,36 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<!-- Disable annotation processing for ourselves. -->
-					<!--   <compilerArgument>-proc:none</compilerArgument> -->
+	<plugins>
+		<plugin>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<configuration>
+				<!-- Disable annotation processing for ourselves. -->
+				<!-- <compilerArgument>-proc:none</compilerArgument> -->
 				<annotationProcessors>
 					<annotationProcessor>lombok.launch.AnnotationProcessorHider$AnnotationProcessor</annotationProcessor>
 				</annotationProcessors>
-				</configuration>
-			</plugin>
-		</plugins>
+			</configuration>
+		</plugin>
+
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-surefire-plugin</artifactId>
+			<configuration>
+				<includes>
+					<include>**/Test*.java</include>
+					<include>**/*Tests.java</include>
+					<include>**/*Test.java</include>
+				</includes>
+			</configuration>
+		</plugin>
+	</plugins>
 	</build>
 </project>
