@@ -226,7 +226,7 @@ public interface EntityState<T> {
 		
 		public StateType getType();
 		
-		@JsonIgnore
+//		@JsonIgnore M7
 		public Model<StateContextEntity> getContextModel();
 		
 		default boolean isLeaf() {

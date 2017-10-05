@@ -35,7 +35,7 @@ public interface ParamConfig<P> extends EntityConfig<P>, Findable<String> {
 	public String getCode();
 	public String getBeanName();
 	
-	@JsonIgnore
+//	@JsonIgnore M7
 	public ParamType getType();
 	
 	public boolean isLeaf();
@@ -57,7 +57,7 @@ public interface ParamConfig<P> extends EntityConfig<P>, Findable<String> {
 	
 	public List<ParamConverter> getConverters();
 	
-	@JsonIgnore
+//	@JsonIgnore M7
 	public ParamConfig<StateContextEntity> getContextParam();
 	
 	public List<AssociatedEntity> getAssociatedEntities();

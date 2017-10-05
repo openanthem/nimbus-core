@@ -52,7 +52,7 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	@JsonIgnore
 	private List<Execution.Config> executionConfigs;
 
-	@JsonIgnore
+//	@JsonIgnore M7
 	private ParamConfig<StateContextEntity> contextParam;
 	
 	@JsonIgnore 

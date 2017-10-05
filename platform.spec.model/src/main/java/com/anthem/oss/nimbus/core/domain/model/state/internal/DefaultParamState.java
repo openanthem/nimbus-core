@@ -59,14 +59,14 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	@JsonIgnore
 	final private Model<?> parentModel;
 	
-	@JsonIgnore
+//	@JsonIgnore M7
 	private Model<StateContextEntity> contextModel;
 	
-	public StateContextEntity getLeafContextModel() {
-		return Optional.ofNullable(getContextModel())
-					.map(Model::getLeafState)
-					.orElse(null);
-	}
+//	public StateContextEntity getLeafContextModel() {
+//		return Optional.ofNullable(getContextModel())
+//					.map(Model::getLeafState)
+//					.orElse(null);
+//	}
 	
 	@JsonIgnore
 	private boolean active = true;
