@@ -38,6 +38,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
 import com.anthem.oss.nimbus.core.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
 import com.anthem.oss.nimbus.core.entity.Findable;
+import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
@@ -47,7 +48,7 @@ import lombok.Setter;
  * @author Soham Chakravarti
  *
  */
-//@JsonFilter("stateCtxFilter")
+@JsonFilter("stateCtxFilter")
 @Getter @Setter
 public class DefaultParamState<T> extends AbstractEntityState<T> implements Param<T>, Findable<String>, Serializable {
 
