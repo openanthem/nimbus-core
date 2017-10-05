@@ -58,6 +58,12 @@ public class MappedDefaultParamConfig<P, M> extends DefaultParamConfig<P> implem
 			setUiStyles(mapsTo.getUiStyles());
 			setValidations(mapsTo.getValidations());
 			setValues(mapsTo.getValues());
+			setEventHandlerConfig(mapsTo.getEventHandlerConfig());
+		}
+		
+		@Override
+		public String getConfigId() {
+			return super.getConfigId();
 		}
 	}
 	

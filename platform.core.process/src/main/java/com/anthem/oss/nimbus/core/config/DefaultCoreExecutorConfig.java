@@ -8,8 +8,8 @@ import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutor;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandMessageConverter;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandPathVariableResolver;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandTransactionInterceptor;
-import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutorConfig;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionBehaviorExecutorGetState;
+import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutorConfig;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutorDelete;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutorGet;
 import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutorNav;
@@ -28,6 +28,8 @@ import com.anthem.oss.nimbus.core.domain.expr.SpelExpressionEvaluator;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.DBSearch;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.MongoSearchByExample;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.MongoSearchByQuery;
+import com.anthem.oss.nimbus.core.session.impl.HttpSessionCache;
+import com.anthem.oss.nimbus.core.session.impl.SessionCache;
 
 /**
  * @author Sandeep Mantha
@@ -54,6 +56,11 @@ public class DefaultCoreExecutorConfig {
 	@Bean
 	public CommandPathVariableResolver defaultCommandPathVariableResolver(BeanResolverStrategy beanResolver) {
 		return new DefaultCommandPathVariableResolver(beanResolver);
+	}
+	
+	@Bean
+	public SessionCache sessionCache() {
+		return new HttpSessionCache();
 	}
 	
 	@Bean(name="default.ExecutionContextLoader", destroyMethod="clear") 

@@ -12,6 +12,7 @@ import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ActivateConditional;
+import com.anthem.oss.nimbus.core.domain.definition.extension.ActivateConditionals;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity.IdString;
 
 import lombok.Getter;
@@ -53,4 +54,12 @@ public class SampleCoreEntity extends IdString {
 	@ActivateConditional(when="state == 'Y'", targetPath="/../q2Level1")
 	private String q2;
 	private SampleCoreNestedEntity q2Level1;
+	
+	@ActivateConditionals({
+		@ActivateConditional(when="state == 'A'", targetPath="/../q3Level1"),
+		@ActivateConditional(when="state == 'B'", targetPath="/../q3Level2")
+	})
+	private String q3;
+	private SampleCoreNestedEntity q3Level1;
+	private SampleCoreNestedEntity q3Level2;
 }

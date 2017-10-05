@@ -25,6 +25,7 @@ import com.anthem.oss.nimbus.core.domain.command.execution.ValidationResult;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.model.config.AnnotationConfig;
+import com.anthem.oss.nimbus.core.domain.model.config.EventHandlerConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
@@ -32,8 +33,10 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification.ActionType;
-import com.anthem.oss.nimbus.core.domain.model.state.StateNotificationHandler;
+import com.anthem.oss.nimbus.core.domain.model.state.ParamEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
+import com.anthem.oss.nimbus.core.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
+import com.anthem.oss.nimbus.core.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
 import com.anthem.oss.nimbus.core.entity.Findable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -53,11 +56,21 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	private ValidationResult validationResult;
 	
+	@JsonIgnore
 	final private Model<?> parentModel;
 	
-	
+//	@JsonIgnore M7
 	private Model<StateContextEntity> contextModel;
 	
+//	public StateContextEntity getLeafContextModel() {
+//		return Optional.ofNullable(getContextModel())
+//					.map(Model::getLeafState)
+//					.orElse(null);
+//	}
+	
+	@JsonIgnore
+	private boolean active = true;
+
 	/* TODO: Weak reference was causing the values to be GC-ed even before the builders got to building 
 	 * Allow referenced subscribers to get garbage collected in scenario when same core is referenced by multiple views. 
 	 * Life span of core may be longer than cumulative views possibly leading to memory leak.
@@ -110,7 +123,15 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		if(isNested())
 			findIfNested().initState();
 		
-		onStateChangeRule(Action._new);
+		// hook up on state load events
+		EventHandlerConfig eventHandlerConfig = getConfig().getEventHandlerConfig();
+		if(eventHandlerConfig!=null && eventHandlerConfig.getOnStateLoadAnnotations()!=null) {
+			eventHandlerConfig.getOnStateLoadAnnotations().stream()
+				.forEach(ac->{
+					OnStateLoadHandler<Annotation> handler = eventHandlerConfig.getOnStateLoadHandler(ac);
+					handler.handle(ac, this);
+				});
+		}
 	}
 	
 //	TODO: Refactor with Weak reference implementation
@@ -126,6 +147,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 //		return eventSubscribers==null ? Collections.emptyList() : eventSubscribers;
 //	}
 
+	//@JsonIgnore 
 	@Override
 	public ParamConfig<T> getConfig() {
 		return (ParamConfig<T>)super.getConfig();
@@ -159,15 +181,16 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	
 	//TODO Soham: make generic based on notification event handlers
-	private void onStateChangeRule(Action action) {
+	private void onStateChangeRule2(Action action) {
 		List<AnnotationConfig> ruleAnnotations = getConfig().getRules();
 		if(CollectionUtils.isEmpty(ruleAnnotations))
 			return;
 		
 		ruleAnnotations.stream()
 			.forEach(ac->{
-				StateNotificationHandler<Annotation> handler = getAspectHandlers().getBeanResolver().find(StateNotificationHandler.class, ac.getAnnotation().annotationType());
-				handler.handle(this, action, ac.getAnnotation());
+				OnStateChangeHandler<Annotation> handler = getAspectHandlers().getBeanResolver().find(OnStateChangeHandler.class, ac.getAnnotation().annotationType());
+				//handler.handle(this, action, ac.getAnnotation());
+				handler.handle(ac.getAnnotation(), resolveRuntime().getTxnContext(), new ParamEvent(action, this));
 			});
 		
 	}
@@ -229,8 +252,15 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		state = preSetState(state);			
 		Action a = getAspectHandlers().getParamStateGateway()._set(this, state); 
 		if(a!=null) {
-			// hook up on state change notifications 
-			onStateChangeRule(a);
+			// hook up on state change events
+			EventHandlerConfig eventHandlerConfig = getConfig().getEventHandlerConfig();
+			if(eventHandlerConfig!=null && eventHandlerConfig.getOnStateChangeAnnotations()!=null) {
+				eventHandlerConfig.getOnStateChangeAnnotations().stream()
+					.forEach(ac->{
+						OnStateChangeHandler<Annotation> handler = eventHandlerConfig.getOnStateChangeHandler(ac);
+						handler.handle(ac, resolveRuntime().getTxnContext(), new ParamEvent(a, this));
+					});
+			}
 			
 			emitNotification(new Notification<>(this, ActionType._updateState, this));
 			h.setState(a);
@@ -447,8 +477,6 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		return getConfig().isFound(resolvedPath);
 	}
 	
-	private boolean active = true;
-
 	@Override
 	public boolean isActive() {
 		if(!active)

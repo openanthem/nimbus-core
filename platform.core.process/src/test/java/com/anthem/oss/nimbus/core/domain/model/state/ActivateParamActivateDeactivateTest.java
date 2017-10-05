@@ -190,7 +190,7 @@ public class ActivateParamActivateDeactivateTest extends ActivateParamBaseTest {
 		Param<Boolean> q1Level1_visible = q1Level1.findParamByPath("/#/visible");
 		Param<Boolean> q1Level1_enabled = q1Level1.findParamByPath("/#/enabled");
 
-		Param<?> q1Level1Attr = _q.getRoot().findParamByPath(CORE_PARAM_PATH_q1Level1_nested_attr_String);
+		Param<String> q1Level1Attr = _q.getRoot().findParamByPath(CORE_PARAM_PATH_q1Level1_nested_attr_String);
 		assertTrue(q1Level1Attr.isActive());
 		
 		Param<Boolean> q1Level1Attr_visible = q1Level1Attr.findParamByPath("/#/visible");
@@ -203,6 +203,9 @@ public class ActivateParamActivateDeactivateTest extends ActivateParamBaseTest {
 		assertTrue(q1Level1Attr_visible.getState());
 		assertTrue(q1Level1Attr_enabled.getState());
 		
+		// check for nested param reset
+		q1Level1Attr.setState("new nested @ "+new Date());
+
 		
 		addListener();
 		q1Level1.deactivate();
@@ -220,13 +223,17 @@ public class ActivateParamActivateDeactivateTest extends ActivateParamBaseTest {
 		
 		// validate events
 		assertNotNull(_paramEvents);
-		//assertEquals(4, _paramEvents.size());
+		assertEquals(6, _paramEvents.size());
 		
 		List<Param<?>> expectedEventParams = new ArrayList<>();
 		expectedEventParams.add(q1Level1_visible);
 		expectedEventParams.add(q1Level1_enabled);
 		expectedEventParams.add(q1Level1Attr_visible);
 		expectedEventParams.add(q1Level1Attr_enabled);
+		
+		expectedEventParams.add(q1Level1);
+		expectedEventParams.add(q1Level1Attr);
+		
 		
 		_paramEvents.stream()
 			.forEach(pe->expectedEventParams.remove(pe.getParam()));

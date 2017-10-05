@@ -3,13 +3,21 @@
  */
 package com.anthem.oss.nimbus.core.domain.model.config;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * @author Soham Chakravarti
  *
  */
 public interface EntityConfig<T> {
 
+	public String getConfigId();
+	
+	@JsonIgnore
 	public Class<T> getReferredClass();
+	
+	@JsonIgnore
+	public EventHandlerConfig getEventHandlerConfig();
 	
 	public <K> ParamConfig<K> findParamByPath(String path);
 	public <K> ParamConfig<K> findParamByPath(String[] pathArr);

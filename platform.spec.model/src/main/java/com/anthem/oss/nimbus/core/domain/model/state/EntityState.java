@@ -26,11 +26,17 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public interface EntityState<T> {
 
 	public String getPath();
+	
+	@JsonIgnore
 	public String getBeanPath();
 	
-	//M6 @JsonIgnore
+	//@JsonIgnore
 	public EntityConfig<T> getConfig();
 
+	default String getConfigId() {
+		return getConfig().getConfigId();
+	}
+	
 	public <S> Model<S> findModelByPath(String path);
 	public <S> Model<S> findModelByPath(String[] pathArr);
 
@@ -59,6 +65,7 @@ public interface EntityState<T> {
 	@JsonIgnore
 	public Model<?> getRootDomain();
 	
+	@JsonIgnore
 	public LockTemplate getLockTemplate();
 	
 	default public boolean isRoot() {
@@ -98,8 +105,10 @@ public interface EntityState<T> {
 		@JsonIgnore
 		public Command getRootCommand();
 		
+		@JsonIgnore
 		public ExecutionRuntime getExecutionRuntime();
 		
+		@JsonIgnore
 		public Map<String, Object> getParamRuntimes();
 		
 		default public <U> U unwrap(Class<U> c) {
@@ -112,12 +121,14 @@ public interface EntityState<T> {
 	
 	public interface Model<T> extends EntityState<T> { 
 		
-		/*M6 @JsonIgnore*/ @Override
+		//@JsonIgnore 
+		@Override
 		public ModelConfig<T> getConfig();
 		
+		@JsonIgnore
 		public Param<T> getAssociatedParam();
 		
-		@Override
+		@JsonIgnore @Override
 		default Model<?> getRootDomain() {
 			return getAssociatedParam().getRootDomain();
 		}
@@ -181,13 +192,17 @@ public interface EntityState<T> {
 		@Override
 		public ListElemParam<T> add();
 		
-		//M6 @JsonIgnore
+		//@JsonIgnore
 		default public ParamConfig<T> getElemConfig() {
 			StateType.NestedCollection<T> typeSAC = getAssociatedParam().getType().findIfCollection(); 
 			ParamType.NestedCollection<T> typeConfig = typeSAC.getConfig().findIfCollection();
 			
 			ParamConfig<T> elemConfig = typeConfig.getElementConfig();
 			return elemConfig;
+		}
+		
+		default String getElemConfigId() {
+			return getElemConfig().getConfigId();
 		}
 	}
 	public interface MappedListModel<T, M> extends ListModel<T>, MappedModel<List<T>, List<M>> {
@@ -200,7 +215,8 @@ public interface EntityState<T> {
 	}
 	
 	public interface Param<T> extends EntityState<T>, State<T>, Notification.Producer<T> {//, Notification.ObserveOn<MappedParam<?, T>, Param<T>> {
-		/*M6 @JsonIgnore*/ @Override
+		//@JsonIgnore 
+		@Override
 		public ParamConfig<T> getConfig();
 		
 		public T getLeafState();
@@ -210,6 +226,7 @@ public interface EntityState<T> {
 		
 		public StateType getType();
 		
+//		@JsonIgnore M7
 		public Model<StateContextEntity> getContextModel();
 		
 		default boolean isLeaf() {
@@ -244,6 +261,7 @@ public interface EntityState<T> {
 			return null;
 		}
 		
+		@JsonIgnore
 		default boolean isLinked() {
 			return false;
 		}
@@ -252,6 +270,7 @@ public interface EntityState<T> {
 			return null;
 		}
 		
+		@JsonIgnore
 		default public boolean isTransient() {
 			return false;
 		}
@@ -260,8 +279,10 @@ public interface EntityState<T> {
 			return null;
 		}
 		
+		@JsonIgnore
 		public PropertyDescriptor getPropertyDescriptor();
 		
+		@JsonIgnore
 		public boolean isActive();
 		public void activate();
 		public void deactivate();
@@ -274,9 +295,10 @@ public interface EntityState<T> {
 			return this;
 		}
 
-		@Override
+		@JsonIgnore @Override
 		public Param<M> getMapsTo();
 		
+		@JsonIgnore
 		default public boolean requiresConversion() {
 			if(isLeaf()) return false;
 			
@@ -306,6 +328,7 @@ public interface EntityState<T> {
 			return this;
 		}
 
+		@JsonIgnore
 		default public boolean isAssinged() {
 			return getMapsTo() != null;
 		}
@@ -370,7 +393,7 @@ public interface EntityState<T> {
 	}
 	
 	public interface MappedListParam<T, M> extends ListParam<T>, MappedParam<List<T>, List<M>> {
-		@Override
+		@JsonIgnore @Override
 		public ListParam<M> getMapsTo();
 		
 		@Override
@@ -390,9 +413,11 @@ public interface EntityState<T> {
 	
 	public interface ListElemParam<E> extends Param<E> {
 		public String getElemId();
+		
+		@JsonIgnore
 		public int getElemIndex();
 		
-		@Override
+		@JsonIgnore @Override
 		public ListModel<E> getParentModel();
 		
 		@Override

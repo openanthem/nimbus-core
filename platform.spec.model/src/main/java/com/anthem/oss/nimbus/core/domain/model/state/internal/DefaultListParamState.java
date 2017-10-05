@@ -19,6 +19,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.Notification;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification.ActionType;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.util.LockTemplate;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 /**
@@ -69,10 +70,12 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 		return new Integer(elemId);
 	}
 	
+	@JsonIgnore
 	public int getNextElemIndex() {
 		return getMaxElemIndex() + 1;
 	}
 	
+	@JsonIgnore
 	public int getMaxElemIndex() {
 		if(getNestedCollectionModel().templateParams().isNullOrEmpty())
 			return -1;

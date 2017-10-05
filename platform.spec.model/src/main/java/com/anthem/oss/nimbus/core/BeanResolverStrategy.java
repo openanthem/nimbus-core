@@ -23,6 +23,7 @@ public interface BeanResolverStrategy {
 	public <T> T get(Class<T> type, String qualifier) throws InvalidConfigException;
 	
 	public <T> T find(Class<T> type, Class<?>...generics);
+	public <T> T get(Class<T> type, Class<?>...generics) throws InvalidConfigException;
 	
 	public <T> Collection<T> findMultiple(Class<T> type);
 	public <T> Collection<T> getMultiple(Class<T> type);

@@ -60,7 +60,7 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 	
 	@JsonIgnore private RulesRuntime rulesRuntime;
 	
-	private boolean stateInitialized;
+	@JsonIgnore private boolean stateInitialized;
 	
 	public AbstractEntityState(EntityConfig<T> config, EntityStateAspectHandlers aspectHandlers) {
 		Objects.requireNonNull(config, "Config must not be null while instantiating StateAndConfig.");

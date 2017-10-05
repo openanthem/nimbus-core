@@ -3,8 +3,11 @@
  */
 package com.anthem.oss.nimbus.core.domain.model.config.internal;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import com.anthem.oss.nimbus.core.domain.model.config.AnnotationConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.EntityConfig;
+import com.anthem.oss.nimbus.core.domain.model.config.EventHandlerConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.RulesConfig;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -24,5 +27,10 @@ abstract public class AbstractEntityConfig<T> implements EntityConfig<T> {
 	private AnnotationConfig uiStyles;
 
 	@JsonIgnore private RulesConfig rulesConfig; 
+	
+	private static final AtomicInteger counter = new AtomicInteger();
+	
+	private final String configId = String.valueOf(counter.incrementAndGet());
 
+	private EventHandlerConfig eventHandlerConfig;
 }

@@ -36,7 +36,11 @@ public abstract class AbstractFrameworkIngerationPersistableTests extends Abstra
 	protected static final String BPM_CORE_PARAM_ROOT = PLATFORM_ROOT + "/" + BPM_CORE_DOMAIN_ALIAS;
 	
 	protected static final String BPM_SF_DOMAIN_ALIAS = "bpmstatefulmodel";
-	protected static final String BPM_SF_PARAM_ROOT = PLATFORM_ROOT + "/" + BPM_SF_DOMAIN_ALIAS;	
+	protected static final String BPM_SF_PARAM_ROOT = PLATFORM_ROOT + "/" + BPM_SF_DOMAIN_ALIAS;
+	
+	protected static final String BPM_CV_DOMAIN_ALIAS = "ctvsubscriberviewmodel";
+	protected static final String BPM_CV_PARAM_ROOT = PLATFORM_ROOT + "/" + BPM_CV_DOMAIN_ALIAS;	
+	
 	
 	public synchronized String createOrGetDomainRoot_RefId() {
 		if(domainRoot_refId!=null) 

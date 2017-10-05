@@ -458,6 +458,8 @@ public class ViewConfig {
 		boolean pagination() default true;
 		boolean postButton() default false;
 		String postButtonUrl() default "";
+		String postButtonTargetPath() default "";
+		String postButtonAlias() default "";
 		boolean postEventOnChange() default false;
 	}
 	
@@ -603,6 +605,17 @@ public class ViewConfig {
 		String type() default ".pdf,.png";
 	}
 	
+	/**
+	 * Following GridColumn attributes can be provided on individual gridcolumns within a grid.<br>
+	 * <ul><li>hidden - Setting this to true will hide the column in the grid</li>
+	 * <li>sortable - Enables sorting on the column</li>
+	 * <li>filter - Setting this to true will enable a explicit filter component(Input TextBox) on the UI</li>
+	 * <li>filterValue - Default filterValue for a particular column. 
+	 * 	Can be used without setting filter attribute to restrict user from providing any other filter value.
+	 * <li>filterMode - Mode to filter data within the column. It is defaulted to 'equals'
+	 * 	Current filter modes supported by the Grid component are listed as enum values</li></ul>
+	 *	
+	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
@@ -610,8 +623,16 @@ public class ViewConfig {
 		String alias() default "GridColumn";
 		boolean hidden() default false;
 		boolean sortable() default true;
-		boolean filter() default true;
-		boolean expandable() default true;
+		boolean filter() default false; 
+		String filterValue() default "";
+		boolean expandable() default true;		
+		public enum FilterMode {
+			equals,
+			contains,
+			endsWith,
+			in
+		}
+		FilterMode filterMode() default FilterMode.equals;
 	}
 	
 }
