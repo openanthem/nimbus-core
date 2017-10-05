@@ -29,28 +29,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class DefaultListParamState<T> extends DefaultParamState<List<T>> implements ListParam<T> {
 	private static final long serialVersionUID = 1L;
 	
-	public static class StateContextListParamState<T> extends DefaultListParamState<T> {
-		private static final long serialVersionUID = 1L;
-		
-		public StateContextListParamState(Model<?> parentModel, ParamConfig<List<T>> config, EntityStateAspectHandlers provider) {
-			super(parentModel, config, provider);
-		}
-		
-		@JsonIgnore @Override
-		public ParamConfig<List<T>> getConfig() {
-			return super.getConfig();
-		}
-	}
-	
 	public DefaultListParamState(Model<?> parentModel, ParamConfig<List<T>> config, EntityStateAspectHandlers provider) {
 		super(parentModel, config, provider);
-	}
-	
-	public static DefaultListParamState instantiateList(Model<?> parentModel, ParamConfig<?> config, EntityStateAspectHandlers provider) {
-		if(isStateContextConfig(parentModel, config))
-			return new StateContextListParamState(parentModel, config, provider);
-		
-		return new DefaultListParamState(parentModel, config, provider);
 	}
 	
 	@Override

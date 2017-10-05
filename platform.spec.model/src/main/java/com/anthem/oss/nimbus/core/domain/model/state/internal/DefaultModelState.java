@@ -43,15 +43,7 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 
 	@JsonIgnore private transient ValidationResult validationResult;
 	
-	public static class StateContextModelState<T> extends DefaultModelState<T> {
-		private static final long serialVersionUID = 1L;
-		
-		public StateContextModelState(Param<T> associatedParam, ModelConfig<T> config, EntityStateAspectHandlers provider) {
-			super(associatedParam, config, provider);
-		}
-	}
-	
-	public DefaultModelState(Param<T> associatedParam, ModelConfig<T> config, EntityStateAspectHandlers provider) {
+	public DefaultModelState(Param<T> associatedParam, ModelConfig<T> config, EntityStateAspectHandlers provider/*, Model<?> backingCoreModel*/) {
 		super(config, provider);
 		
 		Objects.requireNonNull(associatedParam, "Associated Param for Model must not be null.");
@@ -61,14 +53,6 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 		super.setBeanPath(getAssociatedParam().getBeanPath());
 	}
 
-	public static <T> DefaultModelState<T> instantiate(Param<T> associatedParam, ModelConfig<T> config, EntityStateAspectHandlers provider) {
-		if(isStateContextConfig(associatedParam, config))
-			return new StateContextModelState<>(associatedParam, config, provider);
-		
-		return new DefaultModelState<>(associatedParam, config, provider);
-	}
-
-	
 	@Transient @JsonIgnore @Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
 	private final transient CollectionsTemplate<List<EntityState.Param<? extends Object>>, EntityState.Param<? extends Object>> templateParams = new CollectionsTemplate<>(
 			() -> getParams(), (p) -> setParams(p), () -> Collections.synchronizedList(new LinkedList<>()));

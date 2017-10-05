@@ -8,9 +8,7 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListModel;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 
 import lombok.Getter;
@@ -24,37 +22,11 @@ public class DefaultListModelState<T> extends DefaultModelState<List<T>> impleme
 
 	private static final long serialVersionUID = 1L;
 	
-	@JsonIgnore 
 	final private DefaultListElemParamState.Creator<T> elemCreator;
-	
-	public static class StateContextListModelState<T> extends DefaultListModelState<T> {
-		private static final long serialVersionUID = 1L;
-		
-		public StateContextListModelState(ListParam<T> associatedParam, ModelConfig<List<T>> config, EntityStateAspectHandlers provider, DefaultListElemParamState.Creator<T> elemCreator) {
-			super(associatedParam, config, provider, elemCreator);
-		}
-		
-		@JsonIgnore @Override
-		public ModelConfig<List<T>> getConfig() {
-			return super.getConfig();
-		}
-		
-		@JsonIgnore @Override
-		public ParamConfig<T> getElemConfig() {
-			return super.getElemConfig();
-		}
-	}
 	
 	public DefaultListModelState(ListParam<T> associatedParam, ModelConfig<List<T>> config, EntityStateAspectHandlers provider, DefaultListElemParamState.Creator<T> elemCreator) {
 		super(associatedParam, config, provider);
 		this.elemCreator = elemCreator;
-	}
-	
-	public static <T> DefaultListModelState<T> instantiate(ListParam<T> associatedParam, ModelConfig<List<T>> config, EntityStateAspectHandlers provider, DefaultListElemParamState.Creator<T> elemCreator) {
-		if(isStateContextConfig(associatedParam, config))
-			return new StateContextListModelState<>(associatedParam, config, provider, elemCreator);
-		
-		return new DefaultListModelState<>(associatedParam, config, provider, elemCreator);
 	}
 	
 	@Override

@@ -33,19 +33,6 @@ public class DefaultListElemParamState<E> extends DefaultParamState<E> implement
 	
 	final private String elemId;
 	
-	public static class StateContextListElemParamState<E> extends DefaultListElemParamState<E> {
-		private static final long serialVersionUID = 1L;
-		
-		public StateContextListElemParamState(ListModel<E> parentModel, ParamConfig<E> config, EntityStateAspectHandlers aspectHandlers, String elemId) {
-			super(parentModel, config, aspectHandlers, elemId);
-		}
-		
-		@JsonIgnore @Override
-		public ParamConfig<E> getConfig() {
-			return super.getConfig();
-		}
-	}
-	
 	public DefaultListElemParamState(ListModel<E> parentModel, ParamConfig<E> config, EntityStateAspectHandlers aspectHandlers, String elemId) {
 		super(parentModel, config, aspectHandlers);
 		
@@ -53,13 +40,6 @@ public class DefaultListElemParamState<E> extends DefaultParamState<E> implement
 		this.elemId = elemId;
 	}	
 
-	public static <E> DefaultListElemParamState<E> instantiate(ListModel<E> parentModel, ParamConfig<E> config, EntityStateAspectHandlers aspectHandlers, String elemId) {
-		if(isStateContextConfig(parentModel, config))
-			return new StateContextListElemParamState<>(parentModel, config, aspectHandlers, elemId);
-		
-		return new DefaultListElemParamState<>(parentModel, config, aspectHandlers, elemId);
-	}
-	
 	@SuppressWarnings("unchecked")
 	@JsonIgnore @Override
 	public ListModel<E> getParentModel() {

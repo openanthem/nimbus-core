@@ -17,7 +17,6 @@ import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.StateContextEntity;
 import com.anthem.oss.nimbus.core.util.CollectionsTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -48,21 +47,6 @@ public class DefaultModelConfig<T> extends AbstractEntityConfig<T> implements Mo
 	@JsonIgnore private transient ParamConfig<?> idParam;
 	
 	@JsonIgnore	private transient ParamConfig<?> versionParam;
-	
-	public static class StateContextModelConfig<T> extends DefaultModelConfig<T> {
-		private static final long serialVersionUID = 1L;
-		
-		public StateContextModelConfig(Class<T> referredClass) {
-			super(referredClass);
-		}
-	}
-	
-	public static final <T> DefaultModelConfig<T> instantiate(Class<T> referredClass) {
-		if(referredClass == StateContextEntity.class)
-			return new StateContextModelConfig<>(referredClass);
-		
-		return new DefaultModelConfig<>(referredClass);
-	}
 	
 	@JsonIgnore
 	private final transient CollectionsTemplate<List<ParamConfig<?>>, ParamConfig<?>> templateParams = new CollectionsTemplate<>(

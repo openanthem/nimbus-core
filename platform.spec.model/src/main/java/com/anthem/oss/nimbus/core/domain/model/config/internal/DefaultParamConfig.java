@@ -65,10 +65,10 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	private List<AssociatedEntity> associatedEntities;
 
 
-	public static class StateContextParamConfig<P> extends DefaultParamConfig<P> {
+	public static class StateContextConfig<P> extends DefaultParamConfig<P> {
 		private static final long serialVersionUID = 1L;
 
-		public StateContextParamConfig(String code, String beanName) {
+		public StateContextConfig(String code, String beanName) {
 			super(code, beanName);
 		}
 		
@@ -98,7 +98,7 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	
 	final public static <T> DefaultParamConfig<T> instantiate(ModelConfig<?> mConfig, String code, String beanName) {
 		if(mConfig.getReferredClass()==StateContextEntity.class)
-			return new DefaultParamConfig.StateContextParamConfig<>(code, beanName);
+			return new DefaultParamConfig.StateContextConfig<>(code, beanName);
 		
 		return new DefaultParamConfig<>(code, beanName);
 	} 

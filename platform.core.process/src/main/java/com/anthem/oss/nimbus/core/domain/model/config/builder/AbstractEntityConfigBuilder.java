@@ -103,7 +103,7 @@ abstract public class AbstractEntityConfigBuilder {
 			created = new MappedDefaultModelConfig<>(mapsTo, referredClass);
 			
 		} else {
-			created = DefaultModelConfig.instantiate(referredClass);
+			created = new DefaultModelConfig<>(referredClass);
 		}
 		
 		// annotation config: viewStyle
@@ -438,7 +438,12 @@ abstract public class AbstractEntityConfigBuilder {
 	private EventHandlerConfig createEventHandlerConfig(AnnotatedElement aElem) {
 		final DefaultEventHandlerConfig eventConfig = new DefaultEventHandlerConfig();
 		
+//		addEventHandler(aElem, OnStateLoad.class, OnStateLoadHandler.class, (ac, handler)->{
+//			eventConfig.add(ac, (OnStateLoadHandler<Annotation>)handler);
+//		});
+		
 		List<Annotation> onStateLoadAnnotations = AnnotationConfigHandler.handle(aElem, RepeatContainer.class, OnStateLoad.class);
+		//List<Annotation> onStateLoadAnnotations = new ArrayList<>(AnnotatedElementUtils.findMergedRepeatableAnnotations(aElem, OnStateLoad.class));
 		if(!CollectionUtils.isEmpty(onStateLoadAnnotations)) { 
 			
 			onStateLoadAnnotations.stream()
@@ -450,6 +455,7 @@ abstract public class AbstractEntityConfigBuilder {
 
 		
 		List<Annotation> onStateChangeAnnotations = AnnotationConfigHandler.handle(aElem, RepeatContainer.class, OnStateChange.class);
+		//List<Annotation> onStateChangeAnnotations = new ArrayList<>(AnnotatedElementUtils.findMergedRepeatableAnnotations(aElem, OnStateChange.class));
 		if(!CollectionUtils.isEmpty(onStateChangeAnnotations)) { 
 			
 			onStateChangeAnnotations.stream()
@@ -461,7 +467,18 @@ abstract public class AbstractEntityConfigBuilder {
 
 		return eventConfig.isEmpty() ? null : eventConfig;
 	}
-
+	
+//	private <T> void addEventHandler(AnnotatedElement aElem, Class<Annotation> aClass, Class<? extends T> handlerClass, BiConsumer<AnnotationConfig, T> cb) {
+//		List<AnnotationConfig> eventAnnotations = AnnotationConfigHandler.handle(aElem, aClass);
+//		if(!CollectionUtils.isEmpty(eventAnnotations)) { 
+//			
+//			eventAnnotations.stream()
+//				.forEach(ac->{
+//					T handler = getBeanResolver().find(handlerClass, ac.getAnnotation().annotationType());
+//					cb.accept(ac, handler);
+//				});
+//		}
+//	}
 	
 	private ParamConfig<StateContextEntity> cachedRuntimeEntityParamConfig;
 	
