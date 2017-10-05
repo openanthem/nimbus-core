@@ -3,7 +3,6 @@
  */
 package com.anthem.oss.nimbus.core.domain.model.state.internal;
 
-
 import java.beans.PropertyDescriptor;
 import java.util.Objects;
 import java.util.Optional;
