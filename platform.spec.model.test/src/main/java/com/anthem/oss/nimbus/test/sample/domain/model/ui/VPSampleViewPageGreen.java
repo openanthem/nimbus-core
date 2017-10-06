@@ -9,6 +9,7 @@ import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Section;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Tile;
+import com.anthem.oss.nimbus.core.domain.definition.extension.Audit;
 import com.anthem.oss.nimbus.test.sample.domain.model.SampleCoreEntity;
 import com.anthem.oss.nimbus.test.sample.domain.model.SampleCoreNestedEntity;
 
@@ -34,6 +35,16 @@ public class VPSampleViewPageGreen {
 		
 		@Path("/attr_list_1_NestedEntity")
 		private List<SampleCoreNestedEntity> list_attached_noConversion_NestedEntity;
+		
+		@Audit
+		@Path
+		private String attr_String; // mapped and marked with Audit on both view & core	
+		
+		@Audit
+		private String unmapped_String; // unmapped and marked with Audit on a quad with persistent core
+		
+		@Path
+		private Integer attr_Integer; // mapped view to a core which is annotated with Audit
 		
     }
 	

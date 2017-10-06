@@ -13,6 +13,7 @@ import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ActivateConditional;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ActivateConditionals;
+import com.anthem.oss.nimbus.core.domain.definition.extension.Audit;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity.IdString;
 
 import lombok.Getter;
@@ -29,10 +30,16 @@ public class SampleCoreEntity extends IdString {
 
 	private static final long serialVersionUID = 1L;
 
+	@Audit
 	private String attr_String;
 	
 	private int attr_int;
+	
+	@Audit
 	private Integer attr_Integer;
+	
+	@Audit
+	private Date unmapped_Date;
 	
 	private Date attr_Date;
 	private LocalDate attr_LocalDate;
