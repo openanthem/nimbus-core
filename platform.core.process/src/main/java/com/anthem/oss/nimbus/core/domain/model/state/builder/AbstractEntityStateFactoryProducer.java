@@ -12,15 +12,19 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultListElemParamState;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultListElemParamState.LeafElemState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultListModelState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultListParamState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultModelState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultParamState;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultParamState.LeafState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultListElemParamState;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultListElemParamState.MappedLeafElemState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultListModelState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultListParamState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultModelState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultParamState;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultParamState.MappedLeafState;
 
 import lombok.Getter;
 
@@ -73,7 +77,9 @@ public abstract class AbstractEntityStateFactoryProducer {
 		
 		@Override
 		public <E> DefaultListElemParamState<E> instantiateColElemParam(EntityStateAspectHandlers provider, DefaultListModelState<E> parentModel, ParamConfig<E> mpConfig, String elemId) {
-			return new DefaultListElemParamState<>(parentModel, mpConfig, provider, elemId);
+			return mpConfig.isLeaf()
+					? new LeafElemState<>(parentModel, mpConfig, provider, elemId)
+							: new DefaultListElemParamState<>(parentModel, mpConfig, provider, elemId);
 		}
 		
 		@Override
@@ -81,7 +87,9 @@ public abstract class AbstractEntityStateFactoryProducer {
 			if(paramConfig.getType().isCollection())
 				return new DefaultListParamState(parentModel, paramConfig, aspectHandlers);
 			
-			return new DefaultParamState<>(parentModel, paramConfig, aspectHandlers);
+			return paramConfig.isLeaf() 
+					? new LeafState<>(parentModel, paramConfig, aspectHandlers) 
+							: new DefaultParamState<>(parentModel, paramConfig, aspectHandlers);
 		}
 	}
 
@@ -102,7 +110,9 @@ public abstract class AbstractEntityStateFactoryProducer {
 		
 		@Override
 		public <E> DefaultListElemParamState<E> instantiateColElemParam(EntityStateAspectHandlers provider, DefaultListModelState<E> parentModel, ParamConfig<E> mpConfig, String elemId) {
-			return new MappedDefaultListElemParamState<>(parentModel, mpConfig, provider, elemId);
+			return mpConfig.isLeaf()
+					? new MappedLeafElemState<>(parentModel, mpConfig, provider, elemId)
+							: new MappedDefaultListElemParamState<>(parentModel, mpConfig, provider, elemId);
 		}
 		
 		@Override
@@ -111,7 +121,9 @@ public abstract class AbstractEntityStateFactoryProducer {
 				return new MappedDefaultListParamState(mapsToParam.findIfCollection(), parentModel, paramConfig, aspectHandlers);
 			}
 				
-			return new MappedDefaultParamState<>(mapsToParam, parentModel, paramConfig, aspectHandlers);
+			return paramConfig.isLeaf() 
+					? new MappedLeafState<>(mapsToParam, parentModel, paramConfig, aspectHandlers) 
+							: new MappedDefaultParamState<>(mapsToParam, parentModel, paramConfig, aspectHandlers);
 		}
 
 	}

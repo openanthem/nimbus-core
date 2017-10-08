@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -24,7 +23,6 @@ import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.execution.ValidationResult;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
-import com.anthem.oss.nimbus.core.domain.model.config.AnnotationConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.EventHandlerConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
@@ -71,32 +69,22 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	 */
 	//@JsonIgnore @Getter(AccessLevel.PRIVATE)
 	//final private List<WeakReference<MappedParam<?, T>>> weakReferencedEventSubscribers = new ArrayList<>();
-	@JsonIgnore List<MappedParam<?, T>> eventSubscribers = new ArrayList<>(); 
+	
+	@JsonIgnore 
+	List<MappedParam<?, T>> eventSubscribers = new ArrayList<>(); 
 	
 	
 	@JsonIgnore final private PropertyDescriptor propertyDescriptor;
+
+	@JsonIgnore
+	private T transientOldState;
+
 	
-	@Getter @Setter
-	public static class LeafParamState<T> extends DefaultParamState<T> implements LeafParam<T> {
+	public static class LeafState<T> extends DefaultParamState<T> implements LeafParam<T> {
 		private static final long serialVersionUID = 1L;
 		
-		@JsonIgnore
-		private T transientOldState;
-		
-		public LeafParamState(Model<?> parentModel, ParamConfig<T> config, EntityStateAspectHandlers aspectHandlers) {
+		public LeafState(Model<?> parentModel, ParamConfig<T> config, EntityStateAspectHandlers aspectHandlers) {
 			super(parentModel, config, aspectHandlers);
-		}
-		
-		@Override
-		protected Action affectSetStateChange(T state, ExecutionRuntime execRt, Holder<Action> h) {
-			T localPotentialOldState = getState(); 
-			Action a = super.affectSetStateChange(state, execRt, h);
-			
-			if(a != null) {
-				setTransientOldState(localPotentialOldState);
-			}
-			
-			return a;
 		}
 	}
 	
@@ -198,21 +186,6 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 			.ifPresent(Model::fireRules);
 	}
 	
-	//TODO Soham: make generic based on notification event handlers
-	private void onStateChangeRule2(Action action) {
-		List<AnnotationConfig> ruleAnnotations = getConfig().getRules();
-		if(CollectionUtils.isEmpty(ruleAnnotations))
-			return;
-		
-		ruleAnnotations.stream()
-			.forEach(ac->{
-				OnStateChangeHandler<Annotation> handler = getAspectHandlers().getBeanResolver().find(OnStateChangeHandler.class, ac.getAnnotation().annotationType());
-				//handler.handle(this, action, ac.getAnnotation());
-				handler.handle(ac.getAnnotation(), resolveRuntime().getTxnContext(), new ParamEvent(action, this));
-			});
-		
-	}
-	
 	/**
 	 * resurrect entity pojo state from model/param state
 	 * @return
@@ -262,11 +235,26 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	
 	@Override
-	final public Action setState(T state) {
+	public final Action setState(T state) {
 		return changeStateTemplate((rt, h)->affectSetStateChange(state, rt, h));
 	}
 	
 	protected Action affectSetStateChange(T state, ExecutionRuntime execRt, Holder<Action> h) {
+		return isLeaf() ? affectSetStateChangeRetainOld(state, execRt, h) : affectSetStateChangeInternal(state, execRt, h);
+	}
+	
+	protected Action affectSetStateChangeRetainOld(T state, ExecutionRuntime execRt, Holder<Action> h) {
+		T localPotentialOldState = getState(); 
+		Action a = affectSetStateChangeInternal(state, execRt, h);
+		
+		if(a != null) {
+			setTransientOldState(localPotentialOldState);
+		}
+		
+		return a;
+	}
+	
+	private final Action affectSetStateChangeInternal(T state, ExecutionRuntime execRt, Holder<Action> h) {
 		state = preSetState(state);			
 		Action a = getAspectHandlers().getParamStateGateway()._set(this, state); 
 		if(a!=null) {
@@ -290,7 +278,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		postSetState(a, state);
 		return a;
 	}
-	
+
 	
 	protected T preSetState(T state) {
 		return state;
