@@ -62,15 +62,9 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 //	@JsonIgnore M7
 	private Model<StateContextEntity> contextModel;
 	
-//	public StateContextEntity getLeafContextModel() {
-//		return Optional.ofNullable(getContextModel())
-//					.map(Model::getLeafState)
-//					.orElse(null);
-//	}
-	
 	@JsonIgnore
 	private boolean active = true;
-
+	
 	/* TODO: Weak reference was causing the values to be GC-ed even before the builders got to building 
 	 * Allow referenced subscribers to get garbage collected in scenario when same core is referenced by multiple views. 
 	 * Life span of core may be longer than cumulative views possibly leading to memory leak.
@@ -81,6 +75,30 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	
 	@JsonIgnore final private PropertyDescriptor propertyDescriptor;
+	
+	@Getter @Setter
+	public static class LeafParamState<T> extends DefaultParamState<T> implements LeafParam<T> {
+		private static final long serialVersionUID = 1L;
+		
+		@JsonIgnore
+		private T transientOldState;
+		
+		public LeafParamState(Model<?> parentModel, ParamConfig<T> config, EntityStateAspectHandlers aspectHandlers) {
+			super(parentModel, config, aspectHandlers);
+		}
+		
+		@Override
+		protected Action affectSetStateChange(T state, ExecutionRuntime execRt, Holder<Action> h) {
+			T localPotentialOldState = getState(); 
+			Action a = super.affectSetStateChange(state, execRt, h);
+			
+			if(a != null) {
+				setTransientOldState(localPotentialOldState);
+			}
+			
+			return a;
+		}
+	}
 	
 	public DefaultParamState(Model<?> parentModel, ParamConfig<T> config, EntityStateAspectHandlers aspectHandlers) {
 		super(config, aspectHandlers);
@@ -248,7 +266,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		return changeStateTemplate((rt, h)->affectSetStateChange(state, rt, h));
 	}
 	
-	private Action affectSetStateChange(T state, ExecutionRuntime execRt, Holder<Action> h) {
+	protected Action affectSetStateChange(T state, ExecutionRuntime execRt, Holder<Action> h) {
 		state = preSetState(state);			
 		Action a = getAspectHandlers().getParamStateGateway()._set(this, state); 
 		if(a!=null) {

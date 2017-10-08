@@ -300,7 +300,7 @@ public interface EntityState<T> {
 			return this;
 		}
 		
-		T getTransientPreviousState();
+		T getTransientOldState();
 	}
 	
 	interface MappedParam<T, M> extends Param<T>, Mapped<T, M>, Notification.Consumer<M> {

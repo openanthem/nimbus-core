@@ -38,13 +38,13 @@ public class VPSampleViewPageGreen {
 		
 		@Audit
 		@Path
-		private String attr_String; // mapped and marked with Audit on both view & core	
+		private String audit_String; // mapped and marked with Audit on both view & core	
 		
 		@Audit
 		private String unmapped_String; // unmapped and marked with Audit on a quad with persistent core
 		
 		@Path
-		private Integer attr_Integer; // mapped view to a core which is annotated with Audit
+		private Integer audit_Integer; // mapped view to a core which is annotated with Audit
 		
     }
 	

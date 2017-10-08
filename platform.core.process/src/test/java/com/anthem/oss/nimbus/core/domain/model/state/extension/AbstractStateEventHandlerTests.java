@@ -14,6 +14,8 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -47,6 +49,11 @@ public abstract class AbstractStateEventHandlerTests {
 	
 	protected BaseStateEventListener _stateEventListener;
 	
+	@Autowired protected MongoOperations mongo;
+	
+	@Autowired protected MongoTemplate mt;
+	
+	
 	protected Command createCommand() {
 		Command cmd = CommandBuilder.withUri("/hooli/thebox/p/sample_core/_new").getCommand();
 		return cmd;
@@ -65,6 +72,9 @@ public abstract class AbstractStateEventHandlerTests {
 	public void after() {
 		_q.getRoot().getExecutionRuntime().onStopCommandExecution(_cmd);
 		_q.getRoot().getExecutionRuntime().getEventDelegator().removeTxnScopedListener(_stateEventListener);
+		
+		// db cleanup
+		mt.getDb().dropDatabase();
 	}
 	
 	protected void addListener() {

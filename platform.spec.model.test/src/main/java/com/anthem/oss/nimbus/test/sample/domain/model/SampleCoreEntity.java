@@ -30,13 +30,17 @@ public class SampleCoreEntity extends IdString {
 
 	private static final long serialVersionUID = 1L;
 
-	@Audit
 	private String attr_String;
 	
 	private int attr_int;
 	
-	@Audit
 	private Integer attr_Integer;
+
+	@Audit
+	private String audit_String;
+
+	@Audit
+	private Integer audit_Integer;
 	
 	@Audit
 	private Date unmapped_Date;
