@@ -35,6 +35,14 @@ public @interface Execution {
 		String url();
 		
 		String col() default "";
+		
+		KeyValue[] kv() default {};
+	}
+	
+	public @interface KeyValue {
+		
+		String k();
+		String v();
 	}
 
 }

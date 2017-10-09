@@ -3,9 +3,6 @@
  */
 package com.anthem.oss.nimbus.core.entity.audit;
 
-import com.anthem.oss.nimbus.core.domain.definition.Domain;
-import com.anthem.oss.nimbus.core.domain.definition.Repo;
-import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 
 import lombok.Getter;
@@ -15,8 +12,6 @@ import lombok.Setter;
  * @author Soham Chakravarti
  *
  */
-@Domain("audit_history")
-@Repo(Database.rep_mongodb)
 @Getter @Setter
 public class AuditEntry extends AbstractEntity.IdString {
 

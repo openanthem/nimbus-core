@@ -76,6 +76,15 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 		return (ModelConfig<T>)super.getConfig();
 	}
 	
+	@JsonIgnore @Override
+	public Param<?> getIdParam() {
+		return findParamByPath(getConfig().getIdParam().getCode());
+	}
+	
+	@JsonIgnore @Override
+	public Param<?> getVersionParam() {
+		return findParamByPath(getConfig().getVersionParam().getCode());
+	}
 	
 	@Override
 	public void fireRules() {

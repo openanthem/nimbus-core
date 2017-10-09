@@ -239,25 +239,18 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		return changeStateTemplate((rt, h)->affectSetStateChange(state, rt, h));
 	}
 	
-	protected Action affectSetStateChange(T state, ExecutionRuntime execRt, Holder<Action> h) {
-		return isLeaf() ? affectSetStateChangeRetainOld(state, execRt, h) : affectSetStateChangeInternal(state, execRt, h);
-	}
-	
-	protected Action affectSetStateChangeRetainOld(T state, ExecutionRuntime execRt, Holder<Action> h) {
-		T localPotentialOldState = getState(); 
-		Action a = affectSetStateChangeInternal(state, execRt, h);
+	protected final Action affectSetStateChange(T state, ExecutionRuntime execRt, Holder<Action> h) {
+		state = preSetState(state);		
+		boolean isLeaf = isLeaf();
+		final T localPotentialOldState = isLeaf ? getState() : null;
 		
-		if(a != null) {
-			setTransientOldState(localPotentialOldState);
-		}
-		
-		return a;
-	}
-	
-	private final Action affectSetStateChangeInternal(T state, ExecutionRuntime execRt, Holder<Action> h) {
-		state = preSetState(state);			
 		Action a = getAspectHandlers().getParamStateGateway()._set(this, state); 
+		
 		if(a!=null) {
+			
+			if(isLeaf)
+				setTransientOldState(localPotentialOldState);
+			
 			// hook up on state change events
 			EventHandlerConfig eventHandlerConfig = getConfig().getEventHandlerConfig();
 			if(eventHandlerConfig!=null && eventHandlerConfig.getOnStateChangeAnnotations()!=null) {

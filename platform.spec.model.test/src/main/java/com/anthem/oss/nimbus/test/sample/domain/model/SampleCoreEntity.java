@@ -36,14 +36,14 @@ public class SampleCoreEntity extends IdString {
 	
 	private Integer attr_Integer;
 
-	@Audit
+	@Audit(SampleCoreAuditEntry.class)
 	private String audit_String;
 
-	@Audit
+	@Audit(SampleCoreAuditEntry.class)
 	private Integer audit_Integer;
 	
-	@Audit
-	private Date unmapped_Date;
+	@Audit(SampleCoreAuditEntry.class)
+	private String unmapped_String;
 	
 	private Date attr_Date;
 	private LocalDate attr_LocalDate;
@@ -73,4 +73,6 @@ public class SampleCoreEntity extends IdString {
 	private String q3;
 	private SampleCoreNestedEntity q3Level1;
 	private SampleCoreNestedEntity q3Level2;
+	
+	private SampleCoreLevel1_Entity level1;
 }

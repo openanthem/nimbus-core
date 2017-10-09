@@ -128,6 +128,9 @@ public interface EntityState<T> {
 		@JsonIgnore
 		Param<T> getAssociatedParam();
 		
+		public Param<?> getIdParam();
+		public Param<?> getVersionParam();
+		
 		@JsonIgnore @Override
 		default Model<?> getRootDomain() {
 			return getAssociatedParam().getRootDomain();
