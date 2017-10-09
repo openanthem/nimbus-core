@@ -75,4 +75,5 @@ public class SampleCoreEntity extends IdString {
 	private SampleCoreNestedEntity q3Level2;
 	
 	private SampleCoreLevel1_Entity level1;
+
 }
