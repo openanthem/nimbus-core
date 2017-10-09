@@ -31,6 +31,7 @@ domain:
       - com.anthem.oss.nimbus.core.entity
       - com.anthem.oss.nimbus.test.sample.um.model
       - com.anthem.oss.nimbus.test.sample.domain.model
+      - com.anthem.oss.nimbus.test.sample.domain.model.ui
       - com.anthem.nimbus.platform.core.bpm
     typeClassMappings:
       java.time.LocalDate : 
