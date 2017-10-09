@@ -24,7 +24,7 @@ import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
 import com.anthem.oss.nimbus.core.domain.definition.extension.Audit;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.entity.audit.AuditEntry;
-import com.anthem.oss.nimbus.test.sample.domain.model.SampleCoreEntity;
+import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreEntity;
 import com.anthem.oss.nimbus.test.sample.domain.model.ui.VPSampleViewPageGreen;
 
 /**

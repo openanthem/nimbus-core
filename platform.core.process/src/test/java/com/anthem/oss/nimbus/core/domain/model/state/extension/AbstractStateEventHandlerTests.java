@@ -28,7 +28,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.ParamEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.BaseStateEventListener;
-import com.anthem.oss.nimbus.test.sample.domain.model.SampleCoreEntity;
+import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreEntity;
 
 /**
  * @author Soham Chakravarti
