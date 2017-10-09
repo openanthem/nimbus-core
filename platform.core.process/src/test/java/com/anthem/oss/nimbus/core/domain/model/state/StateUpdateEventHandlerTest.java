@@ -31,7 +31,6 @@ public class StateUpdateEventHandlerTest extends AbstractFrameworkIngerationPers
  
 	@SuppressWarnings("unchecked")
 	@Test
-	@Ignore // Swetha : Need to revert. Testing build failure on Bamboo for class loading path issue. 
 	public void t03_WhenCoreEntityUpdated_ThenUpdateAssociatedEntity() {
 		String refId = createOrGetDomainRoot_RefId();
 		
