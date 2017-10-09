@@ -100,16 +100,16 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 	@Test
 	public void t01_core_string() {
 		Param<String> p = getCore_audit_string();
-		mapped_audit_string(p, "audit_String");
+		mapped_audit_string(p, "sample_core", "/sample_core/audit_String");
 	}
 	
 	@Test
 	public void t02_view_string() {
 		Param<String> p = getView_audit_string();
-		mapped_audit_string(p, "audit_String");
+		mapped_audit_string(p, "sample_core", "/sample_core/audit_String"); // core overrides when  both view and core are mapped with @Audit
 	}
 	
-	private void mapped_audit_string(Param<String> p, String property) {
+	private void mapped_audit_string(Param<String> p, String domainRootAlias, String propertyPath) {
 		assertNull(p.getState());
 		assertNull(p.findIfLeaf().getTransientOldState());
 
@@ -122,10 +122,11 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		
 		List<AuditEntry> audit = mongo.findAll(AuditEntry.class, "sample_core_audit_history");
 		assertEquals(1, audit.size());
-		assertEquals(coreRefId, audit.get(0).getEntityId());
+		assertEquals(coreRefId, audit.get(0).getDomainRootRefId());
 		assertEquals(K_state_1, audit.get(0).getNewValue());
 		assertEquals(null, audit.get(0).getOldValue());
-		assertEquals(property, audit.get(0).getProperty());
+		assertEquals(propertyPath, audit.get(0).getPropertyPath());
+		assertEquals("string", audit.get(0).getPropertyType());
 		assertNotNull(audit.get(0).getCreatedBy());
 		assertNotNull(audit.get(0).getCreatedDate());
 	
@@ -137,17 +138,20 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		audit = mongo.findAll(AuditEntry.class, "sample_core_audit_history");
 		assertEquals(2, audit.size());
 		
-		assertEquals(coreRefId, audit.get(0).getEntityId());
+		assertEquals(domainRootAlias, audit.get(0).getDomainRootAlias());
+		assertEquals(coreRefId, audit.get(0).getDomainRootRefId());
 		assertEquals(K_state_1, audit.get(0).getNewValue());
 		assertEquals(null, audit.get(0).getOldValue());
-		assertEquals(property, audit.get(0).getProperty());
+		assertEquals(propertyPath, audit.get(0).getPropertyPath());
 		assertNotNull(audit.get(0).getCreatedBy());
 		assertNotNull(audit.get(0).getCreatedDate());
 		
-		assertEquals(coreRefId, audit.get(1).getEntityId());
+		assertEquals(domainRootAlias, audit.get(1).getDomainRootAlias());
+		assertEquals(coreRefId, audit.get(1).getDomainRootRefId());
 		assertEquals(K_state_2, audit.get(1).getNewValue());
 		assertEquals(K_state_1, audit.get(1).getOldValue());
-		assertEquals(property, audit.get(1).getProperty());
+		assertEquals(propertyPath, audit.get(1).getPropertyPath());
+		assertEquals("string", audit.get(1).getPropertyType());
 		assertNotNull(audit.get(1).getCreatedBy());
 		assertNotNull(audit.get(1).getCreatedDate());
 		
@@ -159,16 +163,16 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 	@Test
 	public void t03_core_integer() {
 		Param<Integer> p = getCore_audit_integer();
-		mapped_audit_integer(p);
+		mapped_audit_integer(p, "sample_core", "/sample_core/audit_Integer");
 	}
 	
 	@Test
 	public void t04_view_integer() {
 		Param<Integer> p = getView_audit_integer();
-		mapped_audit_integer(p);
+		mapped_audit_integer(p, "sample_core", "/sample_core/audit_Integer"); // only core is annotated with @Audit while the param is mapped in view
 	}
 	
-	private void mapped_audit_integer(Param<Integer> p) {
+	private void mapped_audit_integer(Param<Integer> p, String domainRootAlias, String propertyPath) {
 		assertNull(p.getState());
 		assertNull(p.findIfLeaf().getTransientOldState());
 
@@ -181,10 +185,13 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		
 		List<AuditEntry> audit = mongo.findAll(AuditEntry.class, "sample_core_audit_history");
 		assertEquals(1, audit.size());
-		assertEquals(coreRefId, audit.get(0).getEntityId());
+		
+		assertEquals(domainRootAlias, audit.get(0).getDomainRootAlias());
+		assertEquals(coreRefId, audit.get(0).getDomainRootRefId());
 		assertEquals(K_state_1, audit.get(0).getNewValue());
 		assertEquals(null, audit.get(0).getOldValue());
-		assertEquals("audit_Integer", audit.get(0).getProperty());
+		assertEquals(propertyPath, audit.get(0).getPropertyPath());
+		assertEquals("integer", audit.get(0).getPropertyType());
 		assertNotNull(audit.get(0).getCreatedBy());
 		assertNotNull(audit.get(0).getCreatedDate());
 	
@@ -196,17 +203,21 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		audit = mongo.findAll(AuditEntry.class, "sample_core_audit_history");
 		assertEquals(2, audit.size());
 		
-		assertEquals(coreRefId, audit.get(0).getEntityId());
+		assertEquals(domainRootAlias, audit.get(0).getDomainRootAlias());
+		assertEquals(coreRefId, audit.get(0).getDomainRootRefId());
 		assertEquals(K_state_1, audit.get(0).getNewValue());
 		assertEquals(null, audit.get(0).getOldValue());
-		assertEquals("audit_Integer", audit.get(0).getProperty());
+		assertEquals(propertyPath, audit.get(0).getPropertyPath());
+		assertEquals("integer", audit.get(0).getPropertyType());
 		assertNotNull(audit.get(0).getCreatedBy());
 		assertNotNull(audit.get(0).getCreatedDate());
 		
-		assertEquals(coreRefId, audit.get(1).getEntityId());
+		assertEquals(domainRootAlias, audit.get(1).getDomainRootAlias());
+		assertEquals(coreRefId, audit.get(1).getDomainRootRefId());
 		assertEquals(K_state_2, audit.get(1).getNewValue());
 		assertEquals(K_state_1, audit.get(1).getOldValue());
-		assertEquals("audit_Integer", audit.get(1).getProperty());
+		assertEquals(propertyPath, audit.get(1).getPropertyPath());
+		assertEquals("integer", audit.get(1).getPropertyType());
 		assertNotNull(audit.get(1).getCreatedBy());
 		assertNotNull(audit.get(1).getCreatedDate());
 		
@@ -218,14 +229,14 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 	@Test
 	public void t05_coreOnly_unmapped_String() {
 		Param<String> p = getCore_unmapped_string();
-		mapped_audit_string(p, "unmapped_String");
+		mapped_audit_string(p, "sample_core", "/sample_core/unmapped_String");
 	}
 
 	
 	@Test
 	public void t06_viewOnly_unmapped_String() {
 		Param<String> p = getView_unmapped_string();
-		String property = "unmapped_String";
+		String propertyPath = "/sample_view/page_green/tile/unmapped_String";
 	
 		assertNull(p.getState());
 		assertNull(p.findIfLeaf().getTransientOldState());
@@ -239,10 +250,13 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		
 		List<AuditEntry> audit = mongo.findAll(AuditEntry.class, "sample_view_audit_history");
 		assertEquals(1, audit.size());
-		assertEquals(coreRefId, audit.get(0).getEntityId());
+		
+		assertEquals("sample_view", audit.get(0).getDomainRootAlias());
+		assertEquals(coreRefId, audit.get(0).getDomainRootRefId());
 		assertEquals(K_state_1, audit.get(0).getNewValue());
 		assertEquals(null, audit.get(0).getOldValue());
-		assertEquals(property, audit.get(0).getProperty());
+		assertEquals(propertyPath, audit.get(0).getPropertyPath());
+		assertEquals("string", audit.get(0).getPropertyType());
 		assertNotNull(audit.get(0).getCreatedBy());
 		assertNotNull(audit.get(0).getCreatedDate());
 	
@@ -254,17 +268,21 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		audit = mongo.findAll(AuditEntry.class, "sample_view_audit_history");
 		assertEquals(2, audit.size());
 		
-		assertEquals(coreRefId, audit.get(0).getEntityId());
+		assertEquals("sample_view", audit.get(0).getDomainRootAlias());
+		assertEquals(coreRefId, audit.get(0).getDomainRootRefId());
 		assertEquals(K_state_1, audit.get(0).getNewValue());
 		assertEquals(null, audit.get(0).getOldValue());
-		assertEquals(property, audit.get(0).getProperty());
+		assertEquals(propertyPath, audit.get(0).getPropertyPath());
+		assertEquals("string", audit.get(0).getPropertyType());
 		assertNotNull(audit.get(0).getCreatedBy());
 		assertNotNull(audit.get(0).getCreatedDate());
 		
-		assertEquals(coreRefId, audit.get(1).getEntityId());
+		assertEquals("sample_view", audit.get(1).getDomainRootAlias());
+		assertEquals(coreRefId, audit.get(1).getDomainRootRefId());
 		assertEquals(K_state_2, audit.get(1).getNewValue());
 		assertEquals(K_state_1, audit.get(1).getOldValue());
-		assertEquals(property, audit.get(1).getProperty());
+		assertEquals(propertyPath, audit.get(1).getPropertyPath());
+		assertEquals("string", audit.get(1).getPropertyType());
 		assertNotNull(audit.get(1).getCreatedBy());
 		assertNotNull(audit.get(1).getCreatedDate());
 		
@@ -297,10 +315,13 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		
 		List<AuditEntry> audit = mongo.findAll(AuditEntry.class, "sample_core_audit_history");
 		assertEquals(1, audit.size());
-		assertEquals(coreRefId, audit.get(0).getEntityId());
+		
+		assertEquals("sample_core", audit.get(0).getDomainRootAlias());
+		assertEquals(coreRefId, audit.get(0).getDomainRootRefId());
 		assertEquals(K_state_1, audit.get(0).getNewValue());
 		assertEquals(null, audit.get(0).getOldValue());
-		assertEquals("audit_nested_attr", audit.get(0).getProperty());
+		assertEquals("/sample_core/level1/audit_nested_attr", audit.get(0).getPropertyPath());
+		assertEquals("string", audit.get(0).getPropertyType());
 		
 		// validate that view based audit collection is not created
 		assertFalse(mt.collectionExists("samepl_view_audit_history"));

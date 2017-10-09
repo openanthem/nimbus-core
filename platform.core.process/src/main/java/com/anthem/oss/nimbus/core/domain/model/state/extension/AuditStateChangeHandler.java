@@ -33,13 +33,17 @@ public class AuditStateChangeHandler implements OnStateChangeHandler<Audit> {
 //	private ExpressionEvaluator expressionEvaluator;
 //	
 //	private CommandExecutorGateway commandGateway;
-	
-//	@Config(url="/cmcase_audit_history/_new?fn=initEntity", kv={
-//			@KeyValue(k="/entityId", v="<!/.d/id!>"), 
-//			@KeyValue(k="/property", v="assignment"), 
-//			@KeyValue(k="/oldValue", v="<!param(/).getTransientOldState()!>"),
-//			@KeyValue(k="/newValue", v="<!/!>")
-//	})
+
+//	@ConfigConditional(config={
+//			@Config(url="/cmcase_audit_history/_new?fn=initEntity", kv={
+//					@KeyValue(k="/entityId", v="<!/.d/id!>"), // <! ..evaluate in context of audit_string.. !>
+//					@KeyValue(k="/property", v="assignment"), // string literal  v="LocalDateTime.now()"
+//					@KeyValue(k="/oldValue", v="<!param(/).getTransientOldState()!>"),  // <! .p1. !> == param(audit_string).findStateByPath(.p1.)
+//					@KeyValue(k="/newValue", v="<!/!>"),
+//					@KeyValue(k="/newValue", v="/oldValue")  // <! ..evaluate in context of cmcase_audit_history.. !>
+//			})
+//		})
+
 	private ModelRepositoryFactory repositoryFactory;
 	
 	private DomainConfigBuilder domainConfigBuilder;
@@ -66,14 +70,18 @@ public class AuditStateChangeHandler implements OnStateChangeHandler<Audit> {
 		Model<?> persistableDomainRoot = findPersistableDomainRoot(leafParam);
 		
 		// TODO create simulate @Config entry which will re-use implementation for @ConfigConditional handler to execute
-		String entityId = String.valueOf(persistableDomainRoot.getIdParam().getState());
-		String property = leafParam.getConfig().getCode();
+		String domainRootAlias = leafParam.getRootDomain().getConfig().getAlias();
+		String domainRootRefId = String.valueOf(persistableDomainRoot.getIdParam().getState());
+		String propertyPath = leafParam.getPath();
+		String propertyType = leafParam.getType().getName();
 		Object oldValue = leafParam.getTransientOldState();
 		Object newValue = leafParam.getState();
 		
 		AuditEntry ae = javaBeanHandler.instantiate(configuredAnnotation.value());
-		ae.setEntityId(entityId);
-		ae.setProperty(property);
+		ae.setDomainRootAlias(domainRootAlias);
+		ae.setDomainRootRefId(domainRootRefId);
+		ae.setPropertyPath(propertyPath);
+		ae.setPropertyType(propertyType);
 		ae.setOldValue(oldValue);
 		ae.setNewValue(newValue);
 

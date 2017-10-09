@@ -17,26 +17,16 @@ public class AuditEntry extends AbstractEntity.IdString {
 
 	private static final long serialVersionUID = 1L;
 
-	private String entityId;
+	private String domainRootAlias;
 	
-	private String property;
+	private String domainRootRefId;
+	
+	private String propertyPath;
+	
+	private String propertyType;
 	
 	private Object oldValue;
 	
 	private Object newValue;
-	
-	public AuditEntry() { }
-	
-	public AuditEntry(String entityId, String property, Object newValue) {
-		this(entityId, property, null, newValue);
-	}
-	
-	public AuditEntry(String entityId, String property, Object oldValue, Object newValue) {
-		setEntityId(entityId);
-		setProperty(property);
-		setOldValue(oldValue);
-		setNewValue(newValue);
-	}
-	
 	
 }
