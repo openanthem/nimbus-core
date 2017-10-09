@@ -22,7 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.anthem.oss.nimbus.core.TestFrameworkIntegrationScenariosApplication;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.test.sample.domain.model.SampleCoreNestedEntity;
+import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreNestedEntity;
 
 /**
  * @author Soham Chakravarti

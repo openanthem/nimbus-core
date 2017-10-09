@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.test.sample.domain.model;
+package com.anthem.oss.nimbus.test.sample.domain.model.core;
 
 import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ActivateConditional;
