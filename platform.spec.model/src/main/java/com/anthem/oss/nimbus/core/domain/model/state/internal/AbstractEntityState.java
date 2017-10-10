@@ -125,20 +125,21 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 			R resp = cb.affectChange(execRt, h);
 			
 			// fire rules if available at this param level
-			fireRules();
+			//fireRules();
 			
 			return resp;
 		} finally {
 			if(execRt.isLocked(lockId)) {
+				// fire rules at root level upon completion of all set actions
+				if(h.getState()!=null) 
+					getRootExecution().fireRules();
+				
 				// notify subscribers to evaluate their process & rules
 				Param<Object> domainRootParam = (Param<Object>)getRootDomain().getAssociatedParam();
 				resolveRuntime().emitNotification(new Notification<Object>(domainRootParam, ActionType._evalProcess, domainRootParam));
 
 				// await completion of notification events
 				execRt.awaitNotificationsCompletion();
-				
-				// fire rules at root level upon completion of all set actions
-				getRootExecution().fireRules();
 				
 				// evaluate BPM
 				evaluateProcessFlow();
