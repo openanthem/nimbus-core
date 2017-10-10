@@ -70,37 +70,34 @@ public class DefaultActionExecutorGet extends AbstractFunctionCommandExecutor<Pa
 		// set to context
 		eCtx.setQuadModel(q);
 		
+		// hook-up BPM
+		final ProcessFlow processEntityState = loadProcessState(rootDomainConfig, eCtx);
+		q.getRoot().getState().setFlow(processEntityState);
+		
 		return eCtx;
 	}
 	
 	protected QuadModel<?, ?> createNewQuad(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx) {
-		String refId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
+		final String refId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
 		
 		final Object entity;
 		final Repo repo = rootDomainConfig.getRepo();
-		final ProcessFlow processEntityState;
+		final String resolvedRepAlias = resolveEntityAliasByRepo(rootDomainConfig);
 		
 		// db - entity
 		if(Repo.Database.exists(repo) && StringUtils.isNotBlank(refId)) { // root (view or core) is persistent
-			String resolvedRepAlias = resolveEntityAliasByRepo(rootDomainConfig);
-			
 			entity = getRepositoryFactory().get(rootDomainConfig.getRepo())
 						._get(refId, rootDomainConfig.getReferredClass(), resolvedRepAlias, eCtx.getCommandMessage().getCommand().getAbsoluteUri());
 			
-			// db - process
-			processEntityState = loadProcessState(rootDomainConfig, resolvedRepAlias, refId);
-			
 		} else {
 			entity = instantiateEntity(eCtx, rootDomainConfig);
-			processEntityState = null;
 		}
-		
+
 		if(rootDomainConfig.isMapped()) 
 			return handleMapped(rootDomainConfig, eCtx, entity, Action._get);
 		
 		// create quad-model
 		ExecutionEntity<?, ?> e = ExecutionEntity.resolveAndInstantiate(entity, null);
-		e.setFlow(processEntityState);
 		
 		return getQuadModelBuilder().build(eCtx.getCommandMessage().getCommand(), e);
 	}
@@ -119,7 +116,7 @@ public class DefaultActionExecutorGet extends AbstractFunctionCommandExecutor<Pa
 		return getQuadModelBuilder().build(eCtx.getCommandMessage().getCommand(), mapped, coreParam);
 	}
 	
-	protected ProcessFlow loadProcessState(ModelConfig<?> rootDomainConfig, String resolvedEntityAlias, String entityRefId) {
+	protected ProcessFlow loadProcessState(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx) {
 		String domainLifeCycle = rootDomainConfig.getDomainLifecycle();
 		
 		if(StringUtils.trimToNull(domainLifeCycle)==null)
@@ -133,8 +130,10 @@ public class DefaultActionExecutorGet extends AbstractFunctionCommandExecutor<Pa
 		
 		String processStateAlias = StringUtils.isBlank(repo.alias()) ? modelConfig.getAlias() : repo.alias();
 		
+		final String resolvedEntityAlias = resolveEntityAliasByRepo(rootDomainConfig);
 		String entityProcessAlias = resolvedEntityAlias + "_" + processStateAlias;
 		
+		final String entityRefId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
 		ProcessFlow processEntityState = getRepositoryFactory().get(repo)._get(entityRefId, ProcessFlow.class, entityProcessAlias);
 		return processEntityState;
 	}
