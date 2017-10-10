@@ -1,0 +1,18 @@
+package com.anthem.nimbus.platform.core.rules
+
+import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultModelState;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultParamState;
+import java.time.LocalDate;
+import java.time.Period;
+
+rule "Core Rule Test 1"
+   when
+   	$core : DefaultParamState($core.findParamByPath("/triggerParameter").getState() == 'Start'
+   	&& $core.findParamByPath("/triggeredParameter").getState() == null
+   	)
+   	$state : RuleTestCoreModel()
+   then
+   	   $core.findParamByPath("/triggeredParameter").setState("Triggered");   
+   	   $state.setStateCheckParameter("Executed");   
+   end

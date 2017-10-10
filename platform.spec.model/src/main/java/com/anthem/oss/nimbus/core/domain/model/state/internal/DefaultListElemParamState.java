@@ -29,9 +29,18 @@ public class DefaultListElemParamState<E> extends DefaultParamState<E> implement
 	public interface Creator<T> {
 		public DefaultParamState<T> apply(DefaultListModelState<T> colModel, String elemId);
 	}
-
 	
 	final private String elemId;
+
+	
+	public static class LeafElemState<E> extends DefaultListElemParamState<E> implements LeafParam<E> {
+		private static final long serialVersionUID = 1L;
+		
+		public LeafElemState(ListModel<E> parentModel, ParamConfig<E> config, EntityStateAspectHandlers aspectHandlers, String elemId) {
+			super(parentModel, config, aspectHandlers, elemId);
+		}
+	}
+
 	
 	public DefaultListElemParamState(ListModel<E> parentModel, ParamConfig<E> config, EntityStateAspectHandlers aspectHandlers, String elemId) {
 		super(parentModel, config, aspectHandlers);

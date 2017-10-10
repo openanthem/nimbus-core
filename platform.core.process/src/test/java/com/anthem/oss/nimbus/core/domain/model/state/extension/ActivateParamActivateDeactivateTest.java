@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state;
+package com.anthem.oss.nimbus.core.domain.model.state.extension;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -15,35 +15,25 @@ import java.util.List;
 
 import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import com.anthem.oss.nimbus.core.TestFrameworkIntegrationScenariosApplication;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 
 /**
  * @author Soham Chakravarti
  *
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes=TestFrameworkIntegrationScenariosApplication.class)
-@ActiveProfiles("test")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class ActivateParamActivateDeactivateTest extends ActivateParamBaseTest {
+public class ActivateParamActivateDeactivateTest extends AbstractStateEventHandlerTests {
 
 	private static final String CORE_PARAM_PATH_q1 = "/sample_core/q1";
 	private static final String CORE_PARAM_PATH_q1Level1 = "/sample_core/q1Level1";
 	private static final String CORE_PARAM_PATH_q1Level1_nested_attr_String = CORE_PARAM_PATH_q1Level1 + "/nested_attr_String";
 
-	@Override
 	protected String getSourceParamPath() {
 	 	return CORE_PARAM_PATH_q1;
 	}
 	
-	@Override
 	protected String getTargetParamPath() {
 		return CORE_PARAM_PATH_q1Level1;
 	}

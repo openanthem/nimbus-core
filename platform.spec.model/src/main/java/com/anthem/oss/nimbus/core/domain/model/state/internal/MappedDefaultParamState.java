@@ -26,6 +26,14 @@ public class MappedDefaultParamState<T, M> extends DefaultParamState<T> implemen
 	
 	@JsonIgnore private final Notification.Consumer<M> delegate;
 
+	public static class MappedLeafState<T, M> extends MappedDefaultParamState<T, M> implements LeafParam<T> {
+		private static final long serialVersionUID = 1L;
+		
+		public MappedLeafState(Param<M> mapsTo, Model<?> parentModel, ParamConfig<T> config, EntityStateAspectHandlers provider) {
+			super(mapsTo, parentModel, config, provider);
+		}
+	}
+	
 	public MappedDefaultParamState(Param<M> mapsTo, Model<?> parentModel, ParamConfig<T> config, EntityStateAspectHandlers provider) {
 		super(parentModel, config, provider);
 		

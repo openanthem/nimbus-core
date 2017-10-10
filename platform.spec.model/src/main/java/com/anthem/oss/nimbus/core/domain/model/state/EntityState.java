@@ -25,23 +25,23 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 public interface EntityState<T> {
 
-	public String getPath();
+	String getPath();
 	
 	@JsonIgnore
-	public String getBeanPath();
+	String getBeanPath();
 	
 	//@JsonIgnore
-	public EntityConfig<T> getConfig();
+	EntityConfig<T> getConfig();
 
 	default String getConfigId() {
 		return getConfig().getConfigId();
 	}
 	
-	public <S> Model<S> findModelByPath(String path);
-	public <S> Model<S> findModelByPath(String[] pathArr);
+	<S> Model<S> findModelByPath(String path);
+	<S> Model<S> findModelByPath(String[] pathArr);
 
-	public <P> Param<P> findParamByPath(String path);
-	public <P> Param<P> findParamByPath(String[] pathArr);
+	<P> Param<P> findParamByPath(String path);
+	<P> Param<P> findParamByPath(String[] pathArr);
 	
 	default <P> P findStateByPath(String path) {
 		Param<P> param = findParamByPath(path);
@@ -52,46 +52,46 @@ public interface EntityState<T> {
 		return param.getState();
 	}
 
-	public void initSetup();
-	public void initState();
+	void initSetup();
+	void initState();
 	
-	public EntityStateAspectHandlers getAspectHandlers();
+	EntityStateAspectHandlers getAspectHandlers();
 	
-	public void fireRules();
-	
-	@JsonIgnore
-	public ExecutionModel<?> getRootExecution();
+	void fireRules();
 	
 	@JsonIgnore
-	public Model<?> getRootDomain();
+	ExecutionModel<?> getRootExecution();
 	
 	@JsonIgnore
-	public LockTemplate getLockTemplate();
+	Model<?> getRootDomain();
 	
-	default public boolean isRoot() {
+	@JsonIgnore
+	LockTemplate getLockTemplate();
+	
+	default boolean isRoot() {
 		return false;
 	}
 	
 	default boolean isMapped() {
 		return false;
 	}
-	default public Mapped<T, ?> findIfMapped() {
+	default Mapped<T, ?> findIfMapped() {
 		return null;
 	}
 	
-	public interface Mapped<T, M> extends EntityState<T> {
+	interface Mapped<T, M> extends EntityState<T> {
 		@Override
 		default boolean isMapped() {
 			return true;
 		}
 		@Override
-		default public Mapped<T, M> findIfMapped() {
+		default Mapped<T, M> findIfMapped() {
 			return this;
 		}
-		public EntityState<M> getMapsTo();
+		EntityState<M> getMapsTo();
 	}
 	
-	public interface ExecutionModel<T> extends Model<T> {
+	interface ExecutionModel<T> extends Model<T> {
 		@Override
 		default boolean isRoot() {
 			return true;
@@ -103,15 +103,15 @@ public interface EntityState<T> {
 		}
 		
 		@JsonIgnore
-		public Command getRootCommand();
+		Command getRootCommand();
 		
 		@JsonIgnore
-		public ExecutionRuntime getExecutionRuntime();
+		ExecutionRuntime getExecutionRuntime();
 		
 		@JsonIgnore
-		public Map<String, Object> getParamRuntimes();
+		Map<String, Object> getParamRuntimes();
 		
-		default public <U> U unwrap(Class<U> c) {
+		default <U> U unwrap(Class<U> c) {
 			if(c.isInstance(this))
 				return c.cast(this);
 			
@@ -119,14 +119,17 @@ public interface EntityState<T> {
 		}
 	}
 	
-	public interface Model<T> extends EntityState<T> { 
+	interface Model<T> extends EntityState<T> { 
 		
 		//@JsonIgnore 
 		@Override
-		public ModelConfig<T> getConfig();
+		ModelConfig<T> getConfig();
 		
 		@JsonIgnore
-		public Param<T> getAssociatedParam();
+		Param<T> getAssociatedParam();
+		
+		public Param<?> getIdParam();
+		public Param<?> getVersionParam();
 		
 		@JsonIgnore @Override
 		default Model<?> getRootDomain() {
@@ -138,47 +141,47 @@ public interface EntityState<T> {
 		}
 		
 		@Override
-		default public MappedModel<T, ?> findIfMapped() {
+		default MappedModel<T, ?> findIfMapped() {
 			return null;
 		}
 		
-		public List<Param<? extends Object>> getParams();
+		List<Param<? extends Object>> getParams();
 		
-		default public ListModel<?> findIfListModel() {
+		default ListModel<?> findIfListModel() {
 			return null;
 		}
 		
-		public CollectionsTemplate<List<Param<?>>, Param<?>> templateParams();
+		CollectionsTemplate<List<Param<?>>, Param<?>> templateParams();
 		
-		public T instantiateOrGet();
-		public T instantiateAndSet();
+		T instantiateOrGet();
+		T instantiateAndSet();
 		
-		default public T getLeafState() {
+		default T getLeafState() {
 			return Optional.ofNullable(getAssociatedParam()).map(p->p.getLeafState()).orElse(null);
 		}
 		
-		default public T getState() {
+		default T getState() {
 			return Optional.ofNullable(getAssociatedParam()).map(p->p.getState()).orElse(null);
 		}
-		default public void setState(T state) {
+		default void setState(T state) {
 			Optional.ofNullable(getAssociatedParam()).ifPresent(p->p.setState(state));
 		}
 		
 	}
 	
-	public interface MappedModel<T, M> extends Model<T>, Mapped<T, M> {
+	interface MappedModel<T, M> extends Model<T>, Mapped<T, M> {
 		@Override
-		default public MappedModel<T, M> findIfMapped() {
+		default MappedModel<T, M> findIfMapped() {
 			return this;
 		}
 		
 		@Override
-		public Model<M> getMapsTo();
+		Model<M> getMapsTo();
 	}
 	
-	public interface ListModel<T> extends Model<List<T>>, ListBehavior<T> {
+	interface ListModel<T> extends Model<List<T>>, ListBehavior<T> {
 		@Override
-		default public MappedListModel<T, ?> findIfMapped() {
+		default MappedListModel<T, ?> findIfMapped() {
 			return null;
 		}
 		
@@ -187,13 +190,13 @@ public interface EntityState<T> {
 			return this;
 		}
 		
-		public ListElemParam<T> createElement(String elemId);
+		ListElemParam<T> createElement(String elemId);
 		
 		@Override
-		public ListElemParam<T> add();
+		ListElemParam<T> add();
 		
 		//@JsonIgnore
-		default public ParamConfig<T> getElemConfig() {
+		default ParamConfig<T> getElemConfig() {
 			StateType.NestedCollection<T> typeSAC = getAssociatedParam().getType().findIfCollection(); 
 			ParamType.NestedCollection<T> typeConfig = typeSAC.getConfig().findIfCollection();
 			
@@ -205,59 +208,63 @@ public interface EntityState<T> {
 			return getElemConfig().getConfigId();
 		}
 	}
-	public interface MappedListModel<T, M> extends ListModel<T>, MappedModel<List<T>, List<M>> {
+	interface MappedListModel<T, M> extends ListModel<T>, MappedModel<List<T>, List<M>> {
 		@Override
-		default public MappedListModel<T, M> findIfMapped() {
+		default MappedListModel<T, M> findIfMapped() {
 			return this;
 		}
 		@Override
-		public ListModel<M> getMapsTo();
+		ListModel<M> getMapsTo();
 	}
 	
-	public interface Param<T> extends EntityState<T>, State<T>, Notification.Producer<T> {//, Notification.ObserveOn<MappedParam<?, T>, Param<T>> {
+	interface Param<T> extends EntityState<T>, State<T>, Notification.Producer<T> {//, Notification.ObserveOn<MappedParam<?, T>, Param<T>> {
 		//@JsonIgnore 
 		@Override
-		public ParamConfig<T> getConfig();
+		ParamConfig<T> getConfig();
 		
-		public T getLeafState();
+		T getLeafState();
 		
 		@JsonIgnore
-		public Model<?> getParentModel();
+		Model<?> getParentModel();
 		
-		public StateType getType();
+		StateType getType();
 		
 //		@JsonIgnore M7
-		public Model<StateContextEntity> getContextModel();
+		Model<StateContextEntity> getContextModel();
 		
 		default boolean isLeaf() {
 			return getConfig().isLeaf();
 		}
 		
-		default public MappedParam<T, ?> findIfMapped() {
+		default LeafParam<T> findIfLeaf() {
 			return null;
 		}
 		
-		default public boolean isCollection() {
+		default MappedParam<T, ?> findIfMapped() {
+			return null;
+		}
+		
+		default boolean isCollection() {
 			return false;
 		}
 		
-		default public boolean isNested() {
+		default boolean isNested() {
 			return getType().isNested();
 		}
 		
-		default public Model<T> findIfNested() {
+		default Model<T> findIfNested() {
 			return isNested() ? getType().<T>findIfNested().getModel() : null;
 		} 
 		
-		default public boolean isCollectionElem() {
+		default boolean isCollectionElem() {
 			return false;
 		}
 		
-		default public ListParam findIfCollection() {
+		default ListParam findIfCollection() {
 			return null;
 		}
 		
-		default public ListElemParam<T> findIfCollectionElem() {
+		default ListElemParam<T> findIfCollectionElem() {
 			return null;
 		}
 		
@@ -271,35 +278,45 @@ public interface EntityState<T> {
 		}
 		
 		@JsonIgnore
-		default public boolean isTransient() {
+		default boolean isTransient() {
 			return false;
 		}
 		
-		default public MappedTransientParam<T, ?> findIfTransient() {
+		default MappedTransientParam<T, ?> findIfTransient() {
 			return null;
 		}
 		
 		@JsonIgnore
-		public PropertyDescriptor getPropertyDescriptor();
+		PropertyDescriptor getPropertyDescriptor();
 		
 		@JsonIgnore
-		public boolean isActive();
-		public void activate();
-		public void deactivate();
-		
+		boolean isActive();
+		void activate();
+		void deactivate();
+	
 	}
 	
-	public interface MappedParam<T, M> extends Param<T>, Mapped<T, M>, Notification.Consumer<M> {
+	interface LeafParam<T> extends Param<T> {
+	
 		@Override
-		default public MappedParam<T, M> findIfMapped() {
+		default LeafParam<T> findIfLeaf() {
+			return this;
+		}
+		
+		T getTransientOldState();
+	}
+	
+	interface MappedParam<T, M> extends Param<T>, Mapped<T, M>, Notification.Consumer<M> {
+		@Override
+		default MappedParam<T, M> findIfMapped() {
 			return this;
 		}
 
 		@JsonIgnore @Override
-		public Param<M> getMapsTo();
+		Param<M> getMapsTo();
 		
 		@JsonIgnore
-		default public boolean requiresConversion() {
+		default boolean requiresConversion() {
 			if(isLeaf()) return false;
 			
 			if(isTransient() && !findIfTransient().isAssinged()) { // when transient is not assigned
@@ -317,7 +334,7 @@ public interface EntityState<T> {
 		}
 	}
 	
-	public interface MappedTransientParam<T, M> extends MappedParam<T, M> {
+	interface MappedTransientParam<T, M> extends MappedParam<T, M> {
 		@Override
 		default boolean isTransient() {
 			return true;
@@ -329,7 +346,7 @@ public interface EntityState<T> {
 		}
 
 		@JsonIgnore
-		default public boolean isAssinged() {
+		default boolean isAssinged() {
 			return getMapsTo() != null;
 		}
 		
@@ -337,46 +354,46 @@ public interface EntityState<T> {
 			Param<M> mapsToTransient = findParamByPath(rootMapsToPath);
 			assignMapsTo(mapsToTransient);
 		}
-		public void assignMapsTo(Param<M> mapsToTransient);
-		public void unassignMapsTo();
+		void assignMapsTo(Param<M> mapsToTransient);
+		void unassignMapsTo();
 	}
 	
-	public interface ListBehavior<T> {
+	interface ListBehavior<T> {
 		/*
-		public boolean remove(Param<T> p);
-		public Param<T> remove(int i);
-		public Param<T> set(int i, Param<T> p);*/
+		boolean remove(Param<T> p);
+		Param<T> remove(int i);
+		Param<T> set(int i, Param<T> p);*/
 		
-		public String toElemId(int i);
-		public int fromElemId(String elemId);
+		String toElemId(int i);
+		int fromElemId(String elemId);
 		
-		public int size();
+		int size();
 		
-		public T getState(int i);
-		public T getLeafState(int i);
+		T getState(int i);
+		T getLeafState(int i);
 		
-		public boolean add(T elem);
-		public Param<T> add();
-		public boolean add(ListElemParam<T> pColElem);
+		boolean add(T elem);
+		Param<T> add();
+		boolean add(ListElemParam<T> pColElem);
 		
-		public boolean remove(ListElemParam<T> pColElem);
+		boolean remove(ListElemParam<T> pColElem);
 		
-		public void clear();
+		void clear();
 		
-		public boolean contains(Param<?> other);
+		boolean contains(Param<?> other);
 	}
 	
 	
-	public interface ListParam<T> extends Param<List<T>>, ListBehavior<T> {
+	interface ListParam<T> extends Param<List<T>>, ListBehavior<T> {
 		@Override
-		public StateType.NestedCollection<T> getType();
+		StateType.NestedCollection<T> getType();
 		
 		@Override
-		default public MappedListParam<T, ?> findIfMapped() {
+		default MappedListParam<T, ?> findIfMapped() {
 			return null;
 		}
 		
-		default public boolean isCollection() {
+		default boolean isCollection() {
 			return true;
 		}
 		
@@ -385,19 +402,19 @@ public interface EntityState<T> {
 			return this;
 		}
 		
-		public ListElemParam<T> createElement();
+		ListElemParam<T> createElement();
 		
 		@Override
-		public ListElemParam<T> add();
+		ListElemParam<T> add();
 		
 	}
 	
-	public interface MappedListParam<T, M> extends ListParam<T>, MappedParam<List<T>, List<M>> {
+	interface MappedListParam<T, M> extends ListParam<T>, MappedParam<List<T>, List<M>> {
 		@JsonIgnore @Override
-		public ListParam<M> getMapsTo();
+		ListParam<M> getMapsTo();
 		
 		@Override
-		default public MappedListParam<T, M> findIfMapped() {
+		default MappedListParam<T, M> findIfMapped() {
 			return this;
 		}
 
@@ -411,17 +428,17 @@ public interface EntityState<T> {
 		}
 	}
 	
-	public interface ListElemParam<E> extends Param<E> {
-		public String getElemId();
+	interface ListElemParam<E> extends Param<E> {
+		String getElemId();
 		
 		@JsonIgnore
-		public int getElemIndex();
+		int getElemIndex();
 		
 		@JsonIgnore @Override
-		public ListModel<E> getParentModel();
+		ListModel<E> getParentModel();
 		
 		@Override
-		default public MappedListElemParam<E, ?> findIfMapped() {
+		default MappedListElemParam<E, ?> findIfMapped() {
 			return null;
 		}
 		
@@ -435,14 +452,14 @@ public interface EntityState<T> {
 			return this;
 		}
 		
-		public boolean remove();
+		boolean remove();
 	}	
-	public interface MappedListElemParam<E, M> extends ListElemParam<E>, MappedParam<E, M> {
+	interface MappedListElemParam<E, M> extends ListElemParam<E>, MappedParam<E, M> {
 //		@Override
-//		public ListElemParam<M> getMapsTo();
+//		ListElemParam<M> getMapsTo();
 		
 		@Override
-		default public MappedListElemParam<E, M> findIfMapped() {
+		default MappedListElemParam<E, M> findIfMapped() {
 			return this;
 		}
 	}

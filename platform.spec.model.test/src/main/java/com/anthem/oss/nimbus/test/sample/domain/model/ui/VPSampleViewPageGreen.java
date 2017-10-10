@@ -9,8 +9,11 @@ import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Section;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Tile;
-import com.anthem.oss.nimbus.test.sample.domain.model.SampleCoreEntity;
-import com.anthem.oss.nimbus.test.sample.domain.model.SampleCoreNestedEntity;
+import com.anthem.oss.nimbus.core.domain.definition.extension.Audit;
+import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreAuditEntry;
+import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreEntity;
+import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreLevel1_Entity;
+import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreNestedEntity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -34,6 +37,19 @@ public class VPSampleViewPageGreen {
 		
 		@Path("/attr_list_1_NestedEntity")
 		private List<SampleCoreNestedEntity> list_attached_noConversion_NestedEntity;
+		
+		@Audit(SampleCoreAuditEntry.class)
+		@Path
+		private String audit_String; // mapped and marked with Audit on both view & core	
+		
+		@Audit(SampleViewAuditEntry.class)
+		private String unmapped_String; // unmapped and marked with Audit on a quad with persistent core
+		
+		@Path
+		private Integer audit_Integer; // mapped view to a core which is annotated with Audit
+		
+		@Path
+		private SampleCoreLevel1_Entity level1;
 		
     }
 	

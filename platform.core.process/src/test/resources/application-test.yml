@@ -30,8 +30,10 @@ domain:
     basePackages:
       - com.anthem.oss.nimbus.core.entity
       - com.anthem.oss.nimbus.test.sample.um.model
-      - com.anthem.oss.nimbus.test.sample.domain.model
+      - com.anthem.oss.nimbus.test.sample.domain.model.core
+      - com.anthem.oss.nimbus.test.sample.domain.model.ui
       - com.anthem.nimbus.platform.core.bpm
+      - com.anthem.nimbus.platform.core.rules
     typeClassMappings:
       java.time.LocalDate : 
         date

@@ -9,6 +9,7 @@ import static org.junit.Assert.assertNotNull;
 import java.util.List;
 
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -17,7 +18,7 @@ import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
 import com.anthem.oss.nimbus.core.AbstractFrameworkIngerationPersistableTests;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
-import com.anthem.oss.nimbus.test.sample.domain.model.SampleCoreAssociatedEntity;
+import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreAssociatedEntity;
 
 import test.com.anthem.nimbus.platform.utils.MockHttpRequestBuilder;
 

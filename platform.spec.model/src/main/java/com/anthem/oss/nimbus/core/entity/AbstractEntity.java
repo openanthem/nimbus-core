@@ -18,7 +18,6 @@ import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
 import com.anthem.oss.nimbus.core.domain.definition.ConfigNature.Ignore;
 import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import lombok.Getter;
 import lombok.Setter;

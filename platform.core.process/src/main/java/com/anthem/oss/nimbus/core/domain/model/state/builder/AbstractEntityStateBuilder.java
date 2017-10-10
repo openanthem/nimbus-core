@@ -35,16 +35,10 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.StateType;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultListElemParamState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultListModelState;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultListParamState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultModelState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultParamState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity.ExModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultListElemParamState;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultListModelState;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultListParamState;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultModelState;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultParamState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultTransientParamState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.StateContextEntity;
 import com.anthem.oss.nimbus.core.rules.RulesEngineFactoryProducer;
@@ -58,7 +52,7 @@ import lombok.Getter;
  *
  */
 @Getter
-abstract public class AbstractEntityStateBuilder {
+abstract public class AbstractEntityStateBuilder extends AbstractEntityStateFactoryProducer {
 
 	protected final RulesEngineFactoryProducer rulesEngineFactoryProducer;
 	
@@ -79,9 +73,8 @@ abstract public class AbstractEntityStateBuilder {
 	abstract protected <P> StateType buildParamType(EntityStateAspectHandlers provider, DefaultParamState<P> associatedParam, Model<?> mapsToSAC);
 	
 	protected <T> DefaultModelState<T> createModel(Param<T> associatedParam, ModelConfig<T> config, EntityStateAspectHandlers provider, Model<?> mapsToSAC) {
-		DefaultModelState<T> mState = associatedParam.isMapped() ? //(mapsToSAC!=null) ? 
-				new MappedDefaultModelState<>(mapsToSAC, associatedParam, config, provider) : 
-					new DefaultModelState<>(associatedParam, config, provider);
+		// instantiate
+		DefaultModelState<T> mState = getFactory(associatedParam).instantiateModel(associatedParam, config, provider, mapsToSAC);
 		
 		// rules
 		Optional.ofNullable(config.getRulesConfig())
@@ -94,9 +87,8 @@ abstract public class AbstractEntityStateBuilder {
 	}
 	
 	protected <T> DefaultListModelState<T> createCollectionModel(ListParam associatedParam, ModelConfig<List<T>> config, EntityStateAspectHandlers provider, DefaultListElemParamState.Creator<T> elemCreator) {
-		DefaultListModelState<T> mState = (associatedParam.isMapped()) ? 
-				new MappedDefaultListModelState<>(associatedParam.findIfMapped().getMapsTo().getType().findIfCollection().getModel(), associatedParam, config, provider, elemCreator) :
-				new DefaultListModelState<>(associatedParam, config, provider, elemCreator);					
+		// instantiate
+		DefaultListModelState<T> mState = getFactory(associatedParam).instantiateColModel(associatedParam, config, provider, elemCreator);
 		
 		mState.initSetup();
 		return mState;
@@ -110,14 +102,9 @@ abstract public class AbstractEntityStateBuilder {
 		Model<?> colParamParentModel = parentModel.getAssociatedParam().getParentModel();
 		if(mpConfig.getMappingMode()==MapsTo.Mode.MappedAttached && !colParamParentModel.getConfig().isMapped() && !colParamParentModel.isRoot())
 				throw new InvalidConfigException("Model class: "+colParamParentModel.getConfig().getReferredClass()+" must be mapped to load mapped param: "+mpConfig.findIfMapped().getPath());
-		
-		final DefaultListElemParamState<E> mpState;
-		if(parentModel.isMapped()) {
-			mpState = new MappedDefaultListElemParamState<>(parentModel, mpConfig, provider, elemId);
-			
-		} else {
-			mpState = new DefaultListElemParamState<>(parentModel, mpConfig, provider, elemId);
-		}
+
+		// instantiate
+		final DefaultListElemParamState<E> mpState = getFactory(parentModel).instantiateColElemParam(provider, parentModel, mpConfig, elemId);
 		
 		mpState.initSetup();
 		decorateParam(mpState);
@@ -199,19 +186,11 @@ abstract public class AbstractEntityStateBuilder {
 				throw new UnsupportedOperationException("Transient behavior for: "+mappedParamConfig.getPath().nature()+" not yet implemented, found for: "+mappedParamConfig.getCode());
 			}
 			
-			else if(mappedParamConfig.getType().isCollection()) {
-				return new MappedDefaultListParamState(mapsToParam.findIfCollection(), parentModel, mappedParamConfig, aspectHandlers);
-			}
-				
-			return new MappedDefaultParamState<>(mapsToParam, parentModel, mappedParamConfig, aspectHandlers);
+			return getFactory(mappedParamConfig).instantiateParam(mapsToParam, parentModel, mappedParamConfig, aspectHandlers);
 		}
 		
-//		if(!mappedParamConfig.getMapsTo().getType().isNested()) {
-//			throw new UnsupportedOperationException("Mapped Detached ParamType.Field is not yet supported. Supported types are Nested & NestedCollection."
-//					+ " param: "+mappedParamConfig.getCode()+" in parent: "+parentModel.getPath());
-//		}
-		
-		// detached nested: find mapsTo model and create ExState.ExParam for it
+
+		// detached nested
 		
 		ModelConfig<?> mapsToEnclosingModel = mappedParamConfig.getMapsToEnclosingModel();
 		
@@ -230,18 +209,11 @@ abstract public class AbstractEntityStateBuilder {
 		DefaultParamState<C> mapsToDetachedRootParam = buildParam(aspectHandlers, execModelSAC, execModelSAC.getConfig().getCoreParam(), null);
 		Param<?> mapsToParam = mapsToDetachedRootParam.findParamByPath(MapsTo.DETACHED_SIMULATED_FIELD_NAME);
 		
-		if(mappedParamConfig.getType().isCollection()) {
-			return new MappedDefaultListParamState(mapsToParam.findIfCollection(), parentModel, mappedParamConfig, aspectHandlers);
-		}
-		return new MappedDefaultParamState<>(mapsToParam, parentModel, mappedParamConfig, aspectHandlers);
-	
+		return getFactory(mappedParamConfig).instantiateParam(mapsToParam, parentModel, mappedParamConfig, aspectHandlers);
 	}
 
 	private <P> DefaultParamState<P> createParamUnmapped(EntityStateAspectHandlers aspectHandlers, Model<?> parentModel, Model<?> mapsToSAC, ParamConfig<P> paramConfig) {
-		if(paramConfig.getType().isCollection())
-			return new DefaultListParamState(parentModel, paramConfig, aspectHandlers);
-		
-		return new DefaultParamState<>(parentModel, paramConfig, aspectHandlers);
+		return getFactory(paramConfig).instantiateParam(null, parentModel, paramConfig, aspectHandlers);
 	}
 	
 	private <T, M> Param<M> findMapsToParam(ParamConfig<T> pConfig, Model<?> mapsToStateAndConfig) {

@@ -51,7 +51,9 @@ public class CommandMessageConverter {
 		try {
 			Object model = pConfig.getType().isCollection() 
 								? om.readValue(json, om.getTypeFactory().constructCollectionType(List.class, pConfig.getType().findIfCollection().getElementConfig().getReferredClass()))
-										: om.readValue(json, pConfig.getReferredClass());
+										: pConfig.getType().isArray()
+											? om.readValue(json, om.getTypeFactory().constructArrayType(pConfig.getReferredClass()))
+													:om.readValue(json, pConfig.getReferredClass());
 			return model;
 			
 		} catch (Exception ex) {
