@@ -8,9 +8,7 @@ import java.time.Period;
 
 rule "Core Rule Test 1"
    when
-   	$core : DefaultParamState($core.findParamByPath("/triggerParameter").getState() == 'Start'
-   	&& $core.findParamByPath("/triggeredParameter").getState() == null
-   	)
+   	$core : DefaultParamState($core.findParamByPath("/triggerParameter").getState() == 'Start')
    	$state : RuleTestCoreModel()
    then
    	   $core.findParamByPath("/triggeredParameter").setState("Triggered");   
