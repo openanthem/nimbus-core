@@ -42,6 +42,10 @@ public class StateType implements Serializable {
 		return config.isNested();
 	}
 	
+	public boolean isArray() {
+		return config.isArray();
+	}
+	
 	public <P> Nested<P> findIfNested() {
 		return null;
 	}

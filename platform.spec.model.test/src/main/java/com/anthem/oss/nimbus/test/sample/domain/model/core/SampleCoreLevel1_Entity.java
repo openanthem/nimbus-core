@@ -22,15 +22,17 @@ public class SampleCoreLevel1_Entity {
 	@Audit(SampleCoreAuditEntry.class)
 	private String audit_nested_attr;
 	
-	@ActivateConditional(when="state == 'Y'", targetPath="../level")
+	@ActivateConditional(when="state == 'Y'", targetPath="../level2")
 	private String level1Attrib;
 	
-	private Level2 level;
+	private Level2 level2;
 
 	@Model @Getter @Setter
 	public static class Level2 {
 	
-		private String level2Attib;
+		private String level2Attrib;
+		
+		private String[] string_array;
 	}
 	
 }
