@@ -26,18 +26,18 @@ import com.anthem.oss.nimbus.core.domain.definition.event.StateEvent.OnStateLoad
 public @interface ActivateConditional {
 
 	/**
-	 * expression to evaluate against declared param's state 
+	 *  SpEL based condition to be evaluated relative to param's state on which this annotation is declared.
 	 */
 	String when();
 	
 	/**
-	 * path of param to activate when condition is satisfied 
+	 * Path of param to activate when condition is satisfied relative to param on which this annotation is declared
 	 */
 	String targetPath();
 	
 	/**
-	 * condition on which param would be inactivated. <br>
-	 * by default, if no value is provided, then the negation of {@linkplain ActivateConditional#when()} would be used 
+	 * SpEL based condition on which param would be inactivated. <br>
+	 * If value is not overridden, then the negation of {@linkplain ActivateConditional#when()} would be used 
 	 */
 	String inactivateWhen() default "";
 }

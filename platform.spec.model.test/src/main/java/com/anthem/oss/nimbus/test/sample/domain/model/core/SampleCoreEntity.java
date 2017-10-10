@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.test.sample.domain.model;
+package com.anthem.oss.nimbus.test.sample.domain.model.core;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -13,6 +13,7 @@ import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ActivateConditional;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ActivateConditionals;
+import com.anthem.oss.nimbus.core.domain.definition.extension.Audit;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity.IdString;
 
 import lombok.Getter;
@@ -32,7 +33,17 @@ public class SampleCoreEntity extends IdString {
 	private String attr_String;
 	
 	private int attr_int;
+	
 	private Integer attr_Integer;
+
+	@Audit(SampleCoreAuditEntry.class)
+	private String audit_String;
+
+	@Audit(SampleCoreAuditEntry.class)
+	private Integer audit_Integer;
+	
+	@Audit(SampleCoreAuditEntry.class)
+	private String unmapped_String;
 	
 	private Date attr_Date;
 	private LocalDate attr_LocalDate;
@@ -62,4 +73,7 @@ public class SampleCoreEntity extends IdString {
 	private String q3;
 	private SampleCoreNestedEntity q3Level1;
 	private SampleCoreNestedEntity q3Level2;
+	
+	private SampleCoreLevel1_Entity level1;
+
 }

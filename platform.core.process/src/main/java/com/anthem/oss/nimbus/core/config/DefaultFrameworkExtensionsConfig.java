@@ -7,7 +7,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
-import com.anthem.oss.nimbus.core.domain.model.state.notification.ActivateConditionalNotificationHandler;
+import com.anthem.oss.nimbus.core.domain.model.state.extension.ActivateConditionalStateEventHandler;
+import com.anthem.oss.nimbus.core.domain.model.state.extension.AuditStateChangeHandler;
 
 /**
  * @author Soham Chakravarti
@@ -17,7 +18,12 @@ import com.anthem.oss.nimbus.core.domain.model.state.notification.ActivateCondit
 public class DefaultFrameworkExtensionsConfig {
 
 	@Bean
-	public ActivateConditionalNotificationHandler extensionActivateConditionalHandler(BeanResolverStrategy beanResolver) {
-		return new ActivateConditionalNotificationHandler(beanResolver);
+	public ActivateConditionalStateEventHandler extensionActivateConditionalHandler(BeanResolverStrategy beanResolver) {
+		return new ActivateConditionalStateEventHandler(beanResolver);
+	}
+
+	@Bean
+	public AuditStateChangeHandler extensionAuditStateChangeHandler(BeanResolverStrategy beanResolver) {
+		return new AuditStateChangeHandler(beanResolver);
 	}
 }

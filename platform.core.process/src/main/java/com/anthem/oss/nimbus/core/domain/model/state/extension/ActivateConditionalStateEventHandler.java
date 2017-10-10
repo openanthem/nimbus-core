@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state.notification;
+package com.anthem.oss.nimbus.core.domain.model.state.extension;
 
 import java.util.EnumSet;
 import java.util.Optional;
@@ -22,11 +22,11 @@ import com.anthem.oss.nimbus.core.domain.model.state.event.StateEventHandlers.On
  * @author Soham Chakravarti
  *
  */
-public class ActivateConditionalNotificationHandler implements OnStateLoadHandler<ActivateConditional>, OnStateChangeHandler<ActivateConditional> {
+public class ActivateConditionalStateEventHandler implements OnStateLoadHandler<ActivateConditional>, OnStateChangeHandler<ActivateConditional> {
 
 	private ExpressionEvaluator expressionEvaluator;
 	
-	public ActivateConditionalNotificationHandler(BeanResolverStrategy beanResolver) {
+	public ActivateConditionalStateEventHandler(BeanResolverStrategy beanResolver) {
 		this.expressionEvaluator = beanResolver.get(ExpressionEvaluator.class);
 	}
 	

@@ -9,8 +9,8 @@ import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.definition.Repo.Cache;
 import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
-import com.anthem.oss.nimbus.core.entity.task.AssignmentTask;
-import com.anthem.oss.nimbus.test.sample.domain.model.SampleCoreAssociatedEntity;
+//AC12974@bitbucket.anthem.com/scm/nim/anthm-internal-oss-backend.git
+import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreAssociatedEntity;
 
 import lombok.Getter;
 import lombok.Setter;

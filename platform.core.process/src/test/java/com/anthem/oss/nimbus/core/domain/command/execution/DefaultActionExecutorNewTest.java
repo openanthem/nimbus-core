@@ -25,8 +25,8 @@ import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
 import com.anthem.oss.nimbus.core.AbstractFrameworkIngerationPersistableTests;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
-import com.anthem.oss.nimbus.test.sample.domain.model.SampleCoreEntity;
- 
+import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreEntity;
+
 import test.com.anthem.nimbus.platform.utils.ExtractResponseOutputUtils;
 import test.com.anthem.nimbus.platform.utils.MockHttpRequestBuilder;
  

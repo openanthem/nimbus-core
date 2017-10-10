@@ -25,12 +25,21 @@ public class MappedDefaultListElemParamState<E, M> extends DefaultListElemParamS
 	
 	@JsonIgnore final private Notification.Consumer<M> delegate;
 	
+	public static class MappedLeafElemState<E, M> extends MappedDefaultListElemParamState<E, M> implements LeafParam<E> {
+		private static final long serialVersionUID = 1L;
+		
+		public MappedLeafElemState(ListModel<E> parentModel, ParamConfig<E> config, EntityStateAspectHandlers provider, String elemId) {
+			super(parentModel, config, provider, elemId);
+		}
+	}
+	
+	
 	@SuppressWarnings("unchecked")
 	public MappedDefaultListElemParamState(ListModel<E> parentModel, ParamConfig<E> config, EntityStateAspectHandlers provider, String elemId) {
 		this(parentModel, config, provider, (ListElemParam<M>)findOrCreateMapsTo(parentModel, elemId));
 	}
 	
-	public MappedDefaultListElemParamState(ListModel<E> parentModel, ParamConfig<E> config, EntityStateAspectHandlers provider, ListElemParam<M> mapsTo) {
+	private MappedDefaultListElemParamState(ListModel<E> parentModel, ParamConfig<E> config, EntityStateAspectHandlers provider, ListElemParam<M> mapsTo) {
 		super(parentModel, config, provider, mapsTo.getElemId());
 		
 		// check if @Path is configured to refer to nested element model's param

@@ -31,6 +31,7 @@ import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Outp
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.Execution;
 import com.anthem.oss.nimbus.core.domain.definition.Execution.Config;
+import com.anthem.oss.nimbus.core.domain.definition.Execution.KeyValue;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ExecutionModel;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
@@ -188,6 +189,10 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			}
 			public String col() {
 				return "";
+			}
+			@Override
+			public KeyValue[] kv() {
+				return new KeyValue[]{};
 			}
 			@Override
 		    public Class<? extends Annotation> annotationType() {

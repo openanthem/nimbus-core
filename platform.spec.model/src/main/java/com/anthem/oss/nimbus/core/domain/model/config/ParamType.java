@@ -34,6 +34,8 @@ public class ParamType implements Serializable {
 	
 	final private Class<?> referredClass;
 	
+	final private boolean array;
+	
 	public <T> Nested<T> findIfNested() {
 		return null;
 	}
@@ -53,7 +55,7 @@ public class ParamType implements Serializable {
 		private static final long serialVersionUID = 1L;
 
 		public Field(boolean isArray, String name, Class<?> referredClass) {
-			super(false, resolveName(isArray, name), referredClass);
+			super(false, resolveName(isArray, name), referredClass, isArray);
 		}
 		
 		private static String resolveName(boolean isArray, String name) {
@@ -70,7 +72,7 @@ public class ParamType implements Serializable {
 		private ModelConfig<T> model;
 		
 		public Nested(String name, Class<?> referredClass) {
-			super(true, name, referredClass);
+			super(true, name, referredClass, false);
 		}
 		
 		@SuppressWarnings("unchecked")
