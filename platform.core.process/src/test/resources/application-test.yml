@@ -33,6 +33,7 @@ domain:
       - com.anthem.oss.nimbus.test.sample.domain.model.core
       - com.anthem.oss.nimbus.test.sample.domain.model.ui
       - com.anthem.nimbus.platform.core.bpm
+      - com.anthem.nimbus.platform.core.rules
     typeClassMappings:
       java.time.LocalDate : 
         date
