@@ -31,8 +31,8 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityState.MappedTransient
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.integration.websocket.ParamEventAMQPListener;
-import com.anthem.oss.nimbus.test.sample.domain.model.SampleCoreEntity;
-import com.anthem.oss.nimbus.test.sample.domain.model.SampleCoreNestedEntity;
+import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreEntity;
+import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreNestedEntity;
 import com.anthem.oss.nimbus.test.sample.domain.model.ui.VRSampleViewRootEntity;
 import com.anthem.oss.nimbus.test.sample.domain.model.ui.VPSampleViewPageBlue.Section_ConvertedNestedEntity;
 import com.anthem.oss.nimbus.test.sample.domain.model.ui.VPSampleViewPageGreen.ConvertedNestedEntity;

@@ -30,7 +30,7 @@ public class DefaultEventHandlerConfig implements EventHandlerConfig {
 	private Map<Annotation, OnStateChangeHandler<Annotation>> onStateChangeHandlers;
 	
 	public boolean isEmpty() {
-		return MapUtils.isEmpty(getOnStateLoadHandlers()) ||
+		return MapUtils.isEmpty(getOnStateLoadHandlers()) &&
 				MapUtils.isEmpty(getOnStateChangeHandlers());
  	}
 	

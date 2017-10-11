@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -24,7 +23,6 @@ import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.execution.ValidationResult;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
-import com.anthem.oss.nimbus.core.domain.model.config.AnnotationConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.EventHandlerConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
@@ -62,25 +60,33 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 //	@JsonIgnore M7
 	private Model<StateContextEntity> contextModel;
 	
-//	public StateContextEntity getLeafContextModel() {
-//		return Optional.ofNullable(getContextModel())
-//					.map(Model::getLeafState)
-//					.orElse(null);
-//	}
-	
 	@JsonIgnore
 	private boolean active = true;
-
+	
 	/* TODO: Weak reference was causing the values to be GC-ed even before the builders got to building 
 	 * Allow referenced subscribers to get garbage collected in scenario when same core is referenced by multiple views. 
 	 * Life span of core may be longer than cumulative views possibly leading to memory leak.
 	 */
 	//@JsonIgnore @Getter(AccessLevel.PRIVATE)
 	//final private List<WeakReference<MappedParam<?, T>>> weakReferencedEventSubscribers = new ArrayList<>();
-	@JsonIgnore List<MappedParam<?, T>> eventSubscribers = new ArrayList<>(); 
+	
+	@JsonIgnore 
+	List<MappedParam<?, T>> eventSubscribers = new ArrayList<>(); 
 	
 	
 	@JsonIgnore final private PropertyDescriptor propertyDescriptor;
+
+	@JsonIgnore
+	private T transientOldState;
+
+	
+	public static class LeafState<T> extends DefaultParamState<T> implements LeafParam<T> {
+		private static final long serialVersionUID = 1L;
+		
+		public LeafState(Model<?> parentModel, ParamConfig<T> config, EntityStateAspectHandlers aspectHandlers) {
+			super(parentModel, config, aspectHandlers);
+		}
+	}
 	
 	public DefaultParamState(Model<?> parentModel, ParamConfig<T> config, EntityStateAspectHandlers aspectHandlers) {
 		super(config, aspectHandlers);
@@ -164,35 +170,20 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 
 	@Override
 	public void fireRules() {
-		// self
-		Optional.ofNullable(getRulesRuntime())
-			.ifPresent(rt->rt.fireRules(this));
-		
-		// self: on state change
-		
+//		// self
+//		Optional.ofNullable(getRulesRuntime())
+//			.ifPresent(rt->rt.fireRules(this));
+//		
+//		// self: on state change
+//		
 		// nested 
 		Optional.ofNullable(findIfNested())
 			.ifPresent(Model::fireRules);
-		
-		// parent
-		Optional.ofNullable(getParentModel())
-			.filter(m->!m.isRoot())
-			.ifPresent(Model::fireRules);
-	}
-	
-	//TODO Soham: make generic based on notification event handlers
-	private void onStateChangeRule2(Action action) {
-		List<AnnotationConfig> ruleAnnotations = getConfig().getRules();
-		if(CollectionUtils.isEmpty(ruleAnnotations))
-			return;
-		
-		ruleAnnotations.stream()
-			.forEach(ac->{
-				OnStateChangeHandler<Annotation> handler = getAspectHandlers().getBeanResolver().find(OnStateChangeHandler.class, ac.getAnnotation().annotationType());
-				//handler.handle(this, action, ac.getAnnotation());
-				handler.handle(ac.getAnnotation(), resolveRuntime().getTxnContext(), new ParamEvent(action, this));
-			});
-		
+//		
+//		// parent
+//		Optional.ofNullable(getParentModel())
+//			.filter(m->!m.isRoot())
+//			.ifPresent(Model::fireRules);
 	}
 	
 	/**
@@ -244,14 +235,22 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	
 	@Override
-	final public Action setState(T state) {
+	public final Action setState(T state) {
 		return changeStateTemplate((rt, h)->affectSetStateChange(state, rt, h));
 	}
 	
-	private Action affectSetStateChange(T state, ExecutionRuntime execRt, Holder<Action> h) {
-		state = preSetState(state);			
+	protected final Action affectSetStateChange(T state, ExecutionRuntime execRt, Holder<Action> h) {
+		state = preSetState(state);		
+		boolean isLeaf = isLeaf();
+		final T localPotentialOldState = isLeaf ? getState() : null;
+		
 		Action a = getAspectHandlers().getParamStateGateway()._set(this, state); 
+		
 		if(a!=null) {
+			
+			if(isLeaf)
+				setTransientOldState(localPotentialOldState);
+			
 			// hook up on state change events
 			EventHandlerConfig eventHandlerConfig = getConfig().getEventHandlerConfig();
 			if(eventHandlerConfig!=null && eventHandlerConfig.getOnStateChangeAnnotations()!=null) {
@@ -272,7 +271,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		postSetState(a, state);
 		return a;
 	}
-	
+
 	
 	protected T preSetState(T state) {
 		return state;

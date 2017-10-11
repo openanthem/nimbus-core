@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state;
+package com.anthem.oss.nimbus.core.domain.model.state.extension;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -11,11 +11,21 @@ import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
 
+import com.anthem.oss.nimbus.core.TestFrameworkIntegrationScenariosApplication;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ExecutionModel;
+import com.anthem.oss.nimbus.core.domain.model.state.ExecutionTxnContext;
+import com.anthem.oss.nimbus.core.domain.model.state.ParamEvent;
+import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.BaseStateEventListener;
 import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreEntity;
@@ -24,7 +34,10 @@ import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreEntity;
  * @author Soham Chakravarti
  *
  */
-public abstract class ActivateParamBaseTest {
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes=TestFrameworkIntegrationScenariosApplication.class)
+@ActiveProfiles("test")
+public abstract class AbstractStateEventHandlerTests {
 
 	@Autowired QuadModelBuilder quadModelBuilder;
 	
@@ -36,23 +49,21 @@ public abstract class ActivateParamBaseTest {
 	
 	protected BaseStateEventListener _stateEventListener;
 	
-	protected static Command createCommand() {
+	@Autowired protected MongoOperations mongo;
+	
+	@Autowired protected MongoTemplate mt;
+	
+	
+	protected Command createCommand() {
 		Command cmd = CommandBuilder.withUri("/hooli/thebox/p/sample_core/_new").getCommand();
 		return cmd;
 	}
-	
-	protected abstract String getSourceParamPath();
-
-	protected abstract String getTargetParamPath();
-	
+		
 	@Before
 	public void before() {
 		_cmd = createCommand();
 		_q = quadModelBuilder.build(_cmd);
 		assertNotNull(_q);
-		
-		assertNotNull(_q.getRoot().findParamByPath(getSourceParamPath()));
-		assertNotNull(_q.getRoot().findParamByPath(getTargetParamPath()));
 		
 		_q.getRoot().getExecutionRuntime().onStartCommandExecution(_cmd);
 	}
@@ -61,6 +72,9 @@ public abstract class ActivateParamBaseTest {
 	public void after() {
 		_q.getRoot().getExecutionRuntime().onStopCommandExecution(_cmd);
 		_q.getRoot().getExecutionRuntime().getEventDelegator().removeTxnScopedListener(_stateEventListener);
+		
+		// db cleanup
+		mt.getDb().dropDatabase();
 	}
 	
 	protected void addListener() {
