@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.Executors;
 
 import javax.annotation.PostConstruct;
 
@@ -19,6 +20,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
+import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
 import com.anthem.oss.nimbus.core.InvalidArgumentException;
 import com.anthem.oss.nimbus.core.domain.command.Behavior;
 import com.anthem.oss.nimbus.core.domain.command.Command;
@@ -127,7 +129,8 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		cmdMsg.getCommand().validate();
 	}
 	
-	protected List<MultiOutput> executeConfig(ExecutionContext eCtx, Param<?> cmdParam, List<Execution.Config> execConfigs) {
+	@Override
+	public List<MultiOutput> executeConfig(ExecutionContext eCtx, Param<?> cmdParam, List<Execution.Config> execConfigs) {
 		final CommandMessage cmdMsg = eCtx.getCommandMessage();
 		boolean isPayloadUsed = false;
 		
@@ -147,12 +150,28 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 				CommandMessage configCmdMsg = new CommandMessage(configExecCmd, resolvePayload(cmdMsg, configExecCmd, isPayloadUsed));
 				
 				// execute & add output to mOutput
-				MultiOutput configOutput = execute(configCmdMsg);
+				MultiOutput configOutput = executeConfig(eCtx.getCommandMessage().getCommand(), configCmdMsg);
+				
 				configExecOutputs.add(configOutput);
-	//			addMultiOutput(mOutput,configOutput);
+				// addMultiOutput(mOutput,configOutput);
 			}
 		});	
 		return configExecOutputs;
+	}
+	
+	private MultiOutput executeConfig(Command inputCmd, CommandMessage configCmdMsg) {
+		String inputDomainRootUri = inputCmd.buildUri(Type.DomainAlias);
+		String configDomainRootUri = configCmdMsg.getCommand().buildUri(Type.DomainAlias);
+		
+		if(StringUtils.equals(inputDomainRootUri, configDomainRootUri))
+			return execute(configCmdMsg);
+		
+		try {
+			return Executors.newSingleThreadExecutor().submit(()->execute(configCmdMsg)).get();
+			
+		} catch (Exception ex) {
+			throw new FrameworkRuntimeException("Failed to execute config command in asyn-wait thread for configCmdMsg: "+configCmdMsg+" originating from inputCmd: "+inputCmd, ex);
+		}
 	}
 	
 	private void buildAndExecuteColExecConfig(ExecutionContext eCtx, Param<?> cmdParam, Config ec) {

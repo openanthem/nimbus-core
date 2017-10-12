@@ -17,6 +17,8 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import com.anthem.oss.nimbus.core.domain.command.Command;
+import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 
 /**
@@ -30,6 +32,12 @@ public class ActivateParamActivateDeactivateTest extends AbstractStateEventHandl
 	private static final String CORE_PARAM_PATH_q1Level1 = "/sample_core/q1Level1";
 	private static final String CORE_PARAM_PATH_q1Level1_nested_attr_String = CORE_PARAM_PATH_q1Level1 + "/nested_attr_String";
 
+	@Override
+	protected Command createCommand() {
+		Command cmd = CommandBuilder.withUri("/hooli/thebox/p/sample_view/_new").getCommand();
+		return cmd;
+	}
+	
 	protected String getSourceParamPath() {
 	 	return CORE_PARAM_PATH_q1;
 	}
