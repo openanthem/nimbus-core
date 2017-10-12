@@ -30,11 +30,13 @@ import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Input;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
+import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.definition.Execution;
 import com.anthem.oss.nimbus.core.domain.definition.Execution.Config;
 import com.anthem.oss.nimbus.core.domain.definition.Execution.KeyValue;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
+import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ExecutionModel;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
@@ -57,6 +59,8 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 	
 	private ExecutionContextLoader loader;
 	
+	private DomainConfigBuilder domainConfigBuilder;
+	
 	private static final ThreadLocal<String> cmdScopeInThread = new ThreadLocal<>();
 	
 	public DefaultCommandExecutorGateway(BeanResolverStrategy beanResolver) {
@@ -69,6 +73,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 	public void initDependencies() {
 		this.loader = getBeanResolver().get(ExecutionContextLoader.class);
 		this.pathVariableResolver = getBeanResolver().get(CommandPathVariableResolver.class);
+		this.domainConfigBuilder = getBeanResolver().get(DomainConfigBuilder.class);
 	}
 
 	@Override
@@ -160,10 +165,27 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 	}
 	
 	private MultiOutput executeConfig(Command inputCmd, CommandMessage configCmdMsg) {
-		String inputDomainRootUri = inputCmd.buildUri(Type.DomainAlias);
-		String configDomainRootUri = configCmdMsg.getCommand().buildUri(Type.DomainAlias);
+		final String inputDomainRootAlias = inputCmd.buildAlias(Type.DomainAlias);
+	
 		
-		if(StringUtils.equals(inputDomainRootUri, configDomainRootUri))
+		String configDomainAlias = configCmdMsg.getCommand().getRootDomainAlias();
+		ModelConfig<?> configDomainModelConfig = domainConfigBuilder.getRootDomainOrThrowEx(configDomainAlias);
+		
+		
+		String configDomainRootAlias = configCmdMsg.getCommand().buildAlias(Type.DomainAlias);
+		boolean	matched = StringUtils.equals(inputDomainRootAlias, configDomainRootAlias);
+		
+		if(!matched && configDomainModelConfig.isMapped()) {
+			String mapsToConfigDomainAlias = configDomainModelConfig.findIfMapped().getMapsTo().getAlias();
+			
+			String mappedConfigPlatformUri = configCmdMsg.getCommand().buildAlias(Type.PlatformMarker);
+			configDomainRootAlias = mappedConfigPlatformUri + "/" + mapsToConfigDomainAlias;
+			
+			matched = StringUtils.equals(inputDomainRootAlias, configDomainRootAlias);
+		} 
+		
+		
+		if(matched)
 			return execute(configCmdMsg);
 		
 		try {
@@ -172,7 +194,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		} catch (Exception ex) {
 			throw new FrameworkRuntimeException("Failed to execute config command in asyn-wait thread for configCmdMsg: "+configCmdMsg+" originating from inputCmd: "+inputCmd, ex);
 		}
-	}
+	}	
 	
 	private void buildAndExecuteColExecConfig(ExecutionContext eCtx, Param<?> cmdParam, Config ec) {
 		List<Execution.Config> colExecConfigs = new ArrayList<>();
