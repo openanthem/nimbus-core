@@ -14,9 +14,12 @@ import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
  */
 public abstract class AbstractConditionalStateEventHandler {
 
+	protected BeanResolverStrategy beanResolver;
+	
 	protected ExpressionEvaluator expressionEvaluator;
 	
 	public AbstractConditionalStateEventHandler(BeanResolverStrategy beanResolver) {
+		this.beanResolver = beanResolver;
 		this.expressionEvaluator = beanResolver.get(ExpressionEvaluator.class);
 	}
 	

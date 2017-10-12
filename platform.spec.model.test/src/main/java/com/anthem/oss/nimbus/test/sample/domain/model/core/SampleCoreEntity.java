@@ -9,11 +9,13 @@ import java.util.List;
 
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
+import com.anthem.oss.nimbus.core.domain.definition.Execution.Config;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ActivateConditional;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ActivateConditionals;
 import com.anthem.oss.nimbus.core.domain.definition.extension.Audit;
+import com.anthem.oss.nimbus.core.domain.definition.extension.ConfigConditional;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity.IdString;
 
 import lombok.Getter;
@@ -75,5 +77,8 @@ public class SampleCoreEntity extends IdString {
 	private SampleCoreNestedEntity q3Level2;
 	
 	private SampleCoreLevel1_Entity level1;
+	
+	@ConfigConditional(when="state == 'Y'", config=@Config(url="/p/sample_core_audit_history/_new?fn=_initEntity&target=/domainRootRefId&json=\"<!/id!>\""))
+	private String conditional_config_attr;
 
 }
