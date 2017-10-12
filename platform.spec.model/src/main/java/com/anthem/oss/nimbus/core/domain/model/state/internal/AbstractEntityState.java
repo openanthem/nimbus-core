@@ -130,6 +130,8 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 			return resp;
 		} finally {
 			if(execRt.isLocked(lockId)) {
+				logit.trace(()->"Executing within changeStateTemplate->finally block with lockId: "+lockId+" on param: "+this);
+				
 				// fire rules at root level upon completion of all set actions
 				if(h.getState()!=null) 
 					getRootExecution().fireRules();
@@ -146,8 +148,10 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 				
 				// unlock
 				boolean b = execRt.tryUnlock(lockId);
-				if(!b)
-					throw new FrameworkRuntimeException("Failed to release lock acquired during setState of: "+getPath()+" with acquired lockId: "+lockId); 
+				if(!b) {
+					logit.warn(()->"Unable to gracefully unlock on param: "+this+" with lockId: "+lockId+" in thread: "+Thread.currentThread());
+					//==throw new FrameworkRuntimeException("Failed to release lock acquired during setState of: "+getPath()+" with acquired lockId: "+lockId);
+				}
 			}
 			
 			if(h.getState()!=null && (this instanceof Notification.Producer)) {

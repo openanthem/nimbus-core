@@ -15,6 +15,7 @@ import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ExecutionModel;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.anthem.oss.nimbus.core.util.JustLogit;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionTxnContext;
 import com.anthem.oss.nimbus.core.domain.model.state.InvalidStateException;
@@ -42,6 +43,7 @@ public class DefaultExecutionRuntime implements ExecutionRuntime {
 	
 	private boolean isStarted;
 	
+	protected JustLogit logit = new JustLogit(this.getClass());
 	
 	private static final ThreadLocal<DefaultExecutionTxnContext> txnScopeInThread = new ThreadLocal<DefaultExecutionTxnContext>() {
 		@Override
@@ -81,6 +83,8 @@ public class DefaultExecutionRuntime implements ExecutionRuntime {
 		getTxnContext().setId(lockId);
 		
 		eventDelegator.onStartTxn(getTxnContext());
+		
+		logit.trace(()->"Started txn with lockId: "+lockId);
 	}
 	
 	public boolean isTxnStarted() {
@@ -94,7 +98,10 @@ public class DefaultExecutionRuntime implements ExecutionRuntime {
 		
 		eventDelegator.onStopTxn(getTxnContext());
 		
+		String lockId = getTxnContext().getId();
 		getTxnContext().setId(null);
+		
+		logit.trace(()->"Stopped txn with lockId: "+lockId);
 	}
 	
 	
