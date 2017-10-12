@@ -129,8 +129,15 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 				.orElse(null);
 	}
 	
+	private static final InheritableThreadLocal<String> TH_SESSION = new InheritableThreadLocal<String>() {
+		@Override
+		protected String initialValue() {
+			return RequestContextHolder.getRequestAttributes().getSessionId();
+		}
+	};
+	
 	private String getSessionKey(ExecutionContext eCtx) {
-		String sessionId = RequestContextHolder.getRequestAttributes().getSessionId();
+		String sessionId = TH_SESSION.get();
 		String ctxId = eCtx.getId();
 		
 		String key = ctxId +"_sessionId{"+sessionId+"}";
