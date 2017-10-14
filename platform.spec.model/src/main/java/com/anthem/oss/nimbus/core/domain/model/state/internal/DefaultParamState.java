@@ -241,7 +241,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	protected final Action affectSetStateChange(T state, ExecutionRuntime execRt, Holder<Action> h) {
 		state = preSetState(state);		
-		boolean isLeaf = isLeaf();
+		boolean isLeaf = isLeafOrCollectionWithLeafElems();
 		final T localPotentialOldState = isLeaf ? getState() : null;
 		
 		Action a = getAspectHandlers().getParamStateGateway()._set(this, state); 

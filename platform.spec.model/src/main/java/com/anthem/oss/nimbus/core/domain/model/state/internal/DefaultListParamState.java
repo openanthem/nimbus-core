@@ -11,7 +11,9 @@ import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.LeafParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
 import com.anthem.oss.nimbus.core.domain.model.state.InvalidStateException;
@@ -29,8 +31,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class DefaultListParamState<T> extends DefaultParamState<List<T>> implements ListParam<T> {
 	private static final long serialVersionUID = 1L;
 	
-	public DefaultListParamState(Model<?> parentModel, ParamConfig<List<T>> config, EntityStateAspectHandlers provider) {
-		super(parentModel, config, provider);
+	public static class LeafState<T> extends DefaultListParamState<T> implements LeafParam<List<T>> {
+		private static final long serialVersionUID = 1L;
+		
+		public LeafState(Model<?> parentModel, ParamConfig<List<T>> config, EntityStateAspectHandlers aspectHandlers) {
+			super(parentModel, config, aspectHandlers);
+		}
+	}
+	
+	public DefaultListParamState(Model<?> parentModel, ParamConfig<List<T>> config, EntityStateAspectHandlers aspectHandlers) {
+		super(parentModel, config, aspectHandlers);
 	}
 	
 	@Override

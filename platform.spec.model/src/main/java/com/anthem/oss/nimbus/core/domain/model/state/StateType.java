@@ -90,6 +90,10 @@ public class StateType implements Serializable {
 			return true;
 		}
 		
+		public boolean isLeafElements() {
+			return getConfig().findIfCollection().isLeafElements();
+		}
+		
 		@SuppressWarnings("unchecked")
 		@Override
 		public NestedCollection<P> findIfCollection() {

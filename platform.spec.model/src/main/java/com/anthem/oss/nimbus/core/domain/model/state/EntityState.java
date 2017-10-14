@@ -237,6 +237,10 @@ public interface EntityState<T> {
 			return getConfig().isLeaf();
 		}
 		
+		default boolean isLeafOrCollectionWithLeafElems() {
+			return isLeaf() || (isCollection() && findIfCollection().isLeafElements());
+		}
+		
 		default LeafParam<T> findIfLeaf() {
 			return null;
 		}
@@ -396,6 +400,10 @@ public interface EntityState<T> {
 		
 		default boolean isCollection() {
 			return true;
+		}
+		
+		default boolean isLeafElements() {
+			return getType().isLeafElements();
 		}
 		
 		@Override

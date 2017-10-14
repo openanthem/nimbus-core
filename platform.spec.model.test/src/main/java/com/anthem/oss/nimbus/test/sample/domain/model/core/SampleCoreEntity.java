@@ -50,8 +50,10 @@ public class SampleCoreEntity extends IdString {
 	private Date attr_Date;
 	private LocalDate attr_LocalDate;
 	
+	@Audit(SampleCoreAuditEntry.class)
 	private List<String> attr_list_String;
 	
+	@Audit(SampleCoreAuditEntry.class)
 	private String[] attr_array_String;
 	
 	private SampleCoreNestedEntity attr_NestedEntity;
