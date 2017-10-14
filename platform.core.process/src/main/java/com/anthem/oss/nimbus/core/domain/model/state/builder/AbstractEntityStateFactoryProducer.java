@@ -17,7 +17,6 @@ import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultListModelSt
 import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultListParamState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultModelState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultParamState;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultParamState.LeafState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultListElemParamState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultListElemParamState.MappedLeafElemState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultListModelState;
@@ -85,10 +84,12 @@ public abstract class AbstractEntityStateFactoryProducer {
 		@Override
 		public <P> DefaultParamState<P> instantiateParam(Param<?> mapsToParam, Model<?> parentModel, ParamConfig<P> paramConfig, EntityStateAspectHandlers aspectHandlers) {
 			if(paramConfig.getType().isCollection())
-				return new DefaultListParamState(parentModel, paramConfig, aspectHandlers);
+				return paramConfig.getType().findIfCollection().isLeafElements() 
+							? new DefaultListParamState.LeafState(parentModel, paramConfig, aspectHandlers) 
+									:  new DefaultListParamState(parentModel, paramConfig, aspectHandlers);
 			
 			return paramConfig.isLeaf() 
-					? new LeafState<>(parentModel, paramConfig, aspectHandlers) 
+					? new DefaultParamState.LeafState<>(parentModel, paramConfig, aspectHandlers) 
 							: new DefaultParamState<>(parentModel, paramConfig, aspectHandlers);
 		}
 	}
@@ -117,9 +118,11 @@ public abstract class AbstractEntityStateFactoryProducer {
 		
 		@Override
 		public <P> DefaultParamState<P> instantiateParam(Param<?> mapsToParam, Model<?> parentModel, ParamConfig<P> paramConfig, EntityStateAspectHandlers aspectHandlers) {
-			if(paramConfig.getType().isCollection()) {
-				return new MappedDefaultListParamState(mapsToParam.findIfCollection(), parentModel, paramConfig, aspectHandlers);
-			}
+			if(paramConfig.getType().isCollection())
+				return paramConfig.getType().findIfCollection().isLeafElements() 
+							? new MappedDefaultListParamState.LeafState(mapsToParam.findIfCollection(), parentModel, paramConfig, aspectHandlers)
+									: new MappedDefaultListParamState(mapsToParam.findIfCollection(), parentModel, paramConfig, aspectHandlers);
+			
 				
 			return paramConfig.isLeaf() 
 					? new MappedLeafState<>(mapsToParam, parentModel, paramConfig, aspectHandlers) 
