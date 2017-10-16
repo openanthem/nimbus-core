@@ -7,6 +7,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
@@ -115,6 +116,28 @@ public class ConfigConditionalStateChangeHandlerTest extends AbstractStateEventH
 	}
 	
 	// ---- REPEAT for view -----
+	@Test
+	public void t01v_condition_Y_exec() {
+		Param<String> cp = _q.getRoot().findParamByPath("/sample_core/for_mapped_state_change_attr");
+		Param<String> vp = _q.getRoot().findParamByPath("/sample_view/page_green/tile/for_mapped_state_change_attr");
+		
+		assertNotNull(cp);
+		assertNotNull(vp);
+		assertNull(cp.getState());
+		assertNull(vp.getState());
+		
+		// set core
+		final String K_val = "Y";
+		cp.setState(K_val);
+		assertSame(K_val, cp.getState());
+		assertSame(K_val, vp.getState());
+		
+		
+		List<AuditEntry> audit = mongo.findAll(AuditEntry.class, "sample_view_audit_history");
+		assertEquals(1, audit.size());
+		assertEquals(_q.getCore().getState().getId(), audit.get(0).getDomainRootRefId());
+	}
+	
 	@Test
 	public void t28_detached_domain_root() {
 		// test with value from main domain root
