@@ -5,11 +5,13 @@ package com.anthem.oss.nimbus.test.sample.domain.model.ui;
 
 import java.util.List;
 
+import com.anthem.oss.nimbus.core.domain.definition.Execution.Config;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Section;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Tile;
 import com.anthem.oss.nimbus.core.domain.definition.extension.Audit;
+import com.anthem.oss.nimbus.core.domain.definition.extension.ConfigConditional;
 import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreAuditEntry;
 import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreEntity;
 import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreLevel1_Entity;
@@ -51,6 +53,9 @@ public class VPSampleViewPageGreen {
 		@Path
 		private SampleCoreLevel1_Entity level1;
 		
+		@ConfigConditional(config=@Config(url="/p/sample_view_audit_history/_new?fn=_initEntity&target=/domainRootRefId&json=\"<!/.m/id!>\""))
+		@Path
+		private String for_mapped_state_change_attr;
     }
 	
 	@MapsTo.Type(SampleCoreEntity.class)

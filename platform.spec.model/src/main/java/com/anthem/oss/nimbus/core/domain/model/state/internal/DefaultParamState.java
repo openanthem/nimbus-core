@@ -277,7 +277,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	protected void postSetState(Action change, T state) {}
 
 	// TODO : move to runtime.eventDelegate
-	private static void onStateLoadEvent(Param<?> p) {
+	protected static void onStateLoadEvent(Param<?> p) {
 		EventHandlerConfig eventHandlerConfig = p.getConfig().getEventHandlerConfig();
 		if(eventHandlerConfig!=null && eventHandlerConfig.getOnStateLoadAnnotations()!=null) {
 			eventHandlerConfig.getOnStateLoadAnnotations().stream()
@@ -289,7 +289,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	
 	// TODO : move to runtime.eventDelegate
-	private static void onStateChangeEvent(ExecutionTxnContext txnCtx, Param<?> p, Action a) {
+	protected static void onStateChangeEvent(ExecutionTxnContext txnCtx, Param<?> p, Action a) {
 		EventHandlerConfig eventHandlerConfig = p.getConfig().getEventHandlerConfig();
 		if(eventHandlerConfig!=null && eventHandlerConfig.getOnStateChangeAnnotations()!=null) {
 			eventHandlerConfig.getOnStateChangeAnnotations().stream()
@@ -386,6 +386,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 			} else {
 				Optional.ofNullable(consumingParam.getParentModel()).ifPresent(m->m.instantiateOrGet());
 			}	
+			
+			onStateChangeEvent(resolveRuntime().getTxnContext(), consumingParam, event.getActionType().getAction());
 		}
 		
 	    protected void onEventNewModel(Notification<M> event) {
