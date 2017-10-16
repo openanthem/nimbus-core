@@ -44,6 +44,14 @@ public class CommandBuilder {
 		cb.handleUriAndParamsIfAny(absoluteUri);
 		return cb;
 	}
+	
+	public static CommandBuilder withDomainRelativePath(Command rootCmd, String domainRelPath) {
+		String rootDomainAlias = rootCmd.getRootDomainAlias();
+		String nestedDomainPath = StringUtils.removeStart(Constants.SEPARATOR_URI.code + rootDomainAlias, domainRelPath);
+		
+		String absoluteParamUri = rootCmd.getAbsoluteUri() + nestedDomainPath;
+		return withUri(absoluteParamUri);
+	}
 
 	public static CommandBuilder from(Command src, String replaceDomainRootAlias) {
 		Command tmpCmd = src.createRootDomainCommand();

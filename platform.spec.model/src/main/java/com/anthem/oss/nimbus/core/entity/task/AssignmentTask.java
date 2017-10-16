@@ -53,6 +53,8 @@ public class AssignmentTask extends AbstractEntity.IdString{
 	
 	private String entityId;
 	
+	private String parentId; // e.g. OrientationTask
+	
 	private String queueCode;
 	
 	private String recurrence;

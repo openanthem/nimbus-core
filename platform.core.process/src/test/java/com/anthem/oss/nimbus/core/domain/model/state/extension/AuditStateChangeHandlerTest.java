@@ -10,11 +10,13 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.drools.core.util.ArrayUtils;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -327,5 +329,77 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		assertFalse(mt.collectionExists("samepl_view_audit_history"));
 	}
 
+	@Test
+	public void t08_core_string_array() {
+		Param<String[]> cp = _q.getRoot().findParamByPath("/sample_core/attr_array_String");
+		assertNotNull(cp);
+		assertNull(cp.getState());
+		
+		assertTrue(cp.isLeaf());
+		assertNull(cp.findIfLeaf().getTransientOldState());
+		
+		assertNotNull(cp.getConfig().getEventHandlerConfig().findOnStateChangeHandler(
+				FieldUtils.getField(SampleCoreEntity.class, "attr_array_String", true).getAnnotation(Audit.class)));
+		
+		
+		// change value
+		final String K_arr[] = new String[]{"A", "B", "C @"+new Date()};
+		cp.setState(K_arr);
+		assertSame(K_arr, cp.getState());
+		
+		String coreRefId = _q.getCore().getState().getId();
+		assertNotNull(coreRefId);
+		
+		List<AuditEntry> audit = mongo.findAll(AuditEntry.class, "sample_core_audit_history");
+		assertEquals(1, audit.size());
+		
+		assertEquals("sample_core", audit.get(0).getDomainRootAlias());
+		assertEquals(coreRefId, audit.get(0).getDomainRootRefId());
+		
+		// mongo stores the array in JSON and resurrects back as ArrayList. 
+		// Non-consequential for consumers interacting via JSON, such as UI-client or WS-client  
+		assertTrue(ArrayUtils.equals(K_arr, ((List<String>)audit.get(0).getNewValue()).toArray()));
+		
+		assertEquals(null, audit.get(0).getOldValue());
+		assertEquals("/sample_core/attr_array_String", audit.get(0).getPropertyPath());
+		assertEquals("array-string", audit.get(0).getPropertyType());
+	}
 	
+	@Test
+	public void t09_core_string_list() {
+
+		Param<List<String>> cp = _q.getRoot().findParamByPath("/sample_core/attr_list_String");
+		assertNotNull(cp);
+		assertNull(cp.getState());
+		
+		assertTrue(cp.isLeafOrCollectionWithLeafElems());
+		assertNull(cp.findIfLeaf().getTransientOldState());
+		
+		assertNotNull(cp.getConfig().getEventHandlerConfig().findOnStateChangeHandler(
+				FieldUtils.getField(SampleCoreEntity.class, "attr_list_String", true).getAnnotation(Audit.class)));
+		
+		
+		// change value
+		final List<String> K_list = Arrays.asList(new String[]{"A", "B", "C @"+new Date()});
+		cp.setState(K_list);
+		assertTrue(CollectionUtils.isEqualCollection(K_list, cp.getState()));
+		
+		String coreRefId = _q.getCore().getState().getId();
+		assertNotNull(coreRefId);
+		
+		List<AuditEntry> audit = mongo.findAll(AuditEntry.class, "sample_core_audit_history");
+		assertEquals(1, audit.size());
+		
+		assertEquals("sample_core", audit.get(0).getDomainRootAlias());
+		assertEquals(coreRefId, audit.get(0).getDomainRootRefId());
+		
+		// mongo stores the array in JSON and resurrects back as ArrayList. 
+		// Non-consequential for consumers interacting via JSON, such as UI-client or WS-client  
+		assertTrue(CollectionUtils.isEqualCollection(K_list, (List<String>)audit.get(0).getNewValue()));
+		
+		assertEquals(null, audit.get(0).getOldValue());
+		assertEquals("/sample_core/attr_list_String", audit.get(0).getPropertyPath());
+		assertEquals("ArrayList", audit.get(0).getPropertyType());
+	
+	}
 }
