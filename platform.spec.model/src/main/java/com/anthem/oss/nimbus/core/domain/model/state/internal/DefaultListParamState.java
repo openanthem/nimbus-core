@@ -116,7 +116,7 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 			if(getNestedCollectionModel().templateParams().isNullOrEmpty()) 
 				return;
 			
-			changeStateTemplate((execRt, h) -> {
+			changeStateTemplate((execRt, h, lockId) -> {
 				// change state
 				boolean result = affectClearChange(propagateToMapsTo);
 				
@@ -155,7 +155,7 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 		
 		return rLockTemplate.execute(()->{
 			
-			return changeStateTemplate((rt, h) -> {
+			return changeStateTemplate((rt, h, lockId) -> {
 				return affectRemoveChange(pElem, getRootExecution().getExecutionRuntime(), true);
 			});
 		});
@@ -261,7 +261,7 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 		final LockTemplate rLockTemplate = isMapped() ? findIfMapped().getMapsTo().getLockTemplate() : getLockTemplate();
 		
 		return rLockTemplate.execute(()->{
-			return changeStateTemplate((rt, h)->affectAddChange(rt));
+			return changeStateTemplate((rt, h, lockId)->affectAddChange(rt));
 		});
 	} 
 	
@@ -324,7 +324,7 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 	
 	@Override
 	public boolean add(ListElemParam<T> pColElem) {
-		return changeStateTemplate((rt, h)->{
+		return changeStateTemplate((rt, h, lockId)->{
 			List<T> list = getNestedCollectionModel().instantiateOrGet();
 			
 			// add

@@ -82,5 +82,8 @@ public class SampleCoreEntity extends IdString {
 	
 	@ConfigConditional(when="state == 'Y'", config=@Config(url="/p/sample_core_audit_history/_new?fn=_initEntity&target=/domainRootRefId&json=\"<!/id!>\""))
 	private String conditional_config_attr;
+	
+	@ConfigConditional(config=@Config(url="/p/sample_core_audit_history/_new?fn=_initEntity&target=/domainRootRefId&json=\"<!/id!>\""))
+	private List<String> conditional_config_attr_list_String;
 
 }

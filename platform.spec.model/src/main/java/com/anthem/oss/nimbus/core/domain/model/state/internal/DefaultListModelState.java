@@ -43,7 +43,7 @@ public class DefaultListModelState<T> extends DefaultModelState<List<T>> impleme
 
 	@Override
 	public List<T> instantiateAndSet() {
-		return changeStateTemplate((execRt, h)->{
+		return changeStateTemplate((execRt, h, lockId)->{
 			clear();
 			
 			List<T> newInstance =  super.instantiateAndSet();

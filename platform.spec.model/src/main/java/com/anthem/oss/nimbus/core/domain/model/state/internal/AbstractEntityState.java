@@ -114,7 +114,7 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 
 	@FunctionalInterface
 	public static interface ChangeStateCallback<R> {
-		public R affectChange(ExecutionRuntime execRt, Holder<Action> h);
+		public R affectChange(ExecutionRuntime execRt, Holder<Action> h, String localLockId);
 	}
 
 	final protected <R> R changeStateTemplate(ChangeStateCallback<R> cb) {
@@ -122,7 +122,7 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 		String lockId = execRt.tryLock();
 		final Holder<Action> h = new Holder<>();
 		try {
-			R resp = cb.affectChange(execRt, h);
+			R resp = cb.affectChange(execRt, h, lockId);
 			
 			// fire rules if available at this param level
 			//fireRules();

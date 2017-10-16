@@ -6,17 +6,23 @@ package com.anthem.oss.nimbus.core.domain.model.state.extension;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
+import java.util.Date;
 import java.util.List;
 
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
+import org.springframework.util.CollectionUtils;
 
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.entity.audit.AuditEntry;
+
 
 /**
  * @author Soham Chakravarti
@@ -55,7 +61,6 @@ public class ConfigConditionalStateChangeHandlerTest extends AbstractStateEventH
 		
 		List<AuditEntry> audit = mongo.findAll(AuditEntry.class, "sample_core_audit_history");
 		assertEquals(1, audit.size());
-		
 		assertEquals(_q.getCore().getState().getId(), audit.get(0).getDomainRootRefId());
 	}
 	
@@ -70,7 +75,23 @@ public class ConfigConditionalStateChangeHandlerTest extends AbstractStateEventH
 	
 	@Test
 	public void t03c_any_change_exec() {
+		ListParam<String> cp = _q.getRoot().findParamByPath("/sample_core/conditional_config_attr_list_String").findIfCollection();
+		assertNotNull(cp);
+		assertNull(cp.getState());
+		assertFalse(mt.collectionExists("samepl_core_audit_history"));
 		
+		// set
+		final String K_elem1 = "1. elem @ "+ new Date();
+		cp.add(K_elem1);
+		
+		// entity validate
+		assertNotNull(cp.getState());
+		assertTrue(CollectionUtils.contains(cp.getState().iterator(), K_elem1));
+		
+		// db validate
+		List<AuditEntry> audit = mongo.findAll(AuditEntry.class, "sample_core_audit_history");
+		assertEquals(1, audit.size());
+		assertEquals(_q.getCore().getState().getId(), audit.get(0).getDomainRootRefId());
 	}
 	
 	@Test
