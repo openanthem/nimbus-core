@@ -29,6 +29,7 @@ import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
+import com.anthem.oss.nimbus.core.domain.model.state.ExecutionTxnContext;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification.ActionType;
 import com.anthem.oss.nimbus.core.domain.model.state.ParamEvent;
@@ -130,14 +131,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 			findIfNested().initState();
 		
 		// hook up on state load events
-		EventHandlerConfig eventHandlerConfig = getConfig().getEventHandlerConfig();
-		if(eventHandlerConfig!=null && eventHandlerConfig.getOnStateLoadAnnotations()!=null) {
-			eventHandlerConfig.getOnStateLoadAnnotations().stream()
-				.forEach(ac->{
-					OnStateLoadHandler<Annotation> handler = eventHandlerConfig.getOnStateLoadHandler(ac);
-					handler.handle(ac, this);
-				});
-		}
+		onStateLoadEvent(this);
+
 	}
 	
 //	TODO: Refactor with Weak reference implementation
@@ -236,10 +231,10 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	@Override
 	public final Action setState(T state) {
-		return changeStateTemplate((rt, h)->affectSetStateChange(state, rt, h));
+		return changeStateTemplate((rt, h, lockId)->affectSetStateChange(state, rt, h, lockId));
 	}
 	
-	protected final Action affectSetStateChange(T state, ExecutionRuntime execRt, Holder<Action> h) {
+	protected final Action affectSetStateChange(T state, ExecutionRuntime execRt, Holder<Action> h, String localLockId) {
 		state = preSetState(state);		
 		boolean isLeaf = isLeafOrCollectionWithLeafElems();
 		final T localPotentialOldState = isLeaf ? getState() : null;
@@ -252,13 +247,16 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 				setTransientOldState(localPotentialOldState);
 			
 			// hook up on state change events
-			EventHandlerConfig eventHandlerConfig = getConfig().getEventHandlerConfig();
-			if(eventHandlerConfig!=null && eventHandlerConfig.getOnStateChangeAnnotations()!=null) {
-				eventHandlerConfig.getOnStateChangeAnnotations().stream()
-					.forEach(ac->{
-						OnStateChangeHandler<Annotation> handler = eventHandlerConfig.getOnStateChangeHandler(ac);
-						handler.handle(ac, resolveRuntime().getTxnContext(), new ParamEvent(a, this));
-					});
+			onStateChangeEvent(resolveRuntime().getTxnContext(), this, a);
+			
+			// handle collection with leaf
+			if(isCollectionElem() && getParentModel().getAssociatedParam().isLeafOrCollectionWithLeafElems()) {
+				// publish only if current elem holds lock. 
+				// TODO: unhandled scenario if lock is acquired by another param, which is not self or listParent, and add is invoked..such as via rule 
+				if(localLockId!=null) {
+					Param<?> parentList = getParentModel().getAssociatedParam();
+					onStateChangeEvent(resolveRuntime().getTxnContext(), parentList, a);
+				}
 			}
 			
 			emitNotification(new Notification<>(this, ActionType._updateState, this));
@@ -278,6 +276,29 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	protected void postSetState(Action change, T state) {}
 
+	// TODO : move to runtime.eventDelegate
+	private static void onStateLoadEvent(Param<?> p) {
+		EventHandlerConfig eventHandlerConfig = p.getConfig().getEventHandlerConfig();
+		if(eventHandlerConfig!=null && eventHandlerConfig.getOnStateLoadAnnotations()!=null) {
+			eventHandlerConfig.getOnStateLoadAnnotations().stream()
+				.forEach(ac->{
+					OnStateLoadHandler<Annotation> handler = eventHandlerConfig.getOnStateLoadHandler(ac);
+					handler.handle(ac, p);
+				});
+		}
+	}
+	
+	// TODO : move to runtime.eventDelegate
+	private static void onStateChangeEvent(ExecutionTxnContext txnCtx, Param<?> p, Action a) {
+		EventHandlerConfig eventHandlerConfig = p.getConfig().getEventHandlerConfig();
+		if(eventHandlerConfig!=null && eventHandlerConfig.getOnStateChangeAnnotations()!=null) {
+			eventHandlerConfig.getOnStateChangeAnnotations().stream()
+				.forEach(ac->{
+					OnStateChangeHandler<Annotation> handler = eventHandlerConfig.getOnStateChangeHandler(ac);
+					handler.handle(ac, txnCtx, new ParamEvent(a, p));
+				});
+		}
+	}
 	
 	@JsonIgnore @Override
 	public ExecutionModel<?> getRootExecution() {
@@ -505,7 +526,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	
 	protected boolean toggleActivate(boolean to) {
-		return changeStateTemplate((rt, h)->{
+		return changeStateTemplate((rt, h, lockId)->{
 			boolean result = affectToggleActivate(to);
 			if(result)
 				h.setState(Action._update);
