@@ -19,6 +19,7 @@ import org.springframework.data.mongodb.core.query.Update;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
+import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
@@ -62,7 +63,9 @@ public class DefaultMongoModelRepository implements ModelRepository {
 		ParamConfig<?> pId = Optional.ofNullable(mConfig.getIdParam())
 								.orElseThrow(()->new InvalidConfigException("Persistable Entity: "+mConfig.getReferredClass()+" must be configured with @Id param."));
 		
-		String id = String.valueOf(idSequenceRepo.getNextSequenceId(mConfig.getAlias()));
+		Repo repo = mConfig.getRepo();
+		
+		String id = String.valueOf(idSequenceRepo.getNextSequenceId(repo != null && StringUtils.isNotBlank(repo.alias())?repo.alias():mConfig.getAlias()));
 		
 		PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(mConfig.getReferredClass(), pId.getCode());
 		beanHandler.setValue(pd, newState, id);

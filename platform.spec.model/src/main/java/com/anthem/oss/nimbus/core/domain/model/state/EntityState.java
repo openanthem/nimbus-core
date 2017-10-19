@@ -79,7 +79,7 @@ public interface EntityState<T> {
 		return null;
 	}
 	
-	interface Mapped<T, M> extends EntityState<T> {
+	public interface Mapped<T, M> extends EntityState<T> {
 		@Override
 		default boolean isMapped() {
 			return true;
@@ -91,7 +91,7 @@ public interface EntityState<T> {
 		EntityState<M> getMapsTo();
 	}
 	
-	interface ExecutionModel<T> extends Model<T> {
+	public interface ExecutionModel<T> extends Model<T> {
 		@Override
 		default boolean isRoot() {
 			return true;
@@ -119,7 +119,7 @@ public interface EntityState<T> {
 		}
 	}
 	
-	interface Model<T> extends EntityState<T> { 
+	public interface Model<T> extends EntityState<T> { 
 		
 		//@JsonIgnore 
 		@Override
@@ -169,7 +169,7 @@ public interface EntityState<T> {
 		
 	}
 	
-	interface MappedModel<T, M> extends Model<T>, Mapped<T, M> {
+	public interface MappedModel<T, M> extends Model<T>, Mapped<T, M> {
 		@Override
 		default MappedModel<T, M> findIfMapped() {
 			return this;
@@ -179,7 +179,7 @@ public interface EntityState<T> {
 		Model<M> getMapsTo();
 	}
 	
-	interface ListModel<T> extends Model<List<T>>, ListBehavior<T> {
+	public interface ListModel<T> extends Model<List<T>>, ListBehavior<T> {
 		@Override
 		default MappedListModel<T, ?> findIfMapped() {
 			return null;
@@ -208,7 +208,8 @@ public interface EntityState<T> {
 			return getElemConfig().getConfigId();
 		}
 	}
-	interface MappedListModel<T, M> extends ListModel<T>, MappedModel<List<T>, List<M>> {
+	
+	public interface MappedListModel<T, M> extends ListModel<T>, MappedModel<List<T>, List<M>> {
 		@Override
 		default MappedListModel<T, M> findIfMapped() {
 			return this;
@@ -217,7 +218,7 @@ public interface EntityState<T> {
 		ListModel<M> getMapsTo();
 	}
 	
-	interface Param<T> extends EntityState<T>, State<T>, Notification.Producer<T> {//, Notification.ObserveOn<MappedParam<?, T>, Param<T>> {
+	public interface Param<T> extends EntityState<T>, State<T>, Notification.Producer<T> {//, Notification.ObserveOn<MappedParam<?, T>, Param<T>> {
 		//@JsonIgnore 
 		@Override
 		ParamConfig<T> getConfig();
@@ -234,6 +235,10 @@ public interface EntityState<T> {
 		
 		default boolean isLeaf() {
 			return getConfig().isLeaf();
+		}
+		
+		default boolean isLeafOrCollectionWithLeafElems() {
+			return isLeaf() || (isCollection() && findIfCollection().isLeafElements());
 		}
 		
 		default LeafParam<T> findIfLeaf() {
@@ -296,7 +301,7 @@ public interface EntityState<T> {
 	
 	}
 	
-	interface LeafParam<T> extends Param<T> {
+	public interface LeafParam<T> extends Param<T> {
 	
 		@Override
 		default LeafParam<T> findIfLeaf() {
@@ -306,7 +311,7 @@ public interface EntityState<T> {
 		T getTransientOldState();
 	}
 	
-	interface MappedParam<T, M> extends Param<T>, Mapped<T, M>, Notification.Consumer<M> {
+	public interface MappedParam<T, M> extends Param<T>, Mapped<T, M>, Notification.Consumer<M> {
 		@Override
 		default MappedParam<T, M> findIfMapped() {
 			return this;
@@ -334,7 +339,7 @@ public interface EntityState<T> {
 		}
 	}
 	
-	interface MappedTransientParam<T, M> extends MappedParam<T, M> {
+	public interface MappedTransientParam<T, M> extends MappedParam<T, M> {
 		@Override
 		default boolean isTransient() {
 			return true;
@@ -358,7 +363,7 @@ public interface EntityState<T> {
 		void unassignMapsTo();
 	}
 	
-	interface ListBehavior<T> {
+	public interface ListBehavior<T> {
 		/*
 		boolean remove(Param<T> p);
 		Param<T> remove(int i);
@@ -384,7 +389,7 @@ public interface EntityState<T> {
 	}
 	
 	
-	interface ListParam<T> extends Param<List<T>>, ListBehavior<T> {
+	public interface ListParam<T> extends Param<List<T>>, ListBehavior<T> {
 		@Override
 		StateType.NestedCollection<T> getType();
 		
@@ -395,6 +400,10 @@ public interface EntityState<T> {
 		
 		default boolean isCollection() {
 			return true;
+		}
+		
+		default boolean isLeafElements() {
+			return getType().isLeafElements();
 		}
 		
 		@Override
@@ -409,7 +418,7 @@ public interface EntityState<T> {
 		
 	}
 	
-	interface MappedListParam<T, M> extends ListParam<T>, MappedParam<List<T>, List<M>> {
+	public interface MappedListParam<T, M> extends ListParam<T>, MappedParam<List<T>, List<M>> {
 		@JsonIgnore @Override
 		ListParam<M> getMapsTo();
 		
@@ -428,7 +437,7 @@ public interface EntityState<T> {
 		}
 	}
 	
-	interface ListElemParam<E> extends Param<E> {
+	public interface ListElemParam<E> extends Param<E> {
 		String getElemId();
 		
 		@JsonIgnore
@@ -454,7 +463,8 @@ public interface EntityState<T> {
 		
 		boolean remove();
 	}	
-	interface MappedListElemParam<E, M> extends ListElemParam<E>, MappedParam<E, M> {
+	
+	public interface MappedListElemParam<E, M> extends ListElemParam<E>, MappedParam<E, M> {
 //		@Override
 //		ListElemParam<M> getMapsTo();
 		
