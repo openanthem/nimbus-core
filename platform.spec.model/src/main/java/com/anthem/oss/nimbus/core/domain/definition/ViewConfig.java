@@ -198,6 +198,19 @@ public class ViewConfig {
 		boolean inplaceEdit() default false;
 		String inplaceEditType() default "";
 	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface Modal {
+		String alias() default "Modal";
+
+		Type type() default Type.dialog;
+
+		public enum Type {
+			dialog, slider
+		}
+	}
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
@@ -448,9 +461,17 @@ public class ViewConfig {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
+	public @interface GridContainer {
+		String alias() default "GridContainer";
+	}	
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
 	public @interface Grid {
 		String alias() default "Grid";
 		boolean onLoad() default false;
+		boolean expandableRows() default false;
 		boolean isTransient() default false;
 		String url() default "";
 		boolean rowSelection() default false;
