@@ -259,6 +259,12 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 				}
 			}
 			
+			// propagate state event change to parent nested model's associated param
+			Optional.ofNullable(getParentModel()).map(Model::getAssociatedParam).filter(Param::isNested).filter(p->!p.isCollection())
+			.ifPresent(mp->{
+				onStateChangeEvent(resolveRuntime().getTxnContext(), mp, a);
+			});
+			
 			emitNotification(new Notification<>(this, ActionType._updateState, this));
 			h.setState(a);
 			
