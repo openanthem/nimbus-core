@@ -3,6 +3,7 @@
  */
 package com.anthem.oss.nimbus.core.domain.model.state.extension;
 
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Optional;
 
@@ -45,12 +46,18 @@ public class ActivateConditionalStateEventHandler extends AbstractConditionalSta
 		boolean isTrue = evalWhen(onChangeParam, configuredAnnotation.when());
 		
 		// validate target param to activate
-		String targetPath = configuredAnnotation.targetPath();
+		String[] targetPaths = configuredAnnotation.targetPath();
 
-		Param<?> targetParam = Optional.ofNullable(onChangeParam.findParamByPath(targetPath))
-								.orElseThrow(()->new InvalidConfigException("Target parm lookup returned null for targetPath: "+targetPath+" on param: "+onChangeParam));
+		Arrays.asList(targetPaths).stream().forEach((targetPath) ->
+			handleInternal(onChangeParam,targetPath,isTrue));
 		
-		if(isTrue)
+	}
+	
+	protected void handleInternal(Param<?> onChangeParam, String targetPath, boolean evalWhen) {
+		Param<?> targetParam = Optional.ofNullable(onChangeParam.findParamByPath(targetPath))
+				.orElseThrow(()->new InvalidConfigException("Target parm lookup returned null for targetPath: "+targetPath+" on param: "+onChangeParam));
+
+		if(evalWhen)
 			targetParam.activate();
 		else
 			targetParam.deactivate();
