@@ -22,7 +22,7 @@ public final class Contents {
 	@Documented
 	@Retention(RUNTIME)
 	@Target(FIELD)
-	@RepeatContainer
+	//@RepeatContainer
 	public @interface Labels {
 
 		Label[]  value();
