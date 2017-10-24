@@ -3,9 +3,8 @@
  */
 package com.anthem.oss.nimbus.core.domain.model.state.internal;
 
+import java.util.Collections;
 import java.util.List;
-
-import org.springframework.data.annotation.Transient;
 
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
@@ -36,6 +35,13 @@ public class StateContextEntity {
 	
 	private Boolean active = true;
 	
-	@Transient
-	private List<ParamValue> values;
+//	@Transient
+//	private List<ParamValue> values;
+	
+	public List<ParamValue> getValues() {
+		return Collections.emptyList();
+	}
+	public void setValues(List<ParamValue> v) {
+		
+	}
 }
