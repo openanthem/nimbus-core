@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
+import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContextLoader;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 
 /**
@@ -75,6 +76,12 @@ public class WebActionController {
 
 	@Autowired WebCommandDispatcher dispatcher;
 	
+	@Autowired ExecutionContextLoader ctxLoader;
+	
+	@RequestMapping(value="/clear", produces="application/json", method=RequestMethod.GET)
+	public void clear() {
+		ctxLoader.clear();
+	}
 	
 	@RequestMapping(value=URI_PATTERN_P_OPEN, produces="application/json", method=RequestMethod.GET)
 	public Object handleGet(HttpServletRequest req, @RequestParam(required=false) String a) {
