@@ -33,7 +33,7 @@ public @interface ActivateConditional {
 	/**
 	 * Path of param to activate when condition is satisfied relative to param on which this annotation is declared
 	 */
-	String targetPath();
+	String[] targetPath();
 	
 	/**
 	 * SpEL based condition on which param would be inactivated. <br>

@@ -99,5 +99,10 @@ public class SampleCoreEntity extends IdString {
 	@Label(value="Test Label A in French", locale="fr")
 	private String label_c_multiple;
 	
-	
+	@ActivateConditional(when="state != null && state.nested2_attr_String_1 == 'Y' && state.nested2_attr_String_2 == 'Y'",targetPath={
+			"/../q4Level1", "/../q4Level2"
+	})
+	private SampleCoreNested2_Entity q4;	
+	private SampleCoreNested2_Entity q4Level1;
+	private SampleCoreNested2_Entity q4Level2;
 }
