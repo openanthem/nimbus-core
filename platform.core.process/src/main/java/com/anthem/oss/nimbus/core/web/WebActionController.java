@@ -83,6 +83,13 @@ public class WebActionController {
 		ctxLoader.clear();
 	}
 	
+	@RequestMapping(value="/gc", produces="application/json", method=RequestMethod.GET)
+	public void gc() {
+		System.gc();
+		System.runFinalization();
+	}
+	
+	
 	@RequestMapping(value=URI_PATTERN_P_OPEN, produces="application/json", method=RequestMethod.GET)
 	public Object handleGet(HttpServletRequest req, @RequestParam(required=false) String a) {
 		return handleInternal(req, RequestMethod.GET, null, a);
