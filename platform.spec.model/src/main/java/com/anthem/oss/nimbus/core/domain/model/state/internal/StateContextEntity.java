@@ -47,7 +47,7 @@ public class StateContextEntity {
 		if(CollectionUtils.isEmpty(v))
 			return;
 		
-		
+		this.values = v;
 		v.stream().forEach(pv->{
 			Optional.ofNullable(pv.getCode()).map(String::valueOf).map(s->s.intern())
 				.ifPresent(pv::setCode);
