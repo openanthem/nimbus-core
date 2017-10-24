@@ -3,6 +3,7 @@
  */
 package com.anthem.oss.nimbus.core.domain.model.state.internal;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,16 +48,19 @@ public class StateContextEntity {
 		if(CollectionUtils.isEmpty(v))
 			return;
 		
-		this.values = v;
+		this.values = new ArrayList<>();
 		v.stream().forEach(pv->{
+			ParamValue pvNew = new ParamValue();
+			values.add(pvNew);
+			
 			Optional.ofNullable(pv.getCode()).map(String::valueOf).map(s->s.intern())
-				.ifPresent(pv::setCode);
+				.ifPresent(pvNew::setCode);
 			
 			Optional.ofNullable(pv.getDesc()).map(String::valueOf).map(s->s.intern())
-			.ifPresent(pv::setDesc);
+			.ifPresent(pvNew::setDesc);
 		
 			Optional.ofNullable(pv.getLabel()).map(String::valueOf).map(s->s.intern())
-			.ifPresent(pv::setLabel);
+			.ifPresent(pvNew::setLabel);
 		});
 	}
 }
