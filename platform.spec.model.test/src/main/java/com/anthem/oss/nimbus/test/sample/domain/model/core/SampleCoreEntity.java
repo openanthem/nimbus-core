@@ -16,6 +16,7 @@ import com.anthem.oss.nimbus.core.domain.definition.extension.ActivateConditiona
 import com.anthem.oss.nimbus.core.domain.definition.extension.ActivateConditionals;
 import com.anthem.oss.nimbus.core.domain.definition.extension.Audit;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ConfigConditional;
+import com.anthem.oss.nimbus.core.domain.definition.extension.Content.Label;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity.IdString;
 
 import lombok.Getter;
@@ -87,4 +88,16 @@ public class SampleCoreEntity extends IdString {
 	private List<String> conditional_config_attr_list_String;
 
 	private String for_mapped_state_change_attr;
+	
+	@Label("Test Label A")
+	private String label_a_en;
+	
+	@Label(value="Test Label B in French", locale="fr")
+	private String label_b_fr;
+	
+	@Label(value="Test Label C in English")
+	@Label(value="Test Label A in French", locale="fr")
+	private String label_c_multiple;
+	
+	
 }
