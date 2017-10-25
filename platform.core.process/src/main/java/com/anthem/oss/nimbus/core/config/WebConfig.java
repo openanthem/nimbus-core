@@ -41,6 +41,11 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 			registry.addResourceHandler("/node_modules/**")
 					.addResourceLocations("file:./target/frontend/node_modules/", "classpath:/static/node_modules/");
 		}
+		if (!registry.hasMappingForPattern("/jslibs/**")) {
+			registry.addResourceHandler("/jslibs/**")
+					.addResourceLocations("file:./target/frontend/jslibs/", "classpath:/static/jslibs/");
+		}			
+		
 		if (!registry.hasMappingForPattern("/utils/**")) {
 			registry.addResourceHandler("/utils/**").addResourceLocations("file:./target/frontend/utils/", "classpath:/static/utils/" );
 		}
