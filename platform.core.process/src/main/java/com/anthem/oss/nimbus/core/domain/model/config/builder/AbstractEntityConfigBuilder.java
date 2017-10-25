@@ -486,23 +486,23 @@ abstract public class AbstractEntityConfigBuilder {
 	 * build and assign RuntimeEntity Config
 	 */
 	protected <P> DefaultParamConfig<P> decorateParam(ModelConfig<?> mConfig, DefaultParamConfig<P> created, EntityConfigVisitor visitedModels) {
-		// do not make nested runtimeConfig;
-		if(StringUtils.equals(created.getCode(), Constants.SEPARATOR_CONFIG_ATTRIB.code))
-			return created;
-		
-		if(cachedRuntimeEntityParamConfig==null) {
-			DefaultParamConfig<StateContextEntity> pRuntimeConfig = DefaultParamConfig.instantiate(mConfig, Constants.SEPARATOR_CONFIG_ATTRIB.code);
-			cachedRuntimeEntityParamConfig = pRuntimeConfig;
-			
-			ModelConfig<StateContextEntity> mRuntimeConfig = buildModel(StateContextEntity.class, visitedModels);
-			
-			ParamType.Nested<StateContextEntity> nestedType = new ParamType.Nested<>(StateContextEntity.class.getSimpleName(), StateContextEntity.class);
-			nestedType.setModel(mRuntimeConfig);
-			
-			pRuntimeConfig.setType(nestedType);
-		}
-		
-		created.setContextParam(cachedRuntimeEntityParamConfig);
+//		// do not make nested runtimeConfig;
+//		if(StringUtils.equals(created.getCode(), Constants.SEPARATOR_CONFIG_ATTRIB.code))
+//			return created;
+//		
+//		if(cachedRuntimeEntityParamConfig==null) {
+//			DefaultParamConfig<StateContextEntity> pRuntimeConfig = DefaultParamConfig.instantiate(mConfig, Constants.SEPARATOR_CONFIG_ATTRIB.code);
+//			cachedRuntimeEntityParamConfig = pRuntimeConfig;
+//			
+//			ModelConfig<StateContextEntity> mRuntimeConfig = buildModel(StateContextEntity.class, visitedModels);
+//			
+//			ParamType.Nested<StateContextEntity> nestedType = new ParamType.Nested<>(StateContextEntity.class.getSimpleName(), StateContextEntity.class);
+//			nestedType.setModel(mRuntimeConfig);
+//			
+//			pRuntimeConfig.setType(nestedType);
+//		}
+//		
+//		created.setContextParam(cachedRuntimeEntityParamConfig);
 		return created;
 	}
 	
