@@ -3,15 +3,14 @@
  */
 package com.anthem.oss.nimbus.core.domain.model.state.extension;
 
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Optional;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ActivateConditional;
-import com.anthem.oss.nimbus.core.domain.expr.ExpressionEvaluator;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionTxnContext;
 import com.anthem.oss.nimbus.core.domain.model.state.ParamEvent;
@@ -22,12 +21,10 @@ import com.anthem.oss.nimbus.core.domain.model.state.event.StateEventHandlers.On
  * @author Soham Chakravarti
  *
  */
-public class ActivateConditionalStateEventHandler implements OnStateLoadHandler<ActivateConditional>, OnStateChangeHandler<ActivateConditional> {
+public class ActivateConditionalStateEventHandler extends AbstractConditionalStateEventHandler implements OnStateLoadHandler<ActivateConditional>, OnStateChangeHandler<ActivateConditional> {
 
-	private ExpressionEvaluator expressionEvaluator;
-	
 	public ActivateConditionalStateEventHandler(BeanResolverStrategy beanResolver) {
-		this.expressionEvaluator = beanResolver.get(ExpressionEvaluator.class);
+		super(beanResolver);
 	}
 	
 	@Override
@@ -46,18 +43,21 @@ public class ActivateConditionalStateEventHandler implements OnStateLoadHandler<
 	}
 	
 	protected void handleInternal(Param<?> onChangeParam, ActivateConditional configuredAnnotation) {
-		String whenExpr = configuredAnnotation.when();
-		
-		Object entityState = onChangeParam.getLeafState();
-		boolean isTrue = expressionEvaluator.getValue(whenExpr, new Holder<>(entityState), Boolean.class);
+		boolean isTrue = evalWhen(onChangeParam, configuredAnnotation.when());
 		
 		// validate target param to activate
-		String targetPath = configuredAnnotation.targetPath();
+		String[] targetPaths = configuredAnnotation.targetPath();
 
-		Param<?> targetParam = Optional.ofNullable(onChangeParam.findParamByPath(targetPath))
-								.orElseThrow(()->new InvalidConfigException("Target parm lookup returned null for targetPath: "+targetPath+" on param: "+onChangeParam));
+		Arrays.asList(targetPaths).stream().forEach((targetPath) ->
+			handleInternal(onChangeParam,targetPath,isTrue));
 		
-		if(isTrue)
+	}
+	
+	protected void handleInternal(Param<?> onChangeParam, String targetPath, boolean evalWhen) {
+		Param<?> targetParam = Optional.ofNullable(onChangeParam.findParamByPath(targetPath))
+				.orElseThrow(()->new InvalidConfigException("Target parm lookup returned null for targetPath: "+targetPath+" on param: "+onChangeParam));
+
+		if(evalWhen)
 			targetParam.activate();
 		else
 			targetParam.deactivate();

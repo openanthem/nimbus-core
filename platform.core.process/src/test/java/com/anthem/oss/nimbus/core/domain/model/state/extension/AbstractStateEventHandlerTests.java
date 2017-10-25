@@ -14,19 +14,17 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.anthem.oss.nimbus.core.AbstractFrameworkIngerationPersistableTests;
 import com.anthem.oss.nimbus.core.TestFrameworkIntegrationScenariosApplication;
 import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
+import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContextLoader;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ExecutionModel;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionTxnContext;
 import com.anthem.oss.nimbus.core.domain.model.state.ParamEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
-import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.BaseStateEventListener;
 import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreEntity;
 
@@ -37,9 +35,10 @@ import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreEntity;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes=TestFrameworkIntegrationScenariosApplication.class)
 @ActiveProfiles("test")
-public abstract class AbstractStateEventHandlerTests {
+public abstract class AbstractStateEventHandlerTests extends AbstractFrameworkIngerationPersistableTests {
 
-	@Autowired QuadModelBuilder quadModelBuilder;
+	//@Autowired QuadModelBuilder quadModelBuilder;
+	@Autowired ExecutionContextLoader executionContextLoader;
 	
 	protected Command _cmd;
 	
@@ -49,20 +48,15 @@ public abstract class AbstractStateEventHandlerTests {
 	
 	protected BaseStateEventListener _stateEventListener;
 	
-	@Autowired protected MongoOperations mongo;
-	
-	@Autowired protected MongoTemplate mt;
-	
-	
-	protected Command createCommand() {
-		Command cmd = CommandBuilder.withUri("/hooli/thebox/p/sample_core/_new").getCommand();
-		return cmd;
-	}
+
+	protected abstract Command createCommand();
 		
+	@SuppressWarnings("unchecked")
 	@Before
 	public void before() {
 		_cmd = createCommand();
-		_q = quadModelBuilder.build(_cmd);
+		//_q = quadModelBuilder.build(_cmd);
+		_q = (QuadModel<?, SampleCoreEntity>)executionContextLoader.load(_cmd).getQuadModel();
 		assertNotNull(_q);
 		
 		_q.getRoot().getExecutionRuntime().onStartCommandExecution(_cmd);

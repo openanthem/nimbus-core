@@ -49,7 +49,7 @@ public class RulesEngineTests extends AbstractFrameworkIngerationPersistableTest
 		
 		holder = (Holder<MultiOutput>)controller.handlePost(request3, null);		
 		Param<?>  response = (Param<?>)holder.getState().getSingleResult();
-		assertEquals(response.findStateByPath("/triggeredParameter"),"Triggered");
+		assertEquals("Triggered", response.findStateByPath("/triggeredParameter"));
 	}	
 	
 }

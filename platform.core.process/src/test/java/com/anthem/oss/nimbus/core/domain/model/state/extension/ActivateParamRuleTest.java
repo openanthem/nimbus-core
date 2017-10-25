@@ -16,6 +16,8 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import com.anthem.oss.nimbus.core.domain.command.Command;
+import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreNestedEntity;
 
@@ -30,6 +32,10 @@ public class ActivateParamRuleTest  extends AbstractStateEventHandlerTests {
 	private static final String CORE_PARAM_PATH_q2Level1 = "/sample_core/q2Level1";
 	private static final String CORE_PARAM_PATH_q2Level1_nested_attr_String = CORE_PARAM_PATH_q2Level1 + "/nested_attr_String";
 
+	protected Command createCommand() {
+		Command cmd = CommandBuilder.withUri(CORE_PARAM_ROOT + "/_new").getCommand();
+		return cmd;
+	}
 	
 	protected String getSourceParamPath() {
 	 	return CORE_PARAM_PATH_q2;

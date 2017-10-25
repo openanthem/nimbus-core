@@ -114,7 +114,7 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 
 	@FunctionalInterface
 	public static interface ChangeStateCallback<R> {
-		public R affectChange(ExecutionRuntime execRt, Holder<Action> h);
+		public R affectChange(ExecutionRuntime execRt, Holder<Action> h, String localLockId);
 	}
 
 	final protected <R> R changeStateTemplate(ChangeStateCallback<R> cb) {
@@ -122,14 +122,20 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 		String lockId = execRt.tryLock();
 		final Holder<Action> h = new Holder<>();
 		try {
-			R resp = cb.affectChange(execRt, h);
+			R resp = cb.affectChange(execRt, h, lockId);
 			
 			// fire rules if available at this param level
-			fireRules();
+			//fireRules();
 			
 			return resp;
 		} finally {
 			if(execRt.isLocked(lockId)) {
+				logit.trace(()->"Executing within changeStateTemplate->finally block with lockId: "+lockId+" on param: "+this);
+				
+				// fire rules at root level upon completion of all set actions
+				if(h.getState()!=null) 
+					getRootExecution().fireRules();
+				
 				// notify subscribers to evaluate their process & rules
 				Param<Object> domainRootParam = (Param<Object>)getRootDomain().getAssociatedParam();
 				resolveRuntime().emitNotification(new Notification<Object>(domainRootParam, ActionType._evalProcess, domainRootParam));
@@ -137,16 +143,15 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 				// await completion of notification events
 				execRt.awaitNotificationsCompletion();
 				
-				// fire rules at root level upon completion of all set actions
-				getRootExecution().fireRules();
-				
 				// evaluate BPM
 				evaluateProcessFlow();
 				
 				// unlock
 				boolean b = execRt.tryUnlock(lockId);
-				if(!b)
-					throw new FrameworkRuntimeException("Failed to release lock acquired during setState of: "+getPath()+" with acquired lockId: "+lockId); 
+				if(!b) {
+					logit.warn(()->"Unable to gracefully unlock on param: "+this+" with lockId: "+lockId+" in thread: "+Thread.currentThread());
+					//==throw new FrameworkRuntimeException("Failed to release lock acquired during setState of: "+getPath()+" with acquired lockId: "+lockId);
+				}
 			}
 			
 			if(h.getState()!=null && (this instanceof Notification.Producer)) {

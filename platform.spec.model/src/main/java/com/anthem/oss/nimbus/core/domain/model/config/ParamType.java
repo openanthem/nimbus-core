@@ -114,6 +114,10 @@ public class ParamType implements Serializable {
 			return true;
 		}
 		
+		public boolean isLeafElements() {
+			return elementConfig.isLeaf();
+		}
+		
 		@SuppressWarnings("unchecked")
 		@Override
 		public NestedCollection<T> findIfCollection() {

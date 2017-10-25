@@ -15,6 +15,7 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.drools.core.util.ArrayUtils;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -62,7 +63,7 @@ public class DefaultActionExecutorReplaceTest extends AbstractFrameworkIngeratio
 	}
 	
 	@Test
-	public void t02_col_set_existing() {
+	public void t02_col_set_existing_core() {
 		t02_col_set_existing_internal();
 		
 		// repeat
@@ -98,6 +99,72 @@ public class DefaultActionExecutorReplaceTest extends AbstractFrameworkIngeratio
 	}
 	
 	@Test
+	public void t02_col_set_existing_core_noConversion() {
+		String refId = createOrGetDomainRoot_RefId();
+		
+		MockHttpServletRequest req_arr_replace = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(refId)
+					.addNested("/level1/attr_list_String_noConversion").addAction(Action._replace).getMock();
+		
+		final String[] K_string_arr = new String[]{"A", "B", "C @ "+new Date()};
+		final List<String> listString = new ArrayList<>(Arrays.asList(K_string_arr));
+		
+		Object resp_arr_update = controller.handlePut(req_arr_replace, null, converter.convert(listString));
+		
+		// validate via Param
+		MockHttpServletRequest req_arr_get = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(refId)
+				.addNested("/level1/attr_list_String_noConversion").addAction(Action._get).getMock();
+		
+		Object resp_arr_get = controller.handleGet(req_arr_get, null);
+		EntityState.Param<List<String>> cp_string_arr = ExtractResponseOutputUtils.extractOutput(resp_arr_get);
+		assertNotNull(cp_string_arr);
+		
+		assertTrue(CollectionUtils.isEqualCollection(listString, cp_string_arr.getState()));
+		
+		// db validation
+		SampleCoreEntity core = mongo.findById(refId, SampleCoreEntity.class, CORE_DOMAIN_ALIAS);
+		assertNotNull(core);
+		
+		assertTrue(CollectionUtils.isEqualCollection(listString, core.getLevel1().getAttr_list_String_noConversion()));
+	}
+	
+	@Ignore
+	@Test
+	public void t02_col_set_existing_view_noConversion() {
+		t02_col_set_existing_view_noConversion_internal();
+		
+		// repeat
+		t02_col_set_existing_view_noConversion_internal();
+	}
+	
+	public void t02_col_set_existing_view_noConversion_internal() {
+		String refId = createOrGetDomainRoot_RefId();
+		
+		MockHttpServletRequest req_arr_update = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
+				.addNested("/page_green/tile/level1/attr_list_String_noConversion").addAction(Action._replace).getMock();
+		
+		final String[] K_string_arr = new String[]{"A", "B", "C @ "+new Date()};
+		final List<String> listString = new ArrayList<>(Arrays.asList(K_string_arr));
+		Object resp_arr_update = controller.handlePut(req_arr_update, null, converter.convert(listString));
+		
+		
+		// validate via Param
+		MockHttpServletRequest req_arr_get = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
+				.addNested("/page_green/tile/level1/attr_list_String_noConversion").addAction(Action._get).getMock();
+		
+		Object resp_arr_get = controller.handleGet(req_arr_get, null);
+		EntityState.Param<List<String>> vp_string_arr = ExtractResponseOutputUtils.extractOutput(resp_arr_get);
+		assertNotNull(vp_string_arr);
+		
+		assertTrue(CollectionUtils.isEqualCollection(listString, vp_string_arr.getState()));
+		
+		// db validation
+		SampleCoreEntity core = mongo.findById(refId, SampleCoreEntity.class, CORE_DOMAIN_ALIAS);
+		assertNotNull(core);
+		
+		assertTrue(CollectionUtils.isEqualCollection(listString, core.getLevel1().getAttr_list_String_noConversion()));
+	}
+	
+	@Test
 	public void t03_array_update_core() {
 		String refId = createOrGetDomainRoot_RefId();
 		
@@ -130,7 +197,7 @@ public class DefaultActionExecutorReplaceTest extends AbstractFrameworkIngeratio
 		String refId = createOrGetDomainRoot_RefId();
 		
 		MockHttpServletRequest req_arr_update = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
-				.addNested("/page_green/tile/level1/level2/string_array").addAction(Action._update).getMock();
+				.addNested("/page_green/tile/level1/level2/string_array").addAction(Action._replace).getMock();
 		
 		final String[] K_string_arr = new String[]{"A", "B", "C @ "+new Date()};
 		Object resp_arr_update = controller.handlePut(req_arr_update, null, converter.convert(K_string_arr));

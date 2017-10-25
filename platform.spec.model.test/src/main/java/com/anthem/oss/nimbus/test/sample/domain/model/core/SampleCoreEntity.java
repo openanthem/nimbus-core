@@ -9,11 +9,13 @@ import java.util.List;
 
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
+import com.anthem.oss.nimbus.core.domain.definition.Execution.Config;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ActivateConditional;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ActivateConditionals;
 import com.anthem.oss.nimbus.core.domain.definition.extension.Audit;
+import com.anthem.oss.nimbus.core.domain.definition.extension.ConfigConditional;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity.IdString;
 
 import lombok.Getter;
@@ -48,8 +50,10 @@ public class SampleCoreEntity extends IdString {
 	private Date attr_Date;
 	private LocalDate attr_LocalDate;
 	
+	@Audit(SampleCoreAuditEntry.class)
 	private List<String> attr_list_String;
 	
+	@Audit(SampleCoreAuditEntry.class)
 	private String[] attr_array_String;
 	
 	private SampleCoreNestedEntity attr_NestedEntity;
@@ -75,5 +79,19 @@ public class SampleCoreEntity extends IdString {
 	private SampleCoreNestedEntity q3Level2;
 	
 	private SampleCoreLevel1_Entity level1;
+	
+	@ConfigConditional(when="state == 'Y'", config=@Config(url="/p/sample_core_audit_history/_new?fn=_initEntity&target=/domainRootRefId&json=\"<!/id!>\""))
+	private String conditional_config_attr;
+	
+	@ConfigConditional(config=@Config(url="/p/sample_core_audit_history/_new?fn=_initEntity&target=/domainRootRefId&json=\"<!/id!>\""))
+	private List<String> conditional_config_attr_list_String;
 
+	private String for_mapped_state_change_attr;
+	
+	@ActivateConditional(when="state != null && state.nested2_attr_String_1 == 'Y' && state.nested2_attr_String_2 == 'Y'",targetPath={
+			"/../q4Level1", "/../q4Level2"
+	})
+	private SampleCoreNested2_Entity q4;	
+	private SampleCoreNested2_Entity q4Level1;
+	private SampleCoreNested2_Entity q4Level2;
 }
