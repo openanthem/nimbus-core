@@ -117,10 +117,10 @@ abstract public class AbstractEntityConfigBuilder {
 		assignDomainAndModel(created, created::setAlias);
 				
 		// rules
-		Optional.ofNullable(created.getAlias())
-			.map(d->rulesEngineFactoryProducer.getFactory(referredClass))
-			.map(f->f.createConfig(created.getAlias()))
-				.ifPresent(c->created.setRulesConfig(c));
+//		Optional.ofNullable(created.getAlias())
+//			.map(d->rulesEngineFactoryProducer.getFactory(referredClass))
+//			.map(f->f.createConfig(created.getAlias()))
+//				.ifPresent(c->created.setRulesConfig(c));
 		return created; 
 	}
 	
