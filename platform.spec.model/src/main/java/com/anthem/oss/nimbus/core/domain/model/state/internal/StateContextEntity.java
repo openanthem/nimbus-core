@@ -44,23 +44,22 @@ public class StateContextEntity {
 		return values;
 		//return Collections.emptyList();
 	}
+	
 	public void setValues(List<ParamValue> v) {
-		if(CollectionUtils.isEmpty(v))
-			return;
 		
-		this.values = new ArrayList<>();
-		v.stream().forEach(pv->{
-			ParamValue pvNew = new ParamValue();
-			values.add(pvNew);
+		if(!CollectionUtils.isEmpty(v) && this.values!=v) {
+			v.stream().forEach(pv->{
+				Optional.ofNullable(pv.getCode()).map(String::valueOf).map(s->s.intern())
+					.ifPresent(pv::setCode);
+				
+				Optional.ofNullable(pv.getDesc()).map(String::valueOf).map(s->s.intern())
+				.ifPresent(pv::setDesc);
 			
-			Optional.ofNullable(pv.getCode()).map(String::valueOf).map(s->s.intern())
-				.ifPresent(pvNew::setCode);
-			
-			Optional.ofNullable(pv.getDesc()).map(String::valueOf).map(s->s.intern())
-			.ifPresent(pvNew::setDesc);
+				Optional.ofNullable(pv.getLabel()).map(String::valueOf).map(s->s.intern())
+				.ifPresent(pv::setLabel);
+			});
+		}
 		
-			Optional.ofNullable(pv.getLabel()).map(String::valueOf).map(s->s.intern())
-			.ifPresent(pvNew::setLabel);
-		});
+		this.values = v;
 	}
 }
