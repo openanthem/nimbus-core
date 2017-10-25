@@ -78,12 +78,12 @@ public class WebActionController {
 	
 	@Autowired ExecutionContextLoader ctxLoader;
 	
-	@RequestMapping(value="/clear", produces="application/json", method=RequestMethod.GET)
+	@RequestMapping(value=URI_PATTERN_P+"/clear", produces="application/json", method=RequestMethod.GET)
 	public void clear() {
 		ctxLoader.clear();
 	}
 	
-	@RequestMapping(value="/gc", produces="application/json", method=RequestMethod.GET)
+	@RequestMapping(value=URI_PATTERN_P+"/gc", produces="application/json", method=RequestMethod.GET)
 	public void gc() {
 		System.gc();
 		System.runFinalization();
