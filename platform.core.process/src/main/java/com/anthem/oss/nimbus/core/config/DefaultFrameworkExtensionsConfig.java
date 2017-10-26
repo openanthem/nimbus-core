@@ -30,8 +30,8 @@ public class DefaultFrameworkExtensionsConfig {
 	}
 	
 	@Bean
-	public AccessConditionalStateEventHandler extensionAccessConditionalHandler() {
-		return new AccessConditionalStateEventHandler();
+	public AccessConditionalStateEventHandler extensionAccessConditionalHandler(BeanResolverStrategy beanResolver) {
+		return new AccessConditionalStateEventHandler(beanResolver);
 	}
 
 	@Bean
