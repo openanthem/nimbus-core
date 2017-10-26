@@ -3,14 +3,17 @@
  */
 package com.anthem.oss.nimbus.core.domain.model.state.internal;
 
+import java.util.Arrays;
 import java.util.Objects;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
+import com.anthem.oss.nimbus.core.domain.model.state.InvalidStateException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
@@ -56,18 +59,25 @@ public class DefaultListElemParamState<E> extends DefaultParamState<E> implement
 	}
 	
 	@Override
-	protected String resolvePath() {
+	protected String[] resolvePath() {
 		return replaceIndexConstantWithElemId(super.resolvePath());
 	}
 	
 	@Override
-	protected String resolveBeanPath() {
+	protected String[] resolveBeanPath() {
 		return replaceIndexConstantWithElemId(super.resolveBeanPath());
 	}
 	
-	private String replaceIndexConstantWithElemId(String pathExpr) {
-		String rPath = StringUtils.replace(pathExpr, Constants.MARKER_COLLECTION_ELEM_INDEX.code, getElemId());
-		return rPath;
+	private String[] replaceIndexConstantWithElemId(String[] pathExpr) {
+		int index = ArrayUtils.indexOf(pathExpr, Constants.MARKER_COLLECTION_ELEM_INDEX.code);
+		if(index==-1)
+			throw new InvalidStateException("Expected marker "+Constants.MARKER_COLLECTION_ELEM_INDEX.code+" not found in listElem: ");
+		
+		String[] copy = Arrays.copyOf(pathExpr, pathExpr.length);
+		copy[index] = getElemId();
+		return copy;
+//		String rPath = StringUtils.replace(pathExpr, Constants.MARKER_COLLECTION_ELEM_INDEX.code, getElemId());
+//		return rPath;
 	}
 	
 	@Override

@@ -101,28 +101,29 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	@Override
 	protected void initSetupInternal() {
-		setPath(resolvePath());
+		setPathArr(resolvePath());
 		
-		setBeanPath(resolveBeanPath());
+		setBeanPathArr(resolveBeanPath());
 	}
 	
-	protected String resolvePath() {
-		String parentPath = getParentModel().getPath();
+	protected String[] resolvePath() {
+		String[] parentPath = getParentModel().getPathArr();
 		return resolvePath(parentPath, getConfig().getCode());
 	}
 	
-	protected String resolveBeanPath() {
-		String parentPath = getParentModel().getBeanPath();
+	protected String[] resolveBeanPath() {
+		String[] parentPath = getParentModel().getBeanPathArr();
 		return resolvePath(parentPath, getConfig().getBeanName());
 	}
 	
 	
 	
-	public static String resolvePath(String parentPath, String code) {
-		return new StringBuilder(parentPath)
-				.append(Constants.SEPARATOR_URI.code)
-				.append(code)
-				.toString();	
+	public static String[] resolvePath(String[] parentPath, String code) {
+		return ArrayUtils.addAll(parentPath, Constants.SEPARATOR_URI.code, code);
+//		return new StringBuilder(parentPath)
+//				.append(Constants.SEPARATOR_URI.code)
+//				.append(code)
+//				.toString();	
 	}
 
 	@Override

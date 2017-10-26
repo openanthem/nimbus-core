@@ -26,9 +26,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public interface EntityState<T> {
 
 	String getPath();
+	String[] getPathArr();
 	
 	@JsonIgnore
 	String getBeanPath();
+	
+	@JsonIgnore
+	String[] getBeanPathArr();
 	
 	//@JsonIgnore
 	EntityConfig<T> getConfig();
