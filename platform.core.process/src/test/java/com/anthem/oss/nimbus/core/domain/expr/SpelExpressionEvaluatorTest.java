@@ -3,19 +3,24 @@
  */
 package com.anthem.oss.nimbus.core.domain.expr;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
 
 /**
  * @author Swetha Vemuri
+ * @author Soham Chakravarti
  *
  */
 @RunWith(SpringRunner.class)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SpelExpressionEvaluatorTest {
 	
 	private ExpressionEvaluator expressionEvaluator = new SpelExpressionEvaluator();
@@ -27,19 +32,41 @@ public class SpelExpressionEvaluatorTest {
 		Boolean result = expressionEvaluator.getValue(expr, new Holder<>(strArr), Boolean.class);
 		assertTrue(result);
 	}
-	
+
 	@Test
-	public void t02_evaluate_contains_multiple_and_elements_expression() {
+	public void t02_evaluate_exact_equals_expression() {		
+		String expr = "state == new String[]{'Apple','Google','Facebook',' ','Hewlett Packard', null}";
+		Boolean result = expressionEvaluator.getValue(expr, new Holder<>(strArr), Boolean.class);
+		assertTrue(result);
+	}
+
+	@Test
+	public void t03a_PREFERRED_UNORDERED_evaluate_contains_multiple_and_elements_expression() {
 		String expr = "state != null && state.?[#this=='Apple'] != new String[]{} && state.?[#this=='Google'] != new String[]{}";
 		Boolean result = expressionEvaluator.getValue(expr, new Holder<>(strArr), Boolean.class);
 		assertTrue(result);
 	}
 	
 	@Test
-	public void t03_evaluate_equals_expression() {		
-		String expr = "state == new String[]{'Apple','Google','Facebook',' ','Hewlett Packard', null}";
+	public void t03b_ORDER_KNOWN_evaluate_contains_multiple_and_elements_expression() {
+		String expr = "state!=null && state.?[#this=='Apple' || #this=='Google'] == new String[]{'Apple', 'Google'}";
 		Boolean result = expressionEvaluator.getValue(expr, new Holder<>(strArr), Boolean.class);
 		assertTrue(result);
+	}
+	
+	@Test
+	public void t03b_ORDER_UNKNOWN_FAIL_evaluate_contains_multiple_and_elements_expression() {
+		String expr = "state!=null && state.?[#this=='Apple' || #this=='Google'] == new String[]{'Google', 'Apple'}";
+		Boolean result = expressionEvaluator.getValue(expr, new Holder<>(strArr), Boolean.class);
+		// fail
+		assertFalse(result);
+	}
+	
+	@Test
+	public void t03d_PREFERRED_NEGATIVE_evaluate_contains_multiple_and_elements_expression() {
+		String expr = "state != null && state.?[#this=='XYZ'] != new String[]{} && state.?[#this=='Google'] != new String[]{}";
+		Boolean result = expressionEvaluator.getValue(expr, new Holder<>(strArr), Boolean.class);
+		assertFalse(result);
 	}
 	
 	@Test
@@ -58,7 +85,7 @@ public class SpelExpressionEvaluatorTest {
 	
 	@Test
 	public void t06_evaluate_contains_multiple_or_elements_elements_expression() {		
-		String expr = "state != null && (state.?[#this=='Apple'] != new String[]{} || state.?[#this=='Twitter'] != new String[]{})";
+		String expr = "state!=null && state.?[#this=='Apple' || #this=='Google'] != new String[]{}";
 		Boolean result = expressionEvaluator.getValue(expr, new Holder<>(strArr), Boolean.class);
 		assertTrue(result);
 	}
@@ -71,9 +98,16 @@ public class SpelExpressionEvaluatorTest {
 	}
 	
 	@Test
-	public void t08_evaluate_contains_single_element_expression() {		
+	public void t08a_evaluate_contains_single_element_expression() {		
 		String expr = "state != null && state.?[#this=='Apple'] != new String[]{}";
 		Boolean result = expressionEvaluator.getValue(expr, new Holder<>(strArr), Boolean.class);
+		assertTrue(result);
+	}
+	
+	@Test
+	public void t08b_evaluate_exatcly_one_single_element_expression() {		
+		String expr = "state == new String[]{'Apple'}";
+		Boolean result = expressionEvaluator.getValue(expr, new Holder<>(new String[]{"Apple"}), Boolean.class);
 		assertTrue(result);
 	}
 	
