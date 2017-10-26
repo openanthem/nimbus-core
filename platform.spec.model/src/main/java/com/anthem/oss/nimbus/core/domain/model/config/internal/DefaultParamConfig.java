@@ -5,6 +5,7 @@ package com.anthem.oss.nimbus.core.domain.model.config.internal;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -88,8 +89,11 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	}
 	
 	protected DefaultParamConfig(String code, String beanName) {
-		this.code = code;
-		this.beanName = beanName;
+		Objects.requireNonNull(code, ()->"code in param config must not be null");
+		Objects.requireNonNull(beanName, ()->"beanName in param config must not be null");
+		
+		this.code = code.intern();
+		this.beanName = beanName.intern();
 	}
 	
 	final public static <T> DefaultParamConfig<T> instantiate(ModelConfig<?> mConfig, String code) {

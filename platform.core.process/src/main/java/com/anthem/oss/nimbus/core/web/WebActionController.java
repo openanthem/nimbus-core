@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
+import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContextLoader;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
 
 /**
@@ -74,6 +75,19 @@ public class WebActionController {
 	public static final String URI_PATTERN_P_OPEN = URI_PATTERN_P + "/**";
 
 	@Autowired WebCommandDispatcher dispatcher;
+	
+	@Autowired ExecutionContextLoader ctxLoader;
+	
+	@RequestMapping(value=URI_PATTERN_P+"/clear", produces="application/json", method=RequestMethod.GET)
+	public void clear() {
+		ctxLoader.clear();
+	}
+	
+	@RequestMapping(value=URI_PATTERN_P+"/gc", produces="application/json", method=RequestMethod.GET)
+	public void gc() {
+		System.gc();
+		System.runFinalization();
+	}
 	
 	
 	@RequestMapping(value=URI_PATTERN_P_OPEN, produces="application/json", method=RequestMethod.GET)
