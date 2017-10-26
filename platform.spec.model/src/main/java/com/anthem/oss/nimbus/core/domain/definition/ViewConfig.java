@@ -372,6 +372,16 @@ public class ViewConfig {
 		}
 		Property value() default Property.DEFAULT;
 	}
+<<<<<<< HEAD
+=======
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface Paragraph {
+		String alias() default "Paragraph";
+	}
+>>>>>>> refs/remotes/origin/feature/1.0.0.M8
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
