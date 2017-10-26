@@ -23,6 +23,7 @@ import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.entity.audit.AuditEntry;
+import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreAssociatedEntity;
 
 
 /**
@@ -33,6 +34,7 @@ import com.anthem.oss.nimbus.core.entity.audit.AuditEntry;
 public class ConfigConditionalStateChangeHandlerTest extends AbstractStateEventHandlerTests {
 
 	private static final String CORE_CONDITIONAL_PARAM_PATH = "/sample_core/conditional_config_attr";
+	private static final String CORE_CONDITIONALS_PARAM_PATH = "/sample_core/conditionals_config_attr";
 	
 	@Override
 	protected Command createCommand() {
@@ -52,6 +54,7 @@ public class ConfigConditionalStateChangeHandlerTest extends AbstractStateEventH
 	@Test
 	public void t00_init_check() {
 		assertNotNull(_q.getRoot().findParamByPath(CORE_CONDITIONAL_PARAM_PATH));
+		assertNotNull(_q.getRoot().findParamByPath(CORE_CONDITIONALS_PARAM_PATH));
 	}
 	
 	@Test
@@ -63,6 +66,7 @@ public class ConfigConditionalStateChangeHandlerTest extends AbstractStateEventH
 		List<AuditEntry> audit = mongo.findAll(AuditEntry.class, "sample_core_audit_history");
 		assertEquals(1, audit.size());
 		assertEquals(_q.getCore().getState().getId(), audit.get(0).getDomainRootRefId());
+		
 	}
 	
 	@Test 
@@ -143,5 +147,30 @@ public class ConfigConditionalStateChangeHandlerTest extends AbstractStateEventH
 		// test with value from main domain root
 	}
 	
+	@Test
+	public void t01_config_conditionals_collections_exist_test() {
+		Param<String> cp = _q.getRoot().findParamByPath(CORE_CONDITIONALS_PARAM_PATH);
+
+		cp.setState("Y");
+		List<AuditEntry> audit = mongo.findAll(AuditEntry.class, "sample_core_audit_history");
+		assertEquals(1, audit.size());
+		assertEquals(_q.getCore().getState().getId(), audit.get(0).getDomainRootRefId());
+
+		cp.setState("N");
+		List<SampleCoreAssociatedEntity> associatedEntity = mongo.findAll(SampleCoreAssociatedEntity.class, "sample_coreassociatedentity");
+		assertEquals(1, associatedEntity.size());
+		assertEquals(_q.getCore().getState().getId(), associatedEntity.get(0).getEntityId());
+	}
+
+	@Test
+	public void t02_config_conditionals_collections_does_not_exist_test() {
+		Param<String> cp = _q.getRoot().findParamByPath(CORE_CONDITIONALS_PARAM_PATH);
+
+		cp.setState("Y");
+		assertFalse(mt.collectionExists("sample_coreassociatedentity"));
+
+		cp.setState("N");
+		assertFalse(mt.collectionExists("sample_core_audit_history"));
+	}
 
 }
