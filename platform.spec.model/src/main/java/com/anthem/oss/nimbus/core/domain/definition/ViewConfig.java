@@ -376,8 +376,8 @@ public class ViewConfig {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
-	public @interface Label {
-		String alias() default "Label";
+	public @interface Paragraph {
+		String alias() default "Paragraph";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
