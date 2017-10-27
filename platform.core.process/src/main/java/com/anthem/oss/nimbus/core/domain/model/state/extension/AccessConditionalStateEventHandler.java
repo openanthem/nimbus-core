@@ -31,6 +31,10 @@ public class AccessConditionalStateEventHandler extends AbstractConditionalState
 	}
 
 	protected void handleInternal(Param<?> onChangeParam, AccessConditional configuredAnnotation) {
+		
+		if(Permission.WRITE == configuredAnnotation.p())
+			return;
+		
 		ClientUser user = UserEndpointSession.getStaticLoggedInUser();
 		
 		Set<String> userRoleCodes = user.getRoles().stream().map(UserRole::getRoleCode).collect(Collectors.toSet());
