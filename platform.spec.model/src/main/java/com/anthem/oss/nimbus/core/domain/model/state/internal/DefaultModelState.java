@@ -48,9 +48,6 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 		
 		Objects.requireNonNull(associatedParam, "Associated Param for Model must not be null.");
 		this.associatedParam = associatedParam;
-		
-		super.setPathArr(getAssociatedParam().getPathArr());
-		super.setBeanPathArr(getAssociatedParam().getBeanPathArr());
 	}
 
 	@Transient @JsonIgnore @Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
@@ -60,6 +57,16 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 	@JsonIgnore @Override
 	public CollectionsTemplate<List<EntityState.Param<?>>, EntityState.Param<?>> templateParams() {
 		return templateParams;
+	}
+	
+	@Override
+	public String getPath() {
+		return getAssociatedParam().getPath();
+	}
+	
+	@Override
+	public String getBeanPath() {
+		return getAssociatedParam().getBeanPath();
 	}
 	
 	@Override
@@ -101,9 +108,9 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 	
 	@Override
 	public T instantiateOrGet() {
-		if(getConfig().getReferredClass()==StateContextEntity.class) {
-			return (T)createOrGetRuntimeEntity();
-		}
+//		if(getConfig().getReferredClass()==StateContextEntity.class) {
+//			return (T)createOrGetRuntimeEntity();
+//		}
 		
 		T instance = getAspectHandlers().getParamStateGateway()._getRaw(this.getAssociatedParam());
 		return instance==null ? instantiateAndSet() : instance; 
