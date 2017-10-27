@@ -538,7 +538,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 			return;
 		
 		this.visible = visible;
-		emitEvent(Action._update, this);
+		emitParamContextEvent();
 	}
 	
 	public void setValues(List<ParamValue> values) {
@@ -546,7 +546,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 			return;
 		
 		this.values = values;
-		emitEvent(Action._update, this);
+		emitParamContextEvent();
 	}
 	
 	public void setMessage(Message message) {
@@ -558,7 +558,11 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 			return;
 		
 		this.message = message;
-		emitEvent(Action._update, this);
+		emitParamContextEvent();
+	}
+	
+	private void emitParamContextEvent() {
+		resolveRuntime().emitEvent(new ParamEvent(Action._update, this));
 	}
 	
 	@Override
@@ -612,8 +616,9 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 
 		// toggle
 		setActive(to);
-		findParamByPath("/#/visible").setState(to);
-		findParamByPath("/#/enabled").setState(to);
+		setVisible(to);
+//		findParamByPath("/#/visible").setState(to);
+//		findParamByPath("/#/enabled").setState(to);
 		
 		// notify mapped subscribers, if any
 		//==emitNotification(new Notification<>(this, ActionType._active, this));
