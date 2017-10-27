@@ -67,6 +67,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	private boolean visible = true;
 	
+	private boolean enable = true;
+	
 	private List<ParamValue> values;
 	
 	private Message message;
@@ -541,6 +543,14 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		emitParamContextEvent();
 	}
 	
+	public void setEnable(boolean enable) {
+		if(isEnable()==enable)
+			return;
+		
+		this.enable = enable;
+		emitParamContextEvent();
+	}
+	
 	public void setValues(List<ParamValue> values) {
 		if(getValues()==values)
 			return;
@@ -617,6 +627,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		// toggle
 		setActive(to);
 		setVisible(to);
+		setEnable(to);
 //		findParamByPath("/#/visible").setState(to);
 //		findParamByPath("/#/enabled").setState(to);
 		
