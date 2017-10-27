@@ -50,8 +50,11 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 //	private String path;
 //	private String beanPath;
 	
-	private String[] pathArr;
-	private String[] beanPathArr;
+	//private String[] pathArr;
+	//private String[] beanPathArr;
+	
+//	private String pathSegment;
+//	private String beanPathSegment;
 	
 	@JsonIgnore final private EntityStateAspectHandlers aspectHandlers;
 	
@@ -72,6 +75,20 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 	}
 	
 	// TODO: SOHAM - need to refactor part of persistence changes
+	protected static String resolvePath(String p) {
+		p = StringUtils.replace(p, "/c/", "/");
+		p = StringUtils.replace(p, "/v/", "/");
+		//p = StringUtils.replace(p, "/f/", "/");
+		
+		p = StringUtils.removeEnd(p, "/c");
+		p = StringUtils.removeEnd(p, "/v");
+		//p = StringUtils.removeEnd(p, "/f");
+		
+		p = StringUtils.replace(p, "//", "/");
+		return p;
+	}
+	
+	/*
 	@Override
 	public String getPath() {
 		return convertArrayToPath(pathArr);
@@ -120,6 +137,7 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 		
 		return sb.toString();
 	}
+	*/
 	
 	@Override
 	final public void initSetup() {

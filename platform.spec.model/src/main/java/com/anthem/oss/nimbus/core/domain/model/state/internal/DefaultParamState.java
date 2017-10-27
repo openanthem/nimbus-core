@@ -101,30 +101,56 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	@Override
 	protected void initSetupInternal() {
-		setPathArr(resolvePath());
+//		setPathArr(resolvePath());
+//		
+//		setBeanPathArr(resolveBeanPath());
+	}
+	
+	@Override
+	public String getPath() {
+		String parentPath = Optional.ofNullable(getParentModel()).map(Model::getPath).orElse("");
 		
-		setBeanPathArr(resolveBeanPath());
+		String p = new StringBuilder(parentPath)
+				.append(Constants.SEPARATOR_URI.code)
+				.append(getConfig().getCode())
+				.toString();
+		
+		p = resolvePath(p);
+		return p;
 	}
 	
-	protected String[] resolvePath() {
-		String[] parentPath = getParentModel().getPathArr();
-		return resolvePath(parentPath, getConfig().getCode());
+	@Override
+	public String getBeanPath() {
+		String parentPath = Optional.ofNullable(getParentModel()).map(Model::getBeanPath).orElse("");
+		
+		String p = new StringBuilder(parentPath)
+				.append(Constants.SEPARATOR_URI.code)
+				.append(getConfig().getBeanName())
+				.toString();
+		
+		p = StringUtils.replace(p, "//", "/");
+		return p;
 	}
 	
-	protected String[] resolveBeanPath() {
-		String[] parentPath = getParentModel().getBeanPathArr();
-		return resolvePath(parentPath, getConfig().getBeanName());
-	}
+//	protected String[] resolvePath() {
+//		String[] parentPath = getParentModel().getPathArr();
+//		return resolvePath(parentPath, getConfig().getCode());
+//	}
+//	
+//	protected String[] resolveBeanPath() {
+//		String[] parentPath = getParentModel().getBeanPathArr();
+//		return resolvePath(parentPath, getConfig().getBeanName());
+//	}
 	
 	
 	
-	public static String[] resolvePath(String[] parentPath, String code) {
-		return ArrayUtils.addAll(parentPath, Constants.SEPARATOR_URI.code, code);
+//	public static String[] resolvePath(String[] parentPath, String code) {
+//		return ArrayUtils.addAll(parentPath, Constants.SEPARATOR_URI.code, code);
 //		return new StringBuilder(parentPath)
 //				.append(Constants.SEPARATOR_URI.code)
 //				.append(code)
 //				.toString();	
-	}
+//	}
 
 	@Override
 	protected void initStateInternal() {
