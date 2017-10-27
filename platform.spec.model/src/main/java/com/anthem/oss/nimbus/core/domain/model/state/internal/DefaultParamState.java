@@ -26,6 +26,7 @@ import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.model.config.EventHandlerConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
+import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
@@ -59,10 +60,16 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	final private Model<?> parentModel;
 	
 //	@JsonIgnore M7
-	private Model<StateContextEntity> contextModel;
+//M8	private Model<StateContextEntity> contextModel;
 	
 	@JsonIgnore
 	private boolean active = true;
+	
+	private boolean visible = true;
+	
+	private List<ParamValue> values;
+	
+	private Message message;
 	
 	/* TODO: Weak reference was causing the values to be GC-ed even before the builders got to building 
 	 * Allow referenced subscribers to get garbage collected in scenario when same core is referenced by multiple views. 
@@ -250,9 +257,9 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	@JsonIgnore
 	@Override
 	final public T getState() {
-		if(getType().getConfig().getReferredClass()==StateContextEntity.class) {
-			return (T)createOrGetRuntimeEntity();
-		}
+//		if(getType().getConfig().getReferredClass()==StateContextEntity.class) {
+//			return (T)createOrGetRuntimeEntity();
+//		}
 		return getAspectHandlers().getParamStateGateway()._get(this);
 	}
 	
@@ -483,7 +490,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 
 		// context model?
 		if(StringUtils.equals(singlePathSegment, Constants.SEPARATOR_CONFIG_ATTRIB.code))
-			return getContextModel().getAssociatedParam();
+			throw new InvalidConfigException("Use of '#' has been deprecated in favor of direct methods on Param, but found config at: "+getPath());
 
 		// value is only ".m" then return mapsTo if this is a mapped param
 		if(StringUtils.equals(singlePathSegment, Constants.SEPARATOR_MAPSTO.code)) {
@@ -524,6 +531,34 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 //			return isMapped() ? findIfMapped().getMapsTo() : null;
 		
 		return null;	
+	}
+	
+	public void setVisible(boolean visible) {
+		if(isVisible()==visible)
+			return;
+		
+		this.visible = visible;
+		emitEvent(Action._update, this);
+	}
+	
+	public void setValues(List<ParamValue> values) {
+		if(getValues()==values)
+			return;
+		
+		this.values = values;
+		emitEvent(Action._update, this);
+	}
+	
+	public void setMessage(Message message) {
+		if(getMessage()==null && message==null)
+			return;
+		
+		if(getMessage()!=null && message!=null 
+				&& getMessage().equals(message))
+			return;
+		
+		this.message = message;
+		emitEvent(Action._update, this);
 	}
 	
 	@Override

@@ -54,7 +54,6 @@ import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultMode
 import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
 import com.anthem.oss.nimbus.core.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.StateContextEntity;
 import com.anthem.oss.nimbus.core.rules.RulesEngineFactoryProducer;
 import com.anthem.oss.nimbus.core.util.GenericUtils;
 import com.anthem.oss.nimbus.core.util.JustLogit;
@@ -480,32 +479,34 @@ abstract public class AbstractEntityConfigBuilder {
 //		}
 //	}
 	
-	private ParamConfig<StateContextEntity> cachedRuntimeEntityParamConfig;
+//	private ParamConfig<StateContextEntity> cachedRuntimeEntityParamConfig;
 	
-	/**
-	 * build and assign RuntimeEntity Config
-	 */
+//	/**
+//	 * build and assign RuntimeEntity Config
+//	 */
+//	protected <P> DefaultParamConfig<P> decorateParam(ModelConfig<?> mConfig, DefaultParamConfig<P> created, EntityConfigVisitor visitedModels) {
+//		// do not make nested runtimeConfig;
+//		if(StringUtils.equals(created.getCode(), Constants.SEPARATOR_CONFIG_ATTRIB.code))
+//			return created;
+//		
+//		if(cachedRuntimeEntityParamConfig==null) {
+//			DefaultParamConfig<StateContextEntity> pRuntimeConfig = DefaultParamConfig.instantiate(mConfig, Constants.SEPARATOR_CONFIG_ATTRIB.code);
+//			cachedRuntimeEntityParamConfig = pRuntimeConfig;
+//			
+//			ModelConfig<StateContextEntity> mRuntimeConfig = buildModel(StateContextEntity.class, visitedModels);
+//			
+//			ParamType.Nested<StateContextEntity> nestedType = new ParamType.Nested<>(StateContextEntity.class.getSimpleName(), StateContextEntity.class);
+//			nestedType.setModel(mRuntimeConfig);
+//			
+//			pRuntimeConfig.setType(nestedType);
+//		}
+//		
+//		created.setContextParam(cachedRuntimeEntityParamConfig);
+//		return created;
+//	}
 	protected <P> DefaultParamConfig<P> decorateParam(ModelConfig<?> mConfig, DefaultParamConfig<P> created, EntityConfigVisitor visitedModels) {
-		// do not make nested runtimeConfig;
-		if(StringUtils.equals(created.getCode(), Constants.SEPARATOR_CONFIG_ATTRIB.code))
-			return created;
-		
-		if(cachedRuntimeEntityParamConfig==null) {
-			DefaultParamConfig<StateContextEntity> pRuntimeConfig = DefaultParamConfig.instantiate(mConfig, Constants.SEPARATOR_CONFIG_ATTRIB.code);
-			cachedRuntimeEntityParamConfig = pRuntimeConfig;
-			
-			ModelConfig<StateContextEntity> mRuntimeConfig = buildModel(StateContextEntity.class, visitedModels);
-			
-			ParamType.Nested<StateContextEntity> nestedType = new ParamType.Nested<>(StateContextEntity.class.getSimpleName(), StateContextEntity.class);
-			nestedType.setModel(mRuntimeConfig);
-			
-			pRuntimeConfig.setType(nestedType);
-		}
-		
-		created.setContextParam(cachedRuntimeEntityParamConfig);
 		return created;
 	}
-	
 	
 	//TODO Implement mapped param lookup given via explicit path reference
 	private <T> ParamConfig<?> findMappedParam(ModelConfig<T> mapsToModel, String fieldNm, MapsTo.Path mapsTo) {

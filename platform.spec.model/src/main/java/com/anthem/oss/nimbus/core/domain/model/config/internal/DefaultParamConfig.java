@@ -19,7 +19,6 @@ import com.anthem.oss.nimbus.core.domain.model.config.AnnotationConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.StateContextEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
@@ -54,7 +53,7 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	private List<Execution.Config> executionConfigs;
 
 //	@JsonIgnore M7
-	private ParamConfig<StateContextEntity> contextParam;
+//M8	private ParamConfig<StateContextEntity> contextParam;
 	
 	@JsonIgnore 
 	private List<ParamConverter> converters;
@@ -66,23 +65,23 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	private List<AssociatedEntity> associatedEntities;
 
 
-	public static class StateContextConfig<P> extends DefaultParamConfig<P> {
-		private static final long serialVersionUID = 1L;
-
-		public StateContextConfig(String code, String beanName) {
-			super(code, beanName);
-		}
-		
-		@Override
-		final public ParamConfig<StateContextEntity> getContextParam() {
-			return null;
-		}
-		
-		@Override
-		final public void setContextParam(ParamConfig<StateContextEntity> runtimeConfig) {
-			//do nothing
-		}
-	}
+//	public static class StateContextConfig<P> extends DefaultParamConfig<P> {
+//		private static final long serialVersionUID = 1L;
+//
+//		public StateContextConfig(String code, String beanName) {
+//			super(code, beanName);
+//		}
+//		
+//		@Override
+//		final public ParamConfig<StateContextEntity> getContextParam() {
+//			return null;
+//		}
+//		
+//		@Override
+//		final public void setContextParam(ParamConfig<StateContextEntity> runtimeConfig) {
+//			//do nothing
+//		}
+//	}
 	
 	protected DefaultParamConfig(String code) {
 		this(code, code);
@@ -101,8 +100,8 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	}
 	
 	final public static <T> DefaultParamConfig<T> instantiate(ModelConfig<?> mConfig, String code, String beanName) {
-		if(mConfig.getReferredClass()==StateContextEntity.class)
-			return new DefaultParamConfig.StateContextConfig<>(code, beanName);
+//		if(mConfig.getReferredClass()==StateContextEntity.class)
+//			return new DefaultParamConfig.StateContextConfig<>(code, beanName);
 		
 		return new DefaultParamConfig<>(code, beanName);
 	} 
