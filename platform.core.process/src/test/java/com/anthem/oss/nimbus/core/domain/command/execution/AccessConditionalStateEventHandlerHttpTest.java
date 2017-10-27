@@ -1,5 +1,6 @@
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -39,11 +40,10 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 		Param<?> p = excuteNewConfig(userLoginId);
 		assertNotNull(p);
 		
-		Param<Boolean> visibleParam = p.findParamByPath("/accessConditional_Contains_Read/#/visible");
-		Param<Boolean> enableParam = p.findParamByPath("/accessConditional_Contains_Read/#/enabled");
+		Param<?> accessParam = p.findParamByPath("/accessConditional_Contains_Read");
+		//Param<Boolean> enableParam = p.findParamByPath("/accessConditional_Contains_Read/#/enabled");
 		
-		assertTrue(visibleParam.getState() == true);
-		assertTrue(enableParam.getState() != true);
+		assertTrue(accessParam.isVisible());
 	}
 	
 	@Test
@@ -53,11 +53,10 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 		Param<?> p = excuteNewConfig(userLoginId);
 		assertNotNull(p);
 		
-		Param<Boolean> visibleParam = p.findParamByPath("/accessConditional_Contains_Hidden2/#/visible");
-		Param<Boolean> enableParam = p.findParamByPath("/accessConditional_Contains_Hidden2/#/enabled");
+		Param<?> accessParam = p.findParamByPath("/accessConditional_Contains_Hidden2");
+		//Param<Boolean> enableParam = p.findParamByPath("/accessConditional_Contains_Hidden2/#/enabled");
 		
-		assertTrue(visibleParam.getState() == false);
-		assertTrue(enableParam.getState() == null);
+		assertFalse(accessParam.isVisible());
 	}
 
 	@SuppressWarnings("unchecked")

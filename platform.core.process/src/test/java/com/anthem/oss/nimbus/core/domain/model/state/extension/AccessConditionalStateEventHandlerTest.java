@@ -1,5 +1,6 @@
 package com.anthem.oss.nimbus.core.domain.model.state.extension;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -63,50 +64,50 @@ public class AccessConditionalStateEventHandlerTest extends AbstractStateEventHa
 	@Test
 	public void t1_hidden_ContainsTrue_OneRole() {
 		Param<?> p = _q.getRoot().findParamByPath(ACCESS_CONDITIONAL_CONTAINS_HIDDEN_PARAM1_PATH);
-		assertTrue((Boolean)p.findStateByPath("/#/visible") == false);
-		assertTrue((Boolean)p.findStateByPath("/#/enabled") == null);
+		assertFalse(p.isVisible());
+		//assertTrue((Boolean)p.findStateByPath("/#/enabled") == null);
 	}
 	
 	@Test
 	public void t2_hidden_ContainsTrue_MultipleRoles() {
 		Param<?> p = _q.getRoot().findParamByPath(ACCESS_CONDITIONAL_CONTAINS_HIDDEN_PARAM2_PATH);
-		assertTrue((Boolean)p.findStateByPath("/#/visible") == false);
-		assertTrue((Boolean)p.findStateByPath("/#/enabled") == null);
+		assertFalse(p.isVisible());
+		//assertTrue((Boolean)p.findStateByPath("/#/enabled") == null);
 	}
 	
 	@Test
 	public void t3_readOnly_ContainsTrue() {
 		Param<?> p = _q.getRoot().findParamByPath(ACCESS_CONDITIONAL_CONTAINS_READ_PARAM_PATH);
-		assertTrue((Boolean)p.findStateByPath("/#/visible") == true);
-		assertTrue((Boolean)p.findStateByPath("/#/enabled") == false);
+		assertTrue(p.isVisible());
+		//assertTrue((Boolean)p.findStateByPath("/#/enabled") == false);
 	}
 	
 	@Test
 	public void t4_readOnly_WhenTrue() {
 		Param<?> p = _q.getRoot().findParamByPath(ACCESS_CONDITIONAL_WHEN_READ_PARAM1_PATH);
-		assertTrue((Boolean)p.findStateByPath("/#/visible") == true);
-		assertTrue((Boolean)p.findStateByPath("/#/enabled") == false);
+		assertTrue(p.isVisible());
+		//assertTrue((Boolean)p.findStateByPath("/#/enabled") == false);
 	}
 	
 	@Test
 	public void t5_notReadOnly_WhenFails() {
 		Param<?> p = _q.getRoot().findParamByPath(ACCESS_CONDITIONAL_WHEN_READ_PARAM2_PATH);
-		assertTrue((Boolean)p.findStateByPath("/#/visible") == true);
-		assertTrue((Boolean)p.findStateByPath("/#/enabled") != false);
+		assertTrue(p.isVisible());
+		//assertTrue((Boolean)p.findStateByPath("/#/enabled") != false);
 	}
 	
 	@Test
 	public void t6_hidden_WhenTrue() {
 		Param<?> p = _q.getRoot().findParamByPath(ACCESS_CONDITIONAL_WHEN_HIDDEN_PARAM1_PATH);
-		assertTrue((Boolean)p.findStateByPath("/#/visible") == false);
-		assertTrue((Boolean)p.findStateByPath("/#/enabled") == null);
+		assertFalse(p.isVisible());
+		//assertTrue((Boolean)p.findStateByPath("/#/enabled") == null);
 	}
 	
 	@Test
 	public void t7_hidden_WhenTrue() {
 		Param<?> p = _q.getRoot().findParamByPath(ACCESS_CONDITIONAL_WHEN_HIDDEN_PARAM2_PATH);
-		assertTrue((Boolean)p.findStateByPath("/#/visible") == false);
-		assertTrue((Boolean)p.findStateByPath("/#/enabled") == null);
+		assertFalse(p.isVisible());
+		//assertTrue((Boolean)p.findStateByPath("/#/enabled") == null);
 	}
 	
 	
