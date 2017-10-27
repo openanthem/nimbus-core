@@ -143,11 +143,12 @@ abstract public class AbstractEntityStateBuilder extends AbstractEntityStateFact
 		ExecutionEntity.ExConfig<Object, StateContextEntity> exConfig = new ExecutionEntity.ExConfig<>(mConfigContext, null, null);
 		
 		// context model path
-		String ctxPath = created.getRootExecution().getRootCommand().buildAlias(Type.PlatformMarker) + //Constants.SEPARATOR_URI.code+ 
-							created.getPath();// +"/"+ created.getConfig().getContextParam().getCode();
-		Command ctxCmd = CommandBuilder.withUri(ctxPath).getCommand();
-		
-		String ctxParamPath = created.getPath();
+//		String ctxPath = created.getRootExecution().getRootCommand().buildAlias(Type.PlatformMarker) + //Constants.SEPARATOR_URI.code+ 
+//							created.getPath();// +"/"+ created.getConfig().getContextParam().getCode();
+//		Command ctxCmd = CommandBuilder.withUri(ctxPath).getCommand();
+//		
+//		String ctxParamPath = created.getPath();
+		Command ctxCmd = created.getRootExecution().getRootCommand();
 		
 		ExecutionEntity<Object, StateContextEntity> eStateCtx = new ExecutionEntity<>();
 		ExecutionEntity<Object, StateContextEntity>.ExParam exParamCtx = eStateCtx.new ExParamLinked(ctxCmd, created.getAspectHandlers(), exConfig, /*ctxParamPath,*/ created);
