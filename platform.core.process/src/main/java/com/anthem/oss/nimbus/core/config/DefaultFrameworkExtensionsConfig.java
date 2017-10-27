@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
+import com.anthem.oss.nimbus.core.domain.model.state.extension.AccessConditionalStateEventHandler;
 import com.anthem.oss.nimbus.core.domain.model.state.extension.ActivateConditionalStateEventHandler;
 import com.anthem.oss.nimbus.core.domain.model.state.extension.AuditStateChangeHandler;
 import com.anthem.oss.nimbus.core.domain.model.state.extension.ConfigConditionalStateChangeHandler;
@@ -28,6 +29,11 @@ public class DefaultFrameworkExtensionsConfig {
 		return new AuditStateChangeHandler(beanResolver);
 	}
 	
+	@Bean
+	public AccessConditionalStateEventHandler extensionAccessConditionalHandler(BeanResolverStrategy beanResolver) {
+		return new AccessConditionalStateEventHandler(beanResolver);
+	}
+
 	@Bean
 	public ConfigConditionalStateChangeHandler extensionConfigConditionalStateChangeHandler(BeanResolverStrategy beanResolver) {
 		return new ConfigConditionalStateChangeHandler(beanResolver);
