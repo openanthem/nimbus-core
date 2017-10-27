@@ -28,7 +28,13 @@ public interface EntityState<T> {
 	String getPath();
 	
 	@JsonIgnore
+	String[] getPathArr();
+	
+	@JsonIgnore
 	String getBeanPath();
+	
+	@JsonIgnore
+	String[] getBeanPathArr();
 	
 	//@JsonIgnore
 	EntityConfig<T> getConfig();

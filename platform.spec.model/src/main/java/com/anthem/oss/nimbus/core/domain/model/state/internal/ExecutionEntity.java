@@ -170,7 +170,7 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 		
 		private final Param<?> linkedParam;
 		
-		public ExParamLinked(Command rootCommand, EntityStateAspectHandlers provider, ExConfig<V, C> exConfig, String initPath, Param<?> linkedParam) {
+		public ExParamLinked(Command rootCommand, EntityStateAspectHandlers provider, ExConfig<V, C> exConfig, String[] initPath, Param<?> linkedParam) {
 			super(rootCommand, provider, exConfig, initPath);
 			this.linkedParam = linkedParam;
 		}
@@ -195,10 +195,10 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 		private final String rootRefId;
 		
 		public ExParam(Command rootCommand, EntityStateAspectHandlers provider, ExConfig<V, C> exConfig) {
-			this(rootCommand, provider, exConfig, "");
+			this(rootCommand, provider, exConfig, new String[]{""});
 		}
 		
-		public ExParam(Command rootCommand, EntityStateAspectHandlers provider, ExConfig<V, C> exConfig, String initPath) {
+		public ExParam(Command rootCommand, EntityStateAspectHandlers provider, ExConfig<V, C> exConfig, String[] initPath) {
 			super(null, new ExParamConfig(exConfig), provider);
 			
 			ExParamConfig pConfig = ((ExParamConfig)getConfig());
@@ -207,13 +207,13 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 			rootRefId = rootCommand.getRootDomainElement().getRefId();
 			
 			//String rootPath = (rootRefId==null) ? pConfig.getCode() : pConfig.getCode()+":"+rootRefId;
-			String rootPath = initPath;
-			String beanPath = initPath;
+			String[] rootPath = initPath;
+			String[] beanPath = initPath;
 			
 			logit.debug(()->"[ExParam] rootPath: "+rootPath+" :: with beanPath: "+beanPath);
 
-			this.setPath(rootPath);
-			this.setBeanPath(beanPath);
+			setPathArr(rootPath);
+			setBeanPathArr(beanPath);
 			
 			
 			this.rootModel = new ExModel(rootCommand, this, pConfig.getRootParent(), provider);

@@ -16,6 +16,8 @@ import com.anthem.oss.nimbus.core.domain.definition.extension.ActivateConditiona
 import com.anthem.oss.nimbus.core.domain.definition.extension.ActivateConditionals;
 import com.anthem.oss.nimbus.core.domain.definition.extension.Audit;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ConfigConditional;
+import com.anthem.oss.nimbus.core.domain.definition.extension.ConfigConditionals;
+import com.anthem.oss.nimbus.core.domain.definition.extension.Content.Label;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity.IdString;
 
 import lombok.Getter;
@@ -88,10 +90,26 @@ public class SampleCoreEntity extends IdString {
 
 	private String for_mapped_state_change_attr;
 	
+	@Label("Test Label A")
+	private String label_a_en;
+	
+	@Label(value="Test Label B in French", locale="fr")
+	private String label_b_fr;
+	
+	@Label(value="Test Label C in English")
+	@Label(value="Test Label A in French", locale="fr")
+	private String label_c_multiple;
+	
 	@ActivateConditional(when="state != null && state.nested2_attr_String_1 == 'Y' && state.nested2_attr_String_2 == 'Y'",targetPath={
 			"/../q4Level1", "/../q4Level2"
 	})
 	private SampleCoreNested2_Entity q4;	
 	private SampleCoreNested2_Entity q4Level1;
 	private SampleCoreNested2_Entity q4Level2;
+	
+//	@ConfigConditionals(value= {
+//	@ConfigConditional(when="state == 'Y'", config=@Config(url="/p/sample_core_audit_history/_new?fn=_initEntity&target=/domainRootRefId&json=\"<!/id!>\"")),
+//	@ConfigConditional(when="state == 'N'", config=@Config(url="/p/sample_coreassociatedentity/_new?fn=_initEntity&target=/entityId&json=\"<!/id!>\""))
+//	})
+	private String conditionals_config_attr;
 }

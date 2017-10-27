@@ -49,8 +49,8 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 		Objects.requireNonNull(associatedParam, "Associated Param for Model must not be null.");
 		this.associatedParam = associatedParam;
 		
-		super.setPath(getAssociatedParam().getPath());
-		super.setBeanPath(getAssociatedParam().getBeanPath());
+		super.setPathArr(getAssociatedParam().getPathArr());
+		super.setBeanPathArr(getAssociatedParam().getBeanPathArr());
 	}
 
 	@Transient @JsonIgnore @Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)

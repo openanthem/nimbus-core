@@ -147,7 +147,7 @@ abstract public class AbstractEntityStateBuilder extends AbstractEntityStateFact
 							created.getPath();// +"/"+ created.getConfig().getContextParam().getCode();
 		Command ctxCmd = CommandBuilder.withUri(ctxPath).getCommand();
 		
-		String ctxParamPath = created.getPath();
+		String[] ctxParamPath = created.getPathArr();
 		
 		ExecutionEntity<Object, StateContextEntity> eStateCtx = new ExecutionEntity<>();
 		ExecutionEntity<Object, StateContextEntity>.ExParam exParamCtx = eStateCtx.new ExParamLinked(ctxCmd, created.getAspectHandlers(), exConfig, ctxParamPath, created);
@@ -160,7 +160,6 @@ abstract public class AbstractEntityStateBuilder extends AbstractEntityStateFact
 		Model<StateContextEntity> mCtx = pCtx.findIfNested();
 		
 		created.setContextModel(mCtx);
-		
 	}
 	
 	private <P, V, C> DefaultParamState<P> createParamMapped(EntityStateAspectHandlers aspectHandlers, Model<?> parentModel, Model<?> mapsToSAC, MappedParamConfig<P, ?> mappedParamConfig) {
