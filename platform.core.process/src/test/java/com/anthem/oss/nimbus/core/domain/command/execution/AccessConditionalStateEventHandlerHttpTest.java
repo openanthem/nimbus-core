@@ -41,9 +41,9 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 		assertNotNull(p);
 		
 		Param<?> accessParam = p.findParamByPath("/accessConditional_Contains_Read");
-		//Param<Boolean> enableParam = p.findParamByPath("/accessConditional_Contains_Read/#/enabled");
 		
 		assertTrue(accessParam.isVisible());
+		assertFalse(accessParam.isEnabled());
 	}
 	
 	@Test
@@ -54,9 +54,9 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 		assertNotNull(p);
 		
 		Param<?> accessParam = p.findParamByPath("/accessConditional_Contains_Hidden2");
-		//Param<Boolean> enableParam = p.findParamByPath("/accessConditional_Contains_Hidden2/#/enabled");
 		
 		assertFalse(accessParam.isVisible());
+		assertFalse(accessParam.isEnabled());
 	}
 
 	@SuppressWarnings("unchecked")
