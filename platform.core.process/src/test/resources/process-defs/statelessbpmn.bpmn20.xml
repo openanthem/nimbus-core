@@ -3,7 +3,7 @@
   <process id="statelessbpmtest" name="My process" isExecutable="true">
     <startEvent id="startevent1" name="Start"></startEvent>
     <endEvent id="endevent1" name="End"></endEvent>
-    <serviceTask id="servicetask1" name="Set target parameter" activiti:expression="findParamByPath('/bpmtestmodel/targetParameter').setState('Assigned')"></serviceTask>
+    <serviceTask id="servicetask1" name="Set target parameter" activiti:expression="findParamByPath('/targetParameter').setState('Assigned')"></serviceTask>
     <sequenceFlow id="flow3" sourceRef="startevent1" targetRef="servicetask1"></sequenceFlow>
     <sequenceFlow id="flow4" sourceRef="servicetask1" targetRef="endevent1"></sequenceFlow>
   </process>

@@ -372,7 +372,7 @@ public class ViewConfig {
 		}
 		Property value() default Property.DEFAULT;
 	}
-	
+
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle

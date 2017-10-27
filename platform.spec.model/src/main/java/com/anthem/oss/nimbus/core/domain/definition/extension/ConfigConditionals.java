@@ -7,12 +7,10 @@ import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Documented;
-import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import com.anthem.oss.nimbus.core.domain.definition.Execution.Config;
-import com.anthem.oss.nimbus.core.domain.definition.event.StateEvent.OnStateChange;
+import com.anthem.oss.nimbus.core.domain.RepeatContainer;
 
 /**
  * @author Soham Chakravarti
@@ -21,11 +19,8 @@ import com.anthem.oss.nimbus.core.domain.definition.event.StateEvent.OnStateChan
 @Documented
 @Retention(RUNTIME)
 @Target(FIELD)
-@Repeatable(ConfigConditionals.class)
-@OnStateChange
-public @interface ConfigConditional {
+@RepeatContainer
+public @interface ConfigConditionals {
 
-	public String when() default "true";
-	
-	public Config[] config();
+	ConfigConditional[] value();
 }
