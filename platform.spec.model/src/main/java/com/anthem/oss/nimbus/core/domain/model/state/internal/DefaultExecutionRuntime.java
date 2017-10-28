@@ -3,7 +3,7 @@
  */
 package com.anthem.oss.nimbus.core.domain.model.state.internal;
 
-import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Queue;
 import java.util.UUID;
 import java.util.function.BiConsumer;
@@ -14,14 +14,15 @@ import org.apache.commons.collections.CollectionUtils;
 import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ExecutionModel;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.MappedParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.util.JustLogit;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionTxnContext;
 import com.anthem.oss.nimbus.core.domain.model.state.InvalidStateException;
 import com.anthem.oss.nimbus.core.domain.model.state.Notification;
 import com.anthem.oss.nimbus.core.domain.model.state.ParamEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.StateEventDelegator;
+import com.anthem.oss.nimbus.core.util.JustLogit;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -183,10 +184,14 @@ public class DefaultExecutionRuntime implements ExecutionRuntime {
 			Notification<Object> event = notifications.poll();
 			Param<Object> source =  event.getSource();
 			
-			if(CollectionUtils.isNotEmpty(source.getEventSubscribers()))
-				new ArrayList<>(source.getEventSubscribers())
-					.stream()
-						.forEach(subscribedParam->subscribedParam.handleNotification(event));
+			Iterator<MappedParam<?, Object>> iter = source.getEventSubscribers();
+			if(iter!=null && iter.hasNext())
+				iter.forEachRemaining(subscribedParam->subscribedParam.handleNotification(event));
+			
+//			if(CollectionUtils.isNotEmpty(source.getEventSubscribers()))
+//				new ArrayList<>(source.getEventSubscribers())
+//					.stream()
+//						.forEach(subscribedParam->subscribedParam.handleNotification(event));
 		}
 	}
 	

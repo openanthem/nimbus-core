@@ -3,7 +3,7 @@
  */
 package com.anthem.oss.nimbus.core.domain.model.state;
 
-import java.util.List;
+import java.util.Iterator;
 
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.MappedParam;
@@ -41,7 +41,8 @@ public class Notification<T> {
 	final private Param<?> eventParam;
 	
 	public interface Producer<T> extends Dispatcher<T> {
-		public List<MappedParam<?, T>> getEventSubscribers();
+		//public List<MappedParam<?, T>> getEventSubscribers();
+		public Iterator<MappedParam<?, T>> getEventSubscribers();
 		
 		public void registerConsumer(MappedParam<?, T> consumer);
 		
