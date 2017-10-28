@@ -7,9 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.servlet.http.HttpSessionEvent;
-import javax.servlet.http.HttpSessionListener;
-
 import org.springframework.web.context.request.RequestContextHolder;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
@@ -25,20 +22,18 @@ import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
 
-import lombok.Getter;
-
 /**
  * @author Soham Chakravarti
  *
  */
-public class DefaultExecutionContextLoader implements ExecutionContextLoader, HttpSessionListener {
+public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 
 	private final DomainConfigBuilder domainConfigBuilder;
 	private final CommandExecutor<?> executorActionNew;
 	private final CommandExecutor<?> executorActionGet;
 
 	// TODO: Temp impl till Session is rolled out
-	private final SessionData sessionCache;
+	private final Map<String, ExecutionContext> sessionCache;
 	
 	private final QuadModelBuilder quadModelBuilder;
 	
@@ -50,7 +45,7 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader, Ht
 		this.executorActionGet = beanResolver.get(CommandExecutor.class, Action._get.name() + Behavior.$execute.name());
 		
 		// TODO: Temp impl till Session is rolled out
-		this.sessionCache = new SessionData();
+		this.sessionCache = new HashMap<>(100);
 	}
 	
 	@Override
@@ -141,121 +136,25 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader, Ht
 		}
 	};
 	
-	
-	@Override
-	public void sessionCreated(HttpSessionEvent sessionEvent) {
-		String sessionId = sessionEvent.getSession().getId();
-		sessionCache.getData().put(sessionId, new SessionEntries());
-	}
-	
-	@Override
-	public void sessionDestroyed(HttpSessionEvent sessionEvent) {
-		String sessionId = sessionEvent.getSession().getId();
+	private String getSessionKey(ExecutionContext eCtx) {
+		String sessionId = TH_SESSION.get();
+		String ctxId = eCtx.getId();
 		
-		SessionEntries entries = sessionCache.getData().remove(sessionId);
-		Optional.ofNullable(entries)
-			.ifPresent(SessionEntries::clear);
-	}
-	
-	@Getter
-	public static class SessionData {
-		private final Map<String, SessionEntries> data = new HashMap<>();
-		
-		private String getCurrentSessionId() {
-			return TH_SESSION.get();
-		}
-		
-		public boolean containsKey(ExecutionContext eCtx) {
-			String sessionId = getCurrentSessionId();
-			
-			if(!data.containsKey(sessionId))
-				return false;
-			
-			SessionEntries entries = data.get(sessionId);
-			return entries.contains(eCtx);
-		}
-		
-		public ExecutionContext get(ExecutionContext eCtx) {
-			String sessionId = getCurrentSessionId();
-			
-			SessionEntries entries = data.get(sessionId);
-			return entries.get(eCtx);
-		}
-		
-		public void put(ExecutionContext eCtx) {
-			String sessionId = getCurrentSessionId();
-			
-			SessionEntries entries;
-			if(data.containsKey(sessionId))
-				entries = data.get(sessionId);
-			else {
-				entries = new SessionEntries();
-				data.put(sessionId, entries);
-			}
-			
-			entries.put(eCtx);
-		}
-		
-		public ExecutionContext remove(ExecutionContext eCtx) {
-			String sessionId = getCurrentSessionId();
-			
-			SessionEntries entries = data.get(sessionId);
-			return entries.remove(eCtx);
-		}
-		
-		public void clear() {
-			getData().values().stream().forEach(SessionEntries::clear);
-			
-			// map clear
-			getData().clear();
-		}
-	}
-	
-	@Getter
-	public static class SessionEntries {
-		private final Map<String, ExecutionContext> contexts = new HashMap<>();
-		
-		public boolean contains(ExecutionContext eCtx) {
-			String id = eCtx.getId();
-			return contexts.containsKey(id);
-		}
-		
-		public ExecutionContext get(ExecutionContext eCtx) {
-			String id = eCtx.getId();
-			return contexts.get(id);
-		}
-		
-		public void put(ExecutionContext eCtx) {
-			String id = eCtx.getId();
-			contexts.put(id, eCtx);
-		}
-		
-		public ExecutionContext remove(ExecutionContext eCtx) {
-			String id = eCtx.getId();
-			return contexts.remove(id);
-		}
-		
-		public void clear() {
-			getContexts().values().stream().forEach(eCtx->{
-				eCtx.getQuadModel().getRoot().getExecutionRuntime().stop();
-			});
-			
-			// map clear
-			getContexts().clear();
-		}
+		String key = ctxId +"_sessionId{"+sessionId+"}";
+		return key;
 	}
 	
 	private boolean queueExists(ExecutionContext eCtx) {
-		return sessionCache.containsKey(eCtx);
+		return sessionCache.containsKey(getSessionKey(eCtx));
 	}
 	
 	private ExecutionContext queueGet(ExecutionContext eCtx) {
-		return sessionCache.get(eCtx);
+		return sessionCache.get(getSessionKey(eCtx));
 	}
 	
 	private boolean queuePut(ExecutionContext eCtx) {
 		synchronized (sessionCache) {
-			sessionCache.put(eCtx);
+			sessionCache.put(getSessionKey(eCtx), eCtx);
 		}
 		return true;
 	}
@@ -266,7 +165,7 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader, Ht
 			return false;
 		
 		synchronized (sessionCache) {
-			ExecutionContext removed = sessionCache.remove(eCtx);
+			ExecutionContext removed = sessionCache.remove(getSessionKey(eCtx));
 			return removed!=null;
 		}
 	}
@@ -274,7 +173,14 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader, Ht
 	@Override
 	public void clear() {
 		synchronized (sessionCache) {
-			sessionCache.clear();
+			// shutdown
+			sessionCache.values().stream()
+				.forEach(e->{
+					e.getQuadModel().getRoot().getExecutionRuntime().stop();
+				});
+			
+			// clear cache
+			sessionCache.clear();	
 		}
 	}
 }
