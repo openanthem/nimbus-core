@@ -67,6 +67,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	private boolean visible = true;
 	
+	private boolean enabled = true;
+	
 	private List<ParamValue> values;
 	
 	private Message message;
@@ -533,6 +535,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		return null;	
 	}
 	
+	@Override
 	public void setVisible(boolean visible) {
 		if(isVisible()==visible)
 			return;
@@ -541,6 +544,16 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		emitParamContextEvent();
 	}
 	
+	@Override
+	public void setEnabled(boolean enabled) {
+		if(isEnabled()==enabled)
+			return;
+		
+		this.enabled = enabled;
+		emitParamContextEvent();
+	}
+	
+	@Override
 	public void setValues(List<ParamValue> values) {
 		if(getValues()==values)
 			return;
@@ -549,6 +562,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		emitParamContextEvent();
 	}
 	
+	@Override
 	public void setMessage(Message message) {
 		if(getMessage()==null && message==null)
 			return;
@@ -617,8 +631,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		// toggle
 		setActive(to);
 		setVisible(to);
-//		findParamByPath("/#/visible").setState(to);
-//		findParamByPath("/#/enabled").setState(to);
+		setEnabled(to);
 		
 		// notify mapped subscribers, if any
 		//==emitNotification(new Notification<>(this, ActionType._active, this));

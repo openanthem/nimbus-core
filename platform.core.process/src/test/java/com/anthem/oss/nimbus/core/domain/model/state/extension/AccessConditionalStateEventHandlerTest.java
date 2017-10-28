@@ -65,49 +65,49 @@ public class AccessConditionalStateEventHandlerTest extends AbstractStateEventHa
 	public void t1_hidden_ContainsTrue_OneRole() {
 		Param<?> p = _q.getRoot().findParamByPath(ACCESS_CONDITIONAL_CONTAINS_HIDDEN_PARAM1_PATH);
 		assertFalse(p.isVisible());
-		//assertTrue((Boolean)p.findStateByPath("/#/enabled") == null);
+		assertFalse(p.isEnabled());
 	}
 	
 	@Test
 	public void t2_hidden_ContainsTrue_MultipleRoles() {
 		Param<?> p = _q.getRoot().findParamByPath(ACCESS_CONDITIONAL_CONTAINS_HIDDEN_PARAM2_PATH);
 		assertFalse(p.isVisible());
-		//assertTrue((Boolean)p.findStateByPath("/#/enabled") == null);
+		assertFalse(p.isEnabled());
 	}
 	
 	@Test
 	public void t3_readOnly_ContainsTrue() {
 		Param<?> p = _q.getRoot().findParamByPath(ACCESS_CONDITIONAL_CONTAINS_READ_PARAM_PATH);
 		assertTrue(p.isVisible());
-		//assertTrue((Boolean)p.findStateByPath("/#/enabled") == false);
+		assertFalse(p.isEnabled());
 	}
 	
 	@Test
 	public void t4_readOnly_WhenTrue() {
 		Param<?> p = _q.getRoot().findParamByPath(ACCESS_CONDITIONAL_WHEN_READ_PARAM1_PATH);
 		assertTrue(p.isVisible());
-		//assertTrue((Boolean)p.findStateByPath("/#/enabled") == false);
+		assertFalse(p.isEnabled());
 	}
 	
 	@Test
 	public void t5_notReadOnly_WhenFails() {
 		Param<?> p = _q.getRoot().findParamByPath(ACCESS_CONDITIONAL_WHEN_READ_PARAM2_PATH);
 		assertTrue(p.isVisible());
-		//assertTrue((Boolean)p.findStateByPath("/#/enabled") != false);
+		assertTrue(p.isEnabled());
 	}
 	
 	@Test
 	public void t6_hidden_WhenTrue() {
 		Param<?> p = _q.getRoot().findParamByPath(ACCESS_CONDITIONAL_WHEN_HIDDEN_PARAM1_PATH);
 		assertFalse(p.isVisible());
-		//assertTrue((Boolean)p.findStateByPath("/#/enabled") == null);
+		assertFalse(p.isEnabled());
 	}
 	
 	@Test
 	public void t7_hidden_WhenTrue() {
 		Param<?> p = _q.getRoot().findParamByPath(ACCESS_CONDITIONAL_WHEN_HIDDEN_PARAM2_PATH);
 		assertFalse(p.isVisible());
-		//assertTrue((Boolean)p.findStateByPath("/#/enabled") == null);
+		assertFalse(p.isEnabled());
 	}
 	
 	

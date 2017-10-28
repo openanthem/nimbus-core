@@ -55,11 +55,11 @@ public class AccessConditionalStateEventHandler extends AbstractConditionalState
 	private void handlePermission(Permission p, Param<?> onChangeParam) {
 		if(Permission.HIDDEN == p) {
 			onChangeParam.setVisible(false);
-			//onChangeParam.findParamByPath("/#/enabled").setState(null);
+			onChangeParam.setEnabled(false);
 		}
 		else if(Permission.READ == p) {
 			onChangeParam.setVisible(true);
-			//onChangeParam.findParamByPath("/#/enabled").setState(false);
+			onChangeParam.setEnabled(false);
 		}
 	}
 		

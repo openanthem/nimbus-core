@@ -306,6 +306,9 @@ public interface EntityState<T> {
 		boolean isVisible();
 		void setVisible(boolean visible);
 		
+		boolean isEnabled();
+		void setEnabled(boolean enabled);
+		
 		List<ParamValue> getValues();
 		void setValues(List<ParamValue> values);
 		
