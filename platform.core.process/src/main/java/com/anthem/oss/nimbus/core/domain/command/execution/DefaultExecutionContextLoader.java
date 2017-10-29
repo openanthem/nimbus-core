@@ -21,6 +21,7 @@ import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
+import com.anthem.oss.nimbus.core.util.JustLogit;
 
 /**
  * @author Soham Chakravarti
@@ -37,6 +38,8 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 	
 	private final QuadModelBuilder quadModelBuilder;
 	
+	private static final JustLogit logit = new JustLogit(DefaultExecutionContextLoader.class);
+	
 	public DefaultExecutionContextLoader(BeanResolverStrategy beanResolver) {
 		this.domainConfigBuilder = beanResolver.get(DomainConfigBuilder.class);
 		this.quadModelBuilder = beanResolver.get(QuadModelBuilder.class);
@@ -48,28 +51,51 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 		this.sessionCache = new HashMap<>(100);
 	}
 	
+	private static String getSessionIdForLogging() {
+		final String thSessionId = TH_SESSION.get();
+		try {
+			String msg = "Session from HTTP: "+ RequestContextHolder.getRequestAttributes().getSessionId()+
+							" :: Session  from TH_SESSION: "+ thSessionId;
+			return msg;
+		} catch (Exception ex) {
+			logit.error(()->"Failed to get session info, TH_SESSION: "+thSessionId, ex);
+			return "Failed to get session from HTTP, TH_SESSION: "+thSessionId;
+		}
+	}
+	
 	@Override
 	public final ExecutionContext load(Command rootDomainCmd) {
+		logit.trace(()->"[load][I] rootDomainCmd:"+rootDomainCmd+" for "+getSessionIdForLogging());
+		
 		ExecutionContext eCtx = new ExecutionContext(rootDomainCmd);
 		
 		// _search: transient - just create shell 
 		if(isTransient(rootDomainCmd)) {
+			logit.trace(()->"[load] isTransient");
+			
 			QuadModel<?, ?> q = quadModelBuilder.build(rootDomainCmd);
 			eCtx.setQuadModel(q);
 			
 		} else // _new takes priority
 		if(rootDomainCmd.isRootDomainOnly() && rootDomainCmd.getAction()==Action._new) {
+			logit.trace(()->"[load] isRootDomainOnly && _new");
+			
 			eCtx = loadEntity(eCtx, executorActionNew);
 			
 		} else // check if already exists in session
 		if(sessionExists(eCtx)) { 
+			logit.trace(()->"[load] sessionExists");
+			
 			QuadModel<?, ?> q = sessionGet(eCtx);
 			eCtx.setQuadModel(q);
 			
 		} else { // all else requires resurrecting entity
+			logit.trace(()->"[load] do _get and put in sessionIfApplicable");
+			
 			eCtx = loadEntity(eCtx, executorActionGet);
 		}
 		
+		logit.trace(()->"[load][O] rootDomainCmd:"+rootDomainCmd+" for "+getSessionIdForLogging());
 		return eCtx;
 	}
 	
@@ -119,6 +145,14 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 		return queueRemove(eCtx);
 	}
 	
+	private void logSessionKeys() {
+		logit.trace(()->"session size: "+sessionCache.size());
+		
+		sessionCache.keySet().stream()
+			.forEach(key->logit.trace(()->"session key: "+key));
+	}
+	
+	
 	protected boolean sessionExists(ExecutionContext eCtx) {
 		return queueExists(eCtx);
 	}
@@ -137,6 +171,9 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 	};
 	
 	private String getSessionKey(ExecutionContext eCtx) {
+		logit.trace(()->"[getSessionKey] eCtx:"+eCtx+" for "+getSessionIdForLogging());
+		logSessionKeys();
+
 		String sessionId = TH_SESSION.get();
 		String ctxId = eCtx.getId();
 		
