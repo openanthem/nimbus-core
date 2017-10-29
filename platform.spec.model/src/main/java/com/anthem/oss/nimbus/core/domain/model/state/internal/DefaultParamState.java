@@ -8,8 +8,6 @@ import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -20,6 +18,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.util.ClassUtils;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
+import com.anthem.oss.nimbus.core.InvalidOperationAttemptedException;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.execution.ValidationResult;
 import com.anthem.oss.nimbus.core.domain.definition.Constants;
@@ -82,7 +81,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	//final private List<WeakReference<MappedParam<?, T>>> weakReferencedEventSubscribers = new ArrayList<>();
 	
 	@JsonIgnore 
-	private final List<MappedParam<?, T>> eventSubscribers = new ArrayList<>(); 
+	List<MappedParam<?, T>> eventSubscribers = new ArrayList<>(); 
 	
 	
 	@JsonIgnore final private PropertyDescriptor propertyDescriptor;
@@ -172,18 +171,18 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 
 	}
 	
-	// TODO: Refactor with Weak reference implementation
-	@JsonIgnore
-	@Override
-	public Iterator<MappedParam<?, T>> getEventSubscribers() {
+//	TODO: Refactor with Weak reference implementation
+//	@JsonIgnore
+//	@Override
+//	public List<MappedParam<?, T>> getEventSubscribers() {
 //		List<MappedParam<?, T>> eventSubscribers = getWeakReferencedEventSubscribers().stream()
 //			.filter(e->e!=null)
 //			.map(e->e.get())
 //				.filter(mp->mp!=null)
 //				.collect(Collectors.toList());
-
-		return eventSubscribers==null ? Collections.emptyIterator() : eventSubscribers.iterator();
-	}
+//
+//		return eventSubscribers==null ? Collections.emptyList() : eventSubscribers;
+//	}
 
 	//@JsonIgnore 
 	@Override
@@ -366,24 +365,16 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 
 	@Override
 	public void registerConsumer(MappedParam<?, T> subscriber) {
-//		if(this instanceof Notification.Consumer)
-//			throw new InvalidOperationAttemptedException("Registering subscriber for Mapped entities are not supported. Found for: "+this.getPath()
-//						+" while trying to add subscriber: "+subscriber.getPath());
-//		
-//		getWeakReferencedEventSubscribers().add(new WeakReference<>(subscriber));
-		eventSubscribers.add(subscriber);
+		if(this instanceof Notification.Consumer)
+			throw new InvalidOperationAttemptedException("Registering subscriber for Mapped entities are not supported. Found for: "+this.getPath()
+						+" while trying to add subscriber: "+subscriber.getPath());
+		
+		getEventSubscribers().add(subscriber);
 	}
 	
 	@Override
 	public boolean deregisterConsumer(MappedParam<?, T> subscriber) {
-//		Optional<WeakReference<MappedParam<?, T>>> optRef = getWeakReferencedEventSubscribers().stream()
-//				.filter(wRef->wRef.get()==subscriber).findFirst();
-//		
-//		if(optRef.isPresent())
-//			return getWeakReferencedEventSubscribers().remove(optRef.get());
-//		
-//		return false;
-		return eventSubscribers.remove(subscriber);
+		return getEventSubscribers().remove(subscriber);
 	}
 	
 	@SuppressWarnings("unchecked")

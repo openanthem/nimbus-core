@@ -224,7 +224,7 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 			}
 			
 			if(h.getState()!=null && (this instanceof Notification.Producer)) {
-				((Notification.Producer<?>)this).getEventSubscribers().forEachRemaining((subscriber) -> emitEvent(h.getState(), subscriber));
+				((Notification.Producer<?>)this).getEventSubscribers().forEach((subscriber) -> emitEvent(h.getState(), subscriber));
 			}
 
 		}
