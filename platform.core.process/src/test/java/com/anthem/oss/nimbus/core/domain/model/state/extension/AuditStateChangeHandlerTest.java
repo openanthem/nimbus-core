@@ -91,12 +91,12 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		assertNotNull(getCore_audit_string().getConfig().getEventHandlerConfig().findOnStateChangeHandler(FieldUtils.getField(SampleCoreEntity.class, "audit_String", true).getAnnotation(Audit.class)));
 		assertNotNull(getCore_audit_integer().getConfig().getEventHandlerConfig().findOnStateChangeHandler(FieldUtils.getField(SampleCoreEntity.class, "audit_Integer", true).getAnnotation(Audit.class)));
 		assertNotNull(getCore_unmapped_string().getConfig().getEventHandlerConfig().findOnStateChangeHandler(FieldUtils.getField(SampleCoreEntity.class, "unmapped_String", true).getAnnotation(Audit.class)));
-		assertFalse(getCore_unmapped_string().getEventSubscribers().hasNext());
-		 
+		assertTrue(CollectionUtils.isEmpty(getCore_unmapped_string().getEventSubscribers()));
+		
 		assertNotNull(getView_audit_string().getConfig().getEventHandlerConfig().findOnStateChangeHandler(FieldUtils.getField(VPSampleViewPageGreen.TileGreen.class, "audit_String", true).getAnnotation(Audit.class)));
 		assertNull(getView_audit_integer().getConfig().getEventHandlerConfig());
 		assertNotNull(getView_unmapped_string().getConfig().getEventHandlerConfig().findOnStateChangeHandler(FieldUtils.getField(VPSampleViewPageGreen.TileGreen.class, "unmapped_String", true).getAnnotation(Audit.class)));
-		assertFalse(getView_unmapped_string().getEventSubscribers().hasNext());
+		assertTrue(CollectionUtils.isEmpty(getView_unmapped_string().getEventSubscribers()));
 	}
 	
 	@Test
