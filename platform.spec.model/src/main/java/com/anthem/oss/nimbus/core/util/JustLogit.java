@@ -80,9 +80,9 @@ public class JustLogit {
 	}
 	
 	private String nuetralizeLog(Supplier<String> msg) {
-		if(msg.get() != null) {
-			return SecurityUtils.scanObjectForSecureLogging(msg.get(), SecurityUtils.SECURE);
-		}
+//		if(msg.get() != null) {
+//			return SecurityUtils.scanObjectForSecureLogging(msg.get(), SecurityUtils.SECURE);
+//		}
 			return msg.get();		                     
 	}
 	
