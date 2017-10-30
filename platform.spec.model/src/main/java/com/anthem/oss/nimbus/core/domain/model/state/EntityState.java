@@ -59,6 +59,9 @@ public interface EntityState<T> {
 	void initSetup();
 	void initState();
 	
+	boolean isStateInitialized();
+	void setStateInitialized(boolean initialized);
+	
 	EntityStateAspectHandlers getAspectHandlers();
 	
 	void fireRules();

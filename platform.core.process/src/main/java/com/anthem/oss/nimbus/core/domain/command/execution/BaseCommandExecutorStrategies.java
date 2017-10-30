@@ -6,6 +6,8 @@ package com.anthem.oss.nimbus.core.domain.command.execution;
 import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.web.context.request.RequestContextHolder;
+
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Behavior;
@@ -39,6 +41,10 @@ public class BaseCommandExecutorStrategies {
 		this.hierarchyMatchBeanLoader = beanResolver.get(HierarchyMatchBasedBeanFinder.class);
 	}
 	
+	protected String getSessionId() {
+		String sessionId = RequestContextHolder.getRequestAttributes().getSessionId();
+		return sessionId;
+	}
 	
 	protected Param<?> getRootDomainParam(ExecutionContext eCtx) {
 		String rootDomainAlias = eCtx.getCommandMessage().getCommand().getRootDomainAlias();

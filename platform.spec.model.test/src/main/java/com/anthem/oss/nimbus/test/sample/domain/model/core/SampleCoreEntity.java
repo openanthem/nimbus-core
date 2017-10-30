@@ -10,13 +10,13 @@ import java.util.List;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
 import com.anthem.oss.nimbus.core.domain.definition.Execution.Config;
+import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ActivateConditional;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ActivateConditionals;
 import com.anthem.oss.nimbus.core.domain.definition.extension.Audit;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ConfigConditional;
-import com.anthem.oss.nimbus.core.domain.definition.extension.ConfigConditionals;
 import com.anthem.oss.nimbus.core.domain.definition.extension.Content.Label;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity.IdString;
 
@@ -112,4 +112,15 @@ public class SampleCoreEntity extends IdString {
 //	@ConfigConditional(when="state == 'N'", config=@Config(url="/p/sample_coreassociatedentity/_new?fn=_initEntity&target=/entityId&json=\"<!/id!>\""))
 //	})
 	private String conditionals_config_attr;
+	
+	private SampleForm nc_form;
+	
+	@Model
+	@Getter @Setter
+	public static class SampleForm {
+//		@ActivateConditional(when="state=='Y'", targetPath="../nc_nested_level1")
+//		private String nc_attr1;
+		
+		private SampleNoConversionEntity nc_nested0_Details;
+	}
 }

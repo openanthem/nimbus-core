@@ -3,6 +3,8 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
+import org.springframework.web.context.request.RequestContextHolder;
+
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
@@ -48,9 +50,14 @@ import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
  */
 public interface ExecutionContextLoader {
 
-	public ExecutionContext load(Command rootDomainCmd);
+	default ExecutionContext load(Command rootDomainCmd) {
+		String sessionId = RequestContextHolder.getRequestAttributes().getSessionId();
+		return load(rootDomainCmd, sessionId);
+	}
 	
-	public void unload(ExecutionContext eCtx);
+	public ExecutionContext load(Command rootDomainCmd, String sessionId);
+	
+	public void unload(ExecutionContext eCtx, String sessionId);
 	
 	public void clear();
 }

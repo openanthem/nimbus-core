@@ -60,14 +60,14 @@ public class ActivateParamActivateDeactivateTest extends AbstractStateEventHandl
 		assertTrue(q1.isActive());
 		
 		assertTrue(q1.isVisible());
-		//assertTrue(q1_enabled.getState());
+		assertTrue(q1.isEnabled());
 		
 		addListener();
 		q1.deactivate();
 		
 		assertFalse(q1.isActive());
 		assertFalse(q1.isVisible());
-		//assertFalse(q1_enabled.getState());
+		assertFalse(q1.isEnabled());
 		
 		// validate events
 		assertNotNull(_paramEvents);

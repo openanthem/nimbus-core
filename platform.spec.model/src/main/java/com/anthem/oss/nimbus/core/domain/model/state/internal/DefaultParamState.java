@@ -604,6 +604,42 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	
 	@Override
+	public boolean isVisible() {
+		if(!isActive() || !visible)
+			return false;
+		
+		Param<?> parentParam = Optional.ofNullable(getParentModel())
+			.map(Model::getAssociatedParam)
+			.orElse(null);
+			
+		if(parentParam==null)
+			return visible;
+		
+		if(!parentParam.isVisible())
+			return false;
+		
+		return visible;
+	}
+	
+	@Override
+	public boolean isEnabled() {
+		if(!isActive() || !enabled)
+			return false;
+		
+		Param<?> parentParam = Optional.ofNullable(getParentModel())
+			.map(Model::getAssociatedParam)
+			.orElse(null);
+			
+		if(parentParam==null)
+			return enabled;
+		
+		if(!parentParam.isEnabled())
+			return false;
+		
+		return enabled;
+	}
+	
+	@Override
 	public void activate() {
 		toggleActivate(true);
 	}
@@ -616,8 +652,11 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	protected boolean toggleActivate(boolean to) {
 		return changeStateTemplate((rt, h, lockId)->{
 			boolean result = affectToggleActivate(to);
-			if(result)
+			if(result) {
 				h.setState(Action._update);
+				
+				emitParamContextEvent();
+			}
 			
 			return result;
 		});
@@ -656,9 +695,10 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		findIfNested().getParams().stream()
 			.forEach(cp->{
 				if(to)
-					cp.activate();
-				else
-					cp.deactivate();
+					cp.initState();//cp.activate();
+				else {
+					cp.setStateInitialized(false);//cp.deactivate();
+				}
 			});
 		
 		return true;
