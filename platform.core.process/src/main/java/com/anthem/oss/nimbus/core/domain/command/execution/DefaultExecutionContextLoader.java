@@ -7,11 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.servlet.http.HttpSessionEvent;
-import javax.servlet.http.HttpSessionListener;
-
-import org.springframework.web.context.request.RequestContextHolder;
-
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Behavior;
@@ -24,23 +19,24 @@ import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
-
-import lombok.Getter;
+import com.anthem.oss.nimbus.core.util.JustLogit;
 
 /**
  * @author Soham Chakravarti
  *
  */
-public class DefaultExecutionContextLoader implements ExecutionContextLoader, HttpSessionListener {
+public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 
 	private final DomainConfigBuilder domainConfigBuilder;
 	private final CommandExecutor<?> executorActionNew;
 	private final CommandExecutor<?> executorActionGet;
 
 	// TODO: Temp impl till Session is rolled out
-	private final SessionData sessionCache;
+	private final Map<String, ExecutionContext> sessionCache;
 	
 	private final QuadModelBuilder quadModelBuilder;
+	
+	private static final JustLogit logit = new JustLogit(DefaultExecutionContextLoader.class);
 	
 	public DefaultExecutionContextLoader(BeanResolverStrategy beanResolver) {
 		this.domainConfigBuilder = beanResolver.get(DomainConfigBuilder.class);
@@ -50,37 +46,60 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader, Ht
 		this.executorActionGet = beanResolver.get(CommandExecutor.class, Action._get.name() + Behavior.$execute.name());
 		
 		// TODO: Temp impl till Session is rolled out
-		this.sessionCache = new SessionData();
+		this.sessionCache = new HashMap<>(100);
 	}
 	
+//	private static String getSessionIdForLogging() {
+//		final String thSessionId = TH_SESSION.get();
+//		try {
+//			String msg = "Session from HTTP: "+ RequestContextHolder.getRequestAttributes().getSessionId()+
+//							" :: Session  from TH_SESSION: "+ thSessionId;
+//			return msg;
+//		} catch (Exception ex) {
+//			logit.error(()->"Failed to get session info, TH_SESSION: "+thSessionId, ex);
+//			return "Failed to get session from HTTP, TH_SESSION: "+thSessionId;
+//		}
+//	}
+	
 	@Override
-	public final ExecutionContext load(Command rootDomainCmd) {
+	public final ExecutionContext load(Command rootDomainCmd, String sessionId) {
+		logit.trace(()->"[load][I] rootDomainCmd:"+rootDomainCmd+" for "+sessionId);
+		
 		ExecutionContext eCtx = new ExecutionContext(rootDomainCmd);
 		
 		// _search: transient - just create shell 
 		if(isTransient(rootDomainCmd)) {
+			logit.trace(()->"[load] isTransient");
+			
 			QuadModel<?, ?> q = quadModelBuilder.build(rootDomainCmd);
 			eCtx.setQuadModel(q);
 			
 		} else // _new takes priority
 		if(rootDomainCmd.isRootDomainOnly() && rootDomainCmd.getAction()==Action._new) {
-			eCtx = loadEntity(eCtx, executorActionNew);
+			logit.trace(()->"[load] isRootDomainOnly && _new");
+			
+			eCtx = loadEntity(eCtx, executorActionNew, sessionId);
 			
 		} else // check if already exists in session
-		if(sessionExists(eCtx)) { 
-			QuadModel<?, ?> q = sessionGet(eCtx);
+		if(sessionExists(eCtx, sessionId)) { 
+			logit.trace(()->"[load] sessionExists");
+			
+			QuadModel<?, ?> q = sessionGet(eCtx, sessionId);
 			eCtx.setQuadModel(q);
 			
 		} else { // all else requires resurrecting entity
-			eCtx = loadEntity(eCtx, executorActionGet);
+			logit.trace(()->"[load] do _get and put in sessionIfApplicable");
+			
+			eCtx = loadEntity(eCtx, executorActionGet, sessionId);
 		}
 		
+		logit.trace(()->"[load][O] rootDomainCmd:"+rootDomainCmd+" for "+sessionId);
 		return eCtx;
 	}
 	
 	@Override
-	public final void unload(ExecutionContext eCtx) {
-		sessionRemomve(eCtx);
+	public final void unload(ExecutionContext eCtx, String sessionId) {
+		sessionRemomve(eCtx, sessionId);
 		
 		// also do an explicit shutdown
 		eCtx.getQuadModel().getRoot().getExecutionRuntime().stop();
@@ -91,7 +110,7 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader, Ht
 				|| cmd.getAction()==Action._config;
 	}
 	
-	private ExecutionContext loadEntity(ExecutionContext eCtx, CommandExecutor<?> executor) {
+	private ExecutionContext loadEntity(ExecutionContext eCtx, CommandExecutor<?> executor, String sessionId) {
 		CommandMessage cmdMsg = eCtx.getCommandMessage();
 		String inputCmdUri = cmdMsg.getCommand().getAbsoluteUri();
 		
@@ -103,170 +122,95 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader, Ht
 		
 		ModelConfig<?> rootDomainConfig = domainConfigBuilder.getRootDomainOrThrowEx(cmdMsg.getCommand().getRootDomainAlias());
 		
-		sessionPutIfApplicable(rootDomainConfig, eCtx);
+		sessionPutIfApplicable(rootDomainConfig, eCtx, sessionId);
 		
 		return eCtx;
 	}
 	
-	protected boolean sessionPutIfApplicable(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx) {
+	protected boolean sessionPutIfApplicable(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx, String sessionId) {
 		Repo repo = rootDomainConfig.getRepo();
 		if(repo==null)
 			return false;
 		
 		if(repo.cache()==Repo.Cache.rep_device) {
-			return queuePut(eCtx);
+			return queuePut(eCtx, sessionId);
 		}
 
 		return false;
 	}
 	
-	protected boolean sessionRemomve(ExecutionContext eCtx) {
-		return queueRemove(eCtx);
+	protected boolean sessionRemomve(ExecutionContext eCtx, String sessionId) {
+		return queueRemove(eCtx, sessionId);
 	}
 	
-	protected boolean sessionExists(ExecutionContext eCtx) {
-		return queueExists(eCtx);
+	private void logSessionKeys() {
+		logit.trace(()->"session size: "+sessionCache.size());
+		
+		sessionCache.keySet().stream()
+			.forEach(key->logit.trace(()->"session key: "+key));
 	}
 	
-	protected QuadModel<?, ?> sessionGet(ExecutionContext eCtx) {
-		return Optional.ofNullable(queueGet(eCtx))
+	
+	protected boolean sessionExists(ExecutionContext eCtx, String sessionId) {
+		return queueExists(eCtx, sessionId);
+	}
+	
+	protected QuadModel<?, ?> sessionGet(ExecutionContext eCtx, String sessionId) {
+		return Optional.ofNullable(queueGet(eCtx, sessionId))
 				.map(ExecutionContext::getQuadModel)
 				.orElse(null);
 	}
 	
-	private static final InheritableThreadLocal<String> TH_SESSION = new InheritableThreadLocal<String>() {
-		@Override
-		protected String initialValue() {
-			return RequestContextHolder.getRequestAttributes().getSessionId();
-		}
-	};
+//	private static final InheritableThreadLocal<String> TH_SESSION = new InheritableThreadLocal<String>() {
+//		@Override
+//		protected String initialValue() {
+//			return RequestContextHolder.getRequestAttributes().getSessionId();
+//		}
+//	};
+//	
+//	private String getSessionKey(ExecutionContext eCtx) {
+//		logit.trace(()->"[getSessionKey] eCtx:"+eCtx+" for "+getSessionIdForLogging());
+//		logSessionKeys();
+//
+//		String sessionId = TH_SESSION.get();
+//		String ctxId = eCtx.getId();
+//		
+//		String key = ctxId +"_sessionId{"+sessionId+"}";
+//		return key;
+//	}
 	
+	private String getSessionKey(ExecutionContext eCtx, String sessionId) {
+		logit.trace(()->"[getSessionKey] eCtx:"+eCtx+" for "+sessionId);
+		logSessionKeys();
 	
-	@Override
-	public void sessionCreated(HttpSessionEvent sessionEvent) {
-		String sessionId = sessionEvent.getSession().getId();
-		sessionCache.getData().put(sessionId, new SessionEntries());
+		String ctxId = eCtx.getId();
+		
+		String key = ctxId +"_sessionId{"+sessionId+"}";
+		return key;
 	}
 	
-	@Override
-	public void sessionDestroyed(HttpSessionEvent sessionEvent) {
-		String sessionId = sessionEvent.getSession().getId();
-		
-		SessionEntries entries = sessionCache.getData().remove(sessionId);
-		Optional.ofNullable(entries)
-			.ifPresent(SessionEntries::clear);
+	private boolean queueExists(ExecutionContext eCtx, String sessionId) {
+		return sessionCache.containsKey(getSessionKey(eCtx, sessionId));
 	}
 	
-	@Getter
-	public static class SessionData {
-		private final Map<String, SessionEntries> data = new HashMap<>();
-		
-		private String getCurrentSessionId() {
-			return TH_SESSION.get();
-		}
-		
-		public boolean containsKey(ExecutionContext eCtx) {
-			String sessionId = getCurrentSessionId();
-			
-			if(!data.containsKey(sessionId))
-				return false;
-			
-			SessionEntries entries = data.get(sessionId);
-			return entries.contains(eCtx);
-		}
-		
-		public ExecutionContext get(ExecutionContext eCtx) {
-			String sessionId = getCurrentSessionId();
-			
-			SessionEntries entries = data.get(sessionId);
-			return entries.get(eCtx);
-		}
-		
-		public void put(ExecutionContext eCtx) {
-			String sessionId = getCurrentSessionId();
-			
-			SessionEntries entries;
-			if(data.containsKey(sessionId))
-				entries = data.get(sessionId);
-			else {
-				entries = new SessionEntries();
-				data.put(sessionId, entries);
-			}
-			
-			entries.put(eCtx);
-		}
-		
-		public ExecutionContext remove(ExecutionContext eCtx) {
-			String sessionId = getCurrentSessionId();
-			
-			SessionEntries entries = data.get(sessionId);
-			return entries.remove(eCtx);
-		}
-		
-		public void clear() {
-			getData().values().stream().forEach(SessionEntries::clear);
-			
-			// map clear
-			getData().clear();
-		}
+	private ExecutionContext queueGet(ExecutionContext eCtx, String sessionId) {
+		return sessionCache.get(getSessionKey(eCtx, sessionId));
 	}
 	
-	@Getter
-	public static class SessionEntries {
-		private final Map<String, ExecutionContext> contexts = new HashMap<>();
-		
-		public boolean contains(ExecutionContext eCtx) {
-			String id = eCtx.getId();
-			return contexts.containsKey(id);
-		}
-		
-		public ExecutionContext get(ExecutionContext eCtx) {
-			String id = eCtx.getId();
-			return contexts.get(id);
-		}
-		
-		public void put(ExecutionContext eCtx) {
-			String id = eCtx.getId();
-			contexts.put(id, eCtx);
-		}
-		
-		public ExecutionContext remove(ExecutionContext eCtx) {
-			String id = eCtx.getId();
-			return contexts.remove(id);
-		}
-		
-		public void clear() {
-			getContexts().values().stream().forEach(eCtx->{
-				eCtx.getQuadModel().getRoot().getExecutionRuntime().stop();
-			});
-			
-			// map clear
-			getContexts().clear();
-		}
-	}
-	
-	private boolean queueExists(ExecutionContext eCtx) {
-		return sessionCache.containsKey(eCtx);
-	}
-	
-	private ExecutionContext queueGet(ExecutionContext eCtx) {
-		return sessionCache.get(eCtx);
-	}
-	
-	private boolean queuePut(ExecutionContext eCtx) {
+	private boolean queuePut(ExecutionContext eCtx, String sessionId) {
 		synchronized (sessionCache) {
-			sessionCache.put(eCtx);
+			sessionCache.put(getSessionKey(eCtx, sessionId), eCtx);
 		}
 		return true;
 	}
 
-	private boolean queueRemove(ExecutionContext eCtx) {
+	private boolean queueRemove(ExecutionContext eCtx, String sessionId) {
 		// skip if doesn't exist
-		if(!queueExists(eCtx))
+		if(!queueExists(eCtx, sessionId))
 			return false;
 		
 		synchronized (sessionCache) {
-			ExecutionContext removed = sessionCache.remove(eCtx);
+			ExecutionContext removed = sessionCache.remove(getSessionKey(eCtx, sessionId));
 			return removed!=null;
 		}
 	}
@@ -274,7 +218,14 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader, Ht
 	@Override
 	public void clear() {
 		synchronized (sessionCache) {
-			sessionCache.clear();
+			// shutdown
+			sessionCache.values().stream()
+				.forEach(e->{
+					e.getQuadModel().getRoot().getExecutionRuntime().stop();
+				});
+			
+			// clear cache
+			sessionCache.clear();	
 		}
 	}
 }
