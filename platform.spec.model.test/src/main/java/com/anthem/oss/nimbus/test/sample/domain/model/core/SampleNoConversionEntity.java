@@ -40,6 +40,8 @@ public class SampleNoConversionEntity {
 		private String nested_nc_attr2C;
 				
 		private NestedNoConversionLevel3 nc_nested_level3;
+		
+		private String nested_nc_attr2D;
 	}
 	
 	@Model
