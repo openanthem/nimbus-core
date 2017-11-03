@@ -59,7 +59,7 @@ There is a formal process for contributing. We try to keep our contribution proc
 ### The basic contribution workflow
 ![Simple process](simple-contribution.png)
 
-Step 1 is always to be sure there isn't already an issue in the repo. If you can't find one, go ahead and create one, then request to be assigned to it. If you do find one, and no one is assigned to it, then request to be assigned to it. When you're assigned to the issue, your pull requests for it will be reviewed and dconsidered.
+Step 1 is always to be sure there isn't already an issue in the repo. If you can't find one, go ahead and create one, then request to be assigned to it. If you do find one, and no one is assigned to it, then request to be assigned to it. When you're assigned to the issue, your pull requests for it will be reviewed and considered.
 
 All Anthem repositories have code and documentation. You use this same workflow for either content type. For example, you can find and fix doc or code issues. Also, you can propose a new project feature or propose a new feature tutorial by contributing a Markdown file that contains a good description of the proposal.
 
