@@ -54,6 +54,15 @@ specific details and requirements for issue reporting.
 
 This section gives the experienced contributor some tips and guidelines.
 
+There is a formal process for contributing. We try to keep our contribution process simple so you’ll want to contribute frequently.
+
+### The basic contribution workflow
+![Simple process](simple-contribution.png)
+
+Step 1 is always to be sure there isn't already an issue in the repo. If you can't find one, go ahead and create one, then request to be assigned to it. If you do find one, and no one is assigned to it, then request to be assigned to it. When you're assigned to the issue, your pull requests for it will be reviewed and dconsidered.
+
+All Anthem repositories have code and documentation. You use this same workflow for either content type. For example, you can find and fix doc or code issues. Also, you can propose a new project feature or propose a new feature tutorial by contributing a Markdown file that contains a good description of the proposal.
+
 ### Pull requests are always welcome
 
 Not sure if that typo is worth a pull request? Found a bug and know how to fix
@@ -62,8 +71,7 @@ documented as a GitHub issue within the project's issue database.
 
 We are always thrilled to receive pull requests. We do our best to process them
 quickly. If your pull request is not accepted on the first try,
-don't get discouraged! Our contributor's guide explains [the review process we
-use for simple changes](https://anthemopensource.atlassian.net/wiki/spaces/opensource/pages/45842546/Making+a+Contribution).
+don't get discouraged! The review process we use is meant to be receptive and fair.
 
 ### Talking to other Anthem Open Source users and contributors
 
