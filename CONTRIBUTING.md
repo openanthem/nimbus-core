@@ -6,13 +6,12 @@ process](https://anthemopensource.atlassian.net/wiki/spaces/opensource/pages/458
 
 This page contains information about reporting issues as well as some tips and
 guidelines useful to experienced open source contributors. Finally, make sure
-you read our [community guidelines](#docker-community-guidelines) before you
+you read our [community guidelines](#anthem-open-source-community-guidelines) before you
 start participating.
 
 ## Topics
 
 * [Reporting Security Issues](#reporting-security-issues)
-* [Design and Cleanup Proposals](#design-and-cleanup-proposals)
 * [Reporting Issues](#reporting-other-issues)
 * [Quick Contribution Tips and Guidelines](#quick-contribution-tips-and-guidelines)
 * [Community Guidelines](#anthem-open-source-community-guidelines)
@@ -33,8 +32,7 @@ A great way to contribute to the project is to send a detailed report when you
 encounter an issue. We always appreciate a well-written, thorough bug report,
 and will thank you for it!
 
-
-Each project has its own issue database, [out nimbus-demo repository has one.](https://github.com/openanthem/nimbus-demo/issues)
+Each Anthem project has its own issue database. 
 Before raising an issue, be sure to refer to the respective issue database and
 make sure an issue doesn't already include that problem or suggestion.
 If you find a match, you can use the "subscribe" button to get notified on
@@ -60,7 +58,7 @@ This section gives the experienced contributor some tips and guidelines.
 
 Not sure if that typo is worth a pull request? Found a bug and know how to fix
 it? Do it! We will appreciate it. Any significant improvement should be
-documented as a GitHub issues within projects issue database.
+documented as a GitHub issue within the project's issue database.
 
 We are always thrilled to receive pull requests. We do our best to process them
 quickly. If your pull request is not accepted on the first try,
@@ -76,7 +74,7 @@ use for simple changes](https://anthemopensource.atlassian.net/wiki/spaces/opens
     <td>Forums</td>
     <td>
       A public forum for users to discuss questions and explore current design patterns and
-      best practices projects in the Anthem Open Source Ecosystem. Join into the ,
+      best practices projects in the Anthem Open Source Ecosystem. Join the 
       conversations at <a href="http://discourse.oss.antheminc.com/" target="_blank">http://discourse.oss.antheminc.com/</a>.
     </td>
   </tr>  
@@ -99,11 +97,11 @@ Fork the repository and make changes on your fork in a feature branch:
     your intentions, and name it XXXX-something where XXXX is the number of the
     issue.
 
-Submit unit tests for your changes.  Refer to projects README.md#unit-tests for
+Submit unit tests for your changes.  Refer to the project readme's unit tests section for
 project details on unit testing.
 
-Pull request titles should include GitHub issue id from projects issue database
-that supports this change.
+Pull request titles should include the GitHub issue ID from the project's issue database
+that supports the change.
 
 Pull request descriptions should be as clear as possible and include a reference
 to all the issues that they address.
@@ -144,7 +142,7 @@ Please see the [Coding Style](#coding-style) for further guidelines.
 
 ### Merge approval
 
-This will be outlined later.
+Anthem will outline this process soon.
 
 ### How can I become a maintainer?
 
@@ -221,4 +219,4 @@ intolerable.
 
 ## Coding Style
 
-This needs definition.
+Anthem will define these guidelines soon.
