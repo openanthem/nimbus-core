@@ -47,7 +47,7 @@ When sending lengthy log-files, consider posting them as a gist (https://gist.gi
 Don't forget to remove sensitive data from your logfiles before posting (you can
 replace those parts with "REDACTED").
 
-When reporting issues, always refer to projects README.md#issue-reporting for
+When reporting issues, always refer to the project readme's issue reporting section for
 specific details and requirements for issue reporting.
 
 ## Quick contribution tips and guidelines
@@ -59,7 +59,7 @@ There is a formal process for contributing. We try to keep our contribution proc
 ### The basic contribution workflow
 ![Simple process](simple-contribution.png)
 
-Step 1 is always to be sure there isn't already an issue in the repo. If you can't find one, go ahead and create one, then request to be assigned to it. If you do find one, and no one is assigned to it, then request to be assigned to it. When you're assigned to the issue, your pull requests for it will be reviewed and considered.
+Step 1 is always to be sure there isn't already an issue in the repo. If you can't find one, go ahead and create one, then request to be assigned to it. If you do find one, and no one is assigned to it, then request to be assigned to it. When you're assigned to the issue, your pull requests for it will be reviewed and dconsidered.
 
 All Anthem repositories have code and documentation. You use this same workflow for either content type. For example, you can find and fix doc or code issues. Also, you can propose a new project feature or propose a new feature tutorial by contributing a Markdown file that contains a good description of the proposal.
 
