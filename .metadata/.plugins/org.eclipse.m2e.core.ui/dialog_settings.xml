@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="org.eclipse.m2e.core.pom.dependencies">
+	</section>
+	<section name="org.eclipse.m2e.core.pom.overview">
+		<list key="ciManagementUrl">
+		</list>
+		<list key="ciManagementSystem">
+		</list>
+		<list key="issueManagementSystem">
+			<item value="Github"/>
+		</list>
+		<list key="issueManagementUrl">
+			<item value="https://github.com/anthemprojects/nimbus-oss/issues"/>
+		</list>
+	</section>
+</section>

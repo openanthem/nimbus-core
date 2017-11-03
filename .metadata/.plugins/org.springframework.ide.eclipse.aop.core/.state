@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aop-reference-model>
+<aop-project name="platform.core.process"/>
+<aop-project name="platform.spec.model.test"/>
+<aop-project name="platform.core.processor"/>
+<aop-project name="platform.spec.model"/>
+</aop-reference-model>

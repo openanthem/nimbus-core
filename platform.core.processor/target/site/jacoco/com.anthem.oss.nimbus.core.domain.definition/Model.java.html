@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Model.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">com.anthem.oss.nimbus.core.processor</a> &gt; <a href="index.source.html" class="el_package">com.anthem.oss.nimbus.core.domain.definition</a> &gt; <span class="el_source">Model.java</span></div><h1>Model.java</h1><pre class="source lang-java linenums">package com.anthem.oss.nimbus.core.domain.definition;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.util.List;
+
+import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
+import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
+
+/**
+ * @author Soham Chakravarti
+ *
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(value={ElementType.TYPE, ElementType.ANNOTATION_TYPE})
+@Inherited
+public @interface Model {
+	
+	/**
+	 * alias
+	 */
+	String value() default &quot;&quot;;
+	
+	String rules() default &quot;drools&quot;;
+	
+	// list of listeners to exclude at a nested model level. Use only to exclude a particular listener defined at a root Domain level
+	ListenerType[] excludeListeners() default { };
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	public @interface Param {
+		
+		@Retention(RetentionPolicy.RUNTIME)
+		@Target({ElementType.FIELD})
+		public @interface Values {
+			
+			public static interface Source {
+				public List&lt;ParamValue&gt; getValues(String paramCode);
+			}
+			
+<span class="nc" id="L44">			public static class EMPTY implements Source {</span>
+				@Override
+				public List&lt;ParamValue&gt; getValues(String paramPath) {
+<span class="nc" id="L47">					return null;</span>
+				}
+			}
+			
+			Class&lt;? extends Source&gt; value() default EMPTY.class;
+			
+			String url() default &quot;staticCodeValue&quot;;
+		}
+
+	}
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>
