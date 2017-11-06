@@ -11,4 +11,5 @@ com.anthem.oss.nimbus.core.config.DefaultProcessConfig,\
 com.anthem.oss.nimbus.core.config.DefaultCoreExecutorConfig,\
 com.anthem.oss.nimbus.core.config.DefaultCoreBuilderConfig,\
 com.anthem.oss.nimbus.core.config.ActivitiProcessAsBeanRegistrar,\
+com.anthem.oss.nimbus.core.config.SessionProviderConfig,\
 com.anthem.oss.nimbus.core.config.DefaultFrameworkExtensionsConfig
