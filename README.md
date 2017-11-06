@@ -1,5 +1,5 @@
-# oss-base
-Base repository containing files for all other Open Source repositories.
+# nimbus-core
+Core repository of nimbus.
 
 ## Issue Reporting
 
@@ -9,6 +9,6 @@ Base repository containing files for all other Open Source repositories.
 
 Licensing
 =========
-Anthem Open Source projects are licensed under the *WHICH LICENSE??* . See
+Anthem Open Source projects are licensed under the *Apache License v2* . See
 [LICENSE](https://github.com/openanthem/oss-base/blob/master/LICENSE) for the full
 license text.
