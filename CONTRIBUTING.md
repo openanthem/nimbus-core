@@ -57,7 +57,7 @@ This section gives the experienced contributor some tips and guidelines.
 There is a formal process for contributing. We try to keep our contribution process simple so you’ll want to contribute frequently.
 
 ### The basic contribution workflow
-![Simple process](assets/simple-contribution.png)
+![Simple process](oss.platform/assets/simple-contribution.png)
 
 Step 1 is always to be sure there isn't already an issue in the repo. If you can't find one, go ahead and create one, then request to be assigned to it. If you do find one, and no one is assigned to it, then request to be assigned to it. When you're assigned to the issue, your pull requests for it will be reviewed and considered.
 
