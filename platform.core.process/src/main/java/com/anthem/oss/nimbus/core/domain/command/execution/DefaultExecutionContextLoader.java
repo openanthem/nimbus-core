@@ -36,6 +36,8 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 	
 	private final QuadModelBuilder quadModelBuilder;
 	
+	private final SessionProvider sessionProvider;
+	
 	private static final JustLogit logit = new JustLogit(DefaultExecutionContextLoader.class);
 	
 	public DefaultExecutionContextLoader(BeanResolverStrategy beanResolver) {
@@ -44,6 +46,8 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 		
 		this.executorActionNew = beanResolver.get(CommandExecutor.class, Action._new.name() + Behavior.$execute.name());
 		this.executorActionGet = beanResolver.get(CommandExecutor.class, Action._get.name() + Behavior.$execute.name());
+		
+		this.sessionProvider = beanResolver.get(SessionProvider.class);
 		
 		// TODO: Temp impl till Session is rolled out
 		this.sessionCache = new HashMap<>(100);
@@ -61,6 +65,11 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 //		}
 //	}
 	
+	@Override
+	public ExecutionContext load(Command rootDomainCmd) {
+		String sessionId = sessionProvider.getSessionId();
+		return load(rootDomainCmd, sessionId);
+	}
 	@Override
 	public final ExecutionContext load(Command rootDomainCmd, String sessionId) {
 		logit.trace(()->"[load][I] rootDomainCmd:"+rootDomainCmd+" for "+sessionId);
