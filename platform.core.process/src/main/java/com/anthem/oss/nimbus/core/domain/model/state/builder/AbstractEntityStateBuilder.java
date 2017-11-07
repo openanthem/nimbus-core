@@ -28,6 +28,7 @@ import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig.MappedParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
+import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
@@ -40,7 +41,6 @@ import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultParamState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity.ExModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultTransientParamState;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.StateContextEntity;
 import com.anthem.oss.nimbus.core.rules.RulesEngineFactoryProducer;
 import com.anthem.oss.nimbus.core.util.ClassLoadUtils;
 import com.anthem.oss.nimbus.core.util.JustLogit;
@@ -132,34 +132,38 @@ abstract public class AbstractEntityStateBuilder extends AbstractEntityStateFact
 		return p;
 	}
 	
+//	private <T> void decorateParam(DefaultParamState<T> created) {
+//		if(created.getConfig().getContextParam()==null) //skip is not configured for RuntimeConfig
+//			return; 
+//
+//		ParamConfig<StateContextEntity> pCofigContext = created.getConfig().getContextParam();
+//		ModelConfig<StateContextEntity> mConfigContext = pCofigContext.getType().<StateContextEntity>findIfNested().getModel();
+//
+//		// create model config for StateContextEntity
+//		ExecutionEntity.ExConfig<Object, StateContextEntity> exConfig = new ExecutionEntity.ExConfig<>(mConfigContext, null, null);
+//		
+//		// context model path
+////		String ctxPath = created.getRootExecution().getRootCommand().buildAlias(Type.PlatformMarker) + //Constants.SEPARATOR_URI.code+ 
+////							created.getPath();// +"/"+ created.getConfig().getContextParam().getCode();
+////		Command ctxCmd = CommandBuilder.withUri(ctxPath).getCommand();
+////		
+////		String ctxParamPath = created.getPath();
+//		Command ctxCmd = created.getRootExecution().getRootCommand();
+//		
+//		ExecutionEntity<Object, StateContextEntity> eStateCtx = new ExecutionEntity<>();
+//		ExecutionEntity<Object, StateContextEntity>.ExParam exParamCtx = eStateCtx.new ExParamLinked(ctxCmd, created.getAspectHandlers(), exConfig, /*ctxParamPath,*/ created);
+//		//exParamCtx.initSetup();
+//		
+//		ExecutionEntity<Object, StateContextEntity>.ExModel exModelCtx = exParamCtx.getRootExecution().unwrap(ExecutionEntity.ExModel.class);
+//		//exModelCtx.initSetup();
+//		
+//		DefaultParamState<StateContextEntity> pCtx = buildParam(created.getAspectHandlers(), exModelCtx, exModelCtx.getConfig().getCoreParam(), null);
+//		Model<StateContextEntity> mCtx = pCtx.findIfNested();
+//		
+//		created.setContextModel(mCtx);
+//	}
+	
 	private <T> void decorateParam(DefaultParamState<T> created) {
-		if(created.getConfig().getContextParam()==null) //skip is not configured for RuntimeConfig
-			return; 
-
-		ParamConfig<StateContextEntity> pCofigContext = created.getConfig().getContextParam();
-		ModelConfig<StateContextEntity> mConfigContext = pCofigContext.getType().<StateContextEntity>findIfNested().getModel();
-
-		// create model config for StateContextEntity
-		ExecutionEntity.ExConfig<Object, StateContextEntity> exConfig = new ExecutionEntity.ExConfig<>(mConfigContext, null, null);
-		
-		// context model path
-		String ctxPath = created.getRootExecution().getRootCommand().buildAlias(Type.PlatformMarker) + //Constants.SEPARATOR_URI.code+ 
-							created.getPath();// +"/"+ created.getConfig().getContextParam().getCode();
-		Command ctxCmd = CommandBuilder.withUri(ctxPath).getCommand();
-		
-		String ctxParamPath = created.getPath();
-		
-		ExecutionEntity<Object, StateContextEntity> eStateCtx = new ExecutionEntity<>();
-		ExecutionEntity<Object, StateContextEntity>.ExParam exParamCtx = eStateCtx.new ExParamLinked(ctxCmd, created.getAspectHandlers(), exConfig, ctxParamPath, created);
-		//exParamCtx.initSetup();
-		
-		ExecutionEntity<Object, StateContextEntity>.ExModel exModelCtx = exParamCtx.getRootExecution().unwrap(ExecutionEntity.ExModel.class);
-		//exModelCtx.initSetup();
-		
-		DefaultParamState<StateContextEntity> pCtx = buildParam(created.getAspectHandlers(), exModelCtx, exModelCtx.getConfig().getCoreParam(), null);
-		Model<StateContextEntity> mCtx = pCtx.findIfNested();
-		
-		created.setContextModel(mCtx);
 		
 	}
 	
@@ -245,7 +249,7 @@ abstract public class AbstractEntityStateBuilder extends AbstractEntityStateFact
 	private void createParamValues(Param<?> param) {
 		Values values = param.getConfig().getValues();
 		if(values != null) {
-			final Object result;
+			final List<ParamValue> result;
 			if(values.value() != EMPTY.class) {
 				Source srcValues = ClassLoadUtils.newInstance(values.value());
 				result = srcValues.getValues(param.getConfig().getCode());
@@ -259,11 +263,11 @@ abstract public class AbstractEntityStateBuilder extends AbstractEntityStateFact
 				cmdMsg.setCommand(cmd);
 				
 				MultiOutput multiOp = getGateway().execute(cmdMsg);
-				result = multiOp.getSingleResult();
+				result = (List<ParamValue>)multiOp.getSingleResult();
 			}
-			Param<Object> p = param.getContextModel().findParamByPath("/values");
+			
 			if(result != null) 
-				p.setState(result);
+				param.setValues(result);
 		}
 	}
 	

@@ -35,7 +35,6 @@ import com.anthem.oss.nimbus.core.util.JustLogit;
 import com.anthem.oss.nimbus.core.util.LockTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -48,9 +47,14 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 
 	final private EntityConfig<T> config;
 	
-	@Setter(AccessLevel.PROTECTED) private String path;
+//	private String path;
+//	private String beanPath;
 	
-	@Setter(AccessLevel.PROTECTED) private String beanPath;
+	//private String[] pathArr;
+	//private String[] beanPathArr;
+	
+//	private String pathSegment;
+//	private String beanPathSegment;
 	
 	@JsonIgnore final private EntityStateAspectHandlers aspectHandlers;
 	
@@ -63,12 +67,77 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 	@JsonIgnore private boolean stateInitialized;
 	
 	public AbstractEntityState(EntityConfig<T> config, EntityStateAspectHandlers aspectHandlers) {
-		Objects.requireNonNull(config, "Config must not be null while instantiating StateAndConfig.");
-		Objects.requireNonNull(aspectHandlers, "Provider must not be null while instantiating StateAndConfig.");
+		Objects.requireNonNull(config, ()->"Config must not be null while instantiating StateAndConfig.");
+		Objects.requireNonNull(aspectHandlers, ()->"Provider must not be null while instantiating StateAndConfig.");
 		
 		this.aspectHandlers = aspectHandlers;
 		this.config = config;
 	}
+	
+	// TODO: SOHAM - need to refactor part of persistence changes
+	protected static String resolvePath(String p) {
+		p = StringUtils.replace(p, "/c/", "/");
+		p = StringUtils.replace(p, "/v/", "/");
+		//p = StringUtils.replace(p, "/f/", "/");
+		
+		p = StringUtils.removeEnd(p, "/c");
+		p = StringUtils.removeEnd(p, "/v");
+		//p = StringUtils.removeEnd(p, "/f");
+		
+		p = StringUtils.replace(p, "//", "/");
+		return p;
+	}
+	
+	/*
+	@Override
+	public String getPath() {
+		return convertArrayToPath(pathArr);
+//		String p = path;
+//
+//		p = StringUtils.replace(path, "/c/", "/");
+//		p = StringUtils.replace(p, "/v/", "/");
+//		p = StringUtils.replace(p, "/f/", "/");
+//		return p;
+	}
+
+//	protected void setPath(String path) {
+//		this.path = path;
+//	}
+	
+	@Override
+	public String getBeanPath() {
+		return convertArrayToBeanPath(beanPathArr);
+	}
+//	public void setBeanPath(String beanPath) {
+//		this.beanPath = beanPath;
+//	}
+	
+	private final static String[] pathIgnores = new String[]{"c", "v", "f"};
+	private String convertArrayToPath(String[] arr) {
+		if(ArrayUtils.isEmpty(arr))
+			return "";
+		
+		StringBuffer sb = new StringBuffer();
+		for(int i=0; i<arr.length; i++) {
+			if(!ArrayUtils.contains(pathIgnores, arr[i]))
+				sb.append(arr[i]);
+		}
+		
+		return sb.toString();
+	}
+	
+	private String convertArrayToBeanPath(String[] arr) {
+		if(ArrayUtils.isEmpty(arr))
+			return "";
+		
+		StringBuffer sb = new StringBuffer();
+		for(int i=0; i<arr.length; i++) {
+			sb.append(arr[i]);
+		}
+		
+		return sb.toString();
+	}
+	*/
 	
 	@Override
 	final public void initSetup() {
@@ -106,8 +175,8 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 	protected void initStateInternal() {}
 	
 	protected Object createOrGetRuntimeEntity() {
-		if(!getRootExecution().getParamRuntimes().containsKey(getPath()))
-			getRootExecution().getParamRuntimes().put(getPath(), new StateContextEntity());
+//		if(!getRootExecution().getParamRuntimes().containsKey(getPath()))
+//			getRootExecution().getParamRuntimes().put(getPath(), new StateContextEntity());
 		
 		return getRootExecution().getParamRuntimes().get(getPath());
 	}
@@ -189,16 +258,6 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 		listener.listen(e);
 	}
 
-	
-	// TODO: SOHAM - need to refactor part of persistence changes
-	public String getPath() {
-		String p = path;
-
-		p = StringUtils.replace(path, "/c/", "/");
-		p = StringUtils.replace(p, "/v/", "/");
-		p = StringUtils.replace(p, "/f/", "/");
-		return p;
-	}
 	
 	public static String getDomainRootAlias(EntityState<?> p) {
 		Model<?> mapsToRootDomain = p.getRootDomain();

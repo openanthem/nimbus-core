@@ -27,6 +27,15 @@ public abstract class AbstractFrameworkIngerationPersistableTests extends Abstra
 	protected static final String CORE_PARAM_ROOT = PLATFORM_ROOT + "/" + CORE_DOMAIN_ALIAS;
 	protected static final String VIEW_PARAM_ROOT = PLATFORM_ROOT + "/" + VIEW_DOMAIN_ALIAS;
 	
+	protected static final String USER_DOMAIN_ALIAS = "clientuser";
+    protected static final String USER_PARAM_ROOT = PLATFORM_ROOT + "/" + USER_DOMAIN_ALIAS;
+    
+    protected static final String USERROLE_DOMAIN_ALIAS = "userrole";
+    protected static final String USEREOLE_PARAM_ROOT = PLATFORM_ROOT + "/" + USERROLE_DOMAIN_ALIAS;
+    
+    protected static final String CORE_ACCESS_DOMAIN_ALIAS = "sample_core_access"; 
+    protected static final String CORE_PARAM_ACCESS_ROOT = PLATFORM_ROOT + "/" + CORE_ACCESS_DOMAIN_ALIAS;
+	
 	protected static final String CORE_ASSOCIATEDPARAM_ROOT = PLATFORM_ROOT + "/" + CORE_ASSOCIATED_DOMAIN_ALIAS;
 	protected static final String VIEW_CEU_PARAM_ROOT = PLATFORM_ROOT + "/ceu_sampleassociatedentity";
 	

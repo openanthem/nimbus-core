@@ -14,6 +14,7 @@ import com.anthem.oss.nimbus.core.domain.definition.extension.Audit;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ConfigConditional;
 import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreAuditEntry;
 import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreEntity;
+import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreEntity.SampleForm;
 import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreLevel1_Entity;
 import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreNestedEntity;
 
@@ -56,6 +57,8 @@ public class VPSampleViewPageGreen {
 		@ConfigConditional(config=@Config(url="/p/sample_view_audit_history/_new?fn=_initEntity&target=/domainRootRefId&json=\"<!/.m/id!>\""))
 		@Path
 		private String for_mapped_state_change_attr;
+		
+		private VFSampleForm view_sample_form;
     }
 	
 	@MapsTo.Type(SampleCoreEntity.class)
@@ -75,5 +78,12 @@ public class VPSampleViewPageGreen {
 		private String nested_attr_String;
 	}
 	
+	@MapsTo.Type(SampleCoreEntity.class)
+	@Getter @Setter
+	public static class VFSampleForm {
+		
+		@Path("/nc_form")
+		private SampleForm view_nc_form;
+	}
 	
 }

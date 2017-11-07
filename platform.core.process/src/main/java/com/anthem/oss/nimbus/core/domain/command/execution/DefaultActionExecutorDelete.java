@@ -32,6 +32,8 @@ public class DefaultActionExecutorDelete extends AbstractCommandExecutor<Boolean
 		this.loader = getBeanResolver().get(ExecutionContextLoader.class);
 	}
 	
+	
+	
 	@Override
 	protected Output<Boolean> executeInternal(Input input) {
 		ExecutionContext eCtx = input.getContext();
@@ -42,7 +44,7 @@ public class DefaultActionExecutorDelete extends AbstractCommandExecutor<Boolean
 		if(eCtx.getCommandMessage().getCommand().isRootDomainOnly()) {
 			handleRootDelete(eCtx);
 			
-			loader.unload(eCtx);
+			loader.unload(eCtx, getSessionId());
 		}
 		else if(p.isCollection())
 			handleCollection(eCtx, p.findIfCollection());

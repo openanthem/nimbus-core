@@ -37,6 +37,13 @@ public class ActivateParamRuleTest  extends ActivateParamBaseTest {
 	private static final String CORE_PARAM_PATH_q2 = "/sample_core/q2";
 	private static final String CORE_PARAM_PATH_q2Level1 = "/sample_core/q2Level1";
 	private static final String CORE_PARAM_PATH_q2Level1_nested_attr_String = CORE_PARAM_PATH_q2Level1 + "/nested_attr_String";
+	
+	private static final String CORE_PARAM_PATH_q4 = "/sample_core/q4";
+	private static final String CORE_PARAM_PATH_q4Level1 = "/sample_core/q4Level1";
+	private static final String CORE_PARAM_PATH_q4Level2 = "/sample_core/q4Level2";
+	private static final String CORE_PARAM_PATH_q4_nested2_attr_String_1 = CORE_PARAM_PATH_q4 + "/nested2_attr_String_1";
+	private static final String CORE_PARAM_PATH_q4_nested2_attr_String_2 = CORE_PARAM_PATH_q4 + "/nested2_attr_String_2";
+	private static final String CORE_PARAM_PATH_q4Level1_nested2_attr_String_1 = CORE_PARAM_PATH_q4Level1 + "/nested2_attr_String_1";
 
 	@Override
 	protected String getSourceParamPath() {
@@ -164,5 +171,67 @@ public class ActivateParamRuleTest  extends ActivateParamBaseTest {
 		
 		assertNull(q3Level1_attrib.getState());
 		assertNull(q3Level1.getState());
+	}
+	
+	@Test
+	public void t04_rule_activate_nested() {
+		// verify initial state
+		t00_init();
+		
+		Param<String> q4 = _q.getRoot().findParamByPath(CORE_PARAM_PATH_q4);
+		Param<?> q4Level1 = _q.getRoot().findParamByPath(CORE_PARAM_PATH_q4Level1);
+		Param<?> q4Level2 = _q.getRoot().findParamByPath(CORE_PARAM_PATH_q4Level2);
+		Param<String> q4_attrib_1 = _q.getRoot().findParamByPath(CORE_PARAM_PATH_q4_nested2_attr_String_1);
+		Param<String> q4_attrib_2 = _q.getRoot().findParamByPath(CORE_PARAM_PATH_q4_nested2_attr_String_2);
+		Param<?> q4Level1_attr_1 = _q.getRoot().findParamByPath(CORE_PARAM_PATH_q4Level1_nested2_attr_String_1);
+		
+		final String state_q4_attrib_1 = "Y";
+		final String state_q4_attrib_2 = "Y";
+		q4_attrib_1.setState(state_q4_attrib_1);
+		q4_attrib_2.setState(state_q4_attrib_2);
+		
+		
+		assertEquals(state_q4_attrib_1, q4_attrib_1.getState());
+		assertEquals(state_q4_attrib_2, q4_attrib_2.getState());
+		assertNull(q4Level1.getState());
+		assertNull(q4Level2.getState());
+		assertNull(q4Level1_attr_1.getState());
+		
+		assertTrue(q4.isActive());
+		assertTrue(q4Level1.isActive());
+		assertTrue(q4Level2.isActive());
+		assertTrue(q4Level1_attr_1.isActive());
+		
+	}
+	
+	@Test
+	public void t05_rule_deactivate_nested() {
+		// verify initial state
+		t00_init();
+		
+		Param<String> q4 = _q.getRoot().findParamByPath(CORE_PARAM_PATH_q4);
+		Param<?> q4Level1 = _q.getRoot().findParamByPath(CORE_PARAM_PATH_q4Level1);
+		Param<?> q4Level2 = _q.getRoot().findParamByPath(CORE_PARAM_PATH_q4Level2);
+		Param<String> q4_attrib_1 = _q.getRoot().findParamByPath(CORE_PARAM_PATH_q4_nested2_attr_String_1);
+		Param<String> q4_attrib_2 = _q.getRoot().findParamByPath(CORE_PARAM_PATH_q4_nested2_attr_String_2);
+		Param<?> q4Level1_attr_1 = _q.getRoot().findParamByPath(CORE_PARAM_PATH_q4Level1_nested2_attr_String_1);
+		
+		final String state_q4_attrib_1 = "Y";
+		final String state_q4_attrib_2 = "N";
+		q4_attrib_1.setState(state_q4_attrib_1);
+		q4_attrib_2.setState(state_q4_attrib_2);
+		
+		
+		assertEquals(state_q4_attrib_1, q4_attrib_1.getState());
+		assertEquals(state_q4_attrib_2, q4_attrib_2.getState());
+		assertNull(q4Level1.getState());
+		assertNull(q4Level2.getState());
+		assertNull(q4Level1_attr_1.getState());
+		
+		assertTrue(q4.isActive());
+		assertFalse(q4Level1.isActive());
+		assertFalse(q4Level2.isActive());
+		assertFalse(q4Level1_attr_1.isActive());
+		
 	}
 }

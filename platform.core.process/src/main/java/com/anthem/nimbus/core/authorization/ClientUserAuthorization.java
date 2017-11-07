@@ -21,7 +21,6 @@ import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.execution.ExecuteOutput;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityNotFoundException;
 import com.anthem.oss.nimbus.core.entity.client.user.ClientUser;
-import com.anthem.oss.nimbus.core.entity.client.user.ClientUserAccessBehavior;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 
 import lombok.Getter;
@@ -47,8 +46,9 @@ public class ClientUserAuthorization implements AuthorizationService {
 		
 		ClientUser cu = (ClientUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal(); // Assumes authentication has created the principal of type ClientUser
 		
-		ClientUserAccessBehavior clientUserAccessBehavior = cu.newBehaviorInstance(ClientUserAccessBehavior.class);
-		return clientUserAccessBehavior.canUserPerform(command);
+//		clientUserAccessBehavior clientUserAccessBehavior = cu.newBehaviorInstance(ClientUserAccessBehavior.class);
+//		return clientUserAccessBehavior.canUserPerform(command);
+		return true;
 		
 	}
 	
@@ -86,7 +86,8 @@ public class ClientUserAuthorization implements AuthorizationService {
 		if (clientUser==null){
 			throw new UserNotFoundException("No  matching client user found in our records");
 		}
-		ClientUserAccessBehavior clientUserAccessBehavior = clientUser.newBehaviorInstance(ClientUserAccessBehavior.class);
-		return clientUserAccessBehavior.canUserPerform(command);
+//		ClientUserAccessBehavior clientUserAccessBehavior = clientUser.newBehaviorInstance(ClientUserAccessBehavior.class);
+//		return clientUserAccessBehavior.canUserPerform(command);
+		return true;
 	}
 }

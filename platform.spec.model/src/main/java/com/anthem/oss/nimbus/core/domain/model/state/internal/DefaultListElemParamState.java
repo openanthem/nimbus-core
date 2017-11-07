@@ -55,17 +55,36 @@ public class DefaultListElemParamState<E> extends DefaultParamState<E> implement
 		return (ListModel<E>)super.getParentModel();
 	}
 	
+//	@Override
+//	protected String[] resolvePath() {
+//		return replaceIndexConstantWithElemId(super.resolvePath());
+//	}
+//	
+//	@Override
+//	protected String[] resolveBeanPath() {
+//		return replaceIndexConstantWithElemId(super.resolveBeanPath());
+//	}
+
 	@Override
-	protected String resolvePath() {
-		return replaceIndexConstantWithElemId(super.resolvePath());
+	public String getPath() {
+		String p = super.getPath();
+		return replaceIndexConstantWithElemId(p);
 	}
 	
 	@Override
-	protected String resolveBeanPath() {
-		return replaceIndexConstantWithElemId(super.resolveBeanPath());
+	public String getBeanPath() {
+		String p = super.getBeanPath();
+		return replaceIndexConstantWithElemId(p);
 	}
 	
 	private String replaceIndexConstantWithElemId(String pathExpr) {
+//		int index = ArrayUtils.indexOf(pathExpr, Constants.MARKER_COLLECTION_ELEM_INDEX.code);
+//		if(index==-1)
+//			throw new InvalidStateException("Expected marker "+Constants.MARKER_COLLECTION_ELEM_INDEX.code+" not found in listElem: ");
+//		
+//		String[] copy = Arrays.copyOf(pathExpr, pathExpr.length);
+//		copy[index] = getElemId();
+//		return copy;
 		String rPath = StringUtils.replace(pathExpr, Constants.MARKER_COLLECTION_ELEM_INDEX.code, getElemId());
 		return rPath;
 	}
