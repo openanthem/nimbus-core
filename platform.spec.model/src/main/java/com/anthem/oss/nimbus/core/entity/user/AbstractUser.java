@@ -25,32 +25,16 @@ import lombok.ToString;
  *
  */
 @Getter @Setter @ToString(callSuper=true)
-public abstract class AbstractUser<R extends Role<E, T>, E extends Role.Entry<T>, T extends AccessEntity>
+public abstract class AbstractUser<R extends Role>
 		extends Person<String, Address.IdString, Phone.IdString, Name.IdString> {
 	
 
 	private static final long serialVersionUID = 1L;
 	
-	
-	@Id @Getter @Setter //(value=AccessLevel.PROTECTED) 
+	@Id 
 	private String id;
 
 	
 	private String loginId;
-
-	@Ignore 
-	private Set<R> grantedRoles;
-	
-	
-	/**
-	 * 
-	 * @param role
-	 */
-	public void addGrantedRoles(R role) {
-		if(getGrantedRoles() == null)
-			setGrantedRoles(new HashSet<>());
-		
-		getGrantedRoles().add(role);
-	}
 	
 }

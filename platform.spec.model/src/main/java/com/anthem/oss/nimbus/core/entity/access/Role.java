@@ -6,57 +6,22 @@ package com.anthem.oss.nimbus.core.entity.access;
 import java.time.LocalDate;
 import java.util.Set;
 
-import com.anthem.oss.nimbus.core.entity.AbstractEntity;
+import com.anthem.oss.nimbus.core.entity.AbstractEntity.IdString;
+import com.anthem.oss.nimbus.core.entity.client.access.ClientAccessEntity;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 /**
- * @author Soham Chakravarti
+ * @author Rakesh Patel
  *
  */
-@Getter @Setter @ToString(callSuper=true)
-public abstract class Role<E extends Role.Entry<T>, T extends AccessEntity> 
-extends AbstractEntity.IdString {
+@Getter @Setter
+@ToString(callSuper=true)
+public abstract class Role extends IdString {
 
 	private static final long serialVersionUID = 1L;
-
-
-	
-	@Getter @Setter
-	public static abstract class Entry<T extends AccessEntity> extends AbstractEntity.IdString 
-	implements AccessEntity {
-
-		private static final long serialVersionUID = 1L;
-		
-        private Set<Permission> grantedPermissions;
-		
-
-		public Entry() {}
-		
-		public Entry(T referredAccess, Set<Permission> grantedPermissions) {
-			verifyGrantedPermissions(grantedPermissions);
-			setReferredAccess(referredAccess);
-			this.grantedPermissions = grantedPermissions;
-		}
-		
-
-		public abstract T getReferredAccess();
-		
-		public abstract void setReferredAccess(T referredAccess);
-		
-		
-		@Override
-		public Set<Permission> getPermissions() {
-			return getGrantedPermissions();
-		}
-		
-		public void verifyGrantedPermissions(Set<Permission> grantedPermissions) {
-			
-		}
-	}
-	
 
 	private String code;
 
@@ -68,8 +33,7 @@ extends AbstractEntity.IdString {
 	
 	private String description;
 	
-	public abstract Set<E> getEntries();
-
-	public abstract void setEntries(Set<E> entries);
+	private Set<ClientAccessEntity> accessEntities; // case_management, member_management
+	
 	
 }
