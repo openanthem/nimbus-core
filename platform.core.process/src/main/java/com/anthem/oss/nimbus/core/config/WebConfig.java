@@ -1,13 +1,25 @@
 package com.anthem.oss.nimbus.core.config;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
+import com.anthem.nimbus.platform.spec.serializer.CustomLocalDateDeserializer;
+import com.anthem.nimbus.platform.spec.serializer.CustomLocalDateSerializer;
+import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 /**
  * Configures classloader to load resources from custom locations
@@ -59,5 +71,33 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 				registry.addResourceHandler(entry.getKey()).addResourceLocations(entry.getValue());
 			}
 		}
+	}
+	
+	@Bean(name = "default.ObjectMapper")
+	public ObjectMapper objectMapper() {
+		ObjectMapper om = Jackson2ObjectMapperBuilder.json()
+				.annotationIntrospector(new JacksonAnnotationIntrospector())
+				.build();
+	
+		om.registerModule(new JavaTimeModule());
+	    om.registerModule(this.buildDefaultModule());
+		om.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+		return om;
+	}
+	
+	/**
+	 * Builds a default module for serializers and deserializers, bean serializer
+	 * and deserializer modifiers, registration of subtypes and mix-ins
+	 * as well as some other commonly needed objects.
+	 * 
+	 * This method can be overridden to provide additional defaults during instantiation.
+	 * 
+	 * @return the default <tt>Module</tt> object
+	 */
+	protected Module buildDefaultModule() {
+		final SimpleModule defaultModule = new SimpleModule();
+	    defaultModule.addSerializer(LocalDate.class, new CustomLocalDateSerializer());
+	    defaultModule.addDeserializer(LocalDate.class, new CustomLocalDateDeserializer());
+	    return defaultModule;
 	}
 }
