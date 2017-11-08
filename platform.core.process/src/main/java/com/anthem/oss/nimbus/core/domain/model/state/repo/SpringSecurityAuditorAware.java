@@ -28,7 +28,7 @@ public class SpringSecurityAuditorAware implements AuditorAware<String> {
 		return Optional.ofNullable(authentication)
 				.map((auth) -> (UserDetails) authentication.getPrincipal())
 				.map((userDetails) -> (String) userDetails.getUsername())
-				.orElse("");
+				.orElse(null);
 	    
 	 }
 	
