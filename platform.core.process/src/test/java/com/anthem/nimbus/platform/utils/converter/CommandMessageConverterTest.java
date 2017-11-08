@@ -7,7 +7,9 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mockito;
 
+import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandMessageConverter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,15 +35,17 @@ public class CommandMessageConverterTest {
 	static String[] filter = new String[] {"**","-**.fName"};
 	private static FilterProvider filters = new SimpleFilterProvider().addFilter("antPathFilter", new AntPathPropertyFilter(filter));
 
+	private static BeanResolverStrategy beanResolver = Mockito.mock(BeanResolverStrategy.class);
 	
 	@BeforeClass
 	public static void beforeClass() {
-		converter = new CommandMessageConverter();
+		
 		mapper = new ObjectMapper();
 		mapper.addMixIn(Object.class, AntPathFilterMixin.class);
 		mapper.setFilters(filters);
-		//mapper.configure(MapperFeature.DEFAULT_VIEW_INCLUSION, false);
+		Mockito.when(beanResolver.get(ObjectMapper.class)).thenReturn(mapper);
 		
+		converter = new CommandMessageConverter(beanResolver);
 	}
 	
 	@Test

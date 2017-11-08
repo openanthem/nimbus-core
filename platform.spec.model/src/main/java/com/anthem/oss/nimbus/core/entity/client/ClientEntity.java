@@ -62,12 +62,8 @@ public class ClientEntity extends AbstractEntity.IdString {
 	
 	private String description;
 	
-	@JsonDeserialize(using = CustomLocalDateDeserializer.class) 
-	@JsonSerialize(using = CustomLocalDateSerializer.class)
 	private LocalDate effectiveDate;
 	
-	@JsonDeserialize(using = CustomLocalDateDeserializer.class) 
-	@JsonSerialize(using = CustomLocalDateSerializer.class)
 	private LocalDate terminationDate;
 
 	//@Ignore private ClientEntity parentEntity;

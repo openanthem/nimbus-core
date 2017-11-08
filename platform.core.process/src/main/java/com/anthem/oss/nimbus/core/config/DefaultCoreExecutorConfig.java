@@ -44,8 +44,8 @@ public class DefaultCoreExecutorConfig {
 	}
 	
 	@Bean
-	public CommandMessageConverter commandMessageConverter(){
-		return new CommandMessageConverter();
+	public CommandMessageConverter commandMessageConverter(BeanResolverStrategy beanResolver) {
+		return new CommandMessageConverter(beanResolver);
 	}
 	
 	@Bean
