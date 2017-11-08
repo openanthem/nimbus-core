@@ -129,7 +129,6 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		assertEquals(null, audit.get(0).getOldValue());
 		assertEquals(propertyPath, audit.get(0).getPropertyPath());
 		assertEquals("string", audit.get(0).getPropertyType());
-		assertNotNull(audit.get(0).getCreatedBy());
 		assertNotNull(audit.get(0).getCreatedDate());
 	
 		// change value #2
@@ -145,7 +144,6 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		assertEquals(K_state_1, audit.get(0).getNewValue());
 		assertEquals(null, audit.get(0).getOldValue());
 		assertEquals(propertyPath, audit.get(0).getPropertyPath());
-		assertNotNull(audit.get(0).getCreatedBy());
 		assertNotNull(audit.get(0).getCreatedDate());
 		
 		assertEquals(domainRootAlias, audit.get(1).getDomainRootAlias());
@@ -154,7 +152,6 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		assertEquals(K_state_1, audit.get(1).getOldValue());
 		assertEquals(propertyPath, audit.get(1).getPropertyPath());
 		assertEquals("string", audit.get(1).getPropertyType());
-		assertNotNull(audit.get(1).getCreatedBy());
 		assertNotNull(audit.get(1).getCreatedDate());
 		
 		// validate that view based audit collection is not created
@@ -194,7 +191,6 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		assertEquals(null, audit.get(0).getOldValue());
 		assertEquals(propertyPath, audit.get(0).getPropertyPath());
 		assertEquals("integer", audit.get(0).getPropertyType());
-		assertNotNull(audit.get(0).getCreatedBy());
 		assertNotNull(audit.get(0).getCreatedDate());
 	
 		// change value #2
@@ -211,7 +207,6 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		assertEquals(null, audit.get(0).getOldValue());
 		assertEquals(propertyPath, audit.get(0).getPropertyPath());
 		assertEquals("integer", audit.get(0).getPropertyType());
-		assertNotNull(audit.get(0).getCreatedBy());
 		assertNotNull(audit.get(0).getCreatedDate());
 		
 		assertEquals(domainRootAlias, audit.get(1).getDomainRootAlias());
@@ -220,7 +215,6 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		assertEquals(K_state_1, audit.get(1).getOldValue());
 		assertEquals(propertyPath, audit.get(1).getPropertyPath());
 		assertEquals("integer", audit.get(1).getPropertyType());
-		assertNotNull(audit.get(1).getCreatedBy());
 		assertNotNull(audit.get(1).getCreatedDate());
 		
 		// validate that view based audit collection is not created
@@ -259,7 +253,6 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		assertEquals(null, audit.get(0).getOldValue());
 		assertEquals(propertyPath, audit.get(0).getPropertyPath());
 		assertEquals("string", audit.get(0).getPropertyType());
-		assertNotNull(audit.get(0).getCreatedBy());
 		assertNotNull(audit.get(0).getCreatedDate());
 	
 		// change value #2
@@ -276,7 +269,6 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		assertEquals(null, audit.get(0).getOldValue());
 		assertEquals(propertyPath, audit.get(0).getPropertyPath());
 		assertEquals("string", audit.get(0).getPropertyType());
-		assertNotNull(audit.get(0).getCreatedBy());
 		assertNotNull(audit.get(0).getCreatedDate());
 		
 		assertEquals("sample_view", audit.get(1).getDomainRootAlias());
@@ -285,7 +277,6 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		assertEquals(K_state_1, audit.get(1).getOldValue());
 		assertEquals(propertyPath, audit.get(1).getPropertyPath());
 		assertEquals("string", audit.get(1).getPropertyType());
-		assertNotNull(audit.get(1).getCreatedBy());
 		assertNotNull(audit.get(1).getCreatedDate());
 		
 		// validate that view based audit collection is not created
