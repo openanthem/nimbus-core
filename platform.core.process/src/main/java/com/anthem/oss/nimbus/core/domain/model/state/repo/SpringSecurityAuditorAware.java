@@ -10,6 +10,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * This class is used to provide the auditor information (currently it is a user name set during the authentication) for the spring auditing fields {@link CreatedBy} and {@link LastModifiedBy}
@@ -23,8 +24,11 @@ public class SpringSecurityAuditorAware implements AuditorAware<String> {
 	public String getCurrentAuditor() {
 		
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-		return Optional.ofNullable(authentication).map((auth) ->  (String) auth.getPrincipal()).orElse("");
+		
+		return Optional.ofNullable(authentication)
+				.map((auth) -> (UserDetails) authentication.getPrincipal())
+				.map((userDetails) -> (String) userDetails.getUsername())
+				.orElse(null);
 	    
 	 }
 	
