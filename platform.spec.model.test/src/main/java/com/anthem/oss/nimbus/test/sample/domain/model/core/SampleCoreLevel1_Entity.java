@@ -31,6 +31,8 @@ public class SampleCoreLevel1_Entity {
 	
 	private Level2 level2;
 
+	private Level2b level2b;
+	
 	@Model @Getter @Setter
 	public static class Level2 {
 	
@@ -39,4 +41,11 @@ public class SampleCoreLevel1_Entity {
 		private String[] string_array;
 	}
 	
+	@Model @Getter @Setter
+	public static class Level2b {
+	
+		private String level2Attrib_b;
+		
+		private String[] string_array_b;
+	}
 }
