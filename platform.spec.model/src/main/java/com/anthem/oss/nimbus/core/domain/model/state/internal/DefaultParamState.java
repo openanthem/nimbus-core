@@ -267,6 +267,9 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	@Override
 	public final Action setState(T state) {
+		if(!isActive() && state!=null)
+			throw new InvalidConfigException("Param's state cannot be changed when inactive. param: "+this.getPath());
+
 		return changeStateTemplate((rt, h, lockId)->affectSetStateChange(state, rt, h, lockId));
 	}
 	
@@ -539,6 +542,10 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	public void setVisible(boolean visible) {
 		if(isVisible()==visible)
 			return;
+
+		if(!isActive())
+			throw new InvalidConfigException("Param's visible state cannot be changed when inactive. param: "+this.getPath());
+
 		
 		this.visible = visible;
 		emitParamContextEvent();
@@ -548,6 +555,9 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	public void setEnabled(boolean enabled) {
 		if(isEnabled()==enabled)
 			return;
+		
+		if(!isActive())
+			throw new InvalidConfigException("Param's enable state cannot be changed when inactive. param: "+this.getPath());
 		
 		this.enabled = enabled;
 		emitParamContextEvent();
