@@ -56,6 +56,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		RESOURCE_MAPPINGS.put("/**woff2", 				new String[] {TARGET_FRONTEND, CLASSPATH_STATIC});
 		RESOURCE_MAPPINGS.put("/browser-sync*", 		new String[] {TARGET_FRONTEND, CLASSPATH_STATIC});
 		RESOURCE_MAPPINGS.put("/updates*", 				new String[] {TARGET_FRONTEND, CLASSPATH_STATIC});
+		RESOURCE_MAPPINGS.put("/jslibs/**", 			new String[] {TARGET_FRONTEND, CLASSPATH_STATIC});
+
 	}
 	
 	@Override
