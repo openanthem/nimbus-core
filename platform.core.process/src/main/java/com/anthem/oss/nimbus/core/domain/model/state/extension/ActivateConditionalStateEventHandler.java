@@ -54,13 +54,13 @@ public class ActivateConditionalStateEventHandler extends AbstractConditionalSta
 	}
 	
 	protected void handleInternal(Param<?> onChangeParam, String targetPath, boolean evalWhen) {
-		Param<?> targetParam = Optional.ofNullable(onChangeParam.findParamByPath(targetPath))
-				.orElseThrow(()->new InvalidConfigException("Target parm lookup returned null for targetPath: "+targetPath+" on param: "+onChangeParam));
+		final Param<?> targetParam = this.retrieveParamByPath(onChangeParam, targetPath);
 
-		if(evalWhen)
+		if (evalWhen) {
 			targetParam.activate();
-		else
+		} else {
 			targetParam.deactivate();
+		}
 	}
 	
 }
