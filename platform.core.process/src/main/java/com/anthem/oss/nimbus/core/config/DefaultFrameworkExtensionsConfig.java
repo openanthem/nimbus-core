@@ -12,6 +12,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.extension.ActivateCondition
 import com.anthem.oss.nimbus.core.domain.model.state.extension.AuditStateChangeHandler;
 import com.anthem.oss.nimbus.core.domain.model.state.extension.ConfigConditionalStateChangeHandler;
 import com.anthem.oss.nimbus.core.domain.model.state.extension.EnableConditionalStateEventHandler;
+import com.anthem.oss.nimbus.core.domain.model.state.extension.ValuesConditionalStateEventHandler;
 
 /**
  * @author Soham Chakravarti
@@ -20,6 +21,11 @@ import com.anthem.oss.nimbus.core.domain.model.state.extension.EnableConditional
 @Configuration
 public class DefaultFrameworkExtensionsConfig {
 
+	@Bean
+	public ValuesConditionalStateEventHandler extensionValuesConditionalHandler(BeanResolverStrategy beanResolver) {
+		return new ValuesConditionalStateEventHandler(beanResolver);
+	}
+	
 	@Bean
 	public ActivateConditionalStateEventHandler extensionActivateConditionalHandler(BeanResolverStrategy beanResolver) {
 		return new ActivateConditionalStateEventHandler(beanResolver);

@@ -39,6 +39,11 @@ public abstract class AbstractConditionalStateEventHandler {
 		return expressionEvaluator.getValue(whenExpr, new Holder<>(entityState), Boolean.class);
 	}
 	
+	protected Param<?> retrieveParamByPath(Param<?> baseParam, String targetPath) {
+		return Optional.ofNullable(baseParam.findParamByPath(targetPath))
+				.orElseThrow(() -> new InvalidConfigException("Target param lookup returned null for targetPath: " + targetPath + " on param: " + baseParam));
+	}
+	
 	protected static abstract class EvalExprWithCrudActions<A extends Annotation> extends AbstractConditionalStateEventHandler 
 		implements OnStateLoadHandler<A>, OnStateChangeHandler<A> {
 		
@@ -64,8 +69,7 @@ public abstract class AbstractConditionalStateEventHandler {
 		protected abstract void handleInternal(Param<?> onChangeParam, A configuredAnnotation);
 		
 		protected void handleInternal(Param<?> onChangeParam, String targetPath, Consumer<Param<?>> executeCb) {
-			Param<?> targetParam = Optional.ofNullable(onChangeParam.findParamByPath(targetPath))
-					.orElseThrow(()->new InvalidConfigException("Target parm lookup returned null for targetPath: "+targetPath+" on param: "+onChangeParam));
+			Param<?> targetParam = retrieveParamByPath(onChangeParam, targetPath);
 
 			executeCb.accept(targetParam);
 		}
