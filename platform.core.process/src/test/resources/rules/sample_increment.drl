@@ -2,11 +2,14 @@ package com.anthem.nimbus.platform.client.extension.cm.model.sample
 
 import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultParamState;
 
-rule "Sample Rule 1"
-no-loop true
+rule "Rule State Event Handler Test: Sample Increment"
 when
-    $core : DefaultParamState()
+    $core : DefaultParamState();
+    $param : DefaultParamState() from $core.findParamByPath("../rule_param_affectState");
 then
-	System.out.println("Incrementing");
-	$core.findParamByPath("/rule_param_affectState").setState(((Integer) $core.findParamByPath("/rule_param_affectState").getState()) + 1);
+	if (null != $param.getState()) {
+		$param.setState(((Integer) $param.getState()) + 1);
+	} else {
+		$param.setState(1);
+	}
 end

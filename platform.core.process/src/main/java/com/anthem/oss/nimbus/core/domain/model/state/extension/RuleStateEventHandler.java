@@ -46,7 +46,7 @@ public class RuleStateEventHandler extends EvalExprWithCrudActions<Rule>
 				final RulesRuntime rRuntime = this.rulesEngineFactory.createRuntime(rConfig);
 				
 				// Disallow defining @Rule with the same rule file as the root param.
-				final Param<?> rootParam = onChangeParam.getRootDomain().findParamByPath("/");
+				final Param<?> rootParam = onChangeParam.getRootDomain().getAssociatedParam();
 				if (ruleAlias.equals(rootParam.getConfig().getCode())) {
 					throw new InvalidConfigException("Found [@Rule(\"" + ruleAlias + "\")] on " + 
 							onChangeParam.getParentModel().getConfig().getReferredClass() + "." + 
@@ -55,7 +55,7 @@ public class RuleStateEventHandler extends EvalExprWithCrudActions<Rule>
 				}
 				
 				// Execute the rules.
-				this.execute(rRuntime, rootParam);
+				this.execute(rRuntime, onChangeParam);
 				
 			} else {
 				
@@ -79,14 +79,14 @@ public class RuleStateEventHandler extends EvalExprWithCrudActions<Rule>
 	}
 
 	/**
-	 * Executes the rules configured for <tt>rRuntime</tt> relative to the <tt>rootParam</tt>.
+	 * Executes the rules configured for <tt>rRuntime</tt> relative to the <tt>param</tt>.
 	 * 
 	 * @param rRuntime the <tt>RulesRuntime</tt> to execute.
-	 * @param rootParam the relative param from which the configured rules will execute.
+	 * @param param the relative param from which the configured rules will execute.
 	 */
-	private void execute(RulesRuntime rRuntime, Param<?> rootParam) {			
+	private void execute(RulesRuntime rRuntime, Param<?> param) {			
 		rRuntime.start();
-		rRuntime.fireRules(rootParam);
+		rRuntime.fireRules(param);
 		rRuntime.shutdown();
 	}
 
