@@ -77,6 +77,7 @@ public class RuleStateEventHandler extends EvalExprWithCrudActions<Rule>
 	 * @return the <tt>RulesConfig</tt> for <tt>ruleAlias</tt>
 	 */
 	private RulesConfig getRulesConfig(String ruleAlias) {
+		// TODO : Consider moving this to global cache when implemented.
 		return rulesConfigCache.computeIfAbsent(ruleAlias, k -> this.rulesEngineFactory.createConfig(k));
 	}
 
