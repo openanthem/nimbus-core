@@ -11,6 +11,8 @@ import com.anthem.oss.nimbus.core.domain.definition.extension.AccessConditional;
 import com.anthem.oss.nimbus.core.domain.definition.extension.AccessConditional.Permission;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
+import com.anthem.oss.nimbus.core.entity.client.access.ClientAccessEntity;
+import com.anthem.oss.nimbus.core.entity.client.access.ClientUserRole;
 import com.anthem.oss.nimbus.core.entity.client.user.ClientUser;
 import com.anthem.oss.nimbus.core.entity.user.UserRole;
 import com.anthem.oss.nimbus.core.session.UserEndpointSession;
@@ -38,14 +40,25 @@ public class AccessConditionalStateEventHandler extends AbstractConditionalState
 		ClientUser user = UserEndpointSession.getStaticLoggedInUser();
 		
 		Set<String> userRoleCodes = user.getRoles().stream().map(UserRole::getRoleCode).collect(Collectors.toSet());
+		Set<String> userAuthorities = user.getResolvedAccessEntities().stream().map(ClientAccessEntity::getCode).collect(Collectors.toSet());
 		
 		if(configuredAnnotation.containsRoles() != null && configuredAnnotation.containsRoles().length > 0){
 			boolean isTrue = userRoleCodes.stream().anyMatch(userRole -> Arrays.asList(configuredAnnotation.containsRoles()).contains(userRole));
 			if(isTrue)	
 				handlePermission(configuredAnnotation.p(), onChangeParam);
 		}
-		else if(StringUtils.isNotBlank(configuredAnnotation.when())){
-			boolean isTrue = expressionEvaluator.getValue(configuredAnnotation.when(), userRoleCodes, Boolean.class);
+		else if(configuredAnnotation.containsAuthority() != null && configuredAnnotation.containsAuthority().length > 0){
+			boolean isTrue = userAuthorities.stream().anyMatch(userAccessEntity -> Arrays.asList(configuredAnnotation.containsAuthority()).contains(userAccessEntity));
+			if(isTrue)	
+				handlePermission(configuredAnnotation.p(), onChangeParam);
+		}
+		else if(StringUtils.isNotBlank(configuredAnnotation.whenRoles())){
+			boolean isTrue = expressionEvaluator.getValue(configuredAnnotation.whenRoles(), userRoleCodes, Boolean.class);
+			if(isTrue)
+				handlePermission(configuredAnnotation.p(), onChangeParam);
+		}
+		else if(StringUtils.isNotBlank(configuredAnnotation.whenAuthorities())){
+			boolean isTrue = expressionEvaluator.getValue(configuredAnnotation.whenAuthorities(), userAuthorities, Boolean.class);
 			if(isTrue)
 				handlePermission(configuredAnnotation.p(), onChangeParam);
 		}

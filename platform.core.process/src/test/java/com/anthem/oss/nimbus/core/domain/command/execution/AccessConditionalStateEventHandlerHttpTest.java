@@ -7,7 +7,10 @@ import static org.junit.Assert.assertTrue;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -19,6 +22,8 @@ import com.anthem.oss.nimbus.core.AbstractFrameworkIngerationPersistableTests;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.anthem.oss.nimbus.core.entity.client.access.ClientAccessEntity;
+import com.anthem.oss.nimbus.core.entity.client.access.ClientUserRole;
 import com.anthem.oss.nimbus.core.entity.client.user.ClientUser;
 import com.anthem.oss.nimbus.core.entity.user.UserRole;
 import com.anthem.oss.nimbus.core.session.UserEndpointSession;
@@ -61,18 +66,20 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 
 	@SuppressWarnings("unchecked")
 	private Param<?> excuteNewConfig(String userLoginId) {
-		final MockHttpServletRequest fetchModifiedCoreDomain = MockHttpRequestBuilder.withUri(USER_PARAM_ROOT)
+		final MockHttpServletRequest fetchUser = MockHttpRequestBuilder.withUri(USER_PARAM_ROOT)
 				.addAction(Action._search)
 				.addParam("fn", "query")
 				.addParam("where", "clientuser.loginId.eq('"+userLoginId+"')")
 				.addParam("fetch","1")
 				.getMock();
 		
-		Holder<MultiOutput> holder = (Holder<MultiOutput>) controller.handlePost(fetchModifiedCoreDomain, null);
+		Holder<MultiOutput> holder = (Holder<MultiOutput>) controller.handlePost(fetchUser, null);
 		MultiOutput output = holder.getState();
 		ClientUser clientuser = (ClientUser) output.getSingleResult();
 		assertNotNull(clientuser);
 		UserEndpointSession.setAttribute("client-user-key", clientuser);
+		
+		createResolvedAccessEntities(clientuser);
 
 		final MockHttpServletRequest req = MockHttpRequestBuilder.withUri(CORE_PARAM_ACCESS_ROOT)
 				.addAction(Action._new)
@@ -82,6 +89,41 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 		Param<?> p = ExtractResponseOutputUtils.extractOutput(resp);
 		return p;
 	}
+
+	private void createResolvedAccessEntities(ClientUser clientuser) {
+		Holder<MultiOutput> holder;
+		MultiOutput output;
+		Set<String> userRoleCodes = clientuser.getRoles().stream().map(UserRole::getRoleCode).collect(Collectors.toSet());
+		
+		StringBuilder sb = new StringBuilder();
+		int i = 0;
+		for(String userRole: userRoleCodes) {
+			if(i == userRoleCodes.size() - 1) {
+				sb.append("\"").append(userRole).append("\"");
+			}
+			else{
+				sb.append("\"").append(userRole).append("\"").append(",");
+			}
+			i++;
+			
+		}
+		
+		final MockHttpServletRequest fetchUserRole = MockHttpRequestBuilder.withUri(USEREOLE_PARAM_ROOT)
+				.addAction(Action._search)
+				.addParam("fn", "query")
+				.addParam("where", "userrole.code.in("+sb.toString()+")")
+				.getMock();
+		
+		holder = (Holder<MultiOutput>) controller.handlePost(fetchUserRole, null);
+		output = holder.getState();
+		List<ClientUserRole> clientuserRoles = (List<ClientUserRole>) output.getSingleResult();
+		assertNotNull(clientuserRoles);
+		
+		Set<ClientAccessEntity> resolvedAccessEntities = new HashSet<>();
+		clientuserRoles.forEach((r) -> resolvedAccessEntities.addAll(r.getAccessEntities()));
+		
+		clientuser.setResolvedAccessEntities(resolvedAccessEntities);
+	}
 	
 	private String createClientUserWithRoles(String loginId, String... roles) {
 		ClientUser cu = new ClientUser();
@@ -89,6 +131,22 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 		
 		List<UserRole> userRoles = new ArrayList<>();
 		Arrays.asList(roles).forEach((r) -> {
+			
+			ClientUserRole userRole = new ClientUserRole();
+			userRole.setCode(r);
+			userRole.setEffectiveDate(LocalDate.now());
+			
+			Set<ClientAccessEntity> accessEntities = new HashSet<>();
+			
+			ClientAccessEntity accessEntity = new ClientAccessEntity();
+			accessEntity.setCode("member_management");
+			
+			accessEntities.add(accessEntity);
+			
+			userRole.setAccessEntities(accessEntities);
+			
+			mongo.save(userRole, "userrole");
+			
 			UserRole role = new UserRole();
 			role.setRoleCode(r);
 			role.setRetiredDate(LocalDate.now());

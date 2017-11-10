@@ -311,25 +311,6 @@ public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTest
 		
 	}
  	
-	@Test
-	@SuppressWarnings({ "unchecked" })
-	public void tc9_orderby_desc() {
-		inserClientUserRole();
-		
-		CommandMessage cmdMsg = build("Acme/fep/p/userrole/_search?fn=query&where=userrole.status.eq('Active')&orderby=userrole.name.desc()");
-
-		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
-		List<Output<?>> ops  = multiOp.getOutputs();
-		
-		assertNotNull(ops);
-		
-		List<ClientUserRole> values = (List<ClientUserRole>)ops.get(0).getValue();
-		
-		assertNotNull(values);
-		assertEquals((values.get(0)).getName(), "sandeep");
-		assertEquals(values.get(1).getName(), "mantha");
-		assertEquals(values.get(2).getName(), "jayant");
-	}
 	
 	@Test
 	public void tc10_orderby_desc() {
@@ -354,45 +335,6 @@ public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTest
 		mongoOps.insert(clientUserRole4);	
 	}
 	
-	@Test
-	@SuppressWarnings({ "unchecked" })
-	public void tc11_orderby_asc() {
-		inserClientUserRole();
-		
-		CommandMessage cmdMsg = build("Acme/fep/p/userrole/_search?fn=query&where=userrole.status.eq('Active')&orderby=userrole.name.asc()");
-
-		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
-		List<Output<?>> ops  = multiOp.getOutputs();
-		
-		assertNotNull(ops);
-		
-		List<ClientUserRole> values = (List<ClientUserRole>)ops.get(0).getValue();
-		
-		assertNotNull(values);
-		assertEquals((values.get(0)).getName(), "jayant");
-		assertEquals(values.get(1).getName(), "mantha");
-		assertEquals(values.get(2).getName(), "sandeep");
-	}
-	
-	@Test
-	@SuppressWarnings({ "unchecked" })
-	public void tc12_orderbywithprojection_asc() {
-		inserClientUserRole();
-		
-		CommandMessage cmdMsg = build("Acme/fep/p/userrole/_search?fn=query&where=userrole.status.eq('Active')&orderby=userrole.name.asc()");
-
-		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
-		List<Output<?>> ops  = multiOp.getOutputs();
-		
-		assertNotNull(ops);
-		
-		List<ClientUserRole> values = (List<ClientUserRole>)ops.get(0).getValue();
-		
-		assertNotNull(values);
-		assertEquals((values.get(0)).getName(), "jayant");
-		assertEquals(values.get(1).getName(), "mantha");
-		assertEquals(values.get(2).getName(), "sandeep");
-	}
 	
 	private Client insertClient() {
 		mongoOps.dropCollection("client");
@@ -414,25 +356,25 @@ public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTest
 		
 		ClientUserRole clientUserRole = new ClientUserRole();
 		clientUserRole.setName("sandeep");
-		clientUserRole.setStatus("Active");
+		//clientUserRole.setStatus("Active");
 		clientUserRole.setDescription("desc1");;
 		mongoOps.insert(clientUserRole,"userrole");
 		
 		ClientUserRole clientUserRole2 = new ClientUserRole();
 		clientUserRole2.setName("mantha");
-		clientUserRole2.setStatus("Active");
+		//clientUserRole2.setStatus("Active");
 		clientUserRole2.setDescription("desc2");;
 		mongoOps.insert(clientUserRole2,"userrole");
 		
 		ClientUserRole clientUserRole3 = new ClientUserRole();
 		clientUserRole3.setName("rakesh");
-		clientUserRole3.setStatus("Inactive");
+		//clientUserRole3.setStatus("Inactive");
 		clientUserRole3.setDescription("esc2");;
 		mongoOps.insert(clientUserRole3,"userrole");
 		
 		ClientUserRole clientUserRole4 = new ClientUserRole();
 		clientUserRole4.setName("jayant");
-		clientUserRole4.setStatus("Active");
+		//clientUserRole4.setStatus("Active");
 		clientUserRole4.setDescription("dsc2");;
 		mongoOps.insert(clientUserRole4,"userrole");
 	}
