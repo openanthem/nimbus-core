@@ -16,6 +16,8 @@ import com.anthem.oss.nimbus.core.rules.RulesEngineFactory;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 
 /**
+ * Rule State Event handler for triggering one or more rule definitions during its 
+ * OnStateLoad and OnStateChange events.
  * 
  * @author Tony Lopez (AF42192)
  *
