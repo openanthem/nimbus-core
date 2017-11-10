@@ -86,12 +86,11 @@ public class ViewConfig {
 	@Target({ElementType.FIELD})
 	@ViewStyle
 	public @interface Page {
-		String alias() default "page";
-		String route() default "";
-		String breadCrumb() default "none";
-		String imgSrc() default "";
-		String styleClass() default "";
+		String alias() default "Page";
+		String title() default ""; 
+		String cssClass() default ""; 
 		boolean defaultPage() default false;
+		String route() default ""; // remove
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
@@ -99,16 +98,38 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface Tile {
 		public enum Size {
-			XSmall,
-			Small,
-			Medium,
-			Large
+			XSmall, //25%
+			Small, //33%
+			Medium, //50%
+			Large //100%
 		}
 		String alias() default "Tile";
 		String imgSrc() default "";
 		String title() default "";
 		Size size() default Size.Large;
 	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface Section {
+		public enum Type {
+			HEADER, // Global Header and Global Navigation
+			FOOTER, // Global Footer
+			LEFTBAR,
+			RIGHTBAR,
+			BODY,
+			DEFAULT;
+		}
+		
+		Type value() default Type.DEFAULT; // Remove header/footer/leftbar Create GlobalHeader/GlobalFooter etc. Keep section as default.
+		String alias() default "Section";
+		String cssClass() default "";
+		String imgSrc() default ""; // remove
+		String defaultFlow() default ""; // applicable only to Section type BODY. // remove
+	}
+		
+
 	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
@@ -212,27 +233,6 @@ public class ViewConfig {
 		}
 	}
 
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.FIELD})
-	@ViewStyle
-	public @interface Section {
-		
-		public enum Type {
-			HEADER,
-			FOOTER,
-			LEFTBAR,
-			RIGHTBAR,
-			BODY,
-			DEFAULT;
-		}
-		
-		Type value() default Type.DEFAULT;
-		String alias() default "Section";
-		String imgSrc() default "";
-		String cssClass() default "";
-		String defaultFlow() default ""; // applicable only to Section type BODY.
-	}
-		
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
@@ -559,7 +559,7 @@ public class ViewConfig {
 	public @interface GlobalSection {
 		String alias() default "globalSection";
 		String imgSrc() default "";
-		String styleClass() default "";
+		String cssClass() default "";
 	}
 		
 	@Retention(RetentionPolicy.RUNTIME)
