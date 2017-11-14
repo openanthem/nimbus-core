@@ -134,6 +134,37 @@ public class BPMGatewayTests extends AbstractFrameworkIngerationPersistableTests
 		Param<?> response = (Param<?>)holder.getState().getSingleResult();
 		assertEquals(response.findStateByPath("/viewResultParameter"),"Complete");
 	}		
+	
+	@Test
+	@SuppressWarnings("unchecked")
+	public void t02_duplicate_task_creation_bpm() {
+		MockHttpServletRequest request = MockHttpRequestBuilder.withUri(BPM_DP_PARAM_ROOT)
+					.addAction(Action._new)
+					.getMock();
+		Holder<MultiOutput> holder = (Holder<MultiOutput>)controller.handlePost(request, null);
+		String domainRoot_refId  = ExtractResponseOutputUtils.extractDomainRootRefId(holder);
+		assertNotNull(domainRoot_refId);
+		
+		
+		// Set the value of parameterBeforeHumanTask. This should trigger the bpmn to complete the human task and progress to assign value for parameterAfterHumanTask
+		String updateUri = BPM_DP_PARAM_ROOT + ":"+domainRoot_refId+"/triggerParameter";
+		MockHttpServletRequest request4 = MockHttpRequestBuilder.withUri(updateUri)
+				.addAction(Action._update)
+				.getMock();
+		holder = (Holder<MultiOutput>)controller.handlePost(request4, converter.convert("Step1"));	
+		holder = (Holder<MultiOutput>)controller.handlePost(request4, converter.convert("Step2"));	
+		holder = (Holder<MultiOutput>)controller.handlePost(request4, converter.convert("Complete"));	
+		
+		
+		String getUri = BPM_DP_PARAM_ROOT + ":"+domainRoot_refId;
+		MockHttpServletRequest request5 = MockHttpRequestBuilder.withUri(getUri)
+				.addAction(Action._get)
+				.getMock();
+		holder = (Holder<MultiOutput>)controller.handlePost(request5, null);
+		TestTaskContainerModel model = (TestTaskContainerModel)((Param)((MultiOutput)holder.getState()).getSingleResult()).getState();
+		assertEquals("true", model.getTaskProgressed());
+	
+	}	
 		
 	
 }
