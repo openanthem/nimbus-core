@@ -427,6 +427,7 @@ public class ViewConfig {
 		boolean postEventOnChange() default false;
 		String postButtonUrl() default "";
 		String controlId() default "";
+		String help() default "";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
@@ -444,6 +445,7 @@ public class ViewConfig {
 		String alias() default "MultiSelect";
 		String labelClass() default "anthem-label";
 		boolean postEventOnChange() default false;
+		String help() default "";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
@@ -456,6 +458,7 @@ public class ViewConfig {
 		String type() default "date";
 		boolean postEventOnChange() default false;
 		String controlId() default "";
+		String help() default "";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
@@ -494,6 +497,7 @@ public class ViewConfig {
 		String cssClass() default "";
 		boolean postEventOnChange() default false;
 		String controlId() default "";
+		String help() default "";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
@@ -505,6 +509,7 @@ public class ViewConfig {
 		String labelClass() default "anthem-label";
 		boolean postEventOnChange() default false;
 		String controlId() default "";
+		String help() default "";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
@@ -517,6 +522,7 @@ public class ViewConfig {
 		String labelClass() default "anthem-label";
 		boolean postEventOnChange() default false;
 		String controlId() default "";
+		String help() default "";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
@@ -616,6 +622,7 @@ public class ViewConfig {
 		boolean postEventOnChange() default false;
 		String sourceHeader() default "SourceList";
 		String targetHeader() default "TargetList";
+		String help() default "";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
