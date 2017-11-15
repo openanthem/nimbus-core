@@ -166,11 +166,10 @@ public class DefaultActionExecutorNew extends AbstractFunctionCommandExecutor<Ob
 		
 		if(StringUtils.isEmpty(lifecycleKey))
 			return null;
-		
-		String processExecId = bpmGateway.startBusinessProcess(rootDomainParam, lifecycleKey).getExecutionId();
-		
+		ProcessResponse processResponse = bpmGateway.startBusinessProcess(rootDomainParam, lifecycleKey);
 		ProcessFlow processFlow = new ProcessFlow();
-		processFlow.setProcessExecutionId(processExecId);
+		processFlow.setProcessExecutionId(processResponse.getExecutionId());
+		processFlow.setProcessDefinitionId(processResponse.getDefinitionId());
 		return processFlow;
 	}
 	

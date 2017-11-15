@@ -17,4 +17,6 @@ public class ProcessResponse {
 
 	private String executionId;
 	
+	private String definitionId;
+	
 }
