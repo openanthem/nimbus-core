@@ -9,6 +9,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.anthem.oss.nimbus.core.domain.definition.extension.ParamContext;
+
 /**
  * @author Soham Chakravarti
  *
@@ -223,6 +225,7 @@ public class ViewConfig {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.FIELD })
 	@ViewStyle
+	@ParamContext(enabled=false)
 	public @interface Modal {
 		String alias() default "Modal";
 
