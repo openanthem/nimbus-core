@@ -54,6 +54,12 @@ public abstract class AbstractFrameworkIngerationPersistableTests extends Abstra
 	protected static final String RULE_CORE_DOMAIN_ALIAS = "ruletestcoremodel";
 	protected static final String RULE_CORE_PARAM_ROOT = PLATFORM_ROOT + "/" + RULE_CORE_DOMAIN_ALIAS;	
 	
+	protected static final String BPM_DP_DOMAIN_ALIAS = "testtaskcontainermodel";
+	protected static final String BPM_DP_PARAM_ROOT = PLATFORM_ROOT + "/" + BPM_DP_DOMAIN_ALIAS;	
+	
+	protected static final String BPM_DPT_DOMAIN_ALIAS = "testusertaskmodel";
+	protected static final String BPM_DPT_PARAM_ROOT = PLATFORM_ROOT + "/" + BPM_DPT_DOMAIN_ALIAS;	
+	
 	
 	public synchronized String createOrGetDomainRoot_RefId() {
 		if(domainRoot_refId!=null) 
