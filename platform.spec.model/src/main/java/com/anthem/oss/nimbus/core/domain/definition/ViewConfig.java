@@ -84,6 +84,9 @@ public class ViewConfig {
 		String layout() default "";
 	}
 	
+	/*
+	 * Page Definition
+	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
@@ -95,6 +98,9 @@ public class ViewConfig {
 		String route() default ""; // remove
 	}
 	
+	/*
+	 * Tile Definition
+	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
@@ -111,6 +117,9 @@ public class ViewConfig {
 		Size size() default Size.Large;
 	}
 	
+	/*
+	 * Section Definition
+	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
@@ -131,6 +140,97 @@ public class ViewConfig {
 		String defaultFlow() default ""; // applicable only to Section type BODY. // remove
 	}
 		
+	/*
+	 * Modal Window Definition
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	@ParamContext(enabled=false)
+	public @interface Modal {
+		String alias() default "Modal";
+		String cssClass() default ""; // new
+		String title() default ""; // new
+		Type type() default Type.dialog;
+		boolean closable() default false;
+		String width() default "500";
+
+		public enum Type {
+			dialog, slider
+		}
+	}
+
+	/*
+	 * Container for Form Elements {textbox, combobox.. etc}
+	 * Form can have Accordions
+	 * TODO Add Section, Collapsible Sections/Panels instead of Accordions
+	 *
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface Form { 
+		String alias() default "Form";
+		String cssClass() default "";
+		String title() default ""; // new
+		
+		boolean submitButton() default true; // remove
+		String submitUrl() default ""; // remove
+		String b() default ""; // remove
+		String navLink() default ""; // remove
+	}	
+	
+	/*
+	 * Container for Buttons
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface ButtonGroup {	
+		String alias() default "ButtonGroup";
+		String cssClass() default "text-sm-right";
+	}
+	
+	/*
+	 * Grid Container
+	 * TODO expandable row Grid
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface Grid {
+		String alias() default "Grid";
+		String cssClass() default ""; // new
+		String title() default ""; // new
+		boolean expandableRows() default false;
+		
+		boolean onLoad() default false;
+		boolean isTransient() default false;
+		String url() default "";
+		boolean rowSelection() default false;
+		String pageSize() default "50"; // changed default from 10 to 50
+		boolean pagination() default true;
+		boolean postButton() default false;
+		String postButtonUrl() default "";
+		String postButtonTargetPath() default "";
+		String postButtonAlias() default "";
+		boolean postEventOnChange() default false;
+	}
+	
+	/*
+	 * Card Grid
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface CardDetailsGrid { // new Introduce Sections within Card Grid for grouping.
+		String alias() default "CardDetailsGrid";
+		String editUrl() default "";
+		boolean draggable() default false;
+		boolean onLoad() default false;
+	}
+	
+
 
 	
 	@Retention(RetentionPolicy.RUNTIME)
@@ -146,16 +246,6 @@ public class ViewConfig {
 		}
 		String alias() default "Header";
 		Size size() default Size.H3;
-	}
-	
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.FIELD})
-	@ViewStyle
-	public @interface CardDetailsGrid {
-		String alias() default "CardDetailsGrid";
-		String editUrl() default "";
-		boolean draggable() default false;
-		boolean onLoad() default false;
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
@@ -222,40 +312,7 @@ public class ViewConfig {
 		String inplaceEditType() default "";
 	}
 	
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ ElementType.FIELD })
-	@ViewStyle
-	@ParamContext(enabled=false)
-	public @interface Modal {
-		String alias() default "Modal";
 
-		Type type() default Type.dialog;
-
-		public enum Type {
-			dialog, slider
-		}
-	}
-
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.FIELD})
-	@ViewStyle
-	public @interface Form {
-		String alias() default "Form";
-		String submitUrl() default "";
-		String b() default "";
-		String cssClass() default "";
-		boolean submitButton() default true;
-		
-		String navLink() default "";
-	}	
-	
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.FIELD})
-	@ViewStyle
-	public @interface ButtonGroup {	
-		String alias() default "ButtonGroup";
-		String cssClass() default "text-sm-right";
-	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
@@ -470,25 +527,6 @@ public class ViewConfig {
 	public @interface GridContainer {
 		String alias() default "GridContainer";
 	}	
-	
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.FIELD})
-	@ViewStyle
-	public @interface Grid {
-		String alias() default "Grid";
-		boolean onLoad() default false;
-		boolean expandableRows() default false;
-		boolean isTransient() default false;
-		String url() default "";
-		boolean rowSelection() default false;
-		String pageSize() default "10";
-		boolean pagination() default true;
-		boolean postButton() default false;
-		String postButtonUrl() default "";
-		String postButtonTargetPath() default "";
-		String postButtonAlias() default "";
-		boolean postEventOnChange() default false;
-	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
