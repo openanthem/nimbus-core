@@ -44,8 +44,8 @@ public class DefaultProcessConfig {
 	}
 	
 	@Bean
-	public BPMGateway bpmGateway(){
-		return new ActivitiBPMGateway();
+	public BPMGateway bpmGateway(BeanResolverStrategy beanResolver){
+		return new ActivitiBPMGateway(beanResolver);
 	}		
 	
 	@Bean(name="default._new$execute?fn=_initEntity")
