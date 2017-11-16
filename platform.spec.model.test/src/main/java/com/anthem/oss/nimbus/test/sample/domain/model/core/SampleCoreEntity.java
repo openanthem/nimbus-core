@@ -23,6 +23,7 @@ import com.anthem.oss.nimbus.core.domain.definition.extension.ActivateConditiona
 import com.anthem.oss.nimbus.core.domain.definition.extension.Audit;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ConfigConditional;
 import com.anthem.oss.nimbus.core.domain.definition.extension.Content.Label;
+import com.anthem.oss.nimbus.core.domain.definition.extension.Rule;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ValuesConditional;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ValuesConditional.Condition;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ValuesConditionals;
@@ -203,4 +204,12 @@ public class SampleCoreEntity extends IdString {
 			}
 		}
 	}
+	
+	@Rule("rules/sample_increment")
+	private String rule_param;
+	
+	@Rule("rules/sample_increment")
+	private String rule_param2;
+	
+	private int rule_param_affectState;
 }
