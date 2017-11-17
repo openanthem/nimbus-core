@@ -102,7 +102,7 @@ public @interface ValuesConditional {
 	@Documented
 	@Retention(RUNTIME)
 	@Target(FIELD)
-	@RepeatContainer
+	@RepeatContainer(Condition.class)
 	public @interface Conditions {
 		
 		/**
