@@ -18,7 +18,7 @@ import com.anthem.oss.nimbus.core.domain.RepeatContainer;
 @Documented
 @Retention(RUNTIME)
 @Target(FIELD)
-@RepeatContainer
+@RepeatContainer(ValuesConditional.class)
 public @interface ValuesConditionals {
 
 	/**
