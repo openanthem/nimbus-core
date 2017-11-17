@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.validation.Payload;
+import javax.validation.constraints.NotNull;
+
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
 import com.anthem.oss.nimbus.core.domain.definition.Execution.Config;
@@ -23,6 +26,7 @@ import com.anthem.oss.nimbus.core.domain.definition.extension.ActivateConditiona
 import com.anthem.oss.nimbus.core.domain.definition.extension.Audit;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ConfigConditional;
 import com.anthem.oss.nimbus.core.domain.definition.extension.Content.Label;
+import com.anthem.oss.nimbus.core.domain.definition.extension.EnableConditional;
 import com.anthem.oss.nimbus.core.domain.definition.extension.Rule;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ValuesConditional;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ValuesConditional.Condition;
@@ -211,5 +215,16 @@ public class SampleCoreEntity extends IdString {
 	@Rule("rules/sample_increment")
 	private String rule_param2;
 	
+	@NotNull(payload=ConstraintID.class)
 	private int rule_param_affectState;
+	
+	public static class ConstraintID implements Payload {
+		
+	}
+	
+	
+	@EnableConditional(when="state == 'Y'", targetPath="../attr_enable_nested")
+	private String attr_enable_trigger;
+	
+	private SampleCoreEnableEntity attr_enable_nested;
 }

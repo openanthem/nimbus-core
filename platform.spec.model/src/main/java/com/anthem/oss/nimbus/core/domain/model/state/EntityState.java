@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.model.config.EntityConfig;
@@ -331,6 +332,10 @@ public interface EntityState<T> {
 		
 		Message getMessage();
 		void setMessage(Message msg);
+		
+		
+		void onStateLoadEvent();
+		void onStateChangeEvent(ExecutionTxnContext txnCtx, Action a);
 	}
 	
 	public interface LeafParam<T> extends Param<T> {

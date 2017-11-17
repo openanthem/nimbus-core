@@ -321,6 +321,11 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	protected void postSetState(Action change, T state) {}
 
+	@Override
+	public void onStateLoadEvent() {
+		onStateLoadEvent(this);
+	}
+	
 	// TODO : move to runtime.eventDelegate
 	protected static void onStateLoadEvent(Param<?> p) {
 		EventHandlerConfig eventHandlerConfig = p.getConfig().getEventHandlerConfig();
@@ -331,6 +336,11 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 					handler.handle(ac, p);
 				});
 		}
+	}
+	
+	@Override
+	public void onStateChangeEvent(ExecutionTxnContext txnCtx, Action a) {
+		onStateChangeEvent(txnCtx, this, a);
 	}
 	
 	// TODO : move to runtime.eventDelegate
@@ -544,7 +554,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 			return;
 
 		if(!isActive())
-			throw new InvalidConfigException("Param's visible state cannot be changed when inactive. param: "+this.getPath());
+			return;
 
 		
 		this.visible = visible;
@@ -553,14 +563,49 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	@Override
 	public void setEnabled(boolean enabled) {
-		if(isEnabled()==enabled)
-			return;
+		toggleEnabled(enabled);
+	}
+	
+	
+	protected boolean toggleEnabled(boolean to) {
+		return changeStateTemplate((rt, h, lockId)->{
+			boolean result = affectToggleEnabled(to);
+			if(result) {
+				h.setState(Action._update);
+				
+				emitParamContextEvent();
+			}
+			
+			return result;
+		});
+	}
+	
+	protected boolean affectToggleEnabled(boolean to) {
+//		if(enabled==to)
+//			return false;
+//		
+//		if(!isActive())
+//			return false;
 		
-		if(!isActive())
-			throw new InvalidConfigException("Param's enable state cannot be changed when inactive. param: "+this.getPath());
+		this.enabled = to;
 		
-		this.enabled = enabled;
-		emitParamContextEvent();
+		if(!isNested())
+			return true;
+			
+		if(findIfNested().templateParams().isNullOrEmpty())
+			return true;
+		
+		findIfNested().getParams().stream()
+			.forEach(cp->{
+				//if(to) 
+					cp.setEnabled(to);//cp.activate();
+				
+//				else {
+//					cp.setStateInitialized(false);//cp.deactivate();
+//				}
+			});
+		
+		return true;
 	}
 	
 	@Override
