@@ -10,6 +10,10 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
 import com.anthem.oss.nimbus.core.domain.definition.event.StateEvent.OnStateChange;
 import com.anthem.oss.nimbus.core.domain.definition.event.StateEvent.OnStateLoad;
 
@@ -39,4 +43,5 @@ public @interface EnableConditional {
 	 * If value is not overridden, then the negation of {@linkplain EnableConditional#when()} would be used 
 	 */
 	String disableWhen() default "";
+
 }
