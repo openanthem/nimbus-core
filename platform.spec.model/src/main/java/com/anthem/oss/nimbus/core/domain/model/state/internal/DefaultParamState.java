@@ -267,7 +267,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	@Override
 	public final Action setState(T state) {
-		if(!isActive() && state!=null && isStateInitialized())
+		if(!isActive() && state!=null)
 			throw new InvalidConfigException("Param's state cannot be changed when inactive. param: "+this.getPath());
 
 		return changeStateTemplate((rt, h, lockId)->affectSetStateChange(state, rt, h, lockId));
