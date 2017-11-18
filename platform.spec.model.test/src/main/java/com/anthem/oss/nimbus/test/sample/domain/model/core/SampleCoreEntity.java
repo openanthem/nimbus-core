@@ -8,9 +8,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.validation.Payload;
-import javax.validation.constraints.NotNull;
-
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
 import com.anthem.oss.nimbus.core.domain.definition.Execution.Config;
@@ -216,14 +213,9 @@ public class SampleCoreEntity extends IdString {
 	@Rule("rules/sample_increment")
 	private String rule_param2;
 	
-	@NotNull(payload=ConstraintID.class)
 	private int rule_param_affectState;
 	
-	public static class ConstraintID implements Payload {
-		
-	}
-	
-	
+
 	@EnableConditional(when="state == 'Y'", targetPath="../attr_enable_nested")
 	private String attr_enable_trigger;
 	
