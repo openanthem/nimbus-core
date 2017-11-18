@@ -12,6 +12,8 @@ import com.anthem.oss.nimbus.core.domain.model.state.extension.ActivateCondition
 import com.anthem.oss.nimbus.core.domain.model.state.extension.AuditStateChangeHandler;
 import com.anthem.oss.nimbus.core.domain.model.state.extension.ConfigConditionalStateChangeHandler;
 import com.anthem.oss.nimbus.core.domain.model.state.extension.EnableConditionalStateEventHandler;
+import com.anthem.oss.nimbus.core.domain.model.state.extension.ModalStateEventHandler;
+import com.anthem.oss.nimbus.core.domain.model.state.extension.ParamContextStateEventHandler;
 import com.anthem.oss.nimbus.core.domain.model.state.extension.RuleStateEventHandler;
 import com.anthem.oss.nimbus.core.domain.model.state.extension.ValuesConditionalStateEventHandler;
 
@@ -21,7 +23,17 @@ import com.anthem.oss.nimbus.core.domain.model.state.extension.ValuesConditional
  */
 @Configuration
 public class DefaultFrameworkExtensionsConfig {
-
+	
+	@Bean
+	public ModalStateEventHandler extensionModalStateEventHandler() {
+		return new ModalStateEventHandler();
+	}
+	
+	@Bean
+	public ParamContextStateEventHandler extensionParamContextStateEventHandler() {
+		return new ParamContextStateEventHandler();
+	}
+	
 	@Bean
 	public RuleStateEventHandler extensionRuleStateEventHandler(BeanResolverStrategy beanResolver) {
 		return new RuleStateEventHandler(beanResolver);
