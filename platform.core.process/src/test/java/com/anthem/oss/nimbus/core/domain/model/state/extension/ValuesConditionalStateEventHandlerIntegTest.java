@@ -10,6 +10,7 @@ import org.junit.runners.MethodSorters;
 
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
+import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity.IdString;
@@ -71,14 +72,19 @@ public class ValuesConditionalStateEventHandlerIntegTest extends AbstractStateEv
 		Assert.assertEquals(2, statusForm.findParamByPath("/statusReason").getValues().size());
 		Assert.assertEquals("A1", statusForm.findParamByPath("/statusReason").getValues().get(0).getCode());
 		Assert.assertEquals("B1", statusForm.findParamByPath("/statusReason").getValues().get(1).getCode());
+		Assert.assertNull(statusForm.findParamByPath("/statusReason").getState());
 		
+		statusForm.findParamByPath("/statusReason").setState("B1");
 		statusForm.findParamByPath("/status").setState("A");
 		Assert.assertEquals(1, statusForm.findParamByPath("/statusReason").getValues().size());
 		Assert.assertEquals("A1", statusForm.findParamByPath("/statusReason").getValues().get(0).getCode());
+		Assert.assertNull(statusForm.findParamByPath("/statusReason").getState());
 		
+		statusForm.findParamByPath("/statusReason").setState("A1");
 		statusForm.findParamByPath("/status").setState("B");
 		Assert.assertEquals(1, statusForm.findParamByPath("/statusReason").getValues().size());
 		Assert.assertEquals("B1", statusForm.findParamByPath("/statusReason").getValues().get(0).getCode());
+		Assert.assertNull(statusForm.findParamByPath("/statusReason").getState());
 	}
 	
 	@Test
@@ -97,9 +103,11 @@ public class ValuesConditionalStateEventHandlerIntegTest extends AbstractStateEv
 		final Param<?> statusForm = _q.getRoot().findParamByPath(STATUS_FORM);
 		assertNotNull(statusForm);
 		
+		statusForm.findParamByPath("/statusReason").setState("B1");
 		statusForm.findParamByPath("/allowOverrideStatus").setState("A");
 		Assert.assertEquals(1, statusForm.findParamByPath("/statusReason").getValues().size());
 		Assert.assertEquals("B1", statusForm.findParamByPath("/statusReason").getValues().get(0).getCode());
+		Assert.assertNull(statusForm.findParamByPath("/statusReason").getState());
 	}
 	
 	@Test
@@ -107,9 +115,11 @@ public class ValuesConditionalStateEventHandlerIntegTest extends AbstractStateEv
 		final Param<?> statusForm = _q.getRoot().findParamByPath(STATUS_FORM);
 		assertNotNull(statusForm);
 		
+		statusForm.findParamByPath("/statusReason").setState("B1");
 		statusForm.findParamByPath("/disallowOverrideStatus").setState("A");
 		Assert.assertEquals(1, statusForm.findParamByPath("/statusReason").getValues().size());
 		Assert.assertEquals("A1", statusForm.findParamByPath("/statusReason").getValues().get(0).getCode());
+		Assert.assertNull(statusForm.findParamByPath("/statusReason").getState());
 	}
 	
 	@Test
@@ -122,9 +132,11 @@ public class ValuesConditionalStateEventHandlerIntegTest extends AbstractStateEv
 		statusForm.findParamByPath("/status").setState("A");
 		Assert.assertEquals(1, statusForm.findParamByPath("/statusReason2").getValues().size());
 		Assert.assertEquals("A1", statusForm.findParamByPath("/statusReason2").getValues().get(0).getCode());
+		Assert.assertNull(statusForm.findParamByPath("/statusReason").getState());
 		
 		statusForm.findParamByPath("/status").setState("UNKNOWN");
 		Assert.assertNull(statusForm.findParamByPath("/statusReason2").getValues());
+		Assert.assertNull(statusForm.findParamByPath("/statusReason").getState());
 	}
 	
 	@Test
@@ -136,6 +148,8 @@ public class ValuesConditionalStateEventHandlerIntegTest extends AbstractStateEv
 		Assert.assertEquals("A1", statusForm.findParamByPath("/statusReason").getValues().get(0).getCode());
 		Assert.assertEquals("B1", statusForm.findParamByPath("/statusReason").getValues().get(1).getCode());
 		Assert.assertNull(statusForm.findParamByPath("/statusReason2").getValues());
+		Assert.assertNull(statusForm.findParamByPath("/statusReason").getState());
+		Assert.assertNull(statusForm.findParamByPath("/statusReason2").getState());
 		
 		statusForm.findParamByPath("/status").setState("A");
 		Assert.assertEquals(1, statusForm.findParamByPath("/statusReason").getValues().size());
@@ -147,6 +161,52 @@ public class ValuesConditionalStateEventHandlerIntegTest extends AbstractStateEv
 		Assert.assertEquals(2, statusForm.findParamByPath("/statusReason").getValues().size());
 		Assert.assertEquals("A1", statusForm.findParamByPath("/statusReason").getValues().get(0).getCode());
 		Assert.assertEquals("B1", statusForm.findParamByPath("/statusReason").getValues().get(1).getCode());
+		Assert.assertNull(statusForm.findParamByPath("/statusReason2").getValues());;
+	}
+	
+	@Test
+	public void t07_resetOnChange_false_miss() {
+		final Param<?> statusForm = _q.getRoot().findParamByPath(STATUS_FORM);
+		assertNotNull(statusForm);
+		
+		Assert.assertEquals(2, statusForm.findParamByPath("/statusReason").getValues().size());
+		Assert.assertEquals("A1", statusForm.findParamByPath("/statusReason").getValues().get(0).getCode());
+		Assert.assertEquals("B1", statusForm.findParamByPath("/statusReason").getValues().get(1).getCode());
+		
+		statusForm.findParamByPath("/status").setState("B");
+		Assert.assertEquals(1, statusForm.findParamByPath("/statusReason").getValues().size());
+		Assert.assertEquals("B1", statusForm.findParamByPath("/statusReason").getValues().get(0).getCode());
+	}
+	
+	@Test
+	public void t08_resetOnChange_false_hit() {
+		final Param<?> statusForm = _q.getRoot().findParamByPath(STATUS_FORM);
+		assertNotNull(statusForm);
+		
+		Assert.assertEquals(2, statusForm.findParamByPath("/statusReason").getValues().size());
+		Assert.assertEquals("A1", statusForm.findParamByPath("/statusReason").getValues().get(0).getCode());
+		Assert.assertEquals("B1", statusForm.findParamByPath("/statusReason").getValues().get(1).getCode());
+		Assert.assertNull(statusForm.findParamByPath("/statusReason").getState());
+		
+		statusForm.findParamByPath("/statusReason").setState("B1");
+		statusForm.findParamByPath("/status").setState("B");
+		Assert.assertEquals(1, statusForm.findParamByPath("/statusReason").getValues().size());
+		Assert.assertEquals("B1", statusForm.findParamByPath("/statusReason").getValues().get(0).getCode());
+		Assert.assertEquals("B1", statusForm.findParamByPath("/statusReason").getState());
+	}
+	
+	@Test
+	public void t09_resetOnChange_true_doReset() {
+		final Param<?> statusForm = _q.getRoot().findParamByPath(STATUS_FORM);
+		assertNotNull(statusForm);
+		
 		Assert.assertNull(statusForm.findParamByPath("/statusReason2").getValues());
+		Assert.assertNull(statusForm.findParamByPath("/statusReason2").getState());
+		
+		statusForm.findParamByPath("/statusReason2").setState("A1");
+		statusForm.findParamByPath("/status").setState("A");
+		Assert.assertEquals(1, statusForm.findParamByPath("/statusReason2").getValues().size());
+		Assert.assertEquals("A1", statusForm.findParamByPath("/statusReason2").getValues().get(0).getCode());
+		Assert.assertNull(statusForm.findParamByPath("/statusReason").getState());
 	}
 }
