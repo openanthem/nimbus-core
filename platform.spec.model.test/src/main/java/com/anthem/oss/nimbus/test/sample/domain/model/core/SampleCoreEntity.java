@@ -16,6 +16,7 @@ import com.anthem.oss.nimbus.core.domain.definition.Model.Param.Values;
 import com.anthem.oss.nimbus.core.domain.definition.Model.Param.Values.Source;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
+import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Modal;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Radio;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.TextBox;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ActivateConditional;
@@ -24,6 +25,7 @@ import com.anthem.oss.nimbus.core.domain.definition.extension.Audit;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ConfigConditional;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ConfigConditionals;
 import com.anthem.oss.nimbus.core.domain.definition.extension.Content.Label;
+import com.anthem.oss.nimbus.core.domain.definition.extension.ParamContext;
 import com.anthem.oss.nimbus.core.domain.definition.extension.Rule;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ValuesConditional;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ValuesConditional.Condition;
@@ -213,4 +215,16 @@ public class SampleCoreEntity extends IdString {
 	private String rule_param2;
 	
 	private int rule_param_affectState;
+	
+	@ParamContext(enabled = false, visible = false)
+	private String for_set_param_context;
+	
+	@Modal
+	@ParamContext(enabled = true, visible = true)
+	private MyModal myModal1;
+	
+	@Modal
+	private MyModal myModal2;
+	
+	public static class MyModal {}
 }

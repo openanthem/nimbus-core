@@ -9,7 +9,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.anthem.oss.nimbus.core.domain.definition.extension.ParamContext;
+import com.anthem.oss.nimbus.core.domain.definition.event.StateEvent.OnStateLoad;
 
 /**
  * @author Soham Chakravarti
@@ -140,13 +140,28 @@ public class ViewConfig {
 		String defaultFlow() default ""; // applicable only to Section type BODY. // remove
 	}
 		
-	/*
-	 * Modal Window Definition
+	/**
+	 * <p>Framework View Style Component: <b>Modal</b></p>
+	 * 
+	 * <p>Renders a popup window with content defined by the nested fields within the field
+	 * that is decorated with <tt>&#64;Modal</tt>.</p>
+	 * 
+	 * <p>
+	 * <b>Notes:</b>
+	 * <ul>
+	 *   <li>Default contextual properties are set by <tt>ModalStateEventHandler</tt> during 
+	 *   the <tt>OnStateLoad</tt> event.</li>
+	 * </ul>
+	 * </p>
+	 * 
+	 * @author Tony Lopez (AF42192)
+	 * @see com.anthem.oss.nimbus.core.domain.model.state.extension.ModalStateEventHandler
+	 *
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.FIELD })
 	@ViewStyle
-	@ParamContext(enabled=false)
+	@OnStateLoad
 	public @interface Modal {
 		String alias() default "Modal";
 		String cssClass() default ""; // new
@@ -311,7 +326,6 @@ public class ViewConfig {
 		boolean inplaceEdit() default false;
 		String inplaceEditType() default "";
 	}
-	
 
 	
 	@Retention(RetentionPolicy.RUNTIME)
