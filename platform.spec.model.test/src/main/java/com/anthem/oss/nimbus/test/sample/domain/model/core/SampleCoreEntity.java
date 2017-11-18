@@ -16,6 +16,7 @@ import com.anthem.oss.nimbus.core.domain.definition.Model.Param.Values;
 import com.anthem.oss.nimbus.core.domain.definition.Model.Param.Values.Source;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
+import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Modal;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Radio;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.TextBox;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ActivateConditional;
@@ -25,6 +26,7 @@ import com.anthem.oss.nimbus.core.domain.definition.extension.ConfigConditional;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ConfigConditionals;
 import com.anthem.oss.nimbus.core.domain.definition.extension.Content.Label;
 import com.anthem.oss.nimbus.core.domain.definition.extension.EnableConditional;
+import com.anthem.oss.nimbus.core.domain.definition.extension.ParamContext;
 import com.anthem.oss.nimbus.core.domain.definition.extension.Rule;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ValuesConditional;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ValuesConditional.Condition;
@@ -143,12 +145,12 @@ public class SampleCoreEntity extends IdString {
 	public static class StatusForm {
 		
 		@ValuesConditionals({
-			@ValuesConditional(target = "../statusReason", condition = { 
+			@ValuesConditional(target = "../statusReason", resetOnChange = false, condition = { 
 					@Condition(when = "state=='A'", then = @Values(SR_A.class)),
 					@Condition(when = "state=='B'", then = @Values(SR_B.class)),
 				}
 			),
-			@ValuesConditional(target = "../statusReason2", condition = { 
+			@ValuesConditional(target = "../statusReason2", resetOnChange = true, condition = { 
 					@Condition(when = "state=='A'", then = @Values(SR_A.class)),
 				}
 			)
@@ -220,4 +222,16 @@ public class SampleCoreEntity extends IdString {
 	private String attr_enable_trigger;
 	
 	private SampleCoreEnableEntity attr_enable_nested;
+	
+	@ParamContext(enabled = false, visible = false)
+	private String for_set_param_context;
+	
+	@Modal
+	@ParamContext(enabled = true, visible = true)
+	private MyModal myModal1;
+	
+	@Modal
+	private MyModal myModal2;
+	
+	public static class MyModal {}
 }
