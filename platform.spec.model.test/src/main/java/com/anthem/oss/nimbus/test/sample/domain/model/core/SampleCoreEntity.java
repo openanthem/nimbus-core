@@ -144,12 +144,12 @@ public class SampleCoreEntity extends IdString {
 	public static class StatusForm {
 		
 		@ValuesConditionals({
-			@ValuesConditional(target = "../statusReason", condition = { 
+			@ValuesConditional(target = "../statusReason", resetOnChange = false, condition = { 
 					@Condition(when = "state=='A'", then = @Values(SR_A.class)),
 					@Condition(when = "state=='B'", then = @Values(SR_B.class)),
 				}
 			),
-			@ValuesConditional(target = "../statusReason2", condition = { 
+			@ValuesConditional(target = "../statusReason2", resetOnChange = true, condition = { 
 					@Condition(when = "state=='A'", then = @Values(SR_A.class)),
 				}
 			)
