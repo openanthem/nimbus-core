@@ -226,8 +226,8 @@ public class SampleCoreEntity extends IdString {
 	@ParamContext(enabled = false, visible = false)
 	private String for_set_param_context;
 	
-	@Modal
 	@ParamContext(enabled = true, visible = true)
+	@Modal
 	private MyModal myModal1;
 	
 	@Modal

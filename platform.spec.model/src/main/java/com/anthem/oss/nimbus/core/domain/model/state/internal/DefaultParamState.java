@@ -65,9 +65,12 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	@JsonIgnore
 	private boolean active = true;
 	
-	private boolean visible = true;
+//	private boolean visible = true;
+//	
+//	private boolean enabled = true;
 	
-	private boolean enabled = true;
+	private RemnantState<Boolean> visible = new RemnantState<>(true);
+	private RemnantState<Boolean> enabled = new RemnantState<>(true);
 	
 	private List<ParamValue> values;
 	
@@ -267,7 +270,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	@Override
 	public final Action setState(T state) {
-		if(!isActive() && state!=null)
+		if(!isActive() && state!=null && isStateInitialized())
 			throw new InvalidConfigException("Param's state cannot be changed when inactive. param: "+this.getPath());
 
 		return changeStateTemplate((rt, h, lockId)->affectSetStateChange(state, rt, h, lockId));
@@ -320,12 +323,12 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		return state;
 	}
 	protected void postSetState(Action change, T state) {}
-
+	
 	@Override
 	public void onStateLoadEvent() {
 		onStateLoadEvent(this);
 	}
-	
+
 	// TODO : move to runtime.eventDelegate
 	protected static void onStateLoadEvent(Param<?> p) {
 		EventHandlerConfig eventHandlerConfig = p.getConfig().getEventHandlerConfig();
@@ -548,66 +551,102 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		return null;	
 	}
 	
-	@Override
-	public void setVisible(boolean visible) {
-		if(isVisible()==visible)
-			return;
-
-		if(!isActive())
-			return;
-
+	@Getter @Setter
+	private static class RemnantState<T> {
+		private T prevState;
+		private T currState;
 		
-		this.visible = visible;
+		public RemnantState(T initState) {
+			this.prevState = initState;
+			this.currState = initState;
+		} 
+		
+		public void setState(T state) {
+			this.prevState = this.currState;
+			this.currState = state;
+		}
+	}
+	
+	
+	@Override
+	public boolean isVisible() {
+		return visible.getCurrState();
+	}
+	
+	@Override
+	public boolean isEnabled() {
+		return enabled.getCurrState();
+	}
+	
+	public void setVisible(boolean visible) {
+		if(this.visible.currState==visible)
+			return;
+
+		final boolean currActive = isActive();
+		if(!currActive && visible)
+			return;
+		
+		this.visible.setState(visible);
 		emitParamContextEvent();
+		
+		// handle nested
+		if(!isNested() || findIfNested().templateParams().isNullOrEmpty())
+			return;
+		
+		findIfNested().getParams().stream()
+			.forEach(p->{
+
+				p.setVisible(visible);
+				
+			});
+		
+		findIfNested().getParams().stream()
+		.forEach(p->{
+
+			if(p.isStateInitialized())
+				p.onStateLoadEvent();
+			else
+				p.onStateChangeEvent(p.getRootExecution().getExecutionRuntime().getTxnContext(), Action._update);
+			
+		});
 	}
 	
 	@Override
 	public void setEnabled(boolean enabled) {
-		toggleEnabled(enabled);
-	}
-	
-	
-	protected boolean toggleEnabled(boolean to) {
-		return changeStateTemplate((rt, h, lockId)->{
-			boolean result = affectToggleEnabled(to);
-			if(result) {
-				h.setState(Action._update);
-				
-				emitParamContextEvent();
-			}
-			
-			return result;
-		});
-	}
-	
-	protected boolean affectToggleEnabled(boolean to) {
-//		if(enabled==to)
-//			return false;
-//		
-//		if(!isActive())
-//			return false;
+		if(this.enabled.currState==enabled)
+			return;
 		
-		this.enabled = to;
+		final boolean currActive = isActive();
+		if(!currActive && enabled)
+			return;
 		
-		if(!isNested())
-			return true;
-			
-		if(findIfNested().templateParams().isNullOrEmpty())
-			return true;
+		this.enabled.setState(enabled);
+		emitParamContextEvent();
+		
+		// handle nested
+		if(!isNested() || findIfNested().templateParams().isNullOrEmpty())
+			return;
 		
 		findIfNested().getParams().stream()
-			.forEach(cp->{
-				//if(to) 
-					cp.setEnabled(to);//cp.activate();
+			.forEach(p->{
+
+				p.setEnabled(enabled);
 				
-//				else {
-//					cp.setStateInitialized(false);//cp.deactivate();
-//				}
 			});
-		
-		return true;
-	}
 	
+		findIfNested().getParams().stream()
+		.forEach(p->{
+
+			if(p.isStateInitialized())
+				p.onStateLoadEvent();
+			else
+				p.onStateChangeEvent(p.getRootExecution().getExecutionRuntime().getTxnContext(), Action._update);
+			
+		});
+	
+		
+	}
+
 	@Override
 	public void setValues(List<ParamValue> values) {
 		if(getValues()==values)
@@ -659,42 +698,6 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	
 	@Override
-	public boolean isVisible() {
-		if(!isActive() || !visible)
-			return false;
-		
-		Param<?> parentParam = Optional.ofNullable(getParentModel())
-			.map(Model::getAssociatedParam)
-			.orElse(null);
-			
-		if(parentParam==null)
-			return visible;
-		
-		if(!parentParam.isVisible())
-			return false;
-		
-		return visible;
-	}
-	
-	@Override
-	public boolean isEnabled() {
-		if(!isActive() || !enabled)
-			return false;
-		
-		Param<?> parentParam = Optional.ofNullable(getParentModel())
-			.map(Model::getAssociatedParam)
-			.orElse(null);
-			
-		if(parentParam==null)
-			return enabled;
-		
-		if(!parentParam.isEnabled())
-			return false;
-		
-		return enabled;
-	}
-	
-	@Override
 	public void activate() {
 		toggleActivate(true);
 	}
@@ -724,8 +727,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 
 		// toggle
 		setActive(to);
-		setVisible(to);
-		setEnabled(to);
+		//setVisible(to); //this.visible.setState(to); //
+		//setEnabled(to); //this.enabled.setState(to); //
 		
 		// notify mapped subscribers, if any
 		//==emitNotification(new Notification<>(this, ActionType._active, this));
@@ -737,14 +740,14 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 			if(!isPrimitive())
 				setState(null);
 		} else {
-			initState(); // ensure all rules are fired, including the ones on @OnStateChange
+			initState(); // ensure all rules are fired
 		}
 		
-		// ripple to children, if applicable
-		if(!isNested())
-			return true;
+		setVisible(to); //this.visible.setState(to); //
+		setEnabled(to); //this.enabled.setState(to); //
 		
-		if(findIfNested().templateParams().isNullOrEmpty())
+		// ripple to children, if applicable
+		if(!isNested() || findIfNested().templateParams().isNullOrEmpty())
 			return true;
 		
 		findIfNested().getParams().stream()
@@ -754,6 +757,10 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 				else {
 					cp.setStateInitialized(false);//cp.deactivate();
 				}
+				
+				cp.setVisible(to); //this.visible.setState(to); //
+				cp.setEnabled(to); //this.enabled.setState(to); //
+
 			});
 		
 		return true;
