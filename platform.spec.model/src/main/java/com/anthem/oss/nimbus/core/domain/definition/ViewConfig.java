@@ -175,7 +175,7 @@ public class ViewConfig {
 			dialog, slider
 		}
 		
-		ParamContext context() default @ParamContext(enabled = false, visible = false);
+		ParamContext context() default @ParamContext(enabled = true, visible = false);
 	}
 
 	/*
