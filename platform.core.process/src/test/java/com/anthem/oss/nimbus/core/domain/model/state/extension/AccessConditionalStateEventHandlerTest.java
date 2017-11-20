@@ -128,8 +128,8 @@ public class AccessConditionalStateEventHandlerTest extends AbstractStateEventHa
 	@Test
 	public void t9_hidden_WhenAuthoritiesFalse() {
 		Param<?> p = _q.getRoot().findParamByPath(ACCESS_CONDITIONAL_WHENAUTHORITIES_READ_PARAM2_PATH);
-		assertTrue(p.isVisible());
-		assertTrue(p.isEnabled());
+		assertFalse(p.isVisible());
+		assertFalse(p.isEnabled());
 	}
 	
 	@Test

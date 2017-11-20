@@ -50,7 +50,8 @@ public class SampleCoreEntityAccess extends IdString {
 	@AccessConditional(whenAuthorities="?[#this == 'case_management'].empty", p=Permission.HIDDEN)
 	private SampleCoreNestedEntity accessConditional_WhenAuthorities_Hidden1;
 	
-	@AccessConditional(whenAuthorities="!?[#this == 'case_management'].empty", p=Permission.READ)
+	@AccessConditional(whenAuthorities="!?[#this == 'case_management'].empty && ?[#this == 'task_management'].empty", p=Permission.READ)
+	@AccessConditional(whenAuthorities="?[#this == 'case_management'].empty && ?[#this == 'task_management'].empty", p=Permission.HIDDEN)
 	private SampleCoreNestedEntity accessConditional_WhenAuthorities_Read2;
 	
 	@AccessConditional(whenAuthorities="!?[#this == 'case_management'].empty && !?[#this == 'member_management'].empty", p=Permission.HIDDEN)
