@@ -25,6 +25,7 @@ import com.anthem.oss.nimbus.core.domain.definition.extension.Audit;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ConfigConditional;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ConfigConditionals;
 import com.anthem.oss.nimbus.core.domain.definition.extension.Content.Label;
+import com.anthem.oss.nimbus.core.domain.definition.extension.EnableConditional;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ParamContext;
 import com.anthem.oss.nimbus.core.domain.definition.extension.Rule;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ValuesConditional;
@@ -144,12 +145,12 @@ public class SampleCoreEntity extends IdString {
 	public static class StatusForm {
 		
 		@ValuesConditionals({
-			@ValuesConditional(target = "../statusReason", condition = { 
+			@ValuesConditional(target = "../statusReason", resetOnChange = false, condition = { 
 					@Condition(when = "state=='A'", then = @Values(SR_A.class)),
 					@Condition(when = "state=='B'", then = @Values(SR_B.class)),
 				}
 			),
-			@ValuesConditional(target = "../statusReason2", condition = { 
+			@ValuesConditional(target = "../statusReason2", resetOnChange = true, condition = { 
 					@Condition(when = "state=='A'", then = @Values(SR_A.class)),
 				}
 			)
@@ -215,6 +216,12 @@ public class SampleCoreEntity extends IdString {
 	private String rule_param2;
 	
 	private int rule_param_affectState;
+	
+
+	@EnableConditional(when="state == 'Y'", targetPath="../attr_enable_nested")
+	private String attr_enable_trigger;
+	
+	private SampleCoreEnableEntity attr_enable_nested;
 	
 	@ParamContext(enabled = false, visible = false)
 	private String for_set_param_context;
