@@ -45,11 +45,11 @@ public @interface ParamContext {
 	/**
 	 * Whether or not the decorated target should be visible.
 	 */
-	boolean visible() default true;
+	boolean visible();
 	
 	/**
 	 * Whether or not the decorated target should be enabled.
 	 */
-	boolean enabled() default true;
+	boolean enabled();
 	
 }
