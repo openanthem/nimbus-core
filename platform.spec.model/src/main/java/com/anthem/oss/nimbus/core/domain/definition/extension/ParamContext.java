@@ -13,16 +13,15 @@ import com.anthem.oss.nimbus.core.domain.definition.event.StateEvent.OnStateLoad
 /**
  * <p>ParamContext is used to set the contextual properties of a field during the OnStateLoad event. 
  * Contextual properties include those such as: visible, enabled, etc. It is likely that as the framework
- * evolves, additional values will be defined within ParamContext.
+ * evolves, additional values will be defined within <tt>ParamContext</tt>.
  * 
- * <p>The intent of <tt>ParamContext</tt> is to be able to decorate fields with default behavior.
- * For example:</p>
+ * <p>The intent of <tt>&#64;ParamContext</tt> is to be able to decorate fields with default contextual
+ * behavior. For example:</p>
  * 
  * <pre>
  * public static class SampleView {
  * 
- *     &#64;Modal
- *     &#64;ParamContext(enabled=true, visible=true)
+ *     &#64;Modal(context = &#64;ParamContext(enabled=true, visible=true))
  *     private MyModal myModal;
  *     
  *     public static class MyModal { ... }
@@ -45,11 +44,11 @@ public @interface ParamContext {
 	/**
 	 * Whether or not the decorated target should be visible.
 	 */
-	boolean visible() default true;
+	boolean visible();
 	
 	/**
 	 * Whether or not the decorated target should be enabled.
 	 */
-	boolean enabled() default true;
+	boolean enabled();
 	
 }

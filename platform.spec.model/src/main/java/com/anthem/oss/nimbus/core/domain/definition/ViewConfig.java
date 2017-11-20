@@ -10,6 +10,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import com.anthem.oss.nimbus.core.domain.definition.event.StateEvent.OnStateLoad;
+import com.anthem.oss.nimbus.core.domain.definition.extension.ParamContext;
 
 /**
  * @author Soham Chakravarti
@@ -173,6 +174,8 @@ public class ViewConfig {
 		public enum Type {
 			dialog, slider
 		}
+		
+		ParamContext context() default @ParamContext(enabled = true, visible = false);
 	}
 
 	/*

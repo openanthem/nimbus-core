@@ -2,6 +2,7 @@ package com.anthem.oss.nimbus.core.domain.model.state.extension;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -10,8 +11,8 @@ import org.junit.runners.MethodSorters;
 
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
-import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity.IdString;
 import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreEntity;
 
@@ -65,6 +66,6 @@ public class ModalStateEventHandlerTest extends AbstractStateEventHandlerTests {
 		final Param<?> myModal = _q.getRoot().findParamByPath("/sample_core/myModal2");
 		assertNotNull(myModal);
 		assertFalse(myModal.isVisible());
-		assertFalse(myModal.isEnabled());
+		assertTrue(myModal.isEnabled());
 	}
 }
