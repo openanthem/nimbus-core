@@ -146,7 +146,7 @@ public class AccessConditionalStateEventHandlerTest extends AbstractStateEventHa
 		ClientAccessEntity accessEntity2 = new ClientAccessEntity();
 		accessEntity2.setCode("member_management");
 		
-		Set<ClientAccessEntity> accessEntities = new HashSet<>();
+		List<ClientAccessEntity> accessEntities = new ArrayList<>();
 		accessEntities.add(accessEntity2);
 		
 		ClientUser cu = new ClientUser();
