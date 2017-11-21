@@ -39,7 +39,7 @@ public class ClientUser extends AbstractUser<ClientUserRole> {
 	private List<UserRole> roles;
 	
 	@ReadOnlyProperty
-	private Set<ClientAccessEntity> resolvedAccessEntities;
+	private List<ClientAccessEntity> resolvedAccessEntities;
 	
 	private String roleName; // Temp for header
 
