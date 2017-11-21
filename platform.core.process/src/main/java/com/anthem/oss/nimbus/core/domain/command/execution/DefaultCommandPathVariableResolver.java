@@ -52,6 +52,13 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 	}
 	
 	protected String map(Param<?> param, String pathToResolve) {
+		// handle recursive
+		if(ParamPathExpressionParser.containsPrefixSuffix(pathToResolve)) {
+			String recursedPath = resolve(param, pathToResolve);
+			pathToResolve = recursedPath; 
+		}
+			
+		
 		if(StringUtils.startsWithIgnoreCase(pathToResolve, Constants.MARKER_SESSION_SELF.code))
 			return mapSelf(param, pathToResolve);
 		
