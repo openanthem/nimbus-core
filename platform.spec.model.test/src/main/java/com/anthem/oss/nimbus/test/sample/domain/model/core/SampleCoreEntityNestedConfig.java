@@ -1,13 +1,10 @@
 package com.anthem.oss.nimbus.test.sample.domain.model.core;
 
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
-import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
 import com.anthem.oss.nimbus.core.domain.definition.Execution.Config;
 import com.anthem.oss.nimbus.core.domain.definition.Repo;
 import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
-import com.anthem.oss.nimbus.core.domain.definition.extension.AccessConditional;
-import com.anthem.oss.nimbus.core.domain.definition.extension.AccessConditional.Permission;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity.IdString;
 
 import lombok.Getter;
@@ -34,7 +31,7 @@ public class SampleCoreEntityNestedConfig extends IdString {
 	
 	private String testParam3;
 	
-	@Config(url="/testParam3/_update?rawPayload=<!/<!/testParam2!>!>")
+	@Config(url="/testParam3/_update?rawPayload=\"<!../<!../testParam2!>!>\"")
 	private String paramConfigWithNestedPath;
 	
 	
