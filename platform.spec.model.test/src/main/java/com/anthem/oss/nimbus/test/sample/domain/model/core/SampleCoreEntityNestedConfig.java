@@ -34,7 +34,7 @@ public class SampleCoreEntityNestedConfig extends IdString {
 	@Config(url="/testParam3/_update?rawPayload=\"<!../<!../testParam2!>!>\"")
 	private String paramConfigWithNestedPath;
 	
-	@Config(url="/testParam3/_update?rawPayload=\"<!../testParam!><!../testParam2!>!>\"")
+	@Config(url="/testParam3/_update?rawPayload=\"<!../testParam!><!../testParam2!>\"")
 	private String paramConfigWithNestedPath2;
 }
 
