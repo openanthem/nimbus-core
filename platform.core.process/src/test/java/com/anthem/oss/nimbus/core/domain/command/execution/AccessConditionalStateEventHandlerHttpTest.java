@@ -64,18 +64,18 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 		assertFalse(accessParam.isEnabled());
 	}
 	
-	@Test
-	public void t04_accessConditionalGridLinkHidden() throws Exception {
-		String userLoginId = createClientUserWithRoles("superman","intake","clinician");
-		
-		Param<?> p = excuteNewConfigView(userLoginId);
-		assertNotNull(p);
-		
-		Param<?> accessParam = p.findParamByPath("/accessConditional_Contains_Hidden2");
-		
-		assertFalse(accessParam.isVisible());
-		assertFalse(accessParam.isEnabled());
-	}
+//	@Test
+//	public void t04_accessConditionalGridLinkHidden() throws Exception {
+//		String userLoginId = createClientUserWithRoles("superman","intake","clinician");
+//		
+//		Param<?> p = excuteNewConfigView(userLoginId);
+//		assertNotNull(p);
+//		
+//		Param<?> accessParam = p.findParamByPath("/accessConditional_Contains_Hidden2");
+//		
+//		assertFalse(accessParam.isVisible());
+//		assertFalse(accessParam.isEnabled());
+//	}
 
 	@SuppressWarnings("unchecked")
 	private Param<?> excuteNewConfigCore(String userLoginId) {
@@ -103,31 +103,31 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 		return p;
 	}
 	
-	@SuppressWarnings("unchecked")
-	private Param<?> excuteNewConfigView(String userLoginId) {
-		final MockHttpServletRequest fetchUser = MockHttpRequestBuilder.withUri(USER_PARAM_ROOT)
-				.addAction(Action._search)
-				.addParam("fn", "query")
-				.addParam("where", "clientuser.loginId.eq('"+userLoginId+"')")
-				.addParam("fetch","1")
-				.getMock();
-		
-		Holder<MultiOutput> holder = (Holder<MultiOutput>) controller.handlePost(fetchUser, null);
-		MultiOutput output = holder.getState();
-		ClientUser clientuser = (ClientUser) output.getSingleResult();
-		assertNotNull(clientuser);
-		UserEndpointSession.setAttribute("client-user-key", clientuser);
-		
-		createResolvedAccessEntities(clientuser);
-
-		final MockHttpServletRequest req = MockHttpRequestBuilder.withUri(VIEW_PARAM_ACCESS_ROOT)
-				.addAction(Action._new)
-				.getMock();
-
-		final Object resp = controller.handleGet(req, null);
-		Param<?> p = ExtractResponseOutputUtils.extractOutput(resp);
-		return p;
-	}
+//	@SuppressWarnings("unchecked")
+//	private Param<?> excuteNewConfigView(String userLoginId) {
+//		final MockHttpServletRequest fetchUser = MockHttpRequestBuilder.withUri(USER_PARAM_ROOT)
+//				.addAction(Action._search)
+//				.addParam("fn", "query")
+//				.addParam("where", "clientuser.loginId.eq('"+userLoginId+"')")
+//				.addParam("fetch","1")
+//				.getMock();
+//		
+//		Holder<MultiOutput> holder = (Holder<MultiOutput>) controller.handlePost(fetchUser, null);
+//		MultiOutput output = holder.getState();
+//		ClientUser clientuser = (ClientUser) output.getSingleResult();
+//		assertNotNull(clientuser);
+//		UserEndpointSession.setAttribute("client-user-key", clientuser);
+//		
+//		createResolvedAccessEntities(clientuser);
+//
+//		final MockHttpServletRequest req = MockHttpRequestBuilder.withUri(VIEW_PARAM_ACCESS_ROOT)
+//				.addAction(Action._new)
+//				.getMock();
+//
+//		final Object resp = controller.handleGet(req, null);
+//		Param<?> p = ExtractResponseOutputUtils.extractOutput(resp);
+//		return p;
+//	}
 
 	private void createResolvedAccessEntities(ClientUser clientuser) {
 		Holder<MultiOutput> holder;
