@@ -4,6 +4,7 @@
 package com.anthem.oss.nimbus.core.entity.person;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.data.annotation.Id;
@@ -49,14 +50,14 @@ public abstract class Person<ID extends Serializable, A extends Address<ID>, P e
 	
 
 	
-	private N name;
+	private Name.IdString name;
 
-	private Set<A> addresses;
+	private List<Address.IdString> addresses;
 
 	private String email;
 	
 	private String displayName;
 
-	private Set<P> contactPhones;
+	private List<Phone.IdString> contactPhones;
 	
 }
