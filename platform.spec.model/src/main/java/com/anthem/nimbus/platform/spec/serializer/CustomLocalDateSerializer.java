@@ -16,7 +16,7 @@ public class CustomLocalDateSerializer extends StdSerializer<LocalDate> {
     
 	private static final long serialVersionUID = 1L;
 	
-	private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 
     public CustomLocalDateSerializer() {
         this(null);

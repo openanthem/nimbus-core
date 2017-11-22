@@ -5,6 +5,7 @@ import java.time.LocalDate;
 
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -25,6 +26,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
  * @author Tony Lopez (AF42192)
  *
  */
+@Ignore
 @RunWith(MockitoJUnitRunner.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CustomLocalDateSerializerTest {
