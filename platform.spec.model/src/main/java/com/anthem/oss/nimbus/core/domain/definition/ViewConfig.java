@@ -146,7 +146,6 @@ public class ViewConfig {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.FIELD })
 	@ViewStyle
-	@ParamContext(enabled=false)
 	public @interface Modal {
 		String alias() default "Modal";
 		String cssClass() default ""; // new
