@@ -1,6 +1,7 @@
 package com.anthem.oss.nimbus.core.domain.model.state.extension;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutorGateway;
@@ -41,12 +42,28 @@ public class ValuesConditionalStateEventHandler extends AbstractConditionalState
 	 * 
 	 * @param targetParam the entity to set the values within
 	 * @param values the values metadata to set
+	 * @param resetOnChange if true, always resets the state of <tt>targetParam</tt> when 
+	 * <tt>values</tt> is updated. If false, resets the state of <tt>targetParam</tt> only when
+	 * the existing state does not exist within the new updated set of <tt>values</tt>.
 	 */
-	private void execute(Param<?> targetParam, Values values) {
+	private void execute(Param<?> targetParam, Values values, boolean resetOnChange) {
 		final List<ParamValue> oldValues = targetParam.getValues();
 		final List<ParamValue> newValues = AbstractEntityStateBuilder.buildValues(values, targetParam, this.gateway);
 		targetParam.setValues(newValues);
 		LOG.trace(() -> "Updated values for param '" + targetParam + "' from '" + oldValues + "' to '" + newValues + "'.");
+		
+		if (resetOnChange) {
+			targetParam.setState(null);
+		} else {
+			
+			// check if targetParam state is in the list of new values. reset to null if not.
+			if (null != targetParam.getState() && 
+					!newValues.stream().map(ParamValue::getCode).collect(Collectors.toList())
+						.contains(targetParam.getState())) {
+				
+				targetParam.setState(null);
+			}
+		}
 	}
 	
 	/**
@@ -71,7 +88,7 @@ public class ValuesConditionalStateEventHandler extends AbstractConditionalState
 			if (this.evalWhen(srcParam, condition.when())) {
 				
 				// set the values
-				this.execute(targetParam, condition.then());
+				this.execute(targetParam, condition.then(), configuredAnnotation.resetOnChange());
 				
 				// if the configured annotation should only execute one true condition,
 				// execute the first and exit
@@ -103,7 +120,7 @@ public class ValuesConditionalStateEventHandler extends AbstractConditionalState
 		final boolean shouldExecuteDefault = !this.executeConditions(configuredAnnotation, srcParam, targetParam);
 		
 		if (shouldExecuteDefault) {
-			this.execute(targetParam, targetParam.getConfig().getValues());
+			this.execute(targetParam, targetParam.getConfig().getValues(), configuredAnnotation.resetOnChange());
 		}
 	}
 }
