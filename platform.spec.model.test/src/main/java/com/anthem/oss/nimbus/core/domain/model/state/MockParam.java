@@ -2,6 +2,7 @@ package com.anthem.oss.nimbus.core.domain.model.state;
 
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -29,7 +30,7 @@ public class MockParam implements Param<Object> {
 	private boolean active = true;
 	private EntityStateAspectHandlers aspectHandlers = null;
 	private String beanPath = "";
-	private ParamConfig<Object> config = null;
+	private ParamConfig<Object> config = new MockParamConfig();
 	private List<MappedParam<?, Object>> consumers = new ArrayList<>();
 	@Setter(AccessLevel.NONE)
 	private List<Notification<Object>> emittedNotifications = new ArrayList<>();;
@@ -37,15 +38,15 @@ public class MockParam implements Param<Object> {
 	private List<MappedParam<?, Object>> eventSubscribers = new ArrayList<>();
 	private LockTemplate lockTemplate = null;
 	private Message message = null;
-	private Map<String, Model<Object>> modelMap;
-	private Map<String, Param<Object>> paramMap;
+	private Map<String, Model<Object>> modelMap = new HashMap<>();
+	private Map<String, Param<Object>> paramMap = new HashMap<>();
 	private Model<Object> parentModel = null;
 	private String path = "";
 	private PropertyDescriptor propertyDescriptor = null;
 	private Object state = null;
 	private boolean stateInitialized = false;
 	private StateType type = null;
-	private List<ParamValue> values = new ArrayList<>();
+	private List<ParamValue> values = null;
 	private boolean visible = true;
 
 	/* (non-Javadoc)
@@ -108,6 +109,14 @@ public class MockParam implements Param<Object> {
 		return null;
 	}
 
+	public void putParam(Param<Object> param, String path) {
+		this.paramMap.put(path, param);
+	}
+	
+	public void putModel(Model<Object> model, String path) {
+		this.modelMap.put(path, model);
+	}
+	
 	/* (non-Javadoc)
 	 * @see com.anthem.oss.nimbus.core.domain.model.state.EntityState#findModelByPath(java.lang.String)
 	 */
