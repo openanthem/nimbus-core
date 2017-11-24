@@ -45,13 +45,15 @@ public class ValuesConditionalOnStateChangeEventHandler extends AbstractValuesCo
 			targetParam.setState(null);
 		} else {
 			
-			// check if targetParam state is in the list of new values. reset to null if not.
-			if (null != targetParam.getState() && 
+			// if there are no values set (default config values) OR
+			// if previously selected targetParam state is not in the list of new values. then reset to null.
+			if (null == targetParam.getValues() || null != targetParam.getState() && 
 					!targetParam.getValues().stream().map(ParamValue::getCode).collect(Collectors.toList())
 						.contains(targetParam.getState())) {
 				
 				targetParam.setState(null);
 			}
+			// otherwise the state persists.
 		}
 	}
 
