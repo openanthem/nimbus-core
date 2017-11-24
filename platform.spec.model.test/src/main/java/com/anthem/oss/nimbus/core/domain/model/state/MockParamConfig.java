@@ -1,6 +1,7 @@
 package com.anthem.oss.nimbus.core.domain.model.state;
 
 import java.util.List;
+import java.util.Map;
 
 import com.anthem.oss.nimbus.core.domain.definition.AssociatedEntity;
 import com.anthem.oss.nimbus.core.domain.definition.Converters.ParamConverter;
@@ -14,119 +15,71 @@ import com.anthem.oss.nimbus.core.domain.model.config.RulesConfig;
 
 import lombok.Getter;
 import lombok.Setter;
+import test.com.anthem.nimbus.platform.utils.PathUtils;
 
+/**
+ * A mock ParamConfig implementation intended for testing purposes.
+ * 
+ * @author Tony Lopez (AF42192)
+ *
+ */
 @Getter @Setter 
 public class MockParamConfig implements ParamConfig<Object> {
 
-	private Values values;
+	private List<AssociatedEntity> associatedEntities;
+	private String beanName;
 	private String code = "";
-	
-	@Override
-	public String getConfigId() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	private String configId = "";
+	private List<ParamConverter> converters;
+	private Desc desc;
+	private EventHandlerConfig eventHandlerConfig;
+	private List<Config> executionConfigs;
+	private boolean leaf;
+	private Map<String, ParamConfig<?>> paramConfigMap;
+	private Class<Object> referredClass;
+	private List<AnnotationConfig> rules;
+	private RulesConfig rulesConfig;
+	private ParamType type;
+	private List<AnnotationConfig> uiNatures;
+	private AnnotationConfig uiStyles;
+	private List<AnnotationConfig> validations;
+	private Values values;
 
-	@Override
-	public Class<Object> getReferredClass() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public EventHandlerConfig getEventHandlerConfig() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	/*
+	 * (non-Javadoc)
+	 * @see com.anthem.oss.nimbus.core.domain.model.config.EntityConfig#findParamByPath(java.lang.String)
+	 */
 	@Override
 	public <K> ParamConfig<K> findParamByPath(String path) {
-		// TODO Auto-generated method stub
-		return null;
+		return (ParamConfig<K>) this.paramConfigMap.get(path);
 	}
-
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.anthem.oss.nimbus.core.domain.model.config.EntityConfig#findParamByPath(java.lang.String[])
+	 */
 	@Override
 	public <K> ParamConfig<K> findParamByPath(String[] pathArr) {
-		// TODO Auto-generated method stub
-		return null;
+		return PathUtils.findFirstByPath(pathArr, k -> this.findParamByPath(k));
 	}
 
-	@Override
-	public RulesConfig getRulesConfig() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	/*
+	 * (non-Javadoc)
+	 * @see com.anthem.oss.nimbus.core.entity.Findable#isFound(java.lang.Object)
+	 */
 	@Override
 	public boolean isFound(String by) {
-		// TODO Auto-generated method stub
-		return false;
+		return this.paramConfigMap.containsValue(by);
 	}
 
-	@Override
-	public String getBeanName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ParamType getType() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean isLeaf() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public com.anthem.oss.nimbus.core.domain.model.config.ParamConfig.Desc getDesc() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Config> getExecutionConfigs() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<AnnotationConfig> getValidations() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<AnnotationConfig> getUiNatures() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public AnnotationConfig getUiStyles() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<AnnotationConfig> getRules() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<ParamConverter> getConverters() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<AssociatedEntity> getAssociatedEntities() {
-		// TODO Auto-generated method stub
-		return null;
+	/**
+	 * Puts a <tt>ParamConfig</tt> into an internal map by <tt>path</tt> as key.
+	 * 
+	 * @param paramConfig the <tt>ParamConfig</tt> to store
+	 * @param path the key to store <tt>paramConfig</tt> under
+	 */
+	public <K> void putParamConfig(ParamConfig<K> paramConfig, String path) {
+		this.paramConfigMap.put(path, paramConfig);
 	}
 
 }

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
@@ -16,6 +15,7 @@ import com.anthem.oss.nimbus.core.util.LockTemplate;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import test.com.anthem.nimbus.platform.utils.PathUtils;
 
 /**
  * A mock Param implementation intended for testing purposes.
@@ -85,30 +85,6 @@ public class MockParam implements Param<Object> {
 		this.emittedNotifications.add(event);
 	}
 
-	/**
-	 * <p>Iterates through the values of <tt>arr</tt> and uses each element to invoke <tt>finderFn</tt>. The Function <tt>finderFn</tt> is 
-	 * a search function that expects a key <b>K</b> provided by <tt>arr</tt>.</p>
-	 * 
-	 * <p>The first non-null value retrieved as a result of <tt>finderFn</tt> will be returned. If <tt>arr</tt> is null or no value is found,
-	 * <tt>null</tt> will be returned.</p>
-	 * 
-	 * @param arr the array of key objects
-	 * @param finderFn the search function to evaluate
-	 * @return the first found element as a result of <tt>finderFn</tt>, otherwise null 
-	 */
-	private <T, K> T findFirstByPath(K[] arr, Function<K, T> finderFn) {
-		if (null == arr) {
-			return null;
-		}
-		for (final K key : arr) {
-			final T found = finderFn.apply(key);
-			if (null != found) {
-				return found;
-			}
-		}
-		return null;
-	}
-
 	public void putParam(Param<Object> param, String path) {
 		this.paramMap.put(path, param);
 	}
@@ -131,7 +107,7 @@ public class MockParam implements Param<Object> {
 	 */
 	@Override
 	public <S> Model<S> findModelByPath(String[] pathArr) {
-		return this.findFirstByPath(pathArr, k -> this.findModelByPath(k));
+		return PathUtils.findFirstByPath(pathArr, k -> this.findModelByPath(k));
 	}
 
 	/* (non-Javadoc)
@@ -148,7 +124,7 @@ public class MockParam implements Param<Object> {
 	 */
 	@Override
 	public <P> Param<P> findParamByPath(String[] pathArr) {
-		return this.findFirstByPath(pathArr, k -> this.findParamByPath(k));
+		return PathUtils.findFirstByPath(pathArr, k -> this.findParamByPath(k));
 	}
 
 	/* (non-Javadoc)
