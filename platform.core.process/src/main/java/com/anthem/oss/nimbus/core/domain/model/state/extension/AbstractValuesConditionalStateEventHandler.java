@@ -10,28 +10,24 @@ import com.anthem.oss.nimbus.core.domain.definition.extension.ValuesConditional;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ValuesConditional.Condition;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.ExecutionTxnContext;
-import com.anthem.oss.nimbus.core.domain.model.state.ParamEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.AbstractEntityStateBuilder;
-import com.anthem.oss.nimbus.core.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
-import com.anthem.oss.nimbus.core.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 
 /**
- * Conditional State Event handler for updating <tt>Values</tt> annotated fields based
- * on conditional logic defined via configuration.
+ * 
+ * <p>Abstract Conditional State Event handler for updating <tt>Values</tt> annotated fields based
+ * on conditional logic defined via configuration.</p>
  * 
  * @author Tony Lopez (AF42192)
- *
+ * @see com.anthem.oss.nimbus.core.domain.definition.extension.ValuesConditional
  */
-public class ValuesConditionalStateEventHandler extends AbstractConditionalStateEventHandler 
-		implements OnStateLoadHandler<ValuesConditional>, OnStateChangeHandler<ValuesConditional> {
+public abstract class AbstractValuesConditionalStateEventHandler extends AbstractConditionalStateEventHandler {
 
 	public static final JustLogit LOG = new JustLogit();
 	
-	private final CommandExecutorGateway gateway;
+	protected final CommandExecutorGateway gateway;
 	
-	public ValuesConditionalStateEventHandler(BeanResolverStrategy beanResolver) {
+	public AbstractValuesConditionalStateEventHandler(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
 		this.gateway = this.beanResolver.get(CommandExecutorGateway.class);
 	}
@@ -42,28 +38,26 @@ public class ValuesConditionalStateEventHandler extends AbstractConditionalState
 	 * 
 	 * @param targetParam the entity to set the values within
 	 * @param values the values metadata to set
-	 * @param resetOnChange if true, always resets the state of <tt>targetParam</tt> when 
-	 * <tt>values</tt> is updated. If false, resets the state of <tt>targetParam</tt> only when
-	 * the existing state does not exist within the new updated set of <tt>values</tt>.
 	 */
-	private void execute(Param<?> targetParam, Values values, boolean resetOnChange) {
+	protected void execute(Param<?> targetParam, Values values) {
 		final List<ParamValue> oldValues = targetParam.getValues();
 		final List<ParamValue> newValues = AbstractEntityStateBuilder.buildValues(values, targetParam, this.gateway);
 		targetParam.setValues(newValues);
 		LOG.trace(() -> "Updated values for param '" + targetParam + "' from '" + oldValues + "' to '" + newValues + "'.");
+
+		// perform any after-execution logic needed
+		this.afterExecute(targetParam);
+	}
+	
+	/**
+	 * Operations that should be performed after <tt>targetParam</tt>'s have been successfully 
+	 * updated. This method is intended to be overridden by subclasses to extend additional 
+	 * functionality when needed.
+	 * 
+	 * @param targetParam the target entity in which the new values were updated
+	 */
+	protected void afterExecute(Param<?> targetParam) {	
 		
-		if (resetOnChange) {
-			targetParam.setState(null);
-		} else {
-			
-			// check if targetParam state is in the list of new values. reset to null if not.
-			if (null != targetParam.getState() && 
-					!newValues.stream().map(ParamValue::getCode).collect(Collectors.toList())
-						.contains(targetParam.getState())) {
-				
-				targetParam.setState(null);
-			}
-		}
 	}
 	
 	/**
@@ -78,7 +72,7 @@ public class ValuesConditionalStateEventHandler extends AbstractConditionalState
 	 * @param targetParam the target parameter to execute against
 	 * @return true if a condition was successfully executed, false if no condition was executed
 	 */
-	private boolean executeConditions(ValuesConditional configuredAnnotation, Param<?> srcParam, Param<?> targetParam) {
+	protected boolean executeConditions(ValuesConditional configuredAnnotation, Param<?> srcParam, Param<?> targetParam) {
 		boolean executed = false;
 		
 		// iterate through the conditions
@@ -88,7 +82,7 @@ public class ValuesConditionalStateEventHandler extends AbstractConditionalState
 			if (this.evalWhen(srcParam, condition.when())) {
 				
 				// set the values
-				this.execute(targetParam, condition.then(), configuredAnnotation.resetOnChange());
+				this.execute(targetParam, condition.then());
 				
 				// if the configured annotation should only execute one true condition,
 				// execute the first and exit
@@ -103,24 +97,23 @@ public class ValuesConditionalStateEventHandler extends AbstractConditionalState
 		
 		return executed;
 	}
-	
-	@Override
-	public void handle(ValuesConditional configuredAnnotation, Param<?> param) {
-		this.handleInternal(configuredAnnotation, param);	
-	}
-	
-	@Override
-	public void handle(ValuesConditional configuredAnnotation, ExecutionTxnContext txnCtx, ParamEvent event) {
-		this.handle(configuredAnnotation, event.getParam());
-	}
 
-	private void handleInternal(ValuesConditional configuredAnnotation, Param<?> srcParam) {
+	/**
+	 * Entry point for the handler. Seeks to retrieve the target parameter identified by 
+	 * <tt>configuredAnnotation</tt> and based on additional conditional logic defined there and
+	 * within <tt>srcParam</tt>, will attempt to execute setting the appropriate <tt>Values</tt>
+	 * into the target parameter.
+	 * 
+	 * @param configuredAnnotation the provided configuration via <tt>@ValuesConditional</tt>.
+	 * @param srcParam the decorated field's parameter object.
+	 */
+	protected void handleInternal(ValuesConditional configuredAnnotation, Param<?> srcParam) {
 		final Param<?> targetParam = this.retrieveParamByPath(srcParam, configuredAnnotation.target());
 		
 		final boolean shouldExecuteDefault = !this.executeConditions(configuredAnnotation, srcParam, targetParam);
 		
 		if (shouldExecuteDefault) {
-			this.execute(targetParam, targetParam.getConfig().getValues(), configuredAnnotation.resetOnChange());
+			this.execute(targetParam, targetParam.getConfig().getValues());
 		}
 	}
 }

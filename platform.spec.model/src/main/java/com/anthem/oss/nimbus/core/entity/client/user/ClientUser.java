@@ -1,7 +1,6 @@
 package com.anthem.oss.nimbus.core.entity.client.user;
 
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.data.annotation.ReadOnlyProperty;
 
@@ -27,7 +26,7 @@ import lombok.ToString;
  * 
  */
 @Domain(value="clientuser", includeListeners={ListenerType.persistence})
-@Repo(Database.rep_mongodb)
+@Repo(alias="clientuser", value=Database.rep_mongodb)
 @Getter @Setter @ToString(callSuper=true)
 public class ClientUser extends AbstractUser<ClientUserRole> {
 	
