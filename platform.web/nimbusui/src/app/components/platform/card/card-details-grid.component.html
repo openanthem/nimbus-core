@@ -1,0 +1,24 @@
+<ng-template [ngIf]="!grid.config.uiStyles?.attributes?.draggable">
+    <ng-template ngFor let-card [ngForOf]="grid?.type?.model?.params">
+        <!-- loop thru card grid -->
+        <ng-template ngFor let-element [ngForOf]="card?.type?.model?.params">
+            <!-- loop thru collection elements -->
+            <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias == 'CardDetail'">
+                <nm-card-details [element]="element" [collectionElem]="card.collectionElem" [elemId]="card.elemId" ></nm-card-details>
+            </ng-template>
+        </ng-template>
+    </ng-template>
+</ng-template>
+<ng-template [ngIf]="grid.config.uiStyles?.attributes?.draggable">
+    <div nm-dnd-sortable-container [sortableData]="grid?.type?.model?.params">
+        <div *ngFor="let card of grid?.type?.model?.params; let i = index" nm-dnd-sortable [sortableIndex]="i">
+            <!-- loop thru grid collection -->
+            <ng-template ngFor let-element [ngForOf]="card?.type?.model?.params">
+                <!-- loop thru collection element to get to the card -->
+                <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias == 'CardDetail'">
+                    <nm-card-details [element]="element" [collectionElem]="card.collectionElem" [elemId]="card.elemId" ></nm-card-details>
+                </ng-template>
+            </ng-template>
+        </div>
+    </div>
+</ng-template>

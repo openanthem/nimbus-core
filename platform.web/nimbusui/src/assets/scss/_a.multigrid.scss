@@ -1,0 +1,225 @@
+.options{
+    display: inline-block;
+    width: 20%;
+    text-align: center;
+}
+
+.question-header {
+    font-weight: bold;
+    padding: 10px 5px;
+    border-top: 1px solid #000;
+
+    .options {
+        width: 8%;
+    }
+}
+
+.question-row {
+    border-top: 1px solid #000;
+    padding: 5px;
+}
+
+ng-component{
+    display: inline-block;
+    width:100%;
+}
+
+.ui-datatable {
+    position: static;
+    font-size: .8rem;
+    table{
+        border: 1px solid #6AA6DF;
+    }
+    
+    th.ui-state-default{
+        background: $gray-med;
+        color: #fff;
+    }
+    th.ui-state-active{
+        background: $gray-dark;
+    }
+
+    .ui-datatable-data > tr > td {
+        border-width: 1px 0;
+    }
+    tbody > tr {
+        &.ui-widget-content.ui-datatable-even {
+            background-color: #efefef;
+        }
+        &.ui-widget-content.ui-datatable-odd {
+            background-color: #fff;
+        }
+    }
+    .ui-datatable-footer {
+        border: none;
+        background: none;
+        text-align: left;
+        font-size: .6rem;
+    }
+    th.ui-sortable-column:not(.ui-state-active):hover {
+        background-color: $gray-dark;
+        color: #fff;
+    }
+    th.col-icon {
+        width: 30px;
+    }
+    //this is for action icon width as last column in grid -- needs to isolate this grid style
+    .ui-datatable-thead > tr > th:last-child {
+        width: 50px;
+    }
+    .ui-datatable-thead > tr > th {
+        position: relative;
+        text-align: left;
+        border: none;
+        padding: .2rem .4rem;
+        line-height: 1rem;
+        .ui-column-title {
+            display: inline-block;
+            text-align: left;
+            max-width: 65%;
+            margin-right:.3rem;
+            // overflow: hidden;
+            // text-overflow: ellipsis;
+            // height: 1.3rem;
+        }
+        .gridFilterIcon {
+            display:none;
+            position: absolute;
+            left: 2px;
+            top:0;
+            &::before{
+                background-size: 15px 15px;
+                height: 15px;
+                width: 15px;
+                display: block;
+                content: ' ';
+                font-family: "fontAwesome";
+                content: "\f0b0";
+                font-size: .8rem;
+            }
+        }
+       
+        .ui-sortable-column-icon{
+        font-size: 1.2rem;
+        display:inline;
+        color: #fff;
+        }
+    }
+    tr.ui-expanded-row-content {
+        .ui-datatable {
+            padding: .6rem 1.5rem;
+            .ui-state-default {
+                background-color: #ccc;
+                color: #555;
+                span.ui-sortable-column-icon {
+                    color: #555;
+                }
+            }
+        }
+    }
+}
+.ui-widget-content {
+    border:none;
+}
+.ui-widget-header {
+    border: none;
+    text-align: right;
+    font-size: .6rem;
+}
+div#gsFlexGrid {
+    position: relative;
+}
+p-header {
+    position: absolute;
+    left: 1rem;
+    font-size: 1.1rem;
+}
+.recordsDisplayed{
+    position: absolute;
+    left: 40%;
+    padding-top: .1rem;
+    font-size: .9rem;
+}
+span.ui-cell-data img { 
+margin-right: 10px; 
+}
+
+
+.ui-cell-data {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 98%;
+    height: 1.3em;
+}
+ 
+ .form-group{
+     .editTrigger{
+        display: block;
+        position:relative;
+        color:#333;
+        &:hover{
+            border: 1px solid #cecece;
+                padding-left: 10px;
+            &::after{
+                position:absolute;
+                top:0;
+                right:0;
+                height: 100%;
+                border-left: 1px solid #cecece;
+                text-align: center;
+                font-family: "fontAwesome";
+                content: "\f040";
+                padding: 2px 4px 0;
+            }
+        }
+        .unassigned {
+            font-style: italic;
+        }
+     }
+     .editTarget{
+         display:none;
+     }
+     .editSubmit {
+       &::before{
+           display: inline-block;
+           font-family: "fontAwesome";
+                content: "\f00c";
+       }
+    }
+    .editCancel {
+        &::before{
+           display: inline-block;
+           font-family: "fontAwesome";
+                content: "\f00d";
+       }
+    }
+    .saveOptions {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        height: 30px;
+        display: none;
+        text-align: right;
+        z-index: 1;
+    }
+
+     &.editOn {
+        border: 1px solid #cecece;
+        padding: .4rem;
+        margin-bottom: 40px;
+        position: relative;
+        .editTrigger{
+            display: none;
+        }
+        .editTarget{
+            display: block;
+        }
+    }
+ }
+
+.formEditGroup.editOn .form-group .editTarget {
+    display: block;
+}
+.formEditGroup.lockedForm .form-group .editTarget[disabled] {
+    display: block;
+}

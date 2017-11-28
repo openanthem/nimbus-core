@@ -1,0 +1,79 @@
+.floating-toolbar {
+    position: fixed;
+    top: $toolbar-height;
+    right: 0;
+    z-index: 3;
+    .content {
+        position: fixed;
+        right: -400px;
+        background: #eee;
+        width: 400px;
+        transition: right 1s;
+        top: $toolbar-height;
+        padding: 30px 30px 30px 10px;
+        overflow-y: auto;
+        bottom: 50px;
+        border: 1px solid #999;
+        .toolbar-header {
+            position: absolute;
+            top: 0;
+            background: #333;
+            left: 0;
+            right: 0;
+            color: #fff;
+            &::before {
+                font-family: "fontAwesome";
+                content:"\f002";
+                margin: .2rem .4rem;
+            }
+            .menuTrigger {
+                right: 10px;
+                position: absolute;
+                color: #fff;
+            }
+        }
+        .viewport {
+            overflow-y: scroll;
+            position: absolute;
+            top: 30px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+    }
+    &.open {
+        .content {
+            right: 0;
+        }
+        &> .menuTrigger {
+            opacity: 0;
+        }
+    }
+    &> .menuTrigger {
+        width: 60px;
+        height: 60px;
+        border: 1px solid;
+        color: #333;
+        font-size: .9rem;
+        text-align: center;
+        background: #fff;
+        opacity: 1;
+        transition: opacity .3s;
+        position: absolute;
+        top: 0;
+        right: 0;
+        &::before {
+            font-family: "fontAwesome";
+            content:"\f002";
+            display: block;
+            background: blue;
+            color: white;
+            padding: .2rem .4rem;
+            font-size: 1.2rem;
+            height: 35px;
+        }
+        &:hover {
+            text-decoration: none;
+        }
+    }
+}
