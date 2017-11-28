@@ -399,6 +399,7 @@ public class ViewConfig {
 	public @interface Link {
 		public enum Type {
 			MENU,
+			EXTERNAL,
 			DEFAULT;
 		}
 		Type value() default Type.DEFAULT;
@@ -408,6 +409,8 @@ public class ViewConfig {
 		String imgSrc() default "";
 		String cssClass() default "";
 		String altText() default "";
+		String target() default "";
+		String rel() default "";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
