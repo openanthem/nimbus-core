@@ -16,6 +16,7 @@ import java.util.concurrent.Executors;
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 
@@ -38,8 +39,8 @@ import com.anthem.oss.nimbus.core.domain.definition.Execution.KeyValue;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ExecutionModel;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.anthem.oss.nimbus.core.domain.model.state.InvalidStateException;
 import com.anthem.oss.nimbus.core.domain.model.state.ParamEvent;
 import com.anthem.oss.nimbus.core.domain.model.state.StateEventListener;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.BaseStateEventListener;
@@ -210,15 +211,35 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		List<Execution.Config> colExecConfigs = new ArrayList<>();
 		String colPath = ParamPathExpressionParser.stripPrefixSuffix(ec.col());
 		
-		ListParam listParam = findColParamByPath(cmdParam, colPath);
+		Param<?> p = findColParamByPath(cmdParam, colPath);
 		
-		for(int i=0; i < listParam.size(); i++) {
-			colExecConfigs.add(buildExecConfig(ec, colPath, i));
+		if(!p.isCollection() && !p.getConfig().getType().isArray())
+			throw new InvalidConfigException("The param "+colPath+" must be a collection or an array but found to be a non collection/non array from command: "+cmdParam);
+			
+		if(p.isCollection()) {
+			for(int i=0; i < p.findIfCollection().size(); i++) {
+				String url = StringUtils.replace(ec.url(),Constants.MARKER_COL_PARAM.code,colPath+Constants.SEPARATOR_URI.code+i);
+				colExecConfigs.add(buildExecConfig(url));
+			}
 		}
+		else if(p.getConfig().getType().isArray()) {
+			String[] arrayParamState = (String[])p.getState();
+			
+			if(arrayParamState == null)
+				throw new InvalidStateException("The state of param "+p+" must not be null, command: "+cmdParam);
+			
+			int size = ArrayUtils.getLength(arrayParamState);
+			for(int i=0; i < size; i++) {
+				String url = StringUtils.replace(ec.url(), Constants.MARKER_COL_PARAM_EXPR.code, arrayParamState[i]);
+				colExecConfigs.add(buildExecConfig(url));
+			}
+		}
+		
 		executeConfig(eCtx, cmdParam, colExecConfigs, sessionId);
+		
 	}
 
-	private ListParam findColParamByPath(Param<?> cmdParam, String colPath) {
+	private Param<?> findColParamByPath(Param<?> cmdParam, String colPath) {
 		Param<?> p = cmdParam.findParamByPath(colPath);
 		if(p == null)
 			p = cmdParam.getParentModel().findParamByPath(colPath);
@@ -226,17 +247,15 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		if(p == null)
 			throw new InvalidConfigException("The param "+colPath+" not found from command: "+cmdParam);
 		
-		if(!p.isCollection())
-			throw new InvalidConfigException("The param "+colPath+" must be a collection but found to be a non collection from command: "+cmdParam);
-		
-		return p.findIfCollection();
+		return p;
+			
 	}
 
-	private Config buildExecConfig(Config ec, String colPath, int i) {
+	private Config buildExecConfig(String url) {
 		return new Execution.Config() {
 			
 			public String url() {
-				return StringUtils.replace(ec.url(),Constants.MARKER_COL_PARAM.code,colPath+Constants.SEPARATOR_URI.code+i);
+				return url;
 			}
 			public String col() {
 				return "";
