@@ -46,20 +46,30 @@ public class ParamPathExpressionParser {
 			throw new InvalidConfigException("Found config url entry with starting '"+KEY_PREFIX+"' but no closing '"+KEY_SUFFIX+"' in "+ in);
 
 		// check recursive
-		int recursiveCount = countRecursive(in, iStart, iEnd);
-		if(recursiveCount==0)
-			return iEnd;
-		
-		int iRecurEnd = iStart;
-		for(int c=recursiveCount; c>0; c--) {
-			iRecurEnd = StringUtils.indexOf(in, KEY_SUFFIX, iRecurEnd+1);
-		}
-		return iRecurEnd;
+		return countRecursive(in, iStart, iEnd);
 	}
 	
+	String in = "/umcaseview:<!../.m/<!/id!>/another/<!path4!>/path3!>/nested/<!/path2!>/_get";
+	
 	private static int countRecursive(String in, int iStart, int iFirstEnd) {
-		String subStrBetweenFirstStartAndFirstEnd = in.substring(iStart+1);
-		return StringUtils.countMatches(subStrBetweenFirstStartAndFirstEnd, KEY_SUFFIX);
+		// check if there are any starts
+		String subStrBetweenFirstStartAndFirstEnd = in.substring(iStart+1, iFirstEnd);
+		int countStartsInBetween = StringUtils.countMatches(subStrBetweenFirstStartAndFirstEnd, KEY_PREFIX);
+		
+		if(countStartsInBetween==0) {
+			return iFirstEnd;
+		}
+		
+		// find next end after current end
+		int iNextStart = StringUtils.indexOf(in, KEY_PREFIX, iStart+1);
+		
+		int nextEnd = StringUtils.indexOf(in, KEY_SUFFIX, iFirstEnd+1);
+		
+		int recursiveNextEnd = countRecursive(in, iNextStart, nextEnd);
+		if(nextEnd == recursiveNextEnd)
+			return nextEnd;
+		
+		return countRecursive(in, nextEnd, recursiveNextEnd);
 	}
 	
 	public static String stripPrefixSuffix(String in) {

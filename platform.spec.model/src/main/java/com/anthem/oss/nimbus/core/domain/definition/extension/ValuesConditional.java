@@ -20,33 +20,37 @@ import com.anthem.oss.nimbus.core.domain.definition.event.StateEvent.OnStateLoad
  * <p>
  * 1. Update the values of <tt>statusReason</tt> from <tt>SR_ALL.class</tt> to 
  * <tt>SR_A.class</tt> when the value of <tt>status</tt> is 'A'.
+ * </p>
+ * 
  * <pre>
- * @ValuesConditional(target="../statusReason", condition={ 
- *   @Condition(when="state=='A'", then=@Values(SR_A.class))
+ * &#64;ValuesConditional(target = "../statusReason", condition = { 
+ *     &#64;Condition(when = "state == 'A'", then = &#64;Values(SR_A.class))
  * })
  * private String status;
  * 
- * @Values(SR_ALL.class)
+ * &#64;Values(SR_ALL.class)
  * private String statusReason;
  * </pre>
+ * 
  * <p>
  * 2. Set multiple conditions and even override conditions by setting the
  * <tt>exclusive</tt> property. In this case, it is possible to give priority to
  * the last conditional checking for state 'A'.
+ * </p>
  * <pre>
- * @ValuesConditional(target="../statusReason", condition={ 
- *   @Condition(when="state=='A'", then=@Values(SR_A.class))
- *   @Condition(when="state=='B'", then=@Values(SR_B.class))
- *   @Condition(when="state=='A'", then=@Values(SR_C.class))
+ * &#64;ValuesConditional(target = "../statusReason", condition = { 
+ *     &#64;Condition(when = "state=='A'", then = &#64;Values(SR_A.class))
+ *     &#64;Condition(when = "state=='B'", then = &#64;Values(SR_B.class))
+ *     &#64;Condition(when = "state=='A'", then = &#64;Values(SR_C.class))
  * })
  * private String status;
  * 
- * @Values(SR_ALL.class)
+ * &#64;Values(SR_ALL.class)
  * private String statusReason;
  * </pre>
- * </p>
  * 
  * @author Tony Lopez (AF42192)
+ * @see com.anthem.oss.nimbus.core.domain.model.state.extension.AbstractValuesConditionalStateEventHandler
  *
  */
 @Documented
@@ -78,6 +82,21 @@ public @interface ValuesConditional {
 	 * then all truthy conditions will be executed. the default value is true.
 	 */
 	boolean exclusive() default true;
+	
+	/**
+	 * <p>Whether or not to reset the state of the target field when the associated
+	 * <tt>&#64;Values</tt> property is updated.</p>
+	 * 
+	 * <p>If a condition is truthy and <tt>resetOnChange</tt> is <b>false</b>, then state
+	 * will be attempt to be preserved. State is preserved in this scenario only if the value 
+	 * of state is found within the newly updated <tt>&#64;Values</tt> property. If it is 
+	 * not found, the state will be reset.</p>
+	 * 
+	 * <p>If <tt>resetOnChange</tt> is <b>true</b>, state will always be reset on change.</p>
+	 * 
+	 * <p>The default value is <b>true</b>.
+	 */
+	boolean resetOnChange() default true;
 	
 	@Documented
 	@Retention(RUNTIME)
