@@ -26,7 +26,6 @@ import com.fasterxml.jackson.core.JsonGenerator;
  * @author Tony Lopez (AF42192)
  *
  */
-@Ignore
 @RunWith(MockitoJUnitRunner.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CustomLocalDateSerializerTest {
@@ -47,7 +46,7 @@ public class CustomLocalDateSerializerTest {
 		this.testee.serialize(date, gen, null);
 		ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
 		Mockito.verify(this.gen).writeString(captor.capture());
-		Assert.assertEquals("1988-10-13", captor.getValue());
+		Assert.assertEquals("10/13/1988", captor.getValue());
 	}
 	
 	@Test
@@ -55,7 +54,6 @@ public class CustomLocalDateSerializerTest {
 		final LocalDate date = LocalDate.of(1988, 10, 13);
 		Mockito.doThrow(new IOException()).when(this.gen).writeString(Mockito.anyString());
 		this.thrown.expect(JsonParsingException.class);
-		this.thrown.expectMessage("");
 		this.testee.serialize(date, gen, null);
 	}
 }

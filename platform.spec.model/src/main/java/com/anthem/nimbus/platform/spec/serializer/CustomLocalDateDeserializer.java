@@ -11,7 +11,6 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 /**
@@ -35,8 +34,7 @@ public class CustomLocalDateDeserializer extends StdDeserializer<LocalDate> {
 	public LocalDate deserialize(JsonParser jsonparser, DeserializationContext context)
 			throws IOException, JsonProcessingException {
 
-		JsonNode node = jsonparser.getCodec().readTree(jsonparser);
-		final String date = node.textValue();
+		String date = jsonparser.getText();
 		if (StringUtils.isEmpty(date)) {
 			return null;
 		}
