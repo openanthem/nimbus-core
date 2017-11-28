@@ -223,14 +223,14 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			}
 		}
 		else if(p.getConfig().getType().isArray()) {
-			String[] arrayParamState = (String[])p.getState();
+			Object[] arrayParamState = (Object[])p.getState();
 			
 			if(arrayParamState == null)
 				throw new InvalidStateException("The state of param "+p+" must not be null, command: "+cmdParam);
 			
 			int size = ArrayUtils.getLength(arrayParamState);
 			for(int i=0; i < size; i++) {
-				String url = StringUtils.replace(ec.url(), Constants.MARKER_COL_PARAM_EXPR.code, arrayParamState[i]);
+				String url = StringUtils.replace(ec.url(), Constants.MARKER_COL_PARAM_EXPR.code, String.valueOf(arrayParamState[i]));
 				colExecConfigs.add(buildExecConfig(url));
 			}
 		}
