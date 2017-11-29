@@ -1,4 +1,5 @@
 *.DS_Store
+*/nimbusui/package.json.lock
 */**/*.log
 */target/
 */bin/
@@ -10,3 +11,7 @@
 *.iml
 .project
 .classpath
+*/nimbusui/node
+*/nimbusui/node_modules
+*/nimbusui/dist
+*/nimbusui/etc

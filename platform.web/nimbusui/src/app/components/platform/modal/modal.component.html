@@ -1,0 +1,9 @@
+<ng-template [ngIf]="type == 'dialog'">
+    <p-dialog [header]="title" [(visible)]="!visible" [closable]="closable" [closeOnEscape]="false" [modal]="true" [width]="width" appendTo="body" [responsive]="true">
+        <ng-template ngFor let-element [ngForOf]="nestedParams">
+            <ng-template [ngIf]="element.alias == 'Section'">
+                <nm-section [element]="element"></nm-section>	
+            </ng-template>
+        </ng-template>   
+    </p-dialog>
+</ng-template>

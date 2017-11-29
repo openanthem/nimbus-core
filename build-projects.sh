@@ -9,7 +9,7 @@
     # platform.core.process
     # platform.web
    
-PROJECTS="dependencies,parent,core.processor,spec.model,spec.model.test,core.process";
+PROJECTS="dependencies,parent,core.processor,spec.model,spec.model.test,core.process,web";
 
 while getopts p:m: option
 do
@@ -34,7 +34,7 @@ for i in "${NAMES[@]}"; do
   
   BUILD_PROFILES="";
   if [[ "$i" == "web" ]]; then
-    BUILD_PROFILES="local"
+    BUILD_PROFILES="devbuild"
   fi
   
   if [[ -z "$BUILD_PROFILES" ]]; then
