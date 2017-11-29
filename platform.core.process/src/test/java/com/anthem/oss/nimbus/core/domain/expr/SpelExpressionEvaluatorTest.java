@@ -10,9 +10,12 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
+import com.anthem.nimbus.platform.spec.model.dsl.binder.ParamStateHolder;
+import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 
 /**
  * @author Swetha Vemuri
@@ -130,5 +133,19 @@ public class SpelExpressionEvaluatorTest {
 		String expr = "state != null && state.?[#this=='Apple'] != new String[]{} && state.?[#this=='Twitter'] != new String[]{}";
 		Boolean result = expressionEvaluator.getValue(expr, new Holder<>(strArr), Boolean.class);
 		assertFalse(result);
+	}
+	
+	@Test
+	public void t13_evaluate_findParamByState_expression() {
+		
+		Param<?> onChangeParam = Mockito.mock(Param.class);
+		ParamStateHolder holder = Mockito.mock(ParamStateHolder.class);
+		
+		Mockito.when(holder.getState()).thenReturn("foo");		
+		Mockito.when(holder.findStateByPath("somepath")).thenReturn("foo");
+		
+		String expr = "state == findStateByPath('somepath')";
+		Boolean result = expressionEvaluator.getValue(expr, new ParamStateHolder(onChangeParam), Boolean.class);
+		assertTrue(result);
 	}
 }
