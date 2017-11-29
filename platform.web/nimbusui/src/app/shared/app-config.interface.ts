@@ -588,6 +588,8 @@ export class UiAttribute implements Serializable<UiAttribute> {
     defaultFlow: string;
     formReset: boolean;
     browserBack: boolean=false;
+    target: string;
+    rel: string;
     deserialize( inJson ) {
         this.value = inJson.value;
         this.url = inJson.url;
@@ -639,6 +641,8 @@ export class UiAttribute implements Serializable<UiAttribute> {
         this.inplaceEdit = inJson.inplaceEdit;
         this.defaultPage = inJson.defaultPage;
         this.formReset = inJson.formReset;
+        this.target = inJson.target;
+        this.rel = inJson.rel;
         if (inJson.defaultFlow) {
             this.defaultFlow = inJson.defaultFlow;
         }

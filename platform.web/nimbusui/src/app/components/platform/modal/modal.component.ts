@@ -9,6 +9,9 @@ import { Component, ElementRef, Input, OnInit, OnDestroy } from '@angular/core';
 import { Param, Model } from '../../../shared/app-config.interface';
 import { DialogModule } from 'primeng/primeng';
 import { WebContentSvc } from './../../../services/content-management.service';
+import { PageService } from '../../../services/page.service';
+import { Action, HttpMethod, Behavior} from './../../../shared/command.enum';
+import { GenericDomain } from '../../../model/generic-domain.model';
 import { BaseElement } from '../base-element.component';
 
 /**
@@ -38,7 +41,7 @@ export class Modal extends BaseElement implements OnInit, OnDestroy {
     // title of modal window
     public title: string;
 
-    constructor(private wcsvc: WebContentSvc) {
+    constructor(private wcsvc: WebContentSvc, private pageSvc: PageService) {
         super(wcsvc);
     }
 
@@ -63,6 +66,14 @@ export class Modal extends BaseElement implements OnInit, OnDestroy {
      */
     public get width(): string {
         return this.element.config.uiStyles.attributes.width;
+    }
+
+    /**
+     * Close diaglog function.
+     */
+    public closeDialog(event: any) {
+        //console.log('modal close clicked..........');
+        this.pageSvc.processEvent(this.element.path+'/closeModal', Behavior.execute.value, new GenericDomain(), HttpMethod.GET.value);
     }
 
 }

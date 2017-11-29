@@ -1,3 +1,4 @@
+import { BaseElement } from './base-element.component';
 import { Component, Input } from '@angular/core';
 import { Param } from '../../shared/app-config.interface';
 import { WebContentSvc } from '../../services/content-management.service';
@@ -11,18 +12,24 @@ import { ServiceConstants } from './../../services/service.constants';
         WebContentSvc
     ],
     template: `
-        <ng-template [ngIf]="element.config?.uiStyles?.attributes?.imgSrc !== undefined && element.config?.uiStyles?.attributes?.imgSrc !== ''">
-            <a href="{{element.config.uiStyles.attributes.url}}" class='{{element.config.uiStyles.attributes.cssClass}}'>
-                <img src="{{imagesPath}}{{element.config.uiStyles.attributes.imgSrc}}" class=" logo" alt="{{this.label}}" />
+        <ng-template [ngIf]="imgSrc && imgSrc !== ''">
+            <a href="{{url}}" class='{{cssClass}}'>
+                <img src="{{imagesPath}}{{imgSrc}}" class=" logo" alt="{{this.label}}" />
             </a>
         </ng-template>
-        <ng-template [ngIf]="element.config?.uiStyles?.attributes?.imgSrc === undefined || element.config?.uiStyles?.attributes?.imgSrc === ''">
-            <ng-template [ngIf]="element.config?.uiStyles?.attributes?.value=='MENU'">
+        <ng-template [ngIf]="!imgSrc || imgSrc === ''">
+
+            <!-- External Links -->
+            <ng-template [ngIf]="value=='EXTERNAL'">
+                <a href="{{url}}" class="{{cssClass}}" target="{{target}}" rel="{{rel}}">{{label}}</a>
+            </ng-template>
+
+            <ng-template [ngIf]="value=='MENU'">
                 <ng-template [ngIf]="element.mapped==false">
                     <a href="javascript:void(0)" class=" mr-2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                        
                         <svg class="">
-                            <use xmlns:xlink="http://www.w3.org/1999/xlink" attr.xlink:href="{{imagesPath}}{{element.config.uiStyles.attributes.imgSrc}}#Layer_1"></use> 
+                            <use xmlns:xlink="http://www.w3.org/1999/xlink" attr.xlink:href="{{imagesPath}}{{imgSrc}}#Layer_1"></use> 
                         </svg>
                     </a>
                     
@@ -46,9 +53,8 @@ import { ServiceConstants } from './../../services/service.constants';
                     </ng-template>
                 </div>
             </ng-template>
-            <ng-template [ngIf]="element.config?.uiStyles?.attributes?.value=='DEFAULT'">
-                <a class="{{linkClass}}" href="javascript:void(0)" (click)="processOnClick(element.path, 
-                    element.config?.uiStyles?.attributes?.method, element.config?.uiStyles?.attributes?.b)">
+            <ng-template [ngIf]="value=='DEFAULT'">
+                <a class="{{linkClass}}" href="javascript:void(0)" (click)="processOnClick(element.path, method, b)">
                     {{this.label}}
                 </a>
             </ng-template>
@@ -56,25 +62,22 @@ import { ServiceConstants } from './../../services/service.constants';
     `
 })
 
-export class Link {
+export class Link extends BaseElement {
 
     @Input() element: Param;
     @Input() root: Param;
     @Input() inClass: string;
-    private label: string;
     private linkClass: string = 'basicView';
     private imagesPath: string;
 
-    constructor(private wcs: WebContentSvc, private pageSvc: PageService) {
-        wcs.content$.subscribe(result => {
-            this.label = result.label;
-        });
+    constructor(private _wcs: WebContentSvc, private pageSvc: PageService) {
+        super(_wcs);
     }
 
     ngOnInit() {
         //console.log(this.element.config.uiStyles.attributes.value);
         this.imagesPath = ServiceConstants.IMAGES_URL;
-        this.wcs.getContent(this.element.config.code);
+        this._wcs.getContent(this.element.config.code);
         if (this.inClass) {
             this.linkClass = this.inClass;
         }
@@ -88,6 +91,48 @@ export class Link {
             }
         });
         this.pageSvc.processEvent(uri, behaviour, item, httpMethod);
+    }
+
+    /**
+     * The URL attribute for this Param.
+     */
+    get url(): string {
+        return this.element.config.uiStyles.attributes.url;
+    }
+
+    /**
+     * The value attribute for this Param.
+     */
+    get value(): string {
+        return this.element.config.uiStyles.attributes.value;
+    }
+
+    /**
+     * The method attribute for this Param.
+     */
+    get method(): string {
+        return this.element.config.uiStyles.attributes.method;
+    }
+
+    /**
+     * The b attribute for this Param.
+     */
+    get b(): string {
+        return this.element.config.uiStyles.attributes.b;
+    }
+
+    /**
+     * The target attribute for this Param.
+     */
+    get target(): string {
+        return this.element.config.uiStyles.attributes.target;
+    }
+
+    /**
+     * The rel attribute for this Param.
+     */
+    get rel(): string {
+        return this.element.config.uiStyles.attributes.rel;
     }
 }
 
