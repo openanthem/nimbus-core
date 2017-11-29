@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
@@ -75,31 +76,23 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		}
 	}
 	
-	@Bean(name = "default.ObjectMapper")
-	public ObjectMapper objectMapper() {
-		ObjectMapper om = Jackson2ObjectMapperBuilder.json()
-				.annotationIntrospector(new JacksonAnnotationIntrospector())
-				.build();
-	
-		om.registerModule(new JavaTimeModule());
-	    om.registerModule(this.buildDefaultModule());
-		om.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-		return om;
-	}
-	
 	/**
-	 * Builds a default module for serializers and deserializers, bean serializer
-	 * and deserializer modifiers, registration of subtypes and mix-ins
-	 * as well as some other commonly needed objects.
 	 * 
-	 * This method can be overridden to provide additional defaults during instantiation.
+	 * Adds Custom LocalDate serializer and deserializer during spring bean initialization
+	 * With this, every LocalDate field will be serialized and deserialized in the form MM/dd/yyyy
+	 * No need of using @JsonSerializer and @JsonDeserializer
 	 * 
-	 * @return the default <tt>Module</tt> object
 	 */
-	protected Module buildDefaultModule() {
-		final SimpleModule defaultModule = new SimpleModule();
-	    defaultModule.addSerializer(LocalDate.class, new CustomLocalDateSerializer());
-	    defaultModule.addDeserializer(LocalDate.class, new CustomLocalDateDeserializer());
-	    return defaultModule;
-	}
+	@Bean
+    public Jackson2ObjectMapperBuilderCustomizer addCustomLocalDateSerializerDeserializer() {
+        return new Jackson2ObjectMapperBuilderCustomizer() {
+
+            @Override
+            public void customize(Jackson2ObjectMapperBuilder jacksonObjectMapperBuilder) {
+                jacksonObjectMapperBuilder.deserializerByType(LocalDate.class, new CustomLocalDateDeserializer());
+                jacksonObjectMapperBuilder.serializerByType(LocalDate.class, new CustomLocalDateSerializer());
+            }
+
+        };
+    }
 }
