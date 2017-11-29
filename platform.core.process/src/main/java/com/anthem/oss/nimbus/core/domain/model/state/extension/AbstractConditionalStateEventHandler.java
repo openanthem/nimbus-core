@@ -8,7 +8,7 @@ import java.util.EnumSet;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
+import com.anthem.nimbus.platform.spec.model.dsl.binder.ParamStateHolder;
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
@@ -35,8 +35,7 @@ public abstract class AbstractConditionalStateEventHandler {
 	}
 	
 	protected boolean evalWhen(Param<?> onChangeParam, String whenExpr) {
-		Object entityState = onChangeParam.getLeafState();
-		return expressionEvaluator.getValue(whenExpr, new Holder<>(entityState), Boolean.class);
+		return expressionEvaluator.getValue(whenExpr, new ParamStateHolder(onChangeParam), Boolean.class);
 	}
 	
 	protected Param<?> retrieveParamByPath(Param<?> baseParam, String targetPath) {
