@@ -3,6 +3,7 @@
  */
 package com.anthem.oss.nimbus.core.bpm.activiti;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +27,6 @@ import com.anthem.oss.nimbus.core.domain.definition.Constants;
 import com.anthem.oss.nimbus.core.domain.expr.ExpressionEvaluator;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
-import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
 
 /**
  * @author Jayant Chaudhuri
@@ -47,7 +47,24 @@ public class ActivitiBPMGateway implements BPMGateway {
 	}
 	
 	@Override
-	public ProcessResponse startBusinessProcess(Param<?> param, String processId) {
+	public ActivitiProcessFlow startBusinessProcess(Param<?> param, String processId) {
+		ProcessResponse processResponse = startStatlessBusinessProcess(param, processId);
+		ActivitiProcessFlow processFlow = new ActivitiProcessFlow();
+		processFlow.setProcessExecutionId(processResponse.getExecutionId());
+		processFlow.setProcessDefinitionId(processResponse.getDefinitionId());
+		List<String> activeTasks = new ArrayList<String>();
+		List<Task> pendingTasks = taskService.createTaskQuery().processInstanceId(processResponse.getExecutionId()).list();
+		if(pendingTasks != null) {
+			for(Task task: pendingTasks) {
+				activeTasks.add(task.getTaskDefinitionKey());
+			}
+		}
+		processFlow.setActiveTasks(activeTasks);
+		return processFlow;
+	}
+	
+	@Override
+	public ProcessResponse startStatlessBusinessProcess(Param<?> param, String processId) {
 		ProcessEngineContext context = new ProcessEngineContext(param);
 		Map<String, Object> executionVariables = new HashMap<String, Object>();
 		executionVariables.put(Constants.KEY_EXECUTE_PROCESS_CTX.code, context);
@@ -62,17 +79,18 @@ public class ActivitiBPMGateway implements BPMGateway {
 	@Override
 	public Object continueBusinessProcessExecution(Param<?> param, String processExecutionId) {
 		DeploymentManager deploymentManager = processEngineConfiguration.getDeploymentManager();
-		ProcessFlow processFlow = ((ExecutionEntity<?,?>)param.getRootExecution().getState()).getFlow();
-		
-		//TODO: Get List of tasks from process flow
-		List<Task> pendingTasks = taskService.createTaskQuery().processInstanceId(processExecutionId).list();
+		ActivitiProcessFlow processFlow = (ActivitiProcessFlow)((ExecutionEntity<?,?>)param.getRootExecution().getState()).getFlow();
+		List<String> activeTasks = processFlow.getActiveTasks();
 		ProcessEngineContext context = new ProcessEngineContext(param);
 		Map<String, Object> executionVariables = new HashMap<String, Object>();
 		executionVariables.put(Constants.KEY_EXECUTE_PROCESS_CTX.code, context);		
-		for(Task task: pendingTasks){
-			UserTask userTask = (UserTask)deploymentManager.getProcessDefinitionCache().get(processFlow.getProcessDefinitionId()).getProcess().getFlowElementMap().get(task.getTaskDefinitionKey());
-			if(canComplete(param,userTask))
-				taskService.complete(task.getId(),executionVariables);
+		for(String task: activeTasks){
+			UserTask userTask = (UserTask)deploymentManager.getProcessDefinitionCache().get(processFlow.getProcessDefinitionId()).getProcess().getFlowElementMap().get(task);
+			if(canComplete(param,userTask)) {
+				List<Task> activeTaskInstances = taskService.createTaskQuery().processInstanceId(processExecutionId).taskDefinitionKey(task).list();
+				for(Task activeTaskIntance: activeTaskInstances)
+					taskService.complete(activeTaskIntance.getId(),executionVariables);
+			}
 		}
 		return context.getOutput();
 	}
