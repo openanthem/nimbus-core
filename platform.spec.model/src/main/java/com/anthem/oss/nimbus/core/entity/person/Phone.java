@@ -59,4 +59,6 @@ public abstract class Phone<ID extends Serializable> extends AbstractEntity<ID> 
 
 	private String number;
 	
+	private String extension;
+	
 }
