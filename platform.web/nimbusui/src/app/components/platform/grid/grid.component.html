@@ -54,13 +54,11 @@
 				<ng-template *ngIf="col.config.uiStyles?.isLink && col.enabled?.currState" pTemplate="body" let-cell="rowData">
 					<span [ngSwitch]="col.config.uiStyles?.attributes?.imgSrc"> 
 						<!-- <nm-dropdown ></nm-dropdown> -->
-						<div>{{col| json}}</div>
 						<a *ngSwitchCase="''" href="javascript:void(0)" (click)="processOnClick(col, cell)"> {{col.config.label}}  </a> 
 						<img *ngSwitchDefault src="{{imagesPath}}{{col.config?.uiStyles?.attributes?.imgSrc}}" class="grid-icon" (click)="processOnClick(col, cell)" type="submit" />
 					</span> 
 				</ng-template> 
 				<ng-template *ngIf="col.config.uiStyles?.isLink && !col.enabled?.currState" pTemplate="body" let-cell="rowData">
-					<div>{{col | json}}</div>
 					<span [ngSwitch]="col.config.uiStyles?.attributes?.imgSrc"> 
 						<!-- <nm-dropdown ></nm-dropdown> -->
 						<a *ngSwitchCase="''" href="javascript:void(0)" class="btn disabled">{{col.config.label}} </a> 
