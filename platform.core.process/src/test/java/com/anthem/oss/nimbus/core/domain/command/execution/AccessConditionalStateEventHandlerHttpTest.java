@@ -60,8 +60,8 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 		
 		Param<?> accessParam = p.findParamByPath("/accessConditional_WhenAuthorities_Read2");
 		
-		assertTrue(accessParam.isVisible());
-		assertTrue(accessParam.isEnabled());
+		assertFalse(accessParam.isVisible());
+		assertFalse(accessParam.isEnabled());
 	}
 	
 //	@Test
