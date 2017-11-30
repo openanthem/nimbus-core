@@ -61,6 +61,7 @@
 		<nimbus.core.spec.version>${nimbus.core.version}</nimbus.core.spec.version>
 		<nimbus.core.test.version>${nimbus.core.version}</nimbus.core.test.version>
 		<nimbus.core.api.version>${nimbus.core.version}</nimbus.core.api.version>
+		<nimbus.core.ui.version>${nimbus.core.version}</nimbus.core.ui.version>
 		<nimbus.core.processor.version>${nimbus.core.version}</nimbus.core.processor.version>
 	</properties>
 
@@ -241,6 +242,16 @@
 				<groupId>com.anthem.oss.nimbus.core</groupId>
 				<artifactId>com.anthem.oss.nimbus.core.processor</artifactId>
 				<version>${nimbus.core.processor.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.anthem.oss.nimbus.core</groupId>
+				<artifactId>com.anthem.oss.nimbus.core.processor</artifactId>
+				<version>${nimbus.core.processor.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.anthem.oss.nimbus.core</groupId>
+				<artifactId>com.anthem.oss.nimbus.core.web</artifactId>
+				<version>${nimbus.core.ui.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
