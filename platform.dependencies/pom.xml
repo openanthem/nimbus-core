@@ -56,12 +56,12 @@
 		<frontend.plugin.version>1.6</frontend.plugin.version>
 		<maven.karma.plugin.version>1.6</maven.karma.plugin.version>
 		<owasp-esapi.version>2.0.1</owasp-esapi.version>
-		
 		<!-- nimbus-core -->
-		<nimbus.core.spec.version>${project.version}</nimbus.core.spec.version>
-		<nimbus.core.test.version>${project.version}</nimbus.core.test.version>
-		<nimbus.core.api.version>${project.version}</nimbus.core.api.version>
-		<nimbus.core.processor.version>${project.version}</nimbus.core.processor.version>
+		<nimbus.core.version>1.0.0.M9-SNAPSHOT</nimbus.core.version>
+		<nimbus.core.spec.version>${nimbus.core.version}</nimbus.core.spec.version>
+		<nimbus.core.test.version>${nimbus.core.version}</nimbus.core.test.version>
+		<nimbus.core.api.version>${nimbus.core.version}</nimbus.core.api.version>
+		<nimbus.core.processor.version>${nimbus.core.version}</nimbus.core.processor.version>
 	</properties>
 
 	<developers>
