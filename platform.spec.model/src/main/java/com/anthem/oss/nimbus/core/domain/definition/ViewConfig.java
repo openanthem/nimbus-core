@@ -9,6 +9,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.anthem.oss.nimbus.core.domain.definition.event.StateEvent.OnStateLoad;
+import com.anthem.oss.nimbus.core.domain.definition.extension.ParamContext;
+
 /**
  * @author Soham Chakravarti
  *
@@ -82,33 +85,171 @@ public class ViewConfig {
 		String layout() default "";
 	}
 	
+	/*
+	 * Page Definition
+	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
 	public @interface Page {
-		String alias() default "page";
-		String route() default "";
-		String breadCrumb() default "none";
-		String imgSrc() default "";
-		String styleClass() default "";
+		String alias() default "Page";
+		String title() default ""; 
+		String cssClass() default ""; 
 		boolean defaultPage() default false;
+		String route() default ""; // remove
 	}
 	
+	/*
+	 * Tile Definition
+	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
 	public @interface Tile {
 		public enum Size {
-			XSmall,
-			Small,
-			Medium,
-			Large
+			XSmall, //25%
+			Small, //33%
+			Medium, //50%
+			Large //100%
 		}
 		String alias() default "Tile";
 		String imgSrc() default "";
 		String title() default "";
 		Size size() default Size.Large;
 	}
+	
+	/*
+	 * Section Definition
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface Section {
+		public enum Type {
+			HEADER, // Global Header and Global Navigation
+			FOOTER, // Global Footer
+			LEFTBAR,
+			RIGHTBAR,
+			BODY,
+			DEFAULT;
+		}
+		
+		Type value() default Type.DEFAULT; // Remove header/footer/leftbar Create GlobalHeader/GlobalFooter etc. Keep section as default.
+		String alias() default "Section";
+		String cssClass() default "";
+		String imgSrc() default ""; // remove
+		String defaultFlow() default ""; // applicable only to Section type BODY. // remove
+	}
+		
+	/**
+	 * <p>Framework View Style Component: <b>Modal</b></p>
+	 * 
+	 * <p>Renders a popup window with content defined by the nested fields within the field
+	 * that is decorated with <tt>&#64;Modal</tt>.</p>
+	 * 
+	 * <p>
+	 * <b>Notes:</b>
+	 * <ul>
+	 *   <li>Default contextual properties are set by <tt>ModalStateEventHandler</tt> during 
+	 *   the <tt>OnStateLoad</tt> event.</li>
+	 * </ul>
+	 * </p>
+	 * 
+	 * @author Tony Lopez (AF42192)
+	 * @see com.anthem.oss.nimbus.core.domain.model.state.extension.ModalStateEventHandler
+	 *
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	@OnStateLoad
+	public @interface Modal {
+		String alias() default "Modal";
+		String cssClass() default ""; // new
+		String title() default ""; // new
+		Type type() default Type.dialog;
+		boolean closable() default false;
+		String width() default "500";
+
+		public enum Type {
+			dialog, slider
+		}
+		
+		ParamContext context() default @ParamContext(enabled = true, visible = false);
+	}
+
+	/*
+	 * Container for Form Elements {textbox, combobox.. etc}
+	 * Form can have Accordions
+	 * TODO Add Section, Collapsible Sections/Panels instead of Accordions
+	 *
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface Form { 
+		String alias() default "Form";
+		String cssClass() default "";
+		String title() default ""; // new
+		
+		boolean submitButton() default true; // remove
+		String submitUrl() default ""; // remove
+		String b() default ""; // remove
+		String navLink() default ""; // remove
+	}	
+	
+	/*
+	 * Container for Buttons
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface ButtonGroup {	
+		String alias() default "ButtonGroup";
+		String cssClass() default "text-sm-right";
+	}
+	
+	/*
+	 * Grid Container
+	 * TODO expandable row Grid
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface Grid {
+		String alias() default "Grid";
+		String cssClass() default ""; // new
+		String title() default ""; // new
+		boolean expandableRows() default false;
+		
+		boolean onLoad() default false;
+		boolean isTransient() default false;
+		String url() default "";
+		boolean rowSelection() default false;
+		String pageSize() default "50"; // changed default from 10 to 50
+		boolean pagination() default true;
+		boolean postButton() default false;
+		String postButtonUrl() default "";
+		String postButtonTargetPath() default "";
+		String postButtonAlias() default "";
+		boolean postEventOnChange() default false;
+	}
+	
+	/*
+	 * Card Grid
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface CardDetailsGrid { // new Introduce Sections within Card Grid for grouping.
+		String alias() default "CardDetailsGrid";
+		String editUrl() default "";
+		boolean draggable() default false;
+		boolean onLoad() default false;
+	}
+	
+
+
 	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
@@ -123,16 +264,6 @@ public class ViewConfig {
 		}
 		String alias() default "Header";
 		Size size() default Size.H3;
-	}
-	
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.FIELD})
-	@ViewStyle
-	public @interface CardDetailsGrid {
-		String alias() default "CardDetailsGrid";
-		String editUrl() default "";
-		boolean draggable() default false;
-		boolean onLoad() default false;
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
@@ -199,47 +330,6 @@ public class ViewConfig {
 		String inplaceEditType() default "";
 	}
 
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.FIELD})
-	@ViewStyle
-	public @interface Section {
-		
-		public enum Type {
-			HEADER,
-			FOOTER,
-			LEFTBAR,
-			RIGHTBAR,
-			BODY,
-			DEFAULT;
-		}
-		
-		Type value() default Type.DEFAULT;
-		String alias() default "Section";
-		String imgSrc() default "";
-		String cssClass() default "";
-		String defaultFlow() default ""; // applicable only to Section type BODY.
-	}
-		
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.FIELD})
-	@ViewStyle
-	public @interface Form {
-		String alias() default "Form";
-		String submitUrl() default "";
-		String b() default "";
-		String cssClass() default "";
-		boolean submitButton() default true;
-		
-		String navLink() default "";
-	}	
-	
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.FIELD})
-	@ViewStyle
-	public @interface ButtonGroup {	
-		String alias() default "ButtonGroup";
-		String cssClass() default "text-sm-right";
-	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
@@ -309,6 +399,7 @@ public class ViewConfig {
 	public @interface Link {
 		public enum Type {
 			MENU,
+			EXTERNAL,
 			DEFAULT;
 		}
 		Type value() default Type.DEFAULT;
@@ -318,6 +409,8 @@ public class ViewConfig {
 		String imgSrc() default "";
 		String cssClass() default "";
 		String altText() default "";
+		String target() default "";
+		String rel() default "";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
@@ -359,12 +452,12 @@ public class ViewConfig {
 		}
 		Property value() default Property.DEFAULT;
 	}
-	
+
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
-	public @interface Label {
-		String alias() default "Label";
+	public @interface Paragraph {
+		String alias() default "Paragraph";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
@@ -414,6 +507,7 @@ public class ViewConfig {
 		boolean postEventOnChange() default false;
 		String postButtonUrl() default "";
 		String controlId() default "";
+		String help() default "";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
@@ -431,6 +525,7 @@ public class ViewConfig {
 		String alias() default "MultiSelect";
 		String labelClass() default "anthem-label";
 		boolean postEventOnChange() default false;
+		String help() default "";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
@@ -443,25 +538,15 @@ public class ViewConfig {
 		String type() default "date";
 		boolean postEventOnChange() default false;
 		String controlId() default "";
+		String help() default "";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
-	public @interface Grid {
-		String alias() default "Grid";
-		boolean onLoad() default false;
-		boolean isTransient() default false;
-		String url() default "";
-		boolean rowSelection() default false;
-		String pageSize() default "10";
-		boolean pagination() default true;
-		boolean postButton() default false;
-		String postButtonUrl() default "";
-		String postButtonTargetPath() default "";
-		String postButtonAlias() default "";
-		boolean postEventOnChange() default false;
-	}
+	public @interface GridContainer {
+		String alias() default "GridContainer";
+	}	
 	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
@@ -473,6 +558,7 @@ public class ViewConfig {
 		String cssClass() default "";
 		boolean postEventOnChange() default false;
 		String controlId() default "";
+		String help() default "";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
@@ -484,6 +570,7 @@ public class ViewConfig {
 		String labelClass() default "anthem-label";
 		boolean postEventOnChange() default false;
 		String controlId() default "";
+		String help() default "";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
@@ -496,6 +583,7 @@ public class ViewConfig {
 		String labelClass() default "anthem-label";
 		boolean postEventOnChange() default false;
 		String controlId() default "";
+		String help() default "";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
@@ -538,7 +626,7 @@ public class ViewConfig {
 	public @interface GlobalSection {
 		String alias() default "globalSection";
 		String imgSrc() default "";
-		String styleClass() default "";
+		String cssClass() default "";
 	}
 		
 	@Retention(RetentionPolicy.RUNTIME)
@@ -595,6 +683,7 @@ public class ViewConfig {
 		boolean postEventOnChange() default false;
 		String sourceHeader() default "SourceList";
 		String targetHeader() default "TargetList";
+		String help() default "";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)

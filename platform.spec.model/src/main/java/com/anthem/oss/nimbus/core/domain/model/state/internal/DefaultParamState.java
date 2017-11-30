@@ -26,6 +26,7 @@ import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.model.config.EventHandlerConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
+import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
@@ -59,10 +60,21 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	final private Model<?> parentModel;
 	
 //	@JsonIgnore M7
-	private Model<StateContextEntity> contextModel;
+//M8	private Model<StateContextEntity> contextModel;
 	
 	@JsonIgnore
 	private boolean active = true;
+	
+//	private boolean visible = true;
+//	
+//	private boolean enabled = true;
+	
+	private RemnantState<Boolean> visible = new RemnantState<>(true);
+	private RemnantState<Boolean> enabled = new RemnantState<>(true);
+	
+	private List<ParamValue> values;
+	
+	private Message message;
 	
 	/* TODO: Weak reference was causing the values to be GC-ed even before the builders got to building 
 	 * Allow referenced subscribers to get garbage collected in scenario when same core is referenced by multiple views. 
@@ -101,29 +113,56 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	@Override
 	protected void initSetupInternal() {
-		setPath(resolvePath());
+//		setPathArr(resolvePath());
+//		
+//		setBeanPathArr(resolveBeanPath());
+	}
+	
+	@Override
+	public String getPath() {
+		String parentPath = Optional.ofNullable(getParentModel()).map(Model::getPath).orElse("");
 		
-		setBeanPath(resolveBeanPath());
-	}
-	
-	protected String resolvePath() {
-		String parentPath = getParentModel().getPath();
-		return resolvePath(parentPath, getConfig().getCode());
-	}
-	
-	protected String resolveBeanPath() {
-		String parentPath = getParentModel().getBeanPath();
-		return resolvePath(parentPath, getConfig().getBeanName());
-	}
-	
-	
-	
-	public static String resolvePath(String parentPath, String code) {
-		return new StringBuilder(parentPath)
+		String p = new StringBuilder(parentPath)
 				.append(Constants.SEPARATOR_URI.code)
-				.append(code)
-				.toString();	
+				.append(getConfig().getCode())
+				.toString();
+		
+		p = resolvePath(p);
+		return p;
 	}
+	
+	@Override
+	public String getBeanPath() {
+		String parentPath = Optional.ofNullable(getParentModel()).map(Model::getBeanPath).orElse("");
+		
+		String p = new StringBuilder(parentPath)
+				.append(Constants.SEPARATOR_URI.code)
+				.append(getConfig().getBeanName())
+				.toString();
+		
+		p = StringUtils.replace(p, "//", "/");
+		return p;
+	}
+	
+//	protected String[] resolvePath() {
+//		String[] parentPath = getParentModel().getPathArr();
+//		return resolvePath(parentPath, getConfig().getCode());
+//	}
+//	
+//	protected String[] resolveBeanPath() {
+//		String[] parentPath = getParentModel().getBeanPathArr();
+//		return resolvePath(parentPath, getConfig().getBeanName());
+//	}
+	
+	
+	
+//	public static String[] resolvePath(String[] parentPath, String code) {
+//		return ArrayUtils.addAll(parentPath, Constants.SEPARATOR_URI.code, code);
+//		return new StringBuilder(parentPath)
+//				.append(Constants.SEPARATOR_URI.code)
+//				.append(code)
+//				.toString();	
+//	}
 
 	@Override
 	protected void initStateInternal() {
@@ -223,14 +262,17 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	@JsonIgnore
 	@Override
 	final public T getState() {
-		if(getType().getConfig().getReferredClass()==StateContextEntity.class) {
-			return (T)createOrGetRuntimeEntity();
-		}
+//		if(getType().getConfig().getReferredClass()==StateContextEntity.class) {
+//			return (T)createOrGetRuntimeEntity();
+//		}
 		return getAspectHandlers().getParamStateGateway()._get(this);
 	}
 	
 	@Override
 	public final Action setState(T state) {
+		if(!isActive() && state!=null && isStateInitialized())
+			throw new InvalidConfigException("Param's state cannot be changed when inactive. param: "+this.getPath());
+
 		return changeStateTemplate((rt, h, lockId)->affectSetStateChange(state, rt, h, lockId));
 	}
 	
@@ -259,6 +301,12 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 				}
 			}
 			
+			// propagate state event change to parent nested model's associated param
+			Optional.ofNullable(getParentModel()).map(Model::getAssociatedParam).filter(Param::isNested).filter(p->!p.isCollection())
+			.ifPresent(mp->{
+				onStateChangeEvent(resolveRuntime().getTxnContext(), mp, a);
+			});
+			
 			emitNotification(new Notification<>(this, ActionType._updateState, this));
 			h.setState(a);
 			
@@ -275,6 +323,11 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		return state;
 	}
 	protected void postSetState(Action change, T state) {}
+	
+	@Override
+	public void onStateLoadEvent() {
+		onStateLoadEvent(this);
+	}
 
 	// TODO : move to runtime.eventDelegate
 	protected static void onStateLoadEvent(Param<?> p) {
@@ -286,6 +339,11 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 					handler.handle(ac, p);
 				});
 		}
+	}
+	
+	@Override
+	public void onStateChangeEvent(ExecutionTxnContext txnCtx, Action a) {
+		onStateChangeEvent(txnCtx, this, a);
 	}
 	
 	// TODO : move to runtime.eventDelegate
@@ -450,7 +508,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 
 		// context model?
 		if(StringUtils.equals(singlePathSegment, Constants.SEPARATOR_CONFIG_ATTRIB.code))
-			return getContextModel().getAssociatedParam();
+			throw new InvalidConfigException("Use of '#' has been deprecated in favor of direct methods on Param, but found config at: "+getPath());
 
 		// value is only ".m" then return mapsTo if this is a mapped param
 		if(StringUtils.equals(singlePathSegment, Constants.SEPARATOR_MAPSTO.code)) {
@@ -493,6 +551,128 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		return null;	
 	}
 	
+	@Getter @Setter
+	private static class RemnantState<T> {
+		private T prevState;
+		private T currState;
+		
+		public RemnantState(T initState) {
+			this.prevState = initState;
+			this.currState = initState;
+		} 
+		
+		public void setState(T state) {
+			this.prevState = this.currState;
+			this.currState = state;
+		}
+	}
+	
+	
+	@Override
+	public boolean isVisible() {
+		return visible.getCurrState();
+	}
+	
+	@Override
+	public boolean isEnabled() {
+		return enabled.getCurrState();
+	}
+	
+	public void setVisible(boolean visible) {
+		if(this.visible.currState==visible)
+			return;
+
+		final boolean currActive = isActive();
+		if(!currActive && visible)
+			return;
+		
+		this.visible.setState(visible);
+		emitParamContextEvent();
+		
+		// handle nested
+		if(!isNested() || findIfNested().templateParams().isNullOrEmpty())
+			return;
+		
+		findIfNested().getParams().stream()
+			.forEach(p->{
+
+				p.setVisible(visible);
+				
+			});
+		
+		findIfNested().getParams().stream()
+		.forEach(p->{
+
+			if(p.isStateInitialized())
+				p.onStateLoadEvent();
+			else
+				p.onStateChangeEvent(p.getRootExecution().getExecutionRuntime().getTxnContext(), Action._update);
+			
+		});
+	}
+	
+	@Override
+	public void setEnabled(boolean enabled) {
+		if(this.enabled.currState==enabled)
+			return;
+		
+		final boolean currActive = isActive();
+		if(!currActive && enabled)
+			return;
+		
+		this.enabled.setState(enabled);
+		emitParamContextEvent();
+		
+		// handle nested
+		if(!isNested() || findIfNested().templateParams().isNullOrEmpty())
+			return;
+		
+		findIfNested().getParams().stream()
+			.forEach(p->{
+
+				p.setEnabled(enabled);
+				
+			});
+	
+		findIfNested().getParams().stream()
+		.forEach(p->{
+
+			if(p.isStateInitialized())
+				p.onStateLoadEvent();
+			else
+				p.onStateChangeEvent(p.getRootExecution().getExecutionRuntime().getTxnContext(), Action._update);
+			
+		});
+	
+		
+	}
+
+	@Override
+	public void setValues(List<ParamValue> values) {
+		if(getValues()==values)
+			return;
+		
+		this.values = values;
+		emitParamContextEvent();
+	}
+	
+	@Override
+	public void setMessage(Message message) {
+		if(getMessage()==null && message==null)
+			return;
+		
+		if(getMessage()!=null && message!=null 
+				&& getMessage().equals(message))
+			return;
+		
+		this.message = message;
+		emitParamContextEvent();
+	}
+	
+	private void emitParamContextEvent() {
+		resolveRuntime().emitEvent(new ParamEvent(Action._update, this));
+	}
+	
 	@Override
 	public boolean isFound(String path) {
 		String resolvedPath = getResolvingMappedPath(path);
@@ -530,8 +710,11 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	protected boolean toggleActivate(boolean to) {
 		return changeStateTemplate((rt, h, lockId)->{
 			boolean result = affectToggleActivate(to);
-			if(result)
+			if(result) {
 				h.setState(Action._update);
+				
+				emitParamContextEvent();
+			}
 			
 			return result;
 		});
@@ -544,8 +727,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 
 		// toggle
 		setActive(to);
-		findParamByPath("/#/visible").setState(to);
-		findParamByPath("/#/enabled").setState(to);
+		//setVisible(to); //this.visible.setState(to); //
+		//setEnabled(to); //this.enabled.setState(to); //
 		
 		// notify mapped subscribers, if any
 		//==emitNotification(new Notification<>(this, ActionType._active, this));
@@ -557,22 +740,27 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 			if(!isPrimitive())
 				setState(null);
 		} else {
-			initState(); // ensure all rules are fired, including the ones on @OnStateChange
+			initState(); // ensure all rules are fired
 		}
 		
-		// ripple to children, if applicable
-		if(!isNested())
-			return true;
+		setVisible(to); //this.visible.setState(to); //
+		setEnabled(to); //this.enabled.setState(to); //
 		
-		if(findIfNested().templateParams().isNullOrEmpty())
+		// ripple to children, if applicable
+		if(!isNested() || findIfNested().templateParams().isNullOrEmpty())
 			return true;
 		
 		findIfNested().getParams().stream()
 			.forEach(cp->{
 				if(to)
-					cp.activate();
-				else
-					cp.deactivate();
+					cp.initState();//cp.activate();
+				else {
+					cp.setStateInitialized(false);//cp.deactivate();
+				}
+				
+				cp.setVisible(to); //this.visible.setState(to); //
+				cp.setEnabled(to); //this.enabled.setState(to); //
+
 			});
 		
 		return true;

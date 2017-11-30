@@ -1,0 +1,144 @@
+<div class="header" *ngIf="topMenuItems || branding">
+
+	<nm-link [element]="branding.logo" *ngIf="branding.logo"></nm-link>
+
+	<div
+		class="col-lg-4 col-md-5 col-sm-7 hidden-xs-down align-top pull-right p-0">
+		<div class="headerMenu pull-right header-link header-font">
+
+			<div class="btn-group pull-right">
+
+				<div class="mr-2 align-top d-inline-block" *ngIf="branding.userName">
+					<i class="fa fa-user fa-lg" aria-hidden="true"
+						class="mr-2 d-inline-block align-top"
+						style="font-size: 30px !important;"></i>
+					<div class="d-inline-block">
+						<div class="sizeTarget">
+							<nm-value [element]="branding.userName"></nm-value>
+						</div>
+						<div class="sizeTarget">
+							<nm-value [element]="branding.userRole" *ngIf="branding.userRole"></nm-value>
+						</div>
+					</div>
+				</div>
+				<a href="#" class="fa-icon-link alerts mr-2"> <span class="tag"
+					*ngIf="hasMessages">{{messageCount}}</span>
+				</a>
+				<!--   <div class="message-notification" *ngIf="hasMessages">
+                                        <div class="message-count">
+                                            <div class="circle" style="right:5px">
+                                                <div class="badge count">{{messageCount}}</div>
+                                            </div>
+                                            <a href="#">
+                                                <i class="message-bell fa fa-bell fa-lg mt-1" aria-hidden="true" style="font-size:30px !important;"></i>
+                                            </a>
+                                        </div>
+                                    </div>  
+                                    -->
+				<!--     
+                                	<a aria-expanded="false" aria-haspopup="true" class="mr-2" data-toggle="dropdown-ddd" href="javascript:void(0)" 
+                                        onclick="$(this).closest('.btn-group').toggleClass('open');" style="display:inline-block">
+                                        <svg class="">
+                                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="resources/icons/settings.svg#Layer_1"></use>
+                                        </svg>
+                                    </a> 
+                                    -->
+				<a href="#" class="fa-icon-link settings mr-2"></a>
+
+			</div>
+
+		</div>
+	</div>
+	<div class="col-lg-6 col-md-4 hidden-sm-down pull-right p-0">
+		<div class="col-lg-4  hidden-md-down">
+			<nm-comboBox id="{{id}}" [element]="element"
+				[(ngModel)]="element.leafState"
+				*ngIf="element.config?.uiStyles?.attributes?.alias == 'ComboBox'"></nm-comboBox>
+		</div>
+		<div class="col-md-12 col-lg-8 align-bottom">
+			<div style="height: 1rem"></div>
+			<div id="custom-search-input">
+				<div class="input-group">
+					<input type="text" class="form-control input-lg"
+						placeholder="Search" /> <span class="input-group-btn">
+						<button class="btn btn-info btn-lg" type="button">
+							<i class="fa fa-search" aria-hidden="true"></i>
+						</button>
+					</span>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<div class="subheader" *ngIf="topMenuItems || branding">
+
+	<div class="productName d-inline-block ml-2">
+
+		<nm-paragraph [element]="branding.title" *ngIf="branding.title"></nm-paragraph>
+
+	</div>
+	<div class="d-inline-block" *ngIf="branding.subTitle">
+		<nm-value [element]="branding.subTitle"></nm-value>
+	</div>
+
+</div>
+
+<!-- temporary floating menu -->
+<div class="floating-toolbar">
+	<a href="javascript:void(0)" onclick="$(this).closest('.floating-toolbar').toggleClass('open')" class="menuTrigger">Search</a> 
+	<div class="content">
+		<div class="toolbar-header">my title
+			<a href="javascript:void(0)" onclick="$(this).closest('.floating-toolbar').toggleClass('open')" class="menuTrigger">X</a>
+		</div>
+		<div class="viewport">
+			<div class="col-sm-12 mt-2">this is the menu
+					
+						<span class="tooltip-container helpIcon">
+						<a class="tooltip-trigger" href="javascript:void(0)" onclick="$(this).closest('.tooltip-container').toggleClass('open')"></a>
+							<div class=" callout">
+								<a href="javascript:void(0);" class="close" onclick="$(this).closest('.tooltip-container').toggleClass('open')"></a>
+								this is content for the tooltip. the text will wrap in the bubble. Click the X to close
+							</div>
+						</span>
+					
+		
+					</div>
+					<div class="col-sm-12 mt-2">
+
+								<span class="tooltip-container textTrigger">
+								<a class="tooltip-trigger" href="javascript:void(0)" onclick="$(this).closest('.tooltip-container').toggleClass('open')">
+										this is a long menu....
+								</a>
+									<div class=" callout">
+										<a href="javascript:void(0);" class="close" onclick="$(this).closest('.tooltip-container').toggleClass('open')"></a>
+										this is a long menu and longer too. the text will wrap in the bubble. Click the X to close
+									</div>
+								</span>
+							
+				
+							</div>
+			<div class="col-sm-12">
+				<div class="custom-dropdown" onmouseleave="$(this).removeClass('open')">
+					<label>Label for dropdown</label>
+					<input type="text">
+					<a class="dropdownTrigger" href="javascript:void(0)" onclick="$(this).closest('.custom-dropdown').toggleClass('open')"></a> 
+					<div class="dropdownContent">
+						<div class="group-holder">
+							<p class='group-header'>group header</p>
+							<a href="javascript:void(0)" onclick="$(this).closest('.custom-dropdown').find('input').val($(this).text());$(this).closest('.custom-dropdown').toggleClass('open')">select 1</a>
+							<a href="javascript:void(0)" onclick="$(this).closest('.custom-dropdown').find('input').val($(this).text());$(this).closest('.custom-dropdown').toggleClass('open')">select 2select 2select 2select 2select 2select 2select 2select 2select 2select 2select 2select 2select 2select 2</a>
+							<p class=''>some plain text</p>
+						</div>	
+				   <a href="javascript:void(0)" onclick="$(this).closest('.custom-dropdown').find('input').val($(this).text());$(this).closest('.custom-dropdown').toggleClass('open')">select 3</a>
+					</div>
+				</div>
+			</div>
+			
+			
+		</div>
+	</div>
+</div>
+
+

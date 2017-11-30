@@ -8,16 +8,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Command;
 import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
 import com.anthem.oss.nimbus.core.domain.model.config.EntityConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.StateContextEntity;
+import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
 import com.anthem.oss.nimbus.core.util.CollectionsTemplate;
 import com.anthem.oss.nimbus.core.util.LockTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Soham Chakravarti
@@ -54,6 +59,9 @@ public interface EntityState<T> {
 
 	void initSetup();
 	void initState();
+	
+	boolean isStateInitialized();
+	void setStateInitialized(boolean initialized);
 	
 	EntityStateAspectHandlers getAspectHandlers();
 	
@@ -231,7 +239,7 @@ public interface EntityState<T> {
 		StateType getType();
 		
 //		@JsonIgnore M7
-		Model<StateContextEntity> getContextModel();
+//M8	Model<StateContextEntity> getContextModel();
 		
 		default boolean isLeaf() {
 			return getConfig().isLeaf();
@@ -299,6 +307,35 @@ public interface EntityState<T> {
 		void activate();
 		void deactivate();
 	
+		boolean isVisible();
+		void setVisible(boolean visible);
+		
+		boolean isEnabled();
+		void setEnabled(boolean enabled);
+		
+		List<ParamValue> getValues();
+		void setValues(List<ParamValue> values);
+		
+		@Getter @Setter @EqualsAndHashCode
+		public static class Message {
+			public enum Type {
+				INFO,
+				WARNING,
+				DANGER,
+				SUCCESS;
+			}
+				
+			private String text;
+			private Type type;
+
+		}
+		
+		Message getMessage();
+		void setMessage(Message msg);
+		
+		
+		void onStateLoadEvent();
+		void onStateChangeEvent(ExecutionTxnContext txnCtx, Action a);
 	}
 	
 	public interface LeafParam<T> extends Param<T> {

@@ -5,8 +5,10 @@ package com.anthem.oss.nimbus.core;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 
 import com.anthem.oss.nimbus.core.config.DefaultCoreConfiguration;
+import com.anthem.oss.nimbus.core.domain.command.execution.SessionProvider;
 
 /**
  * @author Soham Chakravarti
@@ -17,5 +19,15 @@ public class TestFrameworkIntegrationScenariosApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(TestFrameworkIntegrationScenariosApplication.class, args);
+	}
+	
+	@Bean
+	public SessionProvider sessionProvider(BeanResolverStrategy beanResolver){
+		return new SessionProvider() {
+			@Override
+			public String getSessionId() {
+				return "";
+			}
+		};
 	}
 }

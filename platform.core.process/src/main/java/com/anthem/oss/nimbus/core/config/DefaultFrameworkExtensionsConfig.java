@@ -7,9 +7,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
+import com.anthem.oss.nimbus.core.domain.model.state.extension.AccessConditionalStateEventHandler;
 import com.anthem.oss.nimbus.core.domain.model.state.extension.ActivateConditionalStateEventHandler;
 import com.anthem.oss.nimbus.core.domain.model.state.extension.AuditStateChangeHandler;
 import com.anthem.oss.nimbus.core.domain.model.state.extension.ConfigConditionalStateChangeHandler;
+import com.anthem.oss.nimbus.core.domain.model.state.extension.EnableConditionalStateEventHandler;
+import com.anthem.oss.nimbus.core.domain.model.state.extension.ModalStateEventHandler;
+import com.anthem.oss.nimbus.core.domain.model.state.extension.ParamContextStateEventHandler;
+import com.anthem.oss.nimbus.core.domain.model.state.extension.RuleStateEventHandler;
+import com.anthem.oss.nimbus.core.domain.model.state.extension.ValuesConditionalOnStateChangeEventHandler;
+import com.anthem.oss.nimbus.core.domain.model.state.extension.ValuesConditionalOnStateLoadEventHandler;
 
 /**
  * @author Soham Chakravarti
@@ -17,7 +24,32 @@ import com.anthem.oss.nimbus.core.domain.model.state.extension.ConfigConditional
  */
 @Configuration
 public class DefaultFrameworkExtensionsConfig {
-
+	
+	@Bean
+	public ModalStateEventHandler extensionModalStateEventHandler() {
+		return new ModalStateEventHandler();
+	}
+	
+	@Bean
+	public ParamContextStateEventHandler extensionParamContextStateEventHandler() {
+		return new ParamContextStateEventHandler();
+	}
+	
+	@Bean
+	public RuleStateEventHandler extensionRuleStateEventHandler(BeanResolverStrategy beanResolver) {
+		return new RuleStateEventHandler(beanResolver);
+	}
+	
+	@Bean
+	public ValuesConditionalOnStateLoadEventHandler extensionValuesConditionalOnStateLoadHandler(BeanResolverStrategy beanResolver) {
+		return new ValuesConditionalOnStateLoadEventHandler(beanResolver);
+	}
+	
+	@Bean
+	public ValuesConditionalOnStateChangeEventHandler extensionValuesConditionalOnStateChangeHandler(BeanResolverStrategy beanResolver) {
+		return new ValuesConditionalOnStateChangeEventHandler(beanResolver);
+	}
+	
 	@Bean
 	public ActivateConditionalStateEventHandler extensionActivateConditionalHandler(BeanResolverStrategy beanResolver) {
 		return new ActivateConditionalStateEventHandler(beanResolver);
@@ -29,7 +61,17 @@ public class DefaultFrameworkExtensionsConfig {
 	}
 	
 	@Bean
+	public AccessConditionalStateEventHandler extensionAccessConditionalHandler(BeanResolverStrategy beanResolver) {
+		return new AccessConditionalStateEventHandler(beanResolver);
+	}
+
+	@Bean
 	public ConfigConditionalStateChangeHandler extensionConfigConditionalStateChangeHandler(BeanResolverStrategy beanResolver) {
 		return new ConfigConditionalStateChangeHandler(beanResolver);
+	}
+	
+	@Bean
+	public EnableConditionalStateEventHandler extensionEnableCondiationalStateEventHandler(BeanResolverStrategy beanResolver) {
+		return new EnableConditionalStateEventHandler(beanResolver);
 	}
 }

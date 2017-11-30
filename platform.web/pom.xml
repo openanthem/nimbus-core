@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>	
+
+	<name>platform.web</name>
+	<artifactId>com.anthem.oss.nimbus.core.web</artifactId>
+	<description>oss web project</description>
+	<packaging>jar</packaging>
+
+	<parent>
+		<groupId>com.anthem.oss.nimbus.core</groupId>
+		<artifactId>com.anthem.oss.nimbus.core.parent</artifactId>
+		<version>1.0.0.M9-SNAPSHOT</version>
+	</parent>
+
+	<properties>
+		<sonar.projectName>NIM-Platform Web</sonar.projectName>
+		<testconfig.ui.browsers>ChromeHeadless</testconfig.ui.browsers>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-consul-discovery</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-config-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-config</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-batch</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.anthem.oss.nimbus.core</groupId>
+			<artifactId>com.anthem.oss.nimbus.core.api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>internal</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<!-- <plugin> <groupId>com.github.eirslett</groupId> <artifactId>frontend-maven-plugin</artifactId> 
+						</plugin> -->
+					<plugin>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-maven-plugin</artifactId>
+						<configuration>
+							<mainClass>com.anthem.nimbus.platform.web.Application</mainClass>
+							<layout>ZIP</layout>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>docker</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.github.eirslett</groupId>
+						<artifactId>frontend-maven-plugin</artifactId>
+
+					</plugin>
+					<plugin>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-maven-plugin</artifactId>
+						<configuration>
+							<mainClass>com.anthem.nimbus.platform.web.Application</mainClass>
+							<layout>ZIP</layout>
+						</configuration>
+					</plugin>
+					<!-- docker plugin -->
+					<plugin>
+						<groupId>com.spotify</groupId>
+						<artifactId>docker-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>build</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<imageName>${docker.image.prefix}/${project.artifactId}</imageName>
+							<dockerDirectory>${project.basedir}/src/main/docker</dockerDirectory>
+							<resources>
+								<resource>
+									<targetPath>/</targetPath>
+									<directory>${project.build.directory}</directory>
+									<include>${project.build.finalName}.jar</include>
+								</resource>
+							</resources>
+						</configuration>
+					</plugin>
+				</plugins>
+				<resources>
+					<resource>
+						<directory>${project.basedir}/src/main/resources</directory>
+					</resource>
+					<resource>
+						<directory>target/frontend</directory>
+						<targetPath>static</targetPath>
+					</resource>
+			
+			
+				</resources>
+			</build>
+		</profile>
+		<profile>
+			<id>devbuild</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.github.eirslett</groupId>
+						<artifactId>frontend-maven-plugin</artifactId>
+						<version>${frontend.plugin.version}</version>
+						<configuration>
+   							<workingDirectory>${project.basedir}/nimbusui</workingDirectory>
+						</configuration>
+						<executions>
+						    <execution>
+                                <id>npm install dev</id>
+                                <goals>
+                                    <goal>npm</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>install</arguments>
+                                </configuration>
+                                <phase>generate-resources</phase>
+                            </execution>
+							<execution>
+                                    <id>npm run-script mavenbuild</id>
+                                    <phase>generate-resources</phase>
+                                    <goals>
+                                        <goal>npm</goal>
+                                    </goals>
+                                    <configuration>
+                                        <arguments>run-script mavenbuild</arguments>
+                                    </configuration>
+                             </execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-maven-plugin</artifactId>
+						<configuration>
+							<mainClass>com.anthem.nimbus.platform.web.Application</mainClass>
+							<layout>ZIP</layout>
+
+							<folders>
+								<folder>${project.build.directory}/src/main/resources</folder>
+							</folders>
+
+
+						</configuration>
+					</plugin>
+				</plugins>
+				<resources>
+					<resource>
+						<directory>${project.basedir}/src/main/resources</directory>
+					</resource>
+					<resource>
+						<directory>${project.basedir}/nimbusui/dist</directory>
+						<targetPath>static</targetPath>
+					</resource>
+				</resources>
+			</build>
+		</profile>
+		<profile>
+			<id>local</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-maven-plugin</artifactId>
+						<configuration>
+							<mainClass>com.anthem.nimbus.platform.web.Application</mainClass>
+							<layout>ZIP</layout>
+
+							<folders>
+								<folder>${project.build.directory}/src/main/resources</folder>
+							</folders>
+
+
+						</configuration>
+					</plugin>
+				</plugins>
+				<resources>
+					<resource>
+						<directory>${project.basedir}/src/main/resources</directory>
+					</resource>
+					<resource>
+						<directory>${project.basedir}/nimbusui/dist</directory>
+						<targetPath>static</targetPath>
+					</resource>
+				</resources>
+			</build>
+		</profile>
+		<!-- Profile for executing UI Tests -->
+		<profile>
+			<id>run-ui-tests</id>
+			<activation>
+				<property>
+					<name>run-ui-tests</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.kelveden</groupId>
+						<artifactId>maven-karma-plugin</artifactId>
+						<version>${maven.karma.plugin.version}</version>
+						<executions>
+							<execution>
+								<phase>test</phase>
+								<goals>
+									<goal>start</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<karmaExecutable>${basedir}/node_modules/.bin/karma</karmaExecutable>        
+							<configFile>${basedir}/karma.conf.js</configFile>
+							<reportsDirectory>${project.build.directory}/karma-reports</reportsDirectory>
+							<browsers>${testconfig.ui.browsers}</browsers>
+							<autoWatch>false</autoWatch>
+							<singleRun>true</singleRun>
+							<colors>true</colors>
+							<skipKarma>false</skipKarma>
+							<skipTests>false</skipTests>
+							<karmaFailureIgnore>false</karmaFailureIgnore>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+</project>

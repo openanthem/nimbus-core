@@ -1,0 +1,26 @@
+<div class="col-sm-12 border-bottom mb-1" *ngIf="element.config.uiStyles.attributes.type=='Divider'">
+</div>
+<div class="{{fieldClass}} p-0 clearfix" *ngIf="element.config.uiStyles.attributes.type=='Field'">
+    <ng-template [ngIf]="element.config?.uiStyles?.attributes?.imgSrc">
+        <div class="d-inline-block " style="font-size: 2.4rem; margin-right: .3rem;">
+            <i class="{{element.config.uiStyles.attributes.imgSrc}}"></i>
+        </div>
+        <div class="d-inline-block mr-1">
+            <div class="form-group">
+                <label class="" *ngIf="element.config.uiStyles.attributes.showName==true">{{label}}</label>
+                <p class="form-control-static">{{value}}&nbsp;</p>
+            </div>
+        </div>
+    </ng-template>
+    <ng-template [ngIf]="!element.config?.uiStyles?.attributes?.imgSrc && element?.visible?.currState == true">
+        <ng-template [ngIf]="element.config.uiStyles.attributes.inplaceEdit">
+            <inplace-editor [element]="element"></inplace-editor>
+        </ng-template>
+        <div class="form-group" *ngIf="!element.config.uiStyles.attributes.inplaceEdit">
+            <label class="" *ngIf="element.config.uiStyles.attributes.showName==true">{{label}}</label>
+            <div class="{{iconClass}}">{{value}}&nbsp;</div>
+        </div>
+    </ng-template>
+</div>
+        
+ 

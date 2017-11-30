@@ -59,26 +59,23 @@ public class ActivateParamActivateDeactivateTest extends AbstractStateEventHandl
 		Param<?> q1 = _q.getRoot().findParamByPath(CORE_PARAM_PATH_q1);
 		assertTrue(q1.isActive());
 		
-		Param<Boolean> q1_visible = q1.findParamByPath("/#/visible");
-		Param<Boolean> q1_enabled = q1.findParamByPath("/#/enabled");
-		
-		assertTrue(q1_visible.getState());
-		assertTrue(q1_enabled.getState());
+		assertTrue(q1.isVisible());
+		assertTrue(q1.isEnabled());
 		
 		addListener();
 		q1.deactivate();
 		
 		assertFalse(q1.isActive());
-		assertFalse(q1_visible.getState());
-		assertFalse(q1_enabled.getState());
+		assertFalse(q1.isVisible());
+		assertFalse(q1.isEnabled());
 		
 		// validate events
 		assertNotNull(_paramEvents);
-		assertEquals(2, _paramEvents.size());
+		assertEquals(1, _paramEvents.size());
 		
 		List<Param<?>> expectedEventParams = new ArrayList<>();
-		expectedEventParams.add(q1_visible);
-		expectedEventParams.add(q1_enabled);
+		expectedEventParams.add(q1);
+		//expectedEventParams.add(q1_enabled);
 		
 		_paramEvents.stream()
 			.forEach(pe->expectedEventParams.remove(pe.getParam()));
@@ -100,22 +97,19 @@ public class ActivateParamActivateDeactivateTest extends AbstractStateEventHandl
 		Param<?> q1 = _q.getRoot().findParamByPath(CORE_PARAM_PATH_q1);
 		assertFalse(q1.isActive());
 		
-		Param<Boolean> q1_visible = q1.findParamByPath("/#/visible");
-		Param<Boolean> q1_enabled = q1.findParamByPath("/#/enabled");
-		
 		q1.activate();
 		
 		assertTrue(q1.isActive());
-		assertTrue(q1_visible.getState());
-		assertTrue(q1_enabled.getState());
+		assertTrue(q1.isVisible());
+		//assertTrue(q1_enabled.getState());
 		
 		// validate events
 		assertNotNull(_paramEvents);
-		assertEquals(2, _paramEvents.size());
+		assertEquals(1, _paramEvents.size());
 		
 		List<Param<?>> expectedEventParams = new ArrayList<>();
-		expectedEventParams.add(q1_visible);
-		expectedEventParams.add(q1_enabled);
+		expectedEventParams.add(q1);
+		//expectedEventParams.add(q1_enabled);
 		
 		_paramEvents.stream()
 			.forEach(pe->expectedEventParams.remove(pe.getParam()));
@@ -128,11 +122,8 @@ public class ActivateParamActivateDeactivateTest extends AbstractStateEventHandl
 		Param<String> q1 = _q.getRoot().findParamByPath(CORE_PARAM_PATH_q1);
 		assertTrue(q1.isActive());
 		
-		Param<Boolean> q1_visible = q1.findParamByPath("/#/visible");
-		Param<Boolean> q1_enabled = q1.findParamByPath("/#/enabled");
-		
-		assertTrue(q1_visible.getState());
-		assertTrue(q1_enabled.getState());
+		assertTrue(q1.isVisible());
+		//assertTrue(q1_enabled.getState());
 		
 		final String K_string = "some text @ "+ new Date();
 		q1.setState(K_string);
@@ -141,18 +132,16 @@ public class ActivateParamActivateDeactivateTest extends AbstractStateEventHandl
 		q1.deactivate();
 		
 		assertFalse(q1.isActive());
-		assertFalse(q1_visible.getState());
-		assertFalse(q1_enabled.getState());
+		assertFalse(q1.isVisible());
+		//assertFalse(q1_enabled.getState());
 		assertNull(q1.getState());
 		
 		// validate events
 		assertNotNull(_paramEvents);
-		assertEquals(3, _paramEvents.size());
+		assertEquals(1, _paramEvents.size());
 		
 		List<Param<?>> expectedEventParams = new ArrayList<>();
-		expectedEventParams.add(q1_visible);
-		expectedEventParams.add(q1_enabled);
-		expectedEventParams.add(q1);
+		expectedEventParams.add(q1); 
 		
 		_paramEvents.stream()
 			.forEach(pe->expectedEventParams.remove(pe.getParam()));
@@ -185,21 +174,15 @@ public class ActivateParamActivateDeactivateTest extends AbstractStateEventHandl
 		Param<?> q1Level1 = _q.getRoot().findParamByPath(CORE_PARAM_PATH_q1Level1);
 		assertTrue(q1Level1.isActive());
 		
-		Param<Boolean> q1Level1_visible = q1Level1.findParamByPath("/#/visible");
-		Param<Boolean> q1Level1_enabled = q1Level1.findParamByPath("/#/enabled");
 
 		Param<String> q1Level1Attr = _q.getRoot().findParamByPath(CORE_PARAM_PATH_q1Level1_nested_attr_String);
 		assertTrue(q1Level1Attr.isActive());
 		
-		Param<Boolean> q1Level1Attr_visible = q1Level1Attr.findParamByPath("/#/visible");
-		Param<Boolean> q1Level1Attr_enabled = q1Level1Attr.findParamByPath("/#/enabled");
+		assertTrue(q1Level1.isVisible());
+		//assertTrue(q1Level1_enabled.getState());
 		
-		
-		assertTrue(q1Level1_visible.getState());
-		assertTrue(q1Level1_enabled.getState());
-		
-		assertTrue(q1Level1Attr_visible.getState());
-		assertTrue(q1Level1Attr_enabled.getState());
+		assertTrue(q1Level1Attr.isVisible());
+		//assertTrue(q1Level1Attr_enabled.getState());
 		
 		// check for nested param reset
 		q1Level1Attr.setState("new nested @ "+new Date());
@@ -210,25 +193,20 @@ public class ActivateParamActivateDeactivateTest extends AbstractStateEventHandl
 		
 		assertNull(q1Level1.getState());
 		assertFalse(q1Level1.isActive());
-		assertFalse(q1Level1_visible.getState());
-		assertFalse(q1Level1_enabled.getState());
+		assertFalse(q1Level1.isVisible());
+		//assertFalse(q1Level1_enabled.getState());
 		
 		assertNull(q1Level1Attr.getState());
 		assertFalse(q1Level1Attr.isActive());
-		assertFalse(q1Level1Attr_visible.getState());
-		assertFalse(q1Level1Attr_enabled.getState());
+		assertFalse(q1Level1Attr.isVisible());
+		//assertFalse(q1Level1Attr_enabled.getState());
 		
 		
 		// validate events
 		assertNotNull(_paramEvents);
-		assertEquals(6, _paramEvents.size());
+		assertEquals(2, _paramEvents.size());
 		
 		List<Param<?>> expectedEventParams = new ArrayList<>();
-		expectedEventParams.add(q1Level1_visible);
-		expectedEventParams.add(q1Level1_enabled);
-		expectedEventParams.add(q1Level1Attr_visible);
-		expectedEventParams.add(q1Level1Attr_enabled);
-		
 		expectedEventParams.add(q1Level1);
 		expectedEventParams.add(q1Level1Attr);
 		
@@ -254,33 +232,25 @@ public class ActivateParamActivateDeactivateTest extends AbstractStateEventHandl
 		Param<?> q1Level1 = _q.getRoot().findParamByPath(CORE_PARAM_PATH_q1Level1);
 		assertFalse(q1Level1.isActive());
 		
-		Param<Boolean> q1_visible = q1Level1.findParamByPath("/#/visible");
-		Param<Boolean> q1_enabled = q1Level1.findParamByPath("/#/enabled");
-		
 		Param<?> q1Level1Attr = _q.getRoot().findParamByPath(CORE_PARAM_PATH_q1Level1_nested_attr_String);
 		assertFalse(q1Level1Attr.isActive());
-		
-		Param<Boolean> q1Level1Attr_visible = q1Level1Attr.findParamByPath("/#/visible");
-		Param<Boolean> q1Level1Attr_enabled = q1Level1Attr.findParamByPath("/#/enabled");
-		
 		
 		q1Level1.activate();
 		
 		assertTrue(q1Level1.isActive());
-		assertTrue(q1_visible.getState());
-		assertTrue(q1_enabled.getState());
+		assertTrue(q1Level1.isVisible());
+		//assertTrue(q1_enabled.getState());
 
 		assertTrue(q1Level1Attr.isActive());
-		assertTrue(q1Level1Attr_visible.getState());
-		assertTrue(q1Level1Attr_enabled.getState());
+		assertTrue(q1Level1Attr.isVisible());
+		//assertTrue(q1Level1Attr_enabled.getState());
 		
 		// validate events
 		assertNotNull(_paramEvents);
 		//assertEquals(2, _paramEvents.size());
 		
 		List<Param<?>> expectedEventParams = new ArrayList<>();
-		expectedEventParams.add(q1_visible);
-		expectedEventParams.add(q1_enabled);
+		expectedEventParams.add(q1Level1);
 		
 		_paramEvents.stream()
 			.forEach(pe->expectedEventParams.remove(pe.getParam()));

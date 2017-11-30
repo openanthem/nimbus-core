@@ -17,14 +17,10 @@ import lombok.Setter;
  * @author Jayant Chaudhuri
  *
  */
-@Domain("processFlow")
-@Repo(Database.rep_mongodb)
+@Domain(value = "processFlow")
+@Repo(value = Database.rep_mongodb)
 @Getter @Setter
 public class ProcessFlow extends AbstractEntity.IdString implements Serializable{
-	
 	private static final long serialVersionUID = 1L;
-	
-	//TODO should this be the "id" or separate attribute
 	private String processExecutionId;
-	
 }

@@ -107,7 +107,7 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 		final private ModelConfig<ExecutionEntity<V, C>> rootParent;
 		
 		public ExParamConfig(ExConfig<V, C> exConfig) {
-			super("root");
+			super("");
 			this.rootParent = new ExModelConfig(exConfig); 
 			
 			ParamType.Nested<ExecutionEntity<V, C>> pType = new ParamType.Nested<>(_this().getClass().getSimpleName(), _this().getClass());
@@ -170,9 +170,25 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 		
 		private final Param<?> linkedParam;
 		
-		public ExParamLinked(Command rootCommand, EntityStateAspectHandlers provider, ExConfig<V, C> exConfig, String initPath, Param<?> linkedParam) {
-			super(rootCommand, provider, exConfig, initPath);
+		public ExParamLinked(Command rootCommand, EntityStateAspectHandlers provider, ExConfig<V, C> exConfig, Param<?> linkedParam) {
+			super(rootCommand, provider, exConfig);
 			this.linkedParam = linkedParam;
+		}
+		
+		@Override
+		public String getPath() {
+			String p = super.getPath();
+			
+			p = linkedParam.getPath() + p;
+			return p;
+		}
+		
+		@Override
+		public String getBeanPath() {
+			String p = super.getBeanPath();
+			
+			p = linkedParam.getBeanPath() + p;
+			return p;
 		}
 		
 		@Override
@@ -195,10 +211,6 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 		private final String rootRefId;
 		
 		public ExParam(Command rootCommand, EntityStateAspectHandlers provider, ExConfig<V, C> exConfig) {
-			this(rootCommand, provider, exConfig, "");
-		}
-		
-		public ExParam(Command rootCommand, EntityStateAspectHandlers provider, ExConfig<V, C> exConfig, String initPath) {
 			super(null, new ExParamConfig(exConfig), provider);
 			
 			ExParamConfig pConfig = ((ExParamConfig)getConfig());
@@ -207,13 +219,13 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 			rootRefId = rootCommand.getRootDomainElement().getRefId();
 			
 			//String rootPath = (rootRefId==null) ? pConfig.getCode() : pConfig.getCode()+":"+rootRefId;
-			String rootPath = initPath;
-			String beanPath = initPath;
+//			String[] rootPath = initPath;
+//			String[] beanPath = initPath;
 			
-			logit.debug(()->"[ExParam] rootPath: "+rootPath+" :: with beanPath: "+beanPath);
+//			logit.debug(()->"[ExParam] rootPath: "+rootPath+" :: with beanPath: "+beanPath);
 
-			this.setPath(rootPath);
-			this.setBeanPath(beanPath);
+//			setPathArr(rootPath);
+//			setBeanPathArr(beanPath);
 			
 			
 			this.rootModel = new ExModel(rootCommand, this, pConfig.getRootParent(), provider);
