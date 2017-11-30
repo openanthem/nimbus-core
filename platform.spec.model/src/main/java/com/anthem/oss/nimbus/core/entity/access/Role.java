@@ -4,10 +4,9 @@
 package com.anthem.oss.nimbus.core.entity.access;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 import com.anthem.oss.nimbus.core.entity.AbstractEntity.IdString;
-import com.anthem.oss.nimbus.core.entity.client.access.ClientAccessEntity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -33,7 +32,7 @@ public abstract class Role extends IdString {
 	
 	private String description;
 	
-	private Set<ClientAccessEntity> accessEntities; // case_management, member_management
+	private List<String> accessEntities;
 	
 	
 }

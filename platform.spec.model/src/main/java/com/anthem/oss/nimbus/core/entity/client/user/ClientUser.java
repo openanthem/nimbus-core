@@ -14,6 +14,7 @@ import com.anthem.oss.nimbus.core.entity.client.access.ClientAccessEntity;
 import com.anthem.oss.nimbus.core.entity.client.access.ClientUserRole;
 import com.anthem.oss.nimbus.core.entity.user.AbstractUser;
 import com.anthem.oss.nimbus.core.entity.user.UserRole;
+import com.anthem.oss.nimbus.core.entity.user.UserStatus;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -36,6 +37,7 @@ public class ClientUser extends AbstractUser<ClientUserRole> {
 	private Client client;
 
 	private List<UserRole> roles;
+	private List<UserStatus> userStatuses;
 	
 	@ReadOnlyProperty
 	private List<ClientAccessEntity> resolvedAccessEntities;

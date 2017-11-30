@@ -155,8 +155,8 @@ public class AccessConditionalStateEventHandlerTest extends AbstractStateEventHa
 		List<UserRole> userRoles = new ArrayList<>();
 		Arrays.asList(roles).forEach((r) -> {
 			UserRole role = new UserRole();
-			role.setRoleCode(r);
-			role.setRetiredDate(LocalDate.now());
+			role.setRoleId(r);
+			role.setTerminationDate(LocalDate.now());
 			userRoles.add(role);
 		});
 		cu.setRoles(userRoles);
