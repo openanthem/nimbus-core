@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>	
 
-	<groupId>com.anthem.oss.nimbus.core</groupId>
+	<name>nimbus-core-web</name>
 	<artifactId>com.anthem.oss.nimbus.core.web</artifactId>
-	<version>1.0.0.M9-SNAPSHOT</version>
-	<packaging>jar</packaging>
-
-	<name>platform.web</name>
 	<description>oss web project</description>
+	<packaging>jar</packaging>
 
 	<parent>
 		<groupId>com.anthem.oss.nimbus.core</groupId>

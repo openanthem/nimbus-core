@@ -51,22 +51,26 @@
 					<span title="{{row[col.field]}}">{{row[col.field]}}</span> 
 				</ng-template> 
 				
-				<ng-template *ngIf="col.config.uiStyles?.isLink && col.enabled?.currState" pTemplate="body" let-cell="rowData">
+				<!-- Sandeep -->
+				<!-- The below commented lines from to END are to be uncommented when the server starts sending the enabled flag
+				for every grid column. -->
+				<!-- <ng-template *ngIf="col.config.uiStyles?.isLink && col.enabled?.currState" pTemplate="body" let-cell="rowData"> -->
+				<ng-template *ngIf="col.config.uiStyles?.isLink" pTemplate="body" let-cell="rowData">
 					<span [ngSwitch]="col.config.uiStyles?.attributes?.imgSrc"> 
-						<!-- <nm-dropdown ></nm-dropdown> -->
-						<div>{{col| json}}</div>
 						<a *ngSwitchCase="''" href="javascript:void(0)" (click)="processOnClick(col, cell)"> {{col.config.label}}  </a> 
 						<img *ngSwitchDefault src="{{imagesPath}}{{col.config?.uiStyles?.attributes?.imgSrc}}" class="grid-icon" (click)="processOnClick(col, cell)" type="submit" />
 					</span> 
 				</ng-template> 
+				<!-- END -->
+
+				<!-- 				
 				<ng-template *ngIf="col.config.uiStyles?.isLink && !col.enabled?.currState" pTemplate="body" let-cell="rowData">
-					<div>{{col | json}}</div>
-					<span [ngSwitch]="col.config.uiStyles?.attributes?.imgSrc"> 
-						<!-- <nm-dropdown ></nm-dropdown> -->
+					<span [ngSwitch]="col.config.uiStyles?.attributes?.imgSrc">
 						<a *ngSwitchCase="''" href="javascript:void(0)" class="btn disabled">{{col.config.label}} </a> 
 						<img *ngSwitchDefault src="{{imagesPath}}{{col.config?.uiStyles?.attributes?.imgSrc}}" class="grid-icon" />
 					</span>
-				</ng-template> 
+				</ng-template>
+				 -->
 			</p-column> 
 
 		</ng-template>

@@ -39,7 +39,7 @@ public class AccessConditionalStateEventHandler extends AbstractConditionalState
 		
 		ClientUser user = UserEndpointSession.getStaticLoggedInUser();
 		
-		Set<String> userRoleCodes = user.getRoles().stream().map(UserRole::getRoleCode).collect(Collectors.toSet());
+		Set<String> userRoleCodes = user.getRoles().stream().map(UserRole::getRoleId).collect(Collectors.toSet());
 		Set<String> userAuthorities = user.getResolvedAccessEntities().stream().map(ClientAccessEntity::getCode).collect(Collectors.toSet());
 		
 		if(configuredAnnotation.containsRoles() != null && configuredAnnotation.containsRoles().length > 0){
