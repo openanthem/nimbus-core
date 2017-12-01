@@ -248,13 +248,21 @@ abstract public class AbstractEntityStateBuilder extends AbstractEntityStateFact
 	
 	private void createParamValues(Param<?> param) {
 		Values values = param.getConfig().getValues();
-		if(values != null) {
-			final List<ParamValue> result;
-			if(values.value() != EMPTY.class) {
+		final List<ParamValue> result = buildValues(values, param, getGateway());
+		
+		if (result != null) {
+			param.setValues(result);
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static List<ParamValue> buildValues(Values values, Param<?> param, CommandExecutorGateway gateway) {
+		List<ParamValue> result = null;
+		if (values != null) {
+			if (values.value() != EMPTY.class) {
 				Source srcValues = ClassLoadUtils.newInstance(values.value());
 				result = srcValues.getValues(param.getConfig().getCode());
-			}
-			else {
+			} else {
 				String valuesUrl = values.url();
 				Command cmd = CommandBuilder.withUri(valuesUrl).getCommand();
 				cmd.setAction(Action._search);
@@ -262,13 +270,11 @@ abstract public class AbstractEntityStateBuilder extends AbstractEntityStateFact
 				CommandMessage cmdMsg = new CommandMessage();
 				cmdMsg.setCommand(cmd);
 				
-				MultiOutput multiOp = getGateway().execute(cmdMsg);
-				result = (List<ParamValue>)multiOp.getSingleResult();
+				MultiOutput multiOp = gateway.execute(cmdMsg);
+				result = (List<ParamValue>) multiOp.getSingleResult();
 			}
-			
-			if(result != null) 
-				param.setValues(result);
 		}
+		return result;
 	}
 	
 }

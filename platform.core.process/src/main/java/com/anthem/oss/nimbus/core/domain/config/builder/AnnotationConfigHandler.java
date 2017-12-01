@@ -20,6 +20,7 @@ import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ClassUtils;
 
+import com.anthem.oss.nimbus.core.domain.RepeatContainer;
 import com.anthem.oss.nimbus.core.domain.config.builder.attributes.AnnotationAttributeHandler;
 import com.anthem.oss.nimbus.core.domain.config.builder.attributes.ConstraintAnnotationAttributeHandler;
 import com.anthem.oss.nimbus.core.domain.config.builder.attributes.DefaultAnnotationAttributeHandler;
@@ -81,27 +82,37 @@ public class AnnotationConfigHandler {
 		return CollectionUtils.isEmpty(aConfigs) ? null : aConfigs;
 	}
 	
-	public static List<Annotation> handle(AnnotatedElement aElem, Class<? extends Annotation> repeatableContainerMetaAnnotationType, Class<? extends Annotation> repeatableMetaAnnotationType) {
+	public static List<Annotation> handleRepeatable(AnnotatedElement aElem, Class<? extends Annotation> repeatableMetaAnnotationType) {
 		final List<Annotation> annotations = new ArrayList<>();
 		
 		final Annotation arr[] = aElem.getAnnotations();
 
-		for(final Annotation a : arr) {
-			final Set<String> metaTypes = AnnotatedElementUtils.getMetaAnnotationTypes(aElem, a.annotationType());
+		for(final Annotation currDeclaredAnnotation : arr) {
+			final Set<String> metaTypesOnCurrDeclaredAnnotation = AnnotatedElementUtils.getMetaAnnotationTypes(aElem, currDeclaredAnnotation.annotationType());
 			
 			// handle repeatable container
-			if(metaTypes!=null && metaTypes.contains(repeatableContainerMetaAnnotationType.getName())) {
-				Object value = AnnotationUtils.getValue(a);
-				if(value==null || !value.getClass().isArray())
-					throw new InvalidConfigException("Repeatable container annotation is expected to follow convention: '{RepeableAnnotationType}[] value();' but not found in: "+a);
+			if(metaTypesOnCurrDeclaredAnnotation!=null && metaTypesOnCurrDeclaredAnnotation.contains(RepeatContainer.class.getName())) {
 				
-				Annotation[] annArr = (Annotation[])value;
-				annotations.addAll(Arrays.asList(annArr));
+				// get repeat container meta annotation and use declared repeatable annotaion
+				RepeatContainer repeatContainerMetaAnnotation = AnnotationUtils.getAnnotation(currDeclaredAnnotation, RepeatContainer.class);
+				Class<? extends Annotation> repeatableAnnotationDeclared = repeatContainerMetaAnnotation.value();
+				
+				// check that the declared annotation has passed in meta annotation type
+				
+				boolean hasRepeatable = AnnotatedElementUtils.hasAnnotation(repeatableAnnotationDeclared, repeatableMetaAnnotationType);
+				if(hasRepeatable) {
+					Object value = AnnotationUtils.getValue(currDeclaredAnnotation);
+					if(value==null || !value.getClass().isArray())
+						throw new InvalidConfigException("Repeatable container annotation is expected to follow convention: '{RepeableAnnotationType}[] value();' but not found in: "+currDeclaredAnnotation);
+					
+					Annotation[] annArr = (Annotation[])value;
+					annotations.addAll(Arrays.asList(annArr));
+				}
 			}
 			
 			// handle non-repeating meta annotation
-			if(metaTypes!=null && metaTypes.contains(repeatableMetaAnnotationType.getName())) {
-				annotations.add(a);
+			if(metaTypesOnCurrDeclaredAnnotation!=null && metaTypesOnCurrDeclaredAnnotation.contains(repeatableMetaAnnotationType.getName())) {
+				annotations.add(currDeclaredAnnotation);
 			}
 		}
 		

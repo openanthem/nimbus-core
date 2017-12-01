@@ -8,15 +8,11 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
+import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
-import com.anthem.oss.nimbus.core.entity.user.GroupUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 /**
  * @author Soham Chakravarti
@@ -26,23 +22,11 @@ public class CommandMessageConverter {
 	
 	public static final String EMPTY_JSON_REGEX = "(^\\{\\s*\\}$)";
 	
-	private ObjectMapper om;
+	private final ObjectMapper om;
 	
-	public CommandMessageConverter() {
-		this.om = Jackson2ObjectMapperBuilder.json()
-					.annotationIntrospector(new JacksonAnnotationIntrospector())
-					//.featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-					//.autoDetectFields(true)
-					//.autoDetectGettersSetters(true)
-					//.modules(new JavaTimeModule())
-					.build();
-		
-		om.registerModule(new JavaTimeModule());
-		om.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-
+	public CommandMessageConverter(BeanResolverStrategy beanResolver) {
+		this.om = beanResolver.get(ObjectMapper.class);
 	}
-
-
 
 	public Object convert(ParamConfig<?> pConfig, String json) {
 		if(StringUtils.isEmpty(json) || Pattern.matches(EMPTY_JSON_REGEX, json)) 

@@ -6,6 +6,7 @@ import java.util.List;
 import javax.validation.Constraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
@@ -34,6 +35,9 @@ public class AnnotationConfigHandlerTest {
 	@NotNull(message = "baz can not be null")
 	@Pattern(regexp="foo.*bar", message = "baz must conform to standards")
 	private final String baz = null;
+	
+	@Size(min=3, max=5, message="Required number of selections not met")
+	private final String sizeBaz = null;
 	
 	@Test
 	public void t1_handle_annotationNotFound() throws Exception {
@@ -82,5 +86,15 @@ public class AnnotationConfigHandlerTest {
 		Assert.assertEquals("Pattern", actual.get(1).getName());
 		Assert.assertEquals("baz must conform to standards", actual.get(1).getAttributes().get("message"));
 		Assert.assertEquals("foo.*bar", actual.get(1).getAttributes().get("regexp"));
+	}
+	
+	@Test
+	public void t7_handleSize_singleConfig() throws Exception {
+		final Field annotatedElement = this.getClass().getDeclaredField("sizeBaz");
+		final AnnotationConfig actual = AnnotationConfigHandler.handleSingle(annotatedElement, Constraint.class);
+		Assert.assertEquals("Size", actual.getName());
+		Assert.assertEquals(3, actual.getAttributes().get("min"));
+		Assert.assertEquals(5, actual.getAttributes().get("max"));
+		Assert.assertEquals("Required number of selections not met", actual.getAttributes().get("message"));
 	}
 }
