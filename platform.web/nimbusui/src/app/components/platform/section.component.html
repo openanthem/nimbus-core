@@ -14,6 +14,10 @@
             <ng-template [ngIf]="element.alias == 'CardDetail'">
                 <nm-card-details [element]="element"></nm-card-details>
             </ng-template>
+            <!-- Paragraph -->
+            <ng-template [ngIf]="element.alias == 'Paragraph'">
+                <nm-paragraph [element]="element"></nm-paragraph>
+            </ng-template>
             <!-- Static Text-->
             <ng-template [ngIf]="element.alias == 'StaticText'">
                 <nm-static-text [element]="element"></nm-static-text>

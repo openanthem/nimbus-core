@@ -87,6 +87,10 @@ export class InfiniteScrollGrid {
         }
     }
 
+    getRowPath(col:Param, item: any) {
+        return this.element.path + '/' + item.elemId;// + '/' + col.config.code;
+    }
+
     processOnClick(col: Param, item: any) {
         let uri=this.element.path + '/' + item.elemId + '/' + col.config.code;
 

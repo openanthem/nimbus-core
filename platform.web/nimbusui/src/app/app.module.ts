@@ -47,7 +47,7 @@ import { InputText } from './components/platform/form/elements/textbox.component
 import { DateControl } from './components/platform/form/elements/date.component';
 import { CheckBoxGroup } from './components/platform/form/elements/checkbox-group.component';
 import { MultiselectCard } from './components/platform/form/elements/multi-select-card.component';
-import { dropdownComponent } from './components/platform/form/elements/custom-dropdown.component';
+import { ActionDropdown } from './components/platform/form/elements/action-dropdown.component';
 import { GridContainer } from './components/platform/grid/grid-container.component';
 import { InfiniteScrollGrid } from './components/platform/grid/grid.component';
 import { Link } from './components/platform/link.component';
@@ -121,7 +121,7 @@ import { LinkPipe } from './pipes/link.pipe';
         LayoutService,ContentContainer,Switch,
         DomainFlowCmp,HeaderGlobal,FooterGlobal,
         BreadcrumbComponent, NavLinkRouter,
-        Modal, dropdownComponent,
+        Modal, ActionDropdown,
         GridMouseEventDirective, SortableContainerDirective, SortableComponentDirective,
         HomeLayoutCmp, MainLayoutCmp, DomainLayoutCmp, LoginCmp, LoginLayoutCmp, StyleGuideCmp, KeysPipe, LinkPipe, MultiSelectListBox, 
         CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent
