@@ -396,6 +396,15 @@ public class ViewConfig {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
+	public @interface LinkMenu {
+		String cssClass() default "";
+		String alias() default "LinkMenu";	
+	}
+
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
 	public @interface Link {
 		public enum Type {
 			MENU,
@@ -403,6 +412,7 @@ public class ViewConfig {
 			DEFAULT;
 		}
 		Type value() default Type.DEFAULT;
+		String alias() default "Link";	
 		String url() default "";
 		String method() default "GET";
 		String b() default "$executeAnd$nav";
