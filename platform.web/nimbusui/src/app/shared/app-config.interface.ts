@@ -429,6 +429,8 @@ export class ParamConfig implements Serializable<ParamConfig> {
     gridList: any[];
     //TODO Temporary for grid
     gridCols: Param[];
+    gridLinkMenu: Param;
+    gridLinks: Param[];
 
     deserialize( inJson ) {
      //   this.referredClass = inJson.referredClass;
@@ -471,11 +473,24 @@ export class ParamConfig implements Serializable<ParamConfig> {
         //TODO Temporary for grid
         if ( inJson.type && inJson.type.elementModelParams ) {
             this.gridCols = [];
+            this.gridLinks = [];
             for ( var p in inJson.type.elementModelParams ) {
                 let colParam = new Param();
                 colParam['config'] = new ParamConfig().deserialize( inJson.type.elementModelParams[p] );
-                this.gridCols.push(colParam);
+                if (colParam.config.uiStyles && colParam.config.uiStyles.attributes && colParam.config.uiStyles.attributes.alias == 'Link') {
+                    this.gridLinks.push(colParam);
+                } else if (colParam.config.uiStyles && colParam.config.uiStyles.attributes && colParam.config.uiStyles.attributes.alias == 'LinkMenu') {
+                    this.gridLinkMenu = colParam;
+                } else {
+                    this.gridCols.push(colParam);
+                }
             }
+            // push links to linkmenu
+            if (this.gridLinkMenu) {
+                this.gridLinkMenu['params'] = this.gridLinks;
+                this.gridCols.push(this.gridLinkMenu);
+            }
+            
         }
 
         return this;
@@ -514,7 +529,7 @@ export class UiStyle implements Serializable<UiStyle> {
 
     deserialize( inJson ) {
         this.name = inJson.name;
-        if ( this.name === 'ViewConfig.Link' ) {
+        if ( this.name === 'ViewConfig.Link' || this.name === 'ViewConfig.LinkMenu') {
             this.isLink = true;
         }
         if ( this.name === 'ViewConfig.Hidden' ) {
