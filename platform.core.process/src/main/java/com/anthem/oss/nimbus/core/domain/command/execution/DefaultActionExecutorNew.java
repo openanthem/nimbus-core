@@ -83,7 +83,8 @@ public class DefaultActionExecutorNew extends AbstractFunctionCommandExecutor<Ob
 		
 		// for /domain-root/_new - set "id" from repo 
 		if(cmdMsg.getCommand().isRootDomainOnly()) {
-			PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(p.getConfig().getReferredClass(), p.getConfig().getCode());
+			String idParamCode = p.findIfNested().getIdParam().getConfig().getCode();
+			PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(p.getConfig().getReferredClass(), idParamCode);
 			getJavaBeanHandler().setValue(pd, newState, cmdMsg.getCommand().getRootDomainElement().getRefId());
 		}
 										
