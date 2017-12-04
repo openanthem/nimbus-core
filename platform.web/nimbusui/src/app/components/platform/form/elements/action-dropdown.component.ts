@@ -10,11 +10,11 @@ import { HttpMethod } from '../../../../shared/command.enum';
     selector: 'nm-action-dropdown',
     template: `
     <div class="custom-dropdown {{this.widgetPosition}}" [ngClass]="{'open': isOpen}">
-        <label>Label for dropdown</label>
+        <label></label>
         <input type="text">
         <a class="dropdownTrigger" href="javascript:void(0)" (click)="toggleOpen($event)"></a> 
         <div class="dropdownContent">
-            <a href="javascript:void(0)" (click)="processOnClick(link.config.code)" *ngFor="let link of params">{{link.config.code}}</a>
+            <a href="javascript:void(0)" (click)="processOnClick(link.code)" *ngFor="let link of params">{{link.code}}</a>
         </div>
     </div>
   `
@@ -30,7 +30,7 @@ export class ActionDropdown {
     }
 
     ngOnInit() {
-        // console.log(this.params);
+        //console.log(this.params);
         // console.log(this.elementPath + '/');
     }
 
@@ -42,7 +42,7 @@ export class ActionDropdown {
         else{this.widgetPosition = "east"}
         //console.log("x =",event.screenX,"y =",event.screenY, "broswer inner width", window.innerWidth,"broswer outer width", window.outerWidth);
         this.isOpen = !this.isOpen;
-        console.log("widgetPosition",this.widgetPosition, window.innerWidth,"-",event.clientX,"=",window.innerWidth-event.clientX  );
+        //console.log("widgetPosition",this.widgetPosition, window.innerWidth,"-",event.clientX,"=",window.innerWidth-event.clientX  );
     }
 
     processOnClick(linkCode: string) {

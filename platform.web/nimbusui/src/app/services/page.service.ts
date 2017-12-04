@@ -1,3 +1,4 @@
+import { ElementModelParam } from './../shared/app-config.interface';
 'use strict';
 import { Action, HttpMethod, Behavior} from './../shared/command.enum';
 import { Injectable, EventEmitter } from '@angular/core';
@@ -577,14 +578,14 @@ export class PageService {
          * Create the Grid Row Data from Param Leaf State
          * 
          */
-        createRowData(param: Param, nestedGridParam: Param) {
+        createRowData(param: Param, nestedGridParam: ElementModelParam) {
             let rowData: any = {};
             rowData = param.leafState;
             rowData['elemId'] = param.elemId;
             
             // If nested data exists, set the data to nested grid
             if (nestedGridParam) {
-                nestedGridParam.config.gridList = rowData[nestedGridParam.config.code];
+                nestedGridParam.gridList = rowData[nestedGridParam.code];
             }
             
             return rowData;
@@ -594,12 +595,12 @@ export class PageService {
          * Loop through the Param State and build the Grid
          * 
          */
-        createGridData(params: Param[], gridCols: Param[]) {
+        createGridData(params: Param[], gridCols: ElementModelParam[]) {
             let gridData = [];
             // Look for inner lists (nested grid)
-            let nestedGridParam: Param;
+            let nestedGridParam: ElementModelParam;
             gridCols.forEach(col => {
-               if (col.config.uiStyles && col.config.uiStyles.name == 'ViewConfig.Grid') {
+               if (col.uiStyles && col.uiStyles.name == 'ViewConfig.Grid') {
                    nestedGridParam = col;
                } 
             });
