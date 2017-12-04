@@ -7,6 +7,7 @@ import { PageService } from '../../../services/page.service';
 import { GridService } from '../../../services/grid.service';
 import { WebContentSvc } from '../../../services/content-management.service';
 import { DataTable, OverlayPanel } from 'primeng/primeng';
+import { ElementModelParam } from './../../../shared/app-config.interface';
 import { ServiceConstants } from './../../../services/service.constants';
 import { ControlValueAccessor } from '@angular/forms/src/directives';
 
@@ -26,9 +27,10 @@ export class InfiniteScrollGrid implements ControlValueAccessor{
     @Input() element: Param;
     @Input() data: any[];
     @Output() onScrollEvent: EventEmitter<any> = new EventEmitter();
-    @Input() params: Param[];
+    @Input() params: ElementModelParam[];
     @Input() form: FormGroup;
     @Input('value') _value = [];
+
 //    references DataTable named 'flex' in the view
     @ViewChild('flex') flex: DataTable;
     @ViewChild('dt') dt: DataTable;
@@ -74,8 +76,8 @@ export class InfiniteScrollGrid implements ControlValueAccessor{
             this.params.forEach(element => {
                 if(element != null) {
                     switch (result.id) {
-                        case element.config.code: {
-                            element.config.label = result.label;
+                        case element.code: {
+                            element.label = result.label;
                             break;
                         }
                         case this.element.config.uiStyles.attributes.postButtonAlias: {
@@ -93,12 +95,12 @@ export class InfiniteScrollGrid implements ControlValueAccessor{
         if (this.params != null) {
             this.params.forEach(element => {
                 if(element != null) {
-                    this.wcs.getContent(element.config.code);
+                    this.wcs.getContent(element.code);
                 }
-                if(element.config.uiStyles && element.config.uiStyles.attributes 
-                        && element.config.uiStyles.attributes.filterValue && element.config.uiStyles.attributes.filterValue !== '') {
-                        let filterValue = element.config.uiStyles.attributes.filterValue;
-                        this.flex.filter(filterValue, element.config.code, element.config.uiStyles.attributes.filterMode);
+                if(element.uiStyles && element.uiStyles.attributes 
+                        && element.uiStyles.attributes.filterValue && element.uiStyles.attributes.filterValue !== '') {
+                        let filterValue = element.uiStyles.attributes.filterValue;
+                        this.flex.filter(filterValue, element.code, element.uiStyles.attributes.filterMode);
                 }
             });
         }
@@ -121,12 +123,12 @@ export class InfiniteScrollGrid implements ControlValueAccessor{
         }
     }
 
-    getRowPath(col:Param, item: any) {
-        return this.element.path + '/' + item.elemId;// + '/' + col.config.code;
+    getRowPath(col:ElementModelParam, item: any) {
+        return this.element.path + '/' + item.elemId;// + '/' + col.code;
     }
 
-    processOnClick(col: Param, item: any) {
-        let uri=this.element.path + '/' + item.elemId + '/' + col.config.code;
+    processOnClick(col: ElementModelParam, item: any) {
+        let uri=this.element.path + '/' + item.elemId + '/' + col.code;
 
         let uriParams = this.getAllURLParams(uri);
         if(uriParams!=null) {
@@ -137,7 +139,7 @@ export class InfiniteScrollGrid implements ControlValueAccessor{
                 }
             }
         }
-        this.pageSvc.processEvent(uri, col.config.uiStyles.attributes.b, item, col.config.uiStyles.attributes.method);
+        this.pageSvc.processEvent(uri, col.uiStyles.attributes.b, item, col.uiStyles.attributes.method);
     }
 
     /* look for parameters in URI {} */
@@ -151,7 +153,7 @@ export class InfiniteScrollGrid implements ControlValueAccessor{
         //after the grid view is rendered, get the content management header values
         if (flex!=null) {
             this.params.forEach(element => {
-                this.wcs.getContent(element.config.code);
+                this.wcs.getContent(element.code);
             });
         }
     }
@@ -190,8 +192,8 @@ export class InfiniteScrollGrid implements ControlValueAccessor{
         //this.pageService.postOnChange($event.path, '_update', 'state', JSON.stringify(false));
     }
 
-    postOnChange(col: Param, item: any) {
-        let uri=this.element.path + '/' + item.elemId + '/' + col.config.code;
+    postOnChange(col: ElementModelParam, item: any) {
+        let uri=this.element.path + '/' + item.elemId + '/' + col.code;
         //console.log(event);
         this.pageSvc.postOnChange(uri, 'state', JSON.stringify(event.target['checked']));
     }
@@ -206,8 +208,8 @@ export class InfiniteScrollGrid implements ControlValueAccessor{
     getAddtionalData(event: any) {
         let elemPath = '';
         this.params.forEach(param => {
-            if (param.config.uiStyles && param.config.uiStyles.attributes.alias == 'Grid') {
-                elemPath = this.element.path + '/' + event.data.elemId + '/' + param.config.code;
+            if (param.uiStyles && param.uiStyles.attributes.alias == 'Grid') {
+                elemPath = this.element.path + '/' + event.data.elemId + '/' + param.code;
             }
         });
         
