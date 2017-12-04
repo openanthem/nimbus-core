@@ -15,6 +15,7 @@
 		(onRowClick)="onRowClick($event)"
 		(onRowSelect)="onRowSelect($event)"
 		(onRowUnselect)="onRowUnselect($event)"
+		(valueChange)="handleRowChange($event)"
 		[rows]="element.config?.uiStyles?.attributes?.pageSize"
 		[paginator]="element.config?.uiStyles?.attributes?.pagination"
 		paginatorPosition="both"

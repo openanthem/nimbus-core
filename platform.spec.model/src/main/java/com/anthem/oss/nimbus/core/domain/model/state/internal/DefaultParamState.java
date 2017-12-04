@@ -590,7 +590,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		emitParamContextEvent();
 		
 		// handle nested
-		if(!isNested() || findIfNested().templateParams().isNullOrEmpty())
+		if(!isNested() || (isTransient() && !findIfTransient().isAssinged()))
 			return;
 		
 		findIfNested().getParams().stream()
