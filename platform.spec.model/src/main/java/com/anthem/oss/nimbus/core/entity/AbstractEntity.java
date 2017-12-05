@@ -17,6 +17,7 @@ import org.springframework.data.domain.Persistable;
 import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
 import com.anthem.oss.nimbus.core.domain.definition.ConfigNature.Ignore;
 import com.anthem.oss.nimbus.core.domain.definition.Model;
+import com.anthem.oss.nimbus.core.domain.definition.SearchNature.StartsWith;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
@@ -46,7 +47,7 @@ public abstract class AbstractEntity<ID extends Serializable> implements Seriali
     public static abstract class IdString extends AbstractEntity<String> {
 		private static final long serialVersionUID = 1L;
 
-		@Id @Getter @Setter
+		@Id @Getter @Setter @StartsWith
 		private String id;
 	}
 	

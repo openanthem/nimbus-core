@@ -12,7 +12,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * This class tests for accessConditional(s) for the user with roles {intake, clinician}
+ * This class tests for accessConditional(s) for the user with roles {intake, clinician} and resolvedAuthorities = 'member_management'
  * @author Rakesh Patel
  *
  */
@@ -26,7 +26,7 @@ public class SampleCoreEntityAccess extends IdString {
 
 	private String attr_String;
 
-	@AccessConditional(containsRoles={"intake"}, p=Permission.HIDDEN)
+	@AccessConditional(containsRoles="intake", p=Permission.HIDDEN)
 	private SampleCoreNestedEntity accessConditional_Contains_Hidden1;
 	
 	@AccessConditional(containsRoles={"intake","clinician"}, p=Permission.HIDDEN)
@@ -35,16 +35,26 @@ public class SampleCoreEntityAccess extends IdString {
 	@AccessConditional(containsRoles={"intake"}, p=Permission.READ)
 	private SampleCoreNestedEntity accessConditional_Contains_Read;
 	
-	@AccessConditional(when="!?[#this == 'intake'].empty", p=Permission.READ)
-	private SampleCoreNestedEntity accessConditional_When_Read1;
+	@AccessConditional(whenRoles="!?[#this == 'intake'].empty", p=Permission.READ)
+	private SampleCoreNestedEntity accessConditional_WhenRoles_Read1;
 	
-	@AccessConditional(when="!?[#this == 'intake'].empty && !?[#this == 'casemanager'].empty", p=Permission.READ)
-	private SampleCoreNestedEntity accessConditional_When_Read2;
+	@AccessConditional(whenRoles="!?[#this == 'intake'].empty && !?[#this == 'casemanager'].empty", p=Permission.READ)
+	private SampleCoreNestedEntity accessConditional_WhenRoles_Read2;
 	
-	@AccessConditional(when="!?[#this == 'intake'].empty && !?[#this == 'clinician'].empty", p=Permission.HIDDEN)
-	private SampleCoreNestedEntity accessConditional_When_Hidden1;
+	@AccessConditional(whenRoles="!?[#this == 'intake'].empty && !?[#this == 'clinician'].empty", p=Permission.HIDDEN)
+	private SampleCoreNestedEntity accessConditional_WhenRoles_Hidden1;
 	
-	@AccessConditional(when="!?[#this == 'intake'].empty || !?[#this == 'casemanager'].empty", p=Permission.HIDDEN)
-	private SampleCoreNestedEntity accessConditional_When_Hidden2;
+	@AccessConditional(whenRoles="!?[#this == 'intake'].empty || !?[#this == 'casemanager'].empty", p=Permission.HIDDEN)
+	private SampleCoreNestedEntity accessConditional_WhenRoles_Hidden2;
+	
+	@AccessConditional(whenAuthorities="?[#this == 'case_management'].empty", p=Permission.HIDDEN)
+	private SampleCoreNestedEntity accessConditional_WhenAuthorities_Hidden1;
+	
+	@AccessConditional(whenAuthorities="!?[#this == 'case_management'].empty && ?[#this == 'task_management'].empty", p=Permission.READ)
+	@AccessConditional(whenAuthorities="?[#this == 'case_management'].empty && ?[#this == 'task_management'].empty", p=Permission.HIDDEN)
+	private SampleCoreNestedEntity accessConditional_WhenAuthorities_Read2;
+	
+	@AccessConditional(whenAuthorities="!?[#this == 'case_management'].empty && !?[#this == 'member_management'].empty", p=Permission.HIDDEN)
+	private SampleCoreNestedEntity accessConditional_WhenAuthorities_Hidden2;
 
 }

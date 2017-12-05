@@ -1,0 +1,20 @@
+
+.subheader{
+    height: $subheader-height;
+    position: fixed;
+    top: $headerHeight;
+    left: 0;
+    right: 0;
+    background-color: $subheader-background-color;
+    color: $subheader-font-color;
+}
+
+.title-con {
+    //height: $subheader-title-height;
+    .title{
+        font-size: 1em;
+        font-weight: normal;
+        //color:$subheader-title-color;
+        margin-left:10px;
+    }
+}

@@ -101,7 +101,7 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 		String refId = createOrGetDomainRoot_RefId();
 		
 		MockHttpServletRequest req_arr_update = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(refId)
-				.addNested("/level1/level2/string_array").addAction(Action._update).getMock();
+				.addNested("/level1/level2b/string_array_b").addAction(Action._update).getMock();
 		
 		final String[] K_string_arr = new String[]{"A", "B", "C @ "+new Date()};
 		Object resp_arr_update = controller.handlePut(req_arr_update, null, converter.convert(K_string_arr));
@@ -109,7 +109,7 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 		
 		// validate via Param
 		MockHttpServletRequest req_arr_get = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(refId)
-				.addNested("/level1/level2/string_array").addAction(Action._get).getMock();
+				.addNested("/level1/level2b/string_array_b").addAction(Action._get).getMock();
 		
 		Object resp_arr_get = controller.handleGet(req_arr_get, null);
 		EntityState.Param<String[]> cp_string_arr = ExtractResponseOutputUtils.extractOutput(resp_arr_get);
@@ -121,7 +121,7 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 		SampleCoreEntity core = mongo.findById(refId, SampleCoreEntity.class, CORE_DOMAIN_ALIAS);
 		assertNotNull(core);
 		
-		assertTrue(ArrayUtils.equals(K_string_arr, core.getLevel1().getLevel2().getString_array()));
+		assertTrue(ArrayUtils.equals(K_string_arr, core.getLevel1().getLevel2b().getString_array_b()));
 	}
 	
 	@Test
@@ -129,7 +129,7 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 		String refId = createOrGetDomainRoot_RefId();
 		
 		MockHttpServletRequest req_arr_update = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
-				.addNested("/page_green/tile/level1/level2/string_array").addAction(Action._update).getMock();
+				.addNested("/page_green/tile/level1/level2b/string_array_b").addAction(Action._update).getMock();
 		
 		final String[] K_string_arr = new String[]{"A", "B", "C @ "+new Date()};
 		Object resp_arr_update = controller.handlePut(req_arr_update, null, converter.convert(K_string_arr));
@@ -137,7 +137,7 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 		
 		// validate via Param
 		MockHttpServletRequest req_arr_get = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
-				.addNested("/page_green/tile/level1/level2/string_array").addAction(Action._get).getMock();
+				.addNested("/page_green/tile/level1/level2b/string_array_b").addAction(Action._get).getMock();
 		
 		Object resp_arr_get = controller.handleGet(req_arr_get, null);
 		EntityState.Param<String[]> vp_string_arr = ExtractResponseOutputUtils.extractOutput(resp_arr_get);
@@ -149,6 +149,6 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 		SampleCoreEntity core = mongo.findById(refId, SampleCoreEntity.class, CORE_DOMAIN_ALIAS);
 		assertNotNull(core);
 		
-		assertTrue(ArrayUtils.equals(K_string_arr, core.getLevel1().getLevel2().getString_array()));
+		assertTrue(ArrayUtils.equals(K_string_arr, core.getLevel1().getLevel2b().getString_array_b()));
 	}
 }

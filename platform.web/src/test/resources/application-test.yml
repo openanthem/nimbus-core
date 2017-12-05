@@ -1,0 +1,100 @@
+spring: 
+  data:
+    mongodb:  
+      port: 0
+security:
+    basic:
+      enabled: 
+              false
+
+ruleBasedRequestHandler:
+                     - defaultRuleBasedRequestHandler
+                     - defaultRuleBasedResponseHandler
+
+scriptBasedRequestHandler: defaultScriptBasedRequestHandler
+scriptBasedResponseHandler: defaultScriptBasedResponseHandler
+
+scriptHandlerType: cript
+customHandlerType: Custom
+
+stomp:
+    hostName: localhost
+    port: 61613
+
+domain:
+  model:
+    basePackages:
+      - com.anthem.oss.nimbus.core.entity
+      - com.anthem.platform.client.extension.cm.model
+      - com.anthem.platform.client.extension.cm.flow
+      - com.anthem.oss.nimbus.test.sample.um.model
+    typeClassMappings:
+      java.time.LocalDate : 
+        date
+      java.lang.String : 
+        string
+    includeFilter: ['a','b']
+    persistenceStrategy: ATOMIC
+  action: abc
+    
+  validation:
+    markerAnnotations:
+      javax.validation.Constraint
+    markerInterfaces:
+   
+logging:
+  file: ${HOME}/Documents/nimbuslogs/test-nimbus.log
+user:
+  permissionToActions:
+    ACCESS:
+      _get,_info,_search,_new,_replace,_update,_delete,_nav,_process
+    READ:
+      _get,_info,_search,_getAll,_nav,_process
+    CREATE:
+      _new,_nav,_process
+    UPDATE:
+      _update,_replace,_nav,_process
+    DELETE:
+      _delete,_nav,_process
+  #authenticationStrategyBeans:
+     #jwtAuthenticationStrategy,ldapAuthenticationStrategy
+
+process:
+  key:
+    regex:
+     ([A-Za-z0-9_\\-\\*~]+)
+  database:
+    driver: 
+      com.mysql.jdbc.Driver
+    url: 
+      jdbc:mysql://localhost:3306/nimbus?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false
+    username: 
+      root
+    password: 
+      NimbusNonDocker123
+    taskUpdateQuery:
+      update ACT_RU_TASK set TASK_DEF_KEY_ = ?, NAME_ = ? WHERE ID_=?
+    executionUpdateQuery:
+      update ACT_RU_EXECUTION set ACT_ID_ = ?  WHERE ID_=? AND ACT_ID_=?   
+  history:
+    level: 
+      none         
+template:
+  definitions:
+    - path: e_post/*/comm/icr/p/flow_umcase/_findPatient/_process/_execute
+      id: flow_umcase_findPatient
+      criteria:  
+model:
+  persistence:
+    strategy:
+      mode:
+        ATOMIC
+dsl:
+  behavior:
+    extensions:
+      #$execute:
+        #$save      
+platform:
+  config:
+    secure:
+      regex: "^[a-zA-Z0-9<>()\\[\\]@/: &.=?,$#_-]{1,}"

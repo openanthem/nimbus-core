@@ -27,7 +27,7 @@ public class StatelessBPMFunctionHanlder<T,R> extends AbstractFunctionHandler<T,
 	@SuppressWarnings("unchecked")
 	public R execute(ExecutionContext executionContext, Param<T> actionParameter) {
 		String processId = executionContext.getCommandMessage().getCommand().getFirstParameterValue(Constants.KEY_EXECUTE_PROCESS_ID.code);
-		ProcessResponse response = bpmGateway.startBusinessProcess(executionContext.getQuadModel().getView().getAssociatedParam(), processId);
+		ProcessResponse response = bpmGateway.startStatlessBusinessProcess(executionContext.getQuadModel().getView().getAssociatedParam(), processId);
 		return (R)response.getResponse();
 	}
 }

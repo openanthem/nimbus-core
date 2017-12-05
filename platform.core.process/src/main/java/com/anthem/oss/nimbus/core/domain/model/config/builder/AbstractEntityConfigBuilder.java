@@ -24,7 +24,6 @@ import org.springframework.util.CollectionUtils;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.UnsupportedScenarioException;
-import com.anthem.oss.nimbus.core.domain.RepeatContainer;
 import com.anthem.oss.nimbus.core.domain.config.builder.AnnotationConfigHandler;
 import com.anthem.oss.nimbus.core.domain.definition.AssociatedEntity;
 import com.anthem.oss.nimbus.core.domain.definition.ConfigLoadException;
@@ -441,7 +440,7 @@ abstract public class AbstractEntityConfigBuilder {
 //			eventConfig.add(ac, (OnStateLoadHandler<Annotation>)handler);
 //		});
 		
-		List<Annotation> onStateLoadAnnotations = AnnotationConfigHandler.handle(aElem, RepeatContainer.class, OnStateLoad.class);
+		List<Annotation> onStateLoadAnnotations = AnnotationConfigHandler.handleRepeatable(aElem, OnStateLoad.class);
 		//List<Annotation> onStateLoadAnnotations = new ArrayList<>(AnnotatedElementUtils.findMergedRepeatableAnnotations(aElem, OnStateLoad.class));
 		if(!CollectionUtils.isEmpty(onStateLoadAnnotations)) { 
 			
@@ -453,7 +452,7 @@ abstract public class AbstractEntityConfigBuilder {
 		}
 
 		
-		List<Annotation> onStateChangeAnnotations = AnnotationConfigHandler.handle(aElem, RepeatContainer.class, OnStateChange.class);
+		List<Annotation> onStateChangeAnnotations = AnnotationConfigHandler.handleRepeatable(aElem, OnStateChange.class);
 		//List<Annotation> onStateChangeAnnotations = new ArrayList<>(AnnotatedElementUtils.findMergedRepeatableAnnotations(aElem, OnStateChange.class));
 		if(!CollectionUtils.isEmpty(onStateChangeAnnotations)) { 
 			

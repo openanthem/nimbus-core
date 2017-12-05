@@ -1,0 +1,29 @@
+<nm-header-global [branding]="branding" [topMenuItems]="topMenuItems" [leftMenuItems]="leftMenuItems"></nm-header-global>
+
+<!-- Everything after header -->
+<div class='wrapper ' [ngClass]="{'menu-collapsed': !collapse}">
+	<div class="sidebar"  *ngIf="leftMenuItems">
+       <a class="sidebarToggle" href="javascript:void(0)" (click)="toggelSideNav()"></a>
+        <div class="sidebar-content slimScrollDiv">
+            <ul class="sidebar-list">              
+                <li class="sidebar-list-item" routerLinkActive="active" *ngFor="let menuItem of leftMenuItems"> 
+                    <a class="sidebar-list-link" data-targetpanel="dashboard" routerLinkActive="active" [routerLink]="[menuItem.path]"> 
+                        <!--<img class="sidenav-icon" src="resources/icons/{{menuItem.image}}"/> -->
+                           <svg class="sidenav-icon">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" attr.xlink:href="resources/icons/{{menuItem.image}}#Layer_1"></use> 
+                            </svg>
+                        <span class="indentOpen" >{{menuItem.title}}</span> 
+                    </a> 
+                </li>
+            </ul>
+        </div>
+	</div>
+  
+	<div id="main-content" class="main-content">
+        <router-outlet></router-outlet>
+       <!--  <nm-footer-global></nm-footer-global> -->
+    </div><!--  END main-content  -->
+
+</div><!--  END wrapper  -->
+
+

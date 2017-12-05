@@ -4,6 +4,7 @@ import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
  
 import java.lang.annotation.Documented;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -36,25 +37,36 @@ import com.anthem.oss.nimbus.core.domain.definition.event.StateEvent.OnStateLoad
 @Documented
 @Retention(RUNTIME)
 @Target(FIELD)
+@Repeatable(AccessConditionals.class)
 @OnStateLoad
 public @interface AccessConditional {
 	
 	/**
-	 * Use this to specify an expression 
+	 * Use this to specify an expression for roles
 	 */
-	String when() default "";
+	String whenRoles() default "";
 	
 	/**
-	 * Use for simple contains check, for complex expression, use when()
+	 * Use this to specify an expression for authorities
+	 */
+	String whenAuthorities() default "";
+	
+	/**
+	 * Use for simple role contains check, for complex expression, use when()
 	 */
 	String[] containsRoles() default {};
 	
-	Permission p();
+	/**
+	 * Use for simple area/accessEntity contains check, for complex expression, use when()
+	 */
+	String[] containsAuthority() default {};
 	
+	Permission p();
 	
 	public enum Permission {
 		WRITE,
 		READ,
 		HIDDEN;
 	}
+
 }

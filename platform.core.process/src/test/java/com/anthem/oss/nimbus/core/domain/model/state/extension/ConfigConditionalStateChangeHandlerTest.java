@@ -14,7 +14,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.util.CollectionUtils;
@@ -148,8 +147,7 @@ public class ConfigConditionalStateChangeHandlerTest extends AbstractStateEventH
 		// test with value from main domain root
 	}
 	
-	@Ignore // untill configConditionals is implemented
-	//@Test
+	@Test
 	public void t01_config_conditionals_collections_exist_test() {
 		Param<String> cp = _q.getRoot().findParamByPath(CORE_CONDITIONALS_PARAM_PATH);
 
@@ -164,16 +162,18 @@ public class ConfigConditionalStateChangeHandlerTest extends AbstractStateEventH
 		assertEquals(_q.getCore().getState().getId(), associatedEntity.get(0).getEntityId());
 	}
 
-	@Ignore // untill configConditionals is implemented
-	//@Test
+	@Test
 	public void t02_config_conditionals_collections_does_not_exist_test() {
 		Param<String> cp = _q.getRoot().findParamByPath(CORE_CONDITIONALS_PARAM_PATH);
 
-		cp.setState("Y");
-		assertFalse(mt.collectionExists("sample_coreassociatedentity"));
-
-		cp.setState("N");
 		assertFalse(mt.collectionExists("sample_core_audit_history"));
+		cp.setState("Y");
+		assertTrue(mt.collectionExists("sample_core_audit_history"));
+		
+		assertFalse(mt.collectionExists("sample_coreassociatedentity"));
+		cp.setState("N");
+		assertTrue(mt.collectionExists("sample_core_audit_history"));
+		assertTrue(mt.collectionExists("sample_coreassociatedentity"));
 	}
 
 }
