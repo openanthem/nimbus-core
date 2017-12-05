@@ -1,14 +1,14 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core;
+package com.antheminc.oss.nimbus.core;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import com.anthem.oss.nimbus.core.config.DefaultCoreConfiguration;
-import com.anthem.oss.nimbus.core.domain.command.execution.SessionProvider;
+import com.antheminc.oss.nimbus.core.config.DefaultCoreConfiguration;
+import com.antheminc.oss.nimbus.core.domain.command.execution.SessionProvider;
 
 /**
  * @author Soham Chakravarti

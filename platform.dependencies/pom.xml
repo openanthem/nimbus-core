@@ -2,8 +2,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.anthem.oss.nimbus.core</groupId>
-	<artifactId>com.anthem.oss.nimbus.core.dependencies</artifactId>
+	<groupId>com.antheminc.oss.nimbus.core</groupId>
+	<artifactId>com.antheminc.oss.nimbus.core.dependencies</artifactId>
 	<version>1.0.0.M9-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>nimbus-core-dependencies</name>
@@ -223,34 +223,34 @@
 		        </exclusions>
 			</dependency>
 			<dependency>
-				<groupId>com.anthem.oss.nimbus.core</groupId>
-				<artifactId>com.anthem.oss.nimbus.core.spec</artifactId>
+				<groupId>com.antheminc.oss.nimbus.core</groupId>
+				<artifactId>com.antheminc.oss.nimbus.core.spec</artifactId>
 				<version>${nimbus.core.spec.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.anthem.oss.nimbus.core</groupId>
-				<artifactId>com.anthem.oss.nimbus.core.test</artifactId>
+				<groupId>com.antheminc.oss.nimbus.core</groupId>
+				<artifactId>com.antheminc.oss.nimbus.core.test</artifactId>
 				<version>${nimbus.core.test.version}</version>
 				<!-- <scope>test</scope> -->
 			</dependency>
 			<dependency>
-				<groupId>com.anthem.oss.nimbus.core</groupId>
-				<artifactId>com.anthem.oss.nimbus.core.api</artifactId>
+				<groupId>com.antheminc.oss.nimbus.core</groupId>
+				<artifactId>com.antheminc.oss.nimbus.core.api</artifactId>
 				<version>${nimbus.core.api.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.anthem.oss.nimbus.core</groupId>
-				<artifactId>com.anthem.oss.nimbus.core.processor</artifactId>
+				<groupId>com.antheminc.oss.nimbus.core</groupId>
+				<artifactId>com.antheminc.oss.nimbus.core.processor</artifactId>
 				<version>${nimbus.core.processor.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.anthem.oss.nimbus.core</groupId>
-				<artifactId>com.anthem.oss.nimbus.core.processor</artifactId>
+				<groupId>com.antheminc.oss.nimbus.core</groupId>
+				<artifactId>com.antheminc.oss.nimbus.core.processor</artifactId>
 				<version>${nimbus.core.processor.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.anthem.oss.nimbus.core</groupId>
-				<artifactId>com.anthem.oss.nimbus.core.web</artifactId>
+				<groupId>com.antheminc.oss.nimbus.core</groupId>
+				<artifactId>com.antheminc.oss.nimbus.core.web</artifactId>
 				<version>${nimbus.core.ui.version}</version>
 			</dependency>
 		</dependencies>

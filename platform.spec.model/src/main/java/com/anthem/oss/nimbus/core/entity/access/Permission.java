@@ -1,11 +1,11 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.entity.access;
+package com.antheminc.oss.nimbus.core.entity.access;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.anthem.oss.nimbus.core.entity.AbstractEntity.IdString;
+import com.antheminc.oss.nimbus.core.entity.AbstractEntity.IdString;
 
 import lombok.Getter;
 import lombok.Setter;

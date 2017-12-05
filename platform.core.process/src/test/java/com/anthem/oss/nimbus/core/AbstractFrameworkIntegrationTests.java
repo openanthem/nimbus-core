@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core;
+package com.antheminc.oss.nimbus.core;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -16,10 +16,10 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandMessageConverter;
-import com.anthem.oss.nimbus.core.entity.client.Client;
-import com.anthem.oss.nimbus.core.integration.websocket.ParamEventAMQPListener;
-import com.anthem.oss.nimbus.core.web.WebActionController;
+import com.antheminc.oss.nimbus.core.domain.command.execution.CommandMessageConverter;
+import com.antheminc.oss.nimbus.core.entity.client.Client;
+import com.antheminc.oss.nimbus.core.integration.websocket.ParamEventAMQPListener;
+import com.antheminc.oss.nimbus.core.web.WebActionController;
 
 /**
  * @author Soham Chakravarti

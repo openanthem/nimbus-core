@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core.domain.config.builder.attributes;
+package com.antheminc.oss.nimbus.core.domain.config.builder.attributes;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -15,14 +15,14 @@ import org.springframework.core.annotation.AnnotationUtils;
  * additional changes made.
  * 
  * @author Tony Lopez (AF42192)
- * @see com.anthem.oss.nimbus.core.domain.config.builder.attributes.AnnotationAttributeHandler
+ * @see com.antheminc.oss.nimbus.core.domain.config.builder.attributes.AnnotationAttributeHandler
  *
  */
 public class DefaultAnnotationAttributeHandler implements AnnotationAttributeHandler {
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.anthem.oss.nimbus.core.domain.config.builder.AnnotationAttributeHandler#generateFrom(java.lang.reflect.AnnotatedElement, java.lang.annotation.Annotation)
+	 * @see com.antheminc.oss.nimbus.core.domain.config.builder.AnnotationAttributeHandler#generateFrom(java.lang.reflect.AnnotatedElement, java.lang.annotation.Annotation)
 	 */
 	@Override
 	public Map<String, Object> generateFrom(AnnotatedElement annotatedElement, Annotation annotation) {

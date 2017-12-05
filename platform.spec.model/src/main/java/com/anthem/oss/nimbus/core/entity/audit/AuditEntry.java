@@ -1,9 +1,9 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.entity.audit;
+package com.antheminc.oss.nimbus.core.entity.audit;
 
-import com.anthem.oss.nimbus.core.entity.AbstractEntity;
+import com.antheminc.oss.nimbus.core.entity.AbstractEntity;
 
 import lombok.Getter;
 import lombok.Setter;

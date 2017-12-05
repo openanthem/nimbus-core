@@ -1,15 +1,15 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.test.sample.domain.model.ui;
+package com.antheminc.oss.nimbus.test.sample.domain.model.ui;
 
-import com.anthem.oss.nimbus.core.domain.definition.Domain;
-import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
-import com.anthem.oss.nimbus.core.domain.definition.Repo;
-import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
-import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Page;
-import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreEntity;
+import com.antheminc.oss.nimbus.core.domain.definition.Domain;
+import com.antheminc.oss.nimbus.core.domain.definition.Domain.ListenerType;
+import com.antheminc.oss.nimbus.core.domain.definition.MapsTo;
+import com.antheminc.oss.nimbus.core.domain.definition.Repo;
+import com.antheminc.oss.nimbus.core.domain.definition.Repo.Database;
+import com.antheminc.oss.nimbus.core.domain.definition.ViewConfig.Page;
+import com.antheminc.oss.nimbus.test.sample.domain.model.core.SampleCoreEntity;
 
 import lombok.Getter;
 import lombok.Setter;

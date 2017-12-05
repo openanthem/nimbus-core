@@ -3,7 +3,7 @@
  */
 package test.com.anthem.nimbus.platform.spec.model.user;
 
-import com.anthem.oss.nimbus.core.entity.user.DefaultUser;
+import com.antheminc.oss.nimbus.core.entity.user.DefaultUser;
 
 /**
  * @author Soham Chakravarti

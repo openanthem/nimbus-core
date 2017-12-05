@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.web;
+package com.antheminc.oss.nimbus.core.web;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
-import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContextLoader;
-import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
+import com.antheminc.oss.nimbus.core.domain.command.execution.ExecutionContextLoader;
+import com.antheminc.oss.nimbus.core.domain.model.state.ModelEvent;
 
 /**
  * STEPS to follow with examples. <br>

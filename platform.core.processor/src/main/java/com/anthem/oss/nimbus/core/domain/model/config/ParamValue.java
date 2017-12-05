@@ -1,11 +1,11 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.config;
+package com.antheminc.oss.nimbus.core.domain.model.config;
 
 import java.io.Serializable;
 
-import com.anthem.oss.nimbus.core.domain.definition.Model;
+import com.antheminc.oss.nimbus.core.domain.definition.Model;
 
 import lombok.Getter;
 import lombok.Setter;

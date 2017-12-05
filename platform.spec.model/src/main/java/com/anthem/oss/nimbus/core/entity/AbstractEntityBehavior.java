@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.entity;
+package com.antheminc.oss.nimbus.core.entity;
 
 import java.io.Serializable;
 

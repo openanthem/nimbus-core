@@ -1,5 +1,5 @@
 
-package com.anthem.oss.nimbus.core.integration.websocket;
+package com.antheminc.oss.nimbus.core.integration.websocket;
 
 import org.springframework.context.ApplicationListener;
 import org.springframework.messaging.MessageHeaders;

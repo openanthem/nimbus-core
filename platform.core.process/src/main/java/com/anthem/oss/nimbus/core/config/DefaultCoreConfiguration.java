@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core.config;
+package com.antheminc.oss.nimbus.core.config;
 
 
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -16,33 +16,33 @@ import org.springframework.web.client.RestTemplate;
 import com.anthem.nimbus.platform.core.process.api.repository.SessionCacheRepository;
 import com.anthem.nimbus.platform.core.process.api.support.ProcessBeanHelper;
 import com.anthem.nimbus.platform.core.process.mq.MessageReceiver;
-import com.anthem.oss.nimbus.core.BeanResolverStrategy;
-import com.anthem.oss.nimbus.core.domain.model.state.builder.ValidationConfigHandler;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.DefaultModelRepositoryFactory;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.DefaultParamStateRepositoryDetached;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.DefaultParamStateRepositoryLocal;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.IdSequenceRepository;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.ModelPersistenceHandler;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.ModelRepository;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.ModelRepositoryFactory;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.MongoIdSequenceRepository;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.ParamStateRepository;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.ParamStateRepositoryGateway;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.SpringSecurityAuditorAware;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ClientUserGrooupSearchResponseConverter;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.ParamStateAtomicPersistenceEventListener;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.mongo.DefaultMongoModelPersistenceHandler;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.mongo.DefaultMongoModelRepository;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.ws.DefaultWSModelRepository;
-import com.anthem.oss.nimbus.core.rules.DefaultRulesEngineFactoryProducer;
-import com.anthem.oss.nimbus.core.rules.drools.DroolsRulesEngineFactory;
-import com.anthem.oss.nimbus.core.session.UserEndpointSession;
-import com.anthem.oss.nimbus.core.utils.JavaBeanHandler;
-import com.anthem.oss.nimbus.core.utils.JavaBeanHandlerReflection;
-import com.anthem.oss.nimbus.core.utils.ProcessBeanResolver;
-import com.anthem.oss.nimbus.core.web.WebActionController;
-import com.anthem.oss.nimbus.core.web.WebCommandBuilder;
-import com.anthem.oss.nimbus.core.web.WebCommandDispatcher;
+import com.antheminc.oss.nimbus.core.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.core.domain.model.state.builder.ValidationConfigHandler;
+import com.antheminc.oss.nimbus.core.domain.model.state.repo.DefaultModelRepositoryFactory;
+import com.antheminc.oss.nimbus.core.domain.model.state.repo.DefaultParamStateRepositoryDetached;
+import com.antheminc.oss.nimbus.core.domain.model.state.repo.DefaultParamStateRepositoryLocal;
+import com.antheminc.oss.nimbus.core.domain.model.state.repo.IdSequenceRepository;
+import com.antheminc.oss.nimbus.core.domain.model.state.repo.ModelPersistenceHandler;
+import com.antheminc.oss.nimbus.core.domain.model.state.repo.ModelRepository;
+import com.antheminc.oss.nimbus.core.domain.model.state.repo.ModelRepositoryFactory;
+import com.antheminc.oss.nimbus.core.domain.model.state.repo.MongoIdSequenceRepository;
+import com.antheminc.oss.nimbus.core.domain.model.state.repo.ParamStateRepository;
+import com.antheminc.oss.nimbus.core.domain.model.state.repo.ParamStateRepositoryGateway;
+import com.antheminc.oss.nimbus.core.domain.model.state.repo.SpringSecurityAuditorAware;
+import com.antheminc.oss.nimbus.core.domain.model.state.repo.db.ClientUserGrooupSearchResponseConverter;
+import com.antheminc.oss.nimbus.core.domain.model.state.repo.db.ParamStateAtomicPersistenceEventListener;
+import com.antheminc.oss.nimbus.core.domain.model.state.repo.db.mongo.DefaultMongoModelPersistenceHandler;
+import com.antheminc.oss.nimbus.core.domain.model.state.repo.db.mongo.DefaultMongoModelRepository;
+import com.antheminc.oss.nimbus.core.domain.model.state.repo.ws.DefaultWSModelRepository;
+import com.antheminc.oss.nimbus.core.rules.DefaultRulesEngineFactoryProducer;
+import com.antheminc.oss.nimbus.core.rules.drools.DroolsRulesEngineFactory;
+import com.antheminc.oss.nimbus.core.session.UserEndpointSession;
+import com.antheminc.oss.nimbus.core.utils.JavaBeanHandler;
+import com.antheminc.oss.nimbus.core.utils.JavaBeanHandlerReflection;
+import com.antheminc.oss.nimbus.core.utils.ProcessBeanResolver;
+import com.antheminc.oss.nimbus.core.web.WebActionController;
+import com.antheminc.oss.nimbus.core.web.WebCommandBuilder;
+import com.antheminc.oss.nimbus.core.web.WebCommandDispatcher;
 
 /**
  * @author Sandeep Mantha

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state.internal;
+package com.antheminc.oss.nimbus.core.domain.model.state.internal;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,14 +14,14 @@ import java.util.function.Consumer;
 
 import org.apache.commons.collections.CollectionUtils;
 
-import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ExecutionModel;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
-import com.anthem.oss.nimbus.core.domain.model.state.ExecutionTxnContext;
-import com.anthem.oss.nimbus.core.domain.model.state.ParamEvent;
-import com.anthem.oss.nimbus.core.domain.model.state.StateEventDelegator;
-import com.anthem.oss.nimbus.core.domain.model.state.StateEventListener;
+import com.antheminc.oss.nimbus.core.domain.command.Command;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.ExecutionModel;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.core.domain.model.state.ExecutionRuntime;
+import com.antheminc.oss.nimbus.core.domain.model.state.ExecutionTxnContext;
+import com.antheminc.oss.nimbus.core.domain.model.state.ParamEvent;
+import com.antheminc.oss.nimbus.core.domain.model.state.StateEventDelegator;
+import com.antheminc.oss.nimbus.core.domain.model.state.StateEventListener;
 
 import lombok.Getter;
 import lombok.Setter;

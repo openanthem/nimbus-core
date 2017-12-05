@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.rules.drools;
+package com.antheminc.oss.nimbus.core.rules.drools;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,9 +10,9 @@ import java.util.List;
 import org.drools.KnowledgeBase;
 import org.drools.runtime.StatelessKnowledgeSession;
 
-import com.anthem.oss.nimbus.core.domain.model.config.RulesConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.RulesRuntime;
+import com.antheminc.oss.nimbus.core.domain.model.config.RulesConfig;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.core.domain.model.state.RulesRuntime;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

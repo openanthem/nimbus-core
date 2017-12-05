@@ -1,8 +1,8 @@
-package com.anthem.oss.nimbus.core.domain.model.state.internal;
+package com.antheminc.oss.nimbus.core.domain.model.state.internal;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.anthem.oss.nimbus.core.domain.definition.Converters.ParamConverter;
+import com.antheminc.oss.nimbus.core.domain.definition.Converters.ParamConverter;
 
 
 

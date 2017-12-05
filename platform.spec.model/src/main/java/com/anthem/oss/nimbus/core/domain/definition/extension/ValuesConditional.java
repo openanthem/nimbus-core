@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core.domain.definition.extension;
+package com.antheminc.oss.nimbus.core.domain.definition.extension;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -8,10 +8,10 @@ import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import com.anthem.oss.nimbus.core.domain.RepeatContainer;
-import com.anthem.oss.nimbus.core.domain.definition.Model.Param.Values;
-import com.anthem.oss.nimbus.core.domain.definition.event.StateEvent.OnStateChange;
-import com.anthem.oss.nimbus.core.domain.definition.event.StateEvent.OnStateLoad;
+import com.antheminc.oss.nimbus.core.domain.RepeatContainer;
+import com.antheminc.oss.nimbus.core.domain.definition.Model.Param.Values;
+import com.antheminc.oss.nimbus.core.domain.definition.event.StateEvent.OnStateChange;
+import com.antheminc.oss.nimbus.core.domain.definition.event.StateEvent.OnStateLoad;
 
 /**
  * This annotation is used to provide control and management over the <tt>Values</tt> 
@@ -50,7 +50,7 @@ import com.anthem.oss.nimbus.core.domain.definition.event.StateEvent.OnStateLoad
  * </pre>
  * 
  * @author Tony Lopez (AF42192)
- * @see com.anthem.oss.nimbus.core.domain.model.state.extension.AbstractValuesConditionalStateEventHandler
+ * @see com.antheminc.oss.nimbus.core.domain.model.state.extension.AbstractValuesConditionalStateEventHandler
  *
  */
 @Documented

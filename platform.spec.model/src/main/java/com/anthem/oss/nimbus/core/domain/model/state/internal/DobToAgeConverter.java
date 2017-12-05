@@ -1,9 +1,9 @@
-package com.anthem.oss.nimbus.core.domain.model.state.internal;
+package com.antheminc.oss.nimbus.core.domain.model.state.internal;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
-import com.anthem.oss.nimbus.core.domain.definition.Converters.ParamConverter;
+import com.antheminc.oss.nimbus.core.domain.definition.Converters.ParamConverter;
 
 /**
  * @author Dinakar.Meda

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.expr;
+package com.antheminc.oss.nimbus.core.domain.expr;
 
 import java.util.function.BiFunction;
 

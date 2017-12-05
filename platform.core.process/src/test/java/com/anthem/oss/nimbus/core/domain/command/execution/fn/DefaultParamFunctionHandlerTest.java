@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.command.execution.fn;
+package com.antheminc.oss.nimbus.core.domain.command.execution.fn;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -17,17 +17,17 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.mock.web.MockHttpServletRequest;
 
-import com.anthem.oss.nimbus.core.AbstractFrameworkIngerationPersistableTests;
-import com.anthem.oss.nimbus.core.domain.command.Action;
-import com.anthem.oss.nimbus.core.domain.definition.Constants;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreEntity;
-import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreNestedEntity;
-import com.anthem.oss.nimbus.test.sample.domain.model.ui.VPSampleViewPageGreen;
-import com.anthem.oss.nimbus.test.sample.domain.model.ui.VPSampleViewPageBlue.Section_ConvertedNestedEntity;
-import com.anthem.oss.nimbus.test.sample.domain.model.ui.VPSampleViewPageGreen.ConvertedNestedEntity;
-import com.anthem.oss.nimbus.test.sample.domain.model.ui.VPSampleViewPageRed.Form_ConvertedNestedEntity;
+import com.antheminc.oss.nimbus.core.AbstractFrameworkIngerationPersistableTests;
+import com.antheminc.oss.nimbus.core.domain.command.Action;
+import com.antheminc.oss.nimbus.core.domain.definition.Constants;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.ListParam;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.test.sample.domain.model.core.SampleCoreEntity;
+import com.antheminc.oss.nimbus.test.sample.domain.model.core.SampleCoreNestedEntity;
+import com.antheminc.oss.nimbus.test.sample.domain.model.ui.VPSampleViewPageGreen;
+import com.antheminc.oss.nimbus.test.sample.domain.model.ui.VPSampleViewPageBlue.Section_ConvertedNestedEntity;
+import com.antheminc.oss.nimbus.test.sample.domain.model.ui.VPSampleViewPageGreen.ConvertedNestedEntity;
+import com.antheminc.oss.nimbus.test.sample.domain.model.ui.VPSampleViewPageRed.Form_ConvertedNestedEntity;
 
 import test.com.anthem.nimbus.platform.utils.ExtractResponseOutputUtils;
 import test.com.anthem.nimbus.platform.utils.MockHttpRequestBuilder;

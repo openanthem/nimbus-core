@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core.spec.dummy;
+package com.antheminc.oss.nimbus.core.spec.dummy;
 
 import static org.junit.Assert.assertEquals;
 

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state.repo.db;
+package com.antheminc.oss.nimbus.core.domain.model.state.repo.db;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,18 +11,18 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotationUtils;
 
-import com.anthem.oss.nimbus.core.domain.command.Action;
-import com.anthem.oss.nimbus.core.domain.definition.Domain;
-import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
-import com.anthem.oss.nimbus.core.domain.definition.Model;
-import com.anthem.oss.nimbus.core.domain.definition.Repo;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.AbstractEvent;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.ModelPersistenceHandler;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.ModelRepositoryFactory;
-import com.anthem.oss.nimbus.core.spec.contract.event.BulkEventListener;
+import com.antheminc.oss.nimbus.core.domain.command.Action;
+import com.antheminc.oss.nimbus.core.domain.definition.Domain;
+import com.antheminc.oss.nimbus.core.domain.definition.Domain.ListenerType;
+import com.antheminc.oss.nimbus.core.domain.definition.Model;
+import com.antheminc.oss.nimbus.core.domain.definition.Repo;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.core.domain.model.state.ModelEvent;
+import com.antheminc.oss.nimbus.core.domain.model.state.internal.AbstractEvent;
+import com.antheminc.oss.nimbus.core.domain.model.state.repo.ModelPersistenceHandler;
+import com.antheminc.oss.nimbus.core.domain.model.state.repo.ModelRepositoryFactory;
+import com.antheminc.oss.nimbus.core.spec.contract.event.BulkEventListener;
 
 import lombok.Getter;
 import lombok.Setter;

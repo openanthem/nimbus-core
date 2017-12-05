@@ -1,7 +1,7 @@
 ///**
 // * 
 // */
-//package com.anthem.oss.nimbus.core.events.listeners;
+//package com.antheminc.oss.nimbus.core.events.listeners;
 //
 //import static org.junit.Assert.assertEquals;
 //import static org.junit.Assert.assertFalse;
@@ -28,18 +28,18 @@
 //import org.springframework.test.context.ActiveProfiles;
 //import org.springframework.test.context.junit4.SpringRunner;
 //
-//import com.anthem.oss.nimbus.core.domain.command.Command;
-//import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
-//import com.anthem.oss.nimbus.core.domain.definition.Domain;
-//import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
-//import com.anthem.oss.nimbus.core.domain.definition.Model;
-//import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-//import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
-//import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
-//import com.anthem.oss.nimbus.core.domain.model.state.builder.DefaultQuadModelBuilder;
-//import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
-//import com.anthem.oss.nimbus.core.integration.websocket.ParamEventAMQPListener;
-//import com.anthem.oss.nimbus.core.session.UserEndpointSession;
+//import com.antheminc.oss.nimbus.core.domain.command.Command;
+//import com.antheminc.oss.nimbus.core.domain.command.CommandBuilder;
+//import com.antheminc.oss.nimbus.core.domain.definition.Domain;
+//import com.antheminc.oss.nimbus.core.domain.definition.Domain.ListenerType;
+//import com.antheminc.oss.nimbus.core.domain.definition.Model;
+//import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
+//import com.antheminc.oss.nimbus.core.domain.model.state.ModelEvent;
+//import com.antheminc.oss.nimbus.core.domain.model.state.QuadModel;
+//import com.antheminc.oss.nimbus.core.domain.model.state.builder.DefaultQuadModelBuilder;
+//import com.antheminc.oss.nimbus.core.entity.process.ProcessFlow;
+//import com.antheminc.oss.nimbus.core.integration.websocket.ParamEventAMQPListener;
+//import com.antheminc.oss.nimbus.core.session.UserEndpointSession;
 //
 //
 //

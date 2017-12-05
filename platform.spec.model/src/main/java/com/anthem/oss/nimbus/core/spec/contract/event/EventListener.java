@@ -1,10 +1,10 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.spec.contract.event;
+package com.antheminc.oss.nimbus.core.spec.contract.event;
 
-import com.anthem.oss.nimbus.core.domain.model.state.internal.AbstractEvent;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.AbstractEvent.SuppressMode;
+import com.antheminc.oss.nimbus.core.domain.model.state.internal.AbstractEvent;
+import com.antheminc.oss.nimbus.core.domain.model.state.internal.AbstractEvent.SuppressMode;
 
 /**
  * @author Rakesh Patel

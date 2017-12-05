@@ -1,30 +1,30 @@
-package com.anthem.oss.nimbus.core.config;
+package com.antheminc.oss.nimbus.core.config;
 
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.anthem.oss.nimbus.core.BeanResolverStrategy;
-import com.anthem.oss.nimbus.core.bpm.BPMGateway;
-import com.anthem.oss.nimbus.core.bpm.DefaultExpressionHelper;
-import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiBPMGateway;
-import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiExpressionManager;
-import com.anthem.oss.nimbus.core.bpm.activiti.CommandExecutorTaskDelegate;
-import com.anthem.oss.nimbus.core.domain.command.execution.FunctionHandler;
-import com.anthem.oss.nimbus.core.domain.command.execution.fn.DefaultParamFunctionHandler;
-import com.anthem.oss.nimbus.core.domain.command.execution.nav.DefaultActionNewInitEntityFunctionHandler;
-import com.anthem.oss.nimbus.core.domain.command.execution.nav.PageIdEchoNavHandler;
-import com.anthem.oss.nimbus.core.domain.command.execution.process.AddCollectionsFunctionalHandler;
-import com.anthem.oss.nimbus.core.domain.command.execution.process.AddFunctionHandler;
-import com.anthem.oss.nimbus.core.domain.command.execution.process.EvalFunctionHandler;
-import com.anthem.oss.nimbus.core.domain.command.execution.process.SetByRuleFunctionalHandler;
-import com.anthem.oss.nimbus.core.domain.command.execution.process.SetFunctionHandler;
-import com.anthem.oss.nimbus.core.domain.command.execution.process.StatelessBPMFunctionHanlder;
-import com.anthem.oss.nimbus.core.domain.command.execution.search.DefaultSearchFunctionHandlerExample;
-import com.anthem.oss.nimbus.core.domain.command.execution.search.DefaultSearchFunctionHandlerLookup;
-import com.anthem.oss.nimbus.core.domain.command.execution.search.DefaultSearchFunctionHandlerQuery;
-import com.anthem.oss.nimbus.core.domain.expr.ExpressionEvaluator;
-import com.anthem.oss.nimbus.core.domain.expr.SpelExpressionEvaluator;
+import com.antheminc.oss.nimbus.core.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.core.bpm.BPMGateway;
+import com.antheminc.oss.nimbus.core.bpm.DefaultExpressionHelper;
+import com.antheminc.oss.nimbus.core.bpm.activiti.ActivitiBPMGateway;
+import com.antheminc.oss.nimbus.core.bpm.activiti.ActivitiExpressionManager;
+import com.antheminc.oss.nimbus.core.bpm.activiti.CommandExecutorTaskDelegate;
+import com.antheminc.oss.nimbus.core.domain.command.execution.FunctionHandler;
+import com.antheminc.oss.nimbus.core.domain.command.execution.fn.DefaultParamFunctionHandler;
+import com.antheminc.oss.nimbus.core.domain.command.execution.nav.DefaultActionNewInitEntityFunctionHandler;
+import com.antheminc.oss.nimbus.core.domain.command.execution.nav.PageIdEchoNavHandler;
+import com.antheminc.oss.nimbus.core.domain.command.execution.process.AddCollectionsFunctionalHandler;
+import com.antheminc.oss.nimbus.core.domain.command.execution.process.AddFunctionHandler;
+import com.antheminc.oss.nimbus.core.domain.command.execution.process.EvalFunctionHandler;
+import com.antheminc.oss.nimbus.core.domain.command.execution.process.SetByRuleFunctionalHandler;
+import com.antheminc.oss.nimbus.core.domain.command.execution.process.SetFunctionHandler;
+import com.antheminc.oss.nimbus.core.domain.command.execution.process.StatelessBPMFunctionHanlder;
+import com.antheminc.oss.nimbus.core.domain.command.execution.search.DefaultSearchFunctionHandlerExample;
+import com.antheminc.oss.nimbus.core.domain.command.execution.search.DefaultSearchFunctionHandlerLookup;
+import com.antheminc.oss.nimbus.core.domain.command.execution.search.DefaultSearchFunctionHandlerQuery;
+import com.antheminc.oss.nimbus.core.domain.expr.ExpressionEvaluator;
+import com.antheminc.oss.nimbus.core.domain.expr.SpelExpressionEvaluator;
 
 /**
  * @author Sandeep Mantha

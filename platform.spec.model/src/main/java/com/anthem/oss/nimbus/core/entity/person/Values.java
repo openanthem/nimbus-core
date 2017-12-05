@@ -1,13 +1,13 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.entity.person;
+package com.antheminc.oss.nimbus.core.entity.person;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.anthem.oss.nimbus.core.domain.definition.Model.Param.Values.Source;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
+import com.antheminc.oss.nimbus.core.domain.definition.Model.Param.Values.Source;
+import com.antheminc.oss.nimbus.core.domain.model.config.ParamValue;
 
 /**
  * @author Sandeep Mantha

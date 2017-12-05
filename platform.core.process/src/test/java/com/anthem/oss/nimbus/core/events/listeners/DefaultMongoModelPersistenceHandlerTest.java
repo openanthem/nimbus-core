@@ -1,4 +1,4 @@
-//package com.anthem.oss.nimbus.core.events.listeners;
+//package com.antheminc.oss.nimbus.core.events.listeners;
 //
 //import static org.junit.Assert.assertEquals;
 //import static org.junit.Assert.assertNotNull;
@@ -23,19 +23,19 @@
 //import org.springframework.test.context.ActiveProfiles;
 //
 //import com.anthem.nimbus.platform.core.process.api.AbstractPlatformIntegrationTests;
-//import com.anthem.oss.nimbus.core.domain.command.Command;
-//import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
-//import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
-//import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-//import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
-//import com.anthem.oss.nimbus.core.domain.model.state.builder.DefaultQuadModelBuilder;
-//import com.anthem.oss.nimbus.core.domain.model.state.repo.db.mongo.DefaultMongoModelRepository;
-//import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
-//import com.anthem.oss.nimbus.core.entity.task.AssignmentTask;
-//import com.anthem.oss.nimbus.core.entity.task.AssignmentTask.TaskType;
-//import com.anthem.oss.nimbus.core.events.listeners.TestModelFlowData.Book;
-//import com.anthem.oss.nimbus.core.events.listeners.TestModelFlowData.OrderBookFlow;
-//import com.anthem.oss.nimbus.core.session.UserEndpointSession;
+//import com.antheminc.oss.nimbus.core.domain.command.Command;
+//import com.antheminc.oss.nimbus.core.domain.command.CommandBuilder;
+//import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Model;
+//import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
+//import com.antheminc.oss.nimbus.core.domain.model.state.QuadModel;
+//import com.antheminc.oss.nimbus.core.domain.model.state.builder.DefaultQuadModelBuilder;
+//import com.antheminc.oss.nimbus.core.domain.model.state.repo.db.mongo.DefaultMongoModelRepository;
+//import com.antheminc.oss.nimbus.core.entity.process.ProcessFlow;
+//import com.antheminc.oss.nimbus.core.entity.task.AssignmentTask;
+//import com.antheminc.oss.nimbus.core.entity.task.AssignmentTask.TaskType;
+//import com.antheminc.oss.nimbus.core.events.listeners.TestModelFlowData.Book;
+//import com.antheminc.oss.nimbus.core.events.listeners.TestModelFlowData.OrderBookFlow;
+//import com.antheminc.oss.nimbus.core.session.UserEndpointSession;
 //import com.querydsl.core.types.Predicate;
 //import com.querydsl.core.types.dsl.BooleanExpression;
 //

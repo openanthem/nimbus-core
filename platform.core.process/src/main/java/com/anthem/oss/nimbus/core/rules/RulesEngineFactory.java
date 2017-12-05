@@ -1,10 +1,10 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.rules;
+package com.antheminc.oss.nimbus.core.rules;
 
-import com.anthem.oss.nimbus.core.domain.model.config.RulesConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.RulesRuntime;
+import com.antheminc.oss.nimbus.core.domain.model.config.RulesConfig;
+import com.antheminc.oss.nimbus.core.domain.model.state.RulesRuntime;
 
 /**
  * @author Soham Chakravarti

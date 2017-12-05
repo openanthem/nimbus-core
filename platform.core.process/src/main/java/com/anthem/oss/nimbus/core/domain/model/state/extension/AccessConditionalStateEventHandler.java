@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core.domain.model.state.extension;
+package com.antheminc.oss.nimbus.core.domain.model.state.extension;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -6,16 +6,16 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.anthem.oss.nimbus.core.BeanResolverStrategy;
-import com.anthem.oss.nimbus.core.domain.definition.extension.AccessConditional;
-import com.anthem.oss.nimbus.core.domain.definition.extension.AccessConditional.Permission;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
-import com.anthem.oss.nimbus.core.entity.client.access.ClientAccessEntity;
-import com.anthem.oss.nimbus.core.entity.client.access.ClientUserRole;
-import com.anthem.oss.nimbus.core.entity.client.user.ClientUser;
-import com.anthem.oss.nimbus.core.entity.user.UserRole;
-import com.anthem.oss.nimbus.core.session.UserEndpointSession;
+import com.antheminc.oss.nimbus.core.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.core.domain.definition.extension.AccessConditional;
+import com.antheminc.oss.nimbus.core.domain.definition.extension.AccessConditional.Permission;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.core.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
+import com.antheminc.oss.nimbus.core.entity.client.access.ClientAccessEntity;
+import com.antheminc.oss.nimbus.core.entity.client.access.ClientUserRole;
+import com.antheminc.oss.nimbus.core.entity.client.user.ClientUser;
+import com.antheminc.oss.nimbus.core.entity.user.UserRole;
+import com.antheminc.oss.nimbus.core.session.UserEndpointSession;
 
 /**
  * @author Rakesh Patel

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.bpm.activiti;
+package com.antheminc.oss.nimbus.core.bpm.activiti;
 
 import javax.el.ArrayELResolver;
 import javax.el.BeanELResolver;

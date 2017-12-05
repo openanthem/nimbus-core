@@ -1,10 +1,10 @@
-package com.anthem.oss.nimbus.test.sample.um.model;
+package com.antheminc.oss.nimbus.test.sample.um.model;
 
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
 
-import com.anthem.oss.nimbus.test.sample.um.model.view.Address;
+import com.antheminc.oss.nimbus.test.sample.um.model.view.Address;
 
 import lombok.Getter;
 import lombok.Setter;

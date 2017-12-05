@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core.bpm;
+package com.antheminc.oss.nimbus.core.bpm;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.junit.Assert;
@@ -8,10 +8,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import com.anthem.oss.nimbus.core.BeanResolverStrategy;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutorGateway;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandMessageConverter;
-import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContext;
+import com.antheminc.oss.nimbus.core.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.core.domain.command.execution.CommandExecutorGateway;
+import com.antheminc.oss.nimbus.core.domain.command.execution.CommandMessageConverter;
+import com.antheminc.oss.nimbus.core.domain.command.execution.ExecutionContext;
 
 public class DefaultExpressionHelperTest {
 

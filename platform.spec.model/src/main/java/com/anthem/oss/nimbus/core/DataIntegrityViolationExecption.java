@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core;
+package com.antheminc.oss.nimbus.core;
 
 import lombok.Getter;
 

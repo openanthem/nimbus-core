@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core.domain.model.state.repo.db;
+package com.antheminc.oss.nimbus.core.domain.model.state.repo.db;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.count;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.graphLookup;
@@ -31,12 +31,12 @@ import org.springframework.data.mongodb.repository.support.SpringDataMongodbQuer
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.util.CollectionUtils;
 
-import com.anthem.oss.nimbus.core.BeanResolverStrategy;
-import com.anthem.oss.nimbus.core.entity.EntityAssociation;
-import com.anthem.oss.nimbus.core.entity.SearchCriteria;
-import com.anthem.oss.nimbus.core.entity.queue.Queue;
-import com.anthem.oss.nimbus.core.entity.user.GroupUser;
-import com.anthem.oss.nimbus.core.util.JustLogit;
+import com.antheminc.oss.nimbus.core.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.core.entity.EntityAssociation;
+import com.antheminc.oss.nimbus.core.entity.SearchCriteria;
+import com.antheminc.oss.nimbus.core.entity.queue.Queue;
+import com.antheminc.oss.nimbus.core.entity.user.GroupUser;
+import com.antheminc.oss.nimbus.core.util.JustLogit;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

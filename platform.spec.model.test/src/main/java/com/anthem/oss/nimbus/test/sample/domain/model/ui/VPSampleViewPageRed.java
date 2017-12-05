@@ -1,16 +1,16 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.test.sample.domain.model.ui;
+package com.antheminc.oss.nimbus.test.sample.domain.model.ui;
 
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
-import com.anthem.oss.nimbus.core.domain.definition.Execution.Config;
-import com.anthem.oss.nimbus.core.domain.definition.Executions.Configs;
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Nature;
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
-import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Tile;
-import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreEntity;
-import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreNestedEntity;
+import com.antheminc.oss.nimbus.core.domain.definition.MapsTo;
+import com.antheminc.oss.nimbus.core.domain.definition.Execution.Config;
+import com.antheminc.oss.nimbus.core.domain.definition.Executions.Configs;
+import com.antheminc.oss.nimbus.core.domain.definition.MapsTo.Nature;
+import com.antheminc.oss.nimbus.core.domain.definition.MapsTo.Path;
+import com.antheminc.oss.nimbus.core.domain.definition.ViewConfig.Tile;
+import com.antheminc.oss.nimbus.test.sample.domain.model.core.SampleCoreEntity;
+import com.antheminc.oss.nimbus.test.sample.domain.model.core.SampleCoreNestedEntity;
 
 import lombok.Getter;
 import lombok.Setter;

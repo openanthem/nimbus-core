@@ -1,11 +1,11 @@
-package com.anthem.oss.nimbus.core.web.client;
+package com.antheminc.oss.nimbus.core.web.client;
 
 import org.springframework.data.domain.Page;
 
-import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
-import com.anthem.oss.nimbus.core.domain.command.execution.ValidationException;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityNotFoundException;
-import com.anthem.oss.nimbus.core.entity.client.user.ClientUser;
+import com.antheminc.oss.nimbus.core.FrameworkRuntimeException;
+import com.antheminc.oss.nimbus.core.domain.command.execution.ValidationException;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityNotFoundException;
+import com.antheminc.oss.nimbus.core.entity.client.user.ClientUser;
 
 public interface ClientUserRepoAPI<T extends ClientUser> {
 	

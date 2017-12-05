@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core.domain.definition.extension;
+package com.antheminc.oss.nimbus.core.domain.definition.extension;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.FIELD;
@@ -8,7 +8,7 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import com.anthem.oss.nimbus.core.domain.definition.event.StateEvent.OnStateLoad;
+import com.antheminc.oss.nimbus.core.domain.definition.event.StateEvent.OnStateLoad;
 
 /**
  * <p>ParamContext is used to set the contextual properties of a field during the OnStateLoad event. 
@@ -32,7 +32,7 @@ import com.anthem.oss.nimbus.core.domain.definition.event.StateEvent.OnStateLoad
  * <b>true</b>. These values will be set during the <tt>OnStateLoad</tt> event.</p>
  * 
  * @author Soham Chakravarti, Tony Lopez (AF42192)
- * @see com.anthem.oss.nimbus.core.domain.model.state.extension.ParamContextStateEventHandler
+ * @see com.antheminc.oss.nimbus.core.domain.model.state.extension.ParamContextStateEventHandler
  *
  */
 @Documented

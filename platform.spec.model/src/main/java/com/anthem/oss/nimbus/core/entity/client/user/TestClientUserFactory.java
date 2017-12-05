@@ -1,14 +1,14 @@
-//package com.anthem.oss.nimbus.core.entity.client.user;
+//package com.antheminc.oss.nimbus.core.entity.client.user;
 //
 //import java.util.Arrays;
 //import java.util.HashSet;
 //
-//import com.anthem.oss.nimbus.core.entity.access.DefaultAccessEntity;
-//import com.anthem.oss.nimbus.core.entity.access.Permission;
-//import com.anthem.oss.nimbus.core.entity.client.Client;
-//import com.anthem.oss.nimbus.core.entity.client.access.ClientAccessEntity;
-//import com.anthem.oss.nimbus.core.entity.client.access.ClientUserRole;
-//import com.anthem.oss.nimbus.core.entity.person.Name;
+//import com.antheminc.oss.nimbus.core.entity.access.DefaultAccessEntity;
+//import com.antheminc.oss.nimbus.core.entity.access.Permission;
+//import com.antheminc.oss.nimbus.core.entity.client.Client;
+//import com.antheminc.oss.nimbus.core.entity.client.access.ClientAccessEntity;
+//import com.antheminc.oss.nimbus.core.entity.client.access.ClientUserRole;
+//import com.antheminc.oss.nimbus.core.entity.person.Name;
 //
 //public class TestClientUserFactory {
 //	

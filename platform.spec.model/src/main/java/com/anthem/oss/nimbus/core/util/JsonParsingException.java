@@ -1,6 +1,6 @@
-package com.anthem.oss.nimbus.core.util;
+package com.antheminc.oss.nimbus.core.util;
 
-import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
+import com.antheminc.oss.nimbus.core.FrameworkRuntimeException;
 
 /**
  * @Author Cheikh Niass on 12/2/16.

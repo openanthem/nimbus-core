@@ -1,14 +1,14 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state;
+package com.antheminc.oss.nimbus.core.domain.model.state;
 
 import java.io.Serializable;
 import java.util.List;
 
-import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListModel;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
+import com.antheminc.oss.nimbus.core.domain.model.config.ParamType;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.ListModel;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;

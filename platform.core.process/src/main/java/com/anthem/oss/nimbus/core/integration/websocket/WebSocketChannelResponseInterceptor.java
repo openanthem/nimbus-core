@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.integration.websocket;
+package com.antheminc.oss.nimbus.core.integration.websocket;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.support.MessageBuilder;
@@ -9,8 +9,8 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.support.ChannelInterceptorAdapter;
 
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandTransactionInterceptor;
-import com.anthem.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
+import com.antheminc.oss.nimbus.core.domain.command.execution.CommandTransactionInterceptor;
+import com.antheminc.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
 
 /**
  * @author Soham Chakravarti

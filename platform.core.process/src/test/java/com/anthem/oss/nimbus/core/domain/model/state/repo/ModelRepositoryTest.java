@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core.domain.model.state.repo;
+package com.antheminc.oss.nimbus.core.domain.model.state.repo;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -23,17 +23,17 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 
-import com.anthem.oss.nimbus.core.AbstractFrameworkIntegrationTests;
-import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutorGateway;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
-import com.anthem.oss.nimbus.core.entity.client.ExtClient;
+import com.antheminc.oss.nimbus.core.AbstractFrameworkIntegrationTests;
+import com.antheminc.oss.nimbus.core.domain.command.Command;
+import com.antheminc.oss.nimbus.core.domain.command.CommandMessage;
+import com.antheminc.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
+import com.antheminc.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
+import com.antheminc.oss.nimbus.core.domain.command.execution.CommandExecutorGateway;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
+import com.antheminc.oss.nimbus.core.entity.client.ExtClient;
 
-import test.com.anthem.oss.nimbus.core.testutils.CommandUtils;
+import test.com.antheminc.oss.nimbus.core.testutils.CommandUtils;
 
 /**
  * @author Rakesh Patel

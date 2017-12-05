@@ -1,8 +1,8 @@
-package com.anthem.oss.nimbus.core.domain.model.state;
+package com.antheminc.oss.nimbus.core.domain.model.state;
 ///**
 // * 
 // */
-//package com.anthem.oss.nimbus.core.domain.model.state;
+//package com.antheminc.oss.nimbus.core.domain.model.state;
 //
 //import static org.junit.Assert.assertNotNull;
 //import static org.junit.Assert.assertSame;
@@ -25,20 +25,20 @@ package com.anthem.oss.nimbus.core.domain.model.state;
 //import org.springframework.test.context.ContextConfiguration;
 //import org.springframework.test.context.junit4.SpringRunner;
 //
-//import com.anthem.oss.nimbus.core.domain.command.Command;
-//import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
-//import com.anthem.oss.nimbus.core.domain.model.config.builder.EntityConfigBuilder;
-//import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
-//import com.anthem.oss.nimbus.core.domain.model.state.builder.PageNavigationInitializer;
-//import com.anthem.oss.nimbus.core.domain.model.state.builder.DefaultQuadModelBuilder;
-//import com.anthem.oss.nimbus.core.domain.model.state.repo.DefaultParamStateRepositoryLocal;
-//import com.anthem.oss.nimbus.core.entity.process.PageNode;
-//import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
-//import com.anthem.oss.nimbus.core.rules.DefaultRulesEngineFactoryProducer;
-//import com.anthem.oss.nimbus.core.session.UserEndpointSession;
-//import com.anthem.oss.nimbus.core.utils.JavaBeanHandler;
-//import com.anthem.oss.nimbus.test.sample.um.model.UMCase;
-//import com.anthem.oss.nimbus.test.sample.um.model.view.UMCaseFlow;
+//import com.antheminc.oss.nimbus.core.domain.command.Command;
+//import com.antheminc.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
+//import com.antheminc.oss.nimbus.core.domain.model.config.builder.EntityConfigBuilder;
+//import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.ListParam;
+//import com.antheminc.oss.nimbus.core.domain.model.state.builder.PageNavigationInitializer;
+//import com.antheminc.oss.nimbus.core.domain.model.state.builder.DefaultQuadModelBuilder;
+//import com.antheminc.oss.nimbus.core.domain.model.state.repo.DefaultParamStateRepositoryLocal;
+//import com.antheminc.oss.nimbus.core.entity.process.PageNode;
+//import com.antheminc.oss.nimbus.core.entity.process.ProcessFlow;
+//import com.antheminc.oss.nimbus.core.rules.DefaultRulesEngineFactoryProducer;
+//import com.antheminc.oss.nimbus.core.session.UserEndpointSession;
+//import com.antheminc.oss.nimbus.core.utils.JavaBeanHandler;
+//import com.antheminc.oss.nimbus.test.sample.um.model.UMCase;
+//import com.antheminc.oss.nimbus.test.sample.um.model.view.UMCaseFlow;
 //
 //import test.com.anthem.nimbus.platform.spec.model.comamnd.TestCommandFactory;
 //

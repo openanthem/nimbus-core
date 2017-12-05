@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core.domain.definition;
+package com.antheminc.oss.nimbus.core.domain.definition;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -7,8 +7,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.List;
 
-import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
+import com.antheminc.oss.nimbus.core.domain.definition.Domain.ListenerType;
+import com.antheminc.oss.nimbus.core.domain.model.config.ParamValue;
 
 /**
  * @author Soham Chakravarti

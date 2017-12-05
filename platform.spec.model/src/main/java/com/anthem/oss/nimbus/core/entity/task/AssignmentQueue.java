@@ -1,9 +1,9 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.entity.task;
+package com.antheminc.oss.nimbus.core.entity.task;
 
-import com.anthem.oss.nimbus.core.entity.AbstractEntity;
+import com.antheminc.oss.nimbus.core.entity.AbstractEntity;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core.domain.config.builder;
+package com.antheminc.oss.nimbus.core.domain.config.builder;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -15,8 +15,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
-import com.anthem.oss.nimbus.core.domain.model.config.AnnotationConfig;
+import com.antheminc.oss.nimbus.core.domain.definition.InvalidConfigException;
+import com.antheminc.oss.nimbus.core.domain.model.config.AnnotationConfig;
 
 /**
  * 

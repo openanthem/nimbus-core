@@ -1,12 +1,12 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.entity.user;
+package com.antheminc.oss.nimbus.core.entity.user;
 
 import java.time.LocalDate;
 
-import com.anthem.oss.nimbus.core.domain.definition.Model;
-import com.anthem.oss.nimbus.core.entity.AbstractEntity.IdString;
+import com.antheminc.oss.nimbus.core.domain.definition.Model;
+import com.antheminc.oss.nimbus.core.entity.AbstractEntity.IdString;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,15 +1,15 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state;
+package com.antheminc.oss.nimbus.core.domain.model.state;
 
 import java.util.function.BiFunction;
 
-import com.anthem.oss.nimbus.core.BeanResolverStrategy;
-import com.anthem.oss.nimbus.core.domain.model.config.ValidatorProvider;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.ParamStateGateway;
-import com.anthem.oss.nimbus.core.spec.contract.event.EventListener;
+import com.antheminc.oss.nimbus.core.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.core.domain.model.config.ValidatorProvider;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.core.domain.model.state.repo.ParamStateGateway;
+import com.antheminc.oss.nimbus.core.spec.contract.event.EventListener;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

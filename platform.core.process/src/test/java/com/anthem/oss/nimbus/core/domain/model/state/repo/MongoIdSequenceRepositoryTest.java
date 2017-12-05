@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state.repo;
+package com.antheminc.oss.nimbus.core.domain.model.state.repo;
 
 import static org.junit.Assert.assertNotEquals;
 
@@ -11,7 +11,7 @@ import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 
-import com.anthem.oss.nimbus.core.AbstractFrameworkIntegrationTests;
+import com.antheminc.oss.nimbus.core.AbstractFrameworkIntegrationTests;
 
 /**
  * @author Rakesh Patel

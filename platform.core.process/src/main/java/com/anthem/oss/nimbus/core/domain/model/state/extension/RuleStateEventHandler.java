@@ -1,19 +1,19 @@
-package com.anthem.oss.nimbus.core.domain.model.state.extension;
+package com.antheminc.oss.nimbus.core.domain.model.state.extension;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import com.anthem.oss.nimbus.core.BeanResolverStrategy;
-import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
-import com.anthem.oss.nimbus.core.domain.definition.extension.Rule;
-import com.anthem.oss.nimbus.core.domain.model.config.RulesConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.RulesRuntime;
-import com.anthem.oss.nimbus.core.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
-import com.anthem.oss.nimbus.core.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
-import com.anthem.oss.nimbus.core.domain.model.state.extension.AbstractConditionalStateEventHandler.EvalExprWithCrudActions;
-import com.anthem.oss.nimbus.core.rules.RulesEngineFactory;
-import com.anthem.oss.nimbus.core.util.JustLogit;
+import com.antheminc.oss.nimbus.core.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.core.domain.definition.InvalidConfigException;
+import com.antheminc.oss.nimbus.core.domain.definition.extension.Rule;
+import com.antheminc.oss.nimbus.core.domain.model.config.RulesConfig;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.core.domain.model.state.RulesRuntime;
+import com.antheminc.oss.nimbus.core.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
+import com.antheminc.oss.nimbus.core.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
+import com.antheminc.oss.nimbus.core.domain.model.state.extension.AbstractConditionalStateEventHandler.EvalExprWithCrudActions;
+import com.antheminc.oss.nimbus.core.rules.RulesEngineFactory;
+import com.antheminc.oss.nimbus.core.util.JustLogit;
 
 /**
  * Rule State Event handler for triggering one or more rule definitions during its 

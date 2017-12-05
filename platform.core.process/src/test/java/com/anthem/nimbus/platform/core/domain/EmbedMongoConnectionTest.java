@@ -15,9 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.anthem.oss.nimbus.core.AbstractFrameworkIntegrationTests;
-import com.anthem.oss.nimbus.test.sample.um.model.Patient;
-import com.anthem.oss.nimbus.test.sample.um.model.UMCase;
+import com.antheminc.oss.nimbus.core.AbstractFrameworkIntegrationTests;
+import com.antheminc.oss.nimbus.test.sample.um.model.Patient;
+import com.antheminc.oss.nimbus.test.sample.um.model.UMCase;
 
 /**
  * @author Swetha Vemuri

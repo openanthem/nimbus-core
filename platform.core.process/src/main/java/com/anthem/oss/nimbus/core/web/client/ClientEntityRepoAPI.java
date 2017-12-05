@@ -1,17 +1,17 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.web.client;
+package com.antheminc.oss.nimbus.core.web.client;
 
 import java.util.List;
 
 import org.springframework.data.domain.Page;
 
-import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
-import com.anthem.oss.nimbus.core.domain.command.execution.ValidationException;
-import com.anthem.oss.nimbus.core.entity.client.Client;
-import com.anthem.oss.nimbus.core.entity.client.ClientEntity;
-import com.anthem.oss.nimbus.core.entity.client.access.ClientUserRole;
+import com.antheminc.oss.nimbus.core.FrameworkRuntimeException;
+import com.antheminc.oss.nimbus.core.domain.command.execution.ValidationException;
+import com.antheminc.oss.nimbus.core.entity.client.Client;
+import com.antheminc.oss.nimbus.core.entity.client.ClientEntity;
+import com.antheminc.oss.nimbus.core.entity.client.access.ClientUserRole;
 
 /**
  * @author Swetha Vemuri

@@ -1,11 +1,11 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.entity;
+package com.antheminc.oss.nimbus.core.entity;
 
 import java.time.LocalDate;
 
-import com.anthem.oss.nimbus.core.domain.definition.Model;
+import com.antheminc.oss.nimbus.core.domain.definition.Model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Data;

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.session;
+package com.antheminc.oss.nimbus.core.session;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -10,9 +10,9 @@ import java.util.Map;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
-import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
-import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.entity.client.user.ClientUser;
+import com.antheminc.oss.nimbus.core.FrameworkRuntimeException;
+import com.antheminc.oss.nimbus.core.domain.command.Command;
+import com.antheminc.oss.nimbus.core.entity.client.user.ClientUser;
 
 /**
  * @author Jayant Chaudhuri Platform Session provides the ability for platform

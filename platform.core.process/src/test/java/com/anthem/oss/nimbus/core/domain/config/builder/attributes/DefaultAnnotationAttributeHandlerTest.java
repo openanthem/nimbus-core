@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core.domain.config.builder.attributes;
+package com.antheminc.oss.nimbus.core.domain.config.builder.attributes;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;

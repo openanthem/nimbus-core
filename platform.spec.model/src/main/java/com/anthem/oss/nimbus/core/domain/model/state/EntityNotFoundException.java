@@ -1,6 +1,6 @@
-package com.anthem.oss.nimbus.core.domain.model.state;
+package com.antheminc.oss.nimbus.core.domain.model.state;
 
-import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
+import com.antheminc.oss.nimbus.core.FrameworkRuntimeException;
 
 import lombok.Getter;
 

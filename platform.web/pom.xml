@@ -4,13 +4,13 @@
 	<modelVersion>4.0.0</modelVersion>	
 
 	<name>nimbus-core-web</name>
-	<artifactId>com.anthem.oss.nimbus.core.web</artifactId>
+	<artifactId>com.antheminc.oss.nimbus.core.web</artifactId>
 	<description>oss web project</description>
 	<packaging>jar</packaging>
 
 	<parent>
-		<groupId>com.anthem.oss.nimbus.core</groupId>
-		<artifactId>com.anthem.oss.nimbus.core.parent</artifactId>
+		<groupId>com.antheminc.oss.nimbus.core</groupId>
+		<artifactId>com.antheminc.oss.nimbus.core.parent</artifactId>
 		<version>1.0.0.M9-SNAPSHOT</version>
 	</parent>
 
@@ -63,8 +63,8 @@
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.anthem.oss.nimbus.core</groupId>
-			<artifactId>com.anthem.oss.nimbus.core.api</artifactId>
+			<groupId>com.antheminc.oss.nimbus.core</groupId>
+			<artifactId>com.antheminc.oss.nimbus.core.api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.quartz-scheduler</groupId>

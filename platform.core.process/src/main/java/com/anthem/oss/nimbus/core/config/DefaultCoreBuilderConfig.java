@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core.config;
+package com.antheminc.oss.nimbus.core.config;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -13,18 +13,18 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
-import com.anthem.oss.nimbus.core.BeanResolverStrategy;
-import com.anthem.oss.nimbus.core.DefaultBeanResolverStrategy;
-import com.anthem.oss.nimbus.core.domain.command.execution.process.ParamUpdateEventListener;
-import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
-import com.anthem.oss.nimbus.core.domain.model.config.builder.DefaultValidatorProvider;
-import com.anthem.oss.nimbus.core.domain.model.config.builder.EntityConfigBuilder;
-import com.anthem.oss.nimbus.core.domain.model.state.builder.DefaultQuadModelBuilder;
-import com.anthem.oss.nimbus.core.domain.model.state.builder.EntityStateBuilder;
-import com.anthem.oss.nimbus.core.domain.model.state.builder.PageNavigationInitializer;
-import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
-import com.anthem.oss.nimbus.core.util.JustLogit;
-import com.anthem.oss.nimbus.core.util.SecurityUtils;
+import com.antheminc.oss.nimbus.core.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.core.DefaultBeanResolverStrategy;
+import com.antheminc.oss.nimbus.core.domain.command.execution.process.ParamUpdateEventListener;
+import com.antheminc.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
+import com.antheminc.oss.nimbus.core.domain.model.config.builder.DefaultValidatorProvider;
+import com.antheminc.oss.nimbus.core.domain.model.config.builder.EntityConfigBuilder;
+import com.antheminc.oss.nimbus.core.domain.model.state.builder.DefaultQuadModelBuilder;
+import com.antheminc.oss.nimbus.core.domain.model.state.builder.EntityStateBuilder;
+import com.antheminc.oss.nimbus.core.domain.model.state.builder.PageNavigationInitializer;
+import com.antheminc.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
+import com.antheminc.oss.nimbus.core.util.JustLogit;
+import com.antheminc.oss.nimbus.core.util.SecurityUtils;
 
 import lombok.Getter;
 import lombok.Setter;

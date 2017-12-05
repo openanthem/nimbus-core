@@ -1,6 +1,6 @@
-package com.anthem.oss.nimbus.test.sample.domain.model.core;
+package com.antheminc.oss.nimbus.test.sample.domain.model.core;
 
-import com.anthem.oss.nimbus.core.domain.definition.Model;
+import com.antheminc.oss.nimbus.core.domain.definition.Model;
 
 import lombok.Getter;
 import lombok.Setter;

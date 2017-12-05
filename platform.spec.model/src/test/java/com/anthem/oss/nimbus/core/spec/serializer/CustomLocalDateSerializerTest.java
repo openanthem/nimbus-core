@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core.spec.serializer;
+package com.antheminc.oss.nimbus.core.spec.serializer;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -18,7 +18,7 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.anthem.nimbus.platform.spec.serializer.CustomLocalDateSerializer;
-import com.anthem.oss.nimbus.core.util.JsonParsingException;
+import com.antheminc.oss.nimbus.core.util.JsonParsingException;
 import com.fasterxml.jackson.core.JsonGenerator;
 
 /**

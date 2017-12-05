@@ -1,35 +1,35 @@
-package com.anthem.oss.nimbus.core.config;
+package com.antheminc.oss.nimbus.core.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.anthem.oss.nimbus.core.BeanResolverStrategy;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutor;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandMessageConverter;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandPathVariableResolver;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandTransactionInterceptor;
-import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionBehaviorExecutorGetState;
-import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutorConfig;
-import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutorDelete;
-import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutorGet;
-import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutorNav;
-import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutorNew;
-import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutorProcess;
-import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutorReplace;
-import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutorSearch;
-import com.anthem.oss.nimbus.core.domain.command.execution.DefaultActionExecutorUpdate;
-import com.anthem.oss.nimbus.core.domain.command.execution.DefaultCommandExecutorGateway;
-import com.anthem.oss.nimbus.core.domain.command.execution.DefaultCommandPathVariableResolver;
-import com.anthem.oss.nimbus.core.domain.command.execution.DefaultExecutionContextLoader;
-import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContextLoader;
-import com.anthem.oss.nimbus.core.domain.command.execution.HierarchyMatchBasedBeanFinder;
-import com.anthem.oss.nimbus.core.domain.expr.ExpressionEvaluator;
-import com.anthem.oss.nimbus.core.domain.expr.SpelExpressionEvaluator;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.DBSearch;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.MongoSearchByExample;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.MongoSearchByQuery;
-import com.anthem.oss.nimbus.core.session.impl.HttpSessionCache;
-import com.anthem.oss.nimbus.core.session.impl.SessionCache;
+import com.antheminc.oss.nimbus.core.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.core.domain.command.execution.CommandExecutor;
+import com.antheminc.oss.nimbus.core.domain.command.execution.CommandMessageConverter;
+import com.antheminc.oss.nimbus.core.domain.command.execution.CommandPathVariableResolver;
+import com.antheminc.oss.nimbus.core.domain.command.execution.CommandTransactionInterceptor;
+import com.antheminc.oss.nimbus.core.domain.command.execution.DefaultActionBehaviorExecutorGetState;
+import com.antheminc.oss.nimbus.core.domain.command.execution.DefaultActionExecutorConfig;
+import com.antheminc.oss.nimbus.core.domain.command.execution.DefaultActionExecutorDelete;
+import com.antheminc.oss.nimbus.core.domain.command.execution.DefaultActionExecutorGet;
+import com.antheminc.oss.nimbus.core.domain.command.execution.DefaultActionExecutorNav;
+import com.antheminc.oss.nimbus.core.domain.command.execution.DefaultActionExecutorNew;
+import com.antheminc.oss.nimbus.core.domain.command.execution.DefaultActionExecutorProcess;
+import com.antheminc.oss.nimbus.core.domain.command.execution.DefaultActionExecutorReplace;
+import com.antheminc.oss.nimbus.core.domain.command.execution.DefaultActionExecutorSearch;
+import com.antheminc.oss.nimbus.core.domain.command.execution.DefaultActionExecutorUpdate;
+import com.antheminc.oss.nimbus.core.domain.command.execution.DefaultCommandExecutorGateway;
+import com.antheminc.oss.nimbus.core.domain.command.execution.DefaultCommandPathVariableResolver;
+import com.antheminc.oss.nimbus.core.domain.command.execution.DefaultExecutionContextLoader;
+import com.antheminc.oss.nimbus.core.domain.command.execution.ExecutionContextLoader;
+import com.antheminc.oss.nimbus.core.domain.command.execution.HierarchyMatchBasedBeanFinder;
+import com.antheminc.oss.nimbus.core.domain.expr.ExpressionEvaluator;
+import com.antheminc.oss.nimbus.core.domain.expr.SpelExpressionEvaluator;
+import com.antheminc.oss.nimbus.core.domain.model.state.repo.db.DBSearch;
+import com.antheminc.oss.nimbus.core.domain.model.state.repo.db.MongoSearchByExample;
+import com.antheminc.oss.nimbus.core.domain.model.state.repo.db.MongoSearchByQuery;
+import com.antheminc.oss.nimbus.core.session.impl.HttpSessionCache;
+import com.antheminc.oss.nimbus.core.session.impl.SessionCache;
 
 /**
  * @author Sandeep Mantha

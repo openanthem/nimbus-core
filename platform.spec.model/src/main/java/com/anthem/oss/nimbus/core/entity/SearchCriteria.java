@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core.entity;
+package com.antheminc.oss.nimbus.core.entity;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -6,8 +6,8 @@ import java.util.Map;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
-import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContext;
+import com.antheminc.oss.nimbus.core.FrameworkRuntimeException;
+import com.antheminc.oss.nimbus.core.domain.command.execution.ExecutionContext;
 
 import lombok.Data;
 

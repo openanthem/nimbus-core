@@ -1,19 +1,19 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.config;
+package com.antheminc.oss.nimbus.core.domain.model.config;
 
 import java.io.Serializable;
 import java.util.List;
 
-import com.anthem.oss.nimbus.core.domain.definition.AssociatedEntity;
-import com.anthem.oss.nimbus.core.domain.definition.Converters.ParamConverter;
-import com.anthem.oss.nimbus.core.domain.definition.Execution;
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Mode;
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
-import com.anthem.oss.nimbus.core.domain.definition.Model.Param.Values;
-import com.anthem.oss.nimbus.core.entity.Findable;
+import com.antheminc.oss.nimbus.core.domain.definition.AssociatedEntity;
+import com.antheminc.oss.nimbus.core.domain.definition.Converters.ParamConverter;
+import com.antheminc.oss.nimbus.core.domain.definition.Execution;
+import com.antheminc.oss.nimbus.core.domain.definition.MapsTo;
+import com.antheminc.oss.nimbus.core.domain.definition.MapsTo.Mode;
+import com.antheminc.oss.nimbus.core.domain.definition.MapsTo.Path;
+import com.antheminc.oss.nimbus.core.domain.definition.Model.Param.Values;
+import com.antheminc.oss.nimbus.core.entity.Findable;
 
 /**
  * @author Soham Chakravarti

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.util;
+package com.antheminc.oss.nimbus.core.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 
 import org.springframework.util.CollectionUtils;
 
-import com.anthem.oss.nimbus.core.entity.Findable;
+import com.antheminc.oss.nimbus.core.entity.Findable;
 
 import lombok.RequiredArgsConstructor;
 

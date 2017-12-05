@@ -1,12 +1,12 @@
-package com.anthem.oss.nimbus.core.domain.command.execution.search;
+package com.antheminc.oss.nimbus.core.domain.command.execution.search;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContext;
-import com.anthem.oss.nimbus.core.domain.command.execution.fn.AbstractFunctionHandler;
-import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.entity.SearchCriteria;
+import com.antheminc.oss.nimbus.core.domain.command.execution.ExecutionContext;
+import com.antheminc.oss.nimbus.core.domain.command.execution.fn.AbstractFunctionHandler;
+import com.antheminc.oss.nimbus.core.domain.model.config.ModelConfig;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.core.entity.SearchCriteria;
 
 /**
  * @author Rakesh Patel

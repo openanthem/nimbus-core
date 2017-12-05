@@ -3,12 +3,12 @@
  */
 package com.anthem.nimbus.platform.web.flow.login;
 
-import com.anthem.oss.nimbus.core.domain.definition.Model;
-import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Link;
-import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.PageFooter;
-import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.PageFooter.Property;
-import com.anthem.oss.nimbus.core.domain.definition.extension.Content.Label;
-import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Paragraph;
+import com.antheminc.oss.nimbus.core.domain.definition.Model;
+import com.antheminc.oss.nimbus.core.domain.definition.ViewConfig.Link;
+import com.antheminc.oss.nimbus.core.domain.definition.ViewConfig.PageFooter;
+import com.antheminc.oss.nimbus.core.domain.definition.ViewConfig.PageFooter.Property;
+import com.antheminc.oss.nimbus.core.domain.definition.extension.Content.Label;
+import com.antheminc.oss.nimbus.core.domain.definition.ViewConfig.Paragraph;
 
 import lombok.Getter;
 import lombok.Setter;

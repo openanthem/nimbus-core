@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.entity.person;
+package com.antheminc.oss.nimbus.core.entity.person;
 
 import java.io.Serializable;
 
@@ -9,8 +9,8 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.data.annotation.Id;
 
-import com.anthem.oss.nimbus.core.domain.definition.Model;
-import com.anthem.oss.nimbus.core.entity.AbstractEntity;
+import com.antheminc.oss.nimbus.core.domain.definition.Model;
+import com.antheminc.oss.nimbus.core.entity.AbstractEntity;
 
 import lombok.AccessLevel;
 import lombok.Getter;

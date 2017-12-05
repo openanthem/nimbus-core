@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.config;
+package com.antheminc.oss.nimbus.core.domain.model.config;
 
 import javax.validation.Validator;
 

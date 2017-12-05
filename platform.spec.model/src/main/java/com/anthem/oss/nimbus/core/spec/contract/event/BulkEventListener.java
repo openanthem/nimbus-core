@@ -1,12 +1,12 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.spec.contract.event;
+package com.antheminc.oss.nimbus.core.spec.contract.event;
 
 import java.util.List;
 
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.AbstractEvent;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.core.domain.model.state.internal.AbstractEvent;
 
 /**
  * @author Rakesh Patel

@@ -4,11 +4,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.anthem.oss.nimbus.core</groupId>
-		<artifactId>com.anthem.oss.nimbus.core.parent</artifactId>
+		<groupId>com.antheminc.oss.nimbus.core</groupId>
+		<artifactId>com.antheminc.oss.nimbus.core.parent</artifactId>
 		<version>1.0.0.M9-SNAPSHOT</version>
 	</parent>
-	<artifactId>com.anthem.oss.nimbus.core.spec</artifactId>
+	<artifactId>com.antheminc.oss.nimbus.core.spec</artifactId>
 	<packaging>jar</packaging>
 	<url></url>
 	<name>nimbus-core-spec</name>
@@ -86,8 +86,8 @@
 		    <artifactId>querydsl-apt</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.anthem.oss.nimbus.core</groupId>
-			<artifactId>com.anthem.oss.nimbus.core.processor</artifactId>	
+			<groupId>com.antheminc.oss.nimbus.core</groupId>
+			<artifactId>com.antheminc.oss.nimbus.core.processor</artifactId>	
 		</dependency>
 		<dependency>
 			<groupId>org.owasp.esapi</groupId>
@@ -114,7 +114,7 @@
 					<configuration>
 						<!-- outputDirectory>${basedir}/target/generated-sources/java</outputDirectory> -->
 						<processor>
-							com.anthem.oss.nimbus.core.processor.DomainAnnotationProcessor
+							com.antheminc.oss.nimbus.core.processor.DomainAnnotationProcessor
 						</processor>
 					</configuration>
 				</execution>

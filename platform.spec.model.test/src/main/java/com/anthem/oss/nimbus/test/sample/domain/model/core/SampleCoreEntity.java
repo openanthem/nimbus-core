@@ -1,29 +1,29 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.test.sample.domain.model.core;
+package com.antheminc.oss.nimbus.test.sample.domain.model.core;
 
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
-import com.anthem.oss.nimbus.core.domain.definition.Domain;
-import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
-import com.anthem.oss.nimbus.core.domain.definition.Execution.Config;
-import com.anthem.oss.nimbus.core.domain.definition.Model;
-import com.anthem.oss.nimbus.core.domain.definition.Repo;
-import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
-import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Modal;
-import com.anthem.oss.nimbus.core.domain.definition.extension.ActivateConditional;
-import com.anthem.oss.nimbus.core.domain.definition.extension.ActivateConditionals;
-import com.anthem.oss.nimbus.core.domain.definition.extension.Audit;
-import com.anthem.oss.nimbus.core.domain.definition.extension.ConfigConditional;
-import com.anthem.oss.nimbus.core.domain.definition.extension.ConfigConditionals;
-import com.anthem.oss.nimbus.core.domain.definition.extension.Content.Label;
-import com.anthem.oss.nimbus.core.domain.definition.extension.EnableConditional;
-import com.anthem.oss.nimbus.core.domain.definition.extension.ParamContext;
-import com.anthem.oss.nimbus.core.domain.definition.extension.Rule;
-import com.anthem.oss.nimbus.core.entity.AbstractEntity.IdString;
+import com.antheminc.oss.nimbus.core.domain.definition.Domain;
+import com.antheminc.oss.nimbus.core.domain.definition.Domain.ListenerType;
+import com.antheminc.oss.nimbus.core.domain.definition.Execution.Config;
+import com.antheminc.oss.nimbus.core.domain.definition.Model;
+import com.antheminc.oss.nimbus.core.domain.definition.Repo;
+import com.antheminc.oss.nimbus.core.domain.definition.Repo.Database;
+import com.antheminc.oss.nimbus.core.domain.definition.ViewConfig.Modal;
+import com.antheminc.oss.nimbus.core.domain.definition.extension.ActivateConditional;
+import com.antheminc.oss.nimbus.core.domain.definition.extension.ActivateConditionals;
+import com.antheminc.oss.nimbus.core.domain.definition.extension.Audit;
+import com.antheminc.oss.nimbus.core.domain.definition.extension.ConfigConditional;
+import com.antheminc.oss.nimbus.core.domain.definition.extension.ConfigConditionals;
+import com.antheminc.oss.nimbus.core.domain.definition.extension.Content.Label;
+import com.antheminc.oss.nimbus.core.domain.definition.extension.EnableConditional;
+import com.antheminc.oss.nimbus.core.domain.definition.extension.ParamContext;
+import com.antheminc.oss.nimbus.core.domain.definition.extension.Rule;
+import com.antheminc.oss.nimbus.core.entity.AbstractEntity.IdString;
 
 import lombok.Getter;
 import lombok.Setter;

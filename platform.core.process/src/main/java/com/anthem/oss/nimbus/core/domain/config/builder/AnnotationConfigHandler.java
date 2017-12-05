@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.config.builder;
+package com.antheminc.oss.nimbus.core.domain.config.builder;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -20,12 +20,12 @@ import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ClassUtils;
 
-import com.anthem.oss.nimbus.core.domain.RepeatContainer;
-import com.anthem.oss.nimbus.core.domain.config.builder.attributes.AnnotationAttributeHandler;
-import com.anthem.oss.nimbus.core.domain.config.builder.attributes.ConstraintAnnotationAttributeHandler;
-import com.anthem.oss.nimbus.core.domain.config.builder.attributes.DefaultAnnotationAttributeHandler;
-import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
-import com.anthem.oss.nimbus.core.domain.model.config.AnnotationConfig;
+import com.antheminc.oss.nimbus.core.domain.RepeatContainer;
+import com.antheminc.oss.nimbus.core.domain.config.builder.attributes.AnnotationAttributeHandler;
+import com.antheminc.oss.nimbus.core.domain.config.builder.attributes.ConstraintAnnotationAttributeHandler;
+import com.antheminc.oss.nimbus.core.domain.config.builder.attributes.DefaultAnnotationAttributeHandler;
+import com.antheminc.oss.nimbus.core.domain.definition.InvalidConfigException;
+import com.antheminc.oss.nimbus.core.domain.model.config.AnnotationConfig;
 
 /**
  * @author Soham Chakravarti
@@ -126,7 +126,7 @@ public class AnnotationConfigHandler {
 	 * Otherwise this instance's <tt>defaultAttributeHandler</tt> will be returned.
 	 * 
 	 * @param metaAnnotationType
-	 * @see com.anthem.oss.nimbus.core.domain.config.builder.attributes.DefaultAnnotationAttributeHandler
+	 * @see com.antheminc.oss.nimbus.core.domain.config.builder.attributes.DefaultAnnotationAttributeHandler
 	 * @return
 	 */
 	private static AnnotationAttributeHandler getAttributesHandlerForType(Class<? extends Annotation> metaAnnotationType) {

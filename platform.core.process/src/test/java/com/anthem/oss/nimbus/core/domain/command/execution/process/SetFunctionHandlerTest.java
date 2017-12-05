@@ -1,4 +1,4 @@
-//package com.anthem.oss.nimbus.core.domain.command.execution.process;
+//package com.antheminc.oss.nimbus.core.domain.command.execution.process;
 //
 //import org.junit.FixMethodOrder;
 //import org.junit.Test;
@@ -6,11 +6,11 @@
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 //
-//import com.anthem.oss.nimbus.core.AbstractUnitTest;
-//import com.anthem.oss.nimbus.core.domain.command.Behavior;
-//import com.anthem.oss.nimbus.core.domain.command.Command;
-//import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContext;
-//import com.anthem.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
+//import com.antheminc.oss.nimbus.core.AbstractUnitTest;
+//import com.antheminc.oss.nimbus.core.domain.command.Behavior;
+//import com.antheminc.oss.nimbus.core.domain.command.Command;
+//import com.antheminc.oss.nimbus.core.domain.command.execution.ExecutionContext;
+//import com.antheminc.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
 //
 //@EnableAutoConfiguration
 //@FixMethodOrder(MethodSorters.NAME_ASCENDING)

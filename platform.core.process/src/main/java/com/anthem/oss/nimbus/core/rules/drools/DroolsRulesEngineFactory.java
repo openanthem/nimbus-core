@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.rules.drools;
+package com.antheminc.oss.nimbus.core.rules.drools;
 
 import java.net.URL;
 import java.util.Map;
@@ -13,11 +13,11 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 
-import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
-import com.anthem.oss.nimbus.core.domain.model.config.RulesConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.RulesRuntime;
-import com.anthem.oss.nimbus.core.rules.RulesEngineFactory;
-import com.anthem.oss.nimbus.core.util.JustLogit;
+import com.antheminc.oss.nimbus.core.FrameworkRuntimeException;
+import com.antheminc.oss.nimbus.core.domain.model.config.RulesConfig;
+import com.antheminc.oss.nimbus.core.domain.model.state.RulesRuntime;
+import com.antheminc.oss.nimbus.core.rules.RulesEngineFactory;
+import com.antheminc.oss.nimbus.core.util.JustLogit;
 
 /**
  * @author Soham Chakravarti

@@ -1,12 +1,12 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.test.sample.todo.model;
+package com.antheminc.oss.nimbus.test.sample.todo.model;
 
 import java.util.Date;
 
-import com.anthem.oss.nimbus.core.domain.definition.Model;
-import com.anthem.oss.nimbus.core.entity.AbstractEntity;
+import com.antheminc.oss.nimbus.core.domain.definition.Model;
+import com.antheminc.oss.nimbus.core.entity.AbstractEntity;
 
 import lombok.Getter;
 import lombok.Setter;

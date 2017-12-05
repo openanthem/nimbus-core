@@ -1,12 +1,12 @@
-package com.anthem.oss.nimbus.test.sample.domain.model.core;
+package com.antheminc.oss.nimbus.test.sample.domain.model.core;
 
-import com.anthem.oss.nimbus.core.domain.definition.Domain;
-import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
-import com.anthem.oss.nimbus.core.domain.definition.Repo;
-import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
-import com.anthem.oss.nimbus.core.domain.definition.extension.AccessConditional;
-import com.anthem.oss.nimbus.core.domain.definition.extension.AccessConditional.Permission;
-import com.anthem.oss.nimbus.core.entity.AbstractEntity.IdString;
+import com.antheminc.oss.nimbus.core.domain.definition.Domain;
+import com.antheminc.oss.nimbus.core.domain.definition.Domain.ListenerType;
+import com.antheminc.oss.nimbus.core.domain.definition.Repo;
+import com.antheminc.oss.nimbus.core.domain.definition.Repo.Database;
+import com.antheminc.oss.nimbus.core.domain.definition.extension.AccessConditional;
+import com.antheminc.oss.nimbus.core.domain.definition.extension.AccessConditional.Permission;
+import com.antheminc.oss.nimbus.core.entity.AbstractEntity.IdString;
 
 import lombok.Getter;
 import lombok.Setter;

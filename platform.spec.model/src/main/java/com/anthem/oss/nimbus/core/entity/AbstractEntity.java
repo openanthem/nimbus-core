@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.entity;
+package com.antheminc.oss.nimbus.core.entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -14,10 +14,10 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.domain.Persistable;
 
-import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
-import com.anthem.oss.nimbus.core.domain.definition.ConfigNature.Ignore;
-import com.anthem.oss.nimbus.core.domain.definition.Model;
-import com.anthem.oss.nimbus.core.domain.definition.SearchNature.StartsWith;
+import com.antheminc.oss.nimbus.core.FrameworkRuntimeException;
+import com.antheminc.oss.nimbus.core.domain.definition.ConfigNature.Ignore;
+import com.antheminc.oss.nimbus.core.domain.definition.Model;
+import com.antheminc.oss.nimbus.core.domain.definition.SearchNature.StartsWith;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;

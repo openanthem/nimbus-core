@@ -1,10 +1,10 @@
-package test.com.anthem.oss.nimbus.core.testutils;
+package test.com.antheminc.oss.nimbus.core.testutils;
 
 import java.util.Arrays;
 
-import com.anthem.oss.nimbus.core.domain.command.Behavior;
-import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
+import com.antheminc.oss.nimbus.core.domain.command.Behavior;
+import com.antheminc.oss.nimbus.core.domain.command.Command;
+import com.antheminc.oss.nimbus.core.domain.command.CommandBuilder;
 
 /**
  * 

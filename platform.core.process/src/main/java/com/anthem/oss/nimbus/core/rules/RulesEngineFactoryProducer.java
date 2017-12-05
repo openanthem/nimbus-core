@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.rules;
+package com.antheminc.oss.nimbus.core.rules;
 
 import java.lang.reflect.Field;
 

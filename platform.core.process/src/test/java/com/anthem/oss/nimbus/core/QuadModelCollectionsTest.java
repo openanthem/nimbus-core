@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core;
+package com.antheminc.oss.nimbus.core;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -27,29 +27,29 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamType.CollectionType;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListElemParam;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListModel;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
-import com.anthem.oss.nimbus.core.domain.model.state.StateType;
-import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultListParamState;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultParamState;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
-import com.anthem.oss.nimbus.core.integration.websocket.ParamEventAMQPListener;
-import com.anthem.oss.nimbus.core.session.UserEndpointSession;
-import com.anthem.oss.nimbus.test.sample.um.model.ServiceLine;
-import com.anthem.oss.nimbus.test.sample.um.model.ServiceLine.AuditInfo;
-import com.anthem.oss.nimbus.test.sample.um.model.UMCase;
-import com.anthem.oss.nimbus.test.sample.um.model.view.Page_Pg3.Section_ServiceLine;
-import com.anthem.oss.nimbus.test.sample.um.model.view.UMCaseFlow;
+import com.antheminc.oss.nimbus.core.domain.command.Command;
+import com.antheminc.oss.nimbus.core.domain.model.config.ModelConfig;
+import com.antheminc.oss.nimbus.core.domain.model.config.ParamConfig;
+import com.antheminc.oss.nimbus.core.domain.model.config.ParamType;
+import com.antheminc.oss.nimbus.core.domain.model.config.ParamType.CollectionType;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.ListElemParam;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.ListModel;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.ListParam;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Model;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.core.domain.model.state.QuadModel;
+import com.antheminc.oss.nimbus.core.domain.model.state.StateType;
+import com.antheminc.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
+import com.antheminc.oss.nimbus.core.domain.model.state.internal.DefaultListParamState;
+import com.antheminc.oss.nimbus.core.domain.model.state.internal.DefaultParamState;
+import com.antheminc.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
+import com.antheminc.oss.nimbus.core.integration.websocket.ParamEventAMQPListener;
+import com.antheminc.oss.nimbus.core.session.UserEndpointSession;
+import com.antheminc.oss.nimbus.test.sample.um.model.ServiceLine;
+import com.antheminc.oss.nimbus.test.sample.um.model.ServiceLine.AuditInfo;
+import com.antheminc.oss.nimbus.test.sample.um.model.UMCase;
+import com.antheminc.oss.nimbus.test.sample.um.model.view.Page_Pg3.Section_ServiceLine;
+import com.antheminc.oss.nimbus.test.sample.um.model.view.UMCaseFlow;
 
 import test.com.anthem.nimbus.platform.spec.model.command.TestCommandFactory;
 

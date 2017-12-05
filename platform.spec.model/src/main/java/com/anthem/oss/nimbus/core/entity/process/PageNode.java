@@ -1,12 +1,12 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.entity.process;
+package com.antheminc.oss.nimbus.core.entity.process;
 
 import java.io.Serializable;
 
-import com.anthem.oss.nimbus.core.domain.definition.Model;
-import com.anthem.oss.nimbus.core.entity.Findable;
+import com.antheminc.oss.nimbus.core.domain.definition.Model;
+import com.antheminc.oss.nimbus.core.entity.Findable;
 
 import lombok.Getter;
 import lombok.Setter;

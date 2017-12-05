@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state.repo.ws;
+package com.antheminc.oss.nimbus.core.domain.model.state.repo.ws;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
@@ -22,12 +22,12 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import com.anthem.oss.nimbus.core.BeanResolverStrategy;
-import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.ExternalModelRepository;
-import com.anthem.oss.nimbus.core.entity.SearchCriteria.ExampleSearchCriteria;
-import com.anthem.oss.nimbus.core.entity.SearchCriteria.LookupSearchCriteria;
-import com.anthem.oss.nimbus.core.entity.SearchCriteria.QuerySearchCriteria;
+import com.antheminc.oss.nimbus.core.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.core.FrameworkRuntimeException;
+import com.antheminc.oss.nimbus.core.domain.model.state.repo.ExternalModelRepository;
+import com.antheminc.oss.nimbus.core.entity.SearchCriteria.ExampleSearchCriteria;
+import com.antheminc.oss.nimbus.core.entity.SearchCriteria.LookupSearchCriteria;
+import com.antheminc.oss.nimbus.core.entity.SearchCriteria.QuerySearchCriteria;
 
 import lombok.Getter;
 import lombok.Setter;

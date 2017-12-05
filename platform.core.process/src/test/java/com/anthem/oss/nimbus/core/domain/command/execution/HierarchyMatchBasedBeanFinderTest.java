@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core.domain.command.execution;
+package com.antheminc.oss.nimbus.core.domain.command.execution;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -7,13 +7,13 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.anthem.oss.nimbus.core.AbstractFrameworkIntegrationTests;
-import com.anthem.oss.nimbus.core.domain.command.Behavior;
-import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.command.execution.process.SetFunctionHandler;
-import com.anthem.oss.nimbus.core.domain.definition.Constants;
+import com.antheminc.oss.nimbus.core.AbstractFrameworkIntegrationTests;
+import com.antheminc.oss.nimbus.core.domain.command.Behavior;
+import com.antheminc.oss.nimbus.core.domain.command.Command;
+import com.antheminc.oss.nimbus.core.domain.command.execution.process.SetFunctionHandler;
+import com.antheminc.oss.nimbus.core.domain.definition.Constants;
 
-import test.com.anthem.oss.nimbus.core.testutils.CommandUtils;
+import test.com.antheminc.oss.nimbus.core.testutils.CommandUtils;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class HierarchyMatchBasedBeanFinderTest extends AbstractFrameworkIntegrationTests {
