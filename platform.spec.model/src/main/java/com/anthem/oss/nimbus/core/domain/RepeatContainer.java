@@ -3,6 +3,7 @@ package com.anthem.oss.nimbus.core.domain;
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -19,4 +20,5 @@ import java.lang.annotation.Target;
 @Target(ANNOTATION_TYPE)
 public @interface RepeatContainer {
 
+	Class<? extends Annotation> value();
 }

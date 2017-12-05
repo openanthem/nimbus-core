@@ -4,6 +4,8 @@
 package com.anthem.oss.nimbus.core.rules.drools;
 
 import java.net.URL;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.KnowledgeBase;
 import org.drools.builder.KnowledgeBuilder;
@@ -26,9 +28,14 @@ public class DroolsRulesEngineFactory implements RulesEngineFactory {
 
 	JustLogit logit = new JustLogit(getClass());
 	
+	Map<String,RulesConfig> ruleConfigurations = new ConcurrentHashMap<String,RulesConfig>();
+	
 	@Override
 	public RulesConfig createConfig(String alias) {
 		String path = alias + ".drl";
+		RulesConfig config = ruleConfigurations.get(path);
+		if(config != null)
+			return config;
 		
 		URL verifyUrl = getClass().getClassLoader().getResource(path);
 		if(verifyUrl==null) {
@@ -49,8 +56,8 @@ public class DroolsRulesEngineFactory implements RulesEngineFactory {
 		} catch (Exception e) {
 			throw new FrameworkRuntimeException("Could not build knowledgeBase, either correct or delete the drl file :"+path+": ", e);
 		}
-		
-		DroolsRulesConfig config = new DroolsRulesConfig(path, kb);
+		config = new DroolsRulesConfig(path, kb);
+		ruleConfigurations.put(path, config);
 		return config;
 	}
 

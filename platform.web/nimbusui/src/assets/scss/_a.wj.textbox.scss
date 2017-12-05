@@ -1,0 +1,42 @@
+$default: #55595c;
+$default-text: $default;
+$default-background: #FFFFFF;
+ $content-text: $default;
+
+// $label-text: $default-text; // labels color
+// $disabled: rgba(255, 255, 255, 0.4); // color for disabled state
+// $disabled-bg: tint($disabled, 15%); // background color for disable state
+// $border: rgba(255, 255, 255, 0.5); // border color
+// $border-light: rgba(255, 255, 255, 0.3); // lighter version of border color (for hovers)
+ $input-border: rgba(255, 255, 255, 0.6); // input border color
+// $input-background: rgba(255, 255, 255, 0.1); // input border color for hover
+// $dropdown-text: #7d7d7d; // dropdown text color
+
+
+.wj-input-group .wj-form-control {
+    display: block;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.25;
+    background-image: none;
+    background-clip: padding-box;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 0.25rem;
+}
+
+.wj-input-group .wj-form-control {
+    color: $content-text;
+    @include placeholderStyle($content-text, 0.7);
+    border: 1px solid $input-border;
+    border-radius: 5px;
+    background-color:$default-background;
+    box-shadow: none;
+    font-size: 14px;
+    &:focus {
+        color: $content-text;
+        box-shadow: none;
+        border-color: $primary-bg;
+        background-color:$default-background;
+    }
+}

@@ -3,9 +3,14 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.domain.command.Action;
@@ -25,7 +30,7 @@ import com.anthem.oss.nimbus.core.util.JustLogit;
  * @author Soham Chakravarti
  *
  */
-public class DefaultExecutionContextLoader implements ExecutionContextLoader {
+public class DefaultExecutionContextLoader implements ExecutionContextLoader, HttpSessionListener {
 
 	private final DomainConfigBuilder domainConfigBuilder;
 	private final CommandExecutor<?> executorActionNew;
@@ -36,6 +41,8 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 	
 	private final QuadModelBuilder quadModelBuilder;
 	
+	private final SessionProvider sessionProvider;
+	
 	private static final JustLogit logit = new JustLogit(DefaultExecutionContextLoader.class);
 	
 	public DefaultExecutionContextLoader(BeanResolverStrategy beanResolver) {
@@ -44,6 +51,8 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 		
 		this.executorActionNew = beanResolver.get(CommandExecutor.class, Action._new.name() + Behavior.$execute.name());
 		this.executorActionGet = beanResolver.get(CommandExecutor.class, Action._get.name() + Behavior.$execute.name());
+		
+		this.sessionProvider = beanResolver.get(SessionProvider.class);
 		
 		// TODO: Temp impl till Session is rolled out
 		this.sessionCache = new HashMap<>(100);
@@ -61,6 +70,11 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 //		}
 //	}
 	
+	@Override
+	public ExecutionContext load(Command rootDomainCmd) {
+		String sessionId = sessionProvider.getSessionId();
+		return load(rootDomainCmd, sessionId);
+	}
 	@Override
 	public final ExecutionContext load(Command rootDomainCmd, String sessionId) {
 		logit.trace(()->"[load][I] rootDomainCmd:"+rootDomainCmd+" for "+sessionId);
@@ -161,23 +175,33 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 				.orElse(null);
 	}
 	
-//	private static final InheritableThreadLocal<String> TH_SESSION = new InheritableThreadLocal<String>() {
-//		@Override
-//		protected String initialValue() {
-//			return RequestContextHolder.getRequestAttributes().getSessionId();
-//		}
-//	};
-//	
-//	private String getSessionKey(ExecutionContext eCtx) {
-//		logit.trace(()->"[getSessionKey] eCtx:"+eCtx+" for "+getSessionIdForLogging());
-//		logSessionKeys();
-//
-//		String sessionId = TH_SESSION.get();
-//		String ctxId = eCtx.getId();
-//		
-//		String key = ctxId +"_sessionId{"+sessionId+"}";
-//		return key;
-//	}
+	
+	@Override
+	public void sessionCreated(HttpSessionEvent httpSessionEvent) {
+		logit.trace(()->"[sessionCreated] id:"+httpSessionEvent.getSession().getId());
+	}
+	
+	@Override
+	public void sessionDestroyed(HttpSessionEvent httpSessionEvent) {
+		logit.trace(()->"[sessionDestroyed] id:"+httpSessionEvent.getSession().getId());
+		
+		String sessionKeyPart = getSessionKeyPart(httpSessionEvent.getSession().getId());
+		
+		List<String> keysToRemove = new ArrayList<>();
+		sessionCache.keySet().stream()
+			.filter(key->key.startsWith(sessionKeyPart))
+			.forEach(keysToRemove::add);
+		
+		List<ExecutionContext> removedCtxs = new ArrayList<>(keysToRemove.size());
+		synchronized(sessionCache) {
+			keysToRemove.stream()
+				.map(sessionCache::remove)
+				.forEach(removedCtxs::add);
+		}
+		
+		removedCtxs.stream()
+			.forEach(e->e.getQuadModel().getRoot().getExecutionRuntime().stop());
+	}
 	
 	private String getSessionKey(ExecutionContext eCtx, String sessionId) {
 		logit.trace(()->"[getSessionKey] eCtx:"+eCtx+" for "+sessionId);
@@ -185,8 +209,12 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 	
 		String ctxId = eCtx.getId();
 		
-		String key = ctxId +"_sessionId{"+sessionId+"}";
+		String key = getSessionKeyPart(sessionId) + ctxId;
 		return key;
+	}
+	
+	private String getSessionKeyPart(String sessionId) {
+		return "_sessionId{"+sessionId+"}";
 	}
 	
 	private boolean queueExists(ExecutionContext eCtx, String sessionId) {

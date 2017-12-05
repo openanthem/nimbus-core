@@ -17,19 +17,8 @@ import lombok.ToString;
  *
  */
 @Getter @Setter @ToString(callSuper=true)
-public class DefaultUser extends AbstractUser<DefaultRole, DefaultRole.Entry, DefaultAccessEntity> {
+public class DefaultUser extends AbstractUser<DefaultRole> {
 
 	private static final long serialVersionUID = 1L;
-
-
-	@Override
-	public Set<DefaultRole> getGrantedRoles() {
-		return super.getGrantedRoles();
-	}
-
-	@Override
-	public void setGrantedRoles(Set<DefaultRole> grantedRoles) {
-		super.setGrantedRoles(grantedRoles);
-	}
 	
 }

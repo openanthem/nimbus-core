@@ -4,12 +4,14 @@ import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatc
 
 import java.lang.reflect.Field;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.util.ReflectionUtils;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
 import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
@@ -46,9 +48,22 @@ public class MongoSearchByExample extends MongoDBSearch {
 			return new Query();
 		
 		ExampleMatcher matcher = ExampleMatcher.matching().withIgnoreCase().withIgnoreNullValues().withIgnorePaths("version");
-		for (Field field : referredClass.getDeclaredFields()) {
+		
+		matcher = recurseAllFieldsAndBuildMatcher(referredClass, criteria, matcher);
+		
+		Example<T> example =  Example.of(criteria, matcher);
+		Criteria c = Criteria.byExample(example);
+		Query query = new Query(c);
+		return query;
+	}
+
+	// TODO - recursive matcher is not building correctly - the fieldName should be "." seperated not just the current field name. 
+	// e.g. CMCase > Patient > firstName ==> should be built as "patientReferred.firstName", the commented code only gets the fieldName as "firstName" with recursion into patient-- need to fix
+	private <T> ExampleMatcher recurseAllFieldsAndBuildMatcher(Class<?> referredClass, T criteria, ExampleMatcher matcher) {
+		for (Field field : FieldUtils.getAllFieldsList(referredClass)) {
+			field.setAccessible(true);
 			if (field.getType().isAssignableFrom(String.class)) {
-				field.setAccessible(true);
+				
 				try {
 					String checkString = (String) FieldUtils.readField(field, criteria);
 					if (checkString != null && checkString.isEmpty())
@@ -57,15 +72,19 @@ public class MongoSearchByExample extends MongoDBSearch {
 					throw new FrameworkRuntimeException(e);
 				}
 			}
-
+			
+//			if(!field.getType().isPrimitive() && criteria != null) {
+//				try {
+//					recurseAllFieldsAndBuildMatcher(field.getType(), FieldUtils.readField(field, criteria), matcher);
+//				} catch (Exception e) {
+//					throw new FrameworkRuntimeException("Could not read value of field: "+field+" on object: "+criteria, e);
+//				}
+//			}
+			
 			if (field.isAnnotationPresent(StartsWith.class))
 				matcher = matcher.withMatcher(field.getName(), startsWith());
 		}
-		
-		Example<T> example =  Example.of(criteria, matcher);
-		Criteria c = Criteria.byExample(example);
-		Query query = new Query(c);
-		return query;
+		return matcher;
 	}
 	
 }
