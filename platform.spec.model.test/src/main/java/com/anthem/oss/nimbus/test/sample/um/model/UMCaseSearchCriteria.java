@@ -1,13 +1,13 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.test.sample.um.model;
+package com.antheminc.oss.nimbus.test.sample.um.model;
 
 import java.time.LocalDate;
 
 import javax.validation.constraints.NotNull;
 
-import com.anthem.oss.nimbus.core.domain.definition.Domain;
+import com.antheminc.oss.nimbus.core.domain.definition.Domain;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Data;

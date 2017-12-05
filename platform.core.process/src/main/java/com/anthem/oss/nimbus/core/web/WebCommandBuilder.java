@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.web;
+package com.antheminc.oss.nimbus.core.web;
 
 import java.util.Map;
 
@@ -9,11 +9,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
-import com.anthem.oss.nimbus.core.domain.definition.Constants;
-import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
-import com.anthem.oss.nimbus.core.util.JustLogit;
+import com.antheminc.oss.nimbus.core.domain.command.Command;
+import com.antheminc.oss.nimbus.core.domain.command.CommandBuilder;
+import com.antheminc.oss.nimbus.core.domain.definition.Constants;
+import com.antheminc.oss.nimbus.core.domain.model.state.ModelEvent;
+import com.antheminc.oss.nimbus.core.util.JustLogit;
 
 /**
  * @author Soham Chakravarti

@@ -1,11 +1,11 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core;
+package com.antheminc.oss.nimbus.core;
 
 import java.util.UUID;
 
-import com.anthem.oss.nimbus.core.domain.command.execution.ExecuteError;
+import com.antheminc.oss.nimbus.core.domain.command.execution.ExecuteError;
 
 /**
  * @author Soham Chakravarti

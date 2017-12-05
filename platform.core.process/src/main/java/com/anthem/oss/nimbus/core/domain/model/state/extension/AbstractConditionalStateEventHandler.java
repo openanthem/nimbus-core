@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state.extension;
+package com.antheminc.oss.nimbus.core.domain.model.state.extension;
 
 import java.lang.annotation.Annotation;
 import java.util.EnumSet;
@@ -9,15 +9,15 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.ParamStateHolder;
-import com.anthem.oss.nimbus.core.BeanResolverStrategy;
-import com.anthem.oss.nimbus.core.domain.command.Action;
-import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
-import com.anthem.oss.nimbus.core.domain.expr.ExpressionEvaluator;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.ExecutionTxnContext;
-import com.anthem.oss.nimbus.core.domain.model.state.ParamEvent;
-import com.anthem.oss.nimbus.core.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
-import com.anthem.oss.nimbus.core.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
+import com.antheminc.oss.nimbus.core.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.core.domain.command.Action;
+import com.antheminc.oss.nimbus.core.domain.definition.InvalidConfigException;
+import com.antheminc.oss.nimbus.core.domain.expr.ExpressionEvaluator;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.core.domain.model.state.ExecutionTxnContext;
+import com.antheminc.oss.nimbus.core.domain.model.state.ParamEvent;
+import com.antheminc.oss.nimbus.core.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
+import com.antheminc.oss.nimbus.core.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
 
 /**
  * @author Soham Chakravarti

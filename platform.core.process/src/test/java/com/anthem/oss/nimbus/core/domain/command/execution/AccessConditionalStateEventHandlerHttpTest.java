@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core.domain.command.execution;
+package com.antheminc.oss.nimbus.core.domain.command.execution;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -18,15 +18,15 @@ import org.junit.runners.MethodSorters;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
-import com.anthem.oss.nimbus.core.AbstractFrameworkIngerationPersistableTests;
-import com.anthem.oss.nimbus.core.domain.command.Action;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.entity.client.access.ClientAccessEntity;
-import com.anthem.oss.nimbus.core.entity.client.access.ClientUserRole;
-import com.anthem.oss.nimbus.core.entity.client.user.ClientUser;
-import com.anthem.oss.nimbus.core.entity.user.UserRole;
-import com.anthem.oss.nimbus.core.session.UserEndpointSession;
+import com.antheminc.oss.nimbus.core.AbstractFrameworkIngerationPersistableTests;
+import com.antheminc.oss.nimbus.core.domain.command.Action;
+import com.antheminc.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.core.entity.client.access.ClientAccessEntity;
+import com.antheminc.oss.nimbus.core.entity.client.access.ClientUserRole;
+import com.antheminc.oss.nimbus.core.entity.client.user.ClientUser;
+import com.antheminc.oss.nimbus.core.entity.user.UserRole;
+import com.antheminc.oss.nimbus.core.session.UserEndpointSession;
 
 import test.com.anthem.nimbus.platform.utils.ExtractResponseOutputUtils;
 import test.com.anthem.nimbus.platform.utils.MockHttpRequestBuilder;

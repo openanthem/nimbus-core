@@ -1,13 +1,13 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.entity;
+package com.antheminc.oss.nimbus.core.entity;
 
-import com.anthem.oss.nimbus.core.domain.definition.Domain;
-import com.anthem.oss.nimbus.core.domain.definition.Repo;
-import com.anthem.oss.nimbus.core.domain.definition.Repo.Cache;
-import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
-import com.anthem.oss.nimbus.core.entity.AbstractEntity.IdString;
+import com.antheminc.oss.nimbus.core.domain.definition.Domain;
+import com.antheminc.oss.nimbus.core.domain.definition.Repo;
+import com.antheminc.oss.nimbus.core.domain.definition.Repo.Cache;
+import com.antheminc.oss.nimbus.core.domain.definition.Repo.Database;
+import com.antheminc.oss.nimbus.core.entity.AbstractEntity.IdString;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

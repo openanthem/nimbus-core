@@ -8,13 +8,13 @@
 //import java.util.List;
 //import java.util.Map;
 //
-//import com.anthem.oss.nimbus.core.entity.access.DefaultAccessEntity;
-//import com.anthem.oss.nimbus.core.entity.access.Permission;
-//import com.anthem.oss.nimbus.core.entity.client.Client;
-//import com.anthem.oss.nimbus.core.entity.client.ClientEntity;
-//import com.anthem.oss.nimbus.core.entity.client.ClientEntity.Type;
-//import com.anthem.oss.nimbus.core.entity.client.access.ClientAccessEntity;
-//import com.anthem.oss.nimbus.core.entity.client.access.ClientUserRole;
+//import com.antheminc.oss.nimbus.core.entity.access.DefaultAccessEntity;
+//import com.antheminc.oss.nimbus.core.entity.access.Permission;
+//import com.antheminc.oss.nimbus.core.entity.client.Client;
+//import com.antheminc.oss.nimbus.core.entity.client.ClientEntity;
+//import com.antheminc.oss.nimbus.core.entity.client.ClientEntity.Type;
+//import com.antheminc.oss.nimbus.core.entity.client.access.ClientAccessEntity;
+//import com.antheminc.oss.nimbus.core.entity.client.access.ClientUserRole;
 //
 //import test.com.anthem.nimbus.platform.spec.model.access.AccessEntityFactory;
 //

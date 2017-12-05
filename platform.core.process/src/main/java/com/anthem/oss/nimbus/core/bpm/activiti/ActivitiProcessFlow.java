@@ -1,11 +1,11 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.bpm.activiti;
+package com.antheminc.oss.nimbus.core.bpm.activiti;
 
 import java.util.List;
 
-import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
+import com.antheminc.oss.nimbus.core.entity.process.ProcessFlow;
 
 import lombok.Getter;
 import lombok.Setter;

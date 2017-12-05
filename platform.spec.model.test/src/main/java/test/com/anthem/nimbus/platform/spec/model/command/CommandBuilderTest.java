@@ -13,12 +13,12 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.anthem.oss.nimbus.core.domain.command.Action;
-import com.anthem.oss.nimbus.core.domain.command.Behavior;
-import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
-import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
-import com.anthem.oss.nimbus.core.domain.definition.Constants;
+import com.antheminc.oss.nimbus.core.domain.command.Action;
+import com.antheminc.oss.nimbus.core.domain.command.Behavior;
+import com.antheminc.oss.nimbus.core.domain.command.Command;
+import com.antheminc.oss.nimbus.core.domain.command.CommandBuilder;
+import com.antheminc.oss.nimbus.core.domain.command.CommandElement.Type;
+import com.antheminc.oss.nimbus.core.domain.definition.Constants;
 
 /**
  * IMP: Don't add spring context dependency in this class. If you need to test something related to command but with spring context

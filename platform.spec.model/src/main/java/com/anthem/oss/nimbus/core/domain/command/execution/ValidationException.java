@@ -1,13 +1,13 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.command.execution;
+package com.antheminc.oss.nimbus.core.domain.command.execution;
 
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
 
-import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
+import com.antheminc.oss.nimbus.core.FrameworkRuntimeException;
 
 import lombok.Getter;
 

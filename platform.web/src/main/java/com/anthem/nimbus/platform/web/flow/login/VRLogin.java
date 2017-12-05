@@ -1,12 +1,12 @@
 package com.anthem.nimbus.platform.web.flow.login;
 
-import com.anthem.oss.nimbus.core.domain.definition.Domain;
-import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
-import com.anthem.oss.nimbus.core.domain.definition.Model;
-import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Page;
-import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Section;
-import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.StaticText;
-import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Tile;
+import com.antheminc.oss.nimbus.core.domain.definition.Domain;
+import com.antheminc.oss.nimbus.core.domain.definition.Domain.ListenerType;
+import com.antheminc.oss.nimbus.core.domain.definition.Model;
+import com.antheminc.oss.nimbus.core.domain.definition.ViewConfig.Page;
+import com.antheminc.oss.nimbus.core.domain.definition.ViewConfig.Section;
+import com.antheminc.oss.nimbus.core.domain.definition.ViewConfig.StaticText;
+import com.antheminc.oss.nimbus.core.domain.definition.ViewConfig.Tile;
 
 import lombok.Getter;
 import lombok.Setter;

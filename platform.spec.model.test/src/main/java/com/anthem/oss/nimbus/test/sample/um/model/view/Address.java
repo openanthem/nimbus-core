@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.test.sample.um.model.view;
+package com.antheminc.oss.nimbus.test.sample.um.model.view;
 
 import org.springframework.data.annotation.Id;
 

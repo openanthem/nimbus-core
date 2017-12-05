@@ -1,13 +1,13 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.command.execution;
+package com.antheminc.oss.nimbus.core.domain.command.execution;
 
-import com.anthem.oss.nimbus.core.BeanResolverStrategy;
-import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Input;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
-import com.anthem.oss.nimbus.core.domain.command.execution.nav.NavigationHandler;
+import com.antheminc.oss.nimbus.core.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.core.domain.command.CommandMessage;
+import com.antheminc.oss.nimbus.core.domain.command.execution.CommandExecution.Input;
+import com.antheminc.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
+import com.antheminc.oss.nimbus.core.domain.command.execution.nav.NavigationHandler;
 
 /**
  * @author Soham Chakravarti

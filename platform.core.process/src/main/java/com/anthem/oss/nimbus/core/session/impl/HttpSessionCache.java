@@ -1,10 +1,10 @@
-package com.anthem.oss.nimbus.core.session.impl;
+package com.antheminc.oss.nimbus.core.session.impl;
 
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
-import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContext;
-import com.anthem.oss.nimbus.core.util.JustLogit;
+import com.antheminc.oss.nimbus.core.domain.command.execution.ExecutionContext;
+import com.antheminc.oss.nimbus.core.util.JustLogit;
 
 /**
  * 

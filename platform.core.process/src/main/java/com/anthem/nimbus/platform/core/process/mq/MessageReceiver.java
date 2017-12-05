@@ -1,6 +1,6 @@
 package com.anthem.nimbus.platform.core.process.mq;
 
-import com.anthem.oss.nimbus.core.util.JustLogit;
+import com.antheminc.oss.nimbus.core.util.JustLogit;
 
 public class MessageReceiver {
 

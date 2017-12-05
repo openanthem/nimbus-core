@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core.session;
+package com.antheminc.oss.nimbus.core.session;
 
 /**
  * Simple cache abstraction.

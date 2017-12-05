@@ -1,26 +1,26 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state.extension;
+package com.antheminc.oss.nimbus.core.domain.model.state.extension;
 
 import java.util.Optional;
 
-import com.anthem.oss.nimbus.core.BeanResolverStrategy;
-import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
-import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
-import com.anthem.oss.nimbus.core.domain.definition.Repo;
-import com.anthem.oss.nimbus.core.domain.definition.extension.Audit;
-import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.LeafParam;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.ExecutionTxnContext;
-import com.anthem.oss.nimbus.core.domain.model.state.ParamEvent;
-import com.anthem.oss.nimbus.core.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.ModelRepository;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.ModelRepositoryFactory;
-import com.anthem.oss.nimbus.core.entity.audit.AuditEntry;
-import com.anthem.oss.nimbus.core.utils.JavaBeanHandler;
+import com.antheminc.oss.nimbus.core.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
+import com.antheminc.oss.nimbus.core.domain.definition.InvalidConfigException;
+import com.antheminc.oss.nimbus.core.domain.definition.Repo;
+import com.antheminc.oss.nimbus.core.domain.definition.extension.Audit;
+import com.antheminc.oss.nimbus.core.domain.model.config.ModelConfig;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.LeafParam;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Model;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.core.domain.model.state.ExecutionTxnContext;
+import com.antheminc.oss.nimbus.core.domain.model.state.ParamEvent;
+import com.antheminc.oss.nimbus.core.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
+import com.antheminc.oss.nimbus.core.domain.model.state.repo.ModelRepository;
+import com.antheminc.oss.nimbus.core.domain.model.state.repo.ModelRepositoryFactory;
+import com.antheminc.oss.nimbus.core.entity.audit.AuditEntry;
+import com.antheminc.oss.nimbus.core.utils.JavaBeanHandler;
 
 /**
  * WIP: initial implementation. review TODO comments for planned refactor

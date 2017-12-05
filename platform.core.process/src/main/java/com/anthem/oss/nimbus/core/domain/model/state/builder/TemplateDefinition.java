@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core.domain.model.state.builder;
+package com.antheminc.oss.nimbus.core.domain.model.state.builder;
 
 import lombok.Getter;
 import lombok.Setter;

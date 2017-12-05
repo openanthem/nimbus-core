@@ -2,12 +2,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.anthem.oss.nimbus.core</groupId>
-		<artifactId>com.anthem.oss.nimbus.core.dependencies</artifactId>
+		<groupId>com.antheminc.oss.nimbus.core</groupId>
+		<artifactId>com.antheminc.oss.nimbus.core.dependencies</artifactId>
 		<version>1.0.0.M9-SNAPSHOT</version>
 		<relativePath>../dependencies</relativePath>
 	</parent>
-	<artifactId>com.anthem.oss.nimbus.core.parent</artifactId>
+	<artifactId>com.antheminc.oss.nimbus.core.parent</artifactId>
 	<packaging>pom</packaging>
 	<name>nimbus-core-parent</name>
  	<!-- <modules>

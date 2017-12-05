@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state.builder;
+package com.antheminc.oss.nimbus.core.domain.model.state.builder;
 
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,12 +9,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.anthem.oss.nimbus.core.TestFrameworkIntegrationScenariosApplication;
-import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
-import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
-import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreEntity;
-import com.anthem.oss.nimbus.test.sample.domain.model.ui.VRSampleViewRootEntity;
+import com.antheminc.oss.nimbus.core.TestFrameworkIntegrationScenariosApplication;
+import com.antheminc.oss.nimbus.core.domain.command.Command;
+import com.antheminc.oss.nimbus.core.domain.command.CommandBuilder;
+import com.antheminc.oss.nimbus.core.domain.model.state.QuadModel;
+import com.antheminc.oss.nimbus.test.sample.domain.model.core.SampleCoreEntity;
+import com.antheminc.oss.nimbus.test.sample.domain.model.ui.VRSampleViewRootEntity;
 
 /**
  * @author Soham Chakravarti

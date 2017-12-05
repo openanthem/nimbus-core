@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state;
+package com.antheminc.oss.nimbus.core.domain.model.state;
 
 import java.util.List;
 import java.util.Queue;

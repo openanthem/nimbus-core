@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.test.sample.um.model;
+package com.antheminc.oss.nimbus.test.sample.um.model;
 
 import java.time.LocalDate;
 

@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core.utils;
+package com.antheminc.oss.nimbus.core.utils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
@@ -42,14 +42,14 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.anthem.oss.nimbus.core.AbstractFrameworkIntegrationTests;
-import com.anthem.oss.nimbus.core.entity.AbstractEntity.IdString;
-import com.anthem.oss.nimbus.core.entity.client.user.ClientUser;
-import com.anthem.oss.nimbus.core.entity.queue.Queue;
-import com.anthem.oss.nimbus.core.entity.task.AssignmentTask;
-import com.anthem.oss.nimbus.core.entity.task.AssignmentTask.TaskStatus;
-import com.anthem.oss.nimbus.core.entity.user.ClientUserGroup;
-import com.anthem.oss.nimbus.core.entity.user.GroupUser;
+import com.antheminc.oss.nimbus.core.AbstractFrameworkIntegrationTests;
+import com.antheminc.oss.nimbus.core.entity.AbstractEntity.IdString;
+import com.antheminc.oss.nimbus.core.entity.client.user.ClientUser;
+import com.antheminc.oss.nimbus.core.entity.queue.Queue;
+import com.antheminc.oss.nimbus.core.entity.task.AssignmentTask;
+import com.antheminc.oss.nimbus.core.entity.task.AssignmentTask.TaskStatus;
+import com.antheminc.oss.nimbus.core.entity.user.ClientUserGroup;
+import com.antheminc.oss.nimbus.core.entity.user.GroupUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;

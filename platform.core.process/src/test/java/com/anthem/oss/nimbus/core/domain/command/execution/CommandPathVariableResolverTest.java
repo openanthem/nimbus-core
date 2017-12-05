@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.command.execution;
+package com.antheminc.oss.nimbus.core.domain.command.execution;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -11,9 +11,9 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.mock.web.MockHttpServletRequest;
 
-import com.anthem.oss.nimbus.core.AbstractFrameworkIngerationPersistableTests;
-import com.anthem.oss.nimbus.core.domain.command.Action;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.core.AbstractFrameworkIngerationPersistableTests;
+import com.antheminc.oss.nimbus.core.domain.command.Action;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
 
 import test.com.anthem.nimbus.platform.utils.ExtractResponseOutputUtils;
 import test.com.anthem.nimbus.platform.utils.MockHttpRequestBuilder;

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.config.internal;
+package com.antheminc.oss.nimbus.core.domain.model.config.internal;
 
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -11,13 +11,13 @@ import java.util.Optional;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import com.anthem.oss.nimbus.core.domain.definition.Constants;
-import com.anthem.oss.nimbus.core.domain.definition.Domain;
-import com.anthem.oss.nimbus.core.domain.definition.Model;
-import com.anthem.oss.nimbus.core.domain.definition.Repo;
-import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
-import com.anthem.oss.nimbus.core.util.CollectionsTemplate;
+import com.antheminc.oss.nimbus.core.domain.definition.Constants;
+import com.antheminc.oss.nimbus.core.domain.definition.Domain;
+import com.antheminc.oss.nimbus.core.domain.definition.Model;
+import com.antheminc.oss.nimbus.core.domain.definition.Repo;
+import com.antheminc.oss.nimbus.core.domain.model.config.ModelConfig;
+import com.antheminc.oss.nimbus.core.domain.model.config.ParamConfig;
+import com.antheminc.oss.nimbus.core.util.CollectionsTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.definition;
+package com.antheminc.oss.nimbus.core.domain.definition;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.anthem.oss.nimbus.core.domain.definition.Repo.Cache;
+import com.antheminc.oss.nimbus.core.domain.definition.Repo.Cache;
 
 /**
  * @author Soham Chakravarti

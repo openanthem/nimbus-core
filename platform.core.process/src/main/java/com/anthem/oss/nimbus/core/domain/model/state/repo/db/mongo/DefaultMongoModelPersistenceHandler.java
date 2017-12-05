@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state.repo.db.mongo;
+package com.antheminc.oss.nimbus.core.domain.model.state.repo.db.mongo;
 
 import java.io.Serializable;
 import java.util.List;
@@ -10,14 +10,14 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 
-import com.anthem.oss.nimbus.core.domain.definition.Domain;
-import com.anthem.oss.nimbus.core.domain.definition.Repo;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.ModelPersistenceHandler;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.ModelRepository;
-import com.anthem.oss.nimbus.core.util.JustLogit;
+import com.antheminc.oss.nimbus.core.domain.definition.Domain;
+import com.antheminc.oss.nimbus.core.domain.definition.Repo;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Model;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.core.domain.model.state.ModelEvent;
+import com.antheminc.oss.nimbus.core.domain.model.state.repo.ModelPersistenceHandler;
+import com.antheminc.oss.nimbus.core.domain.model.state.repo.ModelRepository;
+import com.antheminc.oss.nimbus.core.util.JustLogit;
 
 /**
  * @author Rakesh Patel

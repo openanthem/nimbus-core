@@ -1,7 +1,7 @@
 ///**
 // * 
 // */
-//package com.anthem.oss.nimbus.core.repo;
+//package com.antheminc.oss.nimbus.core.repo;
 //
 //import java.util.HashSet;
 //
@@ -16,11 +16,11 @@
 //import org.springframework.context.annotation.Profile;
 //import org.springframework.test.context.junit4.SpringRunner;
 //
-//import com.anthem.oss.nimbus.core.config.BPMEngineConfig;
-//import com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement.AccessEntityRepository;
-//import com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement.PlatformRoleRepository;
-//import com.anthem.oss.nimbus.core.entity.access.DefaultAccessEntity;
-//import com.anthem.oss.nimbus.core.entity.access.DefaultRole;
+//import com.antheminc.oss.nimbus.core.config.BPMEngineConfig;
+//import com.antheminc.oss.nimbus.core.domain.model.state.repo.clientmanagement.AccessEntityRepository;
+//import com.antheminc.oss.nimbus.core.domain.model.state.repo.clientmanagement.PlatformRoleRepository;
+//import com.antheminc.oss.nimbus.core.entity.access.DefaultAccessEntity;
+//import com.antheminc.oss.nimbus.core.entity.access.DefaultRole;
 //
 //import test.com.anthem.nimbus.platform.spec.model.access.AccessEntityFactory;
 //

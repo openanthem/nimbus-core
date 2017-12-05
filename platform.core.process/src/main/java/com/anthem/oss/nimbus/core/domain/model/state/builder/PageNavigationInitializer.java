@@ -1,13 +1,13 @@
-package com.anthem.oss.nimbus.core.domain.model.state.builder;
+package com.antheminc.oss.nimbus.core.domain.model.state.builder;
 
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.anthem.oss.nimbus.core.domain.definition.Constants;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultParamState;
+import com.antheminc.oss.nimbus.core.domain.definition.Constants;
+import com.antheminc.oss.nimbus.core.domain.model.config.ParamConfig;
+import com.antheminc.oss.nimbus.core.domain.model.state.QuadModel;
+import com.antheminc.oss.nimbus.core.domain.model.state.internal.DefaultParamState;
 
 /**
  * @Author Cheikh Niass on 10/11/16.

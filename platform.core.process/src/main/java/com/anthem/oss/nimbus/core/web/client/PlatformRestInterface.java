@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core.web.client;
+package com.antheminc.oss.nimbus.core.web.client;
 
 import javax.servlet.http.HttpServletRequest;
 

@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core.web;
+package com.antheminc.oss.nimbus.core.web;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,12 +25,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
-import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandTransactionInterceptor;
-import com.anthem.oss.nimbus.core.domain.command.execution.ExecuteOutput;
-import com.anthem.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
-import com.anthem.oss.nimbus.core.domain.command.execution.ValidationException;
-import com.anthem.oss.nimbus.core.domain.command.execution.ValidationResult;
+import com.antheminc.oss.nimbus.core.FrameworkRuntimeException;
+import com.antheminc.oss.nimbus.core.domain.command.execution.CommandTransactionInterceptor;
+import com.antheminc.oss.nimbus.core.domain.command.execution.ExecuteOutput;
+import com.antheminc.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
+import com.antheminc.oss.nimbus.core.domain.command.execution.ValidationException;
+import com.antheminc.oss.nimbus.core.domain.command.execution.ValidationResult;
 
 /**
  * 

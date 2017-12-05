@@ -1,20 +1,20 @@
-package com.anthem.oss.nimbus.core.entity.client.user;
+package com.antheminc.oss.nimbus.core.entity.client.user;
 
 import java.util.List;
 
 import org.springframework.data.annotation.ReadOnlyProperty;
 
-import com.anthem.oss.nimbus.core.domain.definition.ConfigNature.Ignore;
-import com.anthem.oss.nimbus.core.domain.definition.Domain;
-import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
-import com.anthem.oss.nimbus.core.domain.definition.Repo;
-import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
-import com.anthem.oss.nimbus.core.entity.client.Client;
-import com.anthem.oss.nimbus.core.entity.client.access.ClientAccessEntity;
-import com.anthem.oss.nimbus.core.entity.client.access.ClientUserRole;
-import com.anthem.oss.nimbus.core.entity.user.AbstractUser;
-import com.anthem.oss.nimbus.core.entity.user.UserRole;
-import com.anthem.oss.nimbus.core.entity.user.UserStatus;
+import com.antheminc.oss.nimbus.core.domain.definition.ConfigNature.Ignore;
+import com.antheminc.oss.nimbus.core.domain.definition.Domain;
+import com.antheminc.oss.nimbus.core.domain.definition.Domain.ListenerType;
+import com.antheminc.oss.nimbus.core.domain.definition.Repo;
+import com.antheminc.oss.nimbus.core.domain.definition.Repo.Database;
+import com.antheminc.oss.nimbus.core.entity.client.Client;
+import com.antheminc.oss.nimbus.core.entity.client.access.ClientAccessEntity;
+import com.antheminc.oss.nimbus.core.entity.client.access.ClientUserRole;
+import com.antheminc.oss.nimbus.core.entity.user.AbstractUser;
+import com.antheminc.oss.nimbus.core.entity.user.UserRole;
+import com.antheminc.oss.nimbus.core.entity.user.UserStatus;
 
 import lombok.Getter;
 import lombok.Setter;

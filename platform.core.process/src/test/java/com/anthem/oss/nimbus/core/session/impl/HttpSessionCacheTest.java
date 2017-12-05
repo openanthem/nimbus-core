@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core.session.impl;
+package com.antheminc.oss.nimbus.core.session.impl;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -14,10 +14,10 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContext;
-import com.anthem.oss.nimbus.core.domain.model.state.ExecutionRuntime;
-import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity.ExModel;
+import com.antheminc.oss.nimbus.core.domain.command.execution.ExecutionContext;
+import com.antheminc.oss.nimbus.core.domain.model.state.ExecutionRuntime;
+import com.antheminc.oss.nimbus.core.domain.model.state.QuadModel;
+import com.antheminc.oss.nimbus.core.domain.model.state.internal.ExecutionEntity.ExModel;
 
 /**
  * 

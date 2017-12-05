@@ -1,9 +1,9 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.util;
+package com.antheminc.oss.nimbus.core.util;
 
-import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
+import com.antheminc.oss.nimbus.core.domain.definition.InvalidConfigException;
 
 /**
  * @author Soham Chakravarti

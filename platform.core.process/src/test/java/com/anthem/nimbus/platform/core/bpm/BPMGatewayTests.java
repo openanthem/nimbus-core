@@ -14,12 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
-import com.anthem.oss.nimbus.core.AbstractFrameworkIngerationPersistableTests;
-import com.anthem.oss.nimbus.core.bpm.BPMGateway;
-import com.anthem.oss.nimbus.core.domain.command.Action;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandMessageConverter;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.core.AbstractFrameworkIngerationPersistableTests;
+import com.antheminc.oss.nimbus.core.bpm.BPMGateway;
+import com.antheminc.oss.nimbus.core.domain.command.Action;
+import com.antheminc.oss.nimbus.core.domain.command.execution.CommandMessageConverter;
+import com.antheminc.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
 
 import test.com.anthem.nimbus.platform.utils.ExtractResponseOutputUtils;
 import test.com.anthem.nimbus.platform.utils.MockHttpRequestBuilder;

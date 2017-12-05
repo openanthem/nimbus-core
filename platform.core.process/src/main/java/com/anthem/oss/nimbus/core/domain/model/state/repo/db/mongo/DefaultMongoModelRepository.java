@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state.repo.db.mongo;
+package com.antheminc.oss.nimbus.core.domain.model.state.repo.db.mongo;
 
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
@@ -17,19 +17,19 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
-import com.anthem.oss.nimbus.core.BeanResolverStrategy;
-import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
-import com.anthem.oss.nimbus.core.domain.definition.Repo;
-import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.IdSequenceRepository;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.ModelRepository;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.DBSearch;
-import com.anthem.oss.nimbus.core.entity.SearchCriteria.ExampleSearchCriteria;
-import com.anthem.oss.nimbus.core.entity.SearchCriteria.LookupSearchCriteria;
-import com.anthem.oss.nimbus.core.entity.SearchCriteria.QuerySearchCriteria;
-import com.anthem.oss.nimbus.core.utils.JavaBeanHandler;
+import com.antheminc.oss.nimbus.core.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.core.domain.definition.InvalidConfigException;
+import com.antheminc.oss.nimbus.core.domain.definition.Repo;
+import com.antheminc.oss.nimbus.core.domain.model.config.ModelConfig;
+import com.antheminc.oss.nimbus.core.domain.model.config.ParamConfig;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.core.domain.model.state.repo.IdSequenceRepository;
+import com.antheminc.oss.nimbus.core.domain.model.state.repo.ModelRepository;
+import com.antheminc.oss.nimbus.core.domain.model.state.repo.db.DBSearch;
+import com.antheminc.oss.nimbus.core.entity.SearchCriteria.ExampleSearchCriteria;
+import com.antheminc.oss.nimbus.core.entity.SearchCriteria.LookupSearchCriteria;
+import com.antheminc.oss.nimbus.core.entity.SearchCriteria.QuerySearchCriteria;
+import com.antheminc.oss.nimbus.core.utils.JavaBeanHandler;
 
 /**
  * @author Soham Chakravarti

@@ -1,23 +1,23 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.config.internal;
+package com.antheminc.oss.nimbus.core.domain.model.config.internal;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo.DetachedState;
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo.LoadState;
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Mode;
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Nature;
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
-import com.anthem.oss.nimbus.core.domain.definition.Repo.Cache;
-import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig.MappedParamConfig;
+import com.antheminc.oss.nimbus.core.domain.definition.MapsTo;
+import com.antheminc.oss.nimbus.core.domain.definition.MapsTo.DetachedState;
+import com.antheminc.oss.nimbus.core.domain.definition.MapsTo.LoadState;
+import com.antheminc.oss.nimbus.core.domain.definition.MapsTo.Mode;
+import com.antheminc.oss.nimbus.core.domain.definition.MapsTo.Nature;
+import com.antheminc.oss.nimbus.core.domain.definition.MapsTo.Path;
+import com.antheminc.oss.nimbus.core.domain.definition.Repo.Cache;
+import com.antheminc.oss.nimbus.core.domain.model.config.ModelConfig;
+import com.antheminc.oss.nimbus.core.domain.model.config.ParamConfig;
+import com.antheminc.oss.nimbus.core.domain.model.config.ParamConfig.MappedParamConfig;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;

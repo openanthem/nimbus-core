@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter;
 
 import org.springframework.util.StringUtils;
 
-import com.anthem.oss.nimbus.core.util.JsonParsingException;
+import com.antheminc.oss.nimbus.core.util.JsonParsingException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;

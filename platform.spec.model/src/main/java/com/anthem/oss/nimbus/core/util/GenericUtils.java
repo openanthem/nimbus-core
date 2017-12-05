@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.util;
+package com.antheminc.oss.nimbus.core.util;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;
@@ -16,7 +16,7 @@ import org.springframework.core.GenericTypeResolver;
 import org.springframework.core.ResolvableType;
 import org.springframework.data.domain.Page;
 
-import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
+import com.antheminc.oss.nimbus.core.domain.definition.InvalidConfigException;
 
 /**
  * @author Soham Chakravarti

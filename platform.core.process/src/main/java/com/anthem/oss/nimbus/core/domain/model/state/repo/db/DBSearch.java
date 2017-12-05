@@ -1,6 +1,6 @@
-package com.anthem.oss.nimbus.core.domain.model.state.repo.db;
+package com.antheminc.oss.nimbus.core.domain.model.state.repo.db;
 
-import com.anthem.oss.nimbus.core.entity.SearchCriteria;
+import com.antheminc.oss.nimbus.core.entity.SearchCriteria;
 
 /**
  * @author Rakesh Patel

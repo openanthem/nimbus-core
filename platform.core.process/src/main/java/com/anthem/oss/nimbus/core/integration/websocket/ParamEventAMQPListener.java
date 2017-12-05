@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core.integration.websocket;
+package com.antheminc.oss.nimbus.core.integration.websocket;
 
 import java.util.Arrays;
 
@@ -9,21 +9,21 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.web.context.request.RequestContextHolder;
 
-import com.anthem.oss.nimbus.core.config.WebSocketHttpConnectHandlerDecoratorFactory;
-import com.anthem.oss.nimbus.core.domain.command.Action;
-import com.anthem.oss.nimbus.core.domain.command.Behavior;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.EventOutput;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandTransactionInterceptor;
-import com.anthem.oss.nimbus.core.domain.command.execution.ExecuteOutput;
-import com.anthem.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
-import com.anthem.oss.nimbus.core.domain.definition.Domain;
-import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
-import com.anthem.oss.nimbus.core.domain.definition.Model;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.AbstractStateAndConfigEventListener;
-import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
-import com.anthem.oss.nimbus.core.spec.contract.event.StateAndConfigEventListener;
+import com.antheminc.oss.nimbus.core.config.WebSocketHttpConnectHandlerDecoratorFactory;
+import com.antheminc.oss.nimbus.core.domain.command.Action;
+import com.antheminc.oss.nimbus.core.domain.command.Behavior;
+import com.antheminc.oss.nimbus.core.domain.command.execution.CommandExecution.EventOutput;
+import com.antheminc.oss.nimbus.core.domain.command.execution.CommandTransactionInterceptor;
+import com.antheminc.oss.nimbus.core.domain.command.execution.ExecuteOutput;
+import com.antheminc.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
+import com.antheminc.oss.nimbus.core.domain.definition.Domain;
+import com.antheminc.oss.nimbus.core.domain.definition.Domain.ListenerType;
+import com.antheminc.oss.nimbus.core.domain.definition.Model;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.core.domain.model.state.repo.db.AbstractStateAndConfigEventListener;
+import com.antheminc.oss.nimbus.core.domain.model.state.ModelEvent;
+import com.antheminc.oss.nimbus.core.spec.contract.event.StateAndConfigEventListener;
 
 /**
  * @author Rakesh Patel

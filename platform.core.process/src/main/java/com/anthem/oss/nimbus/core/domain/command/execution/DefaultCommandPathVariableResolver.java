@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.command.execution;
+package com.antheminc.oss.nimbus.core.domain.command.execution;
 
 import java.util.Map;
 import java.util.Optional;
@@ -9,13 +9,13 @@ import java.util.Optional;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import com.anthem.oss.nimbus.core.BeanResolverStrategy;
-import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
-import com.anthem.oss.nimbus.core.domain.definition.Constants;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.entity.client.user.ClientUser;
-import com.anthem.oss.nimbus.core.session.UserEndpointSession;
-import com.anthem.oss.nimbus.core.utils.ParamPathExpressionParser;
+import com.antheminc.oss.nimbus.core.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.core.domain.command.CommandElement.Type;
+import com.antheminc.oss.nimbus.core.domain.definition.Constants;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.core.entity.client.user.ClientUser;
+import com.antheminc.oss.nimbus.core.session.UserEndpointSession;
+import com.antheminc.oss.nimbus.core.utils.ParamPathExpressionParser;
 
 /**
  * @author Soham Chakravarti

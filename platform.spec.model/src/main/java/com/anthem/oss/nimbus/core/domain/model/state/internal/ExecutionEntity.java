@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state.internal;
+package com.antheminc.oss.nimbus.core.domain.model.state.internal;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -14,24 +14,24 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ClassUtils;
 
-import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
-import com.anthem.oss.nimbus.core.domain.definition.Repo;
-import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
-import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
-import com.anthem.oss.nimbus.core.domain.model.config.internal.DefaultModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.internal.DefaultParamConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultParamConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ExecutionModel;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
-import com.anthem.oss.nimbus.core.domain.model.state.InvalidStateException;
-import com.anthem.oss.nimbus.core.domain.model.state.StateType;
-import com.anthem.oss.nimbus.core.entity.AbstractEntity;
-import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
-import com.anthem.oss.nimbus.core.util.JustLogit;
+import com.antheminc.oss.nimbus.core.domain.command.Command;
+import com.antheminc.oss.nimbus.core.domain.definition.MapsTo;
+import com.antheminc.oss.nimbus.core.domain.definition.MapsTo.Path;
+import com.antheminc.oss.nimbus.core.domain.definition.Repo;
+import com.antheminc.oss.nimbus.core.domain.definition.Repo.Database;
+import com.antheminc.oss.nimbus.core.domain.model.config.ModelConfig;
+import com.antheminc.oss.nimbus.core.domain.model.config.ParamConfig;
+import com.antheminc.oss.nimbus.core.domain.model.config.ParamType;
+import com.antheminc.oss.nimbus.core.domain.model.config.internal.DefaultModelConfig;
+import com.antheminc.oss.nimbus.core.domain.model.config.internal.DefaultParamConfig;
+import com.antheminc.oss.nimbus.core.domain.model.config.internal.MappedDefaultParamConfig;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.ExecutionModel;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
+import com.antheminc.oss.nimbus.core.domain.model.state.InvalidStateException;
+import com.antheminc.oss.nimbus.core.domain.model.state.StateType;
+import com.antheminc.oss.nimbus.core.entity.AbstractEntity;
+import com.antheminc.oss.nimbus.core.entity.process.ProcessFlow;
+import com.antheminc.oss.nimbus.core.util.JustLogit;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;

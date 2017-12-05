@@ -1,9 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>com.anthem.oss.nimbus.core.processor</artifactId>
+  <artifactId>com.antheminc.oss.nimbus.core.processor</artifactId>
   	<parent>
-		<groupId>com.anthem.oss.nimbus.core</groupId>
-		<artifactId>com.anthem.oss.nimbus.core.parent</artifactId>
+		<groupId>com.antheminc.oss.nimbus.core</groupId>
+		<artifactId>com.antheminc.oss.nimbus.core.parent</artifactId>
 		<version>1.0.0.M9-SNAPSHOT</version>
 	</parent>
 	<dependencies>

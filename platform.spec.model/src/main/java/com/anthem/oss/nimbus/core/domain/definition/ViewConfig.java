@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.definition;
+package com.antheminc.oss.nimbus.core.domain.definition;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -9,8 +9,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.anthem.oss.nimbus.core.domain.definition.event.StateEvent.OnStateLoad;
-import com.anthem.oss.nimbus.core.domain.definition.extension.ParamContext;
+import com.antheminc.oss.nimbus.core.domain.definition.event.StateEvent.OnStateLoad;
+import com.antheminc.oss.nimbus.core.domain.definition.extension.ParamContext;
 
 /**
  * @author Soham Chakravarti
@@ -156,7 +156,7 @@ public class ViewConfig {
 	 * </p>
 	 * 
 	 * @author Tony Lopez (AF42192)
-	 * @see com.anthem.oss.nimbus.core.domain.model.state.extension.ModalStateEventHandler
+	 * @see com.antheminc.oss.nimbus.core.domain.model.state.extension.ModalStateEventHandler
 	 *
 	 */
 	@Retention(RetentionPolicy.RUNTIME)

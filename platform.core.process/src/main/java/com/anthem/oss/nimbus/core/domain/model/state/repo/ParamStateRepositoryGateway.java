@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state.repo;
+package com.antheminc.oss.nimbus.core.domain.model.state.repo;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
@@ -11,23 +11,23 @@ import java.util.Optional;
 
 import org.apache.commons.collections.CollectionUtils;
 
-import com.anthem.oss.nimbus.core.BeanResolverStrategy;
-import com.anthem.oss.nimbus.core.InvalidArgumentException;
-import com.anthem.oss.nimbus.core.UnsupportedScenarioException;
-import com.anthem.oss.nimbus.core.domain.command.Action;
-import com.anthem.oss.nimbus.core.domain.definition.Converters.ParamConverter;
-import com.anthem.oss.nimbus.core.domain.definition.Repo.Cache;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig.MappedParamConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListModel;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.MappedParam;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.MappedTransientParam;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.InvalidStateException;
-import com.anthem.oss.nimbus.core.domain.model.state.StateType;
-import com.anthem.oss.nimbus.core.util.JustLogit;
-import com.anthem.oss.nimbus.core.utils.JavaBeanHandler;
+import com.antheminc.oss.nimbus.core.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.core.InvalidArgumentException;
+import com.antheminc.oss.nimbus.core.UnsupportedScenarioException;
+import com.antheminc.oss.nimbus.core.domain.command.Action;
+import com.antheminc.oss.nimbus.core.domain.definition.Converters.ParamConverter;
+import com.antheminc.oss.nimbus.core.domain.definition.Repo.Cache;
+import com.antheminc.oss.nimbus.core.domain.model.config.ParamConfig.MappedParamConfig;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.ListModel;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.ListParam;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.MappedParam;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.MappedTransientParam;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Model;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.core.domain.model.state.InvalidStateException;
+import com.antheminc.oss.nimbus.core.domain.model.state.StateType;
+import com.antheminc.oss.nimbus.core.util.JustLogit;
+import com.antheminc.oss.nimbus.core.utils.JavaBeanHandler;
 
 import lombok.Getter;
 

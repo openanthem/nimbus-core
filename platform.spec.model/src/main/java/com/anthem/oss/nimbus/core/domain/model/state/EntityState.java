@@ -1,23 +1,23 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state;
+package com.antheminc.oss.nimbus.core.domain.model.state;
 
 import java.beans.PropertyDescriptor;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import com.anthem.oss.nimbus.core.domain.command.Action;
-import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
-import com.anthem.oss.nimbus.core.domain.model.config.EntityConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
-import com.anthem.oss.nimbus.core.util.CollectionsTemplate;
-import com.anthem.oss.nimbus.core.util.LockTemplate;
+import com.antheminc.oss.nimbus.core.domain.command.Action;
+import com.antheminc.oss.nimbus.core.domain.command.Command;
+import com.antheminc.oss.nimbus.core.domain.definition.InvalidConfigException;
+import com.antheminc.oss.nimbus.core.domain.model.config.EntityConfig;
+import com.antheminc.oss.nimbus.core.domain.model.config.ModelConfig;
+import com.antheminc.oss.nimbus.core.domain.model.config.ParamConfig;
+import com.antheminc.oss.nimbus.core.domain.model.config.ParamType;
+import com.antheminc.oss.nimbus.core.domain.model.config.ParamValue;
+import com.antheminc.oss.nimbus.core.util.CollectionsTemplate;
+import com.antheminc.oss.nimbus.core.util.LockTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.EqualsAndHashCode;

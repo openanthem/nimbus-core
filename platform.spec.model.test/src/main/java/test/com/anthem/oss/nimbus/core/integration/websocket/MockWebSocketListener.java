@@ -1,7 +1,7 @@
 /**
  * 
  */
-package test.com.anthem.oss.nimbus.core.integration.websocket;
+package test.com.antheminc.oss.nimbus.core.integration.websocket;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
@@ -13,9 +13,9 @@ import java.util.function.Consumer;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
-import com.anthem.oss.nimbus.core.spec.contract.event.StateAndConfigEventListener;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.core.domain.model.state.ModelEvent;
+import com.antheminc.oss.nimbus.core.spec.contract.event.StateAndConfigEventListener;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

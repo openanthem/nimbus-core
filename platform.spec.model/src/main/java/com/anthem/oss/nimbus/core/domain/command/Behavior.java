@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.command;
+package com.antheminc.oss.nimbus.core.domain.command;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

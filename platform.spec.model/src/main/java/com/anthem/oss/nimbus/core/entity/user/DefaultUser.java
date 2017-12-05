@@ -1,12 +1,12 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.entity.user;
+package com.antheminc.oss.nimbus.core.entity.user;
 
 import java.util.Set;
 
-import com.anthem.oss.nimbus.core.entity.access.DefaultAccessEntity;
-import com.anthem.oss.nimbus.core.entity.access.DefaultRole;
+import com.antheminc.oss.nimbus.core.entity.access.DefaultAccessEntity;
+import com.antheminc.oss.nimbus.core.entity.access.DefaultRole;
 
 import lombok.Getter;
 import lombok.Setter;

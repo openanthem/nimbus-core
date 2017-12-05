@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core.domain.command.execution.search;
+package com.antheminc.oss.nimbus.core.domain.command.execution.search;
 
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
@@ -11,19 +11,19 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 
-import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
-import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandPathVariableResolver;
-import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContext;
-import com.anthem.oss.nimbus.core.domain.definition.Repo;
-import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.ModelRepository;
-import com.anthem.oss.nimbus.core.entity.SearchCriteria.LookupSearchCriteria;
-import com.anthem.oss.nimbus.core.entity.SearchCriteria.ProjectCriteria;
-import com.anthem.oss.nimbus.core.entity.StaticCodeValue;
+import com.antheminc.oss.nimbus.core.FrameworkRuntimeException;
+import com.antheminc.oss.nimbus.core.domain.command.Command;
+import com.antheminc.oss.nimbus.core.domain.command.CommandElement.Type;
+import com.antheminc.oss.nimbus.core.domain.command.execution.CommandPathVariableResolver;
+import com.antheminc.oss.nimbus.core.domain.command.execution.ExecutionContext;
+import com.antheminc.oss.nimbus.core.domain.definition.Repo;
+import com.antheminc.oss.nimbus.core.domain.model.config.ModelConfig;
+import com.antheminc.oss.nimbus.core.domain.model.config.ParamValue;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.core.domain.model.state.repo.ModelRepository;
+import com.antheminc.oss.nimbus.core.entity.SearchCriteria.LookupSearchCriteria;
+import com.antheminc.oss.nimbus.core.entity.SearchCriteria.ProjectCriteria;
+import com.antheminc.oss.nimbus.core.entity.StaticCodeValue;
 
 /**
  * @author Rakesh Patel

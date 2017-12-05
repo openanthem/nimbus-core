@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state.internal;
+package com.antheminc.oss.nimbus.core.domain.model.state.internal;
 
 import java.io.Serializable;
 

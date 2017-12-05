@@ -1,13 +1,13 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.test.sample.um.model;
+package com.antheminc.oss.nimbus.test.sample.um.model;
 
 import java.util.Date;
 import java.util.List;
 
-import com.anthem.oss.nimbus.core.domain.definition.ConfigNature.Ignore;
-import com.anthem.oss.nimbus.core.domain.definition.Model;
+import com.antheminc.oss.nimbus.core.domain.definition.ConfigNature.Ignore;
+import com.antheminc.oss.nimbus.core.domain.definition.Model;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

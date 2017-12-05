@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state;
+package com.antheminc.oss.nimbus.core.domain.model.state;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -20,9 +20,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.anthem.oss.nimbus.core.TestFrameworkIntegrationScenariosApplication;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreNestedEntity;
+import com.antheminc.oss.nimbus.core.TestFrameworkIntegrationScenariosApplication;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.test.sample.domain.model.core.SampleCoreNestedEntity;
 
 /**
  * @author Soham Chakravarti

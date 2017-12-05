@@ -1,6 +1,6 @@
 package com.anthem.nimbus.platform.client.extension.cm.model.sample
 
-import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultParamState;
+import com.antheminc.oss.nimbus.core.domain.model.state.internal.DefaultParamState;
 
 rule "Rule State Event Handler Test: Sample Increment"
 when

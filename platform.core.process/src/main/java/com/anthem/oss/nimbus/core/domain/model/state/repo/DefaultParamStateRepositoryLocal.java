@@ -1,20 +1,20 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state.repo;
+package com.antheminc.oss.nimbus.core.domain.model.state.repo;
 
 import java.beans.PropertyDescriptor;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
-import com.anthem.oss.nimbus.core.InvalidOperationAttemptedException;
-import com.anthem.oss.nimbus.core.domain.command.Action;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListElemParam;
-import com.anthem.oss.nimbus.core.util.JustLogit;
-import com.anthem.oss.nimbus.core.utils.JavaBeanHandler;
+import com.antheminc.oss.nimbus.core.FrameworkRuntimeException;
+import com.antheminc.oss.nimbus.core.InvalidOperationAttemptedException;
+import com.antheminc.oss.nimbus.core.domain.command.Action;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.ListElemParam;
+import com.antheminc.oss.nimbus.core.util.JustLogit;
+import com.antheminc.oss.nimbus.core.utils.JavaBeanHandler;
 
 /**
  * @author Soham Chakravarti

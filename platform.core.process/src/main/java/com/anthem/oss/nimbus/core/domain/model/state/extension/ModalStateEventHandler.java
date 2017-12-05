@@ -1,8 +1,8 @@
-package com.anthem.oss.nimbus.core.domain.model.state.extension;
+package com.antheminc.oss.nimbus.core.domain.model.state.extension;
 
-import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Modal;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
+import com.antheminc.oss.nimbus.core.domain.definition.ViewConfig.Modal;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.core.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
 
 /**
  * <p>Default StateEventHandler for <tt>ViewConfig.Modal</tt> that sets default
@@ -10,7 +10,7 @@ import com.anthem.oss.nimbus.core.domain.model.state.event.StateEventHandlers.On
  * <tt>&#64;ParamContext</tt> field <tt>context</tt>.</p>
  * 
  * @author Tony Lopez (AF42192)
- * @see com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Modal
+ * @see com.antheminc.oss.nimbus.core.domain.definition.ViewConfig.Modal
  */
 public class ModalStateEventHandler implements OnStateLoadHandler<Modal> {
 

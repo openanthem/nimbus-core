@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core.web.client;
+package com.antheminc.oss.nimbus.core.web.client;
 
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.data.domain.Page;
@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
-import com.anthem.oss.nimbus.core.domain.command.execution.ValidationException;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityNotFoundException;
-import com.anthem.oss.nimbus.core.entity.client.user.ClientUser;
+import com.antheminc.oss.nimbus.core.FrameworkRuntimeException;
+import com.antheminc.oss.nimbus.core.domain.command.execution.ValidationException;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityNotFoundException;
+import com.antheminc.oss.nimbus.core.entity.client.user.ClientUser;
 
 @FeignClient(name = "platform-management-client")
 public interface ClientUserRepoWebAPIClient extends ClientUserRepoAPI<ClientUser> {

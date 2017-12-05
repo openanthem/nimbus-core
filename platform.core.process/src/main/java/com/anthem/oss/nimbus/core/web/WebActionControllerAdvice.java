@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.web;
+package com.antheminc.oss.nimbus.core.web;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,14 +21,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
-import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandTransactionInterceptor;
-import com.anthem.oss.nimbus.core.domain.command.execution.ExecuteOutput;
-import com.anthem.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
-import com.anthem.oss.nimbus.core.domain.command.execution.ValidationError;
-import com.anthem.oss.nimbus.core.domain.command.execution.ValidationException;
-import com.anthem.oss.nimbus.core.domain.command.execution.ValidationResult;
-import com.anthem.oss.nimbus.core.util.JustLogit;
+import com.antheminc.oss.nimbus.core.FrameworkRuntimeException;
+import com.antheminc.oss.nimbus.core.domain.command.execution.CommandTransactionInterceptor;
+import com.antheminc.oss.nimbus.core.domain.command.execution.ExecuteOutput;
+import com.antheminc.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
+import com.antheminc.oss.nimbus.core.domain.command.execution.ValidationError;
+import com.antheminc.oss.nimbus.core.domain.command.execution.ValidationException;
+import com.antheminc.oss.nimbus.core.domain.command.execution.ValidationResult;
+import com.antheminc.oss.nimbus.core.util.JustLogit;
 
 /**
  * @author Swetha Vemuri

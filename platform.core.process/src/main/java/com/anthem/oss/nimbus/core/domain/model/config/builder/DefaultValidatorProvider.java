@@ -1,13 +1,13 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.config.builder;
+package com.antheminc.oss.nimbus.core.domain.model.config.builder;
 
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
-import com.anthem.oss.nimbus.core.domain.model.config.ValidatorProvider;
+import com.antheminc.oss.nimbus.core.domain.model.config.ValidatorProvider;
 
 /**
  * @author Rakesh Patel

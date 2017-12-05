@@ -1,13 +1,13 @@
-package com.anthem.oss.nimbus.core.entity.user;
+package com.antheminc.oss.nimbus.core.entity.user;
 
 
 import org.springframework.data.annotation.Id;
 
-import com.anthem.oss.nimbus.core.entity.access.Role;
-import com.anthem.oss.nimbus.core.entity.person.Address;
-import com.anthem.oss.nimbus.core.entity.person.Name;
-import com.anthem.oss.nimbus.core.entity.person.Person;
-import com.anthem.oss.nimbus.core.entity.person.Phone;
+import com.antheminc.oss.nimbus.core.entity.access.Role;
+import com.antheminc.oss.nimbus.core.entity.person.Address;
+import com.antheminc.oss.nimbus.core.entity.person.Name;
+import com.antheminc.oss.nimbus.core.entity.person.Person;
+import com.antheminc.oss.nimbus.core.entity.person.Phone;
 
 import lombok.Getter;
 import lombok.Setter;

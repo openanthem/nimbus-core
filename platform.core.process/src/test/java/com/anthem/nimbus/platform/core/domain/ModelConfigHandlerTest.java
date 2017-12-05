@@ -17,15 +17,15 @@ import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.anthem.oss.nimbus.core.AbstractFrameworkIntegrationTests;
-import com.anthem.oss.nimbus.core.domain.definition.Domain;
-import com.anthem.oss.nimbus.core.domain.definition.Model;
-import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
-import com.anthem.oss.nimbus.core.domain.model.config.builder.EntityConfigBuilder;
-import com.anthem.oss.nimbus.core.domain.model.config.builder.EntityConfigVisitor;
-import com.anthem.oss.nimbus.core.entity.person.Address;
+import com.antheminc.oss.nimbus.core.AbstractFrameworkIntegrationTests;
+import com.antheminc.oss.nimbus.core.domain.definition.Domain;
+import com.antheminc.oss.nimbus.core.domain.definition.Model;
+import com.antheminc.oss.nimbus.core.domain.model.config.ModelConfig;
+import com.antheminc.oss.nimbus.core.domain.model.config.ParamConfig;
+import com.antheminc.oss.nimbus.core.domain.model.config.ParamType;
+import com.antheminc.oss.nimbus.core.domain.model.config.builder.EntityConfigBuilder;
+import com.antheminc.oss.nimbus.core.domain.model.config.builder.EntityConfigVisitor;
+import com.antheminc.oss.nimbus.core.entity.person.Address;
 
 import lombok.Getter;
 import lombok.Setter;

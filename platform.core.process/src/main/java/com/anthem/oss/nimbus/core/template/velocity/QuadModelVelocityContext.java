@@ -1,9 +1,9 @@
-//package com.anthem.oss.nimbus.core.template.velocity;
+//package com.antheminc.oss.nimbus.core.template.velocity;
 //
 //import org.apache.velocity.context.Context;
 //
-//import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
-//import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
+//import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Model;
+//import com.antheminc.oss.nimbus.core.domain.model.state.QuadModel;
 //
 //import lombok.RequiredArgsConstructor;
 //

@@ -1,10 +1,10 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.test.sample.todo.model.view;
+package com.antheminc.oss.nimbus.test.sample.todo.model.view;
 
-import com.anthem.oss.nimbus.core.domain.definition.Domain;
-import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Page;
+import com.antheminc.oss.nimbus.core.domain.definition.Domain;
+import com.antheminc.oss.nimbus.core.domain.definition.ViewConfig.Page;
 
 import lombok.Getter;
 import lombok.Setter;

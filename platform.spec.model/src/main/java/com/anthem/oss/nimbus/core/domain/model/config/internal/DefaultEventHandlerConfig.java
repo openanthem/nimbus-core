@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.config.internal;
+package com.antheminc.oss.nimbus.core.domain.model.config.internal;
 
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
@@ -11,10 +11,10 @@ import java.util.Set;
 
 import org.apache.commons.collections.MapUtils;
 
-import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
-import com.anthem.oss.nimbus.core.domain.model.config.EventHandlerConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
-import com.anthem.oss.nimbus.core.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
+import com.antheminc.oss.nimbus.core.domain.definition.InvalidConfigException;
+import com.antheminc.oss.nimbus.core.domain.model.config.EventHandlerConfig;
+import com.antheminc.oss.nimbus.core.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
+import com.antheminc.oss.nimbus.core.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
 
 import lombok.Getter;
 import lombok.Setter;

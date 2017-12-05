@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core;
+package com.antheminc.oss.nimbus.core;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -12,14 +12,14 @@ import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
-import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
-import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
-import com.anthem.oss.nimbus.core.session.UserEndpointSession;
-import com.anthem.oss.nimbus.test.sample.um.model.UMCase;
-import com.anthem.oss.nimbus.test.sample.um.model.view.UMCaseFlow;
-import com.anthem.oss.nimbus.test.sample.um.model.view.V_UMDashboard;
+import com.antheminc.oss.nimbus.core.domain.command.Command;
+import com.antheminc.oss.nimbus.core.domain.command.CommandBuilder;
+import com.antheminc.oss.nimbus.core.domain.model.state.QuadModel;
+import com.antheminc.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
+import com.antheminc.oss.nimbus.core.session.UserEndpointSession;
+import com.antheminc.oss.nimbus.test.sample.um.model.UMCase;
+import com.antheminc.oss.nimbus.test.sample.um.model.view.UMCaseFlow;
+import com.antheminc.oss.nimbus.test.sample.um.model.view.V_UMDashboard;
 
 /**
  * @author Soham Chakravarti

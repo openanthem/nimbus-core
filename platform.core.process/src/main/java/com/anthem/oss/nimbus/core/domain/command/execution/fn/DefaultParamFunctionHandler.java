@@ -1,16 +1,16 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.command.execution.fn;
+package com.antheminc.oss.nimbus.core.domain.command.execution.fn;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.anthem.oss.nimbus.core.BeanResolverStrategy;
-import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContext;
-import com.anthem.oss.nimbus.core.domain.command.execution.FunctionHandler;
-import com.anthem.oss.nimbus.core.domain.definition.Constants;
-import com.anthem.oss.nimbus.core.domain.expr.ExpressionEvaluator;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.core.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.core.domain.command.execution.ExecutionContext;
+import com.antheminc.oss.nimbus.core.domain.command.execution.FunctionHandler;
+import com.antheminc.oss.nimbus.core.domain.definition.Constants;
+import com.antheminc.oss.nimbus.core.domain.expr.ExpressionEvaluator;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
 
 /**
  * @author Soham Chakravarti

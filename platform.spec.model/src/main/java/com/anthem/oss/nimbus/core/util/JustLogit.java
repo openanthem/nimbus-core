@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.util;
+package com.antheminc.oss.nimbus.core.util;
 
 import java.util.function.Supplier;
 

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state.repo;
+package com.antheminc.oss.nimbus.core.domain.model.state.repo;
 
 import java.io.Serializable;
 import java.util.List;
@@ -10,11 +10,11 @@ import java.util.stream.Stream;
 import org.apache.commons.lang.StringUtils;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
-import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.entity.SearchCriteria.ExampleSearchCriteria;
-import com.anthem.oss.nimbus.core.entity.SearchCriteria.LookupSearchCriteria;
-import com.anthem.oss.nimbus.core.entity.SearchCriteria.QuerySearchCriteria;
+import com.antheminc.oss.nimbus.core.domain.model.config.ModelConfig;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.core.entity.SearchCriteria.ExampleSearchCriteria;
+import com.antheminc.oss.nimbus.core.entity.SearchCriteria.LookupSearchCriteria;
+import com.antheminc.oss.nimbus.core.entity.SearchCriteria.QuerySearchCriteria;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

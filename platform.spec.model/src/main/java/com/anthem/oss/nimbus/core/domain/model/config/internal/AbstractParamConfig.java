@@ -1,15 +1,15 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.config.internal;
+package com.antheminc.oss.nimbus.core.domain.model.config.internal;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
 
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
-import com.anthem.oss.nimbus.core.domain.model.config.AnnotationConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
+import com.antheminc.oss.nimbus.core.domain.definition.MapsTo;
+import com.antheminc.oss.nimbus.core.domain.model.config.AnnotationConfig;
+import com.antheminc.oss.nimbus.core.domain.model.config.ParamConfig;
+import com.antheminc.oss.nimbus.core.domain.model.config.ParamType;
 
 import lombok.Getter;
 import lombok.Setter;

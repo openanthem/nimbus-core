@@ -1,13 +1,13 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.entity.person;
+package com.antheminc.oss.nimbus.core.entity.person;
 
 import java.io.Serializable;
 
 import org.springframework.data.annotation.Id;
 
-import com.anthem.oss.nimbus.core.entity.AbstractEntity;
+import com.antheminc.oss.nimbus.core.entity.AbstractEntity;
 
 import lombok.AccessLevel;
 import lombok.Getter;

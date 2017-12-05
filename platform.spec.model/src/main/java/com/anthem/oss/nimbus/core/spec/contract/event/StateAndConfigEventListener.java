@@ -1,12 +1,12 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.spec.contract.event;
+package com.antheminc.oss.nimbus.core.spec.contract.event;
 
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.AbstractEvent.SuppressMode;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.core.domain.model.state.ModelEvent;
+import com.antheminc.oss.nimbus.core.domain.model.state.internal.AbstractEvent.SuppressMode;
 
 /**
  * @author Soham Chakravarti

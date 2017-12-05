@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.command.execution;
+package com.antheminc.oss.nimbus.core.domain.command.execution;
 
 import java.beans.PropertyDescriptor;
 import java.util.Optional;
@@ -9,20 +9,20 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 
-import com.anthem.oss.nimbus.core.BeanResolverStrategy;
-import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.command.CommandElement.Type;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Input;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
-import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
-import com.anthem.oss.nimbus.core.domain.definition.Repo;
-import com.anthem.oss.nimbus.core.domain.model.config.EntityConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.ModelRepositoryFactory;
-import com.anthem.oss.nimbus.core.utils.JavaBeanHandler;
+import com.antheminc.oss.nimbus.core.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.core.domain.command.Command;
+import com.antheminc.oss.nimbus.core.domain.command.CommandElement.Type;
+import com.antheminc.oss.nimbus.core.domain.command.execution.CommandExecution.Input;
+import com.antheminc.oss.nimbus.core.domain.command.execution.CommandExecution.Output;
+import com.antheminc.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
+import com.antheminc.oss.nimbus.core.domain.definition.Repo;
+import com.antheminc.oss.nimbus.core.domain.model.config.EntityConfig;
+import com.antheminc.oss.nimbus.core.domain.model.config.ModelConfig;
+import com.antheminc.oss.nimbus.core.domain.model.config.ParamConfig;
+import com.antheminc.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
+import com.antheminc.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
+import com.antheminc.oss.nimbus.core.domain.model.state.repo.ModelRepositoryFactory;
+import com.antheminc.oss.nimbus.core.utils.JavaBeanHandler;
 
 import lombok.AccessLevel;
 import lombok.Getter;

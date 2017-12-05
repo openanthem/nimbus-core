@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core.domain.model.state.repo;
+package com.antheminc.oss.nimbus.core.domain.model.state.repo;
 
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoOperations;
@@ -6,8 +6,8 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
-import com.anthem.oss.nimbus.core.SequenceException;
-import com.anthem.oss.nimbus.core.entity.DBSequence;
+import com.antheminc.oss.nimbus.core.SequenceException;
+import com.antheminc.oss.nimbus.core.entity.DBSequence;
 
 /**
  * @author Rakesh Patel

@@ -1,12 +1,12 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.config;
+package com.antheminc.oss.nimbus.core.domain.model.config;
 
 import java.util.List;
 
-import com.anthem.oss.nimbus.core.domain.definition.Repo;
-import com.anthem.oss.nimbus.core.util.CollectionsTemplate;
+import com.antheminc.oss.nimbus.core.domain.definition.Repo;
+import com.antheminc.oss.nimbus.core.util.CollectionsTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**

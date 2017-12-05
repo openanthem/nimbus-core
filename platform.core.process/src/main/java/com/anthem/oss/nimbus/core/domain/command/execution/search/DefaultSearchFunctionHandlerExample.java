@@ -1,12 +1,12 @@
-package com.anthem.oss.nimbus.core.domain.command.execution.search;
+package com.antheminc.oss.nimbus.core.domain.command.execution.search;
 
-import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContext;
-import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.ModelRepository;
-import com.anthem.oss.nimbus.core.entity.SearchCriteria.ExampleSearchCriteria;
-import com.anthem.oss.nimbus.core.entity.SearchCriteria.ProjectCriteria;
+import com.antheminc.oss.nimbus.core.domain.command.Command;
+import com.antheminc.oss.nimbus.core.domain.command.execution.ExecutionContext;
+import com.antheminc.oss.nimbus.core.domain.model.config.ModelConfig;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.core.domain.model.state.repo.ModelRepository;
+import com.antheminc.oss.nimbus.core.entity.SearchCriteria.ExampleSearchCriteria;
+import com.antheminc.oss.nimbus.core.entity.SearchCriteria.ProjectCriteria;
 
 /**
  * @author Rakesh Patel

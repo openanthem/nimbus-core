@@ -1,6 +1,6 @@
-package com.anthem.oss.nimbus.core.entity.user;
+package com.antheminc.oss.nimbus.core.entity.user;
 
-import com.anthem.oss.nimbus.core.entity.AbstractEntity;
+import com.antheminc.oss.nimbus.core.entity.AbstractEntity;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,15 +1,15 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state.internal;
+package com.antheminc.oss.nimbus.core.domain.model.state.internal;
 
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 
-import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListModel;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
+import com.antheminc.oss.nimbus.core.domain.model.config.ModelConfig;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.ListModel;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
 
 import lombok.Getter;
 

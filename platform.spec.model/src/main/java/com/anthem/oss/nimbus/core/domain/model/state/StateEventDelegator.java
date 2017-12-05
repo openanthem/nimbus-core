@@ -1,9 +1,9 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state;
+package com.antheminc.oss.nimbus.core.domain.model.state;
 
-import com.anthem.oss.nimbus.core.domain.command.Command;
+import com.antheminc.oss.nimbus.core.domain.command.Command;
 
 /**
  * @author Soham Chakravarti

@@ -1,12 +1,12 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.config.internal;
+package com.antheminc.oss.nimbus.core.domain.model.config.internal;
 
 import java.io.Serializable;
 
-import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig.MappedModelConfig;
+import com.antheminc.oss.nimbus.core.domain.model.config.ModelConfig;
+import com.antheminc.oss.nimbus.core.domain.model.config.ModelConfig.MappedModelConfig;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;

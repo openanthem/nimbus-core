@@ -5,7 +5,7 @@ package com.anthem.nimbus.platform.spec.model.process;
 
 import java.io.Serializable;
 
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
 
 import lombok.Getter;
 import lombok.Setter;

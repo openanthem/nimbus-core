@@ -1,14 +1,14 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state.repo.db;
+package com.antheminc.oss.nimbus.core.domain.model.state.repo.db;
 
 import java.util.List;
 
 import org.springframework.core.convert.converter.Converter;
 
-import com.anthem.oss.nimbus.core.entity.user.ClientUserGroup;
-import com.anthem.oss.nimbus.core.entity.user.GroupUser;
+import com.antheminc.oss.nimbus.core.entity.user.ClientUserGroup;
+import com.antheminc.oss.nimbus.core.entity.user.GroupUser;
 
 /**
  * @author Rakesh Patel

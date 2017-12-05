@@ -1,15 +1,15 @@
-package com.anthem.oss.nimbus.core.entity.queue;
+package com.antheminc.oss.nimbus.core.entity.queue;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import com.anthem.oss.nimbus.core.domain.definition.AssociatedEntity;
-import com.anthem.oss.nimbus.core.domain.definition.Domain;
-import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
-import com.anthem.oss.nimbus.core.domain.definition.Repo;
-import com.anthem.oss.nimbus.core.domain.definition.Repo.Cache;
-import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
-import com.anthem.oss.nimbus.core.entity.AbstractEntity;
+import com.antheminc.oss.nimbus.core.domain.definition.AssociatedEntity;
+import com.antheminc.oss.nimbus.core.domain.definition.Domain;
+import com.antheminc.oss.nimbus.core.domain.definition.Domain.ListenerType;
+import com.antheminc.oss.nimbus.core.domain.definition.Repo;
+import com.antheminc.oss.nimbus.core.domain.definition.Repo.Cache;
+import com.antheminc.oss.nimbus.core.domain.definition.Repo.Database;
+import com.antheminc.oss.nimbus.core.entity.AbstractEntity;
 
 import lombok.Getter;
 import lombok.Setter;

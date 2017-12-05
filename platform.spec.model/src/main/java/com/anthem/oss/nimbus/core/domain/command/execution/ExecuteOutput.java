@@ -1,11 +1,11 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.command.execution;
+package com.antheminc.oss.nimbus.core.domain.command.execution;
 
 import java.io.Serializable;
 
-import com.anthem.oss.nimbus.core.domain.command.Behavior;
+import com.antheminc.oss.nimbus.core.domain.command.Behavior;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

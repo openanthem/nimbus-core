@@ -1,15 +1,15 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.command.execution;
+package com.antheminc.oss.nimbus.core.domain.command.execution;
 
 import java.util.List;
 
-import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.command.CommandMessage;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
-import com.anthem.oss.nimbus.core.domain.definition.Execution;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.core.domain.command.Command;
+import com.antheminc.oss.nimbus.core.domain.command.CommandMessage;
+import com.antheminc.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
+import com.antheminc.oss.nimbus.core.domain.definition.Execution;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
 
 /**
  * @author Soham Chakravarti

@@ -1,4 +1,4 @@
-//package com.anthem.oss.nimbus.core.repo;
+//package com.antheminc.oss.nimbus.core.repo;
 //
 //import static org.junit.Assert.assertNotNull;
 //
@@ -18,15 +18,15 @@
 //import org.springframework.test.context.ActiveProfiles;
 //import org.springframework.test.context.junit4.SpringRunner;
 //
-//import com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement.ClientEntityRepository;
-//import com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement.ClientRepository;
-//import com.anthem.oss.nimbus.core.domain.model.state.repo.clientmanagement.ClientUserGroupRepository;
-//import com.anthem.oss.nimbus.core.entity.client.Client;
-//import com.anthem.oss.nimbus.core.entity.client.ClientEntity;
-//import com.anthem.oss.nimbus.core.entity.client.ClientEntity.Type;
-//import com.anthem.oss.nimbus.core.entity.person.Address;
-//import com.anthem.oss.nimbus.core.entity.user.AbstractUserGroup.Status;
-//import com.anthem.oss.nimbus.core.entity.user.ClientUserGroup;
+//import com.antheminc.oss.nimbus.core.domain.model.state.repo.clientmanagement.ClientEntityRepository;
+//import com.antheminc.oss.nimbus.core.domain.model.state.repo.clientmanagement.ClientRepository;
+//import com.antheminc.oss.nimbus.core.domain.model.state.repo.clientmanagement.ClientUserGroupRepository;
+//import com.antheminc.oss.nimbus.core.entity.client.Client;
+//import com.antheminc.oss.nimbus.core.entity.client.ClientEntity;
+//import com.antheminc.oss.nimbus.core.entity.client.ClientEntity.Type;
+//import com.antheminc.oss.nimbus.core.entity.person.Address;
+//import com.antheminc.oss.nimbus.core.entity.user.AbstractUserGroup.Status;
+//import com.antheminc.oss.nimbus.core.entity.user.ClientUserGroup;
 //
 //
 //@RunWith(SpringRunner.class)
@@ -78,7 +78,7 @@
 //		//org.setEffectiveDate(LocalDate.now());
 //		//org.setTerminationDate(LocalDate.now());
 //		org.setDescription("test");
-//		org.setStatus(com.anthem.oss.nimbus.core.entity.client.ClientEntity.Status.ACTIVE);
+//		org.setStatus(com.antheminc.oss.nimbus.core.entity.client.ClientEntity.Status.ACTIVE);
 //		
 //		
 //		

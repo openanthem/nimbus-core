@@ -1,10 +1,10 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.command.execution;
+package com.antheminc.oss.nimbus.core.domain.command.execution;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
-import com.anthem.oss.nimbus.core.domain.command.Behavior;
+import com.antheminc.oss.nimbus.core.domain.command.Behavior;
 
 /**
  * @author Soham Chakravarti

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state.builder;
+package com.antheminc.oss.nimbus.core.domain.model.state.builder;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -15,20 +15,20 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.client.RestTemplate;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadScopedEventListener;
-import com.anthem.oss.nimbus.core.BeanResolverStrategy;
-import com.anthem.oss.nimbus.core.bpm.BPMGateway;
-import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
-import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
-import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.ValidatorProvider;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
-import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.ParamStateGateway;
-import com.anthem.oss.nimbus.core.spec.contract.event.StateAndConfigEventListener;
-import com.anthem.oss.nimbus.core.util.JustLogit;
+import com.antheminc.oss.nimbus.core.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.core.bpm.BPMGateway;
+import com.antheminc.oss.nimbus.core.domain.command.Command;
+import com.antheminc.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
+import com.antheminc.oss.nimbus.core.domain.definition.InvalidConfigException;
+import com.antheminc.oss.nimbus.core.domain.model.config.ModelConfig;
+import com.antheminc.oss.nimbus.core.domain.model.config.ValidatorProvider;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
+import com.antheminc.oss.nimbus.core.domain.model.state.QuadModel;
+import com.antheminc.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
+import com.antheminc.oss.nimbus.core.domain.model.state.repo.ParamStateGateway;
+import com.antheminc.oss.nimbus.core.spec.contract.event.StateAndConfigEventListener;
+import com.antheminc.oss.nimbus.core.util.JustLogit;
 
 import lombok.Getter;
 import lombok.Setter;

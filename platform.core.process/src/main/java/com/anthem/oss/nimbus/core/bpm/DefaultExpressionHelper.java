@@ -1,14 +1,14 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.bpm;
+package com.antheminc.oss.nimbus.core.bpm;
 
 import org.activiti.engine.delegate.DelegateExecution;
 
-import com.anthem.oss.nimbus.core.BeanResolverStrategy;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandMessageConverter;
-import com.anthem.oss.nimbus.core.domain.command.execution.ExecutionContext;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.core.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.core.domain.command.execution.CommandMessageConverter;
+import com.antheminc.oss.nimbus.core.domain.command.execution.ExecutionContext;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
 
 /**
  * @author Jayant Chaudhuri

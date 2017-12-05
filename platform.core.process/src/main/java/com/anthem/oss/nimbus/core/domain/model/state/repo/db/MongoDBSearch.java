@@ -1,16 +1,16 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state.repo.db;
+package com.antheminc.oss.nimbus.core.domain.model.state.repo.db;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.util.Assert;
 
-import com.anthem.oss.nimbus.core.BeanResolverStrategy;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandMessageConverter;
-import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
-import com.anthem.oss.nimbus.core.entity.SearchCriteria;
+import com.antheminc.oss.nimbus.core.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.core.domain.command.execution.CommandMessageConverter;
+import com.antheminc.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
+import com.antheminc.oss.nimbus.core.entity.SearchCriteria;
 
 import lombok.Getter;
 
@@ -42,8 +42,8 @@ public abstract class MongoDBSearch implements DBSearch {
 			return getDomainConfigBuilder().getModel(criteria.getProjectCriteria().getAlias()).getReferredClass();
 		}
 		else if(criteria.getAggregateCriteria() != null ) {
-			com.anthem.oss.nimbus.core.domain.model.state.repo.ModelRepository.Aggregation aggByAlias = 
-					com.anthem.oss.nimbus.core.domain.model.state.repo.ModelRepository.Aggregation.getByAlias(criteria.getAggregateCriteria());
+			com.antheminc.oss.nimbus.core.domain.model.state.repo.ModelRepository.Aggregation aggByAlias = 
+					com.antheminc.oss.nimbus.core.domain.model.state.repo.ModelRepository.Aggregation.getByAlias(criteria.getAggregateCriteria());
 			
 			Assert.notNull(aggByAlias, "Aggregation constant not found for the alias: " +criteria.getAggregateCriteria());
 			

@@ -1,17 +1,17 @@
-package com.anthem.oss.nimbus.core.domain.model.state.extension;
+package com.antheminc.oss.nimbus.core.domain.model.state.extension;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.anthem.oss.nimbus.core.BeanResolverStrategy;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecutorGateway;
-import com.anthem.oss.nimbus.core.domain.definition.Model.Param.Values;
-import com.anthem.oss.nimbus.core.domain.definition.extension.ValuesConditional;
-import com.anthem.oss.nimbus.core.domain.definition.extension.ValuesConditional.Condition;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.builder.AbstractEntityStateBuilder;
-import com.anthem.oss.nimbus.core.util.JustLogit;
+import com.antheminc.oss.nimbus.core.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.core.domain.command.execution.CommandExecutorGateway;
+import com.antheminc.oss.nimbus.core.domain.definition.Model.Param.Values;
+import com.antheminc.oss.nimbus.core.domain.definition.extension.ValuesConditional;
+import com.antheminc.oss.nimbus.core.domain.definition.extension.ValuesConditional.Condition;
+import com.antheminc.oss.nimbus.core.domain.model.config.ParamValue;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.core.domain.model.state.builder.AbstractEntityStateBuilder;
+import com.antheminc.oss.nimbus.core.util.JustLogit;
 
 /**
  * 
@@ -19,7 +19,7 @@ import com.anthem.oss.nimbus.core.util.JustLogit;
  * on conditional logic defined via configuration.</p>
  * 
  * @author Tony Lopez (AF42192)
- * @see com.anthem.oss.nimbus.core.domain.definition.extension.ValuesConditional
+ * @see com.antheminc.oss.nimbus.core.domain.definition.extension.ValuesConditional
  */
 public abstract class AbstractValuesConditionalStateEventHandler extends AbstractConditionalStateEventHandler {
 

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.command.execution.process;
+package com.antheminc.oss.nimbus.core.domain.command.execution.process;
 
 import lombok.Getter;
 import lombok.Setter;

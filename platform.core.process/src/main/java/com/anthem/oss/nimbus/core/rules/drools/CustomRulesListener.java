@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.rules.drools;
+package com.antheminc.oss.nimbus.core.rules.drools;
 
 import org.drools.event.rule.ActivationCancelledEvent;
 import org.drools.event.rule.ActivationCreatedEvent;
@@ -14,7 +14,7 @@ import org.drools.event.rule.RuleFlowGroupActivatedEvent;
 import org.drools.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.drools.runtime.StatefulKnowledgeSession;
 
-import com.anthem.oss.nimbus.core.util.JustLogit;
+import com.antheminc.oss.nimbus.core.util.JustLogit;
 
 /**
  * @author Rakesh Patel

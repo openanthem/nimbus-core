@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core.domain.config.builder.attributes;
+package com.antheminc.oss.nimbus.core.domain.config.builder.attributes;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -25,7 +25,7 @@ import java.util.Map;
  * <p>Implementing classes should ensure that the returned-value is non-null.</p>
  * 
  * @author Tony Lopez (AF42192)
- * @see com.anthem.oss.nimbus.core.domain.config.builder.attributes.DefaultAnnotationAttributeHandler
+ * @see com.antheminc.oss.nimbus.core.domain.config.builder.attributes.DefaultAnnotationAttributeHandler
  * 
  */
 public interface AnnotationAttributeHandler {

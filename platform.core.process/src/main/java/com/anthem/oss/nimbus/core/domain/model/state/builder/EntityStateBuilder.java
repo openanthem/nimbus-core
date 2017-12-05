@@ -1,28 +1,28 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state.builder;
+package com.antheminc.oss.nimbus.core.domain.model.state.builder;
 
 import java.util.List;
 import java.util.Optional;
 
-import com.anthem.oss.nimbus.core.BeanResolverStrategy;
-import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
-import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamType;
-import com.anthem.oss.nimbus.core.domain.model.config.internal.MappedDefaultParamConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
-import com.anthem.oss.nimbus.core.domain.model.state.StateType;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultListElemParamState;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultListModelState;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultModelState;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.DefaultParamState;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
-import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
+import com.antheminc.oss.nimbus.core.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.core.domain.command.Command;
+import com.antheminc.oss.nimbus.core.domain.definition.InvalidConfigException;
+import com.antheminc.oss.nimbus.core.domain.model.config.ModelConfig;
+import com.antheminc.oss.nimbus.core.domain.model.config.ParamConfig;
+import com.antheminc.oss.nimbus.core.domain.model.config.ParamType;
+import com.antheminc.oss.nimbus.core.domain.model.config.internal.MappedDefaultParamConfig;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Model;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
+import com.antheminc.oss.nimbus.core.domain.model.state.StateType;
+import com.antheminc.oss.nimbus.core.domain.model.state.internal.DefaultListElemParamState;
+import com.antheminc.oss.nimbus.core.domain.model.state.internal.DefaultListModelState;
+import com.antheminc.oss.nimbus.core.domain.model.state.internal.DefaultModelState;
+import com.antheminc.oss.nimbus.core.domain.model.state.internal.DefaultParamState;
+import com.antheminc.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
+import com.antheminc.oss.nimbus.core.entity.process.ProcessFlow;
 
 /**
  * @author Soham Chakravarti

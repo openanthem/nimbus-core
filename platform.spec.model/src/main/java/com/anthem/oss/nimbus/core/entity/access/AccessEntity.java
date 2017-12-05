@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.entity.access;
+package com.antheminc.oss.nimbus.core.entity.access;
 
 import java.util.Set;
 

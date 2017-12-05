@@ -1,6 +1,6 @@
 package com.anthem.nimbus.core.authorization;
 
-import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
+import com.antheminc.oss.nimbus.core.FrameworkRuntimeException;
 
 /**
  * @author AC67870

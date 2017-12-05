@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core.processor;
+package com.antheminc.oss.nimbus.core.processor;
 
 import java.util.Collections;
 
@@ -8,7 +8,7 @@ import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.tools.Diagnostic;
 
-import com.anthem.oss.nimbus.core.domain.definition.Domain;
+import com.antheminc.oss.nimbus.core.domain.definition.Domain;
 import com.querydsl.apt.AbstractQuerydslProcessor;
 import com.querydsl.apt.Configuration;
 import com.querydsl.apt.DefaultConfiguration;
@@ -22,7 +22,7 @@ import com.querydsl.core.annotations.QueryTransient;
  * @author Sandeep Mantha
  *
  */
-@SupportedAnnotationTypes({ "com.mysema.query.annotations.*", "com.anthem.oss.nimbus.core.domain.definition.*","org.springframework.data.mongodb.core.mapping.*" })
+@SupportedAnnotationTypes({ "com.mysema.query.annotations.*", "com.antheminc.oss.nimbus.core.domain.definition.*","org.springframework.data.mongodb.core.mapping.*" })
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class DomainAnnotationProcessor extends AbstractQuerydslProcessor {
 

@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core.domain.config.builder.attributes;
+package com.antheminc.oss.nimbus.core.domain.config.builder.attributes;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -24,7 +24,7 @@ public class ConstraintAnnotationAttributeHandler implements AnnotationAttribute
 	
 	/*
 	 * (non-Javadoc)
-	 * @see com.anthem.oss.nimbus.core.domain.config.builder.AnnotationAttributeHandler#generateFrom(java.lang.reflect.AnnotatedElement, java.lang.annotation.Annotation)
+	 * @see com.antheminc.oss.nimbus.core.domain.config.builder.AnnotationAttributeHandler#generateFrom(java.lang.reflect.AnnotatedElement, java.lang.annotation.Annotation)
 	 */
 	@Override
 	public Map<String, Object> generateFrom(AnnotatedElement annotatedElement, Annotation annotation) {

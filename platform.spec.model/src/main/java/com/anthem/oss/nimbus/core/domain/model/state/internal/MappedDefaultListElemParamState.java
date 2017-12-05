@@ -1,13 +1,13 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state.internal;
+package com.antheminc.oss.nimbus.core.domain.model.state.internal;
 
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamConfig;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.MappedListElemParam;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
-import com.anthem.oss.nimbus.core.domain.model.state.Notification;
+import com.antheminc.oss.nimbus.core.domain.definition.MapsTo;
+import com.antheminc.oss.nimbus.core.domain.model.config.ParamConfig;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.MappedListElemParam;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityStateAspectHandlers;
+import com.antheminc.oss.nimbus.core.domain.model.state.Notification;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;

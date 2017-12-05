@@ -1,13 +1,13 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state;
+package com.antheminc.oss.nimbus.core.domain.model.state;
 
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
-import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ExecutionModel;
+import com.antheminc.oss.nimbus.core.domain.command.Command;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.ExecutionModel;
 
 /**
  * @author Soham Chakravarti

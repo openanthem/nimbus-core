@@ -17,11 +17,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.Assert;
 import org.springframework.web.client.RestTemplate;
 
-import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.command.execution.ExecuteOutput;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityNotFoundException;
-import com.anthem.oss.nimbus.core.entity.client.user.ClientUser;
-import com.anthem.oss.nimbus.core.util.JustLogit;
+import com.antheminc.oss.nimbus.core.domain.command.Command;
+import com.antheminc.oss.nimbus.core.domain.command.execution.ExecuteOutput;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityNotFoundException;
+import com.antheminc.oss.nimbus.core.entity.client.user.ClientUser;
+import com.antheminc.oss.nimbus.core.util.JustLogit;
 
 import lombok.Getter;
 import lombok.Setter;

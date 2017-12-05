@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain;
+package com.antheminc.oss.nimbus.core.domain;
 
 import java.lang.annotation.Annotation;
 

@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core.config;
+package com.antheminc.oss.nimbus.core.config;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.GenericApplicationContext;
 
-import com.anthem.oss.nimbus.core.domain.command.execution.process.ActivitiBPMProcessHandler;
+import com.antheminc.oss.nimbus.core.domain.command.execution.process.ActivitiBPMProcessHandler;
 
 /**
  * @author Sandeep Mantha

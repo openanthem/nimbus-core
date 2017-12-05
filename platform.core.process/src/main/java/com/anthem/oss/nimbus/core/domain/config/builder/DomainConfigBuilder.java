@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.config.builder;
+package com.antheminc.oss.nimbus.core.domain.config.builder;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,13 +16,13 @@ import org.springframework.context.annotation.ClassPathScanningCandidateComponen
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 
-import com.anthem.oss.nimbus.core.domain.definition.Domain;
-import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
-import com.anthem.oss.nimbus.core.domain.model.config.ModelConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.builder.EntityConfigBuilder;
-import com.anthem.oss.nimbus.core.domain.model.config.builder.EntityConfigVisitor;
-import com.anthem.oss.nimbus.core.util.ClassLoadUtils;
-import com.anthem.oss.nimbus.core.util.JustLogit;
+import com.antheminc.oss.nimbus.core.domain.definition.Domain;
+import com.antheminc.oss.nimbus.core.domain.definition.InvalidConfigException;
+import com.antheminc.oss.nimbus.core.domain.model.config.ModelConfig;
+import com.antheminc.oss.nimbus.core.domain.model.config.builder.EntityConfigBuilder;
+import com.antheminc.oss.nimbus.core.domain.model.config.builder.EntityConfigVisitor;
+import com.antheminc.oss.nimbus.core.util.ClassLoadUtils;
+import com.antheminc.oss.nimbus.core.util.JustLogit;
 
 /**
  * @author Soham Chakravarti

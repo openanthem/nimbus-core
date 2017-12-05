@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.utils;
+package com.antheminc.oss.nimbus.core.utils;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;

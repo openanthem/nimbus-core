@@ -1,6 +1,6 @@
 package com.anthem.nimbus.core.authorization;
 
-import com.anthem.oss.nimbus.core.domain.command.Command;
+import com.antheminc.oss.nimbus.core.domain.command.Command;
 
 
 /**

@@ -1,13 +1,13 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.rules.drools;
+package com.antheminc.oss.nimbus.core.rules.drools;
 
 import org.apache.commons.lang.StringUtils;
 import org.drools.KnowledgeBase;
 
-import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
-import com.anthem.oss.nimbus.core.domain.model.config.RulesConfig;
+import com.antheminc.oss.nimbus.core.domain.definition.InvalidConfigException;
+import com.antheminc.oss.nimbus.core.domain.model.config.RulesConfig;
 
 import lombok.Getter;
 

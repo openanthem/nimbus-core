@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core.config;
+package com.antheminc.oss.nimbus.core.config;
 
 import static org.springframework.messaging.simp.SimpMessageType.MESSAGE;
 

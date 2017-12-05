@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.test.sample.todo;
+package com.antheminc.oss.nimbus.test.sample.todo;
 
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;

@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core.web;
+package com.antheminc.oss.nimbus.core.web;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;

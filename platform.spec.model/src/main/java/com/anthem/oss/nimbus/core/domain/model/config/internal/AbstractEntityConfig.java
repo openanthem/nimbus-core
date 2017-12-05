@@ -1,15 +1,15 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.config.internal;
+package com.antheminc.oss.nimbus.core.domain.model.config.internal;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.anthem.oss.nimbus.core.domain.model.config.AnnotationConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.EntityConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.EventHandlerConfig;
-import com.anthem.oss.nimbus.core.domain.model.config.RulesConfig;
-import com.anthem.oss.nimbus.core.util.JustLogit;
+import com.antheminc.oss.nimbus.core.domain.model.config.AnnotationConfig;
+import com.antheminc.oss.nimbus.core.domain.model.config.EntityConfig;
+import com.antheminc.oss.nimbus.core.domain.model.config.EventHandlerConfig;
+import com.antheminc.oss.nimbus.core.domain.model.config.RulesConfig;
+import com.antheminc.oss.nimbus.core.util.JustLogit;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;

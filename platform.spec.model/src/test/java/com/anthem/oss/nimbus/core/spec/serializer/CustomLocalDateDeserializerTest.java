@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core.spec.serializer;
+package com.antheminc.oss.nimbus.core.spec.serializer;
 
 import java.io.IOException;
 import java.time.LocalDate;

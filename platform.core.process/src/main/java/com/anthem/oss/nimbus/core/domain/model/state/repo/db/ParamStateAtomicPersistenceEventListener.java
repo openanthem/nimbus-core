@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core.domain.model.state.repo.db;
+package com.antheminc.oss.nimbus.core.domain.model.state.repo.db;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,17 +6,17 @@ import java.util.List;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.annotation.AnnotationUtils;
 
-import com.anthem.oss.nimbus.core.domain.command.Action;
-import com.anthem.oss.nimbus.core.domain.definition.Domain;
-import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
-import com.anthem.oss.nimbus.core.domain.definition.Repo;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Model;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
-import com.anthem.oss.nimbus.core.domain.model.state.internal.AbstractEvent.PersistenceMode;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.ModelPersistenceHandler;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.ModelRepositoryFactory;
+import com.antheminc.oss.nimbus.core.domain.command.Action;
+import com.antheminc.oss.nimbus.core.domain.definition.Domain;
+import com.antheminc.oss.nimbus.core.domain.definition.InvalidConfigException;
+import com.antheminc.oss.nimbus.core.domain.definition.Repo;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Model;
+import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.core.domain.model.state.ModelEvent;
+import com.antheminc.oss.nimbus.core.domain.model.state.internal.AbstractEvent.PersistenceMode;
+import com.antheminc.oss.nimbus.core.domain.model.state.repo.ModelPersistenceHandler;
+import com.antheminc.oss.nimbus.core.domain.model.state.repo.ModelRepositoryFactory;
 
 import lombok.Getter;
 import lombok.Setter;

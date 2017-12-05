@@ -1,7 +1,7 @@
 ///**
 // * 
 // */
-//package com.anthem.oss.nimbus.core.events.listeners;
+//package com.antheminc.oss.nimbus.core.events.listeners;
 //
 //import static org.junit.Assert.assertEquals;
 //import static org.junit.Assert.assertNotNull;
@@ -22,19 +22,19 @@
 //
 //import com.anthem.nimbus.platform.core.process.api.AbstractPlatformIntegrationTests;
 //import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadScopedEventListener;
-//import com.anthem.oss.nimbus.core.domain.command.Command;
-//import com.anthem.oss.nimbus.core.domain.command.CommandBuilder;
-//import com.anthem.oss.nimbus.core.domain.model.state.EntityState.ListParam;
-//import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-//import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
-//import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
-//import com.anthem.oss.nimbus.core.domain.model.state.builder.DefaultQuadModelBuilder;
-//import com.anthem.oss.nimbus.core.entity.process.ProcessFlow;
-//import com.anthem.oss.nimbus.core.events.listeners.TestModelFlowData.Book;
-//import com.anthem.oss.nimbus.core.events.listeners.TestModelFlowData.Book.Publisher;
-//import com.anthem.oss.nimbus.core.events.listeners.TestModelFlowData.OrderBookFlow;
-//import com.anthem.oss.nimbus.core.session.UserEndpointSession;
-//import com.anthem.oss.nimbus.core.spec.contract.event.StateAndConfigEventListener;
+//import com.antheminc.oss.nimbus.core.domain.command.Command;
+//import com.antheminc.oss.nimbus.core.domain.command.CommandBuilder;
+//import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.ListParam;
+//import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
+//import com.antheminc.oss.nimbus.core.domain.model.state.ModelEvent;
+//import com.antheminc.oss.nimbus.core.domain.model.state.QuadModel;
+//import com.antheminc.oss.nimbus.core.domain.model.state.builder.DefaultQuadModelBuilder;
+//import com.antheminc.oss.nimbus.core.entity.process.ProcessFlow;
+//import com.antheminc.oss.nimbus.core.events.listeners.TestModelFlowData.Book;
+//import com.antheminc.oss.nimbus.core.events.listeners.TestModelFlowData.Book.Publisher;
+//import com.antheminc.oss.nimbus.core.events.listeners.TestModelFlowData.OrderBookFlow;
+//import com.antheminc.oss.nimbus.core.session.UserEndpointSession;
+//import com.antheminc.oss.nimbus.core.spec.contract.event.StateAndConfigEventListener;
 //
 //import test.com.anthem.nimbus.platform.spec.contract.event.MockEventListener;
 //

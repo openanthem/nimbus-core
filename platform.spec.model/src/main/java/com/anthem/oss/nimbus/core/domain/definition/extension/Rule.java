@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.definition.extension;
+package com.antheminc.oss.nimbus.core.domain.definition.extension;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -10,8 +10,8 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import com.anthem.oss.nimbus.core.domain.definition.event.StateEvent.OnStateChange;
-import com.anthem.oss.nimbus.core.domain.definition.event.StateEvent.OnStateLoad;
+import com.antheminc.oss.nimbus.core.domain.definition.event.StateEvent.OnStateChange;
+import com.antheminc.oss.nimbus.core.domain.definition.event.StateEvent.OnStateLoad;
 
 /**
  * <p>Rule allows its decorated field a mechanism for triggering one or more rule definitions 

@@ -1,14 +1,14 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.repo;
+package com.antheminc.oss.nimbus.core.repo;
 
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 
-import com.anthem.oss.nimbus.core.config.BPMEngineConfig;
+import com.antheminc.oss.nimbus.core.config.BPMEngineConfig;
 
 /**
  * @author Soham Chakravarti

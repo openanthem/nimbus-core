@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.model.state.internal;
+package com.antheminc.oss.nimbus.core.domain.model.state.internal;
 
 import java.util.ArrayList;
 import java.util.Deque;
@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
-import com.anthem.oss.nimbus.core.domain.model.state.ExecutionTxnContext;
-import com.anthem.oss.nimbus.core.domain.model.state.InvalidStateException;
-import com.anthem.oss.nimbus.core.domain.model.state.Notification;
-import com.anthem.oss.nimbus.core.domain.model.state.ParamEvent;
+import com.antheminc.oss.nimbus.core.FrameworkRuntimeException;
+import com.antheminc.oss.nimbus.core.domain.model.state.ExecutionTxnContext;
+import com.antheminc.oss.nimbus.core.domain.model.state.InvalidStateException;
+import com.antheminc.oss.nimbus.core.domain.model.state.Notification;
+import com.antheminc.oss.nimbus.core.domain.model.state.ParamEvent;
 
 import lombok.Getter;
 import lombok.Setter;

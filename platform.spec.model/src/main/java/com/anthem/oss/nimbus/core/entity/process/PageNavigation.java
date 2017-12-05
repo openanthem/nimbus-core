@@ -1,15 +1,15 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.entity.process;
+package com.antheminc.oss.nimbus.core.entity.process;
 
 import java.io.Serializable;
 import java.util.List;
 
 import org.springframework.data.annotation.Transient;
 
-import com.anthem.oss.nimbus.core.domain.definition.Model;
-import com.anthem.oss.nimbus.core.util.CollectionsTemplate;
+import com.antheminc.oss.nimbus.core.domain.definition.Model;
+import com.antheminc.oss.nimbus.core.util.CollectionsTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;

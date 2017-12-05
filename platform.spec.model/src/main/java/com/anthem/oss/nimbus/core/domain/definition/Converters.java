@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.core.domain.definition;
+package com.antheminc.oss.nimbus.core.domain.definition;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

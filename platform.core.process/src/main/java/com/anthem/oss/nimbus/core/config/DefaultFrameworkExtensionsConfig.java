@@ -1,22 +1,22 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.config;
+package com.antheminc.oss.nimbus.core.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.anthem.oss.nimbus.core.BeanResolverStrategy;
-import com.anthem.oss.nimbus.core.domain.model.state.extension.AccessConditionalStateEventHandler;
-import com.anthem.oss.nimbus.core.domain.model.state.extension.ActivateConditionalStateEventHandler;
-import com.anthem.oss.nimbus.core.domain.model.state.extension.AuditStateChangeHandler;
-import com.anthem.oss.nimbus.core.domain.model.state.extension.ConfigConditionalStateChangeHandler;
-import com.anthem.oss.nimbus.core.domain.model.state.extension.EnableConditionalStateEventHandler;
-import com.anthem.oss.nimbus.core.domain.model.state.extension.ModalStateEventHandler;
-import com.anthem.oss.nimbus.core.domain.model.state.extension.ParamContextStateEventHandler;
-import com.anthem.oss.nimbus.core.domain.model.state.extension.RuleStateEventHandler;
-import com.anthem.oss.nimbus.core.domain.model.state.extension.ValuesConditionalOnStateChangeEventHandler;
-import com.anthem.oss.nimbus.core.domain.model.state.extension.ValuesConditionalOnStateLoadEventHandler;
+import com.antheminc.oss.nimbus.core.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.core.domain.model.state.extension.AccessConditionalStateEventHandler;
+import com.antheminc.oss.nimbus.core.domain.model.state.extension.ActivateConditionalStateEventHandler;
+import com.antheminc.oss.nimbus.core.domain.model.state.extension.AuditStateChangeHandler;
+import com.antheminc.oss.nimbus.core.domain.model.state.extension.ConfigConditionalStateChangeHandler;
+import com.antheminc.oss.nimbus.core.domain.model.state.extension.EnableConditionalStateEventHandler;
+import com.antheminc.oss.nimbus.core.domain.model.state.extension.ModalStateEventHandler;
+import com.antheminc.oss.nimbus.core.domain.model.state.extension.ParamContextStateEventHandler;
+import com.antheminc.oss.nimbus.core.domain.model.state.extension.RuleStateEventHandler;
+import com.antheminc.oss.nimbus.core.domain.model.state.extension.ValuesConditionalOnStateChangeEventHandler;
+import com.antheminc.oss.nimbus.core.domain.model.state.extension.ValuesConditionalOnStateLoadEventHandler;
 
 /**
  * @author Soham Chakravarti

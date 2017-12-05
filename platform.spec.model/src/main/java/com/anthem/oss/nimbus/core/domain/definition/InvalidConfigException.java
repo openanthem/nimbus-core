@@ -1,9 +1,9 @@
 /**
  * 
  */
-package com.anthem.oss.nimbus.core.domain.definition;
+package com.antheminc.oss.nimbus.core.domain.definition;
 
-import com.anthem.oss.nimbus.core.FrameworkRuntimeException;
+import com.antheminc.oss.nimbus.core.FrameworkRuntimeException;
 
 /**
  * @author Soham Chakravarti
