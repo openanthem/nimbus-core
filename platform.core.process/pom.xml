@@ -7,18 +7,14 @@
 		<artifactId>nimbus.core.parent</artifactId>
 		<version>1.0.0.M9-SNAPSHOT</version>
 	</parent>
-	<url></url>
 	<artifactId>nimbus.core.api</artifactId>
 	<packaging>jar</packaging>
-
 	<name>nimbus-core-api</name>
 	<description>Yo process</description>
-
 	<organization>
 		<name>Anthem Inc.</name>
 		<url>https://www.oss.antheminc.com</url>
 	</organization>
-
 	<properties>
 		<sonar.projectName>NIM-Process</sonar.projectName>
 		<!-- <sonar.jacoco.reportPath>${project.basedir}/../platform.parent/target/jacoco.exec</sonar.jacoco.reportPath> -->
@@ -192,6 +188,12 @@
 			<artifactId>jackson-databind</artifactId>
 		</dependency>
 	</dependencies>
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 	<build>
 		<plugins>
@@ -244,6 +246,27 @@
 						<include>**/*Tests.java</include>
 						<include>**/*Test.java</include>
 					</includes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
+				<version>${plugin.version}</version>
+				<extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>default-deploy</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                    </execution>
+                </executions>
+				<configuration>
+					<serverId>ossrh</serverId>
+					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+					<autoReleaseAfterClose>true</autoReleaseAfterClose>
+                    <skipStaging>true</skipStaging>
 				</configuration>
 			</plugin>
 		</plugins>
