@@ -215,15 +215,17 @@ export class Param implements Serializable<Param> {
         return this;
     }
     // TODO : Clean up. Duplicating this logic here to populate grid data when data is recieved as leafstate
-    private createGridData(params: Param[], gridCols: Param[]) {
+    private createGridData(params: Param[], gridCols: ElementModelParam[]) {
         let gridData = [];
         // Look for inner lists (nested grid)
-        let nestedGridParam: Param;
-        gridCols.forEach(col => {
-           if (col.config.uiStyles && col.config.uiStyles.name == 'ViewConfig.Grid') {
-               nestedGridParam = col;
-           } 
-        });
+        let nestedGridParam: ElementModelParam;
+        if (gridCols) {
+            gridCols.forEach(col => {
+            if (col.uiStyles && col.uiStyles.name == 'ViewConfig.Grid') {
+                nestedGridParam = col;
+            } 
+            });
+        }
         params.forEach(param => {
             let rowData : any = {};
             rowData = this.createRowData(param, nestedGridParam);
@@ -232,14 +234,14 @@ export class Param implements Serializable<Param> {
         return gridData;
     } 
     // TODO : Clean up. Duplicating this logic here to populate grid data when data is recieved as leafstate
-    private createRowData(param: Param, nestedGridParam: Param) {
+    private createRowData(param: Param, nestedGridParam: ElementModelParam) {
         let rowData: any = {};
         rowData = param.leafState;
         rowData['elemId'] = param.elemId;
     
         // If nested data exists, set the data to nested grid
         if (nestedGridParam) {
-            nestedGridParam.config.gridList = rowData[nestedGridParam.config.code];
+            nestedGridParam.gridList = rowData[nestedGridParam.code];
         }
     
     return rowData;
@@ -428,9 +430,7 @@ export class ParamConfig implements Serializable<ParamConfig> {
     postEvent: boolean;
     gridList: any[];
     //TODO Temporary for grid
-    gridCols: Param[];
-    gridLinkMenu: Param;
-    gridLinks: Param[];
+    gridCols: ElementModelParam[];
 
     deserialize( inJson ) {
      //   this.referredClass = inJson.referredClass;
@@ -473,24 +473,11 @@ export class ParamConfig implements Serializable<ParamConfig> {
         //TODO Temporary for grid
         if ( inJson.type && inJson.type.elementModelParams ) {
             this.gridCols = [];
-            this.gridLinks = [];
             for ( var p in inJson.type.elementModelParams ) {
-                let colParam = new Param();
-                colParam['config'] = new ParamConfig().deserialize( inJson.type.elementModelParams[p] );
-                if (colParam.config.uiStyles && colParam.config.uiStyles.attributes && colParam.config.uiStyles.attributes.alias == 'Link') {
-                    this.gridLinks.push(colParam);
-                } else if (colParam.config.uiStyles && colParam.config.uiStyles.attributes && colParam.config.uiStyles.attributes.alias == 'LinkMenu') {
-                    this.gridLinkMenu = colParam;
-                } else {
-                    this.gridCols.push(colParam);
-                }
+                let colParam = new ElementModelParam();
+                colParam = new ElementModelParam().deserialize( inJson.type.elementModelParams[p] );
+                this.gridCols.push(colParam);
             }
-            // push links to linkmenu
-            if (this.gridLinkMenu) {
-                this.gridLinkMenu['params'] = this.gridLinks;
-                this.gridCols.push(this.gridLinkMenu);
-            }
-            
         }
 
         return this;
@@ -503,6 +490,30 @@ export class ParamConfig implements Serializable<ParamConfig> {
             }
         }
         return false;
+    }
+}
+
+export class ElementModelParam extends ParamConfig implements Serializable<ElementModelParam> {
+
+    code: string;
+    label: string;
+    uiStyles: UiStyle;
+    nestedParams: ElementModelParam[];
+
+    deserialize( inJson ) {
+        this.code = inJson.code;
+        this.label = inJson.label;
+        if ( inJson.uiStyles != null ) {
+            this.uiStyles = new UiStyle().deserialize( inJson.uiStyles );
+        }
+        if (inJson.type && inJson.type.model && inJson.type.model.params) {
+            this.nestedParams = [];
+            for (var p in inJson.type.model.params ) {
+                this.nestedParams.push(new ElementModelParam().deserialize(inJson.type.model.params[p]));
+            }
+        }
+
+        return this;
     }
 }
 

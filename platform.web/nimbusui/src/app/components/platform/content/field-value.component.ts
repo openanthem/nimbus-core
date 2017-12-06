@@ -8,7 +8,8 @@ import { Param } from '../../../shared/app-config.interface';
     selector: 'nm-field-value',
     providers: [WebContentSvc],
     template: `
-    <div [hidden]="!element?.config?.visible?.currState" >
+    <!--<div [hidden]="!element?.config?.visible?.currState" >-->
+    <div [hidden]="!element?.visible?.currState" >
         <label>{{label}}</label>
         <p style="margin-bottom:0rem;">{{element.leafState}}</p>
     </div>
