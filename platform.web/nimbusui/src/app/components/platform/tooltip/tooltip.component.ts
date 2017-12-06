@@ -24,9 +24,9 @@ import { Param } from '../../../shared/app-config.interface';
     selector: 'nm-tooltip',
     template: `
         <span class="tooltip-container helpIcon {{widgetPosition}}">
-            <a class="tooltip-trigger" href="javascript:void(0)" (click)="toggleOpen($event)"></a>
-            <div class=" callout">
-                <a href="javascript:void(0);" class="close" (click)="closeCallout($event)"></a>
+            <button class="tooltip-trigger" (click)="toggleOpen($event)"></button>
+            <div class="callout">
+                <button class="close" (click)="closeCallout($event)"></button>
                 <div [innerHTML]="htmlContent"></div>
             </div>
         </span>
