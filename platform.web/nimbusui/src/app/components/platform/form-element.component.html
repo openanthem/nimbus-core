@@ -6,6 +6,8 @@
     <nm-input-textarea id="{{id}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.type=='textarea'" [element]="element" [form]="form"></nm-input-textarea>
     <nm-input-date  id="{{id}}" [formControlName]="element.config?.code"  [disableFormControl]="form.get(element.config?.code)"
         [disableCondition]="element?.enabled?.currState" *ngIf="element.config?.uiStyles?.attributes?.type=='date'" [element]="element" [form]="form"></nm-input-date>
+    <nm-input-calendar  id="{{id}}" [formControlName]="element.config?.code"  [disableFormControl]="form.get(element.config?.code)"
+        [disableCondition]="element?.enabled?.currState" *ngIf="element.config?.uiStyles?.attributes?.type=='calendar'" [element]="element" [form]="form"></nm-input-calendar>
     <nm-comboBox id="{{id}}"  [formControlName]="element.config?.code"  [disableFormControl]="form.get(element.config?.code)"
         [disableCondition]="element?.enabled?.currState" *ngIf="element.config?.uiStyles?.attributes?.alias == 'ComboBox'" [element]="element"  [form]="form"></nm-comboBox>
     <nm-input-radio id="{{id}}"  [formControlName]="element.config?.code"  [disableFormControl]="form.get(element.config?.code)"

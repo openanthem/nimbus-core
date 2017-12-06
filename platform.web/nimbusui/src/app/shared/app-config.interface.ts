@@ -563,6 +563,8 @@ export class UiAttribute implements Serializable<UiAttribute> {
     content: string; //-- TO BE DELETED (always pull with contentId)
     contentId: string;
     labelClass: string;
+    showTime: boolean;
+    hourFormat: string;
     header: string;
     help: string;
     title: string;
@@ -658,6 +660,10 @@ export class UiAttribute implements Serializable<UiAttribute> {
         this.formReset = inJson.formReset;
         this.target = inJson.target;
         this.rel = inJson.rel;
+        this.hourFormat = inJson.hourFormat;
+        if (inJson.showTime) {
+            this.showTime = inJson.showTime;
+        }
         if (inJson.defaultFlow) {
             this.defaultFlow = inJson.defaultFlow;
         }
