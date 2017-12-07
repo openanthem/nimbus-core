@@ -19,13 +19,11 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpModule, BrowserXhr } from '@angular/http';
 import { ReactiveFormsModule }  from '@angular/forms';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
-import { DataTableModule, SharedModule, OverlayPanelModule } from 'primeng/primeng';
-import { PickListModule, DragDropModule } from 'primeng/primeng';
-import {FileUpload, FileUploadModule} from 'primeng/primeng';
+import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, FileUpload, FileUploadModule, ListboxModule, DialogModule  } from 'primeng/primeng';
 import { SortableComponentDirective, SortableContainerDirective } from './directives/sortable-dragdrop.directive';
 import { NavLinkRouter } from './directives/nav-link-router.directive';
-import { ListboxModule, DialogModule } from 'primeng/primeng';
-//import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+// import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 // Platform Imports
 // Components
 import { LayoutService } from './services/layout.service';
@@ -75,6 +73,7 @@ import { Modal } from './components/platform/modal/modal.component';
 import { TooltipComponent } from './components/platform/tooltip/tooltip.component';
 import { HeaderGlobal } from './components/platform/header/header-global.component';
 import { FooterGlobal } from './components/platform/footer/footer-global.component';
+import { Calendar } from './components/platform/form/elements/calendar.component';
 // Services
 import { WebContentSvc } from './services/content-management.service';
 import { STOMPStatusComponent } from './services/stomp-status.component';
@@ -111,6 +110,7 @@ import { LinkPipe } from './pipes/link.pipe';
         DialogModule,
         BrowserModule,
         // BrowserAnimationsModule,
+        CalendarModule
     ],
     declarations: [ AppComponent, STOMPStatusComponent, FlowWrapper, PageContent, PageNotfoundComponent, StaticText,
         Tile, Section, Header, Form, FormElement, InputText, ComboBox, RadioButton, DateControl, CheckBoxGroup,
@@ -124,7 +124,7 @@ import { LinkPipe } from './pipes/link.pipe';
         Modal, ActionDropdown, ActionLink, 
         GridMouseEventDirective, SortableContainerDirective, SortableComponentDirective,
         HomeLayoutCmp, MainLayoutCmp, DomainLayoutCmp, LoginCmp, LoginLayoutCmp, StyleGuideCmp, KeysPipe, LinkPipe, MultiSelectListBox, 
-        CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent
+        CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent, Calendar
 
     ],
     entryComponents: [ FlowWrapper, PageContent, PageNotfoundComponent, LoginCmp, MainLayoutCmp, HomeLayoutCmp],
