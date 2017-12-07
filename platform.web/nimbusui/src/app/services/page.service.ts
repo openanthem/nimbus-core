@@ -1,4 +1,4 @@
-import { ElementModelParam } from './../shared/app-config.interface';
+import { ElementModelParam, RemnantState } from './../shared/app-config.interface';
 'use strict';
 import { Action, HttpMethod, Behavior} from './../shared/command.enum';
 import { Injectable, EventEmitter } from '@angular/core';
@@ -668,47 +668,52 @@ export class PageService {
         }
 
         updateParam(param: Param, payload: Param) {
-            let result: any[] = Reflect.ownKeys(param);
-            let updatedKeys: any[] = Reflect.ownKeys(payload);
-            updatedKeys.forEach(updatedKey => {
-                    result.forEach(currentKey => {
-                            if (currentKey === updatedKey) {
-                                    try {
-                                            if (Reflect.ownKeys(Reflect.get(param, currentKey)) != null
-                                                    && Reflect.ownKeys(Reflect.get(param, currentKey)).length > 0) {
-                                                            if (currentKey ==='type') {
-                                                                    Object.assign(Reflect.get(param, currentKey), new Type().deserialize(Reflect.get(payload, updatedKey)));
-                                                            }else if(currentKey === 'config') {
-                                                                    Object.assign(Reflect.get(param, currentKey), new ParamConfig().deserialize(Reflect.get(payload, updatedKey)));
-                                                            //TODO - refactor this whole method and the conditions. Revisit - order, count
-                                                            } else if(currentKey === 'leafState' || currentKey === 'visible' || currentKey === 'message') {
-                                                                    Reflect.set(param, currentKey, Reflect.get(payload, updatedKey));
-                                                                    this.eventUpdate.next(param);
-                                                            } else if(currentKey === 'values') {
+                let result: any[] = Reflect.ownKeys(param);
+                let updatedKeys: any[] = Reflect.ownKeys(payload);
+                updatedKeys.forEach(updatedKey => {
+                        result.forEach(currentKey => {
+                                if (currentKey === updatedKey) {
+                                        try {
+                                                if (Reflect.ownKeys(Reflect.get(param, currentKey)) != null
+                                                        && Reflect.ownKeys(Reflect.get(param, currentKey)).length > 0) {
+                                                        if (currentKey === 'type') {
+                                                                //Object.assign(Reflect.get(param, currentKey), new Type().deserialize(Reflect.get(payload, updatedKey)));
+                                                        } else if (currentKey === 'config') {
+                                                                Object.assign(Reflect.get(param, currentKey), new ParamConfig().deserialize(Reflect.get(payload, updatedKey)));
+                                                                //TODO - refactor this whole method and the conditions. Revisit - order, count
+                                                        } else if (currentKey === 'leafState' || currentKey === 'message') {
+                                                                Reflect.set(param, currentKey, Reflect.get(payload, updatedKey));
+                                                                this.eventUpdate.next(param);
+                                                        } else if (currentKey === 'enabled' || currentKey === 'visible') {
+                                                                let newRState = new RemnantState().deserialize(Reflect.get(payload, updatedKey));
+                                                                if (newRState['currState'] !== param[currentKey]['currState']) {
+                                                                        Object.assign(Reflect.get(param, currentKey), newRState);
+                                                                }
+                                                        } else if (currentKey === 'values') {
                                                                 if (param.values == null) {
-                                                                    let  values = [];
-                                                                    values.push(Reflect.get(payload, updatedKey)) ;
-                                                                    param.values = values;
-                                                                    this.eventUpdate.next(param);
-                                                            } else {
-                                                                    param.values = Reflect.get(payload, updatedKey);
-                                                                    this.eventUpdate.next(param);
-                                                            }
-                                                     }
-                                            }
-                                    } catch (e) {
-                                            if (e instanceof TypeError) {
-                                                    Reflect.set(param, currentKey, Reflect.get(payload, updatedKey));
-                                                    if(currentKey === 'leafState'|| currentKey === 'visible') {
-                                                            this.eventUpdate.next(param);
-                                                    }
-                                            } else {
-                                                    throw e;
-                                            }
-                                    }
-                            }
-                    });
-            });
+                                                                        let values = [];
+                                                                        values.push(Reflect.get(payload, updatedKey)) ;
+                                                                        param.values = values;
+                                                                        this.eventUpdate.next(param);
+                                                                } else {
+                                                                        param.values = Reflect.get(payload, updatedKey);
+                                                                        this.eventUpdate.next(param);
+                                                                }
+                                                        }
+                                                }
+                                        } catch (e) {
+                                                if (e instanceof TypeError) {
+                                                        Reflect.set(param, currentKey, Reflect.get(payload, updatedKey));
+                                                        if (currentKey === 'leafState' || currentKey === 'visible') {
+                                                                this.eventUpdate.next(param);
+                                                        }
+                                                } else {
+                                                        throw e;
+                                                }
+                                        }
+                                }
+                        });
+                });
 
         }
 
