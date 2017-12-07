@@ -25,7 +25,7 @@ import {FileUpload, FileUploadModule} from 'primeng/primeng';
 import { SortableComponentDirective, SortableContainerDirective } from './directives/sortable-dragdrop.directive';
 import { NavLinkRouter } from './directives/nav-link-router.directive';
 import { ListboxModule, DialogModule } from 'primeng/primeng';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+//import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // Platform Imports
 // Components
 import { LayoutService } from './services/layout.service';
@@ -47,7 +47,7 @@ import { InputText } from './components/platform/form/elements/textbox.component
 import { DateControl } from './components/platform/form/elements/date.component';
 import { CheckBoxGroup } from './components/platform/form/elements/checkbox-group.component';
 import { MultiselectCard } from './components/platform/form/elements/multi-select-card.component';
-import { ActionDropdown } from './components/platform/form/elements/action-dropdown.component';
+import { ActionDropdown, ActionLink } from './components/platform/form/elements/action-dropdown.component';
 import { GridContainer } from './components/platform/grid/grid-container.component';
 import { InfiniteScrollGrid } from './components/platform/grid/grid.component';
 import { Link } from './components/platform/link.component';
@@ -110,7 +110,7 @@ import { LinkPipe } from './pipes/link.pipe';
         FileUploadModule,
         DialogModule,
         BrowserModule,
-        BrowserAnimationsModule,
+        // BrowserAnimationsModule,
     ],
     declarations: [ AppComponent, STOMPStatusComponent, FlowWrapper, PageContent, PageNotfoundComponent, StaticText,
         Tile, Section, Header, Form, FormElement, InputText, ComboBox, RadioButton, DateControl, CheckBoxGroup,
@@ -121,7 +121,7 @@ import { LinkPipe } from './pipes/link.pipe';
         LayoutService,ContentContainer,Switch,
         DomainFlowCmp,HeaderGlobal,FooterGlobal,
         BreadcrumbComponent, NavLinkRouter,
-        Modal, ActionDropdown,
+        Modal, ActionDropdown, ActionLink, 
         GridMouseEventDirective, SortableContainerDirective, SortableComponentDirective,
         HomeLayoutCmp, MainLayoutCmp, DomainLayoutCmp, LoginCmp, LoginLayoutCmp, StyleGuideCmp, KeysPipe, LinkPipe, MultiSelectListBox, 
         CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent

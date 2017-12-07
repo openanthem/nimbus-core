@@ -1,3 +1,4 @@
+import { ElementModelParam } from './../../../../shared/app-config.interface';
 import { Behavior } from './../../../../shared/command.enum';
 import { Component, Input } from '@angular/core';
 import { WebContentSvc } from '../../../../services/content-management.service';
@@ -12,14 +13,14 @@ import { HttpMethod } from '../../../../shared/command.enum';
     <div class="custom-dropdown {{widgetPosition}}" [ngClass]="{'open': isOpen}">
         <button class="dropdownTrigger" attr.aria-expanded="{{isOpen}}" (click)="toggleOpen($event)"></button> 
         <div class="dropdownContent" attr.aria-hidden="{{!isOpen}}">
-            <a href="javascript:void(0)" (click)="processOnClick(link.code)" *ngFor="let link of params">{{link.code}}</a>
+            <nm-action-link [elementPath]="elementPath" [param]="param" *ngFor="let param of params"></nm-action-link>
         </div>
     </div>
   `
 })
 export class ActionDropdown {
 
-    @Input() params: Param[];
+    @Input() params: ElementModelParam[];
     @Input() elementPath: string;
     isOpen: boolean = false;
     widgetPosition: string;
@@ -28,7 +29,7 @@ export class ActionDropdown {
     }
 
     ngOnInit() {
-        //console.log(this.params);
+        // console.log(this.params);
         // console.log(this.elementPath + '/');
     }
 
@@ -48,5 +49,45 @@ export class ActionDropdown {
         this.pageSvc.processEvent(this.elementPath + '/' + linkCode, Behavior.execute.value, item, HttpMethod.GET.value);
     }
 }
+
+@Component({
+    selector: 'nm-action-link',
+    providers: [
+        WebContentSvc
+    ],
+    template: `
+        <ng-template [ngIf]="param.uiStyles.attributes.value =='EXTERNAL'">
+            <a href="{{param.uiStyles?.attributes?.url}}" class="{{param.uiStyles?.attributes?.cssClass}}" target="{{param.uiStyles?.attributes?.target}}" rel="{{param.uiStyles?.attributes?.rel}}">{{label}}</a>
+        </ng-template>
+        <ng-template [ngIf]="param.uiStyles.attributes.value !='EXTERNAL'">
+            <a href="javascript:void(0)" (click)="processOnClick(this.param.code)">{{label}}</a>
+        </ng-template>
+    `
+})
+export class ActionLink {
+    
+        @Input() param: ElementModelParam;
+        @Input() elementPath: string;
+        protected label: string;
+        
+        constructor(private wcs: WebContentSvc, private pageSvc: PageService) {
+            wcs.content$.subscribe(result => {
+                if (this.param && result.id === this.param.code) {
+                    this.label = result.label;
+                }
+            });
+        }
+    
+        ngOnInit() {
+            if (this.param && this.param.code) {
+                this.wcs.getContent(this.param.code);
+            }
+        }
+    
+        processOnClick(linkCode: string) {
+            let item: GenericDomain = new GenericDomain();
+            this.pageSvc.processEvent(this.elementPath + '/' + linkCode, Behavior.execute.value, item, HttpMethod.GET.value);
+        }
+    }
 
 
