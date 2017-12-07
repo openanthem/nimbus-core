@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>	
+	<modelVersion>4.0.0</modelVersion>
 
 	<name>nimbus-core-web</name>
-	<artifactId>com.antheminc.oss.nimbus.core.web</artifactId>
+	<artifactId>nimbus.core.web</artifactId>
 	<description>oss web project</description>
 	<packaging>jar</packaging>
 
 	<parent>
-		<groupId>com.antheminc.oss.nimbus.core</groupId>
-		<artifactId>com.antheminc.oss.nimbus.core.parent</artifactId>
+		<groupId>com.antheminc.oss</groupId>
+		<artifactId>nimbus.core.parent</artifactId>
 		<version>1.0.0.M9-SNAPSHOT</version>
 	</parent>
 
@@ -63,8 +63,9 @@
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.antheminc.oss.nimbus.core</groupId>
-			<artifactId>com.antheminc.oss.nimbus.core.api</artifactId>
+			<groupId>com.antheminc.oss</groupId>
+			<artifactId>nimbus.core.api</artifactId>
+			<version>${nimbus.core.api.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.quartz-scheduler</groupId>
@@ -85,7 +86,7 @@
 			</activation>
 			<build>
 				<plugins>
-					<!-- <plugin> <groupId>com.github.eirslett</groupId> <artifactId>frontend-maven-plugin</artifactId> 
+					<!-- <plugin> <groupId>com.github.eirslett</groupId> <artifactId>frontend-maven-plugin</artifactId>
 						</plugin> -->
 					<plugin>
 						<groupId>org.springframework.boot</groupId>
@@ -148,8 +149,8 @@
 						<directory>target/frontend</directory>
 						<targetPath>static</targetPath>
 					</resource>
-			
-			
+
+
 				</resources>
 			</build>
 		</profile>
@@ -266,7 +267,7 @@
 							</execution>
 						</executions>
 						<configuration>
-							<karmaExecutable>${basedir}/node_modules/.bin/karma</karmaExecutable>        
+							<karmaExecutable>${basedir}/node_modules/.bin/karma</karmaExecutable>
 							<configFile>${basedir}/karma.conf.js</configFile>
 							<reportsDirectory>${project.build.directory}/karma-reports</reportsDirectory>
 							<browsers>${testconfig.ui.browsers}</browsers>

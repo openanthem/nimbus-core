@@ -2,16 +2,15 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.antheminc.oss.nimbus.core</groupId>
-	<artifactId>com.antheminc.oss.nimbus.core.dependencies</artifactId>
+	<groupId>com.antheminc.oss</groupId>
+	<artifactId>nimbus.core.dependencies</artifactId>
 	<version>1.0.0.M9-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>nimbus-core-dependencies</name>
 	<description>Nimbus Core Bill of materials</description>
-	<url></url>
 	<organization>
 		<name>Anthem Inc.</name>
-		<url>https://www.anthem.com</url>
+		<url>https://www.oss.antheminc.com</url>
 	</organization>
 
 	<properties>
@@ -34,6 +33,7 @@
 		<jackson-mapper-asl.version>1.9.6</jackson-mapper-asl.version>
 		<quartz.version>2.2.3</quartz.version>
 		<maven-assembly-plugin.version>2.6</maven-assembly-plugin.version>
+		<maven-build-helper-maven-plugin.version>3.0.0</maven-build-helper-maven-plugin.version>
 		<maven-clean-plugin.version>3.0.0</maven-clean-plugin.version>
 		<maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
 		<maven-install-plugin.version>2.5.2</maven-install-plugin.version>
@@ -64,7 +64,17 @@
 		<nimbus.core.ui.version>${nimbus.core.version}</nimbus.core.ui.version>
 		<nimbus.core.processor.version>${nimbus.core.version}</nimbus.core.processor.version>
 	</properties>
-
+  <repositories>
+		<repository>
+			<id>mvnrepository.com</id>
+      <name>MVN Repository</name>
+      <url>https://mvnrepository.com</url>
+		</repository>
+		<repository>
+  		<id>clojars.org</id>
+  		<url>http://clojars.org/repo</url>
+		</repository>
+	</repositories>
 	<developers>
 		<developer>
 			<id>soham.chakravarti</id> <!-- Replace with github id -->
@@ -223,34 +233,29 @@
 		        </exclusions>
 			</dependency>
 			<dependency>
-				<groupId>com.antheminc.oss.nimbus.core</groupId>
-				<artifactId>com.antheminc.oss.nimbus.core.spec</artifactId>
+				<groupId>com.antheminc.oss</groupId>
+				<artifactId>nimbus.core.spec</artifactId>
 				<version>${nimbus.core.spec.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.antheminc.oss.nimbus.core</groupId>
-				<artifactId>com.antheminc.oss.nimbus.core.test</artifactId>
+				<groupId>com.antheminc.oss</groupId>
+				<artifactId>nimbus.core.test</artifactId>
 				<version>${nimbus.core.test.version}</version>
 				<!-- <scope>test</scope> -->
 			</dependency>
 			<dependency>
-				<groupId>com.antheminc.oss.nimbus.core</groupId>
-				<artifactId>com.antheminc.oss.nimbus.core.api</artifactId>
+				<groupId>com.antheminc.oss</groupId>
+				<artifactId>nimbus.core.api</artifactId>
 				<version>${nimbus.core.api.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.antheminc.oss.nimbus.core</groupId>
-				<artifactId>com.antheminc.oss.nimbus.core.processor</artifactId>
+				<groupId>com.antheminc.oss</groupId>
+				<artifactId>nimbus.core.processor</artifactId>
 				<version>${nimbus.core.processor.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.antheminc.oss.nimbus.core</groupId>
-				<artifactId>com.antheminc.oss.nimbus.core.processor</artifactId>
-				<version>${nimbus.core.processor.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.antheminc.oss.nimbus.core</groupId>
-				<artifactId>com.antheminc.oss.nimbus.core.web</artifactId>
+				<groupId>com.antheminc.oss</groupId>
+				<artifactId>nimbus.core.web</artifactId>
 				<version>${nimbus.core.ui.version}</version>
 			</dependency>
 		</dependencies>
