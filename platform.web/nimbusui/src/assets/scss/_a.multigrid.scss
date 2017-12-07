@@ -6,9 +6,10 @@ ng-component{
     border: 1px solid #cecece;
     position: relative;
 }
+
 .ui-datatable {
     position: static;
-    font-size: .8rem;
+    font-size: 1rem;
     .ui-selection-column .ui-chkbox {
         display: inline-block;
     }
@@ -42,7 +43,7 @@ ng-component{
         border: none;
         background: none;
         text-align: left;
-        font-size: .6rem;
+        font-size: .8rem;
         padding: 0;
     }
     th.ui-sortable-column:not(.ui-state-active):hover {
@@ -116,7 +117,10 @@ ng-component{
 .ui-widget-header {
     border: none;
     text-align: right;
-    font-size: .6rem;
+    font-size: .8rem;
+    &.ui-paginator {
+        font-size: .6rem;
+    }
 }
 
 p-header {
