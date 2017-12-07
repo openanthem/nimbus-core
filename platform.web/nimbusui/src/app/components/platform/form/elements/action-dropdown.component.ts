@@ -9,11 +9,9 @@ import { HttpMethod } from '../../../../shared/command.enum';
 @Component({
     selector: 'nm-action-dropdown',
     template: `
-    <div class="custom-dropdown {{this.widgetPosition}}" [ngClass]="{'open': isOpen}">
-        <label></label>
-        <input type="text">
-        <a class="dropdownTrigger" href="javascript:void(0)" (click)="toggleOpen($event)"></a> 
-        <div class="dropdownContent">
+    <div class="custom-dropdown {{widgetPosition}}" [ngClass]="{'open': isOpen}">
+        <button class="dropdownTrigger" attr.aria-expanded="{{isOpen}}" (click)="toggleOpen($event)"></button> 
+        <div class="dropdownContent" attr.aria-hidden="{{!isOpen}}">
             <a href="javascript:void(0)" (click)="processOnClick(link.code)" *ngFor="let link of params">{{link.code}}</a>
         </div>
     </div>

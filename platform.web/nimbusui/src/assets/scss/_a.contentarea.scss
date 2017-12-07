@@ -41,43 +41,31 @@
 }
 .smallCard,
 .XsmallCard {
-    .col-xs-12.smallCardCenter {
-        text-align: left;
-        padding:0;
-        .btn{
-            width: 100%;
-            margin-top:1rem;
-            padding-left: 0;
-            padding-right: 0;
-        }
-        a.basicView {
-            display: inline-block;
-            text-decoration: underline;
-            text-transform: uppercase;
-        }
-    } 
+    button{
+        display: block;
+    }
     .card-title {
         text-align: center;
     }
 }
-.XsmallCard nm-button {
-    text-align: center;
-    margin: 1.5rem 0 1rem;
-    display: block;
-    float:none;
-}
+// .XsmallCard nm-button {
+//     text-align: center;
+//     margin: 1.5rem 0 1rem;
+//     display: block;
+//     float:none;
+// }
 .col-xs-12 {
     margin: 0 0; //override correction for inline-block fix
 }
-nm-button {
-    float: right;
-    margin: 28px;
-}
-.text-sm-right nm-button{
-    margin:0;
-    float:none;
-    text-align: left;
-}
+// nm-button {
+//     float: right;
+//     margin: 28px;
+// }
+// .text-sm-right nm-button{
+//     margin:0;
+//     float:none;
+//     text-align: left;
+// }
 .info-card {
     .card-block {
         .card-header{
@@ -125,7 +113,7 @@ nm-button {
                 padding-right: 10px;
                 height: $card-header-height;
                 background: $subheader-background-color;
-                h3.card-title,h1.card-title  {
+                h2.card-title,h1.card-title  {
                     padding: 6px 10px;
                     border-bottom: 0;
                     color: #fff;
@@ -133,9 +121,6 @@ nm-button {
                     text-transform: lowercase;
                     svg {
                         display:none;
-                    }
-                    &::first-letter{
-                        text-transform: uppercase;
                     }
                 }
             }
@@ -184,6 +169,11 @@ nm-button {
         overflow-y:auto;
         padding:0;
         @include transition(left .4s ease);
+        .card-block {
+            border: 1px solid #cecece;
+            margin: 1.2rem;
+            padding: 1rem;
+        }
         &.withInfoBar{
             top: $breadcrumb-height + $card-header-height + $infoBar-height + 10px;
             .card-block{
@@ -253,27 +243,16 @@ nm-button {
         }
     }
 }
-
-h3.card-title,h1.card-title {
-    //padding-bottom: 3px;
-    //border-bottom: 2px solid #555;
+h1.page-title {
     margin-bottom:0; 
-    font-size: 28px;
+    margin-left:20px; 
+    font-size: 1.3rem;
+    font-weight: 400;
+}
+h2.card-title {
+    margin-bottom:0; 
+    font-size: 1.2rem;
     font-weight: 300;
-    line-height:1;
-}
-
-h3.card-title img,h1.card-title img {
-    width: 2rem;
-    float: left;
-    margin-right: .6rem;
-}
-
-h3.card-title svg,h1.card-title svg {
-    width: 2rem;
-    float: left;
-    margin-right: .6rem;
-    height: 1.9rem;
 }
 
 .underline { 
@@ -473,7 +452,6 @@ legend {
     }
 }
 .card-holder > .card{
-    min-height: 700px;
     &.height-sm {
         min-height:180px;
     }
