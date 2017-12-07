@@ -15,7 +15,7 @@
 		<module>../platform.spec.model.test</module>
 		<module>../platform.core.process</module>
 	</modules>  -->
-	<url></url>
+
 	<organization>
 		<name>Anthem Inc.</name>
 		<url>https://www.oss.antheminc.com</url>
