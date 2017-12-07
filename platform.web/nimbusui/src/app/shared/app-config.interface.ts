@@ -219,11 +219,13 @@ export class Param implements Serializable<Param> {
         let gridData = [];
         // Look for inner lists (nested grid)
         let nestedGridParam: ElementModelParam;
-        gridCols.forEach(col => {
-           if (col.uiStyles && col.uiStyles.name == 'ViewConfig.Grid') {
-               nestedGridParam = col;
-           } 
-        });
+        if (gridCols) {
+            gridCols.forEach(col => {
+            if (col.uiStyles && col.uiStyles.name == 'ViewConfig.Grid') {
+                nestedGridParam = col;
+            } 
+            });
+        }
         params.forEach(param => {
             let rowData : any = {};
             rowData = this.createRowData(param, nestedGridParam);

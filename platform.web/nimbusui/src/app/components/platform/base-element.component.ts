@@ -34,6 +34,7 @@ export class BaseElement {
     protected _imgSrc: string;
     protected _code: string;
     protected _visible: any;
+    protected _enabled: any;
     protected _cssClass: string;
     protected _type: string;
     
@@ -83,6 +84,13 @@ export class BaseElement {
      */
     public get visible(): boolean {
         return this.element.visible.currState;
+    }
+
+    /**
+     * Enabled property of this Param
+     */
+    public get enabled(): boolean {
+        return this.element.enabled.currState;
     }
 
     /**
