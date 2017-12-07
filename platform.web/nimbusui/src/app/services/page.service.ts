@@ -1,8 +1,8 @@
-import { ElementModelParam, RemnantState } from './../shared/app-config.interface';
 'use strict';
 import { Action, HttpMethod, Behavior} from './../shared/command.enum';
 import { Injectable, EventEmitter } from '@angular/core';
 import { ServiceConstants } from './service.constants';
+import { ElementModelParam, RemnantState } from './../shared/app-config.interface';
 import {
     Model,
     ModelEvent,
@@ -706,7 +706,7 @@ export class PageService {
                                         } catch (e) {
                                                 if (e instanceof TypeError) {
                                                         Reflect.set(param, currentKey, Reflect.get(payload, updatedKey));
-                                                        if (currentKey === 'leafState' || currentKey === 'visible') {
+                                                        if (currentKey === 'leafState') {
                                                                 this.eventUpdate.next(param);
                                                         }
                                                 } else {
