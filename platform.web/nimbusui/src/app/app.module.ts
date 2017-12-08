@@ -22,7 +22,7 @@ import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, FileUpload, FileUploadModule, ListboxModule, DialogModule  } from 'primeng/primeng';
 import { SortableComponentDirective, SortableContainerDirective } from './directives/sortable-dragdrop.directive';
 import { NavLinkRouter } from './directives/nav-link-router.directive';
-// import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 // Platform Imports
 // Components
@@ -109,7 +109,7 @@ import { LinkPipe } from './pipes/link.pipe';
         FileUploadModule,
         DialogModule,
         BrowserModule,
-        // BrowserAnimationsModule,
+        BrowserAnimationsModule,
         CalendarModule
     ],
     declarations: [ AppComponent, STOMPStatusComponent, FlowWrapper, PageContent, PageNotfoundComponent, StaticText,
