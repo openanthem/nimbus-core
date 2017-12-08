@@ -13,7 +13,7 @@ import { HttpMethod } from '../../../../shared/command.enum';
     <div class="custom-dropdown {{widgetPosition}}" [ngClass]="{'open': isOpen}">
         <button class="dropdownTrigger" attr.aria-expanded="{{isOpen}}" (click)="toggleOpen($event)"></button> 
         <div class="dropdownContent" attr.aria-hidden="{{!isOpen}}">
-            <nm-action-link [elementPath]="elementPath" [param]="param" *ngFor="let param of params"></nm-action-link>
+            <nm-action-link [elementPath]="elementPath" [rowData]="rowData" [param]="param" *ngFor="let param of params"></nm-action-link>
         </div>
     </div>
   `
@@ -22,6 +22,7 @@ export class ActionDropdown {
 
     @Input() params: ElementModelParam[];
     @Input() elementPath: string;
+    @Input() rowData: any;
     isOpen: boolean = false;
     widgetPosition: string;
     
@@ -57,7 +58,7 @@ export class ActionDropdown {
     ],
     template: `
         <ng-template [ngIf]="param.uiStyles.attributes.value =='EXTERNAL'">
-            <a href="{{param.uiStyles?.attributes?.url}}" class="{{param.uiStyles?.attributes?.cssClass}}" target="{{param.uiStyles?.attributes?.target}}" rel="{{param.uiStyles?.attributes?.rel}}">{{label}}</a>
+            <a href="{{url}}" class="{{param.uiStyles?.attributes?.cssClass}}" target="{{param.uiStyles?.attributes?.target}}" rel="{{param.uiStyles?.attributes?.rel}}">{{label}}</a>
         </ng-template>
         <ng-template [ngIf]="param.uiStyles.attributes.value !='EXTERNAL'">
             <a href="javascript:void(0)" (click)="processOnClick(this.param.code)">{{label}}</a>
@@ -68,7 +69,9 @@ export class ActionLink {
     
         @Input() param: ElementModelParam;
         @Input() elementPath: string;
+        @Input() rowData: any;
         protected label: string;
+        protected url:string;
         
         constructor(private wcs: WebContentSvc, private pageSvc: PageService) {
             wcs.content$.subscribe(result => {
@@ -82,6 +85,27 @@ export class ActionLink {
             if (this.param && this.param.code) {
                 this.wcs.getContent(this.param.code);
             }
+            // replace parameters in url enclosed within {}
+            if (this.param.uiStyles && this.param.uiStyles.attributes && this.param.uiStyles.attributes.url) {
+                this.url = this.param.uiStyles.attributes.url;
+                let urlParams: string[] = this.getAllURLParams(this.param.uiStyles.attributes.url);
+                if (urlParams && urlParams.length > 0) {
+                    if(urlParams!=null) {
+                        for (let urlParam of urlParams) {
+                            let p = urlParam.substring(1, urlParam.length-1);
+                            if (this.rowData[p]) {
+                                this.url = this.url.replace(new RegExp(urlParam, 'g'), this.rowData[p]);
+                            }
+                        }
+                    }
+                }
+            }
+            console.log(this.url);
+        }
+
+        getAllURLParams (url: string): string[] {
+            var pattern = /{([\s\S]*?)}/g;
+            return url.match(pattern);
         }
     
         processOnClick(linkCode: string) {

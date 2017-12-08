@@ -57,6 +57,7 @@
 				
 				<ng-template *ngIf="col?.uiStyles?.attributes?.alias=='LinkMenu'" pTemplate="body" let-cell="rowData">
 					<nm-action-dropdown [params]="col?.nestedParams"
+						[rowData]="cell"
 						[elementPath]="getRowPath(col, cell)"></nm-action-dropdown>
 				</ng-template>
 				
