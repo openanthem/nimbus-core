@@ -25,7 +25,7 @@
 	<scm>
 		<url>http://github.com/anthem-projects/nimbus-oss</url>
 		<connection>scm:git:git://github.com/openanthem/nimbus-core.git</connection>
-	  <tag>nimbus.core.parent-1.0.0.M9</tag>
+	  <tag>nimbus.core.parent-1.0.0</tag>
   </scm>
 	<issueManagement>
 		<system>Github</system>
@@ -95,11 +95,6 @@
 				<artifactId>embedded-redis</artifactId>
 				<version>${embed-redis.version}</version>
 				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.sonatype.plugins</groupId>
-				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<scope>deploy</scope>
 			</dependency>
 			<!-- <dependency> <groupId>org.apache.qpid</groupId> <artifactId>qpid-broker</artifactId>
 				<version>${qpid-broker.version}</version> <scope>test</scope> </dependency> -->
