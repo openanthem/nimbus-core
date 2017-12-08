@@ -60,4 +60,32 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
         this.showLabel = false;
         this.inPlaceEditContext = context;
     }
+
+    /**
+     * The hidden attribute for this param
+     */
+    public get hidden(): boolean {
+        return this.element.config.uiStyles.attributes.hidden;
+    }
+
+    /**
+     * The help attribute for this param
+     */
+    public get help(): string {
+        return this.element.config.uiStyles.attributes.help;
+    }
+
+    /**
+     * The help readOnly for this param
+     */
+    public get readOnly(): boolean {
+        return this.element.config.uiStyles.attributes.readOnly;
+    }
+
+    /**
+     * The type attribute for this param
+     */
+    public get type(): string {
+        return this.element.config.uiStyles.attributes.type;
+    }
 }
