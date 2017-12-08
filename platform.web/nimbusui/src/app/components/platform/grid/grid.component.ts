@@ -201,8 +201,8 @@ export class InfiniteScrollGrid implements ControlValueAccessor{
     handleRowChange(val) {
         if(this.value!=val)
             this.value = val;
-        console.log('onRowUpdate');
-        console.log(val);
+        // console.log('onRowUpdate');
+        // console.log(val);
     }
 
     getAddtionalData(event: any) {

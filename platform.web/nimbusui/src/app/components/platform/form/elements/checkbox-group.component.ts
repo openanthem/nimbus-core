@@ -27,9 +27,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
                         (click)="selectOption(value.code, this);emitValueChangedEvent(this,$event)"
                         [checked] = "checkedState(value.code)"
                         class="custom-control-input" 
-                        name="{{element.config?.code}}"
-                        [disableFormControl]="form.get(element.config?.code)"
-                        [disableCondition]="element.config?.enabled?.currState">
+                        name="{{element.config?.code}}">
                     <span class="custom-control-indicator"></span>
                     <span class="custom-control-description">{{value.label}}</span>
                 </label>
