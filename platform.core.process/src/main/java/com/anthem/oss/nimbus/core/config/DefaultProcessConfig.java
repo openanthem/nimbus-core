@@ -20,6 +20,7 @@ import com.anthem.oss.nimbus.core.domain.command.execution.process.EvalFunctionH
 import com.anthem.oss.nimbus.core.domain.command.execution.process.SetByRuleFunctionalHandler;
 import com.anthem.oss.nimbus.core.domain.command.execution.process.SetFunctionHandler;
 import com.anthem.oss.nimbus.core.domain.command.execution.process.StatelessBPMFunctionHanlder;
+import com.anthem.oss.nimbus.core.domain.command.execution.process.UpdateFunctionHandler;
 import com.anthem.oss.nimbus.core.domain.command.execution.search.DefaultSearchFunctionHandlerExample;
 import com.anthem.oss.nimbus.core.domain.command.execution.search.DefaultSearchFunctionHandlerLookup;
 import com.anthem.oss.nimbus.core.domain.command.execution.search.DefaultSearchFunctionHandlerQuery;
@@ -66,6 +67,11 @@ public class DefaultProcessConfig {
 	@Bean(name="default._process$execute?fn=_set")
 	public SetFunctionHandler<?,?> setFunctionHandler(){
 		return new SetFunctionHandler<>();
+	}
+	
+	@Bean(name="default._process$execute?fn=_update")
+	public UpdateFunctionHandler<?,?> updateFunctionHandler(){
+		return new UpdateFunctionHandler<>();
 	}
 	
 	@Bean(name="default._process$execute?fn=_setByRule")
