@@ -1,26 +1,35 @@
-import { FormGroup } from '@angular/forms';
-import { Component, Input, Output, ViewChild, EventEmitter, ViewEncapsulation } from '@angular/core';
+import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { Component, Input, Output, forwardRef, ViewChild, EventEmitter, ViewEncapsulation } from '@angular/core';
 
 import { GenericDomain } from '../../../model/generic-domain.model';
 import { Param, ParamConfig } from '../../../shared/app-config.interface';
 import { PageService } from '../../../services/page.service';
 import { GridService } from '../../../services/grid.service';
 import { WebContentSvc } from '../../../services/content-management.service';
-import { DataTable, OverlayPanel } from 'primeng/primeng';
+import { DataTable, OverlayPanel, Paginator } from 'primeng/primeng';
 import { ElementModelParam } from './../../../shared/app-config.interface';
 import { ServiceConstants } from './../../../services/service.constants';
+import { ControlValueAccessor } from '@angular/forms/src/directives';
+
+export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: forwardRef(() => InfiniteScrollGrid),
+    multi: true
+  };
 
 @Component({
     selector: 'infinite-scroll-grid',
-    providers: [ WebContentSvc ],
+    providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc ],
     encapsulation: ViewEncapsulation.None,
     templateUrl:'./grid.component.html'
 })
-export class InfiniteScrollGrid {
+export class InfiniteScrollGrid implements ControlValueAccessor{
     @Input() element: Param;
     @Input() data: any[];
     @Output() onScrollEvent: EventEmitter<any> = new EventEmitter();
     @Input() params: ElementModelParam[];
+    @Input() form: FormGroup;
+    @Input('value') _value = [];
 
 //    references DataTable named 'flex' in the view
     @ViewChild('flex') flex: DataTable;
@@ -32,6 +41,32 @@ export class InfiniteScrollGrid {
     selectedRows: any[];
     filterState: boolean = false;
     postButtonLabel: string;
+
+    public onChange: any = (_) => { /*Empty*/ }
+    public onTouched: any = () => { /*Empty*/ }
+
+    get value() {
+        return this._value;
+    }
+
+    set value(val) {
+        this._value = val;
+        this.onChange(val);
+        this.onTouched();
+    }
+
+    public writeValue(obj: any): void {
+        if (obj !== undefined) {
+        }
+    }
+
+    public registerOnChange(fn: any): void {
+       this.onChange = fn;
+    }
+
+    public registerOnTouched(fn: any): void {
+        this.onTouched = fn;
+    }
 
     fg= new FormGroup({}); // TODO this is for the filter controls that need to be embedded in the grid 
     private imagesPath: string;
@@ -161,6 +196,13 @@ export class InfiniteScrollGrid {
         let uri=this.element.path + '/' + item.elemId + '/' + col.code;
         //console.log(event);
         this.pageSvc.postOnChange(uri, 'state', JSON.stringify(event.target['checked']));
+    }
+
+    handleRowChange(val) {
+        if(this.value!=val)
+            this.value = val;
+        // console.log('onRowUpdate');
+        // console.log(val);
     }
 
     getAddtionalData(event: any) {

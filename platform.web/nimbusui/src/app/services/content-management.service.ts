@@ -30,7 +30,7 @@ export class WebContentSvc {
                 this.content$.next(data);
             },
 				err =>  {
-                    this.logError(err);
+                    //this.logError(err);
                     this.content$.next({
                         'id': id, 
                         'label':id
