@@ -23,8 +23,8 @@ import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.ListParam;
 import com.antheminc.oss.nimbus.test.sample.domain.model.core.SampleCoreEntity;
 import com.antheminc.oss.nimbus.test.sample.domain.model.core.SampleCoreNestedEntity;
 
-import test.com.anthem.nimbus.platform.utils.ExtractResponseOutputUtils;
-import test.com.anthem.nimbus.platform.utils.MockHttpRequestBuilder;
+import test.com.antheminc.oss.nimbus.platform.utils.ExtractResponseOutputUtils;
+import test.com.antheminc.oss.nimbus.platform.utils.MockHttpRequestBuilder;
 
 /**
  * @author Soham Chakravarti

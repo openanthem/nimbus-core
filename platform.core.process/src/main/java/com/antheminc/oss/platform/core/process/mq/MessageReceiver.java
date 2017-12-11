@@ -1,4 +1,4 @@
-package com.anthem.nimbus.platform.core.process.mq;
+package com.antheminc.oss.platform.core.process.mq;
 
 import com.antheminc.oss.nimbus.core.util.JustLogit;
 

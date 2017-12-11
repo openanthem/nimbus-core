@@ -1,11 +1,11 @@
-package com.anthem.nimbus.platform.core.process.mq.config;
+package com.antheminc.oss.platform.core.process.mq.config;
 
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.context.annotation.Bean;
 
-import com.anthem.nimbus.platform.core.process.mq.MessageReceiver;
+import com.antheminc.oss.platform.core.process.mq.MessageReceiver;
 
 //@Configuration
 public class EventListenerConfig {

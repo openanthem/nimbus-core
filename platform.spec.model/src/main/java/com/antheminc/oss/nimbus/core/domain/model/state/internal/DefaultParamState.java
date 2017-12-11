@@ -17,7 +17,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.ClassUtils;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
 import com.antheminc.oss.nimbus.core.InvalidOperationAttemptedException;
 import com.antheminc.oss.nimbus.core.domain.command.Action;
 import com.antheminc.oss.nimbus.core.domain.command.execution.ValidationResult;
@@ -38,6 +37,7 @@ import com.antheminc.oss.nimbus.core.domain.model.state.StateType;
 import com.antheminc.oss.nimbus.core.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
 import com.antheminc.oss.nimbus.core.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
 import com.antheminc.oss.nimbus.core.entity.Findable;
+import com.antheminc.oss.nimbus.platform.spec.model.dsl.binder.Holder;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package test.com.anthem.nimbus.platform.utils;
+package test.com.antheminc.oss.nimbus.platform.utils;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.mock.web.MockHttpServletRequest;

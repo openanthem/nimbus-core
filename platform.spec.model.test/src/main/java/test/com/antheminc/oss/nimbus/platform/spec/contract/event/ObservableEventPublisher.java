@@ -1,7 +1,7 @@
 /**
  * 
  */
-package test.com.anthem.nimbus.platform.spec.contract.event;
+package test.com.antheminc.oss.nimbus.platform.spec.contract.event;
 
 import java.util.Observable;
 import java.util.concurrent.atomic.AtomicInteger;

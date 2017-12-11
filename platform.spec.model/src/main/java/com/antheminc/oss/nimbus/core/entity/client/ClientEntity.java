@@ -7,16 +7,12 @@ import java.time.LocalDate;
 
 import javax.validation.constraints.NotNull;
 
-import com.anthem.nimbus.platform.spec.serializer.CustomLocalDateDeserializer;
-import com.anthem.nimbus.platform.spec.serializer.CustomLocalDateSerializer;
 import com.antheminc.oss.nimbus.core.domain.definition.Domain;
 import com.antheminc.oss.nimbus.core.domain.definition.Domain.ListenerType;
 import com.antheminc.oss.nimbus.core.domain.definition.Repo;
 import com.antheminc.oss.nimbus.core.domain.definition.Repo.Database;
 import com.antheminc.oss.nimbus.core.entity.AbstractEntity;
 import com.antheminc.oss.nimbus.core.entity.person.Address;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import lombok.Getter;
 import lombok.Setter;

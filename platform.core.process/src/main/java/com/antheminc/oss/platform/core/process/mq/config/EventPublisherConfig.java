@@ -1,4 +1,4 @@
-package com.anthem.nimbus.platform.core.process.mq.config;
+package com.antheminc.oss.platform.core.process.mq.config;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;

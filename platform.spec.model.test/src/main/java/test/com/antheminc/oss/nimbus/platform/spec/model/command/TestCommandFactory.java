@@ -1,7 +1,7 @@
 /**
  * 
  */
-package test.com.anthem.nimbus.platform.spec.model.command;
+package test.com.antheminc.oss.nimbus.platform.spec.model.command;
 
 import java.util.LinkedList;
 

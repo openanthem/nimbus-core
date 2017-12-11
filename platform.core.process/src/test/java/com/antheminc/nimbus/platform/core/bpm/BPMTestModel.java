@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.nimbus.platform.core.bpm;
+package com.antheminc.nimbus.platform.core.bpm;
 
 import com.antheminc.oss.nimbus.core.domain.definition.Domain;
 import com.antheminc.oss.nimbus.core.domain.definition.Domain.ListenerType;

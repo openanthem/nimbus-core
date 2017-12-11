@@ -3,7 +3,7 @@
 
 	<groupId>com.antheminc.oss</groupId>
 	<artifactId>nimbus.core.dependencies</artifactId>
-	<version>1.0.2.M9-SNAPSHOT</version>
+	<version>1.0.0.M9-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>nimbus-core-dependencies</name>
 	<description>Nimbus Core Bill of materials</description>

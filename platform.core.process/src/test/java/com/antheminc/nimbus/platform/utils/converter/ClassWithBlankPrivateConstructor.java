@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.nimbus.platform.utils.converter;
+package com.antheminc.nimbus.platform.utils.converter;
 
 import lombok.Getter;
 

@@ -1,4 +1,4 @@
-package com.anthem.nimbus.platform.utils.converter;
+package com.antheminc.nimbus.platform.utils.converter;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

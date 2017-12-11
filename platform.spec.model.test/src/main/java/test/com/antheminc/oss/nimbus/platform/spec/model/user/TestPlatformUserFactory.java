@@ -1,7 +1,7 @@
 /**
  * 
  */
-package test.com.anthem.nimbus.platform.spec.model.user;
+package test.com.antheminc.oss.nimbus.platform.spec.model.user;
 
 import com.antheminc.oss.nimbus.core.entity.user.DefaultUser;
 

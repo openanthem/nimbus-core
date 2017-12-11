@@ -1,11 +1,11 @@
 /**
  * 
  */
-package com.anthem.nimbus.platform.core.rules;
+package com.antheminc.nimbus.platform.core.rules;
 
 import com.antheminc.oss.nimbus.core.domain.definition.Domain;
-import com.antheminc.oss.nimbus.core.domain.definition.Repo;
 import com.antheminc.oss.nimbus.core.domain.definition.Domain.ListenerType;
+import com.antheminc.oss.nimbus.core.domain.definition.Repo;
 import com.antheminc.oss.nimbus.core.domain.definition.Repo.Cache;
 import com.antheminc.oss.nimbus.core.domain.definition.Repo.Database;
 import com.antheminc.oss.nimbus.core.entity.AbstractEntity.IdString;

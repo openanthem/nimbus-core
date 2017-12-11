@@ -1,4 +1,4 @@
-package com.anthem.nimbus.platform.web;
+package com.antheminc.oss.nimbus.platform.web;
 
 import java.time.LocalDate;
 
@@ -19,7 +19,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.session.data.redis.RedisOperationsSessionRepository;
 
-import com.anthem.nimbus.platform.spec.serializer.CustomLocalDateSerializer;
+import com.antheminc.oss.nimbus.platform.spec.serializer.CustomLocalDateSerializer;
 
 @EnableDiscoveryClient
 @SpringBootApplication(exclude = { DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class,

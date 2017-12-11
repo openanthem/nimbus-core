@@ -1,4 +1,4 @@
-package com.anthem.nimbus.platform.spec.model.dsl.binder;
+package com.antheminc.oss.nimbus.platform.spec.model.dsl.binder;
 
 import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
 

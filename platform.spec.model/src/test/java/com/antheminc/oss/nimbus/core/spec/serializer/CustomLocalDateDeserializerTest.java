@@ -2,7 +2,6 @@ package com.antheminc.oss.nimbus.core.spec.serializer;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
@@ -16,7 +15,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.anthem.nimbus.platform.spec.serializer.CustomLocalDateDeserializer;
+import com.antheminc.oss.nimbus.platform.spec.serializer.CustomLocalDateDeserializer;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 
