@@ -194,12 +194,10 @@
 						<configuration>
 							<mainClass>com.anthem.nimbus.platform.web.Application</mainClass>
 							<layout>ZIP</layout>
-
+							<classifier>exec</classifier>
 							<folders>
 								<folder>${project.build.directory}/src/main/resources</folder>
 							</folders>
-
-
 						</configuration>
 					</plugin>
 				</plugins>
@@ -224,12 +222,9 @@
 						<configuration>
 							<mainClass>com.anthem.nimbus.platform.web.Application</mainClass>
 							<layout>ZIP</layout>
-
 							<folders>
 								<folder>${project.build.directory}/src/main/resources</folder>
 							</folders>
-
-
 						</configuration>
 					</plugin>
 				</plugins>
