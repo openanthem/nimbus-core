@@ -27,6 +27,7 @@ import com.anthem.oss.nimbus.core.domain.definition.extension.Audit;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.anthem.oss.nimbus.core.entity.audit.AuditEntry;
 import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreEntity;
+import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreEntity.ComplexObject;
 import com.anthem.oss.nimbus.test.sample.domain.model.ui.VPSampleViewPageGreen;
 
 /**
@@ -392,5 +393,38 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		assertEquals("/sample_core/attr_list_String", audit.get(0).getPropertyPath());
 		assertEquals("ArrayList", audit.get(0).getPropertyType());
 	
+	}
+	
+	@Test
+	public void t10_complexObject() {
+		Param<ComplexObject> cp = _q.getRoot().findParamByPath("/sample_core/complex_object");
+		assertNotNull(cp);
+		assertNull(cp.getState());
+		
+		assertTrue(cp.isLeaf());
+		assertNull(cp.findIfLeaf().getTransientOldState());
+		
+		assertNotNull(cp.getConfig().getEventHandlerConfig().findOnStateChangeHandler(
+				FieldUtils.getField(SampleCoreEntity.class, "complex_object", true).getAnnotation(Audit.class)));
+		
+		// change value
+		final ComplexObject k = new ComplexObject();
+		k.setField1("Five");
+		k.setField2(5);
+		cp.setState(k);
+		assertSame(k, cp.getState());
+		
+		String coreRefId = _q.getCore().getState().getId();
+		assertNotNull(coreRefId);
+		
+		List<AuditEntry> audit = mongo.findAll(AuditEntry.class, "sample_core_audit_history");
+		assertEquals(1, audit.size());
+		assertEquals(coreRefId, audit.get(0).getDomainRootRefId());
+		assertEquals(k.getField1(), ((ComplexObject) audit.get(0).getNewValue()).getField1());
+		assertEquals(k.getField2(), ((ComplexObject) audit.get(0).getNewValue()).getField2());
+		assertEquals(null, audit.get(0).getOldValue());
+		assertEquals("/sample_core/complex_object", audit.get(0).getPropertyPath());
+		assertEquals("SampleCoreEntity.ComplexObject", audit.get(0).getPropertyType());
+		assertNotNull(audit.get(0).getCreatedDate());
 	}
 }
