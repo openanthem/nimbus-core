@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 import org.springframework.data.annotation.Id;
 
+import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 
 import lombok.AccessLevel;
@@ -18,6 +19,7 @@ import lombok.ToString;
  * @author Soham Chakravarti
  *
  */
+@Domain(value="phone")
 @Getter @Setter @ToString(callSuper=true)
 public abstract class Phone<ID extends Serializable> extends AbstractEntity<ID> {
 	

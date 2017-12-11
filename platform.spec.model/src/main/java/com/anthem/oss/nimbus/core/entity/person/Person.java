@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.anthem.oss.nimbus.core.entity.person;
 
 import java.io.Serializable;
@@ -9,6 +6,7 @@ import java.util.Set;
 
 import org.springframework.data.annotation.Id;
 
+import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 
 import lombok.AccessLevel;
@@ -20,6 +18,7 @@ import lombok.ToString;
  * @author Soham Chakravarti
  *
  */
+@Domain(value="person")
 @Getter @Setter @ToString(callSuper=true)
 public abstract class Person<ID extends Serializable, A extends Address<ID>, P extends Phone<ID>, N extends Name<ID>>
 		extends AbstractEntity<ID> {
