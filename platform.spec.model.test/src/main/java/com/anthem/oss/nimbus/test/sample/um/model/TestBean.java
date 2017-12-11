@@ -9,6 +9,11 @@ import lombok.Setter;
 
 @Getter @Setter
 
+/**
+ * @author Sandeep Mantha
+ *
+ */
+
 public class TestBean {
 
 	@DateRange

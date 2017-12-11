@@ -5,6 +5,10 @@ import java.time.format.DateTimeFormatter;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
  
+/**
+ * @author Sandeep Mantha
+ *
+ */
 public class DateValidator implements ConstraintValidator<DateRange, LocalDate> {
     
 	private static final String DATE_FORMAT = new String("MM/dd/yyyy");
