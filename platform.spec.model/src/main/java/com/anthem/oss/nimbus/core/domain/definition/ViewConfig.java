@@ -9,7 +9,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import javax.validation.Constraint;
+import javax.validation.Payload;
+
 import com.anthem.oss.nimbus.core.domain.definition.event.StateEvent.OnStateLoad;
+import com.anthem.oss.nimbus.core.domain.definition.extension.DateValidator;
 import com.anthem.oss.nimbus.core.domain.definition.extension.ParamContext;
 
 /**
@@ -561,6 +565,7 @@ public class ViewConfig {
 		String type() default "calendar";
 		boolean showTime() default true;
 		String hourFormat() default "24";
+		boolean timeOnly() default false;
 		boolean postEventOnChange() default false;
 		String controlId() default "";
 		String help() default "";
@@ -748,5 +753,4 @@ public class ViewConfig {
 		}
 		FilterMode filterMode() default FilterMode.equals;
 	}
-	
 }

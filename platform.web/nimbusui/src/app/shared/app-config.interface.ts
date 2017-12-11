@@ -575,6 +575,7 @@ export class UiAttribute implements Serializable<UiAttribute> {
     contentId: string;
     labelClass: string;
     showTime: boolean;
+    timeOnly: boolean;
     hourFormat: string;
     header: string;
     help: string;
@@ -674,6 +675,9 @@ export class UiAttribute implements Serializable<UiAttribute> {
         this.hourFormat = inJson.hourFormat;
         if (inJson.showTime) {
             this.showTime = inJson.showTime;
+        }
+        if (inJson.timeOnly) {
+            this.timeOnly = inJson.timeOnly;
         }
         if (inJson.defaultFlow) {
             this.defaultFlow = inJson.defaultFlow;
