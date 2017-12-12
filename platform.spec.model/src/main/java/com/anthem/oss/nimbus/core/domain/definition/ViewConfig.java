@@ -140,7 +140,30 @@ public class ViewConfig {
 		String imgSrc() default ""; // remove
 		String defaultFlow() default ""; // applicable only to Section type BODY. // remove
 	}
-		
+	
+	/*
+	 * Global Footer Definition
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface GlobalFooter {
+
+		String alias() default "Footer";
+		String cssClass() default "";
+	}
+
+	/*
+	 * Global Header Definition
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface GlobalHeader {
+
+		String alias() default "Header";
+		String cssClass() default "";
+	}
 	/**
 	 * <p>Framework View Style Component: <b>Modal</b></p>
 	 * 
@@ -438,12 +461,17 @@ public class ViewConfig {
 		public enum Property {
 			LOGO,
 			APPTITLE,
-			SUBTITLE,
+//			SUBTITLE,
 			USERNAME,
 			USERROLE,
-			SUBHEADER,
-			MENU,
-			DEFAULT;
+//			SUBHEADER,
+//			MENU,
+			DEFAULT,
+			SETTINGS,
+			NOTIFICATIONS,
+			NUMBEROFNOTIFICATIONS,
+			HELP,
+			LOGOUT;
 		}
 		Property value() default Property.DEFAULT;
 	}
@@ -451,16 +479,13 @@ public class ViewConfig {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewParamBehavior
-	public @interface PageFooter {
+	public @interface FooterProperty {
 		public enum Property {
-			TOU,
-			VERSION,
-			COPYRIGHT,
-			SSLCERT,
-			PRIVACY,
-			DEFAULT
+			DISCLAIMER,
+			LINK,
+			SSLCERT
 		}
-		Property value() default Property.DEFAULT;
+		Property value() default Property.DISCLAIMER;
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
