@@ -15,7 +15,7 @@ function buildWithOutTests {
   mvn -D maven.repo.local=/Users/charles.russell/.m2/repository clean install -f platform.spec.model/pom.xml -D skipDockerBuild -D maven.test.skip=true
   mvn -D maven.repo.local=/Users/charles.russell/.m2/repository clean install -f platform.spec.model.test/pom.xml -D skipDockerBuild -D maven.test.skip=true
   mvn -D maven.repo.local=/Users/charles.russell/.m2/repository clean install  -f platform.core.process/pom.xml -D skipDockerBuild -D maven.test.skip=true
-  mvn -D maven.repo.local=/Users/charles.russell/.m2/repository clean install  -f platform.web/pom.xml -D skipDockerBuild -D maven.test.skip=true
+  mvn -D maven.repo.local=/Users/charles.russell/.m2/repository clean install  -f platform.web/pom.xml -P devbuild -D skipDockerBuild -D maven.test.skip=true
 }
 
 function buildWithTests {
@@ -26,7 +26,7 @@ function buildWithTests {
   mvn -D maven.repo.local=/Users/charles.russell/.m2/repository clean install -f platform.spec.model/pom.xml -D skipDockerBuild
   mvn -D maven.repo.local=/Users/charles.russell/.m2/repository clean install -f platform.spec.model.test/pom.xml -D skipDockerBuild
   mvn -D maven.repo.local=/Users/charles.russell/.m2/repository clean install  -f platform.core.process/pom.xml -D skipDockerBuild
-  mvn -D maven.repo.local=/Users/charles.russell/.m2/repository clean install  -f platform.web/pom.xml -D skipDockerBuild
+  mvn -D maven.repo.local=/Users/charles.russell/.m2/repository clean install  -f platform.web/pom.xml -P devbuild -D skipDockerBuild
 }
 
 function releasePrepare {
