@@ -156,7 +156,7 @@ public class ViewConfig {
 	 * </p>
 	 * 
 	 * @author Tony Lopez (AF42192)
-	 * @see com.antheminc.oss.nimbus.core.domain.model.state.extension.ModalStateEventHandler
+	 * @see com.anthem.oss.nimbus.core.domain.model.state.extension.ModalStateEventHandler
 	 *
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
@@ -551,6 +551,21 @@ public class ViewConfig {
 		String help() default "";
 	}
 
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface Calendar {
+		String alias() default "Calendar";
+		boolean readOnly() default false;	
+		String labelClass() default "anthem-label";
+		String type() default "calendar";
+		boolean showTime() default true;
+		String hourFormat() default "24";
+		boolean postEventOnChange() default false;
+		String controlId() default "";
+		String help() default "";
+	}
+	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle

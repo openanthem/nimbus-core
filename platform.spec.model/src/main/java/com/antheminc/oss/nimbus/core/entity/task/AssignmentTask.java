@@ -68,6 +68,7 @@ public class AssignmentTask extends AbstractEntity.IdString{
 	public enum TaskStatus{
 		Open,
 		Completed,
+		InProgress,
 		Cancelled;
 		
 		public static TaskStatus findByStatusString(String status) {
