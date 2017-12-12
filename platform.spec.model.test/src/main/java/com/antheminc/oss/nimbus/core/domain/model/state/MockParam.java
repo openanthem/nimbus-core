@@ -15,7 +15,7 @@ import com.antheminc.oss.nimbus.core.util.LockTemplate;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import test.com.anthem.nimbus.platform.utils.PathUtils;
+import test.com.antheminc.oss.nimbus.platform.utils.PathUtils;
 
 /**
  * A mock Param implementation intended for testing purposes.
@@ -50,7 +50,7 @@ public class MockParam implements Param<Object> {
 	private boolean visible = true;
 
 	/* (non-Javadoc)
-	 * @see com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param#activate()
+	 * @see com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param#activate()
 	 */
 	@Override
 	public void activate() {
@@ -60,7 +60,7 @@ public class MockParam implements Param<Object> {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param#deactivate()
+	 * @see com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param#deactivate()
 	 */
 	@Override
 	public void deactivate() {
@@ -70,7 +70,7 @@ public class MockParam implements Param<Object> {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.antheminc.oss.nimbus.core.domain.model.state.Notification.Producer#deregisterConsumer(com.antheminc.oss.nimbus.core.domain.model.state.EntityState.MappedParam)
+	 * @see com.anthem.oss.nimbus.core.domain.model.state.Notification.Producer#deregisterConsumer(com.anthem.oss.nimbus.core.domain.model.state.EntityState.MappedParam)
 	 */
 	@Override
 	public boolean deregisterConsumer(MappedParam<?, Object> consumer) {
@@ -78,7 +78,7 @@ public class MockParam implements Param<Object> {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.antheminc.oss.nimbus.core.domain.model.state.Notification.Dispatcher#emitNotification(com.antheminc.oss.nimbus.core.domain.model.state.Notification)
+	 * @see com.anthem.oss.nimbus.core.domain.model.state.Notification.Dispatcher#emitNotification(com.anthem.oss.nimbus.core.domain.model.state.Notification)
 	 */
 	@Override
 	public void emitNotification(Notification<Object> event) {
@@ -94,7 +94,7 @@ public class MockParam implements Param<Object> {
 	}
 	
 	/* (non-Javadoc)
-	 * @see com.antheminc.oss.nimbus.core.domain.model.state.EntityState#findModelByPath(java.lang.String)
+	 * @see com.anthem.oss.nimbus.core.domain.model.state.EntityState#findModelByPath(java.lang.String)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
@@ -103,7 +103,7 @@ public class MockParam implements Param<Object> {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.antheminc.oss.nimbus.core.domain.model.state.EntityState#findModelByPath(java.lang.String[])
+	 * @see com.anthem.oss.nimbus.core.domain.model.state.EntityState#findModelByPath(java.lang.String[])
 	 */
 	@Override
 	public <S> Model<S> findModelByPath(String[] pathArr) {
@@ -111,7 +111,7 @@ public class MockParam implements Param<Object> {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.antheminc.oss.nimbus.core.domain.model.state.EntityState#findParamByPath(java.lang.String)
+	 * @see com.anthem.oss.nimbus.core.domain.model.state.EntityState#findParamByPath(java.lang.String)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
@@ -120,7 +120,7 @@ public class MockParam implements Param<Object> {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.antheminc.oss.nimbus.core.domain.model.state.EntityState#findParamByPath(java.lang.String[])
+	 * @see com.anthem.oss.nimbus.core.domain.model.state.EntityState#findParamByPath(java.lang.String[])
 	 */
 	@Override
 	public <P> Param<P> findParamByPath(String[] pathArr) {
@@ -128,14 +128,14 @@ public class MockParam implements Param<Object> {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.antheminc.oss.nimbus.core.domain.model.state.EntityState#fireRules()
+	 * @see com.anthem.oss.nimbus.core.domain.model.state.EntityState#fireRules()
 	 */
 	@Override
 	public void fireRules() {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param#getLeafState()
+	 * @see com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param#getLeafState()
 	 */
 	@Override
 	public Object getLeafState() {
@@ -143,7 +143,7 @@ public class MockParam implements Param<Object> {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.antheminc.oss.nimbus.core.domain.model.state.EntityState#getRootDomain()
+	 * @see com.anthem.oss.nimbus.core.domain.model.state.EntityState#getRootDomain()
 	 */
 	@Override
 	public Model<?> getRootDomain() {
@@ -154,7 +154,7 @@ public class MockParam implements Param<Object> {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.antheminc.oss.nimbus.core.domain.model.state.EntityState#getRootExecution()
+	 * @see com.anthem.oss.nimbus.core.domain.model.state.EntityState#getRootExecution()
 	 */
 	@Override
 	public ExecutionModel<?> getRootExecution() {
@@ -165,14 +165,14 @@ public class MockParam implements Param<Object> {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.antheminc.oss.nimbus.core.domain.model.state.EntityState#initSetup()
+	 * @see com.anthem.oss.nimbus.core.domain.model.state.EntityState#initSetup()
 	 */
 	@Override
 	public void initSetup() {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.antheminc.oss.nimbus.core.domain.model.state.EntityState#initState()
+	 * @see com.anthem.oss.nimbus.core.domain.model.state.EntityState#initState()
 	 */
 	@Override
 	public void initState() {
@@ -180,7 +180,7 @@ public class MockParam implements Param<Object> {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.antheminc.oss.nimbus.core.domain.model.state.Notification.Producer#registerConsumer(com.antheminc.oss.nimbus.core.domain.model.state.EntityState.MappedParam)
+	 * @see com.anthem.oss.nimbus.core.domain.model.state.Notification.Producer#registerConsumer(com.anthem.oss.nimbus.core.domain.model.state.EntityState.MappedParam)
 	 */
 	@Override
 	public void registerConsumer(MappedParam<?, Object> consumer) {
@@ -188,7 +188,7 @@ public class MockParam implements Param<Object> {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.antheminc.oss.nimbus.core.domain.model.state.State#setState(java.lang.Object)
+	 * @see com.anthem.oss.nimbus.core.domain.model.state.State#setState(java.lang.Object)
 	 */
 	@Override
 	public Action setState(Object state) {
@@ -199,7 +199,7 @@ public class MockParam implements Param<Object> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param#onStateLoadEvent()
+	 * @see com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param#onStateLoadEvent()
 	 */
 	@Override
 	public void onStateLoadEvent() {
@@ -208,7 +208,7 @@ public class MockParam implements Param<Object> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param#onStateChangeEvent(com.antheminc.oss.nimbus.core.domain.model.state.ExecutionTxnContext, com.antheminc.oss.nimbus.core.domain.command.Action)
+	 * @see com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param#onStateChangeEvent(com.anthem.oss.nimbus.core.domain.model.state.ExecutionTxnContext, com.anthem.oss.nimbus.core.domain.command.Action)
 	 */
 	@Override
 	public void onStateChangeEvent(ExecutionTxnContext txnCtx, Action a) {

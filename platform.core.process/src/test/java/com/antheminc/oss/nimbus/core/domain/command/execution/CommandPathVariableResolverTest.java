@@ -15,8 +15,8 @@ import com.antheminc.oss.nimbus.core.AbstractFrameworkIngerationPersistableTests
 import com.antheminc.oss.nimbus.core.domain.command.Action;
 import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
 
-import test.com.anthem.nimbus.platform.utils.ExtractResponseOutputUtils;
-import test.com.anthem.nimbus.platform.utils.MockHttpRequestBuilder;
+import test.com.antheminc.oss.nimbus.platform.utils.ExtractResponseOutputUtils;
+import test.com.antheminc.oss.nimbus.platform.utils.MockHttpRequestBuilder;
 
 /**
  * @author Rakesh Patel

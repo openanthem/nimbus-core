@@ -10,8 +10,8 @@ import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.antheminc.oss.nimbus.core.domain.command.Action;
 
-import test.com.anthem.nimbus.platform.utils.ExtractResponseOutputUtils;
-import test.com.anthem.nimbus.platform.utils.MockHttpRequestBuilder;
+import test.com.antheminc.oss.nimbus.platform.utils.ExtractResponseOutputUtils;
+import test.com.antheminc.oss.nimbus.platform.utils.MockHttpRequestBuilder;
 
 /**
  * @author Soham Chakravarti

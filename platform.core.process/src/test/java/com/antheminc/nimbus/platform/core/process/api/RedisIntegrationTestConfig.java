@@ -1,4 +1,4 @@
-package com.anthem.nimbus.platform.core.process.api;
+package com.antheminc.nimbus.platform.core.process.api;
 
 import java.io.IOException;
 

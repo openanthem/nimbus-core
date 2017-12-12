@@ -1,4 +1,4 @@
-package com.anthem.nimbus.platform.core.process.mq.config;
+package com.antheminc.oss.platform.core.process.mq.config;
 
 public class MessageConfig {
 	public final static String EVNT_QUEUE_NAME = "eventQ";

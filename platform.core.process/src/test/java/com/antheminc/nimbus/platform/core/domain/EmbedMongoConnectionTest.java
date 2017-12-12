@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.nimbus.platform.core.domain;
+package com.antheminc.nimbus.platform.core.domain;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;

@@ -1,4 +1,4 @@
-package com.anthem.nimbus.core.authorization;
+package com.antheminc.oss.nimbus.core.authorization;
 
 import java.util.ArrayList;
 import java.util.HashMap;

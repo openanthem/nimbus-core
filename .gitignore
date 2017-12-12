@@ -516,6 +516,13 @@ _Pvt_Extensions
 .paket/paket.exe
 paket-files/
 
+# UI - node modules
+**/nimbusui/package.json.lock
+**/nimbusui/node
+**/nimbusui/node_modules
+**/nimbusui/dist
+**/nimbusui/etc
+
 # FAKE - F# Make
 .fake/
 

@@ -14,7 +14,7 @@ import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
-import com.anthem.nimbus.platform.spec.model.process.ProcessEngineContext;
+import com.antheminc.oss.nimbus.platform.spec.model.process.ProcessEngineContext;
 import com.antheminc.oss.nimbus.core.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.core.domain.command.Command;
 import com.antheminc.oss.nimbus.core.domain.command.CommandBuilder;

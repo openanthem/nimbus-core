@@ -10,7 +10,6 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.mockito.Mockito;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
 import com.antheminc.oss.nimbus.core.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.core.domain.command.execution.CommandExecutorGateway;
 import com.antheminc.oss.nimbus.core.domain.definition.Model.Param.Values;
@@ -23,6 +22,7 @@ import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.core.domain.model.state.MockParam;
 import com.antheminc.oss.nimbus.core.domain.model.state.MockParamConfig;
 import com.antheminc.oss.nimbus.core.domain.model.state.ParamEvent;
+import com.antheminc.oss.nimbus.platform.spec.model.dsl.binder.Holder;
 
 /**
  * 

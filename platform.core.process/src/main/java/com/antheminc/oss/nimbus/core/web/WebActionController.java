@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
+import com.antheminc.oss.nimbus.platform.spec.model.dsl.binder.Holder;
 import com.antheminc.oss.nimbus.core.domain.command.execution.ExecutionContextLoader;
 import com.antheminc.oss.nimbus.core.domain.model.state.ModelEvent;
 

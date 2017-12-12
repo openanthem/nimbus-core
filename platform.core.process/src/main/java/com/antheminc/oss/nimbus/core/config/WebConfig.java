@@ -13,14 +13,8 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import com.anthem.nimbus.platform.spec.serializer.CustomLocalDateDeserializer;
-import com.anthem.nimbus.platform.spec.serializer.CustomLocalDateSerializer;
-import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.antheminc.oss.nimbus.platform.spec.serializer.CustomLocalDateDeserializer;
+import com.antheminc.oss.nimbus.platform.spec.serializer.CustomLocalDateSerializer;
 
 /**
  * Configures classloader to load resources from custom locations

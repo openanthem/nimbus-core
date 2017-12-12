@@ -1,15 +1,15 @@
 /**
  * 
  */
-package com.anthem.nimbus.platform.core.bpm;
+package com.antheminc.nimbus.platform.core.bpm;
 
 import com.antheminc.oss.nimbus.core.domain.definition.Domain;
+import com.antheminc.oss.nimbus.core.domain.definition.Domain.ListenerType;
 import com.antheminc.oss.nimbus.core.domain.definition.MapsTo;
 import com.antheminc.oss.nimbus.core.domain.definition.Repo;
 import com.antheminc.oss.nimbus.core.domain.definition.Repo.Cache;
 import com.antheminc.oss.nimbus.core.domain.definition.Repo.Database;
 import com.antheminc.oss.nimbus.core.domain.definition.ViewConfig.ViewRoot;
-import com.antheminc.oss.nimbus.core.domain.definition.Domain.ListenerType;
 
 import lombok.Getter;
 import lombok.Setter;

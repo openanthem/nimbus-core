@@ -6,7 +6,7 @@
 //
 
 
-package com.anthem.nimbus.platform.core.process.api.wsdl;
+package com.antheminc.oss.platform.core.process.api.wsdl;
 
 import javax.xml.bind.annotation.XmlRegistry;
 

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.nimbus.platform.web.flow.login;
+package com.antheminc.oss.nimbus.platform.web.flow.login;
 
 import com.antheminc.oss.nimbus.core.domain.definition.Model;
 import com.antheminc.oss.nimbus.core.domain.definition.ViewConfig.Link;

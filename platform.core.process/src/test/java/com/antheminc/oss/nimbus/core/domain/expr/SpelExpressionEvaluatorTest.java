@@ -13,9 +13,9 @@ import org.junit.runners.MethodSorters;
 import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.ParamStateHolder;
 import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.platform.spec.model.dsl.binder.Holder;
+import com.antheminc.oss.nimbus.platform.spec.model.dsl.binder.ParamStateHolder;
 
 /**
  * @author Swetha Vemuri

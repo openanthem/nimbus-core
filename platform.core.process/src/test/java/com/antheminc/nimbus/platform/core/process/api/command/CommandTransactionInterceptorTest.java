@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.nimbus.platform.core.process.api.command;
+package com.antheminc.nimbus.platform.core.process.api.command;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
@@ -9,10 +9,10 @@ import static org.junit.Assert.assertSame;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
 import com.antheminc.oss.nimbus.core.domain.command.execution.CommandTransactionInterceptor;
 import com.antheminc.oss.nimbus.core.domain.command.execution.ExecuteOutput;
 import com.antheminc.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
+import com.antheminc.oss.nimbus.platform.spec.model.dsl.binder.Holder;
 
 /**
  * @author Soham Chakravarti

@@ -21,7 +21,7 @@ public interface ModelConfig<T> extends EntityConfig<T> {
 	
 	public Repo getRepo();
 
-	@JsonIgnore
+	//@JsonIgnore
 	public List<? extends ParamConfig<?>> getParams();
 	
 	public ParamConfig<?> getIdParam();

@@ -1,4 +1,4 @@
-package test.com.anthem.nimbus.platform.utils;
+package test.com.antheminc.oss.nimbus.platform.utils;
 
 import java.util.function.Function;
 
