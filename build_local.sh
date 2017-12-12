@@ -40,5 +40,5 @@ function releasePrepare {
   #mvn -D maven.repo.local=/Users/charles.russell/.m2/repository release:clean release:prepare  -f platform.web/pom.xml -D skipDockerBuild
 }
 #releasePrepare
-#buildWithTests
-buildWithOutTests
+buildWithTests
+#buildWithOutTests
