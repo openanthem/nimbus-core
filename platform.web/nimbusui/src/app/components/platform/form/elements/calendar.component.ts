@@ -38,24 +38,13 @@ export class Calendar extends BaseControl<String> {
     @ViewChild(NgModel) model: NgModel;
 
     element: Param;
-    
-    min: Date;
-    
-    max: Date
 
     constructor(wcs: WebContentSvc, pageService: PageService) {
         super(pageService,wcs);
     }
 
-    ngOnInit(){
-        if(this.element.config.validation!=null) {
-            this.element.config.validation.constraints.forEach(validator => {
-                if (validator.name === 'DateRange') {
-                  this.min = new Date(validator.attribute.min)
-                  this.max = new Date(validator.attribute.max)
-                }
-              });
-         }
-    }
+    // ngOnInit(){
+ 
+    // }
 
 }

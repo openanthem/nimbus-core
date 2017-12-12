@@ -28,6 +28,7 @@ import com.anthem.oss.nimbus.test.sample.um.model.TestBean;
 /**
  * 
  * @author Tony Lopez (AF42192)
+ * @author Sandeep Mantha - added test cases for date validator
  *
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
