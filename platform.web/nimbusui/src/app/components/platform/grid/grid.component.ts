@@ -6,7 +6,7 @@ import { Param, ParamConfig } from '../../../shared/app-config.interface';
 import { PageService } from '../../../services/page.service';
 import { GridService } from '../../../services/grid.service';
 import { WebContentSvc } from '../../../services/content-management.service';
-import { DataTable, OverlayPanel } from 'primeng/primeng';
+import { DataTable, OverlayPanel, Paginator } from 'primeng/primeng';
 import { ElementModelParam } from './../../../shared/app-config.interface';
 import { ServiceConstants } from './../../../services/service.constants';
 import { ControlValueAccessor } from '@angular/forms/src/directives';
@@ -201,8 +201,8 @@ export class InfiniteScrollGrid implements ControlValueAccessor{
     handleRowChange(val) {
         if(this.value!=val)
             this.value = val;
-        console.log('onRowUpdate');
-        console.log(val);
+        // console.log('onRowUpdate');
+        // console.log(val);
     }
 
     getAddtionalData(event: any) {

@@ -4,9 +4,9 @@
  
 <!-- Total Results: {{data == null ? leafState.length : data?.length}}   -->
  
-<div id="gsFlexGrid">
+<div id="gsFlexGrid" class="scrollGrid">
 	<div class="ui-datatable-header ui-widget-header">
-		<p-header>Grid title - All (185)</p-header>
+		<p-header>{{element.config?.uiStyles?.attributes?.title}}</p-header>
 		<div class="recordsDisplayed">Showing 1-50 records</div>
 	</div>
 
@@ -18,12 +18,15 @@
 		(valueChange)="handleRowChange($event)"
 		[rows]="element.config?.uiStyles?.attributes?.pageSize"
 		[paginator]="element.config?.uiStyles?.attributes?.pagination"
+		scrollable="true" 
+		scrollHeight="200px"
 		paginatorPosition="both"
+		alwaysShowPaginator ="false"
 		[expandableRows]="element.config?.uiStyles?.attributes?.expandableRows"
 		(onRowExpand)="getAddtionalData($event)"
 		[responsive]="true" #dt> 
 
-		<p-column [style]="{'width':'38px'}" 
+		<p-column styleClass="col-select" 
 			selectionMode="multiple" *ngIf="element.config?.uiStyles?.attributes?.rowSelection">
 		</p-column> 
 
@@ -54,12 +57,11 @@
 				
 				<ng-template *ngIf="col?.uiStyles?.attributes?.alias=='LinkMenu'" pTemplate="body" let-cell="rowData">
 					<nm-action-dropdown [params]="col?.nestedParams"
+						[rowData]="cell"
 						[elementPath]="getRowPath(col, cell)"></nm-action-dropdown>
 				</ng-template>
 				
-		
 			</p-column> 
-
 		</ng-template>
 				
 		<!-- <ng-template ngFor let-col [ngForOf]="params">

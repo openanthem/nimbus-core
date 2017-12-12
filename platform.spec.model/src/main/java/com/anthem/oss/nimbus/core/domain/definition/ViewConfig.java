@@ -579,6 +579,22 @@ public class ViewConfig {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
+	public @interface Calendar {
+		String alias() default "Calendar";
+		boolean readOnly() default false;	
+		String labelClass() default "anthem-label";
+		String type() default "calendar";
+		boolean showTime() default true;
+		String hourFormat() default "24";
+		boolean timeOnly() default false;
+		boolean postEventOnChange() default false;
+		String controlId() default "";
+		String help() default "";
+	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
 	public @interface GridContainer {
 		String alias() default "GridContainer";
 	}	
@@ -758,5 +774,4 @@ public class ViewConfig {
 		}
 		FilterMode filterMode() default FilterMode.equals;
 	}
-	
 }

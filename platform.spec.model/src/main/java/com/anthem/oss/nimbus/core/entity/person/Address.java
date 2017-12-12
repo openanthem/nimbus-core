@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.data.annotation.Id;
 
+import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.entity.AbstractEntity;
 
@@ -23,7 +24,7 @@ import lombok.ToString;
  */
 //@Domain(value="address", includeListeners={ListenerType.persistence})
 //@Repo(Database.rep_mongodb)
-@Model
+@Domain(value="address")
 @Getter @Setter @ToString(callSuper=true)
 public abstract class Address<ID extends Serializable> extends AbstractEntity<ID> {
 

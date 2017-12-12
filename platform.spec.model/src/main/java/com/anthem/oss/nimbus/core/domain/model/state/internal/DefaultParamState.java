@@ -593,6 +593,10 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		if(!isNested() || (isTransient() && !findIfTransient().isAssinged()))
 			return;
 		
+		if (null == findIfNested().getParams()) {
+			return;
+		}
+		
 		findIfNested().getParams().stream()
 			.forEach(p->{
 
@@ -626,6 +630,10 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		// handle nested
 		if(!isNested() || findIfNested().templateParams().isNullOrEmpty())
 			return;
+		
+		if (null == findIfNested().getParams()) {
+			return;
+		}
 		
 		findIfNested().getParams().stream()
 			.forEach(p->{

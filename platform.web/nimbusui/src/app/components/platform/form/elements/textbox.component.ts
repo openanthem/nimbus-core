@@ -17,20 +17,29 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   selector: 'nm-input',
   providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc ],
   template: `
-    <label *ngIf="element.config?.uiStyles?.attributes?.hidden!=true" [attr.for]="element.config?.code" class="">{{label}} 
-        <nm-tooltip *ngIf="element.config?.uiStyles?.attributes?.help!=''" [helpText]='element.config?.uiStyles?.attributes?.help'></nm-tooltip>
-    </label>  
-    <input 
+    <label *ngIf="hidden!=true"
+        [attr.for]="element.config?.code" class="">{{label}} 
+        <nm-tooltip *ngIf="help!=''" 
+            [helpText]='help'>
+        </nm-tooltip>
+    </label>
+
+    <input *ngIf="hidden!=true"
         [(ngModel)] = "value"
         [id]="element.config?.code" 
         (focusout)="emitValueChangedEvent(this,value)"
-        [value]="element.config?.uiStyles?.attributes?.type"
-        class="form-control" *ngIf="element.config?.uiStyles?.attributes?.readOnly==false && element.config?.uiStyles?.attributes?.hidden!=true"/>
+        [value]="type"
+        class="form-control" 
+        [readonly]="readOnly" />
+
+    <!--
+    <p style="margin-bottom:0rem;" *ngIf="readOnly">{{element.leafState}}</p>
+    -->
     
-    <p style="margin-bottom:0rem;" *ngIf="element.config?.uiStyles?.attributes?.readOnly==true">{{element.leafState}}</p>
-  
-    <input [id]="element.config?.code" type="hidden" 
-    [value]="element.leafState" *ngIf="element.config?.uiStyles?.attributes?.hidden==true"/>
+    <input *ngIf="hidden==true"
+        [id]="element.config?.code" 
+        type="hidden" 
+        [value]="element.leafState" />
    `
 })
 export class InputText extends BaseControl<String> {

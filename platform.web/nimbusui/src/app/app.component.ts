@@ -1,4 +1,5 @@
 import { Component, ViewEncapsulation, Inject } from '@angular/core';
+import { HostListener } from '@angular/core/src/metadata/directives';
 import { DomainLayoutCmp } from './components/domain/domain-layout.component';
 import { WebContentSvc } from './services/content-management.service';
 import { ServiceConstants } from './services/service.constants';
@@ -36,6 +37,5 @@ export class AppComponent {
         ServiceConstants.STOPGAP_APP_HOST = this.domain;
         ServiceConstants.STOPGAP_APP_PORT = this.port;
     }
-
 
 }
