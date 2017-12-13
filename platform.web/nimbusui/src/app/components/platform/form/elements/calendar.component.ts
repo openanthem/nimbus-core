@@ -5,6 +5,10 @@ import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { PageService } from '../../../../services/page.service';
 import { Param } from '../../../../shared/app-config.interface';
+/**
+ * \@author Sandeep Mantha
+ * \@whatItDoes A control to be used when the user input is in the form of date or date with time or just the time.
+ */
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -21,8 +25,11 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
         </label>
         <p-calendar [(ngModel)]="value"  
             (focusout)="emitValueChangedEvent(this,$event)" 
-            showTime="element.config?.uiStyles?.attributes?.showTime" 
-            hourFormat="element.config?.uiStyles?.attributes?.hourFormat" >
+            [minDate]="min"
+            [maxDate]="max"
+            [timeOnly]="element.config?.uiStyles?.attributes?.timeOnly"
+            [showTime]="element.config?.uiStyles?.attributes?.showTime" 
+            [hourFormat]="element.config?.uiStyles?.attributes?.hourFormat" >
         </p-calendar>
    `
 })
@@ -35,5 +42,9 @@ export class Calendar extends BaseControl<String> {
     constructor(wcs: WebContentSvc, pageService: PageService) {
         super(pageService,wcs);
     }
+
+    // ngOnInit(){
+ 
+    // }
 
 }

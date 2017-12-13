@@ -1,10 +1,23 @@
-<footer class="nm-footer" *ngIf="message">
+<footer class="nm-footer">
+  
     <div class="footer-text">
-      <p>{{message}}</p>
-      <ul>
-            <li *ngFor="let p of links, let i=index">
-                <a href="#">{{p}} </a>
+        <nm-paragraph [element]="footerConfig.disclaimer"></nm-paragraph>
+        <ul *ngIf="footerConfig">
+
+            <ng-template ngFor let-item [ngForOf]="footerConfig.links">
+                <li *ngIf="item.config">
+                    <nm-link [element]="item"></nm-link>
+                </li>
+            </ng-template>
+            <!-- <li *ngFor="let p of links">
+                <a [href] = "p.param.config.url" >{{p.param.config.code}}</a>
+            </li> -->
+        </ul>
+        <ul *ngIf="footerConfig">
+            <li>
+                <nm-link [element]="footerConfig.sslCert"></nm-link>
             </li>
         </ul>
     </div>
+
 </footer>

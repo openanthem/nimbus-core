@@ -26,6 +26,10 @@ export interface AppBranding {
     subTitle: Param;
     userName: Param;
     userRole: Param;
+    help:Param;
+    logOut: Param;
+    numOfNotifications:Param;
+    linkNotifications:Param;
 }
 
 export interface TopBarConfig {
@@ -36,11 +40,9 @@ export interface TopBarConfig {
 }
 
 export interface FooterConfig {
-    version: Param;
-    copyright: Param;
+    disclaimer: Param;
+    links: Param[];
     sslCert: Param;
-    tou: Param;
-    privacy: Param;
 }
 
 export interface BodyConfig {
