@@ -11,12 +11,8 @@ import { FooterConfig } from '../../../model/menu-meta.interface'
 
 /**
  * \@author Vinay.Kurva
- * \@whatItDoes Equivalent to <P> tag in HTML. Content specified in this tag will be displayed within a <P>
- * tag on the HTML page.
- * 
- * \@howToUse 
- * @Paragraph annotation from Configuration drives this.
- * <nm-paragraph [element]="element"></nm-paragraph>
+ * Content specified in this tag will display in global footer
+ *
  * 
  */
 
