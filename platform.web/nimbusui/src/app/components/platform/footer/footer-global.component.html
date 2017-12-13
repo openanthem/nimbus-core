@@ -1,7 +1,9 @@
 <footer class="nm-footer">
   
     <div class="footer-text">
-        <nm-paragraph [element]="footerConfig.disclaimer"></nm-paragraph>
+        <ng-template *ngIf="footerConfig?.disclaimer">
+            <nm-paragraph [element]="footerConfig.disclaimer"></nm-paragraph>
+        </ng-template>  
         <ul *ngIf="footerConfig">
 
             <ng-template ngFor let-item [ngForOf]="footerConfig.links">
