@@ -869,4 +869,3 @@ export function createImage( src: string ) {
 export function callFun( fun: Function ) {
     return fun();
 }
-

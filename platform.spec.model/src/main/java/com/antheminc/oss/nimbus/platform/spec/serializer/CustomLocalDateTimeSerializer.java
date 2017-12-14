@@ -3,6 +3,7 @@ package com.antheminc.oss.nimbus.platform.spec.serializer;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 import com.antheminc.oss.nimbus.core.util.JsonParsingException;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -19,7 +20,7 @@ public class CustomLocalDateTimeSerializer extends StdSerializer<LocalDateTime> 
 	private static final long serialVersionUID = 1L;
 	
 	private static DateTimeFormatter formatter =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
 
     public CustomLocalDateTimeSerializer() {
         this(null);
