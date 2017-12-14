@@ -3,6 +3,7 @@ package com.anthem.nimbus.platform.spec.serializer;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 import org.springframework.util.StringUtils;
 
@@ -20,7 +21,7 @@ public class CustomLocalDateTimeDeserializer extends StdDeserializer<LocalDateTi
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
 
     public CustomLocalDateTimeDeserializer() {
         this(null);

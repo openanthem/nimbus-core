@@ -18,7 +18,7 @@ export class HeaderGlobal implements OnInit {
 
     private label               : string;
     private messageCount        : number = 3;
-    private hasMessages         : boolean;
+    // private hasMessages         : boolean;
     private organizationList    : Array<string>;
     //private id                  : string;
 
@@ -41,7 +41,7 @@ export class HeaderGlobal implements OnInit {
         this.element.visible.currState = true;
         this.element.visible.prevState = true;
         this.organizationList = ['organization 1', 'organization 2', 'organization 3', 'organization 4'];
-        this.hasMessages = this.messageCount > 0; 
+        // this.hasMessages = this.messageCount > 0; 
         this.label = "Organizations";
         //this.id = "id-combobox-test";
 
