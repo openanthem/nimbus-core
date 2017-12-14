@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.anthem.oss.nimbus.core.BeanResolverStrategy;
@@ -39,28 +40,46 @@ public class AccessConditionalStateEventHandler extends AbstractConditionalState
 		
 		ClientUser user = UserEndpointSession.getStaticLoggedInUser();
 		
-		Set<String> userRoleCodes = user.getRoles().stream().map(UserRole::getRoleId).collect(Collectors.toSet());
-		Set<String> userAuthorities = user.getResolvedAccessEntities().stream().map(ClientAccessEntity::getCode).collect(Collectors.toSet());
-		
-		if(configuredAnnotation.containsRoles() != null && configuredAnnotation.containsRoles().length > 0){
-			boolean isTrue = userRoleCodes.stream().anyMatch(userRole -> Arrays.asList(configuredAnnotation.containsRoles()).contains(userRole));
-			if(isTrue)	
-				handlePermission(configuredAnnotation.p(), onChangeParam);
-		}
-		else if(configuredAnnotation.containsAuthority() != null && configuredAnnotation.containsAuthority().length > 0){
-			boolean isTrue = userAuthorities.stream().anyMatch(userAccessEntity -> Arrays.asList(configuredAnnotation.containsAuthority()).contains(userAccessEntity));
-			if(isTrue)	
-				handlePermission(configuredAnnotation.p(), onChangeParam);
-		}
-		else if(StringUtils.isNotBlank(configuredAnnotation.whenRoles())){
-			boolean isTrue = expressionEvaluator.getValue(configuredAnnotation.whenRoles(), userRoleCodes, Boolean.class);
-			if(isTrue)
-				handlePermission(configuredAnnotation.p(), onChangeParam);
-		}
-		else if(StringUtils.isNotBlank(configuredAnnotation.whenAuthorities())){
-			boolean isTrue = expressionEvaluator.getValue(configuredAnnotation.whenAuthorities(), userAuthorities, Boolean.class);
-			if(isTrue)
-				handlePermission(configuredAnnotation.p(), onChangeParam);
+		if(user != null) {
+			
+			if(!CollectionUtils.isEmpty(user.getRoles())) {
+				Set<String> userRoleCodes = user.getRoles().stream().map(UserRole::getRoleId).collect(Collectors.toSet());
+				
+				if(configuredAnnotation.containsRoles() != null && configuredAnnotation.containsRoles().length > 0){
+					boolean isTrue = userRoleCodes.stream().anyMatch(userRole -> Arrays.asList(configuredAnnotation.containsRoles()).contains(userRole));
+					if(isTrue) {	
+						handlePermission(configuredAnnotation.p(), onChangeParam);
+						return;
+					}
+				}
+				else if(StringUtils.isNotBlank(configuredAnnotation.whenRoles())){
+					boolean isTrue = expressionEvaluator.getValue(configuredAnnotation.whenRoles(), userRoleCodes, Boolean.class);
+					if(isTrue) {
+						handlePermission(configuredAnnotation.p(), onChangeParam);
+						return;
+					}
+				}
+			}
+			
+			Set<String> userAuthorities = user.getResolvedAccessEntities().stream().map(ClientAccessEntity::getCode).collect(Collectors.toSet());
+			
+			if(!CollectionUtils.isEmpty(user.getResolvedAccessEntities())) {
+			
+				if(configuredAnnotation.containsAuthority() != null && configuredAnnotation.containsAuthority().length > 0){
+					boolean isTrue = userAuthorities.stream().anyMatch(userAccessEntity -> Arrays.asList(configuredAnnotation.containsAuthority()).contains(userAccessEntity));
+					if(isTrue) {
+						handlePermission(configuredAnnotation.p(), onChangeParam);
+						return;
+					}
+				}
+				else if(StringUtils.isNotBlank(configuredAnnotation.whenAuthorities())){
+					boolean isTrue = expressionEvaluator.getValue(configuredAnnotation.whenAuthorities(), userAuthorities, Boolean.class);
+					if(isTrue) {
+						handlePermission(configuredAnnotation.p(), onChangeParam);
+						return;
+					}
+				}
+			}
 		}
 	}
 	
