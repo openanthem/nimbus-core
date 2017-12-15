@@ -5,7 +5,7 @@ import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.apache.commons.lang3.StringUtils;
 
-import com.anthem.nimbus.platform.spec.model.process.ProcessEngineContext;
+import com.antheminc.oss.nimbus.platform.spec.model.process.ProcessEngineContext;
 import com.antheminc.oss.nimbus.core.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.core.domain.command.Command;
 import com.antheminc.oss.nimbus.core.domain.command.CommandBuilder;

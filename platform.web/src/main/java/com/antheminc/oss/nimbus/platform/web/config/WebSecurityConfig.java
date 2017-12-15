@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.nimbus.platform.web.config;
+package com.antheminc.oss.nimbus.platform.web.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

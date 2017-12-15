@@ -13,7 +13,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
 import com.antheminc.oss.nimbus.core.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.core.domain.command.Action;
 import com.antheminc.oss.nimbus.core.domain.definition.Constants;
@@ -33,6 +32,7 @@ import com.antheminc.oss.nimbus.core.entity.process.ProcessFlow;
 import com.antheminc.oss.nimbus.core.spec.contract.event.EventListener;
 import com.antheminc.oss.nimbus.core.util.JustLogit;
 import com.antheminc.oss.nimbus.core.util.LockTemplate;
+import com.antheminc.oss.nimbus.platform.spec.model.dsl.binder.Holder;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;

@@ -17,7 +17,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.ClassUtils;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
 import com.antheminc.oss.nimbus.core.InvalidOperationAttemptedException;
 import com.antheminc.oss.nimbus.core.domain.command.Action;
 import com.antheminc.oss.nimbus.core.domain.command.execution.ValidationResult;
@@ -38,6 +37,7 @@ import com.antheminc.oss.nimbus.core.domain.model.state.StateType;
 import com.antheminc.oss.nimbus.core.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
 import com.antheminc.oss.nimbus.core.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
 import com.antheminc.oss.nimbus.core.entity.Findable;
+import com.antheminc.oss.nimbus.platform.spec.model.dsl.binder.Holder;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
@@ -590,8 +590,12 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		emitParamContextEvent();
 		
 		// handle nested
-		if(!isNested() || findIfNested().templateParams().isNullOrEmpty())
+		if(!isNested() || (isTransient() && !findIfTransient().isAssinged()))
 			return;
+		
+		if (null == findIfNested().getParams()) {
+			return;
+		}
 		
 		findIfNested().getParams().stream()
 			.forEach(p->{
@@ -626,6 +630,10 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		// handle nested
 		if(!isNested() || findIfNested().templateParams().isNullOrEmpty())
 			return;
+		
+		if (null == findIfNested().getParams()) {
+			return;
+		}
 		
 		findIfNested().getParams().stream()
 			.forEach(p->{

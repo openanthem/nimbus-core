@@ -14,7 +14,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.client.RestTemplate;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadScopedEventListener;
+import com.antheminc.oss.nimbus.platform.spec.model.dsl.binder.QuadScopedEventListener;
 import com.antheminc.oss.nimbus.core.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.core.bpm.BPMGateway;
 import com.antheminc.oss.nimbus.core.domain.command.Command;

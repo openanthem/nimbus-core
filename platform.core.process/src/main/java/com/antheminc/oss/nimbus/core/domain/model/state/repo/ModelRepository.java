@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
+import com.antheminc.oss.nimbus.platform.spec.model.dsl.binder.Holder;
 import com.antheminc.oss.nimbus.core.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.core.entity.SearchCriteria.ExampleSearchCriteria;

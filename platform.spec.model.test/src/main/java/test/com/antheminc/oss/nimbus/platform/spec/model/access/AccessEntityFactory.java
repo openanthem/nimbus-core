@@ -1,7 +1,7 @@
 /**
  * 
  */
-package test.com.anthem.nimbus.platform.spec.model.access;
+package test.com.antheminc.oss.nimbus.platform.spec.model.access;
 
 import java.util.Arrays;
 

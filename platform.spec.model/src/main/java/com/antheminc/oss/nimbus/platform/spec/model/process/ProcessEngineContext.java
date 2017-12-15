@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.nimbus.platform.spec.model.process;
+package com.antheminc.oss.nimbus.platform.spec.model.process;
 
 import java.io.Serializable;
 

@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.data.annotation.Id;
 
-import com.antheminc.oss.nimbus.core.domain.definition.Model;
+import com.antheminc.oss.nimbus.core.domain.definition.Domain;
 import com.antheminc.oss.nimbus.core.entity.AbstractEntity;
 
 import lombok.AccessLevel;
@@ -23,7 +23,7 @@ import lombok.ToString;
  */
 //@Domain(value="address", includeListeners={ListenerType.persistence})
 //@Repo(Database.rep_mongodb)
-@Model
+@Domain(value="address")
 @Getter @Setter @ToString(callSuper=true)
 public abstract class Address<ID extends Serializable> extends AbstractEntity<ID> {
 
@@ -32,7 +32,10 @@ public abstract class Address<ID extends Serializable> extends AbstractEntity<ID
 	
 	public enum Type {
 		MAILING,
-		BILLING;
+		BILLING,
+		HOME,
+		WORK,
+		BUSINESS;
 	}
 	
 

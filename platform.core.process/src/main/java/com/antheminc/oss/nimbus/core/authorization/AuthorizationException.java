@@ -1,4 +1,4 @@
-package com.anthem.nimbus.core.authorization;
+package com.antheminc.oss.nimbus.core.authorization;
 
 import com.antheminc.oss.nimbus.core.FrameworkRuntimeException;
 

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.nimbus.platform.core.process.api.support;
+package com.antheminc.oss.platform.core.process.api.support;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

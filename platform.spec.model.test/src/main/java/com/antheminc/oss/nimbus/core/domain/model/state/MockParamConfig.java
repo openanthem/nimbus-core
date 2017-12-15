@@ -15,7 +15,7 @@ import com.antheminc.oss.nimbus.core.domain.model.config.RulesConfig;
 
 import lombok.Getter;
 import lombok.Setter;
-import test.com.anthem.nimbus.platform.utils.PathUtils;
+import test.com.antheminc.oss.nimbus.platform.utils.PathUtils;
 
 /**
  * A mock ParamConfig implementation intended for testing purposes.

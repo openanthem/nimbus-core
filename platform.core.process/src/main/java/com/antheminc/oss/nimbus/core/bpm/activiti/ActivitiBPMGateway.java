@@ -19,7 +19,7 @@ import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.anthem.nimbus.platform.spec.model.process.ProcessEngineContext;
+import com.antheminc.oss.nimbus.platform.spec.model.process.ProcessEngineContext;
 import com.antheminc.oss.nimbus.core.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.core.bpm.BPMGateway;
 import com.antheminc.oss.nimbus.core.domain.command.execution.ProcessResponse;

@@ -1,4 +1,4 @@
-package com.anthem.nimbus.platform.core.process.api;
+package com.antheminc.nimbus.platform.core.process.api;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -14,15 +14,11 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.util.Assert;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
 import com.antheminc.oss.nimbus.core.AbstractFrameworkIntegrationTests;
 import com.antheminc.oss.nimbus.core.domain.command.Action;
 import com.antheminc.oss.nimbus.core.domain.command.Command;
@@ -38,14 +34,9 @@ import com.antheminc.oss.nimbus.core.entity.VStaticCodeValue;
 import com.antheminc.oss.nimbus.core.entity.client.Client;
 import com.antheminc.oss.nimbus.core.entity.client.access.ClientUserRole;
 import com.antheminc.oss.nimbus.core.entity.client.user.ClientUser;
-import com.antheminc.oss.nimbus.core.entity.queue.MGroupMember;
-import com.antheminc.oss.nimbus.core.entity.queue.MUser;
-import com.antheminc.oss.nimbus.core.entity.queue.MUserGroup;
 import com.antheminc.oss.nimbus.core.entity.queue.Queue;
 import com.antheminc.oss.nimbus.core.entity.user.ClientUserGroup;
 import com.antheminc.oss.nimbus.core.entity.user.GroupUser;
-import com.mongodb.Mongo;
-import com.mongodb.MongoClient;
 
 /**
  * @author Rakesh Patel

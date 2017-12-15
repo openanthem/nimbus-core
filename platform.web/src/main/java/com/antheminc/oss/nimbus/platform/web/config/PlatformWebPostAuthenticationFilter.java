@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.nimbus.platform.web.config;
+package com.antheminc.oss.nimbus.platform.web.config;
 
 import java.io.IOException;
 import java.util.HashMap;

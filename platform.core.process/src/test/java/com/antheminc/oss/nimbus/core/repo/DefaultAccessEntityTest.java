@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import com.antheminc.oss.nimbus.core.AbstractFrameworkIntegrationTests;
 import com.antheminc.oss.nimbus.core.entity.access.DefaultAccessEntity;
 
-import test.com.anthem.nimbus.platform.spec.model.access.AccessEntityFactory;
+import test.com.antheminc.oss.nimbus.platform.spec.model.access.AccessEntityFactory;
 
 /**
  * @author Soham Chakravarti

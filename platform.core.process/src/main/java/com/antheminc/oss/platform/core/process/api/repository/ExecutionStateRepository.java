@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.nimbus.platform.core.process.api.repository;
+package com.antheminc.oss.platform.core.process.api.repository;
 
 import lombok.Getter;
 

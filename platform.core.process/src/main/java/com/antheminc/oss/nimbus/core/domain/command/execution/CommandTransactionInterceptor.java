@@ -3,7 +3,7 @@
  */
 package com.antheminc.oss.nimbus.core.domain.command.execution;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
+import com.antheminc.oss.nimbus.platform.spec.model.dsl.binder.Holder;
 import com.antheminc.oss.nimbus.core.domain.command.Behavior;
 
 /**

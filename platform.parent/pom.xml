@@ -1,21 +1,21 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.antheminc.oss</groupId>
 		<artifactId>nimbus.core.dependencies</artifactId>
 		<version>1.0.0.M9-SNAPSHOT</version>
-		<relativePath>../dependencies</relativePath>
+		<relativePath>../platform.dependencies</relativePath>
 	</parent>
 	<artifactId>nimbus.core.parent</artifactId>
 	<packaging>pom</packaging>
 	<name>nimbus-core-parent</name>
- 	<!-- <modules>
+	<!--
+	<modules>
 		<module>../platform.spec.model</module>
 		<module>../platform.spec.model.test</module>
 		<module>../platform.core.process</module>
-	</modules>  -->
-
+	</modules>
+-->
 	<organization>
 		<name>Anthem Inc.</name>
 		<url>https://www.oss.antheminc.com</url>
@@ -24,8 +24,9 @@
 	<!-- @TODO - Change exact path below -->
 	<scm>
 		<url>http://github.com/anthem-projects/nimbus-oss</url>
-		<connection>scm:git:git://github.com/anthem-projects/nimbus-oss.git</connection>
-	</scm>
+		<connection>scm:git:git://github.com/openanthem/nimbus-core.git</connection>
+	  <tag>nimbus.core.parent-1.0.0.M9</tag>
+  </scm>
 	<issueManagement>
 		<system>Github</system>
 		<url>https://github.com/anthemprojects/nimbus-oss/issues</url>
@@ -94,6 +95,11 @@
 				<artifactId>embedded-redis</artifactId>
 				<version>${embed-redis.version}</version>
 				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
+				<scope>deploy</scope>
 			</dependency>
 			<!-- <dependency> <groupId>org.apache.qpid</groupId> <artifactId>qpid-broker</artifactId>
 				<version>${qpid-broker.version}</version> <scope>test</scope> </dependency> -->

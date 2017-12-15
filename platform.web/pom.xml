@@ -65,7 +65,6 @@
 		<dependency>
 			<groupId>com.antheminc.oss</groupId>
 			<artifactId>nimbus.core.api</artifactId>
-			<version>${nimbus.core.api.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.quartz-scheduler</groupId>
@@ -86,13 +85,13 @@
 			</activation>
 			<build>
 				<plugins>
-					<!-- <plugin> <groupId>com.github.eirslett</groupId> <artifactId>frontend-maven-plugin</artifactId>
+					<!-- <plugin> <groupId>com.github.eirslett</groupId> <artifactId>frontend-maven-plugin</artifactId> 
 						</plugin> -->
 					<plugin>
 						<groupId>org.springframework.boot</groupId>
 						<artifactId>spring-boot-maven-plugin</artifactId>
 						<configuration>
-							<mainClass>com.anthem.nimbus.platform.web.Application</mainClass>
+							<mainClass>com.antheminc.oss.nimbus.platform.web.Application</mainClass>
 							<layout>ZIP</layout>
 						</configuration>
 					</plugin>
@@ -112,7 +111,7 @@
 						<groupId>org.springframework.boot</groupId>
 						<artifactId>spring-boot-maven-plugin</artifactId>
 						<configuration>
-							<mainClass>com.anthem.nimbus.platform.web.Application</mainClass>
+							<mainClass>com.antheminc.oss.nimbus.platform.web.Application</mainClass>
 							<layout>ZIP</layout>
 						</configuration>
 					</plugin>
@@ -149,8 +148,8 @@
 						<directory>target/frontend</directory>
 						<targetPath>static</targetPath>
 					</resource>
-
-
+			
+			
 				</resources>
 			</build>
 		</profile>
@@ -192,14 +191,12 @@
 						<groupId>org.springframework.boot</groupId>
 						<artifactId>spring-boot-maven-plugin</artifactId>
 						<configuration>
-							<mainClass>com.anthem.nimbus.platform.web.Application</mainClass>
+							<mainClass>com.antheminc.oss.nimbus.platform.web.Application</mainClass>
 							<layout>ZIP</layout>
-
+							<classifier>exec</classifier>
 							<folders>
 								<folder>${project.build.directory}/src/main/resources</folder>
 							</folders>
-
-
 						</configuration>
 					</plugin>
 				</plugins>
@@ -222,15 +219,12 @@
 						<groupId>org.springframework.boot</groupId>
 						<artifactId>spring-boot-maven-plugin</artifactId>
 						<configuration>
-							<mainClass>com.anthem.nimbus.platform.web.Application</mainClass>
+							<mainClass>com.antheminc.oss.nimbus.platform.web.Application</mainClass>
 							<layout>ZIP</layout>
-
-							<folders>
+                             <folders>
 								<folder>${project.build.directory}/src/main/resources</folder>
 							</folders>
-
-
-						</configuration>
+							</configuration>
 					</plugin>
 				</plugins>
 				<resources>
@@ -267,7 +261,7 @@
 							</execution>
 						</executions>
 						<configuration>
-							<karmaExecutable>${basedir}/node_modules/.bin/karma</karmaExecutable>
+							<karmaExecutable>${basedir}/node_modules/.bin/karma</karmaExecutable>        
 							<configFile>${basedir}/karma.conf.js</configFile>
 							<reportsDirectory>${project.build.directory}/karma-reports</reportsDirectory>
 							<browsers>${testconfig.ui.browsers}</browsers>

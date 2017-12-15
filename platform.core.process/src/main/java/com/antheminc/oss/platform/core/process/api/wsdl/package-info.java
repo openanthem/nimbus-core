@@ -6,4 +6,4 @@
 //
 
 @javax.xml.bind.annotation.XmlSchema(namespace = "http://wellpoint.com/schema/SearchMemberRequest/v9.02", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
-package com.anthem.nimbus.platform.core.process.api.wsdl;
+package com.antheminc.oss.platform.core.process.api.wsdl;

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.anthem.nimbus.platform.spec.model.dsl.binder;
+package com.antheminc.oss.nimbus.platform.spec.model.dsl.binder;
 
 import java.util.List;
 

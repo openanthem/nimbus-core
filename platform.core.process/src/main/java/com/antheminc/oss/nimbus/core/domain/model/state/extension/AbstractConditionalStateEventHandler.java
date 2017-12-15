@@ -8,7 +8,7 @@ import java.util.EnumSet;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.ParamStateHolder;
+import com.antheminc.oss.nimbus.platform.spec.model.dsl.binder.ParamStateHolder;
 import com.antheminc.oss.nimbus.core.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.core.domain.command.Action;
 import com.antheminc.oss.nimbus.core.domain.definition.InvalidConfigException;
