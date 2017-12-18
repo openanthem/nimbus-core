@@ -9,10 +9,12 @@ import { AuthenticationService } from '../../services/authentication.service';
 import { STOMPService } from '../../services/stomp.service';
 import { PageService } from '../../services/page.service';
 import { ServiceConstants } from '../../services/service.constants';
+import {FooterGlobal} from '../platform/footer/footer-global.component'
 
 @Component({
     templateUrl: './home-layout.component.html',
-    providers: [ STOMPService, LayoutService ]
+    providers: [ STOMPService, LayoutService ],
+    
 })
 
 export class HomeLayoutCmp {
@@ -54,6 +56,9 @@ export class HomeLayoutCmp {
                     this.leftMenuItems = layout.leftNavBar;
                     this.footer = layout.footer;
                     this.body = layout.body;
+                    console.log("this ........................................ footer")
+                    console.log(this.footer );
+                    console.log(this.branding);
                 }
                 //this._router.navigate([this.body['defaultFlow']], { relativeTo: this._route });
             }

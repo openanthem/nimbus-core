@@ -33,7 +33,10 @@ public abstract class Address<ID extends Serializable> extends AbstractEntity<ID
 	
 	public enum Type {
 		MAILING,
-		BILLING;
+		BILLING,
+		HOME,
+		WORK,
+		BUSINESS;
 	}
 	
 

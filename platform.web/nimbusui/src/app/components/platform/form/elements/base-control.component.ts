@@ -15,7 +15,8 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
     label: string;
     inPlaceEditContext: any;
     showLabel: boolean = true;
-
+    min: Date;
+    max: Date;
     constructor(private pageService: PageService, private wcs: WebContentSvc) {
         super();
         wcs.content$.subscribe(result => {
@@ -53,6 +54,15 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
                 this.pageService.processPost(this.element.config.uiStyles.attributes.postButtonUrl, null, $event.leafState, 'POST');
              }
          });
+
+         if(this.element.config.validation!=null) {
+            this.element.config.validation.constraints.forEach(validator => {
+                if (validator.name === 'DateRange') {
+                  this.min = new Date(validator.attribute.min)
+                  this.max = new Date(validator.attribute.max)
+                }
+              });
+         }
     }
 
     /** invoked from InPlaceEdit control */
