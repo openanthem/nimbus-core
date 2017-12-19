@@ -1,6 +1,6 @@
 'use strict';
 import { NgModel, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { Component, ViewChild, forwardRef, Input } from '@angular/core';
+import { Component, ViewChild, forwardRef, Input, ChangeDetectorRef } from '@angular/core';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { PageService } from '../../../../services/page.service';
@@ -48,7 +48,7 @@ export class InputText extends BaseControl<String> {
 
      element: Param;
 
-    constructor(wcs: WebContentSvc, pageService: PageService) {
-        super(pageService,wcs);
+    constructor(wcs: WebContentSvc, pageService: PageService,cd:ChangeDetectorRef) {
+        super(pageService,wcs,cd);
     }
 }

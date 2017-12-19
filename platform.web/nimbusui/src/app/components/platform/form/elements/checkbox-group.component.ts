@@ -26,6 +26,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
                     <input  type="checkbox"
                         (click)="selectOption(value.code, this);emitValueChangedEvent(this,$event)"
                         [checked] = "checkedState(value.code)"
+                        [disabled]="!element?.enabled?.currState"
                         class="custom-control-input" 
                         name="{{element.config?.code}}">
                     <span class="custom-control-indicator"></span>
@@ -117,6 +118,13 @@ export class CheckBoxGroup implements ControlValueAccessor {
         }
         if( this.form.controls[this.element.config.code]!= null) {
             this.form.controls[this.element.config.code].valueChanges.subscribe(($event) => this.setState($event,this));
+            
+            this.pageService.eventUpdate$.subscribe(event => {
+                let frmCtrl = this.form.controls[event.config.code];
+                if(frmCtrl!=null && event.path.startsWith(this.element.path)) {
+                    frmCtrl.setValue(event.leafState);
+                }
+            });
         }
         this.wcs.getContent(this.element.config.code);
         this.antmControlValueChanged.subscribe(($event) => {

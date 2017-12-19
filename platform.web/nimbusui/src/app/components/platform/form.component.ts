@@ -106,12 +106,6 @@ export class Form implements OnInit, OnChanges {
         this.pageSvc.eventUpdate$.subscribe(event => {
             if(event.config.uiStyles != null && event.config.uiStyles.attributes.alias === 'Form' && event.path === this.element.path) {
                 this.form.patchValue(event.leafState);
-            } else {
-                //TODO check for the form name before we get the form control
-                let frmCtrl = this.form.controls[event.config.code];
-                if(frmCtrl!=null && event.path.startsWith(this.element.path)) {
-                    frmCtrl.setValue(event.leafState);
-                }
             }
         });
     }

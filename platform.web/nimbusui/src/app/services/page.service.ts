@@ -31,6 +31,9 @@ export class PageService {
         eventUpdate = new Subject<Param>();
         eventUpdate$ = this.eventUpdate.asObservable();
 
+        validationUpdate = new Subject<Param>();
+        validationUpdate$ = this.eventUpdate.asObservable();
+
         private _entityId: number = 0;
         constructor(private http: HttpClient) {
                 // initialize
@@ -690,6 +693,7 @@ export class PageService {
                                                                 let newRState = new RemnantState().deserialize(Reflect.get(payload, updatedKey));
                                                                 if (newRState['currState'] !== param[currentKey]['currState']) {
                                                                         Object.assign(Reflect.get(param, currentKey), newRState);
+                                                                        this.validationUpdate.next(param);
                                                                 }
                                                         } else if (currentKey === 'values') {
                                                                 if (param.values == null) {

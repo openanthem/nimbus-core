@@ -16,7 +16,7 @@ import { GenericDomain } from '../../../../model/generic-domain.model';
             <label class="">{{label}} 
                 <nm-tooltip *ngIf="element.config?.uiStyles?.attributes?.help!=''" [helpText]='element.config?.uiStyles?.attributes?.help'></nm-tooltip>
             </label>
-            <p-listbox [options]="optionsList" formControlName="{{element.config.code}}" multiple="multiple" 
+            <p-listbox [options]="optionsList" [disabled]="!element?.enabled?.currState" formControlName="{{element.config.code}}" multiple="multiple" 
             (onChange)="emitValueChangedEvent(this,value)" checkbox="checkbox" filter="filter" [style]="{'width':'190px','max-height':'250px'}"></p-listbox>
         </div>
    `
@@ -65,6 +65,13 @@ export class MultiSelectListBox {
                let item: GenericDomain = new GenericDomain();
                //item.addAttribute($event.config.code,$event.leafState);
                this.pageService.processPost(this.element.config.uiStyles.attributes.postButtonUrl, null, $event.leafState, 'POST');
+            }
+        });
+
+        this.pageService.eventUpdate$.subscribe(event => {
+            let frmCtrl = this.form.controls[event.config.code];
+            if(frmCtrl!=null && event.path.startsWith(this.element.path)) {
+                frmCtrl.setValue(event.leafState);
             }
         });
     }
