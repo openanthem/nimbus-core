@@ -23,7 +23,7 @@ import org.junit.runners.MethodSorters;
 import org.mockito.InjectMocks;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.anthem.oss.nimbus.test.sample.um.model.TestBean;
+import com.anthem.oss.nimbus.test.sample.um.model.core.TestBean;
 
 /**
  * 
