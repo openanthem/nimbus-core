@@ -10,6 +10,7 @@ function deploySnapshots {
  mvn -s $HOME/.m2/settings.xml -D maven.repo.local=$HOME/.m2/repository deploy -f platform.dependencies/pom.xml
  mvn -s $HOME/.m2/settings.xml -D maven.repo.local=$HOME/.m2/repository deploy -f platform.parent/pom.xml
  mvn -s $HOME/.m2/settings.xml -D maven.repo.local=$HOME/.m2/repository deploy -f platform.core.processor/pom.xml
+ mvn -s $HOME/.m2/settings.xml -D maven.repo.local=$HOME/.m2/repository deploy -f platform.core.process/pom.xml
  #mvn -s $HOME/.m2/settings.xml -D maven.repo.local=$HOME/.m2/repository deploy -f platform.spec.model/pom.xml
  #mvn -s $HOME/.m2/settings.xml -D maven.repo.local=$HOME/.m2/repository deploy -f platform.spec.model.test/pom.xml
  mvn -s $HOME/.m2/settings.xml -D maven.repo.local=$HOME/.m2/repository deploy -f platform.web/pom.xml
@@ -38,15 +39,8 @@ function buildWithTests {
 }
 
 function releasePrepare {
-  mvn --batch-mode -Dtag=nimbus-core-api-1.0 -Dproject.rel.com.antheminc.oss:nimbus.core.dependencies.api=1.0 -Dproject.dev.com.antheminc.oss:nimbus.core.dependencies.api=1.1-SNAPSHOT release:prepare -f platform.dependencies/pom.xml
-  mvn --batch-mode -Dtag=nimbus-core-api-1.0 -Dproject.rel.com.antheminc.oss:nimbus.core.api=1.0 -Dproject.dev.com.antheminc.oss:nimbus.core.api=1.1-SNAPSHOT release:prepare -f platform.parent/pom.xml
-  #mvn -D maven.repo.local=$HOME/.m2/repository release:clean release:prepare -f platform.parent/pom.xml -D skipDockerBuild
-  #mvn -D maven.repo.local=$HOME/.m2/repository release:clean release:prepare -f platform.core.processor/pom.xml -D skipDockerBuild
-  #mvn -D maven.repo.local=$HOME/.m2/repository release:clean release:prepare -f platform.spec.model/pom.xml -D skipDockerBuild
-  #mvn -D maven.repo.local=$HOME/.m2/repository release:clean release:prepare -f platform.spec.model.test/pom.xml -D skipDockerBuild
-  #mvn -D maven.repo.local=$HOME/.m2/repository release:clean release:prepare  -f platform.core.process/pom.xml -D skipDockerBuild
-  #mvn -D maven.repo.local=$HOME/.m2/repository release:clean release:prepare  -f platform.web/pom.xml -D skipDockerBuild
+  #mvn --batch-mode -Dtag=nimbus-core-api-1.0 -Dproject.rel.com.antheminc.oss:nimbus.core.dependencies.api=1.0 -Dproject.dev.com.antheminc.oss:nimbus.core.dependencies.api=1.1-SNAPSHOT release:prepare -f platform.dependencies/pom.xml
+  #mvn --batch-mode -Dtag=nimbus-core-api-1.0 -Dproject.rel.com.antheminc.oss:nimbus.core.api=1.0 -Dproject.dev.com.antheminc.oss:nimbus.core.api=1.1-SNAPSHOT release:prepare -f platform.parent/pom.xml
 }
 #releasePrepare
-#buildWithOutTests
-deploySnapshots
+buildWithOutTests
