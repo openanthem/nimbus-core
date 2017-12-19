@@ -1,4 +1,4 @@
-package com.anthem.oss.nimbus.test.sample.um.model;
+package com.anthem.oss.nimbus.test.sample.um.model.core;
 
 import java.util.List;
 

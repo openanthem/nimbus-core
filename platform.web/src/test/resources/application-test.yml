@@ -27,7 +27,8 @@ domain:
       - com.anthem.oss.nimbus.core.entity
       - com.anthem.platform.client.extension.cm.model
       - com.anthem.platform.client.extension.cm.flow
-      - com.anthem.oss.nimbus.test.sample.um.model
+      - com.anthem.oss.nimbus.test.sample.um.model.core
+      - com.anthem.oss.nimbus.test.sample.um.model.view
     typeClassMappings:
       java.time.LocalDate : 
         date
