@@ -1,5 +1,5 @@
 import { Param } from '../../../../shared/app-config.interface';
-import { Component, forwardRef, Input,Output, EventEmitter } from '@angular/core';
+import { Component, forwardRef, Input,Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, NgModel} from '@angular/forms';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { PageService } from '../../../../services/page.service';
@@ -16,7 +16,7 @@ import { GenericDomain } from '../../../../model/generic-domain.model';
             <label class="">{{label}} 
                 <nm-tooltip *ngIf="element.config?.uiStyles?.attributes?.help!=''" [helpText]='element.config?.uiStyles?.attributes?.help'></nm-tooltip>
             </label>
-            <p-listbox [options]="optionsList" [disabled]="!element?.enabled?.currState" formControlName="{{element.config.code}}" multiple="multiple" 
+            <p-listbox [options]="optionsList" formControlName="{{element.config.code}}" multiple="multiple" 
             (onChange)="emitValueChangedEvent(this,value)" checkbox="checkbox" filter="filter" [style]="{'width':'190px','max-height':'250px'}"></p-listbox>
         </div>
    `
@@ -32,7 +32,7 @@ export class MultiSelectListBox {
     optionsList: SelectItem[];
     private targetList: any[];
 
-    constructor(private wcs: WebContentSvc, private pageService: PageService) {
+    constructor(private wcs: WebContentSvc, private pageService: PageService,private cd: ChangeDetectorRef) {
         wcs.content$.subscribe(result => {
             this.label = result.label;
         });
@@ -71,13 +71,26 @@ export class MultiSelectListBox {
         this.pageService.eventUpdate$.subscribe(event => {
             let frmCtrl = this.form.controls[event.config.code];
             if(frmCtrl!=null && event.path.startsWith(this.element.path)) {
-                frmCtrl.setValue(event.leafState);
+                if(event.leafState!=null)
+                    frmCtrl.setValue(event.leafState);
+                else
+                    frmCtrl.reset();
+            }
+        });
+        this.pageService.validationUpdate$.subscribe(event => {
+            let frmCtrl = this.form.controls[event.config.code];
+            if(frmCtrl!=null && event.path.startsWith(this.element.path)) {
+                if(event.enabled.currState)
+                    frmCtrl.enable();
+                else
+                    frmCtrl.disable();
             }
         });
     }
 
     setState(event:any, frmInp:any) {
         frmInp.element.leafState = event;
+        this.cd.markForCheck();
     }
 
     emitValueChangedEvent(formControl:any,$event:any) {

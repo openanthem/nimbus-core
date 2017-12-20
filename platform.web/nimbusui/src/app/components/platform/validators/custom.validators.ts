@@ -33,20 +33,17 @@ export class CustomValidators {
     */
     static minMaxSelection(alias: string, attribute: Attribute) {
         return (control: FormControl) => {
-            if (alias === 'CheckBoxGroup') {
-                if (control.value != null) {
-                    if (attribute.min > 0 && control.value.length < attribute.min) {
-                        return {
-                            minMaxSelection: true
-                        };
-                    }
-                    if (attribute.max > 0 && control.value.length > attribute.max) {
-                        return {
-                            minMaxSelection: true
-                        };
-                    }
+            if (control.value != null) {
+                if (attribute.min > 0 && control.value.length < attribute.min) {
+                    return {
+                        minMaxSelection: true
+                    };
                 }
-
+                if (attribute.max > 0 && control.value.length > attribute.max) {
+                    return {
+                        minMaxSelection: true
+                    };
+                }
             }
             return null;
         };
