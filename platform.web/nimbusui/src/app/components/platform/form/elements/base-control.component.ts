@@ -50,7 +50,10 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
             this.pageService.eventUpdate$.subscribe(event => {
                 let frmCtrl = this.form.controls[event.config.code];
                 if(frmCtrl!=null && event.path.startsWith(this.element.path)) {
-                    frmCtrl.setValue(event.leafState);
+                    if(event.leafState!=null)
+                        frmCtrl.setValue(event.leafState);
+                    else
+                        frmCtrl.reset();
                 }
             });
             this.pageService.validationUpdate$.subscribe(event => {
