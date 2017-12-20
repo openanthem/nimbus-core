@@ -105,7 +105,10 @@ export class Form implements OnInit, OnChanges {
         this.form = this.service.toFormGroup(this.formGroupElements,checks);
         this.pageSvc.eventUpdate$.subscribe(event => {
             if(event.config.uiStyles != null && event.config.uiStyles.attributes.alias === 'Form' && event.path === this.element.path) {
-                this.form.patchValue(event.leafState);
+                if(event.leafState != null)
+                    this.form.patchValue(event.leafState);
+                else 
+                    this.form.reset();
             }
         });
     }
