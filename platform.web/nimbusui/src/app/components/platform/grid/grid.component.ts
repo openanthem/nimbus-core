@@ -203,6 +203,8 @@ export class InfiniteScrollGrid implements ControlValueAccessor{
     handleRowChange(val) {
         if(this.value!=val)
             this.value = val;
+
+        this.cd.markForCheck();
         // console.log('onRowUpdate');
         // console.log(val);
     }
