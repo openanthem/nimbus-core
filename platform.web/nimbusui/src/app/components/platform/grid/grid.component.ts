@@ -116,6 +116,25 @@ export class InfiniteScrollGrid implements ControlValueAccessor{
             this.summaryData = data;
         });
 
+        this.pageSvc.gridValueUpdate$.subscribe(event => {
+            if(event.path.startsWith(this.element.path)) {
+                this.value = event.config.gridList;
+                this.cd.markForCheck();
+            }
+        });
+
+        if(this.form!= undefined && this.form.controls[this.element.config.code]!= null) {
+            this.pageSvc.validationUpdate$.subscribe(event => {
+                let frmCtrl = this.form.controls[event.config.code];
+                if(frmCtrl!=null && event.path.startsWith(this.element.path)) {
+                    if(event.enabled.currState)
+                        frmCtrl.enable();
+                    else
+                        frmCtrl.disable();
+                }
+            });
+        }
+
         this._initPostButton();
     }
 
@@ -201,10 +220,7 @@ export class InfiniteScrollGrid implements ControlValueAccessor{
     }
 
     handleRowChange(val) {
-        if(this.value!=val)
-            this.value = val;
-
-        this.cd.markForCheck();
+        //this.cd.markForCheck();
         // console.log('onRowUpdate');
         // console.log(val);
     }

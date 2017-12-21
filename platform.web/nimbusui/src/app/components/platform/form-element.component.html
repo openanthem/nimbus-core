@@ -15,7 +15,7 @@
     <nm-multiselect-card id="{{id}}"  *ngIf="element.config.uiStyles?.attributes?.alias == 'MultiSelectCard'" [formControlName]="element.config?.code" ngDefaultControl [element]="element" [form]="form"></nm-multiselect-card>
     <nm-pickList id="{{id}}"  *ngIf="element.config?.uiStyles?.attributes?.alias == 'PickList'" [formControlName]="element.config?.code" ngDefaultControl [element]="element" [form]="form"></nm-pickList>
     <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias == 'Grid'">
-        <infinite-scroll-grid [data]="element.config?.gridList" 
+        <infinite-scroll-grid
             [element]="element" [form]="form" [formControlName]="element.config?.code"
             [params]="element?.config?.gridCols" (onScrollEvent)="onScrollEvent()">
         </infinite-scroll-grid>

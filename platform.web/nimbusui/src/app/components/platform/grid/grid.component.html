@@ -10,7 +10,7 @@
 		<div class="recordsDisplayed">Showing 1-50 records</div>
 	</div>
 
-	<p-dataTable #flex #dataTable #table [value]="data"
+	<p-dataTable #flex #dataTable #table [value]="value"
 		[(selection)]="selectedRows" 
 		(onRowClick)="onRowClick($event)"
 		(onRowSelect)="onRowSelect($event)"
