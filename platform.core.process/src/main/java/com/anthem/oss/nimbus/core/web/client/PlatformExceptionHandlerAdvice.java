@@ -26,7 +26,7 @@ import com.anthem.oss.nimbus.core.domain.command.execution.ValidationException;
 import com.anthem.oss.nimbus.core.domain.command.execution.ValidationResult;
 import com.anthem.oss.nimbus.core.util.JustLogit;
 
-@ControllerAdvice (annotations = RestController.class)
+@ControllerAdvice ({"com.anthem.oss.nimbus.core.web"})
 public class PlatformExceptionHandlerAdvice implements ResponseBodyAdvice<Object>{
 
 	private JustLogit logit = new JustLogit(this.getClass());
