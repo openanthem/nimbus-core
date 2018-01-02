@@ -554,3 +554,6 @@ __pycache__/
 # should be stored in the .pubxml.user file.
 
 # End of https://www.gitignore.io/api/java,node,eclipse,java-web,sublimetext,visualstudio,visualstudiocode
+
+# Backups of release version set
+pom.xml.versionsBackup
