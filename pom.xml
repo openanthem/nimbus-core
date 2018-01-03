@@ -21,7 +21,7 @@
 
     <properties>
         <sonar.projectName>NIM-Parent</sonar.projectName>
-        <!-- <sonar.jacoco.reportPath>target/jacoco.exec</sonar.jacoco.reportPath> -->
+        <sonar.jacoco.reportPath>target/jacoco.exec</sonar.jacoco.reportPath>
         <docker.image.prefix>nimbus</docker.image.prefix>
         <docker.plugin.version>0.3.258</docker.plugin.version>
         <spring.boot.maven.version>1.4.0.RELEASE</spring.boot.maven.version>
