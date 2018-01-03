@@ -16,7 +16,7 @@
     </organization>
     <properties>
         <sonar.projectName>NIM-Process</sonar.projectName>
-        <sonar.jacoco.reportPath>${project.basedir}/../platform.parent/target/jacoco.exec</sonar.jacoco.reportPath>
+        <!-- <sonar.jacoco.reportPath>${project.basedir}/../platform.parent/target/jacoco.exec</sonar.jacoco.reportPath> -->
     </properties>
     <dependencies>
         <dependency>
