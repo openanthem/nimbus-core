@@ -13,7 +13,7 @@ import com.antheminc.oss.nimbus.core.domain.command.execution.ExecuteOutput;
 import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.core.domain.model.state.QuadModel;
 import com.antheminc.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
-import com.antheminc.oss.nimbus.test.sample.um.model.UMCase;
+import com.antheminc.oss.nimbus.test.sample.um.model.core.UMCase;
 import com.antheminc.oss.nimbus.test.sample.um.model.view.UMCaseFlow;
 
 import test.com.antheminc.oss.nimbus.platform.spec.model.command.TestCommandFactory;

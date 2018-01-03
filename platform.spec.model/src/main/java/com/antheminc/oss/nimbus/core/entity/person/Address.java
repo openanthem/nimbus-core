@@ -68,9 +68,13 @@ public abstract class Address<ID extends Serializable> extends AbstractEntity<ID
 	private String street1;
 
 	private String street2;
+	
+	private String street3;
 
 	@NotNull
 	private String city;
+	
+	private String county;
 
 	@NotNull
 	private String zip;

@@ -1,4 +1,4 @@
-package com.antheminc.oss.nimbus.test.sample.um.model;
+package com.antheminc.oss.nimbus.test.sample.um.model.core;
 
 import java.time.LocalDate;
 

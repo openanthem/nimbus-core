@@ -13,11 +13,11 @@ import com.antheminc.oss.nimbus.core.domain.definition.ViewConfig.Button;
 import com.antheminc.oss.nimbus.core.domain.definition.ViewConfig.ComboBox;
 import com.antheminc.oss.nimbus.core.domain.definition.ViewConfig.Hints;
 import com.antheminc.oss.nimbus.core.domain.definition.ViewConfig.Hints.AlignOptions;
+import com.antheminc.oss.nimbus.test.sample.um.model.core.Patient;
+import com.antheminc.oss.nimbus.test.sample.um.model.core.UMCase;
 import com.antheminc.oss.nimbus.core.domain.definition.ViewConfig.InputDate;
 import com.antheminc.oss.nimbus.core.domain.definition.ViewConfig.Section;
 import com.antheminc.oss.nimbus.core.domain.definition.ViewConfig.TextBox;
-import com.antheminc.oss.nimbus.test.sample.um.model.Patient;
-import com.antheminc.oss.nimbus.test.sample.um.model.UMCase;
 
 import lombok.Getter;
 import lombok.Setter;

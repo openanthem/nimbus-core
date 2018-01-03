@@ -11,7 +11,7 @@ import com.antheminc.oss.nimbus.core.domain.definition.MapsTo;
 import com.antheminc.oss.nimbus.core.domain.definition.MapsTo.Path;
 import com.antheminc.oss.nimbus.core.domain.definition.Model;
 import com.antheminc.oss.nimbus.core.domain.definition.ViewConfig.Page;
-import com.antheminc.oss.nimbus.test.sample.um.model.ServiceLine;
+import com.antheminc.oss.nimbus.test.sample.um.model.core.ServiceLine;
 
 import lombok.Getter;
 import lombok.Setter;
