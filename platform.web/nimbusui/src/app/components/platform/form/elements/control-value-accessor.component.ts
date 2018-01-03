@@ -9,7 +9,7 @@ import { ControlValueAccessor } from '@angular/forms';
 import {BaseElement} from '../../base-element.component';
 
 /**
- * \@author Dinakar.Meda
+ * \@author Dinakar.Meda, Sandeep Mantha
  * \@whatItDoes A Base class for Controls that deal with ValueAccessors. Example- Textbox, Combobox etc.
  * 
  * \@howToUse 

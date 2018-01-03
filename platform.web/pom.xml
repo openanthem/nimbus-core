@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>	
 
-	<name>platform.web</name>
+	<name>nimbus-core-web</name>
 	<artifactId>com.anthem.oss.nimbus.core.web</artifactId>
 	<description>oss web project</description>
 	<packaging>jar</packaging>
@@ -193,12 +193,10 @@
 						<configuration>
 							<mainClass>com.anthem.nimbus.platform.web.Application</mainClass>
 							<layout>ZIP</layout>
-
+							<classifier>exec</classifier>
 							<folders>
 								<folder>${project.build.directory}/src/main/resources</folder>
 							</folders>
-
-
 						</configuration>
 					</plugin>
 				</plugins>
@@ -223,13 +221,10 @@
 						<configuration>
 							<mainClass>com.anthem.nimbus.platform.web.Application</mainClass>
 							<layout>ZIP</layout>
-
-							<folders>
+                             <folders>
 								<folder>${project.build.directory}/src/main/resources</folder>
 							</folders>
-
-
-						</configuration>
+							</configuration>
 					</plugin>
 				</plugins>
 				<resources>

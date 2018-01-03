@@ -4,9 +4,9 @@
  
 <!-- Total Results: {{data == null ? leafState.length : data?.length}}   -->
  
-<div id="gsFlexGrid">
+<div id="gsFlexGrid" class="scrollGrid">
 	<div class="ui-datatable-header ui-widget-header">
-		<p-header>Grid title - All (185)</p-header>
+		<p-header>{{element.config?.uiStyles?.attributes?.title}}</p-header>
 		<div class="recordsDisplayed">Showing 1-50 records</div>
 	</div>
 
@@ -15,14 +15,18 @@
 		(onRowClick)="onRowClick($event)"
 		(onRowSelect)="onRowSelect($event)"
 		(onRowUnselect)="onRowUnselect($event)"
+		(valueChange)="handleRowChange($event)"
 		[rows]="element.config?.uiStyles?.attributes?.pageSize"
 		[paginator]="element.config?.uiStyles?.attributes?.pagination"
+		scrollable="true" 
+		scrollHeight="200px"
 		paginatorPosition="both"
+		alwaysShowPaginator ="false"
 		[expandableRows]="element.config?.uiStyles?.attributes?.expandableRows"
 		(onRowExpand)="getAddtionalData($event)"
 		[responsive]="true" #dt> 
 
-		<p-column [style]="{'width':'38px'}" 
+		<p-column styleClass="col-select" 
 			selectionMode="multiple" *ngIf="element.config?.uiStyles?.attributes?.rowSelection">
 		</p-column> 
 
@@ -30,20 +34,20 @@
 
 		<ng-template ngFor let-col [ngForOf]="params">
 
-			<p-column *ngIf="!col?.config?.type?.nested"
-				[field]="col?.config?.code" 
-				[header]="col?.config?.label"
-				[hidden]="col?.config?.uiStyles?.attributes?.hidden"
-				[sortable]="!col?.config?.uiStyles?.isLink"
-				[filter]="col?.config?.uiStyles?.attributes?.filter"
-				[filterMatchMode]="col?.config?.uiStyles?.attributes?.filterMode"> 
+			<p-column *ngIf="col?.uiStyles?.attributes?.alias != 'Link'"
+				[field]="col?.code" 
+				[header]="col?.label"
+				[hidden]="col?.uiStyles?.attributes?.hidden"
+				[sortable]="!col?.uiStyles?.isLink"
+				[filter]="col?.uiStyles?.attributes?.filter"
+				[filterMatchMode]="col?.uiStyles?.attributes?.filterMode"> 
 							
 				<ng-template pTemplate="header"> 
-					<span title="{{col?.config?.label}}"  *ngIf="!col.config?.uiStyles?.isLink">{{col.config.label}}</span> 
-					<a href="javascript:void(0)" (click)="toggleFilter($event)" class='gridFilterIcon' *ngIf="!col.config?.uiStyles?.isLink"></a> 
+					<span title="{{col?.label}}"  *ngIf="!col?.uiStyles?.isLink">{{col.label}}</span> 
+					<a href="javascript:void(0)" (click)="toggleFilter($event)" class='gridFilterIcon' *ngIf="!col?.uiStyles?.isLink"></a> 
 				</ng-template> 
 				
-				<ng-template *ngIf="col.config?.uiStyles?.attributes?.alias == 'CheckBox'" pTemplate="body" let-cell="rowData"> 
+				<ng-template *ngIf="col?.uiStyles?.attributes?.alias == 'CheckBox'" pTemplate="body" let-cell="rowData"> 
 					<label> <input type="checkbox" (click)="postOnChange(col, cell)"> </label> 
 				</ng-template> 
 				
@@ -51,31 +55,16 @@
 					<span title="{{row[col.field]}}">{{row[col.field]}}</span> 
 				</ng-template> 
 				
-				<!-- Sandeep -->
-				<!-- The below commented lines from to END are to be uncommented when the server starts sending the enabled flag
-				for every grid column. -->
-				<!-- <ng-template *ngIf="col.config.uiStyles?.isLink && col.enabled?.currState" pTemplate="body" let-cell="rowData"> -->
-				<ng-template *ngIf="col.config.uiStyles?.isLink" pTemplate="body" let-cell="rowData">
-					<span [ngSwitch]="col.config.uiStyles?.attributes?.imgSrc"> 
-						<a *ngSwitchCase="''" href="javascript:void(0)" (click)="processOnClick(col, cell)"> {{col.config.label}}  </a> 
-						<img *ngSwitchDefault src="{{imagesPath}}{{col.config?.uiStyles?.attributes?.imgSrc}}" class="grid-icon" (click)="processOnClick(col, cell)" type="submit" />
-					</span> 
-				</ng-template> 
-				<!-- END -->
-
-				<!-- 				
-				<ng-template *ngIf="col.config.uiStyles?.isLink && !col.enabled?.currState" pTemplate="body" let-cell="rowData">
-					<span [ngSwitch]="col.config.uiStyles?.attributes?.imgSrc">
-						<a *ngSwitchCase="''" href="javascript:void(0)" class="btn disabled">{{col.config.label}} </a> 
-						<img *ngSwitchDefault src="{{imagesPath}}{{col.config?.uiStyles?.attributes?.imgSrc}}" class="grid-icon" />
-					</span>
+				<ng-template *ngIf="col?.uiStyles?.attributes?.alias=='LinkMenu'" pTemplate="body" let-cell="rowData">
+					<nm-action-dropdown [params]="col?.nestedParams"
+						[rowData]="cell"
+						[elementPath]="getRowPath(col, cell)"></nm-action-dropdown>
 				</ng-template>
-				 -->
+				
 			</p-column> 
-
 		</ng-template>
 				
-		<ng-template ngFor let-col [ngForOf]="params">
+		<!-- <ng-template ngFor let-col [ngForOf]="params">
 			<ng-template *ngIf="col?.config?.type?.nested" let-subTbl pTemplate="rowexpansion">
 				<infinite-scroll-grid
 								[data]="col?.config?.gridList"
@@ -83,7 +72,7 @@
 								[params]="col?.config?.gridCols">
 				</infinite-scroll-grid>
 			</ng-template>
-		</ng-template>
+		</ng-template> -->
 		
 		<p-footer> 
 			<ng-template [ngIf]="element.config?.uiStyles?.attributes?.postButton">

@@ -9,7 +9,7 @@ import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Page;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.IdParamConverter;
-import com.anthem.oss.nimbus.test.sample.um.model.UMCase;
+import com.anthem.oss.nimbus.test.sample.um.model.core.UMCase;
 
 import lombok.Getter;
 import lombok.Setter;

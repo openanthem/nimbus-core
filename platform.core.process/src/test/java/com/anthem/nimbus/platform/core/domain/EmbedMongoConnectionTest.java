@@ -16,8 +16,8 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.anthem.oss.nimbus.core.AbstractFrameworkIntegrationTests;
-import com.anthem.oss.nimbus.test.sample.um.model.Patient;
-import com.anthem.oss.nimbus.test.sample.um.model.UMCase;
+import com.anthem.oss.nimbus.test.sample.um.model.core.Patient;
+import com.anthem.oss.nimbus.test.sample.um.model.core.UMCase;
 
 /**
  * @author Swetha Vemuri

@@ -15,7 +15,8 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
     label: string;
     inPlaceEditContext: any;
     showLabel: boolean = true;
-
+    min: Date;
+    max: Date;
     constructor(private pageService: PageService, private wcs: WebContentSvc) {
         super();
         wcs.content$.subscribe(result => {
@@ -53,11 +54,48 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
                 this.pageService.processPost(this.element.config.uiStyles.attributes.postButtonUrl, null, $event.leafState, 'POST');
              }
          });
+
+         if(this.element.config.validation!=null) {
+            this.element.config.validation.constraints.forEach(validator => {
+                if (validator.name === 'DateRange') {
+                  this.min = new Date(validator.attribute.min)
+                  this.max = new Date(validator.attribute.max)
+                }
+              });
+         }
     }
 
     /** invoked from InPlaceEdit control */
     setInPlaceEditContext(context: any) {
         this.showLabel = false;
         this.inPlaceEditContext = context;
+    }
+
+    /**
+     * The hidden attribute for this param
+     */
+    public get hidden(): boolean {
+        return this.element.config.uiStyles.attributes.hidden;
+    }
+
+    /**
+     * The help attribute for this param
+     */
+    public get help(): string {
+        return this.element.config.uiStyles.attributes.help;
+    }
+
+    /**
+     * The help readOnly for this param
+     */
+    public get readOnly(): boolean {
+        return this.element.config.uiStyles.attributes.readOnly;
+    }
+
+    /**
+     * The type attribute for this param
+     */
+    public get type(): string {
+        return this.element.config.uiStyles.attributes.type;
     }
 }

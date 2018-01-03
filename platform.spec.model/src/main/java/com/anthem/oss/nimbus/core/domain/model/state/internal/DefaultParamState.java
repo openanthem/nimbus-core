@@ -269,9 +269,11 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	
 	@Override
+	//TODO: Temporary fix to disable active state check. JIRA NIM-9020 created to address this issue. 
+	// A separate copy method needs to be introduced to resolve the issue
 	public final Action setState(T state) {
-		if(!isActive() && state!=null && isStateInitialized())
-			throw new InvalidConfigException("Param's state cannot be changed when inactive. param: "+this.getPath());
+		//if(!isActive() && state!=null && isStateInitialized())
+			//throw new InvalidConfigException("Param's state cannot be changed when inactive. param: "+this.getPath());
 
 		return changeStateTemplate((rt, h, lockId)->affectSetStateChange(state, rt, h, lockId));
 	}
@@ -590,8 +592,12 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		emitParamContextEvent();
 		
 		// handle nested
-		if(!isNested() || findIfNested().templateParams().isNullOrEmpty())
+		if(!isNested() || (isTransient() && !findIfTransient().isAssinged()))
 			return;
+		
+		if (null == findIfNested().getParams()) {
+			return;
+		}
 		
 		findIfNested().getParams().stream()
 			.forEach(p->{
@@ -626,6 +632,10 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		// handle nested
 		if(!isNested() || findIfNested().templateParams().isNullOrEmpty())
 			return;
+		
+		if (null == findIfNested().getParams()) {
+			return;
+		}
 		
 		findIfNested().getParams().stream()
 			.forEach(p->{
