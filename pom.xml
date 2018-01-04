@@ -20,8 +20,8 @@
     </modules>
 
     <properties>
-        <sonar.projectName>NIM-Parent</sonar.projectName>
-        <sonar.jacoco.reportPath>target/jacoco.exec</sonar.jacoco.reportPath>
+        <!-- <sonar.projectName>NIM-Parent</sonar.projectName>
+        <sonar.jacoco.reportPath>target/jacoco.exec</sonar.jacoco.reportPath> -->
         <docker.image.prefix>nimbus</docker.image.prefix>
         <docker.plugin.version>0.3.258</docker.plugin.version>
         <spring.boot.maven.version>1.4.0.RELEASE</spring.boot.maven.version>
@@ -33,8 +33,8 @@
         <sitemesh.version>2.4.2</sitemesh.version>
         <embed-mongo.version>2.0.0</embed-mongo.version>
         <embed-redis.version>0.4</embed-redis.version>
-        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
-        <sonar.jacoco.reportPath>${project.basedir}/target/jacoco.exec</sonar.jacoco.reportPath>
+        <!-- <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+        <sonar.jacoco.reportPath>${project.basedir}/target/jacoco.exec</sonar.jacoco.reportPath> -->
 
         <main.basedir>..</main.basedir>
         <disable.checks>false</disable.checks>
@@ -579,13 +579,11 @@
         </pluginManagement>
         <!-- Plugins which will get executed on each project -->
         <plugins>
-            <plugin>
+            <!-- <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.7.7.201606060606</version>
                 <configuration>
-                    <!-- <destFile>${basedir}/target/jacoco.exec</destFile> -->
-                    <!-- <dataFile>${basedir}/target/jacoco.exec</dataFile> -->
                     <destFile>${sonar.jacoco.reportPath}</destFile>
                     <dataFile>${sonar.jacoco.reportPath}</dataFile>
                     <append>true</append>
@@ -610,7 +608,7 @@
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
                 <version>3.2</version>
-            </plugin>
+            </plugin> -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
