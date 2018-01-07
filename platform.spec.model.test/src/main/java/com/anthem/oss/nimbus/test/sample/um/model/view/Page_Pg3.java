@@ -10,9 +10,9 @@ import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Button;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Hints;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Hints.AlignOptions;
+import com.anthem.oss.nimbus.test.sample.um.model.core.ServiceLine;
+import com.anthem.oss.nimbus.test.sample.um.model.core.UMCase;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.MultiSelect;
-import com.anthem.oss.nimbus.test.sample.um.model.ServiceLine;
-import com.anthem.oss.nimbus.test.sample.um.model.UMCase;
 
 import lombok.Getter;
 import lombok.Setter;
