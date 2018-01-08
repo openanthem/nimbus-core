@@ -49,7 +49,7 @@ public class AssignmentTask extends AbstractEntity.IdString{
 	
 	private LocalDate appointmentDate;
 
-	private TaskStatus status;
+	private String status;
 	
 	private String entityId;
 	
@@ -64,20 +64,6 @@ public class AssignmentTask extends AbstractEntity.IdString{
 	private String testTaskType;
 	
 	private String taskStatus; // TODO - temp attr - to be removed (Rakesh)
-	
-	public enum TaskStatus{
-		Open,
-		Completed,
-		InProgress,
-		Cancelled;
-		
-		public static TaskStatus findByStatusString(String status) {
-			return Arrays.asList(TaskStatus.values()).stream()
-					.filter((taskStatus) -> StringUtils.equalsIgnoreCase(status, taskStatus.name()))
-					.findFirst()
-					.orElse(null);
-		}
-	}
 	
 	public enum TaskPriority{
 		Urgent,	
