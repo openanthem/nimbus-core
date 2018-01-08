@@ -49,7 +49,6 @@ import { ActionDropdown, ActionLink } from './components/platform/form/elements/
 import { GridContainer } from './components/platform/grid/grid-container.component';
 import { InfiniteScrollGrid } from './components/platform/grid/grid.component';
 import { Link } from './components/platform/link.component';
-import { DisableFormControl } from './components/platform/form/elements/control-disable.directive';
 import { Menu } from './components/platform/menu.component';
 import { FlowWrapper } from './components/platform/content/flow-wrapper.component';
 import { SubHeaderCmp } from './components/platform/sub-header.component';
@@ -117,7 +116,7 @@ import { LinkPipe } from './pipes/link.pipe';
         InPlaceEditorComponent, Paragraph, Value, Image, BaseElement, 
         MultiselectCard, Link, Menu, CardDetailsComponent, CardDetailsFieldComponent, CardDetailsGrid, FieldValue,
         AccordionGroup, Accordion, FrmGroupCmp, Button, ButtonGroup, FilterButton, OrderablePickList,
-        STOMPStatusComponent, GridContainer, InfiniteScrollGrid, SubHeaderCmp, DisableFormControl, TextArea, LandingPage,
+        STOMPStatusComponent, GridContainer, InfiniteScrollGrid, SubHeaderCmp, TextArea, LandingPage,
         LayoutService,ContentContainer,Switch,
         DomainFlowCmp,HeaderGlobal,FooterGlobal,
         BreadcrumbComponent, NavLinkRouter,

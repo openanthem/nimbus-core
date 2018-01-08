@@ -26,9 +26,8 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
                 <p-pickList #picklist [source]="element.values" 
                     [sourceHeader] = "element.config?.uiStyles?.attributes.sourceHeader" 
                     [targetHeader]="element.config?.uiStyles?.attributes.targetHeader" 
+                    [disabled]="!element?.enabled?.currState"
                     [target]="targetList" pDroppable="dd" [responsive]="true" 
-                    [disableFormControl]="form.get(element.config?.code)"
-                    [disableCondition]="element.config?.enabled?.currState"        
                     (onMoveToTarget)="updateListValues($event)" (onMoveToSource)="updateListValues($event)">
                     <ng-template let-itm pTemplate="item">
                         <div class="ui-helper-clearfix">
@@ -60,7 +59,7 @@ export class OrderablePickList implements OnInit, ControlValueAccessor {
 
     set disabled(value) { this._disabled = value; }
 
-    constructor(wcs: WebContentSvc, pageService: PageService) {
+    constructor(wcs: WebContentSvc, private pageService: PageService) {
     }
 
     ngOnInit() {
@@ -71,9 +70,16 @@ export class OrderablePickList implements OnInit, ControlValueAccessor {
             this.targetList = [];
         }
 
-        if( this.form.controls[this.element.config.code]!= null) {
+        if( this.form!= null && this.form.controls[this.element.config.code]!= null) {
             this.form.controls[this.element.config.code].valueChanges.subscribe(
                 ($event) => { this.setState($event,this); });
+
+            this.pageService.eventUpdate$.subscribe(event => {
+                let frmCtrl = this.form.controls[event.config.code];
+                if(frmCtrl!=null && event.path.startsWith(this.element.path)) {
+                    frmCtrl.setValue(event.leafState);
+                }
+            });
         }
     }
 

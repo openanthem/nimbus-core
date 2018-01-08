@@ -1,5 +1,5 @@
 import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { Component, Input, Output, forwardRef, ViewChild, EventEmitter, ViewEncapsulation } from '@angular/core';
+import { Component, Input, Output, forwardRef, ViewChild, EventEmitter, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
 
 import { GenericDomain } from '../../../model/generic-domain.model';
 import { Param, ParamConfig } from '../../../shared/app-config.interface';
@@ -10,7 +10,6 @@ import { DataTable, OverlayPanel, Paginator } from 'primeng/primeng';
 import { ElementModelParam } from './../../../shared/app-config.interface';
 import { ServiceConstants } from './../../../services/service.constants';
 import { ControlValueAccessor } from '@angular/forms/src/directives';
-
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => InfiniteScrollGrid),
@@ -58,6 +57,7 @@ export class InfiniteScrollGrid implements ControlValueAccessor{
     public writeValue(obj: any): void {
         if (obj !== undefined) {
         }
+        this.cd.markForCheck();
     }
 
     public registerOnChange(fn: any): void {
@@ -71,7 +71,11 @@ export class InfiniteScrollGrid implements ControlValueAccessor{
     fg= new FormGroup({}); // TODO this is for the filter controls that need to be embedded in the grid 
     private imagesPath: string;
     
-    constructor(private pageSvc : PageService, private wcs: WebContentSvc, private gridService: GridService) {
+    constructor(private pageSvc : PageService, private wcs: WebContentSvc, private gridService: GridService, private cd:ChangeDetectorRef) {
+    }
+
+    ngAfterViewInit() {
+
         this.wcs.content$.subscribe(result => {
             this.params.forEach(element => {
                 if(element != null) {
@@ -88,9 +92,7 @@ export class InfiniteScrollGrid implements ControlValueAccessor{
                 }
             });
         });
-    }
 
-    ngOnInit() {
         this.imagesPath = ServiceConstants.IMAGES_URL;
         if (this.params != null) {
             this.params.forEach(element => {
@@ -113,6 +115,25 @@ export class InfiniteScrollGrid implements ControlValueAccessor{
         this.gridService.eventUpdate$.subscribe(data => {
             this.summaryData = data;
         });
+
+        this.pageSvc.gridValueUpdate$.subscribe(event => {
+            if(event.path.startsWith(this.element.path)) {
+                this.value = event.config.gridList;
+                this.cd.markForCheck();
+            }
+        });
+
+        if(this.form!= undefined && this.form.controls[this.element.config.code]!= null) {
+            this.pageSvc.validationUpdate$.subscribe(event => {
+                let frmCtrl = this.form.controls[event.config.code];
+                if(frmCtrl!=null && event.path.startsWith(this.element.path)) {
+                    if(event.enabled.currState)
+                        frmCtrl.enable();
+                    else
+                        frmCtrl.disable();
+                }
+            });
+        }
 
         this._initPostButton();
     }
@@ -199,8 +220,7 @@ export class InfiniteScrollGrid implements ControlValueAccessor{
     }
 
     handleRowChange(val) {
-        if(this.value!=val)
-            this.value = val;
+        //this.cd.markForCheck();
         // console.log('onRowUpdate');
         // console.log(val);
     }
