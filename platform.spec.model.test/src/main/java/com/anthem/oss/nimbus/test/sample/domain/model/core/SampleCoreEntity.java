@@ -63,6 +63,15 @@ public class SampleCoreEntity extends IdString {
 	@Audit(SampleCoreAuditEntry.class)
 	private String[] attr_array_String;
 	
+	@Audit(SampleCoreAuditEntry.class)
+	private ComplexObject complex_object;
+	
+	@Getter @Setter
+	public static class ComplexObject {
+		private String field1;
+		private Integer field2;
+	}
+	
 	private SampleCoreNestedEntity attr_NestedEntity;
 	
 	private List<SampleCoreNestedEntity> attr_list_1_NestedEntity;
