@@ -74,8 +74,13 @@ export class InfiniteScrollGrid implements ControlValueAccessor{
     constructor(private pageSvc : PageService, private wcs: WebContentSvc, private gridService: GridService, private cd:ChangeDetectorRef) {
     }
 
-    ngAfterViewInit() {
+    ngOnInit() {
+        if(this.element.config.gridList!=null && this.element.config.gridList.length > 0) {
+            this.value = this.element.config.gridList;
+        }
+    }
 
+    ngAfterViewInit() {
         this.wcs.content$.subscribe(result => {
             this.params.forEach(element => {
                 if(element != null) {

@@ -41,7 +41,7 @@
                 <nm-grid-container [element]="element"></nm-grid-container>
             </ng-template>
             <ng-template [ngIf]="element.alias == 'Grid'">
-                <infinite-scroll-grid  
+                <infinite-scroll-grid
                     [element]="element" 
                     [params]="element?.config?.gridCols" (onScrollEvent)="onScrollEvent()">
                 </infinite-scroll-grid>
