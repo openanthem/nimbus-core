@@ -1,6 +1,6 @@
 'use strict';
 import { NG_VALUE_ACCESSOR, NgModel } from '@angular/forms';
-import { Component, forwardRef, ViewChild } from '@angular/core';
+import { Component, forwardRef, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { PageService } from '../../../../services/page.service';
@@ -27,6 +27,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
             (focusout)="emitValueChangedEvent(this,$event)" 
             [minDate]="min"
             [maxDate]="max"
+            [disabled]="!element?.enabled?.currState"
             [timeOnly]="element.config?.uiStyles?.attributes?.timeOnly"
             [showTime]="element.config?.uiStyles?.attributes?.showTime" 
             [hourFormat]="element.config?.uiStyles?.attributes?.hourFormat" >
@@ -39,8 +40,8 @@ export class Calendar extends BaseControl<String> {
 
     element: Param;
 
-    constructor(wcs: WebContentSvc, pageService: PageService) {
-        super(pageService,wcs);
+    constructor(wcs: WebContentSvc, pageService: PageService, cd:ChangeDetectorRef) {
+        super(pageService,wcs,cd);
     }
 
     // ngOnInit(){

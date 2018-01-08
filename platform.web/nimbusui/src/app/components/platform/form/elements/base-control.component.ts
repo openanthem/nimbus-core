@@ -1,6 +1,6 @@
 'use strict';
 import { BaseControlValueAccessor } from './control-value-accessor.component';
-import { Input, Output, EventEmitter } from '@angular/core';
+import { Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, NgModel } from '@angular/forms';
 import { Param } from '../../../../shared/app-config.interface';
 import { PageService } from '../../../../services/page.service';
@@ -17,7 +17,7 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
     showLabel: boolean = true;
     min: Date;
     max: Date;
-    constructor(private pageService: PageService, private wcs: WebContentSvc) {
+    constructor(private pageService: PageService, private wcs: WebContentSvc, private cd: ChangeDetectorRef) {
         super();
         wcs.content$.subscribe(result => {
             if (this.element && result.id === this.element.config.code) {
@@ -28,6 +28,7 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
 
     setState(event:any,frmInp:any) {
         frmInp.element.leafState = event;
+        this.cd.markForCheck();
         //console.log(frmInp.element.leafState);
     }
 
@@ -40,8 +41,30 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
 
     ngOnInit() {
         this.value = this.element.leafState;
+    }
+
+    ngAfterViewInit(){
         if(this.form!= undefined && this.form.controls[this.element.config.code]!= null) {
             this.form.controls[this.element.config.code].valueChanges.subscribe(($event) => this.setState($event,this));
+
+            this.pageService.eventUpdate$.subscribe(event => {
+                let frmCtrl = this.form.controls[event.config.code];
+                if(frmCtrl!=null && event.path == this.element.path) {
+                    if(event.leafState!=null)
+                        frmCtrl.setValue(event.leafState);
+                    else
+                        frmCtrl.reset();
+                }
+            });
+            this.pageService.validationUpdate$.subscribe(event => {
+                let frmCtrl = this.form.controls[event.config.code];
+                if(frmCtrl!=null && event.path.startsWith(this.element.path)) {
+                    if(event.enabled.currState)
+                        frmCtrl.enable();
+                    else
+                        frmCtrl.disable();
+                }
+            });
         }
         this.wcs.getContent(this.element.config.code);
         this.controlValueChanged.subscribe(($event) => {
@@ -64,13 +87,11 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
               });
          }
     }
-
     /** invoked from InPlaceEdit control */
     setInPlaceEditContext(context: any) {
         this.showLabel = false;
         this.inPlaceEditContext = context;
     }
-
     /**
      * The hidden attribute for this param
      */

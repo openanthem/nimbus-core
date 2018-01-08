@@ -31,6 +31,12 @@ export class PageService {
         eventUpdate = new Subject<Param>();
         eventUpdate$ = this.eventUpdate.asObservable();
 
+        validationUpdate = new Subject<Param>();
+        validationUpdate$ = this.validationUpdate.asObservable();
+
+        gridValueUpdate = new Subject<Param>();
+        gridValueUpdate$ = this.gridValueUpdate.asObservable();
+
         private _entityId: number = 0;
         constructor(private http: HttpClient) {
                 // initialize
@@ -628,10 +634,12 @@ export class PageService {
                         } else {
                             param.config.gridList.push(this.createGridData(eventModel.value.type.model.params, param.config.gridCols));
                         }
+                        this.gridValueUpdate.next(param);
                     }
                     // Collection check - update entire collection
                     if (eventModel.value.collection) {
                             param.config.gridList = this.createGridData(eventModel.value.type.model.params, param.config.gridCols);
+                            this.gridValueUpdate.next(param);
                     }
                 }
             } else if (param.config.uiStyles != null && param.config.uiStyles.attributes.alias === 'CardDetailsGrid') {
@@ -690,6 +698,7 @@ export class PageService {
                                                                 let newRState = new RemnantState().deserialize(Reflect.get(payload, updatedKey));
                                                                 if (newRState['currState'] !== param[currentKey]['currState']) {
                                                                         Object.assign(Reflect.get(param, currentKey), newRState);
+                                                                        this.validationUpdate.next(param);
                                                                 }
                                                         } else if (currentKey === 'values') {
                                                                 if (param.values == null) {

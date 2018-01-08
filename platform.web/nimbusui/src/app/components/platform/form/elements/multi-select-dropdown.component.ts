@@ -16,6 +16,7 @@ import { CommonModule } from '@angular/common';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { FormGroup } from '@angular/forms';
 import { Param } from '../../../../shared/app-config.interface';
+import { PageService } from '../../../../services/page.service';
 
 const MULTISELECT_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -167,7 +168,7 @@ export class MultiselectDropdown implements OnInit, DoCheck, ControlValueAccesso
   }
 
   constructor(private elementRef: ElementRef,
-    differs: IterableDiffers) {
+    differs: IterableDiffers, private pageService: PageService) {
     this.differ = differs.find([]).create(null);
   }
   setState(event:any,frmInp:any) {
@@ -182,6 +183,12 @@ export class MultiselectDropdown implements OnInit, DoCheck, ControlValueAccesso
     this.title = this.texts.defaultTitle;
      if( this.form.controls[this.element.config.code]!= null) {
       this.form.controls[this.element.config.code].valueChanges.subscribe(($event) => this.setState($event,this));
+      this.pageService.eventUpdate$.subscribe(event => {
+        let frmCtrl = this.form.controls[event.config.code];
+        if(frmCtrl!=null && event.path.startsWith(this.element.path)) {
+            frmCtrl.setValue(event.leafState);
+        }
+    });
      }
   }
 

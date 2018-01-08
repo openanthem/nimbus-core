@@ -1,5 +1,5 @@
 import { Param } from '../../../../shared/app-config.interface';
-import { Component, forwardRef, Input,Output, EventEmitter } from '@angular/core';
+import { Component, forwardRef, Input,Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, NgModel} from '@angular/forms';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { PageService } from '../../../../services/page.service';
@@ -32,7 +32,7 @@ export class MultiSelectListBox {
     optionsList: SelectItem[];
     private targetList: any[];
 
-    constructor(private wcs: WebContentSvc, private pageService: PageService) {
+    constructor(private wcs: WebContentSvc, private pageService: PageService,private cd: ChangeDetectorRef) {
         wcs.content$.subscribe(result => {
             this.label = result.label;
         });
@@ -67,10 +67,30 @@ export class MultiSelectListBox {
                this.pageService.processPost(this.element.config.uiStyles.attributes.postButtonUrl, null, $event.leafState, 'POST');
             }
         });
+
+        this.pageService.eventUpdate$.subscribe(event => {
+            let frmCtrl = this.form.controls[event.config.code];
+            if(frmCtrl!=null && event.path.startsWith(this.element.path)) {
+                if(event.leafState!=null)
+                    frmCtrl.setValue(event.leafState);
+                else
+                    frmCtrl.reset();
+            }
+        });
+        this.pageService.validationUpdate$.subscribe(event => {
+            let frmCtrl = this.form.controls[event.config.code];
+            if(frmCtrl!=null && event.path.startsWith(this.element.path)) {
+                if(event.enabled.currState)
+                    frmCtrl.enable();
+                else
+                    frmCtrl.disable();
+            }
+        });
     }
 
     setState(event:any, frmInp:any) {
         frmInp.element.leafState = event;
+        this.cd.markForCheck();
     }
 
     emitValueChangedEvent(formControl:any,$event:any) {

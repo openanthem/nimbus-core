@@ -1,6 +1,6 @@
 'use strict';
 import { ControlValueAccessor } from '@angular/forms/src/directives';
-import { Component, Input, Output, EventEmitter,forwardRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter,forwardRef, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Param } from '../../../../shared/app-config.interface';
 import { WebContentSvc } from '../../../../services/content-management.service';
@@ -26,6 +26,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
                     <input  type="checkbox"
                         (click)="selectOption(value.code, this);emitValueChangedEvent(this,$event)"
                         [checked] = "checkedState(value.code)"
+                        [disabled]="!element?.enabled?.currState"
                         class="custom-control-input" 
                         name="{{element.config?.code}}">
                     <span class="custom-control-indicator"></span>
@@ -47,7 +48,7 @@ export class CheckBoxGroup implements ControlValueAccessor {
     // TODO replace selected options with element.leafState once it supports collection
     private selectedOptions: string[] = [];
 
-    constructor(private pageService: PageService,private wcs: WebContentSvc) {
+    constructor(private pageService: PageService,private wcs: WebContentSvc,private cd: ChangeDetectorRef) {
         wcs.content$.subscribe(result => {
             this.label = result.label;
         });
@@ -81,6 +82,7 @@ export class CheckBoxGroup implements ControlValueAccessor {
 
     setState(event:any,frmInp:any) {
         frmInp.element.leafState = event;
+        this.cd.markForCheck();
         //added to overide the state with ws update.
         //this.selectedOptions = [];
         //this.selectedOptions.push(event);
@@ -117,6 +119,25 @@ export class CheckBoxGroup implements ControlValueAccessor {
         }
         if( this.form.controls[this.element.config.code]!= null) {
             this.form.controls[this.element.config.code].valueChanges.subscribe(($event) => this.setState($event,this));
+            
+            this.pageService.eventUpdate$.subscribe(event => {
+                let frmCtrl = this.form.controls[event.config.code];
+                if(frmCtrl!=null && event.path.startsWith(this.element.path)) {
+                    if(event.leafState!=null)
+                        frmCtrl.setValue(event.leafState);
+                    else
+                        frmCtrl.reset();
+                }
+            });
+            this.pageService.validationUpdate$.subscribe(event => {
+                let frmCtrl = this.form.controls[event.config.code];
+                if(frmCtrl!=null && event.path.startsWith(this.element.path)) {
+                    if(event.enabled.currState)
+                        frmCtrl.enable();
+                    else
+                        frmCtrl.disable();
+                }
+            });
         }
         this.wcs.getContent(this.element.config.code);
         this.antmControlValueChanged.subscribe(($event) => {

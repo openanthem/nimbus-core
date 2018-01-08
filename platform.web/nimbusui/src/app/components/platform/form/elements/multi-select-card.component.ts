@@ -101,7 +101,16 @@ export class MultiselectCard  implements ControlValueAccessor {
         if(this.element.leafState !=null) {
             this.selectedOptions = this.element.leafState;
         }
-        this.form.controls[this.element.config.code].valueChanges.subscribe(($event) => this.setState($event));
+        if(this.form!=null && this.form.controls[this.element.config.code]!= null) {
+            this.form.controls[this.element.config.code].valueChanges.subscribe(($event) => this.setState($event));
+            
+            this.pageService.eventUpdate$.subscribe(event => {
+                let frmCtrl = this.form.controls[event.config.code];
+                if(frmCtrl!=null && event.path.startsWith(this.element.path)) {
+                    frmCtrl.setValue(event.leafState);
+                }
+            });
+        }
         //this.form.controls[this.element.config.code].statusChanges.subscribe(($event) => this.setStatus($event));
         this.wcs.getContent(this.element.config.code);
     }

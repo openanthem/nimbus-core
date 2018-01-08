@@ -1,6 +1,6 @@
 'use strict';
 import { NgModel, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { Component, ViewChild, forwardRef } from '@angular/core';
+import { Component, ViewChild, forwardRef, ChangeDetectorRef } from '@angular/core';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { PageService } from '../../../../services/page.service';
@@ -22,6 +22,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     <select
         [(ngModel)] = "value"
         [id]="element.config?.code" 
+        [disabled]="!element?.enabled?.currState"
         (change)="emitValueChangedEvent(this,$event)"
         class="form-control">
         <option value=""></option>
@@ -36,8 +37,8 @@ export class ComboBox extends BaseControl<String> {
 
     element: Param;
 
-    constructor(wcs: WebContentSvc, pageService: PageService) {
-        super(pageService,wcs);
+    constructor(wcs: WebContentSvc, pageService: PageService, cd:ChangeDetectorRef) {
+        super(pageService,wcs,cd);
     }
 
 }
