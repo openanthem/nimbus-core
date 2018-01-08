@@ -57,6 +57,4 @@ public class AssignmentTask extends AbstractEntity.IdString{
 	
 	private String reminder;
 		
-	private String testTaskType;
-	
 }
