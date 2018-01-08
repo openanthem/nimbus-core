@@ -1,3 +1,11 @@
+/**
+ * @license
+ * Copyright Anthem Inc. All Rights Reserved.
+ *
+ * This source code is released under version 2.0 of the Apache License.
+ * The LICENSE information can be found at http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 import { Component, ViewEncapsulation, Inject } from '@angular/core';
 import { HostListener } from '@angular/core/src/metadata/directives';
 import { DomainLayoutCmp } from './components/domain/domain-layout.component';

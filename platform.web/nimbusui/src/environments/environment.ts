@@ -1,3 +1,11 @@
+/**
+ * @license
+ * Copyright Anthem Inc. All Rights Reserved.
+ *
+ * This source code is released under version 2.0 of the Apache License.
+ * The LICENSE information can be found at http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 // The file contents for the current environment will overwrite these during build.
 // The build system defaults to the dev environment which uses `environment.ts`, but if you do
 // `ng build --env=prod` then `environment.prod.ts` will be used instead.

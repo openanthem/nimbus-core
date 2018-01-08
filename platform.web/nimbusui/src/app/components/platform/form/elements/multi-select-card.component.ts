@@ -1,3 +1,11 @@
+/**
+ * @license
+ * Copyright Anthem Inc. All Rights Reserved.
+ *
+ * This source code is released under version 2.0 of the Apache License.
+ * The LICENSE information can be found at http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 import { Component, Input, forwardRef } from '@angular/core';
 import { FormGroup, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { PageService } from '../../../../services/page.service';
