@@ -179,7 +179,7 @@ public class ViewConfig {
 	 * </p>
 	 * 
 	 * @author Tony Lopez (AF42192)
-	 * @see com.anthem.oss.nimbus.core.domain.model.state.extension.ModalStateEventHandler
+	 * @see com.antheminc.oss.nimbus.core.domain.model.state.extension.ModalStateEventHandler
 	 *
 	 */
 	@Retention(RetentionPolicy.RUNTIME)

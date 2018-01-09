@@ -2,46 +2,48 @@
 
 	<nm-link [element]="branding.logo" *ngIf="branding.logo"></nm-link>
 
-	<div class="col-lg-2 col-md-3 col-sm-5 align-top pull-right p-0">
+	<div class="col-lg-4 col-md-5 col-sm-6 align-top pull-right p-0">
 		<div class="headerMenu pull-right header-link header-font">
 			<a class="sr-only" aria-hidden="true" href="">Skip Navigation</a>
-			<a class="" href="#" style="
-				position: absolute;
-				top: -6px;
-				right: 100px;
-				color: white;
-			">Log Out</a>
-			<a class="" href="#" style="
-				position: absolute;
-				top: -6px;
-				right: 20px;
-				color: white;
-			">Help</a>
+			<a class="helpLink" href="#">Help</a>
+			<a class="logoutLink" href="#">Log Out</a>
 			<div class="btn-group mt-1 pull-right">
 
 				<a href="#" class="fa-icon-link alerts mr-2">
 					<!-- <span class="tag" *ngIf="hasMessages">{{messageCount}}</span> -->
 					<span class="tag" *ngIf="messageCount > 0"> {{messageCount}}</span>
 				</a>
-				<a href="#" class="fa-icon-link settings mr-2"></a>
+
+				<!-- <ng-template [element]="branding.title" *ngIf="branding.title == 'Long Term Services Supports(LTSS)'"> -->
+				<a href="#" class="fa-icon-link settings mr-2" *ngIf="branding?.title == 'Long Term Services &amp; Supports(LTSS)'"></a>
+				<!-- </ng-template> -->
 
 			</div>
 
+			<!-- <div class="mr-2 align-top d-inline-block" *ngIf="branding.userName"> -->
+			<div class="mr-2 mt-2 align-top d-inline-block">
+				<i class="fa fa-user userIcon"></i>
+				<div class="userInfo">
+					<div class="userName">
+						<nm-value [element]="branding.userName" *ngIf="branding.userName"></nm-value>  
+					</div>
+					<div class="userRole">
+						<nm-value [element]="branding.userRole" *ngIf="branding.userRole"></nm-value>  
+					</div>
+				</div>
+			</div>
+			
+
 		</div>
 	</div>
-	<div class="col-lg-8 col-md-6 hidden-xs-down col-sm-3 p-0 pl-3">
-		<div class="productName hidden-sm-down d-inline-block ml-2">
 
-			<span class="sizeTarget">{{branding.title.config.code}}</span>
-			<!-- <nm-paragraph [element]="branding.title" *ngIf="branding.title"></nm-paragraph> -->
-
+	<div class="col-lg-6 col-md-4 col-sm-3 hidden-sm-down p-0 pl-3">
+		<div class="productName hidden-xs-down d-inline-block ml-1">
+			  <nm-paragraph [element]="branding.title" *ngIf="branding.title"></nm-paragraph>  
 		</div>
-		<!-- <div class="col-lg-4  hidden-md-down">
-			<nm-comboBox id="{{id}}" [element]="element"
-				[(ngModel)]="element.leafState"
-				*ngIf="element.config?.uiStyles?.attributes?.alias == 'ComboBox'"></nm-comboBox>
-		</div> -->
-		<div class="hidden-md-down col-lg-5 align-bottom ">
+			
+		<!-- <ng-template [element]="branding.title" *ngIf="branding.title == 'Long Term Services Supports(LTSS)'"> -->
+		<div class="hidden-md-down col-lg-5 align-bottom" *ngIf="branding?.title === 'Long Term Services &amp; Supports(LTSS)'">
 			<div id="custom-search-input">
 				<div class="input-group">
 					<input type="text" class="form-control input-lg" placeholder="Search" />
@@ -53,91 +55,8 @@
 				</div>
 			</div>
 		</div>
-
-		<!-- <div class="mr-2 align-top d-inline-block" *ngIf="branding.userName"> -->
-		<div class="mr-2 align-top d-inline-block">
-			<i class="fa fa-user fa-lg" aria-hidden="true" class="mr-2 d-inline-block align-top"></i>
-			<div class="d-inline-block">
-				<div class="sizeTarget">
-					User Name
-					<!-- <nm-value [element]="branding.userName"></nm-value> -->
-				</div>
-				<div class="sizeTarget">
-					User Value
-					<!-- <nm-value [element]="branding.userRole" *ngIf="branding.userRole"></nm-value> -->
-				</div>
-			</div>
-		</div>
+		<!-- </ng-template> -->
 
 	</div>
 
-</div>
-
-<div class="subheader" *ngIf="topMenuItems || branding">
-
-	<div class="productName d-inline-block ml-2">
-
-		<nm-paragraph [element]="branding.title" *ngIf="branding.title"></nm-paragraph>
-
-	</div>
-	<div class="d-inline-block" *ngIf="branding.subTitle">
-		<nm-value [element]="branding.subTitle"></nm-value>
-	</div>
-
-</div>
-
-<!-- temporary floating menu -->
-<div class="floating-toolbar">
-	<a href="javascript:void(0)" onclick="$(this).closest('.floating-toolbar').toggleClass('open')" class="menuTrigger">Search</a>
-	<div class="content">
-		<div class="toolbar-header">my title
-			<a href="javascript:void(0)" onclick="$(this).closest('.floating-toolbar').toggleClass('open')" class="menuTrigger">X</a>
-		</div>
-		<div class="viewport">
-			<div class="col-sm-12 mt-2">this is the menu
-
-				<span class="tooltip-container helpIcon">
-					<a class="tooltip-trigger" href="javascript:void(0)" onclick="$(this).closest('.tooltip-container').toggleClass('open')"></a>
-					<div class=" callout">
-						<a href="javascript:void(0);" class="close" onclick="$(this).closest('.tooltip-container').toggleClass('open')"></a>
-						this is content for the tooltip. the text will wrap in the bubble. Click the X to close
-					</div>
-				</span>
-
-
-			</div>
-			<div class="col-sm-12 mt-2">
-
-				<span class="tooltip-container textTrigger">
-					<a class="tooltip-trigger" href="javascript:void(0)" onclick="$(this).closest('.tooltip-container').toggleClass('open')">
-						this is a long menu....
-					</a>
-					<div class=" callout">
-						<a href="javascript:void(0);" class="close" onclick="$(this).closest('.tooltip-container').toggleClass('open')"></a>
-						this is a long menu and longer too. the text will wrap in the bubble. Click the X to close
-					</div>
-				</span>
-
-
-			</div>
-			<div class="col-sm-12">
-				<div class="custom-dropdown" onmouseleave="$(this).removeClass('open')">
-					<label>Label for dropdown</label>
-					<input type="text">
-					<a class="dropdownTrigger" href="javascript:void(0)" onclick="$(this).closest('.custom-dropdown').toggleClass('open')"></a>
-					<div class="dropdownContent">
-						<div class="group-holder">
-							<p class='group-header'>group header</p>
-							<a href="javascript:void(0)" onclick="$(this).closest('.custom-dropdown').find('input').val($(this).text());$(this).closest('.custom-dropdown').toggleClass('open')">select 1</a>
-							<a href="javascript:void(0)" onclick="$(this).closest('.custom-dropdown').find('input').val($(this).text());$(this).closest('.custom-dropdown').toggleClass('open')">select 2select 2select 2select 2select 2select 2select 2select 2select 2select 2select 2select 2select 2select 2</a>
-							<p class=''>some plain text</p>
-						</div>
-						<a href="javascript:void(0)" onclick="$(this).closest('.custom-dropdown').find('input').val($(this).text());$(this).closest('.custom-dropdown').toggleClass('open')">select 3</a>
-					</div>
-				</div>
-			</div>
-
-
-		</div>
-	</div>
 </div>
