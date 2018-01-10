@@ -10,7 +10,7 @@ import com.anthem.oss.nimbus.core.integration.websocket.WebSocketConnectHandler;
 import com.anthem.oss.nimbus.core.integration.websocket.WebSocketDisconnectHandler;
 
 
-@Configuration
+//@Configuration
 public class WebSocketHandlersConfig<ExpiringSession> {
 
 	@Bean
