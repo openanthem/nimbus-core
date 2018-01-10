@@ -119,10 +119,8 @@ export class LayoutService {
         let subHeaders: Param[] = [];
 
         layoutConfig.params.forEach(param => {
-            if (param.config.uiStyles.attributes.alias === 'Header') {
-                // if (param.config.uiStyles.attributes.value === 'HEADER') {
-                    this.parseTopBarConfig(param.type.model, branding, headerMenus, subHeaders);
-                // }
+            if (param.config.uiStyles.attributes.alias === 'Header' || param.config.uiStyles.attributes.alias === 'Global-Header') {           
+                this.parseTopBarConfig(param.type.model, branding, headerMenus, subHeaders);   
             }
         });
 
