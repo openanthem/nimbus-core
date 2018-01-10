@@ -1,29 +1,21 @@
 package com.anthem.oss.nimbus.core.integration.websocket;
 
-import java.util.Arrays;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.web.context.request.RequestContextHolder;
 
-import com.anthem.oss.nimbus.core.config.WebSocketHttpConnectHandlerDecoratorFactory;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.Behavior;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.EventOutput;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandTransactionInterceptor;
 import com.anthem.oss.nimbus.core.domain.command.execution.ExecuteOutput;
 import com.anthem.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
-import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
-import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
 import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.repo.db.AbstractStateAndConfigEventListener;
 import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
-import com.anthem.oss.nimbus.core.spec.contract.event.StateAndConfigEventListener;
+import com.anthem.oss.nimbus.core.domain.model.state.repo.db.AbstractStateAndConfigEventListener;
 
 /**
  * @author Rakesh Patel
@@ -35,8 +27,8 @@ public class ParamEventAMQPListener extends AbstractStateAndConfigEventListener 
 
 	CommandTransactionInterceptor interceptor;	
 	
-	@Autowired
-	WebSocketHttpConnectHandlerDecoratorFactory webSocketHttpConnectHandlerDecoratorFactory;
+	//@Autowired
+	//WebSocketHttpConnectHandlerDecoratorFactory webSocketHttpConnectHandlerDecoratorFactory;
 	
 	
 	public ParamEventAMQPListener(SimpMessageSendingOperations messageTemplate, CommandTransactionInterceptor interceptor){
@@ -79,7 +71,8 @@ public class ParamEventAMQPListener extends AbstractStateAndConfigEventListener 
 	
 	private String getAssociatedWebSocketSessionId(){
 		String httpSessionId = RequestContextHolder.getRequestAttributes().getSessionId();
-		return webSocketHttpConnectHandlerDecoratorFactory.getAssociatedWebSocketSessionId(httpSessionId);
+		//return webSocketHttpConnectHandlerDecoratorFactory.getAssociatedWebSocketSessionId(httpSessionId);
+		return httpSessionId;
 	}
 
 	@Override

@@ -11,7 +11,7 @@ import org.springframework.security.config.annotation.web.socket.AbstractSecurit
  * 
  * @author Rohit Bajaj
  */
-@Configuration
+//@Configuration
 public class WebSocketSecurityConfig extends AbstractSecurityWebSocketMessageBrokerConfigurer {
 
 	@Override

@@ -15,9 +15,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.support.GenericApplicationContext;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
-import org.springframework.session.data.redis.RedisOperationsSessionRepository;
 
 import com.anthem.nimbus.platform.spec.serializer.CustomLocalDateSerializer;
 
@@ -50,10 +48,5 @@ public class Application {
 		builder.serializerByType(LocalDate.class, new CustomLocalDateSerializer());
 		return builder;
 	}
-	
-	@Bean
-    public RedisOperationsSessionRepository sessionRepository( RedisConnectionFactory factory) {
-        RedisOperationsSessionRepository sessionRepository = new RedisOperationsSessionRepository(factory);
-        return sessionRepository;
-    }
+
 }
