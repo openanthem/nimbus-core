@@ -9,7 +9,7 @@
 import { WebContentSvc } from './content-management.service';
 import { Component, EventEmitter, Injectable } from '@angular/core';
 
-import { Model, Param, Result } from '../shared/app-config.interface';
+import { Model, Param, Result, UiAttribute } from '../shared/app-config.interface';
 import { ServiceConstants } from './service.constants';
 import { PageService } from './page.service';
 import { HttpClient } from './httpclient.service';
@@ -126,9 +126,11 @@ export class LayoutService {
         let subHeaders: Param[] = [];
         
         layoutConfig.params.forEach(param => {
-            if (param.config.uiStyles.attributes.alias === 'Header' || param.config.uiStyles.attributes.alias === 'Global-Header') {          
-                this.parseTopBarConfig(param.type.model, branding, headerMenus, subHeaders);  
-            }
+            let attribute: UiAttribute = param.config.uiStyles.attributes;
+            if (attribute.alias === 'Header' || attribute.alias === 'Global-Header' || 
+                (attribute.alias === 'Section' && attribute.value === 'HEADER')) {
+                this.parseTopBarConfig(param.type.model, branding, headerMenus, subHeaders);
+            } 
         });
 
         topBar['branding'] = branding;
