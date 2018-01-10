@@ -11,11 +11,11 @@ function deploySnapshots {
 }
 
 function buildWithOutTests {
- ./mvnw clean install -D skipDockerBuild -D maven.test.skip=true
+ ./mvnw clean install -D skipDockerBuild -D maven.test.skip=true -P devbuild
 }
 
 function buildWithTests {
- ./mvnw clean install -D skipDockerBuild
+ ./mvnw clean install -D skipDockerBuild -P devbuild
 }
 
 function releasePrepare {

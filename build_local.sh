@@ -5,7 +5,7 @@ function buildWithOutTests {
 }
 
 function buildWithTests {
-  ./mvnw clean install -D skipDockerBuild
+  ./mvnw clean install -D skipDockerBuild -P devbuild
 }
 
 function releasePrepare {
@@ -17,7 +17,7 @@ function releasePrepare {
   #./mvnw -D maven.repo.local=/Users/charles.russell/.m2/repository release:clean release:prepare -f platform.spec.model/pom.xml -D skipDockerBuild
   #./mvnw -D maven.repo.local=/Users/charles.russell/.m2/repository release:clean release:prepare -f platform.spec.model.test/pom.xml -D skipDockerBuild
   #./mvnw -D maven.repo.local=/Users/charles.russell/.m2/repository release:clean release:prepare  -f platform.core.process/pom.xml -D skipDockerBuild
-  #./mvnw -D maven.repo.local=/Users/charles.russell/.m2/repository release:clean release:prepare  -f platform.web/pom.xml -D skipDockerBuild
+  #./mvnw -D maven.repo.local=/Users/charles.russell/.m2/repository release:clean release:prepare  -f platform.web/pom.xml -D skipDockerBuild -P devbuild
 }
 #releasePrepare
 buildWithTests
