@@ -1,6 +1,23 @@
+/**
+ * @license
+ * Copyright 2017-2018 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 'use strict';
 import { NgModel, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { Component, ViewChild, forwardRef } from '@angular/core';
+import { Component, ViewChild, forwardRef, ChangeDetectorRef } from '@angular/core';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { PageService } from '../../../../services/page.service';
@@ -16,13 +33,14 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   selector: 'nm-input-textarea',
   providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc ],
   template: `
-    <div class='textarea-holder' [hidden]="!element?.config?.visible?.currState || !element?.visible?.currState" *ngIf="element.config?.uiStyles?.attributes?.hidden==false">
+    <!--<div class='textarea-holder' [hidden]="!element?.config?.visible?.currState || !element?.visible?.currState" *ngIf="element.config?.uiStyles?.attributes?.hidden==false">-->
+    <div class='textarea-holder' [hidden]="!element?.visible?.currState" *ngIf="element.config?.uiStyles?.attributes?.hidden==false">
         <div class="number" *ngIf="element.config?.uiStyles?.attributes?.controlId!=''">{{element.config?.uiStyles?.attributes?.controlId}}</div>
         <label [attr.for]="element.config?.code" class="">{{label}}
             <nm-tooltip *ngIf="element.config?.uiStyles?.attributes?.help!=''" [helpText]='element.config?.uiStyles?.attributes?.help'></nm-tooltip>
         </label>
         <textarea [(ngModel)] = "value" 
-            rows="element.config?.uiStyles?.attributes?.rows"  
+        rows="element.config?.uiStyles?.attributes?.rows"  
             (focusout)="emitValueChangedEvent(this,value)"
             [id]="element.config?.code" class="form-control" *ngIf="element.config?.uiStyles?.attributes?.readOnly==false"></textarea>
         <p style="margin-bottom:0rem;" *ngIf="element.config?.uiStyles?.attributes?.readOnly==true">{{element.leafState}}</p>
@@ -35,7 +53,7 @@ export class TextArea extends BaseControl<String> {
 
      element: Param;
 
-    constructor(wcs: WebContentSvc, pageService: PageService) {
-        super(pageService,wcs);
+    constructor(wcs: WebContentSvc, pageService: PageService,cd:ChangeDetectorRef) {
+        super(pageService,wcs,cd);
     }
 }

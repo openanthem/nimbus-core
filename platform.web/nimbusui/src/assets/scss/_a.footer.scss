@@ -5,6 +5,21 @@
     color: $footer-color;
     text-align: center;
     @extend .body-1;
+    &.bottom{ // for login page
+        position: absolute;
+        bottom: 0;
+        .footer-text {
+            p {
+                display: inline-block;
+                margin-right: 2rem;
+                margin-left: 2rem;
+            }
+            img.logo {
+                width: 60px;
+                margin-left: 20px;
+            }
+        }
+    }
     .footer-text {
         padding: 30px;
         p {

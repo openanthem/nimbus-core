@@ -3,8 +3,8 @@
     {{pageParam?.message?.text}}
 </div>
 <ng-template [ngIf]="pageParam.config.uiStyles.attributes.title">
-    <h3 class="page-title">
+    <h1 class="page-title">
         {{pageParam.config.uiStyles.attributes.title}}
-    </h3>
+    </h1>
 </ng-template>
 <nm-tile [element]="tile" *ngFor="let tile of tilesList"></nm-tile>

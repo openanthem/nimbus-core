@@ -1,10 +1,20 @@
 /**
  * @license
- * Copyright Anthem Inc. All Rights Reserved.
+ * Copyright 2017-2018 the original author or authors.
  *
- * This source code is released under version 2.0 of the Apache License.
- * The LICENSE information can be found at http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 import { Component, ElementRef, Input, OnInit, OnDestroy } from '@angular/core';
 import { Param, Model } from '../../../shared/app-config.interface';
 import { DialogModule } from 'primeng/primeng';
@@ -73,7 +83,9 @@ export class Modal extends BaseElement implements OnInit, OnDestroy {
      */
     public closeDialog(event: any) {
         //console.log('modal close clicked..........');
-        this.pageSvc.processEvent(this.element.path+'/closeModal', Behavior.execute.value, new GenericDomain(), HttpMethod.GET.value);
+        if (this.visible) {
+            this.pageSvc.processEvent(this.element.path+'/closeModal', Behavior.execute.value, new GenericDomain(), HttpMethod.GET.value);
+        }
     }
 
 }

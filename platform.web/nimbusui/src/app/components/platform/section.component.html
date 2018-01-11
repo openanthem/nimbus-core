@@ -41,13 +41,13 @@
                 <nm-grid-container [element]="element"></nm-grid-container>
             </ng-template>
             <ng-template [ngIf]="element.alias == 'Grid'">
-                <infinite-scroll-grid [data]="element.config?.gridList" 
+                <infinite-scroll-grid 
                     [element]="element" 
                     [params]="element?.config?.gridCols" (onScrollEvent)="onScrollEvent()">
                 </infinite-scroll-grid>
             </ng-template>
             <!--Other buttons. Refactor item : to be triggred based on the buttongroup annotation-->
-            <ng-template [ngIf]="element.alias == 'Button' && element?.visible == true">
+            <ng-template [ngIf]="element.alias == 'Button' && element?.visible.currState == true">
                 <div class="text-sm-right">
                     <nm-button [element]="element"> </nm-button>
                 </div>
