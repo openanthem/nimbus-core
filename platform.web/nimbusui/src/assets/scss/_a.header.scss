@@ -8,21 +8,40 @@
     z-index: 1000;
 	background-color: $header-bkg;
 	padding-top: .9rem;
-	
+	position: fixed;
+	color:#fff;
 	label{
-		color:#fff;
 		font-size: .9rem;
 	}
 	
-	.btn-group .sizeTarget,.productName .sizeTarget {
-			@extend .head-3;
-			margin-top: .3rem;
-			&:first-child,
-			&:first-child a {
-				@extend .head-2;
-			}
+	.productName p {
+			font-size: 1.1rem;
+			font-weight: bold;
+			margin: 0;
+			max-width: 200px;
+    		line-height: 1.5rem;
 		}
-     
+
+	.userIcon {
+    		font-size: 3rem;
+    		display: inline-block;
+			vertical-align: top;
+			margin: 0 1rem;
+	}
+
+	.userInfo {
+    		display: inline-block;
+    		max-width: 300px;
+
+		.userName {
+				font-weight: bold;
+		}
+
+		.userRole {
+				font-size: .9rem;
+		}
+	}
+
         .logo {
 			display:inline-block;
 			width: 150px;
@@ -35,13 +54,30 @@
 			font-size: 0.8rem;
 			padding-top: .5rem;
 		}
-	
+
         .headerMenu {
 			color: #fff;
 			.btn-group{
 				height: $header-btn-height ;
 				padding-top:10px;
 				// a{display:inline-block;}
+			}
+			.helpLink{
+				position: absolute;
+				top: -6px;
+				color: white;
+				right: 95px;
+			}
+			.logoutLink{
+				position: absolute;
+				top: -6px;
+				color: white;
+				right: 20px;
+				&::before{
+					content: "|";
+					display: inline-block;
+					margin-right: 1rem;
+				}
 			}
 			.form-group{
 				margin-bottom:0;
@@ -51,10 +87,7 @@
     			color: #fff;
 				border-color: #8FBEE4;
 			}
-			// .input-group-addon{
-			// 	background-color: $header-search-bkg;
-
-			// }
+			
 			svg{
 				height: $header-userIcon-height;
 				width: $header-userIcon-height;
@@ -65,57 +98,23 @@
 				}
 			}
 			
-			
-			// img {
-			// 	height: $header-userIcon-height;
-			// 	background-color:#fff;
-			// }
-			// i{
-			// 	font-size: $header-faIcon-size;
-			// 	margin-right:.5rem;
-			// 	margin-top:.2rem;
-
-			// }
-			// .tag { 
-			// 	    background-color: red;
-			// 		color: #fff;
-			// 		position: absolute;
-			// 		left: 25px;
-			// 		font-size: 1rem;
-			// 		border-radius: 50%;
-			// 		width: 1.1rem;
-			// 		height: 1.2rem;
-			// 		padding-top: .3rem;
-			// }
-
-		
 			.button-group{
 				height: $header-btn-height ;
 			}
-			// .dropdown-menu 
-			// 	{
-			// 	width: 95%;
-			// 	min-width: 200px;
-			// 	background-color: $gray-lighter;
-			// 	margin-top: $header-dropdown-marginTop;
-			// 	border-radius:0;
-				// a.dropdown-item
-				// {
-				// 	color:$gray-dark;
-				// 	box-sizing: border-box;
-				// }
-				// .card {
-				// 	border-radius:0;
-				// }
-			//}
-			// .dropdown-toggle::after{
-			// 	font-size: 1.5rem;
-			// }
         }
        
 
 }
 
+@media(min-width: 768px) {
+	.header {
+		.headerMenu {
+				.helpLink{
+					right: 105px;
+				}
+			}
+	}			
+}
 
 .custom-control-indicator {
     border: 1px solid #8fbee4;
