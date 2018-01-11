@@ -1,10 +1,20 @@
 /**
  * @license
- * Copyright Anthem Inc. All Rights Reserved.
+ * Copyright 2017-2018 the original author or authors.
  *
- * This source code is released under version 2.0 of the Apache License.
- * The LICENSE information can be found at http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 import { Component, Input } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Param } from '../../../shared/app-config.interface';
@@ -24,9 +34,9 @@ import { Param } from '../../../shared/app-config.interface';
     selector: 'nm-tooltip',
     template: `
         <span class="tooltip-container helpIcon {{widgetPosition}}">
-            <a class="tooltip-trigger" href="javascript:void(0)" (click)="toggleOpen($event)"></a>
-            <div class=" callout">
-                <a href="javascript:void(0);" class="close" (click)="closeCallout($event)"></a>
+            <button class="tooltip-trigger" (click)="toggleOpen($event)"></button>
+            <div class="callout">
+                <button class="close" (click)="closeCallout($event)"></button>
                 <div [innerHTML]="htmlContent"></div>
             </div>
         </span>

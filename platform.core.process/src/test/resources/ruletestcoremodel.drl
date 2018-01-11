@@ -1,4 +1,4 @@
-package com.anthem.nimbus.platform.core.rules
+package com.antheminc.nimbus.platform.core.rules
 
 import com.antheminc.oss.nimbus.core.domain.model.state.internal.DefaultModelState;
 import com.antheminc.oss.nimbus.core.domain.model.state.EntityState.Param;
