@@ -1,3 +1,20 @@
+/**
+ * @license
+ * Copyright 2017-2018 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { Injectable } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, ValidatorFn, FormArray, FormControl,ValidationErrors } from '@angular/forms';
 
@@ -30,11 +47,33 @@ export class FormElementsService {
           group[element.config.code] = this.createNewFormGroup(element);
           //create new formgroup and formcontrol to create checkboxes in form. this is for form binding. TODO validations binding
         } else {
-          group[element.config.code] = checks ? [element.leafState || '', checks] : [element.leafState || ''];
+          group[element.config.code] = checks ? [{value: element.leafState || '', disabled: !element.enabled.currState}, checks] : [{value: element.leafState || '', disabled: !element.enabled.currState}];
         }
       }
     });
     return group;
+  }
+
+  //TODO - Merge buildFormGroup and createNewFormGroup methods to one method. 
+  createNewFormGroup(element: Param) : FormGroup {
+    let fg = new FormGroup({});
+    for (let i = 0; i < element.type.model.params.length; i++) {
+      let param = element.type.model.params[i];
+      var checks: ValidatorFn[] = [];
+      checks = this.buildValidations(param);
+      if (param.type.nested) {
+         fg.addControl(param.config.code, this.createNewFormGroup(param));
+      } else {
+        if (checks) {
+          fg.addControl(param.config.code, 
+            new FormControl({value: param.leafState || '', disabled: !param.enabled.currState}, checks));
+        } else {
+          fg.addControl(param.config.code, 
+            new FormControl({value: param.leafState || '', disabled: !param.enabled.currState}));
+        }
+      }
+    }
+    return fg;
   }
 
   buildValidations(element:Param) :ValidatorFn[] {
@@ -61,18 +100,4 @@ export class FormElementsService {
       return checks;
   }
 
-  //TODO - Merge buildFormGroup and createNewFormGroup methods to one method. 
-  createNewFormGroup(element:Param) : FormGroup {
-    let fg = new FormGroup({});
-    for (let i = 0; i < element.type.model.params.length; i++) {
-      var checks1: ValidatorFn[] = [];
-      checks1 = this.buildValidations(element.type.model.params[i]);
-      if (element.type.model.params[i].type.nested) {
-         fg.addControl(element.type.model.params[i].config.code,this.createNewFormGroup(element.type.model.params[i]));
-      } else {
-        fg.addControl(element.type.model.params[i].config.code, new FormControl(element.type.model.params[i].leafState,checks1));
-      }
-    }
-    return fg;
-  }
 }

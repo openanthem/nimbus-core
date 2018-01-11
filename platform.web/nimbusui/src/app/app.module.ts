@@ -1,3 +1,20 @@
+/**
+ * @license
+ * Copyright 2017-2018 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { InPlaceEditorComponent } from './components/platform/form/elements/inplace-editor.component';
 import { TextArea } from './components/platform/form/elements/textarea.component';
 import { MultiSelectListBox } from './components/platform/form/elements/multi-select-listbox.component';
@@ -19,13 +36,11 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpModule, BrowserXhr } from '@angular/http';
 import { ReactiveFormsModule }  from '@angular/forms';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
-import { DataTableModule, SharedModule, OverlayPanelModule } from 'primeng/primeng';
-import { PickListModule, DragDropModule } from 'primeng/primeng';
-import {FileUpload, FileUploadModule} from 'primeng/primeng';
+import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, FileUpload, FileUploadModule, ListboxModule, DialogModule  } from 'primeng/primeng';
 import { SortableComponentDirective, SortableContainerDirective } from './directives/sortable-dragdrop.directive';
 import { NavLinkRouter } from './directives/nav-link-router.directive';
-import { ListboxModule, DialogModule } from 'primeng/primeng';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 // Platform Imports
 // Components
 import { LayoutService } from './services/layout.service';
@@ -47,11 +62,10 @@ import { InputText } from './components/platform/form/elements/textbox.component
 import { DateControl } from './components/platform/form/elements/date.component';
 import { CheckBoxGroup } from './components/platform/form/elements/checkbox-group.component';
 import { MultiselectCard } from './components/platform/form/elements/multi-select-card.component';
-import { ActionDropdown } from './components/platform/form/elements/action-dropdown.component';
+import { ActionDropdown, ActionLink } from './components/platform/form/elements/action-dropdown.component';
 import { GridContainer } from './components/platform/grid/grid-container.component';
 import { InfiniteScrollGrid } from './components/platform/grid/grid.component';
 import { Link } from './components/platform/link.component';
-import { DisableFormControl } from './components/platform/form/elements/control-disable.directive';
 import { Menu } from './components/platform/menu.component';
 import { FlowWrapper } from './components/platform/content/flow-wrapper.component';
 import { SubHeaderCmp } from './components/platform/sub-header.component';
@@ -75,6 +89,7 @@ import { Modal } from './components/platform/modal/modal.component';
 import { TooltipComponent } from './components/platform/tooltip/tooltip.component';
 import { HeaderGlobal } from './components/platform/header/header-global.component';
 import { FooterGlobal } from './components/platform/footer/footer-global.component';
+import { Calendar } from './components/platform/form/elements/calendar.component';
 // Services
 import { WebContentSvc } from './services/content-management.service';
 import { STOMPStatusComponent } from './services/stomp-status.component';
@@ -111,20 +126,21 @@ import { LinkPipe } from './pipes/link.pipe';
         DialogModule,
         BrowserModule,
         BrowserAnimationsModule,
+        CalendarModule
     ],
     declarations: [ AppComponent, STOMPStatusComponent, FlowWrapper, PageContent, PageNotfoundComponent, StaticText,
         Tile, Section, Header, Form, FormElement, InputText, ComboBox, RadioButton, DateControl, CheckBoxGroup,
         InPlaceEditorComponent, Paragraph, Value, Image, BaseElement, 
         MultiselectCard, Link, Menu, CardDetailsComponent, CardDetailsFieldComponent, CardDetailsGrid, FieldValue,
         AccordionGroup, Accordion, FrmGroupCmp, Button, ButtonGroup, FilterButton, OrderablePickList,
-        STOMPStatusComponent, GridContainer, InfiniteScrollGrid, SubHeaderCmp, DisableFormControl, TextArea, LandingPage,
+        STOMPStatusComponent, GridContainer, InfiniteScrollGrid, SubHeaderCmp, TextArea, LandingPage,
         LayoutService,ContentContainer,Switch,
         DomainFlowCmp,HeaderGlobal,FooterGlobal,
         BreadcrumbComponent, NavLinkRouter,
-        Modal, ActionDropdown,
+        Modal, ActionDropdown, ActionLink, 
         GridMouseEventDirective, SortableContainerDirective, SortableComponentDirective,
         HomeLayoutCmp, MainLayoutCmp, DomainLayoutCmp, LoginCmp, LoginLayoutCmp, StyleGuideCmp, KeysPipe, LinkPipe, MultiSelectListBox, 
-        CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent
+        CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent, Calendar
 
     ],
     entryComponents: [ FlowWrapper, PageContent, PageNotfoundComponent, LoginCmp, MainLayoutCmp, HomeLayoutCmp],
