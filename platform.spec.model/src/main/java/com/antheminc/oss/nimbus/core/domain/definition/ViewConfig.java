@@ -704,7 +704,7 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface SubHeader {
 		String alias() default "SubHeader";
-		String cssClass() default "col-sm-6 align-top";
+		String cssClass() default "col-sm-6 pb-0 align-top";	//pb-0 is added for the demo. It is temp fix
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
