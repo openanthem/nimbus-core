@@ -1,0 +1,72 @@
+/**
+ * 
+ */
+package com.antheminc.oss.nimbus.test.sample.um.model.view;
+
+import java.util.List;
+
+import com.antheminc.oss.nimbus.core.domain.definition.MapsTo;
+import com.antheminc.oss.nimbus.core.domain.definition.MapsTo.Path;
+import com.antheminc.oss.nimbus.core.domain.definition.ViewConfig.Button;
+import com.antheminc.oss.nimbus.core.domain.definition.ViewConfig.Hints;
+import com.antheminc.oss.nimbus.core.domain.definition.ViewConfig.Hints.AlignOptions;
+import com.antheminc.oss.nimbus.test.sample.um.model.core.ServiceLine;
+import com.antheminc.oss.nimbus.test.sample.um.model.core.UMCase;
+import com.antheminc.oss.nimbus.core.domain.definition.ViewConfig.MultiSelect;
+
+import lombok.Getter;
+import lombok.Setter;
+
+/**
+ * @author Soham Chakravarti
+ *
+ */
+@MapsTo.Type(UMCase.class)
+@Getter @Setter
+public class Page_Pg3 {
+
+	private String mappedCaseId;
+	
+	@MapsTo.Type(ServiceLine.class)
+	@Getter @Setter
+	public static class Section_ServiceLine {
+		
+		private String someViewOnlyParam;
+		
+		@Path private String service;
+	}
+	
+	@Path("/caseType") private @MultiSelect String aloha;
+
+	@Button(url="/_nav?a=back") @Hints(value=AlignOptions.Left)
+	private String back;
+	
+	
+	@Path("/oneServiceLine") private ServiceLine coreAttachedOneServiceLine;
+	@Path(linked=false) private ServiceLine noConversionDetachedOneServiceLine;
+	
+	@Path("/oneServiceLineConverted") private Section_ServiceLine viewAttachedOneServiceLineConverted;
+	@Path(linked=false) private Section_ServiceLine convertedDetachedOneServiceLine;
+	
+	
+	// collection mapping 1: primitive list direct mapping
+	@Path private String[] types;
+
+	// collection mapping 2: List of CoreModel mapping directly to List of CoreModel
+	@Path("/serviceLines") private List<ServiceLine> noConversionAttachedColServiceLines;
+	
+	@Path(linked=false) private List<ServiceLine> noConversionDetachedColServiceLines;
+
+	
+	// collection mapping 4: ATTACHED: List of ViewModel mapping to List of CoreModel: ViewModel is mapped to CoreModel
+	@Path("/serviceLinesConverted") private List<Section_ServiceLine> viewAttachedServiceLinesConverted;
+	
+	// collection mapping 5: DEATACHED: List of ViewModel mapping to List of CoreModel: ViewModel is mapped to CoreModel
+	@Path(linked=false) private List<Section_ServiceLine> viewDetachedServiceLinesConverted;
+
+	// collection mapping 6: ATTACHED: List of primitive mapping to one param inside List elem of CoreModel
+	@Path(value="/serviceLines", colElemPath="/service") List<String> attachedNestedColAttribServices;
+	
+	// collection mapping 7: DETACHED: List of primitive mapping to one param inside List elem of CoreModel
+	//@Path(value="/serviceLines/{index}/service", linked=false) List<String> detachedNestedAttribServices;
+}
