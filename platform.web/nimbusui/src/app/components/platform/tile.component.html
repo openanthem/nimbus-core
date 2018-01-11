@@ -1,4 +1,4 @@
-<div class="card-holder" id="{{code}}" [ngClass]="styleWd">
+<div class="card-holder" id="{{code}}" [ngClass]="styleWd" *ngIf="visible==true">
 	<div class="card card-block {{styleHt}}">
 		<div class='windowControls'>
 			 <button type="button" class="btn btn-icon windowControl">
@@ -14,14 +14,9 @@
 		<!--check for title attribute in the view config to render the header-->
 		<ng-template [ngIf]="title">
 			<div class="card-header">
-				<h3 class="card-title">
-					<ng-template [ngIf]="imgSrc">
-						<svg> 
-							<use xmlns:xlink="http://www.w3.org/1999/xlink" attr.xlink:href="{{imgSrc}}"></use> 
-						</svg>
-						{{title}}
-					</ng-template>
-				</h3>
+				<h2 class="card-title">
+					{{title}}
+				</h2>
 				<ng-template ngFor let-element [ngForOf]="nestedParams">
 					<ng-template [ngIf]="element.alias == 'Header'">
 						<nm-header [element]="element"></nm-header>

@@ -1,7 +1,24 @@
+/**
+ * @license
+ * Copyright 2017-2018 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { WebContentSvc } from './content-management.service';
 import { Component, EventEmitter, Injectable } from '@angular/core';
 
-import { Model, Param, Result } from '../shared/app-config.interface';
+import { Model, Param, Result, UiAttribute } from '../shared/app-config.interface';
 import { ServiceConstants } from './service.constants';
 import { PageService } from './page.service';
 import { HttpClient } from './httpclient.service';
@@ -42,6 +59,7 @@ export class LayoutService {
                         this.pageSvc.setLayoutToAppConfig(flowName, flowModel);
 
                         this.parseLayoutConfig(flowModel);
+                        //console.log(flowModel);
                     } else {
                         console.log('ERROR: Unknown response for Layout config call - ' + subResponse.b);
                     }
@@ -80,23 +98,21 @@ export class LayoutService {
 
     private getFooterItems(layoutConfig: Model) {
         let footerConfig = {} as FooterConfig;
+        let elemetarry:any = [];
         layoutConfig.params.forEach(param => {
-            if (param.config.uiStyles.attributes.alias === 'Section') {
-                if (param.config.uiStyles.attributes.value === 'FOOTER') {
+            if (param.config.uiStyles.attributes.alias === 'Footer') {
+                // if (param.config.uiStyles.attributes.value === 'FOOTER') {
                     param.type.model.params.forEach(element => {
+
+                        
                         element.config.uiNatures.forEach(nature => {
-                            if (nature.name === 'ViewConfig.PageFooter') {
-                                if (nature.attributes.value === 'VERSION') {
-                                    footerConfig['version'] = element;
+                            if (nature.name === 'ViewConfig.FooterProperty') {
+                                if (nature.attributes.value === 'DISCLAIMER') {
+                                    footerConfig['disclaimer'] = element;
                                 }
-                                if (nature.attributes.value === 'COPYRIGHT') {
-                                    footerConfig['copyright'] = element;
-                                }
-                                if (nature.attributes.value === 'PRIVACY') {
-                                    footerConfig['privacy'] = element;
-                                }
-                                if (nature.attributes.value === 'TOU') {
-                                    footerConfig['tou'] = element;
+                                 if(nature.attributes.value === 'LINK') {
+                                //     footerConfig.links.push(element);
+                                    elemetarry.push(element);
                                 }
                                 if (nature.attributes.value === 'SSLCERT') {
                                     footerConfig['sslCert'] = element;
@@ -104,9 +120,11 @@ export class LayoutService {
                             }
                         });
                     });
-                }
+                // }
             }
         });
+        if(elemetarry.length !=0)
+        footerConfig['links'] = elemetarry;
         return footerConfig;
     }
 
@@ -115,13 +133,13 @@ export class LayoutService {
         let branding = {} as AppBranding;
         let headerMenus: Param[] = [];
         let subHeaders: Param[] = [];
-
+        
         layoutConfig.params.forEach(param => {
-            if (param.config.uiStyles.attributes.alias === 'Section') {
-                if (param.config.uiStyles.attributes.value === 'HEADER') {
-                    this.parseTopBarConfig(param.type.model, branding, headerMenus, subHeaders);
-                }
-            }
+            let attribute: UiAttribute = param.config.uiStyles.attributes;
+            if (attribute.alias === 'Header' || attribute.alias === 'Global-Header' || 
+                (attribute.alias === 'Section' && attribute.value === 'HEADER')) {
+                this.parseTopBarConfig(param.type.model, branding, headerMenus, subHeaders);
+            } 
         });
 
         topBar['branding'] = branding;
@@ -155,6 +173,18 @@ export class LayoutService {
                         }
                         if (nature.attributes.value === 'USERROLE') {
                             branding['userRole'] = element;
+                        }
+                        if (nature.attributes.value === 'HELP') {
+                            branding['help'] = element;
+                        }
+                        if (nature.attributes.value === 'LOGOUT') {
+                            branding['logOut'] = element;
+                        }
+                        if (nature.attributes.value === 'NOTIFICATIONS') {
+                            branding['linkNotifications'] = element;
+                        }
+                        if (nature.attributes.value === 'NUMBEROFNOTIFICATIONS') {
+                            branding['numOfNotifications'] = element;
                         }
                         if (nature.attributes.value === 'MENU') {
                             headerMenus.push(element);
