@@ -5,4 +5,7 @@ CLA Test3!
 CLA Test4! PDF please emit!
 Sigh, had to reset the db at heroku
 Charles Russell CLA - testing2
+
+
+Had to delete the database object, since the pdf didn't generate
 .
