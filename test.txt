@@ -9,4 +9,5 @@ Charles Russell CLA - testing2
 
 Had to delete the database object, since the pdf didn't generat!e
 Another test after moficiations to cla codebase
-.
+More fixes in the code, this time for pathing issues to html template of cla - testing again
+
