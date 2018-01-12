@@ -22,6 +22,7 @@ import { Model, Param, Result, UiAttribute } from '../shared/app-config.interfac
 import { ServiceConstants } from './service.constants';
 import { PageService } from './page.service';
 import { HttpClient } from './httpclient.service';
+import { GenericDomain } from '../model/generic-domain.model';
 import { AppBranding, Layout, LinkConfig, TopBarConfig, FooterConfig, BodyConfig } from '../model/menu-meta.interface';
 
 @Component({
@@ -139,6 +140,11 @@ export class LayoutService {
             if (attribute.alias === 'Header' || attribute.alias === 'Global-Header' || 
                 (attribute.alias === 'Section' && attribute.value === 'HEADER')) {
                 this.parseTopBarConfig(param.type.model, branding, headerMenus, subHeaders);
+
+                // if param has initialize, execute the confi
+                if (param.config && param.config.initializeComponent()) {
+                    this.pageSvc.processEvent(param.path, '$execute', new GenericDomain(), 'POST', '');
+                }
             } 
         });
 

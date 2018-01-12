@@ -23,7 +23,8 @@ import lombok.Setter;
  */
 @Domain(value="assignmenttask", includeListeners={ListenerType.persistence})
 @Repo(alias="assignmenttask",value=Database.rep_mongodb, cache=Cache.rep_device)
-@Getter @Setter
+@Getter 
+@Setter
 public class AssignmentTask extends AbstractEntity.IdString{
 	
 	private static final long serialVersionUID = 1L;
