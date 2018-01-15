@@ -15,11 +15,16 @@
  */
 package com.anthem.oss.nimbus.test.sample.domain.model.ui;
 
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
+import javax.validation.constraints.NotNull;
+
 import com.anthem.oss.nimbus.core.domain.definition.Execution.Config;
 import com.anthem.oss.nimbus.core.domain.definition.Executions.Configs;
+import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Nature;
 import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
+import com.anthem.oss.nimbus.core.domain.definition.Model;
+import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Modal;
+import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Section;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Tile;
 import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreEntity;
 import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreNestedEntity;
@@ -36,7 +41,7 @@ import lombok.Setter;
 public class VPSampleViewPageRed {
 
 	@Tile(title="Sample Page Red", size=Tile.Size.Large) 
-	private TileRed tile;	
+	private TileRed tile;
 	
 	@MapsTo.Type(SampleCoreEntity.class)
 	@Getter @Setter
@@ -45,6 +50,24 @@ public class VPSampleViewPageRed {
 		// D. add/edit transient collection element (via Form converted-B)
 		@Path(value="/attr_list_2_NestedEntity", nature=Nature.TransientColElem)
 		private Form_ConvertedNestedEntity vt_attached_convertedNestedEntity;
+		
+		@Modal(title = "Red Modal")
+		private VMRedModal modal;
+	}
+
+	@Model @Getter @Setter
+	public static class VMRedModal {
+		
+		@Section
+		private VSRedSection section;
+	}
+	
+	@MapsTo.Type(SampleCoreEntity.class)
+	@Model @Getter @Setter
+	public static class VSRedSection {
+		
+		@Path(value="/attr_list_3_NestedEntity", nature=Nature.TransientColElem)
+		private Form_ConvertedNestedEntity vf_attached_convertedNestedEntity;
 	}
 	
 	@MapsTo.Type(SampleCoreNestedEntity.class)
@@ -64,6 +87,7 @@ public class VPSampleViewPageRed {
 		})
 		private String deleteButton;
 		
+		@NotNull
 		@Path("/nested_attr_String")
 		private String vt_nested_attr_String;
 	}

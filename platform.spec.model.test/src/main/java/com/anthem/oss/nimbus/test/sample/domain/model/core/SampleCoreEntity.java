@@ -88,6 +88,7 @@ public class SampleCoreEntity extends IdString {
 	
 	private List<SampleCoreNestedEntity> attr_list_1_NestedEntity;
 	private List<SampleCoreNestedEntity> attr_list_2_NestedEntity;
+	private List<SampleCoreNestedEntity> attr_list_3_NestedEntity;
 	
 	private String unmapped_attr;
 	
