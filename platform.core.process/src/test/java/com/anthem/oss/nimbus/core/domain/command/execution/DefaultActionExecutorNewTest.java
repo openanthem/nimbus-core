@@ -14,9 +14,10 @@
  *  limitations under the License.
  */
 package com.anthem.oss.nimbus.core.domain.command.execution;
- 
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -38,7 +39,10 @@ import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
 import com.anthem.oss.nimbus.core.AbstractFrameworkIngerationPersistableTests;
 import com.anthem.oss.nimbus.core.domain.command.Action;
 import com.anthem.oss.nimbus.core.domain.command.execution.CommandExecution.MultiOutput;
-import com.anthem.oss.nimbus.core.domain.model.state.StateType.MappedTransient;
+import com.anthem.oss.nimbus.core.domain.definition.Constants;
+import com.anthem.oss.nimbus.core.domain.model.state.StateType;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultModelState;
+import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultParamState.MappedLeafState;
 import com.anthem.oss.nimbus.core.domain.model.state.internal.MappedDefaultTransientParamState;
 import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreEntity;
 
@@ -95,18 +99,38 @@ public class DefaultActionExecutorNewTest extends AbstractFrameworkIngerationPer
 	@Test
 	@Ignore
 	public void t02_transientParamState_isTypeModelPresent() {
-
-		final MockHttpServletRequest req = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT)
-				.addNested("/page_red/tile/vt_attached_convertedNestedEntity")
+		
+		// Test is modeled after CoverSheet.addAllergy @Config.
+		MockHttpServletRequest req = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT)
+				.addNested("/page_red/tile/modal/section/vf_attached_convertedNestedEntity")
 				.addAction(Action._get)
+				.addParam(Constants.KEY_FUNCTION.code, "param")
+				.addParam(Constants.KEY_FN_PARAM_ARG_EXPR.code,  "assignMapsTo('../.m/attr_list_3_NestedEntity')")
 				.getMock();
 		
-		final Holder<MultiOutput> resp = (Holder<MultiOutput>) controller.handleGet(req, null);
+		Holder<MultiOutput> resp = (Holder<MultiOutput>) controller.handleGet(req, null);
 		assertNotNull(resp);
 		
-		final MappedDefaultTransientParamState paramState = (MappedDefaultTransientParamState) resp.getState().getOutputs().get(0).getValue();
-		assertNotNull(((MappedTransient) paramState.getType()).getModel());
+		// Skipping _process?fn=_setByRule&rule=togglemodal, not needed for test.
 		
-		// TODO - Validate the expected model
+		req = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT)
+				.addNested("/page_red/tile/modal/section/vf_attached_convertedNestedEntity")
+				.addAction(Action._update)
+				.getMock();
+		
+		resp = (Holder<MultiOutput>) controller.handleGet(req, null);
+		assertNotNull(resp);
+		
+		// Validate the response
+		MappedDefaultTransientParamState form_paramState = (MappedDefaultTransientParamState) resp.getState().getOutputs().get(1).getValue();
+		MappedDefaultModelState modelState_elem = (MappedDefaultModelState) ((StateType.Nested) form_paramState.getType()).getModel();
+		MappedLeafState leafState_elem = (MappedLeafState) modelState_elem.getParams().get(2);
+		StateType stateType_elem = leafState_elem.getType();
+		// Not confident this is correct. But the UI is expecting type to have model, which is only
+		// available from StateType.Nested and child entities. Need to validate the expected
+		// behavior here.
+		assertTrue(StateType.Nested.class.isAssignableFrom(stateType_elem.getClass()));
+		
+		// TODO: Once stateType_elem has accessible model, validate the validations are coming through.
 	}
 }
