@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.antheminc.oss.nimbus.test.sample.um.model;
+package com.antheminc.oss.nimbus.test.sample.um.model.core;
 
 import java.util.ArrayList;
 import java.util.List;

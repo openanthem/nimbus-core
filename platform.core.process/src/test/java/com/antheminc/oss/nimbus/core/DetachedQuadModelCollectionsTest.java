@@ -17,7 +17,7 @@ import com.antheminc.oss.nimbus.core.domain.command.CommandBuilder;
 import com.antheminc.oss.nimbus.core.domain.model.state.QuadModel;
 import com.antheminc.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
 import com.antheminc.oss.nimbus.core.session.UserEndpointSession;
-import com.antheminc.oss.nimbus.test.sample.um.model.UMCase;
+import com.antheminc.oss.nimbus.test.sample.um.model.core.UMCase;
 import com.antheminc.oss.nimbus.test.sample.um.model.view.UMCaseFlow;
 import com.antheminc.oss.nimbus.test.sample.um.model.view.V_UMDashboard;
 

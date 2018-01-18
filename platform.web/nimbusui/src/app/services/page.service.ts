@@ -1,3 +1,20 @@
+/**
+ * @license
+ * Copyright 2017-2018 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 'use strict';
 import { Action, HttpMethod, Behavior} from './../shared/command.enum';
 import { Injectable, EventEmitter } from '@angular/core';
@@ -30,6 +47,12 @@ export class PageService {
 
         eventUpdate = new Subject<Param>();
         eventUpdate$ = this.eventUpdate.asObservable();
+
+        validationUpdate = new Subject<Param>();
+        validationUpdate$ = this.validationUpdate.asObservable();
+
+        gridValueUpdate = new Subject<Param>();
+        gridValueUpdate$ = this.gridValueUpdate.asObservable();
 
         private _entityId: number = 0;
         constructor(private http: HttpClient) {
@@ -628,10 +651,12 @@ export class PageService {
                         } else {
                             param.config.gridList.push(this.createGridData(eventModel.value.type.model.params, param.config.gridCols));
                         }
+                        this.gridValueUpdate.next(param);
                     }
                     // Collection check - update entire collection
                     if (eventModel.value.collection) {
                             param.config.gridList = this.createGridData(eventModel.value.type.model.params, param.config.gridCols);
+                            this.gridValueUpdate.next(param);
                     }
                 }
             } else if (param.config.uiStyles != null && param.config.uiStyles.attributes.alias === 'CardDetailsGrid') {
@@ -690,6 +715,7 @@ export class PageService {
                                                                 let newRState = new RemnantState().deserialize(Reflect.get(payload, updatedKey));
                                                                 if (newRState['currState'] !== param[currentKey]['currState']) {
                                                                         Object.assign(Reflect.get(param, currentKey), newRState);
+                                                                        this.validationUpdate.next(param);
                                                                 }
                                                         } else if (currentKey === 'values') {
                                                                 if (param.values == null) {

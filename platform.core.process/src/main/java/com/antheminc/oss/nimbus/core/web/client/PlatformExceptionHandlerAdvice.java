@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import com.antheminc.oss.nimbus.core.FrameworkRuntimeException;
@@ -26,7 +25,7 @@ import com.antheminc.oss.nimbus.core.domain.command.execution.ValidationExceptio
 import com.antheminc.oss.nimbus.core.domain.command.execution.ValidationResult;
 import com.antheminc.oss.nimbus.core.util.JustLogit;
 
-@ControllerAdvice (annotations = RestController.class)
+@ControllerAdvice ({"com.antheminc.oss.nimbus.core.web"})
 public class PlatformExceptionHandlerAdvice implements ResponseBodyAdvice<Object>{
 
 	private JustLogit logit = new JustLogit(this.getClass());

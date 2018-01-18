@@ -29,7 +29,8 @@ domain:
   model:
     basePackages:
       - com.antheminc.oss.nimbus.core.entity
-      - com.antheminc.oss.nimbus.test.sample.um.model
+      - com.antheminc.oss.nimbus.test.sample.um.model.core
+      - com.antheminc.oss.nimbus.test.sample.um.model.view
       - com.antheminc.oss.nimbus.test.sample.domain.model.core
       - com.antheminc.oss.nimbus.test.sample.domain.model.ui
       - com.antheminc.nimbus.platform.core.bpm

@@ -45,10 +45,10 @@ import com.antheminc.oss.nimbus.core.domain.model.state.internal.DefaultParamSta
 import com.antheminc.oss.nimbus.core.domain.model.state.internal.ExecutionEntity;
 import com.antheminc.oss.nimbus.core.integration.websocket.ParamEventAMQPListener;
 import com.antheminc.oss.nimbus.core.session.UserEndpointSession;
-import com.antheminc.oss.nimbus.test.sample.um.model.ServiceLine;
-import com.antheminc.oss.nimbus.test.sample.um.model.ServiceLine.AuditInfo;
-import com.antheminc.oss.nimbus.test.sample.um.model.UMCase;
 import com.antheminc.oss.nimbus.test.sample.um.model.view.Page_Pg3.Section_ServiceLine;
+import com.antheminc.oss.nimbus.test.sample.um.model.core.ServiceLine;
+import com.antheminc.oss.nimbus.test.sample.um.model.core.UMCase;
+import com.antheminc.oss.nimbus.test.sample.um.model.core.ServiceLine.AuditInfo;
 import com.antheminc.oss.nimbus.test.sample.um.model.view.UMCaseFlow;
 
 import test.com.antheminc.oss.nimbus.platform.spec.model.command.TestCommandFactory;

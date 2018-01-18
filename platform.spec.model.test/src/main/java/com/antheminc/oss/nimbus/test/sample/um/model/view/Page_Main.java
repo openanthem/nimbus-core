@@ -8,8 +8,8 @@ import java.util.List;
 import com.antheminc.oss.nimbus.core.domain.definition.MapsTo;
 import com.antheminc.oss.nimbus.core.domain.definition.MapsTo.Path;
 import com.antheminc.oss.nimbus.core.domain.definition.ViewConfig.Link;
-import com.antheminc.oss.nimbus.test.sample.um.model.ServiceLine;
-import com.antheminc.oss.nimbus.test.sample.um.model.UMCase;
+import com.antheminc.oss.nimbus.test.sample.um.model.core.ServiceLine;
+import com.antheminc.oss.nimbus.test.sample.um.model.core.UMCase;
 
 import lombok.Getter;
 import lombok.Setter;
