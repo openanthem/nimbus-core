@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.antheminc.oss</groupId>
     <artifactId>nimbus.core.parent</artifactId>
@@ -20,8 +21,6 @@
     </modules>
 
     <properties>
-        <!-- <sonar.projectName>NIM-Parent</sonar.projectName>
-        <sonar.jacoco.reportPath>target/jacoco.exec</sonar.jacoco.reportPath> -->
         <docker.image.prefix>nimbus</docker.image.prefix>
         <docker.plugin.version>0.3.258</docker.plugin.version>
         <spring.boot.maven.version>1.4.0.RELEASE</spring.boot.maven.version>
@@ -33,10 +32,12 @@
         <sitemesh.version>2.4.2</sitemesh.version>
         <embed-mongo.version>2.0.0</embed-mongo.version>
         <embed-redis.version>0.4</embed-redis.version>
-        <!-- <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
-        <sonar.jacoco.reportPath>${project.basedir}/target/jacoco.exec</sonar.jacoco.reportPath> -->
 
-        <main.basedir>..</main.basedir>
+        <sonar.projectName>NIM-Parent</sonar.projectName>
+        <sonar.jacoco.reportPaths>target/jacoco.exec</sonar.jacoco.reportPaths>
+        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+
+        <main.basedir>.</main.basedir>
         <disable.checks>false</disable.checks>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -79,6 +80,10 @@
         <maven.karma.plugin.version>1.6</maven.karma.plugin.version>
         <owasp-esapi.version>2.0.1</owasp-esapi.version>
         <nexus-staging-maven-plugin.version>1.6.7</nexus-staging-maven-plugin.version>
+
+        <jacoco-version>0.7.7.201606060606</jacoco-version>
+        <sonar-version>3.2</sonar-version>
+
         <!-- nimbus-core -->
         <nimbus.core.version>1.0.0.M9-SNAPSHOT</nimbus.core.version>
         <nimbus.core.spec.version>${nimbus.core.version}</nimbus.core.spec.version>
@@ -579,13 +584,13 @@
         </pluginManagement>
         <!-- Plugins which will get executed on each project -->
         <plugins>
-            <!-- <plugin>
+            <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.7.7.201606060606</version>
+                <version>${jacoco-version}</version>
                 <configuration>
-                    <destFile>${sonar.jacoco.reportPath}</destFile>
-                    <dataFile>${sonar.jacoco.reportPath}</dataFile>
+                    <destFile>${sonar.jacoco.reportPaths}</destFile>
+                    <dataFile>${sonar.jacoco.reportPaths}</dataFile>
                     <append>true</append>
                 </configuration>
                 <executions>
@@ -607,8 +612,8 @@
             <plugin>
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
-                <version>3.2</version>
-            </plugin> -->
+                <version>${sonar-version}</version>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -735,8 +740,8 @@
                                         <requireJavaVersion>
                                             <version>1.8</version>
                                         </requireJavaVersion>
-                                        <requireReleaseDeps />
-                                        <requireReleaseVersion />
+                                        <requireReleaseDeps/>
+                                        <requireReleaseVersion/>
                                     </rules>
                                     <fail>true</fail>
                                 </configuration>
@@ -764,8 +769,8 @@
                                         <requireJavaVersion>
                                             <version>1.8</version>
                                         </requireJavaVersion>
-                                        <requireReleaseDeps />
-                                        <requireReleaseVersion />
+                                        <requireReleaseDeps/>
+                                        <requireReleaseVersion/>
                                     </rules>
                                     <fail>true</fail>
                                 </configuration>
