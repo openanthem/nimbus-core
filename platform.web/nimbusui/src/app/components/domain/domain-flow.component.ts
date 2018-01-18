@@ -74,7 +74,7 @@ export class DomainFlowCmp {
         this._pageSvc.config$.subscribe(result => {
             let page: Page = result;
             // Navigate to page with pageId
-            if (page && page.pageConfig) {
+            if (page && page.pageConfig) { console.log('navigating to page - ' + page.pageConfig.config.code);
                 let toPage = '/h/' + page.flow + '/' + page.pageConfig.config.code;
                 this._router.navigate([toPage], { relativeTo: this._route });
             }
