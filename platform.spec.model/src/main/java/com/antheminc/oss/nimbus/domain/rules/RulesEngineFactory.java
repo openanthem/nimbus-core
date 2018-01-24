@@ -13,15 +13,18 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.anthem.oss.nimbus.core.domain.expr;
+package com.antheminc.oss.nimbus.domain.rules;
+
+import com.antheminc.oss.nimbus.domain.model.config.RulesConfig;
+import com.antheminc.oss.nimbus.domain.model.state.RulesRuntime;
 
 /**
  * @author Soham Chakravarti
  *
  */
-public interface ExpressionEvaluator {
+public interface RulesEngineFactory {
 
-	public Object getValue(String exprValue, Object rootObject);
+	public RulesConfig createConfig(String alias);
 	
-	public <T> T getValue(String exprValue, Object rootObject, Class<T> returnType);
+	public RulesRuntime createRuntime(RulesConfig config);
 }

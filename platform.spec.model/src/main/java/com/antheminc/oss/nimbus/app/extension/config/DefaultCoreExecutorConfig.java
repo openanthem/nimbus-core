@@ -18,8 +18,6 @@ package com.antheminc.oss.nimbus.app.extension.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.anthem.oss.nimbus.core.domain.expr.ExpressionEvaluator;
-import com.anthem.oss.nimbus.core.domain.expr.SpelExpressionEvaluator;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.DBSearch;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.MongoSearchByExample;
 import com.anthem.oss.nimbus.core.domain.model.state.repo.db.MongoSearchByQuery;
@@ -45,6 +43,8 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultCommandExecutorG
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultCommandPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultExecutionContextLoader;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.HierarchyMatchBasedBeanFinder;
+import com.antheminc.oss.nimbus.support.expr.ExpressionEvaluator;
+import com.antheminc.oss.nimbus.support.expr.SpelExpressionEvaluator;
 
 /**
  * @author Sandeep Mantha

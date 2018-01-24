@@ -37,7 +37,6 @@ import org.springframework.util.CollectionUtils;
 import com.anthem.oss.nimbus.core.domain.config.builder.AnnotationConfigHandler;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.anthem.oss.nimbus.core.domain.definition.Model;
-import com.anthem.oss.nimbus.core.rules.RulesEngineFactoryProducer;
 import com.antheminc.oss.nimbus.UnsupportedScenarioException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.AssociatedEntity;
@@ -66,6 +65,7 @@ import com.antheminc.oss.nimbus.domain.model.config.internal.MappedDefaultModelC
 import com.antheminc.oss.nimbus.domain.model.config.internal.MappedDefaultParamConfig;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
+import com.antheminc.oss.nimbus.domain.rules.RulesEngineFactoryProducer;
 import com.antheminc.oss.nimbus.support.JustLogit;
 import com.antheminc.oss.nimbus.support.pojo.GenericUtils;
 

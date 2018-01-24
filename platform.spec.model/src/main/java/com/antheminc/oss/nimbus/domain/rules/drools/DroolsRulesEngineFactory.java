@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.anthem.oss.nimbus.core.rules.drools;
+package com.antheminc.oss.nimbus.domain.rules.drools;
 
 import java.net.URL;
 import java.util.Map;
@@ -25,10 +25,10 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 
-import com.anthem.oss.nimbus.core.rules.RulesEngineFactory;
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.domain.model.config.RulesConfig;
 import com.antheminc.oss.nimbus.domain.model.state.RulesRuntime;
+import com.antheminc.oss.nimbus.domain.rules.RulesEngineFactory;
 import com.antheminc.oss.nimbus.support.JustLogit;
 
 /**

@@ -35,7 +35,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
 import com.anthem.oss.nimbus.core.AbstractFrameworkIngerationPersistableTests;
 import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreEntity;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
@@ -45,6 +44,7 @@ import com.antheminc.oss.nimbus.domain.model.state.StateType;
 import com.antheminc.oss.nimbus.domain.model.state.internal.MappedDefaultModelState;
 import com.antheminc.oss.nimbus.domain.model.state.internal.MappedDefaultTransientParamState;
 import com.antheminc.oss.nimbus.domain.model.state.internal.MappedDefaultParamState.MappedLeafState;
+import com.antheminc.oss.nimbus.support.Holder;
 
 import test.com.anthem.nimbus.platform.utils.ExtractResponseOutputUtils;
 import test.com.anthem.nimbus.platform.utils.MockHttpRequestBuilder;

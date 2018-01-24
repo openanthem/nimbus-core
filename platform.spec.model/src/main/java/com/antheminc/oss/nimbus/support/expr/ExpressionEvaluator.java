@@ -13,20 +13,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.anthem.nimbus.platform.spec.model.dsl.binder;
+package com.antheminc.oss.nimbus.support.expr;
 
-import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+/**
+ * @author Soham Chakravarti
+ *
+ */
+public interface ExpressionEvaluator {
 
-public class ParamStateHolder extends Holder<Object> {
-
-	private final Param<?> param;
+	public Object getValue(String exprValue, Object rootObject);
 	
-	public ParamStateHolder(Param<?> param) {
-		super(param.getLeafState());
-		this.param = param;
-	}
-	
-	public Object findStateByPath(String path) {
-		return this.param.findStateByPath(path);
-	}
+	public <T> T getValue(String exprValue, Object rootObject, Class<T> returnType);
 }

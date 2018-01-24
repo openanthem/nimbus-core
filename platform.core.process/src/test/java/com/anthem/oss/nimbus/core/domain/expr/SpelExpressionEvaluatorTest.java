@@ -25,9 +25,11 @@ import org.junit.runners.MethodSorters;
 import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
-import com.anthem.nimbus.platform.spec.model.dsl.binder.ParamStateHolder;
+import com.antheminc.oss.nimbus.domain.model.state.ParamStateHolder;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.support.Holder;
+import com.antheminc.oss.nimbus.support.expr.ExpressionEvaluator;
+import com.antheminc.oss.nimbus.support.expr.SpelExpressionEvaluator;
 
 /**
  * @author Swetha Vemuri

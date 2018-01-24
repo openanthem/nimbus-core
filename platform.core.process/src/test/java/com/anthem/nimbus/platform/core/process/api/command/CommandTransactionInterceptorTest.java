@@ -21,10 +21,10 @@ import static org.junit.Assert.assertSame;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecuteOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.MultiExecuteOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.CommandTransactionInterceptor;
+import com.antheminc.oss.nimbus.support.Holder;
 
 /**
  * @author Soham Chakravarti
