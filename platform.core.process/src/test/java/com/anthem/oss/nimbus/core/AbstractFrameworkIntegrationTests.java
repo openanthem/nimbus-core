@@ -28,10 +28,10 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandMessageConverter;
-import com.anthem.oss.nimbus.core.entity.client.Client;
 import com.anthem.oss.nimbus.core.integration.websocket.ParamEventAMQPListener;
-import com.anthem.oss.nimbus.core.web.WebActionController;
+import com.antheminc.oss.nimbus.channel.web.WebActionController;
+import com.antheminc.oss.nimbus.domain.cmd.exec.internal.CommandMessageConverter;
+import com.antheminc.oss.nimbus.entity.client.Client;
 
 /**
  * @author Soham Chakravarti

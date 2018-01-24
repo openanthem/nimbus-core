@@ -25,7 +25,8 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import com.anthem.oss.nimbus.core.domain.definition.InvalidConfigException;
+import com.antheminc.oss.nimbus.domain.cmd.exec.ParamPathExpressionParser;
+import com.antheminc.oss.nimbus.domain.defn.InvalidConfigException;
 
 /**
  * @author Soham Chakravarti

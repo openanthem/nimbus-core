@@ -21,10 +21,10 @@ import java.util.List;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
-import com.anthem.oss.nimbus.core.spec.contract.event.StateAndConfigEventListener;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState;
+import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.event.listener.StateAndConfigEventListener;
 
 /**
  * MockEventListener for testing the emit event scenarios

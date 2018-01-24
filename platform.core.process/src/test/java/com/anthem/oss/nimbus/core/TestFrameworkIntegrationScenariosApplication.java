@@ -19,8 +19,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import com.anthem.oss.nimbus.core.config.DefaultCoreConfiguration;
-import com.anthem.oss.nimbus.core.domain.command.execution.SessionProvider;
+import com.antheminc.oss.nimbus.app.extension.config.DefaultCoreConfiguration;
+import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.domain.cmd.exec.internal.SessionProvider;
 
 /**
  * @author Soham Chakravarti

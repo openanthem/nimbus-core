@@ -20,7 +20,7 @@ import org.junit.runners.MethodSorters;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 
-import com.anthem.oss.nimbus.core.config.BPMEngineConfig;
+import com.antheminc.oss.nimbus.app.extension.config.BPMEngineConfig;
 
 /**
  * @author Soham Chakravarti

@@ -17,8 +17,8 @@ package test.com.anthem.nimbus.platform.spec.model.access;
 
 import java.util.Arrays;
 
-import com.anthem.oss.nimbus.core.entity.access.DefaultAccessEntity;
-import com.anthem.oss.nimbus.core.entity.access.Permission;
+import com.antheminc.oss.nimbus.entity.access.DefaultAccessEntity;
+import com.antheminc.oss.nimbus.entity.access.Permission;
 
 import lombok.Getter;
 

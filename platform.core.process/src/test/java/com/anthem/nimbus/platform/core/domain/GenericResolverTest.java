@@ -25,8 +25,8 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.anthem.oss.nimbus.core.entity.person.Address;
-import com.anthem.oss.nimbus.core.util.GenericUtils;
+import com.antheminc.oss.nimbus.entity.person.Address;
+import com.antheminc.oss.nimbus.support.pojo.GenericUtils;
 
 import lombok.Getter;
 import lombok.Setter;

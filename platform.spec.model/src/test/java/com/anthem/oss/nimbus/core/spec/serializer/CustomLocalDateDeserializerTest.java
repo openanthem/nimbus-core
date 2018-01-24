@@ -17,7 +17,6 @@ package com.anthem.oss.nimbus.core.spec.serializer;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 
 import org.junit.Assert;
 import org.junit.FixMethodOrder;

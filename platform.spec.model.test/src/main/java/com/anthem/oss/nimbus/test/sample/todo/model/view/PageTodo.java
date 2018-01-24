@@ -17,10 +17,10 @@ package com.anthem.oss.nimbus.test.sample.todo.model.view;
 
 import java.util.List;
 
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
 import com.anthem.oss.nimbus.test.sample.todo.model.Todo;
 import com.anthem.oss.nimbus.test.sample.todo.model.TodoItem;
+import com.antheminc.oss.nimbus.domain.defn.MapsTo;
+import com.antheminc.oss.nimbus.domain.defn.MapsTo.Path;
 
 import lombok.Getter;
 import lombok.Setter;

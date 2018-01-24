@@ -18,14 +18,14 @@ package com.anthem.oss.nimbus.test.sample.domain.model.ui;
 import java.util.List;
 
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
-import com.anthem.oss.nimbus.core.domain.definition.Execution.Config;
-import com.anthem.oss.nimbus.core.domain.definition.Executions.Configs;
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
-import com.anthem.oss.nimbus.core.domain.definition.Repo;
-import com.anthem.oss.nimbus.core.domain.definition.Repo.Cache;
-import com.anthem.oss.nimbus.core.domain.definition.Repo.Database;
 //AC12974@bitbucket.anthem.com/scm/nim/anthm-internal-oss-backend.git
 import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreAssociatedEntity;
+import com.antheminc.oss.nimbus.domain.defn.Repo;
+import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
+import com.antheminc.oss.nimbus.domain.defn.Executions.Configs;
+import com.antheminc.oss.nimbus.domain.defn.MapsTo.Path;
+import com.antheminc.oss.nimbus.domain.defn.Repo.Cache;
+import com.antheminc.oss.nimbus.domain.defn.Repo.Database;
 
 import lombok.Getter;
 import lombok.Setter;

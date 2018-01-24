@@ -30,7 +30,9 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
-import com.anthem.oss.nimbus.core.domain.model.state.ModelEvent;
+import com.antheminc.oss.nimbus.channel.web.WebActionController;
+import com.antheminc.oss.nimbus.channel.web.WebCommandDispatcher;
+import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
 
 /**
  * 

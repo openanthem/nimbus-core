@@ -17,7 +17,7 @@ package com.anthem.oss.nimbus.test.sample.um.model.core;
 
 import java.time.LocalDate;
 
-import com.anthem.oss.nimbus.core.domain.definition.extension.DateRange;
+import com.antheminc.oss.nimbus.domain.defn.extension.DateRange;
 
 import lombok.Getter;
 import lombok.Setter;

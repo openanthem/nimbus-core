@@ -22,9 +22,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
-import com.anthem.oss.nimbus.core.domain.command.execution.CommandTransactionInterceptor;
-import com.anthem.oss.nimbus.core.domain.command.execution.ExecuteOutput;
-import com.anthem.oss.nimbus.core.domain.command.execution.MultiExecuteOutput;
+import com.antheminc.oss.nimbus.domain.cmd.exec.ExecuteOutput;
+import com.antheminc.oss.nimbus.domain.cmd.exec.MultiExecuteOutput;
+import com.antheminc.oss.nimbus.domain.cmd.exec.internal.CommandTransactionInterceptor;
 
 /**
  * @author Soham Chakravarti

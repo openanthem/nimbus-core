@@ -18,8 +18,8 @@ package com.anthem.oss.nimbus.test.sample.todo.model;
 import java.util.List;
 
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
-import com.anthem.oss.nimbus.core.domain.definition.Repo;
-import com.anthem.oss.nimbus.core.entity.AbstractEntity;
+import com.antheminc.oss.nimbus.domain.defn.Repo;
+import com.antheminc.oss.nimbus.entity.AbstractEntity;
 
 import lombok.Getter;
 import lombok.Setter;

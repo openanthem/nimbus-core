@@ -22,7 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 
 import com.anthem.oss.nimbus.core.AbstractFrameworkIntegrationTests;
-import com.anthem.oss.nimbus.core.entity.access.DefaultAccessEntity;
+import com.antheminc.oss.nimbus.entity.access.DefaultAccessEntity;
 
 import test.com.anthem.nimbus.platform.spec.model.access.AccessEntityFactory;
 

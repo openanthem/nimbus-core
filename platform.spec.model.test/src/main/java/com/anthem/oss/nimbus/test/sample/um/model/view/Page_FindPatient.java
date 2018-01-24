@@ -19,17 +19,17 @@ import java.time.LocalDate;
 
 import javax.validation.constraints.NotNull;
 
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
-import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Button;
-import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.ComboBox;
-import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Hints;
-import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Hints.AlignOptions;
 import com.anthem.oss.nimbus.test.sample.um.model.core.Patient;
 import com.anthem.oss.nimbus.test.sample.um.model.core.UMCase;
-import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.InputDate;
-import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Section;
-import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.TextBox;
+import com.antheminc.oss.nimbus.domain.defn.MapsTo;
+import com.antheminc.oss.nimbus.domain.defn.MapsTo.Path;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Button;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.ComboBox;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Hints;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.InputDate;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Section;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.TextBox;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Hints.AlignOptions;
 
 import lombok.Getter;
 import lombok.Setter;

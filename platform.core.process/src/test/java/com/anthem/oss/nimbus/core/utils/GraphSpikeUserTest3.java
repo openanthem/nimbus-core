@@ -35,11 +35,11 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import com.anthem.oss.nimbus.core.AbstractFrameworkIntegrationTests;
-import com.anthem.oss.nimbus.core.entity.client.user.ClientUser;
-import com.anthem.oss.nimbus.core.entity.queue.Queue;
-import com.anthem.oss.nimbus.core.entity.task.AssignmentTask;
-import com.anthem.oss.nimbus.core.entity.user.ClientUserGroup;
-import com.anthem.oss.nimbus.core.entity.user.GroupUser;
+import com.antheminc.oss.nimbus.entity.client.user.ClientUser;
+import com.antheminc.oss.nimbus.entity.queue.Queue;
+import com.antheminc.oss.nimbus.entity.task.AssignmentTask;
+import com.antheminc.oss.nimbus.entity.user.ClientUserGroup;
+import com.antheminc.oss.nimbus.entity.user.GroupUser;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.CommandResult;

@@ -15,7 +15,7 @@
  */
 package com.anthem.oss.nimbus.core.domain.command.execution.process;
 
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
+import com.antheminc.oss.nimbus.domain.defn.MapsTo;
 
 import lombok.Getter;
 import lombok.Setter;

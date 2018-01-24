@@ -21,12 +21,12 @@ import java.util.List;
 import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.definition.Model.Param.Values;
 import com.anthem.oss.nimbus.core.domain.definition.Model.Param.Values.Source;
-import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Radio;
-import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.TextBox;
-import com.anthem.oss.nimbus.core.domain.definition.extension.ValuesConditional;
-import com.anthem.oss.nimbus.core.domain.definition.extension.ValuesConditional.Condition;
-import com.anthem.oss.nimbus.core.domain.definition.extension.ValuesConditionals;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Radio;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.TextBox;
+import com.antheminc.oss.nimbus.domain.defn.extension.ValuesConditional;
+import com.antheminc.oss.nimbus.domain.defn.extension.ValuesConditionals;
+import com.antheminc.oss.nimbus.domain.defn.extension.ValuesConditional.Condition;
 
 import lombok.Getter;
 import lombok.Setter;

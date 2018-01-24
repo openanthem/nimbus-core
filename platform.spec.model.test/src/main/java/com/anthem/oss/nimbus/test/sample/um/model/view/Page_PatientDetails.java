@@ -16,13 +16,13 @@
 package com.anthem.oss.nimbus.test.sample.um.model.view;
 
 
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo;
-import com.anthem.oss.nimbus.core.domain.definition.MapsTo.Path;
-import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Button;
-import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Hints;
-import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Hints.AlignOptions;
 import com.anthem.oss.nimbus.test.sample.um.model.core.Patient;
 import com.anthem.oss.nimbus.test.sample.um.model.core.UMCase;
+import com.antheminc.oss.nimbus.domain.defn.MapsTo;
+import com.antheminc.oss.nimbus.domain.defn.MapsTo.Path;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Button;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Hints;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Hints.AlignOptions;
 
 import lombok.Getter;
 import lombok.Setter;

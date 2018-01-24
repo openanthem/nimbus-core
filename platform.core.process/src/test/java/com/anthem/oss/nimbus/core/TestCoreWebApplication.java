@@ -23,13 +23,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.anthem.oss.nimbus.core.domain.command.Command;
-import com.anthem.oss.nimbus.core.domain.command.execution.ExecuteOutput;
-import com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param;
-import com.anthem.oss.nimbus.core.domain.model.state.QuadModel;
 import com.anthem.oss.nimbus.core.domain.model.state.builder.QuadModelBuilder;
 import com.anthem.oss.nimbus.test.sample.um.model.core.UMCase;
 import com.anthem.oss.nimbus.test.sample.um.model.view.UMCaseFlow;
+import com.antheminc.oss.nimbus.domain.cmd.Command;
+import com.antheminc.oss.nimbus.domain.cmd.exec.ExecuteOutput;
+import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 
 import test.com.anthem.nimbus.platform.spec.model.command.TestCommandFactory;
 import test.com.anthem.nimbus.platform.utils.JsonUtils;
