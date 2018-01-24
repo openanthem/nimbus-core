@@ -48,7 +48,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiExpressionManager;
-import com.anthem.oss.nimbus.core.bpm.activiti.PlatformUserTaskActivityBehavior;
+import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiUserTaskActivityBehavior;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 
 import lombok.Getter;
@@ -133,7 +133,7 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
 		return new DefaultActivityBehaviorFactory() {
 			@Override
 			public UserTaskActivityBehavior createUserTaskActivityBehavior(UserTask userTask) {
-				PlatformUserTaskActivityBehavior platformUserTaskBehavior = new PlatformUserTaskActivityBehavior(userTask);
+				ActivitiUserTaskActivityBehavior platformUserTaskBehavior = new ActivitiUserTaskActivityBehavior(userTask);
 				platformUserTaskBehavior.setBeanResolver(beanResolver);
 				return platformUserTaskBehavior;
 			}

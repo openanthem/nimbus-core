@@ -48,7 +48,7 @@ import com.antheminc.oss.nimbus.entity.process.ProcessFlow;
  * @author Rakesh Patel
  *
  */
-public class PlatformUserTaskActivityBehavior extends UserTaskActivityBehavior {
+public class ActivitiUserTaskActivityBehavior extends UserTaskActivityBehavior {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -61,7 +61,7 @@ public class PlatformUserTaskActivityBehavior extends UserTaskActivityBehavior {
 	DomainConfigBuilder domainConfigBuilder;
 
 	
-	public PlatformUserTaskActivityBehavior(UserTask userTask) {
+	public ActivitiUserTaskActivityBehavior(UserTask userTask) {
 		super(userTask);
 	}
 	
