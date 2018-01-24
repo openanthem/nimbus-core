@@ -39,6 +39,7 @@ import org.mockito.InjectMocks;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.anthem.oss.nimbus.test.sample.um.model.core.TestBean;
+import com.antheminc.oss.nimbus.domain.config.builder.attributes.ConstraintAnnotationAttributeHandler;
 
 /**
  * 

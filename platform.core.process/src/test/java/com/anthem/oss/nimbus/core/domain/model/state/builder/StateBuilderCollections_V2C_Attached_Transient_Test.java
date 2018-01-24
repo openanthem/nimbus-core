@@ -49,6 +49,7 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListModel;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.MappedTransientParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.builder.QuadModelBuilder;
 
 /**
  * @author Soham Chakravarti

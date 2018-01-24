@@ -31,8 +31,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.anthem.nimbus.platform.spec.serializer.CustomLocalDateSerializer;
-import com.anthem.nimbus.platform.spec.serializer.JsonParsingException;
+import com.antheminc.oss.nimbus.support.json.CustomLocalDateSerializer;
+import com.antheminc.oss.nimbus.support.json.JsonParsingException;
 import com.fasterxml.jackson.core.JsonGenerator;
 
 /**

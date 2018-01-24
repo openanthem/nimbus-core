@@ -27,6 +27,7 @@ import com.anthem.oss.nimbus.test.sample.domain.model.ui.VRSampleViewRootEntity;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
+import com.antheminc.oss.nimbus.domain.model.state.builder.QuadModelBuilder;
 
 /**
  * @author Soham Chakravarti
