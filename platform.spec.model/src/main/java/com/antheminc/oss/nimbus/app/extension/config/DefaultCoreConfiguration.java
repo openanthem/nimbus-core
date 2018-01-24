@@ -139,11 +139,6 @@ public class DefaultCoreConfiguration {
 		return new JavaBeanHandlerReflection();
 	}
 	
-	@Bean
-	public ProcessBeanResolver processBeanResolver(){
-		return new ProcessBeanResolver();
-	}
-	
 	//web
 	@Bean
 	public WebCommandBuilder webCommandBuilder(){
