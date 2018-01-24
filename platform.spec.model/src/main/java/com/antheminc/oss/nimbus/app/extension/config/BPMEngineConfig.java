@@ -48,8 +48,8 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiExpressionManager;
-import com.anthem.oss.nimbus.core.bpm.activiti.ActivitiUserTaskActivityBehavior;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.domain.bpm.activiti.ActivitiUserTaskActivityBehavior;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -65,7 +65,7 @@ import lombok.Setter;
  * <li>Load process definition from a configured location.
  * <li>Load process rules from a configured location.
  * The framework makes to distinction between entity rules and process rules. This configuration only loads process rules.
- * For definition of entity rules, please refer{@link  com.anthem.oss.nimbus.core.rules.drools.DroolsRulesEngineFactory}
+ * For definition of entity rules, please refer{@link  com.antheminc.oss.nimbus.domain.rules.drools.DroolsRulesEngineFactory}
  * Process rules are defined as rules that can be defined across multiple entities and across flows. 
  * These rules are loaded using a single KnowlegeBuilder and can be directly accesses within bpmn processes as business rules task/ service task.
  * <li>Overrides the default expression manager to enhance expression capability. See {@link ActivitiExpressionManager}

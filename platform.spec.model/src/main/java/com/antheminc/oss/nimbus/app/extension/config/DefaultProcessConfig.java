@@ -19,8 +19,6 @@ import org.activiti.engine.impl.el.ExpressionManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.anthem.oss.nimbus.core.domain.expr.ExpressionEvaluator;
-import com.anthem.oss.nimbus.core.domain.expr.SpelExpressionEvaluator;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.bpm.BPMGateway;
 import com.antheminc.oss.nimbus.domain.bpm.DefaultExpressionHelper;
@@ -41,6 +39,8 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.internal.process.UpdateFunctionH
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.search.DefaultSearchFunctionHandlerExample;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.search.DefaultSearchFunctionHandlerLookup;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.search.DefaultSearchFunctionHandlerQuery;
+import com.antheminc.oss.nimbus.support.expr.ExpressionEvaluator;
+import com.antheminc.oss.nimbus.support.expr.SpelExpressionEvaluator;
 
 /**
  * @author Sandeep Mantha

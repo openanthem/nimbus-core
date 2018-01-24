@@ -13,31 +13,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.anthem.nimbus.platform.spec.model.dsl.binder;
+package com.antheminc.oss.nimbus.domain.rules;
 
-import lombok.Data;
-
+import java.lang.reflect.Field;
 
 /**
- * @author Rakesh Patel
+ * @author Soham Chakravarti
  *
  */
-@Data
-public class Holder<B> {
+public interface RulesEngineFactoryProducer {
 
-	private B state;
+	public RulesEngineFactory getFactory(Class<?> model);
 	
-	
-	public Holder() {}
-	
-	public Holder(B state) {
-		this.state = state;
-	}
-	
-	
-	@Override
-	public String toString() {
-		return state != null ? state.toString() : this.getClass().getName();
-	}
-	
+	public RulesEngineFactory getFactory(Field param);
 }

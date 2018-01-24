@@ -25,7 +25,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
 import com.anthem.oss.nimbus.core.domain.definition.Domain;
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
@@ -43,6 +42,7 @@ import com.antheminc.oss.nimbus.domain.model.state.RulesRuntime;
 import com.antheminc.oss.nimbus.domain.model.state.Notification.ActionType;
 import com.antheminc.oss.nimbus.domain.model.state.event.listener.EventListener;
 import com.antheminc.oss.nimbus.entity.process.ProcessFlow;
+import com.antheminc.oss.nimbus.support.Holder;
 import com.antheminc.oss.nimbus.support.JustLogit;
 import com.antheminc.oss.nimbus.support.pojo.LockTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;

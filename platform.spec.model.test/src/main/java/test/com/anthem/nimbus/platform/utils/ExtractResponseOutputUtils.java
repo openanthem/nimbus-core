@@ -15,8 +15,8 @@
  */
 package test.com.anthem.nimbus.platform.utils;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
+import com.antheminc.oss.nimbus.support.Holder;
 
 /**
  * @author Swetha Vemuri

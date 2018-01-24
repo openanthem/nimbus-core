@@ -21,12 +21,12 @@ import java.util.stream.Stream;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.entity.SearchCriteria.ExampleSearchCriteria;
 import com.antheminc.oss.nimbus.entity.SearchCriteria.LookupSearchCriteria;
 import com.antheminc.oss.nimbus.entity.SearchCriteria.QuerySearchCriteria;
+import com.antheminc.oss.nimbus.support.Holder;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

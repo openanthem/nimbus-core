@@ -37,7 +37,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.util.Assert;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
 import com.anthem.oss.nimbus.core.AbstractFrameworkIntegrationTests;
 import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
@@ -59,6 +58,7 @@ import com.antheminc.oss.nimbus.entity.queue.MUserGroup;
 import com.antheminc.oss.nimbus.entity.queue.Queue;
 import com.antheminc.oss.nimbus.entity.user.ClientUserGroup;
 import com.antheminc.oss.nimbus.entity.user.GroupUser;
+import com.antheminc.oss.nimbus.support.Holder;
 import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
 

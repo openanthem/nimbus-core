@@ -13,18 +13,20 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.anthem.oss.nimbus.core.rules;
+package com.antheminc.oss.nimbus.domain.model.state;
 
-import com.antheminc.oss.nimbus.domain.model.config.RulesConfig;
-import com.antheminc.oss.nimbus.domain.model.state.RulesRuntime;
+import com.antheminc.oss.nimbus.support.Holder;
 
-/**
- * @author Soham Chakravarti
- *
- */
-public interface RulesEngineFactory {
+public class ParamStateHolder extends Holder<Object> {
 
-	public RulesConfig createConfig(String alias);
+	private final Param<?> param;
 	
-	public RulesRuntime createRuntime(RulesConfig config);
+	public ParamStateHolder(Param<?> param) {
+		super(param.getLeafState());
+		this.param = param;
+	}
+	
+	public Object findStateByPath(String path) {
+		return this.param.findStateByPath(path);
+	}
 }

@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.anthem.nimbus.platform.spec.model.dsl.binder;
+package com.antheminc.oss.nimbus.domain.model.state.event.listener;
 
 import java.util.List;
 
@@ -21,7 +21,6 @@ import org.apache.commons.collections.CollectionUtils;
 
 import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
-import com.antheminc.oss.nimbus.domain.model.state.event.listener.StateAndConfigEventListener;
 import com.antheminc.oss.nimbus.domain.model.state.internal.AbstractEvent.SuppressMode;
 import com.antheminc.oss.nimbus.support.JustLogit;
 

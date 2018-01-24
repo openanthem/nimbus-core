@@ -19,8 +19,8 @@ import java.io.Serializable;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadScopedEventListener;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Model;
+import com.antheminc.oss.nimbus.domain.model.state.event.listener.QuadScopedEventListener;
 import com.antheminc.oss.nimbus.domain.model.state.internal.ExecutionEntity;
 import com.antheminc.oss.nimbus.entity.process.ProcessFlow;
 import com.fasterxml.jackson.annotation.JsonIgnore;
