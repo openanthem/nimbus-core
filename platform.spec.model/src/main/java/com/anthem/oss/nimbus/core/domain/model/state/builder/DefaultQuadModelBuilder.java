@@ -27,9 +27,9 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.client.RestTemplate;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.QuadScopedEventListener;
-import com.anthem.oss.nimbus.core.bpm.BPMGateway;
 import com.anthem.oss.nimbus.core.domain.config.builder.DomainConfigBuilder;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.domain.bpm.BPMGateway;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.defn.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;

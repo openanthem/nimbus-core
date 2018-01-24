@@ -27,7 +27,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.anthem.nimbus.platform.spec.model.dsl.binder.Holder;
 import com.anthem.oss.nimbus.core.AbstractFrameworkIngerationPersistableTests;
-import com.anthem.oss.nimbus.core.bpm.BPMGateway;
+import com.antheminc.oss.nimbus.domain.bpm.BPMGateway;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.CommandMessageConverter;

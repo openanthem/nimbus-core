@@ -15,8 +15,8 @@
  */
 package com.antheminc.oss.nimbus.domain.cmd.exec.internal.process;
 
-import com.anthem.oss.nimbus.core.bpm.BPMGateway;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.domain.bpm.BPMGateway;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ProcessResponse;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.fn.AbstractFunctionHandler;

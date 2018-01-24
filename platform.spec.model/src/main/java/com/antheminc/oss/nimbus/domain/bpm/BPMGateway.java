@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.anthem.oss.nimbus.core.bpm;
+package com.antheminc.oss.nimbus.domain.bpm;
 
 import com.antheminc.oss.nimbus.domain.cmd.exec.ProcessResponse;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;

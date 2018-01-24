@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.anthem.oss.nimbus.core.bpm.activiti;
+package com.antheminc.oss.nimbus.domain.bpm.activiti;
 
 import java.util.List;
 

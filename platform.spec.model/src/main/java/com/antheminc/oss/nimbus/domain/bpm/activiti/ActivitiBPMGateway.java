@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.anthem.oss.nimbus.core.bpm.activiti;
+package com.antheminc.oss.nimbus.domain.bpm.activiti;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,9 +32,9 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.anthem.nimbus.platform.spec.model.process.ProcessEngineContext;
-import com.anthem.oss.nimbus.core.bpm.BPMGateway;
 import com.anthem.oss.nimbus.core.domain.expr.ExpressionEvaluator;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.domain.bpm.BPMGateway;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ProcessResponse;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
