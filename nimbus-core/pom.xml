@@ -130,11 +130,6 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
-        <dependency>
-			<groupId>com.anthem.oss.nimbus.core</groupId>
-			<artifactId>com.anthem.oss.nimbus.core.processor</artifactId>
-			<version>1.0.0.M10-SNAPSHOT</version>	
-		</dependency>
 		<dependency>
 			<groupId>org.owasp.esapi</groupId>
     		<artifactId>esapi</artifactId>
