@@ -68,27 +68,6 @@ import com.antheminc.oss.nimbus.support.pojo.reflection.JavaBeanHandlerReflectio
 @ComponentScan(basePackageClasses = WebActionController.class)
 public class DefaultCoreConfiguration {
 	
-	//TODO - the below 2 beans are blank. should they be deleted ?
-	@Bean(name="default.param.state.rep_session")
-	public SessionCacheRepository customessionCacheRepository(){
-		return new SessionCacheRepository();
-	}
-	
-	
-	@Bean(name="default.param.state.rep_session")
-	public SessionCacheRepository sessionCacheRepository(){
-		return new SessionCacheRepository();
-	}
-	
-	@Bean(name="default.processBeanHelper")
-	public ProcessBeanHelper processBeanHelper(){
-		return new ProcessBeanHelper();
-	}
-
-	@Bean(name="default.messageReciever")
-	public MessageReceiver messageReciever(){
-		return new MessageReceiver();
-	}
 	
 //	//TODO - a blank class - probably have to delete
 	@Bean(name="default.validationConfigHandler")
