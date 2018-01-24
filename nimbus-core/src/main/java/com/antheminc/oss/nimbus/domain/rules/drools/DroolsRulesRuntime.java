@@ -23,8 +23,8 @@ import org.drools.KnowledgeBase;
 import org.drools.runtime.StatelessKnowledgeSession;
 
 import com.antheminc.oss.nimbus.domain.model.config.RulesConfig;
-import com.antheminc.oss.nimbus.domain.model.state.RulesRuntime;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.RulesRuntime;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

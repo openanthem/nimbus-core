@@ -18,13 +18,13 @@ package com.antheminc.oss.nimbus.domain.model.config;
 import java.io.Serializable;
 import java.util.List;
 
-import com.anthem.oss.nimbus.core.domain.definition.Model.Param.Values;
 import com.antheminc.oss.nimbus.domain.defn.AssociatedEntity;
+import com.antheminc.oss.nimbus.domain.defn.Converters.ParamConverter;
 import com.antheminc.oss.nimbus.domain.defn.Execution;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo;
-import com.antheminc.oss.nimbus.domain.defn.Converters.ParamConverter;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo.Mode;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo.Path;
+import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values;
 import com.antheminc.oss.nimbus.entity.Findable;
 
 /**

@@ -17,7 +17,7 @@ package com.antheminc.oss.nimbus.entity.user;
 
 import java.time.LocalDate;
 
-import com.anthem.oss.nimbus.core.domain.definition.Domain;
+import com.antheminc.oss.nimbus.domain.defn.Domain;
 
 import lombok.Getter;
 import lombok.Setter;

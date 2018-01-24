@@ -26,15 +26,14 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 
-import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
-import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
-import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutor;
+import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Input;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
+import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutor;
+import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
 import com.antheminc.oss.nimbus.domain.model.state.HierarchyMatch;
 import com.antheminc.oss.nimbus.entity.AbstractEntity;
 import com.antheminc.oss.nimbus.entity.StaticCodeValue;
@@ -47,7 +46,6 @@ import lombok.Setter;
  *
  */
 @ConfigurationProperties(prefix="static.codevalue")
-@RefreshScope
 public class ParamCodeValueProvider implements HierarchyMatch, CommandExecutor<List<ParamValue>> {
 	
 	private static final String DEFAULT_KEY_ATTRIBUTE = "id";

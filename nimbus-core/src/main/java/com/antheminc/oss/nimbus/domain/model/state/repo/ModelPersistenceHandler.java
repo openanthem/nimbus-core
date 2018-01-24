@@ -17,8 +17,8 @@ package com.antheminc.oss.nimbus.domain.model.state.repo;
 
 import java.util.List;
 
-import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
 
 
 /**

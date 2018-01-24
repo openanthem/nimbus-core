@@ -18,8 +18,8 @@ package com.antheminc.oss.nimbus.domain.model.state.internal;
 import java.util.Objects;
 
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
-import com.antheminc.oss.nimbus.domain.model.state.EntityStateAspectHandlers;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.MappedModel;
+import com.antheminc.oss.nimbus.domain.model.state.EntityStateAspectHandlers;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;

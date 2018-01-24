@@ -23,8 +23,8 @@ import com.antheminc.oss.nimbus.domain.EventHandler;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.defn.event.CommandEvent.OnRootExecute;
 import com.antheminc.oss.nimbus.domain.defn.event.CommandEvent.OnSelfExecute;
-import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ExecutionModel;
+import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
 
 /**
  * @author Soham Chakravarti

@@ -18,15 +18,15 @@ package com.anthem.oss.nimbus.test.sample.domain.model.core;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.anthem.oss.nimbus.core.domain.definition.Model;
-import com.anthem.oss.nimbus.core.domain.definition.Model.Param.Values;
-import com.anthem.oss.nimbus.core.domain.definition.Model.Param.Values.Source;
-import com.anthem.oss.nimbus.core.domain.model.config.ParamValue;
+import com.antheminc.oss.nimbus.domain.defn.Model;
+import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values;
+import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values.Source;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Radio;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.TextBox;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValuesConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValuesConditionals;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValuesConditional.Condition;
+import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
 
 import lombok.Getter;
 import lombok.Setter;

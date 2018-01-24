@@ -18,10 +18,10 @@ package com.anthem.oss.nimbus.core.domain.model.state;
 import java.util.List;
 import java.util.Map;
 
-import com.anthem.oss.nimbus.core.domain.definition.Model.Param.Values;
 import com.antheminc.oss.nimbus.domain.defn.AssociatedEntity;
 import com.antheminc.oss.nimbus.domain.defn.Converters.ParamConverter;
 import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
+import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values;
 import com.antheminc.oss.nimbus.domain.model.config.AnnotationConfig;
 import com.antheminc.oss.nimbus.domain.model.config.EventHandlerConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;

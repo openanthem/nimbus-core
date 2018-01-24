@@ -41,8 +41,6 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.internal.HierarchyMatchBasedBean
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.DBSearch;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.MongoSearchByExample;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.MongoSearchByQuery;
-import com.antheminc.oss.nimbus.domain.session.impl.HttpSessionCache;
-import com.antheminc.oss.nimbus.domain.session.impl.SessionCache;
 import com.antheminc.oss.nimbus.support.expr.ExpressionEvaluator;
 import com.antheminc.oss.nimbus.support.expr.SpelExpressionEvaluator;
 
@@ -71,11 +69,6 @@ public class DefaultCoreExecutorConfig {
 	@Bean
 	public CommandPathVariableResolver defaultCommandPathVariableResolver(BeanResolverStrategy beanResolver) {
 		return new DefaultCommandPathVariableResolver(beanResolver);
-	}
-	
-	@Bean
-	public SessionCache sessionCache() {
-		return new HttpSessionCache();
 	}
 	
 	@Bean(name="default.ExecutionContextLoader", destroyMethod="clear") 

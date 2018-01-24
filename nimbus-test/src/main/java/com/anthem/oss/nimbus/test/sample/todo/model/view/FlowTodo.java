@@ -15,7 +15,7 @@
  */
 package com.anthem.oss.nimbus.test.sample.todo.model.view;
 
-import com.anthem.oss.nimbus.core.domain.definition.Domain;
+import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Page;
 
 import lombok.Getter;

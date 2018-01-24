@@ -15,7 +15,6 @@
  */
 package com.anthem.nimbus.platform.web.flow.login;
 
-import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Hints;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Hints.AlignOptions;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Link;
@@ -23,6 +22,7 @@ import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.PageHeader;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.PageHeader.Property;
 import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Paragraph;
 import com.anthem.oss.nimbus.core.domain.definition.extension.Content.Label;
+import com.antheminc.oss.nimbus.domain.defn.Model;
 
 import lombok.Getter;
 import lombok.Setter;

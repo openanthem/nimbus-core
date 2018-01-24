@@ -15,7 +15,7 @@
  */
 package com.antheminc.oss.nimbus.domain.rules.drools;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.drools.KnowledgeBase;
 
 import com.antheminc.oss.nimbus.domain.defn.InvalidConfigException;

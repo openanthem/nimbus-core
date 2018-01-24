@@ -20,8 +20,8 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
-import com.antheminc.oss.nimbus.domain.model.state.EntityStateAspectHandlers;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListModel;
+import com.antheminc.oss.nimbus.domain.model.state.EntityStateAspectHandlers;
 
 import lombok.Getter;
 

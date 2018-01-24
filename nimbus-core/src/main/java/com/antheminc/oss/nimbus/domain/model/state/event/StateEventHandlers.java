@@ -23,10 +23,10 @@ import com.antheminc.oss.nimbus.domain.EventHandler;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateChange;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnTxnExecute;
-import com.antheminc.oss.nimbus.domain.model.state.ExecutionTxnContext;
-import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ExecutionModel;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.ExecutionTxnContext;
+import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
 
 /**
  * @author Soham Chakravarti

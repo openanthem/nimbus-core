@@ -18,7 +18,7 @@ package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 
 import java.util.Collection;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Input;

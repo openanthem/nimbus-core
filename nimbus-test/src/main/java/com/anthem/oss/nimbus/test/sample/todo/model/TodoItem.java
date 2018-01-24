@@ -17,7 +17,7 @@ package com.anthem.oss.nimbus.test.sample.todo.model;
 
 import java.util.Date;
 
-import com.anthem.oss.nimbus.core.domain.definition.Model;
+import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.entity.AbstractEntity;
 
 import lombok.Getter;

@@ -15,6 +15,7 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state;
 
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.support.Holder;
 
 public class ParamStateHolder extends Holder<Object> {

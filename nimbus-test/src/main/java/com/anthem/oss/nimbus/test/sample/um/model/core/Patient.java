@@ -17,7 +17,7 @@ package com.anthem.oss.nimbus.test.sample.um.model.core;
 
 import java.time.LocalDate;
 
-import com.anthem.oss.nimbus.core.domain.definition.Domain;
+import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.ConfigNature.Ignore;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Cache;

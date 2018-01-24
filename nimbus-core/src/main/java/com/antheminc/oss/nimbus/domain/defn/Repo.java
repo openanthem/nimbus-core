@@ -21,8 +21,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.anthem.oss.nimbus.core.domain.definition.Model;
-
 /**
  * @author Soham Chakravarti
  *

@@ -23,7 +23,6 @@ import java.lang.annotation.Target;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.anthem.oss.nimbus.core.domain.definition.Model;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Cache;
 
 /**

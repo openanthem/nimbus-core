@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
@@ -42,8 +41,7 @@ import lombok.Getter;
  * @author Soham Chakravarti
  *
  */ 
-@Getter 
-@RefreshScope
+@Getter
 public class EntityConfigBuilder extends AbstractEntityConfigBuilder {
 
 	private final Map<String, String> typeClassMappings;

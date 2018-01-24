@@ -17,9 +17,9 @@ package com.antheminc.oss.nimbus.domain.model.state.internal;
 
 import com.antheminc.oss.nimbus.domain.defn.MapsTo;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.MappedListElemParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityStateAspectHandlers;
 import com.antheminc.oss.nimbus.domain.model.state.Notification;
-import com.antheminc.oss.nimbus.domain.model.state.EntityState.MappedListElemParam;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;

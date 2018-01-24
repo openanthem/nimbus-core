@@ -16,8 +16,8 @@
 package com.antheminc.oss.nimbus.domain.model.state.event.listener;
 
 import com.antheminc.oss.nimbus.domain.model.state.EntityState;
-import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
 import com.antheminc.oss.nimbus.domain.model.state.internal.AbstractEvent.SuppressMode;
 
 /**

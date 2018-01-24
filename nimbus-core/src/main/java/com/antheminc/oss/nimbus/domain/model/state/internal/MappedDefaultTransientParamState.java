@@ -20,10 +20,10 @@ import java.util.Objects;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.MappedTransientParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityStateAspectHandlers;
 import com.antheminc.oss.nimbus.domain.model.state.ExecutionRuntime;
 import com.antheminc.oss.nimbus.domain.model.state.Notification;
-import com.antheminc.oss.nimbus.domain.model.state.EntityState.MappedTransientParam;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;

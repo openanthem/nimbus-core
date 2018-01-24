@@ -15,11 +15,11 @@
  */
 package com.anthem.oss.nimbus.test.sample.um.model.view;
 
-import com.anthem.oss.nimbus.core.domain.definition.Domain;
-import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
 import com.anthem.oss.nimbus.test.sample.um.model.core.UMCase;
 import com.antheminc.oss.nimbus.domain.defn.Converters;
+import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo;
+import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Page;
 import com.antheminc.oss.nimbus.domain.model.state.internal.IdParamConverter;
 

@@ -195,13 +195,13 @@
 
 
             <!-- Import dependency management from Spring Cloud -->
-<!--             <dependency>
+            <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
                 <version>${spring.cloud.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency> -->
+            </dependency>
             <!-- Check here for compatible boot dependencies : https://repo.spring.io/release/org/springframework/cloud/spring-cloud-starter-parent/Camden.RELEASE/ -->
             <dependency>
                 <!-- Import dependency management from Spring Boot -->
@@ -567,7 +567,7 @@
                     <target>${java.version}</target>
                 </configuration>
             </plugin>
-            <plugin>
+            <!-- <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <executions>
@@ -598,7 +598,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin> -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>

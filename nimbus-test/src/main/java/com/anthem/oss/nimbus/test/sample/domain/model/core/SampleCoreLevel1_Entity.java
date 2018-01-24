@@ -18,7 +18,7 @@ package com.anthem.oss.nimbus.test.sample.domain.model.core;
 
 import java.util.List;
 
-import com.anthem.oss.nimbus.core.domain.definition.Model;
+import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.domain.defn.extension.ActivateConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.Audit;
 

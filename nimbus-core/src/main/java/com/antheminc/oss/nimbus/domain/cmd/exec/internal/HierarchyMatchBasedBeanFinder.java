@@ -26,10 +26,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
@@ -43,7 +42,6 @@ import lombok.Setter;
  * @author Jayant Chaudhuri
  *
  */
-@RefreshScope
 public class HierarchyMatchBasedBeanFinder implements ApplicationContextAware {
 	
 	ApplicationContext ctx;

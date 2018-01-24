@@ -19,8 +19,8 @@ import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 
-import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
 import com.antheminc.oss.nimbus.domain.model.state.internal.AbstractEvent.SuppressMode;
 import com.antheminc.oss.nimbus.support.JustLogit;
 

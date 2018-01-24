@@ -17,7 +17,7 @@ package com.antheminc.oss.nimbus.entity.process;
 
 import java.io.Serializable;
 
-import com.anthem.oss.nimbus.core.domain.definition.Model;
+import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.entity.Findable;
 
 import lombok.Getter;

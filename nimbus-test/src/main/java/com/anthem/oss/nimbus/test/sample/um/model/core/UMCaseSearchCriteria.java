@@ -19,7 +19,7 @@ import java.time.LocalDate;
 
 import javax.validation.constraints.NotNull;
 
-import com.anthem.oss.nimbus.core.domain.definition.Domain;
+import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Data;

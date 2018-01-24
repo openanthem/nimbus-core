@@ -15,7 +15,7 @@
  */
 package com.anthem.oss.nimbus.test.sample.domain.model.core;
 
-import com.anthem.oss.nimbus.core.domain.definition.Model;
+import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.domain.defn.extension.EnableConditional;
 
 import lombok.Getter;

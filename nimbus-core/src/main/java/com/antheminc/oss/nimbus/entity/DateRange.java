@@ -17,7 +17,7 @@ package com.antheminc.oss.nimbus.entity;
 
 import java.time.LocalDate;
 
-import com.anthem.oss.nimbus.core.domain.definition.Model;
+import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Data;

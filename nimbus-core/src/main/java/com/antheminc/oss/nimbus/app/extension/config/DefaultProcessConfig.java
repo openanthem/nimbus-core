@@ -21,7 +21,6 @@ import org.springframework.context.annotation.Configuration;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.bpm.BPMGateway;
-import com.antheminc.oss.nimbus.domain.bpm.DefaultExpressionHelper;
 import com.antheminc.oss.nimbus.domain.bpm.activiti.ActivitiBPMGateway;
 import com.antheminc.oss.nimbus.domain.bpm.activiti.ActivitiExpressionManager;
 import com.antheminc.oss.nimbus.domain.bpm.activiti.CommandExecutorTaskDelegate;
@@ -52,11 +51,6 @@ public class DefaultProcessConfig {
 	@Bean
 	public ActivitiExpressionManager activitiExpressionManager(){
 		return new ActivitiExpressionManager();
-	}
-	
-	@Bean
-	public DefaultExpressionHelper defaultExpressionHelper(BeanResolverStrategy beanResolver){
-		return new DefaultExpressionHelper(beanResolver);
 	}
 	
 	@Bean

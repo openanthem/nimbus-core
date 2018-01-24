@@ -15,17 +15,8 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.repo.db;
 
-import java.util.Arrays;
-
-import org.springframework.core.annotation.AnnotationUtils;
-
-import com.anthem.oss.nimbus.core.domain.definition.Domain;
-import com.anthem.oss.nimbus.core.domain.definition.Domain.ListenerType;
-import com.antheminc.oss.nimbus.domain.model.state.EntityState;
-import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
-import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
 import com.antheminc.oss.nimbus.domain.model.state.event.listener.StateAndConfigEventListener;
-import com.anthem.oss.nimbus.core.domain.definition.Model;
 
 /**
  * This is an abstract implementation of persistence event listener of type {@link StateAndConfigEventListener}

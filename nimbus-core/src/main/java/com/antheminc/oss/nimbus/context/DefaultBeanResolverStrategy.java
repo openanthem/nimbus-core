@@ -18,7 +18,7 @@ package com.antheminc.oss.nimbus.context;
 import java.util.Collection;
 import java.util.Optional;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.ResolvableType;
 

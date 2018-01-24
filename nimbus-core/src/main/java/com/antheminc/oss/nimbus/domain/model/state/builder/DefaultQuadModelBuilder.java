@@ -23,7 +23,6 @@ import java.util.function.BiFunction;
 
 import javax.annotation.PostConstruct;
 
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.client.RestTemplate;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
@@ -33,9 +32,9 @@ import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
 import com.antheminc.oss.nimbus.domain.defn.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ValidatorProvider;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.EntityStateAspectHandlers;
 import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
-import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.event.listener.QuadScopedEventListener;
 import com.antheminc.oss.nimbus.domain.model.state.event.listener.StateAndConfigEventListener;
 import com.antheminc.oss.nimbus.domain.model.state.internal.ExecutionEntity;
@@ -50,7 +49,6 @@ import lombok.Setter;
  *
  */
 @Getter @Setter
-@RefreshScope
 public class DefaultQuadModelBuilder implements QuadModelBuilder {
 
 	private DomainConfigBuilder domainConfigApi;
