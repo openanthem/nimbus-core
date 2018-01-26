@@ -1,6 +1,9 @@
 # nimbus-core
 Core repository of nimbus.
 
+# Confluence Documentation
+https://anthemopensource.atlassian.net/wiki/spaces/OSS/pages
+
 ## Issue Reporting
 
 ## Unit Tests
