@@ -10,59 +10,25 @@
   <artifactId>nimbus-test</artifactId>
   
   <properties>
-		<sonar.projectName>NIM-ModelTest</sonar.projectName>
-		<sonar.jacoco.reportPath>${project.basedir}/../platform.parent/target/jacoco.exec</sonar.jacoco.reportPath>
+		<sonar.projectName>nimbus-test</sonar.projectName>
+		<!-- <sonar.jacoco.reportPath>${project.basedir}/../platform.parent/target/jacoco.exec</sonar.jacoco.reportPath> -->
 	</properties>
 	<dependencies>
-		<dependency>
-			<groupId>com.fasterxml.jackson.datatype</groupId>
-			<artifactId>jackson-datatype-jsr310</artifactId>
-		</dependency>
-		<dependency>
+    	<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 		</dependency>
+	
 		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-commons</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>net.bytebuddy</groupId>
-			<artifactId>byte-buddy</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.assertj</groupId>
-			<artifactId>assertj-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-tomcat</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.anthem.oss.nimbus.core</groupId>
-			<artifactId>com.anthem.oss.nimbus.core.processor</artifactId>
-			<version>1.0.0.M10-SNAPSHOT</version>
-		</dependency>
-		<!-- <dependency>
 			<groupId>com.antheminc.oss</groupId>
 			<artifactId>nimbus-core</artifactId>
-		</dependency> -->
+		</dependency>
+		
+        <dependency>
+			<groupId>de.flapdoodle.embed</groupId>
+			<artifactId>de.flapdoodle.embed.mongo</artifactId>
+			<scope>test</scope>
+		</dependency>		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -72,7 +38,6 @@
 	
 	<build>
 	<plugins>
-		<!-- Generates the MongoDB static meta model -->
 		<plugin>
 			<groupId>com.mysema.maven</groupId>
 			<artifactId>apt-maven-plugin</artifactId>
@@ -83,9 +48,9 @@
 						<goal>process</goal>
 					</goals>
 					<configuration>
-						<!-- outputDirectory>${basedir}/target/generated-sources/java</outputDirectory> -->
+						<outputDirectory>${basedir}/target/generated-sources/java</outputDirectory> 
 						<processor>
-							com.anthem.oss.nimbus.core.processor.DomainAnnotationProcessor
+							com.antheminc.oss.nimbus.domain.support.DomainQuerydslProcessor
 						</processor>
 					</configuration>
 				</execution>
@@ -104,6 +69,7 @@
 					</goals>
 					<configuration>
 						<sources>
+							<source>${basedir}/target/generated-sources/java</source>
 							<source>${basedir}/target/generated-sources/annotations</source>
 						</sources>
 					</configuration>

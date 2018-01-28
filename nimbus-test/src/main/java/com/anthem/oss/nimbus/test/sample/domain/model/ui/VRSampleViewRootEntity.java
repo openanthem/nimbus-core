@@ -17,9 +17,9 @@ package com.anthem.oss.nimbus.test.sample.domain.model.ui;
 
 import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreEntity;
 import com.antheminc.oss.nimbus.domain.defn.Domain;
+import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
-import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Database;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Page;
 

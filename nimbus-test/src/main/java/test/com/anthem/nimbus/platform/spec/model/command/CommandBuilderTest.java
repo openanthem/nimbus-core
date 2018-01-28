@@ -17,7 +17,6 @@ package test.com.anthem.nimbus.platform.spec.model.command;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
 import java.util.HashMap;
@@ -89,7 +88,6 @@ public class CommandBuilderTest {
 		assertEquals("domainRoot_alias", cmd.getRootDomainAlias());
 		
 		assertSame(Action._new, cmd.getAction());
-		assertNull(cmd.getBehaviors());
 	}
 	
 	@Test

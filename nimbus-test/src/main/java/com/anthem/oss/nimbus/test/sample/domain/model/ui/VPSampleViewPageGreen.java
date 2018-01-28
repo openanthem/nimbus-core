@@ -20,15 +20,15 @@ import java.util.List;
 import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreAuditEntry;
 import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreEntity;
 import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreEntity.SampleForm;
-import com.antheminc.oss.nimbus.domain.defn.MapsTo;
+import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreLevel1_Entity;
+import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreNestedEntity;
 import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
+import com.antheminc.oss.nimbus.domain.defn.MapsTo;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo.Path;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Section;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Tile;
 import com.antheminc.oss.nimbus.domain.defn.extension.Audit;
 import com.antheminc.oss.nimbus.domain.defn.extension.ConfigConditional;
-import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreLevel1_Entity;
-import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreNestedEntity;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -29,6 +29,7 @@ import com.antheminc.oss.nimbus.domain.model.state.extension.ParamContextStateEv
 import com.antheminc.oss.nimbus.domain.model.state.extension.RuleStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValuesConditionalOnStateChangeEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValuesConditionalOnStateLoadEventHandler;
+import com.antheminc.oss.nimbus.domain.model.state.internal.IdParamConverter;
 
 /**
  * @author Soham Chakravarti
@@ -85,5 +86,10 @@ public class DefaultFrameworkExtensionsConfig {
 	@Bean
 	public EnableConditionalStateEventHandler extensionEnableCondiationalStateEventHandler(BeanResolverStrategy beanResolver) {
 		return new EnableConditionalStateEventHandler(beanResolver);
+	}
+	
+	@Bean
+	public IdParamConverter idParamConverter(){
+		return new IdParamConverter();
 	}
 }

@@ -19,8 +19,8 @@ import java.util.List;
 
 import com.anthem.oss.nimbus.test.sample.todo.model.Todo;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo;
-import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo.Path;
+import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Section;
 
 import lombok.Getter;

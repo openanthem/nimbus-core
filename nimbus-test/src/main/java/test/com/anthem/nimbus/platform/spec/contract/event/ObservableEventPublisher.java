@@ -22,8 +22,8 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState;
-import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
 import com.antheminc.oss.nimbus.domain.model.state.event.listener.StateAndConfigEventListener;
 import com.antheminc.oss.nimbus.domain.model.state.internal.AbstractEvent.SuppressMode;
 import com.fasterxml.jackson.databind.ObjectMapper;

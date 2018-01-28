@@ -26,10 +26,10 @@ import com.antheminc.oss.nimbus.domain.defn.MapsTo.Path;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Button;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.ComboBox;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Hints;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Hints.AlignOptions;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.InputDate;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Section;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.TextBox;
-import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Hints.AlignOptions;
 
 import lombok.Getter;
 import lombok.Setter;

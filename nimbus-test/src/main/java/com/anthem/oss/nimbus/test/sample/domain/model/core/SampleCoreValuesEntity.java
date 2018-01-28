@@ -24,8 +24,8 @@ import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values.Source;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Radio;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.TextBox;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValuesConditional;
-import com.antheminc.oss.nimbus.domain.defn.extension.ValuesConditionals;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValuesConditional.Condition;
+import com.antheminc.oss.nimbus.domain.defn.extension.ValuesConditionals;
 import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
 
 import lombok.Getter;

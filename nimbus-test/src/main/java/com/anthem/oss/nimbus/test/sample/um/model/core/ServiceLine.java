@@ -18,8 +18,8 @@ package com.anthem.oss.nimbus.test.sample.um.model.core;
 import java.util.Date;
 import java.util.List;
 
-import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.domain.defn.ConfigNature.Ignore;
+import com.antheminc.oss.nimbus.domain.defn.Model;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

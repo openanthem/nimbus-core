@@ -19,9 +19,9 @@ import java.util.List;
 
 import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreEntity;
 import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreNestedEntity;
-import com.antheminc.oss.nimbus.domain.defn.MapsTo;
 import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
 import com.antheminc.oss.nimbus.domain.defn.Executions.Configs;
+import com.antheminc.oss.nimbus.domain.defn.MapsTo;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo.Path;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Tile;
 
