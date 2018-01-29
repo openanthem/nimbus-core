@@ -4,7 +4,7 @@
 
 	<groupId>com.anthem.oss.nimbus.core</groupId>
 	<artifactId>com.anthem.oss.nimbus.core.dependencies</artifactId>
-	<version>1.0.0.M10-SNAPSHOT</version>
+	<version>1.0.0.M11-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>nimbus-core-dependencies</name>
 	<description>Nimbus Core Bill of materials</description>
@@ -57,7 +57,7 @@
 		<maven.karma.plugin.version>1.6</maven.karma.plugin.version>
 		<owasp-esapi.version>2.0.1</owasp-esapi.version>
 		<!-- nimbus-core -->
-		<nimbus.core.version>1.0.0.M10-SNAPSHOT</nimbus.core.version>
+		<nimbus.core.version>1.0.0.M11-SNAPSHOT</nimbus.core.version>
 		<nimbus.core.spec.version>${nimbus.core.version}</nimbus.core.spec.version>
 		<nimbus.core.test.version>${nimbus.core.version}</nimbus.core.test.version>
 		<nimbus.core.api.version>${nimbus.core.version}</nimbus.core.api.version>
