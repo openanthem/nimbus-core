@@ -186,12 +186,12 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 			return currRep._get(param);
 		
 		// mapped
-
-		MappedParamConfig<P, ?> mappedParamConfig = param.getConfig().findIfMapped();
-		if(mappedParamConfig.isDetachedWithAutoLoad()) {
+		if(param.findIfMapped().getConfig().isMapped()) {
+			MappedParamConfig<P, ?> mappedParamConfig = param.findIfMapped().getConfig().findIfMapped();
 			
-			return mappedParamConfig.getPath().detachedState().cacheState() == Cache.rep_none 
-							|| currRep._get(param) == null ? detachedStateRepository._get(param) : currRep._get(param);
+			if(mappedParamConfig.isDetachedWithAutoLoad())
+				return mappedParamConfig.getPath().detachedState().cacheState() == Cache.rep_none 
+					|| currRep._get(param) == null ? detachedStateRepository._get(param) : currRep._get(param);
 		}
 
 		MappedParam<P, ?> mappedParam = param.findIfMapped();
