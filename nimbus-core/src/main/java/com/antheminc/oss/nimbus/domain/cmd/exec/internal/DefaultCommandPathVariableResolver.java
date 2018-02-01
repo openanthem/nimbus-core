@@ -20,12 +20,14 @@ import java.util.Optional;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.env.PropertyResolver;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ParamPathExpressionParser;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
+import com.antheminc.oss.nimbus.domain.defn.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.session.UserEndpointSession;
 import com.antheminc.oss.nimbus.entity.client.user.ClientUser;
@@ -37,14 +39,30 @@ import com.antheminc.oss.nimbus.entity.client.user.ClientUser;
 public class DefaultCommandPathVariableResolver implements CommandPathVariableResolver {
 
 	private final CommandMessageConverter converter;
+	private final PropertyResolver propertyResolver;
 	
-	public DefaultCommandPathVariableResolver(BeanResolverStrategy beanResolver) {
+	public DefaultCommandPathVariableResolver(BeanResolverStrategy beanResolver, PropertyResolver propertyResolver) {
 		this.converter = beanResolver.get(CommandMessageConverter.class);
+		this.propertyResolver = propertyResolver;
 	}
 	
 	
 	@Override
 	public String resolve(Param<?> param, String urlToResolve) {
+		if(StringUtils.trimToNull(urlToResolve)==null)
+			return urlToResolve;
+		
+		// resolve property place-holders first
+		try {
+			String resolvedPlaceHolders = propertyResolver.resolveRequiredPlaceholders(urlToResolve);
+			return resolveInternal(param, resolvedPlaceHolders);
+		} catch (RuntimeException ex) {
+			throw new InvalidConfigException("Failed to resolve with property place-holders for param: "+param+" with url: "+urlToResolve, ex);
+		}
+	}
+	
+	
+	protected String resolveInternal(Param<?> param, String urlToResolve) {
 		Map<Integer, String> entries = ParamPathExpressionParser.parse(urlToResolve);
 		if(MapUtils.isEmpty(entries))
 			return urlToResolve;

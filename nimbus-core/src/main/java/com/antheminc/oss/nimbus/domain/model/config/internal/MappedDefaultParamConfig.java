@@ -90,6 +90,11 @@ public class MappedDefaultParamConfig<P, M> extends DefaultParamConfig<P> implem
 		this.path = path;
 	}
 	
+	@Override
+	public boolean isMapped() {
+		return true;
+	}
+	
 	@JsonIgnore
 	@Override
 	public boolean isDetachedWithAutoLoad() {

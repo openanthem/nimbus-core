@@ -83,6 +83,11 @@ public interface ParamConfig<P> extends EntityConfig<P>, Findable<String> {
 	
 	public interface MappedParamConfig<P, M> extends ParamConfig<P>, MappedConfig<P, M> {
 		@Override
+		default boolean isMapped() {
+			return true;
+		}
+		
+		@Override
 		default MappedParamConfig<P, M> findIfMapped() {
 			return this;
 		}

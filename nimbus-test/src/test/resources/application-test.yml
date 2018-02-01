@@ -127,3 +127,10 @@ ext:
   repository:
     targetUrl: 
       ext_client: http://localhost:9095
+      
+test:
+  url:
+    code: test-environment
+    link: https://hooli/thebox/someLink
+    image: https://hooli/thebox/someImage
+    initialize: some-alias      
