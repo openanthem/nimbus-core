@@ -61,8 +61,6 @@ public class ParamPathExpressionParser {
 		return countRecursive(in, iStart, iEnd);
 	}
 	
-	String in = "/umcaseview:<!../.m/<!/id!>/another/<!path4!>/path3!>/nested/<!/path2!>/_get";
-	
 	private static int countRecursive(String in, int iStart, int iFirstEnd) {
 		// check if there are any starts
 		String subStrBetweenFirstStartAndFirstEnd = in.substring(iStart+1, iFirstEnd);

@@ -17,6 +17,7 @@ package com.antheminc.oss.nimbus.app.extension.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.PropertyResolver;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutor;
@@ -67,8 +68,8 @@ public class DefaultCoreExecutorConfig {
 	}
 	
 	@Bean
-	public CommandPathVariableResolver defaultCommandPathVariableResolver(BeanResolverStrategy beanResolver) {
-		return new DefaultCommandPathVariableResolver(beanResolver);
+	public CommandPathVariableResolver defaultCommandPathVariableResolver(BeanResolverStrategy beanResolver, PropertyResolver propertyResolver) {
+		return new DefaultCommandPathVariableResolver(beanResolver, propertyResolver);
 	}
 	
 	@Bean(name="default.ExecutionContextLoader", destroyMethod="clear") 

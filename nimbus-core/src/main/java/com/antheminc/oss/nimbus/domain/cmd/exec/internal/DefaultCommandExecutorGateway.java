@@ -94,14 +94,22 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 
 	@Override
 	public final MultiOutput execute(CommandMessage cmdMsg) {
-		String sessionId = getSessionId();
-		return execute(cmdMsg, sessionId);
+		try {
+			String sessionId = getSessionId();
+			return execute(cmdMsg, sessionId);
+		} catch (RuntimeException ex) {
+			throw new FrameworkRuntimeException("Failed to execute command: "+cmdMsg, ex);
+		}
 	}
 	
 	@Override
 	public List<MultiOutput> executeConfig(ExecutionContext eCtx, Param<?> cmdParam, List<Config> execConfigs) {
-		String sessionId = getSessionId();
-		return executeConfig(eCtx, cmdParam, execConfigs, sessionId);
+		try {
+			String sessionId = getSessionId();
+			return executeConfig(eCtx, cmdParam, execConfigs, sessionId);
+		} catch (RuntimeException ex) {
+			throw new FrameworkRuntimeException("Failed to executeConfig eCtx: "+eCtx+" for cmdParam: "+cmdParam, ex);
+		}
 	}
 	
 	private final MultiOutput execute(CommandMessage cmdMsg, String sessionId) {

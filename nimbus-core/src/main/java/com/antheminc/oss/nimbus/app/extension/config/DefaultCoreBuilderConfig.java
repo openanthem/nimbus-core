@@ -15,10 +15,13 @@
  */
 package com.antheminc.oss.nimbus.app.extension.config;
 
+import java.lang.annotation.Annotation;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.validation.Constraint;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -27,11 +30,17 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.core.env.PropertyResolver;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.context.DefaultBeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.process.ParamUpdateEventListener;
+import com.antheminc.oss.nimbus.domain.config.builder.AnnotationConfigHandler;
+import com.antheminc.oss.nimbus.domain.config.builder.DefaultAnnotationConfigHandler;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
+import com.antheminc.oss.nimbus.domain.config.builder.attributes.AnnotationAttributeHandler;
+import com.antheminc.oss.nimbus.domain.config.builder.attributes.ConstraintAnnotationAttributeHandler;
+import com.antheminc.oss.nimbus.domain.config.builder.attributes.DefaultAnnotationAttributeHandler;
 import com.antheminc.oss.nimbus.domain.model.config.builder.DefaultValidatorProvider;
 import com.antheminc.oss.nimbus.domain.model.config.builder.EntityConfigBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.builder.DefaultQuadModelBuilder;
@@ -90,6 +99,14 @@ public class DefaultCoreBuilderConfig {
 	@Bean
 	public DefaultValidatorProvider defaultValidatorProvider(){
 		return new DefaultValidatorProvider();
+	}
+	
+	@Bean 
+	public AnnotationConfigHandler annotationConfigHandler(PropertyResolver propertyResolver) {
+		Map<Class<? extends Annotation>, AnnotationAttributeHandler> attributeHandlers = new HashMap<>();
+		attributeHandlers.put(Constraint.class, new ConstraintAnnotationAttributeHandler());
+		
+		return new DefaultAnnotationConfigHandler(new DefaultAnnotationAttributeHandler(), attributeHandlers, propertyResolver);
 	}
 	
 	@Bean

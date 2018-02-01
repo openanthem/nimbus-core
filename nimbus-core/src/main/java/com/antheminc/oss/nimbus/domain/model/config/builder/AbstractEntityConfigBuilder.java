@@ -83,10 +83,12 @@ abstract public class AbstractEntityConfigBuilder {
 	
 	private final BeanResolverStrategy beanResolver;
 	private final RulesEngineFactoryProducer rulesEngineFactoryProducer;
+	private final AnnotationConfigHandler annotationConfigHandler;
 	
 	public AbstractEntityConfigBuilder(BeanResolverStrategy beanResolver) {
 		this.beanResolver = beanResolver;
 		this.rulesEngineFactoryProducer = beanResolver.get(RulesEngineFactoryProducer.class);
+		this.annotationConfigHandler = beanResolver.get(AnnotationConfigHandler.class);
 	}
 	
 	abstract public <T> ModelConfig<T> buildModel(Class<T> clazz, EntityConfigVisitor visitedModels);
@@ -117,7 +119,7 @@ abstract public class AbstractEntityConfigBuilder {
 		}
 		
 		// annotation config: viewStyle
-		created.setUiStyles(AnnotationConfigHandler.handleSingle(referredClass, ViewStyle.class));
+		created.setUiStyles(annotationConfigHandler.handleSingle(referredClass, ViewStyle.class));
 		
 		// handle repo
 		Repo rep = AnnotationUtils.findAnnotation(referredClass, Repo.class);
@@ -405,8 +407,8 @@ abstract public class AbstractEntityConfigBuilder {
 	}
 	
 	private <P> DefaultParamConfig<P> decorateParam(ModelConfig<?> mConfig, Field f, DefaultParamConfig<P> created, EntityConfigVisitor visitedModels) {
-		created.setUiNatures(AnnotationConfigHandler.handle(f, ViewParamBehavior.class));
-		created.setUiStyles(AnnotationConfigHandler.handleSingle(f, ViewStyle.class));
+		created.setUiNatures(annotationConfigHandler.handle(f, ViewParamBehavior.class));
+		created.setUiStyles(annotationConfigHandler.handleSingle(f, ViewStyle.class));
 		created.setExecutionConfigs(new ArrayList<>(AnnotatedElementUtils.findMergedRepeatableAnnotations(f, Execution.Config.class)));
 		
 		
@@ -435,7 +437,7 @@ abstract public class AbstractEntityConfigBuilder {
 			created.setAssociatedEntities(Arrays.asList(associatedEntityAnnotationArr));
 		}
 		
-		List<AnnotationConfig> vConfig = AnnotationConfigHandler.handle(f, Constraint.class);
+		List<AnnotationConfig> vConfig = annotationConfigHandler.handle(f, Constraint.class);
 		created.setValidations(vConfig);
 
 		EventHandlerConfig eventConfig = createEventHandlerConfig(f);
@@ -452,7 +454,7 @@ abstract public class AbstractEntityConfigBuilder {
 //			eventConfig.add(ac, (OnStateLoadHandler<Annotation>)handler);
 //		});
 		
-		List<Annotation> onStateLoadAnnotations = AnnotationConfigHandler.handleRepeatable(aElem, OnStateLoad.class);
+		List<Annotation> onStateLoadAnnotations = annotationConfigHandler.handleRepeatable(aElem, OnStateLoad.class);
 		//List<Annotation> onStateLoadAnnotations = new ArrayList<>(AnnotatedElementUtils.findMergedRepeatableAnnotations(aElem, OnStateLoad.class));
 		if(!CollectionUtils.isEmpty(onStateLoadAnnotations)) { 
 			
@@ -464,7 +466,7 @@ abstract public class AbstractEntityConfigBuilder {
 		}
 
 		
-		List<Annotation> onStateChangeAnnotations = AnnotationConfigHandler.handleRepeatable(aElem, OnStateChange.class);
+		List<Annotation> onStateChangeAnnotations = annotationConfigHandler.handleRepeatable(aElem, OnStateChange.class);
 		//List<Annotation> onStateChangeAnnotations = new ArrayList<>(AnnotatedElementUtils.findMergedRepeatableAnnotations(aElem, OnStateChange.class));
 		if(!CollectionUtils.isEmpty(onStateChangeAnnotations)) { 
 			

@@ -21,6 +21,8 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.PropertyResolver;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.anthem.oss.nimbus.core.AbstractFrameworkIngerationPersistableTests;
@@ -37,6 +39,8 @@ import test.com.anthem.nimbus.platform.utils.MockHttpRequestBuilder;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CommandPathVariableResolverTest  extends AbstractFrameworkIngerationPersistableTests {
 
+	@Autowired
+	private PropertyResolver pr;
 	
 	@Test
 	public void t0_nestedConfigPath() {

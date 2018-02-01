@@ -15,8 +15,11 @@
  */
 package com.anthem.oss.nimbus.core.domain.config.builder;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Constraint;
 import javax.validation.constraints.NotNull;
@@ -24,13 +27,19 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.core.env.StandardEnvironment;
 
 import com.antheminc.oss.nimbus.domain.config.builder.AnnotationConfigHandler;
+import com.antheminc.oss.nimbus.domain.config.builder.DefaultAnnotationConfigHandler;
+import com.antheminc.oss.nimbus.domain.config.builder.attributes.AnnotationAttributeHandler;
+import com.antheminc.oss.nimbus.domain.config.builder.attributes.ConstraintAnnotationAttributeHandler;
+import com.antheminc.oss.nimbus.domain.config.builder.attributes.DefaultAnnotationAttributeHandler;
 import com.antheminc.oss.nimbus.domain.defn.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.model.config.AnnotationConfig;
 
@@ -41,7 +50,7 @@ import com.antheminc.oss.nimbus.domain.model.config.AnnotationConfig;
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(MockitoJUnitRunner.class)
-public class AnnotationConfigHandlerTest {
+public class DefaultAnnotationConfigHandlerTest {
 
 	private final String foo = null;
 	
@@ -55,16 +64,26 @@ public class AnnotationConfigHandlerTest {
 	@Size(min=3, max=5, message="Required number of selections not met")
 	private final String sizeBaz = null;
 	
+	private AnnotationConfigHandler annotationConfigHandler;
+	
+	@Before
+	public void init() {
+		Map<Class<? extends Annotation>, AnnotationAttributeHandler> attributeHandlers = new HashMap<>();
+		attributeHandlers.put(Constraint.class, new ConstraintAnnotationAttributeHandler());
+		
+		annotationConfigHandler =  new DefaultAnnotationConfigHandler(new DefaultAnnotationAttributeHandler(), attributeHandlers, new StandardEnvironment());
+	}
+	
 	@Test
 	public void t1_handle_annotationNotFound() throws Exception {
 		final Field annotatedElement = this.getClass().getDeclaredField("foo");
-		Assert.assertNull(AnnotationConfigHandler.handle(annotatedElement, Constraint.class));
+		Assert.assertNull(annotationConfigHandler.handle(annotatedElement, Constraint.class));
 	}
 	
 	@Test
 	public void t2_handle_singleAnnotationConfig() throws Exception {
 		final Field annotatedElement = this.getClass().getDeclaredField("bar");
-		final List<AnnotationConfig> actual = AnnotationConfigHandler.handle(annotatedElement, Constraint.class);
+		final List<AnnotationConfig> actual = annotationConfigHandler.handle(annotatedElement, Constraint.class);
 		Assert.assertEquals(1, actual.size());
 		Assert.assertEquals("NotNull", actual.get(0).getName());
 		Assert.assertEquals("bar can not be null", actual.get(0).getAttributes().get("message"));
@@ -75,19 +94,19 @@ public class AnnotationConfigHandlerTest {
 	@Test
 	public void t3_handleSingle_annotationNotFound() throws Exception {
 		final Field annotatedElement = this.getClass().getDeclaredField("foo");
-		Assert.assertNull(AnnotationConfigHandler.handleSingle(annotatedElement, Constraint.class));
+		Assert.assertNull(annotationConfigHandler.handleSingle(annotatedElement, Constraint.class));
 	}
 	
 	@Test(expected = InvalidConfigException.class)
 	public void t4_handleSingle_multipleConfigsFound() throws Exception {
 		final Field annotatedElement = this.getClass().getDeclaredField("baz");
-		Assert.assertNull(AnnotationConfigHandler.handleSingle(annotatedElement, Constraint.class));
+		Assert.assertNull(annotationConfigHandler.handleSingle(annotatedElement, Constraint.class));
 	}
 	
 	@Test
 	public void t5_handleSingle_singleConfig() throws Exception {
 		final Field annotatedElement = this.getClass().getDeclaredField("bar");
-		final AnnotationConfig actual = AnnotationConfigHandler.handleSingle(annotatedElement, Constraint.class);
+		final AnnotationConfig actual = annotationConfigHandler.handleSingle(annotatedElement, Constraint.class);
 		Assert.assertEquals("NotNull", actual.getName());
 		Assert.assertEquals("bar can not be null", actual.getAttributes().get("message"));
 		Assert.assertEquals(0, ((Object[]) actual.getAttributes().get("groups")).length);
@@ -97,7 +116,7 @@ public class AnnotationConfigHandlerTest {
 	@Test
 	public void t6_handle_multiAnnotationConfig() throws Exception {
 		final Field annotatedElement = this.getClass().getDeclaredField("baz");
-		final List<AnnotationConfig> actual = AnnotationConfigHandler.handle(annotatedElement, Constraint.class);
+		final List<AnnotationConfig> actual = annotationConfigHandler.handle(annotatedElement, Constraint.class);
 		Assert.assertEquals(2, actual.size());
 		Assert.assertEquals("Pattern", actual.get(1).getName());
 		Assert.assertEquals("baz must conform to standards", actual.get(1).getAttributes().get("message"));
@@ -107,7 +126,7 @@ public class AnnotationConfigHandlerTest {
 	@Test
 	public void t7_handleSize_singleConfig() throws Exception {
 		final Field annotatedElement = this.getClass().getDeclaredField("sizeBaz");
-		final AnnotationConfig actual = AnnotationConfigHandler.handleSingle(annotatedElement, Constraint.class);
+		final AnnotationConfig actual = annotationConfigHandler.handleSingle(annotatedElement, Constraint.class);
 		Assert.assertEquals("Size", actual.getName());
 		Assert.assertEquals(3, actual.getAttributes().get("min"));
 		Assert.assertEquals(5, actual.getAttributes().get("max"));
