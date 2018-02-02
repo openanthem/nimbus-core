@@ -105,7 +105,6 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface Page {
 		String alias() default "Page";
-		String title() default ""; 
 		String cssClass() default ""; 
 		boolean defaultPage() default false;
 		String route() default ""; // remove
@@ -126,7 +125,6 @@ public class ViewConfig {
 		}
 		String alias() default "Tile";
 		String imgSrc() default "";
-		String title() default "";
 		Size size() default Size.Large;
 	}
 	
@@ -136,21 +134,17 @@ public class ViewConfig {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
+	//TODO: Will have to remove LEFTBAR and HEADER once the leftbarn& header navigation for case is in place
 	public @interface Section {
 		public enum Type {
-			HEADER, // Global Header and Global Navigation
-			FOOTER, // Global Footer
+			HEADER, 
 			LEFTBAR,
-			RIGHTBAR,
-			BODY,
 			DEFAULT;
 		}
 		
-		Type value() default Type.DEFAULT; // Remove header/footer/leftbar Create GlobalHeader/GlobalFooter etc. Keep section as default.
+		Type value() default Type.DEFAULT; // HEADER and LEFTBAR should be removed in future
 		String alias() default "Section";
 		String cssClass() default "";
-		String imgSrc() default ""; // remove
-		String defaultFlow() default ""; // applicable only to Section type BODY. // remove
 	}
 	
 	/*
@@ -173,7 +167,19 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface GlobalHeader {
 
-		String alias() default "Header";
+		String alias() default "Global-Header";
+		String cssClass() default "";
+	}
+	
+	/*
+	 * Global Navigation Menu Definition
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface GlobalNavMenu {
+
+		String alias() default "Global-Nav-Menu";
 		String cssClass() default "";
 	}
 	/**
@@ -191,7 +197,7 @@ public class ViewConfig {
 	 * </p>
 	 * 
 	 * @author Tony Lopez (AF42192)
-	 * @see com.antheminc.oss.nimbus.domain.model.state.extension.ModalStateEventHandler
+	 * @see com.anthem.oss.nimbus.core.domain.model.state.extension.ModalStateEventHandler
 	 *
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
@@ -201,7 +207,6 @@ public class ViewConfig {
 	public @interface Modal {
 		String alias() default "Modal";
 		String cssClass() default ""; // new
-		String title() default ""; // new
 		Type type() default Type.dialog;
 		boolean closable() default false;
 		String width() default "500";
@@ -225,7 +230,6 @@ public class ViewConfig {
 	public @interface Form { 
 		String alias() default "Form";
 		String cssClass() default "";
-		String title() default ""; // new
 		
 		boolean submitButton() default true; // remove
 		String submitUrl() default ""; // remove
@@ -254,7 +258,6 @@ public class ViewConfig {
 	public @interface Grid {
 		String alias() default "Grid";
 		String cssClass() default ""; // new
-		String title() default ""; // new
 		boolean expandableRows() default false;
 		
 		boolean onLoad() default false;
@@ -267,6 +270,7 @@ public class ViewConfig {
 		String postButtonUrl() default "";
 		String postButtonTargetPath() default "";
 		String postButtonAlias() default "";
+		String postButtonLabel() default "";
 		boolean postEventOnChange() default false;
 	}
 	
@@ -310,7 +314,6 @@ public class ViewConfig {
 		String imgSrc() default "";
 		boolean editable() default false;
 		String modelPath() default "";
-		String title() default "";
 		boolean draggable() default false;
 		
 		@Retention(RetentionPolicy.RUNTIME)
@@ -426,6 +429,7 @@ public class ViewConfig {
 		Type value() default Type.CONTEXT;
 		String alias() default "Menu";		
 		String cssClass() default "";
+		String text() default "";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
@@ -505,6 +509,7 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface Paragraph {
 		String alias() default "Paragraph";
+		String cssClass() default "";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
