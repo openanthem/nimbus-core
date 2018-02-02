@@ -21,7 +21,6 @@ import org.springframework.core.env.PropertyResolver;
 import org.springframework.util.ClassUtils;
 
 import com.antheminc.oss.nimbus.domain.RepeatContainer;
-import com.antheminc.oss.nimbus.domain.config.builder.attributes.AnnotationAttributeHandler;
 import com.antheminc.oss.nimbus.domain.defn.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.model.config.AnnotationConfig;
 

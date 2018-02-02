@@ -24,13 +24,15 @@ import java.util.Map.Entry;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.annotation.AnnotationUtils;
 
+import com.antheminc.oss.nimbus.domain.config.builder.AnnotationAttributeHandler;
+
 /**
  * <p>Default Implementation of <tt>AnnotationAttributeHandler</tt> that simply returns a key/value 
  * map of the annotation attributes defined in the <tt>annotation</tt> element with no
  * additional changes made.
  * 
  * @author Tony Lopez (AF42192)
- * @see com.antheminc.oss.nimbus.domain.config.builder.attributes.AnnotationAttributeHandler
+ * @see com.antheminc.oss.nimbus.domain.config.builder.AnnotationAttributeHandler
  *
  */
 public class DefaultAnnotationAttributeHandler implements AnnotationAttributeHandler {

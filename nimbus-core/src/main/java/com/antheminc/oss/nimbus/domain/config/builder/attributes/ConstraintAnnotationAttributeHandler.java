@@ -24,6 +24,8 @@ import java.util.Map.Entry;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.annotation.AnnotationUtils;
 
+import com.antheminc.oss.nimbus.domain.config.builder.AnnotationAttributeHandler;
+
 /**
  * Implementation of <tt>AnnotationAttributeHandler</tt> that ensures all JSR <tt>Constraint</tt>
  * attributes are filtered as needed.
