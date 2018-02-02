@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.antheminc.oss.nimbus.domain.cmd.Behavior;
-import com.antheminc.oss.nimbus.domain.cmd.exec.ExecuteOutput.GenericExecute.CmdExecuteOutput;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -52,7 +51,7 @@ public class ExecuteOutput<T> implements Serializable{
 	
 	
 	
-	@Getter @Setter  @SuppressWarnings("serial") @ToString(callSuper=true) @RequiredArgsConstructor
+	@Getter @Setter @SuppressWarnings("serial") @ToString(callSuper=true) @RequiredArgsConstructor
 	public static class BehaviorExecute<T> extends ExecuteOutput<T> {
 		
 		final private Behavior b;
@@ -69,14 +68,14 @@ public class ExecuteOutput<T> implements Serializable{
 		public T extractSingleValue() {
 			return getResult().get(0).getResult().getOutputs().get(0).getValue();
 		}
-		
+	}
+	
+	@Getter @Setter
+	public static class CmdExecuteOutput<T> {
 		@Getter @Setter
-		public static class CmdExecuteOutput<T> {
-			@Getter @Setter
-			public static class HolderValue<T> {
-				T value;
-			} 
-			private List<HolderValue<T>> outputs;		
-		}
+		public static class HolderValue<T> {
+			T value; 
+		} 
+		private List<HolderValue<T>> outputs;		
 	}
 }
