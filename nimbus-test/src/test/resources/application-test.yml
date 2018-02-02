@@ -87,13 +87,13 @@ process:
      ([A-Za-z0-9_\\-\\*~\\?=\\.\\$]+)
   database:
     driver: 
-      com.mysql.jdbc.Driver
+      embeddedH2
     url: 
-      jdbc:mysql://localhost:3306/nimbus?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false
+      embeddedH2
     username: 
-      root
+      embeddedH2
     password: 
-      NimbusNonDocker123
+      embeddedH2
     taskUpdateQuery:
       update ACT_RU_TASK set TASK_DEF_KEY_ = ?, NAME_ = ? WHERE ID_=?
     executionUpdateQuery:
