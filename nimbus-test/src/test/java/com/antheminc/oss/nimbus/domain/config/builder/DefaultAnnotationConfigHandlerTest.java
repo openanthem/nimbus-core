@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.anthem.oss.nimbus.core.domain.config.builder;
+package com.antheminc.oss.nimbus.domain.config.builder;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -37,7 +37,6 @@ import org.springframework.core.env.StandardEnvironment;
 
 import com.antheminc.oss.nimbus.domain.config.builder.AnnotationConfigHandler;
 import com.antheminc.oss.nimbus.domain.config.builder.DefaultAnnotationConfigHandler;
-import com.antheminc.oss.nimbus.domain.config.builder.attributes.AnnotationAttributeHandler;
 import com.antheminc.oss.nimbus.domain.config.builder.attributes.ConstraintAnnotationAttributeHandler;
 import com.antheminc.oss.nimbus.domain.config.builder.attributes.DefaultAnnotationAttributeHandler;
 import com.antheminc.oss.nimbus.domain.defn.InvalidConfigException;
