@@ -31,6 +31,7 @@ import org.activiti.engine.impl.rules.RulesDeployer;
 import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.activiti.spring.boot.AbstractProcessEngineAutoConfiguration;
+import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -54,6 +55,7 @@ import com.antheminc.oss.nimbus.domain.bpm.activiti.ActivitiUserTaskActivityBeha
 import lombok.Getter;
 import lombok.Setter;
 
+
 /**
  * <p>This class configures BPM functions within the framework. Activiti BPM framework is being used to enable BPM capabilities.
  *
@@ -65,7 +67,7 @@ import lombok.Setter;
  * <li>Load process definition from a configured location.
  * <li>Load process rules from a configured location.
  * The framework makes to distinction between entity rules and process rules. This configuration only loads process rules.
- * For definition of entity rules, please refer{@link  com.antheminc.oss.nimbus.domain.rules.drools.DroolsRulesEngineFactory}
+ * For definition of entity rules, please refer{@link  com.anthem.oss.nimbus.core.rules.drools.DroolsRulesEngineFactory}
  * Process rules are defined as rules that can be defined across multiple entities and across flows. 
  * These rules are loaded using a single KnowlegeBuilder and can be directly accesses within bpmn processes as business rules task/ service task.
  * <li>Overrides the default expression manager to enhance expression capability. See {@link ActivitiExpressionManager}
@@ -194,12 +196,27 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
         return new SimpleAsyncTaskExecutor();
     }
     
+//    @Bean
+//	public DataSource processDataSource() {
+//    	return new EmbeddedDatabaseBuilder().
+//				setType(EmbeddedDatabaseType.H2).
+//				build();
+//	}  
+    
     @Bean
-	public DataSource processDataSource() {
-    	return new EmbeddedDatabaseBuilder().
-				setType(EmbeddedDatabaseType.H2).
-				build();
-	}  
+  	public DataSource processDataSource() {
+    		if(dbUrl.equals("embeddedH2")) {
+    			return new EmbeddedDatabaseBuilder().
+    					setType(EmbeddedDatabaseType.H2).
+    					build();   			
+    		}
+    		BasicDataSource ds = new BasicDataSource();
+    		ds.setUrl(dbUrl);
+    		ds.setUsername(dbUserName);
+    		ds.setPassword(dbPassword);
+    		ds.setDriverClassName(dbDriver);
+    		return ds;
+  	}     
     
 //    @Bean
 //	public JpaTransactionManager jpaTransactionManager(EntityManagerFactory emf) {

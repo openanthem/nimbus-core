@@ -16,8 +16,11 @@
 package com.antheminc.oss.nimbus.domain.cmd.exec;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 import com.antheminc.oss.nimbus.domain.cmd.Behavior;
+import com.antheminc.oss.nimbus.domain.cmd.exec.ExecuteOutput.GenericExecute.CmdExecuteOutput;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -49,13 +52,10 @@ public class ExecuteOutput<T> implements Serializable{
 	
 	
 	
-	@Getter @Setter @ToString(callSuper=true) @RequiredArgsConstructor
+	@Getter @Setter  @SuppressWarnings("serial") @ToString(callSuper=true) @RequiredArgsConstructor
 	public static class BehaviorExecute<T> extends ExecuteOutput<T> {
 		
-		private static final long serialVersionUID = 1L;
-		
 		final private Behavior b;
-		
 		
 		public BehaviorExecute(Behavior b, T result) {
 			this(b);
@@ -63,4 +63,20 @@ public class ExecuteOutput<T> implements Serializable{
 		}
 	}
 	
+	@Getter @Setter @SuppressWarnings("serial") @ToString(callSuper=true) 
+	public static class GenericExecute<T> extends ExecuteOutput<Map<Integer, ExecuteOutput.BehaviorExecute<CmdExecuteOutput<T>>>> {
+		
+		public T extractSingleValue() {
+			return getResult().get(0).getResult().getOutputs().get(0).getValue();
+		}
+		
+		@Getter @Setter
+		public static class CmdExecuteOutput<T> {
+			@Getter @Setter
+			public static class HolderValue<T> {
+				T value;
+			} 
+			private List<HolderValue<T>> outputs;		
+		}
+	}
 }
