@@ -15,10 +15,6 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.repo.db;
 
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.graphLookup;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.unwind;
-
 import java.lang.reflect.Constructor;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,19 +22,14 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.TimeZone;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.repository.support.SpringDataMongodbQuery;
-import org.springframework.util.CollectionUtils;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
-import com.antheminc.oss.nimbus.entity.EntityAssociation;
 import com.antheminc.oss.nimbus.entity.SearchCriteria;
 import com.antheminc.oss.nimbus.support.JustLogit;
 import com.mongodb.BasicDBList;
@@ -167,38 +158,14 @@ public class MongoSearchByQuery extends MongoDBSearch {
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private  <T> Object searchByAggregation(Class<?> referredClass, String alias, SearchCriteria<T> criteria) {
-//		Class<?> outputClass = findOutputClass(criteria, referredClass);
-		
-//		
-//		List<?> result = new ArrayList<>();
-//		EntityAssociation assoc = getConverter().convert(EntityAssociation.class, (String) criteria.getWhere());
-//		
-//		for(EntityAssociation entityAssociation: assoc.getAssociatedEntities()) {
-//			List<AggregationOperation> aggregateOps = new ArrayList<>();
-//
-//			buildAggregationQuery(entityAssociation, aggregateOps);
-//			
-//			if(StringUtils.equalsIgnoreCase(criteria.getAggregateCriteria(), "count")) {
-//				AggregationOperation countOp = count().as("state"); // TODO refactor to support other single value aggregations ...
-//				aggregateOps.add(countOp);
-//			}
-//			
-//			if(criteria.getProjectCriteria() != null && !MapUtils.isEmpty(criteria.getProjectCriteria().getMapsTo())) { 
-//				String[] projectionFields = (String[])criteria.getProjectCriteria().getMapsTo().values().toArray();
-//				AggregationOperation projectOps = Aggregation.project(projectionFields);
-//				aggregateOps.add(projectOps);
-//			}
-//			
-//			AggregationResults models = getMongoOps().aggregate(Aggregation.newAggregation(aggregateOps), assoc.getDomainAlias(), outputClass);
-//			result.addAll(models.getMappedResults());
-//		}
-		
+
 		//TODO - to be refactored - added null checks for LTSS deployment
 		List<?> output = new ArrayList();
 		String[] aggregationCriteria = StringUtils.split((String)criteria.getWhere(), "~~");
 		Arrays.asList(aggregationCriteria).forEach((cr) -> {
 			CommandResult commndResult = getMongoOps().executeCommand(cr);
-			System.out.println("&&& Aggregation Query: "+cr+" --- Result: "+commndResult);
+			//System.out.println("&&& Aggregation Query: "+cr+" --- Result: "+commndResult);
+			logIt.trace(()-> "&&& Aggregation Query: "+cr+" --- Result: "+commndResult);
 			if(commndResult != null && commndResult.get("result") != null && commndResult.get("result") instanceof BasicDBList) {
 				BasicDBList result = (BasicDBList)commndResult.get("result");
 				if(criteria.getProjectCriteria() != null && StringUtils.isNotBlank(criteria.getProjectCriteria().getAlias())) {
@@ -211,52 +178,6 @@ public class MongoSearchByQuery extends MongoDBSearch {
 			}
 		});
 		return output;
-	}
-	
-	private void buildAggregationQuery(EntityAssociation assoc, List<AggregationOperation> aggregateOps) {
-		buildAggregationPipeline(assoc, aggregateOps);
-		
-		if(!CollectionUtils.isEmpty(assoc.getAssociatedEntities())) {
-			buildAggregationQueryNested(assoc.getAssociatedEntities(), aggregateOps);
-		}
-	}
-	
-	private void buildAggregationPipeline(EntityAssociation assoc, List<AggregationOperation> aggregateOps) {
-		aggregateOps.add(buildGraphOperation(assoc));
-		aggregateOps.add(match(Criteria.where(assoc.getAssociationAlias()).ne(Collections.EMPTY_LIST)));
-		if(assoc.isUnwind()) {
-			aggregateOps.add(unwind(assoc.getAssociationAlias()));
-		}
-	}
-	
-	private void buildAggregationQueryNested(List<EntityAssociation> associatedEntities, List<AggregationOperation> aggregateOps) {
-		associatedEntities.forEach((assoc) -> {
-			buildAggregationPipeline(assoc, aggregateOps);
-			
-			if(!CollectionUtils.isEmpty(assoc.getAssociatedEntities())) {
-				buildAggregationQueryNested(assoc.getAssociatedEntities(), aggregateOps);
-			}
-		});
-	}
-	
-	private AggregationOperation buildGraphOperation(EntityAssociation assoc) {
-		if(!CollectionUtils.isEmpty(assoc.getCriteria())) {
-			return graphLookup(assoc.getDomainAlias())
-					.startWith(assoc.getAssociationStartWith())
-					.connectFrom(assoc.getAssociationFrom())
-					.connectTo(assoc.getAssociationTo())
-					.restrict(assoc.getCriteria().stream() //TODO chaining the criteria if more than one
-							.map((restriction) -> Criteria.where(restriction.getKey()).is(restriction.getValue()))
-							.findFirst().get())
-					.as(assoc.getAssociationAlias());
-		}
-		else {
-			return graphLookup(assoc.getDomainAlias())
-					.startWith(assoc.getAssociationStartWith())
-					.connectFrom(assoc.getAssociationFrom())
-					.connectTo(assoc.getAssociationTo())
-					.as(assoc.getAssociationAlias());
-		}
 	}
 	
 }
