@@ -13,24 +13,23 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.test.entity.sample.core;
+package com.antheminc.oss.nimbus.test.entity.sample.s0.core;
 
 import com.antheminc.oss.nimbus.domain.defn.Model;
-import com.antheminc.oss.nimbus.domain.defn.extension.EnableConditional;
 
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * @author Soham Chakravarti
+ * @author Swetha Vemuri
  *
  */
 @Model
-@Getter @Setter 
-public class SampleCoreEnableEntity {
+@Getter @Setter
+public class SampleCoreNested2_Entity {
 	
-	@EnableConditional(when="state == 'Joker'", targetPath="../enable_p2")
-	private String enable_p1;
+	private String nested2_attr_String_1;
 	
-	private String enable_p2;
+	private String nested2_attr_String_2;
+	
 }

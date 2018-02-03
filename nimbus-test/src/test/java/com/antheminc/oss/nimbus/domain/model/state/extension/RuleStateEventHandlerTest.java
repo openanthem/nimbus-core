@@ -26,7 +26,7 @@ import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
 import com.antheminc.oss.nimbus.entity.AbstractEntity.IdString;
-import com.antheminc.oss.nimbus.test.entity.sample.core.SampleCoreEntity;
+import com.antheminc.oss.nimbus.test.entity.sample.s0.core.SampleCoreEntity;
 
 /**
  * 

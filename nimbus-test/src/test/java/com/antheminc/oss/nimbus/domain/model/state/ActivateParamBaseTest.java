@@ -30,7 +30,7 @@ import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ExecutionModel;
 import com.antheminc.oss.nimbus.domain.model.state.builder.QuadModelBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.internal.BaseStateEventListener;
-import com.antheminc.oss.nimbus.test.entity.sample.core.SampleCoreEntity;
+import com.antheminc.oss.nimbus.test.entity.sample.s0.core.SampleCoreEntity;
 
 /**
  * @author Soham Chakravarti

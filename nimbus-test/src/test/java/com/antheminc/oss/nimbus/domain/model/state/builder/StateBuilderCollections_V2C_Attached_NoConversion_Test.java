@@ -30,9 +30,9 @@ import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
 import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
 import com.antheminc.oss.nimbus.domain.model.state.internal.ExecutionEntity;
-import com.antheminc.oss.nimbus.test.entity.sample.core.SampleCoreEntity;
-import com.antheminc.oss.nimbus.test.entity.sample.core.SampleCoreNestedEntity;
-import com.antheminc.oss.nimbus.test.entity.sample.view.VRSampleViewRootEntity;
+import com.antheminc.oss.nimbus.test.entity.sample.s0.core.SampleCoreEntity;
+import com.antheminc.oss.nimbus.test.entity.sample.s0.core.SampleCoreNestedEntity;
+import com.antheminc.oss.nimbus.test.entity.sample.s0.view.VRSampleViewRootEntity;
 
 /**
  * @author Soham Chakravarti

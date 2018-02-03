@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.test.entity.sample.core;
+package com.antheminc.oss.nimbus.test.entity.sample.s0.core;
 
 import java.util.ArrayList;
 import java.util.List;

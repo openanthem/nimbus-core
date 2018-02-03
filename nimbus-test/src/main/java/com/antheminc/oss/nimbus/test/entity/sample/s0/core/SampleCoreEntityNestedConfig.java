@@ -13,25 +13,43 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.test.entity.sample.view;
+package com.antheminc.oss.nimbus.test.entity.sample.s0.core;
 
 import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
+import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Database;
-import com.antheminc.oss.nimbus.entity.audit.AuditEntry;
+import com.antheminc.oss.nimbus.entity.AbstractEntity.IdString;
 
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * @author Soham Chakravarti
+ * This class tests for accessConditional(s) for the user with roles {intake, clinician} and resolvedAuthorities = 'member_management'
+ * @author Rakesh Patel
  *
  */
-@Domain(value="sample_view_audit_history", includeListeners={ListenerType.persistence})
+@Domain(value = "sample_core_nested", includeListeners = { ListenerType.persistence })
 @Repo(Database.rep_mongodb)
-@Getter @Setter
-public class SampleViewAuditEntry extends AuditEntry {
+@Getter
+@Setter
+public class SampleCoreEntityNestedConfig extends IdString {
 
 	private static final long serialVersionUID = 1L;
+
+	private String attr_String;
+	
+	private String testParam;
+	
+	private String testParam2;
+	
+	private String testParam3;
+	
+	@Config(url="/testParam3/_update?rawPayload=\"<!../<!../testParam2!>!>\"")
+	private String paramConfigWithNestedPath;
+	
+	@Config(url="/testParam3/_update?rawPayload=\"<!../testParam!><!../testParam2!>\"")
+	private String paramConfigWithNestedPath2;
 }
+

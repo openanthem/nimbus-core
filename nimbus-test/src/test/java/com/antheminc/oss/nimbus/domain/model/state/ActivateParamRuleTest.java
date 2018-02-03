@@ -34,7 +34,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.test.FrameworkIntegrationTestScenariosApplication;
-import com.antheminc.oss.nimbus.test.entity.sample.core.SampleCoreNestedEntity;
+import com.antheminc.oss.nimbus.test.entity.sample.s0.core.SampleCoreNestedEntity;
 
 /**
  * @author Soham Chakravarti

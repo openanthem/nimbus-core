@@ -55,7 +55,7 @@ public abstract class AbstractFrameworkIntegrationTests {
 	
 	
 	@Before
-	public void t0_init() {
+	public void before() {
 		this.tearDown();
 		Client newClient = new Client();
 		newClient.setId(CLIENT_ID);

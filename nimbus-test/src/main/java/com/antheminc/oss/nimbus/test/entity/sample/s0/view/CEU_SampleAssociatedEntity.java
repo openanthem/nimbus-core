@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.test.entity.sample.view;
+package com.antheminc.oss.nimbus.test.entity.sample.s0.view;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ import com.antheminc.oss.nimbus.domain.defn.MapsTo.Path;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Cache;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Database;
-import com.antheminc.oss.nimbus.test.entity.sample.core.SampleCoreAssociatedEntity;
+import com.antheminc.oss.nimbus.test.entity.sample.s0.core.SampleCoreAssociatedEntity;
 
 import lombok.Getter;
 import lombok.Setter;

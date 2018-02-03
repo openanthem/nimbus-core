@@ -46,7 +46,7 @@ import com.antheminc.oss.nimbus.domain.model.state.internal.MappedDefaultTransie
 import com.antheminc.oss.nimbus.support.Holder;
 import com.antheminc.oss.nimbus.test.domain.support.utils.ExtractResponseOutputUtils;
 import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
-import com.antheminc.oss.nimbus.test.entity.sample.core.SampleCoreEntity;
+import com.antheminc.oss.nimbus.test.entity.sample.s0.core.SampleCoreEntity;
  
  
 /**

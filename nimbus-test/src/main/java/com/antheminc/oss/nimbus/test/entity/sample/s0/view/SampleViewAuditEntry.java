@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.test.entity.sample.core;
+package com.antheminc.oss.nimbus.test.entity.sample.s0.view;
 
 import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
@@ -28,11 +28,10 @@ import lombok.Setter;
  * @author Soham Chakravarti
  *
  */
-@Domain(value="sample_core_audit_history", includeListeners={ListenerType.persistence})
+@Domain(value="sample_view_audit_history", includeListeners={ListenerType.persistence})
 @Repo(Database.rep_mongodb)
 @Getter @Setter
-public class SampleCoreAuditEntry extends AuditEntry {
+public class SampleViewAuditEntry extends AuditEntry {
 
 	private static final long serialVersionUID = 1L;
-
 }

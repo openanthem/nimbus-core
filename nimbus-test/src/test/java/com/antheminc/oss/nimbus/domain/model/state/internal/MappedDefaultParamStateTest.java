@@ -37,7 +37,7 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
 import com.antheminc.oss.nimbus.domain.model.state.builder.QuadModelBuilder;
 import com.antheminc.oss.nimbus.test.FrameworkIntegrationTestScenariosApplication;
-import com.antheminc.oss.nimbus.test.entity.sample.core.SampleCoreEntity;
+import com.antheminc.oss.nimbus.test.entity.sample.s0.core.SampleCoreEntity;
 
 /**
  * @author Soham Chakravarti

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.antheminc.oss.nimbus.test.entity.sample.core;
+package com.antheminc.oss.nimbus.test.entity.sample.s0.core;
 
 import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.defn.Execution.Config;

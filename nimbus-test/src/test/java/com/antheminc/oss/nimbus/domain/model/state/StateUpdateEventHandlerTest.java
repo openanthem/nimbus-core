@@ -30,7 +30,7 @@ import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
 import com.antheminc.oss.nimbus.support.Holder;
 import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
-import com.antheminc.oss.nimbus.test.entity.sample.core.SampleCoreAssociatedEntity;
+import com.antheminc.oss.nimbus.test.entity.sample.s0.core.SampleCoreAssociatedEntity;
 
 /**
  * @author Rakesh Patel
