@@ -44,12 +44,12 @@ domain:
   model:
     basePackages:
       - com.antheminc.oss.nimbus.entity
-      - com.anthem.oss.nimbus.test.sample.um.model.core
-      - com.anthem.oss.nimbus.test.sample.um.model.view
-      - com.anthem.oss.nimbus.test.sample.domain.model.core
-      - com.anthem.oss.nimbus.test.sample.domain.model.ui
-      - com.anthem.nimbus.platform.core.bpm
-      - com.anthem.nimbus.platform.core.rules
+      - com.antheminc.oss.nimbus.test.entity.simplecase.core
+      - com.antheminc.oss.nimbus.test.entity.simplecase.view
+      - com.antheminc.oss.nimbus.test.entity.sample.core
+      - com.antheminc.oss.nimbus.test.entity.sample.view
+      - com.antheminc.oss.nimbus.domain.bpm
+      - com.antheminc.oss.nimbus.domain.rules
     typeClassMappings:
       java.time.LocalDate : 
         date

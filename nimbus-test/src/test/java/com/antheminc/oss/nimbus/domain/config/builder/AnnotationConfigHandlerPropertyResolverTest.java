@@ -15,8 +15,7 @@ import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import com.anthem.oss.nimbus.core.AbstractFrameworkIngerationPersistableTests;
-import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleExprEvalEntity;
+import com.antheminc.oss.nimbus.domain.AbstractFrameworkIngerationPersistableTests;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
@@ -30,6 +29,7 @@ import com.antheminc.oss.nimbus.domain.model.config.builder.EntityConfigVisitor;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
 import com.antheminc.oss.nimbus.domain.model.state.builder.QuadModelBuilder;
+import com.antheminc.oss.nimbus.test.entity.sample.core.SampleExprEvalEntity;
 
 /**
  * @author Soham Chakravarti

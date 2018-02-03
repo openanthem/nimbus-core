@@ -31,7 +31,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.mock.web.MockHttpServletRequest;
 
-import com.anthem.oss.nimbus.core.AbstractFrameworkIngerationPersistableTests;
+import com.antheminc.oss.nimbus.domain.AbstractFrameworkIngerationPersistableTests;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
@@ -41,9 +41,8 @@ import com.antheminc.oss.nimbus.entity.client.access.ClientUserRole;
 import com.antheminc.oss.nimbus.entity.client.user.ClientUser;
 import com.antheminc.oss.nimbus.entity.user.UserRole;
 import com.antheminc.oss.nimbus.support.Holder;
-
-import test.com.anthem.nimbus.platform.utils.ExtractResponseOutputUtils;
-import test.com.anthem.nimbus.platform.utils.MockHttpRequestBuilder;
+import com.antheminc.oss.nimbus.test.domain.support.utils.ExtractResponseOutputUtils;
+import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
 
 /**
  * @author Rakesh Patel

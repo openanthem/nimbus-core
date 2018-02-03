@@ -19,8 +19,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.util.Map;
 
-import com.antheminc.oss.nimbus.domain.config.builder.attributes.DefaultAnnotationAttributeHandler;
-
 /**
  * <p>Base implementation for defining how annotation attributes and their values should be
  * parsed and mapped.</p>

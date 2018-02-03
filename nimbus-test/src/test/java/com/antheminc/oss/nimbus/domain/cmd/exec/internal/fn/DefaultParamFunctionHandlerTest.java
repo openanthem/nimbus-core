@@ -29,20 +29,19 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.mock.web.MockHttpServletRequest;
 
-import com.anthem.oss.nimbus.core.AbstractFrameworkIngerationPersistableTests;
-import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreEntity;
-import com.anthem.oss.nimbus.test.sample.domain.model.core.SampleCoreNestedEntity;
-import com.anthem.oss.nimbus.test.sample.domain.model.ui.VPSampleViewPageBlue.Section_ConvertedNestedEntity;
-import com.anthem.oss.nimbus.test.sample.domain.model.ui.VPSampleViewPageGreen;
-import com.anthem.oss.nimbus.test.sample.domain.model.ui.VPSampleViewPageGreen.ConvertedNestedEntity;
-import com.anthem.oss.nimbus.test.sample.domain.model.ui.VPSampleViewPageRed.Form_ConvertedNestedEntity;
+import com.antheminc.oss.nimbus.domain.AbstractFrameworkIngerationPersistableTests;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
-
-import test.com.anthem.nimbus.platform.utils.ExtractResponseOutputUtils;
-import test.com.anthem.nimbus.platform.utils.MockHttpRequestBuilder;
+import com.antheminc.oss.nimbus.test.domain.support.utils.ExtractResponseOutputUtils;
+import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
+import com.antheminc.oss.nimbus.test.entity.sample.core.SampleCoreEntity;
+import com.antheminc.oss.nimbus.test.entity.sample.core.SampleCoreNestedEntity;
+import com.antheminc.oss.nimbus.test.entity.sample.view.VPSampleViewPageBlue.Section_ConvertedNestedEntity;
+import com.antheminc.oss.nimbus.test.entity.sample.view.VPSampleViewPageGreen;
+import com.antheminc.oss.nimbus.test.entity.sample.view.VPSampleViewPageGreen.ConvertedNestedEntity;
+import com.antheminc.oss.nimbus.test.entity.sample.view.VPSampleViewPageRed.Form_ConvertedNestedEntity;
 
 /**
  * @author Soham Chakravarti

@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.anthem.nimbus.platform.core.rules
+package com.antheminc.oss.nimbus.domain.rules
 
 import com.antheminc.oss.nimbus.domain.model.state.internal.DefaultModelState;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;

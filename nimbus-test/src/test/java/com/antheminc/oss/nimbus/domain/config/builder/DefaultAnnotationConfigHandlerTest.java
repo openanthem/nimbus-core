@@ -35,8 +35,6 @@ import org.junit.runners.MethodSorters;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.core.env.StandardEnvironment;
 
-import com.antheminc.oss.nimbus.domain.config.builder.AnnotationConfigHandler;
-import com.antheminc.oss.nimbus.domain.config.builder.DefaultAnnotationConfigHandler;
 import com.antheminc.oss.nimbus.domain.config.builder.attributes.ConstraintAnnotationAttributeHandler;
 import com.antheminc.oss.nimbus.domain.config.builder.attributes.DefaultAnnotationAttributeHandler;
 import com.antheminc.oss.nimbus.domain.defn.InvalidConfigException;

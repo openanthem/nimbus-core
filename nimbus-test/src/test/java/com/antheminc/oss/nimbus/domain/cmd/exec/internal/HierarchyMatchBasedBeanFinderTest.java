@@ -22,14 +22,12 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.anthem.oss.nimbus.core.AbstractFrameworkIntegrationTests;
 import com.antheminc.oss.nimbus.domain.cmd.Behavior;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
-import com.antheminc.oss.nimbus.domain.cmd.exec.internal.HierarchyMatchBasedBeanFinder;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.process.SetFunctionHandler;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
-
-import test.com.anthem.oss.nimbus.core.testutils.CommandUtils;
+import com.antheminc.oss.nimbus.test.domain.support.AbstractFrameworkIntegrationTests;
+import com.antheminc.oss.nimbus.test.domain.support.utils.CommandUtils;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class HierarchyMatchBasedBeanFinderTest extends AbstractFrameworkIntegrationTests {
