@@ -123,12 +123,6 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		this.propertyDescriptor = pd;
 	}
 	
-	@Override
-	protected void initSetupInternal() {
-//		setPathArr(resolvePath());
-//		
-//		setBeanPathArr(resolveBeanPath());
-	}
 	
 	@Override
 	public String getPath() {
@@ -156,26 +150,6 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		return p;
 	}
 	
-//	protected String[] resolvePath() {
-//		String[] parentPath = getParentModel().getPathArr();
-//		return resolvePath(parentPath, getConfig().getCode());
-//	}
-//	
-//	protected String[] resolveBeanPath() {
-//		String[] parentPath = getParentModel().getBeanPathArr();
-//		return resolvePath(parentPath, getConfig().getBeanName());
-//	}
-	
-	
-	
-//	public static String[] resolvePath(String[] parentPath, String code) {
-//		return ArrayUtils.addAll(parentPath, Constants.SEPARATOR_URI.code, code);
-//		return new StringBuilder(parentPath)
-//				.append(Constants.SEPARATOR_URI.code)
-//				.append(code)
-//				.toString();	
-//	}
-
 	@Override
 	protected void initStateInternal() {
 		if(isNested())

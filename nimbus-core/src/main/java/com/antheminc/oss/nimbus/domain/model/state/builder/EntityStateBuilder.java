@@ -168,15 +168,18 @@ public class EntityStateBuilder extends AbstractEntityStateBuilder {
 	}
 	
 	private <E> DefaultListElemParamState<E> buildElemParam(EntityStateAspectHandlers aspectHandlers, DefaultListModelState<E> mState, ParamConfig<E> mpConfig, String elemId) {
-		final DefaultListElemParamState<E> mpState = createElemParam(aspectHandlers, mState, mpConfig, elemId);
-		logit.debug(()->"[buildInternal] mpStatePath: "+ mpState.getPath());
+		final DefaultListElemParamState<E> pElem = createElemParam(aspectHandlers, mState, mpConfig, elemId);
+		logit.debug(()->"[buildInternal] mpStatePath: "+ pElem.getPath());
 		
 
-		//handle param type
-		StateType type = buildParamType(aspectHandlers, mpState, Optional.ofNullable(mState.findIfMapped()).map(m->m.getMapsTo()).orElse(null));
-		mpState.setType(type);
+		// handle param type
+		StateType type = buildParamType(aspectHandlers, pElem, Optional.ofNullable(mState.findIfMapped()).map(m->m.getMapsTo()).orElse(null));
+		pElem.setType(type);
 		
-		return mpState;
+		// call initState on collection paramElems explicitly as they are created
+		pElem.initState();
+		
+		return pElem;
 	}
 	
 	@Override

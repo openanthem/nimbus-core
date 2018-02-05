@@ -26,9 +26,9 @@ import com.antheminc.oss.nimbus.domain.defn.extension.Audit;
 import com.antheminc.oss.nimbus.domain.defn.extension.ConfigConditional;
 import com.antheminc.oss.nimbus.test.entity.sample.s0.core.SampleCoreAuditEntry;
 import com.antheminc.oss.nimbus.test.entity.sample.s0.core.SampleCoreEntity;
+import com.antheminc.oss.nimbus.test.entity.sample.s0.core.SampleCoreEntity.SampleForm;
 import com.antheminc.oss.nimbus.test.entity.sample.s0.core.SampleCoreLevel1_Entity;
 import com.antheminc.oss.nimbus.test.entity.sample.s0.core.SampleCoreNestedEntity;
-import com.antheminc.oss.nimbus.test.entity.sample.s0.core.SampleCoreEntity.SampleForm;
 
 import lombok.Getter;
 import lombok.Setter;

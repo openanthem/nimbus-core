@@ -38,8 +38,8 @@ import com.antheminc.oss.nimbus.test.domain.support.utils.ExtractResponseOutputU
 import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
 import com.antheminc.oss.nimbus.test.entity.sample.s0.core.SampleCoreEntity;
 import com.antheminc.oss.nimbus.test.entity.sample.s0.core.SampleCoreNestedEntity;
-import com.antheminc.oss.nimbus.test.entity.sample.s0.view.VPSampleViewPageGreen;
 import com.antheminc.oss.nimbus.test.entity.sample.s0.view.VPSampleViewPageBlue.Section_ConvertedNestedEntity;
+import com.antheminc.oss.nimbus.test.entity.sample.s0.view.VPSampleViewPageGreen;
 import com.antheminc.oss.nimbus.test.entity.sample.s0.view.VPSampleViewPageGreen.ConvertedNestedEntity;
 import com.antheminc.oss.nimbus.test.entity.sample.s0.view.VPSampleViewPageRed.Form_ConvertedNestedEntity;
 

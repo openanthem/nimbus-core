@@ -43,10 +43,10 @@ import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
 import com.antheminc.oss.nimbus.test.FrameworkIntegrationTestScenariosApplication;
 import com.antheminc.oss.nimbus.test.entity.sample.s0.core.SampleCoreEntity;
 import com.antheminc.oss.nimbus.test.entity.sample.s0.core.SampleCoreNestedEntity;
-import com.antheminc.oss.nimbus.test.entity.sample.s0.view.VRSampleViewRootEntity;
 import com.antheminc.oss.nimbus.test.entity.sample.s0.view.VPSampleViewPageBlue.Section_ConvertedNestedEntity;
 import com.antheminc.oss.nimbus.test.entity.sample.s0.view.VPSampleViewPageGreen.ConvertedNestedEntity;
 import com.antheminc.oss.nimbus.test.entity.sample.s0.view.VPSampleViewPageRed.Form_ConvertedNestedEntity;
+import com.antheminc.oss.nimbus.test.entity.sample.s0.view.VRSampleViewRootEntity;
 
 /**
  * @author Soham Chakravarti

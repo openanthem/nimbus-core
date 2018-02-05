@@ -115,16 +115,16 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 		for(Output<?> op: outputs) {
 			if(op.getValue() instanceof Param<?>) {
 				Param<?> param = (Param<?>)op.getValue();
-				Param<?> viewTaskParam =param.findParamByPath("/0/viewLink");
-				Param<?> attrStringParam =param.findParamByPath("/0/attr_String");
 				
-				if(viewTaskParam != null && attrStringParam != null) {
-					assertFalse(viewTaskParam.isVisible());
-					assertFalse(viewTaskParam.isEnabled());
-					
-					assertTrue(viewTaskParam.isVisible());
-					assertFalse(viewTaskParam.isEnabled());
-				}
+				Param<?> attrStringParam = param.findParamByPath("/0/attr_String"); // READ
+				assertNotNull(attrStringParam);
+				assertTrue(attrStringParam.isVisible());
+				assertFalse(attrStringParam.isEnabled());
+				
+				Param<?> viewLinkParam = param.findParamByPath("/0/viewLink"); // HIDDEN
+				assertNotNull(viewLinkParam);
+				assertFalse(viewLinkParam.isVisible());
+				assertFalse(viewLinkParam.isEnabled());
 				
 			}
 		}

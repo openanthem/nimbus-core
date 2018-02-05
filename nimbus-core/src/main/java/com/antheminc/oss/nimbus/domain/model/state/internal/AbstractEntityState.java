@@ -59,15 +59,6 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 
 	final private EntityConfig<T> config;
 	
-//	private String path;
-//	private String beanPath;
-	
-	//private String[] pathArr;
-	//private String[] beanPathArr;
-	
-//	private String pathSegment;
-//	private String beanPathSegment;
-	
 	@JsonIgnore final private EntityStateAspectHandlers aspectHandlers;
 	
 	@JsonIgnore final protected LockTemplate lockTemplate = new LockTemplate();
@@ -100,56 +91,6 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 		return p;
 	}
 	
-	/*
-	@Override
-	public String getPath() {
-		return convertArrayToPath(pathArr);
-//		String p = path;
-//
-//		p = StringUtils.replace(path, "/c/", "/");
-//		p = StringUtils.replace(p, "/v/", "/");
-//		p = StringUtils.replace(p, "/f/", "/");
-//		return p;
-	}
-
-//	protected void setPath(String path) {
-//		this.path = path;
-//	}
-	
-	@Override
-	public String getBeanPath() {
-		return convertArrayToBeanPath(beanPathArr);
-	}
-//	public void setBeanPath(String beanPath) {
-//		this.beanPath = beanPath;
-//	}
-	
-	private final static String[] pathIgnores = new String[]{"c", "v", "f"};
-	private String convertArrayToPath(String[] arr) {
-		if(ArrayUtils.isEmpty(arr))
-			return "";
-		
-		StringBuffer sb = new StringBuffer();
-		for(int i=0; i<arr.length; i++) {
-			if(!ArrayUtils.contains(pathIgnores, arr[i]))
-				sb.append(arr[i]);
-		}
-		
-		return sb.toString();
-	}
-	
-	private String convertArrayToBeanPath(String[] arr) {
-		if(ArrayUtils.isEmpty(arr))
-			return "";
-		
-		StringBuffer sb = new StringBuffer();
-		for(int i=0; i<arr.length; i++) {
-			sb.append(arr[i]);
-		}
-		
-		return sb.toString();
-	}
-	*/
 	
 	@Override
 	final public void initSetup() {

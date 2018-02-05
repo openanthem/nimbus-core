@@ -27,6 +27,8 @@ public class S1C_AnotherMain extends IdString {
 	@ActivateConditional(when="state == 'value2_1'", targetPath="/../cOnly1")
 	private String value2;
 	
+	private String value3;
+	
 	private String cOnly1;
 	
 	private String cLink2;

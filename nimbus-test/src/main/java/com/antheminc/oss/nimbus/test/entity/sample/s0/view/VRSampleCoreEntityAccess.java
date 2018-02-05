@@ -2,8 +2,8 @@ package com.antheminc.oss.nimbus.test.entity.sample.s0.view;
 
 import java.util.List;
 
-import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
 import com.antheminc.oss.nimbus.domain.defn.Domain;
+import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
 import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo.Type;

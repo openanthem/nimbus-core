@@ -45,6 +45,13 @@ public class DefaultListElemParamState<E> extends DefaultParamState<E> implement
 	final private String elemId;
 
 	
+	public DefaultListElemParamState(ListModel<E> parentModel, ParamConfig<E> config, EntityStateAspectHandlers aspectHandlers, String elemId) {
+		super(parentModel, config, aspectHandlers);
+		
+		Objects.requireNonNull(elemId, "ElemId must not be null.");
+		this.elemId = elemId;
+	}	
+
 	public static class LeafElemState<E> extends DefaultListElemParamState<E> implements LeafParam<E> {
 		private static final long serialVersionUID = 1L;
 		
@@ -53,30 +60,12 @@ public class DefaultListElemParamState<E> extends DefaultParamState<E> implement
 		}
 	}
 
-	
-	public DefaultListElemParamState(ListModel<E> parentModel, ParamConfig<E> config, EntityStateAspectHandlers aspectHandlers, String elemId) {
-		super(parentModel, config, aspectHandlers);
-		
-		Objects.requireNonNull(elemId, "ElemId must not be null.");
-		this.elemId = elemId;
-	}	
-
 	@SuppressWarnings("unchecked")
 	@JsonIgnore @Override
 	public ListModel<E> getParentModel() {
 		return (ListModel<E>)super.getParentModel();
 	}
 	
-//	@Override
-//	protected String[] resolvePath() {
-//		return replaceIndexConstantWithElemId(super.resolvePath());
-//	}
-//	
-//	@Override
-//	protected String[] resolveBeanPath() {
-//		return replaceIndexConstantWithElemId(super.resolveBeanPath());
-//	}
-
 	@Override
 	public String getPath() {
 		String p = super.getPath();
@@ -90,13 +79,6 @@ public class DefaultListElemParamState<E> extends DefaultParamState<E> implement
 	}
 	
 	private String replaceIndexConstantWithElemId(String pathExpr) {
-//		int index = ArrayUtils.indexOf(pathExpr, Constants.MARKER_COLLECTION_ELEM_INDEX.code);
-//		if(index==-1)
-//			throw new InvalidStateException("Expected marker "+Constants.MARKER_COLLECTION_ELEM_INDEX.code+" not found in listElem: ");
-//		
-//		String[] copy = Arrays.copyOf(pathExpr, pathExpr.length);
-//		copy[index] = getElemId();
-//		return copy;
 		String rPath = StringUtils.replace(pathExpr, Constants.MARKER_COLLECTION_ELEM_INDEX.code, getElemId());
 		return rPath;
 	}
