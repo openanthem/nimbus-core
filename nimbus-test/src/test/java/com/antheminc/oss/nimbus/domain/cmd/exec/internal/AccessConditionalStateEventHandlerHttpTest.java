@@ -17,6 +17,7 @@ package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import com.antheminc.oss.nimbus.domain.AbstractFrameworkIngerationPersistableTests;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
+import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.session.UserEndpointSession;
 import com.antheminc.oss.nimbus.entity.client.access.ClientAccessEntity;
@@ -43,6 +45,7 @@ import com.antheminc.oss.nimbus.entity.user.UserRole;
 import com.antheminc.oss.nimbus.support.Holder;
 import com.antheminc.oss.nimbus.test.domain.support.utils.ExtractResponseOutputUtils;
 import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
+import com.antheminc.oss.nimbus.test.entity.sample.s0.core.SampleCoreEntityAccess;
 
 /**
  * @author Rakesh Patel
@@ -77,18 +80,56 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 		assertFalse(accessParam.isEnabled());
 	}
 	
-//	@Test
-//	public void t04_accessConditionalGridLinkHidden() throws Exception {
-//		String userLoginId = createClientUserWithRoles("superman","intake","clinician");
-//		
-//		Param<?> p = excuteNewConfigView(userLoginId);
-//		assertNotNull(p);
-//		
-//		Param<?> accessParam = p.findParamByPath("/accessConditional_Contains_Hidden2");
-//		
-//		assertFalse(accessParam.isVisible());
-//		assertFalse(accessParam.isEnabled());
-//	}
+	@Test
+	public void t04_accessConditionalGridLinkHidden() throws Exception {
+		String userLoginId = createClientUserWithRoles("superman","intake","clinician");
+		
+		
+		SampleCoreEntityAccess scea = new SampleCoreEntityAccess();
+		scea.setAttr_String("test1");
+		
+		SampleCoreEntityAccess scea2 = new SampleCoreEntityAccess();
+		scea2.setAttr_String("test2");
+		mongo.save(scea, "sample_core_access");
+		mongo.save(scea2, "sample_core_access");
+		
+		
+		Param<?> p = excuteNewConfigView(userLoginId);
+		assertNotNull(p);
+		
+		String refId = p.findStateByPath("/.m/id");
+		
+		final MockHttpServletRequest gridRequest = MockHttpRequestBuilder
+				.withUri(VIEW_PARAM_ACCESS_ROOT)
+				.addRefId(refId)
+				.addNested("/vpSampleCoreEntityAccess/vtSampleCoreEntityAccess/vsSampleCoreEntityAccess/vgSampleCoreEntities")
+				.addAction(Action._get)
+				.getMock();
+		final Object gridResponse = controller.handleGet(gridRequest, null);
+		assertNotNull(gridResponse);
+		
+		List<Output<?>> outputs = MultiOutput.class.cast(Holder.class.cast(gridResponse).getState()).getOutputs();
+		
+		assertNotNull(outputs);
+		
+		for(Output<?> op: outputs) {
+			if(op.getValue() instanceof Param<?>) {
+				Param<?> param = (Param<?>)op.getValue();
+				Param<?> viewTaskParam =param.findParamByPath("/0/viewLink");
+				Param<?> attrStringParam =param.findParamByPath("/0/attr_String");
+				
+				if(viewTaskParam != null && attrStringParam != null) {
+					assertFalse(viewTaskParam.isVisible());
+					assertFalse(viewTaskParam.isEnabled());
+					
+					assertTrue(viewTaskParam.isVisible());
+					assertFalse(viewTaskParam.isEnabled());
+				}
+				
+			}
+		}
+		
+	}
 
 	@SuppressWarnings("unchecked")
 	private Param<?> excuteNewConfigCore(String userLoginId) {
@@ -116,31 +157,31 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 		return p;
 	}
 	
-//	@SuppressWarnings("unchecked")
-//	private Param<?> excuteNewConfigView(String userLoginId) {
-//		final MockHttpServletRequest fetchUser = MockHttpRequestBuilder.withUri(USER_PARAM_ROOT)
-//				.addAction(Action._search)
-//				.addParam("fn", "query")
-//				.addParam("where", "clientuser.loginId.eq('"+userLoginId+"')")
-//				.addParam("fetch","1")
-//				.getMock();
-//		
-//		Holder<MultiOutput> holder = (Holder<MultiOutput>) controller.handlePost(fetchUser, null);
-//		MultiOutput output = holder.getState();
-//		ClientUser clientuser = (ClientUser) output.getSingleResult();
-//		assertNotNull(clientuser);
-//		UserEndpointSession.setAttribute("client-user-key", clientuser);
-//		
-//		createResolvedAccessEntities(clientuser);
-//
-//		final MockHttpServletRequest req = MockHttpRequestBuilder.withUri(VIEW_PARAM_ACCESS_ROOT)
-//				.addAction(Action._new)
-//				.getMock();
-//
-//		final Object resp = controller.handleGet(req, null);
-//		Param<?> p = ExtractResponseOutputUtils.extractOutput(resp);
-//		return p;
-//	}
+	@SuppressWarnings("unchecked")
+	private Param<?> excuteNewConfigView(String userLoginId) {
+		final MockHttpServletRequest fetchUser = MockHttpRequestBuilder.withUri(USER_PARAM_ROOT)
+				.addAction(Action._search)
+				.addParam("fn", "query")
+				.addParam("where", "clientuser.loginId.eq('"+userLoginId+"')")
+				.addParam("fetch","1")
+				.getMock();
+		
+		Holder<MultiOutput> holder = (Holder<MultiOutput>) controller.handlePost(fetchUser, null);
+		MultiOutput output = holder.getState();
+		ClientUser clientuser = (ClientUser) output.getSingleResult();
+		assertNotNull(clientuser);
+		UserEndpointSession.setAttribute("client-user-key", clientuser);
+		
+		createResolvedAccessEntities(clientuser);
+
+		final MockHttpServletRequest req = MockHttpRequestBuilder.withUri(VIEW_PARAM_ACCESS_ROOT)
+				.addAction(Action._new)
+				.getMock();
+
+		final Object resp = controller.handleGet(req, null);
+		Param<?> p = ExtractResponseOutputUtils.extractOutput(resp);
+		return p;
+	}
 
 	private void createResolvedAccessEntities(ClientUser clientuser) {
 		Holder<MultiOutput> holder;

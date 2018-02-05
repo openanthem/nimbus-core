@@ -48,6 +48,10 @@ public abstract class AbstractFrameworkIngerationPersistableTests extends Abstra
     protected static final String CORE_ACCESS_DOMAIN_ALIAS = "sample_core_access"; 
     protected static final String CORE_PARAM_ACCESS_ROOT = PLATFORM_ROOT + "/" + CORE_ACCESS_DOMAIN_ALIAS;
     
+    protected static final String VIEW_ACCESS_DOMAIN_ALIAS = "sample_core_access_view"; 
+    protected static final String VIEW_PARAM_ACCESS_ROOT = PLATFORM_ROOT + "/" + VIEW_ACCESS_DOMAIN_ALIAS;
+
+    
     protected static final String CORE_NESTED_CONFIG_DOMAIN_ALIAS = "sample_core_nested"; 
     protected static final String CORE_NESTED_CONFIG_ROOT = PLATFORM_ROOT + "/" + CORE_NESTED_CONFIG_DOMAIN_ALIAS;
 	
