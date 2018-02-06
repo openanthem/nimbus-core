@@ -46,7 +46,7 @@ public abstract class AbstractSessionProvider implements SessionProvider {
 	}
 	
 	@Override
-	public final void setClientUser(ClientUser clientUser) {
+	public final void setLoggedInUser(ClientUser clientUser) {
 		setAttribute(Constants.CLIENT_USER_KEY.code, clientUser);
 	}
 

@@ -28,6 +28,6 @@ public interface SessionProvider {
 	public void setAttribute(String key, Object value);
 	public ClientUser getLoggedInUser();	
 	public void setAttribute(Command cmd, Object value);
-	public void setClientUser(ClientUser clientUser);
+	public void setLoggedInUser(ClientUser clientUser);
 	public <R> R getOrThrowEx(Command cmd);
 }
