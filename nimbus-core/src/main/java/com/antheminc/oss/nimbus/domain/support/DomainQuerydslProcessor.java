@@ -15,6 +15,7 @@
  */
 package com.antheminc.oss.nimbus.domain.support;
 
+import java.lang.annotation.Annotation;
 import java.util.Collections;
 
 import javax.annotation.processing.RoundEnvironment;
@@ -23,7 +24,6 @@ import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.tools.Diagnostic;
 
-import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.querydsl.apt.AbstractQuerydslProcessor;
 import com.querydsl.apt.Configuration;
 import com.querydsl.apt.DefaultConfiguration;
@@ -43,6 +43,17 @@ import com.querydsl.core.annotations.QueryTransient;
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class DomainQuerydslProcessor extends AbstractQuerydslProcessor {
 
+	private String annClassName = "com.antheminc.oss.nimbus.domain.defn.Domain";
+	
+	@SuppressWarnings("unchecked")
+	private Class<? extends Annotation> lazyLoadClass() {
+		try {
+			return (Class<? extends Annotation>)Class.forName(annClassName);
+		} catch (ClassNotFoundException ex) {
+			throw new RuntimeException("Failed to load annotation for definition entities: "+annClassName, ex);
+		}
+	}
+	
 	@Override
 	protected Configuration createConfiguration(RoundEnvironment roundEnv) {
 
@@ -50,7 +61,7 @@ public class DomainQuerydslProcessor extends AbstractQuerydslProcessor {
 
 		
 		DefaultConfiguration configuration = new DefaultConfiguration(roundEnv, processingEnv.getOptions(),
-				Collections.<String> emptySet(), QueryEntities.class, Domain.class, QuerySupertype.class,
+				Collections.<String> emptySet(), QueryEntities.class, lazyLoadClass(), QuerySupertype.class,
 				QueryEmbeddable.class, QueryEmbedded.class, QueryTransient.class);
 
 		configuration.setUnknownAsEmbedded(true);

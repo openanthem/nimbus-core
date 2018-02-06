@@ -1,0 +1,40 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.antheminc.oss</groupId>
+		<artifactId>nimbus-core-parent</artifactId>
+		<version>1.0.0.M1-SNAPSHOT</version>
+		<relativePath>../</relativePath>
+	</parent>
+
+	<artifactId>nimbus-dsl</artifactId> 
+	<packaging>jar</packaging>
+	<name>nimbus-dsl</name>
+	
+    <properties>
+        <sonar.projectName>nimbus-dsl</sonar.projectName>
+    </properties>
+    <dependencies>
+       	<dependency>
+			<groupId>com.antheminc.oss</groupId>
+			<artifactId>nimbus-core</artifactId>
+		</dependency>
+		
+        <!-- Querydsl -->
+        <dependency>
+            <groupId>com.querydsl</groupId>
+            <artifactId>querydsl-mongodb</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.querydsl</groupId>
+            <artifactId>querydsl-apt</artifactId>
+        </dependency>
+    </dependencies>
+
+	<build>
+		 <sourceDirectory>../target/generated-sources/annotation</sourceDirectory>
+		    <directory>../target/build/dsl</directory>
+	</build>
+
+</project>
