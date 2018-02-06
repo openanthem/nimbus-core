@@ -35,7 +35,7 @@ import com.querydsl.core.annotations.QueryTransient;
 
 /**
  * @author Sandeep Mantha
- *
+ * @author Soham Chakravarti
  */
 @SupportedAnnotationTypes({ 
 	"com.mysema.query.annotations.*", 

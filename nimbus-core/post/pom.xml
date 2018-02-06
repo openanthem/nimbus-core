@@ -8,12 +8,12 @@
 		<relativePath>../</relativePath>
 	</parent>
 
-	<artifactId>nimbus-dsl</artifactId> 
+	<artifactId>nimbus-entity-dsl</artifactId> 
 	<packaging>jar</packaging>
-	<name>nimbus-dsl</name>
+	<name>nimbus-entity-dsl</name>
 	
     <properties>
-        <sonar.projectName>nimbus-dsl</sonar.projectName>
+        <sonar.projectName>nimbus-entity-dsl</sonar.projectName>
     </properties>
     <dependencies>
        	<dependency>
@@ -34,7 +34,7 @@
 
 	<build>
 		 <sourceDirectory>../target/generated-sources/annotation</sourceDirectory>
-		    <directory>../target/build/dsl</directory>
+		 <directory>../target/nimbus-entity-dsl</directory>
 	</build>
 
 </project>

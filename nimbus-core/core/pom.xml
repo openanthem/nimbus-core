@@ -26,7 +26,7 @@
      <testResources><testResource><directory>../src/test/resources</directory></testResource></testResources>
      <testOutputDirectory>../target/test-classes</testOutputDirectory>
      
-     <directory>../target/build</directory>
+     <directory>../target</directory>
      
      <plugins>
      

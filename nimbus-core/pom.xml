@@ -16,16 +16,6 @@
 		<module>post</module>
 	</modules>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>com.antheminc.oss</groupId>
-				<artifactId>nimbus-dsl</artifactId>
-				<version>${nimbus.core.version}</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-	
     <dependencies>
     	<dependency>
 			<groupId>org.projectlombok</groupId>

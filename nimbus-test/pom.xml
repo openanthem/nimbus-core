@@ -20,7 +20,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.antheminc.oss</groupId>
-			<artifactId>nimbus-dsl</artifactId>
+			<artifactId>nimbus-entity-dsl</artifactId>
 		</dependency>		
     	<dependency>
 			<groupId>org.projectlombok</groupId>
