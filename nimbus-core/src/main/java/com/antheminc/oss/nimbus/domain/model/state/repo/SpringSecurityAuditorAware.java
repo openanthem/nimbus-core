@@ -19,7 +19,8 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.domain.AuditorAware;
 
-import com.antheminc.oss.nimbus.domain.session.UserEndpointSession;
+import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.domain.session.SessionProvider;
 import com.antheminc.oss.nimbus.entity.client.user.ClientUser;
 
 /**
@@ -29,11 +30,17 @@ import com.antheminc.oss.nimbus.entity.client.user.ClientUser;
  * @author Rakesh Patel
  */
 public class SpringSecurityAuditorAware implements AuditorAware<String> {
+	
+	private final SessionProvider sessionProvider;
 
+	public SpringSecurityAuditorAware(BeanResolverStrategy beanResolver) {
+		this.sessionProvider = beanResolver.get(SessionProvider.class);
+	}	
+	
 	@Override
 	public String getCurrentAuditor() {
 		
-		ClientUser loggedInUser = UserEndpointSession.getStaticLoggedInUser();
+		ClientUser loggedInUser = sessionProvider.getLoggedInUser();
 		if(loggedInUser != null) {
 			return loggedInUser.getLoginId();
 		}

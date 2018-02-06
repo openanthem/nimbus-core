@@ -79,7 +79,8 @@ public enum Constants {
 	KEY_EXECUTE_EVAL_ARG("eval"),
 	KEY_EXECUTE_PROCESS_ID("processId"),
 	
-	REQUEST_PARAMETER_MARKER("?")
+	REQUEST_PARAMETER_MARKER("?"),
+	CLIENT_USER_KEY("client-user-key")
 	;
 	
 	

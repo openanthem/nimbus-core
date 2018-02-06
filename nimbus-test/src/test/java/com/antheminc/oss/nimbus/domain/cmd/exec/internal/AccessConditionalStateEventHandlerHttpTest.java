@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.antheminc.oss.nimbus.domain.AbstractFrameworkIngerationPersistableTests;
@@ -37,7 +38,7 @@ import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
-import com.antheminc.oss.nimbus.domain.session.UserEndpointSession;
+import com.antheminc.oss.nimbus.domain.session.SessionProvider;
 import com.antheminc.oss.nimbus.entity.client.access.ClientAccessEntity;
 import com.antheminc.oss.nimbus.entity.client.access.ClientUserRole;
 import com.antheminc.oss.nimbus.entity.client.user.ClientUser;
@@ -53,6 +54,9 @@ import com.antheminc.oss.nimbus.test.entity.sample.s0.core.SampleCoreEntityAcces
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AccessConditionalStateEventHandlerHttpTest extends AbstractFrameworkIngerationPersistableTests {
+	
+	@Autowired SessionProvider sessionProvider;
+
 
 	@Test
 	public void t03_accessConditionalReadOnly() throws Exception {
@@ -144,7 +148,7 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 		MultiOutput output = holder.getState();
 		ClientUser clientuser = (ClientUser) output.getSingleResult();
 		assertNotNull(clientuser);
-		UserEndpointSession.setAttribute("client-user-key", clientuser);
+		sessionProvider.setAttribute("client-user-key", clientuser);
 		
 		createResolvedAccessEntities(clientuser);
 
@@ -170,7 +174,7 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 		MultiOutput output = holder.getState();
 		ClientUser clientuser = (ClientUser) output.getSingleResult();
 		assertNotNull(clientuser);
-		UserEndpointSession.setAttribute("client-user-key", clientuser);
+		sessionProvider.setAttribute("client-user-key", clientuser);
 		
 		createResolvedAccessEntities(clientuser);
 

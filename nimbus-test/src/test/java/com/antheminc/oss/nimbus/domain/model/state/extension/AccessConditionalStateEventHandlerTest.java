@@ -27,11 +27,12 @@ import java.util.List;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
-import com.antheminc.oss.nimbus.domain.session.UserEndpointSession;
+import com.antheminc.oss.nimbus.domain.session.SessionProvider;
 import com.antheminc.oss.nimbus.entity.client.access.ClientAccessEntity;
 import com.antheminc.oss.nimbus.entity.client.user.ClientUser;
 import com.antheminc.oss.nimbus.entity.user.UserRole;
@@ -59,10 +60,9 @@ public class AccessConditionalStateEventHandlerTest extends AbstractStateEventHa
 	private static final String ACCESS_CONDITIONAL_WHENAUTHORITIES_READ_PARAM2_PATH = "/sample_core_access/accessConditional_WhenAuthorities_Read2";
 	private static final String ACCESS_CONDITIONAL_WHENAUTHORITIES_HIDDEN_PARAM2_PATH = "/sample_core_access/accessConditional_WhenAuthorities_Hidden2";
 	
-	
-	
-	
 	private static ClientUser CU = createClientUserWithRoles("batman","intake","clinician");
+	
+	@Autowired SessionProvider sessionProvider;
 	
 	@Override
 	protected Command createCommand() {
@@ -72,7 +72,7 @@ public class AccessConditionalStateEventHandlerTest extends AbstractStateEventHa
 	
 	@Override
 	public void before() {
-		UserEndpointSession.setAttribute("client-user-key", CU);
+		sessionProvider.setAttribute("client-user-key", CU);
 		super.before();
 	}
 	

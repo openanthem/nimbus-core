@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.mongodb.MongoDbFactory;
@@ -37,7 +36,7 @@ import lombok.Setter;
  */
 public class ZonedDateTimeConverterTest {
 
-	private static final ZoneId K_SAVE_JVM_ZONE_ID = ZoneId.of("Asia/Kolkata");
+	//private static final ZoneId K_SAVE_JVM_ZONE_ID = ZoneId.of("Asia/Kolkata");
 	
 	private static final ZonedDateTime K_ZDT = ZonedDateTime.of(2018, 2, 6, 6, 52, 0, 0, ZoneId.of("US/Pacific-New"));
 	//private static final ZonedDateTime K_UTC = ZonedDateTime.of(2018, 2, 6, 14, 52, 0, 0, ZoneId.of("UTC"));
@@ -77,16 +76,8 @@ public class ZonedDateTimeConverterTest {
         
     }
     
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-    	System.setProperty("user.timezone", K_SAVE_JVM_ZONE_ID.getId());
-    }
-	
 	@Test
 	public void t1_fromZ() {
-		// set save zone
-		assertEquals(K_SAVE_JVM_ZONE_ID, ZoneId.systemDefault());
-		
 		// create entity to save
 		_TestEntityWithZDT entity_dbSave = new _TestEntityWithZDT();
 		entity_dbSave.setUserEnteredZonedDT(K_ZDT);
