@@ -40,6 +40,11 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+		    <groupId>cz.jirutka.spring</groupId>
+		    <artifactId>embedmongo-spring</artifactId>
+		    <scope>test</scope>
+		</dependency>		
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
