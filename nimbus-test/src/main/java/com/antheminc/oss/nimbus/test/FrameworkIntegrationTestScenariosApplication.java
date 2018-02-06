@@ -21,7 +21,6 @@ import org.springframework.context.annotation.Bean;
 
 import com.antheminc.oss.nimbus.app.extension.config.DefaultCoreConfiguration;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
-import com.antheminc.oss.nimbus.domain.session.HttpSessionProvider;
 import com.antheminc.oss.nimbus.domain.session.SessionProvider;
 
 /**
@@ -37,11 +36,6 @@ public class FrameworkIntegrationTestScenariosApplication {
 	
 	@Bean
 	public SessionProvider sessionProvider(BeanResolverStrategy beanResolver){
-		return new HttpSessionProvider() {
-			@Override
-			public String getSessionId() {
-				return "";
-			}
-		};
+		return new TestSessionProvider();
 	}
 }

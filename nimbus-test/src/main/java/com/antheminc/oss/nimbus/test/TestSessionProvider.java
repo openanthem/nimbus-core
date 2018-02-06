@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.domain.session;
+package com.antheminc.oss.nimbus.test;
 
 import java.util.HashMap;
 import java.util.Map;
