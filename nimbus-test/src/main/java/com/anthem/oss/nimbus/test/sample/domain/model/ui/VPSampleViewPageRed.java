@@ -40,7 +40,7 @@ import lombok.Setter;
 @Getter @Setter
 public class VPSampleViewPageRed {
 
-	@Tile(title="Sample Page Red", size=Tile.Size.Large) 
+	@Tile(size=Tile.Size.Large) 
 	private TileRed tile;
 	
 	@MapsTo.Type(SampleCoreEntity.class)
@@ -51,7 +51,7 @@ public class VPSampleViewPageRed {
 		@Path(value="/attr_list_2_NestedEntity", nature=Nature.TransientColElem)
 		private Form_ConvertedNestedEntity vt_attached_convertedNestedEntity;
 		
-		@Modal(title = "Red Modal")
+		@Modal()
 		private VMRedModal modal;
 	}
 

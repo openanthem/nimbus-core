@@ -37,7 +37,7 @@ import lombok.Setter;
 public class VPSampleViewPageBlue {
 
 
-	@Tile(title="Sample Page Blue", size=Tile.Size.Large) 
+	@Tile(size=Tile.Size.Large) 
 	private TileBlue tile;	
 	
 	@MapsTo.Type(SampleCoreEntity.class)

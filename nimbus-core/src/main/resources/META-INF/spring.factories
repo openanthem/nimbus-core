@@ -6,5 +6,4 @@ com.antheminc.oss.nimbus.app.extension.config.DefaultProcessConfig,\
 com.antheminc.oss.nimbus.app.extension.config.DefaultCoreExecutorConfig,\
 com.antheminc.oss.nimbus.app.extension.config.DefaultCoreBuilderConfig,\
 com.antheminc.oss.nimbus.app.extension.config.ActivitiProcessAsBeanRegistrar,\
-com.antheminc.oss.nimbus.app.extension.config.SessionProviderConfig,\
 com.antheminc.oss.nimbus.app.extension.config.DefaultFrameworkExtensionsConfig
