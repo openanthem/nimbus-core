@@ -59,7 +59,7 @@ import com.antheminc.oss.nimbus.domain.model.state.builder.QuadModelBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.internal.DefaultListParamState;
 import com.antheminc.oss.nimbus.domain.model.state.internal.DefaultParamState;
 import com.antheminc.oss.nimbus.domain.model.state.internal.ExecutionEntity;
-import com.antheminc.oss.nimbus.domain.session.UserEndpointSession;
+import com.antheminc.oss.nimbus.domain.session.SessionProvider;
 
 import test.com.anthem.nimbus.platform.spec.model.command.TestCommandFactory;
 
@@ -75,6 +75,9 @@ public class QuadModelCollectionsTest {
 	
 	@Autowired QuadModelBuilder quadModelBuilder;
 	
+	@Autowired SessionProvider sessionProvider;
+
+	
 	
 	@Before
 	public void before() {
@@ -82,7 +85,7 @@ public class QuadModelCollectionsTest {
 		QuadModel<UMCaseFlow, UMCase> q = quadModelBuilder.build(cmd);
 		assertNotNull(q);
 		
-		UserEndpointSession.setAttribute(cmd, q);
+		sessionProvider.setAttribute(cmd, q);
 	}
 	
 	@Test
@@ -100,7 +103,7 @@ public class QuadModelCollectionsTest {
 	
 	@Test
 	public void t0_configState() {
-		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<UMCaseFlow, UMCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		
 		Param<?> pAloha = q.getView().findParamByPath("/pg3/aloha");
 		assertNotNull(pAloha);
@@ -119,7 +122,7 @@ public class QuadModelCollectionsTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void t1_leafstates() {
-		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<UMCaseFlow, UMCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		
 		ServiceLine sl = new ServiceLine();
 		sl.setService("Karma");
@@ -153,7 +156,7 @@ public class QuadModelCollectionsTest {
 	
 	@Test
 	public void tc01_sanity_check_core_builders() {
-		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<UMCaseFlow, UMCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		
 		// ParamSAC
 		Param<List<ServiceLine>> pSAC_col = q.getCore().findParamByPath("/serviceLines");
@@ -221,7 +224,7 @@ public class QuadModelCollectionsTest {
 	
 	@Test
 	public void tc02_sanity_check_core_ops() {
-		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<UMCaseFlow, UMCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		
 		assertNotNull(q.getCore());
 		// ParamSAC
@@ -252,7 +255,7 @@ public class QuadModelCollectionsTest {
 	
 	@Test
 	public void tc03_col_c_add() {
-		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<UMCaseFlow, UMCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		assertNotNull(q.getCore());
 
 		//add to list
@@ -271,7 +274,7 @@ public class QuadModelCollectionsTest {
 	
 	@Test
 	public void tc04_col_c_getList() {
-		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<UMCaseFlow, UMCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		assertNotNull(q.getCore());
 		
 		//get list
@@ -280,7 +283,7 @@ public class QuadModelCollectionsTest {
 	
 	@Test
 	public void tc05_col_c_setList() {
-		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<UMCaseFlow, UMCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		
 		//set list
 		List<ServiceLine> newList = new ArrayList<>();
@@ -316,7 +319,7 @@ public class QuadModelCollectionsTest {
 	
 	@Test
 	public void tc06_col_c_add_nestedSet() {
-		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<UMCaseFlow, UMCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		
 		ServiceLine elem = new ServiceLine();
 		
@@ -347,7 +350,7 @@ public class QuadModelCollectionsTest {
 	
 	@Test
 	public void tv01_sanity_check_view_builders() {
-		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<UMCaseFlow, UMCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		Model<UMCaseFlow> vUMCase = ((Model<UMCaseFlow>)q.getView());
 		assertNotNull(vUMCase);
 		
@@ -394,7 +397,7 @@ public class QuadModelCollectionsTest {
 	
 	@Test
 	public void tv02_leaf_attached_v2c_noConversion() {
-		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<UMCaseFlow, UMCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		
 		String _ALOHA = "View Says: ALOHA";
 		final DefaultParamState<Object>	viewParam =	(DefaultParamState<Object>) q.getView().findParamByPath("/pg3/aloha");
@@ -409,7 +412,7 @@ public class QuadModelCollectionsTest {
 	
 	@Test 
 	public void tv03_leaf_attached_c2v_noConversion() throws Exception{
-		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<UMCaseFlow, UMCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		
 		String _ALOHA = "Core Says: ALOHA";
 		final DefaultParamState<Object> viewParam = (DefaultParamState<Object>) q.getCore().findParamByPath("/caseType");
@@ -424,7 +427,7 @@ public class QuadModelCollectionsTest {
 	
 	@Test
 	public void tv04_col_attached_v2c_set_noConversion() {
-		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<UMCaseFlow, UMCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		
 		//set list
 		List<ServiceLine> newList = new ArrayList<>();
@@ -481,7 +484,7 @@ public class QuadModelCollectionsTest {
 
 	@Test
 	public void tv05_col_attached_v2c_add_noConversion() {
-		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<UMCaseFlow, UMCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		Model<UMCaseFlow> vUMCase = ((Model<UMCaseFlow>)q.getView());
 		assertNotNull(vUMCase);
 		
@@ -521,7 +524,7 @@ public class QuadModelCollectionsTest {
 	
 	@Test
 	public void tv06_col_attached_v2c_set_conversion() {
-		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<UMCaseFlow, UMCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		
 		// set list
 		List<Section_ServiceLine> newList = new ArrayList<>();
@@ -569,7 +572,7 @@ public class QuadModelCollectionsTest {
 	
 	@Test
 	public void tv07_col_attached_v2c_add_conversion() {
-		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<UMCaseFlow, UMCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		Model<UMCaseFlow> vUMCase = ((Model<UMCaseFlow>)q.getView());
 		assertNotNull(vUMCase);
 		
@@ -609,7 +612,7 @@ public class QuadModelCollectionsTest {
 	
 	@Test
 	public void tv08_leaf_attached_c2v_conversion() throws Exception {
-		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<UMCaseFlow, UMCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		
 		ServiceLine coreSingle = new ServiceLine();
 		coreSingle.setService("Life is Ka!");
@@ -629,7 +632,7 @@ public class QuadModelCollectionsTest {
 	
 	@Test
 	public void tv09_leaf_attached_v2c_conversion() throws Exception {
-		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<UMCaseFlow, UMCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		
 		Section_ServiceLine coreSingle = new Section_ServiceLine();
 		coreSingle.setService("Life is Ka!");
@@ -650,7 +653,7 @@ public class QuadModelCollectionsTest {
 	
 	@Test
 	public void tv10_col_attached_c2v_add_noConversion() {
-		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<UMCaseFlow, UMCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		Model<UMCaseFlow> vUMCase = ((Model<UMCaseFlow>)q.getView());
 		assertNotNull(vUMCase);
 		
@@ -692,7 +695,7 @@ public class QuadModelCollectionsTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void tv11_col_attached_c2v_add_conversion() {
-		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<UMCaseFlow, UMCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		Model<UMCaseFlow> vUMCase = ((Model<UMCaseFlow>)q.getView());
 		assertNotNull(vUMCase);
 		
@@ -733,7 +736,7 @@ public class QuadModelCollectionsTest {
 
 	@Test
 	public void tv12_leaf_detached_c2v_noConversion() {
-		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<UMCaseFlow, UMCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 
 		ServiceLine sl_n = new ServiceLine();
 		sl_n.setService("It's elementary Watson!");
@@ -752,7 +755,7 @@ public class QuadModelCollectionsTest {
 
 	@Test
 	public void tv13_leaf_detached_v2c_noConversion() {
-		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<UMCaseFlow, UMCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 
 		ServiceLine sl_n = new ServiceLine();
 		sl_n.setService("It's elementary Watson!");
@@ -768,7 +771,7 @@ public class QuadModelCollectionsTest {
 
 	@Test
 	public void tv14_leaf_detached_c2v_conversion() {
-		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<UMCaseFlow, UMCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		
 		ServiceLine coreSingle = new ServiceLine();
 		coreSingle.setService("Life is Ka!");
@@ -788,7 +791,7 @@ public class QuadModelCollectionsTest {
 
 	@Test
 	public void tv15_leaf_detached_v2c_conversion() {
-		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<UMCaseFlow, UMCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 
 		Section_ServiceLine viewModel = new Section_ServiceLine();
 		viewModel.setService("\"I am a genius\", said the fool");
@@ -815,7 +818,7 @@ public class QuadModelCollectionsTest {
 
 	@Test
 	public void tv16_col_detached_c2v_add_noConversion() {
-		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<UMCaseFlow, UMCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		Model<UMCaseFlow> vUMCase = ((Model<UMCaseFlow>)q.getView());
 		assertNotNull(vUMCase);
 		
@@ -856,7 +859,7 @@ public class QuadModelCollectionsTest {
 
 	@Test
 	public void tv17_col_detached_v2c_add_noConversion() {
-		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<UMCaseFlow, UMCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		
 		ServiceLine sl = new ServiceLine();
 		sl.setService("Its a bird..");
@@ -895,7 +898,7 @@ public class QuadModelCollectionsTest {
 
 	@Test
 	public void tv18_col_detached_c2v_set_conversion() {
-		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<UMCaseFlow, UMCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		
 		ServiceLine sl_0 = new ServiceLine();
 		sl_0.setService("Batman");
@@ -956,7 +959,7 @@ public class QuadModelCollectionsTest {
 
 	@Test
 	public void tv19_col_detached_v2c_set_conversion() {
-		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<UMCaseFlow, UMCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		
 		Section_ServiceLine vsl1 = new Section_ServiceLine();
 		vsl1.setService("Life is Ka!");
@@ -1055,7 +1058,7 @@ public class QuadModelCollectionsTest {
 	
 	@Test
 	public void tv21_colMappedAttrib_attached_v2c_set_conversion() {
-		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<UMCaseFlow, UMCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		
 		final ListParam<String> vp_nestedService = q.getRoot().findParamByPath("/view_umcase/pg3/attachedNestedColAttribServices").findIfCollection();
 		assertNotNull(vp_nestedService);
@@ -1084,7 +1087,7 @@ public class QuadModelCollectionsTest {
 		tv04_col_attached_v2c_set_noConversion();
 
 		// validate setup
-		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<UMCaseFlow, UMCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		
 		@SuppressWarnings("unchecked")
 		final ListParam<ServiceLine> vp_list = 
@@ -1122,7 +1125,7 @@ public class QuadModelCollectionsTest {
 
 	@Test
 	public void tv23_col_attached_elemNestedAttrib_v2c_delete_conversion() {
-		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<UMCaseFlow, UMCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		
 		final ListParam<String> vp_nestedService = q.getRoot().findParamByPath("/view_umcase/pg3/attachedNestedColAttribServices").findIfCollection();
 		assertNotNull(vp_nestedService);
@@ -1233,7 +1236,7 @@ public class QuadModelCollectionsTest {
 	
 	@Test
 	public void tv24_nested_attached_noConversion() {
-		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<UMCaseFlow, UMCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		Model<UMCaseFlow> vUMCase = ((Model<UMCaseFlow>)q.getView());
 		assertNotNull(vUMCase);
 		
@@ -1272,7 +1275,7 @@ public class QuadModelCollectionsTest {
 	
 	//@After
 	public void after() {
-		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<UMCaseFlow, UMCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
 		printJson(q);
 		//System.out.println("### Counter: "+ DomainConfigAPITest.eventPublisher.counter);
 	}

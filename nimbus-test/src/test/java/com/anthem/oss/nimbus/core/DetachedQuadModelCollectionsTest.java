@@ -31,7 +31,7 @@ import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
 import com.antheminc.oss.nimbus.domain.model.state.builder.QuadModelBuilder;
-import com.antheminc.oss.nimbus.domain.session.UserEndpointSession;
+import com.antheminc.oss.nimbus.domain.session.SessionProvider;
 
 /**
  * @author Soham Chakravarti
@@ -42,7 +42,8 @@ import com.antheminc.oss.nimbus.domain.session.UserEndpointSession;
 public class DetachedQuadModelCollectionsTest extends AbstractFrameworkIntegrationTests {
 
 	@Autowired QuadModelBuilder quadModelBuilder;
-	
+	@Autowired SessionProvider sessionProvider;
+
 	private static Command getCommand() {
 		Command cmd = CommandBuilder.withUri("/anthem/comm/icr/p/v_um_dashboard/_new").getCommand();
 		return cmd;
@@ -53,12 +54,12 @@ public class DetachedQuadModelCollectionsTest extends AbstractFrameworkIntegrati
 		QuadModel<V_UMDashboard, Object> q = quadModelBuilder.build(getCommand());
 		assertNotNull(q);
 		
-		UserEndpointSession.setAttribute(getCommand(), q);
+		sessionProvider.setAttribute(getCommand(), q);
 	}
 	
 	@Test
 	public void tc01_sanity_check_core_builders() {
-		QuadModel<UMCaseFlow, UMCase> q = UserEndpointSession.getOrThrowEx(getCommand());
+		QuadModel<UMCaseFlow, UMCase> q = sessionProvider.getOrThrowEx(getCommand());
 		assertNotNull(q);
 	}
 }
