@@ -8,25 +8,12 @@ import static org.junit.Assert.assertNull;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.data.mongodb.MongoDbFactory;
-import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
-import org.springframework.data.mongodb.core.convert.CustomConversions;
-import org.springframework.data.mongodb.core.convert.DefaultDbRefResolver;
-import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
-import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 
+import com.antheminc.oss.nimbus.AbstractPersistableUnitTests;
 import com.antheminc.oss.nimbus.entity.AbstractEntity.IdString;
-import com.mongodb.MongoClient;
 
-import cz.jirutka.spring.embedmongo.EmbeddedMongoFactoryBean;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,46 +21,15 @@ import lombok.Setter;
  * @author Soham Chakravarti
  *
  */
-public class ZonedDateTimeConverterTest {
+public class ZonedDateTimeConverterTest extends AbstractPersistableUnitTests {
 
-	//private static final ZoneId K_SAVE_JVM_ZONE_ID = ZoneId.of("Asia/Kolkata");
-	
 	private static final ZonedDateTime K_ZDT = ZonedDateTime.of(2018, 2, 6, 6, 52, 0, 0, ZoneId.of("US/Pacific-New"));
-	//private static final ZonedDateTime K_UTC = ZonedDateTime.of(2018, 2, 6, 14, 52, 0, 0, ZoneId.of("UTC"));
-	
-	
-    private static final String MONGO_DB_URL = "localhost";
-    private static final String MONGO_DB_NAME = "embeded_db";
-    
-    private MongoOperations mongo;
     
 	@SuppressWarnings("serial")
 	@Getter @Setter
     private static class _TestEntityWithZDT extends IdString {
 		
     	private ZonedDateTime userEnteredZonedDT;
-    }
-    
-    @Before
-    public void before() throws Exception {
-    	EmbeddedMongoFactoryBean mongoBean = new EmbeddedMongoFactoryBean();
-        mongoBean.setBindIp(MONGO_DB_URL);
-        
-        MongoClient mongoClient = mongoBean.getObject();
-        MongoDbFactory factory = new SimpleMongoDbFactory(mongoClient, MONGO_DB_NAME);
-        
-        List<Converter<?, ?>> converters = new ArrayList<>();
-        
-        converters.add(new ZonedDateTimeMongoConverters.ZDTSerializer());
-        converters.add(new ZonedDateTimeMongoConverters.ZDTDeserializer());
-        CustomConversions customConversions = new CustomConversions(converters);
-        
-        MappingMongoConverter mongoConverter = new MappingMongoConverter(new DefaultDbRefResolver(factory), new MongoMappingContext());
-        mongoConverter.setCustomConversions(customConversions);
-        mongoConverter.afterPropertiesSet();
-        
-        mongo = new MongoTemplate(factory, mongoConverter);
-        
     }
     
 	@Test
