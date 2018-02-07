@@ -29,7 +29,7 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.ParamPathExpressionParser;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.defn.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
-import com.antheminc.oss.nimbus.domain.session.UserEndpointSession;
+import com.antheminc.oss.nimbus.domain.session.SessionProvider;
 import com.antheminc.oss.nimbus.entity.client.user.ClientUser;
 
 /**
@@ -40,10 +40,12 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 
 	private final CommandMessageConverter converter;
 	private final PropertyResolver propertyResolver;
+	private final SessionProvider sessionProvider;
 	
 	public DefaultCommandPathVariableResolver(BeanResolverStrategy beanResolver, PropertyResolver propertyResolver) {
 		this.converter = beanResolver.get(CommandMessageConverter.class);
 		this.propertyResolver = propertyResolver;
+		this.sessionProvider = beanResolver.get(SessionProvider.class);
 	}
 	
 	
@@ -108,9 +110,9 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 	//TODO bean path evaluation to get value
 	protected String mapSelf(Param<?> param, String pathToResolve) {
 		if(StringUtils.endsWith(pathToResolve, "loginId"))
-			return Optional.ofNullable(UserEndpointSession.getStaticLoggedInUser()).orElseGet(() -> new ClientUser()).getLoginId();
+			return Optional.ofNullable(sessionProvider.getLoggedInUser()).orElseGet(() -> new ClientUser()).getLoginId();
 		if(StringUtils.endsWith(pathToResolve, "id"))
-			return Optional.ofNullable(UserEndpointSession.getStaticLoggedInUser()).orElseGet(() -> new ClientUser()).getId();
+			return Optional.ofNullable(sessionProvider.getLoggedInUser()).orElseGet(() -> new ClientUser()).getId();
 		
 		return param.getRootExecution().getRootCommand().getElement(Type.ClientAlias).get().getAlias();
 	}

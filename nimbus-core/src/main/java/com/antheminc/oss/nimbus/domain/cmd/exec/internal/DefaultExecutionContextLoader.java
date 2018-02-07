@@ -39,6 +39,7 @@ import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
 import com.antheminc.oss.nimbus.domain.model.state.builder.QuadModelBuilder;
+import com.antheminc.oss.nimbus.domain.session.SessionProvider;
 import com.antheminc.oss.nimbus.support.JustLogit;
 
 /**

@@ -13,17 +13,21 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
+package com.antheminc.oss.nimbus.domain.session;
 
-import org.springframework.web.context.request.RequestContextHolder;
+import com.antheminc.oss.nimbus.domain.cmd.Command;
+import com.antheminc.oss.nimbus.entity.client.user.ClientUser;
 
 /**
  * @author Rakesh Patel
  *
  */
-public class SpringSessionProvider implements SessionProvider {
-
-	public String getSessionId() {
-		return RequestContextHolder.getRequestAttributes().getSessionId();
-	}
+public interface SessionProvider {
+	public String getSessionId();
+	public <R> R getAttribute(String key);
+	public void setAttribute(String key, Object value);
+	public ClientUser getLoggedInUser();	
+	public void setAttribute(Command cmd, Object value);
+	public void setLoggedInUser(ClientUser clientUser);
+	public <R> R getOrThrowEx(Command cmd);
 }

@@ -27,7 +27,7 @@ import com.antheminc.oss.nimbus.domain.defn.extension.AccessConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.AccessConditional.Permission;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
-import com.antheminc.oss.nimbus.domain.session.UserEndpointSession;
+import com.antheminc.oss.nimbus.domain.session.SessionProvider;
 import com.antheminc.oss.nimbus.entity.client.access.ClientAccessEntity;
 import com.antheminc.oss.nimbus.entity.client.user.ClientUser;
 import com.antheminc.oss.nimbus.entity.user.UserRole;
@@ -38,8 +38,12 @@ import com.antheminc.oss.nimbus.entity.user.UserRole;
  */
 public class AccessConditionalStateEventHandler extends AbstractConditionalStateEventHandler implements OnStateLoadHandler<AccessConditional> {
 	
+	private final SessionProvider sessionProvider;
+
+	
 	public AccessConditionalStateEventHandler(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
+		this.sessionProvider = beanResolver.get(SessionProvider.class);
 	}
 	
 	@Override
@@ -52,7 +56,7 @@ public class AccessConditionalStateEventHandler extends AbstractConditionalState
 		if(Permission.WRITE == configuredAnnotation.p())
 			return;
 		
-		ClientUser user = UserEndpointSession.getStaticLoggedInUser();
+		ClientUser user = sessionProvider.getLoggedInUser();
 		
 		if(user != null) {
 			

@@ -13,14 +13,31 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
+package com.antheminc.oss.nimbus.test.domain.session;
 
-/**
- * @author Rakesh Patel
- *
- */
-public interface SessionProvider {
+import java.util.HashMap;
+import java.util.Map;
 
-	public String getSessionId();
-	
+import com.antheminc.oss.nimbus.domain.session.AbstractSessionProvider;
+
+public class TestSessionProvider extends AbstractSessionProvider {
+
+	public Map<String,Object> sessionMap = new HashMap<String, Object>();
+
+	@Override
+	public String getSessionId() {
+		return "test-session";
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <R> R getAttribute(String key) {
+		return (R)sessionMap.get(key);
+	}
+
+	@Override
+	public void setAttribute(String key, Object value) {
+		sessionMap.put(key, value);
+	}	
+
 }

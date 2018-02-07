@@ -21,7 +21,6 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
@@ -51,7 +50,6 @@ import com.antheminc.oss.nimbus.domain.model.state.repo.db.mongo.DefaultMongoMod
 import com.antheminc.oss.nimbus.domain.model.state.repo.ws.DefaultWSModelRepository;
 import com.antheminc.oss.nimbus.domain.rules.DefaultRulesEngineFactoryProducer;
 import com.antheminc.oss.nimbus.domain.rules.drools.DroolsRulesEngineFactory;
-import com.antheminc.oss.nimbus.domain.session.UserEndpointSession;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandler;
 import com.antheminc.oss.nimbus.support.pojo.reflection.JavaBeanHandlerReflection;
 
@@ -129,7 +127,6 @@ public class DefaultCoreConfiguration {
 		return new DefaultRulesEngineFactoryProducer();
 	}
 	
-//	//utils
 	@Bean(name="default.java.bean.handler")
 	public JavaBeanHandlerReflection javaBeanHandlerReflection(){
 		return new JavaBeanHandlerReflection();
@@ -151,40 +148,14 @@ public class DefaultCoreConfiguration {
 		return new MongoIdSequenceRepository(mongoOperations);
 	}
 
-//	@Bean(name="clientEntityRepo")
-//	public ClientEntityRepoService clientEntityRepoService(ClientRepository cRepo, ClientEntityRepository ceRepo, ClientUserRoleRepository crRepo) {
-//		return new ClientEntityRepoService(cRepo, ceRepo, crRepo);
-//	}
-	
-//	@Bean(name="clientuserrepo")
-//	public ClientUserRepoService clientUserRepoService(ClientUserRepository cuRepo, ClientRepository cRepo, PlatformUserRepository puRepo) {
-//		return new ClientUserRepoService(cuRepo, cRepo, puRepo);
-//	}
-	
-//	@Bean(name="clientUserGroupRepo")
-//	public ClientUserGroupRepoService clientUserGroupRepoService(ClientEntityRepository ceRepo, ClientUserGroupRepository cugRepo) {
-//		return new ClientUserGroupRepoService(ceRepo, cugRepo);
-//	}
-	
-	@Bean
-	@Scope(scopeName="session")
-	public UserEndpointSession userEndpointSession() {
-		return new UserEndpointSession();
-	}
-	
-//	@Bean
-//	BeforeSaveListener beforeSaveListener(@Qualifier("default.processGateway") ProcessGateway processGateway) {
-//		return new BeforeSaveListener();
-//	}
-	
 	@Bean(name="clientUserGrooupSearchResponseConverter")
 	Converter clientUserGroupConverter() {
 		return new ClientUserGrooupSearchResponseConverter();
 	}
 	
 	@Bean
-	public AuditorAware<String> auditorProvider() {
-		return new SpringSecurityAuditorAware();
+	public AuditorAware<String> auditorProvider(BeanResolverStrategy beanResolver) {
+		return new SpringSecurityAuditorAware(beanResolver);
 	}
 	
 	@Bean

@@ -38,8 +38,8 @@ public class VLLogin {
 		@Section(Type.HEADER) 
 		private VSLoginHeader vsLoginHeader;
 		
-//		@Section() 
-//		private VSLoginFooter vsLoginFooter;
+		//@Section(Type.FOOTER) 
+		private VSLoginFooter vsLoginFooter;
 		
 	}
 	

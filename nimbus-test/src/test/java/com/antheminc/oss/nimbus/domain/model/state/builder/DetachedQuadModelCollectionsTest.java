@@ -27,7 +27,7 @@ import org.springframework.test.context.ActiveProfiles;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
-import com.antheminc.oss.nimbus.domain.session.UserEndpointSession;
+import com.antheminc.oss.nimbus.domain.session.SessionProvider;
 import com.antheminc.oss.nimbus.test.domain.support.AbstractFrameworkIntegrationTests;
 import com.antheminc.oss.nimbus.test.entity.simplecase.core.SimpleCase;
 import com.antheminc.oss.nimbus.test.entity.simplecase.view.VRSimpleCaseFlow;
@@ -42,6 +42,7 @@ import com.antheminc.oss.nimbus.test.entity.simplecase.view.V_SimpleDashboard;
 public class DetachedQuadModelCollectionsTest extends AbstractFrameworkIntegrationTests {
 
 	@Autowired QuadModelBuilder quadModelBuilder;
+	@Autowired SessionProvider sessionProvider;
 	
 	private static Command getCommand() {
 		Command cmd = CommandBuilder.withUri("/hooli/compressopm/thebox/p/v_simpledashboard/_new").getCommand();
@@ -53,12 +54,12 @@ public class DetachedQuadModelCollectionsTest extends AbstractFrameworkIntegrati
 		QuadModel<V_SimpleDashboard, Object> q = quadModelBuilder.build(getCommand());
 		assertNotNull(q);
 		
-		UserEndpointSession.setAttribute(getCommand(), q);
+		sessionProvider.setAttribute(getCommand(), q);
 	}
 	
 	@Test
 	public void tc01_sanity_check_core_builders() {
-		QuadModel<VRSimpleCaseFlow, SimpleCase> q = UserEndpointSession.getOrThrowEx(getCommand());
+		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getOrThrowEx(getCommand());
 		assertNotNull(q);
 	}
 }

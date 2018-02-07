@@ -7,45 +7,26 @@
 		<version>1.0.0.M1-SNAPSHOT</version>
 		<relativePath>../nimbus-parent</relativePath>
 	</parent>
-  <artifactId>nimbus-test</artifactId>
+  	
+  	<artifactId>nimbus-test</artifactId>
   
-  <properties>
+  	<properties>
 		<sonar.projectName>nimbus-test</sonar.projectName>
 		<!-- <sonar.jacoco.reportPath>${project.basedir}/../platform.parent/target/jacoco.exec</sonar.jacoco.reportPath> -->
 	</properties>
 	<dependencies>
-		<dependency>
+	   	<dependency>
 			<groupId>com.antheminc.oss</groupId>
 			<artifactId>nimbus-core</artifactId>
 		</dependency>
-		<dependency>
+       	<dependency>
 			<groupId>com.antheminc.oss</groupId>
 			<artifactId>nimbus-entity-dsl</artifactId>
-		</dependency>		
-    	<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
 		</dependency>
-		<!-- <dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-commons</artifactId>
-		</dependency> -->
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>de.flapdoodle.embed</groupId>
-			<artifactId>de.flapdoodle.embed.mongo</artifactId>
-			<scope>test</scope>
-		</dependency>
+    
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.assertj</groupId>
-			<artifactId>assertj-core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
