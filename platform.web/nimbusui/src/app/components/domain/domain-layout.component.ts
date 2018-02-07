@@ -25,29 +25,12 @@ export class DomainLayoutCmp {
                 this.subHeaders = layout.topBar.subHeaders;
                 this.topMenuItems = layout.topBar.headerMenus;
 
-
-                if(this.leftMenuItems != null && this.leftMenuItems !== undefined) {
-                    this.leftMenuItems.forEach(item => {
-                            if(item != null) {
-                                this.wcs.getContent(item.title);
-                            }
-                        });
-                }
                 if(this.hasLayout && this.subHeaders != null && this.subHeaders !== undefined) {
                     document.getElementById('main-content').classList.add('withInfoBar');
                 }
             }
         );
 
-         wcs.content$.subscribe(result => {
-            if(this.leftMenuItems !== null && this.leftMenuItems !== undefined) {
-                this.leftMenuItems.forEach(item => {
-                    if(item != null && item.title === result.id) {
-                        item.title = result.label;
-                    }
-                });
-            }
-        });
         if(this._route.data['value']['layout']) {
             this.layoutSvc.getLayout(this._route.data['value']['layout']);
         }

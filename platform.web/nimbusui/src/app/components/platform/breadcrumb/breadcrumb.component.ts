@@ -34,13 +34,9 @@ export class BreadcrumbComponent implements OnInit {
             // initialize breadcrumbs as empty
             this.breadcrumbs = [];
 
-            // retrieve content from content server
-            this._wcs.content$.subscribe(result => {
-                this.breadcrumbs.forEach(b => {
-                    if (result.id === b.id) {
-                        b.label = result.label;
-                    }
-                });
+            // retrieve labels
+            this.breadcrumbs.forEach(b => {
+                    b.label = b.id;
             });
     }
 
@@ -113,8 +109,8 @@ export class BreadcrumbComponent implements OnInit {
                 // Push the result from the service into this.breadcrumbs
                 this.breadcrumbs.push.apply(this.breadcrumbs, breadcrumbs);
 
-                // retrieve labels from WCS
-                this.breadcrumbs.forEach(breadcrumb => this._wcs.getContent(breadcrumb.id));
+                // update labels
+                // this.breadcrumbs.forEach(breadcrumb => this._wcs.getContent(breadcrumb.id));
             });
         } else {
 

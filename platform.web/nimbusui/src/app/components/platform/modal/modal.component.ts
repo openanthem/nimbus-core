@@ -30,24 +30,19 @@ import { BaseElement } from '../base-element.component';
  */
 @Component({
     selector: 'nm-modal',
-    templateUrl: './modal.component.html'
+    templateUrl: './modal.component.html',
+    providers: [
+        WebContentSvc
+    ]
 })
-
 export class Modal extends BaseElement implements OnInit, OnDestroy {
     // width of modal window
     public _width: string;
     // closable to indicate whether modal window can be closed
     public _closable: boolean;
-    // title of modal window
-    public title: string;
 
     constructor(private wcsvc: WebContentSvc, private pageSvc: PageService) {
         super(wcsvc);
-    }
-
-    ngOnInit(): void {
-        //let modal = this;
-        this.title = this.element.config.uiStyles.attributes.title;
     }
 
     ngOnDestroy() {

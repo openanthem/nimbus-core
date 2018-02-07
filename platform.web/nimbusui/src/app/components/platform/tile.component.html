@@ -12,10 +12,10 @@
             </button>
 		</div>
 		<!--check for title attribute in the view config to render the header-->
-		<ng-template [ngIf]="title">
+		<ng-template [ngIf]="element?.config?.labelConfigs?.length > 0">
 			<div class="card-header">
 				<h2 class="card-title">
-					{{title}}
+					{{label}}
 				</h2>
 				<ng-template ngFor let-element [ngForOf]="nestedParams">
 					<ng-template [ngIf]="element.alias == 'Header'">

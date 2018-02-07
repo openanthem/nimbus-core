@@ -30,7 +30,7 @@ export class FormElementsService {
           group[element.config.code] = this.createNewFormGroup(element);
           //create new formgroup and formcontrol to create checkboxes in form. this is for form binding. TODO validations binding
         } else {
-          group[element.config.code] = checks ? [{value: element.leafState || '', disabled: !element.enabled.currState}, checks] : [{value: element.leafState || '', disabled: !element.enabled.currState}];
+          group[element.config.code] = checks ? [{value: (element.alias === 'Calendar') ? element.leafState= new Date(element.leafState) : element.leafState || '', disabled: !element.enabled.currState}, checks] : [{value: element.leafState || '', disabled: !element.enabled.currState}];
         }
       }
     });
@@ -47,13 +47,12 @@ export class FormElementsService {
       if (param.type.nested) {
          fg.addControl(param.config.code, this.createNewFormGroup(param));
       } else {
-        if (checks) {
-          fg.addControl(param.config.code, 
-            new FormControl({value: param.leafState || '', disabled: !param.enabled.currState}, checks));
-        } else {
-          fg.addControl(param.config.code, 
-            new FormControl({value: param.leafState || '', disabled: !param.enabled.currState}));
-        }
+          //Ternary operator is for converting Calendar string into Date to support @Calendar component
+          if (checks) {
+          fg.addControl(param.config.code, new FormControl({value: (param.alias === 'Calendar') ? param.leafState= new Date(param.leafState) : param.leafState || '', disabled: !param.enabled.currState}, checks));
+          } else {
+            fg.addControl(param.config.code, new FormControl({value: (param.alias === 'Calendar') ? param.leafState= new Date(param.leafState) : param.leafState || '', disabled: !param.enabled.currState}));
+        } 
       }
     }
     return fg;
@@ -64,7 +63,11 @@ export class FormElementsService {
       if (element.config.validation) {
         element.config.validation.constraints.forEach(validator => {
           if (validator.name === 'NotNull') {
-            checks.push(Validators.required);
+            if(element.config.uiStyles.attributes.alias == 'CheckBox') {
+              checks.push(Validators.requiredTrue);
+            } else {
+              checks.push(Validators.required);
+            }
           }
           if (validator.name === 'Pattern') {
             checks.push(Validators.pattern(validator.attribute.regexp));

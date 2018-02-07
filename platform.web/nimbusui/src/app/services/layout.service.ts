@@ -1,11 +1,11 @@
 import { WebContentSvc } from './content-management.service';
 import { Component, EventEmitter, Injectable } from '@angular/core';
-
 import { Model, Param, Result, UiAttribute } from '../shared/app-config.interface';
 import { ServiceConstants } from './service.constants';
 import { PageService } from './page.service';
 import { HttpClient } from './httpclient.service';
-import { AppBranding, Layout, LinkConfig, TopBarConfig, FooterConfig, BodyConfig } from '../model/menu-meta.interface';
+import { AppBranding, Layout, LinkConfig, TopBarConfig, FooterConfig, GlobalNavConfig } from '../model/menu-meta.interface';
+import { GenericDomain } from '../model/generic-domain.model';
 
 @Component({
     selector: 'nm-layout',
@@ -42,8 +42,6 @@ export class LayoutService {
                         this.pageSvc.setLayoutToAppConfig(flowName, flowModel);
 
                         this.parseLayoutConfig(flowModel);
-                        console.log("Looookkkkkk hhhhheeeeeerrrrreeeee foooooorrrrr ddddaaaatttttaaaaa");
-                        console.log(flowModel);
                     } else {
                         console.log('ERROR: Unknown response for Layout config call - ' + subResponse.b);
                     }
@@ -58,26 +56,10 @@ export class LayoutService {
         let layout = {} as Layout;
         layout['leftNavBar'] = this.getLeftMenu(flowModel.params[0].type.model);
         layout['topBar'] = this.getTopBar(flowModel.params[0].type.model);
+        layout['subBar'] = this.getSubBar(flowModel.params[0].type.model);
         layout['footer'] = this.getFooterItems(flowModel.params[0].type.model);
-        layout['body'] = this.getBodyItems(flowModel.params[0].type.model);
         // Push the new menu into the Observable stream
         this.layout$.next(layout);
-    }
-
-    private getBodyItems(layoutConfig: Model) {
-        let bodyConfig = {} as BodyConfig;
-        layoutConfig.params.forEach(param => {
-            if (param.config.uiStyles.attributes.alias === 'Section') {
-                if (param.config.uiStyles.attributes.value === 'BODY') {
-                    if (param.config.uiStyles.attributes.defaultFlow) {
-                        bodyConfig['defaultFlow'] = param.config.uiStyles.attributes.defaultFlow;
-                    } else {
-                        bodyConfig['defaultFlow'] = 'pageNotFound'; // TODO implement pagenotfound (404)
-                    }
-                }
-            }
-        });
-        return bodyConfig;
     }
 
     private getFooterItems(layoutConfig: Model) {
@@ -123,6 +105,10 @@ export class LayoutService {
             if (attribute.alias === 'Header' || attribute.alias === 'Global-Header' || 
                 (attribute.alias === 'Section' && attribute.value === 'HEADER')) {
                 this.parseTopBarConfig(param.type.model, branding, headerMenus, subHeaders);
+                // if param has initialize, execute the config
+                if (param.config && param.config.initializeComponent()) { 
+                        this.pageSvc.processEvent(param.path, '$execute', new GenericDomain(), 'POST', ''); 
+                }
             }     
         });
 
@@ -179,6 +165,40 @@ export class LayoutService {
         });
     }
 
+        private getSubBar(layoutConfig: Model) {
+        let subBarItems = {} as GlobalNavConfig;
+        let menuItems = new Map<string, Param[]>();
+        let subMenuLinks: Param[] = [];
+        let menuLinks: Param[] = [];
+
+        layoutConfig.params.forEach(param => {
+            if (param.config.uiStyles.attributes.alias === 'Global-Nav-Menu') {
+                param.type.model.params.forEach(param => {
+                    if (param.config.uiStyles.attributes.alias === 'Menu') { 
+                        subMenuLinks = [];
+                        param.type.model.params.forEach(paramLink => {
+                            if (paramLink.config.uiStyles.attributes.alias === 'Link') {
+                                subMenuLinks.push(paramLink)
+                            }
+                        })
+                        menuItems.set(param.config.code, subMenuLinks);
+                        subBarItems['menuItems'] = menuItems;
+                    }
+                    if (param.config.uiStyles.attributes.alias === 'ComboBox') {
+                        subBarItems['organization'] = param;
+                    }
+                    if (param.config.uiStyles.attributes.alias === 'Link') {
+                        menuLinks.push(param);
+                    }
+                    subBarItems['menuLinks'] = menuLinks;
+                });
+
+            }
+        });
+
+        return subBarItems;
+    }
+
     private getLeftMenu(layoutConfig: Model) {
         let leftMenu : LinkConfig[] = [];
         layoutConfig.params.forEach(param => {
@@ -188,7 +208,7 @@ export class LayoutService {
                         if (element.config.uiStyles.name === 'ViewConfig.Link') {
                             let navItem = {} as LinkConfig;
                             navItem['path'] = element.config.uiStyles.attributes.url;
-                            navItem['title'] = element.config.code;
+                            navItem['title'] = this.wcs.findLabelContent(element).text;
                             navItem['image'] = element.config.uiStyles.attributes.imgSrc;
                             leftMenu.push(navItem);
                         }

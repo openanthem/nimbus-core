@@ -7,7 +7,7 @@ ng-component{
     position: relative;
 }
 
-.ui-datatable {
+.ui-datatable,.scrollGrid {
     position: static;
     font-size: 1rem;
     .ui-selection-column .ui-chkbox {
@@ -73,6 +73,7 @@ ng-component{
             margin-right:.3rem;
              overflow: hidden;
              text-overflow: ellipsis;
+             white-space: nowrap;
             // height: 1.3rem;
         }
         .gridFilterIcon {
@@ -110,7 +111,24 @@ ng-component{
             }
         }
     }
+    p-header {
+       float:left;
+        margin-left: 1rem;
+        font-size: 1.1rem;
+    }
+    th.dropdown, td.dropdown {
+        width: 40px;
+    }
+    td:not(.dropdown) .ui-cell-data {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 98%;
+        height: 1.3em;
+        display:block;
+    }
 }
+
 .ui-widget-content {
     border:none;
 }
@@ -123,11 +141,7 @@ ng-component{
     }
 }
 
-p-header {
-    position: absolute;
-    left: 1rem;
-    font-size: 1.1rem;
-}
+
 .recordsDisplayed{
     position: absolute;
     left: 40%;
@@ -139,81 +153,6 @@ margin-right: 10px;
 }
 
 
-.ui-cell-data {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    width: 98%;
-    height: 1.3em;
-}
+
  
- .form-group{
-     .editTrigger{
-        display: block;
-        position:relative;
-        color:#333;
-        &:hover{
-            border: 1px solid #cecece;
-                padding-left: 10px;
-            &::after{
-                position:absolute;
-                top:0;
-                right:0;
-                height: 100%;
-                border-left: 1px solid #cecece;
-                text-align: center;
-                font-family: "fontAwesome";
-                content: "\f040";
-                padding: 2px 4px 0;
-            }
-        }
-        .unassigned {
-            font-style: italic;
-        }
-     }
-     .editTarget{
-         display:none;
-     }
-     .editSubmit {
-       &::before{
-           display: inline-block;
-           font-family: "fontAwesome";
-                content: "\f00c";
-       }
-    }
-    .editCancel {
-        &::before{
-           display: inline-block;
-           font-family: "fontAwesome";
-                content: "\f00d";
-       }
-    }
-    .saveOptions {
-        position: absolute;
-        top: 100%;
-        right: 0;
-        height: 30px;
-        display: none;
-        text-align: right;
-        z-index: 1;
-    }
-
-     &.editOn {
-        border: 1px solid #cecece;
-        padding: .4rem;
-        margin-bottom: 40px;
-        position: relative;
-        .editTrigger{
-            display: none;
-        }
-        .editTarget{
-            display: block;
-        }
-    }
- }
-
-.formEditGroup.editOn .form-group .editTarget {
-    display: block;
-}
-.formEditGroup.lockedForm .form-group .editTarget[disabled] {
-    display: block;
-}
+ 

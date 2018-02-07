@@ -20,13 +20,14 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   selector: 'nm-input-calendar',
   providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR,WebContentSvc],
   template: `
-        <label [attr.for]="element.config?.code" class="" *ngIf="this.showLabel">{{label}}
-            <nm-tooltip *ngIf="element.config?.uiStyles?.attributes?.help!=''" [helpText]='element.config?.uiStyles?.attributes?.help'></nm-tooltip>
+        <label [attr.for]="element.config?.code" class="{{elementStyle}}" *ngIf="this.showLabel">{{label}}
+            <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
         </label>
         <p-calendar [(ngModel)]="value"  
             (focusout)="emitValueChangedEvent(this,$event)" 
             [minDate]="min"
             [maxDate]="max"
+            [showIcon]="true"
             [disabled]="!element?.enabled?.currState"
             [timeOnly]="element.config?.uiStyles?.attributes?.timeOnly"
             [showTime]="element.config?.uiStyles?.attributes?.showTime" 

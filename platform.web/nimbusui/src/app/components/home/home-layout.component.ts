@@ -3,13 +3,14 @@ import { Observable } from 'rxjs/Observable';
 import { Message } from 'stompjs';
 import { Component } from '@angular/core';
 import { LayoutService } from '../../services/layout.service';
-import { AppBranding, Layout, LinkConfig, FooterConfig, BodyConfig } from '../../model/menu-meta.interface';
+import { AppBranding, Layout, LinkConfig, FooterConfig } from '../../model/menu-meta.interface';
 import { ExecuteOutput, ModelEvent, Param } from '../../shared/app-config.interface';
 import { AuthenticationService } from '../../services/authentication.service';
 import { STOMPService } from '../../services/stomp.service';
 import { PageService } from '../../services/page.service';
 import { ServiceConstants } from '../../services/service.constants';
 import {FooterGlobal} from '../platform/footer/footer-global.component'
+import { MenuItem } from 'primeng/primeng';
 
 @Component({
     templateUrl: './home-layout.component.html',
@@ -22,13 +23,20 @@ export class HomeLayoutCmp {
     public topMenuItems: Param[];
     public branding: AppBranding;
     public footer: FooterConfig;
+    public userName: any;
+    //TODO: Determine the strategy for global nav
+    //public subBar: GlobalNavConfig;
+    // public organization: Param;
+    // public menus: MenuItem[][];
+
     public organizations: Param[];
-    public body: BodyConfig;
     public collapse: boolean = false;
     public themes: any[] = [];
     // Stream of messages
     public messages: Observable<Message>;
-
+    public organization: Param;
+    public menuItems: Map<string, Param[]>;
+    public menuLinks: Param[] = [];
     private _activeTheme = '';
 
     constructor(
@@ -48,17 +56,16 @@ export class HomeLayoutCmp {
                 let layout: Layout = data;
                 if(layout != null ) {
                     if(layout.topBar != null && layout.topBar.branding != null) {
-                        this.branding = {} as AppBranding;
                         this.branding = layout.topBar.branding;
                         this.topMenuItems = layout.topBar.headerMenus;
-                        this.organizations = layout.topBar.organizations;
+                    }
+                    if(layout.subBar!=null){
+                        this.organization = layout.subBar.organization;
+                        this.menuItems = layout.subBar.menuItems;
+                        this.menuLinks = layout.subBar.menuLinks;
                     }
                     this.leftMenuItems = layout.leftNavBar;
                     this.footer = layout.footer;
-                    this.body = layout.body;
-                    console.log("this ........................................ footer")
-                    console.log(this.footer );
-                    console.log(this.branding);
                 }
                 //this._router.navigate([this.body['defaultFlow']], { relativeTo: this._route });
             }

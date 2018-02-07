@@ -1,7 +1,7 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { LayoutService } from '../../services/layout.service';
 import { Component } from '@angular/core';
-import { AppBranding, Layout, LinkConfig, FooterConfig, BodyConfig } from '../../model/menu-meta.interface';
+import { AppBranding, Layout, LinkConfig, FooterConfig } from '../../model/menu-meta.interface';
 import { Param } from '../../shared/app-config.interface';
 import { AuthenticationService } from '../../services/authentication.service';
 import { ServiceConstants } from '../../services/service.constants';
@@ -17,7 +17,6 @@ export class MainLayoutCmp {
     public topMenuItems: Param[];
     public branding: AppBranding;
     public footer: FooterConfig;
-    public body: BodyConfig;
     public collapse: boolean = false;
     public themes: any[] = [];
 
@@ -43,7 +42,6 @@ export class MainLayoutCmp {
                     }
                     this.leftMenuItems = layout.leftNavBar;
                     this.footer = layout.footer;
-                    this.body = layout.body;
                 }
                 //this._router.navigate([this.body['defaultFlow']], { relativeTo: this._route });
             }

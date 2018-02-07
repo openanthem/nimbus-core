@@ -54,7 +54,7 @@ import { ServiceConstants } from './../../services/service.constants';
                 </div>
             </ng-template>
             <ng-template [ngIf]="value=='DEFAULT'">
-                <a class="{{linkClass}}" href="javascript:void(0)" (click)="processOnClick(element.path, method, b)">
+                <a class="{{cssClass}}" href="javascript:void(0)" (click)="processOnClick(element.path, method, b)">
                     {{this.label}}
                 </a>
             </ng-template>
@@ -75,9 +75,9 @@ export class Link extends BaseElement {
     }
 
     ngOnInit() {
+        super.ngOnInit();
         //console.log(this.element.config.uiStyles.attributes.value);
         this.imagesPath = ServiceConstants.IMAGES_URL;
-        this._wcs.getContent(this.element.config.code);
         if (this.inClass) {
             this.linkClass = this.inClass;
         }
@@ -85,11 +85,14 @@ export class Link extends BaseElement {
 
     processOnClick(uri: string, httpMethod: string, behaviour: string) {
         let item: GenericDomain = new GenericDomain();
-        this.root.type.model.params.forEach(ele => {
-            if(ele.path === this.element.path.slice(0,this.element.path.lastIndexOf('/'))+'/id') {
-                item.addAttribute('id', ele.leafState);
-            }
-        });
+        if(this.root) {
+            this.root.type.model.params.forEach(ele => {
+                if(ele.path === this.element.path.slice(0,this.element.path.lastIndexOf('/'))+'/id') {
+                    item.addAttribute('id', ele.leafState);
+                }
+            });
+        }
+        
         this.pageSvc.processEvent(uri, behaviour, item, httpMethod);
     }
 

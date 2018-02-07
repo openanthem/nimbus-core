@@ -1,3 +1,4 @@
+.displayNone{display:none;}
 //type styles from style guide
 .head-2 {
     font-size: 18px;
@@ -29,20 +30,6 @@ h2{
 h3{
     font-size: 1.1rem;
 }
-.main-content{
-    .style-guide {
-    .info-bar {
-        position: static;
-    }
-    .section-nav{
-        position: absolute;
-        
-    }
-    .breadcrumb-bar{
-        position: static;
-    }
-}
-}
 .col-xs-12.smallCardCenter {
     text-align: right;
     padding: 0 70px 30px;
@@ -56,37 +43,25 @@ h3{
         text-align: center;
     }
 }
-// .XsmallCard nm-button {
-//     text-align: center;
-//     margin: 1.5rem 0 1rem;
-//     display: block;
-//     float:none;
-// }
+
 .col-xs-12 {
     margin: 0 0; //override correction for inline-block fix
 }
-// nm-button {
-//     float: right;
-//     margin: 28px;
-// }
-// .text-sm-right nm-button{
-//     margin:0;
-//     float:none;
-//     text-align: left;
-// }
+
 .info-card {
+    display: inline-block;
+    width: 93%;
     .card-block {
         .card-header{
             margin-bottom: 0;
             padding-right: 10px;
             height: $card-header-height;
             position: fixed;
-            top: $headerHeight + $subheader-height + $breadcrumb-height ;
+            top: $headerHeight + $globalNav-height + $breadcrumb-height ;
             left: 20px;
         }
     }
 }
-
 .card-holder {
     position:relative;
     vertical-align: top;
@@ -120,7 +95,7 @@ h3{
                 margin-bottom: 20px;
                 padding-right: 10px;
                 height: $card-header-height;
-                background: $subheader-background-color;
+                background: $globalNav-background-color;
                 h2.card-title,h1.card-title  {
                     padding: 6px 10px;
                     border-bottom: 0;
@@ -162,9 +137,11 @@ h3{
     left: 0;
     padding: 0;
     position: fixed;
-    top: $headerHeight + $subheader-height;
+    top: $headerHeight + $globalNav-height;
     right:0;
     overflow: hidden;
+    //max-width: 1280px;
+    margin: auto;
 }
 
 .main-content{
@@ -190,48 +167,16 @@ h3{
         }
         .breadcrumb-bar{ 
             padding: 0.5rem;
-            position: fixed;
-            top: $headerHeight + $subheader-height;
-            right: 18px;
-            left: 0;
             height: $breadcrumb-height;
             background: #fff;
-            z-index: 1;
         }
         .info-bar{ 
             display: block; 
             background-color: $header-bkg; 
             color:#fff; 
-            border-left: 1px solid #fff;
-            border-top: 1px solid #fff;
-            border-bottom: 1px solid #fff; 
             font-size: 0.8rem;
-            position: fixed;
-            top: $headerHeight + $subheader-height + $breadcrumb-height + $card-header-height;
-            left: 20px;
-            right: 20px;
-            height: $infoBar-height;
-            
-            &>div {
-                padding: 0.5rem 0.5rem;
-            }
-            &> div:first-child { 
-                border-right: 0px solid #fff;
-                border-bottom: 1px solid #fff;
-            }
-            .innerContainerWithImage { 
-                padding-left: 38px; 
-            }
-            img { 
-                height:35px; 
-                position: absolute;
-                left: 0px;
-            }
-            i{
-                font-size: 2rem;
-                position: absolute;
-                left: 11px;
-            }
+            min-height: $infoBar-height;
+            padding: .6rem 0;
         }
 
 }
@@ -269,14 +214,6 @@ h2.card-title {
     font-weight: bold;
 }
 
-.withInfoBar.withSectionNav .card-holder {
-            position: absolute;
-            right: 0px;
-            left: 120px;
-            bottom: 20px;
-            top: 97px;
-    
-}
 
 .contentBox.bg-alternate {
     &:nth-child(even){
@@ -300,6 +237,9 @@ nm-card-details {
         }
     }
 }
+
+
+
 // for assessment questions
 .subQuestion .subQuestion .col-lg-12 {
     padding-right: 0px;
@@ -320,7 +260,7 @@ legend {
         label:first-of-type {
             margin-top: 0;
         }
-        input[type='text'], select, textarea {
+        input, .select-wrapper, textarea {
             width: 100%;
             margin-left: 0;
         }
@@ -335,8 +275,13 @@ legend {
     label {
         display: block;
         margin: .3rem 0;
+        &.ui-chkbox-label,
+        &.ui-radiobutton-label {
+            display: inline-block;
+        }
     }
-    input[type='text'], select, textarea {
+    
+    input, .select-wrapper, textarea {
         margin-left: 50px;
         margin-bottom: .6rem;
         width: 55%;
@@ -344,9 +289,8 @@ legend {
     .date-holder::after {
         vertical-align: text-bottom;
     }
-    input[type='date'] {
-        margin-left: 50px;
-        margin-bottom: .6rem;
+    .date-holder input {
+        width: 180px;
     }
     label:first-of-type,
     legend:first-of-type {
@@ -360,17 +304,8 @@ legend {
             padding-left: 50px;
         }
     }
-    //<span class="warning">Incomplete</span> append to form-group to show after input
-    span.warning {
-        margin-left: 10px;
-        color: red;
-    }
-    span.warning:before {
-        display: inline-block;
-        content: "X";
-        margin-right: 10px;
-        font-weight: bold;
-        font-size: 1.3rem;
+    .warningMsg {
+        margin-left: 50px;
     }
 }
 .iconField {
@@ -399,9 +334,7 @@ legend {
     }
 }
 
-.form-control{
-	border-color: #8FBEE4;
-}
+
 
 
 
@@ -426,39 +359,9 @@ legend {
     width:30px;
 }
 
-.sectionHeader {
-    background-color: $sidebar;
-    border : 1px solid #8fbee4;
-    .topRight {
-        top: .2rem;
-        color: #fff;
-    }
-    h3,h2 {
-        color:#fff;
-    }
-}
 
-//styling for form alerts.. 
-.form-group.alert {
-    margin-bottom: .65rem;
-    padding:0 .2rem .2rem 1.5rem;
-}
-.form-group {
-    p {
-        margin-bottom: 0;
-    }
-    i {
-        position:absolute;left:.2rem;top:.3rem;
-        }
-    fieldset{
-        legend {
-            font-size:1rem;
-        }
-        .form-control {
-            padding-bottom: .7rem;
-        }
-    }
-}
+
+
 .card-holder > .card{
     &.height-sm {
         min-height:180px;
@@ -471,24 +374,8 @@ legend {
     }
 }
 
-.card-holder.subcard {
-    .viewport {
-        top: 0px;
-    }
-    .card {
-        border-width:0px;
-    }
-}
-// .viewport {
-//     position: absolute;
-//     top: 110px;
-//     right: 20px;
-//     left: 20px;
-//     bottom: 10px;
-//     padding-right:15px;
-//     padding-left:15px;
-//     overflow-y:auto;
-// }
+
+
 .nav-block{
     border-top: 1px solid $border-color;
     border-right: 1px solid $border-color;
@@ -519,29 +406,11 @@ legend {
     }
 }
 
-.subnav {
-    background: #8FBEE4;
-    max-height: 600px;
-    transition-property: max-height;
-    transition-duration: .8s;
-    overflow: hidden;
-    
-    &.nav-block .nav-link {
-        background: #8fbee4;
-        
-        padding-left: 20px;
-        border-color: #fff;
-    }
-    &.collapsed{
-        max-height:0;
-    }
-}
+
 .topRight{
     top:1rem;right:1rem;position:absolute;
 }
-.main-content.no-scroll {
-    overflow-y:hidden;
-}
+
 
 .border-all{
     border: 1px solid $border-color-dark;
@@ -599,55 +468,8 @@ legend {
         }
     }
 }
-.bg-dark{
-    background-color: $gray-dark;
-}.bg-light{
-    background-color: $gray-light;
-}.bg-lighter{
-    background-color: $gray-lighter;
-}.bg-lightest{
-    background-color: $gray-lightest;
-}
-.numberBox{
-    position: relative;
-    padding: 0 0 0.5rem 2rem;
-    margin-bottom: 2rem;
-    .number{
-        position: absolute;
-        width: 1.8rem;
-        height: 1.8rem;
-        left: -1px;
-        top: -1px;
-        text-align: center;
-    }&.dark{
-        border: 1px solid #333;
-        background: #333;
-        .number{
-            color: #fff;
-        }
-    }&.lite{
-        border: 1px solid #333;
-        .number{
-            color: #333;
-            background-color: $gray-lighter;
-        }
-    }
-}
-.tableDiv{
-    display: table;
-    width: 100%;
-    .tableRow{
-        display: table-row;
-        .tableCell{
-            display: table-cell;
-            padding: .3rem;
-            vertical-align: middle;
-            &.leftSide{
-                width: 20%;
-            }
-        }
-    }
-}
+
+
 
 
 //accordion styles
@@ -659,6 +481,10 @@ legend {
         padding: 0.3rem;
         margin: 0;
         font-weight: 300;
+        position: relative;
+        h2{
+            margin-bottom: 0;
+        }
         button {
             all: inherit;
             width:100%;
@@ -670,12 +496,29 @@ legend {
                 transition: transform 400ms;
                 display: inline-block;
             }
+        
+            &:focus,&:hover{
+                &::before{
+                    color: #999;
+                }
+            }
+        }
+        .leftElement{
+            margin-left: 1rem;
+            font-size: .9rem;
+            font-weight: 200;
+        }
+        .rightElement{
+            position:absolute;
+            right: 6px;
+            top: 3px;
+            font-size: .9rem;
         }
     }
     .panel-collapse {
         padding-left: 50px;
         overflow: hidden;
-        display: block;
+        //display: block;
         padding-left: 0px;
     }
     &.openPanel{
@@ -690,142 +533,8 @@ legend {
 
 
 
-.section-nav {
-    position: fixed;
-    left: 20px;
-    bottom: 0px;
-    top: $headerHeight + $subheader-height + $breadcrumb-height + $card-header-height + $infoBar-height + 10px;
-    padding:0;
-    z-index: 1;
 
-    &.navbar-light .navbar-toggler{ 
-        background-color: #fff;
-    }
-}
-//radio button toggle switch
-.slds-form-element__label {
-    display: inline-block;
-    color: #54698d;
-    font-size: .75rem;
-    line-height: 1.5;
-    margin-right: .75rem;
-    margin-bottom: .25rem;
-}
-.slds-checkbox--toggle [type=checkbox] {
-    width: 1px;
-    height: 1px;
-    border: 0;
-    clip: rect(0 0 0 0);
-    margin: -1px;
-    overflow: hidden;
-    padding: 0;
-    position: absolute;
-}
-.slds-checkbox--toggle [type=checkbox]+.slds-checkbox--faux_container {
-    font-size: .625rem;
-    color: #54698d;
-}
-.slds-checkbox--toggle .slds-checkbox--faux {
-    display: block;
-    position: relative;
-    width: 3rem;
-    height: 1.5rem;
-    border: 1px solid #9faab5;
-    padding: .125rem;
-    background-color: #9faab5;
-    border-radius: 15rem;
-    transition: background-color .2s cubic-bezier(.75,0,.08,1);
-}
-.slds-checkbox--toggle .slds-checkbox--faux:after {
-    content: '';
-    position: absolute;
-    top: 1px;
-    left: 1px;
-    width: 1.25rem;
-    height: 1.25rem;
-    background-color: #fff;
-    border-radius: 15rem;
-}
-.slds-checkbox--toggle .slds-checkbox--faux:after {
-    content: '';
-    position: absolute;
-    top: 1px;
-    left: 1px;
-    width: 1.25rem;
-    height: 1.25rem;
-    background-color: #fff;
-    border-radius: 15rem;
-}
-.slds-checkbox--toggle [type=checkbox]+.slds-checkbox--faux_container .slds-checkbox--on {
-    display: none;
-}
-.slds-checkbox--toggle [type=checkbox]:checked+.slds-checkbox--faux_container .slds-checkbox--on {
-    display: block;
-}
-.slds-checkbox--toggle [type=checkbox]+.slds-checkbox--faux_container .slds-checkbox--off {
-    display: block;
-}
-.slds-checkbox--toggle [type=checkbox]:checked+.slds-checkbox--faux_container .slds-checkbox--off {
-    display: none;
-}
-.slds-checkbox--toggle {
-    width: 100%;
-}
-.slds-checkbox--toggle [type=checkbox]:checked+.slds-checkbox--faux:before, 
-.slds-checkbox--toggle [type=checkbox]:checked+.slds-checkbox--faux_container .slds-checkbox--faux:before, 
-.slds-checkbox--toggle [type=checkbox]:checked~.slds-checkbox--faux:before {
-    content: '';
-    position: absolute;
-    top: 1px;
-    right: 1px;
-    width: 1.25rem;
-    height: 1.25rem;
-    background-color: #fff;
-    border-radius: 15rem;
-    transition: transform .2s cubic-bezier(.75,0,.08,1);
-}
-.slds-checkbox--toggle [type=checkbox]:checked+.slds-checkbox--faux:after, 
-.slds-checkbox--toggle [type=checkbox]:checked+.slds-checkbox--faux_container .slds-checkbox--faux:after, 
-.slds-checkbox--toggle [type=checkbox]:checked~.slds-checkbox--faux:after {
-    content: ' ';
-    position: absolute;
-    top: .25rem;
-    left: .6rem;
-    height: .7rem;
-    width: .45rem;
-    border-bottom: 2px solid #fff;
-    border-right: 2px solid #fff;
-    border-radius: 0;
-    background-color: transparent;
-    transform: rotate(45deg);
-}
-.slds-checkbox--toggle [type=checkbox]:checked+.slds-checkbox--faux, 
-.slds-checkbox--toggle [type=checkbox]:checked+.slds-checkbox--faux_container .slds-checkbox--faux, 
-.slds-checkbox--toggle [type=checkbox]:checked~.slds-checkbox--faux {
-    border-color: #0070d2;
-    background-color: #0070d2;
-}
 
-// clears float for even rows in forms
-.form-group.col-xs-6:nth-child(even) {
-    clear: left;
-}
-
-nav.styleGuideNav .nav-link {
-    display: block;
-    position: relative;
-    padding: .2rem;
-    &:hover::before,&.active::before{
-        height: 12px;
-        width: 12px;
-        border-radius: 50%;
-        background-color: lightblue;
-        content: "";
-        position: absolute;
-        left: -17px;
-        top: 10px;
-    }
-}
 
 
 .editTarget[disabled] {
@@ -840,28 +549,10 @@ nav.styleGuideNav .nav-link {
         padding-left: 0;
     }
 }
-// temporary to show radios inline.
-// .form-checkrow {
-//     display: inline-block;
-//     margin-right: 10px;
-// }
-
 .text-bold { 
     font-weight: bold;
 }
 
-.form-group.form-inline .form-checkrow {
-    display: inline-block;
-    margin-right: 1.3rem;
-}
-
-
-
-.form-group.form-inline.legend-left legend {
-    float: left;
-    margin-right: 1.3rem;
-    width: auto;
-}
 
 // screen breaks below 
 html {font-size: 12px;}
@@ -869,7 +560,7 @@ html {font-size: 12px;}
     .navbar-toggleable-md .navbar-collapse {
         z-index: 1;
         position: absolute;
-        width: 350%;
+        width: 400%;
         top: 4px;
         left: 70px;
     }
@@ -886,19 +577,24 @@ html {font-size: 12px;}
      
         .form-group.questionGroup  {
            
-            input[type='text'], select, textarea {
+            input, .select-wrapper, textarea {
                 width: 70%;
                 margin-left: 50px;
             }
         }
     }
+    .form-group.questionGroup.form-inline select.form-control {
+        width: 100%;
+    }
 }
 
-
+.navbar-toggleable-md .navbar-collapse {
+    width: 350px;
+}
 @media(min-width: 768px) {
     
     .navbar-toggleable-md .navbar-collapse {
-        width: 250%;
+        width: 300px;
     }
     
 }
@@ -917,6 +613,13 @@ html {font-size: 12px;}
     .info-card .card-holder:first-of-type{
         left: 18%;
         width: 82%;
+    }
+    .browserScroll .info-card {
+        width: 82%;
+        .card-holder:first-of-type{
+        left: 0;
+        width: 100%;
+        }
     }
     .section-nav{
         width: $section-nav-width;

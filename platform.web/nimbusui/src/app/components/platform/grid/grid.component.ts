@@ -1,3 +1,4 @@
+import { BaseElement } from './../base-element.component';
 import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Component, Input, Output, forwardRef, ViewChild, EventEmitter, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
 
@@ -10,6 +11,7 @@ import { DataTable, OverlayPanel, Paginator } from 'primeng/primeng';
 import { ElementModelParam } from './../../../shared/app-config.interface';
 import { ServiceConstants } from './../../../services/service.constants';
 import { ControlValueAccessor } from '@angular/forms/src/directives';
+
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => InfiniteScrollGrid),
@@ -22,8 +24,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     encapsulation: ViewEncapsulation.None,
     templateUrl:'./grid.component.html'
 })
-export class InfiniteScrollGrid implements ControlValueAccessor{
-    @Input() element: Param;
+export class InfiniteScrollGrid extends BaseElement implements ControlValueAccessor{
     @Input() data: any[];
     @Output() onScrollEvent: EventEmitter<any> = new EventEmitter();
     @Input() params: ElementModelParam[];
@@ -39,7 +40,6 @@ export class InfiniteScrollGrid implements ControlValueAccessor{
     rowHover:boolean;
     selectedRows: any[];
     filterState: boolean = false;
-    postButtonLabel: string;
 
     public onChange: any = (_) => { /*Empty*/ }
     public onTouched: any = () => { /*Empty*/ }
@@ -71,43 +71,40 @@ export class InfiniteScrollGrid implements ControlValueAccessor{
     fg= new FormGroup({}); // TODO this is for the filter controls that need to be embedded in the grid 
     private imagesPath: string;
     
-    constructor(private pageSvc : PageService, private wcs: WebContentSvc, private gridService: GridService, private cd:ChangeDetectorRef) {
+    constructor(
+        private pageSvc : PageService, 
+        private _wcs: WebContentSvc, 
+        private gridService: GridService, 
+        private cd: ChangeDetectorRef) {
+
+            super(_wcs);
     }
 
     ngOnInit() {
+        super.ngOnInit();
+        
+        // Set the column headers
+        if (this.params) {
+            this.params.forEach(element => {
+                element.label = this._wcs.findLabelContentFromConfig(element.code, element.labelConfigs).text;
+            });
+        }
+
         if(this.element.config.gridList!=null && this.element.config.gridList.length > 0) {
             this.value = this.element.config.gridList;
         }
     }
 
     ngAfterViewInit() {
-        this.wcs.content$.subscribe(result => {
-            this.params.forEach(element => {
-                if(element != null) {
-                    switch (result.id) {
-                        case element.code: {
-                            element.label = result.label;
-                            break;
-                        }
-                        case this.element.config.uiStyles.attributes.postButtonAlias: {
-                            this.postButtonLabel = result.label;
-                            break;
-                        }
-                    }
-                }
-            });
-        });
-
         this.imagesPath = ServiceConstants.IMAGES_URL;
         if (this.params != null) {
             this.params.forEach(element => {
                 if(element != null) {
-                    this.wcs.getContent(element.code);
-                }
-                if(element.uiStyles && element.uiStyles.attributes 
-                        && element.uiStyles.attributes.filterValue && element.uiStyles.attributes.filterValue !== '') {
-                        let filterValue = element.uiStyles.attributes.filterValue;
-                        this.flex.filter(filterValue, element.code, element.uiStyles.attributes.filterMode);
+                    if(element.uiStyles && element.uiStyles.attributes && 
+                        element.uiStyles.attributes.filterValue && element.uiStyles.attributes.filterValue !== '') {
+                            let filterValue = element.uiStyles.attributes.filterValue;
+                            this.flex.filter(filterValue, element.code, element.uiStyles.attributes.filterMode);
+                    }
                 }
             });
         }
@@ -125,6 +122,7 @@ export class InfiniteScrollGrid implements ControlValueAccessor{
             if(event.path.startsWith(this.element.path)) {
                 this.value = event.config.gridList;
                 this.cd.markForCheck();
+                this.resetMultiSelection();
             }
         });
 
@@ -138,14 +136,6 @@ export class InfiniteScrollGrid implements ControlValueAccessor{
                         frmCtrl.disable();
                 }
             });
-        }
-
-        this._initPostButton();
-    }
-
-    getContentById(id) {
-        if (id != undefined) {
-            this.wcs.getContent(id);
         }
     }
 
@@ -172,16 +162,6 @@ export class InfiniteScrollGrid implements ControlValueAccessor{
     getAllURLParams (uri: string): string[] {
         var pattern = /{([\s\S]*?)}/g;
         return uri.match(pattern);
-    }
-
-    updateHeaders() {
-        var flex = this.flex;
-        //after the grid view is rendered, get the content management header values
-        if (flex!=null) {
-            this.params.forEach(element => {
-                this.wcs.getContent(element.code);
-            });
-        }
     }
 
     toggleFilter(event: any) {
@@ -241,14 +221,7 @@ export class InfiniteScrollGrid implements ControlValueAccessor{
         this.pageSvc.processEvent(elemPath, '$execute', new GenericDomain(), 'GET' );
     }
 
-    private _initPostButton() {
-        if (this.element.config.uiStyles.attributes.postButton) {
-
-            // fetch the post button alias from the content server, if applicable.
-            let alias = this.element.config.uiStyles.attributes.postButtonAlias;
-            if (alias) {
-                this.wcs.getContent(alias);
-            }
-        }
+    resetMultiSelection() {
+        this.selectedRows = [];
     }
 }

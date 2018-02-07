@@ -18,9 +18,9 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc ],
   template: `
     <label *ngIf="hidden!=true"
-        [attr.for]="element.config?.code" class="">{{label}} 
-        <nm-tooltip *ngIf="help!=''" 
-            [helpText]='help'>
+        [attr.for]="element.config?.code" class="{{elementStyle}}">{{label}} 
+        <nm-tooltip *ngIf="helpText" 
+            [helpText]='helpText'>
         </nm-tooltip>
     </label>
 

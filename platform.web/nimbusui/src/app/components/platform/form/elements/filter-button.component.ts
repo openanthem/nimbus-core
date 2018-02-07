@@ -1,9 +1,11 @@
+import { LabelConfig } from './../../../../shared/app-config.interface';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Param } from '../../../../shared/app-config.interface';
 import { FormGroup } from '@angular/forms';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { PageService } from '../../../../services/page.service';
 import { ServiceConstants } from './../../../../services/service.constants';
+import { BaseElement } from '../../base-element.component';
 
 @Component({
     selector: 'nm-filter-button',
@@ -18,20 +20,17 @@ import { ServiceConstants } from './../../../../services/service.constants';
     `
 })
 
-export class FilterButton {
+export class FilterButton extends BaseElement{
    @Input() filterButton: Param;
    @Input() form: FormGroup;
    @Output() buttonClickEvent = new EventEmitter();
-   public label: string;
    public fbutton: Param;
    public fText: Param;
   // private filterCount: string;
    private imagesPath: string;
 
-   constructor(private pageService: PageService, private wcs: WebContentSvc) {
-       wcs.content$.subscribe( result => {
-           this.label = result.label;
-       } );
+   constructor(private pageService: PageService, private _wcs: WebContentSvc) {
+       super(_wcs);
    }
 
    ngOnInit() {
@@ -40,7 +39,7 @@ export class FilterButton {
            let element = this.filterButton.type.model.params[p];
            if (element.config.uiStyles.attributes.alias === 'Button') {
                this.fbutton = element;
-               this.wcs.getContent(element.config.code);
+               this.loadLabelConfig(element);
            }
            if (element.config.uiStyles.attributes.alias === 'TextBox') {
                this.fText = element;

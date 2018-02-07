@@ -1,37 +1,53 @@
 
 .ui-datatable {
-    .custom-dropdown {
+    .action-dropdown {
+        position: relative;
         display: inline-block;
         vertical-align: top;
         .dropdownTrigger {
             width: 1.3rem;
             height: 1.3rem;
             padding: 0;
-            border: none;
-            background: none;
-            top: 0;
-            left: 0;
+            border: 1px solid #ccc;
+            background: #fff;
+            line-height: 1;
             &::after {
-                width: 1.3rem;
-                height: 1.3rem;
-                font-size: .9rem;
-                top: 0;
-                right: 0;
+                color: #888;
+                font-family: "fontAwesome";
+                content: "\f0d7";
+                font-size: 1.2rem;
+                line-height: 1;
+            }
+            &:hover{
+                background-color: #cecece;
             }
         }
-        &.open .dropdownContent{
-            right: 0;
+        .dropdownContent {
+            max-height: 0;
             width: 200px;
+            background: #fff;
+            border: 1px solid #999;
+            overflow-y: auto;
+            top: 0;
+            position: absolute;
+            z-index: 2;
+            right: 100%;
             padding: 0;
+            a {
+                display: block;
+                text-decoration: none;
+                padding:.2rem .4rem;
+                &:hover{
+                    background: #eee;
+                }
+            }
         }
-        &>label{
-            @extend .sr-only;
-        }
+        
     }
 }
 .custom-dropdown {
     position: relative;
-    input[type="text"] {
+    input {
         width: 90%;
     }
     &> label{

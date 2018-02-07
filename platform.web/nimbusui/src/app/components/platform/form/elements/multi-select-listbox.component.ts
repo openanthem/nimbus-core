@@ -5,7 +5,7 @@ import { WebContentSvc } from '../../../../services/content-management.service';
 import { PageService } from '../../../../services/page.service';
 import {SelectItem} from 'primeng/primeng';
 import { GenericDomain } from '../../../../model/generic-domain.model';
-
+import { BaseElement } from './../../base-element.component';
 @Component({
     selector: 'nm-multi-select-listbox',
     providers: [
@@ -14,7 +14,7 @@ import { GenericDomain } from '../../../../model/generic-domain.model';
     template: `
         <div [formGroup]="form"  [hidden]="!element?.visible?.currState">
             <label class="">{{label}} 
-                <nm-tooltip *ngIf="element.config?.uiStyles?.attributes?.help!=''" [helpText]='element.config?.uiStyles?.attributes?.help'></nm-tooltip>
+                <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
             </label>
             <p-listbox [options]="optionsList" formControlName="{{element.config.code}}" multiple="multiple" 
             (onChange)="emitValueChangedEvent(this,value)" checkbox="checkbox" filter="filter" [style]="{'width':'190px','max-height':'250px'}"></p-listbox>
@@ -22,23 +22,23 @@ import { GenericDomain } from '../../../../model/generic-domain.model';
    `
 })
 
-export class MultiSelectListBox {
+export class MultiSelectListBox extends BaseElement{
 
     @Input() element: Param;
     @Input() form: FormGroup;
     @Output() controlValueChanged =new EventEmitter();
     value = [];
     public label: string;
+    public helpText : string;
     optionsList: SelectItem[];
     private targetList: any[];
 
-    constructor(private wcs: WebContentSvc, private pageService: PageService,private cd: ChangeDetectorRef) {
-        wcs.content$.subscribe(result => {
-            this.label = result.label;
-        });
+    constructor(private _wcs: WebContentSvc, private pageService: PageService, private cd: ChangeDetectorRef) {
+       super(_wcs);
     }
 
     ngOnInit() {
+        super.ngOnInit();
         this.optionsList = [];
         this.element.values.forEach(element => {
             this.optionsList.push({label: element.label, value: element.code});
@@ -52,7 +52,6 @@ export class MultiSelectListBox {
             this.targetList = [];
             this.form.controls[this.element.config.code].setValue(this.targetList);
         }
-        this.wcs.getContent(this.element.config.code);
         if( this.form.controls[this.element.config.code]!= null) {
             this.form.controls[this.element.config.code].valueChanges.subscribe(
                 ($event) => { console.log($event);this.setState($event,this); });

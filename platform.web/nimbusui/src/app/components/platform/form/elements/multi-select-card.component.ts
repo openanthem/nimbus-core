@@ -3,6 +3,7 @@ import { FormGroup, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/for
 import { PageService } from '../../../../services/page.service';
 import { Param } from '../../../../shared/app-config.interface';
 import { WebContentSvc } from '../../../../services/content-management.service';
+import { BaseElement } from './../../base-element.component';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -30,18 +31,15 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     </div>
    `
 })
-export class MultiselectCard  implements ControlValueAccessor {
+export class MultiselectCard  extends BaseElement implements ControlValueAccessor {
     @Input() element: Param;
     @Input() form: FormGroup;
     @Input('value') _value;
 
-    private label: string;
     private selectedOptions: string[] = [];
 
-    constructor(private wcs: WebContentSvc, private pageService: PageService) {
-        wcs.content$.subscribe(result => {
-            this.label = result.label;
-        });
+    constructor(private _wcs: WebContentSvc, private pageService: PageService) {
+        super(_wcs);
     }
     public onChange: any = (_) => { /*Empty*/ }
     public onTouched: any = () => { /*Empty*/ }
@@ -97,6 +95,7 @@ export class MultiselectCard  implements ControlValueAccessor {
     }
 
     ngOnInit() {
+        super.ngOnInit();
         //to set the state of the control with db value on page load. TODO - remove the selectedoptions variable and work with element.leafState
         if(this.element.leafState !=null) {
             this.selectedOptions = this.element.leafState;
@@ -112,7 +111,6 @@ export class MultiselectCard  implements ControlValueAccessor {
             });
         }
         //this.form.controls[this.element.config.code].statusChanges.subscribe(($event) => this.setStatus($event));
-        this.wcs.getContent(this.element.config.code);
     }
 
 }

@@ -3,6 +3,7 @@
 import { Component, Input } from '@angular/core';
 import { WebContentSvc } from '../../../services/content-management.service';
 import { Param } from '../../../shared/app-config.interface';
+import { BaseElement } from '../base-element.component';
 
 @Component({
     selector: 'nm-field-value',
@@ -16,18 +17,14 @@ import { Param } from '../../../shared/app-config.interface';
    `
 })
 
-export class FieldValue {
+export class FieldValue extends BaseElement{
     @Input() element: Param;
-    public label: string;
-
-    constructor(private wcs: WebContentSvc) {
-        wcs.content$.subscribe(result => {
-            this.label = result.label;
-        });
+    constructor(private _wcs: WebContentSvc) {
+        super(_wcs);
     }
 
     ngOnInit() {
-        this.wcs.getContent(this.element.config.code);
+        super.ngOnInit();
     }
 
 }

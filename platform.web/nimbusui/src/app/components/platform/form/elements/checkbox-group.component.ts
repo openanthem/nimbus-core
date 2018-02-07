@@ -5,6 +5,8 @@ import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Param } from '../../../../shared/app-config.interface';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { PageService } from '../../../../services/page.service';
+import { ServiceConstants } from '../../../../services/service.constants';
+import { BaseElement } from './../../base-element.component';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -17,42 +19,31 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR,WebContentSvc ],
   template: `
       <fieldset>
-          <legend class="">{{label}}
-                <nm-tooltip *ngIf="element.config?.uiStyles?.attributes?.help!=''" [helpText]='element.config?.uiStyles?.attributes?.help'></nm-tooltip>
+          <legend class="{{elementStyle}}">{{label}}
+                <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
            </legend>
-          <div class="checkboxHolder">
-            <div class="form-checkrow" *ngFor="let value of element?.values; let i = index">
-                <label class="custom-control custom-check">
-                    <input  type="checkbox"
-                        (click)="selectOption(value.code, this);emitValueChangedEvent(this,$event)"
-                        [checked] = "checkedState(value.code)"
-                        [disabled]="!element?.enabled?.currState"
-                        class="custom-control-input" 
-                        name="{{element.config?.code}}">
-                    <span class="custom-control-indicator"></span>
-                    <span class="custom-control-description">{{value.label}}</span>
-                </label>
+          <div class="checkboxHolder" [formGroup]="form" >
+            <div class="form-checkrow" *ngFor="let val of element?.values; let i = index">
+                <p-checkbox name="{{element?.config?.code}}" [formControlName]="element.config?.code" [value]="val.code" [label]="val.label" (onChange)="emitValueChangedEvent(this,$event)"></p-checkbox>
             </div>
           </div>
     </fieldset>
    `
 })
 
-export class CheckBoxGroup implements ControlValueAccessor {
+export class CheckBoxGroup extends BaseElement implements ControlValueAccessor {
 
     @Input() element: Param;
     @Input() form: FormGroup;
     @Input('value') _value;
     @Output() antmControlValueChanged =new EventEmitter();
-    public label: string;
+    
     // TODO replace selected options with element.leafState once it supports collection
-    private selectedOptions: string[] = [];
+    //private selectedOptions: string[] = [];
 
-    constructor(private pageService: PageService,private wcs: WebContentSvc,private cd: ChangeDetectorRef) {
-        wcs.content$.subscribe(result => {
-            this.label = result.label;
-        });
-    }
+    constructor(private pageService: PageService, private _wcs: WebContentSvc, private cd: ChangeDetectorRef) {
+        super(_wcs);    
+     }
 
     public onChange: any = (_) => { /*Empty*/ }
     public onTouched: any = () => { /*Empty*/ }
@@ -93,29 +84,30 @@ export class CheckBoxGroup implements ControlValueAccessor {
         this.antmControlValueChanged.emit(formControl.element);
     }
 
-    selectOption(code: string, elem: any) {
-        var array = this.selectedOptions;
-        var index = array.indexOf(code);
-        if (index > -1) {
-            array.splice(index, 1);
-        } else {
-            array.push(code);
-        }
-        this.value = this.selectedOptions;
-    }
+    // selectOption(code: string, elem: any) {
+    //     var array = this.value;
+    //     var index = array.indexOf(code);
+    //     if (index > -1) {
+    //         array.splice(index, 1);
+    //     } else {
+    //         array.push(code);
+    //     }
+    //     this.value = this.value;
+    // }
 
-    checkedState(val:any) {
-        var array = this.selectedOptions;
-        var index = array.indexOf(val);
-        if(index> -1) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+    // checkedState(val:any) {
+    //     var array = this.value;
+    //     var index = array.indexOf(val);
+    //     if(index> -1) {
+    //         return true;
+    //     } else {
+    //         return false;
+    //     }
+    // }
     ngOnInit() {
+        super.ngOnInit();
         if(this.element.leafState !=null && this.element.leafState.length > 0) {
-            this.selectedOptions = this.element.leafState;
+            this.value = this.element.leafState;
         }
         if( this.form.controls[this.element.config.code]!= null) {
             this.form.controls[this.element.config.code].valueChanges.subscribe(($event) => this.setState($event,this));
@@ -139,7 +131,6 @@ export class CheckBoxGroup implements ControlValueAccessor {
                 }
             });
         }
-        this.wcs.getContent(this.element.config.code);
         this.antmControlValueChanged.subscribe(($event) => {
              //console.log($event);
              if ($event.config.uiStyles.attributes.postEventOnChange) {

@@ -1,20 +1,32 @@
 import { Component, Input, OnDestroy, ElementRef } from '@angular/core';
 import { Accordion } from './accordion.component';
+import { BaseElement } from './base-element.component';
 import { WebContentSvc } from '../../services/content-management.service';
 import { trigger,state,style,transition,animate,keyframes } from '@angular/animations';
+import { Param } from './../../shared/app-config.interface';
 
 @Component( {
     selector: 'accordion-group',
     providers: [ WebContentSvc ],
     template: `
         <div id="{{title}}" class="panel {{panelClass}} {{state}} ">
-            <h2 class="panel-heading panel-title">
-                  <button attr.aria-expanded="{{isOpen}}" (click)="toggleOpen($event)">{{label}}</button>
+            <div class="panel-heading panel-title">
+                <h2>
+                  <button attr.aria-expanded="{{isOpen}}" (click)="toggleOpen($event)">{{label}}
+                    <!--<span *ngIf="leftElement" class="leftElement">this is optional left</span>-->
+                  </button>
               </h2>
-            <div class="panel-collapse" [@accordionAnimation]='state' (@accordionAnimation.done)="animationDone($event)" attr.aria-hidden="{{!isOpen}}">
-                <div class="panel-body">
-                    <ng-content></ng-content>
-                </div>
+              <!-- <span *ngIf="rightElement" class="rightElement">this is optional right</span> -->
+            </div>
+            <div class="panel-collapse" 
+                [ngClass]="{'displayNone': isHidden}" 
+                [@accordionAnimation]='state' 
+                (@accordionAnimation.start)="animationStart($event)"
+                (@accordionAnimation.done)="animationDone($event)"
+                attr.aria-hidden="{{!isOpen}}">
+                    <div class="panel-body">
+                        <ng-content></ng-content>
+                    </div>
             </div>
         </div>
    `
@@ -33,11 +45,13 @@ import { trigger,state,style,transition,animate,keyframes } from '@angular/anima
    ]
 })
 
-export class AccordionGroup implements OnDestroy {
+export class AccordionGroup extends BaseElement implements OnDestroy {
+    @Input() param : Param;
     @Input() title: string;
     @Input() panelClass: String;
     @Input()
     isOpen: boolean = false;    
+    isHidden: boolean = true;
     set state( value: string ) {
         this._state = value;
     }
@@ -46,18 +60,15 @@ export class AccordionGroup implements OnDestroy {
         return this._state;
     }
 
-    label: string;
     private _state: string = 'closedPanel';
     
-    constructor( private accordion: Accordion, private wcs: WebContentSvc, private elementRef: ElementRef ) {
-        this.accordion.addGroup( this );
-        wcs.content$.subscribe(result => {
-            this.label = result.label;
-        });
+    constructor( private accordion: Accordion, private _wcs: WebContentSvc, private elementRef: ElementRef ) {
+        super(_wcs);
+        this.accordion.addGroup( this );        
     }
     
     ngOnInit() {
-        this.wcs.getContent(this.title);
+        this.loadLabelConfig(this.param);
     }
 
     ngOnDestroy() {
@@ -73,15 +84,22 @@ export class AccordionGroup implements OnDestroy {
             this.state = 'openPanel';
         }
     }
+    animationStart($event) {
+        this.isHidden = false;
+        
+    }
     animationDone($event) {
         //console.log(this);
         //use this for scroll to focus after open
+       
         if ( this._state =='openPanel') {
             this.accordion.closeOthers(this).then(success => {
                 let selElem = this.elementRef.nativeElement.querySelector('#'+this.title);
                 selElem.scrollIntoView();
             });
         }
-
+        if(this._state =='closedPanel'){
+            this.isHidden = true;
+        }
     }
 }

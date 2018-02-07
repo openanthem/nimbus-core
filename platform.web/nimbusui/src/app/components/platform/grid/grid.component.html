@@ -3,10 +3,13 @@
 </div> -->
  
 <!-- Total Results: {{data == null ? leafState.length : data?.length}}   -->
- 
+
 <div id="gsFlexGrid" class="scrollGrid">
 	<div class="ui-datatable-header ui-widget-header">
-		<p-header>{{element.config?.uiStyles?.attributes?.title}}</p-header>
+		<p-header>
+			{{label}}
+			<nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
+		</p-header>
 		<div class="recordsDisplayed">Showing 1-50 records</div>
 	</div>
 
@@ -34,7 +37,7 @@
 
 		<ng-template ngFor let-col [ngForOf]="params">
 
-			<p-column *ngIf="col?.uiStyles?.attributes?.alias != 'Link'"
+			<p-column *ngIf="col?.uiStyles?.attributes?.alias != 'Link' && col?.uiStyles?.attributes?.alias != 'LinkMenu'"
 				[field]="col?.code" 
 				[header]="col?.label"
 				[hidden]="col?.uiStyles?.attributes?.hidden"
@@ -55,13 +58,13 @@
 					<span title="{{row[col.field]}}">{{row[col.field]}}</span> 
 				</ng-template> 
 				
-				<ng-template *ngIf="col?.uiStyles?.attributes?.alias=='LinkMenu'" pTemplate="body" let-cell="rowData">
-					<nm-action-dropdown [params]="col?.nestedParams"
-						[rowData]="cell"
-						[elementPath]="getRowPath(col, cell)"></nm-action-dropdown>
+			</p-column>
+
+			<p-column *ngIf="col?.uiStyles?.attributes?.alias=='LinkMenu'" styleClass="dropdown">
+				<ng-template pTemplate="body" let-cell="rowData">
+					<nm-action-dropdown [params]="col?.nestedParams" [rowData]="cell" [elementPath]="getRowPath(col, cell)"></nm-action-dropdown>
 				</ng-template>
-				
-			</p-column> 
+			</p-column>
 		</ng-template>
 				
 		<!-- <ng-template ngFor let-col [ngForOf]="params">
@@ -74,11 +77,11 @@
 			</ng-template>
 		</ng-template> -->
 		
-		<p-footer> 
+		<p-footer>
 			<ng-template [ngIf]="element.config?.uiStyles?.attributes?.postButton">
 				<div class="text-sm-left">
 					<button (click)="postGridData(this)" type="button" class="btn btn-action post-btn">
-						{{postButtonLabel}}
+						{{element.config.uiStyles.attributes.postButtonLabel}}
 					</button>
 				</div>
 			</ng-template> 

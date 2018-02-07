@@ -3,6 +3,7 @@ import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { Param } from '../../../shared/app-config.interface';
 import { Component, Input, forwardRef } from '@angular/core';
 import { WebContentSvc } from '../../../services/content-management.service';
+import { BaseElement } from './../base-element.component';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -18,26 +19,23 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     templateUrl: './card-details-field.component.html'
 })
 
-export class CardDetailsFieldComponent  implements ControlValueAccessor {
+export class CardDetailsFieldComponent  extends BaseElement implements ControlValueAccessor {
     @Input() element: Param;
     @Input('value') _value='';
-    private label: string;
     private iconClass: string = ''; // default to 'not an icon'.
     private fieldClass: string = 'col-sm-3'; // occupies 1 col of 4
 
-    constructor(private wcs: WebContentSvc) {
-        wcs.content$.subscribe(result => {
-            this.label = result.label;
-        });
+    constructor(private _wcs: WebContentSvc) {
+        super(_wcs);
     }
 
     ngOnInit() {
+        super.ngOnInit();
+
         // field style
         if (this.element.config.uiStyles.attributes.cols === '2') { // occupies 2 cols of 4
             this.fieldClass = 'col-sm-6';
         }
-        // label content
-        this.wcs.getContent(this.element.config.code);
 
         // icon class
         this.setIconClass();

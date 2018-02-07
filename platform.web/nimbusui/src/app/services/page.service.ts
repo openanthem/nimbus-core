@@ -1,3 +1,4 @@
+import { LoaderService } from './loader.service';
 'use strict';
 import { Action, HttpMethod, Behavior} from './../shared/command.enum';
 import { Injectable, EventEmitter } from '@angular/core';
@@ -38,7 +39,7 @@ export class PageService {
         gridValueUpdate$ = this.gridValueUpdate.asObservable();
 
         private _entityId: number = 0;
-        constructor(private http: HttpClient) {
+        constructor(private http: HttpClient, private loaderService: LoaderService) {
                 // initialize
                 this.appConfigs = {};
                 this.flowRootDomainId = {};
@@ -378,7 +379,7 @@ export class PageService {
         }
 
         /** Process execute call - TODO revisit to make it more dynamic based on url completion */
-        processEvent(processUrl: string, behavior: string, model: GenericDomain, method: string, navLink?: string ) {
+        processEvent(processUrl: string, behavior: string, model: GenericDomain, method: string, navLink?: string, loading? : boolean ) {
                 // if (model!=null && model['id']) {
                 //         this.entityId = model['id'];
                 // }
@@ -405,6 +406,7 @@ export class PageService {
                         let flowNameWithId = flowName.concat(':'+rootDomainId);
                         url = url.replace(flowName,flowNameWithId);
                 }
+                this.showLoader();
                 if (method !== '' && method.toUpperCase() === HttpMethod.GET.value) {
                         // if(behavior =='$config'){
                         //         this.router.navigate(['Patientenrollment',{domain:"patientenrollment"}]);
@@ -416,7 +418,9 @@ export class PageService {
                                         this.processResponse(data.result,serverUrl, flowName);
                                 },
                                         err => this.logError(err),
-                                        () => console.log('Process Execution query completed..')
+                                        () => {console.log('Process Execution query completed..');
+                                        this.hideLoader();
+                                                }
                                 );
                         //}
                 } else if(method !== '' && method.toUpperCase() === HttpMethod.POST.value) {
@@ -430,7 +434,9 @@ export class PageService {
                                 }
                         },
                                 err => this.logError(err),
-                                () => console.log('Process Execution query completed..')
+                                () => {console.log('Process Execution query completed..');
+                                        this.hideLoader();
+                                                }
                         );
                 } else {
                         throw 'http method not supported';
@@ -748,4 +754,12 @@ export class PageService {
                         () => console.log('GetPageConfig query completed..')
                         );
         }
+
+        private showLoader(): void {
+                this.loaderService.show();
+            }
+        
+            private hideLoader(): void {
+                this.loaderService.hide();
+            }
 }

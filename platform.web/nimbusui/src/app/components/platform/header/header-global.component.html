@@ -2,43 +2,46 @@
 
     <nm-link [element]="branding.logo" *ngIf="branding.logo"></nm-link>
 
-    <div class="col-lg-4 col-md-5 col-sm-6 align-top pull-right p-0">
-        <div class="headerMenu pull-right header-link header-font">
-            <a class="sr-only" aria-hidden="true" href="">Skip Navigation</a>
-            <a class="helpLink" href="#">Help</a>
-            <a class="logoutLink" href="logout">Log Out</a>
-            <div class="btn-group mt-1 pull-right">
+    <div class="d-inline-block p-0 pull-right clearfix">
+        <div class="headerMenu pull-right clearfix">
+            <div class="topLinksMenu">
+                <a class="sr-only" aria-hidden="true" href="">Skip Navigation</a>
+                <nm-link [element]="branding.help" *ngIf="branding.help"></nm-link>
+                <nm-link [element]="branding.logOut" *ngIf="branding.logOut"></nm-link> 
 
-                <a href="#" class="fa-icon-link alerts mr-2">
+            </div>
+            <div class="btn-group pull-right clearfix">
+
+                <a href="#" class="fa-icon-link alerts mr-2" *ngIf="branding?.linkNotifications">
                     <!-- <span class="tag" *ngIf="hasMessages">{{messageCount}}</span> -->
                     <span class="tag" *ngIf="messageCount > 0"> {{messageCount}}</span>
                 </a>
 
                 <!-- <ng-template [element]="branding.title" *ngIf="branding.title == 'Long Term Services Supports(LTSS)'"> -->
-                <a href="#" class="fa-icon-link settings mr-2" *ngIf="branding?.title === 'Long Term Services &amp; Supports (LTSS)'"></a>
+                 <a href="#" class="fa-icon-link settings mr-2" *ngIf="branding?.settings"></a> 
                 <!-- </ng-template> -->
 
             </div>
-
-            <!-- <div class="mr-2 align-top d-inline-block" *ngIf="branding.userName"> -->
-            <div class="mr-2 mt-2 align-top d-inline-block">
-                <i class="fa fa-user userIcon"></i>
-                <div class="userInfo">
-                    <div class="userName">
-                        <nm-value [element]="branding.userName" *ngIf="branding.userName"></nm-value>  
-                    </div>
-                    <div class="userRole">
-                        <nm-value [element]="branding.userRole" *ngIf="branding.userRole"></nm-value>  
-                    </div>
+        </div>
+        <!-- <div class="mr-2 align-top d-inline-block" *ngIf="branding.userName"> -->
+        <div class="mr-3 mt-1 hidden-xs-down d-inline-block pull-right">
+            <i class="fa fa-user userIcon"></i>
+            <div class="userInfo">
+                <div class="userName">
+                    <nm-value [element]="branding.userName" *ngIf="branding.userName"></nm-value>  
+                </div>
+                <div class="userRole">
+                    <nm-value [element]="branding.userRole" *ngIf="branding.userRole"></nm-value>  
                 </div>
             </div>
-            
-
         </div>
+            
+   
+        
     </div>
 
-    <div class="col-lg-6 col-md-4 col-sm-3 hidden-sm-down p-0 pl-3">
-        <div class="productName hidden-xs-down d-inline-block ml-1">
+    <div class="col-lg-6 col-md-3 col-sm-3 hidden-sm-down p-0 ml-3 mt-1 ">
+        <div class="productName hidden-xs-downd-inline-block">
               <nm-paragraph [element]="branding.title" *ngIf="branding.title"></nm-paragraph>  
         </div>
             

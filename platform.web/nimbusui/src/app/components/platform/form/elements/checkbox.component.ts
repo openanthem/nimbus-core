@@ -8,11 +8,11 @@ import { Param } from '../../../../shared/app-config.interface';
 
 @Component({
   selector: 'nm-single-checkbox',
-  template: ` <label class="custom-control custom-check">
-                 <input type="checkbox" [disabled]="!element?.enabled?.currState" class="custom-control-input" (change)="emitValueChangedEvent(this,$event)" [(ngModel)] = "value" [attr.checked]="value">
+  template: ` <label class="custom-control custom-check {{elementStyle}}">
+                 <input type="checkbox" [disabled]="disabled" class="custom-control-input" (change)="emitValueChangedEvent(this,$event)" [(ngModel)] = "value" [attr.checked]="value">
                  <span class="custom-control-indicator"></span>
                  <span class="custom-control-description">{{label}}
-                      <nm-tooltip *ngIf="element.config?.uiStyles?.attributes?.help!=''" [helpText]='element.config?.uiStyles?.attributes?.help'></nm-tooltip>
+                      <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
                  </span>
              </label>
             `,
@@ -27,7 +27,6 @@ import { Param } from '../../../../shared/app-config.interface';
 export class CheckBox extends BaseControl<boolean> {
 
     @ViewChild(NgModel) model: NgModel;
-    dis: boolean;
     element: Param;
 
     constructor(wcs: WebContentSvc, pageService: PageService, cd:ChangeDetectorRef) {

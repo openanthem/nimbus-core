@@ -1,3 +1,4 @@
+import { LabelConfig } from './../../../../shared/app-config.interface';
 'use strict';
 import { BaseControlValueAccessor } from './control-value-accessor.component';
 import { Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
@@ -12,18 +13,16 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
     @Input() form: FormGroup;
     @Output() controlValueChanged =new EventEmitter();
     protected abstract model: NgModel;
-    label: string;
+    protected _elementStyle: string;
+    public label: string;
+    public helpText : string;
     inPlaceEditContext: any;
     showLabel: boolean = true;
     min: Date;
     max: Date;
+    disabled: boolean;
     constructor(private pageService: PageService, private wcs: WebContentSvc, private cd: ChangeDetectorRef) {
         super();
-        wcs.content$.subscribe(result => {
-            if (this.element && result.id === this.element.config.code) {
-                this.label = result.label;
-            }
-        });
     }
 
     setState(event:any,frmInp:any) {
@@ -41,6 +40,10 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
 
     ngOnInit() {
         this.value = this.element.leafState;
+        this.disabled = !this.element.enabled.currState;
+        let labelContent: LabelConfig = this.wcs.findLabelContent(this.element);
+        this.label = labelContent.text;
+        this.helpText = labelContent.helpText;
     }
 
     ngAfterViewInit(){
@@ -63,10 +66,10 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
                         frmCtrl.enable();
                     else
                         frmCtrl.disable();
+                    this.disabled = !event.enabled.currState;
                 }
             });
         }
-        this.wcs.getContent(this.element.config.code);
         this.controlValueChanged.subscribe(($event) => {
              //console.log($event);
              if ($event.config.uiStyles.attributes.postEventOnChange) {
@@ -118,5 +121,20 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
      */
     public get type(): string {
         return this.element.config.uiStyles.attributes.type;
+    }
+
+    /**
+     * Check if control is required
+     */
+    public get elementStyle(): string {
+        let style = '';
+        if (this.element.config.validation) {
+            this.element.config.validation.constraints.forEach(validator => {
+                if (validator.name === 'NotNull') {
+                    style = 'required';
+                }
+            });
+        }
+        return style;
     }
 }

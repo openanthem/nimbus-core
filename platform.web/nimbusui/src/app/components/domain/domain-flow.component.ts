@@ -4,11 +4,10 @@ import { LayoutService } from '../../services/layout.service';
 import { PageService } from '../../services/page.service';
 import { Layout, LinkConfig } from '../../model/menu-meta.interface';
 import { Param, Page } from '../../shared/app-config.interface';
-import { WebContentSvc } from '../../services/content-management.service';
 
 @Component({
     templateUrl: './domain-flow.component.html',
-    providers: [ LayoutService, WebContentSvc ]
+    providers: [ LayoutService ]
 })
 
 export class DomainFlowCmp {
@@ -20,7 +19,7 @@ export class DomainFlowCmp {
     routeParams: any;
 
     constructor(private _pageSvc: PageService, private layoutSvc: LayoutService,
-            private _route: ActivatedRoute, private _router: Router, private wcs: WebContentSvc) {
+            private _route: ActivatedRoute, private _router: Router) {
 
         this.layoutSvc.layout$.subscribe(
             data => {
@@ -29,30 +28,12 @@ export class DomainFlowCmp {
                 this.subHeaders = layout.topBar.subHeaders;
                 this.topMenuItems = layout.topBar.headerMenus;
 
-
-                if(this.leftMenuItems != null && this.leftMenuItems !== undefined) {
-                    this.leftMenuItems.forEach(item => {
-                            if(item != null) {
-                                this.wcs.getContent(item.title);
-                            }
-                        });
-                }
                 if(this.hasLayout && this.subHeaders != null && this.subHeaders !== undefined) {
                     document.getElementById('main-content').classList.add('withInfoBar');
                 }
 
             }
         );
-
-        wcs.content$.subscribe(result => {
-            if (this.leftMenuItems) {
-                this.leftMenuItems.forEach(item => {
-                    if(item != null && item.title === result.id) {
-                        item.title = result.label;
-                    }
-                });
-            }
-        });
 
         this._pageSvc.config$.subscribe(result => {
             let page: Page = result;

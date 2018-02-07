@@ -5,8 +5,12 @@
         	<use xlink:href="resources/icons/edit.svg#Layer_1" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
 		</svg>
 	</button>
-    <div class="col-sm-12 p-0" *ngIf="element?.config?.uiStyles?.attributes?.title">
-        <div class="col-sm-12 p-0 pt-1 head-1 text-uppercase">{{element.config.uiStyles.attributes.title}}</div>
+    <div class="col-sm-12 p-0" *ngIf="label">
+        <!-- <div class="col-sm-12 p-0 pt-1 head-1 text-uppercase">{{element.config.uiStyles.attributes.title}}</div> -->
+        <h3 class="col-sm-12 p-0 pt-1 head-1 text-uppercase">
+            {{label}}
+            <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
+        </h3>
     </div>
     <ng-template ngFor let-param [ngForOf]="element?.type?.model?.params">
         <ng-template [ngIf]="param.config?.uiStyles?.attributes?.alias == 'CardDetailsTag'">
@@ -36,7 +40,6 @@
                     </ng-template>
                     <ng-template [ngIf]="field.config?.uiStyles?.isLink">
                         <div class="col-sm-3 p-0 clearfix form-group">
-                            <nm-paragraph [element]="field"></nm-paragraph>
                             <div>
                               <nm-link [element]="field"></nm-link>
                             </div>

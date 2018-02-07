@@ -17,7 +17,6 @@ import { BaseElement } from './base-element.component';
  * @Tile annotation from Configuration drives this. 
  *      Attribute "size = {XSmall, Small, Medium, Large}" drives the size of the Tile.
  *      Attribute "imgSrc" - displays an image on the tile header bar next to the title.
- *      Attribute "title" - title for the Tile, displayed on the header
  * <nm-tile [element]="element" tileType="subtile"></nm-tile>
  * 
  */
@@ -29,15 +28,15 @@ import { BaseElement } from './base-element.component';
         },
         `
     ],
+    providers: [
+        WebContentSvc
+    ],
     templateUrl: './tile.component.html'
 })
 
 export class Tile extends BaseElement {
     // Optional tileType = 'subcard' is used for indicating it is a sub-tile. This drives the style of nested tile.
     @Input() tileType?: string;
-
-    // title of tile
-    public title: string;
 
     // width of tile
     public styleWd: string = 'col-lg-12';
@@ -50,6 +49,7 @@ export class Tile extends BaseElement {
     }
 
     ngOnInit() {
+        super.ngOnInit();
         // Determine the Tile size based on "size" attribute.
         if (this.element.config.uiStyles.attributes.size === 'XSmall') {
             this.styleWd = 'card-holder col-lg-3 col-md-6 XsmallCard';
@@ -68,9 +68,6 @@ export class Tile extends BaseElement {
         if (this.tileType === 'subcard') {
             this.styleWd = this.styleWd + ' subcard';
         }
-
-        // Title for tile
-        this.title = this.element.config.uiStyles.attributes.title;
     }
 }
 

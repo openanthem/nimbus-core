@@ -431,6 +431,7 @@ export class ParamConfig implements Serializable<ParamConfig> {
     gridList: any[];
     //TODO Temporary for grid
     gridCols: ElementModelParam[];
+    labelConfigs: LabelConfig[];
 
     deserialize( inJson ) {
      //   this.referredClass = inJson.referredClass;
@@ -479,7 +480,13 @@ export class ParamConfig implements Serializable<ParamConfig> {
                 this.gridCols.push(colParam);
             }
         }
-
+        this.labelConfigs = [];  
+        if ( inJson.labelConfigs != null && inJson.labelConfigs.length > 0) { 
+            for ( var p in inJson.labelConfigs ) {
+                this.labelConfigs.push( new LabelConfig().deserialize(inJson.labelConfigs[p]) );
+            }
+        }   
+        
         return this;
     }
 
@@ -502,6 +509,7 @@ export class ElementModelParam extends ParamConfig implements Serializable<Eleme
 
     deserialize( inJson ) {
         this.code = inJson.code;
+        this.labelConfigs = inJson.labelConfigs;
         this.label = inJson.label;
         if ( inJson.uiStyles != null ) {
             this.uiStyles = new UiStyle().deserialize( inJson.uiStyles );
@@ -602,10 +610,11 @@ export class UiAttribute implements Serializable<UiAttribute> {
     postButton: boolean;
     postButtonUrl: string;
     postButtonTargetPath: string;
+    postButtonAlias : string;
+    postButtonLabel: string;
     filter: boolean;
     filterMode : string;
     filterValue : string;
-    postButtonAlias : string;
     modelPath: string;
     inplaceEdit: boolean;
     inplaceEditType: string;
@@ -662,6 +671,7 @@ export class UiAttribute implements Serializable<UiAttribute> {
         this.postButtonUrl = inJson.postButtonUrl;
         this.postButtonTargetPath = inJson.postButtonTargetPath;
         this.postButtonAlias = inJson.postButtonAlias;
+        this.postButtonLabel = inJson.postButtonLabel;
         this.filterMode=inJson.filterMode;
         this.filterValue=inJson.filterValue;
         this.payload = inJson.payload;
@@ -711,6 +721,19 @@ export class UiAttribute implements Serializable<UiAttribute> {
         if (inJson.filter) {
             this.filter=inJson.filter;
         }
+        return this;
+    }
+}
+
+export class LabelConfig implements Serializable<LabelConfig> {
+    text: string;
+    locale: string;
+    helpText : string;
+
+    deserialize( inJson ) {
+        this.text = inJson.text;
+        this.locale = inJson.locale;
+        this.helpText = inJson.helpText;
         return this;
     }
 }

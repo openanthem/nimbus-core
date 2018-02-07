@@ -1,3 +1,5 @@
+import { WebContentSvc } from './../../../services/content-management.service';
+import { BaseElement } from './../base-element.component';
 import { CardDetails, Param } from '../../../shared/app-config.interface';
 import { Component, Input } from '@angular/core';
 import { PageService } from '../../../services/page.service';
@@ -10,10 +12,12 @@ import { PageService } from '../../../services/page.service';
         },
         `
     ],
-    templateUrl: './card-details.component.html'
+    templateUrl: './card-details.component.html',
+    providers: [
+        WebContentSvc
+    ]
 })
-
-export class CardDetailsComponent {
+export class CardDetailsComponent extends BaseElement {
     @Input() list : CardDetails;
     @Input() collectionElem: boolean = false;
     @Input() elemId: string = undefined;
@@ -21,11 +25,8 @@ export class CardDetailsComponent {
     @Input() editUrl: string;
     opened: boolean = false;
 
-    constructor(private pageSvc : PageService) {
-    }
-
-    ngOnInit() {
-        
+    constructor(private pageSvc : PageService, private _wcs: WebContentSvc) {
+        super(_wcs);
     }
 
     processOnClick() {

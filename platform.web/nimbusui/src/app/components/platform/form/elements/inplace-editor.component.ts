@@ -1,3 +1,4 @@
+import { BaseElement } from './../../base-element.component';
 import { WebContentSvc } from './../../../../services/content-management.service';
 import { PageService } from './../../../../services/page.service';
 import { Param } from './../../../../shared/app-config.interface';
@@ -20,7 +21,10 @@ export const InputComponents = [
     selector: 'inplace-editor',
     template: `
         <div class="form-group {{editClass}}">
-            <label for="exampleInputEmail1">{{label}}</label>
+            <label *ngIf="label">
+                {{label}}
+                <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
+            </label>
             <a class="form-control-static editTrigger" href="javascript:void(0);" (click)="enableEdit()" *ngIf="element.enabled?.currState">
                 <span *ngIf="displayValue==UNASSIGNVALUE" class="unassigned">{{displayValue}}</span>
                 <span *ngIf="displayValue!=UNASSIGNVALUE">{{displayValue}}</span>
@@ -47,9 +51,8 @@ export const InputComponents = [
     entryComponents: InputComponents
 })
 
-export class InPlaceEditorComponent implements OnInit {
-    @Input() element: Param;
-    public type: string;
+export class InPlaceEditorComponent extends BaseElement implements OnInit {
+    
     public editClass: string;
     public label: string;
     public UNASSIGNVALUE = 'Unassigned';
@@ -82,19 +85,15 @@ export class InPlaceEditorComponent implements OnInit {
         }
     }
 
-    constructor(public componentFactoryResolver: ComponentFactoryResolver, private pageService: PageService, private wcs: WebContentSvc) {
-        wcs.content$.subscribe(result => {
-            this.label = result.label;
-        });
+    constructor(public componentFactoryResolver: ComponentFactoryResolver, private pageService: PageService, private _wcs: WebContentSvc) {
+        super(_wcs);
     }
 
     ngOnInit() {
+        super.ngOnInit();
         this.editClass = '';
-        // label content
-        this.wcs.getContent(this.element.config.code);
         this.value = this.element.leafState;
         this.setDisplayValue(this.value);
-        this.type = this.element.config.uiStyles.attributes.inplaceEditType;
         this.generateComponent(this.type);
         
         this.pageService.eventUpdate$.subscribe(event => {
@@ -152,6 +151,10 @@ export class InPlaceEditorComponent implements OnInit {
         if (this.displayValue === '') {
             this.displayValue = this.UNASSIGNVALUE;
         }
+    }
+
+    public get type(): string {
+        return this.element.config.uiStyles.attributes.inplaceEditType;
     }
 
     private getComponentType(typeName: string): any {

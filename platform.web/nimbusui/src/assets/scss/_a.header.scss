@@ -1,5 +1,48 @@
+.browserScroll{
+	.header{
+		position: static;
+	}
+	.globalNav{
+		position: static;
+	}
+	.wrapper{
+		position: static;
+		min-height: 700px;
+	}
+	.section-nav{
+		position: relative;
+		display:inline-block !important;
+		top: 10px;
+		left: 10px;
+		vertical-align: top;
+		.collapse.show {
+			display: block;
+		}
+	}
+	.main-content{
+		position: static;
+	
+		.breadcrumb-bar{
+			position: static;
+		}
+		.info-bar{
+			position: static;
+		}
+	}
+	.info-card {
+		&.card-holder:first-of-type {
+			width: 100%;
+			left: 0;
+		}
+
+		.card-block .card-header{
+			position: static;
+		}
+	}
+}
+
+
 .header {
-    //position: fixed;
     height: $headerHeight;
     left:0;
     right:0;
@@ -15,7 +58,7 @@
 	
 	.productName p {
 			font-size: 1.1rem;
-			font-weight: bold;
+			font-weight: 400;
 			margin: 0;
 			max-width: 200px;
     		line-height: 1.5rem;
@@ -33,7 +76,7 @@
     		max-width: 300px;
 
 		.userName {
-				font-weight: bold;
+				font-weight: 400;
 		}
 
 		.userRole {
@@ -61,22 +104,20 @@
 				padding-top:10px;
 				// a{display:inline-block;}
 			}
-			.helpLink{
-				position: absolute;
-				top: -6px;
-				color: white;
-				right: 95px;
-			}
-			.logoutLink{
-				position: absolute;
-				top: -6px;
-				color: white;
-				right: 20px;
-				&::before{
-					content: "|";
-					display: inline-block;
+			.topLinksMenu{
+				padding-right:20px;
+				a {
+					color: white;
+					float: right;
 					margin-right: 1rem;
+				&:not(.logoutLink)::after {
+							content: "|";
+							margin-left: 1rem;
+					}
 				}
+			}
+			.fa-icon-link::before{
+				font-size:30px;
 			}
 			.form-group{
 				margin-bottom:0;
@@ -97,27 +138,16 @@
 				}
 			}
 			
-			.button-group{
-				height: $header-btn-height ;
-			}
+			
         }
       
 
 }
 
 @media(min-width: 768px) {
-	.header {
-		.headerMenu {
-				.helpLink{
-					right: 105px;
-				}
-			}
-	}			
+			
 }
 
-.custom-control-indicator {
-    border: 1px solid #8fbee4;
-}
 
 .stylish-input-group .input-group-addon{
     background: white !important;

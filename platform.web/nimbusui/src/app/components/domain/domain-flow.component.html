@@ -1,5 +1,5 @@
 <nm-breadcrumb></nm-breadcrumb>
-<div *ngIf="hasLayout">
+<span *ngIf="hasLayout">
 	<div class="info-bar clearfix">
 	    <div [class]="p.config?.uiStyles?.attributes?.cssClass" *ngFor="let p of subHeaders, let index=index">
 	        <ng-template ngFor let-element [ngForOf]="p.type?.model?.params">
@@ -17,7 +17,7 @@
 	        <a class="nav-link" [routerLink]="[menuItem.path, {link:true}]" *ngFor="let menuItem of leftMenuItems" routerLinkActive="active">{{menuItem.title}}</a>
 	    </div>
 	</nav>
-</div>
+</span>
 <div class="{{infoClass}}">
     <router-outlet></router-outlet>
 </div><!--  END Domain-content  -->

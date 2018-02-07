@@ -1,4 +1,4 @@
-import { ElementModelParam } from './../../../../shared/app-config.interface';
+import { ElementModelParam, LabelConfig } from './../../../../shared/app-config.interface';
 import { Behavior } from './../../../../shared/command.enum';
 import { Component, Input } from '@angular/core';
 import { WebContentSvc } from '../../../../services/content-management.service';
@@ -6,17 +6,48 @@ import { PageService } from '../../../../services/page.service';
 import { Param } from '../../../../shared/app-config.interface';
 import { GenericDomain } from './../../../../model/generic-domain.model';
 import { HttpMethod } from '../../../../shared/command.enum';
+import { BaseElement } from './../../base-element.component';
+import { trigger,state,style,transition,animate,keyframes } from '@angular/animations';
+
 
 @Component({
     selector: 'nm-action-dropdown',
     template: `
-    <div class="custom-dropdown {{widgetPosition}}" [ngClass]="{'open': isOpen}">
-        <button class="dropdownTrigger" attr.aria-expanded="{{isOpen}}" (click)="toggleOpen($event)"></button> 
-        <div class="dropdownContent" attr.aria-hidden="{{!isOpen}}">
-            <nm-action-link [elementPath]="elementPath" [rowData]="rowData" [param]="param" *ngFor="let param of params"></nm-action-link>
+    <div class="action-dropdown" >
+        <button class="dropdownTrigger" 
+            aria-label="action menu" 
+            attr.aria-expanded="{{isOpen}}" 
+            (click)="toggleOpen($event)">
+        </button> 
+        <div class="dropdownContent" 
+            [ngClass]="{'displayNone': isHidden}" 
+            [@dropdownAnimation]='state' 
+            (@dropdownAnimation.start)="animationStart($event)" 
+            (@dropdownAnimation.done)="animationDone($event)" 
+            attr.aria-hidden="{{isHidden}}">
+            <nm-action-link 
+                [elementPath]="elementPath" 
+                [rowData]="rowData" 
+                [param]="param" 
+                *ngFor="let param of params">
+            </nm-action-link>
         </div>
     </div>
   `
+  ,
+  animations: [
+    trigger('dropdownAnimation', [
+        state('openPanel', style({
+            maxHeight: '300px',
+        })),
+        state('closedPanel', style({
+            maxHeight: '0',
+        })),
+        
+        transition('closedPanel => openPanel', animate('600ms ease-in')),
+        transition('openPanel => closedPanel', animate('300ms ease-out')),
+     ]),
+]
 })
 export class ActionDropdown {
 
@@ -24,8 +55,8 @@ export class ActionDropdown {
     @Input() elementPath: string;
     @Input() rowData: any;
     isOpen: boolean = false;
-    widgetPosition: string;
-    
+    isHidden: boolean = true;
+    state: string = "closedPanel";
     constructor(private _wcs: WebContentSvc, private pageSvc: PageService) {
     }
 
@@ -34,21 +65,30 @@ export class ActionDropdown {
         // console.log(this.elementPath + '/');
     }
 
-    toggleOpen(event: MouseEvent): void {
+  
+    toggleOpen( event: MouseEvent ): void {
         event.preventDefault();
-        if(window.innerWidth - event.clientX <= 400){
-            this.widgetPosition = "west"
-        }
-        else{this.widgetPosition = "east"}
-        //console.log("x =",event.screenX,"y =",event.screenY, "broswer inner width", window.innerWidth,"broswer outer width", window.outerWidth);
         this.isOpen = !this.isOpen;
-        //console.log("widgetPosition",this.widgetPosition, window.innerWidth,"-",event.clientX,"=",window.innerWidth-event.clientX  );
+        if(this.state == 'openPanel'){
+            this.state = 'closedPanel';
+        }
+        else{
+            this.state = 'openPanel';
+        }
     }
-
     processOnClick(linkCode: string) {
         let item: GenericDomain = new GenericDomain();
         this.pageSvc.processEvent(this.elementPath + '/' + linkCode, Behavior.execute.value, item, HttpMethod.GET.value);
     }
+    animationStart($event) {
+        this.isHidden = false;
+    }
+    animationDone($event) {
+        if(this.isOpen == false){
+            this.isHidden = true;
+        }
+    }
+    
 }
 
 @Component({
@@ -65,26 +105,20 @@ export class ActionDropdown {
         </ng-template>
     `
 })
-export class ActionLink {
+export class ActionLink extends BaseElement{
     
         @Input() param: ElementModelParam;
         @Input() elementPath: string;
         @Input() rowData: any;
-        protected label: string;
         protected url:string;
         
-        constructor(private wcs: WebContentSvc, private pageSvc: PageService) {
-            wcs.content$.subscribe(result => {
-                if (this.param && result.id === this.param.code) {
-                    this.label = result.label;
-                }
-            });
+        constructor(private _wcs: WebContentSvc, private pageSvc: PageService) {
+            super(_wcs);
         }
     
         ngOnInit() {
-            if (this.param && this.param.code) {
-                this.wcs.getContent(this.param.code);
-            }
+            this.loadLabelConfigByCode(this.param.code, this.param.labelConfigs);
+
             // replace parameters in url enclosed within {}
             if (this.param.uiStyles && this.param.uiStyles.attributes && this.param.uiStyles.attributes.url) {
                 this.url = this.param.uiStyles.attributes.url;
@@ -112,6 +146,7 @@ export class ActionLink {
             let item: GenericDomain = new GenericDomain();
             this.pageSvc.processEvent(this.elementPath + '/' + linkCode, Behavior.execute.value, item, HttpMethod.GET.value);
         }
+
     }
 
 

@@ -1,3 +1,4 @@
+import { LabelConfig } from './../../shared/app-config.interface';
 /**
  * @license
  * Copyright Anthem Inc. All Rights Reserved.
@@ -29,7 +30,8 @@ import { WebContentSvc } from '../../services/content-management.service';
  */
 export class BaseElement {
     @Input() element: Param;
-    protected label: string;
+    public label: string;
+    public helpText : string;
     protected _nestedParams: Param[];
     protected _imgSrc: string;
     protected _code: string;
@@ -37,22 +39,33 @@ export class BaseElement {
     protected _enabled: any;
     protected _cssClass: string;
     protected _type: string;
+    protected _elementStyle: string;
     
     constructor(private wcs: WebContentSvc) {
-        wcs.content$.subscribe(result => {
-            if (this.element && result.id === this.element.config.code) {
-                this.label = result.label;
-            }
-        });
+        
     }
 
     /**
      * Initialization activities this Param
      */
     ngOnInit() {
-        if (this.element.config && this.element.config.code) {
-            this.wcs.getContent(this.element.config.code);
-        }
+        this.loadLabelConfig(this.element);
+    }
+
+    /**
+     * Traverses the provided param and stores the label config into this class' appropriate values.
+     * @param param The param for which to load label content for.
+     */
+    protected loadLabelConfig(param: Param): void {
+        let labelConfig: LabelConfig = this.wcs.findLabelContent(param);
+        this.label = labelConfig.text;
+        this.helpText = labelConfig.helpText;
+    }
+
+    protected loadLabelConfigByCode(code: string, labelConfigs: LabelConfig[]): void {
+        let labelConfig: LabelConfig = this.wcs.findLabelContentFromConfig(code, labelConfigs);
+        this.label = labelConfig.text;
+        this.helpText = labelConfig.helpText;
     }
 
     /**
@@ -105,6 +118,21 @@ export class BaseElement {
      */
     public get type(): string {
         return this.element.config.uiStyles.attributes.type;
+    }
+
+    /**
+     * Check if control is required
+     */
+    public get elementStyle(): string {
+        let style = '';
+        if (this.element.config.validation) {
+            this.element.config.validation.constraints.forEach(validator => {
+                if (validator.name === 'NotNull') {
+                    style = 'required';
+                }
+            });
+        }
+        return style;
     }
 }
 

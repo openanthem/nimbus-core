@@ -1,5 +1,6 @@
 import { Route } from '@angular/router';
 import { Param } from './../shared/app-config.interface';
+import {MenuItem} from 'primeng/primeng';
 
 export enum MenuType {
     DEFAULT,
@@ -26,6 +27,7 @@ export interface AppBranding {
     subTitle: Param;
     userName: Param;
     userRole: Param;
+    settings:Param;
     help:Param;
     logOut: Param;
     numOfNotifications:Param;
@@ -36,7 +38,19 @@ export interface TopBarConfig {
     branding: AppBranding;
     headerMenus: Param[];
     subHeaders: Param[];
-    organizations: Param[];
+}
+
+//TODO: Determine the strategy for global nav
+
+export interface GlobalNavConfig {
+    organization: Param;
+    menus: MenuItem[][];
+}
+
+export interface GlobalNavConfig {
+       organization: Param;
+       menuItems: Map<string, Param[]>;
+       menuLinks: Param[];
 }
 
 export interface FooterConfig {
@@ -45,13 +59,9 @@ export interface FooterConfig {
     sslCert: Param;
 }
 
-export interface BodyConfig {
-    defaultFlow: String;
-}
-
 export interface Layout {
     topBar: TopBarConfig;
     leftNavBar: LinkConfig[];
     footer: FooterConfig;
-    body: BodyConfig;
+    subBar: GlobalNavConfig;
 }

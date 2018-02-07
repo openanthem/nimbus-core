@@ -26,6 +26,7 @@
     &.open{
         .callout{
             opacity: 1;
+            display: block;
         }
     }
     &.east .callout {
@@ -59,6 +60,9 @@
     transition: opacity 1s;
     z-index: 4;
     box-shadow: rgb(136, 136, 136) 2px 2px 6px;
+    text-transform: initial;
+    text-align: left;
+    display: none;
     &::before{
         position:absolute;
         left: -10px;
@@ -72,6 +76,7 @@
         content:"";
 
     }
+    
     .close{
         font-size: 1.1rem;
         position: absolute;

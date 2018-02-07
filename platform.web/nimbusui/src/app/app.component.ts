@@ -15,9 +15,11 @@ import { DOCUMENT } from '@angular/platform-browser';
 })
 
 export class AppComponent {
-    domain: any;
-    port : any;
-    label: any;
+    domain: string;
+    port : string;
+    protocol: string;
+    locale : string;
+    label: string;
     private collapse: boolean = false;
 
     constructor(private router: Router,
@@ -34,8 +36,12 @@ export class AppComponent {
    ngOnInit() {
         this.domain = this.document.location.hostname;
         this.port=this.document.location.port;
+        this.protocol=this.document.location.protocol;
+        this.locale = "en-US"; //TODO This locale should be read dynamically. Currently defaulting to en-US
         ServiceConstants.STOPGAP_APP_HOST = this.domain;
         ServiceConstants.STOPGAP_APP_PORT = this.port;
+        ServiceConstants.LOCALE_LANGUAGE = this.locale;
+        ServiceConstants.STOPGAP_APP_PROTOCOL = this.protocol;
     }
 
 }

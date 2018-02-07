@@ -1,25 +1,40 @@
 @mixin styleButton($bkgColor,$color) {
   background: $bkgColor;
   border-color: $bkgColor;
-  border-radius: .7rem;
-  padding: .3rem 1.5rem;
+  
   color:$color;
   line-height:1;
   text-transform: initial;
   margin-right:9px;
+  margin-bottom:1rem;
   &:hover:not([disabled]){
-    background-color: darken($bkgColor, 10%);
+    background-color: lighten($bkgColor, 15%);
+  }
+  &:focus{
+    outline: $focus-outline-setting;
+  }
+  &[disabled]{
+    background-color: lighten($bkgColor, 25%);
   }
 }
-
+button:focus{
+  outline: $focus-outline-setting;
+}
 .btn-action,.btn-primary {
   @include styleButton($primary-action-color,#fff);
+  padding: .3rem 1.5rem;
+  border-radius: .6rem;
 }
 .btn-delete {
   @include styleButton($delete-color,#fff);
+  padding: .2rem .5rem;
+  padding: .3rem 1.5rem;
+  border-radius: .6rem;
 }
 .btn-secondary {
   @include styleButton($secondary-action-color,#494949);
+  padding: .2rem 1rem;
+  border-radius: .4rem;
 }
 
 
@@ -36,6 +51,9 @@
     line-height:1;
     &:hover{
       color: #034b7c;
+    }
+    &:focus{
+      outline: $focus-outline-setting;
     }
 }
 

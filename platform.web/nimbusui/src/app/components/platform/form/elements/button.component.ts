@@ -6,6 +6,7 @@ import { PageService } from '../../../../services/page.service';
 import { FormGroup } from '@angular/forms';
 import { Location } from '@angular/common';
 import { ServiceConstants } from './../../../../services/service.constants';
+import { BaseElement } from '../../base-element.component';
 
 @Component( {
     selector: 'nm-button',
@@ -16,7 +17,7 @@ import { ServiceConstants } from './../../../../services/service.constants';
                 <button class="btn btn-action" (click)="onSubmit()" type="{{element.config?.uiStyles?.attributes?.type}}" [disabled]="!form.valid">{{label}}</button>
             </ng-template>
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style=='SECONDARY' && element?.visible?.currState == true">
-                <button class="btn btn-secondary" (click)="emitEvent(this)" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
+                <button class="btn btn-secondary" [disabled]="disabled" (click)="emitEvent(this)" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
             </ng-template>
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style=='PLAIN' && element?.visible?.currState == true">
                 <button class="btn btn-plain" (click)="emitEvent(this)" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
@@ -35,19 +36,17 @@ import { ServiceConstants } from './../../../../services/service.constants';
     `
 } )
 
-export class Button {
+export class Button extends BaseElement {
 
     @Input() element: Param;
     @Input() payload: string;
     @Input() form: FormGroup;
     @Output() buttonClickEvent = new EventEmitter();
-    private label: string;
     private imagesPath: string;
+    private disabled: boolean;
 
-    constructor( private pageService: PageService, private wcs: WebContentSvc, private location: Location ) {
-        wcs.content$.subscribe( result => {
-            this.label = result.label;
-        } );
+    constructor( private pageService: PageService, private _wcs: WebContentSvc, private location: Location ) {
+        super(_wcs);
     }
 
     emitEvent( $event: any ) {
@@ -60,8 +59,9 @@ export class Button {
     }
 
     ngOnInit() {
+        super.ngOnInit();
+        this.disabled = !this.element.enabled.currState;
         this.imagesPath = ServiceConstants.IMAGES_URL;
-        this.wcs.getContent( this.element.config.code );
         this.payload = this.element.config.uiStyles.attributes.payload;
         this.buttonClickEvent.subscribe(( $event ) => {
             //console.log( $event );
@@ -70,6 +70,12 @@ export class Button {
             this.pageService.processEvent( $event.element.path, $event.element.config.uiStyles.attributes.b,
                 null, $event.element.config.uiStyles.attributes.method );
         } );
+
+        this.pageService.validationUpdate$.subscribe(event => {
+            if(event.path == this.element.path) {
+                this.disabled = !event.enabled.currState;
+            }
+        });
     }
 
     onSubmit() {

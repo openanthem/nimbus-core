@@ -30,12 +30,9 @@ export class Form implements OnInit, OnChanges {
     formGroupElements: Param[] = [];
     buttonList: Param[] = [];
     elementCss: string;
- //   private label: string;
 
     constructor(private service: FormElementsService, private pageSvc: PageService, private wcs: WebContentSvc) {
-//        wcs.content$.subscribe(result => {
-//            this.label = result.label;
-//        });
+
     }
 
     toggle() {

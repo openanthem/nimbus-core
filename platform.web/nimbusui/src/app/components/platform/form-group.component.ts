@@ -1,3 +1,4 @@
+import { LabelConfig } from './../../shared/app-config.interface';
 import { Component, Input, forwardRef } from '@angular/core';
 import { Param } from '../../shared/app-config.interface';
 import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -47,18 +48,17 @@ export class FrmGroupCmp {
        @Input() elementCss : String;
        @Input() parentElement: Param
        private label: string;
+       private helpText : string;
 
        constructor(private wcs: WebContentSvc) {
-            wcs.content$.subscribe(result => {
-                if (this.parentElement && result.id === this.parentElement.config.code) {
-                    this.label = result.label;
-                }
-            });
+           
        }
 
        ngOnInit() {
             if (this.hasParagraph(this.parentElement)) {
-                this.wcs.getContent(this.parentElement.config.code);
+                let labelConfig: LabelConfig = this.wcs.findLabelContent(this.parentElement);
+                this.label = labelConfig.text;
+                this.helpText = labelConfig.helpText;
             }
        }
 

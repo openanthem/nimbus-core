@@ -11,9 +11,9 @@ $header-btn-height: 55px;
 $header-dropdown-marginTop: 6px;
 
 $toolbar-height: 123px;
-$subheader-height: 30px;
-$subheader-background-color:#333;
-$subheader-font-color: #fff;
+$globalNav-height: 30px;
+$globalNav-background-color:#333;
+$globalNav-font-color: #fff;
 
 $breadcrumb-height: 45px;
 $infoBar-height: 60px;
@@ -25,13 +25,15 @@ $card-header-height: 30px;
 // $sidebar-padding-top:30px;
 $sidebar: #034b7c;
 // $sidebar-text: #33CCFF;
-
+$focus-outline-setting: #8FBEE6 solid 2px;
 $footer-bkg : $gray-dark;
 $footer-height-nimbus: 120px;
 $footer-color : #fff;
 
-$border-color: #8fbee4;
-$border-color-dark: #9e9e9e;
+$border-color: #999;
+$border-color-dark: darken($border-color, 50%);
+$border-color-light: lighten($border-color, 30%);
+
 $btn-bkg-primary: rgba(22, 155, 213, 1);
 $primary: #4d86c1 !default;
 $primary-light: tint($primary, 30%);

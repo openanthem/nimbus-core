@@ -8,7 +8,7 @@
     <nm-input-calendar  id="{{id}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.type=='calendar'" [element]="element" [form]="form"></nm-input-calendar>
     <nm-comboBox id="{{id}}"  [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.alias == 'ComboBox'" [element]="element"  [form]="form"></nm-comboBox>
     <nm-input-radio id="{{id}}"  [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.alias == 'Radio'" [element]="element" [form]="form"></nm-input-radio>
-    <nm-input-checkbox id="{{id}}"  *ngIf="element.config?.uiStyles?.attributes?.alias == 'CheckBoxGroup'" [formControlName]="element.config?.code"  ngDefaultControl [element]="element" [form]="form"></nm-input-checkbox>
+    <nm-input-checkbox id="{{id}}"  *ngIf="element.config?.uiStyles?.attributes?.alias == 'CheckBoxGroup'" [element]="element" [form]="form"></nm-input-checkbox>
     <nm-single-checkbox id="{{id}}" *ngIf="element.config?.uiStyles?.attributes?.alias == 'CheckBox'" [formControlName]="element.config?.code"  ngDefaultControl [element]="element" [form]="form"></nm-single-checkbox>
     <nm-multiselect-dropdown id="{{id}}" *ngIf="element.config?.uiStyles?.attributes?.alias == 'MultiSelect1'" [formControlName]="element.config?.code" ngDefaultControl [element]="element"  [form]="form"></nm-multiselect-dropdown>
     <nm-multi-select-listbox id="{{id}}" *ngIf="element.config?.uiStyles?.attributes?.alias == 'MultiSelect'" [element]="element"  [form]="form"></nm-multi-select-listbox>
@@ -22,7 +22,6 @@
     </ng-template>
     <nm-upload id="{{id}}"  *ngIf="element.config?.uiStyles?.attributes?.alias == 'FileUpload'" [element]="element" [form]="form"></nm-upload>
     <div *ngIf="showErrors==true">
-        <p *ngFor="let error of getErrors()">{{error}}</p>
+        <p class="warningMsg" *ngFor="let error of getErrors()">{{error}}</p>
     </div>
-    <i class="fa fa-warning left" aria-hidden="true" *ngIf="showErrors==true"></i>
 </div>
