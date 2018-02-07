@@ -15,13 +15,13 @@
  */
 package com.anthem.nimbus.platform.web.flow.login;
 
-import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Page;
-import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Section;
-import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.StaticText;
-import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Tile;
 import com.antheminc.oss.nimbus.domain.defn.Domain;
-import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
+import com.antheminc.oss.nimbus.domain.defn.Model;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Page;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Section;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.StaticText;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Tile;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -40,7 +40,7 @@ public class VRLogin {
 	@Getter @Setter
 	public static class PageLogin  {
 
-		@Tile(title="LOGIN", imgSrc="resources/icons/member-2.svg#Layer_1", size=Tile.Size.Large) 
+		@Tile(imgSrc="resources/icons/member-2.svg#Layer_1", size=Tile.Size.Large) 
 		private CardLogin cardLogin;
 	}
 	
