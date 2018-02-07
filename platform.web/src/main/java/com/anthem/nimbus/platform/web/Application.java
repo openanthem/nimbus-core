@@ -33,7 +33,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
-import com.anthem.nimbus.platform.spec.serializer.CustomLocalDateSerializer;
+import com.antheminc.oss.nimbus.support.json.CustomLocalDateSerializer;
 
 @EnableDiscoveryClient
 @SpringBootApplication(exclude = { DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class,

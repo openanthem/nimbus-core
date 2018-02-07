@@ -15,12 +15,12 @@
  */
 package com.anthem.nimbus.platform.web.flow.login;
 
-import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Page;
-import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Section;
-import com.anthem.oss.nimbus.core.domain.definition.ViewConfig.Section.Type;
 import com.antheminc.oss.nimbus.domain.defn.Domain;
-import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
+import com.antheminc.oss.nimbus.domain.defn.Model;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Page;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Section;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Section.Type;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -38,8 +38,8 @@ public class VLLogin {
 		@Section(Type.HEADER) 
 		private VSLoginHeader vsLoginHeader;
 		
-		@Section(Type.FOOTER) 
-		private VSLoginFooter vsLoginFooter;
+//		@Section() 
+//		private VSLoginFooter vsLoginFooter;
 		
 	}
 	

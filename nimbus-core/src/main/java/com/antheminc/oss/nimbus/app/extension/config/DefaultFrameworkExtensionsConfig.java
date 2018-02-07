@@ -29,7 +29,9 @@ import com.antheminc.oss.nimbus.domain.model.state.extension.ParamContextStateEv
 import com.antheminc.oss.nimbus.domain.model.state.extension.RuleStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValuesConditionalOnStateChangeEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValuesConditionalOnStateLoadEventHandler;
+import com.antheminc.oss.nimbus.domain.model.state.internal.DobToAgeConverter;
 import com.antheminc.oss.nimbus.domain.model.state.internal.IdParamConverter;
+import com.antheminc.oss.nimbus.domain.model.state.internal.StaticCodeValueBasedCodeToLabelConverter;
 
 /**
  * @author Soham Chakravarti
@@ -92,4 +94,15 @@ public class DefaultFrameworkExtensionsConfig {
 	public IdParamConverter idParamConverter(){
 		return new IdParamConverter();
 	}
+	
+	@Bean
+	public DobToAgeConverter dobToAgeConverter(){
+		return new DobToAgeConverter();
+	}
+	
+	@Bean
+	public StaticCodeValueBasedCodeToLabelConverter staticCodeValueBasedCodeToLabelConverter(){
+		return new StaticCodeValueBasedCodeToLabelConverter();
+	}
+	
 }
