@@ -9,8 +9,6 @@
 	</parent>
 	
 	<artifactId>nimbus-core</artifactId> 
-	<packaging>jar</packaging>
-	<name>nimbus-core</name>
 	
     <properties>
         <sonar.projectName>nimbus-core</sonar.projectName>
@@ -18,20 +16,8 @@
     </properties>
 
     <build>
-    <!-- 
-     <sourceDirectory>../src/main/java</sourceDirectory>
-     <resources><resource><directory>../src/main/resources</directory></resource></resources>
-     <outputDirectory>../target/classes</outputDirectory>
-     
-     <testSourceDirectory>../src/test/java</testSourceDirectory>
-     <testResources><testResource><directory>../src/test/resources</directory></testResource></testResources>
-     <testOutputDirectory>../target/test-classes</testOutputDirectory>
-     
-     <directory>../target</directory>
-      -->
-     <plugins>
-	     	
-				<plugin>
+	     <plugins>
+			<plugin>
 				<groupId>com.mysema.maven</groupId>
 				<artifactId>apt-maven-plugin</artifactId>
 				<version>1.1.3</version>
@@ -51,17 +37,17 @@
 				</executions>
 			</plugin>  
 		
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <includes>
-                        <include>**/Test*.java</include>
-                        <include>**/*Tests.java</include>
-                        <include>**/*Test.java</include>
-                    </includes>
-                </configuration>
-            </plugin>
+	        <plugin>
+	            <groupId>org.apache.maven.plugins</groupId>
+	            <artifactId>maven-surefire-plugin</artifactId>
+	            <configuration>
+	                <includes>
+	                    <include>**/Test*.java</include>
+	                    <include>**/*Tests.java</include>
+	                    <include>**/*Test.java</include>
+	                </includes>
+	            </configuration>
+	        </plugin>
         </plugins>
     </build>
 </project>

@@ -13,41 +13,31 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.test;
+package com.antheminc.oss.nimbus.test.domain.session;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import com.antheminc.oss.nimbus.domain.session.AbstractSessionProvider;
 
-public class TestSessionProvider extends AbstractSessionProvider{
+public class TestSessionProvider extends AbstractSessionProvider {
 
 	public Map<String,Object> sessionMap = new HashMap<String, Object>();
 
-	/* (non-Javadoc)
-	 * @see com.anthem.oss.nimbus.core.domain.command.execution.SessionProvider#getSessionId()
-	 */
 	@Override
 	public String getSessionId() {
 		return "test-session";
 	}
 
-	/* (non-Javadoc)
-	 * @see com.anthem.oss.nimbus.core.domain.command.execution.SessionProvider#getAttribute(java.lang.String)
-	 */
 	@Override
 	@SuppressWarnings("unchecked")
 	public <R> R getAttribute(String key) {
 		return (R)sessionMap.get(key);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.anthem.oss.nimbus.core.domain.command.execution.SessionProvider#setAttribute(java.lang.String, java.lang.Object)
-	 */
 	@Override
 	public void setAttribute(String key, Object value) {
 		sessionMap.put(key, value);
-
 	}	
 
 }

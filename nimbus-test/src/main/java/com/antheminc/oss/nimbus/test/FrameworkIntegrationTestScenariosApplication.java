@@ -22,6 +22,7 @@ import org.springframework.context.annotation.Bean;
 import com.antheminc.oss.nimbus.app.extension.config.DefaultCoreConfiguration;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.session.SessionProvider;
+import com.antheminc.oss.nimbus.test.domain.session.TestSessionProvider;
 
 /**
  * @author Soham Chakravarti
