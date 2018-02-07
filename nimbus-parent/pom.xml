@@ -70,6 +70,7 @@
         <!-- nimbus-core -->
         <nimbus.version>1.0.0.M1-SNAPSHOT</nimbus.version>
         <nimbus.core.version>${nimbus.version}</nimbus.core.version>
+        <nimbus.ui.version>${nimbus.version}</nimbus.ui.version>
         <nimbus.dsl.version>${nimbus.core.version}</nimbus.dsl.version> <!-- DSL matches core's version -->
         <nimbus.test.version>${nimbus.version}</nimbus.test.version>
     </properties>
@@ -297,6 +298,11 @@
                 <groupId>com.antheminc.oss</groupId>
                 <artifactId>nimbus-core</artifactId>
                 <version>${nimbus.core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.antheminc.oss</groupId>
+                <artifactId>nimbus-ui</artifactId>
+                <version>${nimbus.ui.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.antheminc.oss</groupId>

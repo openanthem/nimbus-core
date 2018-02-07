@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.anthem.nimbus.platform.web.flow.login;
+package com.antheminc.oss.nimbus.web.flow.login;
 
 import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Hints;

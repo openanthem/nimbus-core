@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.anthem.nimbus.platform.web;
+package com.antheminc.oss.nimbus.web;
 
 import java.time.LocalDate;
 

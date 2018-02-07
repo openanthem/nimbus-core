@@ -10,8 +10,8 @@
 		<relativePath>../nimbus-parent</relativePath>
 	</parent>
 	
-	<name>nimbus-core-web</name>
-	<artifactId>com.anthem.oss.nimbus.core.web</artifactId>
+	<name>nimbus-ui</name>
+	<artifactId>nimbus-ui</artifactId>
 	<description>oss web project</description>
 	<packaging>jar</packaging>
 	<properties>
