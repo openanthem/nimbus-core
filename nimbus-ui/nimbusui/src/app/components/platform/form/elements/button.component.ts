@@ -1,12 +1,14 @@
-import { GenericDomain } from './../../../../model/generic-domain.model';
+import { Length } from './../../../../shared/app-config.interface';
 import { Component, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { Location } from '@angular/common';
+import { GenericDomain } from './../../../../model/generic-domain.model';
 import { Param } from '../../../../shared/app-config.interface';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { PageService } from '../../../../services/page.service';
-import { FormGroup } from '@angular/forms';
-import { Location } from '@angular/common';
 import { ServiceConstants } from './../../../../services/service.constants';
 import { BaseElement } from '../../base-element.component';
+import { FileService } from '../../../../services/file.service';
 
 @Component( {
     selector: 'nm-button',
@@ -44,8 +46,10 @@ export class Button extends BaseElement {
     @Output() buttonClickEvent = new EventEmitter();
     private imagesPath: string;
     private disabled: boolean;
+    files: any;
 
-    constructor( private pageService: PageService, private _wcs: WebContentSvc, private location: Location ) {
+    constructor( private pageService: PageService, private _wcs: WebContentSvc, 
+        private location: Location, private fileService: FileService ) {
         super(_wcs);
     }
 
@@ -78,27 +82,45 @@ export class Button extends BaseElement {
         });
     }
 
-    onSubmit() {
-        let item: GenericDomain = new GenericDomain();
-        item = this.form.value;
-        let navLink = this.element.config.uiStyles.attributes.navLink;
-        let domainParams;
-        if ( navLink != null ) {
-            domainParams = this.getAllURLParams( navLink );
-        }
-        if ( domainParams != null ) {
-            for ( let domainParam of domainParams ) {
-                let p = domainParam.substring( 1, domainParam.length - 1 );
-                if ( item[p] ) {
-                    navLink = navLink.replace( new RegExp( domainParam, 'g' ), item[p] );
-                } else {
-                    navLink = '';
-                    break;
+    checkObjectType(type: string, obj: object) {
+        var clas = Object.prototype.toString.call(obj).slice(8, -1);
+        return obj !== undefined && obj !== null && clas === type;
+    }
+
+    getFileParameter(item: GenericDomain): string { // make it recursive for nested model in future
+        let hasFile = undefined;
+        for (var key in item) {
+            if (!item.hasOwnProperty(key)) continue;
+            let obj = item[key];
+            if (this.checkObjectType('Array', obj)) {
+                if(obj.length > 0) {
+                    if (this.checkObjectType('File', obj[0])) {
+                        hasFile = key;
+                    }
                 }
             }
         }
-        //this.pageSvc.processEvent(this.element.config.uiStyles.attributes.submitUrl, this.element.config.uiStyles.attributes.b, item,'POST',navLink);
-        this.pageService.processEvent( this.element.path, this.element.config.uiStyles.attributes.b, item, 'POST', navLink );
+        return hasFile;
+    }
+
+    onSubmit() {
+        let item: GenericDomain = new GenericDomain();
+        item = this.form.value;
+        // Check for File upload parameters ('fileControl').
+        if (item['fileControl']) {
+            let files: File[] = item['fileControl'];
+            delete item['fileControl'];
+            for(let p=0; p<files.length; p++){
+                item['fileId'] = files[p]['fileId'];
+                item['name'] = files[p]['name'];
+                this.pageService.processEvent( this.element.path, this.element.config.uiStyles.attributes.b, item, 'POST' );
+               
+            }
+            
+        } else {
+            this.pageService.processEvent( this.element.path, this.element.config.uiStyles.attributes.b, item, 'POST' );
+        }
+
         // Form reset after submit
         this.reset();
     }

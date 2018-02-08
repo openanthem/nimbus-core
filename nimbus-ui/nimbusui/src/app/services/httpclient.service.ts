@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions} from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
-export class HttpClient {
-  constructor(public http: Http) {
+export class CustomHttpClient {
+  constructor(public http: HttpClient, public customHttpClient: Http ) {
     this.http = http;
   }
 
@@ -21,15 +22,26 @@ export class HttpClient {
     let headers = new Headers({'Content-Type': 'application/json'});
     this.createAuthorizationHeader(headers);
     let options = new RequestOptions({headers: headers, withCredentials: true});
-    return this.http.get(url, options);
+    return this.customHttpClient.get(url, options);
   }
 
   post(url, data) {
     let headers = new Headers({'Content-Type': 'application/json'});
     this.createAuthorizationHeader(headers);
     let options = new RequestOptions({headers: headers, withCredentials: true});
-    return this.http.post(url, data, options);
+    return this.customHttpClient.post(url, data, options);
   }
+
+  postFileData(url, data) {
+
+    return this.http.post(url, data);
+  }
+
+  // removeFile(url){
+
+  //   return this.http.delete(url);
+ 
+  // }
 
   getCookie(name) {
     let value = '; ' + document.cookie;

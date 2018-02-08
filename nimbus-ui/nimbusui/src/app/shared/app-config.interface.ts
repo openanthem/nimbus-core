@@ -564,6 +564,7 @@ export class UiStyle implements Serializable<UiStyle> {
 export class UiAttribute implements Serializable<UiAttribute> {
     value: string;
     url: string;
+    controlType: string;
     editUrl: string;
     editable: boolean;
     align: string;
@@ -683,6 +684,9 @@ export class UiAttribute implements Serializable<UiAttribute> {
         this.target = inJson.target;
         this.rel = inJson.rel;
         this.hourFormat = inJson.hourFormat;
+        if ( inJson.controlType != null ) {
+            this.controlType = inJson.controlType;
+        }
         if (inJson.showTime) {
             this.showTime = inJson.showTime;
         }

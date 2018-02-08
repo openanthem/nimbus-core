@@ -3,7 +3,7 @@ import { LoaderService } from './loader.service';
 import { Action, HttpMethod, Behavior} from './../shared/command.enum';
 import { Injectable, EventEmitter } from '@angular/core';
 import { ServiceConstants } from './service.constants';
-import { ElementModelParam, RemnantState } from './../shared/app-config.interface';
+import { ElementModelParam, RemnantState, Validation } from './../shared/app-config.interface';
 import {
     Model,
     ModelEvent,
@@ -13,7 +13,7 @@ import {
     Type,
     Result, ViewRoot
 } from '../shared/app-config.interface';
-import { HttpClient} from './httpclient.service';
+import { CustomHttpClient} from './httpclient.service';
 
 import { Subject } from 'rxjs/Subject';
 import { GenericDomain } from '../model/generic-domain.model';
@@ -39,7 +39,7 @@ export class PageService {
         gridValueUpdate$ = this.gridValueUpdate.asObservable();
 
         private _entityId: number = 0;
-        constructor(private http: HttpClient, private loaderService: LoaderService) {
+        constructor(private http: CustomHttpClient, private loaderService: LoaderService) {
                 // initialize
                 this.appConfigs = {};
                 this.flowRootDomainId = {};
@@ -306,7 +306,7 @@ export class PageService {
                        let flow = this.getFlowNameFromOutput(output.value.path);
                        let viewRoot: ViewRoot = new ViewRoot();
                        // Add the flow config to memory.
-                       if (output.value.config.type.model.uiStyles) {
+                       if (output.value.config.type.model && output.value.config.type.model.uiStyles) {
                            viewRoot.layout = output.value.config.type.model.uiStyles.attributes.layout;
                        }
                        viewRoot.model = output.value.type.model;
@@ -379,7 +379,7 @@ export class PageService {
         }
 
         /** Process execute call - TODO revisit to make it more dynamic based on url completion */
-        processEvent(processUrl: string, behavior: string, model: GenericDomain, method: string, navLink?: string, loading? : boolean ) {
+        processEvent(processUrl: string, behavior: string, model: GenericDomain, method: string ) {
                 // if (model!=null && model['id']) {
                 //         this.entityId = model['id'];
                 // }
@@ -429,9 +429,6 @@ export class PageService {
                         .map(res => res.json())
                         .subscribe(data => {
                                 this.processResponse(data.result,serverUrl, flowName);
-                                if(navLink != null && navLink !== '') {
-                                        this.processEvent(navLink, '$executeAnd$config', null, 'POST');
-                                }
                         },
                                 err => this.logError(err),
                                 () => {console.log('Process Execution query completed..');
@@ -662,8 +659,8 @@ export class PageService {
 
         /** Update param with value */
         traverseParam(param: Param, eventModel: ModelEvent) {
-                let payload: Param;
-                payload = new Param().deserialize(eventModel.value);
+                /* Flow-Wrapper class also invokes methods that eventually call this behaviour. We need to make sure that the eventModel is deserialized by then */
+                let payload = eventModel.value;
                 if (param.type.nested === true) {
                     this.updateParam(param, payload);
                     if (param.type.model && payload.type.model && payload.type.model.params) {
@@ -696,6 +693,9 @@ export class PageService {
                                                                 //Object.assign(Reflect.get(param, currentKey), new Type().deserialize(Reflect.get(payload, updatedKey)));
                                                         } else if (currentKey === 'config') {
                                                                 Object.assign(Reflect.get(param, currentKey), new ParamConfig().deserialize(Reflect.get(payload, updatedKey)));
+                                                                //TODO - refactor this whole method and the conditions. Revisit - order, count
+                                                        } else if (currentKey === 'validations') {
+                                                                Object.assign(Reflect.get(param, currentKey), new Validation().deserialize(Reflect.get(payload, updatedKey)));
                                                                 //TODO - refactor this whole method and the conditions. Revisit - order, count
                                                         } else if (currentKey === 'leafState' || currentKey === 'message') {
                                                                 Reflect.set(param, currentKey, Reflect.get(payload, updatedKey));

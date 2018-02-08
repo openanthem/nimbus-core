@@ -43,7 +43,7 @@ export class CheckBoxGroup extends BaseElement implements ControlValueAccessor {
 
     constructor(private pageService: PageService, private _wcs: WebContentSvc, private cd: ChangeDetectorRef) {
         super(_wcs);    
-     }
+    }
 
     public onChange: any = (_) => { /*Empty*/ }
     public onTouched: any = () => { /*Empty*/ }

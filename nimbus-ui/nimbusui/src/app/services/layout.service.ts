@@ -3,7 +3,7 @@ import { Component, EventEmitter, Injectable } from '@angular/core';
 import { Model, Param, Result, UiAttribute } from '../shared/app-config.interface';
 import { ServiceConstants } from './service.constants';
 import { PageService } from './page.service';
-import { HttpClient } from './httpclient.service';
+import { CustomHttpClient } from './httpclient.service';
 import { AppBranding, Layout, LinkConfig, TopBarConfig, FooterConfig, GlobalNavConfig } from '../model/menu-meta.interface';
 import { GenericDomain } from '../model/generic-domain.model';
 
@@ -20,7 +20,7 @@ export class LayoutService {
 
     layout$: EventEmitter<any>;
 
-    constructor(public http: HttpClient, private wcs: WebContentSvc, private pageSvc: PageService) {
+    constructor(public http: CustomHttpClient, private wcs: WebContentSvc, private pageSvc: PageService) {
         this.layout$ = new EventEmitter<any>();
     }
 
@@ -107,7 +107,7 @@ export class LayoutService {
                 this.parseTopBarConfig(param.type.model, branding, headerMenus, subHeaders);
                 // if param has initialize, execute the config
                 if (param.config && param.config.initializeComponent()) { 
-                        this.pageSvc.processEvent(param.path, '$execute', new GenericDomain(), 'POST', ''); 
+                        this.pageSvc.processEvent(param.path, '$execute', new GenericDomain(), 'POST'); 
                 }
             }     
         });

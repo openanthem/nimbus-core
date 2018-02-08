@@ -83,11 +83,14 @@ import { WebContentSvc } from './services/content-management.service';
 import { STOMPStatusComponent } from './services/stomp-status.component';
 import { DragDropService, DragDropSortableService} from './services/dragdrop.service';
 import { AuthenticationService } from './services/authentication.service';
+import { FileService } from './services/file.service';
 // Routes
 import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app.routing.module';
-import { HttpClient } from './services/httpclient.service';
+import { CustomHttpClient } from './services/httpclient.service';
 import { CustomBrowserXhr } from './custom.browserxhr';
+import { HttpClient } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 
 // Declarations
 import { LoginCmp } from './components/login/login.component';
@@ -101,6 +104,7 @@ import { LoaderComponent } from './components/platform/loader/loader.component';
 @NgModule({
     imports: [
         BrowserModule,
+         HttpClientModule,
         ReactiveFormsModule,
         AppRoutingModule,
         HttpModule,
@@ -140,10 +144,11 @@ import { LoaderComponent } from './components/platform/loader/loader.component';
 
     ],
     entryComponents: [ FlowWrapper, PageContent, PageNotfoundComponent, LoginCmp, MainLayoutCmp, HomeLayoutCmp],
-    providers: [ PageService, WebContentSvc,
-         HttpClient, { provide: BrowserXhr, useClass: CustomBrowserXhr },
+    providers: [ PageService, WebContentSvc,HttpClient,  HttpClientModule,
+         CustomHttpClient, { provide: BrowserXhr, useClass: CustomBrowserXhr },
          { provide: LocationStrategy, useClass: HashLocationStrategy }, GridService, DragDropService, DragDropSortableService, DragDropConfig,
-         AuthenticationService, BreadcrumbService, LoaderService ],
+         AuthenticationService, BreadcrumbService, LoaderService, FileService ],
     bootstrap: [ AppComponent ]
 })
 export class AppModule { }
+
