@@ -15,7 +15,7 @@
  */
 package com.antheminc.oss.nimbus.support.pojo;
 
-import com.antheminc.oss.nimbus.domain.defn.InvalidConfigException;
+import com.antheminc.oss.nimbus.InvalidConfigException;
 
 /**
  * @author Soham Chakravarti

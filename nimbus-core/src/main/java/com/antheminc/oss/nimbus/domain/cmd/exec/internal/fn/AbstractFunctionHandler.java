@@ -19,8 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
+import com.antheminc.oss.nimbus.domain.cmd.exec.FunctionHandler;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.CommandMessageConverter;
-import com.antheminc.oss.nimbus.domain.cmd.exec.internal.FunctionHandler;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepositoryFactory;

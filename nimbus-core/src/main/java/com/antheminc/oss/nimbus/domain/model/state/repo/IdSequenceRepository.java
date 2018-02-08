@@ -15,8 +15,6 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.repo;
 
-import com.antheminc.oss.nimbus.SequenceException;
-
 /**
  * Repository for auto sequence generator (for implementation check {@link MongoIdSequenceRepository})
  * Can be implemented for other data sources

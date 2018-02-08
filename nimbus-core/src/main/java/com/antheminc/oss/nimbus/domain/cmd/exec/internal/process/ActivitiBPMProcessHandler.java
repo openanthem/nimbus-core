@@ -23,7 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.antheminc.oss.nimbus.domain.bpm.ProcessEngineContext;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
-import com.antheminc.oss.nimbus.domain.cmd.exec.internal.FunctionHandler;
+import com.antheminc.oss.nimbus.domain.cmd.exec.FunctionHandler;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 

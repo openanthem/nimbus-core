@@ -24,7 +24,7 @@ import com.antheminc.oss.nimbus.domain.bpm.BPMGateway;
 import com.antheminc.oss.nimbus.domain.bpm.activiti.ActivitiBPMGateway;
 import com.antheminc.oss.nimbus.domain.bpm.activiti.ActivitiExpressionManager;
 import com.antheminc.oss.nimbus.domain.bpm.activiti.CommandExecutorTaskDelegate;
-import com.antheminc.oss.nimbus.domain.cmd.exec.internal.FunctionHandler;
+import com.antheminc.oss.nimbus.domain.cmd.exec.FunctionHandler;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.fn.DefaultParamFunctionHandler;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.nav.DefaultActionNewInitEntityFunctionHandler;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.nav.PageIdEchoNavHandler;

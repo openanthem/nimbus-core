@@ -18,8 +18,8 @@ package com.antheminc.oss.nimbus.domain.model.state.extension;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
-import com.antheminc.oss.nimbus.domain.defn.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.defn.extension.Rule;
 import com.antheminc.oss.nimbus.domain.model.config.RulesConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
