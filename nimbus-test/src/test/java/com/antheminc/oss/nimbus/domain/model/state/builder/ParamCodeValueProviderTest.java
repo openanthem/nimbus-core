@@ -42,7 +42,7 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
 import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
-import com.antheminc.oss.nimbus.domain.model.state.internal.RepoBasedConverter;
+import com.antheminc.oss.nimbus.domain.model.state.extension.StaticCodeValueBasedCodeToLabelConverter;
 import com.antheminc.oss.nimbus.entity.StaticCodeValue;
 import com.antheminc.oss.nimbus.entity.VStaticCodeValue;
 import com.antheminc.oss.nimbus.entity.client.Client;
@@ -68,7 +68,7 @@ public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTest
 	MongoOperations mongoOps;
 	
 	@Autowired
-	RepoBasedConverter converter;
+	StaticCodeValueBasedCodeToLabelConverter converter;
 	
 	@Autowired
 	@Qualifier("default.processGateway")

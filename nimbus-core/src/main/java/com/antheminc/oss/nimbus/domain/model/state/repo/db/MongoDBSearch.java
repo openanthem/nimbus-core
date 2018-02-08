@@ -20,7 +20,7 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.util.Assert;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
-import com.antheminc.oss.nimbus.domain.cmd.exec.internal.CommandMessageConverter;
+import com.antheminc.oss.nimbus.domain.cmd.CommandMessageConverter;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
 import com.antheminc.oss.nimbus.entity.SearchCriteria;
 

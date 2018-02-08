@@ -29,7 +29,6 @@ import com.antheminc.oss.nimbus.channel.web.WebActionController;
 import com.antheminc.oss.nimbus.channel.web.WebCommandBuilder;
 import com.antheminc.oss.nimbus.channel.web.WebCommandDispatcher;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
-import com.antheminc.oss.nimbus.domain.model.state.builder.ValidationConfigHandler;
 import com.antheminc.oss.nimbus.domain.model.state.repo.DefaultModelRepositoryFactory;
 import com.antheminc.oss.nimbus.domain.model.state.repo.DefaultParamStateRepositoryDetached;
 import com.antheminc.oss.nimbus.domain.model.state.repo.DefaultParamStateRepositoryLocal;
@@ -54,18 +53,10 @@ import com.antheminc.oss.nimbus.support.pojo.reflection.JavaBeanHandlerReflectio
 @ComponentScan(basePackageClasses = WebActionController.class)
 public class DefaultCoreConfiguration {
 	
-	
-//	//TODO - a blank class - probably have to delete
-	@Bean(name="default.validationConfigHandler")
-	public ValidationConfigHandler validationConfigHandler(){
-		return new ValidationConfigHandler();
-	}
-	
 	@Bean
 	public DefaultModelRepositoryFactory defaultModelRepositoryFactory(BeanResolverStrategy beanResolver){
 		return new DefaultModelRepositoryFactory(beanResolver);
 	}
-	
 
 	@Bean(name="default.rep_ws")
 	public DefaultWSModelRepository defaultWSModelRepository(BeanResolverStrategy beanResolver){

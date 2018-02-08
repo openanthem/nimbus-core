@@ -28,7 +28,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.antheminc.oss.nimbus.channel.web.WebActionController;
-import com.antheminc.oss.nimbus.domain.cmd.exec.internal.CommandMessageConverter;
+import com.antheminc.oss.nimbus.domain.cmd.CommandMessageConverter;
 import com.antheminc.oss.nimbus.entity.client.Client;
 import com.antheminc.oss.nimbus.test.FrameworkIntegrationTestScenariosApplication;
 
