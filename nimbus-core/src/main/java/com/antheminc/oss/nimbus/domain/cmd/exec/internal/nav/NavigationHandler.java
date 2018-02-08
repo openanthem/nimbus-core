@@ -15,7 +15,7 @@
  */
 package com.antheminc.oss.nimbus.domain.cmd.exec.internal.nav;
 
-import com.antheminc.oss.nimbus.domain.cmd.exec.internal.FunctionHandler;
+import com.antheminc.oss.nimbus.domain.cmd.exec.FunctionHandler;
 
 public interface NavigationHandler<T> extends FunctionHandler<T, String> {
 	

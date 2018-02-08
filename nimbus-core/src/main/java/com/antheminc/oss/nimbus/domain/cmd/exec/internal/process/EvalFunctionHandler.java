@@ -18,7 +18,7 @@ package com.antheminc.oss.nimbus.domain.cmd.exec.internal.process;
 import org.activiti.engine.impl.el.ExpressionManager;
 
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
-import com.antheminc.oss.nimbus.domain.cmd.exec.internal.FunctionHandler;
+import com.antheminc.oss.nimbus.domain.cmd.exec.FunctionHandler;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 
