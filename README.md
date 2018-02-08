@@ -5,7 +5,8 @@ Core repository of the Nimbus Framework
 
 [Sonarcloud.io Analysis](https://sonarcloud.io/dashboard?id=com.antheminc.oss%3Animbus.core.parent)
 
-[![Sonarcloud.io Security](https://sonarcloud.io/api/project_badges/measure?project=com.antheminc.oss%3Animbus.core.parent&metric=security_rating)
+
+![Sonarcloud.io Security](https://sonarcloud.io/api/project_badges/measure?project=com.antheminc.oss%3Animbus.core.parent&metric=security_rating)
 [![Sonarcloud.io Bugs](https://sonarcloud.io/api/project_badges/measure?project=com.antheminc.oss%3Animbus.core.parent&metric=bugs)]() 
 [![Sonarcloud.io Coverage](https://sonarcloud.io/api/project_badges/measure?project=com.antheminc.oss%3Animbus.core.parent&metric=coverage)]() [![Sonarcloud.io Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=com.antheminc.oss%3Animbus.core.parent&metric=sqale_index)]() 
 
