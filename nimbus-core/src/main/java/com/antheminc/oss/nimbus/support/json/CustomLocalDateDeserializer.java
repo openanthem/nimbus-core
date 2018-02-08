@@ -35,7 +35,8 @@ public class CustomLocalDateDeserializer extends StdDeserializer<LocalDate> {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final String[] DATE_FORMATS = new String[] { "yyyy-MM-dd", "MM/dd/yyyy" };
+	private static final String[] DATE_FORMATS = new String[] { "yyyy-MM-dd", "MM/dd/yyyy", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" };
+
 
 	public CustomLocalDateDeserializer() {
 		this(null);

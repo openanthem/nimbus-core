@@ -16,6 +16,7 @@
 package com.antheminc.oss.nimbus.app.extension.config;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -30,6 +31,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 import com.antheminc.oss.nimbus.support.json.CustomLocalDateDeserializer;
 import com.antheminc.oss.nimbus.support.json.CustomLocalDateSerializer;
+import com.antheminc.oss.nimbus.support.json.CustomLocalDateTimeDeserializer;
+import com.antheminc.oss.nimbus.support.json.CustomLocalDateTimeSerializer;
+
 
 /**
  * Configures classloader to load resources from custom locations
@@ -100,6 +104,9 @@ public class WebConfig extends WebMvcConfigurerAdapter {
             public void customize(Jackson2ObjectMapperBuilder jacksonObjectMapperBuilder) {
                 jacksonObjectMapperBuilder.deserializerByType(LocalDate.class, new CustomLocalDateDeserializer());
                 jacksonObjectMapperBuilder.serializerByType(LocalDate.class, new CustomLocalDateSerializer());
+                jacksonObjectMapperBuilder.serializerByType(LocalDateTime.class, new CustomLocalDateTimeSerializer());
+                jacksonObjectMapperBuilder.deserializerByType(LocalDateTime.class, new CustomLocalDateTimeDeserializer());
+
             }
 
         };

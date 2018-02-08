@@ -366,6 +366,7 @@ public class ViewConfig {
 		String iconField() default "";
 		boolean inplaceEdit() default false;
 		String inplaceEditType() default "";
+		String datePattern() default "";
 	}
 
 	
@@ -532,6 +533,7 @@ public class ViewConfig {
 		String type() default "text";
 		boolean postEventOnChange() default false;
 		String controlId() default "";
+		String datePattern() default "";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME) 
@@ -547,6 +549,7 @@ public class ViewConfig {
 		String rows() default "5"; 
 		boolean postEventOnChange() default false; 
 		String controlId() default ""; 
+		String datePattern() default "";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
@@ -560,6 +563,7 @@ public class ViewConfig {
 		String postButtonUrl() default "";
 		String controlId() default "";
 		String help() default "";
+		String datePattern() default "";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
@@ -601,8 +605,8 @@ public class ViewConfig {
 		boolean readOnly() default false;	
 		String labelClass() default "anthem-label";
 		String type() default "calendar";
-		boolean showTime() default true;
-		String hourFormat() default "24";
+		boolean showTime() default false;
+		String hourFormat() default "12";
 		boolean timeOnly() default false;
 		boolean postEventOnChange() default false;
 		String controlId() default "";
@@ -627,6 +631,7 @@ public class ViewConfig {
 		boolean postEventOnChange() default false;
 		String controlId() default "";
 		String help() default "";
+		String datePattern() default "";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
@@ -639,6 +644,7 @@ public class ViewConfig {
 		boolean postEventOnChange() default false;
 		String controlId() default "";
 		String help() default "";
+		String datePattern() default "";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
@@ -790,5 +796,6 @@ public class ViewConfig {
 			in
 		}
 		FilterMode filterMode() default FilterMode.equals;
+		String datePattern() default "";
 	}
 }
