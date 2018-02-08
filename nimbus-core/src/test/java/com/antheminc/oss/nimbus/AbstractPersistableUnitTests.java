@@ -3,12 +3,8 @@
  */
 package com.antheminc.oss.nimbus;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.After;
 import org.junit.Before;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
@@ -17,8 +13,7 @@ import org.springframework.data.mongodb.core.convert.DefaultDbRefResolver;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 
-import com.antheminc.oss.nimbus.support.mongo.UTCDateMongoConverters;
-import com.antheminc.oss.nimbus.support.mongo.ZonedDateTimeMongoConverters;
+import com.antheminc.oss.nimbus.support.mongo.MongoConvertersBuilder;
 import com.mongodb.MongoClient;
 
 import cz.jirutka.spring.embedmongo.EmbeddedMongoFactoryBean;
@@ -42,17 +37,7 @@ public abstract class AbstractPersistableUnitTests {
         MongoClient mongoClient = mongoBean.getObject();
         MongoDbFactory factory = new SimpleMongoDbFactory(mongoClient, MONGO_DB_NAME);
         
-        List<Converter<?, ?>> converters = new ArrayList<>();
-        
-        // ZDT Converters
-        converters.add(new ZonedDateTimeMongoConverters.ZDTSerializer());
-        converters.add(new ZonedDateTimeMongoConverters.ZDTDeserializer());
-        
-        // UTC Date Converters
-        converters.add(new UTCDateMongoConverters.UTCDateSerializer());
-        converters.add(new UTCDateMongoConverters.UTCDateDeserializer());
-        
-        CustomConversions customConversions = new CustomConversions(converters);
+        CustomConversions customConversions = new MongoConvertersBuilder().addDefaults().build();
         
         MappingMongoConverter mongoConverter = new MappingMongoConverter(new DefaultDbRefResolver(factory), new MongoMappingContext());
         mongoConverter.setCustomConversions(customConversions);

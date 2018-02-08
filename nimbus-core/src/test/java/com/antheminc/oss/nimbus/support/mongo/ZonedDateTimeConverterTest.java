@@ -9,7 +9,9 @@ import static org.junit.Assert.assertNull;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import com.antheminc.oss.nimbus.AbstractPersistableUnitTests;
 import com.antheminc.oss.nimbus.entity.AbstractEntity.IdString;
@@ -21,6 +23,7 @@ import lombok.Setter;
  * @author Soham Chakravarti
  *
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ZonedDateTimeConverterTest extends AbstractPersistableUnitTests {
 
 	private static final ZonedDateTime K_ZDT = ZonedDateTime.of(2018, 2, 6, 6, 52, 0, 0, ZoneId.of("US/Pacific-New"));
