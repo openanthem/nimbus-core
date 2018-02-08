@@ -18,10 +18,11 @@ package com.antheminc.oss.nimbus.support.json;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
+import java.util.Arrays;
 
 import org.springframework.util.StringUtils;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
@@ -35,7 +36,8 @@ public class CustomLocalDateTimeDeserializer extends StdDeserializer<LocalDateTi
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
+	private static final String[] DATE_FORMATS = new String[] {  "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" };
+
 
     public CustomLocalDateTimeDeserializer() {
         this(null);
@@ -46,15 +48,21 @@ public class CustomLocalDateTimeDeserializer extends StdDeserializer<LocalDateTi
     }
 
     @Override
-    public LocalDateTime deserialize(JsonParser jsonparser, DeserializationContext context) {
-        String date = null;
-        try {
-            date = jsonparser.getText();
-            return !StringUtils.isEmpty(date) ? LocalDateTime.parse(date, formatter) : null;
-        } catch (IOException e) {
-            throw new JsonParsingException(e);
-        }
+    public LocalDateTime deserialize(JsonParser jsonparser, DeserializationContext context) throws IOException {
+    	String date = jsonparser.getText();
+		if (StringUtils.isEmpty(date)) {
+			return null;
+		}
 
+		for (String DATE_FORMAT : DATE_FORMATS) {
+			try {
+				return LocalDateTime.parse(date, DateTimeFormatter.ofPattern(DATE_FORMAT));
+			} catch (Exception e) {
+			}
+		}
+		throw new JsonParseException(jsonparser,
+				"Unparseable date: \"" + date + "\". Supported formats: " + Arrays.toString(DATE_FORMATS));
     }
+
 }
 
