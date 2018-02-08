@@ -25,10 +25,9 @@ import com.antheminc.oss.nimbus.domain.bpm.activiti.ActivitiBPMGateway;
 import com.antheminc.oss.nimbus.domain.bpm.activiti.ActivitiExpressionManager;
 import com.antheminc.oss.nimbus.domain.bpm.activiti.CommandExecutorTaskDelegate;
 import com.antheminc.oss.nimbus.domain.cmd.exec.FunctionHandler;
-import com.antheminc.oss.nimbus.domain.cmd.exec.internal.fn.DefaultParamFunctionHandler;
+import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultParamFunctionHandler;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.nav.DefaultActionNewInitEntityFunctionHandler;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.nav.PageIdEchoNavHandler;
-import com.antheminc.oss.nimbus.domain.cmd.exec.internal.process.AddCollectionsFunctionalHandler;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.process.AddFunctionHandler;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.process.EvalFunctionHandler;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.process.SetByRuleFunctionalHandler;
@@ -126,11 +125,6 @@ public class DefaultProcessConfig {
 	@Bean(name="default._process$execute?fn=_eval")
 	public EvalFunctionHandler<?,?> evalFunctionHandler(ExpressionManager expressionManager){
 		return new EvalFunctionHandler(expressionManager);
-	}
-	
-	@Bean(name="default._process$execute?fn=_addCollection")
-	public AddCollectionsFunctionalHandler<?,?> setAddCollectionsFunctionalHandler(BeanResolverStrategy beanResolver){
-		return new AddCollectionsFunctionalHandler<>(beanResolver);
 	}
 
 }

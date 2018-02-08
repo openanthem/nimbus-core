@@ -36,8 +36,8 @@ import com.antheminc.oss.nimbus.domain.defn.extension.Content.Label;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig.LabelConfig;
-import com.antheminc.oss.nimbus.domain.model.config.builder.EntityConfigBuilder;
 import com.antheminc.oss.nimbus.domain.model.config.builder.EntityConfigVisitor;
+import com.antheminc.oss.nimbus.domain.model.config.builder.internal.DefaultEntityConfigBuilder;
 import com.antheminc.oss.nimbus.test.domain.support.AbstractFrameworkIntegrationTests;
 import com.antheminc.oss.nimbus.test.entity.sample.s0.core.SampleCoreEntity;
 
@@ -53,7 +53,7 @@ public class LabelConfigEventHandlerTest extends AbstractFrameworkIntegrationTes
 
 	@Autowired DomainConfigBuilder domainConfigBuilder;
 	
-	@Autowired EntityConfigBuilder entityConfigBuilder;
+	@Autowired DefaultEntityConfigBuilder entityConfigBuilder;
 	
 	ModelConfig<?> mConfig;
 	

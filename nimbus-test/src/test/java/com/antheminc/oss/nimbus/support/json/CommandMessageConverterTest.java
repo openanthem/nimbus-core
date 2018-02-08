@@ -22,7 +22,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
-import com.antheminc.oss.nimbus.domain.cmd.exec.internal.CommandMessageConverter;
+import com.antheminc.oss.nimbus.domain.cmd.CommandMessageConverter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.FilterProvider;

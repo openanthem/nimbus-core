@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
+package com.antheminc.oss.nimbus.domain.cmd;
 
 import java.util.Collection;
 import java.util.List;

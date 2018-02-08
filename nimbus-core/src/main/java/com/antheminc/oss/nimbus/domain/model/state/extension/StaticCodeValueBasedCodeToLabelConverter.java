@@ -13,26 +13,34 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.domain.model.state.internal;
+package com.antheminc.oss.nimbus.domain.model.state.extension;
 
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
+import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
+import com.antheminc.oss.nimbus.domain.defn.Converters.ParamConverter;
 import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
 
 /**
  * @author Rakesh Patel
  *
  */
-public class StaticCodeValueBasedCodeToLabelConverter extends RepoBasedConverter {
+public class StaticCodeValueBasedCodeToLabelConverter implements ParamConverter<String, String> {
 
+	private CommandExecutorGateway gateway;
+	
+	public StaticCodeValueBasedCodeToLabelConverter(BeanResolverStrategy beanResolver) {
+		this.gateway = beanResolver.find(CommandExecutorGateway.class);
+	}
 	
 	@SuppressWarnings("unchecked")
 	@Override

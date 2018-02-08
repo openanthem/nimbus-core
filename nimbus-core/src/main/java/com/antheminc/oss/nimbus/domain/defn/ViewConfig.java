@@ -761,11 +761,18 @@ public class ViewConfig {
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.FIELD})
+	@Target({ ElementType.FIELD })
 	@ViewStyle
 	public @interface FileUpload {
+		public enum ControlType {
+			FORMCONTROL
+		}
+
+		boolean multiple() default true;
+		String url() default "";
 		String alias() default "FileUpload";
 		String type() default ".pdf,.png";
+		ControlType controlType() default ControlType.FORMCONTROL;
 	}
 	
 	/**

@@ -24,7 +24,7 @@ import com.antheminc.oss.nimbus.domain.defn.extension.ValuesConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValuesConditional.Condition;
 import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
-import com.antheminc.oss.nimbus.domain.model.state.builder.AbstractEntityStateBuilder;
+import com.antheminc.oss.nimbus.domain.model.state.builder.internal.AbstractEntityStateBuilder;
 import com.antheminc.oss.nimbus.support.JustLogit;
 
 /**

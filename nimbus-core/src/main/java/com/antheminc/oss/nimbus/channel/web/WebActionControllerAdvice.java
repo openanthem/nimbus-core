@@ -34,12 +34,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
+import com.antheminc.oss.nimbus.domain.cmd.exec.CommandTransactionInterceptor;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecuteOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.MultiExecuteOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ValidationError;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ValidationException;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ValidationResult;
-import com.antheminc.oss.nimbus.domain.cmd.exec.internal.CommandTransactionInterceptor;
 import com.antheminc.oss.nimbus.support.JustLogit;
 
 /**

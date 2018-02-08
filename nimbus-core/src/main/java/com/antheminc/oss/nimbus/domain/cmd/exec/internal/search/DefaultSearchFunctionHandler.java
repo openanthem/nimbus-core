@@ -17,8 +17,8 @@ package com.antheminc.oss.nimbus.domain.cmd.exec.internal.search;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.antheminc.oss.nimbus.domain.cmd.exec.AbstractFunctionHandler;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
-import com.antheminc.oss.nimbus.domain.cmd.exec.internal.fn.AbstractFunctionHandler;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.entity.SearchCriteria;

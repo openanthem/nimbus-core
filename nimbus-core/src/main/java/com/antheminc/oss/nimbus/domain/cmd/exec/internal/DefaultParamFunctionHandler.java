@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.domain.cmd.exec.internal.fn;
+package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 
 import org.apache.commons.lang3.StringUtils;
 

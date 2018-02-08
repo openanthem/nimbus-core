@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.domain.model.state.builder;
+package com.antheminc.oss.nimbus.domain.model.state.builder.internal;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -35,6 +35,8 @@ import com.antheminc.oss.nimbus.domain.model.config.ValidatorProvider;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.EntityStateAspectHandlers;
 import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
+import com.antheminc.oss.nimbus.domain.model.state.builder.EntityStateBuilder;
+import com.antheminc.oss.nimbus.domain.model.state.builder.QuadModelBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.event.listener.QuadScopedEventListener;
 import com.antheminc.oss.nimbus.domain.model.state.event.listener.StateAndConfigEventListener;
 import com.antheminc.oss.nimbus.domain.model.state.internal.ExecutionEntity;

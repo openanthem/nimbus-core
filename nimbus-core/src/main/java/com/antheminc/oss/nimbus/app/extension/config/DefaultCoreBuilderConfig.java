@@ -41,13 +41,14 @@ import com.antheminc.oss.nimbus.domain.config.builder.DefaultAnnotationConfigHan
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
 import com.antheminc.oss.nimbus.domain.config.builder.attributes.ConstraintAnnotationAttributeHandler;
 import com.antheminc.oss.nimbus.domain.config.builder.attributes.DefaultAnnotationAttributeHandler;
-import com.antheminc.oss.nimbus.domain.model.config.builder.DefaultValidatorProvider;
 import com.antheminc.oss.nimbus.domain.model.config.builder.EntityConfigBuilder;
-import com.antheminc.oss.nimbus.domain.model.config.builder.EventHandlerConfigFactory;
-import com.antheminc.oss.nimbus.domain.model.state.builder.DefaultQuadModelBuilder;
+import com.antheminc.oss.nimbus.domain.model.config.builder.internal.DefaultEntityConfigBuilder;
+import com.antheminc.oss.nimbus.domain.model.config.builder.internal.EventHandlerConfigFactory;
+import com.antheminc.oss.nimbus.domain.model.config.internal.DefaultValidatorProvider;
 import com.antheminc.oss.nimbus.domain.model.state.builder.EntityStateBuilder;
-import com.antheminc.oss.nimbus.domain.model.state.builder.PageNavigationInitializer;
 import com.antheminc.oss.nimbus.domain.model.state.builder.QuadModelBuilder;
+import com.antheminc.oss.nimbus.domain.model.state.builder.internal.DefaultEntityStateBuilder;
+import com.antheminc.oss.nimbus.domain.model.state.builder.internal.DefaultQuadModelBuilder;
 import com.antheminc.oss.nimbus.support.JustLogit;
 import com.antheminc.oss.nimbus.support.SecurityUtils;
 
@@ -125,17 +126,12 @@ public class DefaultCoreBuilderConfig {
 			typeClassMappings.put(LocalDate.class.getName(), "date");
 		}
 		
-		return new EntityConfigBuilder(beanResolver, typeClassMappings);
+		return new DefaultEntityConfigBuilder(beanResolver, typeClassMappings);
 	}
 	
 	@Bean
 	public EntityStateBuilder entityStateBuilder(BeanResolverStrategy beanResolver){
-		return new EntityStateBuilder(beanResolver);
-	}
-	
-	@Bean
-	public PageNavigationInitializer pageNavigationInitializer(){
-		return new PageNavigationInitializer();
+		return new DefaultEntityStateBuilder(beanResolver);
 	}
 	
 	@Bean
@@ -147,12 +143,5 @@ public class DefaultCoreBuilderConfig {
 	public SecurityUtils securityUtils() {
 		return new SecurityUtils(secureRegex);
 	}
-	
-	
-//	@Bean
-//	public DefaultQuadModelBuilder quadModelBuilder(DomainConfigBuilder domainConfigApi, EntityStateBuilder stateAndConfigBuilder,
-//			ApplicationContext appCtx, PageNavigationInitializer navigationStateHelper,
-//			ValidatorProvider validatorProvider, @Qualifier("default.param.state.repository") ParamStateGateway paramStateGateway){
-//		return new DefaultQuadModelBuilder(domainConfigApi,stateAndConfigBuilder,appCtx,navigationStateHelper,validatorProvider,paramStateGateway);
-//	}
+
 }

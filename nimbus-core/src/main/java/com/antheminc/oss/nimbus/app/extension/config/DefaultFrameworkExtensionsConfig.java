@@ -24,15 +24,15 @@ import com.antheminc.oss.nimbus.domain.model.state.extension.AccessConditionalSt
 import com.antheminc.oss.nimbus.domain.model.state.extension.ActivateConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.AuditStateChangeHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ConfigConditionalStateChangeHandler;
+import com.antheminc.oss.nimbus.domain.model.state.extension.DobToAgeConverter;
 import com.antheminc.oss.nimbus.domain.model.state.extension.EnableConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ModalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ParamContextStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.RuleStateEventHandler;
+import com.antheminc.oss.nimbus.domain.model.state.extension.StaticCodeValueBasedCodeToLabelConverter;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValuesConditionalOnStateChangeEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValuesConditionalOnStateLoadEventHandler;
-import com.antheminc.oss.nimbus.domain.model.state.internal.DobToAgeConverter;
 import com.antheminc.oss.nimbus.domain.model.state.internal.IdParamConverter;
-import com.antheminc.oss.nimbus.domain.model.state.internal.StaticCodeValueBasedCodeToLabelConverter;
 
 /**
  * @author Soham Chakravarti
@@ -107,8 +107,8 @@ public class DefaultFrameworkExtensionsConfig {
 	}
 	
 	@Bean
-	public StaticCodeValueBasedCodeToLabelConverter staticCodeValueBasedCodeToLabelConverter(){
-		return new StaticCodeValueBasedCodeToLabelConverter();
+	public StaticCodeValueBasedCodeToLabelConverter staticCodeValueBasedCodeToLabelConverter(BeanResolverStrategy beanResolver) {
+		return new StaticCodeValueBasedCodeToLabelConverter(beanResolver);
 	}
 	
 }

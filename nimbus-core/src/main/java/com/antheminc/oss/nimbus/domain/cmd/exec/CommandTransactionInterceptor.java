@@ -13,11 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
+package com.antheminc.oss.nimbus.domain.cmd.exec;
 
 import com.antheminc.oss.nimbus.domain.cmd.Behavior;
-import com.antheminc.oss.nimbus.domain.cmd.exec.ExecuteOutput;
-import com.antheminc.oss.nimbus.domain.cmd.exec.MultiExecuteOutput;
 import com.antheminc.oss.nimbus.support.Holder;
 
 /**
