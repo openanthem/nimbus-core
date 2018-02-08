@@ -15,7 +15,6 @@
  */
 package com.antheminc.oss.nimbus.domain.model.config;
 
-import java.io.Serializable;
 import java.util.List;
 
 import com.antheminc.oss.nimbus.domain.defn.AssociatedEntity;
@@ -27,21 +26,16 @@ import com.antheminc.oss.nimbus.domain.defn.MapsTo.Path;
 import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values;
 import com.antheminc.oss.nimbus.entity.Findable;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * @author Soham Chakravarti
  *
  */
 public interface ParamConfig<P> extends EntityConfig<P>, Findable<String> {
 
-	@lombok.Data
-	public static class Desc implements Serializable {
-		private static final long serialVersionUID = 1L;
-
-		private String label;
-		private String hint;
-		private String help;
-	}
-	
 	public String getCode();
 	public String getBeanName();
 	
@@ -50,7 +44,14 @@ public interface ParamConfig<P> extends EntityConfig<P>, Findable<String> {
 	
 	public boolean isLeaf();
 	
-	public Desc getDesc();
+	@Getter @Setter @ToString
+	public static class LabelConfig {
+		private String locale; //default en-US
+		private String text;
+		private String helpText;
+	}
+	public List<LabelConfig> getLabelConfigs();
+	
 	
 	public List<Execution.Config> getExecutionConfigs();
 	
@@ -67,10 +68,9 @@ public interface ParamConfig<P> extends EntityConfig<P>, Findable<String> {
 	
 	public List<ParamConverter> getConverters();
 	
-//	@JsonIgnore M7
-//M8	public ParamConfig<StateContextEntity> getContextParam();
-	
 	public List<AssociatedEntity> getAssociatedEntities();
+
+	public void onCreateEvent();
 	
 	default MapsTo.Mode getMappingMode() {
 		return MapsTo.Mode.UnMapped;

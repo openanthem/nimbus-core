@@ -120,6 +120,9 @@ public class EntityConfigBuilder extends AbstractEntityConfigBuilder {
 		ParamType type = buildParamType(mConfig, pConfig, f, visitedModels);
 		pConfig.setType(type);
 		
+		// trigger event
+		pConfig.onCreateEvent();
+		
 		return pConfig;
 	}
 	

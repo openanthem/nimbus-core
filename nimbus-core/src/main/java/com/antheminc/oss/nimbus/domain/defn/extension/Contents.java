@@ -22,6 +22,7 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import com.antheminc.oss.nimbus.domain.RepeatContainer;
 import com.antheminc.oss.nimbus.domain.defn.extension.Content.Label;
 
 /**
@@ -33,7 +34,7 @@ public final class Contents {
 	@Documented
 	@Retention(RUNTIME)
 	@Target(FIELD)
-	//@RepeatContainer
+	@RepeatContainer(Label.class)
 	public @interface Labels {
 
 		Label[]  value();

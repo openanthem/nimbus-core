@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.domain.config.builder;
+package com.antheminc.oss.nimbus.domain.model.config.builder;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -27,7 +27,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ActiveProfiles;
 
 import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.defn.Model;
@@ -46,7 +45,6 @@ import lombok.Setter;
  * @author Soham Chakravarti 
  *
  */
-@ActiveProfiles("test")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ModelConfigHandlerTest extends AbstractFrameworkIntegrationTests {
 

@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.antheminc.oss.nimbus.domain.defn.InvalidConfigException;
+import com.antheminc.oss.nimbus.domain.model.config.event.ConfigEventHandlers.OnParamCreateHandler;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
 
@@ -29,6 +30,11 @@ import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnSt
  */
 public interface EventHandlerConfig {
 
+	public Set<Annotation> getOnParamCreateAnnotations();
+	public Optional<OnParamCreateHandler<Annotation>> findOnParamCreateHandler(Annotation a);
+	public OnParamCreateHandler<Annotation> getOnParamCreateHandler(Annotation a) throws InvalidConfigException;
+	
+	
 	public Set<Annotation> getOnStateLoadAnnotations();
 	public Optional<OnStateLoadHandler<Annotation>> findOnStateLoadHandler(Annotation a);
 	public OnStateLoadHandler<Annotation> getOnStateLoadHandler(Annotation a) throws InvalidConfigException;

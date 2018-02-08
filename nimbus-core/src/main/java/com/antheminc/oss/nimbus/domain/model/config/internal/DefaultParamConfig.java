@@ -16,8 +16,10 @@
 package com.antheminc.oss.nimbus.domain.model.config.internal;
 
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -28,9 +30,11 @@ import com.antheminc.oss.nimbus.domain.defn.Converters.ParamConverter;
 import com.antheminc.oss.nimbus.domain.defn.Execution;
 import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values;
 import com.antheminc.oss.nimbus.domain.model.config.AnnotationConfig;
+import com.antheminc.oss.nimbus.domain.model.config.EventHandlerConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamType;
+import com.antheminc.oss.nimbus.domain.model.config.event.ConfigEventHandlers.OnParamCreateHandler;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
@@ -50,9 +54,9 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	final private String beanName;
 
 	private ParamType type;	
-
-	private Desc desc = new Desc();
 	
+	private List<LabelConfig> labelConfigs;
+
 	private List<AnnotationConfig> validations;
 	
 	private List<AnnotationConfig> uiNatures;
@@ -64,9 +68,6 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	@JsonIgnore
 	private List<Execution.Config> executionConfigs;
 
-//	@JsonIgnore M7
-//M8	private ParamConfig<StateContextEntity> contextParam;
-	
 	@JsonIgnore 
 	private List<ParamConverter> converters;
 	
@@ -76,25 +77,6 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	@JsonIgnore @Setter 
 	private List<AssociatedEntity> associatedEntities;
 
-
-//	public static class StateContextConfig<P> extends DefaultParamConfig<P> {
-//		private static final long serialVersionUID = 1L;
-//
-//		public StateContextConfig(String code, String beanName) {
-//			super(code, beanName);
-//		}
-//		
-//		@Override
-//		final public ParamConfig<StateContextEntity> getContextParam() {
-//			return null;
-//		}
-//		
-//		@Override
-//		final public void setContextParam(ParamConfig<StateContextEntity> runtimeConfig) {
-//			//do nothing
-//		}
-//	}
-	
 	protected DefaultParamConfig(String code) {
 		this(code, code);
 	}
@@ -112,9 +94,6 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	}
 	
 	final public static <T> DefaultParamConfig<T> instantiate(ModelConfig<?> mConfig, String code, String beanName) {
-//		if(mConfig.getReferredClass()==StateContextEntity.class)
-//			return new DefaultParamConfig.StateContextConfig<>(code, beanName);
-		
 		return new DefaultParamConfig<>(code, beanName);
 	} 
 	
@@ -159,6 +138,19 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 		/* param is leaf node */
 		ParamConfig<K> p = isFound(pathArr[0]) ? (ParamConfig<K>) this : null;
 		return p;
+	}
+	
+	@Override
+	public void onCreateEvent() {
+		Optional.ofNullable(getEventHandlerConfig())
+			.map(EventHandlerConfig::getOnParamCreateAnnotations)
+			.ifPresent(
+				set->set.stream()
+					.forEach(ac-> {
+						OnParamCreateHandler<Annotation> handler = getEventHandlerConfig().getOnParamCreateHandler(ac); 
+						handler.handle(ac, this);
+					})
+			);
 	}
 	
 }

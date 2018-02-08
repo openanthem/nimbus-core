@@ -60,15 +60,14 @@ public class MappedDefaultParamConfig<P, M> extends DefaultParamConfig<P> implem
 		}
 		
 		private void init(ParamConfig<M> mapsTo) {
-//			setContextParam(mapsTo.getContextParam());
 			setConverters(mapsTo.getConverters());
-			setDesc(mapsTo.getDesc());
 			setExecutionConfigs(mapsTo.getExecutionConfigs());
 			setRules(mapsTo.getRules());
 			setType(mapsTo.getType());
 			setUiNatures(mapsTo.getUiNatures());
 			setUiStyles(mapsTo.getUiStyles());
 			setValidations(mapsTo.getValidations());
+			setLabelConfigs(mapsTo.getLabelConfigs());
 			setValues(mapsTo.getValues());
 			setEventHandlerConfig(mapsTo.getEventHandlerConfig());
 		}

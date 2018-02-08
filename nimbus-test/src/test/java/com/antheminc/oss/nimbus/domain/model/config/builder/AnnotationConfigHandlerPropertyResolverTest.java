@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.antheminc.oss.nimbus.domain.config.builder;
+package com.antheminc.oss.nimbus.domain.model.config.builder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

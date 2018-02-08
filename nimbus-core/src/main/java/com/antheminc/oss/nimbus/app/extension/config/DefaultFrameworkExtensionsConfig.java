@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.domain.model.config.extension.LabelConfigEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.AccessConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ActivateConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.AuditStateChangeHandler;
@@ -39,6 +40,11 @@ import com.antheminc.oss.nimbus.domain.model.state.internal.StaticCodeValueBased
  */
 @Configuration
 public class DefaultFrameworkExtensionsConfig {
+	
+	@Bean
+	public LabelConfigEventHandler labelConfigEventHandler() {
+		return new LabelConfigEventHandler();
+	}
 	
 	@Bean
 	public ModalStateEventHandler extensionModalStateEventHandler() {

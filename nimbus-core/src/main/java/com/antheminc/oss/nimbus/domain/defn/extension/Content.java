@@ -23,9 +23,13 @@ import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.util.Locale;
+import java.util.Optional;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.antheminc.oss.nimbus.domain.defn.event.ConfigEvent.OnParamCreate;
 import com.antheminc.oss.nimbus.domain.defn.extension.Contents.Labels;
+
 
 /**
  * @author Soham Chakravarti
@@ -40,10 +44,23 @@ public final class Content {
 	@OnParamCreate
 	public @interface Label {
 		
-		public static final String DEFAULT_LOCALE = Locale.getDefault().toLanguageTag();
+		public static final String DEFAULT_LOCALE_LANGUAGE_TAG = Locale.getDefault().toLanguageTag();
 		
-		String value();
+		String value() default "";
 		
-		String locale() default "";
+		String helpText() default "";
+		
+		/**
+		 * IETF BCP 47 language tag representing this locale
+		 */
+		String localeLanguageTag() default "";
 	}
+
+	public static Locale getLocale(Label label) {
+		return Optional.ofNullable(label.localeLanguageTag())
+				.filter(StringUtils::isNotEmpty)
+				.map(Locale::forLanguageTag)
+				.orElse(Locale.getDefault());
+	}
+
 }

@@ -43,6 +43,7 @@ import com.antheminc.oss.nimbus.domain.config.builder.attributes.ConstraintAnnot
 import com.antheminc.oss.nimbus.domain.config.builder.attributes.DefaultAnnotationAttributeHandler;
 import com.antheminc.oss.nimbus.domain.model.config.builder.DefaultValidatorProvider;
 import com.antheminc.oss.nimbus.domain.model.config.builder.EntityConfigBuilder;
+import com.antheminc.oss.nimbus.domain.model.config.builder.EventHandlerConfigFactory;
 import com.antheminc.oss.nimbus.domain.model.state.builder.DefaultQuadModelBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.builder.EntityStateBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.builder.PageNavigationInitializer;
@@ -99,6 +100,11 @@ public class DefaultCoreBuilderConfig {
 	@Bean
 	public DefaultValidatorProvider defaultValidatorProvider(){
 		return new DefaultValidatorProvider();
+	}
+	
+	@Bean
+	public EventHandlerConfigFactory eventHandlerConfigFactory(BeanResolverStrategy beanResolver) {
+		return new EventHandlerConfigFactory(beanResolver);
 	}
 	
 	@Bean 

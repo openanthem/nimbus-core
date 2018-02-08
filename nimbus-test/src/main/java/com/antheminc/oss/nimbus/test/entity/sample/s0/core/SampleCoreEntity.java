@@ -120,11 +120,11 @@ public class SampleCoreEntity extends IdString {
 	@Label("Test Label A")
 	private String label_a_en;
 	
-	@Label(value="Test Label B in French", locale="fr")
+	@Label(value="Test Label B in French", localeLanguageTag="fr", helpText="some tooltip text here B")
 	private String label_b_fr;
 	
-	@Label(value="Test Label C in English")
-	@Label(value="Test Label A in French", locale="fr")
+	@Label(value="Test Label C in English", helpText="some tooltip text here C")
+	@Label(value="Test Label A in French", localeLanguageTag="fr")
 	private String label_c_multiple;
 	
 	@ActivateConditional(when="state != null && state.nested2_attr_String_1 == 'Y' && state.nested2_attr_String_2 == 'Y'",targetPath={

@@ -71,15 +71,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	@JsonIgnore
 	final private Model<?> parentModel;
 	
-//	@JsonIgnore M7
-//M8	private Model<StateContextEntity> contextModel;
-	
 	@JsonIgnore
 	private boolean active = true;
-	
-//	private boolean visible = true;
-//	
-//	private boolean enabled = true;
 	
 	private RemnantState<Boolean> visible = new RemnantState<>(true);
 	private RemnantState<Boolean> enabled = new RemnantState<>(true);
@@ -248,9 +241,6 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	@JsonIgnore
 	@Override
 	final public T getState() {
-//		if(getType().getConfig().getReferredClass()==StateContextEntity.class) {
-//			return (T)createOrGetRuntimeEntity();
-//		}
 		return getAspectHandlers().getParamStateGateway()._get(this);
 	}
 	
@@ -531,10 +521,6 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 				|| Constants.SEPARATOR_URI.code.equals(StringUtils.trimToNull(singlePathSegment))  //  path = '/'
 					)//|| StringUtils.contains(singlePathSegment, Constants.MARKER_COLLECTION_ELEM_INDEX.code)) // path = .../colModel/{index}/attrib
 			return this;
-		
-//		// value is only ".m" then return mapsTo if this is a mapped param
-//		if(StringUtils.equals(singlePathSegment, Constants.SEPARATOR_MAPSTO.code)) 
-//			return isMapped() ? findIfMapped().getMapsTo() : null;
 		
 		return null;	
 	}

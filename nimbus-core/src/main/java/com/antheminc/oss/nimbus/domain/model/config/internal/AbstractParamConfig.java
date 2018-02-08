@@ -42,11 +42,7 @@ public abstract class AbstractParamConfig<P> implements ParamConfig<P> {
 		this.code = code;
 		this.mapsTo = mapsTo;
 	}
-	
 
-	
-	abstract public void setDesc(ParamConfig.Desc desc);
-	
 	abstract public void setValidations(List<AnnotationConfig> validations);
 	
 	abstract public void setType(ParamType type);

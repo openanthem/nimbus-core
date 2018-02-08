@@ -13,22 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import com.antheminc.oss.nimbus.app.extension.config.DefaultCoreConfigMarker;
+package com.antheminc.oss.nimbus.app.extension.config;
 
 /**
  * @author Soham Chakravarti
  *
  */
-@SpringBootApplication(scanBasePackageClasses=DefaultCoreConfigMarker.class)
-public class FrameworkTestScenariosApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(FrameworkTestScenariosApplication.class, args);
-	}
+public interface DefaultCoreConfigMarker {
 
 }

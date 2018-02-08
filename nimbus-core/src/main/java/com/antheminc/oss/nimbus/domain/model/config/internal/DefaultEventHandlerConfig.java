@@ -25,6 +25,7 @@ import org.apache.commons.collections.MapUtils;
 
 import com.antheminc.oss.nimbus.domain.defn.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.model.config.EventHandlerConfig;
+import com.antheminc.oss.nimbus.domain.model.config.event.ConfigEventHandlers.OnParamCreateHandler;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
 
@@ -38,62 +39,111 @@ import lombok.Setter;
 @Getter @Setter
 public class DefaultEventHandlerConfig implements EventHandlerConfig {
 
-	private Map<Annotation, OnStateLoadHandler<Annotation>> onStateLoadHandlers;
-	private Map<Annotation, OnStateChangeHandler<Annotation>> onStateChangeHandlers;
+	// config handlers
+	private _InternalConfig<OnParamCreateHandler<Annotation>> onParamCreateHandlers = new _InternalConfig<>();
+	
+	// state handlers
+	private _InternalConfig<OnStateLoadHandler<Annotation>> onStateLoadHandlers = new _InternalConfig<>();
+	private _InternalConfig<OnStateChangeHandler<Annotation>> onStateChangeHandlers = new _InternalConfig<>();
+	
+	
+	private static class _InternalConfig<T> {
+		private Map<Annotation, T> eventHandlers;
+		
+		public boolean isEmpty() {
+			return MapUtils.isEmpty(eventHandlers);
+		}
+		
+		public Set<Annotation> getAnnotations() {
+			return Optional.ofNullable(eventHandlers).map(Map::keySet).orElse(null);	
+		}
+		
+		public void add(Annotation a, T handler) {
+			Optional.ofNullable(eventHandlers).orElseGet(()->{
+				eventHandlers = new HashMap<>();
+				return eventHandlers;
+			}).put(a, handler);
+		}
+		
+		public Optional<T> findHandler(Annotation a) {
+			return Optional.ofNullable(eventHandlers).map(handlers->handlers.get(a));
+		}
+		
+		public T getHandler(Annotation a) throws InvalidConfigException {
+			return findHandler(a).orElseThrow(()->getEx(a));
+		}
+		
+		public InvalidConfigException getEx(Annotation a) {
+			return new InvalidConfigException("Expected event handler for annotation: "+a+ " not found");
+		}
+	}
 	
 	public boolean isEmpty() {
-		return MapUtils.isEmpty(getOnStateLoadHandlers()) &&
-				MapUtils.isEmpty(getOnStateChangeHandlers());
+		return 
+			onParamCreateHandlers.isEmpty() && 
+			
+			onStateLoadHandlers.isEmpty() &&
+			onStateChangeHandlers.isEmpty()
+		;
  	}
 	
+	/* onParamCreate */
+	@Override
+	public Set<Annotation> getOnParamCreateAnnotations() {
+		return onParamCreateHandlers.getAnnotations();
+	}
 	
 	@Override
+	public Optional<OnParamCreateHandler<Annotation>> findOnParamCreateHandler(Annotation a) {
+		return onParamCreateHandlers.findHandler(a);
+	}
+	
+	public void add(Annotation a, OnParamCreateHandler<Annotation> handler) {
+		onParamCreateHandlers.add(a, handler);
+	}
+	
+	@Override
+	public OnParamCreateHandler<Annotation> getOnParamCreateHandler(Annotation a) throws InvalidConfigException {
+		return onParamCreateHandlers.getHandler(a);
+	}
+	
+	/* onStateLoad */
+	@Override
 	public Set<Annotation> getOnStateLoadAnnotations() {
-		return Optional.ofNullable(getOnStateLoadHandlers()).map(Map::keySet).orElse(null);
+		return onStateLoadHandlers.getAnnotations();
 	}
 	
 	public void add(Annotation a, OnStateLoadHandler<Annotation> handler) {
-		Optional.ofNullable(getOnStateLoadHandlers()).orElseGet(()->{
-			setOnStateLoadHandlers(new HashMap<>());
-			return getOnStateLoadHandlers();
-		}).put(a, handler);
+		onStateLoadHandlers.add(a, handler);
 	}
 	
 	@Override
 	public Optional<OnStateLoadHandler<Annotation>> findOnStateLoadHandler(Annotation a) {
-		return Optional.ofNullable(getOnStateLoadHandlers()).map(handlers->handlers.get(a));
+		return onStateLoadHandlers.findHandler(a);
 	}
 	
 	@Override
 	public OnStateLoadHandler<Annotation> getOnStateLoadHandler(Annotation a) throws InvalidConfigException {
-		return findOnStateLoadHandler(a).orElseThrow(()->getEx(a));
+		return onStateLoadHandlers.getHandler(a);
 	}
 	
-	
+	/* onStateChange */
 	@Override
 	public Set<Annotation> getOnStateChangeAnnotations() {
-		return Optional.ofNullable(getOnStateChangeHandlers()).map(Map::keySet).orElse(null);
+		return onStateChangeHandlers.getAnnotations();
 	}
 	
 	public void add(Annotation a, OnStateChangeHandler<Annotation> handler) {
-		Optional.ofNullable(getOnStateChangeHandlers()).orElseGet(()->{
-			setOnStateChangeHandlers(new HashMap<>());
-			return getOnStateChangeHandlers();
-		}).put(a, handler);
+		onStateChangeHandlers.add(a, handler);
 	}
 	
 	@Override
 	public Optional<OnStateChangeHandler<Annotation>> findOnStateChangeHandler(Annotation a) {
-		return Optional.ofNullable(getOnStateChangeHandlers()).map(handlers->handlers.get(a));
+		return onStateChangeHandlers.findHandler(a);
 	}
 	
 	@Override
 	public OnStateChangeHandler<Annotation> getOnStateChangeHandler(Annotation a) throws InvalidConfigException {
-		return findOnStateChangeHandler(a).orElseThrow(()->getEx(a));
-	}
-	
-	
-	private InvalidConfigException getEx(Annotation a) {
-		return new InvalidConfigException("Expected event handler for annotation: "+a+ " not found");
+		return onStateChangeHandlers.getHandler(a);
 	}
 }

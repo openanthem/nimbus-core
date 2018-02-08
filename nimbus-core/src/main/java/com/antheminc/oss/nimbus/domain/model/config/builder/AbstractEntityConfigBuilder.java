@@ -15,8 +15,6 @@
  */
 package com.antheminc.oss.nimbus.domain.model.config.builder;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,7 +30,6 @@ import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.util.ClassUtils;
-import org.springframework.util.CollectionUtils;
 
 import com.antheminc.oss.nimbus.UnsupportedScenarioException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
@@ -50,21 +47,16 @@ import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.ViewParamBehavior;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.ViewStyle;
-import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateChange;
-import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 import com.antheminc.oss.nimbus.domain.model.config.AnnotationConfig;
 import com.antheminc.oss.nimbus.domain.model.config.EventHandlerConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig.MappedParamConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamType;
-import com.antheminc.oss.nimbus.domain.model.config.internal.DefaultEventHandlerConfig;
 import com.antheminc.oss.nimbus.domain.model.config.internal.DefaultModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.internal.DefaultParamConfig;
 import com.antheminc.oss.nimbus.domain.model.config.internal.MappedDefaultModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.internal.MappedDefaultParamConfig;
-import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
-import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
 import com.antheminc.oss.nimbus.domain.rules.RulesEngineFactoryProducer;
 import com.antheminc.oss.nimbus.support.JustLogit;
 import com.antheminc.oss.nimbus.support.pojo.GenericUtils;
@@ -83,11 +75,13 @@ abstract public class AbstractEntityConfigBuilder {
 	
 	private final BeanResolverStrategy beanResolver;
 	private final RulesEngineFactoryProducer rulesEngineFactoryProducer;
+	private final EventHandlerConfigFactory eventHandlerConfigFactory;
 	private final AnnotationConfigHandler annotationConfigHandler;
 	
 	public AbstractEntityConfigBuilder(BeanResolverStrategy beanResolver) {
 		this.beanResolver = beanResolver;
 		this.rulesEngineFactoryProducer = beanResolver.get(RulesEngineFactoryProducer.class);
+		this.eventHandlerConfigFactory = beanResolver.get(EventHandlerConfigFactory.class);
 		this.annotationConfigHandler = beanResolver.get(AnnotationConfigHandler.class);
 	}
 	
@@ -440,83 +434,12 @@ abstract public class AbstractEntityConfigBuilder {
 		List<AnnotationConfig> vConfig = annotationConfigHandler.handle(f, Constraint.class);
 		created.setValidations(vConfig);
 
-		EventHandlerConfig eventConfig = createEventHandlerConfig(f);
+		EventHandlerConfig eventConfig = eventHandlerConfigFactory.build(f);
 		created.setEventHandlerConfig(eventConfig);
 		
 		return decorateParam(mConfig, created, visitedModels);
 	}
 	
-	@SuppressWarnings("unchecked")
-	private EventHandlerConfig createEventHandlerConfig(AnnotatedElement aElem) {
-		final DefaultEventHandlerConfig eventConfig = new DefaultEventHandlerConfig();
-		
-//		addEventHandler(aElem, OnStateLoad.class, OnStateLoadHandler.class, (ac, handler)->{
-//			eventConfig.add(ac, (OnStateLoadHandler<Annotation>)handler);
-//		});
-		
-		List<Annotation> onStateLoadAnnotations = annotationConfigHandler.handleRepeatable(aElem, OnStateLoad.class);
-		//List<Annotation> onStateLoadAnnotations = new ArrayList<>(AnnotatedElementUtils.findMergedRepeatableAnnotations(aElem, OnStateLoad.class));
-		if(!CollectionUtils.isEmpty(onStateLoadAnnotations)) { 
-			
-			onStateLoadAnnotations.stream()
-				.forEach(a->{
-					OnStateLoadHandler<Annotation> handler = getBeanResolver().get(OnStateLoadHandler.class, a.annotationType());
-					eventConfig.add(a, handler);
-				});
-		}
-
-		
-		List<Annotation> onStateChangeAnnotations = annotationConfigHandler.handleRepeatable(aElem, OnStateChange.class);
-		//List<Annotation> onStateChangeAnnotations = new ArrayList<>(AnnotatedElementUtils.findMergedRepeatableAnnotations(aElem, OnStateChange.class));
-		if(!CollectionUtils.isEmpty(onStateChangeAnnotations)) { 
-			
-			onStateChangeAnnotations.stream()
-				.forEach(a->{
-					OnStateChangeHandler<Annotation> handler = getBeanResolver().get(OnStateChangeHandler.class, a.annotationType());
-					eventConfig.add(a, handler);
-				});
-		}
-
-		return eventConfig.isEmpty() ? null : eventConfig;
-	}
-	
-//	private <T> void addEventHandler(AnnotatedElement aElem, Class<Annotation> aClass, Class<? extends T> handlerClass, BiConsumer<AnnotationConfig, T> cb) {
-//		List<AnnotationConfig> eventAnnotations = AnnotationConfigHandler.handle(aElem, aClass);
-//		if(!CollectionUtils.isEmpty(eventAnnotations)) { 
-//			
-//			eventAnnotations.stream()
-//				.forEach(ac->{
-//					T handler = getBeanResolver().find(handlerClass, ac.getAnnotation().annotationType());
-//					cb.accept(ac, handler);
-//				});
-//		}
-//	}
-	
-//	private ParamConfig<StateContextEntity> cachedRuntimeEntityParamConfig;
-	
-//	/**
-//	 * build and assign RuntimeEntity Config
-//	 */
-//	protected <P> DefaultParamConfig<P> decorateParam(ModelConfig<?> mConfig, DefaultParamConfig<P> created, EntityConfigVisitor visitedModels) {
-//		// do not make nested runtimeConfig;
-//		if(StringUtils.equals(created.getCode(), Constants.SEPARATOR_CONFIG_ATTRIB.code))
-//			return created;
-//		
-//		if(cachedRuntimeEntityParamConfig==null) {
-//			DefaultParamConfig<StateContextEntity> pRuntimeConfig = DefaultParamConfig.instantiate(mConfig, Constants.SEPARATOR_CONFIG_ATTRIB.code);
-//			cachedRuntimeEntityParamConfig = pRuntimeConfig;
-//			
-//			ModelConfig<StateContextEntity> mRuntimeConfig = buildModel(StateContextEntity.class, visitedModels);
-//			
-//			ParamType.Nested<StateContextEntity> nestedType = new ParamType.Nested<>(StateContextEntity.class.getSimpleName(), StateContextEntity.class);
-//			nestedType.setModel(mRuntimeConfig);
-//			
-//			pRuntimeConfig.setType(nestedType);
-//		}
-//		
-//		created.setContextParam(cachedRuntimeEntityParamConfig);
-//		return created;
-//	}
 	protected <P> DefaultParamConfig<P> decorateParam(ModelConfig<?> mConfig, DefaultParamConfig<P> created, EntityConfigVisitor visitedModels) {
 		return created;
 	}

@@ -46,7 +46,7 @@ public class MockParamConfig implements ParamConfig<Object> {
 	private String code = "";
 	private String configId = "";
 	private List<ParamConverter> converters;
-	private Desc desc;
+	private List<LabelConfig> labelConfigs;
 	private EventHandlerConfig eventHandlerConfig;
 	private List<Config> executionConfigs;
 	private boolean leaf;
@@ -97,4 +97,8 @@ public class MockParamConfig implements ParamConfig<Object> {
 		this.paramConfigMap.put(path, paramConfig);
 	}
 
+	@Override
+	public void onCreateEvent() {
+		
+	}
 }
