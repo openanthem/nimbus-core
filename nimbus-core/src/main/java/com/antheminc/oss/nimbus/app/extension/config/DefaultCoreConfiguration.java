@@ -23,8 +23,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.AuditorAware;
-import org.springframework.data.mongodb.config.EnableMongoAuditing;
-import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.web.client.RestTemplate;
 
 import com.antheminc.oss.nimbus.channel.web.WebActionController;
@@ -35,18 +33,13 @@ import com.antheminc.oss.nimbus.domain.model.state.builder.ValidationConfigHandl
 import com.antheminc.oss.nimbus.domain.model.state.repo.DefaultModelRepositoryFactory;
 import com.antheminc.oss.nimbus.domain.model.state.repo.DefaultParamStateRepositoryDetached;
 import com.antheminc.oss.nimbus.domain.model.state.repo.DefaultParamStateRepositoryLocal;
-import com.antheminc.oss.nimbus.domain.model.state.repo.IdSequenceRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelPersistenceHandler;
-import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepositoryFactory;
-import com.antheminc.oss.nimbus.domain.model.state.repo.MongoIdSequenceRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ParamStateRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ParamStateRepositoryGateway;
 import com.antheminc.oss.nimbus.domain.model.state.repo.SpringSecurityAuditorAware;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.ClientUserGrooupSearchResponseConverter;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.ParamStateAtomicPersistenceEventListener;
-import com.antheminc.oss.nimbus.domain.model.state.repo.db.mongo.DefaultMongoModelPersistenceHandler;
-import com.antheminc.oss.nimbus.domain.model.state.repo.db.mongo.DefaultMongoModelRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ws.DefaultWSModelRepository;
 import com.antheminc.oss.nimbus.domain.rules.DefaultRulesEngineFactoryProducer;
 import com.antheminc.oss.nimbus.domain.rules.drools.DroolsRulesEngineFactory;
@@ -58,7 +51,6 @@ import com.antheminc.oss.nimbus.support.pojo.reflection.JavaBeanHandlerReflectio
  *
  */
 @Configuration
-@EnableMongoAuditing
 @ComponentScan(basePackageClasses = WebActionController.class)
 public class DefaultCoreConfiguration {
 	
@@ -74,16 +66,7 @@ public class DefaultCoreConfiguration {
 		return new DefaultModelRepositoryFactory(beanResolver);
 	}
 	
-	@Bean(name="default.rep_mongodb_handler")
-	public DefaultMongoModelPersistenceHandler defaultMongoModelPersistenceHandler(@Qualifier("default.rep_mongodb") ModelRepository rep){
-		return new DefaultMongoModelPersistenceHandler(rep);
-	}
-	
-	@Bean(name="default.rep_mongodb")
-	public DefaultMongoModelRepository defaultMongoModelRepository(MongoOperations mongoOps, IdSequenceRepository idSequenceRepo, BeanResolverStrategy beanResolver){
-		return new DefaultMongoModelRepository(mongoOps, idSequenceRepo, beanResolver);
-	}
-	
+
 	@Bean(name="default.rep_ws")
 	public DefaultWSModelRepository defaultWSModelRepository(BeanResolverStrategy beanResolver){
 		return new DefaultWSModelRepository(beanResolver);
@@ -143,10 +126,6 @@ public class DefaultCoreConfiguration {
 		return new WebCommandDispatcher(beanResolver);
 	}
 	
-	@Bean
-	public MongoIdSequenceRepository mongoIdSequenceRepository(MongoOperations mongoOperations){
-		return new MongoIdSequenceRepository(mongoOperations);
-	}
 
 	@Bean(name="clientUserGrooupSearchResponseConverter")
 	Converter clientUserGroupConverter() {
