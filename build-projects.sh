@@ -1,15 +1,14 @@
 #!/bin/sh
 
 # The build order: (The command line arguments should be in this order as well)
-    # platform.dependencies
-    # platform.parent
-    # platform.core.processor
-    # platform.spec.model
-    # platform.spec.model.test
-    # platform.core.process
-    # platform.web
+    # nimbus-parent - it builds:
+    	# nimbus-core 
+    	# nimbus-entity-dsl
+    # nimbus-test
+	# nimbus-ui
+    # nimbus-extn-activiti
    
-PROJECTS="dependencies,parent,core.processor,spec.model,spec.model.test,core.process,web";
+PROJECTS="nimbus-parent,nimbus-test,nimbus-ui,nimbus-extn-activiti";
 
 while getopts p:m: option
 do
@@ -27,13 +26,13 @@ echo "NAMES = $NAMES";
 echo "MVN_ARGS = $MVN_ARGS";
 
 for i in "${NAMES[@]}"; do
-  str="platform."$i;
+  str=$i;
   echo "####################################################################"
   echo "### Starting to build: $str "
   echo "####################################################################"
   
   BUILD_PROFILES="";
-  if [[ "$i" == "web" ]]; then
+  if [[ "$i" == "nimbus-ui" ]]; then
     BUILD_PROFILES="devbuild"
   fi
   
