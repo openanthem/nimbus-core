@@ -24,9 +24,9 @@ import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
 
+import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.ConfigNature;
-import com.antheminc.oss.nimbus.domain.defn.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;

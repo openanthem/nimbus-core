@@ -18,7 +18,7 @@ package com.antheminc.oss.nimbus.domain.rules.drools;
 import org.apache.commons.lang3.StringUtils;
 import org.drools.KnowledgeBase;
 
-import com.antheminc.oss.nimbus.domain.defn.InvalidConfigException;
+import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.model.config.RulesConfig;
 
 import lombok.Getter;

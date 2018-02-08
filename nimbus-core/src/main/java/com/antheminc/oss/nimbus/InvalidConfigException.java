@@ -13,9 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.domain.defn;
-
-import com.antheminc.oss.nimbus.FrameworkRuntimeException;
+package com.antheminc.oss.nimbus;
 
 /**
  * @author Soham Chakravarti

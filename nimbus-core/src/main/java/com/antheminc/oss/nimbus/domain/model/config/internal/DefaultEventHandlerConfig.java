@@ -23,7 +23,7 @@ import java.util.Set;
 
 import org.apache.commons.collections.MapUtils;
 
-import com.antheminc.oss.nimbus.domain.defn.InvalidConfigException;
+import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.model.config.EventHandlerConfig;
 import com.antheminc.oss.nimbus.domain.model.config.event.ConfigEventHandlers.OnParamCreateHandler;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;

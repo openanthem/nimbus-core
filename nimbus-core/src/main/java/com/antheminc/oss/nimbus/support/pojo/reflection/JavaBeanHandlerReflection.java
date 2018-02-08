@@ -18,7 +18,7 @@ package com.antheminc.oss.nimbus.support.pojo.reflection;
 import java.lang.reflect.Method;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
-import com.antheminc.oss.nimbus.domain.defn.InvalidConfigException;
+import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.support.JustLogit;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandler;
 

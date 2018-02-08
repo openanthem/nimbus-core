@@ -17,9 +17,9 @@ package com.antheminc.oss.nimbus.domain.model.state.extension;
 
 import java.util.Optional;
 
+import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
-import com.antheminc.oss.nimbus.domain.defn.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.extension.Audit;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;

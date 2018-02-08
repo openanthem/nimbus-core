@@ -13,31 +13,34 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus;
+package com.antheminc.oss.nimbus.domain.model.state.repo;
+
+import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 
 /**
- * @author Swetha Vemuri
+ * @author Rakesh Patel
  *
  */
-public class UserNotAuthorizedException extends FrameworkRuntimeException{
+public class SequenceException extends FrameworkRuntimeException {
+
 	
-	private static final long serialVersionUID = 1L;	
+	private static final long serialVersionUID = 1L;
+	
+	public SequenceException() { }
 
-	public UserNotAuthorizedException() { }
-
-    public UserNotAuthorizedException(String message) {
+    public SequenceException(String message) {
 		super(message);
 	}
     
-    public UserNotAuthorizedException(Throwable cause) {
+    public SequenceException(Throwable cause) {
 		super(cause);
 	}
 
-    public UserNotAuthorizedException(String message, Throwable cause) {
+    public SequenceException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
-	public UserNotAuthorizedException(String message, Throwable cause, boolean enableSuppression,
+	public SequenceException(String message, Throwable cause, boolean enableSuppression,
 			boolean writableStackTrace) {
 		
 		super(message, cause, enableSuppression, writableStackTrace);

@@ -25,11 +25,11 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.web.client.RestTemplate;
 
+import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.bpm.BPMGateway;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
-import com.antheminc.oss.nimbus.domain.defn.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ValidatorProvider;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;

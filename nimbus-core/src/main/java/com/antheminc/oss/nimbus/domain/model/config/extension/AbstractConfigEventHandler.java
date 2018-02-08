@@ -5,7 +5,7 @@ package com.antheminc.oss.nimbus.domain.model.config.extension;
 
 import java.lang.annotation.Annotation;
 
-import com.antheminc.oss.nimbus.domain.defn.InvalidConfigException;
+import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 
 

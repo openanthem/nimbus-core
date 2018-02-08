@@ -21,7 +21,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
-import com.antheminc.oss.nimbus.SequenceException;
 import com.antheminc.oss.nimbus.entity.DBSequence;
 
 /**
