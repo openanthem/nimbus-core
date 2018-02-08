@@ -3,22 +3,18 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.antheminc.oss.nimbus.core</groupId>
-		<artifactId>com.antheminc.oss.nimbus.core.parent</artifactId>
+		<groupId>com.antheminc.oss</groupId>
+		<artifactId>nimbus.core.parent</artifactId>
 		<version>1.0.0.M9-SNAPSHOT</version>
 	</parent>
-	<url></url>
-	<artifactId>com.antheminc.oss.nimbus.core.api</artifactId>
+	<artifactId>nimbus.core.api</artifactId>
 	<packaging>jar</packaging>
-
 	<name>nimbus-core-api</name>
 	<description>Yo process</description>
-
 	<organization>
 		<name>Anthem Inc.</name>
-		<url>https://www.anthem.com</url>
+		<url>https://www.oss.antheminc.com</url>
 	</organization>
-
 	<properties>
 		<sonar.projectName>NIM-Process</sonar.projectName>
 		<!-- <sonar.jacoco.reportPath>${project.basedir}/../platform.parent/target/jacoco.exec</sonar.jacoco.reportPath> -->
@@ -150,12 +146,14 @@
 
 		<!-- nimbus-core -->
 		<dependency>
-			<groupId>com.antheminc.oss.nimbus.core</groupId>
-			<artifactId>com.antheminc.oss.nimbus.core.spec</artifactId>
+			<groupId>com.antheminc.oss</groupId>
+			<artifactId>nimbus.core.spec</artifactId>
+			<version>${nimbus.core.spec.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.antheminc.oss.nimbus.core</groupId>
-			<artifactId>com.antheminc.oss.nimbus.core.test</artifactId>
+			<groupId>com.antheminc.oss</groupId>
+			<artifactId>nimbus.core.test</artifactId>
+			<version>${nimbus.core.test.version}</version>
 			<!-- <scope>test</scope> -->
 		</dependency>
 		<dependency>
@@ -190,8 +188,7 @@
 			<artifactId>jackson-databind</artifactId>
 		</dependency>
 	</dependencies>
-
-	<build>
+  <build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

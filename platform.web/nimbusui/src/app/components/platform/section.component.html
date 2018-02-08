@@ -47,7 +47,7 @@
                 </infinite-scroll-grid>
             </ng-template>
             <!--Other buttons. Refactor item : to be triggred based on the buttongroup annotation-->
-            <ng-template [ngIf]="element.alias == 'Button' && element?.visible == true">
+            <ng-template [ngIf]="element.alias == 'Button' && element?.visible.currState == true">
                 <div class="text-sm-right">
                     <nm-button [element]="element"> </nm-button>
                 </div>

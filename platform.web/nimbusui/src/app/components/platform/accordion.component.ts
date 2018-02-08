@@ -21,7 +21,7 @@ export class Accordion {
     closeOthers( openGroup: AccordionGroup ): Promise<boolean> {
         this.groups.forEach(( group: AccordionGroup ) => {
             if ( group !== openGroup ) {
-                group.state = 'close';
+                group.state = 'closedPanel';
             }
         } );
         return Promise.resolve(true);
@@ -30,7 +30,7 @@ export class Accordion {
     openAll( openGroup: AccordionGroup ): void {
         this.groups.forEach(( group: AccordionGroup ) => {
             if ( group !== openGroup ) {
-                group.state = 'open';
+                group.state = 'openPanel';
             }
         } );
     }

@@ -4,18 +4,18 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.antheminc.oss.nimbus.core</groupId>
-		<artifactId>com.antheminc.oss.nimbus.core.parent</artifactId>
+		<groupId>com.antheminc.oss</groupId>
+		<artifactId>nimbus.core.parent</artifactId>
 		<version>1.0.0.M9-SNAPSHOT</version>
 	</parent>
-	<artifactId>com.antheminc.oss.nimbus.core.spec</artifactId>
+	<artifactId>nimbus.core.spec</artifactId>
 	<packaging>jar</packaging>
 	<url></url>
 	<name>nimbus-core-spec</name>
 
 	<organization>
 		<name>Anthem Inc.</name>
-		<url>https://www.anthem.com</url>
+		<url>https://www.oss.antheminc.com</url>
 	</organization>
 
 	<properties>
@@ -86,8 +86,9 @@
 		    <artifactId>querydsl-apt</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.antheminc.oss.nimbus.core</groupId>
-			<artifactId>com.antheminc.oss.nimbus.core.processor</artifactId>	
+			<groupId>com.antheminc.oss</groupId>
+			<artifactId>nimbus.core.processor</artifactId>
+			<version>${nimbus.core.processor.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.owasp.esapi</groupId>
@@ -124,6 +125,7 @@
 		<plugin>
 			<groupId>org.codehaus.mojo</groupId>
 			<artifactId>build-helper-maven-plugin</artifactId>
+			<version>${maven-build-helper-maven-plugin.version}</version>
 			<executions>
 				<execution>
 					<id>add-extra-source</id>
