@@ -21,6 +21,7 @@ import org.springframework.data.annotation.Id;
 
 import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.entity.AbstractEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -64,6 +65,7 @@ public abstract class Name<ID extends Serializable> extends AbstractEntity<ID> {
 
 	private String middleName;
 	
+	@JsonIgnore
 	private String fullName;
 	
 	public String getFullName() {
