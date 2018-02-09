@@ -1,0 +1,13 @@
+<ng-template [ngIf]="type == 'dialog'">
+    <p-dialog [(visible)]="visible" [closable]="closable" (onHide)="closeDialog($event)" [closeOnEscape]="false" [modal]="true" [width]="width" appendTo="body" [responsive]="true">
+        <p-header *ngIf="label">
+            {{label}}
+            <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
+        </p-header>
+        <ng-template ngFor let-element [ngForOf]="nestedParams">
+            <ng-template [ngIf]="element.alias == 'Section'">
+                <nm-section [element]="element"></nm-section>	
+            </ng-template>
+        </ng-template>   
+    </p-dialog>
+</ng-template>
