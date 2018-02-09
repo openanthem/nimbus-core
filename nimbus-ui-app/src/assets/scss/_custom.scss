@@ -1,0 +1,37 @@
+// Bootstrap overrides
+//
+// Copy variables from `_variables.scss` to this file to override default values
+// without modifying source files.
+// Breadcrumbs
+
+//$breadcrumb-bg:                 transparent;
+$breadcrumb-divider-color:      #494949;
+$breadcrumb-divider:            ">" ;
+$enable-transitions:        true;
+
+$border-radius:          0 ;
+$border-radius-lg:       0 ;
+$border-radius-sm:       0 ;
+
+$input-border-radius:            0;
+$input-border-radius-lg:         0;
+$input-border-radius-sm:         0;
+$input-padding-x:                .5rem ;
+$input-padding-y:                .25rem ;
+$input-line-height:              1;
+
+
+$gray-dark:                 #333333 ; 
+$gray-med:                  #565656 ; 
+$gray:                      #aaaaaa ; //silver chalice
+$gray-light:                #e6e6e6 ; //mecury
+$gray-lighter:              #eceeef ;
+$gray-lightest:             #f7f7f9 ;
+
+$font-family-base:       'SourceSansPro', san-serif;
+
+$custom-control-indicator-bg: #fff;
+
+//footer
+$footer-height: 120px;
+$footer-link-color: #fff;

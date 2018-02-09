@@ -1,0 +1,78 @@
+/* FONT PATH
+ * -------------------------- */
+
+@font-face {
+  font-family: 'FontAwesome';
+  src: url('#{$fa-font-path}/fontawesome-webfont.eot?v=#{$fa-version}');
+  src: url('#{$fa-font-path}/fontawesome-webfont.eot?#iefix&v=#{$fa-version}') format('embedded-opentype'),
+    url('#{$fa-font-path}/fontawesome-webfont.woff2?v=#{$fa-version}') format('woff2'),
+    url('#{$fa-font-path}/fontawesome-webfont.woff?v=#{$fa-version}') format('woff'),
+    url('#{$fa-font-path}/fontawesome-webfont.ttf?v=#{$fa-version}') format('truetype'),
+    url('#{$fa-font-path}/fontawesome-webfont.svg?v=#{$fa-version}#fontawesomeregular') format('svg');
+//  src: url('#{$fa-font-path}/FontAwesome.otf') format('opentype'); // used when developing fonts
+  font-weight: normal;
+  font-style: normal;
+}
+// @font-face {
+//     font-family: 'Source Sans Pro';
+//     font-style: normal;
+//     font-weight: 400;
+//     src: url('#{$fa-font-path}/Source+Sans+Pro_400_normal.eot'); /* {{embedded-opentype-gf-url}} */
+//     src: local('☺'),
+//         url('#{$fa-font-path}/Source+Sans+Pro_400_normal.eot?#iefix') format('embedded-opentype'), /* {{embedded-opentype-gf-url}} */
+//         url('#{$fa-font-path}/Source+Sans+Pro_400_normal.woff') format('woff'), /* http://fonts.gstatic.com/s/sourcesanspro/v9/ODelI1aHBYDBqgeIAH2zlBM0YzuT7MdOe03otPbuUS0.woff */
+//         url('#{$fa-font-path}/Source+Sans+Pro_400_normal.ttf') format('truetype'), /* http://fonts.gstatic.com/s/sourcesanspro/v9/ODelI1aHBYDBqgeIAH2zlEY6Fu39Tt9XkmtSosaMoEA.ttf */
+//         url('#{$fa-font-path}/Source+Sans+Pro_400_normal.svg#Source+Sans+Pro_400_normal') format('svg'); /* http://fonts.gstatic.com/l/font?kit=ODelI1aHBYDBqgeIAH2zlADX0QHsyBtvFGhCuXSMYhM&skey=1e026b1c27170b9b&v=v9#SourceSansPro */
+// }
+
+@font-face {
+	font-family: SourceSansPro;
+	src: url('#{$fa-font-path}/SourceSansPro-Regular.ttf');
+}
+@font-face {
+	font-family: SourceSansPro;
+	src: url('#{$fa-font-path}/SourceSansPro-Regular.ttf');
+	font-weight: 500;
+}
+@font-face {
+	font-family: SourceSansPro;
+	src: url('#{$fa-font-path}/SourceSansPro-Semibold.ttf');
+	font-weight: 500;
+}
+@font-face {
+	font-family: SourceSansPro;
+	src: url('#{$fa-font-path}/SourceSansPro-Bold.ttf');
+	font-weight: bold;
+}
+@font-face {
+	font-family: SourceSansPro;
+	src: url('#{$fa-font-path}/SourceSansPro-Bold.ttf');
+	font-weight: 600;
+}
+@font-face {
+	font-family: SourceSansPro;
+	src: url('#{$fa-font-path}/SourceSansPro-Black.ttf');
+	font-weight: 700;
+}
+@font-face {
+	font-family: SourceSansPro;
+	src: url('#{$fa-font-path}/SourceSansPro-Italic.ttf');
+	font-style: italic;
+}
+@font-face {
+	font-family: SourceSansPro;
+	src: url('#{$fa-font-path}/SourceSansPro-BoldItalic.ttf');
+	font-weight: bold;
+	font-style: italic;
+}
+@font-face {
+	font-family: SourceSansPro;
+	src: url('#{$fa-font-path}/SourceSansPro-Light.ttf');
+	font-weight: 300;
+}
+@font-face {
+	font-family: SourceSansPro;
+	src: url('#{$fa-font-path}/SourceSansPro-LightItalic.ttf');
+	font-style: italic;
+	font-weight: 300;
+}
