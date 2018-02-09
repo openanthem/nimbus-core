@@ -5,10 +5,10 @@
     	# nimbus-core 
     	# nimbus-entity-dsl
     # nimbus-test
+	# nimbus-ui
     # nimbus-extn-activiti
-	# nimbus-ui-app (it is an npm build that created maven artifact and deploys to artifactory)
    
-PROJECTS="nimbus-parent,nimbus-test,nimbus-extn-activiti,nimbus-ui-app";
+PROJECTS="nimbus-parent,nimbus-test,nimbus-ui,nimbus-extn-activiti";
 
 while getopts p:m: option
 do
@@ -31,14 +31,15 @@ for i in "${NAMES[@]}"; do
   echo "### Starting to build: $str "
   echo "####################################################################"
   
+  BUILD_PROFILES="";
+  if [[ "$i" == "nimbus-ui" ]]; then
+    BUILD_PROFILES="devbuild"
+  fi
   
-  if [[ "$i" == "nimbus-ui-app" ]]; then
-	  cd $i 
-	  npm install
-	  npm run prodbuild
-	  cd ..
-   else
-	  mvn clean install -f $str/pom.xml $MVN_ARGS
+  if [[ -z "$BUILD_PROFILES" ]]; then
+    mvn clean install -f $str/pom.xml $MVN_ARGS
+  else
+    mvn clean install -f $str/pom.xml $MVN_ARGS -P $BUILD_PROFILES
   fi 
 
   echo "####################################################################"
