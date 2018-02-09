@@ -68,6 +68,7 @@
         <owasp-esapi.version>2.0.1</owasp-esapi.version>
         <nexus-staging-maven-plugin.version>1.6.7</nexus-staging-maven-plugin.version>
         <!-- nimbus-core -->
+       	<parentDir>../nimbus-parent</parentDir>
         <nimbus.version>1.0.0.M1-SNAPSHOT</nimbus.version>
         <nimbus.core.version>${nimbus.version}</nimbus.core.version>
         <nimbus.ui.version>${nimbus.version}</nimbus.ui.version>
@@ -778,6 +779,30 @@
                     </archive>
                 </configuration>
             </plugin>
+            <plugin>
+			    <groupId>com.mycila</groupId>
+			    <artifactId>license-maven-plugin</artifactId>
+			    <version>3.0</version>
+			    <configuration>
+			        <header>${parentDir}/license.txt</header>
+			        <properties>
+			            <inceptionYear>2016</inceptionYear>
+			            <currentYear>2018</currentYear>
+			        </properties>
+			        <includes>
+				       <include>src/main/java/**</include>
+				       <include>src/test/java/**</include>
+				      </includes>
+			    </configuration>
+			    <executions>
+			        <execution>
+			            <goals>
+			                <goal>format</goal>
+			            </goals>
+			            <phase>process-sources</phase>
+			        </execution>
+			    </executions>
+			</plugin>
         </plugins>
     </build>
     <profiles>
