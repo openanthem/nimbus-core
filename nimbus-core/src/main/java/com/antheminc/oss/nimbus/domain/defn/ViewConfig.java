@@ -274,6 +274,14 @@ public class ViewConfig {
 		boolean postEventOnChange() default false;
 	}
 	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface GridRowBody {
+		String alias() default "GridRowBody";
+		String cssClass() default "";
+	}
+	
 	/*
 	 * Card Grid
 	 */
