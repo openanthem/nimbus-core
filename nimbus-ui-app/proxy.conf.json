@@ -1,0 +1,13 @@
+{
+    "/Anthem/*" :{ 
+        "target" : "http://localhost:8082",
+        "secure" : false,
+        "logLevel": "debug"
+    },
+    
+    "/ltss-integration-services/*" :{ 
+        "target" : "http://localhost:8080",
+        "secure" : false,
+        "logLevel": "debug"
+    }
+}
