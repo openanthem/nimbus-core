@@ -1,0 +1,23 @@
+<nm-breadcrumb></nm-breadcrumb>
+<span *ngIf="hasLayout">
+	<div class="info-bar clearfix">
+	    <div [class]="p.config?.uiStyles?.attributes?.cssClass" *ngFor="let p of subHeaders, let index=index">
+	        <ng-template ngFor let-element [ngForOf]="p.type?.model?.params">
+	            <nm-subheader [param]="element"></nm-subheader>
+	        </ng-template>
+	    </div>
+	</div>
+	
+	<nav class="section-nav nav navbar navbar-toggleable-md navbar-light" role="navigation">
+	    <button aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler collapsed"
+	        data-target="#navbarToggler" data-toggle="collapse" type="button"> 
+	        <span class="navbar-toggler-icon"></span> 
+	    </button>
+	    <div aria-expanded="false" class="navbar-collapse nav-block collapse" id="navbarToggler">
+	        <a class="nav-link" [routerLink]="[menuItem.path, {link:true}]" *ngFor="let menuItem of leftMenuItems" routerLinkActive="active">{{menuItem.title}}</a>
+	    </div>
+	</nav>
+</span>
+<div class="{{infoClass}}">
+    <router-outlet></router-outlet>
+</div><!--  END Domain-content  -->

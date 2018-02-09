@@ -1,0 +1,158 @@
+ng-component{
+    display: inline-block;
+    width:100%;
+}
+.scrollGrid {
+    border: 1px solid #cecece;
+    position: relative;
+}
+
+.ui-datatable,.scrollGrid {
+    position: static;
+    font-size: 1rem;
+    .ui-selection-column .ui-chkbox {
+        display: inline-block;
+    }
+    .ui-datatable-scrollable-body{
+        min-height: 200px;
+    }
+    
+    th.ui-state-default{
+        background: $gray-med;
+        color: #fff;
+    }
+    th.ui-state-active{
+        background: $gray-dark;
+    }
+
+    .ui-datatable-data > tr > td {
+        border-width: 1px 0;
+    }
+    tbody > tr {
+        &.ui-widget-content.ui-datatable-even {
+            background-color: #efefef;
+        }
+        &.ui-widget-content.ui-datatable-odd {
+            background-color: #fff;
+        }
+        &.ui-widget-content.ui-state-highlight { 
+            color: inherit;
+        }
+    }
+    .ui-datatable-footer {
+        border: none;
+        background: none;
+        text-align: left;
+        font-size: .8rem;
+        padding: 0;
+    }
+    th.ui-sortable-column:not(.ui-state-active):hover {
+        background-color: $gray-dark;
+        color: #fff;
+    }
+    .col-icon {
+        width: 30px;
+    }
+    .col-select {
+        width: 38px;
+    }
+    .actionMenu {
+        width: 50px;
+    }
+    
+    .ui-datatable-thead > tr > th {
+        position: relative;
+        text-align: left;
+        border: none;
+        padding: .2rem .4rem;
+        line-height: 1rem;
+        .ui-column-title {
+            display: inline-block;
+            text-align: left;
+            max-width: 65%;
+            margin-right:.3rem;
+             overflow: hidden;
+             text-overflow: ellipsis;
+             white-space: nowrap;
+            // height: 1.3rem;
+        }
+        .gridFilterIcon {
+            display:none;
+            position: absolute;
+            left: 2px;
+            top:0;
+            &::before{
+                background-size: 15px 15px;
+                height: 15px;
+                width: 15px;
+                display: block;
+                content: ' ';
+                font-family: "fontAwesome";
+                content: "\f0b0";
+                font-size: .8rem;
+            }
+        }
+       
+        .ui-sortable-column-icon{
+        font-size: 1.2rem;
+        display:inline;
+        color: #fff;
+        }
+    }
+    tr.ui-expanded-row-content {
+        .ui-datatable {
+            padding: .6rem 1.5rem;
+            .ui-state-default {
+                background-color: #ccc;
+                color: #555;
+                span.ui-sortable-column-icon {
+                    color: #555;
+                }
+            }
+        }
+    }
+    p-header {
+       float:left;
+        margin-left: 1rem;
+        font-size: 1.1rem;
+    }
+    th.dropdown, td.dropdown {
+        width: 40px;
+    }
+    td:not(.dropdown) .ui-cell-data {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 98%;
+        height: 1.3em;
+        display:block;
+    }
+}
+
+.ui-widget-content {
+    border:none;
+}
+.ui-widget-header {
+    border: none;
+    text-align: right;
+    font-size: .8rem;
+    &.ui-paginator {
+        font-size: .6rem;
+    }
+}
+
+
+.recordsDisplayed{
+    position: absolute;
+    left: 40%;
+    padding-top: .1rem;
+    font-size: .9rem;
+}
+span.ui-cell-data img { 
+margin-right: 10px; 
+}
+
+
+
+ 
+ 

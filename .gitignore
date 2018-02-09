@@ -14,7 +14,10 @@
 */nimbus-ui-app/node
 */nimbus-ui-app/node_modules
 */nimbus-ui-app/dist
-*/nimbus-ui-app/etc
+*/nimbusui/node
+*/nimbusui/node_modules
+*/nimbusui/dist
+*/nimbusui/etc
 /nimbus-ui-app/dist
 /nimbus-ui-app/etc
 /nimbus-ui-app/node

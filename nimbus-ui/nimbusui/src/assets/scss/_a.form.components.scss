@@ -1,0 +1,236 @@
+.form-control{
+	border-color: $border-color;
+    color: $border-color-dark;
+}
+.form-group.required label:after, label.required:after {
+    content: "*";
+    color: red;
+}
+.textarea-holder.required label:after {
+    content: "*";
+    color: red;
+}
+.select-wrapper.required label:after {
+    content: "*";
+    color: red;
+}
+ legend.required:after {
+    content: "*";
+    color: red;
+}
+label.custom-control.required{
+    content: "*";
+    color: red;
+}
+.form-control[disabled]{
+	border-color: $border-color-light;
+    color: $border-color;
+    background-color: transparent;
+}
+.form-control:focus{
+	//border-color: $border-color-dark;
+    color: $border-color-dark;
+    outline: $focus-outline-setting;
+}
+//for custom radio and checkbox
+.custom-control-indicator {
+    border: 1px solid $border-color;
+}
+// override webkit auto fill styles
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px white inset;}
+:focus{
+    outline: #8FBEE6 solid 2px; 
+}
+textarea.form-control {
+    max-height: 140px;
+    min-height: 140px;
+    height: 140px;
+    word-break: break-all;
+    white-space: normal;
+}
+//styling for form alerts.. 
+.form-group.alert {
+  margin-bottom: .65rem;
+  padding:0 ;
+  background:none;
+  border:none;
+    .warningMsg::before{
+        content:"\F071";
+    font-family: fontAwesome;
+    display: inline-block;
+    margin-right:.5rem;
+    }
+}
+
+.form-group {
+  p {
+      margin-bottom: 0;
+  }
+ 
+  fieldset{
+      legend {
+          font-size:1rem;
+      }
+      .form-control {
+          padding-bottom: .7rem;
+      }
+      .form-checkrow label {
+        max-width: 90%;
+        line-height: 1.1;
+    }
+  }
+}
+
+.form-group.form-inline .form-checkrow {
+  display: inline-block;
+  margin-right: 1.3rem;
+}
+
+.form-group.form-inline.legend-left legend {
+  float: left;
+  margin-right: 1.3rem;
+  width: auto;
+}
+
+p-dropdown.form-control {
+    border: none;
+}
+.ui-dropdown {
+    min-width: 150px;
+}
+//START inline edit text input styles for inplace-editor.component
+.form-group{
+  .editTrigger{
+     display: block;
+     position:relative;
+     color:#333;
+     &:hover{
+         border: 1px solid #cecece;
+             padding-left: 10px;
+         &::after{
+             position:absolute;
+             top:0;
+             right:0;
+             height: 100%;
+             border-left: 1px solid #cecece;
+             text-align: center;
+             font-family: "fontAwesome";
+             content: "\f040";
+             padding: 2px 4px 0;
+         }
+     }
+     .unassigned {
+         font-style: italic;
+     }
+  }
+  .editTarget{
+      display:none;
+  }
+  .editSubmit {
+    &::before{
+        display: inline-block;
+        font-family: "fontAwesome";
+             content: "\f00c";
+    }
+ }
+ .editCancel {
+     &::before{
+        display: inline-block;
+        font-family: "fontAwesome";
+             content: "\f00d";
+    }
+ }
+ .saveOptions {
+     position: absolute;
+     top: 100%;
+     right: 0;
+     height: 30px;
+     display: none;
+     text-align: right;
+     z-index: 1;
+ }
+
+  &.editOn {
+     border: 1px solid #cecece;
+     padding: .4rem;
+     margin-bottom: 40px;
+     position: relative;
+     .editTrigger{
+         display: none;
+     }
+     .editTarget{
+         display: block;
+     }
+ }
+}
+
+.formEditGroup.editOn .form-group .editTarget {
+ display: block;
+}
+.formEditGroup.lockedForm .form-group .editTarget[disabled] {
+ display: block;
+}
+// END inline edit text input styles for inplace-editor.component
+
+//date and time input
+.ui-calendar .ui-calendar-button {
+    height: 2.15rem;
+}
+.ui-timepicker.ui-widget-header{
+    text-align: center;
+}
+
+// custom radio
+.ui-radiobutton{
+    .ui-radiobutton-icon{
+        position:relative;
+        &::before {
+            position: absolute;
+            font-size: .6rem;
+            top: -.6rem;
+            left: -.25rem;
+        }
+    }
+}
+
+.custom-radio {
+    .custom-control-input{
+        &:checked ~ .custom-control-indicator{
+            background-image: none;
+            background-color: #186ba0;
+            color: #fff;
+            &::after{
+                font-family: fontAwesome;
+                content: "\F111";
+                font-size: .4rem;
+                position: absolute;
+                top: .15rem;
+                left: .25rem;
+            }
+        }
+        &:focus ~ .custom-control-indicator{
+            box-shadow: none;
+        }
+    }
+}
+// custom check
+.custom-check {
+    .custom-control-input{
+        &:checked ~ .custom-control-indicator{
+            background-image: none;
+            background-color: #186ba0;
+            color: #fff;
+            &::after{
+                font-family: fontAwesome;
+                content: "\F00C";
+                font-size: 1rem;
+                position: absolute;
+                top: -.3rem;
+            }
+        }
+        &:focus ~ .custom-control-indicator{
+            box-shadow: none;
+        }
+    }
+}

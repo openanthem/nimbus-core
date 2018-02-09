@@ -1,0 +1,41 @@
+<div class="card-holder" id="{{code}}" [ngClass]="styleWd" *ngIf="visible==true">
+	<div class="card card-block {{styleHt}}">
+		<div class='windowControls'>
+			 <button type="button" class="btn btn-icon windowControl">
+                <svg><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="resources/icons/minimize.svg#Layer_1"></use></svg>
+            </button>
+            <button type="button" class="btn btn-icon windowControl">
+                <svg><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="resources/icons/maximize.svg#Layer_1"></use></svg>
+            </button>
+			<button  type="button" class="btn btn-icon windowControl">
+                <svg><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="resources/icons/close.svg#Layer_1"></use></svg>
+            </button>
+		</div>
+		<!--check for title attribute in the view config to render the header-->
+		<ng-template [ngIf]="element?.config?.labelConfigs?.length > 0">
+			<div class="card-header">
+				<h2 class="card-title">
+					{{label}}
+				</h2>
+				<ng-template ngFor let-element [ngForOf]="nestedParams">
+					<ng-template [ngIf]="element.alias == 'Header'">
+						<nm-header [element]="element"></nm-header>
+					</ng-template>
+				</ng-template>		
+			</div>
+		</ng-template>
+		<div class="viewport" >
+			<ng-template ngFor let-element [ngForOf]="nestedParams">
+				<ng-template [ngIf]="element.alias == 'Tile'">
+					<nm-tile [element]="element" tileType="subtile"></nm-tile>
+				</ng-template>
+				<ng-template [ngIf]="element.alias == 'Section'">
+					<nm-section [element]="element"></nm-section>	
+				</ng-template>
+				<ng-template [ngIf]="element.alias == 'Modal'">
+					<nm-modal [element]="element"></nm-modal>	
+				</ng-template>
+			</ng-template>	
+		</div>
+	</div>
+</div>

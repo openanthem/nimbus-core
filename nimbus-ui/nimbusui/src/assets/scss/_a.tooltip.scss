@@ -1,0 +1,181 @@
+.tooltip-container{
+    display: inline-block;
+    position: relative;
+    z-index: 3;
+    &.helpIcon{
+        .tooltip-trigger {
+            height: 1.2rem;
+            width: 1.2rem;
+            margin-left: .7rem;
+            background: none;
+            border: none;
+            padding: 0;
+            &::before {
+                font-family: fontAwesome;
+                content: "\f059";
+                color: #aeaef7;
+                font-size: 1.2rem;
+                display: inline-block;
+                line-height: 1;
+            }
+            &:hover::before{
+                color: black;
+            }
+        }
+    }
+    &.open{
+        .callout{
+            opacity: 1;
+            display: block;
+        }
+    }
+    &.east .callout {
+        top: -6px;
+        left: 131%;
+    }
+    &.west .callout {
+        left: auto;
+        right: 110%;
+        &::before {
+            left: auto;
+            right: -10px;
+            border-right: none;
+            border-left: 10px solid #cecece;
+        }
+    }
+}
+
+.callout {
+    position: absolute;
+    line-height: 1rem;
+    top: -6px;
+    left: 131%;
+    width: 200px;
+    border: 1px solid rgb(206, 206, 206);
+    padding: 4px 16px 10px;
+    border-radius: 4px;
+    background: rgb(255, 255, 255);
+    font-size: 0.7rem;
+    opacity: 0;
+    transition: opacity 1s;
+    z-index: 4;
+    box-shadow: rgb(136, 136, 136) 2px 2px 6px;
+    text-transform: initial;
+    text-align: left;
+    display: none;
+    &::before{
+        position:absolute;
+        left: -10px;
+        top:0px;
+        width: 0px;
+        height: 0px;
+        border-top: 10px solid transparent;
+        border-bottom: 10px solid transparent;
+        border-right: 10px solid #cecece;
+        display:block;
+        content:"";
+
+    }
+    
+    .close{
+        font-size: 1.1rem;
+        position: absolute;
+        right: 5px;
+        font-weight: normal;
+        &::before{
+            content: "X";
+        }
+        &:hover {
+            font-weight: bold;
+        }
+    }
+    
+}
+
+/* flip container for hover link icon */
+.flip-container {
+	perspective: 1000px;
+	position: relative;
+    transform-style: preserve-3d; 
+    display: block;
+}
+.flip-container, 
+.front, 
+.back {
+	width: 20px;
+	height: 10px;
+    border-radius: .2rem;
+}
+.vertical.flip-container .flipper {
+    transform-origin: 100% 5px; /* half of height */
+}
+/* flip speed goes here */
+.flipper {
+	transition: 0.6s;
+	transform-style: preserve-3d;
+	position: relative;
+}
+//transition on flpper or back & front... 
+.front, .back {
+	backface-visibility: hidden;
+    //transition: 0.6s;                
+	//transform-style: preserve-3d;   
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+.front:before,.back:before {
+    content: '...';
+    display: block;
+    line-height: 1px;
+    text-align: center;
+}
+.front {
+    background-color: #ffda74;
+}
+.back {
+    background-color: #717171;
+    color: white;
+}
+.vertical .front {
+	z-index: 2;
+	transform: rotateX(0deg);
+}
+.vertical .back {
+    transform: rotateX(180deg);
+}
+
+// flip either the .flipper or .back & .front
+
+.vertical.flip-container:hover .flipper {
+    transform: rotateX(180deg);
+}
+
+// .vertical.flip-container:hover .back {
+// 	    transform: rotateX(0deg);
+// 	}
+
+// .vertical.flip-container:hover .front {
+//     transform: rotateX(180deg);
+// }
+
+
+/* front pane, placed above back */
+.horizontal .front {
+	z-index: 2;
+	transform: rotateY(0deg);
+}
+/* back, initially hidden pane */
+.horizontal .back {
+	transform: rotateY(180deg);
+}
+// flip either the .flipper or .back & .front
+.horizontal.flip-container:hover .flipper {
+    transform: rotateY(180deg);
+}
+// .horizontal.flip-container:hover .back {
+// 		transform: rotateY(0deg); 
+// }
+// .horizontal.flip-container:hover .front {
+//     transform: rotateY(180deg);
+

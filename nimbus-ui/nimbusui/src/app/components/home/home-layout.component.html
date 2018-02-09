@@ -1,0 +1,17 @@
+<nm-header-global [branding]="branding" [topMenuItems]="topMenuItems"   [leftMenuItems]="leftMenuItems"></nm-header-global>
+
+<!-- Everything after header -->
+<nm-nav-menu-global [organization]= "organization" [menuItems]="menuItems" [menuLinks]="menuLinks"></nm-nav-menu-global> 
+
+<div class='wrapper'>
+
+	<div id="main-content" class="main-content" >
+        <router-outlet></router-outlet>
+                
+      
+
+	</div><!--  END main-content  -->
+	
+</div><!--  END wrapper  -->
+
+<nm-footer-global [footerConfig] = "footer"></nm-footer-global>

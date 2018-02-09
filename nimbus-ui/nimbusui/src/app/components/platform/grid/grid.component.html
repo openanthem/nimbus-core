@@ -1,0 +1,101 @@
+<!-- <div class="col-xs-12 alert alert-{{element?.type?.model?.config?.message?.type}}" role="alert" *ngIf="element?.type?.model?.config?.message">
+    {{element?.type?.model?.config?.message?.content}}
+</div> -->
+ 
+<!-- Total Results: {{data == null ? leafState.length : data?.length}}   -->
+
+<div id="gsFlexGrid" class="scrollGrid">
+	<div class="ui-datatable-header ui-widget-header">
+		<p-header>
+			{{label}}
+			<nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
+		</p-header>
+		<div class="recordsDisplayed">Showing 1-50 records</div>
+	</div>
+
+	<p-dataTable #flex #dataTable #table [value]="value"
+		[(selection)]="selectedRows" 
+		(onRowClick)="onRowClick($event)"
+		(onRowSelect)="onRowSelect($event)"
+		(onRowUnselect)="onRowUnselect($event)"
+		(valueChange)="handleRowChange($event)"
+		[rows]="element.config?.uiStyles?.attributes?.pageSize"
+		[paginator]="element.config?.uiStyles?.attributes?.pagination"
+		scrollable="true" 
+		scrollHeight="200px"
+		paginatorPosition="both"
+		alwaysShowPaginator ="false"
+		[expandableRows]="element.config?.uiStyles?.attributes?.expandableRows"
+		(onRowExpand)="getAddtionalData($event)"
+		[responsive]="true" #dt> 
+
+		<p-column styleClass="col-select" 
+			selectionMode="multiple" *ngIf="element.config?.uiStyles?.attributes?.rowSelection">
+		</p-column> 
+
+		<p-column expander="true" styleClass="col-icon" *ngIf="element.config?.uiStyles?.attributes?.expandableRows"></p-column>
+
+		<ng-template ngFor let-col [ngForOf]="params">
+
+			<p-column *ngIf="col?.uiStyles?.attributes?.alias != 'Link' && col?.uiStyles?.attributes?.alias != 'LinkMenu'"
+				[field]="col?.code" 
+				[header]="col?.label"
+				[hidden]="col?.uiStyles?.attributes?.hidden"
+				[sortable]="!col?.uiStyles?.isLink"
+				[filter]="col?.uiStyles?.attributes?.filter"
+				[filterMatchMode]="col?.uiStyles?.attributes?.filterMode"> 
+							
+				<ng-template pTemplate="header"> 
+					<span title="{{col?.label}}"  *ngIf="!col?.uiStyles?.isLink">{{col.label}}</span> 
+					<a href="javascript:void(0)" (click)="toggleFilter($event)" class='gridFilterIcon' *ngIf="!col?.uiStyles?.isLink"></a> 
+				</ng-template> 
+				
+				<ng-template *ngIf="col?.uiStyles?.attributes?.alias == 'CheckBox'" pTemplate="body" let-cell="rowData"> 
+					<label> <input type="checkbox" (click)="postOnChange(col, cell)"> </label> 
+				</ng-template> 
+				
+				<ng-template let-col let-row="rowData" pTemplate="body">
+					<span title="{{row[col.field]}}">{{row[col.field]}}</span> 
+				</ng-template> 
+				
+			</p-column>
+
+			<p-column *ngIf="col?.uiStyles?.attributes?.alias=='LinkMenu'" styleClass="dropdown">
+				<ng-template pTemplate="body" let-cell="rowData">
+					<nm-action-dropdown [params]="col?.nestedParams" [rowData]="cell" [elementPath]="getRowPath(col, cell)"></nm-action-dropdown>
+				</ng-template>
+			</p-column>
+		</ng-template>
+				
+		<!-- <ng-template ngFor let-col [ngForOf]="params">
+			<ng-template *ngIf="col?.config?.type?.nested" let-subTbl pTemplate="rowexpansion">
+				<infinite-scroll-grid
+								[data]="col?.config?.gridList"
+								[element]="col"
+								[params]="col?.config?.gridCols">
+				</infinite-scroll-grid>
+			</ng-template>
+		</ng-template> -->
+		
+		<p-footer>
+			<ng-template [ngIf]="element.config?.uiStyles?.attributes?.postButton">
+				<div class="text-sm-left">
+					<button (click)="postGridData(this)" type="button" class="btn btn-action post-btn">
+						{{element.config.uiStyles.attributes.postButtonLabel}}
+					</button>
+				</div>
+			</ng-template> 
+		</p-footer> 
+				   
+	</p-dataTable>
+</div>
+
+<!-- <p-overlayPanel #op>
+	<div>
+		<ng-template ngFor let-key [ngForOf]="summaryData | keys">
+			<div class='d-inline-block mr-3 align-top'>
+				<u>{{key.key}}</u> <br> <b>{{key.value}}</b>
+			</div>
+		</ng-template>
+	</div>
+</p-overlayPanel> -->

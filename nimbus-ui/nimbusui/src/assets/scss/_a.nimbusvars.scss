@@ -1,0 +1,51 @@
+@import "mixins/_transform";
+
+$headerHeight: 95px;
+$header-color: #FFFFFF;
+$header-bkg: #006bc2;
+$header-logoName-size: 0.8rem;
+$header-userIcon-height: 3.3rem;
+$header-faIcon-size: 3.3rem;
+$header-search-bkg: rgb(51, 121, 190);
+$header-btn-height: 55px;
+$header-dropdown-marginTop: 6px;
+
+$toolbar-height: 123px;
+$globalNav-height: 30px;
+$globalNav-background-color:#333;
+$globalNav-font-color: #fff;
+
+$breadcrumb-height: 45px;
+$infoBar-height: 60px;
+$section-nav-width: 16%;
+$card-header-height: 30px;
+
+// $sidebar-width: 255px;
+// $sidebar-collapse-width: 92px;
+// $sidebar-padding-top:30px;
+$sidebar: #034b7c;
+// $sidebar-text: #33CCFF;
+$focus-outline-setting: #8FBEE6 solid 2px;
+$footer-bkg : $gray-dark;
+$footer-height-nimbus: 120px;
+$footer-color : #fff;
+
+$border-color: #999;
+$border-color-dark: darken($border-color, 50%);
+$border-color-light: lighten($border-color, 30%);
+
+$btn-bkg-primary: rgba(22, 155, 213, 1);
+$primary: #4d86c1 !default;
+$primary-light: tint($primary, 30%);
+$primary-dark: shade($primary, 15%);
+$primary-bg: tint($primary, 20%);
+$bg-alternate-color-odd: #fff;
+$bg-alternate-color-even: #e6e6e6;
+
+$delete-color:#C10000; //Delete red
+$support-color1:#C18B05; //Hot Toddy
+$primary-action-color:#43784c;
+$secondary-action-color:#e6e6e6;
+$goGreen: #599E63;
+$mecury:#E6E6E6;
+$silverChalice:#aaaaaa;
