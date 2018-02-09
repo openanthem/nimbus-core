@@ -9,8 +9,8 @@
     "generatePom"  : true,
     "repositories" : [
       {
-        "id": "internal-snapshot",
-        "url": "https://artifactory.anthem.com/artifactory/public/"
+        "id": "repo-prod-public",
+        "url": "https://va10pwprpo001.us.ad.wellpoint.com/artifactory/public/"
       }
     ]
 }
