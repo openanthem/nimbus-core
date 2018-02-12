@@ -1,6 +1,11 @@
 package com.antheminc.oss.nimbus.domain.model.state.extension;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
@@ -154,5 +159,87 @@ public class ValidateConditionalStateEventHandlerTest extends AbstractStateEvent
 		
 		Assert.assertEquals(1, validate_p2.getActiveValidationGroups().length);
 		Assert.assertEquals(GROUP_2.class, validate_p2.getActiveValidationGroups()[0]);
+	}
+	
+	@Test
+	public void t06_validateEventGeneration_sibling() {
+		Param<String> condition = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/condition");
+		Param<String> validate_p1 = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/validate_p1");
+		Param<String> validate_p2 = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/validate_p2");
+		
+		addListener();
+		condition.setState("rigby");
+		
+		// validate events
+		assertNotNull(_paramEvents);
+		assertEquals(3, _paramEvents.size());
+		
+		List<Param<?>> expectedEventParams1 = new ArrayList<>();
+		expectedEventParams1.add(validate_p1);
+		expectedEventParams1.add(validate_p2);
+		expectedEventParams1.add(condition);
+		
+		_paramEvents.stream().forEach(pe->expectedEventParams1.remove(pe.getParam()));
+		assertTrue(expectedEventParams1.isEmpty());
+		
+		condition.setState("hooli");
+		
+		// validate events
+		assertNotNull(_paramEvents);
+		assertEquals(3, _paramEvents.size());
+		
+		List<Param<?>> expectedEventParams2 = new ArrayList<>();
+		expectedEventParams2.add(validate_p1);
+		expectedEventParams2.add(validate_p2);
+		expectedEventParams2.add(condition);
+		
+		_paramEvents.stream().forEach(pe->expectedEventParams2.remove(pe.getParam()));
+		assertTrue(expectedEventParams2.isEmpty());
+	}
+	
+	@Test
+	public void t07_validateEventGeneration_nestedSibling() {
+		Param<String> nested_condition = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/nested_condition");
+		Param<String> validate_p1 = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/validate_p1");
+		Param<String> validate_p2 = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/validate_p2");
+		Param<String> validate_p3_1 = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/validate_p3/validate_p3_1");
+		Param<String> validate_p3_2_1 = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/validate_p3/validate_p3_2/validate_p3_2_1");
+		Param<String> validate_p3_2_2 = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/validate_p3/validate_p3_2/validate_p3_2_2");
+		
+		addListener();
+		nested_condition.setState("rigby");
+		
+		// validate events
+		assertNotNull(_paramEvents);
+		assertEquals(5, _paramEvents.size());
+		
+		List<Param<?>> expectedEventParams1 = new ArrayList<>();
+		expectedEventParams1.add(validate_p1);
+		expectedEventParams1.add(validate_p2);
+		expectedEventParams1.add(validate_p3_1);
+		expectedEventParams1.add(validate_p3_2_1);
+		expectedEventParams1.add(nested_condition);
+		
+		_paramEvents.stream().forEach(pe->expectedEventParams1.remove(pe.getParam()));
+		assertTrue(expectedEventParams1.isEmpty());
+		
+		nested_condition.setState("hooli");
+		
+		// validate events
+		assertNotNull(_paramEvents);
+		assertEquals(6, _paramEvents.size());
+		
+		List<Param<?>> expectedEventParams2 = new ArrayList<>();
+		expectedEventParams2.add(validate_p1);
+		expectedEventParams2.add(validate_p2);
+		expectedEventParams2.add(validate_p3_1);
+		expectedEventParams2.add(validate_p3_2_1);
+		expectedEventParams2.add(validate_p3_2_2);
+		expectedEventParams2.add(nested_condition);
+		
+		_paramEvents.stream().forEach(pe->expectedEventParams2.remove(pe.getParam()));
+		assertTrue(expectedEventParams2.isEmpty());
+		
+		nested_condition.setState("paloalto");
 	}
 }

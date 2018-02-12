@@ -8,6 +8,7 @@ import com.antheminc.oss.nimbus.domain.defn.ViewConfig.TextBox;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.GROUP_1;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.GROUP_2;
+import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.GROUP_3;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.ValidationScope;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditionals;
 
@@ -63,5 +64,8 @@ public class SampleValidateEntity {
 		
 		@NotNull(groups = { GROUP_1.class, GROUP_2.class })
 		private String validate_p3_2_1;
+		
+		@NotNull(groups = { GROUP_2.class })
+		private String validate_p3_2_2;
 	}
 }
