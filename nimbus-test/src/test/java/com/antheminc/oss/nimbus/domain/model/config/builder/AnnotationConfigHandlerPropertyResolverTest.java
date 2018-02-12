@@ -39,7 +39,6 @@ import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Initialize;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Link;
 import com.antheminc.oss.nimbus.domain.model.config.AnnotationConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
-import com.antheminc.oss.nimbus.domain.model.config.builder.EntityConfigVisitor;
 import com.antheminc.oss.nimbus.domain.model.config.builder.internal.DefaultEntityConfigBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.QuadModel;

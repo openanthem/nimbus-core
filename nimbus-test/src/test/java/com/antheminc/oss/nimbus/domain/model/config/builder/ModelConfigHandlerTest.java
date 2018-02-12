@@ -33,7 +33,6 @@ import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamType;
-import com.antheminc.oss.nimbus.domain.model.config.builder.EntityConfigVisitor;
 import com.antheminc.oss.nimbus.domain.model.config.builder.internal.DefaultEntityConfigBuilder;
 import com.antheminc.oss.nimbus.entity.person.Address;
 import com.antheminc.oss.nimbus.test.domain.support.AbstractFrameworkIntegrationTests;
