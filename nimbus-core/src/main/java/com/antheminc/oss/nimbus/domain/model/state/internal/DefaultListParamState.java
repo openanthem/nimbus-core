@@ -270,9 +270,14 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 	public ListElemParam<T> add() {
 		final LockTemplate rLockTemplate = isMapped() ? findIfMapped().getMapsTo().getLockTemplate() : getLockTemplate();
 		
-		return rLockTemplate.execute(()->{
+		ListElemParam<T> pColElem = rLockTemplate.execute(()->{
 			return changeStateTemplate((rt, h, lockId)->affectAddChange(rt));
 		});
+		
+		// initialize for created colElem
+		pColElem.initState();
+		
+		return pColElem;
 	} 
 	
 	private ListElemParam<T> affectAddChange(ExecutionRuntime execRt) {
@@ -319,8 +324,16 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 	
 	@Override
 	public boolean add(T elem) {
-		ListElemParam<T> pColElem = add();
+		//ListElemParam<T> pColElem = add();
+		final LockTemplate rLockTemplate = isMapped() ? findIfMapped().getMapsTo().getLockTemplate() : getLockTemplate();
+		
+		ListElemParam<T> pColElem = rLockTemplate.execute(()->{
+			return changeStateTemplate((rt, h, lockId)->affectAddChange(rt));
+		});
+
 		pColElem.setState(elem);		//lockTemplate.execute(()->pColElem.setState(elem));
+		
+		pColElem.initState();
 		return true;
 	}
 	
