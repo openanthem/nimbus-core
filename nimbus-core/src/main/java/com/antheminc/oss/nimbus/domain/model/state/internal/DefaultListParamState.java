@@ -314,6 +314,9 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 		if(execRt.isStarted())
 			emitEvent(Action._new, this);
 		
+		// initialize for created colElem
+		pColElem.initState();
+		
 		return pColElem;
 	}
 	
