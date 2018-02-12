@@ -25,7 +25,13 @@ import 'rxjs/add/observable/of';
 import { WebContentSvc } from './../../../services/content-management.service';
 import { BreadcrumbService } from './breadcrumb.service';
 import { IBreadcrumb } from './ibreadcrumb.d';
-
+/**
+ * \@author Tony.Lopez
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
     selector: 'nm-breadcrumb',
     template: `

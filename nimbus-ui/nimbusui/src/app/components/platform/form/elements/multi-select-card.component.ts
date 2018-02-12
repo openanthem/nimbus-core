@@ -28,6 +28,14 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   multi: true
 };
 
+/**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
     selector: 'nm-multiselect-card',
     providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR,WebContentSvc ],

@@ -19,6 +19,13 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
+/**
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Injectable()
 export class WindowService {
     height$: Observable<number>;

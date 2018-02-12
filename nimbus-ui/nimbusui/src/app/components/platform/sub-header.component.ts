@@ -20,6 +20,13 @@ import { Param } from '../../shared/app-config.interface';
 import { WebContentSvc } from '../../services/content-management.service';
 import { BaseElement } from './base-element.component';
 
+/**
+ * \@author Dinakar.Meda
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
     selector: 'nm-subheader',
     providers: [WebContentSvc],

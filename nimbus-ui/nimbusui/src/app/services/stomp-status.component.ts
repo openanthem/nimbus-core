@@ -20,6 +20,12 @@ import { Observable } from 'rxjs/Observable';
 import { STOMPService, StateLookup } from './stomp.service';
 
 /**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
  * STOMP connection status as a component
  */
 @Component({

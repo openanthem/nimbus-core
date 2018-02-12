@@ -21,6 +21,13 @@ import { PageService } from '../../../services/page.service';
 import { GenericDomain } from '../../../model/generic-domain.model';
 import { Param } from '../../../shared/app-config.interface';
 
+/**
+ * \@author Dinakar.Meda
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
     selector: 'nm-card-details-grid',
     templateUrl: './card-details-grid.component.html'

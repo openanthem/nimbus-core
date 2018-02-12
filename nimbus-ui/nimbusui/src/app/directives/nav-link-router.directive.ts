@@ -17,6 +17,14 @@
 'use strict';
 import { Directive } from '@angular/core';
 
+/**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Directive({
   selector: '[navLinkRouter]'
 })

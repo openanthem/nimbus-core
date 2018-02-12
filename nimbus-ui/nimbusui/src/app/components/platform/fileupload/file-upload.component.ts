@@ -35,6 +35,14 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 	multi: true
 };
 
+/**
+ * \@author Dinakar.Meda
+ * \@author Vivek.Kamineni
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
 	selector: 'nm-upload',
 	providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc ],

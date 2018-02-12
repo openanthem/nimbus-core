@@ -21,11 +21,16 @@ import { Subject } from 'rxjs/Subject';
 import { HttpHeaders } from '@angular/common/http';
 import {RequestOptions, Request, RequestMethod} from '@angular/http';
 
+/**
+ * \@author Dinakar.Meda
+ * \@author Vivek.Kamineni
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Injectable()
 export class FileService {
-
-    
-
     addFile$: EventEmitter<any>;
     removeFile$: EventEmitter<any>;
 

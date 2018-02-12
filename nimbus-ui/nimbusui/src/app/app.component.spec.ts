@@ -16,9 +16,16 @@
  */
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
-
 import { AppComponent } from './app.component';
 
+/**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({

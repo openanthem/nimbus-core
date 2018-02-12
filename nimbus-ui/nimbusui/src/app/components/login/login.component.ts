@@ -20,7 +20,13 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ServiceConstants } from './../../services/service.constants';
-
+/**
+ * \@author Dinakar.Meda
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
     templateUrl: './login.component.html'
 })

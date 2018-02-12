@@ -15,6 +15,14 @@
  * limitations under the License.
  */
 'use strict';
+
+/**
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 export interface LoaderState {
     show: boolean;
 }

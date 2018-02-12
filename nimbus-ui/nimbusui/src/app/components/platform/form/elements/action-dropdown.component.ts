@@ -27,7 +27,13 @@ import { HttpMethod } from '../../../../shared/command.enum';
 import { BaseElement } from './../../base-element.component';
 import { trigger,state,style,transition,animate,keyframes } from '@angular/animations';
 
-
+/**
+ * \@author Dinakar.Meda
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
     selector: 'nm-action-dropdown',
     template: `

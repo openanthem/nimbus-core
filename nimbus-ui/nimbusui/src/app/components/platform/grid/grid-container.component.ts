@@ -18,6 +18,14 @@
 import { Component, Input } from '@angular/core';
 import { Param } from '../../../shared/app-config.interface';
 
+/**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
     selector: 'nm-grid-container',
     templateUrl: './grid-container.component.html'

@@ -21,6 +21,14 @@ import { Param } from '../../shared/app-config.interface';
 import { WebContentSvc } from '../../services/content-management.service';
 import { LabelConfig } from './../../shared/app-config.interface';
 
+/**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
     selector: 'nm-base-element',
     template:`

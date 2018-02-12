@@ -21,6 +21,13 @@ import { Param, Page } from '../../../shared/app-config.interface';
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router, Resolve, RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
 
+/**
+ * \@author Dinakar.Meda
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Injectable()
 export class FlowResolver implements Resolve<Param> {
     page : Page;

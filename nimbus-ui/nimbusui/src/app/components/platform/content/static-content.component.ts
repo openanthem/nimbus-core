@@ -21,6 +21,13 @@ import { WebContentSvc } from '../../../services/content-management.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { BaseElement } from '../base-element.component';
 
+/**
+ * \@author Dinakar.Meda
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
   selector: 'nm-static-text',
   providers: [WebContentSvc],

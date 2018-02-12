@@ -24,6 +24,13 @@ import { CustomHttpClient } from './httpclient.service';
 import { AppBranding, Layout, LinkConfig, TopBarConfig, FooterConfig, GlobalNavConfig } from '../model/menu-meta.interface';
 import { GenericDomain } from '../model/generic-domain.model';
 
+/**
+ * \@author Dinakar.Meda
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
     selector: 'nm-layout',
     //conflict jit-aot,  below line has to be commented out for gulp-build

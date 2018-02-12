@@ -22,6 +22,14 @@ import { PageService } from '../../../../services/page.service';
 import { BaseControl } from './base-control.component';
 import { Param } from '../../../../shared/app-config.interface';
 
+/**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
   selector: 'nm-single-checkbox',
   template: ` <label class="custom-control custom-check {{elementStyle}}">

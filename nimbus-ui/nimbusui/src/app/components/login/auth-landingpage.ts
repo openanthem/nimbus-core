@@ -18,7 +18,13 @@
 
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-
+/**
+ * \@author Dinakar.Meda
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
     template: ` 
     

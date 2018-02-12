@@ -26,6 +26,13 @@ import { PageService } from '../../../services/page.service';
 import { STOMPService } from '../../../services/stomp.service';
 import { ExecuteOutput, ModelEvent, Page } from '../../../shared/app-config.interface';
 
+/**
+ * \@author Dinakar.Meda
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
     selector: 'nm-flow',
     providers: [STOMPService],

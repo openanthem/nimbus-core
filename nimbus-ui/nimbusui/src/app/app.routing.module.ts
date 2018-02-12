@@ -33,6 +33,14 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { SelectivePreloadingStrategy } from './selective.preloading.strategy';
 
+/**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 const APPROUTES: Routes = [
     //first landing page routes need to be defined here and the rest will be loaded via dynamic router
     {

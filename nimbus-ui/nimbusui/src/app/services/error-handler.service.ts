@@ -19,6 +19,14 @@
 import { ErrorHandler } from '@angular/core';
 declare var trackJs: any;
 //TODO convert to service
+/**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 class TrackJsErrorHandler extends ErrorHandler {
   handleError(error:any) {
     // Add the error message to the telemetry timeline. 

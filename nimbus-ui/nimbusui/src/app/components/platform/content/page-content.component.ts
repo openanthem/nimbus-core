@@ -22,6 +22,13 @@ import { Param } from '../../../shared/app-config.interface';
 import { BaseElement } from '../base-element.component';
 import { WebContentSvc } from './../../../services/content-management.service';
 
+/**
+ * \@author Dinakar.Meda
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
     selector: 'nm-page-content',
     templateUrl: './page-content.component.html'

@@ -16,6 +16,14 @@
  */
 'use strict';
 
+/**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 export interface Serializable<T> {
     deserialize( inJson: Object ): T;
 }

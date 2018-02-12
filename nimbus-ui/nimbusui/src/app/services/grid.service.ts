@@ -21,6 +21,14 @@ import { Subject }    from 'rxjs/Subject';
 
 import 'rxjs/Rx';
 
+/**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Injectable()
 export class GridService {
 

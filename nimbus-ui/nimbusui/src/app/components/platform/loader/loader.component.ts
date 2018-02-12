@@ -20,6 +20,13 @@ import { LoaderService } from './../../../services/loader.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 
+/**
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
     selector: 'app-loader',
     templateUrl: 'loader.component.html',

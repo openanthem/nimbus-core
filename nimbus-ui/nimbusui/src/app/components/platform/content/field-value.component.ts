@@ -20,7 +20,13 @@ import { Component, Input } from '@angular/core';
 import { WebContentSvc } from '../../../services/content-management.service';
 import { Param } from '../../../shared/app-config.interface';
 import { BaseElement } from '../base-element.component';
-
+/**
+ * \@author Dinakar.Meda
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
     selector: 'nm-field-value',
     providers: [WebContentSvc],

@@ -23,7 +23,14 @@ import 'rxjs/add/operator/share';
 import { ServiceConstants } from './service.constants';
 import { Param, LabelConfig, ElementModelParam } from './../shared/app-config.interface';
 
-// Web Content Service
+/**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Injectable()
 export class WebContentSvc {
 

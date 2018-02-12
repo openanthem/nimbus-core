@@ -18,6 +18,14 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { Param } from '../shared/app-config.interface';
 
+/**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Pipe({ name: 'keys' })
 export class KeysPipe implements PipeTransform {
   transform(value) {

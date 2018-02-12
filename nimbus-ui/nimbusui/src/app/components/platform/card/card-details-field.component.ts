@@ -27,6 +27,13 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   multi: true
 };
 
+/**
+ * \@author Dinakar.Meda
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
     selector: 'nm-card-details-field',
     providers: [

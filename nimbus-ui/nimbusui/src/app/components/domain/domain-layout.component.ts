@@ -23,7 +23,13 @@ import { Layout, LinkConfig } from '../../model/menu-meta.interface';
 import { Param } from '../../shared/app-config.interface';
 import { WebContentSvc } from '../../services/content-management.service';
 
-
+/**
+ * \@author Dinakar.Meda
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
     templateUrl: './domain-layout.component.html',
     providers: [ LayoutService,WebContentSvc ]

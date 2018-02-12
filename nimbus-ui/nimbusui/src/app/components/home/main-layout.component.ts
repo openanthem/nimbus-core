@@ -24,7 +24,13 @@ import { Param } from '../../shared/app-config.interface';
 import { AuthenticationService } from '../../services/authentication.service';
 import { ServiceConstants } from '../../services/service.constants';
 
-
+/**
+ * \@author Dinakar.Meda
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
     templateUrl: './main-layout.component.html',
     providers: [ LayoutService ]

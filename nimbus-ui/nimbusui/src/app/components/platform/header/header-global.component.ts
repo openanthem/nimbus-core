@@ -20,6 +20,13 @@ import { LayoutService } from '../../../services/layout.service';
 import { Param, Desc, ParamConfig, UiStyle, UiAttribute, RemnantState } from '../../../shared/app-config.interface';
 import { AppBranding, LinkConfig } from '../../../model/menu-meta.interface';
 
+/**
+ * \@author Mayur.Mehta
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
     selector: 'nm-header-global',
     templateUrl: './header-global.component.html'

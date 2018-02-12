@@ -22,6 +22,14 @@ import { WebContentSvc } from '../../services/content-management.service';
 import { trigger,state,style,transition,animate,keyframes } from '@angular/animations';
 import { Param } from './../../shared/app-config.interface';
 
+/**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component( {
     selector: 'accordion-group',
     providers: [ WebContentSvc ],

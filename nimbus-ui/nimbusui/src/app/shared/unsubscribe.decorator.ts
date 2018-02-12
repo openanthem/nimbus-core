@@ -17,7 +17,13 @@
 'use strict';
 import { Subscriber } from 'rxjs';
 
-// creating the decorator DestroySubscribers
+/**
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * creating the decorator DestroySubscribers
+ */
 export function DestroySubscribers() {
   return function (target: any) {
     // decorating the function ngOnDestroy

@@ -18,6 +18,14 @@
 import { FormControl, ValidatorFn, FormGroup, ValidationErrors } from '@angular/forms';
 import { Attribute } from './../../../shared/app-config.interface';
 
+/**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 export class CustomValidators {
     static isNumber(control: FormControl) {
         if (isNaN(+control.value)) {

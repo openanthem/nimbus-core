@@ -29,7 +29,13 @@ import { PageService } from '../../services/page.service';
 import { ServiceConstants } from '../../services/service.constants';
 import {FooterGlobal} from '../platform/footer/footer-global.component'
 import { MenuItem } from 'primeng/primeng';
-
+/**
+ * \@author Dinakar.Meda
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
     templateUrl: './home-layout.component.html',
     providers: [ STOMPService, LayoutService ],

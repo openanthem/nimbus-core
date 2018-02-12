@@ -28,6 +28,13 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   multi: true
 };
 
+/**
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
   selector: 'nm-input-textarea',
   providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc ],

@@ -18,7 +18,13 @@
 
 import { Component, Input, Output, EventEmitter} from '@angular/core';
 import { Param } from '../../../shared/app-config.interface';
-
+/**
+ * \@author Dinakar.Meda
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
     selector: '',
     template:`

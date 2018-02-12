@@ -20,6 +20,14 @@ import { Injectable } from '@angular/core';
 import { PreloadingStrategy, Route } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 
+/**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Injectable()
 export class SelectivePreloadingStrategy implements PreloadingStrategy {
   preloadedModules: string[] = [];

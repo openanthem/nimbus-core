@@ -18,6 +18,14 @@
 import { Component } from '@angular/core';
 import { AccordionGroup } from './accordion-group.component';
 
+/**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component( {
     selector: 'accordion',
     template: `

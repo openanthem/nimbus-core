@@ -34,6 +34,14 @@ export const InputComponents = [
     ComboBox
 ];
 
+/**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
     selector: 'inplace-editor',
     template: `

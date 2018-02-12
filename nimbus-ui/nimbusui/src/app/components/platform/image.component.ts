@@ -20,6 +20,14 @@ import { Component, Input } from '@angular/core';
 import { Param } from '../../shared/app-config.interface';
 import { ServiceConstants } from './../../services/service.constants';
 
+/**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
   selector: 'nm-image',
   template: `

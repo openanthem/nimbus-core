@@ -19,6 +19,14 @@ import { Route } from '@angular/router';
 import { Param } from './../shared/app-config.interface';
 import {MenuItem} from 'primeng/primeng';
 
+/**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 export enum MenuType {
     DEFAULT,
     TOP,

@@ -17,6 +17,14 @@
 'use strict';
 import { Component } from '@angular/core';
 
+/**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
     templateUrl: './style-guide.component.html'
 })

@@ -18,6 +18,15 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { Param } from '../../../../shared/app-config.interface';
 import { FormGroup } from '@angular/forms';
+
+/**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
     selector: 'nm-button-group',
     template:`

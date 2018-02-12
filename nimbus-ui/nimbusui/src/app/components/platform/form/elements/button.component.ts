@@ -27,6 +27,14 @@ import { ServiceConstants } from './../../../../services/service.constants';
 import { BaseElement } from '../../base-element.component';
 import { FileService } from '../../../../services/file.service';
 
+/**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component( {
     selector: 'nm-button',
     providers: [WebContentSvc],

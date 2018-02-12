@@ -21,6 +21,14 @@ import { Param, Constraint } from '../../shared/app-config.interface';
 
 var counter = 0;
 
+/**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
     selector: 'nm-element',
     templateUrl: './form-element.component.html'

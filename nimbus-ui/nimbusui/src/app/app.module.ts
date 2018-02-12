@@ -117,7 +117,14 @@ import { LinkPipe } from './pipes/link.pipe';
 import { SelectItemPipe } from './pipes/select-item.pipe';
 import { LoaderComponent } from './components/platform/loader/loader.component';
 
-
+/**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @NgModule({
     imports: [
         BrowserModule,

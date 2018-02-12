@@ -24,6 +24,13 @@ import { PageService } from '../../../../services/page.service';
 import { ServiceConstants } from './../../../../services/service.constants';
 import { BaseElement } from '../../base-element.component';
 
+/**
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
     selector: 'nm-filter-button',
     providers: [WebContentSvc],

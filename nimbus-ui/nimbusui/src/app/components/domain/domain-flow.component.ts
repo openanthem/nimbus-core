@@ -21,7 +21,13 @@ import { LayoutService } from '../../services/layout.service';
 import { PageService } from '../../services/page.service';
 import { Layout, LinkConfig } from '../../model/menu-meta.interface';
 import { Param, Page } from '../../shared/app-config.interface';
-
+/**
+ * \@author Dinakar.Meda
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
     templateUrl: './domain-flow.component.html',
     providers: [ LayoutService ]

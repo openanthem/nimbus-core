@@ -18,6 +18,13 @@
 import { Component, Input, SimpleChanges } from '@angular/core';
 import { Param } from '../../../../shared/app-config.interface';
 
+/**
+ * \@author Dinakar.Meda
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
   selector: 'nm-value',
   template: `

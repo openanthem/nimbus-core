@@ -22,6 +22,13 @@ import { CardDetails, Param } from '../../../shared/app-config.interface';
 import { Component, Input } from '@angular/core';
 import { PageService } from '../../../services/page.service';
 
+/**
+ * \@author Dinakar.Meda
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
     selector: 'nm-card-details',
      styles: [`

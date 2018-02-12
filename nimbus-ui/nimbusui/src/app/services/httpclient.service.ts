@@ -19,6 +19,13 @@ import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions} from '@angular/http';
 import { HttpClient } from '@angular/common/http';
 
+/**
+ * \@author Swetha.Vemuri
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Injectable()
 export class CustomHttpClient {
   constructor(public http: HttpClient, public customHttpClient: Http ) {

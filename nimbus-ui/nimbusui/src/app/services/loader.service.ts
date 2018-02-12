@@ -19,6 +19,13 @@ import { LoaderState } from './../components/platform/loader/loader.state';
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 
+/**
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Injectable()
 export class LoaderService {
 

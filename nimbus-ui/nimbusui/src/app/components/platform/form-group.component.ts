@@ -27,8 +27,16 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => FrmGroupCmp),
     multi: true
-  };
+};
 
+  /**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
     selector: 'nm-frm-grp',
     providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc],

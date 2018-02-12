@@ -18,6 +18,14 @@
 import { Injectable } from '@angular/core';
 import { BrowserXhr } from '@angular/http';
 
+/**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Injectable()
 export class CustomBrowserXhr extends BrowserXhr {
     constructor() {

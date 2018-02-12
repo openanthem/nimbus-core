@@ -18,6 +18,13 @@
 import { Component, Input, forwardRef} from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
+/**
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
   selector: 'nm-switch',
   template: `<div (click)="switch()" class="switch" [ngClass]="{ 'checked': value }" [attr.title]="label">

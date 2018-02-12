@@ -24,6 +24,14 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { WindowService } from './services/window-resize.service';
 import { DOCUMENT } from '@angular/platform-browser';
 
+/**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
     selector: 'app-root',
     encapsulation: ViewEncapsulation.None,

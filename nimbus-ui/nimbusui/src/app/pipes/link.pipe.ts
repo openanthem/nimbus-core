@@ -17,6 +17,14 @@
 'use strict';
 import { Pipe, PipeTransform } from '@angular/core';
 
+/**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Pipe({name: 'convertToLinks'})
 export class LinkPipe implements PipeTransform {
     transform(link: string, url: string): string {

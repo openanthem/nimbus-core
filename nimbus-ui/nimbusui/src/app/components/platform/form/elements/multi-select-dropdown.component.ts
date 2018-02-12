@@ -35,6 +35,14 @@ import { FormGroup } from '@angular/forms';
 import { Param } from '../../../../shared/app-config.interface';
 import { PageService } from '../../../../services/page.service';
 
+/**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 const MULTISELECT_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
   useExisting: forwardRef(() => MultiselectDropdown),

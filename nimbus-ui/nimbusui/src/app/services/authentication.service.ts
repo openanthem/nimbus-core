@@ -23,6 +23,14 @@ import 'rxjs/add/operator/share';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 
+/**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Injectable()
 export class AuthenticationService {
 

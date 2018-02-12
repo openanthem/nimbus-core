@@ -36,6 +36,14 @@ import { GenericDomain } from '../model/generic-domain.model';
 
 declare var trackJs: any;
 
+/**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Injectable()
 export class PageService {
         config$: EventEmitter<any>;

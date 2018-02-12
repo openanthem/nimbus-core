@@ -24,6 +24,14 @@ import { PageService } from '../../../../services/page.service';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { GenericDomain } from '../../../../model/generic-domain.model';
 
+/**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
     @Input() element: Param;
     @Input() form: FormGroup;

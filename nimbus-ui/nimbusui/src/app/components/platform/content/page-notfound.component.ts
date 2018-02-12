@@ -18,6 +18,13 @@
 
 import { Component } from '@angular/core';
 
+/**
+ * \@author Dinakar.Meda
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
     selector: 'nm-pg-notfound',
     template: `

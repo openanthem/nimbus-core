@@ -15,6 +15,14 @@
  * limitations under the License.
  */
 'use strict';
+/**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 export class ServiceConstants {
     private static hostName: string;
     private static port: string;

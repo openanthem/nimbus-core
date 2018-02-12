@@ -20,7 +20,13 @@ import { Component } from '@angular/core';
 import { AppBranding, Layout, FooterConfig } from '../../model/menu-meta.interface';
 import { Param } from '../../shared/app-config.interface';
 import { LayoutService } from '../../services/layout.service';
-
+/**
+ * \@author Dinakar.Meda
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
     templateUrl: './login-layout.component.html',
     providers: [ LayoutService ]

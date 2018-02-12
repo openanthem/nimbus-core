@@ -24,6 +24,14 @@ import { PageService } from '../../services/page.service';
 
 var uniqueId = 0;
 
+/**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
     selector: 'nm-form',
     styles: [`

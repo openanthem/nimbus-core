@@ -18,6 +18,14 @@
 import {Pipe, PipeTransform} from '@angular/core';
 import { SelectItem } from 'primeng/components/common/selectitem';
 
+/**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Pipe({
   name: 'selectItemPipe'
 })

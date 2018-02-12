@@ -20,9 +20,15 @@ import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router, Resolve, RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
 import { ServiceConstants } from './../../../services/service.constants';
 import { PageService } from './../../../services/page.service';
-
 import { IBreadcrumb } from './ibreadcrumb.d';
 
+/**
+ * \@author Tony.Lopez
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Injectable()
 export class BreadcrumbService {
 

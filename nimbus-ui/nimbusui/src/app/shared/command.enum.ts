@@ -15,6 +15,15 @@
  * limitations under the License.
  */
 'use strict';
+
+/**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 export class Enum<T> {
   public constructor(public readonly value: T) {}
   public toString() {

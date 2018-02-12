@@ -23,6 +23,14 @@ import { PageService } from '../../services/page.service';
 import { GenericDomain } from './../../model/generic-domain.model';
 import { ServiceConstants } from './../../services/service.constants';
 
+/**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
     selector: 'nm-link',
     providers: [

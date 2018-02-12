@@ -21,6 +21,13 @@ import { Param } from '../../../shared/app-config.interface';
 import { Injectable } from '@angular/core';
 import { Router, Resolve, RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
 
+/**
+ * \@author Dinakar.Meda
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Injectable()
 export class PageResolver implements Resolve<Param> {
 

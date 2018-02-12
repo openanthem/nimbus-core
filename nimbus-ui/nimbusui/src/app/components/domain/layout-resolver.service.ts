@@ -22,7 +22,13 @@ import { Injectable } from '@angular/core';
 import { Router, Resolve, RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { PageService } from '../../services/page.service';
-
+/**
+ * \@author Dinakar.Meda
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Injectable()
 export class LayoutResolver implements Resolve<string> {
 

@@ -23,6 +23,15 @@ import { PageService } from '../../../../services/page.service';
 import {SelectItem} from 'primeng/primeng';
 import { GenericDomain } from '../../../../model/generic-domain.model';
 import { BaseElement } from './../../base-element.component';
+
+/**
+ * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
+ * \@whatItDoes 
+ * 
+ * \@howToUse 
+ * 
+ */
 @Component({
     selector: 'nm-multi-select-listbox',
     providers: [
