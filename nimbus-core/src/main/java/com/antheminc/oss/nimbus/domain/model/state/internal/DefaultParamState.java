@@ -23,7 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Predicate;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -533,14 +535,36 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		public RemnantState(T initState) {
 			this.prevState = initState;
 			this.currState = initState;
-		} 
+		}
 		
-		public void setState(T state) {
-			this.prevState = this.currState;
-			this.currState = state;
+		public boolean isEquals(T state) {
+			return new EqualsBuilder().append(this.currState, state).isEquals();
+		}
+		
+		public boolean isSame(T state) {
+			if (this.currState == state) {
+				return true;
+			}
+			return this.isEquals(state);
+		}
+		
+		public boolean setState(T state) {
+			if (!this.isSame(state)) {
+				this.prevState = this.currState;
+				this.currState = state;
+				return true;
+			}
+			return false;
+		}
+		
+		public boolean setState(T state, Runnable after) {
+			if (this.setState(state)) {
+				after.run();
+				return true;
+			}
+			return false;
 		}
 	}
-	
 	
 	@Override
 	public boolean isVisible() {
@@ -553,15 +577,9 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	
 	public void setVisible(boolean visible) {
-		if(this.visible.currState==visible)
+		boolean changed = this.setStateAndEmitIfActiveOrFalse(this.visible, visible);
+		if (!changed)
 			return;
-
-		final boolean currActive = isActive();
-		if(!currActive && visible)
-			return;
-		
-		this.visible.setState(visible);
-		emitParamContextEvent();
 		
 		// handle nested
 		if(!isNested() || (isTransient() && !findIfTransient().isAssinged()))
@@ -591,15 +609,9 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	@Override
 	public void setEnabled(boolean enabled) {
-		if(this.enabled.currState==enabled)
+		boolean changed = this.setStateAndEmitIfActiveOrFalse(this.enabled, enabled);
+		if (!changed)
 			return;
-		
-		final boolean currActive = isActive();
-		if(!currActive && enabled)
-			return;
-		
-		this.enabled.setState(enabled);
-		emitParamContextEvent();
 		
 		// handle nested
 		if(!isNested() || findIfNested().templateParams().isNullOrEmpty())
@@ -629,6 +641,18 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		
 	}
 
+	@SuppressWarnings("hiding")
+	private <S extends RemnantState<T>, T> boolean setStateAndEmitIf(S source, T state, Predicate<T> condition) {
+		if (!condition.test(state))
+			return false;
+		
+		return source.setState(state, this::emitParamContextEvent);
+	}
+	
+	private <S extends RemnantState<Boolean>> boolean setStateAndEmitIfActiveOrFalse(S source, boolean state) {
+		return this.setStateAndEmitIf(source, state, condition -> this.isActive() || !condition);
+	}
+	
 	@Override
 	public void setValues(List<ParamValue> values) {
 		if(getValues()==values)
