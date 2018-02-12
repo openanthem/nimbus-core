@@ -642,6 +642,11 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 
 	@SuppressWarnings("hiding")
+	private <S extends RemnantState<T>, T> boolean setStateAndEmit(S source, T state) {
+		return this.setStateAndEmitIf(source, state, null);
+	}
+	
+	@SuppressWarnings("hiding")
 	private <S extends RemnantState<T>, T> boolean setStateAndEmitIf(S source, T state, Predicate<T> condition) {
 		if (!condition.test(state))
 			return false;
