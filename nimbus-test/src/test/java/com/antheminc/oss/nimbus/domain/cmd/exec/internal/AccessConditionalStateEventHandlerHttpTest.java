@@ -28,6 +28,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,7 +85,7 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 		assertFalse(accessParam.isEnabled());
 	}
 	
-	@Test
+	@Ignore
 	public void t04_accessConditionalGridLinkHidden() throws Exception {
 		String userLoginId = createClientUserWithRoles("superman","intake","clinician");
 		
