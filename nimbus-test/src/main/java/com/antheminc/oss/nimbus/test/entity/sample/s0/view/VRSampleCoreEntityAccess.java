@@ -62,6 +62,9 @@ public class VRSampleCoreEntityAccess {
 		
 		@Section
 		private VSSampleCoreEntityAccess vsSampleCoreEntityAccess;
+		
+		@Section
+		private VSSamplePageCoreEntityAccess vsSamplePageCoreEntityAccess;
 	}
 	
 	@Model @Getter @Setter
@@ -71,6 +74,15 @@ public class VRSampleCoreEntityAccess {
 		@Config(url = "/vpSampleCoreEntityAccess/vtSampleCoreEntityAccess/vsSampleCoreEntityAccess/vgSampleCoreEntities.m/_process?fn=_set&url=/p/sample_core_access/_search?fn=example")
 		@Grid(onLoad=true)
 		private List<SampleCoreEntityAccessLineItem> vgSampleCoreEntities;
+	}
+	
+	@Model @Getter @Setter
+	public static class VSSamplePageCoreEntityAccess {
+		
+		@MapsTo.Path(linked = false)
+		//@Config(url = "/vpSampleCoreEntityAccess/vtSampleCoreEntityAccess/vsSampleCoreEntityAccess/vgSampleCoreEntities.m/_process?fn=_set&url=/p/sample_core_access/_search?fn=example")
+		@Grid(onLoad=true)
+		private org.springframework.data.domain.Page<SampleCoreEntityAccessLineItem> vgSampleCoreEntities;
 	}
 	
 	

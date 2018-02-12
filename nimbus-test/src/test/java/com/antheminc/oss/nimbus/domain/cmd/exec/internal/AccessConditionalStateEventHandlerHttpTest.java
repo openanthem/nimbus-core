@@ -47,6 +47,7 @@ import com.antheminc.oss.nimbus.support.Holder;
 import com.antheminc.oss.nimbus.test.domain.support.utils.ExtractResponseOutputUtils;
 import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
 import com.antheminc.oss.nimbus.test.entity.sample.s0.core.SampleCoreEntityAccess;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author Rakesh Patel
@@ -111,6 +112,10 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 				.getMock();
 		final Object gridResponse = controller.handleGet(gridRequest, null);
 		assertNotNull(gridResponse);
+		
+		
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.writeValueAsString(gridResponse);
 		
 		List<Output<?>> outputs = MultiOutput.class.cast(Holder.class.cast(gridResponse).getState()).getOutputs();
 		
