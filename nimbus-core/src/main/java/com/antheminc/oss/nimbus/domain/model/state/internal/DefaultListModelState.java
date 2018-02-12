@@ -49,8 +49,7 @@ public class DefaultListModelState<T> extends DefaultModelState<List<T>> impleme
 			return;
 		
 		colEntityState.stream()
-			.map(entityElem->add())
-			.forEach(Param::initState);
+			.forEach(entityElem->add());
 	}
 
 	@Override
