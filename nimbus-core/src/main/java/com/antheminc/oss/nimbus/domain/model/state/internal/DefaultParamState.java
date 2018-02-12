@@ -20,6 +20,7 @@ import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -34,6 +35,7 @@ import com.antheminc.oss.nimbus.InvalidOperationAttemptedException;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ValidationResult;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
+import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.ValidationGroup;
 import com.antheminc.oss.nimbus.domain.model.config.EventHandlerConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
@@ -52,6 +54,7 @@ import com.antheminc.oss.nimbus.entity.Findable;
 import com.antheminc.oss.nimbus.support.Holder;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -97,6 +100,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	@JsonIgnore
 	private T transientOldState;
 
+	@SuppressWarnings("unchecked")
+	private RemnantState<Class<? extends ValidationGroup>[]> activeValidationGroups = new RemnantState<>(new Class[0]);
 	
 	public static class LeafState<T> extends DefaultParamState<T> implements LeafParam<T> {
 		private static final long serialVersionUID = 1L;
@@ -751,5 +756,20 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	private boolean isPrimitive() {
 		return ClassUtils.isPrimitiveOrWrapper(getConfig().getReferredClass());
 	}
-	
+
+
+	@Override
+	public Class<? extends ValidationGroup>[] getActiveValidationGroups() {
+		return this.activeValidationGroups.getCurrState();
+	}
+
+
+	@Override
+	public void setActiveValidationGroups(Class<? extends ValidationGroup>[] activeValidationGroups) {
+		if (Arrays.equals(this.activeValidationGroups.getCurrState(), activeValidationGroups)) {
+			return;
+		}
+		this.activeValidationGroups.setPrevState(this.activeValidationGroups.getCurrState());
+		this.activeValidationGroups.setCurrState(activeValidationGroups);
+	}
 }
