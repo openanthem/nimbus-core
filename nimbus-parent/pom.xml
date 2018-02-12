@@ -779,7 +779,7 @@
                     </archive>
                 </configuration>
             </plugin>
-            <plugin>
+           <!--  <plugin>
 			    <groupId>com.mycila</groupId>
 			    <artifactId>license-maven-plugin</artifactId>
 			    <version>3.0</version>
@@ -802,7 +802,7 @@
 			            <phase>process-sources</phase>
 			        </execution>
 			    </executions>
-			</plugin>
+			</plugin> -->
         </plugins>
     </build>
     <profiles>
