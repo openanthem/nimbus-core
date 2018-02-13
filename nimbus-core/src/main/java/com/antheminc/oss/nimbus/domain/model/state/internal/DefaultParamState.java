@@ -777,6 +777,6 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 
 	@Override
 	public void setActiveValidationGroups(Class<? extends ValidationGroup>[] activeValidationGroups) {
-		this.setStateAndEmit(this.activeValidationGroups, activeValidationGroups);
+		this.activeValidationGroups.setState(activeValidationGroups);
 	}
 }
