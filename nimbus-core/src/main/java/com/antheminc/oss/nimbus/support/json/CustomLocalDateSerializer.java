@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 /**
  * @Author Cheikh Niass on 12/2/16.
+ * @CoAuthor Mayur Mehta
  */
 public class CustomLocalDateSerializer extends StdSerializer<LocalDate> {
     

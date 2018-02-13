@@ -21,6 +21,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.springframework.format.annotation.DateTimeFormat.ISO;
+
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 import com.antheminc.oss.nimbus.domain.defn.extension.ParamContext;
 
@@ -375,8 +377,15 @@ public class ViewConfig {
 		boolean inplaceEdit() default false;
 		String inplaceEditType() default "";
 		String datePattern() default "";
+		//DatePattern datePattern() default DatePattern.NONE;
 	}
 
+	public enum DatePattern{
+		DATE,
+		TIME,
+		DATE_TIME,
+		NONE
+	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})

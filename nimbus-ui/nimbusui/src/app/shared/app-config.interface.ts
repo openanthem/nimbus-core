@@ -528,9 +528,11 @@ export class ParamConfig implements Serializable<ParamConfig> {
 export class ElementModelParam extends ParamConfig implements Serializable<ElementModelParam> {
 
     code: string;
+    config: ParamConfig;
     label: string;
     uiStyles: UiStyle;
     nestedParams: ElementModelParam[];
+    type:Type;
 
     deserialize( inJson ) {
         this.code = inJson.code;
@@ -538,6 +540,9 @@ export class ElementModelParam extends ParamConfig implements Serializable<Eleme
         this.label = inJson.label;
         if ( inJson.uiStyles != null ) {
             this.uiStyles = new UiStyle().deserialize( inJson.uiStyles );
+        }
+        if ( inJson.type != null ) {
+            this.type = new Type().deserialize( inJson.type );
         }
         if (inJson.type && inJson.type.model && inJson.type.model.params) {
             this.nestedParams = [];
@@ -607,6 +612,7 @@ export class UiAttribute implements Serializable<UiAttribute> {
     submitButton: boolean = true;
     content: string; //-- TO BE DELETED (always pull with contentId)
     contentId: string;
+    datePattern: string;
     labelClass: string;
     showTime: boolean;
     timeOnly: boolean;
@@ -672,6 +678,7 @@ export class UiAttribute implements Serializable<UiAttribute> {
         this.control = inJson.control;
         this.content = inJson.content;
         this.contentId = inJson.contentId;
+        this.datePattern = inJson.datePattern;
         this.header = inJson.header;
         this.help = inJson.help;
         this.title = inJson.title;

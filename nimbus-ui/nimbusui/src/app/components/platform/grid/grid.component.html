@@ -54,8 +54,16 @@
 					<label> <input type="checkbox" (click)="postOnChange(col, cell)"> </label> 
 				</ng-template> 
 				
-				<ng-template let-col let-row="rowData" pTemplate="body">
-					<span title="{{row[col.field]}}">{{row[col.field]}}</span> 
+				<ng-template let-datacol let-row="rowData" pTemplate="body">
+					<ng-template [ngIf]="col?.type?.name === 'date' || col?.type?.name === 'Date' || col?.type?.name === 'LocalDateTime'
+					|| col?.type?.name === 'ZonedDateTime'">
+						<span *ngIf="!col?.uiStyles?.attributes?.datePattern" title="{{row[datacol.field]}}">{{row[datacol.field] | dateTimeFormat}}</span> 
+						<span *ngIf="col?.uiStyles?.attributes?.datePattern" title="{{row[datacol.field]}}">{{row[datacol.field] | dateTimeFormat: col.uiStyles.attributes.datePattern}}</span>
+					</ng-template>
+					<ng-template [ngIf]="col?.type?.name !== 'date' && col?.type?.name !== 'Date' && col?.type?.name !== 'LocalDateTime'
+					&& col?.type?.name !== 'ZonedDateTime'">
+						<span title="{{row[datacol.field]}}">{{row[datacol.field]}}</span> 
+					</ng-template>
 				</ng-template> 
 				
 			</p-column>

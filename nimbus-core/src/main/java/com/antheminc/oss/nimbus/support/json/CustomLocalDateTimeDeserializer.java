@@ -36,7 +36,7 @@ public class CustomLocalDateTimeDeserializer extends StdDeserializer<LocalDateTi
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private static final String[] DATE_FORMATS = new String[] {  "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" };
+	private static final String[] DATE_FORMATS = new String[] {  "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"};
 
 
     public CustomLocalDateTimeDeserializer() {
