@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang3.ArrayUtils;
@@ -76,8 +76,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	@JsonIgnore
 	private boolean active = true;
 	
-	private RemnantState<Boolean> visible = new RemnantState<>(true);
-	private RemnantState<Boolean> enabled = new RemnantState<>(true);
+	private RemnantState<Boolean> visible = this.new RemnantState<>(true);
+	private RemnantState<Boolean> enabled = this.new RemnantState<>(true);
 	
 	private List<ParamValue> values;
 	
@@ -528,41 +528,39 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	
 	@Getter @Setter
-	private static class RemnantState<T> {
-		private T prevState;
-		private T currState;
+	private class RemnantState<S> {
+		private S prevState;
+		private S currState;
 		
-		public RemnantState(T initState) {
+		public RemnantState(S initState) {
 			this.prevState = initState;
 			this.currState = initState;
 		}
 		
-		public boolean isEquals(T state) {
+		public boolean isEquals(S state) {
 			return new EqualsBuilder().append(this.currState, state).isEquals();
 		}
 		
-		public boolean isSame(T state) {
-			if (this.currState == state) {
-				return true;
-			}
-			return this.isEquals(state);
+		public boolean setState(S state) {
+			return setStateConditional(state, ()->true);
 		}
-		
-		public boolean setState(T state) {
-			if (!this.isSame(state)) {
-				this.prevState = this.currState;
-				this.currState = state;
-				return true;
-			}
-			return false;
-		}
-		
-		public boolean setState(T state, Runnable after) {
-			if (this.setState(state)) {
-				after.run();
-				return true;
-			}
-			return false;
+
+		public boolean setStateConditional(S state, Supplier<Boolean> condition) {
+			// check equality
+			if(isEquals(state))
+				return false;
+			
+			// check condition
+			Boolean eval = condition.get();
+			if(eval==null || !eval)
+				return false;
+			
+			
+			this.prevState = this.currState;
+			this.currState = state;
+			
+			emitParamContextEvent();
+			return true;
 		}
 	}
 	
@@ -577,7 +575,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	
 	public void setVisible(boolean visible) {
-		boolean changed = this.setStateAndEmitIfActiveOrFalse(this.visible, visible);
+		boolean changed = this.visible.setStateConditional(visible, ()->isActive() || !visible);
 		if (!changed)
 			return;
 		
@@ -609,7 +607,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	@Override
 	public void setEnabled(boolean enabled) {
-		boolean changed = this.setStateAndEmitIfActiveOrFalse(this.enabled, enabled);
+		boolean changed = this.enabled.setStateConditional(enabled, ()->isActive() || !enabled);
 		if (!changed)
 			return;
 		
@@ -641,22 +639,6 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		
 	}
 
-	@SuppressWarnings("hiding")
-	private <S extends RemnantState<T>, T> boolean setStateAndEmit(S source, T state) {
-		return this.setStateAndEmitIf(source, state, null);
-	}
-	
-	@SuppressWarnings("hiding")
-	private <S extends RemnantState<T>, T> boolean setStateAndEmitIf(S source, T state, Predicate<T> condition) {
-		if (null != condition && !condition.test(state))
-			return false;
-		
-		return source.setState(state, this::emitParamContextEvent);
-	}
-	
-	private <S extends RemnantState<Boolean>> boolean setStateAndEmitIfActiveOrFalse(S source, boolean state) {
-		return this.setStateAndEmitIf(source, state, condition -> this.isActive() || !condition);
-	}
 	
 	@Override
 	public void setValues(List<ParamValue> values) {
