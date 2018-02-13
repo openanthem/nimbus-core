@@ -30,6 +30,7 @@ import com.antheminc.oss.nimbus.domain.model.state.extension.ModalStateEventHand
 import com.antheminc.oss.nimbus.domain.model.state.extension.ParamContextStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.RuleStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.StaticCodeValueBasedCodeToLabelConverter;
+import com.antheminc.oss.nimbus.domain.model.state.extension.ValidateConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValuesConditionalOnStateChangeEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValuesConditionalOnStateLoadEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.internal.IdParamConverter;
@@ -94,6 +95,11 @@ public class DefaultFrameworkExtensionsConfig {
 	@Bean
 	public EnableConditionalStateEventHandler extensionEnableCondiationalStateEventHandler(BeanResolverStrategy beanResolver) {
 		return new EnableConditionalStateEventHandler(beanResolver);
+	}
+	
+	@Bean
+	public ValidateConditionalStateEventHandler extensionValidateConditionalStateEventHandler(BeanResolverStrategy beanResolver) {
+		return new ValidateConditionalStateEventHandler(beanResolver);
 	}
 	
 	@Bean
