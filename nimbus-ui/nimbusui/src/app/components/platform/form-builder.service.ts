@@ -20,6 +20,7 @@ import { FormGroup, FormBuilder, Validators, ValidatorFn, FormArray, FormControl
 
 import { CustomValidators } from './validators/custom.validators';
 import { Param } from '../../shared/app-config.interface';
+import { ValidationUtils } from './validators/ValidationUtils';
 
 /**
  * \@author Dinakar.Meda
@@ -49,7 +50,7 @@ export class FormElementsService {
       if(element.config!= null && ((element.config.uiStyles != null && element.config.uiStyles.attributes!= null && element.config.uiStyles.attributes.alias !== 'Button'
           && element.config.uiStyles.attributes.alias !== 'ButtonGroup') || element.config.uiStyles==null)){
         var checks: ValidatorFn[] = [];
-        checks = this.buildValidations(element);
+        checks = ValidationUtils.buildStaticValidations(element);
         //if the form element's state is a collection we do not create a form group for it
         if(element.type.nested && element.type.model.params.length>0 && !element.collection) {
           group[element.config.code] = this.createNewFormGroup(element);
@@ -68,7 +69,7 @@ export class FormElementsService {
     for (let i = 0; i < element.type.model.params.length; i++) {
       let param = element.type.model.params[i];
       var checks: ValidatorFn[] = [];
-      checks = this.buildValidations(param);
+      checks = ValidationUtils.buildStaticValidations(element);
       if (param.type.nested) {
          fg.addControl(param.config.code, this.createNewFormGroup(param));
       } else {
@@ -81,34 +82,6 @@ export class FormElementsService {
       }
     }
     return fg;
-  }
-
-  buildValidations(element:Param) :ValidatorFn[] {
-     var checks: ValidatorFn[] = [];
-      if (element.config.validation) {
-        element.config.validation.constraints.forEach(validator => {
-          if (validator.name === 'NotNull') {
-            if(element.config.uiStyles.attributes.alias == 'CheckBox') {
-              checks.push(Validators.requiredTrue);
-            } else {
-              checks.push(Validators.required);
-            }
-          }
-          if (validator.name === 'Pattern') {
-            checks.push(Validators.pattern(validator.attribute.regexp));
-          }
-          if (validator.name === 'Size') {
-            checks.push(CustomValidators.minMaxSelection(element.config.uiStyles.attributes.alias, validator.attribute));
-          }
-          if (validator.name === 'isNumber') {
-            checks.push(CustomValidators.isNumber);
-          }
-          if (validator.name === 'isZip') {
-            checks.push(CustomValidators.isZip);
-          }
-        });
-      }
-      return checks;
   }
 
 }

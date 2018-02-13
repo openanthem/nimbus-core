@@ -43,7 +43,7 @@ import { BaseElement } from './../../base-element.component';
                 <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
             </label>
             <p-listbox [options]="optionsList" formControlName="{{element.config.code}}" multiple="multiple" 
-            (onChange)="emitValueChangedEvent(this,value)" checkbox="checkbox" filter="filter" [style]="{'width':'190px','max-height':'250px'}"></p-listbox>
+            (onChange)="emitValueChangedEvent(this,value)" [disabled]="disabled" checkbox="checkbox" filter="filter" [style]="{'width':'190px','max-height':'250px'}"></p-listbox>
         </div>
    `
 })

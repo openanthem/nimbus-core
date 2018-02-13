@@ -114,12 +114,13 @@ export class Constraint implements Serializable<Constraint> {
     name: string;
     value: string;
     attribute: Attribute;
+    group: string;
 
     deserialize( inJson ) {
         this.name = inJson.name;
         this.value = inJson.value;
         this.attribute = new Attribute().deserialize( inJson.attributes );
-
+        this.group = inJson.group;
         return this;
     }
 }
@@ -181,6 +182,7 @@ export class Param implements Serializable<Param> {
     enabled: RemnantState<boolean>;
     message : Message;
     values : Values[];
+    group: string;
     _alias: string;
 
     public get alias(): string {

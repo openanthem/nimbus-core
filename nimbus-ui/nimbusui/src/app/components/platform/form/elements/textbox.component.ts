@@ -40,6 +40,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   selector: 'nm-input',
   providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc ],
   template: `
+  {{value}}  {{element.leafState}}
     <label *ngIf="hidden!=true"
         [attr.for]="element.config?.code" class="{{elementStyle}}">{{label}} 
         <nm-tooltip *ngIf="helpText" 
@@ -52,6 +53,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
         [id]="element.config?.code" 
         (focusout)="emitValueChangedEvent(this,value)"
         [value]="type"
+        [disabled]="disabled"
         class="form-control" 
         [readonly]="readOnly" />
 

@@ -23,6 +23,8 @@ import { Param } from '../../../../shared/app-config.interface';
 import { PageService } from '../../../../services/page.service';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { GenericDomain } from '../../../../model/generic-domain.model';
+import { ValidatorFn } from '@angular/forms/src/directives/validators';
+import { ValidationUtils } from '../../validators/ValidationUtils';
 
 /**
  * \@author Dinakar.Meda
@@ -85,12 +87,31 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
             });
             this.pageService.validationUpdate$.subscribe(event => {
                 let frmCtrl = this.form.controls[event.config.code];
-                if(frmCtrl!=null && event.path == this.element.path) {
-                    if(event.enabled.currState)
-                        frmCtrl.enable();
-                    else
-                        frmCtrl.disable();
-                    this.disabled = !event.enabled.currState;
+                if(frmCtrl!=null) {
+                    //perculate the changes to the current parameter and all children when group is not null
+                    if(this.element.path.indexOf(event.path) > 0 && event.group != null && event.group != '') {
+                        var staticChecks: ValidatorFn[] = [];
+                        var dynamicChecks: ValidatorFn[] = [];
+                        staticChecks = ValidationUtils.buildStaticValidations(this.element);
+                        dynamicChecks = ValidationUtils.buildDynamicValidations(this.element, event.group);
+                        frmCtrl.setValidators(staticChecks.concat(dynamicChecks));
+                    }
+                    //rebind the static validations by over writing the complete validators instead of looking if there are any dynamic validations and removing them
+                    if(event.path == this.element.path && (event.group == null || event.group == '')) {
+                        if(event.enabled.currState) {
+                            var staticChecks: ValidatorFn[] = [];
+                            staticChecks = ValidationUtils.buildStaticValidations(this.element);
+                            frmCtrl.setValidators(staticChecks.concat(dynamicChecks));
+                            frmCtrl.enable();   
+                        }
+                        else {
+                            frmCtrl.clearValidators();
+                            frmCtrl.updateValueAndValidity();
+                            frmCtrl.disable();
+                            console.log(frmCtrl.valid);
+                        }
+                        this.disabled = !event.enabled.currState;     
+                    }
                 }
             });
         }
