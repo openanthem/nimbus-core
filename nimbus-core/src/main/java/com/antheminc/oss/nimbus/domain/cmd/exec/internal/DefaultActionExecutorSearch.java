@@ -16,16 +16,11 @@
 package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 
 
-import java.util.Collection;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.exec.AbstractFunctionCommandExecutor;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Input;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.FunctionHandler;
-import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 
 
 /**
@@ -42,18 +37,6 @@ public class DefaultActionExecutorSearch<T, R> extends AbstractFunctionCommandEx
 	@SuppressWarnings("unchecked")
 	protected Output<R> executeInternal(Input input) {
 		R response = (R)executeFunctionHanlder(input, FunctionHandler.class);
-		
-		String projectPath = input.getContext().getCommandMessage().getCommand().getFirstParameterValue("project");
-		// TODO optimize for more than one connection output
-		if(StringUtils.isNotBlank(projectPath)){
-			Param<R> pRoot = findParamByCommandOrThrowEx(input.getContext());
-			if(response instanceof Collection<?>) {
-				response = (R) ((Collection<?>) response).iterator().next();
-			}
-			pRoot.setState(response);
-			response = (R)pRoot.findParamByPath(projectPath).getState();
-		}
-		
 		return Output.instantiate(input, input.getContext(), response);
 	}
 
