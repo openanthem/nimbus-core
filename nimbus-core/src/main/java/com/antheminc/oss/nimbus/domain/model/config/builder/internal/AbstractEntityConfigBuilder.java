@@ -52,7 +52,7 @@ import com.antheminc.oss.nimbus.domain.model.config.EventHandlerConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig.MappedParamConfig;
-import com.antheminc.oss.nimbus.domain.model.config.ParamType;
+import com.antheminc.oss.nimbus.domain.model.config.ParamConfigType;
 import com.antheminc.oss.nimbus.domain.model.config.builder.EntityConfigVisitor;
 import com.antheminc.oss.nimbus.domain.model.config.internal.DefaultModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.internal.DefaultParamConfig;
@@ -90,8 +90,8 @@ abstract public class AbstractEntityConfigBuilder {
 	
 	abstract public <T> ParamConfig<?> buildParam(ModelConfig<T> mConfig, Field f, EntityConfigVisitor visitedModels);
 	
-	abstract protected <T, P> ParamType buildParamType(ModelConfig<T> mConfig, ParamConfig<P> pConfig, Field f, EntityConfigVisitor visitedModels);
-	abstract protected <T, P> ParamType buildParamType(ModelConfig<T> mConfig, ParamConfig<P> pConfig, ParamType.CollectionType colType, Class<?> pDirectOrColElemType, EntityConfigVisitor visitedModels); 
+	abstract protected <T, P> ParamConfigType buildParamType(ModelConfig<T> mConfig, ParamConfig<P> pConfig, Field f, EntityConfigVisitor visitedModels);
+	abstract protected <T, P> ParamConfigType buildParamType(ModelConfig<T> mConfig, ParamConfig<P> pConfig, ParamConfigType.CollectionType colType, Class<?> pDirectOrColElemType, EntityConfigVisitor visitedModels); 
 	
 	public boolean isPrimitive(Class<?> determinedType) {
 		return ClassUtils.isPrimitiveOrWrapper(determinedType) || String.class==determinedType;
@@ -249,8 +249,8 @@ abstract public class AbstractEntityConfigBuilder {
 		MapsTo.Type mappedParamRefClassMapsToType = AnnotationUtils.findAnnotation(mappedField.getType(), MapsTo.Type.class);
 		Class<?> mappedParamRefClassMapsToEntityClass = mappedParamRefClassMapsToType!=null ? mappedParamRefClassMapsToType.value() : mappedField.getType();
 		
-		ParamType pType = buildParamType(simulatedEnclosingModel, simulatedMapsToParam, null, mappedParamRefClassMapsToEntityClass, visitedModels);
-		simulatedMapsToParam.setType(pType);
+		ParamConfigType pType = buildParamType(simulatedEnclosingModel, simulatedMapsToParam, null, mappedParamRefClassMapsToEntityClass, visitedModels);
+		simulatedMapsToParam.setConfigType(pType);
 		
 		DefaultParamConfig<?> mappedParam = decorateParam(mConfig, mappedField, new MappedDefaultParamConfig<>(mappedField.getName(), simulatedEnclosingModel, simulatedMapsToParam, mapsToPath), visitedModels);
 		return mappedParam;
@@ -265,14 +265,14 @@ abstract public class AbstractEntityConfigBuilder {
 		simulatedEnclosingModel.templateParamConfigs().add(simulatedMapsToParam);
 		
 		// determine collection param generic element type
-		final ParamType.CollectionType colType = determineCollectionType(mappedField.getType());
+		final ParamConfigType.CollectionType colType = determineCollectionType(mappedField.getType());
 		final Class<?> determinedMappedColElemType = GenericUtils.resolveGeneric(mConfigOfMappedParam.getReferredClass(), mappedField);
 		
 		MapsTo.Type mappedParamRefClassMapsToType = AnnotationUtils.findAnnotation(determinedMappedColElemType, MapsTo.Type.class);
 		Class<?> mappedParamRefClassMapsToEntityClass = mappedParamRefClassMapsToType!=null ? mappedParamRefClassMapsToType.value() : determinedMappedColElemType;
 		
-		ParamType pType = buildParamType(simulatedEnclosingModel, simulatedMapsToParam, colType, mappedParamRefClassMapsToEntityClass, visitedModels);
-		simulatedMapsToParam.setType(pType);
+		ParamConfigType pType = buildParamType(simulatedEnclosingModel, simulatedMapsToParam, colType, mappedParamRefClassMapsToEntityClass, visitedModels);
+		simulatedMapsToParam.setConfigType(pType);
 		
 		DefaultParamConfig<?> mappedParam = decorateParam(mConfigOfMappedParam, mappedField, new MappedDefaultParamConfig<>(mappedField.getName(), simulatedEnclosingModel, simulatedMapsToParam, mapsToPath), visitedModels);
 		return mappedParam;
@@ -313,7 +313,7 @@ abstract public class AbstractEntityConfigBuilder {
 		logit.debug(()->"[create.pColElem] [colParam is mapped] [elemClass same] [Attached] Found mapsToColParamConfig for "+pConfig.getCode()+" with mapsToPath of colParam: "+mapsToColParamPath+" -> "+mapsToColParamConfig);
 		
 		@SuppressWarnings("unchecked")
-		ParamConfig<P> mapsToColElemParamConfig = (ParamConfig<P>)mapsToColParamConfig.getType().findIfCollection().getElementConfig();
+		ParamConfig<P> mapsToColElemParamConfig = (ParamConfig<P>)mapsToColParamConfig.getConfigType().findIfCollection().getElementConfig();
 
 		
 		// colParam is mapped: colElemModel is NOT explicitly mapped BUT colElemClass is NOT SAME as mappedElemClass :- throw Ex
@@ -458,38 +458,38 @@ abstract public class AbstractEntityConfigBuilder {
 		return mappedToParam;
 	}
 	
-	protected <P> ParamType.NestedCollection<P> createNestedCollectionType(ParamType.CollectionType colType) {
+	protected <P> ParamConfigType.NestedCollection<P> createNestedCollectionType(ParamConfigType.CollectionType colType) {
 		Class<?> referredClass = ArrayList.class;
 		String name = ClassUtils.getShortName(referredClass);
 		
-		ParamType.NestedCollection<P> nestedColType = new ParamType.NestedCollection<>(name, referredClass, colType);
+		ParamConfigType.NestedCollection<P> nestedColType = new ParamConfigType.NestedCollection<>(name, referredClass, colType);
 		return nestedColType;
 	}
 	
-	protected <T, P> ParamType createParamType(boolean isArray, Class<P> determinedType, ModelConfig<?> mConfig, EntityConfigVisitor visitedModels) {
-		final ParamType pType;
+	protected <T, P> ParamConfigType createParamType(boolean isArray, Class<P> determinedType, ModelConfig<?> mConfig, EntityConfigVisitor visitedModels) {
+		final ParamConfigType pType;
 		if(isPrimitive(determinedType)) {	//Primitives bare or with wrapper & String
 			String name = ClassUtils.getShortNameAsProperty(ClassUtils.resolvePrimitiveIfNecessary(determinedType));
-			pType = new ParamType.Field(isArray, name, determinedType);
+			pType = new ParamConfigType.Field(isArray, name, determinedType);
 
 		} else if(lookUpTypeClassMapping(determinedType)!=null) { //custom mapping overrides
 			String name = lookUpTypeClassMapping(determinedType);
-			pType = new ParamType.Field(isArray, name, determinedType);
+			pType = new ParamConfigType.Field(isArray, name, determinedType);
 			
 		} else if(AnnotationUtils.findAnnotation(determinedType, Model.class)!=null) { 
 			String name = ClassUtils.getShortName(determinedType);
 			pType = createParamTypeNested(name, determinedType, mConfig, visitedModels);
 			
 		} else { //All others: Treat as field type instead of complex object that requires config traversal
-			pType = new ParamType.Field(isArray, ClassUtils.getShortName(determinedType), determinedType);
+			pType = new ParamConfigType.Field(isArray, ClassUtils.getShortName(determinedType), determinedType);
 			
 		}
 		return pType;
 	}
 	
-	protected <P> ParamType.Nested<P> createParamTypeNested(String typeName, Class<P> determinedType, ModelConfig<?> mConfig, EntityConfigVisitor visitedModels) {
+	protected <P> ParamConfigType.Nested<P> createParamTypeNested(String typeName, Class<P> determinedType, ModelConfig<?> mConfig, EntityConfigVisitor visitedModels) {
 		
-		final ParamType.Nested<P> nestedParamType = new ParamType.Nested<>(typeName, determinedType);
+		final ParamConfigType.Nested<P> nestedParamType = new ParamConfigType.Nested<>(typeName, determinedType);
 		
 		final ModelConfig<P> nmConfig; 
 		if(mConfig.getReferredClass()==determinedType) { //nested reference to itself
@@ -510,15 +510,15 @@ abstract public class AbstractEntityConfigBuilder {
 		return determineCollectionType(clazz) != null;
 	}
 	
-	protected ParamType.CollectionType determineCollectionType(Class<?> clazz) {
+	protected ParamConfigType.CollectionType determineCollectionType(Class<?> clazz) {
 		if(clazz.isArray())	//Array
-			return ParamType.CollectionType.array;
+			return ParamConfigType.CollectionType.array;
 		
 		else if(Collection.class.isAssignableFrom(clazz))  //Collection
-			return ParamType.CollectionType.list;
+			return ParamConfigType.CollectionType.list;
 			
 		else if(Page.class.isAssignableFrom(clazz))	//Page
-			return ParamType.CollectionType.page;
+			return ParamConfigType.CollectionType.page;
 		
 		return null;
 	}

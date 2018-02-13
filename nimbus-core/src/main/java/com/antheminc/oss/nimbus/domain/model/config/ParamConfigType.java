@@ -28,7 +28,7 @@ import lombok.ToString;
  *
  */
 @Getter @Setter @ToString @RequiredArgsConstructor
-public class ParamType implements Serializable {
+public class ParamConfigType implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -63,7 +63,7 @@ public class ParamType implements Serializable {
 	
 	
 	@Getter @Setter @ToString(callSuper=true) 
-	public static class Field extends ParamType implements Serializable {
+	public static class Field extends ParamConfigType implements Serializable {
 		private static final long serialVersionUID = 1L;
 
 		public Field(boolean isArray, String name, Class<?> referredClass) {
@@ -78,7 +78,7 @@ public class ParamType implements Serializable {
 
 	
 	@Getter @Setter @ToString(callSuper=true)
-	public static class Nested<T> extends ParamType implements Serializable {
+	public static class Nested<T> extends ParamConfigType implements Serializable {
 		private static final long serialVersionUID = 1L;
 
 		private ModelConfig<T> modelConfig;
@@ -115,8 +115,8 @@ public class ParamType implements Serializable {
 		
 		// TODO Temp till custom Serializer is implemented
 		public List<? extends ParamConfig<?>> getElementModelParams() {
-			if(getElementConfig().getType().isNested()) {
-				return getElementConfig().getType().findIfNested().getModelConfig().getParamConfigs();
+			if(getElementConfig().getConfigType().isNested()) {
+				return getElementConfig().getConfigType().findIfNested().getModelConfig().getParamConfigs();
 			}
 			return null;
 		}

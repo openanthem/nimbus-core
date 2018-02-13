@@ -33,7 +33,7 @@ import com.antheminc.oss.nimbus.domain.model.config.AnnotationConfig;
 import com.antheminc.oss.nimbus.domain.model.config.EventHandlerConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
-import com.antheminc.oss.nimbus.domain.model.config.ParamType;
+import com.antheminc.oss.nimbus.domain.model.config.ParamConfigType;
 import com.antheminc.oss.nimbus.domain.model.config.event.ConfigEventHandlers.OnParamCreateHandler;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -53,7 +53,7 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	final private String code;
 	final private String beanName;
 
-	private ParamType type;	
+	private ParamConfigType configType;	
 	
 	private List<LabelConfig> labelConfigs;
 
@@ -101,7 +101,7 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<P> getReferredClass() {
-		return (Class<P>)getType().getReferredClass();
+		return (Class<P>)getConfigType().getReferredClass();
 	}
 	
 	@Override
@@ -111,7 +111,7 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	
 	@Override
 	public boolean isLeaf() {
-		return !getType().isNested();
+		return !getConfigType().isNested();
 	}
 	
 	@Override
@@ -127,7 +127,7 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 			return null;
 		
 		/* param is not leaf node: is nested */
-		ParamType.Nested<?> mp = getType().findIfNested();
+		ParamConfigType.Nested<?> mp = getConfigType().findIfNested();
 		if(mp != null) {
 			return mp.getModelConfig().findParamByPath(pathArr);
 		}

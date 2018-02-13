@@ -22,7 +22,7 @@ import lombok.Setter;
 public class S2V_VRMain {
 	/*
 	 * 1. NestedCollection.elementConfig is different than what is sent in ParamConfig
-	 * 		- rename attribs = type, model, params, param inside Config to end with 'config  
+	 * 		- DONE: rename attribs = type, model, params, param inside Config to end with 'config  
 	 * 2. ElementConfig doesnt send nested model config
 	 * 3. Setting of value to nested collection within row emits entire outer collection as update 
 	 */

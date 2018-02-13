@@ -33,7 +33,7 @@ import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Database;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
-import com.antheminc.oss.nimbus.domain.model.config.ParamType;
+import com.antheminc.oss.nimbus.domain.model.config.ParamConfigType;
 import com.antheminc.oss.nimbus.domain.model.config.internal.DefaultModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.internal.DefaultParamConfig;
 import com.antheminc.oss.nimbus.domain.model.config.internal.MappedDefaultParamConfig;
@@ -122,9 +122,9 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 			super("");
 			this.rootParent = new ExModelConfig(exConfig); 
 			
-			ParamType.Nested<ExecutionEntity<V, C>> pType = new ParamType.Nested<>(_this().getClass().getSimpleName(), _this().getClass());
+			ParamConfigType.Nested<ExecutionEntity<V, C>> pType = new ParamConfigType.Nested<>(_this().getClass().getSimpleName(), _this().getClass());
 			pType.setModelConfig(getRootParent());
-			this.setType(pType);
+			this.setConfigType(pType);
 		}
 	}
 	
@@ -158,8 +158,8 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 			DefaultParamConfig<T> pConfig = createParam(modelConfig, pCode);
 			Class<T> pClass = modelConfig.getReferredClass();
 			
-			ParamType.Nested<T> pType = new ParamType.Nested<>(ClassUtils.getShortName(pClass), pClass);
-			pConfig.setType(pType);
+			ParamConfigType.Nested<T> pType = new ParamConfigType.Nested<>(ClassUtils.getShortName(pClass), pClass);
+			pConfig.setConfigType(pType);
 			pType.setModelConfig(modelConfig);
 			
 			templateParamConfigs().add(pConfig);
@@ -241,7 +241,7 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 			
 			
 			this.rootModel = new ExModel(rootCommand, this, pConfig.getRootParent(), provider);
-			this.setType(new StateType.Nested<>(getConfig().getType().findIfNested(), getRootExecution()));
+			this.setStateType(new StateType.Nested<>(getConfig().getConfigType().findIfNested(), getRootExecution()));
 		}
 		
 		@Override

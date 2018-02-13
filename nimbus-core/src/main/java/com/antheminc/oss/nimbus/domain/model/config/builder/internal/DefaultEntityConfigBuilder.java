@@ -30,7 +30,7 @@ import com.antheminc.oss.nimbus.domain.defn.ConfigNature;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
-import com.antheminc.oss.nimbus.domain.model.config.ParamType;
+import com.antheminc.oss.nimbus.domain.model.config.ParamConfigType;
 import com.antheminc.oss.nimbus.domain.model.config.builder.EntityConfigBuilder;
 import com.antheminc.oss.nimbus.domain.model.config.builder.EntityConfigVisitor;
 import com.antheminc.oss.nimbus.domain.model.config.internal.DefaultModelConfig;
@@ -129,8 +129,8 @@ public class DefaultEntityConfigBuilder extends AbstractEntityConfigBuilder impl
 		final DefaultParamConfig<?> pConfig = createParam(mConfig, f, visitedModels);
 		
 		// handle type
-		ParamType type = buildParamType(mConfig, pConfig, f, visitedModels);
-		pConfig.setType(type);
+		ParamConfigType type = buildParamType(mConfig, pConfig, f, visitedModels);
+		pConfig.setConfigType(type);
 		
 		// trigger event
 		pConfig.onCreateEvent();
@@ -141,23 +141,23 @@ public class DefaultEntityConfigBuilder extends AbstractEntityConfigBuilder impl
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	protected <T, P> ParamType buildParamType(ModelConfig<T> mConfig, ParamConfig<P> pConfig, Field f, EntityConfigVisitor visitedModels) {
+	protected <T, P> ParamConfigType buildParamType(ModelConfig<T> mConfig, ParamConfig<P> pConfig, Field f, EntityConfigVisitor visitedModels) {
 		Class<P> determinedType = (Class<P>)GenericUtils.resolveGeneric(mConfig.getReferredClass(), f);
 		
-		ParamType.CollectionType colType = determineCollectionType(f.getType());	
+		ParamConfigType.CollectionType colType = determineCollectionType(f.getType());	
 		
 		return buildParamType(mConfig, pConfig, colType, determinedType, visitedModels);
 	}
 	
 	@Override
-	protected <T, P> ParamType buildParamType(ModelConfig<T> mConfig, ParamConfig<P> pConfig, ParamType.CollectionType colType, Class<?> pDirectOrColElemType, /*MapsTo.Path mapsToPath, */EntityConfigVisitor visitedModels) {
-		if(ParamType.CollectionType.array==colType && isPrimitive(pDirectOrColElemType)) { // handle primitive array first
-			ParamType type = createParamType(true, pDirectOrColElemType, mConfig, visitedModels);
+	protected <T, P> ParamConfigType buildParamType(ModelConfig<T> mConfig, ParamConfig<P> pConfig, ParamConfigType.CollectionType colType, Class<?> pDirectOrColElemType, /*MapsTo.Path mapsToPath, */EntityConfigVisitor visitedModels) {
+		if(ParamConfigType.CollectionType.array==colType && isPrimitive(pDirectOrColElemType)) { // handle primitive array first
+			ParamConfigType type = createParamType(true, pDirectOrColElemType, mConfig, visitedModels);
 			return type;
 			
 		} else if(colType!=null) { //handle collections second
 			//create nested collection type
-			ParamType.NestedCollection<P> colModelType = createNestedCollectionType(colType);
+			ParamConfigType.NestedCollection<P> colModelType = createNestedCollectionType(colType);
 			
 			//create collection config model
 			DefaultModelConfig<List<P>> colModelConfig = createCollectionModel(colModelType.getReferredClass(), pConfig);
@@ -168,13 +168,13 @@ public class DefaultEntityConfigBuilder extends AbstractEntityConfigBuilder impl
 			colModelType.setElementConfig(colElemParamConfig);
 
 			//create collection element type (and element model config)
-			ParamType colElemType = createParamType(false, pDirectOrColElemType, colModelConfig, visitedModels);
-			colElemParamConfig.setType(colElemType);
+			ParamConfigType colElemType = createParamType(false, pDirectOrColElemType, colModelConfig, visitedModels);
+			colElemParamConfig.setConfigType(colElemType);
 			
 			return colModelType;
 			
 		} else {
-			ParamType type = createParamType(false, pDirectOrColElemType, mConfig, visitedModels);
+			ParamConfigType type = createParamType(false, pDirectOrColElemType, mConfig, visitedModels);
 			return type;
 		}
 	}

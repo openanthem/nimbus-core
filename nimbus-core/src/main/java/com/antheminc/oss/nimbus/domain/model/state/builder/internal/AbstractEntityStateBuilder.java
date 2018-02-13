@@ -39,7 +39,7 @@ import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values.Source;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig.MappedParamConfig;
-import com.antheminc.oss.nimbus.domain.model.config.ParamType;
+import com.antheminc.oss.nimbus.domain.model.config.ParamConfigType;
 import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Model;
@@ -186,11 +186,11 @@ abstract public class AbstractEntityStateBuilder extends AbstractEntityStateFact
 
 			// handle transient
 			if(mappedParamConfig.getPath().nature() == MapsTo.Nature.TransientColElem) {
-				if(!mappedParamConfig.getType().isNested())
+				if(!mappedParamConfig.getConfigType().isNested())
 					throw new InvalidConfigException("Non nested transient params are not supported, but found for: "+mappedParamConfig.getCode());
 				
 				@SuppressWarnings("unchecked")
-				ParamType.Nested<P> mpNmType = ((ParamType.Nested<P>)mappedParamConfig.getType());
+				ParamConfigType.Nested<P> mpNmType = ((ParamConfigType.Nested<P>)mappedParamConfig.getConfigType());
 				
 				ModelConfig<P> mpNmConfig = mpNmType.getModelConfig();
 				MappedDefaultTransientParamState.Creator<P> creator = (associatedParam, transientMapsTo) -> buildModel(aspectHandlers, associatedParam, mpNmConfig, transientMapsTo);

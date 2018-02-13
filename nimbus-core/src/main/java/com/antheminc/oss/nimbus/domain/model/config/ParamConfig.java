@@ -40,7 +40,7 @@ public interface ParamConfig<P> extends EntityConfig<P>, Findable<String> {
 	public String getBeanName();
 	
 //	@JsonIgnore M7
-	public ParamType getType();
+	public ParamConfigType getConfigType();
 	
 	public boolean isLeaf();
 	

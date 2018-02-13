@@ -237,7 +237,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		
 		Param<?> p = findColParamByPath(cmdParam, colPath);
 		
-		if(!p.isCollection() && !p.getConfig().getType().isArray())
+		if(!p.isCollection() && !p.getConfig().getConfigType().isArray())
 			throw new InvalidConfigException("The param "+colPath+" must be a collection or an array but found to be a non collection/non array from command: "+cmdParam);
 			
 		if(p.isCollection()) {
@@ -246,7 +246,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 				colExecConfigs.add(buildExecConfig(url));
 			}
 		}
-		else if(p.getConfig().getType().isArray()) {
+		else if(p.getConfig().getConfigType().isArray()) {
 			Object[] arrayParamState = (Object[])p.getState();
 			
 			if(arrayParamState == null)

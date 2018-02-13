@@ -107,7 +107,7 @@ public class MappedDefaultTransientParamState<T, M> extends DefaultParamState<T>
 			
 			// 3. create new mapped model based on mapsTo
 			Model mappedModel = creator.apply(this, getMapsTo().findIfNested());
-			getType().findIfTransient().assign(mappedModel);
+			getStateType().findIfTransient().assign(mappedModel);
 			
 			// 4. fire rules
 			fireRules();
@@ -127,7 +127,7 @@ public class MappedDefaultTransientParamState<T, M> extends DefaultParamState<T>
 		
 		getMapsTo().deregisterConsumer(this);
 		
-		getType().findIfTransient().unassign();
+		getStateType().findIfTransient().unassign();
 		
 		setMapsToTransient(null);
 	}

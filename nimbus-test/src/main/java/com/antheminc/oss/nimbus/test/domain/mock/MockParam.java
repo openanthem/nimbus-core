@@ -67,7 +67,7 @@ public class MockParam implements Param<Object> {
 	private PropertyDescriptor propertyDescriptor = null;
 	private Object state = null;
 	private boolean stateInitialized = false;
-	private StateType type = null;
+	private StateType stateType = null;
 	private List<ParamValue> values = null;
 	private boolean visible = true;
 	private Class<? extends ValidationGroup>[] activeValidationGroups;

@@ -94,7 +94,7 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 		
 		String jsonPayload = converter.convert(colElemState);
 		
-		String elemId = pListNested.getType().getModel().getParams().get(0).findIfCollectionElem().getElemId();
+		String elemId = pListNested.getStateType().getModel().getParams().get(0).findIfCollectionElem().getElemId();
 		
 		MockHttpServletRequest colElemUpdate_Req = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
 				.addNested("/page_green/tile/list_attached_noConversion_NestedEntity/"+elemId).addAction(Action._update).getMock();

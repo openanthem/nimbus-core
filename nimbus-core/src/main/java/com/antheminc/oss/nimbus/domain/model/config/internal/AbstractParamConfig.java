@@ -21,7 +21,7 @@ import java.util.List;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo;
 import com.antheminc.oss.nimbus.domain.model.config.AnnotationConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
-import com.antheminc.oss.nimbus.domain.model.config.ParamType;
+import com.antheminc.oss.nimbus.domain.model.config.ParamConfigType;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -45,7 +45,7 @@ public abstract class AbstractParamConfig<P> implements ParamConfig<P> {
 
 	abstract public void setValidations(List<AnnotationConfig> validations);
 	
-	abstract public void setType(ParamType type);
+	abstract public void setType(ParamConfigType type);
 	
 	abstract public void setAnnotations(List<Annotation> annotations);
 	

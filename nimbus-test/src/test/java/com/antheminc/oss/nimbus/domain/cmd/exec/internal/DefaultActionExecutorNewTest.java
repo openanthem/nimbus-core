@@ -122,9 +122,9 @@ public class DefaultActionExecutorNewTest extends AbstractFrameworkIngerationPer
 		
 		// Validate the response
 		MappedDefaultTransientParamState form_paramState = (MappedDefaultTransientParamState) resp.getState().getOutputs().get(1).getValue();
-		MappedDefaultModelState modelState_elem = (MappedDefaultModelState) ((StateType.Nested) form_paramState.getType()).getModel();
+		MappedDefaultModelState modelState_elem = (MappedDefaultModelState) ((StateType.Nested) form_paramState.getStateType()).getModel();
 		MappedLeafState leafState_elem = (MappedLeafState) modelState_elem.getParams().get(2);
-		StateType stateType_elem = leafState_elem.getType();
+		StateType stateType_elem = leafState_elem.getStateType();
 		// Not confident this is correct. But the UI is expecting type to have model, which is only
 		// available from StateType.Nested and child entities. Need to validate the expected
 		// behavior here.

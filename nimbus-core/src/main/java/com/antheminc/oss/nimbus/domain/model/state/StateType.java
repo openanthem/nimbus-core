@@ -18,7 +18,7 @@ package com.antheminc.oss.nimbus.domain.model.state;
 import java.io.Serializable;
 import java.util.List;
 
-import com.antheminc.oss.nimbus.domain.model.config.ParamType;
+import com.antheminc.oss.nimbus.domain.model.config.ParamConfigType;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListModel;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -36,7 +36,7 @@ public class StateType implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	@JsonIgnore private final ParamType config;
+	@JsonIgnore private final ParamConfigType config;
 	
 	public String getName() {
 		return config.getName();
@@ -78,7 +78,7 @@ public class StateType implements Serializable {
 
 		private EntityState.Model<P> model;
 		
-		public Nested(ParamType.Nested<P> config, Model<P> model) {
+		public Nested(ParamConfigType.Nested<P> config, Model<P> model) {
 			super(config);
 			this.model = model;
 		}
@@ -93,7 +93,7 @@ public class StateType implements Serializable {
 	public static class NestedCollection<P> extends Nested<List<P>> {
 		private static final long serialVersionUID = 1L;
 
-		public NestedCollection(ParamType.NestedCollection<P> config, ListModel<P> model) {
+		public NestedCollection(ParamConfigType.NestedCollection<P> config, ListModel<P> model) {
 			super(config, model);
 		}
 		
@@ -121,7 +121,7 @@ public class StateType implements Serializable {
 	public static class MappedTransient<P> extends Nested<P> implements Serializable {
 		private static final long serialVersionUID = 1L;
 		
-		public MappedTransient(ParamType.Nested<P> config) {
+		public MappedTransient(ParamConfigType.Nested<P> config) {
 			super(config, null);
 		}
 		
