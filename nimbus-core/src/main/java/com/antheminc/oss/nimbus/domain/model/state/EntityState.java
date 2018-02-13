@@ -19,10 +19,12 @@ import java.beans.PropertyDescriptor;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
+import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.ValidationGroup;
 import com.antheminc.oss.nimbus.domain.model.config.EntityConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
@@ -249,6 +251,9 @@ public interface EntityState<T> {
 		Model<?> getParentModel();
 		
 		StateType getType();
+		
+		Class<? extends ValidationGroup>[] getActiveValidationGroups();
+		void setActiveValidationGroups(Class<? extends ValidationGroup>[] activeValidationGroups);
 		
 //		@JsonIgnore M7
 //M8	Model<StateContextEntity> getContextModel();

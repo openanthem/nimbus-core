@@ -20,10 +20,13 @@ import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Supplier;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -34,6 +37,7 @@ import com.antheminc.oss.nimbus.InvalidOperationAttemptedException;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ValidationResult;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
+import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.ValidationGroup;
 import com.antheminc.oss.nimbus.domain.model.config.EventHandlerConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
@@ -52,6 +56,7 @@ import com.antheminc.oss.nimbus.entity.Findable;
 import com.antheminc.oss.nimbus.support.Holder;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -74,8 +79,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	@JsonIgnore
 	private boolean active = true;
 	
-	private RemnantState<Boolean> visible = new RemnantState<>(true);
-	private RemnantState<Boolean> enabled = new RemnantState<>(true);
+	private RemnantState<Boolean> visible = this.new RemnantState<>(true);
+	private RemnantState<Boolean> enabled = this.new RemnantState<>(true);
 	
 	private List<ParamValue> values;
 	
@@ -97,6 +102,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	@JsonIgnore
 	private T transientOldState;
 
+	@SuppressWarnings("unchecked")
+	private RemnantState<Class<? extends ValidationGroup>[]> activeValidationGroups = new RemnantState<>(new Class[0]);
 	
 	public static class LeafState<T> extends DefaultParamState<T> implements LeafParam<T> {
 		private static final long serialVersionUID = 1L;
@@ -526,21 +533,41 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	
 	@Getter @Setter
-	private static class RemnantState<T> {
-		private T prevState;
-		private T currState;
+	private class RemnantState<S> {
+		private S prevState;
+		private S currState;
 		
-		public RemnantState(T initState) {
+		public RemnantState(S initState) {
 			this.prevState = initState;
 			this.currState = initState;
-		} 
+		}
 		
-		public void setState(T state) {
+		public boolean isEquals(S state) {
+			return new EqualsBuilder().append(this.currState, state).isEquals();
+		}
+		
+		public boolean setState(S state) {
+			return setStateConditional(state, ()->true);
+		}
+
+		public boolean setStateConditional(S state, Supplier<Boolean> condition) {
+			// check equality
+			if(isEquals(state))
+				return false;
+			
+			// check condition
+			Boolean eval = condition.get();
+			if(eval==null || !eval)
+				return false;
+			
+			
 			this.prevState = this.currState;
 			this.currState = state;
+			
+			emitParamContextEvent();
+			return true;
 		}
 	}
-	
 	
 	@Override
 	public boolean isVisible() {
@@ -553,15 +580,9 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	
 	public void setVisible(boolean visible) {
-		if(this.visible.currState==visible)
+		boolean changed = this.visible.setStateConditional(visible, ()->isActive() || !visible);
+		if (!changed)
 			return;
-
-		final boolean currActive = isActive();
-		if(!currActive && visible)
-			return;
-		
-		this.visible.setState(visible);
-		emitParamContextEvent();
 		
 		// handle nested
 		if(!isNested() || (isTransient() && !findIfTransient().isAssinged()))
@@ -591,15 +612,9 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	@Override
 	public void setEnabled(boolean enabled) {
-		if(this.enabled.currState==enabled)
+		boolean changed = this.enabled.setStateConditional(enabled, ()->isActive() || !enabled);
+		if (!changed)
 			return;
-		
-		final boolean currActive = isActive();
-		if(!currActive && enabled)
-			return;
-		
-		this.enabled.setState(enabled);
-		emitParamContextEvent();
 		
 		// handle nested
 		if(!isNested() || findIfNested().templateParams().isNullOrEmpty())
@@ -629,6 +644,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		
 	}
 
+	
 	@Override
 	public void setValues(List<ParamValue> values) {
 		if(getValues()==values)
@@ -751,5 +767,16 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	private boolean isPrimitive() {
 		return ClassUtils.isPrimitiveOrWrapper(getConfig().getReferredClass());
 	}
-	
+
+
+	@Override
+	public Class<? extends ValidationGroup>[] getActiveValidationGroups() {
+		return this.activeValidationGroups.getCurrState();
+	}
+
+
+	@Override
+	public void setActiveValidationGroups(Class<? extends ValidationGroup>[] activeValidationGroups) {
+		this.activeValidationGroups.setState(activeValidationGroups);
+	}
 }

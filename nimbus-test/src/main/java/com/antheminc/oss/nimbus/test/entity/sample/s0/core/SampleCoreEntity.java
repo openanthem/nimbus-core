@@ -177,4 +177,6 @@ public class SampleCoreEntity extends IdString {
 	private MyModal myModal2;
 	
 	public static class MyModal {}
+	
+	private SampleValidateEntity attr_validate_nested;
 }
