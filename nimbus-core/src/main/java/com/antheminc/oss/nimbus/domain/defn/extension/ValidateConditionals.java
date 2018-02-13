@@ -10,7 +10,9 @@ import java.lang.annotation.Target;
 import com.antheminc.oss.nimbus.domain.RepeatContainer;
 
 /**
+ * <p>Repeatable Container class for <tt>ValidateConditional</tt>.
  * 
+ * @see com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional
  * @author Tony Lopez
  *
  */
@@ -20,5 +22,8 @@ import com.antheminc.oss.nimbus.domain.RepeatContainer;
 @RepeatContainer(ValuesConditional.class)
 public @interface ValidateConditionals {
 
+	/**
+	 * <p>The array of <tt>&#64;ValidateConditional</tt> annotations.</p>
+	 */
 	ValidateConditional[] value();
 }

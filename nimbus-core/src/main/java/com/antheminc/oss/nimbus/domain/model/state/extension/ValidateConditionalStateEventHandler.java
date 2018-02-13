@@ -16,7 +16,7 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 
 /**
  * <p>Validate Conditional State Event handler for conditionally assigning validations based
- * on conditional logic defined via <tt>@ValidateConditional</tt> configuration.</p>
+ * on conditional logic defined via <tt>&#64;ValidateConditional</tt> configuration.</p>
  * 
  * @author Tony Lopez
  *
