@@ -202,7 +202,7 @@ abstract public class AbstractEntityConfigBuilder {
 			throw new InvalidConfigException("Mapped param field: "+f.getName()+" is mapped with linked=true. Enclosing model: "+mConfig.getReferredClass()+" must be mapped, but was not.");
 
 		// param field is linked: enclosing mapped model's config must have been loaded
-		Class<?> mapsToModelClass = mConfig.findIfMapped().getMapsTo().getReferredClass();
+		Class<?> mapsToModelClass = mConfig.findIfMapped().getMapsToConfig().getReferredClass();
 		ModelConfig<?> mapsToModel = visitedModels.get(mapsToModelClass);
 		if(mapsToModel==null)
 			throw new ConfigLoadException("Mapped param field: "+f.getName()+" is mapped with linked=true. Enclosing model: "+mConfig.getReferredClass()
@@ -243,7 +243,7 @@ abstract public class AbstractEntityConfigBuilder {
 		
 		// create mapsToParam and attach to enclosing model
 		DefaultParamConfig<?> simulatedMapsToParam = decorateParam(simulatedEnclosingModel, DefaultParamConfig.instantiate(simulatedEnclosingModel, MapsTo.DETACHED_SIMULATED_FIELD_NAME), visitedModels);
-		simulatedEnclosingModel.templateParams().add(simulatedMapsToParam);
+		simulatedEnclosingModel.templateParamConfigs().add(simulatedMapsToParam);
 		
 		// build mapsToParam's type
 		MapsTo.Type mappedParamRefClassMapsToType = AnnotationUtils.findAnnotation(mappedField.getType(), MapsTo.Type.class);
@@ -262,7 +262,7 @@ abstract public class AbstractEntityConfigBuilder {
 		
 		// create mapsToParam and attach to enclosing model
 		DefaultParamConfig<?> simulatedMapsToParam = decorateParam(simulatedEnclosingModel, DefaultParamConfig.instantiate(simulatedEnclosingModel, MapsTo.DETACHED_SIMULATED_FIELD_NAME), visitedModels);
-		simulatedEnclosingModel.templateParams().add(simulatedMapsToParam);
+		simulatedEnclosingModel.templateParamConfigs().add(simulatedMapsToParam);
 		
 		// determine collection param generic element type
 		final ParamType.CollectionType colType = determineCollectionType(mappedField.getType());
@@ -309,7 +309,7 @@ abstract public class AbstractEntityConfigBuilder {
 	
 	private <T, P> ParamConfig<P> createParamCollectionElemMapped(MappedParamConfig<P, ?> pConfig, ModelConfig<List<P>> colModelConfig, EntityConfigVisitor visitedModels, Class<?> colElemClass, MapsTo.Path mapsToColParamPath) {
 		//ParamConfig<?> mapsToColParamConfig = findMappedParam(mapsToEnclosingModel, pConfig.getCode(), mapsToColParamPath);
-		ParamConfig<?> mapsToColParamConfig = pConfig.getMapsTo();
+		ParamConfig<?> mapsToColParamConfig = pConfig.getMapsToConfig();
 		logit.debug(()->"[create.pColElem] [colParam is mapped] [elemClass same] [Attached] Found mapsToColParamConfig for "+pConfig.getCode()+" with mapsToPath of colParam: "+mapsToColParamPath+" -> "+mapsToColParamConfig);
 		
 		@SuppressWarnings("unchecked")
@@ -454,7 +454,7 @@ abstract public class AbstractEntityConfigBuilder {
 			//throw new UnsupportedOperationException("TODO: Explicit Mapped Path lookup is not yet implemented. Found: "+ mapsTo.value());
 		}
 		
-		ParamConfig<?> mappedToParam = mapsToModel.templateParams().find(fieldNm);
+		ParamConfig<?> mappedToParam = mapsToModel.templateParamConfigs().find(fieldNm);
 		return mappedToParam;
 	}
 	
@@ -502,7 +502,7 @@ abstract public class AbstractEntityConfigBuilder {
 			nmConfig = buildModel(determinedType, visitedModels);
 		}
 		
-		nestedParamType.setModel(nmConfig);
+		nestedParamType.setModelConfig(nmConfig);
 		return nestedParamType;
 	}
 	

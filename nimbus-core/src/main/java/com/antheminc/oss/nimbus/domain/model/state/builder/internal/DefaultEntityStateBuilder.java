@@ -129,12 +129,12 @@ public class DefaultEntityStateBuilder extends AbstractEntityStateBuilder implem
 
 		/* if model & param are mapped, then  mapsToSAC must not be null */
 		if(mConfig.isMapped() && mapsToSAC==null) 
-			throw new InvalidConfigException("Model class: "+mConfig.getReferredClass()+" is mapped: "+mConfig.findIfMapped().getMapsTo().getReferredClass()
+			throw new InvalidConfigException("Model class: "+mConfig.getReferredClass()+" is mapped: "+mConfig.findIfMapped().getMapsToConfig().getReferredClass()
 						+" but mapsToState is not supplied for param: "+associatedParam.getPath()+". Was this model's config loaded first as part of core?");
 		
 		DefaultModelState<T> mState = createModel(associatedParam, mConfig, aspectHandlers, mapsToSAC); 
 		
-		if(mConfig.getParams()==null) return mState;
+		if(mConfig.getParamConfigs()==null) return mState;
 		
 		// check if param doesn't require conversion but logically should be treated as mapped
 		boolean isMappedNoConversion = associatedParam.isMapped() 
@@ -142,7 +142,7 @@ public class DefaultEntityStateBuilder extends AbstractEntityStateBuilder implem
 												: false;
 		
 		/* iterate through config params and create state instances in the same order */
-		for(ParamConfig<?> mpConfigRawType : mConfig.getParams()) {
+		for(ParamConfig<?> mpConfigRawType : mConfig.getParamConfigs()) {
 			@SuppressWarnings("unchecked")
 			final ParamConfig<P> mpConfig = (ParamConfig<P>)mpConfigRawType;
 			final ParamConfig<P> resolvedParamConfig;
@@ -196,7 +196,7 @@ public class DefaultEntityStateBuilder extends AbstractEntityStateBuilder implem
 		
 		else if(associatedParam.getConfig().getType().isCollection()) {
 			ParamType.NestedCollection<P> nmcType = associatedParam.getConfig().getType().findIfCollection();
-			ModelConfig<List<P>> nmConfig = nmcType.getModel();
+			ModelConfig<List<P>> nmConfig = nmcType.getModelConfig();
 			
 			DefaultListElemParamState.Creator<P> elemCreator = (colModelState, elemId) -> buildElemParam(aspectHandlers, colModelState, colModelState.getElemConfig(), elemId);
 			DefaultListModelState<P> nmcState = createCollectionModel(associatedParam.findIfCollection(), nmConfig, aspectHandlers, elemCreator); 
@@ -211,7 +211,7 @@ public class DefaultEntityStateBuilder extends AbstractEntityStateBuilder implem
 			@SuppressWarnings("unchecked")
 			ParamType.Nested<P> mpNmType = ((ParamType.Nested<P>)associatedParam.getConfig().getType());
 			
-			ModelConfig<P> mpNmConfig = mpNmType.getModel();
+			ModelConfig<P> mpNmConfig = mpNmType.getModelConfig();
 			
 			/* determine mapsTo model SAC for param's nested model */
 			final Model<?> mpNmMapsToSAC;

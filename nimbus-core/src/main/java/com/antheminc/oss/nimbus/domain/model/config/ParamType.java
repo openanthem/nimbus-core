@@ -81,7 +81,7 @@ public class ParamType implements Serializable {
 	public static class Nested<T> extends ParamType implements Serializable {
 		private static final long serialVersionUID = 1L;
 
-		private ModelConfig<T> model;
+		private ModelConfig<T> modelConfig;
 		
 		public Nested(String name, Class<?> referredClass) {
 			super(true, name, referredClass, false);
@@ -116,7 +116,7 @@ public class ParamType implements Serializable {
 		// TODO Temp till custom Serializer is implemented
 		public List<? extends ParamConfig<?>> getElementModelParams() {
 			if(getElementConfig().getType().isNested()) {
-				return getElementConfig().getType().findIfNested().getModel().getParams();
+				return getElementConfig().getType().findIfNested().getModelConfig().getParamConfigs();
 			}
 			return null;
 		}

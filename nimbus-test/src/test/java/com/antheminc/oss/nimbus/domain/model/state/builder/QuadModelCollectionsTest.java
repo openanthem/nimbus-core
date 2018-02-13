@@ -186,7 +186,7 @@ public class QuadModelCollectionsTest {
 		
 		// ParamSAC: ParamConfig.Type.NestedCollection => ParamType for List<ServiceLine>
 		ParamType.NestedCollection<ServiceLine> pSAC_config_type = pSAC_config.getType().findIfCollection(); 
-		assertSame(pSAC_config_type.getModel(), mSAC_col_config);
+		assertSame(pSAC_config_type.getModelConfig(), mSAC_col_config);
 		assertSame(CollectionType.list, pSAC_config_type.getCollectionType());
 		
 		// list param element

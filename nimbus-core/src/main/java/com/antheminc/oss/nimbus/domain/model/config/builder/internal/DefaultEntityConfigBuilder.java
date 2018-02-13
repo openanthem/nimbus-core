@@ -85,7 +85,7 @@ public class DefaultEntityConfigBuilder extends AbstractEntityConfigBuilder impl
 		if(mConfig.isMapped()) {
 			
 			//ensure mapped class config is already loaded
-			buildModel(mConfig.findIfMapped().getMapsTo().getReferredClass(), visitedModels);
+			buildModel(mConfig.findIfMapped().getMapsToConfig().getReferredClass(), visitedModels);
 		}
 		
 		List<Field> fields = FieldUtils.getAllFieldsList(clazz);
@@ -95,19 +95,19 @@ public class DefaultEntityConfigBuilder extends AbstractEntityConfigBuilder impl
 			.filter((f)-> !f.isSynthetic())
 			.forEach((f)->{
 				ParamConfig<?> p = buildParam(mConfig, f, visitedModels);
-				mConfig.templateParams().add(p);
+				mConfig.templateParamConfigs().add(p);
 				
 				if(AnnotatedElementUtils.isAnnotated(f, Id.class)) {
 					// default id
-					mConfig.setIdParam(p);
+					mConfig.setIdParamConfig(p);
 					
 				} else if(AnnotatedElementUtils.isAnnotated(f, Version.class)) {
 					// default version
-					mConfig.setVersionParam(p);
+					mConfig.setVersionParamConfig(p);
 				}				
 			});
 		
-		if(Repo.Database.isPersistable(mConfig.getRepo()) && mConfig.getIdParam()==null) {
+		if(Repo.Database.isPersistable(mConfig.getRepo()) && mConfig.getIdParamConfig()==null) {
 			throw new InvalidConfigException("Persistable Entity: "+mConfig.getReferredClass()+" must be configured with @Id param which has Repo: "+mConfig.getRepo());
 		}
 		
@@ -161,7 +161,7 @@ public class DefaultEntityConfigBuilder extends AbstractEntityConfigBuilder impl
 			
 			//create collection config model
 			DefaultModelConfig<List<P>> colModelConfig = createCollectionModel(colModelType.getReferredClass(), pConfig);
-			colModelType.setModel(colModelConfig);
+			colModelType.setModelConfig(colModelConfig);
 			 
 			//create collection element param config
 			DefaultParamConfig<P> colElemParamConfig = (DefaultParamConfig<P>)createParamCollectionElement(mConfig, /*mapsToPath, */pConfig, colModelConfig, visitedModels, pDirectOrColElemType);

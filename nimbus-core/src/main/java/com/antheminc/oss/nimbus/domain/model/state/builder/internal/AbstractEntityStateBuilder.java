@@ -192,7 +192,7 @@ abstract public class AbstractEntityStateBuilder extends AbstractEntityStateFact
 				@SuppressWarnings("unchecked")
 				ParamType.Nested<P> mpNmType = ((ParamType.Nested<P>)mappedParamConfig.getType());
 				
-				ModelConfig<P> mpNmConfig = mpNmType.getModel();
+				ModelConfig<P> mpNmConfig = mpNmType.getModelConfig();
 				MappedDefaultTransientParamState.Creator<P> creator = (associatedParam, transientMapsTo) -> buildModel(aspectHandlers, associatedParam, mpNmConfig, transientMapsTo);
 				
 				return new MappedDefaultTransientParamState<>(mapsToParam, parentModel, mappedParamConfig, aspectHandlers, creator);

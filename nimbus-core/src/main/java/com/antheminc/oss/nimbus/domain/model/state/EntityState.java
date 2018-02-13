@@ -375,7 +375,7 @@ public interface EntityState<T> {
 			
 			if(isTransient() && !findIfTransient().isAssinged()) { // when transient is not assigned
 				Class<?> mappedClass = getType().getConfig().getReferredClass();
-				Class<?> mapsToClass = getType().getConfig().findIfNested().getModel().findIfMapped().getMapsTo().getReferredClass();
+				Class<?> mapsToClass = getType().getConfig().findIfNested().getModelConfig().findIfMapped().getMapsToConfig().getReferredClass();
 				
 				return (mappedClass!=mapsToClass);
 			}

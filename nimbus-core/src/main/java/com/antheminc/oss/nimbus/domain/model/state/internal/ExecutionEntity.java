@@ -123,7 +123,7 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 			this.rootParent = new ExModelConfig(exConfig); 
 			
 			ParamType.Nested<ExecutionEntity<V, C>> pType = new ParamType.Nested<>(_this().getClass().getSimpleName(), _this().getClass());
-			pType.setModel(getRootParent());
+			pType.setModelConfig(getRootParent());
 			this.setType(pType);
 		}
 	}
@@ -160,9 +160,9 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 			
 			ParamType.Nested<T> pType = new ParamType.Nested<>(ClassUtils.getShortName(pClass), pClass);
 			pConfig.setType(pType);
-			pType.setModel(modelConfig);
+			pType.setModelConfig(modelConfig);
 			
-			templateParams().add(pConfig);
+			templateParamConfigs().add(pConfig);
 			return pConfig;
 		}
 		

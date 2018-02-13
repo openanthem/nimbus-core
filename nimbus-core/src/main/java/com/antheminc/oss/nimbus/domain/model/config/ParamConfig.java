@@ -102,7 +102,7 @@ public interface ParamConfig<P> extends EntityConfig<P>, Findable<String> {
 		public boolean isDetachedWithAutoLoad(); // e.g. @Path(value="/a/b/c/action", linked=false)
 		
 		@Override
-		public ParamConfig<M> getMapsTo();
+		public ParamConfig<M> getMapsToConfig();
 		
 		public ModelConfig<?> getMapsToEnclosingModel();
 	}

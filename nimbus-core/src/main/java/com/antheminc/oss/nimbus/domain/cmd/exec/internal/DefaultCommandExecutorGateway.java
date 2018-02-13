@@ -211,7 +211,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		boolean	matched = StringUtils.equals(inputDomainRootAlias, configDomainRootAlias);
 		
 		if(!matched && configDomainModelConfig.isMapped()) {
-			String mapsToConfigDomainAlias = configDomainModelConfig.findIfMapped().getMapsTo().getAlias();
+			String mapsToConfigDomainAlias = configDomainModelConfig.findIfMapped().getMapsToConfig().getAlias();
 			
 			String mappedConfigPlatformUri = configCmdMsg.getCommand().buildAlias(Type.PlatformMarker);
 			configDomainRootAlias = mappedConfigPlatformUri + "/" + mapsToConfigDomainAlias;

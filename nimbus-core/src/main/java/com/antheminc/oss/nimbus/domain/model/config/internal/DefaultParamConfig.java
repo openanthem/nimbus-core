@@ -129,7 +129,7 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 		/* param is not leaf node: is nested */
 		ParamType.Nested<?> mp = getType().findIfNested();
 		if(mp != null) {
-			return mp.getModel().findParamByPath(pathArr);
+			return mp.getModelConfig().findParamByPath(pathArr);
 		}
 		
 		/* if param is a leaf node and requested path has more children, then return null */
