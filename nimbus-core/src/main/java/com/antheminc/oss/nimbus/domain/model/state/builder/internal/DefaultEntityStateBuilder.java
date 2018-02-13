@@ -180,7 +180,7 @@ public class DefaultEntityStateBuilder extends AbstractEntityStateBuilder implem
 		pElem.setType(type);
 		
 		// call initState on collection paramElems explicitly as they are created
-		pElem.initState();
+		//pElem.initState();
 		
 		return pElem;
 	}
