@@ -80,7 +80,6 @@ import { CardDetailsGrid } from './components/platform/card/card-details-grid.co
 import { Accordion } from './components/platform/accordion.component';
 import { AccordionGroup } from './components/platform/accordion-group.component';
 import { FrmGroupCmp } from './components/platform/form-group.component';
-import { MultiselectDropdownModule } from './components/platform/form/elements/multi-select-dropdown.component';
 import { Button } from './components/platform/form/elements/button.component';
 import { ButtonGroup } from './components/platform/form/elements/button-group.component';
 import { FilterButton } from './components/platform/form/elements/filter-button.component';
@@ -133,7 +132,6 @@ import { LoaderComponent } from './components/platform/loader/loader.component';
         AppRoutingModule,
         HttpModule,
         FormsModule,
-        MultiselectDropdownModule,
         DropdownModule,
         DataTableModule,
         OverlayPanelModule,
