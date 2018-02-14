@@ -30,9 +30,9 @@ import com.antheminc.oss.nimbus.domain.model.state.extension.ModalStateEventHand
 import com.antheminc.oss.nimbus.domain.model.state.extension.ParamContextStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.RuleStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.StaticCodeValueBasedCodeToLabelConverter;
-import com.antheminc.oss.nimbus.domain.model.state.extension.ValidateConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValuesConditionalOnStateChangeEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValuesConditionalOnStateLoadEventHandler;
+import com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional.ValidateConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.internal.IdParamConverter;
 
 /**

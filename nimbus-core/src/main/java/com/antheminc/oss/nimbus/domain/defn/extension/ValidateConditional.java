@@ -41,7 +41,7 @@ import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
  * able to be defined for this annotation's <tt>scope</tt> attribute to assist in that control.</p>
  * 
  * @author Tony Lopez
- * @see com.antheminc.oss.nimbus.domain.model.state.extension.ValidateConditionalStateEventHandler
+ * @see com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional.ValidateConditionalStateEventHandler
  *
  */
 @Documented
