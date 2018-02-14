@@ -16,6 +16,9 @@
 package com.antheminc.oss.nimbus.domain.model.state.repo.db;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.util.Assert;
 
@@ -65,6 +68,18 @@ public abstract class MongoDBSearch implements DBSearch {
 		return referredClass;
 	}
 
+	
+	public <T> Pageable buildPageRequest(SearchCriteria<T> criteria) {
+		int page = criteria.getPaginationCriteria().getPage();
+		int size = criteria.getPaginationCriteria().getPageSize();
+		Sort sort = criteria.getPaginationCriteria().getSort();
+		
+		if(sort == null)
+			return new PageRequest(page, size);
+		else
+			return new PageRequest(page, size, sort);
+	}
+		
 
 
 	

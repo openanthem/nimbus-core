@@ -17,12 +17,9 @@ package com.antheminc.oss.nimbus.domain.cmd.exec.internal.search;
 
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Stream;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 
@@ -30,7 +27,6 @@ import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
-import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
@@ -73,26 +69,10 @@ public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunct
 		LookupSearchCriteria lookupSearchCriteria = new LookupSearchCriteria();
 		lookupSearchCriteria.validate(executionContext);
 			
-		resolveNamedQueryIfApplicable(executionContext, mConfig, lookupSearchCriteria, actionParameter);
+		String where = resolveNamedQueryIfApplicable(executionContext, mConfig, actionParameter);
+		lookupSearchCriteria.setWhere(where);
 		
-		ProjectCriteria projectCriteria = new ProjectCriteria();
-		
-		if(cmd.getRequestParams().get("projection.alias") != null) {
-			projectCriteria.setAlias(cmd.getFirstParameterValue("projection.alias"));
-		}
-		else if(cmd.getRequestParams().get("projection.mapsTo") != null) {
-			String projectMapping = cmd.getFirstParameterValue("projection.mapsTo");
-			String[] keyValues = StringUtils.split(projectMapping,",");
-			
-			Stream.of(keyValues).forEach((kvString) -> {
-				if(MapUtils.isEmpty(projectCriteria.getMapsTo())){
-					projectCriteria.setMapsTo(new HashMap<String, String>());
-				}
-				String[] kv = StringUtils.split(kvString,":");
-				projectCriteria.getMapsTo().put(kv[0], kv[1]);
-			});
-		}
-		
+		ProjectCriteria projectCriteria = buildProjectCritera(cmd);
 		lookupSearchCriteria.setProjectCriteria(projectCriteria);
 		
 		return lookupSearchCriteria;
@@ -127,35 +107,6 @@ public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunct
 		catch(Exception ex) {
 			throw new FrameworkRuntimeException("Failed to execute read on property: "+codePd+" and "+labelPd, ex);
 		}
-	}
-	
-	private void resolveNamedQueryIfApplicable(ExecutionContext executionContext, ModelConfig<?> mConfig, LookupSearchCriteria lookupSearchCriteria, Param<T> actionParameter) {
-		String where = executionContext.getCommandMessage().getCommand().getFirstParameterValue("where");
-		
-		// find if where is a named query
-		Repo repo = mConfig.getRepo();
-		Repo.NamedNativeQuery[] namedQueries = repo.namedNativeQueries();
-		
-		if(namedQueries != null && namedQueries.length > 0) {
-			for(Repo.NamedNativeQuery query: namedQueries) {
-				if(StringUtils.equalsIgnoreCase(query.name(), where) && query.nativeQueries() != null) {
-					int i = 0;
-					for(String q: query.nativeQueries()) {
-						if(i == 0) {
-							where = q;
-						}
-						else {
-							where = where +"~~"+q;
-						}
-						i++;
-					}
-				}
-			}
-		}
-		//resolve path variables if any
-		where = getPathVariableResolver().resolve(actionParameter, where);
-		
-		lookupSearchCriteria.setWhere(where);
 	}
 	
 }

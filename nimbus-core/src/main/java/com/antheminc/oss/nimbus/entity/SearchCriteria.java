@@ -20,17 +20,19 @@ import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Sort;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Rakesh Patel
  *
  */
-@Data
+@Getter @Setter
 public abstract class SearchCriteria<T> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -39,12 +41,40 @@ public abstract class SearchCriteria<T> implements Serializable {
 	private String aggregateCriteria;
 	private ProjectCriteria projectCriteria;
 	private String fetch;
-	
-	private String responseConverter;
+	private PaginationCriteria paginationCriteria;
 	
 	public abstract void validate(ExecutionContext executionContext);
 	
-	@Data
+	
+	@Getter @Setter
+	public static class PaginationCriteria implements Serializable {
+		private static final long serialVersionUID = 1L;
+		
+		private int pageSize;
+		private int page;
+		
+		private Sort sort;
+		
+		
+//		@Getter @Setter
+//		public static class SortBy implements Serializable {
+//			private static final long serialVersionUID = 1L;
+//			
+//			private String sortProperty;
+//			private Direction sortDirection;
+//			
+//			public SortBy(){ }
+//			
+//			public SortBy(String sortProperty, Direction sortDirection) {
+//				this.sortProperty = sortProperty;
+//				this.sortDirection = sortDirection;
+//			}
+//		}
+		
+		
+	}
+	
+	@Getter @Setter
 	public static class ProjectCriteria implements Serializable {
 
 		private static final long serialVersionUID = 1L;
@@ -54,7 +84,7 @@ public abstract class SearchCriteria<T> implements Serializable {
 		
 	}
 	
-	@Data
+	@Getter @Setter
 	public static class QuerySearchCriteria extends SearchCriteria<String> {
 
 		private static final long serialVersionUID = 1L;
@@ -71,7 +101,7 @@ public abstract class SearchCriteria<T> implements Serializable {
 		
 	}
 
-	@Data
+	@Getter @Setter
 	public static class ExampleSearchCriteria<T> extends SearchCriteria<T> {
 
 		private static final long serialVersionUID = 1L;
@@ -86,7 +116,7 @@ public abstract class SearchCriteria<T> implements Serializable {
 		
 	}
 
-	@Data
+	@Getter @Setter
 	public static class LookupSearchCriteria extends SearchCriteria<String> {
 
 		private static final long serialVersionUID = 1L;

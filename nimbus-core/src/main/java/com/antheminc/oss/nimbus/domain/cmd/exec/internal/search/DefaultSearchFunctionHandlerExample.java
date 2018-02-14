@@ -17,11 +17,11 @@ package com.antheminc.oss.nimbus.domain.cmd.exec.internal.search;
 
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
+import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
 import com.antheminc.oss.nimbus.entity.SearchCriteria.ExampleSearchCriteria;
-import com.antheminc.oss.nimbus.entity.SearchCriteria.ProjectCriteria;
 
 /**
  * @author Rakesh Patel
@@ -46,7 +46,6 @@ public class DefaultSearchFunctionHandlerExample<T, R> extends DefaultSearchFunc
 
 	@Override
 	protected ExampleSearchCriteria createSearchCriteria(ExecutionContext executionContext, ModelConfig<?> mConfig, Param<T> actionParam) {
-		
 		Command cmd = executionContext.getCommandMessage().getCommand();
 		
 		ExampleSearchCriteria exampleSearchCriteria = new ExampleSearchCriteria<>();
@@ -56,15 +55,10 @@ public class DefaultSearchFunctionHandlerExample<T, R> extends DefaultSearchFunc
 		T criteria = (T)getConverter().convert(criteriaClass, executionContext.getCommandMessage().getRawPayload());
 		
 		exampleSearchCriteria.setWhere(criteria);
+		exampleSearchCriteria.setAggregateCriteria(cmd.getFirstParameterValue(Constants.SEARCH_REQ_AGGREGATE_MARKER.code));
 		
-		String aggregateAs = cmd.getFirstParameterValue("aggregate");
-		exampleSearchCriteria.setAggregateCriteria(aggregateAs);
-		
-		ProjectCriteria projectCriteria = new ProjectCriteria();
-		String projectAlias = cmd.getFirstParameterValue("projection.alias");
-		projectCriteria.setAlias(projectAlias);
-		
-		exampleSearchCriteria.setProjectCriteria(projectCriteria);
+		exampleSearchCriteria.setProjectCriteria(buildProjectCritera(cmd));
+		exampleSearchCriteria.setPaginationCriteria(buildPageCriteria(cmd));
 		
 		return exampleSearchCriteria;
 		

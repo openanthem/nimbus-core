@@ -78,11 +78,14 @@ public class VRSampleCoreEntityAccess {
 	
 	@Model @Getter @Setter
 	public static class VSSamplePageCoreEntityAccess {
+		// Discussion with Dinakar:
+			// need paging vs no paging - no option to configure
+			// where to define default pageSize - @Grid already has it.
 		
 		@MapsTo.Path(linked = false)
-		//@Config(url = "/vpSampleCoreEntityAccess/vtSampleCoreEntityAccess/vsSampleCoreEntityAccess/vgSampleCoreEntities.m/_process?fn=_set&url=/p/sample_core_access/_search?fn=example")
+		@Config(url = "/vpSampleCoreEntityAccess/vtSampleCoreEntityAccess/vsSamplePageCoreEntityAccess/vgSamplePageCoreEntities.m/_process?fn=_set&url=/p/sample_core_access/_search?fn=query")
 		@Grid(onLoad=true)
-		private org.springframework.data.domain.Page<SampleCoreEntityAccessLineItem> vgSampleCoreEntities;
+		private org.springframework.data.domain.Page<SampleCoreEntityAccessLineItem> vgSamplePageCoreEntities;
 	}
 	
 	

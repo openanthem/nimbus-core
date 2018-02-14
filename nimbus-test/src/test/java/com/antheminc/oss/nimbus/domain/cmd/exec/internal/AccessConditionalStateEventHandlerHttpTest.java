@@ -28,6 +28,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,9 +114,65 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 		final Object gridResponse = controller.handleGet(gridRequest, null);
 		assertNotNull(gridResponse);
 		
+		List<Output<?>> outputs = MultiOutput.class.cast(Holder.class.cast(gridResponse).getState()).getOutputs();
+		
+		assertNotNull(outputs);
+		
+		for(Output<?> op: outputs) {
+			if(op.getValue() instanceof Param<?>) {
+				Param<?> param = (Param<?>)op.getValue();
+				
+				Param<?> attrStringParam = param.findParamByPath("/0/attr_String"); // READ
+				assertNotNull(attrStringParam);
+				assertTrue(attrStringParam.isVisible());
+				assertFalse(attrStringParam.isEnabled());
+				
+				Param<?> viewLinkParam = param.findParamByPath("/0/viewLink"); // HIDDEN
+				assertNotNull(viewLinkParam);
+				assertFalse(viewLinkParam.isVisible());
+				assertFalse(viewLinkParam.isEnabled());
+				
+			}
+		}
+		
+	}
+	
+	//TODO Rakesh 02/14/2018- test once the grid return type of page is available in the framework
+	@Ignore
+	public void t05_accessConditionalGridPagination() throws Exception {
+		String userLoginId = createClientUserWithRoles("superman","intake","clinician");
+		
+		
+		SampleCoreEntityAccess scea = new SampleCoreEntityAccess();
+		scea.setAttr_String("test1");
+		
+		SampleCoreEntityAccess scea2 = new SampleCoreEntityAccess();
+		scea2.setAttr_String("test2");
+		mongo.save(scea, "sample_core_access");
+		mongo.save(scea2, "sample_core_access");
+		
+		
+		Param<?> p = excuteNewConfigView(userLoginId);
+		assertNotNull(p);
+		
+		String refId = p.findStateByPath("/.m/id");
+		
+		final MockHttpServletRequest gridRequest = MockHttpRequestBuilder
+				.withUri(VIEW_PARAM_ACCESS_ROOT)
+				.addRefId(refId)
+				.addNested("/vpSampleCoreEntityAccess/vtSampleCoreEntityAccess/vsSamplePageCoreEntityAccess/vgSamplePageCoreEntities")
+				.addParam("pageSize", "1")
+				.addParam("page", "0")
+				.addParam("sortBy", "attr_String,asc")
+				.addAction(Action._get)
+				.getMock();
+		final Object gridResponse = controller.handleGet(gridRequest, null);
+		assertNotNull(gridResponse);
+		
 		
 		ObjectMapper mapper = new ObjectMapper();
-		mapper.writeValueAsString(gridResponse);
+		String json = mapper.writeValueAsString(gridResponse);
+		System.out.println(json);
 		
 		List<Output<?>> outputs = MultiOutput.class.cast(Holder.class.cast(gridResponse).getState()).getOutputs();
 		

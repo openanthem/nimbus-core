@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -196,6 +197,9 @@ public class CommandBuilder {
 	 * @return
 	 */
 	public CommandBuilder addParams(Map<String, String[]> rParams) {
+		if(MapUtils.isEmpty(rParams))
+			return this;
+		
 		String[] bArr = rParams.get(Constants.MARKER_URI_BEHAVIOR.code);
 		if(ArrayUtils.isNotEmpty(bArr)) {
 			LinkedList<Behavior> behaviors = new LinkedList<>();
@@ -214,7 +218,10 @@ public class CommandBuilder {
 			//TODO Implement client/app => heirarchy based config for default behavior
 			cmd.setBehaviors(new LinkedList<>(Arrays.asList(Behavior.DEFAULT)));
 		}
-		cmd.setRequestParams(rParams);
+		if(MapUtils.isNotEmpty(cmd.getRequestParams()))
+			cmd.getRequestParams().putAll(rParams);	
+		else
+			cmd.setRequestParams(rParams);
 		
 		return this;
 	}

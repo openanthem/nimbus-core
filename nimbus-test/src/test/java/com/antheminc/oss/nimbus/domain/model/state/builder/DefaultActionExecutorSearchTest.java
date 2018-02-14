@@ -29,6 +29,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -46,52 +47,51 @@ import com.antheminc.oss.nimbus.domain.model.state.extension.StaticCodeValueBase
 import com.antheminc.oss.nimbus.entity.StaticCodeValue;
 import com.antheminc.oss.nimbus.entity.VStaticCodeValue;
 import com.antheminc.oss.nimbus.entity.client.Client;
-import com.antheminc.oss.nimbus.entity.client.access.ClientUserRole;
 import com.antheminc.oss.nimbus.entity.client.user.ClientUser;
 import com.antheminc.oss.nimbus.entity.queue.Queue;
 import com.antheminc.oss.nimbus.entity.user.ClientUserGroup;
 import com.antheminc.oss.nimbus.entity.user.GroupUser;
 import com.antheminc.oss.nimbus.test.domain.support.AbstractFrameworkIntegrationTests;
+import com.antheminc.oss.nimbus.test.entity.sample.s0.core.SampleCoreEntityAccess;
 
 /**
  * @author Rakesh Patel
  *
  */
-@Ignore
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 //@ContextConfiguration(classes = MongoConfiguration.class)
-public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTests {
+@SuppressWarnings("unchecked")
+public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegrationTests {
 
-	private static final String[] COLLECTIONS = {"queue","clientusergroup","clientuser"};
+	private static final String[] COLLECTIONS = {QUEUE_ALIAS, CLIENT_USER_ALIAS, CLIENT_USER_GROUP_ALIAS,SAMPLE_CORE_ENTITY_ACCESS_ALIAS};
 	
 	@Autowired
 	MongoOperations mongoOps;
 	
 	@Autowired
-	StaticCodeValueBasedCodeToLabelConverter converter;
+	StaticCodeValueBasedCodeToLabelConverter labelConverter;
 	
 	@Autowired
 	@Qualifier("default.processGateway")
 	CommandExecutorGateway commandGateway;
 	
 	@Test
-	@SuppressWarnings("unchecked")
 	public void t1_testSearchByLookupStaticCodeValue() {
-		
 		this.mongoOps.dropCollection("staticCodeValue");
+		
 		final List<ParamValue> expectedValues = new ArrayList<>();
 		expectedValues.add(new ParamValue("code1", "label1", "desc1"));
 		final StaticCodeValue expected = new StaticCodeValue("/status", expectedValues);
 		this.mongoOps.insert(expected, "staticCodeValue");
 		
-		CommandMessage cmdMsg = build("Acme/fep/icr/p/staticCodeValue/_search?fn=lookup&where=staticCodeValue.paramCode.eq('/status')");
+		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/staticCodeValue/_search?fn=lookup&where=staticCodeValue.paramCode.eq('/status')");
 		
 		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
 		List<Output<?>> ops  = multiOp.getOutputs();
 		
 		assertNotNull(ops);
 		
-		final List<ParamValue> values = (List<ParamValue>)ops.get(0).getValue(); // TODO having to cast the output, is that correct ??
+		final List<ParamValue> values = (List<ParamValue>)ops.get(0).getValue();
 		assertEquals(1, values.size());
 		assertEquals(expectedValues.get(0).getCode(), values.get(0).getCode());
 		assertEquals(expectedValues.get(0).getLabel(), values.get(0).getLabel());
@@ -106,17 +106,13 @@ public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTest
 		final StaticCodeValue expected = new StaticCodeValue("anything", expectedValues);
 		this.mongoOps.insert(expected, "staticCodeValue");
 		
-		assertEquals("Anticardiolpin Antibodies", this.converter.serialize("ACL"));
+		assertEquals("Anticardiolpin Antibodies", this.labelConverter.serialize("ACL"));
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
 	public void t2_testSearchByLookupModel() {
 		insertClient();
-		CommandMessage cmdMsg = build("Acme/fep/icr/p/client/_search?fn=lookup&projection.mapsTo=code:name,label:name");
-		
-		//ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
-		//List<ParamValue> values = lookupFunctionHandler.execute(exContext, null);
+		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/client/_search?fn=lookup&projection.mapsTo=code:name,label:name");
 		
 		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
 		List<Output<?>> ops  = multiOp.getOutputs();
@@ -132,9 +128,7 @@ public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTest
 	@Test
 	public void t3_testSearchByExampleCriteriaNull() {
 		insertClient();
-		CommandMessage cmdMsg = build("Acme/fep/icr/p/client/_search?fn=example");
-//		ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
-//		List<?> values = (List<?>)exampleFunctionHandler.execute(exContext, null);
+		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/client/_search?fn=example");
 		
 		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
 		List<Output<?>> ops  = multiOp.getOutputs();
@@ -151,10 +145,8 @@ public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTest
 	public void t4_testSearchByExampleCriteriaNotNull() {
 		Client c = insertClient();
 		
-		CommandMessage cmdMsg = build("Acme/fep/icr/p/client/_search?fn=example");
+		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/client/_search?fn=example");
 		cmdMsg.setRawPayload("{\"code\":\""+c.getCode()+"\"}");
-		//ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
-		//List<?> values = (List<?>)exampleFunctionHandler.execute(exContext, null);
 		
 		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
 		List<Output<?>> ops  = multiOp.getOutputs();
@@ -170,7 +162,7 @@ public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTest
 	@Test
 	public void t41_testSearchByQueryCriteriaNotNull() {
 		this.insertClient();
-		CommandMessage cmdMsg = build("Acme/fep/icr/p/client/_search?fn=query&where=client.code.eq('c1')");
+		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/client/_search?fn=query&where=client.code.eq('c1')");
 		
 		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
 		List<Output<?>> ops  = multiOp.getOutputs();
@@ -185,19 +177,15 @@ public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTest
 
 	@Test
 	public void t5_testSearchByQueryWithProjection() {
-		
 		this.mongoOps.dropCollection("staticCodeValue");
 		final List<ParamValue> expectedValues = new ArrayList<>();
 		expectedValues.add(new ParamValue("code1", "label1", "desc1"));
 		final StaticCodeValue expected = new StaticCodeValue("/status", expectedValues);
 		this.mongoOps.insert(expected, "staticCodeValue");
 		
-		CommandMessage cmdMsg = build("Acme/fep/icr/p/staticCodeValue/_search?fn=query&where=staticCodeValue.paramCode.eq('/status')&projection.alias=vstaticCodeValue");
-		//ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
-		//List<?> values = (List<?>)queryFunctionHandler.execute(exContext, null);
+		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/staticCodeValue/_search?fn=query&where=staticCodeValue.paramCode.eq('/status')&projection.alias=vstaticCodeValue");
 		
 		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
-		@SuppressWarnings("unchecked")
 		List<VStaticCodeValue> values = (List<VStaticCodeValue>) multiOp.getSingleResult();
 		
 		assertNotNull(values);
@@ -207,13 +195,11 @@ public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTest
 	
 	// TODO - 2017/09/06 Tony (AF42192) - Test needs to be updated per new framework changes.
 	@Ignore
-	@SuppressWarnings("unchecked")
 	@Test
 	public void t51_testSearchByQueryWithProjectionAndMapsTo() {
-		
 		ClientUserGroup cug = insertClientUserGroup();
 	
-		CommandMessage cmdMsg = build("Acme/fep/icr/p/clientusergroup/members/_search?fn=query&where=clientusergroup.id.eq('"+cug.getId()+"')");
+		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/clientusergroup/members/_search?fn=query&where=clientusergroup.id.eq('"+cug.getId()+"')");
 		
 		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
 		List<GroupUser> values = (List<GroupUser>)multiOp.getSingleResult();
@@ -224,14 +210,11 @@ public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTest
 	
 	@Test
 	public void t6_testSearchByQueryWithCountAggregation() {
-		
 		this.mongoOps.dropCollection("staticCodeValue");
 		this.mongoOps.insert(new StaticCodeValue("/status", null), "staticCodeValue");
 		this.mongoOps.insert(new StaticCodeValue("/status", null), "staticCodeValue");
 		
-		CommandMessage cmdMsg = build("Acme/fep/icr/p/staticCodeValue/_search?fn=query&where=staticCodeValue.paramCode.eq('/status')&aggregate=count");
-//		ExecutionContext exContext = new ExecutionContext(cmdMsg, null);
-//		Holder<Long> count = (Holder<Long>)queryFunctionHandler.execute(exContext, null);
+		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/staticCodeValue/_search?fn=query&where=staticCodeValue.paramCode.eq('/status')&aggregate=count");
 		
 		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
 		Long count = (Long) multiOp.getSingleResult();
@@ -252,7 +235,7 @@ public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTest
 		String userGroupQueues = "{ \"aggregate\": \"queue\", \"pipeline\": [{ $graphLookup: { from: \"clientusergroup\", startWith: \"$entityId\", connectFromField: \"entityId\", connectToField: \"_id\", as: \"usergroups\", restrictSearchWithMatch: {\"members.userId\":\"casemanager\"} } }, { $match: { \"usergroups\" :{ $ne: []} } } ] }";
 		String finalCriteria = userQueues+"~~"+userGroupQueues;
 		
-		CommandMessage cmdMsg = build("Acme/fep/cmapp/p/queue/_search?fn=query&where="+finalCriteria);
+		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/queue/_search?fn=query&where="+finalCriteria);
 		
 		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
 		List<Queue> values = (List<Queue>) multiOp.getSingleResult();
@@ -263,13 +246,13 @@ public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTest
 	
 	// TODO - the in-memory flapdoodle mongo does not support the graphLookup query hence @Ignore
 	@Ignore
-	public void t9t1_getAllQueuesForUserByNamedQueryAggregation() {
+	public void t10_getAllQueuesForUserByNamedQueryAggregation() {
 		Stream.of(COLLECTIONS).forEach((collection) -> mongoOps.dropCollection(collection));
 		createUsers();
 		createUserGroups();
 		createQueues();
 		
-		CommandMessage cmdMsg = build("Acme/fep/cmapp/p/queue/_search?fn=query&where=userQueues");
+		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/p/queue/_search?fn=query&where=userQueues");
 		
 		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
 		List<Queue> values = (List<Queue>) multiOp.getSingleResult();
@@ -280,7 +263,7 @@ public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTest
 	}
 	
 	@Test
-	public void t9t2_getMembersFromUserGroupByAggregation() {
+	public void t11_getMembersFromUserGroupByAggregation() {
 		Stream.of(COLLECTIONS).forEach((collection) -> mongoOps.dropCollection(collection));
 		createUsers();
 		createUserGroups();
@@ -306,40 +289,292 @@ public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTest
 				"    ] \n" + 
 				"}";
 		
-		CommandMessage cmdMsg = build("Acme/fep/cmapp/p/clientusergroup/_search?fn=query&where="+query+"&projection.alias=groupuser");
+		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/clientusergroup/_search?fn=query&where="+query+"&projection.alias=groupuser");
 		
 		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
 		List<GroupUser> values = (List<GroupUser>) multiOp.getSingleResult();
 		
 		Assert.notEmpty(values, "values cannot be empty");
-		org.junit.Assert.assertEquals(2, values.size());
+		assertEquals(2, values.size());
 		
 		System.out.println(values.get(0).getUserId());
 		
 	}
  	
+	@Test
+	public void t12_testSearchByQueryPageable() {
+		cleanInsertSampleCoreAccess(new String[] {"1","2","3","4","5","6"});
+		
+		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/sample_core_access/_search?fn=query&pageSize=5&page=0");
+		
+		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
+		List<Output<?>> ops  = multiOp.getOutputs();
+		
+		assertNotNull(ops);
+		
+		Page<?> response = (Page<?>)ops.get(0).getValue();
+		
+		assertNotNull(response);
+		assertNotNull(response.getContent());
+		assertEquals(5, response.getContent().size());
+		
+		//String json = converter.convert(values);
+		//System.out.println(json);
+	}
 	
 	@Test
-	public void tc10_orderby_desc() {
-		ClientUserRole clientUserRole = new ClientUserRole();
-		clientUserRole.setName("sandeep");
-		clientUserRole.setDescription("desc1");;
-		mongoOps.insert(clientUserRole);
+	public void t13_testSearchByQueryPageable_NextPage() {
+		cleanInsertSampleCoreAccess(new String[] {"1","2","3","4","5","6"});
 		
-		ClientUserRole clientUserRole2 = new ClientUserRole();
-		clientUserRole2.setName("mantha");
-		clientUserRole2.setDescription("desc2");;
-		mongoOps.insert(clientUserRole2);
+		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/sample_core_access/_search?fn=query&pageSize=5&page=1");
 		
-		ClientUserRole clientUserRole3 = new ClientUserRole();
-		clientUserRole3.setName("rakesh");
-		clientUserRole3.setDescription("esc2");;
-		mongoOps.insert(clientUserRole3);
+		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
+		List<Output<?>> ops  = multiOp.getOutputs();
 		
-		ClientUserRole clientUserRole4 = new ClientUserRole();
-		clientUserRole4.setName("jayant");
-		clientUserRole4.setDescription("dsc2");;
-		mongoOps.insert(clientUserRole4);	
+		assertNotNull(ops);
+		
+		Page<SampleCoreEntityAccess> response = (Page<SampleCoreEntityAccess>)ops.get(0).getValue();
+		
+		assertNotNull(response);
+		assertNotNull(response.getContent());
+		assertEquals(1, response.getContent().size());
+	}
+
+	
+	@Test
+	public void t14_testSearchByQueryPageableWithSort() {
+		cleanInsertSampleCoreAccess(new String[] {"1","2","3","4","5","6"});
+		
+		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/sample_core_access/_search?fn=query&pageSize=5&page=0&sortBy=attr_String,DESC");
+		
+		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
+		List<Output<?>> ops  = multiOp.getOutputs();
+		
+		assertNotNull(ops);
+		
+		Page<SampleCoreEntityAccess> response = (Page<SampleCoreEntityAccess>)ops.get(0).getValue();
+		
+		assertNotNull(response);
+		assertNotNull(response.getContent());
+		assertEquals(5, response.getContent().size());
+		
+		assertEquals("6", response.getContent().get(0).getAttr_String());
+		assertEquals("5", response.getContent().get(1).getAttr_String());
+		assertEquals("4", response.getContent().get(2).getAttr_String());
+		assertEquals("3", response.getContent().get(3).getAttr_String());
+		assertEquals("2", response.getContent().get(4).getAttr_String());
+	}
+	
+	@Test
+	public void t15_testSearchByQueryPageableWithSort_NextPage() {
+		cleanInsertSampleCoreAccess(new String[] {"1","2","3","4","5","6"});
+		
+		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/sample_core_access/_search?fn=query&pageSize=5&page=1&sortBy=attr_String,DESC");
+		
+		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
+		List<Output<?>> ops  = multiOp.getOutputs();
+		
+		assertNotNull(ops);
+		
+		Page<SampleCoreEntityAccess> response = (Page<SampleCoreEntityAccess>)ops.get(0).getValue();
+		
+		assertNotNull(response);
+		assertNotNull(response.getContent());
+		assertEquals(1, response.getContent().size());
+		
+		assertEquals("1", response.getContent().get(0).getAttr_String());
+	}
+	
+	@Test
+	public void t16_testSearchByQueryPageable_SimulatePageNavigation() {
+		cleanInsertSampleCoreAccess(new String[] {"1","2","3","4","5","6"});
+		
+		/* page 1 request */
+		getFirstPage();
+		
+		/* page 2 request (Next) */
+		getNextPage();
+		
+		/* page 1 request (Back) */
+		getFirstPage();
+	}
+	
+	@Test
+	public void t17_testSearchByExamplePageable() {
+		cleanInsertSampleCoreAccess(new String[] {"1","1","1","1","1","6"});
+		
+		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/sample_core_access/_search?fn=example&pageSize=4&page=0");
+		cmdMsg.setRawPayload("{\"attr_String\":\"1\"}");
+		
+		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
+		List<Output<?>> ops  = multiOp.getOutputs();
+		
+		assertNotNull(ops);
+		
+		Page<SampleCoreEntityAccess> responsePage = (Page<SampleCoreEntityAccess>)ops.get(0).getValue();
+		
+		assertNotNull(responsePage);
+		assertNotNull(responsePage.getContent());
+		assertEquals(4, responsePage.getContent().size());
+	}
+	
+	@Test
+	public void t18_testSearchByExamplePageable_SimulatePageNavigation() {
+		cleanInsertSampleCoreAccess(new String[] {"1","1","1","1","1","6"});
+		
+		/* page 1 request */
+		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/sample_core_access/_search?fn=example&pageSize=4&page=0");
+		cmdMsg.setRawPayload("{\"attr_String\":\"1\"}");
+		
+		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
+		List<Output<?>> ops  = multiOp.getOutputs();
+		
+		assertNotNull(ops);
+		
+		Page<SampleCoreEntityAccess> responsePage = (Page<SampleCoreEntityAccess>)ops.get(0).getValue();
+		
+		assertNotNull(responsePage);
+		assertNotNull(responsePage.getContent());
+		assertEquals(4, responsePage.getContent().size());
+		
+		/* page 2 request */
+		CommandMessage cmdMsg2 = build(PLATFORM_ROOT+"/sample_core_access/_search?fn=example&pageSize=4&page=1");
+		cmdMsg2.setRawPayload("{\"attr_String\":\"1\"}");
+		
+		MultiOutput multiOp2 = this.commandGateway.execute(cmdMsg2);
+		List<Output<?>> ops2  = multiOp2.getOutputs();
+		
+		assertNotNull(ops2);
+		
+		Page<SampleCoreEntityAccess> responsePage2 = (Page<SampleCoreEntityAccess>)ops2.get(0).getValue();
+		
+		assertNotNull(responsePage2);
+		assertNotNull(responsePage2.getContent());
+		assertEquals(1, responsePage2.getContent().size());
+	}
+	
+	@Test
+	public void t19_testSearchByExamplePageableWithSort() {
+		cleanInsertSampleCoreAccess(new String[] {"1","1","1","1","1","6"}, "1","2","3","4","5","6");
+		
+		/* page 1 request */
+		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/sample_core_access/_search?fn=example&pageSize=4&page=0&sortBy=attr_String2,desc&sortBy=attr_String,desc");
+		cmdMsg.setRawPayload("{\"attr_String\":\"1\"}");
+		
+		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
+		List<Output<?>> ops  = multiOp.getOutputs();
+		
+		assertNotNull(ops);
+		
+		Page<SampleCoreEntityAccess> responsePage = (Page<SampleCoreEntityAccess>)ops.get(0).getValue();
+		
+		assertNotNull(responsePage);
+		assertNotNull(responsePage.getContent());
+		assertEquals(4, responsePage.getContent().size());
+		assertEquals("5", responsePage.getContent().get(0).getAttr_String2());
+		assertEquals("4", responsePage.getContent().get(1).getAttr_String2());
+		assertEquals("3", responsePage.getContent().get(2).getAttr_String2());
+		assertEquals("2", responsePage.getContent().get(3).getAttr_String2());
+		
+		
+		/* page 2 request */
+		CommandMessage cmdMsg2 = build(PLATFORM_ROOT+"/sample_core_access/_search?fn=example&pageSize=4&page=1&sortBy=attr_String2,desc&sortBy=attr_String,desc");
+		cmdMsg2.setRawPayload("{\"attr_String\":\"1\"}");
+		
+		MultiOutput multiOp2 = this.commandGateway.execute(cmdMsg2);
+		List<Output<?>> ops2  = multiOp2.getOutputs();
+		
+		assertNotNull(ops2);
+		
+		Page<SampleCoreEntityAccess> responsePage2 = (Page<SampleCoreEntityAccess>)ops2.get(0).getValue();
+		
+		assertNotNull(responsePage2);
+		assertNotNull(responsePage2.getContent());
+		assertEquals(1, responsePage2.getContent().size());
+		assertEquals("1", responsePage2.getContent().get(0).getAttr_String2());
+	}
+
+	private void getFirstPage() {
+		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/sample_core_access/_search?fn=query&pageSize=4&page=0");
+		
+		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
+		List<Output<?>> ops  = multiOp.getOutputs();
+		
+		assertNotNull(ops);
+		
+		Page<SampleCoreEntityAccess> response = (Page<SampleCoreEntityAccess>)ops.get(0).getValue();
+		
+		assertNotNull(response);
+		assertNotNull(response.getContent());
+		assertEquals(4, response.getContent().size());
+		assertEquals("1", response.getContent().get(0).getAttr_String());
+		assertEquals("2", response.getContent().get(1).getAttr_String());
+		assertEquals("3", response.getContent().get(2).getAttr_String());
+		assertEquals("4", response.getContent().get(3).getAttr_String());
+	}
+	
+	private void getNextPage() {
+		CommandMessage cmdMsg2 = build(PLATFORM_ROOT+"/sample_core_access/_search?fn=query&pageSize=4&page=1");
+		
+		MultiOutput multiOp2 = this.commandGateway.execute(cmdMsg2);
+		List<Output<?>> ops2  = multiOp2.getOutputs();
+		
+		assertNotNull(ops2);
+		
+		Page<SampleCoreEntityAccess> response2 = (Page<SampleCoreEntityAccess>)ops2.get(0).getValue();
+		
+		assertNotNull(response2);
+		assertNotNull(response2.getContent());
+		assertEquals(2, response2.getContent().size());
+		assertEquals("5", response2.getContent().get(0).getAttr_String());
+		assertEquals("6", response2.getContent().get(1).getAttr_String());
+	}
+
+	private void cleanInsertSampleCoreAccess(String[] attr_String, String... attr_String2) {
+		mongoOps.dropCollection("sample_core_access");
+		
+		for(int i=0; i < attr_String.length; i++) {
+			SampleCoreEntityAccess scea = new SampleCoreEntityAccess();
+			scea.setAttr_String(attr_String[i]);
+			if(attr_String2 != null && attr_String2.length > 0 && i <= attr_String2.length) {
+				scea.setAttr_String2(attr_String2[i]);
+			}
+			mongo.insert(scea, "sample_core_access");
+		}
+		
+//		for(String attr: attr_String) {
+//			SampleCoreEntityAccess scea = new SampleCoreEntityAccess();
+//			scea.setAttr_String(attr);
+//			mongo.insert(scea, "sample_core_access");
+//		}
+//		
+//		if(attr_String2 != null) {
+//			for(String attr2: attr_String2) {
+//				SampleCoreEntityAccess scea = new SampleCoreEntityAccess();
+//				scea.setAttr_String2(attr2);
+//				mongo.insert(scea, "sample_core_access");
+//			}
+//		}
+		
+//		SampleCoreEntityAccess scea = new SampleCoreEntityAccess();
+//		scea.setAttr_String("1");
+//		SampleCoreEntityAccess scea2 = new SampleCoreEntityAccess();
+//		scea2.setAttr_String("2");
+//		SampleCoreEntityAccess scea3 = new SampleCoreEntityAccess();
+//		scea3.setAttr_String("3");
+//		SampleCoreEntityAccess scea4 = new SampleCoreEntityAccess();
+//		scea4.setAttr_String("4");
+//		SampleCoreEntityAccess scea5 = new SampleCoreEntityAccess();
+//		scea5.setAttr_String("5");
+//		SampleCoreEntityAccess scea6 = new SampleCoreEntityAccess();
+//		scea6.setAttr_String("6");
+//		
+//		mongo.insert(scea, "sample_core_access");
+//		mongo.insert(scea2, "sample_core_access");
+//		mongo.insert(scea3, "sample_core_access");
+//		mongo.insert(scea4, "sample_core_access");
+//		mongo.insert(scea5, "sample_core_access");
+//		mongo.insert(scea6, "sample_core_access");
 	}
 	
 	
@@ -356,34 +591,6 @@ public class ParamCodeValueProviderTest extends AbstractFrameworkIntegrationTest
 		c1.setCode("c1");
 		mongoOps.insert(c1, "client");
 		return c;
-	}
-	
-	private void inserClientUserRole() {
-		mongoOps.dropCollection("userrole");
-		
-		ClientUserRole clientUserRole = new ClientUserRole();
-		clientUserRole.setName("sandeep");
-		//clientUserRole.setStatus("Active");
-		clientUserRole.setDescription("desc1");;
-		mongoOps.insert(clientUserRole,"userrole");
-		
-		ClientUserRole clientUserRole2 = new ClientUserRole();
-		clientUserRole2.setName("mantha");
-		//clientUserRole2.setStatus("Active");
-		clientUserRole2.setDescription("desc2");;
-		mongoOps.insert(clientUserRole2,"userrole");
-		
-		ClientUserRole clientUserRole3 = new ClientUserRole();
-		clientUserRole3.setName("rakesh");
-		//clientUserRole3.setStatus("Inactive");
-		clientUserRole3.setDescription("esc2");;
-		mongoOps.insert(clientUserRole3,"userrole");
-		
-		ClientUserRole clientUserRole4 = new ClientUserRole();
-		clientUserRole4.setName("jayant");
-		//clientUserRole4.setStatus("Active");
-		clientUserRole4.setDescription("dsc2");;
-		mongoOps.insert(clientUserRole4,"userrole");
 	}
 	
 	private void createUsers() {
