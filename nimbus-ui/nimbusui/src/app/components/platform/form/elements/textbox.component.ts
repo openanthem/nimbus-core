@@ -40,7 +40,6 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   selector: 'nm-input',
   providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc ],
   template: `
-  {{value}}  {{element.leafState}}
     <label *ngIf="hidden!=true"
         [attr.for]="element.config?.code" class="{{elementStyle}}">{{label}} 
         <nm-tooltip *ngIf="helpText" 
