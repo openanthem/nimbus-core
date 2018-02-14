@@ -55,7 +55,17 @@ export class FormElementsService {
           group[element.config.code] = this.createNewFormGroup(element);
           //create new formgroup and formcontrol to create checkboxes in form. this is for form binding. TODO validations binding
         } else {
-          group[element.config.code] = checks ? [{value: (element.alias === 'Calendar' && element.leafState != null) ? element.leafState= new Date(element.leafState) : element.leafState || '', disabled: !element.enabled.currState}, checks] : [{value: (element.alias === 'Calendar' && element.leafState != null) ? element.leafState= new Date(element.leafState) : element.leafState || '', disabled: !element.enabled.currState}];
+          var leafState: any;
+          if (element.alias === 'Calendar' && element.leafState != null) {
+            leafState= new Date(element.leafState);
+          } else {
+            leafState = element.leafState || '';
+          }
+          if (checks) {
+            group[element.config.code] = [{value: leafState, disabled: !element.enabled.currState}, checks];
+          } else {
+            group[element.config.code] = [{value: leafState, disabled: !element.enabled.currState}] 
+         }
         }
       }
     });

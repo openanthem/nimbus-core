@@ -174,12 +174,9 @@ p-dropdown.form-control {
 // END inline edit text input styles for inplace-editor.component
 
 //date and time input
-.ui-calendar {
-    display: block;
-    .ui-calendar-button {
-        height: 2.15rem;
-    }
-} 
+.ui-calendar .ui-calendar-button {
+    height: 2.15rem;
+}
 .ui-timepicker.ui-widget-header{
     text-align: center;
 }
