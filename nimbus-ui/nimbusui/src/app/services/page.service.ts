@@ -718,8 +718,9 @@ export class PageService {
                                                         } else if (currentKey === 'config') {
                                                                 Object.assign(Reflect.get(param, currentKey), new ParamConfig().deserialize(Reflect.get(payload, updatedKey)));
                                                                 //TODO - refactor this whole method and the conditions. Revisit - order, count
-                                                        } else if (currentKey === 'validations') {
-                                                                Object.assign(Reflect.get(param, currentKey), new Validation().deserialize(Reflect.get(payload, updatedKey)));
+                                                        } else if (currentKey === 'activeValidationGroups') {
+                                                                Reflect.set(param, currentKey, Reflect.get(payload, updatedKey));
+                                                                this.validationUpdate.next(param);
                                                                 //TODO - refactor this whole method and the conditions. Revisit - order, count
                                                         } else if (currentKey === 'leafState' || currentKey === 'message') {
                                                                 Reflect.set(param, currentKey, Reflect.get(payload, updatedKey));

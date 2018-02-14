@@ -21,7 +21,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 
 /**
- * \@author Sandeep.Mantha
+ * 
+ * \@author reference https://github.com/ivanderbu2/angular-redux
  * \@whatItDoes 
  * 
  * \@howToUse 

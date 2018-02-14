@@ -99,6 +99,7 @@ export class Attribute implements Serializable<Attribute> {
     regexp: string;
     min: any;
     max: any;
+    groups: String[];
 
     deserialize( inJson ) {
         this.message = inJson.message;
@@ -106,6 +107,7 @@ export class Attribute implements Serializable<Attribute> {
         this.regexp = inJson.regexp;
         this.min = inJson.min;
         this.max = inJson.max;
+        this.groups = inJson.groups;
         return this;
     }
 }
@@ -114,13 +116,11 @@ export class Constraint implements Serializable<Constraint> {
     name: string;
     value: string;
     attribute: Attribute;
-    group: string;
 
     deserialize( inJson ) {
         this.name = inJson.name;
         this.value = inJson.value;
         this.attribute = new Attribute().deserialize( inJson.attributes );
-        this.group = inJson.group;
         return this;
     }
 }
@@ -182,7 +182,7 @@ export class Param implements Serializable<Param> {
     enabled: RemnantState<boolean>;
     message : Message;
     values : Values[];
-    group: string;
+    activeValidationGroups: String[];
     _alias: string;
 
     public get alias(): string {
@@ -239,6 +239,7 @@ export class Param implements Serializable<Param> {
                 this.values.push( new Values().deserialize( inJson.values[value] ) );
             }
         }
+        this.activeValidationGroups = inJson.activeValidationGroups;
         return this;
     }
     // TODO : Clean up. Duplicating this logic here to populate grid data when data is recieved as leafstate

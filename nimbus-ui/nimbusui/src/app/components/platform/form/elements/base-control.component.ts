@@ -1,3 +1,4 @@
+import { ValidationConstraint } from './../../../../shared/validationconstraints.enum';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -88,30 +89,59 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
             this.pageService.validationUpdate$.subscribe(event => {
                 let frmCtrl = this.form.controls[event.config.code];
                 if(frmCtrl!=null) {
-                    //perculate the changes to the current parameter and all children when group is not null
-                    if(this.element.path.indexOf(event.path) > 0 && event.group != null && event.group != '') {
-                        var staticChecks: ValidatorFn[] = [];
-                        var dynamicChecks: ValidatorFn[] = [];
-                        staticChecks = ValidationUtils.buildStaticValidations(this.element);
-                        dynamicChecks = ValidationUtils.buildDynamicValidations(this.element, event.group);
-                        frmCtrl.setValidators(staticChecks.concat(dynamicChecks));
-                    }
-                    //rebind the static validations by over writing the complete validators instead of looking if there are any dynamic validations and removing them
-                    if(event.path == this.element.path && (event.group == null || event.group == '')) {
-                        if(event.enabled.currState) {
+                    // //perculate the changes to the current parameter and all children when group is not null
+                    // if(event.path == this.element.path && event.activeValidationGroups != null && event.activeValidationGroups.length > 0) {
+                    //     var staticChecks: ValidatorFn[] = [];
+                    //     var dynamicChecks: ValidatorFn[] = [];
+                    //     staticChecks = ValidationUtils.buildStaticValidations(this.element);
+                    //     dynamicChecks = ValidationUtils.buildDynamicValidations(this.element, event.activeValidationGroups);
+                    //     frmCtrl.setValidators(dynamicChecks);
+                    //     if(event.enabled.currState) {
+                    //         frmCtrl.enable();   
+                    //     }
+                    //     else {
+                    //         frmCtrl.disable();
+                    //     }
+                    // }
+                    // //rebind the static validations by over writing the complete validators instead of looking if there are any dynamic validations and removing them
+                    // if(event.path == this.element.path && (event.activeValidationGroups == null || event.activeValidationGroups.length == 0)) {
+                    //     if(event.enabled.currState) {
+                    //         var staticChecks: ValidatorFn[] = [];
+                    //         staticChecks = ValidationUtils.buildStaticValidations(this.element);
+                    //         frmCtrl.setValidators(staticChecks);
+                    //         frmCtrl.enable();   
+                    //     }
+                    //     else {
+                    //         frmCtrl.clearValidators();
+                    //         frmCtrl.updateValueAndValidity();
+                    //         frmCtrl.disable();
+                    //         console.log(frmCtrl.valid);
+                    //     }
+                    //     this.disabled = !event.enabled.currState;     
+                    // }
+                    if(event.path === this.element.path) {
+                        //bind dynamic validations on a param as a result of a state change of another param
+                        if(event.activeValidationGroups != null && event.activeValidationGroups.length > 0) {
+                            var staticChecks: ValidatorFn[] = [];
+                            var dynamicChecks: ValidatorFn[] = [];
+                            staticChecks = ValidationUtils.buildStaticValidations(this.element);
+                            //merge the static and dynamic validations and overwrite the form control's validators
+                            dynamicChecks = ValidationUtils.buildDynamicValidations(this.element, event.activeValidationGroups);
+                            frmCtrl.setValidators(dynamicChecks);
+                        } else {
                             var staticChecks: ValidatorFn[] = [];
                             staticChecks = ValidationUtils.buildStaticValidations(this.element);
-                            frmCtrl.setValidators(staticChecks.concat(dynamicChecks));
+                            frmCtrl.setValidators(staticChecks);
+                        }
+                        if(event.enabled.currState && event.visible.currState) {
                             frmCtrl.enable();   
                         }
                         else {
-                            frmCtrl.clearValidators();
-                            frmCtrl.updateValueAndValidity();
                             frmCtrl.disable();
-                            console.log(frmCtrl.valid);
                         }
-                        this.disabled = !event.enabled.currState;     
+                        this.disabled = !event.enabled.currState;   
                     }
+
                 }
             });
         }
@@ -126,14 +156,6 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
              }
          });
 
-         if(this.element.config.validation!=null) {
-            this.element.config.validation.constraints.forEach(validator => {
-                if (validator.name === 'DateRange') {
-                  this.min = new Date(validator.attribute.min)
-                  this.max = new Date(validator.attribute.max)
-                }
-              });
-         }
     }
     /** invoked from InPlaceEdit control */
     setInPlaceEditContext(context: any) {
@@ -175,7 +197,7 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
         let style = '';
         if (this.element.config.validation) {
             this.element.config.validation.constraints.forEach(validator => {
-                if (validator.name === 'NotNull') {
+                if (validator.name === ValidationConstraint._notNull.value) {
                     style = 'required';
                 }
             });
