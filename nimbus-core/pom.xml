@@ -1,0 +1,53 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.antheminc.oss</groupId>
+		<artifactId>nimbus-parent</artifactId>
+		<version>1.0.0.M1-SNAPSHOT</version>
+		<relativePath>../nimbus-parent</relativePath>
+	</parent>
+	
+	<artifactId>nimbus-core</artifactId> 
+	
+    <properties>
+        <sonar.projectName>nimbus-core</sonar.projectName>
+        <!-- <sonar.jacoco.reportPath>${project.basedir}/../platform.parent/target/jacoco.exec</sonar.jacoco.reportPath> -->
+    </properties>
+
+    <build>
+	     <plugins>
+			<plugin>
+				<groupId>com.mysema.maven</groupId>
+				<artifactId>apt-maven-plugin</artifactId>
+				<version>1.1.3</version>
+				<executions>
+					<execution>
+						<phase>compile</phase>
+						<goals>
+							<goal>process</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/target/generated-sources/annotations</outputDirectory> 
+							<processor>
+								com.antheminc.oss.nimbus.domain.support.DomainQuerydslProcessor
+							</processor>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>  
+		
+	        <plugin>
+	            <groupId>org.apache.maven.plugins</groupId>
+	            <artifactId>maven-surefire-plugin</artifactId>
+	            <configuration>
+	                <includes>
+	                    <include>**/Test*.java</include>
+	                    <include>**/*Tests.java</include>
+	                    <include>**/*Test.java</include>
+	                </includes>
+	            </configuration>
+	        </plugin>
+        </plugins>
+    </build>
+</project>

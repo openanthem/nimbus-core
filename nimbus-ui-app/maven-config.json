@@ -1,0 +1,16 @@
+{
+    "groupId"      : "com.antheminc.oss",
+    "artifactId"   : "nimbus-ui-app",
+    "version"      : "1.0.0.M1-SNAPSHOT",
+    "buildDir"     : "dist",
+    "finalName"    : "com.antheminc.oss.nimbusuiapp",
+    "type"         : "jar",
+    "fileEncoding" : "utf-8",
+    "generatePom"  : true,
+    "repositories" : [
+      {
+        "id": "repo-prod-public",
+        "url": "https://va10pwprpo001.us.ad.wellpoint.com/artifactory/public/"
+      }
+    ]
+}

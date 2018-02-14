@@ -1,0 +1,65 @@
+<div class="header" *ngIf="topMenuItems || branding">
+
+    <nm-link [element]="branding.logo" *ngIf="branding.logo"></nm-link>
+
+    <div class="d-inline-block p-0 pull-right clearfix">
+        <div class="headerMenu pull-right clearfix">
+            <div class="topLinksMenu">
+                <a class="sr-only" aria-hidden="true" href="">Skip Navigation</a>
+                <nm-link [element]="branding.help" *ngIf="branding.help"></nm-link>
+                <nm-link [element]="branding.logOut" *ngIf="branding.logOut"></nm-link> 
+
+            </div>
+            <div class="btn-group pull-right clearfix">
+
+                <a href="#" class="fa-icon-link alerts mr-2" *ngIf="branding?.linkNotifications">
+                    <!-- <span class="tag" *ngIf="hasMessages">{{messageCount}}</span> -->
+                    <span class="tag" *ngIf="messageCount > 0"> {{messageCount}}</span>
+                </a>
+
+                <!-- <ng-template [element]="branding.title" *ngIf="branding.title == 'Long Term Services Supports(LTSS)'"> -->
+                 <a href="#" class="fa-icon-link settings mr-2" *ngIf="branding?.settings"></a> 
+                <!-- </ng-template> -->
+
+            </div>
+        </div>
+        <!-- <div class="mr-2 align-top d-inline-block" *ngIf="branding.userName"> -->
+        <div class="mr-3 mt-1 hidden-xs-down d-inline-block pull-right">
+            <i class="fa fa-user userIcon"></i>
+            <div class="userInfo">
+                <div class="userName">
+                    <nm-value [element]="branding.userName" *ngIf="branding.userName"></nm-value>  
+                </div>
+                <div class="userRole">
+                    <nm-value [element]="branding.userRole" *ngIf="branding.userRole"></nm-value>  
+                </div>
+            </div>
+        </div>
+            
+   
+        
+    </div>
+
+    <div class="col-lg-6 col-md-3 col-sm-3 hidden-sm-down p-0 ml-3 mt-1 ">
+        <div class="productName hidden-xs-downd-inline-block">
+              <nm-paragraph [element]="branding.title" *ngIf="branding.title"></nm-paragraph>  
+        </div>
+            
+        <!-- <ng-template [element]="branding.title" *ngIf="branding.title == 'Long Term Services Supports(LTSS)'"> -->
+        <div class="hidden-md-down col-lg-5 align-bottom" *ngIf="branding?.title === 'Long Term Services &amp; Supports (LTSS)'">
+            <div id="custom-search-input">
+                <div class="input-group">
+                    <input type="text" class="form-control input-lg" placeholder="Search" />
+                    <span class="input-group-btn">
+                        <button class="btn btn-info btn-lg" type="button">
+                            <i class="fa fa-search" aria-hidden="true"></i>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <!-- </ng-template> -->
+
+    </div>
+
+</div>

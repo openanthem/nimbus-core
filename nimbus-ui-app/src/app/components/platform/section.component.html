@@ -1,0 +1,71 @@
+<div class="{{cssClass}}" id="{{code}}">
+    <!-- Section Message -->
+    <div class="alert alert-info{{element?.type?.model?.config?.message?.type}}" role="alert" *ngIf="element?.message">
+        {{element?.message.text}}
+    </div>
+
+    <!-- Loop thru Section Params - look at the visible flag and put in the right condition-->
+    <ng-template [ngIf]="visible==true">
+        <ng-template ngFor let-element [ngForOf]="nestedParams">
+            <!-- Card Content -->
+            <ng-template [ngIf]="element.alias == 'CardDetailsGrid'">
+                <nm-card-details-grid [grid]="element"></nm-card-details-grid>
+            </ng-template>
+            <ng-template [ngIf]="element.alias == 'CardDetail'">
+                <nm-card-details [element]="element"></nm-card-details>
+            </ng-template>
+            <!-- Paragraph -->
+            <ng-template [ngIf]="element.alias == 'Paragraph'">
+                <nm-paragraph [element]="element"></nm-paragraph>
+            </ng-template>
+            <!-- Static Text-->
+            <ng-template [ngIf]="element.alias == 'StaticText'">
+                <nm-static-text [element]="element"></nm-static-text>
+            </ng-template>
+            <!-- Form Param -->
+            <ng-template [ngIf]="element.alias == 'Form'">
+                <nm-form [element]="element" [model]="element.type?.model"></nm-form>
+            </ng-template>
+            <!-- Link Param -->
+            <ng-template [ngIf]="element.config?.uiStyles?.isLink">
+                <div class="col-xs-12 smallCardCenter">
+                    <nm-link [element]="element" [root]="elements"></nm-link>
+                </div>
+            </ng-template>
+            <!-- Menu Param -->
+            <ng-template [ngIf]="element.alias == 'Menu'">
+                <nm-menu [element]="element"></nm-menu>
+            </ng-template>
+            <!-- Grid Param -->
+            <ng-template [ngIf]="element.alias == 'GridContainer'">
+                <nm-grid-container [element]="element"></nm-grid-container>
+            </ng-template>
+            <ng-template [ngIf]="element.alias == 'Grid'">
+                <infinite-scroll-grid
+                    [element]="element" 
+                    [params]="element?.config?.gridCols" (onScrollEvent)="onScrollEvent()">
+                </infinite-scroll-grid>
+            </ng-template>
+            <!--Other buttons. Refactor item : to be triggred based on the buttongroup annotation-->
+            <ng-template [ngIf]="element.alias == 'Button' && element?.visible.currState == true">
+                <div class="text-sm-right">
+                    <nm-button [element]="element"> </nm-button>
+                </div>
+            </ng-template>
+            <ng-template [ngIf]="element.alias == 'ButtonGroup'">
+                <div class="">
+                    <nm-button-group [buttonList]="element.type?.model?.params" [cssClass]="element.config?.uiStyles?.attributes?.cssClass">
+                    </nm-button-group>
+                </div>
+            </ng-template>
+            <!--textbox control without a form-->
+            <ng-template [ngIf]="element.alias == 'TextBox'">
+                <nm-input id="{{code}}" [element]="element" [(ngModel)]="element.leafState"></nm-input>
+            </ng-template>
+            <!--combobox control without a form-->
+            <ng-template [ngIf]="element.alias == 'ComboBox'">
+                <nm-comboBox id="{{code}}" [element]="element" [(ngModel)]="element.leafState"></nm-comboBox>
+            </ng-template>
+        </ng-template>
+    </ng-template>
+</div>

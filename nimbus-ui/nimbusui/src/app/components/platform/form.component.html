@@ -1,0 +1,11 @@
+
+<form id="{{formId}}" [formGroup]="form" novalidate>
+    <!--condition for rendering accordion groups inside form-->
+    <accordion *ngIf="groups.length>0" >
+        <accordion-group [param]="group" [title]="group?.config?.code" [formGroup]="form" [panelClass]="group?.config?.uiStyles?.attributes?.cssClass" *ngFor="let group of groups">
+            <nm-frm-grp [elements]="group?.type?.model?.params" [form]="form" [elementCss]="elementCss"> </nm-frm-grp>
+        </accordion-group>
+    </accordion>
+    <!--condition to render those form elements that dont have an accordion container-->
+    <nm-frm-grp *ngIf="formElements.length>0" [elements]="formElements" [form]="form" [elementCss]="elementCss"> </nm-frm-grp>
+</form>

@@ -1,0 +1,10 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.antheminc.oss.nimbus.app.extension.config.BPMEngineConfig,\
+com.antheminc.oss.nimbus.app.extension.config.DefaultCoreConfiguration,\
+com.antheminc.oss.nimbus.app.extension.config.DefaultMongoConfig,\
+com.antheminc.oss.nimbus.app.extension.config.WebConfig,\
+com.antheminc.oss.nimbus.app.extension.config.SwaggerConfig,\
+com.antheminc.oss.nimbus.app.extension.config.DefaultProcessConfig,\
+com.antheminc.oss.nimbus.app.extension.config.DefaultCoreExecutorConfig,\
+com.antheminc.oss.nimbus.app.extension.config.DefaultCoreBuilderConfig,\
+com.antheminc.oss.nimbus.app.extension.config.ActivitiProcessAsBeanRegistrar,\
+com.antheminc.oss.nimbus.app.extension.config.DefaultFrameworkExtensionsConfig

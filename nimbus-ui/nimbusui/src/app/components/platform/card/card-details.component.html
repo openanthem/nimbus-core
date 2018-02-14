@@ -1,0 +1,78 @@
+<div [ngClass]="{hide: opened}" class="col-xs-12 {{element.config?.uiStyles?.attributes?.cssClass}}">
+    <button class="btn btn-icon edit topRight" type="button" (click)="processOnClick()" title="Select to Edit" 
+    	*ngIf="element?.config?.uiStyles?.attributes?.editable === true">
+    	<svg>
+        	<use xlink:href="resources/icons/edit.svg#Layer_1" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+		</svg>
+	</button>
+    <div class="col-sm-12 p-0" *ngIf="label">
+        <!-- <div class="col-sm-12 p-0 pt-1 head-1 text-uppercase">{{element.config.uiStyles.attributes.title}}</div> -->
+        <h3 class="col-sm-12 p-0 pt-1 head-1 text-uppercase">
+            <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
+        </h3>
+    </div>
+    <ng-template ngFor let-param [ngForOf]="element?.type?.model?.params">
+        <ng-template [ngIf]="param.config?.uiStyles?.attributes?.alias == 'CardDetailsTag'">
+            <a href="javascript:void(0);" (click)="processOnClick()" title="Select to Edit" class="border-all topLeft number">
+                <div *ngFor="let field of param?.type?.model?.params">
+                    <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == 'FieldValue'">
+                            {{field.leafState}}
+                    </ng-template>
+                </div>
+            </a>
+        </ng-template>
+        <div class="col-sm-12 p-0 mt-1 clearfix ">
+            <ng-template [ngIf]="param.config?.uiStyles?.attributes?.alias == 'CardDetailsHeader'">
+                <span *ngFor="let field of param?.type?.model?.params">
+                    <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == 'FieldValue'">
+                            <nm-card-details-field [element]="field" [(value)]="field.leafState"></nm-card-details-field>
+                    </ng-template>
+                </span>
+            </ng-template>
+            <ng-template [ngIf]="param.config?.uiStyles?.attributes?.alias == 'CardDetailsBody'">
+                <span *ngFor="let field of param?.type?.model?.params">
+                    <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == 'StaticText'">
+                            <nm-static-text [element]="field"></nm-static-text>
+                    </ng-template>
+                    <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == 'FieldValue'">
+                            <nm-card-details-field [element]="field" [(value)]="field.leafState"></nm-card-details-field>
+                    </ng-template>
+                    <ng-template [ngIf]="field.config?.uiStyles?.isLink">
+                        <div class="col-sm-3 p-0 clearfix form-group">
+                            <div>
+                              <nm-link [element]="field"></nm-link>
+                            </div>
+                        </div>
+                    </ng-template>
+                </span>
+            </ng-template>
+            <ng-template [ngIf]="param.config?.uiStyles?.attributes?.alias == 'CardDetailsFooter'">
+                <!-- TODO add the footer component -->
+            </ng-template> 
+        </div>
+    </ng-template>
+</div>
+
+
+
+<!--############ Testing for drag drop #####################-->
+    <!--<a href="javascript:void(0);" title="Select to Edit" class=" editIcon topRight"></a>-->
+        <ng-template [ngIf] = "list">
+         <div  class="col-xs-12 mt-1 contentBox right-gutter bg-light col-xs-12 mt-1 contentBox right-gutter bg-alternate withIndex withIcon planned" >
+         <!--pDraggable="dd"  
+                            (onDragStart)="dragStart($event, list)" (onDragEnd)="dragEnd($event)">-->
+                            
+            <button class="btn btn-icon edit topRight " type="button"  title="Select to Edit" ><svg>
+                    <use xlink:href="resources/icons/edit.svg#Layer_1" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                </svg></button>
+                <!-- TODO add the header component -->
+               <div>
+                        {{list?.header?.title?.field}} - {{list?.header?.title?.value}}<br>
+               </div>
+               <div *ngFor="let field of list.body.fields">                 
+                   {{field.field}} - {{field.value}}
+               </div>          
+        </div>
+        </ng-template>
+        
+ 

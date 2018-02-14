@@ -1,0 +1,27 @@
+<div [formGroup]="form" *ngIf="element.config?.uiStyles?.attributes?.alias!='Button'" [hidden]="!element?.visible?.currState" class="form-group  {{elementCss}} {{getErrorStyles()}}">
+   
+    <nm-header [element]="element" *ngIf="element.config?.uiStyles?.attributes?.alias=='Header'" ></nm-header>
+    <nm-paragraph [element]="element" *ngIf="element.config?.uiStyles?.attributes?.alias=='Paragraph'"></nm-paragraph>
+    <nm-input id="{{id}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.type=='text'" [element]="element" [form]="form"></nm-input>
+    <nm-input-textarea id="{{id}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.type=='textarea'" [element]="element" [form]="form"></nm-input-textarea>
+    <nm-input-date  id="{{id}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.type=='date'" [element]="element" [form]="form"></nm-input-date>
+    <nm-input-calendar  id="{{id}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.type=='calendar'" [element]="element" [form]="form"></nm-input-calendar>
+    <nm-comboBox id="{{id}}"  [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.alias == 'ComboBox'" [element]="element"  [form]="form"></nm-comboBox>
+    <nm-input-radio id="{{id}}"  [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.alias == 'Radio'" [element]="element" [form]="form"></nm-input-radio>
+    <nm-input-checkbox id="{{id}}"  *ngIf="element.config?.uiStyles?.attributes?.alias == 'CheckBoxGroup'" [element]="element" [form]="form"></nm-input-checkbox>
+    <nm-single-checkbox id="{{id}}" *ngIf="element.config?.uiStyles?.attributes?.alias == 'CheckBox'" [formControlName]="element.config?.code"  ngDefaultControl [element]="element" [form]="form"></nm-single-checkbox>
+    <nm-multiselect-dropdown id="{{id}}" *ngIf="element.config?.uiStyles?.attributes?.alias == 'MultiSelect1'" [formControlName]="element.config?.code" ngDefaultControl [element]="element"  [form]="form"></nm-multiselect-dropdown>
+    <nm-multi-select-listbox id="{{id}}" *ngIf="element.config?.uiStyles?.attributes?.alias == 'MultiSelect'" [element]="element"  [form]="form"></nm-multi-select-listbox>
+    <nm-multiselect-card id="{{id}}"  *ngIf="element.config.uiStyles?.attributes?.alias == 'MultiSelectCard'" [formControlName]="element.config?.code" ngDefaultControl [element]="element" [form]="form"></nm-multiselect-card>
+    <nm-pickList id="{{id}}" *ngIf="element.config?.uiStyles?.attributes?.alias == 'PickList'" [formControlName]="element.config?.code" ngDefaultControl [element]="element" [form]="form"></nm-pickList>
+    <nm-upload id="{{id}}" *ngIf="element.config?.uiStyles?.attributes?.alias == 'FileUpload'" [formControlName]="element.config?.code" [element]="element" [form]="form"></nm-upload>
+    <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias == 'Grid'">
+        <infinite-scroll-grid
+            [element]="element" [form]="form" [formControlName]="element.config?.code"
+            [params]="element?.config?.gridCols" (onScrollEvent)="onScrollEvent()">
+        </infinite-scroll-grid>
+    </ng-template>
+    <div *ngIf="showErrors==true">
+        <p class="warningMsg" *ngFor="let error of getErrors()">{{error}}</p>
+    </div>
+</div>

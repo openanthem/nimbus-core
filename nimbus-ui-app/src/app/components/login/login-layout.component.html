@@ -1,0 +1,36 @@
+<div class="header">
+	<nm-link [element]="branding.logo" *ngIf="branding.logo"></nm-link>        
+    <div class=" productName d-inline-block ml-2 pt-1">
+		<div class="sizeTarget">
+            <nm-link [element]="branding.title" *ngIf="branding.title"></nm-link>
+        </div>
+    </div>
+    <div class="headerMenu hidden-sm-down col-sm-6 col-md-7 col-xl-8 pull-right">
+        <div class="btn-group pull-right" *ngFor="let menuItem of topMenuItems">
+            <nm-link [element]="menuItem"></nm-link>
+        </div>      
+    </div>
+</div>
+
+<!-- Everything after header -->
+<div class="wrapper">
+	<div class="main-content" >
+		<router-outlet></router-outlet>
+
+	</div><!--  END main-content  -->
+</div><!--  END wrapper  -->
+<div id="footer" class="nm-footer bottom" *ngIf="footer">
+		<div class="footer-text">
+			<ul>
+				<li *ngIf="footer.version" >
+						<nm-paragraph [element]="footer.version" ></nm-paragraph>  
+				</li>
+				<li *ngIf="footer.copyright">
+						<nm-paragraph [element]="footer.copyright" ></nm-paragraph> 
+				</li>
+				<li *ngIf="footer.sslCert">
+						<nm-link [element]="footer.sslCert"></nm-link> 
+				</li>
+			</ul>
+		</div>
+	</div>

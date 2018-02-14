@@ -1,0 +1,58 @@
+.nm-footer {
+    width: 100%;
+    min-height: $footer-height-nimbus; 
+    background-color: $footer-bkg;
+    color: $footer-color;
+    text-align: center;
+    @extend .body-1;
+    &.bottom{ // for login page
+        position: absolute;
+        bottom: 0;
+        .footer-text {
+            p {
+                display: inline-block;
+                margin-right: 2rem;
+                margin-left: 2rem;
+            }
+            img.logo {
+                width: 60px;
+                margin-left: 20px;
+            }
+        }
+    }
+    .footer-text {
+        padding: 30px;
+        p {
+            max-width: 800px;
+            margin: auto;
+            margin-bottom: 1.5rem;
+        }
+
+        ul{
+            list-style-type: none;
+            text-align: center;
+
+            li{
+                display: inline;
+
+                &:after{
+                    content: ' | '
+                };
+
+                &:last-child:after{
+                    content: '';
+                }
+            };
+
+            a {
+                color: $footer-color;
+            &:hover{
+                    
+                }
+            }
+
+            
+        }
+    }
+}
+

@@ -1,0 +1,15 @@
+<ng-template ngFor let-element [ngForOf]="element?.type?.model?.params">
+    <!-- Grid Param -->
+    <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias == 'Grid'">
+        <infinite-scroll-grid
+            [data]="element.config?.gridList"
+            [element]="element"
+            [params]="element?.config?.gridCols"
+            (onScrollEvent)="onScrollEvent()">
+        </infinite-scroll-grid>
+    </ng-template>
+    <!-- Button Group -->
+    <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias == 'ButtonGroup'">
+        <div class=""><nm-button-group [buttonList]="element.type?.model?.params" [cssClass]="element.config?.uiStyles?.attributes?.cssClass"> </nm-button-group></div>
+    </ng-template>
+</ng-template>

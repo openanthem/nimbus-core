@@ -1,0 +1,204 @@
+@mixin styleButton($bkgColor,$color) {
+  background: $bkgColor;
+  border-color: $bkgColor;
+  
+  color:$color;
+  line-height:1;
+  text-transform: initial;
+  margin-right:9px;
+  margin-bottom:1rem;
+  &:hover:not([disabled]){
+    background-color: lighten($bkgColor, 15%);
+  }
+  &:focus{
+    outline: $focus-outline-setting;
+  }
+  &[disabled]{
+    background-color: lighten($bkgColor, 25%);
+  }
+}
+button:focus{
+  outline: $focus-outline-setting;
+}
+.btn-action,.btn-primary {
+  @include styleButton($primary-action-color,#fff);
+  padding: .3rem 1.5rem;
+  border-radius: .6rem;
+}
+.btn-delete {
+  @include styleButton($delete-color,#fff);
+  padding: .2rem .5rem;
+  padding: .3rem 1.5rem;
+  border-radius: .6rem;
+}
+.btn-secondary {
+  @include styleButton($secondary-action-color,#494949);
+  padding: .2rem 1rem;
+  border-radius: .4rem;
+}
+
+
+.dropdown-menu {
+  margin-top: 0;
+}
+
+.btn-plain {
+    border-width: 0px;
+    background: none;
+    text-transform: initial;
+    text-decoration: underline;
+      color:$header-bkg;
+    line-height:1;
+    &:hover{
+      color: #034b7c;
+    }
+    &:focus{
+      outline: $focus-outline-setting;
+    }
+}
+
+.btn-blue {
+  @include styleButton($header-bkg,#fff);
+  i {
+    color:#169bd5;
+  }
+}
+.btn-badge{
+    position: relative;
+    padding: .3rem 2.5rem .3rem 1rem;
+    min-width: 85px;
+    text-transform: uppercase;
+    line-height: 1;
+    color: #555;
+    border-color: #888;
+    background: #fff;
+    font-size: .9rem;
+    border-radius:0;
+    min-height: 1.6rem;
+    .badge {
+          position: absolute;
+          top: .1rem;
+          right: 2px;
+          padding: .2rem .5rem;
+          background-color: #777;
+          color: #fff;
+    }
+    &.btn-delete {
+      background: #ccc;
+      border-color: #999;
+    }
+    &:hover:not([disabled]){
+    background-color: darken(#777, 10%);
+    color: #fff
+    }
+}
+.btn.btn-icon, .icon-holder {
+    padding: 0;
+    background: transparent;
+    svg {
+      width: 2rem;
+      height: 2rem;
+      fill: white;
+      stroke: #999;
+      stroke-width: .5;
+  }
+  &.green, &.edit {
+    svg{
+      fill: white;
+      stroke: $goGreen;
+    }
+    &:hover  svg {
+    fill: $goGreen;
+      stroke: #fff;
+
+  }
+  }
+   &.blue {
+    svg{
+      fill: white;
+      stroke: $header-bkg;
+    }
+    &:hover  svg {
+      fill: $mecury;
+
+    }
+  }
+}
+
+.windowControls .btn.btn-icon svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    stroke-width: 1;
+    margin-right: 8px;
+}
+
+.fa-icon-link {
+  position:relative;
+  display: inline-block; 
+  text-shadow: none;
+  font-size: .9rem;
+  text-decoration: none;
+  color: #fff;
+  line-height: 1.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  cursor: pointer;
+ padding:6px;
+
+  
+  .tag {
+    background-color: transparent;
+    position: absolute;
+    right:2px;
+    top:0;
+    border: .1rem solid white;
+    border-radius: 50%;
+    min-width: 1.1rem;
+    min-height: 1.1rem;
+    line-height: 1;
+    text-align: center;
+    color: #fff;
+    font-weight: 100;
+    padding: .1rem .3rem 0rem;
+    z-index: 1;
+  
+
+  }
+  i {
+      font-size: 30px;
+  }
+  &:hover,
+  &.active {
+      color: #014c8c;
+      .tag{
+        border-color: #034b7c;
+        background-color: #fff;
+        color: #034b7c;
+        font-weight: 600;
+        font-size: 1rem;
+        padding-top: 0;
+        padding-bottom: .1rem;
+        right:0;
+      }
+  }
+  &::before {
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    font-size: 36px;
+  }
+  &.alerts{
+    &::before {
+      content: "\f0f3";
+      transform: rotate(-15deg);
+    }
+  }
+  &.settings{
+    &::before {
+      content: "\f013";
+
+    }
+  }
+}

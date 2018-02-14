@@ -1,0 +1,25 @@
+<footer class="nm-footer">
+  
+    <div class="footer-text">
+        <ng-template *ngIf="footerConfig?.disclaimer">
+            <nm-paragraph [element]="footerConfig.disclaimer"></nm-paragraph>
+        </ng-template>  
+        <ul *ngIf="footerConfig">
+
+            <ng-template ngFor let-item [ngForOf]="footerConfig.links">
+                <li *ngIf="item.config">
+                    <nm-link [element]="item"></nm-link>
+                </li>
+            </ng-template>
+            <!-- <li *ngFor="let p of links">
+                <a [href] = "p.param.config.url" >{{p.param.config.code}}</a>
+            </li> -->
+        </ul>
+        <ul *ngIf="footerConfig">
+            <li>
+                <nm-link [element]="footerConfig.sslCert"></nm-link>
+            </li>
+        </ul>
+    </div>
+
+</footer>

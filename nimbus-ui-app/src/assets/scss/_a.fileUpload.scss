@@ -1,0 +1,83 @@
+.ui-fileupload {
+    margin-top: 1rem;
+    .ui-fileupload-buttonbar.ui-widget-header {
+        text-align: left;
+        border: 1px solid #CECECE;
+    }
+    .ui-fileupload-content.ui-widget-content {
+            border: 1px solid #CECECE;
+    }    
+}
+
+// .ui-dialog-title{
+//     p-header { //this is for dialog header and other widgets
+//         float: left;
+//     }
+// }
+
+// .ui-fileupload.ui-widget {
+//     position: relative;
+//     padding: 10px;
+//     .ui-fileupload-buttonbar {
+//         background: none;
+//         .ui-button-text-icon-left .ui-button-text {
+//             padding: .25em 1em;
+//         }
+//         .ui-button-text-icon-left.ui-fileupload-choose{
+//             .ui-button-text {
+//                 text-decoration: underline;
+//                 padding: .25em 1em .25rem 1.8rem;
+//             }
+//             .fa-plus:before {
+//                 content: "\F093";
+//             }
+//             &.hover{
+//                 .ui-button-text {
+//                     text-decoration: underline;
+//                     padding: .25em 1em .25rem 1.8rem;
+//                 }
+//             }
+//         }
+//         .ui-button:first-child {
+//             color: black;
+//             background: none;
+//             border: none;
+//             position: absolute;
+//             left: 0;
+//             top: 0;
+//         }
+        
+//         .ui-button:nth-child(2) {
+//             position: absolute;
+//             bottom: 6px;
+//             right: 55%;
+//             z-index: 1;
+//             .fa-upload:before {
+//                 content: "";
+//             }
+//         }
+//         .ui-button:nth-child(3) {
+//             position: absolute;
+//             bottom: 6px;
+//             right: 40%;
+//             z-index: 1;
+//             background: #eee;
+//             color: #888;
+//             border-color: #eee;
+//             .fa-close:before {
+//                 content: "";
+//             }
+//         }
+//     }
+// }
+
+// .ui-fileupload-files {
+//     width: 95%;
+// }
+// .ui-fileupload-content.ui-widget-content {
+//     width: 70%;
+//     margin-left: 10%;
+//     padding: 2rem;
+//     border: 1px dashed #cecece;
+//     margin-bottom: 80px;
+// }
