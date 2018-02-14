@@ -74,6 +74,7 @@
         <nimbus.ui.version>${nimbus.version}</nimbus.ui.version>
         <nimbus.dsl.version>${nimbus.core.version}</nimbus.dsl.version> <!-- DSL matches core's version -->
         <nimbus.test.version>${nimbus.version}</nimbus.test.version>
+        <nimbus.starter.version>${nimbus.version}</nimbus.starter.version>
     </properties>
 
     <repositories>
@@ -315,6 +316,11 @@
                 <artifactId>nimbus-test</artifactId>
                 <version>${nimbus.test.version}</version>
                 <scope>test</scope> 
+            </dependency>
+            <dependency>
+                <groupId>com.antheminc.oss</groupId>
+                <artifactId>nimbus-starter</artifactId>
+                <version>${nimbus.starter.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
