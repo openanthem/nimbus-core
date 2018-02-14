@@ -55,7 +55,7 @@ export class FormElementsService {
           group[element.config.code] = this.createNewFormGroup(element);
           //create new formgroup and formcontrol to create checkboxes in form. this is for form binding. TODO validations binding
         } else {
-          group[element.config.code] = checks ? [{value: (element.alias === 'Calendar') ? element.leafState= new Date(element.leafState) : element.leafState || '', disabled: !element.enabled.currState}, checks] : [{value: element.leafState || '', disabled: !element.enabled.currState}];
+          group[element.config.code] = checks ? [{value: (element.alias === 'Calendar' && element.leafState != null) ? element.leafState= new Date(element.leafState) : element.leafState || '', disabled: !element.enabled.currState}, checks] : [{value: (element.alias === 'Calendar' && element.leafState != null) ? element.leafState= new Date(element.leafState) : element.leafState || '', disabled: !element.enabled.currState}];
         }
       }
     });
@@ -74,9 +74,9 @@ export class FormElementsService {
       } else {
           //Ternary operator is for converting Calendar string into Date to support @Calendar component
           if (checks) {
-          fg.addControl(param.config.code, new FormControl({value: (param.alias === 'Calendar') ? param.leafState= new Date(param.leafState) : param.leafState || '', disabled: !param.enabled.currState}, checks));
+          fg.addControl(param.config.code, new FormControl({value: (param.alias === 'Calendar' && param.leafState != null) ? param.leafState= new Date(param.leafState) : param.leafState || '', disabled: !param.enabled.currState}, checks));
           } else {
-            fg.addControl(param.config.code, new FormControl({value: (param.alias === 'Calendar') ? param.leafState= new Date(param.leafState) : param.leafState || '', disabled: !param.enabled.currState}));
+            fg.addControl(param.config.code, new FormControl({value: (param.alias === 'Calendar' && param.leafState != null) ? param.leafState= new Date(param.leafState) : param.leafState || '', disabled: !param.enabled.currState}));
         } 
       }
     }
