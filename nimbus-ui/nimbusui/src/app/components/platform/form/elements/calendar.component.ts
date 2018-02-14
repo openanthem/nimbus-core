@@ -47,9 +47,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
             <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
         </label>
         <p-calendar [(ngModel)]="value"  
-            (focusout)="emitValueChangedEvent(this,$event)" 
-            [minDate]="min"
-            [maxDate]="max"
+            (focusout)="emitValueChangedEvent(this,$event)"
             [showIcon]="true"
             [disabled]="disabled"
             [timeOnly]="element.config?.uiStyles?.attributes?.timeOnly"

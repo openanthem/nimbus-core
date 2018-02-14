@@ -1,4 +1,3 @@
-import { ValidationConstraint } from './../../../../shared/validationconstraints.enum';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -26,7 +25,7 @@ import { WebContentSvc } from '../../../../services/content-management.service';
 import { GenericDomain } from '../../../../model/generic-domain.model';
 import { ValidatorFn } from '@angular/forms/src/directives/validators';
 import { ValidationUtils } from '../../validators/validationUtils';
-
+import { ValidationConstraint } from './../../../../shared/validationconstraints.enum';
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -45,8 +44,6 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
     public helpText : string;
     inPlaceEditContext: any;
     showLabel: boolean = true;
-    min: Date;
-    max: Date;
     disabled: boolean;
     constructor(private pageService: PageService, private wcs: WebContentSvc, private cd: ChangeDetectorRef) {
         super();
@@ -125,7 +122,6 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
                 this.pageService.processPost(this.element.config.uiStyles.attributes.postButtonUrl, null, $event.leafState, 'POST');
              }
          });
-
     }
     /** invoked from InPlaceEdit control */
     setInPlaceEditContext(context: any) {
