@@ -377,14 +377,6 @@ public class ViewConfig {
 		boolean inplaceEdit() default false;
 		String inplaceEditType() default "";
 		String datePattern() default "";
-		//DatePattern datePattern() default DatePattern.NONE;
-	}
-
-	public enum DatePattern{
-		DATE,
-		TIME,
-		DATE_TIME,
-		NONE
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
@@ -550,7 +542,6 @@ public class ViewConfig {
 		String type() default "text";
 		boolean postEventOnChange() default false;
 		String controlId() default "";
-		String datePattern() default "";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME) 
@@ -566,7 +557,6 @@ public class ViewConfig {
 		String rows() default "5"; 
 		boolean postEventOnChange() default false; 
 		String controlId() default ""; 
-		String datePattern() default "";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
@@ -580,7 +570,6 @@ public class ViewConfig {
 		String postButtonUrl() default "";
 		String controlId() default "";
 		String help() default "";
-		String datePattern() default "";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
@@ -648,7 +637,6 @@ public class ViewConfig {
 		boolean postEventOnChange() default false;
 		String controlId() default "";
 		String help() default "";
-		String datePattern() default "";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
@@ -661,7 +649,6 @@ public class ViewConfig {
 		boolean postEventOnChange() default false;
 		String controlId() default "";
 		String help() default "";
-		String datePattern() default "";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
