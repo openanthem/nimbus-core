@@ -10,6 +10,7 @@ import org.apache.commons.lang.ArrayUtils;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.ValidationGroup;
 import com.antheminc.oss.nimbus.domain.model.config.AnnotationConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.extension.ValidateConditionalStateEventHandler;
 
 /**
  * <p>Abstract Strategy implementation class provides support for strategies used
@@ -20,18 +21,14 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
  * @author Tony Lopez
  *
  */
-public abstract class ValidationAssignmentStrategy {
+public abstract class AbstractValidationAssignmentStrategy implements 
+		ValidateConditionalStateEventHandler.ValidationAssignmentStrategy {
 
 	public static final String ATTR_GROUPS = "groups";
 	
-	/**
-	 * <p>Executes this validation assignment strategy.</p>
-	 * 
-	 * @param add if true, attempts to assign <tt>group</tt> to the <tt>activeValidationGroups</tt> field 
-	 * of <tt>param</tt>.
-	 * 
-	 * @param param the root param on which &#64;ValidateConditional is defined
-	 * @param group the group to assign
+	/*
+	 * (non-Javadoc)
+	 * @see com.antheminc.oss.nimbus.domain.model.state.extension.ValidateConditionalStateEventHandler.ValidationAssignmentStrategy#execute(boolean, com.antheminc.oss.nimbus.domain.model.state.EntityState.Param, java.lang.Class)
 	 */
 	public void execute(boolean add, Param<?> param, Class<? extends ValidationGroup> group) {
 		if (!add) {
@@ -99,8 +96,7 @@ public abstract class ValidationAssignmentStrategy {
 			BiConsumer<Param<?>, Class<? extends ValidationGroup>> handler) {
 		
 		if (param.isNested()) {
-			param.findIfNested().getParams().forEach(nestedParam -> 
-				handleNested(nestedParam, group, handler));
+			param.findIfNested().getParams().forEach(nestedParam -> handleNested(nestedParam, group, handler));
 		}
 		handler.accept(param, group);
 	}

@@ -22,7 +22,7 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
  * 
  * @author Tony Lopez
  */
-public final class SiblingNestedValidationAssignmentStrategy extends ValidationAssignmentStrategy {
+public final class SiblingNestedValidationAssignmentStrategy extends AbstractValidationAssignmentStrategy {
 
 	@Override
 	void assignGroupTo(Param<?> param, Class<? extends ValidationGroup> group) {
