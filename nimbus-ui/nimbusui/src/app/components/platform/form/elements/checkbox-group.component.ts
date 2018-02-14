@@ -23,6 +23,8 @@ import { WebContentSvc } from '../../../../services/content-management.service';
 import { PageService } from '../../../../services/page.service';
 import { ServiceConstants } from '../../../../services/service.constants';
 import { BaseElement } from './../../base-element.component';
+import { ValidatorFn } from '@angular/forms/src/directives/validators';
+import { ValidationUtils } from '../../validators/validationUtils';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -120,11 +122,29 @@ export class CheckBoxGroup extends BaseElement implements ControlValueAccessor {
             });
             this.pageService.validationUpdate$.subscribe(event => {
                 let frmCtrl = this.form.controls[event.config.code];
-                if(frmCtrl!=null && event.path.startsWith(this.element.path)) {
-                    if(event.enabled.currState)
-                        frmCtrl.enable();
-                    else
-                        frmCtrl.disable();
+                if(frmCtrl!=null) {
+                    if(event.path === this.element.path) {
+                        //bind dynamic validations on a param as a result of a state change of another param
+                        if(event.activeValidationGroups != null && event.activeValidationGroups.length > 0) {
+                            var staticChecks: ValidatorFn[] = [];
+                            var dynamicChecks: ValidatorFn[] = [];
+                            staticChecks = ValidationUtils.buildStaticValidations(this.element);
+                            //merge the static and dynamic validations and overwrite the form control's validators
+                            dynamicChecks = ValidationUtils.buildDynamicValidations(this.element, event.activeValidationGroups);
+                            frmCtrl.setValidators(dynamicChecks.concat(staticChecks));
+                        } else {
+                            var staticChecks: ValidatorFn[] = [];
+                            staticChecks = ValidationUtils.buildStaticValidations(this.element);
+                            frmCtrl.setValidators(staticChecks);
+                        }
+                        if(event.enabled.currState && event.visible.currState) {
+                            frmCtrl.enable();   
+                        }
+                        else {
+                            frmCtrl.disable();
+                        } 
+                    }
+
                 }
             });
         }
