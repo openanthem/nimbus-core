@@ -45,7 +45,7 @@ import lombok.ToString;
  * @author Soham Chakravarti
  *
  */
-@Getter @Setter @ToString(callSuper=true, of={"code", "beanName", "type"})
+@Getter @Setter @ToString(callSuper=true, of={"code", "beanName", "configType"})
 public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements ParamConfig<P>, Serializable {
 
 	private static final long serialVersionUID = 1L;

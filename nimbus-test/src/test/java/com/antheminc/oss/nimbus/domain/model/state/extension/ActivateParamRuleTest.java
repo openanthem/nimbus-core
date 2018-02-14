@@ -31,7 +31,7 @@ import org.junit.runners.MethodSorters;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
-import com.antheminc.oss.nimbus.test.entity.sample.s0.core.SampleCoreNestedEntity;
+import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreNestedEntity;
 
 /**
  * @author Soham Chakravarti
