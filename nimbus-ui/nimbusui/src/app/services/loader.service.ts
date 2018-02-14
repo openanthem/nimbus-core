@@ -20,7 +20,7 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 
 /**
- * \@author Sandeep.Mantha
+ * \@author reference https://github.com/ivanderbu2/angular-redux
  * \@whatItDoes 
  * 
  * \@howToUse 

@@ -25,7 +25,7 @@ import { PageService } from '../../../../services/page.service';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { GenericDomain } from '../../../../model/generic-domain.model';
 import { ValidatorFn } from '@angular/forms/src/directives/validators';
-import { ValidationUtils } from '../../validators/ValidationUtils';
+import { ValidationUtils } from '../../validators/validationUtils';
 
 /**
  * \@author Dinakar.Meda
@@ -89,36 +89,6 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
             this.pageService.validationUpdate$.subscribe(event => {
                 let frmCtrl = this.form.controls[event.config.code];
                 if(frmCtrl!=null) {
-                    // //perculate the changes to the current parameter and all children when group is not null
-                    // if(event.path == this.element.path && event.activeValidationGroups != null && event.activeValidationGroups.length > 0) {
-                    //     var staticChecks: ValidatorFn[] = [];
-                    //     var dynamicChecks: ValidatorFn[] = [];
-                    //     staticChecks = ValidationUtils.buildStaticValidations(this.element);
-                    //     dynamicChecks = ValidationUtils.buildDynamicValidations(this.element, event.activeValidationGroups);
-                    //     frmCtrl.setValidators(dynamicChecks);
-                    //     if(event.enabled.currState) {
-                    //         frmCtrl.enable();   
-                    //     }
-                    //     else {
-                    //         frmCtrl.disable();
-                    //     }
-                    // }
-                    // //rebind the static validations by over writing the complete validators instead of looking if there are any dynamic validations and removing them
-                    // if(event.path == this.element.path && (event.activeValidationGroups == null || event.activeValidationGroups.length == 0)) {
-                    //     if(event.enabled.currState) {
-                    //         var staticChecks: ValidatorFn[] = [];
-                    //         staticChecks = ValidationUtils.buildStaticValidations(this.element);
-                    //         frmCtrl.setValidators(staticChecks);
-                    //         frmCtrl.enable();   
-                    //     }
-                    //     else {
-                    //         frmCtrl.clearValidators();
-                    //         frmCtrl.updateValueAndValidity();
-                    //         frmCtrl.disable();
-                    //         console.log(frmCtrl.valid);
-                    //     }
-                    //     this.disabled = !event.enabled.currState;     
-                    // }
                     if(event.path === this.element.path) {
                         //bind dynamic validations on a param as a result of a state change of another param
                         if(event.activeValidationGroups != null && event.activeValidationGroups.length > 0) {
@@ -127,7 +97,7 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
                             staticChecks = ValidationUtils.buildStaticValidations(this.element);
                             //merge the static and dynamic validations and overwrite the form control's validators
                             dynamicChecks = ValidationUtils.buildDynamicValidations(this.element, event.activeValidationGroups);
-                            frmCtrl.setValidators(dynamicChecks);
+                            frmCtrl.setValidators(dynamicChecks.concat(staticChecks));
                         } else {
                             var staticChecks: ValidatorFn[] = [];
                             staticChecks = ValidationUtils.buildStaticValidations(this.element);

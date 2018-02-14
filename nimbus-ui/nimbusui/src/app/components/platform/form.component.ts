@@ -1,4 +1,4 @@
-import { ValidationUtils } from './validators/ValidationUtils';
+import { ValidationUtils } from './validators/validationUtils';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
