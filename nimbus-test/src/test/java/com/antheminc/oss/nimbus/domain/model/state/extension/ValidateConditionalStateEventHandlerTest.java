@@ -239,7 +239,98 @@ public class ValidateConditionalStateEventHandlerTest extends AbstractStateEvent
 		
 		_paramEvents.stream().forEach(pe->expectedEventParams2.remove(pe.getParam()));
 		assertTrue(expectedEventParams2.isEmpty());
+	}
+	
+	@Test
+	public void t08_validationRemoval() {
+		Param<String> condition = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/condition");
 		
-		nested_condition.setState("paloalto");
+		Param<String> validate_p1 = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/validate_p1");
+		Assert.assertEquals(2, validate_p1.getConfig().getValidations().size());
+		Assert.assertEquals(0, validate_p1.getActiveValidationGroups().length);
+		
+		Param<String> validate_p2 = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/validate_p2");
+		Assert.assertEquals(validate_p2.getConfig().getValidations().size(), 2);
+		Assert.assertEquals(0, validate_p2.getActiveValidationGroups().length);
+		
+		condition.setState("rigby");
+		
+		Assert.assertEquals(1, validate_p1.getActiveValidationGroups().length);
+		Assert.assertEquals(GROUP_1.class, validate_p1.getActiveValidationGroups()[0]);
+		
+		Assert.assertEquals(1, validate_p2.getActiveValidationGroups().length);
+		Assert.assertEquals(GROUP_1.class, validate_p2.getActiveValidationGroups()[0]);
+		
+		addListener();
+		condition.setState("unknown");
+		
+		Assert.assertEquals(0, validate_p1.getActiveValidationGroups().length);
+		Assert.assertEquals(0, validate_p2.getActiveValidationGroups().length);
+		
+		// validate events
+		assertNotNull(_paramEvents);
+		assertEquals(3, _paramEvents.size());
+		
+		List<Param<?>> expectedEventParams = new ArrayList<>();
+		expectedEventParams.add(validate_p1);
+		expectedEventParams.add(validate_p2);
+		expectedEventParams.add(condition);
+		
+		_paramEvents.stream().forEach(pe->expectedEventParams.remove(pe.getParam()));
+		assertTrue(expectedEventParams.isEmpty());
+	}
+	
+	@Test
+	public void t09_validationRemovalNested() {
+		Param<String> nested_condition = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/nested_condition");
+		
+		Param<String> validate_p1 = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/validate_p1");
+		Assert.assertEquals(2, validate_p1.getConfig().getValidations().size());
+		Assert.assertEquals(0, validate_p1.getActiveValidationGroups().length);
+		
+		Param<String> validate_p2 = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/validate_p2");
+		Assert.assertEquals(validate_p2.getConfig().getValidations().size(), 2);
+		Assert.assertEquals(0, validate_p2.getActiveValidationGroups().length);
+		
+		Param<String> validate_p3_1 = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/validate_p3/validate_p3_1");
+		Assert.assertEquals(1, validate_p3_1.getConfig().getValidations().size());
+		Assert.assertEquals(0, validate_p3_1.getActiveValidationGroups().length);
+		
+		Param<String> validate_p3_2_1 = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/validate_p3/validate_p3_2/validate_p3_2_1");
+		Assert.assertEquals(1, validate_p3_2_1.getConfig().getValidations().size());
+		Assert.assertEquals(0, validate_p3_2_1.getActiveValidationGroups().length);
+		
+		nested_condition.setState("rigby");
+		
+		Assert.assertEquals(1, validate_p1.getActiveValidationGroups().length);
+		Assert.assertEquals(GROUP_1.class, validate_p1.getActiveValidationGroups()[0]);
+		Assert.assertEquals(1, validate_p2.getActiveValidationGroups().length);
+		Assert.assertEquals(GROUP_1.class, validate_p2.getActiveValidationGroups()[0]);
+		Assert.assertEquals(1, validate_p3_1.getActiveValidationGroups().length);
+		Assert.assertEquals(GROUP_1.class, validate_p3_1.getActiveValidationGroups()[0]);
+		Assert.assertEquals(1, validate_p3_2_1.getActiveValidationGroups().length);
+		Assert.assertEquals(GROUP_1.class, validate_p3_2_1.getActiveValidationGroups()[0]);
+		
+		addListener();
+		nested_condition.setState("unknown");
+		
+		Assert.assertEquals(0, validate_p1.getActiveValidationGroups().length);
+		Assert.assertEquals(0, validate_p2.getActiveValidationGroups().length);
+		Assert.assertEquals(0, validate_p3_1.getActiveValidationGroups().length);
+		Assert.assertEquals(0, validate_p3_2_1.getActiveValidationGroups().length);
+		
+		// validate events
+		assertNotNull(_paramEvents);
+		assertEquals(5, _paramEvents.size());
+		
+		List<Param<?>> expectedEventParams = new ArrayList<>();
+		expectedEventParams.add(validate_p1);
+		expectedEventParams.add(validate_p2);
+		expectedEventParams.add(validate_p3_1);
+		expectedEventParams.add(validate_p3_2_1);
+		expectedEventParams.add(nested_condition);
+		
+		_paramEvents.stream().forEach(pe->expectedEventParams.remove(pe.getParam()));
+		assertTrue(expectedEventParams.isEmpty());
 	}
 }

@@ -15,10 +15,14 @@
  */
 package com.antheminc.oss.nimbus.app.extension.config;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.ValidationScope;
 import com.antheminc.oss.nimbus.domain.model.config.extension.LabelConfigEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.AccessConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ActivateConditionalStateEventHandler;
@@ -33,6 +37,9 @@ import com.antheminc.oss.nimbus.domain.model.state.extension.StaticCodeValueBase
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValidateConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValuesConditionalOnStateChangeEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValuesConditionalOnStateLoadEventHandler;
+import com.antheminc.oss.nimbus.domain.model.state.extension.ValidateConditionalStateEventHandler.ValidationAssignmentStrategy;
+import com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional.SiblingNestedValidationAssignmentStrategy;
+import com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional.SiblingValidationAssignmentStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.internal.IdParamConverter;
 
 /**
@@ -99,7 +106,15 @@ public class DefaultFrameworkExtensionsConfig {
 	
 	@Bean
 	public ValidateConditionalStateEventHandler extensionValidateConditionalStateEventHandler(BeanResolverStrategy beanResolver) {
-		return new ValidateConditionalStateEventHandler(beanResolver);
+		return new ValidateConditionalStateEventHandler(beanResolver, null);
+	}
+	
+	@Bean
+	public Map<ValidationScope, ValidationAssignmentStrategy> extensionValidateConditionalAssignmentStrategies() {
+		Map<ValidationScope, ValidationAssignmentStrategy> validationAssignmentStrategies = new HashMap<>();
+		validationAssignmentStrategies.put(ValidationScope.SIBLING, new SiblingValidationAssignmentStrategy());
+		validationAssignmentStrategies.put(ValidationScope.SIBLING_NESTED, new SiblingNestedValidationAssignmentStrategy());
+		return validationAssignmentStrategies;
 	}
 	
 	@Bean
