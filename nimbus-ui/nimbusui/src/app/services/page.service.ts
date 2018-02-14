@@ -34,8 +34,6 @@ import { CustomHttpClient} from './httpclient.service';
 import { Subject } from 'rxjs/Subject';
 import { GenericDomain } from '../model/generic-domain.model';
 
-declare var trackJs: any;
-
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -697,10 +695,6 @@ export class PageService {
                     }
                 } else {
                     this.updateParam(param, payload);
-                }
-
-                if (trackJs) {
-                        trackJs.track('test the manual error log');
                 }
         }
 
