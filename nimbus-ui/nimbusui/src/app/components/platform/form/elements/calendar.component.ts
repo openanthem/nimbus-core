@@ -68,8 +68,4 @@ export class Calendar extends BaseControl<String> {
         super(pageService,wcs,cd);
     }
 
-    // ngOnInit(){
- 
-    // }
-
 }

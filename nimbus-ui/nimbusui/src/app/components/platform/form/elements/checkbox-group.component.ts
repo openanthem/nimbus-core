@@ -62,9 +62,6 @@ export class CheckBoxGroup extends BaseElement implements ControlValueAccessor {
     @Input('value') _value;
     @Output() antmControlValueChanged =new EventEmitter();
     
-    // TODO replace selected options with element.leafState once it supports collection
-    //private selectedOptions: string[] = [];
-
     constructor(private pageService: PageService, private _wcs: WebContentSvc, private cd: ChangeDetectorRef) {
         super(_wcs);    
     }
@@ -98,36 +95,12 @@ export class CheckBoxGroup extends BaseElement implements ControlValueAccessor {
     setState(event:any,frmInp:any) {
         frmInp.element.leafState = event;
         this.cd.markForCheck();
-        //added to overide the state with ws update.
-        //this.selectedOptions = [];
-        //this.selectedOptions.push(event);
-        //console.log(frmInp.element.leafState);
     }
 
     emitValueChangedEvent(formControl:any,$event:any) {
         this.antmControlValueChanged.emit(formControl.element);
     }
 
-    // selectOption(code: string, elem: any) {
-    //     var array = this.value;
-    //     var index = array.indexOf(code);
-    //     if (index > -1) {
-    //         array.splice(index, 1);
-    //     } else {
-    //         array.push(code);
-    //     }
-    //     this.value = this.value;
-    // }
-
-    // checkedState(val:any) {
-    //     var array = this.value;
-    //     var index = array.indexOf(val);
-    //     if(index> -1) {
-    //         return true;
-    //     } else {
-    //         return false;
-    //     }
-    // }
     ngOnInit() {
         super.ngOnInit();
         if(this.element.leafState !=null && this.element.leafState.length > 0) {
@@ -156,7 +129,6 @@ export class CheckBoxGroup extends BaseElement implements ControlValueAccessor {
             });
         }
         this.antmControlValueChanged.subscribe(($event) => {
-             //console.log($event);
              if ($event.config.uiStyles.attributes.postEventOnChange) {
                 this.pageService.postOnChange($event.path, 'state', JSON.stringify($event.leafState));
              }

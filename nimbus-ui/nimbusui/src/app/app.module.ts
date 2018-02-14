@@ -48,7 +48,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // Components
 import { LayoutService } from './services/layout.service';
 import { ContentContainer } from './components/platform/content/content-container.component';
-import { Switch } from './components/platform/form/elements/switch.component';
 import { BaseElement } from './components/platform/base-element.component';
 import { AppComponent }  from './app.component';
 import { Tile }  from './components/platform/tile.component';
@@ -155,7 +154,7 @@ import { LoaderComponent } from './components/platform/loader/loader.component';
         MultiselectCard, Link, Menu, CardDetailsComponent, CardDetailsFieldComponent, CardDetailsGrid, FieldValue,
         AccordionGroup, Accordion, FrmGroupCmp, Button, ButtonGroup, FilterButton, OrderablePickList,
         STOMPStatusComponent, GridContainer, InfiniteScrollGrid, SubHeaderCmp, TextArea, LandingPage,
-        LayoutService,ContentContainer,Switch,
+        LayoutService,ContentContainer,
         DomainFlowCmp,HeaderGlobal,FooterGlobal,
         BreadcrumbComponent, NavLinkRouter,
         Modal, ActionDropdown, ActionLink, 

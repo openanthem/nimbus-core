@@ -83,12 +83,10 @@ export class MultiSelectListBox extends BaseElement{
                 ($event) => { console.log($event);this.setState($event,this); });
         }
         this.controlValueChanged.subscribe(($event) => {
-            //console.log($event);
             if ($event.config.uiStyles.attributes.postEventOnChange) {
                this.pageService.postOnChange($event.path, 'state', JSON.stringify($event.leafState));
             } else if($event.config.uiStyles.attributes.postButtonUrl) {
                let item: GenericDomain = new GenericDomain();
-               //item.addAttribute($event.config.code,$event.leafState);
                this.pageService.processPost(this.element.config.uiStyles.attributes.postButtonUrl, null, $event.leafState, 'POST');
             }
         });
