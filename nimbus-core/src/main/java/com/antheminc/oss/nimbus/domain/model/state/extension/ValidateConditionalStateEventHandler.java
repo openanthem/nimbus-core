@@ -53,7 +53,7 @@ public class ValidateConditionalStateEventHandler extends
 	 */
 	private void doSiblingNestedStrategy(Param<?> param, ValidateConditional configuredAnnotation) {
 		this.handleSiblings(param, configuredAnnotation, (siblingParam, ca) -> {
-			this.handleSiblingNested(siblingParam, ca, this::handleGroupAssignment);
+			this.handleNested(siblingParam, ca, this::handleGroupAssignment);
 		});
 	}
 	
@@ -128,7 +128,9 @@ public class ValidateConditionalStateEventHandler extends
 	}
 	
 	private void doSiblingNestedRemovalStrategy(Param<?> param, ValidateConditional configuredAnnotation) {
-		this.handleSiblingNested(param, configuredAnnotation, this::removeTargetGroup);
+		this.handleSiblings(param, configuredAnnotation, (siblingParam, ca) -> {
+			this.handleNested(siblingParam, ca, this::removeTargetGroup);
+		});
 	}
 
 	private void doSiblingRemovalStrategy(Param<?> param, ValidateConditional configuredAnnotation) {
@@ -148,11 +150,11 @@ public class ValidateConditionalStateEventHandler extends
 	 * @param param the param from which to retrieve siblings and nested entities from
 	 * @param configuredAnnotation the annotation metadata
 	 */
-	private void handleSiblingNested(Param<?> param, ValidateConditional configuredAnnotation, 
+	private void handleNested(Param<?> param, ValidateConditional configuredAnnotation, 
 			BiConsumer<Param<?>, ValidateConditional> handler) {
 		if (param.isNested()) {
 			param.findIfNested().getParams().forEach(nestedParam -> 
-				handleSiblingNested(nestedParam, configuredAnnotation, handler));
+				handleNested(nestedParam, configuredAnnotation, handler));
 		}
 		handler.accept(param, configuredAnnotation);
 	}
