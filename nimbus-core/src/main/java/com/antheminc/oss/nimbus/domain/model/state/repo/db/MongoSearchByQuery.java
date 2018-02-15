@@ -71,7 +71,6 @@ public class MongoSearchByQuery extends MongoDBSearch {
 	
 	
 	private <T> Object searchByQuery(Class<?> referredClass, String alias, SearchCriteria<T> criteria) {
-		
 		Class<?> outputClass = findOutputClass(criteria, referredClass);
 		
 		AbstractMongodbQuery query = new SpringDataMongodbQuery<>(getMongoOps(), outputClass, alias);
@@ -95,8 +94,8 @@ public class MongoSearchByQuery extends MongoDBSearch {
 			
 		}
 		
-		if(criteria.getPaginationCriteria() != null) {
-			return findAllPageable(referredClass, alias, criteria, query);
+		if(criteria.getPageRequest() != null) {
+			return findAllPageable(referredClass, alias, criteria.getPageRequest(), query);
 		}
 		
 		List<?> response = query.fetch();
@@ -117,18 +116,17 @@ public class MongoSearchByQuery extends MongoDBSearch {
 		return query;
 	}
 	
-	private <T> Object findAllPageable(Class<?> referredClass, String alias, SearchCriteria<T> criteria, AbstractMongodbQuery query) {
-		Pageable pr = buildPageRequest(criteria);
-		AbstractMongodbQuery qPage = query.offset(pr.getOffset()).limit(pr.getPageSize());
+	private <T> Object findAllPageable(Class<?> referredClass, String alias, Pageable pageRequest, AbstractMongodbQuery query) {
+		AbstractMongodbQuery qPage = query.offset(pageRequest.getOffset()).limit(pageRequest.getPageSize());
 		
-		if(pr.getSort() != null){
+		if(pageRequest.getSort() != null){
 			PathBuilder<?> entityPath = new PathBuilder(referredClass, alias);
-			for (Order order : pr.getSort()) {
+			for (Order order : pageRequest.getSort()) {
 			    PathBuilder<Object> path = entityPath.get(order.getProperty());
 			    qPage.orderBy(new OrderSpecifier(com.querydsl.core.types.Order.valueOf(order.getDirection().name().toUpperCase()), path));
 			}
 		}
-		return PageableExecutionUtils.getPage(query.offset(pr.getOffset()).limit(pr.getPageSize()).fetchResults().getResults(), pr, () -> query.fetchCount());
+		return PageableExecutionUtils.getPage(qPage.fetchResults().getResults(), pageRequest, () -> query.fetchCount());
 	}
 	
 	private <T> Object searchWithProjection(Class<?> referredClass, SearchCriteria<T> criteria, AbstractMongodbQuery query) {
@@ -139,7 +137,6 @@ public class MongoSearchByQuery extends MongoDBSearch {
 	}
 
 	private Predicate buildPredicate(String criteria, Class<?> referredClass, String alias) {
-		
 		if(StringUtils.isBlank(criteria)) {
 			return null;
 		}
@@ -160,7 +157,6 @@ public class MongoSearchByQuery extends MongoDBSearch {
 	}
 	
 	private OrderSpecifier buildOrderSpecifier(String criteria, Class<?> referredClass, String alias) {
-		
 		if(StringUtils.isBlank(criteria)) {
 			return null;
 		}
@@ -189,7 +185,6 @@ public class MongoSearchByQuery extends MongoDBSearch {
 	}
 		
 	private  <T> Object searchByAggregation(Class<?> referredClass, String alias, SearchCriteria<T> criteria) {
-
 		List<?> output = new ArrayList();
 		String[] aggregationCriteria = StringUtils.split((String)criteria.getWhere(), Constants.SEARCH_NAMED_QUERY_DELIMTER.code);
 		Arrays.asList(aggregationCriteria).forEach((cr) -> {

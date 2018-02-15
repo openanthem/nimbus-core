@@ -61,9 +61,7 @@ public class DefaultSearchFunctionHandlerQuery<T, R> extends DefaultSearchFuncti
 		querySearchCriteria.setAggregateCriteria(cmd.getFirstParameterValue(Constants.SEARCH_REQ_AGGREGATE_MARKER.code));
 		
 		querySearchCriteria.setProjectCriteria(buildProjectCritera(cmd));
-		querySearchCriteria.setPaginationCriteria(buildPageCriteria(cmd));
-		
-		
+		querySearchCriteria.setPageRequest(buildPageCriteria(cmd));
 		
 		return querySearchCriteria;
 	}

@@ -62,7 +62,13 @@ import com.antheminc.oss.nimbus.test.entity.sample.s0.core.SampleCoreEntityAcces
 //@ContextConfiguration(classes = MongoConfiguration.class)
 @SuppressWarnings("unchecked")
 public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegrationTests {
-
+	
+	protected static final String SAMPLE_CORE_ENTITY_ACCESS_ALIAS = "sample_core_access";
+	protected static final String CLIENT_USER_ALIAS = "clientuser";
+	protected static final String CLIENT_USER_GROUP_ALIAS = "clientusergroup";
+	protected static final String QUEUE_ALIAS = "queue";
+	protected static final String STATIC_CODE_VALUE_ALIAS = "staticCodeValue";
+	
 	private static final String[] COLLECTIONS = {QUEUE_ALIAS, CLIENT_USER_ALIAS, CLIENT_USER_GROUP_ALIAS,SAMPLE_CORE_ENTITY_ACCESS_ALIAS};
 	
 	@Autowired

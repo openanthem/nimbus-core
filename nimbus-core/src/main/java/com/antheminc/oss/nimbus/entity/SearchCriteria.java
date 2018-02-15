@@ -20,7 +20,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
@@ -41,38 +41,9 @@ public abstract class SearchCriteria<T> implements Serializable {
 	private String aggregateCriteria;
 	private ProjectCriteria projectCriteria;
 	private String fetch;
-	private PaginationCriteria paginationCriteria;
+	private Pageable pageRequest;
 	
 	public abstract void validate(ExecutionContext executionContext);
-	
-	
-	@Getter @Setter
-	public static class PaginationCriteria implements Serializable {
-		private static final long serialVersionUID = 1L;
-		
-		private int pageSize;
-		private int page;
-		
-		private Sort sort;
-		
-		
-//		@Getter @Setter
-//		public static class SortBy implements Serializable {
-//			private static final long serialVersionUID = 1L;
-//			
-//			private String sortProperty;
-//			private Direction sortDirection;
-//			
-//			public SortBy(){ }
-//			
-//			public SortBy(String sortProperty, Direction sortDirection) {
-//				this.sortProperty = sortProperty;
-//				this.sortDirection = sortDirection;
-//			}
-//		}
-		
-		
-	}
 	
 	@Getter @Setter
 	public static class ProjectCriteria implements Serializable {

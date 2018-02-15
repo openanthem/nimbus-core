@@ -58,9 +58,8 @@ public class DefaultSearchFunctionHandlerExample<T, R> extends DefaultSearchFunc
 		exampleSearchCriteria.setAggregateCriteria(cmd.getFirstParameterValue(Constants.SEARCH_REQ_AGGREGATE_MARKER.code));
 		
 		exampleSearchCriteria.setProjectCriteria(buildProjectCritera(cmd));
-		exampleSearchCriteria.setPaginationCriteria(buildPageCriteria(cmd));
+		exampleSearchCriteria.setPageRequest(buildPageCriteria(cmd));
 		
 		return exampleSearchCriteria;
-		
 	}
 }

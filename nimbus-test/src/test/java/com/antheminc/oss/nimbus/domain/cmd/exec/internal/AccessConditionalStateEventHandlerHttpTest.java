@@ -142,7 +142,6 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 	public void t05_accessConditionalGridPagination() throws Exception {
 		String userLoginId = createClientUserWithRoles("superman","intake","clinician");
 		
-		
 		SampleCoreEntityAccess scea = new SampleCoreEntityAccess();
 		scea.setAttr_String("test1");
 		
@@ -161,9 +160,10 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 				.withUri(VIEW_PARAM_ACCESS_ROOT)
 				.addRefId(refId)
 				.addNested("/vpSampleCoreEntityAccess/vtSampleCoreEntityAccess/vsSamplePageCoreEntityAccess/vgSamplePageCoreEntities")
-				.addParam("pageSize", "1")
-				.addParam("page", "0")
-				.addParam("sortBy", "attr_String,asc")
+//				.addParam("pageSize", "1")
+//				.addParam("page", "0")
+//				.addParam("sortBy", "attr_String,asc")
+				.addParam("pageCriteria", "pageSize=5&page=0&sortBy=attr_String,DESC")
 				.addAction(Action._get)
 				.getMock();
 		final Object gridResponse = controller.handleGet(gridRequest, null);

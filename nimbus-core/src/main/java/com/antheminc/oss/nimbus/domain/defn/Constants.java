@@ -36,6 +36,8 @@ public enum Constants {
 	MARKER_COL_PARAM("col"),
 	MARKER_COL_PARAM_EXPR("<!col!>"),
 	
+	MARKER_URI_PAGE_EXPR("page=y"),
+	
 	SEPARATOR_URI("/"),
 	
 	SEPARATOR_URI_PLATFORM(SEPARATOR_URI.code + MARKER_URI_PLATFORM.code),	/* /p */

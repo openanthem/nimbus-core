@@ -20,9 +20,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
@@ -35,7 +36,6 @@ import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.entity.SearchCriteria;
-import com.antheminc.oss.nimbus.entity.SearchCriteria.PaginationCriteria;
 import com.antheminc.oss.nimbus.entity.SearchCriteria.ProjectCriteria;
 
 /**
@@ -52,16 +52,12 @@ public abstract class DefaultSearchFunctionHandler<T, R> extends AbstractFunctio
 		return alias;
 	}
 	
-	protected PaginationCriteria buildPageCriteria(Command cmd) {
+	protected Pageable buildPageCriteria(Command cmd) {
 		String pageSize = cmd.getFirstParameterValue(Constants.SEARCH_REQ_PAGINATION_SIZE.code);
 		String page = cmd.getFirstParameterValue(Constants.SEARCH_REQ_PAGINATION_PAGE_NUM.code);
 		String[] sortBy = cmd.getParameterValue(Constants.SEARCH_REQ_PAGINATION_SORT_PROPERTY.code);
 		
 		if(StringUtils.isNotBlank(pageSize) && StringUtils.isNotBlank(page)) {
-			PaginationCriteria pageCriteria = new PaginationCriteria();
-			pageCriteria.setPageSize(Integer.valueOf(pageSize));
-			pageCriteria.setPage(Integer.valueOf(page));
-			
 			if(sortBy != null && sortBy.length > 0) {
 				List<Order> sortByList = Stream.of(sortBy)
 					.map(s -> s.split(","))
@@ -69,12 +65,13 @@ public abstract class DefaultSearchFunctionHandler<T, R> extends AbstractFunctio
 					.map(s -> new Order(Direction.fromString(s[1]), s[0]))
 					.collect(Collectors.toList());
 				
-				if(CollectionUtils.isNotEmpty(sortByList)) {
-					Sort sort = new Sort(sortByList);
-					pageCriteria.setSort(sort);
-				}
+				Sort sort = new Sort(sortByList);
+				
+				return new PageRequest(Integer.valueOf(page), Integer.valueOf(pageSize), sort);
 			}
-			return pageCriteria;
+			else{
+				return new PageRequest(Integer.valueOf(page), Integer.valueOf(pageSize));
+			}
 		}
 		return null;
 	}

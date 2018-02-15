@@ -58,8 +58,8 @@ public class MongoSearchByExample extends MongoDBSearch {
 			referredClass = findOutputClass(criteria, referredClass);
 		}
 		
-		if(criteria.getPaginationCriteria() != null) {
-			return findAllPageable(referredClass, alias, criteria, query);
+		if(criteria.getPageRequest() != null) {
+			return findAllPageable(referredClass, alias, criteria.getPageRequest(), query);
 		}
 		
 		return getMongoOps().find(query, referredClass, alias);
@@ -80,16 +80,15 @@ public class MongoSearchByExample extends MongoDBSearch {
 		return query;
 	}
 	
-	private <T> Object findAllPageable(Class<?> referredClass, String alias, SearchCriteria<T> criteria, Query query) {
-		Pageable pr = buildPageRequest(criteria);
-		Query qPage = query.with(pr);
+	private <T> Object findAllPageable(Class<?> referredClass, String alias, Pageable pageRequest, Query query) {
+		Query qPage = query.with(pageRequest);
 		
 		List<?> results = getMongoOps().find(qPage, referredClass, alias);
 		
 		if(CollectionUtils.isEmpty(results))
 			return null;
 		
-		return PageableExecutionUtils.getPage(results, pr, () -> getMongoOps().count(query, referredClass, alias));
+		return PageableExecutionUtils.getPage(results, pageRequest, () -> getMongoOps().count(query, referredClass, alias));
 		
 	}
 

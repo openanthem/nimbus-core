@@ -30,7 +30,7 @@ import com.antheminc.oss.nimbus.entity.SearchCriteria;
 import lombok.Getter;
 
 /**
- * @author AC67870
+ * @author Rakesh Patel
  *
  */
 @Getter
@@ -68,19 +68,4 @@ public abstract class MongoDBSearch implements DBSearch {
 		return referredClass;
 	}
 
-	
-	public <T> Pageable buildPageRequest(SearchCriteria<T> criteria) {
-		int page = criteria.getPaginationCriteria().getPage();
-		int size = criteria.getPaginationCriteria().getPageSize();
-		Sort sort = criteria.getPaginationCriteria().getSort();
-		
-		if(sort == null)
-			return new PageRequest(page, size);
-		else
-			return new PageRequest(page, size, sort);
-	}
-		
-
-
-	
 }
