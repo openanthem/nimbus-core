@@ -55,29 +55,6 @@ export class CardDetailsComponent extends BaseElement {
     }
 
     processOnClick() {
-        // let uri = this.element.config.uiStyles.attributes.editUrl;
-
-        // // Collection check - append colletion path and index
-        // if (this.collectionElem) {
-        //     uri = uri + '?path=' + this.element.config.uiStyles.attributes.modelPath;
-        //     uri = uri + '/' + this.elemId;
-        // } 
-
-        // // Replace url parameters with values 
-        // let uriParams = this.getAllURLParams(uri);
-        // if(uriParams!=null) {
-        //     for (let uriParam of uriParams) {
-        //         let p = uriParam.substring(1, uriParam.length-1);
-        //         this.element.type.model.params.forEach(param => {
-        //             param.type.model.params.forEach(field => {
-        //                 if(field.config.code == p) {
-        //                     uri = uri.replace(new RegExp(uriParam, 'g'), field.leafState);
-        //                 }
-        //             });
-        //         });
-        //     }
-        // }
-        // console.log(uri);
         this.pageSvc.processEvent(this.element.path, '$execute', null, 'POST');
     }
 

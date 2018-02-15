@@ -22,8 +22,9 @@ import * as Stomp from 'stompjs';
 import { ServiceConstants } from './service.constants';
 
 /**
+ * \@author reference https://github.com/ivanderbu2/angular-redux
  * \@author Dinakar.Meda
- * \@author Sandeep.Mantha
+ * 
  * \@whatItDoes 
  * 
  * \@howToUse 

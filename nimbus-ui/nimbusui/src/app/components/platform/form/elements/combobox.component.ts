@@ -47,7 +47,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     <p-dropdown 
         [options]="element.values | selectItemPipe" 
         [(ngModel)] = "value"
-        [disabled]="!element?.enabled?.currState"
+        [disabled]="disabled"
         (onChange)="emitValueChangedEvent(this,$event)"
         class="form-control" 
         placeholder="Please Select...">
