@@ -1,3 +1,4 @@
+import { ValidationUtils } from './validators/validationUtils';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -122,7 +123,7 @@ export class Form implements OnInit, OnChanges {
             });
         }
         var checks: ValidatorFn[] = [];
-        checks = this.service.buildValidations(this.element);
+        checks = ValidationUtils.buildStaticValidations(this.element);
 
         this.form = this.service.toFormGroup(this.formGroupElements,checks);
         this.pageSvc.eventUpdate$.subscribe(event => {

@@ -16,6 +16,9 @@
 package com.antheminc.oss.nimbus.domain.model.state.repo.db;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.util.Assert;
 
@@ -27,7 +30,7 @@ import com.antheminc.oss.nimbus.entity.SearchCriteria;
 import lombok.Getter;
 
 /**
- * @author AC67870
+ * @author Rakesh Patel
  *
  */
 @Getter
@@ -65,7 +68,4 @@ public abstract class MongoDBSearch implements DBSearch {
 		return referredClass;
 	}
 
-
-
-	
 }

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.antheminc.oss</groupId>
+	<artifactId>nimbus-starter</artifactId>
+    <version>1.0.0.M2-SNAPSHOT</version>
+   
+	<name>nimbus-starter</name>
+	<description>framework starter project</description>
+
+	<properties>
+		<nimbus.version>1.0.0.M2-SNAPSHOT</nimbus.version>
+	</properties>
+
+	<dependencies>	
+	    <dependency>
+			<groupId>com.antheminc.oss</groupId>
+		    <artifactId>nimbus-core</artifactId>
+		    <version>${nimbus.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.antheminc.oss</groupId>
+		    <artifactId>nimbus-ui</artifactId>
+            <version>${nimbus.version}</version>
+	    </dependency>
+        <dependency>
+			<groupId>com.antheminc.oss</groupId>
+			<artifactId>nimbus-entity-dsl</artifactId>
+            <version>${nimbus.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.antheminc.oss</groupId>
+			<artifactId>nimbus-test</artifactId>
+            <version>${nimbus.version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+</project>

@@ -40,7 +40,11 @@ import com.antheminc.oss.nimbus.test.FrameworkIntegrationTestScenariosApplicatio
 @SpringBootTest(classes=FrameworkIntegrationTestScenariosApplication.class)
 @ActiveProfiles("test")
 public abstract class AbstractFrameworkIntegrationTests {
-
+	
+	protected static final String CLIENT_ID = "hooli";
+	
+	protected static final String PLATFORM_ROOT = "/"+CLIENT_ID+"/thebox/p";
+	
 	@Autowired protected WebActionController controller;
 	
 	@Autowired protected MongoOperations mongo;
@@ -49,9 +53,7 @@ public abstract class AbstractFrameworkIntegrationTests {
 	
 	@Autowired protected CommandMessageConverter converter;
 	
-	protected static final String CLIENT_ID = "hooli";
 	
-	protected static final String PLATFORM_ROOT = "/"+CLIENT_ID+"/thebox/p"; 
 	
 	
 	@Before

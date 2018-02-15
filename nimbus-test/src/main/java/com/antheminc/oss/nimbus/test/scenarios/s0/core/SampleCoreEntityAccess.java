@@ -40,6 +40,8 @@ public class SampleCoreEntityAccess extends IdString {
 	private static final long serialVersionUID = 1L;
 
 	private String attr_String;
+	
+	private String attr_String2;
 
 	@AccessConditional(containsRoles="intake", p=Permission.HIDDEN)
 	private SampleCoreNestedEntity accessConditional_Contains_Hidden1;

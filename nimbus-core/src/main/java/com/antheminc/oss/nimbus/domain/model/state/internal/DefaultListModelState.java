@@ -48,8 +48,12 @@ public class DefaultListModelState<T> extends DefaultModelState<List<T>> impleme
 		if(CollectionUtils.isEmpty(colEntityState))
 			return;
 		
-		colEntityState.stream()
-			.forEach(entityElem->add());
+		for(@SuppressWarnings("unused") Object e : colEntityState.toArray()) {
+			add();
+		}
+//		colEntityState.stream()
+//			.forEach(entityElem->add());
+		
 	}
 
 	@Override
