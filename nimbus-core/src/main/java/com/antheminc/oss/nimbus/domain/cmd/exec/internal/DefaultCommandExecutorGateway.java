@@ -49,6 +49,7 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextLoader;
+import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ParamPathExpressionParser;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
@@ -74,6 +75,8 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 	
 	private CommandPathVariableResolver pathVariableResolver;
 	
+	private ExecutionContextPathVariableResolver eCtxPathVariableResolver;
+	
 	private ExecutionContextLoader loader;
 	
 	private DomainConfigBuilder domainConfigBuilder;
@@ -90,6 +93,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 	public void initDependencies() {
 		this.loader = getBeanResolver().get(ExecutionContextLoader.class);
 		this.pathVariableResolver = getBeanResolver().get(CommandPathVariableResolver.class);
+		this.eCtxPathVariableResolver = getBeanResolver().get(ExecutionContextPathVariableResolver.class);
 		this.domainConfigBuilder = getBeanResolver().get(DomainConfigBuilder.class);
 	}
 
@@ -183,7 +187,13 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			else {
 				String completeConfigUri = eCtx.getCommandMessage().getCommand().getRelativeUri(ec.url());
 				
-				String resolvedConfigUri = pathVariableResolver.resolve(cmdParam, completeConfigUri); 
+				// TODO Rakesh - Review with soham
+				// - e.g. needed to replace e.g. <!page=y!> path variable with the value available in request params (only available in eCtx at this point)
+					// can be used for any other values not available in commandParam ??
+				String eCtxResolvedConfigUri = eCtxPathVariableResolver.resolve(eCtx, completeConfigUri);
+			
+				String resolvedConfigUri = pathVariableResolver.resolve(cmdParam, eCtxResolvedConfigUri);
+					
 				Command configExecCmd = CommandBuilder.withUri(resolvedConfigUri).getCommand();
 				
 				// TODO decide on which commands should get the payload
