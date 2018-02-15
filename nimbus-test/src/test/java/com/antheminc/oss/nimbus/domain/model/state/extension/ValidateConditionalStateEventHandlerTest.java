@@ -16,6 +16,7 @@ import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.GROUP_1;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.GROUP_2;
+import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.GROUP_3;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 
 /**
@@ -54,6 +55,11 @@ public class ValidateConditionalStateEventHandlerTest extends AbstractStateEvent
 		Assert.assertEquals(validate_p2.getConfig().getValidations().size(), 2);
 		Assert.assertEquals(0, validate_p2.getActiveValidationGroups().length);
 		
+		Param<String> validate_p4 = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/validate_p4");
+		Assert.assertEquals(validate_p4.getConfig().getValidations().size(), 1);
+		Assert.assertEquals(1, validate_p4.getActiveValidationGroups().length);
+		Assert.assertEquals(GROUP_3.class, validate_p4.getActiveValidationGroups()[0]);
+		
 		condition.setState("rigby");
 		
 		Assert.assertEquals(1, validate_p1.getActiveValidationGroups().length);
@@ -61,6 +67,8 @@ public class ValidateConditionalStateEventHandlerTest extends AbstractStateEvent
 		
 		Assert.assertEquals(1, validate_p2.getActiveValidationGroups().length);
 		Assert.assertEquals(GROUP_1.class, validate_p2.getActiveValidationGroups()[0]);
+		
+		Assert.assertEquals(0, validate_p4.getActiveValidationGroups().length);
 	}
 	
 	@Test
@@ -75,12 +83,20 @@ public class ValidateConditionalStateEventHandlerTest extends AbstractStateEvent
 		Assert.assertEquals(2, validate_p2.getConfig().getValidations().size());
 		Assert.assertEquals(0, validate_p2.getActiveValidationGroups().length);
 		
+		Param<String> validate_p4 = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/validate_p4");
+		Assert.assertEquals(validate_p4.getConfig().getValidations().size(), 1);
+		Assert.assertEquals(1, validate_p4.getActiveValidationGroups().length);
+		Assert.assertEquals(GROUP_3.class, validate_p4.getActiveValidationGroups()[0]);
+		
 		condition.setState("hooli");
 		
 		Assert.assertEquals(0, validate_p1.getActiveValidationGroups().length);
 		
 		Assert.assertEquals(1, validate_p2.getActiveValidationGroups().length);
 		Assert.assertEquals(GROUP_2.class, validate_p2.getActiveValidationGroups()[0]);
+		
+		Assert.assertEquals(1, validate_p4.getActiveValidationGroups().length);
+		Assert.assertEquals(GROUP_3.class, validate_p4.getActiveValidationGroups()[0]);
 	}
 	
 	@Test
@@ -166,17 +182,19 @@ public class ValidateConditionalStateEventHandlerTest extends AbstractStateEvent
 		Param<String> condition = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/condition");
 		Param<String> validate_p1 = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/validate_p1");
 		Param<String> validate_p2 = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/validate_p2");
+		Param<String> validate_p4 = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/validate_p4");
 		
 		addListener();
 		condition.setState("rigby");
 		
 		// validate events
 		assertNotNull(_paramEvents);
-		assertEquals(3, _paramEvents.size());
+		assertEquals(4, _paramEvents.size());
 		
 		List<Param<?>> expectedEventParams1 = new ArrayList<>();
 		expectedEventParams1.add(validate_p1);
 		expectedEventParams1.add(validate_p2);
+		expectedEventParams1.add(validate_p4);
 		expectedEventParams1.add(condition);
 		
 		_paramEvents.stream().forEach(pe->expectedEventParams1.remove(pe.getParam()));
@@ -186,11 +204,12 @@ public class ValidateConditionalStateEventHandlerTest extends AbstractStateEvent
 		
 		// validate events
 		assertNotNull(_paramEvents);
-		assertEquals(3, _paramEvents.size());
+		assertEquals(4, _paramEvents.size());
 		
 		List<Param<?>> expectedEventParams2 = new ArrayList<>();
 		expectedEventParams2.add(validate_p1);
 		expectedEventParams2.add(validate_p2);
+		expectedEventParams2.add(validate_p4);
 		expectedEventParams2.add(condition);
 		
 		_paramEvents.stream().forEach(pe->expectedEventParams2.remove(pe.getParam()));
@@ -261,23 +280,10 @@ public class ValidateConditionalStateEventHandlerTest extends AbstractStateEvent
 		Assert.assertEquals(1, validate_p2.getActiveValidationGroups().length);
 		Assert.assertEquals(GROUP_1.class, validate_p2.getActiveValidationGroups()[0]);
 		
-		addListener();
 		condition.setState("unknown");
 		
 		Assert.assertEquals(0, validate_p1.getActiveValidationGroups().length);
 		Assert.assertEquals(0, validate_p2.getActiveValidationGroups().length);
-		
-		// validate events
-		assertNotNull(_paramEvents);
-		assertEquals(3, _paramEvents.size());
-		
-		List<Param<?>> expectedEventParams = new ArrayList<>();
-		expectedEventParams.add(validate_p1);
-		expectedEventParams.add(validate_p2);
-		expectedEventParams.add(condition);
-		
-		_paramEvents.stream().forEach(pe->expectedEventParams.remove(pe.getParam()));
-		assertTrue(expectedEventParams.isEmpty());
 	}
 	
 	@Test
@@ -311,26 +317,11 @@ public class ValidateConditionalStateEventHandlerTest extends AbstractStateEvent
 		Assert.assertEquals(1, validate_p3_2_1.getActiveValidationGroups().length);
 		Assert.assertEquals(GROUP_1.class, validate_p3_2_1.getActiveValidationGroups()[0]);
 		
-		addListener();
 		nested_condition.setState("unknown");
 		
 		Assert.assertEquals(0, validate_p1.getActiveValidationGroups().length);
 		Assert.assertEquals(0, validate_p2.getActiveValidationGroups().length);
 		Assert.assertEquals(0, validate_p3_1.getActiveValidationGroups().length);
 		Assert.assertEquals(0, validate_p3_2_1.getActiveValidationGroups().length);
-		
-		// validate events
-		assertNotNull(_paramEvents);
-		assertEquals(5, _paramEvents.size());
-		
-		List<Param<?>> expectedEventParams = new ArrayList<>();
-		expectedEventParams.add(validate_p1);
-		expectedEventParams.add(validate_p2);
-		expectedEventParams.add(validate_p3_1);
-		expectedEventParams.add(validate_p3_2_1);
-		expectedEventParams.add(nested_condition);
-		
-		_paramEvents.stream().forEach(pe->expectedEventParams.remove(pe.getParam()));
-		assertTrue(expectedEventParams.isEmpty());
 	}
 }

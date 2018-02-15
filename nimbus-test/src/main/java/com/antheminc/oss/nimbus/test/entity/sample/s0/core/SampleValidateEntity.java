@@ -8,6 +8,7 @@ import com.antheminc.oss.nimbus.domain.defn.ViewConfig.TextBox;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.GROUP_1;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.GROUP_2;
+import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.GROUP_3;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.ValidationScope;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditionals;
 
@@ -27,7 +28,8 @@ public class SampleValidateEntity {
 	
 	@ValidateConditionals({
 		@ValidateConditional(when = "state == 'rigby'", targetGroup = GROUP_1.class),
-		@ValidateConditional(when = "state == 'hooli'", targetGroup = GROUP_2.class)
+		@ValidateConditional(when = "state == 'hooli'", targetGroup = GROUP_2.class),
+		@ValidateConditional(when = "state != 'rigby'", targetGroup = GROUP_3.class)
 	})
 	@TextBox(postEventOnChange = true)
 	private String condition;
@@ -67,4 +69,7 @@ public class SampleValidateEntity {
 		@NotNull(groups = { GROUP_2.class })
 		private String validate_p3_2_2;
 	}
+	
+	@NotNull(groups = { GROUP_3.class })
+	private String validate_p4;
 }

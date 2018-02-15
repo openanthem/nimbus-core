@@ -1,5 +1,6 @@
 package com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -71,16 +72,16 @@ public abstract class AbstractValidationAssignmentStrategy implements
 		if (null != validations) {
 			
 			// Collect the validation groups that should be "active"
-			Set<Class<? extends ValidationGroup>> activeValidationGroups = new HashSet<>();
+			Class<? extends ValidationGroup>[] existingActiveValidationGroups = param.getActiveValidationGroups();
+			Set<Class<? extends ValidationGroup>> activeValidationGroups = new HashSet<>(Arrays.asList(existingActiveValidationGroups));
 			for(AnnotationConfig ac : validations) {
 				Class<?>[] groups = (Class<?>[]) ac.getAttributes().get(ATTR_GROUPS);
 				if (ArrayUtils.contains(groups, group)) {
 					activeValidationGroups.add(group);
+					param.setActiveValidationGroups(activeValidationGroups.toArray(new Class[activeValidationGroups.size()]));
+					return;
 				}
 			}
-			
-			// Set the active validation groups.
-			param.setActiveValidationGroups(activeValidationGroups.toArray(new Class[activeValidationGroups.size()]));
 		}
 	}
 	
