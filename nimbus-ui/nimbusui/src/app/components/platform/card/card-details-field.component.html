@@ -19,9 +19,8 @@
         <ng-template [ngIf]="element.type.name == 'date' || element.type.name == 'Date' || element.type.name == 'LocalDateTime'
                 || element.type.name == 'ZonedDateTime'">
             <label class="" *ngIf="element.config.uiStyles.attributes.showName==true">{{label}}</label>
-            <div class="{{iconClass}}" *ngIf="element.config.uiStyles.attributes.datePattern">{{value | dateTimeFormat: element.config.uiStyles.attributes.datePattern }}&nbsp;</div>
-            <div class="{{iconClass}}" *ngIf="!element.config.uiStyles.attributes.datePattern">{{value | dateTimeFormat }}&nbsp;</div>
-        </ng-template>
+            <div class="{{iconClass}}">{{value | dateTimeFormat: element.config?.uiStyles?.attributes?.datePattern }}&nbsp;</div>
+         </ng-template>
         <div class="form-group" *ngIf="!element.config.uiStyles.attributes.inplaceEdit && element.type.name !== 'date' && 
         element.type.name !== 'Date' && element.type.name !== 'LocalDateTime' && element.type.name != 'ZonedDateTime'">
                 <label class="" *ngIf="element.config.uiStyles.attributes.showName==true">{{label}}</label>

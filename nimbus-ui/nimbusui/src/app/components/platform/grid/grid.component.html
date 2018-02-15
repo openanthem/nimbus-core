@@ -57,8 +57,7 @@
 				<ng-template let-datacol let-row="rowData" pTemplate="body">
 					<ng-template [ngIf]="col?.type?.name === 'date' || col?.type?.name === 'Date' || col?.type?.name === 'LocalDateTime'
 					|| col?.type?.name === 'ZonedDateTime'">
-						<span *ngIf="!col?.uiStyles?.attributes?.datePattern" title="{{row[datacol.field]}}">{{row[datacol.field] | dateTimeFormat}}</span> 
-						<span *ngIf="col?.uiStyles?.attributes?.datePattern" title="{{row[datacol.field]}}">{{row[datacol.field] | dateTimeFormat: col.uiStyles.attributes.datePattern}}</span>
+						<span title="{{row[datacol.field]}}">{{row[datacol.field] | dateTimeFormat: col.uiStyles?.attributes?.datePattern}}</span>
 					</ng-template>
 					<ng-template [ngIf]="col?.type?.name !== 'date' && col?.type?.name !== 'Date' && col?.type?.name !== 'LocalDateTime'
 					&& col?.type?.name !== 'ZonedDateTime'">

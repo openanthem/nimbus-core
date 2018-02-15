@@ -4,7 +4,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 @Pipe({ name: 'dateTimeFormat' })
   export class DateTimeFormatPipe extends DatePipe implements PipeTransform {
     transform(value: any, args: string): any {
-        if(args === undefined){
+        if(args === undefined || args === ''){
             args="MM/dd/yyyy hh:mm a";
         }
         return super.transform(value, args);
