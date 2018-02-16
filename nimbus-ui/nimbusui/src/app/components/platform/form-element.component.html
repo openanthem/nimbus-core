@@ -17,7 +17,7 @@
     <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias == 'Grid'">
         <infinite-scroll-grid
             [element]="element" [form]="form" [formControlName]="element.config?.code"
-            [params]="element?.config?.gridCols" (onScrollEvent)="onScrollEvent()">
+            [params]="element?.config?.type?.elementConfig?.type?.model?.paramConfigs" (onScrollEvent)="onScrollEvent()">
         </infinite-scroll-grid>
     </ng-template>
     <div *ngIf="showErrors==true">

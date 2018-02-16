@@ -25,7 +25,6 @@ import { PageService } from '../../../services/page.service';
 import { GridService } from '../../../services/grid.service';
 import { WebContentSvc } from '../../../services/content-management.service';
 import { DataTable, OverlayPanel, Paginator } from 'primeng/primeng';
-import { ElementModelParam } from './../../../shared/app-config.interface';
 import { ServiceConstants } from './../../../services/service.constants';
 import { ControlValueAccessor } from '@angular/forms/src/directives';
 
@@ -52,7 +51,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 export class InfiniteScrollGrid extends BaseElement implements ControlValueAccessor{
     @Input() data: any[];
     @Output() onScrollEvent: EventEmitter<any> = new EventEmitter();
-    @Input() params: ElementModelParam[];
+    @Input() params: ParamConfig[];
     @Input() form: FormGroup;
     @Input('value') _value = [];
 
@@ -164,11 +163,11 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         }
     }
 
-    getRowPath(col:ElementModelParam, item: any) {
-        return this.element.path + '/' + item.elemId;// + '/' + col.code;
+    getRowPath(col:ParamConfig, item: any) {
+        return this.element.path + '/' + item.elemId + '/' + col.code;
     }
 
-    processOnClick(col: ElementModelParam, item: any) {
+    processOnClick(col: ParamConfig, item: any) {
         let uri=this.element.path + '/' + item.elemId + '/' + col.code;
 
         let uriParams = this.getAllURLParams(uri);
@@ -217,7 +216,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     onRowUnSelect(event) {
     }
 
-    postOnChange(col: ElementModelParam, item: any) {
+    postOnChange(col: ParamConfig, item: any) {
         let uri=this.element.path + '/' + item.elemId + '/' + col.code;
         this.pageSvc.postOnChange(uri, 'state', JSON.stringify(event.target['checked']));
     }
@@ -228,7 +227,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     getAddtionalData(event: any) {
         let elemPath = '';
         this.params.forEach(param => {
-            if (param.uiStyles && param.uiStyles.attributes.alias == 'Grid') {
+            if (param.uiStyles && param.uiStyles.attributes.alias == 'GridRowBody') {
                 elemPath = this.element.path + '/' + event.data.elemId + '/' + param.code;
             }
         });
