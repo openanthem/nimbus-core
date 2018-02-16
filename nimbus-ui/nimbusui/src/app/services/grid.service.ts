@@ -15,11 +15,12 @@
  * limitations under the License.
  */
 'use strict';
-import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
-import { Subject }    from 'rxjs/Subject';
-
-import 'rxjs/Rx';
+import { Injectable, EventEmitter } from '@angular/core';
+import { CustomHttpClient } from './httpclient.service';
+import { Subject } from 'rxjs/Subject';
+import { PaginatedRequest } from './../model/pagination.model';
+import { URLSearchParams } from '@angular/http';
+import { forEach } from '@angular/router/src/utils/collection';
 
 /**
  * \@author Dinakar.Meda
@@ -34,17 +35,42 @@ export class GridService {
 
     eventUpdate = new Subject<any>();
     eventUpdate$ = this.eventUpdate.asObservable();
-    constructor(private http: Http) {}
+    gridData$: EventEmitter<any>;
 
-    setSummaryObject(object: any) {
-         this.eventUpdate.next(object);
+    constructor(private http: CustomHttpClient) {
+        this.gridData$ = new EventEmitter();
     }
 
-    getSummaryDetails(id:string,url:string) {
+    setSummaryObject(object: any) {
+        this.eventUpdate.next(object);
+    }
+
+    getSummaryDetails(id: string, url: string) {
         // return this.http.get('app/resources/data/cars-medium.json')
         //             .toPromise()
         //             .then(res => <Car[]> res.json().data)
         //             .then(data => { return data; });
-        return this.http.get(url).map(res =>  res.json().data);
+        return this.http.get(url).map(res => res.json().data);
     }
+
+    getGridData(pageRequest: PaginatedRequest) {
+        let params = new URLSearchParams();
+        params.set('pageSize', `${pageRequest.pageSize}`);
+        params.set('page', `${pageRequest.page}`);
+        if (pageRequest.sort != null) {
+            pageRequest.sort.forEach(sfield => {
+                params.append('sortBy', `${sfield.property},${sfield.direction}`);
+            });
+        }
+
+        return this.http.get('/Anthem/loadCases', params)
+            .subscribe(data => {
+                console.log("data", data);
+                this.gridData$.next(data);
+            },
+            err => console.log(err),
+            () => console.log('Grid Data loaded ..')
+            );
+    }
+
 }
