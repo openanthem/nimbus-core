@@ -9,7 +9,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateChange;
-import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 
 /**
  * <p>This annotation is used to provide control and management over conditional validations to be 
