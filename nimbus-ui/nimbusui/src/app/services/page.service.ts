@@ -19,7 +19,7 @@ import { LoaderService } from './loader.service';
 import { Action, HttpMethod, Behavior} from './../shared/command.enum';
 import { Injectable, EventEmitter } from '@angular/core';
 import { ServiceConstants } from './service.constants';
-import { ElementModelParam, RemnantState, Validation } from './../shared/app-config.interface';
+import { RemnantState, Validation } from './../shared/app-config.interface';
 import {
     Model,
     ModelEvent,
@@ -609,7 +609,7 @@ export class PageService {
          * Create the Grid Row Data from Param Leaf State
          * 
          */
-        createRowData(param: Param, nestedGridParam: ElementModelParam) {
+        createRowData(param: Param, nestedGridParam: ParamConfig) {
             let rowData: any = {};
             rowData = param.leafState;
             rowData['elemId'] = param.elemId;
@@ -626,13 +626,13 @@ export class PageService {
          * Loop through the Param State and build the Grid
          * 
          */
-        createGridData(params: Param[], gridCols: ElementModelParam[]) {
+        createGridData(params: Param[], gridCols: ParamConfig[]) {
             let gridData = [];
             // Look for inner lists (nested grid)
-            let nestedGridParam: ElementModelParam;
+            let nestedGridParam: ParamConfig;
             if (gridCols) {
                 gridCols.forEach(col => {
-                if (col.uiStyles && col.uiStyles.name == 'ViewConfig.Grid') {
+                if (col.uiStyles && col.uiStyles.name == 'ViewConfig.GridRowBody') {
                         nestedGridParam = col;
                 } 
                 });
@@ -655,15 +655,15 @@ export class PageService {
                     // Collection Element Check - update only the element
                     if (eventModel.value.collectionElem) {
                         if (param.config.gridList == null) {
-                            param.config.gridList = this.createGridData(eventModel.value.type.model.params, param.config.gridCols);
+                            param.config.gridList = this.createGridData(eventModel.value.type.model.params, param.config.type.elementConfig.type.model.paramConfigs);
                         } else {
-                            param.config.gridList.push(this.createGridData(eventModel.value.type.model.params, param.config.gridCols));
+                            param.config.gridList.push(this.createGridData(eventModel.value.type.model.params, param.config.type.elementConfig.type.model.paramConfigs));
                         }
                         this.gridValueUpdate.next(param);
                     }
                     // Collection check - update entire collection
                     if (eventModel.value.collection) {
-                            param.config.gridList = this.createGridData(eventModel.value.type.model.params, param.config.gridCols);
+                            param.config.gridList = this.createGridData(eventModel.value.type.model.params, param.config.type.elementConfig.type.model.paramConfigs);
                             this.gridValueUpdate.next(param);
                     }
                 }

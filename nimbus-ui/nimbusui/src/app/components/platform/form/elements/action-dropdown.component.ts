@@ -16,16 +16,16 @@
  */
 'use strict';
 
-import { ElementModelParam, LabelConfig } from './../../../../shared/app-config.interface';
-import { Behavior } from './../../../../shared/command.enum';
+import { trigger,state,style,transition,animate,keyframes } from '@angular/animations';
 import { Component, Input } from '@angular/core';
+import { LabelConfig } from './../../../../shared/app-config.interface';
+import { Behavior } from './../../../../shared/command.enum';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { PageService } from '../../../../services/page.service';
-import { Param } from '../../../../shared/app-config.interface';
+import { Param, ParamConfig } from '../../../../shared/app-config.interface';
 import { GenericDomain } from './../../../../model/generic-domain.model';
 import { HttpMethod } from '../../../../shared/command.enum';
 import { BaseElement } from './../../base-element.component';
-import { trigger,state,style,transition,animate,keyframes } from '@angular/animations';
 
 /**
  * \@author Dinakar.Meda
@@ -75,7 +75,7 @@ import { trigger,state,style,transition,animate,keyframes } from '@angular/anima
 })
 export class ActionDropdown {
 
-    @Input() params: ElementModelParam[];
+    @Input() params: ParamConfig[];
     @Input() elementPath: string;
     @Input() rowData: any;
     isOpen: boolean = false;
@@ -131,7 +131,7 @@ export class ActionDropdown {
 })
 export class ActionLink extends BaseElement{
     
-        @Input() param: ElementModelParam;
+        @Input() param: ParamConfig;
         @Input() elementPath: string;
         @Input() rowData: any;
         protected url:string;

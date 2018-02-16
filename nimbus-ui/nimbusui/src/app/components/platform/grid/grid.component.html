@@ -62,7 +62,7 @@
 
 			<p-column *ngIf="col?.uiStyles?.attributes?.alias=='LinkMenu'" styleClass="dropdown">
 				<ng-template pTemplate="body" let-cell="rowData">
-					<nm-action-dropdown [params]="col?.nestedParams" [rowData]="cell" [elementPath]="getRowPath(col, cell)"></nm-action-dropdown>
+					<nm-action-dropdown [params]="col?.type?.model?.paramConfigs" [rowData]="cell" [elementPath]="getRowPath(col, cell)"></nm-action-dropdown>
 				</ng-template>
 			</p-column>
 		</ng-template>
@@ -72,7 +72,7 @@
 				<infinite-scroll-grid
 								[data]="col?.config?.gridList"
 								[element]="col"
-								[params]="col?.config?.gridCols">
+								[params]="col?.config?.type?.elementConfig?.type?.model?.paramConfigs">
 				</infinite-scroll-grid>
 			</ng-template>
 		</ng-template> -->
