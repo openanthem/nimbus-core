@@ -48,7 +48,7 @@ import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 @Retention(RUNTIME)
 @Target(FIELD)
 @Repeatable(ValidateConditionals.class)
-@OnStateChange @OnStateLoad
+@OnStateChange
 public @interface ValidateConditional {
 
 	/**

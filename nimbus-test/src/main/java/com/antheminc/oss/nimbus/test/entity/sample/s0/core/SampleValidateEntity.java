@@ -9,6 +9,8 @@ import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.GROUP_1;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.GROUP_2;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.GROUP_3;
+import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.GROUP_4;
+import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.GROUP_5;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.ValidationScope;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditionals;
 
@@ -41,6 +43,13 @@ public class SampleValidateEntity {
 	@TextBox(postEventOnChange = true)
 	private String nested_condition;
 	
+	@ValidateConditionals({
+		@ValidateConditional(when = "state != 'other'", targetGroup = GROUP_4.class),
+		@ValidateConditional(when = "state == 'paloalto'", targetGroup = GROUP_5.class)
+	})
+	@TextBox(postEventOnChange = true)
+	private String condition_3;
+	
 	@NotNull
 	@Pattern(regexp = G1_PATTERN_REGEX, groups = { GROUP_1.class })
 	private String validate_p1;
@@ -72,4 +81,10 @@ public class SampleValidateEntity {
 	
 	@NotNull(groups = { GROUP_3.class })
 	private String validate_p4;
+	
+	@NotNull(groups = { GROUP_4.class })
+	private String validate_p5;
+	
+	@NotNull(groups = { GROUP_5.class })
+	private String validate_p6;
 }

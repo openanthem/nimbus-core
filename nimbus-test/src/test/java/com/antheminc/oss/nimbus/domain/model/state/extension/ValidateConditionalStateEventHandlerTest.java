@@ -17,6 +17,8 @@ import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.GROUP_1;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.GROUP_2;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.GROUP_3;
+import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.GROUP_4;
+import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.GROUP_5;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 
 /**
@@ -323,5 +325,39 @@ public class ValidateConditionalStateEventHandlerTest extends AbstractStateEvent
 		Assert.assertEquals(0, validate_p2.getActiveValidationGroups().length);
 		Assert.assertEquals(0, validate_p3_1.getActiveValidationGroups().length);
 		Assert.assertEquals(0, validate_p3_2_1.getActiveValidationGroups().length);
+	}
+	
+	@Test
+	public void t10_multipleTrueConditions() {
+		Param<String> condition_3 = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/condition_3");
+		
+		Param<String> validate_p5 = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/validate_p5");
+		Assert.assertEquals(1, validate_p5.getConfig().getValidations().size());
+		Assert.assertEquals(1, validate_p5.getActiveValidationGroups().length);
+		Assert.assertEquals(GROUP_4.class, validate_p5.getActiveValidationGroups()[0]);
+		
+		Param<String> validate_p6 = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/validate_p6");
+		Assert.assertEquals(1, validate_p6.getConfig().getValidations().size());
+		Assert.assertEquals(0, validate_p6.getActiveValidationGroups().length);
+		
+		addListener();
+		condition_3.setState("paloalto");
+		
+		Assert.assertEquals(1, validate_p5.getActiveValidationGroups().length);
+		Assert.assertEquals(GROUP_4.class, validate_p5.getActiveValidationGroups()[0]);
+		
+		Assert.assertEquals(1, validate_p6.getActiveValidationGroups().length);
+		Assert.assertEquals(GROUP_5.class, validate_p6.getActiveValidationGroups()[0]);
+		
+		// validate events
+		assertNotNull(_paramEvents);
+		assertEquals(2, _paramEvents.size());
+		
+		List<Param<?>> expectedEventParams = new ArrayList<>();
+		expectedEventParams.add(validate_p6);
+		expectedEventParams.add(condition_3);
+		
+		_paramEvents.stream().forEach(pe->expectedEventParams.remove(pe.getParam()));
+		assertTrue(expectedEventParams.isEmpty());
 	}
 }
