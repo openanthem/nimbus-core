@@ -3,7 +3,7 @@ package com.antheminc.oss.nimbus.domain.model.state.extension.validateconditiona
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.ValidationGroup;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 /**
- * <p>This strategy will first find all siblings of <tt>param</tt>, inclusively. As it finds
+ * <p>This strategy will first find all siblings of <tt>onChangeParam</tt>, inclusively. As it finds
  * a sibling param, it will head-recursively traverse to all nested params that exist below that 
  * sibling param.</p> 
  * 
@@ -25,15 +25,15 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 public final class SiblingNestedValidationAssignmentStrategy extends AbstractValidationAssignmentStrategy {
 
 	@Override
-	void assignGroupTo(Param<?> param, Class<? extends ValidationGroup> group) {
-		this.handleSiblings(param, group, (siblingParam, g) -> {
+	void assignGroupTo(Param<?> onChangeParam, Class<? extends ValidationGroup> targetGroup) {
+		this.handleSiblings(onChangeParam, targetGroup, (siblingParam, g) -> {
 			this.handleNested(siblingParam, g, this::addGroupToParam);
 		});
 	}
 
 	@Override
-	void unassignGroupFrom(Param<?> param, Class<? extends ValidationGroup> group) {
-		this.handleSiblings(param, group, (siblingParam, g) -> {
+	void unassignGroupFrom(Param<?> onChangeParam, Class<? extends ValidationGroup> targetGroup) {
+		this.handleSiblings(onChangeParam, targetGroup, (siblingParam, g) -> {
 			this.handleNested(siblingParam, g, this::removeGroupFromParam);
 		});
 	}

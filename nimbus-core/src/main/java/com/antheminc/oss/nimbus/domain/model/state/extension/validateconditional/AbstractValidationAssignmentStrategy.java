@@ -1,5 +1,6 @@
 package com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,57 +31,56 @@ public abstract class AbstractValidationAssignmentStrategy implements
 	 * (non-Javadoc)
 	 * @see com.antheminc.oss.nimbus.domain.model.state.extension.ValidateConditionalStateEventHandler.ValidationAssignmentStrategy#execute(boolean, com.antheminc.oss.nimbus.domain.model.state.EntityState.Param, java.lang.Class)
 	 */
-	public void execute(boolean add, Param<?> param, Class<? extends ValidationGroup> group) {
+	public void execute(boolean add, Param<?> onChangeParam, Class<? extends ValidationGroup> group) {
 		if (!add) {
-			this.unassignGroupFrom(param, group);
+			this.unassignGroupFrom(onChangeParam, group);
 		} else {
-			this.assignGroupTo(param, group);
+			this.assignGroupTo(onChangeParam, group);
 		}
 	}
 	
 	/**
-	 * <p>Abstract method containing logic to add <tt>group</tt> to the <tt></tt> field of 
-	 * <tt>activeValidationGroups</tt>.</p>
+	 * <p>Abstract method containing logic to add <tt>targetGroup</tt> to the 
+	 * the desired <tt>activeValidationGroups</tt> fields.</p>
 	 * 
-	 * @param param the root param on which &#64;ValidateConditional is defined
-	 * @param group the group to assign
+	 * @param onChangeParam the root param on which &#64;ValidateConditional is defined
+	 * @param targetGroup the group to assign
 	 */
-	abstract void assignGroupTo(Param<?> param, Class<? extends ValidationGroup> group);
+	abstract void assignGroupTo(Param<?> onChangeParam, Class<? extends ValidationGroup> targetGroup);
 	
 	/**
-	 * <p>Abstract method containing logic to remove <tt>group</tt> from the <tt></tt> field of 
-	 * <tt>activeValidationGroups</tt>.</p>
+	 * <p>Abstract method containing logic to remove <tt>targetGroup</tt> from the desired 
+	 * <tt>activeValidationGroups</tt> fields.</p>
 	 * 
-	 * @param param the root param on which &#64;ValidateConditional is defined
-	 * @param group the group to unassign
+	 * @param onChangeParam the root param on which &#64;ValidateConditional is defined
+	 * @param targetGroup the group to unassign
 	 */
-	abstract void unassignGroupFrom(Param<?> param, Class<? extends ValidationGroup> group);
+	abstract void unassignGroupFrom(Param<?> onChangeParam, Class<? extends ValidationGroup> targetGroup);
 	
 	/**
 	 * <p>When <tt>param</tt> contains a Constraint annotation config with a matching group of 
-	 * <tt>group</tt>, then that group will be added to the </tt>activeValidationGroups</tt> 
+	 * <tt>targetGroup</tt>, then that group will be added to the </tt>activeValidationGroups</tt> 
 	 * field of <tt>param</tt>.</p>
 	 * 
 	 * @param param the param to apply group assignment to
-	 * @param group the group to assign
+	 * @param targetGroup the group to assign
 	 */
 	@SuppressWarnings("unchecked")
-	protected void addGroupToParam(Param<?> param, Class<? extends ValidationGroup> group) {
+	protected void addGroupToParam(Param<?> param, Class<? extends ValidationGroup> targetGroup) {
 		
 		List<AnnotationConfig> validations = param.getConfig().getValidations();
 		if (null != validations) {
 			
 			// Collect the validation groups that should be "active"
-			Set<Class<? extends ValidationGroup>> activeValidationGroups = new HashSet<>();
 			for(AnnotationConfig ac : validations) {
 				Class<?>[] groups = (Class<?>[]) ac.getAttributes().get(ATTR_GROUPS);
-				if (ArrayUtils.contains(groups, group)) {
-					activeValidationGroups.add(group);
+				if (ArrayUtils.contains(groups, targetGroup)) {
+					Set<Class<? extends ValidationGroup>> activeValidationGroups = new HashSet<>(Arrays.asList(param.getActiveValidationGroups()));
+					activeValidationGroups.add(targetGroup);
+					param.setActiveValidationGroups(activeValidationGroups.toArray(new Class[activeValidationGroups.size()]));
+					return;
 				}
 			}
-			
-			// Set the active validation groups.
-			param.setActiveValidationGroups(activeValidationGroups.toArray(new Class[activeValidationGroups.size()]));
 		}
 	}
 	
@@ -90,15 +90,15 @@ public abstract class AbstractValidationAssignmentStrategy implements
 	 * 
 	 * @param param the param object from which to retrieve nested entities from
 	 * @param handler the handler method to execute on all retrieved params
-	 * @param group the group object
+	 * @param targetGroup the group object
 	 */
-	protected void handleNested(Param<?> param, Class<? extends ValidationGroup> group, 
+	protected void handleNested(Param<?> param, Class<? extends ValidationGroup> targetGroup, 
 			BiConsumer<Param<?>, Class<? extends ValidationGroup>> handler) {
 		
 		if (param.isNested()) {
-			param.findIfNested().getParams().forEach(nestedParam -> handleNested(nestedParam, group, handler));
+			param.findIfNested().getParams().forEach(nestedParam -> handleNested(nestedParam, targetGroup, handler));
 		}
-		handler.accept(param, group);
+		handler.accept(param, targetGroup);
 	}
 
 	/**
@@ -107,11 +107,11 @@ public abstract class AbstractValidationAssignmentStrategy implements
 	 * 
 	 * @param param the param from which to retrieve siblings from
 	 * @param handler the handler method to execute on the sibling params
-	 * @param group the group object
+	 * @param targetGroup the group object
 	 */
-	protected void handleSiblings(Param<?> param, Class<? extends ValidationGroup> group, 
+	protected void handleSiblings(Param<?> param, Class<? extends ValidationGroup> targetGroup, 
 			BiConsumer<Param<?>, Class<? extends ValidationGroup>> handler) {
-		param.getParentModel().getParams().forEach(p -> handler.accept(p, group));
+		param.getParentModel().getParams().forEach(p -> handler.accept(p, targetGroup));
 	}
 	
 	/**
@@ -120,11 +120,11 @@ public abstract class AbstractValidationAssignmentStrategy implements
 	 * field of <tt>param</tt>.</p>
 	 * 
 	 * @param param the param from which to remove <tt>group</tt> from
-	 * @param group the group to remove
+	 * @param targetGroup the group to remove
 	 */
 	@SuppressWarnings("unchecked")
-	protected void removeGroupFromParam(Param<?> param, Class<? extends ValidationGroup> group) {
+	protected void removeGroupFromParam(Param<?> param, Class<? extends ValidationGroup> targetGroup) {
 		param.setActiveValidationGroups((Class<? extends ValidationGroup>[]) 
-				ArrayUtils.removeElement(param.getActiveValidationGroups(), group));
+				ArrayUtils.removeElement(param.getActiveValidationGroups(), targetGroup));
 	}
 }

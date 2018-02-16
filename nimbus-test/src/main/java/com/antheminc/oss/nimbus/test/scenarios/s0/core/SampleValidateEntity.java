@@ -23,6 +23,9 @@ import com.antheminc.oss.nimbus.domain.defn.ViewConfig.TextBox;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.GROUP_1;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.GROUP_2;
+import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.GROUP_3;
+import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.GROUP_4;
+import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.GROUP_5;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.ValidationScope;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditionals;
 
@@ -42,7 +45,8 @@ public class SampleValidateEntity {
 	
 	@ValidateConditionals({
 		@ValidateConditional(when = "state == 'rigby'", targetGroup = GROUP_1.class),
-		@ValidateConditional(when = "state == 'hooli'", targetGroup = GROUP_2.class)
+		@ValidateConditional(when = "state == 'hooli'", targetGroup = GROUP_2.class),
+		@ValidateConditional(when = "state != 'rigby'", targetGroup = GROUP_3.class)
 	})
 	@TextBox(postEventOnChange = true)
 	private String condition;
@@ -53,6 +57,13 @@ public class SampleValidateEntity {
 	})
 	@TextBox(postEventOnChange = true)
 	private String nested_condition;
+	
+	@ValidateConditionals({
+		@ValidateConditional(when = "state != 'other'", targetGroup = GROUP_4.class),
+		@ValidateConditional(when = "state == 'paloalto'", targetGroup = GROUP_5.class)
+	})
+	@TextBox(postEventOnChange = true)
+	private String condition_3;
 	
 	@NotNull
 	@Pattern(regexp = G1_PATTERN_REGEX, groups = { GROUP_1.class })
@@ -82,4 +93,13 @@ public class SampleValidateEntity {
 		@NotNull(groups = { GROUP_2.class })
 		private String validate_p3_2_2;
 	}
+	
+	@NotNull(groups = { GROUP_3.class })
+	private String validate_p4;
+	
+	@NotNull(groups = { GROUP_4.class })
+	private String validate_p5;
+	
+	@NotNull(groups = { GROUP_5.class })
+	private String validate_p6;
 }
