@@ -130,7 +130,7 @@ public class DefaultStateEventDelegator implements StateEventDelegator {
 			List<ParamEvent> groupedEvents = createOrGet(aggregatedEvents, pe.getParam().getRootExecution());
 			
 			
-			Param<?> colParent = findFirstCollectionParent(pe.getParam());
+			Param<?> colParent = findFirstCollectionNode(pe.getParam());
 			ParamEvent resolved = (colParent==null) ? pe : new ParamEvent(pe.getAction(), colParent);
 
 			if(!unique.contains(resolved.getParam())) {
@@ -163,14 +163,17 @@ public class DefaultStateEventDelegator implements StateEventDelegator {
 		return root;
 	} 
 	
-	private static Param<?> findFirstCollectionParent(Param<?> currParam) {
+	private static Param<?> findFirstCollectionNode(Param<?> currParam) {
+		if(currParam.isCollection())
+			return currParam;
+		
 		if(currParam.getParentModel()==null)
 			return null;
 		
 		if(currParam.getParentModel().getAssociatedParam().isCollection())
 			return currParam.getParentModel().getAssociatedParam();
 		
-		return findFirstCollectionParent(currParam.getParentModel().getAssociatedParam());
+		return findFirstCollectionNode(currParam.getParentModel().getAssociatedParam());
 	}
 	
 	private void delegate(Consumer<StateEventListener> cb) {

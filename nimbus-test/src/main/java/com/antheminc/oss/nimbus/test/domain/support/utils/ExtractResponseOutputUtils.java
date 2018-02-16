@@ -15,7 +15,10 @@
  */
 package com.antheminc.oss.nimbus.test.domain.support.utils;
 
+import java.util.Set;
+
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
+import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
 import com.antheminc.oss.nimbus.support.Holder;
 
 /**
@@ -32,6 +35,11 @@ public class ExtractResponseOutputUtils {
 	public static <T> T extractOutput(Object controllerResp) {
 		return (T)MultiOutput.class.cast(Holder.class.cast(controllerResp).getState()).getOutputs().get(0).getValue();
 	}
+
+	public static Set<ParamEvent> extractAggregatedEvents(Object controllerResp) {
+		return MultiOutput.class.cast(Holder.class.cast(controllerResp).getState()).getOutputs().get(0).getAggregatedEvents();
+	}
+
 	
 	public static <T> T extractOutput(Object controllerResp, int j) {
 		return extractOutput(controllerResp, 0, j);
