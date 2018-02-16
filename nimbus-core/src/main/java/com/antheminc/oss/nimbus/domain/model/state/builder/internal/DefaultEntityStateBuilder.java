@@ -118,7 +118,7 @@ public class DefaultEntityStateBuilder extends AbstractEntityStateBuilder implem
 		
 		//handle param type
 		StateType type = buildParamType(aspectHandlers, mpState, mapsToSAC);
-		mpState.setStateType(type);
+		mpState.setType(type);
 		
 		return mpState;
 	}
@@ -177,7 +177,7 @@ public class DefaultEntityStateBuilder extends AbstractEntityStateBuilder implem
 
 		// handle param type
 		StateType type = buildParamType(aspectHandlers, pElem, Optional.ofNullable(mState.findIfMapped()).map(m->m.getMapsTo()).orElse(null));
-		pElem.setStateType(type);
+		pElem.setType(type);
 		
 		// call initState on collection paramElems explicitly as they are created
 		//pElem.initState();
@@ -190,12 +190,12 @@ public class DefaultEntityStateBuilder extends AbstractEntityStateBuilder implem
 		if(associatedParam.isTransient()) {
 			// do not create model, instead create a pointer with a new type
 			
-			StateType.MappedTransient<P> mappedTransientType = new StateType.MappedTransient<>(associatedParam.getConfig().getConfigType().findIfNested());
+			StateType.MappedTransient<P> mappedTransientType = new StateType.MappedTransient<>(associatedParam.getConfig().getType().findIfNested());
 			return mappedTransientType;
 		}
 		
-		else if(associatedParam.getConfig().getConfigType().isCollection()) {
-			ParamConfigType.NestedCollection<P> nmcType = associatedParam.getConfig().getConfigType().findIfCollection();
+		else if(associatedParam.getConfig().getType().isCollection()) {
+			ParamConfigType.NestedCollection<P> nmcType = associatedParam.getConfig().getType().findIfCollection();
 			ModelConfig<List<P>> nmConfig = nmcType.getModelConfig();
 			
 			DefaultListElemParamState.Creator<P> elemCreator = (colModelState, elemId) -> buildElemParam(aspectHandlers, colModelState, colModelState.getElemConfig(), elemId);
@@ -206,10 +206,10 @@ public class DefaultEntityStateBuilder extends AbstractEntityStateBuilder implem
 			
 		} 
 		
-		else if(associatedParam.getConfig().getConfigType().isNested()) {
+		else if(associatedParam.getConfig().getType().isNested()) {
 			//handle nested model
 			@SuppressWarnings("unchecked")
-			ParamConfigType.Nested<P> mpNmType = ((ParamConfigType.Nested<P>)associatedParam.getConfig().getConfigType());
+			ParamConfigType.Nested<P> mpNmType = ((ParamConfigType.Nested<P>)associatedParam.getConfig().getType());
 			
 			ModelConfig<P> mpNmConfig = mpNmType.getModelConfig();
 			
@@ -218,8 +218,8 @@ public class DefaultEntityStateBuilder extends AbstractEntityStateBuilder implem
 			
 			if(!associatedParam.isMapped()) {
 				mpNmMapsToSAC = mapsToSAC;
-			} else if(associatedParam.getConfig().getConfigType().isNested()) {
-				mpNmMapsToSAC = associatedParam.findIfMapped().getMapsTo().getStateType().findIfNested().getModel();
+			} else if(associatedParam.getConfig().getType().isNested()) {
+				mpNmMapsToSAC = associatedParam.findIfMapped().getMapsTo().getType().findIfNested().getModel();
 			} else { // leaf
 				mpNmMapsToSAC = associatedParam.findIfMapped().getMapsTo().getParentModel();
 			}
@@ -232,7 +232,7 @@ public class DefaultEntityStateBuilder extends AbstractEntityStateBuilder implem
 			
 		} else {
 			
-			return new StateType(associatedParam.getConfig().getConfigType());
+			return new StateType(associatedParam.getConfig().getType());
 		}
 	}
 	

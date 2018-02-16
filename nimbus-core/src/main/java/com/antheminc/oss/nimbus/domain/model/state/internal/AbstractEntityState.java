@@ -269,7 +269,7 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 
  		if(p==null) return null;
 		
-		Model<?> m = p.getStateType().findIfNested().getModel();
+		Model<?> m = p.getType().findIfNested().getModel();
 		return (m == null) ? null : (Model<S>)m;
 	}
 	

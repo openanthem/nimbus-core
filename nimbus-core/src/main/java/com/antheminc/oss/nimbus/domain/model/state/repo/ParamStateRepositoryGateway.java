@@ -244,7 +244,7 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 				ListParam<P> listParam = (ListParam<P>)param.findIfCollection();
 				//reset collection
 				//_instantiateAndSet(currRep, param);
-				listParam.getStateType().getModel().instantiateAndSet();
+				listParam.getType().getModel().instantiateAndSet();
 
 				if(!(newState instanceof Collection))
 					throw new InvalidArgumentException("Collection param with path: "+param.getPath()+" must have argument of type "+Collection.class);
@@ -334,7 +334,7 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 			
 			// reset collection
 			//_instantiateAndSet(currRep, param);
-			mappedListParam.getStateType().getModel().instantiateAndSet();
+			mappedListParam.getType().getModel().instantiateAndSet();
 
 			if(!(newState instanceof Collection))
 				throw new InvalidArgumentException("Collection param with path: "+param.getPath()+" must have argument of type "+Collection.class);
@@ -386,7 +386,7 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 //		if(param.isMapped())
 //			param.findIfMapped().getMapsTo().findIfNested().instantiateOrGet();
 		
-		StateType.Nested<P> nestedType = param.getStateType().findIfNested(); 
+		StateType.Nested<P> nestedType = param.getType().findIfNested(); 
 		Model<P> nestedModel = nestedType.getModel();
 		if(nestedModel.templateParams().isNullOrEmpty()) return null;
 		

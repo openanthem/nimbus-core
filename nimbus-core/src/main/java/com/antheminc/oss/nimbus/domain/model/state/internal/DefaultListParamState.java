@@ -54,12 +54,12 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 	}
 	
 	@Override
-	public StateType.NestedCollection<T> getStateType() {
-		return super.getStateType().findIfCollection();
+	public StateType.NestedCollection<T> getType() {
+		return super.getType().findIfCollection();
 	}
 	
 	protected EntityState.ListModel<T> getNestedCollectionModel() {
-		return getStateType().getModel();
+		return getType().getModel();
 	}
 	
 	@Override

@@ -69,7 +69,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 
 	private static final long serialVersionUID = 1L;
 
-	private StateType stateType;
+	private StateType type;
 	
 	private ValidationResult validationResult;
 	
@@ -349,7 +349,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 			return getParentModel().getRootExecution();
 		
 		/* if param is root, then it has to be of type nested */
-		if(!getStateType().isNested())
+		if(!getType().isNested())
 			throw new InvalidConfigException("Found param as root which is not nested: "+ this);
 		
 		return findIfNested().findIfRoot();
@@ -503,11 +503,11 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 				return getRootDomain().findIfMapped().getMapsTo().getAssociatedParam();
 		}
 		
-		if(getStateType().findIfNested()==null)
+		if(getType().findIfNested()==null)
 			return null;
 
 		// param is not leaf node  
-		final Model<?> associatedNestedModel = getStateType().findIfNested().getModel();
+		final Model<?> associatedNestedModel = getType().findIfNested().getModel();
 
 		// find nested param: passed in path may contain "code" or "code.m"	
 		Param<?> currNestedParam = associatedNestedModel.templateParams().find(singlePathSegment);

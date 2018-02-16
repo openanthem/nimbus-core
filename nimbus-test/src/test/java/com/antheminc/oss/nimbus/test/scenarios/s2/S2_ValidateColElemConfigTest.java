@@ -94,7 +94,7 @@ public class S2_ValidateColElemConfigTest extends AbstractFrameworkIntegrationTe
 		Object o = ExtractResponseOutputUtils.extractOutput(controllerResp);
 		assertNotNull(o);
 		
-		assertThat(json.write(o)).hasJsonPathValue("$.stateType.model.params[0].config.configType.elementConfig.configType.modelConfig.paramConfigs", new Object[]{});
+		assertThat(json.write(o)).hasJsonPathValue("$.type.model.params[0].config.type.elementConfig.type.modelConfig.paramConfigs", new Object[]{});
 	}
 	
 	private Object createNew_VR() {

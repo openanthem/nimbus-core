@@ -250,7 +250,7 @@ abstract public class AbstractEntityConfigBuilder {
 		Class<?> mappedParamRefClassMapsToEntityClass = mappedParamRefClassMapsToType!=null ? mappedParamRefClassMapsToType.value() : mappedField.getType();
 		
 		ParamConfigType pType = buildParamType(simulatedEnclosingModel, simulatedMapsToParam, null, mappedParamRefClassMapsToEntityClass, visitedModels);
-		simulatedMapsToParam.setConfigType(pType);
+		simulatedMapsToParam.setType(pType);
 		
 		DefaultParamConfig<?> mappedParam = decorateParam(mConfig, mappedField, new MappedDefaultParamConfig<>(mappedField.getName(), simulatedEnclosingModel, simulatedMapsToParam, mapsToPath), visitedModels);
 		return mappedParam;
@@ -272,7 +272,7 @@ abstract public class AbstractEntityConfigBuilder {
 		Class<?> mappedParamRefClassMapsToEntityClass = mappedParamRefClassMapsToType!=null ? mappedParamRefClassMapsToType.value() : determinedMappedColElemType;
 		
 		ParamConfigType pType = buildParamType(simulatedEnclosingModel, simulatedMapsToParam, colType, mappedParamRefClassMapsToEntityClass, visitedModels);
-		simulatedMapsToParam.setConfigType(pType);
+		simulatedMapsToParam.setType(pType);
 		
 		DefaultParamConfig<?> mappedParam = decorateParam(mConfigOfMappedParam, mappedField, new MappedDefaultParamConfig<>(mappedField.getName(), simulatedEnclosingModel, simulatedMapsToParam, mapsToPath), visitedModels);
 		return mappedParam;
@@ -313,7 +313,7 @@ abstract public class AbstractEntityConfigBuilder {
 		logit.debug(()->"[create.pColElem] [colParam is mapped] [elemClass same] [Attached] Found mapsToColParamConfig for "+pConfig.getCode()+" with mapsToPath of colParam: "+mapsToColParamPath+" -> "+mapsToColParamConfig);
 		
 		@SuppressWarnings("unchecked")
-		ParamConfig<P> mapsToColElemParamConfig = (ParamConfig<P>)mapsToColParamConfig.getConfigType().findIfCollection().getElementConfig();
+		ParamConfig<P> mapsToColElemParamConfig = (ParamConfig<P>)mapsToColParamConfig.getType().findIfCollection().getElementConfig();
 
 		
 		// colParam is mapped: colElemModel is NOT explicitly mapped BUT colElemClass is NOT SAME as mappedElemClass :- throw Ex

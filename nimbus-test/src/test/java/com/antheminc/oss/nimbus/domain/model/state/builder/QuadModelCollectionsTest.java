@@ -176,12 +176,12 @@ public class QuadModelCollectionsTest {
 		assertNotNull(pSAC_col);
 		assertEquals("/core_simplecase/serviceLines", pSAC_col.getPath());
 		
-		assertTrue(pSAC_col.getStateType().isNested());
-		assertTrue(pSAC_col.getStateType().isCollection());
-		assertTrue(pSAC_col.getStateType() instanceof StateType.NestedCollection);
+		assertTrue(pSAC_col.getType().isNested());
+		assertTrue(pSAC_col.getType().isCollection());
+		assertTrue(pSAC_col.getType() instanceof StateType.NestedCollection);
 		
 		// ParamSAC: TypeSAC
-		StateType.NestedCollection<ServiceLine> pSAC_col_type = pSAC_col.getStateType().findIfCollection(); 
+		StateType.NestedCollection<ServiceLine> pSAC_col_type = pSAC_col.getType().findIfCollection(); 
 		
 		// ParamSAC: TypeSAC.NestedCollection => SAC Type for List<ServiceLine>
 		ListModel<ServiceLine> mSAC_col = pSAC_col_type.getModel();
@@ -198,22 +198,22 @@ public class QuadModelCollectionsTest {
 		assertNotNull(pSAC_config);
 		assertTrue(List.class.isAssignableFrom(pSAC_config.getReferredClass()));
 		
-		assertTrue(pSAC_config.getConfigType().isNested());
-		assertTrue(pSAC_config.getConfigType().isCollection());
-		assertTrue(pSAC_config.getConfigType() instanceof ParamConfigType.NestedCollection);
+		assertTrue(pSAC_config.getType().isNested());
+		assertTrue(pSAC_config.getType().isCollection());
+		assertTrue(pSAC_config.getType() instanceof ParamConfigType.NestedCollection);
 		
 		// ParamSAC: ParamConfig.Type.NestedCollection => ParamType for List<ServiceLine>
-		ParamConfigType.NestedCollection<ServiceLine> pSAC_config_type = pSAC_config.getConfigType().findIfCollection(); 
+		ParamConfigType.NestedCollection<ServiceLine> pSAC_config_type = pSAC_config.getType().findIfCollection(); 
 		assertSame(pSAC_config_type.getModelConfig(), mSAC_col_config);
 		assertSame(CollectionType.list, pSAC_config_type.getCollectionType());
 		
 		// list param element
 		assertNotNull(pSAC_config_type.getElementConfig());
-		assertTrue(pSAC_config_type.getElementConfig().getConfigType().isNested());
-		assertFalse(pSAC_config_type.getElementConfig().getConfigType().isCollection());
+		assertTrue(pSAC_config_type.getElementConfig().getType().isNested());
+		assertFalse(pSAC_config_type.getElementConfig().getType().isCollection());
 
 		// list param element: type
-		ParamConfigType.Nested<ServiceLine> typNestedColElem = pSAC_config_type.getElementConfig().getConfigType().findIfNested();
+		ParamConfigType.Nested<ServiceLine> typNestedColElem = pSAC_config_type.getElementConfig().getType().findIfNested();
 		assertSame(ServiceLine.class, typNestedColElem.getReferredClass());
 		
 		//ParamType
@@ -223,7 +223,7 @@ public class QuadModelCollectionsTest {
 		// array-{primitive}
 		Param<String[]> pArrayString_types = q.getCore().findParamByPath("/types");
 		assertNotNull(pArrayString_types);
-		assertEquals("array-string", pArrayString_types.getConfig().getConfigType().getName());
+		assertEquals("array-string", pArrayString_types.getConfig().getType().getName());
 		assertNull(pArrayString_types.getState());
 		
 		String[] types = new String[]{"ONE", "TWO"};
@@ -244,7 +244,7 @@ public class QuadModelCollectionsTest {
 		Param<List<ServiceLine>> pSAC_col = q.getCore().findParamByPath("/serviceLines");
 		assertNotNull(pSAC_col);
 		
-		assertTrue(pSAC_col.getStateType().isCollection());
+		assertTrue(pSAC_col.getType().isCollection());
 		ListParam<ServiceLine> lpServiceLines = pSAC_col.findIfCollection();
 		
 		// initially is null
@@ -316,13 +316,13 @@ public class QuadModelCollectionsTest {
 		assertNotSame(newList, q.getCore().findParamByPath("/serviceLines").getState());
 		assertNotSame(core.getServiceLines(), newList);
 		assertSame(2, q.getCore().findParamByPath("/serviceLines").findIfCollection().size());
-		assertSame(2, q.getCore().findParamByPath("/serviceLines").findIfCollection().getStateType().findIfCollection().getModel().getParams().size());
+		assertSame(2, q.getCore().findParamByPath("/serviceLines").findIfCollection().getType().findIfCollection().getModel().getParams().size());
 		
 		assertEquals(sl_0, q.getCore().findParamByPath("/serviceLines/0").getState());
 		assertEquals(sl_1, q.getCore().findParamByPath("/serviceLines/1").getState());
 		
 		AtomicInteger counter = new AtomicInteger(0);
-		q.getCore().templateParams().find("serviceLines").getStateType().findIfCollection().getModel().getParams()
+		q.getCore().templateParams().find("serviceLines").getType().findIfCollection().getModel().getParams()
 			.stream()
 			.sequential()
 			.peek(p->{
@@ -467,7 +467,7 @@ public class QuadModelCollectionsTest {
 		assertNotSame(newList, vp_list.getState());
 		
 		assertSame(2, vp_list.getState().size());
-		assertSame(2, vp_list.getStateType().findIfCollection().getModel().getParams().size()); 
+		assertSame(2, vp_list.getType().findIfCollection().getModel().getParams().size()); 
 		
 		SimpleCase core = q.getCore().getState();
 		
@@ -489,7 +489,7 @@ public class QuadModelCollectionsTest {
 		vp_list.setState(againList);
 		assertSame(2, vp_list.size());
 		assertSame(2, vp_list.getState().size());
-		assertSame(2, vp_list.getStateType().findIfCollection().getModel().getParams().size()); 
+		assertSame(2, vp_list.getType().findIfCollection().getModel().getParams().size()); 
 		
 		assertSame(againsl_0.getService(), q.getRoot().findParamByPath("/view_simplecase/pg3/noConversionAttachedColServiceLines/0/service").getState());
 		assertSame(againsl_1.getService(), q.getRoot().findParamByPath("/view_simplecase/pg3/noConversionAttachedColServiceLines/1/service").getState());
@@ -564,7 +564,7 @@ public class QuadModelCollectionsTest {
 		assertNotSame(newList, vp_list.getState());
 		
 		assertSame(2, vp_list.getState().size());
-		assertSame(2, vp_list.getStateType().findIfCollection().getModel().getParams().size());
+		assertSame(2, vp_list.getType().findIfCollection().getModel().getParams().size());
 		
 		assertNotSame(sl_0, q.getCore().findParamByPath("/serviceLinesConverted/0").getState());
 		assertEquals(sl_0.getService(), q.getCore().findParamByPath("/serviceLinesConverted/0/service").getState());
@@ -575,7 +575,7 @@ public class QuadModelCollectionsTest {
 		SimpleCase core = q.getCore().getState();
 		
 		AtomicInteger counter = new AtomicInteger(0);
-		q.getCore().templateParams().find("serviceLinesConverted").getStateType().findIfCollection().getModel().getParams()
+		q.getCore().templateParams().find("serviceLinesConverted").getType().findIfCollection().getModel().getParams()
 			.stream()
 			.sequential()
 			.peek(p->{

@@ -61,7 +61,7 @@ public class MappedDefaultListParamState<T, M> extends DefaultListParamState<T> 
 				mapsToListModel.getLockTemplate().execute(()->{
 					// check if mapped elem was already created
 					String elemId = event.getEventParam().findIfCollectionElem().getElemId();
-					Param<?> param = getStateType().findIfNested().getModel().templateParams().find(elemId);
+					Param<?> param = getType().findIfNested().getModel().templateParams().find(elemId);
 					
 					if(param!=null) {
 						MappedParam<?, ?> mappedParam = param.findIfMapped();
@@ -89,7 +89,7 @@ public class MappedDefaultListParamState<T, M> extends DefaultListParamState<T> 
 					
 					String elemId = event.getEventParam().findIfCollectionElem().getElemId();
 					
-					ListModel<T> mappedColModel = (ListModel<T>)getStateType().findIfNested().getModel().findIfListModel();
+					ListModel<T> mappedColModel = (ListModel<T>)getType().findIfNested().getModel().findIfListModel();
 					Param<?> mappedParamElem = mappedColModel.templateParams().remove(elemId);
 					
 					emitNotification(new Notification<>(mappedColModel.getAssociatedParam(), ActionType._deleteElem, mappedParamElem));
@@ -107,7 +107,7 @@ public class MappedDefaultListParamState<T, M> extends DefaultListParamState<T> 
 				super.onEventUpdateState(event);
 				
 				// synch-up between mapped & mapsTo
-				ListModel<?> mapsToListModel = event.getEventParam().findIfCollection().getStateType().getModel();	
+				ListModel<?> mapsToListModel = event.getEventParam().findIfCollection().getType().getModel();	
 				
 				mapsToListModel.getLockTemplate().execute(()->{
 					// only scenario to handle here is of "clear" of list model, all other scenarios should have been handled at elem-event level

@@ -85,7 +85,7 @@ public class AuditStateChangeHandler implements OnStateChangeHandler<Audit> {
 		String domainRootAlias = leafParam.getRootDomain().getConfig().getAlias();
 		String domainRootRefId = String.valueOf(persistableDomainRoot.getIdParam().getState());
 		String propertyPath = leafParam.getPath();
-		String propertyType = leafParam.getStateType().getName();
+		String propertyType = leafParam.getType().getName();
 		Object oldValue = leafParam.getTransientOldState();
 		Object newValue = leafParam.getState();
 		

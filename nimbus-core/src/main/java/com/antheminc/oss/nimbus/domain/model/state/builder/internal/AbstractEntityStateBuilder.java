@@ -186,11 +186,11 @@ abstract public class AbstractEntityStateBuilder extends AbstractEntityStateFact
 
 			// handle transient
 			if(mappedParamConfig.getPath().nature() == MapsTo.Nature.TransientColElem) {
-				if(!mappedParamConfig.getConfigType().isNested())
+				if(!mappedParamConfig.getType().isNested())
 					throw new InvalidConfigException("Non nested transient params are not supported, but found for: "+mappedParamConfig.getCode());
 				
 				@SuppressWarnings("unchecked")
-				ParamConfigType.Nested<P> mpNmType = ((ParamConfigType.Nested<P>)mappedParamConfig.getConfigType());
+				ParamConfigType.Nested<P> mpNmType = ((ParamConfigType.Nested<P>)mappedParamConfig.getType());
 				
 				ModelConfig<P> mpNmConfig = mpNmType.getModelConfig();
 				MappedDefaultTransientParamState.Creator<P> creator = (associatedParam, transientMapsTo) -> buildModel(aspectHandlers, associatedParam, mpNmConfig, transientMapsTo);

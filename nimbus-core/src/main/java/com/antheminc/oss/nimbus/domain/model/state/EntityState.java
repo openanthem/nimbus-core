@@ -219,7 +219,7 @@ public interface EntityState<T> {
 		
 		//@JsonIgnore
 		default ParamConfig<T> getElemConfig() {
-			StateType.NestedCollection<T> typeSAC = getAssociatedParam().getStateType().findIfCollection(); 
+			StateType.NestedCollection<T> typeSAC = getAssociatedParam().getType().findIfCollection(); 
 			ParamConfigType.NestedCollection<T> typeConfig = typeSAC.getConfig().findIfCollection();
 			
 			ParamConfig<T> elemConfig = typeConfig.getElementConfig();
@@ -250,7 +250,7 @@ public interface EntityState<T> {
 		@JsonIgnore
 		Model<?> getParentModel();
 		
-		StateType getStateType();
+		StateType getType();
 		
 		Class<? extends ValidationGroup>[] getActiveValidationGroups();
 		void setActiveValidationGroups(Class<? extends ValidationGroup>[] activeValidationGroups);
@@ -279,11 +279,11 @@ public interface EntityState<T> {
 		}
 		
 		default boolean isNested() {
-			return getStateType().isNested();
+			return getType().isNested();
 		}
 		
 		default Model<T> findIfNested() {
-			return isNested() ? getStateType().<T>findIfNested().getModel() : null;
+			return isNested() ? getType().<T>findIfNested().getModel() : null;
 		} 
 		
 		default boolean isCollectionElem() {
@@ -379,14 +379,14 @@ public interface EntityState<T> {
 			if(isLeaf()) return false;
 			
 			if(isTransient() && !findIfTransient().isAssinged()) { // when transient is not assigned
-				Class<?> mappedClass = getStateType().getConfig().getReferredClass();
-				Class<?> mapsToClass = getStateType().getConfig().findIfNested().getModelConfig().findIfMapped().getMapsToConfig().getReferredClass();
+				Class<?> mappedClass = getType().getConfig().getReferredClass();
+				Class<?> mapsToClass = getType().getConfig().findIfNested().getModelConfig().findIfMapped().getMapsToConfig().getReferredClass();
 				
 				return (mappedClass!=mapsToClass);
 			}
 			
-			Class<?> mappedClass = getStateType().findIfNested().getModel().getConfig().getReferredClass();
-			Class<?> mapsToClass = getMapsTo().getStateType().findIfNested().getModel().getConfig().getReferredClass();
+			Class<?> mappedClass = getType().findIfNested().getModel().getConfig().getReferredClass();
+			Class<?> mapsToClass = getMapsTo().getType().findIfNested().getModel().getConfig().getReferredClass();
 
 			// conversion required when mappedClass and mapsToClass are NOT same
 			return (mappedClass!=mapsToClass);
@@ -445,7 +445,7 @@ public interface EntityState<T> {
 	
 	public interface ListParam<T> extends Param<List<T>>, ListBehavior<T> {
 		@Override
-		StateType.NestedCollection<T> getStateType();
+		StateType.NestedCollection<T> getType();
 		
 		@Override
 		default MappedListParam<T, ?> findIfMapped() {
@@ -457,7 +457,7 @@ public interface EntityState<T> {
 		}
 		
 		default boolean isLeafElements() {
-			return getStateType().isLeafElements();
+			return getType().isLeafElements();
 		}
 		
 		@Override
@@ -483,8 +483,8 @@ public interface EntityState<T> {
 
 		@Override
 		default boolean requiresConversion() {
-			Class<?> mappedElemClass = getStateType().findIfCollection().getModel().getElemConfig().getReferredClass();
-			Class<?> mapsToElemClass = getMapsTo().getStateType().findIfCollection().getModel().getElemConfig().getReferredClass();
+			Class<?> mappedElemClass = getType().findIfCollection().getModel().getElemConfig().getReferredClass();
+			Class<?> mapsToElemClass = getMapsTo().getType().findIfCollection().getModel().getElemConfig().getReferredClass();
 			
 			// conversion required when mappedClass and mapsToClass are NOT same
 			return (mappedElemClass!=mapsToElemClass);

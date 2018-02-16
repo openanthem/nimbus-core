@@ -52,7 +52,7 @@ public class DefaultActionExecutorUpdate extends AbstractCommandExecutor<Boolean
 	
 	protected void handleCollection(ExecutionContext eCtx, ListParam<Object> p) {
 		// perform add on collection
-		Object colElemState = getConverter().convert(p.getStateType().getModel().getElemConfig(), eCtx.getCommandMessage().getRawPayload());
+		Object colElemState = getConverter().convert(p.getType().getModel().getElemConfig(), eCtx.getCommandMessage().getRawPayload());
 		
 		p.add(colElemState);
 	}

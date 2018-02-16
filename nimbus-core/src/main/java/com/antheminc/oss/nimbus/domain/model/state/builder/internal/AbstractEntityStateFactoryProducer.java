@@ -95,8 +95,8 @@ public abstract class AbstractEntityStateFactoryProducer {
 		
 		@Override
 		public <P> DefaultParamState<P> instantiateParam(Param<?> mapsToParam, Model<?> parentModel, ParamConfig<P> paramConfig, EntityStateAspectHandlers aspectHandlers) {
-			if(paramConfig.getConfigType().isCollection())
-				return paramConfig.getConfigType().findIfCollection().isLeafElements() 
+			if(paramConfig.getType().isCollection())
+				return paramConfig.getType().findIfCollection().isLeafElements() 
 							? new DefaultListParamState.LeafState(parentModel, paramConfig, aspectHandlers) 
 									:  new DefaultListParamState(parentModel, paramConfig, aspectHandlers);
 			
@@ -118,7 +118,7 @@ public abstract class AbstractEntityStateFactoryProducer {
 		
 		@Override
 		public <T> DefaultListModelState<T> instantiateColModel(ListParam associatedParam, ModelConfig<List<T>> config, EntityStateAspectHandlers provider, DefaultListElemParamState.Creator<T> elemCreator) {
-			return new MappedDefaultListModelState<>(associatedParam.findIfMapped().getMapsTo().getStateType().findIfCollection().getModel(), associatedParam, config, provider, elemCreator);					
+			return new MappedDefaultListModelState<>(associatedParam.findIfMapped().getMapsTo().getType().findIfCollection().getModel(), associatedParam, config, provider, elemCreator);					
 		}
 		
 		@Override
@@ -130,8 +130,8 @@ public abstract class AbstractEntityStateFactoryProducer {
 		
 		@Override
 		public <P> DefaultParamState<P> instantiateParam(Param<?> mapsToParam, Model<?> parentModel, ParamConfig<P> paramConfig, EntityStateAspectHandlers aspectHandlers) {
-			if(paramConfig.getConfigType().isCollection())
-				return paramConfig.getConfigType().findIfCollection().isLeafElements() 
+			if(paramConfig.getType().isCollection())
+				return paramConfig.getType().findIfCollection().isLeafElements() 
 							? new MappedDefaultListParamState.LeafState(mapsToParam.findIfCollection(), parentModel, paramConfig, aspectHandlers)
 									: new MappedDefaultListParamState(mapsToParam.findIfCollection(), parentModel, paramConfig, aspectHandlers);
 			

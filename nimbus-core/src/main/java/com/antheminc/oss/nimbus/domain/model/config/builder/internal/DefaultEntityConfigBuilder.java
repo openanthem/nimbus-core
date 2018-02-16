@@ -130,7 +130,7 @@ public class DefaultEntityConfigBuilder extends AbstractEntityConfigBuilder impl
 		
 		// handle type
 		ParamConfigType type = buildParamType(mConfig, pConfig, f, visitedModels);
-		pConfig.setConfigType(type);
+		pConfig.setType(type);
 		
 		// trigger event
 		pConfig.onCreateEvent();
@@ -169,7 +169,7 @@ public class DefaultEntityConfigBuilder extends AbstractEntityConfigBuilder impl
 
 			//create collection element type (and element model config)
 			ParamConfigType colElemType = createParamType(false, pDirectOrColElemType, colModelConfig, visitedModels);
-			colElemParamConfig.setConfigType(colElemType);
+			colElemParamConfig.setType(colElemType);
 			
 			return colModelType;
 			

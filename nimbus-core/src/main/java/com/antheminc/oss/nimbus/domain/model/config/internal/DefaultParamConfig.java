@@ -53,7 +53,7 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	final private String code;
 	final private String beanName;
 
-	private ParamConfigType configType;	
+	private ParamConfigType type;	
 	
 	private List<LabelConfig> labelConfigs;
 
@@ -101,7 +101,7 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<P> getReferredClass() {
-		return (Class<P>)getConfigType().getReferredClass();
+		return (Class<P>)getType().getReferredClass();
 	}
 	
 	@Override
@@ -111,7 +111,7 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	
 	@Override
 	public boolean isLeaf() {
-		return !getConfigType().isNested();
+		return !getType().isNested();
 	}
 	
 	@Override
@@ -127,7 +127,7 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 			return null;
 		
 		/* param is not leaf node: is nested */
-		ParamConfigType.Nested<?> mp = getConfigType().findIfNested();
+		ParamConfigType.Nested<?> mp = getType().findIfNested();
 		if(mp != null) {
 			return mp.getModelConfig().findParamByPath(pathArr);
 		}

@@ -54,7 +54,7 @@ public class MockParamConfig implements ParamConfig<Object> {
 	private Class<Object> referredClass;
 	private List<AnnotationConfig> rules;
 	private RulesConfig rulesConfig;
-	private ParamConfigType configType;
+	private ParamConfigType type;
 	private List<AnnotationConfig> uiNatures;
 	private AnnotationConfig uiStyles;
 	private List<AnnotationConfig> validations;
