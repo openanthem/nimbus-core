@@ -34,8 +34,6 @@ import { CustomHttpClient} from './httpclient.service';
 import { Subject } from 'rxjs/Subject';
 import { GenericDomain } from '../model/generic-domain.model';
 
-declare var trackJs: any;
-
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -698,10 +696,6 @@ export class PageService {
                 } else {
                     this.updateParam(param, payload);
                 }
-
-                if (trackJs) {
-                        trackJs.track('test the manual error log');
-                }
         }
 
         updateParam(param: Param, payload: Param) {
@@ -718,8 +712,9 @@ export class PageService {
                                                         } else if (currentKey === 'config') {
                                                                 Object.assign(Reflect.get(param, currentKey), new ParamConfig().deserialize(Reflect.get(payload, updatedKey)));
                                                                 //TODO - refactor this whole method and the conditions. Revisit - order, count
-                                                        } else if (currentKey === 'validations') {
-                                                                Object.assign(Reflect.get(param, currentKey), new Validation().deserialize(Reflect.get(payload, updatedKey)));
+                                                        } else if (currentKey === 'activeValidationGroups') {
+                                                                Reflect.set(param, currentKey, Reflect.get(payload, updatedKey));
+                                                                this.validationUpdate.next(param);
                                                                 //TODO - refactor this whole method and the conditions. Revisit - order, count
                                                         } else if (currentKey === 'leafState' || currentKey === 'message') {
                                                                 Reflect.set(param, currentKey, Reflect.get(payload, updatedKey));

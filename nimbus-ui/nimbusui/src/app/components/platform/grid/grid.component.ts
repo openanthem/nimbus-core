@@ -206,33 +206,23 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     }
 
     onRowSelect(event) {
-        //console.log(event);
-        //this.pageService.postOnChange($event.path, '_update', 'state', JSON.stringify(true));
     }
 
     onRowUnselect(event) {
-        //console.log(event);
-        //this.pageService.postOnChange($event.path, '_update', 'state', JSON.stringify(true));
     }
+
     onRowClick(event: any) {
-        //console.log(event);
-        //this.pageService.postOnChange($event.path, '_update', 'state', JSON.stringify(true));
     }
+
     onRowUnSelect(event) {
-        //console.log(event);
-        //this.pageService.postOnChange($event.path, '_update', 'state', JSON.stringify(false));
     }
 
     postOnChange(col: ElementModelParam, item: any) {
         let uri=this.element.path + '/' + item.elemId + '/' + col.code;
-        //console.log(event);
         this.pageSvc.postOnChange(uri, 'state', JSON.stringify(event.target['checked']));
     }
 
     handleRowChange(val) {
-        //this.cd.markForCheck();
-        // console.log('onRowUpdate');
-        // console.log(val);
     }
 
     getAddtionalData(event: any) {

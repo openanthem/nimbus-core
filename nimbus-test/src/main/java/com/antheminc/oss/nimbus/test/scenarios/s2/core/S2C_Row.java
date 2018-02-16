@@ -7,6 +7,7 @@ import com.antheminc.oss.nimbus.domain.defn.Model;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * 
@@ -14,7 +15,7 @@ import lombok.Setter;
  *
  */
 @Domain("s2c_row")
-@Getter @Setter
+@Getter @Setter @ToString
 public class S2C_Row {
 
 	@Model

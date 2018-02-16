@@ -15,22 +15,26 @@
  * limitations under the License.
  */
 'use strict';
-import { ErrorHandler } from '@angular/core';
-declare var trackJs: any;
-//TODO convert to service
+
 /**
- * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
  * \@whatItDoes 
  * 
  * \@howToUse 
  * 
  */
-class TrackJsErrorHandler extends ErrorHandler {
-  handleError(error:any) {
-    // Add the error message to the telemetry timeline. 
-    // It can occasionally have useful additional context.
-    console.error(error);
+export class Enum<T> {
+  public constructor(public readonly value: T) {}
+  public toString() {
+    return this.value.toString();
   }
 }
-export default TrackJsErrorHandler;
+
+export class ValidationConstraint extends Enum<string> {
+  public static readonly _notNull = new Enum('NotNull');
+  public static readonly _pattern= new Enum('Pattern');
+  public static readonly _size= new Enum('Size');
+  public static readonly _number = new Enum('isNumber');
+  public static readonly _zip = new Enum('isZip');
+}
+

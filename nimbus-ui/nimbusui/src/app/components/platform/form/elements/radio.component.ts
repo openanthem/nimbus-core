@@ -48,7 +48,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
         </legend>
         <div class="checkboxHolder" >
         <div class="form-checkrow" *ngFor="let val of element?.values; let i = index">
-        <p-radioButton name="{{element?.config?.code}}" [(ngModel)]="value" [value]="val.code" [label]="val.label" (ngModelChange)="emitValueChangedEvent(this,$event)"></p-radioButton>
+        <p-radioButton name="{{element?.config?.code}}" [(ngModel)]="value"   [disabled]="disabled" [value]="val.code" [label]="val.label" (ngModelChange)="emitValueChangedEvent(this,$event)"></p-radioButton>
     </div>
         </div>
     </fieldset>

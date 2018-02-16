@@ -30,6 +30,7 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 
 /**
  * @author Jayant Chaudhuri
+ * @author Rakesh Patel
  *
  */
 abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements FunctionHandler<T,R> {
@@ -56,37 +57,24 @@ abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements Functi
 	
 	abstract public R assign(ExecutionContext executionContext, Param<T> actionParameter,Param<S> targetParameter, S state);
 
-	//TODO - need to revisit the design of how to pass the where clause in a url. In the below example the _search where clause is being truncated as we are looking at only the url query parameter
-	//Ex - /pageOrgUserGroupList/tileUserGroups/sectionUserGroups/userGroupList.m/_process?fn=_set&url=/p/clientusergroup/_search?fn=query&where=clientusergroup.organizationId.eq('<!/.m/id!>')
 	protected String getUrl(CommandMessage commandMessage){
-		String url = commandMessage.getCommand().getFirstParameterValue("url");
-		//Temporarily added the below code. Need to revisit.
-		String where = commandMessage.getCommand().getFirstParameterValue("where");
-		String orderby = commandMessage.getCommand().getFirstParameterValue("orderby");
-		String fetch = commandMessage.getCommand().getFirstParameterValue("fetch");
-		String converter = commandMessage.getCommand().getFirstParameterValue("converter");
-		String aggregate = commandMessage.getCommand().getFirstParameterValue("aggregate");
-		String project = commandMessage.getCommand().getFirstParameterValue("project");
 		
-		if(StringUtils.isNotBlank(where)) {
-			url = url+"&where="+where;
-		}
-		if(StringUtils.isNotBlank(orderby)) {
-			url =  url+"&orderby="+orderby;
-		}		
-		if(StringUtils.isNotBlank(fetch)) {
-			url =  url+"&fetch="+fetch;
-		}
-		if(StringUtils.isNotBlank(converter)) {
-			url =  url+"&converter="+converter;
-		}
-		if(StringUtils.isNotBlank(aggregate)) {
-			url =  url+"&aggregate="+aggregate;
-		}
-		if(StringUtils.isNotBlank(project)) {
-			url =  url+"&project="+project;
-		}
-		return url;
+		StringBuilder url = new StringBuilder();
+		url.append(commandMessage.getCommand().getFirstParameterValue(Constants.REQUEST_PARAMETER_URL_MARKER.code));
+		
+		commandMessage.getCommand().getRequestParams().entrySet().stream()
+					.filter(map -> !Constants.REQUEST_PARAMETER_URL_MARKER.code.equalsIgnoreCase(map.getKey()))
+					.filter(map -> map.getValue() != null && map.getValue().length > 0)
+					.forEach(map -> url.append(Constants.REQUEST_PARAMETER_DELIMITER.code).append(map.getKey()).append(Constants.PARAM_ASSIGNMENT_MARKER.code).append(map.getValue()[0]));
+		
+		return url.toString();
+	}
+	
+	protected String getUrlStripParams(CommandMessage commandMessage){
+		
+		StringBuilder url = new StringBuilder();
+		url.append(commandMessage.getCommand().getFirstParameterValue(Constants.REQUEST_PARAMETER_URL_MARKER.code));
+		return url.toString();
 	}
 	
 	protected CommandMessage buildExternalCommand(CommandMessage commandMessage){
@@ -104,7 +92,7 @@ abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements Functi
 	
 
 	protected boolean isInternal(CommandMessage commandMessage){
-		String url = commandMessage.getCommand().getFirstParameterValue("url");
+		String url = commandMessage.getCommand().getFirstParameterValue(Constants.REQUEST_PARAMETER_URL_MARKER.code);
 		if(StringUtils.startsWith(url, Constants.SEPARATOR_URI_PLATFORM.code)) {
 			return false;
 		}
@@ -117,7 +105,7 @@ abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements Functi
 	}	
 	
 	protected S getInternalState(ExecutionContext executionContext){
-		String url = getUrl(executionContext.getCommandMessage());
+		String url = getUrlStripParams(executionContext.getCommandMessage());
 		return executionContext.findStateByPath(url);
 		
 	}

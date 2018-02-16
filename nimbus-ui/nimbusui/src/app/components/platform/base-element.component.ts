@@ -1,3 +1,4 @@
+import { ValidationConstraint } from './../../shared/validationconstraints.enum';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -145,7 +146,7 @@ export class BaseElement {
         let style = '';
         if (this.element.config.validation) {
             this.element.config.validation.constraints.forEach(validator => {
-                if (validator.name === 'NotNull') {
+                if (validator.name === ValidationConstraint._notNull.value) {
                     style = 'required';
                 }
             });
