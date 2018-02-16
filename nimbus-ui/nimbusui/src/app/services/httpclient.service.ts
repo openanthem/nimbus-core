@@ -16,7 +16,7 @@
  */
 'use strict';
 import { Injectable } from '@angular/core';
-import { Http, Headers, RequestOptions} from '@angular/http';
+import { Http, Headers, RequestOptions, URLSearchParams } from '@angular/http';
 import { HttpClient } from '@angular/common/http';
 
 /**
@@ -42,10 +42,13 @@ export class CustomHttpClient {
     // headers.append('X-CSRFToken',localStorage.getItem('XSRF-Token'));
   }
 
-  get(url) {
+  get(url: string, searchParams?: URLSearchParams) {
     let headers = new Headers({'Content-Type': 'application/json'});
     this.createAuthorizationHeader(headers);
     let options = new RequestOptions({headers: headers, withCredentials: true});
+    if (searchParams) {
+      options.params = searchParams;
+    } 
     return this.customHttpClient.get(url, options);
   }
 
