@@ -22,6 +22,7 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ActiveProfiles;
@@ -31,6 +32,7 @@ import com.antheminc.oss.nimbus.channel.web.WebActionController;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessageConverter;
 import com.antheminc.oss.nimbus.entity.client.Client;
 import com.antheminc.oss.nimbus.test.FrameworkIntegrationTestScenariosApplication;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author Soham Chakravarti
@@ -53,12 +55,18 @@ public abstract class AbstractFrameworkIntegrationTests {
 	
 	@Autowired protected CommandMessageConverter converter;
 	
+	@Autowired protected ObjectMapper om;
 	
+	protected JacksonTester<Object> json;
+
 	
 	
 	@Before
 	public void before() {
 		this.tearDown();
+
+		JacksonTester.initFields(this, om);
+		
 		Client newClient = new Client();
 		newClient.setId(CLIENT_ID);
 		mongo.insert(newClient, "cliententity");

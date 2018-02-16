@@ -3,6 +3,7 @@
  */
 package com.antheminc.oss.nimbus.test.scenarios.s2;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
@@ -31,7 +32,6 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
 import com.antheminc.oss.nimbus.test.domain.support.AbstractFrameworkIntegrationTests;
 import com.antheminc.oss.nimbus.test.domain.support.utils.ExtractResponseOutputUtils;
-import com.antheminc.oss.nimbus.test.domain.support.utils.JsonUtils;
 import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
 import com.antheminc.oss.nimbus.test.scenarios.s2.core.S2C_LineItemB;
 import com.antheminc.oss.nimbus.test.scenarios.s2.core.S2C_Row;
@@ -68,7 +68,6 @@ public class S2_ValidateColElemConfigTest extends AbstractFrameworkIntegrationTe
 	public void before() {
 		super.before();
 		
-
 		Mockito.when(defaultActionExecutorSearch.execute(any())).thenAnswer(new Answer<Output<Object>>() {
 			
 			@Override
@@ -84,7 +83,7 @@ public class S2_ValidateColElemConfigTest extends AbstractFrameworkIntegrationTe
 	}
 	
 	@Test
-	public void t00_config_check() {
+	public void t00_config_check() throws Exception {
 		HttpServletRequest httpReq = MockHttpRequestBuilder.withUri(K_URI_VR)
 			.addAction(Action._new)
 			.getMock();
@@ -95,7 +94,7 @@ public class S2_ValidateColElemConfigTest extends AbstractFrameworkIntegrationTe
 		Object o = ExtractResponseOutputUtils.extractOutput(controllerResp);
 		assertNotNull(o);
 		
-		System.out.println(JsonUtils.get().convert(o));
+		assertThat(json.write(o)).hasJsonPathValue("$.stateType.model.params[0].config.configType.elementConfig.configType.modelConfig.paramConfigs", new Object[]{});
 	}
 	
 	private Object createNew_VR() {
