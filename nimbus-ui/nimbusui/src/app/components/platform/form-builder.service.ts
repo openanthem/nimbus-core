@@ -20,7 +20,7 @@ import { FormGroup, FormBuilder, Validators, ValidatorFn, FormArray, FormControl
 
 import { CustomValidators } from './validators/custom.validators';
 import { Param } from '../../shared/app-config.interface';
-import { ValidationUtils } from './validators/validationUtils';
+import { ValidationUtils } from './validators/ValidationUtils';
 
 /**
  * \@author Dinakar.Meda
