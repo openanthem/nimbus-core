@@ -19,7 +19,6 @@ import java.beans.PropertyDescriptor;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
@@ -53,7 +52,7 @@ public interface EntityState<T> {
 	EntityConfig<T> getConfig();
 
 	default String getConfigId() {
-		return getConfig().getConfigId();
+		return getConfig().getId();
 	}
 	
 	<S> Model<S> findModelByPath(String path);
@@ -74,9 +73,11 @@ public interface EntityState<T> {
 	void initSetup();
 	void initState();
 	
+	@JsonIgnore
 	boolean isStateInitialized();
 	void setStateInitialized(boolean initialized);
 	
+	@JsonIgnore
 	EntityStateAspectHandlers getAspectHandlers();
 	
 	void fireRules();
@@ -90,10 +91,12 @@ public interface EntityState<T> {
 	@JsonIgnore
 	LockTemplate getLockTemplate();
 	
+	@JsonIgnore
 	default boolean isRoot() {
 		return false;
 	}
 	
+	@JsonIgnore
 	default boolean isMapped() {
 		return false;
 	}
@@ -150,7 +153,10 @@ public interface EntityState<T> {
 		@JsonIgnore
 		Param<T> getAssociatedParam();
 		
+		@JsonIgnore
 		public Param<?> getIdParam();
+		
+		@JsonIgnore
 		public Param<?> getVersionParam();
 		
 		@JsonIgnore @Override
@@ -227,7 +233,7 @@ public interface EntityState<T> {
 		}
 		
 		default String getElemConfigId() {
-			return getElemConfig().getConfigId();
+			return getElemConfig().getId();
 		}
 	}
 	
@@ -362,6 +368,7 @@ public interface EntityState<T> {
 			return this;
 		}
 		
+		@JsonIgnore
 		T getTransientOldState();
 	}
 	

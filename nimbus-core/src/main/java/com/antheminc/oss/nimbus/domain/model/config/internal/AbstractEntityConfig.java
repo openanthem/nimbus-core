@@ -34,15 +34,18 @@ import lombok.Setter;
 @Getter @Setter
 abstract public class AbstractEntityConfig<T> implements EntityConfig<T> {
 
-	@JsonIgnore final protected JustLogit logit = new JustLogit(getClass());
+	@JsonIgnore 
+	final protected JustLogit logit = new JustLogit(getClass());
 
 	private AnnotationConfig uiStyles;
 
-	@JsonIgnore private RulesConfig rulesConfig; 
+	@JsonIgnore 
+	private RulesConfig rulesConfig; 
 	
 	private static final AtomicInteger counter = new AtomicInteger();
 	
-	private final String configId = String.valueOf(counter.incrementAndGet());
+	private final String id = String.valueOf(counter.incrementAndGet());
 
+	@JsonIgnore
 	private EventHandlerConfig eventHandlerConfig;
 }

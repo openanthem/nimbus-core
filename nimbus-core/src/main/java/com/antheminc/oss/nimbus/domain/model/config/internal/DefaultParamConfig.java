@@ -45,12 +45,14 @@ import lombok.ToString;
  * @author Soham Chakravarti
  *
  */
-@Getter @Setter @ToString(callSuper=true, of={"code", "beanName", "configType"})
+@Getter @Setter @ToString(callSuper=true, of={"code", "beanName", "type"})
 public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements ParamConfig<P>, Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	final private String code;
+	
+	@JsonIgnore
 	final private String beanName;
 
 	private ParamConfigType type;	
@@ -97,7 +99,7 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 		return new DefaultParamConfig<>(code, beanName);
 	} 
 	
-
+	@JsonIgnore
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<P> getReferredClass() {
@@ -109,6 +111,7 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 		return StringUtils.equals(getCode(), by);
 	}
 	
+	@JsonIgnore
 	@Override
 	public boolean isLeaf() {
 		return !getType().isNested();

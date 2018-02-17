@@ -45,8 +45,10 @@ import com.antheminc.oss.nimbus.entity.process.ProcessFlow;
 import com.antheminc.oss.nimbus.support.Holder;
 import com.antheminc.oss.nimbus.support.JustLogit;
 import com.antheminc.oss.nimbus.support.pojo.LockTemplate;
+import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -54,10 +56,14 @@ import lombok.Setter;
  * @author Soham Chakravarti
  *
  */
+@JsonFilter("default.entityState.filter")
 @Getter @Setter
 public abstract class AbstractEntityState<T> implements EntityState<T> {
 
 	final private EntityConfig<T> config;
+	
+	@Setter(AccessLevel.PRIVATE)
+	private String configId;
 	
 	@JsonIgnore final private EntityStateAspectHandlers aspectHandlers;
 	

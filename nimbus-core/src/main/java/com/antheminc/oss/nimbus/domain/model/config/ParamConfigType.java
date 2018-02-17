@@ -18,6 +18,8 @@ package com.antheminc.oss.nimbus.domain.model.config;
 import java.io.Serializable;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -44,8 +46,10 @@ public class ParamConfigType implements Serializable {
 	
 	final private String name;
 	
+	@JsonIgnore
 	final private Class<?> referredClass;
 	
+	@JsonIgnore
 	final private boolean array;
 	
 	public <T> Nested<T> findIfNested() {
@@ -87,6 +91,7 @@ public class ParamConfigType implements Serializable {
 			super(true, name, referredClass, false);
 		}
 		
+		@JsonIgnore
 		@SuppressWarnings("unchecked")
 		@Override
 		public Class<T> getReferredClass() {
@@ -113,19 +118,12 @@ public class ParamConfigType implements Serializable {
 			this.collectionType = collectionType;
 		}
 		
-//		// TODO Temp till custom Serializer is implemented
-//		public List<? extends ParamConfig<?>> getElementModelParams() {
-//			if(getElementConfig().getConfigType().isNested()) {
-//				return getElementConfig().getConfigType().findIfNested().getModelConfig().getParamConfigs();
-//			}
-//			return null;
-//		}
-		
 		@Override
 		public boolean isCollection() {
 			return true;
 		}
 		
+		@JsonIgnore
 		public boolean isLeafElements() {
 			return elementConfig.isLeaf();
 		}
@@ -136,6 +134,7 @@ public class ParamConfigType implements Serializable {
 			return this;
 		}
 		
+		@JsonIgnore
 		@Override
 		public Class<List<T>> getReferredClass() {
 			return super.getReferredClass();

@@ -47,7 +47,8 @@ public class DefaultModelConfig<T> extends AbstractEntityConfig<T> implements Mo
 	private static final long serialVersionUID = 1L;
 
 	@JsonIgnore private final Class<T> referredClass;
-	private String alias;
+	
+	@JsonIgnore private String alias;
 	
 	@JsonIgnore private Domain domain;
 	@JsonIgnore private Model model;

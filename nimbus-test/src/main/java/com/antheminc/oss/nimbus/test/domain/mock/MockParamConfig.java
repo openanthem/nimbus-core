@@ -44,7 +44,7 @@ public class MockParamConfig implements ParamConfig<Object> {
 	private List<AssociatedEntity> associatedEntities;
 	private String beanName;
 	private String code = "";
-	private String configId = "";
+	private String id = "";
 	private List<ParamConverter> converters;
 	private List<LabelConfig> labelConfigs;
 	private EventHandlerConfig eventHandlerConfig;

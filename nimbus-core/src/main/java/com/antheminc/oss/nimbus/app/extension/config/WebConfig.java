@@ -29,11 +29,13 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+import com.antheminc.oss.nimbus.domain.model.state.internal.EntityStateConfigJsonFilter;
 import com.antheminc.oss.nimbus.support.json.CustomLocalDateDeserializer;
 import com.antheminc.oss.nimbus.support.json.CustomLocalDateSerializer;
 import com.antheminc.oss.nimbus.support.json.CustomLocalDateTimeDeserializer;
 import com.antheminc.oss.nimbus.support.json.CustomLocalDateTimeSerializer;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
 
 /**
@@ -104,6 +106,9 @@ public class WebConfig extends WebMvcConfigurerAdapter {
             @Override
             public void customize(Jackson2ObjectMapperBuilder jacksonObjectMapperBuilder) {
             	jacksonObjectMapperBuilder.serializationInclusion(Include.NON_NULL);
+            	
+            	jacksonObjectMapperBuilder.filters(
+            			new SimpleFilterProvider().addFilter("default.entityState.filter", new EntityStateConfigJsonFilter()));
             	
                 jacksonObjectMapperBuilder.deserializerByType(LocalDate.class, new CustomLocalDateDeserializer());
                 jacksonObjectMapperBuilder.serializerByType(LocalDate.class, new CustomLocalDateSerializer());

@@ -42,6 +42,7 @@ public class StateType implements Serializable {
 		return config.getName();
 	}
 	
+	@JsonIgnore
 	public boolean isTransient() {
 		return false;
 	}
@@ -54,6 +55,7 @@ public class StateType implements Serializable {
 		return config.isNested();
 	}
 	
+	@JsonIgnore
 	public boolean isArray() {
 		return config.isArray();
 	}
@@ -102,6 +104,7 @@ public class StateType implements Serializable {
 			return true;
 		}
 		
+		@JsonIgnore
 		public boolean isLeafElements() {
 			return getConfig().findIfCollection().isLeafElements();
 		}

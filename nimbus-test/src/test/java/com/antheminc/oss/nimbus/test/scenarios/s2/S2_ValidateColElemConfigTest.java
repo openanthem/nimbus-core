@@ -94,7 +94,8 @@ public class S2_ValidateColElemConfigTest extends AbstractFrameworkIntegrationTe
 		Object o = ExtractResponseOutputUtils.extractOutput(controllerResp);
 		assertNotNull(o);
 		
-		assertThat(json.write(o)).hasJsonPathValue("$.type.model.params[0].config.type.elementConfig.type.modelConfig.paramConfigs", new Object[]{});
+		//assertThat(json.write(o)).hasJsonPathValue("$.type.model.params[0].config.type.elementConfig.type.modelConfig.paramConfigs", new Object[]{});
+		assertThat(json.write(o)).hasJsonPathValue("$.config.type.modelConfig.paramConfigs[0].type.elementConfig.type.modelConfig.paramConfigs", new Object[]{});
 	}
 	
 	private Object createNew_VR() {
@@ -104,7 +105,7 @@ public class S2_ValidateColElemConfigTest extends AbstractFrameworkIntegrationTe
 	}
 	
 	@Test
-	public void t01_col_nestedCol_update() {
+	public void t01_col_nestedCol_update() throws Exception {
 		// vr_main: new session for view root
 		Object controllerResp_new = createNew_VR();
 		Param<?> vp_main = ExtractResponseOutputUtils.extractOutput(controllerResp_new);
@@ -140,5 +141,6 @@ public class S2_ValidateColElemConfigTest extends AbstractFrameworkIntegrationTe
 		assertEquals(1, resp_rowBodyLIs_get$Events.size());
 		assertSame(vp_main.findParamByPath("/rows/0/nestedRowBody/nestedRowBodyLineItems"), resp_rowBodyLIs_get$Events.iterator().next().getParam());
 
+		System.out.println(json.write(ExtractResponseOutputUtils.extractOutput(controllerResp_new)).getJson());
 	}
 }

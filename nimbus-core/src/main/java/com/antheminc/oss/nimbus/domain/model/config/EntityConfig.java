@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 public interface EntityConfig<T> {
 
-	public String getConfigId();
+	public String getId();
 	
 	@JsonIgnore
 	public Class<T> getReferredClass();
@@ -39,8 +39,10 @@ public interface EntityConfig<T> {
 		return getRulesConfig()!=null;
 	}
 	
+	@JsonIgnore
 	public RulesConfig getRulesConfig();
 	
+	@JsonIgnore
 	default boolean isMapped() {
 		return false;
 	}

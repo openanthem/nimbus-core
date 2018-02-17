@@ -71,11 +71,7 @@ public class MappedDefaultParamConfig<P, M> extends DefaultParamConfig<P> implem
 			setValues(mapsTo.getValues());
 			setEventHandlerConfig(mapsTo.getEventHandlerConfig());
 		}
-		
-		@Override
-		public String getConfigId() {
-			return super.getConfigId();
-		}
+
 	}
 	
 	public MappedDefaultParamConfig(String code, ModelConfig<?> mapsToEnclosingModel, ParamConfig<M> mapsTo, Path path) {
