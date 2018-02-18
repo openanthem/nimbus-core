@@ -22,6 +22,7 @@ import org.apache.commons.collections.CollectionUtils;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListModel;
 import com.antheminc.oss.nimbus.domain.model.state.EntityStateAspectHandlers;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
 
@@ -34,6 +35,7 @@ public class DefaultListModelState<T> extends DefaultModelState<List<T>> impleme
 
 	private static final long serialVersionUID = 1L;
 	
+	@JsonIgnore 
 	final private DefaultListElemParamState.Creator<T> elemCreator;
 	
 	public DefaultListModelState(ListParam<T> associatedParam, ModelConfig<List<T>> config, EntityStateAspectHandlers provider, DefaultListElemParamState.Creator<T> elemCreator) {

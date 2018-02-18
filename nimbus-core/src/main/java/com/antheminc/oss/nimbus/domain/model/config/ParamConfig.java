@@ -25,6 +25,7 @@ import com.antheminc.oss.nimbus.domain.defn.MapsTo.Mode;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo.Path;
 import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values;
 import com.antheminc.oss.nimbus.entity.Findable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -72,6 +73,7 @@ public interface ParamConfig<P> extends EntityConfig<P>, Findable<String> {
 
 	public void onCreateEvent();
 	
+	@JsonIgnore
 	default MapsTo.Mode getMappingMode() {
 		return MapsTo.Mode.UnMapped;
 	}

@@ -113,6 +113,8 @@ public interface EntityState<T> {
 		default Mapped<T, M> findIfMapped() {
 			return this;
 		}
+		
+		@JsonIgnore
 		EntityState<M> getMapsTo();
 	}
 	
@@ -223,7 +225,7 @@ public interface EntityState<T> {
 		@Override
 		ListElemParam<T> add();
 		
-		//@JsonIgnore
+		@JsonIgnore
 		default ParamConfig<T> getElemConfig() {
 			StateType.NestedCollection<T> typeSAC = getAssociatedParam().getType().findIfCollection(); 
 			ParamConfigType.NestedCollection<T> typeConfig = typeSAC.getConfig().findIfCollection();
@@ -231,6 +233,7 @@ public interface EntityState<T> {
 			ParamConfig<T> elemConfig = typeConfig.getElementConfig();
 			return elemConfig;
 		}
+		
 		
 		default String getElemConfigId() {
 			return getElemConfig().getId();
@@ -261,13 +264,12 @@ public interface EntityState<T> {
 		Class<? extends ValidationGroup>[] getActiveValidationGroups();
 		void setActiveValidationGroups(Class<? extends ValidationGroup>[] activeValidationGroups);
 		
-//		@JsonIgnore M7
-//M8	Model<StateContextEntity> getContextModel();
-		
+		@JsonIgnore
 		default boolean isLeaf() {
 			return getConfig().isLeaf();
 		}
 		
+		@JsonIgnore
 		default boolean isLeafOrCollectionWithLeafElems() {
 			return isLeaf() || (isCollection() && findIfCollection().isLeafElements());
 		}
@@ -463,6 +465,7 @@ public interface EntityState<T> {
 			return true;
 		}
 		
+		@JsonIgnore
 		default boolean isLeafElements() {
 			return getType().isLeafElements();
 		}

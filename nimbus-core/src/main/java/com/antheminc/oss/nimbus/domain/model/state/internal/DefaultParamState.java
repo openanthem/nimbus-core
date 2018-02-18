@@ -20,7 +20,6 @@ import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -56,7 +55,6 @@ import com.antheminc.oss.nimbus.entity.Findable;
 import com.antheminc.oss.nimbus.support.Holder;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -79,8 +77,15 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	@JsonIgnore
 	private boolean active = true;
 	
+	@JsonIgnore
 	private RemnantState<Boolean> visible = this.new RemnantState<>(true);
+	
+	@JsonIgnore
 	private RemnantState<Boolean> enabled = this.new RemnantState<>(true);
+	
+	@JsonIgnore
+	@SuppressWarnings("unchecked")
+	private RemnantState<Class<? extends ValidationGroup>[]> activeValidationGroups = new RemnantState<>(new Class[0]);
 	
 	private List<ParamValue> values;
 	
@@ -97,14 +102,12 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	List<MappedParam<?, T>> eventSubscribers = new ArrayList<>(); 
 	
 	
-	@JsonIgnore final private PropertyDescriptor propertyDescriptor;
+	@JsonIgnore 
+	final private PropertyDescriptor propertyDescriptor;
 
 	@JsonIgnore
 	private T transientOldState;
 
-	@SuppressWarnings("unchecked")
-	private RemnantState<Class<? extends ValidationGroup>[]> activeValidationGroups = new RemnantState<>(new Class[0]);
-	
 	public static class LeafState<T> extends DefaultParamState<T> implements LeafParam<T> {
 		private static final long serialVersionUID = 1L;
 		
