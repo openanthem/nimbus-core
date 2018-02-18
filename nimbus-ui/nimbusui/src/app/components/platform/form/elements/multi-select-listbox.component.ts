@@ -24,7 +24,7 @@ import {SelectItem} from 'primeng/primeng';
 import { GenericDomain } from '../../../../model/generic-domain.model';
 import { BaseElement } from './../../base-element.component';
 import { ValidatorFn } from '@angular/forms/src/directives/validators';
-import { ValidationUtils } from '../../validators/validationUtils';
+import { ValidationUtils } from '../../validators/ValidationUtils';
 
 /**
  * \@author Dinakar.Meda

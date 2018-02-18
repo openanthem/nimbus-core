@@ -24,7 +24,7 @@ import { PageService } from '../../../../services/page.service';
 import { ServiceConstants } from '../../../../services/service.constants';
 import { BaseElement } from './../../base-element.component';
 import { ValidatorFn } from '@angular/forms/src/directives/validators';
-import { ValidationUtils } from '../../validators/validationUtils';
+import { ValidationUtils } from '../../validators/ValidationUtils';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
