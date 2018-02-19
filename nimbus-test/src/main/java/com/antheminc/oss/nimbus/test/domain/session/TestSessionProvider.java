@@ -39,5 +39,11 @@ public class TestSessionProvider extends AbstractSessionProvider {
 	public void setAttribute(String key, Object value) {
 		sessionMap.put(key, value);
 	}	
+	
+	@Override
+	public boolean removeAttribute(String key) {
+		sessionMap.remove(key);
+		return true;
+	}
 
 }

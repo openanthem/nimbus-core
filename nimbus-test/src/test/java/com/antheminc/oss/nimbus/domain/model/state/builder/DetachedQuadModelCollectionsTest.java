@@ -59,7 +59,7 @@ public class DetachedQuadModelCollectionsTest extends AbstractFrameworkIntegrati
 	
 	@Test
 	public void tc01_sanity_check_core_builders() {
-		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getOrThrowEx(getCommand());
+		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getAttribute(getCommand().getRootDomainUri());
 		assertNotNull(q);
 	}
 }
