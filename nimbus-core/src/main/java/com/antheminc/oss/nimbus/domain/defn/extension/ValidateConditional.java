@@ -8,7 +8,10 @@ import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import javax.validation.Payload;
+
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateChange;
+import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 
 /**
  * <p>This annotation is used to provide control and management over conditional validations to be 
@@ -47,7 +50,7 @@ import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateChange;
 @Retention(RUNTIME)
 @Target(FIELD)
 @Repeatable(ValidateConditionals.class)
-@OnStateChange
+@OnStateLoad @OnStateChange
 public @interface ValidateConditional {
 
 	/**
@@ -87,12 +90,12 @@ public @interface ValidateConditional {
 	 * condition evaluates to <tt>true</tt>.</p>
 	 * 
 	 * <p>For convenience, a set of identify class implementations have been defined within 
-	 * <tt>ValidateConditional</tt> as <tt>Group_<b>X</b></tt>, where 0 &#8804; <b>X</b> &#8804; 9. 
+	 * <tt>ValidateConditional</tt> as <tt>Group_<b>X</b></tt>, where 0 &#8804; <b>X</b> &#8804; 29. 
 	 * If additional marker classes are needed, simply create a new implementation of 
 	 * <tt>ValidationGroup</tt> and use that class in the <tt>targetGroup</tt> property and the 
 	 * corresponding param.</p>
 	 */
-	public interface ValidationGroup {};
+	public interface ValidationGroup extends Payload {};
 	
 	public interface GROUP_0 extends ValidationGroup {};
 	public interface GROUP_1 extends ValidationGroup {};
@@ -104,6 +107,26 @@ public @interface ValidateConditional {
 	public interface GROUP_7 extends ValidationGroup {};
 	public interface GROUP_8 extends ValidationGroup {};
 	public interface GROUP_9 extends ValidationGroup {};
+	public interface GROUP_10 extends ValidationGroup {};
+	public interface GROUP_11 extends ValidationGroup {};
+	public interface GROUP_12 extends ValidationGroup {};
+	public interface GROUP_13 extends ValidationGroup {};
+	public interface GROUP_14 extends ValidationGroup {};
+	public interface GROUP_15 extends ValidationGroup {};
+	public interface GROUP_16 extends ValidationGroup {};
+	public interface GROUP_17 extends ValidationGroup {};
+	public interface GROUP_18 extends ValidationGroup {};
+	public interface GROUP_19 extends ValidationGroup {};
+	public interface GROUP_20 extends ValidationGroup {};
+	public interface GROUP_21 extends ValidationGroup {};
+	public interface GROUP_22 extends ValidationGroup {};
+	public interface GROUP_23 extends ValidationGroup {};
+	public interface GROUP_24 extends ValidationGroup {};
+	public interface GROUP_25 extends ValidationGroup {};
+	public interface GROUP_26 extends ValidationGroup {};
+	public interface GROUP_27 extends ValidationGroup {};
+	public interface GROUP_28 extends ValidationGroup {};
+	public interface GROUP_29 extends ValidationGroup {};
 	
 	/**
 	 * <p>The enumerated set of ValidationScope's available for use in 
