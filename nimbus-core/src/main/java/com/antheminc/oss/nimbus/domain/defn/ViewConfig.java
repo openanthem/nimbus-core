@@ -280,6 +280,7 @@ public class ViewConfig {
 	public @interface GridRowBody {
 		String alias() default "GridRowBody";
 		String cssClass() default "";
+		boolean asynchronous() default false;
 	}
 	
 	/*

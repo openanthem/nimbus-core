@@ -592,12 +592,16 @@ export class PageService {
                         rootParam.type.model.params.forEach(element => {
                                 // Check if param matches the updated param path
                                 if (element.config.code === paramTree[node]) {
-                                        if (node < numNodes) {
+                                        if ((element.config.type && element.config.type.collection) || node >= numNodes) {
+                                                // Matching param node OR Collection node. Collection nodes cannot be traversed further.
+                                                this.processModelEvent(element, eventModel);
+                                        } else {
                                                 // Lets go futher into the matching param to find the exact match
                                                 this.traversePageConfig(element, eventModel, node);
+                                        }
+
+                                        if (node < numNodes) {
                                         } else {
-                                                // Matching param node
-                                                this.processModelEvent(element, eventModel);
                                         }
                                 }
                         });
@@ -611,7 +615,7 @@ export class PageService {
          */
         createRowData(param: Param, nestedGridParam: ParamConfig) {
             let rowData: any = {};
-            rowData = param.leafState;
+            rowData = param.type.model;
             rowData['elemId'] = param.elemId;
             
             // If nested data exists, set the data to nested grid
@@ -652,19 +656,41 @@ export class PageService {
             // Grid updates
             if (param.config.uiStyles != null && param.config.uiStyles.attributes.alias === 'Grid') {
                 if(eventModel.value.leafState != null) {
-                    // Collection Element Check - update only the element
-                    if (eventModel.value.collectionElem) {
-                        if (param.config.gridList == null) {
-                            param.config.gridList = this.createGridData(eventModel.value.type.model.params, param.config.type.elementConfig.type.model.paramConfigs);
-                        } else {
-                            param.config.gridList.push(this.createGridData(eventModel.value.type.model.params, param.config.type.elementConfig.type.model.paramConfigs));
+                    // Check if the update is for the Current Collection or a Nested Collection
+                    if (param.path == eventModel.value.path) {
+                        // Current Collection
+                        // Collection Element Check - update only the element
+                        if (eventModel.value.collectionElem) {
+                                if (param.config.gridList == null) {
+                                        param.config.gridList = this.createGridData(eventModel.value.type.model.params, param.config.type.elementConfig.type.model.paramConfigs);
+                                } else {
+                                        param.config.gridList.push(this.createGridData(eventModel.value.type.model.params, param.config.type.elementConfig.type.model.paramConfigs));
+                                }
+                                this.gridValueUpdate.next(param);
                         }
-                        this.gridValueUpdate.next(param);
-                    }
-                    // Collection check - update entire collection
-                    if (eventModel.value.collection) {
-                            param.config.gridList = this.createGridData(eventModel.value.type.model.params, param.config.type.elementConfig.type.model.paramConfigs);
-                            this.gridValueUpdate.next(param);
+                        // Collection check - replace entire grid
+                        if (eventModel.value.collection) {
+                                param.config.gridList = this.createGridData(eventModel.value.type.model.params, param.config.type.elementConfig.type.model.paramConfigs);
+                                this.gridValueUpdate.next(param);
+                        }
+                    } else { // Nested Collection. Need to traverse to right location
+                        let nestedPath = eventModel.value.path.substr(param.path.length + 1);
+                        let elemIndex = nestedPath.substr(0, nestedPath.indexOf('/'));
+                        for (var p = 0; p<param.config.gridList.length; p++) {
+                                if (param.config.gridList[p]['elemId'] == elemIndex) {
+                                        console.log(param.config.gridList[p]['nestedElement']);
+                                        let nestedElement = this.getNestedElementParam(param.config.gridList[p]['nestedElement'], nestedPath);
+                                        if (nestedElement) {
+                                                nestedElement['config']['gridList'] = this.createGridData(eventModel.value.type.model.params, param.config.type.elementConfig.type.model.paramConfigs);
+                                                this.gridValueUpdate.next(nestedElement);
+                                        } else {
+                                                console.log('Nested Grid Element not found.');
+                                        }
+                                        break;
+                                }
+                        }
+
+                        console.log('eventModel');
                     }
                 }
             } else if (param.config.uiStyles != null && param.config.uiStyles.attributes.alias === 'CardDetailsGrid') {
@@ -677,6 +703,39 @@ export class PageService {
             } else {
                 this.traverseParam(param, eventModel);
             }
+        }
+
+        getNestedElementParam(nestedElement: Param, nestedPath: string): Param {
+                let paramTree = nestedPath.split('/');
+                let startIndex = 1;
+
+                if (this.matchNode(nestedElement, paramTree[startIndex])) {
+                        return this.traverseNestedPath(nestedElement, startIndex+1, paramTree); 
+                } else {
+                        return undefined;
+                }
+        }
+
+        traverseNestedPath(nestedElement: Param, index: number, tree: string[]): Param {
+                for (var p = 0; p < nestedElement.type.model.params.length; p++) {
+                        let element = nestedElement.type.model.params[p];
+                        if (this.matchNode(element, tree[index])) {
+                                if (index == tree.length-1) {
+                                        return element;
+                                } else {
+                                        return this.traverseNestedPath(element, index+1, tree);
+                                }
+                        }
+                }
+                return undefined;
+        }
+
+        matchNode(element: Param, node: string): boolean {
+                if (element.config.code == node) {
+                        return true;
+                } else {
+                        return false;
+                }
         }
 
         /** Update param with value */
