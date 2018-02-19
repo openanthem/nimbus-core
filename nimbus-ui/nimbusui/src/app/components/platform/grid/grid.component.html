@@ -5,7 +5,7 @@
 <!-- Total Results: {{data == null ? leafState.length : data?.length}}   -->
 
 <div id="gsFlexGrid" class="scrollGrid">
-	<div class="ui-datatable-header ui-widget-header">
+	<div class="ui-datatable-header ui-widget-header" *ngIf="element.config?.uiStyles?.attributes?.showHeader == true">
 		<p-header>
 			{{label}}
 			<nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
@@ -22,7 +22,7 @@
 		[rows]="element.config?.uiStyles?.attributes?.pageSize"
 		[paginator]="element.config?.uiStyles?.attributes?.pagination"
 		scrollable="true" 
-		scrollHeight="200px"
+		
 		paginatorPosition="both"
 		alwaysShowPaginator ="false"
 		[expandableRows]="element.config?.uiStyles?.attributes?.expandableRows"

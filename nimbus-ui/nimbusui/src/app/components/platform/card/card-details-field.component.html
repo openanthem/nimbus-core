@@ -18,7 +18,7 @@
         </ng-template>
         <div class="form-group" *ngIf="!element.config.uiStyles.attributes.inplaceEdit">
             <label class="" *ngIf="element.config.uiStyles.attributes.showName==true">{{label}}</label>
-            <div class="{{iconClass}}">{{value}}&nbsp;</div>
+            <div class="{{iconClass}} textWrapBreakWord">{{value}}&nbsp;</div>
         </div>
     </ng-template>
 </div>

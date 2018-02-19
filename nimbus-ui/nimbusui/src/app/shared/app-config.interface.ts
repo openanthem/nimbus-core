@@ -617,6 +617,7 @@ export class UiAttribute implements Serializable<UiAttribute> {
     postEventOnChange: boolean;
     draggable: boolean;
     rowSelection: boolean;
+    showHeader: boolean;
     pagination: boolean;
     pageSize: string;
     postButton: boolean;
@@ -678,6 +679,7 @@ export class UiAttribute implements Serializable<UiAttribute> {
         this.targetHeader = inJson.targetHeader;
         this.rowSelection = inJson.rowSelection;
         this.pagination = inJson.pagination;
+        this.showHeader = inJson.showHeader;
         this.pageSize = inJson.pageSize;
         this.postButton = inJson.postButton;
         this.rows = inJson.rows;

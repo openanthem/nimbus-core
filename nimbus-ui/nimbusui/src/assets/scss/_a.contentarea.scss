@@ -1,4 +1,12 @@
 .displayNone{display:none;}
+.underline { 
+    border-bottom: 2px solid #000;
+    padding: 10px;
+    font-weight: bold;
+}
+* {
+    vertical-align: top;
+}
 //type styles from style guide
 .head-2 {
     font-size: 18px;
@@ -30,216 +38,181 @@ h2{
 h3{
     font-size: 1.1rem;
 }
-.col-xs-12.smallCardCenter {
-    text-align: right;
-    padding: 0 70px 30px;
-}
-.smallCard,
-.XsmallCard {
-    button{
-        display: block;
-    }
-    .card-title {
-        text-align: center;
-    }
-}
-
-.col-xs-12 {
-    margin: 0 0; //override correction for inline-block fix
-}
-
-.info-card {
-    display: inline-block;
-    width: 93%;
-    .card-block {
-        .card-header{
-            margin-bottom: 0;
-            padding-right: 10px;
-            height: $card-header-height;
-            position: fixed;
-            top: $headerHeight + $globalNav-height + $breadcrumb-height ;
-            left: 20px;
-        }
-    }
-}
-.card-holder {
-    position:relative;
-    vertical-align: top;
-    .card-header{
-        margin-bottom: 20px;
-    }  
-    &:not(.mediumCard),
-    &:not(.smallCard),
-    &:not(.XsmallCard) {
-        .viewport{
-
-        }
-    }
-    &.XsmallCard {
-        .col-lg-12 {
-            padding-left: 0; // removes padding on dash from form group
-            padding-right: 0;
-        }
-    }
-    &.mediumCard,
-    &.smallCard,
-    &.XsmallCard {
-    padding: 10px;
-    
-        .card-block {
-            position:static;
-            padding:0;
-            border: 1px solid #ccc;
-            margin-bottom:0;
-            .card-header{
-                margin-bottom: 20px;
-                padding-right: 10px;
-                height: $card-header-height;
-                background: $globalNav-background-color;
-                h2.card-title,h1.card-title  {
-                    padding: 6px 10px;
-                    border-bottom: 0;
-                    color: #fff;
-                    font-size: 1.2rem;
-                    text-transform: lowercase;
-                    svg {
-                        display:none;
-                    }
-                }
-            }
-            .viewport {
-                top:60px;
-                padding: 10px 10px 0 10px;
-            }
-            
-        }
-        .windowControls {
-            display:none;
-        }
-        .form-group.col-lg-4.col-md-6 {
-            width: 100%;
-        }
-    }   
-}
-.windowControls {
-    display:none;
-    position: absolute;
-    right: 30px;
-    top: 15px;
-    a {
-        color: $gray;
-    }
-}
-.wrapper {
-    background-color: $wrapperBkg;
-    margin-bottom: 0;
-	bottom: 0;
-    left: 0;
-    padding: 0;
-    position: fixed;
-    top: $headerHeight + $globalNav-height;
-    right:0;
-    overflow: hidden;
-    //max-width: 1280px;
-    margin: auto;
-}
-
-.main-content{
-        position:absolute; 
-        left: 0px;
-        right:0;
-        bottom: 0;
-        top: 45px;
-        overflow-x:auto;
-        overflow-y:auto;
-        padding:0;
-        @include transition(left .4s ease);
-        .card-block {
-            border: 1px solid #cecece;
-            margin: 1.2rem;
-            padding: 1rem;
-        }
-        &.withInfoBar{
-            top: $breadcrumb-height + $card-header-height + $infoBar-height + 10px;
-            .card-block{
-                padding-top: 0;
-            }
-        }
-        .breadcrumb-bar{ 
-            padding: 0.5rem;
-            height: $breadcrumb-height;
-            background: #fff;
-        }
-        .info-bar{ 
-            display: block; 
-            background-color: $header-bkg; 
-            color:#fff; 
-            font-size: 0.8rem;
-            min-height: $infoBar-height;
-            padding: .6rem 0;
-        }
-
-}
-
-.info-card {
-    .card-holder {
-        &:first-of-type{
-            position: relative;
-           width: 100%;
-        }
-    }
-    &.withSectionNav {
-        .card-holder {
-            &:first-of-type{
-                left: 230px;
-            }
-        }
-    }
-}
+// .col-xs-12.smallCardCenter {
+//     text-align: right;
+//     padding: 0 70px 30px;
+// }
+// .smallCard,
+// .XsmallCard {
+//     button{
+//         display: block;
+//     }
+//     .card-title {
+//         text-align: center;
+//     }
+// }
 h1.page-title {
     margin-bottom:0; 
     margin-left:20px; 
     font-size: 1.3rem;
     font-weight: 400;
+    &.dashboard::before{
+        color: $iconColor;
+        font-family: fontAwesome;
+        content: "\F080";
+        margin-right: .3rem;
+    }
 }
-h2.card-title {
-    margin-bottom:0; 
-    font-size: 1.2rem;
-    font-weight: 300;
+.memberSearchIcon::before{
+    color: $iconColor;
+    font-family: fontAwesome;
+    content: "\F002";
+    margin-right: .3rem;
+}
+.caseSearchIcon::before{
+    color: $iconColor;
+    font-family: fontAwesome;
+    content: "\F002";
+    margin-right: .3rem;
+}
+.caseIcon::before{
+    color: $iconColor;
+    font-family: fontAwesome;
+    content: "\F2bc";
+    margin-right: .3rem;
+}
+.taskIcon::before{
+    color: $iconColor;
+    font-family: fontAwesome;
+    content: "\F0ae";
+    margin-right: .3rem;
+}
+.filterIcon::before{
+    color: $iconColor;
+    font-family: fontAwesome;
+    content: "\F0b0";
+    margin-right: .3rem;
 }
 
-.underline { 
-    border-bottom: 2px solid #000;
-    padding: 10px;
-    font-weight: bold;
+.col-xs-12 {
+    margin: 0 0; //override correction for inline-block fix
+}
+.wrapper {
+    min-height: 700px;
+    //max-width: 1280px;
+    margin: auto;
 }
 
-
-.contentBox.bg-alternate {
-    &:nth-child(even){
-        background-color: $bg-alternate-color-even;
+.main-content{
+        padding:0;
     }
 
-    &:nth-child(odd){
-        background-color: $bg-alternate-color-odd;
+.breadcrumb-bar{ 
+    padding: 0.5rem;
+    height: $breadcrumb-height;
+    background: #fff;
+}
+.info-bar{ 
+    display: block; 
+    background-color: $header-bkg; 
+    color:#fff; 
+    font-size: 0.8rem;
+    min-height: $infoBar-height;
+    padding: .6rem 0;
+    margin-bottom: 10px;
+}
+
+.colorBox {
+    padding:1rem;
+    border: 1px solid #bbd3e8;
+    background: #edf7ff;
+     margin-bottom: 1.5rem;
+    // margin-left: 2rem;
+    .colorBox {
+        border: none;
     }
+}
+.panel-body {
+    background: #fff;
+    border: 1px solid #bbd3e8;
+}
+.panel-body .colorBox {
+    background: none;
+}
+.card-holder {
+    position:relative;
+    vertical-align: top;
+    margin-bottom:10px;
+    padding: 0;
+    .card-header{
+        margin-bottom: .3rem;
+        padding: .5rem;
+        color: #fff;
+        background: $header-bkg;
+        h2.card-title {
+            font-size: 1.2rem;
+        }
+    }
+
+    .card-block {
+        margin: 0;
+    }
+    .viewport {
+        padding: 10px 10px 0 10px;
+    } 
+}   
+.card-holder > .card{
+    &.height-sm {
+        min-height:180px;
+    }
+    &.height-md {
+        min-height:385px;
+    }
+    &.height-lg {
+        min-height:650px;
+    }
+}
+
+
+.info-card {
+    display: inline-block;
+    width: 86%;
+   
+}
+
+.textWrapBreakWord {
+    word-break: break-word;;
 }
 
 nm-card-details {
     &:nth-child(even){
-        &>.contentBox.bg-alternate {
+        .bg-alternate .cardBody{
             background-color: $bg-alternate-color-even;
         }
     }
     &:nth-child(odd){
-        &>.contentBox.bg-alternate {
+        .bg-alternate .cardBody{
             background-color: $bg-alternate-color-odd;
         }
     }
 }
 
 
-
+.XsmallCard {
+    margin-left: 2rem;
+    .card-header {
+        margin: 0;
+    }
+    .card-block {
+        padding: 0;
+        .viewport {
+            padding: 0;
+        }
+    }
+    .colorBox {
+        margin: 0;
+    }
+}
 // for assessment questions
 .subQuestion .subQuestion .col-lg-12 {
     padding-right: 0px;
@@ -253,25 +226,27 @@ legend {
         padding-left: 0;
     }
     .form-group.questionGroup  {
-        background: #eee;
+        background: #edf7ff;
         display: block;
         padding: .3rem .7rem .8rem;
-        margin: 0 100px 0 50px;
+        margin: 0 100px 0 0px;
         label:first-of-type {
             margin-top: 0;
         }
         input, .select-wrapper, textarea {
+            max-width: 300px;
             width: 100%;
             margin-left: 0;
         }
     }
     legend:first-of-type {
         margin-top: 0.5rem;
+        margin-bottom: 1.5rem;
     }
 }
 
 .form-group.questionGroup  {
-    margin-bottom: 0.5rem;
+    margin-bottom: 2.5rem;
     label {
         display: block;
         margin: .3rem 0;
@@ -280,12 +255,19 @@ legend {
             display: inline-block;
         }
     }
-    
-    input, .select-wrapper, textarea {
-        margin-left: 50px;
-        margin-bottom: .6rem;
-        width: 55%;
+    .form-checkrow label, .form-checkrow label:first-of-type {
+        margin-bottom: 0;
     }
+    input, .select-wrapper, textarea {
+        //margin-left: 50px;
+        margin-bottom: .6rem;
+        max-width: 300px;
+        width: 100%;
+    }
+    .ui-calendar input { 
+        width: 180px; 
+    }
+    //.date-holder is old date component
     .date-holder::after {
         vertical-align: text-bottom;
     }
@@ -295,17 +277,18 @@ legend {
     label:first-of-type,
     legend:first-of-type {
         margin-top: 0.5rem;
+        margin-bottom: 1.5rem;
     }
     fieldset {
         label:first-of-type {
             margin-top: 0;
         }
         .checkboxHolder {
-            padding-left: 50px;
+            padding-left: 0px;
         }
     }
     .warningMsg {
-        margin-left: 50px;
+        margin-left: 0px;
     }
 }
 .iconField {
@@ -320,6 +303,8 @@ legend {
         vertical-align: bottom;
     }
 }
+//.date-holder is old date component
+
 .date-holder {
     @extend .iconField;
     &::after {
@@ -362,33 +347,30 @@ legend {
 
 
 
-.card-holder > .card{
-    &.height-sm {
-        min-height:180px;
-    }
-    &.height-md {
-        min-height:385px;
-    }
-    &.height-lg {
-        min-height:650px;
-    }
-}
+
 
 
 
 .nav-block{
-    border-top: 1px solid $border-color;
-    border-right: 1px solid $border-color;
-    border-left: 1px solid $border-color;
+    
     .nav-link{
         display: block;
         padding: .4rem;
-        background: $header-bkg;
-        color: #fff;
-        border-bottom: 1px solid $border-color;
-        &.active,&:hover{
-            background: #fff;
-            color: #000;
+        background: #d9edfd;
+        color: #4c4c4c;
+        border: 1px solid #B8D4E8;
+        margin-bottom: 3px;
+        &.active,
+        {
+            background: #e5991c;
+            border-color: #e5991c;
+            color: #fff;
+
+        }
+        &:hover{
+            background: #4c4c4c;
+            border-color: #4c4c4c;
+            color: #fff;
         } 
         &.disabled,&.disabled:hover{
             background: #999;
@@ -476,7 +458,7 @@ legend {
 .panel.panel-default {
     margin-top: 10px;
     & > .panel-heading {
-        background: #014080;
+        background: $header-bkg;
         color: white;
         padding: 0.3rem;
         margin: 0;
@@ -573,18 +555,9 @@ html {font-size: 12px;}
             }
         }
     }
-    .subQuestion {
-     
-        .form-group.questionGroup  {
-           
-            input, .select-wrapper, textarea {
-                width: 70%;
-                margin-left: 50px;
-            }
-        }
-    }
-    .form-group.questionGroup.form-inline select.form-control {
-        width: 100%;
+
+    .globalNav{
+        display: block;
     }
 }
 
@@ -592,11 +565,18 @@ html {font-size: 12px;}
     width: 350px;
 }
 @media(min-width: 768px) {
-    
+    .header {
+        height: 80px;
+    }
+       
+  
+    .logo {
+        margin-left: 10px;
+        margin-top: 15px;
+    }
     .navbar-toggleable-md .navbar-collapse {
         width: 300px;
     }
-    
 }
 
 @media (min-width: 992px) {
@@ -610,26 +590,23 @@ html {font-size: 12px;}
         width: 100%;
         position: static;  
     }
-    .info-card .card-holder:first-of-type{
-        left: 18%;
-        width: 82%;
-    }
-    .browserScroll .info-card {
-        width: 82%;
-        .card-holder:first-of-type{
-        left: 0;
-        width: 100%;
-        }
-    }
+  
+  
     .section-nav{
         width: $section-nav-width;
     }
-    
+    .header {
+        height: 90px;
+    }
 }
 
 @media (min-width: 1200px) {
-    
+  
 } 
 @media (min-width: 1300px) {
     html {font-size: 16px;}
+    .header {
+        height: 100px;
+    }
+
 }

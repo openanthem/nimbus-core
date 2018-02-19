@@ -3,8 +3,8 @@
     {{pageParam?.message?.text}}
 </div>
 <ng-template [ngIf]="pageParam?.config?.labelConfigs?.length > 0">
-    <h1 class="page-title">
-        {{label}}
+    <h1 class="page-title dashboard ">
+        {{label}} 
     </h1>
 </ng-template>
 <nm-tile [element]="tile" *ngFor="let tile of tilesList"></nm-tile>
