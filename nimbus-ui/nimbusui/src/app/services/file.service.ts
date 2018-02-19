@@ -19,7 +19,7 @@ import { CustomHttpClient } from './httpclient.service';
 import { Injectable, EventEmitter } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { HttpHeaders } from '@angular/common/http';
-import {RequestOptions, Request, RequestMethod} from '@angular/http';
+import { RequestOptions, Request, RequestMethod } from '@angular/http';
 
 /**
  * \@author Dinakar.Meda

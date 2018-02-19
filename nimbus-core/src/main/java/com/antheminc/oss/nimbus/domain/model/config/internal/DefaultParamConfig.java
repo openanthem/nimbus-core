@@ -33,7 +33,7 @@ import com.antheminc.oss.nimbus.domain.model.config.AnnotationConfig;
 import com.antheminc.oss.nimbus.domain.model.config.EventHandlerConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
-import com.antheminc.oss.nimbus.domain.model.config.ParamType;
+import com.antheminc.oss.nimbus.domain.model.config.ParamConfigType;
 import com.antheminc.oss.nimbus.domain.model.config.event.ConfigEventHandlers.OnParamCreateHandler;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -45,7 +45,7 @@ import lombok.ToString;
  * @author Soham Chakravarti
  *
  */
-@Getter @Setter @ToString(callSuper=true, of={"code", "beanName", "type"})
+@Getter @Setter @ToString(callSuper=true, of={"code", "beanName", "configType"})
 public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements ParamConfig<P>, Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -53,7 +53,7 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	final private String code;
 	final private String beanName;
 
-	private ParamType type;	
+	private ParamConfigType type;	
 	
 	private List<LabelConfig> labelConfigs;
 
@@ -127,9 +127,9 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 			return null;
 		
 		/* param is not leaf node: is nested */
-		ParamType.Nested<?> mp = getType().findIfNested();
+		ParamConfigType.Nested<?> mp = getType().findIfNested();
 		if(mp != null) {
-			return mp.getModel().findParamByPath(pathArr);
+			return mp.getModelConfig().findParamByPath(pathArr);
 		}
 		
 		/* if param is a leaf node and requested path has more children, then return null */

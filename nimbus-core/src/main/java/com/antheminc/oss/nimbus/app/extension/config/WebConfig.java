@@ -33,6 +33,7 @@ import com.antheminc.oss.nimbus.support.json.CustomLocalDateDeserializer;
 import com.antheminc.oss.nimbus.support.json.CustomLocalDateSerializer;
 import com.antheminc.oss.nimbus.support.json.CustomLocalDateTimeDeserializer;
 import com.antheminc.oss.nimbus.support.json.CustomLocalDateTimeSerializer;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 
 /**
@@ -102,6 +103,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
             @Override
             public void customize(Jackson2ObjectMapperBuilder jacksonObjectMapperBuilder) {
+            	jacksonObjectMapperBuilder.serializationInclusion(Include.NON_NULL);
+            	
                 jacksonObjectMapperBuilder.deserializerByType(LocalDate.class, new CustomLocalDateDeserializer());
                 jacksonObjectMapperBuilder.serializerByType(LocalDate.class, new CustomLocalDateSerializer());
                 jacksonObjectMapperBuilder.serializerByType(LocalDateTime.class, new CustomLocalDateTimeSerializer());

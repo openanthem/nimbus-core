@@ -32,7 +32,7 @@ import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
-import com.antheminc.oss.nimbus.domain.model.config.ParamType;
+import com.antheminc.oss.nimbus.domain.model.config.ParamConfigType;
 import com.antheminc.oss.nimbus.domain.model.config.builder.internal.DefaultEntityConfigBuilder;
 import com.antheminc.oss.nimbus.entity.person.Address;
 import com.antheminc.oss.nimbus.test.domain.support.AbstractFrameworkIntegrationTests;
@@ -84,7 +84,7 @@ public class ModelConfigHandlerTest extends AbstractFrameworkIntegrationTests {
 	
 	@Test
 	public void test_id() {
-		ParamConfig<?> p = mConfig.templateParams().find("id");
+		ParamConfig<?> p = mConfig.templateParamConfigs().find("id");
 		Assert.assertNotNull(p);
 		Assert.assertEquals("id", p.getCode());
 		Assert.assertFalse(p.getType().isNested());
@@ -94,7 +94,7 @@ public class ModelConfigHandlerTest extends AbstractFrameworkIntegrationTests {
 	
 	@Test
 	public void test_primitive_int() {
-		ParamConfig<?> p = mConfig.templateParams().find("primitive_int");
+		ParamConfig<?> p = mConfig.templateParamConfigs().find("primitive_int");
 		Assert.assertNotNull(p);
 		Assert.assertFalse(p.getType().isNested());
 		Assert.assertEquals("integer", p.getType().getName());
@@ -103,7 +103,7 @@ public class ModelConfigHandlerTest extends AbstractFrameworkIntegrationTests {
 	
 	@Test
 	public void test_class_int() {
-		ParamConfig<?> p = mConfig.templateParams().find("class_int");
+		ParamConfig<?> p = mConfig.templateParamConfigs().find("class_int");
 		Assert.assertNotNull(p);
 		Assert.assertFalse(p.getType().isNested());
 		Assert.assertEquals("integer", p.getType().getName());
@@ -112,16 +112,16 @@ public class ModelConfigHandlerTest extends AbstractFrameworkIntegrationTests {
 	
 	@Test 
 	public void test_collection_primitive_long() {
-		ParamConfig<?> p = mConfig.templateParams().find("collection_primitive_long");
+		ParamConfig<?> p = mConfig.templateParamConfigs().find("collection_primitive_long");
 		Assert.assertNotNull(p);
 		Assert.assertTrue(p.getType().isNested());
 		Assert.assertEquals("ArrayList", p.getType().getName());
-		Assert.assertSame(ParamType.CollectionType.list, p.getType().findIfCollection().getCollectionType());
+		Assert.assertSame(ParamConfigType.CollectionType.list, p.getType().findIfCollection().getCollectionType());
 	}
 	
 	@Test
 	public void test_localDate() {
-		ParamConfig<?> p = mConfig.templateParams().find("localDate");
+		ParamConfig<?> p = mConfig.templateParamConfigs().find("localDate");
 		Assert.assertNotNull(p);
 		Assert.assertFalse(p.getType().isNested());
 		Assert.assertEquals("date", p.getType().getName());
@@ -131,13 +131,13 @@ public class ModelConfigHandlerTest extends AbstractFrameworkIntegrationTests {
 	@Ignore
 	@Test
 	public void test1_nested() {
-		ParamConfig<?> p = mConfig.templateParams().find("nested");
+		ParamConfig<?> p = mConfig.templateParamConfigs().find("nested");
 		Assert.assertNotNull(p);
 		Assert.assertTrue(p.getType().isNested());
 		Assert.assertEquals(TestNestedModel.class.getSimpleName(), p.getType().getName());
 		Assert.assertNull(p.getType().findIfCollection());
 		
-		ModelConfig<?> nmNested = ((ParamType.Nested)p.getType()).getModel();
+		ModelConfig<?> nmNested = ((ParamConfigType.Nested)p.getType()).getModelConfig();
 		Assert.assertNotNull(nmNested);
 	}
 	

@@ -29,9 +29,9 @@ import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
 import com.antheminc.oss.nimbus.domain.session.SessionProvider;
 import com.antheminc.oss.nimbus.test.domain.support.AbstractFrameworkIntegrationTests;
-import com.antheminc.oss.nimbus.test.entity.simplecase.core.SimpleCase;
-import com.antheminc.oss.nimbus.test.entity.simplecase.view.VRSimpleCaseFlow;
-import com.antheminc.oss.nimbus.test.entity.simplecase.view.V_SimpleDashboard;
+import com.antheminc.oss.nimbus.test.scenarios.s3.core.SimpleCase;
+import com.antheminc.oss.nimbus.test.scenarios.s3.view.VRSimpleCaseFlow;
+import com.antheminc.oss.nimbus.test.scenarios.s3.view.V_SimpleDashboard;
 
 /**
  * @author Soham Chakravarti

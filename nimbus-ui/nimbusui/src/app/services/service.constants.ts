@@ -66,6 +66,6 @@ export class ServiceConstants {
     public static get IMAGES_URL(): string { return 'http://'+this.hostName+':'+this.STATIC_CONTENT_PORT+'/resources/icons/'; }
 
     public static get HOME_ROUTE(): string { return '/h'; }
-    public static get HOME_DOMAIN(): string { return 'cmdashboard'; }
-    public static get HOME_PAGE(): string { return 'vpDashboard'; }
+    public static get HOME_DOMAIN(): string { return 'vrCSLandingPage'; }
+    public static get HOME_PAGE(): string { return 'vpCSMemberload'; }
 }

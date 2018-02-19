@@ -24,7 +24,7 @@ import { PageService } from '../../../../services/page.service';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { GenericDomain } from '../../../../model/generic-domain.model';
 import { ValidatorFn } from '@angular/forms/src/directives/validators';
-import { ValidationUtils } from '../../validators/validationUtils';
+import { ValidationUtils } from '../../validators/ValidationUtils';
 import { ValidationConstraint } from './../../../../shared/validationconstraints.enum';
 /**
  * \@author Dinakar.Meda

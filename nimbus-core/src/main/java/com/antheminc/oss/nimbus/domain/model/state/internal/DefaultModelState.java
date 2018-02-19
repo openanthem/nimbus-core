@@ -97,12 +97,12 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 	
 	@JsonIgnore @Override
 	public Param<?> getIdParam() {
-		return findParamByPath(getConfig().getIdParam().getCode());
+		return findParamByPath(getConfig().getIdParamConfig().getCode());
 	}
 	
 	@JsonIgnore @Override
 	public Param<?> getVersionParam() {
-		return findParamByPath(getConfig().getVersionParam().getCode());
+		return findParamByPath(getConfig().getVersionParamConfig().getCode());
 	}
 	
 	@Override

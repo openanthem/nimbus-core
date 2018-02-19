@@ -52,7 +52,8 @@ import com.antheminc.oss.nimbus.entity.queue.Queue;
 import com.antheminc.oss.nimbus.entity.user.ClientUserGroup;
 import com.antheminc.oss.nimbus.entity.user.GroupUser;
 import com.antheminc.oss.nimbus.test.domain.support.AbstractFrameworkIntegrationTests;
-import com.antheminc.oss.nimbus.test.entity.sample.s0.core.SampleCoreEntityAccess;
+import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntityAccess;
+
 
 /**
  * @author Rakesh Patel

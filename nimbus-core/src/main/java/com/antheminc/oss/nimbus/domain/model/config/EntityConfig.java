@@ -60,6 +60,6 @@ public interface EntityConfig<T> {
 			return this;
 		}
 		
-		public EntityConfig<M> getMapsTo();
+		public EntityConfig<M> getMapsToConfig();
 	}
 }
