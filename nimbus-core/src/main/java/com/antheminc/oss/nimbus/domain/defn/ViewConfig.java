@@ -799,13 +799,27 @@ public class ViewConfig {
 		boolean sortable() default true;
 		boolean filter() default false; 
 		String filterValue() default "";
-		boolean expandable() default true;		
+		boolean expandable() default true;
+		String sortAs() default ""; // number, text
+		
 		public enum FilterMode {
 			equals,
 			contains,
 			endsWith,
 			in
 		}
+		
+//		public enum SortAs {
+//			DEFAULT(""),
+//			NUMBER("number"),
+//			TEXT("text");
+//			
+//			String code;
+//			
+//			SortAs(String code) {
+//				this.code = code;
+//			}
+//		}
 		FilterMode filterMode() default FilterMode.equals;
 		String datePattern() default "";
 	}

@@ -41,9 +41,8 @@
 				[field]="col?.code" 
 				[header]="col?.label"
 				[hidden]="col?.uiStyles?.attributes?.hidden"
-				[sortable]="col?.type?.name !== 'date' ? !col?.uiStyles?.isLink : 'custom'"
-				(sortFunction)="(col?.type?.name === 'date' || col?.type?.name === 'Date' || col?.type?.name === 'LocalDateTime'
-				|| col?.type?.name === 'ZonedDateTime') ? mysort($event): null"
+				[sortable]="!col?.uiStyles?.isLink ? 'custom' : false"
+				(sortFunction)="sortBy($event, col?.type?.name, col?.uiStyles?.attributes?.sortAs)"
 				[filter]="col?.uiStyles?.attributes?.filter"
 				[filterMatchMode]="col?.uiStyles?.attributes?.filterMode"> 
 							
