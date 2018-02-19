@@ -11,6 +11,7 @@ import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.GROUP_
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.GROUP_3;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.GROUP_4;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.GROUP_5;
+import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.GROUP_6;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.ValidationScope;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditionals;
 
@@ -50,6 +51,9 @@ public class SampleValidateEntity {
 	@TextBox(postEventOnChange = true)
 	private String condition_3;
 	
+	@ValidateConditional(when = "state == null", targetGroup = GROUP_6.class)
+	private String condition_4;
+	
 	@NotNull
 	@Pattern(regexp = G1_PATTERN_REGEX, groups = { GROUP_1.class })
 	private String validate_p1;
@@ -87,4 +91,7 @@ public class SampleValidateEntity {
 	
 	@NotNull(groups = { GROUP_5.class })
 	private String validate_p6;
+	
+	@NotNull(groups = { GROUP_6.class })
+	private String validate_p7;
 }
