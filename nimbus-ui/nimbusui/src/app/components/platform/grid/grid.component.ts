@@ -136,7 +136,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         }
 
         if (this.element.config.uiStyles.attributes.onLoad === true) {
-            this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'GET');
+             this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'GET');
         }
 
         this.rowHover=true;
@@ -250,4 +250,35 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     resetMultiSelection() {
         this.selectedRows = [];
     }
+
+    mysort(e: any){
+        console.log("entered my sort", this.value);
+        let comparer = function (a, b): number {
+            if(new Date(a[e.field])>new Date(b[e.field]))
+            return 1*e.order;
+            if(new Date(a[e.field])<new Date(b[e.field]))
+            return -1*e.order;
+
+            return 0;
+          };
+      
+        //  this.value.sort(comparer);
+
+        // let comparer = function (a, b): number {
+        //     let formatedA = moment(a[e.field], "MM/DD/YYYY").format('MM-DD-YYYY');
+        //     let formatedB = moment(b[e.field], "MM/DD/YYYY").format('MM-DD-YYYY');
+        //     let result: number = -1;
+      
+        //     if (moment(formatedB).isBefore(formatedA, 'day')) result = 1;
+        //     return result * e.order;
+        //   };
+      
+          this.value.sort(comparer);
+          
+          this.value = [...this.value];
+           
+
+    }
 }
+
+
