@@ -31,6 +31,7 @@ import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.antheminc.oss.nimbus.app.extension.config.ActivitiProcessDefinitionCache;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.bpm.BPMGateway;
 import com.antheminc.oss.nimbus.domain.bpm.ProcessEngineContext;
@@ -97,7 +98,8 @@ public class ActivitiBPMGateway implements BPMGateway {
 		Map<String, Object> executionVariables = new HashMap<String, Object>();
 		executionVariables.put(Constants.KEY_EXECUTE_PROCESS_CTX.code, context);		
 		for(String task: activeTasks){
-			UserTask userTask = (UserTask)deploymentManager.getProcessDefinitionCache().get(processFlow.getProcessDefinitionId()).getProcess().getFlowElementMap().get(task);
+			ActivitiProcessDefinitionCache cache = (ActivitiProcessDefinitionCache)deploymentManager.getProcessDefinitionCache();
+			UserTask userTask = (UserTask)cache.find(processFlow.getProcessDefinitionId()).getProcess().getFlowElementMap().get(task);
 			if(canComplete(param,userTask)) {
 				List<Task> activeTaskInstances = taskService.createTaskQuery().processInstanceId(processExecutionId).taskDefinitionKey(task).list();
 				for(Task activeTaskIntance: activeTaskInstances)
