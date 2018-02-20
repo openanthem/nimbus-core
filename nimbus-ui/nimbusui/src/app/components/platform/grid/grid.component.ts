@@ -252,10 +252,10 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     }
 
     sortBy(e: any, fieldType: string, sortAs: string){
-        if(sortAs === 'number') {
+        if(this.isSortAsNumber(fieldType, sortAs)) {
             this.sortInternal(fieldValue => fieldValue, e);
         }
-        else if(fieldType === 'date' || fieldType === 'Date' || fieldType === 'LocalDateTime' || fieldType === 'ZonedDateTime') {
+        else if(this.isSortAsDate(fieldType, sortAs)) {
             this.sortInternal(fieldValue => new Date(fieldValue), e);
         }
         else {
@@ -279,11 +279,24 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
             if (value1 < value2) {
                 return -1 * event.order;
             }
-  
             return 0;
         });
     }
-    
+
+    protected isSortAsNumber(fieldType: string, sortAs: string): boolean {
+        let fieldTypeToMatch = fieldType.toLowerCase();
+        return (sortAs === 'number' || fieldTypeToMatch === 'int' || fieldTypeToMatch === 'integer' 
+                || fieldTypeToMatch === 'long' || fieldTypeToMatch === 'double');
+        
+    }
+
+    protected isSortAsDate(fieldType: string, sortAs: string): boolean {
+        let fieldTypeToMatch = fieldType.toLowerCase();
+        return (sortAs === 'date' || fieldTypeToMatch === 'date' 
+                || fieldTypeToMatch === 'localdatetime' || fieldType === 'zoneddatetime');
+        
+    }
+
 }
 
 
