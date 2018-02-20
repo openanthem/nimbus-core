@@ -12,7 +12,7 @@ public class CustomDateSerializer extends StdSerializer<Date>{
 
 	private static final long serialVersionUID = 1L;
 	
-	private SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
+	private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
     public CustomDateSerializer() {
         this(null);
