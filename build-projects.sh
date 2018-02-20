@@ -8,7 +8,7 @@
 	# nimbus-ui
     # nimbus-extn-activiti
    
-PROJECTS="nimbus-parent,nimbus-test,nimbus-ui,nimbus-extn-activiti";
+PROJECTS="nimbus-parent,nimbus-test,nimbus-ui,nimbus-extn-activiti,nimbus-starter";
 
 while getopts p:m: option
 do

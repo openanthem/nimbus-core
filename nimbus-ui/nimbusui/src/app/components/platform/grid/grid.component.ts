@@ -32,6 +32,8 @@ import { ControlValueAccessor } from '@angular/forms/src/directives';
 import {DateTimeFormatPipe} from '../../../pipes/date.pipe';
 import {Calendar} from 'primeng/components/calendar/calendar';
 import * as moment from 'moment';
+import { SortAs, GridColumnDataType } from './sortas.interface';
+
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     provide: NG_VALUE_ACCESSOR,
@@ -266,34 +268,53 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         this.selectedRows = [];
     }
 
-    mysort(e: any){
-        console.log("entered my sort", this.value);
-        let comparer = function (a, b): number {
-            if(new Date(a[e.field])>new Date(b[e.field]))
-            return 1*e.order;
-            if(new Date(a[e.field])<new Date(b[e.field]))
-            return -1*e.order;
-
-            return 0;
-          };
-      
-        //  this.value.sort(comparer);
-
-        // let comparer = function (a, b): number {
-        //     let formatedA = moment(a[e.field], "MM/DD/YYYY").format('MM-DD-YYYY');
-        //     let formatedB = moment(b[e.field], "MM/DD/YYYY").format('MM-DD-YYYY');
-        //     let result: number = -1;
-      
-        //     if (moment(formatedB).isBefore(formatedA, 'day')) result = 1;
-        //     return result * e.order;
-        //   };
-      
-          this.value.sort(comparer);
-          
-          this.value = [...this.value];
-           
-
+    sortBy(e: any, fieldType: string, sortAs: SortAs){
+        if(this.isSortAsNumber(fieldType, sortAs)) {
+            this.sortInternal(fieldValue => fieldValue, e);
+        }
+        else if(this.isSortAsDate(fieldType, sortAs)) {
+            this.sortInternal(fieldValue => new Date(fieldValue), e);
+        }
+        else {
+            // all else are sorted as string using localeCompare
+            this.value.sort((item1: any, item2: any) => {
+                return item1[e.field].localeCompare(item2[e.field]) * e.order;
+            });
+        }
+        this.value = [...this.value];
     }
+
+    protected sortInternal(itemCallback: Function, event: any): Array<any> {
+        return this.value.sort((item1: any, item2: any) => {
+            let value1 = itemCallback(item1[event.field]);
+            let value2 = itemCallback(item2[event.field]);
+  
+            if (value1 > value2) {
+                return 1 * event.order;
+            }
+  
+            if (value1 < value2) {
+                return -1 * event.order;
+            }
+            return 0;
+        });
+    }
+
+    protected isSortAsNumber(fieldType: string, sortAs: SortAs): boolean {
+        let fieldTypeToMatch = fieldType.toLowerCase();
+        return (sortAs === SortAs.number|| fieldTypeToMatch === GridColumnDataType.int.value || fieldTypeToMatch === GridColumnDataType.integer.value 
+                || fieldTypeToMatch === GridColumnDataType.long.value || fieldTypeToMatch === GridColumnDataType.double.value);
+        
+    }
+
+
+    protected isSortAsDate(fieldType: string, sortAs: SortAs): boolean {
+        let fieldTypeToMatch = fieldType.toLowerCase();
+        return (sortAs === SortAs.date || fieldTypeToMatch === GridColumnDataType.date.value 
+                || fieldTypeToMatch === GridColumnDataType.localdatetime.value || fieldType === GridColumnDataType.zoneddatetime.value);
+        
+    }
+
 
     myFilter(e: any, ref, field, filterMatchMode, datePattern?, dateType?){
 
@@ -341,6 +362,9 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
             this.rowStart=0; this.rowEnd=0;
         }
     }
+
+
+
 
 
 }

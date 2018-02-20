@@ -181,9 +181,12 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 				buildAndExecuteColExecConfig(eCtx, cmdParam, ec, sessionId);
 			}
 			else {
+				long startTime = System.currentTimeMillis();
 				String completeConfigUri = eCtx.getCommandMessage().getCommand().getRelativeUri(ec.url());
 				
 				String resolvedConfigUri = pathVariableResolver.resolve(cmdParam, completeConfigUri); 
+				
+				
 				Command configExecCmd = CommandBuilder.withUri(resolvedConfigUri).getCommand();
 				
 				// TODO decide on which commands should get the payload
@@ -193,6 +196,8 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 				MultiOutput configOutput = executeConfig(eCtx.getCommandMessage().getCommand(), configCmdMsg, sessionId);
 				
 				configExecOutputs.add(configOutput);
+				long endTime = System.currentTimeMillis();
+				logit.info(() -> "Time taken "+(endTime-startTime)+ " ms in config url: "+resolvedConfigUri);
 				// addMultiOutput(mOutput,configOutput);
 			}
 		});	

@@ -21,6 +21,7 @@ import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { PageService } from '../../../../services/page.service';
 import { Param } from '../../../../shared/app-config.interface';
+
 /**
  * \@author Sandeep Mantha
  * \@whatItDoes A control to be used when the user input is in the form of date or date with time or just the time.
@@ -67,9 +68,4 @@ export class Calendar extends BaseControl<String> {
     constructor(wcs: WebContentSvc, pageService: PageService, cd:ChangeDetectorRef) {
         super(pageService,wcs,cd);
     }
-
-    // ngOnInit(){
- 
-    // }
-
 }

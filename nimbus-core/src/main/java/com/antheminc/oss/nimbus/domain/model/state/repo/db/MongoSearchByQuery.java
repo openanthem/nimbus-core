@@ -163,8 +163,11 @@ public class MongoSearchByQuery extends MongoDBSearch {
 		List<?> output = new ArrayList();
 		String[] aggregationCriteria = StringUtils.split((String)criteria.getWhere(), "~~");
 		Arrays.asList(aggregationCriteria).forEach((cr) -> {
+			long startTime = System.currentTimeMillis();
 			CommandResult commndResult = getMongoOps().executeCommand(cr);
+			long endTime = System.currentTimeMillis();
 			//System.out.println("&&& Aggregation Query: "+cr+" --- Result: "+commndResult);
+			logIt.info(() -> "&&& Time taken "+(endTime-startTime)+ "ms in db query: "+cr);
 			logIt.trace(()-> "&&& Aggregation Query: "+cr+" --- Result: "+commndResult);
 			if(commndResult != null && commndResult.get("result") != null && commndResult.get("result") instanceof BasicDBList) {
 				BasicDBList result = (BasicDBList)commndResult.get("result");
@@ -175,6 +178,7 @@ public class MongoSearchByQuery extends MongoDBSearch {
 					}
 				}
 				output.addAll(getMongoOps().getConverter().read(List.class, result));
+				logIt.info(() -> "&&& result size: "+output.size());
 			}
 		});
 		return output;
