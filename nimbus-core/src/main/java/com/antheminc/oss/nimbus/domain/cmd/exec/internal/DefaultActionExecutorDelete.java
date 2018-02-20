@@ -59,7 +59,7 @@ public class DefaultActionExecutorDelete extends AbstractCommandExecutor<Boolean
 		if(eCtx.getCommandMessage().getCommand().isRootDomainOnly()) {
 			handleRootDelete(eCtx);
 			
-			loader.unload(eCtx, getSessionId());
+			loader.unload(eCtx);
 		}
 		else if(p.isCollection())
 			handleCollection(eCtx, p.findIfCollection());
