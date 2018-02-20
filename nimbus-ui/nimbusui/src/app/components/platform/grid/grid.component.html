@@ -10,9 +10,9 @@
 			{{label}}
 			<nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
 		</p-header>
-		<div class="recordsDisplayed">Showing 1-50 records</div>
+		<div class="recordsDisplayed">Showing {{rowStart}}-{{rowEnd}} of  {{totalRecords}}</div>
 	</div>
-
+	
 	<p-dataTable #flex #dataTable #table [value]="value"
 		[(selection)]="selectedRows" 
 		(onRowClick)="onRowClick($event)"
@@ -27,6 +27,7 @@
 		alwaysShowPaginator ="false"
 		[expandableRows]="element.config?.uiStyles?.attributes?.expandableRows"
 		(onRowExpand)="getAddtionalData($event)"
+		(onPage)="paginate($event)"
 		[responsive]="true" #dt> 
 
 		<p-column styleClass="col-select" 
@@ -41,11 +42,12 @@
 				[field]="col?.code" 
 				[header]="col?.label"
 				[hidden]="col?.uiStyles?.attributes?.hidden"
-				[sortable]="col?.type?.name !== 'date' ? !col?.uiStyles?.isLink : 'custom'"
-				(sortFunction)="(col?.type?.name === 'date' || col?.type?.name === 'Date' || col?.type?.name === 'LocalDateTime'
-				|| col?.type?.name === 'ZonedDateTime') ? mysort($event): null"
+				[sortable]="!col?.uiStyles?.isLink ? 'custom' : false"
+				(sortFunction)="sortBy($event, col?.type?.name, col?.uiStyles?.attributes?.sortAs)"
 				[filter]="col?.uiStyles?.attributes?.filter"
-				[filterMatchMode]="col?.uiStyles?.attributes?.filterMode"> 
+				[filterMatchMode]="col?.uiStyles?.attributes?.filterMode"
+			
+				> 
 							
 				<ng-template pTemplate="header"> 
 
@@ -76,6 +78,17 @@
 					<ng-template [ngIf]="col?.type?.name !== 'date' && col?.type?.name !== 'Date' && col?.type?.name !== 'LocalDateTime'
 					&& col?.type?.name !== 'ZonedDateTime'">
 						<span title="{{row[datacol.field]}}">{{row[datacol.field]}}</span> 
+					</ng-template>
+				</ng-template> 
+
+				<ng-template let-filtercol pTemplate="filter">
+					<ng-template [ngIf]="col?.type?.name === 'date' || col?.type?.name === 'Date' || col?.type?.name === 'LocalDateTime'
+					|| col?.type?.name === 'ZonedDateTime'">
+					 <input type="text" (input)="myFilter($event, dt, filtercol.field, col?.uiStyles?.attributes?.filterMode, col?.uiStyles?.attributes?.datePattern, col?.type?.name)"> 
+					</ng-template>
+					<ng-template [ngIf]="col?.type?.name !== 'date' && col?.type?.name !== 'Date' && col?.type?.name !== 'LocalDateTime'
+					&& col?.type?.name !== 'ZonedDateTime'">
+					<input type="text" (input)="myFilter($event, dt, filtercol.field, col?.uiStyles?.attributes?.filterMode)">
 					</ng-template>
 				</ng-template> 
 				
