@@ -41,4 +41,13 @@ public class HttpSessionProvider extends AbstractSessionProvider {
 		requestAttributes.setAttribute(key, value, RequestAttributes.SCOPE_SESSION);
 	}
 	
+	@Override
+	public boolean removeAttribute(String key) {
+		RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+		if(requestAttributes.getAttribute(key,RequestAttributes.SCOPE_SESSION) == null)
+			return false;
+		requestAttributes.removeAttribute(key, RequestAttributes.SCOPE_SESSION);
+		return true;
+	}
+	
 }
