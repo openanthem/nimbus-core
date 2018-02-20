@@ -1,3 +1,5 @@
+import { SortAs } from "../components/platform/grid/sortas.interface";
+
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -660,7 +662,8 @@ export class UiAttribute implements Serializable<UiAttribute> {
     browserBack: boolean=false;
     target: string;
     rel: string;
-    sortAs: string;
+    sortAs: SortAs;
+    sortable: boolean;
     deserialize( inJson ) {
         this.value = inJson.value;
         this.url = inJson.url;
@@ -758,6 +761,9 @@ export class UiAttribute implements Serializable<UiAttribute> {
         }
         if (inJson.filter) {
             this.filter=inJson.filter;
+        }
+        if(inJson.sortable) {
+            this.sortable = inJson.sortable;
         }
         return this;
     }

@@ -800,7 +800,7 @@ public class ViewConfig {
 		boolean filter() default false; 
 		String filterValue() default "";
 		boolean expandable() default true;
-		String sortAs() default ""; // number, text
+		SortAs sortAs() default SortAs.DEFAULT; // number, text
 		
 		public enum FilterMode {
 			equals,
@@ -809,17 +809,12 @@ public class ViewConfig {
 			in
 		}
 		
-//		public enum SortAs {
-//			DEFAULT(""),
-//			NUMBER("number"),
-//			TEXT("text");
-//			
-//			String code;
-//			
-//			SortAs(String code) {
-//				this.code = code;
-//			}
-//		}
+		public enum SortAs {
+			DEFAULT,
+			NUMBER,
+			TEXT;
+			
+		}
 		FilterMode filterMode() default FilterMode.equals;
 		String datePattern() default "";
 	}

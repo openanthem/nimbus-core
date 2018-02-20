@@ -29,6 +29,7 @@ import { ElementModelParam } from './../../../shared/app-config.interface';
 import { ServiceConstants } from './../../../services/service.constants';
 import { ControlValueAccessor } from '@angular/forms/src/directives';
 import {DateTimeFormatPipe} from '../../../pipes/date.pipe';
+import { SortAs, GridColumnDataType } from './sortas.interface';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     provide: NG_VALUE_ACCESSOR,
@@ -251,7 +252,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         this.selectedRows = [];
     }
 
-    sortBy(e: any, fieldType: string, sortAs: string){
+    sortBy(e: any, fieldType: string, sortAs: SortAs){
         if(this.isSortAsNumber(fieldType, sortAs)) {
             this.sortInternal(fieldValue => fieldValue, e);
         }
@@ -283,17 +284,17 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         });
     }
 
-    protected isSortAsNumber(fieldType: string, sortAs: string): boolean {
+    protected isSortAsNumber(fieldType: string, sortAs: SortAs): boolean {
         let fieldTypeToMatch = fieldType.toLowerCase();
-        return (sortAs === 'number' || fieldTypeToMatch === 'int' || fieldTypeToMatch === 'integer' 
-                || fieldTypeToMatch === 'long' || fieldTypeToMatch === 'double');
+        return (sortAs === SortAs.number|| fieldTypeToMatch === GridColumnDataType.int.value || fieldTypeToMatch === GridColumnDataType.integer.value 
+                || fieldTypeToMatch === GridColumnDataType.long.value || fieldTypeToMatch === GridColumnDataType.double.value);
         
     }
 
-    protected isSortAsDate(fieldType: string, sortAs: string): boolean {
+    protected isSortAsDate(fieldType: string, sortAs: SortAs): boolean {
         let fieldTypeToMatch = fieldType.toLowerCase();
-        return (sortAs === 'date' || fieldTypeToMatch === 'date' 
-                || fieldTypeToMatch === 'localdatetime' || fieldType === 'zoneddatetime');
+        return (sortAs === SortAs.date || fieldTypeToMatch === GridColumnDataType.date.value 
+                || fieldTypeToMatch === GridColumnDataType.localdatetime.value || fieldType === GridColumnDataType.zoneddatetime.value);
         
     }
 
