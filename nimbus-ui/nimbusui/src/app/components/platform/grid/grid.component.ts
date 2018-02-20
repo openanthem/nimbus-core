@@ -1,3 +1,4 @@
+import { Length } from './../../../shared/app-config.interface';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -29,6 +30,8 @@ import { ElementModelParam } from './../../../shared/app-config.interface';
 import { ServiceConstants } from './../../../services/service.constants';
 import { ControlValueAccessor } from '@angular/forms/src/directives';
 import {DateTimeFormatPipe} from '../../../pipes/date.pipe';
+import {Calendar} from 'primeng/components/calendar/calendar';
+import * as moment from 'moment';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     provide: NG_VALUE_ACCESSOR,
@@ -56,6 +59,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     @Input() params: ElementModelParam[];
     @Input() form: FormGroup;
     @Input('value') _value = [];
+    totalRecords=0;
 
 //    references DataTable named 'flex' in the view
     @ViewChild('flex') flex: DataTable;
@@ -66,6 +70,8 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     rowHover:boolean;
     selectedRows: any[];
     filterState: boolean = false;
+    rowStart=0;
+    rowEnd=0;
 
     public onChange: any = (_) => { /*Empty*/ }
     public onTouched: any = () => { /*Empty*/ }
@@ -147,6 +153,14 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         this.pageSvc.gridValueUpdate$.subscribe(event => {
             if(event.path.startsWith(this.element.path)) {
                 this.value = event.config.gridList;
+                this.totalRecords=this.value.length;
+                if(this.totalRecords){
+                   this.rowStart=1;
+                   this.rowEnd = this.totalRecords < +this.element.config.uiStyles.attributes.pageSize ? this.totalRecords : +this.element.config.uiStyles.attributes.pageSize;
+                }
+                else{
+                    this.rowStart=0; this.rowEnd=0;
+                }
                 this.cd.markForCheck();
                 this.resetMultiSelection();
             }
@@ -163,6 +177,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
                 }
             });
         }
+       
     }
 
     getRowPath(col:ElementModelParam, item: any) {
@@ -279,6 +294,57 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
            
 
     }
+
+    myFilter(e: any, ref, field, filterMatchMode, datePattern?, dateType?){
+
+     if((datePattern && e.target.value.length!=0) || dateType){
+            
+        if(e.target.value.length == datePattern.length || dateType && e.target.value.length=='10' ){
+
+            if( e.target.value.length=='0'){
+                ref.filter(e.target.value, field, "startsWith");
+            }
+            else{
+            let formatedDate = moment(e.target.value, datePattern.toUpperCase()).format('MM/DD/YYYY');
+            ref.filter(formatedDate, field, "startsWith");
+            }
+        }
+
+        this.totalRecords=ref.dataToRender.length;
+        if(this.totalRecords){
+            this.rowStart=1;
+            this.rowEnd = this.totalRecords < +this.element.config.uiStyles.attributes.pageSize ? this.totalRecords : +this.element.config.uiStyles.attributes.pageSize;
+        }
+    }       
+    else{
+        ref.filter(e.target.value, field, "startsWith");
+        console.log("Testing.");
+         this.totalRecords=ref.dataToRender.length;
+        if(this.totalRecords!=0){
+            this.rowStart=1;
+            this.rowEnd = this.totalRecords < +this.element.config.uiStyles.attributes.pageSize ? this.totalRecords : +this.element.config.uiStyles.attributes.pageSize;
+        }
+        else{
+            this.rowStart=0; this.rowEnd=0;
+        }
+    }  
+
+ }
+
+
+    paginate(e: any){
+        if(this.totalRecords!=0){
+        this.rowEnd=((this.totalRecords / (e.first +  (+e.rows)) >= 1) ? (e.first +  (+e.rows)) : e.first + (this.totalRecords - e.first));
+        this.rowStart=e.first+1;
+        }
+        else{
+            this.rowStart=0; this.rowEnd=0;
+        }
+    }
+
+
 }
+
+    
 
 

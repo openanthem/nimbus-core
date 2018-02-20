@@ -23,6 +23,7 @@ import { ServiceConstants } from './services/service.constants';
 import { Router, ActivatedRoute } from '@angular/router';
 import { WindowService } from './services/window-resize.service';
 import { DOCUMENT } from '@angular/platform-browser';
+import * as moment from 'moment';
 
 /**
  * \@author Dinakar.Meda
