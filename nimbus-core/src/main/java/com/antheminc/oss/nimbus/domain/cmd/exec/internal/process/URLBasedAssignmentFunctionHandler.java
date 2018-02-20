@@ -15,6 +15,11 @@
  */
 package com.antheminc.oss.nimbus.domain.cmd.exec.internal.process;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -59,11 +64,14 @@ abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements Functi
 
 	protected String getUrl(CommandMessage commandMessage){
 		
+		List<String> queryParamsToInclude = getQueryParamsToInclude();
+		
 		StringBuilder url = new StringBuilder();
 		url.append(commandMessage.getCommand().getFirstParameterValue(Constants.REQUEST_PARAMETER_URL_MARKER.code));
 		
 		commandMessage.getCommand().getRequestParams().entrySet().stream()
 					.filter(map -> !Constants.REQUEST_PARAMETER_URL_MARKER.code.equalsIgnoreCase(map.getKey()))
+					.filter(map -> queryParamsToInclude.contains(map.getKey()))
 					.filter(map -> map.getValue() != null && map.getValue().length > 0)
 					.forEach(map -> url.append(Constants.REQUEST_PARAMETER_DELIMITER.code).append(map.getKey()).append(Constants.PARAM_ASSIGNMENT_MARKER.code).append(map.getValue()[0]));
 		
@@ -116,6 +124,14 @@ abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements Functi
 		MultiOutput response = executorGateway.execute(commandToExecute);
 		//TODO Soham: temp fix, need to talk to Jayant
 		return (S)response.getOutputs().get(0).getValue();
-	}	
+	}
+	
+	// TODO - move this to config lookup
+	private List<String> getQueryParamsToInclude() {
+		return Arrays.asList(Constants.SEARCH_REQ_WHERE_MARKER.code,Constants.SEARCH_REQ_ORDERBY_MARKER.code, 
+				Constants.SEARCH_REQ_FETCH_MARKER.code,Constants.SEARCH_REQ_AGGREGATE_MARKER.code,
+				Constants.SEARCH_REQ_PAGINATION_SIZE.code,Constants.SEARCH_REQ_PAGINATION_PAGE_NUM.code, 
+				Constants.SEARCH_REQ_PAGINATION_SORT_PROPERTY.code);
+	}
 
 }
