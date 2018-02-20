@@ -252,9 +252,9 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         this.selectedRows = [];
     }
 
-    sortBy(e: any, fieldType: string, sortAs: SortAs){
+    sortBy(e: any, fieldType: string, sortAs: string){
         if(this.isSortAsNumber(fieldType, sortAs)) {
-            this.sortInternal(fieldValue => fieldValue, e);
+            this.sortInternal(fieldValue => Number(fieldValue), e);
         }
         else if(this.isSortAsDate(fieldType, sortAs)) {
             this.sortInternal(fieldValue => new Date(fieldValue), e);
@@ -284,16 +284,16 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         });
     }
 
-    protected isSortAsNumber(fieldType: string, sortAs: SortAs): boolean {
+    protected isSortAsNumber(fieldType: string, sortAs: string): boolean {
         let fieldTypeToMatch = fieldType.toLowerCase();
-        return (sortAs === SortAs.number|| fieldTypeToMatch === GridColumnDataType.int.value || fieldTypeToMatch === GridColumnDataType.integer.value 
+        return ((sortAs !== null && sortAs === SortAs.number.value) || fieldTypeToMatch === GridColumnDataType.int.value || fieldTypeToMatch === GridColumnDataType.integer.value 
                 || fieldTypeToMatch === GridColumnDataType.long.value || fieldTypeToMatch === GridColumnDataType.double.value);
         
     }
 
-    protected isSortAsDate(fieldType: string, sortAs: SortAs): boolean {
+    protected isSortAsDate(fieldType: string, sortAs: string): boolean {
         let fieldTypeToMatch = fieldType.toLowerCase();
-        return (sortAs === SortAs.date || fieldTypeToMatch === GridColumnDataType.date.value 
+        return ((sortAs !== null && sortAs === SortAs.date.value) || fieldTypeToMatch === GridColumnDataType.date.value 
                 || fieldTypeToMatch === GridColumnDataType.localdatetime.value || fieldType === GridColumnDataType.zoneddatetime.value);
         
     }

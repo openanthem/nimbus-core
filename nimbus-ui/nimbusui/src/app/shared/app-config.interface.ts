@@ -662,7 +662,7 @@ export class UiAttribute implements Serializable<UiAttribute> {
     browserBack: boolean=false;
     target: string;
     rel: string;
-    sortAs: SortAs;
+    sortAs: string;
     sortable: boolean;
     deserialize( inJson ) {
         this.value = inJson.value;
