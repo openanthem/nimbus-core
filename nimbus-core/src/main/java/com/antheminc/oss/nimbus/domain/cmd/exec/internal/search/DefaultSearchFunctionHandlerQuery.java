@@ -15,19 +15,12 @@
  */
 package com.antheminc.oss.nimbus.domain.cmd.exec.internal.search;
 
-import java.util.HashMap;
-import java.util.stream.Stream;
-
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
-import com.antheminc.oss.nimbus.domain.defn.Repo;
+import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
-import com.antheminc.oss.nimbus.entity.SearchCriteria.ProjectCriteria;
 import com.antheminc.oss.nimbus.entity.SearchCriteria.QuerySearchCriteria;
 
 /**
@@ -60,68 +53,17 @@ public class DefaultSearchFunctionHandlerQuery<T, R> extends DefaultSearchFuncti
 		
 		querySearchCriteria.validate(executionContext);
 		
-		resolveNamedQueryIfApplicable(executionContext, mConfig, querySearchCriteria, actionParam);
+		String where = resolveNamedQueryIfApplicable(executionContext, mConfig, actionParam);
+		querySearchCriteria.setWhere(where);
 		
-		querySearchCriteria.setOrderby(executionContext.getCommandMessage().getCommand().getFirstParameterValue("orderby"));
+		querySearchCriteria.setOrderby(cmd.getFirstParameterValue(Constants.SEARCH_REQ_ORDERBY_MARKER.code));
+		querySearchCriteria.setFetch(cmd.getFirstParameterValue(Constants.SEARCH_REQ_FETCH_MARKER.code));
+		querySearchCriteria.setAggregateCriteria(cmd.getFirstParameterValue(Constants.SEARCH_REQ_AGGREGATE_MARKER.code));
 		
-		querySearchCriteria.setFetch(executionContext.getCommandMessage().getCommand().getFirstParameterValue("fetch"));
-		
-		String aggregateAs = cmd.getFirstParameterValue("aggregate");
-		querySearchCriteria.setAggregateCriteria(aggregateAs);
-		
-		String converter = cmd.getFirstParameterValue("converter");
-		querySearchCriteria.setResponseConverter(converter);
-		
-		ProjectCriteria projectCriteria = new ProjectCriteria();
-		
-		if(cmd.getRequestParams().get("projection.alias") != null) {
-			projectCriteria.setAlias(cmd.getFirstParameterValue("projection.alias"));
-			querySearchCriteria.setProjectCriteria(projectCriteria);
-		}
-		
-		if(cmd.getRequestParams().get("projection.mapsTo") != null) {
-			String projectMapping = cmd.getFirstParameterValue("projection.mapsTo");
-			String[] keyValues = StringUtils.split(projectMapping,",");
-			
-			Stream.of(keyValues).forEach((kvString) -> {
-				if(MapUtils.isEmpty(projectCriteria.getMapsTo())){
-					projectCriteria.setMapsTo(new HashMap<String, String>());
-				}
-				String[] kv = StringUtils.split(kvString,":");
-				projectCriteria.getMapsTo().put(kv[0], kv[1]);
-			});
-		}
+		querySearchCriteria.setProjectCriteria(buildProjectCritera(cmd));
+		querySearchCriteria.setPageRequest(buildPageCriteria(cmd));
 		
 		return querySearchCriteria;
-	}
-
-
-	private void resolveNamedQueryIfApplicable(ExecutionContext executionContext, ModelConfig<?> mConfig, QuerySearchCriteria querySearchCriteria, Param<T> actionParam) {
-		String where = executionContext.getCommandMessage().getCommand().getFirstParameterValue("where");
-		
-		// find if where is a named query
-		Repo repo = mConfig.getRepo();
-		Repo.NamedNativeQuery[] namedQueries = repo.namedNativeQueries();
-		
-		if(namedQueries != null && namedQueries.length > 0) {
-			for(Repo.NamedNativeQuery query: namedQueries) {
-				if(StringUtils.equalsIgnoreCase(query.name(), where) && query.nativeQueries() != null) {
-					int i = 0;
-					for(String q: query.nativeQueries()) {
-						if(i == 0) {
-							where = q;
-						}
-						else {
-							where = where +"~~"+q;
-						}
-						i++;
-					}
-				}
-			}
-		}
-		where = getPathVariableResolver().resolve(actionParam, where);
-		
-		querySearchCriteria.setWhere(where);
 	}
 
 }

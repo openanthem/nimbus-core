@@ -71,6 +71,9 @@ export class Tile extends BaseElement {
         } else if (this.element.config.uiStyles.attributes.size === 'Medium') {
             this.styleWd = 'card-holder col-lg-9 col-md-12 mediumCard';
             this.styleHt = 'height-md';
+        } else if (this.element.config.uiStyles.attributes.size === 'Colorbox') {
+            this.styleWd = 'my-card-holder col-xs-12 colorBox';
+            this.styleHt = 'my-card-block ';
         } else {
             this.styleWd = '';
             this.styleHt = '';

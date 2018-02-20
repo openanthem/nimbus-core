@@ -1,41 +1,47 @@
 @mixin styleButton($bkgColor,$color) {
   background: $bkgColor;
   border-color: $bkgColor;
-  
   color:$color;
   line-height:1;
   text-transform: initial;
   margin-right:9px;
   margin-bottom:1rem;
   &:hover:not([disabled]){
-    background-color: lighten($bkgColor, 15%);
+    background-color: darken($bkgColor, 15%);
+    border-color: darken($bkgColor, 15%);
   }
   &:focus{
     outline: $focus-outline-setting;
   }
   &[disabled]{
-    background-color: lighten($bkgColor, 25%);
+    background-color: lighten($bkgColor, 15%);
+    color: lighten($color, 10%);
   }
 }
+
 button:focus{
   outline: $focus-outline-setting;
 }
 .btn-action,.btn-primary {
-  @include styleButton($primary-action-color,#fff);
+  @include styleButton(#96acbb,#fff);
   padding: .3rem 1.5rem;
   border-radius: .6rem;
 }
 .btn-delete {
-  @include styleButton($delete-color,#fff);
+  @include styleButton(#C10000,#fff);
   padding: .2rem .5rem;
   padding: .3rem 1.5rem;
   border-radius: .6rem;
 }
 .btn-secondary {
-  @include styleButton($secondary-action-color,#494949);
+  @include styleButton(#e6e6e6,#494949);
   padding: .2rem 1rem;
   border-radius: .4rem;
 }
+
+
+
+
 
 
 .dropdown-menu {

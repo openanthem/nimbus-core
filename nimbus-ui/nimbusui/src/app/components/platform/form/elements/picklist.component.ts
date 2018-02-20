@@ -170,7 +170,6 @@ export class OrderablePickList implements OnInit, ControlValueAccessor {
             }
             this.draggedItm = null;
             //updating the internal data model
-            //console.log(this.targetList);
             if(this.targetList.length === 0) {
                 this.value = null;
             } else {
@@ -179,7 +178,6 @@ export class OrderablePickList implements OnInit, ControlValueAccessor {
                     this.selectedOptions.push(element.code);
                 });
                 this.value = this.selectedOptions;
-                //this.value = this.targetList;
             }
         }
     }

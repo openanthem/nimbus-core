@@ -48,7 +48,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // Components
 import { LayoutService } from './services/layout.service';
 import { ContentContainer } from './components/platform/content/content-container.component';
-import { Switch } from './components/platform/form/elements/switch.component';
 import { BaseElement } from './components/platform/base-element.component';
 import { AppComponent }  from './app.component';
 import { Tile }  from './components/platform/tile.component';
@@ -80,7 +79,6 @@ import { CardDetailsGrid } from './components/platform/card/card-details-grid.co
 import { Accordion } from './components/platform/accordion.component';
 import { AccordionGroup } from './components/platform/accordion-group.component';
 import { FrmGroupCmp } from './components/platform/form-group.component';
-import { MultiselectDropdownModule } from './components/platform/form/elements/multi-select-dropdown.component';
 import { Button } from './components/platform/form/elements/button.component';
 import { ButtonGroup } from './components/platform/form/elements/button-group.component';
 import { FilterButton } from './components/platform/form/elements/filter-button.component';
@@ -134,7 +132,6 @@ import {DateTimeFormatPipe} from './pipes/date.pipe';
         AppRoutingModule,
         HttpModule,
         FormsModule,
-        MultiselectDropdownModule,
         DropdownModule,
         DataTableModule,
         OverlayPanelModule,
@@ -158,7 +155,7 @@ import {DateTimeFormatPipe} from './pipes/date.pipe';
         MultiselectCard, Link, Menu, CardDetailsComponent, CardDetailsFieldComponent, CardDetailsGrid, FieldValue,
         AccordionGroup, Accordion, FrmGroupCmp, Button, ButtonGroup, FilterButton, OrderablePickList,
         STOMPStatusComponent, GridContainer, InfiniteScrollGrid, SubHeaderCmp, TextArea, LandingPage,
-        LayoutService,ContentContainer,Switch,
+        LayoutService,ContentContainer,
         DomainFlowCmp,HeaderGlobal,FooterGlobal,
         BreadcrumbComponent, NavLinkRouter,
         Modal, ActionDropdown, ActionLink, 

@@ -81,12 +81,23 @@ textarea.form-control {
     }
   }
 }
-
+// allows radio & checkbox components to stack instead of default inline-form
+.form-group.form-inline.stackedRadio .form-checkrow {
+    display: block;
+    margin-bottom: 1rem;
+}
 .form-group.form-inline .form-checkrow {
   display: inline-block;
   margin-right: 1.3rem;
 }
-
+// allows inputs to align to right of label
+// use on fieldValue component @FieldValue(cols="1", iconField ="labelLeft")
+.labelLeft { 
+    display:inline-block;
+    &::after { //this removes psuedo after inherited from iconField class
+        display: none;
+    }
+}
 .form-group.form-inline.legend-left legend {
   float: left;
   margin-right: 1.3rem;
@@ -95,6 +106,9 @@ textarea.form-control {
 
 p-dropdown.form-control {
     border: none;
+    padding:0;
+    background: none;
+
 }
 .ui-dropdown {
     min-width: 150px;
@@ -174,18 +188,18 @@ p-dropdown.form-control {
 // END inline edit text input styles for inplace-editor.component
 
 //date and time input
-.ui-calendar {
-    display: block;
-    .ui-calendar-button {
+.ui-calendar{
+    display:block;
+     .ui-calendar-button {
         height: 2.15rem;
     }
-} 
+}
 .ui-timepicker.ui-widget-header{
     text-align: center;
 }
 
-.form-group.questionGroup .ui-calendar input {
-    width: 150px;
+.form-group.questionGroup .ui-calendar input { 
+    width: 150px; 
 }
 
 // custom radio

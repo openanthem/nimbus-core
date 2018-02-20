@@ -119,7 +119,7 @@ public class DefaultActionExecutorGet extends AbstractFunctionCommandExecutor<Pa
 	}
 
 	protected QuadModel<?, ?> handleMapped(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx, Object mapped, Action action) {
-		ModelConfig<?> mapsToConfig = rootDomainConfig.findIfMapped().getMapsTo();
+		ModelConfig<?> mapsToConfig = rootDomainConfig.findIfMapped().getMapsToConfig();
 
 		// create mapsTo command and invoke command gateway to load coreParam
 		Command mapsToCmd = CommandBuilder.from(eCtx.getCommandMessage().getCommand(), mapsToConfig.getAlias()).getCommand();

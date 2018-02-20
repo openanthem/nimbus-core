@@ -19,14 +19,16 @@ import java.beans.PropertyDescriptor;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
+import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.ValidationGroup;
 import com.antheminc.oss.nimbus.domain.model.config.EntityConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
-import com.antheminc.oss.nimbus.domain.model.config.ParamType;
+import com.antheminc.oss.nimbus.domain.model.config.ParamConfigType;
 import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
 import com.antheminc.oss.nimbus.support.pojo.CollectionsTemplate;
 import com.antheminc.oss.nimbus.support.pojo.LockTemplate;
@@ -218,7 +220,7 @@ public interface EntityState<T> {
 		//@JsonIgnore
 		default ParamConfig<T> getElemConfig() {
 			StateType.NestedCollection<T> typeSAC = getAssociatedParam().getType().findIfCollection(); 
-			ParamType.NestedCollection<T> typeConfig = typeSAC.getConfig().findIfCollection();
+			ParamConfigType.NestedCollection<T> typeConfig = typeSAC.getConfig().findIfCollection();
 			
 			ParamConfig<T> elemConfig = typeConfig.getElementConfig();
 			return elemConfig;
@@ -249,6 +251,9 @@ public interface EntityState<T> {
 		Model<?> getParentModel();
 		
 		StateType getType();
+		
+		Class<? extends ValidationGroup>[] getActiveValidationGroups();
+		void setActiveValidationGroups(Class<? extends ValidationGroup>[] activeValidationGroups);
 		
 //		@JsonIgnore M7
 //M8	Model<StateContextEntity> getContextModel();
@@ -375,7 +380,7 @@ public interface EntityState<T> {
 			
 			if(isTransient() && !findIfTransient().isAssinged()) { // when transient is not assigned
 				Class<?> mappedClass = getType().getConfig().getReferredClass();
-				Class<?> mapsToClass = getType().getConfig().findIfNested().getModel().findIfMapped().getMapsTo().getReferredClass();
+				Class<?> mapsToClass = getType().getConfig().findIfNested().getModelConfig().findIfMapped().getMapsToConfig().getReferredClass();
 				
 				return (mappedClass!=mapsToClass);
 			}

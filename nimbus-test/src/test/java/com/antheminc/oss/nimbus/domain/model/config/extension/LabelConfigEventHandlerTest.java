@@ -39,7 +39,7 @@ import com.antheminc.oss.nimbus.domain.model.config.ParamConfig.LabelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.builder.EntityConfigVisitor;
 import com.antheminc.oss.nimbus.domain.model.config.builder.internal.DefaultEntityConfigBuilder;
 import com.antheminc.oss.nimbus.test.domain.support.AbstractFrameworkIntegrationTests;
-import com.antheminc.oss.nimbus.test.entity.sample.s0.core.SampleCoreEntity;
+import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
 
 import lombok.Getter;
 import lombok.Setter;

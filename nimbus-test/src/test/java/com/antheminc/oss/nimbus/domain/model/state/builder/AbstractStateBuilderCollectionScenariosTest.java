@@ -25,8 +25,8 @@ import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
 import com.antheminc.oss.nimbus.test.FrameworkIntegrationTestScenariosApplication;
-import com.antheminc.oss.nimbus.test.entity.sample.s0.core.SampleCoreEntity;
-import com.antheminc.oss.nimbus.test.entity.sample.s0.view.VRSampleViewRootEntity;
+import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
+import com.antheminc.oss.nimbus.test.scenarios.s0.view.VRSampleViewRootEntity;
 
 /**
  * @author Soham Chakravarti

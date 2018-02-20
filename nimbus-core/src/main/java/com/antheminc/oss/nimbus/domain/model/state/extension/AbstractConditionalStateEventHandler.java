@@ -55,7 +55,7 @@ public abstract class AbstractConditionalStateEventHandler {
 				.orElseThrow(() -> new InvalidConfigException("Target param lookup returned null for targetPath: " + targetPath + " on param: " + baseParam));
 	}
 	
-	protected static abstract class EvalExprWithCrudActions<A extends Annotation> extends AbstractConditionalStateEventHandler 
+	public static abstract class EvalExprWithCrudActions<A extends Annotation> extends AbstractConditionalStateEventHandler 
 		implements OnStateLoadHandler<A>, OnStateChangeHandler<A> {
 		
 		public EvalExprWithCrudActions(BeanResolverStrategy beanResolver) {

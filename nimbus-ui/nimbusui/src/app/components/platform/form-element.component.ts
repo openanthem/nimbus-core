@@ -1,3 +1,4 @@
+import { ValidationConstraint } from './../../shared/validationconstraints.enum';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -95,15 +96,15 @@ export class FormElement {
                 this.element.config.validation.constraints.forEach(validator => {
                     // Defaults
                     // TODO - Consider moving this logic to a lookup service.
-                    if (this.form.controls[this.element.config.code].errors.required && validator.name === "NotNull") {
+                    if (this.form.controls[this.element.config.code].errors.required && validator.name === ValidationConstraint._notNull.value) {
                         if (!this.checkforCustomMessages(validator, errors))
                             errors.push('Field is required.');
                     }
-                    if (this.form.controls[this.element.config.code].errors.pattern && validator.name === "Pattern") {
+                    if (this.form.controls[this.element.config.code].errors.pattern && validator.name === ValidationConstraint._pattern.value) {
                         if (!this.checkforCustomMessages(validator, errors))
                             errors.push('RegEx is invalid.');  
                     }
-                    if (this.form.controls[this.element.config.code].errors.minMaxSelection && validator.name === "Size") {
+                    if (this.form.controls[this.element.config.code].errors.minMaxSelection && validator.name === ValidationConstraint._size.value) {
                         if (!this.checkforCustomMessages(validator, errors))
                             errors.push('Required number of fields not met.'); 
                     }

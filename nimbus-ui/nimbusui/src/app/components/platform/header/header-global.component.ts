@@ -17,7 +17,7 @@
 'use strict';
 import { Component, Input } from '@angular/core';
 import { LayoutService } from '../../../services/layout.service';
-import { Param, Desc, ParamConfig, UiStyle, UiAttribute, RemnantState } from '../../../shared/app-config.interface';
+import { Param } from '../../../shared/app-config.interface';
 import { AppBranding, LinkConfig } from '../../../model/menu-meta.interface';
 
 /**
@@ -38,10 +38,9 @@ export class HeaderGlobal{
     @Input() leftMenuItems: LinkConfig[];
     @Input() element: Param;
 
-    private messageCount        : number = 3;
+    private messageCount : number = 3;
 
-    constructor(){
-        
+    constructor() {
     }
 
 }

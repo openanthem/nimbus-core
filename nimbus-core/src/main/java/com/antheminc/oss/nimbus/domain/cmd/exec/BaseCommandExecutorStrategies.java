@@ -46,19 +46,11 @@ public class BaseCommandExecutorStrategies {
 	
 	private final HierarchyMatchBasedBeanFinder hierarchyMatchBeanLoader;
 	
-	private final SessionProvider sessionProvider;
-
 	protected final JustLogit logit = new JustLogit(this.getClass());
 
 	public BaseCommandExecutorStrategies(BeanResolverStrategy beanResolver) {
 		this.beanResolver = beanResolver;
 		this.hierarchyMatchBeanLoader = beanResolver.get(HierarchyMatchBasedBeanFinder.class);
-		this.sessionProvider = beanResolver.get(SessionProvider.class);
-	}
-	
-	protected String getSessionId() {
-		String sessionId = sessionProvider.getSessionId();
-		return sessionId;
 	}
 	
 	protected Param<?> getRootDomainParam(ExecutionContext eCtx) {

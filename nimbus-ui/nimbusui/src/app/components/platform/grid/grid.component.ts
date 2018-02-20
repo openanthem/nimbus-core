@@ -26,7 +26,6 @@ import { PageService } from '../../../services/page.service';
 import { GridService } from '../../../services/grid.service';
 import { WebContentSvc } from '../../../services/content-management.service';
 import { DataTable, OverlayPanel, Paginator } from 'primeng/primeng';
-import { ElementModelParam } from './../../../shared/app-config.interface';
 import { ServiceConstants } from './../../../services/service.constants';
 import { ControlValueAccessor } from '@angular/forms/src/directives';
 import {DateTimeFormatPipe} from '../../../pipes/date.pipe';
@@ -58,7 +57,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 export class InfiniteScrollGrid extends BaseElement implements ControlValueAccessor{
     @Input() data: any[];
     @Output() onScrollEvent: EventEmitter<any> = new EventEmitter();
-    @Input() params: ElementModelParam[];
+    @Input() params: ParamConfig[];
     @Input() form: FormGroup;
     @Input('value') _value = [];
     totalRecords=0;
@@ -153,7 +152,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         });
 
         this.pageSvc.gridValueUpdate$.subscribe(event => {
-            if(event.path.startsWith(this.element.path)) {
+            if(event.path == this.element.path) {
                 this.value = event.config.gridList;
                 this.totalRecords=this.value.length;
                 if(this.totalRecords){
@@ -182,11 +181,11 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
        
     }
 
-    getRowPath(col:ElementModelParam, item: any) {
-        return this.element.path + '/' + item.elemId;// + '/' + col.code;
+    getRowPath(col:ParamConfig, item: any) {
+        return this.element.path + '/' + item.elemId + '/' + col.code;
     }
 
-    processOnClick(col: ElementModelParam, item: any) {
+    processOnClick(col: ParamConfig, item: any) {
         let uri=this.element.path + '/' + item.elemId + '/' + col.code;
 
         let uriParams = this.getAllURLParams(uri);
@@ -224,44 +223,43 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     }
 
     onRowSelect(event) {
-        //console.log(event);
-        //this.pageService.postOnChange($event.path, '_update', 'state', JSON.stringify(true));
     }
 
     onRowUnselect(event) {
-        //console.log(event);
-        //this.pageService.postOnChange($event.path, '_update', 'state', JSON.stringify(true));
-    }
-    onRowClick(event: any) {
-        //console.log(event);
-        //this.pageService.postOnChange($event.path, '_update', 'state', JSON.stringify(true));
-    }
-    onRowUnSelect(event) {
-        //console.log(event);
-        //this.pageService.postOnChange($event.path, '_update', 'state', JSON.stringify(false));
     }
 
-    postOnChange(col: ElementModelParam, item: any) {
+    onRowClick(event: any) {
+    }
+
+    onRowUnSelect(event) {
+    }
+
+    postOnChange(col: ParamConfig, item: any) {
         let uri=this.element.path + '/' + item.elemId + '/' + col.code;
-        //console.log(event);
         this.pageSvc.postOnChange(uri, 'state', JSON.stringify(event.target['checked']));
     }
 
     handleRowChange(val) {
-        //this.cd.markForCheck();
-        // console.log('onRowUpdate');
-        // console.log(val);
     }
 
     getAddtionalData(event: any) {
-        let elemPath = '';
-        this.params.forEach(param => {
-            if (param.uiStyles && param.uiStyles.attributes.alias == 'Grid') {
-                elemPath = this.element.path + '/' + event.data.elemId + '/' + param.code;
+        let elemPath;
+        for ( var p in this.params ) {
+            let param = this.params[p];
+            if (param.type.nested) {
+                if (param.uiStyles && param.uiStyles.attributes.alias == 'GridRowBody') {
+                    // Check if data has to be extracted async'ly
+                    if (param.uiStyles.attributes.asynchronous) {
+                        elemPath = this.element.path + '/' + event.data.elemId + '/' + param.code;
+                    } else {
+                        event.data['nestedElement']=event.data.params[p];
+                    }
+                }    
             }
-        });
-        
-        this.pageSvc.processEvent(elemPath, '$execute', new GenericDomain(), 'GET' );
+        }
+        if (elemPath) {
+            this.pageSvc.processEvent(elemPath, '$execute', new GenericDomain(), 'GET' );
+        }
     }
 
     resetMultiSelection() {
