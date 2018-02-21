@@ -25,6 +25,7 @@ import com.antheminc.oss.nimbus.support.JustLogit;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -44,8 +45,20 @@ abstract public class AbstractEntityConfig<T> implements EntityConfig<T> {
 	
 	private static final AtomicInteger counter = new AtomicInteger();
 	
-	private final String id = String.valueOf(counter.incrementAndGet());
+	private final String id;
 
 	@JsonIgnore
 	private EventHandlerConfig eventHandlerConfig;
+
+	public AbstractEntityConfig() {
+		this(generateNextId());
+	}
+	
+	public AbstractEntityConfig(String id) {
+		this.id = id;
+	}
+	
+	protected static String generateNextId() {
+		return String.valueOf(counter.incrementAndGet());
+	}
 }
