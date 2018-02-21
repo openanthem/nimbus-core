@@ -21,6 +21,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.springframework.format.annotation.DateTimeFormat.ISO;
+
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 import com.antheminc.oss.nimbus.domain.defn.extension.ParamContext;
 
@@ -379,7 +381,6 @@ public class ViewConfig {
 		String inplaceEditType() default "";
 		String datePattern() default "";
 	}
-
 	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
@@ -544,7 +545,6 @@ public class ViewConfig {
 		String type() default "text";
 		boolean postEventOnChange() default false;
 		String controlId() default "";
-		String datePattern() default "";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME) 
@@ -560,7 +560,6 @@ public class ViewConfig {
 		String rows() default "5"; 
 		boolean postEventOnChange() default false; 
 		String controlId() default ""; 
-		String datePattern() default "";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
@@ -574,7 +573,6 @@ public class ViewConfig {
 		String postButtonUrl() default "";
 		String controlId() default "";
 		String help() default "";
-		String datePattern() default "";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
@@ -642,7 +640,6 @@ public class ViewConfig {
 		boolean postEventOnChange() default false;
 		String controlId() default "";
 		String help() default "";
-		String datePattern() default "";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
@@ -655,7 +652,6 @@ public class ViewConfig {
 		boolean postEventOnChange() default false;
 		String controlId() default "";
 		String help() default "";
-		String datePattern() default "";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
@@ -806,12 +802,21 @@ public class ViewConfig {
 		boolean sortable() default true;
 		boolean filter() default false; 
 		String filterValue() default "";
-		boolean expandable() default true;		
+		boolean expandable() default true;
+		SortAs sortAs() default SortAs.DEFAULT; // number, text
+		
 		public enum FilterMode {
 			equals,
 			contains,
 			endsWith,
 			in
+		}
+		
+		public enum SortAs {
+			DEFAULT,
+			NUMBER,
+			TEXT;
+			
 		}
 		FilterMode filterMode() default FilterMode.equals;
 		String datePattern() default "";

@@ -22,6 +22,7 @@ import { WebContentSvc } from './services/content-management.service';
 import { ServiceConstants } from './services/service.constants';
 import { Router, ActivatedRoute } from '@angular/router';
 import { DOCUMENT } from '@angular/platform-browser';
+import * as moment from 'moment';
 
 /**
  * \@author Dinakar.Meda

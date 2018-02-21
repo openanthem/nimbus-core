@@ -54,7 +54,7 @@ public class MappedDefaultParamConfig<P, M> extends DefaultParamConfig<P> implem
 		private static final long serialVersionUID = 1L;
 		
 		public NoConversion(ModelConfig<?> mapsToEnclosingModel, ParamConfig<M> mapsTo) {
-			super(mapsTo.getCode(), mapsTo.getBeanName(), mapsToEnclosingModel, mapsTo, createNewImplicitMapping("", true));
+			super(mapsTo.getCode(), mapsTo.getBeanName(), mapsToEnclosingModel, mapsTo, createNewImplicitMapping("", true), mapsTo.getId());
 			
 			init(mapsTo);
 		}
@@ -80,6 +80,13 @@ public class MappedDefaultParamConfig<P, M> extends DefaultParamConfig<P> implem
 	
 	public MappedDefaultParamConfig(String code, String beanName, ModelConfig<?> mapsToEnclosingModel, ParamConfig<M> mapsToConfig, Path path) {
 		super(code, beanName);
+		this.mapsToEnclosingModel = mapsToEnclosingModel;
+		this.mapsToConfig = mapsToConfig;
+		this.path = path;
+	}
+	
+	public MappedDefaultParamConfig(String code, String beanName, ModelConfig<?> mapsToEnclosingModel, ParamConfig<M> mapsToConfig, Path path, String id) {
+		super(code, beanName, id);
 		this.mapsToEnclosingModel = mapsToEnclosingModel;
 		this.mapsToConfig = mapsToConfig;
 		this.path = path;

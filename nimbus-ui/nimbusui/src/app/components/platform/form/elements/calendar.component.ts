@@ -21,6 +21,7 @@ import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { PageService } from '../../../../services/page.service';
 import { Param } from '../../../../shared/app-config.interface';
+
 /**
  * \@author Sandeep Mantha
  * \@whatItDoes A control to be used when the user input is in the form of date or date with time or just the time.
@@ -47,9 +48,9 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
             <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
         </label>
         <p-calendar [(ngModel)]="value"  
-            (focusout)="emitValueChangedEvent(this,$event)"
+            (focusout)="emitValueChangedEvent(this,$event)" 
             [showIcon]="true"
-            [disabled]="disabled"
+            [disabled]="!element?.enabled?.currState"
             [timeOnly]="element.config?.uiStyles?.attributes?.timeOnly"
             [showTime]="element.config?.uiStyles?.attributes?.showTime" 
             [hourFormat]="element.config?.uiStyles?.attributes?.hourFormat" >
@@ -65,5 +66,9 @@ export class Calendar extends BaseControl<String> {
     constructor(wcs: WebContentSvc, pageService: PageService, cd:ChangeDetectorRef) {
         super(pageService,wcs,cd);
     }
+
+    // ngOnInit(){
+ 
+    // }
 
 }

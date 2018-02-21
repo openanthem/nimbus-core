@@ -80,17 +80,32 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	private List<AssociatedEntity> associatedEntities;
 
 	protected DefaultParamConfig(String code) {
-		this(code, code);
+		this(code, code, generateNextId());
 	}
 	
 	protected DefaultParamConfig(String code, String beanName) {
+		super();
+		
 		Objects.requireNonNull(code, ()->"code in param config must not be null");
 		Objects.requireNonNull(beanName, ()->"beanName in param config must not be null");
 		
 		this.code = code.intern();
 		this.beanName = beanName.intern();
+		
 	}
 	
+	protected DefaultParamConfig(String code, String beanName, String id) {
+		super(id);
+		
+		Objects.requireNonNull(code, ()->"code in param config must not be null");
+		Objects.requireNonNull(beanName, ()->"beanName in param config must not be null");
+		Objects.requireNonNull(id, ()->"id in param config must not be null");
+		
+		this.code = code.intern();
+		this.beanName = beanName.intern();
+	}
+
+
 	final public static <T> DefaultParamConfig<T> instantiate(ModelConfig<?> mConfig, String code) {
 		return instantiate(mConfig, code, code);
 	}

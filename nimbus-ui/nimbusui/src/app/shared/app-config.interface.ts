@@ -17,6 +17,7 @@
 'use strict';
 
 import { ConfigService } from './../services/config.service';
+import { SortAs } from "../components/platform/grid/sortas.interface";
 
 /**
  * \@author Dinakar.Meda
@@ -589,6 +590,7 @@ export class UiAttribute implements Serializable<UiAttribute> {
     submitButton: boolean = true;
     content: string; //-- TO BE DELETED (always pull with contentId)
     contentId: string;
+    datePattern: string;
     labelClass: string;
     showTime: boolean;
     timeOnly: boolean;
@@ -637,6 +639,8 @@ export class UiAttribute implements Serializable<UiAttribute> {
     browserBack: boolean=false;
     target: string;
     rel: string;
+    sortAs: string;
+    sortable: boolean;
     deserialize( inJson ) {
         this.value = inJson.value;
         this.url = inJson.url;
@@ -658,6 +662,7 @@ export class UiAttribute implements Serializable<UiAttribute> {
         this.control = inJson.control;
         this.content = inJson.content;
         this.contentId = inJson.contentId;
+        this.datePattern = inJson.datePattern;
         this.header = inJson.header;
         this.help = inJson.help;
         this.title = inJson.title;
@@ -696,6 +701,7 @@ export class UiAttribute implements Serializable<UiAttribute> {
         this.target = inJson.target;
         this.rel = inJson.rel;
         this.hourFormat = inJson.hourFormat;
+        this.sortAs = inJson.sortAs;
         if ( inJson.controlType != null ) {
             this.controlType = inJson.controlType;
         }
@@ -736,6 +742,9 @@ export class UiAttribute implements Serializable<UiAttribute> {
         }
         if (inJson.filter) {
             this.filter=inJson.filter;
+        }
+        if(inJson.sortable) {
+            this.sortable = inJson.sortable;
         }
         return this;
     }
