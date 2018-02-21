@@ -22,12 +22,15 @@
 		[rows]="element.config?.uiStyles?.attributes?.pageSize"
 		[paginator]="element.config?.uiStyles?.attributes?.pagination"
 		scrollable="true" 
-		scrollHeight="200px"
+        scrollHeight="200px"
 		paginatorPosition="both"
 		alwaysShowPaginator ="false"
 		[expandableRows]="element.config?.uiStyles?.attributes?.expandableRows"
 		(onRowExpand)="getAddtionalData($event)"
 		(onPage)="paginate($event)"
+        (onFilter)="filterCallBack($event)"
+        (onSort)="updatePageDetailsState()"
+
 		[responsive]="true" #dt> 
 
 		<p-column styleClass="col-select" 
@@ -50,20 +53,8 @@
 				> 
 							
 				<ng-template pTemplate="header"> 
-
-				<ng-template [ngIf]="col?.type?.name === 'date' || col?.type?.name === 'Date' || col?.type?.name === 'LocalDateTime'
-					|| col?.type?.name === 'ZonedDateTime'">
 					<span title="{{col?.label}}"  *ngIf="!col?.uiStyles?.isLink">{{col.label}}</span> 
 					<a href="javascript:void(0)" (click)="toggleFilter($event)" class='gridFilterIcon' *ngIf="!col?.uiStyles?.isLink"></a> 
-				</ng-template>
-
-				<ng-template [ngIf]="col?.type?.name !== 'date' && col?.type?.name !== 'Date' && col?.type?.name !== 'LocalDateTime'
-				&& col?.type?.name !== 'ZonedDateTime'">
-					
-				<span title="{{col?.label}}"  *ngIf="!col?.uiStyles?.isLink">{{col.label}}</span> 
-				<a href="javascript:void(0)" (click)="toggleFilter($event)" class='gridFilterIcon' *ngIf="!col?.uiStyles?.isLink"></a> 
-				</ng-template>
-
 				</ng-template> 
 				
 				<ng-template *ngIf="col?.uiStyles?.attributes?.alias == 'CheckBox'" pTemplate="body" let-cell="rowData"> 
@@ -71,24 +62,21 @@
 				</ng-template> 
 				
 				<ng-template let-datacol let-row="rowData" pTemplate="body">
-					<ng-template [ngIf]="col?.type?.name === 'date' || col?.type?.name === 'Date' || col?.type?.name === 'LocalDateTime'
-					|| col?.type?.name === 'ZonedDateTime'">
+					<ng-template [ngIf]="isDate(col?.type?.name)">
 						<span title="{{row[datacol.field]}}">{{row[datacol.field] | dateTimeFormat: col.uiStyles?.attributes?.datePattern}}</span>
 					</ng-template>
-					<ng-template [ngIf]="col?.type?.name !== 'date' && col?.type?.name !== 'Date' && col?.type?.name !== 'LocalDateTime'
-					&& col?.type?.name !== 'ZonedDateTime'">
+					<ng-template [ngIf]="!isDate(col?.type?.name)">
 						<span title="{{row[datacol.field]}}">{{row[datacol.field]}}</span> 
 					</ng-template>
 				</ng-template> 
 
 				<ng-template let-filtercol pTemplate="filter">
-					<ng-template [ngIf]="col?.type?.name === 'date' || col?.type?.name === 'Date' || col?.type?.name === 'LocalDateTime'
-					|| col?.type?.name === 'ZonedDateTime'">
-					 <input type="text" (input)="myFilter($event, dt, filtercol.field, col?.uiStyles?.attributes?.filterMode, col?.uiStyles?.attributes?.datePattern, col?.type?.name)"> 
+					<ng-template [ngIf]="isDate(col?.type?.name)">
+					<input type="text" (input)="dateFilter($event, dt, filtercol.field, col?.uiStyles?.attributes?.filterMode, col?.uiStyles?.attributes?.datePattern, col?.type?.name)"> 
 					</ng-template>
-					<ng-template [ngIf]="col?.type?.name !== 'date' && col?.type?.name !== 'Date' && col?.type?.name !== 'LocalDateTime'
-					&& col?.type?.name !== 'ZonedDateTime'">
-					<input type="text" (input)="myFilter($event, dt, filtercol.field, col?.uiStyles?.attributes?.filterMode)">
+
+					<ng-template [ngIf]="!isDate(col?.type?.name)">
+					<input type="text" (input)="inputFilter($event, dt, filtercol.field, col?.uiStyles?.attributes?.filterMode)">
 					</ng-template>
 				</ng-template> 
 				

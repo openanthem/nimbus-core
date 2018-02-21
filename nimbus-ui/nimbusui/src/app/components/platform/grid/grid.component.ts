@@ -1,4 +1,3 @@
-import { Length } from './../../../shared/app-config.interface';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -29,8 +28,8 @@ import { DataTable, OverlayPanel, Paginator } from 'primeng/primeng';
 import { ElementModelParam } from './../../../shared/app-config.interface';
 import { ServiceConstants } from './../../../services/service.constants';
 import { ControlValueAccessor } from '@angular/forms/src/directives';
-import {DateTimeFormatPipe} from '../../../pipes/date.pipe';
-import {Calendar} from 'primeng/components/calendar/calendar';
+import { DateTimeFormatPipe } from '../../../pipes/date.pipe';
+import { Calendar } from 'primeng/components/calendar/calendar';
 import * as moment from 'moment';
 import { SortAs, GridColumnDataType } from './sortas.interface';
 
@@ -39,7 +38,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => InfiniteScrollGrid),
     multi: true
-  };
+};
 
 /**
  * \@author Dinakar.Meda
@@ -51,29 +50,30 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
  */
 @Component({
     selector: 'infinite-scroll-grid',
-    providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc ],
+    providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc],
     encapsulation: ViewEncapsulation.None,
-    templateUrl:'./grid.component.html'
+    templateUrl: './grid.component.html'
 })
-export class InfiniteScrollGrid extends BaseElement implements ControlValueAccessor{
+export class InfiniteScrollGrid extends BaseElement implements ControlValueAccessor {
     @Input() data: any[];
     @Output() onScrollEvent: EventEmitter<any> = new EventEmitter();
     @Input() params: ElementModelParam[];
     @Input() form: FormGroup;
     @Input('value') _value = [];
-    totalRecords=0;
+    filterValue: Date;
+    totalRecords: number = 0;
 
-//    references DataTable named 'flex' in the view
+    //    references DataTable named 'flex' in the view
     @ViewChild('flex') flex: DataTable;
     @ViewChild('dt') dt: DataTable;
-    @ViewChild ('op') overlayPanel: OverlayPanel;
-    
+    @ViewChild('op') overlayPanel: OverlayPanel;
+
     summaryData: any;
-    rowHover:boolean;
+    rowHover: boolean;
     selectedRows: any[];
     filterState: boolean = false;
-    rowStart=0;
-    rowEnd=0;
+    rowStart = 0;
+    rowEnd = 0;
 
     public onChange: any = (_) => { /*Empty*/ }
     public onTouched: any = () => { /*Empty*/ }
@@ -95,28 +95,28 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     }
 
     public registerOnChange(fn: any): void {
-       this.onChange = fn;
+        this.onChange = fn;
     }
 
     public registerOnTouched(fn: any): void {
         this.onTouched = fn;
     }
 
-    fg= new FormGroup({}); // TODO this is for the filter controls that need to be embedded in the grid 
+    fg = new FormGroup({}); // TODO this is for the filter controls that need to be embedded in the grid 
     private imagesPath: string;
-    
+
     constructor(
-        private pageSvc : PageService, 
-        private _wcs: WebContentSvc, 
-        private gridService: GridService, 
+        private pageSvc: PageService,
+        private _wcs: WebContentSvc,
+        private gridService: GridService,
         private cd: ChangeDetectorRef) {
 
-            super(_wcs);
+        super(_wcs);
     }
 
     ngOnInit() {
         super.ngOnInit();
-        
+
         // Set the column headers
         if (this.params) {
             this.params.forEach(element => {
@@ -124,7 +124,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
             });
         }
 
-        if(this.element.config.gridList!=null && this.element.config.gridList.length > 0) {
+        if (this.element.config.gridList != null && this.element.config.gridList.length > 0) {
             this.value = this.element.config.gridList;
         }
     }
@@ -133,66 +133,60 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         this.imagesPath = ServiceConstants.IMAGES_URL;
         if (this.params != null) {
             this.params.forEach(element => {
-                if(element != null) {
-                    if(element.uiStyles && element.uiStyles.attributes && 
+                if (element != null) {
+                    if (element.uiStyles && element.uiStyles.attributes &&
                         element.uiStyles.attributes.filterValue && element.uiStyles.attributes.filterValue !== '') {
-                            let filterValue = element.uiStyles.attributes.filterValue;
-                            this.flex.filter(filterValue, element.code, element.uiStyles.attributes.filterMode);
+                        let filterValue = element.uiStyles.attributes.filterValue;
+                        this.flex.filter(filterValue, element.code, element.uiStyles.attributes.filterMode);
                     }
                 }
             });
         }
 
         if (this.element.config.uiStyles.attributes.onLoad === true) {
-             this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'GET');
+            this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'GET');
         }
 
-        this.rowHover=true;
+        this.rowHover = true;
         this.gridService.eventUpdate$.subscribe(data => {
             this.summaryData = data;
         });
 
         this.pageSvc.gridValueUpdate$.subscribe(event => {
-            if(event.path.startsWith(this.element.path)) {
+            if (event.path.startsWith(this.element.path)) {
                 this.value = event.config.gridList;
-                this.totalRecords=this.value.length;
-                if(this.totalRecords){
-                   this.rowStart=1;
-                   this.rowEnd = this.totalRecords < +this.element.config.uiStyles.attributes.pageSize ? this.totalRecords : +this.element.config.uiStyles.attributes.pageSize;
-                }
-                else{
-                    this.rowStart=0; this.rowEnd=0;
-                }
+                this.totalRecords = this.value.length;
+                this.updatePageDetailsState();
                 this.cd.markForCheck();
                 this.resetMultiSelection();
             }
         });
 
-        if(this.form!= undefined && this.form.controls[this.element.config.code]!= null) {
+        if (this.form != undefined && this.form.controls[this.element.config.code] != null) {
             this.pageSvc.validationUpdate$.subscribe(event => {
                 let frmCtrl = this.form.controls[event.config.code];
-                if(frmCtrl!=null && event.path.startsWith(this.element.path)) {
-                    if(event.enabled.currState)
+                if (frmCtrl != null && event.path.startsWith(this.element.path)) {
+                    if (event.enabled.currState)
                         frmCtrl.enable();
                     else
                         frmCtrl.disable();
                 }
             });
         }
-       
+
     }
 
-    getRowPath(col:ElementModelParam, item: any) {
+    getRowPath(col: ElementModelParam, item: any) {
         return this.element.path + '/' + item.elemId;// + '/' + col.code;
     }
 
     processOnClick(col: ElementModelParam, item: any) {
-        let uri=this.element.path + '/' + item.elemId + '/' + col.code;
+        let uri = this.element.path + '/' + item.elemId + '/' + col.code;
 
         let uriParams = this.getAllURLParams(uri);
-        if(uriParams!=null) {
+        if (uriParams != null) {
             for (let uriParam of uriParams) {
-                let p = uriParam.substring(1, uriParam.length-1);
+                let p = uriParam.substring(1, uriParam.length - 1);
                 if (item[p]) {
                     uri = uri.replace(new RegExp(uriParam, 'g'), item[p]);
                 }
@@ -202,7 +196,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     }
 
     /* look for parameters in URI {} */
-    getAllURLParams (uri: string): string[] {
+    getAllURLParams(uri: string): string[] {
         var pattern = /{([\s\S]*?)}/g;
         return uri.match(pattern);
     }
@@ -218,8 +212,8 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         this.selectedRows.forEach(element => {
             elemIds.push(element.elemId);
         });
-        
-        item.addAttribute(this.element.config.uiStyles.attributes.postButtonTargetPath,elemIds);
+
+        item.addAttribute(this.element.config.uiStyles.attributes.postButtonTargetPath, elemIds);
         this.pageSvc.processEvent(this.element.config.uiStyles.attributes.postButtonUrl, null, item, 'POST');
     }
 
@@ -242,7 +236,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     }
 
     postOnChange(col: ElementModelParam, item: any) {
-        let uri=this.element.path + '/' + item.elemId + '/' + col.code;
+        let uri = this.element.path + '/' + item.elemId + '/' + col.code;
         //console.log(event);
         this.pageSvc.postOnChange(uri, 'state', JSON.stringify(event.target['checked']));
     }
@@ -260,19 +254,19 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
                 elemPath = this.element.path + '/' + event.data.elemId + '/' + param.code;
             }
         });
-        
-        this.pageSvc.processEvent(elemPath, '$execute', new GenericDomain(), 'GET' );
+
+        this.pageSvc.processEvent(elemPath, '$execute', new GenericDomain(), 'GET');
     }
 
     resetMultiSelection() {
         this.selectedRows = [];
     }
 
-    sortBy(e: any, fieldType: string, sortAs: SortAs){
-        if(this.isSortAsNumber(fieldType, sortAs)) {
+    sortBy(e: any, fieldType: string, sortAs: SortAs) {
+        if (this.isSortAsNumber(fieldType, sortAs)) {
             this.sortInternal(fieldValue => fieldValue, e);
         }
-        else if(this.isSortAsDate(fieldType, sortAs)) {
+        else if (this.isSortAsDate(fieldType, sortAs)) {
             this.sortInternal(fieldValue => new Date(fieldValue), e);
         }
         else {
@@ -288,11 +282,11 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         return this.value.sort((item1: any, item2: any) => {
             let value1 = itemCallback(item1[event.field]);
             let value2 = itemCallback(item2[event.field]);
-  
+
             if (value1 > value2) {
                 return 1 * event.order;
             }
-  
+
             if (value1 < value2) {
                 return -1 * event.order;
             }
@@ -302,73 +296,80 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
 
     protected isSortAsNumber(fieldType: string, sortAs: SortAs): boolean {
         let fieldTypeToMatch = fieldType.toLowerCase();
-        return (sortAs === SortAs.number|| fieldTypeToMatch === GridColumnDataType.int.value || fieldTypeToMatch === GridColumnDataType.integer.value 
-                || fieldTypeToMatch === GridColumnDataType.long.value || fieldTypeToMatch === GridColumnDataType.double.value);
-        
+        return (sortAs === SortAs.number || fieldTypeToMatch === GridColumnDataType.int.value || fieldTypeToMatch === GridColumnDataType.integer.value
+            || fieldTypeToMatch === GridColumnDataType.long.value || fieldTypeToMatch === GridColumnDataType.double.value);
+
     }
 
 
     protected isSortAsDate(fieldType: string, sortAs: SortAs): boolean {
         let fieldTypeToMatch = fieldType.toLowerCase();
-        return (sortAs === SortAs.date || fieldTypeToMatch === GridColumnDataType.date.value 
-                || fieldTypeToMatch === GridColumnDataType.localdatetime.value || fieldType === GridColumnDataType.zoneddatetime.value);
-        
+        return (sortAs === SortAs.date || fieldTypeToMatch === GridColumnDataType.date.value
+            || fieldTypeToMatch === GridColumnDataType.localdatetime.value || fieldType === GridColumnDataType.zoneddatetime.value);
+
     }
 
 
-    myFilter(e: any, ref, field, filterMatchMode, datePattern?, dateType?){
+    dateFilter(e: any, dt: DataTable, field: string, filterMatchMode: string, datePattern?: string, dateType?: string) {
 
-     if((datePattern && e.target.value.length!=0) || dateType){
-            
-        if(e.target.value.length == datePattern.length || dateType && e.target.value.length=='10' ){
 
-            if( e.target.value.length=='0'){
-                ref.filter(e.target.value, field, "startsWith");
-            }
-            else{
-            let formatedDate = moment(e.target.value, datePattern.toUpperCase()).format('MM/DD/YYYY');
-            ref.filter(formatedDate, field, "startsWith");
-            }
-        }
+        datePattern = (datePattern == "") ? "MM/DD/YYYY" : datePattern;
 
-        this.totalRecords=ref.dataToRender.length;
-        if(this.totalRecords){
-            this.rowStart=1;
-            this.rowEnd = this.totalRecords < +this.element.config.uiStyles.attributes.pageSize ? this.totalRecords : +this.element.config.uiStyles.attributes.pageSize;
-        }
-    }       
-    else{
-        ref.filter(e.target.value, field, "startsWith");
-        console.log("Testing.");
-         this.totalRecords=ref.dataToRender.length;
-        if(this.totalRecords!=0){
-            this.rowStart=1;
-            this.rowEnd = this.totalRecords < +this.element.config.uiStyles.attributes.pageSize ? this.totalRecords : +this.element.config.uiStyles.attributes.pageSize;
+        if (e.target.value.length == '0') {
+            dt.filter(e.target.value, field, "startsWith");
         }
         else{
-            this.rowStart=0; this.rowEnd=0;
+            if(moment(e.target.value, datePattern.toUpperCase(), true).isValid()){
+                let formatedDate = moment(e.target.value, datePattern.toUpperCase()).format('MM/DD/YYYY');
+                dt.filter(formatedDate, field, "startsWith");                 
+            }
         }
-    }  
 
- }
+        this.totalRecords = dt.dataToRender.length;
+        this.updatePageDetailsState();
 
+    }
 
-    paginate(e: any){
-        if(this.totalRecords!=0){
-        this.rowEnd=((this.totalRecords / (e.first +  (+e.rows)) >= 1) ? (e.first +  (+e.rows)) : e.first + (this.totalRecords - e.first));
-        this.rowStart=e.first+1;
+    inputFilter(e: any, dt: DataTable, field: string, filterMatchMode: string){
+
+        dt.filter(e.target.value, field, "startsWith");
+
+    }
+
+    isDate(dataType: string): boolean {
+        if (dataType === 'date' || dataType === 'Date' || dataType === 'LocalDateTime' || dataType === 'ZonedDateTime') return true;
+        if (dataType !== 'date' && dataType !== 'Date' && dataType !== 'LocalDateTime' && dataType !== 'ZonedDateTime') return false;
+    }
+
+    paginate(e: any) {
+        if (this.totalRecords != 0) {
+            this.rowEnd = ((this.totalRecords / (e.first + (+e.rows)) >= 1) ? (e.first + (+e.rows)) : e.first + (this.totalRecords - e.first));
+            this.rowStart = e.first + 1;
         }
-        else{
-            this.rowStart=0; this.rowEnd=0;
+        else {
+            this.rowStart = 0; this.rowEnd = 0;
         }
     }
 
+    updatePageDetailsState(){
+        if (this.totalRecords != 0) {
+            this.rowStart = 1;
+            this.rowEnd = this.totalRecords < +this.element.config.uiStyles.attributes.pageSize ? this.totalRecords : +this.element.config.uiStyles.attributes.pageSize;
+        }
+        else {
+            this.rowStart = 0; this.rowEnd = 0;
+        }
+    }
 
+    filterCallBack(e: any){   
+    this.totalRecords=e.filteredValue.length;
+    this.updatePageDetailsState();
 
+    }
 
 
 }
 
-    
+
 
 
