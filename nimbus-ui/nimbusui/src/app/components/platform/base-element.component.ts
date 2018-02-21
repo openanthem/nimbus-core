@@ -112,17 +112,17 @@ export class BaseElement {
     }
 
     /**
-     * Visibility of this Param
+     * Visibility of this Param. Visible by default
      */
     public get visible(): boolean {
-        return this.element.visible.currState;
+        return this.element.visible;
     }
 
     /**
-     * Enabled property of this Param
+     * Enabled property of this Param. Enabled by default.
      */
     public get enabled(): boolean {
-        return this.element.enabled.currState;
+        return this.element.enabled;
     }
 
     /**

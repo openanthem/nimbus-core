@@ -63,9 +63,9 @@ export class FormElementsService {
             leafState = element.leafState || '';
           }
           if (checks) {
-            group[element.config.code] = [{value: leafState, disabled: !element.enabled.currState}, checks];
+            group[element.config.code] = [{value: leafState, disabled: !element.enabled}, checks];
           } else {
-            group[element.config.code] = [{value: leafState, disabled: !element.enabled.currState}] 
+            group[element.config.code] = [{value: leafState, disabled: !element.enabled}] 
          }
         }
       }
@@ -85,9 +85,9 @@ export class FormElementsService {
       } else {
           //Ternary operator is for converting Calendar string into Date to support @Calendar component
           if (checks) {
-          fg.addControl(param.config.code, new FormControl({value: (param.alias === 'Calendar' && param.leafState != null) ? param.leafState= new Date(param.leafState) : param.leafState || '', disabled: !param.enabled.currState}, checks));
+          fg.addControl(param.config.code, new FormControl({value: (param.alias === 'Calendar' && param.leafState != null) ? param.leafState= new Date(param.leafState) : param.leafState || '', disabled: !param.enabled}, checks));
           } else {
-            fg.addControl(param.config.code, new FormControl({value: (param.alias === 'Calendar' && param.leafState != null) ? param.leafState= new Date(param.leafState) : param.leafState || '', disabled: !param.enabled.currState}));
+            fg.addControl(param.config.code, new FormControl({value: (param.alias === 'Calendar' && param.leafState != null) ? param.leafState= new Date(param.leafState) : param.leafState || '', disabled: !param.enabled}));
         } 
       }
     }

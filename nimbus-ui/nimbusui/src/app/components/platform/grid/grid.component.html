@@ -1,8 +1,3 @@
-<!-- <div class="col-xs-12 alert alert-{{element?.type?.model?.config?.message?.type}}" role="alert" *ngIf="element?.type?.model?.config?.message">
-    {{element?.type?.model?.config?.message?.content}}
-</div> -->
- 
-<!-- Total Results: {{data == null ? leafState.length : data?.length}}   -->
 
 <div id="gsFlexGrid" class="scrollGrid">
 	<div class="ui-datatable-header ui-widget-header" *ngIf="element.config?.uiStyles?.attributes?.showHeader == true">
@@ -72,16 +67,6 @@
 		<ng-template let-row pTemplate="rowexpansion">
 			<nm-section [element]="row.nestedElement"></nm-section>	
 		</ng-template> 
-				
-		<!-- <ng-template ngFor let-col [ngForOf]="params">
-			<ng-template *ngIf="col?.config?.type?.nested" let-subTbl pTemplate="rowexpansion">
-				<infinite-scroll-grid
-								[data]="col?.config?.gridList"
-								[element]="col"
-								[params]="col?.config?.type?.elementConfig?.type?.model?.paramConfigs">
-				</infinite-scroll-grid>
-			</ng-template>
-		</ng-template> -->
 		
 		<p-footer>
 			<ng-template [ngIf]="element.config?.uiStyles?.attributes?.postButton">
@@ -95,13 +80,3 @@
 				   
 	</p-dataTable>
 </div>
-
-<!-- <p-overlayPanel #op>
-	<div>
-		<ng-template ngFor let-key [ngForOf]="summaryData | keys">
-			<div class='d-inline-block mr-3 align-top'>
-				<u>{{key.key}}</u> <br> <b>{{key.value}}</b>
-			</div>
-		</ng-template>
-	</div>
-</p-overlayPanel> -->

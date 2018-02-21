@@ -39,8 +39,8 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   selector: 'nm-input-textarea',
   providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc ],
   template: `
-    <!--<div class='textarea-holder' [hidden]="!element?.config?.visible?.currState || !element?.visible?.currState" *ngIf="element.config?.uiStyles?.attributes?.hidden==false">-->
-    <div class='textarea-holder' [hidden]="!element?.visible?.currState" *ngIf="element.config?.uiStyles?.attributes?.hidden==false">
+    <!--<div class='textarea-holder' [hidden]="!element?.config?.visible || !element?.visible" *ngIf="element.config?.uiStyles?.attributes?.hidden==false">-->
+    <div class='textarea-holder' [hidden]="!element?.visible" *ngIf="element.config?.uiStyles?.attributes?.hidden==false">
         <div class="number" *ngIf="element.config?.uiStyles?.attributes?.controlId!=''">{{element.config?.uiStyles?.attributes?.controlId}}</div>
         <label [attr.for]="element.config?.code" class="{{elementStyle}}">{{label}}
             <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>

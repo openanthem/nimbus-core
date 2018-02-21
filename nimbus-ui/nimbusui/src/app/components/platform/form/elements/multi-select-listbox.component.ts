@@ -40,7 +40,7 @@ import { ValidationUtils } from '../../validators/ValidationUtils';
         WebContentSvc
     ],
     template: `
-        <div [formGroup]="form"  [hidden]="!element?.visible?.currState">
+        <div [formGroup]="form"  [hidden]="!element?.visible">
             <label class="">{{label}} 
                 <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
             </label>
@@ -119,7 +119,7 @@ export class MultiSelectListBox extends BaseElement{
                             staticChecks = ValidationUtils.buildStaticValidations(this.element);
                             frmCtrl.setValidators(staticChecks);
                         }
-                        if(event.enabled.currState && event.visible.currState) {
+                        if(event.enabled && event.visible) {
                             frmCtrl.enable();   
                         }
                         else {

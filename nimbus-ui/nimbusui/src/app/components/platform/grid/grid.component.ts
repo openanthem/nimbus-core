@@ -154,7 +154,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
             this.pageSvc.validationUpdate$.subscribe(event => {
                 let frmCtrl = this.form.controls[event.config.code];
                 if(frmCtrl!=null && event.path.startsWith(this.element.path)) {
-                    if(event.enabled.currState)
+                    if(event.enabled)
                         frmCtrl.enable();
                     else
                         frmCtrl.disable();

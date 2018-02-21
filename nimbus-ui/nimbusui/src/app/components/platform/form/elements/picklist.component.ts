@@ -45,13 +45,13 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
         CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR,WebContentSvc
     ],
     template: `
-        <!--<div [hidden]="!element?.config?.visible?.currState || !element?.visible?.currState" *ngIf="element.config?.uiStyles?.attributes?.hidden==false">-->
-        <div [hidden]="!element?.visible?.currState" *ngIf="element.config?.uiStyles?.attributes?.hidden==false">
-            <fieldset [disabled]="!element.config?.enabled?.currState">
+        <!--<div [hidden]="!element?.config?.visible || !element?.visible" *ngIf="element.config?.uiStyles?.attributes?.hidden==false">-->
+        <div [hidden]="!element?.visible" *ngIf="element.config?.uiStyles?.attributes?.hidden==false">
+            <fieldset [disabled]="!element.config?.enabled">
                 <p-pickList #picklist [source]="element.values" 
                     [sourceHeader] = "element.config?.uiStyles?.attributes.sourceHeader" 
                     [targetHeader]="element.config?.uiStyles?.attributes.targetHeader" 
-                    [disabled]="!element?.enabled?.currState"
+                    [disabled]="!element?.enabled"
                     [target]="targetList" pDroppable="dd" [responsive]="true" 
                     (onMoveToTarget)="updateListValues($event)" (onMoveToSource)="updateListValues($event)">
                     <ng-template let-itm pTemplate="item">
@@ -136,7 +136,7 @@ export class OrderablePickList implements OnInit, ControlValueAccessor {
     }
 
     dragStart(event, itm: any) {
-        if(this.element.config.enabled.currState) {
+        if(this.element.config.enabled) {
             this.draggedItm = itm;
         }
     }

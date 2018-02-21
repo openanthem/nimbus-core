@@ -137,7 +137,7 @@ export class CheckBoxGroup extends BaseElement implements ControlValueAccessor {
                             staticChecks = ValidationUtils.buildStaticValidations(this.element);
                             frmCtrl.setValidators(staticChecks);
                         }
-                        if(event.enabled.currState && event.visible.currState) {
+                        if(event.enabled && event.visible) {
                             frmCtrl.enable();   
                         }
                         else {

@@ -12,7 +12,7 @@
             </div>
         </div>
     </ng-template>
-    <ng-template [ngIf]="!element.config?.uiStyles?.attributes?.imgSrc && element?.visible?.currState == true">
+    <ng-template [ngIf]="!element.config?.uiStyles?.attributes?.imgSrc && element?.visible == true">
         <ng-template [ngIf]="element.config.uiStyles.attributes.inplaceEdit">
             <inplace-editor [element]="element"></inplace-editor>
         </ng-template>

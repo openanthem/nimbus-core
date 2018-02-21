@@ -28,6 +28,7 @@ import { MainLayoutCmp } from './components/home/main-layout.component';
 import { LoginLayoutCmp } from './components/login/login-layout.component';
 import { OrderablePickList } from './components/platform/form/elements/picklist.component';
 import { PageService } from './services/page.service';
+import { ConfigService } from './services/config.service';
 import { PageNotfoundComponent } from './components/platform/content/page-notfound.component';
 import { PageContent } from './components/platform/content/page-content.component';
 import { GridService } from './services/grid.service';
@@ -65,7 +66,6 @@ import { DateControl } from './components/platform/form/elements/date.component'
 import { CheckBoxGroup } from './components/platform/form/elements/checkbox-group.component';
 import { MultiselectCard } from './components/platform/form/elements/multi-select-card.component';
 import { ActionDropdown, ActionLink } from './components/platform/form/elements/action-dropdown.component';
-import { GridContainer } from './components/platform/grid/grid-container.component';
 import { InfiniteScrollGrid } from './components/platform/grid/grid.component';
 import { Link } from './components/platform/link.component';
 import { Menu } from './components/platform/menu.component';
@@ -126,7 +126,7 @@ import { LoaderComponent } from './components/platform/loader/loader.component';
 @NgModule({
     imports: [
         BrowserModule,
-         HttpClientModule,
+        HttpClientModule,
         ReactiveFormsModule,
         AppRoutingModule,
         HttpModule,
@@ -153,7 +153,7 @@ import { LoaderComponent } from './components/platform/loader/loader.component';
         InPlaceEditorComponent, Paragraph, Value, Image, BaseElement, 
         MultiselectCard, Link, Menu, CardDetailsComponent, CardDetailsFieldComponent, CardDetailsGrid, FieldValue,
         AccordionGroup, Accordion, FrmGroupCmp, Button, ButtonGroup, FilterButton, OrderablePickList,
-        STOMPStatusComponent, GridContainer, InfiniteScrollGrid, SubHeaderCmp, TextArea, LandingPage,
+        STOMPStatusComponent, InfiniteScrollGrid, SubHeaderCmp, TextArea, LandingPage,
         LayoutService,ContentContainer,
         DomainFlowCmp,HeaderGlobal,FooterGlobal,
         BreadcrumbComponent, NavLinkRouter,
@@ -165,7 +165,7 @@ import { LoaderComponent } from './components/platform/loader/loader.component';
 
     ],
     entryComponents: [ FlowWrapper, PageContent, PageNotfoundComponent, LoginCmp, MainLayoutCmp, HomeLayoutCmp],
-    providers: [ PageService, WebContentSvc,HttpClient,  HttpClientModule,
+    providers: [ PageService, ConfigService, WebContentSvc,HttpClient,  HttpClientModule,
          CustomHttpClient, { provide: BrowserXhr, useClass: CustomBrowserXhr },
          { provide: LocationStrategy, useClass: HashLocationStrategy }, GridService, DragDropService, DragDropSortableService, DragDropConfig,
          AuthenticationService, BreadcrumbService, LoaderService, FileService ],

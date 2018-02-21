@@ -16,20 +16,20 @@
  */
 'use strict';
 import { LoaderService } from './loader.service';
-import { Action, HttpMethod, Behavior} from './../shared/command.enum';
+import { ConfigService } from './config.service';
+import { Action, HttpMethod, Behavior } from './../shared/command.enum';
 import { Injectable, EventEmitter } from '@angular/core';
 import { ServiceConstants } from './service.constants';
-import { RemnantState, Validation } from './../shared/app-config.interface';
-import {
-    Model,
-    ModelEvent,
-    Page,
-    Param,
-    ParamConfig,
-    Type,
-    Result, ViewRoot
+import { Validation, ViewConfig,
+        Model,
+        ModelEvent,
+        Page,
+        Param,
+        ParamConfig,
+        Type,
+        Result, ViewRoot
 } from '../shared/app-config.interface';
-import { CustomHttpClient} from './httpclient.service';
+import { CustomHttpClient } from './httpclient.service';
 
 import { Subject } from 'rxjs/Subject';
 import { GenericDomain } from '../model/generic-domain.model';
@@ -46,7 +46,6 @@ import { GenericDomain } from '../model/generic-domain.model';
 export class PageService {
         config$: EventEmitter<any>;
         layout$: EventEmitter<any>;
-        appConfigs: Object;
         flowRootDomainId: Object;
         pageMap: Object;
         routeParams: any;
@@ -61,9 +60,8 @@ export class PageService {
         gridValueUpdate$ = this.gridValueUpdate.asObservable();
 
         private _entityId: number = 0;
-        constructor(private http: CustomHttpClient, private loaderService: LoaderService) {
+        constructor(private http: CustomHttpClient, private loaderService: LoaderService, private configService: ConfigService) {
                 // initialize
-                this.appConfigs = {};
                 this.flowRootDomainId = {};
                 // Create Observable Stream to output our data     
                 this.config$ = new EventEmitter();
@@ -82,14 +80,14 @@ export class PageService {
         }
 
         logError(err) {
-            console.error('ERROR: Failure making server call : ' + JSON.stringify(err));
+                console.error('ERROR: Failure making server call : ' + JSON.stringify(err));
         }
 
         /** Build the base URL for Server calls */
         buildBaseURL() {
                 let baseURL = ServiceConstants.PLATFORM_BASE_URL;
                 let client;
-                if(this.routeParams != null) {
+                if (this.routeParams != null) {
                         client = this.routeParams.client;
                         /** If client is passed then use client code, else 'platform' */
                         if (client == null) {
@@ -103,13 +101,13 @@ export class PageService {
                                 baseURL += this.routeParams.client;
                         }
                         /** App name for the flow - required */
-                        if (this.routeParams!=null && this.routeParams.app == null) {
+                        if (this.routeParams != null && this.routeParams.app == null) {
                                 console.log('ERROR: Missing app name.');
                         } else {
                                 baseURL += '/' + this.routeParams.app + '/p';
                         }
                         /** Domain for the operation - required */
-                        if (this.routeParams!= null && this.routeParams.domain == null) {
+                        if (this.routeParams != null && this.routeParams.domain == null) {
                                 console.log('ERROR: Missing domain entity name.');
                         }
                 }
@@ -119,31 +117,22 @@ export class PageService {
         /** Build the page flow base URL for Server calls */
         buildFlowBaseURL() {
                 let baseURL = this.buildBaseURL();
-                baseURL +=  this.routeParams.domain;
+                baseURL += this.routeParams.domain;
                 return baseURL;
-        }
-
-        /** Get the flow config if it is already loaded */
-        getFlowConfig(flowName: string): Model {
-            if (this.appConfigs[flowName]) {
-                return this.appConfigs[flowName].model;
-            } else {
-                return undefined;
-            }
         }
 
         /** Get the layout config name for flow */
         getFlowLayoutConfig(flowName: string, routeToDefaultPage: boolean): Promise<string> {
-            let layoutName: string = undefined;
-            if (this.appConfigs[flowName]) {
-                layoutName = this.appConfigs[flowName].layout;
-                if (routeToDefaultPage) {
-                    this.navigateToDefaultPageForFlow(this.appConfigs[flowName].model, flowName);
+                let layoutName: string = undefined;
+                let viewRoot: ViewRoot = this.configService.getFlowConfig(flowName);
+                if (viewRoot) {
+                        layoutName = viewRoot.layout;
+                        if (routeToDefaultPage) {
+                                this.navigateToDefaultPageForFlow(viewRoot.model, flowName);
+                        }
                 }
-            }
-            return Promise.resolve(layoutName);
+                return Promise.resolve(layoutName);
         }
-
         /** Get the rootDomainId config if it is already loaded */
         getFlowRootDomainId(flowName: string) {
                 return this.flowRootDomainId[flowName];
@@ -155,31 +144,31 @@ export class PageService {
          * @param flowName
          */
         getLayoutConfigForFlow(flowName: string) {
-            this.loadDomainFlowConfig(flowName);
+                this.loadDomainFlowConfig(flowName);
         }
 
         /** Get Flow Config */
         loadDomainFlowConfig(flowName: string) {
-            let baseUrl = ServiceConstants.PLATFORM_BASE_URL;
-            baseUrl += '/' + flowName;
-            let url = baseUrl + '/'+Action._new.value+'?b='+Behavior.execute.value;
+                let baseUrl = ServiceConstants.PLATFORM_BASE_URL;
+                baseUrl += '/' + flowName;
+                let url = baseUrl + '/' + Action._new.value + '?b=' + Behavior.execute.value;
 
-            this.http.get(url)
-                    .map(res => res.json())
-                    .subscribe(data => {
-                            console.log('Creating a global page map');
-                            this.processResponse(data.result, baseUrl, flowName);
-                    },
-                    err => this.logError(err),
-                    () => console.log('GetPageConfig query completed..')
-                    );
+                this.http.get(url)
+                        .map(res => res.json())
+                        .subscribe(data => {
+                                console.log('Creating a global page map');
+                                this.processResponse(data.result, baseUrl, flowName);
+                        },
+                        err => this.logError(err),
+                        () => console.log('GetPageConfig query completed..')
+                        );
         }
 
         /** Get Flow Config - TODO delete after routes refactor. the above method will be used instead of this one.*/
         loadFlowConfig(routeParms: any) {
                 let baseUrl = ServiceConstants.PLATFORM_BASE_URL;
                 baseUrl += '/' + routeParms.domain;
-                let url = baseUrl + '/'+Action._new.value+'?b='+Behavior.execute.value;
+                let url = baseUrl + '/' + Action._new.value + '?b=' + Behavior.execute.value;
 
                 this.http.get(url)
                         .map(res => res.json())
@@ -193,26 +182,26 @@ export class PageService {
         }
 
         /** Page id - to know which page to load from the config */
-        getPageToNavigateTo(direction: string, useFlowUrl:string) {
+        getPageToNavigateTo(direction: string, useFlowUrl: string) {
                 let flowName = useFlowUrl.substring(useFlowUrl.indexOf('flow_'));
                 if (flowName.indexOf('/') > 0) {
-                        flowName = flowName.substring(0,flowName.indexOf('/'));
+                        flowName = flowName.substring(0, flowName.indexOf('/'));
                 }
                 let url = '';
-                if(useFlowUrl === '') {
+                if (useFlowUrl === '') {
                         url = this.buildFlowBaseURL();
                 } else {
                         url = useFlowUrl;
                 }
                 url = url + '/_nav?a=' + direction + '&b=$execute';
                 this.http.get(url)
-                .map(res => res.json())
-                .subscribe(data => {
-                        this.processResponse(data.result,'', flowName);
-                },
+                        .map(res => res.json())
+                        .subscribe(data => {
+                                this.processResponse(data.result, '', flowName);
+                        },
                         err => this.logError(err),
                         () => console.log('getPageToNavigateTo query completed..')
-                );
+                        );
         }
 
         /** Parse flow name from payload path */
@@ -222,9 +211,9 @@ export class PageService {
                 // path pattern is - '/flowname/.../...'.
                 // If it is complete path, truncate everything before /p/
                 if (path.indexOf('/p/') > 0) {
-                    truncatedBasePath = path.substring(path.indexOf('/p/', 1) + 2, path.length);
+                        truncatedBasePath = path.substring(path.indexOf('/p/', 1) + 2, path.length);
                 } else {
-                    truncatedBasePath = path;
+                        truncatedBasePath = path;
                 }
                 flowName = truncatedBasePath.split('/')[1];
 
@@ -236,136 +225,132 @@ export class PageService {
         }
 
         /** Process response - array or responses based on request chaining */
-        processResponse(response: any, serverUrl:string, flowName: string) {
+        processResponse(response: any, serverUrl: string, flowName: string) {
                 let index = 0;
                 while (response[index]) {
                         let subResponse: any = response[index];
                         if (subResponse.b === Behavior.execute.value) {
-                            let flowConfig = new Result().deserialize(subResponse.result);
-                            this.traverseOutput(flowConfig.outputs);
+                                let flowConfig = new Result(this.configService).deserialize(subResponse.result);
+                                this.traverseOutput(flowConfig.outputs);
                         } else {
                                 console.log('ERROR: Unknown response for behavior - ' + subResponse.b);
                         }
-                        index ++;
+                        index++;
                 }
         }
 
-       getFlowNameFromOutput(paramPath:string): string {
+        getFlowNameFromOutput(paramPath: string): string {
                 let flow = this.getFlowNameFromPath(paramPath);
-                if(flow.indexOf(':')>0) {
-                        flow = flow.substr(0,flow.indexOf(':'));
+                if (flow.indexOf(':') > 0) {
+                        flow = flow.substr(0, flow.indexOf(':'));
                 }
                 return flow;
         }
 
-       setLayoutToAppConfig(flowName: string, model: Model) {
-           let viewRoot: ViewRoot = new ViewRoot();
-           viewRoot.model = model;
-           this.appConfigs[flowName] = viewRoot;
-       }
+        getDetaultPageForFlow(model: Model): Param {
+                if (model != null && model.params != null) {
+                        for (var p in model.params) {
+                                let pageParam: Param = model.params[p];
+                                if (pageParam.config.uiStyles != null && pageParam.config.uiStyles.name === 'ViewConfig.Page') {
+                                        if (pageParam.config.uiStyles.attributes.defaultPage) {
+                                                return pageParam;
+                                        }
+                                }
+                        }
+                }
+                return undefined;
+        }
 
-       getDetaultPageForFlow(model: Model): Param {
-           if (model!=null && model.params != null) {
-               for ( var p in model.params ) {
-                   let pageParam: Param = model.params[p];
-                   if (pageParam.config.uiStyles!= null && pageParam.config.uiStyles.name === 'ViewConfig.Page') {
-                       if(pageParam.config.uiStyles.attributes.defaultPage) {
-                           return pageParam;
-                       }
-                   }
-               }
-           }
-           return undefined;
-       }
+        navigateToDefaultPageForFlow(model: Model, flow: string) {
+                let pageParam: Param = this.getDetaultPageForFlow(model);
+                if (pageParam) {
+                        this.navigateToPage(pageParam, flow);
+                }
+        }
 
-       navigateToDefaultPageForFlow(model: Model, flow: string) {
-           let pageParam: Param = this.getDetaultPageForFlow(model);
-           if (pageParam) {
-               this.navigateToPage(pageParam, flow);
-           }
-       }
+        /**
+         * Process the Outputs from http call response.
+         * @param outputs
+         */
+        traverseOutput(outputs: Result[]) {
+                var navToDefault = true;
+                outputs.forEach(otp => {
+                        if (otp.action === Action._nav.value) {
+                                navToDefault = false;
+                        }
+                });
+                outputs.forEach(output => {
+                        if (output.value == null) {
+                                this.traverseOutput(output.outputs);
+                        } else {
+                                if (output.action === Action._new.value) {
+                                        let flow = this.getFlowNameFromOutput(output.value.path);
+                                        // Check if the _new output is for the Root Flow
+                                        if (output.value.path == '/' + flow) {
+                                                let viewRoot: ViewRoot = new ViewRoot();
+                                                // Check if there is a layout for this domain
+                                                if (output.value.config.type.model.uiStyles) {
+                                                        viewRoot.layout = output.value.config.type.model.uiStyles.attributes.layout;
+                                                        // emit the layout name
+                                                        this.layout$.emit(viewRoot.layout);
+                                                }
+                                                viewRoot.model = output.value.type.model;
+                                                this.configService.setLayoutToAppConfig(flow, viewRoot);
 
-       /**
-        * Process the Outputs from http call response.
-        * @param outputs
-        */
-       traverseOutput(outputs:Result[]) {
-           var navToDefault = true;
-           outputs.forEach(otp => {
-                   if(otp.action === Action._nav.value ) {
-                        navToDefault = false;
-                   }
-           });
-           outputs.forEach(output => {
-               if (output.value == null) {
-                   this.traverseOutput(output.outputs);
-               } else { 
-                   if (output.action === Action._new.value) {
-                       let flow = this.getFlowNameFromOutput(output.value.path);
-                       // Check if the _new output is for the Root Flow
-                       if (output.value.path == '/' + flow) {
-                           let viewRoot: ViewRoot = new ViewRoot();
-                           // Check if there is a layout for this domain
-                           if (output.value.config.type.model.uiStyles) {
-                               viewRoot.layout = output.value.config.type.model.uiStyles.attributes.layout;
-                               // emit the layout name
-                               this.layout$.emit(viewRoot.layout);
-                           }
-                           viewRoot.model = output.value.type.model;
-                           this.appConfigs[flow] = viewRoot;
+                                                if (output.rootDomainId !== 'null') {
+                                                        this.flowRootDomainId[flow] = output.rootDomainId;
+                                                }
+                                                if (navToDefault) {
+                                                        this.navigateToDefaultPageForFlow(output.value.type.model, flow);
+                                                }
+                                        } else {
+                                                let eventModel: ModelEvent = new ModelEvent().deserialize(output);
+                                                this.traverseFlowConfig(eventModel, flow);
+                                        }
+                                } else if (output.action === Action._get.value) {
+                                        let flow = this.getFlowNameFromOutput(output.value.path);
+                                        let viewRoot: ViewRoot = new ViewRoot();
+                                        // Add the flow config to memory.
+                                        if (output.value.config.type.model && output.value.config.type.model.uiStyles) {
+                                                viewRoot.layout = output.value.config.type.model.uiStyles.attributes.layout;
+                                        }
+                                        viewRoot.model = output.value.type.model;
+                                        this.configService.setLayoutToAppConfig(flow, viewRoot);
+                                        
+                                        if (output.rootDomainId !== 'null') {
+                                                this.flowRootDomainId[flow] = output.rootDomainId;
+                                        }
 
-                           if(output.rootDomainId !== 'null') {
-                                   this.flowRootDomainId[flow] = output.rootDomainId;
-                           }
-                           if(navToDefault) {
-                                    this.navigateToDefaultPageForFlow(output.value.type.model, flow);
-                           }
-                       } else {
-                           let eventModel : ModelEvent = new ModelEvent().deserialize(output);
-                           this.traverseFlowConfig(eventModel, flow);
-                       }                          
-                   } else if (output.action === Action._get.value) {
-                       let flow = this.getFlowNameFromOutput(output.value.path);
-                       let viewRoot: ViewRoot = new ViewRoot();
-                       // Add the flow config to memory.
-                       if (output.value.config.type.model && output.value.config.type.model.uiStyles) {
-                           viewRoot.layout = output.value.config.type.model.uiStyles.attributes.layout;
-                       }
-                       viewRoot.model = output.value.type.model;
-                       this.appConfigs[flow] = viewRoot;
-                       if (output.rootDomainId !== 'null') {
-                           this.flowRootDomainId[flow]=output.rootDomainId;
-                       }
+                                        if (navToDefault) {
+                                                let toPage: Param = this.getDetaultPageForFlow(viewRoot.model);
+                                                this.navigateToPage(toPage, flow);
+                                        }
+                                } else if (output.action === Action._nav.value) {
+                                        let flow = this.getFlowNameFromOutput(output.inputCommandUri);
+                                        let pageParam = this.findMatchingPageConfigById(output.value, flow);
+                                        this.navigateToPage(pageParam, flow);
+                                } else {
+                                        if (output.value && output.value.path) {
+                                                let flow = this.getFlowNameFromOutput(output.value.path);
+                                                let eventModel: ModelEvent = new ModelEvent().deserialize(output);
+                                                this.traverseFlowConfig(eventModel, flow);
+                                        }
+                                }
+                        }
+                });
+        }
 
-                       if(navToDefault) {
-                           let toPage: Param = this.getDetaultPageForFlow(viewRoot.model);
-                           this.navigateToPage(toPage, flow);
-                       }
-                   } else if (output.action === Action._nav.value) {
-                       let flow = this.getFlowNameFromOutput(output.inputCommandUri);
-                       let pageParam = this.findMatchingPageConfigById(output.value, flow);
-                       this.navigateToPage(pageParam, flow);
-                   } else {
-                       if (output.value && output.value.path) {
-                           let flow = this.getFlowNameFromOutput(output.value.path);
-                           let eventModel : ModelEvent = new ModelEvent().deserialize(output);
-                           this.traverseFlowConfig(eventModel, flow);
-                       }
-                   }
-               }
-           });
-       }
+        /** When the config is already loaded, find the default page to load */
+        loadDefaultPageForConfig(flowName: string) {
+                let baseUrl = ServiceConstants.PLATFORM_BASE_URL;
+                baseUrl += '/' + flowName;
+                this.getPageToNavigateTo('next', baseUrl);
+                let viewRoot: ViewRoot = this.configService.getFlowConfig(flowName);
+                let model: Model = viewRoot.model;
+                this.navigateToDefaultPageForFlow(model, flowName);
+        }
 
-       /** When the config is already loaded, find the default page to load */
-       loadDefaultPageForConfig(flowName: string) {
-           let baseUrl = ServiceConstants.PLATFORM_BASE_URL;
-           baseUrl += '/' + flowName;
-           this.getPageToNavigateTo('next', baseUrl);
-           let model: Model = this.getFlowConfig(flowName);
-           this.navigateToDefaultPageForFlow(model, flowName);
-       }
-
-       navigateToPage(pageParam:Param, flow:string) {
+        navigateToPage(pageParam: Param, flow: string) {
                 let page: Page = new Page();
                 page.pageConfig = pageParam;
                 page.flow = flow;
@@ -373,26 +358,29 @@ export class PageService {
         }
 
         getPageConfigById(pageId: string, flowName: string): Promise<Param> {
-               return Promise.resolve(this.findMatchingPageConfigById(pageId, flowName));
+                return Promise.resolve(this.findMatchingPageConfigById(pageId, flowName));
         }
 
         /** Get the page config matching the page ID and flow Name */
         findMatchingPageConfigById(pageId: string, flowName: string): Param {
 
-                if(flowName.indexOf(':') !== -1) {
+                if (flowName.indexOf(':') !== -1) {
                         flowName = flowName.substr(0, flowName.indexOf(':'));
                 }
 
                 let page: Param;
-                let flowConfig = this.getFlowConfig(flowName);
-                if (flowConfig != null && flowConfig.params != null) {
-                        flowConfig.params.forEach(pageParam => {
-                                if (pageParam.config.uiStyles!= null && pageParam.config.uiStyles.name === 'ViewConfig.Page') {
-                                        if(pageParam.config.code === pageId) {
-                                                page = pageParam;
+                let viewRoot: ViewRoot = this.configService.getFlowConfig(flowName);
+                if (viewRoot) {
+                        let flowConfig: Model = viewRoot.model;
+                        if (flowConfig != null && flowConfig.params != null) {
+                                flowConfig.params.forEach(pageParam => {
+                                        if (pageParam.config.uiStyles != null && pageParam.config.uiStyles.name === 'ViewConfig.Page') {
+                                                if (pageParam.config.code === pageId) {
+                                                        page = pageParam;
+                                                }
                                         }
-                                }
-                        });
+                                });
+                        }
                 }
                 if (!page) {
                         console.log('ERROR: Page Configuration not found for Page ID: ' + pageId + ' in Flow: ' + flowName);
@@ -401,32 +389,32 @@ export class PageService {
         }
 
         /** Process execute call - TODO revisit to make it more dynamic based on url completion */
-        processEvent(processUrl: string, behavior: string, model: GenericDomain, method: string ) {
+        processEvent(processUrl: string, behavior: string, model: GenericDomain, method: string) {
                 // if (model!=null && model['id']) {
                 //         this.entityId = model['id'];
                 // }
-                processUrl = processUrl+'/' + Action._get.value;
+                processUrl = processUrl + '/' + Action._get.value;
                 let url = '';
                 let serverUrl = '';
                 let flowName = '';
-                if(behavior==undefined) {
-                         behavior = Behavior.execute.value;
+                if (behavior == undefined) {
+                        behavior = Behavior.execute.value;
                 }
                 flowName = processUrl.substring(1, processUrl.indexOf('/', 2)); //TODO
                 url = ServiceConstants.PLATFORM_BASE_URL;
-                serverUrl = url + processUrl.replace('{id}',this.entityId.toString());
+                serverUrl = url + processUrl.replace('{id}', this.entityId.toString());
 
                 if (processUrl.indexOf('?') > 0) {
-                        url = url + processUrl.replace('{id}',this.entityId.toString())+'&b='+behavior;
+                        url = url + processUrl.replace('{id}', this.entityId.toString()) + '&b=' + behavior;
                 } else {
-                        url = url + processUrl.replace('{id}',this.entityId.toString())+'?b='+behavior;
+                        url = url + processUrl.replace('{id}', this.entityId.toString()) + '?b=' + behavior;
                 }
                 //}
 
                 let rootDomainId = this.getFlowRootDomainId(flowName);
-                if(rootDomainId!=null) {
-                        let flowNameWithId = flowName.concat(':'+rootDomainId);
-                        url = url.replace(flowName,flowNameWithId);
+                if (rootDomainId != null) {
+                        let flowNameWithId = flowName.concat(':' + rootDomainId);
+                        url = url.replace(flowName, flowNameWithId);
                 }
                 this.showLoader();
                 if (method !== '' && method.toUpperCase() === HttpMethod.GET.value) {
@@ -434,52 +422,54 @@ export class PageService {
                         //         this.router.navigate(['Patientenrollment',{domain:"patientenrollment"}]);
                         // }else{
 
-                                this.http.get(url)
+                        this.http.get(url)
                                 .map(res => res.json())
                                 .subscribe(data => {
-                                        this.processResponse(data.result,serverUrl, flowName);
+                                        this.processResponse(data.result, serverUrl, flowName);
                                 },
-                                        err => this.logError(err),
-                                        () => {console.log('Process Execution query completed..');
+                                err => this.logError(err),
+                                () => {
+                                        console.log('Process Execution query completed..');
                                         this.hideLoader();
-                                                }
+                                }
                                 );
                         //}
-                } else if(method !== '' && method.toUpperCase() === HttpMethod.POST.value) {
+                } else if (method !== '' && method.toUpperCase() === HttpMethod.POST.value) {
                         console.log('payload - ' + JSON.stringify(model));
                         this.http.post(url, JSON.stringify(model))
-                        .map(res => res.json())
-                        .subscribe(data => {
-                                this.processResponse(data.result,serverUrl, flowName);
-                        },
+                                .map(res => res.json())
+                                .subscribe(data => {
+                                        this.processResponse(data.result, serverUrl, flowName);
+                                },
                                 err => this.logError(err),
-                                () => {console.log('Process Execution query completed..');
+                                () => {
+                                        console.log('Process Execution query completed..');
                                         this.hideLoader();
-                                                }
-                        );
+                                }
+                                );
                 } else {
                         throw 'http method not supported';
                 }
         }
 
         /** Process execute call - TODO revisit to make it more dynamic based on url completion */
-        processPost(processUrl: string, behavior: string, payload: any, method: string, navLink?: string ) {
+        processPost(processUrl: string, behavior: string, payload: any, method: string, navLink?: string) {
                 let flowName = processUrl.substring(1, processUrl.indexOf('/', 2)); //TODO
-                let url = ServiceConstants.PLATFORM_BASE_URL + processUrl+'/' + Action._get.value;
-                
-                if(method !== '' && method.toUpperCase() === HttpMethod.POST.value) {
+                let url = ServiceConstants.PLATFORM_BASE_URL + processUrl + '/' + Action._get.value;
+
+                if (method !== '' && method.toUpperCase() === HttpMethod.POST.value) {
                         console.log('payload - ' + JSON.stringify(payload));
                         this.http.post(url, JSON.stringify(payload))
-                        .map(res => res.json())
-                        .subscribe(data => {
-                                this.processResponse(data.result, url, flowName);
-                                if(navLink != null && navLink !== '') {
-                                        this.processEvent(navLink, '$executeAnd$config', null, 'POST');
-                                }
-                        },
+                                .map(res => res.json())
+                                .subscribe(data => {
+                                        this.processResponse(data.result, url, flowName);
+                                        if (navLink != null && navLink !== '') {
+                                                this.processEvent(navLink, '$executeAnd$config', null, 'POST');
+                                        }
+                                },
                                 err => this.logError(err),
                                 () => console.log('Process Execution query completed..')
-                        );
+                                );
                 } else {
                         throw 'http method not supported';
                 }
@@ -489,9 +479,9 @@ export class PageService {
                 path = path + '/' + Action._replace.value;
                 let flowName = path.substring(1, path.indexOf('/', 2));
                 let rootDomainId = this.getFlowRootDomainId(flowName);
-                if(rootDomainId!=null) {
-                        let flowNameWithId = flowName.concat(':'+rootDomainId);
-                        path = path.replace(flowName,flowNameWithId);
+                if (rootDomainId != null) {
+                        let flowNameWithId = flowName.concat(':' + rootDomainId);
+                        path = path.replace(flowName, flowNameWithId);
                 }
                 console.log('Post on change :: ' + path);
                 let modelEvnt = new ModelEvent();
@@ -499,38 +489,40 @@ export class PageService {
                 modelEvnt.id = path;
                 modelEvnt.value = payloadValue;
                 modelEvnt.payload = payloadValue;
-              //  modelEvnt.value.path = path;
+                //  modelEvnt.value.path = path;
                 console.log(JSON.stringify(modelEvnt));
                 var urlBase = ServiceConstants.PLATFORM_BASE_URL;
                 var url = urlBase + '/event/notify';
                 //if (action === Action._update.value) {
-                        console.log('Post update Event Notify call');
-                        return this.http.post(url, JSON.stringify(modelEvnt))
-                                .map(res => res.json())
-                                .subscribe(data => {
-                                        //console.log('Event notify data::' + JSON.stringify(data));
-                                        this.processResponse(data.result, '', '');
-                                },
-                                err => this.logError(err),
-                                () => console.log('Post completed..')
-                                );
-               // }
+                console.log('Post update Event Notify call');
+                return this.http.post(url, JSON.stringify(modelEvnt))
+                        .map(res => res.json())
+                        .subscribe(data => {
+                                //console.log('Event notify data::' + JSON.stringify(data));
+                                this.processResponse(data.result, '', '');
+                        },
+                        err => this.logError(err),
+                        () => console.log('Post completed..')
+                        );
+                // }
         }
 
         /**
          * Loop through all Configs to find the match to update the Model Event
          */
         traverseFlowConfig(eventModel: ModelEvent, flowName: string) {
-            if (this.getFlowConfig(flowName)) {
-                this.traverseConfig(this.getFlowConfig(flowName).params, eventModel);
-            }
+                let viewRoot: ViewRoot = this.configService.getFlowConfig(flowName);
+                let flowConfig: Model = viewRoot.model;
+                if (flowConfig) {
+                        this.traverseConfig(flowConfig.params, eventModel);
+                }
         }
 
         getUpdatedParamPath(eventModelPath: string): string {
                 // Remove path before '/p/' which is the platform path
                 //let updatedParamPath = eventModelPath.substring(eventModelPath.indexOf('/p/')+3);
                 // Remove flow name which is the beginning of the event path
-                let updatedParamPath = eventModelPath.substring(eventModelPath.indexOf('/', 1)+1);
+                let updatedParamPath = eventModelPath.substring(eventModelPath.indexOf('/', 1) + 1);
                 //Remove the context model attributes from path
                 if (updatedParamPath.indexOf('/#') !== -1) {
                         updatedParamPath = updatedParamPath.substring(0, updatedParamPath.indexOf('/#'));
@@ -546,7 +538,7 @@ export class PageService {
                 }
                 return updatedParamPath;
         }
-        
+
         /**
          * Traverse the complete config to find the matching page to update the event
          * params: list of pages
@@ -586,65 +578,68 @@ export class PageService {
 
                 // Check if root param matches the eventModel update node
                 if (rootParam.config.code === paramTree[node]) {
-                    node++;
-                    // Loop through the Params in the Page
-                    if (rootParam.type.model && rootParam.type.model.params) {
-                        rootParam.type.model.params.forEach(element => {
-                                // Check if param matches the updated param path
-                                if (element.config.code === paramTree[node]) {
-                                        if ((element.config.type && element.config.type.collection) || node >= numNodes) {
-                                                // Matching param node OR Collection node. Collection nodes cannot be traversed further.
-                                                this.processModelEvent(element, eventModel);
-                                        } else {
-                                                // Lets go futher into the matching param to find the exact match
-                                                this.traversePageConfig(element, eventModel, node);
-                                        }
+                        node++;
+                        // Loop through the Params in the Page
+                        if (rootParam.type.model && rootParam.type.model.params) {
+                                rootParam.type.model.params.forEach(element => {
+                                        // Check if param matches the updated param path
+                                        if (element.config.code === paramTree[node]) {
+                                                if ((element.config.type && element.config.type.collection) || node >= numNodes) {
+                                                        // Matching param node OR Collection node. Collection nodes cannot be traversed further.
+                                                        this.processModelEvent(element, eventModel);
+                                                } else {
+                                                        // Lets go futher into the matching param to find the exact match
+                                                        this.traversePageConfig(element, eventModel, node);
+                                                }
 
-                                        if (node < numNodes) {
-                                        } else {
+                                                if (node < numNodes) {
+                                                } else {
+                                                }
                                         }
-                                }
-                        });
-                    }
+                                });
+                        }
                 }
         }
-        
+
         /** 
          * Create the Grid Row Data from Param Leaf State
          * 
          */
         createRowData(param: Param, nestedGridParam: ParamConfig) {
-            let rowData: any = {};
-            rowData = param.type.model;
-            rowData['elemId'] = param.elemId;
-            
-            // If nested data exists, set the data to nested grid
-            if (nestedGridParam) {
-                nestedGridParam.gridList = rowData[nestedGridParam.code];
-            }
-            
-            return rowData;
+                let rowData: any = {};
+                rowData = param.type.model;
+                rowData['elemId'] = param.elemId;
+
+                // If nested data exists, set the data to nested grid
+                if (nestedGridParam) {
+                        nestedGridParam.gridList = rowData[nestedGridParam.code];
+                }
+
+                return rowData;
         }
-        
+
         /** 
          * Loop through the Param State and build the Grid
          * 
          */
-        createGridData(params: Param[], gridCols: ParamConfig[]) {
-            let gridData = [];
-            // Look for inner lists (nested grid)
-            let nestedGridParam: ParamConfig;
-            if (gridCols) {
-                gridCols.forEach(col => {
-                if (col.uiStyles && col.uiStyles.name == 'ViewConfig.GridRowBody') {
-                        nestedGridParam = col;
-                } 
-                });
-            }
-            params.forEach(param => {
-                gridData.push(this.createRowData(param, nestedGridParam));
-            });
-            return gridData;
+        createGridData(params: Param[], nestedParams: ParamConfig[]) {
+                let gridData = [];
+                // Look for inner lists (nested grid)
+                let nestedGridParam: ParamConfig;
+                if (nestedParams) {
+                        nestedParams.forEach(col => {
+                                if (col.uiStyles && col.uiStyles.name == 'ViewConfig.GridRowBody') {
+                                        nestedGridParam = col;
+                                }
+                        });
+                }
+                if (params) {
+                        params.forEach(param => {
+                                let p = new Param(this.configService).deserialize(param);
+                                gridData.push(this.createRowData(p, nestedGridParam));
+                        });        
+                }
+                return gridData;
         }
 
         /**
@@ -653,56 +648,56 @@ export class PageService {
          * eventModel: Event received
          */
         processModelEvent(param: Param, eventModel: ModelEvent) {
-            // Grid updates
-            if (param.config.uiStyles != null && param.config.uiStyles.attributes.alias === 'Grid') {
-                if(eventModel.value.leafState != null) {
-                    // Check if the update is for the Current Collection or a Nested Collection
-                    if (param.path == eventModel.value.path) {
-                        // Current Collection
-                        // Collection Element Check - update only the element
-                        if (eventModel.value.collectionElem) {
-                                if (param.config.gridList == null) {
-                                        param.config.gridList = this.createGridData(eventModel.value.type.model.params, param.config.type.elementConfig.type.model.paramConfigs);
-                                } else {
-                                        param.config.gridList.push(this.createGridData(eventModel.value.type.model.params, param.config.type.elementConfig.type.model.paramConfigs));
-                                }
-                                this.gridValueUpdate.next(param);
-                        }
-                        // Collection check - replace entire grid
-                        if (eventModel.value.collection) {
-                                param.config.gridList = this.createGridData(eventModel.value.type.model.params, param.config.type.elementConfig.type.model.paramConfigs);
-                                this.gridValueUpdate.next(param);
-                        }
-                    } else { // Nested Collection. Need to traverse to right location
-                        let nestedPath = eventModel.value.path.substr(param.path.length + 1);
-                        let elemIndex = nestedPath.substr(0, nestedPath.indexOf('/'));
-                        for (var p = 0; p<param.config.gridList.length; p++) {
-                                if (param.config.gridList[p]['elemId'] == elemIndex) {
-                                        console.log(param.config.gridList[p]['nestedElement']);
-                                        let nestedElement = this.getNestedElementParam(param.config.gridList[p]['nestedElement'], nestedPath);
-                                        if (nestedElement) {
-                                                nestedElement['config']['gridList'] = this.createGridData(eventModel.value.type.model.params, param.config.type.elementConfig.type.model.paramConfigs);
-                                                this.gridValueUpdate.next(nestedElement);
-                                        } else {
-                                                console.log('Nested Grid Element not found.');
+                // Grid updates
+                if (param.config.uiStyles != null && param.config.uiStyles.attributes.alias === 'Grid') {
+                        if (eventModel.value.leafState != null) {
+                                // Check if the update is for the Current Collection or a Nested Collection
+                                if (param.path == eventModel.value.path) {
+                                        // Current Collection
+                                        // Collection Element Check - update only the element
+                                        if (eventModel.value.collectionElem) {
+                                                if (param.config.gridList == null) {
+                                                        param.config.gridList = this.createGridData(eventModel.value.type.model.params, param.config.type.elementConfig.type.model.paramConfigs);
+                                                } else {
+                                                        param.config.gridList.push(this.createGridData(eventModel.value.type.model.params, param.config.type.elementConfig.type.model.paramConfigs));
+                                                }
+                                                this.gridValueUpdate.next(param);
                                         }
-                                        break;
+                                        // Collection check - replace entire grid
+                                        if (eventModel.value.collection) {
+                                                param.config.gridList = this.createGridData(eventModel.value.type.model.params, param.config.type.elementConfig.type.model.paramConfigs);
+                                                this.gridValueUpdate.next(param);
+                                        }
+                                } else { // Nested Collection. Need to traverse to right location
+                                        let nestedPath = eventModel.value.path.substr(param.path.length + 1);
+                                        let elemIndex = nestedPath.substr(0, nestedPath.indexOf('/'));
+                                        for (var p = 0; p < param.config.gridList.length; p++) {
+                                                if (param.config.gridList[p]['elemId'] == elemIndex) {
+                                                        console.log(param.config.gridList[p]['nestedElement']);
+                                                        let nestedElement = this.getNestedElementParam(param.config.gridList[p]['nestedElement'], nestedPath);
+                                                        if (nestedElement) {
+                                                                nestedElement['config']['gridList'] = this.createGridData(eventModel.value.type.model.params, param.config.type.elementConfig.type.model.paramConfigs);
+                                                                this.gridValueUpdate.next(nestedElement);
+                                                        } else {
+                                                                console.log('Nested Grid Element not found.');
+                                                        }
+                                                        break;
+                                                }
+                                        }
+
+                                        console.log('eventModel');
                                 }
                         }
-
-                        console.log('eventModel');
-                    }
-                }
-            } else if (param.config.uiStyles != null && param.config.uiStyles.attributes.alias === 'CardDetailsGrid') {
-                if (param.type.collection === true) {
-                    let payload: Param = new Param().deserialize(eventModel.value);
-                    param.type.model['params'] = payload.type.model.params;
+                } else if (param.config.uiStyles != null && param.config.uiStyles.attributes.alias === 'CardDetailsGrid') {
+                        if (param.type.collection === true) {
+                                let payload: Param = new Param(this.configService).deserialize(eventModel.value);
+                                param.type.model['params'] = payload.type.model.params;
+                        } else {
+                                this.traverseParam(param, eventModel);
+                        }
                 } else {
-                    this.traverseParam(param, eventModel);
+                        this.traverseParam(param, eventModel);
                 }
-            } else {
-                this.traverseParam(param, eventModel);
-            }
         }
 
         getNestedElementParam(nestedElement: Param, nestedPath: string): Param {
@@ -710,7 +705,7 @@ export class PageService {
                 let startIndex = 1;
 
                 if (this.matchNode(nestedElement, paramTree[startIndex])) {
-                        return this.traverseNestedPath(nestedElement, startIndex+1, paramTree); 
+                        return this.traverseNestedPath(nestedElement, startIndex + 1, paramTree);
                 } else {
                         return undefined;
                 }
@@ -720,10 +715,10 @@ export class PageService {
                 for (var p = 0; p < nestedElement.type.model.params.length; p++) {
                         let element = nestedElement.type.model.params[p];
                         if (this.matchNode(element, tree[index])) {
-                                if (index == tree.length-1) {
+                                if (index == tree.length - 1) {
                                         return element;
                                 } else {
-                                        return this.traverseNestedPath(element, index+1, tree);
+                                        return this.traverseNestedPath(element, index + 1, tree);
                                 }
                         }
                 }
@@ -743,17 +738,17 @@ export class PageService {
                 /* Flow-Wrapper class also invokes methods that eventually call this behaviour. We need to make sure that the eventModel is deserialized by then */
                 let payload = eventModel.value;
                 if (param.type.nested === true) {
-                    this.updateParam(param, payload);
-                    if (param.type.model && payload.type.model && payload.type.model.params) {
-                        for ( var p in param.type.model.params ) {
-                            this.updateParam(param.type.model.params[p], payload.type.model.params[p]);
+                        this.updateParam(param, payload);
+                        if (param.type.model && payload.type.model && payload.type.model.params) {
+                                for (var p in param.type.model.params) {
+                                        this.updateParam(param.type.model.params[p], payload.type.model.params[p]);
+                                }
                         }
-                    }
-                    if (param.type.model === undefined && payload.type.model) {
-                        param.type['model'] = payload.type.model;
-                    }
+                        if (param.type.model === undefined && payload.type.model) {
+                                param.type['model'] = payload.type.model;
+                        }
                 } else {
-                    this.updateParam(param, payload);
+                        this.updateParam(param, payload);
                 }
         }
 
@@ -769,7 +764,7 @@ export class PageService {
                                                         if (currentKey === 'type') {
                                                                 //Object.assign(Reflect.get(param, currentKey), new Type().deserialize(Reflect.get(payload, updatedKey)));
                                                         } else if (currentKey === 'config') {
-                                                                Object.assign(Reflect.get(param, currentKey), new ParamConfig().deserialize(Reflect.get(payload, updatedKey)));
+                                                                Object.assign(Reflect.get(param, currentKey), new ParamConfig(this.configService).deserialize(Reflect.get(payload, updatedKey)));
                                                                 //TODO - refactor this whole method and the conditions. Revisit - order, count
                                                         } else if (currentKey === 'activeValidationGroups') {
                                                                 Reflect.set(param, currentKey, Reflect.get(payload, updatedKey));
@@ -779,11 +774,8 @@ export class PageService {
                                                                 Reflect.set(param, currentKey, Reflect.get(payload, updatedKey));
                                                                 this.eventUpdate.next(param);
                                                         } else if (currentKey === 'enabled' || currentKey === 'visible') {
-                                                                let newRState = new RemnantState().deserialize(Reflect.get(payload, updatedKey));
-                                                                if (newRState['currState'] !== param[currentKey]['currState']) {
-                                                                        Object.assign(Reflect.get(param, currentKey), newRState);
-                                                                        this.validationUpdate.next(param);
-                                                                }
+                                                                Reflect.set(param, currentKey, Reflect.get(payload, updatedKey));
+                                                                this.validationUpdate.next(param);
                                                         } else if (currentKey === 'values') {
                                                                 if (param.values == null) {
                                                                         let values = [];
@@ -818,7 +810,7 @@ export class PageService {
                 // TODO - temp to handle subflows
                 if (this.routeParams.subflow === true) {
                         url = url + '/_landing/_process?b=$executeAnd$config';
-                } else  {
+                } else {
                         url = url + '/_new?b=$config';
                 }
 
@@ -826,7 +818,7 @@ export class PageService {
                         .map(res => res.json())
                         .subscribe(data => {
                                 console.log('Creating a global page map');
-                                this.processResponse(data.result,'', '');
+                                this.processResponse(data.result, '', '');
                         },
                         err => this.logError(err),
                         () => console.log('GetPageConfig query completed..')
@@ -835,9 +827,9 @@ export class PageService {
 
         private showLoader(): void {
                 this.loaderService.show();
-            }
-        
-            private hideLoader(): void {
+        }
+
+        private hideLoader(): void {
                 this.loaderService.hide();
-            }
+        }
 }

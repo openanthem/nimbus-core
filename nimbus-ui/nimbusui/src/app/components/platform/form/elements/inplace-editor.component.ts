@@ -50,11 +50,11 @@ export const InputComponents = [
                 {{label}}
                 <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
             </label>
-            <a class="form-control-static editTrigger" href="javascript:void(0);" (click)="enableEdit()" *ngIf="element.enabled?.currState">
+            <a class="form-control-static editTrigger" href="javascript:void(0);" (click)="enableEdit()" *ngIf="element.enabled">
                 <span *ngIf="displayValue==UNASSIGNVALUE" class="unassigned">{{displayValue}}</span>
                 <span *ngIf="displayValue!=UNASSIGNVALUE">{{displayValue}}</span>
             </a>
-            <div *ngIf="!element.enabled?.currState">
+            <div *ngIf="!element.enabled">
                 <span *ngIf="displayValue==UNASSIGNVALUE" class="unassigned">{{displayValue}}</span>
                 <span *ngIf="displayValue!=UNASSIGNVALUE">{{displayValue}}</span>
             </div>

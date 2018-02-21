@@ -23,6 +23,7 @@ import { Observable } from 'rxjs/Observable';
 import { Message } from 'stompjs';
 
 import { PageService } from '../../../services/page.service';
+import { ConfigService } from '../../../services/config.service';
 import { STOMPService } from '../../../services/stomp.service';
 import { ExecuteOutput, ModelEvent, Page } from '../../../shared/app-config.interface';
 
@@ -45,7 +46,11 @@ export class FlowWrapper {
     // Stream of messages
     public messages: Observable<Message>;
 
-    constructor(private _pageSvc: PageService, private _stompService: STOMPService, private _route: ActivatedRoute, private _router: Router) {
+    constructor(private _pageSvc: PageService, 
+        private _configSvc: ConfigService,
+        private _stompService: STOMPService, 
+        private _route: ActivatedRoute, 
+        private _router: Router) {
         // Get the Flow Domain
         _route.data.subscribe( data => {
                 this.routeParams = data;
@@ -69,7 +74,7 @@ export class FlowWrapper {
         });
         // IF this is a new flow to be loaded.
 
-        if (this._pageSvc.getFlowConfig(this.routeParams['domain']) === undefined) {
+        if (this._configSvc.getFlowConfig(this.routeParams['domain']) === undefined) {
             this._pageSvc.loadFlowConfig(this.routeParams);
         } else { // load page from pre loaded config
             this._pageSvc.loadDefaultPageForConfig(this.routeParams['domain']);

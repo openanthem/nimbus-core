@@ -64,7 +64,7 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
 
     ngOnInit() {
         this.value = this.element.leafState;
-        this.disabled = !this.element.enabled.currState;
+        this.disabled = !this.element.enabled;
         let labelContent: LabelConfig = this.wcs.findLabelContent(this.element);
         this.label = labelContent.text;
         this.helpText = labelContent.helpText;
@@ -100,13 +100,13 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
                             staticChecks = ValidationUtils.buildStaticValidations(this.element);
                             frmCtrl.setValidators(staticChecks);
                         }
-                        if(event.enabled.currState && event.visible.currState) {
+                        if(event.enabled && event.visible) {
                             frmCtrl.enable();   
                         }
                         else {
                             frmCtrl.disable();
                         }
-                        this.disabled = !event.enabled.currState;   
+                        this.disabled = !event.enabled;   
                     }
 
                 }

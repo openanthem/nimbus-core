@@ -158,7 +158,6 @@ export class ActionLink extends BaseElement{
                     }
                 }
             }
-            console.log(this.url);
         }
 
         getAllURLParams (url: string): string[] {

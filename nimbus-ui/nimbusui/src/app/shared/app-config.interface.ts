@@ -16,6 +16,8 @@
  */
 'use strict';
 
+import { ConfigService } from './../services/config.service';
+
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -42,11 +44,72 @@ export class Values implements Serializable<Values> {
 }
 
 export class ElementConfig implements Serializable<ElementConfig> {
-    type: Type;
+    id: string;
+    type: ConfigType;
+
+    constructor(private configSvc: ConfigService) {}
 
     deserialize( inJson ) {
+        this.id = inJson.id;
         if ( inJson.type ) {
-            this.type = new Type().deserialize( inJson.type );
+            this.type = new ConfigType(this.configSvc).deserialize( inJson.type );
+        }
+
+        return this;
+    }
+}
+
+export class ModelConfig implements Serializable<ModelConfig> {
+    paramConfigIds: string[];
+    uiStyles: UiStyle;
+    id: string;
+    _paramConfigs: ParamConfig[];
+
+    constructor(private configSvc: ConfigService) {}
+
+    public get paramConfigs(): ParamConfig[] {
+        let paramConfigs: ParamConfig[] = [];
+        for ( var p in this.paramConfigIds ) {
+            paramConfigs.push(this.configSvc.getViewConfigById(this.paramConfigIds[p]));
+        }
+        return paramConfigs;
+    }
+    
+    deserialize( inJson ) {
+        if(inJson.uiStyles != null) {
+            this.uiStyles = new UiStyle().deserialize( inJson.uiStyles );
+        }
+        this.paramConfigIds = [];
+        for ( var p in inJson.paramConfigs ) {
+            let config: ParamConfig = new ParamConfig(this.configSvc).deserialize(inJson.paramConfigs[p]);
+            this.paramConfigIds.push(config.id);
+            this.configSvc.setViewConfigToParamConfigMap(config.id, config);
+        }
+        return this;
+    }
+}
+
+export class ConfigType implements Serializable<ConfigType> {
+    nested: boolean;
+    name: string;
+    model: ModelConfig;
+    collection: boolean;
+    elementConfig: ElementConfig;
+
+    constructor(private configSvc: ConfigService) {}
+    
+    deserialize( inJson ) {
+        this.nested = inJson.nested;
+        this.name = inJson.name;
+        this.collection = inJson.collection;
+
+        if ( this.nested === true ) {
+            if (inJson.modelConfig != null) {
+                this.model = new ModelConfig(this.configSvc).deserialize( inJson.modelConfig );
+            }
+        }
+        if ( inJson.elementConfig != null) {
+            this.elementConfig = new ElementConfig(this.configSvc).deserialize( inJson.elementConfig );
         }
 
         return this;
@@ -58,7 +121,8 @@ export class Type implements Serializable<Type> {
     name: string;
     model: Model;
     collection: boolean;
-    elementConfig: ElementConfig;
+
+    constructor(private configSvc: ConfigService) {}
 
     deserialize( inJson ) {
         this.nested = inJson.nested;
@@ -67,13 +131,10 @@ export class Type implements Serializable<Type> {
 
         if ( this.nested === true ) {
             if (inJson.model  != null) {
-                this.model = new Model().deserialize( inJson.model );
+                this.model = new Model(this.configSvc).deserialize( inJson.model );
             } else if (inJson.modelConfig != null) {
-                this.model = new Model().deserialize( inJson.modelConfig );
+                this.model = new Model(this.configSvc).deserialize( inJson.modelConfig );
             }
-        }
-        if ( inJson.elementConfig != null) {
-            this.elementConfig = new ElementConfig().deserialize( inJson.elementConfig );
         }
 
         return this;
@@ -145,32 +206,27 @@ export class Message implements Serializable<Message> {
     }
 }
 
-export class RemnantState<T> {
-    currState: T
-    prevState: T
-
-    deserialize(inJson) {
-        this.currState = inJson.currState;
-        this.prevState = inJson.prevState;
-        return this;
-    }
-}
-
 export class Param implements Serializable<Param> {
-    config: ParamConfig;
+    configId: string;
     type: Type;
     leafState: any;
     path: string;
     collection: boolean;
     collectionElem: boolean;
     elemId: string;
-    mapped: boolean;
-    visible: RemnantState<boolean>;
-    enabled: RemnantState<boolean>;
+    visible: boolean;
+    enabled: boolean;
     message : Message;
     values : Values[];
     activeValidationGroups: String[];
     _alias: string;
+    _config: ParamConfig;
+
+    constructor(private configSvc: ConfigService) {}
+
+    public get config(): ParamConfig {
+        return this.configSvc.getViewConfigById(this.configId);
+    }
 
     public get alias(): string {
         if (this.config.uiStyles && this.config.uiStyles.attributes) {
@@ -178,13 +234,16 @@ export class Param implements Serializable<Param> {
         }
         return undefined;
     }
+
     deserialize( inJson ) {
-        this.mapped = inJson.mapped;
-        if(inJson.config != null) {
-            this.config = new ParamConfig().deserialize( inJson.config );
+        this.configId = inJson.configId;
+        // Set Config in ParamConfig Map
+        if (inJson.config != null) {
+            let config: ParamConfig = new ParamConfig(this.configSvc).deserialize(inJson.config);
+            this.configSvc.setViewConfigToParamConfigMap(config.id, config);
         }
-        if(inJson.type != null) {
-            this.type = new Type().deserialize( inJson.type );
+        if (inJson.type != null) {
+            this.type = new Type(this.configSvc).deserialize( inJson.type );
         }
         this.collectionElem = inJson.collectionElem;
         this.collection = inJson.collection;
@@ -195,27 +254,16 @@ export class Param implements Serializable<Param> {
             if(inJson.leafState != null) {
                 this.leafState = new CardDetailsGrid().deserialize( inJson.leafState );
             }
-        //} else if( this.config != null && this.config.uiStyles && this.config.uiStyles.attributes.alias === 'Grid' ){ 
-        //  // TODO : Clean up. Duplicating this logic here to populate grid data when data is recieved as leafstate.
-            //  if(inJson.leafState != null) {
-            //      this.config.gridList = this.createGridData(this.type.model.params, this.config.gridCols);
-            //  }
         } else {
             this.leafState = inJson.leafState;
         }
 
-        // if(this.config != null && this.config.uiStyles && this.config.uiStyles.attributes.alias === 'Grid' ) {
-        //     if(inJson.leafState != null) {
-        //          this.config.gridList = this.createGridData(this.type.model.params, this.config.gridCols);
-        //     }
-        // }
-        
         this.path = inJson.path;
         if (inJson.visible != null) {
-            this.visible = new RemnantState<boolean>().deserialize(inJson.visible);
+            this.visible = inJson.visible;
         }
         if (inJson.enabled != null) {
-            this.enabled = new RemnantState<boolean>().deserialize(inJson.enabled);
+            this.enabled = inJson.enabled;
         }
         if ( inJson.message != null ) {
             this.message = new Message().deserialize( inJson.message );
@@ -229,61 +277,33 @@ export class Param implements Serializable<Param> {
         this.activeValidationGroups = inJson.activeValidationGroups;
         return this;
     }
-    // TODO : Clean up. Duplicating this logic here to populate grid data when data is recieved as leafstate
-    // private createGridData(params: Param[], gridCols: ElementModelParam[]) {
-    //     let gridData = [];
-    //     // Look for inner lists (nested grid)
-    //     let nestedGridParam: ElementModelParam;
-    //     if (gridCols) {
-    //         gridCols.forEach(col => {
-    //         if (col.uiStyles && col.uiStyles.name == 'ViewConfig.Grid') {
-    //             nestedGridParam = col;
-    //         } 
-    //         });
-    //     }
-    //     params.forEach(param => {
-    //         let rowData : any = {};
-    //         rowData = this.createRowData(param, nestedGridParam);
-    //         gridData.push(rowData);
-    //     });
-    //     return gridData;
-    // } 
-    // TODO : Clean up. Duplicating this logic here to populate grid data when data is recieved as leafstate
-    // private createRowData(param: Param, nestedGridParam: ElementModelParam) {
-    //     let rowData: any = {};
-    //     rowData = param.leafState;
-    //     rowData['elemId'] = param.elemId;
-    
-    //     // If nested data exists, set the data to nested grid
-    //     // if (nestedGridParam) {
-    //     //     nestedGridParam.gridList = rowData[nestedGridParam.code];
-    //     // }
-    
-    //     return rowData;
-    // }
 }
 
 export class Input implements Serializable<Input> {
     model: Model;
+
+    constructor(private configSvc: ConfigService) {}
+
     deserialize( inJson ) {
-        this.model = new Model().deserialize( inJson.model );
+        this.model = new Model(this.configSvc).deserialize( inJson.model );
         return this;
     }
 }
 
 export class Result implements Serializable<Result> {
-    action: string;
     inputCommandUri: string;
+    action: string;
     outputs : Result[];
     value: any;
     rootDomainId:string;
+    constructor(private configSvc: ConfigService) {}
     deserialize( inJson ) {
         this.action = inJson.action;
         this.inputCommandUri = inJson.inputCommandUri;
         this.rootDomainId = inJson.rootDomainId;
         if(inJson.value != null) {
             if(inJson.value.config != null) {
-                this.value = new Param().deserialize( inJson.value );
+                this.value = new Param(this.configSvc).deserialize( inJson.value );
             } else {
                 this.value = inJson.value;
             }
@@ -291,7 +311,7 @@ export class Result implements Serializable<Result> {
         this.outputs = [];
         if ( inJson.outputs != null && inJson.outputs.length > 0 ) {
             for ( var value in inJson.outputs ) {
-                this.outputs.push( new Result().deserialize( inJson.outputs[value] ) );
+                this.outputs.push( new Result(this.configSvc).deserialize( inJson.outputs[value] ) );
             }
         }
         return this;
@@ -321,22 +341,24 @@ export class ViewRoot {
     layout: string;
 }
 
+export class ViewConfig {
+    configId: string;
+    config: ParamConfig;
+}
+
 export class Model implements Serializable<Model> {
-    paramConfigs: ParamConfig[];
     uiStyles: UiStyle;
     params: Param[];
+
+    constructor(private configSvc: ConfigService) {}
 
     deserialize( inJson ) {
         if(inJson.uiStyles != null) {
             this.uiStyles = new UiStyle().deserialize( inJson.uiStyles );
         }
-        this.paramConfigs = [];
-        for ( var p in inJson.paramConfigs ) {
-            this.paramConfigs.push( new ParamConfig().deserialize( inJson.paramConfigs[p] ) );
-        }
         this.params = [];
         for ( var p in inJson.params ) {
-            this.params.push( new Param().deserialize( inJson.params[p] ) );
+            this.params.push( new Param(this.configSvc).deserialize( inJson.params[p] ) );
         }
         return this;
     }
@@ -346,9 +368,11 @@ export class Config implements Serializable<Config> {
     input: Input;
     output: Output;
 
+    constructor(private configSvc: ConfigService) {}
+
     deserialize( inJson ) {
-        this.input = new Input().deserialize( inJson.input );
-        this.output = new Output().deserialize( inJson.output );
+        this.input = new Input(this.configSvc).deserialize( inJson.input );
+        this.output = new Output(this.configSvc).deserialize( inJson.output );
         return this;
     }
 }
@@ -384,10 +408,13 @@ export class Length implements Serializable<Length> {
     }
 }
 
-export class Output implements Serializable<Input> {
+export class Output implements Serializable<Output> {
     model: Model;
+
+    constructor(private configSvc: ConfigService) {}
+
     deserialize( inJson ) {
-        this.model = new Model().deserialize( inJson.model );
+        this.model = new Model(this.configSvc).deserialize( inJson.model );
         return this;
     }
 }
@@ -432,13 +459,14 @@ export class Details implements Serializable<Details> {
 
 export class ParamConfig implements Serializable<ParamConfig> {
     uiStyles: UiStyle;
+    id: string;
     code: string;
-    type: Type;
+    type: ConfigType;   
     labelConfigs: LabelConfig[];
     validation: Validation;
     uiNatures: UiNature[];
-    enabled: RemnantState<boolean>;
-    visible: RemnantState<boolean>;
+    enabled: boolean;
+    visible: boolean;
     label: string;
     
     message: Message;
@@ -448,15 +476,17 @@ export class ParamConfig implements Serializable<ParamConfig> {
 
     //TODO Temporary for grid
     gridList: any[];
-    gridCols: ElementModelParam[];
+
+    constructor(private configSvc: ConfigService) {}
 
     deserialize( inJson ) {
         if ( inJson.uiStyles != null ) {
             this.uiStyles = new UiStyle().deserialize( inJson.uiStyles );
         }
+        this.id = inJson.id;
         this.code = inJson.code;
         if(inJson.type != null) {
-            this.type = new Type().deserialize( inJson.type );
+            this.type = new ConfigType(this.configSvc).deserialize( inJson.type );
         }
         this.labelConfigs = [];  
         if ( inJson.labelConfigs != null && inJson.labelConfigs.length > 0) { 
@@ -474,10 +504,10 @@ export class ParamConfig implements Serializable<ParamConfig> {
             }
         }
         if (inJson.enabled != null) {
-            this.enabled = new RemnantState<boolean>().deserialize(inJson.enabled);
+            this.enabled = inJson.enabled;
         }
         if (inJson.visible != null) {
-            this.visible = new RemnantState<boolean>().deserialize(inJson.visible);
+            this.visible = inJson.visible;
         }
         
         // Not sure if the below is required..
@@ -488,15 +518,6 @@ export class ParamConfig implements Serializable<ParamConfig> {
         this.active = inJson.active;
         this.required = inJson.required;
 
-        //TODO Temporary for grid
-        // if ( inJson.type && inJson.type.elementModelParams ) {
-        //     this.gridCols = [];
-        //     for ( var p in inJson.type.elementModelParams ) {
-        //         let colParam = new ElementModelParam();
-        //         colParam = new ElementModelParam().deserialize( inJson.type.elementModelParams[p] );
-        //         this.gridCols.push(colParam);
-        //     }
-        // }
         return this;
     }
 
@@ -507,31 +528,6 @@ export class ParamConfig implements Serializable<ParamConfig> {
             }
         }
         return false;
-    }
-}
-
-export class ElementModelParam extends ParamConfig implements Serializable<ElementModelParam> {
-
-    code: string;
-    label: string;
-    uiStyles: UiStyle;
-    nestedParams: ElementModelParam[];
-
-    deserialize( inJson ) {
-        this.code = inJson.code;
-        this.labelConfigs = inJson.labelConfigs;
-        this.label = inJson.label;
-        if ( inJson.uiStyles != null ) {
-            this.uiStyles = new UiStyle().deserialize( inJson.uiStyles );
-        }
-        if (inJson.type && inJson.type.model && inJson.type.model.params) {
-            this.nestedParams = [];
-            for (var p in inJson.type.model.params ) {
-                this.nestedParams.push(new ElementModelParam().deserialize(inJson.type.model.params[p]));
-            }
-        }
-
-        return this;
     }
 }
 
@@ -619,7 +615,7 @@ export class UiAttribute implements Serializable<UiAttribute> {
     rowSelection: boolean;
     showHeader: boolean;
     pagination: boolean;
-    pageSize: string;
+    pageSize: number;
     postButton: boolean;
     postButtonUrl: string;
     postButtonTargetPath: string;
@@ -653,7 +649,9 @@ export class UiAttribute implements Serializable<UiAttribute> {
         this.asynchronous = inJson.asynchronous;
         this.b = inJson.b;
         this.method = inJson.method;
-        this.imgSrc = inJson.imgSrc;
+        if (inJson.imgSrc && inJson.imgSrc != '') {
+            this.imgSrc = inJson.imgSrc;
+        }
         this.level = inJson.level;
         this.cssClass = inJson.cssClass;
         this.labelClass = inJson.labelClass;
