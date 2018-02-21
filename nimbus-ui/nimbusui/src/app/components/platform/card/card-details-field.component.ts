@@ -20,6 +20,7 @@ import { Param } from '../../../shared/app-config.interface';
 import { Component, Input, forwardRef } from '@angular/core';
 import { WebContentSvc } from '../../../services/content-management.service';
 import { BaseElement } from './../base-element.component';
+import {DateTimeFormatPipe} from '../../../pipes/date.pipe';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,

@@ -13,14 +13,18 @@
         </div>
     </ng-template>
     <ng-template [ngIf]="!element.config?.uiStyles?.attributes?.imgSrc && element?.visible?.currState == true">
-        <ng-template [ngIf]="element.config.uiStyles.attributes.inplaceEdit">
+        <ng-template [ngIf]="element.config.uiStyles.attributes.inplaceEdit ">
             <inplace-editor [element]="element"></inplace-editor>
         </ng-template>
-        <div class="form-group" *ngIf="!element.config.uiStyles.attributes.inplaceEdit">
+        <ng-template [ngIf]="element.type.name == 'date' || element.type.name == 'Date' || element.type.name == 'LocalDateTime'
+                || element.type.name == 'ZonedDateTime'">
             <label class="" *ngIf="element.config.uiStyles.attributes.showName==true">{{label}}</label>
-            <div class="{{iconClass}} textWrapBreakWord">{{value}}&nbsp;</div>
+            <div class="{{iconClass}}">{{value | dateTimeFormat: element.config?.uiStyles?.attributes?.datePattern }}&nbsp;</div>
+         </ng-template>
+        <div class="form-group" *ngIf="!element.config.uiStyles.attributes.inplaceEdit && element.type.name !== 'date' && 
+        element.type.name !== 'Date' && element.type.name !== 'LocalDateTime' && element.type.name != 'ZonedDateTime'">
+                <label class="" *ngIf="element.config.uiStyles.attributes.showName==true">{{label}}</label>
+                <div class="{{iconClass}}">{{value}}&nbsp;</div>    
         </div>
     </ng-template>
 </div>
-        
- 

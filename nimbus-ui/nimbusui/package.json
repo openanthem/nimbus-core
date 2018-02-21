@@ -29,6 +29,7 @@
     "bootstrap": "^4.0.0-beta",
     "core-js": "^2.4.1",
     "jquery": "^3.2.1",
+    "moment": "^2.20.1",
     "popper.js": "^1.12.9",
     "primeng": "^5.0.2",
     "reflect-metadata": "^0.1.8",

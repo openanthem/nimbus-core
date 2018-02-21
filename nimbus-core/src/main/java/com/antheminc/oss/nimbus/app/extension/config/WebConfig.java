@@ -17,6 +17,7 @@ package com.antheminc.oss.nimbus.app.extension.config;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -30,6 +31,8 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import com.antheminc.oss.nimbus.domain.model.state.internal.EntityStateConfigJsonFilter;
+import com.antheminc.oss.nimbus.support.json.CustomDateDeserializer;
+import com.antheminc.oss.nimbus.support.json.CustomDateSerializer;
 import com.antheminc.oss.nimbus.support.json.CustomLocalDateDeserializer;
 import com.antheminc.oss.nimbus.support.json.CustomLocalDateSerializer;
 import com.antheminc.oss.nimbus.support.json.CustomLocalDateTimeDeserializer;
@@ -114,7 +117,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
                 jacksonObjectMapperBuilder.serializerByType(LocalDate.class, new CustomLocalDateSerializer());
                 jacksonObjectMapperBuilder.serializerByType(LocalDateTime.class, new CustomLocalDateTimeSerializer());
                 jacksonObjectMapperBuilder.deserializerByType(LocalDateTime.class, new CustomLocalDateTimeDeserializer());
-
+                jacksonObjectMapperBuilder.serializerByType(Date.class, new CustomDateSerializer());
+                jacksonObjectMapperBuilder.deserializerByType(Date.class, new CustomDateDeserializer());
             }
 
         };

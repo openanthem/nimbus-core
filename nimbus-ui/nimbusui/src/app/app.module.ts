@@ -114,6 +114,7 @@ import { KeysPipe } from './pipes/app.pipe';
 import { LinkPipe } from './pipes/link.pipe';
 import { SelectItemPipe } from './pipes/select-item.pipe';
 import { LoaderComponent } from './components/platform/loader/loader.component';
+import {DateTimeFormatPipe} from './pipes/date.pipe';
 
 /**
  * \@author Dinakar.Meda
@@ -160,7 +161,7 @@ import { LoaderComponent } from './components/platform/loader/loader.component';
         Modal, ActionDropdown, ActionLink, 
         GridMouseEventDirective, SortableContainerDirective, SortableComponentDirective,
         HomeLayoutCmp, MainLayoutCmp, DomainLayoutCmp, LoginCmp, LoginLayoutCmp, StyleGuideCmp, 
-        KeysPipe, LinkPipe, SelectItemPipe, MultiSelectListBox, 
+        KeysPipe, LinkPipe, DateTimeFormatPipe, SelectItemPipe, MultiSelectListBox, 
         CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent, Calendar, NavMenuGlobal, LoaderComponent
 
     ],

@@ -63,6 +63,7 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
     }
 
     ngOnInit() {
+        
         this.value = this.element.leafState;
         this.disabled = !this.element.enabled.currState;
         let labelContent: LabelConfig = this.wcs.findLabelContent(this.element);
@@ -77,9 +78,12 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
             this.pageService.eventUpdate$.subscribe(event => {
                 let frmCtrl = this.form.controls[event.config.code];
                 if(frmCtrl!=null && event.path == this.element.path) {
-                    if(event.leafState!=null)
+                    if(event.leafState!=null){
+                        if (event.alias === 'Calendar') {
+                            event.leafState= new Date(event.leafState);
+                          }
                         frmCtrl.setValue(event.leafState);
-                    else
+                    } else
                         frmCtrl.reset();
                 }
             });

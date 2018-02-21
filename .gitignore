@@ -5,10 +5,12 @@
 */bin/
 /.metadata/
 /.swp
-*.settings
+*/.settings
 .factorypath
 .idea/
 *.iml
+.project
+.classpath
 */nimbus-ui-app/node
 */nimbus-ui-app/node_modules
 */nimbus-ui-app/dist
@@ -20,5 +22,3 @@
 /nimbus-ui-app/etc
 /nimbus-ui-app/node
 /nimbus-ui-app/node_modules
-*.project
-*.classpath

@@ -16,7 +16,7 @@
 package com.antheminc.oss.nimbus.entity.task;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import javax.validation.constraints.NotNull;
 
@@ -56,7 +56,7 @@ public class AssignmentTask extends AbstractEntity.IdString{
 
 	private String priority;
 	
-	private LocalDateTime appointmentDate;
+	private ZonedDateTime appointmentDate;
 
 	private String status;
 	

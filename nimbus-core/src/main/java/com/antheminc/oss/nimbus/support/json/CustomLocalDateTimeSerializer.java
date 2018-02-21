@@ -28,9 +28,7 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
  * @Author Sandeep Mantha
  */
 public class CustomLocalDateTimeSerializer extends StdSerializer<LocalDateTime> {
-    /**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	
 	private static DateTimeFormatter formatter =
