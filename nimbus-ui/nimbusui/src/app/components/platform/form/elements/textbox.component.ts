@@ -52,6 +52,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
         [id]="element.config?.code" 
         (focusout)="emitValueChangedEvent(this,value)"
         [value]="type"
+        [disabled]="disabled"
         class="form-control" 
         [readonly]="readOnly" />
 

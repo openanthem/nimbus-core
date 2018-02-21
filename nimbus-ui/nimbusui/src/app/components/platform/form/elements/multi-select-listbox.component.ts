@@ -23,6 +23,8 @@ import { PageService } from '../../../../services/page.service';
 import {SelectItem} from 'primeng/primeng';
 import { GenericDomain } from '../../../../model/generic-domain.model';
 import { BaseElement } from './../../base-element.component';
+import { ValidatorFn } from '@angular/forms/src/directives/validators';
+import { ValidationUtils } from '../../validators/ValidationUtils';
 
 /**
  * \@author Dinakar.Meda
@@ -83,12 +85,10 @@ export class MultiSelectListBox extends BaseElement{
                 ($event) => { console.log($event);this.setState($event,this); });
         }
         this.controlValueChanged.subscribe(($event) => {
-            //console.log($event);
             if ($event.config.uiStyles.attributes.postEventOnChange) {
                this.pageService.postOnChange($event.path, 'state', JSON.stringify($event.leafState));
             } else if($event.config.uiStyles.attributes.postButtonUrl) {
                let item: GenericDomain = new GenericDomain();
-               //item.addAttribute($event.config.code,$event.leafState);
                this.pageService.processPost(this.element.config.uiStyles.attributes.postButtonUrl, null, $event.leafState, 'POST');
             }
         });
@@ -104,12 +104,30 @@ export class MultiSelectListBox extends BaseElement{
         });
         this.pageService.validationUpdate$.subscribe(event => {
             let frmCtrl = this.form.controls[event.config.code];
-            if(frmCtrl!=null && event.path.startsWith(this.element.path)) {
-                if(event.enabled.currState)
-                    frmCtrl.enable();
-                else
-                    frmCtrl.disable();
-            }
+                if(frmCtrl!=null) {
+                    if(event.path === this.element.path) {
+                        //bind dynamic validations on a param as a result of a state change of another param
+                        if(event.activeValidationGroups != null && event.activeValidationGroups.length > 0) {
+                            var staticChecks: ValidatorFn[] = [];
+                            var dynamicChecks: ValidatorFn[] = [];
+                            staticChecks = ValidationUtils.buildStaticValidations(this.element);
+                            //merge the static and dynamic validations and overwrite the form control's validators
+                            dynamicChecks = ValidationUtils.buildDynamicValidations(this.element, event.activeValidationGroups);
+                            frmCtrl.setValidators(dynamicChecks.concat(staticChecks));
+                        } else {
+                            var staticChecks: ValidatorFn[] = [];
+                            staticChecks = ValidationUtils.buildStaticValidations(this.element);
+                            frmCtrl.setValidators(staticChecks);
+                        }
+                        if(event.enabled.currState && event.visible.currState) {
+                            frmCtrl.enable();   
+                        }
+                        else {
+                            frmCtrl.disable();
+                        }
+                    }
+
+                }
         });
     }
 

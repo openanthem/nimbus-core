@@ -102,12 +102,6 @@ export class FileUploadComponent extends BaseElement implements ControlValueAcce
 
 	ngOnInit() {
 		this.selectedFiles = [];
-		// if( this.form!= null && this.form.controls[this.element.config.code]!= null) {
-		// 	this.form.controls[this.element.config.code].valueChanges.subscribe(
-		// 		($event) => { 
-		// 			console.log($event); 
-		// 		});
-		// }
 
 		this.fileService.addFile$.subscribe(file => {
 			if (!this.multipleFiles) {
@@ -129,15 +123,12 @@ export class FileUploadComponent extends BaseElement implements ControlValueAcce
 				this.fileService.uploadFile(file);
 			}
 		}
-		//this.value = this.selectedFiles;
 	}
 
 	removeFiles(event) {
 		let index = this.hasFile(event.file);
 		if ( index > -1) {
 			this.selectedFiles.splice(index, 1);
-
-			// this.fileService.removeFile(file);
 		}
 		this.value = this.selectedFiles;
 

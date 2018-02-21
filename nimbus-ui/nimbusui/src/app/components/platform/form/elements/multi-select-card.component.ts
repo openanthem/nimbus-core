@@ -135,7 +135,6 @@ export class MultiselectCard  extends BaseElement implements ControlValueAccesso
                 }
             });
         }
-        //this.form.controls[this.element.config.code].statusChanges.subscribe(($event) => this.setStatus($event));
     }
 
 }

@@ -20,17 +20,19 @@ import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Pageable;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Rakesh Patel
  *
  */
-@Data
+@Getter @Setter
 public abstract class SearchCriteria<T> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -39,12 +41,11 @@ public abstract class SearchCriteria<T> implements Serializable {
 	private String aggregateCriteria;
 	private ProjectCriteria projectCriteria;
 	private String fetch;
-	
-	private String responseConverter;
+	private Pageable pageRequest;
 	
 	public abstract void validate(ExecutionContext executionContext);
 	
-	@Data
+	@Getter @Setter
 	public static class ProjectCriteria implements Serializable {
 
 		private static final long serialVersionUID = 1L;
@@ -54,7 +55,7 @@ public abstract class SearchCriteria<T> implements Serializable {
 		
 	}
 	
-	@Data
+	@Getter @Setter
 	public static class QuerySearchCriteria extends SearchCriteria<String> {
 
 		private static final long serialVersionUID = 1L;
@@ -71,7 +72,7 @@ public abstract class SearchCriteria<T> implements Serializable {
 		
 	}
 
-	@Data
+	@Getter @Setter
 	public static class ExampleSearchCriteria<T> extends SearchCriteria<T> {
 
 		private static final long serialVersionUID = 1L;
@@ -86,7 +87,7 @@ public abstract class SearchCriteria<T> implements Serializable {
 		
 	}
 
-	@Data
+	@Getter @Setter
 	public static class LookupSearchCriteria extends SearchCriteria<String> {
 
 		private static final long serialVersionUID = 1L;

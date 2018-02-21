@@ -123,7 +123,8 @@ public class ViewConfig {
 			XSmall, //25%
 			Small, //33%
 			Medium, //50%
-			Large //100%
+			Large, //100%
+			Colorbox //100%
 		}
 		String alias() default "Tile";
 		String imgSrc() default "";
@@ -267,6 +268,7 @@ public class ViewConfig {
 		String url() default "";
 		boolean rowSelection() default false;
 		String pageSize() default "50"; // changed default from 10 to 50
+		boolean showHeader() default true;
 		boolean pagination() default true;
 		boolean postButton() default false;
 		String postButtonUrl() default "";
@@ -282,6 +284,7 @@ public class ViewConfig {
 	public @interface GridRowBody {
 		String alias() default "GridRowBody";
 		String cssClass() default "";
+		boolean asynchronous() default false;
 	}
 	
 	/*
@@ -372,7 +375,7 @@ public class ViewConfig {
 		String imgSrc() default "";
 		String cssClass() default "";
 		boolean showName() default true;
-		String cols() default "1";
+		String cols() default "3";
 		String iconField() default "";
 		boolean inplaceEdit() default false;
 		String inplaceEditType() default "";

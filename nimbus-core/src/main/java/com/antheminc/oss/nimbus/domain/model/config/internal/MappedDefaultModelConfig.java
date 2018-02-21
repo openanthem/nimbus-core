@@ -28,16 +28,16 @@ import lombok.ToString;
  * @author Soham Chakravarti
  *
  */
-@Getter @ToString(callSuper=true, of={"mapsTo"})
+@Getter @ToString(callSuper=true, of={"mapsToConfig"})
 public class MappedDefaultModelConfig<T, M> extends DefaultModelConfig<T> implements MappedModelConfig<T, M>, Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	@JsonIgnore final private ModelConfig<M> mapsTo;
+	@JsonIgnore final private ModelConfig<M> mapsToConfig;
 	
-	public MappedDefaultModelConfig(ModelConfig<M> mapsTo, Class<T> referredClass) {
+	public MappedDefaultModelConfig(ModelConfig<M> mapsToConfig, Class<T> referredClass) {
 		super(referredClass);
-		this.mapsTo = mapsTo;
+		this.mapsToConfig = mapsToConfig;
 	}
 		
 }

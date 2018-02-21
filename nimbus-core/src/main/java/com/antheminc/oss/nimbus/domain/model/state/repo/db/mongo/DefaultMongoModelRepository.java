@@ -72,7 +72,7 @@ public class DefaultMongoModelRepository implements ModelRepository {
 	@Override
 	public <T> T _new(ModelConfig<T> mConfig, T newState) {
 		// detect id paramConfig
-		ParamConfig<?> pId = Optional.ofNullable(mConfig.getIdParam())
+		ParamConfig<?> pId = Optional.ofNullable(mConfig.getIdParamConfig())
 								.orElseThrow(()->new InvalidConfigException("Persistable Entity: "+mConfig.getReferredClass()+" must be configured with @Id param."));
 		
 		Repo repo = mConfig.getRepo();

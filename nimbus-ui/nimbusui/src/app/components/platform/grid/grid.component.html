@@ -5,7 +5,7 @@
 <!-- Total Results: {{data == null ? leafState.length : data?.length}}   -->
 
 <div id="gsFlexGrid" class="scrollGrid">
-	<div class="ui-datatable-header ui-widget-header">
+	<div class="ui-datatable-header ui-widget-header" *ngIf="element.config?.uiStyles?.attributes?.showHeader == true">
 		<p-header>
 			{{label}}
 			<nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
@@ -41,7 +41,7 @@
 
 		<ng-template ngFor let-col [ngForOf]="params">
 
-			<p-column *ngIf="col?.uiStyles?.attributes?.alias != 'Link' && col?.uiStyles?.attributes?.alias != 'LinkMenu'"
+			<p-column *ngIf="col?.uiStyles?.attributes?.alias != 'Link' && col?.uiStyles?.attributes?.alias != 'LinkMenu' && col?.type?.nested == false"
 				[field]="col?.code" 
 				[header]="col?.label"
 				[hidden]="col?.uiStyles?.attributes?.hidden"
@@ -84,17 +84,21 @@
 
 			<p-column *ngIf="col?.uiStyles?.attributes?.alias=='LinkMenu'" styleClass="dropdown">
 				<ng-template pTemplate="body" let-cell="rowData">
-					<nm-action-dropdown [params]="col?.nestedParams" [rowData]="cell" [elementPath]="getRowPath(col, cell)"></nm-action-dropdown>
+					<nm-action-dropdown [params]="col?.type?.model?.paramConfigs" [rowData]="cell" [elementPath]="getRowPath(col, cell)"></nm-action-dropdown>
 				</ng-template>
 			</p-column>
 		</ng-template>
+
+		<ng-template let-row pTemplate="rowexpansion">
+			<nm-section [element]="row.nestedElement"></nm-section>	
+		</ng-template> 
 				
 		<!-- <ng-template ngFor let-col [ngForOf]="params">
 			<ng-template *ngIf="col?.config?.type?.nested" let-subTbl pTemplate="rowexpansion">
 				<infinite-scroll-grid
 								[data]="col?.config?.gridList"
 								[element]="col"
-								[params]="col?.config?.gridCols">
+								[params]="col?.config?.type?.elementConfig?.type?.model?.paramConfigs">
 				</infinite-scroll-grid>
 			</ng-template>
 		</ng-template> -->

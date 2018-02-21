@@ -119,7 +119,7 @@ public class DefaultQuadModelBuilder implements QuadModelBuilder {
 		
 		// if mapped set domain config to view, other use it as core
 		ModelConfig<V> viewConfig = modelConfig.isMapped() ? (ModelConfig<V>)modelConfig : null;
-		ModelConfig<C> coreConfig = modelConfig.isMapped() ? (ModelConfig<C>)modelConfig.findIfMapped().getMapsTo() : (ModelConfig<C>)modelConfig;
+		ModelConfig<C> coreConfig = modelConfig.isMapped() ? (ModelConfig<C>)modelConfig.findIfMapped().getMapsToConfig() : (ModelConfig<C>)modelConfig;
 		
 		ExecutionEntity.ExConfig<V, C> exConfig = new ExecutionEntity.ExConfig<>(coreConfig, viewConfig, null);
 		return exConfig;

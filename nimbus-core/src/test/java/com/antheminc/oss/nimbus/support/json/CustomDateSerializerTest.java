@@ -46,7 +46,7 @@ public class CustomDateSerializerTest {
 		this.testee.serialize(date, gen, null);
 		ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
 		Mockito.verify(this.gen).writeString(captor.capture());
-		Assert.assertEquals("02/11/2018 12:00 AM", captor.getValue());
+		Assert.assertEquals("2018-02-11T00:00:00.000Z", captor.getValue());
 	}
 	
 	@Test

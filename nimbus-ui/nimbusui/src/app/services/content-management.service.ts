@@ -21,7 +21,7 @@ import { Http, Headers, RequestOptions } from '@angular/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/share';
 import { ServiceConstants } from './service.constants';
-import { Param, LabelConfig, ElementModelParam } from './../shared/app-config.interface';
+import { Param, LabelConfig } from './../shared/app-config.interface';
 
 /**
  * \@author Dinakar.Meda

@@ -16,7 +16,7 @@
  */
 'use strict';
 import { Injectable } from '@angular/core';
-import { Http, Headers, RequestOptions} from '@angular/http';
+import { Http, Headers, RequestOptions, URLSearchParams } from '@angular/http';
 import { HttpClient } from '@angular/common/http';
 
 /**
@@ -33,19 +33,16 @@ export class CustomHttpClient {
   }
 
   createAuthorizationHeader(headers:Headers) {
-    // headers.append('X-Csrf-Token', 'RANDOM123'); // W
-    headers.append('X-Csrf-Token', this.getCookie('XSRF-Token')); //XSRF-Token - Krishna is setting this in serverside
-    //either token will be stored in the cookie or as a keyvalue pair in the localstore
-    //localStorage.getItem('XSRF-Token');
-    // console.log(headers);
-    //console.log('Localstorage - get token:'+localStorage.getItem('XSRF-Token'))
-    // headers.append('X-CSRFToken',localStorage.getItem('XSRF-Token'));
+    headers.append('X-Csrf-Token', this.getCookie('XSRF-Token'));
   }
 
-  get(url) {
+  get(url: string, searchParams?: URLSearchParams) {
     let headers = new Headers({'Content-Type': 'application/json'});
     this.createAuthorizationHeader(headers);
     let options = new RequestOptions({headers: headers, withCredentials: true});
+    if (searchParams) {
+      options.params = searchParams;
+    } 
     return this.customHttpClient.get(url, options);
   }
 
@@ -60,12 +57,6 @@ export class CustomHttpClient {
 
     return this.http.post(url, data);
   }
-
-  // removeFile(url){
-
-  //   return this.http.delete(url);
- 
-  // }
 
   getCookie(name) {
     let value = '; ' + document.cookie;

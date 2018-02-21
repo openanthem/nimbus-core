@@ -30,8 +30,8 @@ import org.springframework.core.type.filter.AnnotationTypeFilter;
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
-import com.antheminc.oss.nimbus.domain.model.config.builder.EntityConfigVisitor;
 import com.antheminc.oss.nimbus.domain.model.config.builder.EntityConfigBuilder;
+import com.antheminc.oss.nimbus.domain.model.config.builder.EntityConfigVisitor;
 import com.antheminc.oss.nimbus.support.JustLogit;
 import com.antheminc.oss.nimbus.support.pojo.ClassLoadUtils;
 

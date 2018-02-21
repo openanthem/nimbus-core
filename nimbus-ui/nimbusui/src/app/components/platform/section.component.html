@@ -43,7 +43,7 @@
             <ng-template [ngIf]="element.alias == 'Grid'">
                 <infinite-scroll-grid
                     [element]="element" 
-                    [params]="element?.config?.gridCols" (onScrollEvent)="onScrollEvent()">
+                    [params]="element?.config?.type?.elementConfig?.type?.model?.paramConfigs" (onScrollEvent)="onScrollEvent()">
                 </infinite-scroll-grid>
             </ng-template>
             <!--Other buttons. Refactor item : to be triggred based on the buttongroup annotation-->

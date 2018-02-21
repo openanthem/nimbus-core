@@ -59,7 +59,7 @@ public class DefaultActionExecutorDelete extends AbstractCommandExecutor<Boolean
 		if(eCtx.getCommandMessage().getCommand().isRootDomainOnly()) {
 			handleRootDelete(eCtx);
 			
-			loader.unload(eCtx, getSessionId());
+			loader.unload(eCtx);
 		}
 		else if(p.isCollection())
 			handleCollection(eCtx, p.findIfCollection());
@@ -84,7 +84,7 @@ public class DefaultActionExecutorDelete extends AbstractCommandExecutor<Boolean
 		} 
 		
 		if(rootDomainConfig.isMapped()) {
-			ModelConfig<?> mapsToConfig = rootDomainConfig.findIfMapped().getMapsTo();
+			ModelConfig<?> mapsToConfig = rootDomainConfig.findIfMapped().getMapsToConfig();
 			Repo mapsToRepo = mapsToConfig.getRepo();
 			
 			if(Repo.Database.exists(mapsToRepo)) {

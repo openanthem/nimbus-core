@@ -48,6 +48,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
         <textarea [(ngModel)] = "value" 
         rows="element.config?.uiStyles?.attributes?.rows"  
             (focusout)="emitValueChangedEvent(this,value)"
+            [disabled]="disabled"
             [id]="element.config?.code" class="form-control" *ngIf="element.config?.uiStyles?.attributes?.readOnly==false"></textarea>
         <p style="margin-bottom:0rem;" *ngIf="element.config?.uiStyles?.attributes?.readOnly==true">{{element.leafState}}</p>
     </div>

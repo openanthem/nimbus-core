@@ -49,8 +49,6 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
         </label>
         <p-calendar [(ngModel)]="value"  
             (focusout)="emitValueChangedEvent(this,$event)" 
-            [minDate]="min"
-            [maxDate]="max"
             [showIcon]="true"
             [disabled]="!element?.enabled?.currState"
             [timeOnly]="element.config?.uiStyles?.attributes?.timeOnly"
@@ -68,4 +66,9 @@ export class Calendar extends BaseControl<String> {
     constructor(wcs: WebContentSvc, pageService: PageService, cd:ChangeDetectorRef) {
         super(pageService,wcs,cd);
     }
+
+    // ngOnInit(){
+ 
+    // }
+
 }
