@@ -7,6 +7,11 @@ ng-component{
     position: relative;
 }
 
+.ui-expanded-row-content .scrollGrid .ui-datatable-scrollable-body, 
+.ui-expanded-row-content .ui-datatable .ui-datatable-scrollable-body {
+    min-height: 0px;
+}
+
 .ui-datatable,.scrollGrid {
     position: static;
     font-size: 1rem;
@@ -18,11 +23,11 @@ ng-component{
     }
     
     th.ui-state-default{
-        background: $gray-med;
-        color: #fff;
+        background: #daedfc;
+        color: #4d4c57;
     }
     th.ui-state-active{
-        background: $gray-dark;
+        background: #b3dcfc;
     }
 
     .ui-datatable-data > tr > td {
@@ -30,10 +35,10 @@ ng-component{
     }
     tbody > tr {
         &.ui-widget-content.ui-datatable-even {
-            background-color: #efefef;
+            background-color: #fff;
         }
         &.ui-widget-content.ui-datatable-odd {
-            background-color: #fff;
+            background-color: #edf7ff;
         }
         &.ui-widget-content.ui-state-highlight { 
             color: inherit;
@@ -47,8 +52,7 @@ ng-component{
         padding: 0;
     }
     th.ui-sortable-column:not(.ui-state-active):hover {
-        background-color: $gray-dark;
-        color: #fff;
+        background-color: #b3dcfc;
     }
     .col-icon {
         width: 30px;
@@ -64,44 +68,43 @@ ng-component{
         position: relative;
         text-align: left;
         border: none;
-        padding: .2rem .4rem;
+        padding: .2rem 40px .2rem .4rem ;
         line-height: 1rem;
         .ui-column-title {
-            display: inline-block;
-            text-align: left;
-            max-width: 65%;
-            margin-right:.3rem;
-             overflow: hidden;
-             text-overflow: ellipsis;
-             white-space: nowrap;
-            // height: 1.3rem;
+            display: block;
+            text-align: center;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            
         }
         .gridFilterIcon {
-            display:none;
-            position: absolute;
-            left: 2px;
-            top:0;
+            position:absolute;
+            right: 0;
+            top: 0;
             &::before{
                 background-size: 15px 15px;
                 height: 15px;
                 width: 15px;
                 display: block;
-                content: ' ';
                 font-family: "fontAwesome";
                 content: "\f0b0";
                 font-size: .8rem;
+                color: #96acbb;
             }
         }
        
         .ui-sortable-column-icon{
-        font-size: 1.2rem;
-        display:inline;
-        color: #fff;
+            font-size: 1.2rem;
+            color: #80A7DE;
+            position:absolute;
+            right: 14px;
+            top: 0;
         }
     }
     tr.ui-expanded-row-content {
+        background: #D9EDFD;
+        padding: .4rem;
         .ui-datatable {
-            padding: .6rem 1.5rem;
             .ui-state-default {
                 background-color: #ccc;
                 color: #555;
@@ -133,14 +136,54 @@ ng-component{
     border:none;
 }
 .ui-widget-header {
+    background: #6e9de1;
     border: none;
     text-align: right;
     font-size: .8rem;
+    color: #fff;
     &.ui-paginator {
-        font-size: .6rem;
+        font-size: .8rem;
+        .ui-paginator-page.ui-state-active {
+            background: #184987;
+            color: #ffffff;
+            
+        }
+        .ui-corner-all {
+            border-radius: 0px;
+        }
+        .ui-state-default{
+            border: none;
+        }
+        .ui-paginator-first{
+            background: none;
+            color:#fff;
+            .fa-step-backward::before{
+                content: "\f053";
+            }
+        }
+        .ui-paginator-prev{
+            background: none;
+            color:#fff;
+            .fa-backward::before{
+                content: "\f060";
+            }
+        }
+        .ui-paginator-next{
+            background: none;
+            color:#fff;
+            .fa-forward::before{
+                content: "\f061";
+            }
+        }
+        .ui-paginator-last{
+            background: none;
+            color:#fff;
+            .fa-step-forward::before{
+                content: "\f054";
+            }
+        }
     }
 }
-
 
 .recordsDisplayed{
     position: absolute;
@@ -151,8 +194,3 @@ ng-component{
 span.ui-cell-data img { 
 margin-right: 10px; 
 }
-
-
-
- 
- 

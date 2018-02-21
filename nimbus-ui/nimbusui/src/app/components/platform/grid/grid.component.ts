@@ -143,7 +143,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         });
 
         this.pageSvc.gridValueUpdate$.subscribe(event => {
-            if(event.path.startsWith(this.element.path)) {
+            if(event.path == this.element.path) {
                 this.value = event.config.gridList;
                 this.cd.markForCheck();
                 this.resetMultiSelection();
@@ -225,14 +225,23 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     }
 
     getAddtionalData(event: any) {
-        let elemPath = '';
-        this.params.forEach(param => {
-            if (param.uiStyles && param.uiStyles.attributes.alias == 'GridRowBody') {
-                elemPath = this.element.path + '/' + event.data.elemId + '/' + param.code;
+        let elemPath;
+        for ( var p in this.params ) {
+            let param = this.params[p];
+            if (param.type.nested) {
+                if (param.uiStyles && param.uiStyles.attributes.alias == 'GridRowBody') {
+                    // Check if data has to be extracted async'ly
+                    if (param.uiStyles.attributes.asynchronous) {
+                        elemPath = this.element.path + '/' + event.data.elemId + '/' + param.code;
+                    } else {
+                        event.data['nestedElement']=event.data.params[p];
+                    }
+                }    
             }
-        });
-        
-        this.pageSvc.processEvent(elemPath, '$execute', new GenericDomain(), 'GET' );
+        }
+        if (elemPath) {
+            this.pageSvc.processEvent(elemPath, '$execute', new GenericDomain(), 'GET' );
+        }
     }
 
     resetMultiSelection() {

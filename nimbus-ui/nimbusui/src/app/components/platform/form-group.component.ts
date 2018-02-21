@@ -41,7 +41,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     selector: 'nm-frm-grp',
     providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc],
     template:`
-        <div class="col-lg-12 clearfix">
+        <div class="col-lg-12 clearfix colorBox">
             <ng-template ngFor let-element let-isFirst="first" [ngForOf]="elements">
                 <ng-template [ngIf]="isFirst">
                     <legend *ngIf="label && element.visible?.currState">
