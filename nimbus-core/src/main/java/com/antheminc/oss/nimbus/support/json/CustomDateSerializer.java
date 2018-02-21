@@ -1,7 +1,8 @@
 package com.antheminc.oss.nimbus.support.json;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -12,7 +13,7 @@ public class CustomDateSerializer extends StdSerializer<Date>{
 
 	private static final long serialVersionUID = 1L;
 	
-	private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+	private final CustomLocalDateTimeSerializer serializer;
 
     public CustomDateSerializer() {
         this(null);
@@ -20,15 +21,15 @@ public class CustomDateSerializer extends StdSerializer<Date>{
     
 	protected CustomDateSerializer(Class<Date> t) {
 		super(t);
+		this.serializer = new CustomLocalDateTimeSerializer();
 	}
 
 	@Override
 	public void serialize(Date value, JsonGenerator gen, SerializerProvider provider) throws IOException {
-		try {
-            gen.writeString(formatter.format(value));
-        } catch (IOException e) {
-            throw new JsonParsingException(e);
-        }
+	 	if(value == null)
+    		return;
+    	
+	 	this.serializer.serialize(LocalDateTime.ofInstant(value.toInstant(), ZoneId.systemDefault()), gen, provider);
 	}
 
 }
