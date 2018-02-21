@@ -752,8 +752,9 @@ export class PageService {
                 }
         }
 
-        updateParam(param: Param, payload: Param) {
+        updateParam(param: Param, rawPayload: Param) {
                 let result: any[] = Reflect.ownKeys(param);
+                let payload: Param = new Param(this.configService).deserialize(rawPayload);
                 let updatedKeys: any[] = Reflect.ownKeys(payload);
                 updatedKeys.forEach(updatedKey => {
                         result.forEach(currentKey => {
