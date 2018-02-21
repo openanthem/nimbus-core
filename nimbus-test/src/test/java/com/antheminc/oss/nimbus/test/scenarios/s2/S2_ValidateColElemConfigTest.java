@@ -95,6 +95,7 @@ public class S2_ValidateColElemConfigTest extends AbstractFrameworkIntegrationTe
 		assertNotNull(o);
 		
 		//assertThat(json.write(o)).hasJsonPathValue("$.type.model.params[0].config.type.elementConfig.type.modelConfig.paramConfigs", new Object[]{});
+		System.out.println(json.write(o).getJson());
 		assertThat(json.write(o)).hasJsonPathValue("$.config.type.modelConfig.paramConfigs[0].type.elementConfig.type.modelConfig.paramConfigs", new Object[]{});
 	}
 	

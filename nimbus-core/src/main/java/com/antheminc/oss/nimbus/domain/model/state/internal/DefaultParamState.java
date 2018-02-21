@@ -78,14 +78,14 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	private boolean active = true;
 	
 	@JsonIgnore
-	private RemnantState<Boolean> visible = this.new RemnantState<>(true);
+	private RemnantState<Boolean> visibleState = this.new RemnantState<>(true);
 	
 	@JsonIgnore
-	private RemnantState<Boolean> enabled = this.new RemnantState<>(true);
+	private RemnantState<Boolean> enabledState = this.new RemnantState<>(true);
 	
 	@JsonIgnore
 	@SuppressWarnings("unchecked")
-	private RemnantState<Class<? extends ValidationGroup>[]> activeValidationGroups = new RemnantState<>(new Class[0]);
+	private RemnantState<Class<? extends ValidationGroup>[]> activeValidationGroupsState = new RemnantState<>(new Class[0]);
 	
 	private List<ParamValue> values;
 	
@@ -574,16 +574,16 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	@Override
 	public boolean isVisible() {
-		return visible.getCurrState();
+		return visibleState.getCurrState();
 	}
 	
 	@Override
 	public boolean isEnabled() {
-		return enabled.getCurrState();
+		return enabledState.getCurrState();
 	}
 	
 	public void setVisible(boolean visible) {
-		boolean changed = this.visible.setStateConditional(visible, ()->isActive() || !visible);
+		boolean changed = this.visibleState.setStateConditional(visible, ()->isActive() || !visible);
 		if (!changed)
 			return;
 		
@@ -615,7 +615,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	@Override
 	public void setEnabled(boolean enabled) {
-		boolean changed = this.enabled.setStateConditional(enabled, ()->isActive() || !enabled);
+		boolean changed = this.enabledState.setStateConditional(enabled, ()->isActive() || !enabled);
 		if (!changed)
 			return;
 		
@@ -774,12 +774,12 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 
 	@Override
 	public Class<? extends ValidationGroup>[] getActiveValidationGroups() {
-		return this.activeValidationGroups.getCurrState();
+		return this.activeValidationGroupsState.getCurrState();
 	}
 
 
 	@Override
 	public void setActiveValidationGroups(Class<? extends ValidationGroup>[] activeValidationGroups) {
-		this.activeValidationGroups.setState(activeValidationGroups);
+		this.activeValidationGroupsState.setState(activeValidationGroups);
 	}
 }
