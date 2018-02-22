@@ -108,6 +108,7 @@ public class ActivitiUserTaskActivityBehavior extends UserTaskActivityBehavior {
 	
 	@Override
 	public void leave(DelegateExecution execution) {
+		init();
 		super.leave(execution);
 		removeActiveTask(execution);
 	}
