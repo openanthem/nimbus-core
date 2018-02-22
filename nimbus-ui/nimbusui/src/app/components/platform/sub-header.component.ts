@@ -33,8 +33,15 @@ import { BaseElement } from './base-element.component';
     template:`           
         <ng-template [ngIf]="!param?.type?.nested">
            <div class="col-sm-12 col-md-6 col-lg-4 {{param?.config?.uiStyles?.attributes?.cssClass}}">
-                <span [hidden]="!param?.config?.uiStyles?.attributes?.showName">{{label}}</span>
-                <span>{{param.leafState}}</span>
+                <ng-template [ngIf]="param.type.name == 'date' || param.type.name == 'Date' || param.type.name == 'LocalDateTime'
+                || param.type.name == 'ZonedDateTime'">
+                    <span [hidden]="!param?.config?.uiStyles?.attributes?.showName">{{label}}</span>
+                    <span>{{param.leafState | dateTimeFormat: param.config?.uiStyles?.attributes?.datePattern}}</span>
+                </ng-template>
+                <div *ngIf="param.type.name !== 'date' && param.type.name !== 'Date' && param.type.name !== 'LocalDateTime' && param.type.name != 'ZonedDateTime'">
+                    <span [hidden]="!param?.config?.uiStyles?.attributes?.showName">{{label}}</span>
+                    <span>{{param.leafState}}</span>
+                </div>
            </div>
         </ng-template>
     `
