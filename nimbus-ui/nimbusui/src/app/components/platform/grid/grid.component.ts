@@ -152,7 +152,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         });
 
         this.pageSvc.gridValueUpdate$.subscribe(event => {
-            if(event.path == this.element.path) {
+            if (event.path == this.element.path) {
                 this.value = event.config.gridList;
                 this.totalRecords = this.value.length;
                 this.updatePageDetailsState();
@@ -164,8 +164,8 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         if (this.form != undefined && this.form.controls[this.element.config.code] != null) {
             this.pageSvc.validationUpdate$.subscribe(event => {
                 let frmCtrl = this.form.controls[event.config.code];
-                if(frmCtrl != null && event.path == this.element.path) {
-                    if(event.enabled)
+                if (frmCtrl != null && event.path == this.element.path) {
+                    if (event.enabled)
                         frmCtrl.enable();
                     else
                         frmCtrl.disable();
@@ -175,12 +175,12 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
 
     }
 
-    getRowPath(col:ParamConfig, item: any) {
+    getRowPath(col: ParamConfig, item: any) {
         return this.element.path + '/' + item.elemId + '/' + col.code;
     }
 
     processOnClick(col: ParamConfig, item: any) {
-        let uri=this.element.path + '/' + item.elemId + '/' + col.code;
+        let uri = this.element.path + '/' + item.elemId + '/' + col.code;
 
         let uriParams = this.getAllURLParams(uri);
         if (uriParams != null) {
@@ -229,7 +229,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     }
 
     postOnChange(col: ParamConfig, item: any) {
-        let uri=this.element.path + '/' + item.elemId + '/' + col.code;
+        let uri = this.element.path + '/' + item.elemId + '/' + col.code;
         this.pageSvc.postOnChange(uri, 'state', JSON.stringify(event.target['checked']));
     }
 
@@ -238,21 +238,21 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
 
     getAddtionalData(event: any) {
         let elemPath;
-        for ( var p in this.params ) {
+        for (var p in this.params) {
             let param = this.params[p];
             if (param.type.nested) {
                 if (param.uiStyles && param.uiStyles.attributes.alias == 'GridRowBody') {
-                    // Check if data has to be extracted async'ly
-                    if (param.uiStyles.attributes.asynchronous) {
-                        elemPath = this.element.path + '/' + event.data.elemId + '/' + param.code;
-                    } else {
-                        event.data['nestedElement']=event.data.params[p];
-                    }
-                }    
+                    // // Check if data has to be extracted async'ly
+                    // if (param.uiStyles.attributes.asynchronous) {
+                    //     elemPath = this.element.path + '/' + event.data.elemId + '/' + param.code;
+                    // } else {
+                        event.data['nestedElement'] = event.data.params[p];
+                    // }
+                }
             }
         }
         if (elemPath) {
-            this.pageSvc.processEvent(elemPath, '$execute', new GenericDomain(), 'GET' );
+            this.pageSvc.processEvent(elemPath, '$execute', new GenericDomain(), 'GET');
         }
     }
 
@@ -260,8 +260,8 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         this.selectedRows = [];
     }
 
-    sortBy(e: any, fieldType: string, sortAs: string){
-        if(this.isSortAsNumber(fieldType, sortAs)) {
+    sortBy(e: any, fieldType: string, sortAs: string) {
+        if (this.isSortAsNumber(fieldType, sortAs)) {
             this.sortInternal(fieldValue => Number(fieldValue), e);
         }
         else if (this.isSortAsDate(fieldType, sortAs)) {
@@ -294,43 +294,37 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
 
     protected isSortAsNumber(fieldType: string, sortAs: string): boolean {
         let fieldTypeToMatch = fieldType.toLowerCase();
-        return ((sortAs !== null && sortAs === SortAs.number.value) || fieldTypeToMatch === GridColumnDataType.int.value || fieldTypeToMatch === GridColumnDataType.integer.value 
-                || fieldTypeToMatch === GridColumnDataType.long.value || fieldTypeToMatch === GridColumnDataType.double.value);
-        
+        return ((sortAs !== null && sortAs === SortAs.number.value) || fieldTypeToMatch === GridColumnDataType.int.value || fieldTypeToMatch === GridColumnDataType.integer.value
+            || fieldTypeToMatch === GridColumnDataType.long.value || fieldTypeToMatch === GridColumnDataType.double.value);
+
     }
 
     protected isSortAsDate(fieldType: string, sortAs: string): boolean {
-      let fieldTypeToMatch = fieldType.toLowerCase();
-        return ((sortAs !== null && sortAs === SortAs.date.value) || fieldTypeToMatch === GridColumnDataType.date.value 
-                || fieldTypeToMatch === GridColumnDataType.localdatetime.value || fieldType === GridColumnDataType.zoneddatetime.value);
-        
+        let fieldTypeToMatch = fieldType.toLowerCase();
+        return ((sortAs !== null && sortAs === SortAs.date.value) || fieldTypeToMatch === GridColumnDataType.date.value
+            || fieldTypeToMatch === GridColumnDataType.localdatetime.value || fieldType === GridColumnDataType.zoneddatetime.value);
+
     }
 
-
     dateFilter(e: any, dt: DataTable, field: string, filterMatchMode: string, datePattern?: string, dateType?: string) {
-
-
         datePattern = (datePattern == "") ? "MM/DD/YYYY" : datePattern;
 
         if (e.target.value.length == '0') {
             dt.filter(e.target.value, field, "startsWith");
         }
-        else{
-            if(moment(e.target.value, datePattern.toUpperCase(), true).isValid()){
+        else {
+            if (moment(e.target.value, datePattern.toUpperCase(), true).isValid()) {
                 let formatedDate = moment(e.target.value, datePattern.toUpperCase()).format('MM/DD/YYYY');
-                dt.filter(formatedDate, field, "startsWith");                 
+                dt.filter(formatedDate, field, "startsWith");
             }
         }
 
         this.totalRecords = dt.dataToRender.length;
         this.updatePageDetailsState();
-
     }
 
-    inputFilter(e: any, dt: DataTable, field: string, filterMatchMode: string){
-
+    inputFilter(e: any, dt: DataTable, field: string, filterMatchMode: string) {
         dt.filter(e.target.value, field, "startsWith");
-
     }
 
     isDate(dataType: string): boolean {
@@ -348,7 +342,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         }
     }
 
-    updatePageDetailsState(){
+    updatePageDetailsState() {
         if (this.totalRecords != 0) {
             this.rowStart = 1;
             this.rowEnd = this.totalRecords < +this.element.config.uiStyles.attributes.pageSize ? this.totalRecords : +this.element.config.uiStyles.attributes.pageSize;
@@ -358,15 +352,8 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         }
     }
 
-    filterCallBack(e: any){   
-    this.totalRecords=e.filteredValue.length;
-    this.updatePageDetailsState();
-
+    filterCallBack(e: any) {
+        this.totalRecords = e.filteredValue.length;
+        this.updatePageDetailsState();
     }
-
-
 }
-
-
-
-
