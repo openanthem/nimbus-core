@@ -116,7 +116,7 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
             SpringAsyncExecutor springAsyncExecutor, BeanResolverStrategy beanResolver) throws Exception {
     	SpringProcessEngineConfiguration engineConfiguration = this.baseSpringProcessEngineConfiguration(processDataSource, jpaTransactionManager, springAsyncExecutor);
     	engineConfiguration.setExpressionManager(platformExpressionManager);
-    	
+    	engineConfiguration.setProcessDefinitionCache(new ActivitiProcessDefinitionCache());
     	engineConfiguration.setActivityBehaviorFactory(platformActivityBehaviorFactory(beanResolver));
     	engineConfiguration.setHistoryLevel(HistoryLevel.getHistoryLevelForKey(processHistoryLevel));
     	addCustomDeployers(engineConfiguration);
@@ -196,13 +196,6 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
         return new SimpleAsyncTaskExecutor();
     }
     
-//    @Bean
-//	public DataSource processDataSource() {
-//    	return new EmbeddedDatabaseBuilder().
-//				setType(EmbeddedDatabaseType.H2).
-//				build();
-//	}  
-    
     @Bean
   	public DataSource processDataSource() {
     		if(dbUrl.equals("embeddedH2")) {
@@ -218,9 +211,6 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
     		return ds;
   	}     
     
-//    @Bean
-//	public JpaTransactionManager jpaTransactionManager(EntityManagerFactory emf) {
-//		return new JpaTransactionManager(emf);
-//	}
+   
     
 }
