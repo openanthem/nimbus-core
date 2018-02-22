@@ -22,8 +22,7 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateChange;
-import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
+import com.antheminc.oss.nimbus.domain.RepeatContainer;
 
 /**
  * @author Soham Chakravarti
@@ -32,23 +31,8 @@ import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 @Documented
 @Retention(RUNTIME)
 @Target(FIELD)
-@OnStateLoad @OnStateChange
-public @interface ExpressionConditional {
+@RepeatContainer(ExpressionConditional.class)
+public @interface ExpressionConditionals {
 
-	/**
-	 *  SpEL based condition to be evaluated relative to param's state on which this annotation is declared.
-	 */
-	String when();
-	
-
-	/**
-	 *  SpEL based expression to be executed relative to param on which this annotation is declared, if when() is true.
-	 */
-	String then();
-	
-	/**
-	 *  SpEL based expression to be executed relative to param on which this annotation is declared, if when() is false. <br>
-	 *  Defaults to no action.
-	 */
-	String elseThen() default "";
+	ExpressionConditional[] value();
 }
