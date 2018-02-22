@@ -15,85 +15,105 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.extension;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertSame;
 
+import java.time.LocalDate;
+
+import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
+import com.antheminc.oss.nimbus.domain.AbstractFrameworkIngerationPersistableTests;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
+import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
+import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
+import com.antheminc.oss.nimbus.domain.model.config.builder.EntityConfigVisitor;
+import com.antheminc.oss.nimbus.domain.model.config.builder.internal.DefaultEntityConfigBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
+import com.antheminc.oss.nimbus.domain.model.state.builder.QuadModelBuilder;
+import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleExprEvalEntity;
 
 /**
  * @author Soham Chakravarti
  *
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class ExpressionConditionalStateEventHandlerTest extends AbstractStateEventHandlerTests {
+public class ExpressionConditionalStateEventHandlerTest extends AbstractFrameworkIngerationPersistableTests {
 
-	@Override
-	protected Command createCommand() {
-		Command cmd = CommandBuilder.withUri("/hooli/thebox/p/sample_view/_new").getCommand();
-		return cmd;
+	@Autowired 
+	DefaultEntityConfigBuilder entityConfigBuilder;
+	
+	@Autowired 
+	CommandPathVariableResolver cmdPathResolver;
+	
+	@Autowired
+	QuadModelBuilder quadBuilder;
+	
+	ModelConfig<SampleExprEvalEntity> mConfig;
+	
+	@Value(SampleExprEvalEntity.K_LINK_URL)
+	String expected_url_link;
+	
+	@Value(SampleExprEvalEntity.K_IMAGE_URL)
+	String expected_url_image;
+	
+	@Value(SampleExprEvalEntity.K_INITIALIZE_URL)
+	String expected_url_initialize;
+	
+	@Value("${test.url.code}")
+	String expected_env_code;
+	
+	public static final String K_PARAM_REF_VALUE = "pass value p1";
+	
+	
+	@Before
+	public void before() {
+		mConfig = entityConfigBuilder.load(SampleExprEvalEntity.class, new EntityConfigVisitor());
 	}
 	
 	@Test
-	public void t00_init() {
-		Param<String> cp_trigger = _q.getRoot().findParamByPath("/sample_core/attr_enable_trigger");
-		assertNotNull(cp_trigger);
+	public void t01_onLoad() {
+		Command cmd = CommandBuilder.withUri("/hooli/thebox/p/sample_expr/_new").getCommand();
 		
-		Param<String> cp_action = _q.getRoot().findParamByPath("/sample_core/attr_enable_nested");
-		assertNotNull(cp_action);
+		QuadModel<?, ?> q = quadBuilder.build(cmd);
+		assertNotNull(q);
 		
-		Param<String> cp_action_nested_p1 = _q.getRoot().findParamByPath("/sample_core/attr_enable_nested/enable_p1");
-		assertNotNull(cp_action_nested_p1);
-		
-		Param<String> cp_action_nested_p2 = _q.getRoot().findParamByPath("/sample_core/attr_enable_nested/enable_p2");
-		assertNotNull(cp_action_nested_p2);
+		Param<LocalDate> pInitOnLoad = q.getCore().findParamByPath("/initDateOnLoad");
+		assertNotNull(pInitOnLoad.getState());
+		assertEquals(LocalDate.now(), pInitOnLoad.getState());
 	}
 	
 	@Test
-	public void t01c_condition_NULL_onLoad() {
-		Param<String> cp_trigger = _q.getRoot().findParamByPath("/sample_core/attr_enable_trigger");
-		assertNull(cp_trigger.getState());
-		assertTrue(cp_trigger.isEnabled());
+	public void t02_onChange() {
+		Command cmd = CommandBuilder.withUri("/hooli/thebox/p/sample_expr/_new").getCommand();
 		
-		Param<String> cp_action = _q.getRoot().findParamByPath("/sample_core/attr_enable_nested");
-		assertNull(cp_action.getState());
-		assertFalse(cp_action.isEnabled());
+		QuadModel<?, ?> q = quadBuilder.build(cmd);
+		assertNotNull(q);
 		
-		Param<String> cp_action_nested_p1 = _q.getRoot().findParamByPath("/sample_core/attr_enable_nested/enable_p1");
-		assertNull(cp_action_nested_p1.getState());
-		assertFalse(cp_action_nested_p1.isEnabled());
+		Param<String> trigger = q.getCore().findParamByPath("/exprWhenTrigger");
+		Param<String> exprThen = q.getCore().findParamByPath("/exprThen");
 		
-		Param<String> cp_action_nested_p2 = _q.getRoot().findParamByPath("/sample_core/attr_enable_nested/enable_p2");
-		assertNull(cp_action_nested_p2.getState());
-		assertFalse(cp_action_nested_p2.isEnabled());
-	}
-	
-	@Test
-	public void t02c_condition_positive() {
-		Param<String> cp_trigger = _q.getRoot().findParamByPath("/sample_core/attr_enable_trigger");
-		assertNull(cp_trigger.getState());
+		assertNotNull(trigger);
+		assertNotNull(exprThen);
 		
-		// set positive scenario
-		cp_trigger.setState("Y");
-		assertTrue(cp_trigger.isEnabled());
+		assertNull(exprThen.getState());
 		
-		Param<String> cp_action = _q.getRoot().findParamByPath("/sample_core/attr_enable_nested");
-		assertNull(cp_action.getState());
-		assertTrue(cp_action.isEnabled());
+		// thenB
+		trigger.setState(SampleExprEvalEntity.K_VAL_B_WHEN);
+		assertEquals(SampleExprEvalEntity.K_VAL_B_THEN, exprThen.getState());
 		
-		Param<String> cp_action_nested_p1 = _q.getRoot().findParamByPath("/sample_core/attr_enable_nested/enable_p1");
-		assertNull(cp_action_nested_p1.getState());
-		assertTrue(cp_action_nested_p1.isEnabled());
+		// not thenB
+		trigger.setState("something else...");
 		
-		Param<String> cp_action_nested_p2 = _q.getRoot().findParamByPath("/sample_core/attr_enable_nested/enable_p2");
-		assertNull(cp_action_nested_p2.getState());
-		assertFalse(cp_action_nested_p2.isEnabled());
+		// check that old value is still retained
+		assertEquals(SampleExprEvalEntity.K_VAL_B_THEN, exprThen.getState());
 	}
 }

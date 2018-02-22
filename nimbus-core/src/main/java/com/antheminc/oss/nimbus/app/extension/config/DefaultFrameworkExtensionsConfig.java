@@ -30,6 +30,7 @@ import com.antheminc.oss.nimbus.domain.model.state.extension.AuditStateChangeHan
 import com.antheminc.oss.nimbus.domain.model.state.extension.ConfigConditionalStateChangeHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.DobToAgeConverter;
 import com.antheminc.oss.nimbus.domain.model.state.extension.EnableConditionalStateEventHandler;
+import com.antheminc.oss.nimbus.domain.model.state.extension.ExpressionConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ModalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ParamContextStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.RuleStateEventHandler;
@@ -115,6 +116,11 @@ public class DefaultFrameworkExtensionsConfig {
 		validationAssignmentStrategies.put(ValidationScope.SIBLING, new SiblingValidationAssignmentStrategy());
 		validationAssignmentStrategies.put(ValidationScope.SIBLING_NESTED, new SiblingNestedValidationAssignmentStrategy());
 		return validationAssignmentStrategies;
+	}
+	
+	@Bean
+	public ExpressionConditionalStateEventHandler expressionConditionalHandler(BeanResolverStrategy beanResolver) {
+		return new ExpressionConditionalStateEventHandler(beanResolver);
 	}
 	
 	@Bean

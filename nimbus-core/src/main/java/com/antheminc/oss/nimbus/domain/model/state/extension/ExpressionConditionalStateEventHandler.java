@@ -15,9 +15,15 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.extension;
 
+import java.util.Optional;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.extension.ExpressionConditional;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.StateHolder.ParamStateHolder;
 import com.antheminc.oss.nimbus.domain.model.state.extension.AbstractConditionalStateEventHandler.EvalExprWithCrudActions;
 
 /**
@@ -32,8 +38,26 @@ public class ExpressionConditionalStateEventHandler extends EvalExprWithCrudActi
 	
 	@Override
 	protected void handleInternal(Param<?> onChangeParam, ExpressionConditional configuredAnnotation) {
-		boolean isTrue = evalWhen(onChangeParam, configuredAnnotation.when());
+		boolean isExecuteThen = evalWhen(onChangeParam, configuredAnnotation.when());
 		
-		
+		if(isExecuteThen) {
+			String thenExpr = Optional.ofNullable(configuredAnnotation.then())
+								.filter(StringUtils::isNotEmpty)
+								.orElseThrow(()->new InvalidConfigException(configuredAnnotation+" must have valid expression to execute."));
+			
+			execute(onChangeParam, thenExpr);
+			return;
+		} 
+
+//		// else expression
+//		String elseExpr = StringUtils.trimToNull(configuredAnnotation.elseThen());
+//		if(elseExpr == null) 
+//			return;
+//		
+//		execute(onChangeParam, elseExpr);
+	}
+	
+	private void execute(Param<?> onChangeParam, String expr) {
+		expressionEvaluator.getValue(expr, new ParamStateHolder<>(onChangeParam));
 	}
 }
