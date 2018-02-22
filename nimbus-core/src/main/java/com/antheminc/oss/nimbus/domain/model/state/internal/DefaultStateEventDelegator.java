@@ -123,7 +123,7 @@ public class DefaultStateEventDelegator implements StateEventDelegator {
 		if(CollectionUtils.isEmpty(events))
 			return aggregatedEvents;
 
-		Set<Param<?>> unique = new HashSet<>(events.size());
+		Map<String, Param<?>> unique = new HashMap<>(events.size());
 		for(ParamEvent pe : events) {
 			//ParamEvent pe = events.poll();
 			
@@ -133,8 +133,8 @@ public class DefaultStateEventDelegator implements StateEventDelegator {
 			Param<?> colParent = findFirstCollectionNode(pe.getParam());
 			ParamEvent resolved = (colParent==null) ? pe : new ParamEvent(pe.getAction(), colParent);
 
-			if(!unique.contains(resolved.getParam())) {
-				unique.add(resolved.getParam());
+			if(!unique.containsKey(resolved.getParam().getPath())) {
+				unique.put(resolved.getParam().getPath(), resolved.getParam());
 					
 				groupedEvents.add(resolved);
 			}

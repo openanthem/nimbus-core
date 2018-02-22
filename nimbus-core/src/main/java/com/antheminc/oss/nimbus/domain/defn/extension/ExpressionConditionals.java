@@ -13,21 +13,26 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.domain.model.state;
+package com.antheminc.oss.nimbus.domain.defn.extension;
 
-import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
-import com.antheminc.oss.nimbus.support.Holder;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-public class ParamStateHolder extends Holder<Object> {
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-	private final Param<?> param;
-	
-	public ParamStateHolder(Param<?> param) {
-		super(param.getLeafState());
-		this.param = param;
-	}
-	
-	public Object findStateByPath(String path) {
-		return this.param.findStateByPath(path);
-	}
+import com.antheminc.oss.nimbus.domain.RepeatContainer;
+
+/**
+ * @author Soham Chakravarti
+ *
+ */
+@Documented
+@Retention(RUNTIME)
+@Target(FIELD)
+@RepeatContainer(ExpressionConditional.class)
+public @interface ExpressionConditionals {
+
+	ExpressionConditional[] value();
 }
