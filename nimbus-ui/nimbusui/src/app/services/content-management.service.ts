@@ -39,7 +39,7 @@ export class WebContentSvc {
 	}
 
     logError(err) {
-		console.error('Failure making server call : ' + JSON.stringify(err));
+		// console.error('Failure making server call : ' + JSON.stringify(err));
 	}
 
     findLabelContent(param: Param) {

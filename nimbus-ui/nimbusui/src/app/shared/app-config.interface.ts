@@ -18,6 +18,8 @@
 
 import { ConfigService } from './../services/config.service';
 import { SortAs } from "../components/platform/grid/sortas.interface";
+import { PageService } from '../services/page.service';
+import { GridService } from '../services/grid.service';
 
 /**
  * \@author Dinakar.Meda
@@ -235,6 +237,12 @@ export class Param implements Serializable<Param> {
         }
         return undefined;
     }
+    createRowData(param: Param) {
+        let rowData: any = {};
+        rowData = param.type.model;
+        rowData['elemId'] = param.elemId;
+        return rowData;
+    }
 
     deserialize( inJson ) {
         this.configId = inJson.configId;
@@ -254,6 +262,16 @@ export class Param implements Serializable<Param> {
         if ( this.config != null && this.config.uiStyles && this.config.uiStyles.attributes.alias === 'CardDetailsGrid' ) {
             if(inJson.leafState != null) {
                 this.leafState = new CardDetailsGrid().deserialize( inJson.leafState );
+            }
+        } else if (this.config != null && this.config.uiStyles && this.config.uiStyles.attributes.alias === 'Grid') {
+            console.log(this.config);
+            console.log(inJson);
+            if (inJson.type && inJson.type.model && inJson.type.model.params) {
+                this.config.gridList = [];
+                for ( var p in inJson.type.model.params ) {
+                    let param = new Param(this.configSvc).deserialize(inJson.type.model.params[p]);
+                    this.config.gridList.push(this.createRowData(param));
+                }
             }
         } else {
             this.leafState = inJson.leafState;

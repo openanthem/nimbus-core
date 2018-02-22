@@ -156,7 +156,7 @@ export class PageService {
                 this.http.get(url)
                         .map(res => res.json())
                         .subscribe(data => {
-                                console.log('Creating a global page map');
+                                // console.log('Creating a global page map');
                                 this.processResponse(data.result, baseUrl, flowName);
                         },
                         err => this.logError(err),
@@ -435,7 +435,7 @@ export class PageService {
                                 );
                         //}
                 } else if (method !== '' && method.toUpperCase() === HttpMethod.POST.value) {
-                        console.log('payload - ' + JSON.stringify(model));
+                        // console.log('payload - ' + JSON.stringify(model));
                         this.http.post(url, JSON.stringify(model))
                                 .map(res => res.json())
                                 .subscribe(data => {
@@ -458,7 +458,7 @@ export class PageService {
                 let url = ServiceConstants.PLATFORM_BASE_URL + processUrl + '/' + Action._get.value;
 
                 if (method !== '' && method.toUpperCase() === HttpMethod.POST.value) {
-                        console.log('payload - ' + JSON.stringify(payload));
+                        // console.log('payload - ' + JSON.stringify(payload));
                         this.http.post(url, JSON.stringify(payload))
                                 .map(res => res.json())
                                 .subscribe(data => {
@@ -483,14 +483,14 @@ export class PageService {
                         let flowNameWithId = flowName.concat(':' + rootDomainId);
                         path = path.replace(flowName, flowNameWithId);
                 }
-                console.log('Post on change :: ' + path);
+                // console.log('Post on change :: ' + path);
                 let modelEvnt = new ModelEvent();
                 modelEvnt.type = Action._replace.value; //use the server side actions like _new, _update
                 modelEvnt.id = path;
                 modelEvnt.value = payloadValue;
                 modelEvnt.payload = payloadValue;
                 //  modelEvnt.value.path = path;
-                console.log(JSON.stringify(modelEvnt));
+                // console.log(JSON.stringify(modelEvnt));
                 var urlBase = ServiceConstants.PLATFORM_BASE_URL;
                 var url = urlBase + '/event/notify';
                 //if (action === Action._update.value) {
@@ -673,7 +673,7 @@ export class PageService {
                                         let elemIndex = nestedPath.substr(0, nestedPath.indexOf('/'));
                                         for (var p = 0; p < param.config.gridList.length; p++) {
                                                 if (param.config.gridList[p]['elemId'] == elemIndex) {
-                                                        console.log(param.config.gridList[p]['nestedElement']);
+                                                        // console.log(param.config.gridList[p]['nestedElement']);
                                                         let nestedElement = this.getNestedElementParam(param.config.gridList[p]['nestedElement'], nestedPath);
                                                         if (nestedElement) {
                                                                 nestedElement['config']['gridList'] = this.createGridData(eventModel.value.type.model.params, param.config.type.elementConfig.type.model.paramConfigs);
@@ -685,7 +685,7 @@ export class PageService {
                                                 }
                                         }
 
-                                        console.log('eventModel');
+                                        // console.log('eventModel');
                                 }
                         }
                 } else if (param.config.uiStyles != null && param.config.uiStyles.attributes.alias === 'CardDetailsGrid') {
@@ -755,6 +755,9 @@ export class PageService {
         updateParam(param: Param, rawPayload: Param) {
                 let result: any[] = Reflect.ownKeys(param);
                 let payload: Param = new Param(this.configService).deserialize(rawPayload);
+                if (payload.config == undefined) {
+                        console.log(payload);
+                }
                 let updatedKeys: any[] = Reflect.ownKeys(payload);
                 updatedKeys.forEach(updatedKey => {
                         result.forEach(currentKey => {
@@ -818,7 +821,7 @@ export class PageService {
                 this.http.get(url)
                         .map(res => res.json())
                         .subscribe(data => {
-                                console.log('Creating a global page map');
+                                // console.log('Creating a global page map');
                                 this.processResponse(data.result, '', '');
                         },
                         err => this.logError(err),

@@ -82,7 +82,10 @@ export class MultiSelectListBox extends BaseElement{
         }
         if( this.form.controls[this.element.config.code]!= null) {
             this.form.controls[this.element.config.code].valueChanges.subscribe(
-                ($event) => { console.log($event);this.setState($event,this); });
+                ($event) => { 
+                    // console.log($event);
+                    this.setState($event,this); 
+                });
         }
         this.controlValueChanged.subscribe(($event) => {
             if ($event.config.uiStyles.attributes.postEventOnChange) {
