@@ -18,11 +18,14 @@
  */
 package com.antheminc.oss.nimbus.test.scenarios.s0.core;
 
+import java.time.LocalDate;
+
 import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Image;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Initialize;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Link;
+import com.antheminc.oss.nimbus.domain.defn.extension.ExpressionConditional;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -55,4 +58,22 @@ public class SampleExprEvalEntity {
 	@Initialize(alias=K_INITIALIZE_URL)
 	@Image(imgSrc=K_IMAGE_URL, alias=K_LINK_URL)
 	private String initialize;
+	
+	/* expression */
+	public static final String K_VAL_B_WHEN = "whenB";
+	public static final String K_VAL_B_THEN = "thenB";
+	
+	//@ExpressionConditional(when="state == "+K_VAL_A_WHEN, then="findParamByPath('../exprThen').setState("+K_VAL_A_THEN+")")
+	@ExpressionConditional(
+			when="state == '"+K_VAL_B_WHEN+"'", 
+			then="findParamByPath('../exprThen').setState('"+K_VAL_B_THEN+"')")
+	
+	private String exprWhenTrigger;
+	
+	private String exprThen;
+	
+	
+	@ExpressionConditional(when="onLoad()", then="setState( T(java.time.LocalDate).now() )")
+	private LocalDate initDateOnLoad;
+	
 }
