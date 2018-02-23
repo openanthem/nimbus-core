@@ -18,7 +18,6 @@ package com.antheminc.oss.nimbus.domain.model.state.extension;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 
 import java.time.LocalDate;
 
@@ -89,6 +88,11 @@ public class ExpressionConditionalStateEventHandlerTest extends AbstractFramewor
 		Param<LocalDate> pInitOnLoad = q.getCore().findParamByPath("/initDateOnLoad");
 		assertNotNull(pInitOnLoad.getState());
 		assertEquals(LocalDate.now(), pInitOnLoad.getState());
+		
+		// set some value after onLoad
+		LocalDate newDate = LocalDate.of(2000, 1, 1);
+		pInitOnLoad.setState(newDate);
+		assertEquals(newDate, pInitOnLoad.getState());
 	}
 	
 	@Test
