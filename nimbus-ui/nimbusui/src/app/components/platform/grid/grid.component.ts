@@ -324,7 +324,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     }
 
     inputFilter(e: any, dt: DataTable, field: string, filterMatchMode: string) {
-        dt.filter(e.target.value, field, "startsWith");
+        dt.filter(e.target.value, field, filterMatchMode);
     }
 
     isDate(dataType: string): boolean {

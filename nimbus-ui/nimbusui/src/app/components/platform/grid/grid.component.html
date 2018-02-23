@@ -55,13 +55,11 @@
 				</ng-template>
 
 				<ng-template let-datacol let-row="rowData" pTemplate="body">
-					<ng-template ngFor let-param [ngForOf]="row.params">
-						<ng-template [ngIf]="isDate(col?.type?.name)">
-							<span *ngIf="datacol.field == param.config.code">{{param.leafState | dateTimeFormat: col.uiStyles?.attributes?.datePattern}}</span> 
-						</ng-template>
-						<ng-template [ngIf]="!isDate(col?.type?.name)">
-							<span *ngIf="datacol.field == param.config.code">{{param.leafState}}</span> 
-						</ng-template>
+					<ng-template [ngIf]="isDate(col?.type?.name)">
+						<span title="{{row[datacol.field]}}">{{row[datacol.field] | dateTimeFormat: col.uiStyles?.attributes?.datePattern}}</span>
+					</ng-template>
+					<ng-template [ngIf]="!isDate(col?.type?.name)">
+						<span title="{{row[datacol.field]}}">{{row[datacol.field]}}</span> 
 					</ng-template>
 				</ng-template>
 

@@ -76,4 +76,10 @@ public class CustomLocalDateDeserializerTest {
 		this.thrown.expectMessage("Unparseable date: \"10-13-1988\". Supported formats: [yyyy-MM-dd, yyyy-MM-dd'T'HH:mm:ss.SSS'Z']");
 		this.testee.deserialize(this.jsonParser, null);
 	}
+	
+	@Test
+	public void t4_deserialize_nullString() throws IOException {
+		Mockito.when(this.jsonParser.getText()).thenReturn("null");
+		Assert.assertNull(this.testee.deserialize(this.jsonParser, null));
+	}
 }

@@ -239,7 +239,7 @@ export class Param implements Serializable<Param> {
     }
     createRowData(param: Param) {
         let rowData: any = {};
-        rowData = param.type.model;
+        rowData = param.leafState;
         rowData['elemId'] = param.elemId;
         return rowData;
     }
@@ -267,8 +267,7 @@ export class Param implements Serializable<Param> {
             if (inJson.type && inJson.type.model && inJson.type.model.params) {
                 this.config.gridList = [];
                 for ( var p in inJson.type.model.params ) {
-                    let param = new Param(this.configSvc).deserialize(inJson.type.model.params[p]);
-                    this.config.gridList.push(this.createRowData(param));
+                    this.config.gridList.push(this.createRowData(inJson.type.model.params[p]));
                 }
             }
         } else {
@@ -699,7 +698,7 @@ export class UiAttribute implements Serializable<UiAttribute> {
         this.rowSelection = inJson.rowSelection;
         this.pagination = inJson.pagination;
         this.showHeader = inJson.showHeader;
-        this.pageSize = inJson.pageSize;
+        this.pageSize = +inJson.pageSize;
         this.postButton = inJson.postButton;
         this.rows = inJson.rows;
         this.postButtonUrl = inJson.postButtonUrl;
