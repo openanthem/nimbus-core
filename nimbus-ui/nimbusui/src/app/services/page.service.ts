@@ -96,19 +96,19 @@ export class PageService {
                                 baseURL = ServiceConstants.CLIENT_BASE_URL;
                                 /** client code is required for a client base url.*/
                                 if (this.routeParams.client == null) {
-                                        console.log('ERROR: Missing client information for a CLIENT_BASE_URL.');
+                                        this.logError('Missing client information for a CLIENT_BASE_URL.');
                                 }
                                 baseURL += this.routeParams.client;
                         }
                         /** App name for the flow - required */
                         if (this.routeParams != null && this.routeParams.app == null) {
-                                console.log('ERROR: Missing app name.');
+                                this.logError('Missing app name.');
                         } else {
                                 baseURL += '/' + this.routeParams.app + '/p';
                         }
                         /** Domain for the operation - required */
                         if (this.routeParams != null && this.routeParams.domain == null) {
-                                console.log('ERROR: Missing domain entity name.');
+                                this.logError('Missing domain entity name.');
                         }
                 }
                 return baseURL;
@@ -233,7 +233,7 @@ export class PageService {
                                 let flowConfig = new Result(this.configService).deserialize(subResponse.result);
                                 this.traverseOutput(flowConfig.outputs);
                         } else {
-                                console.log('ERROR: Unknown response for behavior - ' + subResponse.b);
+                                this.logError('Unknown response for behavior - ' + subResponse.b);
                         }
                         index++;
                 }
@@ -327,7 +327,7 @@ export class PageService {
                                                         this.navigateToPage(toPage, flow);
                                                 }                                                                
                                         } else {
-                                                console.log('ERROR: Received an _get call without model or config ' + output.value.path);
+                                                this.logError('Received an _get call without model or config ' + output.value.path);
                                         }
                                 } else if (output.action === Action._nav.value) {
                                         let flow = this.getFlowNameFromOutput(output.inputCommandUri);
@@ -387,7 +387,7 @@ export class PageService {
                         }
                 }
                 if (!page) {
-                        console.log('ERROR: Page Configuration not found for Page ID: ' + pageId + ' in Flow: ' + flowName);
+                        this.logError('Page Configuration not found for Page ID: ' + pageId + ' in Flow: ' + flowName);
                 }
                 return page;
         }
@@ -759,53 +759,58 @@ export class PageService {
         updateParam(param: Param, payload: Param) {
                 let result: any[] = Reflect.ownKeys(param);
                 let updatedKeys: any[] = Reflect.ownKeys(payload);
-                updatedKeys.forEach(updatedKey => {
-                        result.forEach(currentKey => {
-                                if (currentKey === updatedKey) {
-                                        try {
-                                                if (Reflect.ownKeys(Reflect.get(param, currentKey)) != null
-                                                        && Reflect.ownKeys(Reflect.get(param, currentKey)).length > 0) {
-                                                        if (currentKey === 'type') {
-                                                                //Object.assign(Reflect.get(param, currentKey), new Type().deserialize(Reflect.get(payload, updatedKey)));
-                                                        } else if (currentKey === 'config') {
-                                                                Object.assign(Reflect.get(param, currentKey), new ParamConfig(this.configService).deserialize(Reflect.get(payload, updatedKey)));
-                                                                //TODO - refactor this whole method and the conditions. Revisit - order, count
-                                                        } else if (currentKey === 'activeValidationGroups') {
-                                                                Reflect.set(param, currentKey, Reflect.get(payload, updatedKey));
-                                                                this.validationUpdate.next(param);
-                                                                //TODO - refactor this whole method and the conditions. Revisit - order, count
-                                                        } else if (currentKey === 'leafState' || currentKey === 'message') {
-                                                                Reflect.set(param, currentKey, Reflect.get(payload, updatedKey));
-                                                                this.eventUpdate.next(param);
-                                                        } else if (currentKey === 'enabled' || currentKey === 'visible') {
-                                                                Reflect.set(param, currentKey, Reflect.get(payload, updatedKey));
-                                                                this.validationUpdate.next(param);
-                                                        } else if (currentKey === 'values') {
-                                                                if (param.values == null) {
-                                                                        let values = [];
-                                                                        values.push(Reflect.get(payload, updatedKey)) ;
-                                                                        param.values = values;
+                let config = this.configService.getViewConfigById(payload.configId);
+                //By this time the config for the parameter is set in the config map as it is deserelized
+                if(config != null && config != undefined) {
+                        updatedKeys.forEach(updatedKey => {
+                                result.forEach(currentKey => {
+                                        if (currentKey === updatedKey) {
+                                                try {
+                                                        if (Reflect.ownKeys(Reflect.get(param, currentKey)) != null
+                                                                && Reflect.ownKeys(Reflect.get(param, currentKey)).length > 0) {
+                                                                if (currentKey === 'type') {
+                                                                        //Object.assign(Reflect.get(param, currentKey), new Type().deserialize(Reflect.get(payload, updatedKey)));
+                                                                } else if (currentKey === 'config') {
+                                                                        Object.assign(Reflect.get(param, currentKey), new ParamConfig(this.configService).deserialize(Reflect.get(payload, updatedKey)));
+                                                                        //TODO - refactor this whole method and the conditions. Revisit - order, count
+                                                                } else if (currentKey === 'activeValidationGroups') {
+                                                                        Reflect.set(param, currentKey, Reflect.get(payload, updatedKey));
+                                                                        this.validationUpdate.next(param);
+                                                                        //TODO - refactor this whole method and the conditions. Revisit - order, count
+                                                                } else if (currentKey === 'leafState' || currentKey === 'message') {
+                                                                        Reflect.set(param, currentKey, Reflect.get(payload, updatedKey));
                                                                         this.eventUpdate.next(param);
-                                                                } else {
-                                                                        param.values = Reflect.get(payload, updatedKey);
-                                                                        this.eventUpdate.next(param);
+                                                                } else if (currentKey === 'enabled' || currentKey === 'visible') {
+                                                                        Reflect.set(param, currentKey, Reflect.get(payload, updatedKey));
+                                                                        this.validationUpdate.next(param);
+                                                                } else if (currentKey === 'values') {
+                                                                        if (param.values == null) {
+                                                                                let values = [];
+                                                                                values.push(Reflect.get(payload, updatedKey)) ;
+                                                                                param.values = values;
+                                                                                this.eventUpdate.next(param);
+                                                                        } else {
+                                                                                param.values = Reflect.get(payload, updatedKey);
+                                                                                this.eventUpdate.next(param);
+                                                                        }
                                                                 }
                                                         }
-                                                }
-                                        } catch (e) {
-                                                if (e instanceof TypeError) {
-                                                        Reflect.set(param, currentKey, Reflect.get(payload, updatedKey));
-                                                        if (currentKey === 'leafState') {
-                                                                this.eventUpdate.next(param);
+                                                } catch (e) {
+                                                        if (e instanceof TypeError) {
+                                                                Reflect.set(param, currentKey, Reflect.get(payload, updatedKey));
+                                                                if (currentKey === 'leafState') {
+                                                                        this.eventUpdate.next(param);
+                                                                }
+                                                        } else {
+                                                                throw e;
                                                         }
-                                                } else {
-                                                        throw e;
                                                 }
                                         }
-                                }
+                                });
                         });
-                });
-
+                } else {
+                        this.logError('Could not process the update from the server for' + payload.path + ' because config is undefined.');
+                }
         }
 
         /** Get flow configuration to create pages. */
