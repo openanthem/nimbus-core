@@ -68,7 +68,7 @@ export class Form implements OnInit, OnChanges {
     groupFormElements(model : Model){
         if (model && model.params) {
             model.params.forEach(element => {
-                if (element.config.uiStyles) {
+                if (element.config && element.config.uiStyles) {
                     if(element.config.uiStyles!= null && element.config.uiStyles.attributes.alias === 'Accordion') {
                         this.groups.push(element);
                     } else {
@@ -127,7 +127,7 @@ export class Form implements OnInit, OnChanges {
 
         this.form = this.service.toFormGroup(this.formGroupElements,checks);
         this.pageSvc.eventUpdate$.subscribe(event => {
-            if(event.config.uiStyles != null && event.config.uiStyles.attributes.alias === 'Form' && event.path === this.element.path) {
+            if(event.config && event.config.uiStyles != null && event.config.uiStyles.attributes.alias === 'Form' && event.path === this.element.path) {
                 if(event.leafState != null && !this.hasNull(event.leafState))
                     this.form.patchValue(event.leafState);
                 else 
