@@ -583,7 +583,7 @@ export class PageService {
                         if (rootParam.type.model && rootParam.type.model.params) {
                                 rootParam.type.model.params.forEach(element => {
                                         // Check if param matches the updated param path
-                                        if (element.config.code === paramTree[node]) {
+                                        if (element.config && element.config.code === paramTree[node]) {
                                                 if ((element.config.type && element.config.type.collection) || node >= numNodes) {
                                                         // Matching param node OR Collection node. Collection nodes cannot be traversed further.
                                                         this.processModelEvent(element, eventModel);
@@ -736,7 +736,7 @@ export class PageService {
         /** Update param with value */
         traverseParam(param: Param, eventModel: ModelEvent) {
                 /* Flow-Wrapper class also invokes methods that eventually call this behaviour. We need to make sure that the eventModel is deserialized by then */
-                let payload = eventModel.value;
+                let payload: Param = new Param(this.configService).deserialize(eventModel.value);
                 if (param.type.nested === true) {
                         this.updateParam(param, payload);
                         if (param.type.model && payload.type.model && payload.type.model.params) {
@@ -752,12 +752,8 @@ export class PageService {
                 }
         }
 
-        updateParam(param: Param, rawPayload: Param) {
+        updateParam(param: Param, payload: Param) {
                 let result: any[] = Reflect.ownKeys(param);
-                let payload: Param = new Param(this.configService).deserialize(rawPayload);
-                if (payload.config == undefined) {
-                        console.log(payload);
-                }
                 let updatedKeys: any[] = Reflect.ownKeys(payload);
                 updatedKeys.forEach(updatedKey => {
                         result.forEach(currentKey => {
