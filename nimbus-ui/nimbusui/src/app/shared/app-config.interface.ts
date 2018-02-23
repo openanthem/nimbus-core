@@ -698,7 +698,7 @@ export class UiAttribute implements Serializable<UiAttribute> {
         this.rowSelection = inJson.rowSelection;
         this.pagination = inJson.pagination;
         this.showHeader = inJson.showHeader;
-        this.pageSize = inJson.pageSize;
+        this.pageSize = +inJson.pageSize;
         this.postButton = inJson.postButton;
         this.rows = inJson.rows;
         this.postButtonUrl = inJson.postButtonUrl;
