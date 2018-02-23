@@ -611,7 +611,7 @@ export class PageService {
          */
         createRowData(param: Param, nestedGridParam: ParamConfig) {
                 let rowData: any = {};
-                rowData = param.type.model;
+                rowData = param.leafState;
                 rowData['elemId'] = param.elemId;
 
                 // If nested data exists, set the data to nested grid
@@ -621,7 +621,7 @@ export class PageService {
 
                 return rowData;
         }
-
+        
         /** 
          * Loop through the Param State and build the Grid
          * 
