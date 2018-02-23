@@ -246,7 +246,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
                     // if (param.uiStyles.attributes.asynchronous) {
                     //     elemPath = this.element.path + '/' + event.data.elemId + '/' + param.code;
                     // } else {
-                        event.data['nestedElement'] = event.data.params[p];
+                        event.data['nestedElement'] = event.data.nestedGridParam;
                     // }
                 }
             }

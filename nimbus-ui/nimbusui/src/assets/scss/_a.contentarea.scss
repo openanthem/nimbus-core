@@ -260,6 +260,9 @@ legend {
     .form-checkrow label, .form-checkrow label:first-of-type {
         margin-bottom: 0;
     }
+    .ui-dropdown label:first-of-type, .ui-dropdown label {
+        margin: 1px 0 0 0;
+    }
     input, .select-wrapper, textarea {
         //margin-left: 50px;
         margin-bottom: .6rem;
