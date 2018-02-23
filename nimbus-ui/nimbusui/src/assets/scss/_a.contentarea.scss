@@ -138,6 +138,7 @@ h1.page-title {
 }
 .panel-body .colorBox {
     background: none;
+    border: none;
 }
 .card-holder {
     position:relative;
@@ -504,13 +505,16 @@ legend {
         //display: block;
         padding-left: 0px;
     }
-    &.openPanel{
+    &.openPanel {
         & > .panel-heading {
             button::before {
                 //content: "\f0d7"; 
                 transform: rotate(90deg);
             }
-        }               
+        } 
+        .panel-collapse { 
+            overflow: visible; 
+        }              
     }
 }
 
