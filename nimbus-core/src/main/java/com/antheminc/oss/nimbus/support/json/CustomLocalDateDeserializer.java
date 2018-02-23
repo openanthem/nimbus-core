@@ -36,7 +36,7 @@ public class CustomLocalDateDeserializer extends StdDeserializer<LocalDate> {
 	private static final long serialVersionUID = 1L;
 	
 	private static final String[] DATE_FORMATS = new String[] { "yyyy-MM-dd", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" };
-
+	private static final String NULL_STRING = "null";
 
 	public CustomLocalDateDeserializer() {
 		this(null);
@@ -53,7 +53,7 @@ public class CustomLocalDateDeserializer extends StdDeserializer<LocalDate> {
 //		LocalDateTime ldtDate = this.deserializer.deserialize(jsonparser, context);
 //		return null==ldtDate ? null : ldtDate.toLocalDate();
 		String date = jsonparser.getText();
-		if (StringUtils.isEmpty(date)) {
+		if (StringUtils.isEmpty(date) || NULL_STRING.equals(date)) {
 			return null;
 		}
 
