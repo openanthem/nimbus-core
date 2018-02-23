@@ -73,7 +73,7 @@ public class SampleExprEvalEntity {
 	private String exprThen;
 	
 	
-	@ExpressionConditional(when="onLoad()", then="setState( T(java.time.LocalDate).now() )")
+	@ExpressionConditional(when="onLoad() && state==null", then="setState( T(java.time.LocalDate).now() )")
 	private LocalDate initDateOnLoad;
 	
 }
