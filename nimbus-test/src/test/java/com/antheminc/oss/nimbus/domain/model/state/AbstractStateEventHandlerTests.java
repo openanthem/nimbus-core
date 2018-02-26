@@ -20,6 +20,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.junit.After;
 import org.junit.Before;
@@ -91,6 +92,10 @@ public abstract class AbstractStateEventHandlerTests extends AbstractFrameworkIn
 		};
 		
 		_q.getRoot().getExecutionRuntime().getEventDelegator().addTxnScopedListener(_stateEventListener);
+	}
+	
+	protected void clearListenerEntries() {
+		Optional.ofNullable(_paramEvents).ifPresent((k)->_paramEvents.clear());
 	}
 
 }

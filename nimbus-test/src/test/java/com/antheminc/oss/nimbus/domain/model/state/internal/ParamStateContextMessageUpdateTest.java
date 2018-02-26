@@ -17,13 +17,16 @@ package com.antheminc.oss.nimbus.domain.model.state.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
@@ -36,6 +39,7 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param.Message.Typ
  * @author Soham Chakravarti
  *
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ParamStateContextMessageUpdateTest extends AbstractStateEventHandlerTests {
 
 	@Override
@@ -45,13 +49,11 @@ public class ParamStateContextMessageUpdateTest extends AbstractStateEventHandle
 	}
 
 	@Test
-	public void t00_init() {
+	public void t01_single_set() {
 		Param<String> msg_trigger = _q.getRoot().findParamByPath("/sample_expr/triggerMessageUpdate");
 		assertNotNull(msg_trigger);
 		
-		Message msg = new Message();
-		msg.setText("test message "+ new Date());
-		msg.setType(Type.INFO);
+		Message msg = new Message("test message "+ new Date(), Type.INFO);
 		
 		addListener();
 		msg_trigger.setMessage(msg);
@@ -67,5 +69,58 @@ public class ParamStateContextMessageUpdateTest extends AbstractStateEventHandle
 		assertTrue(expectedEventParams.isEmpty());
 		
 		assertEquals(msg, msg_trigger.getMessage());
+	}
+	
+
+	@Test
+	public void t02_multi_set_same_msg() {
+		Param<String> msg_trigger = _q.getRoot().findParamByPath("/sample_expr/triggerMessageUpdate");
+		assertNotNull(msg_trigger);
+		
+		Message msg = new Message("test message "+ new Date(), Type.INFO);
+		
+		// set once
+		msg_trigger.setMessage(msg);
+		
+		// set same instance again
+		addListener();
+		msg_trigger.setMessage(msg);
+		
+		// validate that its not triggered again
+		assertNull(_paramEvents);
+
+		// from first message set
+		assertEquals(msg, msg_trigger.getMessage());
+		
+	}
+	
+	@Test
+	public void t03_multi_set_changed_msg() {
+		Param<String> msg_trigger = _q.getRoot().findParamByPath("/sample_expr/triggerMessageUpdate");
+		assertNotNull(msg_trigger);
+		
+		Message msg = new Message("test message "+ new Date(), Type.INFO);
+		
+		// set once
+		msg_trigger.setMessage(msg);
+		
+		// change text in same Message instance
+		addListener();
+		Message msg2 = new Message("new text "+ new Date(), Type.INFO);
+		msg_trigger.setMessage(msg2);
+		
+		List<Param<?>> expectedEventParams = new ArrayList<>();
+		expectedEventParams.add(msg_trigger);
+		
+		// validate that it is triggered again
+		assertNotNull(_paramEvents);
+		_paramEvents.stream()
+			.forEach(pe->expectedEventParams.remove(pe.getParam()));
+		
+		assertTrue(expectedEventParams.isEmpty());
+		
+		// from 2nd message set
+		assertEquals(msg2, msg_trigger.getMessage());
+		
 	}
 }

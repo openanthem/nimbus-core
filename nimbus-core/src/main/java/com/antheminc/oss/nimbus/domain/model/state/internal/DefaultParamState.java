@@ -41,7 +41,6 @@ import com.antheminc.oss.nimbus.domain.model.config.EventHandlerConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
-import com.antheminc.oss.nimbus.domain.model.state.EntityState;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.EntityStateAspectHandlers;
 import com.antheminc.oss.nimbus.domain.model.state.ExecutionRuntime;
@@ -581,11 +580,6 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		return visibleState.getCurrState();
 	}
 	
-	@Override
-	public boolean isEnabled() {
-		return enabledState.getCurrState();
-	}
-	
 	public void setVisible(boolean visible) {
 		boolean changed = this.visibleState.setStateConditional(visible, ()->isActive() || !visible);
 		if (!changed)
@@ -618,6 +612,11 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	
 	@Override
+	public boolean isEnabled() {
+		return enabledState.getCurrState();
+	}
+	
+	@Override
 	public void setEnabled(boolean enabled) {
 		boolean changed = this.enabledState.setStateConditional(enabled, ()->isActive() || !enabled);
 		if (!changed)
@@ -647,8 +646,6 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 				p.onStateChangeEvent(p.getRootExecution().getExecutionRuntime().getTxnContext(), Action._update);
 			
 		});
-	
-		
 	}
 
 	
@@ -669,15 +666,6 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	@Override
 	public void setMessage(Message message) {
 		this.messageState.setState(message);
-//		if(getMessage()==null && message==null)
-//			return;
-//		
-//		if(getMessage()!=null && message!=null 
-//				&& getMessage().equals(message))
-//			return;
-//		
-//		this.message = message;
-//		emitParamContextEvent();
 	}
 	
 	private void emitParamContextEvent() {
