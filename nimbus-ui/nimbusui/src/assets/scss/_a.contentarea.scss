@@ -138,6 +138,7 @@ h1.page-title {
 }
 .panel-body .colorBox {
     background: none;
+    border: none;
 }
 .card-holder {
     position:relative;
@@ -258,6 +259,9 @@ legend {
     }
     .form-checkrow label, .form-checkrow label:first-of-type {
         margin-bottom: 0;
+    }
+    .ui-dropdown label:first-of-type, .ui-dropdown label {
+        margin: 1px 0 0 0;
     }
     input, .select-wrapper, textarea {
         //margin-left: 50px;
@@ -504,13 +508,16 @@ legend {
         //display: block;
         padding-left: 0px;
     }
-    &.openPanel{
+    &.openPanel {
         & > .panel-heading {
             button::before {
                 //content: "\f0d7"; 
                 transform: rotate(90deg);
             }
-        }               
+        } 
+        .panel-collapse { 
+            overflow: visible; 
+        }              
     }
 }
 

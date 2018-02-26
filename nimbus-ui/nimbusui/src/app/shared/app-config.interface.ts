@@ -492,6 +492,7 @@ export class ParamConfig implements Serializable<ParamConfig> {
 
     //TODO Temporary for grid
     gridList: any[];
+    nestedGridRow: Param;
 
     constructor(private configSvc: ConfigService) {}
 
