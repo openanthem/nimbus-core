@@ -7,6 +7,6 @@ import { Pipe, PipeTransform } from '@angular/core';
         if(args === undefined || args === '' || args === null){
             args="MM/dd/yyyy hh:mm a";
         }
-        return super.transform(value, args, 'UTC');
+        return super.transform(value, args);
     }
   }
