@@ -41,6 +41,7 @@ import com.antheminc.oss.nimbus.domain.model.config.EventHandlerConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.EntityStateAspectHandlers;
 import com.antheminc.oss.nimbus.domain.model.state.ExecutionRuntime;
@@ -89,7 +90,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	private List<ParamValue> values;
 	
-	private Message message;
+	@JsonIgnore
+	private RemnantState<Message> messageState = this.new RemnantState<Message>(null);
 	
 	/* TODO: Weak reference was causing the values to be GC-ed even before the builders got to building 
 	 * Allow referenced subscribers to get garbage collected in scenario when same core is referenced by multiple views. 
@@ -563,12 +565,14 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 			if(eval==null || !eval)
 				return false;
 			
+			return changeStateTemplate((rt, h, lockId)->{
+				this.prevState = this.currState;
+				this.currState = state;
+				
+				emitParamContextEvent();
+				return true;
+			});
 			
-			this.prevState = this.currState;
-			this.currState = state;
-			
-			emitParamContextEvent();
-			return true;
 		}
 	}
 	
@@ -658,16 +662,22 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	
 	@Override
+	public Message getMessage() {
+		return this.messageState.getCurrState();
+	}
+	
+	@Override
 	public void setMessage(Message message) {
-		if(getMessage()==null && message==null)
-			return;
-		
-		if(getMessage()!=null && message!=null 
-				&& getMessage().equals(message))
-			return;
-		
-		this.message = message;
-		emitParamContextEvent();
+		this.messageState.setState(message);
+//		if(getMessage()==null && message==null)
+//			return;
+//		
+//		if(getMessage()!=null && message!=null 
+//				&& getMessage().equals(message))
+//			return;
+//		
+//		this.message = message;
+//		emitParamContextEvent();
 	}
 	
 	private void emitParamContextEvent() {

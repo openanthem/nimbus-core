@@ -76,4 +76,6 @@ public class SampleExprEvalEntity {
 	@ExpressionConditional(when="onLoad() && state==null", then="setState( T(java.time.LocalDate).now() )")
 	private LocalDate initDateOnLoad;
 	
+	private String triggerMessageUpdate;
+	
 }
