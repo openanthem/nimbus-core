@@ -353,11 +353,6 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         dt.filter(e.target.value, field, filterMatchMode);
     }
 
-    isDate(dataType: string): boolean {
-        if (dataType === 'date' || dataType === 'Date' || dataType === 'LocalDateTime' || dataType === 'ZonedDateTime') return true;
-        if (dataType !== 'date' && dataType !== 'Date' && dataType !== 'LocalDateTime' && dataType !== 'ZonedDateTime') return false;
-    }
-
     paginate(e: any) {
         if (this.totalRecords != 0) {
             this.rowEnd = ((this.totalRecords / (e.first + (+e.rows)) >= 1) ? (e.first + (+e.rows)) : e.first + (this.totalRecords - e.first));

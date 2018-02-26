@@ -122,10 +122,6 @@ public class DefaultCoreBuilderConfig {
 			typeClassMappings = new HashMap<>();
 		}
 		
-		if(!typeClassMappings.containsKey(LocalDate.class.getName())) {
-			typeClassMappings.put(LocalDate.class.getName(), "date");
-		}
-		
 		return new DefaultEntityConfigBuilder(beanResolver, typeClassMappings);
 	}
 	

@@ -21,6 +21,7 @@ import { Component, Input } from '@angular/core';
 import { Param } from '../../shared/app-config.interface';
 import { WebContentSvc } from '../../services/content-management.service';
 import { LabelConfig } from './../../shared/app-config.interface';
+import { ParamUtils } from '../../shared/param-utils';
 
 /**
  * \@author Dinakar.Meda
@@ -152,6 +153,10 @@ export class BaseElement {
             });
         }
         return style;
+    }
+
+    isDate(dataType: string): boolean {
+        return ParamUtils.isKnownDateType(dataType);
     }
 }
 
