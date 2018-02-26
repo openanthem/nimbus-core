@@ -108,11 +108,19 @@ p-dropdown.form-control {
     border: none;
     padding:0;
     background: none;
+    .ui-widget-content { 
+        border: 1px solid #9dd3f7; 
+        background: #ecf7ff; 
+        border-radius: 0; 
+    }
+}
+.ui-dropdown { 
+    min-width: 150px; 
+    .ui-dropdown-panel .ui-dropdown-list { 
+        padding:0; 
+    } 
+}
 
-}
-.ui-dropdown {
-    min-width: 150px;
-}
 //START inline edit text input styles for inplace-editor.component
 .form-group{
   .editTrigger{
