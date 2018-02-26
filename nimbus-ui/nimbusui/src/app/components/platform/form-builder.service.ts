@@ -56,12 +56,7 @@ export class FormElementsService {
           group[element.config.code] = this.createNewFormGroup(element);
           //create new formgroup and formcontrol to create checkboxes in form. this is for form binding. TODO validations binding
         } else {
-          var leafState: any;
-          if (element.alias === 'Calendar' && element.leafState != null) {
-            leafState= new Date(element.leafState);
-          } else {
-            leafState = element.leafState || '';
-          }
+          var leafState: any = element.leafState || '';
           if (checks) {
             group[element.config.code] = [{value: leafState, disabled: !element.enabled}, checks];
           } else {
