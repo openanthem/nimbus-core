@@ -306,7 +306,25 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
 
     }
 
+    between(value: any, filter: any){
+
+        //  if( filter[0] >= value && filter[1] <= value) { return true; } return false;
+
+        var valueDate1 = new Date(value.toDateString());
+        var valueDate2 = new Date (filter.toDateString());
+        return valueDate1.valueOf() == valueDate2.valueOf();
+    }
+
     dateFilter(e: any, dt: DataTable, field: string, filterMatchMode: string, datePattern?: string, dateType?: string) {
+
+
+        if (this.dt !== undefined) {
+
+            const customFilterConstraints = this.dt.filterConstraints;
+            customFilterConstraints['between'] = this.between; //between filter functionality
+            this.dt.filterConstraints = customFilterConstraints;
+          }
+
         datePattern = (datePattern == "") ? "MM/DD/YYYY" : datePattern;
 
         if (e.target.value.length == '0') {
@@ -315,9 +333,24 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         else {
             if (moment(e.target.value, datePattern.toUpperCase(), true).isValid()) {
                 let formatedDate = moment(e.target.value, datePattern.toUpperCase()).format('MM/DD/YYYY');
-                dt.filter(formatedDate, field, "startsWith");
+                console.log("moment", moment(e.target.value, datePattern.toUpperCase()).toDate());
+                console.log("just moment", moment('2016-01-01'));
+                this.value.map(item => item[field]= new Date(item[field]));
+                dt.filter(moment(e.target.value, datePattern.toUpperCase()).toDate(), field, "between");
             }
         }
+
+
+
+        // else {
+        //     if (moment(e.target.value, datePattern.toUpperCase(), true).isValid()) {
+        //         12-12-2018
+        //         12-12-2018
+        //         let formatedDate = moment(e.target.value, datePattern.toUpperCase()).format('YY-DD-MM');
+        //         this.value.map(item => item[field]=this._dateTimeFormat.transform(item[field], "yy-dd-MM"));
+        //         dt.filter(formatedDate, field, "startsWith");
+        //     }
+        // }
 
         this.totalRecords = dt.dataToRender.length;
         this.updatePageDetailsState();
@@ -326,6 +359,12 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     inputFilter(e: any, dt: DataTable, field: string, filterMatchMode: string) {
         dt.filter(e.target.value, field, filterMatchMode);
     }
+
+
+    clearFilter(txt: any, dt: DataTable, field: string){
+        txt.value='';
+        dt.filter(txt.value, field, "");
+     }
 
     isDate(dataType: string): boolean {
         if (dataType === 'date' || dataType === 'Date' || dataType === 'LocalDateTime' || dataType === 'ZonedDateTime') return true;
