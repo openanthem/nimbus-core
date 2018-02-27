@@ -78,15 +78,16 @@ export class FormElementsService {
       if (param.type.nested) {
          fg.addControl(param.config.code, this.createNewFormGroup(param));
       } else {
-          //Ternary operator is for converting Calendar string into Date to support @Calendar component
+          let leafState: any = param.leafState || '';
+          let formState: any = { value: leafState, disabled: !param.enabled }
+          let formControl: FormControl = new FormControl(formState);
           if (checks) {
-          fg.addControl(param.config.code, new FormControl({value: (param.alias === 'Calendar' && param.leafState != null) ? param.leafState= new Date(param.leafState) : param.leafState || '', disabled: !param.enabled}, checks));
-          } else {
-            fg.addControl(param.config.code, new FormControl({value: (param.alias === 'Calendar' && param.leafState != null) ? param.leafState= new Date(param.leafState) : param.leafState || '', disabled: !param.enabled}));
+            formControl = new FormControl(formState, checks);
+          }
+          fg.addControl(param.config.code, formControl);
         } 
       }
-    }
-    return fg;
+      return fg;
   }
 
 }
