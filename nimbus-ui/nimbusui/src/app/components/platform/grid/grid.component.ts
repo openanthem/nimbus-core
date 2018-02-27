@@ -332,18 +332,21 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
 
     }
 
-    between(value: any, filter: any){
+    between(value: any, filter: any[]){
 
         //  if( filter[0] >= value && filter[1] <= value) { return true; } return false;
 
-        var valueDate1 = new Date(value.toDateString());
-        var valueDate2 = new Date (filter.toDateString());
-        return valueDate1.valueOf() == valueDate2.valueOf();
+        // var valueDate1 = new Date(value.toDateString());
+        // var valueDate2 = new Date (filter.toDateString());
+        // return valueDate1.valueOf() == valueDate2.valueOf();
+
+        return (value >= filter[0] && value<=filter[1])
     }
 
     dateFilter(e: any, dt: DataTable, field: string, filterMatchMode: string, datePattern?: string, dateType?: string) {
 
 
+       
         if (this.dt !== undefined) {
 
             const customFilterConstraints = this.dt.filterConstraints;
@@ -357,27 +360,16 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
             dt.filter(e.target.value, field, "startsWith");
         }
         else {
+            let filter: any[] = [];
+
             if (moment(e.target.value, datePattern.toUpperCase(), true).isValid()) {
-                let formatedDate = moment(e.target.value, datePattern.toUpperCase()).format('MM/DD/YYYY');
-                console.log("moment", moment(e.target.value, datePattern.toUpperCase()).toDate());
-                console.log("just moment", moment('2016-01-01'));
-                this.value.map(item => item[field]= new Date(item[field]));
-                dt.filter(moment(e.target.value, datePattern.toUpperCase()).toDate(), field, "between");
+                // let formatedDate = moment(e.target.value, datePattern.toUpperCase()).format('MM/DD/YYYY');
+               var localStartDate= moment.utc(e.target.value, datePattern.toUpperCase()).toDate();
+               var localEndDate=moment.utc(e.target.value,  datePattern.toUpperCase()).endOf('day').toDate();
+               filter[0]=localStartDate; filter[1]=localEndDate;
+               dt.filter(filter, field, "between");
             }
         }
-
-
-
-        // else {
-        //     if (moment(e.target.value, datePattern.toUpperCase(), true).isValid()) {
-        //         12-12-2018
-        //         12-12-2018
-        //         let formatedDate = moment(e.target.value, datePattern.toUpperCase()).format('YY-DD-MM');
-        //         this.value.map(item => item[field]=this._dateTimeFormat.transform(item[field], "yy-dd-MM"));
-        //         dt.filter(formatedDate, field, "startsWith");
-        //     }
-        // }
-
         this.totalRecords = dt.dataToRender.length;
         this.updatePageDetailsState();
     }
