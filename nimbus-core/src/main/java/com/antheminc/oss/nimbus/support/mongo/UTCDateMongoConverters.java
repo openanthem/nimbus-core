@@ -13,18 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * 
- */
 package com.antheminc.oss.nimbus.support.mongo;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 import java.util.function.Function;
 
 import org.springframework.core.convert.converter.Converter;
@@ -54,7 +52,11 @@ public class UTCDateMongoConverters {
 	public static class UTCLocalDateTimeSerializer implements Converter<LocalDateTime, Date> {
 		@Override
 		public Date convert(LocalDateTime inCurrTimeZone) {
-			return serializerTemplate(inCurrTimeZone, currTimeZone->ZonedDateTime.of(inCurrTimeZone, currTimeZone));
+			Calendar cal = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC.normalized()));
+			cal.set(inCurrTimeZone.getYear(), inCurrTimeZone.getMonthValue()-1, inCurrTimeZone.getDayOfMonth(), inCurrTimeZone.getHour() , inCurrTimeZone.getMinute(), inCurrTimeZone.getSecond()); 
+			cal.set(Calendar.MILLISECOND, 0);
+			return cal.getTime();
+			//return serializerTemplate(inCurrTimeZone, currTimeZone->ZonedDateTime.of(inCurrTimeZone, currTimeZone));
 		}
 	}
 	
@@ -69,7 +71,11 @@ public class UTCDateMongoConverters {
 	public static class UTCLocalDateSerializer implements Converter<LocalDate, Date> {
 		@Override
 		public Date convert(LocalDate inCurrTimeZone) {
-			return serializerTemplate(inCurrTimeZone, currTimeZone->ZonedDateTime.of(inCurrTimeZone, LocalTime.MIN, currTimeZone));
+			Calendar cal = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC.normalized()));
+			cal.set(inCurrTimeZone.getYear(), inCurrTimeZone.getMonthValue()-1, inCurrTimeZone.getDayOfMonth(), 0 , 0, 0); 
+			cal.set(Calendar.MILLISECOND, 0);
+			return cal.getTime();
+			//return serializerTemplate(inCurrTimeZone, currTimeZone->ZonedDateTime.of(inCurrTimeZone, LocalTime.MIN, currTimeZone));
 		}
 	}
 	
@@ -79,7 +85,6 @@ public class UTCDateMongoConverters {
 			return deserializerTemplate(inUTC, ZonedDateTime::toLocalDate);
 		}
 	}
-	
 	
 	public static <T> Date serializerTemplate(T inCurrTimeZone, Function<ZoneId, ZonedDateTime> cb) {
 		if(inCurrTimeZone==null)
@@ -100,7 +105,7 @@ public class UTCDateMongoConverters {
 			return null;
 		
 		ZonedDateTime zUTC = ZonedDateTime.ofInstant(inUTC.toInstant(), ZoneOffset.UTC);
-		ZoneId currDefaultZone = ZoneId.systemDefault();
+		ZoneId currDefaultZone = ZoneOffset.UTC.normalized();
 		
 		// convert to current default system time zone
 		ZonedDateTime inCurrTimeZone = zUTC.withZoneSameInstant(currDefaultZone);
