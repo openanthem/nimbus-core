@@ -20,6 +20,7 @@ import { ConfigService } from './../services/config.service';
 import { SortAs } from "../components/platform/grid/sortas.interface";
 import { PageService } from '../services/page.service';
 import { GridService } from '../services/grid.service';
+import { ParamUtils } from './param-utils';
 
 /**
  * \@author Dinakar.Meda
@@ -67,7 +68,7 @@ export class ModelConfig implements Serializable<ModelConfig> {
     uiStyles: UiStyle;
     id: string;
     _paramConfigs: ParamConfig[];
-
+    
     constructor(private configSvc: ConfigService) {}
 
     public get paramConfigs(): ParamConfig[] {
@@ -215,6 +216,7 @@ export class Param implements Serializable<Param> {
     leafState: any;
     path: string;
     collection: boolean;
+    collectionConfigs: any;
     collectionElem: boolean;
     elemId: string;
     visible: boolean;
@@ -258,6 +260,16 @@ export class Param implements Serializable<Param> {
         this.collection = inJson.collection;
         if ( inJson.collectionElem ) {
             this.elemId = inJson.elemId;
+            // TODO Move to its own deserializer
+            this.collectionConfigs = {};
+            if (this.type.model.params && this.type.model.params.length > 0) {
+                let params = this.type.model.params;
+                let typeMappings = {};
+                for(let param of params) {
+                    typeMappings[param.config.code] = param.config.type.name;
+                }
+                this.collectionConfigs.typeMappings = typeMappings;
+            }
         }
         if ( this.config != null && this.config.uiStyles && this.config.uiStyles.attributes.alias === 'CardDetailsGrid' ) {
             if(inJson.leafState != null) {
@@ -270,6 +282,8 @@ export class Param implements Serializable<Param> {
                     this.config.gridList.push(this.createRowData(inJson.type.model.params[p]));
                 }
             }
+        } else if (this.config && this.config.type && ParamUtils.isKnownDateType(this.config.type.name)) {
+            this.leafState = inJson.leafState ? new Date(inJson.leafState) : null;
         } else {
             this.leafState = inJson.leafState;
         }
