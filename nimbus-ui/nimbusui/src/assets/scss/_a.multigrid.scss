@@ -156,6 +156,10 @@ ng-component{
     }
 }
 
+.ui-expanded-row-content .scrollGrid td.dropdown .ui-cell-data, .ui-expanded-row-content .ui-datatable td.dropdown .ui-cell-data {
+    overflow: visible;
+}
+
 .ui-widget-content {
     border:none;
 }
