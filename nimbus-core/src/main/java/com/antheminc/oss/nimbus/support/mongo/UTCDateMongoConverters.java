@@ -17,12 +17,11 @@ package com.antheminc.oss.nimbus.support.mongo;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.TimeZone;
 import java.util.function.Function;
 
 import org.springframework.core.convert.converter.Converter;
@@ -52,11 +51,7 @@ public class UTCDateMongoConverters {
 	public static class UTCLocalDateTimeSerializer implements Converter<LocalDateTime, Date> {
 		@Override
 		public Date convert(LocalDateTime inCurrTimeZone) {
-			Calendar cal = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC.normalized()));
-			cal.set(inCurrTimeZone.getYear(), inCurrTimeZone.getMonthValue()-1, inCurrTimeZone.getDayOfMonth(), inCurrTimeZone.getHour() , inCurrTimeZone.getMinute(), inCurrTimeZone.getSecond()); 
-			cal.set(Calendar.MILLISECOND, 0);
-			return cal.getTime();
-			//return serializerTemplate(inCurrTimeZone, currTimeZone->ZonedDateTime.of(inCurrTimeZone, currTimeZone));
+			return serializerTemplate(inCurrTimeZone, currTimeZone->ZonedDateTime.of(inCurrTimeZone, currTimeZone));
 		}
 	}
 	
@@ -71,11 +66,7 @@ public class UTCDateMongoConverters {
 	public static class UTCLocalDateSerializer implements Converter<LocalDate, Date> {
 		@Override
 		public Date convert(LocalDate inCurrTimeZone) {
-			Calendar cal = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC.normalized()));
-			cal.set(inCurrTimeZone.getYear(), inCurrTimeZone.getMonthValue()-1, inCurrTimeZone.getDayOfMonth(), 0 , 0, 0); 
-			cal.set(Calendar.MILLISECOND, 0);
-			return cal.getTime();
-			//return serializerTemplate(inCurrTimeZone, currTimeZone->ZonedDateTime.of(inCurrTimeZone, LocalTime.MIN, currTimeZone));
+			return serializerTemplate(inCurrTimeZone, currTimeZone->ZonedDateTime.of(inCurrTimeZone, LocalTime.MIN, currTimeZone));
 		}
 	}
 	
@@ -90,7 +81,7 @@ public class UTCDateMongoConverters {
 		if(inCurrTimeZone==null)
 			return null;
 		
-		ZoneId currDefaultZone = ZoneId.systemDefault();
+		ZoneId currDefaultZone = ZoneOffset.UTC.normalized();
 		//ZonedDateTime currZoneDT = ZonedDateTime.ofInstant(inDefaultZone.toInstant(), currDefaultZone);
 		ZonedDateTime currZoneDT = cb.apply(currDefaultZone);
 		
