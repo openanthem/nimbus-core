@@ -619,7 +619,7 @@ export class PageService {
                         for(let key in rowData) {
                                 let typeMapping = param.collectionConfigs.typeMappings[key];
                                 if (ParamUtils.isKnownDateType(typeMapping)) {
-                                        rowData[key] = new Date(rowData[key]);
+                                        rowData[key] = ParamUtils.convertServerDateStringToDate(rowData[key], typeMapping);
                                 }
                         }
                 }

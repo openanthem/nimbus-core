@@ -53,4 +53,50 @@ export class ParamUtils {
         }
         return false;
     }
+
+    /**
+     * <p>Converts any date objects coming from the server (see: 
+     * <tt>ParamUtils.DATE_TYPE_MAPPINGS.LOCAL_DATE</tt>) to an equivalent Javascript <tt>Date</tt>
+     * object.</p>
+     * 
+     * <p>The server time string is under contract to always come back in the UTC time zone, in the
+     * ISO Date Format of yyyy-MM-ddThh:mm:ss.SSSZ. Consequently, the converted <tt>Date</tt> object will 
+     * be converted to the browser's current time zone.</p>
+     * 
+     * <p>If <tt>typeClassMapping</tt> is a <tt>LocalDate</tt>, this method will effectively ignore the 
+     * time zone by adding the offset time between the UTC time zone and the browser time zone when 
+     * doing the <tt>Date</tt> conversion. e.g. A <tt>LocalDate.of(1931, 2, 4)</tt> from the server would
+     * give:</p>
+     * 
+     * <ul>
+     *  <li>Response from server: '1931-02-04T00:00:00.000Z'</li>
+     *  <li>*Converted <tt>Date</tt>: Wed Feb 04 1931 00:00:00 GMT-0500 (EST)</li>
+     * </ul>
+     * 
+     * <p>In the same scenario, if <tt>typeClassMapping</tt> is anything but <tt>LocalDate</tt>,
+     * <tt>LocalDateTime.of(1931, 2, 4, 0, 0)</tt> from the server would give:</p>
+     * 
+     * <ul>
+     *  <li>Response from server: '1931-02-04T00:00:00.000Z'</li>
+     *  <li>*Converted <tt>Date</tt>: Wed Feb 04 1931 00:00:00 GMT-0500 (EST)</li>
+     * </ul>
+     * 
+     * <p>* Assumes browser is in EST timezone.</p>
+     * 
+     * @param value the server date string
+     * @param typeClassMapping the class type of the server date object
+     */
+    public static convertServerDateStringToDate(value: string, typeClassMapping: string): Date {
+        if (typeClassMapping !== ParamUtils.DATE_TYPE_MAPPINGS.LOCAL_DATE) {
+            return value ? new Date(value) : null;
+        } else {
+            if (value) {
+                var serverDateTime = new Date(value);
+                return new Date(serverDateTime.getUTCFullYear(), 
+                    serverDateTime.getUTCMonth(), 
+                    serverDateTime.getUTCDate());
+            }
+            return null;
+        }
+    }
 }

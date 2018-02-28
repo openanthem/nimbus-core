@@ -283,7 +283,7 @@ export class Param implements Serializable<Param> {
                 }
             }
         } else if (this.config && this.config.type && ParamUtils.isKnownDateType(this.config.type.name)) {
-            this.leafState = inJson.leafState ? new Date(inJson.leafState) : null;
+            this.leafState = ParamUtils.convertServerDateStringToDate(inJson.leafState, this.config.type.name);
         } else {
             this.leafState = inJson.leafState;
         }
