@@ -356,7 +356,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
             this.dt.filterConstraints = customFilterConstraints;
           }
 
-        datePattern = (datePattern == "") ? "MM/DD/YYYY" : datePattern;
+        datePattern = (!datePattern || datePattern == "") ? "MM/DD/YYYY" : datePattern;
 
         if (e.target.value.length == '0') {
             dt.filter(e.target.value, field, "startsWith");
@@ -385,11 +385,6 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         txt.value='';
         dt.filter(txt.value, field, "");
      }
-
-    isDate(dataType: string): boolean {
-        if (dataType === 'date' || dataType === 'Date' || dataType === 'LocalDateTime' || dataType === 'ZonedDateTime') return true;
-        if (dataType !== 'date' && dataType !== 'Date' && dataType !== 'LocalDateTime' && dataType !== 'ZonedDateTime') return false;
-    }
 
     paginate(e: any) {
         if (this.totalRecords != 0) {
