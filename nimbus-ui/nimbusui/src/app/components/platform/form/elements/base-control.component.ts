@@ -26,6 +26,7 @@ import { GenericDomain } from '../../../../model/generic-domain.model';
 import { ValidatorFn } from '@angular/forms/src/directives/validators';
 import { ValidationUtils } from '../../validators/ValidationUtils';
 import { ValidationConstraint } from './../../../../shared/validationconstraints.enum';
+import { FormControl, AbstractControl } from '@angular/forms/src/model';
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -45,6 +46,7 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
     inPlaceEditContext: any;
     showLabel: boolean = true;
     disabled: boolean;
+    requiredCss:boolean = false;
     constructor(private pageService: PageService, private wcs: WebContentSvc, private cd: ChangeDetectorRef) {
         super();
     }
@@ -69,6 +71,12 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
         let labelContent: LabelConfig = this.wcs.findLabelContent(this.element);
         this.label = labelContent.text;
         this.helpText = labelContent.helpText;
+        this.applyelementStyle();
+        let frmCtrl = this.form.controls[this.element.config.code];
+        //rebind the validations as there are dynamic validations along with the static validations
+        if(frmCtrl!=null && this.element.activeValidationGroups != null && this.element.activeValidationGroups.length > 0) {
+            this.reBindValidations(frmCtrl,this.element.activeValidationGroups);
+        } 
     }
 
     ngAfterViewInit(){
@@ -93,13 +101,9 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
                     if(event.path === this.element.path) {
                         //bind dynamic validations on a param as a result of a state change of another param
                         if(event.activeValidationGroups != null && event.activeValidationGroups.length > 0) {
-                            var staticChecks: ValidatorFn[] = [];
-                            var dynamicChecks: ValidatorFn[] = [];
-                            staticChecks = ValidationUtils.buildStaticValidations(this.element);
-                            //merge the static and dynamic validations and overwrite the form control's validators
-                            dynamicChecks = ValidationUtils.buildDynamicValidations(this.element, event.activeValidationGroups);
-                            frmCtrl.setValidators(dynamicChecks.concat(staticChecks));
+                            this.reBindValidations(frmCtrl,event.activeValidationGroups);
                         } else {
+                            this.applyelementStyle();
                             var staticChecks: ValidatorFn[] = [];
                             staticChecks = ValidationUtils.buildStaticValidations(this.element);
                             frmCtrl.setValidators(staticChecks);
@@ -163,15 +167,28 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
     /**
      * Check if control is required
      */
-    public get elementStyle(): string {
+    public applyelementStyle(): string {
         let style = '';
+        this.requiredCss = false;
         if (this.element.config.validation) {
             this.element.config.validation.constraints.forEach(validator => {
-                if (validator.name === ValidationConstraint._notNull.value) {
-                    style = 'required';
+                if (validator.name === ValidationConstraint._notNull.value && 
+                    validator.attribute != null && validator.attribute.groups.length == 0) {
+                    //style = 'required';
+                    this.requiredCss = true;
                 }
             });
         }
         return style;
+    }
+
+    reBindValidations(frmCtrl:AbstractControl,groups:String[]) {
+        var staticChecks: ValidatorFn[] = [];
+        var dynamicChecks: ValidatorFn[] = [];
+        staticChecks = ValidationUtils.buildStaticValidations(this.element);
+        //merge the static and dynamic validations and overwrite the form control's validators
+        dynamicChecks = ValidationUtils.buildDynamicValidations(this.element, groups);
+        this.requiredCss = ValidationUtils.createRequired(this.element, groups);
+        frmCtrl.setValidators(dynamicChecks.concat(staticChecks));
     }
 }

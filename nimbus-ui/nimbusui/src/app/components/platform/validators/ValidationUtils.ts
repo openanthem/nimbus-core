@@ -79,4 +79,18 @@ export class ValidationUtils {
             return CustomValidators.isZip;
           }    
     }
+
+    static createRequired(element:Param, groups: String[]) :boolean {
+        var required: boolean = false;
+         if (element.config.validation) {
+            element.config.validation.constraints.forEach(validator => {
+                groups.forEach(group => {
+                    if(validator.attribute.groups.some(x => x === group) && validator.name == ValidationConstraint._notNull.value) {
+                        required = true;
+                    }
+                });
+            });
+         }
+         return required;
+     }
 }

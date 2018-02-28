@@ -43,7 +43,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   <!--<div class='date-holder' [hidden]="!element?.config?.visible || !element?.visible" *ngIf="element.config?.uiStyles?.attributes?.hidden==false">-->
   <div class='date-holder' [hidden]="!element?.visible" *ngIf="element.config?.uiStyles?.attributes?.hidden==false">
   <div class="number" *ngIf="element.config?.uiStyles?.attributes?.controlId!=''">{{element.config?.uiStyles?.attributes?.controlId}}</div>
-    <label [attr.for]="element.config?.code" class="{{elementStyle}}">{{label}}
+    <label [attr.for]="element.config?.code"  [ngClass]="{'required': requiredCss, '': !requiredCss}">{{label}}
         <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
     </label>
     <input
