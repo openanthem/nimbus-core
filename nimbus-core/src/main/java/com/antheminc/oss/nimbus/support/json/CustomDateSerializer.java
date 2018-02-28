@@ -2,7 +2,7 @@ package com.antheminc.oss.nimbus.support.json;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Date;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -29,7 +29,7 @@ public class CustomDateSerializer extends StdSerializer<Date>{
 	 	if(value == null)
     		return;
     	
-	 	this.serializer.serialize(LocalDateTime.ofInstant(value.toInstant(), ZoneId.systemDefault()), gen, provider);
+	 	this.serializer.serialize(LocalDateTime.ofInstant(value.toInstant(), ZoneOffset.UTC.normalized()), gen, provider);
 	}
 
 }
