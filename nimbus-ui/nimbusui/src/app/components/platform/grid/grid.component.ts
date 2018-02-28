@@ -125,6 +125,8 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
 
         if (this.element.config.gridList != null && this.element.config.gridList.length > 0) {
             this.value = this.element.config.gridList;
+            this.totalRecords = this.value.length;
+            this.updatePageDetailsState();
         }
     }
 
@@ -350,7 +352,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         if (this.dt !== undefined) {
 
             const customFilterConstraints = this.dt.filterConstraints;
-            customFilterConstraints['between'] = this.between; //between filter functionality
+            customFilterConstraints['between'] = this.between; 
             this.dt.filterConstraints = customFilterConstraints;
           }
 
