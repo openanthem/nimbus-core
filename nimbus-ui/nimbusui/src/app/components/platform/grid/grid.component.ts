@@ -262,15 +262,35 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
 
     sortBy(e: any, fieldType: string, sortAs: string) {
         if (this.isSortAsNumber(fieldType, sortAs)) {
-            this.sortInternal(fieldValue => Number(fieldValue), e);
+            this.sortInternal(fieldValue =>  {
+                if(fieldValue != null && fieldValue !== undefined)
+                    return Number(fieldValue);
+                else
+                    return null;
+            }, e);
         }
         else if (this.isSortAsDate(fieldType, sortAs)) {
-            this.sortInternal(fieldValue => new Date(fieldValue), e);
+            this.sortInternal(fieldValue => {
+                if(fieldValue != null && fieldValue !== undefined)
+                    return new Date(fieldValue);
+                else
+                    return null;
+            }, e);
         }
         else {
             // all else are sorted as string using localeCompare
             this.value.sort((item1: any, item2: any) => {
-                return item1[e.field].localeCompare(item2[e.field]) * e.order;
+                let value1 = item1[e.field] !== undefined ? item1[e.field]: null;
+                let value2 = item2[e.field] !== undefined ? item2[e.field]: null;
+
+                if(value1 == null && value2 == null)
+                    return 0;
+                if (value1 == null && value2 != null)
+                    return -1 * e.order;
+                else if (value1 != null && value2 == null)
+                    return 1 * e.order;
+
+                return value1.localeCompare(value2) * e.order;
             });
         }
         this.value = [...this.value];
@@ -281,10 +301,16 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
             let value1 = itemCallback(item1[event.field]);
             let value2 = itemCallback(item2[event.field]);
 
+            if(value1 == null && value2 == null)
+                return 0;
+            if(value1 == null && value2 != null) 
+                return -1 * event.order;
+            if(value1 != null && value2 == null)
+                return 1 * event.order;
+
             if (value1 > value2) {
                 return 1 * event.order;
             }
-
             if (value1 < value2) {
                 return -1 * event.order;
             }
