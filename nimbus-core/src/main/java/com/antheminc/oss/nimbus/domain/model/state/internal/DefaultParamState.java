@@ -89,7 +89,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	private List<ParamValue> values;
 	
-	private Message message;
+	@JsonIgnore
+	private RemnantState<Message> messageState = this.new RemnantState<Message>(null);
 	
 	/* TODO: Weak reference was causing the values to be GC-ed even before the builders got to building 
 	 * Allow referenced subscribers to get garbage collected in scenario when same core is referenced by multiple views. 
@@ -563,23 +564,20 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 			if(eval==null || !eval)
 				return false;
 			
+			return changeStateTemplate((rt, h, lockId)->{
+				this.prevState = this.currState;
+				this.currState = state;
+				
+				emitParamContextEvent();
+				return true;
+			});
 			
-			this.prevState = this.currState;
-			this.currState = state;
-			
-			emitParamContextEvent();
-			return true;
 		}
 	}
 	
 	@Override
 	public boolean isVisible() {
 		return visibleState.getCurrState();
-	}
-	
-	@Override
-	public boolean isEnabled() {
-		return enabledState.getCurrState();
 	}
 	
 	public void setVisible(boolean visible) {
@@ -614,6 +612,11 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	
 	@Override
+	public boolean isEnabled() {
+		return enabledState.getCurrState();
+	}
+	
+	@Override
 	public void setEnabled(boolean enabled) {
 		boolean changed = this.enabledState.setStateConditional(enabled, ()->isActive() || !enabled);
 		if (!changed)
@@ -643,8 +646,6 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 				p.onStateChangeEvent(p.getRootExecution().getExecutionRuntime().getTxnContext(), Action._update);
 			
 		});
-	
-		
 	}
 
 	
@@ -658,16 +659,13 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	
 	@Override
+	public Message getMessage() {
+		return this.messageState.getCurrState();
+	}
+	
+	@Override
 	public void setMessage(Message message) {
-		if(getMessage()==null && message==null)
-			return;
-		
-		if(getMessage()!=null && message!=null 
-				&& getMessage().equals(message))
-			return;
-		
-		this.message = message;
-		emitParamContextEvent();
+		this.messageState.setState(message);
 	}
 	
 	private void emitParamContextEvent() {

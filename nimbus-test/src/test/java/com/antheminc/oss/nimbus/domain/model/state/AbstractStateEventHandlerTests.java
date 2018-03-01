@@ -13,13 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.domain.model.state.extension;
+package com.antheminc.oss.nimbus.domain.model.state;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.junit.After;
 import org.junit.Before;
@@ -33,9 +34,6 @@ import com.antheminc.oss.nimbus.domain.AbstractFrameworkIngerationPersistableTes
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextLoader;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ExecutionModel;
-import com.antheminc.oss.nimbus.domain.model.state.ExecutionTxnContext;
-import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
-import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
 import com.antheminc.oss.nimbus.domain.model.state.internal.BaseStateEventListener;
 import com.antheminc.oss.nimbus.entity.AbstractEntity.IdString;
 import com.antheminc.oss.nimbus.test.FrameworkIntegrationTestScenariosApplication;
@@ -50,7 +48,8 @@ import com.antheminc.oss.nimbus.test.FrameworkIntegrationTestScenariosApplicatio
 public abstract class AbstractStateEventHandlerTests extends AbstractFrameworkIngerationPersistableTests {
 
 	//@Autowired QuadModelBuilder quadModelBuilder;
-	@Autowired ExecutionContextLoader executionContextLoader;
+	@Autowired 
+	protected ExecutionContextLoader executionContextLoader;
 	
 	protected Command _cmd;
 	
@@ -93,6 +92,10 @@ public abstract class AbstractStateEventHandlerTests extends AbstractFrameworkIn
 		};
 		
 		_q.getRoot().getExecutionRuntime().getEventDelegator().addTxnScopedListener(_stateEventListener);
+	}
+	
+	protected void clearListenerEntries() {
+		Optional.ofNullable(_paramEvents).ifPresent((k)->_paramEvents.clear());
 	}
 
 }
