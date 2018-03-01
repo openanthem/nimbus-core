@@ -28,26 +28,28 @@ import { GridService } from '../services/grid.service';
  * \@howToUse 
  * 
  */
-
 export class ParamUtils {
 
-    public static DATE_TYPE_MAPPINGS: any = {
-        DATE: 'Date',
-        LOCAL_DATE: 'LocalDate',
-        LOCAL_DATE_TIME: 'LocalDateTime',
-        ZONED_DATE_TIME: 'ZonedDateTime'
+    // TODO - Move default date formats to spring config
+    public static DATE_TYPE_METADATA: any = {
+        DATE:               { name: 'Date', defaultFormat: 'MM/dd/yyyy hh:mm a' },
+        LOCAL_DATE:         { name: 'LocalDate', defaultFormat: 'MM/dd/yyyy' },
+        LOCAL_DATE_TIME:    { name: 'LocalDateTime', defaultFormat: 'MM/dd/yyyy hh:mm a' },
+        ZONED_DATE_TIME:    { name: 'ZonedDateTime', defaultFormat: 'MM/dd/yyyy hh:mm a' },
     };
 
+    public static DEFAULT_DATE_FORMAT: string = 'MM/dd/yyyy hh:mm a';
+
     /**
-     * <p>Checks to see if the provided the <tt>dataType</tt> is matching a known
+     * <p>Checks to see if the provided the <tt>typeClassMapping</tt> is matching a known
      * type that is identified by the UI framework as a <tt>Date<tt> object.</p>
      * 
-     * @param dataType the name of the type to check if whether or not it is a known
+     * @param typeClassMapping the name of the type to check if whether or not it is a known
      * date type.
      */
-    public static isKnownDateType(dataType: string): boolean {
-        for(let x in ParamUtils.DATE_TYPE_MAPPINGS) {
-            if (ParamUtils.DATE_TYPE_MAPPINGS[x] === dataType) {
+    public static isKnownDateType(typeClassMapping: string): boolean {
+        for(let x in ParamUtils.DATE_TYPE_METADATA) {
+            if (ParamUtils.DATE_TYPE_METADATA[x].name === typeClassMapping) {
                 return true;
             }
         }
@@ -85,6 +87,7 @@ export class ParamUtils {
      * @param typeClassMapping the class type of the server date object
      */
     public static convertServerDateStringToDate(value: string, typeClassMapping: string): Date {
+        // TODO
         // Currently there is no difference between any of the typeClassMappings. In the future
         // we may wish to handle ZonedDateTime values differently.
         if (value) {
@@ -92,6 +95,23 @@ export class ParamUtils {
             return new Date(serverDateTime.getUTCFullYear(), 
                 serverDateTime.getUTCMonth(), 
                 serverDateTime.getUTCDate());
+        }
+        return null;
+    }
+
+    /**
+     * <p>Provides a default format based on the type of object returned from the server.</p>
+     * 
+     * <p>Returns <tt>null</tt> if a default format is not found for <tt>typeClassMapping</tt>.
+     * 
+     * @param typeClassMapping the class type of the server date object
+     */
+    public static getDateFormatForType(typeClassMapping: string): string {
+        for(let x in ParamUtils.DATE_TYPE_METADATA) {
+            let dateTypeMetadata = ParamUtils.DATE_TYPE_METADATA[x];
+            if (dateTypeMetadata.name === typeClassMapping) {
+                return dateTypeMetadata.defaultFormat;
+            }
         }
         return null;
     }

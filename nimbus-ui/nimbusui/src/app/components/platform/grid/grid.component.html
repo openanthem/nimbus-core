@@ -55,10 +55,10 @@
 				</ng-template>
 
 				<ng-template let-datacol let-row="rowData" pTemplate="body">
-					<ng-template [ngIf]="isDate(col?.type?.name)">
-						<span title="{{row[datacol.field] | dateTimeFormat: col.uiStyles?.attributes?.datePattern}}">{{row[datacol.field] | dateTimeFormat: col.uiStyles?.attributes?.datePattern}}</span>
+					<ng-template [ngIf]="isDate(col.type.name)">
+						<span title="{{row[datacol.field] | dateTimeFormat: col.uiStyles?.attributes?.datePattern : col.type.name }}">{{row[datacol.field] | dateTimeFormat: col.uiStyles?.attributes?.datePattern : col.type.name }}</span>
 					</ng-template>
-					<ng-template [ngIf]="!isDate(col?.type?.name)">
+					<ng-template [ngIf]="!isDate(col.type.name)">
 						<span title="{{row[datacol.field]}}">{{row[datacol.field]}}</span> 
 					</ng-template>
 
@@ -66,14 +66,14 @@
 				</ng-template>
 
 			<ng-template  let-filtercol pTemplate="filter">
-				<ng-template [ngIf]="isDate(col?.type?.name)">
+				<ng-template [ngIf]="isDate(col.type.name)">
 					<div class="filterHolder" >
 					<input #text type="text" (input)="dateFilter($event, dt, filtercol.field, col?.uiStyles?.attributes?.filterMode, col?.uiStyles?.attributes?.datePattern, col?.type?.name)"> 
 					<button (click)= "clearFilter(text,dt,filtercol.field)" ><i class="fa fa-times"></i>  </button>
 				    </div>	
 				</ng-template>
 
-				<ng-template [ngIf]="!isDate(col?.type?.name)">
+				<ng-template [ngIf]="!isDate(col.type.name)">
 					<div class="filterHolder" >	
 					<input #text type="text" (input)="inputFilter($event, dt, filtercol.field, col?.uiStyles?.attributes?.filterMode)">
 					<button (click)= "clearFilter(text,dt,filtercol.field)" ><i class="fa fa-times"></i>  </button>
