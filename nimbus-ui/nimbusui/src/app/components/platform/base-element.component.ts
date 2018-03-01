@@ -60,7 +60,7 @@ export class BaseElement {
     protected _cssClass: string;
     protected _type: string;
     protected _elementStyle: string;
-    protected requiredCss: boolean = false;
+    public requiredCss: boolean = false;
     constructor(private wcs: WebContentSvc) {
         
     }
