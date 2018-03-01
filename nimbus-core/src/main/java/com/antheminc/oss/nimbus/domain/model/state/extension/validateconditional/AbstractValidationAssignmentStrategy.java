@@ -95,7 +95,7 @@ public abstract class AbstractValidationAssignmentStrategy implements
 	protected void handleNested(Param<?> param, Class<? extends ValidationGroup> targetGroup, 
 			BiConsumer<Param<?>, Class<? extends ValidationGroup>> handler) {
 		
-		if (param.isNested()) {
+		if (param.isNested() && null != param.findIfNested().getParams()) {
 			param.findIfNested().getParams().forEach(nestedParam -> handleNested(nestedParam, targetGroup, handler));
 		}
 		handler.accept(param, targetGroup);

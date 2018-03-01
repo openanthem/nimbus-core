@@ -20,6 +20,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.annotation.concurrent.Immutable;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
@@ -33,8 +37,8 @@ import com.antheminc.oss.nimbus.support.pojo.CollectionsTemplate;
 import com.antheminc.oss.nimbus.support.pojo.LockTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -341,7 +345,8 @@ public interface EntityState<T> {
 		List<ParamValue> getValues();
 		void setValues(List<ParamValue> values);
 		
-		@Getter @Setter @EqualsAndHashCode
+		@Immutable
+		@Getter @Setter @RequiredArgsConstructor 
 		public static class Message {
 			public enum Type {
 				INFO,
@@ -350,9 +355,25 @@ public interface EntityState<T> {
 				SUCCESS;
 			}
 				
-			private String text;
-			private Type type;
+			private final String text;
+			private final Type type;
 
+			@Override
+			public boolean equals(Object obj) {
+				if(obj==null && this.text==null && this.type==null)
+					return true;
+				
+				if(!Message.class.isInstance(obj))
+					return false;
+				
+				Message other = Message.class.cast(obj);
+				
+				if(StringUtils.equalsIgnoreCase(other.getText(), this.getText())
+						&& other.getType()==this.getType())
+					return true;
+			
+				return false;
+			}
 		}
 		
 		Message getMessage();

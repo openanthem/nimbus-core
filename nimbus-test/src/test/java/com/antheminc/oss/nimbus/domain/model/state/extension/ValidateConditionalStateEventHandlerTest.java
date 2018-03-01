@@ -20,6 +20,7 @@ import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.GROUP_
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.GROUP_4;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.GROUP_5;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.GROUP_6;
+import com.antheminc.oss.nimbus.domain.model.state.AbstractStateEventHandlerTests;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 
 /**

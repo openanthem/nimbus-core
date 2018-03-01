@@ -13,9 +13,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * 
- */
 package com.antheminc.oss.nimbus.support.mongo;
 
 import java.time.LocalDate;
@@ -80,12 +77,11 @@ public class UTCDateMongoConverters {
 		}
 	}
 	
-	
 	public static <T> Date serializerTemplate(T inCurrTimeZone, Function<ZoneId, ZonedDateTime> cb) {
 		if(inCurrTimeZone==null)
 			return null;
 		
-		ZoneId currDefaultZone = ZoneId.systemDefault();
+		ZoneId currDefaultZone = ZoneOffset.UTC.normalized();
 		//ZonedDateTime currZoneDT = ZonedDateTime.ofInstant(inDefaultZone.toInstant(), currDefaultZone);
 		ZonedDateTime currZoneDT = cb.apply(currDefaultZone);
 		
@@ -100,7 +96,7 @@ public class UTCDateMongoConverters {
 			return null;
 		
 		ZonedDateTime zUTC = ZonedDateTime.ofInstant(inUTC.toInstant(), ZoneOffset.UTC);
-		ZoneId currDefaultZone = ZoneId.systemDefault();
+		ZoneId currDefaultZone = ZoneOffset.UTC.normalized();
 		
 		// convert to current default system time zone
 		ZonedDateTime inCurrTimeZone = zUTC.withZoneSameInstant(currDefaultZone);
