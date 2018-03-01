@@ -45,7 +45,7 @@ export class LayoutResolver implements Resolve<string> {
         if (flowConfig && flowConfig.model) {
 
             // Push the home breadcrumb into memory under the domain name.
-            this._breadcrumbService.push(flowName, 'Home', flowConfig.model.params[0].path);
+            // this._breadcrumbService.push(flowName, 'Home', flowConfig.model.params[0].path);
 
             let routeToDefaultPage: boolean = true;
             if (route.firstChild.params['pageId']) {

@@ -24,7 +24,7 @@ import { Params } from '@angular/router';
  * \@howToUse 
  * 
  */
-interface IBreadcrumb {
+export interface Breadcrumb {
     id: string;
     label: string;
     params: Params;
