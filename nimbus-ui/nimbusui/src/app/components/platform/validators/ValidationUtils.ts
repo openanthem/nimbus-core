@@ -19,7 +19,7 @@ import { ValidationConstraint } from './../../../shared/validationconstraints.en
 import { Validators, ValidatorFn } from '@angular/forms';
 import { CustomValidators } from './custom.validators';
 import { Param, Constraint } from '../../../shared/app-config.interface';
-import { FormControl } from '@angular/forms/src/model';
+import { FormControl, AbstractControl } from '@angular/forms/src/model';
 
 /**
  * \@author Sandeep.Mantha
@@ -36,7 +36,7 @@ export class ValidationUtils {
          if (element.config.validation) {
             element.config.validation.constraints.forEach(validator => {
                 if(validator.attribute != null && validator.attribute.groups == null || validator.attribute.groups.length == 0) {
-                    checks.push(this.constructValidations(validator, element.config.uiStyles.attributes.alias));
+                    checks.push(ValidationUtils.constructValidations(validator, element.config.uiStyles.attributes.alias));
                 }
             });
          }
@@ -49,7 +49,7 @@ export class ValidationUtils {
             element.config.validation.constraints.forEach(validator => {
                 groups.forEach(group => {
                     if(validator.attribute.groups.some(x => x === group)) {
-                        var check = this.constructValidations(validator, element.config.uiStyles.attributes.alias)
+                        var check = ValidationUtils.constructValidations(validator, element.config.uiStyles.attributes.alias)
                         checks.push(check);
                     }
                 });
@@ -93,4 +93,42 @@ export class ValidationUtils {
          }
          return required;
      }
+
+     static assessControlValidation(event:Param,frmCtrl:AbstractControl) {
+        if(event.enabled && event.visible) {
+            frmCtrl.enable();   
+        }
+        else {
+            frmCtrl.disable();
+        }
+     }
+
+     static rebindValidations(frmCtrl:AbstractControl,groups:String[],param:Param) : boolean{
+        var staticChecks: ValidatorFn[] = [];
+        var dynamicChecks: ValidatorFn[] = [];
+        let requiredCss:boolean = false;
+        staticChecks = ValidationUtils.buildStaticValidations(param);
+        //merge the static and dynamic validations and overwrite the form control's validators
+        dynamicChecks = ValidationUtils.buildDynamicValidations(param, groups);
+        requiredCss = ValidationUtils.createRequired(param, groups);
+        frmCtrl.setValidators(dynamicChecks.concat(staticChecks));
+        return requiredCss;
+    }
+
+    /**
+     * Check if control is required
+     */
+    static applyelementStyle(element: Param): boolean {
+        let requiredCss = false;
+        if (element.config.validation) {
+            element.config.validation.constraints.forEach(validator => {
+                if (validator.name === ValidationConstraint._notNull.value && 
+                    validator.attribute != null && validator.attribute.groups.length == 0) {
+                    //style = 'required';
+                    requiredCss = true;
+                }
+            });
+        }
+        return requiredCss;
+    }
 }

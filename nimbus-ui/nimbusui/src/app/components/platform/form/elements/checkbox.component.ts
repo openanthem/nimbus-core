@@ -32,10 +32,10 @@ import { Param } from '../../../../shared/app-config.interface';
  */
 @Component({
   selector: 'nm-single-checkbox',
-  template: ` <label class="custom-control custom-check {{elementStyle}}">
+  template: ` <label class="custom-control custom-check">
                  <input type="checkbox" [disabled]="disabled" class="custom-control-input" (change)="emitValueChangedEvent(this,$event)" [(ngModel)] = "value" [attr.checked]="value">
                  <span class="custom-control-indicator"></span>
-                 <span class="custom-control-description">{{label}}
+                 <span class="custom-control-description"  [ngClass]="{'required': requiredCss, '': !requiredCss}">{{label}}
                       <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
                  </span>
              </label>

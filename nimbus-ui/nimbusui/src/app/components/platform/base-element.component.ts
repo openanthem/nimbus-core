@@ -21,6 +21,7 @@ import { Component, Input } from '@angular/core';
 import { Param } from '../../shared/app-config.interface';
 import { WebContentSvc } from '../../services/content-management.service';
 import { LabelConfig } from './../../shared/app-config.interface';
+import { ValidationUtils } from './validators/ValidationUtils';
 
 /**
  * \@author Dinakar.Meda
@@ -59,7 +60,7 @@ export class BaseElement {
     protected _cssClass: string;
     protected _type: string;
     protected _elementStyle: string;
-    
+    protected requiredCss: boolean = false;
     constructor(private wcs: WebContentSvc) {
         
     }
@@ -69,6 +70,7 @@ export class BaseElement {
      */
     ngOnInit() {
         this.loadLabelConfig(this.element);
+        this.requiredCss = ValidationUtils.applyelementStyle(this.element);
     }
 
     /**
