@@ -7,36 +7,33 @@
 * {
     vertical-align: top;
 }
-//type styles from style guide
-.head-2 {
-    font-size: 18px;
-    font-weight: 600;
-    line-height:1;
-}
-.head-3 {
-    font-size: 18px;
-    font-weight: 400;
-    line-height:1;
-}
-.body-1 {
-    font-size: 12px;
-    font-weight: 300;
-    line-height:1;
+.text-bold { 
+    font-weight: bold;
 }
 
-.body-10 {
-    font-size: 18px;
-    font-weight: 300;
-    line-height:1;
+html {
+    font-size: 12px;
+    line-height: 15px;
+    color: #4c4c4c;
 }
+//type styles from style guide
+
 h1{
-    font-size: 1.3rem;
+    font-size: 1.43rem;
+    line-height: 1.75rem;
+    font-weight: normal;
+
 }
 h2{
-    font-size: 1.2rem;
+    font-size: 1.28rem;
+    line-height: 1.6rem;
+    font-weight: bold;
 }
 h3{
-    font-size: 1.1rem;
+    font-size: 1.14rem;
+    line-height: 1.75rem;
+    font-weight: bold;
+
 }
 // .col-xs-12.smallCardCenter {
 //     text-align: right;
@@ -179,6 +176,12 @@ h1.page-title {
     width: 86%;
    
 }
+.ui-dialog-content label {
+    padding-top: .3rem;
+}
+.ui-widget-header{
+    text-align: left;
+}
 
 .textWrapBreakWord {
     word-break: break-word;
@@ -197,7 +200,10 @@ nm-card-details {
         }
     }
 }
-
+//to make values bold in card-detail component
+nm-card-details-field label+div {
+    font-weight: bold;
+}
 
 .XsmallCard {
     margin-left: 2rem;
@@ -538,7 +544,6 @@ legend {
 
 
 // screen breaks below 
-html {font-size: 12px;}
 @media(min-width: 576px) {
     .navbar-toggleable-md .navbar-collapse {
         z-index: 1;
@@ -581,7 +586,10 @@ html {font-size: 12px;}
 }
 
 @media (min-width: 992px) {
-    html {font-size: 14px;}
+    html {
+        font-size: 14px;
+        line-height: 18px;
+    }
     //nav bar hiding methods...  
     .navbar-toggleable-md .navbar-toggler {
         display: none;
@@ -605,7 +613,6 @@ html {font-size: 12px;}
   
 } 
 @media (min-width: 1300px) {
-    html {font-size: 16px;}
     .header {
         height: 100px;
     }
