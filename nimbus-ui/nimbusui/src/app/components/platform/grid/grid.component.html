@@ -56,7 +56,7 @@
 
 				<ng-template let-datacol let-row="rowData" pTemplate="body">
 					<ng-template [ngIf]="isDate(col?.type?.name)">
-						<span title="{{row[datacol.field]}}">{{row[datacol.field] | dateTimeFormat: col.uiStyles?.attributes?.datePattern}}</span>
+						<span title="{{row[datacol.field] | dateTimeFormat: col.uiStyles?.attributes?.datePattern}}">{{row[datacol.field] | dateTimeFormat: col.uiStyles?.attributes?.datePattern}}</span>
 					</ng-template>
 					<ng-template [ngIf]="!isDate(col?.type?.name)">
 						<span title="{{row[datacol.field]}}">{{row[datacol.field]}}</span> 

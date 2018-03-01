@@ -609,14 +609,14 @@ export class PageService {
          * Create the Grid Row Data from Param Leaf State
          * 
          */
-        createRowData(param: Param, nestedGridParam: ParamConfig) {
+        createRowData(param: Param, nestedParamIdx: number) {
                 let rowData: any = {};
                 rowData = param.leafState;
                 rowData['elemId'] = param.elemId;
 
                 // If nested data exists, set the data to nested grid
-                if (nestedGridParam) {
-                        nestedGridParam.gridList = rowData[nestedGridParam.code];
+                if (nestedParamIdx && param.type.model.params) {
+                        rowData['nestedGridParam'] = param.type.model.params[nestedParamIdx];
                 }
 
                 return rowData;
@@ -629,18 +629,19 @@ export class PageService {
         createGridData(params: Param[], nestedParams: ParamConfig[]) {
                 let gridData = [];
                 // Look for inner lists (nested grid)
-                let nestedGridParam: ParamConfig;
+                let nestedParamIdx: number;
                 if (nestedParams) {
-                        nestedParams.forEach(col => {
-                                if (col.uiStyles && col.uiStyles.name == 'ViewConfig.GridRowBody') {
-                                        nestedGridParam = col;
+                        for (let p in nestedParams) {
+                                if (nestedParams[p].uiStyles && nestedParams[p].uiStyles.name == 'ViewConfig.GridRowBody') {
+                                        nestedParamIdx = +p;
+                                        break;
                                 }
-                        });
+                        }
                 }
                 if (params) {
                         params.forEach(param => {
                                 let p = new Param(this.configService).deserialize(param);
-                                gridData.push(this.createRowData(p, nestedGridParam));
+                                gridData.push(this.createRowData(p, nestedParamIdx));
                         });        
                 }
                 return gridData;
