@@ -334,15 +334,17 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
 
     }
 
-    between(value: any, filter: any[]){
+    // between(value: any, filter: any[]){
 
-        //  if( filter[0] >= value && filter[1] <= value) { return true; } return false;
+    between(value: any, filter: any){    
 
+        return moment(filter).isSame(value, 'day'); 
+        // if(value){
         // var valueDate1 = new Date(value.toDateString());
         // var valueDate2 = new Date (filter.toDateString());
-        // return valueDate1.valueOf() == valueDate2.valueOf();
-
-        return (value >= filter[0] && value<=filter[1])
+        // return valueDate1.valueOf() == valueDate2.valueOf();}
+     
+        // return (value >= filter[0] && value<=filter[1])
     }
 
     dateFilter(e: any, dt: DataTable, field: string, filterMatchMode: string, datePattern?: string, dateType?: string) {
@@ -362,14 +364,15 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
             dt.filter(e.target.value, field, "startsWith");
         }
         else {
-            let filter: any[] = [];
+            // let filter: any[] = [];
 
             if (moment(e.target.value, datePattern.toUpperCase(), true).isValid()) {
                 // let formatedDate = moment(e.target.value, datePattern.toUpperCase()).format('MM/DD/YYYY');
-               var localStartDate= moment.utc(e.target.value, datePattern.toUpperCase()).toDate();
-               var localEndDate=moment.utc(e.target.value,  datePattern.toUpperCase()).endOf('day').toDate();
-               filter[0]=localStartDate; filter[1]=localEndDate;
-               dt.filter(filter, field, "between");
+            //    var localStartDate= moment.utc(e.target.value, datePattern.toUpperCase()).toDate();
+            //    var localEndDate=moment.utc(e.target.value,  datePattern.toUpperCase()).endOf('day').toDate();
+            //    filter[0]=localStartDate; filter[1]=localEndDate;
+            //    dt.filter(filter, field, "between");
+                dt.filter( moment(e.target.value, datePattern.toUpperCase()).toDate(), field, "between");
             }
         }
         this.totalRecords = dt.dataToRender.length;
