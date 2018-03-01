@@ -128,6 +128,13 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
             this.totalRecords = this.value.length;
             this.updatePageDetailsState();
         }
+
+        if (this.dt !== undefined) {
+
+            const customFilterConstraints = this.dt.filterConstraints;
+            customFilterConstraints['between'] = this.between; 
+            this.dt.filterConstraints = customFilterConstraints;
+        }
     }
 
     ngAfterViewInit() {
@@ -348,15 +355,8 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     }
 
     dateFilter(e: any, dt: DataTable, field: string, filterMatchMode: string, datePattern?: string, dateType?: string) {
-
-
-       
-        if (this.dt !== undefined) {
-
-            const customFilterConstraints = this.dt.filterConstraints;
-            customFilterConstraints['between'] = this.between; 
-            this.dt.filterConstraints = customFilterConstraints;
-          }
+      
+    if(dateType == 'LocalDate' || dateType == 'date' || dateType == 'Date'){
 
         datePattern = (!datePattern || datePattern == "") ? "MM/DD/YYYY" : datePattern;
 
@@ -375,6 +375,22 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
                 dt.filter( moment(e.target.value, datePattern.toUpperCase()).toDate(), field, "between");
             }
         }
+    }
+
+    else if(dateType == 'LocalDateTime' || dateType == 'ZonedDateTime'){
+        
+        if (e.target.value.length == '0') {
+            dt.filter(e.target.value, field, "startsWith");
+        }
+        else {
+
+            if (moment(e.target.value, "MM/DD/YYYY", true).isValid()) {
+
+                dt.filter( moment(e.target.value, "MM/DD/YYYY").toDate(), field, "between");
+            }
+        }
+    }
+
         this.totalRecords = dt.dataToRender.length;
         this.updatePageDetailsState();
     }
@@ -414,3 +430,11 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         this.updatePageDetailsState();
     }
 }
+
+
+
+
+
+
+
+
