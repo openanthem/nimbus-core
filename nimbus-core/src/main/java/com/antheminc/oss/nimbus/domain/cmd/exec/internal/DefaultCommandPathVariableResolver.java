@@ -125,7 +125,7 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 			
 			Object state = p.getLeafState();
 			String json = converter.convert(state);
-			return json;
+			return String.valueOf(json);
 		} else {
 			Param<?> p = param.findParamByPath(pathToResolve) != null? param.findParamByPath(pathToResolve): param.getParentModel().findParamByPath(pathToResolve);
 			return String.valueOf(p.getState());
