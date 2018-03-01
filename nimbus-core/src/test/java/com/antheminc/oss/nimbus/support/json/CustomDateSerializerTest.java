@@ -1,11 +1,12 @@
 package com.antheminc.oss.nimbus.support.json;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.Rule;
@@ -41,12 +42,17 @@ public class CustomDateSerializerTest {
 	
 	@Test
 	public void t1_serialize() throws IOException {
+
 		Date date = new GregorianCalendar(2018, Calendar.FEBRUARY, 11).getTime();
+
+		String expected = (new DateTime(date).withZone(DateTimeZone.UTC).toDateTimeISO().toString());
+
 		Mockito.doNothing().when(this.gen).writeString(Mockito.anyString());
 		this.testee.serialize(date, gen, null);
 		ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
 		Mockito.verify(this.gen).writeString(captor.capture());
-		Assert.assertEquals("2018-02-11T00:00:00.000Z", captor.getValue());
+
+		Assert.assertEquals(expected, captor.getValue());
 	}
 	
 	@Test
