@@ -286,7 +286,7 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 		if(list.size()!=getNestedCollectionModel().templateParams().size() /*&& (
 				isMapped() && getAssociatedParam().findIfMapped().requiresConversion()
 				)*/)  {
-			logit.error(()->
+			logit.trace(()->
 			/*throw new InvalidStateException(*/" 1  List entity has size: "+list.size()+" whereas ListModel.params has size: "+getNestedCollectionModel().templateParams().size()+". "
 					+ "Must be same but found different.");
 		}
