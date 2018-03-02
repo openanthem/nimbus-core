@@ -42,12 +42,12 @@
 				[hidden]="col?.uiStyles?.attributes?.hidden"
 				[sortable]="!col?.uiStyles?.isLink ? 'custom' : false"
 				(sortFunction)="sortBy($event, col?.type?.name, col?.uiStyles?.attributes?.sortAs)"
-				[filter]="col?.uiStyles?.attributes?.filter"
+				[filter]="filterState"
 				[filterMatchMode]="col?.uiStyles?.attributes?.filterMode" > 
 							
 				<ng-template pTemplate="header"> 
 					<span title="{{col?.label}}"  *ngIf="!col?.uiStyles?.isLink">{{col.label}}</span> 
-					<a href="javascript:void(0)" (click)="toggleFilter($event)" class='gridFilterIcon' *ngIf="!col?.uiStyles?.isLink"></a> 
+					<a href="javascript:void(0)" (click)="toggleFilter(col?.uiStyles?.attributes?.filter)" class='gridFilterIcon' *ngIf="!col?.uiStyles?.isLink"></a> 
 				</ng-template> 
 				
 				<ng-template *ngIf="col?.uiStyles?.attributes?.alias == 'CheckBox'" pTemplate="body" let-cell="rowData"> 
@@ -55,23 +55,31 @@
 				</ng-template>
 
 				<ng-template let-datacol let-row="rowData" pTemplate="body">
-					<ng-template [ngIf]="isDate(col?.type?.name)">
-						<span title="{{row[datacol.field] | dateTimeFormat: col.uiStyles?.attributes?.datePattern}}">{{row[datacol.field] | dateTimeFormat: col.uiStyles?.attributes?.datePattern}}</span>
+					<ng-template [ngIf]="isDate(col.type.name)">
+						<span title="{{row[datacol.field] | dateTimeFormat: col.uiStyles?.attributes?.datePattern : col.type.name }}">{{row[datacol.field] | dateTimeFormat: col.uiStyles?.attributes?.datePattern : col.type.name }}</span>
 					</ng-template>
-					<ng-template [ngIf]="!isDate(col?.type?.name)">
+					<ng-template [ngIf]="!isDate(col.type.name)">
 						<span title="{{row[datacol.field]}}">{{row[datacol.field]}}</span> 
 					</ng-template>
+
+					
 				</ng-template>
 
-				<ng-template let-filtercol pTemplate="filter">
-					<ng-template [ngIf]="isDate(col?.type?.name)">
-					<input type="text" (input)="dateFilter($event, dt, filtercol.field, col?.uiStyles?.attributes?.filterMode, col?.uiStyles?.attributes?.datePattern, col?.type?.name)"> 
-					</ng-template>
+			<ng-template  let-filtercol pTemplate="filter">
+				<ng-template [ngIf]="isDate(col.type.name)">
+					<div class="filterHolder" >
+					<input #text type="text" (input)="dateFilter($event, dt, filtercol.field, col?.uiStyles?.attributes?.filterMode, col?.uiStyles?.attributes?.datePattern, col?.type?.name)"> 
+					<button (click)= "clearFilter(text,dt,filtercol.field)" ><i class="fa fa-times"></i>  </button>
+				    </div>	
+				</ng-template>
 
-					<ng-template [ngIf]="!isDate(col?.type?.name)">
-					<input type="text" (input)="inputFilter($event, dt, filtercol.field, col?.uiStyles?.attributes?.filterMode)">
-					</ng-template>
-				</ng-template> 
+				<ng-template [ngIf]="!isDate(col.type.name)">
+					<div class="filterHolder" >	
+					<input #text type="text" (input)="inputFilter($event, dt, filtercol.field, col?.uiStyles?.attributes?.filterMode)">
+					<button (click)= "clearFilter(text,dt,filtercol.field)" ><i class="fa fa-times"></i>  </button>
+				    </div>
+				</ng-template>
+			</ng-template> 
 				
 			</p-column>
 
@@ -79,7 +87,9 @@
 				<ng-template pTemplate="body" let-cell="rowData">
 					<nm-action-dropdown [params]="col?.type?.model?.paramConfigs" [rowData]="cell" [elementPath]="getRowPath(col, cell)"></nm-action-dropdown>
 				</ng-template>
+				
 			</p-column>
+			
 		</ng-template>
 
 		<ng-template let-row pTemplate="rowexpansion">
@@ -97,4 +107,5 @@
 		</p-footer> 
 				   
 	</p-dataTable>
+	
 </div>

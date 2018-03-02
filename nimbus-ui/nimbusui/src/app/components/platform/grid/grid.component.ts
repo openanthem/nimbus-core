@@ -125,6 +125,15 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
 
         if (this.element.config.gridList != null && this.element.config.gridList.length > 0) {
             this.value = this.element.config.gridList;
+            this.totalRecords = this.value.length;
+            this.updatePageDetailsState();
+        }
+
+        if (this.dt !== undefined) {
+
+            const customFilterConstraints = this.dt.filterConstraints;
+            customFilterConstraints['between'] = this.between; 
+            this.dt.filterConstraints = customFilterConstraints;
         }
     }
 
@@ -332,18 +341,55 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
 
     }
 
+    // between(value: any, filter: any[]){
+
+    between(value: any, filter: any){    
+
+        return moment(filter).isSame(value, 'day'); 
+        // if(value){
+        // var valueDate1 = new Date(value.toDateString());
+        // var valueDate2 = new Date (filter.toDateString());
+        // return valueDate1.valueOf() == valueDate2.valueOf();}
+     
+        // return (value >= filter[0] && value<=filter[1])
+    }
+
     dateFilter(e: any, dt: DataTable, field: string, filterMatchMode: string, datePattern?: string, dateType?: string) {
-        datePattern = (datePattern == "") ? "MM/DD/YYYY" : datePattern;
+      
+    if(dateType == 'LocalDate' || dateType == 'date' || dateType == 'Date'){
+
+        datePattern = (!datePattern || datePattern == "") ? "MM/DD/YYYY" : datePattern;
 
         if (e.target.value.length == '0') {
             dt.filter(e.target.value, field, "startsWith");
         }
         else {
+            // let filter: any[] = [];
+
             if (moment(e.target.value, datePattern.toUpperCase(), true).isValid()) {
-                let formatedDate = moment(e.target.value, datePattern.toUpperCase()).format('MM/DD/YYYY');
-                dt.filter(formatedDate, field, "startsWith");
+                // let formatedDate = moment(e.target.value, datePattern.toUpperCase()).format('MM/DD/YYYY');
+            //    var localStartDate= moment.utc(e.target.value, datePattern.toUpperCase()).toDate();
+            //    var localEndDate=moment.utc(e.target.value,  datePattern.toUpperCase()).endOf('day').toDate();
+            //    filter[0]=localStartDate; filter[1]=localEndDate;
+            //    dt.filter(filter, field, "between");
+                dt.filter( moment(e.target.value, datePattern.toUpperCase()).toDate(), field, "between");
             }
         }
+    }
+
+    else if(dateType == 'LocalDateTime' || dateType == 'ZonedDateTime'){
+        
+        if (e.target.value.length == '0') {
+            dt.filter(e.target.value, field, "startsWith");
+        }
+        else {
+
+            if (moment(e.target.value, "MM/DD/YYYY", true).isValid()) {
+
+                dt.filter( moment(e.target.value, "MM/DD/YYYY").toDate(), field, "between");
+            }
+        }
+    }
 
         this.totalRecords = dt.dataToRender.length;
         this.updatePageDetailsState();
@@ -353,10 +399,11 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         dt.filter(e.target.value, field, filterMatchMode);
     }
 
-    isDate(dataType: string): boolean {
-        if (dataType === 'date' || dataType === 'Date' || dataType === 'LocalDateTime' || dataType === 'ZonedDateTime') return true;
-        if (dataType !== 'date' && dataType !== 'Date' && dataType !== 'LocalDateTime' && dataType !== 'ZonedDateTime') return false;
-    }
+
+    clearFilter(txt: any, dt: DataTable, field: string){
+        txt.value='';
+        dt.filter(txt.value, field, "");
+     }
 
     paginate(e: any) {
         if (this.totalRecords != 0) {
@@ -383,3 +430,11 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         this.updatePageDetailsState();
     }
 }
+
+
+
+
+
+
+
+
