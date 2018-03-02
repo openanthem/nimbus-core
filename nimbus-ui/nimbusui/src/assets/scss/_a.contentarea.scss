@@ -180,8 +180,8 @@ h1.page-title {
 .ui-dialog-content label {
     padding-top: .3rem;
 }
-.ui-widget-header{
-    text-align: left;
+.ui-widget-header.ui-dialog-titlebar{
+        text-align: left;
 }
 
 .textWrapBreakWord {
