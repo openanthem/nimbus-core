@@ -41,7 +41,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   selector: 'nm-comboBox',
   providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc ],
   template: `
-    <label [attr.for]="element.config?.code" class="{{elementStyle}}" *ngIf="this.showLabel">{{label}}
+    <label [attr.for]="element.config?.code"  [ngClass]="{'required': requiredCss, '': !requiredCss}" *ngIf="this.showLabel">{{label}}
         <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
     </label>
     <p-dropdown 

@@ -43,7 +43,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR,WebContentSvc],
   template: `
     <fieldset>
-        <legend class="{{elementStyle}}">{{label}}
+        <legend  [ngClass]="{'required': requiredCss, '': !requiredCss}">{{label}}
         <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
         </legend>
         <div class="checkboxHolder" >
