@@ -26,6 +26,7 @@ import { GenericDomain } from '../../../../model/generic-domain.model';
 import { ValidatorFn } from '@angular/forms/src/directives/validators';
 import { ValidationUtils } from '../../validators/ValidationUtils';
 import { ValidationConstraint } from './../../../../shared/validationconstraints.enum';
+import { FormControl, AbstractControl } from '@angular/forms/src/model';
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -45,6 +46,7 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
     inPlaceEditContext: any;
     showLabel: boolean = true;
     disabled: boolean;
+    requiredCss:boolean = false;
     constructor(private pageService: PageService, private wcs: WebContentSvc, private cd: ChangeDetectorRef) {
         super();
     }
@@ -69,63 +71,70 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
         let labelContent: LabelConfig = this.wcs.findLabelContent(this.element);
         this.label = labelContent.text;
         this.helpText = labelContent.helpText;
+        this.requiredCss = ValidationUtils.applyelementStyle(this.element);
+        let frmCtrl = this.form.controls[this.element.config.code];
+        //rebind the validations as there are dynamic validations along with the static validations
+        if(frmCtrl!=null && this.element.activeValidationGroups != null && this.element.activeValidationGroups.length > 0) {
+            this.requiredCss = ValidationUtils.rebindValidations(frmCtrl,this.element.activeValidationGroups,this.element);
+        } 
     }
 
     ngAfterViewInit(){
         if(this.form!= undefined && this.form.controls[this.element.config.code]!= null) {
             this.form.controls[this.element.config.code].valueChanges.subscribe(($event) => this.setState($event,this));
-
-            this.pageService.eventUpdate$.subscribe(event => {
-                let frmCtrl = this.form.controls[event.config.code];
-                if(frmCtrl!=null && event.path == this.element.path) {
-                    if(event.leafState!=null){
-                        if (event.alias === 'Calendar') {
-                            event.leafState= new Date(event.leafState);
-                          }
-                        frmCtrl.setValue(event.leafState);
-                    } else
-                        frmCtrl.reset();
-                }
-            });
-            this.pageService.validationUpdate$.subscribe(event => {
-                let frmCtrl = this.form.controls[event.config.code];
-                if(frmCtrl!=null) {
-                    if(event.path === this.element.path) {
-                        //bind dynamic validations on a param as a result of a state change of another param
-                        if(event.activeValidationGroups != null && event.activeValidationGroups.length > 0) {
-                            var staticChecks: ValidatorFn[] = [];
-                            var dynamicChecks: ValidatorFn[] = [];
-                            staticChecks = ValidationUtils.buildStaticValidations(this.element);
-                            //merge the static and dynamic validations and overwrite the form control's validators
-                            dynamicChecks = ValidationUtils.buildDynamicValidations(this.element, event.activeValidationGroups);
-                            frmCtrl.setValidators(dynamicChecks.concat(staticChecks));
-                        } else {
-                            var staticChecks: ValidatorFn[] = [];
-                            staticChecks = ValidationUtils.buildStaticValidations(this.element);
-                            frmCtrl.setValidators(staticChecks);
-                        }
-                        if(event.enabled && event.visible) {
-                            frmCtrl.enable();   
-                        }
-                        else {
-                            frmCtrl.disable();
-                        }
-                        this.disabled = !event.enabled;   
-                    }
-
-                }
-            });
+            this.stateUpdateSubscriber();
+            this.validationUpdateSubscriber();
         }
+        this.onChangeEventSubscriber();
+    }
+
+    private stateUpdateSubscriber() {
+        this.pageService.eventUpdate$.subscribe(event => {
+            let frmCtrl = this.form.controls[event.config.code];
+            if(frmCtrl!=null && event.path == this.element.path) {
+                if(event.leafState!=null){
+                    if (event.alias === 'Calendar') {
+                        event.leafState= new Date(event.leafState);
+                      }
+                    frmCtrl.setValue(event.leafState);
+                } else
+                    frmCtrl.reset();
+            }
+        });
+    }
+
+    private validationUpdateSubscriber() {
+        this.pageService.validationUpdate$.subscribe(event => {
+            let frmCtrl = this.form.controls[event.config.code];
+            if(frmCtrl!=null) {
+                if(event.path === this.element.path) {
+                    //bind dynamic validations on a param as a result of a state change of another param
+                    if(event.activeValidationGroups != null && event.activeValidationGroups.length > 0) {
+                        this.requiredCss = ValidationUtils.rebindValidations(frmCtrl,event.activeValidationGroups,this.element);
+                    } else {
+                        this.requiredCss = ValidationUtils.applyelementStyle(this.element);
+                        var staticChecks: ValidatorFn[] = [];
+                        staticChecks = ValidationUtils.buildStaticValidations(this.element);
+                        frmCtrl.setValidators(staticChecks);
+                    }
+                    ValidationUtils.assessControlValidation(event,frmCtrl);
+                    this.disabled = !event.enabled;   
+                }
+
+            }
+        });
+    }
+
+    private onChangeEventSubscriber() {
         this.controlValueChanged.subscribe(($event) => {
-             //console.log($event);
-             if ($event.config.uiStyles.attributes.postEventOnChange) {
-                this.pageService.postOnChange($event.path, 'state', JSON.stringify($event.leafState));
-             } else if($event.config.uiStyles.attributes.postButtonUrl) {
-                let item: GenericDomain = new GenericDomain();
-                //item.addAttribute($event.config.code,$event.leafState);
-                this.pageService.processPost(this.element.config.uiStyles.attributes.postButtonUrl, null, $event.leafState, 'POST');
-             }
-         });
+            //console.log($event);
+            if ($event.config.uiStyles.attributes.postEventOnChange) {
+               this.pageService.postOnChange($event.path, 'state', JSON.stringify($event.leafState));
+            } else if($event.config.uiStyles.attributes.postButtonUrl) {
+               let item: GenericDomain = new GenericDomain();
+               this.pageService.processPost(this.element.config.uiStyles.attributes.postButtonUrl, null, $event.leafState, 'POST');
+            }
+        });
     }
     /** invoked from InPlaceEdit control */
     setInPlaceEditContext(context: any) {
@@ -158,20 +167,5 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
      */
     public get type(): string {
         return this.element.config.uiStyles.attributes.type;
-    }
-
-    /**
-     * Check if control is required
-     */
-    public get elementStyle(): string {
-        let style = '';
-        if (this.element.config.validation) {
-            this.element.config.validation.constraints.forEach(validator => {
-                if (validator.name === ValidationConstraint._notNull.value) {
-                    style = 'required';
-                }
-            });
-        }
-        return style;
     }
 }

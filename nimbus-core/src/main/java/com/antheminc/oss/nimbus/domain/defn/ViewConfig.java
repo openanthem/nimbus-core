@@ -219,6 +219,8 @@ public class ViewConfig {
 		}
 		
 		ParamContext context() default @ParamContext(enabled = true, visible = false);
+		
+		boolean resizable() default true;
 	}
 
 	/*

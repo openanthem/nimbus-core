@@ -657,6 +657,7 @@ export class UiAttribute implements Serializable<UiAttribute> {
     rel: string;
     sortAs: string;
     sortable: boolean;
+    resizable:boolean;
     deserialize( inJson ) {
         this.value = inJson.value;
         this.url = inJson.url;
@@ -761,6 +762,9 @@ export class UiAttribute implements Serializable<UiAttribute> {
         }
         if(inJson.sortable) {
             this.sortable = inJson.sortable;
+        }
+        if(inJson.resizable) {
+            this.resizable = inJson.resizable;
         }
         return this;
     }
