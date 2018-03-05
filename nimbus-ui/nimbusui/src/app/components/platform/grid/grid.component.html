@@ -34,7 +34,7 @@
 
 		<p-column expander="true" styleClass="col-icon" *ngIf="element.config?.uiStyles?.attributes?.expandableRows"></p-column>
 
-		<ng-template ngFor let-col [ngForOf]="params">
+		<ng-template ngFor let-col let-colIndex="index" [ngForOf]="params">
 
 			<p-column *ngIf="col?.uiStyles?.attributes?.alias != 'Link' && col?.uiStyles?.attributes?.alias != 'LinkMenu' && col?.type?.nested == false"
 				[field]="col?.code" 
@@ -85,7 +85,7 @@
 
 			<p-column *ngIf="col?.uiStyles?.attributes?.alias=='LinkMenu'" styleClass="dropdown">
 				<ng-template pTemplate="body" let-cell="rowData">
-					<nm-action-dropdown [params]="col?.type?.model?.paramConfigs" [rowData]="cell" [elementPath]="getRowPath(col, cell)"></nm-action-dropdown>
+					<nm-action-dropdown [element]="cell._params[colIndex]" [params]="col?.type?.model?.paramConfigs" [rowData]="cell" [elementPath]="getRowPath(col, cell)"></nm-action-dropdown>
 				</ng-template>
 				
 			</p-column>
