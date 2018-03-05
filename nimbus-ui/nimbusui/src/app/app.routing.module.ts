@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 'use strict';
-import { DomainLayoutCmp } from './components/domain/domain-layout.component';
 import { DomainFlowCmp } from './components/domain/domain-flow.component';
 import { StyleGuideCmp } from './styleguide/style-guide.component';
 import { MainLayoutCmp } from './components/home/main-layout.component';

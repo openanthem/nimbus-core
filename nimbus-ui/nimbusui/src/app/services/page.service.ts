@@ -821,7 +821,7 @@ export class PageService {
                                 });
                         });
                 } else {
-                        this.logError('Could not process the update from the server for' + payload.path + ' because config is undefined.');
+                        this.logError('Could not process the update from the server for ' + payload.path + ' because config is undefined.');
                 }
         }
 

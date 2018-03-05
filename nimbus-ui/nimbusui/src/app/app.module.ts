@@ -22,7 +22,6 @@ import { MultiSelectListBox } from './components/platform/form/elements/multi-se
 import { BreadcrumbComponent } from './components/platform/breadcrumb/breadcrumb.component';
 import { BreadcrumbService } from './components/platform/breadcrumb/breadcrumb.service';
 import { HomeLayoutCmp } from './components/home/home-layout.component';
-import { DomainLayoutCmp } from './components/domain/domain-layout.component';
 import { StyleGuideCmp } from './styleguide/style-guide.component';
 import { MainLayoutCmp } from './components/home/main-layout.component';
 import { LoginLayoutCmp } from './components/login/login-layout.component';
@@ -160,7 +159,7 @@ import {DateTimeFormatPipe} from './pipes/date.pipe';
         BreadcrumbComponent, NavLinkRouter,
         Modal, ActionDropdown, ActionLink, 
         GridMouseEventDirective, SortableContainerDirective, SortableComponentDirective,
-        HomeLayoutCmp, MainLayoutCmp, DomainLayoutCmp, LoginCmp, LoginLayoutCmp, StyleGuideCmp, 
+        HomeLayoutCmp, MainLayoutCmp, LoginCmp, LoginLayoutCmp, StyleGuideCmp, 
         KeysPipe, LinkPipe, DateTimeFormatPipe, SelectItemPipe, MultiSelectListBox, 
         CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent, Calendar, NavMenuGlobal, LoaderComponent
 

@@ -89,10 +89,14 @@ export class Form implements OnInit, OnChanges {
 
     /** Initialize the Form **/
     ngOnInit() {
-        if(this.element.config.uiStyles.attributes.cssClass === 'threeColumn') {
+        if(this.element.config.uiStyles.attributes.cssClass === 'fourColumn') {
+            this.elementCss = 'col-lg-3 col-md-6 col-sm-12';
+        } else if(this.element.config.uiStyles.attributes.cssClass === 'threeColumn') {
             this.elementCss = 'col-lg-4 col-md-6 col-sm-12';
         } else if(this.element.config.uiStyles.attributes.cssClass === 'twoColumn') {
             this.elementCss = 'col-sm-12 col-md-6';        
+        } else if(this.element.config.uiStyles.attributes.cssClass === 'oneColumn') {
+            this.elementCss = 'col-sm-12';        
         } else if(this.element.config.uiStyles.attributes.cssClass === 'questionGroup') {
             this.elementCss = 'form-inline questionGroup';
         } 

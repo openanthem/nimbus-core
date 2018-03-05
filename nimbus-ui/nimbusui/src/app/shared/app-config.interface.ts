@@ -262,7 +262,7 @@ export class Param implements Serializable<Param> {
             this.elemId = inJson.elemId;
             // TODO Move to its own deserializer
             this.collectionConfigs = {};
-            if (this.type.model.params && this.type.model.params.length > 0) {
+            if (this.type.model && this.type.model.params && this.type.model.params.length > 0) {
                 let params = this.type.model.params;
                 let typeMappings = {};
                 for(let param of params) {
