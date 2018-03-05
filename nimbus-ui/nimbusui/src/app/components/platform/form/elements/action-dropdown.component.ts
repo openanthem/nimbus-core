@@ -88,6 +88,10 @@ export class ActionDropdown {
     constructor(private _wcs: WebContentSvc, private pageSvc: PageService, private _elementRef: ElementRef) {
     }
 
+    get elementRef(){
+        return this._elementRef;
+    }
+
     ngOnInit() {
         // console.log(this.params);
         // console.log(this.elementPath + '/');

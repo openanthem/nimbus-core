@@ -31,8 +31,12 @@ import { DateTimeFormatPipe } from '../../../pipes/date.pipe';
 import { Calendar } from 'primeng/components/calendar/calendar';
 import * as moment from 'moment';
 import { SortAs, GridColumnDataType } from './sortas.interface';
+import { ActionDropdown } from './../form/elements/action-dropdown.component';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/fromEvent';
+import { Subscription } from 'rxjs/Subscription';
+
+
 
 
 
@@ -64,6 +68,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     @Input('value') _value = [];
     filterValue: Date;
     totalRecords: number = 0;
+    mouseClickOnDocumentSubscription: Subscription;
 
     //    references DataTable named 'flex' in the view
     @ViewChild('flex') flex: DataTable;
@@ -140,20 +145,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
             customFilterConstraints['between'] = this.between;
             this.dt.filterConstraints = customFilterConstraints;
         }
-
-        Observable.fromEvent(document, 'click').subscribe((event: any) => {
-
-            var isClickedOnDropDown = this.isClickedOnDropDown(this.dropDowns.toArray(), event.target);
-
-            if (!isClickedOnDropDown) {
-                this.dropDowns.toArray().forEach((item) => {
-                    item.isOpen = false;
-                    item.state = 'closedPanel';                   
-                });
-                this.cd.detectChanges();
-            }
-        });
-
+        
     }
 
     ngAfterViewInit() {
@@ -203,10 +195,10 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
 
     }
 
-    isClickedOnDropDown(dropDownArray, target) {
+    isClickedOnDropDown(dropDownArray: Array<ActionDropdown>, target: any) {
 
         for (var i = 0; i < dropDownArray.length; i++) {
-            if (dropDownArray[i]._elementRef.nativeElement.contains(target))
+            if (dropDownArray[i].elementRef.nativeElement.contains(target))
                 return true;
         }
         return false;
@@ -285,7 +277,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
                     // if (param.uiStyles.attributes.asynchronous) {
                     //     elemPath = this.element.path + '/' + event.data.elemId + '/' + param.code;
                     // } else {
-                        event.data['nestedElement'] = event.data.nestedGridParam;
+                    event.data['nestedElement'] = event.data.nestedGridParam;
                     // }
                 }
             }
@@ -366,7 +358,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
 
     protected isSortAsDate(fieldType: string, sortAs: string): boolean {
         let fieldTypeToMatch = fieldType.toLowerCase();
-        return ((sortAs !== null && sortAs === SortAs.date.value) || fieldTypeToMatch === GridColumnDataType.date.value
+        return ((sortAs !== null && sortAs === SortAs.date.value) || fieldTypeToMatch === GridColumnDataType.date.value || fieldTypeToMatch === GridColumnDataType.localdate.value
             || fieldTypeToMatch === GridColumnDataType.localdatetime.value || fieldType === GridColumnDataType.zoneddatetime.value);
 
     }
@@ -430,10 +422,10 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     }
 
 
-    clearFilter(txt: any, dt: DataTable, field: string){
-        txt.value='';
+    clearFilter(txt: any, dt: DataTable, field: string) {
+        txt.value = '';
         dt.filter(txt.value, field, "");
-     }
+    }
 
     paginate(e: any) {
         if (this.totalRecords != 0) {
@@ -465,6 +457,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         let selectedDropDownIsOpen = e.isOpen;
         let selectedDropDownState = e.state;
 
+        if(this.dropDowns)
         this.dropDowns.toArray().forEach((item) => {
             if (!item.selectedItem) {
                 item.isOpen = false;
@@ -476,15 +469,31 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
 
         if (selectedDropDownState == 'openPanel') {
             e.state = 'closedPanel';
-
+            if(!this.mouseClickOnDocumentSubscription.closed)
+            this.mouseClickOnDocumentSubscription.unsubscribe();
         }
         else {
             e.state = 'openPanel';
-
+            if(this.dropDowns && (this.mouseClickOnDocumentSubscription == undefined || this.mouseClickOnDocumentSubscription.closed))
+            this.mouseClickOnDocumentSubscription =
+                Observable.fromEvent(document, 'click').filter((event: any) => 
+                !this.isClickedOnDropDown(this.dropDowns.toArray(), event.target)).first().subscribe(() => 
+                {
+                    this.dropDowns.toArray().forEach((item) => {
+                        item.isOpen = false;
+                        item.state = 'closedPanel';
+                    });
+                    this.cd.detectChanges();
+                });
         }
-
         e.selectedItem = false;
         this.cd.detectChanges();
+    }
+
+    ngOnDestroy() {
+        if(this.mouseClickOnDocumentSubscription)   
+        this.mouseClickOnDocumentSubscription.unsubscribe();
+        this.cd.detach();
     }
 }
 
