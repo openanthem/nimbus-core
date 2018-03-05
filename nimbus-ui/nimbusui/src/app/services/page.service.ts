@@ -612,6 +612,7 @@ export class PageService {
          */
         createRowData(param: Param, nestedParamIdx: number) {
                 let rowData: any = param.leafState;
+                rowData['_params'] = param.type.model.params;
                 
                 // If classTypeMappings are present, handle any conversions that should occur.
                 // TODO Use a better design pattern to handle this scenario.

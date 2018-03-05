@@ -41,7 +41,8 @@ import { BaseElement } from './../../base-element.component';
         <button class="dropdownTrigger" 
             aria-label="action menu" 
             attr.aria-expanded="{{isOpen}}" 
-            (click)="toggleOpen($event)">
+            (click)="toggleOpen($event)"
+            [disabled]="(enabled !== undefined && !enabled) ? true : null">
         </button> 
         <div class="dropdownContent" 
             [ngClass]="{'displayNone': isHidden}" 
@@ -49,11 +50,12 @@ import { BaseElement } from './../../base-element.component';
             (@dropdownAnimation.start)="animationStart($event)" 
             (@dropdownAnimation.done)="animationDone($event)" 
             attr.aria-hidden="{{isHidden}}">
-            <nm-action-link 
+            <nm-action-link
                 [elementPath]="elementPath" 
                 [rowData]="rowData" 
-                [param]="param" 
-                *ngFor="let param of params">
+                [param]="param"
+                [element]="element.type.model.params[i]"
+                *ngFor="let param of params; index as i">
             </nm-action-link>
         </div>
     </div>
@@ -75,6 +77,7 @@ import { BaseElement } from './../../base-element.component';
 })
 export class ActionDropdown {
 
+    @Input() element: Param;
     @Input() params: ParamConfig[];
     @Input() elementPath: string;
     @Input() rowData: any;
@@ -82,6 +85,7 @@ export class ActionDropdown {
     isHidden: boolean = true;
     state: string = "closedPanel";
     constructor(private _wcs: WebContentSvc, private pageSvc: PageService) {
+        
     }
 
     ngOnInit() {
@@ -91,6 +95,9 @@ export class ActionDropdown {
 
   
     toggleOpen( event: MouseEvent ): void {
+        // if (undefined !== this.element.enabled && !this.element.enabled) {
+        //     return;
+        // }
         event.preventDefault();
         this.isOpen = !this.isOpen;
         if(this.state == 'openPanel'){
@@ -113,6 +120,9 @@ export class ActionDropdown {
         }
     }
     
+    get enabled(): boolean {
+        return this.element.enabled;
+    }
 }
 
 @Component({
@@ -125,7 +135,7 @@ export class ActionDropdown {
             <a href="{{url}}" class="{{param.uiStyles?.attributes?.cssClass}}" target="{{param.uiStyles?.attributes?.target}}" rel="{{param.uiStyles?.attributes?.rel}}">{{label}}</a>
         </ng-template>
         <ng-template [ngIf]="param.uiStyles.attributes.value !='EXTERNAL'">
-            <a href="javascript:void(0)" (click)="processOnClick(this.param.code)">{{label}}</a>
+            <a href="javascript:void(0)" [class.disabled]="enabled !== undefined && !enabled" (click)="processOnClick(this.param.code)">{{label}}</a>
         </ng-template>
     `
 })
@@ -166,6 +176,10 @@ export class ActionLink extends BaseElement{
         }
     
         processOnClick(linkCode: string) {
+            if (undefined !== this.enabled && !this.enabled) {
+                return;
+            }
+
             let item: GenericDomain = new GenericDomain();
             this.pageSvc.processEvent(this.elementPath + '/' + linkCode, Behavior.execute.value, item, HttpMethod.GET.value);
         }

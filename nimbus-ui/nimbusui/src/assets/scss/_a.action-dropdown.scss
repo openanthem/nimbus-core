@@ -9,8 +9,11 @@
             height: 1.3rem;
             padding: 0;
             //border: 1px solid #ccc;
-            background: $iconColor;
+            background: #e5991c;
             line-height: 1;
+            &:disabled {
+                background-color: #b9b6b6;
+            }
             &::after {
                 color: #fff;
                 font-family: "fontAwesome";
@@ -18,8 +21,8 @@
                 font-size: 1.2rem;
                 line-height: 1;
             }
-            &:hover{
-                background-color: darken($iconColor,10%);
+            &:hover:not(:disabled), &:focus:not(:disabled){
+                background-color: #4a90e2;
             }
         }
         .dropdownContent {
@@ -37,9 +40,13 @@
                 display: block;
                 text-decoration: none;
                 padding:.2rem .4rem;
-                &:hover{
-                    background: #4a90e2;
+                &:hover:not(.disabled), &:focus:not(.disabled){
                     color: #fff;
+                    background: #4a90e2;
+                }
+                &.disabled {
+                    color: #b9b6b6;
+                    cursor: default;
                 }
             }
         }
