@@ -95,9 +95,6 @@ export class ActionDropdown {
 
   
     toggleOpen( event: MouseEvent ): void {
-        // if (undefined !== this.element.enabled && !this.element.enabled) {
-        //     return;
-        // }
         event.preventDefault();
         this.isOpen = !this.isOpen;
         if(this.state == 'openPanel'){
