@@ -65,8 +65,8 @@ export class ParamUtils {
      * ISO Date Format of yyyy-MM-ddThh:mm:ss.SSSZ. Consequently, the converted <tt>Date</tt> object will 
      * be converted to the browser's current time zone.</p>
      * 
-     * <p>This method will effectively ignore the time zone by adding the offset time between the UTC time 
-     * zone and the browser time zone when doing the <tt>Date</tt> conversion. e.g. A 
+     * <p>This method will effectively ignore the time zone by adding the offset time 
+     * between the UTC time zone and the browser time zone when doing the <tt>Date</tt> conversion. e.g. A 
      * <tt>LocalDate.of(1931, 2, 4)</tt> from the server would give:</p>
      * 
      * <ul>
@@ -87,14 +87,14 @@ export class ParamUtils {
      * @param typeClassMapping the class type of the server date object
      */
     public static convertServerDateStringToDate(value: string, typeClassMapping: string): Date {
-        // TODO
-        // Currently there is no difference between any of the typeClassMappings. In the future
-        // we may wish to handle ZonedDateTime values differently.
         if (value) {
             var serverDateTime = new Date(value);
-            return new Date(serverDateTime.getUTCFullYear(), 
-                serverDateTime.getUTCMonth(), 
-                serverDateTime.getUTCDate());
+            if (typeClassMapping === ParamUtils.DATE_TYPE_METADATA.LOCAL_DATE.name) {
+                return new Date(serverDateTime.getUTCFullYear(), serverDateTime.getUTCMonth(), serverDateTime.getUTCDate());
+            } else {
+                return new Date(serverDateTime.getUTCFullYear(), serverDateTime.getUTCMonth(), serverDateTime.getUTCDate(), 
+                    serverDateTime.getHours(), serverDateTime.getMinutes(), serverDateTime.getSeconds());
+            }
         }
         return null;
     }
