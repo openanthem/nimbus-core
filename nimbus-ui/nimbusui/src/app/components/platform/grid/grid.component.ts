@@ -17,7 +17,7 @@
 'use strict';
 import { BaseElement } from './../base-element.component';
 import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { Component, Input, Output, forwardRef, ViewChild, EventEmitter, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, Output, forwardRef, ViewChild, EventEmitter, ViewEncapsulation, ChangeDetectorRef, QueryList, ViewChildren } from '@angular/core';
 
 import { GenericDomain } from '../../../model/generic-domain.model';
 import { Param, ParamConfig } from '../../../shared/app-config.interface';
@@ -31,6 +31,9 @@ import { DateTimeFormatPipe } from '../../../pipes/date.pipe';
 import { Calendar } from 'primeng/components/calendar/calendar';
 import * as moment from 'moment';
 import { SortAs, GridColumnDataType } from './sortas.interface';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/fromEvent';
+
 
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
@@ -66,6 +69,8 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     @ViewChild('flex') flex: DataTable;
     @ViewChild('dt') dt: DataTable;
     @ViewChild('op') overlayPanel: OverlayPanel;
+    @ViewChildren('dropDown') dropDowns: QueryList<any>;
+
 
     summaryData: any;
     rowHover: boolean;
@@ -132,9 +137,23 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         if (this.dt !== undefined) {
 
             const customFilterConstraints = this.dt.filterConstraints;
-            customFilterConstraints['between'] = this.between; 
+            customFilterConstraints['between'] = this.between;
             this.dt.filterConstraints = customFilterConstraints;
         }
+
+        Observable.fromEvent(document, 'click').subscribe((event: any) => {
+
+            var isClickedOnDropDown = this.isClickedOnDropDown(this.dropDowns.toArray(), event.target);
+
+            if (!isClickedOnDropDown) {
+                this.dropDowns.toArray().forEach((item) => {
+                    item.isOpen = false;
+                    item.state = 'closedPanel';                   
+                });
+                this.cd.detectChanges();
+            }
+        });
+
     }
 
     ngAfterViewInit() {
@@ -183,6 +202,17 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         }
 
     }
+
+    isClickedOnDropDown(dropDownArray, target) {
+
+        for (var i = 0; i < dropDownArray.length; i++) {
+            if (dropDownArray[i]._elementRef.nativeElement.contains(target))
+                return true;
+        }
+        return false;
+
+    }
+
 
     getRowPath(col: ParamConfig, item: any) {
         return this.element.path + '/' + item.elemId + '/' + col.code;
@@ -428,6 +458,33 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     filterCallBack(e: any) {
         this.totalRecords = e.filteredValue.length;
         this.updatePageDetailsState();
+    }
+
+    toggleOpen(e: any) {
+
+        let selectedDropDownIsOpen = e.isOpen;
+        let selectedDropDownState = e.state;
+
+        this.dropDowns.toArray().forEach((item) => {
+            if (!item.selectedItem) {
+                item.isOpen = false;
+                item.state = 'closedPanel';
+            }
+        });
+
+        e.isOpen = !selectedDropDownIsOpen;
+
+        if (selectedDropDownState == 'openPanel') {
+            e.state = 'closedPanel';
+
+        }
+        else {
+            e.state = 'openPanel';
+
+        }
+
+        e.selectedItem = false;
+        this.cd.detectChanges();
     }
 }
 
