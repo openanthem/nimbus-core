@@ -113,17 +113,31 @@ export class BaseElement {
     }
 
     /**
-     * Visibility of this Param. Visible by default
+     *  Get visibility of this Param. Visible by default
      */
     public get visible(): boolean {
         return this.element.visible;
     }
 
     /**
-     * Enabled property of this Param. Enabled by default.
+     * Get enabled property of this Param. Enabled by default.
      */
     public get enabled(): boolean {
         return this.element.enabled;
+    }
+
+    /**
+     * Set visibility of this Param.
+     */
+    public set visible(visible: boolean) {
+         this._visible = visible;
+    }
+
+    /**
+     * Set enabled property of this Param.
+     */
+    public set enabled(enabled: boolean) {
+         this._enabled = enabled;
     }
 
     /**
