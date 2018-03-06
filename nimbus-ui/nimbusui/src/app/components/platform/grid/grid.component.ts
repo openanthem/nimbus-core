@@ -68,7 +68,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     @Input('value') _value = [];
     filterValue: Date;
     totalRecords: number = 0;
-    mouseClickOnDocumentSubscription: Subscription;
+    mouseEventSubscription: Subscription;
 
     //    references DataTable named 'flex' in the view
     @ViewChild('flex') flex: DataTable;
@@ -469,13 +469,13 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
 
         if (selectedDropDownState == 'openPanel') {
             e.state = 'closedPanel';
-            if(!this.mouseClickOnDocumentSubscription.closed)
-            this.mouseClickOnDocumentSubscription.unsubscribe();
+            if(!this.mouseEventSubscription.closed)
+            this.mouseEventSubscription.unsubscribe();
         }
         else {
             e.state = 'openPanel';
-            if(this.dropDowns && (this.mouseClickOnDocumentSubscription == undefined || this.mouseClickOnDocumentSubscription.closed))
-            this.mouseClickOnDocumentSubscription =
+            if(this.dropDowns && (this.mouseEventSubscription == undefined || this.mouseEventSubscription.closed))
+            this.mouseEventSubscription =
                 Observable.fromEvent(document, 'click').filter((event: any) => 
                 !this.isClickedOnDropDown(this.dropDowns.toArray(), event.target)).first().subscribe(() => 
                 {
@@ -491,8 +491,8 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     }
 
     ngOnDestroy() {
-        if(this.mouseClickOnDocumentSubscription)   
-        this.mouseClickOnDocumentSubscription.unsubscribe();
+        if(this.mouseEventSubscription)   
+        this.mouseEventSubscription.unsubscribe();
         this.cd.detach();
     }
 }
