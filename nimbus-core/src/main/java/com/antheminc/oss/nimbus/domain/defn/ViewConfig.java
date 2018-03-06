@@ -21,8 +21,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.springframework.format.annotation.DateTimeFormat.ISO;
-
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 import com.antheminc.oss.nimbus.domain.defn.extension.ParamContext;
 
@@ -109,6 +107,7 @@ public class ViewConfig {
 		String alias() default "Page";
 		String cssClass() default ""; 
 		boolean defaultPage() default false;
+		String imgSrc() default "";
 		String route() default ""; // remove
 	}
 	

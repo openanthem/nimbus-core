@@ -17,7 +17,7 @@
 'use strict';
 
 import { trigger,state,style,transition,animate,keyframes } from '@angular/animations';
-import { Component, Input } from '@angular/core';
+import { Component, Input, ViewChild, Output, EventEmitter, ElementRef, HostListener } from '@angular/core';
 import { LabelConfig } from './../../../../shared/app-config.interface';
 import { Behavior } from './../../../../shared/command.enum';
 import { WebContentSvc } from '../../../../services/content-management.service';
@@ -84,25 +84,26 @@ export class ActionDropdown {
     isOpen: boolean = false;
     isHidden: boolean = true;
     state: string = "closedPanel";
-    constructor(private _wcs: WebContentSvc, private pageSvc: PageService) {
-        
+    selectedItem: boolean = false;
+
+    @Output() dropDownClick: EventEmitter<any> = new EventEmitter();
+
+    constructor(private _wcs: WebContentSvc, private pageSvc: PageService, private _elementRef: ElementRef) {
+    }
+
+    get elementRef(){
+        return this._elementRef;
     }
 
     ngOnInit() {
         // console.log(this.params);
         // console.log(this.elementPath + '/');
     }
-
   
     toggleOpen( event: MouseEvent ): void {
         event.preventDefault();
-        this.isOpen = !this.isOpen;
-        if(this.state == 'openPanel'){
-            this.state = 'closedPanel';
-        }
-        else{
-            this.state = 'openPanel';
-        }
+        this.selectedItem = true;
+        this.dropDownClick.emit(this);
     }
     processOnClick(linkCode: string) {
         let item: GenericDomain = new GenericDomain();

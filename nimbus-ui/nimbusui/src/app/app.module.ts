@@ -22,7 +22,6 @@ import { MultiSelectListBox } from './components/platform/form/elements/multi-se
 import { BreadcrumbComponent } from './components/platform/breadcrumb/breadcrumb.component';
 import { BreadcrumbService } from './components/platform/breadcrumb/breadcrumb.service';
 import { HomeLayoutCmp } from './components/home/home-layout.component';
-import { DomainLayoutCmp } from './components/domain/domain-layout.component';
 import { StyleGuideCmp } from './styleguide/style-guide.component';
 import { MainLayoutCmp } from './components/home/main-layout.component';
 import { LoginLayoutCmp } from './components/login/login-layout.component';
@@ -40,7 +39,7 @@ import { ReactiveFormsModule }  from '@angular/forms';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
     FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
-    ProgressBarModule, ProgressSpinnerModule  } from 'primeng/primeng';
+    ProgressBarModule, ProgressSpinnerModule, AccordionModule  } from 'primeng/primeng';
 import { SortableComponentDirective, SortableContainerDirective } from './directives/sortable-dragdrop.directive';
 import { NavLinkRouter } from './directives/nav-link-router.directive';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -147,7 +146,8 @@ import {DateTimeFormatPipe} from './pipes/date.pipe';
         CalendarModule,
         RadioButtonModule,
         ProgressBarModule,
-        ProgressSpinnerModule
+        ProgressSpinnerModule,
+        AccordionModule
     ],
     declarations: [ AppComponent, STOMPStatusComponent, FlowWrapper, PageContent, PageNotfoundComponent, StaticText,
         Tile, Section, Header, Form, FormElement, InputText, ComboBox, RadioButton, DateControl, CheckBoxGroup,
@@ -160,7 +160,7 @@ import {DateTimeFormatPipe} from './pipes/date.pipe';
         BreadcrumbComponent, NavLinkRouter,
         Modal, ActionDropdown, ActionLink, 
         GridMouseEventDirective, SortableContainerDirective, SortableComponentDirective,
-        HomeLayoutCmp, MainLayoutCmp, DomainLayoutCmp, LoginCmp, LoginLayoutCmp, StyleGuideCmp, 
+        HomeLayoutCmp, MainLayoutCmp, LoginCmp, LoginLayoutCmp, StyleGuideCmp, 
         KeysPipe, LinkPipe, DateTimeFormatPipe, SelectItemPipe, MultiSelectListBox, 
         CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent, Calendar, NavMenuGlobal, LoaderComponent
 
