@@ -138,9 +138,9 @@ public class StateType implements Serializable {
 			super.model = model;
 		}
 		
-		public boolean isAssigned() {
-			return getModel()!=null;
-		}
+//		public boolean isAssigned() {
+//			return getModel()!=null;
+//		}
 		
 		public void assign(EntityState.Model<P> mappedModel) {
 			setModel(mappedModel);

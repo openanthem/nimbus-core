@@ -283,14 +283,14 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 			return mapsToParam.setState(newState);
 		}
 		
-		if(mappedParam.isTransient()) {
+		if(mappedParam.isTransient() && mappedParam.findIfTransient().isAssinged()) {
 			MappedTransientParam<P, ?> mappedTransient = mappedParam.findIfTransient();
 			
 			// handle unassigned scenario
-			if(!mappedTransient.isAssinged()) 
-				throw new InvalidStateException("MappedTransientParam must be assigned prior to setting state. "
-						+ "Is config missing that needs to assign or re-assign for transientParam: "+mappedTransient);
-			
+//			if(!mappedTransient.isAssinged()) 
+//				throw new InvalidStateException("MappedTransientParam must be assigned prior to setting state. "
+//						+ "Is config missing that needs to assign or re-assign for transientParam: "+mappedTransient);
+//			
 			
 			// handle assigned..
 				

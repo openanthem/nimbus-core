@@ -41,6 +41,10 @@ public class MapsTo {
 		Default,
 		TransientColElem,
 		TransientModel;
+		
+		public boolean isTransient() {
+			return !Default.name().equals(name());
+		}
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)

@@ -313,6 +313,14 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	protected void postSetState(Action change, T state) {}
 	
+	
+	protected void triggerEvents() {
+		if(isStateInitialized())
+			onStateLoadEvent();
+		else
+			onStateChangeEvent(getRootExecution().getExecutionRuntime().getTxnContext(), Action._update);
+	}
+	
 	@Override
 	public void onStateLoadEvent() {
 		onStateLoadEvent(this);
@@ -537,7 +545,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	
 	@Getter @Setter
-	private class RemnantState<S> {
+	protected class RemnantState<S> {
 		private S prevState;
 		private S currState;
 		
@@ -586,7 +594,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 			return;
 		
 		// handle nested
-		if(!isNested() || (isTransient() && !findIfTransient().isAssinged()))
+		if(!isNested() /*|| (isTransient() && !findIfTransient().isAssinged())*/)
 			return;
 		
 		if (null == findIfNested().getParams()) {

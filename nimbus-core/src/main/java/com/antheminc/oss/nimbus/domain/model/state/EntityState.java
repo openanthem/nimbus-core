@@ -434,10 +434,9 @@ public interface EntityState<T> {
 			return this;
 		}
 
-		@JsonIgnore
-		default boolean isAssinged() {
-			return getMapsTo() != null;
-		}
+		boolean isAssinged();
+		
+		void assignMapsTo();
 		
 		default void assignMapsTo(String rootMapsToPath) {
 			Param<M> mapsToTransient = findParamByPath(rootMapsToPath);

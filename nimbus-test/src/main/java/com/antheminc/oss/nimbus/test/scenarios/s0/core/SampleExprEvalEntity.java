@@ -78,4 +78,19 @@ public class SampleExprEvalEntity {
 	
 	private String triggerMessageUpdate;
 	
+//	@RepoOverride listenerOverride= -- new TransientConditionalParam
+//	private SampleCoreEnableEntity vvar;
+//	
+//	private class SampleCoreEnableEntity optional {
+//		
+//		@OnChange().
+//		private String onchange;
+//		
+//		@Config("../attachPersistence()")
+//		@Config("../update")
+//		private String submit;
+//	};
+//	
+//	
+//	
 }
