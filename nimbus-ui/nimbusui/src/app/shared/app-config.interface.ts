@@ -672,6 +672,7 @@ export class UiAttribute implements Serializable<UiAttribute> {
     sortAs: string;
     sortable: boolean;
     resizable:boolean;
+    placeholder: string;
     deserialize( inJson ) {
         this.value = inJson.value;
         this.url = inJson.url;
@@ -733,6 +734,7 @@ export class UiAttribute implements Serializable<UiAttribute> {
         this.rel = inJson.rel;
         this.hourFormat = inJson.hourFormat;
         this.sortAs = inJson.sortAs;
+        this.placeholder = inJson.placeholder;
         if ( inJson.controlType != null ) {
             this.controlType = inJson.controlType;
         }
