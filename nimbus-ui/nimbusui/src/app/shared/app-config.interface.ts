@@ -242,6 +242,7 @@ export class Param implements Serializable<Param> {
     createRowData(param: Param) {
         let rowData: any = {};
         rowData = param.leafState;
+        rowData['_params'] = param.type.model.params;
         rowData['elemId'] = param.elemId;
         return rowData;
     }
