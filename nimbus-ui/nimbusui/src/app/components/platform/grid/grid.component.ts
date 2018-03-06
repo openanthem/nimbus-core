@@ -17,7 +17,7 @@
 'use strict';
 import { BaseElement } from './../base-element.component';
 import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { Component, Input, Output, forwardRef, ViewChild, EventEmitter, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, Output, forwardRef, ViewChild, EventEmitter, ViewEncapsulation, ChangeDetectorRef, QueryList, ViewChildren } from '@angular/core';
 
 import { GenericDomain } from '../../../model/generic-domain.model';
 import { Param, ParamConfig } from '../../../shared/app-config.interface';
@@ -31,6 +31,13 @@ import { DateTimeFormatPipe } from '../../../pipes/date.pipe';
 import { Calendar } from 'primeng/components/calendar/calendar';
 import * as moment from 'moment';
 import { SortAs, GridColumnDataType } from './sortas.interface';
+import { ActionDropdown } from './../form/elements/action-dropdown.component';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/fromEvent';
+import { Subscription } from 'rxjs/Subscription';
+
+
+
 
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
@@ -61,11 +68,14 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     @Input('value') _value = [];
     filterValue: Date;
     totalRecords: number = 0;
+    mouseEventSubscription: Subscription;
 
     //    references DataTable named 'flex' in the view
     @ViewChild('flex') flex: DataTable;
     @ViewChild('dt') dt: DataTable;
     @ViewChild('op') overlayPanel: OverlayPanel;
+    @ViewChildren('dropDown') dropDowns: QueryList<any>;
+
 
     summaryData: any;
     rowHover: boolean;
@@ -132,9 +142,10 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         if (this.dt !== undefined) {
 
             const customFilterConstraints = this.dt.filterConstraints;
-            customFilterConstraints['between'] = this.between; 
+            customFilterConstraints['between'] = this.between;
             this.dt.filterConstraints = customFilterConstraints;
         }
+        
     }
 
     ngAfterViewInit() {
@@ -183,6 +194,17 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         }
 
     }
+
+    isClickedOnDropDown(dropDownArray: Array<ActionDropdown>, target: any) {
+
+        for (var i = 0; i < dropDownArray.length; i++) {
+            if (dropDownArray[i].elementRef.nativeElement.contains(target))
+                return true;
+        }
+        return false;
+
+    }
+
 
     getRowPath(col: ParamConfig, item: any) {
         return this.element.path + '/' + item.elemId + '/' + col.code;
@@ -255,7 +277,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
                     // if (param.uiStyles.attributes.asynchronous) {
                     //     elemPath = this.element.path + '/' + event.data.elemId + '/' + param.code;
                     // } else {
-                        event.data['nestedElement'] = event.data.nestedGridParam;
+                    event.data['nestedElement'] = event.data.nestedGridParam;
                     // }
                 }
             }
@@ -336,7 +358,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
 
     protected isSortAsDate(fieldType: string, sortAs: string): boolean {
         let fieldTypeToMatch = fieldType.toLowerCase();
-        return ((sortAs !== null && sortAs === SortAs.date.value) || fieldTypeToMatch === GridColumnDataType.date.value
+        return ((sortAs !== null && sortAs === SortAs.date.value) || fieldTypeToMatch === GridColumnDataType.date.value || fieldTypeToMatch === GridColumnDataType.localdate.value
             || fieldTypeToMatch === GridColumnDataType.localdatetime.value || fieldType === GridColumnDataType.zoneddatetime.value);
 
     }
@@ -400,10 +422,10 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     }
 
 
-    clearFilter(txt: any, dt: DataTable, field: string){
-        txt.value='';
+    clearFilter(txt: any, dt: DataTable, field: string) {
+        txt.value = '';
         dt.filter(txt.value, field, "");
-     }
+    }
 
     paginate(e: any) {
         if (this.totalRecords != 0) {
@@ -428,6 +450,50 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     filterCallBack(e: any) {
         this.totalRecords = e.filteredValue.length;
         this.updatePageDetailsState();
+    }
+
+    toggleOpen(e: any) {
+
+        let selectedDropDownIsOpen = e.isOpen;
+        let selectedDropDownState = e.state;
+
+        if(this.dropDowns)
+        this.dropDowns.toArray().forEach((item) => {
+            if (!item.selectedItem) {
+                item.isOpen = false;
+                item.state = 'closedPanel';
+            }
+        });
+
+        e.isOpen = !selectedDropDownIsOpen;
+
+        if (selectedDropDownState == 'openPanel') {
+            e.state = 'closedPanel';
+            if(!this.mouseEventSubscription.closed)
+            this.mouseEventSubscription.unsubscribe();
+        }
+        else {
+            e.state = 'openPanel';
+            if(this.dropDowns && (this.mouseEventSubscription == undefined || this.mouseEventSubscription.closed))
+            this.mouseEventSubscription =
+                Observable.fromEvent(document, 'click').filter((event: any) => 
+                !this.isClickedOnDropDown(this.dropDowns.toArray(), event.target)).first().subscribe(() => 
+                {
+                    this.dropDowns.toArray().forEach((item) => {
+                        item.isOpen = false;
+                        item.state = 'closedPanel';
+                    });
+                    this.cd.detectChanges();
+                });
+        }
+        e.selectedItem = false;
+        this.cd.detectChanges();
+    }
+
+    ngOnDestroy() {
+        if(this.mouseEventSubscription)   
+        this.mouseEventSubscription.unsubscribe();
+        this.cd.detach();
     }
 }
 

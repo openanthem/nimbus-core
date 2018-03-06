@@ -72,7 +72,8 @@ ng-component{
         line-height: 1rem;
         .ui-column-title {
             display: block;
-            text-align: center;
+            text-align: left;
+            font-weight: bold;
             overflow: hidden;
             text-overflow: ellipsis;
             padding-right: 40px; 
@@ -166,8 +167,7 @@ ng-component{
 .ui-widget-header {
     background: #6e9de1;
     border: none;
-    text-align: right;
-    font-size: .8rem;
+    text-align: left;
     color: #fff;
     &.ui-paginator {
         font-size: .8rem;

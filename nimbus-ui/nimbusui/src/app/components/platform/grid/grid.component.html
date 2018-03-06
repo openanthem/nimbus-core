@@ -85,7 +85,7 @@
 
 			<p-column *ngIf="col?.uiStyles?.attributes?.alias=='LinkMenu'" styleClass="dropdown">
 				<ng-template pTemplate="body" let-cell="rowData">
-					<nm-action-dropdown [element]="cell._params[colIndex]" [params]="col?.type?.model?.paramConfigs" [rowData]="cell" [elementPath]="getRowPath(col, cell)"></nm-action-dropdown>
+					<nm-action-dropdown #dropDown [element]="cell._params[colIndex]" [params]="col?.type?.model?.paramConfigs" [rowData]="cell" [elementPath]="getRowPath(col, cell)" (dropDownClick)="toggleOpen($event)"></nm-action-dropdown>
 				</ng-template>
 				
 			</p-column>
