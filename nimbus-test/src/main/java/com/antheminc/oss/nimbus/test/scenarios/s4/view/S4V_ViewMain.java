@@ -49,7 +49,7 @@ public class S4V_ViewMain {
 		@Path
 		private String str2;
 		
-		@Config(url="/form/_get?fn=param&expr=assignMapsTo('<!#this!>/../.m')")
+		@Config(url="/form/_get?fn=param&expr=assignMapsTo('/.d/<!#this!>/../.m')")
 		private String editLink;
 	}
 	

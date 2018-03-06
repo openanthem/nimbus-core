@@ -253,7 +253,7 @@ public class S4_MappedTransientTest extends AbstractFrameworkIntegrationTests {
 		assertEquals(1, vp_main.findParamByPath("/summaryGrid").findIfCollection().size());
 	}
 	
-	//@Test
+	@Test
 	public void t05_onLoad_edit() throws Exception {
 		// load db
 		t05_onLoad_check();
