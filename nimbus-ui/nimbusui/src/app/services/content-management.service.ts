@@ -42,11 +42,11 @@ export class WebContentSvc {
 		// console.error('Failure making server call : ' + JSON.stringify(err));
 	}
 
-    findLabelContent(param: Param) {
+    findLabelContent(param: Param): LabelConfig {
         return this.findLabelContentFromConfig(param.config.code, param.config.labelConfigs);
     }
 
-    findLabelContentFromConfig(code : string, labelConfigs : LabelConfig[]) {
+    findLabelContentFromConfig(code : string, labelConfigs : LabelConfig[]): LabelConfig {
         let labelContent: LabelConfig = new LabelConfig();
         if(labelConfigs == null || (labelConfigs != null && labelConfigs.length < 1)) {
             labelContent.text = code;

@@ -1,9 +1,9 @@
 <!-- Display Tiles -->
 <div>
-    {{pageParam?.message?.text}}
+    {{element?.message?.text}}
 </div>
-<ng-template [ngIf]="pageParam?.config?.labelConfigs?.length > 0">
-    <h1 class="page-title dashboard ">
+<ng-template [ngIf]="element?.config?.labelConfigs?.length > 0">
+    <h1 class="page-title {{imgSrc}} ">
         {{label}} 
     </h1>
 </ng-template>

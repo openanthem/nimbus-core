@@ -68,15 +68,40 @@ ng-component{
         position: relative;
         text-align: left;
         border: none;
-        padding: .2rem 40px .2rem .4rem ;
+        padding: .2rem 2px .2rem .4rem ;
         line-height: 1rem;
         .ui-column-title {
             display: block;
-            text-align: center;
+            text-align: left;
+            font-weight: bold;
             overflow: hidden;
             text-overflow: ellipsis;
+            padding-right: 40px; 
             
         }
+
+        .filterHolder{
+            position: relative;
+            margin-top: 3px;
+            input{
+                max-width: 100%;
+                min-width: 98%;
+            }
+            button{
+                position: absolute;
+                right: 3%;
+                top: 2.2px;
+                font-size: 0.8rem;
+                border: none;
+                height: 1rem;
+                color: #b9b6b6;
+                &:hover, &:focus{
+                    color: #4c4c4c;
+                }
+            }
+        }
+
+      
         .gridFilterIcon {
             position:absolute;
             right: 0;
@@ -142,8 +167,7 @@ ng-component{
 .ui-widget-header {
     background: #6e9de1;
     border: none;
-    text-align: right;
-    font-size: .8rem;
+    text-align: left;
     color: #fff;
     &.ui-paginator {
         font-size: .8rem;

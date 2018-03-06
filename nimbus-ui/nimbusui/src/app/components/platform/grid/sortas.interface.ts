@@ -40,6 +40,7 @@ export class GridColumnDataType extends Enum<string> {
     public static readonly double = new Enum('double');
 
     public static readonly date = new Enum('date');
+    public static readonly localdate = new Enum('localdate');
     public static readonly localdatetime = new Enum('localdatetime');
     public static readonly zoneddatetime = new Enum('zoneddatetime');
     

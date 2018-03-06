@@ -9,8 +9,11 @@
             height: 1.3rem;
             padding: 0;
             //border: 1px solid #ccc;
-            background: $iconColor;
+            background: #e5991c;
             line-height: 1;
+            &:disabled {
+                background-color: #b9b6b6;
+            }
             &::after {
                 color: #fff;
                 font-family: "fontAwesome";
@@ -18,15 +21,15 @@
                 font-size: 1.2rem;
                 line-height: 1;
             }
-            &:hover{
-                background-color: darken($iconColor,10%);
+            &:hover:not(:disabled), &:focus:not(:disabled){
+                background-color: #4a90e2;
             }
         }
         .dropdownContent {
             max-height: 0;
             width: 200px;
-            background: #fff;
-            border: 1px solid #999;
+            background: #fcf6d9;
+            border: 1px solid #e5991c;
             overflow-y: auto;
             top: 0;
             position: absolute;
@@ -37,8 +40,13 @@
                 display: block;
                 text-decoration: none;
                 padding:.2rem .4rem;
-                &:hover{
-                    background: #eee;
+                &:hover:not(.disabled), &:focus:not(.disabled){
+                    color: #fff;
+                    background: #4a90e2;
+                }
+                &.disabled {
+                    color: #b9b6b6;
+                    cursor: default;
                 }
             }
         }

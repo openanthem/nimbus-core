@@ -65,7 +65,4 @@ export class ServiceConstants {
     public static get BLACK_THEME_URL(): string { return 'http://'+this.hostName+':'+this.STATIC_CONTENT_PORT+'/styles/anthem/anthem.black.theme.css'; }
     public static get IMAGES_URL(): string { return 'http://'+this.hostName+':'+this.STATIC_CONTENT_PORT+'/resources/icons/'; }
 
-    public static get HOME_ROUTE(): string { return '/h'; }
-    public static get HOME_DOMAIN(): string { return 'vrCSLandingPage'; }
-    public static get HOME_PAGE(): string { return 'vpCSMemberload'; }
 }

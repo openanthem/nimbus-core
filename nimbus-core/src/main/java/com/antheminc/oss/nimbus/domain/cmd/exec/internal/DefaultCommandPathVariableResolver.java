@@ -32,6 +32,7 @@ import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.session.SessionProvider;
 import com.antheminc.oss.nimbus.entity.client.user.ClientUser;
+import com.antheminc.oss.nimbus.support.JustLogit;
 
 /**
  * @author Soham Chakravarti
@@ -39,6 +40,10 @@ import com.antheminc.oss.nimbus.entity.client.user.ClientUser;
  */
 public class DefaultCommandPathVariableResolver implements CommandPathVariableResolver {
 
+	protected final JustLogit logit = new JustLogit(this.getClass());
+	
+	private static final String STRING_NULL = "null";
+	
 	private final CommandMessageConverter converter;
 	private final PropertyResolver propertyResolver;
 	private final SessionProvider sessionProvider;
@@ -122,12 +127,19 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 		if(StringUtils.startsWith(pathToResolve, "json(")) {
 			String paramPath = StringUtils.substringBetween(pathToResolve, "json(", ")");
 			Param<?> p = param.findParamByPath(paramPath) != null? param.findParamByPath(paramPath): param.getParentModel().findParamByPath(paramPath);
-			
+			if(p == null) {
+				logit.error(() -> new StringBuffer().append(" Param (using paramPath) ").append(paramPath).append(" not found from param reference: ").append(param).toString());
+				return STRING_NULL;
+			}
 			Object state = p.getLeafState();
 			String json = converter.convert(state);
-			return json;
+			return String.valueOf(json);
 		} else {
 			Param<?> p = param.findParamByPath(pathToResolve) != null? param.findParamByPath(pathToResolve): param.getParentModel().findParamByPath(pathToResolve);
+			if(p == null) {
+				logit.error(() -> new StringBuffer().append(" Param (using paramPath) ").append(pathToResolve).append(" not found from param reference: ").append(param).toString());
+				return STRING_NULL;
+			}
 			return String.valueOf(p.getState());
 		}
 	}

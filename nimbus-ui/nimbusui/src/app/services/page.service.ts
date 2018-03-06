@@ -33,6 +33,7 @@ import { CustomHttpClient } from './httpclient.service';
 
 import { Subject } from 'rxjs/Subject';
 import { GenericDomain } from '../model/generic-domain.model';
+import { ParamUtils } from '../shared/param-utils';
 
 /**
  * \@author Dinakar.Meda
@@ -610,8 +611,19 @@ export class PageService {
          * 
          */
         createRowData(param: Param, nestedParamIdx: number) {
-                let rowData: any = {};
-                rowData = param.leafState;
+                let rowData: any = param.leafState;
+                rowData['_params'] = param.type.model.params;
+                
+                // If classTypeMappings are present, handle any conversions that should occur.
+                // TODO Use a better design pattern to handle this scenario.
+                if (rowData && param.collectionConfigs && param.collectionConfigs.typeMappings) {
+                        for(let key in rowData) {
+                                let typeMapping = param.collectionConfigs.typeMappings[key];
+                                if (ParamUtils.isKnownDateType(typeMapping)) {
+                                        rowData[key] = ParamUtils.convertServerDateStringToDate(rowData[key], typeMapping);
+                                }
+                        }
+                }
                 rowData['elemId'] = param.elemId;
 
                 // If nested data exists, set the data to nested grid
@@ -621,7 +633,7 @@ export class PageService {
 
                 return rowData;
         }
-        
+
         /** 
          * Loop through the Param State and build the Grid
          * 
@@ -813,7 +825,7 @@ export class PageService {
                                 });
                         });
                 } else {
-                        this.logError('Could not process the update from the server for' + payload.path + ' because config is undefined.');
+                        this.logError('Could not process the update from the server for ' + payload.path + ' because config is undefined.');
                 }
         }
 

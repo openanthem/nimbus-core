@@ -3,7 +3,6 @@
   border-color: $bkgColor;
   color:$color;
   line-height:1;
-  text-transform: initial;
   margin-right:9px;
   margin-bottom:1rem;
   &:hover:not([disabled]){
@@ -22,25 +21,56 @@
 button:focus{
   outline: $focus-outline-setting;
 }
-.btn-action,.btn-primary {
-  @include styleButton(#96acbb,#fff);
-  padding: .3rem 1.5rem;
+.btn-primary {
+  background: #006bc2;
+  border-color: #006bc2;
+  color:#fff;
+  line-height:1;
+  margin-right:9px;
+  margin-bottom:1rem;
+  padding: .4rem 1.5rem;
   border-radius: .6rem;
-}
-.btn-delete {
-  @include styleButton(#C10000,#fff);
-  padding: .2rem .5rem;
-  padding: .3rem 1.5rem;
-  border-radius: .6rem;
+  &:hover:not([disabled]){
+    background-color: #4c4c4c;
+    border-color: #4c4c4c;
+  }
+  &:active:not([disabled]){
+    background-color: #669fe2;
+    border-color: #669fe2;
+  }
+  &[disabled]{
+    background-color: #b9b6b6;
+    border-color: #b9b6b6;
+  }
 }
 .btn-secondary {
-  @include styleButton(#e6e6e6,#494949);
-  padding: .2rem 1rem;
+  background: #4a90e2;
+  border-color: #4a90e2;
+  color:#fff;
+  line-height:1;
+  margin-right:9px;
+  margin-bottom:1rem;
+  padding: .3rem 1rem;
   border-radius: .4rem;
+  &:hover:not([disabled]){
+    background-color: #707070;
+    border-color: #707070;
+  }
+  &:active:not([disabled]){
+    background-color: #7aa8de;
+    border-color: #7aa8de;
+  }
+  &[disabled]{
+    background-color: #b9b6b6;
+    border-color: #b9b6b6;
+  }
 }
 
-
-
+.fa-fw {
+  width: 1.28571429em;
+  text-align: center;
+  margin-right: .3rem;
+}
 
 
 
@@ -53,51 +83,21 @@ button:focus{
     background: none;
     text-transform: initial;
     text-decoration: underline;
-      color:$header-bkg;
+      color:#006bc2;
     line-height:1;
     &:hover{
-      color: #034b7c;
+      color: #4a90e2;
+      background: none;
     }
     &:focus{
       outline: $focus-outline-setting;
     }
 }
 
-.btn-blue {
-  @include styleButton($header-bkg,#fff);
-  i {
-    color:#169bd5;
-  }
-}
-.btn-badge{
-    position: relative;
-    padding: .3rem 2.5rem .3rem 1rem;
-    min-width: 85px;
-    text-transform: uppercase;
-    line-height: 1;
-    color: #555;
-    border-color: #888;
-    background: #fff;
-    font-size: .9rem;
-    border-radius:0;
-    min-height: 1.6rem;
-    .badge {
-          position: absolute;
-          top: .1rem;
-          right: 2px;
-          padding: .2rem .5rem;
-          background-color: #777;
-          color: #fff;
-    }
-    &.btn-delete {
-      background: #ccc;
-      border-color: #999;
-    }
-    &:hover:not([disabled]){
-    background-color: darken(#777, 10%);
-    color: #fff
-    }
-}
+
+
+
+
 .btn.btn-icon, .icon-holder {
     padding: 0;
     background: transparent;

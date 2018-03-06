@@ -1,5 +1,7 @@
 <div class="header" *ngIf="topMenuItems || branding">
-        <nm-link [element]="branding.logo" *ngIf="branding.logo"></nm-link>
+    <a [routerLink]="[homeRoute]">
+        <img src="{{imagesPath}}{{branding.logo.config.uiStyles.attributes.imgSrc}}" class=" logo" alt="{{this.label}}" />
+    </a>
     <div class="d-inline-block p-0 pull-right clearfix">
         <div class="headerMenu pull-right clearfix">
             <div class="topLinksMenu">
@@ -33,8 +35,6 @@
                 </div>
             </div>
         </div>
-            
-   
         
     </div>
 
