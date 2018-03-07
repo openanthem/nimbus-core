@@ -26,14 +26,13 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
-import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
+import com.antheminc.oss.nimbus.domain.model.state.internal.MappedDefaultParamState.MappedLeafState;
 import com.antheminc.oss.nimbus.support.Holder;
 import com.antheminc.oss.nimbus.test.domain.support.AbstractFrameworkIntegrationTests;
 import com.antheminc.oss.nimbus.test.domain.support.utils.ExtractResponseOutputUtils;
 import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
-import com.antheminc.oss.nimbus.test.scenarios.s4.view.S4Values;
 
 /**
  * @author Tony Lopez
@@ -62,32 +61,43 @@ public class S4_ValidateConditionalTest extends AbstractFrameworkIntegrationTest
 		
 		Assert.assertNotNull(ExtractResponseOutputUtils.extractOutput(controllerResp_new));
 		
-		// Execute assign maps to call on param: addData
-		Object controllerResp_addData_get = controller.handleGet(MockHttpRequestBuilder.withUri(VIEW_ROOT)
+		// Execute assign maps to call on param: S4_VRMainCoreBackingObjectView...VFMain.addData
+		controller.handleGet(MockHttpRequestBuilder.withUri(VIEW_ROOT)
 				.addRefId("1")
 				.addNested("/vpMain/vtMain/vsMain/vfMain/addData")
 				.addAction(Action._get).getMock(), null);
 		
-		// Update the state of param: q1
+		// Update the state of param: VFAddDataModalForm.q1
 		MockHttpServletRequest req_q1_eventNotify = MockHttpRequestBuilder.withUri(PLATFORM_ROOT)
 			.addNested("/event/notify")
 			.addAction(Action._replace)
 			.getMock();
 		
+		// Build the request that updates the state of VFAddDataModalForm.q1 with "preference2"
+		// This should trigger @ValuesConditional to set the values of VFAddDataModalForm.q2 to Preference2Types.class
 		ModelEvent<String> modelEvent_q1 = new ModelEvent<>();
 		modelEvent_q1.setId("/s4_MainCoreBackingObjectView:1/vpMain/vtMain/addDataModal/vsAddDataModalBody/vfAddDataModalForm/q1/_replace");
 		modelEvent_q1.setType(Action._replace.name());
 		modelEvent_q1.setPayload("\"preference2\"");
 		
-		// Validate that q1's ValuesConditional was applied to param: q2.
+		// Make the call
 		Object controllerResp_q1 = controller.handleEventNotify(req_q1_eventNotify, modelEvent_q1);
-		
 		List<CommandExecution.Output<?>> outputs = MultiOutput.class.cast(Holder.class.cast(controllerResp_q1).getState()).getOutputs();
-		Assert.assertEquals(3, outputs.size());
-		List<ParamValue> values = ((Param<?>) outputs.get(2).getValue()).getValues();
-		Assert.assertEquals(3, values.size());
-		Assert.assertEquals("preference2a", values.get(0).getCode());
-		Assert.assertEquals("preference2b", values.get(1).getCode());
-		Assert.assertEquals("preference2c", values.get(2).getCode());
+		
+		Param<?> q1 = (Param<?>) outputs.get(1).getValue();
+		
+		// #1. Validate VFAddDataModalForm.q1 state change occurred
+		Assert.assertEquals("preference2", q1.getState());
+		
+		// #2. Validate that q1's ValuesConditional was applied to param: VFAddDataModalForm.q2
+		
+		// TODO: Get the output related to the valuesconditional update
+		Param<?> q2 = (Param<?>) outputs.get(2).getValue();
+		
+		// Validate that the new values are in place.
+		Assert.assertEquals(3, q2.getValues().size());
+		Assert.assertEquals("preference2a", q2.getValues().get(0).getCode());
+		Assert.assertEquals("preference2b", q2.getValues().get(1).getCode());
+		Assert.assertEquals("preference2c", q2.getValues().get(2).getCode());
 	}
 }
