@@ -43,6 +43,17 @@ public class MappedDefaultListElemParamState<E, M> extends DefaultListElemParamS
 		public MappedLeafElemState(ListModel<E> parentModel, ParamConfig<E> config, EntityStateAspectHandlers provider, String elemId) {
 			super(parentModel, config, provider, elemId);
 		}
+		
+		@JsonIgnore
+		@Override
+		public boolean isLeaf() {
+			return true;
+		}
+		
+		@Override
+		public MappedLeafElemState<E, M> findIfLeaf() {
+			return this;
+		}
 	}
 	
 	
@@ -85,5 +96,20 @@ public class MappedDefaultListElemParamState<E, M> extends DefaultListElemParamS
 			
 			return mapsToElem;
 		});
+	}
+	
+	@Override
+	public boolean isMapped() {
+		return true;
+	}
+	
+	@Override
+	public MappedDefaultListElemParamState<E, M> findIfMapped() {
+		return this;
+	}
+	
+	@Override
+	public boolean requiresConversion() {
+		return MappedDefaultParamState.requiresConversion(this);
 	}
 }

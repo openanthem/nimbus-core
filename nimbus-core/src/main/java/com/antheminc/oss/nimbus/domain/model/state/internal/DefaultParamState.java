@@ -115,6 +115,17 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		public LeafState(Model<?> parentModel, ParamConfig<T> config, EntityStateAspectHandlers aspectHandlers) {
 			super(parentModel, config, aspectHandlers);
 		}
+		
+		@JsonIgnore
+		@Override
+		public boolean isLeaf() {
+			return true;
+		}
+		
+		@Override
+		public LeafState<T> findIfLeaf() {
+			return this;
+		}
 	}
 	
 	public DefaultParamState(Model<?> parentModel, ParamConfig<T> config, EntityStateAspectHandlers aspectHandlers) {
@@ -347,7 +358,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		}
 	}
 	
-	@JsonIgnore @Override
+	@JsonIgnore 
+	@Override
 	public ExecutionModel<?> getRootExecution() {
 		if(getParentModel() != null) 
 			return getParentModel().getRootExecution();
@@ -359,7 +371,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		return findIfNested().findIfRoot();
 	}
 
-	@JsonIgnore @Override
+	@JsonIgnore 
+	@Override
 	public Model<?> getRootDomain() {
 		if(getParentModel()!=null && getParentModel().isRoot()) {
 			return findIfNested();
@@ -726,9 +739,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 
 		// toggle
 		setActive(to);
-		//setVisible(to); //this.visible.setState(to); //
-		//setEnabled(to); //this.enabled.setState(to); //
-		
+
 		// notify mapped subscribers, if any
 		//==emitNotification(new Notification<>(this, ActionType._active, this));
 		
@@ -742,8 +753,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 			initState(); // ensure all rules are fired
 		}
 		
-		setVisible(to); //this.visible.setState(to); //
-		setEnabled(to); //this.enabled.setState(to); //
+		setVisible(to); 
+		setEnabled(to); 
 		
 		// ripple to children, if applicable
 		if(!isNested() || findIfNested().templateParams().isNullOrEmpty())
@@ -757,8 +768,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 					cp.setStateInitialized(false);//cp.deactivate();
 				}
 				
-				cp.setVisible(to); //this.visible.setState(to); //
-				cp.setEnabled(to); //this.enabled.setState(to); //
+				cp.setVisible(to); 
+				cp.setEnabled(to); 
 
 			});
 		
@@ -769,15 +780,88 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		return ClassUtils.isPrimitiveOrWrapper(getConfig().getReferredClass());
 	}
 
-
 	@Override
 	public Class<? extends ValidationGroup>[] getActiveValidationGroups() {
 		return this.activeValidationGroupsState.getCurrState();
 	}
 
-
 	@Override
 	public void setActiveValidationGroups(Class<? extends ValidationGroup>[] activeValidationGroups) {
 		this.activeValidationGroupsState.setState(activeValidationGroups);
 	}
+
+	@JsonIgnore
+	@Override
+	public boolean isLeaf() {
+		return false;
+	}
+
+	@JsonIgnore
+	@Override
+	public boolean isLeafOrCollectionWithLeafElems() {
+		return isLeaf() || (isCollection() && findIfCollection().isLeafElements());
+	}
+
+	@Override
+	public LeafParam<T> findIfLeaf() {
+		return null;
+	}
+
+	@Override
+	public MappedParam<T, ?> findIfMapped() {
+		return null;
+	}
+
+	@Override
+	public boolean isCollection() {
+		return false;
+	}
+
+	@Override
+	public boolean isNested() {
+		return getType().isNested();
+	}
+
+	@Override
+	public Model<T> findIfNested() {
+		return isNested() ? getType().<T>findIfNested().getModel() : null;
+	}
+
+	@Override
+	public boolean isCollectionElem() {
+		return false;
+	}
+
+	@Override
+	public ListParam findIfCollection() {
+		return null;
+	}
+
+	@Override
+	public ListElemParam<T> findIfCollectionElem() {
+		return null;
+	}
+
+	@JsonIgnore
+	@Override
+	public boolean isLinked() {
+		return false;
+	}
+
+	@Override
+	public Param<?> findIfLinked() {
+		return null;
+	}
+
+	@JsonIgnore
+	@Override
+	public boolean isTransient() {
+		return false;
+	}
+
+	@Override
+	public MappedTransientParam<T, ?> findIfTransient() {
+		return null;
+	}
+	
 }

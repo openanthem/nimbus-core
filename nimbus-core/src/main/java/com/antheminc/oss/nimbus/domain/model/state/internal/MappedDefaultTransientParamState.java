@@ -131,4 +131,42 @@ public class MappedDefaultTransientParamState<T, M> extends DefaultParamState<T>
 		
 		setMapsToTransient(null);
 	}
+
+	@Override
+	public boolean requiresConversion() {
+		return MappedDefaultParamState.requiresConversion(this);
+	}
+	
+	@JsonIgnore
+	@Override
+	public boolean isAssinged() {
+		return getMapsTo() != null;
+	}
+
+	@Override
+	public void assignMapsTo(String rootMapsToPath) {
+		Param<M> mapsToTransient = findParamByPath(rootMapsToPath);
+		assignMapsTo(mapsToTransient);		
+	}
+
+	@Override
+	public boolean isTransient() {
+		return true;
+	}
+	
+	@Override
+	public MappedDefaultTransientParamState<T, M> findIfTransient() {
+		return this;
+	}
+	
+	@JsonIgnore
+	@Override
+	public boolean isMapped() {
+		return true;
+	}
+	
+	@Override
+	public MappedDefaultTransientParamState<T, M> findIfMapped() {
+		return this;
+	}
 }

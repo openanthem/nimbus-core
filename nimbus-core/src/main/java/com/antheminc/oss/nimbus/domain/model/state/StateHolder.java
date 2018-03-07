@@ -165,6 +165,11 @@ public class StateHolder {
 		public LockTemplate getLockTemplate() {
 			throw throwEx();
 		}
+
+		@Override
+		public Mapped<T, ?> findIfMapped() {
+			throw throwEx();
+		}
 	}
 
 	
@@ -215,6 +220,11 @@ public class StateHolder {
 			
 			@Override
 			public void handleNotification(Notification<M> event) {
+				throw throwEx();
+			}
+			
+			@Override
+			public boolean requiresConversion() {
 				throw throwEx();
 			}
 		}
