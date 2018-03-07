@@ -896,22 +896,6 @@ export class FieldValue implements Serializable<FieldValue> {
     }
 }
 
-export class DragDropData {
-    dragData: any;
-    mouseEvent: MouseEvent;
-}
-
-export class DragDropConfig {
-    public onDragStartClass: string = 'dnd-drag-start';
-    public onDragEnterClass: string = 'dnd-drag-enter';
-    public onDragOverClass: string = 'dnd-drag-over';
-    public onSortableDragClass: string = 'dnd-sortable-drag';
-
-    public dragEffect: DataTransferEffect = DataTransferEffect.MOVE;
-    public dropEffect: DataTransferEffect = DataTransferEffect.MOVE;
-    public dragCursor: string = 'move';
-}
-
 export class DataTransferEffect {
 
     static COPY = new DataTransferEffect( 'copy' );
