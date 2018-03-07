@@ -242,6 +242,7 @@ export class Param implements Serializable<Param> {
     createRowData(param: Param) {
         let rowData: any = {};
         rowData = param.leafState;
+        rowData['_params'] = param.type.model.params;
         rowData['elemId'] = param.elemId;
         return rowData;
     }
@@ -617,6 +618,9 @@ export class UiAttribute implements Serializable<UiAttribute> {
     readOnly: boolean = false;
     level: string;
     cssClass: string;
+    multiple: boolean;
+    selected: boolean;
+    activeIndex: string;
     submitButton: boolean = true;
     content: string; //-- TO BE DELETED (always pull with contentId)
     contentId: string;
@@ -689,6 +693,9 @@ export class UiAttribute implements Serializable<UiAttribute> {
         }
         this.level = inJson.level;
         this.cssClass = inJson.cssClass;
+        this.multiple = inJson.multiple;
+        this.selected = inJson.selected;
+        this.activeIndex = inJson.activeIndex;
         this.labelClass = inJson.labelClass;
         this.control = inJson.control;
         this.content = inJson.content;
