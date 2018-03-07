@@ -31,11 +31,20 @@ import { BaseElement } from '../base-element.component';
     selector: 'nm-accordion-tab',
     providers: [WebContentSvc],
     template: `
-
+        <p-accordionTab [header]="label" [selected]="selected">
+            <ng-template ngFor let-element [ngForOf]="nestedParams">
+                <!-- Card Content -->
+                <ng-template [ngIf]="element.alias == 'CardDetail'">
+                    <nm-card-details [element]="element"></nm-card-details>
+                </ng-template>
+            </ng-template>
+        </p-accordionTab>
     `
 })
 
 export class AccordionTab  extends BaseElement {
+
+    protected _selected: boolean;
 
     constructor(private wcsvc: WebContentSvc) {
         super(wcsvc);
@@ -45,4 +54,10 @@ export class AccordionTab  extends BaseElement {
         super.ngOnInit();
     }
 
+    /**
+     * Tab Selected?
+     */
+    public get selected(): boolean {
+        return this.element.config.uiStyles.attributes.selected;
+    }
 }

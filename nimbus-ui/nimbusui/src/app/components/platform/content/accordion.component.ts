@@ -31,10 +31,17 @@ import { BaseElement } from '../base-element.component';
     selector: 'nm-accordion',
     providers: [WebContentSvc],
     template: `
+        <p-accordion [multiple]="multiple">
+            <ng-template ngFor let-element [ngForOf]="nestedParams">
+                <nm-accordion-tab [element]="element"></nm-accordion-tab>
+            </ng-template>
+        </p-accordion>
     `
 })
 
 export class AccordionMain extends BaseElement {
+
+    protected _multiple: boolean;
 
     constructor(private wcsvc: WebContentSvc) {
         super(wcsvc);
@@ -42,5 +49,12 @@ export class AccordionMain extends BaseElement {
 
     ngOnInit() {
         super.ngOnInit();
+    }
+
+    /**
+     * Expand Multiple Tabs?
+     */
+    public get multiple(): boolean {
+        return this.element.config.uiStyles.attributes.multiple;
     }
 }
