@@ -14,13 +14,12 @@ __MACOSX
 .idea/dictionaries
 
 # Sensitive or high-churn files:
-.idea/**/dataSources/
-.idea/**/dataSources.ids
-.idea/**/dataSources.xml
-.idea/**/dataSources.local.xml
-.idea/**/sqlDataSources.xml
-.idea/**/dynamic.xml
-.idea/**/uiDesigner.xml
+.idea/
+*.iml
+*.iws
+*.ipr
+*.ids
+*.orig
 
 # Gradle:
 .idea/**/gradle.xml
@@ -555,3 +554,6 @@ __pycache__/
 # should be stored in the .pubxml.user file.
 
 # End of https://www.gitignore.io/api/java,node,eclipse,java-web,sublimetext,visualstudio,visualstudiocode
+
+# Backups of release version set
+pom.xml.versionsBackup

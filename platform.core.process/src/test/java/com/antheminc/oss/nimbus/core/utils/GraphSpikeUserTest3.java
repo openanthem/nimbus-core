@@ -4,59 +4,30 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.graphLookup;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.project;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.unwind;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Stream;
 
-import org.bson.types.ObjectId;
 import org.junit.FixMethodOrder;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
-import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
-import org.springframework.data.mongodb.core.aggregation.Fields;
-import org.springframework.data.mongodb.core.aggregation.GraphLookupOperation;
-import org.springframework.data.mongodb.core.aggregation.MatchOperation;
-import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
-import org.springframework.data.mongodb.core.aggregation.UnwindOperation;
-import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import com.antheminc.oss.nimbus.core.AbstractFrameworkIntegrationTests;
-import com.antheminc.oss.nimbus.core.entity.AbstractEntity.IdString;
 import com.antheminc.oss.nimbus.core.entity.client.user.ClientUser;
 import com.antheminc.oss.nimbus.core.entity.queue.Queue;
 import com.antheminc.oss.nimbus.core.entity.task.AssignmentTask;
-import com.antheminc.oss.nimbus.core.entity.task.AssignmentTask.TaskStatus;
 import com.antheminc.oss.nimbus.core.entity.user.ClientUserGroup;
 import com.antheminc.oss.nimbus.core.entity.user.GroupUser;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.CommandResult;
-import com.mongodb.DBObject;
-import com.mongodb.Mongo;
-import com.mongodb.MongoClient;
 
 /**
  * @author Rakesh Patel
@@ -156,19 +127,19 @@ public class GraphSpikeUserTest3 extends AbstractFrameworkIntegrationTests{
 	public void t3_createTasks() {
 		
 		AssignmentTask task = new AssignmentTask();
-		task.setStatus(TaskStatus.Open);
+		task.setStatus("Open");
 		task.setDueDate(LocalDate.now());
 		task.setTaskType("Patient Enrollment 1");
 		task.setQueueCode("casemanager");
 		
 		AssignmentTask task1 = new AssignmentTask();
-		task1.setStatus(TaskStatus.Open);
+		task1.setStatus("Open");
 		task1.setDueDate(LocalDate.now());
 		task1.setTaskType("Patient Enrollment 2");
 		task1.setQueueCode("casemanager");
 		
 		AssignmentTask task2 = new AssignmentTask();
-		task2.setStatus(TaskStatus.Open);
+		task2.setStatus("Open");
 		task2.setDueDate(LocalDate.now());
 		task2.setTaskType("Patient Enrollment 2");
 		task2.setQueueCode("UG1");

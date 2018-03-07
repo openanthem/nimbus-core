@@ -1,6 +1,30 @@
-import { Component, Input, OnInit } from '@angular/core';
+/**
+ * @license
+ * Copyright 2017-2018 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-var _uniqueId = 0;
+import { Component, Input, OnInit } from '@angular/core';
+import { FooterConfig } from '../../../model/menu-meta.interface'
+
+/**
+ * \@author Vinay.Kurva
+ * Content specified in this tag will display in global footer
+ *
+ * 
+ */
+
 
 @Component({
     selector: 'nm-footer-global',
@@ -9,20 +33,11 @@ var _uniqueId = 0;
 
 export class FooterGlobal implements OnInit {
 
-    @Input() message: string;
-    
-    private links : Array<string>;
-
-    constructor(){
-        
+    @Input() footerConfig = <FooterConfig>{};
+    constructor() {
     }
 
-    ngOnInit(){
-        this.links = ['Site Map', 'Terms of Use', 'Protected Marks', 'Privacy Policy'];
-        
-        this.message = `© 2005 - 2017 copyright of Anthem Insurance Companies, Inc. Serving Colorado, Connecticut, Georgia,
-        Indiana, Kentucky, Maine, Missouri (excluding 30 counties in the Kansas City area), Nevada, New Hampshire, Ohio,
-        Virginia (excluding the Northern Virginia suburbs of Washington, D.C.), and Wisconsin.`;
+    ngOnInit() {
     }
 
 }

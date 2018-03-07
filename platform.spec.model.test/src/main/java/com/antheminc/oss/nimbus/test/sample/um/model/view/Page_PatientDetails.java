@@ -9,8 +9,8 @@ import com.antheminc.oss.nimbus.core.domain.definition.MapsTo.Path;
 import com.antheminc.oss.nimbus.core.domain.definition.ViewConfig.Button;
 import com.antheminc.oss.nimbus.core.domain.definition.ViewConfig.Hints;
 import com.antheminc.oss.nimbus.core.domain.definition.ViewConfig.Hints.AlignOptions;
-import com.antheminc.oss.nimbus.test.sample.um.model.Patient;
-import com.antheminc.oss.nimbus.test.sample.um.model.UMCase;
+import com.antheminc.oss.nimbus.test.sample.um.model.core.Patient;
+import com.antheminc.oss.nimbus.test.sample.um.model.core.UMCase;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,3 +1,20 @@
+/**
+ * @license
+ * Copyright 2017-2018 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { Values } from './../../../../shared/app-config.interface';
 import { ControlValueAccessor } from '@angular/forms/src/directives';
 import { Param } from '../../../../shared/app-config.interface';
@@ -26,9 +43,8 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
                 <p-pickList #picklist [source]="element.values" 
                     [sourceHeader] = "element.config?.uiStyles?.attributes.sourceHeader" 
                     [targetHeader]="element.config?.uiStyles?.attributes.targetHeader" 
+                    [disabled]="!element?.enabled?.currState"
                     [target]="targetList" pDroppable="dd" [responsive]="true" 
-                    [disableFormControl]="form.get(element.config?.code)"
-                    [disableCondition]="element.config?.enabled?.currState"        
                     (onMoveToTarget)="updateListValues($event)" (onMoveToSource)="updateListValues($event)">
                     <ng-template let-itm pTemplate="item">
                         <div class="ui-helper-clearfix">
@@ -60,7 +76,7 @@ export class OrderablePickList implements OnInit, ControlValueAccessor {
 
     set disabled(value) { this._disabled = value; }
 
-    constructor(wcs: WebContentSvc, pageService: PageService) {
+    constructor(wcs: WebContentSvc, private pageService: PageService) {
     }
 
     ngOnInit() {
@@ -71,9 +87,16 @@ export class OrderablePickList implements OnInit, ControlValueAccessor {
             this.targetList = [];
         }
 
-        if( this.form.controls[this.element.config.code]!= null) {
+        if( this.form!= null && this.form.controls[this.element.config.code]!= null) {
             this.form.controls[this.element.config.code].valueChanges.subscribe(
                 ($event) => { this.setState($event,this); });
+
+            this.pageService.eventUpdate$.subscribe(event => {
+                let frmCtrl = this.form.controls[event.config.code];
+                if(frmCtrl!=null && event.path.startsWith(this.element.path)) {
+                    frmCtrl.setValue(event.leafState);
+                }
+            });
         }
     }
 

@@ -1,3 +1,20 @@
+/**
+ * @license
+ * Copyright 2017-2018 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { InPlaceEditorComponent } from './components/platform/form/elements/inplace-editor.component';
 import { TextArea } from './components/platform/form/elements/textarea.component';
 import { MultiSelectListBox } from './components/platform/form/elements/multi-select-listbox.component';
@@ -49,7 +66,6 @@ import { ActionDropdown, ActionLink } from './components/platform/form/elements/
 import { GridContainer } from './components/platform/grid/grid-container.component';
 import { InfiniteScrollGrid } from './components/platform/grid/grid.component';
 import { Link } from './components/platform/link.component';
-import { DisableFormControl } from './components/platform/form/elements/control-disable.directive';
 import { Menu } from './components/platform/menu.component';
 import { FlowWrapper } from './components/platform/content/flow-wrapper.component';
 import { SubHeaderCmp } from './components/platform/sub-header.component';
@@ -117,7 +133,7 @@ import { LinkPipe } from './pipes/link.pipe';
         InPlaceEditorComponent, Paragraph, Value, Image, BaseElement, 
         MultiselectCard, Link, Menu, CardDetailsComponent, CardDetailsFieldComponent, CardDetailsGrid, FieldValue,
         AccordionGroup, Accordion, FrmGroupCmp, Button, ButtonGroup, FilterButton, OrderablePickList,
-        STOMPStatusComponent, GridContainer, InfiniteScrollGrid, SubHeaderCmp, DisableFormControl, TextArea, LandingPage,
+        STOMPStatusComponent, GridContainer, InfiniteScrollGrid, SubHeaderCmp, TextArea, LandingPage,
         LayoutService,ContentContainer,Switch,
         DomainFlowCmp,HeaderGlobal,FooterGlobal,
         BreadcrumbComponent, NavLinkRouter,
