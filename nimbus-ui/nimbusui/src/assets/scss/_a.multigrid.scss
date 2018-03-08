@@ -53,7 +53,11 @@ ng-component{
     }
     th.ui-sortable-column:not(.ui-state-active):hover {
         background-color: #b3dcfc;
+        .ui-sortable-column-icon {
+            color: #4c4c4c;
+        }
     }
+    
     .col-icon {
         width: 30px;
     }
@@ -83,47 +87,72 @@ ng-component{
         .filterHolder{
             position: relative;
             margin-top: 3px;
-            input{
-                max-width: 100%;
-                min-width: 98%;
+                input{
+                    max-width: 100%;
+                    min-width: 98%;
+                }
+                button{
+                    position: absolute;
+                    right: 3%;
+                    top: 4px;
+                    font-size: .8rem;
+                    border: none;
+                    height: 1rem;
+                    color: #b9b6b6;
+                    padding: .1rem .3rem;
+                    color: #b9b6b6;
+                    &:hover, &:focus{
+                        color: #4c4c4c;
+                    }
+                }
             }
-            button{
-                position: absolute;
-                right: 3%;
-                top: 2.2px;
-                font-size: 0.8rem;
-                border: none;
-                height: 1rem;
+            .gridFilterIcon {
+                position:absolute;
+                right: 0;
+                top: 0;
                 color: #b9b6b6;
+                &::before{
+                    background-size: 15px 15px;
+                    height: 15px;
+                    width: 15px;
+                    display: block;
+                    font-family: "fontAwesome";
+                    content: "\f0b0";
+                    font-size: .8rem;
+                }
                 &:hover, &:focus{
                     color: #4c4c4c;
                 }
             }
-        }
-
-      
-        .gridFilterIcon {
-            position:absolute;
-            right: 0;
-            top: 0;
-            &::before{
-                background-size: 15px 15px;
-                height: 15px;
-                width: 15px;
-                display: block;
-                font-family: "fontAwesome";
-                content: "\f0b0";
-                font-size: .8rem;
-                color: #96acbb;
-            }
-        }
        
-        .ui-sortable-column-icon{
-            font-size: 1.2rem;
-            color: #80A7DE;
+       
+        .ui-sortable-column-icon {
+            font-size: 1rem;
+            color: #b9b6b6;
             position:absolute;
             right: 14px;
-            top: 0;
+            top: 2px;
+            &:hover, &:focus{
+                color: #4c4c4c;
+            }
+        }
+        .fa-sort:before, .fa-unsorted:before {
+            content: "\f176";;
+        }
+        .fa-sort:after, .fa-unsorted:after {
+            content: "\f175";;
+        }
+        .fa-sort-asc:before,.fa-sort-asc:after {
+            color: #e5991c;
+            &:hover{
+                color: #4c4c4c;
+            }
+        }
+        .fa-sort-desc:before,.fa-sort-desc:after {
+            color: #e5991c;
+            &:hover{
+                color: #4c4c4c;
+            }
         }
     }
     tr.ui-expanded-row-content {
@@ -171,6 +200,7 @@ ng-component{
     color: #fff;
     &.ui-paginator {
         font-size: .8rem;
+        text-align: right;
         .ui-paginator-page.ui-state-active {
             background: #184987;
             color: #ffffff;
@@ -215,7 +245,7 @@ ng-component{
 
 .recordsDisplayed{
     position: absolute;
-    left: 40%;
+    left: 43%;
     padding-top: .1rem;
     font-size: .9rem;
 }
