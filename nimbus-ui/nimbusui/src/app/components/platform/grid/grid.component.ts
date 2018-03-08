@@ -359,7 +359,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     protected isSortAsDate(fieldType: string, sortAs: string): boolean {
         let fieldTypeToMatch = fieldType.toLowerCase();
         return ((sortAs !== null && sortAs === SortAs.date.value) || fieldTypeToMatch === GridColumnDataType.date.value || fieldTypeToMatch === GridColumnDataType.localdate.value
-            || fieldTypeToMatch === GridColumnDataType.localdatetime.value || fieldType === GridColumnDataType.zoneddatetime.value);
+            || fieldTypeToMatch === GridColumnDataType.localdatetime.value || fieldTypeToMatch === GridColumnDataType.zoneddatetime.value);
 
     }
 

@@ -381,6 +381,7 @@ public class ViewConfig {
 		boolean inplaceEdit() default false;
 		String inplaceEditType() default "";
 		String datePattern() default "";
+		String placeholder() default "";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
@@ -825,6 +826,7 @@ public class ViewConfig {
 		String filterValue() default "";
 		boolean expandable() default true;
 		SortAs sortAs() default SortAs.DEFAULT; // number, text
+		String placeholder() default "";
 		
 		public enum FilterMode {
 			equals,

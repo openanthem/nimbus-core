@@ -8,7 +8,7 @@
         <div class="d-inline-block mr-1">
             <div class="form-group">
                 <label class="" *ngIf="element.config.uiStyles.attributes.showName==true">{{label}}</label>
-                <p class="form-control-static">{{value}}&nbsp;</p>
+                <p class="form-control-static">{{value ? value : placeholder}}&nbsp;</p>
             </div>
         </div>
     </ng-template>
@@ -22,7 +22,7 @@
          </ng-template>
         <div class="form-group" *ngIf="!element.config.uiStyles.attributes.inplaceEdit && !isDate(element.type.name)">
             <label class="" *ngIf="element.config.uiStyles.attributes.showName==true">{{label}}</label>
-            <div class="{{iconClass}} textWrapBreakWord">{{value}}&nbsp;</div>    
+            <div class="{{iconClass}} textWrapBreakWord">{{value ? value : placeholder}}&nbsp;</div>    
         </div>
     </ng-template>
 </div>

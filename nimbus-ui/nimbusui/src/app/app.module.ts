@@ -40,7 +40,6 @@ import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
     FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
     ProgressBarModule, ProgressSpinnerModule, AccordionModule  } from 'primeng/primeng';
-import { SortableComponentDirective, SortableContainerDirective } from './directives/sortable-dragdrop.directive';
 import { NavLinkRouter } from './directives/nav-link-router.directive';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -83,7 +82,6 @@ import { FrmGroupCmp } from './components/platform/form-group.component';
 import { Button } from './components/platform/form/elements/button.component';
 import { ButtonGroup } from './components/platform/form/elements/button-group.component';
 import { FilterButton } from './components/platform/form/elements/filter-button.component';
-import { DragDropConfig } from './shared/app-config.interface';
 import { CheckBox } from './components/platform/form/elements/checkbox.component';
 import { DomainFlowCmp } from './components/domain/domain-flow.component';
 import { FileUploadComponent } from './components/platform/fileupload/file-upload.component';
@@ -97,7 +95,6 @@ import { NavMenuGlobal } from './components/platform/globalNavMenu/nav-global-me
 // Services
 import { WebContentSvc } from './services/content-management.service';
 import { STOMPStatusComponent } from './services/stomp-status.component';
-import { DragDropService, DragDropSortableService} from './services/dragdrop.service';
 import { AuthenticationService } from './services/authentication.service';
 import { FileService } from './services/file.service';
 // Routes
@@ -161,7 +158,7 @@ import {DateTimeFormatPipe} from './pipes/date.pipe';
         DomainFlowCmp,HeaderGlobal,FooterGlobal,
         BreadcrumbComponent, NavLinkRouter,
         Modal, ActionDropdown, ActionLink, 
-        GridMouseEventDirective, SortableContainerDirective, SortableComponentDirective,
+        GridMouseEventDirective,
         HomeLayoutCmp, MainLayoutCmp, LoginCmp, LoginLayoutCmp, StyleGuideCmp, 
         KeysPipe, LinkPipe, DateTimeFormatPipe, SelectItemPipe, MultiSelectListBox, 
         CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent, Calendar, NavMenuGlobal, LoaderComponent
@@ -170,7 +167,7 @@ import {DateTimeFormatPipe} from './pipes/date.pipe';
     entryComponents: [ FlowWrapper, PageContent, PageNotfoundComponent, LoginCmp, MainLayoutCmp, HomeLayoutCmp],
     providers: [ PageService, ConfigService, WebContentSvc,HttpClient,  HttpClientModule,
          CustomHttpClient, { provide: BrowserXhr, useClass: CustomBrowserXhr },
-         { provide: LocationStrategy, useClass: HashLocationStrategy }, GridService, DragDropService, DragDropSortableService, DragDropConfig,
+         { provide: LocationStrategy, useClass: HashLocationStrategy }, GridService,
          AuthenticationService, BreadcrumbService, LoaderService, FileService ],
     bootstrap: [ AppComponent ]
 })

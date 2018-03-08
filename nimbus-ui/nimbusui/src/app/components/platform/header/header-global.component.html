@@ -40,8 +40,10 @@
 
     <div class="col-lg-6 col-md-3 col-sm-3 hidden-xs-down p-0 ml-3 mt-1 ">
         <div class="productName hidden-xs-down d-inline-block">
-              <nm-paragraph [element]="branding.title" *ngIf="branding.title"></nm-paragraph>
-              <nm-paragraph [element]="branding.subTitle" *ngIf="branding.subTitle"></nm-paragraph>  
+            <nm-paragraph [element]="branding.title" *ngIf="branding.title"></nm-paragraph>
+            <div class="subTitle" *ngIf="branding.subTitle">
+                <nm-paragraph [element]="branding.subTitle"></nm-paragraph> 
+            </div>
         </div>
             
         <!-- <div class="hidden-md-down col-lg-5 align-bottom">
