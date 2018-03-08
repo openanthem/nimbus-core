@@ -141,12 +141,6 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 		return getAssociatedParam()==null ? null : getAssociatedParam().findParamByPath(pathArr);
 	}	
 	
-	@JsonIgnore
-	@Override
-	public T getState() {
-		return Model.super.getState();
-	}
-	
 	public static class ParamsConverter extends StdConverter<List<?>, List<?>> {
 		@Override
 		public List<?> convert(List<?> in) {
@@ -158,5 +152,42 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 	@Override
 	public List<Param<? extends Object>> getParams() {
 		return params;
+	}
+
+	@JsonIgnore
+	@Override
+	public Model<?> getRootDomain() {
+		return getAssociatedParam().getRootDomain();
+	}
+
+	@Override
+	public ExecutionModel<T> findIfRoot() {
+		return null;
+	}
+
+	@Override
+	public MappedModel<T, ?> findIfMapped() {
+		return null;
+	}
+
+	@Override
+	public ListModel<?> findIfListModel() {
+		return null;
+	}
+
+	@Override
+	public T getLeafState() {
+		return Optional.ofNullable(getAssociatedParam()).map(p->p.getLeafState()).orElse(null);
+	}
+
+	@JsonIgnore
+	@Override
+	public T getState() {
+		return Optional.ofNullable(getAssociatedParam()).map(p->p.getState()).orElse(null);
+	}
+
+	@Override
+	public void setState(T state) {
+		Optional.ofNullable(getAssociatedParam()).ifPresent(p->p.setState(state));
 	}
 }

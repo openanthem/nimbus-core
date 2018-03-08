@@ -45,6 +45,18 @@ public class MappedDefaultListModelState<T, M> extends DefaultListModelState<T> 
 		//createElemParamMapping();
 	}
 	
+	@JsonIgnore
+	@Override
+	public boolean isMapped() {
+		return true;
+	}
+	
+	@JsonIgnore
+	@Override
+	public MappedDefaultListModelState<T, M> findIfMapped() {
+		return this;
+	}
+	
 	
 	protected void createElemParamMapping() {
 		if(getMapsTo().size()==0)

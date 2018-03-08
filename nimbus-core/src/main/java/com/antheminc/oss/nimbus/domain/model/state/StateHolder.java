@@ -18,6 +18,7 @@ package com.antheminc.oss.nimbus.domain.model.state;
 import java.beans.PropertyDescriptor;
 import java.util.List;
 
+import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.InvalidOperationAttemptedException;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.ValidationGroup;
@@ -165,6 +166,11 @@ public class StateHolder {
 		public LockTemplate getLockTemplate() {
 			throw throwEx();
 		}
+
+		@Override
+		public Mapped<T, ?> findIfMapped() {
+			throw throwEx();
+		}
 	}
 
 	
@@ -215,6 +221,11 @@ public class StateHolder {
 			
 			@Override
 			public void handleNotification(Notification<M> event) {
+				throw throwEx();
+			}
+			
+			@Override
+			public boolean requiresConversion() {
 				throw throwEx();
 			}
 		}
@@ -325,6 +336,13 @@ public class StateHolder {
 		@Override
 		public boolean isTransient() {
 			return this.ref.isTransient();
+		}
+		
+		public boolean isAssigned() {
+			if(!isTransient()) 
+				throw new InvalidConfigException("Attempted method on non-transient parameter: "+this.ref);
+			
+			return findIfTransient().isAssinged();
 		}
 		
 		/* ********************** Parameter Context State Attributes *********************** */

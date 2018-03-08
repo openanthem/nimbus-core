@@ -58,6 +58,7 @@ import com.antheminc.oss.nimbus.domain.model.config.internal.DefaultModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.internal.DefaultParamConfig;
 import com.antheminc.oss.nimbus.domain.model.config.internal.MappedDefaultModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.internal.MappedDefaultParamConfig;
+import com.antheminc.oss.nimbus.domain.model.config.internal.MappedDefaultTransientParamConfig;
 import com.antheminc.oss.nimbus.domain.rules.RulesEngineFactoryProducer;
 import com.antheminc.oss.nimbus.support.JustLogit;
 import com.antheminc.oss.nimbus.support.pojo.GenericUtils;
@@ -213,10 +214,21 @@ abstract public class AbstractEntityConfigBuilder {
 		if(mapsToParam==null)
 			throw new InvalidConfigException("No mapsTo param found for mapped param field: "+f.getName()+" in enclosing model:"+mConfig.getReferredClass()+" with mapsToPath: "+mapsToPath);
 		
-		// handle transient
-		//DefaultParamConfig<?> mappedParamAttached = mapsToPath.nature()==MapsTo.Nature.TransientColElem ?
 		
-		return decorateParam(mConfig, f, new MappedDefaultParamConfig<>(f.getName(), mapsToModel, mapsToParam, mapsToPath), visitedModels);
+		final DefaultParamConfig<?> created;
+		
+		// handle transient
+		if(mapsToPath.nature().isTransient()) {
+			MapsTo.Path simulatedMapsToPath = MappedDefaultParamConfig.createNewImplicitMapping("", false);
+			DefaultParamConfig<?> simulatedMappedParamDetached = createMappedParamDetached(mConfig, f, visitedModels, simulatedMapsToPath);
+			
+			created = new MappedDefaultTransientParamConfig<>(simulatedMappedParamDetached, f.getName(), mapsToModel, mapsToParam, mapsToPath);
+			
+		} else {
+			created = new MappedDefaultParamConfig<>(f.getName(), mapsToModel, mapsToParam, mapsToPath);
+		}
+		
+		return decorateParam(mConfig, f, created, visitedModels);
 	}
 	
 	private DefaultParamConfig<?> createMappedParamDetached(ModelConfig<?> mConfig, Field mappedField, EntityConfigVisitor visitedModels, MapsTo.Path mapsToPath) {
