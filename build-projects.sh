@@ -37,9 +37,9 @@ for i in "${NAMES[@]}"; do
   fi
   
   if [[ -z "$BUILD_PROFILES" ]]; then
-    mvn clean install -f $str/pom.xml $MVN_ARGS
+    ./mvnw clean install -f $str/pom.xml $MVN_ARGS
   else
-    mvn clean install -f $str/pom.xml $MVN_ARGS -P $BUILD_PROFILES
+    ./mvnw clean install -f $str/pom.xml $MVN_ARGS -P $BUILD_PROFILES
   fi 
 
   echo "####################################################################"
