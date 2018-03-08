@@ -183,7 +183,10 @@ h1.page-title {
 .ui-widget-header.ui-dialog-titlebar{
         text-align: left;
 }
-
+.ui-widget {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", san-serif;
+    font-size: 1rem;
+}
 .textWrapBreakWord {
     word-break: break-word;
     font-weight: bold;

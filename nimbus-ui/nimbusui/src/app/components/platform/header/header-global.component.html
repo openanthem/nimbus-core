@@ -40,11 +40,13 @@
 
     <div class="col-lg-6 col-md-3 col-sm-3 hidden-xs-down p-0 ml-3 mt-1 ">
         <div class="productName hidden-xs-down d-inline-block">
-              <nm-paragraph [element]="branding.title" *ngIf="branding.title"></nm-paragraph>  
+            <nm-paragraph [element]="branding.title" *ngIf="branding.title"></nm-paragraph>
+            <div class="subTitle" *ngIf="branding.subTitle">
+                <nm-paragraph [element]="branding.subTitle"></nm-paragraph> 
+            </div>
         </div>
             
-        <!-- <ng-template [element]="branding.title" *ngIf="branding.title == 'Long Term Services Supports(LTSS)'"> -->
-        <div class="hidden-md-down col-lg-5 align-bottom" *ngIf="branding?.title === 'Long Term Services &amp; Supports (LTSS)'">
+        <!-- <div class="hidden-md-down col-lg-5 align-bottom">
             <div id="custom-search-input">
                 <div class="input-group">
                     <input type="text" class="form-control input-lg" placeholder="Search" />
@@ -55,8 +57,7 @@
                     </span>
                 </div>
             </div>
-        </div>
-        <!-- </ng-template> -->
+        </div> -->
 
     </div>
 

@@ -242,6 +242,7 @@ export class Param implements Serializable<Param> {
     createRowData(param: Param) {
         let rowData: any = {};
         rowData = param.leafState;
+        rowData['_params'] = param.type.model.params;
         rowData['elemId'] = param.elemId;
         return rowData;
     }
@@ -617,6 +618,9 @@ export class UiAttribute implements Serializable<UiAttribute> {
     readOnly: boolean = false;
     level: string;
     cssClass: string;
+    multiple: boolean;
+    selected: boolean;
+    activeIndex: string;
     submitButton: boolean = true;
     content: string; //-- TO BE DELETED (always pull with contentId)
     contentId: string;
@@ -690,6 +694,9 @@ export class UiAttribute implements Serializable<UiAttribute> {
         }
         this.level = inJson.level;
         this.cssClass = inJson.cssClass;
+        this.multiple = inJson.multiple;
+        this.selected = inJson.selected;
+        this.activeIndex = inJson.activeIndex;
         this.labelClass = inJson.labelClass;
         this.control = inJson.control;
         this.content = inJson.content;
@@ -889,22 +896,6 @@ export class FieldValue implements Serializable<FieldValue> {
         this.value = inJson.value;
         return this;
     }
-}
-
-export class DragDropData {
-    dragData: any;
-    mouseEvent: MouseEvent;
-}
-
-export class DragDropConfig {
-    public onDragStartClass: string = 'dnd-drag-start';
-    public onDragEnterClass: string = 'dnd-drag-enter';
-    public onDragOverClass: string = 'dnd-drag-over';
-    public onSortableDragClass: string = 'dnd-sortable-drag';
-
-    public dragEffect: DataTransferEffect = DataTransferEffect.MOVE;
-    public dropEffect: DataTransferEffect = DataTransferEffect.MOVE;
-    public dragCursor: string = 'move';
 }
 
 export class DataTransferEffect {

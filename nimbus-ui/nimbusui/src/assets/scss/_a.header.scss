@@ -25,12 +25,18 @@
 	}
 	
 	.productName, .productName p {
-			font-size: 1.1rem;
-			font-weight: 400;
-			margin: 0;
-			max-width: 200px;
-    		line-height: 1.2rem;
-		}
+		font-size: 1.1rem;
+		font-weight: 400;
+		margin: 0;
+		max-width: 200px;
+		line-height: 1.2rem;
+	}
+
+	.subTitle p {
+		color:#94acbc;
+		font-size: 1rem;
+		margin-top: 0.2rem;
+	}
 
 	.userIcon {
 		font-size: 2rem;

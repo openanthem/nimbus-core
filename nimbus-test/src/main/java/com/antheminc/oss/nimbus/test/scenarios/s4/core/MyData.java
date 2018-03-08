@@ -13,11 +13,8 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.test.scenarios.s2.core;
+package com.antheminc.oss.nimbus.test.scenarios.s4.core;
 
-import java.util.List;
-
-import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.defn.Model;
 
 import lombok.Getter;
@@ -25,32 +22,19 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * 
- * @author Soham Chakravarti
+ * @author Tony Lopez
  *
  */
-@Domain("s2c_row")
+@Model
 @Getter @Setter @ToString
-public class S2C_Row {
+public class MyData {
 
-	@Model
-	@Getter @Setter
-	public static class Nested2LevelElem {
-		
-		private String nested2Value1;
+	public static enum Preference {
+		preference1,
+		preference2;
 	}
 	
-	@Model
-	@Getter @Setter
-	public static class NestedInRow {
-		private String nestedValue1;
-		private String nestedValue2;
-		
-		private List<Nested2LevelElem> nestedRowCollection;
-	}
+	private Preference q1;
 	
-	private String topValue1;
-	private String topValue2;
-	
-	private NestedInRow nestedInRow;
+	private String q2;
 }

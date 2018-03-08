@@ -201,7 +201,7 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 		
 		// add value to mapsTo core to see effect in mapped transient
 		MockHttpServletRequest updateReq = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(refId)
-				.addNested("/attr_list_2_NestedEntity")
+				.addNested("/attr_list_2_NestedEntity/0")
 				.addAction(Action._update)
 				.getMock();
 		

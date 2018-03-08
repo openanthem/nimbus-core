@@ -672,6 +672,26 @@ public class ViewConfig {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.FIELD })
 	@ViewStyle
+	public @interface AccordionMain {
+		String alias() default "AccordionMain";
+		String cssClass() default "panel-default";
+		boolean multiple() default false;
+		String activeIndex() default "0";
+	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface AccordionTab {
+		String alias() default "AccordionTab";
+		String cssClass() default "panel-default";
+		boolean selected() default false;
+	}
+	
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
 	public @interface Accordion {
 		String alias() default "Accordion";
 		String cssClass() default "panel-default";
