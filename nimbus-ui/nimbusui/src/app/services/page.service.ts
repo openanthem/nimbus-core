@@ -763,7 +763,10 @@ export class PageService {
                         if (param.type.model === undefined && payload.type.model) {
                                 param.type['model'] = payload.type.model;
                         }
-                } else {
+                        if (param.message === undefined && payload.message) {
+                                param['message'] = payload.message;
+                        }
+                } else {                        
                         this.updateParam(param, payload);
                 }
         }
