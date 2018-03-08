@@ -77,6 +77,8 @@ import { CardDetailsFieldComponent } from './components/platform/card/card-detai
 import { CardDetailsGrid } from './components/platform/card/card-details-grid.component';
 import { Accordion } from './components/platform/accordion.component';
 import { AccordionGroup } from './components/platform/accordion-group.component';
+import { AccordionMain } from './components/platform/content/accordion.component';
+import { AccordionTab } from './components/platform/content/accordion-tab.component';
 import { FrmGroupCmp } from './components/platform/form-group.component';
 import { Button } from './components/platform/form/elements/button.component';
 import { ButtonGroup } from './components/platform/form/elements/button-group.component';
@@ -153,7 +155,7 @@ import {DateTimeFormatPipe} from './pipes/date.pipe';
         Tile, Section, Header, Form, FormElement, InputText, ComboBox, RadioButton, DateControl, CheckBoxGroup,
         InPlaceEditorComponent, Paragraph, Value, Image, BaseElement, 
         MultiselectCard, Link, Menu, CardDetailsComponent, CardDetailsFieldComponent, CardDetailsGrid, FieldValue,
-        AccordionGroup, Accordion, FrmGroupCmp, Button, ButtonGroup, FilterButton, OrderablePickList,
+        AccordionGroup, Accordion, AccordionMain, AccordionTab, FrmGroupCmp, Button, ButtonGroup, FilterButton, OrderablePickList,
         STOMPStatusComponent, InfiniteScrollGrid, SubHeaderCmp, TextArea, LandingPage,
         LayoutService,ContentContainer,
         DomainFlowCmp,HeaderGlobal,FooterGlobal,

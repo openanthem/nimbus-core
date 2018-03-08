@@ -36,6 +36,10 @@
             <ng-template [ngIf]="element.alias == 'Menu'">
                 <nm-menu [element]="element"></nm-menu>
             </ng-template>
+            <!-- Accordion Main Param -->
+            <ng-template [ngIf]="element.alias == 'AccordionMain'">
+                <nm-accordion [element]="element"></nm-accordion>
+            </ng-template>
             <!-- Grid Param -->
             <ng-template [ngIf]="element.alias == 'Grid'">
                 <infinite-scroll-grid
