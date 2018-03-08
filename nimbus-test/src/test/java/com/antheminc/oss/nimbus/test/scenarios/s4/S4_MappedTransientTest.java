@@ -40,7 +40,6 @@ public class S4_MappedTransientTest extends AbstractFrameworkIntegrationTests {
 					MockHttpRequestBuilder.withUri(K_URI_VR).addAction(Action._new).getMock(), 
 					null);
 	}
-	
 
 	@Test
 	public void t00_onLoad_check() {
@@ -279,4 +278,58 @@ public class S4_MappedTransientTest extends AbstractFrameworkIntegrationTests {
 		assertTrue(pForm.findParamByPath("/deleteButton").isEnabled());
 	}
 
+	@Test
+	public void t06_add() throws Exception {
+		Object controllerResp_new = createNew_VR();
+		Param<?> vp_main = ExtractResponseOutputUtils.extractOutput(controllerResp_new);
+		String refId = ExtractResponseOutputUtils.extractDomainRootRefId(controllerResp_new);
+		
+		Param<VForm> pForm = vp_main.findParamByPath("/form");
+
+		// click on add
+		controller.handleGet(
+				MockHttpRequestBuilder.withUri(K_URI_VR).addRefId(refId).addNested("/addButton").addAction(Action._get).getMock(), 
+				null);
+		
+		// check that the values are reset
+		assertNull(pForm.findParamByPath("/str1").getLeafState());
+		
+		// check cancel is enabled and delete is disabled
+		assertTrue(pForm.findParamByPath("/cancelButton").isEnabled());
+		assertFalse(pForm.findParamByPath("/deleteButton").isEnabled());
+		
+		// ensure no element has been added to core or view collections
+		assertEquals(0, vp_main.findParamByPath(".m/anotherModeList").findIfCollection().size());
+		assertEquals(0, vp_main.findParamByPath("/summaryGrid").findIfCollection().size());
+		
+		// verify that db has no entries
+		assertTrue(mongo.findAll(S4C_CoreMain.class, "s4c_main").isEmpty());
+		
+		// save: create payload
+		final String K1 = "str1 val" + new Date();
+		final String K2 = "str2 val" + new Date();
+		VForm formEntity = new VForm();
+		formEntity.setStr1(K1);
+		formEntity.setStr2(K2);
+		formEntity.setUnmappedAttr1("unmappedAttr1 val "+ new Date());
+		
+		// save: call
+		controller.handlePost(
+				MockHttpRequestBuilder.withUri(K_URI_VR).addRefId(refId).addNested("/form/saveButton").addAction(Action._get).getMock(), 
+				json.write(formEntity).getJson());
+		
+		// check that the transient param is now assigend
+		assertTrue(pForm.findIfTransient().isAssinged());
+		
+		// check cancel is DISABLED and delete is ENABLED
+		assertFalse(pForm.findParamByPath("/cancelButton").isEnabled());
+		assertTrue(pForm.findParamByPath("/deleteButton").isEnabled());
+		
+		// ensure no element has been added to core or view collections
+		assertEquals(1, vp_main.findParamByPath(".m/anotherModeList").findIfCollection().size());
+		assertEquals(1, vp_main.findParamByPath("/summaryGrid").findIfCollection().size());
+		
+		// verify that db has 1 entry
+		assertFalse(mongo.findAll(S4C_CoreMain.class, "s4c_main").isEmpty());
+	}
 }

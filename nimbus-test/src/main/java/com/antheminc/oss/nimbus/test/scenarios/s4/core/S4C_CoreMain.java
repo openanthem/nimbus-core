@@ -30,5 +30,5 @@ public class S4C_CoreMain extends IdString {
 
 	private List<S4C_AnotherModel> anotherModeList;
 	
-	private S4C_AnotherModel anotherModelNested;
+	//private S4C_AnotherModel anotherModelNested;
 }
