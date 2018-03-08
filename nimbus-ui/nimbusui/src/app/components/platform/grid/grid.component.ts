@@ -234,6 +234,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     toggleFilter(event: any) {
         //console.log(event);
         this.filterState = !this.filterState;
+        this.dt.reset();
     }
 
     postGridData(obj) {
