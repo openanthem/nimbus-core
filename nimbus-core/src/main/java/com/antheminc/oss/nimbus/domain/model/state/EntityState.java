@@ -479,6 +479,8 @@ public interface EntityState<T> {
 //		default boolean isAssinged() {
 //			return getMapsTo() != null;
 //		}
+
+		void assignMapsTo();
 		
 		void assignMapsTo(String rootMapsToPath);
 //		default void assignMapsTo(String rootMapsToPath) {
@@ -545,7 +547,7 @@ public interface EntityState<T> {
 //			return this;
 //		}
 		
-		ListElemParam<T> createElement();
+//		ListElemParam<T> createElement();
 		
 		@Override
 		ListElemParam<T> add();

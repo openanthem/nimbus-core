@@ -306,6 +306,8 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 		String elemId = toElemId(getNextElemIndex());
 		
 		Param<T> pElem = getNestedCollectionModel().createElement(elemId);
+		//list.add(null);//pElem.setState(null);
+		
 		ListElemParam<T> pColElem = pElem.findIfCollectionElem();
 		getNestedCollectionModel().templateParams().add(pColElem);
 		
@@ -349,13 +351,13 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 		return true;
 	}
 	
-	@Override
-	public ListElemParam<T> createElement() {
-		String elemId = toElemId(getNextElemIndex());
-		
-		ListElemParam<T> pColElem = getNestedCollectionModel().createElement(elemId);
-		return pColElem;
-	}
+//	@Override
+//	public ListElemParam<T> createElement() {
+//		String elemId = toElemId(getNextElemIndex());
+//		
+//		ListElemParam<T> pColElem = getNestedCollectionModel().createElement(elemId);
+//		return pColElem;
+//	}
 	
 	@Override
 	public boolean add(ListElemParam<T> pColElem) {

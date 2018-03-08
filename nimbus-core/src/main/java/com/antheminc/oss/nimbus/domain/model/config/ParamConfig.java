@@ -74,6 +74,16 @@ public interface ParamConfig<P> extends EntityConfig<P>, Findable<String> {
 	public void onCreateEvent();
 	
 	@JsonIgnore
+	default boolean isTransient() {
+		return false;
+	}
+	
+	@JsonIgnore
+	default MappedTransientParamConfig<P, ?> findIfTransient() {
+		return null;
+	}
+	
+	@JsonIgnore
 	default MapsTo.Mode getMappingMode() {
 		return MapsTo.Mode.UnMapped;
 	}
@@ -107,5 +117,19 @@ public interface ParamConfig<P> extends EntityConfig<P>, Findable<String> {
 		public ParamConfig<M> getMapsToConfig();
 		
 		public ModelConfig<?> getMapsToEnclosingModel();
+	}
+	
+	public interface MappedTransientParamConfig<P, M> extends MappedParamConfig<P, M> {
+		@Override
+		default boolean isTransient() {
+			return true;
+		}
+		
+		@Override @JsonIgnore
+		default MappedTransientParamConfig<P, ?> findIfTransient() {
+			return this;
+		}
+		
+		MappedParamConfig<P, M> getSimulatedDetached();
 	}
 }

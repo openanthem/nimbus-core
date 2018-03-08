@@ -13,44 +13,30 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.test.scenarios.s2.core;
+package com.antheminc.oss.nimbus.test.scenarios.s4.core;
 
 import java.util.List;
 
 import com.antheminc.oss.nimbus.domain.defn.Domain;
-import com.antheminc.oss.nimbus.domain.defn.Model;
+import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
+import com.antheminc.oss.nimbus.domain.defn.Repo;
+import com.antheminc.oss.nimbus.domain.defn.Repo.Database;
+import com.antheminc.oss.nimbus.entity.AbstractEntity.IdString;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 /**
  * 
- * @author Soham Chakravarti
+ * @author Tony Lopez
  *
  */
-@Domain("s2c_row")
-@Getter @Setter @ToString
-public class S2C_Row {
+@Domain(value="s4_mainCoreBackingObject", includeListeners={ListenerType.persistence})
+@Repo(Database.rep_mongodb)
+@Getter @Setter
+public class S4_MainCoreBackingObject extends IdString {
 
-	@Model
-	@Getter @Setter
-	public static class Nested2LevelElem {
-		
-		private String nested2Value1;
-	}
+	private static final long serialVersionUID = 1L;
 	
-	@Model
-	@Getter @Setter
-	public static class NestedInRow {
-		private String nestedValue1;
-		private String nestedValue2;
-		
-		private List<Nested2LevelElem> nestedRowCollection;
-	}
-	
-	private String topValue1;
-	private String topValue2;
-	
-	private NestedInRow nestedInRow;
+	private List<MyData> myDataCollection;
 }
