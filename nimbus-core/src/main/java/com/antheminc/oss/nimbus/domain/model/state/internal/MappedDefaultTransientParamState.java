@@ -96,6 +96,11 @@ public class MappedDefaultTransientParamState<T, M> extends DefaultParamState<T>
 	}
 	
 	@Override
+	public void flush() {
+		assignMapsTo();
+	}
+	
+	@Override
 	public void assignMapsTo() {
 		T oldState = getLeafState();
 		assignMapsTo(initialMapsTo);
