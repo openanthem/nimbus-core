@@ -152,7 +152,7 @@ public class MongoSearchByQuery extends MongoDBSearch {
         localDateTime.atZone(TimeZone.getDefault().toZoneId());
        
         binding.setProperty("todaydate",localDateTime);
-        final GroovyShell shell = new GroovyShell(binding); 
+        final GroovyShell shell = new GroovyShell(obj.getClass().getClassLoader(), binding); 
         return (Predicate)shell.evaluate(groovyScript);
 	}
 	
