@@ -174,5 +174,9 @@ export class BaseElement {
     isDate(dataType: string): boolean {
         return ParamUtils.isKnownDateType(dataType);
     }
+
+    public get placeholder(): string {
+        return this.element.config.uiStyles.attributes.placeholder;
+    }
 }
 
