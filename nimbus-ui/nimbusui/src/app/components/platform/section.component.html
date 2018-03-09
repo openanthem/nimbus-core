@@ -1,6 +1,6 @@
 <div class="{{cssClass}}" id="{{code}}">
     <!-- Section Message -->
-    <div class="alert alert-info{{element?.type?.model?.config?.message?.type}}" role="alert" *ngIf="element?.message">
+    <div class="message {{element?.message.type}}" role="alert" *ngIf="element?.message">
         {{element?.message.text}}
     </div>
 
