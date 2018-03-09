@@ -255,3 +255,6 @@ ng-component{
 span.ui-cell-data img { 
 margin-right: 10px; 
 }
+.scrollGrid .ui-datatable-thead > tr > th.activeFilter .gridFilterIcon::before { 
+    color: orange; 
+}
