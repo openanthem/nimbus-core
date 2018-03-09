@@ -19,7 +19,7 @@ ng-component{
         display: inline-block;
     }
     .ui-datatable-scrollable-body{
-        min-height: 200px;
+        min-height: 60px;
     }
     
     th.ui-state-default{
@@ -248,6 +248,9 @@ ng-component{
     left: 43%;
     padding-top: .1rem;
     font-size: .9rem;
+}
+.ui-datatable-header .btn-plain { 
+    color: #FFF; 
 }
 span.ui-cell-data img { 
 margin-right: 10px; 
