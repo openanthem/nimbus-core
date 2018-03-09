@@ -24,6 +24,7 @@ import com.antheminc.oss.nimbus.domain.defn.MapsTo;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.MappedListParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityStateAspectHandlers;
 import com.antheminc.oss.nimbus.domain.model.state.ExecutionRuntime;
 import com.antheminc.oss.nimbus.domain.model.state.InvalidStateException;
@@ -46,6 +47,17 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 		
 		public LeafState(Model<?> parentModel, ParamConfig<List<T>> config, EntityStateAspectHandlers aspectHandlers) {
 			super(parentModel, config, aspectHandlers);
+		}
+		
+		@JsonIgnore
+		@Override
+		public boolean isLeaf() {
+			return true;
+		}
+		
+		@Override
+		public LeafState<T> findIfLeaf() {
+			return this;
 		}
 	}
 	
@@ -294,6 +306,8 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 		String elemId = toElemId(getNextElemIndex());
 		
 		Param<T> pElem = getNestedCollectionModel().createElement(elemId);
+		//list.add(null);//pElem.setState(null);
+		
 		ListElemParam<T> pColElem = pElem.findIfCollectionElem();
 		getNestedCollectionModel().templateParams().add(pColElem);
 		
@@ -337,13 +351,13 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 		return true;
 	}
 	
-	@Override
-	public ListElemParam<T> createElement() {
-		String elemId = toElemId(getNextElemIndex());
-		
-		ListElemParam<T> pColElem = getNestedCollectionModel().createElement(elemId);
-		return pColElem;
-	}
+//	@Override
+//	public ListElemParam<T> createElement() {
+//		String elemId = toElemId(getNextElemIndex());
+//		
+//		ListElemParam<T> pColElem = getNestedCollectionModel().createElement(elemId);
+//		return pColElem;
+//	}
 	
 	@Override
 	public boolean add(ListElemParam<T> pColElem) {
@@ -367,5 +381,26 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 	@Override
 	public boolean contains(Param<?> other) {
 		return getNestedCollectionModel().templateParams().contains(other);
+	}
+	
+	@Override
+	public boolean isCollection() {
+		return true;
+	}
+	
+	@JsonIgnore
+	@Override
+	public boolean isLeafElements() {
+		return getType().isLeafElements();
+	}
+	
+	@Override
+	public DefaultListParamState<T> findIfCollection() {
+		return this;
+	}
+	
+	@Override
+	public MappedListParam<T, ?> findIfMapped() {
+		return null;
 	}
 }

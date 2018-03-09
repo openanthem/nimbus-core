@@ -230,16 +230,6 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 			// TODO use in getPath to append refId to root domain alias
 			rootRefId = rootCommand.getRootDomainElement().getRefId();
 			
-			//String rootPath = (rootRefId==null) ? pConfig.getCode() : pConfig.getCode()+":"+rootRefId;
-//			String[] rootPath = initPath;
-//			String[] beanPath = initPath;
-			
-//			logit.debug(()->"[ExParam] rootPath: "+rootPath+" :: with beanPath: "+beanPath);
-
-//			setPathArr(rootPath);
-//			setBeanPathArr(beanPath);
-			
-			
 			this.rootModel = new ExModel(rootCommand, this, pConfig.getRootParent(), provider);
 			this.setType(new StateType.Nested<>(getConfig().getType().findIfNested(), getRootExecution()));
 		}
@@ -304,16 +294,12 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 			return (ExModelConfig)super.getConfig();
 		}
 		
+		@JsonIgnore
 		@Override
 		public ExParam getAssociatedParam() {
 			return (ExParam)super.getAssociatedParam();
 		}
-		
-		@JsonIgnore @Override
-		public ExModel getRootExecution() {
-			return this;
-		}
-		
+
 		@Override
 		public Command getRootCommand() {
 			if(getAssociatedParam().isLinked()) {
@@ -328,14 +314,35 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 			getAssociatedParam().fireRules();
 		}
 		
+		@JsonIgnore
 		@Override
 		public ExecutionEntity<V, C> getState() {
 			return _this();
 		}
 		
+		@JsonIgnore
 		@Override
 		public Map<String, Object> getParamRuntimes() {
 			return _this().getParamRuntimes();
+		}
+		
+		@JsonIgnore
+		@Override
+		public boolean isRoot() {
+			return true;
+		}
+		
+		@Override
+		public ExecutionModel<ExecutionEntity<V, C>> findIfRoot() {
+			return this;
+		}
+		
+		@Override
+		public <U> U unwrap(Class<U> c) {
+			if(c.isInstance(this))
+				return c.cast(this);
+			
+			return null;
 		}
 		
 		@Override

@@ -21,8 +21,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.springframework.format.annotation.DateTimeFormat.ISO;
-
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 import com.antheminc.oss.nimbus.domain.defn.extension.ParamContext;
 
@@ -109,6 +107,7 @@ public class ViewConfig {
 		String alias() default "Page";
 		String cssClass() default ""; 
 		boolean defaultPage() default false;
+		String imgSrc() default "";
 		String route() default ""; // remove
 	}
 	
@@ -382,6 +381,7 @@ public class ViewConfig {
 		boolean inplaceEdit() default false;
 		String inplaceEditType() default "";
 		String datePattern() default "";
+		String placeholder() default "";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
@@ -672,6 +672,26 @@ public class ViewConfig {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.FIELD })
 	@ViewStyle
+	public @interface AccordionMain {
+		String alias() default "AccordionMain";
+		String cssClass() default "panel-default";
+		boolean multiple() default false;
+		String activeIndex() default "0";
+	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface AccordionTab {
+		String alias() default "AccordionTab";
+		String cssClass() default "panel-default";
+		boolean selected() default false;
+	}
+	
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
 	public @interface Accordion {
 		String alias() default "Accordion";
 		String cssClass() default "panel-default";
@@ -806,6 +826,7 @@ public class ViewConfig {
 		String filterValue() default "";
 		boolean expandable() default true;
 		SortAs sortAs() default SortAs.DEFAULT; // number, text
+		String placeholder() default "";
 		
 		public enum FilterMode {
 			equals,

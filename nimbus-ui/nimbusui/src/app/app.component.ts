@@ -17,7 +17,6 @@
 'use strict';
 import { Component, ViewEncapsulation, Inject } from '@angular/core';
 import { HostListener } from '@angular/core/src/metadata/directives';
-import { DomainLayoutCmp } from './components/domain/domain-layout.component';
 import { WebContentSvc } from './services/content-management.service';
 import { ServiceConstants } from './services/service.constants';
 import { Router, ActivatedRoute } from '@angular/router';

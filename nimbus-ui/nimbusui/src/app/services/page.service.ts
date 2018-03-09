@@ -612,6 +612,7 @@ export class PageService {
          */
         createRowData(param: Param, nestedParamIdx: number) {
                 let rowData: any = param.leafState;
+                rowData['_params'] = param.type.model.params;
                 
                 // If classTypeMappings are present, handle any conversions that should occur.
                 // TODO Use a better design pattern to handle this scenario.
@@ -803,12 +804,15 @@ export class PageService {
                                                                                 let values = [];
                                                                                 values.push(Reflect.get(payload, updatedKey)) ;
                                                                                 param.values = values;
-                                                                                this.eventUpdate.next(param);
+                                                                                //this.eventUpdate.next(param);
                                                                         } else {
                                                                                 param.values = Reflect.get(payload, updatedKey);
-                                                                                this.eventUpdate.next(param);
+                                                                                //this.eventUpdate.next(param);
                                                                         }
                                                                 }
+                                                        } else if (Reflect.ownKeys(Reflect.get(param, currentKey)).length == 0 && currentKey === 'leafState') {
+                                                                Reflect.set(param, currentKey, Reflect.get(payload, updatedKey));
+                                                                this.eventUpdate.next(param);
                                                         }
                                                 } catch (e) {
                                                         if (e instanceof TypeError) {
@@ -824,7 +828,7 @@ export class PageService {
                                 });
                         });
                 } else {
-                        this.logError('Could not process the update from the server for' + payload.path + ' because config is undefined.');
+                        this.logError('Could not process the update from the server for ' + payload.path + ' because config is undefined.');
                 }
         }
 

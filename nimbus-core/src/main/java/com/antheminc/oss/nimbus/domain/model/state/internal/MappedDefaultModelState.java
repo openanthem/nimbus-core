@@ -41,5 +41,15 @@ public class MappedDefaultModelState<T, M> extends DefaultModelState<T> implemen
     	Objects.requireNonNull(mapsTo, "MapsTo model must not be null.");
     	this.mapsTo = mapsTo;
  	}
+	
+	@Override
+	public boolean isMapped() {
+		return true;
+	}
+	
+	@Override
+	public MappedDefaultModelState<T, M> findIfMapped() {
+		return this;
+	}
 
 }

@@ -1,0 +1,33 @@
+.ui-accordion {
+    .ui-accordion-header {
+        background: #669fe2;
+        border: 1px solid #669fe2;
+        &.ui-state-default.ui-corner-all.ui-state-active {
+            background: #669fe2;
+        }
+    
+        a {
+            color: #fff;
+            .ui-accordion-toggle-icon {
+                font-size: 1.5rem;
+                line-height: 1;
+                margin-top: -4px;
+            }
+        }
+    }
+    .ui-accordion-header:not(.ui-state-active):not(.ui-state-disabled):hover {
+        background: #669fe2;
+        a{
+            color: #fff;
+        }
+    }
+    .ui-accordion-content-wrapper {
+        border: 1px solid #669fe2;
+        margin-bottom: 1rem;
+        padding: 0.1rem;
+    }
+    .ui-accordion-content{
+        padding:0;
+    }
+    
+}

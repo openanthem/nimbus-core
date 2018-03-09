@@ -72,11 +72,13 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
         this.label = labelContent.text;
         this.helpText = labelContent.helpText;
         this.requiredCss = ValidationUtils.applyelementStyle(this.element);
-        let frmCtrl = this.form.controls[this.element.config.code];
-        //rebind the validations as there are dynamic validations along with the static validations
-        if(frmCtrl!=null && this.element.activeValidationGroups != null && this.element.activeValidationGroups.length > 0) {
-            this.requiredCss = ValidationUtils.rebindValidations(frmCtrl,this.element.activeValidationGroups,this.element);
-        } 
+        if (this.form) {
+            let frmCtrl = this.form.controls[this.element.config.code];
+            //rebind the validations as there are dynamic validations along with the static validations
+            if(frmCtrl!=null && this.element.activeValidationGroups != null && this.element.activeValidationGroups.length > 0) {
+                this.requiredCss = ValidationUtils.rebindValidations(frmCtrl,this.element.activeValidationGroups,this.element);
+            } 
+        }
     }
 
     ngAfterViewInit(){

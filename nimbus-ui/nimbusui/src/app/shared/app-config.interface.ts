@@ -242,6 +242,7 @@ export class Param implements Serializable<Param> {
     createRowData(param: Param) {
         let rowData: any = {};
         rowData = param.leafState;
+        rowData['_params'] = param.type.model.params;
         rowData['elemId'] = param.elemId;
         return rowData;
     }
@@ -262,7 +263,7 @@ export class Param implements Serializable<Param> {
             this.elemId = inJson.elemId;
             // TODO Move to its own deserializer
             this.collectionConfigs = {};
-            if (this.type.model.params && this.type.model.params.length > 0) {
+            if (this.type.model && this.type.model.params && this.type.model.params.length > 0) {
                 let params = this.type.model.params;
                 let typeMappings = {};
                 for(let param of params) {
@@ -617,6 +618,9 @@ export class UiAttribute implements Serializable<UiAttribute> {
     readOnly: boolean = false;
     level: string;
     cssClass: string;
+    multiple: boolean;
+    selected: boolean;
+    activeIndex: string;
     submitButton: boolean = true;
     content: string; //-- TO BE DELETED (always pull with contentId)
     contentId: string;
@@ -672,6 +676,7 @@ export class UiAttribute implements Serializable<UiAttribute> {
     sortAs: string;
     sortable: boolean;
     resizable:boolean;
+    placeholder: string;
     deserialize( inJson ) {
         this.value = inJson.value;
         this.url = inJson.url;
@@ -689,6 +694,9 @@ export class UiAttribute implements Serializable<UiAttribute> {
         }
         this.level = inJson.level;
         this.cssClass = inJson.cssClass;
+        this.multiple = inJson.multiple;
+        this.selected = inJson.selected;
+        this.activeIndex = inJson.activeIndex;
         this.labelClass = inJson.labelClass;
         this.control = inJson.control;
         this.content = inJson.content;
@@ -733,6 +741,7 @@ export class UiAttribute implements Serializable<UiAttribute> {
         this.rel = inJson.rel;
         this.hourFormat = inJson.hourFormat;
         this.sortAs = inJson.sortAs;
+        this.placeholder = inJson.placeholder;
         if ( inJson.controlType != null ) {
             this.controlType = inJson.controlType;
         }
@@ -887,22 +896,6 @@ export class FieldValue implements Serializable<FieldValue> {
         this.value = inJson.value;
         return this;
     }
-}
-
-export class DragDropData {
-    dragData: any;
-    mouseEvent: MouseEvent;
-}
-
-export class DragDropConfig {
-    public onDragStartClass: string = 'dnd-drag-start';
-    public onDragEnterClass: string = 'dnd-drag-enter';
-    public onDragOverClass: string = 'dnd-drag-over';
-    public onSortableDragClass: string = 'dnd-sortable-drag';
-
-    public dragEffect: DataTransferEffect = DataTransferEffect.MOVE;
-    public dropEffect: DataTransferEffect = DataTransferEffect.MOVE;
-    public dragCursor: string = 'move';
 }
 
 export class DataTransferEffect {
