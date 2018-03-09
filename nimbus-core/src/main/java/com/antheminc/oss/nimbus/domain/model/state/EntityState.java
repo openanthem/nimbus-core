@@ -489,6 +489,8 @@ public interface EntityState<T> {
 //		}
 		void assignMapsTo(Param<M> mapsToTransient);
 		void unassignMapsTo();
+		
+		void flush();
 	}
 	
 	public interface ListBehavior<T> {
