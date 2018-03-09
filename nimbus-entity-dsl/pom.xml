@@ -5,7 +5,6 @@
 		<groupId>com.antheminc.oss</groupId>
 		<artifactId>nimbus-parent</artifactId>
 		<version>1.0.0.M1-SNAPSHOT</version>
-		<relativePath>../</relativePath>
 	</parent>
 
 	<artifactId>nimbus-entity-dsl</artifactId> 
@@ -24,8 +23,8 @@
     </dependencies>
 
 	<build>
-		 <sourceDirectory>../../nimbus-core/target/generated-sources/annotations</sourceDirectory>
-		 <directory>../../nimbus-core/target/nimbus-entity-dsl</directory>
+		 <sourceDirectory>../nimbus-core/target/generated-sources/annotations</sourceDirectory>
+		 <directory>../nimbus-core/target/nimbus-entity-dsl</directory>
 	</build>
 
 </project>

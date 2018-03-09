@@ -5,7 +5,14 @@
 	<version>1.0.0.M1-SNAPSHOT</version>
 	<name>nimbus-parent</name>
 	<packaging>pom</packaging>
-   
+
+    <modules>
+        <module>nimbus-core</module>
+        <module>nimbus-entity-dsl</module>
+        <module>nimbus-test</module>
+        <module>nimbus-ui</module>
+        <module>nimbus-extn-activiti</module>
+    </modules>
 
 	<properties>
         <!-- <sonar.projectName>NIM-Parent</sonar.projectName>
@@ -68,7 +75,6 @@
         <owasp-esapi.version>2.0.1</owasp-esapi.version>
         <nexus-staging-maven-plugin.version>1.6.7</nexus-staging-maven-plugin.version>
         <!-- nimbus-core -->
-       	<parentDir>../nimbus-parent</parentDir>
         <nimbus.version>1.0.0.M1-SNAPSHOT</nimbus.version>
         <nimbus.core.version>${nimbus.version}</nimbus.core.version>
         <nimbus.ui.version>${nimbus.version}</nimbus.ui.version>
@@ -958,8 +964,4 @@
             </build>
         </profile>
     </profiles>
-    <modules>
-    	<module>../nimbus-core</module>
-    	<module>post</module>
-    </modules>
 </project>
