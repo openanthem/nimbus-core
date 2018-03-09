@@ -5,6 +5,11 @@
 	<version>1.0.0.M1-SNAPSHOT</version>
 	<name>nimbus-parent</name>
 	<packaging>pom</packaging>
+    <description>Nimbus Core Bill of materials</description>
+    <organization>
+        <name>Anthem Inc.</name>
+        <url>https://www.oss.antheminc.com</url>
+    </organization>
 
     <modules>
         <module>nimbus-core</module>
@@ -31,7 +36,7 @@
         <sonar.jacoco.reportPaths>target/jacoco.exec</sonar.jacoco.reportPaths>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
 
-        <main.basedir>..</main.basedir>
+        <main.basedir>.</main.basedir>
         <disable.checks>false</disable.checks>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -744,7 +749,7 @@
                     <target>${java.version}</target>
                 </configuration>
             </plugin>
-            <!-- <plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <executions>
@@ -775,7 +780,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin> -->
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>

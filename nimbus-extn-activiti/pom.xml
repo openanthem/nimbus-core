@@ -13,11 +13,6 @@
 		<sonar.projectName>nimbus-extn-activiti</sonar.projectName>
 	</properties>
 
-	<organization>
-		<name>Anthem Inc.</name>
-		<url>https://www.anthem.com</url>
-	</organization>
-	
 	<dependencies>
 		<dependency>
 			<groupId>org.activiti.designer</groupId>
