@@ -58,18 +58,18 @@ h3{
         margin-right: 1rem;
         font-size: 1.5rem;
     }
-    &.danger {
+    &.DANGER {
         background: #e9a129;
         color: #ae0015;
         &::before {
-            content: "\f001";
+            content: "\f00d";
         }
     }
-    &.success {
+    &.SUCCESS {
         background: #e6f6d4;
         color: #5aa00d;
         &::before {
-            content: "\f001";
+            content: "\f00c";
         }
     }
 }
