@@ -5,7 +5,7 @@
 			{{label}}
 			<nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
 		</p-header>
-		<div class="recordsDisplayed">Showing {{rowStart}}-{{rowEnd}} of  {{totalRecords}}</div>
+		<div class="recordsDisplayed">Showing {{rowStart}}-{{rowEnd}} of  {{totalRecords}} <button class="btn-plain ml-2" (click)="clearAll()">Clear Grid Filters</button> </div>
 	</div>
 	
 	<p-dataTable #flex #dataTable #table [value]="value"
@@ -71,14 +71,14 @@
 			<ng-template  let-filtercol pTemplate="filter">
 				<ng-template [ngIf]="isDate(col.type.name)">
 					<div class="filterHolder" >
-					<input #text type="text" (input)="dateFilter($event, dt, filtercol.field, col?.uiStyles?.attributes?.filterMode, col?.uiStyles?.attributes?.datePattern, col?.type?.name)"> 
+					<input #text type="text" [(ngModel)]="filterStateArray[colIndex]" (input)="dateFilter($event, dt, filtercol.field, col?.uiStyles?.attributes?.filterMode, col?.uiStyles?.attributes?.datePattern, col?.type?.name)"> 
 					<button (click)= "clearFilter(text,dt,filtercol.field)" ><i class="fa fa-times"></i>  </button>
 				    </div>	
 				</ng-template>
 
 				<ng-template [ngIf]="!isDate(col.type.name)">
 					<div class="filterHolder" >	
-					<input #text type="text" (input)="inputFilter($event, dt, filtercol.field, col?.uiStyles?.attributes?.filterMode)">
+					<input #text type="text" [(ngModel)]="filterStateArray[colIndex]" (input)="inputFilter($event, dt, filtercol.field, col?.uiStyles?.attributes?.filterMode)">
 					<button (click)= "clearFilter(text,dt,filtercol.field)" ><i class="fa fa-times"></i>  </button>
 				    </div>
 				</ng-template>

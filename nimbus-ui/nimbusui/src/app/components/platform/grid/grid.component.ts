@@ -69,6 +69,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     filterValue: Date;
     totalRecords: number = 0;
     mouseEventSubscription: Subscription;
+    filterStateArray: any[]=[];
 
     //    references DataTable named 'flex' in the view
     @ViewChild('flex') flex: DataTable;
@@ -234,7 +235,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     toggleFilter(event: any) {
         //console.log(event);
         this.filterState = !this.filterState;
-        this.dt.reset();
+        // this.dt.reset();
     }
 
     postGridData(obj) {
@@ -427,6 +428,10 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         txt.value = '';
         dt.filter(txt.value, field, "");
     }
+
+    clearAll() {
+        this.dt.reset();
+      }
 
     paginate(e: any) {
         if (this.totalRecords != 0) {

@@ -31,7 +31,7 @@ import { Component, Input } from '@angular/core';
 @Component({
     selector: 'nm-message',
     template: `
-                <div class="message {{messageType}}" role="alert"   {{messageText}}   </div>
+                <div class="message {{messageType}}" role="alert">   {{messageText}}   </div>
 
 	          `
 })
