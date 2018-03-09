@@ -69,7 +69,7 @@ public class S4V_ViewMain {
 		
 		
 		@Config(url="<!#this!>/../_replace")
-		@Config(url="<!#this!>/../_get?fn=param&expr=assignMapsTo()")
+		@Config(url="<!#this!>/../_get?fn=param&expr=flush()")
 		private String saveButton;
 		
 		@Config(url="<!#this!>/../_get?fn=param&expr=unassignMapsTo()")
