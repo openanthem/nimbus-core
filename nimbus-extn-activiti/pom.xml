@@ -8,7 +8,11 @@
 	</parent>
 	<artifactId>nimbus-extn-activiti</artifactId>
 	<name>nimbus-extn-activiti</name>
-	
+
+	<properties>
+		<sonar.projectName>nimbus-extn-activiti</sonar.projectName>
+	</properties>
+
 	<organization>
 		<name>Anthem Inc.</name>
 		<url>https://www.anthem.com</url>

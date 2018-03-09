@@ -15,8 +15,6 @@
     </modules>
 
 	<properties>
-        <!-- <sonar.projectName>NIM-Parent</sonar.projectName>
-        <sonar.jacoco.reportPath>target/jacoco.exec</sonar.jacoco.reportPath> -->
         <docker.image.prefix>nimbus</docker.image.prefix>
         <docker.plugin.version>0.3.258</docker.plugin.version>
         <spring.boot.maven.version>1.4.0.RELEASE</spring.boot.maven.version>
@@ -28,8 +26,10 @@
         <sitemesh.version>2.4.2</sitemesh.version>
         <embed-mongo.version>2.0.0</embed-mongo.version>
         <embed-redis.version>0.4</embed-redis.version>
-        <!-- <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
-        <sonar.jacoco.reportPath>${project.basedir}/target/jacoco.exec</sonar.jacoco.reportPath> -->
+
+        <sonar.projectName>NIM-Parent</sonar.projectName>
+        <sonar.jacoco.reportPaths>target/jacoco.exec</sonar.jacoco.reportPaths>
+        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
 
         <main.basedir>..</main.basedir>
         <disable.checks>false</disable.checks>
@@ -80,6 +80,9 @@
         <nimbus.ui.version>${nimbus.version}</nimbus.ui.version>
         <nimbus.dsl.version>${nimbus.core.version}</nimbus.dsl.version> <!-- DSL matches core's version -->
         <nimbus.test.version>${nimbus.version}</nimbus.test.version>
+
+        <jacoco-version>0.7.7.201606060606</jacoco-version>
+        <sonar-version>3.2</sonar-version>
     </properties>
 
     <repositories>
@@ -703,13 +706,13 @@
         </pluginManagement>
         <!-- Plugins which will get executed on each project -->
         <plugins>
-            <!-- <plugin>
+            <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.7.7.201606060606</version>
+                <version>${jacoco-version}</version>
                 <configuration>
-                    <destFile>${sonar.jacoco.reportPath}</destFile>
-                    <dataFile>${sonar.jacoco.reportPath}</dataFile>
+                    <destFile>${sonar.jacoco.reportPaths}</destFile>
+                    <dataFile>${sonar.jacoco.reportPaths}</dataFile>
                     <append>true</append>
                 </configuration>
                 <executions>
@@ -731,8 +734,8 @@
             <plugin>
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
-                <version>3.2</version>
-            </plugin> -->
+                <version>${sonar-version}</version>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
