@@ -19,6 +19,7 @@ import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -38,6 +39,7 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.repo.IdSequenceRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.DBSearch;
+import com.antheminc.oss.nimbus.entity.SearchCriteria;
 import com.antheminc.oss.nimbus.entity.SearchCriteria.ExampleSearchCriteria;
 import com.antheminc.oss.nimbus.entity.SearchCriteria.LookupSearchCriteria;
 import com.antheminc.oss.nimbus.entity.SearchCriteria.QuerySearchCriteria;
@@ -162,20 +164,34 @@ public class DefaultMongoModelRepository implements ModelRepository {
 		T state = mongoOps.findAndRemove(query, referredClass, alias);
 		return state;
 	}
-	
-	@Override
-	public <T> Object _search(Class<T> referredDomainClass, String alias, LookupSearchCriteria criteria) {
-		return searchByQuery.search(referredDomainClass, alias, criteria);
-	}
-	
-	@Override
-	public <T> Object _search(Class<T> referredDomainClass, String alias, QuerySearchCriteria criteria) {
-		return searchByQuery.search(referredDomainClass, alias, criteria);
-	}
 
 	@Override
-	public <T> Object _search(Class<T> referredDomainClass, String alias, ExampleSearchCriteria<T> criteria) {
-		return searchByExample.search(referredDomainClass, alias, criteria);
+	public <T> Object _search(Class<T> referredDomainClass, String alias, Supplier<SearchCriteria<?>> criteria) {
+		SearchCriteria<?> sc = criteria.get();
+		if(sc instanceof ExampleSearchCriteria) {
+			return searchByExample.search(referredDomainClass, alias, sc);
+		}
+		return searchByQuery.search(referredDomainClass, alias, sc);
 	}
+	
+//	@Override
+//	public <T> Object _search(Class<T> referredDomainClass, String alias, LookupSearchCriteria criteria) {
+//		return searchByQuery.search(referredDomainClass, alias, criteria);
+//	}
+//	
+//	@Override
+//	public <T> Object _search(Class<T> referredDomainClass, String alias, QuerySearchCriteria criteria) {
+//		return searchByQuery.search(referredDomainClass, alias, criteria);
+//	}
+//
+//	@Override
+//	public <T> Object _search(Class<T> referredDomainClass, String alias, ExampleSearchCriteria<T> criteria) {
+//		return searchByExample.search(referredDomainClass, alias, criteria);
+//	}
+//	
+//	@Override
+//	public <T> Object _search(Class<T> referredDomainClass, String alias, Supplier<SearchCriteria<T>> criteria) {
+//		return null;
+//	}
 
 }

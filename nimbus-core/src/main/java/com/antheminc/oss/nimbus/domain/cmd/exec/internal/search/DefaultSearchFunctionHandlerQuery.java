@@ -27,24 +27,8 @@ import com.antheminc.oss.nimbus.entity.SearchCriteria.QuerySearchCriteria;
  * @author Rakesh Patel
  *
  */
-@SuppressWarnings("unchecked")
 public class DefaultSearchFunctionHandlerQuery<T, R> extends DefaultSearchFunctionHandler<T, R> {
 
-	@Override
-	public R execute(ExecutionContext executionContext, Param<T> actionParameter) {
-		ModelConfig<?> mConfig = getRootDomainConfig(executionContext);
-		
-		QuerySearchCriteria querySearchCriteria = createSearchCriteria(executionContext, mConfig, actionParameter);
-		Class<?> criteriaClass = mConfig.getReferredClass();
-		
-		String alias = findRepoAlias(mConfig);
-		
-		ModelRepository rep = getRepFactory().get(mConfig.getRepo());
-		
-		return (R)rep._search(criteriaClass, alias, querySearchCriteria, executionContext.getCommandMessage().getCommand().getAbsoluteUri());
-	}
-	
-	
 	@Override
 	protected QuerySearchCriteria createSearchCriteria(ExecutionContext executionContext, ModelConfig<?> mConfig, Param<T> actionParam) {
 		Command cmd = executionContext.getCommandMessage().getCommand();
@@ -62,6 +46,8 @@ public class DefaultSearchFunctionHandlerQuery<T, R> extends DefaultSearchFuncti
 		
 		querySearchCriteria.setProjectCriteria(buildProjectCritera(cmd));
 		querySearchCriteria.setPageRequest(buildPageCriteria(cmd));
+		
+		querySearchCriteria.setCmd(executionContext.getCommandMessage().getCommand());
 		
 		return querySearchCriteria;
 	}

@@ -47,21 +47,17 @@ public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunct
 		
 		ModelConfig<?> mConfig = getRootDomainConfig(executionContext);
 		
-		LookupSearchCriteria lookupSearchCriteria = createSearchCriteria(executionContext, mConfig, actionParameter);
-		Class<?> criteriaClass = mConfig.getReferredClass();
-		String alias = findRepoAlias(mConfig);
-		
-		ModelRepository rep = getRepFactory().get(mConfig.getRepo()); //TODO what if it is a non db search like WS call for search ? 
-		
-		List<?> searchResult = (List<?>)rep._search(criteriaClass, alias, lookupSearchCriteria);
-
+		List<?> searchResult = (List<?>)super.execute(executionContext, actionParameter);
+				
 		Command cmd = executionContext.getCommandMessage().getCommand();
 		if(StringUtils.equalsIgnoreCase(cmd.getElement(Type.DomainAlias).get().getAlias(), "staticCodeValue")) {
 			return getStaticParamValues((List<StaticCodeValue>)searchResult, cmd);
 		}
-		return getDynamicParamValues(lookupSearchCriteria, criteriaClass, searchResult);
+		LookupSearchCriteria lookupSearchCriteria = createSearchCriteria(executionContext, mConfig, actionParameter);
+		return getDynamicParamValues(lookupSearchCriteria, mConfig.getReferredClass(), searchResult);
 	}
 
+	
 	@Override
 	protected LookupSearchCriteria createSearchCriteria(ExecutionContext executionContext, ModelConfig<?> mConfig, Param<T> actionParameter) {
 		Command cmd = executionContext.getCommandMessage().getCommand();
@@ -75,6 +71,7 @@ public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunct
 		ProjectCriteria projectCriteria = buildProjectCritera(cmd);
 		lookupSearchCriteria.setProjectCriteria(projectCriteria);
 		
+		lookupSearchCriteria.setCmd(executionContext.getCommandMessage().getCommand());
 		return lookupSearchCriteria;
 	}
 	

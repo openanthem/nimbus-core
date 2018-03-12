@@ -52,7 +52,7 @@ public abstract class MongoDBSearch implements DBSearch {
 	}
 	
 	
-	public <T> Class<?> findOutputClass(SearchCriteria<T> criteria, Class<?> referredClass) {
+	public <T> Class<?> findOutputClass(SearchCriteria<?> criteria, Class<T> referredClass) {
 		if(criteria.getProjectCriteria() != null && StringUtils.isNotBlank(criteria.getProjectCriteria().getAlias())) {
 			return getDomainConfigBuilder().getModel(criteria.getProjectCriteria().getAlias()).getReferredClass();
 		}
