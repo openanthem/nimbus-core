@@ -277,6 +277,7 @@ public class ViewConfig {
 		String postButtonAlias() default "";
 		String postButtonLabel() default "";
 		boolean postEventOnChange() default false;
+		boolean clearAllFilters() default true;
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
