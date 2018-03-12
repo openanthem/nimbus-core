@@ -40,7 +40,7 @@
 				[field]="col?.code" 
 				[header]="col?.label"
 				[hidden]="col?.uiStyles?.attributes?.hidden"
-				[sortable]="!col?.uiStyles?.isLink ? 'custom' : false"
+				[sortable]="(!col?.uiStyles?.isLink && col?.uiStyles?.attributes?.sortable !== false) ? 'custom' : false"
 				(sortFunction)="sortBy($event, col?.type?.name, col?.uiStyles?.attributes?.sortAs)"
 				[filter]="!showFilters ? false : col?.uiStyles?.attributes?.filter"
 				[filterMatchMode]="col?.uiStyles?.attributes?.filterMode" > 
