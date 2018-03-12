@@ -255,7 +255,7 @@ ng-component{
 span.ui-cell-data img { 
 margin-right: 10px; 
 }
-.scrollGrid .ui-datatable-thead > tr > th.activeFilter .gridFilterIcon::before,
-.ui-datatable .ui-datatable-thead > tr > th.activeFilter .gridFilterIcon::before { 
+.scrollGrid .ui-datatable-thead > tr > th .gridFilterIcon.activeFilter::before,
+.ui-datatable .ui-datatable-thead > tr > th .gridFilterIcon.activeFilter::before { 
     color: orange; 
 }
