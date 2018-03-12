@@ -19,7 +19,7 @@
 			<artifactId>org.activiti.designer.integration</artifactId>
 			<version>5.18.0</version> <!-- Use the current Activiti Designer version -->
 			<scope>system</scope>
-			<systemPath>${project.basedir}/src/main/resources/lib/org.activiti.designer.integration-5.18.0.jar</systemPath>
+			<systemPath>${pom.basedir}/src/main/resources/lib/org.activiti.designer.integration-5.18.0.jar</systemPath>
 		</dependency>
 	</dependencies>
 
