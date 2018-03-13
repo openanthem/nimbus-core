@@ -1,3 +1,4 @@
+import { UiStyle } from './app-config.interface';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -239,7 +240,7 @@ export class Param implements Serializable<Param> {
         return undefined;
     }
 
-    createRowData(param: Param) {
+    createRowData(param: Param, isDeserialized?: boolean) {
         let rowData: any = {};
         rowData = param.leafState;
         rowData['_params'] = param.type.model.params;
@@ -247,6 +248,13 @@ export class Param implements Serializable<Param> {
 
         for(let p of param.type.model.params) {
             let config = this.configSvc.paramConfigs[p.configId];
+
+            // handle nested grid data
+            if (config.uiStyles && config.uiStyles.name == 'ViewConfig.GridRowBody') {
+                rowData['nestedGridParam'] = isDeserialized ? p : new Param(this.configSvc).deserialize(p);
+            }
+
+            // handle dates
             if (config && ParamUtils.isKnownDateType(config.type.name)) {
                 rowData[config.code] = ParamUtils.convertServerDateStringToDate(rowData[config.code], config.type.name);
             }
@@ -286,7 +294,7 @@ export class Param implements Serializable<Param> {
 
         if ( inJson.collectionElem ) {
             this.elemId = inJson.elemId;
-            this.leafState = this.createRowData(this);
+            this.leafState = this.createRowData(this, true);
         }
 
         this.path = inJson.path;
