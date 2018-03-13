@@ -37,9 +37,10 @@ import org.springframework.web.client.RestTemplate;
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ExternalModelRepository;
-import com.antheminc.oss.nimbus.entity.SearchCriteria.ExampleSearchCriteria;
-import com.antheminc.oss.nimbus.entity.SearchCriteria.LookupSearchCriteria;
-import com.antheminc.oss.nimbus.entity.SearchCriteria.QuerySearchCriteria;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.ExampleSearchCriteria;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.LookupSearchCriteria;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.QuerySearchCriteria;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -79,12 +80,14 @@ public class DefaultWSModelRepository implements ExternalModelRepository {
 	}
 	
 	@Override
-	public <T> Object _search(Class<T> referredDomainClass, String alias, LookupSearchCriteria criteria, String url) {
-		URI uri = createUriForAlias(alias, url);
+	public <T> Object _search(Class<T> referredDomainClass, String alias, Supplier<SearchCriteria<?>> criteriaSupplier) {
+		SearchCriteria<?> searchCriteria = criteriaSupplier.get();
+		
+		URI uri = createUriForAlias(alias, searchCriteria.getCmd().getAbsoluteUri());
 		if(uri == null)
 			return null;
 		
-		Object response = execute(() -> new RequestEntity<Object>(HttpMethod.POST, uri), 
+		Object response = execute(() -> new RequestEntity<Object>(searchCriteria instanceof ExampleSearchCriteria ? searchCriteria.getWhere(): null, HttpMethod.POST, uri), 
 						() -> new ParameterizedTypeReference<List<T>>() {
 								public Type getType() {
 									return new CustomParameterizedTypeImpl((ParameterizedType) super.getType(), new Type[] {referredDomainClass});
@@ -92,38 +95,6 @@ public class DefaultWSModelRepository implements ExternalModelRepository {
 						});
 		return response;
 	}
-
-	@Override
-	public <T> Object _search(Class<T> referredDomainClass, String alias, QuerySearchCriteria criteria,  String url) {
-		URI uri = createUriForAlias(alias, url);
-		if(uri == null)
-			return null;
-		
-		Object response = execute(() -> new RequestEntity<Object>(HttpMethod.POST, uri), 
-						() -> new ParameterizedTypeReference<List<T>>() {
-								public Type getType() {
-									return new CustomParameterizedTypeImpl((ParameterizedType) super.getType(), new Type[] {referredDomainClass});
-								}
-						});
-		return response;
-	}
-
-	@Override
-	public <T> Object _search(Class<T> referredDomainClass, String alias, ExampleSearchCriteria<T> criteria, String url) {
-		//return this.externalRepositoryClient._search(criteria.getWhere());
-		URI uri = createUriForAlias(alias, url);
-		if(uri == null)
-			return null;
-		
-		Object response = execute(() -> new RequestEntity<T>(criteria.getWhere(), HttpMethod.POST, uri), 
-						() -> new ParameterizedTypeReference<List<T>>() {
-				    			public Type getType() {
-				    				return new CustomParameterizedTypeImpl((ParameterizedType) super.getType(), new Type[] {referredDomainClass});
-				    			}
-						});
-		return response;
-	}
-	
 	
 	private Object execute(Supplier<RequestEntity<?>> reqEntitySupplier, Supplier<ParameterizedTypeReference<?>> responseTypeSupplier) {
 		ResponseEntity<?> responseEntity = restTemplate.exchange(reqEntitySupplier.get(), responseTypeSupplier.get());
@@ -142,7 +113,7 @@ public class DefaultWSModelRepository implements ExternalModelRepository {
 			URI uri = new URI(urlToConctruct);
 			return uri;
 		} catch (URISyntaxException e) {
-			throw new FrameworkRuntimeException("Cannot crate URI from supplied url: "+url);
+			throw new FrameworkRuntimeException("Cannot create URI from supplied url: "+url);
 		}
 	}
 	
