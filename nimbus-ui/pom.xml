@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>	
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>com.antheminc.oss</groupId>
 		<artifactId>nimbus-parent</artifactId>
 		<version>1.0.0.M1-SNAPSHOT</version>
-		<relativePath>../nimbus-parent</relativePath>
 	</parent>
-	
+
 	<name>nimbus-ui</name>
 	<artifactId>nimbus-ui</artifactId>
 	<description>oss web project</description>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 	<properties>
 		<sonar.projectName>NIM-Platform Web</sonar.projectName>
 		<testconfig.ui.browsers>ChromeHeadless</testconfig.ui.browsers>
@@ -85,8 +84,8 @@
 			</activation>
 			<build>
 				<plugins>
-					<!-- <plugin> <groupId>com.github.eirslett</groupId> <artifactId>frontend-maven-plugin</artifactId> 
-						</plugin> -->
+					<!-- <plugin> <groupId>com.github.eirslett</groupId> <artifactId>frontend-maven-plugin</artifactId>
+                        </plugin> -->
 					<plugin>
 						<groupId>org.springframework.boot</groupId>
 						<artifactId>spring-boot-maven-plugin</artifactId>
@@ -148,8 +147,6 @@
 						<directory>target/frontend</directory>
 						<targetPath>static</targetPath>
 					</resource>
-			
-			
 				</resources>
 			</build>
 		</profile>
@@ -158,33 +155,89 @@
 			<build>
 				<plugins>
 					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-resources-plugin</artifactId>
+						<version>${maven-resources-plugin.version}</version>
+						<executions>
+							<execution>
+								<id>default-resources</id>
+								<phase>validate</phase>
+								<goals>
+									<goal>copy-resources</goal>
+								</goals>
+								<configuration>
+									<outputDirectory>target/classes</outputDirectory>
+									<useDefaultDelimiters>false</useDefaultDelimiters>
+									<delimiters>
+										<delimiter>#</delimiter>
+									</delimiters>
+									<resources>
+										<resource>
+											<directory>src/main/resources/</directory>
+											<filtering>true</filtering>
+											<includes>
+												<include>**/*.xml</include>
+												<include>**/*.yml</include>
+											</includes>
+										</resource>
+										<resource>
+											<directory>src/main/resources/</directory>
+											<filtering>false</filtering>
+											<excludes>
+												<exclude>**/*.xml</exclude>
+												<exclude>**/*.yml</exclude>
+											</excludes>
+										</resource>
+									</resources>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-war-plugin</artifactId>
+						<configuration>
+							<!--<warSourceDirectory>target/www/</warSourceDirectory>-->
+							<failOnMissingWebXml>false</failOnMissingWebXml>
+							<packagingExcludes>WEB-INF/lib/tomcat-*.jar</packagingExcludes>
+							<webResources>
+								<resource>
+									<directory>${project.basedir}/nimbusui/dist</directory>
+									<targetPath>.</targetPath>
+								</resource>
+							</webResources>
+						</configuration>
+					</plugin>
+					<plugin>
 						<groupId>com.github.eirslett</groupId>
 						<artifactId>frontend-maven-plugin</artifactId>
 						<version>${frontend.plugin.version}</version>
 						<configuration>
-   							<workingDirectory>${project.basedir}/nimbusui</workingDirectory>
+							<workingDirectory>${project.basedir}/nimbusui</workingDirectory>
+							<installDirectory>target</installDirectory>
 						</configuration>
 						<executions>
-						    <execution>
-                                <id>npm install dev</id>
-                                <goals>
-                                    <goal>npm</goal>
-                                </goals>
-                                <configuration>
-                                    <arguments>install</arguments>
-                                </configuration>
-                                <phase>generate-resources</phase>
-                            </execution>
 							<execution>
-                                    <id>npm run-script mavenbuild</id>
-                                    <phase>generate-resources</phase>
-                                    <goals>
-                                        <goal>npm</goal>
-                                    </goals>
-                                    <configuration>
-                                        <arguments>run-script mavenbuild</arguments>
-                                    </configuration>
-                             </execution>
+								<id>npm install dev</id>
+								<goals>
+									<goal>npm</goal>
+								</goals>
+								<configuration>
+									<arguments>install</arguments>
+								</configuration>
+								<phase>generate-resources</phase>
+							</execution>
+							<execution>
+								<id>npm run-script mavenbuild</id>
+								<phase>generate-resources</phase>
+								<goals>
+									<goal>npm</goal>
+								</goals>
+								<configuration>
+									<arguments>run-script mavenbuild</arguments>
+								</configuration>
+							</execution>
 						</executions>
 					</plugin>
 					<plugin>
@@ -204,10 +257,6 @@
 					<resource>
 						<directory>${project.basedir}/src/main/resources</directory>
 					</resource>
-					<resource>
-						<directory>${project.basedir}/nimbusui/dist</directory>
-						<targetPath>static</targetPath>
-					</resource>
 				</resources>
 			</build>
 		</profile>
@@ -221,10 +270,10 @@
 						<configuration>
 							<mainClass>com.anthem.nimbus.platform.web.Application</mainClass>
 							<layout>ZIP</layout>
-                             <folders>
+							<folders>
 								<folder>${project.build.directory}/src/main/resources</folder>
 							</folders>
-							</configuration>
+						</configuration>
 					</plugin>
 				</plugins>
 				<resources>
@@ -261,7 +310,7 @@
 							</execution>
 						</executions>
 						<configuration>
-							<karmaExecutable>${basedir}/node_modules/.bin/karma</karmaExecutable>        
+							<karmaExecutable>${basedir}/node_modules/.bin/karma</karmaExecutable>
 							<configFile>${basedir}/karma.conf.js</configFile>
 							<reportsDirectory>${project.build.directory}/karma-reports</reportsDirectory>
 							<browsers>${testconfig.ui.browsers}</browsers>

@@ -5,23 +5,21 @@
 		<groupId>com.antheminc.oss</groupId>
 		<artifactId>nimbus-parent</artifactId>
 		<version>1.0.0.M1-SNAPSHOT</version>
-		<relativePath>../nimbus-parent</relativePath>
 	</parent>
 	<artifactId>nimbus-extn-activiti</artifactId>
 	<name>nimbus-extn-activiti</name>
-	
-	<organization>
-		<name>Anthem Inc.</name>
-		<url>https://www.anthem.com</url>
-	</organization>
-	
+
+	<properties>
+		<sonar.projectName>nimbus-extn-activiti</sonar.projectName>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.activiti.designer</groupId>
 			<artifactId>org.activiti.designer.integration</artifactId>
 			<version>5.18.0</version> <!-- Use the current Activiti Designer version -->
 			<scope>system</scope>
-			<systemPath>${project.basedir}/src/main/resources/lib/org.activiti.designer.integration-5.18.0.jar</systemPath>
+			<systemPath>${pom.basedir}/src/main/resources/lib/org.activiti.designer.integration-5.18.0.jar</systemPath>
 		</dependency>
 	</dependencies>
 
