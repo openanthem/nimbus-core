@@ -173,25 +173,5 @@ public class DefaultMongoModelRepository implements ModelRepository {
 		}
 		return searchByQuery.search(referredDomainClass, alias, sc);
 	}
-	
-//	@Override
-//	public <T> Object _search(Class<T> referredDomainClass, String alias, LookupSearchCriteria criteria) {
-//		return searchByQuery.search(referredDomainClass, alias, criteria);
-//	}
-//	
-//	@Override
-//	public <T> Object _search(Class<T> referredDomainClass, String alias, QuerySearchCriteria criteria) {
-//		return searchByQuery.search(referredDomainClass, alias, criteria);
-//	}
-//
-//	@Override
-//	public <T> Object _search(Class<T> referredDomainClass, String alias, ExampleSearchCriteria<T> criteria) {
-//		return searchByExample.search(referredDomainClass, alias, criteria);
-//	}
-//	
-//	@Override
-//	public <T> Object _search(Class<T> referredDomainClass, String alias, Supplier<SearchCriteria<T>> criteria) {
-//		return null;
-//	}
 
 }

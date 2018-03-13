@@ -79,52 +79,22 @@ public class DefaultWSModelRepository implements ExternalModelRepository {
 		return Optional.ofNullable(responseEntity).map((response) -> response.getBody()).orElse(null);
 	}
 	
-//	@Override
-//	public <T> Object _search(Class<T> referredDomainClass, String alias, LookupSearchCriteria criteria, String url) {
-//		URI uri = createUriForAlias(alias, url);
-//		if(uri == null)
-//			return null;
-//		
-//		Object response = execute(() -> new RequestEntity<Object>(HttpMethod.POST, uri), 
-//						() -> new ParameterizedTypeReference<List<T>>() {
-//								public Type getType() {
-//									return new CustomParameterizedTypeImpl((ParameterizedType) super.getType(), new Type[] {referredDomainClass});
-//								}
-//						});
-//		return response;
-//	}
-//
-//	@Override
-//	public <T> Object _search(Class<T> referredDomainClass, String alias, QuerySearchCriteria criteria,  String url) {
-//		URI uri = createUriForAlias(alias, url);
-//		if(uri == null)
-//			return null;
-//		
-//		Object response = execute(() -> new RequestEntity<Object>(HttpMethod.POST, uri), 
-//						() -> new ParameterizedTypeReference<List<T>>() {
-//								public Type getType() {
-//									return new CustomParameterizedTypeImpl((ParameterizedType) super.getType(), new Type[] {referredDomainClass});
-//								}
-//						});
-//		return response;
-//	}
-//
-//	@Override
-//	public <T> Object _search(Class<T> referredDomainClass, String alias, ExampleSearchCriteria<T> criteria, String url) {
-//		//return this.externalRepositoryClient._search(criteria.getWhere());
-//		URI uri = createUriForAlias(alias, url);
-//		if(uri == null)
-//			return null;
-//		
-//		Object response = execute(() -> new RequestEntity<T>(criteria.getWhere(), HttpMethod.POST, uri), 
-//						() -> new ParameterizedTypeReference<List<T>>() {
-//				    			public Type getType() {
-//				    				return new CustomParameterizedTypeImpl((ParameterizedType) super.getType(), new Type[] {referredDomainClass});
-//				    			}
-//						});
-//		return response;
-//	}
-	
+	@Override
+	public <T> Object _search(Class<T> referredDomainClass, String alias, Supplier<SearchCriteria<?>> criteriaSupplier) {
+		SearchCriteria<?> searchCriteria = criteriaSupplier.get();
+		
+		URI uri = createUriForAlias(alias, searchCriteria.getCmd().getAbsoluteUri());
+		if(uri == null)
+			return null;
+		
+		Object response = execute(() -> new RequestEntity<Object>(searchCriteria instanceof ExampleSearchCriteria ? searchCriteria.getWhere(): null, HttpMethod.POST, uri), 
+						() -> new ParameterizedTypeReference<List<T>>() {
+								public Type getType() {
+									return new CustomParameterizedTypeImpl((ParameterizedType) super.getType(), new Type[] {referredDomainClass});
+								}
+						});
+		return response;
+	}
 	
 	private Object execute(Supplier<RequestEntity<?>> reqEntitySupplier, Supplier<ParameterizedTypeReference<?>> responseTypeSupplier) {
 		ResponseEntity<?> responseEntity = restTemplate.exchange(reqEntitySupplier.get(), responseTypeSupplier.get());
@@ -172,24 +142,6 @@ public class DefaultWSModelRepository implements ExternalModelRepository {
 	        return delegate.getOwnerType();
 	    }
 
-	}
-
-
-	@Override
-	public <T> Object _search(Class<T> referredDomainClass, String alias, Supplier<SearchCriteria<?>> criteriaSupplier) {
-		SearchCriteria<?> searchCriteria = criteriaSupplier.get();
-		
-		URI uri = createUriForAlias(alias, searchCriteria.getCmd().getAbsoluteUri());
-		if(uri == null)
-			return null;
-		
-		Object response = execute(() -> new RequestEntity<Object>(searchCriteria instanceof ExampleSearchCriteria ? searchCriteria.getWhere(): null, HttpMethod.POST, uri), 
-						() -> new ParameterizedTypeReference<List<T>>() {
-								public Type getType() {
-									return new CustomParameterizedTypeImpl((ParameterizedType) super.getType(), new Type[] {referredDomainClass});
-								}
-						});
-		return response;
 	}
 
 }
