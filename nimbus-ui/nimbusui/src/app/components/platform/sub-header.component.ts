@@ -32,7 +32,7 @@ import { BaseElement } from './base-element.component';
     providers: [WebContentSvc],
     template:`           
         <ng-template [ngIf]="!param?.type?.nested">
-           <div class="col-sm-12 col-md-6 col-lg-4 {{param?.config?.uiStyles?.attributes?.cssClass}}">
+           <div class="{{param?.config?.uiStyles?.attributes?.cssClass}}">
                 <ng-template [ngIf]="isDate(param.type.name)">
                     <span [hidden]="!param?.config?.uiStyles?.attributes?.showName">{{label}}</span>
                     <span>{{param.leafState | dateTimeFormat: param.config?.uiStyles?.attributes?.datePattern : param.type.name }}</span>
@@ -60,6 +60,3 @@ export class SubHeaderCmp extends BaseElement{
         }
     }
 }
-
-
-

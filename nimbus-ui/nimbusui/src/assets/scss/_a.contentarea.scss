@@ -1,5 +1,6 @@
+
 .displayNone{display:none;}
-.underline { 
+.underline {
     border-bottom: 2px solid #000;
     padding: 10px;
     font-weight: bold;
@@ -7,7 +8,7 @@
 * {
     vertical-align: top;
 }
-.text-bold { 
+.text-bold {
     font-weight: bold;
 }
 
@@ -115,8 +116,8 @@ h3{
 
 
 h1.page-title {
-    margin-bottom:0; 
-    margin-left:20px; 
+    margin-bottom:0;
+    margin-left:20px;
     font-size: 1.3rem;
     font-weight: 400;
     &.dashboard::before{
@@ -170,19 +171,20 @@ h1.page-title {
         padding:0;
     }
 
-.breadcrumb-bar{ 
+.breadcrumb-bar{
     padding: 0.5rem;
     height: $breadcrumb-height;
     background: #fff;
 }
-.info-bar{ 
-    display: block; 
-    background-color: $header-bkg; 
-    color:#fff; 
+.info-bar {
+    display: block;
+    background-color: #d9edfd;
+    color: #4c4c4c;
     font-size: 0.8rem;
-    min-height: $infoBar-height;
+    min-height: 60px;
     padding: .6rem 0;
-    margin-bottom: 10px;
+    margin: 0 20px 10px;
+    border: 1px solid #9dd3f7;
 }
 
 .colorBox {
@@ -223,8 +225,8 @@ h1.page-title {
     }
     .viewport {
         padding: 10px 10px 0 10px;
-    } 
-}   
+    }
+}  
 .card-holder > .card{
     &.height-sm {
         min-height:180px;
@@ -240,8 +242,8 @@ h1.page-title {
 
 .info-card {
     display: inline-block;
-    width: 86%;
-   
+    width: 84%;
+  
 }
 .ui-dialog-content label {
     padding-top: .3rem;
@@ -344,8 +346,8 @@ legend {
         max-width: 300px;
         width: 100%;
     }
-    .ui-calendar input { 
-        width: 180px; 
+    .ui-calendar input {
+        width: 180px;
     }
     //.date-holder is old date component
     .date-holder::after {
@@ -451,11 +453,11 @@ legend {
             background: #4c4c4c;
             border-color: #4c4c4c;
             color: #fff;
-        } 
+        }
         &.disabled,&.disabled:hover{
             background: #999;
             color: #fff;
-        } 
+        }
     
         &.toggle.collapsed:after {
             content: "▾";
@@ -586,12 +588,12 @@ legend {
     &.openPanel {
         & > .panel-heading {
             button::before {
-                //content: "\f0d7"; 
+                //content: "\f0d7";
                 transform: rotate(90deg);
             }
-        } 
-        .panel-collapse { 
-            overflow: visible; 
+        }
+        .panel-collapse {
+            overflow: visible;
         }              
     }
 }
@@ -614,12 +616,12 @@ legend {
         padding-left: 0;
     }
 }
-.text-bold { 
+.text-bold {
     font-weight: bold;
 }
 
 
-// screen breaks below 
+// screen breaks below
 @media(min-width: 576px) {
     .navbar-toggleable-md .navbar-collapse {
         z-index: 1;
@@ -629,14 +631,6 @@ legend {
         left: 70px;
     }
 
-    .main-content{
-        .info-bar{ 
-            &> div:first-child { 
-                border-right: 1px solid #fff;
-                border-bottom: 0 solid #fff;
-            }
-        }
-    }
 
     .globalNav{
         display: block;
@@ -650,7 +644,7 @@ legend {
     .header {
         height: 80px;
     }
-       
+      
   
     .logo {
         margin-left: 10px;
@@ -687,7 +681,7 @@ legend {
 
 @media (min-width: 1200px) {
   
-} 
+}
 @media (min-width: 1300px) {
     .header {
         height: 100px;
