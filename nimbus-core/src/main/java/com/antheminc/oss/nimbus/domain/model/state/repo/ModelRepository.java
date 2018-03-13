@@ -17,12 +17,14 @@ package com.antheminc.oss.nimbus.domain.model.state.repo;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.entity.SearchCriteria;
 import com.antheminc.oss.nimbus.entity.SearchCriteria.ExampleSearchCriteria;
 import com.antheminc.oss.nimbus.entity.SearchCriteria.LookupSearchCriteria;
 import com.antheminc.oss.nimbus.entity.SearchCriteria.QuerySearchCriteria;
@@ -89,23 +91,28 @@ public interface ModelRepository {
 	//Action._delete
 	public <ID extends Serializable, T> T _delete(ID id, Class<T> referredClass, String alias);
 		
-	public <T> Object _search(Class<T> referredDomainClass, String alias, LookupSearchCriteria criteria);
+//	public <T> Object _search(Class<T> referredDomainClass, String alias, LookupSearchCriteria criteria);
+//	
+//	public default <T> Object _search(Class<T> referredDomainClass, String alias, LookupSearchCriteria criteria, String url) {
+//		return this._search(referredDomainClass, alias, criteria);
+//	}
+//	
+//	public <T> Object _search(Class<T> referredDomainClass, String alias, QuerySearchCriteria criteria);
+//	
+//	public default <T> Object _search(Class<T> referredDomainClass, String alias, QuerySearchCriteria criteria, String url) {
+//		return this._search(referredDomainClass, alias, criteria);
+//	}
+//	
+//	public <T> Object _search(Class<T> referredDomainClass, String alias, ExampleSearchCriteria<T> criteria);
+//	
+//	public default <T> Object _search(Class<T> referredDomainClass, String alias, ExampleSearchCriteria<T> criteria, String url) {
+//		return this._search(referredDomainClass, alias, criteria);
+//	}
 	
-	public default <T> Object _search(Class<T> referredDomainClass, String alias, LookupSearchCriteria criteria, String url) {
-		return this._search(referredDomainClass, alias, criteria);
-	}
 	
-	public <T> Object _search(Class<T> referredDomainClass, String alias, QuerySearchCriteria criteria);
+	public <T> Object _search(Class<T> referredDomainClass, String alias, Supplier<SearchCriteria<?>> criteria);
 	
-	public default <T> Object _search(Class<T> referredDomainClass, String alias, QuerySearchCriteria criteria, String url) {
-		return this._search(referredDomainClass, alias, criteria);
-	}
 	
-	public <T> Object _search(Class<T> referredDomainClass, String alias, ExampleSearchCriteria<T> criteria);
-	
-	public default <T> Object _search(Class<T> referredDomainClass, String alias, ExampleSearchCriteria<T> criteria, String url) {
-		return this._search(referredDomainClass, alias, criteria);
-	}
 	
 
 }

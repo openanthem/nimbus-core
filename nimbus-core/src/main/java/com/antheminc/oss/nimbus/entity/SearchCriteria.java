@@ -23,6 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Pageable;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
+import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
 
 import lombok.Getter;
@@ -42,6 +43,8 @@ public abstract class SearchCriteria<T> implements Serializable {
 	private ProjectCriteria projectCriteria;
 	private String fetch;
 	private Pageable pageRequest;
+	
+	private Command cmd;
 	
 	public abstract void validate(ExecutionContext executionContext);
 	

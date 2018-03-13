@@ -31,20 +31,6 @@ import com.antheminc.oss.nimbus.entity.SearchCriteria.ExampleSearchCriteria;
 public class DefaultSearchFunctionHandlerExample<T, R> extends DefaultSearchFunctionHandler<T, R> {
 
 	@Override
-	public R execute(ExecutionContext executionContext, Param<T> actionParameter) {
-		ModelConfig<?> mConfig = getRootDomainConfig(executionContext);
-		
-		ExampleSearchCriteria exampleSearchCriteria = createSearchCriteria(executionContext, mConfig, actionParameter);
-		Class<?> criteriaClass = mConfig.getReferredClass();
-		String alias = findRepoAlias(mConfig);
-		
-		ModelRepository rep = getRepFactory().get(mConfig.getRepo());
-		
-		return (R)rep._search(criteriaClass, alias, exampleSearchCriteria, executionContext.getCommandMessage().getCommand().getAbsoluteUri());
-	}
-
-
-	@Override
 	protected ExampleSearchCriteria createSearchCriteria(ExecutionContext executionContext, ModelConfig<?> mConfig, Param<T> actionParam) {
 		Command cmd = executionContext.getCommandMessage().getCommand();
 		
@@ -60,6 +46,7 @@ public class DefaultSearchFunctionHandlerExample<T, R> extends DefaultSearchFunc
 		exampleSearchCriteria.setProjectCriteria(buildProjectCritera(cmd));
 		exampleSearchCriteria.setPageRequest(buildPageCriteria(cmd));
 		
+		exampleSearchCriteria.setCmd(executionContext.getCommandMessage().getCommand());
 		return exampleSearchCriteria;
 	}
 }

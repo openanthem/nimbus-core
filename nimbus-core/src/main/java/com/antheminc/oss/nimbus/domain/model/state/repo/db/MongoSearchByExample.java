@@ -47,7 +47,7 @@ public class MongoSearchByExample extends MongoDBSearch {
 	}
 
 	@Override
-	public <T> Object search(Class<?> referredClass, String alias, SearchCriteria<T> criteria) {
+	public <T> Object search(Class<T> referredClass, String alias, SearchCriteria<?> criteria) {
 		Query query = buildQuery(referredClass, alias, criteria.getWhere());
 		
 		if(StringUtils.equalsIgnoreCase(criteria.getAggregateCriteria(),Constants.SEARCH_REQ_AGGREGATE_COUNT.code)){
@@ -55,7 +55,7 @@ public class MongoSearchByExample extends MongoDBSearch {
 		}
 		
 		if(criteria.getProjectCriteria() != null && StringUtils.isNotBlank(criteria.getProjectCriteria().getAlias())) {
-			referredClass = findOutputClass(criteria, referredClass);
+			referredClass = (Class<T>)findOutputClass(criteria, referredClass);
 		}
 		
 		if(criteria.getPageRequest() != null) {

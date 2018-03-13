@@ -17,9 +17,11 @@ package com.antheminc.oss.nimbus.domain.model.state.repo;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.function.Supplier;
 
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.entity.SearchCriteria;
 import com.antheminc.oss.nimbus.entity.SearchCriteria.ExampleSearchCriteria;
 import com.antheminc.oss.nimbus.entity.SearchCriteria.LookupSearchCriteria;
 import com.antheminc.oss.nimbus.entity.SearchCriteria.QuerySearchCriteria;
@@ -68,19 +70,5 @@ public interface ExternalModelRepository extends ModelRepository {
 	default public <ID extends Serializable, T> T _delete(ID id, Class<T> referredClass, String alias){
 		throw new UnsupportedOperationException("_delete operation is not supported for Database.rep_ws repository");
 	}
-		
-	default public <T> Object _search(Class<T> referredDomainClass, String alias, LookupSearchCriteria criteria){
-		throw new UnsupportedOperationException("_search operation is not supported for Database.rep_ws repository");
-	}
-	
-	default public <T> Object _search(Class<T> referredDomainClass, String alias, QuerySearchCriteria criteria){
-		throw new UnsupportedOperationException("_search operation is not supported for Database.rep_ws repository");
-	}
-	
-	default public <T> Object _search(Class<T> referredDomainClass, String alias, ExampleSearchCriteria<T> criteria){
-		throw new UnsupportedOperationException("_search operation is not supported for Database.rep_ws repository");
-	}
-	
-	
 	
 }

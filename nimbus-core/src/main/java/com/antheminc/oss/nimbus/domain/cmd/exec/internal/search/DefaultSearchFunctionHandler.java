@@ -35,6 +35,7 @@ import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
 import com.antheminc.oss.nimbus.entity.SearchCriteria;
 import com.antheminc.oss.nimbus.entity.SearchCriteria.ProjectCriteria;
 
@@ -42,8 +43,25 @@ import com.antheminc.oss.nimbus.entity.SearchCriteria.ProjectCriteria;
  * @author Rakesh Patel
  *
  */
+@SuppressWarnings("unchecked")
 public abstract class DefaultSearchFunctionHandler<T, R> extends AbstractFunctionHandler<T, R> {
 
+	
+	@Override
+	public R execute(ExecutionContext executionContext, Param<T> actionParameter) {
+		ModelConfig<?> mConfig = getRootDomainConfig(executionContext);
+		
+		Class<?> criteriaClass = mConfig.getReferredClass();
+		String alias = findRepoAlias(mConfig);
+		
+		ModelRepository rep = getRepFactory().get(mConfig.getRepo());
+		
+		return (R)rep._search(criteriaClass, alias, () -> this.createSearchCriteria(executionContext, mConfig, actionParameter));
+	}
+	
+	protected abstract SearchCriteria<?> createSearchCriteria(ExecutionContext executionContext, ModelConfig<?> mConfig, Param<T> cmdParam);
+	
+	
 	protected String findRepoAlias(ModelConfig<?> mConfig) {
 		String alias = mConfig.getRepo().alias();
 		if(StringUtils.isBlank(alias)) {
@@ -127,6 +145,6 @@ public abstract class DefaultSearchFunctionHandler<T, R> extends AbstractFunctio
 		return where;
 	}
 	
-	protected abstract SearchCriteria<?> createSearchCriteria(ExecutionContext executionContext, ModelConfig<?> mConfig, Param<T> cmdParam);
+	
 	
 }

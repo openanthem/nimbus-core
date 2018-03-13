@@ -23,5 +23,5 @@ import com.antheminc.oss.nimbus.entity.SearchCriteria;
  */
 public interface DBSearch {
 	
-	public <T> Object search(Class<?> referredClass, String alias, SearchCriteria<T> criteria);
+	public <T> Object search(Class<T> referredClass, String alias, SearchCriteria<?> criteria);
 }
