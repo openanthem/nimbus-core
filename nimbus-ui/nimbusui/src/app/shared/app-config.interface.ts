@@ -785,7 +785,7 @@ export class UiAttribute implements Serializable<UiAttribute> {
         if (inJson.filter) {
             this.filter=inJson.filter;
         }
-        if(inJson.sortable) {
+        if(inJson.sortable !== undefined) {
             this.sortable = inJson.sortable;
         }
         if(inJson.resizable) {

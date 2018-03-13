@@ -50,19 +50,24 @@ h3{
 // }
 .message {
     text-align: center;
-    padding: .3rem;
     margin: 0 0 .6rem 0;
     font-weight: bold;
     &::before {
         font-family: "fontAwesome";
-        margin-right: 1rem;
-        font-size: 1.5rem;
+        margin-right: 0.9rem;
+        font-size: 2rem;
     }
     &.DANGER {
         background: #e9a129;
         color: #ae0015;
         &::before {
             content: "\f00d";
+        }
+        .closeIcon {
+
+            &:hover, &.btn-plain:focus{
+                color:#FFF;
+            }           
         }
     }
     &.SUCCESS {
@@ -72,7 +77,42 @@ h3{
             content: "\f00c";
         }
     }
+    &.INFO {
+        background: #EBEBEB;
+        color: #014B87;
+        &::before {
+            content: "\f129";
+        }
+    }
+    &.WARNING {
+        background: #FCF6D9;
+        color: #E5991C;
+        &::before {
+            content: "\f12a";
+        }
+    }
 }
+
+.closeIcon {
+    float: right;
+    margin-right: 20px;
+    margin-top: 3px;
+    color: #4C4C4C;
+    text-decoration: none;
+    &::before{
+        font-family: "fontAwesome";
+        content: "\f057";
+        font-size: 1.5rem;
+                
+    }
+    &:hover, &.btn-plain:focus{
+        outline: none;
+        color: inherit;
+    }
+    
+
+}
+
 
 h1.page-title {
     margin-bottom:0; 
