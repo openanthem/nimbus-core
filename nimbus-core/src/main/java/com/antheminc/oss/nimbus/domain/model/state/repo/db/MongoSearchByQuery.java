@@ -33,6 +33,7 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.repository.support.SpringDataMongodbQuery;
 import org.springframework.data.repository.support.PageableExecutionUtils;
 
+import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.entity.SearchCriteria;
@@ -130,7 +131,8 @@ public class MongoSearchByQuery extends MongoDBSearch {
 				Constructor<?> con = cl.getConstructor(String.class);
 				obj = con.newInstance(referredClass.getSimpleName());
 			} catch (Exception e) {
-				e.printStackTrace();
+				throw new FrameworkRuntimeException("Cannot instantiate queryDsl class for entity: "+referredClass+ " "
+						+ "please make sure the entity has been annotated with either @Domain or @Model and a Q Class has been generated for it", e);
 			}
 			return obj;
 		}
