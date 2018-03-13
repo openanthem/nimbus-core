@@ -176,7 +176,10 @@ export class BaseElement {
     }
 
     public get placeholder(): string {
-        return this.element.config.uiStyles.attributes.placeholder;
+        if (this.element && this.element.config && this.element.config.uiStyles && this.element.config.uiStyles.attributes) {
+            return this.element.config.uiStyles.attributes.placeholder;
+        }
+        return undefined;
     }
 }
 

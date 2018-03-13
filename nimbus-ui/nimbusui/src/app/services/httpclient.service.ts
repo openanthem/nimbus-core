@@ -17,7 +17,8 @@
 'use strict';
 import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, URLSearchParams } from '@angular/http';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { ExecuteResponse } from '../shared/app-config.interface';
 
 /**
  * \@author Swetha.Vemuri
@@ -26,35 +27,32 @@ import { HttpClient } from '@angular/common/http';
  * \@howToUse 
  * 
  */
+
+const httpOptions = {
+  headers: new HttpHeaders({
+    'Content-Type':  'application/json',
+    'X-Csrf-Token': ''
+  }),
+  params : new HttpParams()
+};
+
 @Injectable()
 export class CustomHttpClient {
-  constructor(public http: HttpClient, public customHttpClient: Http ) {
+  constructor(public http: HttpClient, public customHttpClient: HttpClient ) {
     this.http = http;
   }
 
-  createAuthorizationHeader(headers:Headers) {
-    headers.append('X-Csrf-Token', this.getCookie('XSRF-Token'));
-  }
-
   get(url: string, searchParams?: URLSearchParams) {
-    let headers = new Headers({'Content-Type': 'application/json'});
-    this.createAuthorizationHeader(headers);
-    let options = new RequestOptions({headers: headers, withCredentials: true});
-    if (searchParams) {
-      options.params = searchParams;
-    } 
-    return this.customHttpClient.get(url, options);
+    httpOptions.headers.set('X-Csrf-Token', this.getCookie('XSRF-Token'));
+    return this.customHttpClient.get<ExecuteResponse>(url, httpOptions);
   }
 
   post(url, data) {
-    let headers = new Headers({'Content-Type': 'application/json'});
-    this.createAuthorizationHeader(headers);
-    let options = new RequestOptions({headers: headers, withCredentials: true});
-    return this.customHttpClient.post(url, data, options);
+    httpOptions.headers.set('X-Csrf-Token', this.getCookie('XSRF-Token'));
+    return this.customHttpClient.post<ExecuteResponse>(url, data, httpOptions);
   }
 
   postFileData(url, data) {
-
     return this.http.post(url, data);
   }
 

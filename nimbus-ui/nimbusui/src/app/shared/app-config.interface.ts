@@ -822,6 +822,34 @@ export class ExecuteOutput implements Serializable<ExecuteOutput> {
     }
 }
 
+export class ExecuteResponse implements Serializable<ExecuteResponse> {
+    result: MultiOutput[];
+    constructor(private configSvc: ConfigService) {}
+    deserialize( inJson ) {
+        this.result = [];
+        if ( inJson.result != null && inJson.result.length > 0) {
+            // tslint:disable-next-line:forin
+            for ( const p in inJson.result ) {
+                this.result.push( new MultiOutput(this.configSvc).deserialize(inJson.result[p]) );
+            }
+        }
+        return this;
+    }
+}
+
+export class MultiOutput implements Serializable<MultiOutput> {
+    behavior: string;
+    result: Result;
+    constructor(private configSvc: ConfigService) {}
+    deserialize( inJson ) {
+        this.behavior = inJson.b;
+        if ( inJson.result != null ) {
+            this.result = new Result(this.configSvc).deserialize( inJson.result );
+        }
+        return this;
+    }
+}
+
 export class CardDetailsGrid implements Serializable<CardDetailsGrid> {
     cards: Array<CardDetails>;
     deserialize( inJson ) {
