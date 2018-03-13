@@ -81,45 +81,41 @@ public class MongoSearchByQuery extends MongoDBSearch {
 				return this;
 			}
 			
-			String groovyScript = criteria.toString().replaceAll("<", "(").replace(">", ")");
-					
-			final Binding binding = new Binding();
-			Object obj = createQueryDslClassInstance(referredClass);
-	        binding.setProperty(alias, obj);
-	        
-	        LocalDate localDate = LocalDate.now();
-	        LocalDateTime localDateTime = LocalDateTime.of(localDate, LocalTime.MIDNIGHT);
-	        localDateTime.atZone(TimeZone.getDefault().toZoneId());
-	       
-	        binding.setProperty("todaydate",localDateTime);
-	        final GroovyShell shell = new GroovyShell(obj.getClass().getClassLoader(), binding); 
-	        Predicate predicate = (Predicate)shell.evaluate(groovyScript);
+			final GroovyShell shell = createQBinding(referredClass, alias); 
+	        Predicate predicate = (Predicate)shell.evaluate(criteria);
 	        
 			query.where(predicate);
 			
 			return this;
 		}
-		
+
 		public QueryBuilder buildOrderBy(String criteria, Class<?> referredClass, String alias ) {
 			
 			if(StringUtils.isBlank(criteria)) {
 				return this;
 			}
 			
-			String groovyScript = criteria.toString().replaceAll("<", "(").replace(">", ")");
-					
 			final Binding binding = new Binding();
 			Object obj = createQueryDslClassInstance(referredClass);
 	        binding.setProperty(alias, obj);
 	        
-	        final GroovyShell shell = new GroovyShell(binding); 
-	        OrderSpecifier orderBy = (OrderSpecifier)shell.evaluate(groovyScript);
+	        final GroovyShell shell = createQBinding(referredClass, alias); 
+	        OrderSpecifier orderBy = (OrderSpecifier)shell.evaluate(criteria);
 	        
-			//OrderSpecifier orderBy = buildOrderSpecifier(criteria, referredClass, alias);
 			if(orderBy != null)
 				query.orderBy(orderBy);
 			
 			return this;
+		}
+		
+		private GroovyShell createQBinding(Class<?> referredClass, String alias) {
+			final Binding binding = new Binding();
+			Object obj = createQueryDslClassInstance(referredClass);
+	        binding.setProperty(alias, obj);
+	        
+	     
+	        final GroovyShell shell = new GroovyShell(obj.getClass().getClassLoader(), binding);
+			return shell;
 		}
 		
 		private Object createQueryDslClassInstance(Class<?> referredClass) {
