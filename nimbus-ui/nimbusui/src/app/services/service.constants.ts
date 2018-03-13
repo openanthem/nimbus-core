@@ -38,6 +38,7 @@ export class ServiceConstants {
 
     /* Enable for stopgap server */
     public static get BASE_URL(): string    { return this.STOPGAP_APP_HOST_URL+this.WEB_CONTENT_PORT; }
+    public static get LOGIN_URL(): string { return this.STOPGAP_APP_HOST_URL+this.STOPGAP_APP_PORT+'/login'; }
     public static get PLATFORM_BASE_URL(): string    { return this.STOPGAP_APP_HOST_URL+this.STOPGAP_APP_PORT+'/Anthem/fep/p'; }
     public static get CLIENT_BASE_URL(): string    { return this.STOPGAP_APP_HOST_URL+this.STOPGAP_APP_PORT+'/'; }
     public static get WS_BASE_URL(): string { return 'ws://'+this.STOPGAP_APP_HOST+':'+this.WS_PORT+'/updates'; }
