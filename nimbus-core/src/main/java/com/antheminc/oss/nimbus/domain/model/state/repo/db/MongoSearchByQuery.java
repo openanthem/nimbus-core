@@ -36,7 +36,6 @@ import org.springframework.data.repository.support.PageableExecutionUtils;
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
-import com.antheminc.oss.nimbus.entity.SearchCriteria;
 import com.antheminc.oss.nimbus.support.JustLogit;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;

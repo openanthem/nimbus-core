@@ -37,10 +37,10 @@ import org.springframework.web.client.RestTemplate;
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ExternalModelRepository;
-import com.antheminc.oss.nimbus.entity.SearchCriteria;
-import com.antheminc.oss.nimbus.entity.SearchCriteria.ExampleSearchCriteria;
-import com.antheminc.oss.nimbus.entity.SearchCriteria.LookupSearchCriteria;
-import com.antheminc.oss.nimbus.entity.SearchCriteria.QuerySearchCriteria;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.ExampleSearchCriteria;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.LookupSearchCriteria;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.QuerySearchCriteria;
 
 import lombok.Getter;
 import lombok.Setter;

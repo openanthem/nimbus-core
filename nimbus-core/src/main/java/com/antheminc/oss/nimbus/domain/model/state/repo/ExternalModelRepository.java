@@ -21,10 +21,10 @@ import java.util.function.Supplier;
 
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
-import com.antheminc.oss.nimbus.entity.SearchCriteria;
-import com.antheminc.oss.nimbus.entity.SearchCriteria.ExampleSearchCriteria;
-import com.antheminc.oss.nimbus.entity.SearchCriteria.LookupSearchCriteria;
-import com.antheminc.oss.nimbus.entity.SearchCriteria.QuerySearchCriteria;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.ExampleSearchCriteria;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.LookupSearchCriteria;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.QuerySearchCriteria;
 
 /**
  * @author Rakesh Patel

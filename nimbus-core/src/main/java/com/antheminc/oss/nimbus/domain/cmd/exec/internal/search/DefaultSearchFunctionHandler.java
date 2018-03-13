@@ -36,8 +36,8 @@ import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
-import com.antheminc.oss.nimbus.entity.SearchCriteria;
-import com.antheminc.oss.nimbus.entity.SearchCriteria.ProjectCriteria;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.ProjectCriteria;
 
 /**
  * @author Rakesh Patel

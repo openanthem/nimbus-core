@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.entity;
+package com.antheminc.oss.nimbus.domain.model.state.repo.db;
 
 import java.io.Serializable;
 import java.util.Map;

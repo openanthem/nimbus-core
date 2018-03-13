@@ -15,8 +15,6 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.repo.db;
 
-import com.antheminc.oss.nimbus.entity.SearchCriteria;
-
 /**
  * @author Rakesh Patel
  *

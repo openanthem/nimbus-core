@@ -34,7 +34,6 @@ import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.defn.SearchNature.StartsWith;
-import com.antheminc.oss.nimbus.entity.SearchCriteria;
 
 /**
  * @author Rakesh Patel
