@@ -31,7 +31,7 @@ import { Component, Input } from '@angular/core';
 @Component({
     selector: 'nm-message',
     template: `
-                <div class="message {{messageType}}" role="alert">   {{messageText}} <button title="select to close alert" class="btn btn-plain closeIcon"></button>   </div>
+                <div *ngIf="showMessage" class="message {{messageType}}" role="alert">   {{messageText}} <button title="select to close alert" class="btn btn-plain closeIcon" (click)="showMessage=false"></button> </div>
 
 	          `
 })
@@ -40,6 +40,7 @@ export class MessageComponent {
 
     @Input() messageType: String;
     @Input() messageText: String;
+    showMessage: boolean = true;
 
     constructor() {
 
