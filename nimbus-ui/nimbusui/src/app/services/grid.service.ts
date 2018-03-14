@@ -48,18 +48,18 @@ export class GridService {
         return this.http.get(url).map(res =>  res.json().data);
     }
 
-    getGridData(page: number, pageSize: number, sort: PaginationPropertySort): Rx.Observable<PaginationPage<any>> {
-        let params = new URLSearchParams();
-        params.set('size', `${pageSize}`);
-        params.set('page', `${page}`);
-        if (sort != null) {
-            params.set('sort', `${sort.property},${sort.direction}`);
-        }
+    // getGridData(page: number, pageSize: number, sort: PaginationPropertySort): Rx.Observable<PaginationPage<any>> {
+    //     let params = new URLSearchParams();
+    //     params.set('size', `${pageSize}`);
+    //     params.set('page', `${page}`);
+    //     if (sort != null) {
+    //         params.set('sort', `${sort.property},${sort.direction}`);
+    //     }
 
-        let options = new RequestOptions({
-            search: params
-        });
-        return this.http.get(`${webServiceEndpoint}/person`, options).map(this.extractData).publish().refCount();
-    }
+    //     let options = new RequestOptions({
+    //         search: params
+    //     });
+    //     return this.http.get(`${webServiceEndpoint}/person`, options).map((res) => this.extractData).publish().refCount();
+    // }
 
 }
