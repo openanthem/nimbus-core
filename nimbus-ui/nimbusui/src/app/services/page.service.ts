@@ -613,18 +613,6 @@ export class PageService {
          */
         createRowData(param: Param, nestedParamIdx: number) {
                 let rowData: any = param.leafState;
-                
-                // If classTypeMappings are present, handle any conversions that should occur.
-                // TODO Use a better design pattern to handle this scenario.
-                if (rowData && param.collectionConfigs && param.collectionConfigs.typeMappings) {
-                        for(let key in rowData) {
-                                let typeMapping = param.collectionConfigs.typeMappings[key];
-                                if (ParamUtils.isKnownDateType(typeMapping)) {
-                                        rowData[key] = ParamUtils.convertServerDateStringToDate(rowData[key], typeMapping);
-                                }
-                        }
-                }
-                rowData['elemId'] = param.elemId;
 
                 // If nested data exists, set the data to nested grid
                 if (nestedParamIdx && param.type.model.params) {

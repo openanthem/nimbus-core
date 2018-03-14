@@ -216,7 +216,6 @@ export class Param implements Serializable<Param> {
     leafState: any;
     path: string;
     collection: boolean;
-    collectionConfigs: any;
     collectionElem: boolean;
     elemId: string;
     enabled: boolean;
@@ -241,10 +240,26 @@ export class Param implements Serializable<Param> {
         }
         return undefined;
     }
-    createRowData(param: Param) {
+
+    createRowData(param: Param, isDeserialized?: boolean) {
         let rowData: any = {};
         rowData = param.leafState;
         rowData['elemId'] = param.elemId;
+
+        for(let p of param.type.model.params) {
+            let config = this.configSvc.paramConfigs[p.configId];
+
+            // handle nested grid data
+            if (config.uiStyles && config.uiStyles.name == 'ViewConfig.GridRowBody') {
+                rowData['nestedGridParam'] = isDeserialized ? p : new Param(this.configSvc).deserialize(p);
+            }
+
+            // handle dates
+            if (config && ParamUtils.isKnownDateType(config.type.name)) {
+                rowData[config.code] = ParamUtils.convertServerDateStringToDate(rowData[config.code], config.type.name);
+            }
+        }
+
         return rowData;
     }
 
@@ -260,19 +275,6 @@ export class Param implements Serializable<Param> {
         }
         this.collectionElem = inJson.collectionElem;
         this.collection = inJson.collection;
-        if ( inJson.collectionElem ) {
-            this.elemId = inJson.elemId;
-            // TODO Move to its own deserializer
-            this.collectionConfigs = {};
-            if (this.type.model && this.type.model.params && this.type.model.params.length > 0) {
-                let params = this.type.model.params;
-                let typeMappings = {};
-                for(let param of params) {
-                    typeMappings[param.config.code] = param.config.type.name;
-                }
-                this.collectionConfigs.typeMappings = typeMappings;
-            }
-        }
         if ( this.config != null && this.config.uiStyles && this.config.uiStyles.attributes.alias === 'CardDetailsGrid' ) {
             if(inJson.leafState != null) {
                 this.leafState = new CardDetailsGrid().deserialize( inJson.leafState );
@@ -290,6 +292,11 @@ export class Param implements Serializable<Param> {
             this.leafState = ParamUtils.convertServerDateStringToDate(inJson.leafState, this.config.type.name);
         } else {
             this.leafState = inJson.leafState;
+        }
+
+        if ( inJson.collectionElem ) {
+            this.elemId = inJson.elemId;
+            this.leafState = this.createRowData(this, true);
         }
 
         this.path = inJson.path;
