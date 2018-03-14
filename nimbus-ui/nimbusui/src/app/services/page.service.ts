@@ -27,7 +27,7 @@ import { Validation, ViewConfig,
         Param,
         ParamConfig,
         Type,
-        Result, ViewRoot
+        Result, ViewRoot, ExecuteResponse
 } from '../shared/app-config.interface';
 import { CustomHttpClient } from './httpclient.service';
 
@@ -153,9 +153,7 @@ export class PageService {
                 let baseUrl = ServiceConstants.PLATFORM_BASE_URL;
                 baseUrl += '/' + flowName;
                 let url = baseUrl + '/' + Action._new.value + '?b=' + Behavior.execute.value;
-
                 this.http.get(url)
-                        .map(res => res.json())
                         .subscribe(data => {
                                 // console.log('Creating a global page map');
                                 this.processResponse(data.result, baseUrl, flowName);
@@ -170,9 +168,7 @@ export class PageService {
                 let baseUrl = ServiceConstants.PLATFORM_BASE_URL;
                 baseUrl += '/' + routeParms.domain;
                 let url = baseUrl + '/' + Action._new.value + '?b=' + Behavior.execute.value;
-
                 this.http.get(url)
-                        .map(res => res.json())
                         .subscribe(data => {
                                 console.log('Creating a global page map');
                                 this.processResponse(data.result, baseUrl, routeParms.domain);
@@ -196,7 +192,6 @@ export class PageService {
                 }
                 url = url + '/_nav?a=' + direction + '&b=$execute';
                 this.http.get(url)
-                        .map(res => res.json())
                         .subscribe(data => {
                                 this.processResponse(data.result, '', flowName);
                         },
@@ -428,7 +423,6 @@ export class PageService {
                         // }else{
 
                         this.http.get(url)
-                                .map(res => res.json())
                                 .subscribe(data => {
                                         this.processResponse(data.result, serverUrl, flowName);
                                 },
@@ -442,7 +436,6 @@ export class PageService {
                 } else if (method !== '' && method.toUpperCase() === HttpMethod.POST.value) {
                         // console.log('payload - ' + JSON.stringify(model));
                         this.http.post(url, JSON.stringify(model))
-                                .map(res => res.json())
                                 .subscribe(data => {
                                         this.processResponse(data.result, serverUrl, flowName);
                                 },
@@ -465,7 +458,6 @@ export class PageService {
                 if (method !== '' && method.toUpperCase() === HttpMethod.POST.value) {
                         // console.log('payload - ' + JSON.stringify(payload));
                         this.http.post(url, JSON.stringify(payload))
-                                .map(res => res.json())
                                 .subscribe(data => {
                                         this.processResponse(data.result, url, flowName);
                                         if (navLink != null && navLink !== '') {
@@ -501,7 +493,6 @@ export class PageService {
                 //if (action === Action._update.value) {
                 console.log('Post update Event Notify call');
                 return this.http.post(url, JSON.stringify(modelEvnt))
-                        .map(res => res.json())
                         .subscribe(data => {
                                 //console.log('Event notify data::' + JSON.stringify(data));
                                 this.processResponse(data.result, '', '');
@@ -843,7 +834,6 @@ export class PageService {
                 }
 
                 this.http.get(url)
-                        .map(res => res.json())
                         .subscribe(data => {
                                 // console.log('Creating a global page map');
                                 this.processResponse(data.result, '', '');

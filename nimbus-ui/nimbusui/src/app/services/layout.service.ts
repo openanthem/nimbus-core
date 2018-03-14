@@ -60,7 +60,6 @@ export class LayoutService {
             var urlBase = ServiceConstants.PLATFORM_BASE_URL;
             var urlAction = urlBase +  '/' + flowName + '/_new?b=$execute';
             return this.http.get(urlAction)
-                .map(res => res.json())
                 .subscribe(data => {
                     let subResponse: any = data.result[0];
                     if (subResponse) {

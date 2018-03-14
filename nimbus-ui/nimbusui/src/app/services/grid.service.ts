@@ -50,27 +50,8 @@ export class GridService {
         //             .toPromise()
         //             .then(res => <Car[]> res.json().data)
         //             .then(data => { return data; });
-        return this.http.get(url).map(res => res.json().data);
-    }
-
-    getGridData(pageRequest: PaginatedRequest) {
-        let params = new URLSearchParams();
-        params.set('pageSize', `${pageRequest.pageSize}`);
-        params.set('page', `${pageRequest.page}`);
-        if (pageRequest.sort != null) {
-            pageRequest.sort.forEach(sfield => {
-                params.append('sortBy', `${sfield.property},${sfield.direction}`);
-            });
-        }
-
-        return this.http.get('/Anthem/loadCases', params)
-            .subscribe(data => {
-                console.log("data", data);
-                this.gridData$.next(data);
-            },
-            err => console.log(err),
-            () => console.log('Grid Data loaded ..')
-            );
+        // return this.http.get(url);
+              //  .map(res => res.json());
     }
 
 }
