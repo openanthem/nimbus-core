@@ -1,3 +1,4 @@
+import { ParamUtils } from './../shared/param-utils';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -440,8 +441,9 @@ export class PageService {
                                 );
                         //}
                 } else if (method !== '' && method.toUpperCase() === HttpMethod.POST.value) {
-                        // console.log('payload - ' + JSON.stringify(model));
-                        this.http.post(url, JSON.stringify(model))
+
+                        // console.log('payload - ' + json);
+                        this.http.post(url, ParamUtils.stringify(model))
                                 .map(res => res.json())
                                 .subscribe(data => {
                                         this.processResponse(data.result, serverUrl, flowName);
@@ -463,8 +465,8 @@ export class PageService {
                 let url = ServiceConstants.PLATFORM_BASE_URL + processUrl + '/' + Action._get.value;
 
                 if (method !== '' && method.toUpperCase() === HttpMethod.POST.value) {
-                        // console.log('payload - ' + JSON.stringify(payload));
-                        this.http.post(url, JSON.stringify(payload))
+                        
+                        this.http.post(url, ParamUtils.stringify(payload))
                                 .map(res => res.json())
                                 .subscribe(data => {
                                         this.processResponse(data.result, url, flowName);
@@ -500,7 +502,7 @@ export class PageService {
                 var url = urlBase + '/event/notify';
                 //if (action === Action._update.value) {
                 console.log('Post update Event Notify call');
-                return this.http.post(url, JSON.stringify(modelEvnt))
+                return this.http.post(url, ParamUtils.stringify(modelEvnt))
                         .map(res => res.json())
                         .subscribe(data => {
                                 //console.log('Event notify data::' + JSON.stringify(data));

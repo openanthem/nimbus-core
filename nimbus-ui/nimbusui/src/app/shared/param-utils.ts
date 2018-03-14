@@ -1,3 +1,4 @@
+import { Param } from './app-config.interface';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -114,5 +115,16 @@ export class ParamUtils {
             }
         }
         return null;
+    }
+
+    public static stringify(obj: any): string {
+        var json = JSON.stringify(obj, function(key, value) {
+            if (typeof value === 'object' && value !== null) {
+                    delete value['_params']
+            }
+            return value;
+        });
+        // console.log(`ParamUtils#stringify(string): json string value is: ${json}`);
+        return json;
     }
 }
