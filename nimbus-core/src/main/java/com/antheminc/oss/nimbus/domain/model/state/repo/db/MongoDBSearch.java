@@ -25,7 +25,6 @@ import org.springframework.util.Assert;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessageConverter;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
-import com.antheminc.oss.nimbus.entity.SearchCriteria;
 
 import lombok.Getter;
 
@@ -52,7 +51,7 @@ public abstract class MongoDBSearch implements DBSearch {
 	}
 	
 	
-	public <T> Class<?> findOutputClass(SearchCriteria<T> criteria, Class<?> referredClass) {
+	public <T> Class<?> findOutputClass(SearchCriteria<?> criteria, Class<T> referredClass) {
 		if(criteria.getProjectCriteria() != null && StringUtils.isNotBlank(criteria.getProjectCriteria().getAlias())) {
 			return getDomainConfigBuilder().getModel(criteria.getProjectCriteria().getAlias()).getReferredClass();
 		}
