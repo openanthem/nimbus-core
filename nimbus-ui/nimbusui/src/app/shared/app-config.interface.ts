@@ -216,12 +216,12 @@ export class Param implements Serializable<Param> {
     leafState: any;
     path: string;
     collection: boolean;
-    collectionConfigs: any;
     collectionElem: boolean;
     elemId: string;
     visible: boolean;
     enabled: boolean;
     message : Message;
+    paramState: Param[];
     values : Values[];
     activeValidationGroups: String[];
     _alias: string;
@@ -239,11 +239,26 @@ export class Param implements Serializable<Param> {
         }
         return undefined;
     }
-    createRowData(param: Param) {
+
+    createRowData(param: Param, isDeserialized?: boolean) {
         let rowData: any = {};
         rowData = param.leafState;
-        rowData['_params'] = param.type.model.params;
         rowData['elemId'] = param.elemId;
+
+        for(let p of param.type.model.params) {
+            let config = this.configSvc.paramConfigs[p.configId];
+
+            // handle nested grid data
+            if (config.uiStyles && config.uiStyles.name == 'ViewConfig.GridRowBody') {
+                rowData['nestedGridParam'] = isDeserialized ? p : new Param(this.configSvc).deserialize(p);
+            }
+
+            // handle dates
+            if (config && ParamUtils.isKnownDateType(config.type.name)) {
+                rowData[config.code] = ParamUtils.convertServerDateStringToDate(rowData[config.code], config.type.name);
+            }
+        }
+
         return rowData;
     }
 
@@ -259,19 +274,6 @@ export class Param implements Serializable<Param> {
         }
         this.collectionElem = inJson.collectionElem;
         this.collection = inJson.collection;
-        if ( inJson.collectionElem ) {
-            this.elemId = inJson.elemId;
-            // TODO Move to its own deserializer
-            this.collectionConfigs = {};
-            if (this.type.model && this.type.model.params && this.type.model.params.length > 0) {
-                let params = this.type.model.params;
-                let typeMappings = {};
-                for(let param of params) {
-                    typeMappings[param.config.code] = param.config.type.name;
-                }
-                this.collectionConfigs.typeMappings = typeMappings;
-            }
-        }
         if ( this.config != null && this.config.uiStyles && this.config.uiStyles.attributes.alias === 'CardDetailsGrid' ) {
             if(inJson.leafState != null) {
                 this.leafState = new CardDetailsGrid().deserialize( inJson.leafState );
@@ -279,7 +281,9 @@ export class Param implements Serializable<Param> {
         } else if (this.config != null && this.config.uiStyles && this.config.uiStyles.attributes.alias === 'Grid') {
             if (inJson.type && inJson.type.model && inJson.type.model.params) {
                 this.config.gridList = [];
+                this.paramState = [];
                 for ( var p in inJson.type.model.params ) {
+                    this.paramState.push(inJson.type.model.params[p].type.model.params);
                     this.config.gridList.push(this.createRowData(inJson.type.model.params[p]));
                 }
             }
@@ -287,6 +291,11 @@ export class Param implements Serializable<Param> {
             this.leafState = ParamUtils.convertServerDateStringToDate(inJson.leafState, this.config.type.name);
         } else {
             this.leafState = inJson.leafState;
+        }
+
+        if ( inJson.collectionElem ) {
+            this.elemId = inJson.elemId;
+            this.leafState = this.createRowData(this, true);
         }
 
         this.path = inJson.path;
@@ -677,6 +686,7 @@ export class UiAttribute implements Serializable<UiAttribute> {
     sortable: boolean;
     resizable:boolean;
     placeholder: string;
+    clearAllFilters: boolean;
     deserialize( inJson ) {
         this.value = inJson.value;
         this.url = inJson.url;
@@ -742,6 +752,7 @@ export class UiAttribute implements Serializable<UiAttribute> {
         this.hourFormat = inJson.hourFormat;
         this.sortAs = inJson.sortAs;
         this.placeholder = inJson.placeholder;
+        this.clearAllFilters = inJson.clearAllFilters;
         if ( inJson.controlType != null ) {
             this.controlType = inJson.controlType;
         }

@@ -1,9 +1,8 @@
 <div class="{{cssClass}}" id="{{code}}">
     <!-- Section Message -->
-    <div class="alert alert-info{{element?.type?.model?.config?.message?.type}}" role="alert" *ngIf="element?.message">
-        {{element?.message.text}}
-    </div>
-
+    
+      <nm-message messageType="{{element?.message.type}}" messageText="{{element?.message.text}}" *ngIf="element?.message"></nm-message>
+        
     <!-- Loop thru Section Params - look at the visible flag and put in the right condition-->
     <ng-template [ngIf]="visible==true">
         <ng-template ngFor let-element [ngForOf]="nestedParams">
@@ -44,7 +43,8 @@
             <ng-template [ngIf]="element.alias == 'Grid'">
                 <infinite-scroll-grid
                     [element]="element" 
-                    [params]="element?.config?.type?.elementConfig?.type?.model?.paramConfigs" (onScrollEvent)="onScrollEvent()">
+                    [params]="element?.config?.type?.elementConfig?.type?.model?.paramConfigs"
+                    (onScrollEvent)="onScrollEvent()">
                 </infinite-scroll-grid>
             </ng-template>
             <!--Other buttons. Refactor item : to be triggred based on the buttongroup annotation-->
