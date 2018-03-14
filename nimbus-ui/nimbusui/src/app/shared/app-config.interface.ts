@@ -222,6 +222,7 @@ export class Param implements Serializable<Param> {
     visible: boolean;
     enabled: boolean;
     message : Message;
+    paramState: Param[];
     values : Values[];
     activeValidationGroups: String[];
     _alias: string;
@@ -243,7 +244,6 @@ export class Param implements Serializable<Param> {
     createRowData(param: Param, isDeserialized?: boolean) {
         let rowData: any = {};
         rowData = param.leafState;
-        rowData['_params'] = param.type.model.params;
         rowData['elemId'] = param.elemId;
 
         for(let p of param.type.model.params) {
@@ -282,7 +282,9 @@ export class Param implements Serializable<Param> {
         } else if (this.config != null && this.config.uiStyles && this.config.uiStyles.attributes.alias === 'Grid') {
             if (inJson.type && inJson.type.model && inJson.type.model.params) {
                 this.config.gridList = [];
+                this.paramState = [];
                 for ( var p in inJson.type.model.params ) {
+                    this.paramState.push(inJson.type.model.params[p].type.model.params);
                     this.config.gridList.push(this.createRowData(inJson.type.model.params[p]));
                 }
             }
@@ -685,6 +687,7 @@ export class UiAttribute implements Serializable<UiAttribute> {
     sortable: boolean;
     resizable:boolean;
     placeholder: string;
+    clearAllFilters: boolean;
     deserialize( inJson ) {
         this.value = inJson.value;
         this.url = inJson.url;
@@ -750,6 +753,7 @@ export class UiAttribute implements Serializable<UiAttribute> {
         this.hourFormat = inJson.hourFormat;
         this.sortAs = inJson.sortAs;
         this.placeholder = inJson.placeholder;
+        this.clearAllFilters = inJson.clearAllFilters;
         if ( inJson.controlType != null ) {
             this.controlType = inJson.controlType;
         }

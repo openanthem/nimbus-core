@@ -91,6 +91,7 @@ import { HeaderGlobal } from './components/platform/header/header-global.compone
 import { FooterGlobal } from './components/platform/footer/footer-global.component';
 import { Calendar } from './components/platform/form/elements/calendar.component';
 import { NavMenuGlobal } from './components/platform/globalNavMenu/nav-global-menu.component';
+import { MessageComponent } from './components/platform/message/message.component';
 
 // Services
 import { WebContentSvc } from './services/content-management.service';
@@ -161,7 +162,7 @@ import {DateTimeFormatPipe} from './pipes/date.pipe';
         GridMouseEventDirective,
         HomeLayoutCmp, MainLayoutCmp, LoginCmp, LoginLayoutCmp, StyleGuideCmp, 
         KeysPipe, LinkPipe, DateTimeFormatPipe, SelectItemPipe, MultiSelectListBox, 
-        CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent, Calendar, NavMenuGlobal, LoaderComponent
+        CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent, Calendar, NavMenuGlobal, LoaderComponent, MessageComponent
 
     ],
     entryComponents: [ FlowWrapper, PageContent, PageNotfoundComponent, LoginCmp, MainLayoutCmp, HomeLayoutCmp],
