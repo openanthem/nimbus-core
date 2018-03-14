@@ -54,7 +54,7 @@ import { BaseElement } from './../../base-element.component';
                 [elementPath]="elementPath" 
                 [rowData]="rowData" 
                 [param]="param"
-                [element]="element.type.model.params[i]"
+                [element]="element?.type?.model?.params[i]"
                 *ngFor="let param of params; index as i">
             </nm-action-link>
         </div>
@@ -119,7 +119,10 @@ export class ActionDropdown {
     }
     
     get enabled(): boolean {
-        return this.element.enabled;
+        if (this.element) {
+            return this.element.enabled;
+        }
+        return undefined;
     }
 }
 

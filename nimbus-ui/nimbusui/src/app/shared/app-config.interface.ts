@@ -222,6 +222,7 @@ export class Param implements Serializable<Param> {
     visible: boolean;
     enabled: boolean;
     message : Message;
+    paramState: Param[];
     values : Values[];
     activeValidationGroups: String[];
     _alias: string;
@@ -242,7 +243,6 @@ export class Param implements Serializable<Param> {
     createRowData(param: Param) {
         let rowData: any = {};
         rowData = param.leafState;
-        rowData['_params'] = param.type.model.params;
         rowData['elemId'] = param.elemId;
         return rowData;
     }
@@ -279,7 +279,9 @@ export class Param implements Serializable<Param> {
         } else if (this.config != null && this.config.uiStyles && this.config.uiStyles.attributes.alias === 'Grid') {
             if (inJson.type && inJson.type.model && inJson.type.model.params) {
                 this.config.gridList = [];
+                this.paramState = [];
                 for ( var p in inJson.type.model.params ) {
+                    this.paramState.push(inJson.type.model.params[p].type.model.params);
                     this.config.gridList.push(this.createRowData(inJson.type.model.params[p]));
                 }
             }

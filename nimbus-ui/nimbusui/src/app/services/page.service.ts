@@ -34,7 +34,6 @@ import { CustomHttpClient } from './httpclient.service';
 
 import { Subject } from 'rxjs/Subject';
 import { GenericDomain } from '../model/generic-domain.model';
-import { ParamUtils } from '../shared/param-utils';
 
 /**
  * \@author Dinakar.Meda
@@ -443,7 +442,7 @@ export class PageService {
                 } else if (method !== '' && method.toUpperCase() === HttpMethod.POST.value) {
 
                         // console.log('payload - ' + json);
-                        this.http.post(url, ParamUtils.stringify(model))
+                        this.http.post(url, JSON.stringify(model))
                                 .map(res => res.json())
                                 .subscribe(data => {
                                         this.processResponse(data.result, serverUrl, flowName);
@@ -466,7 +465,7 @@ export class PageService {
 
                 if (method !== '' && method.toUpperCase() === HttpMethod.POST.value) {
                         
-                        this.http.post(url, ParamUtils.stringify(payload))
+                        this.http.post(url, JSON.stringify(payload))
                                 .map(res => res.json())
                                 .subscribe(data => {
                                         this.processResponse(data.result, url, flowName);
@@ -502,7 +501,7 @@ export class PageService {
                 var url = urlBase + '/event/notify';
                 //if (action === Action._update.value) {
                 console.log('Post update Event Notify call');
-                return this.http.post(url, ParamUtils.stringify(modelEvnt))
+                return this.http.post(url, JSON.stringify(modelEvnt))
                         .map(res => res.json())
                         .subscribe(data => {
                                 //console.log('Event notify data::' + JSON.stringify(data));
@@ -614,7 +613,6 @@ export class PageService {
          */
         createRowData(param: Param, nestedParamIdx: number) {
                 let rowData: any = param.leafState;
-                rowData['_params'] = param.type.model.params;
                 
                 // If classTypeMappings are present, handle any conversions that should occur.
                 // TODO Use a better design pattern to handle this scenario.
@@ -640,8 +638,10 @@ export class PageService {
          * Loop through the Param State and build the Grid
          * 
          */
-        createGridData(params: Param[], nestedParams: ParamConfig[]) {
+        createGridData(gridElementParams: Param[], gridParam: Param) {
+                let nestedParams = gridParam.config.type.elementConfig.type.model.paramConfigs;
                 let gridData = [];
+                let paramState = [];
                 // Look for inner lists (nested grid)
                 let nestedParamIdx: number;
                 if (nestedParams) {
@@ -652,12 +652,14 @@ export class PageService {
                                 }
                         }
                 }
-                if (params) {
-                        params.forEach(param => {
+                if (gridElementParams) {
+                        gridElementParams.forEach(param => {
                                 let p = new Param(this.configService).deserialize(param);
+                                paramState.push(p.type.model.params);
                                 gridData.push(this.createRowData(p, nestedParamIdx));
                         });        
                 }
+                gridParam['paramState'] = paramState;
                 return gridData;
         }
 
@@ -676,15 +678,15 @@ export class PageService {
                                         // Collection Element Check - update only the element
                                         if (eventModel.value.collectionElem) {
                                                 if (param.config.gridList == null) {
-                                                        param.config.gridList = this.createGridData(eventModel.value.type.model.params, param.config.type.elementConfig.type.model.paramConfigs);
+                                                        param.config.gridList = this.createGridData(eventModel.value.type.model.params, param);
                                                 } else {
-                                                        param.config.gridList.push(this.createGridData(eventModel.value.type.model.params, param.config.type.elementConfig.type.model.paramConfigs));
+                                                        param.config.gridList.push(this.createGridData(eventModel.value.type.model.params, param));
                                                 }
                                                 this.gridValueUpdate.next(param);
                                         }
                                         // Collection check - replace entire grid
                                         if (eventModel.value.collection) {
-                                                param.config.gridList = this.createGridData(eventModel.value.type.model.params, param.config.type.elementConfig.type.model.paramConfigs);
+                                                param.config.gridList = this.createGridData(eventModel.value.type.model.params, param);
                                                 this.gridValueUpdate.next(param);
                                         }
                                 } else { // Nested Collection. Need to traverse to right location
@@ -695,7 +697,7 @@ export class PageService {
                                                         // console.log(param.config.gridList[p]['nestedElement']);
                                                         let nestedElement = this.getNestedElementParam(param.config.gridList[p]['nestedElement'], nestedPath);
                                                         if (nestedElement) {
-                                                                nestedElement['config']['gridList'] = this.createGridData(eventModel.value.type.model.params, param.config.type.elementConfig.type.model.paramConfigs);
+                                                                nestedElement['config']['gridList'] = this.createGridData(eventModel.value.type.model.params, nestedElement);
                                                                 this.gridValueUpdate.next(nestedElement);
                                                         } else {
                                                                 console.log('Nested Grid Element not found.');
