@@ -219,11 +219,12 @@ export class Param implements Serializable<Param> {
     collectionConfigs: any;
     collectionElem: boolean;
     elemId: string;
-    visible: boolean;
     enabled: boolean;
+    gridList: any[];
     message : Message;
     paramState: Param[];
     values : Values[];
+    visible: boolean;
     activeValidationGroups: String[];
     _alias: string;
     _config: ParamConfig;
@@ -278,11 +279,11 @@ export class Param implements Serializable<Param> {
             }
         } else if (this.config != null && this.config.uiStyles && this.config.uiStyles.attributes.alias === 'Grid') {
             if (inJson.type && inJson.type.model && inJson.type.model.params) {
-                this.config.gridList = [];
+                this.gridList = [];
                 this.paramState = [];
                 for ( var p in inJson.type.model.params ) {
                     this.paramState.push(inJson.type.model.params[p].type.model.params);
-                    this.config.gridList.push(this.createRowData(inJson.type.model.params[p]));
+                    this.gridList.push(this.createRowData(inJson.type.model.params[p]));
                 }
             }
         } else if (this.config && this.config.type && ParamUtils.isKnownDateType(this.config.type.name)) {
@@ -506,10 +507,6 @@ export class ParamConfig implements Serializable<ParamConfig> {
     url: string;
     active: boolean;
     required: boolean;
-
-    //TODO Temporary for grid
-    gridList: any[];
-    nestedGridRow: Param;
 
     constructor(private configSvc: ConfigService) {}
 

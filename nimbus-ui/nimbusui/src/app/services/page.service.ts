@@ -677,27 +677,27 @@ export class PageService {
                                         // Current Collection
                                         // Collection Element Check - update only the element
                                         if (eventModel.value.collectionElem) {
-                                                if (param.config.gridList == null) {
-                                                        param.config.gridList = this.createGridData(eventModel.value.type.model.params, param);
+                                                if (param.gridList == null) {
+                                                        param.gridList = this.createGridData(eventModel.value.type.model.params, param);
                                                 } else {
-                                                        param.config.gridList.push(this.createGridData(eventModel.value.type.model.params, param));
+                                                        param.gridList.push(this.createGridData(eventModel.value.type.model.params, param));
                                                 }
                                                 this.gridValueUpdate.next(param);
                                         }
                                         // Collection check - replace entire grid
                                         if (eventModel.value.collection) {
-                                                param.config.gridList = this.createGridData(eventModel.value.type.model.params, param);
+                                                param.gridList = this.createGridData(eventModel.value.type.model.params, param);
                                                 this.gridValueUpdate.next(param);
                                         }
                                 } else { // Nested Collection. Need to traverse to right location
                                         let nestedPath = eventModel.value.path.substr(param.path.length + 1);
                                         let elemIndex = nestedPath.substr(0, nestedPath.indexOf('/'));
-                                        for (var p = 0; p < param.config.gridList.length; p++) {
-                                                if (param.config.gridList[p]['elemId'] == elemIndex) {
+                                        for (var p = 0; p < param.gridList.length; p++) {
+                                                if (param.gridList[p]['elemId'] == elemIndex) {
                                                         // console.log(param.config.gridList[p]['nestedElement']);
-                                                        let nestedElement = this.getNestedElementParam(param.config.gridList[p]['nestedElement'], nestedPath);
+                                                        let nestedElement = this.getNestedElementParam(param.gridList[p]['nestedElement'], nestedPath);
                                                         if (nestedElement) {
-                                                                nestedElement['config']['gridList'] = this.createGridData(eventModel.value.type.model.params, nestedElement);
+                                                                nestedElement['gridList'] = this.createGridData(eventModel.value.type.model.params, nestedElement);
                                                                 this.gridValueUpdate.next(nestedElement);
                                                         } else {
                                                                 console.log('Nested Grid Element not found.');
