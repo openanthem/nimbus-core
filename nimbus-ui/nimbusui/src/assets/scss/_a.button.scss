@@ -2,17 +2,15 @@ button:focus{
   outline: $focus-outline-setting;
 }
 .buttonGroup{
+  padding: 1rem 0;
   &.left{
     @extend .text-sm-left;
-    padding: .8rem 0 ;
   }
   &.center{
     @extend .text-sm-center;
-    padding: .8rem 0 ;
   }
   &.right{
     @extend .text-sm-right;
-    padding: .8rem 0 ;
   }
   &.inline{
     display: inline-block;
