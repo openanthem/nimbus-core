@@ -85,7 +85,11 @@
         <repository>
             <id>clojars.org</id>
             <url>http://clojars.org/repo</url>
-        </repository>
+    	</repository>
+	<repository>
+            <id>alfresco.com</id>
+	    <url>https://maven.alfresco.com/nexus/content/repositories/activiti/</url>
+	</repository>
     </repositories>
 
     <developers>
