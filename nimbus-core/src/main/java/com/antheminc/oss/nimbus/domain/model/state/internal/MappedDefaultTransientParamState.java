@@ -77,8 +77,11 @@ public class MappedDefaultTransientParamState<T, M> extends DefaultParamState<T>
 	public void onTypeAssign() {
 		Param mapsToTransientDetached = creator.buildMapsToDetachedParam(this);
 		setMapsToTransient(mapsToTransientDetached);
-
+		mapsToTransientDetached.registerConsumer(this);
+		
 		assignType();
+		
+		fireRules();
 	}
 	
 	public void assignType() {

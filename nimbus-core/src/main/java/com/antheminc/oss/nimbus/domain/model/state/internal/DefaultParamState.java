@@ -628,7 +628,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		findIfNested().getParams().stream()
 		.forEach(p->{
 
-			if(p.isStateInitialized())
+			if(!p.isStateInitialized())
 				p.onStateLoadEvent();
 			else
 				p.onStateChangeEvent(p.getRootExecution().getExecutionRuntime().getTxnContext(), Action._update);
@@ -648,7 +648,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 			return;
 		
 		// handle nested
-		if(!isNested() || findIfNested().templateParams().isNullOrEmpty())
+		if(!isNested() /*|| findIfNested().templateParams().isNullOrEmpty()*/)
 			return;
 		
 		if (null == findIfNested().getParams()) {
@@ -665,7 +665,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		findIfNested().getParams().stream()
 		.forEach(p->{
 
-			if(p.isStateInitialized())
+			if(!p.isStateInitialized())
 				p.onStateLoadEvent();
 			else
 				p.onStateChangeEvent(p.getRootExecution().getExecutionRuntime().getTxnContext(), Action._update);
@@ -769,7 +769,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		setEnabled(to); 
 		
 		// ripple to children, if applicable
-		if(!isNested() || findIfNested().templateParams().isNullOrEmpty())
+		if(!isNested() /*|| findIfNested().templateParams().isNullOrEmpty()*/)
 			return true;
 		
 		findIfNested().getParams().stream()
