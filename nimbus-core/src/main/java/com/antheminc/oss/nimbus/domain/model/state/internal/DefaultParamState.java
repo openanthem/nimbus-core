@@ -175,6 +175,10 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 
 	}
 	
+	public void onTypeAssign() {
+		
+	}
+	
 //	TODO: Refactor with Weak reference implementation
 //	@JsonIgnore
 //	@Override
