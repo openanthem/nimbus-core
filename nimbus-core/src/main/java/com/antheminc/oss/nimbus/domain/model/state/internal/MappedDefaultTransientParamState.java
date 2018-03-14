@@ -22,6 +22,7 @@ import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.MappedTransientParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityStateAspectHandlers;
+import com.antheminc.oss.nimbus.domain.model.state.ExecutionRuntime;
 import com.antheminc.oss.nimbus.domain.model.state.Notification;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -63,11 +64,26 @@ public class MappedDefaultTransientParamState<T, M> extends DefaultParamState<T>
 		this.initialMapsTo = initialMapsTo;
 
 	}
-
+	
+	@Override
+	protected void initStateInternal() {
+		// initialize with shell: detached entity
+		resetToDetachedMapping();
+		
+		super.initStateInternal();
+	}
 
 	@Override
 	public void onTypeAssign() {
-		resetToDetachedMapping();
+		Param mapsToTransientDetached = creator.buildMapsToDetachedParam(this);
+		setMapsToTransient(mapsToTransientDetached);
+
+		assignType();
+	}
+	
+	public void assignType() {
+		Model mappedModel = creator.buildMappedTransientModel(this, getMapsTo().findIfNested());
+		getType().findIfTransient().assign(mappedModel);
 	}
 	
 //	@Override
@@ -139,8 +155,7 @@ public class MappedDefaultTransientParamState<T, M> extends DefaultParamState<T>
 			setAssigned(isAssigned);
 			
 			// 3. create new mapped model based on mapsTo
-			Model mappedModel = creator.buildMappedTransientModel(this, getMapsTo().findIfNested());
-			getType().findIfTransient().assign(mappedModel);
+			assignType();
 			
 			// 4. fire rules
 			fireRules();
