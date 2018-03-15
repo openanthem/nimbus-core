@@ -24,6 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -38,6 +39,7 @@ public class CommandMessageConverter {
 	
 	public CommandMessageConverter(BeanResolverStrategy beanResolver) {
 		this.om = beanResolver.get(ObjectMapper.class);
+		this.om.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 	}
 
 	public Object convert(ParamConfig<?> pConfig, String json) {
