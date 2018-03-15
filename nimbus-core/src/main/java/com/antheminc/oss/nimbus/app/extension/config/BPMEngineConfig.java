@@ -112,34 +112,36 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
 	@Autowired
 	private ActivitiExpressionManager platformExpressionManager;
 	
-    @Bean
-    public SpringProcessEngineConfiguration springProcessEngineConfiguration(
-            @Qualifier("processDataSource")DataSource processDataSource,
-            PlatformTransactionManager jpaTransactionManager,
-            SpringAsyncExecutor springAsyncExecutor, BeanResolverStrategy beanResolver) throws Exception {
-    	
-    		SpringProcessEngineConfiguration engineConfiguration = this.baseSpringProcessEngineConfiguration(processDataSource, jpaTransactionManager, springAsyncExecutor);
-    	
-	    if(deploymentName.isPresent()) {
-	    		engineConfiguration.setDeploymentName(deploymentName.get());
-	    }
-	    	engineConfiguration.setExpressionManager(platformExpressionManager);
-	    	engineConfiguration.setProcessDefinitionCache(new ActivitiProcessDefinitionCache());
-	    	engineConfiguration.setActivityBehaviorFactory(platformActivityBehaviorFactory(beanResolver));
-	    	engineConfiguration.setHistoryLevel(HistoryLevel.getHistoryLevelForKey(processHistoryLevel));
-	    	addCustomDeployers(engineConfiguration);
-    	
-        List<Resource> resources = new ArrayList<>(Arrays.asList(engineConfiguration.getDeploymentResources()));
-        Resource[] supportingResources = loadBPMResources();
-        if(supportingResources != null && supportingResources.length > 0){
-        		resources.addAll(Arrays.asList(loadBPMResources()));
-        }
-        engineConfiguration.setDeploymentResources(resources.toArray(new Resource[resources.size()])); 
-        
-        return engineConfiguration;
-    }
+	@Bean
+	public SpringProcessEngineConfiguration springProcessEngineConfiguration(
+			@Qualifier("processDataSource") DataSource processDataSource,
+			PlatformTransactionManager jpaTransactionManager, SpringAsyncExecutor springAsyncExecutor,
+			BeanResolverStrategy beanResolver) throws Exception {
+		
+		SpringProcessEngineConfiguration engineConfiguration = this
+				.baseSpringProcessEngineConfiguration(processDataSource, jpaTransactionManager, springAsyncExecutor);
+
+		if (deploymentName.isPresent()) {
+			engineConfiguration.setDeploymentName(deploymentName.get());
+		}
+		engineConfiguration.setExpressionManager(platformExpressionManager);
+		engineConfiguration.setProcessDefinitionCache(new ActivitiProcessDefinitionCache());
+		engineConfiguration.setActivityBehaviorFactory(platformActivityBehaviorFactory(beanResolver));
+		engineConfiguration.setHistoryLevel(HistoryLevel.getHistoryLevelForKey(processHistoryLevel));
+		addCustomDeployers(engineConfiguration);
+
+		List<Resource> resources = new ArrayList<>(Arrays.asList(engineConfiguration.getDeploymentResources()));
+		Resource[] supportingResources = loadBPMResources();
+		if (supportingResources != null && supportingResources.length > 0) {
+			resources.addAll(Arrays.asList(loadBPMResources()));
+		}
+		engineConfiguration.setDeploymentResources(resources.toArray(new Resource[resources.size()]));
+
+		return engineConfiguration;
+	}
     
 	public DefaultActivityBehaviorFactory platformActivityBehaviorFactory(BeanResolverStrategy beanResolver) {
+		
 		return new DefaultActivityBehaviorFactory() {
 			@Override
 			public UserTaskActivityBehavior createUserTaskActivityBehavior(UserTask userTask) {
