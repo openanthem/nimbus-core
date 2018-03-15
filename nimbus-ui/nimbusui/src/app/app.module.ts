@@ -91,6 +91,7 @@ import { HeaderGlobal } from './components/platform/header/header-global.compone
 import { FooterGlobal } from './components/platform/footer/footer-global.component';
 import { Calendar } from './components/platform/form/elements/calendar.component';
 import { NavMenuGlobal } from './components/platform/globalNavMenu/nav-global-menu.component';
+import { MessageComponent } from './components/platform/message/message.component';
 
 // Services
 import { WebContentSvc } from './services/content-management.service';
@@ -101,8 +102,9 @@ import { FileService } from './services/file.service';
 import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app.routing.module';
 import { CustomHttpClient } from './services/httpclient.service';
+import { CustomHttpClientInterceptor } from './services/httpclient-interceptor.service';
 import { CustomBrowserXhr } from './custom.browserxhr';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
 
 // Declarations
@@ -150,23 +152,24 @@ import {DateTimeFormatPipe} from './pipes/date.pipe';
     ],
     declarations: [ AppComponent, STOMPStatusComponent, FlowWrapper, PageContent, PageNotfoundComponent, StaticText,
         Tile, Section, Header, Form, FormElement, InputText, ComboBox, RadioButton, DateControl, CheckBoxGroup,
-        InPlaceEditorComponent, Paragraph, Value, Image, BaseElement, 
+        InPlaceEditorComponent, Paragraph, Value, Image, BaseElement,
         MultiselectCard, Link, Menu, CardDetailsComponent, CardDetailsFieldComponent, CardDetailsGrid, FieldValue,
         AccordionGroup, Accordion, AccordionMain, AccordionTab, FrmGroupCmp, Button, ButtonGroup, FilterButton, OrderablePickList,
         STOMPStatusComponent, InfiniteScrollGrid, SubHeaderCmp, TextArea, LandingPage,
-        LayoutService,ContentContainer,
-        DomainFlowCmp,HeaderGlobal,FooterGlobal,
+        LayoutService, ContentContainer,
+        DomainFlowCmp, HeaderGlobal, FooterGlobal,
         BreadcrumbComponent, NavLinkRouter,
-        Modal, ActionDropdown, ActionLink, 
+        Modal, ActionDropdown, ActionLink,
         GridMouseEventDirective,
         HomeLayoutCmp, MainLayoutCmp, LoginCmp, LoginLayoutCmp, StyleGuideCmp, 
         KeysPipe, LinkPipe, DateTimeFormatPipe, SelectItemPipe, MultiSelectListBox, 
-        CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent, Calendar, NavMenuGlobal, LoaderComponent
+        CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent, Calendar, NavMenuGlobal, LoaderComponent, MessageComponent
 
     ],
     entryComponents: [ FlowWrapper, PageContent, PageNotfoundComponent, LoginCmp, MainLayoutCmp, HomeLayoutCmp],
-    providers: [ PageService, ConfigService, WebContentSvc,HttpClient,  HttpClientModule,
+    providers: [ PageService, ConfigService, WebContentSvc, HttpClient,  HttpClientModule,
          CustomHttpClient, { provide: BrowserXhr, useClass: CustomBrowserXhr },
+         { provide: HTTP_INTERCEPTORS, useClass: CustomHttpClientInterceptor, multi: true },
          { provide: LocationStrategy, useClass: HashLocationStrategy }, GridService,
          AuthenticationService, BreadcrumbService, LoaderService, FileService ],
     bootstrap: [ AppComponent ]

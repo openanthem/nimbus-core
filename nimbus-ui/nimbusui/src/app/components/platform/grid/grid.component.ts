@@ -69,6 +69,9 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     filterValue: Date;
     totalRecords: number = 0;
     mouseEventSubscription: Subscription;
+    filterState: any[]=[];
+   
+    
 
     //    references DataTable named 'flex' in the view
     @ViewChild('flex') flex: DataTable;
@@ -80,7 +83,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     summaryData: any;
     rowHover: boolean;
     selectedRows: any[];
-    filterState: boolean = false;
+    showFilters: boolean = false;
     rowStart = 0;
     rowEnd = 0;
 
@@ -205,6 +208,11 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
 
     }
 
+    isActive(index){
+        if (this.filterState[index]!='' && this.filterState[index]!= undefined) return true;
+        else return false;
+    }
+
 
     getRowPath(col: ParamConfig, item: any) {
         return this.element.path + '/' + item.elemId + '/' + col.code;
@@ -233,8 +241,9 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
 
     toggleFilter(event: any) {
         //console.log(event);
-        this.filterState = !this.filterState;
-        this.dt.reset();
+        this.showFilters = !this.showFilters;
+        
+        // this.dt.reset();
     }
 
     postGridData(obj) {
@@ -423,10 +432,15 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     }
 
 
-    clearFilter(txt: any, dt: DataTable, field: string) {
+    clearFilter(txt: any, dt: DataTable, field: string, index) {
         txt.value = '';
         dt.filter(txt.value, field, "");
     }
+
+    clearAll() {
+        this.filterState=[];
+        this.dt.reset();
+      }
 
     paginate(e: any) {
         if (this.totalRecords != 0) {

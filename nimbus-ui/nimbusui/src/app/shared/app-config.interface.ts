@@ -677,6 +677,7 @@ export class UiAttribute implements Serializable<UiAttribute> {
     sortable: boolean;
     resizable:boolean;
     placeholder: string;
+    clearAllFilters: boolean;
     deserialize( inJson ) {
         this.value = inJson.value;
         this.url = inJson.url;
@@ -742,6 +743,7 @@ export class UiAttribute implements Serializable<UiAttribute> {
         this.hourFormat = inJson.hourFormat;
         this.sortAs = inJson.sortAs;
         this.placeholder = inJson.placeholder;
+        this.clearAllFilters = inJson.clearAllFilters;
         if ( inJson.controlType != null ) {
             this.controlType = inJson.controlType;
         }
@@ -818,6 +820,34 @@ export class ExecuteOutput implements Serializable<ExecuteOutput> {
         this.validationResult = inJson.validationResult;
         this.executeException = inJson.executeException;
 
+        return this;
+    }
+}
+
+export class ExecuteResponse implements Serializable<ExecuteResponse> {
+    result: MultiOutput[];
+    constructor(private configSvc: ConfigService) {}
+    deserialize( inJson ) {
+        this.result = [];
+        if ( inJson.result != null && inJson.result.length > 0) {
+            // tslint:disable-next-line:forin
+            for ( const p in inJson.result ) {
+                this.result.push( new MultiOutput(this.configSvc).deserialize(inJson.result[p]) );
+            }
+        }
+        return this;
+    }
+}
+
+export class MultiOutput implements Serializable<MultiOutput> {
+    behavior: string;
+    result: Result;
+    constructor(private configSvc: ConfigService) {}
+    deserialize( inJson ) {
+        this.behavior = inJson.b;
+        if ( inJson.result != null ) {
+            this.result = new Result(this.configSvc).deserialize( inJson.result );
+        }
         return this;
     }
 }
