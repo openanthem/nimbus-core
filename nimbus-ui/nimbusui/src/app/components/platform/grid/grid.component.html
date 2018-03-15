@@ -16,8 +16,6 @@
 		(valueChange)="handleRowChange($event)"
 		[rows]="element.config?.uiStyles?.attributes?.pageSize"
 		[paginator]="element.config?.uiStyles?.attributes?.pagination"
-		scrollable="true" 
-        scrollHeight="700px"
 		paginatorPosition="both"
 		alwaysShowPaginator ="false"
 		[expandableRows]="element.config?.uiStyles?.attributes?.expandableRows"
@@ -100,7 +98,7 @@
 		
 		<p-footer>
 			<ng-template [ngIf]="element.config?.uiStyles?.attributes?.postButton">
-				<div class="text-sm-left mt-1 ml-2">
+				<div class="buttonGroup left">
 					<button (click)="postGridData(this)" type="button" class="btn btn-secondary post-btn">
 						{{element.config.uiStyles.attributes.postButtonLabel}}
 					</button>

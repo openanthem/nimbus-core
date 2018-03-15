@@ -205,12 +205,14 @@ ng-component{
     } 
 }
 .ui-row-toggler{
+    font-size: 1.5rem;
+    width: 20px;
     &.fa-chevron-circle-down:before {
     content: "\f0d7";
     color: #e5991c;
     }
     &.fa-chevron-circle-right:before{
-        content: "\f0d7";
+        content: "\f0da";
         color: #94acbc;;
     }
 }

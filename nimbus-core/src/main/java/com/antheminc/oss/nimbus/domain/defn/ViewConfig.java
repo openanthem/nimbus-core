@@ -249,7 +249,7 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface ButtonGroup {	
 		String alias() default "ButtonGroup";
-		String cssClass() default "text-sm-right";
+		String cssClass() default "text-sm-center";
 	}
 	
 	/*
@@ -418,7 +418,7 @@ public class ViewConfig {
 		String imgSrc() default "";
 		Style style() default Style.PLAIN;
 		String payload() default "";
-		String cssClass() default "btn btn-primary";
+		String cssClass() default "btn btn-plain";
 		boolean browserBack() default false;
 		boolean formReset() default true;
 	}

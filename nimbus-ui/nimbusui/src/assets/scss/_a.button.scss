@@ -2,7 +2,7 @@ button:focus{
   outline: $focus-outline-setting;
 }
 .buttonGroup{
-  padding: 1rem 0;
+  padding: 1rem 0 0;
   &.left{
     @extend .text-sm-left;
   }
@@ -17,6 +17,7 @@ button:focus{
     padding-top: 2rem;
   }
 }
+
 .btn-primary {
   background: #006bc2;
   border-color: #006bc2;
@@ -62,10 +63,11 @@ button:focus{
   }
 }
 
-.fa-fw {
+.btn-plain .fa-fw {
   width: 1.28571429em;
   text-align: center;
   margin-right: .3rem;
+  font-size: 1.3rem;
 }
 
 
