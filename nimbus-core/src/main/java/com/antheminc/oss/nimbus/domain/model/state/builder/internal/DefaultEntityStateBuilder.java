@@ -120,6 +120,9 @@ public class DefaultEntityStateBuilder extends AbstractEntityStateBuilder implem
 		StateType type = buildParamType(aspectHandlers, mpState, mapsToSAC);
 		mpState.setType(type);
 		
+		// trigger event
+		mpState.onTypeAssign();
+		
 		return mpState;
 	}
 	
