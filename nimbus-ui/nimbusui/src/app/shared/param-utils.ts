@@ -1,3 +1,4 @@
+import { Param } from './app-config.interface';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
