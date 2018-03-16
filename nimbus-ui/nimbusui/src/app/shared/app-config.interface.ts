@@ -506,11 +506,7 @@ export class ParamConfig implements Serializable<ParamConfig> {
     labelConfigs: LabelConfig[];
     validation: Validation;
     uiNatures: UiNature[];
-    enabled: boolean;
-    visible: boolean;
     label: string;
-    
-    message: Message;
     url: string;
     active: boolean;
     required: boolean;
@@ -541,17 +537,8 @@ export class ParamConfig implements Serializable<ParamConfig> {
                 this.uiNatures.push( new UiNature().deserialize( inJson.uiNatures[uiNature] ) );
             }
         }
-        if (inJson.enabled != null) {
-            this.enabled = inJson.enabled;
-        }
-        if (inJson.visible != null) {
-            this.visible = inJson.visible;
-        }
         
-        // Not sure if the below is required..
-        if ( inJson.message != null ) {
-            this.message = new Message().deserialize( inJson.message );
-        }
+      
         this.url = inJson.url;
         this.active = inJson.active;
         this.required = inJson.required;
@@ -826,6 +813,34 @@ export class ExecuteOutput implements Serializable<ExecuteOutput> {
         this.validationResult = inJson.validationResult;
         this.executeException = inJson.executeException;
 
+        return this;
+    }
+}
+
+export class ExecuteResponse implements Serializable<ExecuteResponse> {
+    result: MultiOutput[];
+    constructor(private configSvc: ConfigService) {}
+    deserialize( inJson ) {
+        this.result = [];
+        if ( inJson.result != null && inJson.result.length > 0) {
+            // tslint:disable-next-line:forin
+            for ( const p in inJson.result ) {
+                this.result.push( new MultiOutput(this.configSvc).deserialize(inJson.result[p]) );
+            }
+        }
+        return this;
+    }
+}
+
+export class MultiOutput implements Serializable<MultiOutput> {
+    behavior: string;
+    result: Result;
+    constructor(private configSvc: ConfigService) {}
+    deserialize( inJson ) {
+        this.behavior = inJson.b;
+        if ( inJson.result != null ) {
+            this.result = new Result(this.configSvc).deserialize( inJson.result );
+        }
         return this;
     }
 }

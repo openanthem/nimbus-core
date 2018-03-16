@@ -34,7 +34,6 @@ import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.defn.SearchNature.StartsWith;
-import com.antheminc.oss.nimbus.entity.SearchCriteria;
 
 /**
  * @author Rakesh Patel
@@ -47,7 +46,7 @@ public class MongoSearchByExample extends MongoDBSearch {
 	}
 
 	@Override
-	public <T> Object search(Class<?> referredClass, String alias, SearchCriteria<T> criteria) {
+	public <T> Object search(Class<T> referredClass, String alias, SearchCriteria<?> criteria) {
 		Query query = buildQuery(referredClass, alias, criteria.getWhere());
 		
 		if(StringUtils.equalsIgnoreCase(criteria.getAggregateCriteria(),Constants.SEARCH_REQ_AGGREGATE_COUNT.code)){
@@ -55,7 +54,7 @@ public class MongoSearchByExample extends MongoDBSearch {
 		}
 		
 		if(criteria.getProjectCriteria() != null && StringUtils.isNotBlank(criteria.getProjectCriteria().getAlias())) {
-			referredClass = findOutputClass(criteria, referredClass);
+			referredClass = (Class<T>)findOutputClass(criteria, referredClass);
 		}
 		
 		if(criteria.getPageRequest() != null) {

@@ -28,7 +28,7 @@ import { Param } from '../../../shared/app-config.interface';
 @Component({
     selector: '',
     template:`
-        <div [hidden] = "!this.param?.config?.visible"  [innerHTML]="param?.config?.uiStyles?.attributes?.content | convertToLinks">
+        <div [hidden] = "!this.param?.visible"  [innerHTML]="param?.config?.uiStyles?.attributes?.content | convertToLinks">
         </div>
     `
 })

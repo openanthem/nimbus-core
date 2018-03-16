@@ -25,6 +25,9 @@
         border: 1px solid #669fe2;
         margin-bottom: 1rem;
         padding: 0.1rem;
+        &.ui-accordion-content-wrapper-overflown {
+            padding: 0;
+        }
     }
     .ui-accordion-content{
         padding:0;

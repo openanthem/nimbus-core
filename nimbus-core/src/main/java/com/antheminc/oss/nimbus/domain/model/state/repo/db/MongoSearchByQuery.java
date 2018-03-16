@@ -29,12 +29,13 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Order;
+import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.repository.support.SpringDataMongodbQuery;
 import org.springframework.data.repository.support.PageableExecutionUtils;
 
+import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
-import com.antheminc.oss.nimbus.entity.SearchCriteria;
 import com.antheminc.oss.nimbus.support.JustLogit;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
@@ -46,6 +47,7 @@ import com.querydsl.mongodb.AbstractMongodbQuery;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
+import lombok.RequiredArgsConstructor;
 
 /**
  * @author Rakesh Patel
@@ -59,10 +61,81 @@ public class MongoSearchByQuery extends MongoDBSearch {
 	public MongoSearchByQuery(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
 	}
+	
+	@RequiredArgsConstructor
+	class QueryBuilder {
+		
+		private final AbstractMongodbQuery query;
+		
+		public QueryBuilder(MongoOperations mongoOps, Class<?> clazz, String collectionName) {
+			query = new SpringDataMongodbQuery<>(mongoOps, clazz, collectionName);
+		}
+		
+		public AbstractMongodbQuery get() {
+			return query;
+		}
+		
+		public QueryBuilder buildPredicate(String criteria, Class<?> referredClass, String alias ) {
+			
+			if(StringUtils.isBlank(criteria)) {
+				return this;
+			}
+			
+			final GroovyShell shell = createQBinding(referredClass, alias); 
+	        Predicate predicate = (Predicate)shell.evaluate(criteria);
+	        
+			query.where(predicate);
+			
+			return this;
+		}
 
-
+		public QueryBuilder buildOrderBy(String criteria, Class<?> referredClass, String alias ) {
+			
+			if(StringUtils.isBlank(criteria)) {
+				return this;
+			}
+			
+			final Binding binding = new Binding();
+			Object obj = createQueryDslClassInstance(referredClass);
+	        binding.setProperty(alias, obj);
+	        
+	        final GroovyShell shell = createQBinding(referredClass, alias); 
+	        OrderSpecifier orderBy = (OrderSpecifier)shell.evaluate(criteria);
+	        
+			if(orderBy != null)
+				query.orderBy(orderBy);
+			
+			return this;
+		}
+		
+		private GroovyShell createQBinding(Class<?> referredClass, String alias) {
+			final Binding binding = new Binding();
+			Object obj = createQueryDslClassInstance(referredClass);
+	        binding.setProperty(alias, obj);
+	        
+	     
+	        final GroovyShell shell = new GroovyShell(obj.getClass().getClassLoader(), binding);
+			return shell;
+		}
+		
+		private Object createQueryDslClassInstance(Class<?> referredClass) {
+			Object obj = null;
+			try {
+				String cannonicalQuerydslclass = referredClass.getCanonicalName().replace(referredClass.getSimpleName(), "Q".concat(referredClass.getSimpleName()));
+				Class<?> cl = Class.forName(cannonicalQuerydslclass);
+				Constructor<?> con = cl.getConstructor(String.class);
+				obj = con.newInstance(referredClass.getSimpleName());
+			} catch (Exception e) {
+				throw new FrameworkRuntimeException("Cannot instantiate queryDsl class for entity: "+referredClass+ " "
+						+ "please make sure the entity has been annotated with either @Domain or @Model and a Q Class has been generated for it", e);
+			}
+			return obj;
+		}
+		
+	}
+	
 	@Override
-	public <T> Object search(Class<?> referredClass, String alias, SearchCriteria<T> criteria) {
+	public <T> Object search(Class<T> referredClass, String alias, SearchCriteria<?> criteria) {
 		if(StringUtils.contains((String)criteria.getWhere(),Constants.SEARCH_REQ_AGGREGATE_MARKER.code)) {
 			return searchByAggregation(referredClass, alias, criteria);
 		}
@@ -73,49 +146,31 @@ public class MongoSearchByQuery extends MongoDBSearch {
 	private <T> Object searchByQuery(Class<?> referredClass, String alias, SearchCriteria<T> criteria) {
 		Class<?> outputClass = findOutputClass(criteria, referredClass);
 		
-		AbstractMongodbQuery query = new SpringDataMongodbQuery<>(getMongoOps(), outputClass, alias);
-		
-		Predicate predicate = buildPredicate((String)criteria.getWhere(), referredClass, alias);
-		
-		query = buildQueryPredicate(query, predicate);
-		
-		query = buildQueryOrderBy(query, (String)criteria.getOrderby(), referredClass, alias);
+		AbstractMongodbQuery query = new QueryBuilder(getMongoOps(), outputClass, alias)
+										.buildPredicate((String)criteria.getWhere(), referredClass, alias)
+										.buildOrderBy((String)criteria.getOrderby(), referredClass, alias)
+										.get();
 		
 		if(StringUtils.equalsIgnoreCase(criteria.getAggregateCriteria(), Constants.SEARCH_REQ_AGGREGATE_COUNT.code)) {
 			return (Long)query.fetchCount();
 		}
 		
 		if(StringUtils.isNotBlank(criteria.getFetch())) {
-			return query.where(predicate).fetchOne();
+			return query.fetchOne();
 		}
 		
 		if(criteria.getProjectCriteria() != null && !MapUtils.isEmpty(criteria.getProjectCriteria().getMapsTo())) {
 			return searchWithProjection(referredClass, criteria, query);
-			
 		}
 		
 		if(criteria.getPageRequest() != null) {
 			return findAllPageable(referredClass, alias, criteria.getPageRequest(), query);
 		}
 		
-		List<?> response = query.fetch();
-		return response;
+		return query.fetch();
 		
 	}
 
-
-	private AbstractMongodbQuery buildQueryPredicate(AbstractMongodbQuery query, Predicate predicate) {
-		query = query.where(predicate);
-		return query;
-	}
-	
-	private AbstractMongodbQuery buildQueryOrderBy(AbstractMongodbQuery query, String criteria, Class<?> referredClass, String alias ) {
-		OrderSpecifier orderBy = buildOrderSpecifier(criteria, referredClass, alias);
-		if(orderBy != null)
-			query = query.orderBy(orderBy);
-		return query;
-	}
-	
 	private <T> Object findAllPageable(Class<?> referredClass, String alias, Pageable pageRequest, AbstractMongodbQuery query) {
 		AbstractMongodbQuery qPage = query.offset(pageRequest.getOffset()).limit(pageRequest.getPageSize());
 		
@@ -136,54 +191,6 @@ public class MongoSearchByQuery extends MongoDBSearch {
 		return query.fetch(paths.toArray(new PathBuilder[paths.size()]));
 	}
 
-	private Predicate buildPredicate(String criteria, Class<?> referredClass, String alias) {
-		if(StringUtils.isBlank(criteria)) {
-			return null;
-		}
-		
-		String groovyScript = criteria.toString().replaceAll("<", "(").replace(">", ")");
-				
-		final Binding binding = new Binding();
-		Object obj = createQueryDslClassInstance(referredClass);
-        binding.setProperty(alias, obj);
-        
-        LocalDate localDate = LocalDate.now();
-        LocalDateTime localDateTime = LocalDateTime.of(localDate, LocalTime.MIDNIGHT);
-        localDateTime.atZone(TimeZone.getDefault().toZoneId());
-       
-        binding.setProperty("todaydate",localDateTime);
-        final GroovyShell shell = new GroovyShell(binding); 
-        return (Predicate)shell.evaluate(groovyScript);
-	}
-	
-	private OrderSpecifier buildOrderSpecifier(String criteria, Class<?> referredClass, String alias) {
-		if(StringUtils.isBlank(criteria)) {
-			return null;
-		}
-		
-		String groovyScript = criteria.toString().replaceAll("<", "(").replace(">", ")");
-				
-		final Binding binding = new Binding();
-		Object obj = createQueryDslClassInstance(referredClass);
-        binding.setProperty(alias, obj);
-        
-        final GroovyShell shell = new GroovyShell(binding); 
-        return (OrderSpecifier)shell.evaluate(groovyScript);
-	}
-	
-	private Object createQueryDslClassInstance(Class<?> referredClass) {
-		Object obj = null;
-		try {
-			String cannonicalQuerydslclass = referredClass.getCanonicalName().replace(referredClass.getSimpleName(), "Q".concat(referredClass.getSimpleName()));
-			Class<?> cl = Class.forName(cannonicalQuerydslclass);
-			Constructor<?> con = cl.getConstructor(String.class);
-			obj = con.newInstance(referredClass.getSimpleName());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return obj;
-	}
-		
 	private  <T> Object searchByAggregation(Class<?> referredClass, String alias, SearchCriteria<T> criteria) {
 		List<?> output = new ArrayList();
 		String[] aggregationCriteria = StringUtils.split((String)criteria.getWhere(), Constants.SEARCH_NAMED_QUERY_DELIMTER.code);
