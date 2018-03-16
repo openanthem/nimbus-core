@@ -333,14 +333,14 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 			
 			mongo.save(accessEntity, "authorities");
 			
-			accessEntities.add(accessEntity.getId());
+			accessEntities.add(accessEntity.getCode());
 			
 			userRole.setAccessEntities(accessEntities);
 			
 			mongo.save(userRole, "userrole");
 			
 			UserRole role = new UserRole();
-			role.setRoleId(userRole.getId());
+			role.setRoleId(userRole.getCode());
 			role.setTerminationDate(LocalDate.now());
 			userRoles.add(role);
 		});
