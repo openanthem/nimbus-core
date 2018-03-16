@@ -53,6 +53,7 @@ export class AppComponent {
    ngOnInit() {
         this.domain = this.document.location.hostname;
         this.port=this.document.location.port;
+        console.log("Location="+this.document.location.pathname);
         this.protocol=this.document.location.protocol;
         this.locale = "en-US"; //TODO This locale should be read dynamically. Currently defaulting to en-US
         ServiceConstants.STOPGAP_APP_HOST = this.domain;
