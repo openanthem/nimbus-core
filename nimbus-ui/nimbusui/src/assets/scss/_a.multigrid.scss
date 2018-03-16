@@ -247,9 +247,7 @@ ng-component{
         .ui-paginator-first{
             background: none;
             color:#fff;
-            .fa-step-backward::before{
-                content: "\f053";
-            }
+            
         }
         .ui-paginator-prev{
             background: none;
@@ -268,9 +266,7 @@ ng-component{
         .ui-paginator-last{
             background: none;
             color:#fff;
-            .fa-step-forward::before{
-                content: "\f054";
-            }
+            
         }
     }
 }

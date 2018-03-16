@@ -222,6 +222,9 @@ h1.page-title {
 .ui-widget-content a {
     color: #0275d8;
 }
+.ui-datepicker.ui-widget-content a {
+    color: #696b6c;
+}
 .textWrapBreakWord {
     word-break: break-word;
     font-weight: bold;
@@ -357,9 +360,6 @@ legend {
 .ui-widget-content a{
         color: #696b6c;
     }
-    .ui-datepicker-header a {
-     color: #494949;
-    }
 }
 .ui-state-default {
     border: 1px solid #b9b6b6;
@@ -370,20 +370,23 @@ legend {
 .ui-dropdown:not(.ui-state-disabled):hover {
     border-color: #9dd3f7;
 }
-.ui-datepicker-header {
-    background: #9dd3f7;
+.ui-widget-header.ui-datepicker-header {
+    background: #c8e3f6;
     color: #494949;
+    a {
+        color: #494949;
+        font-size: 1.5rem;
+        height: 1.8rem;
+    }
+       
 }
 .ui-datepicker-prev span, 
 .ui-datepicker-next span{
     color: #006bc2;
 }
-.ui-datepicker.ui-widget .ui-datepicker-calendar td a.ui-state-highlight {
-    background-color: #006bc2;
-    color: #fff;
-}
+
 .ui-datepicker.ui-widget .ui-datepicker-calendar thead th {
-    background-color: #c8e3f6;
+    background-color: #ebebeb;
 }
 button.ui-datepicker-trigger.ui-calendar-button {
     border: none;
@@ -398,7 +401,16 @@ button.ui-datepicker-trigger.ui-calendar-button {
     background: none;
     color: #4c4c4c;
   }
-
+  .ui-datepicker.ui-widget .ui-datepicker-calendar td a.ui-state-highlight {
+    background-color: #006bc2;
+    color: #fff;
+}
+  .ui-datepicker .ui-datepicker-calendar td:not(.ui-state-disabled) a:hover,
+  .ui-datepicker.ui-widget .ui-datepicker-calendar td a.ui-state-active {
+    border-color: #e5991c;
+    background: #e5991c;
+    color: #fff;
+}
 
 //.date-holder is old date component
 
