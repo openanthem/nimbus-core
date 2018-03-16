@@ -45,9 +45,9 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
         CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR,WebContentSvc
     ],
     template: `
-        <!--<div [hidden]="!element?.config?.visible || !element?.visible" *ngIf="element.config?.uiStyles?.attributes?.hidden==false">-->
+        <!--<div [hidden]="!element?.visible" *ngIf="element.config?.uiStyles?.attributes?.hidden==false">-->
         <div [hidden]="!element?.visible" *ngIf="element.config?.uiStyles?.attributes?.hidden==false">
-            <fieldset [disabled]="!element.config?.enabled">
+            <fieldset [disabled]="!element?.enabled">
                 <p-pickList #picklist [source]="element.values" 
                     [sourceHeader] = "element.config?.uiStyles?.attributes.sourceHeader" 
                     [targetHeader]="element.config?.uiStyles?.attributes.targetHeader" 
@@ -136,7 +136,7 @@ export class OrderablePickList implements OnInit, ControlValueAccessor {
     }
 
     dragStart(event, itm: any) {
-        if(this.element.config.enabled) {
+        if(this.element.enabled) {
             this.draggedItm = itm;
         }
     }

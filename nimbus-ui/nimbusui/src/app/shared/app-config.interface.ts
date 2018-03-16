@@ -496,11 +496,7 @@ export class ParamConfig implements Serializable<ParamConfig> {
     labelConfigs: LabelConfig[];
     validation: Validation;
     uiNatures: UiNature[];
-    enabled: boolean;
-    visible: boolean;
     label: string;
-    
-    message: Message;
     url: string;
     active: boolean;
     required: boolean;
@@ -535,17 +531,8 @@ export class ParamConfig implements Serializable<ParamConfig> {
                 this.uiNatures.push( new UiNature().deserialize( inJson.uiNatures[uiNature] ) );
             }
         }
-        if (inJson.enabled != null) {
-            this.enabled = inJson.enabled;
-        }
-        if (inJson.visible != null) {
-            this.visible = inJson.visible;
-        }
         
-        // Not sure if the below is required..
-        if ( inJson.message != null ) {
-            this.message = new Message().deserialize( inJson.message );
-        }
+      
         this.url = inJson.url;
         this.active = inJson.active;
         this.required = inJson.required;

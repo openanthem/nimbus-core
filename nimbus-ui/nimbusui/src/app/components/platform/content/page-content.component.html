@@ -1,9 +1,13 @@
 <!-- Display Tiles -->
 <nm-message messageType="{{element?.message.type}}" messageText="{{element?.message.text}}" *ngIf="element?.message"></nm-message>
+Visible {{element?.visible}}
+<ng-template [ngIf]="element?.visible">
+    <ng-template [ngIf]="element?.config?.labelConfigs?.length > 0">
+        <h1 class="page-title {{imgSrc}} ">
+            {{label}}
+        </h1>
+    </ng-template>
 
-<ng-template [ngIf]="element?.config?.labelConfigs?.length > 0 && element?.visible && element?.config?.visible">
-    <h1 class="page-title {{imgSrc}} ">
-        {{label}}
-    </h1>
+    <nm-tile [element]="tile" *ngFor="let tile of tilesList"></nm-tile>
 </ng-template>
-<nm-tile [element]="tile" *ngFor="let tile of tilesList"></nm-tile>
+
