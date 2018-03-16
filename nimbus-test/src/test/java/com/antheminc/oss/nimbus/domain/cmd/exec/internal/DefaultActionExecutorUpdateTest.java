@@ -52,7 +52,7 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 		
 		SampleCoreNestedEntity colElemState = new SampleCoreNestedEntity();
 		colElemState.setNested_attr_String("TEST_INTG_COL_ELEM_add "+ new Date());
-		String jsonPayload = converter.convert(colElemState);
+		String jsonPayload = converter.write(colElemState);
 		
 		Object colElemAdd_Resp = controller.handlePut(colElemAdd_Req, null, jsonPayload);
 		assertNotNull(colElemAdd_Resp);
@@ -92,7 +92,7 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 		String updatedVal = colElemState.getNested_attr_String() + " - updated "+new Date();
 		colElemState.setNested_attr_String(updatedVal);
 		
-		String jsonPayload = converter.convert(colElemState);
+		String jsonPayload = converter.write(colElemState);
 		
 		String elemId = pListNested.getType().getModel().getParams().get(0).findIfCollectionElem().getElemId();
 		
@@ -115,7 +115,7 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 				.addNested("/level1/level2b/string_array_b").addAction(Action._update).getMock();
 		
 		final String[] K_string_arr = new String[]{"A", "B", "C @ "+new Date()};
-		Object resp_arr_update = controller.handlePut(req_arr_update, null, converter.convert(K_string_arr));
+		Object resp_arr_update = controller.handlePut(req_arr_update, null, converter.write(K_string_arr));
 		
 		
 		// validate via Param
@@ -143,7 +143,7 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 				.addNested("/page_green/tile/level1/level2b/string_array_b").addAction(Action._update).getMock();
 		
 		final String[] K_string_arr = new String[]{"A", "B", "C @ "+new Date()};
-		Object resp_arr_update = controller.handlePut(req_arr_update, null, converter.convert(K_string_arr));
+		Object resp_arr_update = controller.handlePut(req_arr_update, null, converter.write(K_string_arr));
 		
 		
 		// validate via Param

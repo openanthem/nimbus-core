@@ -40,7 +40,7 @@ public class CommandMessageConverter {
 		this.om = beanResolver.get(ObjectMapper.class);
 	}
 
-	public Object convert(ParamConfig<?> pConfig, String json) {
+	public Object read(ParamConfig<?> pConfig, String json) {
 		if(StringUtils.isEmpty(json) || Pattern.matches(EMPTY_JSON_REGEX, json)) 
 			return null;
 		
@@ -58,7 +58,7 @@ public class CommandMessageConverter {
 		}
 	}
 	
-	public <T> T convert(Class<T> clazz, String json) {
+	public <T> T read(Class<T> clazz, String json) {
 		if(StringUtils.isEmpty(json) || Pattern.matches(EMPTY_JSON_REGEX, json)) 
 			return null;
 		
@@ -72,7 +72,7 @@ public class CommandMessageConverter {
 		}
 	}
 	
-	public List convertArray(Class<?> elemClazz, Class<? extends Collection> collClazz, String json) {
+	public List readArray(Class<?> elemClazz, Class<? extends Collection> collClazz, String json) {
 		if(StringUtils.isEmpty(json) || Pattern.matches(EMPTY_JSON_REGEX, json)) 
 			return null;
 		
@@ -86,7 +86,7 @@ public class CommandMessageConverter {
 		}
 	}
 	
-	public String convert(Object model) {
+	public String write(Object model) {
 		if(model==null) return null;
 		
 		try {
