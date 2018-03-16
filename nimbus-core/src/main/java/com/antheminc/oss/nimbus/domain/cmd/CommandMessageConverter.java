@@ -39,7 +39,6 @@ public class CommandMessageConverter {
 	
 	public CommandMessageConverter(BeanResolverStrategy beanResolver) {
 		this.om = beanResolver.get(ObjectMapper.class);
-		this.om.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 	}
 
 	public Object convert(ParamConfig<?> pConfig, String json) {

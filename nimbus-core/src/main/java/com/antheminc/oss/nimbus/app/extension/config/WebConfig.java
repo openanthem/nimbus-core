@@ -38,6 +38,7 @@ import com.antheminc.oss.nimbus.support.json.CustomLocalDateSerializer;
 import com.antheminc.oss.nimbus.support.json.CustomLocalDateTimeDeserializer;
 import com.antheminc.oss.nimbus.support.json.CustomLocalDateTimeSerializer;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
 
@@ -108,7 +109,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
             @Override
             public void customize(Jackson2ObjectMapperBuilder jacksonObjectMapperBuilder) {
-            	jacksonObjectMapperBuilder.serializationInclusion(Include.NON_NULL);
+            	jacksonObjectMapperBuilder.serializationInclusion(Include.NON_EMPTY);
+            	jacksonObjectMapperBuilder.featuresToEnable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
             	
             	jacksonObjectMapperBuilder.filters(
             			new SimpleFilterProvider().addFilter("default.entityState.filter", new EntityStateConfigJsonFilter()));
