@@ -77,8 +77,8 @@ h3{
 
 h1.page-title {
     margin-bottom:0;
-    margin-left:20px;
     font-size: 1.3rem;
+    margin-left:20px;
     font-weight: 400;
     &.dashboard::before{
         color: $iconColor;
@@ -186,6 +186,7 @@ h1.page-title {
 
     .card-block {
         margin: 0;
+        padding: 0;
     }
     .viewport {
         padding: 10px 10px 0 10px;
@@ -207,7 +208,7 @@ h1.page-title {
 .info-card {
     display: inline-block;
     width: 84%;
-  
+    padding-left: 20px;
 }
 .ui-dialog-content label {
     padding-top: .3rem;
@@ -278,19 +279,20 @@ legend {
         background: #edf7ff;
         display: block;
         padding: .3rem .7rem .8rem;
-        margin: 0 100px 0 0px;
+        margin: 0 100px 0 20px;
         label:first-of-type {
             margin-top: 0;
         }
-        input, .select-wrapper, textarea {
+        input, .ui-dropdown, textarea {
             max-width: 300px;
             width: 100%;
             margin-left: 0;
+            margin-left: 20px;
         }
     }
     legend:first-of-type {
         margin-top: 0.5rem;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1.0rem;
     }
 }
 .ui-calendar input {
@@ -337,7 +339,7 @@ legend {
             margin-top: 0;
         }
         .checkboxHolder {
-            padding-left: 0px;
+            padding-left: 20px;
         }
     }
     .warningMsg {

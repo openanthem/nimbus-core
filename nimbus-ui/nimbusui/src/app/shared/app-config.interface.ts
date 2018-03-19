@@ -507,7 +507,7 @@ export class ParamConfig implements Serializable<ParamConfig> {
     validation: Validation;
     uiNatures: UiNature[];
     enabled: boolean;
-    visible: boolean;
+    //visible: boolean;
     label: string;
     
     message: Message;
@@ -544,9 +544,9 @@ export class ParamConfig implements Serializable<ParamConfig> {
         if (inJson.enabled != null) {
             this.enabled = inJson.enabled;
         }
-        if (inJson.visible != null) {
-            this.visible = inJson.visible;
-        }
+        // if (inJson.visible != null) {
+        //     this.visible = inJson.visible;
+        // }
         
         // Not sure if the below is required..
         if ( inJson.message != null ) {

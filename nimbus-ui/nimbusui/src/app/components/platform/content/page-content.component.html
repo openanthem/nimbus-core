@@ -1,7 +1,7 @@
 <!-- Display Tiles -->
 <nm-message messageType="{{element?.message.type}}" messageText="{{element?.message.text}}" *ngIf="element?.message"></nm-message>
 
-<ng-template [ngIf]="element?.config?.labelConfigs?.length > 0 && element?.visible && element?.config?.visible">
+<ng-template [ngIf]="element?.config?.labelConfigs?.length > 0 && element?.visible">
     <h1 class="page-title {{imgSrc}} ">
         {{label}}
     </h1>

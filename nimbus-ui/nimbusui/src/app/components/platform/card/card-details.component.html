@@ -1,4 +1,4 @@
-<div [ngClass]="{hide: opened}" class="col-xs-12 mb-2 {{element.config?.uiStyles?.attributes?.cssClass}}">
+<div [ngClass]="{hide: opened}" class="col-xs-12 mt-1 {{element.config?.uiStyles?.attributes?.cssClass}}">
     <ng-template ngFor let-param [ngForOf]="element?.type?.model?.params">
         <div class="col-sm-12 cardBody">
             <ng-template [ngIf]="param.config?.uiStyles?.attributes?.alias == 'CardDetailsHeader'">
