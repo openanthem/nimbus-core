@@ -205,7 +205,7 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 	}
 	
 	@Test
-	public void t05_updateOnlyGivenFields_nested() {
+	public void t06_updateOnlyGivenFields_nested() {
 		String refId = createOrGetDomainRoot_RefId();
 		
 		// Build the request for updating the form
