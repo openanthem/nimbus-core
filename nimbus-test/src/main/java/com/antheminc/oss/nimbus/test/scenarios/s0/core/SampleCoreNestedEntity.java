@@ -29,4 +29,6 @@ import lombok.Setter;
 public class SampleCoreNestedEntity {
 	
 	private String nested_attr_String;
+	
+	private String nested_attr_String2;
 }
