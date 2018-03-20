@@ -45,12 +45,45 @@ public class CommandMessageConverter {
 			return null;
 		
 		try {
-			Object model = pConfig.getType().isCollection() 
-								? om.readValue(json, om.getTypeFactory().constructCollectionType(List.class, pConfig.getType().findIfCollection().getElementConfig().getReferredClass()))
-										: pConfig.getType().isArray()
-											? om.readValue(json, om.getTypeFactory().constructArrayType(pConfig.getReferredClass()))
-													:om.readValue(json, pConfig.getReferredClass());
+			final Object model;
+											
+			if(pConfig.getType().isCollection())
+				model = om.readValue(json, om.getTypeFactory().constructCollectionType(List.class, pConfig.getType().findIfCollection().getElementConfig().getReferredClass()));
+			
+			else if(pConfig.getType().isArray())
+				model = om.readValue(json, om.getTypeFactory().constructArrayType(pConfig.getReferredClass()));
+			
+			else
+				model = om.readValue(json, pConfig.getReferredClass());
+											
 			return model;
+			
+		} catch (Exception ex) {
+			throw new FrameworkRuntimeException("Failed to convert from JSON to instance of "+pConfig
+					+"\n json:\n"+json, ex);
+		}
+	}
+	
+	
+	public <T> T read(ParamConfig<?> pConfig, String json, T existingEntityToUpdate) {
+		if(StringUtils.isEmpty(json) || Pattern.matches(EMPTY_JSON_REGEX, json)) 
+			return null;
+		
+		try {
+			final Object model;
+											
+			if(pConfig.getType().isCollection())
+				model = om.readValue(json, om.getTypeFactory().constructCollectionType(List.class, pConfig.getType().findIfCollection().getElementConfig().getReferredClass()));
+			
+			else if(pConfig.getType().isArray())
+				model = om.readValue(json, om.getTypeFactory().constructArrayType(pConfig.getReferredClass()));
+			
+			else {
+				//model = om.readValue(json, pConfig.getReferredClass());
+				model = om.readerForUpdating(existingEntityToUpdate).readValue(json);
+			}
+											
+			return (T)model;
 			
 		} catch (Exception ex) {
 			throw new FrameworkRuntimeException("Failed to convert from JSON to instance of "+pConfig
@@ -97,5 +130,6 @@ public class CommandMessageConverter {
 					+ "\n modelInstance: "+model, ex);
 		}
 	}
+
 }
  

@@ -162,4 +162,11 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 		
 		assertTrue(ArrayUtils.equals(K_string_arr, core.getLevel1().getLevel2b().getString_array_b()));
 	}
+	
+	@Test
+	public void t05_entity_update() {
+		String refId = createOrGetDomainRoot_RefId();
+		
+		
+	}
 }

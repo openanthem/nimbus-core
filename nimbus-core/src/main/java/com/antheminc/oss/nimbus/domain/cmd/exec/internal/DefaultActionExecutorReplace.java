@@ -20,6 +20,7 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.AbstractCommandExecutor;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Input;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 
 /**
@@ -32,17 +33,48 @@ public class DefaultActionExecutorReplace extends AbstractCommandExecutor<Boolea
 		super(beanResolver);
 	}
 
+//	@Override
+//	protected Output<Boolean> executeInternal(Input input) {
+//		ExecutionContext eCtx = input.getContext();
+//		
+//		Param<Object> p = findParamByCommandOrThrowEx(eCtx);
+//		
+//		Object state = getConverter().read(p.getConfig(), eCtx.getCommandMessage().getRawPayload());
+//		
+//		p.setState(state);
+//		
+//		return Output.instantiate(input, eCtx, Boolean.TRUE);
+//	}
+	
+	@SuppressWarnings("unchecked")
 	@Override
 	protected Output<Boolean> executeInternal(Input input) {
 		ExecutionContext eCtx = input.getContext();
 		
 		Param<Object> p = findParamByCommandOrThrowEx(eCtx);
 		
-		Object state = getConverter().read(p.getConfig(), eCtx.getCommandMessage().getRawPayload());
+		if(p.isCollection())
+			handleCollection(eCtx, p.findIfCollection());
+		else 
+			handleParam(eCtx, p);
 		
-		p.setState(state);
-		
+		// TODO use the Action output from the setState to check if the action performed is _update to return true
+		//, else false - right now it either return _new or _replace (change detection is not yet implemented)
 		return Output.instantiate(input, eCtx, Boolean.TRUE);
+	}
+	
+	protected void handleCollection(ExecutionContext eCtx, ListParam<Object> p) {
+		// perform add on collection
+		Object colElemState = getConverter().read(p.getType().getModel().getElemConfig(), eCtx.getCommandMessage().getRawPayload());
+		
+		p.add(colElemState);
+	}
+	
+	protected void handleParam(ExecutionContext eCtx, Param<Object> p) {
+		// replace existing
+		Object updated = getConverter().read(p.getConfig(), eCtx.getCommandMessage().getRawPayload());
+		
+		p.setState(updated);
 	}
 	
 } 
