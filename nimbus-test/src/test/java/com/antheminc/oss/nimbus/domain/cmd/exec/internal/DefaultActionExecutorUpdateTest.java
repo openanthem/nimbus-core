@@ -37,6 +37,7 @@ import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreNestedEntity;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleNoConversionEntity.NestedNoConversionLevel1;
+import com.antheminc.oss.nimbus.test.scenarios.s0.view.VPSampleViewPageRed.Form_ConvertedNestedEntity;
 
 /**
  * @author Soham Chakravarti
@@ -251,5 +252,63 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 		// Validate original value still exists
 		assertEquals("initially_set_value", viewParam.getState().getNested_nc_attr1A());
 		assertEquals("initially_set_value", viewParam.getState().getNc_nested_level2().getNested_nc_attr2C());
+	}
+	
+	@Test
+	public void t07_updateOnlyGivenFields_transient() {
+		String refId = createOrGetDomainRoot_RefId();
+		
+		// Build the request for updating the form
+		MockHttpServletRequest req_update = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT)
+				.addRefId(refId)
+				.addNested("/page_red/tile/vt_attached_convertedNestedEntity")
+				.addAction(Action._update)
+				.getMock();
+		
+		// Build the request for assigning maps to
+		MockHttpServletRequest req_assignMapsTo = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT)
+				.addRefId(refId)
+				.addNested("/page_red/tile/vt_attached_convertedNestedEntity")
+				.addAction(Action._get)
+				.addParam("fn", "param")
+				//.addParam("expr", "assignMapsTo('/.d/.m/attr_NestedEntity')")
+				.addParam("expr", "assignMapsTo()")
+				.getMock();
+		
+		// Build the request for retrieving the form
+		MockHttpServletRequest req_get = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT)
+				.addRefId(refId)
+				.addNested("/page_red/tile/vt_attached_convertedNestedEntity")
+				.addAction(Action._get)
+				.getMock();
+		
+		// Assign the transient param
+		this.controller.handleGet(req_assignMapsTo, null);
+		
+		// Set an initial value to one field
+		String payload = 
+			"{ " + 
+				"\"vt_nested_attr_String\": \"initially_set_value\"" +
+			"}";
+		
+		this.controller.handlePut(req_update, null, payload);
+		
+		// Validate the value was set
+		Object resp_get = controller.handleGet(req_get, null);
+		EntityState.Param<Form_ConvertedNestedEntity> viewParam = ExtractResponseOutputUtils.extractOutput(resp_get);
+		// TODO - This fails with a null value. Why is it not being retrieved?
+		assertEquals("initially_set_value", viewParam.getState().getVt_nested_attr_String());
+		
+		// Set a second value to a different field
+		payload = "{ \"vt_nested_attr_String2\":\"new_value_from_update\" }";
+		this.controller.handlePut(req_update, null, payload);
+		
+		// Validate the value was set
+		resp_get = controller.handleGet(req_get, null);
+		viewParam = ExtractResponseOutputUtils.extractOutput(resp_get);
+		assertEquals("new_value_from_update", viewParam.getState().getVt_nested_attr_String2());
+		
+		// Validate original value still exists
+		assertEquals("initially_set_value", viewParam.getState().getVt_nested_attr_String());
 	}
 }

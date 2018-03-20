@@ -90,6 +90,9 @@ public class VPSampleViewPageRed {
 		@NotNull
 		@Path("/nested_attr_String")
 		private String vt_nested_attr_String;
+		
+		@Path("/nested_attr_String2")
+		private String vt_nested_attr_String2;
 	}
 	
 }
