@@ -37,12 +37,12 @@ import { ServiceConstants } from './../../services/service.constants';
         WebContentSvc
     ],
     template: `
-        <ng-template [ngIf]="imgSrc && imgSrc !== ''">
+        <ng-template [ngIf]="imgSrc">
             <a href="{{url}}" class='{{cssClass}}'>
                 <img src="{{imagesPath}}{{imgSrc}}" class=" logo" alt="{{this.label}}" />
             </a>
         </ng-template>
-        <ng-template [ngIf]="!imgSrc || imgSrc === ''">
+        <ng-template [ngIf]="!imgSrc">
 
             <!-- External Links -->
             <ng-template [ngIf]="value=='EXTERNAL'">

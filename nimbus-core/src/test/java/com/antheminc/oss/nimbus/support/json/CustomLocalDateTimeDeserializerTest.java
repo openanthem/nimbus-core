@@ -32,7 +32,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.antheminc.oss.nimbus.support.json.CustomLocalDateTimeDeserializer;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 
@@ -66,7 +65,7 @@ public class CustomLocalDateTimeDeserializerTest {
 	public void t1_deserializeBadDate() throws IOException {
 		Mockito.when(this.jsonParser.getText()).thenReturn("10-13-1988");
 		this.thrown.expect(JsonParseException.class);
-		this.thrown.expectMessage("Unparseable date: \"10-13-1988\". Supported formats: [yyyy-MM-dd'T'HH:mm:ss.SSS'Z']");
+		this.thrown.expectMessage("Unparseable date: \"10-13-1988\". Supported format: yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		this.testee.deserialize(this.jsonParser, null);
 	}
 }

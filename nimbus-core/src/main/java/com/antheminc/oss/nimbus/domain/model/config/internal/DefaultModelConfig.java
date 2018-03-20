@@ -47,26 +47,27 @@ public class DefaultModelConfig<T> extends AbstractEntityConfig<T> implements Mo
 	private static final long serialVersionUID = 1L;
 
 	@JsonIgnore private final Class<T> referredClass;
-	private String alias;
+	
+	@JsonIgnore private String alias;
 	
 	@JsonIgnore private Domain domain;
 	@JsonIgnore private Model model;
 	
 	@JsonIgnore private Repo repo;
 	
-	private List<ParamConfig<?>> params;
+	private List<ParamConfig<?>> paramConfigs;
 	
-	@JsonIgnore private transient ParamConfig<?> idParam;
+	@JsonIgnore private transient ParamConfig<?> idParamConfig;
 	
-	@JsonIgnore	private transient ParamConfig<?> versionParam;
+	@JsonIgnore	private transient ParamConfig<?> versionParamConfig;
 	
 	@JsonIgnore
-	private final transient CollectionsTemplate<List<ParamConfig<?>>, ParamConfig<?>> templateParams = new CollectionsTemplate<>(
-			() -> getParams(), (p) -> setParams(p), () -> new LinkedList<>());
+	private final transient CollectionsTemplate<List<ParamConfig<?>>, ParamConfig<?>> templateParamConfigs = new CollectionsTemplate<>(
+			() -> getParamConfigs(), (p) -> setParamConfigs(p), () -> new LinkedList<>());
 
 	@Override @JsonIgnore
-	public CollectionsTemplate<List<ParamConfig<?>>, ParamConfig<?>> templateParams() {
-		return templateParams;
+	public CollectionsTemplate<List<ParamConfig<?>>, ParamConfig<?>> templateParamConfigs() {
+		return templateParamConfigs;
 	}
 
 	@Override @JsonIgnore 
@@ -90,7 +91,7 @@ public class DefaultModelConfig<T> extends AbstractEntityConfig<T> implements Mo
 		String nPath = pathArr[0];
 		
 		@SuppressWarnings("unchecked")
-		ParamConfig<K> p = (ParamConfig<K>)templateParams().find(nPath);
+		ParamConfig<K> p = (ParamConfig<K>)templateParamConfigs().find(nPath);
 		if(p == null) return null;
 		
 		if(pathArr.length == 1) { //last one

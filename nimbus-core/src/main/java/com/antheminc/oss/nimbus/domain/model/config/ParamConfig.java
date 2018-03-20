@@ -25,6 +25,7 @@ import com.antheminc.oss.nimbus.domain.defn.MapsTo.Mode;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo.Path;
 import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values;
 import com.antheminc.oss.nimbus.entity.Findable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -40,7 +41,7 @@ public interface ParamConfig<P> extends EntityConfig<P>, Findable<String> {
 	public String getBeanName();
 	
 //	@JsonIgnore M7
-	public ParamType getType();
+	public ParamConfigType getType();
 	
 	public boolean isLeaf();
 	
@@ -72,6 +73,17 @@ public interface ParamConfig<P> extends EntityConfig<P>, Findable<String> {
 
 	public void onCreateEvent();
 	
+	@JsonIgnore
+	default boolean isTransient() {
+		return false;
+	}
+	
+	@JsonIgnore
+	default MappedTransientParamConfig<P, ?> findIfTransient() {
+		return null;
+	}
+	
+	@JsonIgnore
 	default MapsTo.Mode getMappingMode() {
 		return MapsTo.Mode.UnMapped;
 	}
@@ -102,8 +114,22 @@ public interface ParamConfig<P> extends EntityConfig<P>, Findable<String> {
 		public boolean isDetachedWithAutoLoad(); // e.g. @Path(value="/a/b/c/action", linked=false)
 		
 		@Override
-		public ParamConfig<M> getMapsTo();
+		public ParamConfig<M> getMapsToConfig();
 		
 		public ModelConfig<?> getMapsToEnclosingModel();
+	}
+	
+	public interface MappedTransientParamConfig<P, M> extends MappedParamConfig<P, M> {
+		@Override
+		default boolean isTransient() {
+			return true;
+		}
+		
+		@Override @JsonIgnore
+		default MappedTransientParamConfig<P, ?> findIfTransient() {
+			return this;
+		}
+		
+		MappedParamConfig<P, M> getSimulatedDetached();
 	}
 }

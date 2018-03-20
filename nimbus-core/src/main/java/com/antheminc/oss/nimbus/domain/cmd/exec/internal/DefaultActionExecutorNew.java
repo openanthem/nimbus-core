@@ -157,7 +157,7 @@ public class DefaultActionExecutorNew extends AbstractFunctionCommandExecutor<Ob
 	}
 	
 	protected QuadModel<?, ?> handleMapped(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx, Object mapped, Action action) {
-		ModelConfig<?> mapsToConfig = rootDomainConfig.findIfMapped().getMapsTo();
+		ModelConfig<?> mapsToConfig = rootDomainConfig.findIfMapped().getMapsToConfig();
 
 		Command mapsToCmd = CommandBuilder.from(eCtx.getCommandMessage().getCommand(), mapsToConfig.getAlias()).getCommand();
 		mapsToCmd.setAction(action);

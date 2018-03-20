@@ -15,8 +15,6 @@
  */
 package com.antheminc.oss.nimbus.domain.cmd.exec;
 
-import org.springframework.web.context.request.RequestContextHolder;
-
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
@@ -62,14 +60,9 @@ import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
  */
 public interface ExecutionContextLoader {
 
-	default ExecutionContext load(Command rootDomainCmd) {
-		String sessionId = RequestContextHolder.getRequestAttributes().getSessionId();
-		return load(rootDomainCmd, sessionId);
-	}
+	public ExecutionContext load(Command rootDomainCmd);
 	
-	public ExecutionContext load(Command rootDomainCmd, String sessionId);
-	
-	public void unload(ExecutionContext eCtx, String sessionId);
+	public void unload(ExecutionContext eCtx);
 	
 	public void clear();
 }

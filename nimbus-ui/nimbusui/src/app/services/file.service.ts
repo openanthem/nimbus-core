@@ -57,16 +57,4 @@ export class FileService {
             );
     }
 
-    // removeFile(fileId: String){
-    
-    // var url="";
-    // return this.http.removeFile(url)
-    //     .subscribe(data => {
-    //         // console.log("data", data);
-    //     },
-    //         err => console.log(err),
-    //         () => console.log('File deleted ..')
-    //     );
-
-    // }
 }

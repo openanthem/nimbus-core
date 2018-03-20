@@ -21,6 +21,7 @@ import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { PageService } from '../../../../services/page.service';
 import { Param } from '../../../../shared/app-config.interface';
+
 /**
  * \@author Sandeep Mantha
  * \@whatItDoes A control to be used when the user input is in the form of date or date with time or just the time.
@@ -43,18 +44,16 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   selector: 'nm-input-calendar',
   providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR,WebContentSvc],
   template: `
-        <label [attr.for]="element.config?.code" class="{{elementStyle}}" *ngIf="this.showLabel">{{label}}
+        <label [attr.for]="element.config?.code"  [ngClass]="{'required': requiredCss, '': !requiredCss}" *ngIf="this.showLabel">{{label}}
             <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
         </label>
         <p-calendar [(ngModel)]="value"  
             (focusout)="emitValueChangedEvent(this,$event)" 
-            [minDate]="min"
-            [maxDate]="max"
             [showIcon]="true"
-            [disabled]="!element?.enabled?.currState"
             [timeOnly]="element.config?.uiStyles?.attributes?.timeOnly"
             [showTime]="element.config?.uiStyles?.attributes?.showTime" 
-            [hourFormat]="element.config?.uiStyles?.attributes?.hourFormat" >
+            [hourFormat]="element.config?.uiStyles?.attributes?.hourFormat" 
+            [disabled]="disabled">
         </p-calendar>
    `
 })

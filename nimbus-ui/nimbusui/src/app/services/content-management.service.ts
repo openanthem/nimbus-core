@@ -21,7 +21,7 @@ import { Http, Headers, RequestOptions } from '@angular/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/share';
 import { ServiceConstants } from './service.constants';
-import { Param, LabelConfig, ElementModelParam } from './../shared/app-config.interface';
+import { Param, LabelConfig } from './../shared/app-config.interface';
 
 /**
  * \@author Dinakar.Meda
@@ -39,14 +39,14 @@ export class WebContentSvc {
 	}
 
     logError(err) {
-		console.error('Failure making server call : ' + JSON.stringify(err));
+		// console.error('Failure making server call : ' + JSON.stringify(err));
 	}
 
-    findLabelContent(param: Param) {
+    findLabelContent(param: Param): LabelConfig {
         return this.findLabelContentFromConfig(param.config.code, param.config.labelConfigs);
     }
 
-    findLabelContentFromConfig(code : string, labelConfigs : LabelConfig[]) {
+    findLabelContentFromConfig(code : string, labelConfigs : LabelConfig[]): LabelConfig {
         let labelContent: LabelConfig = new LabelConfig();
         if(labelConfigs == null || (labelConfigs != null && labelConfigs.length < 1)) {
             labelContent.text = code;

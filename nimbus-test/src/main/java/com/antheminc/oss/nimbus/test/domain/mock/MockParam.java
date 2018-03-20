@@ -21,7 +21,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
+import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.ValidationGroup;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
@@ -67,7 +69,23 @@ public class MockParam implements Param<Object> {
 	private StateType type = null;
 	private List<ParamValue> values = null;
 	private boolean visible = true;
+	private Class<? extends ValidationGroup>[] activeValidationGroups;
 
+	@Override
+	public String getConfigId() {
+		return getConfig().getId();
+	}
+	
+	@Override
+	public <P> P findStateByPath(String path) {
+		Param<P> param = findParamByPath(path);
+		
+		if(param==null)
+			throw new InvalidConfigException("Param not found for given path: "+path+" relative to current param/model: "+this);
+		
+		return param.getState();
+	}
+	
 	/* (non-Javadoc)
 	 * @see com.anthem.oss.nimbus.core.domain.model.state.EntityState.Param#activate()
 	 */
@@ -232,5 +250,86 @@ public class MockParam implements Param<Object> {
 	@Override
 	public void onStateChangeEvent(ExecutionTxnContext txnCtx, Action a) {
 		
+	}
+
+	@Override
+	public boolean isRoot() {
+		return false;
+	}
+
+	@Override
+	public boolean isMapped() {
+		return false;
+	}
+
+	@Override
+	public boolean isLeaf() {
+		return false;
+	}
+
+	@Override
+	public boolean isLeafOrCollectionWithLeafElems() {
+		return false;
+	}
+
+	@Override
+	public LeafParam<Object> findIfLeaf() {
+		return null;
+	}
+
+	@Override
+	public MappedParam<Object, ?> findIfMapped() {
+		return null;
+	}
+
+	@Override
+	public boolean isCollection() {
+		return false;
+	}
+
+	@Override
+	public boolean isNested() {
+		return false;
+	}
+
+	@Override
+	public com.antheminc.oss.nimbus.domain.model.state.EntityState.Model<Object> findIfNested() {
+		return null;
+	}
+
+	@Override
+	public boolean isCollectionElem() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public ListParam findIfCollection() {
+		return null;
+	}
+
+	@Override
+	public ListElemParam<Object> findIfCollectionElem() {
+		return null;
+	}
+
+	@Override
+	public boolean isLinked() {
+		return false;
+	}
+
+	@Override
+	public Param<?> findIfLinked() {
+		return null;
+	}
+
+	@Override
+	public boolean isTransient() {
+		return false;
+	}
+
+	@Override
+	public MappedTransientParam<Object, ?> findIfTransient() {
+		return null;
 	}
 }

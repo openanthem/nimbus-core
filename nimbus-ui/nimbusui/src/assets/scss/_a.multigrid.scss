@@ -7,6 +7,11 @@ ng-component{
     position: relative;
 }
 
+.ui-expanded-row-content .scrollGrid .ui-datatable-scrollable-body, 
+.ui-expanded-row-content .ui-datatable .ui-datatable-scrollable-body {
+    min-height: 0px;
+}
+
 .ui-datatable,.scrollGrid {
     position: static;
     font-size: 1rem;
@@ -14,15 +19,15 @@ ng-component{
         display: inline-block;
     }
     .ui-datatable-scrollable-body{
-        min-height: 200px;
+        min-height: 60px;
     }
     
     th.ui-state-default{
-        background: $gray-med;
-        color: #fff;
+        background: #daedfc;
+        color: #4d4c57;
     }
     th.ui-state-active{
-        background: $gray-dark;
+        background: #b3dcfc;
     }
 
     .ui-datatable-data > tr > td {
@@ -30,10 +35,10 @@ ng-component{
     }
     tbody > tr {
         &.ui-widget-content.ui-datatable-even {
-            background-color: #efefef;
+            background-color: #fff;
         }
         &.ui-widget-content.ui-datatable-odd {
-            background-color: #fff;
+            background-color: #edf7ff;
         }
         &.ui-widget-content.ui-state-highlight { 
             color: inherit;
@@ -47,9 +52,12 @@ ng-component{
         padding: 0;
     }
     th.ui-sortable-column:not(.ui-state-active):hover {
-        background-color: $gray-dark;
-        color: #fff;
+        background-color: #b3dcfc;
+        .ui-sortable-column-icon {
+            color: #4c4c4c;
+        }
     }
+    
     .col-icon {
         width: 30px;
     }
@@ -64,44 +72,93 @@ ng-component{
         position: relative;
         text-align: left;
         border: none;
-        padding: .2rem .4rem;
+        padding: .2rem 2px .2rem .4rem ;
         line-height: 1rem;
         .ui-column-title {
-            display: inline-block;
+            display: block;
             text-align: left;
-            max-width: 65%;
-            margin-right:.3rem;
-             overflow: hidden;
-             text-overflow: ellipsis;
-             white-space: nowrap;
-            // height: 1.3rem;
+            font-weight: bold;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding-right: 40px; 
+            
         }
-        .gridFilterIcon {
-            display:none;
-            position: absolute;
-            left: 2px;
-            top:0;
-            &::before{
-                background-size: 15px 15px;
-                height: 15px;
-                width: 15px;
-                display: block;
-                content: ' ';
-                font-family: "fontAwesome";
-                content: "\f0b0";
-                font-size: .8rem;
+
+        .filterHolder{
+            position: relative;
+            margin-top: 3px;
+                input{
+                    max-width: 100%;
+                    min-width: 98%;
+                }
+                button{
+                    position: absolute;
+                    right: 3%;
+                    top: 4px;
+                    font-size: .8rem;
+                    border: none;
+                    height: 1rem;
+                    color: #b9b6b6;
+                    padding: .1rem .3rem;
+                    color: #b9b6b6;
+                    &:hover, &:focus{
+                        color: #4c4c4c;
+                    }
+                }
+            }
+            .gridFilterIcon {
+                position:absolute;
+                right: 0;
+                top: 0;
+                color: #b9b6b6;
+                &::before{
+                    background-size: 15px 15px;
+                    height: 15px;
+                    width: 15px;
+                    display: block;
+                    font-family: "fontAwesome";
+                    content: "\f0b0";
+                    font-size: .8rem;
+                }
+                &:hover, &:focus{
+                    color: #4c4c4c;
+                }
+            }
+       
+       
+        .ui-sortable-column-icon {
+            font-size: 1rem;
+            color: #b9b6b6;
+            position:absolute;
+            right: 14px;
+            top: 2px;
+            &:hover, &:focus{
+                color: #4c4c4c;
             }
         }
-       
-        .ui-sortable-column-icon{
-        font-size: 1.2rem;
-        display:inline;
-        color: #fff;
+        .fa-sort:before, .fa-unsorted:before {
+            content: "\f176";;
+        }
+        .fa-sort:after, .fa-unsorted:after {
+            content: "\f175";;
+        }
+        .fa-sort-asc:before,.fa-sort-asc:after {
+            color: #e5991c;
+            &:hover{
+                color: #4c4c4c;
+            }
+        }
+        .fa-sort-desc:before,.fa-sort-desc:after {
+            color: #e5991c;
+            &:hover{
+                color: #4c4c4c;
+            }
         }
     }
     tr.ui-expanded-row-content {
+        background: #D9EDFD;
+        padding: .4rem;
         .ui-datatable {
-            padding: .6rem 1.5rem;
             .ui-state-default {
                 background-color: #ccc;
                 color: #555;
@@ -129,30 +186,104 @@ ng-component{
     }
 }
 
+.ui-expanded-row-content .scrollGrid td.dropdown .ui-cell-data, 
+.ui-expanded-row-content .ui-datatable td.dropdown .ui-cell-data {
+    overflow: visible;
+}
+
+.ui-expanded-row-content {
+    .scrollGrid, .ui-datatable{
+        td.dropdown .ui-cell-data {
+            overflow: visible;
+        }
+        .ui-datatable-thead > tr > th .ui-column-title {
+            font-weight: normal;
+        }
+        tbody > tr.ui-widget-content.ui-datatable-odd {
+            background-color: #fff;
+        }
+    } 
+}
+.ui-row-toggler{
+    font-size: 1.5rem;
+    width: 20px;
+    &.fa-chevron-circle-down:before {
+    content: "\f0d7";
+    color: #e5991c;
+    }
+    &.fa-chevron-circle-right:before{
+        content: "\f0da";
+        color: #94acbc;;
+    }
+}
+.ui-datatable tr.ui-expanded-row-content .ui-datatable .ui-state-default, 
+.scrollGrid tr.ui-expanded-row-content .ui-datatable .ui-state-default {
+    background-color: #ebebeb;
+    color: #555;
+}
+
 .ui-widget-content {
     border:none;
 }
 .ui-widget-header {
+    background: #6e9de1;
     border: none;
-    text-align: right;
-    font-size: .8rem;
+    text-align: left;
+    color: #fff;
     &.ui-paginator {
-        font-size: .6rem;
+        font-size: .8rem;
+        text-align: right;
+        .ui-paginator-page.ui-state-active {
+            background: #184987;
+            color: #ffffff;
+            
+        }
+        .ui-corner-all {
+            border-radius: 0px;
+        }
+        .ui-state-default{
+            border: none;
+        }
+        .ui-paginator-first{
+            background: none;
+            color:#fff;
+            
+        }
+        .ui-paginator-prev{
+            background: none;
+            color:#fff;
+            .fa-backward::before{
+                content: "\f060";
+            }
+        }
+        .ui-paginator-next{
+            background: none;
+            color:#fff;
+            .fa-forward::before{
+                content: "\f061";
+            }
+        }
+        .ui-paginator-last{
+            background: none;
+            color:#fff;
+            
+        }
     }
 }
 
-
 .recordsDisplayed{
     position: absolute;
-    left: 40%;
+    left: 43%;
     padding-top: .1rem;
     font-size: .9rem;
+}
+.ui-datatable-header .btn-plain { 
+    color: #FFF; 
 }
 span.ui-cell-data img { 
 margin-right: 10px; 
 }
-
-
-
- 
- 
+.scrollGrid .ui-datatable-thead > tr > th .gridFilterIcon.activeFilter::before,
+.ui-datatable .ui-datatable-thead > tr > th .gridFilterIcon.activeFilter::before { 
+    color: orange; 
+}

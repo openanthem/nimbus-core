@@ -44,12 +44,8 @@ domain:
   model:
     basePackages:
       - com.antheminc.oss.nimbus.entity
-      - com.antheminc.oss.nimbus.test.entity.simplecase.core
-      - com.antheminc.oss.nimbus.test.entity.simplecase.view
-      - com.antheminc.oss.nimbus.test.entity.sample.s0.core
-      - com.antheminc.oss.nimbus.test.entity.sample.s0.view
-      - com.antheminc.oss.nimbus.test.entity.sample.s1.core
-      - com.antheminc.oss.nimbus.test.entity.sample.s1.view      
+      - com.antheminc.oss.nimbus.**.core
+      - com.antheminc.oss.nimbus.**.view
       - com.antheminc.oss.nimbus.domain.bpm
       - com.antheminc.oss.nimbus.domain.rules
     typeClassMappings:

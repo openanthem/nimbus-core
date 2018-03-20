@@ -15,11 +15,12 @@
  * limitations under the License.
  */
 'use strict';
-import { Injectable } from '@angular/core';
-import { Http, RequestOptions } from '@angular/http';
-import { Subject }    from 'rxjs/Subject';
-import { PaginationPropertySort, PaginationPage } from './../model/pagination';
-import * as Rx from "rxjs/Rx";
+import { Injectable, EventEmitter } from '@angular/core';
+import { CustomHttpClient } from './httpclient.service';
+import { Subject } from 'rxjs/Subject';
+import { PaginatedRequest } from './../model/pagination.model';
+import { URLSearchParams } from '@angular/http';
+import { forEach } from '@angular/router/src/utils/collection';
 
 /**
  * \@author Dinakar.Meda
@@ -34,32 +35,23 @@ export class GridService {
 
     eventUpdate = new Subject<any>();
     eventUpdate$ = this.eventUpdate.asObservable();
-    constructor(private http: Http) {}
+    gridData$: EventEmitter<any>;
 
-    setSummaryObject(object: any) {
-         this.eventUpdate.next(object);
+    constructor(private http: CustomHttpClient) {
+        this.gridData$ = new EventEmitter();
     }
 
-    getSummaryDetails(id:string,url:string) {
+    setSummaryObject(object: any) {
+        this.eventUpdate.next(object);
+    }
+
+    getSummaryDetails(id: string, url: string) {
         // return this.http.get('app/resources/data/cars-medium.json')
         //             .toPromise()
         //             .then(res => <Car[]> res.json().data)
         //             .then(data => { return data; });
-        return this.http.get(url).map(res =>  res.json().data);
+        // return this.http.get(url);
+              //  .map(res => res.json());
     }
-
-     //getGridData(page: number, pageSize: number, sort: PaginationPropertySort): Rx.Observable<PaginationPage<any>> {
-     //    let params = new URLSearchParams();
-     //    params.set('size', `${pageSize}`);
-     //    params.set('page', `${page}`);
-     //    if (sort != null) {
-     //        params.set('sort', `${sort.property},${sort.direction}`);
-     //    }
-
-     //    let options = new RequestOptions({
-     //        search: params
-     //    });
-     //    return this.http.get(`${webServiceEndpoint}/person`, options).map((res) => this.extractData).publish().refCount();
-     //}
 
 }

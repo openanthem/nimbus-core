@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.antheminc.oss</groupId>
 		<artifactId>nimbus-parent</artifactId>
-		<version>1.0.0.M1-SNAPSHOT</version>
+		<version>1.0.0.M4-SNAPSHOT</version>
 		<relativePath>../nimbus-parent</relativePath>
 	</parent>
 	<artifactId>nimbus-extn-activiti</artifactId>
@@ -20,6 +20,8 @@
 			<groupId>org.activiti.designer</groupId>
 			<artifactId>org.activiti.designer.integration</artifactId>
 			<version>5.18.0</version> <!-- Use the current Activiti Designer version -->
+			<scope>system</scope>
+			<systemPath>${project.basedir}/src/main/resources/lib/org.activiti.designer.integration-5.18.0.jar</systemPath>
 		</dependency>
 	</dependencies>
 

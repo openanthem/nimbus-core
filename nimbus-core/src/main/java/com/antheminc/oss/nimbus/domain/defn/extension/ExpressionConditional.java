@@ -19,6 +19,7 @@ import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Documented;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -32,6 +33,7 @@ import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 @Documented
 @Retention(RUNTIME)
 @Target(FIELD)
+@Repeatable(ExpressionConditionals.class)
 @OnStateLoad @OnStateChange
 public @interface ExpressionConditional {
 
@@ -42,7 +44,7 @@ public @interface ExpressionConditional {
 	
 
 	/**
-	 *  SpEL based expression to be executed relative to param on which this annotation is declared.
+	 *  SpEL based expression to be executed relative to param on which this annotation is declared, if when() is true.
 	 */
 	String then();
 }

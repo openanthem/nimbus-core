@@ -17,6 +17,7 @@
 'use strict';
 
 import { PageService } from '../../../services/page.service';
+import { ConfigService } from '../../../services/config.service';
 import { Param, Page } from '../../../shared/app-config.interface';
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router, Resolve, RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
@@ -32,7 +33,10 @@ import { ActivatedRoute, Router, Resolve, RouterStateSnapshot, ActivatedRouteSna
 export class FlowResolver implements Resolve<Param> {
     page : Page;
 
-    constructor(private _pageSvc: PageService, private _route: ActivatedRoute, private _router: Router) {}
+    constructor(private _pageSvc: PageService, 
+        private _configSvc: ConfigService, 
+        private _route: ActivatedRoute, 
+        private _router: Router) {}
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<Param> {
         let flowName = route.params['flow'];
@@ -50,7 +54,7 @@ export class FlowResolver implements Resolve<Param> {
         });
 
         // Check if this is a new flow to be loaded.
-        if (this._pageSvc.getFlowConfig(flowName) === undefined) {
+        if (this._configSvc.getFlowConfig(flowName) === undefined) {
             this._pageSvc.loadFlowConfig(flowName);
         } else { // load page from pre loaded config
             this._pageSvc.loadDefaultPageForConfig(flowName);

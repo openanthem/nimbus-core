@@ -39,7 +39,8 @@ export class GridMouseEventDirective {
     this.highlight(this.highlightColor || this._defaultColor);
     //TODO ------- url to come from server config
     let url = 'resources/case-data.json';
-    this.gridService.getSummaryDetails(this.data.rowObj.caseId,url).subscribe((tasks) => {
+  // TODO - Remove this unused code. Replace with actual implementation. 
+    /*  this.gridService.getSummaryDetails(this.data.rowObj.caseId,url).subscribe((tasks) => {
         if(this.data.col.hover || this.data.rowhover) {
             this.gridService.setSummaryObject(tasks.find(p => p.caseId === this.data.rowObj.caseID ));
             //TODO ---------- pass event.target. Currently it is showing the overlay at the bottom of grid.
@@ -47,7 +48,7 @@ export class GridMouseEventDirective {
         } else {
             this.overlayPanel.hide();
         }
-    });
+    });*/
   }
   onMouseLeave() {
       this.highlight(null);

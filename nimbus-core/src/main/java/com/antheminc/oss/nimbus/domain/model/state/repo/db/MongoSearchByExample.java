@@ -18,18 +18,22 @@ package com.antheminc.oss.nimbus.domain.model.state.repo.db;
 import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.startsWith;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.repository.support.PageableExecutionUtils;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.defn.SearchNature.StartsWith;
-import com.antheminc.oss.nimbus.entity.SearchCriteria;
 
 /**
  * @author Rakesh Patel
@@ -42,20 +46,25 @@ public class MongoSearchByExample extends MongoDBSearch {
 	}
 
 	@Override
-	public <T> Object search(Class<?> referredClass, String alias, SearchCriteria<T> criteria) {
+	public <T> Object search(Class<T> referredClass, String alias, SearchCriteria<?> criteria) {
 		Query query = buildQuery(referredClass, alias, criteria.getWhere());
 		
-		if(StringUtils.equalsIgnoreCase(criteria.getAggregateCriteria(), "count")){
-			return getMongoOps().count(query, referredClass, alias); // TODO refactor to support other single value aggregations ...
+		if(StringUtils.equalsIgnoreCase(criteria.getAggregateCriteria(),Constants.SEARCH_REQ_AGGREGATE_COUNT.code)){
+			return getMongoOps().count(query, referredClass, alias);
 		}
+		
 		if(criteria.getProjectCriteria() != null && StringUtils.isNotBlank(criteria.getProjectCriteria().getAlias())) {
-			referredClass = findOutputClass(criteria, referredClass);
-			return getMongoOps().find(query, referredClass, alias);
+			referredClass = (Class<T>)findOutputClass(criteria, referredClass);
+		}
+		
+		if(criteria.getPageRequest() != null) {
+			return findAllPageable(referredClass, alias, criteria.getPageRequest(), query);
 		}
 		
 		return getMongoOps().find(query, referredClass, alias);
+		
 	}
-	
+
 	private <T> Query buildQuery(Class<?> referredClass, String alias, T criteria) {
 		if(criteria == null) 
 			return new Query();
@@ -68,6 +77,18 @@ public class MongoSearchByExample extends MongoDBSearch {
 		Criteria c = Criteria.byExample(example);
 		Query query = new Query(c);
 		return query;
+	}
+	
+	private <T> Object findAllPageable(Class<?> referredClass, String alias, Pageable pageRequest, Query query) {
+		Query qPage = query.with(pageRequest);
+		
+		List<?> results = getMongoOps().find(qPage, referredClass, alias);
+		
+		if(CollectionUtils.isEmpty(results))
+			return null;
+		
+		return PageableExecutionUtils.getPage(results, pageRequest, () -> getMongoOps().count(query, referredClass, alias));
+		
 	}
 
 	// TODO - recursive matcher is not building correctly - the fieldName should be "." seperated not just the current field name. 

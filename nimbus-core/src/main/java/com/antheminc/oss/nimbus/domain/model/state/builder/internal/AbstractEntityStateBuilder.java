@@ -39,7 +39,7 @@ import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values.Source;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig.MappedParamConfig;
-import com.antheminc.oss.nimbus.domain.model.config.ParamType;
+import com.antheminc.oss.nimbus.domain.model.config.ParamConfigType;
 import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Model;
@@ -144,70 +144,64 @@ abstract public class AbstractEntityStateBuilder extends AbstractEntityStateFact
 		return p;
 	}
 	
-//	private <T> void decorateParam(DefaultParamState<T> created) {
-//		if(created.getConfig().getContextParam()==null) //skip is not configured for RuntimeConfig
-//			return; 
-//
-//		ParamConfig<StateContextEntity> pCofigContext = created.getConfig().getContextParam();
-//		ModelConfig<StateContextEntity> mConfigContext = pCofigContext.getType().<StateContextEntity>findIfNested().getModel();
-//
-//		// create model config for StateContextEntity
-//		ExecutionEntity.ExConfig<Object, StateContextEntity> exConfig = new ExecutionEntity.ExConfig<>(mConfigContext, null, null);
-//		
-//		// context model path
-////		String ctxPath = created.getRootExecution().getRootCommand().buildAlias(Type.PlatformMarker) + //Constants.SEPARATOR_URI.code+ 
-////							created.getPath();// +"/"+ created.getConfig().getContextParam().getCode();
-////		Command ctxCmd = CommandBuilder.withUri(ctxPath).getCommand();
-////		
-////		String ctxParamPath = created.getPath();
-//		Command ctxCmd = created.getRootExecution().getRootCommand();
-//		
-//		ExecutionEntity<Object, StateContextEntity> eStateCtx = new ExecutionEntity<>();
-//		ExecutionEntity<Object, StateContextEntity>.ExParam exParamCtx = eStateCtx.new ExParamLinked(ctxCmd, created.getAspectHandlers(), exConfig, /*ctxParamPath,*/ created);
-//		//exParamCtx.initSetup();
-//		
-//		ExecutionEntity<Object, StateContextEntity>.ExModel exModelCtx = exParamCtx.getRootExecution().unwrap(ExecutionEntity.ExModel.class);
-//		//exModelCtx.initSetup();
-//		
-//		DefaultParamState<StateContextEntity> pCtx = buildParam(created.getAspectHandlers(), exModelCtx, exModelCtx.getConfig().getCoreParam(), null);
-//		Model<StateContextEntity> mCtx = pCtx.findIfNested();
-//		
-//		created.setContextModel(mCtx);
-//	}
-	
 	private <T> void decorateParam(DefaultParamState<T> created) {
 		
 	}
 	
 	private <P, V, C> DefaultParamState<P> createParamMapped(EntityStateAspectHandlers aspectHandlers, Model<?> parentModel, Model<?> mapsToSAC, MappedParamConfig<P, ?> mappedParamConfig) {
 		if(mappedParamConfig.getMappingMode() == Mode.MappedAttached) {
-			// find mapped param's state
-			final Param<?> mapsToParam = findMapsToParam(mappedParamConfig, mapsToSAC);
-
-			// handle transient
-			if(mappedParamConfig.getPath().nature() == MapsTo.Nature.TransientColElem) {
-				if(!mappedParamConfig.getType().isNested())
-					throw new InvalidConfigException("Non nested transient params are not supported, but found for: "+mappedParamConfig.getCode());
-				
-				@SuppressWarnings("unchecked")
-				ParamType.Nested<P> mpNmType = ((ParamType.Nested<P>)mappedParamConfig.getType());
-				
-				ModelConfig<P> mpNmConfig = mpNmType.getModel();
-				MappedDefaultTransientParamState.Creator<P> creator = (associatedParam, transientMapsTo) -> buildModel(aspectHandlers, associatedParam, mpNmConfig, transientMapsTo);
-				
-				return new MappedDefaultTransientParamState<>(mapsToParam, parentModel, mappedParamConfig, aspectHandlers, creator);
-			} 
-			
-			else if(mappedParamConfig.getPath().nature() != MapsTo.Nature.Default) {
-				throw new UnsupportedOperationException("Transient behavior for: "+mappedParamConfig.getPath().nature()+" not yet implemented, found for: "+mappedParamConfig.getCode());
-			}
-			
-			return getFactory(mappedParamConfig).instantiateParam(mapsToParam, parentModel, mappedParamConfig, aspectHandlers);
+			return createParamMappedAttached(aspectHandlers, parentModel, mapsToSAC, mappedParamConfig);			
 		}
 		
 
 		// detached nested
+		return createParamMappedDetached(aspectHandlers, parentModel, mapsToSAC, mappedParamConfig);
+	}
+
+	private <P, V, C> DefaultParamState<P> createParamMappedAttached(EntityStateAspectHandlers aspectHandlers, Model<?> parentModel, Model<?> mapsToSAC, MappedParamConfig<P, ?> mappedParamConfig) {
+		// find mapped param's state
+		final Param<?> mapsToParam = findMapsToParam(mappedParamConfig, mapsToSAC);
+
+		// handle transient
+		if(mappedParamConfig.getPath().nature() == MapsTo.Nature.TransientColElem) {
+			if(!mappedParamConfig.getType().isNested())
+				throw new InvalidConfigException("Non nested transient params are not supported, but found for: "+mappedParamConfig.getCode());
+			
+			@SuppressWarnings("unchecked")
+			ParamConfigType.Nested<P> mpNmType = ((ParamConfigType.Nested<P>)mappedParamConfig.getType());
+			
+			ModelConfig<P> mpNmConfig = mpNmType.getModelConfig();
+
+			MappedDefaultTransientParamState.Creator<P> creator = new MappedDefaultTransientParamState.Creator<P>() {
+				@Override
+				public Model<P> buildMappedTransientModel(MappedDefaultTransientParamState<P, ?> associatedParam, Model<?> transientMapsTo) {
+					return buildModel(aspectHandlers, associatedParam, mpNmConfig, transientMapsTo);
+				}
+				
+				@Override
+				public Param<?> buildMapsToDetachedParam(MappedDefaultTransientParamState<P, ?> associatedParam) {
+					MappedParamConfig<P, ?> simulatedDetachedParamConfig = mappedParamConfig.findIfTransient().getSimulatedDetached();
+					return createParamMapsToDetached(aspectHandlers, associatedParam.getParentModel(), mapsToSAC, simulatedDetachedParamConfig);
+				}
+			};
+			
+			return new MappedDefaultTransientParamState<>(mapsToParam, parentModel, mappedParamConfig, aspectHandlers, creator);
+		} 
 		
+		else if(mappedParamConfig.getPath().nature() != MapsTo.Nature.Default) {
+			throw new UnsupportedOperationException("Transient behavior for: "+mappedParamConfig.getPath().nature()+" not yet implemented, found for: "+mappedParamConfig.getCode());
+		}
+		
+		return getFactory(mappedParamConfig).instantiateParam(mapsToParam, parentModel, mappedParamConfig, aspectHandlers);
+	}
+	
+	private <P, V, C> DefaultParamState<P> createParamMappedDetached(EntityStateAspectHandlers aspectHandlers, Model<?> parentModel, Model<?> mapsToSAC, MappedParamConfig<P, ?> mappedParamConfig) {
+		Param<?> mapsToParam = createParamMapsToDetached(aspectHandlers, parentModel, mapsToSAC, mappedParamConfig);
+		
+		return getFactory(mappedParamConfig).instantiateParam(mapsToParam, parentModel, mappedParamConfig, aspectHandlers);
+	}
+	
+	private <P, V, C> Param<?> createParamMapsToDetached(EntityStateAspectHandlers aspectHandlers, Model<?> parentModel, Model<?> mapsToSAC, MappedParamConfig<P, ?> mappedParamConfig) {
 		ModelConfig<?> mapsToEnclosingModel = mappedParamConfig.getMapsToEnclosingModel();
 		
 		ExecutionEntity.ExConfig<V, C> exConfig = new ExecutionEntity.ExConfig<>((ModelConfig<C>)mapsToEnclosingModel, null, null);
@@ -225,9 +219,12 @@ abstract public class AbstractEntityStateBuilder extends AbstractEntityStateFact
 		DefaultParamState<C> mapsToDetachedRootParam = buildParam(aspectHandlers, execModelSAC, execModelSAC.getConfig().getCoreParam(), null);
 		Param<?> mapsToParam = mapsToDetachedRootParam.findParamByPath(MapsTo.DETACHED_SIMULATED_FIELD_NAME);
 		
-		return getFactory(mappedParamConfig).instantiateParam(mapsToParam, parentModel, mappedParamConfig, aspectHandlers);
+		return mapsToParam;
 	}
-
+	
+	
+	
+	
 	private <P> DefaultParamState<P> createParamUnmapped(EntityStateAspectHandlers aspectHandlers, Model<?> parentModel, Model<?> mapsToSAC, ParamConfig<P> paramConfig) {
 		return getFactory(paramConfig).instantiateParam(null, parentModel, paramConfig, aspectHandlers);
 	}

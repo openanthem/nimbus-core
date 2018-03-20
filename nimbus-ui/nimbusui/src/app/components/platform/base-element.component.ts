@@ -1,3 +1,4 @@
+import { ValidationConstraint } from './../../shared/validationconstraints.enum';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -20,6 +21,8 @@ import { Component, Input } from '@angular/core';
 import { Param } from '../../shared/app-config.interface';
 import { WebContentSvc } from '../../services/content-management.service';
 import { LabelConfig } from './../../shared/app-config.interface';
+import { ValidationUtils } from './validators/ValidationUtils';
+import { ParamUtils } from '../../shared/param-utils';
 
 /**
  * \@author Dinakar.Meda
@@ -58,7 +61,7 @@ export class BaseElement {
     protected _cssClass: string;
     protected _type: string;
     protected _elementStyle: string;
-    
+    public requiredCss: boolean = false;
     constructor(private wcs: WebContentSvc) {
         
     }
@@ -68,6 +71,7 @@ export class BaseElement {
      */
     ngOnInit() {
         this.loadLabelConfig(this.element);
+        this.requiredCss = ValidationUtils.applyelementStyle(this.element);
     }
 
     /**
@@ -111,17 +115,31 @@ export class BaseElement {
     }
 
     /**
-     * Visibility of this Param
+     *  Get visibility of this Param. Visible by default
      */
     public get visible(): boolean {
-        return this.element.visible.currState;
+        return this.element.visible;
     }
 
     /**
-     * Enabled property of this Param
+     * Get enabled property of this Param. Enabled by default.
      */
     public get enabled(): boolean {
-        return this.element.enabled.currState;
+        return this.element.enabled;
+    }
+
+    /**
+     * Set visibility of this Param.
+     */
+    public set visible(visible: boolean) {
+         this._visible = visible;
+    }
+
+    /**
+     * Set enabled property of this Param.
+     */
+    public set enabled(enabled: boolean) {
+         this._enabled = enabled;
     }
 
     /**
@@ -145,12 +163,23 @@ export class BaseElement {
         let style = '';
         if (this.element.config.validation) {
             this.element.config.validation.constraints.forEach(validator => {
-                if (validator.name === 'NotNull') {
+                if (validator.name === ValidationConstraint._notNull.value) {
                     style = 'required';
                 }
             });
         }
         return style;
+    }
+
+    isDate(dataType: string): boolean {
+        return ParamUtils.isKnownDateType(dataType);
+    }
+
+    public get placeholder(): string {
+        if (this.element && this.element.config && this.element.config.uiStyles && this.element.config.uiStyles.attributes) {
+            return this.element.config.uiStyles.attributes.placeholder;
+        }
+        return undefined;
     }
 }
 

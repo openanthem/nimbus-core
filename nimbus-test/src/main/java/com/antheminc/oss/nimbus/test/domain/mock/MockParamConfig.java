@@ -25,7 +25,7 @@ import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values;
 import com.antheminc.oss.nimbus.domain.model.config.AnnotationConfig;
 import com.antheminc.oss.nimbus.domain.model.config.EventHandlerConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
-import com.antheminc.oss.nimbus.domain.model.config.ParamType;
+import com.antheminc.oss.nimbus.domain.model.config.ParamConfigType;
 import com.antheminc.oss.nimbus.domain.model.config.RulesConfig;
 import com.antheminc.oss.nimbus.test.domain.support.utils.PathUtils;
 
@@ -44,7 +44,7 @@ public class MockParamConfig implements ParamConfig<Object> {
 	private List<AssociatedEntity> associatedEntities;
 	private String beanName;
 	private String code = "";
-	private String configId = "";
+	private String id = "";
 	private List<ParamConverter> converters;
 	private List<LabelConfig> labelConfigs;
 	private EventHandlerConfig eventHandlerConfig;
@@ -54,7 +54,7 @@ public class MockParamConfig implements ParamConfig<Object> {
 	private Class<Object> referredClass;
 	private List<AnnotationConfig> rules;
 	private RulesConfig rulesConfig;
-	private ParamType type;
+	private ParamConfigType type;
 	private List<AnnotationConfig> uiNatures;
 	private AnnotationConfig uiStyles;
 	private List<AnnotationConfig> validations;

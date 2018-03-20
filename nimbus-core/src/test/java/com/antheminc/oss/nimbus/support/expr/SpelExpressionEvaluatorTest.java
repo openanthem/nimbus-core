@@ -26,7 +26,7 @@ import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
-import com.antheminc.oss.nimbus.domain.model.state.ParamStateHolder;
+import com.antheminc.oss.nimbus.domain.model.state.StateHolder.ParamStateHolder;
 import com.antheminc.oss.nimbus.support.Holder;
 
 /**
@@ -151,13 +151,14 @@ public class SpelExpressionEvaluatorTest {
 	public void t13_evaluate_findParamByState_expression() {
 		
 		Param<?> onChangeParam = Mockito.mock(Param.class);
+		@SuppressWarnings("rawtypes")
 		ParamStateHolder holder = Mockito.mock(ParamStateHolder.class);
 		
 		Mockito.when(holder.getState()).thenReturn("foo");		
 		Mockito.when(holder.findStateByPath("somepath")).thenReturn("foo");
 		
 		String expr = "state == findStateByPath('somepath')";
-		Boolean result = expressionEvaluator.getValue(expr, new ParamStateHolder(onChangeParam), Boolean.class);
+		Boolean result = expressionEvaluator.getValue(expr, new ParamStateHolder<>(onChangeParam), Boolean.class);
 		assertTrue(result);
 	}
 }

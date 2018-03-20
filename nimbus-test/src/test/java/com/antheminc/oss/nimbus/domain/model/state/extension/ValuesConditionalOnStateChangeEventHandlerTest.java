@@ -33,6 +33,7 @@ import com.antheminc.oss.nimbus.domain.defn.extension.ValuesConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValuesConditional.Condition;
 import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.StateHolder.ParamStateHolder;
 import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
 import com.antheminc.oss.nimbus.support.Holder;
 import com.antheminc.oss.nimbus.support.expr.ExpressionEvaluator;
@@ -249,7 +250,7 @@ public class ValuesConditionalOnStateChangeEventHandlerTest {
 		Mockito.when(condition1.when()).thenReturn("condition1expr");
 		Mockito.when(condition1.then()).thenReturn(condition1Values);
 		Mockito.when(condition1Values.value()).thenReturn((Class) SAMPLE_A_VALUES.class); 
-		Mockito.when(this.expressionEvaluator.getValue(Mockito.eq("condition1expr"), Mockito.isA(Holder.class), Mockito.eq(Boolean.class))).thenReturn(true);
+		Mockito.when(this.expressionEvaluator.getValue(Mockito.eq("condition1expr"), Mockito.isA(ParamStateHolder.class), Mockito.eq(Boolean.class))).thenReturn(true);
 		
 		this.testee.handle(configuredAnnotation, null, event);
 		
@@ -291,9 +292,9 @@ public class ValuesConditionalOnStateChangeEventHandlerTest {
 		Mockito.when(condition3.when()).thenReturn("condition3expr");
 		Mockito.when(condition3.then()).thenReturn(condition3Values);
 		Mockito.when(condition3Values.value()).thenReturn((Class) SAMPLE_B_VALUES.class);
-		Mockito.when(this.expressionEvaluator.getValue(Mockito.eq("condition1expr"), Mockito.isA(Holder.class), Mockito.eq(Boolean.class))).thenReturn(true);
-		Mockito.when(this.expressionEvaluator.getValue(Mockito.eq("condition2expr"), Mockito.isA(Holder.class), Mockito.eq(Boolean.class))).thenReturn(false);
-		Mockito.when(this.expressionEvaluator.getValue(Mockito.eq("condition3expr"), Mockito.isA(Holder.class), Mockito.eq(Boolean.class))).thenReturn(true);
+		Mockito.when(this.expressionEvaluator.getValue(Mockito.eq("condition1expr"), Mockito.isA(ParamStateHolder.class), Mockito.eq(Boolean.class))).thenReturn(true);
+		Mockito.when(this.expressionEvaluator.getValue(Mockito.eq("condition2expr"), Mockito.isA(ParamStateHolder.class), Mockito.eq(Boolean.class))).thenReturn(false);
+		Mockito.when(this.expressionEvaluator.getValue(Mockito.eq("condition3expr"), Mockito.isA(ParamStateHolder.class), Mockito.eq(Boolean.class))).thenReturn(true);
 		
 		this.testee.handle(configuredAnnotation, null, event);
 		
