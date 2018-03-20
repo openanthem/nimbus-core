@@ -1,5 +1,5 @@
 # NIMBUS-CORE
-
+[![license](https://img.shields.io/github/license/openanthem/nimbus-core.svg?style=for-the-badge)]() 
 [![Sonatype Nexus (Milestone Build)](https://img.shields.io/nexus/s/https/oss.sonatype.org/com.antheminc.oss/nimbus-core.svg?style=for-the-badge)]()
 [![GitHub contributors](https://img.shields.io/github/contributors/openanthem/nimbus-core.svg?style=for-the-badge)]()
 [![GitHub last commit](https://img.shields.io/github/last-commit/openanthem/nimbus-core.svg?style=for-the-badge)]()
@@ -7,9 +7,9 @@
 
 Sonarcloud.io Analysis
 ----------------------
-![Sonarcloud.io Security](https://sonarcloud.io/api/project_badges/measure?project=com.antheminc.oss%3Animbus-core&metric=security_rating)
-[![Sonarcloud.io Bugs](https://sonarcloud.io/api/project_badges/measure?project=com.antheminc.oss%3Animbus-core&metric=bugs)]() 
-[![Sonarcloud.io Coverage](https://sonarcloud.io/api/project_badges/measure?project=com.antheminc.oss%3Animbus-core&metric=coverage)]() [![Sonarcloud.io Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=com.antheminc.oss%3Animbus-core&metric=sqale_index)]() 
+![Sonarcloud.io Security](https://sonarcloud.io/api/project_badges/measure?project=com.antheminc.oss%3Animbus-core&metric=security_rating&style=for-the-badge)
+[![Sonarcloud.io Bugs](https://sonarcloud.io/api/project_badges/measure?project=com.antheminc.oss%3Animbus-core&metric=bugs&style=for-the-badge)]() 
+[![Sonarcloud.io Coverage](https://sonarcloud.io/api/project_badges/measure?project=com.antheminc.oss%3Animbus-core&metric=coverage&style=for-the-badge)]() [![Sonarcloud.io Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=com.antheminc.oss%3Animbus-core&metric=sqale_index&style=for-the-badge)]() 
 
 <br>[Full Report](https://sonarcloud.io/dashboard?id=com.antheminc.oss%3Animbus-core)
 
