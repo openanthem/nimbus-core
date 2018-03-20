@@ -61,7 +61,12 @@ public class DefaultActionExecutorUpdate extends AbstractCommandExecutor<Boolean
 		// existing entity state
 		Object existing = p.getLeafState();
 		
-		Object updated = getConverter().read(p.getConfig(), eCtx.getCommandMessage().getRawPayload(), existing);
+		final Object updated;
+		
+		if(existing==null)
+			updated = getConverter().read(p.getConfig(), eCtx.getCommandMessage().getRawPayload());
+		else
+			updated = getConverter().read(p.getConfig(), eCtx.getCommandMessage().getRawPayload(), existing);
 		
 		p.setState(updated);
 	}
