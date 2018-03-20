@@ -41,12 +41,12 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.MappedTransientPa
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
 import com.antheminc.oss.nimbus.test.FrameworkIntegrationTestScenariosApplication;
-import com.antheminc.oss.nimbus.test.entity.sample.s0.core.SampleCoreEntity;
-import com.antheminc.oss.nimbus.test.entity.sample.s0.core.SampleCoreNestedEntity;
-import com.antheminc.oss.nimbus.test.entity.sample.s0.view.VPSampleViewPageBlue.Section_ConvertedNestedEntity;
-import com.antheminc.oss.nimbus.test.entity.sample.s0.view.VPSampleViewPageGreen.ConvertedNestedEntity;
-import com.antheminc.oss.nimbus.test.entity.sample.s0.view.VPSampleViewPageRed.Form_ConvertedNestedEntity;
-import com.antheminc.oss.nimbus.test.entity.sample.s0.view.VRSampleViewRootEntity;
+import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
+import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreNestedEntity;
+import com.antheminc.oss.nimbus.test.scenarios.s0.view.VPSampleViewPageBlue.Section_ConvertedNestedEntity;
+import com.antheminc.oss.nimbus.test.scenarios.s0.view.VPSampleViewPageGreen.ConvertedNestedEntity;
+import com.antheminc.oss.nimbus.test.scenarios.s0.view.VPSampleViewPageRed.Form_ConvertedNestedEntity;
+import com.antheminc.oss.nimbus.test.scenarios.s0.view.VRSampleViewRootEntity;
 
 /**
  * @author Soham Chakravarti
@@ -114,7 +114,9 @@ public class StateBuilderCollections_V2C_Attached_Transient_Test {
 		return mapsToCol;
 	}
 	
-	private QuadModel<?, ?> create_addFlow() {
+	@Test
+	public void t03_assign_state_get() {
+
 		QuadModel<VRSampleViewRootEntity, SampleCoreEntity> q = buildQuad();
 		
 		MappedTransientParam<?, ?> pTransient = findViewTransientParam(q).findIfTransient();
@@ -132,18 +134,13 @@ public class StateBuilderCollections_V2C_Attached_Transient_Test {
 		assertEquals(CORE_PARAM_PATH+"/0", pTransientMapsTo.getPath());
 		
 		// newly created transient element increments max index, but is not added to core list model
-		assertTrue(mapsToCol.templateParams().isNullOrEmpty());
+		assertFalse(mapsToCol.templateParams().isNullOrEmpty());
+		assertEquals(1, mapsToCol.templateParams().size());
 		
 		assertNull(pTransient.getState());
 		assertNull(pTransientMapsTo.getState());
-		
-		return q;
 	}
 	
-	@Test
-	public void t03_assign_state_get() {
-		create_addFlow();
-	}
 	
 	@Test
 	public void t04_assign_state_set_add_new() {

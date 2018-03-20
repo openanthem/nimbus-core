@@ -79,7 +79,7 @@ public class DefaultActionExecutorConfigTest extends AbstractFrameworkIngeration
 		assertNotNull(resp);
 		
 		ParamConfig<?> pConfig = ExtractResponseOutputUtils.extractOutput(resp);
-		assertSame(domainConfigBuilder.getRootDomain(VIEW_DOMAIN_ALIAS), pConfig.getType().findIfNested().getModel());
+		assertSame(domainConfigBuilder.getRootDomain(VIEW_DOMAIN_ALIAS), pConfig.getType().findIfNested().getModelConfig());
 	}
 	
 //	@Test

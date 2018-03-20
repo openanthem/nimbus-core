@@ -1,3 +1,6 @@
+label{
+    margin-bottom: .4rem;
+}
 .form-control{
 	border-color: $border-color;
     color: $border-color-dark;
@@ -46,7 +49,7 @@ textarea.form-control {
     max-height: 140px;
     min-height: 140px;
     height: 140px;
-    word-break: break-all;
+    word-break: break-word;
     white-space: normal;
 }
 //styling for form alerts.. 
@@ -81,12 +84,23 @@ textarea.form-control {
     }
   }
 }
-
+// allows radio & checkbox components to stack instead of default inline-form
+.form-group.form-inline.stackedRadio .form-checkrow {
+    display: block;
+    margin-bottom: 1rem;
+}
 .form-group.form-inline .form-checkrow {
   display: inline-block;
   margin-right: 1.3rem;
 }
-
+// allows inputs to align to right of label
+// use on fieldValue component @FieldValue(cols="1", iconField ="labelLeft")
+.labelLeft { 
+    display:inline-block;
+    &::after { //this removes psuedo after inherited from iconField class
+        display: none;
+    }
+}
 .form-group.form-inline.legend-left legend {
   float: left;
   margin-right: 1.3rem;
@@ -95,10 +109,31 @@ textarea.form-control {
 
 p-dropdown.form-control {
     border: none;
+    padding:0.1rem;
+    background: none;
+    line-height: 1.5;
+    .ui-widget-content {
+        border: 1px solid #9dd3f7;
+        background: #ecf7ff;
+        border-radius: 0;
+    }
+    .ui-state-highlight,
+    .ui-dropdown-panel .ui-dropdown-item:not(.ui-state-highlight):hover {
+        border-color: #4a90e2;
+        background: #4a90e2;
+        color: #FFFFFF;
+    }
 }
 .ui-dropdown {
     min-width: 150px;
+    .ui-dropdown-panel .ui-dropdown-list{
+        padding:0;
+    }
 }
+.ui-corner-all {
+    border-radius: 0px;
+}
+
 //START inline edit text input styles for inplace-editor.component
 .form-group{
   .editTrigger{
@@ -174,31 +209,69 @@ p-dropdown.form-control {
 // END inline edit text input styles for inplace-editor.component
 
 //date and time input
-.ui-calendar .ui-calendar-button {
-    height: 2.15rem;
+.ui-calendar{
+    display:block;
+     .ui-calendar-button {
+        height: 2.15rem;
+    }
 }
 .ui-timepicker.ui-widget-header{
     text-align: center;
 }
 
+.form-group.questionGroup .ui-calendar input { 
+    width: 150px; 
+}
+
+
 // custom radio
-.ui-radiobutton{
-    .ui-radiobutton-icon{
-        position:relative;
-        &::before {
-            position: absolute;
-            font-size: .6rem;
-            top: -.6rem;
-            left: -.25rem;
+
+.ui-state-default {
+    border: 1px solid #9dd3f7;
+    background: #ffffff;
+    color: #4c4c4c;
+}
+p-checkbox.ng-dirty.ng-invalid .ui-chkbox-box {
+    border-bottom-color: #9dd3f7;
+}
+
+    .ui-chkbox-box.ui-state-active, 
+    .ui-radiobutton-box.ui-state-active {
+        border: 1px solid #006bc2;
+        background: #006bc2;
+        color: #FFFFFF;
+   
+        .ui-radiobutton-icon{
+            position:relative;
+            vertical-align: bottom;
+            &::before {
+                position: absolute;
+                font-size: .3rem;
+                bottom: .4rem;
+                left: -.15rem;
+            }
         }
     }
-}
+    .ui-radiobutton-box:not(.ui-state-disabled):not(.ui-state-active):hover,
+    .ui-chkbox-box:not(.ui-state-disabled):not(.ui-state-active):hover {
+        border-color: #006bc2;
+        background: #D9EDFD;
+    }
+    .ui-radiobutton-box.ui-state-disabled,
+    .ui-radiobutton-box.ui-state-disabled:hover,
+    .ui-chkbox-box.ui-state-disabled,
+    .ui-chkbox-box.ui-state-disabled:hover {
+        border-color: #dadada;
+        background: #ebebeb;
+    }
+
+
 
 .custom-radio {
     .custom-control-input{
         &:checked ~ .custom-control-indicator{
             background-image: none;
-            background-color: #186ba0;
+            background-color: #006bc2;
             color: #fff;
             &::after{
                 font-family: fontAwesome;
@@ -219,7 +292,7 @@ p-dropdown.form-control {
     .custom-control-input{
         &:checked ~ .custom-control-indicator{
             background-image: none;
-            background-color: #186ba0;
+            background-color: #006bc2;
             color: #fff;
             &::after{
                 font-family: fontAwesome;

@@ -37,7 +37,7 @@ import { WebContentSvc } from './../../../services/content-management.service';
 export class PageContent extends BaseElement{
     pageId: string;
     tilesList: any[];
-    public pageParam: Param;
+
     constructor(private router: Router, private route: ActivatedRoute, private _wcs : WebContentSvc) {
         super(_wcs);
         this.router.events.subscribe(path => {
@@ -48,8 +48,8 @@ export class PageContent extends BaseElement{
     ngOnInit() {
         this.route.data.subscribe((data: { page: Param }) => {
             let page : Param = data.page;
-            this.pageParam = page;
-            this.loadLabelConfig(this.pageParam);
+            this.element = page;
+            this.loadLabelConfig(this.element);
             this.tilesList = [];
             if(page.type.model != null) {
                 page.type.model.params.forEach(element => {

@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.antheminc.oss</groupId>
 	<artifactId>nimbus-parent</artifactId>
-	<version>1.0.0.M1-SNAPSHOT</version>
+	<version>1.0.0.M4-SNAPSHOT</version>
 	<name>nimbus-parent</name>
 	<packaging>pom</packaging>
    
@@ -69,11 +69,12 @@
         <nexus-staging-maven-plugin.version>1.6.7</nexus-staging-maven-plugin.version>
         <!-- nimbus-core -->
        	<parentDir>../nimbus-parent</parentDir>
-        <nimbus.version>1.0.0.M1-SNAPSHOT</nimbus.version>
+        <nimbus.version>1.0.0.M4-SNAPSHOT</nimbus.version>
         <nimbus.core.version>${nimbus.version}</nimbus.core.version>
         <nimbus.ui.version>${nimbus.version}</nimbus.ui.version>
         <nimbus.dsl.version>${nimbus.core.version}</nimbus.dsl.version> <!-- DSL matches core's version -->
         <nimbus.test.version>${nimbus.version}</nimbus.test.version>
+        <nimbus.starter.version>${nimbus.version}</nimbus.starter.version>
     </properties>
 
     <repositories>
@@ -85,11 +86,7 @@
         <repository>
             <id>clojars.org</id>
             <url>http://clojars.org/repo</url>
-    	</repository>
-	<repository>
-            <id>alfresco.com</id>
-	    <url>https://maven.alfresco.com/nexus/content/repositories/activiti/</url>
-	</repository>
+        </repository>
     </repositories>
 
     <developers>
@@ -184,6 +181,12 @@
                 <version>${embed-mongo.version}</version>
                 <scope>test</scope>
             </dependency>
+            	<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310 -->
+			<dependency>
+		    		<groupId>com.fasterxml.jackson.datatype</groupId>
+		    		<artifactId>jackson-datatype-jsr310</artifactId>
+		    		<version>2.9.4</version>
+			</dependency>
             <dependency>
 			    <groupId>cz.jirutka.spring</groupId>
 			    <artifactId>embedmongo-spring</artifactId>
@@ -320,6 +323,18 @@
                 <version>${nimbus.test.version}</version>
                 <scope>test</scope> 
             </dependency>
+            <dependency>
+                <groupId>com.antheminc.oss</groupId>
+                <artifactId>nimbus-starter</artifactId>
+                <version>${nimbus.starter.version}</version>
+            </dependency>
+            <dependency>
+			    <groupId>org.springframework.boot</groupId>
+			    <artifactId>spring-boot-devtools</artifactId>
+			    <optional>true</optional>
+			    <scope>runtime</scope>
+			    <version>${spring.boot.version}</version>
+			</dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -337,7 +352,7 @@
         	<groupId>org.springframework.boot</groupId>
         	<artifactId>spring-boot-starter-web</artifactId>
     	</dependency>
-        <dependency>
+       	<dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
         </dependency>
@@ -469,8 +484,8 @@
 			<groupId>org.owasp.esapi</groupId>
     		<artifactId>esapi</artifactId>
 		</dependency>
-						
-    </dependencies>	
+		
+	</dependencies>	
 
     <distributionManagement>
         <snapshotRepository>

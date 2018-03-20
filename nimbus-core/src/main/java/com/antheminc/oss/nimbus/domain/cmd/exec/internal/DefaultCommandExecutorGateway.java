@@ -49,6 +49,7 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextLoader;
+import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ParamPathExpressionParser;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
@@ -74,6 +75,8 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 	
 	private CommandPathVariableResolver pathVariableResolver;
 	
+	private ExecutionContextPathVariableResolver eCtxPathVariableResolver;
+	
 	private ExecutionContextLoader loader;
 	
 	private DomainConfigBuilder domainConfigBuilder;
@@ -90,35 +93,19 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 	public void initDependencies() {
 		this.loader = getBeanResolver().get(ExecutionContextLoader.class);
 		this.pathVariableResolver = getBeanResolver().get(CommandPathVariableResolver.class);
+		this.eCtxPathVariableResolver = getBeanResolver().get(ExecutionContextPathVariableResolver.class);
 		this.domainConfigBuilder = getBeanResolver().get(DomainConfigBuilder.class);
 	}
 
+	
+	
 	@Override
 	public final MultiOutput execute(CommandMessage cmdMsg) {
-		try {
-			String sessionId = getSessionId();
-			return execute(cmdMsg, sessionId);
-		} catch (RuntimeException ex) {
-			throw new FrameworkRuntimeException("Failed to execute command: "+cmdMsg, ex);
-		}
-	}
-	
-	@Override
-	public List<MultiOutput> executeConfig(ExecutionContext eCtx, Param<?> cmdParam, List<Config> execConfigs) {
-		try {
-			String sessionId = getSessionId();
-			return executeConfig(eCtx, cmdParam, execConfigs, sessionId);
-		} catch (RuntimeException ex) {
-			throw new FrameworkRuntimeException("Failed to executeConfig eCtx: "+eCtx+" for cmdParam: "+cmdParam, ex);
-		}
-	}
-	
-	private final MultiOutput execute(CommandMessage cmdMsg, String sessionId) {
 		// validate
 		validateCommand(cmdMsg);
 		
 		// load execution context 
-		ExecutionContext eCtx = loadExecutionContext(cmdMsg, sessionId);
+		ExecutionContext eCtx = loadExecutionContext(cmdMsg);
 		
 		final String lockId;
 		
@@ -132,7 +119,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		}
 		
 		try {
-			return executeInternal(eCtx, cmdMsg, sessionId);
+			return executeInternal(eCtx, cmdMsg);
 		} finally {
 			if(lockId!=null) {
 				eCtx.getRootModel().getExecutionRuntime().onStopRootCommandExecution(cmdMsg.getCommand());
@@ -141,7 +128,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		}
 	}
 	
-	protected MultiOutput executeInternal(ExecutionContext eCtx, CommandMessage cmdMsg, String sessionId) {
+	protected MultiOutput executeInternal(ExecutionContext eCtx, CommandMessage cmdMsg) {
 		final String inputCommandUri = cmdMsg.getCommand().getAbsoluteUri();
 		
 		MultiOutput mOutput = new MultiOutput(inputCommandUri, eCtx, cmdMsg.getCommand().getAction(), cmdMsg.getCommand().getBehaviors());
@@ -152,11 +139,11 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		
 		// if present, hand-off to each command within execution config
 		if(CollectionUtils.isNotEmpty(execConfigs)) {
-			List<MultiOutput> execConfigOutputs = executeConfig(eCtx, cmdParam, execConfigs, sessionId);
+			List<MultiOutput> execConfigOutputs = executeConfig(eCtx, cmdParam, execConfigs);
 			execConfigOutputs.stream().forEach(mOut->addMultiOutput(mOutput, mOut));
 
 		} else {// otherwise, execute self
-			List<Output<?>> selfExecOutputs = executeSelf(eCtx, cmdParam, sessionId);
+			List<Output<?>> selfExecOutputs = executeSelf(eCtx, cmdParam);
 			selfExecOutputs.stream().forEach(out->addOutput(mOutput, out));
 		}
 		
@@ -170,7 +157,8 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		cmdMsg.getCommand().validate();
 	}
 	
-	private List<MultiOutput> executeConfig(ExecutionContext eCtx, Param<?> cmdParam, List<Execution.Config> execConfigs, String sessionId) {
+	@Override
+	public List<MultiOutput> executeConfig(ExecutionContext eCtx, Param<?> cmdParam, List<Execution.Config> execConfigs) {
 		final CommandMessage cmdMsg = eCtx.getCommandMessage();
 		boolean isPayloadUsed = false;
 		
@@ -178,19 +166,25 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		final List<MultiOutput> configExecOutputs = new ArrayList<>();
 		execConfigs.stream().forEach(ec->{
 			if(StringUtils.isNotBlank(ec.col())) {
-				buildAndExecuteColExecConfig(eCtx, cmdParam, ec, sessionId);
+				buildAndExecuteColExecConfig(eCtx, cmdParam, ec);
 			}
 			else {
 				String completeConfigUri = eCtx.getCommandMessage().getCommand().getRelativeUri(ec.url());
 				
-				String resolvedConfigUri = pathVariableResolver.resolve(cmdParam, completeConfigUri); 
+				// TODO Rakesh - Review with soham
+				// - e.g. needed to replace e.g. <!page=y!> path variable with the value available in request params (only available in eCtx at this point)
+					// can be used for any other values not available in commandParam ??
+				String eCtxResolvedConfigUri = eCtxPathVariableResolver.resolve(eCtx, completeConfigUri);
+			
+				String resolvedConfigUri = pathVariableResolver.resolve(cmdParam, eCtxResolvedConfigUri);
+					
 				Command configExecCmd = CommandBuilder.withUri(resolvedConfigUri).getCommand();
 				
 				// TODO decide on which commands should get the payload
 				CommandMessage configCmdMsg = new CommandMessage(configExecCmd, resolvePayload(cmdMsg, configExecCmd, isPayloadUsed));
 				
 				// execute & add output to mOutput
-				MultiOutput configOutput = executeConfig(eCtx.getCommandMessage().getCommand(), configCmdMsg, sessionId);
+				MultiOutput configOutput = executeConfig(eCtx.getCommandMessage().getCommand(), configCmdMsg);
 				
 				configExecOutputs.add(configOutput);
 				// addMultiOutput(mOutput,configOutput);
@@ -199,7 +193,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		return configExecOutputs;
 	}
 	
-	private MultiOutput executeConfig(Command inputCmd, CommandMessage configCmdMsg, String sessionId) {
+	private MultiOutput executeConfig(Command inputCmd, CommandMessage configCmdMsg) {
 		final String inputDomainRootAlias = inputCmd.buildAlias(Type.DomainAlias);
 	
 		
@@ -211,7 +205,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		boolean	matched = StringUtils.equals(inputDomainRootAlias, configDomainRootAlias);
 		
 		if(!matched && configDomainModelConfig.isMapped()) {
-			String mapsToConfigDomainAlias = configDomainModelConfig.findIfMapped().getMapsTo().getAlias();
+			String mapsToConfigDomainAlias = configDomainModelConfig.findIfMapped().getMapsToConfig().getAlias();
 			
 			String mappedConfigPlatformUri = configCmdMsg.getCommand().buildAlias(Type.PlatformMarker);
 			configDomainRootAlias = mappedConfigPlatformUri + "/" + mapsToConfigDomainAlias;
@@ -224,14 +218,14 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			return execute(configCmdMsg);
 		
 		try {
-			return Executors.newSingleThreadExecutor().submit(()->execute(configCmdMsg, sessionId)).get();
+			return Executors.newSingleThreadExecutor().submit(()->execute(configCmdMsg)).get();
 			
 		} catch (Exception ex) {
 			throw new FrameworkRuntimeException("Failed to execute config command in asyn-wait thread for configCmdMsg: "+configCmdMsg+" originating from inputCmd: "+inputCmd, ex);
 		}
 	}	
 	
-	private void buildAndExecuteColExecConfig(ExecutionContext eCtx, Param<?> cmdParam, Config ec, String sessionId) {
+	private void buildAndExecuteColExecConfig(ExecutionContext eCtx, Param<?> cmdParam, Config ec) {
 		List<Execution.Config> colExecConfigs = new ArrayList<>();
 		String colPath = ParamPathExpressionParser.stripPrefixSuffix(ec.col());
 		
@@ -259,7 +253,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			}
 		}
 		
-		executeConfig(eCtx, cmdParam, colExecConfigs, sessionId);
+		executeConfig(eCtx, cmdParam, colExecConfigs);
 		
 	}
 
@@ -310,7 +304,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		return null;
 	}
 	
-	protected List<Output<?>> executeSelf(ExecutionContext eCtx, Param<?> cmdParam, String sessionId) {
+	protected List<Output<?>> executeSelf(ExecutionContext eCtx, Param<?> cmdParam) {
 		final CommandMessage cmdMsg = eCtx.getCommandMessage();
 		final String inputCommandUri = cmdMsg.getCommand().getAbsoluteUri();
 		
@@ -386,7 +380,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 	}	
 
 	
-	protected ExecutionContext loadExecutionContext(CommandMessage cmdMsg, String sessionId) {
+	protected ExecutionContext loadExecutionContext(CommandMessage cmdMsg) {
 		// create domain root if needed - for loading execution context
 		final Command domainRootCmd;
 		if(!cmdMsg.getCommand().isRootDomainOnly()) {
@@ -396,7 +390,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			domainRootCmd = cmdMsg.getCommand();
 		}
 		
-		ExecutionContext loaderCtx = loader.load(domainRootCmd, sessionId);
+		ExecutionContext loaderCtx = loader.load(domainRootCmd);
 		
 		// create context for passed in command and payload
 		ExecutionContext eCtx = new ExecutionContext(cmdMsg, loaderCtx.getQuadModel());

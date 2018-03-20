@@ -122,7 +122,7 @@ public abstract class AbstractCommandExecutor<R> extends BaseCommandExecutorStra
 			return cb.whenRootDomainHasRepo();
 			
 		} else if(rootDomainConfig.isMapped()) {
-			ModelConfig<?> mapsToConfig = rootDomainConfig.findIfMapped().getMapsTo();
+			ModelConfig<?> mapsToConfig = rootDomainConfig.findIfMapped().getMapsToConfig();
 			Repo mapsToRepo = mapsToConfig.getRepo();
 			
 			if(Repo.Database.exists(mapsToRepo))
@@ -136,14 +136,14 @@ public abstract class AbstractCommandExecutor<R> extends BaseCommandExecutorStra
 			@Override
 			public Object whenRootDomainHasRepo() {
 				if(rootDomainConfig.isMapped())  // has core
-					return getRefId(rootDomainConfig, rootDomainConfig.getIdParam(), e.getView());  //return q.getView().findParamByPath("/id").getState();
+					return getRefId(rootDomainConfig, rootDomainConfig.getIdParamConfig(), e.getView());  //return q.getView().findParamByPath("/id").getState();
 				else
-					return getRefId(rootDomainConfig, rootDomainConfig.getIdParam(), e.getCore());  //return q.getCore().findParamByPath("/id").getState();
+					return getRefId(rootDomainConfig, rootDomainConfig.getIdParamConfig(), e.getCore());  //return q.getCore().findParamByPath("/id").getState();
 			}
 			
 			@Override
 			public Object whenMappedRootDomainHasRepo(ModelConfig<?> mapsToConfig) {
-				return getRefId(mapsToConfig, mapsToConfig.getIdParam(), e.getCore()); //return q.getCore().findParamByPath("/id").getState();
+				return getRefId(mapsToConfig, mapsToConfig.getIdParamConfig(), e.getCore()); //return q.getCore().findParamByPath("/id").getState();
 			}
 		});
 		

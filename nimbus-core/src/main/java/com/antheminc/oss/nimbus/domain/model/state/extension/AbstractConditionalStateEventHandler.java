@@ -26,7 +26,7 @@ import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.ExecutionTxnContext;
 import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
-import com.antheminc.oss.nimbus.domain.model.state.ParamStateHolder;
+import com.antheminc.oss.nimbus.domain.model.state.StateHolder.ParamStateHolder;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
 import com.antheminc.oss.nimbus.support.expr.ExpressionEvaluator;
@@ -47,7 +47,7 @@ public abstract class AbstractConditionalStateEventHandler {
 	}
 	
 	protected boolean evalWhen(Param<?> onChangeParam, String whenExpr) {
-		return expressionEvaluator.getValue(whenExpr, new ParamStateHolder(onChangeParam), Boolean.class);
+		return expressionEvaluator.getValue(whenExpr, new ParamStateHolder<>(onChangeParam), Boolean.class);
 	}
 	
 	protected Param<?> retrieveParamByPath(Param<?> baseParam, String targetPath) {
@@ -55,7 +55,7 @@ public abstract class AbstractConditionalStateEventHandler {
 				.orElseThrow(() -> new InvalidConfigException("Target param lookup returned null for targetPath: " + targetPath + " on param: " + baseParam));
 	}
 	
-	protected static abstract class EvalExprWithCrudActions<A extends Annotation> extends AbstractConditionalStateEventHandler 
+	public static abstract class EvalExprWithCrudActions<A extends Annotation> extends AbstractConditionalStateEventHandler 
 		implements OnStateLoadHandler<A>, OnStateChangeHandler<A> {
 		
 		public EvalExprWithCrudActions(BeanResolverStrategy beanResolver) {

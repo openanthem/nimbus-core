@@ -58,7 +58,7 @@ public class CustomLocalDateSerializerTest {
 		this.testee.serialize(date, gen, null);
 		ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
 		Mockito.verify(this.gen).writeString(captor.capture());
-		Assert.assertEquals("10/13/1988", captor.getValue());
+		Assert.assertEquals("1988-10-13T00:00:00.000Z", captor.getValue());
 	}
 	
 	@Test

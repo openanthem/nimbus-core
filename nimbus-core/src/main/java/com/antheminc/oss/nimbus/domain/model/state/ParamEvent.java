@@ -17,6 +17,7 @@ package com.antheminc.oss.nimbus.domain.model.state;
 
 import java.util.Arrays;
 
+import org.apache.commons.codec.binary.StringUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 
 import com.antheminc.oss.nimbus.domain.cmd.Action;
@@ -26,14 +27,14 @@ import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Soham Chakravarti
  *
  */
-@Data @AllArgsConstructor @EqualsAndHashCode(of="param")
+@Getter @Setter @AllArgsConstructor
 public class ParamEvent {
 
 	private Action action;
@@ -79,5 +80,22 @@ public class ParamEvent {
 	// TODO move this to EventManager
 	public boolean containsListener(ListenerType listenerType) {
 		return ListenerType.websocket == listenerType;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj==null)
+			return false;
+		
+		if(!ParamEvent.class.isInstance(obj))
+			return false;
+		
+		ParamEvent other = ParamEvent.class.cast(obj);
+		return StringUtils.equals(this.getParam().getPath(), other.getParam().getPath());
+	}
+	
+	@Override
+	public int hashCode() {
+		return getParam().getPath().hashCode();
 	}
 }

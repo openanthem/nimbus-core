@@ -33,12 +33,12 @@ public interface ModelConfig<T> extends EntityConfig<T> {
 	public Repo getRepo();
 
 	//@JsonIgnore
-	public List<? extends ParamConfig<?>> getParams();
+	public List<? extends ParamConfig<?>> getParamConfigs();
 	
-	public ParamConfig<?> getIdParam();
-	public ParamConfig<?> getVersionParam();
+	public ParamConfig<?> getIdParamConfig();
+	public ParamConfig<?> getVersionParamConfig();
 	
-	public CollectionsTemplate<List<ParamConfig<?>>, ParamConfig<?>> templateParams();
+	public CollectionsTemplate<List<ParamConfig<?>>, ParamConfig<?>> templateParamConfigs();
 	
 	public RulesConfig getRulesConfig();
 
@@ -63,7 +63,7 @@ public interface ModelConfig<T> extends EntityConfig<T> {
 		}
 		
 		@Override
-		public ModelConfig<M> getMapsTo();
+		public ModelConfig<M> getMapsToConfig();
 	}
 	
 }

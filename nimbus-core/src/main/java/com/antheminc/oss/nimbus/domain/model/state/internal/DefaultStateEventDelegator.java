@@ -17,11 +17,9 @@ package com.antheminc.oss.nimbus.domain.model.state.internal;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Consumer;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -123,18 +121,18 @@ public class DefaultStateEventDelegator implements StateEventDelegator {
 		if(CollectionUtils.isEmpty(events))
 			return aggregatedEvents;
 
-		Set<Param<?>> unique = new HashSet<>(events.size());
+		Map<String, Param<?>> unique = new HashMap<>(events.size());
 		for(ParamEvent pe : events) {
 			//ParamEvent pe = events.poll();
 			
 			List<ParamEvent> groupedEvents = createOrGet(aggregatedEvents, pe.getParam().getRootExecution());
 			
 			
-			Param<?> colParent = findFirstCollectionParent(pe.getParam());
+			Param<?> colParent = findFirstCollectionNode(pe.getParam());
 			ParamEvent resolved = (colParent==null) ? pe : new ParamEvent(pe.getAction(), colParent);
 
-			if(!unique.contains(resolved.getParam())) {
-				unique.add(resolved.getParam());
+			if(!unique.containsKey(resolved.getParam().getPath())) {
+				unique.put(resolved.getParam().getPath(), resolved.getParam());
 					
 				groupedEvents.add(resolved);
 			}
@@ -163,14 +161,17 @@ public class DefaultStateEventDelegator implements StateEventDelegator {
 		return root;
 	} 
 	
-	private static Param<?> findFirstCollectionParent(Param<?> currParam) {
+	private static Param<?> findFirstCollectionNode(Param<?> currParam) {
+		if(currParam.isCollection())
+			return currParam;
+		
 		if(currParam.getParentModel()==null)
 			return null;
 		
 		if(currParam.getParentModel().getAssociatedParam().isCollection())
 			return currParam.getParentModel().getAssociatedParam();
 		
-		return findFirstCollectionParent(currParam.getParentModel().getAssociatedParam());
+		return findFirstCollectionNode(currParam.getParentModel().getAssociatedParam());
 	}
 	
 	private void delegate(Consumer<StateEventListener> cb) {

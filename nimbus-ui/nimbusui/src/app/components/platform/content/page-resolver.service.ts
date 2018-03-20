@@ -1,3 +1,4 @@
+import { LabelConfig } from './../../../shared/app-config.interface';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -15,11 +16,12 @@
  * limitations under the License.
  */
 'use strict';
-import { BreadcrumbService } from './../breadcrumb/breadcrumb.service';
-import { PageService } from '../../../services/page.service';
-import { Param } from '../../../shared/app-config.interface';
 import { Injectable } from '@angular/core';
 import { Router, Resolve, RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
+import { BreadcrumbService } from './../breadcrumb/breadcrumb.service'
+import { WebContentSvc } from './../../../services/content-management.service';
+import { PageService } from '../../../services/page.service';
+import { Param } from '../../../shared/app-config.interface';
 
 /**
  * \@author Dinakar.Meda
@@ -34,17 +36,23 @@ export class PageResolver implements Resolve<Param> {
     constructor(
         private _pageSvc: PageService, 
         private _router: Router,
-        private _breadcrumbService: BreadcrumbService) {}
+        private _breadcrumbService: BreadcrumbService,
+        private _wcs: WebContentSvc
+    ) {}
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<Param> {
+    resolve(route: ActivatedRouteSnapshot, rustate: RouterStateSnapshot): Promise<Param> {
         let pageId = route.params['pageId'];
         //let flow = route.parent.data['domain'];
         let flow = route.parent.url[0]['path'];
         return this._pageSvc.getPageConfigById(pageId, flow).then(page => {
             if (page) {
-
+                let labelConfig: LabelConfig = this._wcs.findLabelContent(page);
+                let labelText = page.config.code;
+                if (labelConfig.text && labelConfig.text.trim().length > 0) {
+                    labelText = labelConfig.text;
+                }
                 // Push the home breadcrumb into memory under the domain name.
-                this._breadcrumbService.push(page.config.code, page.config.code, page.path);
+                this._breadcrumbService.push(page.config.code, labelText, route['_routerState'].url);
                 
                 return page;
             } else { // page not found

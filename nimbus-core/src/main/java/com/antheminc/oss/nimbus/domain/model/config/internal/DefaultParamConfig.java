@@ -33,7 +33,7 @@ import com.antheminc.oss.nimbus.domain.model.config.AnnotationConfig;
 import com.antheminc.oss.nimbus.domain.model.config.EventHandlerConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
-import com.antheminc.oss.nimbus.domain.model.config.ParamType;
+import com.antheminc.oss.nimbus.domain.model.config.ParamConfigType;
 import com.antheminc.oss.nimbus.domain.model.config.event.ConfigEventHandlers.OnParamCreateHandler;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -51,9 +51,11 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	private static final long serialVersionUID = 1L;
 
 	final private String code;
+	
+	@JsonIgnore
 	final private String beanName;
 
-	private ParamType type;	
+	private ParamConfigType type;	
 	
 	private List<LabelConfig> labelConfigs;
 
@@ -78,17 +80,32 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	private List<AssociatedEntity> associatedEntities;
 
 	protected DefaultParamConfig(String code) {
-		this(code, code);
+		this(code, code, generateNextId());
 	}
 	
 	protected DefaultParamConfig(String code, String beanName) {
+		super();
+		
 		Objects.requireNonNull(code, ()->"code in param config must not be null");
 		Objects.requireNonNull(beanName, ()->"beanName in param config must not be null");
 		
 		this.code = code.intern();
 		this.beanName = beanName.intern();
+		
 	}
 	
+	protected DefaultParamConfig(String code, String beanName, String id) {
+		super(id);
+		
+		Objects.requireNonNull(code, ()->"code in param config must not be null");
+		Objects.requireNonNull(beanName, ()->"beanName in param config must not be null");
+		Objects.requireNonNull(id, ()->"id in param config must not be null");
+		
+		this.code = code.intern();
+		this.beanName = beanName.intern();
+	}
+
+
 	final public static <T> DefaultParamConfig<T> instantiate(ModelConfig<?> mConfig, String code) {
 		return instantiate(mConfig, code, code);
 	}
@@ -97,7 +114,7 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 		return new DefaultParamConfig<>(code, beanName);
 	} 
 	
-
+	@JsonIgnore
 	@SuppressWarnings("unchecked")
 	@Override
 	public Class<P> getReferredClass() {
@@ -109,6 +126,7 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 		return StringUtils.equals(getCode(), by);
 	}
 	
+	@JsonIgnore
 	@Override
 	public boolean isLeaf() {
 		return !getType().isNested();
@@ -127,9 +145,9 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 			return null;
 		
 		/* param is not leaf node: is nested */
-		ParamType.Nested<?> mp = getType().findIfNested();
+		ParamConfigType.Nested<?> mp = getType().findIfNested();
 		if(mp != null) {
-			return mp.getModel().findParamByPath(pathArr);
+			return mp.getModelConfig().findParamByPath(pathArr);
 		}
 		
 		/* if param is a leaf node and requested path has more children, then return null */

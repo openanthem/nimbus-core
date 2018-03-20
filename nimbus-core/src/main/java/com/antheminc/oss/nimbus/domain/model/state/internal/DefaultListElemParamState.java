@@ -58,6 +58,16 @@ public class DefaultListElemParamState<E> extends DefaultParamState<E> implement
 		public LeafElemState(ListModel<E> parentModel, ParamConfig<E> config, EntityStateAspectHandlers aspectHandlers, String elemId) {
 			super(parentModel, config, aspectHandlers, elemId);
 		}
+		
+		@Override
+		public boolean isLeaf() {
+			return true;
+		}
+		
+		@Override
+		public LeafElemState<E> findIfLeaf() {
+			return this;
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -96,5 +106,20 @@ public class DefaultListElemParamState<E> extends DefaultParamState<E> implement
 	@Override
 	public boolean remove() {
 		return getParentModel().remove(this);
+	}
+	
+	@Override
+	public MappedListElemParam<E, ?> findIfMapped() {
+		return null;
+	}
+	
+	@Override
+	public boolean isCollectionElem() {
+		return true;
+	}
+	
+	@Override
+	public DefaultListElemParamState<E> findIfCollectionElem() {
+		return this;
 	}
 }

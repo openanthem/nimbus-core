@@ -107,6 +107,7 @@ public class ViewConfig {
 		String alias() default "Page";
 		String cssClass() default ""; 
 		boolean defaultPage() default false;
+		String imgSrc() default "";
 		String route() default ""; // remove
 	}
 	
@@ -121,7 +122,8 @@ public class ViewConfig {
 			XSmall, //25%
 			Small, //33%
 			Medium, //50%
-			Large //100%
+			Large, //100%
+			Colorbox //100%
 		}
 		String alias() default "Tile";
 		String imgSrc() default "";
@@ -216,6 +218,8 @@ public class ViewConfig {
 		}
 		
 		ParamContext context() default @ParamContext(enabled = true, visible = false);
+		
+		boolean resizable() default true;
 	}
 
 	/*
@@ -245,7 +249,7 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface ButtonGroup {	
 		String alias() default "ButtonGroup";
-		String cssClass() default "text-sm-right";
+		String cssClass() default "text-sm-center";
 	}
 	
 	/*
@@ -265,6 +269,7 @@ public class ViewConfig {
 		String url() default "";
 		boolean rowSelection() default false;
 		String pageSize() default "50"; // changed default from 10 to 50
+		boolean showHeader() default true;
 		boolean pagination() default true;
 		boolean postButton() default false;
 		String postButtonUrl() default "";
@@ -272,6 +277,7 @@ public class ViewConfig {
 		String postButtonAlias() default "";
 		String postButtonLabel() default "";
 		boolean postEventOnChange() default false;
+		boolean clearAllFilters() default true;
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
@@ -280,6 +286,7 @@ public class ViewConfig {
 	public @interface GridRowBody {
 		String alias() default "GridRowBody";
 		String cssClass() default "";
+		boolean asynchronous() default false;
 	}
 	
 	/*
@@ -318,7 +325,7 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface CardDetail {
 		String alias() default "CardDetail";
-		String cssClass() default "contentBox right-gutter bg-light mt-1";
+		String cssClass() default "";
 		String imgSrc() default "";
 		boolean editable() default false;
 		String modelPath() default "";
@@ -370,13 +377,13 @@ public class ViewConfig {
 		String imgSrc() default "";
 		String cssClass() default "";
 		boolean showName() default true;
-		String cols() default "1";
+		String cols() default "4";
 		String iconField() default "";
 		boolean inplaceEdit() default false;
 		String inplaceEditType() default "";
 		String datePattern() default "";
+		String placeholder() default "";
 	}
-
 	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
@@ -411,7 +418,7 @@ public class ViewConfig {
 		String imgSrc() default "";
 		Style style() default Style.PLAIN;
 		String payload() default "";
-		String cssClass() default "btn btn-primary";
+		String cssClass() default "btn btn-plain";
 		boolean browserBack() default false;
 		boolean formReset() default true;
 	}
@@ -541,7 +548,6 @@ public class ViewConfig {
 		String type() default "text";
 		boolean postEventOnChange() default false;
 		String controlId() default "";
-		String datePattern() default "";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME) 
@@ -557,7 +563,6 @@ public class ViewConfig {
 		String rows() default "5"; 
 		boolean postEventOnChange() default false; 
 		String controlId() default ""; 
-		String datePattern() default "";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
@@ -571,7 +576,6 @@ public class ViewConfig {
 		String postButtonUrl() default "";
 		String controlId() default "";
 		String help() default "";
-		String datePattern() default "";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
@@ -639,7 +643,6 @@ public class ViewConfig {
 		boolean postEventOnChange() default false;
 		String controlId() default "";
 		String help() default "";
-		String datePattern() default "";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
@@ -652,7 +655,6 @@ public class ViewConfig {
 		boolean postEventOnChange() default false;
 		String controlId() default "";
 		String help() default "";
-		String datePattern() default "";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
@@ -667,6 +669,26 @@ public class ViewConfig {
 		String controlId() default "";
 		String help() default "";
 	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface AccordionMain {
+		String alias() default "AccordionMain";
+		String cssClass() default "panel-default";
+		boolean multiple() default false;
+		String activeIndex() default "0";
+	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface AccordionTab {
+		String alias() default "AccordionTab";
+		String cssClass() default "panel-default";
+		boolean selected() default false;
+	}
+	
 	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.FIELD })
@@ -803,12 +825,22 @@ public class ViewConfig {
 		boolean sortable() default true;
 		boolean filter() default false; 
 		String filterValue() default "";
-		boolean expandable() default true;		
+		boolean expandable() default true;
+		SortAs sortAs() default SortAs.DEFAULT; // number, text
+		String placeholder() default "";
+		
 		public enum FilterMode {
 			equals,
 			contains,
 			endsWith,
 			in
+		}
+		
+		public enum SortAs {
+			DEFAULT,
+			NUMBER,
+			TEXT;
+			
 		}
 		FilterMode filterMode() default FilterMode.equals;
 		String datePattern() default "";

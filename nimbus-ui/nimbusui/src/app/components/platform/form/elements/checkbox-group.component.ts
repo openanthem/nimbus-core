@@ -23,6 +23,8 @@ import { WebContentSvc } from '../../../../services/content-management.service';
 import { PageService } from '../../../../services/page.service';
 import { ServiceConstants } from '../../../../services/service.constants';
 import { BaseElement } from './../../base-element.component';
+import { ValidatorFn } from '@angular/forms/src/directives/validators';
+import { ValidationUtils } from '../../validators/ValidationUtils';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -43,7 +45,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR,WebContentSvc ],
   template: `
       <fieldset>
-          <legend class="{{elementStyle}}">{{label}}
+          <legend [ngClass]="{'required': requiredCss, '': !requiredCss}">{{label}}
                 <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
            </legend>
           <div class="checkboxHolder" [formGroup]="form" >
@@ -62,9 +64,6 @@ export class CheckBoxGroup extends BaseElement implements ControlValueAccessor {
     @Input('value') _value;
     @Output() antmControlValueChanged =new EventEmitter();
     
-    // TODO replace selected options with element.leafState once it supports collection
-    //private selectedOptions: string[] = [];
-
     constructor(private pageService: PageService, private _wcs: WebContentSvc, private cd: ChangeDetectorRef) {
         super(_wcs);    
     }
@@ -98,38 +97,19 @@ export class CheckBoxGroup extends BaseElement implements ControlValueAccessor {
     setState(event:any,frmInp:any) {
         frmInp.element.leafState = event;
         this.cd.markForCheck();
-        //added to overide the state with ws update.
-        //this.selectedOptions = [];
-        //this.selectedOptions.push(event);
-        //console.log(frmInp.element.leafState);
     }
 
     emitValueChangedEvent(formControl:any,$event:any) {
         this.antmControlValueChanged.emit(formControl.element);
     }
 
-    // selectOption(code: string, elem: any) {
-    //     var array = this.value;
-    //     var index = array.indexOf(code);
-    //     if (index > -1) {
-    //         array.splice(index, 1);
-    //     } else {
-    //         array.push(code);
-    //     }
-    //     this.value = this.value;
-    // }
-
-    // checkedState(val:any) {
-    //     var array = this.value;
-    //     var index = array.indexOf(val);
-    //     if(index> -1) {
-    //         return true;
-    //     } else {
-    //         return false;
-    //     }
-    // }
     ngOnInit() {
         super.ngOnInit();
+        let frmCtrl = this.form.controls[this.element.config.code];
+        //rebind the validations as there are dynamic validations along with the static validations
+        if(frmCtrl!=null && this.element.activeValidationGroups != null && this.element.activeValidationGroups.length > 0) {
+            this.requiredCss = ValidationUtils.rebindValidations(frmCtrl,this.element.activeValidationGroups,this.element);
+        } 
         if(this.element.leafState !=null && this.element.leafState.length > 0) {
             this.value = this.element.leafState;
         }
@@ -147,16 +127,23 @@ export class CheckBoxGroup extends BaseElement implements ControlValueAccessor {
             });
             this.pageService.validationUpdate$.subscribe(event => {
                 let frmCtrl = this.form.controls[event.config.code];
-                if(frmCtrl!=null && event.path.startsWith(this.element.path)) {
-                    if(event.enabled.currState)
-                        frmCtrl.enable();
-                    else
-                        frmCtrl.disable();
+                if(frmCtrl!=null) {
+                    if(event.path === this.element.path) {
+                       //bind dynamic validations on a param as a result of a state change of another param
+                        if(event.activeValidationGroups != null && event.activeValidationGroups.length > 0) {
+                            this.requiredCss = ValidationUtils.rebindValidations(frmCtrl,event.activeValidationGroups,this.element);
+                        } else {
+                            this.requiredCss = ValidationUtils.applyelementStyle(this.element);
+                            var staticChecks: ValidatorFn[] = [];
+                            staticChecks = ValidationUtils.buildStaticValidations(this.element);
+                            frmCtrl.setValidators(staticChecks);
+                        }
+                        ValidationUtils.assessControlValidation(event,frmCtrl);
+                    }
                 }
             });
         }
         this.antmControlValueChanged.subscribe(($event) => {
-             //console.log($event);
              if ($event.config.uiStyles.attributes.postEventOnChange) {
                 this.pageService.postOnChange($event.path, 'state', JSON.stringify($event.leafState));
              }

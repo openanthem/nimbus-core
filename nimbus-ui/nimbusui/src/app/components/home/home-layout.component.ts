@@ -48,10 +48,8 @@ export class HomeLayoutCmp {
     public branding: AppBranding;
     public footer: FooterConfig;
     public userName: any;
-    //TODO: Determine the strategy for global nav
-    //public subBar: GlobalNavConfig;
-    // public organization: Param;
-    // public menus: MenuItem[][];
+    public navMenuBar: boolean = false;
+    
 
     public organizations: Param[];
     public collapse: boolean = false;
@@ -83,10 +81,13 @@ export class HomeLayoutCmp {
                         this.branding = layout.topBar.branding;
                         this.topMenuItems = layout.topBar.headerMenus;
                     }
-                    if(layout.subBar!=null){
+                    if(layout.subBar && (layout.subBar.menuItems || layout.subBar.menuLinks || layout.subBar.organization)) {
+                        this.navMenuBar = true;
                         this.organization = layout.subBar.organization;
                         this.menuItems = layout.subBar.menuItems;
                         this.menuLinks = layout.subBar.menuLinks;
+                    } else {
+                        this.navMenuBar = false;
                     }
                     this.leftMenuItems = layout.leftNavBar;
                     this.footer = layout.footer;

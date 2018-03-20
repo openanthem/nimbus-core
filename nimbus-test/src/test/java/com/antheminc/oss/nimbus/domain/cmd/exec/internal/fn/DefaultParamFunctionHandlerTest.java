@@ -36,12 +36,12 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.test.domain.support.utils.ExtractResponseOutputUtils;
 import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
-import com.antheminc.oss.nimbus.test.entity.sample.s0.core.SampleCoreEntity;
-import com.antheminc.oss.nimbus.test.entity.sample.s0.core.SampleCoreNestedEntity;
-import com.antheminc.oss.nimbus.test.entity.sample.s0.view.VPSampleViewPageBlue.Section_ConvertedNestedEntity;
-import com.antheminc.oss.nimbus.test.entity.sample.s0.view.VPSampleViewPageGreen;
-import com.antheminc.oss.nimbus.test.entity.sample.s0.view.VPSampleViewPageGreen.ConvertedNestedEntity;
-import com.antheminc.oss.nimbus.test.entity.sample.s0.view.VPSampleViewPageRed.Form_ConvertedNestedEntity;
+import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
+import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreNestedEntity;
+import com.antheminc.oss.nimbus.test.scenarios.s0.view.VPSampleViewPageGreen;
+import com.antheminc.oss.nimbus.test.scenarios.s0.view.VPSampleViewPageBlue.Section_ConvertedNestedEntity;
+import com.antheminc.oss.nimbus.test.scenarios.s0.view.VPSampleViewPageGreen.ConvertedNestedEntity;
+import com.antheminc.oss.nimbus.test.scenarios.s0.view.VPSampleViewPageRed.Form_ConvertedNestedEntity;
 
 /**
  * @author Soham Chakravarti
@@ -201,7 +201,7 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 		
 		// add value to mapsTo core to see effect in mapped transient
 		MockHttpServletRequest updateReq = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(refId)
-				.addNested("/attr_list_2_NestedEntity")
+				.addNested("/attr_list_2_NestedEntity/0")
 				.addAction(Action._update)
 				.getMock();
 		

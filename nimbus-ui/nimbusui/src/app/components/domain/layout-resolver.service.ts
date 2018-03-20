@@ -22,6 +22,7 @@ import { Injectable } from '@angular/core';
 import { Router, Resolve, RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { PageService } from '../../services/page.service';
+import { ConfigService } from '../../services/config.service';
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 
@@ -33,17 +34,18 @@ import { PageService } from '../../services/page.service';
 export class LayoutResolver implements Resolve<string> {
 
     constructor(
-        private _pageSvc: PageService, 
+        private _pageSvc: PageService,
+        private _configSvc: ConfigService,
         private router: Router,
         private _breadcrumbService: BreadcrumbService) {}
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<string> | Promise<string> {
         let flowName = route.params['domain'];
-        let flowConfig = this._pageSvc.getFlowConfig(flowName);
-        if (flowConfig) {
+        let flowConfig = this._configSvc.getFlowConfig(flowName);
+        if (flowConfig && flowConfig.model) {
 
             // Push the home breadcrumb into memory under the domain name.
-            this._breadcrumbService.push(flowName, 'Home', flowConfig.params[0].path);
+            // this._breadcrumbService.push(flowName, 'Home', flowConfig.model.params[0].path);
 
             let routeToDefaultPage: boolean = true;
             if (route.firstChild.params['pageId']) {

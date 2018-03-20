@@ -19,11 +19,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.activiti.bpmn.model.ExtensionElement;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -31,6 +34,8 @@ import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.antheminc.oss.nimbus.FrameworkRuntimeException;
+import com.antheminc.oss.nimbus.app.extension.config.ActivitiProcessDefinitionCache;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.bpm.BPMGateway;
 import com.antheminc.oss.nimbus.domain.bpm.ProcessEngineContext;
@@ -38,6 +43,7 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.ProcessResponse;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.internal.ExecutionEntity;
+import com.antheminc.oss.nimbus.support.JustLogit;
 import com.antheminc.oss.nimbus.support.expr.ExpressionEvaluator;
 
 /**
@@ -45,6 +51,8 @@ import com.antheminc.oss.nimbus.support.expr.ExpressionEvaluator;
  *
  */
 public class ActivitiBPMGateway implements BPMGateway {
+	
+	protected final JustLogit logit = new JustLogit(this.getClass());
 	
 	@Autowired RuntimeService runtimeService;
 	
@@ -97,7 +105,14 @@ public class ActivitiBPMGateway implements BPMGateway {
 		Map<String, Object> executionVariables = new HashMap<String, Object>();
 		executionVariables.put(Constants.KEY_EXECUTE_PROCESS_CTX.code, context);		
 		for(String task: activeTasks){
-			UserTask userTask = (UserTask)deploymentManager.getProcessDefinitionCache().get(processFlow.getProcessDefinitionId()).getProcess().getFlowElementMap().get(task);
+			ActivitiProcessDefinitionCache cache = (ActivitiProcessDefinitionCache)deploymentManager.getProcessDefinitionCache();
+			refreshProcessDefinitionCacheIfApplicable(processFlow.getProcessDefinitionId(), cache, param);
+			if(cache.size() == 0) {
+				logit.error(() -> "Could not get ProcessDefinitionCache from either processEngineConfiguration or db query findDeployedLatestProcessDefinitionByKey (which should refresh the cache) while executing param "
+								+ param + " and process Execution Id: " + processExecutionId);
+			}
+			
+			UserTask userTask = (UserTask)cache.findByKey(getProcessKeyFromDefinitionId(processFlow.getProcessDefinitionId(), param)).getProcess().getFlowElementMap().get(task);
 			if(canComplete(param,userTask)) {
 				List<Task> activeTaskInstances = taskService.createTaskQuery().processInstanceId(processExecutionId).taskDefinitionKey(task).list();
 				for(Task activeTaskIntance: activeTaskInstances)
@@ -105,6 +120,19 @@ public class ActivitiBPMGateway implements BPMGateway {
 			}
 		}
 		return context.getOutput();
+	}
+
+	private void refreshProcessDefinitionCacheIfApplicable(String processDefinitionId, ActivitiProcessDefinitionCache cache, Param<?> param) {
+		if(cache.size() == 0) {
+			CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
+			if(commandExecutor != null) {
+				commandExecutor.execute((commandContext) -> {
+				          return Context.getProcessEngineConfiguration()
+				                        .getDeploymentManager()
+				                        .findDeployedLatestProcessDefinitionByKey(getProcessKeyFromDefinitionId(processDefinitionId, param));
+				});
+			}
+		}
 	}
 	
 	private boolean canComplete(Param<?> param, UserTask userTask) {
@@ -128,5 +156,13 @@ public class ActivitiBPMGateway implements BPMGateway {
 		ExtensionElement extensionElement = extensionElementList.get(0);
 		return extensionElement.getElementText();
 	}	
+	
+	
+	private String getProcessKeyFromDefinitionId(String processDefinitionId, Param<?> param) {
+		return Optional.ofNullable(processDefinitionId)
+			.map(id -> id.split(":")[0])
+			.orElseThrow(() -> new FrameworkRuntimeException("Process Definition Id cannot be null while trying to continue the process for param "+param+" execution"));
+		
+	}
 
 }

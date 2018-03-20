@@ -53,7 +53,7 @@ public class CustomLocalDateDeserializerTest {
 	
 	@Test
 	public void t1_deserialize() throws IOException {
-		Mockito.when(this.jsonParser.getText()).thenReturn("1988-10-13");
+		Mockito.when(this.jsonParser.getText()).thenReturn("1988-10-13T00:00:00.000Z");
 		final LocalDate result = this.testee.deserialize(this.jsonParser, null);
 		Mockito.verify(this.jsonParser, Mockito.times(1)).getText();
 		Assert.assertEquals(LocalDate.of(1988, 10, 13), result);
@@ -62,16 +62,24 @@ public class CustomLocalDateDeserializerTest {
 	@Test
 	public void t2_deserializeDifferentFormat() throws IOException {
 		Mockito.when(this.jsonParser.getText()).thenReturn("10/13/1988");
-		final LocalDate result = this.testee.deserialize(this.jsonParser, null);
-		Mockito.verify(this.jsonParser, Mockito.times(1)).getText();
-		Assert.assertEquals(LocalDate.of(1988, 10, 13), result);
+		this.thrown.expect(JsonParseException.class);
+		this.thrown.expectMessage("Unparseable date: \"10/13/1988\". Supported formats: [yyyy-MM-dd, yyyy-MM-dd'T'HH:mm:ss.SSS'Z']");
+//		this.thrown.expectMessage("Unparseable date: \"10/13/1988\". Supported format: yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		this.testee.deserialize(this.jsonParser, null);
 	}
 	
 	@Test
-	public void t1_deserializeBadDate() throws IOException {
+	public void t3_deserializeBadDate() throws IOException {
 		Mockito.when(this.jsonParser.getText()).thenReturn("10-13-1988");
 		this.thrown.expect(JsonParseException.class);
-		this.thrown.expectMessage("Unparseable date: \"10-13-1988\". Supported formats: [yyyy-MM-dd, MM/dd/yyyy, yyyy-MM-dd'T'HH:mm:ss.SSS'Z']");
+//		this.thrown.expectMessage("Unparseable date: \"10-13-1988\". Supported format: yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		this.thrown.expectMessage("Unparseable date: \"10-13-1988\". Supported formats: [yyyy-MM-dd, yyyy-MM-dd'T'HH:mm:ss.SSS'Z']");
 		this.testee.deserialize(this.jsonParser, null);
+	}
+	
+	@Test
+	public void t4_deserialize_nullString() throws IOException {
+		Mockito.when(this.jsonParser.getText()).thenReturn("null");
+		Assert.assertNull(this.testee.deserialize(this.jsonParser, null));
 	}
 }

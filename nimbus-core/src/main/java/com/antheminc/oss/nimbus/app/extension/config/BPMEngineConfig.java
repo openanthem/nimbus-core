@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import javax.sql.DataSource;
 
@@ -27,7 +28,6 @@ import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.deploy.Deployer;
-import org.activiti.engine.impl.rules.RulesDeployer;
 import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.activiti.spring.boot.AbstractProcessEngineAutoConfiguration;
@@ -95,7 +95,10 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
 	private String dbPassword;
 	
 	@Value("${process.history.level}") 
-	private String processHistoryLevel;	
+	private String processHistoryLevel;
+	
+	@Value("${process.deployment.name:#{null}}")
+	private Optional<String> deploymentName;
 	
 	@Getter @Setter
 	private List<String> definitions = new ArrayList<String>();
@@ -109,29 +112,36 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
 	@Autowired
 	private ActivitiExpressionManager platformExpressionManager;
 	
-    @Bean
-    public SpringProcessEngineConfiguration springProcessEngineConfiguration(
-            @Qualifier("processDataSource")DataSource processDataSource,
-            PlatformTransactionManager jpaTransactionManager,
-            SpringAsyncExecutor springAsyncExecutor, BeanResolverStrategy beanResolver) throws Exception {
-    	SpringProcessEngineConfiguration engineConfiguration = this.baseSpringProcessEngineConfiguration(processDataSource, jpaTransactionManager, springAsyncExecutor);
-    	engineConfiguration.setExpressionManager(platformExpressionManager);
-    	
-    	engineConfiguration.setActivityBehaviorFactory(platformActivityBehaviorFactory(beanResolver));
-    	engineConfiguration.setHistoryLevel(HistoryLevel.getHistoryLevelForKey(processHistoryLevel));
-    	addCustomDeployers(engineConfiguration);
-    	
-        List<Resource> resources = new ArrayList<>(Arrays.asList(engineConfiguration.getDeploymentResources()));
-        Resource[] supportingResources = loadBPMResources();
-        if(supportingResources != null && supportingResources.length > 0){
-        	resources.addAll(Arrays.asList(loadBPMResources()));
-        }
-        engineConfiguration.setDeploymentResources(resources.toArray(new Resource[resources.size()])); 
-        
-        return engineConfiguration;
-    }
+	@Bean
+	public SpringProcessEngineConfiguration springProcessEngineConfiguration(
+			@Qualifier("processDataSource") DataSource processDataSource,
+			PlatformTransactionManager jpaTransactionManager, SpringAsyncExecutor springAsyncExecutor,
+			BeanResolverStrategy beanResolver) throws Exception {
+		
+		SpringProcessEngineConfiguration engineConfiguration = this
+				.baseSpringProcessEngineConfiguration(processDataSource, jpaTransactionManager, springAsyncExecutor);
+
+		if (deploymentName.isPresent()) {
+			engineConfiguration.setDeploymentName(deploymentName.get());
+		}
+		engineConfiguration.setExpressionManager(platformExpressionManager);
+		engineConfiguration.setProcessDefinitionCache(new ActivitiProcessDefinitionCache());
+		engineConfiguration.setActivityBehaviorFactory(platformActivityBehaviorFactory(beanResolver));
+		engineConfiguration.setHistoryLevel(HistoryLevel.getHistoryLevelForKey(processHistoryLevel));
+		addCustomDeployers(engineConfiguration);
+
+		List<Resource> resources = new ArrayList<>(Arrays.asList(engineConfiguration.getDeploymentResources()));
+		Resource[] supportingResources = loadBPMResources();
+		if (supportingResources != null && supportingResources.length > 0) {
+			resources.addAll(Arrays.asList(loadBPMResources()));
+		}
+		engineConfiguration.setDeploymentResources(resources.toArray(new Resource[resources.size()]));
+
+		return engineConfiguration;
+	}
     
 	public DefaultActivityBehaviorFactory platformActivityBehaviorFactory(BeanResolverStrategy beanResolver) {
+		
 		return new DefaultActivityBehaviorFactory() {
 			@Override
 			public UserTaskActivityBehavior createUserTaskActivityBehavior(UserTask userTask) {
@@ -148,12 +158,14 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
      * The custom deployer can read custom format and convert into a structure that can be processed by the framework.
      * 
      * <p>The framework by default adds the custom Rules Deployer
-     * 
+     * <p>Removed support for rules deployer by default since f/w does not support the patter of executing rules within activiti step as of now.
+     * If needed, using application can inject one in the BPMEngineConfig.
+     *
      * @param engineConfiguration
      */
     protected void addCustomDeployers(SpringProcessEngineConfiguration engineConfiguration) throws Exception{
     	List<Deployer> deployers = new ArrayList<>();
-        deployers.add(new RulesDeployer());
+        //deployers.add(new RulesDeployer());
         if(customDeployers != null){
         	for(String customDeployerClass: customDeployers){
         		Class<?> clazz = Class.forName(customDeployerClass);
@@ -164,20 +176,20 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
     }
     
     protected Resource[] loadBPMResources() throws IOException{ 
-    	List<Resource> bpmResources = new ArrayList<Resource>();
-    	addBPMResources(bpmResources,definitions);
-    	//==addBPMResources(bpmResources,rules);
+    		List<Resource> bpmResources = new ArrayList<Resource>();
+    		addBPMResources(bpmResources,definitions);
+    		//==addBPMResources(bpmResources,rules);
   		return bpmResources.toArray(new Resource[bpmResources.size()]);
 	}
     
     private void addBPMResources(List<Resource> bpmResources, List<String> bpmResourcePath) throws IOException{
-    	PathMatchingResourcePatternResolver pmrs = new PathMatchingResourcePatternResolver();
-    	for(String path: bpmResourcePath){
-    		Resource[] resources = pmrs.getResources(path);
-    		for(Resource resource: resources){
-    			bpmResources.add(resource);
-    		}
-    	}
+    		PathMatchingResourcePatternResolver pmrs = new PathMatchingResourcePatternResolver();
+	    	for(String path: bpmResourcePath){
+	    		Resource[] resources = pmrs.getResources(path);
+	    		for(Resource resource: resources){
+	    			bpmResources.add(resource);
+	    		}
+	    	}
     }
    
     @Bean
@@ -187,7 +199,7 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
 
     @Bean
     public PlatformTransactionManager jpaTransactionManager(@Qualifier("processDataSource")DataSource processDataSource) {
-    	return new DataSourceTransactionManager(processDataSource);
+    		return new DataSourceTransactionManager(processDataSource);
     }
     
    
@@ -195,13 +207,6 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
     public TaskExecutor taskExecutor() {
         return new SimpleAsyncTaskExecutor();
     }
-    
-//    @Bean
-//	public DataSource processDataSource() {
-//    	return new EmbeddedDatabaseBuilder().
-//				setType(EmbeddedDatabaseType.H2).
-//				build();
-//	}  
     
     @Bean
   	public DataSource processDataSource() {
@@ -218,9 +223,6 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
     		return ds;
   	}     
     
-//    @Bean
-//	public JpaTransactionManager jpaTransactionManager(EntityManagerFactory emf) {
-//		return new JpaTransactionManager(emf);
-//	}
+   
     
 }

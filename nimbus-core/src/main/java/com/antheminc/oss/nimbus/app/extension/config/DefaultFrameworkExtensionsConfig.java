@@ -15,10 +15,14 @@
  */
 package com.antheminc.oss.nimbus.app.extension.config;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.ValidationScope;
 import com.antheminc.oss.nimbus.domain.model.config.extension.LabelConfigEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.AccessConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ActivateConditionalStateEventHandler;
@@ -26,12 +30,17 @@ import com.antheminc.oss.nimbus.domain.model.state.extension.AuditStateChangeHan
 import com.antheminc.oss.nimbus.domain.model.state.extension.ConfigConditionalStateChangeHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.DobToAgeConverter;
 import com.antheminc.oss.nimbus.domain.model.state.extension.EnableConditionalStateEventHandler;
+import com.antheminc.oss.nimbus.domain.model.state.extension.ExpressionConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ModalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ParamContextStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.RuleStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.StaticCodeValueBasedCodeToLabelConverter;
+import com.antheminc.oss.nimbus.domain.model.state.extension.ValidateConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValuesConditionalOnStateChangeEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValuesConditionalOnStateLoadEventHandler;
+import com.antheminc.oss.nimbus.domain.model.state.extension.ValidateConditionalStateEventHandler.ValidationAssignmentStrategy;
+import com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional.SiblingNestedValidationAssignmentStrategy;
+import com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional.SiblingValidationAssignmentStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.internal.IdParamConverter;
 
 /**
@@ -94,6 +103,24 @@ public class DefaultFrameworkExtensionsConfig {
 	@Bean
 	public EnableConditionalStateEventHandler extensionEnableCondiationalStateEventHandler(BeanResolverStrategy beanResolver) {
 		return new EnableConditionalStateEventHandler(beanResolver);
+	}
+	
+	@Bean
+	public ValidateConditionalStateEventHandler extensionValidateConditionalStateEventHandler(BeanResolverStrategy beanResolver) {
+		return new ValidateConditionalStateEventHandler(beanResolver, null);
+	}
+	
+	@Bean
+	public Map<ValidationScope, ValidationAssignmentStrategy> extensionValidateConditionalAssignmentStrategies() {
+		Map<ValidationScope, ValidationAssignmentStrategy> validationAssignmentStrategies = new HashMap<>();
+		validationAssignmentStrategies.put(ValidationScope.SIBLING, new SiblingValidationAssignmentStrategy());
+		validationAssignmentStrategies.put(ValidationScope.SIBLING_NESTED, new SiblingNestedValidationAssignmentStrategy());
+		return validationAssignmentStrategies;
+	}
+	
+	@Bean
+	public ExpressionConditionalStateEventHandler expressionConditionalHandler(BeanResolverStrategy beanResolver) {
+		return new ExpressionConditionalStateEventHandler(beanResolver);
 	}
 	
 	@Bean
