@@ -73,6 +73,22 @@ public class MappedDefaultTransientParamState<T, M> extends DefaultParamState<T>
 		super.initStateInternal();
 	}
 
+	@Override
+	public void onTypeAssign() {
+		Param mapsToTransientDetached = creator.buildMapsToDetachedParam(this);
+		setMapsToTransient(mapsToTransientDetached);
+		mapsToTransientDetached.registerConsumer(this);
+		
+		assignType();
+		
+		fireRules();
+	}
+	
+	public void assignType() {
+		Model mappedModel = creator.buildMappedTransientModel(this, getMapsTo().findIfNested());
+		getType().findIfTransient().assign(mappedModel);
+	}
+	
 //	@Override
 //	public void fireRules() {
 //		if(isAssinged())
@@ -142,8 +158,7 @@ public class MappedDefaultTransientParamState<T, M> extends DefaultParamState<T>
 			setAssigned(isAssigned);
 			
 			// 3. create new mapped model based on mapsTo
-			Model mappedModel = creator.buildMappedTransientModel(this, getMapsTo().findIfNested());
-			getType().findIfTransient().assign(mappedModel);
+			assignType();
 			
 			// 4. fire rules
 			fireRules();
