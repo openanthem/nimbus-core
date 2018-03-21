@@ -50,7 +50,6 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 	],
 	encapsulation: ViewEncapsulation.None,
 	template: `
-			<div style="color: red">{{statusMessage}}</div>
 			<p-fileUpload name="pfileupload" 
 				[showUploadButton]="false" 
 				[showCancelButton]="false"
@@ -70,7 +69,6 @@ export class FileUploadComponent extends BaseElement implements ControlValueAcce
 	@Input('value') _value;
 	selectedFiles: File[];
 	multipleFiles: boolean = false;
-	statusMessage: string;
 
 	constructor(private fileService: FileService, private _wcs: WebContentSvc) {
 		super(_wcs); 
@@ -106,7 +104,6 @@ export class FileUploadComponent extends BaseElement implements ControlValueAcce
 		this.selectedFiles = [];
 
 		this.fileService.addFile$.subscribe(file => {
-			this.statusMessage="";
 			if (!this.multipleFiles) {
 				this.selectedFiles = [];	
 			}
@@ -115,14 +112,12 @@ export class FileUploadComponent extends BaseElement implements ControlValueAcce
 			
 		},
 	(error) => {
-		this.statusMessage = "Problem with the service.  Please try later.";
-		// console.log("error in main comp", error);
+		 console.log(error);
 	}
 	);
 	}
 
 	addFiles(event) {
-		this.statusMessage="Uploading.....";
 		let files = event.originalEvent.dataTransfer ? event.originalEvent.dataTransfer.files : event.originalEvent.target.files;
 		for ( var p=0; p< files.length; p++ ) {
 			if (this.hasFile(files[p]) == -1) {
