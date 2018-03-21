@@ -21,7 +21,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { ExecuteResponse } from '../shared/app-config.interface';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
-import 'rxjs/add/Observable/throw';
+import 'rxjs/add/observable/throw';
 
 /**
  * \@author Swetha.Vemuri
