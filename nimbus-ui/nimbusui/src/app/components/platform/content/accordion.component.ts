@@ -55,7 +55,7 @@ import { BaseElement } from '../base-element.component';
 export class AccordionMain extends BaseElement {
 
     protected _multiple: boolean;
-    protected index: number[]; 
+    index: number[]; 
     @ViewChild('accordion') accordion: AccordionMain;
 
     constructor(private wcsvc: WebContentSvc) {

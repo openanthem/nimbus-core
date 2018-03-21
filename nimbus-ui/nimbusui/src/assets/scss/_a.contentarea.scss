@@ -250,8 +250,8 @@ h1.page-title {
     width: 84%;
     padding-left: 20px;
 }
-.ui-dialog-content label {
-    padding-top: .3rem;
+.ui-dialog .ui-dialog-titlebar-close span {
+    font-size: 1.5rem;
 }
 .ui-widget-header.ui-dialog-titlebar{
         text-align: left;
@@ -339,7 +339,7 @@ legend {
     width: 120px;
 }
 .ui-dialog.ui-widget .ui-dialog-titlebar .ui-dialog-title {
-    font-size: 1rem;
+    margin-left: 1rem;
 }
 .ui-dialog.ui-widget .ui-dialog-titlebar {
     padding: .5rem;
@@ -349,7 +349,9 @@ legend {
     content: "\f057";
     color: #fff;
 }
-
+.ui-dialog .ui-dialog-titlebar-icon:hover .fa-close:before {
+    color: #6e9de1;
+}
 .section-nav{
    .nav-link::before{
         color: inherit;
