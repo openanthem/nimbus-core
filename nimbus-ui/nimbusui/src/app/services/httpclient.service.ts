@@ -19,6 +19,9 @@ import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, URLSearchParams } from '@angular/http';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { ExecuteResponse } from '../shared/app-config.interface';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/Observable/throw';
 
 /**
  * \@author Swetha.Vemuri
@@ -53,7 +56,9 @@ export class CustomHttpClient {
   }
 
   postFileData(url, data) {
-    return this.http.post(url, data);
+
+    return this.http.post(url, data)
+          .catch(this.errorHandler);
   }
 
   getCookie(name) {
@@ -63,5 +68,11 @@ export class CustomHttpClient {
     if (parts.length === 2) {
       return parts.pop().split(';').shift();
     }
+  }
+
+  errorHandler(error: Response){
+    console.error(error);
+    return Observable.throw(error);
+
   }
 }

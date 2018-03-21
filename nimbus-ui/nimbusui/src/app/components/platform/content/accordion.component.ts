@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 'use strict';
-import { Component, Input } from '@angular/core';
-import { Param } from '../../../shared/app-config.interface';
+import { Component, Input, ViewChild } from '@angular/core';
+import { Param, LabelConfig } from '../../../shared/app-config.interface';
 import { WebContentSvc } from '../../../services/content-management.service';
 import { BaseElement } from '../base-element.component';
 
@@ -31,9 +31,22 @@ import { BaseElement } from '../base-element.component';
     selector: 'nm-accordion',
     providers: [WebContentSvc],
     template: `
-        <p-accordion [multiple]="multiple">
-            <ng-template ngFor let-element [ngForOf]="nestedParams">
-                <nm-accordion-tab [element]="element"></nm-accordion-tab>
+        <div class="text-sm-right" *ngIf="element.config?.uiStyles?.attributes?.showExpandAll">
+            <button type="button" class="btn btn-expand" (click)="openAll()">Expand All</button>
+            <span class="btn-pipe">|</span>
+            <button type="button" class="btn btn-expand" (click)="closeAll()">Collapse All</button>
+        </div>
+
+        <p-accordion #accordion [multiple]="multiple" [activeIndex]="index">
+            <ng-template ngFor let-tab [ngForOf]="nestedParams">
+                <p-accordionTab [header]="getTabLabel(tab)" [selected]="tab?.config?.uiStyles?.attributes?.selected">
+                    <ng-template ngFor let-tabElement [ngForOf]="tab?.type?.model?.params">
+                        <!-- Card Content -->
+                        <ng-template [ngIf]="tabElement.alias == 'CardDetail'">
+                            <nm-card-details [element]="tabElement"></nm-card-details>
+                        </ng-template>
+                    </ng-template>
+                </p-accordionTab>
             </ng-template>
         </p-accordion>
     `
@@ -42,6 +55,8 @@ import { BaseElement } from '../base-element.component';
 export class AccordionMain extends BaseElement {
 
     protected _multiple: boolean;
+    index: number[]; 
+    @ViewChild('accordion') accordion: AccordionMain;
 
     constructor(private wcsvc: WebContentSvc) {
         super(wcsvc);
@@ -56,5 +71,35 @@ export class AccordionMain extends BaseElement {
      */
     public get multiple(): boolean {
         return this.element.config.uiStyles.attributes.multiple;
+    }
+
+    /**
+     * Get Tab label
+     */
+    protected getTabLabel(param: Param): string {
+        let labelConfig: LabelConfig = this.wcsvc.findLabelContent(param);
+        return labelConfig.text;
+    }
+
+    /**
+     * Close All Tabs
+     */
+    public closeAll() {
+        if(this.accordion['tabs']){
+            this.index = [];
+            this.index.push(-1);
+        }
+    }
+
+    /**
+     * Open All Tabs
+     */
+    public openAll() {
+        if(this.accordion['tabs']){
+            this.index = [];
+            for (let t =0; t<this.accordion['tabs'].length; t++){
+                this.index.push(t);
+            }
+        }
     }
 }

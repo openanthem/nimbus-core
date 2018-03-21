@@ -97,6 +97,7 @@ textarea.form-control {
 // use on fieldValue component @FieldValue(cols="1", iconField ="labelLeft")
 .labelLeft { 
     display:inline-block;
+    margin-left: .6rem;
     &::after { //this removes psuedo after inherited from iconField class
         display: none;
     }
