@@ -16,18 +16,20 @@
 package com.antheminc.oss.nimbus.domain.model.state.repo.db;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.util.Assert;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessageConverter;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
-import com.antheminc.oss.nimbus.entity.SearchCriteria;
 
 import lombok.Getter;
 
 /**
- * @author AC67870
+ * @author Rakesh Patel
  *
  */
 @Getter
@@ -49,7 +51,7 @@ public abstract class MongoDBSearch implements DBSearch {
 	}
 	
 	
-	public <T> Class<?> findOutputClass(SearchCriteria<T> criteria, Class<?> referredClass) {
+	public <T> Class<?> findOutputClass(SearchCriteria<?> criteria, Class<T> referredClass) {
 		if(criteria.getProjectCriteria() != null && StringUtils.isNotBlank(criteria.getProjectCriteria().getAlias())) {
 			return getDomainConfigBuilder().getModel(criteria.getProjectCriteria().getAlias()).getReferredClass();
 		}
@@ -65,7 +67,4 @@ public abstract class MongoDBSearch implements DBSearch {
 		return referredClass;
 	}
 
-
-
-	
 }

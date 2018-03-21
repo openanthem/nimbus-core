@@ -16,15 +16,13 @@
  */
 'use strict';
 
-import { DomainFlowCmp } from './../../domain/domain-flow.component';
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd, Params, PRIMARY_OUTLET } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
-
-import { WebContentSvc } from './../../../services/content-management.service';
+import { DomainFlowCmp } from './../../domain/domain-flow.component';
 import { BreadcrumbService } from './breadcrumb.service';
-import { IBreadcrumb } from './ibreadcrumb.d';
+import { Breadcrumb } from './../../../model/breadcrumb.model';
 /**
  * \@author Tony.Lopez
  * \@whatItDoes 
@@ -42,17 +40,15 @@ import { IBreadcrumb } from './ibreadcrumb.d';
                 </li>
             </ol>
         </div>
-    `,
-    providers: [ WebContentSvc ]
+    `
 })
 export class BreadcrumbComponent implements OnInit {
 
-    public breadcrumbs: IBreadcrumb[];
+    public breadcrumbs: Breadcrumb[];
 
     constructor(
         private _activatedRoute: ActivatedRoute, 
         private _router: Router,
-        private _wcs: WebContentSvc,
         private _breadcrumbService: BreadcrumbService) {
         
             // initialize breadcrumbs as empty
@@ -80,7 +76,7 @@ export class BreadcrumbComponent implements OnInit {
      * @param {string} url
      * @param {IBreadcrumb[]} breadcrumbs
      */
-    private getBreadcrumbs(route: ActivatedRoute, breadcrumbs: IBreadcrumb[]=[]): Observable<IBreadcrumb[]> {
+    private getBreadcrumbs(route: ActivatedRoute, breadcrumbs: Breadcrumb[]=[]): Observable<Breadcrumb[]> {
 
         //get the child routes, return if there are no more children
         let children: ActivatedRoute[] = route.children;

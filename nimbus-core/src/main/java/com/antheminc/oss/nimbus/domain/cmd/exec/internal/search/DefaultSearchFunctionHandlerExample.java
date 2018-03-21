@@ -17,11 +17,10 @@ package com.antheminc.oss.nimbus.domain.cmd.exec.internal.search;
 
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
+import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
-import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
-import com.antheminc.oss.nimbus.entity.SearchCriteria.ExampleSearchCriteria;
-import com.antheminc.oss.nimbus.entity.SearchCriteria.ProjectCriteria;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.ExampleSearchCriteria;
 
 /**
  * @author Rakesh Patel
@@ -31,22 +30,7 @@ import com.antheminc.oss.nimbus.entity.SearchCriteria.ProjectCriteria;
 public class DefaultSearchFunctionHandlerExample<T, R> extends DefaultSearchFunctionHandler<T, R> {
 
 	@Override
-	public R execute(ExecutionContext executionContext, Param<T> actionParameter) {
-		ModelConfig<?> mConfig = getRootDomainConfig(executionContext);
-		
-		ExampleSearchCriteria exampleSearchCriteria = createSearchCriteria(executionContext, mConfig, actionParameter);
-		Class<?> criteriaClass = mConfig.getReferredClass();
-		String alias = findRepoAlias(mConfig);
-		
-		ModelRepository rep = getRepFactory().get(mConfig.getRepo());
-		
-		return (R)rep._search(criteriaClass, alias, exampleSearchCriteria, executionContext.getCommandMessage().getCommand().getAbsoluteUri());
-	}
-
-
-	@Override
 	protected ExampleSearchCriteria createSearchCriteria(ExecutionContext executionContext, ModelConfig<?> mConfig, Param<T> actionParam) {
-		
 		Command cmd = executionContext.getCommandMessage().getCommand();
 		
 		ExampleSearchCriteria exampleSearchCriteria = new ExampleSearchCriteria<>();
@@ -56,17 +40,12 @@ public class DefaultSearchFunctionHandlerExample<T, R> extends DefaultSearchFunc
 		T criteria = (T)getConverter().convert(criteriaClass, executionContext.getCommandMessage().getRawPayload());
 		
 		exampleSearchCriteria.setWhere(criteria);
+		exampleSearchCriteria.setAggregateCriteria(cmd.getFirstParameterValue(Constants.SEARCH_REQ_AGGREGATE_MARKER.code));
 		
-		String aggregateAs = cmd.getFirstParameterValue("aggregate");
-		exampleSearchCriteria.setAggregateCriteria(aggregateAs);
+		exampleSearchCriteria.setProjectCriteria(buildProjectCritera(cmd));
+		exampleSearchCriteria.setPageRequest(buildPageCriteria(cmd));
 		
-		ProjectCriteria projectCriteria = new ProjectCriteria();
-		String projectAlias = cmd.getFirstParameterValue("projection.alias");
-		projectCriteria.setAlias(projectAlias);
-		
-		exampleSearchCriteria.setProjectCriteria(projectCriteria);
-		
+		exampleSearchCriteria.setCmd(executionContext.getCommandMessage().getCommand());
 		return exampleSearchCriteria;
-		
 	}
 }

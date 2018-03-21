@@ -41,7 +41,8 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc ],
   template: `
     <label *ngIf="hidden!=true"
-        [attr.for]="element.config?.code" class="{{elementStyle}}">{{label}} 
+    [ngClass]="{'required': requiredCss, '': !requiredCss}"
+        [attr.for]="element.config?.code">{{label}} 
         <nm-tooltip *ngIf="helpText" 
             [helpText]='helpText'>
         </nm-tooltip>
@@ -52,6 +53,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
         [id]="element.config?.code" 
         (focusout)="emitValueChangedEvent(this,value)"
         [value]="type"
+        [disabled]="disabled"
         class="form-control" 
         [readonly]="readOnly" />
 

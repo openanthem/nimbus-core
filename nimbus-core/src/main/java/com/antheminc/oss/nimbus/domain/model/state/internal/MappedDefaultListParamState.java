@@ -46,6 +46,17 @@ public class MappedDefaultListParamState<T, M> extends DefaultListParamState<T> 
 		public LeafState(ListParam<M> mapsTo, Model<?> parentModel, ParamConfig<List<T>> config, EntityStateAspectHandlers provider) {
 			super(mapsTo, parentModel, config, provider);
 		}
+		
+		@JsonIgnore
+		@Override
+		public boolean isLeaf() {
+			return true;
+		}
+		
+		@Override
+		public LeafState<T, M> findIfLeaf() {
+			return this;
+		}
 	}
 	
 	public MappedDefaultListParamState(ListParam<M> mapsTo, Model<?> parentModel, ParamConfig<List<T>> config, EntityStateAspectHandlers provider) {
@@ -122,5 +133,24 @@ public class MappedDefaultListParamState<T, M> extends DefaultListParamState<T> 
 		};
 
 		getMapsTo().registerConsumer(this);
+	}
+	
+	@Override
+	public boolean isMapped() {
+		return true;
+	}
+	
+	@Override
+	public MappedDefaultListParamState<T, M> findIfMapped() {
+		return this;
+	}
+	
+	@Override
+	public boolean requiresConversion() {
+		Class<?> mappedElemClass = getType().findIfCollection().getModel().getElemConfig().getReferredClass();
+		Class<?> mapsToElemClass = getMapsTo().getType().findIfCollection().getModel().getElemConfig().getReferredClass();
+		
+		// conversion required when mappedClass and mapsToClass are NOT same
+		return (mappedElemClass!=mapsToElemClass);
 	}
 }

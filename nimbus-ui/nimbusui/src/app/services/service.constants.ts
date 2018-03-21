@@ -38,6 +38,7 @@ export class ServiceConstants {
 
     /* Enable for stopgap server */
     public static get BASE_URL(): string    { return this.STOPGAP_APP_HOST_URL+this.WEB_CONTENT_PORT; }
+    public static get LOGIN_URL(): string { return this.STOPGAP_APP_HOST_URL+this.STOPGAP_APP_PORT+'/login'; }
     public static get PLATFORM_BASE_URL(): string    { return this.STOPGAP_APP_HOST_URL+this.STOPGAP_APP_PORT+'/Anthem/fep/p'; }
     public static get CLIENT_BASE_URL(): string    { return this.STOPGAP_APP_HOST_URL+this.STOPGAP_APP_PORT+'/'; }
     public static get WS_BASE_URL(): string { return 'ws://'+this.STOPGAP_APP_HOST+':'+this.WS_PORT+'/updates'; }
@@ -65,7 +66,4 @@ export class ServiceConstants {
     public static get BLACK_THEME_URL(): string { return 'http://'+this.hostName+':'+this.STATIC_CONTENT_PORT+'/styles/anthem/anthem.black.theme.css'; }
     public static get IMAGES_URL(): string { return 'http://'+this.hostName+':'+this.STATIC_CONTENT_PORT+'/resources/icons/'; }
 
-    public static get HOME_ROUTE(): string { return '/h'; }
-    public static get HOME_DOMAIN(): string { return 'cmdashboard'; }
-    public static get HOME_PAGE(): string { return 'vpDashboard'; }
 }

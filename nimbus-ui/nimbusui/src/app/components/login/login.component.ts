@@ -56,7 +56,7 @@ export class LoginCmp {
         } else if(this.loginForm.value.username === 'member') {
             this._router.navigate(['/mem/a']);
         } else {
-           this._router.navigate(['/h/cmdashboard']);
+           this._router.navigate(['/h/vrCSLandingPage']);
         }
     }
 

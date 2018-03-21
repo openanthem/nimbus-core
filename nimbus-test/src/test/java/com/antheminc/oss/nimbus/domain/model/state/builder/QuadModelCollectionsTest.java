@@ -38,11 +38,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.antheminc.oss.nimbus.domain.cmd.Action;
+import com.antheminc.oss.nimbus.domain.cmd.Behavior;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
+import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
-import com.antheminc.oss.nimbus.domain.model.config.ParamType;
-import com.antheminc.oss.nimbus.domain.model.config.ParamType.CollectionType;
+import com.antheminc.oss.nimbus.domain.model.config.ParamConfigType;
+import com.antheminc.oss.nimbus.domain.model.config.ParamConfigType.CollectionType;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListElemParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListModel;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
@@ -55,11 +58,11 @@ import com.antheminc.oss.nimbus.domain.model.state.internal.DefaultParamState;
 import com.antheminc.oss.nimbus.domain.model.state.internal.ExecutionEntity;
 import com.antheminc.oss.nimbus.domain.session.SessionProvider;
 import com.antheminc.oss.nimbus.test.FrameworkIntegrationTestScenariosApplication;
-import com.antheminc.oss.nimbus.test.entity.simplecase.core.ServiceLine;
-import com.antheminc.oss.nimbus.test.entity.simplecase.core.ServiceLine.AuditInfo;
-import com.antheminc.oss.nimbus.test.entity.simplecase.core.SimpleCase;
-import com.antheminc.oss.nimbus.test.entity.simplecase.view.Page_Pg3.Section_ServiceLine;
-import com.antheminc.oss.nimbus.test.entity.simplecase.view.VRSimpleCaseFlow;
+import com.antheminc.oss.nimbus.test.scenarios.s3.core.ServiceLine;
+import com.antheminc.oss.nimbus.test.scenarios.s3.core.SimpleCase;
+import com.antheminc.oss.nimbus.test.scenarios.s3.core.ServiceLine.AuditInfo;
+import com.antheminc.oss.nimbus.test.scenarios.s3.view.VRSimpleCaseFlow;
+import com.antheminc.oss.nimbus.test.scenarios.s3.view.Page_Pg3.Section_ServiceLine;
 
 /**
  * @author Soham Chakravarti
@@ -74,9 +77,24 @@ public class QuadModelCollectionsTest {
 	@Autowired QuadModelBuilder quadModelBuilder;
 	@Autowired SessionProvider sessionProvider;
 	
+	public static Command create_view_main() {
+
+		Command c = new Command("/hooli/comm/thebox/p/view_simplecase/_new");
+
+		c.createRoot(Type.ClientAlias, "hooli")
+			.createNext(Type.ClientOrgAlias, "compression")
+			.createNext(Type.AppAlias, "icr")
+			.createNext(Type.PlatformMarker, "p")
+			.createNext(Type.DomainAlias, "view_simplecase")
+			;//.createNext(Type.Action, Action._new.name());
+		c.setAction(Action._new);
+		c.templateBehaviors().add(Behavior.$config);
+		return c;
+	}
+	
 	@Before
 	public void before() {
-		Command cmd = TestCommandFactory.create_view_icr_UMCaseFlow();
+		Command cmd = create_view_main();
 		QuadModel<VRSimpleCaseFlow, SimpleCase> q = quadModelBuilder.build(cmd);
 		assertNotNull(q);
 		
@@ -89,7 +107,7 @@ public class QuadModelCollectionsTest {
 		SimpleCase core = new SimpleCase();
 		core.setId(id);
 		
-		Command cmd = TestCommandFactory.create_view_icr_UMCaseFlow();
+		Command cmd = create_view_main();
 		QuadModel<VRSimpleCaseFlow, SimpleCase> q = quadModelBuilder.build(cmd, new ExecutionEntity<>(new VRSimpleCaseFlow(), core));
 		
 		Param<String> coreId = q.getView().findParamByPath("/.m/id");
@@ -98,7 +116,7 @@ public class QuadModelCollectionsTest {
 	
 	@Test
 	public void t0_configState() {
-		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getAttribute(create_view_main().getRootDomainUri());
 		
 		Param<?> pAloha = q.getView().findParamByPath("/pg3/aloha");
 		assertNotNull(pAloha);
@@ -117,7 +135,7 @@ public class QuadModelCollectionsTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void t1_leafstates() {
-		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getAttribute(create_view_main().getRootDomainUri());
 		
 		ServiceLine sl = new ServiceLine();
 		sl.setService("Karma");
@@ -151,7 +169,7 @@ public class QuadModelCollectionsTest {
 	
 	@Test
 	public void tc01_sanity_check_core_builders() {
-		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getAttribute(create_view_main().getRootDomainUri());
 		
 		// ParamSAC
 		Param<List<ServiceLine>> pSAC_col = q.getCore().findParamByPath("/serviceLines");
@@ -182,11 +200,11 @@ public class QuadModelCollectionsTest {
 		
 		assertTrue(pSAC_config.getType().isNested());
 		assertTrue(pSAC_config.getType().isCollection());
-		assertTrue(pSAC_config.getType() instanceof ParamType.NestedCollection);
+		assertTrue(pSAC_config.getType() instanceof ParamConfigType.NestedCollection);
 		
 		// ParamSAC: ParamConfig.Type.NestedCollection => ParamType for List<ServiceLine>
-		ParamType.NestedCollection<ServiceLine> pSAC_config_type = pSAC_config.getType().findIfCollection(); 
-		assertSame(pSAC_config_type.getModel(), mSAC_col_config);
+		ParamConfigType.NestedCollection<ServiceLine> pSAC_config_type = pSAC_config.getType().findIfCollection(); 
+		assertSame(pSAC_config_type.getModelConfig(), mSAC_col_config);
 		assertSame(CollectionType.list, pSAC_config_type.getCollectionType());
 		
 		// list param element
@@ -195,7 +213,7 @@ public class QuadModelCollectionsTest {
 		assertFalse(pSAC_config_type.getElementConfig().getType().isCollection());
 
 		// list param element: type
-		ParamType.Nested<ServiceLine> typNestedColElem = pSAC_config_type.getElementConfig().getType().findIfNested();
+		ParamConfigType.Nested<ServiceLine> typNestedColElem = pSAC_config_type.getElementConfig().getType().findIfNested();
 		assertSame(ServiceLine.class, typNestedColElem.getReferredClass());
 		
 		//ParamType
@@ -219,7 +237,7 @@ public class QuadModelCollectionsTest {
 	
 	@Test
 	public void tc02_sanity_check_core_ops() {
-		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getAttribute(create_view_main().getRootDomainUri());
 		
 		assertNotNull(q.getCore());
 		// ParamSAC
@@ -250,7 +268,7 @@ public class QuadModelCollectionsTest {
 	
 	@Test
 	public void tc03_col_c_add() {
-		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getAttribute(create_view_main().getRootDomainUri());
 		assertNotNull(q.getCore());
 
 		//add to list
@@ -269,7 +287,7 @@ public class QuadModelCollectionsTest {
 	
 	@Test
 	public void tc04_col_c_getList() {
-		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getAttribute(create_view_main().getRootDomainUri());
 		assertNotNull(q.getCore());
 		
 		//get list
@@ -278,7 +296,7 @@ public class QuadModelCollectionsTest {
 	
 	@Test
 	public void tc05_col_c_setList() {
-		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getAttribute(create_view_main().getRootDomainUri());
 		
 		//set list
 		List<ServiceLine> newList = new ArrayList<>();
@@ -314,7 +332,7 @@ public class QuadModelCollectionsTest {
 	
 	@Test
 	public void tc06_col_c_add_nestedSet() {
-		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getAttribute(create_view_main().getRootDomainUri());
 		
 		ServiceLine elem = new ServiceLine();
 		
@@ -345,7 +363,7 @@ public class QuadModelCollectionsTest {
 	
 	@Test
 	public void tv01_sanity_check_view_builders() {
-		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getAttribute(create_view_main().getRootDomainUri());
 		Model<VRSimpleCaseFlow> vUMCase = ((Model<VRSimpleCaseFlow>)q.getView());
 		assertNotNull(vUMCase);
 		
@@ -392,7 +410,7 @@ public class QuadModelCollectionsTest {
 	
 	@Test
 	public void tv02_leaf_attached_v2c_noConversion() {
-		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getAttribute(create_view_main().getRootDomainUri());
 		
 		String _ALOHA = "View Says: ALOHA";
 		final DefaultParamState<Object>	viewParam =	(DefaultParamState<Object>) q.getView().findParamByPath("/pg3/aloha");
@@ -407,7 +425,7 @@ public class QuadModelCollectionsTest {
 	
 	@Test 
 	public void tv03_leaf_attached_c2v_noConversion() throws Exception{
-		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getAttribute(create_view_main().getRootDomainUri());
 		
 		String _ALOHA = "Core Says: ALOHA";
 		final DefaultParamState<Object> viewParam = (DefaultParamState<Object>) q.getCore().findParamByPath("/caseType");
@@ -422,7 +440,7 @@ public class QuadModelCollectionsTest {
 	
 	@Test
 	public void tv04_col_attached_v2c_set_noConversion() {
-		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getAttribute(create_view_main().getRootDomainUri());
 		
 		//set list
 		List<ServiceLine> newList = new ArrayList<>();
@@ -479,7 +497,7 @@ public class QuadModelCollectionsTest {
 
 	@Test
 	public void tv05_col_attached_v2c_add_noConversion() {
-		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getAttribute(create_view_main().getRootDomainUri());
 		Model<VRSimpleCaseFlow> vUMCase = ((Model<VRSimpleCaseFlow>)q.getView());
 		assertNotNull(vUMCase);
 		
@@ -519,7 +537,7 @@ public class QuadModelCollectionsTest {
 	
 	@Test
 	public void tv06_col_attached_v2c_set_conversion() {
-		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getAttribute(create_view_main().getRootDomainUri());
 		
 		// set list
 		List<Section_ServiceLine> newList = new ArrayList<>();
@@ -567,7 +585,7 @@ public class QuadModelCollectionsTest {
 	
 	@Test
 	public void tv07_col_attached_v2c_add_conversion() {
-		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getAttribute(create_view_main().getRootDomainUri());
 		Model<VRSimpleCaseFlow> vUMCase = ((Model<VRSimpleCaseFlow>)q.getView());
 		assertNotNull(vUMCase);
 		
@@ -607,7 +625,7 @@ public class QuadModelCollectionsTest {
 	
 	@Test
 	public void tv08_leaf_attached_c2v_conversion() throws Exception {
-		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getAttribute(create_view_main().getRootDomainUri());
 		
 		ServiceLine coreSingle = new ServiceLine();
 		coreSingle.setService("Life is Ka!");
@@ -627,7 +645,7 @@ public class QuadModelCollectionsTest {
 	
 	@Test
 	public void tv09_leaf_attached_v2c_conversion() throws Exception {
-		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getAttribute(create_view_main().getRootDomainUri());
 		
 		Section_ServiceLine coreSingle = new Section_ServiceLine();
 		coreSingle.setService("Life is Ka!");
@@ -648,7 +666,7 @@ public class QuadModelCollectionsTest {
 	
 	@Test
 	public void tv10_col_attached_c2v_add_noConversion() {
-		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getAttribute(create_view_main().getRootDomainUri());
 		Model<VRSimpleCaseFlow> vUMCase = ((Model<VRSimpleCaseFlow>)q.getView());
 		assertNotNull(vUMCase);
 		
@@ -690,7 +708,7 @@ public class QuadModelCollectionsTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void tv11_col_attached_c2v_add_conversion() {
-		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getAttribute(create_view_main().getRootDomainUri());
 		Model<VRSimpleCaseFlow> vUMCase = ((Model<VRSimpleCaseFlow>)q.getView());
 		assertNotNull(vUMCase);
 		
@@ -731,7 +749,7 @@ public class QuadModelCollectionsTest {
 
 	@Test
 	public void tv12_leaf_detached_c2v_noConversion() {
-		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getAttribute(create_view_main().getRootDomainUri());
 
 		ServiceLine sl_n = new ServiceLine();
 		sl_n.setService("It's elementary Watson!");
@@ -750,7 +768,7 @@ public class QuadModelCollectionsTest {
 
 	@Test
 	public void tv13_leaf_detached_v2c_noConversion() {
-		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getAttribute(create_view_main().getRootDomainUri());
 
 		ServiceLine sl_n = new ServiceLine();
 		sl_n.setService("It's elementary Watson!");
@@ -766,7 +784,7 @@ public class QuadModelCollectionsTest {
 
 	@Test
 	public void tv14_leaf_detached_c2v_conversion() {
-		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getAttribute(create_view_main().getRootDomainUri());
 		
 		ServiceLine coreSingle = new ServiceLine();
 		coreSingle.setService("Life is Ka!");
@@ -786,7 +804,7 @@ public class QuadModelCollectionsTest {
 
 	@Test
 	public void tv15_leaf_detached_v2c_conversion() {
-		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getAttribute(create_view_main().getRootDomainUri());
 
 		Section_ServiceLine viewModel = new Section_ServiceLine();
 		viewModel.setService("\"I am a genius\", said the fool");
@@ -813,7 +831,7 @@ public class QuadModelCollectionsTest {
 
 	@Test
 	public void tv16_col_detached_c2v_add_noConversion() {
-		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getAttribute(create_view_main().getRootDomainUri());
 		Model<VRSimpleCaseFlow> vUMCase = ((Model<VRSimpleCaseFlow>)q.getView());
 		assertNotNull(vUMCase);
 		
@@ -854,7 +872,7 @@ public class QuadModelCollectionsTest {
 
 	@Test
 	public void tv17_col_detached_v2c_add_noConversion() {
-		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getAttribute(create_view_main().getRootDomainUri());
 		
 		ServiceLine sl = new ServiceLine();
 		sl.setService("Its a bird..");
@@ -893,7 +911,7 @@ public class QuadModelCollectionsTest {
 
 	@Test
 	public void tv18_col_detached_c2v_set_conversion() {
-		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getAttribute(create_view_main().getRootDomainUri());
 		
 		ServiceLine sl_0 = new ServiceLine();
 		sl_0.setService("Batman");
@@ -954,7 +972,7 @@ public class QuadModelCollectionsTest {
 
 	@Test
 	public void tv19_col_detached_v2c_set_conversion() {
-		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getAttribute(create_view_main().getRootDomainUri());
 		
 		Section_ServiceLine vsl1 = new Section_ServiceLine();
 		vsl1.setService("Life is Ka!");
@@ -1034,7 +1052,7 @@ public class QuadModelCollectionsTest {
 		ExecutionEntity<VRSimpleCaseFlow, SimpleCase> eState = new ExecutionEntity<>();
 		eState.setCore(existingCore);
 		
-		Command cmd = TestCommandFactory.create_view_icr_UMCaseFlow();
+		Command cmd = create_view_main();
 		QuadModel<VRSimpleCaseFlow, SimpleCase> q = quadModelBuilder.build(cmd, eState);
 		
 		@SuppressWarnings("unchecked")
@@ -1053,7 +1071,7 @@ public class QuadModelCollectionsTest {
 	
 	@Test
 	public void tv21_colMappedAttrib_attached_v2c_set_conversion() {
-		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getAttribute(create_view_main().getRootDomainUri());
 		
 		final ListParam<String> vp_nestedService = q.getRoot().findParamByPath("/view_simplecase/pg3/attachedNestedColAttribServices").findIfCollection();
 		assertNotNull(vp_nestedService);
@@ -1082,7 +1100,7 @@ public class QuadModelCollectionsTest {
 		tv04_col_attached_v2c_set_noConversion();
 
 		// validate setup
-		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getAttribute(create_view_main().getRootDomainUri());
 		
 		@SuppressWarnings("unchecked")
 		final ListParam<ServiceLine> vp_list = 
@@ -1120,7 +1138,7 @@ public class QuadModelCollectionsTest {
 
 	@Test
 	public void tv23_col_attached_elemNestedAttrib_v2c_delete_conversion() {
-		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getAttribute(create_view_main().getRootDomainUri());
 		
 		final ListParam<String> vp_nestedService = q.getRoot().findParamByPath("/view_simplecase/pg3/attachedNestedColAttribServices").findIfCollection();
 		assertNotNull(vp_nestedService);
@@ -1231,7 +1249,7 @@ public class QuadModelCollectionsTest {
 	
 	@Test
 	public void tv24_nested_attached_noConversion() {
-		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getAttribute(create_view_main().getRootDomainUri());
 		Model<VRSimpleCaseFlow> vUMCase = ((Model<VRSimpleCaseFlow>)q.getView());
 		assertNotNull(vUMCase);
 		
@@ -1270,7 +1288,7 @@ public class QuadModelCollectionsTest {
 	
 	//@After
 	public void after() {
-		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getOrThrowEx(TestCommandFactory.create_view_icr_UMCaseFlow());
+		QuadModel<VRSimpleCaseFlow, SimpleCase> q = sessionProvider.getAttribute(create_view_main().getRootDomainUri());
 		printJson(q);
 		//System.out.println("### Counter: "+ DomainConfigAPITest.eventPublisher.counter);
 	}

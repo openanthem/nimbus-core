@@ -20,6 +20,7 @@ import { Param } from '../../../shared/app-config.interface';
 import { Component, Input, forwardRef } from '@angular/core';
 import { WebContentSvc } from '../../../services/content-management.service';
 import { BaseElement } from './../base-element.component';
+import {DateTimeFormatPipe} from '../../../pipes/date.pipe';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -29,6 +30,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 
 /**
  * \@author Dinakar.Meda
+ * @author Sandeep.Mantha
  * \@whatItDoes 
  * 
  * \@howToUse 
@@ -56,10 +58,17 @@ export class CardDetailsFieldComponent  extends BaseElement implements ControlVa
         super.ngOnInit();
 
         // field style
-        if (this.element.config.uiStyles.attributes.cols === '2') { // occupies 2 cols of 4
+        if (this.element.config.uiStyles.attributes.cols === '4') { // occupies 1 cols of 2
+            this.fieldClass = 'col-sm-3';
+        } else if (this.element.config.uiStyles.attributes.cols === '3') { // occupies 1 cols of 2
+            this.fieldClass = 'col-sm-4';
+        } else if (this.element.config.uiStyles.attributes.cols === '2') { // occupies 1 cols of 2
             this.fieldClass = 'col-sm-6';
+        } else if (this.element.config.uiStyles.attributes.cols === '1') { // occupies 1 col of 1
+            this.fieldClass = 'col-sm-12';
+        } else {
+            this.fieldClass = 'col-sm-3';
         }
-
         // icon class
         this.setIconClass();
 

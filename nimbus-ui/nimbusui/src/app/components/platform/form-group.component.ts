@@ -41,10 +41,10 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     selector: 'nm-frm-grp',
     providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc],
     template:`
-        <div class="col-lg-12 clearfix">
+        <div class="col-lg-12 clearfix colorBox" [hidden]="!hasParams()">
             <ng-template ngFor let-element let-isFirst="first" [ngForOf]="elements">
                 <ng-template [ngIf]="isFirst">
-                    <legend *ngIf="label && element.visible?.currState">
+                    <legend *ngIf="label && element.visible">
                         {{label}}
                     </legend>
                 </ng-template>
@@ -52,7 +52,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
                     <nm-element id="{{id}}" [element]="element" [elementCss]="elementCss" [form]="form"></nm-element>
                 </ng-template>
                 <ng-template [ngIf]="element.type?.model?.params?.length && element.config?.uiStyles?.attributes?.alias!='ButtonGroup' && !element.collection">
-                    <fieldset class="subQuestion" [hidden]="!element?.visible?.currState">
+                    <fieldset class="subQuestion" [hidden]="!element?.visible">
                         <nm-frm-grp [elements]="element.type?.model?.params" [form]="form.controls[element.config?.code]" [elementCss]="elementCss" [parentElement]="element"></nm-frm-grp>
                     </fieldset>
                 </ng-template>
@@ -89,5 +89,14 @@ export class FrmGroupCmp {
 
        hasParagraph(element: Param): boolean {
            return element && element.config && element.config.uiStyles && element.config.uiStyles.attributes && element.config.uiStyles.attributes.alias=='Paragraph';
+       }
+
+       hasParams() {
+           for (let p in this.elements) {
+               if (this.elements[p].visible) {
+                   return true;
+               }
+           }
+           return false;
        }
    }

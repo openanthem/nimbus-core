@@ -17,8 +17,11 @@
 'use strict';
 import { Component, Input } from '@angular/core';
 import { LayoutService } from '../../../services/layout.service';
-import { Param, Desc, ParamConfig, UiStyle, UiAttribute, RemnantState } from '../../../shared/app-config.interface';
+import { Param } from '../../../shared/app-config.interface';
 import { AppBranding, LinkConfig } from '../../../model/menu-meta.interface';
+import { ServiceConstants } from './../../../services/service.constants';
+import { BreadcrumbService } from './../breadcrumb/breadcrumb.service';
+import { Breadcrumb } from '../../../model/breadcrumb.model';
 
 /**
  * \@author Mayur.Mehta
@@ -32,17 +35,26 @@ import { AppBranding, LinkConfig } from '../../../model/menu-meta.interface';
     templateUrl: './header-global.component.html'
 })
 
-export class HeaderGlobal{
+export class HeaderGlobal {
     @Input() branding : AppBranding;
     @Input() topMenuItems: Param[];
     @Input() leftMenuItems: LinkConfig[];
     @Input() element: Param;
+    private imagesPath: string;
+    private _homeRoute: string;
 
-    private messageCount        : number = 3;
+    private messageCount : number = 3;
 
-    constructor(){
-        
+    constructor(private _breadcrumbService: BreadcrumbService) {
+        this.imagesPath = ServiceConstants.IMAGES_URL;
     }
 
+    public get homeRoute(): string {
+        let crumb: Breadcrumb = this._breadcrumbService.getHomeBreadcrumb();
+        if (crumb) {
+            return crumb['url'];
+        }
+        return '';
+    }
 }
 

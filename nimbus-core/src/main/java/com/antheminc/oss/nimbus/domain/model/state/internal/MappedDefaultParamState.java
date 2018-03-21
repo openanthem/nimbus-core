@@ -44,6 +44,17 @@ public class MappedDefaultParamState<T, M> extends DefaultParamState<T> implemen
 		public MappedLeafState(Param<M> mapsTo, Model<?> parentModel, ParamConfig<T> config, EntityStateAspectHandlers provider) {
 			super(mapsTo, parentModel, config, provider);
 		}
+		
+		@JsonIgnore
+		@Override
+		public boolean isLeaf() {
+			return true;
+		}
+		
+		@Override
+		public MappedLeafState<T, M> findIfLeaf() {
+			return this;
+		}
 	}
 	
 	public MappedDefaultParamState(Param<M> mapsTo, Model<?> parentModel, ParamConfig<T> config, EntityStateAspectHandlers provider) {
@@ -64,5 +75,40 @@ public class MappedDefaultParamState<T, M> extends DefaultParamState<T> implemen
 		};
 		
 		getMapsTo().registerConsumer(this);
+	}
+	
+	@JsonIgnore
+	@Override
+	public boolean isMapped() {
+		return true;
+	}
+	
+	@Override
+	public MappedDefaultParamState<T, M> findIfMapped() {
+		return this;
+	}
+	
+	@JsonIgnore
+	public boolean requiresConversion() {
+		return requiresConversion(this);
+	}
+	
+	@JsonIgnore
+	public static <T, M> boolean requiresConversion(MappedParam<T, M> mappedParam) {
+		if(mappedParam.isLeaf()) 
+			return false;
+		
+		if(mappedParam.isTransient() && !mappedParam.findIfTransient().isAssinged()) { // when transient is not assigned
+			Class<?> mappedClass = mappedParam.getType().getConfig().getReferredClass();
+			Class<?> mapsToClass = mappedParam.getType().getConfig().findIfNested().getModelConfig().findIfMapped().getMapsToConfig().getReferredClass();
+			
+			return (mappedClass!=mapsToClass);
+		}
+		
+		Class<?> mappedClass = mappedParam.getType().findIfNested().getModel().getConfig().getReferredClass();
+		Class<?> mapsToClass = mappedParam.getMapsTo().getType().findIfNested().getModel().getConfig().getReferredClass();
+
+		// conversion required when mappedClass and mapsToClass are NOT same
+		return (mappedClass!=mapsToClass);
 	}
 }

@@ -31,15 +31,14 @@ import { BaseElement } from '../base-element.component';
     selector: 'nm-field-value',
     providers: [WebContentSvc],
     template: `
-    <!--<div [hidden]="!element?.config?.visible?.currState" >-->
-    <div [hidden]="!element?.visible?.currState" >
+    <div [hidden]="!element?.visible" >
         <label>{{label}}</label>
         <p style="margin-bottom:0rem;">{{element.leafState}}</p>
     </div>
    `
 })
 
-export class FieldValue extends BaseElement{
+export class FieldValue extends BaseElement {
     @Input() element: Param;
     constructor(private _wcs: WebContentSvc) {
         super(_wcs);

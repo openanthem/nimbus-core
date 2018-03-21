@@ -23,6 +23,8 @@ import { PageService } from '../../../../services/page.service';
 import {SelectItem} from 'primeng/primeng';
 import { GenericDomain } from '../../../../model/generic-domain.model';
 import { BaseElement } from './../../base-element.component';
+import { ValidatorFn } from '@angular/forms/src/directives/validators';
+import { ValidationUtils } from '../../validators/ValidationUtils';
 
 /**
  * \@author Dinakar.Meda
@@ -38,8 +40,8 @@ import { BaseElement } from './../../base-element.component';
         WebContentSvc
     ],
     template: `
-        <div [formGroup]="form"  [hidden]="!element?.visible?.currState">
-            <label class="">{{label}} 
+        <div [formGroup]="form"  [hidden]="!element?.visible">
+            <label [ngClass]="{'required': requiredCss, '': !requiredCss}">{{label}} 
                 <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
             </label>
             <p-listbox [options]="optionsList" formControlName="{{element.config.code}}" multiple="multiple" 
@@ -66,6 +68,11 @@ export class MultiSelectListBox extends BaseElement{
     ngOnInit() {
         super.ngOnInit();
         this.optionsList = [];
+        let frmCtrl = this.form.controls[this.element.config.code];
+        //rebind the validations as there are dynamic validations along with the static validations
+        if(frmCtrl!=null && this.element.activeValidationGroups != null && this.element.activeValidationGroups.length > 0) {
+            this.requiredCss = ValidationUtils.rebindValidations(frmCtrl,this.element.activeValidationGroups,this.element);
+        } 
         this.element.values.forEach(element => {
             this.optionsList.push({label: element.label, value: element.code});
         });
@@ -80,15 +87,16 @@ export class MultiSelectListBox extends BaseElement{
         }
         if( this.form.controls[this.element.config.code]!= null) {
             this.form.controls[this.element.config.code].valueChanges.subscribe(
-                ($event) => { console.log($event);this.setState($event,this); });
+                ($event) => { 
+                    // console.log($event);
+                    this.setState($event,this); 
+                });
         }
         this.controlValueChanged.subscribe(($event) => {
-            //console.log($event);
             if ($event.config.uiStyles.attributes.postEventOnChange) {
                this.pageService.postOnChange($event.path, 'state', JSON.stringify($event.leafState));
             } else if($event.config.uiStyles.attributes.postButtonUrl) {
                let item: GenericDomain = new GenericDomain();
-               //item.addAttribute($event.config.code,$event.leafState);
                this.pageService.processPost(this.element.config.uiStyles.attributes.postButtonUrl, null, $event.leafState, 'POST');
             }
         });
@@ -104,11 +112,19 @@ export class MultiSelectListBox extends BaseElement{
         });
         this.pageService.validationUpdate$.subscribe(event => {
             let frmCtrl = this.form.controls[event.config.code];
-            if(frmCtrl!=null && event.path.startsWith(this.element.path)) {
-                if(event.enabled.currState)
-                    frmCtrl.enable();
-                else
-                    frmCtrl.disable();
+            if(frmCtrl!=null) {
+                if(event.path === this.element.path) {
+                   //bind dynamic validations on a param as a result of a state change of another param
+                    if(event.activeValidationGroups != null && event.activeValidationGroups.length > 0) {
+                        this.requiredCss = ValidationUtils.rebindValidations(frmCtrl,event.activeValidationGroups,this.element);
+                    } else {
+                        this.requiredCss = ValidationUtils.applyelementStyle(this.element);
+                        var staticChecks: ValidatorFn[] = [];
+                        staticChecks = ValidationUtils.buildStaticValidations(this.element);
+                        frmCtrl.setValidators(staticChecks);
+                    }
+                    ValidationUtils.assessControlValidation(event,frmCtrl);
+                }
             }
         });
     }

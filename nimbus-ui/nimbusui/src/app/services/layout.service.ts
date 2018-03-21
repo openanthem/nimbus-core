@@ -17,9 +17,10 @@
 'use strict';
 import { WebContentSvc } from './content-management.service';
 import { Component, EventEmitter, Injectable } from '@angular/core';
-import { Model, Param, Result, UiAttribute } from '../shared/app-config.interface';
+import { Model, Param, Result, UiAttribute, ViewRoot } from '../shared/app-config.interface';
 import { ServiceConstants } from './service.constants';
 import { PageService } from './page.service';
+import { ConfigService } from './config.service';
 import { CustomHttpClient } from './httpclient.service';
 import { AppBranding, Layout, LinkConfig, TopBarConfig, FooterConfig, GlobalNavConfig } from '../model/menu-meta.interface';
 import { GenericDomain } from '../model/generic-domain.model';
@@ -44,26 +45,28 @@ export class LayoutService {
 
     layout$: EventEmitter<any>;
 
-    constructor(public http: CustomHttpClient, private wcs: WebContentSvc, private pageSvc: PageService) {
+    constructor(public http: CustomHttpClient, 
+        private wcs: WebContentSvc,
+        private pageSvc: PageService,
+        private configSvc: ConfigService) {
         this.layout$ = new EventEmitter<any>();
     }
 
     public getLayout(flowName: string) {
-        let layoutConfig: Model = this.pageSvc.getFlowConfig(flowName);
+        let layoutConfig: ViewRoot = this.configSvc.getFlowConfig(flowName);
         if (layoutConfig) {
-            this.parseLayoutConfig(layoutConfig);
+            this.parseLayoutConfig(layoutConfig.model);
         } else {
             var urlBase = ServiceConstants.PLATFORM_BASE_URL;
             var urlAction = urlBase +  '/' + flowName + '/_new?b=$execute';
             return this.http.get(urlAction)
-                .map(res => res.json())
                 .subscribe(data => {
                     let subResponse: any = data.result[0];
                     if (subResponse) {
-                        let layoutConfig = new Result().deserialize(subResponse.result);
+                        let layoutConfig = new Result(this.configSvc).deserialize(subResponse.result);
                         let flowModel: Model = layoutConfig.outputs[0].value.type.model;
                         // Set layout config to appconfig map
-                        this.pageSvc.setLayoutToAppConfig(flowName, flowModel);
+                        this.configSvc.setLayoutToAppConfigByModel(flowName, flowModel);
 
                         this.parseLayoutConfig(flowModel);
                     } else {

@@ -23,7 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Supplier;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -34,6 +36,7 @@ import com.antheminc.oss.nimbus.InvalidOperationAttemptedException;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ValidationResult;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
+import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.ValidationGroup;
 import com.antheminc.oss.nimbus.domain.model.config.EventHandlerConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
@@ -74,12 +77,20 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	@JsonIgnore
 	private boolean active = true;
 	
-	private RemnantState<Boolean> visible = new RemnantState<>(true);
-	private RemnantState<Boolean> enabled = new RemnantState<>(true);
+	@JsonIgnore
+	private RemnantState<Boolean> visibleState = this.new RemnantState<>(true);
+	
+	@JsonIgnore
+	private RemnantState<Boolean> enabledState = this.new RemnantState<>(true);
+	
+	@JsonIgnore
+	@SuppressWarnings("unchecked")
+	private RemnantState<Class<? extends ValidationGroup>[]> activeValidationGroupsState = new RemnantState<>(new Class[0]);
 	
 	private List<ParamValue> values;
 	
-	private Message message;
+	@JsonIgnore
+	private RemnantState<Message> messageState = this.new RemnantState<Message>(null);
 	
 	/* TODO: Weak reference was causing the values to be GC-ed even before the builders got to building 
 	 * Allow referenced subscribers to get garbage collected in scenario when same core is referenced by multiple views. 
@@ -92,17 +103,28 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	List<MappedParam<?, T>> eventSubscribers = new ArrayList<>(); 
 	
 	
-	@JsonIgnore final private PropertyDescriptor propertyDescriptor;
+	@JsonIgnore 
+	final private PropertyDescriptor propertyDescriptor;
 
 	@JsonIgnore
 	private T transientOldState;
 
-	
 	public static class LeafState<T> extends DefaultParamState<T> implements LeafParam<T> {
 		private static final long serialVersionUID = 1L;
 		
 		public LeafState(Model<?> parentModel, ParamConfig<T> config, EntityStateAspectHandlers aspectHandlers) {
 			super(parentModel, config, aspectHandlers);
+		}
+		
+		@JsonIgnore
+		@Override
+		public boolean isLeaf() {
+			return true;
+		}
+		
+		@Override
+		public LeafState<T> findIfLeaf() {
+			return this;
 		}
 	}
 	
@@ -151,6 +173,10 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		// hook up on state load events
 		onStateLoadEvent(this);
 
+	}
+	
+	public void onTypeAssign() {
+		
 	}
 	
 //	TODO: Refactor with Weak reference implementation
@@ -302,6 +328,14 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	protected void postSetState(Action change, T state) {}
 	
+	
+	protected void triggerEvents() {
+		if(isStateInitialized())
+			onStateLoadEvent();
+		else
+			onStateChangeEvent(getRootExecution().getExecutionRuntime().getTxnContext(), Action._update);
+	}
+	
 	@Override
 	public void onStateLoadEvent() {
 		onStateLoadEvent(this);
@@ -336,7 +370,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		}
 	}
 	
-	@JsonIgnore @Override
+	@JsonIgnore 
+	@Override
 	public ExecutionModel<?> getRootExecution() {
 		if(getParentModel() != null) 
 			return getParentModel().getRootExecution();
@@ -348,7 +383,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		return findIfNested().findIfRoot();
 	}
 
-	@JsonIgnore @Override
+	@JsonIgnore 
+	@Override
 	public Model<?> getRootDomain() {
 		if(getParentModel()!=null && getParentModel().isRoot()) {
 			return findIfNested();
@@ -526,45 +562,56 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	
 	@Getter @Setter
-	private static class RemnantState<T> {
-		private T prevState;
-		private T currState;
+	protected class RemnantState<S> {
+		private S prevState;
+		private S currState;
 		
-		public RemnantState(T initState) {
+		public RemnantState(S initState) {
 			this.prevState = initState;
 			this.currState = initState;
-		} 
+		}
 		
-		public void setState(T state) {
-			this.prevState = this.currState;
-			this.currState = state;
+		public boolean isEquals(S state) {
+			return new EqualsBuilder().append(this.currState, state).isEquals();
+		}
+		
+		public boolean setState(S state) {
+			return setStateConditional(state, ()->true);
+		}
+
+		public boolean setStateConditional(S state, Supplier<Boolean> condition) {
+			// check equality
+			if(isEquals(state))
+				return false;
+			
+			// check condition
+			Boolean eval = condition.get();
+			if(eval==null || !eval)
+				return false;
+			
+			return changeStateTemplate((rt, h, lockId)->{
+				this.prevState = this.currState;
+				this.currState = state;
+				
+				emitParamContextEvent();
+				return true;
+			});
+			
 		}
 	}
 	
-	
 	@Override
 	public boolean isVisible() {
-		return visible.getCurrState();
-	}
-	
-	@Override
-	public boolean isEnabled() {
-		return enabled.getCurrState();
+		return visibleState.getCurrState();
 	}
 	
 	public void setVisible(boolean visible) {
-		if(this.visible.currState==visible)
+		boolean changed = this.visibleState.setStateConditional(visible, ()->isActive() || !visible);
+		if (!changed)
 			return;
-
-		final boolean currActive = isActive();
-		if(!currActive && visible)
-			return;
-		
-		this.visible.setState(visible);
-		emitParamContextEvent();
 		
 		// handle nested
-		if(!isNested() || (isTransient() && !findIfTransient().isAssinged()))
+		if(!isNested() /*|| (isTransient() && !findIfTransient().isAssinged())*/)
 			return;
 		
 		if (null == findIfNested().getParams()) {
@@ -581,7 +628,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		findIfNested().getParams().stream()
 		.forEach(p->{
 
-			if(p.isStateInitialized())
+			if(!p.isStateInitialized())
 				p.onStateLoadEvent();
 			else
 				p.onStateChangeEvent(p.getRootExecution().getExecutionRuntime().getTxnContext(), Action._update);
@@ -590,19 +637,18 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	
 	@Override
+	public boolean isEnabled() {
+		return enabledState.getCurrState();
+	}
+	
+	@Override
 	public void setEnabled(boolean enabled) {
-		if(this.enabled.currState==enabled)
+		boolean changed = this.enabledState.setStateConditional(enabled, ()->isActive() || !enabled);
+		if (!changed)
 			return;
-		
-		final boolean currActive = isActive();
-		if(!currActive && enabled)
-			return;
-		
-		this.enabled.setState(enabled);
-		emitParamContextEvent();
 		
 		// handle nested
-		if(!isNested() || findIfNested().templateParams().isNullOrEmpty())
+		if(!isNested() /*|| findIfNested().templateParams().isNullOrEmpty()*/)
 			return;
 		
 		if (null == findIfNested().getParams()) {
@@ -619,16 +665,15 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		findIfNested().getParams().stream()
 		.forEach(p->{
 
-			if(p.isStateInitialized())
+			if(!p.isStateInitialized())
 				p.onStateLoadEvent();
 			else
 				p.onStateChangeEvent(p.getRootExecution().getExecutionRuntime().getTxnContext(), Action._update);
 			
 		});
-	
-		
 	}
 
+	
 	@Override
 	public void setValues(List<ParamValue> values) {
 		if(getValues()==values)
@@ -639,16 +684,13 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	
 	@Override
+	public Message getMessage() {
+		return this.messageState.getCurrState();
+	}
+	
+	@Override
 	public void setMessage(Message message) {
-		if(getMessage()==null && message==null)
-			return;
-		
-		if(getMessage()!=null && message!=null 
-				&& getMessage().equals(message))
-			return;
-		
-		this.message = message;
-		emitParamContextEvent();
+		this.messageState.setState(message);
 	}
 	
 	private void emitParamContextEvent() {
@@ -709,9 +751,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 
 		// toggle
 		setActive(to);
-		//setVisible(to); //this.visible.setState(to); //
-		//setEnabled(to); //this.enabled.setState(to); //
-		
+
 		// notify mapped subscribers, if any
 		//==emitNotification(new Notification<>(this, ActionType._active, this));
 		
@@ -725,11 +765,11 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 			initState(); // ensure all rules are fired
 		}
 		
-		setVisible(to); //this.visible.setState(to); //
-		setEnabled(to); //this.enabled.setState(to); //
+		setVisible(to); 
+		setEnabled(to); 
 		
 		// ripple to children, if applicable
-		if(!isNested() || findIfNested().templateParams().isNullOrEmpty())
+		if(!isNested() /*|| findIfNested().templateParams().isNullOrEmpty()*/)
 			return true;
 		
 		findIfNested().getParams().stream()
@@ -740,8 +780,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 					cp.setStateInitialized(false);//cp.deactivate();
 				}
 				
-				cp.setVisible(to); //this.visible.setState(to); //
-				cp.setEnabled(to); //this.enabled.setState(to); //
+				cp.setVisible(to); 
+				cp.setEnabled(to); 
 
 			});
 		
@@ -750,6 +790,90 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	private boolean isPrimitive() {
 		return ClassUtils.isPrimitiveOrWrapper(getConfig().getReferredClass());
+	}
+
+	@Override
+	public Class<? extends ValidationGroup>[] getActiveValidationGroups() {
+		return this.activeValidationGroupsState.getCurrState();
+	}
+
+	@Override
+	public void setActiveValidationGroups(Class<? extends ValidationGroup>[] activeValidationGroups) {
+		this.activeValidationGroupsState.setState(activeValidationGroups);
+	}
+
+	@JsonIgnore
+	@Override
+	public boolean isLeaf() {
+		return false;
+	}
+
+	@JsonIgnore
+	@Override
+	public boolean isLeafOrCollectionWithLeafElems() {
+		return isLeaf() || (isCollection() && findIfCollection().isLeafElements());
+	}
+
+	@Override
+	public LeafParam<T> findIfLeaf() {
+		return null;
+	}
+
+	@Override
+	public MappedParam<T, ?> findIfMapped() {
+		return null;
+	}
+
+	@Override
+	public boolean isCollection() {
+		return false;
+	}
+
+	@Override
+	public boolean isNested() {
+		return getType().isNested();
+	}
+
+	@Override
+	public Model<T> findIfNested() {
+		return isNested() ? getType().<T>findIfNested().getModel() : null;
+	}
+
+	@Override
+	public boolean isCollectionElem() {
+		return false;
+	}
+
+	@Override
+	public ListParam findIfCollection() {
+		return null;
+	}
+
+	@Override
+	public ListElemParam<T> findIfCollectionElem() {
+		return null;
+	}
+
+	@JsonIgnore
+	@Override
+	public boolean isLinked() {
+		return false;
+	}
+
+	@Override
+	public Param<?> findIfLinked() {
+		return null;
+	}
+
+	@JsonIgnore
+	@Override
+	public boolean isTransient() {
+		return false;
+	}
+
+	@Override
+	public MappedTransientParam<T, ?> findIfTransient() {
+		return null;
 	}
 	
 }

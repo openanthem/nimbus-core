@@ -24,10 +24,13 @@ import com.antheminc.oss.nimbus.entity.client.user.ClientUser;
  */
 public interface SessionProvider {
 	public String getSessionId();
+	
 	public <R> R getAttribute(String key);
+	
 	public void setAttribute(String key, Object value);
-	public ClientUser getLoggedInUser();	
 	public void setAttribute(Command cmd, Object value);
+	public boolean removeAttribute(String key);
+	
+	public ClientUser getLoggedInUser();	
 	public void setLoggedInUser(ClientUser clientUser);
-	public <R> R getOrThrowEx(Command cmd);
 }

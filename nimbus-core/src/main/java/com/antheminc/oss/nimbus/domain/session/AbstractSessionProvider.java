@@ -15,7 +15,6 @@
  */
 package com.antheminc.oss.nimbus.domain.session;
 
-import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.entity.client.user.ClientUser;
@@ -37,14 +36,6 @@ public abstract class AbstractSessionProvider implements SessionProvider {
 		setAttribute(cmd.getRootDomainUri(), value);
 	}
 
-	@Override
-	public final <R> R getOrThrowEx(Command cmd) {
-		R value = getAttribute(cmd.getRootDomainUri());
-		if (value != null)
-			return value;
-		throw new FrameworkRuntimeException("Required value not found with provided key: " + cmd.getRootDomainUri());		
-	}
-	
 	@Override
 	public final void setLoggedInUser(ClientUser clientUser) {
 		setAttribute(Constants.CLIENT_USER_KEY.code, clientUser);

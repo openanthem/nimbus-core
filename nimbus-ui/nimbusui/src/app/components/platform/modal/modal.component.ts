@@ -52,6 +52,8 @@ export class Modal extends BaseElement implements OnInit, OnDestroy {
     // closable to indicate whether modal window can be closed
     public _closable: boolean;
 
+    private _resizable: boolean;
+
     constructor(private wcsvc: WebContentSvc, private pageSvc: PageService) {
         super(wcsvc);
     }
@@ -84,4 +86,10 @@ export class Modal extends BaseElement implements OnInit, OnDestroy {
         }
     }
 
+    /**
+     * Resizable attribute to alter the size of the modal window
+     */
+    public get resizable(): boolean {
+        return this.element.config.uiStyles.attributes.resizable;
+    }
 }

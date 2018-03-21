@@ -1,19 +1,13 @@
 .globalNav{
-    height: $globalNav-height;
-    position: fixed;
-    top: $headerHeight;
-    left: 0;
-    right: 0;
-    display: none;      //hides global-nav at small screens
-    background-color: $globalNav-background-color;
-    color: $globalNav-font-color;
+    display:none; //hides at small screen
+    height: 30px;
     z-index: 1;
     .orgSelect{
-        margin-left: 1rem;
-        margin-top: 3px;
-        display:inline-block;
+        margin-left: 30px;
+        display: inline-block;
         min-width: 150px;
         margin-right: 1rem;
+        color: #959595;
         label{
             @extend .sr-only;
         }
@@ -187,18 +181,10 @@
     }
 }
 
-@media(min-width: 1300px) {
-    .globalNav{
-       .orgSelect{
-        margin-top: 0;
-       }
-    }
-}
+
 
 @media(min-width: 576px) {
-    .globalNav{
-       display: block;
-    }
+ 
 }
 
 .title-con {
@@ -212,3 +198,15 @@
 }
 
 
+@media(min-width: 768px) {
+
+    
+    
+}
+
+@media (min-width: 992px) {
+    
+}
+@media(min-width: 1300px) {
+   
+}

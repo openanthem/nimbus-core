@@ -15,22 +15,22 @@
  */
 package com.antheminc.oss.nimbus.support.json;
 
-import java.io.IOException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 /**
- * @Author Cheikh Niass on 12/2/16.
+ * @Author Mayur Mehta, Tony Lopez, Soham Chakravarti
  */
 public class CustomLocalDateSerializer extends StdSerializer<LocalDate> {
     
 	private static final long serialVersionUID = 1L;
 	
-	private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+	private final CustomLocalDateTimeSerializer serializer;
 
     public CustomLocalDateSerializer() {
         this(null);
@@ -38,17 +38,15 @@ public class CustomLocalDateSerializer extends StdSerializer<LocalDate> {
 
     public CustomLocalDateSerializer(Class<LocalDate> t) {
         super(t);
+        this.serializer = new CustomLocalDateTimeSerializer();
     }
 
     @Override
     public void serialize(LocalDate value, JsonGenerator gen, SerializerProvider serializerProvider) {
-        try {
-        	if(value == null)
-        		return;
-            gen.writeString(formatter.format(value));
-        } catch (IOException e) {
-            throw new JsonParsingException(e);
-        }
+    	if(value == null)
+    		return;
+    	
+    	this.serializer.serialize(LocalDateTime.of(value, LocalTime.MIN), gen, serializerProvider);
     }
 
 }

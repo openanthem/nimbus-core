@@ -22,12 +22,12 @@ import { MultiSelectListBox } from './components/platform/form/elements/multi-se
 import { BreadcrumbComponent } from './components/platform/breadcrumb/breadcrumb.component';
 import { BreadcrumbService } from './components/platform/breadcrumb/breadcrumb.service';
 import { HomeLayoutCmp } from './components/home/home-layout.component';
-import { DomainLayoutCmp } from './components/domain/domain-layout.component';
 import { StyleGuideCmp } from './styleguide/style-guide.component';
 import { MainLayoutCmp } from './components/home/main-layout.component';
 import { LoginLayoutCmp } from './components/login/login-layout.component';
 import { OrderablePickList } from './components/platform/form/elements/picklist.component';
 import { PageService } from './services/page.service';
+import { ConfigService } from './services/config.service';
 import { PageNotfoundComponent } from './components/platform/content/page-notfound.component';
 import { PageContent } from './components/platform/content/page-content.component';
 import { GridService } from './services/grid.service';
@@ -39,8 +39,7 @@ import { ReactiveFormsModule }  from '@angular/forms';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
     FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
-    ProgressBarModule, ProgressSpinnerModule  } from 'primeng/primeng';
-import { SortableComponentDirective, SortableContainerDirective } from './directives/sortable-dragdrop.directive';
+    ProgressBarModule, ProgressSpinnerModule, AccordionModule  } from 'primeng/primeng';
 import { NavLinkRouter } from './directives/nav-link-router.directive';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -48,7 +47,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // Components
 import { LayoutService } from './services/layout.service';
 import { ContentContainer } from './components/platform/content/content-container.component';
-import { Switch } from './components/platform/form/elements/switch.component';
 import { BaseElement } from './components/platform/base-element.component';
 import { AppComponent }  from './app.component';
 import { Tile }  from './components/platform/tile.component';
@@ -66,7 +64,6 @@ import { DateControl } from './components/platform/form/elements/date.component'
 import { CheckBoxGroup } from './components/platform/form/elements/checkbox-group.component';
 import { MultiselectCard } from './components/platform/form/elements/multi-select-card.component';
 import { ActionDropdown, ActionLink } from './components/platform/form/elements/action-dropdown.component';
-import { GridContainer } from './components/platform/grid/grid-container.component';
 import { InfiniteScrollGrid } from './components/platform/grid/grid.component';
 import { Link } from './components/platform/link.component';
 import { Menu } from './components/platform/menu.component';
@@ -79,12 +76,12 @@ import { CardDetailsFieldComponent } from './components/platform/card/card-detai
 import { CardDetailsGrid } from './components/platform/card/card-details-grid.component';
 import { Accordion } from './components/platform/accordion.component';
 import { AccordionGroup } from './components/platform/accordion-group.component';
+import { AccordionMain } from './components/platform/content/accordion.component';
+import { AccordionTab } from './components/platform/content/accordion-tab.component';
 import { FrmGroupCmp } from './components/platform/form-group.component';
-import { MultiselectDropdownModule } from './components/platform/form/elements/multi-select-dropdown.component';
 import { Button } from './components/platform/form/elements/button.component';
 import { ButtonGroup } from './components/platform/form/elements/button-group.component';
 import { FilterButton } from './components/platform/form/elements/filter-button.component';
-import { DragDropConfig } from './shared/app-config.interface';
 import { CheckBox } from './components/platform/form/elements/checkbox.component';
 import { DomainFlowCmp } from './components/domain/domain-flow.component';
 import { FileUploadComponent } from './components/platform/fileupload/file-upload.component';
@@ -94,19 +91,20 @@ import { HeaderGlobal } from './components/platform/header/header-global.compone
 import { FooterGlobal } from './components/platform/footer/footer-global.component';
 import { Calendar } from './components/platform/form/elements/calendar.component';
 import { NavMenuGlobal } from './components/platform/globalNavMenu/nav-global-menu.component';
+import { MessageComponent } from './components/platform/message/message.component';
 
 // Services
 import { WebContentSvc } from './services/content-management.service';
 import { STOMPStatusComponent } from './services/stomp-status.component';
-import { DragDropService, DragDropSortableService} from './services/dragdrop.service';
 import { AuthenticationService } from './services/authentication.service';
 import { FileService } from './services/file.service';
 // Routes
 import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app.routing.module';
 import { CustomHttpClient } from './services/httpclient.service';
+import { CustomHttpClientInterceptor } from './services/httpclient-interceptor.service';
 import { CustomBrowserXhr } from './custom.browserxhr';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
 
 // Declarations
@@ -116,6 +114,7 @@ import { KeysPipe } from './pipes/app.pipe';
 import { LinkPipe } from './pipes/link.pipe';
 import { SelectItemPipe } from './pipes/select-item.pipe';
 import { LoaderComponent } from './components/platform/loader/loader.component';
+import {DateTimeFormatPipe} from './pipes/date.pipe';
 
 /**
  * \@author Dinakar.Meda
@@ -128,12 +127,11 @@ import { LoaderComponent } from './components/platform/loader/loader.component';
 @NgModule({
     imports: [
         BrowserModule,
-         HttpClientModule,
+        HttpClientModule,
         ReactiveFormsModule,
         AppRoutingModule,
         HttpModule,
         FormsModule,
-        MultiselectDropdownModule,
         DropdownModule,
         DataTableModule,
         OverlayPanelModule,
@@ -149,28 +147,30 @@ import { LoaderComponent } from './components/platform/loader/loader.component';
         CalendarModule,
         RadioButtonModule,
         ProgressBarModule,
-        ProgressSpinnerModule
+        ProgressSpinnerModule,
+        AccordionModule
     ],
     declarations: [ AppComponent, STOMPStatusComponent, FlowWrapper, PageContent, PageNotfoundComponent, StaticText,
         Tile, Section, Header, Form, FormElement, InputText, ComboBox, RadioButton, DateControl, CheckBoxGroup,
-        InPlaceEditorComponent, Paragraph, Value, Image, BaseElement, 
+        InPlaceEditorComponent, Paragraph, Value, Image, BaseElement,
         MultiselectCard, Link, Menu, CardDetailsComponent, CardDetailsFieldComponent, CardDetailsGrid, FieldValue,
-        AccordionGroup, Accordion, FrmGroupCmp, Button, ButtonGroup, FilterButton, OrderablePickList,
-        STOMPStatusComponent, GridContainer, InfiniteScrollGrid, SubHeaderCmp, TextArea, LandingPage,
-        LayoutService,ContentContainer,Switch,
-        DomainFlowCmp,HeaderGlobal,FooterGlobal,
+        AccordionGroup, Accordion, AccordionMain, AccordionTab, FrmGroupCmp, Button, ButtonGroup, FilterButton, OrderablePickList,
+        STOMPStatusComponent, InfiniteScrollGrid, SubHeaderCmp, TextArea, LandingPage,
+        LayoutService, ContentContainer,
+        DomainFlowCmp, HeaderGlobal, FooterGlobal,
         BreadcrumbComponent, NavLinkRouter,
-        Modal, ActionDropdown, ActionLink, 
-        GridMouseEventDirective, SortableContainerDirective, SortableComponentDirective,
-        HomeLayoutCmp, MainLayoutCmp, DomainLayoutCmp, LoginCmp, LoginLayoutCmp, StyleGuideCmp, 
-        KeysPipe, LinkPipe, SelectItemPipe, MultiSelectListBox, 
-        CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent, Calendar, NavMenuGlobal, LoaderComponent
+        Modal, ActionDropdown, ActionLink,
+        GridMouseEventDirective,
+        HomeLayoutCmp, MainLayoutCmp, LoginCmp, LoginLayoutCmp, StyleGuideCmp, 
+        KeysPipe, LinkPipe, DateTimeFormatPipe, SelectItemPipe, MultiSelectListBox, 
+        CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent, Calendar, NavMenuGlobal, LoaderComponent, MessageComponent
 
     ],
     entryComponents: [ FlowWrapper, PageContent, PageNotfoundComponent, LoginCmp, MainLayoutCmp, HomeLayoutCmp],
-    providers: [ PageService, WebContentSvc,HttpClient,  HttpClientModule,
+    providers: [ PageService, ConfigService, WebContentSvc, HttpClient,  HttpClientModule,
          CustomHttpClient, { provide: BrowserXhr, useClass: CustomBrowserXhr },
-         { provide: LocationStrategy, useClass: HashLocationStrategy }, GridService, DragDropService, DragDropSortableService, DragDropConfig,
+         { provide: HTTP_INTERCEPTORS, useClass: CustomHttpClientInterceptor, multi: true },
+         { provide: LocationStrategy, useClass: HashLocationStrategy }, GridService,
          AuthenticationService, BreadcrumbService, LoaderService, FileService ],
     bootstrap: [ AppComponent ]
 })

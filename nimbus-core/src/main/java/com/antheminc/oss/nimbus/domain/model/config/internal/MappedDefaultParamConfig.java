@@ -39,14 +39,14 @@ import lombok.ToString;
  * @author Soham Chakravarti
  *
  */
-@Getter @ToString(callSuper=true, of={"mapsTo", "path"})
+@Getter @ToString(callSuper=true, of={"mapsToConfig", "path"})
 public class MappedDefaultParamConfig<P, M> extends DefaultParamConfig<P> implements MappedParamConfig<P, M>, Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
 	@JsonIgnore final private ModelConfig<?> mapsToEnclosingModel;
 	
-	@JsonIgnore	final private ParamConfig<M> mapsTo;
+	@JsonIgnore	final private ParamConfig<M> mapsToConfig;
 
 	@JsonIgnore final private Path path;
 	
@@ -54,7 +54,7 @@ public class MappedDefaultParamConfig<P, M> extends DefaultParamConfig<P> implem
 		private static final long serialVersionUID = 1L;
 		
 		public NoConversion(ModelConfig<?> mapsToEnclosingModel, ParamConfig<M> mapsTo) {
-			super(mapsTo.getCode(), mapsTo.getBeanName(), mapsToEnclosingModel, mapsTo, createNewImplicitMapping("", true));
+			super(mapsTo.getCode(), mapsTo.getBeanName(), mapsToEnclosingModel, mapsTo, createNewImplicitMapping("", true), mapsTo.getId());
 			
 			init(mapsTo);
 		}
@@ -71,21 +71,24 @@ public class MappedDefaultParamConfig<P, M> extends DefaultParamConfig<P> implem
 			setValues(mapsTo.getValues());
 			setEventHandlerConfig(mapsTo.getEventHandlerConfig());
 		}
-		
-		@Override
-		public String getConfigId() {
-			return super.getConfigId();
-		}
+
 	}
 	
 	public MappedDefaultParamConfig(String code, ModelConfig<?> mapsToEnclosingModel, ParamConfig<M> mapsTo, Path path) {
 		this(code, code, mapsToEnclosingModel, mapsTo, path);
 	}
 	
-	public MappedDefaultParamConfig(String code, String beanName, ModelConfig<?> mapsToEnclosingModel, ParamConfig<M> mapsTo, Path path) {
+	public MappedDefaultParamConfig(String code, String beanName, ModelConfig<?> mapsToEnclosingModel, ParamConfig<M> mapsToConfig, Path path) {
 		super(code, beanName);
 		this.mapsToEnclosingModel = mapsToEnclosingModel;
-		this.mapsTo = mapsTo;
+		this.mapsToConfig = mapsToConfig;
+		this.path = path;
+	}
+	
+	public MappedDefaultParamConfig(String code, String beanName, ModelConfig<?> mapsToEnclosingModel, ParamConfig<M> mapsToConfig, Path path, String id) {
+		super(code, beanName, id);
+		this.mapsToEnclosingModel = mapsToEnclosingModel;
+		this.mapsToConfig = mapsToConfig;
 		this.path = path;
 	}
 	
