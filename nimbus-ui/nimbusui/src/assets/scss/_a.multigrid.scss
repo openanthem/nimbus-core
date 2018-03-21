@@ -87,25 +87,24 @@ ng-component{
         .filterHolder{
             position: relative;
             margin-top: 3px;
-                input{
-                    max-width: 100%;
-                    min-width: 98%;
-                }
-                button{
-                    position: absolute;
-                    right: 3%;
-                    top: 4px;
-                    font-size: .8rem;
-                    border: none;
-                    height: 1rem;
-                    color: #b9b6b6;
-                    padding: .1rem .3rem;
-                    color: #b9b6b6;
-                    &:hover, &:focus{
-                        color: #4c4c4c;
-                    }
+            input{
+                max-width: 100%;
+                min-width: 98%;
+            }
+            button{
+                position: absolute;
+                right: 3%;
+                top: 2.2px;
+                font-size: 0.8rem;
+                border: none;
+                height: 1rem;
+                color: #b9b6b6;
+                &:hover, &:focus{
+                    color: #4c4c4c;
                 }
             }
+        }
+
             .gridFilterIcon {
                 position:absolute;
                 right: 0;

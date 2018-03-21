@@ -201,10 +201,12 @@ export class Page implements Serializable<Page> {
 export class Message implements Serializable<Message> {
     type: string;
     text: string;
+    context: string;
     
     deserialize( inJson ) {
         this.type = inJson.type;
         this.text = inJson.text;
+        this.context = inJson.context;
         
         return this;
     }
@@ -611,6 +613,7 @@ export class UiAttribute implements Serializable<UiAttribute> {
     level: string;
     cssClass: string;
     multiple: boolean;
+    showExpandAll: boolean;
     selected: boolean;
     activeIndex: string;
     submitButton: boolean = true;
@@ -688,6 +691,7 @@ export class UiAttribute implements Serializable<UiAttribute> {
         this.level = inJson.level;
         this.cssClass = inJson.cssClass;
         this.multiple = inJson.multiple;
+        this.showExpandAll = inJson.showExpandAll;
         this.selected = inJson.selected;
         this.activeIndex = inJson.activeIndex;
         this.labelClass = inJson.labelClass;
@@ -777,7 +781,7 @@ export class UiAttribute implements Serializable<UiAttribute> {
         if (inJson.filter) {
             this.filter=inJson.filter;
         }
-        if(inJson.sortable) {
+        if(inJson.sortable !== undefined) {
             this.sortable = inJson.sortable;
         }
         if(inJson.resizable) {

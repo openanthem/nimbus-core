@@ -110,7 +110,11 @@ export class FileUploadComponent extends BaseElement implements ControlValueAcce
 			this.selectedFiles.push(file);
 			this.value = this.selectedFiles;
 			
-		});
+		},
+	(error) => {
+		 console.log(error);
+	}
+	);
 	}
 
 	addFiles(event) {
@@ -122,6 +126,7 @@ export class FileUploadComponent extends BaseElement implements ControlValueAcce
 				// upload the file to get file Id
 				this.fileService.uploadFile(file);
 			}
+
 		}
 	}
 
