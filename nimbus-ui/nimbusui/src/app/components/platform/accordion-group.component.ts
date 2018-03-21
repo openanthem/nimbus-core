@@ -59,13 +59,13 @@ import { Param } from './../../shared/app-config.interface';
    animations: [
        trigger('accordionAnimation', [
            state('openPanel', style({
-               maxHeight: '10000px',
+               height: '*'
            })),
            state('closedPanel', style({
-               maxHeight: '0',
+               height: '0'
            })),
-           transition('closedPanel => openPanel', animate('600ms ease-in')),
-           transition('openPanel => closedPanel', animate('200ms ease-out')),
+           transition('closedPanel => openPanel', [animate(250, style({minHeight: '1200px'})), animate(100)]),
+           transition('openPanel => closedPanel', [animate(250, style({minHeight: '0px'})), animate(100)]),
         ]),
    ]
 })
