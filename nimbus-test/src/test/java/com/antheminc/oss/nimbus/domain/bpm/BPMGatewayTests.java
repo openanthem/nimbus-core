@@ -106,7 +106,7 @@ public class BPMGatewayTests extends AbstractFrameworkIngerationPersistableTests
 		MockHttpServletRequest request4 = MockHttpRequestBuilder.withUri(updateUri)
 				.addAction(Action._update)
 				.getMock();
-		holder = (Holder<MultiOutput>)controller.handlePost(request4, converter.convert("Assigned"));	
+		holder = (Holder<MultiOutput>)controller.handlePost(request4, converter.write("Assigned"));	
 		
 		//Fetch the model again to make sure the bpmn progressed and set the value for parameterAfterHumanTask
 		request3 = MockHttpRequestBuilder.withUri(BPM_SF_PARAM_ROOT).addRefId(domainRoot_refId)
@@ -134,7 +134,7 @@ public class BPMGatewayTests extends AbstractFrameworkIngerationPersistableTests
 		MockHttpServletRequest request4 = MockHttpRequestBuilder.withUri(updateUri)
 				.addAction(Action._update)
 				.getMock();
-		holder = (Holder<MultiOutput>)controller.handlePost(request4, converter.convert("Assigned"));	
+		holder = (Holder<MultiOutput>)controller.handlePost(request4, converter.write("Assigned"));	
 		
 		MockHttpServletRequest request3 = MockHttpRequestBuilder.withUri(BPM_CV_PARAM_ROOT).addRefId(domainRoot_refId)
 				.addAction(Action._get)
@@ -161,9 +161,9 @@ public class BPMGatewayTests extends AbstractFrameworkIngerationPersistableTests
 		MockHttpServletRequest request4 = MockHttpRequestBuilder.withUri(updateUri)
 				.addAction(Action._update)
 				.getMock();
-		holder = (Holder<MultiOutput>)controller.handlePost(request4, converter.convert("Step1"));	
-		holder = (Holder<MultiOutput>)controller.handlePost(request4, converter.convert("Step2"));	
-		holder = (Holder<MultiOutput>)controller.handlePost(request4, converter.convert("Complete"));	
+		holder = (Holder<MultiOutput>)controller.handlePost(request4, converter.write("Step1"));	
+		holder = (Holder<MultiOutput>)controller.handlePost(request4, converter.write("Step2"));	
+		holder = (Holder<MultiOutput>)controller.handlePost(request4, converter.write("Complete"));	
 		
 		
 		String getUri = BPM_DP_PARAM_ROOT + ":"+domainRoot_refId;

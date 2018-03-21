@@ -53,7 +53,7 @@ public class RulesEngineTests extends AbstractFrameworkIngerationPersistableTest
 		MockHttpServletRequest request4 = MockHttpRequestBuilder.withUri(updateUri)
 				.addAction(Action._update)
 				.getMock();
-		holder = (Holder<MultiOutput>)controller.handlePost(request4, converter.convert("Start"));		
+		holder = (Holder<MultiOutput>)controller.handlePost(request4, converter.write("Start"));		
 		MockHttpServletRequest request3 = MockHttpRequestBuilder.withUri(RULE_CORE_PARAM_ROOT).addRefId(domainRoot_refId)
 				.addAction(Action._get)
 				.getMock();
