@@ -678,6 +678,7 @@ public class ViewConfig {
 		String cssClass() default "panel-default";
 		boolean multiple() default false;
 		String activeIndex() default "0";
+		boolean showExpandAll() default false;
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
