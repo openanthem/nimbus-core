@@ -16,8 +16,6 @@
 		(valueChange)="handleRowChange($event)"
 		[rows]="element.config?.uiStyles?.attributes?.pageSize"
 		[paginator]="element.config?.uiStyles?.attributes?.pagination"
-		scrollable="true" 
-        scrollHeight="700px"
 		paginatorPosition="both"
 		alwaysShowPaginator ="false"
 		[expandableRows]="element.config?.uiStyles?.attributes?.expandableRows"
@@ -87,8 +85,8 @@
 			</p-column>
 
 			<p-column *ngIf="col?.uiStyles?.attributes?.alias=='LinkMenu'" styleClass="dropdown">
-				<ng-template pTemplate="body" let-cell="rowData">
-					<nm-action-dropdown #dropDown [element]="cell._params[colIndex]" [params]="col?.type?.model?.paramConfigs" [rowData]="cell" [elementPath]="getRowPath(col, cell)" (dropDownClick)="toggleOpen($event)"></nm-action-dropdown>
+				<ng-template pTemplate="body" let-cell="rowData" let-rowIndex="rowIndex">
+					<nm-action-dropdown #dropDown [element]="paramState[rowIndex][colIndex]" [params]="col?.type?.model?.paramConfigs" [rowData]="cell" [elementPath]="getRowPath(col, cell)" (dropDownClick)="toggleOpen($event)"></nm-action-dropdown>
 				</ng-template>
 			</p-column>
 			
@@ -100,8 +98,8 @@
 		
 		<p-footer>
 			<ng-template [ngIf]="element.config?.uiStyles?.attributes?.postButton">
-				<div class="text-sm-left">
-					<button (click)="postGridData(this)" type="button" class="btn btn-action post-btn">
+				<div class="buttonGroup left">
+					<button (click)="postGridData(this)" type="button" class="btn btn-secondary post-btn">
 						{{element.config.uiStyles.attributes.postButtonLabel}}
 					</button>
 				</div>

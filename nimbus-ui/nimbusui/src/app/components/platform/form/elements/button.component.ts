@@ -47,7 +47,7 @@ import { FileService } from '../../../../services/file.service';
                 <button class="btn btn-secondary" [disabled]="disabled" (click)="emitEvent(this)" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
             </ng-template>
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style=='PLAIN' && element?.visible == true">
-                <button class="btn-plain" (click)="emitEvent(this)" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
+                <button class="btn btn-plain" (click)="emitEvent(this)" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
             </ng-template>
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style=='DESTRUCTIVE' && element?.visible == true">
                 <button class="btn btn-delete" (click)="emitEvent(this)" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>

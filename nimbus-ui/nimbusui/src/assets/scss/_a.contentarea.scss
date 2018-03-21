@@ -77,8 +77,8 @@ h3{
 
 h1.page-title {
     margin-bottom:0;
-    margin-left:20px;
     font-size: 1.3rem;
+    margin-left:20px;
     font-weight: 400;
     &.dashboard::before{
         color: $iconColor;
@@ -145,8 +145,12 @@ h1.page-title {
     padding: .6rem 0;
     margin: 0 20px 10px;
     border: 1px solid #9dd3f7;
+     div.text-bold:nth-child(1) {
+         nm-subheader:nth-child(1) {
+            font-size: 1.1rem;
+         }
+     }
 }
-
 .colorBox {
     padding:1rem;
     border: 1px solid #bbd3e8;
@@ -182,6 +186,7 @@ h1.page-title {
 
     .card-block {
         margin: 0;
+        padding: 0;
     }
     .viewport {
         padding: 10px 10px 0 10px;
@@ -203,7 +208,7 @@ h1.page-title {
 .info-card {
     display: inline-block;
     width: 84%;
-  
+    padding-left: 20px;
 }
 .ui-dialog-content label {
     padding-top: .3rem;
@@ -217,6 +222,9 @@ h1.page-title {
 }
 .ui-widget-content a {
     color: #0275d8;
+}
+.ui-datepicker.ui-widget-content a {
+    color: #696b6c;
 }
 .textWrapBreakWord {
     word-break: break-word;
@@ -271,22 +279,25 @@ legend {
         background: #edf7ff;
         display: block;
         padding: .3rem .7rem .8rem;
-        margin: 0 100px 0 0px;
+        margin: 0 100px 0 20px;
         label:first-of-type {
             margin-top: 0;
         }
-        input, .select-wrapper, textarea {
+        input, .ui-dropdown, textarea {
             max-width: 300px;
             width: 100%;
             margin-left: 0;
+            margin-left: 20px;
         }
     }
     legend:first-of-type {
         margin-top: 0.5rem;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1.0rem;
     }
 }
-
+.ui-calendar input {
+    width: 120px;
+}
 .form-group.questionGroup  {
     margin-bottom: 2.5rem;
     label {
@@ -309,9 +320,8 @@ legend {
         max-width: 300px;
         width: 100%;
     }
-    .ui-calendar input {
-        width: 180px;
-    }
+  
+   
     //.date-holder is old date component
     .date-holder::after {
         vertical-align: text-bottom;
@@ -329,7 +339,7 @@ legend {
             margin-top: 0;
         }
         .checkboxHolder {
-            padding-left: 0px;
+            padding-left: 20px;
         }
     }
     .warningMsg {
@@ -348,6 +358,62 @@ legend {
         vertical-align: bottom;
     }
 }
+.ui-datepicker {
+.ui-widget-content a{
+        color: #696b6c;
+    }
+}
+.ui-state-default {
+    border: 1px solid #b9b6b6;
+}
+.ui-inputtext:enabled:hover {
+    border-color: #9dd3f7;
+}
+.ui-dropdown:not(.ui-state-disabled):hover {
+    border-color: #9dd3f7;
+}
+.ui-widget-header.ui-datepicker-header {
+    background: #c8e3f6;
+    color: #494949;
+    a {
+        color: #494949;
+        font-size: 1.5rem;
+        height: 1.8rem;
+    }
+       
+}
+.ui-datepicker-prev span, 
+.ui-datepicker-next span{
+    color: #006bc2;
+}
+
+.ui-datepicker.ui-widget .ui-datepicker-calendar thead th {
+    background-color: #ebebeb;
+}
+button.ui-datepicker-trigger.ui-calendar-button {
+    border: none;
+    background: none;
+    color: #2399e5;
+    font-size: 1.7rem;
+    width: 2.5rem;
+  }
+  .ui-widget.ui-button:enabled:hover, 
+  .ui-widget.ui-button:focus{
+    border: none;
+    background: none;
+    color: #4c4c4c;
+  }
+  .ui-datepicker.ui-widget .ui-datepicker-calendar td a.ui-state-highlight {
+    background-color: #006bc2;
+    color: #fff;
+}
+  .ui-datepicker .ui-datepicker-calendar td:not(.ui-state-disabled) a:hover,
+  .ui-datepicker.ui-widget .ui-datepicker-calendar td a.ui-state-active {
+    border-color: #e5991c;
+    background: #e5991c;
+    color: #fff;
+}
+
 //.date-holder is old date component
 
 .date-holder {

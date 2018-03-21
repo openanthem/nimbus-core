@@ -249,7 +249,7 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface ButtonGroup {	
 		String alias() default "ButtonGroup";
-		String cssClass() default "text-sm-right";
+		String cssClass() default "text-sm-center";
 	}
 	
 	/*
@@ -325,7 +325,7 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface CardDetail {
 		String alias() default "CardDetail";
-		String cssClass() default "contentBox right-gutter bg-light mt-1";
+		String cssClass() default "";
 		String imgSrc() default "";
 		boolean editable() default false;
 		String modelPath() default "";
@@ -377,7 +377,7 @@ public class ViewConfig {
 		String imgSrc() default "";
 		String cssClass() default "";
 		boolean showName() default true;
-		String cols() default "3";
+		String cols() default "4";
 		String iconField() default "";
 		boolean inplaceEdit() default false;
 		String inplaceEditType() default "";
@@ -418,7 +418,7 @@ public class ViewConfig {
 		String imgSrc() default "";
 		Style style() default Style.PLAIN;
 		String payload() default "";
-		String cssClass() default "btn btn-primary";
+		String cssClass() default "btn btn-plain";
 		boolean browserBack() default false;
 		boolean formReset() default true;
 	}

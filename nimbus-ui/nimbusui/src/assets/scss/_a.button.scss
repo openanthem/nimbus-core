@@ -1,26 +1,23 @@
-@mixin styleButton($bkgColor,$color) {
-  background: $bkgColor;
-  border-color: $bkgColor;
-  color:$color;
-  line-height:1;
-  margin-right:9px;
-  margin-bottom:1rem;
-  &:hover:not([disabled]){
-    background-color: darken($bkgColor, 15%);
-    border-color: darken($bkgColor, 15%);
-  }
-  &:focus{
-    outline: $focus-outline-setting;
-  }
-  &[disabled]{
-    background-color: lighten($bkgColor, 15%);
-    color: lighten($color, 10%);
-  }
-}
-
 button:focus{
   outline: $focus-outline-setting;
 }
+.buttonGroup{
+  padding: 1rem 0 0;
+  &.left{
+    @extend .text-sm-left;
+  }
+  &.center{
+    @extend .text-sm-center;
+  }
+  &.right{
+    @extend .text-sm-right;
+  }
+  &.inline{
+    display: inline-block;
+    padding-top: 2rem;
+  }
+}
+
 .btn-primary {
   background: #006bc2;
   border-color: #006bc2;
@@ -66,10 +63,11 @@ button:focus{
   }
 }
 
-.fa-fw {
+.btn-plain .fa-fw {
   width: 1.28571429em;
   text-align: center;
   margin-right: .3rem;
+  font-size: 1.3rem;
 }
 
 
@@ -131,12 +129,7 @@ button:focus{
   }
 }
 
-.windowControls .btn.btn-icon svg {
-    width: 1.5rem;
-    height: 1.5rem;
-    stroke-width: 1;
-    margin-right: 8px;
-}
+
 
 .fa-icon-link {
   position:relative;

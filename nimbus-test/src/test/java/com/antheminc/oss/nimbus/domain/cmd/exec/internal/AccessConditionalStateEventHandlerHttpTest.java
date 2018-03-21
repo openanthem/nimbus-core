@@ -270,7 +270,7 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 		final MockHttpServletRequest fetchUserRole = MockHttpRequestBuilder.withUri(USEREOLE_PARAM_ROOT)
 				.addAction(Action._search)
 				.addParam("fn", "query")
-				.addParam("where", "userrole.id.in("+sb.toString()+")")
+				.addParam("where", "userrole.code.in("+sb.toString()+")")
 				.getMock();
 		
 		holder = (Holder<MultiOutput>) controller.handlePost(fetchUserRole, null);
@@ -300,7 +300,7 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 		final MockHttpServletRequest fetchAuthorities = MockHttpRequestBuilder.withUri("/hooli/thebox/p/authorities")
 				.addAction(Action._search)
 				.addParam("fn", "query")
-				.addParam("where", "authorities.id.in("+sb2.toString()+")")
+				.addParam("where", "authorities.code.in("+sb2.toString()+")")
 				.getMock();
 		
 		holder = (Holder<MultiOutput>) controller.handlePost(fetchAuthorities, null);
@@ -333,14 +333,14 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 			
 			mongo.save(accessEntity, "authorities");
 			
-			accessEntities.add(accessEntity.getId());
+			accessEntities.add(accessEntity.getCode());
 			
 			userRole.setAccessEntities(accessEntities);
 			
 			mongo.save(userRole, "userrole");
 			
 			UserRole role = new UserRole();
-			role.setRoleId(userRole.getId());
+			role.setRoleId(userRole.getCode());
 			role.setTerminationDate(LocalDate.now());
 			userRoles.add(role);
 		});
