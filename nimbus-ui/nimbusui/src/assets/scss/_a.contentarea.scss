@@ -298,6 +298,28 @@ legend {
 .ui-calendar input {
     width: 120px;
 }
+.ui-dialog.ui-widget .ui-dialog-titlebar .ui-dialog-title {
+    font-size: 1rem;
+}
+.ui-dialog.ui-widget .ui-dialog-titlebar {
+    padding: .5rem;
+    border-radius: 0;
+}
+.ui-dialog .ui-dialog-titlebar-close span::before{
+    content: "\f057";
+    color: #fff;
+}
+
+.section-nav{
+   .nav-link::before{
+        color: inherit;
+    }
+   
+}
+.ui-dialog .colorBox {
+    background: none;
+    border: none;
+}
 .form-group.questionGroup  {
     margin-bottom: 2.5rem;
     label {
@@ -571,7 +593,7 @@ button.ui-datepicker-trigger.ui-calendar-button {
     & > .panel-heading {
         background: $header-bkg;
         color: white;
-        padding: 0.3rem;
+        padding: 0.3rem 0.3rem 0.3rem 1rem;
         margin: 0;
         font-weight: 300;
         position: relative;
@@ -610,7 +632,6 @@ button.ui-datepicker-trigger.ui-calendar-button {
     }
     .panel-collapse {
         padding-left: 50px;
-        overflow: hidden;
         //display: block;
         padding-left: 0px;
     }
@@ -621,9 +642,7 @@ button.ui-datepicker-trigger.ui-calendar-button {
                 transform: rotate(90deg);
             }
         }
-        .panel-collapse {
-            overflow: visible;
-        }              
+                  
     }
 }
 
