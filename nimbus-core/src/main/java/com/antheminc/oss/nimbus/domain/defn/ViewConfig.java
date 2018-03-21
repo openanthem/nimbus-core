@@ -211,7 +211,7 @@ public class ViewConfig {
 		String cssClass() default ""; // new
 		Type type() default Type.dialog;
 		boolean closable() default false;
-		String width() default "500";
+		String width() default "medium";
 
 		public enum Type {
 			dialog, slider
@@ -268,7 +268,7 @@ public class ViewConfig {
 		boolean isTransient() default false;
 		String url() default "";
 		boolean rowSelection() default false;
-		String pageSize() default "50"; // changed default from 10 to 50
+		String pageSize() default "25"; 
 		boolean showHeader() default true;
 		boolean pagination() default true;
 		boolean postButton() default false;
@@ -277,7 +277,7 @@ public class ViewConfig {
 		String postButtonAlias() default "";
 		String postButtonLabel() default "";
 		boolean postEventOnChange() default false;
-		boolean clearAllFilters() default true;
+		boolean clearAllFilters() default false;
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
