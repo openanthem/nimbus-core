@@ -58,7 +58,9 @@ export class CardDetailsFieldComponent  extends BaseElement implements ControlVa
         super.ngOnInit();
 
         // field style
-        if (this.element.config.uiStyles.attributes.cols === '4') { // occupies 1 cols of 4
+        if (this.element.config.uiStyles.attributes.cols === '6') { // occupies 1 cols of 6
+            this.fieldClass = 'col-sm-2';
+        } else if (this.element.config.uiStyles.attributes.cols === '4') { // occupies 1 cols of 4
             this.fieldClass = 'col-sm-3';
         } else if (this.element.config.uiStyles.attributes.cols === '3') { // occupies 1 cols of 3
             this.fieldClass = 'col-sm-4';
