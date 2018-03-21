@@ -378,13 +378,19 @@ public interface EntityState<T> {
 				DANGER,
 				SUCCESS;
 			}
+			public enum Context {			
+				INLINE,
+				GROWL;				
+			}
 				
 			private final String text;
 			private final Type type;
+			private final Context context;
+			
 
 			@Override
 			public boolean equals(Object obj) {
-				if(obj==null && this.text==null && this.type==null)
+				if(obj==null && this.text==null && this.type==null && this.context==null)
 					return true;
 				
 				if(!Message.class.isInstance(obj))
@@ -393,7 +399,7 @@ public interface EntityState<T> {
 				Message other = Message.class.cast(obj);
 				
 				if(StringUtils.equalsIgnoreCase(other.getText(), this.getText())
-						&& other.getType()==this.getType())
+						&& other.getType()==this.getType() && other.getContext()==this.getContext())
 					return true;
 			
 				return false;

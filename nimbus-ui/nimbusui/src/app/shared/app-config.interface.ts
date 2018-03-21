@@ -201,10 +201,12 @@ export class Page implements Serializable<Page> {
 export class Message implements Serializable<Message> {
     type: string;
     text: string;
+    context: string;
     
     deserialize( inJson ) {
         this.type = inJson.type;
         this.text = inJson.text;
+        this.context = inJson.context;
         
         return this;
     }
