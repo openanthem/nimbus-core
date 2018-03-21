@@ -190,7 +190,7 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 		// Validate the value was set
 		Object resp_get = controller.handleGet(req_get, null);
 		EntityState.Param<NestedNoConversionLevel1> viewParam = ExtractResponseOutputUtils.extractOutput(resp_get);
-		assertEquals("initially_set_value", viewParam.getState().getNested_nc_attr1A());
+		assertEquals("initially_set_value", viewParam.getLeafState().getNested_nc_attr1A());
 		
 		// Set a second value to a different field
 		payload = "{ \"nested_nc_attr1B\":\"new_value_from_update\" }";
@@ -199,10 +199,10 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 		// Validate the value was set
 		resp_get = controller.handleGet(req_get, null);
 		viewParam = ExtractResponseOutputUtils.extractOutput(resp_get);
-		assertEquals("new_value_from_update", viewParam.getState().getNested_nc_attr1B());
+		assertEquals("new_value_from_update", viewParam.getLeafState().getNested_nc_attr1B());
 		
 		// Validate original value still exists
-		assertEquals("initially_set_value", viewParam.getState().getNested_nc_attr1A());
+		assertEquals("initially_set_value", viewParam.getLeafState().getNested_nc_attr1A());
 	}
 	
 	@Test
@@ -237,8 +237,8 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 		// Validate the value was set
 		Object resp_get = controller.handleGet(req_get, null);
 		EntityState.Param<NestedNoConversionLevel1> viewParam = ExtractResponseOutputUtils.extractOutput(resp_get);
-		assertEquals("initially_set_value", viewParam.getState().getNested_nc_attr1A());
-		assertEquals("initially_set_value", viewParam.getState().getNc_nested_level2().getNested_nc_attr2C());
+		assertEquals("initially_set_value", viewParam.getLeafState().getNested_nc_attr1A());
+		assertEquals("initially_set_value", viewParam.getLeafState().getNc_nested_level2().getNested_nc_attr2C());
 		
 		// Set a second value to a different field
 		payload = "{ \"nested_nc_attr1B\":\"new_value_from_update\" }";
@@ -247,11 +247,11 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 		// Validate the value was set
 		resp_get = controller.handleGet(req_get, null);
 		viewParam = ExtractResponseOutputUtils.extractOutput(resp_get);
-		assertEquals("new_value_from_update", viewParam.getState().getNested_nc_attr1B());
+		assertEquals("new_value_from_update", viewParam.getLeafState().getNested_nc_attr1B());
 		
 		// Validate original value still exists
-		assertEquals("initially_set_value", viewParam.getState().getNested_nc_attr1A());
-		assertEquals("initially_set_value", viewParam.getState().getNc_nested_level2().getNested_nc_attr2C());
+		assertEquals("initially_set_value", viewParam.getLeafState().getNested_nc_attr1A());
+		assertEquals("initially_set_value", viewParam.getLeafState().getNc_nested_level2().getNested_nc_attr2C());
 	}
 	
 	@Test
@@ -297,7 +297,7 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 		Object resp_get = controller.handleGet(req_get, null);
 		EntityState.Param<Form_ConvertedNestedEntity> viewParam = ExtractResponseOutputUtils.extractOutput(resp_get);
 		// TODO - This fails with a null value. Why is it not being retrieved?
-		assertEquals("initially_set_value", viewParam.getState().getVt_nested_attr_String());
+		assertEquals("initially_set_value", viewParam.getLeafState().getVt_nested_attr_String());
 		
 		// Set a second value to a different field
 		payload = "{ \"vt_nested_attr_String2\":\"new_value_from_update\" }";
@@ -306,9 +306,9 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 		// Validate the value was set
 		resp_get = controller.handleGet(req_get, null);
 		viewParam = ExtractResponseOutputUtils.extractOutput(resp_get);
-		assertEquals("new_value_from_update", viewParam.getState().getVt_nested_attr_String2());
+		assertEquals("new_value_from_update", viewParam.getLeafState().getVt_nested_attr_String2());
 		
 		// Validate original value still exists
-		assertEquals("initially_set_value", viewParam.getState().getVt_nested_attr_String());
+		assertEquals("initially_set_value", viewParam.getLeafState().getVt_nested_attr_String());
 	}
 }

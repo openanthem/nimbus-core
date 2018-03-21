@@ -79,8 +79,11 @@ public class CommandMessageConverter {
 				model = om.readValue(json, om.getTypeFactory().constructArrayType(pConfig.getReferredClass()));
 			
 			else {
-				//model = om.readValue(json, pConfig.getReferredClass());
-				model = om.readerForUpdating(existingEntityToUpdate).readValue(json);
+				if (!pConfig.isLeaf()) {
+					model = om.readerForUpdating(existingEntityToUpdate).readValue(json);
+				} else {
+					model = om.readValue(json, pConfig.getReferredClass());
+				}
 			}
 											
 			return (T)model;
