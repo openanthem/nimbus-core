@@ -611,6 +611,7 @@ export class UiAttribute implements Serializable<UiAttribute> {
     level: string;
     cssClass: string;
     multiple: boolean;
+    showExpandAll: boolean;
     selected: boolean;
     activeIndex: string;
     submitButton: boolean = true;
@@ -688,6 +689,7 @@ export class UiAttribute implements Serializable<UiAttribute> {
         this.level = inJson.level;
         this.cssClass = inJson.cssClass;
         this.multiple = inJson.multiple;
+        this.showExpandAll = inJson.showExpandAll;
         this.selected = inJson.selected;
         this.activeIndex = inJson.activeIndex;
         this.labelClass = inJson.labelClass;

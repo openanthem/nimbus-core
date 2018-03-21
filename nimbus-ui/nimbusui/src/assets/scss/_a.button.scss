@@ -70,10 +70,19 @@ button:focus{
   font-size: 1.3rem;
 }
 
-
-
 .dropdown-menu {
   margin-top: 0;
+}
+
+.btn-expand {
+  @extend .btn-plain;
+  padding-right: 0.2rem;
+  padding-left: 0.2rem;
+}
+
+.btn-pipe {
+  display: inline-block;
+  vertical-align: baseline;
 }
 
 .btn-plain {
