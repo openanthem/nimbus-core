@@ -4,6 +4,9 @@
 [![GitHub contributors](https://img.shields.io/github/contributors/openanthem/nimbus-core.svg?style=for-the-badge)]()
 [![GitHub last commit](https://img.shields.io/github/last-commit/openanthem/nimbus-core.svg?style=for-the-badge)]()
 
+Codeclimate Analysis
+--------------------
+[![Maintainability](https://api.codeclimate.com/v1/badges/c6e5a784163a6ce69242/maintainability)](https://codeclimate.com/github/openanthem/nimbus-core/maintainability)
 
 Sonarcloud.io Analysis
 ----------------------
