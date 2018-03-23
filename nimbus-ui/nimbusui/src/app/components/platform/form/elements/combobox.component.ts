@@ -1,3 +1,4 @@
+import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -39,7 +40,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
  */
 @Component({
   selector: 'nm-comboBox',
-  providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc ],
+  providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc, ControlSubscribers ],
   template: `
     <label [attr.for]="element.config?.code"  [ngClass]="{'required': requiredCss, '': !requiredCss}" *ngIf="this.showLabel">{{label}}
         <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
@@ -59,8 +60,8 @@ export class ComboBox extends BaseControl<String> {
 
     @ViewChild(NgModel) model: NgModel;
 
-    constructor(wcs: WebContentSvc, pageService: PageService, cd:ChangeDetectorRef) {
-        super(pageService,wcs,cd);
+    constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd:ChangeDetectorRef) {
+        super(controlService,wcs,cd);
     }
 
 }

@@ -5,7 +5,11 @@
 			{{label}}
 			<nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
 		</p-header>
-		<div class="recordsDisplayed">Showing {{rowStart}}-{{rowEnd}} of  {{totalRecords}} <button *ngIf="element.config?.uiStyles?.attributes?.clearAllFilters" class="btn-plain ml-2" (click)="clearAll()">Clear Grid Filters</button> </div>
+		<div class="recordsDisplayed">Showing {{rowStart}}-{{rowEnd}} of  {{totalRecords}}
+			 <button *ngIf="element.config?.uiStyles?.attributes?.clearAllFilters" class="btn-plain ml-2" (click)="clearAll()">Clear Grid Filters</button> 
+			 <button *ngIf="element.config?.uiStyles?.attributes?.export" class="btn-plain ml-2" (click)="dt.exportCSV()">Export</button>
+		</div>
+		
 	</div>
 	
 	<p-dataTable #flex #dataTable #table [value]="value"
@@ -103,7 +107,7 @@
 						{{element.config.uiStyles.attributes.postButtonLabel}}
 					</button>
 				</div>
-			</ng-template> 
+			</ng-template>
 		</p-footer> 
 				   
 	</p-dataTable>

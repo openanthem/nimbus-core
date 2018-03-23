@@ -1,3 +1,4 @@
+import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -37,7 +38,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
  */
 @Component({
   selector: 'nm-input-textarea',
-  providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc ],
+  providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc, ControlSubscribers ],
   template: `
     <!--<div class='textarea-holder' [hidden]="!element?.visible || !element?.visible" *ngIf="element.config?.uiStyles?.attributes?.hidden==false">-->
     <div class='textarea-holder' [hidden]="!element?.visible" *ngIf="element.config?.uiStyles?.attributes?.hidden==false">
@@ -60,7 +61,7 @@ export class TextArea extends BaseControl<String> {
 
      element: Param;
 
-    constructor(wcs: WebContentSvc, pageService: PageService,cd:ChangeDetectorRef) {
-        super(pageService,wcs,cd);
+    constructor(wcs: WebContentSvc, controlService: ControlSubscribers,cd:ChangeDetectorRef) {
+        super(controlService,wcs,cd);
     }
 }

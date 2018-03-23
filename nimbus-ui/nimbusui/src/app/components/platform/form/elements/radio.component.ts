@@ -1,3 +1,4 @@
+import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -40,14 +41,16 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
  */
 @Component({
   selector: 'nm-input-radio',
-  providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR,WebContentSvc],
+  providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR,WebContentSvc, ControlSubscribers],
   template: `
+  
     <fieldset>
         <legend  [ngClass]="{'required': requiredCss, '': !requiredCss}">{{label}}
         <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
         </legend>
         <div class="checkboxHolder" >
         <div class="form-checkrow" *ngFor="let val of element?.values; let i = index">
+        {{val}} {{element.leafState}}sadasd
         <p-radioButton name="{{element?.config?.code}}" [(ngModel)]="value"   [disabled]="disabled" [value]="val.code" [label]="val.label" (ngModelChange)="emitValueChangedEvent(this,$event)"></p-radioButton>
     </div>
         </div>
@@ -62,8 +65,8 @@ export class RadioButton extends BaseControl<String> {
     element: Param;
     
 
-    constructor(wcs: WebContentSvc, pageService: PageService, cd:ChangeDetectorRef) {
-        super(pageService, wcs, cd);
+    constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd:ChangeDetectorRef) {
+        super(controlService,wcs,cd);
     }
 
 }

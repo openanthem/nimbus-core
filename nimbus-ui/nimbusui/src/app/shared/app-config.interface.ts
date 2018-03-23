@@ -673,6 +673,7 @@ export class UiAttribute implements Serializable<UiAttribute> {
     resizable:boolean;
     placeholder: string;
     clearAllFilters: boolean;
+    export: boolean;
     deserialize( inJson ) {
         this.value = inJson.value;
         this.url = inJson.url;
@@ -740,6 +741,9 @@ export class UiAttribute implements Serializable<UiAttribute> {
         this.sortAs = inJson.sortAs;
         this.placeholder = inJson.placeholder;
         this.clearAllFilters = inJson.clearAllFilters;
+        if ( inJson.export != null ) {
+            this.export = inJson.export;
+        }
         if ( inJson.controlType != null ) {
             this.controlType = inJson.controlType;
         }
