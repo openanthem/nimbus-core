@@ -20,8 +20,6 @@ package com.antheminc.oss.nimbus.channel.web;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.web.bind.annotation.RequestMethod;
-
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
@@ -46,12 +44,12 @@ public class WebCommandDispatcher {
 		this.gateway = beanResolver.get(CommandExecutorGateway.class);
 	}
 	
-	public Object handle(HttpServletRequest httpReq, RequestMethod httpMethod, ModelEvent<String> event) {
+	public Object handle(HttpServletRequest httpReq, ModelEvent<String> event) {
 		Command cmd = builder.build(httpReq, event);
 		return handle(cmd, event.getPayload());
 	}
 
-	public Object handle(HttpServletRequest httpReq, RequestMethod httpMethod, String v, String json) {
+	public Object handle(HttpServletRequest httpReq, String json) {
 		Command cmd = builder.build(httpReq);
 		return handle(cmd, json);
 	}
