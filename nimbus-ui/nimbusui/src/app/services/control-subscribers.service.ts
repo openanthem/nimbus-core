@@ -1,5 +1,3 @@
-import { GenericDomain } from './../model/generic-domain.model';
-import { Param } from './../shared/app-config.interface';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -27,6 +25,8 @@ import { FormGroup } from '@angular/forms/src/model';
 import { ValidationUtils } from '../components/platform/validators/ValidationUtils';
 import { BaseControl } from '../components/platform/form/elements/base-control.component';
 import { ValidatorFn } from '@angular/forms/src/directives/validators';
+import { GenericDomain } from './../model/generic-domain.model';
+import { Param } from './../shared/app-config.interface';
 /**
  * \@author Sandeep.Mantha
  * \@whatItDoes 
