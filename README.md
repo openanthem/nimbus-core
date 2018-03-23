@@ -14,7 +14,7 @@ Sonarcloud.io Analysis
 [![Sonarcloud.io Bugs](https://sonarcloud.io/api/project_badges/measure?project=com.antheminc.oss%3Animbus-core&metric=bugs&style=for-the-badge)]() 
 [![Sonarcloud.io Coverage](https://sonarcloud.io/api/project_badges/measure?project=com.antheminc.oss%3Animbus-core&metric=coverage&style=for-the-badge)]() [![Sonarcloud.io Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=com.antheminc.oss%3Animbus-core&metric=sqale_index&style=for-the-badge)]() 
 
-<br>[Full Report](https://sonarcloud.io/dashboard?id=com.antheminc.oss%3Animbus-core)
+[Full Report](https://sonarcloud.io/dashboard?id=com.antheminc.oss%3Animbus-core)
 
 Development Process
 -------------------
