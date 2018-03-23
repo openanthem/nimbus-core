@@ -200,8 +200,8 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 		assertNotNull(fnAssignResp);
 		
 		// add value to mapsTo core to see effect in mapped transient
-		MockHttpServletRequest updateReq = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(refId)
-				.addNested("/attr_list_2_NestedEntity/0")
+		MockHttpServletRequest updateReq = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
+				.addNested("/page_red/tile/vt_attached_convertedNestedEntity/.m")
 				.addAction(Action._update)
 				.getMock();
 		
@@ -211,6 +211,15 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 		
 		Object updateResp = controller.handlePut(updateReq, null, jsonPayload);
 		assertNotNull(updateResp);
+		
+		// call flush to simulate save call
+		MockHttpServletRequest fnReq_flush = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
+				.addNested("/page_red/tile/vt_attached_convertedNestedEntity/")
+				.addAction(Action._get)
+				.addParam(Constants.KEY_FUNCTION.code, "param")
+				.addParam(Constants.KEY_FN_PARAM_ARG_EXPR.code, "flush()")
+				.getMock();
+		controller.handleGet(fnReq_flush, null);
 		
 		// get fn=param
 		MockHttpServletRequest fnReq = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
@@ -248,8 +257,8 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 		String jsonFormPayload = converter.write(form);
 		
 		MockHttpServletRequest submitFormReq = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
-				.addNested("/page_red/tile/vt_attached_convertedNestedEntity")
-				.addAction(Action._update)
+				.addNested("/page_red/tile/vt_attached_convertedNestedEntity/saveButton")
+				.addAction(Action._replace)
 				.getMock();
 		
 		Object submitFormResp = controller.handlePut(submitFormReq, null, jsonFormPayload);
