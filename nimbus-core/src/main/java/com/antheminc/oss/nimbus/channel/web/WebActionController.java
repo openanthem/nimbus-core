@@ -95,13 +95,6 @@ public class WebActionController {
 		ctxLoader.clear();
 	}
 	
-	@RequestMapping(value=URI_PATTERN_P+"/gc", produces="application/json", method=RequestMethod.GET)
-	public void gc() {
-		System.gc();
-		System.runFinalization();
-	}
-	
-	
 	@RequestMapping(value=URI_PATTERN_P_OPEN, produces="application/json", method=RequestMethod.GET)
 	public Object handleGet(HttpServletRequest req, @RequestParam(required=false) String a) {
 		return handleInternal(req, RequestMethod.GET, null, a);
@@ -129,7 +122,7 @@ public class WebActionController {
 	
 	@RequestMapping(value=URI_PATTERN_P+"/event/notify", produces="application/json", method=RequestMethod.POST)
 	public Object handleEventNotify(HttpServletRequest req, @RequestBody ModelEvent<String> event) {
-		Object obj = dispatcher.handle(req, RequestMethod.POST, event);
+		Object obj = dispatcher.handle(req, event);
 		
 		Holder<Object> output = new Holder<>(obj);
 		return output;
@@ -142,7 +135,7 @@ public class WebActionController {
 	
 	
 	protected Object handleInternal(HttpServletRequest req, RequestMethod httpMethod, String v, String json) {
-		Object obj = dispatcher.handle(req, httpMethod, v, json);
+		Object obj = dispatcher.handle(req, json);
 		Holder<Object> output = new Holder<>(obj);
 		return output;
 	}
