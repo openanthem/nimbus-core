@@ -85,7 +85,7 @@ public class DefaultActionNewInitEntityFunctionHandler<T> implements FunctionHan
 				.map(StringUtils::trimToNull)
 				.orElseThrow(()->new InvalidConfigException("'json' OR must be configured but found null for cmd:"+cmd));
 		
-		Object converted = converter.convert(pConfig, json);
+		Object converted = converter.read(pConfig, json);
 		return converted;
 	}
 }

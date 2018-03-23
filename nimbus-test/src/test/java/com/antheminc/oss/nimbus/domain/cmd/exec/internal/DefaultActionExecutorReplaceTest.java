@@ -61,7 +61,7 @@ public class DefaultActionExecutorReplaceTest extends AbstractFrameworkIngeratio
 		colElemState_2.setNested_attr_String("TEST_INTG_COL_ELEM_add_2 "+ new Date());
 		colState.add(colElemState_1);
 		colState.add(colElemState_2);
-		String jsonPayload = converter.convert(colState);
+		String jsonPayload = converter.write(colState);
 		
 		Object colElemAdd_Resp = controller.handlePost(colElemAdd_Req, jsonPayload);
 		assertNotNull(colElemAdd_Resp);
@@ -89,7 +89,7 @@ public class DefaultActionExecutorReplaceTest extends AbstractFrameworkIngeratio
 		final String[] K_string_arr = new String[]{"A", "B", "C @ "+new Date()};
 		final List<String> listString = new ArrayList<>(Arrays.asList(K_string_arr));
 		
-		Object resp_arr_update = controller.handlePut(req_arr_replace, null, converter.convert(listString));
+		Object resp_arr_update = controller.handlePut(req_arr_replace, null, converter.write(listString));
 		
 		// validate via Param
 		MockHttpServletRequest req_arr_get = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(refId)
@@ -119,7 +119,7 @@ public class DefaultActionExecutorReplaceTest extends AbstractFrameworkIngeratio
 		final String[] K_string_arr = new String[]{"A", "B", "C @ "+new Date()};
 		final List<String> listString = new ArrayList<>(Arrays.asList(K_string_arr));
 		
-		Object resp_arr_update = controller.handlePut(req_arr_replace, null, converter.convert(listString));
+		Object resp_arr_update = controller.handlePut(req_arr_replace, null, converter.write(listString));
 		
 		// validate via Param
 		MockHttpServletRequest req_arr_get = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(refId)
@@ -155,7 +155,7 @@ public class DefaultActionExecutorReplaceTest extends AbstractFrameworkIngeratio
 		
 		final String[] K_string_arr = new String[]{"A", "B", "C @ "+new Date()};
 		final List<String> listString = new ArrayList<>(Arrays.asList(K_string_arr));
-		Object resp_arr_update = controller.handlePut(req_arr_update, null, converter.convert(listString));
+		Object resp_arr_update = controller.handlePut(req_arr_update, null, converter.write(listString));
 		
 		
 		// validate via Param
@@ -183,7 +183,7 @@ public class DefaultActionExecutorReplaceTest extends AbstractFrameworkIngeratio
 				.addNested("/level1/level2b/string_array_b").addAction(Action._replace).getMock();
 		
 		final String[] K_string_arr = new String[]{"A", "B", "C @ "+new Date()};
-		Object resp_arr_update = controller.handlePut(req_arr_update, null, converter.convert(K_string_arr));
+		Object resp_arr_update = controller.handlePut(req_arr_update, null, converter.write(K_string_arr));
 		
 		
 		// validate via Param
@@ -211,7 +211,7 @@ public class DefaultActionExecutorReplaceTest extends AbstractFrameworkIngeratio
 				.addNested("/page_green/tile/level1/level2b/string_array_b").addAction(Action._replace).getMock();
 		
 		final String[] K_string_arr = new String[]{"A", "B", "C @ "+new Date()};
-		Object resp_arr_update = controller.handlePut(req_arr_update, null, converter.convert(K_string_arr));
+		Object resp_arr_update = controller.handlePut(req_arr_update, null, converter.write(K_string_arr));
 		
 		
 		// validate via Param
