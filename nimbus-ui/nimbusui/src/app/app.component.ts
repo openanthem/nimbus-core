@@ -51,6 +51,15 @@ export class AppComponent {
     }
 
    ngOnInit() {
+
+        //added to support startswith in IE
+        if (!String.prototype.startsWith) {
+            String.prototype.startsWith = function(searchString, position){
+                position = position || 0;
+                return this.substr(position, searchString.length) === searchString;
+            };
+        }
+
         this.domain = this.document.location.hostname;
         this.port=this.document.location.port;
         this.protocol=this.document.location.protocol;
