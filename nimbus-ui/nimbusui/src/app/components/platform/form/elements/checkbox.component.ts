@@ -1,4 +1,3 @@
-import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -22,6 +21,7 @@ import { WebContentSvc } from '../../../../services/content-management.service';
 import { PageService } from '../../../../services/page.service';
 import { BaseControl } from './base-control.component';
 import { Param } from '../../../../shared/app-config.interface';
+import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 
 /**
  * \@author Dinakar.Meda

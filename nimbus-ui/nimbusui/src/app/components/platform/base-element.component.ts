@@ -1,4 +1,3 @@
-import { ValidationConstraint } from './../../shared/validationconstraints.enum';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -23,6 +22,7 @@ import { WebContentSvc } from '../../services/content-management.service';
 import { LabelConfig } from './../../shared/app-config.interface';
 import { ValidationUtils } from './validators/ValidationUtils';
 import { ParamUtils } from '../../shared/param-utils';
+import { ValidationConstraint } from './../../shared/validationconstraints.enum';
 
 /**
  * \@author Dinakar.Meda

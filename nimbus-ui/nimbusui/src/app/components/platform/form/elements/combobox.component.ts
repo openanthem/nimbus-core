@@ -1,4 +1,3 @@
-import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -23,6 +22,7 @@ import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { PageService } from '../../../../services/page.service';
 import { Param } from '../../../../shared/app-config.interface';
+import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
