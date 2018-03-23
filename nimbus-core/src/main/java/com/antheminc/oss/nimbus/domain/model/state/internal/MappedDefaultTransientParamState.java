@@ -93,6 +93,8 @@ public class MappedDefaultTransientParamState<T, M> extends DefaultParamState<T>
 			return;
 		
 		changeStateTemplate((rt, h, lockId)->{
+			unassignMapsToInternal();
+			
 			// if collection, add element
 			Param<M> resolvedMapsTo = mapsToTransient.isCollection() ? mapsToTransient.findIfCollection().add() : mapsToTransient;
 			setMapsToTransient(resolvedMapsTo);
@@ -128,9 +130,7 @@ public class MappedDefaultTransientParamState<T, M> extends DefaultParamState<T>
 	@Override
 	public void unassignMapsTo() {
 		changeStateTemplate((rt, h, lockId)->{
-			setMapsToTransient(null);
-			
-			copyStateToDetached(null);
+			unassignMapsToInternal();
 			
 			emitEvent(Action._update, this);
 			
@@ -138,6 +138,12 @@ public class MappedDefaultTransientParamState<T, M> extends DefaultParamState<T>
 			
 			return null;
 		});
+	}
+	
+	private void unassignMapsToInternal() {
+		setMapsToTransient(null);
+		
+		copyStateToDetached(null);
 	}
 	
 	private void copyStateToDetached(M state) {
