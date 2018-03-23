@@ -252,7 +252,7 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 	private void createResolvedAccessEntities(ClientUser clientuser) {
 		Holder<MultiOutput> holder;
 		MultiOutput output;
-		Set<String> userRoleCodes = clientuser.getRoles().stream().map(UserRole::getRoleId).collect(Collectors.toSet());
+		Set<String> userRoleCodes = clientuser.getRoles().stream().map(UserRole::getRoleCode).collect(Collectors.toSet());
 		
 		StringBuilder sb = new StringBuilder();
 		int i = 0;
@@ -340,7 +340,7 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 			mongo.save(userRole, "userrole");
 			
 			UserRole role = new UserRole();
-			role.setRoleId(userRole.getCode());
+			role.setRoleCode(userRole.getCode());
 			role.setTerminationDate(LocalDate.now());
 			userRoles.add(role);
 		});
