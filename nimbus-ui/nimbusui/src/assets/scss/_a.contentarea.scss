@@ -51,19 +51,24 @@ h3{
 // }
 .message {
     text-align: center;
-    padding: .3rem;
     margin: 0 0 .6rem 0;
     font-weight: bold;
     &::before {
         font-family: "fontAwesome";
-        margin-right: 1rem;
-        font-size: 1.5rem;
+        margin-right: 0.9rem;
+        font-size: 2rem;
     }
     &.DANGER {
         background: #e9a129;
         color: #ae0015;
         &::before {
             content: "\f00d";
+        }
+        .closeIcon {
+
+            &:hover, &.btn-plain:focus{
+                color:#FFF;
+            }           
         }
     }
     &.SUCCESS {
@@ -73,7 +78,42 @@ h3{
             content: "\f00c";
         }
     }
+    &.INFO {
+        background: #EBEBEB;
+        color: #014B87;
+        &::before {
+            content: "\f129";
+        }
+    }
+    &.WARNING {
+        background: #FCF6D9;
+        color: #E5991C;
+        &::before {
+            content: "\f12a";
+        }
+    }
 }
+
+.closeIcon {
+    float: right;
+    margin-right: 20px;
+    margin-top: 3px;
+    color: #4C4C4C;
+    text-decoration: none;
+    &::before{
+        font-family: "fontAwesome";
+        content: "\f057";
+        font-size: 1.5rem;
+                
+    }
+    &:hover, &.btn-plain:focus{
+        outline: none;
+        color: inherit;
+    }
+    
+
+}
+
 
 h1.page-title {
     margin-bottom:0;
@@ -210,8 +250,8 @@ h1.page-title {
     width: 84%;
     padding-left: 20px;
 }
-.ui-dialog-content label {
-    padding-top: .3rem;
+.ui-dialog .ui-dialog-titlebar-close span {
+    font-size: 1.5rem;
 }
 .ui-widget-header.ui-dialog-titlebar{
         text-align: left;
@@ -297,6 +337,30 @@ legend {
 }
 .ui-calendar input {
     width: 120px;
+}
+.ui-dialog.ui-widget .ui-dialog-titlebar .ui-dialog-title {
+    margin-left: 1rem;
+}
+.ui-dialog.ui-widget .ui-dialog-titlebar {
+    padding: .5rem;
+    border-radius: 0;
+}
+.ui-dialog .ui-dialog-titlebar-close span::before{
+    content: "\f057";
+    color: #fff;
+}
+.ui-dialog .ui-dialog-titlebar-icon:hover .fa-close:before {
+    color: #6e9de1;
+}
+.section-nav{
+   .nav-link::before{
+        color: inherit;
+    }
+   
+}
+.ui-dialog .colorBox {
+    background: none;
+    border: none;
 }
 .form-group.questionGroup  {
     margin-bottom: 2.5rem;
@@ -571,7 +635,7 @@ button.ui-datepicker-trigger.ui-calendar-button {
     & > .panel-heading {
         background: $header-bkg;
         color: white;
-        padding: 0.3rem;
+        padding: 0.3rem 0.3rem 0.3rem 1rem;
         margin: 0;
         font-weight: 300;
         position: relative;
@@ -610,7 +674,6 @@ button.ui-datepicker-trigger.ui-calendar-button {
     }
     .panel-collapse {
         padding-left: 50px;
-        overflow: hidden;
         //display: block;
         padding-left: 0px;
     }
@@ -621,9 +684,7 @@ button.ui-datepicker-trigger.ui-calendar-button {
                 transform: rotate(90deg);
             }
         }
-        .panel-collapse {
-            overflow: visible;
-        }              
+                  
     }
 }
 

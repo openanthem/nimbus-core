@@ -33,6 +33,7 @@ import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.AbstractStateEventHandlerTests;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param.Message;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param.Message.Context;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param.Message.Type;
 
 /**
@@ -53,7 +54,7 @@ public class ParamStateContextMessageUpdateTest extends AbstractStateEventHandle
 		Param<String> msg_trigger = _q.getRoot().findParamByPath("/sample_expr/triggerMessageUpdate");
 		assertNotNull(msg_trigger);
 		
-		Message msg = new Message("test message "+ new Date(), Type.INFO);
+		Message msg = new Message("test message "+ new Date(), Type.INFO, Context.INLINE);
 		
 		addListener();
 		msg_trigger.setMessage(msg);
@@ -77,7 +78,7 @@ public class ParamStateContextMessageUpdateTest extends AbstractStateEventHandle
 		Param<String> msg_trigger = _q.getRoot().findParamByPath("/sample_expr/triggerMessageUpdate");
 		assertNotNull(msg_trigger);
 		
-		Message msg = new Message("test message "+ new Date(), Type.INFO);
+		Message msg = new Message("test message "+ new Date(), Type.INFO, Context.INLINE);
 		
 		// set once
 		msg_trigger.setMessage(msg);
@@ -99,14 +100,14 @@ public class ParamStateContextMessageUpdateTest extends AbstractStateEventHandle
 		Param<String> msg_trigger = _q.getRoot().findParamByPath("/sample_expr/triggerMessageUpdate");
 		assertNotNull(msg_trigger);
 		
-		Message msg = new Message("test message "+ new Date(), Type.INFO);
+		Message msg = new Message("test message "+ new Date(), Type.INFO, Context.INLINE);
 		
 		// set once
 		msg_trigger.setMessage(msg);
 		
 		// change text in same Message instance
 		addListener();
-		Message msg2 = new Message("new text "+ new Date(), Type.INFO);
+		Message msg2 = new Message("new text "+ new Date(), Type.INFO, Context.INLINE);
 		msg_trigger.setMessage(msg2);
 		
 		List<Param<?>> expectedEventParams = new ArrayList<>();

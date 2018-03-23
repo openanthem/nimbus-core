@@ -52,7 +52,9 @@ export class FileService {
                 file['fileId'] = data;
                 this.addFile$.next(file);
             },
-                err => console.log(err),
+                error => {
+                    this.addFile$.error(error);              
+                },
                 () => console.log('File uploaded ..')
             );
     }
