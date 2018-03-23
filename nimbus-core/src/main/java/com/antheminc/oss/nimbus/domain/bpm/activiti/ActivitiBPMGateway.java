@@ -23,7 +23,6 @@ import java.util.Optional;
 
 import org.activiti.bpmn.model.ExtensionElement;
 import org.activiti.bpmn.model.UserTask;
-import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.context.Context;
@@ -34,6 +33,7 @@ import org.activiti.engine.task.Task;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.app.extension.config.ActivitiProcessDefinitionCache;
@@ -63,15 +63,18 @@ public class ActivitiBPMGateway implements BPMGateway {
 	
 	private ExpressionEvaluator expressionEvaluator;
 	
+	@Value("${process.supportStatefulProcesses:#{true}}")
+	private Optional<Boolean> supportStatefulProcesses;
+	
 	public ActivitiBPMGateway (BeanResolverStrategy beanResolver) {
 		this.expressionEvaluator = beanResolver.find(ExpressionEvaluator.class);
 	}
 	
 	@Override
 	public ActivitiProcessFlow startBusinessProcess(Param<?> param, String processId) {
-		ProcessResponse processResponse = startStatlessBusinessProcess(param, processId);
-		if(processResponse == null)
+		if(supportStatefulProcesses.isPresent() && !supportStatefulProcesses.get())
 			return null;
+		ProcessResponse processResponse = startStatlessBusinessProcess(param, processId);
 		ActivitiProcessFlow processFlow = new ActivitiProcessFlow();
 		processFlow.setProcessExecutionId(processResponse.getExecutionId());
 		processFlow.setProcessDefinitionId(processResponse.getDefinitionId());
@@ -91,17 +94,12 @@ public class ActivitiBPMGateway implements BPMGateway {
 		ProcessEngineContext context = new ProcessEngineContext(param);
 		Map<String, Object> executionVariables = new HashMap<String, Object>();
 		executionVariables.put(Constants.KEY_EXECUTE_PROCESS_CTX.code, context);
-		try {
-			ProcessInstance pi = runtimeService.startProcessInstanceByKey(processId, executionVariables);
-			ProcessResponse response = new ProcessResponse();
-			response.setResponse(context.getOutput());
-			response.setExecutionId(pi.getId());
-			response.setDefinitionId(pi.getProcessDefinitionId());
-			return response;
-		}catch (ActivitiObjectNotFoundException e) {
-			logit.info(()->processId + " is not available");
-			return null;
-		}
+		ProcessInstance pi = runtimeService.startProcessInstanceByKey(processId, executionVariables);
+		ProcessResponse response = new ProcessResponse();
+		response.setResponse(context.getOutput());
+		response.setExecutionId(pi.getId());
+		response.setDefinitionId(pi.getProcessDefinitionId());
+		return response;
 	}
 	
 	@Override
