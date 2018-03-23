@@ -32,8 +32,6 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.app.extension.config.ActivitiProcessDefinitionCache;
@@ -55,24 +53,28 @@ public class ActivitiBPMGateway implements BPMGateway {
 	
 	protected final JustLogit logit = new JustLogit(this.getClass());
 	
-	@Autowired RuntimeService runtimeService;
+	RuntimeService runtimeService;
 	
-	@Autowired TaskService taskService;
+	TaskService taskService;
 	
-	@Autowired SpringProcessEngineConfiguration processEngineConfiguration;
+	SpringProcessEngineConfiguration processEngineConfiguration;
 	
 	private ExpressionEvaluator expressionEvaluator;
 	
-	@Value("${process.supportStatefulProcesses:#{true}}")
-	private Optional<Boolean> supportStatefulProcesses;
+	private Boolean supportStatefulProcesses;
 	
-	public ActivitiBPMGateway (BeanResolverStrategy beanResolver) {
+	public ActivitiBPMGateway (BeanResolverStrategy beanResolver,Boolean supportStatefulProcesses) {
 		this.expressionEvaluator = beanResolver.find(ExpressionEvaluator.class);
+		this.runtimeService = beanResolver.find(RuntimeService.class);
+		this.taskService = beanResolver.find(TaskService.class);
+		this.processEngineConfiguration = beanResolver.find(SpringProcessEngineConfiguration.class);
+		this.supportStatefulProcesses = supportStatefulProcesses;
+
 	}
 	
 	@Override
 	public ActivitiProcessFlow startBusinessProcess(Param<?> param, String processId) {
-		if(supportStatefulProcesses.isPresent() && !supportStatefulProcesses.get())
+		if(!supportStatefulProcesses)
 			return null;
 		ProcessResponse processResponse = startStatlessBusinessProcess(param, processId);
 		ActivitiProcessFlow processFlow = new ActivitiProcessFlow();
