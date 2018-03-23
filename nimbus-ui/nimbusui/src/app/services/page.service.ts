@@ -426,7 +426,10 @@ export class PageService {
                                 .subscribe(data => {
                                         this.processResponse(data.result, serverUrl, flowName);
                                 },
-                                err => this.logError(err),
+                                err => {
+                                        this.logError(err);
+                                        this.hideLoader();
+                                        },
                                 () => {
                                         console.log('Process Execution query completed..');
                                         this.hideLoader();
@@ -440,7 +443,9 @@ export class PageService {
                                 .subscribe(data => {
                                         this.processResponse(data.result, serverUrl, flowName);
                                 },
-                                err => this.logError(err),
+                                err => {this.logError(err);
+                                        this.hideLoader();
+                                        },
                                 () => {
                                         console.log('Process Execution query completed..');
                                         this.hideLoader();
