@@ -41,6 +41,7 @@
 			<p-column *ngIf="col?.uiStyles?.attributes?.alias != 'Link' && col?.uiStyles?.attributes?.alias != 'LinkMenu' && col?.type?.nested == false"
 				[field]="col?.code" 
 				[header]="col?.label"
+				[exportable]="(col?.uiStyles?.attributes?.hidden) ?  false : true"
 				[hidden]="col?.uiStyles?.attributes?.hidden"
 				[sortable]="(!col?.uiStyles?.isLink && col?.uiStyles?.attributes?.sortable !== false) ? 'custom' : false"
 				(sortFunction)="sortBy($event, col?.type?.name, col?.uiStyles?.attributes?.sortAs)"
