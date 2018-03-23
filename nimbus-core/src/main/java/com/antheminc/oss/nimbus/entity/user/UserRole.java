@@ -31,7 +31,7 @@ import lombok.Setter;
 @Getter @Setter
 public class UserRole {
 	
-	private String roleId;
+	private String roleCode;
 	
 	private LocalDate effectiveDate;
 	private LocalDate terminationDate;
