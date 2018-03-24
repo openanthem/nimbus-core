@@ -564,6 +564,20 @@ public class ViewConfig {
 		boolean postEventOnChange() default false; 
 		String controlId() default ""; 
 	}
+	
+	@Retention(RetentionPolicy.RUNTIME) 
+	@Target({ElementType.FIELD}) 
+	@ViewStyle 
+	public @interface Signature { 
+		String alias() default "Signature"; 
+		boolean hidden() default false; 
+		boolean readOnly() default false; 
+		String help() default ""; 
+		String labelClass() default "anthem-label"; 
+		String type() default "signature";
+		boolean postEventOnChange() default false; 
+		String controlId() default ""; 
+	}
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
