@@ -87,25 +87,24 @@ ng-component{
         .filterHolder{
             position: relative;
             margin-top: 3px;
-                input{
-                    max-width: 100%;
-                    min-width: 98%;
-                }
-                button{
-                    position: absolute;
-                    right: 3%;
-                    top: 4px;
-                    font-size: .8rem;
-                    border: none;
-                    height: 1rem;
-                    color: #b9b6b6;
-                    padding: .1rem .3rem;
-                    color: #b9b6b6;
-                    &:hover, &:focus{
-                        color: #4c4c4c;
-                    }
+            input{
+                max-width: 100%;
+                min-width: 98%;
+            }
+            button{
+                position: absolute;
+                right: 3%;
+                top: 2.2px;
+                font-size: 0.8rem;
+                border: none;
+                height: 1rem;
+                color: #b9b6b6;
+                &:hover, &:focus{
+                    color: #4c4c4c;
                 }
             }
+        }
+
             .gridFilterIcon {
                 position:absolute;
                 right: 0;
@@ -156,7 +155,7 @@ ng-component{
         }
     }
     tr.ui-expanded-row-content {
-        background: #D9EDFD;
+        background: #f5f5f5;
         padding: .4rem;
         .ui-datatable {
             .ui-state-default {
@@ -186,8 +185,40 @@ ng-component{
     }
 }
 
-.ui-expanded-row-content .scrollGrid td.dropdown .ui-cell-data, .ui-expanded-row-content .ui-datatable td.dropdown .ui-cell-data {
+.ui-expanded-row-content .scrollGrid td.dropdown .ui-cell-data, 
+.ui-expanded-row-content .ui-datatable td.dropdown .ui-cell-data {
     overflow: visible;
+}
+
+.ui-expanded-row-content {
+    .scrollGrid, .ui-datatable{
+        td.dropdown .ui-cell-data {
+            overflow: visible;
+        }
+        .ui-datatable-thead > tr > th .ui-column-title {
+            font-weight: normal;
+        }
+        tbody > tr.ui-widget-content.ui-datatable-odd {
+            background-color: #fff;
+        }
+    } 
+}
+.ui-row-toggler{
+    font-size: 1.5rem;
+    width: 20px;
+    &.fa-chevron-circle-down:before {
+    content: "\f0d7";
+    color: #e5991c;
+    }
+    &.fa-chevron-circle-right:before{
+        content: "\f0da";
+        color: #94acbc;;
+    }
+}
+.ui-datatable tr.ui-expanded-row-content .ui-datatable .ui-state-default, 
+.scrollGrid tr.ui-expanded-row-content .ui-datatable .ui-state-default {
+    background-color: #ebebeb;
+    color: #555;
 }
 
 .ui-widget-content {
@@ -215,9 +246,7 @@ ng-component{
         .ui-paginator-first{
             background: none;
             color:#fff;
-            .fa-step-backward::before{
-                content: "\f053";
-            }
+            
         }
         .ui-paginator-prev{
             background: none;
@@ -236,9 +265,7 @@ ng-component{
         .ui-paginator-last{
             background: none;
             color:#fff;
-            .fa-step-forward::before{
-                content: "\f054";
-            }
+            
         }
     }
 }

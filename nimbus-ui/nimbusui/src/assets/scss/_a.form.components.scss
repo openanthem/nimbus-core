@@ -97,6 +97,7 @@ textarea.form-control {
 // use on fieldValue component @FieldValue(cols="1", iconField ="labelLeft")
 .labelLeft { 
     display:inline-block;
+    margin-left: .6rem;
     &::after { //this removes psuedo after inherited from iconField class
         display: none;
     }
@@ -111,6 +112,7 @@ p-dropdown.form-control {
     border: none;
     padding:0.1rem;
     background: none;
+    line-height: 1.5;
     .ui-widget-content {
         border: 1px solid #9dd3f7;
         background: #ecf7ff;

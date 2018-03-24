@@ -116,7 +116,7 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 		
 		SampleCoreNestedEntity colElemState = new SampleCoreNestedEntity();
 		colElemState.setNested_attr_String("TEST_INTG_COL_ELEM_add "+ new Date());
-		String jsonPayload = converter.convert(colElemState);
+		String jsonPayload = converter.write(colElemState);
 		
 		Object updateResp = controller.handlePut(updateReq, null, jsonPayload);
 		assertNotNull(updateResp);
@@ -158,7 +158,7 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 		
 		Form_ConvertedNestedEntity form = new Form_ConvertedNestedEntity();
 		form.setVt_nested_attr_String(K_VAL);
-		String jsonPayload = converter.convert(form);
+		String jsonPayload = converter.write(form);
 		
 		// user clicks on save button :: set to form 
 		MockHttpServletRequest updateReq = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
@@ -200,17 +200,26 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 		assertNotNull(fnAssignResp);
 		
 		// add value to mapsTo core to see effect in mapped transient
-		MockHttpServletRequest updateReq = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(refId)
-				.addNested("/attr_list_2_NestedEntity/0")
+		MockHttpServletRequest updateReq = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
+				.addNested("/page_red/tile/vt_attached_convertedNestedEntity/.m")
 				.addAction(Action._update)
 				.getMock();
 		
 		SampleCoreNestedEntity colElemState = new SampleCoreNestedEntity();
 		colElemState.setNested_attr_String("TEST_INTG_COL_ELEM_add "+ new Date());
-		String jsonPayload = converter.convert(colElemState);
+		String jsonPayload = converter.write(colElemState);
 		
 		Object updateResp = controller.handlePut(updateReq, null, jsonPayload);
 		assertNotNull(updateResp);
+		
+		// call flush to simulate save call
+		MockHttpServletRequest fnReq_flush = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
+				.addNested("/page_red/tile/vt_attached_convertedNestedEntity/")
+				.addAction(Action._get)
+				.addParam(Constants.KEY_FUNCTION.code, "param")
+				.addParam(Constants.KEY_FN_PARAM_ARG_EXPR.code, "flush()")
+				.getMock();
+		controller.handleGet(fnReq_flush, null);
 		
 		// get fn=param
 		MockHttpServletRequest fnReq = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
@@ -245,11 +254,11 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 		final String K_VAL_0 = "setting from form at: "+ new Date();
 		Form_ConvertedNestedEntity form = new Form_ConvertedNestedEntity();
 		form.setVt_nested_attr_String(K_VAL_0);
-		String jsonFormPayload = converter.convert(form);
+		String jsonFormPayload = converter.write(form);
 		
 		MockHttpServletRequest submitFormReq = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
-				.addNested("/page_red/tile/vt_attached_convertedNestedEntity")
-				.addAction(Action._update)
+				.addNested("/page_red/tile/vt_attached_convertedNestedEntity/saveButton")
+				.addAction(Action._replace)
 				.getMock();
 		
 		Object submitFormResp = controller.handlePut(submitFormReq, null, jsonFormPayload);
@@ -264,7 +273,7 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 		final String K_VAL_1 = "TEST_INTG_COL_ELEM_add "+ new Date();
 		SampleCoreNestedEntity colElemState = new SampleCoreNestedEntity();
 		colElemState.setNested_attr_String(K_VAL_1);
-		String jsonPayload = converter.convert(colElemState);
+		String jsonPayload = converter.write(colElemState);
 		
 		Object updateCoreResp = controller.handlePut(updateCoreReq, null, jsonPayload);
 		assertNotNull(updateCoreResp);
@@ -297,7 +306,7 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 		// user submits form to update existing 
 		final String K_VAL_0_updated = "updating from form at: "+ new Date();
 		form.setVt_nested_attr_String(K_VAL_0_updated);
-		String jsonPayload_updated = converter.convert(form);
+		String jsonPayload_updated = converter.write(form);
 		
 		MockHttpServletRequest submitUpdateFormReq = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
 				.addNested("/page_red/tile/vt_attached_convertedNestedEntity/saveButton")
@@ -335,7 +344,7 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 				.addAction(Action._new)
 				.getMock();
 		
-		Object setColResp = controller.handlePost(setColReq, converter.convert(nestedCol));
+		Object setColResp = controller.handlePost(setColReq, converter.write(nestedCol));
 		assertNotNull(setColResp);
 		
 		// assign 0th elem to transient parameter -- user clicks on edit link in grid :: assign colElem for edit

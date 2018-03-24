@@ -21,6 +21,7 @@ import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { PageService } from '../../../../services/page.service';
 import { Param } from '../../../../shared/app-config.interface';
+import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -38,7 +39,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
  */
 @Component({
   selector: 'nm-input',
-  providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc ],
+  providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc, ControlSubscribers ],
   template: `
     <label *ngIf="hidden!=true"
     [ngClass]="{'required': requiredCss, '': !requiredCss}"
@@ -73,7 +74,7 @@ export class InputText extends BaseControl<String> {
 
      element: Param;
 
-    constructor(wcs: WebContentSvc, pageService: PageService,cd:ChangeDetectorRef) {
-        super(pageService,wcs,cd);
+    constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd:ChangeDetectorRef) {
+        super(controlService,wcs,cd);
     }
 }

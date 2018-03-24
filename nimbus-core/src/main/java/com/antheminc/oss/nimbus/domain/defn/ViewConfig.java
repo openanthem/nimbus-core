@@ -211,7 +211,7 @@ public class ViewConfig {
 		String cssClass() default ""; // new
 		Type type() default Type.dialog;
 		boolean closable() default false;
-		String width() default "500";
+		String width() default "medium";
 
 		public enum Type {
 			dialog, slider
@@ -249,7 +249,7 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface ButtonGroup {	
 		String alias() default "ButtonGroup";
-		String cssClass() default "text-sm-right";
+		String cssClass() default "text-sm-center";
 	}
 	
 	/*
@@ -268,7 +268,7 @@ public class ViewConfig {
 		boolean isTransient() default false;
 		String url() default "";
 		boolean rowSelection() default false;
-		String pageSize() default "50"; // changed default from 10 to 50
+		String pageSize() default "25"; 
 		boolean showHeader() default true;
 		boolean pagination() default true;
 		boolean postButton() default false;
@@ -277,7 +277,8 @@ public class ViewConfig {
 		String postButtonAlias() default "";
 		String postButtonLabel() default "";
 		boolean postEventOnChange() default false;
-		boolean clearAllFilters() default true;
+		boolean clearAllFilters() default false;
+		boolean export() default false;
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
@@ -325,7 +326,7 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface CardDetail {
 		String alias() default "CardDetail";
-		String cssClass() default "contentBox right-gutter bg-light mt-1";
+		String cssClass() default "";
 		String imgSrc() default "";
 		boolean editable() default false;
 		String modelPath() default "";
@@ -377,7 +378,7 @@ public class ViewConfig {
 		String imgSrc() default "";
 		String cssClass() default "";
 		boolean showName() default true;
-		String cols() default "3";
+		String cols() default "4";
 		String iconField() default "";
 		boolean inplaceEdit() default false;
 		String inplaceEditType() default "";
@@ -418,7 +419,7 @@ public class ViewConfig {
 		String imgSrc() default "";
 		Style style() default Style.PLAIN;
 		String payload() default "";
-		String cssClass() default "btn btn-primary";
+		String cssClass() default "btn btn-plain";
 		boolean browserBack() default false;
 		boolean formReset() default true;
 	}
@@ -692,6 +693,7 @@ public class ViewConfig {
 		String cssClass() default "panel-default";
 		boolean multiple() default false;
 		String activeIndex() default "0";
+		boolean showExpandAll() default false;
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)

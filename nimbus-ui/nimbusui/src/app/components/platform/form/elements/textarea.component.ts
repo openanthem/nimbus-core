@@ -21,6 +21,7 @@ import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { PageService } from '../../../../services/page.service';
 import { Param } from '../../../../shared/app-config.interface';
+import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -37,9 +38,9 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
  */
 @Component({
   selector: 'nm-input-textarea',
-  providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc ],
+  providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc, ControlSubscribers ],
   template: `
-    <!--<div class='textarea-holder' [hidden]="!element?.config?.visible || !element?.visible" *ngIf="element.config?.uiStyles?.attributes?.hidden==false">-->
+    <!--<div class='textarea-holder' [hidden]="!element?.visible || !element?.visible" *ngIf="element.config?.uiStyles?.attributes?.hidden==false">-->
     <div class='textarea-holder' [hidden]="!element?.visible" *ngIf="element.config?.uiStyles?.attributes?.hidden==false">
         <div class="number" *ngIf="element.config?.uiStyles?.attributes?.controlId!=''">{{element.config?.uiStyles?.attributes?.controlId}}</div>
         <label [attr.for]="element.config?.code" [ngClass]="{'required': requiredCss, '': !requiredCss}">{{label}}
@@ -60,7 +61,7 @@ export class TextArea extends BaseControl<String> {
 
      element: Param;
 
-    constructor(wcs: WebContentSvc, pageService: PageService,cd:ChangeDetectorRef) {
-        super(pageService,wcs,cd);
+    constructor(wcs: WebContentSvc, controlService: ControlSubscribers,cd:ChangeDetectorRef) {
+        super(controlService,wcs,cd);
     }
 }

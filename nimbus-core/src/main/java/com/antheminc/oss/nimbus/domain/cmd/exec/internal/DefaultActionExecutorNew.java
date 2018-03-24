@@ -94,7 +94,7 @@ public class DefaultActionExecutorNew extends AbstractFunctionCommandExecutor<Ob
 			return;
 		
 		Object newState = cmdMsg.hasPayload()
-							? getConverter().convert(p.getConfig(), cmdMsg.getRawPayload())
+							? getConverter().read(p.getConfig(), cmdMsg.getRawPayload())
 									: getJavaBeanHandler().instantiate(p.getConfig().getReferredClass());
 		
 		// for /domain-root/_new - set "id" from repo 

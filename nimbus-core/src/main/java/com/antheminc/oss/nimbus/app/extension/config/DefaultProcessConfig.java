@@ -15,7 +15,10 @@
  */
 package com.antheminc.oss.nimbus.app.extension.config;
 
+import java.util.Optional;
+
 import org.activiti.engine.impl.el.ExpressionManager;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -47,6 +50,9 @@ import com.antheminc.oss.nimbus.support.expr.SpelExpressionEvaluator;
 @Configuration 
 public class DefaultProcessConfig {
 	
+	@Value("${process.supportStatefulProcesses:#{true}}")
+	private Optional<Boolean> supportStatefulProcesses;	
+		
 	@Bean
 	public ActivitiExpressionManager activitiExpressionManager(){
 		return new ActivitiExpressionManager();
@@ -54,7 +60,7 @@ public class DefaultProcessConfig {
 	
 	@Bean
 	public BPMGateway bpmGateway(BeanResolverStrategy beanResolver){
-		return new ActivitiBPMGateway(beanResolver);
+		return new ActivitiBPMGateway(beanResolver,supportStatefulProcesses.get());
 	}		
 	
 	@Bean(name="default._new$execute?fn=_initEntity")

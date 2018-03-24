@@ -60,7 +60,7 @@ public class DefaultActionExecutorDeleteTest extends AbstractFrameworkIngeration
 		colState.add(colElemState_0);
 		colState.add(colElemState_1);
 		
-		String jsonPayload = converter.convert(colState);
+		String jsonPayload = converter.write(colState);
 		
 		Object colNew_Resp = controller.handlePost(colNew_Req, jsonPayload);
 		assertNotNull(colNew_Resp);

@@ -66,6 +66,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     @Input() params: ParamConfig[];
     @Input() form: FormGroup;
     @Input('value') _value = [];
+    paramState: Param[];
     filterValue: Date;
     totalRecords: number = 0;
     mouseEventSubscription: Subscription;
@@ -136,8 +137,8 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
             });
         }
 
-        if (this.element.config.gridList != null && this.element.config.gridList.length > 0) {
-            this.value = this.element.config.gridList;
+        if (this.element.gridList != null && this.element.gridList.length > 0) {
+            this.value = this.element.gridList;
             this.totalRecords = this.value.length;
             this.updatePageDetailsState();
         }
@@ -149,6 +150,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
             this.dt.filterConstraints = customFilterConstraints;
         }
         
+        this.paramState = this.element.paramState;
     }
 
     ngAfterViewInit() {
@@ -176,8 +178,9 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
 
         this.pageSvc.gridValueUpdate$.subscribe(event => {
             if (event.path == this.element.path) {
-                this.value = event.config.gridList;
-                this.totalRecords = this.value.length;
+                this.value = event.gridList;
+                this.paramState = event.paramState;
+                this.totalRecords = this.value ? this.value.length : 0;
                 this.updatePageDetailsState();
                 this.cd.markForCheck();
                 this.resetMultiSelection();

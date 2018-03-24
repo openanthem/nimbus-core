@@ -53,7 +53,7 @@ export class Modal extends BaseElement implements OnInit, OnDestroy {
     public _closable: boolean;
 
     private _resizable: boolean;
-
+    privateelementCss: string;
     constructor(private wcsvc: WebContentSvc, private pageSvc: PageService) {
         super(wcsvc);
     }
@@ -73,9 +73,20 @@ export class Modal extends BaseElement implements OnInit, OnDestroy {
      * TODO drive it through cssClass instead of a separate width attribute.
      */
     public get width(): string {
-        return this.element.config.uiStyles.attributes.width;
-    }
+        let myWidth = this.element.config.uiStyles.attributes.width;
 
+        if(myWidth === 'small') {
+            return '500';
+        }else if(myWidth === 'medium') {
+            return '700';
+        }else if(myWidth === 'large') {
+            return '900';
+        }else {
+            return myWidth;
+        }
+        
+    }
+    
     /**
      * Close diaglog function.
      */

@@ -65,10 +65,10 @@ public class CommandMessageConverterTest {
 	public void t0_convertStringToJson() {
 		String str = "some value";
 		
-		String json = converter.convert(str);
+		String json = converter.write(str);
 		System.out.println("JSON: "+ json);
 		
-		String res = converter.convert(String.class, json);
+		String res = converter.read(String.class, json);
 		assertEquals(str, res);
 	}
 	
@@ -116,11 +116,11 @@ public class CommandMessageConverterTest {
 	@Test
 	public void t3_convertObjWithPrivateBlankConstructor() {
 		ClassWithBlankPrivateConstructor obj = new ClassWithBlankPrivateConstructor("some data");
-		String json = converter.convert(obj);
+		String json = converter.write(obj);
 		
 		System.out.println("JSON: "+json);
 		
-		ClassWithBlankPrivateConstructor res = converter.convert(ClassWithBlankPrivateConstructor.class, json);
+		ClassWithBlankPrivateConstructor res = converter.read(ClassWithBlankPrivateConstructor.class, json);
 		assertEquals(obj.getNeeded(), res.getNeeded());
 	}
 	

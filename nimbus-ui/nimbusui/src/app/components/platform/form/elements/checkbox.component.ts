@@ -21,6 +21,7 @@ import { WebContentSvc } from '../../../../services/content-management.service';
 import { PageService } from '../../../../services/page.service';
 import { BaseControl } from './base-control.component';
 import { Param } from '../../../../shared/app-config.interface';
+import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 
 /**
  * \@author Dinakar.Meda
@@ -45,7 +46,7 @@ import { Param } from '../../../../shared/app-config.interface';
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => CheckBox),
       multi: true
-    }, WebContentSvc
+    }, WebContentSvc, ControlSubscribers
   ]
 })
 export class CheckBox extends BaseControl<boolean> {
@@ -53,8 +54,8 @@ export class CheckBox extends BaseControl<boolean> {
     @ViewChild(NgModel) model: NgModel;
     element: Param;
 
-    constructor(wcs: WebContentSvc, pageService: PageService, cd:ChangeDetectorRef) {
-      super(pageService,wcs,cd);
-  }
+    constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd:ChangeDetectorRef) {
+      super(controlService,wcs,cd);
+    }
 
 }

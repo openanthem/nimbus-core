@@ -24,6 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -40,16 +41,22 @@ public class CommandMessageConverter {
 		this.om = beanResolver.get(ObjectMapper.class);
 	}
 
-	public Object convert(ParamConfig<?> pConfig, String json) {
+	public Object read(ParamConfig<?> pConfig, String json) {
 		if(StringUtils.isEmpty(json) || Pattern.matches(EMPTY_JSON_REGEX, json)) 
 			return null;
 		
 		try {
-			Object model = pConfig.getType().isCollection() 
-								? om.readValue(json, om.getTypeFactory().constructCollectionType(List.class, pConfig.getType().findIfCollection().getElementConfig().getReferredClass()))
-										: pConfig.getType().isArray()
-											? om.readValue(json, om.getTypeFactory().constructArrayType(pConfig.getReferredClass()))
-													:om.readValue(json, pConfig.getReferredClass());
+			final Object model;
+											
+			if(pConfig.getType().isCollection())
+				model = om.readValue(json, om.getTypeFactory().constructCollectionType(List.class, pConfig.getType().findIfCollection().getElementConfig().getReferredClass()));
+			
+			else if(pConfig.getType().isArray())
+				model = om.readValue(json, om.getTypeFactory().constructArrayType(pConfig.getReferredClass()));
+			
+			else
+				model = om.readValue(json, pConfig.getReferredClass());
+											
 			return model;
 			
 		} catch (Exception ex) {
@@ -58,7 +65,37 @@ public class CommandMessageConverter {
 		}
 	}
 	
-	public <T> T convert(Class<T> clazz, String json) {
+	
+	public <T> T read(ParamConfig<?> pConfig, String json, T existingEntityToUpdate) {
+		if(StringUtils.isEmpty(json) || Pattern.matches(EMPTY_JSON_REGEX, json)) 
+			return null;
+		
+		try {
+			final Object model;
+											
+			if(pConfig.getType().isCollection())
+				model = om.readValue(json, om.getTypeFactory().constructCollectionType(List.class, pConfig.getType().findIfCollection().getElementConfig().getReferredClass()));
+			
+			else if(pConfig.getType().isArray())
+				model = om.readValue(json, om.getTypeFactory().constructArrayType(pConfig.getReferredClass()));
+			
+			else {
+				if (!pConfig.isLeaf()) {
+					model = om.readerForUpdating(existingEntityToUpdate).readValue(json);
+				} else {
+					model = om.readValue(json, pConfig.getReferredClass());
+				}
+			}
+											
+			return (T)model;
+			
+		} catch (Exception ex) {
+			throw new FrameworkRuntimeException("Failed to convert from JSON to instance of "+pConfig
+					+"\n json:\n"+json, ex);
+		}
+	}
+	
+	public <T> T read(Class<T> clazz, String json) {
 		if(StringUtils.isEmpty(json) || Pattern.matches(EMPTY_JSON_REGEX, json)) 
 			return null;
 		
@@ -72,7 +109,7 @@ public class CommandMessageConverter {
 		}
 	}
 	
-	public List convertArray(Class<?> elemClazz, Class<? extends Collection> collClazz, String json) {
+	public List readArray(Class<?> elemClazz, Class<? extends Collection> collClazz, String json) {
 		if(StringUtils.isEmpty(json) || Pattern.matches(EMPTY_JSON_REGEX, json)) 
 			return null;
 		
@@ -86,7 +123,7 @@ public class CommandMessageConverter {
 		}
 	}
 	
-	public String convert(Object model) {
+	public String write(Object model) {
 		if(model==null) return null;
 		
 		try {
@@ -97,5 +134,6 @@ public class CommandMessageConverter {
 					+ "\n modelInstance: "+model, ex);
 		}
 	}
+
 }
  
