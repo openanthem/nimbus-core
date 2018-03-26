@@ -479,7 +479,7 @@ export class PageService {
         }
 
         postOnChange(path: string, payloadAttr: string, payloadValue: string) {
-                path = path + '/' + Action._replace.value;
+                path = path;
                 let flowName = path.substring(1, path.indexOf('/', 2));
                 let rootDomainId = this.getFlowRootDomainId(flowName);
                 if (rootDomainId != null) {
@@ -488,7 +488,7 @@ export class PageService {
                 }
                 // console.log('Post on change :: ' + path);
                 let modelEvnt = new ModelEvent();
-                modelEvnt.type = Action._replace.value; //use the server side actions like _new, _update
+                modelEvnt.type = Action._update.value; //use the server side actions like _new, _update
                 modelEvnt.id = path;
                 modelEvnt.value = payloadValue;
                 modelEvnt.payload = payloadValue;
