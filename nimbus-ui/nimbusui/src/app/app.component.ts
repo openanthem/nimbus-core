@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * 
- * Array.from code is taken from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from to support IE
  */
 'use strict';
 import { Component, ViewEncapsulation, Inject } from '@angular/core';
