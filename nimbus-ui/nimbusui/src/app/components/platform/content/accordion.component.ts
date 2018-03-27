@@ -39,14 +39,7 @@ import { BaseElement } from '../base-element.component';
 
         <p-accordion #accordion [multiple]="multiple" [activeIndex]="index">
             <ng-template ngFor let-tab [ngForOf]="nestedParams">
-                <p-accordionTab [header]="getTabLabel(tab)" [selected]="tab?.config?.uiStyles?.attributes?.selected">
-                    <ng-template ngFor let-tabElement [ngForOf]="tab?.type?.model?.params">
-                        <!-- Card Content -->
-                        <ng-template [ngIf]="tabElement.alias == 'CardDetail'">
-                            <nm-card-details [element]="tabElement"></nm-card-details>
-                        </ng-template>
-                    </ng-template>
-                </p-accordionTab>
+                <nm-accordion-tab [element]="tab"></nm-accordion-tab>
             </ng-template>
         </p-accordion>
     `
