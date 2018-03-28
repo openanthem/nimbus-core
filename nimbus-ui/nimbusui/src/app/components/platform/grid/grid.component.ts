@@ -1,3 +1,4 @@
+import { ParamUtils } from './../../../shared/param-utils';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -56,7 +57,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
  */
 @Component({
     selector: 'infinite-scroll-grid',
-    providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc],
+    providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc, DateTimeFormatPipe],
     encapsulation: ViewEncapsulation.None,
     templateUrl: './grid.component.html'
 })
@@ -122,6 +123,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         private pageSvc: PageService,
         private _wcs: WebContentSvc,
         private gridService: GridService,
+        private dtFormat: DateTimeFormatPipe,
         private cd: ChangeDetectorRef) {
 
         super(_wcs);
@@ -506,6 +508,27 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         }
         e.selectedItem = false;
         this.cd.detectChanges();
+    }
+
+    export() {
+        let exportDt = this.dt;
+        let dtCols = this.params.filter(col => (col.type != null && ParamUtils.isKnownDateType(col.type.name)!= null))
+        if(dtCols != null && dtCols.length > 0) {
+            exportDt.dataToRender.forEach(row => {
+                for (var key in row) {
+                    if (row.hasOwnProperty(key)) {
+                        if(row[key] instanceof Date) {
+                            let col = dtCols.filter(cd => cd.code == key)
+                            if(col != null && col.length > 0){
+                                row[key] = this.dtFormat.transform(row[key], col[0].uiStyles.attributes.datePattern,col[0].type.name);
+                            }
+                        }
+                    }
+                } 
+            });
+        }
+       
+        exportDt.exportCSV();
     }
 
     ngOnDestroy() {
