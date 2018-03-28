@@ -629,6 +629,7 @@ export class UiAttribute implements Serializable<UiAttribute> {
     title: string;
     closable: boolean;
     width: string;
+    height: string;
     type: string;
     style: string;
     layout: string;
@@ -674,6 +675,8 @@ export class UiAttribute implements Serializable<UiAttribute> {
     placeholder: string;
     clearAllFilters: boolean;
     export: boolean;
+    clearLabel: string;
+    acceptLabel: string;
     deserialize( inJson ) {
         this.value = inJson.value;
         this.url = inJson.url;
@@ -705,6 +708,7 @@ export class UiAttribute implements Serializable<UiAttribute> {
         this.title = inJson.title;
         this.closable = inJson.closable;
         this.width = inJson.width;
+        this.height = inJson.height;
         this.type = inJson.type;
         this.style = inJson.style;
         this.size = inJson.size;
@@ -741,6 +745,8 @@ export class UiAttribute implements Serializable<UiAttribute> {
         this.sortAs = inJson.sortAs;
         this.placeholder = inJson.placeholder;
         this.clearAllFilters = inJson.clearAllFilters;
+        this.clearLabel = inJson.clearLabel;
+        this.acceptLabel = inJson.acceptLabel;
         if ( inJson.export != null ) {
             this.export = inJson.export;
         }

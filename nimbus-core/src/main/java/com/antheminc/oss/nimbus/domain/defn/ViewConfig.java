@@ -577,7 +577,11 @@ public class ViewConfig {
 		String labelClass() default "anthem-label"; 
 		String type() default "signature";
 		boolean postEventOnChange() default false; 
-		String controlId() default ""; 
+		String controlId() default "";
+		String clearLabel() default "Clear";
+		String acceptLabel() default "Save";
+		String width() default "400";
+		String height() default "400";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)

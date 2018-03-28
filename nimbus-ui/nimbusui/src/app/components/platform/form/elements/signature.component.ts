@@ -28,6 +28,7 @@ import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { PageService } from '../../../../services/page.service';
 import { Param } from '../../../../shared/app-config.interface';
+import { ControlSubscribers } from '../../../../services/control-subscribers.service';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -44,7 +45,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
  */
 @Component({
   selector: 'nm-signature',
-  providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc ],
+  providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc, ControlSubscribers],
   template: `
     <label *ngIf="hidden!=true"
         [ngClass]="{'required': requiredCss, '': !requiredCss}"
@@ -53,14 +54,23 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
             [helpText]='helpText'>
         </nm-tooltip>
     </label>
-    <canvas #canvas
-        [id]="element.config?.code" 
-        (mouseout)="acceptSignature()"
-        class="form-control" ngDefaultControl>
-    </canvas>
-    <img #img *ngIf="element.enabled != true" src="{{value}}" 
+    <ng-template [ngIf]="!disabled">
+        <canvas #canvas
+            [id]="element.config?.code" 
+            class="form-control" ngDefaultControl>
+        </canvas>
+        <img #img src="{{value}}" 
             (load)="afterLoading()" style='display: none;' />
-    
+        <button (click)="acceptSignature()" type="button" class="btn btn-secondary post-btn">
+            {{element.config?.uiStyles?.attributes?.acceptLabel}}
+        </button>
+        <button (click)="clearSignature()" type="button" class="btn btn-secondary post-btn">
+            {{element.config?.uiStyles?.attributes?.clearLabel}}
+        </button>
+    </ng-template>
+    <ng-template [ngIf]="disabled">
+        <img #img src="{{value}}" />
+    </ng-template>
    `
 })
 export class Signature extends BaseControl<String> implements ControlValueAccessor {
@@ -69,20 +79,22 @@ export class Signature extends BaseControl<String> implements ControlValueAccess
     @ViewChild('img') img: ElementRef;
 
     @Input() element: Param;
-    @Input() form: FormGroup;
+    //@Input() form: FormGroup;
     @Input('value') _value ;
 
     canvasEl: HTMLCanvasElement;
     imgElement: HTMLImageElement;
     
-    @Input() public width = 400;
-    @Input() public height = 400;
+    width: number;
+    height: number;
     
-    constructor(wcs: WebContentSvc, pageService: PageService,cd:ChangeDetectorRef) {
-        super(pageService,wcs,cd);
+    private cx: CanvasRenderingContext2D;
+
+    constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd:ChangeDetectorRef) {
+        super(controlService, wcs, cd);
     }
 
-    public onChange: any = (_) => { console.log("signature changed .... ") }
+    public onChange: any = (_) => { /*Empty*/ }
     public onTouched: any = () => { /*Empty*/ }
     
     get value() {
@@ -109,72 +121,60 @@ export class Signature extends BaseControl<String> implements ControlValueAccess
         this.onTouched = fn;
     }
 
-    acceptSignature() {
-        var imageData: String = this.canvasEl.toDataURL();
-        this.value = imageData;
-        super.emitValueChangedEvent(this, this.value);
-    }
+    ngOnInit() {
+        super.ngOnInit();
 
-    private cx: CanvasRenderingContext2D;
+        if(this.element.config !== undefined) {
+            this.width = Number(this.element.config.uiStyles.attributes.width);
+            this.height = Number(this.element.config.uiStyles.attributes.height);
+        }
+    }
 
     public ngAfterViewInit() {
         super.ngAfterViewInit();
-
-        this.canvasEl = this.canvas.nativeElement;
-        this.cx = this.canvasEl.getContext('2d');
-
         if(this.img !== undefined) {
             this.imgElement = this.img.nativeElement;
         }
 
-        this.canvasEl.width = this.width;
-        this.canvasEl.height = this.height;
-
-        this.cx.lineWidth = 3;
-        this.cx.lineCap = 'round';
-        this.cx.strokeStyle = '#000';
-
         if(this.element.enabled) {
+            this.canvasEl = this.canvas.nativeElement;
+            this.cx = this.canvasEl.getContext('2d');
+
+            this.canvasEl.width = this.width;
+            this.canvasEl.height = this.height;
+
+            this.cx.lineWidth = 3;
+            this.cx.lineCap = 'round';
+            this.cx.strokeStyle = '#000';
+            
             this.captureEvents(this.canvasEl);
         }
     }
     
-    afterLoading() {
-        this.cx.clearRect(0, 0, this.width, this.height);
-        console.log('drawImage');
-        // this prints an image element with src I gave
-        console.log(this.imgElement);
-        this.cx.drawImage(this.imgElement, 0, 0, this.width, this.height);
-    }
-
-    // clearImage() {
-    //     this.cx.clearRect(0,0,this.width, this.height);
-    // }
-
     private captureEvents(canvasEl: HTMLCanvasElement) {
         Observable
-        .fromEvent(canvasEl, 'mousedown')
-        .switchMap((e) => {
-            return Observable
-            .fromEvent(canvasEl, 'mousemove')
-            .takeUntil(Observable.fromEvent(canvasEl, 'mouseup'))
-            .pairwise()
-        })
-        .subscribe((res: [MouseEvent, MouseEvent]) => {
-            const rect = canvasEl.getBoundingClientRect();
-    
-            const prevPos = {
-            x: res[0].clientX - rect.left,
-            y: res[0].clientY - rect.top
-            };
-    
-            const currentPos = {
-            x: res[1].clientX - rect.left,
-            y: res[1].clientY - rect.top
-            };
-    
-            this.drawOnCanvas(prevPos, currentPos);
-        });
+            .fromEvent(canvasEl, 'mousedown')
+            .switchMap((e) => {
+                return Observable
+                    .fromEvent(canvasEl, 'mousemove')
+                    .takeUntil(Observable.fromEvent(canvasEl, 'mouseup'))
+                    .pairwise()
+            })
+            .subscribe((res: [MouseEvent, MouseEvent]) => {
+                const rect = canvasEl.getBoundingClientRect();
+        
+                const prevPos = {
+                    x: res[0].clientX - rect.left,
+                    y: res[0].clientY - rect.top
+                };
+                
+                const currentPos = {
+                    x: res[1].clientX - rect.left,
+                    y: res[1].clientY - rect.top
+                };
+                
+                this.drawOnCanvas(prevPos, currentPos);
+            });
     }
 
     private drawOnCanvas(prevPos: { x: number, y: number }, currentPos: { x: number, y: number }) {
@@ -183,10 +183,27 @@ export class Signature extends BaseControl<String> implements ControlValueAccess
         this.cx.beginPath();
 
         if (prevPos) {
-        this.cx.moveTo(prevPos.x, prevPos.y); // from
-        this.cx.lineTo(currentPos.x, currentPos.y);
-        this.cx.stroke();
+            this.cx.moveTo(prevPos.x, prevPos.y); // from
+            this.cx.lineTo(currentPos.x, currentPos.y);
+            this.cx.stroke();
         }
+    }
+
+    afterLoading() {
+        this.cx.clearRect(0, 0, this.width, this.height);
+        this.cx.drawImage(this.imgElement, 0, 0, this.width, this.height);
+    }
+
+    clearSignature() {
+        this.cx.clearRect(0, 0, this.width, this.height);
+        this.value = null;
+        super.emitValueChangedEvent(this, this.value);
+    }
+
+    acceptSignature() {
+        var imageData: String = this.canvasEl.toDataURL();
+        this.value = imageData;
+        super.emitValueChangedEvent(this, this.value);
     }
 
 }
