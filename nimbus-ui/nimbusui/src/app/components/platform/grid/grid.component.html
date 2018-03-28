@@ -7,7 +7,7 @@
 		</p-header>
 		<div class="recordsDisplayed">Showing {{rowStart}}-{{rowEnd}} of  {{totalRecords}}
 			 <button *ngIf="element.config?.uiStyles?.attributes?.clearAllFilters" class="btn-plain ml-2" (click)="clearAll()">Clear Grid Filters</button> 
-			 <button *ngIf="element.config?.uiStyles?.attributes?.export" class="btn-plain ml-2" (click)="dt.exportCSV()">Export</button>
+			 <button *ngIf="element.config?.uiStyles?.attributes?.export" class="btn-plain ml-2" (click)="export()"><i class="fa fa-fw fa-share" aria-hidden="true"></i>Export</button>
 		</div>
 		
 	</div>
