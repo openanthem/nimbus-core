@@ -294,6 +294,12 @@ export class Param implements Serializable<Param> {
             this.leafState = ParamUtils.convertServerDateStringToDate(inJson.leafState, this.config.type.name);
         } else {
             this.leafState = inJson.leafState;
+
+            // Handle any transformations that need to be applied to the leaf state
+            if (typeof inJson.leafState === 'object' && (this.type.model && this.type.model.params)) {
+
+                this.leafState = this.recursivelyApplyTransformations(inJson.leafState, this.type.model.params, inJson.path);
+            }
         }
 
         if ( inJson.collectionElem ) {
@@ -319,6 +325,43 @@ export class Param implements Serializable<Param> {
         }
         this.activeValidationGroups = inJson.activeValidationGroups;
         return this;
+    }
+
+    // TODO Move to ParamUtils
+    recursivelyApplyTransformations(obj: any, objParams: Param[], path: string): any {
+
+        // the transformed object to return
+        var transformed = obj;
+
+        // iterate over each of the properties of the object.
+        for (var x in obj) {
+
+            // Find the nested param associated with this leaf state property.
+            let x_param = objParams.filter(p => p.path == `${path}/${x}`)[0];
+
+            // if the param identified by x is a collection or nested element, apply the transformations recursively.
+            if (x_param && (x_param.collection || x_param.type.nested)) {
+                
+                // if model or params are not found, we can't continue.
+                if (x_param.type.model && x_param.type.model.params) {
+                    transformed[x] = this.recursivelyApplyTransformations(obj[x], x_param.type.model.params, x_param.path);
+                } else {
+                    console.warn(`Unable to find params for ${x} in ${obj[x]}`);
+                }
+
+            // Otherwise, this element is a primitive type and we can handle transformations
+            } else {
+
+                // TODO provide callback fn
+                
+                // Handle Date transformations
+                if (x_param && x_param.type && ParamUtils.isKnownDateType(x_param.type.name)) {
+                    transformed[x] = ParamUtils.convertServerDateStringToDate(obj[x], x_param.type.name);
+                }
+            }
+        }
+
+        return transformed;
     }
 }
 
@@ -472,6 +515,7 @@ export class ModelEvent implements Serializable<ModelEvent> {
         this.type = inJson.type;
         this.value = inJson.value;
         this.id = inJson.id;
+
         return this;
     }
 }
