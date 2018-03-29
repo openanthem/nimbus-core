@@ -171,6 +171,7 @@ ng-component{
        float:left;
         margin-left: 1rem;
         font-size: 1.1rem;
+        margin-top: .3rem;
     }
     th.dropdown, td.dropdown {
         width: 40px;
@@ -232,6 +233,9 @@ ng-component{
     &.ui-paginator {
         font-size: .8rem;
         text-align: right;
+        .ui-paginator-element span.fa:before {
+            font-size: 1.15rem;
+        }
         .ui-paginator-page.ui-state-active {
             background: #184987;
             color: #ffffff;
@@ -269,11 +273,10 @@ ng-component{
         }
     }
 }
-
 .recordsDisplayed{
     position: absolute;
-    left: 43%;
-    padding-top: .1rem;
+    left: 40%;
+    padding-top: .3rem;
     font-size: .9rem;
 }
 .ui-datatable-header .btn-plain { 
