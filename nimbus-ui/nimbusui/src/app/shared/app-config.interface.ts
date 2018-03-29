@@ -277,6 +277,7 @@ export class Param implements Serializable<Param> {
         }
         this.collectionElem = inJson.collectionElem;
         this.collection = inJson.collection;
+        this.path = inJson.path;
         if ( this.config != null && this.config.uiStyles && this.config.uiStyles.attributes.alias === 'CardDetailsGrid' ) {
             if(inJson.leafState != null) {
                 this.leafState = new CardDetailsGrid().deserialize( inJson.leafState );
@@ -298,7 +299,7 @@ export class Param implements Serializable<Param> {
             // Handle any transformations that need to be applied to the leaf state
             if (typeof inJson.leafState === 'object' && (this.type.model && this.type.model.params)) {
 
-                this.leafState = this.recursivelyApplyTransformations(inJson.leafState, this.type.model.params, inJson.path);
+                this.leafState = ParamUtils.applyLeafStateTransformations(inJson.leafState, this);
             }
         }
 
@@ -306,8 +307,6 @@ export class Param implements Serializable<Param> {
             this.elemId = inJson.elemId;
             this.leafState = this.createRowData(this, true);
         }
-
-        this.path = inJson.path;
         if (inJson.visible != null) {
             this.visible = inJson.visible;
         }
@@ -325,43 +324,6 @@ export class Param implements Serializable<Param> {
         }
         this.activeValidationGroups = inJson.activeValidationGroups;
         return this;
-    }
-
-    // TODO Move to ParamUtils
-    recursivelyApplyTransformations(obj: any, objParams: Param[], path: string): any {
-
-        // the transformed object to return
-        var transformed = obj;
-
-        // iterate over each of the properties of the object.
-        for (var x in obj) {
-
-            // Find the nested param associated with this leaf state property.
-            let x_param = objParams.filter(p => p.path == `${path}/${x}`)[0];
-
-            // if the param identified by x is a collection or nested element, apply the transformations recursively.
-            if (x_param && (x_param.collection || x_param.type.nested)) {
-                
-                // if model or params are not found, we can't continue.
-                if (x_param.type.model && x_param.type.model.params) {
-                    transformed[x] = this.recursivelyApplyTransformations(obj[x], x_param.type.model.params, x_param.path);
-                } else {
-                    console.warn(`Unable to find params for ${x} in ${obj[x]}`);
-                }
-
-            // Otherwise, this element is a primitive type and we can handle transformations
-            } else {
-
-                // TODO provide callback fn
-                
-                // Handle Date transformations
-                if (x_param && x_param.type && ParamUtils.isKnownDateType(x_param.type.name)) {
-                    transformed[x] = ParamUtils.convertServerDateStringToDate(obj[x], x_param.type.name);
-                }
-            }
-        }
-
-        return transformed;
     }
 }
 

@@ -32,6 +32,7 @@ export class ServiceConstants {
     public static get PAGE_INDEX() : number { return 0;}
     public static get PAGE_SIZE() : number { return 20;}
     public static get URL_SEPERATOR(): string { return '/'; }
+    public static get PATH_SEPARATOR(): string { return '/'; }
     public static get WS_SUBSCRIBE_Q(): string { return '/user/queue/updates'; }
     public static get LOCALE_LANGUAGE() : string { return this.locale;}
     public static set LOCALE_LANGUAGE(locale : string ) {this.locale = locale;}
