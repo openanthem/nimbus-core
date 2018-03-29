@@ -731,7 +731,7 @@ export class PageService {
         }
 
         matchNode(element: Param, node: string): boolean {
-                if (element.config.code == node) {
+                if (element && element.config.code == node) {
                         return true;
                 } else {
                         return false;
