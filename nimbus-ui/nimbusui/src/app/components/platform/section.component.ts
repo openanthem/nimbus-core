@@ -47,7 +47,6 @@ export class Section extends BaseElement implements OnInit {
 
     ngOnInit() {
         // Check for initialization
-        console.log('section initialized');
         if (this.element.config && this.element.config.initializeComponent()) {
             this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'POST');
         }
