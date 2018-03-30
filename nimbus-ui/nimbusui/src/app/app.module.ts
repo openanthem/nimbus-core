@@ -172,7 +172,7 @@ import {DateTimeFormatPipe} from './pipes/date.pipe';
          CustomHttpClient, { provide: BrowserXhr, useClass: CustomBrowserXhr },
          { provide: HTTP_INTERCEPTORS, useClass: CustomHttpClientInterceptor, multi: true },
          { provide: LocationStrategy, useClass: HashLocationStrategy }, GridService,
-         AuthenticationService, BreadcrumbService, LoaderService, FileService ],
+         AuthenticationService, BreadcrumbService, LoaderService, FileService, LayoutService ],
     bootstrap: [ AppComponent ]
 })
 export class AppModule { }
