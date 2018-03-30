@@ -19,6 +19,7 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -119,13 +120,54 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		}
 		
 		try {
-			return executeInternal(eCtx, cmdMsg);
+			MultiOutput mOut = executeInternal(eCtx, cmdMsg);
+			return createFlattenedOutput(mOut);
 		} finally {
 			if(lockId!=null) {
 				eCtx.getRootModel().getExecutionRuntime().onStopRootCommandExecution(cmdMsg.getCommand());
 				cmdScopeInThread.set(null);
 			}
 		}
+	}
+	
+	private void flattenOutput(Output<?> in, Map<Object, Output<?>> uniqueValues) {
+		if(in.getValue() != null) {
+			uniqueValues.put(in.getValue(), in);
+			return;
+		}
+		
+		// multiple
+		if(!MultiOutput.class.isInstance(in)) 
+			return;
+		
+		MultiOutput mIn = MultiOutput.class.cast(in);
+		if(CollectionUtils.isEmpty(mIn.getOutputs())) {
+			return;
+		}
+					
+		for(Output<?> inner : mIn.getOutputs()) {
+			flattenOutput(inner, uniqueValues);
+		}
+	}
+
+	private MultiOutput createFlattenedOutput(MultiOutput in) {
+		Map<Object, Output<?>> uniqueValues = new LinkedHashMap<>();
+		
+		flattenOutput(in, uniqueValues);
+		
+		if(uniqueValues.isEmpty())
+			return in;
+		
+		MultiOutput mOut = new MultiOutput(in.getInputCommandUri(), in.getContext(), in.getAction(), in.getBehaviors());
+		
+		for(Object value : uniqueValues.keySet()) {
+			Output<?> out = uniqueValues.get(value);
+			Output<?> newOut = new Output<>(out.getInputCommandUri(), out.getContext(), out.getAction(), out.getBehaviors(), value);
+			mOut.template().add(newOut);
+			
+		}
+		
+		return mOut;
 	}
 	
 	protected MultiOutput executeInternal(ExecutionContext eCtx, CommandMessage cmdMsg) {

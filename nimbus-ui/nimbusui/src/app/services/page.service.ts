@@ -269,10 +269,13 @@ export class PageService {
          * @param outputs
          */
         traverseOutput(outputs: Result[]) {
+                /** Check for Nav Output. Execute Nav after processing all other outputs. */
                 var navToDefault = true;
+                let navOutput: Result = undefined;
                 outputs.forEach(otp => {
                         if (otp.action === Action._nav.value) {
                                 navToDefault = false;
+                                navOutput = otp;
                         }
                 });
                 outputs.forEach(output => {
@@ -326,9 +329,7 @@ export class PageService {
                                                 this.logError('Received an _get call without model or config ' + output.value.path);
                                         }
                                 } else if (output.action === Action._nav.value) {
-                                        let flow = this.getFlowNameFromOutput(output.inputCommandUri);
-                                        let pageParam = this.findMatchingPageConfigById(output.value, flow);
-                                        this.navigateToPage(pageParam, flow);
+                                        // Do Nothing. We will process _nav action in the end.
                                 } else {
                                         if (output.value && output.value.path) {
                                                 let flow = this.getFlowNameFromOutput(output.value.path);
@@ -338,6 +339,12 @@ export class PageService {
                                 }
                         }
                 });
+                /** Now that all outputs are processed, lets process _nav */
+                if (navOutput) {
+                        let flow = this.getFlowNameFromOutput(navOutput.inputCommandUri);
+                        let pageParam = this.findMatchingPageConfigById(navOutput.value, flow);
+                        this.navigateToPage(pageParam, flow);
+                }
         }
 
         /** When the config is already loaded, find the default page to load */
@@ -731,7 +738,7 @@ export class PageService {
         }
 
         matchNode(element: Param, node: string): boolean {
-                if (element.config.code == node) {
+                if (element && element.config.code == node) {
                         return true;
                 } else {
                         return false;
