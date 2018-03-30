@@ -54,7 +54,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
             [timeOnly]="element.config?.uiStyles?.attributes?.timeOnly"
             [showTime]="element.config?.uiStyles?.attributes?.showTime" 
             [hourFormat]="element.config?.uiStyles?.attributes?.hourFormat" 
-            [disabled]="disabled || readOnly">
+            [disabled]="disabled">
         </p-calendar>
    `
 })

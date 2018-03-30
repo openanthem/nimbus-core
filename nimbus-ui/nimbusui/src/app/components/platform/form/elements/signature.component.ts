@@ -39,7 +39,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 /**
  * \@author Rakesh.Patel
  * \@whatItDoes 
- *  Component to capture user's signature
+ *  Component to capture/display user's signature
  * \@howToUse 
  *  
  */
@@ -59,99 +59,71 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
             [id]="element.config?.code" 
             class="form-control" ngDefaultControl>
         </canvas>
-        <img #img src="{{value}}" 
-            (load)="afterLoading()" style='display: none;' />
         <button (click)="acceptSignature()" type="button" class="btn btn-secondary post-btn">
             {{element.config?.uiStyles?.attributes?.acceptLabel}}
         </button>
         <button (click)="clearSignature()" type="button" class="btn btn-secondary post-btn">
             {{element.config?.uiStyles?.attributes?.clearLabel}}
         </button>
+        <img #img [src]="value != null ? value : defaultEmptyImage" (load)="onImgLoad()" style='display: none;' />
     </ng-template>
     <ng-template [ngIf]="disabled">
         <img #img src="{{value}}" />
     </ng-template>
    `
 })
-export class Signature extends BaseControl<String> implements ControlValueAccessor {
+export class Signature extends BaseControl<String> {
     @ViewChild(NgModel) model: NgModel;
-    @ViewChild('canvas') public canvas: ElementRef;
-    @ViewChild('img') img: ElementRef;
-
-    @Input() element: Param;
-    //@Input() form: FormGroup;
-    @Input('value') _value ;
-
+    
+    @ViewChild('canvas') canvas: ElementRef;
     canvasEl: HTMLCanvasElement;
+    cx: CanvasRenderingContext2D;
+
+    @ViewChild('img') img: ElementRef;
     imgElement: HTMLImageElement;
+    
+    @Input() element: Param;
     
     width: number;
     height: number;
+    defaultEmptyImage: string = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAVkAAAA8CAYAAADMvMmGAAAB+klEQVR4Xu3UsQ0AAAjDMPr/01yRzRzQwULZOQIECBDIBJYtGyZAgACBE1lPQIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBB41fMAPZcifoIAAAAASUVORK5CYII=";
     
-    private cx: CanvasRenderingContext2D;
-
     constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd:ChangeDetectorRef) {
         super(controlService, wcs, cd);
     }
 
-    public onChange: any = (_) => { /*Empty*/ }
-    public onTouched: any = () => { /*Empty*/ }
-    
-    get value() {
-        return this._value;
-    }
-
-    set value(val) {
-        this._value = val;
-        this.onChange(val);
-        this.onTouched();
-    }
-
-    registerOnChange(fn) {
-        this.onChange = fn;
-    }
-
-    writeValue(value) {
-        if (value) {
-            this.value = value;
-        }
-    }
-
-    registerOnTouched(fn) {
-        this.onTouched = fn;
-    }
-
     ngOnInit() {
         super.ngOnInit();
-
         if(this.element.config !== undefined) {
             this.width = Number(this.element.config.uiStyles.attributes.width);
             this.height = Number(this.element.config.uiStyles.attributes.height);
         }
     }
 
-    public ngAfterViewInit() {
+    ngAfterViewInit() {
         super.ngAfterViewInit();
         if(this.img !== undefined) {
             this.imgElement = this.img.nativeElement;
         }
-
         if(this.element.enabled) {
-            this.canvasEl = this.canvas.nativeElement;
-            this.cx = this.canvasEl.getContext('2d');
-
-            this.canvasEl.width = this.width;
-            this.canvasEl.height = this.height;
-
-            this.cx.lineWidth = 3;
-            this.cx.lineCap = 'round';
-            this.cx.strokeStyle = '#000';
-            
+            this.initCanvasElement();
             this.captureEvents(this.canvasEl);
         }
     }
+
+    initCanvasElement() {
+        this.canvasEl = this.canvas.nativeElement;
+        this.cx = this.canvasEl.getContext('2d');
+
+        this.canvasEl.width = this.width;
+        this.canvasEl.height = this.height;
+
+        this.cx.lineWidth = 3;
+        this.cx.lineCap = 'round';
+        this.cx.strokeStyle = '#000';
+     }
     
-    private captureEvents(canvasEl: HTMLCanvasElement) {
+    captureEvents(canvasEl: HTMLCanvasElement) {
         Observable
             .fromEvent(canvasEl, 'mousedown')
             .switchMap((e) => {
@@ -177,7 +149,7 @@ export class Signature extends BaseControl<String> implements ControlValueAccess
             });
     }
 
-    private drawOnCanvas(prevPos: { x: number, y: number }, currentPos: { x: number, y: number }) {
+    drawOnCanvas(prevPos: { x: number, y: number }, currentPos: { x: number, y: number }) {
         if (!this.cx) { return; }
 
         this.cx.beginPath();
@@ -189,21 +161,34 @@ export class Signature extends BaseControl<String> implements ControlValueAccess
         }
     }
 
-    afterLoading() {
+    onImgLoad() {
+        if(this.element.enabled) {
+            this.initCanvasElement();
+            this.captureEvents(this.canvasEl);
+        }
         this.cx.clearRect(0, 0, this.width, this.height);
-        this.cx.drawImage(this.imgElement, 0, 0, this.width, this.height);
+        if(this.imgElement.src != this.defaultEmptyImage ){
+            this.cx.drawImage(this.imgElement, 0, 0, this.width, this.height);
+        }
     }
 
     clearSignature() {
         this.cx.clearRect(0, 0, this.width, this.height);
         this.value = null;
-        super.emitValueChangedEvent(this, this.value);
+        this.imgElement.src = "";
+        super.emitValueChangedEvent(this, null);
     }
 
     acceptSignature() {
-        var imageData: String = this.canvasEl.toDataURL();
-        this.value = imageData;
-        super.emitValueChangedEvent(this, this.value);
+        var imageData: string = this.canvasEl.toDataURL();
+        if(imageData == this.defaultEmptyImage) {
+            this.clearSignature();
+        }
+        else {
+            this.value = imageData;
+            this.imgElement.src = imageData;
+            super.emitValueChangedEvent(this, this.value);
+        }
     }
 
 }

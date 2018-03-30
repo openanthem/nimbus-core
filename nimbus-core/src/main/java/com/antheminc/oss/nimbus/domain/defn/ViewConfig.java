@@ -572,7 +572,6 @@ public class ViewConfig {
 	public @interface Signature { 
 		String alias() default "Signature"; 
 		boolean hidden() default false; 
-		boolean readOnly() default false; 
 		String help() default ""; 
 		String labelClass() default "anthem-label"; 
 		String type() default "signature";
@@ -580,8 +579,8 @@ public class ViewConfig {
 		String controlId() default "";
 		String clearLabel() default "Clear";
 		String acceptLabel() default "Save";
-		String width() default "400";
-		String height() default "400";
+		String width() default "345";
+		String height() default "60";
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
