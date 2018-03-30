@@ -107,22 +107,42 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		// load execution context 
 		ExecutionContext eCtx = loadExecutionContext(cmdMsg);
 		
+		final Set<ParamEvent> _aggregatedEvents = new HashSet<>();
+		final StateEventListener cmdListener;
+		
 		final String lockId;
 		
 		if(cmdScopeInThread.get()==null) {
 			lockId = UUID.randomUUID().toString();
 			cmdScopeInThread.set(lockId);
+			
+			cmdListener = new BaseStateEventListener() {
+
+				@Override
+				public void onStopCommandExecution(Command cmd, Map<ExecutionModel<?>, List<ParamEvent>> aggregatedEvents) {
+					for(ExecutionModel<?> rootKey : aggregatedEvents.keySet()) {
+						List<ParamEvent> rawEvents = aggregatedEvents.get(rootKey);
+						_aggregatedEvents.addAll(rawEvents);
+					}
+				}
+			};
+			
+			eCtx.getRootModel().getExecutionRuntime().getEventDelegator().addTxnScopedListener(cmdListener);
 			eCtx.getRootModel().getExecutionRuntime().onStartRootCommandExecution(cmdMsg.getCommand());
 			
 		} else {
 			lockId = null;
+			cmdListener = null;
 		}
 		
 		try {
-			return executeInternal(eCtx, cmdMsg);
+			MultiOutput mOutput = executeInternal(eCtx, cmdMsg);
+			mOutput.setAggregatedEvents(_aggregatedEvents);
+			return mOutput;
 		} finally {
 			if(lockId!=null) {
 				eCtx.getRootModel().getExecutionRuntime().onStopRootCommandExecution(cmdMsg.getCommand());
+				eCtx.getRootModel().getExecutionRuntime().getEventDelegator().removeTxnScopedListener(cmdListener);
 				cmdScopeInThread.set(null);
 			}
 		}
@@ -140,7 +160,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		// if present, hand-off to each command within execution config
 		if(CollectionUtils.isNotEmpty(execConfigs)) {
 			List<MultiOutput> execConfigOutputs = executeConfig(eCtx, cmdParam, execConfigs);
-			execConfigOutputs.stream().forEach(mOut->addMultiOutput(mOutput, mOut));
+			//==execConfigOutputs.stream().forEach(mOut->addMultiOutput(mOutput, mOut));
 
 		} else {// otherwise, execute self
 			List<Output<?>> selfExecOutputs = executeSelf(eCtx, cmdParam);
@@ -318,32 +338,28 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			// execute command
 			Input input = new Input(inputCommandUri, eCtx, cmdMsg.getCommand().getAction(), b);
 			
-			final Set<ParamEvent> _aggregatedEvents = new HashSet<>();
-			StateEventListener cmdListener = new BaseStateEventListener() {
-
-				@Override
-				public void onStopCommandExecution(Command cmd, Map<ExecutionModel<?>, List<ParamEvent>> aggregatedEvents) {
-					for(ExecutionModel<?> rootKey : aggregatedEvents.keySet()) {
-						List<ParamEvent> rawEvents = aggregatedEvents.get(rootKey);
-						_aggregatedEvents.addAll(rawEvents);
-					}
-				}
-			};
+//			final Set<ParamEvent> _aggregatedEvents = new HashSet<>();
+//			StateEventListener cmdListener = new BaseStateEventListener() {
+//
+//				@Override
+//				public void onStopCommandExecution(Command cmd, Map<ExecutionModel<?>, List<ParamEvent>> aggregatedEvents) {
+//					for(ExecutionModel<?> rootKey : aggregatedEvents.keySet()) {
+//						List<ParamEvent> rawEvents = aggregatedEvents.get(rootKey);
+//						_aggregatedEvents.addAll(rawEvents);
+//					}
+//				}
+//			};
 			
-			eCtx.getRootModel().getExecutionRuntime().getEventDelegator().addTxnScopedListener(cmdListener);
+//			eCtx.getRootModel().getExecutionRuntime().getEventDelegator().addTxnScopedListener(cmdListener);
 			eCtx.getRootModel().getExecutionRuntime().onStartCommandExecution(cmdMsg.getCommand());
 
 			Output<?> output = executor.execute(input);
-			output.setAggregatedEvents(_aggregatedEvents);
+//			output.setAggregatedEvents(_aggregatedEvents);
 			selfExecOutputs.add(output);
 
 			eCtx.getRootModel().getExecutionRuntime().onStopCommandExecution(cmdMsg.getCommand());
-			eCtx.getRootModel().getExecutionRuntime().getEventDelegator().removeTxnScopedListener(cmdListener);
+//			eCtx.getRootModel().getExecutionRuntime().getEventDelegator().removeTxnScopedListener(cmdListener);
 			
-//			mOutput.template().add(output);
-			//addOutput(mOutput,output);
-			
-//			addEvents(eCtx, mOutput.getAggregatedEvents(), input, mOutput);
 		});
 		return selfExecOutputs;
 	}
