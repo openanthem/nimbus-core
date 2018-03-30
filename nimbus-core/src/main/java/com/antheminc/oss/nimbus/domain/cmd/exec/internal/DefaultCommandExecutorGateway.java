@@ -19,6 +19,7 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -150,7 +151,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 	}
 
 	private MultiOutput createFlattenedOutput(MultiOutput in) {
-		Map<Object, Output<?>> uniqueValues = new HashMap<>();
+		Map<Object, Output<?>> uniqueValues = new LinkedHashMap<>();
 		
 		flattenOutput(in, uniqueValues);
 		
