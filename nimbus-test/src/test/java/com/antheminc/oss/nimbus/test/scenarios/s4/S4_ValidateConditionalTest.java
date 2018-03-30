@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -54,6 +55,7 @@ public class S4_ValidateConditionalTest extends AbstractFrameworkIntegrationTest
 	}
 	
 	@Test
+	@Ignore
 	public void t01_checkQ2ValuesAfterQ1Update() throws Exception {
 		
 		// Create a new entity
