@@ -291,6 +291,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		}
 	}
 	
+	@JsonIgnore
 	private final SetStateListener<T, Object> defaultSetStateListener = new SetStateListener<T, Object>(){};
 	
 	protected final <X> Action setState(T state, SetStateListener<T, X> cb) {

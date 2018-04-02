@@ -29,6 +29,7 @@ import org.springframework.data.domain.Sort;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.antheminc.oss.nimbus.domain.model.state.EntityStateAspectHandlers;
 import com.antheminc.oss.nimbus.domain.model.state.StateType;
 
@@ -39,6 +40,7 @@ import com.antheminc.oss.nimbus.domain.model.state.StateType;
 @SuppressWarnings("serial")
 public abstract class AbstractListPaginatedParam<T> extends DefaultParamState<List<T>> implements ListParam<T> {
 	
+	@JsonIgnore
 	private Page<T> pageDelegate;
 
 	public AbstractListPaginatedParam(Model<?> parentModel, ParamConfig<List<T>> config, EntityStateAspectHandlers aspectHandlers) {
