@@ -23,7 +23,7 @@ ng-component{
     }
     
     th.ui-state-default{
-        background: #daedfc;
+        background: #ebebeb;
         color: #4d4c57;
     }
     th.ui-state-active{
@@ -72,7 +72,7 @@ ng-component{
         position: relative;
         text-align: left;
         border: none;
-        padding: .2rem 2px .2rem .4rem ;
+        padding: .6rem  .2rem ;
         line-height: 1rem;
         .ui-column-title {
             display: block;
@@ -93,12 +93,13 @@ ng-component{
             }
             button{
                 position: absolute;
-                right: 2px;
+                right: 4px;
                 top: 3px;
                 font-size: 0.9rem;
                 border: none;
                 height: 1.2rem;
                 color: #b9b6b6;
+                padding: 0;
                 &:hover, &:focus{
                     color: #4c4c4c;
                 }
@@ -107,9 +108,9 @@ ng-component{
 
             .gridFilterIcon {
                 position:absolute;
-                right: 0;
-                top: 0;
-                color: #b9b6b6;
+                right: 2px;
+                top: .6rem;
+                color: #94acbc;
                 &::before{
                     background-size: 15px 15px;
                     height: 15px;
@@ -117,7 +118,7 @@ ng-component{
                     display: block;
                     font-family: "fontAwesome";
                     content: "\f0b0";
-                    font-size: .8rem;
+                    font-size: 1.2rem;
                 }
                 &:hover, &:focus{
                     color: #4c4c4c;
@@ -126,11 +127,11 @@ ng-component{
        
        
         .ui-sortable-column-icon {
-            font-size: 1rem;
-            color: #b9b6b6;
+            font-size: 1.2rem;
+            color: #669fe2;
             position:absolute;
-            right: 14px;
-            top: 2px;
+            right: 18px;
+            top: .6rem;
             &:hover, &:focus{
                 color: #4c4c4c;
             }
@@ -170,7 +171,7 @@ ng-component{
     p-header {
        float:left;
         margin-left: 1rem;
-        font-size: 1.1rem;
+        font-size: 1.3rem;
         margin-top: .3rem;
     }
     th.dropdown, td.dropdown {
@@ -225,13 +226,18 @@ ng-component{
 .ui-widget-content {
     border:none;
 }
+.ui-paginator .ui-paginator-page{
+    padding: .2rem .7rem;
+    margin-left: .1rem;
+    margin-right: .1rem;
+}
 .ui-widget-header {
     background: #6e9de1;
     border: none;
     text-align: left;
     color: #fff;
     &.ui-paginator {
-        font-size: .8rem;
+        font-size: 1rem;
         text-align: right;
         padding: .25em;
         .ui-paginator-element span.fa:before {
@@ -277,7 +283,7 @@ ng-component{
 .recordsDisplayed{
     position: absolute;
     left: 40%;
-    padding-top: .3rem;
+    padding-top: .6rem;
     font-size: .9rem;
 }
 .ui-datatable-header .btn-plain { 

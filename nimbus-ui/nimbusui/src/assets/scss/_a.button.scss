@@ -9,8 +9,10 @@ button:focus{
   &.center{
     @extend .text-sm-center;
   }
-  &.right{
+  &.right, &.text-sm-right{
     @extend .text-sm-right;
+    padding: 0;
+
   }
   &.inline{
     display: inline-block;
@@ -24,6 +26,7 @@ button:focus{
   color:#fff;
   line-height: 1;
   margin-right: 9px;
+  margin-left: 9px;
   margin-bottom: 1rem;
   padding: .6rem 1.4rem;
   border-radius: .5rem;
@@ -46,6 +49,7 @@ button:focus{
   color:#fff;
   line-height: 1;
   margin-right: 9px;
+  margin-left: 9px;
   margin-bottom: 1rem;
   padding: .6rem 1.4rem;
   border-radius: .5rem;
