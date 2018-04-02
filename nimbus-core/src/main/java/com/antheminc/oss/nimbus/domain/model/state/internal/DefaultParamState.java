@@ -57,6 +57,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * @author Soham Chakravarti
@@ -561,7 +562,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		return null;	
 	}
 	
-	@Getter @Setter
+	@Getter @Setter @ToString(of="currState")
 	protected class RemnantState<S> {
 		private S prevState;
 		private S currState;
