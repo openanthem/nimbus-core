@@ -24,7 +24,6 @@ import com.antheminc.oss.nimbus.domain.defn.MapsTo;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
-import com.antheminc.oss.nimbus.domain.model.state.EntityState.MappedListParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityStateAspectHandlers;
 import com.antheminc.oss.nimbus.domain.model.state.ExecutionRuntime;
 import com.antheminc.oss.nimbus.domain.model.state.InvalidStateException;
@@ -39,7 +38,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @author Soham Chakravarti
  *
  */
-public class DefaultListParamState<T> extends DefaultParamState<List<T>> implements ListParam<T> {
+public class DefaultListParamState<T> extends AbstractListPaginatedParam<T> implements ListParam<T> {
 	private static final long serialVersionUID = 1L;
 	
 	public static class LeafState<T> extends DefaultListParamState<T> implements LeafParam<List<T>> {

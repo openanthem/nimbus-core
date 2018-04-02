@@ -281,6 +281,23 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		return changeStateTemplate((rt, h, lockId)->affectSetStateChange(state, rt, h, lockId));
 	}
 	
+	public interface SetStateListener<T, X> {
+		default X preSetState(T state, String localLockId, ExecutionRuntime execRt) {
+			return null;
+		}
+		
+		default Action postSetState(Action change, T state, String localLockId, ExecutionRuntime execRt, X customCtx) {
+			return change;
+		}
+	}
+	
+	private final SetStateListener<T, Object> defaultSetStateListener = new SetStateListener<T, Object>(){};
+	
+	protected final <X> Action setState(T state, SetStateListener<T, X> cb) {
+		
+		return null;
+	}
+	
 	protected final Action affectSetStateChange(T state, ExecutionRuntime execRt, Holder<Action> h, String localLockId) {
 		state = preSetState(state);		
 		boolean isLeaf = isLeafOrCollectionWithLeafElems();
