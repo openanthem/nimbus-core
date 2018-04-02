@@ -15,8 +15,10 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.internal;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
@@ -60,7 +62,7 @@ public abstract class AbstractListPaginatedParam<T> extends DefaultParamState<Li
 		super.initStateInternal();
 		
 		// create page
-		List<T> content = getLeafState();
+		List<T> content = Optional.ofNullable(getLeafState()).orElse(Collections.emptyList());
 		this.pageDelegate = new PageImpl<>(content);
 	}
 	
@@ -73,7 +75,7 @@ public abstract class AbstractListPaginatedParam<T> extends DefaultParamState<Li
 	@Override
 	protected void postSetState(Action change, List<T> state) {
 		// create only if not invoked via setPage
-		List<T> content = getLeafState();
+		List<T> content = Optional.ofNullable(getLeafState()).orElse(Collections.emptyList());
 		this.pageDelegate = new PageImpl<>(content);
 	}
 	
