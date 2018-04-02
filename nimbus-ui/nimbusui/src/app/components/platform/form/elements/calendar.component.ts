@@ -58,7 +58,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
         </p-calendar>
    `
 })
-export class Calendar extends BaseControl<String> {
+export class Calendar extends BaseControl<Date> {
 
     @ViewChild(NgModel) model: NgModel;
 

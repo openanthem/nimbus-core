@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
+import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Database;
 import com.antheminc.oss.nimbus.entity.AbstractEntity.IdString;
@@ -31,4 +32,10 @@ public class S4C_CoreMain extends IdString {
 	private List<S4C_AnotherModel> anotherModeList;
 	
 	//private S4C_AnotherModel anotherModelNested;
+	
+	@Config(url="/targetParam/_update?rawPayload=\"v1\"")
+	@Config(url="/targetParam/_update?rawPayload=\"v2\"")
+	private String events_output;
+	
+	private String targetParam;
 }

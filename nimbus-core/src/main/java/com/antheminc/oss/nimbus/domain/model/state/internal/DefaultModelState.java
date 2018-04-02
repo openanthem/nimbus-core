@@ -175,6 +175,7 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 		return null;
 	}
 
+	@JsonIgnore
 	@Override
 	public T getLeafState() {
 		return Optional.ofNullable(getAssociatedParam()).map(p->p.getLeafState()).orElse(null);

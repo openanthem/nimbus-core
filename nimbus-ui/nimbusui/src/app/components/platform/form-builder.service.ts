@@ -1,3 +1,4 @@
+import { ParamUtils } from './../../shared/param-utils';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -56,7 +57,7 @@ export class FormElementsService {
           group[element.config.code] = this.createNewFormGroup(element);
           //create new formgroup and formcontrol to create checkboxes in form. this is for form binding. TODO validations binding
         } else {
-          var leafState: any = element.leafState || '';
+          var leafState = this._getTypeSafeLeafState(element);
           if (checks) {
             group[element.config.code] = [{value: leafState, disabled: !element.enabled}, checks];
           } else {
@@ -78,7 +79,7 @@ export class FormElementsService {
       if (param.type.nested) {
          fg.addControl(param.config.code, this.createNewFormGroup(param));
       } else {
-          let leafState: any = param.leafState || '';
+          var leafState = this._getTypeSafeLeafState(param);
           let formState: any = { value: leafState, disabled: !param.enabled }
           let formControl: FormControl = new FormControl(formState);
           if (checks) {
@@ -88,6 +89,16 @@ export class FormElementsService {
         } 
       }
       return fg;
+  }
+
+  private _getTypeSafeLeafState(param: Param): any {
+    var leafState;
+    if (ParamUtils.isKnownDateType(param.config.type.name)) {
+      leafState = param.leafState || null;
+    } else {
+      leafState = param.leafState || '';
+    }
+    return leafState;
   }
 
 }
