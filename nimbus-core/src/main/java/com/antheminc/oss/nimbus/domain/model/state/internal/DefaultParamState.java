@@ -51,11 +51,13 @@ import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
 import com.antheminc.oss.nimbus.domain.model.state.StateType;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
+import com.antheminc.oss.nimbus.domain.model.state.internal.DefaultParamState.SetStateListener.ListenerContext;
 import com.antheminc.oss.nimbus.entity.Findable;
 import com.antheminc.oss.nimbus.support.Holder;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -271,6 +273,28 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		return getAspectHandlers().getParamStateGateway()._get(this);
 	}
 	
+	public interface SetStateListener<T, X> {
+		default ListenerContext<T, X> preSetState(T state, String localLockId, ExecutionRuntime execRt) {
+			return new ListenerContext<>(state, null);
+		}
+		
+		default Action postSetState(Action change, T state, String localLockId, ExecutionRuntime execRt, ListenerContext<T, X> ctx) {
+			return change;
+		}
+		
+		@Getter @RequiredArgsConstructor
+		public static class ListenerContext<T, X> {
+			private final T state;
+			private final X data;
+		}
+	}
+	
+	@JsonIgnore
+	protected <X> SetStateListener<T, X> getSetStateListener() {
+		return null;
+	}
+
+	
 	@Override
 	//TODO: Temporary fix to disable active state check. JIRA NIM-9020 created to address this issue. 
 	// A separate copy method needs to be introduced to resolve the issue
@@ -278,29 +302,19 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		//if(!isActive() && state!=null && isStateInitialized())
 			//throw new InvalidConfigException("Param's state cannot be changed when inactive. param: "+this.getPath());
 
-		return changeStateTemplate((rt, h, lockId)->affectSetStateChange(state, rt, h, lockId));
+		return changeStateTemplate((rt, h, lockId)->affectSetStateChange(state, rt, h, lockId, getSetStateListener()));
 	}
 	
-	public interface SetStateListener<T, X> {
-		default X preSetState(T state, String localLockId, ExecutionRuntime execRt) {
-			return null;
-		}
-		
-		default Action postSetState(Action change, T state, String localLockId, ExecutionRuntime execRt, X customCtx) {
-			return change;
-		}
-	}
-	
-	@JsonIgnore
-	private final SetStateListener<T, Object> defaultSetStateListener = new SetStateListener<T, Object>(){};
 	
 	protected final <X> Action setState(T state, SetStateListener<T, X> cb) {
-		
-		return null;
+		return changeStateTemplate((rt, h, lockId)->affectSetStateChange(state, rt, h, lockId, cb));
 	}
 	
-	protected final Action affectSetStateChange(T state, ExecutionRuntime execRt, Holder<Action> h, String localLockId) {
-		state = preSetState(state);		
+
+	
+	protected final <X> Action affectSetStateChange(T state, ExecutionRuntime execRt, Holder<Action> h, String localLockId, SetStateListener<T, X> cb) {
+		ListenerContext<T, X> ctx = preSetState(state, localLockId, execRt, cb);
+		
 		boolean isLeaf = isLeafOrCollectionWithLeafElems();
 		final T localPotentialOldState = isLeaf ? getState() : null;
 		
@@ -337,15 +351,16 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 				emitEvent(a, this);
 		}
 		
-		postSetState(a, state);
-		return a;
+		return postSetState(a, localPotentialOldState, localLockId, execRt, ctx, cb);
 	}
 
 	
-	protected T preSetState(T state) {
-		return state;
+	protected <X> ListenerContext<T, X> preSetState(T state, String localLockId, ExecutionRuntime execRt, SetStateListener<T, X> cb) {
+		return cb==null ? null : cb.preSetState(state, localLockId, execRt);
 	}
-	protected void postSetState(Action change, T state) {}
+	protected <X> Action postSetState(Action change, T state, String localLockId, ExecutionRuntime execRt, ListenerContext<T, X> ctx, SetStateListener<T, X> cb) {
+		return cb==null ? change : cb.postSetState(change, state, localLockId, execRt, ctx);
+	}
 	
 	
 	protected void triggerEvents() {

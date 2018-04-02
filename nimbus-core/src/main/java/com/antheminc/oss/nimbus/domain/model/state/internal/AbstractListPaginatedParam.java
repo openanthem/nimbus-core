@@ -31,6 +31,7 @@ import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.antheminc.oss.nimbus.domain.model.state.EntityStateAspectHandlers;
+import com.antheminc.oss.nimbus.domain.model.state.ExecutionRuntime;
 import com.antheminc.oss.nimbus.domain.model.state.StateType;
 
 /**
@@ -67,120 +68,109 @@ public abstract class AbstractListPaginatedParam<T> extends DefaultParamState<Li
 		List<T> content = Optional.ofNullable(getLeafState()).orElse(Collections.emptyList());
 		this.pageDelegate = new PageImpl<>(content);
 	}
-	
+
+	private final SetStateListener<List<T>, Object> defaultSetStateListener = new SetStateListener<List<T>, Object>() {
+		@Override
+		public Action postSetState(Action change, List<T> state, String localLockId, ExecutionRuntime execRt, ListenerContext<List<T>, Object> ctx) {
+			List<T> content = Optional.ofNullable(getLeafState()).orElse(Collections.emptyList());
+			pageDelegate = new PageImpl<>(content);
+			
+			return change;
+		}
+	};
+
 	@Override
-	protected List<T> preSetState(List<T> state) {
-		// TODO Auto-generated method stub
-		return super.preSetState(state);
-	}
-	
-	@Override
-	protected void postSetState(Action change, List<T> state) {
-		// create only if not invoked via setPage
-		List<T> content = Optional.ofNullable(getLeafState()).orElse(Collections.emptyList());
-		this.pageDelegate = new PageImpl<>(content);
+	protected SetStateListener<List<T>, Object> getSetStateListener() {
+		return defaultSetStateListener;
 	}
 	
 	@Override
 	public void setPage(Page<T> page) {
 		List<T> content = page.getContent();
-		setState(content);
+		setState(content, null);
+		
+		pageDelegate = page;
 	}
 	
 	@Override
 	public int getNumber() {
-		// TODO Auto-generated method stub
-		return 0;
+		return pageDelegate.getNumber();
 	}
 
 	@Override
 	public int getSize() {
-		// TODO Auto-generated method stub
-		return 0;
+		return pageDelegate.getSize();
 	}
 
 	@Override
 	public int getNumberOfElements() {
-		// TODO Auto-generated method stub
-		return 0;
+		return pageDelegate.getNumberOfElements();
 	}
 
+	@JsonIgnore 
 	@Override
 	public List<T> getContent() {
-		// TODO Auto-generated method stub
-		return null;
+		return pageDelegate.getContent();
 	}
 
 	@Override
 	public boolean hasContent() {
-		// TODO Auto-generated method stub
-		return false;
+		return pageDelegate.hasContent();
 	}
 
 	@Override
 	public Sort getSort() {
-		// TODO Auto-generated method stub
-		return null;
+		return pageDelegate.getSort();
 	}
 
 	@Override
 	public boolean isFirst() {
-		// TODO Auto-generated method stub
-		return false;
+		return pageDelegate.isFirst();
 	}
 
 	@Override
 	public boolean isLast() {
-		// TODO Auto-generated method stub
-		return false;
+		return pageDelegate.isLast();
 	}
 
 	@Override
 	public boolean hasNext() {
-		// TODO Auto-generated method stub
-		return false;
+		return pageDelegate.hasNext();
 	}
 
 	@Override
 	public boolean hasPrevious() {
-		// TODO Auto-generated method stub
-		return false;
+		return pageDelegate.hasPrevious();
 	}
 
 	@Override
 	public Pageable nextPageable() {
-		// TODO Auto-generated method stub
-		return null;
+		return pageDelegate.nextPageable();
 	}
 
 	@Override
 	public Pageable previousPageable() {
-		// TODO Auto-generated method stub
-		return null;
+		return pageDelegate.previousPageable();
 	}
 
 	@Override
 	public Iterator<T> iterator() {
-		// TODO Auto-generated method stub
-		return null;
+		return pageDelegate.iterator();
 	}
 
 	@Override
 	public int getTotalPages() {
-		// TODO Auto-generated method stub
-		return 0;
+		return pageDelegate.getTotalPages();
 	}
 
 	@Override
 	public long getTotalElements() {
-		// TODO Auto-generated method stub
-		return 0;
+		return pageDelegate.getTotalElements();
 	}
 
 	@Override
 	public <S> Page<S> map(Converter<? super T, ? extends S> converter) {
-		// TODO Auto-generated method stub
-		return null;
+		return pageDelegate.map(converter);
 	}
 	
 	
