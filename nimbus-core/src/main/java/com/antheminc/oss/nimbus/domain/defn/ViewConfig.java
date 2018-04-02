@@ -706,6 +706,7 @@ public class ViewConfig {
 		String alias() default "AccordionTab";
 		String cssClass() default "panel-default";
 		boolean selected() default false;
+		boolean editable() default false;
 	}
 	
 	
