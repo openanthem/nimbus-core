@@ -22,7 +22,7 @@ import java.util.Map;
 import javax.annotation.concurrent.Immutable;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
@@ -526,7 +526,7 @@ public interface EntityState<T> {
 	}
 	
 	
-	public interface ListParam<T> extends Param<List<T>>, ListBehavior<T>, Page<T> {
+	public interface ListParam<T> extends Param<List<T>>, ListBehavior<T> {
 		@Override
 		StateType.NestedCollection<T> getType();
 		
@@ -561,7 +561,7 @@ public interface EntityState<T> {
 		@Override
 		ListElemParam<T> add();
 		
-		void setPage(Page<T> page);
+		void setPage(List<T> content, Pageable pageable, int totalContent);
 		
 	}
 	

@@ -51,7 +51,6 @@ import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
 import com.antheminc.oss.nimbus.domain.model.state.StateType;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
-import com.antheminc.oss.nimbus.domain.model.state.internal.DefaultParamState.SetStateListener.ListenerContext;
 import com.antheminc.oss.nimbus.entity.Findable;
 import com.antheminc.oss.nimbus.support.Holder;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -273,12 +272,12 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		return getAspectHandlers().getParamStateGateway()._get(this);
 	}
 	
-	public interface SetStateListener<T, X> {
-		default ListenerContext<T, X> preSetState(T state, String localLockId, ExecutionRuntime execRt) {
-			return new ListenerContext<>(state, null);
+	public interface SetStateListener<T> {
+		default T preSetState(T state, String localLockId, ExecutionRuntime execRt) {
+			return state;
 		}
 		
-		default Action postSetState(Action change, T state, String localLockId, ExecutionRuntime execRt, ListenerContext<T, X> ctx) {
+		default Action postSetState(Action change, T state, String localLockId, ExecutionRuntime execRt) {
 			return change;
 		}
 		
@@ -290,7 +289,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	
 	@JsonIgnore
-	protected <X> SetStateListener<T, X> getSetStateListener() {
+	protected SetStateListener<T> getSetStateListener() {
 		return null;
 	}
 
@@ -306,14 +305,14 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	
 	
-	protected final <X> Action setState(T state, SetStateListener<T, X> cb) {
+	protected final Action setState(T state, SetStateListener<T> cb) {
 		return changeStateTemplate((rt, h, lockId)->affectSetStateChange(state, rt, h, lockId, cb));
 	}
 	
 
 	
-	protected final <X> Action affectSetStateChange(T state, ExecutionRuntime execRt, Holder<Action> h, String localLockId, SetStateListener<T, X> cb) {
-		ListenerContext<T, X> ctx = preSetState(state, localLockId, execRt, cb);
+	protected final <X> Action affectSetStateChange(T state, ExecutionRuntime execRt, Holder<Action> h, String localLockId, SetStateListener<T> cb) {
+		state = preSetState(state, localLockId, execRt, cb);
 		
 		boolean isLeaf = isLeafOrCollectionWithLeafElems();
 		final T localPotentialOldState = isLeaf ? getState() : null;
@@ -351,15 +350,15 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 				emitEvent(a, this);
 		}
 		
-		return postSetState(a, localPotentialOldState, localLockId, execRt, ctx, cb);
+		return postSetState(a, localPotentialOldState, localLockId, execRt, cb);
 	}
 
 	
-	protected <X> ListenerContext<T, X> preSetState(T state, String localLockId, ExecutionRuntime execRt, SetStateListener<T, X> cb) {
-		return cb==null ? null : cb.preSetState(state, localLockId, execRt);
+	protected T preSetState(T state, String localLockId, ExecutionRuntime execRt, SetStateListener<T> cb) {
+		return cb==null ? state : cb.preSetState(state, localLockId, execRt);
 	}
-	protected <X> Action postSetState(Action change, T state, String localLockId, ExecutionRuntime execRt, ListenerContext<T, X> ctx, SetStateListener<T, X> cb) {
-		return cb==null ? change : cb.postSetState(change, state, localLockId, execRt, ctx);
+	protected Action postSetState(Action change, T state, String localLockId, ExecutionRuntime execRt, SetStateListener<T> cb) {
+		return cb==null ? change : cb.postSetState(change, state, localLockId, execRt);
 	}
 	
 	
