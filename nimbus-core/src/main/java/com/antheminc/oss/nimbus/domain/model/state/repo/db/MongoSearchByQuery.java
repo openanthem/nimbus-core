@@ -95,11 +95,7 @@ public class MongoSearchByQuery extends MongoDBSearch {
 				return this;
 			}
 			
-			final Binding binding = new Binding();
-			Object obj = createQueryDslClassInstance(referredClass);
-	        binding.setProperty(alias, obj);
-	        
-	        final GroovyShell shell = createQBinding(referredClass, alias); 
+			final GroovyShell shell = createQBinding(referredClass, alias); 
 	        OrderSpecifier orderBy = (OrderSpecifier)shell.evaluate(criteria);
 	        
 			if(orderBy != null)
@@ -113,8 +109,7 @@ public class MongoSearchByQuery extends MongoDBSearch {
 			Object obj = createQueryDslClassInstance(referredClass);
 	        binding.setProperty(alias, obj);
 	        
-	     
-	        final GroovyShell shell = new GroovyShell(obj.getClass().getClassLoader(), binding);
+	        final GroovyShell shell = new GroovyShell(referredClass.getClassLoader(), binding);
 			return shell;
 		}
 		

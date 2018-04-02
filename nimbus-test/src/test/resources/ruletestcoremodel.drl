@@ -22,11 +22,14 @@ import com.antheminc.oss.nimbus.domain.model.state.internal.DefaultParamState;
 import java.time.LocalDate;
 import java.time.Period;
 
+import function com.antheminc.oss.nimbus.domain.rules.drools.DroolsLoggerUtil.*;
 rule "Core Rule Test 1"
    when
    	$core : DefaultParamState($core.findParamByPath("/triggerParameter").getState() == 'Start')
    	$state : RuleTestCoreModel()
    then
+   		info(drools, "my first info");
+   		System.out.println("TEST !!! ");
    	   $core.findParamByPath("/triggeredParameter").setState("Triggered");   
    	   $state.setStateCheckParameter("Executed");   
    end
