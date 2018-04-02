@@ -11,7 +11,7 @@
 	<artifactId>nimbus-core</artifactId> 
 	
     <properties>
-        <sonar.projectName>nimbus-core</sonar.projectName>
+        <!-- <sonar.projectName>nimbus-core</sonar.projectName> -->
         <!-- <sonar.jacoco.reportPath>${project.basedir}/../platform.parent/target/jacoco.exec</sonar.jacoco.reportPath> -->
     </properties>
 
