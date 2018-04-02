@@ -59,12 +59,14 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
             [id]="element.config?.code" 
             class="form-control" ngDefaultControl>
         </canvas>
+        <div class="text-sm-center buttonGroup" [style.width.px]="width">
         <button (click)="acceptSignature()" type="button" class="btn btn-secondary post-btn">
             {{element.config?.uiStyles?.attributes?.acceptLabel}}
         </button>
         <button (click)="clearSignature()" type="button" class="btn btn-secondary post-btn">
             {{element.config?.uiStyles?.attributes?.clearLabel}}
         </button>
+        </div>
         <img #img [src]="value != null ? value : defaultEmptyImage" (load)="onImgLoad()" style='display: none;' />
     </ng-template>
     <ng-template [ngIf]="disabled">
