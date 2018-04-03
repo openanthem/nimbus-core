@@ -15,9 +15,8 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.internal;
 
-import com.antheminc.oss.nimbus.UnsupportedScenarioException;
-import com.antheminc.oss.nimbus.domain.model.state.EntityState;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Model;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.PropertyWriter;
@@ -27,7 +26,7 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
  * @author Soham Chakravarti
  *
  */
-public class EntityStateConfigJsonFilter extends SimpleBeanPropertyFilter {
+public abstract class AbstractEntityStateJsonFilter extends SimpleBeanPropertyFilter {
 
 	@Override
 	public void serializeAsField(Object pojo, JsonGenerator jgen, SerializerProvider provider, PropertyWriter writer)
@@ -35,14 +34,9 @@ public class EntityStateConfigJsonFilter extends SimpleBeanPropertyFilter {
 		
 		if (include(writer)) {
 			
-			if(EntityState.class.isInstance(pojo) && writer.getName().equals("config")) {
-				EntityState<?> es = getEntityState(pojo);
-				
-				Model<?> rootDomain = es.getRootDomain();
-				if(rootDomain != null 
-						&& es != rootDomain.getAssociatedParam())
-					return;
-			} 
+			boolean shouldOmmit = omitConditional(pojo, writer.getName());
+			if(shouldOmmit)
+				return;
 
 			writer.serializeAsField(pojo, jgen, provider);
 			return;
@@ -51,13 +45,35 @@ public class EntityStateConfigJsonFilter extends SimpleBeanPropertyFilter {
 	    	writer.serializeAsOmittedField(pojo, jgen, provider);
 	    }
 	}
-	
-	private EntityState<?> getEntityState(Object o) {
-		if(EntityState.class.isInstance(o)) 
-			return EntityState.class.cast(o);
-		
-		throw new UnsupportedScenarioException("Unsupported type, expected "+EntityState.class.getSimpleName()
-				+" but found JsonGenerator.getCurrentValue(): "+ o);
-	}
 
+	protected final boolean omitConditional(Object pojo, String fieldName) {
+		if(Param.class.isInstance(pojo)) {
+			Param<?> param = Param.class.cast(pojo);
+			
+			if(fieldName.equals("config")) {
+				Model<?> rootDomain = param.getRootDomain();
+				if(rootDomain != null 
+						&& param != rootDomain.getAssociatedParam())
+					return true;
+				else
+					return false;
+			} 
+			
+			return omitConditionalParam(param, fieldName);
+			
+		} else if(Model.class.isInstance(pojo)) {
+			Model<?> model = Model.class.cast(pojo);
+			
+			if(fieldName.equals("config"))
+				return true;
+			
+			return omitConditionalModel(model, fieldName);
+		}		
+		
+		return false;
+	}
+	
+	protected abstract boolean omitConditionalParam(Param<?> param, String fieldName);
+	
+	protected abstract boolean omitConditionalModel(Model<?> model, String fieldName);
 }
