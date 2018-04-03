@@ -13,38 +13,28 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.test.scenarios.s0.view;
+package com.antheminc.oss.nimbus.test.scenarios.s0.core;
 
 import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
-import com.antheminc.oss.nimbus.domain.defn.MapsTo;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
+import com.antheminc.oss.nimbus.domain.defn.Repo.Cache;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Database;
-import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Page;
-import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
+import com.antheminc.oss.nimbus.entity.AbstractEntity.IdString;
 
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * @author Soham Chakravarti
- * @author Sandeep Mantha - added a new page page_orange
+ * @author Sandeep Mantha
+ *
  */
-@Domain(value="sample_view", includeListeners={ListenerType.websocket})
-@MapsTo.Type(SampleCoreEntity.class)
-@Repo(Database.rep_none)
+@Domain(value="sample_entity", includeListeners={ListenerType.persistence})
+@Repo(alias="sample_entity",value=Database.rep_mongodb, cache=Cache.rep_device)
 @Getter @Setter
-public class VRSampleViewRootEntity {
+public class SampleEntity extends IdString {
 
-	@Page(route="sample_view_colors")
-	private VPSampleViewPageGreen page_green;
+	private static final long serialVersionUID = 1L;
 
-	@Page(route="sample_view_colors")
-	private VPSampleViewPageBlue page_blue;
-
-	@Page(route="sample_view_colors")
-	private VPSampleViewPageRed page_red;
-
-	@Page(route="sample_view_colors")
-	private VPSampleViewPageOrange page_orange;
+	private String test_name;
 }
