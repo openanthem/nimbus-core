@@ -35,7 +35,6 @@ import { ActionDropdown } from './../form/elements/action-dropdown.component';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/fromEvent';
 import { Subscription } from 'rxjs/Subscription';
-import { RequestProcessorService } from './../../../services/requestprocessor.service';
 import { ParamUtils } from './../../../shared/param-utils';
 
 
