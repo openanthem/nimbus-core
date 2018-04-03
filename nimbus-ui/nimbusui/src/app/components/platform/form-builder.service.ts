@@ -27,7 +27,7 @@ import { ValidationUtils } from './validators/ValidationUtils';
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
  * \@whatItDoes 
- * 
+ *  
  * \@howToUse 
  * 
  */
@@ -95,6 +95,8 @@ export class FormElementsService {
     var leafState;
     if (ParamUtils.isKnownDateType(param.config.type.name)) {
       leafState = param.leafState || null;
+    } else if(param.alias === 'Grid' && param.gridList && param.gridList.length > 0) {
+        leafState = param.gridList;
     } else {
       leafState = param.leafState || '';
     }
