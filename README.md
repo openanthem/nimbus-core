@@ -4,20 +4,38 @@
 [![GitHub contributors](https://img.shields.io/github/contributors/openanthem/nimbus-core.svg?style=for-the-badge)]()
 [![GitHub last commit](https://img.shields.io/github/last-commit/openanthem/nimbus-core.svg?style=for-the-badge)]()
 
-Codeclimate Analysis
---------------------
+## Codeclimate Analysis
+
 [![Maintainability](https://api.codeclimate.com/v1/badges/c6e5a784163a6ce69242/maintainability)](https://codeclimate.com/github/openanthem/nimbus-core/maintainability)
 
-Sonarcloud.io Analysis
-----------------------
-![Sonarcloud.io Security](https://sonarcloud.io/api/project_badges/measure?project=com.antheminc.oss%3Animbus-core&metric=security_rating&style=for-the-badge)
-[![Sonarcloud.io Bugs](https://sonarcloud.io/api/project_badges/measure?project=com.antheminc.oss%3Animbus-core&metric=bugs&style=for-the-badge)]() 
-[![Sonarcloud.io Coverage](https://sonarcloud.io/api/project_badges/measure?project=com.antheminc.oss%3Animbus-core&metric=coverage&style=for-the-badge)]() [![Sonarcloud.io Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=com.antheminc.oss%3Animbus-core&metric=sqale_index&style=for-the-badge)]() 
+## Sonarcloud.io Analysis
 
-[Full Report](https://sonarcloud.io/dashboard?id=com.antheminc.oss%3Animbus-core)
+### Master Branch (release)
 
-Development Process
--------------------
+![Sonarcloud.io Security](https://sonarcloud.io/api/project_badges/measure?project=openanthem%3Animbus-core-master&metric=security_rating&style=for-the-badge)
+[![Sonarcloud.io Bugs](https://sonarcloud.io/api/project_badges/measure?project=openanthem%3Animbus-core-master&metric=bugs&style=for-the-badge)]() 
+[![Sonarcloud.io Coverage](https://sonarcloud.io/api/project_badges/measure?project=openanthem%3Animbus-core-master&metric=coverage&style=for-the-badge)]() [![Sonarcloud.io Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=openanthem%3Animbus-core-master&metric=sqale_index&style=for-the-badge)]() 
+
+[Full Report](https://sonarcloud.io/dashboard?id=openanthem%3Animbus-core-master)
+
+### Develop Branch (release candidate)
+
+![Sonarcloud.io Security](https://sonarcloud.io/api/project_badges/measure?project=openanthem%3Animbus-core-develop&metric=security_rating&style=for-the-badge)
+[![Sonarcloud.io Bugs](https://sonarcloud.io/api/project_badges/measure?project=openanthem%3Animbus-core-develop&metric=bugs&style=for-the-badge)]() 
+[![Sonarcloud.io Coverage](https://sonarcloud.io/api/project_badges/measure?project=openanthem%3Animbus-core-develop&metric=coverage&style=for-the-badge)]() [![Sonarcloud.io Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=openanthem%3Animbus-core-develop&metric=sqale_index&style=for-the-badge)]() 
+
+[Full Report](https://sonarcloud.io/dashboard?id=openanthem%3Animbus-core-develop)
+
+### 1.0.0.M1 Branch (current milestone)
+
+![Sonarcloud.io Security](https://sonarcloud.io/api/project_badges/measure?project=openanthem%3Animbus-core-1.0.0.M1&metric=security_rating&style=for-the-badge)
+[![Sonarcloud.io Bugs](https://sonarcloud.io/api/project_badges/measure?project=openanthem%3Animbus-core-1.0.0.M1&metric=bugs&style=for-the-badge)]() 
+[![Sonarcloud.io Coverage](https://sonarcloud.io/api/project_badges/measure?project=openanthem%3Animbus-core-1.0.0.M1&metric=coverage&style=for-the-badge)]() [![Sonarcloud.io Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=openanthem%3Animbus-core-1.0.0.M1&metric=sqale_index&style=for-the-badge)]() 
+
+[Full Report](https://sonarcloud.io/dashboard?id=openanthem%3Animbus-core-1.0.0.M1)
+
+Development Overview 
+--------------------
 
 The contribution workflow is described in [CONTRIBUTING.md](CONTRIBUTING.md).
 
