@@ -41,16 +41,14 @@ import { BaseElement } from './base-element.component';
 })
 export class Section extends BaseElement implements OnInit {
 
-    constructor(private wcsvc: WebContentSvc, private pageService: PageService) {
+    constructor(private wcsvc: WebContentSvc, private pageSvc: PageService) {
         super(wcsvc);
     }
 
     ngOnInit() {
         // Check for initialization
         if (this.element.config && this.element.config.initializeComponent()) {
-            this.pageService.invoke(this.element.path, '$execute', 'POST').subscribe(
-                result => {}
-            );
+            this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'POST');
         }
     }
 

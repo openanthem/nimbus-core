@@ -63,8 +63,8 @@ export class PageService {
         gridValueUpdate = new Subject<Param>();
         gridValueUpdate$ = this.gridValueUpdate.asObservable();
 
-        requestHolder = new Subject<RequestContainer>();
-        requestHolder$ = this.requestHolder.asObservable();
+        // requestHolder = new Subject<RequestContainer>();
+        // requestHolder$ = this.requestHolder.asObservable();
 
     private requestQueue :RequestContainer[] = [];
 
@@ -75,7 +75,7 @@ export class PageService {
                 // Create Observable Stream to output our data     
                 this.config$ = new EventEmitter();
                 this.layout$ = new EventEmitter();
-                this.requestHolder$.subscribe(holder => this.processRequest(holder));
+                //this.requestHolder$.subscribe(holder => this.processRequest(holder));
         }
 
         ngOnInit() {
@@ -864,115 +864,115 @@ export class PageService {
                 this.loaderService.hide();
         }
 
-        executeCalls(request: RequestContainer, behavior: string, model: GenericDomain, method: string){
-                // if (model!=null && model['id']) {
-                //         this.entityId = model['id'];
-                // }
-                let processUrl = request.path + '/' + Action._get.value;
-                let url = '';
-                let serverUrl = '';
-                let flowName = '';
-                if (behavior == undefined) {
-                        behavior = Behavior.execute.value;
-                }
-                flowName = processUrl.substring(1, processUrl.indexOf('/', 2)); //TODO
-                url = ServiceConstants.PLATFORM_BASE_URL;
-                serverUrl = url + processUrl.replace('{id}', this.entityId.toString());
+//         executeCalls(request: RequestContainer, behavior: string, model: GenericDomain, method: string){
+//                 // if (model!=null && model['id']) {
+//                 //         this.entityId = model['id'];
+//                 // }
+//                 let processUrl = request.path + '/' + Action._get.value;
+//                 let url = '';
+//                 let serverUrl = '';
+//                 let flowName = '';
+//                 if (behavior == undefined) {
+//                         behavior = Behavior.execute.value;
+//                 }
+//                 flowName = processUrl.substring(1, processUrl.indexOf('/', 2)); //TODO
+//                 url = ServiceConstants.PLATFORM_BASE_URL;
+//                 serverUrl = url + processUrl.replace('{id}', this.entityId.toString());
 
-                if (processUrl.indexOf('?') > 0) {
-                        url = url + processUrl.replace('{id}', this.entityId.toString()) + '&b=' + behavior;
-                } else {
-                        url = url + processUrl.replace('{id}', this.entityId.toString()) + '?b=' + behavior;
-                }
-                //}
+//                 if (processUrl.indexOf('?') > 0) {
+//                         url = url + processUrl.replace('{id}', this.entityId.toString()) + '&b=' + behavior;
+//                 } else {
+//                         url = url + processUrl.replace('{id}', this.entityId.toString()) + '?b=' + behavior;
+//                 }
+//                 //}
 
-                let rootDomainId = this.getFlowRootDomainId(flowName);
-                if (rootDomainId != null) {
-                        let flowNameWithId = flowName.concat(':' + rootDomainId);
-                        url = url.replace(flowName, flowNameWithId);
-                }
-                this.showLoader();
-                // if (method !== '' && method.toUpperCase() === HttpMethod.GET.value) {
-                //         const promise = this.http.get(url).toPromise()
-                //                 .then(data => {
-                //                         this.processResponse(data.result, serverUrl, flowName);
-                //                         this.hideLoader;
-                //                 }).catch(err => { this.logError(err),
-                //                                 this.hideLoader;
-                //                         })
-                //         return promise;
-                // } else if (method !== '' && method.toUpperCase() === HttpMethod.POST.value) {
-                //         const promise = this.http.post(url, JSON.stringify(model)).toPromise()
-                //                         .then(data => {
-                //                                 this.processResponse(data.result, serverUrl, flowName);
-                //                                 this.hideLoader;
-                //                         }).catch(err => { this.logError(err),
-                //                                         this.hideLoader;
-                //                                 })      
-                // } else {
-                //         throw 'http method not supported';
-                // }
-               console.log("call for"+url);
-                if (method !== '' && method.toUpperCase() === HttpMethod.GET.value) {
-                        this.http.get(url)
-                                .subscribe(data => {
-                                        this.processResponse(data.result, serverUrl, flowName);
-                                },
-                                err => {
-                                        this.logError(err);
-                                        this.hideLoader();
-                                        },
-                                () => {
-                                        console.log('Process Execution query completed..');
-                                        this.hideLoader();
-                                        this.fetchNext()
-                                }
-                                );
-                        //}
-                } else if (method !== '' && method.toUpperCase() === HttpMethod.POST.value) {
+//                 let rootDomainId = this.getFlowRootDomainId(flowName);
+//                 if (rootDomainId != null) {
+//                         let flowNameWithId = flowName.concat(':' + rootDomainId);
+//                         url = url.replace(flowName, flowNameWithId);
+//                 }
+//                 this.showLoader();
+//                 // if (method !== '' && method.toUpperCase() === HttpMethod.GET.value) {
+//                 //         const promise = this.http.get(url).toPromise()
+//                 //                 .then(data => {
+//                 //                         this.processResponse(data.result, serverUrl, flowName);
+//                 //                         this.hideLoader;
+//                 //                 }).catch(err => { this.logError(err),
+//                 //                                 this.hideLoader;
+//                 //                         })
+//                 //         return promise;
+//                 // } else if (method !== '' && method.toUpperCase() === HttpMethod.POST.value) {
+//                 //         const promise = this.http.post(url, JSON.stringify(model)).toPromise()
+//                 //                         .then(data => {
+//                 //                                 this.processResponse(data.result, serverUrl, flowName);
+//                 //                                 this.hideLoader;
+//                 //                         }).catch(err => { this.logError(err),
+//                 //                                         this.hideLoader;
+//                 //                                 })      
+//                 // } else {
+//                 //         throw 'http method not supported';
+//                 // }
+//                console.log("call for"+url);
+//                 if (method !== '' && method.toUpperCase() === HttpMethod.GET.value) {
+//                         this.http.get(url)
+//                                 .subscribe(data => {
+//                                         this.processResponse(data.result, serverUrl, flowName);
+//                                 },
+//                                 err => {
+//                                         this.logError(err);
+//                                         this.hideLoader();
+//                                         },
+//                                 () => {
+//                                         console.log('Process Execution query completed..');
+//                                         this.hideLoader();
+//                                         this.fetchNext()
+//                                 }
+//                                 );
+//                         //}
+//                 } else if (method !== '' && method.toUpperCase() === HttpMethod.POST.value) {
 
-                        // console.log('payload - ' + json);
-                        this.http.post(url, JSON.stringify(model))
-                                .subscribe(data => {
-                                        this.processResponse(data.result, serverUrl, flowName);
-                                },
-                                err => {this.logError(err);
-                                        this.hideLoader();
-                                        },
-                                () => {
-                                        console.log('Process Execution query completed..');
-                                        this.hideLoader();
-                                        this.fetchNext();
-                                }
-                                );
-                } else {
-                        throw 'http method not supported';
-                }
+//                         // console.log('payload - ' + json);
+//                         this.http.post(url, JSON.stringify(model))
+//                                 .subscribe(data => {
+//                                         this.processResponse(data.result, serverUrl, flowName);
+//                                 },
+//                                 err => {this.logError(err);
+//                                         this.hideLoader();
+//                                         },
+//                                 () => {
+//                                         console.log('Process Execution query completed..');
+//                                         this.hideLoader();
+//                                         this.fetchNext();
+//                                 }
+//                                 );
+//                 } else {
+//                         throw 'http method not supported';
+//                 }
                 
-        }
+//         }
 
-    invoke(path, method, payload) {
-        return this.addRequestToQueue(path, method, payload);
-    }
+//     invoke(path, method, payload) {
+//         return this.addRequestToQueue(path, method, payload);
+//     }
 
-    private processRequest(request:RequestContainer) {
-        this.executeCalls(request, '$execute', new GenericDomain(), 'POST');  
-    }
+//     private processRequest(request:RequestContainer) {
+//         this.executeCalls(request, '$execute', new GenericDomain(), 'POST');  
+//     }
 
-    private fetchNext() {
-        if (this.requestQueue.length) {
-          this.processRequest(this.requestQueue.shift());
-        }
-    }
+//     private fetchNext() {
+//         if (this.requestQueue.length) {
+//           this.processRequest(this.requestQueue.shift());
+//         }
+//     }
 
-    private addRequestToQueue(path:string,method:string,payload:any) {
-        const sub = new Subject<any>();
-        const request = new RequestContainer(path,'POST',null,sub);
-        if (this.requestQueue.length === 0) {
-          this.requestHolder.next(request);
-        } else {
-          this.requestQueue.push(request);
-        }
-        return sub;
-    }
+//     private addRequestToQueue(path:string,method:string,payload:any) {
+//         const sub = new Subject<any>();
+//         const request = new RequestContainer(path,'POST',null,sub);
+//         if (this.requestQueue.length === 0) {
+//           this.requestHolder.next(request);
+//         } else {
+//           this.requestQueue.push(request);
+//         }
+//         return sub;
+//     }
 }

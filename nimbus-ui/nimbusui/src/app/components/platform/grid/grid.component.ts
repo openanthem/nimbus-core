@@ -170,10 +170,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         }
 
         if (this.element.config.uiStyles.attributes.onLoad === true) {
-            this.pageSvc.invoke(this.element.path, '$execute', 'GET').subscribe(
-                result => {}
-            );
-           // this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'GET');
+            this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'GET');
         }
 
         this.rowHover = true;
