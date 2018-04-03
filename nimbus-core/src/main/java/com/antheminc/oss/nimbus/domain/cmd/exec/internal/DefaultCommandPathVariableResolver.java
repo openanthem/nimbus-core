@@ -125,11 +125,28 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 				// for matched path, get the filter mode config from @GridColumn
 				// create the querydsl expression like <propertyPath>.<filtermode>.(<value>)
 			
+			// diagnosis.code.eq('123')
+			
 			StringBuilder builder = new StringBuilder();
 			//param.findIfMapped().findIfCollection().getConfig().getType().findIfCollection().
+			//param.getConfig().getType().findIfCollection().getElementConfig().findIfMapped().getMapsToConfig().getType().findIfNested().getModelConfig().findParamByPath("/id")
+			
+			//param.getConfig().getType().findIfCollection().getElementConfig().getType().findIfNested().getModelConfig().findParamByPath("/id")
+			
+			//param.getConfig().getType().findIfCollection().getElementConfig().getType().findIfNested().getModelConfig().findParamByPath("/memberEffectiveDate") then further to get the mapsto path
+			
+			String alias = param.getConfig()
+						.getType()
+						.findIfCollection()
+						.getElementConfig()
+						.findIfMapped()
+						.getMapsToConfig()
+						.getType()
+						.findIfNested()
+						.getModelConfig()
+						.getAlias();
 			
 			filters.forEach(f-> {
-				
 				ParamConfig<?> p = param.getConfig().getType().findIfCollection().getElementConfig().findParamByPath(f.getCode());
 				if(p != null) {
 					String path = p.getCode();
