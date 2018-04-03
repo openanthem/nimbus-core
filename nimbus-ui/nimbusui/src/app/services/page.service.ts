@@ -847,4 +847,55 @@ export class PageService {
         private hideLoader(): void {
                 this.loaderService.hide();
         }
+
+        executeCalls(processUrl: string, behavior: string, model: GenericDomain, method: string): Promise<any> {
+                // if (model!=null && model['id']) {
+                //         this.entityId = model['id'];
+                // }
+                processUrl = processUrl + '/' + Action._get.value;
+                let url = '';
+                let serverUrl = '';
+                let flowName = '';
+                if (behavior == undefined) {
+                        behavior = Behavior.execute.value;
+                }
+                flowName = processUrl.substring(1, processUrl.indexOf('/', 2)); //TODO
+                url = ServiceConstants.PLATFORM_BASE_URL;
+                serverUrl = url + processUrl.replace('{id}', this.entityId.toString());
+
+                if (processUrl.indexOf('?') > 0) {
+                        url = url + processUrl.replace('{id}', this.entityId.toString()) + '&b=' + behavior;
+                } else {
+                        url = url + processUrl.replace('{id}', this.entityId.toString()) + '?b=' + behavior;
+                }
+                //}
+
+                let rootDomainId = this.getFlowRootDomainId(flowName);
+                if (rootDomainId != null) {
+                        let flowNameWithId = flowName.concat(':' + rootDomainId);
+                        url = url.replace(flowName, flowNameWithId);
+                }
+                this.showLoader();
+                if (method !== '' && method.toUpperCase() === HttpMethod.GET.value) {
+                        const promise = this.http.get(url).toPromise()
+                                .then(data => {
+                                        this.processResponse(data.result, serverUrl, flowName);
+                                        this.hideLoader;
+                                }).catch(err => { this.logError(err),
+                                                this.hideLoader;
+                                        })
+                        return promise;
+                } else if (method !== '' && method.toUpperCase() === HttpMethod.POST.value) {
+                        const promise = this.http.post(url, JSON.stringify(model)).toPromise()
+                                        .then(data => {
+                                                this.processResponse(data.result, serverUrl, flowName);
+                                                this.hideLoader;
+                                        }).catch(err => { this.logError(err),
+                                                        this.hideLoader;
+                                                })
+                        return promise;      
+                } else {
+                        throw 'http method not supported';
+                }
+        }
 }

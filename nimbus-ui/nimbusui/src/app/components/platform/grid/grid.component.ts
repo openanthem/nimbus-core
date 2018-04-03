@@ -1,4 +1,3 @@
-import { ParamUtils } from './../../../shared/param-utils';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -36,7 +35,8 @@ import { ActionDropdown } from './../form/elements/action-dropdown.component';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/fromEvent';
 import { Subscription } from 'rxjs/Subscription';
-
+import { RequestProcessorService } from './../../../services/requestprocessor.service';
+import { ParamUtils } from './../../../shared/param-utils';
 
 
 
@@ -124,6 +124,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         private _wcs: WebContentSvc,
         private gridService: GridService,
         private dtFormat: DateTimeFormatPipe,
+        private requestProcessor: RequestProcessorService,
         private cd: ChangeDetectorRef) {
 
         super(_wcs);
@@ -170,7 +171,9 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         }
 
         if (this.element.config.uiStyles.attributes.onLoad === true) {
-            this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'GET');
+            this.requestProcessor.invoke(this.element.path, '$execute', 'GET').subscribe(
+                result => {}
+            );
         }
 
         this.rowHover = true;
