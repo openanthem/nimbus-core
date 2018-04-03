@@ -37,7 +37,11 @@ public class DefaultSearchFunctionHandlerQuery<T, R> extends DefaultSearchFuncti
 		
 		querySearchCriteria.validate(executionContext);
 		
-		String where = resolveNamedQueryIfApplicable(executionContext, mConfig, actionParam);
+		//String where = resolveNamedQueryIfApplicable(executionContext, mConfig, actionParam);
+		String where = executionContext.getCommandMessage().getCommand().getFirstParameterValue(Constants.SEARCH_REQ_WHERE_MARKER.code);
+		if(where.startsWith(".and(")) {
+			where = where.replaceFirst(".and(", "");
+		}
 		querySearchCriteria.setWhere(where);
 		
 		querySearchCriteria.setOrderby(cmd.getFirstParameterValue(Constants.SEARCH_REQ_ORDERBY_MARKER.code));

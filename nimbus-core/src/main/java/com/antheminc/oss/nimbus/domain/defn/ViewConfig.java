@@ -49,6 +49,13 @@ public class ViewConfig {
 	public @interface ViewStyle {
 		
 	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(value={ElementType.ANNOTATION_TYPE})
+	@Inherited
+	public @interface GridFilter {
+		
+	}
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
@@ -837,7 +844,6 @@ public class ViewConfig {
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
-	@ViewStyle
 	public @interface GridColumn {
 		String alias() default "GridColumn";
 		boolean hidden() default false;

@@ -85,6 +85,9 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	private RemnantState<Boolean> enabledState = this.new RemnantState<>(true);
 	
 	@JsonIgnore
+	private RemnantState<Object> filterState = this.new RemnantState<>(null);
+	
+	@JsonIgnore
 	@SuppressWarnings("unchecked")
 	private RemnantState<Class<? extends ValidationGroup>[]> activeValidationGroupsState = new RemnantState<>(new Class[0]);
 	
@@ -710,6 +713,18 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	@Override
 	public void setMessage(Message message) {
 		this.messageState.setState(message);
+	}
+	
+	@Override
+	public Object getFilter() {
+		return this.filterState.getCurrState();
+	}
+	
+	@Override
+	public void setFilter(Object filter) {
+		this.filterState.setState(filter);
+		
+		this.onStateChangeEvent(getRootExecution().getExecutionRuntime().getTxnContext(), Action._update);
 	}
 	
 	private void emitParamContextEvent() {

@@ -15,9 +15,11 @@
  */
 package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.env.PropertyResolver;
@@ -29,7 +31,10 @@ import com.antheminc.oss.nimbus.domain.cmd.CommandMessageConverter;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ParamPathExpressionParser;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
+import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.MappedParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.FilterCriteria;
 import com.antheminc.oss.nimbus.domain.session.SessionProvider;
 import com.antheminc.oss.nimbus.entity.client.user.ClientUser;
 import com.antheminc.oss.nimbus.support.JustLogit;
@@ -97,7 +102,6 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 			pathToResolve = recursedPath; 
 		}
 			
-		
 		if(StringUtils.startsWithIgnoreCase(pathToResolve, Constants.MARKER_SESSION_SELF.code))
 			return mapSelf(param, pathToResolve);
 		
@@ -110,6 +114,41 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 		if(StringUtils.startsWithIgnoreCase(pathToResolve, Constants.MARKER_ELEM_ID.code)) 
 			return mapColElem(param, pathToResolve);
 		
+		if(StringUtils.equalsIgnoreCase(pathToResolve, Constants.MARKER_URI_FILTER_EXPR.code)) {
+			// [path, values]
+			List<FilterCriteria<?>> filters = converter.read(List.class, param.getRootExecution().getRootCommand().getRawPayload());
+			if(CollectionUtils.isEmpty(filters))
+				return pathToResolve;
+			
+			// get the model of current grid list param
+			// loop through the params to find the matching path with incoming filter path(s)
+				// for matched path, get the filter mode config from @GridColumn
+				// create the querydsl expression like <propertyPath>.<filtermode>.(<value>)
+			
+			StringBuilder builder = new StringBuilder();
+			//param.findIfMapped().findIfCollection().getConfig().getType().findIfCollection().
+			
+			filters.forEach(f-> {
+				
+				ParamConfig<?> p = param.getConfig().getType().findIfCollection().getElementConfig().findParamByPath(f.getCode());
+				if(p != null) {
+					String path = p.getCode();
+					MappedParam<?,?> mappedParam = param.findIfMapped();
+					if(mappedParam != null) {
+						path = mappedParam.getMapsTo().getPath();
+					}
+					builder.append(".and(")
+						.append(path.replaceAll("/", "."))
+						.append(".")
+						.append(p.getUiStyles().getAttributes().get("filterMode"))
+						.append("(")
+						.append(f.getValue())
+						.append("))");
+				}
+				
+			});
+				
+		}
 		return mapQuad(param, pathToResolve);
 	}
 	

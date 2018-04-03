@@ -45,6 +45,8 @@ import com.antheminc.oss.nimbus.domain.defn.Execution;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo;
 import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.GridColumn;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.GridFilter;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.ViewParamBehavior;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.ViewStyle;
 import com.antheminc.oss.nimbus.domain.model.config.AnnotationConfig;
@@ -416,8 +418,9 @@ abstract public class AbstractEntityConfigBuilder {
 	private <P> DefaultParamConfig<P> decorateParam(ModelConfig<?> mConfig, Field f, DefaultParamConfig<P> created, EntityConfigVisitor visitedModels) {
 		created.setUiNatures(annotationConfigHandler.handle(f, ViewParamBehavior.class));
 		created.setUiStyles(annotationConfigHandler.handleSingle(f, ViewStyle.class));
-		created.setExecutionConfigs(new ArrayList<>(AnnotatedElementUtils.findMergedRepeatableAnnotations(f, Execution.Config.class)));
+		created.setGridFilter(annotationConfigHandler.handleSingle(f, GridFilter.class));
 		
+		created.setExecutionConfigs(new ArrayList<>(AnnotatedElementUtils.findMergedRepeatableAnnotations(f, Execution.Config.class)));
 		
 		if(AnnotatedElementUtils.isAnnotated(f, Converters.class)) {
 			Converters convertersAnnotation = AnnotationUtils.getAnnotation(f, Converters.class);
@@ -429,7 +432,7 @@ abstract public class AbstractEntityConfigBuilder {
 			
 			created.setConverters(converters);
 		}
-
+		
 		if(AnnotatedElementUtils.isAnnotated(f, Model.Param.Values.class)) {
 			Model.Param.Values aVal = AnnotationUtils.getAnnotation(f, Model.Param.Values.class);
 			
@@ -447,6 +450,7 @@ abstract public class AbstractEntityConfigBuilder {
 		List<AnnotationConfig> vConfig = annotationConfigHandler.handle(f, Constraint.class);
 		created.setValidations(vConfig);
 
+		// if param has @GridColumn with filter = true, add filterStateHandlerEvent dynamically
 		EventHandlerConfig eventConfig = eventHandlerConfigFactory.build(f);
 		created.setEventHandlerConfig(eventConfig);
 		

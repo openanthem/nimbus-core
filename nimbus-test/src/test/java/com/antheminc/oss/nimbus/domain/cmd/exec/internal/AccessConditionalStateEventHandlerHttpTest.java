@@ -138,7 +138,7 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 	}
 	
 	//TODO Rakesh 02/14/2018- test once the grid return type of page is available in the framework
-	@Ignore
+	@Test
 	public void t05_accessConditionalGridPagination() throws Exception {
 		String userLoginId = createClientUserWithRoles("superman","intake","clinician");
 		
@@ -160,9 +160,6 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 				.withUri(VIEW_PARAM_ACCESS_ROOT)
 				.addRefId(refId)
 				.addNested("/vpSampleCoreEntityAccess/vtSampleCoreEntityAccess/vsSamplePageCoreEntityAccess/vgSamplePageCoreEntities")
-//				.addParam("pageSize", "1")
-//				.addParam("page", "0")
-//				.addParam("sortBy", "attr_String,asc")
 				.addParam("pageCriteria", "pageSize=5&page=0&sortBy=attr_String,DESC")
 				.addAction(Action._get)
 				.getMock();

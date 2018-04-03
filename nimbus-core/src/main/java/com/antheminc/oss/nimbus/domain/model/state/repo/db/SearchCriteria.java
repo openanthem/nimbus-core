@@ -16,6 +16,7 @@
 package com.antheminc.oss.nimbus.domain.model.state.repo.db;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -45,6 +46,19 @@ public abstract class SearchCriteria<T> implements Serializable {
 	private Pageable pageRequest;
 	
 	private Command cmd;
+	
+	private List<FilterCriteria<T>> filters;
+	
+	
+	@Getter @Setter
+	public static class FilterCriteria<T> implements Serializable {
+		
+		private static final long serialVersionUID = 1L;
+		
+		private String code;
+		private T value;
+		
+	}
 	
 	public abstract void validate(ExecutionContext executionContext);
 	

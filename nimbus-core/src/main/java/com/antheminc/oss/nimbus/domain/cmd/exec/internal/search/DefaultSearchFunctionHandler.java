@@ -118,32 +118,32 @@ public abstract class DefaultSearchFunctionHandler<T, R> extends AbstractFunctio
 		return null;
 	}
 	
-	protected String resolveNamedQueryIfApplicable(ExecutionContext executionContext, ModelConfig<?> mConfig, Param<T> actionParam) {
-		String where = executionContext.getCommandMessage().getCommand().getFirstParameterValue(Constants.SEARCH_REQ_WHERE_MARKER.code);
-		
-		// find if where is a named query
-		Repo repo = mConfig.getRepo();
-		Repo.NamedNativeQuery[] namedQueries = repo.namedNativeQueries();
-		
-		if(namedQueries != null && namedQueries.length > 0) {
-			for(Repo.NamedNativeQuery query: namedQueries) {
-				if(StringUtils.equalsIgnoreCase(query.name(), where) && query.nativeQueries() != null) {
-					int i = 0;
-					for(String q: query.nativeQueries()) {
-						if(i == 0) {
-							where = q;
-						}
-						else {
-							where = where +Constants.SEARCH_NAMED_QUERY_DELIMTER.code+q;
-						}
-						i++;
-					}
-				}
-			}
-		}
-		where = getPathVariableResolver().resolve(actionParam, where);
-		return where;
-	}
+//	protected String resolveNamedQueryIfApplicable(ExecutionContext executionContext, ModelConfig<?> mConfig, Param<T> actionParam) {
+//		String where = executionContext.getCommandMessage().getCommand().getFirstParameterValue(Constants.SEARCH_REQ_WHERE_MARKER.code);
+//		
+//		// find if where is a named query
+//		Repo repo = mConfig.getRepo();
+//		Repo.NamedNativeQuery[] namedQueries = repo.namedNativeQueries();
+//		
+//		if(namedQueries != null && namedQueries.length > 0) {
+//			for(Repo.NamedNativeQuery query: namedQueries) {
+//				if(StringUtils.equalsIgnoreCase(query.name(), where) && query.nativeQueries() != null) {
+//					int i = 0;
+//					for(String q: query.nativeQueries()) {
+//						if(i == 0) {
+//							where = q;
+//						}
+//						else {
+//							where = where +Constants.SEARCH_NAMED_QUERY_DELIMTER.code+q;
+//						}
+//						i++;
+//					}
+//				}
+//			}
+//		}
+//		where = getPathVariableResolver().resolve(actionParam, where);
+//		return where;
+//	}
 	
 	
 	

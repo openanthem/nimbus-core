@@ -14,7 +14,7 @@ import com.antheminc.oss.nimbus.domain.defn.Constants;
  * @author Rakesh Patel
  *
  */
-public class DefaultExecutionContextPathVariableResolver implements ExecutionContextPathVariableResolver{
+public class DefaultExecutionContextPathVariableResolver implements ExecutionContextPathVariableResolver {
 
 	@Override
 	public String resolve(ExecutionContext eCtx, String pathToResolve) {
@@ -47,10 +47,12 @@ public class DefaultExecutionContextPathVariableResolver implements ExecutionCon
 	
 	
 	private String mapMarkers(ExecutionContext eCtx, String pathToResolve) {
-		if(StringUtils.startsWithIgnoreCase(pathToResolve, Constants.MARKER_URI_PAGE_EXPR.code)) 
+		if(StringUtils.startsWithIgnoreCase(pathToResolve, Constants.MARKER_URI_PAGE_EXPR.code)) {
 			return eCtx.getCommandMessage().getCommand().getFirstParameterValue("pageCriteria");
+		}
 		
 		return null;
+		
 	}
 	
 }

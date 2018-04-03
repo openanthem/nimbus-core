@@ -37,6 +37,7 @@ public enum Constants {
 	MARKER_COL_PARAM_EXPR("<!col!>"),
 	
 	MARKER_URI_PAGE_EXPR("page=y"),
+	MARKER_URI_FILTER_EXPR("filterCriteria"),
 	
 	SEPARATOR_URI("/"),
 	

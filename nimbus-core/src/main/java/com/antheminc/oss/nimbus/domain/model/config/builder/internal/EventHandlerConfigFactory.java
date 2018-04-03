@@ -20,10 +20,12 @@ import java.lang.reflect.AnnotatedElement;
 import java.util.List;
 import java.util.function.BiConsumer;
 
+import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.util.CollectionUtils;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.config.builder.AnnotationConfigHandler;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.GridFilter;
 import com.antheminc.oss.nimbus.domain.defn.event.ConfigEvent.OnParamCreate;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateChange;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
@@ -64,6 +66,10 @@ public class EventHandlerConfigFactory {
 		// onStateChange
 		buildInternal(aElem, OnStateChange.class, OnStateChangeHandler.class, (a,h)->eventConfig.add(a, h));
 
+		
+//		if(AnnotatedElementUtils.hasAnnotation(aElem, GridFilter.class)) {
+//			buildInternal(aElem, OnStateLoad.class, OnStateLoadHandler.class, )
+//		}
 		
 		return eventConfig.isEmpty() ? null : eventConfig;
 	}

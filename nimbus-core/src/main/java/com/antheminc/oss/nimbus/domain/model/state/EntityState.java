@@ -410,6 +410,9 @@ public interface EntityState<T> {
 		Message getMessage();
 		void setMessage(Message msg);
 		
+		Object getFilter();
+		void setFilter(Object filter);
+		
 		
 		void onStateLoadEvent();
 		void onStateChangeEvent(ExecutionTxnContext txnCtx, Action a);
