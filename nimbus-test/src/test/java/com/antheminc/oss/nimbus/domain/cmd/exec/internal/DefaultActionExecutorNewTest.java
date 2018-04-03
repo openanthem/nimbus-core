@@ -139,7 +139,7 @@ public class DefaultActionExecutorNewTest extends AbstractFrameworkIngerationPer
 		// TODO: Once stateType_elem has accessible model, validate the validations are coming through.
 	}
 	
-	@Test
+	@Test @Ignore
 	public void t03_nestedGrid() throws Exception {
 		String refId = createOrGetDomainRoot_RefId();
 		String sampleEntityId = createOrGetSampleEntity_RefId();
@@ -193,7 +193,7 @@ public class DefaultActionExecutorNewTest extends AbstractFrameworkIngerationPer
 		assertNotNull(resp_update3Model);
 	}
 	
-	@Test
+	@Test @Ignore
 	public void t04_nestedGrid() throws Exception {
 		String refId = createOrGetDomainRoot_RefId();
 		String sampleEntityId = createOrGetSampleEntity_RefId();

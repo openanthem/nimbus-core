@@ -5,6 +5,7 @@
     padding: 10px;
     font-weight: bold;
 }
+body{color:#4c4c4c;}
 * {
     vertical-align: top;
 }
@@ -118,14 +119,19 @@ h3{
 h1.page-title {
     margin-bottom:0;
     font-size: 1.3rem;
-    margin-left:20px;
+    margin-left:10px;
     font-weight: 400;
-    &.dashboard::before{
+    display:none;
+    &::before{
+        font-size: 1.9rem;
         color: $iconColor;
         font-family: fontAwesome;
-        content: "\F080";
         margin-right: .3rem;
     }
+    
+}
+.dashboard-cm::before{
+    content: "\F080";
 }
 .memberSearchIcon::before{
     color: $iconColor;
@@ -175,6 +181,17 @@ h1.page-title {
     padding: 0.5rem;
     height: $breadcrumb-height;
     background: #fff;
+    .breadcrumb-item{
+        font-size: 1rem;
+    }
+    .breadcrumb-item + .breadcrumb-item::before{
+        padding-right: .3rem;
+    }
+    .breadcrumb-item:last-child > a {
+        text-decoration: none;
+        color: #669FE2;
+        font-weight: bold;
+    }
 }
 .info-bar {
     display: block;
@@ -229,7 +246,7 @@ h1.page-title {
         padding: 0;
     }
     .viewport {
-        padding: 10px 10px 0 10px;
+        padding: 0 10px ;
     }
 }  
 .card-holder > .card{
@@ -247,8 +264,7 @@ h1.page-title {
 
 .info-card {
     display: inline-block;
-    width: 84%;
-    padding-left: 20px;
+    width: 80%;
 }
 .ui-dialog .ui-dialog-titlebar-close span {
     font-size: 1.5rem;
@@ -334,10 +350,7 @@ legend {
         margin-top: 0.5rem;
         margin-bottom: 1.0rem;
     }
-}
-.ui-calendar input {
-    width: 120px;
-}
+} 
 .ui-dialog.ui-widget .ui-dialog-titlebar .ui-dialog-title {
     margin-left: 1rem;
 }
@@ -535,17 +548,28 @@ button.ui-datepicker-trigger.ui-calendar-button {
         color: #4c4c4c;
         border: 1px solid #B8D4E8;
         margin-bottom: 3px;
+        &::before{
+            font-size: 1.4rem;
+            color: #669fe2;
+            font-family: fontAwesome;
+            margin-right: .3rem;
+        }
         &.active,
         {
             background: #e5991c;
             border-color: #e5991c;
             color: #fff;
-
+            &::before {
+                color: #fff;
+            }
         }
         &:hover{
             background: #4c4c4c;
             border-color: #4c4c4c;
             color: #fff;
+            &::before {
+                color: #fff;
+            }
         }
         &.disabled,&.disabled:hover{
             background: #999;
@@ -762,7 +786,7 @@ button.ui-datepicker-trigger.ui-calendar-button {
   
   
     .section-nav{
-        width: $section-nav-width;
+        width: 13%;
     }
     .header {
         height: 90px;

@@ -22,12 +22,13 @@ export class RequestProcessorService {
     }
 
     private processRequest(request:RequestContainer) {
-        this.pageService.processEvent(request.path, '$execute', new GenericDomain(), 'POST');
-        console.log("processing"+request.path);
-        const req = this.pageService.executeCalls(request.path, '$execute', new GenericDomain(), 'POST')
-                    .then(data => {this.fetchNext()});
-        // const sub = request.subscription;
-        // sub.switchMap(req);
+        //const req = this.pageService.processEvent(request.path, '$execute', new GenericDomain(), 'POST');
+        // console.log("processing"+request.path);
+        //const req = this.pageService.executeCalls(request.path, '$execute', new GenericDomain(), 'POST').finally(() => this.fetchNext());
+                     
+            // const sub = request.subscription;
+            // sub.switchMap(req);
+        
     }
 
     private fetchNext() {

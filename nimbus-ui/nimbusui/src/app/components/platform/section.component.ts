@@ -1,4 +1,3 @@
-import { RequestProcessorService } from './../../services/requestprocessor.service';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -42,14 +41,14 @@ import { BaseElement } from './base-element.component';
 })
 export class Section extends BaseElement implements OnInit {
 
-    constructor(private wcsvc: WebContentSvc, private requestProcessor: RequestProcessorService) {
+    constructor(private wcsvc: WebContentSvc, private pageService: PageService) {
         super(wcsvc);
     }
 
     ngOnInit() {
         // Check for initialization
         if (this.element.config && this.element.config.initializeComponent()) {
-            this.requestProcessor.invoke(this.element.path, '$execute', 'POST').subscribe(
+            this.pageService.invoke(this.element.path, '$execute', 'POST').subscribe(
                 result => {}
             );
         }

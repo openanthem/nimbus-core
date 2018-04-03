@@ -124,7 +124,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         private _wcs: WebContentSvc,
         private gridService: GridService,
         private dtFormat: DateTimeFormatPipe,
-        private requestProcessor: RequestProcessorService,
+       // private requestProcessor: RequestProcessorService,
         private cd: ChangeDetectorRef) {
 
         super(_wcs);
@@ -171,9 +171,10 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         }
 
         if (this.element.config.uiStyles.attributes.onLoad === true) {
-            this.requestProcessor.invoke(this.element.path, '$execute', 'GET').subscribe(
+            this.pageSvc.invoke(this.element.path, '$execute', 'GET').subscribe(
                 result => {}
             );
+           // this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'GET');
         }
 
         this.rowHover = true;

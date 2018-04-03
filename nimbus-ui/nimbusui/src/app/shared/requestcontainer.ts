@@ -14,38 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-'use strict';
+import { Observable } from 'rxjs/Observable';
+import { Param } from "./app-config.interface";
+import { Subject } from 'rxjs/Subject';
 
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
 /**
- * \@author Dinakar.Meda
+ * \@author Sandeep.Mantha
  * \@whatItDoes 
  * 
  * \@howToUse 
  * 
  */
-@Component({
-    template: ` 
-    
-    <button class = "btn btn-primary" type="button" (click)="routeCaseManager()">Case Manager</button>
-    <button type="button"  class = "btn btn-danger" (click)="routeAdmin()">Admin</button>
-   `
-})
-export class LandingPage {
 
-    constructor(private _router: Router) {
+export class RequestContainer {
+    path: string;
+    method: string;
+    payload: any;
+    subscription: Subject<any>;
+
+    constructor(path:string,method: string, payload: any, subscription: Subject<any>) {
+        this.path = path;
+        this.method = method;
+        this.payload = payload;
+        this.subscription = subscription;
     }
-
-    ngOnInit() {
-    }
-
-    routeCaseManager() {
-         this._router.navigate(['/main/f']);
-    }
-
-    routeAdmin() {
-         this._router.navigate(['/main/a']);
-    }
-
+  
 }

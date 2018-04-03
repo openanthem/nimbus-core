@@ -32,13 +32,15 @@ export class ServiceConstants {
     public static get PAGE_INDEX() : number { return 0;}
     public static get PAGE_SIZE() : number { return 20;}
     public static get URL_SEPERATOR(): string { return '/'; }
+    public static get PATH_SEPARATOR(): string { return '/'; }
     public static get WS_SUBSCRIBE_Q(): string { return '/user/queue/updates'; }
     public static get LOCALE_LANGUAGE() : string { return this.locale;}
     public static set LOCALE_LANGUAGE(locale : string ) {this.locale = locale;}
 
     /* Enable for stopgap server */
     public static get BASE_URL(): string    { return this.STOPGAP_APP_HOST_URL+this.WEB_CONTENT_PORT; }
-    public static get LOGIN_URL(): string { return this.STOPGAP_APP_HOST_URL+this.STOPGAP_APP_PORT+'/login'; }
+    public static get LOGIN_URL(): string { return this.STOPGAP_APP_HOST_URL+this.STOPGAP_APP_PORT+'/ltss/login'; }
+    public static get LOGOUT_URL(): string { return this.STOPGAP_APP_HOST_URL+this.STOPGAP_APP_PORT+'/ltss/logout'; }
     public static get PLATFORM_BASE_URL(): string    { return this.STOPGAP_APP_HOST_URL+this.STOPGAP_APP_PORT+'/ltss/fep/p'; }
     public static get CLIENT_BASE_URL(): string    { return this.STOPGAP_APP_HOST_URL+this.STOPGAP_APP_PORT+'/'; }
     public static get WS_BASE_URL(): string { return 'ws://'+this.STOPGAP_APP_HOST+':'+this.WS_PORT+'/updates'; }

@@ -19,6 +19,7 @@ import { Component, Input, ViewChild } from '@angular/core';
 import { Param, LabelConfig } from '../../../shared/app-config.interface';
 import { WebContentSvc } from '../../../services/content-management.service';
 import { BaseElement } from '../base-element.component';
+import { PageService } from '../../../services/page.service';
 
 /**
  * \@author Dinakar.Meda
@@ -40,6 +41,11 @@ import { BaseElement } from '../base-element.component';
         <p-accordion #accordion [multiple]="multiple" [activeIndex]="index">
             <ng-template ngFor let-tab [ngForOf]="nestedParams">
                 <p-accordionTab [header]="getTabLabel(tab)" [selected]="tab?.config?.uiStyles?.attributes?.selected">
+                    <div class="accordionBtn" *ngIf="tab?.config?.uiStyles?.attributes?.editable">
+                        <button  (click)="processOnClick(tab)" type="button" class="btn btn-plain">
+                            <i class="fa fa-fw fa-pencil" aria-hidden="true"></i>Edit
+                        </button>
+                    </div>
                     <ng-template ngFor let-tabElement [ngForOf]="tab?.type?.model?.params">
                         <!-- Card Content -->
                         <ng-template [ngIf]="tabElement.alias == 'CardDetail'">
@@ -58,7 +64,7 @@ export class AccordionMain extends BaseElement {
     index: number[]; 
     @ViewChild('accordion') accordion: AccordionMain;
 
-    constructor(private wcsvc: WebContentSvc) {
+    constructor(private wcsvc: WebContentSvc, private pageSvc: PageService) {
         super(wcsvc);
     }
 
@@ -101,5 +107,12 @@ export class AccordionMain extends BaseElement {
                 this.index.push(t);
             }
         }
+    }
+
+    /**
+     * Process configs on the click event
+     */
+    processOnClick(param: Param) {
+        this.pageSvc.processEvent(param.path, '$execute', null, 'POST');
     }
 }

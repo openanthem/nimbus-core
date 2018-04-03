@@ -1,4 +1,3 @@
-import { ParamUtils } from './../shared/param-utils';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -28,12 +27,16 @@ import { Validation, ViewConfig,
         Param,
         ParamConfig,
         Type,
-        Result, ViewRoot, ExecuteResponse
+        Result, ViewRoot
 } from '../shared/app-config.interface';
 import { CustomHttpClient } from './httpclient.service';
 
 import { Subject } from 'rxjs/Subject';
 import { GenericDomain } from '../model/generic-domain.model';
+import { RequestContainer } from '../shared/requestcontainer';
+import { Observable } from 'rxjs/Observable';
+import { ExecuteResponse } from './../shared/app-config.interface';
+import { ParamUtils } from './../shared/param-utils';
 
 /**
  * \@author Dinakar.Meda
@@ -60,6 +63,11 @@ export class PageService {
         gridValueUpdate = new Subject<Param>();
         gridValueUpdate$ = this.gridValueUpdate.asObservable();
 
+        requestHolder = new Subject<RequestContainer>();
+        requestHolder$ = this.requestHolder.asObservable();
+
+    private requestQueue :RequestContainer[] = [];
+
         private _entityId: number = 0;
         constructor(private http: CustomHttpClient, private loaderService: LoaderService, private configService: ConfigService) {
                 // initialize
@@ -67,6 +75,7 @@ export class PageService {
                 // Create Observable Stream to output our data     
                 this.config$ = new EventEmitter();
                 this.layout$ = new EventEmitter();
+                this.requestHolder$.subscribe(holder => this.processRequest(holder));
         }
 
         ngOnInit() {
@@ -269,10 +278,13 @@ export class PageService {
          * @param outputs
          */
         traverseOutput(outputs: Result[]) {
+                /** Check for Nav Output. Execute Nav after processing all other outputs. */
                 var navToDefault = true;
+                let navOutput: Result = undefined;
                 outputs.forEach(otp => {
                         if (otp.action === Action._nav.value) {
                                 navToDefault = false;
+                                navOutput = otp;
                         }
                 });
                 outputs.forEach(output => {
@@ -326,9 +338,7 @@ export class PageService {
                                                 this.logError('Received an _get call without model or config ' + output.value.path);
                                         }
                                 } else if (output.action === Action._nav.value) {
-                                        let flow = this.getFlowNameFromOutput(output.inputCommandUri);
-                                        let pageParam = this.findMatchingPageConfigById(output.value, flow);
-                                        this.navigateToPage(pageParam, flow);
+                                        // Do Nothing. We will process _nav action in the end.
                                 } else {
                                         if (output.value && output.value.path) {
                                                 let flow = this.getFlowNameFromOutput(output.value.path);
@@ -338,6 +348,12 @@ export class PageService {
                                 }
                         }
                 });
+                /** Now that all outputs are processed, lets process _nav */
+                if (navOutput) {
+                        let flow = this.getFlowNameFromOutput(navOutput.inputCommandUri);
+                        let pageParam = this.findMatchingPageConfigById(navOutput.value, flow);
+                        this.navigateToPage(pageParam, flow);
+                }
         }
 
         /** When the config is already loaded, find the default page to load */
@@ -731,7 +747,7 @@ export class PageService {
         }
 
         matchNode(element: Param, node: string): boolean {
-                if (element.config.code == node) {
+                if (element && element.config.code == node) {
                         return true;
                 } else {
                         return false;
@@ -848,11 +864,11 @@ export class PageService {
                 this.loaderService.hide();
         }
 
-        executeCalls(processUrl: string, behavior: string, model: GenericDomain, method: string): Promise<any> {
+        executeCalls(request: RequestContainer, behavior: string, model: GenericDomain, method: string){
                 // if (model!=null && model['id']) {
                 //         this.entityId = model['id'];
                 // }
-                processUrl = processUrl + '/' + Action._get.value;
+                let processUrl = request.path + '/' + Action._get.value;
                 let url = '';
                 let serverUrl = '';
                 let flowName = '';
@@ -876,26 +892,87 @@ export class PageService {
                         url = url.replace(flowName, flowNameWithId);
                 }
                 this.showLoader();
+                // if (method !== '' && method.toUpperCase() === HttpMethod.GET.value) {
+                //         const promise = this.http.get(url).toPromise()
+                //                 .then(data => {
+                //                         this.processResponse(data.result, serverUrl, flowName);
+                //                         this.hideLoader;
+                //                 }).catch(err => { this.logError(err),
+                //                                 this.hideLoader;
+                //                         })
+                //         return promise;
+                // } else if (method !== '' && method.toUpperCase() === HttpMethod.POST.value) {
+                //         const promise = this.http.post(url, JSON.stringify(model)).toPromise()
+                //                         .then(data => {
+                //                                 this.processResponse(data.result, serverUrl, flowName);
+                //                                 this.hideLoader;
+                //                         }).catch(err => { this.logError(err),
+                //                                         this.hideLoader;
+                //                                 })      
+                // } else {
+                //         throw 'http method not supported';
+                // }
+               console.log("call for"+url);
                 if (method !== '' && method.toUpperCase() === HttpMethod.GET.value) {
-                        const promise = this.http.get(url).toPromise()
-                                .then(data => {
+                        this.http.get(url)
+                                .subscribe(data => {
                                         this.processResponse(data.result, serverUrl, flowName);
-                                        this.hideLoader;
-                                }).catch(err => { this.logError(err),
-                                                this.hideLoader;
-                                        })
-                        return promise;
+                                },
+                                err => {
+                                        this.logError(err);
+                                        this.hideLoader();
+                                        },
+                                () => {
+                                        console.log('Process Execution query completed..');
+                                        this.hideLoader();
+                                        this.fetchNext()
+                                }
+                                );
+                        //}
                 } else if (method !== '' && method.toUpperCase() === HttpMethod.POST.value) {
-                        const promise = this.http.post(url, JSON.stringify(model)).toPromise()
-                                        .then(data => {
-                                                this.processResponse(data.result, serverUrl, flowName);
-                                                this.hideLoader;
-                                        }).catch(err => { this.logError(err),
-                                                        this.hideLoader;
-                                                })
-                        return promise;      
+
+                        // console.log('payload - ' + json);
+                        this.http.post(url, JSON.stringify(model))
+                                .subscribe(data => {
+                                        this.processResponse(data.result, serverUrl, flowName);
+                                },
+                                err => {this.logError(err);
+                                        this.hideLoader();
+                                        },
+                                () => {
+                                        console.log('Process Execution query completed..');
+                                        this.hideLoader();
+                                        this.fetchNext();
+                                }
+                                );
                 } else {
                         throw 'http method not supported';
                 }
+                
         }
+
+    invoke(path, method, payload) {
+        return this.addRequestToQueue(path, method, payload);
+    }
+
+    private processRequest(request:RequestContainer) {
+        this.executeCalls(request, '$execute', new GenericDomain(), 'POST');  
+    }
+
+    private fetchNext() {
+        if (this.requestQueue.length) {
+          this.processRequest(this.requestQueue.shift());
+        }
+    }
+
+    private addRequestToQueue(path:string,method:string,payload:any) {
+        const sub = new Subject<any>();
+        const request = new RequestContainer(path,'POST',null,sub);
+        if (this.requestQueue.length === 0) {
+          this.requestHolder.next(request);
+        } else {
+          this.requestQueue.push(request);
+        }
+        return sub;
+    }
 }

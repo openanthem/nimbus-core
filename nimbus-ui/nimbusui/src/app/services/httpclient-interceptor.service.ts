@@ -40,7 +40,7 @@ export class CustomHttpClientInterceptor implements HttpInterceptor {
                     Hence the additional check for 200 & err.url.
                     This will have to be refactored when Siteminder authentication replaces the form based authentication. */
                 if (err.status === 302 || err.status === 403 || (err.status === 200 && err.url === `${ServiceConstants.LOGIN_URL}`)) {
-                    window.location.href = `${ServiceConstants.CLIENT_BASE_URL}logout`;
+                    window.location.href = `${ServiceConstants.LOGOUT_URL}`;
                 }
             }
         });
