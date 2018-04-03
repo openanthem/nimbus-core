@@ -58,6 +58,11 @@ public class EntityStateJsonFilter extends AbstractEntityStateJsonFilter {
 				StringUtils.equals(param.getType().getName(), "string") && !param.getType().isNested())
 			return true;
 		
+		// leafState - serialize only when its leaf OR collection and not when its nested
+		if(StringUtils.equals(fieldName, "leafState") && 
+				!param.isLeaf() && !param.isCollection())
+			return true;
+		
 		return false;
 	}
 	
