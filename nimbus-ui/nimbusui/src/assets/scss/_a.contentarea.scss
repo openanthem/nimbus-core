@@ -264,7 +264,7 @@ h1.page-title {
 
 .info-card {
     display: inline-block;
-    width: 80%;
+    width: 82%;
 }
 .ui-dialog .ui-dialog-titlebar-close span {
     font-size: 1.5rem;
@@ -665,11 +665,15 @@ button.ui-datepicker-trigger.ui-calendar-button {
         position: relative;
         h2{
             margin-bottom: 0;
-        }
+        
         button {
             all: inherit;
             width:100%;
             cursor: pointer;
+            background: none;
+            border: none;
+            text-align: left;
+            color: #fff;
             &::before{
                 font-family: "FontAwesome";
                 content: "\f0da";
@@ -677,6 +681,7 @@ button.ui-datepicker-trigger.ui-calendar-button {
                 transition: transform 400ms;
                 display: inline-block;
             }
+        }
         
             &:focus,&:hover{
                 &::before{
