@@ -21,30 +21,24 @@ import com.antheminc.oss.nimbus.domain.defn.MapsTo;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Database;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Page;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.ViewRoot;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
+import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleEntity;
 
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * @author Soham Chakravarti
- * @author Sandeep Mantha - added a new page page_orange
+ * @author Sandeep Mantha
+ *
  */
-@Domain(value="sample_view", includeListeners={ListenerType.websocket})
-@MapsTo.Type(SampleCoreEntity.class)
-@Repo(Database.rep_none)
+@Domain(value="sample_withoutmodel", includeListeners={ListenerType.websocket})
+@ViewRoot(layout = "")
+@Repo(value = Repo.Database.rep_none, cache = Repo.Cache.rep_device)
 @Getter @Setter
-public class VRSampleViewRootEntity {
-
-	@Page(route="sample_view_colors")
-	private VPSampleViewPageGreen page_green;
-
-	@Page(route="sample_view_colors")
-	private VPSampleViewPageBlue page_blue;
-
-	@Page(route="sample_view_colors")
-	private VPSampleViewPageRed page_red;
-
+public class VRSampleWithoutModel {
+	
 	@Page(route="sample_view_colors")
 	private VPSampleViewPageOrange page_orange;
+
 }
