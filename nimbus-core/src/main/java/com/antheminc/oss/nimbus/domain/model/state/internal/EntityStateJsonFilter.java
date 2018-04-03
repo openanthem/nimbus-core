@@ -41,12 +41,12 @@ public class EntityStateJsonFilter extends AbstractEntityStateJsonFilter {
 		if(StringUtils.equals(fieldName, "collection") && !param.isCollection())
 			return true;
 		
-		// nested: false
-		if(StringUtils.equals(fieldName, "nested") && !param.isNested())
+		// collectionElem: false
+		if(StringUtils.equals(fieldName, "collectionElem") && !param.isCollectionElem())
 			return true;
 		
-		// collectionElem: false
-		if(StringUtils.equals(fieldName, "enabled") && !param.isCollectionElem())
+		// nested: false
+		if(StringUtils.equals(fieldName, "nested") && !param.isNested())
 			return true;
 		
 		// activeValidationGroups: []
