@@ -16,8 +16,8 @@ Sonarcloud.io Analysis
 
 [Full Report](https://sonarcloud.io/dashboard?id=com.antheminc.oss%3Animbus-core)
 
-Development Process
--------------------
+Development Overview 
+--------------------
 
 The contribution workflow is described in [CONTRIBUTING.md](CONTRIBUTING.md).
 
