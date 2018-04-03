@@ -18,6 +18,7 @@ package com.antheminc.oss.nimbus.domain.model.state.internal;
 import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.util.Arrays;
 
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Grid;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Model;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 
@@ -59,23 +60,30 @@ public class EntityStateJsonFilter extends AbstractEntityStateJsonFilter {
 			return true;
 		
 		// leafState - serialize only when its leaf OR collection and not when its nested
-		if(StringUtils.equals(fieldName, "leafState") && 
-				!param.isLeaf() && !param.isCollection())
-			return true;
-		
+		if(StringUtils.equals(fieldName, "leafState")) {
+			
+			if(param.isLeaf())
+				return false; // include for leaf
+			
+			// include when collection and has @Grid annotation
+			else if(param.isCollection() && hasGrid(param))
+				return false;
+			
+			else
+				return true;
+		}
 		return false;
+	}
+	
+	private boolean hasGrid(Param<?> param) {
+		if(param.getConfig().getUiStyles()==null)
+			return false;
+		
+		return param.getConfig().getUiStyles().getAnnotation().annotationType()==Grid.class;
 	}
 	
 	@Override
 	protected boolean omitConditionalModel(Model<?> model, String fieldName) {
-		// collection: false
-		if(StringUtils.equals(fieldName, "collection") && !model.getAssociatedParam().isCollection())
-			return true;
-		
-		// nested: true
-		if(StringUtils.equals(fieldName, "nested") && model.getAssociatedParam().isNested())
-			return true;
-		
 		return false;
 	}
 }
