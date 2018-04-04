@@ -914,37 +914,45 @@ export class PageService {
                 // }
                console.log("call for"+url);
                 if (method !== '' && method.toUpperCase() === HttpMethod.GET.value) {
-                        this.http.get(url)
-                                .subscribe(data => {
+                       const prom =  this.http.get(url)
+                                // .subscribe(data => {
+                                //         this.processResponse(data.result, serverUrl, flowName);
+                                // },
+                                // err => {
+                                //         this.logError(err);
+                                //         this.hideLoader();
+                                //         },
+                                // () => {
+                                //         console.log('Process Execution query completed..');
+                                //         this.hideLoader();
+                                //         this.fetchNext()
+                                // }
+                                // );
+                                .toPromise().then(data => {
                                         this.processResponse(data.result, serverUrl, flowName);
-                                },
-                                err => {
-                                        this.logError(err);
-                                        this.hideLoader();
-                                        },
-                                () => {
-                                        console.log('Process Execution query completed..');
-                                        this.hideLoader();
-                                        this.fetchNext()
-                                }
-                                );
+                                }).catch(err => { this.logError(err);})
+                                return prom;
                         //}
                 } else if (method !== '' && method.toUpperCase() === HttpMethod.POST.value) {
 
                         // console.log('payload - ' + json);
-                        this.http.post(url, JSON.stringify(model))
-                                .subscribe(data => {
+                        const prom =  this.http.post(url, JSON.stringify(model))
+                                // .subscribe(data => {
+                                //         this.processResponse(data.result, serverUrl, flowName);
+                                // },
+                                // err => {this.logError(err);
+                                //         this.hideLoader();
+                                //         },
+                                // () => {
+                                //         console.log('Process Execution query completed..');
+                                //         this.hideLoader();
+                                //         this.fetchNext();
+                                // }
+                                // );
+                                .toPromise().then(data => {
                                         this.processResponse(data.result, serverUrl, flowName);
-                                },
-                                err => {this.logError(err);
-                                        this.hideLoader();
-                                        },
-                                () => {
-                                        console.log('Process Execution query completed..');
-                                        this.hideLoader();
-                                        this.fetchNext();
-                                }
-                                );
+                                }).catch(err => { this.logError(err);})
+                                return prom;
                 } else {
                         throw 'http method not supported';
                 }
@@ -956,7 +964,7 @@ export class PageService {
     }
 
     private processRequest(request:RequestContainer) {
-        this.executeCalls(request, '$execute', new GenericDomain(), 'POST');  
+        this.executeCalls(request, '$execute', new GenericDomain(), 'POST').then(res => {this.hideLoader();console.log(request.path); console.log('Process Execution query completed..');this.fetchNext()}); 
     }
 
     private fetchNext() {
