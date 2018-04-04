@@ -127,6 +127,7 @@ public class DefaultListParamState<T> extends AbstractListPaginatedParam<T> impl
 
 	@Override
 	public void clear() {
+		clearPageMeta();
 		clear(true);
 	}
 	
@@ -172,6 +173,7 @@ public class DefaultListParamState<T> extends AbstractListPaginatedParam<T> impl
 	
 	@Override
 	public boolean remove(final ListElemParam<T> pElem) {
+		clearPageMeta();
 		final LockTemplate rLockTemplate = isMapped() ? findIfMapped().getMapsTo().getLockTemplate() : getLockTemplate();
 		
 		return rLockTemplate.execute(()->{
@@ -279,6 +281,7 @@ public class DefaultListParamState<T> extends AbstractListPaginatedParam<T> impl
 	
 	@Override
 	public ListElemParam<T> add() {
+		clearPageMeta();
 		final LockTemplate rLockTemplate = isMapped() ? findIfMapped().getMapsTo().getLockTemplate() : getLockTemplate();
 		
 		ListElemParam<T> pColElem = rLockTemplate.execute(()->{
@@ -337,6 +340,7 @@ public class DefaultListParamState<T> extends AbstractListPaginatedParam<T> impl
 	
 	@Override
 	public boolean add(T elem) {
+		clearPageMeta();
 		//ListElemParam<T> pColElem = add();
 		final LockTemplate rLockTemplate = isMapped() ? findIfMapped().getMapsTo().getLockTemplate() : getLockTemplate();
 		
@@ -360,6 +364,7 @@ public class DefaultListParamState<T> extends AbstractListPaginatedParam<T> impl
 	
 	@Override
 	public boolean add(ListElemParam<T> pColElem) {
+		clearPageMeta();
 		return changeStateTemplate((rt, h, lockId)->{
 			List<T> list = getNestedCollectionModel().instantiateOrGet();
 			

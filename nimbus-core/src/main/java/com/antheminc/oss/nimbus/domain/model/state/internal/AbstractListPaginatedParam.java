@@ -15,23 +15,21 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.internal;
 
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.antheminc.oss.nimbus.domain.model.state.EntityStateAspectHandlers;
+import com.antheminc.oss.nimbus.domain.model.state.ExecutionRuntime;
 import com.antheminc.oss.nimbus.domain.model.state.StateType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import lombok.Getter;
 
 /**
  * @author Soham Chakravarti
@@ -41,8 +39,11 @@ import com.antheminc.oss.nimbus.domain.model.state.StateType;
 public abstract class AbstractListPaginatedParam<T> extends DefaultParamState<List<T>> implements ListParam<T> {
 	
 	@JsonIgnore
-	private Page<T> pageDelegate;
-
+	private Pageable pageable;
+	
+	@JsonIgnore
+	private int totalContent;
+	
 	public AbstractListPaginatedParam(Model<?> parentModel, ParamConfig<List<T>> config, EntityStateAspectHandlers aspectHandlers) {
 		super(parentModel, config, aspectHandlers);
 	}
@@ -58,130 +59,44 @@ public abstract class AbstractListPaginatedParam<T> extends DefaultParamState<Li
 	@Override
 	public abstract AbstractListPaginatedParam<T> findIfCollection();
 
-	@Override
-	protected void initStateInternal() {
-		// wrap up default initializations
-		super.initStateInternal();
-		
-		// create page
-		List<T> content = Optional.ofNullable(getLeafState()).orElse(Collections.emptyList());
-		this.pageDelegate = new PageImpl<>(content);
+	public Page<T> getPage() {
+		return pageable==null ? new PageWrapper<T>(this) : new PageWrapper<T>(this, pageable, totalContent);
 	}
 	
 	@Override
-	protected List<T> preSetState(List<T> state) {
-		// TODO Auto-generated method stub
-		return super.preSetState(state);
+	protected Action postSetState(Action change, List<T> state, String localLockId, ExecutionRuntime execRt, SetStateListener<List<T>> cb) {
+		clearPageMeta();
+		return super.postSetState(change, state, localLockId, execRt, cb);
 	}
 	
 	@Override
-	protected void postSetState(Action change, List<T> state) {
-		// create only if not invoked via setPage
-		List<T> content = Optional.ofNullable(getLeafState()).orElse(Collections.emptyList());
-		this.pageDelegate = new PageImpl<>(content);
-	}
-	
-	@Override
-	public void setPage(Page<T> page) {
-		List<T> content = page.getContent();
+	public void setPage(List<T> content, Pageable pageable, int totalContent) {
+		this.pageable = pageable;
+		this.totalContent = totalContent;
 		setState(content);
 	}
 	
-	@Override
-	public int getNumber() {
-		// TODO Auto-generated method stub
-		return 0;
+	protected void clearPageMeta() {
+		pageable = null;
+		totalContent = 0;
 	}
 
-	@Override
-	public int getSize() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int getNumberOfElements() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public List<T> getContent() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean hasContent() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public Sort getSort() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean isFirst() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isLast() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean hasNext() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean hasPrevious() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public Pageable nextPageable() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Pageable previousPageable() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Iterator<T> iterator() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public int getTotalPages() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public long getTotalElements() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public <S> Page<S> map(Converter<? super T, ? extends S> converter) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
-	
+	@Getter
+	public static class PageWrapper<T> extends PageImpl<T> {
+		
+		public PageWrapper(ListParam<T> p) {
+			super(new ReadOnlyListSupplier<>(p));
+		}
+		
+		public PageWrapper(ListParam<T> p, Pageable pageable, int total) {
+			super(new ReadOnlyListSupplier<>(p), pageable, total);
+		}
+		
+		@JsonIgnore
+		@Override
+		public List<T> getContent() {
+			return super.getContent();
+		}
+	}
 }
