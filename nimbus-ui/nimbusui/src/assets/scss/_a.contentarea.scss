@@ -114,14 +114,15 @@ h3{
     
 
 }
-
+.info-card h1.page-title {
+    @extend .sr-only;
+}
 
 h1.page-title {
     margin-bottom:0;
     font-size: 1.3rem;
     margin-left:10px;
     font-weight: 400;
-    display:none;
     &::before{
         font-size: 1.9rem;
         color: $iconColor;
