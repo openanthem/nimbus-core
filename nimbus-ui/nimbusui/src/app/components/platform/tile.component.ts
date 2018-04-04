@@ -86,10 +86,7 @@ export class Tile extends BaseElement {
         }
         // Check for initialization
         if (this.element.config && this.element.config.initializeComponent()) {
-            this.pageSvc.invoke(this.element.path, '$execute', 'GET').subscribe(
-                result => {}
-            );
-            //this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'POST');
+            this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'POST');
         }
     }
 }
