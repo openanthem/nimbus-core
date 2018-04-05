@@ -131,38 +131,51 @@ h1.page-title {
     }
     
 }
-.dashboard-cm::before{
+
+.CmDashIcon::before{
     content: "\F080";
 }
+.SupDashIcon::before{
+    content: "\f0ce";
+}
+.planOfCareIcon::before{
+    content: "\f12e";
+}
+.notesIcon::before{
+    content: "\f03a";
+}
+.correspondenceIcon::before{
+    content: "\f08b";
+}
+.documentsIcon::before{
+    content: "\f0c5";
+}
+.caseHistoryIcon::before{
+    content: "\f0ea";
+}
+.authorizationsIcon::before{
+    content: "\f0ec";
+}
+.assessmentsIcon::before{
+    content: "\f15c";
+}
 .memberSearchIcon::before{
-    color: $iconColor;
-    font-family: fontAwesome;
     content: "\F002";
-    margin-right: .3rem;
+}
+.memberOverviewIcon::before{
+    content: "\f0c0";
 }
 .caseSearchIcon::before{
-    color: $iconColor;
-    font-family: fontAwesome;
     content: "\F002";
-    margin-right: .3rem;
 }
 .caseIcon::before{
-    color: $iconColor;
-    font-family: fontAwesome;
     content: "\F2bc";
-    margin-right: .3rem;
 }
-.taskIcon::before{
-    color: $iconColor;
-    font-family: fontAwesome;
-    content: "\F0ae";
-    margin-right: .3rem;
+.tasksIcon::before{
+    content: "\f039";
 }
 .filterIcon::before{
-    color: $iconColor;
-    font-family: fontAwesome;
     content: "\F0b0";
-    margin-right: .3rem;
 }
 
 .col-xs-12 {
