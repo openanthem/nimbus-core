@@ -1,4 +1,3 @@
-import { ParamUtils } from './../shared/param-utils';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -28,12 +27,16 @@ import { Validation, ViewConfig,
         Param,
         ParamConfig,
         Type,
-        Result, ViewRoot, ExecuteResponse
+        Result, ViewRoot
 } from '../shared/app-config.interface';
 import { CustomHttpClient } from './httpclient.service';
 
 import { Subject } from 'rxjs/Subject';
 import { GenericDomain } from '../model/generic-domain.model';
+import { RequestContainer } from '../shared/requestcontainer';
+import { Observable } from 'rxjs/Observable';
+import { ExecuteResponse } from './../shared/app-config.interface';
+import { ParamUtils } from './../shared/param-utils';
 
 /**
  * \@author Dinakar.Meda
@@ -59,6 +62,8 @@ export class PageService {
 
         gridValueUpdate = new Subject<Param>();
         gridValueUpdate$ = this.gridValueUpdate.asObservable();
+
+    private requestQueue :RequestContainer[] = [];
 
         private _entityId: number = 0;
         constructor(private http: CustomHttpClient, private loaderService: LoaderService, private configService: ConfigService) {
@@ -854,4 +859,5 @@ export class PageService {
         private hideLoader(): void {
                 this.loaderService.hide();
         }
+
 }

@@ -277,6 +277,7 @@ export class Param implements Serializable<Param> {
         }
         this.collectionElem = inJson.collectionElem;
         this.collection = inJson.collection;
+        this.path = inJson.path;
         if ( this.config != null && this.config.uiStyles && this.config.uiStyles.attributes.alias === 'CardDetailsGrid' ) {
             if(inJson.leafState != null) {
                 this.leafState = new CardDetailsGrid().deserialize( inJson.leafState );
@@ -294,14 +295,18 @@ export class Param implements Serializable<Param> {
             this.leafState = ParamUtils.convertServerDateStringToDate(inJson.leafState, this.config.type.name);
         } else {
             this.leafState = inJson.leafState;
+
+            // Handle any transformations that need to be applied to the leaf state
+            if (typeof inJson.leafState === 'object' && (this.type.model && this.type.model.params)) {
+
+                this.leafState = ParamUtils.applyLeafStateTransformations(inJson.leafState, this);
+            }
         }
 
         if ( inJson.collectionElem ) {
             this.elemId = inJson.elemId;
             this.leafState = this.createRowData(this, true);
         }
-
-        this.path = inJson.path;
         if (inJson.visible != null) {
             this.visible = inJson.visible;
         }
@@ -472,6 +477,7 @@ export class ModelEvent implements Serializable<ModelEvent> {
         this.type = inJson.type;
         this.value = inJson.value;
         this.id = inJson.id;
+
         return this;
     }
 }

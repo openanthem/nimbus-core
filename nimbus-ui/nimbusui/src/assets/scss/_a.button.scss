@@ -9,8 +9,10 @@ button:focus{
   &.center{
     @extend .text-sm-center;
   }
-  &.right{
+  &.right, &.text-sm-right{
     @extend .text-sm-right;
+    padding: 0;
+
   }
   &.inline{
     display: inline-block;
@@ -24,6 +26,7 @@ button:focus{
   color:#fff;
   line-height: 1;
   margin-right: 9px;
+  margin-left: 9px;
   margin-bottom: 1rem;
   padding: .6rem 1.4rem;
   border-radius: .5rem;
@@ -46,6 +49,7 @@ button:focus{
   color:#fff;
   line-height: 1;
   margin-right: 9px;
+  margin-left: 9px;
   margin-bottom: 1rem;
   padding: .6rem 1.4rem;
   border-radius: .5rem;
@@ -62,7 +66,16 @@ button:focus{
     border-color: #b9b6b6;
   }
 }
-
+.ui-datatable-header .btn-plain{
+  
+  &:hover{
+    text-decoration: none;
+  }
+ .fa-fw {
+    font-size: 1rem;
+    padding-top: .1rem;
+}
+}
 .btn-plain .fa-fw {
   width: 1.28571429em;
   text-align: center;
@@ -91,7 +104,7 @@ button:focus{
     text-transform: initial;
     text-decoration: underline;
       color:#006bc2;
-    line-height:1;
+    line-height:1.5;
     &:hover{
       color: #e5991c;
       background: none;

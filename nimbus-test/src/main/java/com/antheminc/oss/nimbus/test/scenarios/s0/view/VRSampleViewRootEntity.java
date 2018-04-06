@@ -28,7 +28,7 @@ import lombok.Setter;
 
 /**
  * @author Soham Chakravarti
- *
+ * @author Sandeep Mantha - added a new page page_orange
  */
 @Domain(value="sample_view", includeListeners={ListenerType.websocket})
 @MapsTo.Type(SampleCoreEntity.class)
@@ -45,4 +45,6 @@ public class VRSampleViewRootEntity {
 	@Page(route="sample_view_colors")
 	private VPSampleViewPageRed page_red;
 
+	@Page(route="sample_view_colors")
+	private VPSampleViewPageOrange page_orange;
 }

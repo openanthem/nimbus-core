@@ -136,3 +136,10 @@
         }
     }
 }
+.ui-datatable .ui-datatable-data>tr>td.dropdown {
+    padding-top: 7px;
+    padding-bottom: 0;
+}
+.ui-datatable .ui-datatable-thead>tr>th, .ui-datatable .ui-datatable-tfoot>tr>td, .ui-datatable .ui-datatable-data>tr>td{
+    padding: .5rem .4rem;
+}
