@@ -19,8 +19,8 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
-import org.assertj.core.util.Arrays;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
@@ -125,7 +125,7 @@ public class DefaultEntityConfigBuilder extends AbstractEntityConfigBuilder impl
 		
 		/* handle ignore field */
 		if(AnnotatedElementUtils.isAnnotated(f, ConfigNature.Ignore.class) && 
-				Arrays.isNullOrEmpty(f.getAnnotation(ConfigNature.Ignore.class).listeners())) 
+				ArrayUtils.isEmpty(f.getAnnotation(ConfigNature.Ignore.class).listeners())) 
 			return null;
 		
 		if("serialVersionUID".equals(f.getName())) 
