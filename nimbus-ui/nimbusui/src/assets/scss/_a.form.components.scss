@@ -323,6 +323,10 @@ p-checkbox.ng-dirty.ng-invalid .ui-chkbox-box {
             background-image: none;
             background-color: #006bc2;
             color: #fff;
+            border-color: #006bc2;
+            -webkit-font-smoothing: antialiased;
+            width: 1.1rem;
+            height: 1.1rem;
             &::after{
                 font-family: fontAwesome;
                 content: "\F00C";

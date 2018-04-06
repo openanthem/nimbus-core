@@ -102,7 +102,7 @@ export class Form implements OnInit, OnChanges {
         } else if(this.element.config.uiStyles.attributes.cssClass === 'inline') {
             this.elementCss = 'd-inline-block mr-3';
         } else if(this.element.config.uiStyles.attributes.cssClass === 'questionGroup') {
-            this.elementCss = 'form-inline questionGroup';
+            this.elementCss = ' questionGroup';
         } else {
             this.elementCss = this.element.config.uiStyles.attributes.cssClass;
         }

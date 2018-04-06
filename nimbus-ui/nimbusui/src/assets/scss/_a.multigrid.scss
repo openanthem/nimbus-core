@@ -178,6 +178,8 @@ ng-component{
         margin-left: 1rem;
         font-size: 1.3rem;
         margin-top: .3rem;
+        position: relative;
+        z-index: 1;
     }
     th.dropdown, td.dropdown {
         width: 40px;
@@ -290,6 +292,7 @@ ng-component{
     left: 40%;
     padding-top: .6rem;
     font-size: .9rem;
+    z-index: 1;
 }
 .ui-datatable-header .btn-plain { 
     color: #FFF; 
