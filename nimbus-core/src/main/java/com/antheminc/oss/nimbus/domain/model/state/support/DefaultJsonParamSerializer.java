@@ -21,7 +21,9 @@ import java.util.function.Supplier;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Grid;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.ValidationGroup;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListElemParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Model;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -81,24 +83,27 @@ public class DefaultJsonParamSerializer extends JsonSerializer<Param<?>> {
 			gen.writeStringField(K_CONFIGID, p.getConfigId());
 			
 			Model<?> rootDomain = p.getRootDomain();
-			if (rootDomain != null && p == rootDomain.getAssociatedParam()) {
+			if(rootDomain != null && p == rootDomain.getAssociatedParam()) {
 				gen.writeObjectField(K_CONFIG, p.getConfig());
 			}
 			
+			//writer.writeBooleanIfNotDefault(K_IS_COL, p::isCollection, false);
+			writer.writeBooleanIfNotDefault(K_IS_COL_ELEM, p::isCollectionElem, false);
+			writer.writeBooleanIfNotDefault(K_IS_ENABLED, p::isEnabled, true);
+			writer.writeBooleanIfNotDefault(K_IS_VISIBLE, p::isVisible, true);
+			//writer.writeBooleanIfNotDefault(K_IS_NESTED, p::isNested, false);
+
 			Class<? extends ValidationGroup>[] activeValidationGroups = p.getActiveValidationGroups();
-			if (ArrayUtils.isNotEmpty(activeValidationGroups))
+			if(ArrayUtils.isNotEmpty(activeValidationGroups))
 				gen.writeObjectField(K_ACTIVE_VALS, p.getActiveValidationGroups());
 			
-			writer.writeObjectIfNotNull(K_LEAF_STATE, p::getLeafState);
 			writer.writeObjectIfNotNull(K_MESSAGE, p::getMessage);
-			writer.writeObjectIfNotNull(K_TYPE, p::getType);
 			writer.writeObjectIfNotNull(K_VALUES, p::getValues);
 			
-			gen.writeBooleanField(K_IS_COL, p.isCollection());
-			gen.writeBooleanField(K_IS_COL_ELEM, p.isCollectionElem());
-			gen.writeBooleanField(K_IS_ENABLED, p.isEnabled());
-			gen.writeBooleanField(K_IS_VISIBLE, p.isVisible());
-			gen.writeBooleanField(K_IS_NESTED, p.isNested());
+			if(!p.getType().getName().equals("string"))
+				writer.writeObjectIfNotNull(K_TYPE, p::getType);
+			
+			writer.writeLeafStateConditionally(p);
 			
 			gen.writeEndObject();
 			
@@ -119,6 +124,35 @@ public class DefaultJsonParamSerializer extends JsonSerializer<Param<?>> {
 				return;
 			
 			gen.writeObjectField(fieldName, o);
+		}
+		
+		private void writeBooleanIfNotDefault(String fieldName, Supplier<Boolean> cb, boolean defaultValue) throws IOException {
+			boolean o = cb.get();
+			if(o==defaultValue)
+				return;
+			
+			gen.writeBooleanField(fieldName, o);
+		}
+		
+		private void writeLeafStateConditionally(Param<?> p) throws IOException {
+			Object o = p.getLeafState();
+			if(o==null)
+				return;
+			
+			if(p.isLeaf() || hasGrid(p))
+				gen.writeObjectField(K_LEAF_STATE, o);
+		}
+		
+		private boolean hasGrid(Param<?> p) {
+			if(!p.isCollectionElem())
+				return false;
+			
+			ListElemParam<?> elemParam = p.findIfCollectionElem();
+			Param<?> colParam = elemParam.getParentModel().getAssociatedParam();
+			if(colParam.getConfig().getUiStyles()==null)
+				return false;
+			
+			return colParam.getConfig().getUiStyles().getAnnotation().annotationType()==Grid.class;
 		}
 	}
 }
