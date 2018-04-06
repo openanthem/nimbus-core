@@ -127,7 +127,9 @@ export class Type implements Serializable<Type,string> {
     constructor(private configSvc: ConfigService) {}
 
     deserialize( inJson, path ) {
-        this.nested = inJson.nested;
+        if(typeof inJson.nested !== 'undefined'){
+            this.nested = inJson.nested;
+        }
         this.name = inJson.name;
         this.collection = inJson.collection;
 
@@ -213,13 +215,13 @@ export class Param implements Serializable<Param, string> {
     collection: boolean;
     collectionElem: boolean;
     elemId: string;
-    enabled: boolean;
+    enabled: boolean = true;
     gridList: any[];
     message : Message;
     paramState: Param[];
     values : Values[];
-    visible: boolean;
-    activeValidationGroups: String[];
+    visible: boolean = true;
+    activeValidationGroups: String[] = [];
     _alias: string;
     _config: ParamConfig;
 
@@ -269,8 +271,15 @@ export class Param implements Serializable<Param, string> {
             let config: ParamConfig = new ParamConfig(this.configSvc).deserialize(inJson.config);
             this.configSvc.setViewConfigToParamConfigMap(config.id, config);
         }
-        this.collectionElem = inJson.collectionElem;
-        this.collection = inJson.collection;
+        
+        if (typeof inJson.collectionElem !== 'undefined'){
+            this.collectionElem = inJson.collectionElem;
+        }    
+
+        if (typeof inJson.collection !== 'undefined'){
+            this.collection = inJson.collection;
+        }
+
         if(path == inJson.path){
             this.path = path;
         }
@@ -283,7 +292,14 @@ export class Param implements Serializable<Param, string> {
         }
         if (inJson.type != null) {
             this.type = new Type(this.configSvc).deserialize( inJson.type, this.path );
+        } else {
+            this.type =  new Type (this.configSvc);
+            this.type['nested'] = false;
+            this.type['name'] = 'string';
+            this.type['collection'] = false;
         }
+
+
         console.log(this.path);
        // this.path = inJson.path;
         if ( this.config != null && this.config.uiStyles && this.config.uiStyles.attributes.alias === 'CardDetailsGrid' ) {
@@ -313,14 +329,14 @@ export class Param implements Serializable<Param, string> {
             }
         }
 
-        if ( inJson.collectionElem ) {
+        if ( inJson.collectionElem && this.leafState) {
             this.elemId = inJson.elemId;
             this.leafState = this.createRowData(this, true);
         }
-        if (inJson.visible != null) {
+        if (typeof inJson.visible !== 'undefined') {
             this.visible = inJson.visible;
         }
-        if (inJson.enabled != null) {
+        if (typeof inJson.enabled !== 'undefined') {
             this.enabled = inJson.enabled;
         }
         if ( inJson.message != null ) {
@@ -332,7 +348,10 @@ export class Param implements Serializable<Param, string> {
                 this.values.push( new Values().deserialize( inJson.values[value] ) );
             }
         }
-        this.activeValidationGroups = inJson.activeValidationGroups;
+
+        if (typeof inJson.activeValidationGroups ! == 'undefined') {
+            this.activeValidationGroups = inJson.activeValidationGroups;
+        }
         return this;
     }
 }
