@@ -242,7 +242,7 @@ export class PageService {
 
         getFlowNameFromOutput(paramPath: string): string {
                 let flow = this.getFlowNameFromPath(paramPath);
-                if (flow.indexOf(':') > 0) {
+                if (flow && flow.indexOf(':') > 0) {
                         flow = flow.substr(0, flow.indexOf(':'));
                 }
                 return flow;
@@ -252,7 +252,7 @@ export class PageService {
                 if (model != null && model.params != null) {
                         for (var p in model.params) {
                                 let pageParam: Param = model.params[p];
-                                if (pageParam.config.uiStyles != null && pageParam.config.uiStyles.name === 'ViewConfig.Page') {
+                                if (pageParam != null && pageParam.config.uiStyles != null && pageParam.config.uiStyles.name === 'ViewConfig.Page') {
                                         if (pageParam.config.uiStyles.attributes.defaultPage) {
                                                 return pageParam;
                                         }
@@ -284,13 +284,13 @@ export class PageService {
                         }
                 });
                 outputs.forEach(output => {
-                        if (output.value == null) {
+                        if (output.value == null || ParamUtils.isEmpty(output.value)) {
                                 this.traverseOutput(output.outputs);
                         } else {
                                 if (output.action === Action._new.value) {
                                         let flow = this.getFlowNameFromOutput(output.value.path);
                                         // Check if the _new output is for the Root Flow
-                                        if (output.value.path == '/' + flow) {
+                                        if (output.value.path == "/" + flow) {
                                                 let viewRoot: ViewRoot = new ViewRoot();
                                                 // Check if there is a layout for this domain
                                                 if (output.value.config.type.model.uiStyles) {
@@ -597,7 +597,7 @@ export class PageService {
                         if (rootParam.type.model && rootParam.type.model.params) {
                                 rootParam.type.model.params.forEach(element => {
                                         // Check if param matches the updated param path
-                                        if (element.config && element.config.code === paramTree[node]) {
+                                        if (element && element.config && element.config.code === paramTree[node]) {
                                                 if ((element.config.type && element.config.type.collection) || node >= numNodes) {
                                                         // Matching param node OR Collection node. Collection nodes cannot be traversed further.
                                                         this.processModelEvent(element, eventModel);
@@ -650,9 +650,11 @@ export class PageService {
                 }
                 if (gridElementParams) {
                         gridElementParams.forEach(param => {
-                                let p = new Param(this.configService).deserialize(param);
-                                paramState.push(p.type.model.params);
-                                gridData.push(this.createRowData(p, nestedParamIdx));
+                                let p = new Param(this.configService).deserialize(param, param.path);
+                                if(p != null) {
+                                        paramState.push(p.type.model.params);
+                                        gridData.push(this.createRowData(p, nestedParamIdx));
+                                }
                         });        
                 }
                 gridParam['paramState'] = paramState;
@@ -707,7 +709,7 @@ export class PageService {
                         }
                 } else if (param.config.uiStyles != null && param.config.uiStyles.attributes.alias === 'CardDetailsGrid') {
                         if (param.type.collection === true) {
-                                let payload: Param = new Param(this.configService).deserialize(eventModel.value);
+                                let payload: Param = new Param(this.configService).deserialize(eventModel.value, eventModel.value.path);
                                 param.type.model['params'] = payload.type.model.params;
                         } else {
                                 this.traverseParam(param, eventModel);
@@ -753,12 +755,12 @@ export class PageService {
         /** Update param with value */
         traverseParam(param: Param, eventModel: ModelEvent) {
                 /* Flow-Wrapper class also invokes methods that eventually call this behaviour. We need to make sure that the eventModel is deserialized by then */
-                let payload: Param = new Param(this.configService).deserialize(eventModel.value);
+                let payload: Param = new Param(this.configService).deserialize(eventModel.value, eventModel.value.path);
                 if (param.type.nested === true) {
                         this.updateParam(param, payload);
                         if (param.type.model && payload.type.model && payload.type.model.params) {
                                 for (var p in param.type.model.params) {
-                                        this.updateParam(param.type.model.params[p], payload.type.model.params[p]);
+                                                this.updateParam(param.type.model.params[p], payload.type.model.params[p]);
                                 }
                         }
                         if (param.type.model === undefined && payload.type.model) {

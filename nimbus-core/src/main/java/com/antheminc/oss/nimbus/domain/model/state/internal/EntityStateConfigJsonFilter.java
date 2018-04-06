@@ -15,11 +15,14 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.internal;
 
-import java.util.UUID;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.ArrayUtils;
 
 import com.antheminc.oss.nimbus.UnsupportedScenarioException;
+import com.antheminc.oss.nimbus.domain.defn.ConfigNature.Ignore;
+import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
+import com.antheminc.oss.nimbus.domain.model.config.AnnotationConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState;
-import com.antheminc.oss.nimbus.domain.model.state.EntityState.Model;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -32,42 +35,37 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
  */
 public class EntityStateConfigJsonFilter extends SimpleBeanPropertyFilter {
 
-	private static final ThreadLocal<String> parserScopeInThread = new ThreadLocal<>();
-	
 	@Override
 	public void serializeAsField(Object pojo, JsonGenerator jgen, SerializerProvider provider, PropertyWriter writer)
 	throws Exception {
-
-		String lockId = null;
-		try {
+		
+		if (include(writer)) {
 			
-			if (include(writer)) {
-
-				if (EntityState.class.isInstance(pojo) && writer.getName().equals("config")) {
-					EntityState<?> es = getEntityState(pojo);
-
-					Model<?> rootDomain = es.getRootDomain();
-					if (rootDomain != null && es != rootDomain.getAssociatedParam())
+			if(pojo instanceof Param) { // TODO pending code merge with config default optimization
+				Param<?> p = (Param<?>)pojo;
+				if(CollectionUtils.isNotEmpty(p.getConfig().getExtensions())) {
+					
+					boolean isWebSocketListenerPresent = p.getConfig().getExtensions()
+						.stream()
+						.map(AnnotationConfig::getAnnotation)
+						.filter(a->a.annotationType()==Ignore.class)
+						.map(Ignore.class::cast)
+						.map(Ignore::listeners)
+						.filter(array->ArrayUtils.contains(array, ListenerType.websocket))
+						.findFirst()
+						.isPresent();
+					
+					if(isWebSocketListenerPresent)
 						return;
-				} 
-				
-				if (Param.class.isInstance(pojo) && writer.getName().equals("path")) {
-					if (parserScopeInThread.get() == null) {
-						lockId = UUID.randomUUID().toString();
-						parserScopeInThread.set(lockId);
-					}
 				}
+			}
 
-				writer.serializeAsField(pojo, jgen, provider);
-				return;
-
-			} else if (!jgen.canOmitFields()) {
-				writer.serializeAsOmittedField(pojo, jgen, provider);
-			} 
-		} finally {
-			if(lockId != null) 
-				parserScopeInThread.set(null);
-		}
+			writer.serializeAsField(pojo, jgen, provider);
+			return;
+	        		
+		} else if (!jgen.canOmitFields()) { 
+	    	writer.serializeAsOmittedField(pojo, jgen, provider);
+	    }
 	}
 	
 	private EntityState<?> getEntityState(Object o) {

@@ -123,7 +123,7 @@ public class DefaultAnnotationConfigHandler implements AnnotationConfigHandler {
 			// handle repeatable container
 			if(metaTypesOnCurrDeclaredAnnotation!=null && metaTypesOnCurrDeclaredAnnotation.contains(RepeatContainer.class.getName())) {
 				
-				// get repeat container meta annotation and use declared repeatable annotaion
+				// get repeat container meta annotation and use declared repeatable annotation
 				RepeatContainer repeatContainerMetaAnnotation = AnnotationUtils.getAnnotation(currDeclaredAnnotation, RepeatContainer.class);
 				Class<? extends Annotation> repeatableAnnotationDeclared = repeatContainerMetaAnnotation.value();
 				
