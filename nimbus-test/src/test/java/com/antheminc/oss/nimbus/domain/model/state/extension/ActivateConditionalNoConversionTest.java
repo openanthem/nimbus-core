@@ -29,6 +29,7 @@ import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.AbstractStateEventHandlerTests;
 import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
+import com.antheminc.oss.nimbus.entity.AbstractEntity.IdLong;
 import com.antheminc.oss.nimbus.entity.AbstractEntity.IdString;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
 
@@ -42,7 +43,7 @@ public class ActivateConditionalNoConversionTest extends AbstractStateEventHandl
 	private static final String CORE_PARAM_nc_form = "/sample_core/nc_form";
 	private static final String VIEW_PARAM_nc_form = "/sample_view/page_green/tile/view_sample_form/view_nc_form";
 
-	private String REF_ID;
+	private Long REF_ID;
 	
 	@Override
 	protected Command createCommand() {
@@ -81,7 +82,7 @@ public class ActivateConditionalNoConversionTest extends AbstractStateEventHandl
 
 		executionContextLoader.clear();
 		
-		_q = (QuadModel<?, ? extends IdString>)executionContextLoader.load(_cmd).getQuadModel();
+		_q = (QuadModel<?, ? extends IdLong>)executionContextLoader.load(_cmd).getQuadModel();
 		assertNotNull(_q);
 		
 		_q.getRoot().getExecutionRuntime().onStartCommandExecution(_cmd);

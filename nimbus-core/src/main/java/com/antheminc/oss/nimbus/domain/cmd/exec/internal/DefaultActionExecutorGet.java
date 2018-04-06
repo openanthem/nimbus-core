@@ -94,14 +94,14 @@ public class DefaultActionExecutorGet extends AbstractFunctionCommandExecutor<Pa
 	}
 	
 	protected QuadModel<?, ?> createNewQuad(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx) {
-		final String refId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
+		final Long refId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
 		
 		final Object entity;
 		final Repo repo = rootDomainConfig.getRepo();
 		final String resolvedRepAlias = resolveEntityAliasByRepo(rootDomainConfig);
 		
 		// db - entity
-		if(Repo.Database.exists(repo) && StringUtils.isNotBlank(refId)) { // root (view or core) is persistent
+		if(Repo.Database.exists(repo) && refId != null) { // root (view or core) is persistent
 			entity = getRepositoryFactory().get(rootDomainConfig.getRepo())
 						._get(refId, rootDomainConfig.getReferredClass(), resolvedRepAlias, eCtx.getCommandMessage().getCommand().getAbsoluteUri());
 			
@@ -149,7 +149,7 @@ public class DefaultActionExecutorGet extends AbstractFunctionCommandExecutor<Pa
 		final String resolvedEntityAlias = resolveEntityAliasByRepo(rootDomainConfig);
 		String entityProcessAlias = resolvedEntityAlias + "_" + processStateAlias;
 		
-		final String entityRefId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
+		final Long entityRefId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
 		ProcessFlow processEntityState = getRepositoryFactory().get(repo)._get(entityRefId, ProcessFlow.class, entityProcessAlias);
 		return processEntityState;
 	}

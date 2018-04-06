@@ -48,7 +48,7 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 	
 	@Test
 	public void t01_colElem_add() {
-		String refId = createOrGetDomainRoot_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
 		MockHttpServletRequest colElemAdd_Req = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
 					.addNested("/page_green/tile/list_attached_noConversion_NestedEntity").addAction(Action._update).getMock();
 		
@@ -66,7 +66,7 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 	
 	@Test
 	public void t02_colElem_edit() {
-		String refId = createOrGetDomainRoot_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
 		
 		// create of get entry in db
 		SampleCoreEntity core = mongo.findById(refId, SampleCoreEntity.class, CORE_DOMAIN_ALIAS);
@@ -111,7 +111,7 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 	
 	@Test
 	public void t03_array_update_core() {
-		String refId = createOrGetDomainRoot_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
 		
 		MockHttpServletRequest req_arr_update = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(refId)
 				.addNested("/level1/level2b/string_array_b").addAction(Action._update).getMock();
@@ -139,7 +139,7 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 	
 	@Test
 	public void t04_array_update_view() {
-		String refId = createOrGetDomainRoot_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
 		
 		MockHttpServletRequest req_arr_update = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
 				.addNested("/page_green/tile/level1/level2b/string_array_b").addAction(Action._update).getMock();
@@ -167,7 +167,7 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 	
 	@Test
 	public void t05_updateOnlyGivenFields() {
-		String refId = createOrGetDomainRoot_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
 		
 		// Build the request for updating the form
 		MockHttpServletRequest req_update = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT)
@@ -207,7 +207,7 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 	
 	@Test
 	public void t06_updateOnlyGivenFields_nested() {
-		String refId = createOrGetDomainRoot_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
 		
 		// Build the request for updating the form
 		MockHttpServletRequest req_update = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT)
@@ -256,7 +256,7 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 	
 	@Test
 	public void t07_updateOnlyGivenFields_transient() {
-		String refId = createOrGetDomainRoot_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
 		
 		// Build the request for updating the form
 		MockHttpServletRequest req_update = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT)

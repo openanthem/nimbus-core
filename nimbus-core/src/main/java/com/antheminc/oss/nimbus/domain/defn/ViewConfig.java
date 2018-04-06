@@ -24,6 +24,9 @@ import java.lang.annotation.Target;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 import com.antheminc.oss.nimbus.domain.defn.extension.ParamContext;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * @author Soham Chakravarti
  *
@@ -844,6 +847,7 @@ public class ViewConfig {
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
+	@ViewStyle
 	public @interface GridColumn {
 		String alias() default "GridColumn";
 		boolean hidden() default false;
@@ -855,10 +859,18 @@ public class ViewConfig {
 		String placeholder() default "";
 		
 		public enum FilterMode {
-			equals,
-			contains,
-			endsWith,
-			in
+			equals("eq"),
+			contains("contains"),
+			endsWith("endsWith"),
+			in("in");
+			
+			@Getter @Setter
+			private String code;
+			
+			FilterMode(String code) {
+				this.code = code;
+			}
+			
 		}
 		
 		public enum SortAs {

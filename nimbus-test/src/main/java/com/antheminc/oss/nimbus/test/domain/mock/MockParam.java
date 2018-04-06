@@ -333,15 +333,4 @@ public class MockParam implements Param<Object> {
 		return null;
 	}
 
-	@Override
-	public Object getFilter() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setFilter(Object filter) {
-		// TODO Auto-generated method stub
-		
-	}
 }

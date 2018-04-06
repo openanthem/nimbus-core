@@ -83,7 +83,7 @@ public class VRSampleCoreEntityAccess {
 			// where to define default pageSize - @Grid already has it.
 		
 		@MapsTo.Path(linked = false)
-		@Config(url = "/vpSampleCoreEntityAccess/vtSampleCoreEntityAccess/vsSamplePageCoreEntityAccess/vgSamplePageCoreEntities.m/_process?fn=_set&url=/p/sample_core_access/_search?fn=query&where=<!filterCriteria!>")
+		@Config(url = "/vpSampleCoreEntityAccess/vtSampleCoreEntityAccess/vsSamplePageCoreEntityAccess/vgSamplePageCoreEntities.m/_process?fn=_set&url=/p/sample_core_access/_search?fn=query&<!page=y!>&where=<!filterCriteria!>")
 		@Grid(onLoad=true)
 		private List<SampleCoreEntityAccessLineItem> vgSamplePageCoreEntities;
 	}

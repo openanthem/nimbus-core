@@ -47,16 +47,13 @@ public abstract class SearchCriteria<T> implements Serializable {
 	
 	private Command cmd;
 	
-	private List<FilterCriteria<T>> filters;
-	
-	
 	@Getter @Setter
-	public static class FilterCriteria<T> implements Serializable {
+	public static class FilterCriteria implements Serializable {
 		
 		private static final long serialVersionUID = 1L;
 		
 		private String code;
-		private T value;
+		private String value; // client to send dates in ISODate even for filter (uuuu-MM-ddTHH:mm:ss:SSS'T')
 		
 	}
 	

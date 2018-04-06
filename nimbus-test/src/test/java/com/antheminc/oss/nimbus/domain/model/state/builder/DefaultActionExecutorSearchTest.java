@@ -19,10 +19,17 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.junit.FixMethodOrder;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -44,6 +51,7 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
 import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
 import com.antheminc.oss.nimbus.domain.model.state.extension.StaticCodeValueBasedCodeToLabelConverter;
+import com.antheminc.oss.nimbus.domain.model.state.internal.AbstractListPaginatedParam.PageWrapper.PageRequestAndRespone;
 import com.antheminc.oss.nimbus.entity.StaticCodeValue;
 import com.antheminc.oss.nimbus.entity.VStaticCodeValue;
 import com.antheminc.oss.nimbus.entity.client.Client;
@@ -319,7 +327,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		
 		assertNotNull(ops);
 		
-		Page<?> response = (Page<?>)ops.get(0).getValue();
+		PageRequestAndRespone<SampleCoreEntityAccess> response = (PageRequestAndRespone<SampleCoreEntityAccess>)ops.get(0).getValue();
 		
 		assertNotNull(response);
 		assertNotNull(response.getContent());
@@ -340,7 +348,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		
 		assertNotNull(ops);
 		
-		Page<SampleCoreEntityAccess> response = (Page<SampleCoreEntityAccess>)ops.get(0).getValue();
+		PageRequestAndRespone<SampleCoreEntityAccess> response = (PageRequestAndRespone<SampleCoreEntityAccess>)ops.get(0).getValue();
 		
 		assertNotNull(response);
 		assertNotNull(response.getContent());
@@ -350,7 +358,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 	
 	@Test
 	public void t14_testSearchByQueryPageableWithSort() {
-		cleanInsertSampleCoreAccess(new String[] {"1","2","3","4","5","6"});
+		cleanInsertSampleCoreAccess(new String[] {"1","2","3","4","5","11"});
 		
 		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/sample_core_access/_search?fn=query&pageSize=5&page=0&sortBy=attr_String,DESC");
 		
@@ -359,13 +367,13 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		
 		assertNotNull(ops);
 		
-		Page<SampleCoreEntityAccess> response = (Page<SampleCoreEntityAccess>)ops.get(0).getValue();
+		PageRequestAndRespone<SampleCoreEntityAccess> response = (PageRequestAndRespone<SampleCoreEntityAccess>)ops.get(0).getValue();
 		
 		assertNotNull(response);
 		assertNotNull(response.getContent());
 		assertEquals(5, response.getContent().size());
 		
-		assertEquals("6", response.getContent().get(0).getAttr_String());
+		assertEquals("11", response.getContent().get(0).getAttr_String());
 		assertEquals("5", response.getContent().get(1).getAttr_String());
 		assertEquals("4", response.getContent().get(2).getAttr_String());
 		assertEquals("3", response.getContent().get(3).getAttr_String());
@@ -383,7 +391,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		
 		assertNotNull(ops);
 		
-		Page<SampleCoreEntityAccess> response = (Page<SampleCoreEntityAccess>)ops.get(0).getValue();
+		PageRequestAndRespone<SampleCoreEntityAccess> response = (PageRequestAndRespone<SampleCoreEntityAccess>)ops.get(0).getValue();
 		
 		assertNotNull(response);
 		assertNotNull(response.getContent());
@@ -418,7 +426,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		
 		assertNotNull(ops);
 		
-		Page<SampleCoreEntityAccess> responsePage = (Page<SampleCoreEntityAccess>)ops.get(0).getValue();
+		PageRequestAndRespone<SampleCoreEntityAccess> responsePage = (PageRequestAndRespone<SampleCoreEntityAccess>)ops.get(0).getValue();
 		
 		assertNotNull(responsePage);
 		assertNotNull(responsePage.getContent());
@@ -438,7 +446,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		
 		assertNotNull(ops);
 		
-		Page<SampleCoreEntityAccess> responsePage = (Page<SampleCoreEntityAccess>)ops.get(0).getValue();
+		PageRequestAndRespone<SampleCoreEntityAccess> responsePage = (PageRequestAndRespone<SampleCoreEntityAccess>)ops.get(0).getValue();
 		
 		assertNotNull(responsePage);
 		assertNotNull(responsePage.getContent());
@@ -453,7 +461,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		
 		assertNotNull(ops2);
 		
-		Page<SampleCoreEntityAccess> responsePage2 = (Page<SampleCoreEntityAccess>)ops2.get(0).getValue();
+		PageRequestAndRespone<SampleCoreEntityAccess> responsePage2 = (PageRequestAndRespone<SampleCoreEntityAccess>)ops2.get(0).getValue();
 		
 		assertNotNull(responsePage2);
 		assertNotNull(responsePage2.getContent());
@@ -473,7 +481,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		
 		assertNotNull(ops);
 		
-		Page<SampleCoreEntityAccess> responsePage = (Page<SampleCoreEntityAccess>)ops.get(0).getValue();
+		PageRequestAndRespone<SampleCoreEntityAccess> responsePage = (PageRequestAndRespone<SampleCoreEntityAccess>)ops.get(0).getValue();
 		
 		assertNotNull(responsePage);
 		assertNotNull(responsePage.getContent());
@@ -493,12 +501,64 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		
 		assertNotNull(ops2);
 		
-		Page<SampleCoreEntityAccess> responsePage2 = (Page<SampleCoreEntityAccess>)ops2.get(0).getValue();
+		PageRequestAndRespone<SampleCoreEntityAccess> responsePage2 = (PageRequestAndRespone<SampleCoreEntityAccess>)ops2.get(0).getValue();
 		
 		assertNotNull(responsePage2);
 		assertNotNull(responsePage2.getContent());
 		assertEquals(1, responsePage2.getContent().size());
 		assertEquals("1", responsePage2.getContent().get(0).getAttr_String2());
+	}
+	
+	@Test
+	public void t20_tt() {
+		SampleCoreEntityAccess scea = new SampleCoreEntityAccess();
+		scea.setAttr_String("test1_string1");
+		scea.setAttr_String2("test2_string2");
+		scea.setAttr_LocalDate1(LocalDate.now());
+		scea.setAttr_LocalDateTime1(LocalDateTime.now());
+		scea.setAttr_ZonedDateTime1(ZonedDateTime.now());
+		scea.setAttr_Date1(new Date());
+		
+		SampleCoreEntityAccess scea2 = new SampleCoreEntityAccess();
+		scea2.setAttr_String("test1_string1");
+		scea2.setAttr_String2("test2_string2");
+		scea2.setAttr_LocalDate1(LocalDate.now().plusYears(1));
+		scea2.setAttr_LocalDateTime1(LocalDateTime.now().plusHours(2));
+		scea2.setAttr_ZonedDateTime1(ZonedDateTime.now().plusHours(9));
+		Date dt = new Date();
+		dt.setTime(15000);
+		scea2.setAttr_Date1(dt);
+		
+		mongoOps.save(scea, "sample_core_access");
+		mongoOps.save(scea2, "sample_core_access");
+		
+		//Instant instant = Instant.parse("2018-04-05");
+		//get date time only
+	    //LocalDateTime result = LocalDateTime.ofInstant(instant, ZoneId.of(ZoneOffset.UTC.getId()));
+		
+		LocalDateTime inputDate = LocalDateTime.now();
+		String inputDateString = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(inputDate);
+		LocalDate result = LocalDate.parse(inputDateString, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
+		
+		//LocalDateTime dtTime = LocalDateTime.parse("2018-04-05T04:00:00.000Z", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
+		//Date date = Date.from(dtTime.atZone(ZoneId.systemDefault()).toInstant());
+		//Date nextDate = DateUtils.addDays(date, 1);
+		
+	    int year = result.getYear();
+	    int month = result.getMonthValue();
+	    int day = result.getDayOfMonth();
+		int nextDay = day + 1;
+		
+		// localdate, localdatetime, Date query:
+		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/sample_core_access/_search?fn=query&where=sample_core_access.attr_LocalDateTime1.goe(java.time.LocalDate.of("+year+", "+month+", "+day+")).and(sample_core_access.attr_LocalDateTime1.lt(java.time.LocalDate.of("+year+", "+month+", "+nextDay+")))");
+		//CommandMessage cmdMsg = build(PLATFORM_ROOT+"/sample_core_access/_search?fn=query&where=sample_core_access.attr_LocalDateTime1.goe('"+date+"').and(sample_core_access.attr_LocalDateTime1.lt('"+nextDate+"'))");
+		
+		//zoneddatetime: ?
+		
+		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
+		List<Output<?>> ops  = multiOp.getOutputs();
+		
+		assertNotNull(ops);
 	}
 
 	private void getFirstPage() {
@@ -509,7 +569,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		
 		assertNotNull(ops);
 		
-		Page<SampleCoreEntityAccess> response = (Page<SampleCoreEntityAccess>)ops.get(0).getValue();
+		PageRequestAndRespone<SampleCoreEntityAccess> response = (PageRequestAndRespone<SampleCoreEntityAccess>)ops.get(0).getValue();
 		
 		assertNotNull(response);
 		assertNotNull(response.getContent());
@@ -528,7 +588,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		
 		assertNotNull(ops2);
 		
-		Page<SampleCoreEntityAccess> response2 = (Page<SampleCoreEntityAccess>)ops2.get(0).getValue();
+		PageRequestAndRespone<SampleCoreEntityAccess> response2 = (PageRequestAndRespone<SampleCoreEntityAccess>)ops2.get(0).getValue();
 		
 		assertNotNull(response2);
 		assertNotNull(response2.getContent());

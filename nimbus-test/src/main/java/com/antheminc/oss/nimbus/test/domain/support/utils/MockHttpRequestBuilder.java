@@ -45,7 +45,7 @@ public final class MockHttpRequestBuilder {
 		return new MockHttpRequestBuilder(new MockHttpServletRequest(httpMethod.name(), uri));
 	}
 	
-	public MockHttpRequestBuilder addRefId(String refId) {
+	public MockHttpRequestBuilder addRefId(Long refId) {
 		String uri = httpReq.getRequestURI() + ":" + refId;
 		httpReq.setRequestURI(uri);
 		

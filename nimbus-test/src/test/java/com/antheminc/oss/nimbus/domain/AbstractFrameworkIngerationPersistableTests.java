@@ -58,7 +58,7 @@ public abstract class AbstractFrameworkIngerationPersistableTests extends Abstra
 	protected static final String CORE_ASSOCIATEDPARAM_ROOT = PLATFORM_ROOT + "/" + CORE_ASSOCIATED_DOMAIN_ALIAS;
 	protected static final String VIEW_CEU_PARAM_ROOT = PLATFORM_ROOT + "/ceu_sampleassociatedentity";
 	
-	protected static String domainRoot_refId;
+	protected static Long domainRoot_refId;
 	
 	protected static final String BPM_CORE_DOMAIN_ALIAS = "bpmtestmodel";
 	protected static final String BPM_CORE_PARAM_ROOT = PLATFORM_ROOT + "/" + BPM_CORE_DOMAIN_ALIAS;
@@ -80,7 +80,7 @@ public abstract class AbstractFrameworkIngerationPersistableTests extends Abstra
 	protected static final String BPM_DPT_PARAM_ROOT = PLATFORM_ROOT + "/" + BPM_DPT_DOMAIN_ALIAS;	
 	
 	
-	public synchronized String createOrGetDomainRoot_RefId() {
+	public synchronized Long createOrGetDomainRoot_RefId() {
 		if(domainRoot_refId!=null) 
 			return domainRoot_refId;
 		

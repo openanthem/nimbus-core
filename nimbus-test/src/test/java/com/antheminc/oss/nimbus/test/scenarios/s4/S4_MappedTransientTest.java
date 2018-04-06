@@ -70,7 +70,7 @@ public class S4_MappedTransientTest extends AbstractFrameworkIntegrationTests {
 	public void t01_openForm_new_unassigned() throws Exception {
 		Object controllerResp_new = createNew_VR();
 		Param<?> vp_main = ExtractResponseOutputUtils.extractOutput(controllerResp_new);
-		String refId = ExtractResponseOutputUtils.extractDomainRootRefId(controllerResp_new);
+		Long refId = ExtractResponseOutputUtils.extractDomainRootRefId(controllerResp_new);
 		
 		Param<VForm> pForm = vp_main.findParamByPath("/form");
 		
@@ -99,7 +99,7 @@ public class S4_MappedTransientTest extends AbstractFrameworkIntegrationTests {
 	public void t02_openForm_new_unassigned_discard() throws Exception {
 		Object controllerResp_new = createNew_VR();
 		Param<?> vp_main = ExtractResponseOutputUtils.extractOutput(controllerResp_new);
-		String refId = ExtractResponseOutputUtils.extractDomainRootRefId(controllerResp_new);
+		Long refId = ExtractResponseOutputUtils.extractDomainRootRefId(controllerResp_new);
 		
 		Param<VForm> pForm = vp_main.findParamByPath("/form");
 		
@@ -136,7 +136,7 @@ public class S4_MappedTransientTest extends AbstractFrameworkIntegrationTests {
 	public void t03_openForm_save() throws Exception {
 		Object controllerResp_new = createNew_VR();
 		Param<?> vp_main = ExtractResponseOutputUtils.extractOutput(controllerResp_new);
-		String refId = ExtractResponseOutputUtils.extractDomainRootRefId(controllerResp_new);
+		Long refId = ExtractResponseOutputUtils.extractDomainRootRefId(controllerResp_new);
 		
 		Param<VForm> pForm = vp_main.findParamByPath("/form");
 		
@@ -179,7 +179,7 @@ public class S4_MappedTransientTest extends AbstractFrameworkIntegrationTests {
 	public void t04_openForm_save_delete() throws Exception {
 		Object controllerResp_new = createNew_VR();
 		Param<?> vp_main = ExtractResponseOutputUtils.extractOutput(controllerResp_new);
-		String refId = ExtractResponseOutputUtils.extractDomainRootRefId(controllerResp_new);
+		Long refId = ExtractResponseOutputUtils.extractDomainRootRefId(controllerResp_new);
 		
 		Param<VForm> pForm = vp_main.findParamByPath("/form");
 		
@@ -217,7 +217,7 @@ public class S4_MappedTransientTest extends AbstractFrameworkIntegrationTests {
 		assertTrue(core.getAnotherModeList().isEmpty());
 	}
 	
-	private static final String K_DB_REFID = "-99";
+	private static final Long K_DB_REFID = -99L;
 	
 	@Test
 	public void t05_onLoad_check() throws Exception {
@@ -282,7 +282,7 @@ public class S4_MappedTransientTest extends AbstractFrameworkIntegrationTests {
 	public void t06_add() throws Exception {
 		Object controllerResp_new = createNew_VR();
 		Param<?> vp_main = ExtractResponseOutputUtils.extractOutput(controllerResp_new);
-		String refId = ExtractResponseOutputUtils.extractDomainRootRefId(controllerResp_new);
+		Long refId = ExtractResponseOutputUtils.extractDomainRootRefId(controllerResp_new);
 		
 		Param<VForm> pForm = vp_main.findParamByPath("/form");
 

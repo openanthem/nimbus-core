@@ -38,7 +38,7 @@ import lombok.ToString;
 @Model(value="core_simplecase", excludeListeners={ListenerType.websocket})
 @Repo(value=Database.rep_mongodb, cache=Cache.rep_device)
 @Getter @Setter @ToString
-public class SimpleCase extends AbstractEntity.IdString {
+public class SimpleCase extends AbstractEntity.IdLong {
 
 	private static final long serialVersionUID = 1L;
     

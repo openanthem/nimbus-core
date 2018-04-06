@@ -75,7 +75,7 @@ public class S1_GridTest extends AbstractFrameworkIntegrationTests {
 
 	private S1C_AnotherMain build() {
 		S1C_AnotherMain s = new S1C_AnotherMain();
-		String suffix = "_" + counter.getAndIncrement();
+		Long suffix = Long.class.cast(counter.getAndIncrement());
 		s.setId(suffix);
 		s.setValue1("value1"+suffix);
 		s.setValue2("value2"+suffix);

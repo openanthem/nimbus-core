@@ -17,6 +17,8 @@ package com.antheminc.oss.nimbus.domain.model.state.extension;
 
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
@@ -29,6 +31,7 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.ExecutionTxnContext;
 import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
+import com.antheminc.oss.nimbus.domain.model.state.repo.IdSequenceRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepositoryFactory;
 import com.antheminc.oss.nimbus.entity.audit.AuditEntry;
@@ -62,10 +65,13 @@ public class AuditStateChangeHandler implements OnStateChangeHandler<Audit> {
 	
 	private JavaBeanHandler javaBeanHandler;
 	
+	private final IdSequenceRepository idSequenceRepo;
+	
 	public AuditStateChangeHandler(BeanResolverStrategy beanResolver) {
 		this.repositoryFactory = beanResolver.get(ModelRepositoryFactory.class);
 		this.domainConfigBuilder = beanResolver.get(DomainConfigBuilder.class);
 		this.javaBeanHandler = beanResolver.get(JavaBeanHandler.class);
+		this.idSequenceRepo =  beanResolver.get(IdSequenceRepository.class);
 	}
 	
 	@Override
@@ -83,7 +89,7 @@ public class AuditStateChangeHandler implements OnStateChangeHandler<Audit> {
 		
 		// TODO create simulate @Config entry which will re-use implementation for @ConfigConditional handler to execute
 		String domainRootAlias = leafParam.getRootDomain().getConfig().getAlias();
-		String domainRootRefId = String.valueOf(persistableDomainRoot.getIdParam().getState());
+		Long domainRootRefId = Long.valueOf(String.valueOf(persistableDomainRoot.getIdParam().getState()));
 		String propertyPath = leafParam.getPath();
 		String propertyType = leafParam.getType().getName();
 		Object oldValue = leafParam.getTransientOldState();
@@ -102,9 +108,14 @@ public class AuditStateChangeHandler implements OnStateChangeHandler<Audit> {
 
 		String auditHistoryAlias = findAuditHistoryAlias(auditConfig, configuredAnnotation);
 		Repo repo = findAuditHistoryRepo(auditConfig, configuredAnnotation);
+		
 		ModelRepository db = repositoryFactory.get(repo);
 		
-		db._save(auditHistoryAlias, ae);
+		// autogenerate id
+		Long id = idSequenceRepo.getNextSequenceId(repo != null && StringUtils.isNotBlank(repo.alias())?repo.alias():auditHistoryAlias);
+		ae.setId(id);
+		
+		db._save(StringUtils.isNotBlank(repo.alias()) ? repo.alias() :auditHistoryAlias, ae);
 	}
 	
 	private String findAuditHistoryAlias(ModelConfig<?> auditConfig, Audit configuredAnnotation) {

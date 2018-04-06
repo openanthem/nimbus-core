@@ -63,7 +63,7 @@ public class S4_ValidateConditionalTest extends AbstractFrameworkIntegrationTest
 				.addAction(Action._new).getMock(), null);
 		
 		Assert.assertNotNull(ExtractResponseOutputUtils.extractOutput(controllerResp_new));
-		final String refId = ExtractResponseOutputUtils.extractDomainRootRefId(controllerResp_new);
+		final Long refId = ExtractResponseOutputUtils.extractDomainRootRefId(controllerResp_new);
 		
 		// Execute assign maps to call on param: S4_VRMainCoreBackingObjectView...VFMain.addData
 		controller.handleGet(MockHttpRequestBuilder.withUri(VIEW_ROOT)

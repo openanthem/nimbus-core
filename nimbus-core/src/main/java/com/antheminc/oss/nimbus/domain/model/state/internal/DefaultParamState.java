@@ -729,18 +729,6 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		this.messageState.setState(message);
 	}
 	
-	@Override
-	public Object getFilter() {
-		return this.filterState.getCurrState();
-	}
-	
-	@Override
-	public void setFilter(Object filter) {
-		this.filterState.setState(filter);
-		
-		this.onStateChangeEvent(getRootExecution().getExecutionRuntime().getTxnContext(), Action._update);
-	}
-	
 	private void emitParamContextEvent() {
 		resolveRuntime().emitEvent(new ParamEvent(Action._update, this));
 	}

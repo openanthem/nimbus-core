@@ -25,13 +25,13 @@ import lombok.Setter;
  *
  */
 @Getter @Setter
-public class AuditEntry extends AbstractEntity.IdString {
+public class AuditEntry extends AbstractEntity.IdLong {
 
 	private static final long serialVersionUID = 1L;
 
 	private String domainRootAlias;
 	
-	private String domainRootRefId;
+	private Long domainRootRefId;
 	
 	private String propertyPath;
 	

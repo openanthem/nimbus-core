@@ -27,9 +27,8 @@ public class UpdateFunctionHandler <T,S> extends URLBasedAssignmentFunctionHandl
 
 	
 	@Override
-	public Void assign(ExecutionContext executionContext, Param<T> actionParameter, Param<S> targetParameter,
-			S state) {
-		if(targetParameter.isCollection()) {
+	public Void assign(ExecutionContext executionContext, Param<T> actionParameter, Param<S> targetParameter, S state) {
+		if (targetParameter.isCollection()) {
 			ListParam<S> listParam = targetParameter.findIfCollection();
 			listParam.add(state);
 		}

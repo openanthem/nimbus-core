@@ -28,7 +28,7 @@ import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.AbstractStateEventHandlerTests;
 import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
-import com.antheminc.oss.nimbus.entity.AbstractEntity.IdString;
+import com.antheminc.oss.nimbus.entity.AbstractEntity.IdLong;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
 
 /**
@@ -41,7 +41,7 @@ public class ValuesConditionalStateEventHandlerIntegTest extends AbstractStateEv
 
 	private static final String STATUS_FORM = "/sample_core/sampleCoreValuesEntity/statusForm";
 
-	private String REF_ID;
+	private Long REF_ID;
 	
 	@Override
 	protected Command createCommand() {
@@ -73,7 +73,7 @@ public class ValuesConditionalStateEventHandlerIntegTest extends AbstractStateEv
 
 		executionContextLoader.clear();
 		
-		_q = (QuadModel<?, ? extends IdString>)executionContextLoader.load(_cmd).getQuadModel();
+		_q = (QuadModel<?, ? extends IdLong>)executionContextLoader.load(_cmd).getQuadModel();
 		assertNotNull(_q);
 		
 		_q.getRoot().getExecutionRuntime().onStartCommandExecution(_cmd);

@@ -418,7 +418,6 @@ abstract public class AbstractEntityConfigBuilder {
 	private <P> DefaultParamConfig<P> decorateParam(ModelConfig<?> mConfig, Field f, DefaultParamConfig<P> created, EntityConfigVisitor visitedModels) {
 		created.setUiNatures(annotationConfigHandler.handle(f, ViewParamBehavior.class));
 		created.setUiStyles(annotationConfigHandler.handleSingle(f, ViewStyle.class));
-		created.setGridFilter(annotationConfigHandler.handleSingle(f, GridFilter.class));
 		
 		created.setExecutionConfigs(new ArrayList<>(AnnotatedElementUtils.findMergedRepeatableAnnotations(f, Execution.Config.class)));
 		

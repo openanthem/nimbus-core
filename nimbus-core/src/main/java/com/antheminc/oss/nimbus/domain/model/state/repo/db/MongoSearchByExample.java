@@ -34,6 +34,7 @@ import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.defn.SearchNature.StartsWith;
+import com.antheminc.oss.nimbus.domain.model.state.internal.AbstractListPaginatedParam.PageWrapper.PageRequestAndRespone;
 
 /**
  * @author Rakesh Patel
@@ -79,15 +80,15 @@ public class MongoSearchByExample extends MongoDBSearch {
 		return query;
 	}
 	
-	private <T> Object findAllPageable(Class<?> referredClass, String alias, Pageable pageRequest, Query query) {
+	private <T> PageRequestAndRespone<T> findAllPageable(Class<T> referredClass, String alias, Pageable pageRequest, Query query) {
 		Query qPage = query.with(pageRequest);
 		
-		List<?> results = getMongoOps().find(qPage, referredClass, alias);
+		List<T> results = getMongoOps().find(qPage, referredClass, alias);
 		
 		if(CollectionUtils.isEmpty(results))
 			return null;
 		
-		return PageableExecutionUtils.getPage(results, pageRequest, () -> getMongoOps().count(query, referredClass, alias));
+		return new PageRequestAndRespone<T>(results, pageRequest, () -> getMongoOps().count(query, referredClass, alias));
 		
 	}
 

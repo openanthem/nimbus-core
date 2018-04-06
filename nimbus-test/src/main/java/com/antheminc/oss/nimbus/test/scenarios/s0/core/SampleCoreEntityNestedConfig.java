@@ -20,7 +20,7 @@ import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
 import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Database;
-import com.antheminc.oss.nimbus.entity.AbstractEntity.IdString;
+import com.antheminc.oss.nimbus.entity.AbstractEntity.IdLong;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -34,7 +34,7 @@ import lombok.Setter;
 @Repo(Database.rep_mongodb)
 @Getter
 @Setter
-public class SampleCoreEntityNestedConfig extends IdString {
+public class SampleCoreEntityNestedConfig extends IdLong {
 
 	private static final long serialVersionUID = 1L;
 

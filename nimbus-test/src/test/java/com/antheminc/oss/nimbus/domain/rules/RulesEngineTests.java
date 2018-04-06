@@ -45,7 +45,7 @@ public class RulesEngineTests extends AbstractFrameworkIngerationPersistableTest
 					.addAction(Action._new)
 					.getMock();
 		Holder<MultiOutput> holder = (Holder<MultiOutput>)controller.handlePost(request, null);
-		String domainRoot_refId  = ExtractResponseOutputUtils.extractDomainRootRefId(holder);
+		Long domainRoot_refId  = ExtractResponseOutputUtils.extractDomainRootRefId(holder);
 		assertNotNull(domainRoot_refId);
 		
 

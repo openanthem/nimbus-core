@@ -381,17 +381,6 @@ public class StateHolder {
 		}
 		
 		@Override
-		public Object getFilter() {
-			return this.ref.getFilter();
-		}
-		
-		@Override
-		public void setFilter(Object filter) {
-			this.ref.setFilter(filter);
-			
-		}
-		
-		@Override
 		public List<ParamValue> getValues() {
 			return this.ref.getValues();
 		}

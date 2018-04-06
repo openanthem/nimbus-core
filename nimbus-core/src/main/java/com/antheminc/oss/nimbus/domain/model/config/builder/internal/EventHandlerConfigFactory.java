@@ -65,11 +65,6 @@ public class EventHandlerConfigFactory {
 		
 		// onStateChange
 		buildInternal(aElem, OnStateChange.class, OnStateChangeHandler.class, (a,h)->eventConfig.add(a, h));
-
-		
-//		if(AnnotatedElementUtils.hasAnnotation(aElem, GridFilter.class)) {
-//			buildInternal(aElem, OnStateLoad.class, OnStateLoadHandler.class, )
-//		}
 		
 		return eventConfig.isEmpty() ? null : eventConfig;
 	}
