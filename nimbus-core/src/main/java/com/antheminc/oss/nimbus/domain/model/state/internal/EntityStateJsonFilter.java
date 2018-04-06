@@ -15,8 +15,8 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.internal;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.assertj.core.util.Arrays;
 
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Grid;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Model;
@@ -51,7 +51,7 @@ public class EntityStateJsonFilter extends AbstractEntityStateJsonFilter {
 			return true;
 		
 		// activeValidationGroups: []
-		if(StringUtils.equals(fieldName, "activeValidationGroups") && Arrays.isNullOrEmpty(param.getActiveValidationGroups()))
+		if(StringUtils.equals(fieldName, "activeValidationGroups") && ArrayUtils.isEmpty(param.getActiveValidationGroups()))
 			return true;
 		
 		// type: {name: "string", collection: false, nested: false}
