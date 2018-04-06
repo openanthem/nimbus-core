@@ -672,13 +672,14 @@ button.ui-datepicker-trigger.ui-calendar-button {
 .panel.panel-default {
     margin-top: 10px;
     & > .panel-heading {
-        background: $header-bkg;
+        background: #669fe2;
         color: white;
         padding: 0.3rem 0.3rem 0.3rem 1rem;
         margin: 0;
-        font-weight: 300;
         position: relative;
         h2{
+            font-weight: normal;
+            font-size: 1rem;
             margin-bottom: 0;
         
         button {
