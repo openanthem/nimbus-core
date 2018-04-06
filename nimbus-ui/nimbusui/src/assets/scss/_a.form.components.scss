@@ -29,8 +29,8 @@ label.custom-control.required{
     color: red;
 }
 .form-control[disabled]{
-	border-color: #dadada;
-    background-color: #ebebeb;
+    border-color: #B9B6B6;
+    background-color: #d4d4d4;
 }
 .form-control:focus{
 	border-color: #9dd3f7;
@@ -40,12 +40,15 @@ label.custom-control.required{
 .ui-calendar .ui-widget:disabled {
     opacity: 1;
     filter: Alpha(Opacity=100);
-    border-color: #dadada;
-    background-color: #ebebeb;
+    border-color: #B9B6B6;
+    background-color: #d4d4d4;
 }
 .ui-calendar .ui-widget.ui-calendar-button:disabled {
     border-color: transparent;
     background-color: transparent;
+}
+.ui-state-disabled span.ui-button-icon-left {
+    color: #b9b6b6;
 }
 .ui-calendar input {
     width: 120px;
@@ -75,11 +78,15 @@ textarea.form-control {
   padding:0 ;
   background:none;
   border:none;
-    .warningMsg::before{
-        content:"\F071";
-    font-family: fontAwesome;
-    display: inline-block;
-    margin-right:.5rem;
+  color: #4c4c4c;
+    .warningMsg{
+        color: #a94442;
+        &::before{
+            content:"\F071";
+            font-family: fontAwesome;
+            display: inline-block;
+            margin-right:.5rem;
+        }
     }
 }
 
@@ -264,12 +271,14 @@ p-checkbox.ng-dirty.ng-invalid .ui-chkbox-box {
             vertical-align: bottom;
             &::before {
                 position: absolute;
-                font-size: .3rem;
-                bottom: .4rem;
-                left: -.15rem;
+                font-size: .5rem;
+                bottom: .3rem;
+                left: -.19rem;
             }
         }
     }
+
+
     .ui-radiobutton-box:not(.ui-state-disabled):not(.ui-state-active):hover,
     .ui-chkbox-box:not(.ui-state-disabled):not(.ui-state-active):hover {
         border-color: #006bc2;
@@ -279,8 +288,10 @@ p-checkbox.ng-dirty.ng-invalid .ui-chkbox-box {
     .ui-radiobutton-box.ui-state-disabled:hover,
     .ui-chkbox-box.ui-state-disabled,
     .ui-chkbox-box.ui-state-disabled:hover {
-        border-color: #dadada;
-        background: #ebebeb;
+        border-color: #b9b6b6;
+        background: #d4d4d4;
+        opacity: 1;
+        color: #4c4c4c;
     }
 
 
