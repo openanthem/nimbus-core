@@ -55,7 +55,7 @@ import lombok.Setter;
  * @author Soham Chakravarti
  *
  */
-@JsonFilter("default.entityState.filter")
+//@JsonFilter("default.entityState.filter")
 @Getter @Setter
 public abstract class AbstractEntityState<T> implements EntityState<T> {
 

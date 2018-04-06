@@ -51,6 +51,7 @@ import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
 import com.antheminc.oss.nimbus.domain.model.state.StateType;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
+import com.antheminc.oss.nimbus.domain.model.state.support.DefaultJsonParamSerializer;
 import com.antheminc.oss.nimbus.entity.Findable;
 import com.antheminc.oss.nimbus.support.Holder;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -64,7 +65,7 @@ import lombok.ToString;
  * @author Soham Chakravarti
  *
  */
-@JsonSerialize(using=ParamSerializer.class)
+@JsonSerialize(using=DefaultJsonParamSerializer.class)
 @Getter @Setter
 public class DefaultParamState<T> extends AbstractEntityState<T> implements Param<T>, Findable<String>, Serializable {
 

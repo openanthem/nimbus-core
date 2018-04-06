@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.domain.model.state.internal;
+package com.antheminc.oss.nimbus.domain.model.state.support;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -34,7 +34,7 @@ import lombok.RequiredArgsConstructor;
  * @author Soham Chakravarti
  *
  */
-public class ParamSerializer extends JsonSerializer<Param<?>> {
+public class DefaultJsonParamSerializer extends JsonSerializer<Param<?>> {
 
 	private static final String K_PATH = "path";
 	private static final String K_ELEM_ID = "elemId";
@@ -59,8 +59,7 @@ public class ParamSerializer extends JsonSerializer<Param<?>> {
 	
 	@Override
 	public void serialize(Param<?> p, JsonGenerator gen, SerializerProvider provider) throws IOException {
-		System.out.println("@@@ "+ p.getPath());
-		
+
 		final String lockId;
 		if(TH_PATH.get()==null) {
 			lockId = UUID.randomUUID().toString();
