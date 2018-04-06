@@ -65,6 +65,8 @@ public interface ParamConfig<P> extends EntityConfig<P>, Findable<String> {
 	// TODO Soham: change to list of notification handler annotations
 	public List<AnnotationConfig> getRules();
 	
+	public List<AnnotationConfig> getExtensions();
+	
 	public Values getValues();
 	
 	public List<ParamConverter> getConverters();

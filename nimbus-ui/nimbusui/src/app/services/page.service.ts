@@ -252,7 +252,7 @@ export class PageService {
                 if (model != null && model.params != null) {
                         for (var p in model.params) {
                                 let pageParam: Param = model.params[p];
-                                if (pageParam.config.uiStyles != null && pageParam.config.uiStyles.name === 'ViewConfig.Page') {
+                                if (pageParam != null && pageParam.config.uiStyles != null && pageParam.config.uiStyles.name === 'ViewConfig.Page') {
                                         if (pageParam.config.uiStyles.attributes.defaultPage) {
                                                 return pageParam;
                                         }
@@ -284,7 +284,7 @@ export class PageService {
                         }
                 });
                 outputs.forEach(output => {
-                        if (output.value == null) {
+                        if (output.value == null || ParamUtils.isEmpty(output.value)) {
                                 this.traverseOutput(output.outputs);
                         } else {
                                 if (output.action === Action._new.value) {
@@ -597,7 +597,7 @@ export class PageService {
                         if (rootParam.type.model && rootParam.type.model.params) {
                                 rootParam.type.model.params.forEach(element => {
                                         // Check if param matches the updated param path
-                                        if (element.config && element.config.code === paramTree[node]) {
+                                        if (element && element.config && element.config.code === paramTree[node]) {
                                                 if ((element.config.type && element.config.type.collection) || node >= numNodes) {
                                                         // Matching param node OR Collection node. Collection nodes cannot be traversed further.
                                                         this.processModelEvent(element, eventModel);
@@ -651,8 +651,10 @@ export class PageService {
                 if (gridElementParams) {
                         gridElementParams.forEach(param => {
                                 let p = new Param(this.configService).deserialize(param, param.path);
-                                paramState.push(p.type.model.params);
-                                gridData.push(this.createRowData(p, nestedParamIdx));
+                                if(p != null) {
+                                        paramState.push(p.type.model.params);
+                                        gridData.push(this.createRowData(p, nestedParamIdx));
+                                }
                         });        
                 }
                 gridParam['paramState'] = paramState;
@@ -758,7 +760,7 @@ export class PageService {
                         this.updateParam(param, payload);
                         if (param.type.model && payload.type.model && payload.type.model.params) {
                                 for (var p in param.type.model.params) {
-                                        this.updateParam(param.type.model.params[p], payload.type.model.params[p]);
+                                                this.updateParam(param.type.model.params[p], payload.type.model.params[p]);
                                 }
                         }
                         if (param.type.model === undefined && payload.type.model) {

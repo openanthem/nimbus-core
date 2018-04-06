@@ -41,7 +41,6 @@ export class CardDetailsGrid {
     }
 
     ngOnInit() {
-        //console.log(JSON.stringify(this.grid));
         if (this.grid.config.uiStyles.attributes.onLoad === true) {
             this.pageSvc.processEvent(this.grid.path, '$execute', new GenericDomain(), 'GET');
         }

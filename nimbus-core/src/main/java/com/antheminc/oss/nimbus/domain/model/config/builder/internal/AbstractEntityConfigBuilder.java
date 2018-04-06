@@ -36,6 +36,7 @@ import com.antheminc.oss.nimbus.UnsupportedScenarioException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.config.builder.AnnotationConfigHandler;
 import com.antheminc.oss.nimbus.domain.defn.AssociatedEntity;
+import com.antheminc.oss.nimbus.domain.defn.ConfigExtension;
 import com.antheminc.oss.nimbus.domain.defn.ConfigLoadException;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.defn.Converters;
@@ -447,6 +448,9 @@ abstract public class AbstractEntityConfigBuilder {
 		List<AnnotationConfig> vConfig = annotationConfigHandler.handle(f, Constraint.class);
 		created.setValidations(vConfig);
 
+		List<AnnotationConfig> extensionConfigs = annotationConfigHandler.handle(f, ConfigExtension.class);
+		created.setExtensions(extensionConfigs);
+		
 		EventHandlerConfig eventConfig = eventHandlerConfigFactory.build(f);
 		created.setEventHandlerConfig(eventConfig);
 		

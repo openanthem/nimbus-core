@@ -90,8 +90,6 @@ export class Button extends BaseElement {
         this.imagesPath = ServiceConstants.IMAGES_URL;
         this.payload = this.element.config.uiStyles.attributes.payload;
         this.buttonClickEvent.subscribe(( $event ) => {
-            //console.log( $event );
-            //let payload = JSON.parse(JSON.stringify(this.payload));
 
             this.pageService.processEvent( $event.element.path, $event.element.config.uiStyles.attributes.b,
                 null, $event.element.config.uiStyles.attributes.method );
