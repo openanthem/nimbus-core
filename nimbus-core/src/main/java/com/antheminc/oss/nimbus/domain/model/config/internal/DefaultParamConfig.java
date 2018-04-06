@@ -66,6 +66,8 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	@JsonIgnore
 	private List<AnnotationConfig> rules;
 	
+	@JsonIgnore
+	private List<AnnotationConfig> extensions;
 	
 	@JsonIgnore
 	private List<Execution.Config> executionConfigs;
