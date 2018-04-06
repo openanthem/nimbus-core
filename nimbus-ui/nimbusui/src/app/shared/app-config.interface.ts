@@ -249,16 +249,18 @@ export class Param implements Serializable<Param> {
         rowData['elemId'] = param.elemId;
 
         for(let p of param.type.model.params) {
-            let config = this.configSvc.paramConfigs[p.configId];
+            if(p != null) {
+                let config = this.configSvc.paramConfigs[p.configId];
 
-            // handle nested grid data
-            if (config.uiStyles && config.uiStyles.name == 'ViewConfig.GridRowBody') {
-                rowData['nestedGridParam'] = isDeserialized ? p : new Param(this.configSvc).deserialize(p);
-            }
+                // handle nested grid data
+                if (config.uiStyles && config.uiStyles.name == 'ViewConfig.GridRowBody') {
+                    rowData['nestedGridParam'] = isDeserialized ? p : new Param(this.configSvc).deserialize(p);
+                }
 
-            // handle dates
-            if (config && ParamUtils.isKnownDateType(config.type.name)) {
-                rowData[config.code] = ParamUtils.convertServerDateStringToDate(rowData[config.code], config.type.name);
+                // handle dates
+                if (config && ParamUtils.isKnownDateType(config.type.name)) {
+                    rowData[config.code] = ParamUtils.convertServerDateStringToDate(rowData[config.code], config.type.name);
+                }
             }
         }
 
@@ -287,8 +289,10 @@ export class Param implements Serializable<Param> {
                 this.gridList = [];
                 this.paramState = [];
                 for ( var p in inJson.type.model.params ) {
-                    this.paramState.push(inJson.type.model.params[p].type.model.params);
-                    this.gridList.push(this.createRowData(inJson.type.model.params[p]));
+                    if(!ParamUtils.isEmpty(inJson.type.model.params[p])) {
+                        this.paramState.push(inJson.type.model.params[p].type.model.params);
+                        this.gridList.push(this.createRowData(inJson.type.model.params[p]));
+                    }
                 }
             }
         } else if (this.config && this.config.type && ParamUtils.isKnownDateType(this.config.type.name)) {
@@ -406,7 +410,10 @@ export class Model implements Serializable<Model> {
         }
         this.params = [];
         for ( var p in inJson.params ) {
-            this.params.push( new Param(this.configSvc).deserialize( inJson.params[p] ) );
+            if(!ParamUtils.isEmpty(inJson.params[p])) {
+                //param when null means that there is an @Ignore(event = websocket) on the parameter
+                this.params.push( new Param(this.configSvc).deserialize( inJson.params[p] ) );
+            }
         }
         return this;
     }
