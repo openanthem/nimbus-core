@@ -26,11 +26,10 @@ declare var trackJs: any;
  * \@howToUse 
  * 
  */
-class TrackJsErrorHandler extends ErrorHandler {
+export class TrackJsErrorHandler extends ErrorHandler {
   handleError(error:any) {
     // Add the error message to the telemetry timeline. 
     // It can occasionally have useful additional context.
     console.error(error);
   }
 }
-export default TrackJsErrorHandler;

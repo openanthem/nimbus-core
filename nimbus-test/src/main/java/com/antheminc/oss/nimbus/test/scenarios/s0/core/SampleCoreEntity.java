@@ -35,6 +35,7 @@ import com.antheminc.oss.nimbus.domain.defn.extension.Content.Label;
 import com.antheminc.oss.nimbus.domain.defn.extension.EnableConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.ParamContext;
 import com.antheminc.oss.nimbus.domain.defn.extension.Rule;
+import com.antheminc.oss.nimbus.domain.defn.extension.VisibleConditional;
 import com.antheminc.oss.nimbus.entity.AbstractEntity.IdLong;
 
 import lombok.Getter;
@@ -166,6 +167,11 @@ public class SampleCoreEntity extends IdLong {
 	private String attr_enable_trigger;
 	
 	private SampleCoreEnableEntity attr_enable_nested;
+	
+	@VisibleConditional(when="state == 'Y'", targetPath="../attr_visible_nested")
+	private String attr_visible_trigger;
+	
+	private SampleCoreVisibleEntity attr_visible_nested;
 	
 	@ParamContext(enabled = false, visible = false)
 	private String for_set_param_context;

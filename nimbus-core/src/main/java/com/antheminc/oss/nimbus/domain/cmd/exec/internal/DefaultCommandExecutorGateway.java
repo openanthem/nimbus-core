@@ -121,13 +121,37 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		
 		try {
 			MultiOutput mOut = executeInternal(eCtx, cmdMsg);
-			return createFlattenedOutput(mOut);
+			
+			if(lockId!=null)
+				return createFlattenedOutput(mOut);
+			
+			return mOut;
 		} finally {
 			if(lockId!=null) {
 				eCtx.getRootModel().getExecutionRuntime().onStopRootCommandExecution(cmdMsg.getCommand());
 				cmdScopeInThread.set(null);
 			}
 		}
+	}
+	
+	private MultiOutput createFlattenedOutput(MultiOutput in) {
+		Map<Object, Output<?>> uniqueValues = new LinkedHashMap<>();
+		
+		flattenOutput(in, uniqueValues);
+		
+		if(uniqueValues.isEmpty())
+			return in;
+		
+		MultiOutput mOut = new MultiOutput(in.getInputCommandUri(), in.getContext(), in.getAction(), in.getBehaviors());
+		
+		for(Object value : uniqueValues.keySet()) {
+			Output<?> out = uniqueValues.get(value);
+			Output<?> newOut = new Output<>(out.getInputCommandUri(), out.getContext(), out.getAction(), out.getBehaviors(), value);
+			mOut.template().add(newOut);
+			
+		}
+		
+		return mOut;
 	}
 	
 	private void flattenOutput(Output<?> in, Map<Object, Output<?>> uniqueValues) {
@@ -150,25 +174,6 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		}
 	}
 
-	private MultiOutput createFlattenedOutput(MultiOutput in) {
-		Map<Object, Output<?>> uniqueValues = new LinkedHashMap<>();
-		
-		flattenOutput(in, uniqueValues);
-		
-		if(uniqueValues.isEmpty())
-			return in;
-		
-		MultiOutput mOut = new MultiOutput(in.getInputCommandUri(), in.getContext(), in.getAction(), in.getBehaviors());
-		
-		for(Object value : uniqueValues.keySet()) {
-			Output<?> out = uniqueValues.get(value);
-			Output<?> newOut = new Output<>(out.getInputCommandUri(), out.getContext(), out.getAction(), out.getBehaviors(), value);
-			mOut.template().add(newOut);
-			
-		}
-		
-		return mOut;
-	}
 	
 	protected MultiOutput executeInternal(ExecutionContext eCtx, CommandMessage cmdMsg) {
 		final String inputCommandUri = cmdMsg.getCommand().getAbsoluteUri();

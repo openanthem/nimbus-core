@@ -70,7 +70,7 @@ import { BaseElement } from './../../base-element.component';
             maxHeight: '0',
         })),
         
-        transition('closedPanel => openPanel', animate('600ms ease-in')),
+        transition('closedPanel => openPanel', animate('300ms ease-in')),
         transition('openPanel => closedPanel', animate('300ms ease-out')),
      ]),
 ]

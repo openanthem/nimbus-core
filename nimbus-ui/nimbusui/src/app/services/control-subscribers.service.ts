@@ -48,9 +48,6 @@ export class ControlSubscribers {
             let frmCtrl = control.form.controls[event.config.code];
             if(frmCtrl!=null && event.path == control.element.path) {
                 if(event.leafState!=null){
-                    if (event.alias === 'Calendar') {
-                        event.leafState= new Date(event.leafState);
-                      }
                     frmCtrl.setValue(event.leafState);
                 } else
                     frmCtrl.reset();

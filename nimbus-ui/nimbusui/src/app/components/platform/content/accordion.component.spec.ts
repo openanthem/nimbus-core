@@ -19,6 +19,10 @@ import { DateTimeFormatPipe } from '../../../pipes/date.pipe';
 import { TooltipComponent } from '../tooltip/tooltip.component';
 import { SelectItemPipe } from '../../../pipes/select-item.pipe';
 import { WebContentSvc } from '../../../services/content-management.service';
+import { PageService } from '../../../services/page.service';
+import { CustomHttpClient } from '../../../services/httpclient.service';
+import { LoaderService } from '../../../services/loader.service';
+import { ConfigService } from '../../../services/config.service';
 
 class MockWebContentSvc {
     findLabelContent(param) {
@@ -55,7 +59,11 @@ describe('AccordionMain', () => {
           HttpClientModule
         ],
         providers: [
-            {provide: WebContentSvc, useClass: MockWebContentSvc}
+            {provide: WebContentSvc, useClass: MockWebContentSvc},
+            PageService,
+            CustomHttpClient,
+            LoaderService,
+            ConfigService
         ]
       }).compileComponents();
     })

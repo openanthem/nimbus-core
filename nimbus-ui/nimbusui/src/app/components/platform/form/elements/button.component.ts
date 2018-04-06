@@ -55,9 +55,7 @@ import { FileService } from '../../../../services/file.service';
         </ng-template>
         <ng-template [ngIf]="element.config?.uiStyles?.attributes?.imgSrc">
            <button (click)="emitEvent(this)" type="button" class="{{element.config?.uiStyles?.attributes?.cssClass}} ">
-                    <i class="fa fa-fw {{element.config?.uiStyles?.attributes?.imgSrc}}" aria-hidden="true"></i>
-                    {{label}}
-            </button>
+                    <i class="fa fa-fw {{element.config?.uiStyles?.attributes?.imgSrc}}" aria-hidden="true"></i>{{label}}</button>
         </ng-template>
     `
 } )
