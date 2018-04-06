@@ -17,6 +17,8 @@ package com.antheminc.oss.nimbus.domain.model.state.extension;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.util.Random;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +28,7 @@ import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.AbstractStateEventHandlerTests;
 import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
+import com.antheminc.oss.nimbus.entity.AbstractEntity.IdLong;
 import com.antheminc.oss.nimbus.entity.AbstractEntity.IdString;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
 
@@ -40,7 +43,7 @@ public class RuleStateEventHandlerTest extends AbstractStateEventHandlerTests {
 	public static final String ENTITY_VIEW = "sample_view";
 	public static final String ENTITY_BASEPATH = "/" + ENTITY_CORE;
 	
-	private String REF_ID;
+	private Long REF_ID;
 	
 	@Override
 	protected Command createCommand() {
@@ -55,6 +58,7 @@ public class RuleStateEventHandlerTest extends AbstractStateEventHandlerTests {
 		}
 		
 		final SampleCoreEntity core = new SampleCoreEntity();
+		core.setId(new Random().nextLong());
 		mongo.insert(core, ENTITY_CORE);
 		REF_ID = core.getId();
 		assertNotNull(REF_ID);
@@ -71,7 +75,7 @@ public class RuleStateEventHandlerTest extends AbstractStateEventHandlerTests {
 
 		executionContextLoader.clear();
 		
-		_q = (QuadModel<?, ? extends IdString>)executionContextLoader.load(_cmd).getQuadModel();
+		_q = (QuadModel<?, ? extends IdLong>)executionContextLoader.load(_cmd).getQuadModel();
 		assertNotNull(_q);
 		
 		_q.getRoot().getExecutionRuntime().onStartCommandExecution(_cmd);

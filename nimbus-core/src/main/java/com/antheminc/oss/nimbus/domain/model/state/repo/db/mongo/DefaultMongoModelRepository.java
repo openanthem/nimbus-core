@@ -41,8 +41,6 @@ import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.DBSearch;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.ExampleSearchCriteria;
-import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.LookupSearchCriteria;
-import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.QuerySearchCriteria;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandler;
 
 /**
@@ -79,7 +77,7 @@ public class DefaultMongoModelRepository implements ModelRepository {
 		
 		Repo repo = mConfig.getRepo();
 		
-		String id = String.valueOf(idSequenceRepo.getNextSequenceId(repo != null && StringUtils.isNotBlank(repo.alias())?repo.alias():mConfig.getAlias()));
+		Long id = idSequenceRepo.getNextSequenceId(repo != null && StringUtils.isNotBlank(repo.alias())?repo.alias():mConfig.getAlias());
 		
 		PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(mConfig.getReferredClass(), pId.getCode());
 		beanHandler.setValue(pd, newState, id);

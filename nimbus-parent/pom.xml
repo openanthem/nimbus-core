@@ -328,13 +328,13 @@
                 <artifactId>nimbus-starter</artifactId>
                 <version>${nimbus.starter.version}</version>
             </dependency>
-            <dependency>
+            <!-- <dependency>
 			    <groupId>org.springframework.boot</groupId>
 			    <artifactId>spring-boot-devtools</artifactId>
 			    <optional>true</optional>
 			    <scope>runtime</scope>
 			    <version>${spring.boot.version}</version>
-			</dependency>
+			</dependency> -->
         </dependencies>
     </dependencyManagement>
 

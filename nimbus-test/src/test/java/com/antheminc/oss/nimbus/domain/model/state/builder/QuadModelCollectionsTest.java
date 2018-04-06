@@ -103,7 +103,7 @@ public class QuadModelCollectionsTest {
 	
 	@Test
 	public void t0_mapstoPath() {
-		String id = "TEST ID";
+		Long id = 1L;
 		SimpleCase core = new SimpleCase();
 		core.setId(id);
 		

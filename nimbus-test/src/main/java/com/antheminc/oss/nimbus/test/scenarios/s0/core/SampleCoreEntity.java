@@ -36,7 +36,7 @@ import com.antheminc.oss.nimbus.domain.defn.extension.EnableConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.ParamContext;
 import com.antheminc.oss.nimbus.domain.defn.extension.Rule;
 import com.antheminc.oss.nimbus.domain.defn.extension.VisibleConditional;
-import com.antheminc.oss.nimbus.entity.AbstractEntity.IdString;
+import com.antheminc.oss.nimbus.entity.AbstractEntity.IdLong;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -48,7 +48,7 @@ import lombok.Setter;
 @Domain(value="sample_core", includeListeners={ListenerType.persistence})
 @Repo(Database.rep_mongodb)
 @Getter @Setter
-public class SampleCoreEntity extends IdString {
+public class SampleCoreEntity extends IdLong {
 
 	private static final long serialVersionUID = 1L;
 

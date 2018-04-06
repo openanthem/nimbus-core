@@ -39,6 +39,9 @@ abstract public class AbstractEntityConfig<T> implements EntityConfig<T> {
 	final protected JustLogit logit = new JustLogit(getClass());
 
 	private AnnotationConfig uiStyles;
+	
+	@JsonIgnore
+	private AnnotationConfig gridFilter;
 
 	@JsonIgnore 
 	private RulesConfig rulesConfig; 
