@@ -75,7 +75,9 @@ export class Form implements OnInit, OnChanges {
                         this.formElements.push(element);
                     }
                 } else {
-                    this.groupFormElements(element.type.model)
+                    if(element.type){
+                        this.groupFormElements(element.type.model)
+                    }
                 }
              });
         }
