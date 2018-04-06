@@ -121,7 +121,7 @@ export class ConfigType implements Serializable<ConfigType> {
 }
 
 export class Type implements Serializable<Type> {
-    nested: boolean;
+    nested: boolean = false;
     name: string;
     model: Model;
     collection: boolean;
@@ -129,9 +129,14 @@ export class Type implements Serializable<Type> {
     constructor(private configSvc: ConfigService) {}
 
     deserialize( inJson ) {
-        this.nested = inJson.nested;
+
+        if(typeof inJson.nested !== 'undefined'){
+            this.nested = inJson.nested;
+        }
+
         this.name = inJson.name;
         this.collection = inJson.collection;
+    
 
         if ( this.nested === true ) {
             if (inJson.model  != null) {
@@ -217,16 +222,16 @@ export class Param implements Serializable<Param> {
     type: Type;
     leafState: any;
     path: string;
-    collection: boolean;
-    collectionElem: boolean;
+    collection: boolean = false;
+    collectionElem: boolean = false;
     elemId: string;
-    enabled: boolean;
+    enabled: boolean = true;
     gridList: any[];
     message : Message;
     paramState: Param[];
     values : Values[];
-    visible: boolean;
-    activeValidationGroups: String[];
+    visible: boolean = true;
+    activeValidationGroups: String[] = [];
     _alias: string;
     _config: ParamConfig;
 
@@ -274,9 +279,20 @@ export class Param implements Serializable<Param> {
         }
         if (inJson.type != null) {
             this.type = new Type(this.configSvc).deserialize( inJson.type );
+        } else {
+            this.type =  new Type (this.configSvc);
+            this.type['nested'] = false;
+            this.type['name'] = 'string';
+            this.type['collection'] = false;
         }
-        this.collectionElem = inJson.collectionElem;
-        this.collection = inJson.collection;
+
+        if (typeof inJson.collectionElem !== 'undefined'){
+            this.collectionElem = inJson.collectionElem;
+        }    
+
+        if (typeof inJson.collection !== 'undefined'){
+         this.collection = inJson.collection;
+        }
         this.path = inJson.path;
         if ( this.config != null && this.config.uiStyles && this.config.uiStyles.attributes.alias === 'CardDetailsGrid' ) {
             if(inJson.leafState != null) {
@@ -303,14 +319,14 @@ export class Param implements Serializable<Param> {
             }
         }
 
-        if ( inJson.collectionElem ) {
+        if ( inJson.collectionElem && this.leafState) {
             this.elemId = inJson.elemId;
             this.leafState = this.createRowData(this, true);
         }
-        if (inJson.visible != null) {
+        if (typeof inJson.visible !== 'undefined') {
             this.visible = inJson.visible;
         }
-        if (inJson.enabled != null) {
+        if (typeof inJson.enabled !== 'undefined') {
             this.enabled = inJson.enabled;
         }
         if ( inJson.message != null ) {
@@ -322,6 +338,7 @@ export class Param implements Serializable<Param> {
                 this.values.push( new Values().deserialize( inJson.values[value] ) );
             }
         }
+        if (typeof inJson.activeValidationGroups ! == 'undefined')
         this.activeValidationGroups = inJson.activeValidationGroups;
         return this;
     }

@@ -594,7 +594,7 @@ export class PageService {
                 if (rootParam.config.code === paramTree[node]) {
                         node++;
                         // Loop through the Params in the Page
-                        if (rootParam.type.model && rootParam.type.model.params) {
+                        if (rootParam.type && rootParam.type.model && rootParam.type.model.params) {
                                 rootParam.type.model.params.forEach(element => {
                                         // Check if param matches the updated param path
                                         if (element.config && element.config.code === paramTree[node]) {
@@ -667,7 +667,6 @@ export class PageService {
         processModelEvent(param: Param, eventModel: ModelEvent) {
                 // Grid updates
                 if (param.config.uiStyles != null && param.config.uiStyles.attributes.alias === 'Grid') {
-                        if (eventModel.value.leafState != null) {
                                 // Check if the update is for the Current Collection or a Nested Collection
                                 if (param.path == eventModel.value.path) {
                                         // Current Collection
@@ -704,7 +703,7 @@ export class PageService {
 
                                         // console.log('eventModel');
                                 }
-                        }
+                        
                 } else if (param.config.uiStyles != null && param.config.uiStyles.attributes.alias === 'CardDetailsGrid') {
                         if (param.type.collection === true) {
                                 let payload: Param = new Param(this.configService).deserialize(eventModel.value);
@@ -754,7 +753,7 @@ export class PageService {
         traverseParam(param: Param, eventModel: ModelEvent) {
                 /* Flow-Wrapper class also invokes methods that eventually call this behaviour. We need to make sure that the eventModel is deserialized by then */
                 let payload: Param = new Param(this.configService).deserialize(eventModel.value);
-                if (param.type.nested === true) {
+                if (param.type && param.type.nested === true) {
                         this.updateParam(param, payload);
                         if (param.type.model && payload.type.model && payload.type.model.params) {
                                 for (var p in param.type.model.params) {
