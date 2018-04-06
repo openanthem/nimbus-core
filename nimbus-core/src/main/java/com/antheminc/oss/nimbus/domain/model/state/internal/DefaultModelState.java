@@ -71,6 +71,7 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 		return templateParams;
 	}
 	
+	@JsonIgnore
 	@Override
 	public String getPath() {
 		return getAssociatedParam().getPath();
@@ -90,6 +91,7 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 			.forEach(Param::initState);
 	}
 	
+	@JsonIgnore
 	@Override
 	public ModelConfig<T> getConfig() {
 		return (ModelConfig<T>)super.getConfig();

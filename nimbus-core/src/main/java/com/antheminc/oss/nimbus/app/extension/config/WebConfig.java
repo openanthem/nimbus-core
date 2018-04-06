@@ -116,6 +116,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
             	jacksonObjectMapperBuilder.filters(
             			new SimpleFilterProvider().addFilter("default.entityState.filter", new EntityStateConfigJsonFilter()));
             	
+            	//jacksonObjectMapperBuilder.serializerByType(Param.class, new ParamSerializer());
+            	
                 jacksonObjectMapperBuilder.deserializerByType(LocalDate.class, new CustomLocalDateDeserializer());
                 jacksonObjectMapperBuilder.serializerByType(LocalDate.class, new CustomLocalDateSerializer());
                 jacksonObjectMapperBuilder.serializerByType(LocalDateTime.class, new CustomLocalDateTimeSerializer());

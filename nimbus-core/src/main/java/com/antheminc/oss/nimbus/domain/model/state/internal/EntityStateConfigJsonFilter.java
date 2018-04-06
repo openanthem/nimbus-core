@@ -15,9 +15,12 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.internal;
 
+import java.util.UUID;
+
 import com.antheminc.oss.nimbus.UnsupportedScenarioException;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Model;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.PropertyWriter;
@@ -29,27 +32,42 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
  */
 public class EntityStateConfigJsonFilter extends SimpleBeanPropertyFilter {
 
+	private static final ThreadLocal<String> parserScopeInThread = new ThreadLocal<>();
+	
 	@Override
 	public void serializeAsField(Object pojo, JsonGenerator jgen, SerializerProvider provider, PropertyWriter writer)
 	throws Exception {
-		
-		if (include(writer)) {
-			
-			if(EntityState.class.isInstance(pojo) && writer.getName().equals("config")) {
-				EntityState<?> es = getEntityState(pojo);
-				
-				Model<?> rootDomain = es.getRootDomain();
-				if(rootDomain != null 
-						&& es != rootDomain.getAssociatedParam())
-					return;
-			} 
 
-			writer.serializeAsField(pojo, jgen, provider);
-			return;
-	        		
-		} else if (!jgen.canOmitFields()) { 
-	    	writer.serializeAsOmittedField(pojo, jgen, provider);
-	    }
+		String lockId = null;
+		try {
+			
+			if (include(writer)) {
+
+				if (EntityState.class.isInstance(pojo) && writer.getName().equals("config")) {
+					EntityState<?> es = getEntityState(pojo);
+
+					Model<?> rootDomain = es.getRootDomain();
+					if (rootDomain != null && es != rootDomain.getAssociatedParam())
+						return;
+				} 
+				
+				if (Param.class.isInstance(pojo) && writer.getName().equals("path")) {
+					if (parserScopeInThread.get() == null) {
+						lockId = UUID.randomUUID().toString();
+						parserScopeInThread.set(lockId);
+					}
+				}
+
+				writer.serializeAsField(pojo, jgen, provider);
+				return;
+
+			} else if (!jgen.canOmitFields()) {
+				writer.serializeAsOmittedField(pojo, jgen, provider);
+			} 
+		} finally {
+			if(lockId != null) 
+				parserScopeInThread.set(null);
+		}
 	}
 	
 	private EntityState<?> getEntityState(Object o) {
