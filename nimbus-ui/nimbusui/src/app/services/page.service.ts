@@ -242,7 +242,7 @@ export class PageService {
 
         getFlowNameFromOutput(paramPath: string): string {
                 let flow = this.getFlowNameFromPath(paramPath);
-                if (flow.indexOf(':') > 0) {
+                if (flow && flow.indexOf(':') > 0) {
                         flow = flow.substr(0, flow.indexOf(':'));
                 }
                 return flow;
@@ -290,7 +290,7 @@ export class PageService {
                                 if (output.action === Action._new.value) {
                                         let flow = this.getFlowNameFromOutput(output.value.path);
                                         // Check if the _new output is for the Root Flow
-                                        if (output.value.path == '/' + flow) {
+                                        if (output.value.path == "/" + flow) {
                                                 let viewRoot: ViewRoot = new ViewRoot();
                                                 // Check if there is a layout for this domain
                                                 if (output.value.config.type.model.uiStyles) {
@@ -650,7 +650,7 @@ export class PageService {
                 }
                 if (gridElementParams) {
                         gridElementParams.forEach(param => {
-                                let p = new Param(this.configService).deserialize(param);
+                                let p = new Param(this.configService).deserialize(param, param.path);
                                 paramState.push(p.type.model.params);
                                 gridData.push(this.createRowData(p, nestedParamIdx));
                         });        
@@ -707,7 +707,7 @@ export class PageService {
                         }
                 } else if (param.config.uiStyles != null && param.config.uiStyles.attributes.alias === 'CardDetailsGrid') {
                         if (param.type.collection === true) {
-                                let payload: Param = new Param(this.configService).deserialize(eventModel.value);
+                                let payload: Param = new Param(this.configService).deserialize(eventModel.value, eventModel.value.path);
                                 param.type.model['params'] = payload.type.model.params;
                         } else {
                                 this.traverseParam(param, eventModel);
@@ -753,7 +753,7 @@ export class PageService {
         /** Update param with value */
         traverseParam(param: Param, eventModel: ModelEvent) {
                 /* Flow-Wrapper class also invokes methods that eventually call this behaviour. We need to make sure that the eventModel is deserialized by then */
-                let payload: Param = new Param(this.configService).deserialize(eventModel.value);
+                let payload: Param = new Param(this.configService).deserialize(eventModel.value, eventModel.value.path);
                 if (param.type.nested === true) {
                         this.updateParam(param, payload);
                         if (param.type.model && payload.type.model && payload.type.model.params) {
