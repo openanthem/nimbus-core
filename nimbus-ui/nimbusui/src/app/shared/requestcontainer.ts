@@ -14,22 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-'use strict';
-import { ErrorHandler } from '@angular/core';
-declare var trackJs: any;
-//TODO convert to service
+import { Observable } from 'rxjs/Observable';
+import { Param } from "./app-config.interface";
+import { Subject } from 'rxjs/Subject';
+
 /**
- * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
  * \@whatItDoes 
  * 
  * \@howToUse 
  * 
  */
-export class TrackJsErrorHandler extends ErrorHandler {
-  handleError(error:any) {
-    // Add the error message to the telemetry timeline. 
-    // It can occasionally have useful additional context.
-    console.error(error);
-  }
+
+export class RequestContainer {
+    path: string;
+    method: string;
+    payload: any;
+    subscription: Subject<any>;
+
+    constructor(path:string,method: string, payload: any, subscription: Subject<any>) {
+        this.path = path;
+        this.method = method;
+        this.payload = payload;
+        this.subscription = subscription;
+    }
+  
 }

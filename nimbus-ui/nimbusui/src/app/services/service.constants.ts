@@ -61,7 +61,7 @@ export class ServiceConstants {
     
     public static get WS_PORT() : string { return '8080';}
     public static get WEB_CONTENT_PORT() : string { return '3004';}
-    public static get STATIC_CONTENT_PORT() : string { return '4000';}
+    public static get STATIC_CONTENT_PORT() : string { return '4001';}
 
     //static content server constants
     public static get BLUE_THEME_URL(): string  { return 'http://'+this.hostName+':'+this.STATIC_CONTENT_PORT+'/styles/anthem/anthem.blue.theme.css'; }

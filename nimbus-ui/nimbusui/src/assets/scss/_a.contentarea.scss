@@ -114,14 +114,15 @@ h3{
     
 
 }
-
+.info-card h1.page-title {
+    @extend .sr-only;
+}
 
 h1.page-title {
     margin-bottom:0;
     font-size: 1.3rem;
     margin-left:10px;
     font-weight: 400;
-    display:none;
     &::before{
         font-size: 1.9rem;
         color: $iconColor;
@@ -264,7 +265,7 @@ h1.page-title {
 
 .info-card {
     display: inline-block;
-    width: 80%;
+    width: 82%;
 }
 .ui-dialog .ui-dialog-titlebar-close span {
     font-size: 1.5rem;
@@ -665,11 +666,15 @@ button.ui-datepicker-trigger.ui-calendar-button {
         position: relative;
         h2{
             margin-bottom: 0;
-        }
+        
         button {
             all: inherit;
             width:100%;
             cursor: pointer;
+            background: none;
+            border: none;
+            text-align: left;
+            color: #fff;
             &::before{
                 font-family: "FontAwesome";
                 content: "\f0da";
@@ -677,6 +682,7 @@ button.ui-datepicker-trigger.ui-calendar-button {
                 transition: transform 400ms;
                 display: inline-block;
             }
+        }
         
             &:focus,&:hover{
                 &::before{

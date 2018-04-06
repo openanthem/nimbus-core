@@ -107,7 +107,6 @@ import { CustomHttpClientInterceptor } from './services/httpclient-interceptor.s
 import { CustomBrowserXhr } from './custom.browserxhr';
 import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
-
 // Declarations
 import { LoginCmp } from './components/login/login.component';
 import { LandingPage } from './components/login/auth-landingpage';
@@ -116,7 +115,6 @@ import { LinkPipe } from './pipes/link.pipe';
 import { SelectItemPipe } from './pipes/select-item.pipe';
 import { LoaderComponent } from './components/platform/loader/loader.component';
 import {DateTimeFormatPipe} from './pipes/date.pipe';
-
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
