@@ -19,6 +19,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Grid;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListElemParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Model;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 
@@ -66,7 +67,7 @@ public class EntityStateJsonFilter extends AbstractEntityStateJsonFilter {
 				return false; // include for leaf
 			
 			// include when collection and has @Grid annotation
-			else if(param.isCollection() && hasGrid(param))
+			else if(param.isCollectionElem() && hasGrid(param.findIfCollectionElem()))
 				return false;
 			
 			else
@@ -75,11 +76,12 @@ public class EntityStateJsonFilter extends AbstractEntityStateJsonFilter {
 		return false;
 	}
 	
-	private boolean hasGrid(Param<?> param) {
-		if(param.getConfig().getUiStyles()==null)
+	private boolean hasGrid(ListElemParam<?> elemParam) {
+		Param<?> colParam = elemParam.getParentModel().getAssociatedParam();
+		if(colParam.getConfig().getUiStyles()==null)
 			return false;
 		
-		return param.getConfig().getUiStyles().getAnnotation().annotationType()==Grid.class;
+		return colParam.getConfig().getUiStyles().getAnnotation().annotationType()==Grid.class;
 	}
 	
 	@Override
