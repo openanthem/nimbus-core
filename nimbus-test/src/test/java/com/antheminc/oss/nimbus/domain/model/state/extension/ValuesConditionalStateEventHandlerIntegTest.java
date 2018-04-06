@@ -17,6 +17,9 @@ package com.antheminc.oss.nimbus.domain.model.state.extension;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -54,8 +57,9 @@ public class ValuesConditionalStateEventHandlerIntegTest extends AbstractStateEv
 		if (REF_ID != null) {
 			return mongo.findById(REF_ID, SampleCoreEntity.class, "sample_core");
 		}
-		
+		//AtomicInteger counter = new AtomicInteger(0);
 		final SampleCoreEntity core = new SampleCoreEntity();
+		core.setId(new Random().nextLong());
 		mongo.insert(core, "sample_core");
 		REF_ID = core.getId();
 		assertNotNull(REF_ID);

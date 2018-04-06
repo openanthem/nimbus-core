@@ -27,6 +27,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.time.DateUtils;
@@ -358,7 +359,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 	
 	@Test
 	public void t14_testSearchByQueryPageableWithSort() {
-		cleanInsertSampleCoreAccess(new String[] {"1","2","3","4","5","11"});
+		cleanInsertSampleCoreAccess(new String[] {"1","2","3","4","5","6"});
 		
 		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/sample_core_access/_search?fn=query&pageSize=5&page=0&sortBy=attr_String,DESC");
 		
@@ -373,7 +374,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		assertNotNull(response.getContent());
 		assertEquals(5, response.getContent().size());
 		
-		assertEquals("11", response.getContent().get(0).getAttr_String());
+		assertEquals("6", response.getContent().get(0).getAttr_String());
 		assertEquals("5", response.getContent().get(1).getAttr_String());
 		assertEquals("4", response.getContent().get(2).getAttr_String());
 		assertEquals("3", response.getContent().get(3).getAttr_String());
@@ -512,6 +513,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 	@Test
 	public void t20_tt() {
 		SampleCoreEntityAccess scea = new SampleCoreEntityAccess();
+		scea.setId(1L);
 		scea.setAttr_String("test1_string1");
 		scea.setAttr_String2("test2_string2");
 		scea.setAttr_LocalDate1(LocalDate.now());
@@ -520,6 +522,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		scea.setAttr_Date1(new Date());
 		
 		SampleCoreEntityAccess scea2 = new SampleCoreEntityAccess();
+		scea2.setId(2L);
 		scea2.setAttr_String("test1_string1");
 		scea2.setAttr_String2("test2_string2");
 		scea2.setAttr_LocalDate1(LocalDate.now().plusYears(1));
@@ -602,6 +605,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		
 		for(int i=0; i < attr_String.length; i++) {
 			SampleCoreEntityAccess scea = new SampleCoreEntityAccess();
+			scea.setId(new Random().nextLong());
 			scea.setAttr_String(attr_String[i]);
 			if(attr_String2 != null && attr_String2.length > 0 && i <= attr_String2.length) {
 				scea.setAttr_String2(attr_String2[i]);

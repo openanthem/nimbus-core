@@ -36,7 +36,7 @@ public class SampleCoreAssociatedEntity extends IdLong{
 
 	private static final long serialVersionUID = 1L;
 	
-	private String entityId;
+	private Long entityId;
 	
 	private String status;
 	

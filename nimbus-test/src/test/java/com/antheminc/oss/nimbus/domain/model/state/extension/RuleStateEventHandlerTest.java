@@ -17,6 +17,8 @@ package com.antheminc.oss.nimbus.domain.model.state.extension;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.util.Random;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,7 +58,7 @@ public class RuleStateEventHandlerTest extends AbstractStateEventHandlerTests {
 		}
 		
 		final SampleCoreEntity core = new SampleCoreEntity();
-		core.setId(1L);
+		core.setId(new Random().nextLong());
 		mongo.insert(core, ENTITY_CORE);
 		REF_ID = core.getId();
 		assertNotNull(REF_ID);

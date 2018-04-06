@@ -19,6 +19,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -54,8 +56,9 @@ public class ModalStateEventHandlerTest extends AbstractStateEventHandlerTests {
 		if (REF_ID != null) {
 			return mongo.findById(REF_ID, SampleCoreEntity.class, "sample_core");
 		}
-		
+		AtomicInteger counter = new AtomicInteger(0);
 		final SampleCoreEntity core = new SampleCoreEntity();
+		core.setId(Long.valueOf(counter.getAndIncrement()));
 		mongo.insert(core, "sample_core");
 		REF_ID = core.getId();
 		assertNotNull(REF_ID);

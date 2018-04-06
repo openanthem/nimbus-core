@@ -146,6 +146,7 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 		String userLoginId = createClientUserWithRoles("superman","intake","clinician");
 		
 		SampleCoreEntityAccess scea = new SampleCoreEntityAccess();
+		scea.setId(1L);
 		scea.setAttr_String("test1_string1");
 		scea.setAttr_String2("test2_string2");
 		scea.setAttr_LocalDate1(LocalDate.now());
@@ -155,6 +156,7 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 		scea.setAccessConditional_Contains_Hidden1(nestedEntity);
 		
 		SampleCoreEntityAccess scea2 = new SampleCoreEntityAccess();
+		scea2.setId(2L);
 		scea2.setAttr_String("test2_string1");
 		scea2.setAttr_String2("test2_string2");
 		

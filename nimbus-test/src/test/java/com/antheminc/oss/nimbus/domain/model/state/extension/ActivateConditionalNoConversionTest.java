@@ -64,8 +64,9 @@ public class ActivateConditionalNoConversionTest extends AbstractStateEventHandl
 		
 //		core.getNc_form().getNc_nested0_Details().getNc_nested_level1()
 //			.setNested_nc_attr1A("No");
-		
+		core.setId(1L);
 		mongo.insert(core, "sample_core");
+		
 		REF_ID = core.getId();
 		assertNotNull(REF_ID);
 		

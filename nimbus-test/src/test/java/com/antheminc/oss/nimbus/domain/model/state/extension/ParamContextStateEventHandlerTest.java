@@ -56,6 +56,7 @@ public class ParamContextStateEventHandlerTest extends AbstractStateEventHandler
 		}
 		
 		final SampleCoreEntity core = new SampleCoreEntity();
+		core.setId(1L);
 		mongo.insert(core, "sample_core");
 		REF_ID = core.getId();
 		assertNotNull(REF_ID);

@@ -81,7 +81,7 @@ public abstract class AbstractFrameworkIngerationPersistableTests extends Abstra
 	
 	protected static final String SAMPLE_DOMAIN_ALIAS = "sample_entity";
 	
-	protected static String sampleEntity_refId;
+	protected static Long sampleEntity_refId;
 	
 	public synchronized Long createOrGetDomainRoot_RefId() {
 		if(domainRoot_refId!=null) 
@@ -95,7 +95,7 @@ public abstract class AbstractFrameworkIngerationPersistableTests extends Abstra
 		return domainRoot_refId;
 	}
 	
-	public synchronized String createOrGetSampleEntity_RefId() {
+	public synchronized Long createOrGetSampleEntity_RefId() {
 		final String VIEW_SAMPLE_ENTITY = PLATFORM_ROOT + "/" + SAMPLE_DOMAIN_ALIAS;
 		
 		if(sampleEntity_refId!=null) 

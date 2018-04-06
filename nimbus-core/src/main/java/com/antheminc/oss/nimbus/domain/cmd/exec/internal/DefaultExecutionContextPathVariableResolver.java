@@ -58,7 +58,7 @@ public class DefaultExecutionContextPathVariableResolver implements ExecutionCon
 			// look for relative path to execution context
 			String entryToResolve = ParamPathExpressionParser.stripPrefixSuffix(key);
 			
-			String val = mapSearchMarkers(eCtx, param, entryToResolve);
+			String val = mapSearchMarkers(eCtx, param, key);
 			
 			if(StringUtils.isNotBlank(val)) {
 				out = StringUtils.replace(out, key, val, 1);
@@ -77,15 +77,16 @@ public class DefaultExecutionContextPathVariableResolver implements ExecutionCon
 	}
 	
 	
-	private String mapSearchMarkers(ExecutionContext eCtx, Param<?> param, String pathToResolve) {
-		if(StringUtils.equalsIgnoreCase(pathToResolve, Constants.SERVER_PAGE_EXP_MARKER.code)) {
+	private String mapSearchMarkers(ExecutionContext eCtx, Param<?> param, String key) {
+		String entryToResolve = ParamPathExpressionParser.stripPrefixSuffix(key);
+		if(StringUtils.equalsIgnoreCase(entryToResolve, Constants.SERVER_PAGE_EXP_MARKER.code)) {
 			return mapPageCriteria(eCtx);
 		}
-		if(StringUtils.equalsIgnoreCase(pathToResolve, Constants.SERVER_FILTER_EXPR_MARKER.code)) {
-			return mapFilterCriteria(eCtx, param, pathToResolve);
+		if(StringUtils.equalsIgnoreCase(entryToResolve, Constants.SERVER_FILTER_EXPR_MARKER.code)) {
+			return mapFilterCriteria(eCtx, param);
 		}
 		
-		return null;
+		return key;
 	}
 
 	private String mapPageCriteria(ExecutionContext eCtx) {
@@ -93,7 +94,7 @@ public class DefaultExecutionContextPathVariableResolver implements ExecutionCon
 	}
 
 	@SuppressWarnings("unchecked")
-	private String mapFilterCriteria(ExecutionContext eCtx, Param<?> param, String pathToResolve) {
+	private String mapFilterCriteria(ExecutionContext eCtx, Param<?> param) {
 		List<FilterCriteria> filters = converter.readArray(FilterCriteria.class, List.class, eCtx.getCommandMessage().getRawPayload());
 		
 		if(CollectionUtils.isEmpty(filters))

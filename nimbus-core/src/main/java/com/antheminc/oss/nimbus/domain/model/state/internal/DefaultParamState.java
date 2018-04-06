@@ -425,7 +425,6 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		if(getParentModel()!=null && getParentModel().isRoot()) {
 			return findIfNested();
 		}
-		
 		return getParentModel().getRootDomain();
 	}
 
