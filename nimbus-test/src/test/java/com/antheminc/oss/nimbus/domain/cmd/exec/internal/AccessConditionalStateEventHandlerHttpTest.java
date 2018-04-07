@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -323,18 +324,21 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 	
 	private String createClientUserWithRoles(String loginId, String... roles) {
 		ClientUser cu = new ClientUser();
+		cu.setId(new Random().nextLong());
 		cu.setLoginId(loginId);
 		
 		List<UserRole> userRoles = new ArrayList<>();
 		Arrays.asList(roles).forEach((r) -> {
 			
 			ClientUserRole userRole = new ClientUserRole();
+			userRole.setId(new Random().nextLong());
 			userRole.setCode(r);
 			userRole.setEffectiveDate(LocalDate.now());
 			
 			List<String> accessEntities = new ArrayList<>();
 			
 			ClientAccessEntity accessEntity = new ClientAccessEntity();
+			accessEntity.setId(new Random().nextLong());
 			accessEntity.setCode("member_management");
 			
 			mongo.save(accessEntity, "authorities");

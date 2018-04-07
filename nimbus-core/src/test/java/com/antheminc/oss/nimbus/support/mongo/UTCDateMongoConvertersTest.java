@@ -33,7 +33,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.antheminc.oss.nimbus.AbstractPersistableUnitTests;
-import com.antheminc.oss.nimbus.entity.AbstractEntity.IdString;
+import com.antheminc.oss.nimbus.entity.AbstractEntity.IdLong;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -50,23 +50,23 @@ public class UTCDateMongoConvertersTest extends AbstractPersistableUnitTests {
 	
 	@SuppressWarnings("serial")
 	@Getter @Setter
-    private static class _TestEntityWithDate extends IdString {
+    private static class _TestEntityWithDate extends IdLong {
 		
-    	private Date userEntered;
+		private Date userEntered;
     }
     
 	@SuppressWarnings("serial")
 	@Getter @Setter
-    private static class _TestEntityWithLocalDateTime extends IdString {
+    private static class _TestEntityWithLocalDateTime extends IdLong {
 		
-    	private LocalDateTime userEntered;
+    		private LocalDateTime userEntered;
     }
     
 	@SuppressWarnings("serial")
 	@Getter @Setter
-    private static class _TestEntityWithLocalDate extends IdString {
+    private static class _TestEntityWithLocalDate extends IdLong {
 		
-    	private LocalDate userEntered;
+		private LocalDate userEntered;
     }
     
 	

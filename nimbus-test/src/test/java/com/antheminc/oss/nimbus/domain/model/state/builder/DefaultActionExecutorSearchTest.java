@@ -98,6 +98,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		final List<ParamValue> expectedValues = new ArrayList<>();
 		expectedValues.add(new ParamValue("code1", "label1", "desc1"));
 		final StaticCodeValue expected = new StaticCodeValue("/status", expectedValues);
+		expected.setId(new Random().nextLong());
 		this.mongoOps.insert(expected, "staticCodeValue");
 		
 		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/staticCodeValue/_search?fn=lookup&where=staticCodeValue.paramCode.eq('/status')");
@@ -120,6 +121,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		final List<ParamValue> expectedValues = new ArrayList<>();
 		expectedValues.add(new ParamValue("ACL", "Anticardiolpin Antibodies", null));
 		final StaticCodeValue expected = new StaticCodeValue("anything", expectedValues);
+		expected.setId(new Random().nextLong());
 		this.mongoOps.insert(expected, "staticCodeValue");
 		
 		assertEquals("Anticardiolpin Antibodies", this.labelConverter.serialize("ACL"));
@@ -177,7 +179,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 	
 	@Test
 	public void t41_testSearchByQueryCriteriaNotNull() {
-		this.insertClient();
+		insertClient();
 		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/client/_search?fn=query&where=client.code.eq('c1')");
 		
 		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
@@ -197,6 +199,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		final List<ParamValue> expectedValues = new ArrayList<>();
 		expectedValues.add(new ParamValue("code1", "label1", "desc1"));
 		final StaticCodeValue expected = new StaticCodeValue("/status", expectedValues);
+		expected.setId(new Random().nextLong());
 		this.mongoOps.insert(expected, "staticCodeValue");
 		
 		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/staticCodeValue/_search?fn=query&where=staticCodeValue.paramCode.eq('/status')&projection.alias=vstaticCodeValue");
@@ -227,8 +230,12 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 	@Test
 	public void t6_testSearchByQueryWithCountAggregation() {
 		this.mongoOps.dropCollection("staticCodeValue");
-		this.mongoOps.insert(new StaticCodeValue("/status", null), "staticCodeValue");
-		this.mongoOps.insert(new StaticCodeValue("/status", null), "staticCodeValue");
+		StaticCodeValue scv = new StaticCodeValue("/status", null);
+		scv.setId(new Random().nextLong());
+		StaticCodeValue scv2 = new StaticCodeValue("/status", null);
+		scv2.setId(new Random().nextLong());
+		this.mongoOps.insert(scv, "staticCodeValue");
+		this.mongoOps.insert(scv2, "staticCodeValue");
 		
 		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/staticCodeValue/_search?fn=query&where=staticCodeValue.paramCode.eq('/status')&aggregate=count");
 		
@@ -247,34 +254,22 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		createUserGroups();
 		createQueues();
 
-		String userQueues = "{ \"aggregate\": \"queue\", \"pipeline\": [ { $graphLookup: { from: \"clientuser\", startWith: \"$entityId\", connectFromField: \"entityId\", connectToField: \"loginId\", as: \"users\", restrictSearchWithMatch: { \"loginId\": \"casemanager\" } } }, { $match: { \"users\": { $ne: [] } } } ] }";
-		String userGroupQueues = "{ \"aggregate\": \"queue\", \"pipeline\": [{ $graphLookup: { from: \"clientusergroup\", startWith: \"$entityId\", connectFromField: \"entityId\", connectToField: \"_id\", as: \"usergroups\", restrictSearchWithMatch: {\"members.userId\":\"casemanager\"} } }, { $match: { \"usergroups\" :{ $ne: []} } } ] }";
-		String finalCriteria = userQueues+"~~"+userGroupQueues;
+		String userQueuesQuery = "{ \"aggregate\": \"queue\", \"pipeline\": [ { $graphLookup: { from: \"clientuser\", startWith: \"$entityId\", connectFromField: \"entityId\", connectToField: \"loginId\", as: \"users\", restrictSearchWithMatch: { \"loginId\": \"casemanager\" } } }, { $match: { \"users\": { $ne: [] } } } ] }";
+		String userGroupQueuesQuery = "{ \"aggregate\": \"queue\", \"pipeline\": [{ $graphLookup: { from: \"clientusergroup\", startWith: \"$entityId\", connectFromField: \"entityId\", connectToField: \"_id\", as: \"usergroups\", restrictSearchWithMatch: {\"members.userId\":\"casemanager\"} } }, { $match: { \"usergroups\" :{ $ne: []} } } ] }";
 		
-		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/queue/_search?fn=query&where="+finalCriteria);
-		
-		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
-		List<Queue> values = (List<Queue>) multiOp.getSingleResult();
-		
-		Assert.notEmpty(values, "values cannot be empty");
-		
-	}
-	
-	// TODO - the in-memory flapdoodle mongo does not support the graphLookup query hence @Ignore
-	@Ignore
-	public void t10_getAllQueuesForUserByNamedQueryAggregation() {
-		Stream.of(COLLECTIONS).forEach((collection) -> mongoOps.dropCollection(collection));
-		createUsers();
-		createUserGroups();
-		createQueues();
-		
-		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/p/queue/_search?fn=query&where=userQueues");
+		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/queue/_search?fn=query&where="+userQueuesQuery);
 		
 		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
-		List<Queue> values = (List<Queue>) multiOp.getSingleResult();
+		List<Queue> userQueues = (List<Queue>) multiOp.getSingleResult();
 		
-		Assert.notEmpty(values, "values cannot be empty");
-		org.junit.Assert.assertEquals(4, values.size());
+		Assert.notEmpty(userQueues, "values cannot be empty");
+		
+		CommandMessage cmdMsg2 = build(PLATFORM_ROOT+"/queue/_search?fn=query&where="+userGroupQueuesQuery);
+		
+		MultiOutput multiOp2 = this.commandGateway.execute(cmdMsg2);
+		List<Queue> userGrpQueues = (List<Queue>) multiOp2.getSingleResult();
+		
+		Assert.notEmpty(userGrpQueues, "values cannot be empty");
 		
 	}
 	
@@ -653,11 +648,13 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		mongoOps.dropCollection("client");
 		
 		Client c = new Client();
+		c.setId(new Random().nextLong());
 		c.setName("client");
 		c.setCode("c");
 		mongoOps.insert(c, "client");
 		
 		Client c1 = new Client();
+		c1.setId(new Random().nextLong());
 		c1.setName("client1");
 		c1.setCode("c1");
 		mongoOps.insert(c1, "client");
@@ -668,22 +665,22 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		mongoOps.dropCollection("clientuser");
 		
 		ClientUser clientUser = new ClientUser();
-		clientUser.setId("U1");
+		clientUser.setId(new Random().nextLong());
+		clientUser.setDisplayName("U1");
 		clientUser.setLoginId("casemanager");
-		clientUser.setDisplayName("testClientUserDisplayName_1");
 		
 		
 		ClientUser clientUser2 = new ClientUser();
-		clientUser2.setId("U2");
-		clientUser2.setDisplayName("testClientUserDisplayName_2");
+		clientUser2.setId(new Random().nextLong());
+		clientUser2.setDisplayName("U2");
 		
 		ClientUser clientUser3 = new ClientUser();
-		clientUser3.setId("U3");
-		clientUser3.setDisplayName("testClientUserDisplayName_3");
+		clientUser3.setId(new Random().nextLong());
+		clientUser3.setDisplayName("U3");
 		
 		ClientUser clientUser4 = new ClientUser();
-		clientUser4.setId("U4");
-		clientUser4.setDisplayName("testClientUserDisplayName_4");
+		clientUser4.setId(new Random().nextLong());
+		clientUser4.setDisplayName("U4");
 		
 		mongoOps.save(clientUser, "clientuser");
 		mongoOps.save(clientUser2, "clientuser");
@@ -695,8 +692,8 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		mongoOps.dropCollection("clientusergroup");
 		
 		ClientUserGroup userGroup = new ClientUserGroup();
-		userGroup.setId("UG1");
-		userGroup.setName("testClientUserGroupName_1");
+		userGroup.setId(new Random().nextLong());
+		userGroup.setName("UG1");
 		
 		List<GroupUser> groupUsers = new ArrayList<>();
 		GroupUser groupUser = new GroupUser();
@@ -704,11 +701,13 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		groupUsers.add(groupUser);
 		
 		GroupUser groupUser22 = new GroupUser();
+		groupUser22.setId(new Random().nextLong());
 		groupUser22.setUserId("U3");
 		groupUser22.setAdmin(true);
 		groupUsers.add(groupUser22);
 		
 		GroupUser groupUser33 = new GroupUser();
+		groupUser33.setId(new Random().nextLong());
 		groupUser33.setUserId("U4");
 		groupUser33.setAdmin(true);
 		groupUsers.add(groupUser33);
@@ -716,8 +715,8 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		userGroup.setMembers(groupUsers);
 		
 		ClientUserGroup userGroup2 = new ClientUserGroup();
-		userGroup2.setId("UG2");
-		userGroup2.setName("testClientUserGroupName_2");
+		userGroup2.setId(new Random().nextLong());
+		userGroup2.setName("UG2");
 		
 		List<GroupUser> groupUsers2 = new ArrayList<>();
 		GroupUser groupUser2 = new GroupUser();
@@ -727,8 +726,8 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		userGroup2.setMembers(groupUsers2);
 		
 		ClientUserGroup userGroup3 = new ClientUserGroup();
-		userGroup3.setId("UG3");
-		userGroup3.setName("testClientUserGroupName_3");
+		userGroup3.setId(new Random().nextLong());
+		userGroup3.setName("UG3");
 		
 		List<GroupUser> groupUsers3 = new ArrayList<>();
 		GroupUser groupUser3 = new GroupUser();
@@ -746,44 +745,45 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		mongoOps.dropCollection("queue");
 		
 		Queue queue = new Queue();
-		queue.setId("Q1");
+		queue.setId(new Random().nextLong());
+		queue.setName("Q1");
 		
-		ClientUser cu = mongoOps.findOne(new Query(Criteria.where("id").is("U1")), ClientUser.class, "clientuser");
+		ClientUser cu = mongoOps.findOne(new Query(Criteria.where("displayName").is("U1")), ClientUser.class, "clientuser");
 		queue.setName(cu.getLoginId());
-		queue.setEntityId(cu.getLoginId());
+		queue.setEntityId(cu.getId());
 		
 		Queue queue2 = new Queue();
-		queue2.setId("Q2");
+		queue2.setId(new Random().nextLong());
+		queue2.setName("Q2");
 		
-		
-		ClientUserGroup cug = mongoOps.findOne(new Query(Criteria.where("id").is("UG1")), ClientUserGroup.class, "clientusergroup");
-		
+		ClientUserGroup cug = mongoOps.findOne(new Query(Criteria.where("name").is("UG1")), ClientUserGroup.class, "clientusergroup");
 		queue2.setName(cug.getName());
 		queue2.setEntityId(cug.getId());
 		
 		Queue queue3 = new Queue();
-		queue3.setId("Q3");
+		queue3.setId(new Random().nextLong());
+		queue3.setName("Q3");
 		
-		
-		ClientUserGroup cug2 = mongoOps.findOne(new Query(Criteria.where("id").is("UG1")), ClientUserGroup.class, "clientusergroup");
+		ClientUserGroup cug2 = mongoOps.findOne(new Query(Criteria.where("name").is("UG1")), ClientUserGroup.class, "clientusergroup");
 		queue3.setName(cug2.getName());
 		queue3.setEntityId(cug2.getId());
 		
 		Queue queue4 = new Queue();
-		queue4.setId("Q4");
+		queue4.setId(new Random().nextLong());
+		queue4.setName("Q4");
 		
-		
-		ClientUserGroup cug3 = mongoOps.findOne(new Query(Criteria.where("id").is("UG2")), ClientUserGroup.class, "clientusergroup");
+		ClientUserGroup cug3 = mongoOps.findOne(new Query(Criteria.where("name").is("UG2")), ClientUserGroup.class, "clientusergroup");
 		queue4.setName(cug3.getName());
 		queue4.setEntityId(cug3.getId());
 		
 		Queue queue5 = new Queue();
-		queue5.setId("Q5");
+		queue5.setId(new Random().nextLong());
+		queue5.setName("Q5");
 		
 		
-		ClientUser cu2 = mongoOps.findOne(new Query(Criteria.where("id").is("U2")), ClientUser.class, "clientuser");
+		ClientUser cu2 = mongoOps.findOne(new Query(Criteria.where("displayName").is("U2")), ClientUser.class, "clientuser");
 		queue5.setName(cu2.getLoginId());
-		queue5.setEntityId(cu2.getLoginId());
+		queue5.setEntityId(cu2.getId());
 		
 		mongoOps.save(queue, "queue");
 		mongoOps.save(queue2, "queue");
@@ -795,7 +795,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 	private ClientUserGroup insertClientUserGroup() {
 		mongoOps.dropCollection("clientusergroup");
 		ClientUserGroup cug = new ClientUserGroup(); 
-		cug.setId("1"); 
+		cug.setId(new Random().nextLong());
 		List<GroupUser> guList = new ArrayList<GroupUser>(); 
 		GroupUser gu = new GroupUser(); 
 		gu.setUserId("test1"); 

@@ -122,8 +122,10 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 	protected String mapSelf(Param<?> param, String pathToResolve) {
 		if(StringUtils.endsWith(pathToResolve, "loginId"))
 			return Optional.ofNullable(sessionProvider.getLoggedInUser()).orElseGet(() -> new ClientUser()).getLoginId();
-		if(StringUtils.endsWith(pathToResolve, "id"))
-			return Optional.ofNullable(sessionProvider.getLoggedInUser()).orElseGet(() -> new ClientUser()).getId();
+		if(StringUtils.endsWith(pathToResolve, "id")) {
+			Long id = Optional.ofNullable(sessionProvider.getLoggedInUser()).orElseGet(() -> new ClientUser()).getId();
+			String.valueOf(id);
+		}
 		
 		return param.getRootExecution().getRootCommand().getElement(Type.ClientAlias).get().getAlias();
 	}
