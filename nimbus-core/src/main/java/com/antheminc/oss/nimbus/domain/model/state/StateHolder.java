@@ -380,10 +380,6 @@ public class StateHolder {
 			this.ref.setMessage(msg);
 		}
 		
-		public void setMessage(String msgTxt, Message.Type type, Message.Context context) {
-			this.ref.setMessage(new Message(msgTxt, type, context));
-		}
-		
 		@Override
 		public List<ParamValue> getValues() {
 			return this.ref.getValues();

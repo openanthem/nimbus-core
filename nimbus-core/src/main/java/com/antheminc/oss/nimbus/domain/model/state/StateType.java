@@ -38,7 +38,6 @@ public class StateType implements Serializable {
 	
 	@JsonIgnore private final ParamConfigType config;
 	
-	@JsonIgnore
 	public String getName() {
 		return config.getName();
 	}
@@ -48,12 +47,10 @@ public class StateType implements Serializable {
 		return false;
 	}
 	
-	@JsonIgnore
 	public boolean isCollection() {
 		return false;
 	}
 	
-	@JsonIgnore
 	public boolean isNested() {
 		return config.isNested();
 	}
@@ -102,7 +99,6 @@ public class StateType implements Serializable {
 			super(config, model);
 		}
 		
-		@JsonIgnore
 		@Override
 		public boolean isCollection() {
 			return true;
@@ -141,6 +137,10 @@ public class StateType implements Serializable {
 		private void setModel(EntityState.Model<P> model) {
 			super.model = model;
 		}
+		
+//		public boolean isAssigned() {
+//			return getModel()!=null;
+//		}
 		
 		public void assign(EntityState.Model<P> mappedModel) {
 			setModel(mappedModel);
