@@ -17,7 +17,7 @@
 'use strict';
 import { LabelConfig } from './../../shared/app-config.interface';
 import { Component, Input, forwardRef } from '@angular/core';
-import { Param } from '../../shared/app-config.interface';
+import { Param } from '../../shared/Param';
 import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { WebContentSvc } from '../../services/content-management.service';
 import { BaseControl } from './form/elements/base-control.component';

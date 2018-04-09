@@ -20,7 +20,7 @@ import { Component, forwardRef, ViewChild, ChangeDetectorRef } from '@angular/co
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { PageService } from '../../../../services/page.service';
-import { Param } from '../../../../shared/app-config.interface';
+import { Param } from '../../../../shared/Param';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 
 /**

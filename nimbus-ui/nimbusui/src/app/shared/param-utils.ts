@@ -1,4 +1,3 @@
-import { Param } from './app-config.interface';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -22,7 +21,7 @@ import { SortAs } from "../components/platform/grid/sortas.interface";
 import { PageService } from '../services/page.service';
 import { GridService } from '../services/grid.service';
 import { ServiceConstants } from '../services/service.constants';
-
+import { Param } from './Param'
 /**
  * \@author Tony.Lopez
  * \@whatItDoes 

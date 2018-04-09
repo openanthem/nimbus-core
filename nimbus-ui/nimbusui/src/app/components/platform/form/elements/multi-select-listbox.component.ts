@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 'use strict';
-import { Param } from '../../../../shared/app-config.interface';
+import { Param } from '../../../../shared/Param';
 import { Component, forwardRef, Input,Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, NgModel} from '@angular/forms';
 import { WebContentSvc } from '../../../../services/content-management.service';

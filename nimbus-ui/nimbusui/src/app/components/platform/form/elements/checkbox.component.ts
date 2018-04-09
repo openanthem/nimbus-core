@@ -20,7 +20,7 @@ import { NgModel, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { PageService } from '../../../../services/page.service';
 import { BaseControl } from './base-control.component';
-import { Param } from '../../../../shared/app-config.interface';
+import { Param } from '../../../../shared/Param';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 
 /**

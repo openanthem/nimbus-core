@@ -17,7 +17,7 @@
 'use strict';
 
 import { Component, Input, OnInit } from '@angular/core';
-import { Param } from '../../shared/app-config.interface';
+import { Param } from '../../shared/Param';
 import { PageService } from '../../services/page.service';
 import { WebContentSvc } from './../../services/content-management.service';
 import { GenericDomain } from './../../model/generic-domain.model';

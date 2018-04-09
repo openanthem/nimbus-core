@@ -24,11 +24,11 @@ import { Validation, ViewConfig,
         Model,
         ModelEvent,
         Page,
-        Param,
         ParamConfig,
         Type,
         Result, ViewRoot
 } from '../shared/app-config.interface';
+import {Param} from '../shared/Param';
 import { CustomHttpClient } from './httpclient.service';
 
 import { Subject } from 'rxjs/Subject';
@@ -37,6 +37,7 @@ import { RequestContainer } from '../shared/requestcontainer';
 import { Observable } from 'rxjs/Observable';
 import { ExecuteResponse } from './../shared/app-config.interface';
 import { ParamUtils } from './../shared/param-utils';
+import { ParamAttribute } from './../shared/command.enum';
 
 /**
  * \@author Dinakar.Meda
@@ -402,9 +403,6 @@ export class PageService {
 
         /** Process execute call - TODO revisit to make it more dynamic based on url completion */
         processEvent(processUrl: string, behavior: string, model: GenericDomain, method: string) {
-                // if (model!=null && model['id']) {
-                //         this.entityId = model['id'];
-                // }
                 processUrl = processUrl + '/' + Action._get.value;
                 let url = '';
                 let serverUrl = '';
@@ -421,7 +419,6 @@ export class PageService {
                 } else {
                         url = url + processUrl.replace('{id}', this.entityId.toString()) + '?b=' + behavior;
                 }
-                //}
 
                 let rootDomainId = this.getFlowRootDomainId(flowName);
                 if (rootDomainId != null) {
@@ -540,15 +537,6 @@ export class PageService {
                 //Remove the context model attributes from path
                 if (updatedParamPath.indexOf('/#') !== -1) {
                         updatedParamPath = updatedParamPath.substring(0, updatedParamPath.indexOf('/#'));
-                        // TODO REMOVE , ONLY FOR TESTING SINCE SERVER SIDE FRAMEWORK IS NOT SENDING THE WEBSOCKET UPDATE UPTO THE LAST ELEMENT LEVEL
-                        if (updatedParamPath === 'caseOverview/caseInfoCard/caseInfoSection/cardDetailCase/headerCase') {
-                                updatedParamPath = 'caseOverview/caseInfoCard/caseInfoSection/cardDetailCase/headerCase/caseStatus';
-                                //cmPrograms/cmProgramCard/cmProgramSection/cmProgramForm/caseStatus/#/values
-                        }
-                        if (updatedParamPath === 'caseOverview/caseInfoCard/caseInfoSection/cardDetailCase/headerCase2') {
-                                updatedParamPath = 'caseOverview/caseInfoCard/caseInfoSection/cardDetailCase/headerCase2/statusReason';
-                                //cmPrograms/cmProgramCard/cmProgramSection/cmProgramForm/caseStatus/#/values
-                        }
                 }
                 return updatedParamPath;
         }
@@ -635,7 +623,10 @@ export class PageService {
          * 
          */
         createGridData(gridElementParams: Param[], gridParam: Param) {
-                let nestedParams = gridParam.config.type.elementConfig.type.model.paramConfigs;
+
+                let nestedParams;
+                if(gridParam.config.type.elementConfig.type.model)
+                        nestedParams = gridParam.config.type.elementConfig.type.model.paramConfigs;
                 let gridData = [];
                 let paramState = [];
                 // Look for inner lists (nested grid)
@@ -650,7 +641,7 @@ export class PageService {
                 }
                 if (gridElementParams) {
                         gridElementParams.forEach(param => {
-                                let p = new Param(this.configService).deserialize(param, param.path);
+                                let p = new Param(this.configService).deserialize(param, gridParam.path + "/" + param.elemId);
                                 if(p != null) {
                                         paramState.push(p.type.model.params);
                                         gridData.push(this.createRowData(p, nestedParamIdx));
@@ -690,21 +681,21 @@ export class PageService {
                                 } else { // Nested Collection. Need to traverse to right location
                                         let nestedPath = eventModel.value.path.substr(param.path.length + 1);
                                         let elemIndex = nestedPath.substr(0, nestedPath.indexOf('/'));
-                                        for (var p = 0; p < param.gridList.length; p++) {
-                                                if (param.gridList[p]['elemId'] == elemIndex) {
-                                                        // console.log(param.config.gridList[p]['nestedElement']);
-                                                        let nestedElement = this.getNestedElementParam(param.gridList[p]['nestedElement'], nestedPath);
-                                                        if (nestedElement) {
-                                                                nestedElement['gridList'] = this.createGridData(eventModel.value.type.model.params, nestedElement);
-                                                                this.gridValueUpdate.next(nestedElement);
-                                                        } else {
-                                                                console.log('Nested Grid Element not found.');
+                                        if( param.gridList) {
+                                                for (var p = 0; p < param.gridList.length; p++) {
+                                                        if (param.gridList[p]['elemId'] == elemIndex) {
+                                                                // console.log(param.config.gridList[p]['nestedElement']);
+                                                                let nestedElement = this.getNestedElementParam(param.gridList[p]['nestedElement'], nestedPath);
+                                                                if (nestedElement) {
+                                                                        nestedElement['gridList'] = this.createGridData(eventModel.value.type.model.params, nestedElement);
+                                                                        this.gridValueUpdate.next(nestedElement);
+                                                                } else {
+                                                                        console.log('Nested Grid Element not found.');
+                                                                }
+                                                                break;
                                                         }
-                                                        break;
                                                 }
                                         }
-
-                                        // console.log('eventModel');
                                 }
                         }
                 } else if (param.config.uiStyles != null && param.config.uiStyles.attributes.alias === 'CardDetailsGrid') {
@@ -774,65 +765,33 @@ export class PageService {
                 }
         }
 
-        updateParam(param: Param, payload: Param) {
-                let result: any[] = Reflect.ownKeys(param);
-                let updatedKeys: any[] = Reflect.ownKeys(payload);
-                let config = this.configService.getViewConfigById(payload.configId);
+        /*
+        * Updates the param with the values sent from server and emit the events so that controls that subscribed to these would process
+        * accordingly. validation update will switch on/off certain validations and eventUpdate will do a set state on the form control
+        */
+        updateParam(sourceParam: Param, responseParam: Param) {
+                let responseParamKeys: any[] = Reflect.ownKeys(responseParam);
                 //By this time the config for the parameter is set in the config map as it is deserelized
+                let config = this.configService.getViewConfigById(responseParam.configId);
                 if(config != null && config != undefined) {
-                        updatedKeys.forEach(updatedKey => {
-                                result.forEach(currentKey => {
-                                        if (currentKey === updatedKey) {
-                                                try {
-                                                        if (Reflect.ownKeys(Reflect.get(param, currentKey)) != null
-                                                                && Reflect.ownKeys(Reflect.get(param, currentKey)).length > 0) {
-                                                                if (currentKey === 'type') {
-                                                                        //Object.assign(Reflect.get(param, currentKey), new Type().deserialize(Reflect.get(payload, updatedKey)));
-                                                                } else if (currentKey === 'config') {
-                                                                        Object.assign(Reflect.get(param, currentKey), new ParamConfig(this.configService).deserialize(Reflect.get(payload, updatedKey)));
-                                                                        //TODO - refactor this whole method and the conditions. Revisit - order, count
-                                                                } else if (currentKey === 'activeValidationGroups') {
-                                                                        Reflect.set(param, currentKey, Reflect.get(payload, updatedKey));
-                                                                        this.validationUpdate.next(param);
-                                                                        //TODO - refactor this whole method and the conditions. Revisit - order, count
-                                                                } else if (currentKey === 'leafState' || currentKey === 'message') {
-                                                                        Reflect.set(param, currentKey, Reflect.get(payload, updatedKey));
-                                                                        this.eventUpdate.next(param);
-                                                                } else if (currentKey === 'enabled' || currentKey === 'visible') {
-                                                                        Reflect.set(param, currentKey, Reflect.get(payload, updatedKey));
-                                                                        this.validationUpdate.next(param);
-                                                                } else if (currentKey === 'values') {
-                                                                        if (param.values == null) {
-                                                                                let values = [];
-                                                                                values.push(Reflect.get(payload, updatedKey)) ;
-                                                                                param.values = values;
-                                                                                //this.eventUpdate.next(param);
-                                                                        } else {
-                                                                                param.values = Reflect.get(payload, updatedKey);
-                                                                                //this.eventUpdate.next(param);
-                                                                        }
-                                                                }
-                                                        } else if (Reflect.ownKeys(Reflect.get(param, currentKey)).length == 0 && currentKey === 'leafState') {
-                                                                Reflect.set(param, currentKey, Reflect.get(payload, updatedKey));
-                                                                this.eventUpdate.next(param);
-                                                        }
-                                                } catch (e) {
-                                                        if (e instanceof TypeError) {
-                                                                Reflect.set(param, currentKey, Reflect.get(payload, updatedKey));
-                                                                if (currentKey === 'leafState') {
-                                                                        this.eventUpdate.next(param);
-                                                                }
-                                                        } else {
-                                                                throw e;
-                                                        }
-                                                }
-                                        }
-                                });
+                        //replace the source param with the response key updates
+                        responseParamKeys.forEach(respKey => {
+                                Reflect.set(sourceParam, respKey, Reflect.get(responseParam, respKey));
+                        });
+                        let filterKeys = responseParamKeys.filter(key => ParamAttribute.attributeList().indexOf(key) > 0);
+                        filterKeys.forEach(filterKey => {
+                                if(filterKey === ParamAttribute.leafState.toString()) {
+                                        this.eventUpdate.next(sourceParam);
+                                }
+                                if(filterKey === ParamAttribute.enabled.toString() || filterKey === ParamAttribute.activeValidationGroups.toString()) {
+                                        this.validationUpdate.next(sourceParam);
+                                }
                         });
                 } else {
-                        this.logError('Could not process the update from the server for ' + payload.path + ' because config is undefined.');
+                        this.logError('Could not process the update from the server for ' + responseParam.path + ' because config is undefined.');
                 }
         }
+
 
         /** Get flow configuration to create pages. */
         getPageConfig() {

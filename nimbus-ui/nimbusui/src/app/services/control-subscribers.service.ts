@@ -26,7 +26,7 @@ import { ValidationUtils } from '../components/platform/validators/ValidationUti
 import { BaseControl } from '../components/platform/form/elements/base-control.component';
 import { ValidatorFn } from '@angular/forms/src/directives/validators';
 import { GenericDomain } from './../model/generic-domain.model';
-import { Param } from './../shared/app-config.interface';
+import { Param } from './../shared/Param';
 /**
  * \@author Sandeep.Mantha
  * \@whatItDoes 

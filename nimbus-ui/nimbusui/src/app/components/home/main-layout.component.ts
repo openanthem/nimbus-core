@@ -20,7 +20,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LayoutService } from '../../services/layout.service';
 import { Component } from '@angular/core';
 import { AppBranding, Layout, LinkConfig, FooterConfig } from '../../model/menu-meta.interface';
-import { Param } from '../../shared/app-config.interface';
+import { Param } from '../../shared/Param';
 import { AuthenticationService } from '../../services/authentication.service';
 import { ServiceConstants } from '../../services/service.constants';
 

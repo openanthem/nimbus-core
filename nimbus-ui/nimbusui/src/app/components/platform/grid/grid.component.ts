@@ -20,7 +20,8 @@ import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Component, Input, Output, forwardRef, ViewChild, EventEmitter, ViewEncapsulation, ChangeDetectorRef, QueryList, ViewChildren } from '@angular/core';
 
 import { GenericDomain } from '../../../model/generic-domain.model';
-import { Param, ParamConfig } from '../../../shared/app-config.interface';
+import { ParamConfig } from '../../../shared/app-config.interface';
+import { Param } from '../../../shared/Param';
 import { PageService } from '../../../services/page.service';
 import { GridService } from '../../../services/grid.service';
 import { WebContentSvc } from '../../../services/content-management.service';

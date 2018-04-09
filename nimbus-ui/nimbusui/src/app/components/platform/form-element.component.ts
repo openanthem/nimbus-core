@@ -18,7 +18,8 @@ import { ValidationConstraint } from './../../shared/validationconstraints.enum'
 'use strict';
 import { Component, Input } from '@angular/core';
 import { FormGroup, AbstractControlDirective, NgModel } from '@angular/forms';
-import { Param, Constraint } from '../../shared/app-config.interface';
+import { Constraint } from '../../shared/app-config.interface';
+import { Param } from '../../shared/Param';
 
 var counter = 0;
 

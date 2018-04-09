@@ -17,7 +17,8 @@
 'use strict';
 
 import { Component, ElementRef, Input, OnInit, OnDestroy } from '@angular/core';
-import { Param, Model } from '../../../shared/app-config.interface';
+import { Model } from '../../../shared/app-config.interface';
+import { Param } from '../../../shared/Param';
 import { DialogModule } from 'primeng/primeng';
 import { WebContentSvc } from './../../../services/content-management.service';
 import { PageService } from '../../../services/page.service';
