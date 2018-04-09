@@ -29,7 +29,7 @@ import lombok.ToString;
  */
 @Domain(value="name")
 @Getter @Setter @ToString(callSuper=true)
-public abstract class Name extends AbstractEntity.IdLong {
+public class Name extends AbstractEntity.IdLong {
 	
 	private static final long serialVersionUID = 1L;
 	
