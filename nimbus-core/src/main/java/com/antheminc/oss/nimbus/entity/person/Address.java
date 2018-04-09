@@ -32,7 +32,7 @@ import lombok.ToString;
 //@Repo(Database.rep_mongodb)
 @Domain(value="address")
 @Getter @Setter @ToString(callSuper=true)
-public abstract class Address extends AbstractEntity.IdLong {
+public class Address extends AbstractEntity.IdLong {
 
 	private static final long serialVersionUID = 1L;
 
