@@ -27,6 +27,7 @@ import { BaseControl } from '../components/platform/form/elements/base-control.c
 import { ValidatorFn } from '@angular/forms/src/directives/validators';
 import { GenericDomain } from './../model/generic-domain.model';
 import { Param } from './../shared/Param';
+import { HttpMethod } from '../shared/command.enum';
 /**
  * \@author Sandeep.Mantha
  * \@whatItDoes 
@@ -84,7 +85,7 @@ export class ControlSubscribers {
                this.pageService.postOnChange($event.path, 'state', JSON.stringify($event.leafState));
             } else if($event.config.uiStyles.attributes.postButtonUrl) {
                let item: GenericDomain = new GenericDomain();
-               this.pageService.processPost(control.element.config.uiStyles.attributes.postButtonUrl, null, $event.leafState, 'POST');
+               this.pageService.processPost(control.element.config.uiStyles.attributes.postButtonUrl, null, $event.leafState, HttpMethod.POST.value);
             }
         });
     }

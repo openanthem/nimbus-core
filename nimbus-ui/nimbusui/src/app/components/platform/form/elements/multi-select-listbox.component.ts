@@ -25,7 +25,7 @@ import { GenericDomain } from '../../../../model/generic-domain.model';
 import { BaseElement } from './../../base-element.component';
 import { ValidatorFn } from '@angular/forms/src/directives/validators';
 import { ValidationUtils } from '../../validators/ValidationUtils';
-
+import { HttpMethod } from './../../../../shared/command.enum';
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -97,7 +97,7 @@ export class MultiSelectListBox extends BaseElement{
                this.pageService.postOnChange($event.path, 'state', JSON.stringify($event.leafState));
             } else if($event.config.uiStyles.attributes.postButtonUrl) {
                let item: GenericDomain = new GenericDomain();
-               this.pageService.processPost(this.element.config.uiStyles.attributes.postButtonUrl, null, $event.leafState, 'POST');
+               this.pageService.processPost(this.element.config.uiStyles.attributes.postButtonUrl, null, $event.leafState, HttpMethod.POST.value);
             }
         });
 

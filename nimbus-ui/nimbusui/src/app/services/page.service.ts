@@ -159,14 +159,7 @@ export class PageService {
                 let baseUrl = ServiceConstants.PLATFORM_BASE_URL;
                 baseUrl += '/' + flowName;
                 let url = baseUrl + '/' + Action._new.value + '?b=' + Behavior.execute.value;
-                this.http.get(url)
-                        .subscribe(data => {
-                                // console.log('Creating a global page map');
-                                this.processResponse(data.result, baseUrl, flowName);
-                        },
-                        err => this.logError(err),
-                        () => console.log('GetPageConfig query completed..')
-                        );
+                this.executeHttp(url, HttpMethod.GET.value, null);
         }
 
         /** Get Flow Config - TODO delete after routes refactor. the above method will be used instead of this one.*/
@@ -174,14 +167,7 @@ export class PageService {
                 let baseUrl = ServiceConstants.PLATFORM_BASE_URL;
                 baseUrl += '/' + routeParms.domain;
                 let url = baseUrl + '/' + Action._new.value + '?b=' + Behavior.execute.value;
-                this.http.get(url)
-                        .subscribe(data => {
-                                console.log('Creating a global page map');
-                                this.processResponse(data.result, baseUrl, routeParms.domain);
-                        },
-                        err => this.logError(err),
-                        () => console.log('GetPageConfig query completed..')
-                        );
+                this.executeHttp(url, HttpMethod.GET.value, null);
         }
 
         /** Page id - to know which page to load from the config */
@@ -197,13 +183,7 @@ export class PageService {
                         url = useFlowUrl;
                 }
                 url = url + '/_nav?a=' + direction + '&b=$execute';
-                this.http.get(url)
-                        .subscribe(data => {
-                                this.processResponse(data.result, '', flowName);
-                        },
-                        err => this.logError(err),
-                        () => console.log('getPageToNavigateTo query completed..')
-                        );
+                this.executeHttp(url, HttpMethod.GET.value, null);
         }
 
         /** Parse flow name from payload path */
@@ -227,7 +207,7 @@ export class PageService {
         }
 
         /** Process response - array or responses based on request chaining */
-        processResponse(response: any, serverUrl: string, flowName: string) {
+        processResponse(response: any) {
                 let index = 0;
                 while (response[index]) {
                         let subResponse: any = response[index];
@@ -425,66 +405,50 @@ export class PageService {
                         let flowNameWithId = flowName.concat(':' + rootDomainId);
                         url = url.replace(flowName, flowNameWithId);
                 }
-                this.showLoader();
-                if (method !== '' && method.toUpperCase() === HttpMethod.GET.value) {
-                        // if(behavior =='$config'){
-                        //         this.router.navigate(['Patientenrollment',{domain:"patientenrollment"}]);
-                        // }else{
-
-                        this.http.get(url)
-                                .subscribe(data => {
-                                        this.processResponse(data.result, serverUrl, flowName);
-                                },
-                                err => {
-                                        this.logError(err);
-                                        this.hideLoader();
-                                        },
-                                () => {
-                                        console.log('Process Execution query completed..');
-                                        this.hideLoader();
-                                }
-                                );
-                        //}
-                } else if (method !== '' && method.toUpperCase() === HttpMethod.POST.value) {
-
-                        // console.log('payload - ' + json);
-                        this.http.post(url, JSON.stringify(model))
-                                .subscribe(data => {
-                                        this.processResponse(data.result, serverUrl, flowName);
-                                },
-                                err => {this.logError(err);
-                                        this.hideLoader();
-                                        },
-                                () => {
-                                        console.log('Process Execution query completed..');
-                                        this.hideLoader();
-                                }
-                                );
-                } else {
-                        throw 'http method not supported';
-                }
+                this.executeHttp(url, method, model);
         }
 
+        executeHttp(url:string, method : string, model:any) {
+                this.showLoader();
+                if (method !== '' && method.toUpperCase() === HttpMethod.GET.value) {
+                        this.executeHttpGet(url)
+                 } else if (method !== '' && method.toUpperCase() === HttpMethod.POST.value) {
+                         this.executeHttpPost(url, model);
+                 } else {
+                         this.invokeFinally();
+                         throw 'http method not supported';
+                 }
+        }
+        executeHttpGet(url) {
+                this.http.get(url).subscribe(
+                        data => { this.processResponse(data.result); },
+                        err => { this.processError(err); },
+                        () => { this.invokeFinally(); }
+                        );
+        }
+
+        executeHttpPost(url:string, model:GenericDomain) {
+                this.http.post(url, JSON.stringify(model)).subscribe(
+                        data => { this.processResponse(data.result);},
+                        err => { this.processError(err); },
+                        () => { this.invokeFinally(); }
+                        );
+        }
+
+        processError(err:any) {
+                this.logError(err);
+                this.hideLoader();
+        }
+
+        invokeFinally() {
+                console.log('Process Execution query completed..');
+                this.hideLoader();
+        }
         /** Process execute call - TODO revisit to make it more dynamic based on url completion */
-        processPost(processUrl: string, behavior: string, payload: any, method: string, navLink?: string) {
+        processPost(processUrl: string, behavior: string, payload: any, method: string) {
                 let flowName = processUrl.substring(1, processUrl.indexOf('/', 2)); //TODO
                 let url = ServiceConstants.PLATFORM_BASE_URL + processUrl + '/' + Action._get.value;
-
-                if (method !== '' && method.toUpperCase() === HttpMethod.POST.value) {
-                        
-                        this.http.post(url, JSON.stringify(payload))
-                                .subscribe(data => {
-                                        this.processResponse(data.result, url, flowName);
-                                        if (navLink != null && navLink !== '') {
-                                                this.processEvent(navLink, '$executeAnd$config', null, 'POST');
-                                        }
-                                },
-                                err => this.logError(err),
-                                () => console.log('Process Execution query completed..')
-                                );
-                } else {
-                        throw 'http method not supported';
-                }
+                this.executeHttp(url, method, payload);
         }
 
         postOnChange(path: string, payloadAttr: string, payloadValue: string) {
@@ -495,27 +459,19 @@ export class PageService {
                         let flowNameWithId = flowName.concat(':' + rootDomainId);
                         path = path.replace(flowName, flowNameWithId);
                 }
-                // console.log('Post on change :: ' + path);
+
                 let modelEvnt = new ModelEvent();
                 modelEvnt.type = Action._update.value; //use the server side actions like _new, _update
                 modelEvnt.id = path;
                 modelEvnt.value = payloadValue;
                 modelEvnt.payload = payloadValue;
-                //  modelEvnt.value.path = path;
-                // console.log(JSON.stringify(modelEvnt));
+             
                 var urlBase = ServiceConstants.PLATFORM_BASE_URL;
                 var url = urlBase + '/event/notify';
-                //if (action === Action._update.value) {
+
                 console.log('Post update Event Notify call');
-                return this.http.post(url, JSON.stringify(modelEvnt))
-                        .subscribe(data => {
-                                //console.log('Event notify data::' + JSON.stringify(data));
-                                this.processResponse(data.result, '', '');
-                        },
-                        err => this.logError(err),
-                        () => console.log('Post completed..')
-                        );
-                // }
+                return this.executeHttp(url, HttpMethod.POST.value, modelEvnt);
+                
         }
 
         /**
@@ -751,7 +707,7 @@ export class PageService {
                         this.updateParam(param, payload);
                         if (param.type.model && payload.type.model && payload.type.model.params) {
                                 for (var p in param.type.model.params) {
-                                                this.updateParam(param.type.model.params[p], payload.type.model.params[p]);
+                                        this.updateParam(param.type.model.params[p], payload.type.model.params[p]);
                                 }
                         }
                         if (param.type.model === undefined && payload.type.model) {
@@ -792,31 +748,16 @@ export class PageService {
                 }
         }
 
-
-        /** Get flow configuration to create pages. */
-        getPageConfig() {
-                let url = this.buildFlowBaseURL();
-                // TODO - temp to handle subflows
-                if (this.routeParams.subflow === true) {
-                        url = url + '/_landing/_process?b=$executeAnd$config';
-                } else {
-                        url = url + '/_new?b=$config';
-                }
-
-                this.http.get(url)
-                        .subscribe(data => {
-                                // console.log('Creating a global page map');
-                                this.processResponse(data.result, '', '');
-                        },
-                        err => this.logError(err),
-                        () => console.log('GetPageConfig query completed..')
-                        );
-        }
-
+        /*
+        * show the loader icon the page
+        */
         private showLoader(): void {
                 this.loaderService.show();
         }
 
+        /*
+        * hide the loader icon the page
+        */
         private hideLoader(): void {
                 this.loaderService.hide();
         }
