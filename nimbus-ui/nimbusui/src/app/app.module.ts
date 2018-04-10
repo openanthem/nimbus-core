@@ -37,6 +37,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpModule, BrowserXhr } from '@angular/http';
 import { ReactiveFormsModule }  from '@angular/forms';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
+import { APP_BASE_HREF } from '@angular/common';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
     FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
     ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule  } from 'primeng/primeng';
@@ -99,6 +100,7 @@ import { WebContentSvc } from './services/content-management.service';
 import { STOMPStatusComponent } from './services/stomp-status.component';
 import { AuthenticationService } from './services/authentication.service';
 import { FileService } from './services/file.service';
+import { ServiceConstants } from "./services/service.constants";
 // Routes
 import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app.routing.module';
@@ -107,6 +109,7 @@ import { CustomHttpClientInterceptor } from './services/httpclient-interceptor.s
 import { CustomBrowserXhr } from './custom.browserxhr';
 import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
+
 // Declarations
 import { LoginCmp } from './components/login/login.component';
 import { LandingPage } from './components/login/auth-landingpage';
@@ -115,6 +118,7 @@ import { LinkPipe } from './pipes/link.pipe';
 import { SelectItemPipe } from './pipes/select-item.pipe';
 import { LoaderComponent } from './components/platform/loader/loader.component';
 import {DateTimeFormatPipe} from './pipes/date.pipe';
+
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -170,6 +174,7 @@ import {DateTimeFormatPipe} from './pipes/date.pipe';
          CustomHttpClient, { provide: BrowserXhr, useClass: CustomBrowserXhr },
          { provide: HTTP_INTERCEPTORS, useClass: CustomHttpClientInterceptor, multi: true },
          { provide: LocationStrategy, useClass: HashLocationStrategy }, GridService,
+         { provide: APP_BASE_HREF, useValue: ServiceConstants.APP_CONTEXT },
          AuthenticationService, BreadcrumbService, LoaderService, FileService, LayoutService ],
     bootstrap: [ AppComponent ]
 })

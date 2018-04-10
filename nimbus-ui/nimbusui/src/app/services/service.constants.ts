@@ -26,6 +26,7 @@
 export class ServiceConstants {
     private static hostName: string;
     private static port: string;
+    private static appcontext: string;
     private static protocol: string;
     private static locale : string;
 
@@ -39,9 +40,9 @@ export class ServiceConstants {
 
     /* Enable for stopgap server */
     public static get BASE_URL(): string    { return this.STOPGAP_APP_HOST_URL+this.WEB_CONTENT_PORT; }
-    public static get LOGIN_URL(): string { return this.STOPGAP_APP_HOST_URL+this.STOPGAP_APP_PORT+'/ltss/login'; }
-    public static get LOGOUT_URL(): string { return this.STOPGAP_APP_HOST_URL+this.STOPGAP_APP_PORT+'/ltss/logout'; }
-    public static get PLATFORM_BASE_URL(): string    { return this.STOPGAP_APP_HOST_URL+this.STOPGAP_APP_PORT+'/ltss/fep/p'; }
+    public static get LOGIN_URL(): string { return this.STOPGAP_APP_HOST_URL+this.STOPGAP_APP_PORT+'/'+this.APP_CONTEXT+'/login'; }
+    public static get LOGOUT_URL(): string { return this.STOPGAP_APP_HOST_URL+this.STOPGAP_APP_PORT+'/'+this.APP_CONTEXT+'/logout'; }
+    public static get PLATFORM_BASE_URL(): string    { return this.STOPGAP_APP_HOST_URL+this.STOPGAP_APP_PORT+'/'+this.APP_CONTEXT+'/fep/p'; }
     public static get CLIENT_BASE_URL(): string    { return this.STOPGAP_APP_HOST_URL+this.STOPGAP_APP_PORT+'/'; }
     public static get WS_BASE_URL(): string { return 'ws://'+this.STOPGAP_APP_HOST+':'+this.WS_PORT+'/updates'; }
 
@@ -51,9 +52,11 @@ export class ServiceConstants {
     public static set STOPGAP_APP_HOST(name:string) { this.hostName = name;}
     public static set STOPGAP_APP_PORT(port:string) { this.port = port;}
     public static set STOPGAP_APP_PROTOCOL(protocol:string) {this.protocol = protocol;}
+    public static set APP_CONTEXT(appcontext:string) { this.appcontext = appcontext;}
     public static get STOPGAP_APP_HOST() : string { return this.hostName; }
     public static get STOPGAP_APP_PORT() : string { return this.port; }
     public static get STOPGAP_APP_PROTOCOL() : string { return this.protocol; }
+    public static get APP_CONTEXT() : string { return this.appcontext; }
 
     public static get STOPGAP_APP_HOST_URL() : string { 
         return this.STOPGAP_APP_PROTOCOL+'//'+this.STOPGAP_APP_HOST+':'; 
@@ -61,7 +64,7 @@ export class ServiceConstants {
     
     public static get WS_PORT() : string { return '8080';}
     public static get WEB_CONTENT_PORT() : string { return '3004';}
-    public static get STATIC_CONTENT_PORT() : string { return '4001';}
+    public static get STATIC_CONTENT_PORT() : string { return '4000';}
 
     //static content server constants
     public static get BLUE_THEME_URL(): string  { return 'http://'+this.hostName+':'+this.STATIC_CONTENT_PORT+'/styles/anthem/anthem.blue.theme.css'; }
