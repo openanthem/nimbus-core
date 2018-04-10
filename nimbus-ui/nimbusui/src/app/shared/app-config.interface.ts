@@ -128,8 +128,10 @@ export class Type implements Serializable<Type,string> {
 
     constructor(private configSvc: ConfigService) {}
 
-    deserialize( inJson, path ) {
-        this.nested = inJson.nested;
+    deserialize( inJson, path ) {        
+        if(typeof inJson.nested !== 'undefined'){
+            this.nested = inJson.nested;
+        }
         this.name = inJson.name;
         this.collection = inJson.collection;
 
