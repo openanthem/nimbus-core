@@ -99,7 +99,7 @@ public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunct
 		try {
 			List<ParamValue> paramValues = new ArrayList<>();
 			for(Object model: searchResult) {
-				paramValues.add(new ParamValue((String)codePd.getReadMethod().invoke(model), (String)labelPd.getReadMethod().invoke(model)));
+				paramValues.add(new ParamValue(codePd.getReadMethod().invoke(model).toString(), (String)labelPd.getReadMethod().invoke(model)));
 			}
 			return (R)paramValues;
 		}

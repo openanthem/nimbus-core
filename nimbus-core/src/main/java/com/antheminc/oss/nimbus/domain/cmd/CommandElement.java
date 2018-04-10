@@ -70,7 +70,7 @@ abstract public class CommandElement implements Serializable {
 	
 	private String alias;
 
-	private Long refId;	
+	private Serializable refId;	
 	
 	
 	abstract public void detachChildElements();

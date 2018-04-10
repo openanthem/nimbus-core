@@ -220,7 +220,7 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdLong implements Seri
 		
 		private final ExecutionModel<ExecutionEntity<V, C>> rootModel;
 		
-		private final Long rootRefId;
+		private final Serializable rootRefId;
 		
 		public ExParam(Command rootCommand, EntityStateAspectHandlers provider, ExConfig<V, C> exConfig) {
 			super(null, new ExParamConfig(exConfig), provider);

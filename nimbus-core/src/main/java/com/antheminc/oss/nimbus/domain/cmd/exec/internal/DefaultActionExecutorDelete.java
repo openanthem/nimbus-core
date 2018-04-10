@@ -15,6 +15,8 @@
  */
 package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 
+import java.io.Serializable;
+
 import javax.annotation.PostConstruct;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
@@ -73,7 +75,7 @@ public class DefaultActionExecutorDelete extends AbstractCommandExecutor<Boolean
 	}
 	
 	protected void handleRootDelete(ExecutionContext eCtx) {
-		Long refId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
+		Serializable refId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
 		
 		ModelConfig<?> rootDomainConfig = getRootDomainConfig(eCtx);
 		Repo repo = rootDomainConfig.getRepo();

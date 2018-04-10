@@ -15,6 +15,7 @@
  */
 package com.antheminc.oss.nimbus.test.domain.support.utils;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
@@ -27,7 +28,7 @@ import com.antheminc.oss.nimbus.support.Holder;
  */
 public class ExtractResponseOutputUtils {
 
-	public static Long extractDomainRootRefId(Object controllerResp) {
+	public static Serializable extractDomainRootRefId(Object controllerResp) {
 		return MultiOutput.class.cast(Holder.class.cast(controllerResp).getState()).getOutputs().get(0).getRootDomainId();
 	}
 	

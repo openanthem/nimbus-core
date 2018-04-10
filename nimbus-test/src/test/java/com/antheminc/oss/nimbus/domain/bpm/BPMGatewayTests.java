@@ -19,6 +19,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.io.Serializable;
+
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -54,7 +56,7 @@ public class BPMGatewayTests extends AbstractFrameworkIngerationPersistableTests
 					.getMock();
 		
 		Holder<MultiOutput> holder = (Holder<MultiOutput>)controller.handlePost(request, null);
-		Long domainRoot_refId  = ExtractResponseOutputUtils.extractDomainRootRefId(holder);
+		Serializable domainRoot_refId  = ExtractResponseOutputUtils.extractDomainRootRefId(holder);
 		assertNotNull(domainRoot_refId);
 		
 		MockHttpServletRequest request2 = MockHttpRequestBuilder.withUri(BPM_CORE_PARAM_ROOT).addRefId(domainRoot_refId)
@@ -88,7 +90,7 @@ public class BPMGatewayTests extends AbstractFrameworkIngerationPersistableTests
 					.addAction(Action._new)
 					.getMock();
 		Holder<MultiOutput> holder = (Holder<MultiOutput>)controller.handlePost(request, null);
-		Long domainRoot_refId  = ExtractResponseOutputUtils.extractDomainRootRefId(holder);
+		Serializable domainRoot_refId  = ExtractResponseOutputUtils.extractDomainRootRefId(holder);
 		assertNotNull(domainRoot_refId);
 		
 		
@@ -127,7 +129,7 @@ public class BPMGatewayTests extends AbstractFrameworkIngerationPersistableTests
 					.addAction(Action._new)
 					.getMock();
 		Holder<MultiOutput> holder = (Holder<MultiOutput>)controller.handlePost(request, null);
-		Long domainRoot_refId  = ExtractResponseOutputUtils.extractDomainRootRefId(holder);
+		Serializable domainRoot_refId  = ExtractResponseOutputUtils.extractDomainRootRefId(holder);
 		assertNotNull(domainRoot_refId);
 		
 		String updateUri = BPM_CV_PARAM_ROOT + ":"+domainRoot_refId+"/.m/coreParameter";
@@ -152,7 +154,7 @@ public class BPMGatewayTests extends AbstractFrameworkIngerationPersistableTests
 					.addAction(Action._new)
 					.getMock();
 		Holder<MultiOutput> holder = (Holder<MultiOutput>)controller.handlePost(request, null);
-		Long domainRoot_refId  = ExtractResponseOutputUtils.extractDomainRootRefId(holder);
+		Serializable domainRoot_refId  = ExtractResponseOutputUtils.extractDomainRootRefId(holder);
 		assertNotNull(domainRoot_refId);
 		
 		

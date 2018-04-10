@@ -24,6 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -141,8 +142,8 @@ public class DefaultActionExecutorNewTest extends AbstractFrameworkIngerationPer
 	
 	@Test @Ignore
 	public void t03_nestedGrid() throws Exception {
-		Long refId = createOrGetDomainRoot_RefId();
-		Long sampleEntityId = createOrGetSampleEntity_RefId();
+		Serializable refId = createOrGetDomainRoot_RefId();
+		Serializable sampleEntityId = createOrGetSampleEntity_RefId();
 		
 		MockHttpServletRequest req_updateViewBy = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
 				.addNested("/page_orange/vtOrange/vsSwitchView/viewBy").addAction(Action._update).getMock();
@@ -195,8 +196,8 @@ public class DefaultActionExecutorNewTest extends AbstractFrameworkIngerationPer
 	
 	@Test @Ignore
 	public void t04_nestedGrid() throws Exception {
-		Long refId = createOrGetDomainRoot_RefId();
-		Long sampleEntityId = createOrGetSampleEntity_RefId();
+		Serializable refId = createOrGetDomainRoot_RefId();
+		Serializable sampleEntityId = createOrGetSampleEntity_RefId();
 		final String VIEW_ROOT_WITHOUT_MAPPEDMODEL = PLATFORM_ROOT + "/sample_withoutmodel";
 		
 		MockHttpServletRequest req_updateViewBy = MockHttpRequestBuilder.withUri(VIEW_ROOT_WITHOUT_MAPPEDMODEL)

@@ -16,6 +16,7 @@
 package com.antheminc.oss.nimbus.domain.model.state.internal;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -69,7 +70,7 @@ public class ReadOnlyListSupplier<E> implements List<E> {
 
 	@Override
 	public Object[] toArray() {
-		return Optional.ofNullable(p.getLeafState()).map(List::toArray).orElse(null);
+		return Optional.ofNullable(p.getLeafState()).map(List::toArray).orElse(Collections.EMPTY_LIST.toArray());
 	}
 
 	@Override

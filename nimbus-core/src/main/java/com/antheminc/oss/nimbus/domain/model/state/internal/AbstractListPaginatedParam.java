@@ -63,7 +63,6 @@ public abstract class AbstractListPaginatedParam<T> extends DefaultParamState<Li
 	public abstract AbstractListPaginatedParam<T> findIfCollection();
 
 	public Page<T> getPage() {
-		//return pageable==null ? new PageWrapper<T>(this) : new PageWrapper<T>(this, pageable, totalCountSupplier.get());
 		return pageable == null ? PageWrapper.getPage(this, null, () -> Long.class.cast(size())) : PageWrapper.getPage(this, pageable, totalCountSupplier);
 	}
 	

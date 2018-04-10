@@ -5,6 +5,8 @@ package com.antheminc.oss.nimbus.test.scenarios.s4;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.Serializable;
+
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -35,7 +37,7 @@ public class S4_CommandRootEventTest extends AbstractFrameworkIntegrationTests {
 	public void t01_openForm_new_unassigned() throws Exception {
 		Object controllerResp_new = createNew_VR();
 		//Param<?> vp_main = ExtractResponseOutputUtils.extractOutput(controllerResp_new);
-		Long refId = ExtractResponseOutputUtils.extractDomainRootRefId(controllerResp_new);
+		Serializable refId = ExtractResponseOutputUtils.extractDomainRootRefId(controllerResp_new);
 		
 		// get call
 		Object controllerResp_get = controller.handleGet(

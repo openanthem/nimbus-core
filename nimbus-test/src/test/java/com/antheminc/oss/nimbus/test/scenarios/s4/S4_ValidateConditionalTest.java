@@ -17,6 +17,7 @@ package com.antheminc.oss.nimbus.test.scenarios.s4;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.junit.Assert;
@@ -63,7 +64,7 @@ public class S4_ValidateConditionalTest extends AbstractFrameworkIntegrationTest
 				.addAction(Action._new).getMock(), null);
 		
 		Assert.assertNotNull(ExtractResponseOutputUtils.extractOutput(controllerResp_new));
-		final Long refId = ExtractResponseOutputUtils.extractDomainRootRefId(controllerResp_new);
+		final Serializable refId = ExtractResponseOutputUtils.extractDomainRootRefId(controllerResp_new);
 		
 		// Execute assign maps to call on param: S4_VRMainCoreBackingObjectView...VFMain.addData
 		controller.handleGet(MockHttpRequestBuilder.withUri(VIEW_ROOT)

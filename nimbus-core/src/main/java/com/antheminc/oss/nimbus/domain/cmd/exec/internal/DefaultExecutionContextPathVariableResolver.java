@@ -9,6 +9,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessageConverter;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
@@ -95,7 +96,13 @@ public class DefaultExecutionContextPathVariableResolver implements ExecutionCon
 
 	@SuppressWarnings("unchecked")
 	private String mapFilterCriteria(ExecutionContext eCtx, Param<?> param) {
-		List<FilterCriteria> filters = converter.readArray(FilterCriteria.class, List.class, eCtx.getCommandMessage().getRawPayload());
+		final List<FilterCriteria> filters;
+		try {
+			filters = converter.readArray(FilterCriteria.class, List.class, eCtx.getCommandMessage().getRawPayload());
+		}
+		catch (FrameworkRuntimeException e) {
+			return null;
+		}
 		
 		if(CollectionUtils.isEmpty(filters))
 			return null;
