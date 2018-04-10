@@ -444,12 +444,6 @@ export class PageService {
                 console.log('Process Execution query completed..');
                 this.hideLoader();
         }
-        /** Process execute call - TODO revisit to make it more dynamic based on url completion */
-        processPost(processUrl: string, behavior: string, payload: any, method: string) {
-                let flowName = processUrl.substring(1, processUrl.indexOf('/', 2)); //TODO
-                let url = ServiceConstants.PLATFORM_BASE_URL + processUrl + '/' + Action._get.value;
-                this.executeHttp(url, method, payload);
-        }
 
         postOnChange(path: string, payloadAttr: string, payloadValue: string) {
                 path = path;
