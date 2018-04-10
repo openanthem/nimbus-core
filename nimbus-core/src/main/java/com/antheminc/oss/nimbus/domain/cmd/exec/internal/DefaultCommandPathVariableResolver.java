@@ -124,7 +124,7 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 			return Optional.ofNullable(sessionProvider.getLoggedInUser()).orElseGet(() -> new ClientUser()).getLoginId();
 		if(StringUtils.endsWith(pathToResolve, "id")) {
 			Long id = Optional.ofNullable(sessionProvider.getLoggedInUser()).orElseGet(() -> new ClientUser()).getId();
-			String.valueOf(id);
+			return String.valueOf(id);
 		}
 		
 		return param.getRootExecution().getRootCommand().getElement(Type.ClientAlias).get().getAlias();

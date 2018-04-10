@@ -29,7 +29,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +49,6 @@ import com.antheminc.oss.nimbus.test.domain.support.utils.ExtractResponseOutputU
 import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntityAccess;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreNestedEntity;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author Rakesh Patel
@@ -177,7 +175,7 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 				//.addParam("pageCriteria", "pageSize=5&page=0&sortBy=attr_String,DESC")
 				.addAction(Action._get)
 				.getMock();
-		final Object gridResponse = controller.handlePost(gridRequest, "[{\"code\":\"attr_String2\", \"value\":\"test2_string2\"},{\"code\":\"nested_attr_String\", \"value\":\"nested\"},{\"code\":\"attr_LocalDate1\",\"value\":\"2018-04-06T00:00:00.000Z\"}]");
+		final Object gridResponse = controller.handlePost(gridRequest, "[{\"code\":\"attr_String2\", \"value\":\"test2_string2\"},{\"code\":\"nested_attr_String\", \"value\":\"nested\"},{\"code\":\"attr_LocalDate1\",\"value\":\""+LocalDate.now()+"T00:00:00.000Z\"}]");
 		//final Object gridResponse = controller.handlePost(gridRequest, null);
 		assertNotNull(gridResponse);
 		

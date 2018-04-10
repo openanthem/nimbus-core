@@ -66,7 +66,7 @@ public class VPSampleViewPageGreen {
 		@Path
 		private SampleCoreLevel1_Entity level1;
 		
-		@ConfigConditional(config=@Config(url="/p/sample_view_audit_history/_new?fn=_initEntity&target=/domainRootRefId&json=\"<!/.m/id!>\""))
+		@ConfigConditional(config=@Config(url="/p/sample_view_audit_history/_new?fn=_initEntity&target=/domainRootRefId&json=<!/.m/id!>"))
 		@Path
 		private String for_mapped_state_change_attr;
 		

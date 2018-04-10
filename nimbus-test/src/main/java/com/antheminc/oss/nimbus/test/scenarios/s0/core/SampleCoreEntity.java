@@ -110,10 +110,10 @@ public class SampleCoreEntity extends IdLong {
 	
 	private SampleCoreLevel1_Entity level1;
 	
-	@ConfigConditional(when="state == 'Y'", config=@Config(url="/p/sample_core_audit_history/_new?fn=_initEntity&target=/domainRootRefId&json=\"<!/id!>\""))
+	@ConfigConditional(when="state == 'Y'", config=@Config(url="/p/sample_core_audit_history/_new?fn=_initEntity&target=/domainRootRefId&json=<!/id!>"))
 	private String conditional_config_attr;
 	
-	@ConfigConditional(config=@Config(url="/p/sample_core_audit_history/_new?fn=_initEntity&target=/domainRootRefId&json=\"<!/id!>\""))
+	@ConfigConditional(config=@Config(url="/p/sample_core_audit_history/_new?fn=_initEntity&target=/domainRootRefId&json=<!/id!>"))
 	private List<String> conditional_config_attr_list_String;
 
 	private String for_mapped_state_change_attr;
@@ -136,8 +136,8 @@ public class SampleCoreEntity extends IdLong {
 	private SampleCoreNested2_Entity q4Level2;
 	
 	@ConfigConditionals({
-			@ConfigConditional(when="state == 'Y'", config=@Config(url="/p/sample_core_audit_history/_new?fn=_initEntity&target=/domainRootRefId&json=\"<!/id!>\"")),
-			@ConfigConditional(when="state == 'N'", config=@Config(url="/p/sample_coreassociatedentity/_new?fn=_initEntity&target=/entityId&json=\"<!/id!>\""))
+			@ConfigConditional(when="state == 'Y'", config=@Config(url="/p/sample_core_audit_history/_new?fn=_initEntity&target=/domainRootRefId&json=<!/id!>")),
+			@ConfigConditional(when="state == 'N'", config=@Config(url="/p/sample_coreassociatedentity/_new?fn=_initEntity&target=/entityId&json=<!/id!>"))
 	})
 	private String conditionals_config_attr;
 	
