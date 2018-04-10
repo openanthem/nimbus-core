@@ -21,7 +21,7 @@
 		[rows]="element.config?.uiStyles?.attributes?.pageSize"
 		[paginator]="element.config?.uiStyles?.attributes?.pagination"
 		paginatorPosition="both"
-		alwaysShowPaginator ="false"
+		[alwaysShowPaginator] ="false"
 		[expandableRows]="element.config?.uiStyles?.attributes?.expandableRows"
 		(onRowExpand)="getAddtionalData($event)"
 		(onPage)="paginate($event)"

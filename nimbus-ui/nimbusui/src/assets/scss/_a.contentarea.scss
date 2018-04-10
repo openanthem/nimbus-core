@@ -231,6 +231,7 @@ h1.page-title {
     // margin-left: 2rem;
     .colorBox {
         border: none;
+        padding: 0;
     }
 }
 .panel-body {
@@ -335,6 +336,18 @@ nm-card-details-field label+div {
     }
 }
 // for assessment questions
+.subQuestion {
+    margin-bottom: 2.5rem;
+    padding: 1rem;
+    background: #edf7ff;
+}
+.subQuestion .subQuestion {
+    margin-left: 1rem;
+    margin-bottom: 0;
+}
+.subQuestion .colorBox {
+    margin-bottom: 0;
+}
 .subQuestion .subQuestion .col-lg-12 {
     padding-right: 0px;
 }
@@ -342,7 +355,6 @@ legend {
     font-size: 1rem;
 }
 .subQuestion {
-    margin-bottom: 0.5rem;
     .col-lg-12:first-of-type{
         padding-left: 0;
     }
@@ -362,10 +374,117 @@ legend {
         }
     }
     legend:first-of-type {
-        margin-top: 0.5rem;
-        margin-bottom: 1.0rem;
+        margin-bottom: .5rem;
     }
 } 
+
+/* QUESTION WRAPPER */
+
+$questionWidth:40%;
+$answerWidth: 99%-$questionWidth;
+
+
+.questionWrapper{
+  padding:6px 0;
+  margin-left:20px;
+  font-size: .9rem;
+  &:not(:last-child){
+      border-bottom: 1px dashed #333;
+    }
+    legend {
+      width: $questionWidth;
+      float:left;
+      font-size: inherit;
+      
+    }
+    .form-control {
+      display: inline-table;
+      table-layout: fixed;
+      border-width: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      width: $answerWidth; 
+      font-size: inherit;
+        label {
+          padding: 5px 5px 5px 35px;
+          text-indent:-25px;
+          display:table-cell;
+          &:hover{
+            color:#efcfcf;
+            }
+          input {
+            margin-right:10px;
+          }
+        }
+    }
+    &.colHeader{
+      padding:2px 0;
+      border-bottom: 1px solid #333;
+        legend{
+          font-weight:bold;
+        }
+         label {
+          font-weight:bold; 
+          text-indent:0;
+          padding-left:0;
+          vertical-align:bottom;
+        }
+    }
+}
+
+/* QUESTION WRAPPER */
+
+$questionWidth:40%;
+$answerWidth: 99%-$questionWidth;
+.form-grid.headerRow fieldset .checkboxHolder .form-checkrow .ui-widget {
+    display: none;
+}
+.form-grid.headerRow fieldset .checkboxHolder .form-checkrow label {
+    display: block;
+    font-weight: bold;
+}
+.form-grid.headerRow legend {
+    visibility: hidden;
+}
+.form-grid .questionGroup {
+    border-bottom: 1px dashed;
+}
+.form-group.form-grid.questionGroup.headerRow {
+    border-bottom: 1px solid;
+    padding-bottom: 0;
+    margin-bottom: .6rem;
+}
+.form-grid fieldset{
+  padding:0;
+  font-size: .9rem;
+  legend {
+    width: $questionWidth;
+    float:left;
+    
+  }
+  .checkboxHolder {
+    display: inline-table;
+    table-layout: fixed;
+    width: $answerWidth; 
+    .form-checkrow{
+            display: inline-block;
+            width: 15%;
+            label{
+                display: none;
+            }
+       
+    }
+  }
+  &.form-group.questionGroup {
+        padding: 0;
+        margin: 0 20px;
+    }
+}
+
+
+
+
+
 .ui-dialog.ui-widget .ui-dialog-titlebar .ui-dialog-title {
     margin-left: 1rem;
 }
@@ -395,6 +514,7 @@ legend {
     label {
         display: block;
         margin: .3rem 0;
+        max-width: 850px;
         &.ui-chkbox-label,
         &.ui-radiobutton-label {
             display: inline-block;
@@ -407,8 +527,7 @@ legend {
         margin: 1px 0 0 0;
     }
     input, .select-wrapper, textarea {
-        //margin-left: 50px;
-        margin-bottom: .6rem;
+        margin-left: 20px;
         max-width: 300px;
         width: 100%;
     }
@@ -423,8 +542,7 @@ legend {
     }
     label:first-of-type,
     legend:first-of-type {
-        margin-top: 0.5rem;
-        margin-bottom: 1.5rem;
+        margin-bottom: .5rem;
     }
     fieldset {
         label:first-of-type {
@@ -672,13 +790,14 @@ button.ui-datepicker-trigger.ui-calendar-button {
 .panel.panel-default {
     margin-top: 10px;
     & > .panel-heading {
-        background: $header-bkg;
+        background: #669fe2;
         color: white;
         padding: 0.3rem 0.3rem 0.3rem 1rem;
         margin: 0;
-        font-weight: 300;
         position: relative;
         h2{
+            font-weight: normal;
+            font-size: 1rem;
             margin-bottom: 0;
         
         button {
