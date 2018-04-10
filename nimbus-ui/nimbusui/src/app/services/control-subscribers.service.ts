@@ -82,10 +82,10 @@ export class ControlSubscribers {
         this.controlValueChanged.subscribe(($event) => {
             //console.log($event);
             if ($event.config.uiStyles.attributes.postEventOnChange) {
-               this.pageService.postOnChange($event.path, 'state', JSON.stringify($event.leafState));
+                this.pageService.postOnChange($event.path, 'state', JSON.stringify($event.leafState));
             } else if($event.config.uiStyles.attributes.postButtonUrl) {
-               let item: GenericDomain = new GenericDomain();
-               this.pageService.processPost(control.element.config.uiStyles.attributes.postButtonUrl, null, $event.leafState, HttpMethod.POST.value);
+                let item: GenericDomain = new GenericDomain();
+                this.pageService.processEvent(control.element.config.uiStyles.attributes.postButtonUrl, null, $event.leafState, HttpMethod.POST.value);
             }
         });
     }
