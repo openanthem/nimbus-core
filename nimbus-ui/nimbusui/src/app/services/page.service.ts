@@ -616,7 +616,7 @@ export class PageService {
         processModelEvent(param: Param, eventModel: ModelEvent) {
                 // Grid updates
                 if (param.config.uiStyles != null && param.config.uiStyles.attributes.alias === 'Grid') {
-                        if (eventModel.value.leafState != null) {
+                        if (eventModel.value != null) {
                                 // Check if the update is for the Current Collection or a Nested Collection
                                 if (param.path == eventModel.value.path) {
                                         // Current Collection
@@ -630,7 +630,7 @@ export class PageService {
                                                 this.gridValueUpdate.next(param);
                                         }
                                         // Collection check - replace entire grid
-                                        if (eventModel.value.collection) {
+                                        if (param.config.type.collection) {
                                                 param.gridList = this.createGridData(eventModel.value.type.model.params, param);
                                                 this.gridValueUpdate.next(param);
                                         }
@@ -703,7 +703,7 @@ export class PageService {
         traverseParam(param: Param, eventModel: ModelEvent) {
                 /* Flow-Wrapper class also invokes methods that eventually call this behaviour. We need to make sure that the eventModel is deserialized by then */
                 let payload: Param = new Param(this.configService).deserialize(eventModel.value, eventModel.value.path);
-                if (param.type.nested === true) {
+                if (param.type.model && param.type.model.params) {
                         this.updateParam(param, payload);
                         if (param.type.model && payload.type.model && payload.type.model.params) {
                                 for (var p in param.type.model.params) {

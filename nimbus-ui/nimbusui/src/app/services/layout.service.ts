@@ -148,7 +148,7 @@ export class LayoutService {
 
     private parseTopBarConfig(topBarConfig: Model, branding: AppBranding, headerMenus: Param[], subHeaders: Param[]) {
         topBarConfig.params.forEach(element => {
-            if (element.type.nested === true) {
+            if (element.type.model && element.type.model.params) {
                 if (element.config.uiStyles !== undefined && element.config.uiStyles.attributes.alias === 'SubHeader') {
                     subHeaders.push(element);
                 } else {

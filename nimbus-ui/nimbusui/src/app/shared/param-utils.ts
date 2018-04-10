@@ -161,7 +161,7 @@ export class ParamUtils {
             if (x_param) {
 
                 // if the param identified by x is a collection or nested element...
-                if ((x_param.collection || x_param.type.nested)) {
+                if ((x_param.collection || x_param.type.model && x_param.type.model.params)) {
                     
                     // if we have what we need, then apply the transformations recursively.
                     if (x_param.type.model && x_param.type.model.params) {

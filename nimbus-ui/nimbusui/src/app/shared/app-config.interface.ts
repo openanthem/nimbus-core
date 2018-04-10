@@ -94,29 +94,28 @@ export class ModelConfig implements Serializable<ModelConfig,string> {
 }
 
 export class ConfigType implements Serializable<ConfigType,string> {
-    nested: boolean;
+   
     name: string;
     model: ModelConfig;
-    collection: boolean;
+    collection: boolean = false;
     elementConfig: ElementConfig;
 
     constructor(private configSvc: ConfigService) {}
     
     deserialize( inJson ) {
-        this.nested = inJson.nested;
-        this.name = inJson.name;
-        this.collection = inJson.collection;
-
-        if ( this.nested === true ) {
-            if (inJson.modelConfig != null) {
-                this.model = new ModelConfig(this.configSvc).deserialize( inJson.modelConfig );
-            }
+    
+        let obj = this;
+        obj = Converter.convert(inJson,obj);
+        
+        if (inJson.modelConfig != null) {
+            obj['model'] = new ModelConfig(this.configSvc).deserialize( inJson.modelConfig );
         }
+       
         if ( inJson.elementConfig != null) {
-            this.elementConfig = new ElementConfig(this.configSvc).deserialize( inJson.elementConfig );
+           obj['elementConfig'] = new ElementConfig(this.configSvc).deserialize( inJson.elementConfig );
         }
 
-        return this;
+        return obj;
     }
 }
 
@@ -129,19 +128,18 @@ export class Type implements Serializable<Type,string> {
     constructor(private configSvc: ConfigService) {}
 
     deserialize( inJson, path ) {        
-        if(typeof inJson.nested !== 'undefined'){
-            this.nested = inJson.nested;
-        }
+       
+        
         this.name = inJson.name;
         this.collection = inJson.collection;
 
-        if ( this.nested === true ) {
+     
             if (inJson.model  != null) {
                 this.model = new Model(this.configSvc).deserialize( inJson.model, path );
             } else if (inJson.modelConfig != null) {
                 this.model = new Model(this.configSvc).deserialize( inJson.modelConfig, path);
             }
-        }
+        
 
         return this;
     }
