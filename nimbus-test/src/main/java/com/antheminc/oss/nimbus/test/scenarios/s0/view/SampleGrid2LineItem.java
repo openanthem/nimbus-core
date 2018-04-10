@@ -46,7 +46,7 @@ public class SampleGrid2LineItem {
 		
 		@MapsTo.Path(linked = false)
 		@Grid(onLoad = true, pagination=false, showHeader=false)
-		@Config(url = "/<!#this!>/.m/_process?fn=_set&url=/p/sample_entity/_search?fn=query&where=sample_entity.id.eq('1')")
+		@Config(url = "/<!#this!>/.m/_process?fn=_set&url=/p/sample_entity/_search?fn=query&where=sample_entity.id.eq(1)")
 		private List<InnerGridLineItem> innerGrid;
 		
 	}

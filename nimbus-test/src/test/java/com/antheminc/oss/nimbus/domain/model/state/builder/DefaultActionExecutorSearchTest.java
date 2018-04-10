@@ -218,7 +218,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 	public void t51_testSearchByQueryWithProjectionAndMapsTo() {
 		ClientUserGroup cug = insertClientUserGroup();
 	
-		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/clientusergroup/members/_search?fn=query&where=clientusergroup.id.eq('"+cug.getId()+"')");
+		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/clientusergroup/members/_search?fn=query&where=clientusergroup.id.eq("+cug.getId()+")");
 		
 		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
 		List<GroupUser> values = (List<GroupUser>)multiOp.getSingleResult();
