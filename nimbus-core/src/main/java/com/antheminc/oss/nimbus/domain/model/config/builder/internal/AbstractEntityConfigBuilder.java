@@ -165,8 +165,15 @@ abstract public class AbstractEntityConfigBuilder {
 							+ "Found in both with different values for class: "+created.getReferredClass()
 							+" with @Domain: "+domain+" and @Model: "+model);
 			}
-		else 
+		else {
+			
+			if (null == domain) {
+				throw new InvalidConfigException("Domain value was null. Are domain models up to date?"
+						+ "Found null value for class: "+created.getReferredClass());
+			}
+			
 			cb.accept(domain.value());
+		}
 		
 	}
 	
