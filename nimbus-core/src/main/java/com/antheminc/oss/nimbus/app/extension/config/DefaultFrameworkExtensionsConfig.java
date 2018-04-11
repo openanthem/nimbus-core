@@ -40,6 +40,7 @@ import com.antheminc.oss.nimbus.domain.model.state.extension.ValidateConditional
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValuesConditionalOnStateChangeEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValuesConditionalOnStateLoadEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.VisibleConditionalStateEventHandler;
+import com.antheminc.oss.nimbus.domain.model.state.extension.WarningConditionalHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional.SiblingNestedValidationAssignmentStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional.SiblingValidationAssignmentStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.internal.IdParamConverter;
@@ -114,6 +115,11 @@ public class DefaultFrameworkExtensionsConfig {
 	@Bean
 	public ValidateConditionalStateEventHandler extensionValidateConditionalStateEventHandler(BeanResolverStrategy beanResolver) {
 		return new ValidateConditionalStateEventHandler(beanResolver, null);
+	}
+	
+	@Bean
+	public WarningConditionalHandler extensionWarningConditionalHandler(BeanResolverStrategy beanResolver) {
+		return new WarningConditionalHandler(beanResolver);
 	}
 	
 	@Bean

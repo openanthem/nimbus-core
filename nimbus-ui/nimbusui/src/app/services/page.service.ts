@@ -756,21 +756,20 @@ export class PageService {
         traverseParam(param: Param, eventModel: ModelEvent) {
                 /* Flow-Wrapper class also invokes methods that eventually call this behaviour. We need to make sure that the eventModel is deserialized by then */
                 let payload: Param = new Param(this.configService).deserialize(eventModel.value);
+                this.updateParam(param, payload);
                 if (param.type.nested === true) {
-                        this.updateParam(param, payload);
+
                         if (param.type.model && payload.type.model && payload.type.model.params) {
                                 for (var p in param.type.model.params) {
-                                                this.updateParam(param.type.model.params[p], payload.type.model.params[p]);
+                                        this.updateParam(param.type.model.params[p], payload.type.model.params[p]);
                                 }
                         }
                         if (param.type.model === undefined && payload.type.model) {
                                 param.type['model'] = payload.type.model;
                         }
-                        if (param.message === undefined && payload.message) {
-                                param['message'] = payload.message;
-                        }
-                } else {                        
-                        this.updateParam(param, payload);
+                }
+                if (param.message === undefined && payload.message) {
+                        param['message'] = payload.message;
                 }
         }
 

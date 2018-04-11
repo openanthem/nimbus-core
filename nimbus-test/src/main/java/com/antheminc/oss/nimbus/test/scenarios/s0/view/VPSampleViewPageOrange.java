@@ -7,11 +7,14 @@ import com.antheminc.oss.nimbus.domain.defn.MapsTo;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo.Path;
 import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.ComboBox;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Form;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Grid;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Section;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.TextBox;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Tile;
 import com.antheminc.oss.nimbus.domain.defn.extension.ActivateConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.ActivateConditionals;
+import com.antheminc.oss.nimbus.domain.defn.extension.WarningConditional;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
 import com.antheminc.oss.nimbus.test.scenarios.s0.view.CodeValueTypes.SampleDropDownValues;
 
@@ -20,6 +23,7 @@ import lombok.Setter;
 
 /**
  * @author Sandeep Mantha
+ * @author AC63346 - added a new Section for Form Fields warning Validation
  *
  */
 
@@ -40,6 +44,9 @@ public class VPSampleViewPageOrange {
 		
 		@Section
 		private VSSampleGrid2 vsSampleGrid2;
+		
+		@Section
+		private VSSampleForm vsSampleForm;
 		
 	}
 	
@@ -73,5 +80,18 @@ public class VPSampleViewPageOrange {
 		@Config(url = "/page_orange/vtOrange/vsSampleGrid2/sampleGrid2/.m/_process?fn=_set&url=/p/sample_core/_search?fn=query&where=sample_core.id.eq('1')")
 		private List<SampleGrid2LineItem> sampleGrid2;
 		
+	}
+	@Model @Getter @Setter
+	public static class VSSampleForm{
+		@Form
+		private VFSampleForm vfSampleForm;
+		
+	}
+	@Model @Getter @Setter
+	public static class VFSampleForm{
+		
+		@TextBox(postEventOnChange=true)
+		@WarningConditional(when="state =='Yes'", message="This is a Test Warning Message")
+		private String testWarningTextBox;
 	}
 }

@@ -24,4 +24,7 @@
     <div *ngIf="showErrors==true">
         <p class="warningMsg" *ngFor="let error of getErrors()">{{error}}</p>
     </div>
+    <div *ngIf="showWarnings==true">
+        <p class="warningMsg" *ngFor="let warning of getWarnings()">{{warning}}</p>
+    </div>
 </div>

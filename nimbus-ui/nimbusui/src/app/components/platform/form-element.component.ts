@@ -60,8 +60,10 @@ export class FormElement {
     get showErrors() {
         return (!this.isPristine && !this.isValid);
     }
-
-    constructor() { };
+    get showWarnings() {
+        return (this.element.message != null && this.element.message.text != null);
+    }
+    constructor() { }
 
     ngOnInit() {
         //console.log(JSON.stringify(this.elements));
@@ -78,6 +80,9 @@ export class FormElement {
         if (this.showErrors) {
             return 'alert alert-danger';
         }
+        if(this.showWarnings){
+            return 'alert alert-warning';
+        }
     }
 
     getElementStyle() {
@@ -87,7 +92,13 @@ export class FormElement {
             return '';
         }
     }
-
+    getWarnings() {
+        const warnings: string[] = [];
+        if (this.element.message != null && this.element.message.type === 'WARNING' ) {
+            warnings.push(this.element.message.text);
+        }
+       return warnings;
+    }
     getErrors() {
         let errors: string[] = [];
 
