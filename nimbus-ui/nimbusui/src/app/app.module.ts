@@ -41,6 +41,7 @@ import { APP_BASE_HREF } from '@angular/common';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
     FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
     ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule  } from 'primeng/primeng';
+import { TableModule } from 'primeng/table';
 import { NavLinkRouter } from './directives/nav-link-router.directive';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -67,6 +68,7 @@ import { CheckBoxGroup } from './components/platform/form/elements/checkbox-grou
 import { MultiselectCard } from './components/platform/form/elements/multi-select-card.component';
 import { ActionDropdown, ActionLink } from './components/platform/form/elements/action-dropdown.component';
 import { InfiniteScrollGrid } from './components/platform/grid/grid.component';
+import { DataTable } from './components/platform/grid/table.component';
 import { Link } from './components/platform/link.component';
 import { Menu } from './components/platform/menu.component';
 import { FlowWrapper } from './components/platform/content/flow-wrapper.component';
@@ -137,6 +139,7 @@ import {DateTimeFormatPipe} from './pipes/date.pipe';
         FormsModule,
         DropdownModule,
         DataTableModule,
+        TableModule,
         OverlayPanelModule,
         PickListModule,
         DragDropModule,
@@ -159,7 +162,7 @@ import {DateTimeFormatPipe} from './pipes/date.pipe';
         InPlaceEditorComponent, Paragraph, Value, Image, BaseElement,
         MultiselectCard, Link, Menu, CardDetailsComponent, CardDetailsFieldComponent, CardDetailsGrid, FieldValue,
         AccordionGroup, Accordion, AccordionMain, AccordionTab, FrmGroupCmp, Button, ButtonGroup, FilterButton, OrderablePickList,
-        STOMPStatusComponent, InfiniteScrollGrid, SubHeaderCmp, TextArea, LandingPage,
+        STOMPStatusComponent, InfiniteScrollGrid, DataTable, SubHeaderCmp, TextArea, LandingPage,
         LayoutService, ContentContainer,
         DomainFlowCmp, HeaderGlobal, FooterGlobal,
         BreadcrumbComponent, NavLinkRouter,

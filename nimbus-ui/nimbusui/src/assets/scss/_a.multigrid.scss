@@ -6,6 +6,12 @@ ng-component{
     border: 1px solid #cecece;
     position: relative;
 }
+.scrollGrid.greyGrid .ui-datatable-tablewrapper, .scrollGrid.greyGrid .ui-widget-header {
+    background: darkgrey;
+}
+.scrollGrid .ui-datatable-tablewrapper {
+    background: #6e9de1;
+}
 
 .ui-expanded-row-content .scrollGrid .ui-datatable-scrollable-body, 
 .ui-expanded-row-content .ui-datatable .ui-datatable-scrollable-body {
@@ -168,10 +174,12 @@ ng-component{
         }
     }
     p-header {
-       float:left;
+        float:left;
         margin-left: 1rem;
         font-size: 1.3rem;
         margin-top: .3rem;
+        position: relative;
+        z-index: 1;
     }
     th.dropdown, td.dropdown {
         width: 40px;
@@ -284,6 +292,7 @@ ng-component{
     left: 40%;
     padding-top: .6rem;
     font-size: .9rem;
+    z-index: 1;
 }
 .ui-datatable-header .btn-plain { 
     color: #FFF; 
