@@ -15,9 +15,16 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.internal;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.ArrayUtils;
+
 import com.antheminc.oss.nimbus.UnsupportedScenarioException;
+import com.antheminc.oss.nimbus.domain.defn.ConfigNature.Ignore;
+import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
+import com.antheminc.oss.nimbus.domain.model.config.AnnotationConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Model;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.PropertyWriter;
@@ -42,7 +49,25 @@ public class EntityStateConfigJsonFilter extends SimpleBeanPropertyFilter {
 				if(rootDomain != null 
 						&& es != rootDomain.getAssociatedParam())
 					return;
-			} 
+				
+			} else if(pojo instanceof Param) { // TODO pending code merge with config default optimization
+				Param<?> p = (Param<?>)pojo;
+				if(CollectionUtils.isNotEmpty(p.getConfig().getExtensions())) {
+					
+					boolean isWebSocketListenerPresent = p.getConfig().getExtensions()
+						.stream()
+						.map(AnnotationConfig::getAnnotation)
+						.filter(a->a.annotationType()==Ignore.class)
+						.map(Ignore.class::cast)
+						.map(Ignore::listeners)
+						.filter(array->ArrayUtils.contains(array, ListenerType.websocket))
+						.findFirst()
+						.isPresent();
+					
+					if(isWebSocketListenerPresent)
+						return;
+				}
+			}
 
 			writer.serializeAsField(pojo, jgen, provider);
 			return;

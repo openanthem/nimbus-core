@@ -235,4 +235,16 @@ export class ParamUtils {
             return ParamUtils.findParamByPath(params[0], key_parts.slice(1).join(ServiceConstants.PATH_SEPARATOR));
         }
     }
+
+    /**
+     * <p>Checks to see if JSON object is empty or not
+     */
+    static isEmpty(obj): boolean {
+        for(var prop in obj) {
+            if(obj.hasOwnProperty(prop))
+                return false;
+        }
+    
+        return true;
+    }
 }
