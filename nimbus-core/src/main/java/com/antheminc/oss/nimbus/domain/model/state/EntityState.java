@@ -22,6 +22,7 @@ import java.util.Map;
 import javax.annotation.concurrent.Immutable;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Pageable;
 
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
@@ -559,6 +560,8 @@ public interface EntityState<T> {
 		
 		@Override
 		ListElemParam<T> add();
+		
+		void setPage(List<T> content, Pageable pageable, int totalContent);
 		
 	}
 	
