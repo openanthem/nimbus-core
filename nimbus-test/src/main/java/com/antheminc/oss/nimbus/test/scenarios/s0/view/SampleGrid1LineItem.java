@@ -20,7 +20,7 @@ public class SampleGrid1LineItem {
 	
 	@Path
 	@GridColumn
-	private String id;
+	private Long id;
 	
 	@Path()
 	@GridColumn(filter = true, filterMode = FilterMode.contains)
