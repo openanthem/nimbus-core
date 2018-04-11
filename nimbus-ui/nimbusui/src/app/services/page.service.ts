@@ -768,7 +768,9 @@ export class PageService {
                                 param.type['model'] = payload.type.model;
                         }
                 }
-                param['message'] = payload.message;
+                if (param.message === undefined && payload.message) {
+                        param['message'] = payload.message;
+                }
         }
 
         updateParam(param: Param, payload: Param) {

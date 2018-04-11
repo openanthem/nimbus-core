@@ -14,7 +14,7 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
  * @author AC63346
  *
  */
-public class WarningConditionalEventHandlerTest extends AbstractStateEventHandlerTests {
+public class MessageConditionalEventHandlerTest extends AbstractStateEventHandlerTests {
 
 	@Override
 	protected Command createCommand() {
@@ -28,14 +28,21 @@ public class WarningConditionalEventHandlerTest extends AbstractStateEventHandle
 		
 	}
 	@Test
-	public void t01_groupValidation_multipleParams_1() {
+	public void t01_testOnStateChangeMessage_1() {
 		Param<String> inputParam = _q.getRoot().findParamByPath("/sample_view/page_orange/vtOrange/vsSampleForm/vfSampleForm/testWarningTextBox");
 		
-		Assert.assertNull(inputParam.getMessage());
+		Assert.assertNull(inputParam.getMessage().getText());
 		inputParam.setState("Yes");
 		Assert.assertNotNull(inputParam.getMessage());
 		Assert.assertEquals(inputParam.getMessage().getText(), "This is a Test Warning Message");
 		
 	}
-	
+	@Test
+	public void t02_testOnStateLoadMessage_1() {
+		Param<String> inputParam = _q.getRoot().findParamByPath("/sample_view/page_orange/vtOrange/vsSampleForm/vfSampleForm/testMessageTextBox2");
+		
+		Assert.assertNotNull(inputParam.getMessage().getText());
+		Assert.assertEquals(inputParam.getMessage().getText(), "This is a Test Warning Message");
+		
+	}
 }

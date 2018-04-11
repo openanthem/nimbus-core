@@ -14,7 +14,7 @@ import com.antheminc.oss.nimbus.domain.defn.ViewConfig.TextBox;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Tile;
 import com.antheminc.oss.nimbus.domain.defn.extension.ActivateConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.ActivateConditionals;
-import com.antheminc.oss.nimbus.domain.defn.extension.WarningConditional;
+import com.antheminc.oss.nimbus.domain.defn.extension.MessageConditional;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
 import com.antheminc.oss.nimbus.test.scenarios.s0.view.CodeValueTypes.SampleDropDownValues;
 
@@ -91,7 +91,11 @@ public class VPSampleViewPageOrange {
 	public static class VFSampleForm{
 		
 		@TextBox(postEventOnChange=true)
-		@WarningConditional(when="state =='Yes'", message="This is a Test Warning Message")
+		@MessageConditional(when="state =='Yes'", message="This is a Test Warning Message")
 		private String testWarningTextBox;
+		
+		@TextBox(postEventOnChange=true)
+		@MessageConditional(when="state == null", message="This is a Test Warning Message")
+		private String testMessageTextBox2;
 	}
 }

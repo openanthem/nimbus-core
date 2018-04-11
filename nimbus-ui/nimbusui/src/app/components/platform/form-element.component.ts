@@ -61,7 +61,7 @@ export class FormElement {
         return (!this.isPristine && !this.isValid);
     }
     get showWarnings() {
-        return (this.element.message != null && this.element.message.text != null);
+        return (this.element.message != null && this.element.message.text != null && this.element.message.type === 'WARNING');
     }
     constructor() { }
 
@@ -80,7 +80,7 @@ export class FormElement {
         if (this.showErrors) {
             return 'alert alert-danger';
         }
-        if(this.showWarnings){
+        if (this.showWarnings) {
             return 'alert alert-warning';
         }
     }
