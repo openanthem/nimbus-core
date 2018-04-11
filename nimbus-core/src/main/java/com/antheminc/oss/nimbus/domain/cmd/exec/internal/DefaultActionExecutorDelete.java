@@ -75,7 +75,7 @@ public class DefaultActionExecutorDelete extends AbstractCommandExecutor<Boolean
 	}
 	
 	protected void handleRootDelete(ExecutionContext eCtx) {
-		Serializable refId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
+		Long refId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
 		
 		ModelConfig<?> rootDomainConfig = getRootDomainConfig(eCtx);
 		Repo repo = rootDomainConfig.getRepo();

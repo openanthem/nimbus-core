@@ -53,7 +53,7 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 
 	@Test
 	public void t01_get_core() {
-		Serializable refId = createOrGetDomainRoot_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
 		MockHttpServletRequest fnReq = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(refId)
 					.addAction(Action._get)
 					.addParam(Constants.KEY_FUNCTION.code, "param")
@@ -72,7 +72,7 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 
 	@Test
 	public void t02_get_view_mapsTo() {
-		Serializable refId = createOrGetDomainRoot_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
 		MockHttpServletRequest fnReq = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
 					.addAction(Action._get)
 					.addParam(Constants.KEY_FUNCTION.code, "param")
@@ -90,7 +90,7 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 	
 	@Test
 	public void t03_arg_findParamByPath() {
-		Serializable refId = createOrGetDomainRoot_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
 		MockHttpServletRequest fnReq = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
 					.addAction(Action._get)
 					.addParam(Constants.KEY_FUNCTION.code, "param")
@@ -107,7 +107,7 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 	
 	@Test
 	public void t04_arg_getElem_index() {
-		Serializable refId = createOrGetDomainRoot_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
 		
 		// add collection in core
 		MockHttpServletRequest updateReq = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(refId)
@@ -140,7 +140,7 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 	
 	@Test
 	public void t05_assign_state_set_add_new() {
-		Serializable refId = createOrGetDomainRoot_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
 
 		// assign for add
 		MockHttpServletRequest fnAssignReq = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
@@ -189,7 +189,7 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 	
 	@Test
 	public void t06_assign_by_addButton() {
-		Serializable refId = createOrGetDomainRoot_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
 		
 		// assign for add
 		MockHttpServletRequest fnAssignReq = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
@@ -240,7 +240,7 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 	
 	@Test
 	public void t07_assign_addForm_addCore_assignEdit_updateExisting() {
-		Serializable refId = createOrGetDomainRoot_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
 		
 		// user clicks add button :: assign for add 
 		MockHttpServletRequest fnAssignReq = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
@@ -325,7 +325,7 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 	
 	@Test
 	public void t08_assign_existing_delete() {
-		Serializable refId = createOrGetDomainRoot_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
 		
 		// add value to mapsTo core
 		List<ConvertedNestedEntity> nestedCol = new ArrayList<>();

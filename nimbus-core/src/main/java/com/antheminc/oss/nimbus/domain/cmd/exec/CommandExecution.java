@@ -15,7 +15,6 @@
  */
 package com.antheminc.oss.nimbus.domain.cmd.exec;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -75,7 +74,7 @@ public final class CommandExecution {
 		
 		private T value;
 		
-		private Serializable rootDomainId;
+		private Long rootDomainId;
 		
 		private ValidationResult validation;
 		private ExecuteError error;

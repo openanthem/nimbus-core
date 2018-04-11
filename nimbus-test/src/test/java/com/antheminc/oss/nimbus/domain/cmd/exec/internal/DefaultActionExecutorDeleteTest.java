@@ -45,7 +45,7 @@ public class DefaultActionExecutorDeleteTest extends AbstractFrameworkIngeration
 	
 	@Test
 	public void t1_colElem_add() {
-		Serializable refId = createOrGetDomainRoot_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
 		
 		// create new collection
 		MockHttpServletRequest colNew_Req = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)

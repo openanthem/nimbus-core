@@ -95,7 +95,7 @@ public class DefaultActionExecutorGet extends AbstractFunctionCommandExecutor<Pa
 	}
 	
 	protected QuadModel<?, ?> createNewQuad(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx) {
-		final Serializable refId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
+		final Long refId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
 		
 		final Object entity;
 		final Repo repo = rootDomainConfig.getRepo();
@@ -150,7 +150,7 @@ public class DefaultActionExecutorGet extends AbstractFunctionCommandExecutor<Pa
 		final String resolvedEntityAlias = resolveEntityAliasByRepo(rootDomainConfig);
 		String entityProcessAlias = resolvedEntityAlias + "_" + processStateAlias;
 		
-		final Serializable entityRefId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
+		final Long entityRefId = eCtx.getCommandMessage().getCommand().getRefId(Type.DomainAlias);
 		ProcessFlow processEntityState = getRepositoryFactory().get(repo)._get(entityRefId, ProcessFlow.class, entityProcessAlias);
 		return processEntityState;
 	}

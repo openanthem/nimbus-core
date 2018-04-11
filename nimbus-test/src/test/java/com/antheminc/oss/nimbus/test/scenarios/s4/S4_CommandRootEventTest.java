@@ -37,7 +37,7 @@ public class S4_CommandRootEventTest extends AbstractFrameworkIntegrationTests {
 	public void t01_openForm_new_unassigned() throws Exception {
 		Object controllerResp_new = createNew_VR();
 		//Param<?> vp_main = ExtractResponseOutputUtils.extractOutput(controllerResp_new);
-		Serializable refId = ExtractResponseOutputUtils.extractDomainRootRefId(controllerResp_new);
+		Long refId = ExtractResponseOutputUtils.extractDomainRootRefId(controllerResp_new);
 		
 		// get call
 		Object controllerResp_get = controller.handleGet(

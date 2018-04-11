@@ -28,7 +28,7 @@ import com.antheminc.oss.nimbus.support.Holder;
  */
 public class ExtractResponseOutputUtils {
 
-	public static Serializable extractDomainRootRefId(Object controllerResp) {
+	public static Long extractDomainRootRefId(Object controllerResp) {
 		return MultiOutput.class.cast(Holder.class.cast(controllerResp).getState()).getOutputs().get(0).getRootDomainId();
 	}
 	

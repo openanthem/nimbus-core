@@ -56,7 +56,7 @@ public class BPMGatewayTests extends AbstractFrameworkIngerationPersistableTests
 					.getMock();
 		
 		Holder<MultiOutput> holder = (Holder<MultiOutput>)controller.handlePost(request, null);
-		Serializable domainRoot_refId  = ExtractResponseOutputUtils.extractDomainRootRefId(holder);
+		Long domainRoot_refId  = ExtractResponseOutputUtils.extractDomainRootRefId(holder);
 		assertNotNull(domainRoot_refId);
 		
 		MockHttpServletRequest request2 = MockHttpRequestBuilder.withUri(BPM_CORE_PARAM_ROOT).addRefId(domainRoot_refId)
@@ -90,7 +90,7 @@ public class BPMGatewayTests extends AbstractFrameworkIngerationPersistableTests
 					.addAction(Action._new)
 					.getMock();
 		Holder<MultiOutput> holder = (Holder<MultiOutput>)controller.handlePost(request, null);
-		Serializable domainRoot_refId  = ExtractResponseOutputUtils.extractDomainRootRefId(holder);
+		Long domainRoot_refId  = ExtractResponseOutputUtils.extractDomainRootRefId(holder);
 		assertNotNull(domainRoot_refId);
 		
 		
@@ -129,7 +129,7 @@ public class BPMGatewayTests extends AbstractFrameworkIngerationPersistableTests
 					.addAction(Action._new)
 					.getMock();
 		Holder<MultiOutput> holder = (Holder<MultiOutput>)controller.handlePost(request, null);
-		Serializable domainRoot_refId  = ExtractResponseOutputUtils.extractDomainRootRefId(holder);
+		Long domainRoot_refId  = ExtractResponseOutputUtils.extractDomainRootRefId(holder);
 		assertNotNull(domainRoot_refId);
 		
 		String updateUri = BPM_CV_PARAM_ROOT + ":"+domainRoot_refId+"/.m/coreParameter";
@@ -154,7 +154,7 @@ public class BPMGatewayTests extends AbstractFrameworkIngerationPersistableTests
 					.addAction(Action._new)
 					.getMock();
 		Holder<MultiOutput> holder = (Holder<MultiOutput>)controller.handlePost(request, null);
-		Serializable domainRoot_refId  = ExtractResponseOutputUtils.extractDomainRootRefId(holder);
+		Long domainRoot_refId  = ExtractResponseOutputUtils.extractDomainRootRefId(holder);
 		assertNotNull(domainRoot_refId);
 		
 		

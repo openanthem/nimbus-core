@@ -50,7 +50,7 @@ public class DefaultActionExecutorReplaceTest extends AbstractFrameworkIngeratio
 	
 	@Test
 	public void t01_col_set() {
-		Serializable refId = createOrGetDomainRoot_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
 		MockHttpServletRequest colElemAdd_Req = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
 					.addNested("/page_green/tile/section_grid/grid_attached_ConvertedItems").addAction(Action._replace).getMock();
 		
@@ -82,7 +82,7 @@ public class DefaultActionExecutorReplaceTest extends AbstractFrameworkIngeratio
 		t02_col_set_existing_internal();
 	}
 	public void t02_col_set_existing_internal() {
-		Serializable refId = createOrGetDomainRoot_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
 		
 		MockHttpServletRequest req_arr_replace = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(refId)
 					.addNested("/attr_list_String").addAction(Action._replace).getMock();
@@ -112,7 +112,7 @@ public class DefaultActionExecutorReplaceTest extends AbstractFrameworkIngeratio
 	
 	@Test
 	public void t02_col_set_existing_core_noConversion() {
-		Serializable refId = createOrGetDomainRoot_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
 		
 		MockHttpServletRequest req_arr_replace = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(refId)
 					.addNested("/level1/attr_list_String_noConversion").addAction(Action._replace).getMock();
@@ -149,7 +149,7 @@ public class DefaultActionExecutorReplaceTest extends AbstractFrameworkIngeratio
 	}
 	
 	public void t02_col_set_existing_view_noConversion_internal() {
-		Serializable refId = createOrGetDomainRoot_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
 		
 		MockHttpServletRequest req_arr_update = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
 				.addNested("/page_green/tile/level1/attr_list_String_noConversion").addAction(Action._replace).getMock();
@@ -178,7 +178,7 @@ public class DefaultActionExecutorReplaceTest extends AbstractFrameworkIngeratio
 	
 	@Test
 	public void t03_array_update_core() {
-		Serializable refId = createOrGetDomainRoot_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
 		
 		MockHttpServletRequest req_arr_update = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(refId)
 				.addNested("/level1/level2b/string_array_b").addAction(Action._replace).getMock();
@@ -206,7 +206,7 @@ public class DefaultActionExecutorReplaceTest extends AbstractFrameworkIngeratio
 	
 	@Test
 	public void t04_array_update_view() {
-		Serializable refId = createOrGetDomainRoot_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
 		
 		MockHttpServletRequest req_arr_update = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
 				.addNested("/page_green/tile/level1/level2b/string_array_b").addAction(Action._replace).getMock();

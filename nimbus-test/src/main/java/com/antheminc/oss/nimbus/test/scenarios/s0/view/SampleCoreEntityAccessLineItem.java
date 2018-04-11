@@ -42,6 +42,10 @@ public class SampleCoreEntityAccessLineItem {
 
 	@Path @GridColumn(filter = true, filterMode = FilterMode.contains)
 	@AccessConditional(whenAuthorities="?[#this == 'case_management'].empty", p=Permission.READ)
+	private String id;
+	
+	@Path @GridColumn(filter = true, filterMode = FilterMode.contains)
+	@AccessConditional(whenAuthorities="?[#this == 'case_management'].empty", p=Permission.READ)
 	private String attr_String;
 	
 	@Path @GridColumn(filter = true, filterMode = FilterMode.equals)
