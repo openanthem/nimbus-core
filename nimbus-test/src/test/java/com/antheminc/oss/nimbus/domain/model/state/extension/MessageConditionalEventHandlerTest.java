@@ -11,7 +11,7 @@ import com.antheminc.oss.nimbus.domain.model.state.AbstractStateEventHandlerTest
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 
 /**
- * @author AC63346
+ * @author Akancha Kashyap
  *
  */
 public class MessageConditionalEventHandlerTest extends AbstractStateEventHandlerTests {
