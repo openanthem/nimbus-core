@@ -35,7 +35,7 @@ import { Subject } from 'rxjs/Subject';
 import { GenericDomain } from '../model/generic-domain.model';
 import { RequestContainer } from '../shared/requestcontainer';
 import { Observable } from 'rxjs/Observable';
-import { ExecuteResponse } from './../shared/app-config.interface';
+import { ExecuteResponse, ExecuteException } from './../shared/app-config.interface';
 import { ParamUtils } from './../shared/param-utils';
 
 /**
@@ -62,6 +62,9 @@ export class PageService {
 
         gridValueUpdate = new Subject<Param>();
         gridValueUpdate$ = this.gridValueUpdate.asObservable();
+
+        errorMessageUpdate = new Subject<ExecuteException>();
+        errorMessageUpdate$ = this.errorMessageUpdate.asObservable();
 
     private requestQueue :RequestContainer[] = [];
 

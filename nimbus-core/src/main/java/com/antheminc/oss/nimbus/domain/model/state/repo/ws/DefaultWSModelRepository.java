@@ -32,6 +32,8 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
@@ -39,8 +41,7 @@ import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ExternalModelRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.ExampleSearchCriteria;
-import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.LookupSearchCriteria;
-import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.QuerySearchCriteria;
+import com.antheminc.oss.nimbus.support.JustLogit;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -62,6 +63,8 @@ public class DefaultWSModelRepository implements ExternalModelRepository {
 	
 	private Map<String, String> targetUrl;
 	
+	private final static JustLogit logit = new JustLogit(DefaultWSModelRepository.class);
+	
 	//private ExternalModelRepositoryClient externalRepositoryClient;
 	
 	public DefaultWSModelRepository(BeanResolverStrategy beanResolver) {
@@ -75,8 +78,16 @@ public class DefaultWSModelRepository implements ExternalModelRepository {
 		if(uri == null)
 			return null;
 		
-		ResponseEntity<T> responseEntity = restTemplate.exchange(new RequestEntity<T>(HttpMethod.GET, uri), referredClass);
-		return Optional.ofNullable(responseEntity).map((response) -> response.getBody()).orElse(null);
+		try {
+			ResponseEntity<T> responseEntity = restTemplate.exchange(new RequestEntity<T>(HttpMethod.GET, uri), referredClass);
+			return Optional.ofNullable(responseEntity).map((response) -> response.getBody()).orElse(null);
+		} catch(HttpStatusCodeException e) {
+			logit.error(() -> "@ HttpStatusCodeException for "+uri+" Message : "+e.getResponseBodyAsString(),e);
+			throw new FrameworkRuntimeException(e.getResponseBodyAsString(),e);
+		} catch(RestClientException re) {
+			logit.error(() -> "@ RestClient exception for "+uri+" Message : "+re.getMessage());
+			throw new FrameworkRuntimeException(re.getMessage(), re);
+		}		
 	}
 	
 	@Override
@@ -97,8 +108,16 @@ public class DefaultWSModelRepository implements ExternalModelRepository {
 	}
 	
 	private Object execute(Supplier<RequestEntity<?>> reqEntitySupplier, Supplier<ParameterizedTypeReference<?>> responseTypeSupplier) {
-		ResponseEntity<?> responseEntity = restTemplate.exchange(reqEntitySupplier.get(), responseTypeSupplier.get());
-		return Optional.of(responseEntity).map((response)->response.getBody()).orElse(null);
+		 try {
+			ResponseEntity<?> responseEntity = restTemplate.exchange(reqEntitySupplier.get(), responseTypeSupplier.get());
+			return Optional.of(responseEntity).map((response)->response.getBody()).orElse(null);
+		} catch(HttpStatusCodeException e) {
+			logit.error(() -> "@ HttpStatusCodeException for "+reqEntitySupplier.get().getUrl()+" Message : "+e.getResponseBodyAsString(),e);
+			throw new FrameworkRuntimeException(e.getResponseBodyAsString(),e);
+		} catch(RestClientException re) {
+			logit.error(() -> "@ RestClient exception for "+reqEntitySupplier.get().getUrl()+" Message : "+re.getMessage());
+			throw new FrameworkRuntimeException(re.getMessage(), re);
+		}		
 	}
 	
 	private URI createUriForAlias(String alias, String url) {

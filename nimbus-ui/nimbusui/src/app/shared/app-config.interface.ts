@@ -854,12 +854,29 @@ export class ExecuteResponse implements Serializable<ExecuteResponse> {
 export class MultiOutput implements Serializable<MultiOutput> {
     behavior: string;
     result: Result;
+    executeException: ExecuteException;
     constructor(private configSvc: ConfigService) {}
     deserialize( inJson ) {
         this.behavior = inJson.b;
         if ( inJson.result != null ) {
             this.result = new Result(this.configSvc).deserialize( inJson.result );
         }
+        if ( inJson.executeException != null ) {
+            this.executeException = new ExecuteException(this.configSvc).deserialize( inJson.executeException );
+        }
+        return this;
+    }
+}
+
+export class ExecuteException implements Serializable<ExecuteException> {
+    code: string;
+    message: string;
+    uniqueId: string;
+    constructor(private configSvc: ConfigService) {}
+    deserialize( inJson ) {
+        this.code = inJson.code;
+        this.message = inJson.message;
+        this.uniqueId = inJson.uniqueId;
         return this;
     }
 }
