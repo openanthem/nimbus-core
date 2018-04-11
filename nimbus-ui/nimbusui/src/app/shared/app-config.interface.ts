@@ -395,15 +395,11 @@ export class ViewConfig {
 }
 
 export class Model implements Serializable<Model> {
-    uiStyles: UiStyle;
     params: Param[];
 
     constructor(private configSvc: ConfigService) {}
 
     deserialize( inJson ) {
-        if(inJson.uiStyles != null) {
-            this.uiStyles = new UiStyle().deserialize( inJson.uiStyles );
-        }
         this.params = [];
         for ( var p in inJson.params ) {
             this.params.push( new Param(this.configSvc).deserialize( inJson.params[p] ) );
