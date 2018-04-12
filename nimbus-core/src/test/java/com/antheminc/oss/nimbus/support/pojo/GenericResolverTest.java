@@ -82,13 +82,13 @@ public class GenericResolverTest {
 	@Test
 	public void test_addresses() {
 		Class<?> c = subClassField("addresses");
-		Assert.assertEquals(Address.IdString.class, c);
+		Assert.assertEquals(Address.class, c);
 	}
 
 	@Test
 	public void test_oneAddress() {
 		Class<?> c = subClassField("oneAddress");
-		Assert.assertEquals(Address.IdString.class, c);
+		Assert.assertEquals(Address.class, c);
 	}
 
 	
@@ -101,7 +101,7 @@ public class GenericResolverTest {
 	@Test
 	public void test_wildcardAddresses() {
 		Class<?> c = subClassField("wildcardAddresses");
-		Assert.assertEquals(Address.IdString.class, c);
+		Assert.assertEquals(Address.class, c);
 	}	
 	
 	@Test

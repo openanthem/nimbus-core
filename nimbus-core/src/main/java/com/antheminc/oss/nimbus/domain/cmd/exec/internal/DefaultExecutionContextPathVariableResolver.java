@@ -22,6 +22,7 @@ import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig.MappedParamConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.FilterCriteria;
+import com.antheminc.oss.nimbus.support.JustLogit;
 
 /**
  * @author Rakesh Patel
@@ -29,6 +30,7 @@ import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.Filter
  */
 public class DefaultExecutionContextPathVariableResolver implements ExecutionContextPathVariableResolver {
 
+	protected final JustLogit logit = new JustLogit(this.getClass());
 	private static final String[] DATE_FORMATS = new String[] { "yyyy-MM-dd", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" };
 	private static final String STRING_NULL = "null";
 	
@@ -101,6 +103,10 @@ public class DefaultExecutionContextPathVariableResolver implements ExecutionCon
 			filters = converter.readArray(FilterCriteria.class, List.class, eCtx.getCommandMessage().getRawPayload());
 		}
 		catch (FrameworkRuntimeException e) {
+			logit.error(() -> "Could not convert the rawPayload " + eCtx.getCommandMessage().getRawPayload()
+					+ " to <!filterCriteria!> for search config on param: " + param
+					+ ". This can happen if 1. if you are submitting a different payaload and also have configured the search with <!filterCriteria!> in which case we cannot support the filterCriteria or 2. The submitted filterCriteria cannot be serialized which needs to be investigated.",
+					e);
 			return null;
 		}
 		
