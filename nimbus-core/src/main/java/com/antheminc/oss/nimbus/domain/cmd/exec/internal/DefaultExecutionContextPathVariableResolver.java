@@ -104,8 +104,8 @@ public class DefaultExecutionContextPathVariableResolver implements ExecutionCon
 		}
 		catch (FrameworkRuntimeException e) {
 			logit.error(() -> "Could not convert the rawPayload " + eCtx.getCommandMessage().getRawPayload()
-					+ " to <!filterCriteria!> for search config on param: " + param
-					+ ". This can happen if 1. if you are submitting a different payaload and also have configured the search with <!filterCriteria!> in which case we cannot support the filterCriteria or 2. The submitted filterCriteria cannot be serialized which needs to be investigated.",
+					+ " to filterCriteria for search config on param: " + param
+					+ ". This can happen if 1. You are submitting a different payload and also have configured the search with <!filterCriteria!> in which case we cannot support the filterCriteria or 2. The submitted filterCriteria cannot be serialized which needs to be investigated.",
 					e);
 			return null;
 		}
