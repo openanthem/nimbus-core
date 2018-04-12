@@ -146,7 +146,11 @@ public class MongoSearchByQuery extends MongoDBSearch {
 			return (Long)query.fetchCount();
 		}
 		if(StringUtils.isNotBlank(criteria.getFetch())) {
-			return query.fetchOne();
+			if(criteria.getProjectCriteria() != null && !MapUtils.isEmpty(criteria.getProjectCriteria().getMapsTo())) {
+				return query.fetchOne(this.buildProjectionPathBuilder(referredClass, criteria, query));
+			} else {
+				return query.fetchOne();
+			}
 		}
 		if(criteria.getProjectCriteria() != null && !MapUtils.isEmpty(criteria.getProjectCriteria().getMapsTo())) {
 			return searchWithProjection(referredClass, criteria, query);
@@ -173,11 +177,15 @@ public class MongoSearchByQuery extends MongoDBSearch {
 		//return PageableExecutionUtils.getPage(qPage.fetchResults().getResults(), pageRequest, () -> query.fetchCount());
 	}
 	
-	private <T> List<Object> searchWithProjection(Class<?> referredClass, SearchCriteria<T> criteria, AbstractMongodbQuery query) {
+	private PathBuilder[] buildProjectionPathBuilder(Class<?> referredClass, SearchCriteria criteria, AbstractMongodbQuery query) {
 		Collection<String> fields = criteria.getProjectCriteria().getMapsTo().values();
 		List<PathBuilder> paths = new ArrayList<>();
 		fields.forEach((f)->paths.add(new PathBuilder(referredClass, f)));
-		return query.fetch(paths.toArray(new PathBuilder[paths.size()]));
+		return paths.toArray(new PathBuilder[paths.size()]);
+	}
+	
+	private <T> List<Object> searchWithProjection(Class<?> referredClass, SearchCriteria<T> criteria, AbstractMongodbQuery query) {
+		return query.fetch(this.buildProjectionPathBuilder(referredClass, criteria, query));
 	}
 
 	private  <T> Object searchByAggregation(Class<?> referredClass, String alias, SearchCriteria<T> criteria) {

@@ -100,9 +100,9 @@ public abstract class DefaultSearchFunctionHandler<T, R> extends AbstractFunctio
 			return projectCriteria;
 		}
 		
-		if(cmd.getRequestParams().get(Constants.SEARCH_REQ_PROJECT_MAPING_MARKER.code) != null) {
+		if(cmd.getRequestParams().get(Constants.SEARCH_REQ_PROJECT_MAPPING_MARKER.code) != null) {
 			ProjectCriteria projectCriteria = new ProjectCriteria();
-			String projectMapping = cmd.getFirstParameterValue(Constants.SEARCH_REQ_PROJECT_MAPING_MARKER.code);
+			String projectMapping = cmd.getFirstParameterValue(Constants.SEARCH_REQ_PROJECT_MAPPING_MARKER.code);
 			String[] keyValues = StringUtils.split(projectMapping,",");
 			
 			Stream.of(keyValues).forEach((kvString) -> {

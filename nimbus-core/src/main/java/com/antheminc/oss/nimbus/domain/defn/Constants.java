@@ -92,7 +92,7 @@ public enum Constants {
 	
 	/* search request param constants */
 	SEARCH_REQ_PROJECT_ALIAS_MARKER("projection.alias"),
-	SEARCH_REQ_PROJECT_MAPING_MARKER("projection.mapsTo"),
+	SEARCH_REQ_PROJECT_MAPPING_MARKER("projection.mapsTo"),
 	
 	SEARCH_REQ_AGGREGATE_MARKER("aggregate"),
 	SEARCH_REQ_AGGREGATE_COUNT("count"),
