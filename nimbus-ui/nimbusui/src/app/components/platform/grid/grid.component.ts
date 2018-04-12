@@ -287,7 +287,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         let elemPath;
         for (var p in this.params) {
             let param = this.params[p];
-            if (param.type.model) {
+            if (param.type.nested) {
                 if (param.uiStyles && param.uiStyles.attributes.alias == 'GridRowBody') {
                     // // Check if data has to be extracted async'ly
                     // if (param.uiStyles.attributes.asynchronous) {

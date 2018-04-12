@@ -66,7 +66,7 @@ export class Param implements Serializable<Param, string> {
         rowData = param.leafState;
         if(rowData instanceof Object)
             rowData['elemId'] = param.elemId;
-        if(param.type.model && param.type.model.params) {
+        if(param.type.model) {
             for(let p of param.type.model.params) {
                 if(p != null) {
                     let config = this.configSvc.paramConfigs[p.configId];

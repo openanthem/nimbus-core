@@ -53,7 +53,7 @@ export class FormElementsService {
         var checks: ValidatorFn[] = [];
         checks = ValidationUtils.buildStaticValidations(element);
         //if the form element's state is a collection we do not create a form group for it
-        if(element.type && element.type.model && element.type.model.params.length>0 && !element.collection) {
+        if(element.type && element.config.type.nested && element.type.model.params.length>0 && !element.collection) {
           group[element.config.code] = this.createNewFormGroup(element);
           //create new formgroup and formcontrol to create checkboxes in form. this is for form binding. TODO validations binding
         } else {
@@ -76,7 +76,7 @@ export class FormElementsService {
       let param = element.type.model.params[i];
       var checks: ValidatorFn[] = [];
       checks = ValidationUtils.buildStaticValidations(element);
-      if (param.type.model && param.type.model.params) {
+      if (param.config.type.nested) {
          fg.addControl(param.config.code, this.createNewFormGroup(param));
       } else {
           var leafState = this._getTypeSafeLeafState(param);

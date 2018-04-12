@@ -31,13 +31,13 @@ import { BaseElement } from './base-element.component';
     selector: 'nm-subheader',
     providers: [WebContentSvc],
     template:`           
-        <ng-template [ngIf]="!param?.type?.nested">
+        <ng-template [ngIf]="!param?.config?.type?.nested">
            <div class="{{param?.config?.uiStyles?.attributes?.cssClass}}">
-                <ng-template [ngIf]="isDate(param.type.name)">
+                <ng-template [ngIf]="isDate(param.config.type.name)">
                     <span [hidden]="!param?.config?.uiStyles?.attributes?.showName">{{label}}</span>
-                    <span>{{param.leafState | dateTimeFormat: param.config?.uiStyles?.attributes?.datePattern : param.type.name }}</span>
+                    <span>{{param.leafState | dateTimeFormat: param.config?.uiStyles?.attributes?.datePattern : param.config.type.name }}</span>
                 </ng-template>
-                <div *ngIf="!isDate(param.type.name)">
+                <div *ngIf="!isDate(param.config.type.name)">
                     <span [hidden]="!param?.config?.uiStyles?.attributes?.showName">{{label}}</span>
                     <span>{{param.leafState}}</span>
                 </div>

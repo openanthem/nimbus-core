@@ -99,6 +99,7 @@ export class ConfigType implements Serializable<ConfigType,string> {
     model: ModelConfig;
     collection: boolean = false;
     elementConfig: ElementConfig;
+    nested: boolean = false;
 
     constructor(private configSvc: ConfigService) {}
     
@@ -120,27 +121,19 @@ export class ConfigType implements Serializable<ConfigType,string> {
 }
 
 export class Type implements Serializable<Type,string> {
-    nested: boolean;
-    name: string;
+   
     model: Model;
-    collection: boolean;
 
     constructor(private configSvc: ConfigService) {}
 
     deserialize( inJson, path ) {        
-       
-        
-        this.name = inJson.name;
-        this.collection = inJson.collection;
-
-     
+ 
             if (inJson.model  != null) {
                 this.model = new Model(this.configSvc).deserialize( inJson.model, path );
             } else if (inJson.modelConfig != null) {
                 this.model = new Model(this.configSvc).deserialize( inJson.modelConfig, path);
             }
         
-
         return this;
     }
 }
