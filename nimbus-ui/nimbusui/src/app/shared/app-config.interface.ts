@@ -862,7 +862,7 @@ export class MultiOutput implements Serializable<MultiOutput> {
             this.result = new Result(this.configSvc).deserialize( inJson.result );
         }
         if ( inJson.executeException != null ) {
-            this.executeException = new ExecuteException(this.configSvc).deserialize( inJson.executeException );
+            this.executeException = new ExecuteException().deserialize( inJson.executeException );
         }
         return this;
     }
@@ -871,12 +871,10 @@ export class MultiOutput implements Serializable<MultiOutput> {
 export class ExecuteException implements Serializable<ExecuteException> {
     code: string;
     message: string;
-    uniqueId: string;
-    constructor(private configSvc: ConfigService) {}
+
     deserialize( inJson ) {
         this.code = inJson.code;
         this.message = inJson.message;
-        this.uniqueId = inJson.uniqueId;
         return this;
     }
 }

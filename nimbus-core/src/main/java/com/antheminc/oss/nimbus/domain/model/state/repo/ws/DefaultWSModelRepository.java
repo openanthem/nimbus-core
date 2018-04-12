@@ -77,17 +77,14 @@ public class DefaultWSModelRepository implements ExternalModelRepository {
 		URI uri = createUriForAlias(alias, url);
 		if(uri == null)
 			return null;
-		
+	
 		try {
 			ResponseEntity<T> responseEntity = restTemplate.exchange(new RequestEntity<T>(HttpMethod.GET, uri), referredClass);
 			return Optional.ofNullable(responseEntity).map((response) -> response.getBody()).orElse(null);
-		} catch(HttpStatusCodeException e) {
-			logit.error(() -> "@ HttpStatusCodeException for "+uri+" Message : "+e.getResponseBodyAsString(),e);
-			throw new FrameworkRuntimeException(e.getResponseBodyAsString(),e);
-		} catch(RestClientException re) {
-			logit.error(() -> "@ RestClient exception for "+uri+" Message : "+re.getMessage());
-			throw new FrameworkRuntimeException(re.getMessage(), re);
-		}		
+		} catch(Exception e) {
+			handleException(e,uri);
+		}
+		return null;	
 	}
 	
 	@Override
@@ -111,13 +108,10 @@ public class DefaultWSModelRepository implements ExternalModelRepository {
 		 try {
 			ResponseEntity<?> responseEntity = restTemplate.exchange(reqEntitySupplier.get(), responseTypeSupplier.get());
 			return Optional.of(responseEntity).map((response)->response.getBody()).orElse(null);
-		} catch(HttpStatusCodeException e) {
-			logit.error(() -> "@ HttpStatusCodeException for "+reqEntitySupplier.get().getUrl()+" Message : "+e.getResponseBodyAsString(),e);
-			throw new FrameworkRuntimeException(e.getResponseBodyAsString(),e);
-		} catch(RestClientException re) {
-			logit.error(() -> "@ RestClient exception for "+reqEntitySupplier.get().getUrl()+" Message : "+re.getMessage());
-			throw new FrameworkRuntimeException(re.getMessage(), re);
-		}		
+		} catch(Exception e) {
+			handleException(e, reqEntitySupplier.get().getUrl());
+		}			 
+		 return null;
 	}
 	
 	private URI createUriForAlias(String alias, String url) {
@@ -161,6 +155,16 @@ public class DefaultWSModelRepository implements ExternalModelRepository {
 	        return delegate.getOwnerType();
 	    }
 
+	}
+	
+	private void handleException(Exception e, URI uri) {
+		if(e instanceof HttpStatusCodeException) {
+			logit.error(() -> "@ HttpStatusCodeException for "+uri);
+			throw new FrameworkRuntimeException(((HttpStatusCodeException) e).getResponseBodyAsString(),e);
+		} else if(e instanceof RestClientException) {
+			logit.error(() -> "@ RestClient exception for "+uri);
+			throw new FrameworkRuntimeException(e.getMessage(), e);
+		}
 	}
 
 }

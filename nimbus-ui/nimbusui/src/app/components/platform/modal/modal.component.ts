@@ -55,23 +55,14 @@ export class Modal extends BaseElement implements OnInit, OnDestroy {
     privateelementCss: string;
     private errMsg: string;
     private subscription: Subscription;
-    constructor(private wcsvc: WebContentSvc, private pageSvc: PageService,
-        private configService: ConfigService) {
+    constructor(private wcsvc: WebContentSvc, private pageSvc: PageService ) {
         super(wcsvc);
     }
 
     ngOnInit() {
-        this.initializeErrMessage();
     }
 
     ngOnDestroy() {
-    }
-
-    initializeErrMessage() {
-        this.subscription =  this.pageSvc.errorMessageUpdate$
-        .subscribe((err: ExecuteException) => {
-            this.errMsg = err.message;
-        });
     }
 
     /**
@@ -104,11 +95,6 @@ export class Modal extends BaseElement implements OnInit, OnDestroy {
      * Close diaglog function.
      */
     public closeDialog(event: any) {
-        /* Resetting the error message component on closing of modal window */
-        const exception = new ExecuteException(this.configService);
-        exception.message = null;
-        exception.code = null;
-        this.pageSvc.errorMessageUpdate.next(exception);
 
         if (this.visible) {
             this.pageSvc.processEvent(this.element.path+'/closeModal', Behavior.execute.value, new GenericDomain(), HttpMethod.GET.value);

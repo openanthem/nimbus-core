@@ -20,7 +20,6 @@ import { HttpInterceptor, HttpHandler, HttpEvent, HttpRequest, HttpErrorResponse
 import { Observable } from 'rxjs/Observable';
 import { ServiceConstants } from './service.constants';
 import { ExecuteException } from '../shared/app-config.interface';
-import { ConfigService } from './config.service';
 import { PageService } from './page.service';
 /**
  * \@author Swetha.Vemuri
@@ -32,27 +31,25 @@ import { PageService } from './page.service';
  */
 @Injectable()
 export class CustomHttpClientInterceptor implements HttpInterceptor {
-    constructor(public configService: ConfigService, private pageSvc: PageService) {}
+    constructor(private pageSvc: PageService) {}
     /**
      * Http interceptor to handle custom implementation of request & error handling.
      * On a failure of http response, the error handler event is emitted based on the
      * exception in response. Framework returns all exceptions in a predefined format of ExecuteException.
      * To clear the event emitter of the web service exceptions, on each successful request an empty
      * exception object is emitted through the error handler event emitter.
-     * @param req 
-     * @param next 
+     * @param req
+     * @param next
      */
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         return next.handle(req).do((event: HttpEvent<any>) => {
-            const exception = new ExecuteException(this.configService);
+            const exception = new ExecuteException();
             exception.message = null;
             exception.code = null;
-            this.pageSvc.errorMessageUpdate.next(exception);
-
+            this.pageSvc.notifyErrorEvent(exception);
           }, (err: any) => {
                 const exception: ExecuteException = err.error.result[0].executeException;
-                this.pageSvc.errorMessageUpdate.next(exception);
-
+                this.pageSvc.notifyErrorEvent(exception);
                 if (err instanceof HttpErrorResponse) {
                     /*  Currently, the server side websecurityconfig redirects to /login when session in expired.
                         Although the original response is HttpErrorResponse, the redirected url is in 200 status.

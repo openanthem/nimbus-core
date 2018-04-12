@@ -92,6 +92,10 @@ export class PageService {
                 console.error('ERROR: Failure making server call : ' + JSON.stringify(err));
         }
 
+        notifyErrorEvent(exec: ExecuteException) {
+                this.errorMessageUpdate.next(exec);
+        }
+
         /** Build the base URL for Server calls */
         buildBaseURL() {
                 let baseURL = ServiceConstants.PLATFORM_BASE_URL;
