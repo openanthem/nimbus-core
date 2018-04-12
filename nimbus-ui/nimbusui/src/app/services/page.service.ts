@@ -222,6 +222,8 @@ export class PageService {
         }
 
         getFlowNameFromOutput(paramPath: string): string {
+                if(paramPath == undefined)
+                return '';
                 let flow = this.getFlowNameFromPath(paramPath);
                 if (flow && flow.indexOf(':') > 0) {
                         flow = flow.substr(0, flow.indexOf(':'));
