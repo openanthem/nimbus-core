@@ -44,11 +44,11 @@ public @interface MessageConditional {
 	/**
 	 *  SpEL based condition to be evaluated relative to param's state on which this annotation is declared.
 	 */
-	String when() default "";
+	String when();
 	/**
 	 *  The  Message displayed if the Spel condition evaluates to false.
 	 */
-	String message() default "";
+	String message();
 	/**
 	 *  The Type of Message - dictates UI properties of the Message
 	 */
@@ -60,7 +60,7 @@ public @interface MessageConditional {
 	/**
 	 *  To retain the Message when "when" evaluates to false - 
 	 */
-	boolean whenElseRetainMsg() default false;
+	boolean whenElseRetainMessage() default false;
 	
 	
 }
