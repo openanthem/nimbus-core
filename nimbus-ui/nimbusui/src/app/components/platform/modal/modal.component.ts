@@ -24,8 +24,6 @@ import { PageService } from '../../../services/page.service';
 import { Action, HttpMethod, Behavior} from './../../../shared/command.enum';
 import { GenericDomain } from '../../../model/generic-domain.model';
 import { BaseElement } from '../base-element.component';
-import { Subscription } from 'rxjs/Subscription';
-import { ConfigService } from '../../../services/config.service';
 /**
  * \@author Sandeep.Mantha
  * \@author Dinakar.Meda
@@ -53,13 +51,8 @@ export class Modal extends BaseElement implements OnInit, OnDestroy {
     public _closable: boolean;
     private _resizable: boolean;
     privateelementCss: string;
-    private errMsg: string;
-    private subscription: Subscription;
     constructor(private wcsvc: WebContentSvc, private pageSvc: PageService ) {
         super(wcsvc);
-    }
-
-    ngOnInit() {
     }
 
     ngOnDestroy() {

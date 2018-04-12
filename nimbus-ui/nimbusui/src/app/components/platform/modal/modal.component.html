@@ -10,7 +10,6 @@
     [blockScroll]="true" 
     [contentStyle]=""
     >
-        <nm-message messageContext="INLINE" messageType="DANGER" messageText="{{errMsg}}" *ngIf="errMsg"></nm-message>
         <p-header *ngIf="label">
             {{label}}
             <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
