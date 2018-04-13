@@ -17,7 +17,6 @@ package com.antheminc.oss.nimbus.domain.model.state.repo.db;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -34,7 +33,6 @@ import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.state.internal.AbstractListPaginatedParam.PageWrapper.PageRequestAndRespone;
 import com.antheminc.oss.nimbus.support.JustLogit;
 import com.mongodb.BasicDBList;
-import com.mongodb.BasicDBObject;
 import com.mongodb.CommandResult;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Predicate;
@@ -142,28 +140,25 @@ public class MongoSearchByQuery extends MongoDBSearch {
 										.buildOrderBy((String)criteria.getOrderby(), referredClass, alias)
 										.get();
 		
+		PathBuilder[] projectionPaths = buildProjectionPathBuilder(referredClass, criteria, query);
+				
 		if(StringUtils.equalsIgnoreCase(criteria.getAggregateCriteria(), Constants.SEARCH_REQ_AGGREGATE_COUNT.code)) {
 			return (Long)query.fetchCount();
 		}
+		
 		if(StringUtils.isNotBlank(criteria.getFetch())) {
-			if(criteria.getProjectCriteria() != null && !MapUtils.isEmpty(criteria.getProjectCriteria().getMapsTo())) {
-				return query.fetchOne(this.buildProjectionPathBuilder(referredClass, criteria, query));
-			} else {
-				return query.fetchOne();
-			}
+			return query.fetchOne(projectionPaths);
 		}
-		if(criteria.getProjectCriteria() != null && !MapUtils.isEmpty(criteria.getProjectCriteria().getMapsTo())) {
-			return searchWithProjection(referredClass, criteria, query);
-		}
+
 		if(criteria.getPageRequest() != null) {
-			return findAllPageable(referredClass, alias, criteria.getPageRequest(), query);
+			return findAllPageable(referredClass, alias, criteria.getPageRequest(), query, projectionPaths);
 		}
 		
-		return query.fetch();
+		return query.fetch(projectionPaths);
 		
 	}
 
-	private PageRequestAndRespone<Object> findAllPageable(Class<?> referredClass, String alias, Pageable pageRequest, AbstractMongodbQuery query) {
+	private PageRequestAndRespone<Object> findAllPageable(Class<?> referredClass, String alias, Pageable pageRequest, AbstractMongodbQuery query, PathBuilder[] projectionPaths) {
 		AbstractMongodbQuery qPage = query.offset(pageRequest.getOffset()).limit(pageRequest.getPageSize());
 		
 		if(pageRequest.getSort() != null){
@@ -173,48 +168,40 @@ public class MongoSearchByQuery extends MongoDBSearch {
 			    qPage.orderBy(new OrderSpecifier(com.querydsl.core.types.Order.valueOf(order.getDirection().name().toUpperCase()), path));
 			}
 		}
-		return new PageRequestAndRespone<Object>(qPage.fetchResults().getResults(), pageRequest, () -> query.fetchCount());
-		//return PageableExecutionUtils.getPage(qPage.fetchResults().getResults(), pageRequest, () -> query.fetchCount());
+		return new PageRequestAndRespone<Object>(qPage.fetchResults(projectionPaths).getResults(), pageRequest, () -> query.fetchCount());
 	}
 	
 	private PathBuilder[] buildProjectionPathBuilder(Class<?> referredClass, SearchCriteria criteria, AbstractMongodbQuery query) {
-		Collection<String> fields = criteria.getProjectCriteria().getMapsTo().values();
 		List<PathBuilder> paths = new ArrayList<>();
-		fields.forEach((f)->paths.add(new PathBuilder(referredClass, f)));
+		if(criteria.getProjectCriteria() != null && !MapUtils.isEmpty(criteria.getProjectCriteria().getMapsTo())) {
+			Collection<String> fields = criteria.getProjectCriteria().getMapsTo().values();
+			fields.forEach((f)->paths.add(new PathBuilder(referredClass, f)));
+			return paths.toArray(new PathBuilder[paths.size()]);
+		}
 		return paths.toArray(new PathBuilder[paths.size()]);
 	}
 	
-	private <T> List<Object> searchWithProjection(Class<?> referredClass, SearchCriteria<T> criteria, AbstractMongodbQuery query) {
-		return query.fetch(this.buildProjectionPathBuilder(referredClass, criteria, query));
-	}
-
 	private  <T> Object searchByAggregation(Class<?> referredClass, String alias, SearchCriteria<T> criteria) {
 		List<?> output = new ArrayList();
-		String[] aggregationCriteria = StringUtils.split((String)criteria.getWhere(), Constants.SEARCH_NAMED_QUERY_DELIMTER.code);
-		Arrays.asList(aggregationCriteria).forEach((cr) -> {
-			long startTime = System.currentTimeMillis();
-			CommandResult commndResult = getMongoOps().executeCommand(cr);
-			long endTime = System.currentTimeMillis();
-			//System.out.println("&&& Aggregation Query: "+cr+" --- Result: "+commndResult);
-			logIt.info(() -> "&&& Time taken "+(endTime-startTime)+ "ms in db query: "+cr);
-			logIt.trace(()-> "&&& Aggregation Query: "+cr+" --- Result: "+commndResult);
-			if (commndResult != null && commndResult.get(Constants.SEARCH_NAMED_QUERY_RESULT.code) != null
-					&& commndResult.get(Constants.SEARCH_NAMED_QUERY_RESULT.code) instanceof BasicDBList) {
-				BasicDBList result = (BasicDBList)commndResult.get(Constants.SEARCH_NAMED_QUERY_RESULT.code);
-				if(criteria.getProjectCriteria() != null && StringUtils.isNotBlank(criteria.getProjectCriteria().getAlias())) {
-					BasicDBObject dbObject = (BasicDBObject)result.get(0);
-					if(dbObject != null && dbObject.get(criteria.getProjectCriteria().getAlias()) instanceof BasicDBList) {
-						result = (BasicDBList)dbObject.get(criteria.getProjectCriteria().getAlias());
-					}
-				}
-				output.addAll(getMongoOps().getConverter().read(List.class, result));
-				logIt.info(() -> "&&& result size: "+output.size());
-			}
-		});
+		String cr = (String)criteria.getWhere();
+		logIt.info(() -> "### Aggregation query: "+cr);
+		
+		long startTime = System.currentTimeMillis();
+		CommandResult commndResult = getMongoOps().executeCommand(cr);
+		long endTime = System.currentTimeMillis();
+		logIt.info(() -> " took "+(endTime-startTime)+ " ms ");
+				
+		if (commndResult != null && commndResult.get(Constants.SEARCH_NAMED_QUERY_RESULT.code) instanceof BasicDBList) {
+			BasicDBList result = (BasicDBList)commndResult.get(Constants.SEARCH_NAMED_QUERY_RESULT.code);
+			output.addAll(getMongoOps().getConverter().read(List.class, result));
+			logIt.info(() -> "with result size: "+output.size());
+			logIt.trace(()-> " and result content: "+commndResult);
+		}
 		return output;
 	}
 	
 	/*
+	 * WIP: sorting and pagination for aggregate queries:
 	 * 
 	 * { $sort : { livingArrangement : -1,subscriberId: -1} },
 	 * { $skip : 5 },

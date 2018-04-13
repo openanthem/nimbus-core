@@ -21,7 +21,6 @@ import static org.junit.Assert.assertNotNull;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -30,14 +29,12 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Stream;
 
-import org.apache.commons.lang3.time.DateUtils;
 import org.junit.FixMethodOrder;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.Page;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -180,7 +177,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 	@Test
 	public void t41_testSearchByQueryCriteriaNotNull() {
 		insertClient();
-		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/client/_search?fn=query&where=client.code.eq('c1')");
+		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/client/_search?fn=query&where=client.code.eq('c1')&projection.mapsTo=test:name");
 		
 		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
 		List<Output<?>> ops  = multiOp.getOutputs();
@@ -210,21 +207,6 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		assertNotNull(values);
 		assertEquals(1, values.size());
 		assertEquals("/status", values.get(0).getParamCode());
-	}
-	
-	// TODO - 2017/09/06 Tony (AF42192) - Test needs to be updated per new framework changes.
-	@Ignore
-	@Test
-	public void t51_testSearchByQueryWithProjectionAndMapsTo() {
-		ClientUserGroup cug = insertClientUserGroup();
-	
-		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/clientusergroup/members/_search?fn=query&where=clientusergroup.id.eq("+cug.getId()+")");
-		
-		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
-		List<GroupUser> values = (List<GroupUser>)multiOp.getSingleResult();
-		
-		assertNotNull(values);
-		assertEquals(2, values.size());
 	}
 	
 	@Test
@@ -273,6 +255,7 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		
 	}
 	
+	// removed the projection.alias support since not the correct solution. below scenario is not used as of now in the app, however need to discuss the correct approach.
 	@Test
 	public void t11_getMembersFromUserGroupByAggregation() {
 		Stream.of(COLLECTIONS).forEach((collection) -> mongoOps.dropCollection(collection));
@@ -280,35 +263,39 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		createUserGroups();
 		createQueues();
 		
-		String query = "{\n" + 
-				"    \"aggregate\" : \"clientusergroup\",\n" + 
-				"    \"pipeline\" : [ \n" + 
-				"        {\n" + 
-				"			$match: {\n" + 
-				"                \"members.admin\": true\n" + 
-				"                }\n" + 
-				"		},\n" + 
-				"        {\n" + 
-				"        $project: {\n" + 
-				"            groupuser: {$filter: {\n" + 
-				"                input: \"$members\",\n" + 
-				"                as: \"member\",\n" + 
-				"                cond: {$eq: [\"$$member.admin\", true]}\n" + 
-				"        }},\n" + 
-				"        _id: 0\n" + 
-				"    }}\n" +  
-				"    ] \n" + 
+		String query = "{" + 
+				"    \"aggregate\" : \"clientusergroup\"," + 
+				"    \"pipeline\" : [ " + 
+				"        {" + 
+				"			$match: {" + 
+				"                \"members.admin\": true" + 
+				"                }" + 
+				"		 }," + 
+				"        {" + 
+				"        $project: {" + 
+				"            members: {$filter: {" + 
+				"                input: \"$members\"," + 
+				"                as: \"member\"," + 
+				"                cond: {$eq: [\"$$member.admin\", true]}" + 
+				"        }}," + 
+				"        _class: 1," + 
+				"        _id: 0" + 
+				"    }}" +  
+				"    ] " + 
 				"}";
 		
-		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/clientusergroup/_search?fn=query&where="+query+"&projection.alias=groupuser");
+		//CommandMessage cmdMsg = build(PLATFORM_ROOT+"/clientusergroup/_search?fn=query&where="+query+"&projection.alias=groupuser");
+		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/clientusergroup/_search?fn=query&where="+query);
 		
 		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
-		List<GroupUser> values = (List<GroupUser>) multiOp.getSingleResult();
+		List<ClientUserGroup> values = (List<ClientUserGroup>) multiOp.getSingleResult();
 		
 		Assert.notEmpty(values, "values cannot be empty");
-		assertEquals(2, values.size());
+		assertEquals(1, values.size());
+		assertNotNull(values.get(0).getMembers());
+		assertEquals(2, values.get(0).getMembers().size());
 		
-		System.out.println(values.get(0).getUserId());
+		//System.out.println(values.get(0).getUserId());
 		
 	}
  	
@@ -701,13 +688,11 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		groupUsers.add(groupUser);
 		
 		GroupUser groupUser22 = new GroupUser();
-		groupUser22.setId(new Random().nextLong());
 		groupUser22.setUserId("U3");
 		groupUser22.setAdmin(true);
 		groupUsers.add(groupUser22);
 		
 		GroupUser groupUser33 = new GroupUser();
-		groupUser33.setId(new Random().nextLong());
 		groupUser33.setUserId("U4");
 		groupUser33.setAdmin(true);
 		groupUsers.add(groupUser33);
