@@ -17,7 +17,7 @@
 'use strict';
 
 import { ConfigService } from './../services/config.service';
-import { SortAs } from "../components/platform/grid/sortas.interface";
+import { SortAs } from '../components/platform/grid/sortas.interface';
 import { PageService } from '../services/page.service';
 import { GridService } from '../services/grid.service';
 import { ServiceConstants } from '../services/service.constants';
