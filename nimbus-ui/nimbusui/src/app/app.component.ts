@@ -42,6 +42,7 @@ export class AppComponent {
     domain: string;
     port : string;
     protocol: string;
+    appcontext: string;
     locale : string;
     label: string;
     private collapse: boolean = false;
@@ -56,9 +57,11 @@ export class AppComponent {
         this.domain = this.document.location.hostname;
         this.port=this.document.location.port;
         this.protocol=this.document.location.protocol;
+        this.appcontext=this.document.location.pathname.split('/').splice(1, 1);
         this.locale = "en-US"; //TODO This locale should be read dynamically. Currently defaulting to en-US
         ServiceConstants.STOPGAP_APP_HOST = this.domain;
         ServiceConstants.STOPGAP_APP_PORT = this.port;
+        ServiceConstants.APP_CONTEXT = this.appcontext;
         ServiceConstants.LOCALE_LANGUAGE = this.locale;
         ServiceConstants.STOPGAP_APP_PROTOCOL = this.protocol;
     }

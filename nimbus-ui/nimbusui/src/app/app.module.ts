@@ -37,9 +37,11 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpModule, BrowserXhr } from '@angular/http';
 import { ReactiveFormsModule }  from '@angular/forms';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
+import { APP_BASE_HREF } from '@angular/common';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
     FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
     ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule  } from 'primeng/primeng';
+import { TableModule } from 'primeng/table';
 import { NavLinkRouter } from './directives/nav-link-router.directive';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -66,6 +68,7 @@ import { CheckBoxGroup } from './components/platform/form/elements/checkbox-grou
 import { MultiselectCard } from './components/platform/form/elements/multi-select-card.component';
 import { ActionDropdown, ActionLink } from './components/platform/form/elements/action-dropdown.component';
 import { InfiniteScrollGrid } from './components/platform/grid/grid.component';
+import { DataTable } from './components/platform/grid/table.component';
 import { Link } from './components/platform/link.component';
 import { Menu } from './components/platform/menu.component';
 import { FlowWrapper } from './components/platform/content/flow-wrapper.component';
@@ -99,6 +102,7 @@ import { WebContentSvc } from './services/content-management.service';
 import { STOMPStatusComponent } from './services/stomp-status.component';
 import { AuthenticationService } from './services/authentication.service';
 import { FileService } from './services/file.service';
+import { ServiceConstants } from "./services/service.constants";
 // Routes
 import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app.routing.module';
@@ -107,6 +111,7 @@ import { CustomHttpClientInterceptor } from './services/httpclient-interceptor.s
 import { CustomBrowserXhr } from './custom.browserxhr';
 import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
+
 // Declarations
 import { LoginCmp } from './components/login/login.component';
 import { LandingPage } from './components/login/auth-landingpage';
@@ -115,6 +120,7 @@ import { LinkPipe } from './pipes/link.pipe';
 import { SelectItemPipe } from './pipes/select-item.pipe';
 import { LoaderComponent } from './components/platform/loader/loader.component';
 import {DateTimeFormatPipe} from './pipes/date.pipe';
+
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -133,6 +139,7 @@ import {DateTimeFormatPipe} from './pipes/date.pipe';
         FormsModule,
         DropdownModule,
         DataTableModule,
+        TableModule,
         OverlayPanelModule,
         PickListModule,
         DragDropModule,
@@ -155,7 +162,7 @@ import {DateTimeFormatPipe} from './pipes/date.pipe';
         InPlaceEditorComponent, Paragraph, Value, Image, BaseElement,
         MultiselectCard, Link, Menu, CardDetailsComponent, CardDetailsFieldComponent, CardDetailsGrid, FieldValue,
         AccordionGroup, Accordion, AccordionMain, AccordionTab, FrmGroupCmp, Button, ButtonGroup, FilterButton, OrderablePickList,
-        STOMPStatusComponent, InfiniteScrollGrid, SubHeaderCmp, TextArea, LandingPage,
+        STOMPStatusComponent, InfiniteScrollGrid, DataTable, SubHeaderCmp, TextArea, LandingPage,
         LayoutService, ContentContainer,
         DomainFlowCmp, HeaderGlobal, FooterGlobal,
         BreadcrumbComponent, NavLinkRouter,
@@ -170,6 +177,7 @@ import {DateTimeFormatPipe} from './pipes/date.pipe';
          CustomHttpClient, { provide: BrowserXhr, useClass: CustomBrowserXhr },
          { provide: HTTP_INTERCEPTORS, useClass: CustomHttpClientInterceptor, multi: true },
          { provide: LocationStrategy, useClass: HashLocationStrategy }, GridService,
+         { provide: APP_BASE_HREF, useValue: ServiceConstants.APP_CONTEXT },
          AuthenticationService, BreadcrumbService, LoaderService, FileService, LayoutService ],
     bootstrap: [ AppComponent ]
 })

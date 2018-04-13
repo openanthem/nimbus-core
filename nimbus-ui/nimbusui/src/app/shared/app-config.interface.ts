@@ -251,6 +251,7 @@ export class ViewConfig {
 
 export class Model implements Serializable<Model,string> {
     uiStyles: UiStyle;
+
     params: Param[];
 
     constructor(private configSvc: ConfigService) {}
