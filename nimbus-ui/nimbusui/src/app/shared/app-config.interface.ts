@@ -708,12 +708,27 @@ export class ExecuteResponse implements Serializable<ExecuteResponse,string> {
 export class MultiOutput implements Serializable<MultiOutput,string> {
     behavior: string;
     result: Result;
+    executeException: ExecuteException;
     constructor(private configSvc: ConfigService) {}
     deserialize( inJson ) {
         this.behavior = inJson.b;
         if ( inJson.result != null ) {
             this.result = new Result(this.configSvc).deserialize( inJson.result );
         }
+        if ( inJson.executeException != null ) {
+            this.executeException = new ExecuteException().deserialize( inJson.executeException );
+        }
+        return this;
+    }
+}
+
+export class ExecuteException implements Serializable<ExecuteException> {
+    code: string;
+    message: string;
+
+    deserialize( inJson ) {
+        this.code = inJson.code;
+        this.message = inJson.message;
         return this;
     }
 }

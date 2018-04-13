@@ -35,7 +35,7 @@ import { Subject } from 'rxjs/Subject';
 import { GenericDomain } from '../model/generic-domain.model';
 import { RequestContainer } from '../shared/requestcontainer';
 import { Observable } from 'rxjs/Observable';
-import { ExecuteResponse } from './../shared/app-config.interface';
+import { ExecuteResponse, ExecuteException } from './../shared/app-config.interface';
 import { ParamUtils } from './../shared/param-utils';
 import { ParamAttribute } from './../shared/command.enum';
 
@@ -64,6 +64,9 @@ export class PageService {
         gridValueUpdate = new Subject<Param>();
         gridValueUpdate$ = this.gridValueUpdate.asObservable();
 
+        errorMessageUpdate = new Subject<ExecuteException>();
+        errorMessageUpdate$ = this.errorMessageUpdate.asObservable();
+
     private requestQueue :RequestContainer[] = [];
 
         private _entityId: number = 0;
@@ -88,6 +91,10 @@ export class PageService {
 
         logError(err) {
                 console.error('ERROR: Failure making server call : ' + JSON.stringify(err));
+        }
+
+        notifyErrorEvent(exec: ExecuteException) {
+                this.errorMessageUpdate.next(exec);
         }
 
         /** Build the base URL for Server calls */

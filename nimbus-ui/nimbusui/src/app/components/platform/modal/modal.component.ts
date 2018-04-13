@@ -92,7 +92,6 @@ export class Modal extends BaseElement implements OnInit, OnDestroy {
      * Close diaglog function.
      */
     public closeDialog(event: any) {
-        //console.log('modal close clicked..........');
         if (this.visible) {
             this.pageSvc.processEvent(this.element.path+'/closeModal', Behavior.execute.value, new GenericDomain(), HttpMethod.GET.value);
         }
