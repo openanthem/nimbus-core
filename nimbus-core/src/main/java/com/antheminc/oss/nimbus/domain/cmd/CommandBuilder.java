@@ -180,7 +180,7 @@ public class CommandBuilder {
 								"Command code and refId must have the format of /{domainAlias}:{refId}");
 
 					cmdElem = cmdElem.createNext(type, codeAndRefId[0]);
-					cmdElem.setRefId(codeAndRefId[1]);
+					cmdElem.setRefId(Long.valueOf(codeAndRefId[1]));
 				} 
 				else {
                     cmdElem = cmdElem.createNext(type, val);

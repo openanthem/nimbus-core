@@ -15,6 +15,7 @@
  */
 package com.antheminc.oss.nimbus.domain.bpm.activiti;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -177,7 +178,7 @@ public class ActivitiUserTaskActivityBehavior extends UserTaskActivityBehavior {
 		Repo repo = modelConfig.getRepo();
 		String processStateAlias = StringUtils.isBlank(repo.alias()) ? modelConfig.getAlias() : repo.alias();
 		String entityProcessAlias = context.getParam().getRootDomain().getConfig().getAlias() + "_" + processStateAlias;
-		String entityRefId = context.getParam().getRootExecution().getRootCommand().getRefId(Type.DomainAlias);
+		Long entityRefId = context.getParam().getRootExecution().getRootCommand().getRefId(Type.DomainAlias);
 		repositoryFactory.get(repo)._update(entityProcessAlias, entityRefId, "/activeTasks", activeTasks);
 	}	
 

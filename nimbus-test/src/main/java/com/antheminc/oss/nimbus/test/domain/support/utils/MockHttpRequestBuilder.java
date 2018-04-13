@@ -15,6 +15,8 @@
  */
 package com.antheminc.oss.nimbus.test.domain.support.utils;
 
+import java.io.Serializable;
+
 import org.springframework.http.HttpMethod;
 import org.springframework.mock.web.MockHttpServletRequest;
 
@@ -45,7 +47,7 @@ public final class MockHttpRequestBuilder {
 		return new MockHttpRequestBuilder(new MockHttpServletRequest(httpMethod.name(), uri));
 	}
 	
-	public MockHttpRequestBuilder addRefId(String refId) {
+	public MockHttpRequestBuilder addRefId(Serializable refId) {
 		String uri = httpReq.getRequestURI() + ":" + refId;
 		httpReq.setRequestURI(uri);
 		
@@ -73,9 +75,8 @@ public final class MockHttpRequestBuilder {
 		return this;
 	}
 	
-	public MockHttpRequestBuilder addParam(String name, String value) {
-		httpReq.addParameter(name, value);
-		
+	public MockHttpRequestBuilder addParam(String name, Serializable value) {
+		httpReq.addParameter(name, value != null? value.toString(): null);
 		return this;
 	}
 }

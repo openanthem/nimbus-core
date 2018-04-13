@@ -162,7 +162,7 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		_setRaw(defaultRepStrategy, param, newState);
 	}
 	public <P> void _setRaw(ParamStateRepository currRep, Param<P> param, P newState) {
-		currRep._set(param, newState);
+		currRep._set(param, (P)toObject(param.getConfig().getReferredClass(), newState));
 	}
 	
 	/***
@@ -219,6 +219,8 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 	}
 	
 	public <P> Action _set(ParamStateRepository currRep, Param<P> param, P newState) {
+		
+		newState = (P)toObject(param.getConfig().getReferredClass(), newState);
 		
 		// unmapped core/view - nested/leaf: set to param
 		if(!param.isMapped()) {
@@ -419,6 +421,21 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		//11
 		boolean isEqual = currState.equals(newState);
 		return isEqual ? null : Action._update;
+	}
+	
+	/**
+	 * TODO Rakesh - in progress - try replace this with ConvertUtils...
+	 */
+	public static <P> Object toObject(Class<?> clazz, P value) {
+		if(value != null) {
+			if( Boolean.class == clazz || Boolean.TYPE == clazz) return Boolean.parseBoolean(value.toString());
+			if( Short.class == clazz || Short.TYPE == clazz) return Short.parseShort(value.toString());
+			if( Integer.class == clazz || Integer.TYPE == clazz) return Integer.parseInt(value.toString());
+			if( Long.class == clazz || Long.TYPE == clazz) return Long.parseLong(value.toString());
+			if( Float.class == clazz || Float.TYPE == clazz) return Float.parseFloat(value.toString());
+			if( Double.class == clazz || Double.TYPE == clazz) return Double.parseDouble(value.toString());
+		}
+	    return value;
 	}
 	
 }

@@ -16,10 +16,12 @@
 package com.antheminc.oss.nimbus.domain.model.state.internal;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.util.Assert;
 
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
@@ -30,6 +32,7 @@ import com.antheminc.oss.nimbus.domain.model.state.StateType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 /**
  * @author Soham Chakravarti
@@ -42,7 +45,7 @@ public abstract class AbstractListPaginatedParam<T> extends DefaultParamState<Li
 	private Pageable pageable;
 	
 	@JsonIgnore
-	private int totalContent;
+	private Supplier<Long> totalCountSupplier;
 	
 	public AbstractListPaginatedParam(Model<?> parentModel, ParamConfig<List<T>> config, EntityStateAspectHandlers aspectHandlers) {
 		super(parentModel, config, aspectHandlers);
@@ -60,7 +63,7 @@ public abstract class AbstractListPaginatedParam<T> extends DefaultParamState<Li
 	public abstract AbstractListPaginatedParam<T> findIfCollection();
 
 	public Page<T> getPage() {
-		return pageable==null ? new PageWrapper<T>(this) : new PageWrapper<T>(this, pageable, totalContent);
+		return pageable == null ? PageWrapper.getPage(this, null, () -> Long.class.cast(size())) : PageWrapper.getPage(this, pageable, totalCountSupplier);
 	}
 	
 	@Override
@@ -70,15 +73,15 @@ public abstract class AbstractListPaginatedParam<T> extends DefaultParamState<Li
 	}
 	
 	@Override
-	public void setPage(List<T> content, Pageable pageable, int totalContent) {
+	public void setPage(List<T> content, Pageable pageable, Supplier<Long> totalCountSupplier) {
 		this.pageable = pageable;
-		this.totalContent = totalContent;
+		this.totalCountSupplier = totalCountSupplier;
 		setState(content);
 	}
 	
 	protected void clearPageMeta() {
 		pageable = null;
-		totalContent = 0;
+		totalCountSupplier = null;
 	}
 
 	
@@ -89,7 +92,7 @@ public abstract class AbstractListPaginatedParam<T> extends DefaultParamState<Li
 			super(new ReadOnlyListSupplier<>(p));
 		}
 		
-		public PageWrapper(ListParam<T> p, Pageable pageable, int total) {
+		public PageWrapper(ListParam<T> p, Pageable pageable, long total) {
 			super(new ReadOnlyListSupplier<>(p), pageable, total);
 		}
 		
@@ -97,6 +100,34 @@ public abstract class AbstractListPaginatedParam<T> extends DefaultParamState<Li
 		@Override
 		public List<T> getContent() {
 			return super.getContent();
+		}
+		
+		@RequiredArgsConstructor @Getter
+		public static class PageRequestAndRespone<T> {
+			
+			private final List<T> content;
+			private final Pageable pageable;
+			private final Supplier<Long> totalSupplier;
+		}
+		
+		public static <T> Page<T> getPage(ListParam<T> p, Pageable pageable, Supplier<Long> totalSupplier) {
+
+			Assert.notNull(totalSupplier, "TotalSupplier must not be null!");
+
+			if (pageable == null || pageable.getOffset() == 0) {
+
+				if (pageable == null || pageable.getPageSize() > p.size()) {
+					return new PageWrapper<T>(p, pageable, p.size());
+				}
+
+				return new PageWrapper<T>(p, pageable, totalSupplier.get());
+			}
+
+			if (p.size() != 0 && pageable.getPageSize() > p.size()) {
+				return new PageWrapper<T>(p, pageable, pageable.getOffset() + p.size());
+			}
+
+			return new PageWrapper<T>(p, pageable, totalSupplier.get());
 		}
 	}
 }

@@ -41,7 +41,7 @@ public class ParamUpdateEventListener extends AbstractStateAndConfigEventListene
 		if(StringUtils.contains(event.getPayload().getPath(), 
 				"/cmcase/status") && StringUtils.equalsIgnoreCase("Cancelled", (String)event.getPayload().getState())) {
 			
-			String entityId = (String)event.getPayload().getRootDomain().findParamByPath("/id").getState();
+			Long entityId = (Long)event.getPayload().getRootDomain().findParamByPath("/id").getState();
 			
 			mongoOps.updateMulti(
 					new Query(Criteria.where("status").is("Open").and("entityId").is(entityId)), 

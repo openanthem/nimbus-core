@@ -221,7 +221,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 				// TODO Rakesh - Review with soham
 				// - e.g. needed to replace e.g. <!page=y!> path variable with the value available in request params (only available in eCtx at this point)
 					// can be used for any other values not available in commandParam ??
-				String eCtxResolvedConfigUri = eCtxPathVariableResolver.resolve(eCtx, completeConfigUri);
+				String eCtxResolvedConfigUri = eCtxPathVariableResolver.resolve(eCtx, cmdParam, completeConfigUri);
 			
 				String resolvedConfigUri = pathVariableResolver.resolve(cmdParam, eCtxResolvedConfigUri);
 					

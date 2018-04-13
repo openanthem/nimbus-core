@@ -57,7 +57,7 @@ import lombok.Setter;
 
 @Repo(Database.rep_mongodb)
 @Getter @Setter
-public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Serializable {
+public class ExecutionEntity<V, C> extends AbstractEntity.IdLong implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -220,7 +220,7 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdString implements Se
 		
 		private final ExecutionModel<ExecutionEntity<V, C>> rootModel;
 		
-		private final String rootRefId;
+		private final Serializable rootRefId;
 		
 		public ExParam(Command rootCommand, EntityStateAspectHandlers provider, ExConfig<V, C> exConfig) {
 			super(null, new ExParamConfig(exConfig), provider);

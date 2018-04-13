@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Before;
@@ -75,10 +76,11 @@ public class S1_GridTest extends AbstractFrameworkIntegrationTests {
 
 	private S1C_AnotherMain build() {
 		S1C_AnotherMain s = new S1C_AnotherMain();
-		String suffix = "_" + counter.getAndIncrement();
+		int count = counter.getAndIncrement();
+		Long suffix = new Random().nextLong();
 		s.setId(suffix);
-		s.setValue1("value1"+suffix);
-		s.setValue2("value2"+suffix);
+		s.setValue1("value1_"+count);
+		s.setValue2("value2_"+count);
 		return s;
 	}
 	

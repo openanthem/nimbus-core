@@ -86,6 +86,9 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	private RemnantState<Boolean> enabledState = this.new RemnantState<>(true);
 	
 	@JsonIgnore
+	private RemnantState<Object> filterState = this.new RemnantState<>(null);
+	
+	@JsonIgnore
 	@SuppressWarnings("unchecked")
 	private RemnantState<Class<? extends ValidationGroup>[]> activeValidationGroupsState = new RemnantState<>(new Class[0]);
 	
@@ -422,7 +425,6 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		if(getParentModel()!=null && getParentModel().isRoot()) {
 			return findIfNested();
 		}
-		
 		return getParentModel().getRootDomain();
 	}
 

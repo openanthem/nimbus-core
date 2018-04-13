@@ -24,11 +24,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +48,7 @@ import com.antheminc.oss.nimbus.support.Holder;
 import com.antheminc.oss.nimbus.test.domain.support.utils.ExtractResponseOutputUtils;
 import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntityAccess;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreNestedEntity;
 
 /**
  * @author Rakesh Patel
@@ -92,9 +92,11 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 		
 		
 		SampleCoreEntityAccess scea = new SampleCoreEntityAccess();
+		scea.setId(1L);
 		scea.setAttr_String("test1");
 		
 		SampleCoreEntityAccess scea2 = new SampleCoreEntityAccess();
+		scea2.setId(2L);
 		scea2.setAttr_String("test2");
 		mongo.save(scea, "sample_core_access");
 		mongo.save(scea2, "sample_core_access");
@@ -103,7 +105,7 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 		Param<?> p = excuteNewConfigView(userLoginId);
 		assertNotNull(p);
 		
-		String refId = p.findStateByPath("/.m/id");
+		Long refId = p.findStateByPath("/.m/id");
 		
 		final MockHttpServletRequest gridRequest = MockHttpRequestBuilder
 				.withUri(VIEW_PARAM_ACCESS_ROOT)
@@ -137,16 +139,26 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 		
 	}
 	
-	//TODO Rakesh 02/14/2018- test once the grid return type of page is available in the framework
-	@Ignore
+	// Rakesh :TODO: - more test cases to capture different scenarios of page/filter
+	@Test
 	public void t05_accessConditionalGridPagination() throws Exception {
 		String userLoginId = createClientUserWithRoles("superman","intake","clinician");
 		
 		SampleCoreEntityAccess scea = new SampleCoreEntityAccess();
-		scea.setAttr_String("test1");
+		scea.setId(1L);
+		scea.setAttr_String("test1_string1");
+		scea.setAttr_String2("test2_string2");
+		scea.setAttr_LocalDate1(LocalDate.now());
+		
+		SampleCoreNestedEntity nestedEntity = new SampleCoreNestedEntity();
+		nestedEntity.setNested_attr_String("nested_test1");
+		scea.setAccessConditional_Contains_Hidden1(nestedEntity);
 		
 		SampleCoreEntityAccess scea2 = new SampleCoreEntityAccess();
-		scea2.setAttr_String("test2");
+		scea2.setId(2L);
+		scea2.setAttr_String("test2_string1");
+		scea2.setAttr_String2("test2_string2");
+		
 		mongo.save(scea, "sample_core_access");
 		mongo.save(scea2, "sample_core_access");
 		
@@ -154,25 +166,18 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 		Param<?> p = excuteNewConfigView(userLoginId);
 		assertNotNull(p);
 		
-		String refId = p.findStateByPath("/.m/id");
+		Long refId = p.findStateByPath("/.m/id");
 		
 		final MockHttpServletRequest gridRequest = MockHttpRequestBuilder
 				.withUri(VIEW_PARAM_ACCESS_ROOT)
 				.addRefId(refId)
 				.addNested("/vpSampleCoreEntityAccess/vtSampleCoreEntityAccess/vsSamplePageCoreEntityAccess/vgSamplePageCoreEntities")
-//				.addParam("pageSize", "1")
-//				.addParam("page", "0")
-//				.addParam("sortBy", "attr_String,asc")
-				.addParam("pageCriteria", "pageSize=5&page=0&sortBy=attr_String,DESC")
+				//.addParam("pageCriteria", "pageSize=5&page=0&sortBy=attr_String,DESC")
 				.addAction(Action._get)
 				.getMock();
-		final Object gridResponse = controller.handleGet(gridRequest, null);
+		final Object gridResponse = controller.handlePost(gridRequest, "[{\"code\":\"attr_String2\", \"value\":\"test2_string2\"},{\"code\":\"nested_attr_String\", \"value\":\"nested\"},{\"code\":\"attr_LocalDate1\",\"value\":\""+LocalDate.now()+"T00:00:00.000Z\"}]");
+		//final Object gridResponse = controller.handlePost(gridRequest, null);
 		assertNotNull(gridResponse);
-		
-		
-		ObjectMapper mapper = new ObjectMapper();
-		String json = mapper.writeValueAsString(gridResponse);
-		System.out.println(json);
 		
 		List<Output<?>> outputs = MultiOutput.class.cast(Holder.class.cast(gridResponse).getState()).getOutputs();
 		
@@ -317,18 +322,21 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 	
 	private String createClientUserWithRoles(String loginId, String... roles) {
 		ClientUser cu = new ClientUser();
+		cu.setId(new Random().nextLong());
 		cu.setLoginId(loginId);
 		
 		List<UserRole> userRoles = new ArrayList<>();
 		Arrays.asList(roles).forEach((r) -> {
 			
 			ClientUserRole userRole = new ClientUserRole();
+			userRole.setId(new Random().nextLong());
 			userRole.setCode(r);
 			userRole.setEffectiveDate(LocalDate.now());
 			
 			List<String> accessEntities = new ArrayList<>();
 			
 			ClientAccessEntity accessEntity = new ClientAccessEntity();
+			accessEntity.setId(new Random().nextLong());
 			accessEntity.setCode("member_management");
 			
 			mongo.save(accessEntity, "authorities");

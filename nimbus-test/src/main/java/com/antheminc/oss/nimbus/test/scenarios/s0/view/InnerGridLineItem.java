@@ -23,7 +23,7 @@ public class InnerGridLineItem {
 	
 	@Path
 	@GridColumn(hidden=true)
-	private String id;
+	private Long id;
 	
 	@Path()
 	@GridColumn(filter = true, filterMode = FilterMode.contains)
