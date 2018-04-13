@@ -722,7 +722,7 @@ export class MultiOutput implements Serializable<MultiOutput,string> {
     }
 }
 
-export class ExecuteException implements Serializable<ExecuteException> {
+export class ExecuteException implements Serializable<ExecuteException, string> {
     code: string;
     message: string;
 
