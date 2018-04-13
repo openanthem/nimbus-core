@@ -768,9 +768,11 @@ export class PageService {
                                 param.type['model'] = payload.type.model;
                         }
                 }
-                if (param.message === undefined && payload.message) {
+                // When the message is set to null for a param from the server, the payload doesnt have the message param, 
+                // Hence the updateParam method doesnt find "message" as part of "updatedkeys"
+                // For (param.type.message === undefined && payload.type.message) condition to be added, 
+                // We need to modify the updateparam function to update when the param sent from server is null
                         param['message'] = payload.message;
-                }
         }
 
         updateParam(param: Param, payload: Param) {

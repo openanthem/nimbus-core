@@ -24,11 +24,9 @@ public class MessageConditionalHandler extends AbstractConditionalStateEventHand
 			Message msg = new Message(configuredAnnotation.message(), configuredAnnotation.messageType(), configuredAnnotation.context());
 			onChangeParam.setMessage(msg);
 		}
-		// Be  default the message is retained on the param
-		// TODO :Check with Dinakar - if we can remove the empty Message Text Message Object
+		
 		else if(!configuredAnnotation.whenElseRetainMessage()) {
-			Message msg = new Message(null, configuredAnnotation.messageType(), configuredAnnotation.context());
-			onChangeParam.setMessage(msg);
+			onChangeParam.setMessage(null);
 		}
 		
 		
