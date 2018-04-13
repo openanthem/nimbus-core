@@ -21,7 +21,8 @@ import { SortAs } from "../components/platform/grid/sortas.interface";
 import { PageService } from '../services/page.service';
 import { GridService } from '../services/grid.service';
 import { ParamUtils } from './param-utils';
-
+import { Converter } from './object.conversion';
+import { Param } from './Param';
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -30,24 +31,23 @@ import { ParamUtils } from './param-utils';
  * \@howToUse 
  * 
  */
-export interface Serializable<T> {
-    deserialize( inJson: Object ): T;
+export interface Serializable<T, R> {
+    deserialize( inJson: Object, path?: string ): T;
 }
 
-export class Values implements Serializable<Values> {
+export class Values implements Serializable<Values, string> {
     code: string;
     label: string;
     desc: string;
 
     deserialize( inJson ) {
-        this.code = inJson.code;
-        this.label = inJson.label;
-        this.desc = inJson.desc;
-        return this;
+       var obj = this;
+       obj = Converter.convert(inJson,obj);
+       return obj;
     }
 }
 
-export class ElementConfig implements Serializable<ElementConfig> {
+export class ElementConfig implements Serializable<ElementConfig, string> {
     id: string;
     type: ConfigType;
 
@@ -63,7 +63,7 @@ export class ElementConfig implements Serializable<ElementConfig> {
     }
 }
 
-export class ModelConfig implements Serializable<ModelConfig> {
+export class ModelConfig implements Serializable<ModelConfig,string> {
     paramConfigIds: string[];
     uiStyles: UiStyle;
     id: string;
@@ -93,59 +93,52 @@ export class ModelConfig implements Serializable<ModelConfig> {
     }
 }
 
-export class ConfigType implements Serializable<ConfigType> {
-    nested: boolean;
+export class ConfigType implements Serializable<ConfigType,string> {
+   
     name: string;
     model: ModelConfig;
-    collection: boolean;
+    collection: boolean = false;
     elementConfig: ElementConfig;
+    nested: boolean = false;
 
     constructor(private configSvc: ConfigService) {}
     
     deserialize( inJson ) {
-        this.nested = inJson.nested;
-        this.name = inJson.name;
-        this.collection = inJson.collection;
-
-        if ( this.nested === true ) {
-            if (inJson.modelConfig != null) {
-                this.model = new ModelConfig(this.configSvc).deserialize( inJson.modelConfig );
-            }
+    
+        let obj = this;
+        obj = Converter.convert(inJson,obj);
+        
+        if (inJson.modelConfig != null) {
+            obj['model'] = new ModelConfig(this.configSvc).deserialize( inJson.modelConfig );
         }
+       
         if ( inJson.elementConfig != null) {
-            this.elementConfig = new ElementConfig(this.configSvc).deserialize( inJson.elementConfig );
+           obj['elementConfig'] = new ElementConfig(this.configSvc).deserialize( inJson.elementConfig );
         }
 
-        return this;
+        return obj;
     }
 }
 
-export class Type implements Serializable<Type> {
-    nested: boolean;
-    name: string;
+export class Type implements Serializable<Type,string> {
+   
     model: Model;
-    collection: boolean;
 
     constructor(private configSvc: ConfigService) {}
 
-    deserialize( inJson ) {
-        this.nested = inJson.nested;
-        this.name = inJson.name;
-        this.collection = inJson.collection;
-
-        if ( this.nested === true ) {
+    deserialize( inJson, path ) {        
+ 
             if (inJson.model  != null) {
-                this.model = new Model(this.configSvc).deserialize( inJson.model );
+                this.model = new Model(this.configSvc).deserialize( inJson.model, path );
             } else if (inJson.modelConfig != null) {
-                this.model = new Model(this.configSvc).deserialize( inJson.modelConfig );
+                this.model = new Model(this.configSvc).deserialize( inJson.modelConfig, path);
             }
-        }
-
+        
         return this;
     }
 }
 
-export class Attribute implements Serializable<Attribute> {
+export class Attribute implements Serializable<Attribute,string> {
     message: string;
     pattern: string;
     regexp: string;
@@ -154,17 +147,14 @@ export class Attribute implements Serializable<Attribute> {
     groups: String[];
 
     deserialize( inJson ) {
-        this.message = inJson.message;
-        this.pattern = inJson.pattern;
-        this.regexp = inJson.regexp;
-        this.min = inJson.min;
-        this.max = inJson.max;
-        this.groups = inJson.groups;
-        return this;
+        let obj = this;
+        obj = Converter.convert(inJson,obj);
+        obj['groups'] = inJson.groups;
+        return obj;
     }
 }
 
-export class Constraint implements Serializable<Constraint> {
+export class Constraint implements Serializable<Constraint,string> {
     name: string;
     value: string;
     attribute: Attribute;
@@ -177,7 +167,7 @@ export class Constraint implements Serializable<Constraint> {
     }
 }
 
-export class Validation implements Serializable<Validation> {
+export class Validation implements Serializable<Validation,string> {
     constraints: Constraint[];
 
     deserialize( inJson ) {
@@ -189,7 +179,7 @@ export class Validation implements Serializable<Validation> {
     }
 }
 
-export class Page implements Serializable<Page> {
+export class Page implements Serializable<Page, string> {
     pageConfig: Param;
     flow: string;
 
@@ -198,147 +188,30 @@ export class Page implements Serializable<Page> {
     }
 }
 
-export class Message implements Serializable<Message> {
+export class Message implements Serializable<Message, string> {
     type: string;
     text: string;
     context: string;
     
     deserialize( inJson ) {
-        this.type = inJson.type;
-        this.text = inJson.text;
-        this.context = inJson.context;
-        
-        return this;
+        let obj = this;
+        obj = Converter.convert(inJson,obj);
+        return obj;
     }
 }
 
-export class Param implements Serializable<Param> {
-    configId: string;
-    type: Type;
-    leafState: any;
-    path: string;
-    collection: boolean;
-    collectionElem: boolean;
-    elemId: string;
-    enabled: boolean;
-    gridList: any[];
-    message : Message;
-    paramState: Param[];
-    values : Values[];
-    visible: boolean;
-    activeValidationGroups: String[];
-    _alias: string;
-    _config: ParamConfig;
-
-    constructor(private configSvc: ConfigService) {}
-
-    public get config(): ParamConfig {
-        return this.configSvc.getViewConfigById(this.configId);
-    }
-
-    public get alias(): string {
-        if (this.config.uiStyles && this.config.uiStyles.attributes) {
-            return this.config.uiStyles.attributes.alias;
-        }
-        return undefined;
-    }
-
-    createRowData(param: Param, isDeserialized?: boolean) {
-        let rowData: any = {};
-        rowData = param.leafState;
-        rowData['elemId'] = param.elemId;
-
-        for(let p of param.type.model.params) {
-            let config = this.configSvc.paramConfigs[p.configId];
-
-            // handle nested grid data
-            if (config.uiStyles && config.uiStyles.name == 'ViewConfig.GridRowBody') {
-                rowData['nestedGridParam'] = isDeserialized ? p : new Param(this.configSvc).deserialize(p);
-            }
-
-            // handle dates
-            if (config && ParamUtils.isKnownDateType(config.type.name)) {
-                rowData[config.code] = ParamUtils.convertServerDateStringToDate(rowData[config.code], config.type.name);
-            }
-        }
-
-        return rowData;
-    }
-
-    deserialize( inJson ) {
-        this.configId = inJson.configId;
-        // Set Config in ParamConfig Map
-        if (inJson.config != null) {
-            let config: ParamConfig = new ParamConfig(this.configSvc).deserialize(inJson.config);
-            this.configSvc.setViewConfigToParamConfigMap(config.id, config);
-        }
-        if (inJson.type != null) {
-            this.type = new Type(this.configSvc).deserialize( inJson.type );
-        }
-        this.collectionElem = inJson.collectionElem;
-        this.collection = inJson.collection;
-        this.path = inJson.path;
-        if ( this.config != null && this.config.uiStyles && this.config.uiStyles.attributes.alias === 'CardDetailsGrid' ) {
-            if(inJson.leafState != null) {
-                this.leafState = new CardDetailsGrid().deserialize( inJson.leafState );
-            }
-        } else if (this.config != null && this.config.uiStyles && this.config.uiStyles.attributes.alias === 'Grid') {
-            if (inJson.type && inJson.type.model && inJson.type.model.params) {
-                this.gridList = [];
-                this.paramState = [];
-                for ( var p in inJson.type.model.params ) {
-                    this.paramState.push(inJson.type.model.params[p].type.model.params);
-                    this.gridList.push(this.createRowData(inJson.type.model.params[p]));
-                }
-            }
-        } else if (this.config && this.config.type && ParamUtils.isKnownDateType(this.config.type.name)) {
-            this.leafState = ParamUtils.convertServerDateStringToDate(inJson.leafState, this.config.type.name);
-        } else {
-            this.leafState = inJson.leafState;
-
-            // Handle any transformations that need to be applied to the leaf state
-            if (typeof inJson.leafState === 'object' && (this.type.model && this.type.model.params)) {
-
-                this.leafState = ParamUtils.applyLeafStateTransformations(inJson.leafState, this);
-            }
-        }
-
-        if ( inJson.collectionElem ) {
-            this.elemId = inJson.elemId;
-            this.leafState = this.createRowData(this, true);
-        }
-        if (inJson.visible != null) {
-            this.visible = inJson.visible;
-        }
-        if (inJson.enabled != null) {
-            this.enabled = inJson.enabled;
-        }
-        if ( inJson.message != null ) {
-            this.message = new Message().deserialize( inJson.message );
-        }
-        this.values = [];
-        if ( inJson.values != null && inJson.values.length > 0 ) {
-            for ( var value in inJson.values ) {
-                this.values.push( new Values().deserialize( inJson.values[value] ) );
-            }
-        }
-        this.activeValidationGroups = inJson.activeValidationGroups;
-        return this;
-    }
-}
-
-export class Input implements Serializable<Input> {
+export class Input implements Serializable<Input,string> {
     model: Model;
 
     constructor(private configSvc: ConfigService) {}
 
-    deserialize( inJson ) {
-        this.model = new Model(this.configSvc).deserialize( inJson.model );
+    deserialize( inJson, path ) {
+        this.model = new Model(this.configSvc).deserialize( inJson.model , path);
         return this;
     }
 }
 
-export class Result implements Serializable<Result> {
+export class Result implements Serializable<Result,string> {
     inputCommandUri: string;
     action: string;
     outputs : Result[];
@@ -346,43 +219,25 @@ export class Result implements Serializable<Result> {
     rootDomainId:string;
     constructor(private configSvc: ConfigService) {}
     deserialize( inJson ) {
-        this.action = inJson.action;
-        this.inputCommandUri = inJson.inputCommandUri;
-        this.rootDomainId = inJson.rootDomainId;
+        let obj = this;
+        obj = Converter.convert(inJson, obj);
         if(inJson.value != null) {
             if(inJson.value.config != null) {
-                this.value = new Param(this.configSvc).deserialize( inJson.value );
+                obj['value'] = new Param(this.configSvc).deserialize( inJson.value, inJson.code );
             } else {
-                this.value = inJson.value;
+                obj['value'] = inJson.value;
             }
         }
-        this.outputs = [];
+        var outputs = [];
         if ( inJson.outputs != null && inJson.outputs.length > 0 ) {
             for ( var value in inJson.outputs ) {
-                this.outputs.push( new Result(this.configSvc).deserialize( inJson.outputs[value] ) );
+                outputs.push( new Result(this.configSvc).deserialize( inJson.outputs[value] ) );
             }
         }
-        return this;
+        obj['outputs'] = outputs;
+        return obj;
     }
 }
-
-// export class Outputs implements Serializable<Outputs> {
-//     action: string;
-//     inputCommandUri: string;
-//     value: Param;
-//     outputs : Result;
-//     deserialize( inJson ) {
-//         this.action = inJson.action;
-//         this.inputCommandUri = inJson.inputCommandUri;
-//         if(inJson.value!=null) {
-//             this.value = new Param().deserialize( inJson.value );
-//         }
-//         if (inJson.outputs != null ) {
-//             this.outputs = new Result().deserialize(inJson.outputs);
-//         }
-//         return this;
-//     }
-// }
 
 export class ViewRoot {
     model: Model;
@@ -394,38 +249,41 @@ export class ViewConfig {
     config: ParamConfig;
 }
 
-export class Model implements Serializable<Model> {
+export class Model implements Serializable<Model,string> {
     uiStyles: UiStyle;
     params: Param[];
 
     constructor(private configSvc: ConfigService) {}
 
-    deserialize( inJson ) {
+    deserialize( inJson, path ) {
         if(inJson.uiStyles != null) {
             this.uiStyles = new UiStyle().deserialize( inJson.uiStyles );
         }
         this.params = [];
         for ( var p in inJson.params ) {
-            this.params.push( new Param(this.configSvc).deserialize( inJson.params[p] ) );
+            if(!ParamUtils.isEmpty(inJson.params[p])) {
+                //param when null means that there is an @Ignore(event = websocket) on the parameter
+                this.params.push( new Param(this.configSvc).deserialize( inJson.params[p], path ) );
+            }
         }
         return this;
     }
 }
 
-export class Config implements Serializable<Config> {
+export class Config implements Serializable<Config,string> {
     input: Input;
     output: Output;
 
     constructor(private configSvc: ConfigService) {}
 
-    deserialize( inJson ) {
-        this.input = new Input(this.configSvc).deserialize( inJson.input );
-        this.output = new Output(this.configSvc).deserialize( inJson.output );
+    deserialize( inJson , path) {
+        this.input = new Input(this.configSvc).deserialize( inJson.input , path);
+        this.output = new Output(this.configSvc).deserialize( inJson.output, path );
         return this;
     }
 }
 
-export class Pattern implements Serializable<Pattern> {
+export class Pattern implements Serializable<Pattern,string> {
     regex: string;
 
     deserialize( inJson ) {
@@ -437,7 +295,7 @@ export class Pattern implements Serializable<Pattern> {
     }
 }
 
-export class Length implements Serializable<Length> {
+export class Length implements Serializable<Length, string> {
     regexp: string;
 
     deserialize( inJson ) {
@@ -456,18 +314,18 @@ export class Length implements Serializable<Length> {
     }
 }
 
-export class Output implements Serializable<Output> {
+export class Output implements Serializable<Output, string> {
     model: Model;
 
     constructor(private configSvc: ConfigService) {}
 
-    deserialize( inJson ) {
-        this.model = new Model(this.configSvc).deserialize( inJson.model );
+    deserialize( inJson, path ) {
+        this.model = new Model(this.configSvc).deserialize( inJson.model, path );
         return this;
     }
 }
 
-export class ModelEvent implements Serializable<ModelEvent> {
+export class ModelEvent implements Serializable<ModelEvent,string> {
     type: string; //Revisit - server sending as type instead of action
     value: any;
     payload: any; //temp fix - value doesnt work. Remove value since server side ModelEvent interface has payload.
@@ -482,18 +340,18 @@ export class ModelEvent implements Serializable<ModelEvent> {
     }
 }
 
-export class Detail implements Serializable<Detail> {
+export class Detail implements Serializable<Detail,string> {
     label: string;
     value: string;
 
     deserialize( inJson ) {
-        this.value = inJson.value;
-        this.label = inJson.label;
-        return this;
+        var obj = this;
+        obj = Converter.convert(inJson, obj)
+        return obj;
     }
 }
 
-export class Details implements Serializable<Details> {
+export class Details implements Serializable<Details,string> {
     details: Detail[];
 
     deserialize( inJson ) {
@@ -506,7 +364,7 @@ export class Details implements Serializable<Details> {
 }
 
 
-export class ParamConfig implements Serializable<ParamConfig> {
+export class ParamConfig implements Serializable<ParamConfig,string> {
     uiStyles: UiStyle;
     id: string;
     code: string;
@@ -516,41 +374,38 @@ export class ParamConfig implements Serializable<ParamConfig> {
     uiNatures: UiNature[];
     label: string;
     url: string;
-    active: boolean;
-    required: boolean;
+    active: boolean = false;
+    required: boolean = false;
 
     constructor(private configSvc: ConfigService) {}
 
     deserialize( inJson ) {
+        var obj = this;
+        obj = Converter.convert(inJson, obj);
         if ( inJson.uiStyles != null ) {
-            this.uiStyles = new UiStyle().deserialize( inJson.uiStyles );
+            obj['uiStyles'] = new UiStyle().deserialize( inJson.uiStyles );
         }
-        this.id = inJson.id;
-        this.code = inJson.code;
         if(inJson.type != null) {
-            this.type = new ConfigType(this.configSvc).deserialize( inJson.type );
+            obj['type'] = new ConfigType(this.configSvc).deserialize( inJson.type );
         }
-        this.labelConfigs = [];  
+        let labelConfigs = [];  
         if ( inJson.labelConfigs != null && inJson.labelConfigs.length > 0) { 
             for ( var p in inJson.labelConfigs ) {
-                this.labelConfigs.push( new LabelConfig().deserialize(inJson.labelConfigs[p]) );
+                labelConfigs.push( new LabelConfig().deserialize(inJson.labelConfigs[p]) );
             }
+            obj['labelConfigs'] = labelConfigs;
         }   
         if ( inJson.validations != null ) {
-            this.validation = new Validation().deserialize( inJson.validations );
+            obj['validation'] = new Validation().deserialize( inJson.validations );
         }
-        this.uiNatures = [];
+        let uiNatures = [];
         if ( inJson.uiNatures != null && inJson.uiNatures.length > 0 ) {
             for ( var uiNature in inJson.uiNatures ) {
-                this.uiNatures.push( new UiNature().deserialize( inJson.uiNatures[uiNature] ) );
+                uiNatures.push( new UiNature().deserialize( inJson.uiNatures[uiNature] ) );
             }
-        }        
-      
-        this.url = inJson.url;
-        this.active = inJson.active;
-        this.required = inJson.required;
-
-        return this;
+        }
+        obj['uiNatures'] = uiNatures;        
+        return obj;
     }
 
     initializeComponent() : boolean {
@@ -563,21 +418,21 @@ export class ParamConfig implements Serializable<ParamConfig> {
     }
 }
 
-export class UiNature implements Serializable<UiNature> {
+export class UiNature implements Serializable<UiNature,string> {
     name: string;
     value: string;
     attributes: UiAttribute;
 
     deserialize( inJson ) {
-        this.name = inJson.name;
-        this.value = inJson.value;
-        this.attributes = new UiAttribute().deserialize( inJson.attributes );
+        let obj = this;
+        obj = Converter.convert(inJson, obj);
+        obj['attributes'] = new UiAttribute().deserialize( inJson.attributes );
 
-        return this;
+        return obj;
     }
 }
 
-export class UiStyle implements Serializable<UiStyle> {
+export class UiStyle implements Serializable<UiStyle,string> {
     name: string;
     value: string;
     isLink: boolean = false;
@@ -599,7 +454,7 @@ export class UiStyle implements Serializable<UiStyle> {
     }
 }
 
-export class UiAttribute implements Serializable<UiAttribute> {
+export class UiAttribute implements Serializable<UiAttribute,string> {
     value: string;
     url: string;
     asynchronous: boolean;
@@ -807,20 +662,19 @@ export class UiAttribute implements Serializable<UiAttribute> {
     }
 }
 
-export class LabelConfig implements Serializable<LabelConfig> {
+export class LabelConfig implements Serializable<LabelConfig,string> {
     text: string;
     locale: string;
     helpText : string;
 
     deserialize( inJson ) {
-        this.text = inJson.text;
-        this.locale = inJson.locale;
-        this.helpText = inJson.helpText;
-        return this;
+        let obj = this;
+        obj = Converter.convert(inJson,obj);
+        return obj;
     }
 }
 
-export class ExecuteOutput implements Serializable<ExecuteOutput> {
+export class ExecuteOutput implements Serializable<ExecuteOutput,string> {
     result: ModelEvent;
     validationResult: any;
     executeException: any;
@@ -836,7 +690,7 @@ export class ExecuteOutput implements Serializable<ExecuteOutput> {
     }
 }
 
-export class ExecuteResponse implements Serializable<ExecuteResponse> {
+export class ExecuteResponse implements Serializable<ExecuteResponse,string> {
     result: MultiOutput[];
     constructor(private configSvc: ConfigService) {}
     deserialize( inJson ) {
@@ -851,7 +705,7 @@ export class ExecuteResponse implements Serializable<ExecuteResponse> {
     }
 }
 
-export class MultiOutput implements Serializable<MultiOutput> {
+export class MultiOutput implements Serializable<MultiOutput,string> {
     behavior: string;
     result: Result;
     constructor(private configSvc: ConfigService) {}
@@ -864,7 +718,7 @@ export class MultiOutput implements Serializable<MultiOutput> {
     }
 }
 
-export class CardDetailsGrid implements Serializable<CardDetailsGrid> {
+export class CardDetailsGrid implements Serializable<CardDetailsGrid,string> {
     cards: Array<CardDetails>;
     deserialize( inJson ) {
         this.cards = [];
@@ -875,7 +729,7 @@ export class CardDetailsGrid implements Serializable<CardDetailsGrid> {
     }
 }
 
-export class CardDetails implements Serializable<CardDetails> {
+export class CardDetails implements Serializable<CardDetails,string> {
     id: string;
     number: number;
     header: CardDetailsHeader;
@@ -892,7 +746,7 @@ export class CardDetails implements Serializable<CardDetails> {
     }
 }
 
-export class CardDetailsHeader implements Serializable<CardDetailsHeader> {
+export class CardDetailsHeader implements Serializable<CardDetailsHeader,string> {
     title: FieldValue;
     date: FieldValue;
     status: FieldValue;
@@ -905,7 +759,7 @@ export class CardDetailsHeader implements Serializable<CardDetailsHeader> {
     }
 }
 
-export class CardDetailsBody implements Serializable<CardDetailsBody> {
+export class CardDetailsBody implements Serializable<CardDetailsBody,string> {
     fields: Array<FieldValue>;
 
     deserialize( inJson ) {
@@ -917,7 +771,7 @@ export class CardDetailsBody implements Serializable<CardDetailsBody> {
     }
 }
 
-export class CardDetailsFooter implements Serializable<CardDetailsFooter> {
+export class CardDetailsFooter implements Serializable<CardDetailsFooter,string> {
     fields: Array<FieldValue>;
 
     deserialize( inJson ) {
@@ -929,7 +783,7 @@ export class CardDetailsFooter implements Serializable<CardDetailsFooter> {
     }
 }
 
-export class FieldValue implements Serializable<FieldValue> {
+export class FieldValue implements Serializable<FieldValue,string> {
     field: string;
     value: any;
 

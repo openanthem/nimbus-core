@@ -17,7 +17,7 @@
 'use strict';
 import { Values } from './../../../../shared/app-config.interface';
 import { ControlValueAccessor } from '@angular/forms/src/directives';
-import { Param } from '../../../../shared/app-config.interface';
+import { Param } from '../../../../shared/Param';
 import { Component, forwardRef, Input, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 

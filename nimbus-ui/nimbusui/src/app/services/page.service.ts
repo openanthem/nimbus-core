@@ -24,11 +24,11 @@ import { Validation, ViewConfig,
         Model,
         ModelEvent,
         Page,
-        Param,
         ParamConfig,
         Type,
         Result, ViewRoot
 } from '../shared/app-config.interface';
+import {Param} from '../shared/Param';
 import { CustomHttpClient } from './httpclient.service';
 
 import { Subject } from 'rxjs/Subject';
@@ -37,6 +37,7 @@ import { RequestContainer } from '../shared/requestcontainer';
 import { Observable } from 'rxjs/Observable';
 import { ExecuteResponse } from './../shared/app-config.interface';
 import { ParamUtils } from './../shared/param-utils';
+import { ParamAttribute } from './../shared/command.enum';
 
 /**
  * \@author Dinakar.Meda
@@ -158,14 +159,7 @@ export class PageService {
                 let baseUrl = ServiceConstants.PLATFORM_BASE_URL;
                 baseUrl += '/' + flowName;
                 let url = baseUrl + '/' + Action._new.value + '?b=' + Behavior.execute.value;
-                this.http.get(url)
-                        .subscribe(data => {
-                                // console.log('Creating a global page map');
-                                this.processResponse(data.result, baseUrl, flowName);
-                        },
-                        err => this.logError(err),
-                        () => console.log('GetPageConfig query completed..')
-                        );
+                this.executeHttp(url, HttpMethod.GET.value, null);
         }
 
         /** Get Flow Config - TODO delete after routes refactor. the above method will be used instead of this one.*/
@@ -173,14 +167,7 @@ export class PageService {
                 let baseUrl = ServiceConstants.PLATFORM_BASE_URL;
                 baseUrl += '/' + routeParms.domain;
                 let url = baseUrl + '/' + Action._new.value + '?b=' + Behavior.execute.value;
-                this.http.get(url)
-                        .subscribe(data => {
-                                console.log('Creating a global page map');
-                                this.processResponse(data.result, baseUrl, routeParms.domain);
-                        },
-                        err => this.logError(err),
-                        () => console.log('GetPageConfig query completed..')
-                        );
+                this.executeHttp(url, HttpMethod.GET.value, null);
         }
 
         /** Page id - to know which page to load from the config */
@@ -196,13 +183,7 @@ export class PageService {
                         url = useFlowUrl;
                 }
                 url = url + '/_nav?a=' + direction + '&b=$execute';
-                this.http.get(url)
-                        .subscribe(data => {
-                                this.processResponse(data.result, '', flowName);
-                        },
-                        err => this.logError(err),
-                        () => console.log('getPageToNavigateTo query completed..')
-                        );
+                this.executeHttp(url, HttpMethod.GET.value, null);
         }
 
         /** Parse flow name from payload path */
@@ -226,7 +207,7 @@ export class PageService {
         }
 
         /** Process response - array or responses based on request chaining */
-        processResponse(response: any, serverUrl: string, flowName: string) {
+        processResponse(response: any) {
                 let index = 0;
                 while (response[index]) {
                         let subResponse: any = response[index];
@@ -241,8 +222,10 @@ export class PageService {
         }
 
         getFlowNameFromOutput(paramPath: string): string {
+                if(paramPath == undefined)
+                return '';
                 let flow = this.getFlowNameFromPath(paramPath);
-                if (flow.indexOf(':') > 0) {
+                if (flow && flow.indexOf(':') > 0) {
                         flow = flow.substr(0, flow.indexOf(':'));
                 }
                 return flow;
@@ -252,7 +235,7 @@ export class PageService {
                 if (model != null && model.params != null) {
                         for (var p in model.params) {
                                 let pageParam: Param = model.params[p];
-                                if (pageParam.config.uiStyles != null && pageParam.config.uiStyles.name === 'ViewConfig.Page') {
+                                if (pageParam != null && pageParam.config.uiStyles != null && pageParam.config.uiStyles.name === 'ViewConfig.Page') {
                                         if (pageParam.config.uiStyles.attributes.defaultPage) {
                                                 return pageParam;
                                         }
@@ -284,13 +267,13 @@ export class PageService {
                         }
                 });
                 outputs.forEach(output => {
-                        if (output.value == null) {
+                        if (output.value == null || ParamUtils.isEmpty(output.value)) {
                                 this.traverseOutput(output.outputs);
                         } else {
                                 if (output.action === Action._new.value) {
                                         let flow = this.getFlowNameFromOutput(output.value.path);
                                         // Check if the _new output is for the Root Flow
-                                        if (output.value.path == '/' + flow) {
+                                        if (output.value.path == "/" + flow) {
                                                 let viewRoot: ViewRoot = new ViewRoot();
                                                 // Check if there is a layout for this domain
                                                 if (output.value.config.type.model.uiStyles) {
@@ -402,9 +385,6 @@ export class PageService {
 
         /** Process execute call - TODO revisit to make it more dynamic based on url completion */
         processEvent(processUrl: string, behavior: string, model: GenericDomain, method: string) {
-                // if (model!=null && model['id']) {
-                //         this.entityId = model['id'];
-                // }
                 processUrl = processUrl + '/' + Action._get.value;
                 let url = '';
                 let serverUrl = '';
@@ -421,73 +401,50 @@ export class PageService {
                 } else {
                         url = url + processUrl.replace('{id}', this.entityId.toString()) + '?b=' + behavior;
                 }
-                //}
 
                 let rootDomainId = this.getFlowRootDomainId(flowName);
                 if (rootDomainId != null) {
                         let flowNameWithId = flowName.concat(':' + rootDomainId);
                         url = url.replace(flowName, flowNameWithId);
                 }
-                this.showLoader();
-                if (method !== '' && method.toUpperCase() === HttpMethod.GET.value) {
-                        // if(behavior =='$config'){
-                        //         this.router.navigate(['Patientenrollment',{domain:"patientenrollment"}]);
-                        // }else{
-
-                        this.http.get(url)
-                                .subscribe(data => {
-                                        this.processResponse(data.result, serverUrl, flowName);
-                                },
-                                err => {
-                                        this.logError(err);
-                                        this.hideLoader();
-                                        },
-                                () => {
-                                        console.log('Process Execution query completed..');
-                                        this.hideLoader();
-                                }
-                                );
-                        //}
-                } else if (method !== '' && method.toUpperCase() === HttpMethod.POST.value) {
-
-                        // console.log('payload - ' + json);
-                        this.http.post(url, JSON.stringify(model))
-                                .subscribe(data => {
-                                        this.processResponse(data.result, serverUrl, flowName);
-                                },
-                                err => {this.logError(err);
-                                        this.hideLoader();
-                                        },
-                                () => {
-                                        console.log('Process Execution query completed..');
-                                        this.hideLoader();
-                                }
-                                );
-                } else {
-                        throw 'http method not supported';
-                }
+                this.executeHttp(url, method, model);
         }
 
-        /** Process execute call - TODO revisit to make it more dynamic based on url completion */
-        processPost(processUrl: string, behavior: string, payload: any, method: string, navLink?: string) {
-                let flowName = processUrl.substring(1, processUrl.indexOf('/', 2)); //TODO
-                let url = ServiceConstants.PLATFORM_BASE_URL + processUrl + '/' + Action._get.value;
+        executeHttp(url:string, method : string, model:any) {
+                this.showLoader();
+                if (method !== '' && method.toUpperCase() === HttpMethod.GET.value) {
+                        this.executeHttpGet(url)
+                 } else if (method !== '' && method.toUpperCase() === HttpMethod.POST.value) {
+                         this.executeHttpPost(url, model);
+                 } else {
+                         this.invokeFinally();
+                         throw 'http method not supported';
+                 }
+        }
+        executeHttpGet(url) {
+                this.http.get(url).subscribe(
+                        data => { this.processResponse(data.result); },
+                        err => { this.processError(err); },
+                        () => { this.invokeFinally(); }
+                        );
+        }
 
-                if (method !== '' && method.toUpperCase() === HttpMethod.POST.value) {
-                        
-                        this.http.post(url, JSON.stringify(payload))
-                                .subscribe(data => {
-                                        this.processResponse(data.result, url, flowName);
-                                        if (navLink != null && navLink !== '') {
-                                                this.processEvent(navLink, '$executeAnd$config', null, 'POST');
-                                        }
-                                },
-                                err => this.logError(err),
-                                () => console.log('Process Execution query completed..')
-                                );
-                } else {
-                        throw 'http method not supported';
-                }
+        executeHttpPost(url:string, model:GenericDomain) {
+                this.http.post(url, JSON.stringify(model)).subscribe(
+                        data => { this.processResponse(data.result);},
+                        err => { this.processError(err); },
+                        () => { this.invokeFinally(); }
+                        );
+        }
+
+        processError(err:any) {
+                this.logError(err);
+                this.hideLoader();
+        }
+
+        invokeFinally() {
+                console.log('Process Execution query completed..');
+                this.hideLoader();
         }
 
         postOnChange(path: string, payloadAttr: string, payloadValue: string) {
@@ -498,27 +455,19 @@ export class PageService {
                         let flowNameWithId = flowName.concat(':' + rootDomainId);
                         path = path.replace(flowName, flowNameWithId);
                 }
-                // console.log('Post on change :: ' + path);
+
                 let modelEvnt = new ModelEvent();
                 modelEvnt.type = Action._update.value; //use the server side actions like _new, _update
                 modelEvnt.id = path;
                 modelEvnt.value = payloadValue;
                 modelEvnt.payload = payloadValue;
-                //  modelEvnt.value.path = path;
-                // console.log(JSON.stringify(modelEvnt));
+             
                 var urlBase = ServiceConstants.PLATFORM_BASE_URL;
                 var url = urlBase + '/event/notify';
-                //if (action === Action._update.value) {
+
                 console.log('Post update Event Notify call');
-                return this.http.post(url, JSON.stringify(modelEvnt))
-                        .subscribe(data => {
-                                //console.log('Event notify data::' + JSON.stringify(data));
-                                this.processResponse(data.result, '', '');
-                        },
-                        err => this.logError(err),
-                        () => console.log('Post completed..')
-                        );
-                // }
+                return this.executeHttp(url, HttpMethod.POST.value, modelEvnt);
+                
         }
 
         /**
@@ -540,15 +489,6 @@ export class PageService {
                 //Remove the context model attributes from path
                 if (updatedParamPath.indexOf('/#') !== -1) {
                         updatedParamPath = updatedParamPath.substring(0, updatedParamPath.indexOf('/#'));
-                        // TODO REMOVE , ONLY FOR TESTING SINCE SERVER SIDE FRAMEWORK IS NOT SENDING THE WEBSOCKET UPDATE UPTO THE LAST ELEMENT LEVEL
-                        if (updatedParamPath === 'caseOverview/caseInfoCard/caseInfoSection/cardDetailCase/headerCase') {
-                                updatedParamPath = 'caseOverview/caseInfoCard/caseInfoSection/cardDetailCase/headerCase/caseStatus';
-                                //cmPrograms/cmProgramCard/cmProgramSection/cmProgramForm/caseStatus/#/values
-                        }
-                        if (updatedParamPath === 'caseOverview/caseInfoCard/caseInfoSection/cardDetailCase/headerCase2') {
-                                updatedParamPath = 'caseOverview/caseInfoCard/caseInfoSection/cardDetailCase/headerCase2/statusReason';
-                                //cmPrograms/cmProgramCard/cmProgramSection/cmProgramForm/caseStatus/#/values
-                        }
                 }
                 return updatedParamPath;
         }
@@ -597,7 +537,7 @@ export class PageService {
                         if (rootParam.type.model && rootParam.type.model.params) {
                                 rootParam.type.model.params.forEach(element => {
                                         // Check if param matches the updated param path
-                                        if (element.config && element.config.code === paramTree[node]) {
+                                        if (element && element.config && element.config.code === paramTree[node]) {
                                                 if ((element.config.type && element.config.type.collection) || node >= numNodes) {
                                                         // Matching param node OR Collection node. Collection nodes cannot be traversed further.
                                                         this.processModelEvent(element, eventModel);
@@ -635,7 +575,10 @@ export class PageService {
          * 
          */
         createGridData(gridElementParams: Param[], gridParam: Param) {
-                let nestedParams = gridParam.config.type.elementConfig.type.model.paramConfigs;
+
+                let nestedParams;
+                if(gridParam.config.type.elementConfig.type.model)
+                        nestedParams = gridParam.config.type.elementConfig.type.model.paramConfigs;
                 let gridData = [];
                 let paramState = [];
                 // Look for inner lists (nested grid)
@@ -650,9 +593,11 @@ export class PageService {
                 }
                 if (gridElementParams) {
                         gridElementParams.forEach(param => {
-                                let p = new Param(this.configService).deserialize(param);
-                                paramState.push(p.type.model.params);
-                                gridData.push(this.createRowData(p, nestedParamIdx));
+                                let p = new Param(this.configService).deserialize(param, gridParam.path + "/" + param.elemId);
+                                if(p != null) {
+                                        paramState.push(p.type.model.params);
+                                        gridData.push(this.createRowData(p, nestedParamIdx));
+                                }
                         });        
                 }
                 gridParam['paramState'] = paramState;
@@ -667,7 +612,7 @@ export class PageService {
         processModelEvent(param: Param, eventModel: ModelEvent) {
                 // Grid updates
                 if (param.config.uiStyles != null && param.config.uiStyles.attributes.alias === 'Grid') {
-                        if (eventModel.value.leafState != null) {
+                        if (eventModel.value != null) {
                                 // Check if the update is for the Current Collection or a Nested Collection
                                 if (param.path == eventModel.value.path) {
                                         // Current Collection
@@ -681,33 +626,33 @@ export class PageService {
                                                 this.gridValueUpdate.next(param);
                                         }
                                         // Collection check - replace entire grid
-                                        if (eventModel.value.collection) {
+                                        if (param.config.type.collection) {
                                                 param.gridList = this.createGridData(eventModel.value.type.model.params, param);
                                                 this.gridValueUpdate.next(param);
                                         }
                                 } else { // Nested Collection. Need to traverse to right location
                                         let nestedPath = eventModel.value.path.substr(param.path.length + 1);
                                         let elemIndex = nestedPath.substr(0, nestedPath.indexOf('/'));
-                                        for (var p = 0; p < param.gridList.length; p++) {
-                                                if (param.gridList[p]['elemId'] == elemIndex) {
-                                                        // console.log(param.config.gridList[p]['nestedElement']);
-                                                        let nestedElement = this.getNestedElementParam(param.gridList[p]['nestedElement'], nestedPath);
-                                                        if (nestedElement) {
-                                                                nestedElement['gridList'] = this.createGridData(eventModel.value.type.model.params, nestedElement);
-                                                                this.gridValueUpdate.next(nestedElement);
-                                                        } else {
-                                                                console.log('Nested Grid Element not found.');
+                                        if( param.gridList) {
+                                                for (var p = 0; p < param.gridList.length; p++) {
+                                                        if (param.gridList[p]['elemId'] == elemIndex) {
+                                                                // console.log(param.config.gridList[p]['nestedElement']);
+                                                                let nestedElement = this.getNestedElementParam(param.gridList[p]['nestedElement'], nestedPath);
+                                                                if (nestedElement) {
+                                                                        nestedElement['gridList'] = this.createGridData(eventModel.value.type.model.params, nestedElement);
+                                                                        this.gridValueUpdate.next(nestedElement);
+                                                                } else {
+                                                                        console.log('Nested Grid Element not found.');
+                                                                }
+                                                                break;
                                                         }
-                                                        break;
                                                 }
                                         }
-
-                                        // console.log('eventModel');
                                 }
                         }
                 } else if (param.config.uiStyles != null && param.config.uiStyles.attributes.alias === 'CardDetailsGrid') {
-                        if (param.type.collection === true) {
-                                let payload: Param = new Param(this.configService).deserialize(eventModel.value);
+                        if (param.config.type.collection === true) {
+                                let payload: Param = new Param(this.configService).deserialize(eventModel.value, eventModel.value.path);
                                 param.type.model['params'] = payload.type.model.params;
                         } else {
                                 this.traverseParam(param, eventModel);
@@ -753,8 +698,8 @@ export class PageService {
         /** Update param with value */
         traverseParam(param: Param, eventModel: ModelEvent) {
                 /* Flow-Wrapper class also invokes methods that eventually call this behaviour. We need to make sure that the eventModel is deserialized by then */
-                let payload: Param = new Param(this.configService).deserialize(eventModel.value);
-                if (param.type.nested === true) {
+                let payload: Param = new Param(this.configService).deserialize(eventModel.value, eventModel.value.path);
+                if (param.config.type.nested === true) {
                         this.updateParam(param, payload);
                         if (param.type.model && payload.type.model && payload.type.model.params) {
                                 for (var p in param.type.model.params) {
@@ -772,90 +717,43 @@ export class PageService {
                 }
         }
 
-        updateParam(param: Param, payload: Param) {
-                let result: any[] = Reflect.ownKeys(param);
-                let updatedKeys: any[] = Reflect.ownKeys(payload);
-                let config = this.configService.getViewConfigById(payload.configId);
+        /*
+        * Updates the param with the values sent from server and emit the events so that controls that subscribed to these would process
+        * accordingly. validation update will switch on/off certain validations and eventUpdate will do a set state on the form control
+        */
+        updateParam(sourceParam: Param, responseParam: Param) {
+                let responseParamKeys: any[] = Reflect.ownKeys(responseParam);
                 //By this time the config for the parameter is set in the config map as it is deserelized
+                let config = this.configService.getViewConfigById(responseParam.configId);
                 if(config != null && config != undefined) {
-                        updatedKeys.forEach(updatedKey => {
-                                result.forEach(currentKey => {
-                                        if (currentKey === updatedKey) {
-                                                try {
-                                                        if (Reflect.ownKeys(Reflect.get(param, currentKey)) != null
-                                                                && Reflect.ownKeys(Reflect.get(param, currentKey)).length > 0) {
-                                                                if (currentKey === 'type') {
-                                                                        //Object.assign(Reflect.get(param, currentKey), new Type().deserialize(Reflect.get(payload, updatedKey)));
-                                                                } else if (currentKey === 'config') {
-                                                                        Object.assign(Reflect.get(param, currentKey), new ParamConfig(this.configService).deserialize(Reflect.get(payload, updatedKey)));
-                                                                        //TODO - refactor this whole method and the conditions. Revisit - order, count
-                                                                } else if (currentKey === 'activeValidationGroups') {
-                                                                        Reflect.set(param, currentKey, Reflect.get(payload, updatedKey));
-                                                                        this.validationUpdate.next(param);
-                                                                        //TODO - refactor this whole method and the conditions. Revisit - order, count
-                                                                } else if (currentKey === 'leafState' || currentKey === 'message') {
-                                                                        Reflect.set(param, currentKey, Reflect.get(payload, updatedKey));
-                                                                        this.eventUpdate.next(param);
-                                                                } else if (currentKey === 'enabled' || currentKey === 'visible') {
-                                                                        Reflect.set(param, currentKey, Reflect.get(payload, updatedKey));
-                                                                        this.validationUpdate.next(param);
-                                                                } else if (currentKey === 'values') {
-                                                                        if (param.values == null) {
-                                                                                let values = [];
-                                                                                values.push(Reflect.get(payload, updatedKey)) ;
-                                                                                param.values = values;
-                                                                                //this.eventUpdate.next(param);
-                                                                        } else {
-                                                                                param.values = Reflect.get(payload, updatedKey);
-                                                                                //this.eventUpdate.next(param);
-                                                                        }
-                                                                }
-                                                        } else if (Reflect.ownKeys(Reflect.get(param, currentKey)).length == 0 && currentKey === 'leafState') {
-                                                                Reflect.set(param, currentKey, Reflect.get(payload, updatedKey));
-                                                                this.eventUpdate.next(param);
-                                                        }
-                                                } catch (e) {
-                                                        if (e instanceof TypeError) {
-                                                                Reflect.set(param, currentKey, Reflect.get(payload, updatedKey));
-                                                                if (currentKey === 'leafState') {
-                                                                        this.eventUpdate.next(param);
-                                                                }
-                                                        } else {
-                                                                throw e;
-                                                        }
-                                                }
-                                        }
-                                });
+                        //replace the source param with the response key updates
+                        responseParamKeys.forEach(respKey => {
+                                Reflect.set(sourceParam, respKey, Reflect.get(responseParam, respKey));
+                        });
+                        let filterKeys = responseParamKeys.filter(key => ParamAttribute.attributeList().indexOf(key) > 0);
+                        filterKeys.forEach(filterKey => {
+                                if(filterKey === ParamAttribute.leafState.toString()) {
+                                        this.eventUpdate.next(sourceParam);
+                                }
+                                if(filterKey === ParamAttribute.enabled.toString() || filterKey === ParamAttribute.activeValidationGroups.toString()) {
+                                        this.validationUpdate.next(sourceParam);
+                                }
                         });
                 } else {
-                        this.logError('Could not process the update from the server for ' + payload.path + ' because config is undefined.');
+                        this.logError('Could not process the update from the server for ' + responseParam.path + ' because config is undefined.');
                 }
         }
 
-        /** Get flow configuration to create pages. */
-        getPageConfig() {
-                let url = this.buildFlowBaseURL();
-                // TODO - temp to handle subflows
-                if (this.routeParams.subflow === true) {
-                        url = url + '/_landing/_process?b=$executeAnd$config';
-                } else {
-                        url = url + '/_new?b=$config';
-                }
-
-                this.http.get(url)
-                        .subscribe(data => {
-                                // console.log('Creating a global page map');
-                                this.processResponse(data.result, '', '');
-                        },
-                        err => this.logError(err),
-                        () => console.log('GetPageConfig query completed..')
-                        );
-        }
-
+        /*
+        * show the loader icon the page
+        */
         private showLoader(): void {
                 this.loaderService.show();
         }
 
+        /*
+        * hide the loader icon the page
+        */
         private hideLoader(): void {
                 this.loaderService.hide();
         }

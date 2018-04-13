@@ -18,7 +18,7 @@
 
 import { Component, Input } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { Param } from '../../../shared/app-config.interface';
+import { Param } from '../../../shared/Param';
 
 /**
  * \@author Mayur.Mehta

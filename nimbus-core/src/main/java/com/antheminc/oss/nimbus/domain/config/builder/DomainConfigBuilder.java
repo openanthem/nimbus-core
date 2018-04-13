@@ -98,11 +98,14 @@ public class DomainConfigBuilder {
 			String classNm = bd.getBeanClassName();
 			
 			Class<T> clazz = ClassLoadUtils.loadClass(classNm);
-			Domain domain = AnnotationUtils.findAnnotation(clazz, Domain.class);
-			
-			ModelConfig<T> mConfig = configBuilder.load(clazz, configVisitor);
-			cacheDomainRootModel.put(domain.value(), mConfig);
+			handleClass(clazz);
 		}
 	}
 
+	public <T> void handleClass(Class<T> clazz) {
+		Domain domain = AnnotationUtils.findAnnotation(clazz, Domain.class);
+		
+		ModelConfig<T> mConfig = configBuilder.load(clazz, configVisitor);
+		cacheDomainRootModel.put(domain.value(), mConfig);
+	}
 }

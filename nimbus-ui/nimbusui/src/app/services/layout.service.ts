@@ -17,7 +17,8 @@
 'use strict';
 import { WebContentSvc } from './content-management.service';
 import { Component, EventEmitter, Injectable } from '@angular/core';
-import { Model, Param, Result, UiAttribute, ViewRoot } from '../shared/app-config.interface';
+import { Model, Result, UiAttribute, ViewRoot } from '../shared/app-config.interface';
+import { Param } from '../shared/Param';
 import { ServiceConstants } from './service.constants';
 import { PageService } from './page.service';
 import { ConfigService } from './config.service';
@@ -147,7 +148,7 @@ export class LayoutService {
 
     private parseTopBarConfig(topBarConfig: Model, branding: AppBranding, headerMenus: Param[], subHeaders: Param[]) {
         topBarConfig.params.forEach(element => {
-            if (element.type.nested === true) {
+            if (element.config.type.nested === true) {
                 if (element.config.uiStyles !== undefined && element.config.uiStyles.attributes.alias === 'SubHeader') {
                     subHeaders.push(element);
                 } else {

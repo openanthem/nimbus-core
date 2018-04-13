@@ -16,7 +16,8 @@
  */
 'use strict';
 import { Component, Input, ViewChild } from '@angular/core';
-import { Param, LabelConfig } from '../../../shared/app-config.interface';
+import { LabelConfig } from '../../../shared/app-config.interface';
+import { Param } from '../../../shared/Param';
 import { WebContentSvc } from '../../../services/content-management.service';
 import { BaseElement } from '../base-element.component';
 import { PageService } from '../../../services/page.service';

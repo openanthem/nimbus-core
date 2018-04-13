@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import { Observable } from 'rxjs/Observable';
-import { Param } from "./app-config.interface";
+import { Param } from "./Param";
 import { Subject } from 'rxjs/Subject';
 
 /**

@@ -16,7 +16,7 @@
  */
 'use strict';
 import { Component, Input, SimpleChanges } from '@angular/core';
-import { Param } from '../../../../shared/app-config.interface';
+import { Param } from '../../../../shared/Param';
 
 /**
  * \@author Dinakar.Meda

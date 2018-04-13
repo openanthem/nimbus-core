@@ -21,7 +21,7 @@ import { Router, Resolve, RouterStateSnapshot, ActivatedRouteSnapshot } from '@a
 import { BreadcrumbService } from './../breadcrumb/breadcrumb.service'
 import { WebContentSvc } from './../../../services/content-management.service';
 import { PageService } from '../../../services/page.service';
-import { Param } from '../../../shared/app-config.interface';
+import { Param } from '../../../shared/Param';
 
 /**
  * \@author Dinakar.Meda
