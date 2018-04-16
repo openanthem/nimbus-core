@@ -48,10 +48,10 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
                         {{label}}
                     </legend>
                 </ng-template>
-                <ng-template [ngIf]="!element.type?.model?.params?.length || element.collection">
+                <ng-template [ngIf]="!element.type?.model?.params?.length || element.config?.type?.collection">
                     <nm-element id="{{id}}" [element]="element" [elementCss]="elementCss" [form]="form"></nm-element>
                 </ng-template>
-                <ng-template [ngIf]="element.type?.model?.params?.length && element.config?.uiStyles?.attributes?.alias!='ButtonGroup' && !element.collection">
+                <ng-template [ngIf]="element.type?.model?.params?.length && element.config?.uiStyles?.attributes?.alias!='ButtonGroup' && !element?.config?.type?.collection">
                     <fieldset class="subQuestion" [hidden]="!element?.visible">
                         <nm-frm-grp [elements]="element.type?.model?.params" [form]="form.controls[element.config?.code]" [elementCss]="elementCss" [parentElement]="element"></nm-frm-grp>
                     </fieldset>
