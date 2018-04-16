@@ -32,7 +32,8 @@ import { WebContentSvc } from '../../../services/content-management.service';
 import { DateTimeFormatPipe } from '../../../pipes/date.pipe';
 import { BaseElement } from './../base-element.component';
 import { GenericDomain } from '../../../model/generic-domain.model';
-import { Param, ParamConfig } from '../../../shared/app-config.interface';
+import { Param } from '../../../shared/Param';
+import { ParamConfig } from '../../../shared/app-config.interface';
 import { PageService } from '../../../services/page.service';
 import { GridService } from '../../../services/grid.service';
 import { ServiceConstants } from './../../../services/service.constants';
@@ -41,7 +42,7 @@ import { ActionDropdown } from './../form/elements/action-dropdown.component';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     provide: NG_VALUE_ACCESSOR,
-    useExisting: forwardRef(() => Table),
+    useExisting: forwardRef(() => DataTable),
     multi: true
 };
 
