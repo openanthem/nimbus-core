@@ -37,7 +37,7 @@ import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
 
 /**
  * 
- * @author Tony Lopez (AF42192)
+ * @author Tony Lopez
  *
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)

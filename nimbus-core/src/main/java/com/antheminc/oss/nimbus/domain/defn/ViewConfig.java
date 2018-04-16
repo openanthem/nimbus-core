@@ -208,7 +208,7 @@ public class ViewConfig {
 	 * </ul>
 	 * </p>
 	 * 
-	 * @author Tony Lopez (AF42192)
+	 * @author Tony Lopez
 	 * @see com.anthem.oss.nimbus.core.domain.model.state.extension.ModalStateEventHandler
 	 *
 	 */

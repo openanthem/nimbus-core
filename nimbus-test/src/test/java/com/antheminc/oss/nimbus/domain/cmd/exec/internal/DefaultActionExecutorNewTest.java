@@ -99,7 +99,7 @@ public class DefaultActionExecutorNewTest extends AbstractFrameworkIngerationPer
 	}
 
 	/**
-	 * Test case added by Tony Lopez (AF42192) to resolve issue NIM-8531.
+	 * Test case added by Tony Lopez to resolve issue NIM-8531.
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test

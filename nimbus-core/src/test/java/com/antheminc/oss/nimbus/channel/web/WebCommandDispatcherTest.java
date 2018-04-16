@@ -37,7 +37,7 @@ import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
 
 /**
  * 
- * @author Tony Lopez (AF42192)
+ * @author Tony Lopez
  *
  */
 @RunWith(MockitoJUnitRunner.class)
