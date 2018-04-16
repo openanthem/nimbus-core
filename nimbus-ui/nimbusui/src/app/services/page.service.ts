@@ -613,6 +613,7 @@ export class PageService {
                         });        
                 }
                 gridParam['collectionParams'] = collectionParams;
+                gridParam['paramState'] = paramState;
                 return gridData;
         }
 
