@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.antheminc.oss</groupId>
 		<artifactId>nimbus-parent</artifactId>
-		<version>1.0.0.M4-SNAPSHOT</version>
+		<version>1.0.0.M1-SNAPSHOT</version>
 		<relativePath>../</relativePath>
 	</parent>
 
