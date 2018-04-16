@@ -62,8 +62,6 @@ export class Calendar extends BaseControl<Date> {
 
     @ViewChild(NgModel) model: NgModel;
 
-    element: Param;
-
     constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd:ChangeDetectorRef) {
         super(controlService,wcs,cd);
     }

@@ -250,16 +250,11 @@ export class ViewConfig {
 }
 
 export class Model implements Serializable<Model,string> {
-    uiStyles: UiStyle;
-
     params: Param[];
 
     constructor(private configSvc: ConfigService) {}
 
     deserialize( inJson, path ) {
-        if(inJson.uiStyles != null) {
-            this.uiStyles = new UiStyle().deserialize( inJson.uiStyles );
-        }
         this.params = [];
         for ( var p in inJson.params ) {
             if(!ParamUtils.isEmpty(inJson.params[p])) {

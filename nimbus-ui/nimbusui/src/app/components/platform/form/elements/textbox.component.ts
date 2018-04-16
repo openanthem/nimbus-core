@@ -70,9 +70,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 })
 export class InputText extends BaseControl<String> {
 
-   @ViewChild(NgModel) model: NgModel;
-
-     element: Param;
+    @ViewChild(NgModel) model: NgModel;
 
     constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd:ChangeDetectorRef) {
         super(controlService,wcs,cd);

@@ -229,8 +229,9 @@ export class PageService {
         }
 
         getFlowNameFromOutput(paramPath: string): string {
-                if(paramPath == undefined)
-                return '';
+                if(paramPath == undefined) {
+                        return '';
+                }
                 let flow = this.getFlowNameFromPath(paramPath);
                 if (flow && flow.indexOf(':') > 0) {
                         flow = flow.substr(0, flow.indexOf(':'));
@@ -588,6 +589,7 @@ export class PageService {
                         nestedParams = gridParam.config.type.elementConfig.type.model.paramConfigs;
                 let gridData = [];
                 let paramState = [];
+                let collectionParams = [];
                 // Look for inner lists (nested grid)
                 let nestedParamIdx: number;
                 if (nestedParams) {
@@ -603,11 +605,14 @@ export class PageService {
                                 let p = new Param(this.configService).deserialize(param, gridParam.path + "/" + param.elemId);
                                 if(p != null) {
                                         paramState.push(p.type.model.params);
-                                        gridData.push(this.createRowData(p, nestedParamIdx));
+                                        let lineItem = this.createRowData(p, nestedParamIdx); 
+                                        collectionParams.push(lineItem.nestedGridParam); 
+                                        delete lineItem.nestedGridParam; 
+                                        gridData.push(lineItem);
                                 }
                         });        
                 }
-                gridParam['paramState'] = paramState;
+                gridParam['collectionParams'] = collectionParams;
                 return gridData;
         }
 
@@ -733,19 +738,18 @@ export class PageService {
                 //By this time the config for the parameter is set in the config map as it is deserelized
                 let config = this.configService.getViewConfigById(responseParam.configId);
                 if(config != null && config != undefined) {
-                        //replace the source param with the response key updates
-                        responseParamKeys.forEach(respKey => {
-                                Reflect.set(sourceParam, respKey, Reflect.get(responseParam, respKey));
-                        });
-                        let filterKeys = responseParamKeys.filter(key => ParamAttribute.attributeList().indexOf(key) > 0);
-                        filterKeys.forEach(filterKey => {
-                                if(filterKey === ParamAttribute.leafState.toString()) {
-                                        this.eventUpdate.next(sourceParam);
-                                }
-                                if(filterKey === ParamAttribute.enabled.toString() || filterKey === ParamAttribute.activeValidationGroups.toString()) {
-                                        this.validationUpdate.next(sourceParam);
-                                }
-                        });
+                        //replace the source param with the response key updates 
+                        responseParamKeys.forEach(respKey => { 
+                                try { 
+                                        //config is static and cannot be replaced and nested parameters should be ignored as update is for state of the current param 
+                                        if(respKey !== ParamAttribute.config.toString() && respKey !== ParamAttribute.type.toString()) 
+                                                Reflect.set(sourceParam, respKey, Reflect.get(responseParam, respKey)); 
+                                } catch (e) { 
+                                        throw e; 
+                                } 
+                        }); 
+                        this.eventUpdate.next(sourceParam); 
+                        this.validationUpdate.next(sourceParam);
                 } else {
                         this.logError('Could not process the update from the server for ' + responseParam.path + ' because config is undefined.');
                 }

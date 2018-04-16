@@ -52,7 +52,6 @@ import { ControlSubscribers } from './../../../../services/control-subscribers.s
 export class CheckBox extends BaseControl<boolean> {
 
     @ViewChild(NgModel) model: NgModel;
-    element: Param;
 
     constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd:ChangeDetectorRef) {
       super(controlService,wcs,cd);

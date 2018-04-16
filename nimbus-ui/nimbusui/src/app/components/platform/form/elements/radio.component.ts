@@ -61,9 +61,6 @@ export class RadioButton extends BaseControl<String> {
 
     @ViewChild(NgModel) model: NgModel;
 
-    element: Param;
-    
-
     constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd:ChangeDetectorRef) {
         super(controlService,wcs,cd);
     }

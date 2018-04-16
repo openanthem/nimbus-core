@@ -45,6 +45,7 @@ export class Param implements Serializable<Param, string> {
     values : Values[];
     visible: boolean = true;
     activeValidationGroups: String[] = [];
+    collectionParams: Param[] = [];
     _alias: string;
     _config: ParamConfig;
 
@@ -70,7 +71,7 @@ export class Param implements Serializable<Param, string> {
             for(let p of param.type.model.params) {
                 if(p != null) {
                     let config = this.configSvc.paramConfigs[p.configId];
-                    p.path = param.path + "/" + param.elemId +"/"+ config.code;
+                    p.path = param.path + "/" + config.code;
                     // handle nested grid data
                     if (config.uiStyles && config.uiStyles.name == 'ViewConfig.GridRowBody') {
                         let isDeserialized = false;
@@ -143,9 +144,12 @@ export class Param implements Serializable<Param, string> {
                 if(this.path && typeof inJson.path == undefined)
                     inJson.path = this.path;
                 for ( var p in inJson.type.model.params ) {
-                    if(!ParamUtils.isEmpty(inJson.type.model.params[p])) {
-                        this.paramState.push(inJson.type.model.params[p].type.model.params);
-                        this.gridList.push(this.createRowData(inJson.type.model.params[p]));
+                    if (!ParamUtils.isEmpty(inJson.type.model.params[p])) {
+                        this.paramState.push(inJson.type.model.params[p].type.model.params); 
+                        //this.gridList.push(this.createRowData(inJson.type.model.params[p])); 
+                        let lineItem = this.createRowData(inJson.type.model.params[p]);
+                        this.collectionParams.push(lineItem.nestedGridParam); 
+                        delete lineItem.nestedGridParam; this.gridList.push(lineItem);  
                     }
                 }
             }
