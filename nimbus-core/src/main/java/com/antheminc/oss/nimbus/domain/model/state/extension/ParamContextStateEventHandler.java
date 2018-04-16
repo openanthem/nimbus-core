@@ -23,7 +23,7 @@ import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnSt
  * Default StateEventHandler for fields decorated with <tt>ParamContext</tt> that sets
  * param context values as defined within the <tt>ParamContext</tt> annotation attributes.
  *  
- * @author Tony Lopez (AF42192)
+ * @author Tony Lopez
  * @see com.antheminc.oss.nimbus.domain.defn.extension.ParamContext
  */
 public class ParamContextStateEventHandler implements OnStateLoadHandler<ParamContext> {

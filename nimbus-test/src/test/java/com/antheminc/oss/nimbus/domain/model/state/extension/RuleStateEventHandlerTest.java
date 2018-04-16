@@ -34,7 +34,7 @@ import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
 
 /**
  * 
- * @author Tony Lopez (AF42192)
+ * @author Tony Lopez
  *
  */
 public class RuleStateEventHandlerTest extends AbstractStateEventHandlerTests {

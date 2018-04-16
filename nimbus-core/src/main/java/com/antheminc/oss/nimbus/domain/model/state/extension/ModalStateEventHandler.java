@@ -24,7 +24,7 @@ import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnSt
  * contextual values for enabled and visible to the value in the provided
  * <tt>&#64;ParamContext</tt> field <tt>context</tt>.</p>
  * 
- * @author Tony Lopez (AF42192)
+ * @author Tony Lopez
  * @see com.antheminc.oss.nimbus.domain.defn.ViewConfig.Modal
  */
 public class ModalStateEventHandler implements OnStateLoadHandler<Modal> {

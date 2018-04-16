@@ -20,7 +20,7 @@ import java.util.function.Function;
 /**
  * Utility class containing common path methods used within the framework.
  * 
- * @author Tony Lopez (AF42192)
+ * @author Tony Lopez
  *
  */
 public class PathUtils {

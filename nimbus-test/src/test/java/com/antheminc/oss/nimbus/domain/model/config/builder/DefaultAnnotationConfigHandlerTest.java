@@ -45,7 +45,7 @@ import com.antheminc.oss.nimbus.domain.model.config.AnnotationConfig;
 
 /**
  * 
- * @author Tony Lopez (AF42192)
+ * @author Tony Lopez
  *
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
