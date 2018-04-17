@@ -48,8 +48,6 @@ export class CustomHttpClientInterceptor implements HttpInterceptor {
             exception.code = null;
             this.pageSvc.notifyErrorEvent(exception);
           }, (err: any) => {
-                const exception: ExecuteException = err.error.result[0].executeException;
-                this.pageSvc.notifyErrorEvent(exception);
                 if (err instanceof HttpErrorResponse) {
                     /*  Currently, the server side websecurityconfig redirects to /login when session in expired.
                         Although the original response is HttpErrorResponse, the redirected url is in 200 status.
@@ -59,6 +57,8 @@ export class CustomHttpClientInterceptor implements HttpInterceptor {
                         window.location.href = `${ServiceConstants.LOGOUT_URL}`;
                     }
                 }
+                const exception: ExecuteException = err.error.result[0].executeException;
+                this.pageSvc.notifyErrorEvent(exception);
         });
     }
 }
