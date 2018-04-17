@@ -32,7 +32,7 @@ import { Component, Input, SimpleChanges} from '@angular/core';
     selector: 'nm-message',
     template: `
                 <p-messages *ngIf="messageContext === 'INLINE'"[(value)]="messageArray"></p-messages>
-                <p-growl *ngIf="messageContext === 'GROWL'" [life] = "life" [(value)]="messageArray"></p-growl>
+                <p-growl *ngIf="messageContext === 'GROWL'" [immutable]=false [life] = "life" [(value)]="messageArray"></p-growl>
 
 	          `
 })
