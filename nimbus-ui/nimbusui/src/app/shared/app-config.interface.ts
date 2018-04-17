@@ -723,7 +723,7 @@ export class ExecuteResponse implements Serializable<ExecuteResponse,string> {
     constructor(private configSvc: ConfigService) {}
     deserialize( inJson ) {
         this.result = [];
-        if ( inJson.result != null && inJson.result.length > 0) {
+        if ( inJson.result != null) {
             // tslint:disable-next-line:forin
             for ( const p in inJson.result ) {
                 this.result.push( new MultiOutput(this.configSvc).deserialize(inJson.result[p]) );
