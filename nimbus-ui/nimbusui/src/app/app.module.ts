@@ -44,6 +44,7 @@ import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, Drag
 import { TableModule } from 'primeng/table';
 import { NavLinkRouter } from './directives/nav-link-router.directive';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { WindowRefService } from './services/window-ref.service';
 
 // Platform Imports
 // Components
@@ -178,7 +179,7 @@ import {DateTimeFormatPipe} from './pipes/date.pipe';
          { provide: HTTP_INTERCEPTORS, useClass: CustomHttpClientInterceptor, multi: true },
          { provide: LocationStrategy, useClass: HashLocationStrategy }, GridService,
          { provide: APP_BASE_HREF, useValue: ServiceConstants.APP_CONTEXT },
-         AuthenticationService, BreadcrumbService, LoaderService, FileService, LayoutService ],
+         AuthenticationService, BreadcrumbService, LoaderService, FileService, LayoutService, WindowRefService ],
     bootstrap: [ AppComponent ]
 })
 export class AppModule { }

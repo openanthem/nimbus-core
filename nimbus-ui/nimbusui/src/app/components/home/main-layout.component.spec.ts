@@ -9,6 +9,10 @@ import {
   RequestOptions,
   URLSearchParams
 } from '@angular/http';
+import { Subject } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import { Router, ActivatedRoute, Route, ActivatedRouteSnapshot, UrlSegment, Params, Data, ParamMap } from '@angular/router';
+
 
 import { MainLayoutCmp } from './main-layout.component';
 import { HeaderGlobal } from '../platform/header/header-global.component';
@@ -22,6 +26,80 @@ import { LoaderService } from '../../services/loader.service';
 import { ConfigService } from '../../services/config.service';
 import { AuthenticationService } from '../../services/authentication.service';
 import { BreadcrumbService } from '../platform/breadcrumb/breadcrumb.service';
+import { LayoutService } from '../../services/layout.service';
+import { WindowRefService } from '../../services/window-ref.service';
+
+let app, fixture, layoutService, authenticationService, windowRef, route;
+
+export class MockActivatedRoute implements ActivatedRoute {
+  snapshot: ActivatedRouteSnapshot;
+  url: Observable<UrlSegment[]>;
+  params: Observable<Params>;
+  queryParams: Observable<Params>;
+  fragment: Observable<string>;
+  outlet: string;
+  component: any;
+  routeConfig: Route;
+  root: ActivatedRoute;
+  parent: ActivatedRoute;
+  firstChild: ActivatedRoute;
+  children: ActivatedRoute[];
+  pathFromRoot: ActivatedRoute[];
+  data: any = {
+          value: {layout: 123}
+    };
+  paramMap: Observable<ParamMap>;
+  queryParamMap: Observable<ParamMap>;
+}
+
+export class MockActivatedRoute1 implements ActivatedRoute {
+  snapshot: ActivatedRouteSnapshot;
+  url: Observable<UrlSegment[]>;
+  params: Observable<Params>;
+  queryParams: Observable<Params>;
+  fragment: Observable<string>;
+  outlet: string;
+  component: any;
+  routeConfig: Route;
+  root: ActivatedRoute;
+  parent: ActivatedRoute;
+  firstChild: ActivatedRoute;
+  children: ActivatedRoute[];
+  pathFromRoot: ActivatedRoute[];
+  data: any = {
+          value: {layout: null}
+    };
+  paramMap: Observable<ParamMap>;
+  queryParamMap: Observable<ParamMap>;
+}
+
+class MockLayoutService {
+  public layout$: Subject<any>;
+
+  constructor() {
+    this.layout$ = new Subject();
+  }
+
+  parseLayoutConfig(res) {
+    this.layout$.next(res);
+  }
+  
+  getLayout() { }
+}
+
+class MockWindowRefService {
+  window = {
+    location: {
+      href: ''
+    }
+  };
+}
+
+class MockAuthenticationService {
+  logout() {
+    return Observable.of('');
+  }
+}
 
 describe('MainLayoutCmp', () => {
   beforeEach(
@@ -30,36 +108,134 @@ describe('MainLayoutCmp', () => {
         declarations: [MainLayoutCmp, HeaderGlobal, Paragraph, Value, Link],
         imports: [HttpModule, RouterTestingModule, HttpClientModule],
         providers: [
+          {provide: LayoutService, useClass: MockLayoutService},
+          {provide: WindowRefService, useClass: MockWindowRefService},
+          {provide: AuthenticationService, useClass: MockAuthenticationService},
+          {provide: ActivatedRoute, useClass: MockActivatedRoute},
           CustomHttpClient,
           WebContentSvc,
           PageService,
           LoaderService,
           ConfigService,
-          AuthenticationService,
           BreadcrumbService
         ]
       }).compileComponents();
+      fixture = TestBed.createComponent(MainLayoutCmp);
+      app = fixture.debugElement.componentInstance;
+      layoutService = TestBed.get(LayoutService);
+      authenticationService = TestBed.get(AuthenticationService);
+      windowRef = TestBed.get(WindowRefService);
+      route = TestBed.get(ActivatedRoute);
     })
   );
 
-  it(
-    'should create the app',
-    async(() => {
-      const fixture = TestBed.createComponent(MainLayoutCmp);
-      const app = fixture.debugElement.componentInstance;
+  it('should create the app', async(() => {
       expect(app).toBeTruthy();
-    })
-  );
+    }));
 
-  it(
-    'toggelSideNav should update collapse property',
-    async(() => {
-      const fixture = TestBed.createComponent(MainLayoutCmp);
-      const app = fixture.debugElement.componentInstance;
+  it('toggelSideNav should update collapse property', async(() => {
       app.collapse = true;
       app.toggelSideNav();
       expect(app.collapse).toEqual(false);
+    }));
+
+  it('activeTheme() should return app.activeTheme', async(() => {
+    app.activeTheme = 'testing';
+    app.activeTheme = 'testing';
+    expect(app.activeTheme).toEqual('testing');
+  }));
+
+  it('ngoninit () should update themes', async(() => {
+    app.ngOnInit();
+    const theme = [{
+      link: 'styles/vendor/anthem.blue.theme.css', 
+      label: 'Blue Theme'
+    },
+    {
+      link: 'styles/vendor/anthem.black.theme.css', 
+      label: 'Black Theme'
+    }];
+    expect(app.themes).toEqual(theme);
+  }));
+
+  it('ngoninit should update app.branding', async(() => {
+    app.ngOnInit();
+    const test = {
+      topBar: {
+        headerMenus: 'theaderMenus',
+        branding: 'tbranding'
+      },
+      leftNavBar: 'leftNavBar',
+      footer: 'tfooter'
+    };
+    layoutService.parseLayoutConfig(test);
+    expect(app.branding).toEqual('tbranding');
+  }));
+
+  it('ngoninit should not update app.branding', async(() => {
+    app.ngOnInit();
+    layoutService.parseLayoutConfig(null);
+    expect(app.branding).toBeFalsy();
+  }));
+
+  it('ngoninit should not update app.branding if topBar.branding is null', async(() => {
+    app.ngOnInit();
+    const test = {
+      topBar: {
+        branding: null
+      }
+    };
+    layoutService.parseLayoutConfig(test);
+    expect(app.branding).toBeFalsy();
+  }));
+
+  it('ngoninit should call layoutservice getlayout', async(() => {
+    spyOn(layoutService, 'getLayout').and.callThrough();
+    app.ngOnInit();
+    layoutService.parseLayoutConfig(null);
+    expect(layoutService.getLayout).toHaveBeenCalled();
+  }));
+
+  it('logut() should update the window.location.href', async(() => {
+    app.logout();
+    expect(windowRef.window.location.href.includes('logout')).toBeTruthy();
+  }));
+
+});
+
+describe('mainlayoutcomp', () => {
+  beforeEach(
+    async(() => {
+      TestBed.configureTestingModule({
+        declarations: [MainLayoutCmp, HeaderGlobal, Paragraph, Value, Link],
+        imports: [HttpModule, RouterTestingModule, HttpClientModule],
+        providers: [
+          {provide: LayoutService, useClass: MockLayoutService},
+          {provide: WindowRefService, useClass: MockWindowRefService},
+          {provide: AuthenticationService, useClass: MockAuthenticationService},
+          {provide: ActivatedRoute, useClass: MockActivatedRoute1},
+          CustomHttpClient,
+          WebContentSvc,
+          PageService,
+          LoaderService,
+          ConfigService,
+          BreadcrumbService
+        ]
+      }).compileComponents();
+      fixture = TestBed.createComponent(MainLayoutCmp);
+      app = fixture.debugElement.componentInstance;
+      layoutService = TestBed.get(LayoutService);
+      authenticationService = TestBed.get(AuthenticationService);
+      windowRef = TestBed.get(WindowRefService);
+      route = TestBed.get(ActivatedRoute);
     })
   );
+
+  it('ngoninit should not call layoutservice.getlayout()', async(() => {
+    spyOn(layoutService, 'getLayout').and.callThrough();
+    app.ngOnInit();
+    layoutService.parseLayoutConfig(null);
+    expect(layoutService.getLayout).not.toHaveBeenCalled();
+  }));
 
 });

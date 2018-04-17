@@ -23,6 +23,7 @@ import { AppBranding, Layout, LinkConfig, FooterConfig } from '../../model/menu-
 import { Param } from '../../shared/Param';
 import { AuthenticationService } from '../../services/authentication.service';
 import { ServiceConstants } from '../../services/service.constants';
+import { WindowRefService } from '../../services/window-ref.service';
 
 /**
  * \@author Dinakar.Meda
@@ -32,8 +33,7 @@ import { ServiceConstants } from '../../services/service.constants';
  * 
  */
 @Component({
-    templateUrl: './main-layout.component.html',
-    providers: [ LayoutService ]
+    templateUrl: './main-layout.component.html'
 })
 
 export class MainLayoutCmp {
@@ -49,8 +49,37 @@ export class MainLayoutCmp {
         private _authenticationService: AuthenticationService,
         private layoutSvc: LayoutService,
         private _route: ActivatedRoute,
-        private _router: Router) {
+        private _router: Router,
+        private windowRef: WindowRefService
+    ) {
+    }
 
+    logout() {
+        this._authenticationService.logout().subscribe(success => {
+            this.windowRef.window.location.href=`${ServiceConstants.CLIENT_BASE_URL}logout`;
+        });
+    }
+
+    // Side navigation bar toggle effect
+    toggelSideNav() {
+        this.collapse = !this.collapse;
+    }
+
+    get activeTheme(): string {
+        return this._activeTheme;
+    }
+
+    set activeTheme(value: string) {
+        if (this._activeTheme !== value) {
+            this._activeTheme = value;
+            let themeLink = <HTMLLinkElement>document.getElementById('activeThemeLink');
+            if (themeLink) {
+                themeLink.href = value;
+            }
+        }
+    }
+
+    ngOnInit() {
         // initialize
         this.themes.push({link:'styles/vendor/anthem.blue.theme.css',label:'Blue Theme'});
         this.themes.push({link:'styles/vendor/anthem.black.theme.css',label:'Black Theme'});
@@ -72,31 +101,6 @@ export class MainLayoutCmp {
         );
         if(this._route.data['value']['layout'] != null) {
             this.layoutSvc.getLayout(this._route.data['value']['layout']);
-        }
-    }
-
-    logout() {
-        this._authenticationService.logout().subscribe(success => {
-            window.location.href=`${ServiceConstants.CLIENT_BASE_URL}logout`;
-        });
-    }
-
-    // Side navigation bar toggle effect
-    toggelSideNav() {
-        this.collapse = !this.collapse;
-    }
-
-    get activeTheme(): string {
-        return this._activeTheme;
-    }
-
-    set activeTheme(value: string) {
-        if (this._activeTheme !== value) {
-            this._activeTheme = value;
-            let themeLink = <HTMLLinkElement>document.getElementById('activeThemeLink');
-            if (themeLink) {
-                themeLink.href = value;
-            }
         }
     }
 
