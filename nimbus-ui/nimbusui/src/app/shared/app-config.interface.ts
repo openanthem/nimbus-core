@@ -192,12 +192,44 @@ export class Message implements Serializable<Message, string> {
     type: string;
     text: string;
     context: string;
+    messageArray: any[] = [];
+    
     
     deserialize( inJson ) {
+
         let obj = this;
         obj = Converter.convert(inJson,obj);
+
+        if(this.context !== undefined){
+
+           let severity: string, summary: string, life: number;
+
+            switch (this.type) {               
+
+                case "SUCCESS": 
+                    severity = 'success'; summary = 'Success Message'; life = 3000;
+                    break;
+                case "DANGER": 
+                    severity = 'error'; summary = 'Error Message'; life = 10000;
+                    break; 
+                case "WARNING": 
+                    severity = 'warn'; summary = 'Warn Message'; life = 5000;
+                    break;
+                case "INFO": 
+                    severity = 'info'; summary = 'Info Message'; life = 3000;
+                    break;   
+            }
+    
+            this.messageArray.push({severity: severity,  summary: summary,  detail: this.text});
+            obj['messageArray'] = this.messageArray;
+            obj['life'] = life;
+
+        }
+
         return obj;
     }
+
+
 }
 
 export class Input implements Serializable<Input,string> {
