@@ -37,6 +37,7 @@ import { PageService } from '../../../services/page.service';
 export class PageContent extends BaseElement{
     pageId: string;
     tilesList: any[];
+    errMsgArray: any[] =[];
     errMsg: string;
 
     constructor(private router: Router, private route: ActivatedRoute, private _wcs : WebContentSvc, private pageSvc: PageService,private cd: ChangeDetectorRef) {
@@ -64,7 +65,9 @@ export class PageContent extends BaseElement{
 
     ngAfterViewInit() {
         this.pageSvc.errorMessageUpdate$.subscribe((err: ExecuteException) => {
-            this.errMsg = err.message;
+            if(err.message){
+                this.errMsgArray.push({severity: 'error',  summary: 'Error Message',  detail: err.message});    
+            }        
             this.cd.markForCheck();
         });
     }
