@@ -70,6 +70,11 @@ public class DefaultListElemParamState<E> extends DefaultParamState<E> implement
 		}
 	}
 
+	@Override
+	protected ValueAccessor constructValueAccessor() {
+		return null;
+	}
+	
 	@SuppressWarnings("unchecked")
 	@JsonIgnore @Override
 	public ListModel<E> getParentModel() {

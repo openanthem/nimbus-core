@@ -15,7 +15,6 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state;
 
-import java.beans.PropertyDescriptor;
 import java.util.List;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
@@ -426,7 +425,7 @@ public class StateHolder {
 		
 		
 		@Override
-		public PropertyDescriptor getPropertyDescriptor() {
+		public ValueAccessor getValueAccessor() {
 			throw throwEx();
 		}
 		

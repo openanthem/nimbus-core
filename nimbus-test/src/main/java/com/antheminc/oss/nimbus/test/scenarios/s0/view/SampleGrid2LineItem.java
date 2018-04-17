@@ -53,7 +53,7 @@ public class SampleGrid2LineItem {
 	
 	 @Model
 	  @Getter @Setter
-	  private static class VLLinks {
+	  public static class VLLinks {
 		 	@Link
 			private String link1;
 	

@@ -22,7 +22,6 @@ import org.springframework.data.annotation.Id;
 import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.entity.AbstractEntity;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -52,7 +51,7 @@ public abstract class Phone<ID extends Serializable> extends AbstractEntity<ID> 
 		private static final long serialVersionUID = 1L;
 		
 		
-		@Id @Getter @Setter(value=AccessLevel.PROTECTED) 
+		@Id @Getter @Setter
 		private Long id;
 	}
 	
@@ -63,7 +62,7 @@ public abstract class Phone<ID extends Serializable> extends AbstractEntity<ID> 
 		private static final long serialVersionUID = 1L;
 		
 		
-		@Id @Getter @Setter(value=AccessLevel.PROTECTED) 
+		@Id @Getter @Setter 
 		private String id;
 	}
 

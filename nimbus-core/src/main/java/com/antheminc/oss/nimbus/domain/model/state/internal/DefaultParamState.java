@@ -16,7 +16,6 @@
 package com.antheminc.oss.nimbus.domain.model.state.internal;
 
 
-import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -28,7 +27,6 @@ import java.util.function.Supplier;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.util.ClassUtils;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
@@ -53,6 +51,7 @@ import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnSt
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
 import com.antheminc.oss.nimbus.entity.Findable;
 import com.antheminc.oss.nimbus.support.Holder;
+import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandlerUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
@@ -105,7 +104,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	
 	@JsonIgnore 
-	final private PropertyDescriptor propertyDescriptor;
+	final ValueAccessor valueAccessor;
 
 	@JsonIgnore
 	private T transientOldState;
@@ -135,8 +134,20 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		if(!isRoot()) Objects.requireNonNull(parentModel, "Parent model must not be null with code: "+getConfig().getCode());
 		this.parentModel = parentModel;
 		
-		PropertyDescriptor pd = constructPropertyDescriptor();
-		this.propertyDescriptor = pd;
+		this.valueAccessor = constructValueAccessor();
+	}
+	
+	
+	protected ValueAccessor constructValueAccessor() {
+		if(getParentModel()==null) 
+			return null;
+		
+		ValueAccessor vaConfig = getConfig().getType().getValueAccessor();
+		if(vaConfig!=null) 
+			return vaConfig;
+		
+		ModelConfig<?> mConfig = getParentModel().getConfig();
+		return JavaBeanHandlerUtils.constructValueAccessor(mConfig.getReferredClass(), getConfig().getBeanName());
 	}
 	
 	
@@ -198,15 +209,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	public ParamConfig<T> getConfig() {
 		return (ParamConfig<T>)super.getConfig();
 	}
-	
-	protected PropertyDescriptor constructPropertyDescriptor() {
-		if(getParentModel()==null) return null;
-		
-		ModelConfig<?> mConfig = getParentModel().getConfig();
-		
-		PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(mConfig.getReferredClass(), getConfig().getBeanName());
-		return pd;
-	}
+
 
 	@Override
 	public void fireRules() {
@@ -258,7 +261,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 			for(Param<?> pNestedParam : findIfNested().getParams()) {
 				Object nestedParamLeafState = pNestedParam.getLeafState();
 				if(nestedParamLeafState!=null)
-					getAspectHandlers().getParamStateGateway().setValue(pNestedParam.getPropertyDescriptor().getWriteMethod(), entity, nestedParamLeafState);
+					getAspectHandlers().getParamStateGateway().setValue(pNestedParam.getValueAccessor(), entity, nestedParamLeafState);
 			}
 		}
 		

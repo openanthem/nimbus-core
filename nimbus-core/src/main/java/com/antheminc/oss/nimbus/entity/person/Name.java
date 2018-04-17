@@ -23,7 +23,6 @@ import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.entity.AbstractEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -44,7 +43,7 @@ public abstract class Name<ID extends Serializable> extends AbstractEntity<ID> {
 		
 		private static final long serialVersionUID = 1L;
 
-		@Id @Getter @Setter(value=AccessLevel.PROTECTED) 
+		@Id @Getter @Setter 
 		private Long id;
 	}
 	
@@ -54,7 +53,7 @@ public abstract class Name<ID extends Serializable> extends AbstractEntity<ID> {
 		
 		private static final long serialVersionUID = 1L;
 		
-		@Id @Getter @Setter(value=AccessLevel.PROTECTED) 
+		@Id @Getter @Setter 
 		private String id;
 	}
 	

@@ -15,14 +15,12 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.repo.db.mongo;
 
-import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.core.MongoOperations;
@@ -36,14 +34,14 @@ import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.ValueAccessor;
 import com.antheminc.oss.nimbus.domain.model.state.repo.IdSequenceRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.DBSearch;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.ExampleSearchCriteria;
-import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.LookupSearchCriteria;
-import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.QuerySearchCriteria;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandler;
+import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandlerUtils;
 
 /**
  * @author Soham Chakravarti
@@ -81,8 +79,8 @@ public class DefaultMongoModelRepository implements ModelRepository {
 		
 		String id = String.valueOf(idSequenceRepo.getNextSequenceId(repo != null && StringUtils.isNotBlank(repo.alias())?repo.alias():mConfig.getAlias()));
 		
-		PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(mConfig.getReferredClass(), pId.getCode());
-		beanHandler.setValue(pd, newState, id);
+		ValueAccessor va = JavaBeanHandlerUtils.constructValueAccessor(mConfig.getReferredClass(), pId.getCode());
+		beanHandler.setValue(va, newState, id);
 		
 		String alias = mConfig.getRepo() != null && StringUtils.isNotBlank(mConfig.getRepo().alias()) ? mConfig.getRepo().alias():mConfig.getAlias();
 		//mongoOps.save(newState, alias);

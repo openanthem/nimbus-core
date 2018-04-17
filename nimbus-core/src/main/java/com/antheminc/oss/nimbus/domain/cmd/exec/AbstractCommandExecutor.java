@@ -32,10 +32,12 @@ import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.model.config.EntityConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.ValueAccessor;
 import com.antheminc.oss.nimbus.domain.model.state.builder.QuadModelBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.internal.ExecutionEntity;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepositoryFactory;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandler;
+import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandlerUtils;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -168,9 +170,9 @@ public abstract class AbstractCommandExecutor<R> extends BaseCommandExecutorStra
 	}
 
 	protected Object getRefId(ModelConfig<?> parentModelConfig, ParamConfig<?> pConfig, Object entity) {
-		PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(parentModelConfig.getReferredClass(), pConfig.getCode());
+		ValueAccessor va = JavaBeanHandlerUtils.constructValueAccessor(parentModelConfig.getReferredClass(), pConfig.getCode());
 		
-		Object refId = getJavaBeanHandler().getValue(pd, entity);
+		Object refId = getJavaBeanHandler().getValue(va, entity);
 		return refId;
 	}
 
