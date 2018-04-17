@@ -16,7 +16,7 @@
  */
 'use strict';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { ExecuteException } from '../../../shared/app-config.interface';
 import { Param } from '../../../shared/Param';
 import { BaseElement } from '../base-element.component';
@@ -40,7 +40,7 @@ export class PageContent extends BaseElement{
     errMsgArray: any[] =[];
     errMsg: string;
 
-    constructor(private router: Router, private route: ActivatedRoute, private _wcs : WebContentSvc, private pageSvc: PageService) {
+    constructor(private router: Router, private route: ActivatedRoute, private _wcs : WebContentSvc, private pageSvc: PageService,private cd: ChangeDetectorRef) {
         super(_wcs);
         this.router.events.subscribe(path => {
             this.pageId = this.route.snapshot.url[0].path;
@@ -61,10 +61,14 @@ export class PageContent extends BaseElement{
                 });
             }
         });
+    }
+
+    ngAfterViewInit() {
         this.pageSvc.errorMessageUpdate$.subscribe((err: ExecuteException) => {
             if(err.message){
                 this.errMsgArray.push({severity: 'error',  summary: 'Error Message',  detail: err.message});    
             }        
+            this.cd.markForCheck();
         });
     }
 
