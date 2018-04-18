@@ -182,12 +182,14 @@ public class DefaultJsonParamSerializer extends JsonSerializer<Param<?>> {
 			}
 			
 			// mapped: nested
+			gen.writeObjectFieldStart(getFieldNameForState(p, isRoot));
 			for(Param<?> cp : p.findIfNested().getParams()) {
 				if(cp.isLeafOrCollectionWithLeafElems()) 
 					writeLeafOrCollectionWithLeafElements(cp, false);
 				else 
 					writeParamState(cp, false);
 			}
+			gen.writeEndObject();
 		}
 
 		private void writeCollection(Param<?> p, boolean isRoot) throws IOException {
