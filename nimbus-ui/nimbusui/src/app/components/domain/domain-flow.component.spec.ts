@@ -170,7 +170,7 @@ describe('DomainFlowCmp', () => {
     expect(router.navigate).toHaveBeenCalled();
   }));
 
-  it('ngOnInit() 123 not call router.navigate', async(() => {
+  it('ngOnInit() should not call router.navigate', async(() => {
     spyOn(document, 'getElementById').and.returnValue({
       classList: {
         remove: () => {},
