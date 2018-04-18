@@ -75,8 +75,8 @@ public class DefaultCoreExecutorConfig {
 	}
 	
 	@Bean
-	public ExecutionContextPathVariableResolver defaultExecutionContextPathVariableResolver() {
-		return new DefaultExecutionContextPathVariableResolver();
+	public ExecutionContextPathVariableResolver defaultExecutionContextPathVariableResolver(BeanResolverStrategy beanResolver) {
+		return new DefaultExecutionContextPathVariableResolver(beanResolver);
 	}
 	
 	@Bean(name="default.ExecutionContextLoader", destroyMethod="clear") 

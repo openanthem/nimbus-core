@@ -34,7 +34,7 @@ import com.antheminc.oss.nimbus.support.Holder;
 
 /**
  * 
- * @author Tony Lopez (AF42192)
+ * @author Tony Lopez
  *
  */
 @RunWith(MockitoJUnitRunner.class)

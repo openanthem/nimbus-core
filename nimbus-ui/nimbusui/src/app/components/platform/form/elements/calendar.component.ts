@@ -20,7 +20,7 @@ import { Component, forwardRef, ViewChild, ChangeDetectorRef } from '@angular/co
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { PageService } from '../../../../services/page.service';
-import { Param } from '../../../../shared/app-config.interface';
+import { Param } from '../../../../shared/Param';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 
 /**
@@ -61,8 +61,6 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 export class Calendar extends BaseControl<Date> {
 
     @ViewChild(NgModel) model: NgModel;
-
-    element: Param;
 
     constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd:ChangeDetectorRef) {
         super(controlService,wcs,cd);

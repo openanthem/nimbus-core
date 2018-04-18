@@ -68,7 +68,7 @@ public class VPSampleViewPageOrange {
 		
 		@Grid(onLoad=true)
 		@Path(linked=false)
-		@Config(url = "/page_orange/vtOrange/vsSampleGrid1/sampleGrid1/.m/_process?fn=_set&url=/p/sample_core/_search?fn=query&where=sample_core.id.eq('1')")
+		@Config(url = "/page_orange/vtOrange/vsSampleGrid1/sampleGrid1/.m/_process?fn=_set&url=/p/sample_core/_search?fn=query&where=sample_core.id.eq(1)")
 		private List<SampleGrid1LineItem> sampleGrid1;
 	}
 	
@@ -77,7 +77,7 @@ public class VPSampleViewPageOrange {
 		
 		@Grid(onLoad=true)
 		@Path(linked=false)
-		@Config(url = "/page_orange/vtOrange/vsSampleGrid2/sampleGrid2/.m/_process?fn=_set&url=/p/sample_core/_search?fn=query&where=sample_core.id.eq('1')")
+		@Config(url = "/page_orange/vtOrange/vsSampleGrid2/sampleGrid2/.m/_process?fn=_set&url=/p/sample_core/_search?fn=query&where=sample_core.id.eq(1)")
 		private List<SampleGrid2LineItem> sampleGrid2;
 		
 	}

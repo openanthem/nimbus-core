@@ -121,9 +121,9 @@ public class IgnoreTest extends AbstractFrameworkIntegrationTests {
 		Param<?> coreParam = q.getCore().getAssociatedParam();
 		JsonContent<Object> jContent = json.write(coreParam);
 		
+		System.out.println(jContent.getJson());
+		
 		assertThat(jContent).hasJsonPathArrayValue("$.type.model.params");
-		assertThat(jContent).hasEmptyJsonPathValue("$.type.model.params[0]");
-		assertThat(jContent).hasEmptyJsonPathValue("$.type.model.params[1]");
-		assertThat(jContent).hasJsonPathValue("$.type.model.params[2]");
+		assertThat(jContent).hasJsonPathValue("$.type.model.params[0]");
 	}
 }

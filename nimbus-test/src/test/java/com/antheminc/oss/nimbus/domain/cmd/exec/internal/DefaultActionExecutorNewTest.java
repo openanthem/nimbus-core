@@ -24,6 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -98,7 +99,7 @@ public class DefaultActionExecutorNewTest extends AbstractFrameworkIngerationPer
 	}
 
 	/**
-	 * Test case added by Tony Lopez (AF42192) to resolve issue NIM-8531.
+	 * Test case added by Tony Lopez to resolve issue NIM-8531.
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
@@ -141,8 +142,8 @@ public class DefaultActionExecutorNewTest extends AbstractFrameworkIngerationPer
 	
 	@Test @Ignore
 	public void t03_nestedGrid() throws Exception {
-		String refId = createOrGetDomainRoot_RefId();
-		String sampleEntityId = createOrGetSampleEntity_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
+		Long sampleEntityId = createOrGetSampleEntity_RefId();
 		
 		MockHttpServletRequest req_updateViewBy = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
 				.addNested("/page_orange/vtOrange/vsSwitchView/viewBy").addAction(Action._update).getMock();
@@ -152,7 +153,7 @@ public class DefaultActionExecutorNewTest extends AbstractFrameworkIngerationPer
 		
 		MockHttpServletRequest req_getGrid1_Results = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
 				.addNested("/page_orange/vtOrange/vsSampleGrid1/sampleGrid1").addAction(Action._get).getMock();
-		Object resp_GridResults = controller.handleGet(req_getGrid1_Results, refId);
+		Object resp_GridResults = controller.handleGet(req_getGrid1_Results, refId.toString());
 		assertNotNull(resp_GridResults);
 		
 		MockHttpServletRequest req_update2ViewBy = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
@@ -166,14 +167,14 @@ public class DefaultActionExecutorNewTest extends AbstractFrameworkIngerationPer
 		
 		MockHttpServletRequest req_root = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
 										 .addAction(Action._get).getMock();
-		Object resp_root = controller.handleGet(req_root, refId);
+		Object resp_root = controller.handleGet(req_root, refId.toString());
 		Param<?> rootEntity = ExtractResponseOutputUtils.extractOutput(resp_root);
 		assertNotNull(rootEntity);
 		assertNull(rootEntity.findParamByPath("/page_orange/vtOrange/vsSampleGrid2/sampleGrid2/.m").getState());
 		
 		MockHttpServletRequest req_getGrid2_Results = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
 				.addNested("/page_orange/vtOrange/vsSampleGrid2/sampleGrid2").addAction(Action._get).getMock();
-		Object resp_Grid2Results = controller.handleGet(req_getGrid2_Results, refId);
+		Object resp_Grid2Results = controller.handleGet(req_getGrid2_Results, refId.toString());
 		assertNotNull(resp_Grid2Results);
 		
 		assertNotNull(rootEntity.findParamByPath("/page_orange/vtOrange/vsSampleGrid2/sampleGrid2/.m").getState());
@@ -183,7 +184,7 @@ public class DefaultActionExecutorNewTest extends AbstractFrameworkIngerationPer
 		
 		MockHttpServletRequest req_getGrid2RowExpander = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
 				.addNested("/page_orange/vtOrange/vsSampleGrid2/sampleGrid2/0/childList/innerGrid").addAction(Action._get).getMock();
-		Object resp_InnerGridResults = controller.handleGet(req_getGrid2RowExpander, refId);
+		Object resp_InnerGridResults = controller.handleGet(req_getGrid2RowExpander, refId.toString());
 		assertNotNull(resp_InnerGridResults);
 		
 		MockHttpServletRequest req_update3ViewBy = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
@@ -195,8 +196,8 @@ public class DefaultActionExecutorNewTest extends AbstractFrameworkIngerationPer
 	
 	@Test @Ignore
 	public void t04_nestedGrid() throws Exception {
-		String refId = createOrGetDomainRoot_RefId();
-		String sampleEntityId = createOrGetSampleEntity_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
+		Long sampleEntityId = createOrGetSampleEntity_RefId();
 		final String VIEW_ROOT_WITHOUT_MAPPEDMODEL = PLATFORM_ROOT + "/sample_withoutmodel";
 		
 		MockHttpServletRequest req_updateViewBy = MockHttpRequestBuilder.withUri(VIEW_ROOT_WITHOUT_MAPPEDMODEL)

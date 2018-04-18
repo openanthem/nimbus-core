@@ -35,7 +35,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  * 
- * @author Tony Lopez (AF42192)
+ * @author Tony Lopez
  * @author Sandeep Mantha - added test cases for date validator
  *
  */

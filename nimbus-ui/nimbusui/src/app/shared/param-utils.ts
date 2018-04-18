@@ -1,4 +1,3 @@
-import { Param } from './app-config.interface';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -18,11 +17,11 @@ import { Param } from './app-config.interface';
 'use strict';
 
 import { ConfigService } from './../services/config.service';
-import { SortAs } from "../components/platform/grid/sortas.interface";
+import { SortAs } from '../components/platform/grid/sortas.interface';
 import { PageService } from '../services/page.service';
 import { GridService } from '../services/grid.service';
 import { ServiceConstants } from '../services/service.constants';
-
+import { Param } from './Param'
 /**
  * \@author Tony.Lopez
  * \@whatItDoes 
@@ -162,7 +161,7 @@ export class ParamUtils {
             if (x_param) {
 
                 // if the param identified by x is a collection or nested element...
-                if ((x_param.collection || x_param.type.nested)) {
+                if ((x_param.config.type.collection || x_param.config.type.nested)) {
                     
                     // if we have what we need, then apply the transformations recursively.
                     if (x_param.type.model && x_param.type.model.params) {
@@ -178,8 +177,8 @@ export class ParamUtils {
                 } else {
                     
                     // Handle Date transformations
-                    if (x_param.type && ParamUtils.isKnownDateType(x_param.type.name)) {
-                       transformed[x] = ParamUtils.convertServerDateStringToDate(obj[x], x_param.type.name);
+                    if (x_param.config.type && ParamUtils.isKnownDateType(x_param.config.type.name)) {
+                       transformed[x] = ParamUtils.convertServerDateStringToDate(obj[x], x_param.config.type.name);
                     }
                 }
             }

@@ -39,7 +39,7 @@ import java.util.Map;
  * 
  * <p>Implementing classes should ensure that the returned-value is non-null.</p>
  * 
- * @author Tony Lopez (AF42192)
+ * @author Tony Lopez
  * @see com.antheminc.oss.nimbus.domain.config.builder.attributes.DefaultAnnotationAttributeHandler
  * 
  */

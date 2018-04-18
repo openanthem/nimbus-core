@@ -26,7 +26,8 @@ import { ValidationUtils } from '../components/platform/validators/ValidationUti
 import { BaseControl } from '../components/platform/form/elements/base-control.component';
 import { ValidatorFn } from '@angular/forms/src/directives/validators';
 import { GenericDomain } from './../model/generic-domain.model';
-import { Param } from './../shared/app-config.interface';
+import { Param } from './../shared/Param';
+import { HttpMethod } from '../shared/command.enum';
 /**
  * \@author Sandeep.Mantha
  * \@whatItDoes 
@@ -81,10 +82,10 @@ export class ControlSubscribers {
         this.controlValueChanged.subscribe(($event) => {
             //console.log($event);
             if ($event.config.uiStyles.attributes.postEventOnChange) {
-               this.pageService.postOnChange($event.path, 'state', JSON.stringify($event.leafState));
+                this.pageService.postOnChange($event.path, 'state', JSON.stringify($event.leafState));
             } else if($event.config.uiStyles.attributes.postButtonUrl) {
-               let item: GenericDomain = new GenericDomain();
-               this.pageService.processPost(control.element.config.uiStyles.attributes.postButtonUrl, null, $event.leafState, 'POST');
+                let item: GenericDomain = new GenericDomain();
+                this.pageService.processEvent(control.element.config.uiStyles.attributes.postButtonUrl, null, $event.leafState, HttpMethod.POST.value);
             }
         });
     }

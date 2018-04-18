@@ -1,23 +1,25 @@
 /**
- * @license
- * Copyright 2016-2018 the original author or authors.
- * 
+* @license
+* Copyright 2016-2018 the original author or authors.
+*
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
  *        http://www.apache.org/licenses/LICENSE-2.0
- * 
+*
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 'use strict';
 
-import { Component, Input, Output, forwardRef, ViewChild, EventEmitter, 
-    ViewEncapsulation, ChangeDetectorRef, QueryList, ViewChildren } from '@angular/core';
+import {
+    Component, Input, Output, forwardRef, ViewChild, EventEmitter,
+    ViewEncapsulation, ChangeDetectorRef, QueryList, ViewChildren
+} from '@angular/core';
 import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { ControlValueAccessor } from '@angular/forms/src/directives';
 import { Subscription } from 'rxjs/Subscription';
@@ -32,25 +34,26 @@ import { WebContentSvc } from '../../../services/content-management.service';
 import { DateTimeFormatPipe } from '../../../pipes/date.pipe';
 import { BaseElement } from './../base-element.component';
 import { GenericDomain } from '../../../model/generic-domain.model';
-import { Param, ParamConfig } from '../../../shared/app-config.interface';
+import { ParamConfig } from '../../../shared/app-config.interface';
 import { PageService } from '../../../services/page.service';
 import { GridService } from '../../../services/grid.service';
 import { ServiceConstants } from './../../../services/service.constants';
 import { SortAs, GridColumnDataType } from './sortas.interface';
 import { ActionDropdown } from './../form/elements/action-dropdown.component';
+import { Param } from '../../../shared/Param';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     provide: NG_VALUE_ACCESSOR,
-    useExisting: forwardRef(() => Table),
+    useExisting: forwardRef(() => DataTable),
     multi: true
 };
 
 /**
- * \@author Dinakar.Meda
- * \@whatItDoes 
- * 
- * \@howToUse 
- * 
+* \@author Dinakar.Meda
+* \@whatItDoes
+ *
+ * \@howToUse
+ *
  */
 @Component({
     selector: 'nm-table',
@@ -59,7 +62,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     templateUrl: './table.component.html'
 })
 export class DataTable extends BaseElement implements ControlValueAccessor {
-    @Input() data: any[];
+
     @Output() onScrollEvent: EventEmitter<any> = new EventEmitter();
     @Input() params: ParamConfig[];
     @Input() form: FormGroup;
@@ -68,8 +71,8 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     filterValue: Date;
     totalRecords: number = 0;
     mouseEventSubscription: Subscription;
-    filterState: any[]=[];
-   
+    filterState: any[] = [];
+
     @ViewChild('dt') dt: Table;
     @ViewChild('op') overlayPanel: OverlayPanel;
     @ViewChildren('dropDown') dropDowns: QueryList<any>;
@@ -108,7 +111,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         this.onTouched = fn;
     }
 
-    fg = new FormGroup({}); // TODO this is for the filter controls that need to be embedded in the grid 
+    fg = new FormGroup({}); // TODO this is for the filter controls that need to be embedded in the grid
     private imagesPath: string;
 
     constructor(
@@ -130,7 +133,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
                 element.label = this._wcs.findLabelContentFromConfig(element.code, element.labelConfigs).text;
                 // Set field and header attributes. TurboTable expects these specific variables.
                 element['field'] = element.code;
-                element['header'] = element.label;    
+                element['header'] = element.label;
                 if (element.uiStyles.attributes.hidden) {
                     element['exportable'] = false;
                 } else {
@@ -155,7 +158,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
             customFilterConstraints['between'] = this.between;
             this.dt.filterConstraints = customFilterConstraints;
         }
-        
+
         this.paramState = this.element.paramState;
     }
 
@@ -251,11 +254,10 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
 
     }
 
-    isActive(index){
-        if (this.filterState[index]!='' && this.filterState[index]!= undefined) return true;
+    isActive(index) {
+        if (this.filterState[index] != '' && this.filterState[index] != undefined) return true;
         else return false;
     }
-
 
     getRowPath(col: ParamConfig, item: any) {
         return this.element.path + '/' + item.elemId + '/' + col.code;
@@ -285,7 +287,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     toggleFilter(event: any) {
         //console.log(event);
         this.showFilters = !this.showFilters;
-        
+
         // this.dt.reset();
     }
 
@@ -321,23 +323,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     }
 
     getAddtionalData(event: any) {
-        let elemPath;
-        for (var p in this.params) {
-            let param = this.params[p];
-            if (param.type.nested) {
-                if (param.uiStyles && param.uiStyles.attributes.alias == 'GridRowBody') {
-                    // // Check if data has to be extracted async'ly
-                    // if (param.uiStyles.attributes.asynchronous) {
-                    //     elemPath = this.element.path + '/' + event.data.elemId + '/' + param.code;
-                    // } else {
-                    event.data['nestedElement'] = event.data.nestedGridParam;
-                    // }
-                }
-            }
-        }
-        if (elemPath) {
-            this.pageSvc.processEvent(elemPath, '$execute', new GenericDomain(), 'GET');
-        }
+        event.data['nestedElement'] = this.element.collectionParams.find(ele => ele.path == this.element.path + '/' + event.data.elemId + '/' + ele.config.code);
     }
 
     resetMultiSelection() {
@@ -348,8 +334,8 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         let fieldType: string = event.field.type.name;
         let sortAs: string = event.field.uiStyles.attributes.sortAs;
         if (this.isSortAsNumber(fieldType, sortAs)) {
-            this.sortInternal(fieldValue =>  {
-                if(fieldValue != null && fieldValue !== undefined)
+            this.sortInternal(fieldValue => {
+                if (fieldValue != null && fieldValue !== undefined)
                     return Number(fieldValue);
                 else
                     return null;
@@ -357,7 +343,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         }
         else if (this.isSortAsDate(fieldType, sortAs)) {
             this.sortInternal(fieldValue => {
-                if(fieldValue != null && fieldValue !== undefined)
+                if (fieldValue != null && fieldValue !== undefined)
                     return new Date(fieldValue);
                 else
                     return null;
@@ -366,10 +352,10 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         else {
             // all else are sorted as string using localeCompare
             this.value.sort((item1: any, item2: any) => {
-                let value1 = item1[event.field.code] !== undefined ? item1[event.field.code]: null;
-                let value2 = item2[event.field.code] !== undefined ? item2[event.field.code]: null;
+                let value1 = item1[event.field.code] !== undefined ? item1[event.field.code] : null;
+                let value2 = item2[event.field.code] !== undefined ? item2[event.field.code] : null;
 
-                if(value1 == null && value2 == null)
+                if (value1 == null && value2 == null)
                     return 0;
                 if (value1 == null && value2 != null)
                     return -1 * event.order;
@@ -387,11 +373,11 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
             let value1 = itemCallback(item1[event.field.code]);
             let value2 = itemCallback(item2[event.field.code]);
 
-            if(value1 == null && value2 == null)
+            if (value1 == null && value2 == null)
                 return 0;
-            if(value1 == null && value2 != null) 
+            if (value1 == null && value2 != null)
                 return -1 * event.order;
-            if(value1 != null && value2 == null)
+            if (value1 != null && value2 == null)
                 return 1 * event.order;
 
             if (value1 > value2) {
@@ -420,14 +406,14 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
 
     // between(value: any, filter: any[]){
 
-    between(value: any, filter: any){    
+    between(value: any, filter: any) {
 
-        return moment(filter).isSame(value, 'day'); 
+        return moment(filter).isSame(value, 'day');
         // if(value){
         // var valueDate1 = new Date(value.toDateString());
         // var valueDate2 = new Date (filter.toDateString());
         // return valueDate1.valueOf() == valueDate2.valueOf();}
-     
+
         // return (value >= filter[0] && value<=filter[1])
     }
 
@@ -476,16 +462,15 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         dt.filter(e.target.value, field, filterMatchMode);
     }
 
-
     clearFilter(txt: any, dt: Table, field: string, index) {
         txt.value = '';
         dt.filter(txt.value, field, "");
     }
 
     clearAll() {
-        this.filterState=[];
+        this.filterState = [];
         this.dt.reset();
-      }
+    }
 
     paginate(e: any) {
         if (this.totalRecords != 0) {
@@ -517,34 +502,33 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         let selectedDropDownIsOpen = e.isOpen;
         let selectedDropDownState = e.state;
 
-        if(this.dropDowns)
-        this.dropDowns.toArray().forEach((item) => {
-            if (!item.selectedItem) {
-                item.isOpen = false;
-                item.state = 'closedPanel';
-            }
-        });
+        if (this.dropDowns)
+            this.dropDowns.toArray().forEach((item) => {
+                if (!item.selectedItem) {
+                    item.isOpen = false;
+                    item.state = 'closedPanel';
+                }
+            });
 
         e.isOpen = !selectedDropDownIsOpen;
 
         if (selectedDropDownState == 'openPanel') {
             e.state = 'closedPanel';
-            if(!this.mouseEventSubscription.closed)
-            this.mouseEventSubscription.unsubscribe();
+            if (!this.mouseEventSubscription.closed)
+                this.mouseEventSubscription.unsubscribe();
         }
         else {
             e.state = 'openPanel';
-            if(this.dropDowns && (this.mouseEventSubscription == undefined || this.mouseEventSubscription.closed))
-            this.mouseEventSubscription =
-                Observable.fromEvent(document, 'click').filter((event: any) => 
-                !this.isClickedOnDropDown(this.dropDowns.toArray(), event.target)).first().subscribe(() => 
-                {
-                    this.dropDowns.toArray().forEach((item) => {
-                        item.isOpen = false;
-                        item.state = 'closedPanel';
-                    });
-                    this.cd.detectChanges();
-                });
+            if (this.dropDowns && (this.mouseEventSubscription == undefined || this.mouseEventSubscription.closed))
+                this.mouseEventSubscription =
+                    Observable.fromEvent(document, 'click').filter((event: any) =>
+                        !this.isClickedOnDropDown(this.dropDowns.toArray(), event.target)).first().subscribe(() => {
+                            this.dropDowns.toArray().forEach((item) => {
+                                item.isOpen = false;
+                                item.state = 'closedPanel';
+                            });
+                            this.cd.detectChanges();
+                        });
         }
         e.selectedItem = false;
         this.cd.detectChanges();
@@ -552,20 +536,20 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
 
     export() {
         let exportDt = this.dt;
-        let dtCols = this.params.filter(col => (col.type != null && ParamUtils.isKnownDateType(col.type.name)!= null))
-        if(dtCols != null && dtCols.length > 0) {
+        let dtCols = this.params.filter(col => (col.type != null && ParamUtils.isKnownDateType(col.type.name) != null))
+        if (dtCols != null && dtCols.length > 0) {
             let tblData: any[] = exportDt.filteredValue || exportDt.value;
             tblData.forEach(row => {
                 for (var key in row) {
                     if (row.hasOwnProperty(key)) {
-                        if(row[key] instanceof Date) {
+                        if (row[key] instanceof Date) {
                             let col = dtCols.filter(cd => cd.code == key)
-                            if(col != null && col.length > 0){
+                            if (col != null && col.length > 0) {
                                 row[key] = this.dtFormat.transform(row[key], col[0].uiStyles.attributes.datePattern, col[0].type.name);
                             }
                         }
                     }
-                } 
+                }
             });
             exportDt.filteredValue = tblData;
         }
@@ -573,8 +557,8 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     }
 
     ngOnDestroy() {
-        if(this.mouseEventSubscription)   
-        this.mouseEventSubscription.unsubscribe();
+        if (this.mouseEventSubscription)
+            this.mouseEventSubscription.unsubscribe();
         this.cd.detach();
     }
 }

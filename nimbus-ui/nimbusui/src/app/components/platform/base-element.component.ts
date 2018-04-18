@@ -17,7 +17,7 @@
 'use strict';
 
 import { Component, Input } from '@angular/core';
-import { Param } from '../../shared/app-config.interface';
+import { Param } from '../../shared/Param';
 import { WebContentSvc } from '../../services/content-management.service';
 import { LabelConfig } from './../../shared/app-config.interface';
 import { ValidationUtils } from './validators/ValidationUtils';

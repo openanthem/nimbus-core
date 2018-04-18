@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.antheminc.oss</groupId>
 	<artifactId>nimbus-parent</artifactId>
-	<version>1.0.0.M5-SNAPSHOT</version>
+	<version>1.0.0.M6-SNAPSHOT</version>
 	<name>nimbus-parent</name>
 	<packaging>pom</packaging>
    
@@ -69,7 +69,7 @@
         <nexus-staging-maven-plugin.version>1.6.7</nexus-staging-maven-plugin.version>
         <!-- nimbus-core -->
        	<parentDir>../nimbus-parent</parentDir>
-        <nimbus.version>1.0.0.M5-SNAPSHOT</nimbus.version>
+        <nimbus.version>1.0.0.M6-SNAPSHOT</nimbus.version>
         <nimbus.core.version>${nimbus.version}</nimbus.core.version>
         <nimbus.ui.version>${nimbus.version}</nimbus.ui.version>
         <nimbus.dsl.version>${nimbus.core.version}</nimbus.dsl.version> <!-- DSL matches core's version -->
@@ -328,13 +328,13 @@
                 <artifactId>nimbus-starter</artifactId>
                 <version>${nimbus.starter.version}</version>
             </dependency>
-            <dependency>
+            <!-- <dependency>
 			    <groupId>org.springframework.boot</groupId>
 			    <artifactId>spring-boot-devtools</artifactId>
 			    <optional>true</optional>
 			    <scope>runtime</scope>
 			    <version>${spring.boot.version}</version>
-			</dependency>
+			</dependency> -->
         </dependencies>
     </dependencyManagement>
 

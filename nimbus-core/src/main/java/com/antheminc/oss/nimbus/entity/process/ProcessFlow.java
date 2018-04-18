@@ -32,7 +32,7 @@ import lombok.Setter;
 @Domain(value = "processFlow")
 @Repo(value = Database.rep_mongodb)
 @Getter @Setter
-public class ProcessFlow extends AbstractEntity.IdString implements Serializable{
+public class ProcessFlow extends AbstractEntity.IdLong implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private String processExecutionId;
 }

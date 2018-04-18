@@ -17,6 +17,8 @@ package com.antheminc.oss.nimbus.domain;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.Serializable;
+
 import org.junit.After;
 import org.springframework.mock.web.MockHttpServletRequest;
 
@@ -58,7 +60,7 @@ public abstract class AbstractFrameworkIngerationPersistableTests extends Abstra
 	protected static final String CORE_ASSOCIATEDPARAM_ROOT = PLATFORM_ROOT + "/" + CORE_ASSOCIATED_DOMAIN_ALIAS;
 	protected static final String VIEW_CEU_PARAM_ROOT = PLATFORM_ROOT + "/ceu_sampleassociatedentity";
 	
-	protected static String domainRoot_refId;
+	protected static Long domainRoot_refId;
 	
 	protected static final String BPM_CORE_DOMAIN_ALIAS = "bpmtestmodel";
 	protected static final String BPM_CORE_PARAM_ROOT = PLATFORM_ROOT + "/" + BPM_CORE_DOMAIN_ALIAS;
@@ -81,9 +83,9 @@ public abstract class AbstractFrameworkIngerationPersistableTests extends Abstra
 	
 	protected static final String SAMPLE_DOMAIN_ALIAS = "sample_entity";
 	
-	protected static String sampleEntity_refId;
+	protected static Long sampleEntity_refId;
 	
-	public synchronized String createOrGetDomainRoot_RefId() {
+	public synchronized Long createOrGetDomainRoot_RefId() {
 		if(domainRoot_refId!=null) 
 			return domainRoot_refId;
 		
@@ -95,7 +97,7 @@ public abstract class AbstractFrameworkIngerationPersistableTests extends Abstra
 		return domainRoot_refId;
 	}
 	
-	public synchronized String createOrGetSampleEntity_RefId() {
+	public synchronized Long createOrGetSampleEntity_RefId() {
 		final String VIEW_SAMPLE_ENTITY = PLATFORM_ROOT + "/" + SAMPLE_DOMAIN_ALIAS;
 		
 		if(sampleEntity_refId!=null) 

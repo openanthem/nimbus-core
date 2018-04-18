@@ -23,7 +23,6 @@ import { BreadcrumbComponent } from './components/platform/breadcrumb/breadcrumb
 import { BreadcrumbService } from './components/platform/breadcrumb/breadcrumb.service';
 import { HomeLayoutCmp } from './components/home/home-layout.component';
 import { StyleGuideCmp } from './styleguide/style-guide.component';
-import { MainLayoutCmp } from './components/home/main-layout.component';
 import { LoginLayoutCmp } from './components/login/login-layout.component';
 import { OrderablePickList } from './components/platform/form/elements/picklist.component';
 import { PageService } from './services/page.service';
@@ -38,12 +37,15 @@ import { HttpModule, BrowserXhr } from '@angular/http';
 import { ReactiveFormsModule }  from '@angular/forms';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { APP_BASE_HREF } from '@angular/common';
+import {MessagesModule} from 'primeng/messages';
+import {MessageModule} from 'primeng/message';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
     FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
     ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule  } from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
 import { NavLinkRouter } from './directives/nav-link-router.directive';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { WindowRefService } from './services/window-ref.service';
 
 // Platform Imports
 // Components
@@ -155,7 +157,9 @@ import {DateTimeFormatPipe} from './pipes/date.pipe';
         ProgressBarModule,
         ProgressSpinnerModule,
         AccordionModule,
-        GrowlModule
+        GrowlModule,
+        MessagesModule,
+        MessageModule
     ],
     declarations: [ AppComponent, STOMPStatusComponent, FlowWrapper, PageContent, PageNotfoundComponent, StaticText,
         Tile, Section, Header, Form, FormElement, InputText, ComboBox, RadioButton, Signature, DateControl, CheckBoxGroup,
@@ -168,17 +172,17 @@ import {DateTimeFormatPipe} from './pipes/date.pipe';
         BreadcrumbComponent, NavLinkRouter,
         Modal, ActionDropdown, ActionLink,
         GridMouseEventDirective,
-        HomeLayoutCmp, MainLayoutCmp, LoginCmp, LoginLayoutCmp, StyleGuideCmp, 
+        HomeLayoutCmp, LoginCmp, LoginLayoutCmp, StyleGuideCmp, 
         KeysPipe, LinkPipe, DateTimeFormatPipe, SelectItemPipe, MultiSelectListBox, 
         CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent, Calendar, NavMenuGlobal, LoaderComponent, MessageComponent
     ],
-    entryComponents: [ FlowWrapper, PageContent, PageNotfoundComponent, LoginCmp, MainLayoutCmp, HomeLayoutCmp],
+    entryComponents: [ FlowWrapper, PageContent, PageNotfoundComponent, LoginCmp, HomeLayoutCmp],
     providers: [ PageService, ConfigService, WebContentSvc, HttpClient,  HttpClientModule,
          CustomHttpClient, { provide: BrowserXhr, useClass: CustomBrowserXhr },
          { provide: HTTP_INTERCEPTORS, useClass: CustomHttpClientInterceptor, multi: true },
          { provide: LocationStrategy, useClass: HashLocationStrategy }, GridService,
          { provide: APP_BASE_HREF, useValue: ServiceConstants.APP_CONTEXT },
-         AuthenticationService, BreadcrumbService, LoaderService, FileService, LayoutService ],
+         AuthenticationService, BreadcrumbService, LoaderService, FileService, LayoutService, WindowRefService ],
     bootstrap: [ AppComponent ]
 })
 export class AppModule { }

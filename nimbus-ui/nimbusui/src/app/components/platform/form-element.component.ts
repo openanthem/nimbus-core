@@ -18,7 +18,8 @@ import { ValidationConstraint } from './../../shared/validationconstraints.enum'
 'use strict';
 import { Component, Input } from '@angular/core';
 import { FormGroup, AbstractControlDirective, NgModel } from '@angular/forms';
-import { Param, Constraint } from '../../shared/app-config.interface';
+import { Constraint } from '../../shared/app-config.interface';
+import { Param } from '../../shared/Param';
 
 var counter = 0;
 
@@ -66,7 +67,6 @@ export class FormElement {
     constructor() { }
 
     ngOnInit() {
-        //console.log(JSON.stringify(this.elements));
         if (this.element.config.uiStyles && this.element.config.uiStyles.attributes.controlId !== null) {
             if (Number(this.element.config.uiStyles.attributes.controlId) % 2 === 0) {
                 this.elementCss = this.elementCss + ' even';

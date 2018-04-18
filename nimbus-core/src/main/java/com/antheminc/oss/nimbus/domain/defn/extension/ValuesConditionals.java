@@ -27,7 +27,7 @@ import com.antheminc.oss.nimbus.domain.RepeatContainer;
 /**
  * 
  * @see com.antheminc.oss.nimbus.domain.defn.extension.ValuesConditional
- * @author Tony Lopez (AF42192)
+ * @author Tony Lopez
  *
  */
 @Documented

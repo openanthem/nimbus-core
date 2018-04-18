@@ -18,7 +18,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { AppBranding, Layout, FooterConfig } from '../../model/menu-meta.interface';
-import { Param } from '../../shared/app-config.interface';
+import { Param } from '../../shared/Param';
 import { LayoutService } from '../../services/layout.service';
 /**
  * \@author Dinakar.Meda

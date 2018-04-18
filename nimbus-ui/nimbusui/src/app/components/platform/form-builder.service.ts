@@ -20,7 +20,7 @@ import { Injectable } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, ValidatorFn, FormArray, FormControl,ValidationErrors } from '@angular/forms';
 
 import { CustomValidators } from './validators/custom.validators';
-import { Param } from '../../shared/app-config.interface';
+import { Param } from '../../shared/Param';
 import { ValidationUtils } from './validators/ValidationUtils';
 
 /**
@@ -53,7 +53,7 @@ export class FormElementsService {
         var checks: ValidatorFn[] = [];
         checks = ValidationUtils.buildStaticValidations(element);
         //if the form element's state is a collection we do not create a form group for it
-        if(element.type.nested && element.type.model.params.length>0 && !element.collection) {
+        if(element.type && element.config.type.nested && element.type.model.params.length>0 && !element.config.type.collection) {
           group[element.config.code] = this.createNewFormGroup(element);
           //create new formgroup and formcontrol to create checkboxes in form. this is for form binding. TODO validations binding
         } else {
@@ -76,7 +76,7 @@ export class FormElementsService {
       let param = element.type.model.params[i];
       var checks: ValidatorFn[] = [];
       checks = ValidationUtils.buildStaticValidations(element);
-      if (param.type.nested) {
+      if (param.config.type.nested) {
          fg.addControl(param.config.code, this.createNewFormGroup(param));
       } else {
           var leafState = this._getTypeSafeLeafState(param);

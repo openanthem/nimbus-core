@@ -51,11 +51,14 @@ import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
 import com.antheminc.oss.nimbus.domain.model.state.StateType;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
+import com.antheminc.oss.nimbus.domain.model.state.support.DefaultJsonParamSerializer;
 import com.antheminc.oss.nimbus.entity.Findable;
 import com.antheminc.oss.nimbus.support.Holder;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -63,6 +66,7 @@ import lombok.ToString;
  * @author Soham Chakravarti
  *
  */
+@JsonSerialize(using=DefaultJsonParamSerializer.class)
 @Getter @Setter
 public class DefaultParamState<T> extends AbstractEntityState<T> implements Param<T>, Findable<String>, Serializable {
 
@@ -83,6 +87,9 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	@JsonIgnore
 	private RemnantState<Boolean> enabledState = this.new RemnantState<>(true);
+	
+	@JsonIgnore
+	private RemnantState<Object> filterState = this.new RemnantState<>(null);
 	
 	@JsonIgnore
 	@SuppressWarnings("unchecked")
@@ -271,6 +278,28 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		return getAspectHandlers().getParamStateGateway()._get(this);
 	}
 	
+	public interface SetStateListener<T> {
+		default T preSetState(T state, String localLockId, ExecutionRuntime execRt) {
+			return state;
+		}
+		
+		default Action postSetState(Action change, T state, String localLockId, ExecutionRuntime execRt) {
+			return change;
+		}
+		
+		@Getter @RequiredArgsConstructor
+		public static class ListenerContext<T, X> {
+			private final T state;
+			private final X data;
+		}
+	}
+	
+	@JsonIgnore
+	protected SetStateListener<T> getSetStateListener() {
+		return null;
+	}
+
+	
 	@Override
 	//TODO: Temporary fix to disable active state check. JIRA NIM-9020 created to address this issue. 
 	// A separate copy method needs to be introduced to resolve the issue
@@ -278,11 +307,19 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		//if(!isActive() && state!=null && isStateInitialized())
 			//throw new InvalidConfigException("Param's state cannot be changed when inactive. param: "+this.getPath());
 
-		return changeStateTemplate((rt, h, lockId)->affectSetStateChange(state, rt, h, lockId));
+		return changeStateTemplate((rt, h, lockId)->affectSetStateChange(state, rt, h, lockId, getSetStateListener()));
 	}
 	
-	protected final Action affectSetStateChange(T state, ExecutionRuntime execRt, Holder<Action> h, String localLockId) {
-		state = preSetState(state);		
+	
+	protected final Action setState(T state, SetStateListener<T> cb) {
+		return changeStateTemplate((rt, h, lockId)->affectSetStateChange(state, rt, h, lockId, cb));
+	}
+	
+
+	
+	protected final <X> Action affectSetStateChange(T state, ExecutionRuntime execRt, Holder<Action> h, String localLockId, SetStateListener<T> cb) {
+		state = preSetState(state, localLockId, execRt, cb);
+		
 		boolean isLeaf = isLeafOrCollectionWithLeafElems();
 		final T localPotentialOldState = isLeaf ? getState() : null;
 		
@@ -319,15 +356,16 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 				emitEvent(a, this);
 		}
 		
-		postSetState(a, state);
-		return a;
+		return postSetState(a, localPotentialOldState, localLockId, execRt, cb);
 	}
 
 	
-	protected T preSetState(T state) {
-		return state;
+	protected T preSetState(T state, String localLockId, ExecutionRuntime execRt, SetStateListener<T> cb) {
+		return cb==null ? state : cb.preSetState(state, localLockId, execRt);
 	}
-	protected void postSetState(Action change, T state) {}
+	protected Action postSetState(Action change, T state, String localLockId, ExecutionRuntime execRt, SetStateListener<T> cb) {
+		return cb==null ? change : cb.postSetState(change, state, localLockId, execRt);
+	}
 	
 	
 	protected void triggerEvents() {
@@ -390,7 +428,6 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		if(getParentModel()!=null && getParentModel().isRoot()) {
 			return findIfNested();
 		}
-		
 		return getParentModel().getRootDomain();
 	}
 

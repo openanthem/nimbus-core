@@ -19,7 +19,7 @@ import { LabelConfig } from './../../../../shared/app-config.interface';
 import { BaseControlValueAccessor } from './control-value-accessor.component';
 import { Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, NgModel } from '@angular/forms';
-import { Param } from '../../../../shared/app-config.interface';
+import { Param } from '../../../../shared/Param';
 import { PageService } from '../../../../services/page.service';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { GenericDomain } from '../../../../model/generic-domain.model';

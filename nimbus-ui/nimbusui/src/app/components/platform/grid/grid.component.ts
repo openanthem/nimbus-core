@@ -20,7 +20,8 @@ import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Component, Input, Output, forwardRef, ViewChild, EventEmitter, ViewEncapsulation, ChangeDetectorRef, QueryList, ViewChildren } from '@angular/core';
 
 import { GenericDomain } from '../../../model/generic-domain.model';
-import { Param, ParamConfig } from '../../../shared/app-config.interface';
+import { ParamConfig } from '../../../shared/app-config.interface';
+import { Param } from '../../../shared/Param';
 import { PageService } from '../../../services/page.service';
 import { GridService } from '../../../services/grid.service';
 import { WebContentSvc } from '../../../services/content-management.service';
@@ -283,23 +284,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     }
 
     getAddtionalData(event: any) {
-        let elemPath;
-        for (var p in this.params) {
-            let param = this.params[p];
-            if (param.type.nested) {
-                if (param.uiStyles && param.uiStyles.attributes.alias == 'GridRowBody') {
-                    // // Check if data has to be extracted async'ly
-                    // if (param.uiStyles.attributes.asynchronous) {
-                    //     elemPath = this.element.path + '/' + event.data.elemId + '/' + param.code;
-                    // } else {
-                    event.data['nestedElement'] = event.data.nestedGridParam;
-                    // }
-                }
-            }
-        }
-        if (elemPath) {
-            this.pageSvc.processEvent(elemPath, '$execute', new GenericDomain(), 'GET');
-        }
+        event.data['nestedElement']= this.element.collectionParams.find(ele => ele.path == this.element.path +'/'+event.data.elemId+'/'+ ele.config.code);
     }
 
     resetMultiSelection() {
