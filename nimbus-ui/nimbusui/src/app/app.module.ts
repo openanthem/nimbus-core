@@ -23,7 +23,6 @@ import { BreadcrumbComponent } from './components/platform/breadcrumb/breadcrumb
 import { BreadcrumbService } from './components/platform/breadcrumb/breadcrumb.service';
 import { HomeLayoutCmp } from './components/home/home-layout.component';
 import { StyleGuideCmp } from './styleguide/style-guide.component';
-import { MainLayoutCmp } from './components/home/main-layout.component';
 import { LoginLayoutCmp } from './components/login/login-layout.component';
 import { OrderablePickList } from './components/platform/form/elements/picklist.component';
 import { PageService } from './services/page.service';
@@ -173,11 +172,11 @@ import {DateTimeFormatPipe} from './pipes/date.pipe';
         BreadcrumbComponent, NavLinkRouter,
         Modal, ActionDropdown, ActionLink,
         GridMouseEventDirective,
-        HomeLayoutCmp, MainLayoutCmp, LoginCmp, LoginLayoutCmp, StyleGuideCmp, 
+        HomeLayoutCmp, LoginCmp, LoginLayoutCmp, StyleGuideCmp, 
         KeysPipe, LinkPipe, DateTimeFormatPipe, SelectItemPipe, MultiSelectListBox, 
         CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent, Calendar, NavMenuGlobal, LoaderComponent, MessageComponent
     ],
-    entryComponents: [ FlowWrapper, PageContent, PageNotfoundComponent, LoginCmp, MainLayoutCmp, HomeLayoutCmp],
+    entryComponents: [ FlowWrapper, PageContent, PageNotfoundComponent, LoginCmp, HomeLayoutCmp],
     providers: [ PageService, ConfigService, WebContentSvc, HttpClient,  HttpClientModule,
          CustomHttpClient, { provide: BrowserXhr, useClass: CustomBrowserXhr },
          { provide: HTTP_INTERCEPTORS, useClass: CustomHttpClientInterceptor, multi: true },
