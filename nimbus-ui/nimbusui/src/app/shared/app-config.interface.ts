@@ -193,6 +193,7 @@ export class Message implements Serializable<Message, string> {
     text: string;
     context: string;
     messageArray: any[] = [];
+    life: number;
     
     
     deserialize( inJson ) {
@@ -203,20 +204,36 @@ export class Message implements Serializable<Message, string> {
         if(this.context !== undefined){
 
            let severity: string, summary: string, life: number;
-
+           
             switch (this.type) {               
 
                 case "SUCCESS": 
-                    severity = 'success'; summary = 'Success Message'; life = 3000;
+                    severity = 'success'; summary = 'Success Message';
+                    if(this.life != undefined)
+                        life = this.life;
+                    else    
+                        life = 3000;
                     break;
                 case "DANGER": 
-                    severity = 'error'; summary = 'Error Message'; life = 10000;
+                    severity = 'error'; summary = 'Error Message';
+                    if(this.life != undefined)
+                        life = this.life;
+                    else    
+                        life = 10000;
                     break; 
                 case "WARNING": 
-                    severity = 'warn'; summary = 'Warn Message'; life = 5000;
+                    severity = 'warn'; summary = 'Warn Message';
+                    if(this.life != undefined)
+                        life = this.life;
+                    else    
+                        life = 5000;
                     break;
                 case "INFO": 
-                    severity = 'info'; summary = 'Info Message'; life = 3000;
+                    severity = 'info'; summary = 'Info Message';
+                    if(this.life != undefined)
+                        life = this.life;
+                    else    
+                        life = 3000;
                     break;   
             }
     
@@ -723,7 +740,7 @@ export class ExecuteResponse implements Serializable<ExecuteResponse,string> {
     constructor(private configSvc: ConfigService) {}
     deserialize( inJson ) {
         this.result = [];
-        if ( inJson.result != null && inJson.result.length > 0) {
+        if ( inJson.result != null) {
             // tslint:disable-next-line:forin
             for ( const p in inJson.result ) {
                 this.result.push( new MultiOutput(this.configSvc).deserialize(inJson.result[p]) );
