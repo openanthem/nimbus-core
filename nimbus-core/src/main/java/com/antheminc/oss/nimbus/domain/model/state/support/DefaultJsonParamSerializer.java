@@ -193,7 +193,7 @@ public class DefaultJsonParamSerializer extends JsonSerializer<Param<?>> {
 		private void writeCollection(Param<?> p, boolean isRoot) throws IOException {
 			for(Param<?> ep : p.findIfNested().getParams()) {
 				gen.writeStartArray();
-				writeParamState(ep, false);
+				writeParamState(ep, isRoot);
 				gen.writeEndArray();					
 			}
 		}
@@ -203,8 +203,12 @@ public class DefaultJsonParamSerializer extends JsonSerializer<Param<?>> {
 		}
 	
 		private void writeWithin(Param<?> p, boolean isRoot, Supplier<Object> cb) throws IOException {
-			String fieldName = isRoot ? K_LEAF_STATE : p.getConfig().getBeanName(); 
+			String fieldName = getFieldNameForState(p, isRoot); 
 			writeObjectIfNotNull(fieldName, cb);
+		}
+		
+		private String getFieldNameForState(Param<?> p, boolean isRoot) {
+			return isRoot ? K_LEAF_STATE : p.getConfig().getBeanName(); 
 		}
 	}
 	
