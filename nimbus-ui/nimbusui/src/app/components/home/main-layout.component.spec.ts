@@ -145,97 +145,9 @@ describe('MainLayoutCmp', () => {
     expect(app.activeTheme).toEqual('testing');
   }));
 
-  it('ngoninit () should update themes', async(() => {
-    app.ngOnInit();
-    const theme = [{
-      link: 'styles/vendor/anthem.blue.theme.css', 
-      label: 'Blue Theme'
-    },
-    {
-      link: 'styles/vendor/anthem.black.theme.css', 
-      label: 'Black Theme'
-    }];
-    expect(app.themes).toEqual(theme);
-  }));
-
-  it('ngoninit should update app.branding', async(() => {
-    app.ngOnInit();
-    const test = {
-      topBar: {
-        headerMenus: 'theaderMenus',
-        branding: 'tbranding'
-      },
-      leftNavBar: 'leftNavBar',
-      footer: 'tfooter'
-    };
-    layoutService.parseLayoutConfig(test);
-    expect(app.branding).toEqual('tbranding');
-  }));
-
-  it('ngoninit should not update app.branding', async(() => {
-    app.ngOnInit();
-    layoutService.parseLayoutConfig(null);
-    expect(app.branding).toBeFalsy();
-  }));
-
-  it('ngoninit should not update app.branding if topBar.branding is null', async(() => {
-    app.ngOnInit();
-    const test = {
-      topBar: {
-        branding: null
-      }
-    };
-    layoutService.parseLayoutConfig(test);
-    expect(app.branding).toBeFalsy();
-  }));
-
-  it('ngoninit should call layoutservice getlayout', async(() => {
-    spyOn(layoutService, 'getLayout').and.callThrough();
-    app.ngOnInit();
-    layoutService.parseLayoutConfig(null);
-    expect(layoutService.getLayout).toHaveBeenCalled();
-  }));
-
-  it('logut() should update the window.location.href', async(() => {
+  it('logout() should update the window.location.href', async(() => {
     app.logout();
     expect(windowRef.window.location.href.includes('logout')).toBeTruthy();
-  }));
-
-});
-
-describe('mainlayoutcomp', () => {
-  beforeEach(
-    async(() => {
-      TestBed.configureTestingModule({
-        declarations: [MainLayoutCmp, HeaderGlobal, Paragraph, Value, Link],
-        imports: [HttpModule, RouterTestingModule, HttpClientModule],
-        providers: [
-          {provide: LayoutService, useClass: MockLayoutService},
-          {provide: WindowRefService, useClass: MockWindowRefService},
-          {provide: AuthenticationService, useClass: MockAuthenticationService},
-          {provide: ActivatedRoute, useClass: MockActivatedRoute1},
-          CustomHttpClient,
-          WebContentSvc,
-          PageService,
-          LoaderService,
-          ConfigService,
-          BreadcrumbService
-        ]
-      }).compileComponents();
-      fixture = TestBed.createComponent(MainLayoutCmp);
-      app = fixture.debugElement.componentInstance;
-      layoutService = TestBed.get(LayoutService);
-      authenticationService = TestBed.get(AuthenticationService);
-      windowRef = TestBed.get(WindowRefService);
-      route = TestBed.get(ActivatedRoute);
-    })
-  );
-
-  it('ngoninit should not call layoutservice.getlayout()', async(() => {
-    spyOn(layoutService, 'getLayout').and.callThrough();
-    app.ngOnInit();
-    layoutService.parseLayoutConfig(null);
-    expect(layoutService.getLayout).not.toHaveBeenCalled();
   }));
 
 });

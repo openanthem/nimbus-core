@@ -30,7 +30,8 @@ import { Param } from '../../shared/Param';
  * 
  */
 @Component({
-    templateUrl: './domain-flow.component.html'
+    templateUrl: './domain-flow.component.html',
+    providers: [ LayoutService ]
 })
 
 export class DomainFlowCmp {
@@ -43,9 +44,7 @@ export class DomainFlowCmp {
 
     constructor(private _pageSvc: PageService, private layoutSvc: LayoutService,
             private _route: ActivatedRoute, private _router: Router) {
-    }
 
-    ngOnInit() {
         this.layoutSvc.layout$.subscribe(
             data => {
                 let layout: Layout = data;
@@ -69,6 +68,9 @@ export class DomainFlowCmp {
             }
         });
 
+    }
+
+    ngOnInit() {
         this._route.data.subscribe((data: { layout: string }) => {
             let layout: string = data.layout;
             if (layout) {

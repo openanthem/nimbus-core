@@ -33,7 +33,8 @@ import { WindowRefService } from '../../services/window-ref.service';
  * 
  */
 @Component({
-    templateUrl: './main-layout.component.html'
+    templateUrl: './main-layout.component.html',
+    providers: [ LayoutService ]
 })
 
 export class MainLayoutCmp {
@@ -76,31 +77,6 @@ export class MainLayoutCmp {
             if (themeLink) {
                 themeLink.href = value;
             }
-        }
-    }
-
-    ngOnInit() {
-        // initialize
-        this.themes.push({link:'styles/vendor/anthem.blue.theme.css',label:'Blue Theme'});
-        this.themes.push({link:'styles/vendor/anthem.black.theme.css',label:'Black Theme'});
-
-        this.layoutSvc.layout$.subscribe(
-            data => {
-                let layout: Layout = data;
-                if(layout != null ) {
-                    if(layout.topBar != null && layout.topBar.branding != null) {
-                        this.branding = {} as AppBranding;
-                        this.branding = layout.topBar.branding;
-                        this.topMenuItems = layout.topBar.headerMenus;
-                    }
-                    this.leftMenuItems = layout.leftNavBar;
-                    this.footer = layout.footer;
-                }
-                //this._router.navigate([this.body['defaultFlow']], { relativeTo: this._route });
-            }
-        );
-        if(this._route.data['value']['layout'] != null) {
-            this.layoutSvc.getLayout(this._route.data['value']['layout']);
         }
     }
 

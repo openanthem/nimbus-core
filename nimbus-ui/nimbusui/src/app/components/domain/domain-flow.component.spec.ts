@@ -30,7 +30,6 @@ class MockLayoutService {
 
   getLayout(a) {    }
   parseLayoutConfig(result) {
-    // console.log('parseLayoutConfig', result);
     this.layout$.next(result);
   }
 }
@@ -130,32 +129,6 @@ describe('DomainFlowCmp', () => {
 
   it('should create the app', async(() => {
     expect(app).toBeTruthy();
-  }));
-
-  it('ngOnInit() should update leftMenuItemd, subHeaders, topMenuItems', async(() => {
-    spyOn(document, 'getElementById').and.returnValue({ 
-        classList: {
-            remove: () => {
-            },
-            add: () => {
-
-            }
-        }
-     });
-    const res = {
-      leftNavBar: 'tleftNavBar',
-      subHeaders: 'tsubHeaders',
-      topBar: {
-        headerMenus: 'theaderMenus',
-        subHeaders: 'ttsubHeaders'
-      }
-    };
-    app.ngOnInit();
-    layoutservice.parseLayoutConfig(res);
-    expect(app.leftMenuItems).toEqual('tleftNavBar');
-    expect(app.subHeaders).toEqual('ttsubHeaders');
-    expect(app.topMenuItems).toEqual('theaderMenus');
-    expect(document.getElementById).toHaveBeenCalled();
   }));
 
   it('ngOnInit() 123123 should not update main-content', async(() => {
