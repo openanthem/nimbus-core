@@ -16,19 +16,13 @@
  */
 'use strict';
 import { LoaderService } from './loader.service';
-import { ConfigService } from './config.service';
+import { ConfigService, ViewConfig } from './config.service';
 import { Action, HttpMethod, Behavior } from './../shared/command.enum';
 import { Injectable, EventEmitter } from '@angular/core';
 import { ServiceConstants } from './service.constants';
-import { Validation, ViewConfig,
-        Model,
-        ModelEvent,
-        Page,
-        ParamConfig,
-        Type,
-        Result, ViewRoot
-} from '../shared/app-config.interface';
-import {Param} from '../shared/Param';
+import { ParamConfig, Validation } from '../shared/param-config';
+import { ModelEvent, Page, Result, ViewRoot } from '../shared/app-config.interface';
+import { Param, Model, Type } from '../shared/param-state';
 import { CustomHttpClient } from './httpclient.service';
 
 import { Subject } from 'rxjs/Subject';

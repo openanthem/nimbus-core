@@ -17,8 +17,9 @@
 'use strict';
 import { WebContentSvc } from './content-management.service';
 import { Component, EventEmitter, Injectable } from '@angular/core';
-import { Model, Result, UiAttribute, ViewRoot } from '../shared/app-config.interface';
-import { Param } from '../shared/Param';
+import { Result, ViewRoot } from '../shared/app-config.interface';
+import { UiAttribute } from '../shared/param-config';
+import { Param, Model } from '../shared/param-state';
 import { ServiceConstants } from './service.constants';
 import { PageService } from './page.service';
 import { ConfigService } from './config.service';

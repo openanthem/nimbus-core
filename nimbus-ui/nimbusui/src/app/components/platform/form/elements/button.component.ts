@@ -20,7 +20,7 @@ import { Component, Input, Output, EventEmitter, ViewEncapsulation } from '@angu
 import { FormGroup } from '@angular/forms';
 import { Location } from '@angular/common';
 import { GenericDomain } from './../../../../model/generic-domain.model';
-import { Param } from '../../../../shared/Param';
+import { Param } from '../../../../shared/param-state';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { PageService } from '../../../../services/page.service';
 import { ServiceConstants } from './../../../../services/service.constants';

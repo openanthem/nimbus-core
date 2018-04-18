@@ -28,7 +28,10 @@ import { PageService } from '../services/page.service';
 import { GridService } from '../services/grid.service';
 import { ParamUtils } from './param-utils';
 import { Converter } from './object.conversion';
-import { Serializable, Type, Message, Values, ParamConfig, CardDetailsGrid } from './app-config.interface';
+import { Serializable } from './serializable';
+import { ParamConfig } from './param-config';
+import { Message } from './message';
+import { CardDetailsGrid } from './card-details';
 
 export class Param implements Serializable<Param, string> {
     configId: string;
@@ -188,6 +191,52 @@ export class Param implements Serializable<Param, string> {
         if (typeof inJson.activeValidationGroups ! == 'undefined') {
             this.activeValidationGroups = inJson.activeValidationGroups;
         }
+        
+        return this;
+    }
+}
+
+export class Values implements Serializable<Values, string> {
+    code: string;
+    label: string;
+    desc: string;
+
+    deserialize( inJson ) {
+       var obj = this;
+       obj = Converter.convert(inJson,obj);
+       return obj;
+    }
+}
+
+export class Model implements Serializable<Model, string> {
+    params: Param[];
+
+    constructor(private configSvc: ConfigService) {}
+
+    deserialize( inJson, path ) {
+        this.params = [];
+        for ( var p in inJson.params ) {
+            if(!ParamUtils.isEmpty(inJson.params[p])) {
+                //param when null means that there is an @Ignore(event = websocket) on the parameter
+                this.params.push( new Param(this.configSvc).deserialize( inJson.params[p], path ) );
+            }
+        }
+        return this;
+    }
+}
+
+export class Type implements Serializable<Type, string> {
+    model: Model;
+
+    constructor(private configSvc: ConfigService) {}
+
+    deserialize( inJson, path ) {        
+ 
+            if (inJson.model  != null) {
+                this.model = new Model(this.configSvc).deserialize( inJson.model, path );
+            } else if (inJson.modelConfig != null) {
+                this.model = new Model(this.configSvc).deserialize( inJson.modelConfig, path);
+            }
         
         return this;
     }

@@ -34,13 +34,13 @@ import { WebContentSvc } from '../../../services/content-management.service';
 import { DateTimeFormatPipe } from '../../../pipes/date.pipe';
 import { BaseElement } from './../base-element.component';
 import { GenericDomain } from '../../../model/generic-domain.model';
-import { ParamConfig } from '../../../shared/app-config.interface';
+import { ParamConfig } from '../../../shared/param-config';
 import { PageService } from '../../../services/page.service';
 import { GridService } from '../../../services/grid.service';
 import { ServiceConstants } from './../../../services/service.constants';
 import { SortAs, GridColumnDataType } from './sortas.interface';
 import { ActionDropdown } from './../form/elements/action-dropdown.component';
-import { Param } from '../../../shared/Param';
+import { Param } from '../../../shared/param-state';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     provide: NG_VALUE_ACCESSOR,

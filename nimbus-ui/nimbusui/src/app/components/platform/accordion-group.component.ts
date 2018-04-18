@@ -20,7 +20,7 @@ import { Accordion } from './accordion.component';
 import { BaseElement } from './base-element.component';
 import { WebContentSvc } from '../../services/content-management.service';
 import { trigger,state,style,transition,animate,keyframes } from '@angular/animations';
-import { Param } from './../../shared/Param';
+import { Param } from './../../shared/param-state';
 
 /**
  * \@author Dinakar.Meda
