@@ -13,14 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.support.pojo.reflection;
+package com.antheminc.oss.nimbus.support.pojo;
 
 import java.lang.reflect.Method;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.InvalidConfigException;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.ValueAccessor;
 import com.antheminc.oss.nimbus.support.JustLogit;
-import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandler;
 
 /**
  * @author Soham Chakravarti
@@ -30,8 +30,12 @@ public class JavaBeanHandlerReflection implements JavaBeanHandler {
 
 	private JustLogit logit = new JustLogit(getClass());
 	
-	@SuppressWarnings("unchecked")
 	@Override
+	public <T> T getValue(ValueAccessor va, Object target) {
+		return getValue(va.getReadMethod(), target);
+	}
+	
+	@SuppressWarnings("unchecked")
 	public <T> T getValue(Method readMethod, Object target) {
 		try {
 			return (target == null) ? null : (T)readMethod.invoke(target);
@@ -42,6 +46,10 @@ public class JavaBeanHandlerReflection implements JavaBeanHandler {
 	}
 	
 	@Override
+	public <T> void setValue(ValueAccessor va, Object target, T value) {
+		setValue(va.getWriteMethod(), target, value);
+	}
+	
 	public <T> void setValue(Method writeMethod, Object target, T value) {
 		logit.trace(()->"setValue@enter -> writeMethod: "+writeMethod+" target: "+target+" value: "+value);
 		

@@ -15,7 +15,8 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state;
 
-import java.beans.PropertyDescriptor;
+import java.lang.invoke.MethodHandle;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -39,6 +40,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * @author Soham Chakravarti
@@ -92,6 +94,23 @@ public interface EntityState<T> {
 	boolean isMapped();
 	
 	Mapped<T, ?> findIfMapped();
+	
+	@Getter @RequiredArgsConstructor @ToString
+	public static class ValueAccessor {
+		@JsonIgnore
+		final private Method readMethod;
+		
+		@JsonIgnore
+		final private Method writeMethod;
+
+		
+		@JsonIgnore
+		final private MethodHandle readMethodHandle;
+		
+		@JsonIgnore
+		final private MethodHandle writeMethodHandle;
+		
+	}
 	
 	public interface Mapped<T, M> extends EntityState<T> {
 		
@@ -354,8 +373,14 @@ public interface EntityState<T> {
 //			return null;
 //		}
 		
+//		@JsonIgnore
+//		PropertyDescriptor getPropertyDescriptor();
+		
+//		@JsonIgnore
+//		MethodHandle[] getMethodHandles();
+
 		@JsonIgnore
-		PropertyDescriptor getPropertyDescriptor();
+		ValueAccessor getValueAccessor();
 		
 		@JsonIgnore
 		boolean isActive();

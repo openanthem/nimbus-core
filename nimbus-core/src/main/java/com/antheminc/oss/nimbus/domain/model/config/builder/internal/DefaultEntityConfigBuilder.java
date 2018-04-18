@@ -16,6 +16,7 @@
 package com.antheminc.oss.nimbus.domain.model.config.builder.internal;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +37,9 @@ import com.antheminc.oss.nimbus.domain.model.config.builder.EntityConfigBuilder;
 import com.antheminc.oss.nimbus.domain.model.config.builder.EntityConfigVisitor;
 import com.antheminc.oss.nimbus.domain.model.config.internal.DefaultModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.internal.DefaultParamConfig;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.ValueAccessor;
 import com.antheminc.oss.nimbus.support.pojo.GenericUtils;
+import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandlerUtils;
 
 import lombok.Getter;
 
@@ -93,7 +96,8 @@ public class DefaultEntityConfigBuilder extends AbstractEntityConfigBuilder impl
 		if(fields==null) return mConfig;
 		
 		fields.stream()
-			.filter((f)-> !f.isSynthetic())
+			.filter(f->!f.isSynthetic())
+			.filter(f->!Modifier.isStatic(f.getModifiers()))
 			.forEach((f)->{
 				ParamConfig<?> p = buildParam(mConfig, f, visitedModels);
 				mConfig.templateParamConfigs().add(p);
@@ -139,6 +143,9 @@ public class DefaultEntityConfigBuilder extends AbstractEntityConfigBuilder impl
 		
 		// trigger event
 		pConfig.onCreateEvent();
+		
+		ValueAccessor va = JavaBeanHandlerUtils.constructValueAccessor(mConfig.getReferredClass(), pConfig.getBeanName());
+		type.setValueAccessor(va);
 		
 		return pConfig;
 	}
