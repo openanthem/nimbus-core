@@ -51,11 +51,11 @@ public class DefaultJsonParamSerializer extends JsonSerializer<Param<?>> {
 	private static final String K_TYPE = "type";
 	private static final String K_VALUES = "values";
 	
-	private static final String K_IS_COL = "collection";
+	//private static final String K_IS_COL = "collection";
 	private static final String K_IS_COL_ELEM = "collectionElem";
 	private static final String K_IS_ENABLED = "enabled";
 	private static final String K_IS_VISIBLE = "visible";
-	private static final String K_IS_NESTED = "nested";
+	//private static final String K_IS_NESTED = "nested";
 	
 	private static final ThreadLocal<String> TH_PATH = new ThreadLocal<>();
 	
@@ -135,12 +135,9 @@ public class DefaultJsonParamSerializer extends JsonSerializer<Param<?>> {
 		}
 		
 		private void writeLeafStateConditionally(Param<?> p) throws IOException {
-			Object o = p.getLeafState();
-			if(o==null)
-				return;
-			
-			if(p.isLeaf() || hasGrid(p))
-				gen.writeObjectField(K_LEAF_STATE, o);
+			if(p.isLeaf() || hasGrid(p)) {
+				writeSyntheticState(p);
+			}
 		}
 		
 		private boolean hasGrid(Param<?> p) {
@@ -154,5 +151,62 @@ public class DefaultJsonParamSerializer extends JsonSerializer<Param<?>> {
 			
 			return colParam.getConfig().getUiStyles().getAnnotation().annotationType()==Grid.class;
 		}
+		
+		private void writeSyntheticState(Param<?> p) throws IOException {
+			//gen.writeStartObject();
+			writeParamState(p, true);
+			//gen.writeEndObject();
+		}
+		
+		private void writeParamState(Param<?> p, boolean isRoot) throws IOException {
+			// unmapped
+			if(!p.isMapped()) {
+				writeWithin(p, isRoot, p::getState);
+				return;
+			}
+			
+			// mapped: leaf
+			if(p.isLeafOrCollectionWithLeafElems()) {
+				writeLeafOrCollectionWithLeafElements(p, isRoot);
+				return;
+			}
+			
+			// mapped: nested
+			if(p.findIfNested()==null || p.findIfNested().templateParams().isNullOrEmpty())
+				return;
+			
+			// mapped: collection
+			if(p.isCollection()) {
+				writeCollection(p, isRoot);
+				return;
+			}
+			
+			// mapped: nested
+			for(Param<?> cp : p.findIfNested().getParams()) {
+				if(cp.isLeafOrCollectionWithLeafElems()) 
+					writeLeafOrCollectionWithLeafElements(cp, false);
+				else 
+					writeParamState(cp, false);
+			}
+		}
+
+		private void writeCollection(Param<?> p, boolean isRoot) throws IOException {
+			for(Param<?> ep : p.findIfNested().getParams()) {
+				gen.writeStartArray();
+				writeParamState(ep, false);
+				gen.writeEndArray();					
+			}
+		}
+		
+		private void writeLeafOrCollectionWithLeafElements(Param<?> p, boolean isRoot) throws IOException {
+			writeWithin(p, isRoot, p::getState);
+		}
+	
+		private void writeWithin(Param<?> p, boolean isRoot, Supplier<Object> cb) throws IOException {
+			String fieldName = isRoot ? K_LEAF_STATE : p.getConfig().getBeanName(); 
+			writeObjectIfNotNull(fieldName, cb);
+		}
 	}
+	
+
 }
