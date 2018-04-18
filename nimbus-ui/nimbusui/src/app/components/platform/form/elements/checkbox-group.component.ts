@@ -18,7 +18,7 @@
 import { ControlValueAccessor } from '@angular/forms/src/directives';
 import { Component, Input, Output, EventEmitter,forwardRef, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { Param } from '../../../../shared/app-config.interface';
+import { Param } from '../../../../shared/Param';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { PageService } from '../../../../services/page.service';
 import { ServiceConstants } from '../../../../services/service.constants';

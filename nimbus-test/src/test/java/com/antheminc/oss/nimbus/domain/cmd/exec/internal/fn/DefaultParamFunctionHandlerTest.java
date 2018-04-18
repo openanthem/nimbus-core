@@ -20,6 +20,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -52,7 +53,7 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 
 	@Test
 	public void t01_get_core() {
-		String refId = createOrGetDomainRoot_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
 		MockHttpServletRequest fnReq = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(refId)
 					.addAction(Action._get)
 					.addParam(Constants.KEY_FUNCTION.code, "param")
@@ -71,7 +72,7 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 
 	@Test
 	public void t02_get_view_mapsTo() {
-		String refId = createOrGetDomainRoot_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
 		MockHttpServletRequest fnReq = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
 					.addAction(Action._get)
 					.addParam(Constants.KEY_FUNCTION.code, "param")
@@ -89,7 +90,7 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 	
 	@Test
 	public void t03_arg_findParamByPath() {
-		String refId = createOrGetDomainRoot_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
 		MockHttpServletRequest fnReq = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
 					.addAction(Action._get)
 					.addParam(Constants.KEY_FUNCTION.code, "param")
@@ -106,7 +107,7 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 	
 	@Test
 	public void t04_arg_getElem_index() {
-		String refId = createOrGetDomainRoot_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
 		
 		// add collection in core
 		MockHttpServletRequest updateReq = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(refId)
@@ -139,7 +140,7 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 	
 	@Test
 	public void t05_assign_state_set_add_new() {
-		String refId = createOrGetDomainRoot_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
 
 		// assign for add
 		MockHttpServletRequest fnAssignReq = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
@@ -188,7 +189,7 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 	
 	@Test
 	public void t06_assign_by_addButton() {
-		String refId = createOrGetDomainRoot_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
 		
 		// assign for add
 		MockHttpServletRequest fnAssignReq = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
@@ -200,8 +201,8 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 		assertNotNull(fnAssignResp);
 		
 		// add value to mapsTo core to see effect in mapped transient
-		MockHttpServletRequest updateReq = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(refId)
-				.addNested("/attr_list_2_NestedEntity/0")
+		MockHttpServletRequest updateReq = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
+				.addNested("/page_red/tile/vt_attached_convertedNestedEntity/.m")
 				.addAction(Action._update)
 				.getMock();
 		
@@ -211,6 +212,15 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 		
 		Object updateResp = controller.handlePut(updateReq, null, jsonPayload);
 		assertNotNull(updateResp);
+		
+		// call flush to simulate save call
+		MockHttpServletRequest fnReq_flush = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
+				.addNested("/page_red/tile/vt_attached_convertedNestedEntity/")
+				.addAction(Action._get)
+				.addParam(Constants.KEY_FUNCTION.code, "param")
+				.addParam(Constants.KEY_FN_PARAM_ARG_EXPR.code, "flush()")
+				.getMock();
+		controller.handleGet(fnReq_flush, null);
 		
 		// get fn=param
 		MockHttpServletRequest fnReq = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
@@ -230,7 +240,7 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 	
 	@Test
 	public void t07_assign_addForm_addCore_assignEdit_updateExisting() {
-		String refId = createOrGetDomainRoot_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
 		
 		// user clicks add button :: assign for add 
 		MockHttpServletRequest fnAssignReq = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
@@ -248,8 +258,8 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 		String jsonFormPayload = converter.write(form);
 		
 		MockHttpServletRequest submitFormReq = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
-				.addNested("/page_red/tile/vt_attached_convertedNestedEntity")
-				.addAction(Action._update)
+				.addNested("/page_red/tile/vt_attached_convertedNestedEntity/saveButton")
+				.addAction(Action._replace)
 				.getMock();
 		
 		Object submitFormResp = controller.handlePut(submitFormReq, null, jsonFormPayload);
@@ -315,7 +325,7 @@ public class DefaultParamFunctionHandlerTest extends AbstractFrameworkIngeration
 	
 	@Test
 	public void t08_assign_existing_delete() {
-		String refId = createOrGetDomainRoot_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
 		
 		// add value to mapsTo core
 		List<ConvertedNestedEntity> nestedCol = new ArrayList<>();

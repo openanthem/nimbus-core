@@ -34,7 +34,7 @@ import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnSt
  * when new <tt>values</tt> are updated. If false, the handler will reset the state of the <tt>targetParam</tt>
  * only when the existing state does not exist within the new updated set of <tt>values</tt>.</p>
  * 
- * @author Tony Lopez (AF42192)
+ * @author Tony Lopez
  * @see com.antheminc.oss.nimbus.domain.defn.extension.ValuesConditional
  * @see com.antheminc.oss.nimbus.domain.model.state.extension.AbstractValuesConditionalStateEventHandler
  */

@@ -37,21 +37,21 @@ import lombok.Setter;
 public class GenericResolverTest {
 
 	@Getter @Setter
-	public static class Base<ID extends Serializable, A extends Address<ID>> {
+	public static class Base<ID extends Serializable, A extends Address> {
 		private String id;
 		private String[] names;
 		private ID[] idArray;
 		
 		private Set<A> addresses;
 		private A oneAddress;
-		private Address<String> nonCollectionParameterizedField;
+		private Address nonCollectionParameterizedField;
 		private Set<? extends A> wildcardAddresses;
 		
 		private List<Long> longList;
 	}
 	
 	@Getter @Setter
-	public static class SubClass<T extends Collection<E>, E> extends Base<String, Address.IdString> {
+	public static class SubClass<T extends Collection<E>, E> extends Base<String, Address> {
 		private List<T> complicatedGeneric;
 		private T genericSubclassLoneRanger;
 	}
@@ -82,13 +82,13 @@ public class GenericResolverTest {
 	@Test
 	public void test_addresses() {
 		Class<?> c = subClassField("addresses");
-		Assert.assertEquals(Address.IdString.class, c);
+		Assert.assertEquals(Address.class, c);
 	}
 
 	@Test
 	public void test_oneAddress() {
 		Class<?> c = subClassField("oneAddress");
-		Assert.assertEquals(Address.IdString.class, c);
+		Assert.assertEquals(Address.class, c);
 	}
 
 	
@@ -101,7 +101,7 @@ public class GenericResolverTest {
 	@Test
 	public void test_wildcardAddresses() {
 		Class<?> c = subClassField("wildcardAddresses");
-		Assert.assertEquals(Address.IdString.class, c);
+		Assert.assertEquals(Address.class, c);
 	}	
 	
 	@Test

@@ -36,7 +36,9 @@ public enum Constants {
 	MARKER_COL_PARAM("col"),
 	MARKER_COL_PARAM_EXPR("<!col!>"),
 	
-	MARKER_URI_PAGE_EXPR("page=y"),
+	SERVER_PAGE_EXP_MARKER("page=y"),
+	SERVER_PAGE_CRITERIA_EXPR_MARKER("pageCriteria"),
+	SERVER_FILTER_EXPR_MARKER("filterCriteria"),
 	
 	SEPARATOR_URI("/"),
 	
@@ -90,7 +92,7 @@ public enum Constants {
 	
 	/* search request param constants */
 	SEARCH_REQ_PROJECT_ALIAS_MARKER("projection.alias"),
-	SEARCH_REQ_PROJECT_MAPING_MARKER("projection.mapsTo"),
+	SEARCH_REQ_PROJECT_MAPPING_MARKER("projection.mapsTo"),
 	
 	SEARCH_REQ_AGGREGATE_MARKER("aggregate"),
 	SEARCH_REQ_AGGREGATE_COUNT("count"),

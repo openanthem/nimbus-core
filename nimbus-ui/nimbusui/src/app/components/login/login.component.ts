@@ -17,7 +17,7 @@
 'use strict';
 
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ServiceConstants } from './../../services/service.constants';
 /**
@@ -35,7 +35,7 @@ export class LoginCmp {
     public loginForm;
     public imagesPath: string;
 
-    constructor(public fb: FormBuilder, private _route: ActivatedRoute, private _router: Router) {
+    constructor(public fb: FormBuilder, private _router: Router) {
     }
 
     ngOnInit() {

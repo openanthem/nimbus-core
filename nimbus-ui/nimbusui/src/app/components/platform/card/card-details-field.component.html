@@ -17,12 +17,17 @@
             <inplace-editor [element]="element"></inplace-editor>
         </ng-template>
         
-        <ng-template [ngIf]="isDate(element.type.name)">
+        <ng-template [ngIf]="isDate(element.config.type.name)">
             <label class="" *ngIf="element.config.uiStyles.attributes.showName==true">{{label}}</label>
-            <div class="{{iconClass}}">{{value | dateTimeFormat: element.config?.uiStyles?.attributes?.datePattern : element.type.name }}&nbsp;</div>
+            <ng-template [ngIf]="value">
+                <div class="{{iconClass}}">{{value | dateTimeFormat: element.config?.uiStyles?.attributes?.datePattern : element.config.type.name }}&nbsp;</div>
+            </ng-template>
+            <ng-template [ngIf]="!value">
+                <div class="{{iconClass}} textWrapBreakWord">{{placeholder}}&nbsp;</div>
+            </ng-template>
          </ng-template>
 
-        <div class="form-group" *ngIf="!element.config.uiStyles.attributes.inplaceEdit && !isDate(element.type.name)">
+        <div class="form-group" *ngIf="!element.config.uiStyles.attributes.inplaceEdit && !isDate(element.config.type.name)">
             <label class="" *ngIf="element.config.uiStyles.attributes.showName==true">{{label}}</label>
             <div class="{{iconClass}} textWrapBreakWord">{{value ? value : placeholder}}&nbsp;</div>    
         </div>

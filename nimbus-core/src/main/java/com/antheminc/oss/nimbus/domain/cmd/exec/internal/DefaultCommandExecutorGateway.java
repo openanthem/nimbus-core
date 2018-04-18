@@ -19,6 +19,7 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -119,7 +120,12 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		}
 		
 		try {
-			return executeInternal(eCtx, cmdMsg);
+			MultiOutput mOut = executeInternal(eCtx, cmdMsg);
+			
+			if(lockId!=null)
+				return createFlattenedOutput(mOut);
+			
+			return mOut;
 		} finally {
 			if(lockId!=null) {
 				eCtx.getRootModel().getExecutionRuntime().onStopRootCommandExecution(cmdMsg.getCommand());
@@ -127,6 +133,47 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			}
 		}
 	}
+	
+	private MultiOutput createFlattenedOutput(MultiOutput in) {
+		Map<Object, Output<?>> uniqueValues = new LinkedHashMap<>();
+		
+		flattenOutput(in, uniqueValues);
+		
+		if(uniqueValues.isEmpty())
+			return in;
+		
+		MultiOutput mOut = new MultiOutput(in.getInputCommandUri(), in.getContext(), in.getAction(), in.getBehaviors());
+		
+		for(Object value : uniqueValues.keySet()) {
+			Output<?> out = uniqueValues.get(value);
+			Output<?> newOut = new Output<>(out.getInputCommandUri(), out.getContext(), out.getAction(), out.getBehaviors(), value);
+			mOut.template().add(newOut);
+			
+		}
+		
+		return mOut;
+	}
+	
+	private void flattenOutput(Output<?> in, Map<Object, Output<?>> uniqueValues) {
+		if(in.getValue() != null) {
+			uniqueValues.put(in.getValue(), in);
+			return;
+		}
+		
+		// multiple
+		if(!MultiOutput.class.isInstance(in)) 
+			return;
+		
+		MultiOutput mIn = MultiOutput.class.cast(in);
+		if(CollectionUtils.isEmpty(mIn.getOutputs())) {
+			return;
+		}
+					
+		for(Output<?> inner : mIn.getOutputs()) {
+			flattenOutput(inner, uniqueValues);
+		}
+	}
+
 	
 	protected MultiOutput executeInternal(ExecutionContext eCtx, CommandMessage cmdMsg) {
 		final String inputCommandUri = cmdMsg.getCommand().getAbsoluteUri();
@@ -174,7 +221,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 				// TODO Rakesh - Review with soham
 				// - e.g. needed to replace e.g. <!page=y!> path variable with the value available in request params (only available in eCtx at this point)
 					// can be used for any other values not available in commandParam ??
-				String eCtxResolvedConfigUri = eCtxPathVariableResolver.resolve(eCtx, completeConfigUri);
+				String eCtxResolvedConfigUri = eCtxPathVariableResolver.resolve(eCtx, cmdParam, completeConfigUri);
 			
 				String resolvedConfigUri = pathVariableResolver.resolve(cmdParam, eCtxResolvedConfigUri);
 					

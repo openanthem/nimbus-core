@@ -23,7 +23,7 @@ import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 
 /**
  * 
- * @author Tony Lopez (AF42192)
+ * @author Tony Lopez
  *
  */
 public final class CommandUtils {

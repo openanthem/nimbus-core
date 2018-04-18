@@ -21,7 +21,7 @@ package com.antheminc.oss.nimbus.test.scenarios.s1.core;
 import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.defn.extension.ActivateConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.EnableConditional;
-import com.antheminc.oss.nimbus.entity.AbstractEntity.IdString;
+import com.antheminc.oss.nimbus.entity.AbstractEntity.IdLong;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -34,7 +34,7 @@ import lombok.ToString;
 @Domain("s1c_another")
 @Getter @Setter @ToString(callSuper=true)
 @SuppressWarnings("serial")
-public class S1C_AnotherMain extends IdString {
+public class S1C_AnotherMain extends IdLong {
 
 	@EnableConditional(when="state == 'value1_0'", targetPath="/../cLink2")
 	private String value1;

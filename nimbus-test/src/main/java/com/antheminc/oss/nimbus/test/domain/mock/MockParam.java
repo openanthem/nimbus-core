@@ -41,7 +41,7 @@ import lombok.Setter;
 /**
  * A mock Param implementation intended for testing purposes.
  * 
- * @author Tony Lopez (AF42192)
+ * @author Tony Lopez
  *
  */
 @Getter
@@ -332,4 +332,5 @@ public class MockParam implements Param<Object> {
 	public MappedTransientParam<Object, ?> findIfTransient() {
 		return null;
 	}
+
 }

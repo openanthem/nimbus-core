@@ -61,7 +61,7 @@ public class AccessConditionalStateEventHandler extends AbstractConditionalState
 		if(user != null) {
 			
 			if(!CollectionUtils.isEmpty(user.getRoles())) {
-				Set<String> userRoleCodes = user.getRoles().stream().map(UserRole::getRoleId).collect(Collectors.toSet());
+				Set<String> userRoleCodes = user.getRoles().stream().map(UserRole::getRoleCode).collect(Collectors.toSet());
 				
 				if(configuredAnnotation.containsRoles() != null && configuredAnnotation.containsRoles().length > 0){
 					boolean isTrue = userRoleCodes.stream().anyMatch(userRole -> Arrays.asList(configuredAnnotation.containsRoles()).contains(userRole));

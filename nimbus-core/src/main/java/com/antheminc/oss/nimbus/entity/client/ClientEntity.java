@@ -36,7 +36,7 @@ import lombok.ToString;
 @Domain(value="cliententity", includeListeners={ListenerType.persistence})
 @Repo(Database.rep_mongodb)
 @Getter @Setter @ToString(callSuper=true)
-public class ClientEntity extends AbstractEntity.IdString {
+public class ClientEntity extends AbstractEntity.IdLong {
 
 	private static final long serialVersionUID = 1L;
 

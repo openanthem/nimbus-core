@@ -34,7 +34,7 @@ import com.antheminc.oss.nimbus.support.JustLogit;
  * Rule State Event handler for triggering one or more rule definitions during its 
  * OnStateLoad and OnStateChange events.
  * 
- * @author Tony Lopez (AF42192)
+ * @author Tony Lopez
  *
  */
 public class RuleStateEventHandler extends EvalExprWithCrudActions<Rule> 

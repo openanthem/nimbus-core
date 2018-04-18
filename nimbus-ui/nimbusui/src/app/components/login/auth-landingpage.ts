@@ -17,7 +17,7 @@
 'use strict';
 
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 
@@ -34,7 +34,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class LandingPage {
 
-    constructor(private _route: ActivatedRoute, private _router: Router) {
+    constructor(private _router: Router) {
     }
 
     ngOnInit() {

@@ -49,7 +49,7 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.ValidationResult;
 
 /**
  * 
- * @author Tony Lopez (AF42192)
+ * @author Tony Lopez
  *
  */
 @RunWith(MockitoJUnitRunner.class)

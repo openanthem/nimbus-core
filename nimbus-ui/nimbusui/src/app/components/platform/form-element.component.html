@@ -3,6 +3,7 @@
     <nm-header [element]="element" *ngIf="element.config?.uiStyles?.attributes?.alias=='Header'" ></nm-header>
     <nm-paragraph [element]="element" *ngIf="element.config?.uiStyles?.attributes?.alias=='Paragraph'"></nm-paragraph>
     <nm-input id="{{id}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.type=='text'" [element]="element" [form]="form"></nm-input>
+    <nm-signature id="{{id}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.type=='signature'" [element]="element" [form]="form"></nm-signature>
     <nm-input-textarea id="{{id}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.type=='textarea'" [element]="element" [form]="form"></nm-input-textarea>
     <nm-input-date  id="{{id}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.type=='date'" [element]="element" [form]="form"></nm-input-date>
     <nm-input-calendar  id="{{id}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.type=='calendar'" [element]="element" [form]="form"></nm-input-calendar>

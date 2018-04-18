@@ -18,7 +18,7 @@ package com.antheminc.oss.nimbus.entity.user;
 import java.time.LocalDate;
 
 import com.antheminc.oss.nimbus.domain.defn.Model;
-import com.antheminc.oss.nimbus.entity.AbstractEntity.IdString;
+import com.antheminc.oss.nimbus.entity.AbstractEntity.IdLong;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -29,7 +29,7 @@ import lombok.Setter;
  */
 @Model("groupuser")
 @Getter @Setter
-public class GroupUser extends IdString {
+public class GroupUser extends IdLong {
 
 	private static final long serialVersionUID = 1L;
 

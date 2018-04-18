@@ -23,7 +23,7 @@ import {
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { FormGroup, FormControl, FormArray, FormBuilder, Validators } from '@angular/forms';
 import { FormArrayName } from '@angular/forms/src/directives/reactive_directives/form_group_name';
-import { Param } from '../../../shared/app-config.interface';
+import { Param } from '../../../shared/Param';
 import { FileService } from './../../../services/file.service';
 import { BaseElement } from '../base-element.component';
 import { WebContentSvc } from './../../../services/content-management.service';

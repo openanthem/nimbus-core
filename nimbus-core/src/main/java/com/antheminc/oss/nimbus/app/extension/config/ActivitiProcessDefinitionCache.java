@@ -15,6 +15,9 @@
  */
 package com.antheminc.oss.nimbus.app.extension.config;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.activiti.engine.impl.persistence.deploy.DefaultDeploymentCache;
 import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
 
@@ -24,15 +27,24 @@ import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
  */
 public class ActivitiProcessDefinitionCache extends DefaultDeploymentCache<ProcessDefinitionCacheEntry> {
 	
-	  public ProcessDefinitionCacheEntry findByKey(String currentKey) {
-		  for(String processDefinition:cache.keySet()) {
-			  String key = processDefinition.split(":")[0];
-			  if(key.equals(currentKey)) {
-				  ProcessDefinitionCacheEntry entry = cache.get(processDefinition);
-				  return entry;
-			  }
-		  }
-		  return null;
-	  }
-
+	private Map<String,ProcessDefinitionCacheEntry> processDefinitionCache = new ConcurrentHashMap<String,ProcessDefinitionCacheEntry>();
+	
+	public ProcessDefinitionCacheEntry findByKey(String currentKey) {
+		ProcessDefinitionCacheEntry entry = processDefinitionCache.get(currentKey);
+		if(entry != null)
+			return entry;
+		int version = 0;
+		for(String processDefinition:cache.keySet()) {
+			String key = processDefinition.split(":")[0];
+			if(key.equals(currentKey)) {
+				ProcessDefinitionCacheEntry definitionEntry = cache.get(processDefinition);
+				if(definitionEntry.getProcessDefinition().getVersion() > version) {
+					entry = definitionEntry;
+					version = definitionEntry.getProcessDefinition().getVersion();
+				}
+			}
+		}
+		processDefinitionCache.put(currentKey, entry);
+		return entry;
+	}
 }

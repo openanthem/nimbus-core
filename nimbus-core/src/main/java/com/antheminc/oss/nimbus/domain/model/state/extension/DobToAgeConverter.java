@@ -15,6 +15,7 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.extension;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -24,11 +25,11 @@ import com.antheminc.oss.nimbus.domain.defn.Converters.ParamConverter;
  * @author Dinakar.Meda
  *
  */
-public class DobToAgeConverter implements ParamConverter<LocalDateTime, Long> {
+public class DobToAgeConverter implements ParamConverter<LocalDate, Long> {
 	public static final String PREFIX = "ANT";
 	
 	@Override
-	public Long serialize(LocalDateTime birthdate) {
+	public Long serialize(LocalDate birthdate) {
 		LocalDateTime now = LocalDateTime.now();
 		if (birthdate != null) {
 			return ChronoUnit.YEARS.between(birthdate, now);
@@ -38,7 +39,7 @@ public class DobToAgeConverter implements ParamConverter<LocalDateTime, Long> {
 	}
 
 	@Override
-	public LocalDateTime deserialize(Long age) {
+	public LocalDate deserialize(Long age) {
 		// This method is not required. We will not convert Age to DOB.
 		return null;
 	}
