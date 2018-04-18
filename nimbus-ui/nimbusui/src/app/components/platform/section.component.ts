@@ -17,7 +17,7 @@
 'use strict';
 
 import { Component, Input, OnInit } from '@angular/core';
-import { Param } from '../../shared/app-config.interface';
+import { Param } from '../../shared/Param';
 import { PageService } from '../../services/page.service';
 import { WebContentSvc } from './../../services/content-management.service';
 import { GenericDomain } from './../../model/generic-domain.model';
@@ -41,14 +41,14 @@ import { BaseElement } from './base-element.component';
 })
 export class Section extends BaseElement implements OnInit {
 
-    constructor(private wcsvc: WebContentSvc, private pageSvc: PageService) {
+    constructor(private wcsvc: WebContentSvc, private pageService: PageService) {
         super(wcsvc);
     }
 
     ngOnInit() {
         // Check for initialization
         if (this.element.config && this.element.config.initializeComponent()) {
-            this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'POST');
+            this.pageService.processEvent(this.element.path, '$execute', new GenericDomain(), 'POST');
         }
     }
 

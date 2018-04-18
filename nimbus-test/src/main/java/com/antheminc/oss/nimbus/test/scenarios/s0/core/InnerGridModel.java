@@ -13,20 +13,21 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.entity.access;
+package com.antheminc.oss.nimbus.test.scenarios.s0.core;
 
-import java.util.Set;
+import com.antheminc.oss.nimbus.domain.defn.Model;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
- * @author Soham Chakravarti
+ * @author Sandeep Mantha
  *
  */
-public interface AccessEntity {
 
-	/**
-	 * 
-	 * @return
-	 */
-	public Set<Permission> getPermissions();
-	
+@Getter @Setter @Model
+public class InnerGridModel extends SampleEntity {
+
+	private static final long serialVersionUID = 1L;
+
 }

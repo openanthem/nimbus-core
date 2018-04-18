@@ -18,6 +18,7 @@ package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -44,7 +45,7 @@ public class DefaultActionExecutorDeleteTest extends AbstractFrameworkIngeration
 	
 	@Test
 	public void t1_colElem_add() {
-		String refId = createOrGetDomainRoot_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
 		
 		// create new collection
 		MockHttpServletRequest colNew_Req = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)

@@ -64,7 +64,7 @@ import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
  * private String statusReason;
  * </pre>
  * 
- * @author Tony Lopez (AF42192)
+ * @author Tony Lopez
  * @see com.antheminc.oss.nimbus.domain.model.state.extension.AbstractValuesConditionalStateEventHandler
  *
  */

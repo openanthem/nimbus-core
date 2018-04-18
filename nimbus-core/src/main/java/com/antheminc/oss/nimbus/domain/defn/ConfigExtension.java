@@ -13,21 +13,24 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.entity.user;
+package com.antheminc.oss.nimbus.domain.defn;
 
-import com.antheminc.oss.nimbus.entity.access.DefaultRole;
+import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
  * @author Soham Chakravarti
  *
  */
-@Getter @Setter @ToString(callSuper=true)
-public class DefaultUser extends AbstractUser<DefaultRole> {
+@Target({ ANNOTATION_TYPE })
+@Retention(RUNTIME)
+@Inherited
+@Documented
+public @interface ConfigExtension {
 
-	private static final long serialVersionUID = 1L;
-	
 }

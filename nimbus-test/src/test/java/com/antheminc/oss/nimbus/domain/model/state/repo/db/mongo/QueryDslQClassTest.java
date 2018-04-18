@@ -13,27 +13,26 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.domain.model.state.repo.db;
+package com.antheminc.oss.nimbus.domain.model.state.repo.db.mongo;
 
-import java.util.List;
+import static org.junit.Assert.assertEquals;
 
-import org.springframework.core.convert.converter.Converter;
+import org.junit.Test;
+import org.springframework.data.querydsl.SimpleEntityPathResolver;
 
-import com.antheminc.oss.nimbus.entity.user.ClientUserGroup;
-import com.antheminc.oss.nimbus.entity.user.GroupUser;
+import com.antheminc.oss.nimbus.entity.user.QUserRole;
+import com.antheminc.oss.nimbus.entity.user.UserRole;
+import com.querydsl.core.types.EntityPath;
 
 /**
- * @author Rakesh Patel
+ * @author Soham Chakravarti
  *
  */
-public class ClientUserGrooupSearchResponseConverter implements Converter<List<ClientUserGroup>, List<GroupUser>> {
+public class QueryDslQClassTest {
 
-	@Override
-	public List<GroupUser> convert(List<ClientUserGroup> source) {
-		
-		ClientUserGroup cug = source.get(0);
-		
-		return cug.getMembers();
+	@Test
+	public void test_QClass_lookup() {
+		EntityPath<UserRole> qClassActual = SimpleEntityPathResolver.INSTANCE.createPath(UserRole.class);
+		assertEquals(QUserRole.userRole, qClassActual);
 	}
-
 }

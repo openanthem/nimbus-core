@@ -13,34 +13,31 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.entity.queue;
+package com.antheminc.oss.nimbus.test.scenarios.s0.view;
 
 import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
+import com.antheminc.oss.nimbus.domain.defn.MapsTo;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
-import com.antheminc.oss.nimbus.domain.defn.Repo.Cache;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Database;
-import com.antheminc.oss.nimbus.entity.AbstractEntity.IdString;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Page;
+import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
+import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleEntity;
 
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * @author Rakesh Patel
+ * @author Sandeep Mantha
  *
  */
-@Domain(value="groupmember", includeListeners={ListenerType.persistence})
-@Repo(value=Database.rep_mongodb, cache=Cache.rep_device)
+@Domain(value="sample_entity_view", includeListeners={ListenerType.websocket})
+@MapsTo.Type(SampleEntity.class)
+@Repo(Database.rep_none)
 @Getter @Setter
-public class MGroupMember extends IdString {
+public class VRSampleEntity {
 
-	private static final long serialVersionUID = 1L;
-	
-	private String name;
-	
-	private String userName;
-	
-	private boolean isAdmin;
-
+	@Page(route="sample_view_colors")
+	private VPSampleViewPageOrange page_orange;
 	
 }

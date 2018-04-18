@@ -19,6 +19,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.data.annotation.Id;
@@ -123,8 +124,12 @@ public class DefaultEntityConfigBuilder extends AbstractEntityConfigBuilder impl
 		logit.trace(()->"Building Param for config class: "+mConfig.getReferredClass()+ " field : "+f.getName());
 		
 		/* handle ignore field */
-		if(AnnotatedElementUtils.isAnnotated(f, ConfigNature.Ignore.class)) return null;
-		if("serialVersionUID".equals(f.getName())) return null;
+		if(AnnotatedElementUtils.isAnnotated(f, ConfigNature.Ignore.class) && 
+				ArrayUtils.isEmpty(f.getAnnotation(ConfigNature.Ignore.class).listeners())) 
+			return null;
+		
+		if("serialVersionUID".equals(f.getName())) 
+			return null;
 
 		final DefaultParamConfig<?> pConfig = createParam(mConfig, f, visitedModels);
 		

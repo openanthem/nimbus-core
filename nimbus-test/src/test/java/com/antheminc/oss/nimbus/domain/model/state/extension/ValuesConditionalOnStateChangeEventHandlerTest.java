@@ -42,7 +42,7 @@ import com.antheminc.oss.nimbus.test.domain.mock.MockParamConfig;
 
 /**
  * 
- * @author Tony Lopez (AF42192)
+ * @author Tony Lopez
  *
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)

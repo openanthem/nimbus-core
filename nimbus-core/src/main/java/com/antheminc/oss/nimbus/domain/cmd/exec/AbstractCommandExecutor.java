@@ -131,7 +131,7 @@ public abstract class AbstractCommandExecutor<R> extends BaseCommandExecutorStra
 		return null;
 	}
 	
-	protected String getRootDomainRefIdByRepoDatabase(ModelConfig<?> rootDomainConfig, ExecutionEntity<?, ?> e) {
+	protected Long getRootDomainRefIdByRepoDatabase(ModelConfig<?> rootDomainConfig, ExecutionEntity<?, ?> e) {
 		Object refId = determineByRepoDatabase(rootDomainConfig, new RepoDBCallback<Object>() {
 			@Override
 			public Object whenRootDomainHasRepo() {
@@ -150,6 +150,7 @@ public abstract class AbstractCommandExecutor<R> extends BaseCommandExecutorStra
 		return Optional.ofNullable(refId)
 				.map(String::valueOf)
 				.map(StringUtils::trimToNull)
+				.map(Long::valueOf)
 				.orElse(null);
 	}
 	

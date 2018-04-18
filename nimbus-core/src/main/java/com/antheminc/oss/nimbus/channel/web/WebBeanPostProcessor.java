@@ -22,7 +22,7 @@ import org.springframework.web.servlet.DispatcherServlet;
 
 /**
  * 
- * @author Tony Lopez (AF42192)
+ * @author Tony Lopez
  *
  */
 //TODO: Hack solution, to be revisited. Objective is to set the threadContextInheritable property of DispatcherServlet

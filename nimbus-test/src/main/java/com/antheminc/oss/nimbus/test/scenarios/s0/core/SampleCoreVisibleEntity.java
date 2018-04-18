@@ -13,19 +13,24 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.entity.access;
+package com.antheminc.oss.nimbus.test.scenarios.s0.core;
+
+import com.antheminc.oss.nimbus.domain.defn.Model;
+import com.antheminc.oss.nimbus.domain.defn.extension.VisibleConditional;
 
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * @author Soham Chakravarti
+ * @author Tony Lopez
  *
  */
-@Setter @Getter
-public class DefaultRole extends Role {
-	
-	private static final long serialVersionUID = 1L;
+@Model
+@Getter @Setter
+public class SampleCoreVisibleEntity {
 
+	@VisibleConditional(when = "state == 'show me'", targetPath = "/../visible_p2")
+	private String visible_p1;
 	
+	private String visible_p2;
 }

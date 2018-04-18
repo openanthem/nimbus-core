@@ -22,7 +22,7 @@ import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Cache;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Database;
 import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
-import com.antheminc.oss.nimbus.entity.AbstractEntity.IdString;
+import com.antheminc.oss.nimbus.entity.AbstractEntity.IdLong;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +35,7 @@ import lombok.Setter;
 @Domain("staticCodeValue")
 @Repo(value=Database.rep_mongodb, cache=Cache.rep_device)
 @Getter @Setter @RequiredArgsConstructor
-public class StaticCodeValue extends IdString {
+public class StaticCodeValue extends IdLong {
 
 	private static final long serialVersionUID = 1L;
 

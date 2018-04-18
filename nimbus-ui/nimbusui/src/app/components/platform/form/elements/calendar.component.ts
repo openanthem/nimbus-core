@@ -20,7 +20,8 @@ import { Component, forwardRef, ViewChild, ChangeDetectorRef } from '@angular/co
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { PageService } from '../../../../services/page.service';
-import { Param } from '../../../../shared/app-config.interface';
+import { Param } from '../../../../shared/Param';
+import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 
 /**
  * \@author Sandeep Mantha
@@ -42,7 +43,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
  */
 @Component({
   selector: 'nm-input-calendar',
-  providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR,WebContentSvc],
+  providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR,WebContentSvc, ControlSubscribers],
   template: `
         <label [attr.for]="element.config?.code"  [ngClass]="{'required': requiredCss, '': !requiredCss}" *ngIf="this.showLabel">{{label}}
             <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
@@ -57,14 +58,12 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
         </p-calendar>
    `
 })
-export class Calendar extends BaseControl<String> {
+export class Calendar extends BaseControl<Date> {
 
     @ViewChild(NgModel) model: NgModel;
 
-    element: Param;
-
-    constructor(wcs: WebContentSvc, pageService: PageService, cd:ChangeDetectorRef) {
-        super(pageService,wcs,cd);
+    constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd:ChangeDetectorRef) {
+        super(controlService,wcs,cd);
     }
 
     // ngOnInit(){

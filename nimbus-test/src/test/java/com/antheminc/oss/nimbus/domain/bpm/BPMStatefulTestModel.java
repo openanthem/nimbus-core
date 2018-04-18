@@ -20,7 +20,7 @@ import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Cache;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Database;
-import com.antheminc.oss.nimbus.entity.AbstractEntity.IdString;
+import com.antheminc.oss.nimbus.entity.AbstractEntity.IdLong;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -33,7 +33,7 @@ import lombok.ToString;
 @Domain(value="bpmstatefulmodel", includeListeners={ListenerType.persistence, ListenerType.update}, lifecycle="bpmstatefulmodel") 
 @Repo(value=Database.rep_mongodb, cache=Cache.rep_device)
 @Getter @Setter @ToString(callSuper=true)
-public class BPMStatefulTestModel  extends IdString {
+public class BPMStatefulTestModel  extends IdLong {
 	private static final long serialVersionUID = 1L;
 	private String parameterBeforeHumanTask;
 	private String parameterAfterHumanTask;

@@ -19,6 +19,8 @@
 import { Component, Input } from '@angular/core';
 import { WebContentSvc } from './../../services/content-management.service';
 import { BaseElement } from './base-element.component';
+import { PageService } from '../../services/page.service';
+import { GenericDomain } from './../../model/generic-domain.model';
 
 /**
  * \@author Dinakar.Meda
@@ -55,7 +57,7 @@ export class Tile extends BaseElement {
     // height of tile
     public styleHt: string = 'height-lg';
 
-    constructor(private wcsvc: WebContentSvc) {
+    constructor(private wcsvc: WebContentSvc, private pageSvc: PageService) {
         super(wcsvc);
     }
 
@@ -81,6 +83,10 @@ export class Tile extends BaseElement {
         // SubTile (nested tile) style override
         if (this.tileType === 'subcard') {
             this.styleWd = this.styleWd + ' subcard';
+        }
+        // Check for initialization
+        if (this.element.config && this.element.config.initializeComponent()) {
+            this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'POST');
         }
     }
 }

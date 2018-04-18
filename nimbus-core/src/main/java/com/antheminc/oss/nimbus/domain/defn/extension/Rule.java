@@ -46,7 +46,7 @@ import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
  * <b>sample_rule_entity.drl</b> which will be automatically fired by naming convention.</p>
  * <p>For cases where additional configuration for other rules is needed, @Rule can be used.</p>
  *
- * @author Soham Chakravarti, Tony Lopez (AF42192)
+ * @author Soham Chakravarti, Tony Lopez
  */
 @Documented
 @Retention(RUNTIME)

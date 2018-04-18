@@ -13,59 +13,28 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.entity.queue;
+package com.antheminc.oss.nimbus.test.scenarios.s0.core;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import com.antheminc.oss.nimbus.domain.defn.AssociatedEntity;
-import com.antheminc.oss.nimbus.domain.defn.ConfigNature.Ignore;
 import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Cache;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Database;
-import com.antheminc.oss.nimbus.entity.AbstractEntity.IdString;
+import com.antheminc.oss.nimbus.entity.AbstractEntity.IdLong;
 
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * @author Rakesh Patel
+ * @author Sandeep Mantha
  *
  */
-@Domain(value="muser", includeListeners={ListenerType.persistence})
-@Repo(value=Database.rep_mongodb, cache=Cache.rep_device)
+@Domain(value="sample_entity", includeListeners={ListenerType.persistence})
+@Repo(alias="sample_entity",value=Database.rep_mongodb, cache=Cache.rep_device)
 @Getter @Setter
-public class MUser extends IdString {
-	
-	@Ignore
-	private static final long serialVersionUID = 1L;
-	
-	private String id;
-	
-	private String name;
-	
-	private String code;
-	
-	@AssociatedEntity(clazz=MUserGroup.class)
-	private Set<String> userGroups;
-	
-	@AssociatedEntity(clazz=Queue.class)
-	private Set<String> queues;
-	
-	public void addUserGroups(MUserGroup ug) {
-		if(getUserGroups() == null) {
-			setUserGroups(new HashSet<>());
-		}
-		getUserGroups().add(ug.getName());
-	}
-	
-	public void addQueues(Queue q) {
-		if(getQueues() == null) {
-			setQueues(new HashSet<>());
-		}
-		getQueues().add(q.getName());
-	}
+public class SampleEntity extends IdLong {
 
+	private static final long serialVersionUID = 1L;
+
+	private String test_name;
 }

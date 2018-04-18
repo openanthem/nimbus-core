@@ -75,9 +75,8 @@ public class VPSampleViewPageRed {
 	public static class Form_ConvertedNestedEntity {
 		
 		// detect if in add mode vs. edit: add results in addition to collection elements whereas edit updates existing element
-		@Configs(
-			@Config(url="<!#this!>/../_update")	
-		)
+		@Config(url="<!#this!>/../_replace")	
+		@Config(url="<!#this!>/../_get?fn=param&expr=flush()")
 		private String saveButton;
 		
 		// 1. delete mapsTo elem	2. unassign

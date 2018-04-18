@@ -20,7 +20,7 @@ import { Component, Input, Output, EventEmitter, ViewEncapsulation } from '@angu
 import { FormGroup } from '@angular/forms';
 import { Location } from '@angular/common';
 import { GenericDomain } from './../../../../model/generic-domain.model';
-import { Param } from '../../../../shared/app-config.interface';
+import { Param } from '../../../../shared/Param';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { PageService } from '../../../../services/page.service';
 import { ServiceConstants } from './../../../../services/service.constants';
@@ -55,9 +55,7 @@ import { FileService } from '../../../../services/file.service';
         </ng-template>
         <ng-template [ngIf]="element.config?.uiStyles?.attributes?.imgSrc">
            <button (click)="emitEvent(this)" type="button" class="{{element.config?.uiStyles?.attributes?.cssClass}} ">
-                    <i class="fa fa-fw {{element.config?.uiStyles?.attributes?.imgSrc}}" aria-hidden="true"></i>
-                    {{label}}
-            </button>
+                    <i class="fa fa-fw {{element.config?.uiStyles?.attributes?.imgSrc}}" aria-hidden="true"></i>{{label}}</button>
         </ng-template>
     `
 } )
@@ -92,8 +90,6 @@ export class Button extends BaseElement {
         this.imagesPath = ServiceConstants.IMAGES_URL;
         this.payload = this.element.config.uiStyles.attributes.payload;
         this.buttonClickEvent.subscribe(( $event ) => {
-            //console.log( $event );
-            //let payload = JSON.parse(JSON.stringify(this.payload));
 
             this.pageService.processEvent( $event.element.path, $event.element.config.uiStyles.attributes.b,
                 null, $event.element.config.uiStyles.attributes.method );

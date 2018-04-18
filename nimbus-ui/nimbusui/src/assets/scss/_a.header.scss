@@ -16,6 +16,9 @@
 	height: 70px;
 	color: $header-bkg;
 	border-bottom: 1px solid #578de1;
+	a{
+		text-decoration: none;
+	}
 	&::before{
 		display: block;
 		height: 1rem;
@@ -60,15 +63,7 @@
 	
 	.logo {
 		display:inline-block;
-		width: 135px;
-		height: 50px;
-		svg{
-			width: 135px;
-			height: 50px;
-			vertical-align: top;
-			fill: #3A7EC4;
-			stroke: $header-bkg;
-		}
+		
 	}
 
 	.logoName{

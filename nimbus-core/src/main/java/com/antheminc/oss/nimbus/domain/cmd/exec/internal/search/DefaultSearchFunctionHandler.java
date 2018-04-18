@@ -32,7 +32,6 @@ import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.exec.AbstractFunctionHandler;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
-import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
@@ -101,9 +100,9 @@ public abstract class DefaultSearchFunctionHandler<T, R> extends AbstractFunctio
 			return projectCriteria;
 		}
 		
-		if(cmd.getRequestParams().get(Constants.SEARCH_REQ_PROJECT_MAPING_MARKER.code) != null) {
+		if(cmd.getRequestParams().get(Constants.SEARCH_REQ_PROJECT_MAPPING_MARKER.code) != null) {
 			ProjectCriteria projectCriteria = new ProjectCriteria();
-			String projectMapping = cmd.getFirstParameterValue(Constants.SEARCH_REQ_PROJECT_MAPING_MARKER.code);
+			String projectMapping = cmd.getFirstParameterValue(Constants.SEARCH_REQ_PROJECT_MAPPING_MARKER.code);
 			String[] keyValues = StringUtils.split(projectMapping,",");
 			
 			Stream.of(keyValues).forEach((kvString) -> {
@@ -117,34 +116,5 @@ public abstract class DefaultSearchFunctionHandler<T, R> extends AbstractFunctio
 		}
 		return null;
 	}
-	
-	protected String resolveNamedQueryIfApplicable(ExecutionContext executionContext, ModelConfig<?> mConfig, Param<T> actionParam) {
-		String where = executionContext.getCommandMessage().getCommand().getFirstParameterValue(Constants.SEARCH_REQ_WHERE_MARKER.code);
-		
-		// find if where is a named query
-		Repo repo = mConfig.getRepo();
-		Repo.NamedNativeQuery[] namedQueries = repo.namedNativeQueries();
-		
-		if(namedQueries != null && namedQueries.length > 0) {
-			for(Repo.NamedNativeQuery query: namedQueries) {
-				if(StringUtils.equalsIgnoreCase(query.name(), where) && query.nativeQueries() != null) {
-					int i = 0;
-					for(String q: query.nativeQueries()) {
-						if(i == 0) {
-							where = q;
-						}
-						else {
-							where = where +Constants.SEARCH_NAMED_QUERY_DELIMTER.code+q;
-						}
-						i++;
-					}
-				}
-			}
-		}
-		where = getPathVariableResolver().resolve(actionParam, where);
-		return where;
-	}
-	
-	
 	
 }

@@ -131,7 +131,8 @@ abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements Functi
 		return Arrays.asList(Constants.SEARCH_REQ_WHERE_MARKER.code,Constants.SEARCH_REQ_ORDERBY_MARKER.code, 
 				Constants.SEARCH_REQ_FETCH_MARKER.code,Constants.SEARCH_REQ_AGGREGATE_MARKER.code,
 				Constants.SEARCH_REQ_PAGINATION_SIZE.code,Constants.SEARCH_REQ_PAGINATION_PAGE_NUM.code, 
-				Constants.SEARCH_REQ_PAGINATION_SORT_PROPERTY.code);
+				Constants.SEARCH_REQ_PAGINATION_SORT_PROPERTY.code,
+				Constants.SEARCH_REQ_PROJECT_MAPPING_MARKER.code);
 	}
 
 }
