@@ -1,3 +1,4 @@
+import { ViewConfig } from './param-annotations.enum';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -103,10 +104,10 @@ export class UiStyle implements Serializable<UiStyle,string> {
 
     deserialize( inJson ) {
         this.name = inJson.name;
-        if ( this.name === 'ViewConfig.Link' || this.name === 'ViewConfig.LinkMenu') {
+        if ( this.name === ViewConfig.link.toString() || this.name === ViewConfig.linkmenu.toString()) {
             this.isLink = true;
         }
-        if ( this.name === 'ViewConfig.Hidden' ) {
+        if ( this.name === ViewConfig.hidden.toString() ) {
             this.isHidden = true;
         }
         this.value = inJson.value;

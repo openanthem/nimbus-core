@@ -16,7 +16,7 @@
  */
 'use strict';
 import { LoaderService } from './loader.service';
-import { ConfigService, ViewConfig } from './config.service';
+import { ConfigService } from './config.service';
 import { Action, HttpMethod, Behavior } from './../shared/command.enum';
 import { Injectable, EventEmitter } from '@angular/core';
 import { ServiceConstants } from './service.constants';
@@ -32,7 +32,7 @@ import { Observable } from 'rxjs/Observable';
 import { ExecuteResponse, ExecuteException } from './../shared/app-config.interface';
 import { ParamUtils } from './../shared/param-utils';
 import { ParamAttribute } from './../shared/command.enum';
-
+import { ViewConfig } from './../shared/param-annotations.enum';
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -237,7 +237,7 @@ export class PageService {
                 if (model != null && model.params != null) {
                         for (var p in model.params) {
                                 let pageParam: Param = model.params[p];
-                                if (pageParam != null && pageParam.config.uiStyles != null && pageParam.config.uiStyles.name === 'ViewConfig.Page') {
+                                if (pageParam != null && pageParam.config.uiStyles != null && pageParam.config.uiStyles.name ===  ViewConfig.page.toString()) {
                                         if (pageParam.config.uiStyles.attributes.defaultPage) {
                                                 return pageParam;
                                         }
@@ -371,7 +371,7 @@ export class PageService {
                         let flowConfig: Model = viewRoot.model;
                         if (flowConfig != null && flowConfig.params != null) {
                                 flowConfig.params.forEach(pageParam => {
-                                        if (pageParam.config.uiStyles != null && pageParam.config.uiStyles.name === 'ViewConfig.Page') {
+                                        if (pageParam.config.uiStyles != null && pageParam.config.uiStyles.name === ViewConfig.page.toString()) {
                                                 if (pageParam.config.code === pageId) {
                                                         page = pageParam;
                                                 }

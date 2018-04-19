@@ -32,6 +32,7 @@ import { Serializable } from './serializable';
 import { ParamConfig } from './param-config';
 import { Message } from './message';
 import { CardDetailsGrid } from './card-details';
+import { ViewConfig } from './param-annotations.enum';
 
 export class Param implements Serializable<Param, string> {
     configId: string;
@@ -77,7 +78,7 @@ export class Param implements Serializable<Param, string> {
                     let config = this.configSvc.paramConfigs[p.configId];
                     //let path = paramPath + "/" + config.code;
                     // handle nested grid data
-                    if (config.uiStyles && (config.uiStyles.name == 'ViewConfig.GridRowBody' || config.uiStyles.name == 'ViewConfig.LinkMenu' )) {
+                    if (config.uiStyles && (config.uiStyles.name == ViewConfig.gridrowbody.toString()|| config.uiStyles.name == ViewConfig.linkmenu.toString())) {
                         let isDeserialized = false;
                         if(p instanceof Param){
                             isDeserialized = true;

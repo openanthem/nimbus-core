@@ -37,6 +37,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/fromEvent';
 import { Subscription } from 'rxjs/Subscription';
 import { ParamUtils } from './../../../shared/param-utils';
+import { ViewComponent } from '../../../shared/param-annotations.enum';
 
 
 
@@ -216,7 +217,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     }
 
     getLinkMenuParam(col,rowIndex): Param {
-        return this.element.collectionParams.find(ele => ele.path == this.element.path +'/'+rowIndex+'/'+ ele.config.code && ele.alias == 'LinkMenu');
+        return this.element.collectionParams.find(ele => ele.path == this.element.path +'/'+rowIndex+'/'+ ele.config.code && ele.alias == ViewComponent.linkMenu.toString());
     }
 
     isActive(index){

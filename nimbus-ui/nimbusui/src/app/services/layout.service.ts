@@ -26,7 +26,7 @@ import { ConfigService } from './config.service';
 import { CustomHttpClient } from './httpclient.service';
 import { AppBranding, Layout, LinkConfig, TopBarConfig, FooterConfig, GlobalNavConfig } from '../model/menu-meta.interface';
 import { GenericDomain } from '../model/generic-domain.model';
-
+import { ViewConfig, ViewComponent } from './../shared/param-annotations.enum';
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 
@@ -231,10 +231,10 @@ export class LayoutService {
     private getLeftMenu(layoutConfig: Model) {
         let leftMenu : LinkConfig[] = [];
         layoutConfig.params.forEach(param => {
-            if (param.config.uiStyles.attributes.alias === 'Section') {
+            if (param.config.uiStyles.attributes.alias === ViewComponent.section.toString()) {
                 if (param.config.uiStyles.attributes.value ==='LEFTBAR') {
                     param.type.model.params.forEach(element => { // look for links and add to left menu
-                        if (element.config.uiStyles.name === 'ViewConfig.Link') {
+                        if (element.config.uiStyles.name === ViewConfig.link.toString()) {
                             let navItem = {} as LinkConfig;
                             navItem['path'] = element.config.uiStyles.attributes.url;
                             navItem['title'] = this.wcs.findLabelContent(element).text;
