@@ -19,8 +19,9 @@ import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpHandler, HttpEvent, HttpRequest, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { ServiceConstants } from './service.constants';
-import { ExecuteException } from '../shared/app-config.interface';
+import { ExecuteException, ExecuteResponse, MultiOutput } from '../shared/app-config.interface';
 import { PageService } from './page.service';
+import { ConfigService } from './config.service';
 /**
  * \@author Swetha.Vemuri
  * \@whatItDoes
@@ -31,7 +32,7 @@ import { PageService } from './page.service';
  */
 @Injectable()
 export class CustomHttpClientInterceptor implements HttpInterceptor {
-    constructor(private pageSvc: PageService) {}
+    constructor(private pageSvc: PageService, private configSvc: ConfigService) {}
     /**
      * Http interceptor to handle custom implementation of request & error handling.
      * On a failure of http response, the error handler event is emitted based on the
@@ -56,9 +57,12 @@ export class CustomHttpClientInterceptor implements HttpInterceptor {
                     if (err.status === 302 || err.status === 403 || (err.status === 200 && err.url === `${ServiceConstants.LOGIN_URL}`)) {
                         window.location.href = `${ServiceConstants.LOGOUT_URL}`;
                     }
+                    const execResp  = new ExecuteResponse(this.configSvc).deserialize(err.error);
+                    if (execResp != null && execResp.result != null && execResp.result[0] != null) {
+                        const exception: ExecuteException = execResp.result[0].executeException;
+                        this.pageSvc.notifyErrorEvent(exception);
+                    }
                 }
-                const exception: ExecuteException = err.error.result[0].executeException;
-                this.pageSvc.notifyErrorEvent(exception);
         });
     }
 }

@@ -19,10 +19,9 @@ import { WebContentSvc } from './../../services/content-management.service';
 import { Component, Input, OnInit, OnChanges, SimpleChanges, SimpleChange } from '@angular/core';
 import { FormGroup, Validators, ValidatorFn } from '@angular/forms';
 import { FormElementsService } from './form-builder.service';
-import { Model } from '../../shared/app-config.interface';
 import { PageService } from '../../services/page.service';
 import { ValidationUtils } from './validators/ValidationUtils';
-import { Param } from '../../shared/Param';
+import { Param, Model } from '../../shared/param-state';
 
 
 var uniqueId = 0;

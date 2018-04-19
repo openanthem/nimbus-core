@@ -16,7 +16,7 @@
  */
 'use strict';
 import { Component, Input } from '@angular/core';
-import { Param } from '../../shared/Param';
+import { Param } from '../../shared/param-state';
 
 /**
  * \@author Dinakar.Meda

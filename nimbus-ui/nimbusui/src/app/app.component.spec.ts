@@ -63,7 +63,8 @@ describe('AppComponent', () => {
       location: {
         hostname: 'testing',
         port: '999',
-        protocol: 'testProtocol'
+        protocol: 'testProtocol',
+        pathname: 'test/test'
       }
     };
     app.ngOnInit();
