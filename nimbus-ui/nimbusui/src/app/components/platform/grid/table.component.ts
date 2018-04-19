@@ -41,6 +41,7 @@ import { ServiceConstants } from './../../../services/service.constants';
 import { SortAs, GridColumnDataType } from './sortas.interface';
 import { ActionDropdown } from './../form/elements/action-dropdown.component';
 import { Param } from '../../../shared/param-state';
+import { ViewComponent } from '../../../shared/param-annotations.enum';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     provide: NG_VALUE_ACCESSOR,
@@ -257,6 +258,10 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     isActive(index) {
         if (this.filterState[index] != '' && this.filterState[index] != undefined) return true;
         else return false;
+    }
+
+    getLinkMenuParam(col,rowIndex): Param {
+        return this.element.collectionParams.find(ele => ele.path == this.element.path +'/'+rowIndex+'/'+ ele.config.code && ele.alias == ViewComponent.linkMenu.toString());
     }
 
     getRowPath(col: ParamConfig, item: any) {
