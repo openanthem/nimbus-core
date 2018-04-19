@@ -561,15 +561,12 @@ export class PageService {
          * Create the Grid Row Data from Param Leaf State
          * 
          */
-        createRowData(param: Param, nestedParamIdx: number) {
+        createRowData(param: Param) {
                 let rowData: any = param.leafState;
-
                 // If nested data exists, set the data to nested grid
                 if (param.type.model && param.type.model.params) {
-
                         rowData['nestedGridParam'] = param.type.model.params.filter(param => param.type.model && param.type.model.params);
                 }
-
                 return rowData;
         }
 
@@ -578,29 +575,14 @@ export class PageService {
          * 
          */
         createGridData(gridElementParams: Param[], gridParam: Param) {
-
-                //let nestedParams;
-                //if(gridParam.config.type.elementConfig.type.model)
-                //        nestedParams = gridParam.config.type.elementConfig.type.model.paramConfigs;
                 let gridData = [];
-                //let paramState = [];
                 let collectionParams = [];
-                // Look for inner lists (nested grid)
-                let nestedParamIdx: number;
-                // if (nestedParams) {
-                //         for (let p in nestedParams) {
-                //                 if (nestedParams[p].uiStyles && nestedParams[p].uiStyles.name == 'ViewConfig.GridRowBody') {
-                //                         nestedParamIdx = +p;
-                //                         break;
-                //                 }
-                //         }
-                // }
                 if (gridElementParams) {
                         gridElementParams.forEach(param => {
                                 let p = new Param(this.configService).deserialize(param, gridParam.path);
                                 if(p != null) {
                                         //paramState.push(p.type.model.params);
-                                        let lineItem = this.createRowData(p, nestedParamIdx); 
+                                        let lineItem = this.createRowData(p); 
                                         if(lineItem.nestedGridParam)
                                                 collectionParams = collectionParams.concat(lineItem.nestedGridParam); 
                                         delete lineItem.nestedGridParam;
@@ -609,8 +591,6 @@ export class PageService {
                         });        
                 }
                 gridParam['collectionParams'] = collectionParams;
-
-                //gridParam['paramState'] = paramState;
                 return gridData;
         }
 

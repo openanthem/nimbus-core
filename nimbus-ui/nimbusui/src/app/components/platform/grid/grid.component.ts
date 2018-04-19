@@ -217,12 +217,6 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
 
     getLinkMenuParam(col,rowIndex): Param {
         return this.element.collectionParams.find(ele => ele.path == this.element.path +'/'+rowIndex+'/'+ ele.config.code && ele.alias == 'LinkMenu');
-        // let param;
-        // this.element.collectionParams.forEach(ele => {
-        //     if(ele.path === this.element.path +'/'+rowIndex+'/'+ ele.config.code && ele.alias == 'LinkMenu')
-        //         param = ele;
-        //         break;
-        // });
     }
 
     isActive(index){
