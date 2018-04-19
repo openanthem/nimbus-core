@@ -74,11 +74,12 @@
                         <i [ngClass]="expanded ? 'fa fa-fw fa-chevron-circle-down' : 'fa fa-fw fa-chevron-circle-right'"></i>
                     </a>
                 </td>
+
                 <ng-template ngFor let-col let-colIndex="index" [ngForOf]="params">
                     <td *ngIf="col.uiStyles.attributes?.hidden == false">
                         <span title="{{getCellDisplayValue(rowData, col)}}" *ngIf="showValue(col)">{{getCellDisplayValue(rowData, col)}}</span>
                         <span styleClass="dropdown" *ngIf="showLinkMenu(col)">
-                            <nm-action-dropdown #dropDown [element]="getLinkMenuParam()" [params]="col?.type?.model?.paramConfigs" [rowData]="rowData"
+                            <nm-action-dropdown #dropDown [element]="getLinkMenuParam(col, rowIndex)" [params]="col?.type?.model?.paramConfigs" [rowData]="rowData"
                                 [elementPath]="getRowPath(col, rowData)" (dropDownClick)="toggleOpen($event)"></nm-action-dropdown>
                         </span>
                     </td>
