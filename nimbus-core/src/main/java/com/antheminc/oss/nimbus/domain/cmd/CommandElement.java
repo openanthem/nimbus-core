@@ -109,7 +109,7 @@ abstract public class CommandElement implements Serializable {
 		}
 		else {
 			String alias = StringUtils.substring(uri, 0, i);
-			Long refId = Long.class.cast(StringUtils.substring(uri, i+1));
+			Long refId = Long.valueOf(StringUtils.substring(uri, i+1));
 			setAlias(alias);
 			setRefId(refId);
 		}
