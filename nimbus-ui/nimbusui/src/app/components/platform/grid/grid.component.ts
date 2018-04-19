@@ -67,7 +67,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     @Input() params: ParamConfig[];
     @Input() form: FormGroup;
     @Input('value') _value = [];
-    paramState: Param[];
+    //paramState: Param[];
     filterValue: Date;
     totalRecords: number = 0;
     mouseEventSubscription: Subscription;
@@ -153,7 +153,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
             this.dt.filterConstraints = customFilterConstraints;
         }
         
-        this.paramState = this.element.paramState;
+        //this.paramState = this.element.paramState;
     }
 
     ngAfterViewInit() {
@@ -182,7 +182,8 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         this.pageSvc.gridValueUpdate$.subscribe(event => {
             if (event.path == this.element.path) {
                 this.value = event.gridList;
-                this.paramState = event.paramState;
+                //this.paramState = event.paramState;
+                //this.element.collectionParams = event.collectionParams;
                 this.totalRecords = this.value ? this.value.length : 0;
                 this.updatePageDetailsState();
                 this.cd.markForCheck();
@@ -212,6 +213,16 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         }
         return false;
 
+    }
+
+    getLinkMenuParam(col,rowIndex): Param {
+        return this.element.collectionParams.find(ele => ele.path == this.element.path +'/'+rowIndex+'/'+ ele.config.code && ele.alias == 'LinkMenu');
+        // let param;
+        // this.element.collectionParams.forEach(ele => {
+        //     if(ele.path === this.element.path +'/'+rowIndex+'/'+ ele.config.code && ele.alias == 'LinkMenu')
+        //         param = ele;
+        //         break;
+        // });
     }
 
     isActive(index){
@@ -284,7 +295,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     }
 
     getAddtionalData(event: any) {
-        event.data['nestedElement']= this.element.collectionParams.find(ele => ele.path == this.element.path +'/'+event.data.elemId+'/'+ ele.config.code);
+        event.data['nestedElement']= this.element.collectionParams.find(ele => ele.path == this.element.path +'/'+event.data.elemId+'/'+ ele.config.code && ele.alias == 'GridRowBody');
     }
 
     resetMultiSelection() {

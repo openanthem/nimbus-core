@@ -571,8 +571,9 @@ export class PageService {
                 let rowData: any = param.leafState;
 
                 // If nested data exists, set the data to nested grid
-                if (nestedParamIdx && param.type.model.params) {
-                        rowData['nestedGridParam'] = param.type.model.params[nestedParamIdx];
+                if (param.type.model && param.type.model.params) {
+
+                        rowData['nestedGridParam'] = param.type.model.params.filter(param => param.type.model && param.type.model.params);
                 }
 
                 return rowData;
@@ -584,36 +585,38 @@ export class PageService {
          */
         createGridData(gridElementParams: Param[], gridParam: Param) {
 
-                let nestedParams;
-                if(gridParam.config.type.elementConfig.type.model)
-                        nestedParams = gridParam.config.type.elementConfig.type.model.paramConfigs;
+                //let nestedParams;
+                //if(gridParam.config.type.elementConfig.type.model)
+                //        nestedParams = gridParam.config.type.elementConfig.type.model.paramConfigs;
                 let gridData = [];
-                let paramState = [];
+                //let paramState = [];
                 let collectionParams = [];
                 // Look for inner lists (nested grid)
                 let nestedParamIdx: number;
-                if (nestedParams) {
-                        for (let p in nestedParams) {
-                                if (nestedParams[p].uiStyles && nestedParams[p].uiStyles.name == 'ViewConfig.GridRowBody') {
-                                        nestedParamIdx = +p;
-                                        break;
-                                }
-                        }
-                }
+                // if (nestedParams) {
+                //         for (let p in nestedParams) {
+                //                 if (nestedParams[p].uiStyles && nestedParams[p].uiStyles.name == 'ViewConfig.GridRowBody') {
+                //                         nestedParamIdx = +p;
+                //                         break;
+                //                 }
+                //         }
+                // }
                 if (gridElementParams) {
                         gridElementParams.forEach(param => {
-                                let p = new Param(this.configService).deserialize(param, gridParam.path + "/" + param.elemId);
+                                let p = new Param(this.configService).deserialize(param, gridParam.path);
                                 if(p != null) {
-                                        paramState.push(p.type.model.params);
+                                        //paramState.push(p.type.model.params);
                                         let lineItem = this.createRowData(p, nestedParamIdx); 
-                                        collectionParams.push(lineItem.nestedGridParam); 
-                                        delete lineItem.nestedGridParam; 
+                                        if(lineItem.nestedGridParam)
+                                                collectionParams = collectionParams.concat(lineItem.nestedGridParam); 
+                                        delete lineItem.nestedGridParam;
                                         gridData.push(lineItem);
                                 }
                         });        
                 }
                 gridParam['collectionParams'] = collectionParams;
-                gridParam['paramState'] = paramState;
+
+                //gridParam['paramState'] = paramState;
                 return gridData;
         }
 

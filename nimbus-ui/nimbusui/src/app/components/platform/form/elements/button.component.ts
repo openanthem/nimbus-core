@@ -47,14 +47,14 @@ import { FileService } from '../../../../services/file.service';
                 <button class="btn btn-secondary" [disabled]="disabled" (click)="emitEvent(this)" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
             </ng-template>
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style=='PLAIN' && element?.visible == true">
-                <button class="btn btn-plain" (click)="emitEvent(this)" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
+                <button class="btn btn-plain" (click)="emitEvent(this)" [disabled]="disabled" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
             </ng-template>
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style=='DESTRUCTIVE' && element?.visible == true">
-                <button class="btn btn-delete" (click)="emitEvent(this)" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
+                <button class="btn btn-delete" (click)="emitEvent(this)" [disabled]="disabled" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
             </ng-template>
         </ng-template>
         <ng-template [ngIf]="element.config?.uiStyles?.attributes?.imgSrc">
-           <button (click)="emitEvent(this)" type="button" class="{{element.config?.uiStyles?.attributes?.cssClass}} ">
+           <button (click)="emitEvent(this)" [disabled]="disabled" type="button" class="{{element.config?.uiStyles?.attributes?.cssClass}} ">
                     <i class="fa fa-fw {{element.config?.uiStyles?.attributes?.imgSrc}}" aria-hidden="true"></i>{{label}}</button>
         </ng-template>
     `

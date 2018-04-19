@@ -68,17 +68,21 @@ export class Param implements Serializable<Param, string> {
         if(rowData instanceof Object)
             rowData['elemId'] = param.elemId;
         if(param.type.model) {
+            rowData['nestedGridParam'] = [];
             for(let p of param.type.model.params) {
                 if(p != null) {
                     let config = this.configSvc.paramConfigs[p.configId];
-                    p.path = param.path + "/" + config.code;
+                    //let path = paramPath + "/" + config.code;
                     // handle nested grid data
-                    if (config.uiStyles && config.uiStyles.name == 'ViewConfig.GridRowBody') {
+                    if (config.uiStyles && (config.uiStyles.name == 'ViewConfig.GridRowBody' || config.uiStyles.name == 'ViewConfig.LinkMenu' )) {
                         let isDeserialized = false;
                         if(p instanceof Param){
                             isDeserialized = true;
                         }
-                        rowData['nestedGridParam'] = isDeserialized ? p : new Param(this.configSvc).deserialize(p,p.path);
+                        if(param.collectionElem)
+                            rowData['nestedGridParam'].push(isDeserialized ? p : new Param(this.configSvc).deserialize(p,this.path + '/' + param.elemId));
+                        else
+                            rowData['nestedGridParam'].push(isDeserialized ? p : new Param(this.configSvc).deserialize(p,this.path));
                     }
     
                     // handle dates
@@ -96,14 +100,20 @@ export class Param implements Serializable<Param, string> {
         let paramPath;
         if(path == inJson.path){
             paramPath = path;
-        }
-        else if(path == undefined && this.config) {
+        } else if(path == undefined && this.config) {
             paramPath =  "/" + this.config.code;
         } else if(path && this.config){
             paramPath = path + "/" + this.config.code;
-        } else {
+        } else if(path && this.config && inJson.elemId){
+            paramPath = path + "/" + inJson.elemId + "/" + this.config.code;
+        } else if (path && inJson.elemId) {
+            paramPath = path + '/' + inJson.elemId;
+        }  
+        else {
             paramPath = path;
-        } 
+        }
+        
+ 
         return paramPath;
     }
 
@@ -140,16 +150,18 @@ export class Param implements Serializable<Param, string> {
         } else if (this.config != null && this.config.uiStyles && this.config.uiStyles.attributes.alias === 'Grid') {
             if (inJson.type && inJson.type.model && inJson.type.model.params) {
                 this.gridList = [];
-                this.paramState = [];
+                //this.paramState = [];
                 if(this.path && typeof inJson.path == undefined)
                     inJson.path = this.path;
                 for ( var p in inJson.type.model.params ) {
                     if (!ParamUtils.isEmpty(inJson.type.model.params[p])) {
-                        this.paramState.push(inJson.type.model.params[p].type.model.params); 
+                        //this.paramState.push(inJson.type.model.params[p].type.model.params); 
                         //this.gridList.push(this.createRowData(inJson.type.model.params[p])); 
                         let lineItem = this.createRowData(inJson.type.model.params[p]);
-                        this.collectionParams.push(lineItem.nestedGridParam); 
-                        delete lineItem.nestedGridParam; this.gridList.push(lineItem);  
+                        if(lineItem.nestedGridParam)
+                          this.collectionParams = this.collectionParams.concat(lineItem.nestedGridParam); 
+                        delete lineItem.nestedGridParam; 
+                        this.gridList.push(lineItem);  
                     }
                 }
             }
