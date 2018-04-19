@@ -21,6 +21,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
+import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.InvalidOperationAttemptedException;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState;
@@ -55,6 +56,11 @@ public class DefaultParamStateRepositoryLocal implements ParamStateRepository {
 			
 		} else {
 			PropertyDescriptor pd = param.getPropertyDescriptor();
+			
+			if (null == pd) {
+				throw new InvalidConfigException("Unable to locate property descriptor for " + param + ".");
+			}
+			
 			Object target = param.getParentModel().getState();
 			return javaBeanHandler.getValue(pd, target);
 		}
