@@ -6,7 +6,9 @@ ng-component{
     border: 1px solid #cecece;
     position: relative;
 }
-.scrollGrid.greyGrid .ui-datatable-tablewrapper, .scrollGrid.greyGrid .ui-widget-header {
+.scrollGrid.greyGrid .ui-table-tablewrapper, 
+.scrollGrid.greyGrid .ui-datatable-tablewrapper, 
+.scrollGrid.greyGrid .ui-widget-header {
     background: darkgrey;
 }
 .scrollGrid .ui-datatable-tablewrapper {
@@ -14,16 +16,22 @@ ng-component{
 }
 
 .ui-expanded-row-content .scrollGrid .ui-datatable-scrollable-body, 
-.ui-expanded-row-content .ui-datatable .ui-datatable-scrollable-body {
+.ui-expanded-row-content .ui-datatable .ui-datatable-scrollable-body,
+.ui-expanded-row-content .scrollGrid .ui-table-scrollable-body, 
+.ui-expanded-row-content .ui-table .ui-table-scrollable-body {
     min-height: 0px;
 }
-
-.ui-datatable,.scrollGrid {
+.ui-table .ui-sortable-column.ui-state-highlight {
+    background: #b3dcfc;
+    color: #4d4c57;
+}
+.ui-table,.ui-datatable,.scrollGrid {
     position: static;
     font-size: 1rem;
     .ui-selection-column .ui-chkbox {
         display: inline-block;
     }
+    .ui-table-scrollable-body,
     .ui-datatable-scrollable-body{
         min-height: 60px;
     }
@@ -36,13 +44,16 @@ ng-component{
         background: #b3dcfc;
     }
 
+    .ui-table-data > tr > td,
     .ui-datatable-data > tr > td {
         border-width: 1px 0;
     }
     tbody > tr {
+        &.ui-widget-content.ui-table-even,
         &.ui-widget-content.ui-datatable-even {
             background-color: #fff;
         }
+        &.ui-widget-content.ui-table-odd,
         &.ui-widget-content.ui-datatable-odd {
             background-color: #edf7ff;
         }
@@ -50,6 +61,7 @@ ng-component{
             color: inherit;
         }
     }
+    .ui-table-footer,
     .ui-datatable-footer {
         border: none;
         background: none;
@@ -73,14 +85,24 @@ ng-component{
     .actionMenu {
         width: 50px;
     }
-    
+    .ui-table .ui-table-thead > tr > th, 
+    .ui-table .ui-table-tfoot > tr > td{
+        color: #4c4c4c;
+    }
+    .ui-table-thead > tr:nth-child(2) th {
+        background: #aeaeae;
+    }
+    .ui-table-thead > tr:nth-child(2) th span {
+        padding: 0;
+    }
+    .ui-table-thead > tr > th,
     .ui-datatable-thead > tr > th {
         position: relative;
         text-align: left;
         border: none;
-        padding: .6rem  .2rem ;
+        padding: .6rem  .5rem ;
         line-height: 1rem;
-        .ui-column-title {
+        &> span {
             display: block;
             text-align: left;
             font-weight: bold;
@@ -163,7 +185,7 @@ ng-component{
     tr.ui-expanded-row-content {
         background: #f5f5f5;
         padding: .4rem;
-        .ui-datatable {
+        .ui-table, .ui-datatable {
             .ui-state-default {
                 background-color: #ccc;
                 color: #555;
@@ -195,19 +217,22 @@ ng-component{
 }
 
 .ui-expanded-row-content .scrollGrid td.dropdown .ui-cell-data, 
-.ui-expanded-row-content .ui-datatable td.dropdown .ui-cell-data {
+.ui-expanded-row-content .ui-datatable td.dropdown .ui-cell-data,
+.ui-expanded-row-content .ui-table td.dropdown .ui-cell-data {
     overflow: visible;
 }
 
 .ui-expanded-row-content {
-    .scrollGrid, .ui-datatable{
+    .scrollGrid, .ui-datatable, .ui-table{
         td.dropdown .ui-cell-data {
             overflow: visible;
         }
-        .ui-datatable-thead > tr > th .ui-column-title {
+        .ui-datatable-thead > tr > th .ui-column-title,
+        .ui-table-thead > tr > th .ui-column-title {
             font-weight: normal;
         }
-        tbody > tr.ui-widget-content.ui-datatable-odd {
+        tbody > tr.ui-widget-content.ui-datatable-odd,
+        tbody > tr.ui-widget-content.ui-table-odd {
             background-color: #fff;
         }
     } 
@@ -224,6 +249,7 @@ ng-component{
         color: #94acbc;;
     }
 }
+.ui-table tr.ui-expanded-row-content .ui-table .ui-state-default, 
 .ui-datatable tr.ui-expanded-row-content .ui-datatable .ui-state-default, 
 .scrollGrid tr.ui-expanded-row-content .ui-datatable .ui-state-default {
     background-color: #ebebeb;
@@ -294,13 +320,16 @@ ng-component{
     font-size: .9rem;
     z-index: 1;
 }
+.ui-table-header .btn-plain,
 .ui-datatable-header .btn-plain { 
     color: #FFF; 
 }
 span.ui-cell-data img { 
 margin-right: 10px; 
 }
+.scrollGrid .ui-table-thead > tr > th .gridFilterIcon.activeFilter::before,
 .scrollGrid .ui-datatable-thead > tr > th .gridFilterIcon.activeFilter::before,
-.ui-datatable .ui-datatable-thead > tr > th .gridFilterIcon.activeFilter::before { 
-    color: orange; 
+.ui-datatable .ui-datatable-thead > tr > th .gridFilterIcon.activeFilter::before,
+.ui-table .ui-table-thead > tr > th .gridFilterIcon.activeFilter::before { 
+    color: #e5991c; 
 }

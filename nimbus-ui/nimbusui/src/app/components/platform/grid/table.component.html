@@ -35,7 +35,7 @@
                             {{col.header}}
                             <p-sortIcon [field]="col" *ngIf="col?.uiStyles?.attributes?.sortable !== false"></p-sortIcon>
                             <a href="javascript:void(0)" (click)="toggleFilter(col?.uiStyles?.attributes?.filter)" class='gridFilterIcon' [class.activeFilter]="isActive(colIndex)"
-                                *ngIf="col?.uiStyles?.attributes?.filter">F</a>
+                                *ngIf="col?.uiStyles?.attributes?.filter"></a>
                         </span>
                     </th>
                 </ng-template>
