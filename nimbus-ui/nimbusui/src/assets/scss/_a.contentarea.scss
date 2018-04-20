@@ -529,9 +529,14 @@ $answerWidth: 99%-$questionWidth;
     .ui-dropdown label:first-of-type, .ui-dropdown label {
         margin: 1px 0 0 0;
     }
-    input, .select-wrapper, textarea {
+    input {
         margin-left: 20px;
         max-width: 300px;
+        width: 100%;
+    }
+    textarea {
+        margin-left: 20px;
+        max-width: 800px;
         width: 100%;
     }
   
