@@ -25,7 +25,7 @@ ng-component{
     background: #b3dcfc;
     color: #4d4c57;
 }
-.ui-table,.ui-datatable,.scrollGrid {
+.ui-table,.ui-datatable {
     position: static;
     font-size: 1rem;
     .ui-selection-column .ui-chkbox {
@@ -43,8 +43,7 @@ ng-component{
     th.ui-state-active{
         background: #b3dcfc;
     }
-
-    .ui-table-data > tr > td,
+    .ui-table-tbody > tr > td,
     .ui-datatable-data > tr > td {
         border-width: 1px 0;
     }
@@ -206,7 +205,8 @@ ng-component{
     th.dropdown, td.dropdown {
         width: 40px;
     }
-    td:not(.dropdown) .ui-cell-data {
+    td:not(.dropdown) .ui-cell-data,
+    td:not(.dropdown) span {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
