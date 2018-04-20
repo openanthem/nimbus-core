@@ -79,8 +79,17 @@ textarea.form-control {
   background:none;
   border:none;
   color: #4c4c4c;
-    .warningMsg{
+    .errorMsg{
         color: #a94442;
+        &::before{
+            content:"\F071";
+            font-family: fontAwesome;
+            display: inline-block;
+            margin-right:.5rem;
+        }
+    }
+    .warningMsg{
+        color: #e5991c;
         &::before{
             content:"\F071";
             font-family: fontAwesome;
