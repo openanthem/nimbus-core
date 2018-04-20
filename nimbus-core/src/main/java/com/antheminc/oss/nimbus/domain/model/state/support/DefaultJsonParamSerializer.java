@@ -135,6 +135,16 @@ public class DefaultJsonParamSerializer extends JsonSerializer<Param<?>> {
 		}
 		
 		private void writeLeafStateConditionally(Param<?> p) throws IOException {
+			/* legacy code using leafState
+			if(p.isLeaf() || hasGrid(p)) {
+				Object o = p.getLeafState();
+				if(o==null)
+					return;
+
+				gen.writeObjectField(K_LEAF_STATE, o);
+			}
+			*/
+			
 			if(p.isLeaf() || hasGrid(p)) {
 				writeSyntheticState(p);
 			}
@@ -193,11 +203,13 @@ public class DefaultJsonParamSerializer extends JsonSerializer<Param<?>> {
 		}
 
 		private void writeCollection(Param<?> p, boolean isRoot) throws IOException {
+			gen.writeObjectFieldStart(getFieldNameForState(p, isRoot));
 			for(Param<?> ep : p.findIfNested().getParams()) {
 				gen.writeStartArray();
 				writeParamState(ep, isRoot);
 				gen.writeEndArray();					
 			}
+			gen.writeEndObject();
 		}
 		
 		private void writeLeafOrCollectionWithLeafElements(Param<?> p, boolean isRoot) throws IOException {
