@@ -1,3 +1,4 @@
+
 package com.antheminc.oss.nimbus.domain.model.state.extension;
 
 import static org.junit.Assert.assertNotNull;
@@ -31,7 +32,7 @@ public class MessageConditionalEventHandlerTest extends AbstractStateEventHandle
 	public void t01_testOnStateChangeMessage_1() {
 		Param<String> inputParam = _q.getRoot().findParamByPath("/sample_view/page_orange/vtOrange/vsSampleForm/vfSampleForm/testWarningTextBox");
 		
-		Assert.assertNull(inputParam.getMessage().getText());
+		Assert.assertNull(inputParam.getMessage());
 		inputParam.setState("Yes");
 		Assert.assertNotNull(inputParam.getMessage());
 		Assert.assertEquals(inputParam.getMessage().getText(), "This is a Test Warning Message");
@@ -41,7 +42,7 @@ public class MessageConditionalEventHandlerTest extends AbstractStateEventHandle
 	public void t02_testOnStateLoadMessage_1() {
 		Param<String> inputParam = _q.getRoot().findParamByPath("/sample_view/page_orange/vtOrange/vsSampleForm/vfSampleForm/testMessageTextBox2");
 		
-		Assert.assertNotNull(inputParam.getMessage().getText());
+		Assert.assertNotNull(inputParam.getMessage());
 		Assert.assertEquals(inputParam.getMessage().getText(), "This is a Test Warning Message");
 		
 	}
