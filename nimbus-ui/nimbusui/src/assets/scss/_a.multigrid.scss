@@ -89,7 +89,7 @@ ng-component{
         color: #4c4c4c;
     }
     .ui-table-thead > tr:nth-child(2) th {
-        background: #aeaeae;
+        background: #b8d4e8;
     }
     .ui-table-thead > tr:nth-child(2) th span {
         padding: 0;
@@ -215,7 +215,12 @@ ng-component{
         display:block;
     }
 }
-
+.ui-datatable-header p-header {
+    position: absolute;
+    left: 20px;
+    top: .3rem;
+    font-size: 1.3rem;
+}
 .ui-expanded-row-content .scrollGrid td.dropdown .ui-cell-data, 
 .ui-expanded-row-content .ui-datatable td.dropdown .ui-cell-data,
 .ui-expanded-row-content .ui-table td.dropdown .ui-cell-data {
