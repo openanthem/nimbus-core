@@ -9,6 +9,7 @@
                 <i class="fa fa-fw fa-times hidden-md-down" aria-hidden="true"></i>Clear Grid Filters</button>
             <button *ngIf="element.config?.uiStyles?.attributes?.export" class="btn-plain ml-2" (click)="export()">
                 <i class="fa fa-fw fa-share hidden-md-down" aria-hidden="true"></i>Export</button>
+                <button class="btn-plain ml-2 " (click)="toggleFilter(col?.uiStyles?.attributes?.filter)" title="show grid filters"> <i class="fa fa-fw fa-filter hidden-md-down" aria-hidden="true"></i></button>
         </div>
     </div>
 
@@ -34,8 +35,7 @@
                         <span *ngIf="showValue(col)">
                             {{col.header}}
                             <p-sortIcon [field]="col" *ngIf="col?.uiStyles?.attributes?.sortable !== false"></p-sortIcon>
-                            <a href="javascript:void(0)" (click)="toggleFilter(col?.uiStyles?.attributes?.filter)" class='gridFilterIcon' [class.activeFilter]="isActive(colIndex)"
-                                *ngIf="col?.uiStyles?.attributes?.filter"></a>
+                            
                         </span>
                     </th>
                 </ng-template>
@@ -52,13 +52,19 @@
                                     <i class="fa fa-times"></i>
                                 </button>
                             </div>
-                            <div class="filterHolder" *ngIf="!isDate(col.type.name)">
-                                <input #text type="text" [(ngModel)]="filterState[colIndex]" (input)="inputFilter($event, dt, col.field, col?.uiStyles?.attributes?.filterMode)">
+                            <div *ngIf="!isDate(col.type.name)" >
+                                <div class="filterHolder">
+                                    <input #text type="text" [(ngModel)]="filterState[colIndex]" (input)="inputFilter($event, dt, col.field, col?.uiStyles?.attributes?.filterMode)">
                                 <button (click)="clearFilter(text, dt, col.field); filterState[colIndex]=''">
                                     <i class="fa fa-times"></i>
                                 </button>
                             </div>
-                        </span>
+                            <button class="btn btn-plain filterSubmit" >
+                                <i class="fa fa-arrow-right"></i>
+                            </button>
+                          
+                        </div>
+                    </span>
                     </th>
                 </ng-template>
             </tr>

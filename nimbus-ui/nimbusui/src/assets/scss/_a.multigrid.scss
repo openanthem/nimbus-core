@@ -107,13 +107,15 @@ ng-component{
             font-weight: bold;
             overflow: hidden;
             text-overflow: ellipsis;
-            padding-right: 40px; 
+            padding-right: 30px; 
             
         }
 
         .filterHolder{
             position: relative;
             margin-top: 6px;
+            display:inline-block;
+            width: 80%;
             input{
                 width: 100%;
             }
@@ -131,7 +133,9 @@ ng-component{
                 }
             }
         }
-
+        .filterSubmit{
+            padding: .7rem .3rem 0;
+        }
         .gridFilterIcon {
             position:absolute;
             right: 2px;
@@ -156,7 +160,7 @@ ng-component{
             font-size: 1.2rem;
             color: #669fe2;
             position:absolute;
-            right: 18px;
+            right: 6px;
             top: .6rem;
             &:hover, &:focus{
                 color: #4c4c4c;
