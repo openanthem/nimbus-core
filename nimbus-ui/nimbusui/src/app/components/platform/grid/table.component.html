@@ -21,7 +21,10 @@
         (sortFunction)="customSort($event)" 
         [customSort]="true" 
         [responsive]="true" 
-        (onRowExpand)="getAddtionalData($event)">
+        (onRowExpand)="getAddtionalData($event)"
+        
+        (onPage)="onPage($event)"
+        (onFilter)="onFilter($event)">
 
         <ng-template pTemplate="header" let-columns>
             <tr>

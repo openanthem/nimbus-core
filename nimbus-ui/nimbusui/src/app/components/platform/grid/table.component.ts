@@ -336,6 +336,9 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     }
 
     customSort(event: any) {
+        console.log(event.order);
+        console.log(event.field.code);
+        console.log(this.element.path);
         let fieldType: string = event.field.type.name;
         let sortAs: string = event.field.uiStyles.attributes.sortAs;
         if (this.isSortAsNumber(fieldType, sortAs)) {
@@ -565,5 +568,25 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         if (this.mouseEventSubscription)
             this.mouseEventSubscription.unsubscribe();
         this.cd.detach();
+    }
+
+    onSort(event: any) {
+        console.log(event.order);
+        console.log(event.field.code);
+    }
+
+    onPage(event: any) {
+        console.log(event.first);
+        console.log(event.rows);
+    }
+
+    onFilter(event: any) {
+        let filterKeys: string[] = [];
+        if (event.filters) {
+            filterKeys = Object.keys(event.filters);
+        }
+        filterKeys.forEach(key => {
+            console.log(event.filters[key]);
+        })
     }
 }
