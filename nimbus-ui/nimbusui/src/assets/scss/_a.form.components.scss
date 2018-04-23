@@ -163,6 +163,15 @@ p-dropdown.form-control {
     .ui-dropdown-panel .ui-dropdown-list{
         padding:0;
     }
+    &.ui-state-disabled, 
+    &.ui-widget:disabled {
+        opacity: 1;
+        .ui-dropdown-label.ui-inputtext,
+        .ui-dropdown-trigger {
+            border-color: #B9B6B6;
+            background-color: #d4d4d4;
+        }
+    }
 }
 .ui-corner-all {
     border-radius: 0px;
