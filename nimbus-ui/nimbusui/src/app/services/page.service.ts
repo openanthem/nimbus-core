@@ -385,6 +385,29 @@ export class PageService {
                 return page;
         }
 
+        processGridEvent(processUrl: string, pageSize: number, pageIdx: number, sortBy: string) {
+                processUrl = processUrl + '/' + Action._search.value;
+                let url = '';
+                let flowName = '';
+                flowName = processUrl.substring(1, processUrl.indexOf('/', 2));
+                url = ServiceConstants.PLATFORM_BASE_URL;
+
+                url = url + processUrl.replace('{id}', this.entityId.toString()) + '?fn=query';
+                if (sortBy) {
+                        url = url + '&sortBy=' + sortBy;
+                }
+                if (pageIdx) {
+                        url = url + '&pageSize=' + pageSize + '&page=' + pageIdx;
+                }
+
+                let rootDomainId = this.getFlowRootDomainId(flowName);
+                if (rootDomainId != null) {
+                        let flowNameWithId = flowName.concat(':' + rootDomainId);
+                        url = url.replace(flowName, flowNameWithId);
+                }
+                this.executeHttp(url, HttpMethod.POST.value, undefined);
+        }
+
         /** Process execute call - TODO revisit to make it more dynamic based on url completion */
         processEvent(processUrl: string, behavior: string, model: GenericDomain, method: string) {
                 processUrl = processUrl + '/' + Action._get.value;

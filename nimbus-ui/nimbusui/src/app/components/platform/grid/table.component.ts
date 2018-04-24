@@ -73,6 +73,9 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     mouseEventSubscription: Subscription;
     filterState: any[] = [];
 
+    pageIdx: number = 0;
+    sortBy: string;
+
     @ViewChild('dt') dt: Table;
     @ViewChild('op') overlayPanel: OverlayPanel;
     @ViewChildren('dropDown') dropDowns: QueryList<any>;
@@ -347,6 +350,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     }
 
     customSort(event: any) {
+        let pageSize: number = this.element.config.uiStyles.attributes.pageSize;
         let order: number = event.order;
         let sortField: string = event.field.code;
         let sortOrder: string = 'ASC';
@@ -355,7 +359,10 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         }
         let sortBy = sortField + ',' + sortOrder;
         console.log(sortBy);
+        console.log(pageSize);
+        console.log(this.pageIdx);
         //&sortBy=attr_String,DESC
+        //&pageSize=5&page=0
 
         let fieldType: string = event.field.type.name;
         let sortAs: string = event.field.uiStyles.attributes.sortAs;
@@ -589,20 +596,36 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     }
 
     onSort(event: any) {
-        console.log(event.order);
-        console.log(event.field.code);
+        let pageSize: number = this.element.config.uiStyles.attributes.pageSize;
+        let order: number = event.order;
+        let sortField: string = event.field.code;
+        let sortOrder: string = 'ASC';
+        if (order != 1) {
+            sortOrder = 'DESC';
+        }
+        let sortBy = sortField + ',' + sortOrder;
+        console.log(sortBy);
+        console.log(pageSize);
+        console.log(this.pageIdx);
+        //&sortBy=attr_String,DESC
+        //&pageSize=5&page=0
+
     }
 
     onPage(event: any) {
-        let pageSize: number = event.rows;
+        let pageSize: number = this.element.config.uiStyles.attributes.pageSize;
         let first: number = event.first;
-        let pageIdx: number = 0;
         if (first != 0 ) {
-            pageIdx = first/pageSize;
-        }   
+            this.pageIdx = first/pageSize;
+        } else {
+            this.pageIdx = 0;
+        }
         console.log(pageSize);
-        console.log(pageIdx);
-        //&pageSize=5&page=0"
+        console.log(this.pageIdx);
+        console.log(this.sortBy);
+        //&pageSize=5&page=0
+        //&sortBy=attr_String,DESC
+        this.pageSvc.processGridEvent(this.element.path, pageSize, this.pageIdx, this.sortBy);
     }
 
     onFilter(event: any) {
