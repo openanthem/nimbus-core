@@ -26,7 +26,6 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandTransactionInterceptor;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextLoader;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextPathVariableResolver;
-import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionBehaviorExecutorGetState;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorConfig;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorDelete;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorGet;
@@ -36,6 +35,7 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorPr
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorReplace;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorSearch;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorUpdate;
+import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultBehaviorExecutorState;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultCommandExecutorGateway;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultCommandPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultExecutionContextLoader;
@@ -130,9 +130,9 @@ public class DefaultCoreExecutorConfig {
 		return new DefaultActionExecutorConfig(beanResolver);
 	}
 	
-	@Bean(name="default._get$state")
+	@Bean(name="default.$state")
 	public CommandExecutor<?> defaultActionBehaviorExecutorGetState(BeanResolverStrategy beanResolver){
-		return new DefaultActionBehaviorExecutorGetState(beanResolver);
+		return new DefaultBehaviorExecutorState(beanResolver);
 	}
 	
 	@Bean

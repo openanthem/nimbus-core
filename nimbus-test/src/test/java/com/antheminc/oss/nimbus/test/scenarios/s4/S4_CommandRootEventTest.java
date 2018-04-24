@@ -5,8 +5,6 @@ package com.antheminc.oss.nimbus.test.scenarios.s4;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.io.Serializable;
-
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;

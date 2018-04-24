@@ -18,7 +18,6 @@ package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

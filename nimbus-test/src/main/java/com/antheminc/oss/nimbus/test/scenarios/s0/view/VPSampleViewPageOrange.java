@@ -3,7 +3,6 @@ package com.antheminc.oss.nimbus.test.scenarios.s0.view;
 import java.util.List;
 
 import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
-import com.antheminc.oss.nimbus.domain.defn.MapsTo;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo.Path;
 import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.ComboBox;
@@ -15,7 +14,6 @@ import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Tile;
 import com.antheminc.oss.nimbus.domain.defn.extension.ActivateConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.ActivateConditionals;
 import com.antheminc.oss.nimbus.domain.defn.extension.MessageConditional;
-import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
 import com.antheminc.oss.nimbus.test.scenarios.s0.view.CodeValueTypes.SampleDropDownValues;
 
 import lombok.Getter;

@@ -15,8 +15,6 @@
  */
 package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 
-import java.io.Serializable;
-
 import javax.annotation.PostConstruct;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;

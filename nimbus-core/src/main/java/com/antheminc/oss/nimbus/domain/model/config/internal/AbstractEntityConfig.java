@@ -25,7 +25,6 @@ import com.antheminc.oss.nimbus.support.JustLogit;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 /**
