@@ -73,6 +73,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     totalRecords: number = 0;
     mouseEventSubscription: Subscription;
     filterState: any[] = [];
+    loadLazy = false;
 
     @ViewChild('dt') dt: Table;
     @ViewChild('op') overlayPanel: OverlayPanel;
@@ -194,7 +195,22 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         this.pageSvc.gridValueUpdate$.subscribe(event => {
             if (event.path == this.element.path) {
                 this.value = event.gridList;
-                this.totalRecords = this.value ? this.value.length : 0;
+                let gridListSize = this.value ? this.value.length : 0;
+                // Check for Server Pagination Vs Client Pagination
+                if (event.page && event.page.totalElements > gridListSize) {
+                    // Server Pagination
+                    this.loadLazy = true;
+                    this.totalRecords = event.page.totalElements;
+                } else {
+                    // Client Pagination
+                    this.loadLazy = false;
+                    this.totalRecords = this.value ? this.value.length : 0;
+                }
+
+                console.log(this.totalRecords);
+                console.log(event.page);
+
+
                 this.updatePageDetailsState();
                 this.cd.markForCheck();
                 this.resetMultiSelection();
@@ -342,8 +358,8 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     handleRowChange(val) {
     }
 
-    getAddtionalData(event: any) {
-        event.data['nestedElement'] = this.element.collectionParams.find(ele => ele.path == this.element.path + '/' + event.data.elemId + '/' + ele.config.code);
+    getAddtionalData(event: any) { 
+        event.data['nestedElement'] = this.element.collectionParams.find(ele => ele.path == this.element.path + '/' + event.data.elemId + '/' + ele.config.code && ele.alias == ViewComponent.gridRowBody.toString()); 
     }
 
     resetMultiSelection() {
@@ -547,11 +563,11 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
                                 item.isOpen = false;
                                 item.state = 'closedPanel';
                             });
-                            //this.cd.markForCheck();
+                            this.cd.markForCheck();
                         });
         }
         e.selectedItem = false;
-        //this.cd.markForCheck();
+        this.cd.markForCheck();
     }
 
     export() {

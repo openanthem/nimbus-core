@@ -22,7 +22,7 @@ import { Injectable, EventEmitter } from '@angular/core';
 import { ServiceConstants } from './service.constants';
 import { ParamConfig, Validation } from '../shared/param-config';
 import { ModelEvent, Page, Result, ViewRoot } from '../shared/app-config.interface';
-import { Param, Model, Type } from '../shared/param-state';
+import { Param, Model, Type, GridPage } from '../shared/param-state';
 import { CustomHttpClient } from './httpclient.service';
 
 import { Subject } from 'rxjs/Subject';
@@ -620,6 +620,10 @@ export class PageService {
                                         }
                                         // Collection check - replace entire grid
                                         if (param.config.type.collection) {
+                                                if (eventModel.value.page) {
+                                                        let page: GridPage = new GridPage().deserialize(eventModel.value.page);
+                                                        param.page = page;
+                                                }
                                                 param.gridList = this.createGridData(eventModel.value.type.model.params, param);
                                                 this.gridValueUpdate.next(param);
                                         }
