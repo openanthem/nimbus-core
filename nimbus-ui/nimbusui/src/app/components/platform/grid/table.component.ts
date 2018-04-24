@@ -74,10 +74,6 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     mouseEventSubscription: Subscription;
     filterState: any[] = [];
 
-    filterCriteria: GenericDomain = new GenericDomain();
-    pageIdx: number = 0;
-    sortBy: string;
-
     @ViewChild('dt') dt: Table;
     @ViewChild('op') overlayPanel: OverlayPanel;
     @ViewChildren('dropDown') dropDowns: QueryList<any>;
@@ -131,10 +127,6 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
 
     ngOnInit() {
         super.ngOnInit();
-        // Initialize Filter/Sort/Page parameters
-        this.filterCriteria = new GenericDomain();
-        this.pageIdx = 0;
-        this.sortBy = undefined;
 
         // Set the column headers
         if (this.params) {
@@ -188,7 +180,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         }
 
         if (this.element.config.uiStyles.attributes.onLoad === true) {
-            let queryString: string = this.getQueryString(this.pageIdx, this.sortBy);
+            let queryString: string = this.getQueryString(0, undefined);
             this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'GET', queryString);
         }
 
@@ -357,20 +349,6 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     }
 
     customSort(event: any) {
-        let pageSize: number = this.element.config.uiStyles.attributes.pageSize;
-        let order: number = event.order;
-        let sortField: string = event.field.code;
-        let sortOrder: string = 'ASC';
-        if (order != 1) {
-            sortOrder = 'DESC';
-        }
-        let sortBy = sortField + ',' + sortOrder;
-        console.log(sortBy);
-        console.log(pageSize);
-        console.log(this.pageIdx);
-        //&sortBy=attr_String,DESC
-        //&pageSize=5&page=0
-
         let fieldType: string = event.field.type.name;
         let sortAs: string = event.field.uiStyles.attributes.sortAs;
         if (this.isSortAsNumber(fieldType, sortAs)) {
@@ -602,43 +580,45 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         this.cd.detach();
     }
 
-    onSort(event: any) {
-        let order: number = event.order;
-        let sortField: string = event.field.code;
-        let sortOrder: string = 'ASC';
-        if (order != 1) {
-            sortOrder = 'DESC';
-        }
-        let sortBy = sortField + ',' + sortOrder;
-        //&pageSize=5&page=0&sortBy=attr_String,DESC
-        let queryString: string = this.getQueryString(this.pageIdx, this.sortBy);
-        this.pageSvc.processEvent(this.element.path, '$execute', this.filterCriteria, HttpMethod.POST.value, queryString);
-
-    }
-
-    onPage(event: any) {
+    loadDataLazy(event:any) {
+        console.log(event);
+        // Pagination Logic
         let pageSize: number = this.element.config.uiStyles.attributes.pageSize;
+        let pageIdx: number = 0;        
         let first: number = event.first;
         if (first != 0 ) {
-            this.pageIdx = first/pageSize;
+            pageIdx = first/pageSize;
         } else {
-            this.pageIdx = 0;
+            pageIdx = 0;
         }
-        //&pageSize=5&page=0&sortBy=attr_String,DESC
-        let queryString: string = this.getQueryString(this.pageIdx, this.sortBy);
-        this.pageSvc.processEvent(this.element.path, '$execute', this.filterCriteria, HttpMethod.POST.value, queryString);
-    }
 
-    onFilter(event: any) {
+        // Sort Logic
+        let sortBy: string = undefined;
+        if (event.sortField) {
+            let order: number = event.sortOrder;
+            let sortField: string = event.sortField.code;
+            let sortOrder: string = 'ASC';
+            if (order != 1) {
+                sortOrder = 'DESC';
+            }
+            sortBy = sortField + ',' + sortOrder;    
+        }
+
+        // Filter Logic
+        let filterCriteria: GenericDomain = new GenericDomain();
         let filterKeys: string[] = [];
         if (event.filters) {
             filterKeys = Object.keys(event.filters);
         }
         filterKeys.forEach(key => {
-            this.filterCriteria.addAttribute(key, event.filters[key].value);
+            filterCriteria.addAttribute(key, event.filters[key].value);
         })
-        let queryString: string = this.getQueryString(this.pageIdx, this.sortBy);
-        this.pageSvc.processEvent(this.element.path, '$execute', this.filterCriteria, HttpMethod.POST.value, queryString);
+
+        // query params - &pageSize=5&page=0&sortBy=attr_String,DESC
+        // request body - filterCriteria
+        let queryString: string = this.getQueryString(pageIdx, sortBy);
+        this.pageSvc.processEvent(this.element.path, '$execute', filterCriteria, HttpMethod.POST.value, queryString);
+
     }
 
     getQueryString(pageIdx: number, sortBy: string): string {
