@@ -134,17 +134,19 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
                 // Set field and header attributes. TurboTable expects these specific variables.
                 column['field'] = column.code;
                 column['header'] = column.label;
-                if (column.uiStyles.attributes.hidden) {
-                    column['exportable'] = false;
-                } else {
-                    if (column.uiStyles.attributes.alias == 'LinkMenu' || column.type.nested == true) {
+                if(column.uiStyles) {
+                    if (column.uiStyles.attributes.hidden) {
                         column['exportable'] = false;
                     } else {
-                        column['exportable'] = true;
+                        if (column.uiStyles.attributes.alias == 'LinkMenu' || column.type.nested == true) {
+                            column['exportable'] = false;
+                        } else {
+                            column['exportable'] = true;
+                        }
                     }
-                }
-                if (!column.uiStyles.attributes.rowExpander) {
-                    this.rowExpanderKey = column.code;
+                    if (column.uiStyles.attributes.rowExpander != undefined && !column.uiStyles.attributes.rowExpander) {
+                        this.rowExpanderKey = column.code;
+                    }
                 }
             });
         }
@@ -214,12 +216,12 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         if(this.rowExpanderKey == '')
             return true;
         
-        let showExpander = rowData[this.rowExpanderKey];
+        let val = rowData[this.rowExpanderKey];
         
-        if(showExpander)
-            return showExpander;
+        if(val)
+            return false;
         else
-            return false;    
+            return true;  
     }
 
     getCellDisplayValue(rowData: any, col: ParamConfig) {
@@ -381,7 +383,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
                 return value1.localeCompare(value2) * event.order;
             });
         }
-        this.value = [...this.value];
+        //this.value = [...this.value];
     }
 
     protected sortInternal(itemCallback: Function, event: any): Array<any> {
@@ -543,11 +545,11 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
                                 item.isOpen = false;
                                 item.state = 'closedPanel';
                             });
-                            this.cd.detectChanges();
+                            //this.cd.markForCheck();
                         });
         }
         e.selectedItem = false;
-        this.cd.detectChanges();
+        //this.cd.markForCheck();
     }
 
     export() {
