@@ -124,6 +124,11 @@ public abstract class AbstractValuesConditionalStateEventHandler extends Abstrac
 	protected void handleInternal(ValuesConditional configuredAnnotation, Param<?> srcParam) {
 		final Param<?> targetParam = this.retrieveParamByPath(srcParam, configuredAnnotation.target());
 		
+		// if the target param is not enabled, skip the values processing
+		if (!targetParam.isEnabled()) {
+			return;
+		}
+		
 		final boolean shouldExecuteDefault = !this.executeConditions(configuredAnnotation, srcParam, targetParam);
 		
 		if (shouldExecuteDefault) {
