@@ -358,8 +358,8 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     handleRowChange(val) {
     }
 
-    getAddtionalData(event: any) {
-        event.data['nestedElement'] = this.element.collectionParams.find(ele => ele.path == this.element.path + '/' + event.data.elemId + '/' + ele.config.code);
+    getAddtionalData(event: any) { 
+        event.data['nestedElement'] = this.element.collectionParams.find(ele => ele.path == this.element.path + '/' + event.data.elemId + '/' + ele.config.code && ele.alias == ViewComponent.gridRowBody.toString()); 
     }
 
     resetMultiSelection() {
