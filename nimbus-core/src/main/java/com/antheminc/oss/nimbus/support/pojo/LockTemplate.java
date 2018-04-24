@@ -15,6 +15,9 @@
  */
 package com.antheminc.oss.nimbus.support.pojo;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 import lombok.Getter;
 
 /**
@@ -35,15 +38,15 @@ public class LockTemplate {
 		public void execute();
 	}
 	
-	final public <L> L execute(CallbackReturn<L> cb) {
-		return cb.execute();
-	}
+//	final public <L> L execute(CallbackReturn<L> cb) {
+//		return cb.execute();
+//	}
 	
-	final public void execute(CallbackVoid cb) {
-		cb.execute();
-	}
+//	final public void execute(CallbackVoid cb) {
+//		cb.execute();
+//	}
 	
-	/*
+	
 	final private Lock lock;
 
 	public LockTemplate() {
@@ -67,5 +70,5 @@ public class LockTemplate {
 			lock.unlock();
 		}
 	}
-	*/
+	
 }
