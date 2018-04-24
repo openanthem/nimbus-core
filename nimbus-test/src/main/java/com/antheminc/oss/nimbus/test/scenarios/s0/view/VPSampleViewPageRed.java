@@ -92,6 +92,12 @@ public class VPSampleViewPageRed {
 		
 		@Path("/nested_attr_String2")
 		private String vt_nested_attr_String2;
+		
+		@Path("/nested_attr_String3")
+		private String vt_nested_attr_String3_1;
+		
+		@Path("/nested_attr_String3")
+		private String vt_nested_attr_String3_2;
 	}
 	
 }

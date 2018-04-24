@@ -49,7 +49,7 @@ export class FileService {
             .subscribe(data => {
                 // console.log("data", data);
 
-                file['fileId'] = data;
+                file['fileId'] = data.fileId;
                 this.addFile$.next(file);
             },
                 error => {

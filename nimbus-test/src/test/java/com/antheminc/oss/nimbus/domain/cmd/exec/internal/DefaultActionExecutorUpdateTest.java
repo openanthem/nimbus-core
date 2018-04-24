@@ -19,7 +19,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import org.drools.core.util.ArrayUtils;
@@ -272,7 +271,6 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 				.addNested("/page_red/tile/vt_attached_convertedNestedEntity")
 				.addAction(Action._get)
 				.addParam("fn", "param")
-				//.addParam("expr", "assignMapsTo('/.d/.m/attr_NestedEntity')")
 				.addParam("expr", "assignMapsTo()")
 				.getMock();
 		
@@ -289,27 +287,50 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 		// Set an initial value to one field
 		String payload = 
 			"{ " + 
-				"\"vt_nested_attr_String\": \"initially_set_value\"" +
+				"\"vt_nested_attr_String\": \"update 1a\"," +
+				"\"vt_nested_attr_String3_1\": \"update 1b\"" +
 			"}";
 		
 		this.controller.handlePut(req_update, null, payload);
 		
-		// Validate the value was set
+		// Validate the values were set
 		Object resp_get = controller.handleGet(req_get, null);
 		EntityState.Param<Form_ConvertedNestedEntity> viewParam = ExtractResponseOutputUtils.extractOutput(resp_get);
-		// TODO - This fails with a null value. Why is it not being retrieved?
-		assertEquals("initially_set_value", viewParam.getLeafState().getVt_nested_attr_String());
+		assertEquals("update 1a", viewParam.getLeafState().getVt_nested_attr_String());
+		assertEquals("update 1b", viewParam.getLeafState().getVt_nested_attr_String3_1());
+		assertEquals("update 1b", viewParam.getLeafState().getVt_nested_attr_String3_2());
 		
 		// Set a second value to a different field
-		payload = "{ \"vt_nested_attr_String2\":\"new_value_from_update\" }";
+		payload = "{ \"vt_nested_attr_String2\":\"update 2\" }";
 		this.controller.handlePut(req_update, null, payload);
 		
 		// Validate the value was set
 		resp_get = controller.handleGet(req_get, null);
 		viewParam = ExtractResponseOutputUtils.extractOutput(resp_get);
-		assertEquals("new_value_from_update", viewParam.getLeafState().getVt_nested_attr_String2());
+		assertEquals("update 2", viewParam.getLeafState().getVt_nested_attr_String2());
 		
-		// Validate original value still exists
-		assertEquals("initially_set_value", viewParam.getLeafState().getVt_nested_attr_String());
+		// Validate original values still exist
+		assertEquals("update 1a", viewParam.getLeafState().getVt_nested_attr_String());
+		assertEquals("update 1b", viewParam.getLeafState().getVt_nested_attr_String3_1());
+		assertEquals("update 1b", viewParam.getLeafState().getVt_nested_attr_String3_2());
+		
+		payload = 
+			"{ " + 
+				"\"vt_nested_attr_String3_2\": \"update 3\"" +
+			"}";
+		
+		this.controller.handlePut(req_update, null, payload);
+		
+		// Validate the new values were set
+		resp_get = controller.handleGet(req_get, null);
+		viewParam = ExtractResponseOutputUtils.extractOutput(resp_get);
+		assertEquals("update 3", viewParam.getLeafState().getVt_nested_attr_String3_1());
+		assertEquals("update 3", viewParam.getLeafState().getVt_nested_attr_String3_2());
+		
+		// Validate existing values
+		assertEquals("update 1a", viewParam.getLeafState().getVt_nested_attr_String());
+		assertEquals("update 2", viewParam.getLeafState().getVt_nested_attr_String2());
 	}
+	
 }
+
