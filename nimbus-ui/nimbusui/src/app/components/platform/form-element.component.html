@@ -1,3 +1,4 @@
+
 <div [formGroup]="form" *ngIf="element.config?.uiStyles?.attributes?.alias!='Button'" [hidden]="!element?.visible" class="form-group  {{elementCss}} {{getErrorStyles()}}">
    
     <nm-header [element]="element" *ngIf="element.config?.uiStyles?.attributes?.alias=='Header'" ></nm-header>
@@ -21,7 +22,7 @@
             [params]="element?.config?.type?.elementConfig?.type?.model?.paramConfigs" (onScrollEvent)="onScrollEvent()">
         </infinite-scroll-grid>
     </ng-template>
-    <div *ngIf="showErrors==true">
-        <p class="warningMsg" *ngFor="let error of getErrors()">{{error}}</p>
-    </div>
+    <ng-template ngFor let-msg [ngForOf]="getMessages()">
+        <nm-message [messageContext]="msg.context"  [messageArray]="msg.messageArray" ></nm-message>
+    </ng-template>
 </div>

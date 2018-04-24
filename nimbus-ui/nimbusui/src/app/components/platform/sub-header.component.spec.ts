@@ -5,7 +5,7 @@ import { HttpModule } from '@angular/http';
 
 import { SubHeaderCmp } from './sub-header.component';
 import { DateTimeFormatPipe } from '../../pipes/date.pipe';
-import { Param } from '../../shared/app-config.interface';
+import { Param } from '../../shared/Param';
 
 describe('SubHeaderCmp', () => {
   beforeEach(async(() => {

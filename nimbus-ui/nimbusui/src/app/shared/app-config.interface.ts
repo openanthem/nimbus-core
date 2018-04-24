@@ -237,7 +237,7 @@ export class Message implements Serializable<Message, string> {
                     break;   
             }
     
-            this.messageArray.push({severity: severity,  summary: summary,  detail: this.text});
+            this.messageArray.push({severity: severity,  detail: this.text});
             obj['messageArray'] = this.messageArray;
             obj['life'] = life;
 

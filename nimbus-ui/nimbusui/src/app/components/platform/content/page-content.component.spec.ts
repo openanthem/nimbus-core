@@ -53,6 +53,10 @@ import { Calendar } from '../form/elements/calendar.component';
 import { DateControl } from '../form/elements/date.component';
 import { Signature } from '../form/elements/signature.component';
 import { WebContentSvc } from './../../../services/content-management.service';
+import { PageService } from '../../../services/page.service';
+import { CustomHttpClient } from '../../../services/httpclient.service';
+import { LoaderService } from '../../../services/loader.service';
+import { ConfigService } from '../../../services/config.service';
 
 export class MockActivatedRoute implements ActivatedRoute {
   snapshot: ActivatedRouteSnapshot;
@@ -164,7 +168,11 @@ describe('PageContent', () => {
        ],
        providers: [
         {provide: WebContentSvc, useClass: MockWebContentSvc},
-        {provide: ActivatedRoute, useClass: MockActivatedRoute}
+        {provide: ActivatedRoute, useClass: MockActivatedRoute},
+        PageService,
+        CustomHttpClient,
+        LoaderService,
+        ConfigService
        ]
     }).compileComponents();
   }));
