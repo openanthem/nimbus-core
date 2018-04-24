@@ -20,8 +20,8 @@ import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Component, Input, Output, forwardRef, ViewChild, EventEmitter, ViewEncapsulation, ChangeDetectorRef, QueryList, ViewChildren } from '@angular/core';
 
 import { GenericDomain } from '../../../model/generic-domain.model';
-import { ParamConfig } from '../../../shared/app-config.interface';
-import { Param } from '../../../shared/Param';
+import { ParamConfig } from '../../../shared/param-config';
+import { Param } from '../../../shared/param-state';
 import { PageService } from '../../../services/page.service';
 import { GridService } from '../../../services/grid.service';
 import { WebContentSvc } from '../../../services/content-management.service';
@@ -37,6 +37,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/fromEvent';
 import { Subscription } from 'rxjs/Subscription';
 import { ParamUtils } from './../../../shared/param-utils';
+import { ViewComponent } from '../../../shared/param-annotations.enum';
 
 
 
@@ -67,7 +68,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     @Input() params: ParamConfig[];
     @Input() form: FormGroup;
     @Input('value') _value = [];
-    paramState: Param[];
+    //paramState: Param[];
     filterValue: Date;
     totalRecords: number = 0;
     mouseEventSubscription: Subscription;
@@ -153,7 +154,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
             this.dt.filterConstraints = customFilterConstraints;
         }
         
-        this.paramState = this.element.paramState;
+        //this.paramState = this.element.paramState;
     }
 
     ngAfterViewInit() {
@@ -182,7 +183,8 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         this.pageSvc.gridValueUpdate$.subscribe(event => {
             if (event.path == this.element.path) {
                 this.value = event.gridList;
-                this.paramState = event.paramState;
+                //this.paramState = event.paramState;
+                //this.element.collectionParams = event.collectionParams;
                 this.totalRecords = this.value ? this.value.length : 0;
                 this.updatePageDetailsState();
                 this.cd.markForCheck();
@@ -212,6 +214,10 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         }
         return false;
 
+    }
+
+    getLinkMenuParam(col,rowIndex): Param {
+        return this.element.collectionParams.find(ele => ele.path == this.element.path +'/'+rowIndex+'/'+ ele.config.code && ele.alias == ViewComponent.linkMenu.toString());
     }
 
     isActive(index){
@@ -284,7 +290,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     }
 
     getAddtionalData(event: any) {
-        event.data['nestedElement']= this.element.collectionParams.find(ele => ele.path == this.element.path +'/'+event.data.elemId+'/'+ ele.config.code);
+        event.data['nestedElement']= this.element.collectionParams.find(ele => ele.path == this.element.path +'/'+event.data.elemId+'/'+ ele.config.code && ele.alias == 'GridRowBody');
     }
 
     resetMultiSelection() {

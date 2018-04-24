@@ -79,8 +79,17 @@ textarea.form-control {
   background:none;
   border:none;
   color: #4c4c4c;
-    .warningMsg{
+    .errorMsg{
         color: #a94442;
+        &::before{
+            content:"\F071";
+            font-family: fontAwesome;
+            display: inline-block;
+            margin-right:.5rem;
+        }
+    }
+    .warningMsg{
+        color: #e5991c;
         &::before{
             content:"\F071";
             font-family: fontAwesome;
@@ -137,7 +146,6 @@ p-dropdown.form-control {
     padding:0.1rem;
     background: none;
     line-height: 1.5;
-    margin-left: 20px;
     .ui-widget-content {
         border: 1px solid #9dd3f7;
         background: #ecf7ff;
@@ -154,6 +162,15 @@ p-dropdown.form-control {
     min-width: 150px;
     .ui-dropdown-panel .ui-dropdown-list{
         padding:0;
+    }
+    &.ui-state-disabled, 
+    &.ui-widget:disabled {
+        opacity: 1;
+        .ui-dropdown-label.ui-inputtext,
+        .ui-dropdown-trigger {
+            border-color: #B9B6B6;
+            background-color: #d4d4d4;
+        }
     }
 }
 .ui-corner-all {

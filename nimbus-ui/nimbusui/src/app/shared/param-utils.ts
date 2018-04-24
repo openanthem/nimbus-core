@@ -21,7 +21,7 @@ import { SortAs } from '../components/platform/grid/sortas.interface';
 import { PageService } from '../services/page.service';
 import { GridService } from '../services/grid.service';
 import { ServiceConstants } from '../services/service.constants';
-import { Param } from './Param'
+import { Param } from './param-state';
 /**
  * \@author Tony.Lopez
  * \@whatItDoes 

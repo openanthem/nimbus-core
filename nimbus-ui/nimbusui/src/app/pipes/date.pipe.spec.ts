@@ -1,6 +1,6 @@
 import { DateTimeFormatPipe } from './date.pipe';
 import { TestBed, async } from '@angular/core/testing';
-import { Param } from '../shared/Param';
+import { Param } from '../shared/param-state';
 
 describe('DateTimeFormatPipe', () => {
 

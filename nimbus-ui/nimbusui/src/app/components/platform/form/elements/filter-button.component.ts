@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 'use strict';
-import { LabelConfig } from './../../../../shared/app-config.interface';
+import { LabelConfig } from './../../../../shared/param-config';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { Param } from '../../../../shared/Param';
+import { Param } from '../../../../shared/param-state';
 import { FormGroup } from '@angular/forms';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { PageService } from '../../../../services/page.service';
