@@ -93,12 +93,32 @@ public class DefaultExecutionContextPathVariableResolver implements ExecutionCon
 	}
 
 	private String mapPageCriteria(ExecutionContext eCtx, Param<?> param) {
-		String pageCriteria = eCtx.getCommandMessage().getCommand().getFirstParameterValue(Constants.SERVER_PAGE_CRITERIA_EXPR_MARKER.code);
+		//String pageCriteria = eCtx.getCommandMessage().getCommand().getFirstParameterValue(Constants.SERVER_PAGE_CRITERIA_EXPR_MARKER.code);
+		String pageSize = eCtx.getCommandMessage().getCommand().getFirstParameterValue(Constants.SEARCH_REQ_PAGINATION_SIZE.code);
+		String page = eCtx.getCommandMessage().getCommand().getFirstParameterValue(Constants.SEARCH_REQ_PAGINATION_PAGE_NUM.code);
+		String[] sortBy = eCtx.getCommandMessage().getCommand().getParameterValue(Constants.SEARCH_REQ_PAGINATION_SORT_PROPERTY.code);
+		
+		StringBuilder url = new StringBuilder();
+		
+		url.append(Constants.SEARCH_REQ_PAGINATION_SIZE.code).append(Constants.PARAM_ASSIGNMENT_MARKER.code).append(pageSize)
+				.append(Constants.REQUEST_PARAMETER_DELIMITER.code).append(Constants.SEARCH_REQ_PAGINATION_PAGE_NUM.code)
+				.append(Constants.PARAM_ASSIGNMENT_MARKER.code).append(page);
+		
+		if(sortBy != null && sortBy.length > 0) {
+			Stream.of(sortBy)
+				.forEach(sort -> url.append(Constants.REQUEST_PARAMETER_DELIMITER.code)
+						.append(Constants.SEARCH_REQ_PAGINATION_SORT_PROPERTY.code)
+						.append(Constants.PARAM_ASSIGNMENT_MARKER.code)
+						.append(sort));
+		}
+		
+		String pageCriteria = url.toString();
+		
 		if(StringUtils.isNotBlank(pageCriteria)) {
-			String[] sortBy = StringUtils.substringsBetween(pageCriteria, "sortBy=", ",");
+			String[] sortByCriteria = StringUtils.substringsBetween(pageCriteria, "sortBy=", ",");
 			
-			if(sortBy != null && sortBy.length > 0) {
-				pageCriteria=Stream.of(sortBy)
+			if(sortByCriteria != null && sortByCriteria.length > 0) {
+				pageCriteria=Stream.of(sortByCriteria)
 			             .map(toRem-> (Function<String,String>)s->s.replaceAll(toRem, findMappedParamPath(toRem,param)).replaceAll("/", "."))
 			             .reduce(Function.identity(), Function::andThen)
 			             .apply(pageCriteria);
