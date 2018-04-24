@@ -70,7 +70,8 @@
                     <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
                 </td>
                 <td *ngIf="element.config?.uiStyles?.attributes?.expandableRows">
-                    <a href="#" [pRowToggler]="rowData">
+
+                    <a href="#" [pRowToggler]="rowData" *ngIf=isRowExpanderHidden(rowData)>
                         <i [ngClass]="expanded ? 'fa fa-fw fa-chevron-circle-down' : 'fa fa-fw fa-chevron-circle-right'"></i>
                     </a>
                 </td>

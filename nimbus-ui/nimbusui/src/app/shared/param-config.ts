@@ -201,6 +201,7 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
     export: boolean;
     clearLabel: string;
     acceptLabel: string;
+    rowExpander: boolean;
     deserialize( inJson ) {
         this.value = inJson.value;
         this.url = inJson.url;
@@ -271,6 +272,7 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
         this.clearAllFilters = inJson.clearAllFilters;
         this.clearLabel = inJson.clearLabel;
         this.acceptLabel = inJson.acceptLabel;
+        this.rowExpander = inJson.rowExpander;
         if ( inJson.export != null ) {
             this.export = inJson.export;
         }

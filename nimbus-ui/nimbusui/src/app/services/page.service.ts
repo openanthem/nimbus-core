@@ -689,22 +689,7 @@ export class PageService {
         traverseParam(param: Param, eventModel: ModelEvent) {
                 /* Flow-Wrapper class also invokes methods that eventually call this behaviour. We need to make sure that the eventModel is deserialized by then */
                 let payload: Param = new Param(this.configService).deserialize(eventModel.value, eventModel.value.path);
-                if (param.config.type.nested === true) {
-                        this.updateParam(param, payload);
-                        if (param.type.model && payload.type.model && payload.type.model.params) {
-                                for (var p in param.type.model.params) {
-                                        this.updateParam(param.type.model.params[p], payload.type.model.params[p]);
-                                }
-                        }
-                        if (param.type.model === undefined && payload.type.model) {
-                                param.type['model'] = payload.type.model;
-                        }
-                        if (param.message === undefined && payload.message) {
-                                param['message'] = payload.message;
-                        }
-                } else {                        
-                        this.updateParam(param, payload);
-                }
+                this.updateParam(param, payload);
         }
 
         /*
@@ -728,11 +713,26 @@ export class PageService {
                         }); 
                         this.eventUpdate.next(sourceParam); 
                         this.validationUpdate.next(sourceParam);
+                        this.updateNestedParameters(sourceParam,responseParam);
                 } else {
                         this.logError('Could not process the update from the server for ' + responseParam.path + ' because config is undefined.');
                 }
         }
 
+        updateNestedParameters(sourceParam: Param,responseParam: Param) {
+                if(responseParam.type && responseParam.type.model) {
+                        try {
+                                if(sourceParam.type.model.params) {
+                                        for (var p in responseParam.type.model.params) {
+                                                this.updateParam(sourceParam.type.model.params[p], responseParam.type.model.params[p]);
+                                        }
+                                }
+                        }catch (e) {
+                                this.logError('Could not find source param to update the nested payload param path'+ responseParam.path);
+                                throw e; 
+                        }
+                }
+        }
         /*
         * show the loader icon the page
         */

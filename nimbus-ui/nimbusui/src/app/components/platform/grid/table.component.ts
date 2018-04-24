@@ -68,7 +68,6 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     @Input() params: ParamConfig[];
     @Input() form: FormGroup;
     @Input('value') _value = [];
-    paramState: Param[];
     filterValue: Date;
     totalRecords: number = 0;
     mouseEventSubscription: Subscription;
@@ -84,7 +83,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     showFilters: boolean = false;
     rowStart = 0;
     rowEnd = 0;
-
+    rowExpanderKey = '';
     public onChange: any = (_) => { /*Empty*/ }
     public onTouched: any = () => { /*Empty*/ }
 
@@ -130,19 +129,22 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
 
         // Set the column headers
         if (this.params) {
-            this.params.forEach(element => {
-                element.label = this._wcs.findLabelContentFromConfig(element.code, element.labelConfigs).text;
+            this.params.forEach(column => {
+                column.label = this._wcs.findLabelContentFromConfig(column.code, column.labelConfigs).text;
                 // Set field and header attributes. TurboTable expects these specific variables.
-                element['field'] = element.code;
-                element['header'] = element.label;
-                if (element.uiStyles.attributes.hidden) {
-                    element['exportable'] = false;
+                column['field'] = column.code;
+                column['header'] = column.label;
+                if (column.uiStyles.attributes.hidden) {
+                    column['exportable'] = false;
                 } else {
-                    if (element.uiStyles.attributes.alias == 'LinkMenu' || element.type.nested == true) {
-                        element['exportable'] = false;
+                    if (column.uiStyles.attributes.alias == 'LinkMenu' || column.type.nested == true) {
+                        column['exportable'] = false;
                     } else {
-                        element['exportable'] = true;
+                        column['exportable'] = true;
                     }
+                }
+                if (!column.uiStyles.attributes.rowExpander) {
+                    this.rowExpanderKey = column.code;
                 }
             });
         }
@@ -160,7 +162,6 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
             this.dt.filterConstraints = customFilterConstraints;
         }
 
-        this.paramState = this.element.paramState;
     }
 
     ngAfterViewInit() {
@@ -189,7 +190,6 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         this.pageSvc.gridValueUpdate$.subscribe(event => {
             if (event.path == this.element.path) {
                 this.value = event.gridList;
-                this.paramState = event.paramState;
                 this.totalRecords = this.value ? this.value.length : 0;
                 this.updatePageDetailsState();
                 this.cd.markForCheck();
@@ -209,6 +209,17 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
             });
         }
 
+    }
+    isRowExpanderHidden(rowData: any): boolean {
+        if(this.rowExpanderKey == '')
+            return true;
+        
+        let showExpander = rowData[this.rowExpanderKey];
+        
+        if(showExpander)
+            return showExpander;
+        else
+            return false;    
     }
 
     getCellDisplayValue(rowData: any, col: ParamConfig) {
