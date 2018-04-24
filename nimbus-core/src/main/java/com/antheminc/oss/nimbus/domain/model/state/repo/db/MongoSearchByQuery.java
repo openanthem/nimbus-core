@@ -158,8 +158,8 @@ public class MongoSearchByQuery extends MongoDBSearch {
 		
 	}
 
-	private PageRequestAndRespone<Object> findAllPageable(Class<?> referredClass, String alias, Pageable pageRequest, AbstractMongodbQuery query, PathBuilder[] projectionPaths) {
-		AbstractMongodbQuery qPage = query.offset(pageRequest.getOffset()).limit(pageRequest.getPageSize());
+	private Object findAllPageable(Class<?> referredClass, String alias, Pageable pageRequest, AbstractMongodbQuery query, PathBuilder[] projectionPaths) {
+		AbstractMongodbQuery qPage = query;
 		
 		if(pageRequest.getSort() != null){
 			PathBuilder<?> entityPath = new PathBuilder(referredClass, alias);
@@ -168,7 +168,14 @@ public class MongoSearchByQuery extends MongoDBSearch {
 			    qPage.orderBy(new OrderSpecifier(com.querydsl.core.types.Order.valueOf(order.getDirection().name().toUpperCase()), path));
 			}
 		}
-		return new PageRequestAndRespone<Object>(qPage.fetchResults(projectionPaths).getResults(), pageRequest, () -> query.fetchCount());
+		
+		long count = query.fetchCount();
+		if(count <= getSearchThreshold()) {
+			return qPage.fetch(projectionPaths);
+		}
+		
+		return new PageRequestAndRespone<Object>(qPage.fetchResults(projectionPaths).getResults(), pageRequest, () -> count);
+		
 	}
 	
 	private PathBuilder[] buildProjectionPathBuilder(Class<?> referredClass, SearchCriteria criteria, AbstractMongodbQuery query) {
