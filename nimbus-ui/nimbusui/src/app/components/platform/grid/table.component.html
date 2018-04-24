@@ -13,7 +13,7 @@
         </div>
     </div>
 
-    <p-table #dt [value]="value" [columns]="params" dataKey="id" 
+    <p-table #dt [value]="value" [columns]="params" dataKey="id"
         [(selection)]="selectedRows" 
         [rows]="element.config?.uiStyles?.attributes?.pageSize"
         [totalRecords]=500
@@ -32,9 +32,9 @@
                 <th style="width: 2.25em" *ngIf="element.config?.uiStyles?.attributes?.rowSelection">
                     <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
                 </th>
-                <th style="width: 2.25em" *ngIf="element.config?.uiStyles?.attributes?.expandableRows"></th>
+                <th style="width: 2.25em" *ngIf="element?.config?.uiStyles?.attributes?.expandableRows"></th>
                 <ng-template ngFor let-col let-colIndex="index" [ngForOf]="params">
-                    <th *ngIf="col.uiStyles.attributes?.hidden == false" [pSortableColumn]="col" [ngClass]="{dropdown:showLinkMenu(col)}">
+                    <th *ngIf="col?.uiStyles?.attributes?.hidden == false" [pSortableColumn]="col" [ngClass]="{dropdown:showLinkMenu(col)}">
                         <span *ngIf="showValue(col)">
                             {{col.header}}
                             <p-sortIcon [field]="col" *ngIf="col?.uiStyles?.attributes?.sortable !== false"></p-sortIcon>
