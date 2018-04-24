@@ -181,6 +181,9 @@ h1.page-title {
 .filterIcon::before{
     content: "\F0b0";
 }
+.clinicalInfoIcon::before{
+    content: "\F0fa";
+}
 
 .col-xs-12 {
     margin: 0 0; //override correction for inline-block fix
