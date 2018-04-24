@@ -41,6 +41,7 @@ import { ServiceConstants } from './../../../services/service.constants';
 import { SortAs, GridColumnDataType } from './sortas.interface';
 import { ActionDropdown } from './../form/elements/action-dropdown.component';
 import { Param } from '../../../shared/param-state';
+import { HttpMethod } from './../../../shared/command.enum';
 import { ViewComponent } from '../../../shared/param-annotations.enum';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
@@ -73,6 +74,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     mouseEventSubscription: Subscription;
     filterState: any[] = [];
 
+    filterCriteria: GenericDomain = new GenericDomain();
     pageIdx: number = 0;
     sortBy: string;
 
@@ -129,6 +131,10 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
 
     ngOnInit() {
         super.ngOnInit();
+        // Initialize Filter/Sort/Page parameters
+        this.filterCriteria = new GenericDomain();
+        this.pageIdx = 0;
+        this.sortBy = undefined;
 
         // Set the column headers
         if (this.params) {
@@ -182,8 +188,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         }
 
         if (this.element.config.uiStyles.attributes.onLoad === true) {
-            let pageSize: number = this.element.config.uiStyles.attributes.pageSize;
-            let queryString: string = this.getQueryString(pageSize, this.pageIdx, this.sortBy);
+            let queryString: string = this.getQueryString(this.pageIdx, this.sortBy);
             this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'GET', queryString);
         }
 
@@ -598,7 +603,6 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     }
 
     onSort(event: any) {
-        let pageSize: number = this.element.config.uiStyles.attributes.pageSize;
         let order: number = event.order;
         let sortField: string = event.field.code;
         let sortOrder: string = 'ASC';
@@ -606,13 +610,9 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
             sortOrder = 'DESC';
         }
         let sortBy = sortField + ',' + sortOrder;
-        console.log(sortBy);
-        console.log(pageSize);
-        console.log(this.pageIdx);
-        //&sortBy=attr_String,DESC
-        //&pageSize=5&page=0
-        let queryString: string = this.getQueryString(pageSize, this.pageIdx, this.sortBy);
-        this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'GET', queryString);
+        //&pageSize=5&page=0&sortBy=attr_String,DESC
+        let queryString: string = this.getQueryString(this.pageIdx, this.sortBy);
+        this.pageSvc.processEvent(this.element.path, '$execute', this.filterCriteria, HttpMethod.POST.value, queryString);
 
     }
 
@@ -624,13 +624,9 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         } else {
             this.pageIdx = 0;
         }
-        console.log(pageSize);
-        console.log(this.pageIdx);
-        console.log(this.sortBy);
-        //&pageSize=5&page=0
-        //&sortBy=attr_String,DESC
-        let queryString: string = this.getQueryString(pageSize, this.pageIdx, this.sortBy);
-        this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'GET', queryString);
+        //&pageSize=5&page=0&sortBy=attr_String,DESC
+        let queryString: string = this.getQueryString(this.pageIdx, this.sortBy);
+        this.pageSvc.processEvent(this.element.path, '$execute', this.filterCriteria, HttpMethod.POST.value, queryString);
     }
 
     onFilter(event: any) {
@@ -639,12 +635,15 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
             filterKeys = Object.keys(event.filters);
         }
         filterKeys.forEach(key => {
-            console.log(event.filters[key]);
+            this.filterCriteria.addAttribute(key, event.filters[key].value);
         })
+        let queryString: string = this.getQueryString(this.pageIdx, this.sortBy);
+        this.pageSvc.processEvent(this.element.path, '$execute', this.filterCriteria, HttpMethod.POST.value, queryString);
     }
 
-    getQueryString(pageSize: number, pageIdx: number, sortBy: string): string {
+    getQueryString(pageIdx: number, sortBy: string): string {
         let queryString: string = '';
+        let pageSize: number = this.element.config.uiStyles.attributes.pageSize;
         if (sortBy) {
             queryString = queryString + '&sortBy=' + sortBy;
         }
