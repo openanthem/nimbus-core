@@ -51,11 +51,13 @@ public class DefaultJsonParamSerializer extends JsonSerializer<Param<?>> {
 	private static final String K_TYPE = "type";
 	private static final String K_VALUES = "values";
 	
-	private static final String K_IS_COL = "collection";
+	private static final String K_PAGE = "page";
+	
+	//private static final String K_IS_COL = "collection";
 	private static final String K_IS_COL_ELEM = "collectionElem";
 	private static final String K_IS_ENABLED = "enabled";
 	private static final String K_IS_VISIBLE = "visible";
-	private static final String K_IS_NESTED = "nested";
+	//private static final String K_IS_NESTED = "nested";
 	
 	private static final ThreadLocal<String> TH_PATH = new ThreadLocal<>();
 	
@@ -85,6 +87,10 @@ public class DefaultJsonParamSerializer extends JsonSerializer<Param<?>> {
 			Model<?> rootDomain = p.getRootDomain();
 			if(rootDomain != null && p == rootDomain.getAssociatedParam()) {
 				gen.writeObjectField(K_CONFIG, p.getConfig());
+			}
+			
+			if(p.isCollection()) {
+				gen.writeObjectField(K_PAGE, p.findIfCollection().getPage());
 			}
 			
 			//writer.writeBooleanIfNotDefault(K_IS_COL, p::isCollection, false);

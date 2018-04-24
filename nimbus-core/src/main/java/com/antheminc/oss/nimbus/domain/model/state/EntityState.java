@@ -23,6 +23,7 @@ import java.util.function.Supplier;
 import javax.annotation.concurrent.Immutable;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.antheminc.oss.nimbus.domain.cmd.Action;
@@ -532,35 +533,19 @@ public interface EntityState<T> {
 		
 		@Override
 		MappedListParam<T, ?> findIfMapped();
-//		@Override
-//		default MappedListParam<T, ?> findIfMapped() {
-//			return null;
-//		}
 		
 		boolean isCollection();
-//		default boolean isCollection() {
-//			return true;
-//		}
 		
 		@JsonIgnore
 		boolean isLeafElements();
-//		@JsonIgnore
-//		default boolean isLeafElements() {
-//			return getType().isLeafElements();
-//		}
-		
+
 		@Override
 		ListParam<T> findIfCollection();
-//		@Override
-//		default ListParam<T> findIfCollection() {
-//			return this;
-//		}
-		
-//		ListElemParam<T> createElement();
-		
+
 		@Override
 		ListElemParam<T> add();
 		
+		Page<T> getPage();
 		void setPage(List<T> content, Pageable pageable, Supplier<Long> totalCountSupplier);
 		
 	}
