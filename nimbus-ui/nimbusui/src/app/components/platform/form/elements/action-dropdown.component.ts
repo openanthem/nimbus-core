@@ -38,7 +38,7 @@ import { BaseElement } from './../../base-element.component';
 @Component({
     selector: 'nm-action-dropdown',
     template: `
-    <div class="action-dropdown" >
+    <div class="action-dropdown" [hidden]="!element?.visible">
         <button class="dropdownTrigger" 
             aria-label="action menu" 
             attr.aria-expanded="{{isOpen}}" 
