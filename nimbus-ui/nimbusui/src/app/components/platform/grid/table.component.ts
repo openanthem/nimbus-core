@@ -611,6 +611,8 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         console.log(this.pageIdx);
         //&sortBy=attr_String,DESC
         //&pageSize=5&page=0
+        let queryString: string = this.getQueryString(pageSize, this.pageIdx, this.sortBy);
+        this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'GET', queryString);
 
     }
 
@@ -627,7 +629,8 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         console.log(this.sortBy);
         //&pageSize=5&page=0
         //&sortBy=attr_String,DESC
-        this.pageSvc.processGridEvent(this.element.path, pageSize, this.pageIdx, this.sortBy);
+        let queryString: string = this.getQueryString(pageSize, this.pageIdx, this.sortBy);
+        this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'GET', queryString);
     }
 
     onFilter(event: any) {
