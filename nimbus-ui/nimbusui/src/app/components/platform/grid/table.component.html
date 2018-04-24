@@ -16,6 +16,7 @@
     <p-table #dt [value]="value" [columns]="params" dataKey="id" 
         [(selection)]="selectedRows" 
         [rows]="element.config?.uiStyles?.attributes?.pageSize"
+        [totalRecords]=500
         [paginator]="element.config?.uiStyles?.attributes?.pagination" 
         paginatorPosition="both" 
         [alwaysShowPaginator]="true"
@@ -23,9 +24,8 @@
         [customSort]="true" 
         [responsive]="true" 
         (onRowExpand)="getAddtionalData($event)"
-        
-        (onPage)="onPage($event)"
-        (onFilter)="onFilter($event)">
+        [lazy]="true" 
+        (onLazyLoad)="loadDataLazy($event)">
 
         <ng-template pTemplate="header" let-columns>
             <tr>
