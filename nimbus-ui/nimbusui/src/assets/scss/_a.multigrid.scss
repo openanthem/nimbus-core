@@ -25,7 +25,7 @@ ng-component{
     background: #b3dcfc;
     color: #4d4c57;
 }
-.ui-table,.ui-datatable,.scrollGrid {
+.ui-table,.ui-datatable {
     position: static;
     font-size: 1rem;
     .ui-selection-column .ui-chkbox {
@@ -43,8 +43,7 @@ ng-component{
     th.ui-state-active{
         background: #b3dcfc;
     }
-
-    .ui-table-data > tr > td,
+    .ui-table-tbody > tr > td,
     .ui-datatable-data > tr > td {
         border-width: 1px 0;
     }
@@ -90,7 +89,7 @@ ng-component{
         color: #4c4c4c;
     }
     .ui-table-thead > tr:nth-child(2) th {
-        background: #aeaeae;
+        background: #b8d4e8;
     }
     .ui-table-thead > tr:nth-child(2) th span {
         padding: 0;
@@ -108,13 +107,15 @@ ng-component{
             font-weight: bold;
             overflow: hidden;
             text-overflow: ellipsis;
-            padding-right: 40px; 
+            padding-right: 30px; 
             
         }
 
         .filterHolder{
             position: relative;
             margin-top: 6px;
+            display:inline-block;
+            width: 80%;
             input{
                 width: 100%;
             }
@@ -132,7 +133,9 @@ ng-component{
                 }
             }
         }
-
+        .filterSubmit{
+            padding: .7rem .3rem 0;
+        }
         .gridFilterIcon {
             position:absolute;
             right: 2px;
@@ -157,7 +160,7 @@ ng-component{
             font-size: 1.2rem;
             color: #669fe2;
             position:absolute;
-            right: 18px;
+            right: 6px;
             top: .6rem;
             &:hover, &:focus{
                 color: #4c4c4c;
@@ -206,7 +209,8 @@ ng-component{
     th.dropdown, td.dropdown {
         width: 40px;
     }
-    td:not(.dropdown) .ui-cell-data {
+    td:not(.dropdown) .ui-cell-data,
+    td:not(.dropdown) span {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -215,7 +219,12 @@ ng-component{
         display:block;
     }
 }
-
+.ui-datatable-header p-header {
+    position: absolute;
+    left: 20px;
+    top: .3rem;
+    font-size: 1.3rem;
+}
 .ui-expanded-row-content .scrollGrid td.dropdown .ui-cell-data, 
 .ui-expanded-row-content .ui-datatable td.dropdown .ui-cell-data,
 .ui-expanded-row-content .ui-table td.dropdown .ui-cell-data {

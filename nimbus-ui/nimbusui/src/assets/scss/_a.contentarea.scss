@@ -529,9 +529,14 @@ $answerWidth: 99%-$questionWidth;
     .ui-dropdown label:first-of-type, .ui-dropdown label {
         margin: 1px 0 0 0;
     }
-    input, .select-wrapper, textarea {
+    input {
         margin-left: 20px;
         max-width: 300px;
+        width: 100%;
+    }
+    textarea {
+        margin-left: 20px;
+        max-width: 800px;
         width: 100%;
     }
   
@@ -557,6 +562,25 @@ $answerWidth: 99%-$questionWidth;
     }
     .warningMsg {
         margin-left: 0px;
+    }
+}
+
+.ui-messages .fa-2x {
+    font-size: 1.3rem;
+}
+.form-group .ui-messages-error, .form-group .ui-messages-warn {
+    background: none;
+    border: none;
+    padding: 0;
+    margin-left: 20px;
+}
+.ui-messages-warn {
+    color: #e5991c;
+}
+.ui-messages-error{
+    color: #a94442;
+    .fa-close::before{
+        content:"\F071";
     }
 }
 .iconField {
