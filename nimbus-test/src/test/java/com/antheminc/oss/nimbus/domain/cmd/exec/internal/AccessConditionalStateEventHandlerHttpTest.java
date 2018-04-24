@@ -177,7 +177,10 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 				.withUri(VIEW_PARAM_ACCESS_ROOT)
 				.addRefId(refId)
 				.addNested("/vpSampleCoreEntityAccess/vtSampleCoreEntityAccess/vsSamplePageCoreEntityAccess/vgSamplePageCoreEntities")
-				.addParam("pageCriteria", "pageSize=5&page=0&sortBy=attr_String,ASC")
+				//.addParam("pageCriteria", "pageSize=5&page=0&sortBy=attr_String,ASC")
+				.addParam("pageSize", "5")
+				.addParam("page", "0")
+				.addParam("sortBy", "attr_String,ASC")
 				.addAction(Action._get)
 				.getMock();
 		final Object gridResponse = controller.handlePost(gridRequest, "[{\"code\":\"attr_String2\", \"value\":\"test2_string2\"},{\"code\":\"nested_attr_String\", \"value\":\"test1\"},{\"code\":\"attr_LocalDate1\",\"value\":\""+LocalDate.now()+"T00:00:00.000Z\"}]");
