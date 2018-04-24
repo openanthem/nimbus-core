@@ -409,7 +409,7 @@ export class PageService {
         }
 
         /** Process execute call - TODO revisit to make it more dynamic based on url completion */
-        processEvent(processUrl: string, behavior: string, model: GenericDomain, method: string) {
+        processEvent(processUrl: string, behavior: string, model: GenericDomain, method: string, queryParams?: string) {
                 processUrl = processUrl + '/' + Action._get.value;
                 let url = '';
                 let serverUrl = '';
@@ -425,6 +425,9 @@ export class PageService {
                         url = url + processUrl.replace('{id}', this.entityId.toString()) + '&b=' + behavior;
                 } else {
                         url = url + processUrl.replace('{id}', this.entityId.toString()) + '?b=' + behavior;
+                }
+                if (queryParams) {
+                        url = url + queryParams;
                 }
 
                 let rootDomainId = this.getFlowRootDomainId(flowName);

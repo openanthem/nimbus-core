@@ -182,7 +182,9 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         }
 
         if (this.element.config.uiStyles.attributes.onLoad === true) {
-            this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'GET');
+            let pageSize: number = this.element.config.uiStyles.attributes.pageSize;
+            let queryString: string = this.getQueryString(pageSize, this.pageIdx, this.sortBy);
+            this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'GET', queryString);
         }
 
         this.rowHover = true;
@@ -636,5 +638,16 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         filterKeys.forEach(key => {
             console.log(event.filters[key]);
         })
+    }
+
+    getQueryString(pageSize: number, pageIdx: number, sortBy: string): string {
+        let queryString: string = '';
+        if (sortBy) {
+            queryString = queryString + '&sortBy=' + sortBy;
+        }
+        if (pageIdx !== undefined) {
+            queryString = queryString + '&pageSize=' + pageSize + '&page=' + pageIdx;
+        }
+        return queryString;
     }
 }
