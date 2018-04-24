@@ -20,15 +20,9 @@ import { ConfigService } from './config.service';
 import { Action, HttpMethod, Behavior } from './../shared/command.enum';
 import { Injectable, EventEmitter } from '@angular/core';
 import { ServiceConstants } from './service.constants';
-import { Validation, ViewConfig,
-        Model,
-        ModelEvent,
-        Page,
-        ParamConfig,
-        Type,
-        Result, ViewRoot
-} from '../shared/app-config.interface';
-import {Param} from '../shared/Param';
+import { ParamConfig, Validation } from '../shared/param-config';
+import { ModelEvent, Page, Result, ViewRoot } from '../shared/app-config.interface';
+import { Param, Model, Type } from '../shared/param-state';
 import { CustomHttpClient } from './httpclient.service';
 
 import { Subject } from 'rxjs/Subject';
@@ -38,7 +32,7 @@ import { Observable } from 'rxjs/Observable';
 import { ExecuteResponse, ExecuteException } from './../shared/app-config.interface';
 import { ParamUtils } from './../shared/param-utils';
 import { ParamAttribute } from './../shared/command.enum';
-
+import { ViewConfig } from './../shared/param-annotations.enum';
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -243,7 +237,7 @@ export class PageService {
                 if (model != null && model.params != null) {
                         for (var p in model.params) {
                                 let pageParam: Param = model.params[p];
-                                if (pageParam != null && pageParam.config.uiStyles != null && pageParam.config.uiStyles.name === 'ViewConfig.Page') {
+                                if (pageParam != null && pageParam.config.uiStyles != null && pageParam.config.uiStyles.name ===  ViewConfig.page.toString()) {
                                         if (pageParam.config.uiStyles.attributes.defaultPage) {
                                                 return pageParam;
                                         }
@@ -377,7 +371,7 @@ export class PageService {
                         let flowConfig: Model = viewRoot.model;
                         if (flowConfig != null && flowConfig.params != null) {
                                 flowConfig.params.forEach(pageParam => {
-                                        if (pageParam.config.uiStyles != null && pageParam.config.uiStyles.name === 'ViewConfig.Page') {
+                                        if (pageParam.config.uiStyles != null && pageParam.config.uiStyles.name === ViewConfig.page.toString()) {
                                                 if (pageParam.config.code === pageId) {
                                                         page = pageParam;
                                                 }
@@ -389,6 +383,29 @@ export class PageService {
                         this.logError('Page Configuration not found for Page ID: ' + pageId + ' in Flow: ' + flowName);
                 }
                 return page;
+        }
+
+        processGridEvent(processUrl: string, pageSize: number, pageIdx: number, sortBy: string) {
+                processUrl = processUrl + '/' + Action._search.value;
+                let url = '';
+                let flowName = '';
+                flowName = processUrl.substring(1, processUrl.indexOf('/', 2));
+                url = ServiceConstants.PLATFORM_BASE_URL;
+
+                url = url + processUrl.replace('{id}', this.entityId.toString()) + '?fn=query';
+                if (sortBy) {
+                        url = url + '&sortBy=' + sortBy;
+                }
+                if (pageIdx) {
+                        url = url + '&pageSize=' + pageSize + '&page=' + pageIdx;
+                }
+
+                let rootDomainId = this.getFlowRootDomainId(flowName);
+                if (rootDomainId != null) {
+                        let flowNameWithId = flowName.concat(':' + rootDomainId);
+                        url = url.replace(flowName, flowNameWithId);
+                }
+                this.executeHttp(url, HttpMethod.POST.value, undefined);
         }
 
         /** Process execute call - TODO revisit to make it more dynamic based on url completion */
@@ -567,14 +584,12 @@ export class PageService {
          * Create the Grid Row Data from Param Leaf State
          * 
          */
-        createRowData(param: Param, nestedParamIdx: number) {
+        createRowData(param: Param) {
                 let rowData: any = param.leafState;
-
                 // If nested data exists, set the data to nested grid
-                if (nestedParamIdx && param.type.model.params) {
-                        rowData['nestedGridParam'] = param.type.model.params[nestedParamIdx];
+                if (param.type.model && param.type.model.params) {
+                        rowData['nestedGridParam'] = param.type.model.params.filter(param => param.type.model && param.type.model.params);
                 }
-
                 return rowData;
         }
 
@@ -583,37 +598,22 @@ export class PageService {
          * 
          */
         createGridData(gridElementParams: Param[], gridParam: Param) {
-
-                let nestedParams;
-                if(gridParam.config.type.elementConfig.type.model)
-                        nestedParams = gridParam.config.type.elementConfig.type.model.paramConfigs;
                 let gridData = [];
-                let paramState = [];
                 let collectionParams = [];
-                // Look for inner lists (nested grid)
-                let nestedParamIdx: number;
-                if (nestedParams) {
-                        for (let p in nestedParams) {
-                                if (nestedParams[p].uiStyles && nestedParams[p].uiStyles.name == 'ViewConfig.GridRowBody') {
-                                        nestedParamIdx = +p;
-                                        break;
-                                }
-                        }
-                }
                 if (gridElementParams) {
                         gridElementParams.forEach(param => {
-                                let p = new Param(this.configService).deserialize(param, gridParam.path + "/" + param.elemId);
+                                let p = new Param(this.configService).deserialize(param, gridParam.path);
                                 if(p != null) {
-                                        paramState.push(p.type.model.params);
-                                        let lineItem = this.createRowData(p, nestedParamIdx); 
-                                        collectionParams.push(lineItem.nestedGridParam); 
-                                        delete lineItem.nestedGridParam; 
+                                        //paramState.push(p.type.model.params);
+                                        let lineItem = this.createRowData(p); 
+                                        if(lineItem.nestedGridParam)
+                                                collectionParams = collectionParams.concat(lineItem.nestedGridParam); 
+                                        delete lineItem.nestedGridParam;
                                         gridData.push(lineItem);
                                 }
                         });        
                 }
                 gridParam['collectionParams'] = collectionParams;
-                gridParam['paramState'] = paramState;
                 return gridData;
         }
 
@@ -712,22 +712,7 @@ export class PageService {
         traverseParam(param: Param, eventModel: ModelEvent) {
                 /* Flow-Wrapper class also invokes methods that eventually call this behaviour. We need to make sure that the eventModel is deserialized by then */
                 let payload: Param = new Param(this.configService).deserialize(eventModel.value, eventModel.value.path);
-                if (param.config.type.nested === true) {
-                        this.updateParam(param, payload);
-                        if (param.type.model && payload.type.model && payload.type.model.params) {
-                                for (var p in param.type.model.params) {
-                                        this.updateParam(param.type.model.params[p], payload.type.model.params[p]);
-                                }
-                        }
-                        if (param.type.model === undefined && payload.type.model) {
-                                param.type['model'] = payload.type.model;
-                        }
-                        if (param.message === undefined && payload.message) {
-                                param['message'] = payload.message;
-                        }
-                } else {                        
-                        this.updateParam(param, payload);
-                }
+                this.updateParam(param, payload);
         }
 
         /*
@@ -751,11 +736,26 @@ export class PageService {
                         }); 
                         this.eventUpdate.next(sourceParam); 
                         this.validationUpdate.next(sourceParam);
+                        this.updateNestedParameters(sourceParam,responseParam);
                 } else {
                         this.logError('Could not process the update from the server for ' + responseParam.path + ' because config is undefined.');
                 }
         }
 
+        updateNestedParameters(sourceParam: Param,responseParam: Param) {
+                if(responseParam.type && responseParam.type.model) {
+                        try {
+                                if(sourceParam.type.model.params) {
+                                        for (var p in responseParam.type.model.params) {
+                                                this.updateParam(sourceParam.type.model.params[p], responseParam.type.model.params[p]);
+                                        }
+                                }
+                        }catch (e) {
+                                this.logError('Could not find source param to update the nested payload param path'+ responseParam.path);
+                                throw e; 
+                        }
+                }
+        }
         /*
         * show the loader icon the page
         */

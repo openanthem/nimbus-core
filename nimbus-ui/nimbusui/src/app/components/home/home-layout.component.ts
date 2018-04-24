@@ -23,7 +23,7 @@ import { Component } from '@angular/core';
 import { LayoutService } from '../../services/layout.service';
 import { AppBranding, Layout, LinkConfig, FooterConfig } from '../../model/menu-meta.interface';
 import { ExecuteOutput, ModelEvent } from '../../shared/app-config.interface';
-import { Param } from '../../shared/Param';
+import { Param } from '../../shared/param-state';
 import { AuthenticationService } from '../../services/authentication.service';
 import { STOMPService } from '../../services/stomp.service';
 import { PageService } from '../../services/page.service';

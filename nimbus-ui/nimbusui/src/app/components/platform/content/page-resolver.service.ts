@@ -1,4 +1,3 @@
-import { LabelConfig } from './../../../shared/app-config.interface';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -21,7 +20,8 @@ import { Router, Resolve, RouterStateSnapshot, ActivatedRouteSnapshot } from '@a
 import { BreadcrumbService } from './../breadcrumb/breadcrumb.service'
 import { WebContentSvc } from './../../../services/content-management.service';
 import { PageService } from '../../../services/page.service';
-import { Param } from '../../../shared/Param';
+import { Param } from '../../../shared/param-state';
+import { LabelConfig } from './../../../shared/param-config';
 
 /**
  * \@author Dinakar.Meda

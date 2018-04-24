@@ -19,7 +19,7 @@
 import { Component, Input } from '@angular/core';
 import { PageService } from '../../../services/page.service';
 import { GenericDomain } from '../../../model/generic-domain.model';
-import { Param } from '../../../shared/Param';
+import { Param } from '../../../shared/param-state';
 
 /**
  * \@author Dinakar.Meda

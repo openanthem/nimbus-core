@@ -21,7 +21,7 @@ import { LayoutService } from '../../services/layout.service';
 import { PageService } from '../../services/page.service';
 import { Layout, LinkConfig } from '../../model/menu-meta.interface';
 import { Page } from '../../shared/app-config.interface';
-import { Param } from '../../shared/Param';
+import { Param } from '../../shared/param-state';
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 

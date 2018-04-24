@@ -18,7 +18,7 @@
 import { Component, Input, forwardRef } from '@angular/core';
 import { FormGroup, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { PageService } from '../../../../services/page.service';
-import { Param } from '../../../../shared/Param';
+import { Param } from '../../../../shared/param-state';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseElement } from './../../base-element.component';
 

@@ -34,13 +34,14 @@ import { WebContentSvc } from '../../../services/content-management.service';
 import { DateTimeFormatPipe } from '../../../pipes/date.pipe';
 import { BaseElement } from './../base-element.component';
 import { GenericDomain } from '../../../model/generic-domain.model';
-import { ParamConfig } from '../../../shared/app-config.interface';
+import { ParamConfig } from '../../../shared/param-config';
 import { PageService } from '../../../services/page.service';
 import { GridService } from '../../../services/grid.service';
 import { ServiceConstants } from './../../../services/service.constants';
 import { SortAs, GridColumnDataType } from './sortas.interface';
 import { ActionDropdown } from './../form/elements/action-dropdown.component';
-import { Param } from '../../../shared/Param';
+import { Param } from '../../../shared/param-state';
+import { ViewComponent } from '../../../shared/param-annotations.enum';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     provide: NG_VALUE_ACCESSOR,
@@ -67,11 +68,13 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     @Input() params: ParamConfig[];
     @Input() form: FormGroup;
     @Input('value') _value = [];
-    paramState: Param[];
     filterValue: Date;
     totalRecords: number = 0;
     mouseEventSubscription: Subscription;
     filterState: any[] = [];
+
+    pageIdx: number = 0;
+    sortBy: string;
 
     @ViewChild('dt') dt: Table;
     @ViewChild('op') overlayPanel: OverlayPanel;
@@ -83,7 +86,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     showFilters: boolean = false;
     rowStart = 0;
     rowEnd = 0;
-
+    rowExpanderKey = '';
     public onChange: any = (_) => { /*Empty*/ }
     public onTouched: any = () => { /*Empty*/ }
 
@@ -129,19 +132,22 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
 
         // Set the column headers
         if (this.params) {
-            this.params.forEach(element => {
-                element.label = this._wcs.findLabelContentFromConfig(element.code, element.labelConfigs).text;
+            this.params.forEach(column => {
+                column.label = this._wcs.findLabelContentFromConfig(column.code, column.labelConfigs).text;
                 // Set field and header attributes. TurboTable expects these specific variables.
-                element['field'] = element.code;
-                element['header'] = element.label;
-                if (element.uiStyles.attributes.hidden) {
-                    element['exportable'] = false;
+                column['field'] = column.code;
+                column['header'] = column.label;
+                if (column.uiStyles.attributes.hidden) {
+                    column['exportable'] = false;
                 } else {
-                    if (element.uiStyles.attributes.alias == 'LinkMenu' || element.type.nested == true) {
-                        element['exportable'] = false;
+                    if (column.uiStyles.attributes.alias == 'LinkMenu' || column.type.nested == true) {
+                        column['exportable'] = false;
                     } else {
-                        element['exportable'] = true;
+                        column['exportable'] = true;
                     }
+                }
+                if (!column.uiStyles.attributes.rowExpander) {
+                    this.rowExpanderKey = column.code;
                 }
             });
         }
@@ -159,7 +165,6 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
             this.dt.filterConstraints = customFilterConstraints;
         }
 
-        this.paramState = this.element.paramState;
     }
 
     ngAfterViewInit() {
@@ -188,7 +193,6 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         this.pageSvc.gridValueUpdate$.subscribe(event => {
             if (event.path == this.element.path) {
                 this.value = event.gridList;
-                this.paramState = event.paramState;
                 this.totalRecords = this.value ? this.value.length : 0;
                 this.updatePageDetailsState();
                 this.cd.markForCheck();
@@ -208,6 +212,17 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
             });
         }
 
+    }
+    isRowExpanderHidden(rowData: any): boolean {
+        if(this.rowExpanderKey == '')
+            return true;
+        
+        let showExpander = rowData[this.rowExpanderKey];
+        
+        if(showExpander)
+            return showExpander;
+        else
+            return false;    
     }
 
     getCellDisplayValue(rowData: any, col: ParamConfig) {
@@ -257,6 +272,10 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     isActive(index) {
         if (this.filterState[index] != '' && this.filterState[index] != undefined) return true;
         else return false;
+    }
+
+    getLinkMenuParam(col,rowIndex): Param {
+        return this.element.collectionParams.find(ele => ele.path == this.element.path +'/'+rowIndex+'/'+ ele.config.code && ele.alias == ViewComponent.linkMenu.toString());
     }
 
     getRowPath(col: ParamConfig, item: any) {
@@ -331,6 +350,20 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     }
 
     customSort(event: any) {
+        let pageSize: number = this.element.config.uiStyles.attributes.pageSize;
+        let order: number = event.order;
+        let sortField: string = event.field.code;
+        let sortOrder: string = 'ASC';
+        if (order != 1) {
+            sortOrder = 'DESC';
+        }
+        let sortBy = sortField + ',' + sortOrder;
+        console.log(sortBy);
+        console.log(pageSize);
+        console.log(this.pageIdx);
+        //&sortBy=attr_String,DESC
+        //&pageSize=5&page=0
+
         let fieldType: string = event.field.type.name;
         let sortAs: string = event.field.uiStyles.attributes.sortAs;
         if (this.isSortAsNumber(fieldType, sortAs)) {
@@ -560,5 +593,48 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         if (this.mouseEventSubscription)
             this.mouseEventSubscription.unsubscribe();
         this.cd.detach();
+    }
+
+    onSort(event: any) {
+        let pageSize: number = this.element.config.uiStyles.attributes.pageSize;
+        let order: number = event.order;
+        let sortField: string = event.field.code;
+        let sortOrder: string = 'ASC';
+        if (order != 1) {
+            sortOrder = 'DESC';
+        }
+        let sortBy = sortField + ',' + sortOrder;
+        console.log(sortBy);
+        console.log(pageSize);
+        console.log(this.pageIdx);
+        //&sortBy=attr_String,DESC
+        //&pageSize=5&page=0
+
+    }
+
+    onPage(event: any) {
+        let pageSize: number = this.element.config.uiStyles.attributes.pageSize;
+        let first: number = event.first;
+        if (first != 0 ) {
+            this.pageIdx = first/pageSize;
+        } else {
+            this.pageIdx = 0;
+        }
+        console.log(pageSize);
+        console.log(this.pageIdx);
+        console.log(this.sortBy);
+        //&pageSize=5&page=0
+        //&sortBy=attr_String,DESC
+        this.pageSvc.processGridEvent(this.element.path, pageSize, this.pageIdx, this.sortBy);
+    }
+
+    onFilter(event: any) {
+        let filterKeys: string[] = [];
+        if (event.filters) {
+            filterKeys = Object.keys(event.filters);
+        }
+        filterKeys.forEach(key => {
+            console.log(event.filters[key]);
+        })
     }
 }

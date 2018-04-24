@@ -18,12 +18,12 @@
 
 import { trigger,state,style,transition,animate,keyframes } from '@angular/animations';
 import { Component, Input, ViewChild, Output, EventEmitter, ElementRef, HostListener } from '@angular/core';
-import { LabelConfig } from './../../../../shared/app-config.interface';
+import { LabelConfig } from './../../../../shared/param-config';
 import { Behavior } from './../../../../shared/command.enum';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { PageService } from '../../../../services/page.service';
-import { ParamConfig } from '../../../../shared/app-config.interface';
-import { Param } from '../../../../shared/Param';
+import { ParamConfig } from '../../../../shared/param-config';
+import { Param } from '../../../../shared/param-state';
 import { GenericDomain } from './../../../../model/generic-domain.model';
 import { HttpMethod } from '../../../../shared/command.enum';
 import { BaseElement } from './../../base-element.component';
@@ -38,7 +38,7 @@ import { BaseElement } from './../../base-element.component';
 @Component({
     selector: 'nm-action-dropdown',
     template: `
-    <div class="action-dropdown" >
+    <div class="action-dropdown" [hidden]="!element?.visible">
         <button class="dropdownTrigger" 
             aria-label="action menu" 
             attr.aria-expanded="{{isOpen}}" 
