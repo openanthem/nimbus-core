@@ -79,13 +79,14 @@ public class DefaultParamStateRepositoryLocal implements ParamStateRepository {
 			// boundary condition check: entity-list-size cannot be more than model-list-size
 			int modelListSize = pElem.getParentModel().templateParams().size();
 			
+			/*
 			if(entityStateList.size() > modelListSize) {
 				throw new InvalidOperationAttemptedException(
 						"Attemted to set in collection where entity state size :"+entityStateList.size()
 						+" is more than model list size of:"+modelListSize
 						+" for param.path: "+param.getPath());
 				
-			} /*else if(modelListSize > entityStateList.size()+1) {
+			} else if(modelListSize > entityStateList.size()+1) {
 				throw new InvalidOperationAttemptedException(
 						"Attemted to set in collection where model list size :"+modelListSize
 						+" is more than entity list size of:"+entityStateList.size()+" by difference greater than 1"
