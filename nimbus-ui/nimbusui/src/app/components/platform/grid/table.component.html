@@ -24,7 +24,7 @@
         [customSort]="true" 
         [responsive]="true" 
         (onRowExpand)="getAddtionalData($event)"
-        [lazy]="true" 
+        [lazy]=loadLazy
         (onLazyLoad)="loadDataLazy($event)">
 
         <ng-template pTemplate="header" let-columns>

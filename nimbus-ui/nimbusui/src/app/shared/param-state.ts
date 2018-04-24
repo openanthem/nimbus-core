@@ -50,6 +50,7 @@ export class Param implements Serializable<Param, string> {
     visible: boolean = true;
     activeValidationGroups: String[] = [];
     collectionParams: Param[] = [];
+    page: GridPage;
     _alias: string;
     _config: ParamConfig;
 
@@ -153,6 +154,10 @@ export class Param implements Serializable<Param, string> {
                 this.leafState = new CardDetailsGrid().deserialize( inJson.leafState );
             }
         } else if (this.config != null && this.config.uiStyles && this.config.uiStyles.attributes.alias === 'Grid') {
+            // deserialize Page
+            if (inJson.page) {
+                this.page = new GridPage().deserialize(inJson.page);
+            }
             if (inJson.type && inJson.type.model && inJson.type.model.params) {
                 this.gridList = [];
                 //this.paramState = [];
@@ -253,5 +258,21 @@ export class Type implements Serializable<Type, string> {
             }
         
         return this;
+    }
+}
+
+export class GridPage implements Serializable<GridPage, string> {
+    last: boolean;
+    totalPages: number;
+    totalElements: number;
+    size: number;
+    pageNumber: number;
+    first: boolean;
+    numberOfElements: number;
+
+    deserialize( inJson) {   
+        var obj = this;
+        obj = Converter.convert(inJson, obj);
+        return obj;
     }
 }
