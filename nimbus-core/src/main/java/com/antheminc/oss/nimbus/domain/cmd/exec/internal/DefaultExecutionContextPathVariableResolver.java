@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
@@ -59,8 +61,6 @@ public class DefaultExecutionContextPathVariableResolver implements ExecutionCon
 			String key = entries.get(i);
 			
 			// look for relative path to execution context
-			String entryToResolve = ParamPathExpressionParser.stripPrefixSuffix(key);
-			
 			String val = mapSearchMarkers(eCtx, param, key);
 			
 			if(StringUtils.isNotBlank(val)) {
@@ -83,7 +83,7 @@ public class DefaultExecutionContextPathVariableResolver implements ExecutionCon
 	private String mapSearchMarkers(ExecutionContext eCtx, Param<?> param, String key) {
 		String entryToResolve = ParamPathExpressionParser.stripPrefixSuffix(key);
 		if(StringUtils.equalsIgnoreCase(entryToResolve, Constants.SERVER_PAGE_EXP_MARKER.code)) {
-			return mapPageCriteria(eCtx);
+			return mapPageCriteria(eCtx, param);
 		}
 		if(StringUtils.equalsIgnoreCase(entryToResolve, Constants.SERVER_FILTER_EXPR_MARKER.code)) {
 			return mapFilterCriteria(eCtx, param);
@@ -92,8 +92,38 @@ public class DefaultExecutionContextPathVariableResolver implements ExecutionCon
 		return key;
 	}
 
-	private String mapPageCriteria(ExecutionContext eCtx) {
-		return eCtx.getCommandMessage().getCommand().getFirstParameterValue(Constants.SERVER_PAGE_CRITERIA_EXPR_MARKER.code);
+	private String mapPageCriteria(ExecutionContext eCtx, Param<?> param) {
+		String pageCriteria = eCtx.getCommandMessage().getCommand().getFirstParameterValue(Constants.SERVER_PAGE_CRITERIA_EXPR_MARKER.code);
+		if(StringUtils.isNotBlank(pageCriteria)) {
+			String[] sortBy = StringUtils.substringsBetween(pageCriteria, "sortBy=", ",");
+			
+			if(sortBy != null && sortBy.length > 0) {
+				pageCriteria=Stream.of(sortBy)
+			             .map(toRem-> (Function<String,String>)s->s.replaceAll(toRem, findMappedParamPath(toRem,param)).replaceAll("/", "."))
+			             .reduce(Function.identity(), Function::andThen)
+			             .apply(pageCriteria);
+			}
+		}
+		
+		return pageCriteria;
+	}
+	
+	private String findMappedParamPath(String currentParamPath, Param<?> param) {
+		ParamConfig<?> p = param.getConfig().getType().findIfCollection().getElementConfig();
+		MappedParamConfig<?,?> mappedParam = p.findIfMapped();
+		
+		String paramPath = currentParamPath;
+		ParamConfig<?> currentParam = p.getType().findIfNested().getModelConfig()
+				.findParamByPath("/" + currentParamPath);
+		if(mappedParam != null) {
+			MappedParamConfig<?, ?> mappedElemParam = (MappedParamConfig<?, ?>) currentParam;
+			String mappedPath = mappedElemParam.getPath().value();
+			if (StringUtils.isNotBlank(mappedPath)) {
+				paramPath = StringUtils.stripStart(mappedPath, "/");
+			}
+		}
+		
+		return paramPath;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -133,16 +163,16 @@ public class DefaultExecutionContextPathVariableResolver implements ExecutionCon
 		
 		filters.forEach(f -> {
 
-			String paramPath = f.getCode();
-			ParamConfig<?> currentParam = p.getType().findIfNested().getModelConfig()
-					.findParamByPath("/" + f.getCode());
-			if(mappedParam != null) {
-				MappedParamConfig<?, ?> mappedElemParam = (MappedParamConfig<?, ?>) currentParam;
-				String mappedPath = mappedElemParam.getPath().value();
-				if (StringUtils.isNotBlank(mappedPath)) {
-					paramPath = StringUtils.stripStart(mappedPath, "/");
-				}
-			}
+			String paramPath = findMappedParamPath(f.getCode(), param);
+//			String paramPath = f.getCode();
+//			if(mappedParam != null) {
+//				MappedParamConfig<?, ?> mappedElemParam = (MappedParamConfig<?, ?>) currentParam;
+//				String mappedPath = mappedElemParam.getPath().value();
+//				if (StringUtils.isNotBlank(mappedPath)) {
+//					paramPath = StringUtils.stripStart(mappedPath, "/");
+//				}
+//			}
+			ParamConfig<?> currentParam = p.getType().findIfNested().getModelConfig().findParamByPath("/" + f.getCode());
 			FilterMode filterMode = (FilterMode) currentParam.getUiStyles().getAttributes().get("filterMode");
 			String operator = filterMode.getCode();
 			

@@ -158,6 +158,11 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 		scea2.setId(2L);
 		scea2.setAttr_String("test2_string1");
 		scea2.setAttr_String2("test2_string2");
+		scea2.setAttr_LocalDate1(LocalDate.now());
+		
+		SampleCoreNestedEntity nestedEntity2 = new SampleCoreNestedEntity();
+		nestedEntity2.setNested_attr_String("mested_test1");
+		scea2.setAccessConditional_Contains_Hidden1(nestedEntity2);
 		
 		mongo.save(scea, "sample_core_access");
 		mongo.save(scea2, "sample_core_access");
@@ -172,10 +177,10 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 				.withUri(VIEW_PARAM_ACCESS_ROOT)
 				.addRefId(refId)
 				.addNested("/vpSampleCoreEntityAccess/vtSampleCoreEntityAccess/vsSamplePageCoreEntityAccess/vgSamplePageCoreEntities")
-				//.addParam("pageCriteria", "pageSize=5&page=0&sortBy=attr_String,DESC")
+				.addParam("pageCriteria", "pageSize=5&page=0&sortBy=attr_String,ASC")
 				.addAction(Action._get)
 				.getMock();
-		final Object gridResponse = controller.handlePost(gridRequest, "[{\"code\":\"attr_String2\", \"value\":\"test2_string2\"},{\"code\":\"nested_attr_String\", \"value\":\"nested\"},{\"code\":\"attr_LocalDate1\",\"value\":\""+LocalDate.now()+"T00:00:00.000Z\"}]");
+		final Object gridResponse = controller.handlePost(gridRequest, "[{\"code\":\"attr_String2\", \"value\":\"test2_string2\"},{\"code\":\"nested_attr_String\", \"value\":\"test1\"},{\"code\":\"attr_LocalDate1\",\"value\":\""+LocalDate.now()+"T00:00:00.000Z\"}]");
 		//final Object gridResponse = controller.handlePost(gridRequest, null);
 		assertNotNull(gridResponse);
 		
