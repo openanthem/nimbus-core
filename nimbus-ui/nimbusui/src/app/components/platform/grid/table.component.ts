@@ -203,17 +203,16 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
                     // Server Pagination
                     this.loadLazy = true;
                     this.totalRecords = event.page.totalElements;
+                    if (event.page.first) {
+                        this.updatePageDetailsState();
+                    }
                 } else {
                     // Client Pagination
                     this.loadLazy = false;
                     this.totalRecords = this.value ? this.value.length : 0;
+                    this.updatePageDetailsState();
                 }
 
-                console.log(this.totalRecords);
-                console.log(event.page);
-
-
-                this.updatePageDetailsState();
                 this.cd.markForCheck();
                 this.resetMultiSelection();
             }
@@ -293,8 +292,8 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         else return false;
     }
 
-    getLinkMenuParam(col,rowIndex): Param {
-        return this.element.collectionParams.find(ele => ele.path == this.element.path +'/'+rowIndex+'/'+ ele.config.code && ele.alias == ViewComponent.linkMenu.toString());
+    getLinkMenuParam(col, rowIndex): Param {
+        return this.element.collectionParams.find(ele => ele.path == this.element.path + '/'+rowIndex+'/' + col.code && ele.alias == ViewComponent.linkMenu.toString());
     }
 
     getRowPath(col: ParamConfig, item: any) {
@@ -511,12 +510,11 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     }
 
     paginate(e: any) {
-        if (this.totalRecords != 0) {
-            this.rowEnd = ((this.totalRecords / (e.first + (+e.rows)) >= 1) ? (e.first + (+e.rows)) : e.first + (this.totalRecords - e.first));
-            this.rowStart = e.first + 1;
-        }
-        else {
-            this.rowStart = 0; this.rowEnd = 0;
+        this.rowStart = e.first + 1;
+        if (e.first + e.rows < this.totalRecords) {
+            this.rowEnd = e.first + e.rows;
+        } else  {
+            this.rowEnd = this.totalRecords;
         }
     }
 
@@ -565,11 +563,11 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
                                 item.isOpen = false;
                                 item.state = 'closedPanel';
                             });
-                            this.cd.markForCheck();
+                            this.cd.detectChanges();
                         });
         }
         e.selectedItem = false;
-        this.cd.markForCheck();
+        this.cd.detectChanges();
     }
 
     export() {

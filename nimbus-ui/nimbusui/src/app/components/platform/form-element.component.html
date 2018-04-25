@@ -22,7 +22,9 @@
             [params]="element?.config?.type?.elementConfig?.type?.model?.paramConfigs" (onScrollEvent)="onScrollEvent()">
         </nm-table>
     </ng-template>
-    <ng-template ngFor let-msg [ngForOf]="getMessages()">
-        <nm-message [messageContext]="msg.context"  [messageArray]="msg.messageArray" ></nm-message>
+    <ng-template [ngIf]="!isPristine">
+        <ng-template ngFor let-msg [ngForOf]="getMessages()">
+            <nm-message [messageContext]="msg.context"  [messageArray]="msg.messageArray" ></nm-message>
+        </ng-template>
     </ng-template>
 </div>
