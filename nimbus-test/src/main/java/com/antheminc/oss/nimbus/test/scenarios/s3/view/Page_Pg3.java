@@ -22,9 +22,9 @@ import com.antheminc.oss.nimbus.domain.defn.MapsTo.Path;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Button;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Hints;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Hints.AlignOptions;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.MultiSelect;
 import com.antheminc.oss.nimbus.test.scenarios.s3.core.ServiceLine;
 import com.antheminc.oss.nimbus.test.scenarios.s3.core.SimpleCase;
-import com.antheminc.oss.nimbus.domain.defn.ViewConfig.MultiSelect;
 
 import lombok.Getter;
 import lombok.Setter;

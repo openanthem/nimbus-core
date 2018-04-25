@@ -2,16 +2,16 @@ package com.antheminc.oss.nimbus.test.scenarios.s0.view;
 
 import java.util.List;
 
-import com.antheminc.oss.nimbus.domain.defn.MapsTo;
 import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
+import com.antheminc.oss.nimbus.domain.defn.MapsTo;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo.Path;
 import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Grid;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.GridColumn;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.GridColumn.FilterMode;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.GridRowBody;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Link;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.LinkMenu;
-import com.antheminc.oss.nimbus.domain.defn.ViewConfig.GridColumn.FilterMode;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
 
 import lombok.Getter;

@@ -18,7 +18,6 @@ package com.antheminc.oss.nimbus.domain.model.state;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.Serializable;
 import java.util.List;
 
 import org.junit.FixMethodOrder;
