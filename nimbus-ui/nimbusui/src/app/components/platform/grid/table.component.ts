@@ -148,7 +148,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
                             column['exportable'] = true;
                         }
                     }
-                    if (column.uiStyles.attributes.rowExpander != undefined && !column.uiStyles.attributes.rowExpander) {
+                    if (column.uiStyles.attributes.ignoreRowExpander != undefined && !column.uiStyles.attributes.ignoreRowExpander) {
                         this.rowExpanderKey = column.code;
                     }
                 }
@@ -234,13 +234,11 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     isRowExpanderHidden(rowData: any): boolean {
         if(this.rowExpanderKey == '')
             return true;
-        
         let val = rowData[this.rowExpanderKey];
-        
         if(val)
-            return false;
+            return true;
         else
-            return true;  
+            return false;
     }
 
     getCellDisplayValue(rowData: any, col: ParamConfig) {
