@@ -130,6 +130,17 @@ public class MappedDefaultListParamState<T, M> extends DefaultListParamState<T> 
 					clear(false);
 				});
 			}
+			
+			@Override
+			protected void onEventUpdateState(Notification<List<M>> event) {
+				super.onEventUpdateState(event);
+				
+				ListParam<M> mapsToCol = event.getEventParam().findIfCollection();
+				
+				// update page attributes
+				setPageable(mapsToCol.getPageable());
+				setTotalCountSupplier(mapsToCol.getTotalCountSupplier());
+			}
 		};
 
 		getMapsTo().registerConsumer(this);

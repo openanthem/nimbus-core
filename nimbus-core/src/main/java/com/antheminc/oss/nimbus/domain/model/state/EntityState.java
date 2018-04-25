@@ -545,6 +545,9 @@ public interface EntityState<T> {
 		@Override
 		ListElemParam<T> add();
 		
+		Pageable getPageable();
+		Supplier<Long> getTotalCountSupplier();
+		
 		Page<T> getPage();
 		void setPage(List<T> content, Pageable pageable, Supplier<Long> totalCountSupplier);
 		

@@ -23,16 +23,15 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.util.Assert;
 
-import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityStateAspectHandlers;
-import com.antheminc.oss.nimbus.domain.model.state.ExecutionRuntime;
 import com.antheminc.oss.nimbus.domain.model.state.StateType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 /**
  * @author Soham Chakravarti
@@ -41,9 +40,11 @@ import lombok.RequiredArgsConstructor;
 @SuppressWarnings("serial")
 public abstract class AbstractListPaginatedParam<T> extends DefaultParamState<List<T>> implements ListParam<T> {
 	
+	@Getter @Setter
 	@JsonIgnore
 	private Pageable pageable;
 	
+	@Getter @Setter
 	@JsonIgnore
 	private Supplier<Long> totalCountSupplier;
 	
@@ -68,23 +69,11 @@ public abstract class AbstractListPaginatedParam<T> extends DefaultParamState<Li
 	}
 	
 	@Override
-	protected Action postSetState(Action change, List<T> state, String localLockId, ExecutionRuntime execRt, SetStateListener<List<T>> cb) {
-		clearPageMeta();
-		return super.postSetState(change, state, localLockId, execRt, cb);
-	}
-	
-	@Override
 	public void setPage(List<T> content, Pageable pageable, Supplier<Long> totalCountSupplier) {
 		this.pageable = pageable;
 		this.totalCountSupplier = totalCountSupplier;
 		setState(content);
 	}
-	
-	protected void clearPageMeta() {
-		pageable = null;
-		totalCountSupplier = null;
-	}
-
 	
 	@Getter
 	public static class PageWrapper<T> extends PageImpl<T> {
