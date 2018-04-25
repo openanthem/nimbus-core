@@ -74,6 +74,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     mouseEventSubscription: Subscription;
     filterState: any[] = [];
     loadLazy = false;
+    columnsToShow: number = 0;
 
     @ViewChild('dt') dt: Table;
     @ViewChild('op') overlayPanel: OverlayPanel;
@@ -128,7 +129,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
 
     ngOnInit() {
         super.ngOnInit();
-
+        this.columnsToShow = 0;
         // Set the column headers
         if (this.params) {
             this.params.forEach(column => {
@@ -140,6 +141,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
                     if (column.uiStyles.attributes.hidden) {
                         column['exportable'] = false;
                     } else {
+                        this.columnsToShow ++;
                         if (column.uiStyles.attributes.alias == 'LinkMenu' || column.type.nested == true) {
                             column['exportable'] = false;
                         } else {

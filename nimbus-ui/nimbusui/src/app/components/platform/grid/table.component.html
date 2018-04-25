@@ -97,9 +97,9 @@
             </tr>
         </ng-template>
 
-        <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
+        <ng-template pTemplate="rowexpansion" let-rowData>
             <tr>
-                <td [attr.colspan]="columns.length + 1">
+                <td [attr.colspan]="columnsToShow + 1">
                     <nm-section *ngIf="rowData.nestedElement" [element]="rowData.nestedElement"></nm-section>
                 </td>
             </tr>
