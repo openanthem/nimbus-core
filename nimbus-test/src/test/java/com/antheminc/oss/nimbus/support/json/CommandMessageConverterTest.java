@@ -17,6 +17,8 @@ package com.antheminc.oss.nimbus.support.json;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.Serializable;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -63,7 +65,7 @@ public class CommandMessageConverterTest {
 	
 	@Test
 	public void t0_convertStringToJson() {
-		String str = "some value";
+		Serializable str = "some value";
 		
 		String json = converter.write(str);
 		System.out.println("JSON: "+ json);

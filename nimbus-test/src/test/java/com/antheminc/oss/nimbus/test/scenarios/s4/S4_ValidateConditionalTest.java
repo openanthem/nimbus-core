@@ -15,6 +15,9 @@
  */
 package com.antheminc.oss.nimbus.test.scenarios.s4;
 
+import static org.junit.Assert.assertNotNull;
+
+import java.io.Serializable;
 import java.util.List;
 
 import org.junit.Assert;
@@ -26,9 +29,9 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
+import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
-import com.antheminc.oss.nimbus.domain.model.state.internal.MappedDefaultParamState.MappedLeafState;
 import com.antheminc.oss.nimbus.support.Holder;
 import com.antheminc.oss.nimbus.test.domain.support.AbstractFrameworkIntegrationTests;
 import com.antheminc.oss.nimbus.test.domain.support.utils.ExtractResponseOutputUtils;
@@ -61,7 +64,7 @@ public class S4_ValidateConditionalTest extends AbstractFrameworkIntegrationTest
 				.addAction(Action._new).getMock(), null);
 		
 		Assert.assertNotNull(ExtractResponseOutputUtils.extractOutput(controllerResp_new));
-		final String refId = ExtractResponseOutputUtils.extractDomainRootRefId(controllerResp_new);
+		final Long refId = ExtractResponseOutputUtils.extractDomainRootRefId(controllerResp_new);
 		
 		// Execute assign maps to call on param: S4_VRMainCoreBackingObjectView...VFMain.addData
 		controller.handleGet(MockHttpRequestBuilder.withUri(VIEW_ROOT)
@@ -86,7 +89,21 @@ public class S4_ValidateConditionalTest extends AbstractFrameworkIntegrationTest
 		Object controllerResp_q1 = controller.handleEventNotify(req_q1_eventNotify, modelEvent_q1);
 		List<CommandExecution.Output<?>> outputs = MultiOutput.class.cast(Holder.class.cast(controllerResp_q1).getState()).getOutputs();
 		
-		Param<?> q1 = (Param<?>) outputs.get(1).getValue();
+		Param<?> q1 = null;
+		Param<?> q2 = null;
+		
+		for(Output<?> o : outputs) {
+			if(o.getValue() instanceof Param) {
+				Param<?> po = (Param<?>)o.getValue();
+				if(po.getPath().endsWith("q1"))
+					q1 = po;
+				else if(po.getPath().endsWith("q2"))
+					q2 = po;
+			} 
+		}
+		
+		assertNotNull(q1);
+		assertNotNull(q2);
 		
 		// #1. Validate VFAddDataModalForm.q1 state change occurred
 		Assert.assertEquals(MyData.Preference.preference2, q1.getState());
@@ -94,7 +111,6 @@ public class S4_ValidateConditionalTest extends AbstractFrameworkIntegrationTest
 		// #2. Validate that q1's ValuesConditional was applied to param: VFAddDataModalForm.q2
 		
 		// TODO: Get the output related to the valuesconditional update
-		Param<?> q2 = (Param<?>) outputs.get(2).getValue();
 		
 		// Validate that the new values are in place.
 		Assert.assertEquals(3, q2.getValues().size());

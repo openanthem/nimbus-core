@@ -70,7 +70,7 @@ abstract public class CommandElement implements Serializable {
 	
 	private String alias;
 
-	private String refId;	
+	private Long refId;	
 	
 	
 	abstract public void detachChildElements();
@@ -82,7 +82,7 @@ abstract public class CommandElement implements Serializable {
 	}
 	
 	public boolean hasRefId() {
-		return StringUtils.trimToNull(getRefId()) != null;
+		return getRefId() != null;
 	}
 	
 	public String getAliasUri() {
@@ -109,7 +109,7 @@ abstract public class CommandElement implements Serializable {
 		}
 		else {
 			String alias = StringUtils.substring(uri, 0, i);
-			String refId = StringUtils.substring(uri, i+1);
+			Long refId = Long.valueOf(StringUtils.substring(uri, i+1));
 			setAlias(alias);
 			setRefId(refId);
 		}

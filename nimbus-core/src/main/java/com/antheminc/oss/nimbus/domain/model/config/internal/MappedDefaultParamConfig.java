@@ -183,4 +183,9 @@ public class MappedDefaultParamConfig<P, M> extends DefaultParamConfig<P> implem
 			}
 		};
 	}
+
+	@Override
+	public MappedParamConfig<P, M> findIfMapped() {
+		return this;
+	}
 }

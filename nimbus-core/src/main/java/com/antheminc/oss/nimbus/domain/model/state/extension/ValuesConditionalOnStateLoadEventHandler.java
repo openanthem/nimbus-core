@@ -25,7 +25,7 @@ import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnSt
  * <p>Abstract Conditional State Event handler for updating <tt>Values</tt> annotated fields based
  * on conditional logic defined via configuration during the OnStateLoad event.</p>
  * 
- * @author Tony Lopez (AF42192)
+ * @author Tony Lopez
  * @see com.antheminc.oss.nimbus.domain.defn.extension.ValuesConditional
  * @see com.antheminc.oss.nimbus.domain.model.state.extension.AbstractValuesConditionalStateEventHandler
  *

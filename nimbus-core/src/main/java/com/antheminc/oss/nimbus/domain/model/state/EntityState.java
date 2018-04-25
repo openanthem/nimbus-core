@@ -18,10 +18,12 @@ package com.antheminc.oss.nimbus.domain.model.state;
 import java.beans.PropertyDescriptor;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import javax.annotation.concurrent.Immutable;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Pageable;
 
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
@@ -409,7 +411,6 @@ public interface EntityState<T> {
 		Message getMessage();
 		void setMessage(Message msg);
 		
-		
 		void onStateLoadEvent();
 		void onStateChangeEvent(ExecutionTxnContext txnCtx, Action a);
 	}
@@ -559,6 +560,8 @@ public interface EntityState<T> {
 		
 		@Override
 		ListElemParam<T> add();
+		
+		void setPage(List<T> content, Pageable pageable, Supplier<Long> totalCountSupplier);
 		
 	}
 	

@@ -36,7 +36,7 @@ import lombok.ToString;
 @Repo(value=Database.rep_mongodb, cache=Cache.rep_device)
 @Domain("member")
 @ToString
-public class Member extends AbstractEntity.IdString {
+public class Member extends AbstractEntity.IdLong {
     
 	@Ignore
 	private static final long serialVersionUID = 1L;

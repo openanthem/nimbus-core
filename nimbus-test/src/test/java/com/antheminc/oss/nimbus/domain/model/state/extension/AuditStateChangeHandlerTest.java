@@ -133,7 +133,7 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		final String K_state_1 = "1. new value @ "+new Date();
 		p.setState(K_state_1);
 		
-		String coreRefId = _q.getCore().getState().getId();
+		Long coreRefId = _q.getCore().getState().getId();
 		assertNotNull(coreRefId);
 		
 		List<AuditEntry> audit = mongo.findAll(AuditEntry.class, "sample_core_audit_history");
@@ -193,7 +193,7 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		final Integer K_state_1 = 1;
 		p.setState(K_state_1);
 		
-		String coreRefId = _q.getCore().getState().getId();
+		Long coreRefId = _q.getCore().getState().getId();
 		assertNotNull(coreRefId);
 		
 		List<AuditEntry> audit = mongo.findAll(AuditEntry.class, "sample_core_audit_history");
@@ -255,7 +255,7 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		final String K_state_1 = "1. new value @ "+new Date();
 		p.setState(K_state_1);
 		
-		String coreRefId = _q.getCore().getState().getId();
+		Long coreRefId = _q.getCore().getState().getId();
 		assertNotNull(coreRefId);
 		
 		List<AuditEntry> audit = mongo.findAll(AuditEntry.class, "sample_view_audit_history");
@@ -314,7 +314,7 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		final String K_state_1 = "1. new value @ "+new Date();
 		vp.setState(K_state_1);
 		
-		String coreRefId = _q.getCore().getState().getId();
+		Long coreRefId = _q.getCore().getState().getId();
 		assertNotNull(coreRefId);
 		
 		assertSame(K_state_1, vp.getState());
@@ -352,7 +352,7 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		cp.setState(K_arr);
 		assertSame(K_arr, cp.getState());
 		
-		String coreRefId = _q.getCore().getState().getId();
+		Long coreRefId = _q.getCore().getState().getId();
 		assertNotNull(coreRefId);
 		
 		List<AuditEntry> audit = mongo.findAll(AuditEntry.class, "sample_core_audit_history");
@@ -389,7 +389,7 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		cp.setState(K_list);
 		assertTrue(CollectionUtils.isEqualCollection(K_list, cp.getState()));
 		
-		String coreRefId = _q.getCore().getState().getId();
+		Long coreRefId = _q.getCore().getState().getId();
 		assertNotNull(coreRefId);
 		
 		List<AuditEntry> audit = mongo.findAll(AuditEntry.class, "sample_core_audit_history");
@@ -427,7 +427,7 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		cp.setState(k);
 		assertSame(k, cp.getState());
 		
-		String coreRefId = _q.getCore().getState().getId();
+		Long coreRefId = _q.getCore().getState().getId();
 		assertNotNull(coreRefId);
 		
 		List<AuditEntry> audit = mongo.findAll(AuditEntry.class, "sample_core_audit_history");

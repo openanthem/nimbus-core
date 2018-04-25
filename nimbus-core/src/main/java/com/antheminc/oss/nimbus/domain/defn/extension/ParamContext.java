@@ -46,7 +46,7 @@ import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
  * <p>In this scenario we have configured the contextual values for enabled and visible to be
  * <b>true</b>. These values will be set during the <tt>OnStateLoad</tt> event.</p>
  * 
- * @author Soham Chakravarti, Tony Lopez (AF42192)
+ * @author Soham Chakravarti, Tony Lopez
  * @see com.antheminc.oss.nimbus.domain.model.state.extension.ParamContextStateEventHandler
  *
  */

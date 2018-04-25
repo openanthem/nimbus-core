@@ -1,4 +1,3 @@
-import { ValidationUtils } from './validators/ValidationUtils';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -20,8 +19,11 @@ import { WebContentSvc } from './../../services/content-management.service';
 import { Component, Input, OnInit, OnChanges, SimpleChanges, SimpleChange } from '@angular/core';
 import { FormGroup, Validators, ValidatorFn } from '@angular/forms';
 import { FormElementsService } from './form-builder.service';
-import { Param, Model } from '../../shared/app-config.interface';
+import { Model } from '../../shared/app-config.interface';
 import { PageService } from '../../services/page.service';
+import { ValidationUtils } from './validators/ValidationUtils';
+import { Param } from '../../shared/Param';
+
 
 var uniqueId = 0;
 
@@ -75,7 +77,9 @@ export class Form implements OnInit, OnChanges {
                         this.formElements.push(element);
                     }
                 } else {
-                    this.groupFormElements(element.type.model)
+                    if(element.type){
+                        this.groupFormElements(element.type.model)
+                    }
                 }
              });
         }
@@ -102,7 +106,7 @@ export class Form implements OnInit, OnChanges {
         } else if(this.element.config.uiStyles.attributes.cssClass === 'inline') {
             this.elementCss = 'd-inline-block mr-3';
         } else if(this.element.config.uiStyles.attributes.cssClass === 'questionGroup') {
-            this.elementCss = 'form-inline questionGroup';
+            this.elementCss = ' questionGroup';
         } else {
             this.elementCss = this.element.config.uiStyles.attributes.cssClass;
         }
@@ -137,8 +141,7 @@ export class Form implements OnInit, OnChanges {
             if(event.config && event.config.uiStyles != null && event.config.uiStyles.attributes.alias === 'Form' && event.path === this.element.path) {
                 if(event.leafState != null && !this.hasNull(event.leafState))
                     this.form.patchValue(event.leafState);
-                else 
-                    this.form.reset();
+                //form reset will be addressed at the each control level where the update would be sent by the server
             }
         });
     }

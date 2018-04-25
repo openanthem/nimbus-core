@@ -74,7 +74,7 @@ public final class CommandExecution {
 		
 		private T value;
 		
-		private String rootDomainId;
+		private Long rootDomainId;
 		
 		private ValidationResult validation;
 		private ExecuteError error;

@@ -126,7 +126,7 @@ public class DefaultActionExecutorNew extends AbstractFunctionCommandExecutor<Ob
 			return eCtx;
 		
 		ExecutionEntity<?, ?> e = q.getRoot().getState();
-		String refId = getRootDomainRefIdByRepoDatabase(rootDomainConfig, e);
+		Long refId = getRootDomainRefIdByRepoDatabase(rootDomainConfig, e);
 		processEntityState.setId(refId);
 		
 		e.setFlow(processEntityState);
@@ -174,7 +174,7 @@ public class DefaultActionExecutorNew extends AbstractFunctionCommandExecutor<Ob
 	
 	
 	private void updateCommandWithRefId(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx, ExecutionEntity<?, ?> e) {
-		String refId = getRootDomainRefIdByRepoDatabase(rootDomainConfig, e);
+		Long refId = getRootDomainRefIdByRepoDatabase(rootDomainConfig, e);
 		eCtx.getCommandMessage().getCommand().getRootDomainElement().setRefId(refId);
 	}
 	

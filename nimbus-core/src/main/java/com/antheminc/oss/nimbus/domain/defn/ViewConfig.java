@@ -24,6 +24,9 @@ import java.lang.annotation.Target;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 import com.antheminc.oss.nimbus.domain.defn.extension.ParamContext;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * @author Soham Chakravarti
  *
@@ -47,6 +50,13 @@ public class ViewConfig {
 	@Target(value={ElementType.ANNOTATION_TYPE})
 	@Inherited
 	public @interface ViewStyle {
+		
+	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(value={ElementType.ANNOTATION_TYPE})
+	@Inherited
+	public @interface GridFilter {
 		
 	}
 
@@ -198,7 +208,7 @@ public class ViewConfig {
 	 * </ul>
 	 * </p>
 	 * 
-	 * @author Tony Lopez (AF42192)
+	 * @author Tony Lopez
 	 * @see com.anthem.oss.nimbus.core.domain.model.state.extension.ModalStateEventHandler
 	 *
 	 */
@@ -278,6 +288,7 @@ public class ViewConfig {
 		String postButtonLabel() default "";
 		boolean postEventOnChange() default false;
 		boolean clearAllFilters() default false;
+		boolean export() default false;
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
@@ -564,6 +575,23 @@ public class ViewConfig {
 		boolean postEventOnChange() default false; 
 		String controlId() default ""; 
 	}
+	
+	@Retention(RetentionPolicy.RUNTIME) 
+	@Target({ElementType.FIELD}) 
+	@ViewStyle 
+	public @interface Signature { 
+		String alias() default "Signature"; 
+		boolean hidden() default false; 
+		String help() default ""; 
+		String labelClass() default "anthem-label"; 
+		String type() default "signature";
+		boolean postEventOnChange() default false; 
+		String controlId() default "";
+		String clearLabel() default "Clear";
+		String acceptLabel() default "Save";
+		String width() default "345";
+		String height() default "60";
+	}
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
@@ -688,6 +716,7 @@ public class ViewConfig {
 		String alias() default "AccordionTab";
 		String cssClass() default "panel-default";
 		boolean selected() default false;
+		boolean editable() default false;
 	}
 	
 	
@@ -831,10 +860,18 @@ public class ViewConfig {
 		String placeholder() default "";
 		
 		public enum FilterMode {
-			equals,
-			contains,
-			endsWith,
-			in
+			equals("eq"),
+			contains("contains"),
+			endsWith("endsWith"),
+			in("in");
+			
+			@Getter @Setter
+			private String code;
+			
+			FilterMode(String code) {
+				this.code = code;
+			}
+			
 		}
 		
 		public enum SortAs {

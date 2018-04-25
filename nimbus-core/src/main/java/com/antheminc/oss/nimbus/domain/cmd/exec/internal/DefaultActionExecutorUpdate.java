@@ -28,7 +28,7 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
  *
  */
 public class DefaultActionExecutorUpdate extends AbstractCommandExecutor<Boolean> {
-
+	
 	public DefaultActionExecutorUpdate(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
 	}
@@ -58,17 +58,7 @@ public class DefaultActionExecutorUpdate extends AbstractCommandExecutor<Boolean
 	}
 	
 	protected void handleParam(ExecutionContext eCtx, Param<Object> p) {
-		// existing entity state
-		Object existing = p.getLeafState();
-		
-		final Object updated;
-		
-		if(existing==null)
-			updated = getConverter().read(p.getConfig(), eCtx.getCommandMessage().getRawPayload());
-		else
-			updated = getConverter().read(p.getConfig(), eCtx.getCommandMessage().getRawPayload(), existing);
-		
-		p.setState(updated);
+		getConverter().readAndSet(p, eCtx.getCommandMessage().getRawPayload());
 	}
-	
+
 }

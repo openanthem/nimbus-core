@@ -15,6 +15,8 @@
  */
 package com.antheminc.oss.nimbus.support.pojo;
 
+import org.apache.commons.lang3.ClassUtils;
+
 import com.antheminc.oss.nimbus.InvalidConfigException;
 
 /**
@@ -27,7 +29,8 @@ public class ClassLoadUtils {
 	@SuppressWarnings("unchecked")
 	public static <T> Class<T> loadClass(String classNm) {
 		try {
-			return (Class<T>)Class.forName(classNm);
+			return (Class<T>)ClassUtils.getClass(classNm, false);
+			//return (Class<T>)Class.forName(classNm);
 		} 
 		catch (ClassNotFoundException ex) {
 			throw new InvalidConfigException("Anomaly as this state should not occur "

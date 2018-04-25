@@ -17,7 +17,6 @@
 'use strict';
 import { DomainFlowCmp } from './components/domain/domain-flow.component';
 import { StyleGuideCmp } from './styleguide/style-guide.component';
-import { MainLayoutCmp } from './components/home/main-layout.component';
 import { HomeLayoutCmp } from './components/home/home-layout.component';
 import { LoginLayoutCmp } from './components/login/login-layout.component';
 import { LoginCmp } from './components/login/login.component';

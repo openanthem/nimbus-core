@@ -6,6 +6,12 @@ ng-component{
     border: 1px solid #cecece;
     position: relative;
 }
+.scrollGrid.greyGrid .ui-datatable-tablewrapper, .scrollGrid.greyGrid .ui-widget-header {
+    background: darkgrey;
+}
+.scrollGrid .ui-datatable-tablewrapper {
+    background: #6e9de1;
+}
 
 .ui-expanded-row-content .scrollGrid .ui-datatable-scrollable-body, 
 .ui-expanded-row-content .ui-datatable .ui-datatable-scrollable-body {
@@ -23,7 +29,7 @@ ng-component{
     }
     
     th.ui-state-default{
-        background: #daedfc;
+        background: #ebebeb;
         color: #4d4c57;
     }
     th.ui-state-active{
@@ -72,7 +78,7 @@ ng-component{
         position: relative;
         text-align: left;
         border: none;
-        padding: .2rem 2px .2rem .4rem ;
+        padding: .6rem  .2rem ;
         line-height: 1rem;
         .ui-column-title {
             display: block;
@@ -86,51 +92,51 @@ ng-component{
 
         .filterHolder{
             position: relative;
-            margin-top: 3px;
+            margin-top: 6px;
             input{
-                max-width: 100%;
-                min-width: 98%;
+                width: 100%;
             }
             button{
                 position: absolute;
-                right: 3%;
-                top: 2.2px;
-                font-size: 0.8rem;
+                right: 4px;
+                top: 2px;
+                background: transparent;
                 border: none;
-                height: 1rem;
+                height: 1.2rem;
                 color: #b9b6b6;
+                padding: 0;
                 &:hover, &:focus{
                     color: #4c4c4c;
                 }
             }
         }
 
-            .gridFilterIcon {
-                position:absolute;
-                right: 0;
-                top: 0;
-                color: #b9b6b6;
-                &::before{
-                    background-size: 15px 15px;
-                    height: 15px;
-                    width: 15px;
-                    display: block;
-                    font-family: "fontAwesome";
-                    content: "\f0b0";
-                    font-size: .8rem;
-                }
-                &:hover, &:focus{
-                    color: #4c4c4c;
-                }
+        .gridFilterIcon {
+            position:absolute;
+            right: 2px;
+            top: .6rem;
+            color: #94acbc;
+            &::before{
+                background-size: 15px 15px;
+                height: 15px;
+                width: 15px;
+                display: block;
+                font-family: "fontAwesome";
+                content: "\f0b0";
+                font-size: 1.2rem;
             }
+            &:hover, &:focus{
+                color: #4c4c4c;
+            }
+        }
        
        
         .ui-sortable-column-icon {
-            font-size: 1rem;
-            color: #b9b6b6;
+            font-size: 1.2rem;
+            color: #669fe2;
             position:absolute;
-            right: 14px;
-            top: 2px;
+            right: 18px;
+            top: .6rem;
             &:hover, &:focus{
                 color: #4c4c4c;
             }
@@ -155,7 +161,7 @@ ng-component{
         }
     }
     tr.ui-expanded-row-content {
-        background: #D9EDFD;
+        background: #f5f5f5;
         padding: .4rem;
         .ui-datatable {
             .ui-state-default {
@@ -168,9 +174,12 @@ ng-component{
         }
     }
     p-header {
-       float:left;
+        float:left;
         margin-left: 1rem;
-        font-size: 1.1rem;
+        font-size: 1.3rem;
+        margin-top: .3rem;
+        position: relative;
+        z-index: 1;
     }
     th.dropdown, td.dropdown {
         width: 40px;
@@ -224,14 +233,23 @@ ng-component{
 .ui-widget-content {
     border:none;
 }
+.ui-paginator .ui-paginator-page{
+    padding: .2rem .7rem;
+    margin-left: .1rem;
+    margin-right: .1rem;
+}
 .ui-widget-header {
     background: #6e9de1;
     border: none;
     text-align: left;
     color: #fff;
     &.ui-paginator {
-        font-size: .8rem;
+        font-size: 1rem;
         text-align: right;
+        padding: .25em;
+        .ui-paginator-element span.fa:before {
+            font-size: 1.15rem;
+        }
         .ui-paginator-page.ui-state-active {
             background: #184987;
             color: #ffffff;
@@ -269,12 +287,12 @@ ng-component{
         }
     }
 }
-
 .recordsDisplayed{
     position: absolute;
-    left: 43%;
-    padding-top: .1rem;
+    left: 40%;
+    padding-top: .6rem;
     font-size: .9rem;
+    z-index: 1;
 }
 .ui-datatable-header .btn-plain { 
     color: #FFF; 

@@ -37,7 +37,7 @@ import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
 
 /**
  * 
- * @author Tony Lopez (AF42192)
+ * @author Tony Lopez
  *
  */
 @RunWith(MockitoJUnitRunner.class)
@@ -79,7 +79,7 @@ public class WebCommandDispatcherTest {
 		
 		Mockito.when(this.builder.build(request, event)).thenReturn(expectedCommand);
 		Mockito.when(this.gateway.execute(expectedCommand, event.getPayload())).thenReturn(expected);
-		final Object actual = this.testee.handle(request, RequestMethod.GET, event);
+		final Object actual = this.testee.handle(request, event);
 		Mockito.verify(this.builder, Mockito.only()).build(request, event);
 		Mockito.verify(this.gateway, Mockito.times(1)).execute(expectedCommand, event.getPayload());
 		
@@ -97,7 +97,7 @@ public class WebCommandDispatcherTest {
 		
 		Mockito.when(this.builder.build(request)).thenReturn(expectedCommand);
 		Mockito.when(this.gateway.execute(expectedCommand, payload)).thenReturn(expected);
-		final Object actual = this.testee.handle(request, RequestMethod.GET, "version", payload);
+		final Object actual = this.testee.handle(request, payload);
 		Mockito.verify(this.builder, Mockito.only()).build(request);
 		Mockito.verify(this.gateway, Mockito.times(1)).execute(expectedCommand, payload);
 		

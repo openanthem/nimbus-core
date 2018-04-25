@@ -18,6 +18,8 @@ package com.antheminc.oss.nimbus.domain.rules;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.Serializable;
+
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -45,7 +47,7 @@ public class RulesEngineTests extends AbstractFrameworkIngerationPersistableTest
 					.addAction(Action._new)
 					.getMock();
 		Holder<MultiOutput> holder = (Holder<MultiOutput>)controller.handlePost(request, null);
-		String domainRoot_refId  = ExtractResponseOutputUtils.extractDomainRootRefId(holder);
+		Long domainRoot_refId  = ExtractResponseOutputUtils.extractDomainRootRefId(holder);
 		assertNotNull(domainRoot_refId);
 		
 

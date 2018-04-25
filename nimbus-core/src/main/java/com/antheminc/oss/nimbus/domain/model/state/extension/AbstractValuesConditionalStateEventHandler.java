@@ -32,7 +32,7 @@ import com.antheminc.oss.nimbus.support.JustLogit;
  * <p>Abstract Conditional State Event handler for updating <tt>Values</tt> annotated fields based
  * on conditional logic defined via configuration.</p>
  * 
- * @author Tony Lopez (AF42192)
+ * @author Tony Lopez
  * @see com.antheminc.oss.nimbus.domain.defn.extension.ValuesConditional
  */
 public abstract class AbstractValuesConditionalStateEventHandler extends AbstractConditionalStateEventHandler {
@@ -123,6 +123,11 @@ public abstract class AbstractValuesConditionalStateEventHandler extends Abstrac
 	 */
 	protected void handleInternal(ValuesConditional configuredAnnotation, Param<?> srcParam) {
 		final Param<?> targetParam = this.retrieveParamByPath(srcParam, configuredAnnotation.target());
+		
+		// if the target param is not enabled, skip the values processing
+		if (!targetParam.isEnabled()) {
+			return;
+		}
 		
 		final boolean shouldExecuteDefault = !this.executeConditions(configuredAnnotation, srcParam, targetParam);
 		

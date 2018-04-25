@@ -16,7 +16,19 @@
  */
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing'
+
 import { AppComponent } from './app.component';
+import { LoaderComponent } from './components/platform/loader/loader.component';
+import { LoaderService } from './services/loader.service';
+import { ServiceConstants } from './services/service.constants';
+
+class MockServiceConstant {
+  STOPGAP_APP_HOST: string;
+  STOPGAP_APP_PORT: any;
+  LOCALE_LANGUAGE: string;
+  STOPGAP_APP_PROTOCOL: string;
+}
 
 /**
  * \@author Dinakar.Meda
@@ -30,8 +42,11 @@ describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        AppComponent
+        AppComponent,
+        LoaderComponent
       ],
+      imports: [ RouterTestingModule ],
+      providers: [ LoaderService, { provide: ServiceConstants, useClass: MockServiceConstant} ]
     }).compileComponents();
   }));
 
@@ -41,16 +56,25 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   }));
 
-  it(`should have as title 'app'`, async(() => {
+  it(`ngoninit() should get values from document`, async(() => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('app');
-  }));
-
-  it('should render title in a h1 tag', async(() => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Welcome to app!');
+    app.document = {
+      location: {
+        hostname: 'testing',
+        port: '999',
+        protocol: 'testProtocol',
+        pathname: 'test/test'
+      }
+    };
+    app.ngOnInit();
+    expect(app.domain).toEqual('testing');
+    expect(app.port).toEqual('999');
+    expect(app.protocol).toEqual('testProtocol');
+    expect(app.locale).toEqual('en-US');
+    expect(ServiceConstants.STOPGAP_APP_HOST).toEqual('testing');
+    expect(ServiceConstants.STOPGAP_APP_PORT).toEqual('999');
+    expect(ServiceConstants.LOCALE_LANGUAGE).toEqual('en-US');
+    expect(ServiceConstants.STOPGAP_APP_PROTOCOL).toEqual('testProtocol');
   }));
 });

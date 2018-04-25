@@ -22,7 +22,6 @@ import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.MappedTransientParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityStateAspectHandlers;
-import com.antheminc.oss.nimbus.domain.model.state.ExecutionRuntime;
 import com.antheminc.oss.nimbus.domain.model.state.Notification;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -38,14 +37,15 @@ public class MappedDefaultTransientParamState<T, M> extends DefaultParamState<T>
 
 	private static final long serialVersionUID = 1L;
 
-	@JsonIgnore private transient Param<M> mapsToTransient;
 	
 	@JsonIgnore private final Notification.Consumer<M> delegate;
 	
 	@JsonIgnore private final Param<M> initialMapsTo;
 	
-	@JsonIgnore 
-	private RemnantState<Boolean> isAssignedState = this.new RemnantState<Boolean>(false);
+	@JsonIgnore private Param<M> detachedMapsTo;
+	
+	@JsonIgnore private Param<M> mapsToTransient;
+	
 	
 	public interface Creator<T> {
 		public EntityState.Model<T> buildMappedTransientModel(MappedDefaultTransientParamState<T, ?> associatedParam, EntityState.Model<?> transientMapsTo);
@@ -63,119 +63,58 @@ public class MappedDefaultTransientParamState<T, M> extends DefaultParamState<T>
 		this.creator = creator;
 		this.initialMapsTo = initialMapsTo;
 
+		// create detached and link to this mapped parameter
+		this.detachedMapsTo = creator.buildMapsToDetachedParam(this);
+		this.detachedMapsTo.registerConsumer(this);
 	}
 	
-	@Override
-	protected void initStateInternal() {
-		// initialize with shell: detached entity
-		resetToDetachedMapping();
-		
-		super.initStateInternal();
-	}
-
 	@Override
 	public void onTypeAssign() {
-		Param mapsToTransientDetached = creator.buildMapsToDetachedParam(this);
-		setMapsToTransient(mapsToTransientDetached);
-		mapsToTransientDetached.registerConsumer(this);
-		
-		assignType();
-		
-		fireRules();
-	}
-	
-	public void assignType() {
-		Model mappedModel = creator.buildMappedTransientModel(this, getMapsTo().findIfNested());
+		Model mappedModel = creator.buildMappedTransientModel(this, detachedMapsTo.findIfNested());
 		getType().findIfTransient().assign(mappedModel);
-	}
-	
-//	@Override
-//	public void fireRules() {
-//		if(isAssinged())
-//			super.fireRules();
-//	}
-	
-	@JsonIgnore
-	@Override
-	public Param<M> getMapsTo() {
-		return mapsToTransient;
-	}
-	
-	@JsonIgnore
-	@Override
-	public boolean isAssinged() {
-		return this.isAssignedState.getCurrState();
-	}
-	
-	public void setAssigned(boolean isAssigned) {
-		this.isAssignedState.setState(isAssigned);
-	}
-	
-	@Override
-	public void flush() {
-		assignMapsTo();
 	}
 	
 	@Override
 	public void assignMapsTo() {
-		T oldState = getLeafState();
 		assignMapsTo(initialMapsTo);
-		setState(oldState);
+	}
+	
+	@Override
+	public void assignMapsTo(String rootMapsToPath) {
+		Param<M> mapsToTransient = findParamByPath(rootMapsToPath);
+		assignMapsTo(mapsToTransient);	
 	}
 	
 	@Override
 	public void assignMapsTo(Param<M> mapsToTransient) {
-		assignMapsToInternal(mapsToTransient, true);
-		
-		triggerEvents();
-	}
-	
-	private void assignMapsToInternal(Param<M> mapsToTransient, boolean isAssigned) {
 		Objects.requireNonNull(mapsToTransient, "MapsTo transient param must not be null.");
 		
-		if(getMapsTo()==mapsToTransient)
-			return;
-		
 		changeStateTemplate((rt, h, lockId)->{
-			unassignMapsToInternal();
-			
-			final Param<M> resolvedMapsTo;
-			
-			//TODO: 1. create model for this type (Mapped) based on passed in mapsTo
-			// 1.1 If passed in mapsTo is collection, then create mapsTo (shell) element which "might" get added to collection upon setState of this mapped:: createElement is not same addElement
-			final Action a;
-			if(mapsToTransient.isCollection()) {
-				resolvedMapsTo = mapsToTransient.findIfCollection().add();
-				a = Action._new;
-			} else {
-				resolvedMapsTo = mapsToTransient;
-				a = Action._replace;
-			}
-			
-			// 2. hook up notifications to mapsTo
-			resolvedMapsTo.registerConsumer(this);
+			// if collection, add element
+			Param<M> resolvedMapsTo = mapsToTransient.isCollection() ? mapsToTransient.findIfCollection().add() : mapsToTransient;
 			setMapsToTransient(resolvedMapsTo);
-			setAssigned(isAssigned);
 			
-			// 3. create new mapped model based on mapsTo
-			assignType();
+			copyStateToDetached(resolvedMapsTo.getLeafState());
 			
-			// 4. fire rules
-			fireRules();
+			emitEvent(Action._update, this);
 			
-			// 5. emit event
-			emitEvent(a, this);
+			triggerEvents();
 			
 			return resolvedMapsTo;
 		});
 	}
-	
+
 	@Override
-	public void unassignMapsTo() {
+	public void flush() {
 		changeStateTemplate((rt, h, lockId)->{
-			unassignMapsToInternal();
+			if(!isAssinged()) {
+				Param<M> resolvedMapsTo = initialMapsTo.isCollection() ? initialMapsTo.findIfCollection().add() : initialMapsTo;
+				setMapsToTransient(resolvedMapsTo);
+			}
 			
-			resetToDetachedMapping();
+			copyStateFromDetached();
+			
+			emitEvent(Action._update, this);
 			
 			triggerEvents();
 			
@@ -183,35 +122,46 @@ public class MappedDefaultTransientParamState<T, M> extends DefaultParamState<T>
 		});
 	}
 	
-	private void unassignMapsToInternal() {
-		if(getMapsTo()==null)
-			return;
-		
-		getMapsTo().deregisterConsumer(this);
-		
-		getType().findIfTransient().unassign();
-		
-		setMapsToTransient(null);
-		
-		setAssigned(false);
+	@Override
+	public void unassignMapsTo() {
+		changeStateTemplate((rt, h, lockId)->{
+			setMapsToTransient(null);
+			copyStateToDetached(null);
+			
+			emitEvent(Action._update, this);
+			
+			triggerEvents();
+			
+			return null;
+		});
 	}
 	
-	private void resetToDetachedMapping() {
-		Param mapsToTransientDetached = creator.buildMapsToDetachedParam(this);
-		assignMapsToInternal(mapsToTransientDetached, false);
+	private void copyStateToDetached(M state) {
+		detachedMapsTo.setState(state);
 	}
 
+	private void copyStateFromDetached() {
+		M state = detachedMapsTo.getLeafState();
+		mapsToTransient.setState(state);
+	}
+
+	@JsonIgnore
+	@Override
+	public Param<M> getMapsTo() {
+		return isAssinged() ? getMapsToTransient() : getDetachedMapsTo();
+	}
+	
+	@JsonIgnore
+	@Override
+	public boolean isAssinged() {
+		return getMapsToTransient()!=null;
+	}
+	
 	@Override
 	public boolean requiresConversion() {
 		return MappedDefaultParamState.requiresConversion(this);
 	}
 	
-	@Override
-	public void assignMapsTo(String rootMapsToPath) {
-		Param<M> mapsToTransient = findParamByPath(rootMapsToPath);
-		assignMapsTo(mapsToTransient);		
-	}
-
 	@Override
 	public boolean isTransient() {
 		return true;
