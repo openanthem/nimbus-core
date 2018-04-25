@@ -75,6 +75,11 @@ public abstract class AbstractListPaginatedParam<T> extends DefaultParamState<Li
 		setState(content);
 	}
 	
+	public void clearPageMeta() {
+		this.pageable = null;
+		this.totalCountSupplier = null;
+	}
+	
 	@Getter
 	public static class PageWrapper<T> extends PageImpl<T> {
 		

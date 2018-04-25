@@ -15,9 +15,6 @@
  */
 package com.antheminc.oss.nimbus.support.pojo;
 
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 import lombok.Getter;
 
 /**
@@ -38,37 +35,37 @@ public class LockTemplate {
 		public void execute();
 	}
 	
-//	final public <L> L execute(CallbackReturn<L> cb) {
-//		return cb.execute();
-//	}
-	
-//	final public void execute(CallbackVoid cb) {
-//		cb.execute();
-//	}
-	
-	
-	final private Lock lock;
-
-	public LockTemplate() {
-		this.lock = new ReentrantLock();
-	}
-	
 	final public <L> L execute(CallbackReturn<L> cb) {
-		lock.lock();
-		try{
-			return cb.execute();
-		} finally {
-			lock.unlock();
-		}
+		return cb.execute();
 	}
 	
 	final public void execute(CallbackVoid cb) {
-		lock.lock();
-		try{
-			cb.execute();
-		} finally {
-			lock.unlock();
-		}
+		cb.execute();
 	}
+	
+	
+//	final private Lock lock;
+//
+//	public LockTemplate() {
+//		this.lock = new ReentrantLock();
+//	}
+//	
+//	final public <L> L execute(CallbackReturn<L> cb) {
+//		lock.lock();
+//		try{
+//			return cb.execute();
+//		} finally {
+//			lock.unlock();
+//		}
+//	}
+//	
+//	final public void execute(CallbackVoid cb) {
+//		lock.lock();
+//		try{
+//			cb.execute();
+//		} finally {
+//			lock.unlock();
+//		}
+//	}
 	
 }
