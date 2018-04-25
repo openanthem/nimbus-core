@@ -128,6 +128,8 @@ public class MappedDefaultListParamState<T, M> extends DefaultListParamState<T> 
 					
 					// clear mapped
 					clear(false);
+					
+					clearPageMeta();
 				});
 			}
 			
