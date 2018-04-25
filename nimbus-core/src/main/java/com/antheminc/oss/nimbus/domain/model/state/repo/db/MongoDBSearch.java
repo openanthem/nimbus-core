@@ -39,9 +39,6 @@ public abstract class MongoDBSearch implements DBSearch {
 	
 	private final BeanResolverStrategy beanResolver;
 	
-	@Value("${search.threshold:500}")
-	private long searchThreshold;	
-	
 	public MongoDBSearch(BeanResolverStrategy beanResolver) {
 		this.beanResolver = beanResolver;
 		this.mongoOps = beanResolver.get(MongoOperations.class);
