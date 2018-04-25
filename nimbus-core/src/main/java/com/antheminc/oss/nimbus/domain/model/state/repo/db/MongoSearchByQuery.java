@@ -172,9 +172,10 @@ public class MongoSearchByQuery extends MongoDBSearch {
 		long count = query.fetchCount();
 		if(count <= getSearchThreshold()) {
 			return qPage.fetch(projectionPaths);
+		} else {
+			qPage = query.offset(pageRequest.getOffset()).limit(pageRequest.getPageSize());
+			return new PageRequestAndRespone<Object>(qPage.fetchResults(projectionPaths).getResults(), pageRequest, () -> count);
 		}
-		
-		return new PageRequestAndRespone<Object>(qPage.fetchResults(projectionPaths).getResults(), pageRequest, () -> count);
 		
 	}
 	

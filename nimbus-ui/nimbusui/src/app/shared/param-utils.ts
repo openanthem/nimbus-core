@@ -158,7 +158,7 @@ export class ParamUtils {
             // Find the nested param associated with this obj[x].
             let x_param = ParamUtils.findParamByPath(relativeParam, x);
 
-            if (x_param) {
+            if (x_param && x_param.config) {
 
                 // if the param identified by x is a collection or nested element...
                 if ((x_param.config.type.collection || x_param.config.type.nested)) {
