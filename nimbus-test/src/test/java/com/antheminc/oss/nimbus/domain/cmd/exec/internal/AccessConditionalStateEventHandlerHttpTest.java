@@ -32,12 +32,14 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.antheminc.oss.nimbus.domain.AbstractFrameworkIngerationPersistableTests;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.session.SessionProvider;
 import com.antheminc.oss.nimbus.entity.client.access.ClientAccessEntity;
@@ -193,8 +195,10 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 		
 		for(Output<?> op: outputs) {
 			if(op.getValue() instanceof Param<?>) {
-				Param<?> param = (Param<?>)op.getValue();
-				
+				ListParam<?> param = (ListParam<?>)op.getValue();
+				Page<?> pg = param.getPage();
+				assertNotNull(pg);
+				assertNotNull(pg.getContent());
 				Param<?> attrStringParam = param.findParamByPath("/0/attr_String"); // READ
 				assertNotNull(attrStringParam);
 				assertTrue(attrStringParam.isVisible());
