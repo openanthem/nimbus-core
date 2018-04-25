@@ -27,7 +27,7 @@
         [responsive]="true" 
         (onRowExpand)="getAddtionalData($event)"
         (onPage)="paginate($event)"
-        [lazy]=loadLazy
+        [lazy]=element.config?.uiStyles?.attributes?.lazyLoad
         (onLazyLoad)="loadDataLazy($event)">
 
         <ng-template pTemplate="header" let-columns>

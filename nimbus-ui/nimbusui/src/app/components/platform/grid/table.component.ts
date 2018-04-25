@@ -73,7 +73,6 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     totalRecords: number = 0;
     mouseEventSubscription: Subscription;
     filterState: any[] = [];
-    loadLazy = false;
     columnsToShow: number = 0;
 
     @ViewChild('dt') dt: Table;
@@ -199,16 +198,14 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
                 this.value = event.gridList;
                 let gridListSize = this.value ? this.value.length : 0;
                 // Check for Server Pagination Vs Client Pagination
-                if (event.page && event.page.totalElements > gridListSize) {
+                if (this.element.config.uiStyles.attributes.lazyLoad) {
                     // Server Pagination
-                    this.loadLazy = true;
                     this.totalRecords = event.page.totalElements;
                     if (event.page.first) {
                         this.updatePageDetailsState();
                     }
                 } else {
                     // Client Pagination
-                    this.loadLazy = false;
                     this.totalRecords = this.value ? this.value.length : 0;
                     this.updatePageDetailsState();
                 }
