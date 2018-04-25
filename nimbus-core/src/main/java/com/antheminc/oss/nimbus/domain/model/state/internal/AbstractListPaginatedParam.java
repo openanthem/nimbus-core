@@ -79,12 +79,11 @@ public abstract class AbstractListPaginatedParam<T> extends DefaultParamState<Li
 			
 			return null;
 		});
-
 	}
 	
 	public void clearPageMeta() {
-		this.pageable = null;
-		this.totalCountSupplier = null;
+		//this.pageable = null;
+		//this.totalCountSupplier = null;
 	}
 	
 	@Getter
