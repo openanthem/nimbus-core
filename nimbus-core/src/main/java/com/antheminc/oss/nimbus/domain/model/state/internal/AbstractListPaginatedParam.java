@@ -70,10 +70,16 @@ public abstract class AbstractListPaginatedParam<T> extends DefaultParamState<Li
 	
 	@Override
 	public void setPage(List<T> content, Pageable pageable, Supplier<Long> totalCountSupplier) {
-		setState(content);
+		changeStateTemplate((rt, h, lockId)->{
 
-		this.pageable = pageable;
-		this.totalCountSupplier = totalCountSupplier;
+			setState(content);
+
+			this.pageable = pageable;
+			this.totalCountSupplier = totalCountSupplier;
+			
+			return null;
+		});
+
 	}
 	
 	public void clearPageMeta() {
