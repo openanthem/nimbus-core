@@ -83,6 +83,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     rowHover: boolean;
     selectedRows: any[];
     showFilters: boolean = false;
+    hasFilters: boolean = false;
     rowStart = 0;
     rowEnd = 0;
     rowExpanderKey = '';
@@ -128,6 +129,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
 
     ngOnInit() {
         super.ngOnInit();
+        // non-hidden columns
         this.columnsToShow = 0;
         // Set the column headers
         if (this.params) {
@@ -137,6 +139,9 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
                 column['field'] = column.code;
                 column['header'] = column.label;
                 if(column.uiStyles) {
+                    if (column.uiStyles.attributes.filter) {
+                        this.hasFilters = true;
+                    }
                     if (column.uiStyles.attributes.hidden) {
                         column['exportable'] = false;
                     } else {

@@ -9,7 +9,7 @@
                 <i class="fa fa-fw fa-times hidden-md-down" aria-hidden="true"></i>Clear Grid Filters</button>
             <button *ngIf="element.config?.uiStyles?.attributes?.export" class="btn-plain ml-2" (click)="export()">
                 <i class="fa fa-fw fa-share hidden-md-down" aria-hidden="true"></i>Export</button>
-            <button class="btn-plain ml-2 " (click)="toggleFilter(col?.uiStyles?.attributes?.filter)" title="show grid filters" *ngIf="showFilters"> 
+            <button class="btn-plain ml-2 " (click)="toggleFilter(col?.uiStyles?.attributes?.filter)" title="show grid filters" *ngIf="hasFilters"> 
                 <i class="fa fa-fw fa-filter hidden-md-down" aria-hidden="true"></i>
             </button>
         </div>
