@@ -273,7 +273,7 @@ public class ViewConfig {
 		String alias() default "Grid";
 		String cssClass() default ""; // new
 		boolean expandableRows() default false;
-		
+		boolean lazyLoad() default false;
 		boolean onLoad() default false;
 		boolean isTransient() default false;
 		String url() default "";
@@ -858,7 +858,7 @@ public class ViewConfig {
 		boolean expandable() default true;
 		SortAs sortAs() default SortAs.DEFAULT; // number, text
 		String placeholder() default "";
-		boolean rowExpander() default true;
+		boolean ignoreRowExpander() default true;
 		
 		public enum FilterMode {
 			equals("eq"),

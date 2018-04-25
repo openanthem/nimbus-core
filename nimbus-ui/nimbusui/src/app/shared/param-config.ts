@@ -195,135 +195,18 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
     rel: string;
     sortAs: string;
     sortable: boolean;
+    lazyLoad: boolean;
     resizable:boolean;
     placeholder: string;
     clearAllFilters: boolean;
     export: boolean;
     clearLabel: string;
     acceptLabel: string;
-    rowExpander: boolean;
+    ignoreRowExpander: boolean;
     deserialize( inJson ) {
-        this.value = inJson.value;
-        this.url = inJson.url;
-        this.editUrl = inJson.editUrl;
-        this.editable = inJson.editable;
-        this.align = inJson.align;
-        this.alias = inJson.alias;
-        this.onLoad = inJson.onLoad;
-        this.expandableRows = inJson.expandableRows;
-        this.asynchronous = inJson.asynchronous;
-        this.b = inJson.b;
-        this.method = inJson.method;
-        if (inJson.imgSrc && inJson.imgSrc != '') {
-            this.imgSrc = inJson.imgSrc;
-        }
-        this.level = inJson.level;
-        this.cssClass = inJson.cssClass;
-        this.multiple = inJson.multiple;
-        this.showExpandAll = inJson.showExpandAll;
-        this.selected = inJson.selected;
-        this.activeIndex = inJson.activeIndex;
-        this.labelClass = inJson.labelClass;
-        this.control = inJson.control;
-        this.content = inJson.content;
-        this.contentId = inJson.contentId;
-        this.datePattern = inJson.datePattern;
-        this.header = inJson.header;
-        this.help = inJson.help;
-        this.title = inJson.title;
-        this.closable = inJson.closable;
-        this.width = inJson.width;
-        this.height = inJson.height;
-        this.type = inJson.type;
-        this.style = inJson.style;
-        this.size = inJson.size;
-        this.submitUrl = inJson.submitUrl;
-        this.navLink = inJson.navLink;
-        this.browserBack = inJson.browserBack;
-        this.postEventOnChange = inJson.postEventOnChange;
-        this.controlId = inJson.controlId;
-        this.submitButton = inJson.submitButton;
-        this.draggable = inJson.draggable;
-        this.sourceHeader = inJson.sourceHeader;
-        this.targetHeader = inJson.targetHeader;
-        this.rowSelection = inJson.rowSelection;
-        this.pagination = inJson.pagination;
-        this.showHeader = inJson.showHeader;
-        this.pageSize = +inJson.pageSize;
-        this.postButton = inJson.postButton;
-        this.rows = inJson.rows;
-        this.postButtonUrl = inJson.postButtonUrl;
-        this.postButtonTargetPath = inJson.postButtonTargetPath;
-        this.postButtonAlias = inJson.postButtonAlias;
-        this.postButtonLabel = inJson.postButtonLabel;
-        this.filterMode=inJson.filterMode;
-        this.filterValue=inJson.filterValue;
-        this.payload = inJson.payload;
-        this.showName = inJson.showName;
-        this.iconField = inJson.iconField;
-        this.inplaceEdit = inJson.inplaceEdit;
-        this.defaultPage = inJson.defaultPage;
-        this.formReset = inJson.formReset;
-        this.target = inJson.target;
-        this.rel = inJson.rel;
-        this.hourFormat = inJson.hourFormat;
-        this.sortAs = inJson.sortAs;
-        this.placeholder = inJson.placeholder;
-        this.clearAllFilters = inJson.clearAllFilters;
-        this.clearLabel = inJson.clearLabel;
-        this.acceptLabel = inJson.acceptLabel;
-        this.rowExpander = inJson.rowExpander;
-        if ( inJson.export != null ) {
-            this.export = inJson.export;
-        }
-        if ( inJson.controlType != null ) {
-            this.controlType = inJson.controlType;
-        }
-        if (inJson.showTime) {
-            this.showTime = inJson.showTime;
-        }
-        if (inJson.timeOnly) {
-            this.timeOnly = inJson.timeOnly;
-        }
-        if (inJson.defaultFlow) {
-            this.defaultFlow = inJson.defaultFlow;
-        }
-        if ( inJson.inplaceEdit ) {
-            this.inplaceEditType = inJson.inplaceEditType;
-        }
-        if ( inJson.modelPath ) {
-            this.modelPath = inJson.modelPath;
-        }
-        if ( inJson.cols ) {
-            this.cols = inJson.cols;
-        }
-        if ( inJson.hidden ) {
-            this.hidden = inJson.hidden;
-        }
-        if ( inJson.readOnly ) {
-            this.readOnly = inJson.readOnly;
-        } else {
-            this.readOnly = false;
-        }
-        if ( inJson.route ) {
-            this.route = inJson.route;
-        }
-        if ( inJson.layout ) {
-            this.layout = inJson.layout;
-        }
-        if ( inJson.formReset ) {
-            this.formReset = inJson.formReset;
-        }
-        if (inJson.filter) {
-            this.filter=inJson.filter;
-        }
-        if(inJson.sortable !== undefined) {
-            this.sortable = inJson.sortable;
-        }
-        if(inJson.resizable) {
-            this.resizable = inJson.resizable;
-        }
-        return this;
+        let obj = this;
+        obj = Converter.convert(inJson,obj);
+        return obj;
     }
 }
 

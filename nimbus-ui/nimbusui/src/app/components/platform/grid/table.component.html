@@ -9,14 +9,16 @@
                 <i class="fa fa-fw fa-times hidden-md-down" aria-hidden="true"></i>Clear Grid Filters</button>
             <button *ngIf="element.config?.uiStyles?.attributes?.export" class="btn-plain ml-2" (click)="export()">
                 <i class="fa fa-fw fa-share hidden-md-down" aria-hidden="true"></i>Export</button>
-                <button class="btn-plain ml-2 " (click)="toggleFilter(col?.uiStyles?.attributes?.filter)" title="show grid filters"> <i class="fa fa-fw fa-filter hidden-md-down" aria-hidden="true"></i></button>
+            <button class="btn-plain ml-2 " (click)="toggleFilter(col?.uiStyles?.attributes?.filter)" title="show grid filters" *ngIf="showFilters"> 
+                <i class="fa fa-fw fa-filter hidden-md-down" aria-hidden="true"></i>
+            </button>
         </div>
     </div>
 
     <p-table #dt [value]="value" [columns]="params" dataKey="id"
         [(selection)]="selectedRows" 
         [rows]="element.config?.uiStyles?.attributes?.pageSize"
-        [totalRecords]=500
+        [totalRecords]=totalRecords
         [paginator]="element.config?.uiStyles?.attributes?.pagination" 
         paginatorPosition="both" 
         [alwaysShowPaginator]="true"
@@ -24,7 +26,8 @@
         [customSort]="true" 
         [responsive]="true" 
         (onRowExpand)="getAddtionalData($event)"
-        [lazy]=loadLazy
+        (onPage)="paginate($event)"
+        [lazy]=element.config?.uiStyles?.attributes?.lazyLoad
         (onLazyLoad)="loadDataLazy($event)">
 
         <ng-template pTemplate="header" let-columns>
@@ -73,7 +76,7 @@
             </tr>
         </ng-template>
 
-        <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex" let-columns="columns" let-expanded="expanded">
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
             <tr>
                 <td *ngIf="element.config?.uiStyles?.attributes?.rowSelection">
                     <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
@@ -89,8 +92,12 @@
                     <td *ngIf="col.uiStyles.attributes?.hidden == false" [ngClass]="{dropdown:showLinkMenu(col)}">
                         <span title="{{getCellDisplayValue(rowData, col)}}" *ngIf="showValue(col)">{{getCellDisplayValue(rowData, col)}}</span>
                         <span *ngIf="showLinkMenu(col)">
-                            <nm-action-dropdown #dropDown [element]="getLinkMenuParam(col, rowIndex)" [params]="col?.type?.model?.paramConfigs" [rowData]="rowData"
-                                [elementPath]="getRowPath(col, rowData)" (dropDownClick)="toggleOpen($event)"></nm-action-dropdown>
+                                <nm-action-dropdown #dropDown [element]="getLinkMenuParam(col, rowData['elemId'])" 
+                                    [params]="col?.type?.model?.paramConfigs" 
+                                    [rowData]="rowData" 
+                                    [elementPath]="getRowPath(col, rowData)" 
+                                    (dropDownClick)="toggleOpen($event)">
+                                </nm-action-dropdown>
                         </span>
                     </td>
                 </ng-template>
