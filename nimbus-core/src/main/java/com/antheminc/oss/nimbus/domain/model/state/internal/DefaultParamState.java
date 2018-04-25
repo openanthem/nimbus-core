@@ -242,30 +242,34 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		if(!isMapped())
 			return getState();
 		
-		if(!isNested())
-			return getState();
+		return getMappedState(this);
+	}
+	
+	final static protected <T> T getMappedState(Param<T> p) {
+		if(!p.isNested())
+			return p.getState();
 		
 		// create new entity instance
-		T entity = getAspectHandlers().getParamStateGateway().instantiate(this.getConfig().getReferredClass());
+		T entity = p.getAspectHandlers().getParamStateGateway().instantiate(p.getConfig().getReferredClass());
 		
 		// assign param values to entity instance attributes
-		if(findIfNested()==null)
+		if(p.findIfNested()==null)
 			return entity;
 		
-		if(findIfNested().templateParams().isNullOrEmpty())
+		if(p.findIfNested().templateParams().isNullOrEmpty())
 			return entity;
 		
-		if(isCollection()) {
+		if(p.isCollection()) {
 			List<Object> colEntity = (List<Object>)entity;
-			for(Param<?> pColElem : findIfNested().getParams()) {
-				Object colElemState = pColElem.getLeafState();
+			for(Param<?> pColElem : p.findIfNested().getParams()) {
+				Object colElemState = getMappedState(pColElem);//pColElem.getLeafState();
 				colEntity.add(colElemState);
 			}
 		} else { // nested
-			for(Param<?> pNestedParam : findIfNested().getParams()) {
-				Object nestedParamLeafState = pNestedParam.getLeafState();
+			for(Param<?> pNestedParam : p.findIfNested().getParams()) {
+				Object nestedParamLeafState = getMappedState(pNestedParam);//pNestedParam.getLeafState();
 				if(nestedParamLeafState!=null)
-					getAspectHandlers().getParamStateGateway().setValue(pNestedParam.getPropertyDescriptor().getWriteMethod(), entity, nestedParamLeafState);
+					p.getAspectHandlers().getParamStateGateway().setValue(pNestedParam.getPropertyDescriptor().getWriteMethod(), entity, nestedParamLeafState);
 			}
 		}
 		
