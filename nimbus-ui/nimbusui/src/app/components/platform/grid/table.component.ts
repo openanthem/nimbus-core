@@ -148,7 +148,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
                             column['exportable'] = true;
                         }
                     }
-                    if (column.uiStyles.attributes.rowExpander != undefined && !column.uiStyles.attributes.rowExpander) {
+                    if (column.uiStyles.attributes.ignoreRowExpander != undefined && !column.uiStyles.attributes.ignoreRowExpander) {
                         this.rowExpanderKey = column.code;
                     }
                 }
