@@ -505,9 +505,11 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     }
 
     paginate(e: any) {
-        this.rowStart = e.first + 1;
-        if (e.first + e.rows < this.totalRecords) {
-            this.rowEnd = e.first + e.rows;
+        let first: number = parseInt(e.first);
+        let rows: number = parseInt(e.rows);
+        this.rowStart = first + 1;
+        if (first + rows < this.totalRecords) {
+            this.rowEnd = first + rows;
         } else  {
             this.rowEnd = this.totalRecords;
         }
