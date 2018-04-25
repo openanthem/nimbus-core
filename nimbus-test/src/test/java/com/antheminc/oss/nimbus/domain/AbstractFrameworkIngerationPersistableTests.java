@@ -17,8 +17,6 @@ package com.antheminc.oss.nimbus.domain;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.io.Serializable;
-
 import org.junit.After;
 import org.springframework.mock.web.MockHttpServletRequest;
 

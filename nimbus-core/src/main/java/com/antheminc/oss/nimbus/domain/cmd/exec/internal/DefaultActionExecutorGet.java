@@ -15,7 +15,6 @@
  */
 package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 
-import java.io.Serializable;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;

@@ -16,7 +16,6 @@
 package com.antheminc.oss.nimbus.domain.model.state.repo.db;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
