@@ -235,13 +235,11 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     isRowExpanderHidden(rowData: any): boolean {
         if(this.rowExpanderKey == '')
             return true;
-        
         let val = rowData[this.rowExpanderKey];
-        
         if(val)
-            return false;
+            return true;
         else
-            return true;  
+            return false;
     }
 
     getCellDisplayValue(rowData: any, col: ParamConfig) {
