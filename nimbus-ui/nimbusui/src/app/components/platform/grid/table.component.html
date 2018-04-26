@@ -51,9 +51,9 @@
                 <th style="width: 2.25em" *ngIf="element.config?.uiStyles?.attributes?.expandableRows"></th>
                 <ng-template ngFor let-col let-colIndex="index" [ngForOf]="params">
                     <th *ngIf="col?.uiStyles?.attributes?.hidden == false">
-                        <span *ngIf="col?.uiStyles?.attributes?.filter">
+                        <span *ngIf="col?.uiStyles?.attributes?.filter" [ngClass]="{overflowVisible:isDate(col.type.name)}">
                             <div class="filterHolder" *ngIf="isDate(col.type.name)">
-                                <input #text type="text" [(ngModel)]="filterState[colIndex]" (input)="dateFilter($event, dt, col.field, col?.uiStyles?.attributes?.filterMode, col?.uiStyles?.attributes?.datePattern, col?.type?.name)">
+                                <p-calendar #text [monthNavigator]="true" [yearNavigator]="true" [(ngModel)]="filterState[colIndex]"  (onChange)="dateFilter($event, dt, col.field, col?.uiStyles?.attributes?.filterMode, col?.uiStyles?.attributes?.datePattern, col?.type?.name)"> </p-calendar>
                                 <button (click)="clearFilter(text, dt, col.field); filterState[colIndex]=''">
                                     <i class="fa fa-times"></i>
                                 </button>

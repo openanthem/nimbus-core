@@ -15,7 +15,9 @@ body{color:#4c4c4c;}
 .text-bold {
     font-weight: bold;
 }
-
+.ui-table .ui-table-thead > tr > th > span.overflowVisible,.overflowVisible {
+    overflow: visible;
+}
 html {
     font-size: 12px;
     line-height: 15px;
