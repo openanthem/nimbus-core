@@ -15,7 +15,6 @@
  */
 package com.antheminc.oss.nimbus.domain.bpm.activiti;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

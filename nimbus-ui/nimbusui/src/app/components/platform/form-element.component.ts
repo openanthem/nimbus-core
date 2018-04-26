@@ -40,9 +40,10 @@ var counter = 0;
 export class FormElement {
     @Input() element: Param;
     @Input() form: FormGroup;
+    @Input() elementCss: String;
     elemMessages: Message[];
     id: String = 'form-control' + counter++;
-    @Input() elementCss: String;
+
     get isValid() {
         if (this.form.controls[this.element.config.code] != null) {
             return this.form.controls[this.element.config.code].valid;
@@ -50,6 +51,7 @@ export class FormElement {
             return true;
         }
     }
+
     get isPristine() {
         if (this.element.config.code.startsWith('{')) {
             return true;
@@ -60,22 +62,32 @@ export class FormElement {
             return true;
         }
     }
+
     getMessages() {
-        this.elemMessages =[];
+        this.elemMessages = [];
         this.getErrors();
-        if (this.element.message != null ) {
+        if (this.element.message != null) {
             this.elemMessages.push(this.element.message);
         }
         return this.elemMessages;
     }
+
     get showMessages() {
-        return  (this.elemMessages != null && this.elemMessages.length > 0);
+        return (this.elemMessages != null && this.elemMessages.length > 0);
     }
-    constructor() {}
+
+    constructor() { }
+
     getErrorStyles() {
-        if (this.showErrors) { return 'alert alert-danger'; }
-     }
-     get showErrors() { return (!this.isPristine && !this.isValid); }
+        if (this.showErrors) {
+            return 'alert alert-danger';
+        }
+    }
+
+    get showErrors() { 
+        return (!this.isPristine && !this.isValid); 
+    }
+
     ngOnInit() {
         if (this.element.config.uiStyles && this.element.config.uiStyles.attributes.controlId !== null) {
             if (Number(this.element.config.uiStyles.attributes.controlId) % 2 === 0) {
@@ -84,7 +96,7 @@ export class FormElement {
                 this.elementCss = this.elementCss + ' odd';
             }
         }
-      }
+    }
 
     getElementStyle() {
         if (this.element.config.uiStyles != null && this.element.config.uiStyles.attributes.alias === 'MultiSelectCard') {
@@ -93,6 +105,7 @@ export class FormElement {
             return '';
         }
     }
+    
     getErrors() {
         if (this.form.controls[this.element.config.code].invalid) {
             if (this.element.config.validation) {
@@ -117,17 +130,18 @@ export class FormElement {
             }
         }
     }
-    addErrorMessages (errorText: string) {
 
-        let errorMessage: Message, summary : string;
+    addErrorMessages(errorText: string) {
+        let errorMessage: Message, summary: string;
         errorMessage = new Message();
         errorMessage.context = 'INLINE';
         errorMessage.life = 10000;
-        errorMessage.messageArray.push({severity: 'error',  summary: summary,  detail: errorText});
+        errorMessage.messageArray.push({ severity: 'error', summary: summary, detail: errorText });
         this.elemMessages.push(errorMessage);
     }
+
     ngModelState(ngm: AbstractControlDirective): string {
-        let ret = ngm instanceof NgModel ? `name: ${ngm.name};  ` : '';
-        return ret + `touched: ${ngm.touched};  pristine: ${ngm.pristine};  valid: ${ngm.valid};  errors: ${JSON.stringify(ngm.errors)};  value: ${JSON.stringify(ngm.value)}`;
+        let ret = ngm instanceof NgModel ? 'name: ${ngm.name};  ' : '';
+        return ret + 'touched: ${ngm.touched};  pristine: ${ngm.pristine};  valid: ${ngm.valid};  errors: ${JSON.stringify(ngm.errors)};  value: ${JSON.stringify(ngm.value)}';
     }
 }

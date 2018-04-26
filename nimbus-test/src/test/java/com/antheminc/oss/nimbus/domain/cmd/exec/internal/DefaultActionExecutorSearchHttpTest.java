@@ -16,9 +16,7 @@
 package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -293,7 +291,7 @@ public class DefaultActionExecutorSearchHttpTest extends AbstractFrameworkIngera
 				.addParam("page", "0")
 				.addAction(Action._get)
 				.getMock();
-		final Object gridResponse = controller.handlePost(gridRequest, "[{\"code\":\"attr_String2\", \"value\":\"test2_string2\"},{\"code\":\"nested_attr_String\", \"value\":\"test1\"}]");
+		final Object gridResponse = controller.handlePost(gridRequest, "{\"filters\": [{\"code\":\"attr_String2\", \"value\":\"test2_string2\"},{\"code\":\"nested_attr_String\", \"value\":\"test1\"}]}");
 		//final Object gridResponse = controller.handlePost(gridRequest, null);
 		assertNotNull(gridResponse);
 		
@@ -356,7 +354,7 @@ public class DefaultActionExecutorSearchHttpTest extends AbstractFrameworkIngera
 				.addParam("sortBy", "attr_String,ASC")
 				.addAction(Action._get)
 				.getMock();
-		final Object gridResponse = controller.handlePost(gridRequest, "[{\"code\":\"attr_LocalDate1\",\"value\":\""+LocalDate.now()+"T00:00:00.000Z\"}]");
+		final Object gridResponse = controller.handlePost(gridRequest, "{\"filters\": [{\"code\":\"attr_LocalDate1\",\"value\":\""+LocalDate.now()+"T00:00:00.000Z\"}]}");
 		//final Object gridResponse = controller.handlePost(gridRequest, null);
 		assertNotNull(gridResponse);
 		
@@ -419,7 +417,7 @@ public class DefaultActionExecutorSearchHttpTest extends AbstractFrameworkIngera
 				.addParam("sortBy", "attr_String,ASC")
 				.addAction(Action._get)
 				.getMock();
-		final Object gridResponse = controller.handlePost(gridRequest, "[{\"code\":\"attr_String2\", \"value\":\"test2_string2\"},{\"code\":\"nested_attr_String\", \"value\":\"test1\"},{\"code\":\"attr_LocalDate1\",\"value\":\""+LocalDate.now()+"T00:00:00.000Z\"}]");
+		final Object gridResponse = controller.handlePost(gridRequest, "{\"filters\": [{\"code\":\"attr_String2\", \"value\":\"test2_string2\"},{\"code\":\"nested_attr_String\", \"value\":\"test1\"},{\"code\":\"attr_LocalDate1\",\"value\":\""+LocalDate.now()+"T00:00:00.000Z\"}]}");
 		//final Object gridResponse = controller.handlePost(gridRequest, null);
 		assertNotNull(gridResponse);
 		

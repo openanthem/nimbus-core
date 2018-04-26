@@ -73,7 +73,6 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     totalRecords: number = 0;
     mouseEventSubscription: Subscription;
     filterState: any[] = [];
-    loadLazy = false;
     columnsToShow: number = 0;
 
     @ViewChild('dt') dt: Table;
@@ -84,6 +83,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     rowHover: boolean;
     selectedRows: any[];
     showFilters: boolean = false;
+    hasFilters: boolean = false;
     rowStart = 0;
     rowEnd = 0;
     rowExpanderKey = '';
@@ -129,6 +129,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
 
     ngOnInit() {
         super.ngOnInit();
+        // non-hidden columns
         this.columnsToShow = 0;
         // Set the column headers
         if (this.params) {
@@ -138,6 +139,9 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
                 column['field'] = column.code;
                 column['header'] = column.label;
                 if(column.uiStyles) {
+                    if (column.uiStyles.attributes.filter) {
+                        this.hasFilters = true;
+                    }
                     if (column.uiStyles.attributes.hidden) {
                         column['exportable'] = false;
                     } else {
@@ -148,7 +152,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
                             column['exportable'] = true;
                         }
                     }
-                    if (column.uiStyles.attributes.rowExpander != undefined && !column.uiStyles.attributes.rowExpander) {
+                    if (column.uiStyles.attributes.ignoreRowExpander != undefined && !column.uiStyles.attributes.ignoreRowExpander) {
                         this.rowExpanderKey = column.code;
                     }
                 }
@@ -185,8 +189,11 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         }
 
         if (this.element.config.uiStyles.attributes.onLoad === true) {
-            let queryString: string = this.getQueryString(0, undefined);
-            this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'GET', queryString);
+            // If table is set to lazyload, the loadDataLazy(event) method will handle the initialization
+            if (!this.element.config.uiStyles.attributes.lazyLoad) {
+                let queryString: string = this.getQueryString(0, undefined);
+                this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'GET', queryString);
+            }
         }
 
         this.rowHover = true;
@@ -199,21 +206,18 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
                 this.value = event.gridList;
                 let gridListSize = this.value ? this.value.length : 0;
                 // Check for Server Pagination Vs Client Pagination
-                if (event.page && event.page.totalElements > gridListSize) {
+                if (this.element.config.uiStyles.attributes.lazyLoad) {
                     // Server Pagination
-                    this.loadLazy = true;
                     this.totalRecords = event.page.totalElements;
+                    if (event.page.first) {
+                        this.updatePageDetailsState();
+                    }
                 } else {
                     // Client Pagination
-                    this.loadLazy = false;
                     this.totalRecords = this.value ? this.value.length : 0;
+                    this.updatePageDetailsState();
                 }
 
-                console.log(this.totalRecords);
-                console.log(event.page);
-
-
-                this.updatePageDetailsState();
                 this.cd.markForCheck();
                 this.resetMultiSelection();
             }
@@ -235,13 +239,11 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     isRowExpanderHidden(rowData: any): boolean {
         if(this.rowExpanderKey == '')
             return true;
-        
         let val = rowData[this.rowExpanderKey];
-        
         if(val)
-            return false;
+            return true;
         else
-            return true;  
+            return false;
     }
 
     getCellDisplayValue(rowData: any, col: ParamConfig) {
@@ -293,8 +295,8 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         else return false;
     }
 
-    getLinkMenuParam(col,rowIndex): Param {
-        return this.element.collectionParams.find(ele => ele.path == this.element.path +'/'+rowIndex+'/'+ ele.config.code && ele.alias == ViewComponent.linkMenu.toString());
+    getLinkMenuParam(col, rowIndex): Param {
+        return this.element.collectionParams.find(ele => ele.path == this.element.path + '/'+rowIndex+'/' + col.code && ele.alias == ViewComponent.linkMenu.toString());
     }
 
     getRowPath(col: ParamConfig, item: any) {
@@ -511,12 +513,13 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     }
 
     paginate(e: any) {
-        if (this.totalRecords != 0) {
-            this.rowEnd = ((this.totalRecords / (e.first + (+e.rows)) >= 1) ? (e.first + (+e.rows)) : e.first + (this.totalRecords - e.first));
-            this.rowStart = e.first + 1;
-        }
-        else {
-            this.rowStart = 0; this.rowEnd = 0;
+        let first: number = parseInt(e.first);
+        let rows: number = parseInt(e.rows);
+        this.rowStart = first + 1;
+        if (first + rows < this.totalRecords) {
+            this.rowEnd = first + rows;
+        } else  {
+            this.rowEnd = this.totalRecords;
         }
     }
 
@@ -565,11 +568,11 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
                                 item.isOpen = false;
                                 item.state = 'closedPanel';
                             });
-                            this.cd.markForCheck();
+                            this.cd.detectChanges();
                         });
         }
         e.selectedItem = false;
-        this.cd.markForCheck();
+        this.cd.detectChanges();
     }
 
     export() {
@@ -601,7 +604,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     }
 
     loadDataLazy(event:any) {
-        console.log(event);
+        // console.log(event);
         // Pagination Logic
         let pageSize: number = this.element.config.uiStyles.attributes.pageSize;
         let pageIdx: number = 0;        
@@ -625,19 +628,25 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         }
 
         // Filter Logic
-        let filterCriteria: GenericDomain = new GenericDomain();
+        let filterCriteria: any[] = [];
         let filterKeys: string[] = [];
         if (event.filters) {
             filterKeys = Object.keys(event.filters);
         }
         filterKeys.forEach(key => {
-            filterCriteria.addAttribute(key, event.filters[key].value);
+            let filter: any = {};
+            filter['code'] = key;
+            filter['value'] = event.filters[key].value;
+            filterCriteria.push(filter);
         })
-
+        let payload: GenericDomain = new GenericDomain();
+        if (filterCriteria.length > 0) {
+            payload.addAttribute('filters', filterCriteria);
+        }
         // query params - &pageSize=5&page=0&sortBy=attr_String,DESC
         // request body - filterCriteria
         let queryString: string = this.getQueryString(pageIdx, sortBy);
-        this.pageSvc.processEvent(this.element.path, '$execute', filterCriteria, HttpMethod.POST.value, queryString);
+        this.pageSvc.processEvent(this.element.path, '$execute', payload, HttpMethod.POST.value, queryString);
 
     }
 

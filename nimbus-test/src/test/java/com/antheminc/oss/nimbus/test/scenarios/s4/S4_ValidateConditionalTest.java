@@ -17,7 +17,6 @@ package com.antheminc.oss.nimbus.test.scenarios.s4;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.io.Serializable;
 import java.util.List;
 
 import org.junit.Assert;

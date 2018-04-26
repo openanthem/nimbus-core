@@ -9,14 +9,16 @@
                 <i class="fa fa-fw fa-times hidden-md-down" aria-hidden="true"></i>Clear Grid Filters</button>
             <button *ngIf="element.config?.uiStyles?.attributes?.export" class="btn-plain ml-2" (click)="export()">
                 <i class="fa fa-fw fa-share hidden-md-down" aria-hidden="true"></i>Export</button>
-                <button class="btn-plain ml-2 " (click)="toggleFilter(col?.uiStyles?.attributes?.filter)" title="show grid filters"> <i class="fa fa-fw fa-filter hidden-md-down" aria-hidden="true"></i></button>
+            <button class="btn-plain ml-2 " (click)="toggleFilter(col?.uiStyles?.attributes?.filter)" title="show grid filters" *ngIf="hasFilters"> 
+                <i class="fa fa-fw fa-filter hidden-md-down" aria-hidden="true"></i>
+            </button>
         </div>
     </div>
 
     <p-table #dt [value]="value" [columns]="params" dataKey="id"
         [(selection)]="selectedRows" 
         [rows]="element.config?.uiStyles?.attributes?.pageSize"
-        [totalRecords]=500
+        [totalRecords]=totalRecords
         [paginator]="element.config?.uiStyles?.attributes?.pagination" 
         paginatorPosition="both" 
         [alwaysShowPaginator]="true"
@@ -24,7 +26,8 @@
         [customSort]="true" 
         [responsive]="true" 
         (onRowExpand)="getAddtionalData($event)"
-        [lazy]=loadLazy
+        (onPage)="paginate($event)"
+        [lazy]=element.config?.uiStyles?.attributes?.lazyLoad
         (onLazyLoad)="loadDataLazy($event)">
 
         <ng-template pTemplate="header" let-columns>
@@ -47,7 +50,7 @@
                 <th style="width: 2.25em" *ngIf="element.config?.uiStyles?.attributes?.rowSelection"></th>
                 <th style="width: 2.25em" *ngIf="element.config?.uiStyles?.attributes?.expandableRows"></th>
                 <ng-template ngFor let-col let-colIndex="index" [ngForOf]="params">
-                    <th *ngIf="col.uiStyles.attributes?.hidden == false">
+                    <th *ngIf="col?.uiStyles?.attributes?.hidden == false">
                         <span *ngIf="col?.uiStyles?.attributes?.filter">
                             <div class="filterHolder" *ngIf="isDate(col.type.name)">
                                 <input #text type="text" [(ngModel)]="filterState[colIndex]" (input)="dateFilter($event, dt, col.field, col?.uiStyles?.attributes?.filterMode, col?.uiStyles?.attributes?.datePattern, col?.type?.name)">
@@ -62,9 +65,9 @@
                                     <i class="fa fa-times"></i>
                                 </button>
                             </div>
-                            <button class="btn btn-plain filterSubmit" >
+                            <!-- <button class="btn btn-plain filterSubmit" >
                                 <i class="fa fa-arrow-right"></i>
-                            </button>
+                            </button> -->
                           
                         </div>
                     </span>
@@ -73,7 +76,7 @@
             </tr>
         </ng-template>
 
-        <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex" let-columns="columns" let-expanded="expanded">
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
             <tr>
                 <td *ngIf="element.config?.uiStyles?.attributes?.rowSelection">
                     <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
@@ -86,11 +89,15 @@
                 </td>
 
                 <ng-template ngFor let-col let-colIndex="index" [ngForOf]="params">
-                    <td *ngIf="col.uiStyles.attributes?.hidden == false" [ngClass]="{dropdown:showLinkMenu(col)}">
+                    <td *ngIf="col?.uiStyles?.attributes?.hidden == false" [ngClass]="{dropdown:showLinkMenu(col)}">
                         <span title="{{getCellDisplayValue(rowData, col)}}" *ngIf="showValue(col)">{{getCellDisplayValue(rowData, col)}}</span>
                         <span *ngIf="showLinkMenu(col)">
-                            <nm-action-dropdown #dropDown [element]="getLinkMenuParam(col, rowIndex)" [params]="col?.type?.model?.paramConfigs" [rowData]="rowData"
-                                [elementPath]="getRowPath(col, rowData)" (dropDownClick)="toggleOpen($event)"></nm-action-dropdown>
+                                <nm-action-dropdown #dropDown [element]="getLinkMenuParam(col, rowData['elemId'])" 
+                                    [params]="col?.type?.model?.paramConfigs" 
+                                    [rowData]="rowData" 
+                                    [elementPath]="getRowPath(col, rowData)" 
+                                    (dropDownClick)="toggleOpen($event)">
+                                </nm-action-dropdown>
                         </span>
                     </td>
                 </ng-template>

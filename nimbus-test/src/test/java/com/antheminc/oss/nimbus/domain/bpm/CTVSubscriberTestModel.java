@@ -21,7 +21,6 @@ import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Cache;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Database;
 import com.antheminc.oss.nimbus.entity.AbstractEntity.IdLong;
-import com.antheminc.oss.nimbus.entity.AbstractEntity.IdString;
 
 import lombok.Getter;
 import lombok.Setter;

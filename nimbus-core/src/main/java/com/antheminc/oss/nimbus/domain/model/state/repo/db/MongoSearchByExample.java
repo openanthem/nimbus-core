@@ -28,7 +28,6 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.repository.support.PageableExecutionUtils;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
@@ -80,21 +79,15 @@ public class MongoSearchByExample extends MongoDBSearch {
 		return query;
 	}
 	
-	private Object findAllPageable(Class<?> referredClass, String alias, Pageable pageRequest, Query query) {
-		long count = getMongoOps().count(query, referredClass, alias);
-		
-		if(count <= getSearchThreshold()) {
-			return getMongoOps().find(query, referredClass, alias);
-		}
-		
+	private <T> PageRequestAndRespone<T> findAllPageable(Class<T> referredClass, String alias, Pageable pageRequest, Query query) {
 		Query qPage = query.with(pageRequest);
 		
-		List<Object> results = (List<Object>)getMongoOps().find(qPage, referredClass, alias);
+		List<T> results = getMongoOps().find(qPage, referredClass, alias);
 		
 		if(CollectionUtils.isEmpty(results))
 			return null;
 		
-		return new PageRequestAndRespone<Object>(results, pageRequest, () -> getMongoOps().count(query, referredClass, alias));
+		return new PageRequestAndRespone<T>(results, pageRequest, () -> getMongoOps().count(query, referredClass, alias));
 		
 	}
 
