@@ -80,8 +80,8 @@
                 </td>
                 <td *ngIf="element.config?.uiStyles?.attributes?.expandableRows">
 
-                    <a href="#" [pRowToggler]="rowData" *ngIf=isRowExpanderHidden(rowData)>
-                        <i [ngClass]="expanded ? 'fa fa-fw fa-chevron-circle-down' : 'fa fa-fw fa-chevron-circle-right'"></i>
+                    <a href="#" [pRowToggler]="rowData" *ngIf=isRowExpanderHidden(rowData) >
+                        <i [ngClass]="expanded ? 'fa fa-fw fa-chevron-circle-down ui-row-toggler' : 'fa fa-fw fa-chevron-circle-right ui-row-toggler'"></i>
                     </a>
                 </td>
 
