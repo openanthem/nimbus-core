@@ -279,6 +279,9 @@ ng-component{
     margin-left: .1rem;
     margin-right: .1rem;
 }
+.ui-datatable-header {
+    min-height: 40px;
+}
 .ui-widget-header {
     background: #6e9de1;
     border: none;
@@ -325,6 +328,11 @@ ng-component{
             background: none;
             color:#fff;
             
+        }
+        &.ui-paginator-top {
+            top: 0;
+            position: absolute;
+            right: 0;
         }
     }
 }
