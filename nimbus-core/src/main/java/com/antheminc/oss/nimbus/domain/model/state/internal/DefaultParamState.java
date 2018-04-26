@@ -114,9 +114,6 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	@JsonIgnore 
 	final private PropertyDescriptor propertyDescriptor;
 
-	@JsonIgnore
-	private T transientOldState;
-
 	public static class LeafState<T> extends DefaultParamState<T> implements LeafParam<T> {
 		private static final long serialVersionUID = 1L;
 		
@@ -326,10 +323,6 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		Action a = getAspectHandlers().getParamStateGateway()._set(this, state); 
 		
 		if(a!=null) {
-			
-			if(isLeaf)
-				setTransientOldState(localPotentialOldState);
-			
 			// hook up on state change events
 			onStateChangeEvent(resolveRuntime().getTxnContext(), this, a);
 			
