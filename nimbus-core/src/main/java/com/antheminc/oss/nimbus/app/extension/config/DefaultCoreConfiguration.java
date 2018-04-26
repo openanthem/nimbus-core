@@ -41,7 +41,7 @@ import com.antheminc.oss.nimbus.domain.model.state.repo.ws.DefaultWSModelReposit
 import com.antheminc.oss.nimbus.domain.rules.DefaultRulesEngineFactoryProducer;
 import com.antheminc.oss.nimbus.domain.rules.drools.DroolsRulesEngineFactory;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandler;
-import com.antheminc.oss.nimbus.support.pojo.reflection.JavaBeanHandlerReflection;
+import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandlerLambda;
 
 /**
  * @author Sandeep Mantha
@@ -100,8 +100,8 @@ public class DefaultCoreConfiguration {
 	}
 	
 	@Bean(name="default.java.bean.handler")
-	public JavaBeanHandlerReflection javaBeanHandlerReflection(){
-		return new JavaBeanHandlerReflection();
+	public JavaBeanHandler javaBeanHandler(){
+		return new JavaBeanHandlerLambda();
 	}
 	
 	//web
