@@ -41,7 +41,6 @@
                         <span *ngIf="showValue(col)">
                             {{col.header}}
                             <p-sortIcon [field]="col" *ngIf="col?.uiStyles?.attributes?.sortable !== false"></p-sortIcon>
-                            
                         </span>
                     </th>
                 </ng-template>
@@ -53,7 +52,14 @@
                     <th *ngIf="col?.uiStyles?.attributes?.hidden == false">
                         <span *ngIf="col?.uiStyles?.attributes?.filter" [ngClass]="{overflowVisible:isDate(col.type.name)}">
                             <div class="filterHolder" *ngIf="isDate(col.type.name)">
-                                <p-calendar #text [monthNavigator]="true" [yearNavigator]="true" [(ngModel)]="filterState[colIndex]"  (onChange)="dateFilter($event, dt, col.field, col?.uiStyles?.attributes?.filterMode, col?.uiStyles?.attributes?.datePattern, col?.type?.name)"> </p-calendar>
+                                <p-calendar #text 
+                                    [monthNavigator]="true" 
+                                    [yearNavigator]="true" 
+                                    yearRange="2000:2030"
+                                    [readonlyInput]="true"
+                                    [(ngModel)]="filterState[colIndex]"  
+                                    (onSelect)="dateFilter($event, dt, col.field, col?.uiStyles?.attributes?.datePattern, col?.type?.name)"> 
+                                </p-calendar>
                                 <button (click)="clearFilter(text, dt, col.field); filterState[colIndex]=''">
                                     <i class="fa fa-times"></i>
                                 </button>
