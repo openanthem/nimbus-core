@@ -34,7 +34,7 @@ public class InnerGridLineItem {
 	
 	 @Model
 	  @Getter @Setter
-	  private static class VLInnerLinks {
+	  public static class VLInnerLinks {
 		 	@Link
 			private String innerLink1;
 	
