@@ -15,17 +15,16 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.repo;
 
-import java.beans.PropertyDescriptor;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
-import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.InvalidOperationAttemptedException;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListElemParam;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.ValueAccessor;
 import com.antheminc.oss.nimbus.support.JustLogit;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandler;
 
@@ -55,14 +54,9 @@ public class DefaultParamStateRepositoryLocal implements ParamStateRepository {
 			return coreList.size()>index && index!=-1 ? coreList.get(index) : null;
 			
 		} else {
-			PropertyDescriptor pd = param.getPropertyDescriptor();
-			
-			if (null == pd) {
-				throw new InvalidConfigException("Unable to locate property descriptor for " + param + ".");
-			}
-			
+			ValueAccessor va = param.getValueAccessor();
 			Object target = param.getParentModel().getState();
-			return javaBeanHandler.getValue(pd, target);
+			return javaBeanHandler.getValue(va, target);
 		}
 	}
 	
@@ -121,13 +115,14 @@ public class DefaultParamStateRepositoryLocal implements ParamStateRepository {
 			
 			
 		} else {
-			PropertyDescriptor pd = param.getPropertyDescriptor();
+			ValueAccessor va = param.getValueAccessor();
 			
 			//ensure that the target parent model is instantiated
 			Object target = param.getParentModel().instantiateOrGet();
-			if(target==null) throw new FrameworkRuntimeException("Target must not be null for setting in property: "+pd+" with value: "+ newState);
+			if(target==null) 
+				throw new FrameworkRuntimeException("Target must not be null for setting in property: "+va+" with value: "+ newState);
 			
-			javaBeanHandler.setValue(pd, target, newState);
+			javaBeanHandler.setValue(va, target, newState);
 			
 			//TODO change detection
 			return Action._replace;

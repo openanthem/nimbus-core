@@ -15,11 +15,9 @@
  */
 package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 
-import java.beans.PropertyDescriptor;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
@@ -38,10 +36,12 @@ import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.ValueAccessor;
 import com.antheminc.oss.nimbus.domain.model.state.InvalidStateException;
 import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
 import com.antheminc.oss.nimbus.domain.model.state.internal.ExecutionEntity;
 import com.antheminc.oss.nimbus.entity.process.ProcessFlow;
+import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandlerUtils;
 
 /**
  * @author Soham Chakravarti
@@ -100,8 +100,8 @@ public class DefaultActionExecutorNew extends AbstractFunctionCommandExecutor<Ob
 		// for /domain-root/_new - set "id" from repo 
 		if(cmdMsg.getCommand().isRootDomainOnly()) {
 			String idParamCode = p.findIfNested().getIdParam().getConfig().getCode();
-			PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(p.getConfig().getReferredClass(), idParamCode);
-			getJavaBeanHandler().setValue(pd, newState, cmdMsg.getCommand().getRootDomainElement().getRefId());
+			ValueAccessor va = JavaBeanHandlerUtils.constructValueAccessor(p.getConfig().getReferredClass(), idParamCode);
+			getJavaBeanHandler().setValue(va, newState, cmdMsg.getCommand().getRootDomainElement().getRefId());
 		}
 										
 		p.setState(newState);
