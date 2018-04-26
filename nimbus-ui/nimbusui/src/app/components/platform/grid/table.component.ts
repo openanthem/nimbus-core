@@ -189,8 +189,11 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         }
 
         if (this.element.config.uiStyles.attributes.onLoad === true) {
-            let queryString: string = this.getQueryString(0, undefined);
-            this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'GET', queryString);
+            // If table is set to lazyload, the loadDataLazy(event) method will handle the initialization
+            if (!this.element.config.uiStyles.attributes.lazyLoad) {
+                let queryString: string = this.getQueryString(0, undefined);
+                this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'GET', queryString);
+            }
         }
 
         this.rowHover = true;
@@ -601,7 +604,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     }
 
     loadDataLazy(event:any) {
-        console.log(event);
+        // console.log(event);
         // Pagination Logic
         let pageSize: number = this.element.config.uiStyles.attributes.pageSize;
         let pageIdx: number = 0;        
@@ -625,19 +628,25 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         }
 
         // Filter Logic
-        let filterCriteria: GenericDomain = new GenericDomain();
+        let filterCriteria: any[] = [];
         let filterKeys: string[] = [];
         if (event.filters) {
             filterKeys = Object.keys(event.filters);
         }
         filterKeys.forEach(key => {
-            filterCriteria.addAttribute(key, event.filters[key].value);
+            let filter: any = {};
+            filter['code'] = key;
+            filter['value'] = event.filters[key].value;
+            filterCriteria.push(filter);
         })
-
+        let payload: GenericDomain = new GenericDomain();
+        if (filterCriteria.length > 0) {
+            payload.addAttribute('filters', filterCriteria);
+        }
         // query params - &pageSize=5&page=0&sortBy=attr_String,DESC
         // request body - filterCriteria
         let queryString: string = this.getQueryString(pageIdx, sortBy);
-        this.pageSvc.processEvent(this.element.path, '$execute', filterCriteria, HttpMethod.POST.value, queryString);
+        this.pageSvc.processEvent(this.element.path, '$execute', payload, HttpMethod.POST.value, queryString);
 
     }
 
