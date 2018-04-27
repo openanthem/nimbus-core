@@ -20,7 +20,7 @@ import { Component, Input, Output, EventEmitter, ViewEncapsulation } from '@angu
 import { FormGroup } from '@angular/forms';
 import { Location } from '@angular/common';
 import { GenericDomain } from './../../../../model/generic-domain.model';
-import { Param } from '../../../../shared/Param';
+import { Param } from '../../../../shared/param-state';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { PageService } from '../../../../services/page.service';
 import { ServiceConstants } from './../../../../services/service.constants';
@@ -47,10 +47,10 @@ import { FileService } from '../../../../services/file.service';
                 <button class="btn btn-secondary" [disabled]="disabled" (click)="emitEvent(this)" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
             </ng-template>
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style=='PLAIN' && element?.visible == true">
-                <button class="btn btn-plain" [disabled]="disabled" (click)="emitEvent(this)" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
+                <button class="btn btn-plain" (click)="emitEvent(this)" [disabled]="disabled" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
             </ng-template>
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style=='DESTRUCTIVE' && element?.visible == true">
-                <button class="btn btn-delete" [disabled]="disabled" (click)="emitEvent(this)" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
+                <button class="btn btn-delete" (click)="emitEvent(this)" [disabled]="disabled" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
             </ng-template>
         </ng-template>
         <ng-template [ngIf]="element.config?.uiStyles?.attributes?.imgSrc">

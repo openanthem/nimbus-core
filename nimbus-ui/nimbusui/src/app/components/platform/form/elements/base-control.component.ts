@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 'use strict';
-import { LabelConfig } from './../../../../shared/app-config.interface';
+import { LabelConfig } from './../../../../shared/param-config';
 import { BaseControlValueAccessor } from './control-value-accessor.component';
 import { Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, NgModel } from '@angular/forms';
-import { Param } from '../../../../shared/Param';
+import { Param } from '../../../../shared/param-state';
 import { PageService } from '../../../../services/page.service';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { GenericDomain } from '../../../../model/generic-domain.model';
