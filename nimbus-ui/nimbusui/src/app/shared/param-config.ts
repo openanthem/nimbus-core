@@ -202,7 +202,12 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
     export: boolean;
     clearLabel: string;
     acceptLabel: string;
-    ignoreRowExpander: boolean;
+    rowExpander: boolean;
+    readonlyInput: boolean;
+	monthNavigator: boolean;
+	yearNavigator: boolean;
+    yearRange: string;
+    
     deserialize( inJson ) {
         let obj = this;
         obj = Converter.convert(inJson,obj);
