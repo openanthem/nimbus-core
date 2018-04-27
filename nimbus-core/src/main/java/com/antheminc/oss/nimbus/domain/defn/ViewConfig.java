@@ -858,7 +858,7 @@ public class ViewConfig {
 		boolean expandable() default true;
 		SortAs sortAs() default SortAs.DEFAULT; // number, text
 		String placeholder() default "";
-		boolean ignoreRowExpander() default true;
+		boolean rowExpander() default false;
 		
 		public enum FilterMode {
 			equals("eq"),
