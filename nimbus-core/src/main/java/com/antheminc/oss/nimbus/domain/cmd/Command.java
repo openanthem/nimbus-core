@@ -42,7 +42,7 @@ import lombok.ToString;
  * @author Soham Chakravarti
  *
  */
-@Data @ToString(of={"absoluteUri", "event", "behaviors", "clientUserId"}) 
+@Data @ToString(of={"absoluteUri", "action", "behaviors", "clientUserId"}) 
 public class Command implements Serializable {
 
 	private static final long serialVersionUID = 1L;

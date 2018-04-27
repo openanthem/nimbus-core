@@ -273,7 +273,7 @@ public class ViewConfig {
 		String alias() default "Grid";
 		String cssClass() default ""; // new
 		boolean expandableRows() default false;
-		
+		boolean lazyLoad() default false;
 		boolean onLoad() default false;
 		boolean isTransient() default false;
 		String url() default "";
@@ -651,6 +651,10 @@ public class ViewConfig {
 		boolean postEventOnChange() default false;
 		String controlId() default "";
 		String help() default "";
+		boolean readonlyInput() default false;
+		boolean monthNavigator() default false;
+		boolean yearNavigator() default false;
+		String yearRange() default "1910:2050";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
@@ -858,6 +862,7 @@ public class ViewConfig {
 		boolean expandable() default true;
 		SortAs sortAs() default SortAs.DEFAULT; // number, text
 		String placeholder() default "";
+		boolean rowExpander() default false;
 		
 		public enum FilterMode {
 			equals("eq"),
