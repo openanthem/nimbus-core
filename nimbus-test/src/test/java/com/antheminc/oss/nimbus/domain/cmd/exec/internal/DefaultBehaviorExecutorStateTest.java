@@ -61,7 +61,7 @@ public class DefaultBehaviorExecutorStateTest extends AbstractFrameworkIngeratio
 		
 		SampleCoreNestedEntity colElemState = new SampleCoreNestedEntity();
 		colElemState.setNested_attr_String("TEST_INTG_COL_ELEM_add "+ new Date());
-		String jsonPayload = converter.write(colElemState);
+		String jsonPayload = converter.toJson(colElemState);
 		
 		Object colElemAdd_Resp = controller.handlePut(colElemAdd_Req, null, jsonPayload);
 		assertNotNull(colElemAdd_Resp);

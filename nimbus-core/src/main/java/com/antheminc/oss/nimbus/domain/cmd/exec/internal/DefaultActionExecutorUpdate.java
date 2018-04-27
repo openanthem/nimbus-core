@@ -25,6 +25,7 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 
 /**
  * @author Rakesh Patel
+ * @author Tony Lopez
  *
  */
 public class DefaultActionExecutorUpdate extends AbstractCommandExecutor<Boolean> {
@@ -58,7 +59,7 @@ public class DefaultActionExecutorUpdate extends AbstractCommandExecutor<Boolean
 	}
 	
 	protected void handleParam(ExecutionContext eCtx, Param<Object> p) {
-		getConverter().readAndSet(p, eCtx.getCommandMessage().getRawPayload());
+		getConverter().update(p, eCtx.getCommandMessage().getRawPayload());
 	}
 
 }

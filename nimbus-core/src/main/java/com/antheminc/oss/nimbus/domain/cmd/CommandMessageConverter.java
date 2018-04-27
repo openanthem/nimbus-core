@@ -19,7 +19,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
@@ -33,9 +32,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 /**
  * @author Soham Chakravarti
+ * @author Tony Lopez
  *
  */
 public class CommandMessageConverter {
@@ -48,51 +49,82 @@ public class CommandMessageConverter {
 		this.om = beanResolver.get(ObjectMapper.class);
 	}
 	
-	public <T> T read(ParamConfig<?> pConfig, String json) {
-		return read(pConfig, json, null);
-	}
-	
 	/**
-	 * <p>
-	 * This method call effectively (1) iterates over the <tt>json</tt> string, (2) retrieves the 
-	 * key/value pairs, and (3) then iterates over key/value pairs again to perform the setState logic.
-	 * </p>
+	 * <p>Uses the provided <tt>json</tt> to explicitly update the state of the provided param <tt>p</tt>. 
+	 * Explicitly update means that only the values provided in the given <tt>json</tt> will be updated in 
+	 * <tt>p</tt>'s state. Other state values will be preserved.</p>
 	 * 
-	 * TODO Efficiency improvement: We should be able to avoid (3) by hooking this logic into Jackson directly.
+	 * <p>This process is as follows:</p>
+	 * 
+	 * <ul>
+	 * <li>Retrieves the key/value pairs from the provided <tt>json</tt> <i>(where key is the field name and value is the field's value)</i>
+	 * <li>Uses the keys to traverse <tt>p</tt> and set the state of each leaf param with the corresponding value</li>
+	 * </ul>
+	 * 
+	 * <p>While traversing <tt>p</tt>, support is provided for nested params of the following:</p>
+	 * 
+	 * <ol>
+	 * <li>Leaf param (primitive or literal type)</li>
+	 * <li>Complex param (object type)</li>
+	 * <li>Collection<tt>&lt;T&gt;</tt> param</li>
+	 * <ol>
+	 * <li><tt>T</tt> is a primitive or literal type</li>
+	 * <li><tt>T</tt> is an object type</li>
+	 * </ol>
+	 * </ol>
+	 * 
 	 * 
 	 * @param p the param to set
 	 * @param json the json to read
 	 */
-	public void readAndSet(Param<Object> p, String json) {
-		// exit condition: set the leaf param and return
+	// TODO Add support for collection of collections
+	public void update(Param<Object> p, String json) {
+		// exit condition 1: p is a leaf -- can't traverse any further
 		if (p.isLeaf()) {
 			Object updated = read(p.getConfig(), json);
 			p.setState(updated);
 			
-		// otherwise, p is nested -- now traverse it's nested params
+		// otherwise, p is nested -- now traverse and handle it's nested params
 		} else {
 			// iterate over the json string and essentially retrieve the key/value pairs 
-			JsonNode tree = (JsonNode) read(p.getConfig(), json, p);
+			JsonNode tree = readToJsonNode(json);
 			
-			Iterator<Entry<String, JsonNode>> iterator = tree.fields();
-			while(iterator.hasNext()) {
-				Entry<String, JsonNode> entry = iterator.next();
-				try {
-					// recursively traverse to set pNested state if it is a leaf param
-					Param<Object> pNested = p.findParamByPath(Constants.SEPARATOR_URI.code + entry.getKey()); 
-					readAndSet(pNested, om.writeValueAsString(entry.getValue()));
-					
-				} catch (Exception e) {
-					throw new FrameworkRuntimeException("Failed to convert JsonNode " + entry.getValue() + " to JSON");
+			if (!tree.isArray()) {
+				// traverse and update nested params with the provided json
+				tree.fields().forEachRemaining(entry -> {
+					Param<Object> pNested = p.findParamByPath(Constants.SEPARATOR_URI.code + entry.getKey());
+					update(pNested, toJson(entry.getValue()));
+				});
+				
+			} else {
+				
+				if (!p.isCollection()) {
+					throw new FrameworkRuntimeException("Attempted to update " + p + " as a collection, but it is not a collection. " +
+							"JSON was: " + json);
 				}
 				
+				// exit condition 2: collection param is not instantiated -- can't traverse any further so
+				// set the state to the object created from the provided json
+				if (null == p.findIfCollection().getValues() || p.findIfCollection().getValues().isEmpty()) {
+					Object collectionState = this.read(p.getConfig(),  json);
+					p.setState(collectionState);
+					return;
+				}
+				
+				// traverse and update a collection's collection elements with the provided json 
+				ArrayNode array = (ArrayNode) tree;
+				Iterator<JsonNode> iterator = array.iterator();
+				for(int index = 0; iterator.hasNext(); index++) {
+					JsonNode entry = iterator.next();
+					Param<Object> pNested = p.findParamByPath(Constants.SEPARATOR_URI.code + index);
+					update(pNested, toJson(entry));
+				}
 			}
-
 		}
 		
 	}
 	
-	private <T> T read(ParamConfig<?> pConfig, String json, Param<Object> param) {
+	public <T> T read(ParamConfig<?> pConfig, String json) {
 		if(StringUtils.isEmpty(json) || Pattern.matches(EMPTY_JSON_REGEX, json)) 
 			return null;
 		
@@ -106,24 +138,29 @@ public class CommandMessageConverter {
 				model = om.readValue(json, om.getTypeFactory().constructArrayType(pConfig.getReferredClass()));
 			
 			else {
+				model = om.readValue(json, pConfig.getReferredClass());
 				
-				if (null == param || pConfig.isLeaf()) {
-					model = om.readValue(json, pConfig.getReferredClass());
-					
-				} else {
-					// TODO instead of returning the JsonNode, iterate over the param's nested children
-					// and set the values according to the provided json.
-					ObjectReader reader = om.readerFor(new TypeReference<Map<String, JsonNode>>() {});
-					model = reader.readTree(json);
-					
-				}
 			}
 			
-			return (T)model;
+			return (T) model;
 			
 		} catch (Exception ex) {
 			throw new FrameworkRuntimeException("Failed to convert from JSON to instance of "+pConfig
 					+"\n json:\n"+json, ex);
+		}
+	}
+	
+	private JsonNode readToJsonNode(String json) {
+		if(StringUtils.isEmpty(json) || Pattern.matches(EMPTY_JSON_REGEX, json)) 
+			return null;
+		
+		try {
+			ObjectReader reader = om.readerFor(new TypeReference<Map<String, JsonNode>>() {});
+			return reader.readTree(json);
+			
+		} catch (Exception ex) {
+			throw new FrameworkRuntimeException("Failed to convert from JSON to instance of JsonNode"
+					+"\n json:\n" + json, ex);
 		}
 	}
 	
@@ -155,7 +192,7 @@ public class CommandMessageConverter {
 		}
 	}
 	
-	public String write(Object model) {
+	public String toJson(Object model) {
 		if(model==null) return null;
 		
 		try {
@@ -168,4 +205,3 @@ public class CommandMessageConverter {
 	}
 
 }
- 
