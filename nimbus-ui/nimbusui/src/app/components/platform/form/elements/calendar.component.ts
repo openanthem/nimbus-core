@@ -54,6 +54,10 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
             [timeOnly]="element.config?.uiStyles?.attributes?.timeOnly"
             [showTime]="element.config?.uiStyles?.attributes?.showTime" 
             [hourFormat]="element.config?.uiStyles?.attributes?.hourFormat" 
+            [monthNavigator]="element.config?.uiStyles?.attributes?.monthNavigator"
+            [yearNavigator]="element.config?.uiStyles?.attributes?.yearNavigator"
+            [readonlyInput]="element.config?.uiStyles?.attributes?.readonlyInput"
+            [yearRange]="element.config?.uiStyles?.attributes?.yearRange"
             [disabled]="disabled">
         </p-calendar>
    `

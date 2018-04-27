@@ -651,6 +651,10 @@ public class ViewConfig {
 		boolean postEventOnChange() default false;
 		String controlId() default "";
 		String help() default "";
+		boolean readonlyInput() default false;
+		boolean monthNavigator() default false;
+		boolean yearNavigator() default false;
+		String yearRange() default "1910:2050";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
