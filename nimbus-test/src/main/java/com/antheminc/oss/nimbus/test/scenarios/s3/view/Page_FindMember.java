@@ -25,11 +25,11 @@ import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Button;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.ComboBox;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Hints;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Hints.AlignOptions;
-import com.antheminc.oss.nimbus.test.scenarios.s3.core.Member;
-import com.antheminc.oss.nimbus.test.scenarios.s3.core.SimpleCase;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.InputDate;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Section;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.TextBox;
+import com.antheminc.oss.nimbus.test.scenarios.s3.core.Member;
+import com.antheminc.oss.nimbus.test.scenarios.s3.core.SimpleCase;
 
 import lombok.Getter;
 import lombok.Setter;
