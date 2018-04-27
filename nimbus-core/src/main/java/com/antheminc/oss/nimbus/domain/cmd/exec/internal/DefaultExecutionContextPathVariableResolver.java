@@ -2,7 +2,6 @@ package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -23,7 +22,7 @@ import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig.MappedParamConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
-import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.FilterCriteria;
+import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.PageFilter;
 import com.antheminc.oss.nimbus.support.JustLogit;
 
 /**
@@ -100,9 +99,11 @@ public class DefaultExecutionContextPathVariableResolver implements ExecutionCon
 		
 		StringBuilder url = new StringBuilder();
 		
-		url.append(Constants.SEARCH_REQ_PAGINATION_SIZE.code).append(Constants.PARAM_ASSIGNMENT_MARKER.code).append(pageSize)
-				.append(Constants.REQUEST_PARAMETER_DELIMITER.code).append(Constants.SEARCH_REQ_PAGINATION_PAGE_NUM.code)
-				.append(Constants.PARAM_ASSIGNMENT_MARKER.code).append(page);
+		if(StringUtils.isNotBlank(pageSize) && StringUtils.isNotBlank(page) ) {
+			url.append(Constants.SEARCH_REQ_PAGINATION_SIZE.code).append(Constants.PARAM_ASSIGNMENT_MARKER.code).append(pageSize)
+					.append(Constants.REQUEST_PARAMETER_DELIMITER.code).append(Constants.SEARCH_REQ_PAGINATION_PAGE_NUM.code)
+					.append(Constants.PARAM_ASSIGNMENT_MARKER.code).append(page);
+		}
 		
 		if(sortBy != null && sortBy.length > 0) {
 			Stream.of(sortBy)
@@ -146,11 +147,10 @@ public class DefaultExecutionContextPathVariableResolver implements ExecutionCon
 		return paramPath;
 	}
 
-	@SuppressWarnings("unchecked")
 	private String mapFilterCriteria(ExecutionContext eCtx, Param<?> param) {
-		final List<FilterCriteria> filters;
+		final PageFilter pageFilter;
 		try {
-			filters = converter.readArray(FilterCriteria.class, List.class, eCtx.getCommandMessage().getRawPayload());
+			pageFilter = converter.read(PageFilter.class, eCtx.getCommandMessage().getRawPayload());
 		}
 		catch (FrameworkRuntimeException e) {
 			logit.error(() -> "Could not convert the rawPayload " + eCtx.getCommandMessage().getRawPayload()
@@ -160,7 +160,7 @@ public class DefaultExecutionContextPathVariableResolver implements ExecutionCon
 			return null;
 		}
 		
-		if(CollectionUtils.isEmpty(filters))
+		if(pageFilter == null || CollectionUtils.isEmpty(pageFilter.getFilters()))
 			return null;
 		
 		StringBuilder builder = new StringBuilder();
@@ -181,7 +181,7 @@ public class DefaultExecutionContextPathVariableResolver implements ExecutionCon
 					: modelConfig.getAlias();
 		}
 		
-		filters.forEach(f -> {
+		pageFilter.getFilters().forEach(f -> {
 
 			String paramPath = findMappedParamPath(f.getCode(), param);
 //			String paramPath = f.getCode();
