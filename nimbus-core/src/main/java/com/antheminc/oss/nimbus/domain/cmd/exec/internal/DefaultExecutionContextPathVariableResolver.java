@@ -99,9 +99,11 @@ public class DefaultExecutionContextPathVariableResolver implements ExecutionCon
 		
 		StringBuilder url = new StringBuilder();
 		
-		url.append(Constants.SEARCH_REQ_PAGINATION_SIZE.code).append(Constants.PARAM_ASSIGNMENT_MARKER.code).append(pageSize)
-				.append(Constants.REQUEST_PARAMETER_DELIMITER.code).append(Constants.SEARCH_REQ_PAGINATION_PAGE_NUM.code)
-				.append(Constants.PARAM_ASSIGNMENT_MARKER.code).append(page);
+		if(StringUtils.isNotBlank(pageSize) && StringUtils.isNotBlank(page) ) {
+			url.append(Constants.SEARCH_REQ_PAGINATION_SIZE.code).append(Constants.PARAM_ASSIGNMENT_MARKER.code).append(pageSize)
+					.append(Constants.REQUEST_PARAMETER_DELIMITER.code).append(Constants.SEARCH_REQ_PAGINATION_PAGE_NUM.code)
+					.append(Constants.PARAM_ASSIGNMENT_MARKER.code).append(page);
+		}
 		
 		if(sortBy != null && sortBy.length > 0) {
 			Stream.of(sortBy)
