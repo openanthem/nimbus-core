@@ -32,12 +32,14 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.antheminc.oss.nimbus.domain.AbstractFrameworkIngerationPersistableTests;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.session.SessionProvider;
 import com.antheminc.oss.nimbus.entity.client.access.ClientAccessEntity;
@@ -139,69 +141,6 @@ public class AccessConditionalStateEventHandlerHttpTest extends AbstractFramewor
 		
 	}
 	
-	// Rakesh :TODO: - more test cases to capture different scenarios of page/filter
-	@Test
-	public void t05_accessConditionalGridPagination() throws Exception {
-		String userLoginId = createClientUserWithRoles("superman","intake","clinician");
-		
-		SampleCoreEntityAccess scea = new SampleCoreEntityAccess();
-		scea.setId(1L);
-		scea.setAttr_String("test1_string1");
-		scea.setAttr_String2("test2_string2");
-		scea.setAttr_LocalDate1(LocalDate.now());
-		
-		SampleCoreNestedEntity nestedEntity = new SampleCoreNestedEntity();
-		nestedEntity.setNested_attr_String("nested_test1");
-		scea.setAccessConditional_Contains_Hidden1(nestedEntity);
-		
-		SampleCoreEntityAccess scea2 = new SampleCoreEntityAccess();
-		scea2.setId(2L);
-		scea2.setAttr_String("test2_string1");
-		scea2.setAttr_String2("test2_string2");
-		
-		mongo.save(scea, "sample_core_access");
-		mongo.save(scea2, "sample_core_access");
-		
-		
-		Param<?> p = excuteNewConfigView(userLoginId);
-		assertNotNull(p);
-		
-		Long refId = p.findStateByPath("/.m/id");
-		
-		final MockHttpServletRequest gridRequest = MockHttpRequestBuilder
-				.withUri(VIEW_PARAM_ACCESS_ROOT)
-				.addRefId(refId)
-				.addNested("/vpSampleCoreEntityAccess/vtSampleCoreEntityAccess/vsSamplePageCoreEntityAccess/vgSamplePageCoreEntities")
-				//.addParam("pageCriteria", "pageSize=5&page=0&sortBy=attr_String,DESC")
-				.addAction(Action._get)
-				.getMock();
-		final Object gridResponse = controller.handlePost(gridRequest, "[{\"code\":\"attr_String2\", \"value\":\"test2_string2\"},{\"code\":\"nested_attr_String\", \"value\":\"nested\"},{\"code\":\"attr_LocalDate1\",\"value\":\""+LocalDate.now()+"T00:00:00.000Z\"}]");
-		//final Object gridResponse = controller.handlePost(gridRequest, null);
-		assertNotNull(gridResponse);
-		
-		List<Output<?>> outputs = MultiOutput.class.cast(Holder.class.cast(gridResponse).getState()).getOutputs();
-		
-		assertNotNull(outputs);
-		
-		for(Output<?> op: outputs) {
-			if(op.getValue() instanceof Param<?>) {
-				Param<?> param = (Param<?>)op.getValue();
-				
-				Param<?> attrStringParam = param.findParamByPath("/0/attr_String"); // READ
-				assertNotNull(attrStringParam);
-				assertTrue(attrStringParam.isVisible());
-				assertFalse(attrStringParam.isEnabled());
-				
-				Param<?> viewLinkParam = param.findParamByPath("/0/viewLink"); // HIDDEN
-				assertNotNull(viewLinkParam);
-				assertFalse(viewLinkParam.isVisible());
-				assertFalse(viewLinkParam.isEnabled());
-				
-			}
-		}
-		
-	}
-
 	@SuppressWarnings("unchecked")
 	private Param<?> excuteNewConfigCore(String userLoginId) {
 		final MockHttpServletRequest fetchUser = MockHttpRequestBuilder.withUri(USER_PARAM_ROOT)

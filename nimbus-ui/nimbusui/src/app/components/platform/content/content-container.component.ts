@@ -17,7 +17,7 @@
 'use strict';
 
 import { Component, Input, Output, EventEmitter} from '@angular/core';
-import { Param } from '../../../shared/Param';
+import { Param } from '../../../shared/param-state';
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 

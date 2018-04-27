@@ -31,6 +31,7 @@ import com.antheminc.oss.nimbus.domain.model.state.extension.ConfigConditionalSt
 import com.antheminc.oss.nimbus.domain.model.state.extension.DobToAgeConverter;
 import com.antheminc.oss.nimbus.domain.model.state.extension.EnableConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ExpressionConditionalStateEventHandler;
+import com.antheminc.oss.nimbus.domain.model.state.extension.MessageConditionalHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ModalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ParamContextStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.RuleStateEventHandler;
@@ -40,7 +41,6 @@ import com.antheminc.oss.nimbus.domain.model.state.extension.ValidateConditional
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValuesConditionalOnStateChangeEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValuesConditionalOnStateLoadEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.VisibleConditionalStateEventHandler;
-import com.antheminc.oss.nimbus.domain.model.state.extension.MessageConditionalHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional.SiblingNestedValidationAssignmentStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional.SiblingValidationAssignmentStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.internal.IdParamConverter;

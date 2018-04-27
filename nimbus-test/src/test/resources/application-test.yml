@@ -131,4 +131,7 @@ test:
     code: test-environment
     link: https://hooli/thebox/someLink
     image: https://hooli/thebox/someImage
-    initialize: some-alias      
+    initialize: some-alias
+search:
+  threshold:
+    1     

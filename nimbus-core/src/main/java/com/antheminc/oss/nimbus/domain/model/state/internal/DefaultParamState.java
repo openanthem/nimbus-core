@@ -16,7 +16,6 @@
 package com.antheminc.oss.nimbus.domain.model.state.internal;
 
 
-import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -28,7 +27,6 @@ import java.util.function.Supplier;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.util.ClassUtils;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
@@ -54,6 +52,7 @@ import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnSt
 import com.antheminc.oss.nimbus.domain.model.state.support.DefaultJsonParamSerializer;
 import com.antheminc.oss.nimbus.entity.Findable;
 import com.antheminc.oss.nimbus.support.Holder;
+import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandlerUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -112,7 +111,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	
 	@JsonIgnore 
-	final private PropertyDescriptor propertyDescriptor;
+	final ValueAccessor valueAccessor;
 
 	@JsonIgnore
 	private T transientOldState;
@@ -142,8 +141,20 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		if(!isRoot()) Objects.requireNonNull(parentModel, "Parent model must not be null with code: "+getConfig().getCode());
 		this.parentModel = parentModel;
 		
-		PropertyDescriptor pd = constructPropertyDescriptor();
-		this.propertyDescriptor = pd;
+		this.valueAccessor = constructValueAccessor();
+	}
+	
+	
+	protected ValueAccessor constructValueAccessor() {
+		if(getParentModel()==null) 
+			return null;
+		
+		ValueAccessor vaConfig = getConfig().getType().getValueAccessor();
+		if(vaConfig!=null) 
+			return vaConfig;
+		
+		ModelConfig<?> mConfig = getParentModel().getConfig();
+		return JavaBeanHandlerUtils.constructValueAccessor(mConfig.getReferredClass(), getConfig().getBeanName());
 	}
 	
 	
@@ -205,15 +216,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	public ParamConfig<T> getConfig() {
 		return (ParamConfig<T>)super.getConfig();
 	}
-	
-	protected PropertyDescriptor constructPropertyDescriptor() {
-		if(getParentModel()==null) return null;
-		
-		ModelConfig<?> mConfig = getParentModel().getConfig();
-		
-		PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(mConfig.getReferredClass(), getConfig().getBeanName());
-		return pd;
-	}
+
 
 	@Override
 	public void fireRules() {
@@ -242,30 +245,34 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		if(!isMapped())
 			return getState();
 		
-		if(!isNested())
-			return getState();
+		return getMappedState(this);
+	}
+	
+	final static protected <T> T getMappedState(Param<T> p) {
+		if(!p.isNested())
+			return p.getState();
 		
 		// create new entity instance
-		T entity = getAspectHandlers().getParamStateGateway().instantiate(this.getConfig().getReferredClass());
+		T entity = p.getAspectHandlers().getParamStateGateway().instantiate(p.getConfig().getReferredClass());
 		
 		// assign param values to entity instance attributes
-		if(findIfNested()==null)
+		if(p.findIfNested()==null)
 			return entity;
 		
-		if(findIfNested().templateParams().isNullOrEmpty())
+		if(p.findIfNested().templateParams().isNullOrEmpty())
 			return entity;
 		
-		if(isCollection()) {
+		if(p.isCollection()) {
 			List<Object> colEntity = (List<Object>)entity;
-			for(Param<?> pColElem : findIfNested().getParams()) {
-				Object colElemState = pColElem.getLeafState();
+			for(Param<?> pColElem : p.findIfNested().getParams()) {
+				Object colElemState = getMappedState(pColElem);//pColElem.getLeafState();
 				colEntity.add(colElemState);
 			}
 		} else { // nested
-			for(Param<?> pNestedParam : findIfNested().getParams()) {
-				Object nestedParamLeafState = pNestedParam.getLeafState();
+			for(Param<?> pNestedParam : p.findIfNested().getParams()) {
+				Object nestedParamLeafState = getMappedState(pNestedParam);//pNestedParam.getLeafState();
 				if(nestedParamLeafState!=null)
-					getAspectHandlers().getParamStateGateway().setValue(pNestedParam.getPropertyDescriptor().getWriteMethod(), entity, nestedParamLeafState);
+					p.getAspectHandlers().getParamStateGateway().setValue(pNestedParam.getValueAccessor(), entity, nestedParamLeafState);
 			}
 		}
 		

@@ -26,10 +26,10 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
  * @author Soham Chakravarti
  *
  */
-public class DefaultActionBehaviorExecutorGetState extends AbstractCommandExecutor<Object> {
+public class DefaultBehaviorExecutorState extends AbstractCommandExecutor<Object> {
 
 
-	public DefaultActionBehaviorExecutorGetState(BeanResolverStrategy beanResolver) {
+	public DefaultBehaviorExecutorState(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
 	}
 	

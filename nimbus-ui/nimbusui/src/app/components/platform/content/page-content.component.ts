@@ -18,7 +18,7 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { ExecuteException } from '../../../shared/app-config.interface';
-import { Param } from '../../../shared/Param';
+import { Param } from '../../../shared/param-state';
 import { BaseElement } from '../base-element.component';
 import { WebContentSvc } from './../../../services/content-management.service';
 import { PageService } from '../../../services/page.service';

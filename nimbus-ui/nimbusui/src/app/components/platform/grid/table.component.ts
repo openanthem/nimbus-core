@@ -34,13 +34,15 @@ import { WebContentSvc } from '../../../services/content-management.service';
 import { DateTimeFormatPipe } from '../../../pipes/date.pipe';
 import { BaseElement } from './../base-element.component';
 import { GenericDomain } from '../../../model/generic-domain.model';
-import { ParamConfig } from '../../../shared/app-config.interface';
+import { ParamConfig } from '../../../shared/param-config';
 import { PageService } from '../../../services/page.service';
 import { GridService } from '../../../services/grid.service';
 import { ServiceConstants } from './../../../services/service.constants';
 import { SortAs, GridColumnDataType } from './sortas.interface';
 import { ActionDropdown } from './../form/elements/action-dropdown.component';
-import { Param } from '../../../shared/Param';
+import { Param } from '../../../shared/param-state';
+import { HttpMethod } from './../../../shared/command.enum';
+import { ViewComponent } from '../../../shared/param-annotations.enum';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     provide: NG_VALUE_ACCESSOR,
@@ -67,11 +69,11 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     @Input() params: ParamConfig[];
     @Input() form: FormGroup;
     @Input('value') _value = [];
-    paramState: Param[];
     filterValue: Date;
     totalRecords: number = 0;
     mouseEventSubscription: Subscription;
     filterState: any[] = [];
+    columnsToShow: number = 0;
 
     @ViewChild('dt') dt: Table;
     @ViewChild('op') overlayPanel: OverlayPanel;
@@ -81,9 +83,11 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     rowHover: boolean;
     selectedRows: any[];
     showFilters: boolean = false;
+    hasFilters: boolean = false;
+    filterTimeout: any;
     rowStart = 0;
     rowEnd = 0;
-
+    rowExpanderKey = '';
     public onChange: any = (_) => { /*Empty*/ }
     public onTouched: any = () => { /*Empty*/ }
 
@@ -126,21 +130,31 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
 
     ngOnInit() {
         super.ngOnInit();
-
+        // non-hidden columns
+        this.columnsToShow = 0;
         // Set the column headers
         if (this.params) {
-            this.params.forEach(element => {
-                element.label = this._wcs.findLabelContentFromConfig(element.code, element.labelConfigs).text;
+            this.params.forEach(column => {
+                column.label = this._wcs.findLabelContentFromConfig(column.code, column.labelConfigs).text;
                 // Set field and header attributes. TurboTable expects these specific variables.
-                element['field'] = element.code;
-                element['header'] = element.label;
-                if (element.uiStyles.attributes.hidden) {
-                    element['exportable'] = false;
-                } else {
-                    if (element.uiStyles.attributes.alias == 'LinkMenu' || element.type.nested == true) {
-                        element['exportable'] = false;
+                column['field'] = column.code;
+                column['header'] = column.label;
+                if(column.uiStyles) {
+                    if (column.uiStyles.attributes.filter) {
+                        this.hasFilters = true;
+                    }
+                    if (column.uiStyles.attributes.hidden) {
+                        column['exportable'] = false;
                     } else {
-                        element['exportable'] = true;
+                        this.columnsToShow ++;
+                        if (column.uiStyles.attributes.alias == 'LinkMenu' || column.type.nested == true) {
+                            column['exportable'] = false;
+                        } else {
+                            column['exportable'] = true;
+                        }
+                    }
+                    if (column.uiStyles.attributes.rowExpander) {
+                        this.rowExpanderKey = column.code;
                     }
                 }
             });
@@ -159,7 +173,6 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
             this.dt.filterConstraints = customFilterConstraints;
         }
 
-        this.paramState = this.element.paramState;
     }
 
     ngAfterViewInit() {
@@ -177,7 +190,11 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         }
 
         if (this.element.config.uiStyles.attributes.onLoad === true) {
-            this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'GET');
+            // If table is set to lazyload, the loadDataLazy(event) method will handle the initialization
+            if (!this.element.config.uiStyles.attributes.lazyLoad) {
+                let queryString: string = this.getQueryString(0, undefined);
+                this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'GET', queryString);
+            }
         }
 
         this.rowHover = true;
@@ -188,9 +205,20 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         this.pageSvc.gridValueUpdate$.subscribe(event => {
             if (event.path == this.element.path) {
                 this.value = event.gridList;
-                this.paramState = event.paramState;
-                this.totalRecords = this.value ? this.value.length : 0;
-                this.updatePageDetailsState();
+                let gridListSize = this.value ? this.value.length : 0;
+                // Check for Server Pagination Vs Client Pagination
+                if (this.element.config.uiStyles.attributes.lazyLoad) {
+                    // Server Pagination
+                    this.totalRecords = event.page.totalElements;
+                    if (event.page.first) {
+                        this.updatePageDetailsState();
+                    }
+                } else {
+                    // Client Pagination
+                    this.totalRecords = this.value ? this.value.length : 0;
+                    this.updatePageDetailsState();
+                }
+
                 this.cd.markForCheck();
                 this.resetMultiSelection();
             }
@@ -208,6 +236,15 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
             });
         }
 
+    }
+    isRowExpanderHidden(rowData: any): boolean {
+        if(this.rowExpanderKey == '')
+            return true;
+        let val = rowData[this.rowExpanderKey];
+        if(val)
+            return true;
+        else
+            return false;
     }
 
     getCellDisplayValue(rowData: any, col: ParamConfig) {
@@ -257,6 +294,10 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     isActive(index) {
         if (this.filterState[index] != '' && this.filterState[index] != undefined) return true;
         else return false;
+    }
+
+    getLinkMenuParam(col, rowIndex): Param {
+        return this.element.collectionParams.find(ele => ele.path == this.element.path + '/'+rowIndex+'/' + col.code && ele.alias == ViewComponent.linkMenu.toString());
     }
 
     getRowPath(col: ParamConfig, item: any) {
@@ -322,8 +363,8 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     handleRowChange(val) {
     }
 
-    getAddtionalData(event: any) {
-        event.data['nestedElement'] = this.element.collectionParams.find(ele => ele.path == this.element.path + '/' + event.data.elemId + '/' + ele.config.code);
+    getAddtionalData(event: any) { 
+        event.data['nestedElement'] = this.element.collectionParams.find(ele => ele.path == this.element.path + '/' + event.data.elemId + '/' + ele.config.code && ele.alias == ViewComponent.gridRowBody.toString()); 
     }
 
     resetMultiSelection() {
@@ -365,7 +406,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
                 return value1.localeCompare(value2) * event.order;
             });
         }
-        this.value = [...this.value];
+        //this.value = [...this.value];
     }
 
     protected sortInternal(itemCallback: Function, event: any): Array<any> {
@@ -417,49 +458,42 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         // return (value >= filter[0] && value<=filter[1])
     }
 
-    dateFilter(e: any, dt: Table, field: string, filterMatchMode: string, datePattern?: string, dateType?: string) {
+    dateFilter(e: any, dt: Table, field: string, datePattern?: string, dateType?: string) {
 
         if (dateType == 'LocalDate' || dateType == 'date' || dateType == 'Date') {
-
             datePattern = (!datePattern || datePattern == "") ? "MM/DD/YYYY" : datePattern;
 
-            if (e.target.value.length == '0') {
-                dt.filter(e.target.value, field, "startsWith");
+            if (e.toLocaleDateString().length == '0') {
+                dt.filter(e.toLocaleDateString(), field, "startsWith");
+            } else {
+                if (moment(e.toLocaleDateString(), datePattern.toUpperCase(), false).isValid()) {
+                    dt.filter(moment(e.toLocaleDateString(), datePattern.toUpperCase()).toDate(), field, "between");
+                }
             }
-            else {
-                // let filter: any[] = [];
+        } else if (dateType == 'LocalDateTime' || dateType == 'ZonedDateTime') {
 
-                if (moment(e.target.value, datePattern.toUpperCase(), true).isValid()) {
-                    // let formatedDate = moment(e.target.value, datePattern.toUpperCase()).format('MM/DD/YYYY');
-                    //    var localStartDate= moment.utc(e.target.value, datePattern.toUpperCase()).toDate();
-                    //    var localEndDate=moment.utc(e.target.value,  datePattern.toUpperCase()).endOf('day').toDate();
-                    //    filter[0]=localStartDate; filter[1]=localEndDate;
-                    //    dt.filter(filter, field, "between");
-                    dt.filter(moment(e.target.value, datePattern.toUpperCase()).toDate(), field, "between");
+            if (e.toLocaleDateString().length == '0') {
+                dt.filter(e.toLocaleDateString(), field, "startsWith");
+            } else {
+                if (moment(e.toLocaleDateString(), "MM/DD/YYYY", true).isValid()) {
+                    dt.filter(moment(e.toLocaleDateString(), "MM/DD/YYYY").toDate(), field, "between");
                 }
             }
         }
 
-        else if (dateType == 'LocalDateTime' || dateType == 'ZonedDateTime') {
-
-            if (e.target.value.length == '0') {
-                dt.filter(e.target.value, field, "startsWith");
-            }
-            else {
-
-                if (moment(e.target.value, "MM/DD/YYYY", true).isValid()) {
-
-                    dt.filter(moment(e.target.value, "MM/DD/YYYY").toDate(), field, "between");
-                }
-            }
-        }
-
-        this.totalRecords = dt.filteredValue.length;
+        // this.totalRecords = dt.filteredValue.length;
         this.updatePageDetailsState();
     }
 
     inputFilter(e: any, dt: Table, field: string, filterMatchMode: string) {
-        dt.filter(e.target.value, field, filterMatchMode);
+        // Wait for 500 ms before triggering the filter. This is to give time for the user to enter the criteria 
+        if (this.filterTimeout) {
+            clearTimeout(this.filterTimeout);
+        }
+
+        this.filterTimeout = setTimeout(() => {
+            dt.filter(e.target.value, field, filterMatchMode);
+        }, 500);
     }
 
     clearFilter(txt: any, dt: Table, field: string, index) {
@@ -473,12 +507,13 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     }
 
     paginate(e: any) {
-        if (this.totalRecords != 0) {
-            this.rowEnd = ((this.totalRecords / (e.first + (+e.rows)) >= 1) ? (e.first + (+e.rows)) : e.first + (this.totalRecords - e.first));
-            this.rowStart = e.first + 1;
-        }
-        else {
-            this.rowStart = 0; this.rowEnd = 0;
+        let first: number = parseInt(e.first);
+        let rows: number = parseInt(e.rows);
+        this.rowStart = first + 1;
+        if (first + rows < this.totalRecords) {
+            this.rowEnd = first + rows;
+        } else  {
+            this.rowEnd = this.totalRecords;
         }
     }
 
@@ -560,5 +595,64 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         if (this.mouseEventSubscription)
             this.mouseEventSubscription.unsubscribe();
         this.cd.detach();
+    }
+
+    loadDataLazy(event:any) {
+        // console.log(event);
+        // Pagination Logic
+        let pageSize: number = this.element.config.uiStyles.attributes.pageSize;
+        let pageIdx: number = 0;        
+        let first: number = event.first;
+        if (first != 0 ) {
+            pageIdx = first/pageSize;
+        } else {
+            pageIdx = 0;
+        }
+
+        // Sort Logic
+        let sortBy: string = undefined;
+        if (event.sortField) {
+            let order: number = event.sortOrder;
+            let sortField: string = event.sortField.code;
+            let sortOrder: string = 'ASC';
+            if (order != 1) {
+                sortOrder = 'DESC';
+            }
+            sortBy = sortField + ',' + sortOrder;    
+        }
+
+        // Filter Logic
+        let filterCriteria: any[] = [];
+        let filterKeys: string[] = [];
+        if (event.filters) {
+            filterKeys = Object.keys(event.filters);
+        }
+        filterKeys.forEach(key => {
+            let filter: any = {};
+            filter['code'] = key;
+            filter['value'] = event.filters[key].value;
+            filterCriteria.push(filter);
+        })
+        let payload: GenericDomain = new GenericDomain();
+        if (filterCriteria.length > 0) {
+            payload.addAttribute('filters', filterCriteria);
+        }
+        // query params - &pageSize=5&page=0&sortBy=attr_String,DESC
+        // request body - filterCriteria
+        let queryString: string = this.getQueryString(pageIdx, sortBy);
+        this.pageSvc.processEvent(this.element.path, '$execute', payload, HttpMethod.POST.value, queryString);
+
+    }
+
+    getQueryString(pageIdx: number, sortBy: string): string {
+        let queryString: string = '';
+        let pageSize: number = this.element.config.uiStyles.attributes.pageSize;
+        if (sortBy) {
+            queryString = queryString + '&sortBy=' + sortBy;
+        }
+        if (pageIdx !== undefined) {
+            queryString = queryString + '&pageSize=' + pageSize + '&page=' + pageIdx;
+        }
+        return queryString;
     }
 }

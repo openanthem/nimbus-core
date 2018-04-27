@@ -36,7 +36,6 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextLoader;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ExecutionModel;
 import com.antheminc.oss.nimbus.domain.model.state.internal.BaseStateEventListener;
 import com.antheminc.oss.nimbus.entity.AbstractEntity.IdLong;
-import com.antheminc.oss.nimbus.entity.AbstractEntity.IdString;
 import com.antheminc.oss.nimbus.test.FrameworkIntegrationTestScenariosApplication;
 
 /**
