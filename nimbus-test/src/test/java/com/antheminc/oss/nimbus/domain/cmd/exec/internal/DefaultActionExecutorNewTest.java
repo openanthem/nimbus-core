@@ -24,8 +24,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 import org.hamcrest.core.IsNull;
@@ -42,9 +40,8 @@ import com.antheminc.oss.nimbus.domain.AbstractFrameworkIngerationPersistableTes
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
-import com.antheminc.oss.nimbus.domain.model.state.EntityState;
-import com.antheminc.oss.nimbus.domain.model.state.StateType;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.StateType;
 import com.antheminc.oss.nimbus.domain.model.state.internal.MappedDefaultModelState;
 import com.antheminc.oss.nimbus.domain.model.state.internal.MappedDefaultParamState.MappedLeafState;
 import com.antheminc.oss.nimbus.domain.model.state.internal.MappedDefaultTransientParamState;
@@ -52,7 +49,6 @@ import com.antheminc.oss.nimbus.support.Holder;
 import com.antheminc.oss.nimbus.test.domain.support.utils.ExtractResponseOutputUtils;
 import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
-import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreNestedEntity;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleEntity;
  
  
