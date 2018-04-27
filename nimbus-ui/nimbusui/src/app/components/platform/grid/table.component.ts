@@ -84,6 +84,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     selectedRows: any[];
     showFilters: boolean = false;
     hasFilters: boolean = false;
+    filterTimeout: any;
     rowStart = 0;
     rowEnd = 0;
     rowExpanderKey = '';
@@ -457,49 +458,42 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         // return (value >= filter[0] && value<=filter[1])
     }
 
-    dateFilter(e: any, dt: Table, field: string, filterMatchMode: string, datePattern?: string, dateType?: string) {
+    dateFilter(e: any, dt: Table, field: string, datePattern?: string, dateType?: string) {
 
         if (dateType == 'LocalDate' || dateType == 'date' || dateType == 'Date') {
-
             datePattern = (!datePattern || datePattern == "") ? "MM/DD/YYYY" : datePattern;
 
-            if (e.target.value.length == '0') {
-                dt.filter(e.target.value, field, "startsWith");
+            if (e.toLocaleDateString().length == '0') {
+                dt.filter(e.toLocaleDateString(), field, "startsWith");
+            } else {
+                if (moment(e.toLocaleDateString(), datePattern.toUpperCase(), false).isValid()) {
+                    dt.filter(moment(e.toLocaleDateString(), datePattern.toUpperCase()).toDate(), field, "between");
+                }
             }
-            else {
-                // let filter: any[] = [];
+        } else if (dateType == 'LocalDateTime' || dateType == 'ZonedDateTime') {
 
-                if (moment(e.target.value, datePattern.toUpperCase(), true).isValid()) {
-                    // let formatedDate = moment(e.target.value, datePattern.toUpperCase()).format('MM/DD/YYYY');
-                    //    var localStartDate= moment.utc(e.target.value, datePattern.toUpperCase()).toDate();
-                    //    var localEndDate=moment.utc(e.target.value,  datePattern.toUpperCase()).endOf('day').toDate();
-                    //    filter[0]=localStartDate; filter[1]=localEndDate;
-                    //    dt.filter(filter, field, "between");
-                    dt.filter(moment(e.target.value, datePattern.toUpperCase()).toDate(), field, "between");
+            if (e.toLocaleDateString().length == '0') {
+                dt.filter(e.toLocaleDateString(), field, "startsWith");
+            } else {
+                if (moment(e.toLocaleDateString(), "MM/DD/YYYY", true).isValid()) {
+                    dt.filter(moment(e.toLocaleDateString(), "MM/DD/YYYY").toDate(), field, "between");
                 }
             }
         }
 
-        else if (dateType == 'LocalDateTime' || dateType == 'ZonedDateTime') {
-
-            if (e.target.value.length == '0') {
-                dt.filter(e.target.value, field, "startsWith");
-            }
-            else {
-
-                if (moment(e.target.value, "MM/DD/YYYY", true).isValid()) {
-
-                    dt.filter(moment(e.target.value, "MM/DD/YYYY").toDate(), field, "between");
-                }
-            }
-        }
-
-        this.totalRecords = dt.filteredValue.length;
+        // this.totalRecords = dt.filteredValue.length;
         this.updatePageDetailsState();
     }
 
     inputFilter(e: any, dt: Table, field: string, filterMatchMode: string) {
-        dt.filter(e.target.value, field, filterMatchMode);
+        // Wait for 500 ms before triggering the filter. This is to give time for the user to enter the criteria 
+        if (this.filterTimeout) {
+            clearTimeout(this.filterTimeout);
+        }
+
+        this.filterTimeout = setTimeout(() => {
+            dt.filter(e.target.value, field, filterMatchMode);
+        }, 500);
     }
 
     clearFilter(txt: any, dt: Table, field: string, index) {
