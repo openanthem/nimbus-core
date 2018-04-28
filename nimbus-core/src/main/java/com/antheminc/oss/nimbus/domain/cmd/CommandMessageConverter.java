@@ -29,7 +29,6 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
 
 /**
  * @author Soham Chakravarti
@@ -46,87 +45,140 @@ public class CommandMessageConverter {
 		this.om = beanResolver.get(ObjectMapper.class);
 	}
 	
-	public <T> T toReferredType(Param<?> param, String json) {
-		return toReferredType(param.getConfig(), json);
-	}
-	
-	public <T> T toReferredType(ParamConfig<?> pConfig, String json) {
+	/**
+	 * <p>Given a JSON string that is of JSONArray string format, this method attempts 
+	 * to convert it into a collection implementation of <tt>collectionClazz</tt> containing 
+	 * <tt>elemClazz</tt> typed elements.</p>
+	 * 
+	 * @param elemClazz the expected element type of the converted collection's elements
+	 * @param collectionClazz the expected collection implementation to convert to
+	 * @param json the JSON string to convert
+	 * @return the converted collection of elements
+	 * @throws FrameworkRuntimeException if any failure is encountered during the conversion
+	 */
+	public <S extends Collection<T>, T> S toCollectionFromArray(Class<T> elemClazz, Class<S> collectionClazz, String json) {
 		if(StringUtils.isEmpty(json) || Pattern.matches(EMPTY_JSON_REGEX, json)) 
 			return null;
 		
 		try {
-			final Object model;
-											
-			if(pConfig.getType().isCollection())
-				model = om.readValue(json, om.getTypeFactory().constructCollectionType(List.class, pConfig.getType().findIfCollection().getElementConfig().getReferredClass()));
-			
-			else if(pConfig.getType().isArray())
-				model = om.readValue(json, om.getTypeFactory().constructArrayType(pConfig.getReferredClass()));
-			
-			else {
-				model = om.readValue(json, pConfig.getReferredClass());
-				
-			}
-			
-			return (T) model;
+			return om.readValue(json, om.getTypeFactory().constructCollectionType(collectionClazz, elemClazz));
 			
 		} catch (Exception ex) {
-			throw new FrameworkRuntimeException("Failed to convert from JSON to instance of "+pConfig
+			throw new FrameworkRuntimeException("Failed to convert from JSON Array to instance of "+elemClazz+" collection "+collectionClazz 
 					+"\n json:\n"+json, ex);
 		}
 	}
 	
+	/**
+	 * <p>Given any object <tt>model</tt>, this method attempts to convert that object into 
+	 * it's JSON string representation.</p>
+	 * 
+	 * @param model the object to convert
+	 * @return the converted JSON string
+	 * @throws FrameworkRuntimeException if any failure is encountered during the conversion
+	 */
+	public String toJson(Object model) {
+		if(model==null) 
+			return null;
+		
+		try {
+			return om.writeValueAsString(model);
+		} catch (Exception ex) {
+			throw new FrameworkRuntimeException("Failed to convert from model to JSON, modelClass: "+ model.getClass()
+					+ "\n modelInstance: "+model, ex);
+		}
+	}
+	
+	/**
+	 * <p>Given a JSON string that is of any JSON string format, this method attempts to convert 
+	 * it into to a <tt>Map<String, JsonNode></tt> object, where the map's keys represent the  
+	 * JSON property names and the map's values are corresponding values in <tt>JsonNode</tt>
+	 * format. This map is then packaged into a <tt>JsonNode</tt> for easy access.</p>
+	 * 
+	 * <p>This method is useful when needing to perform traversal of the given JSON string.</p>
+	 * 
+	 * @param json the JSON string to convert
+	 * @return the converted object
+	 * @throws FrameworkRuntimeException if any failure is encountered during the conversion
+	 */
 	public JsonNode toJsonNodeTree(String json) {
 		if(StringUtils.isEmpty(json) || Pattern.matches(EMPTY_JSON_REGEX, json)) 
 			return null;
 		
 		try {
-			ObjectReader reader = om.readerFor(new TypeReference<Map<String, JsonNode>>() {});
-			return reader.readTree(json);
-			
+			return om.readerFor(new TypeReference<Map<String, JsonNode>>() {}).readTree(json);
 		} catch (Exception ex) {
 			throw new FrameworkRuntimeException("Failed to convert from JSON to instance of JsonNode"
 					+"\n json:\n" + json, ex);
 		}
 	}
 	
+	/**
+	 * <p>Given a JSON string that is of any JSON string format representing the <i>referredClass</i> 
+	 * of the provided <tt>param</tt>, this method attempts to convert it to the 
+	 * <i>referredClass</i>.</p>
+	 * 
+	 * @param param the param containing the <i>referredClass</i> configuration to determine the 
+	 * conversion type
+	 * @param json the JSON string to convert
+	 * @return the converted object
+	 * @throws FrameworkRuntimeException if any failure is encountered during the conversion
+	 */
+	public <T> T toReferredType(Param<?> param, String json) {
+		return toReferredType(param.getConfig(), json);
+	}
+	
+	/**
+	 * <p>Given a JSON string that is of any JSON string format representing the <i>referredClass</i> 
+	 * of the provided <tt>pConfig</tt>, this method attempts to convert it to the 
+	 * <i>referredClass</i>.</p>
+	 * 
+	 * @param pConfig the param config containing the <i>referredClass</i> configuration to determine 
+	 * the conversion type
+	 * @param json the JSON string to convert
+	 * @return the converted object
+	 * @throws FrameworkRuntimeException if any failure is encountered during the conversion
+	 */
+	public <T> T toReferredType(ParamConfig<?> pConfig, String json) {
+		if(StringUtils.isEmpty(json) || Pattern.matches(EMPTY_JSON_REGEX, json)) 
+			return null;
+		
+		try {			
+			if(pConfig.getType().isCollection())
+				return om.readValue(json, om.getTypeFactory().constructCollectionType(List.class, pConfig.getType().findIfCollection().getElementConfig().getReferredClass()));
+			
+			else if(pConfig.getType().isArray())
+				return om.readValue(json, om.getTypeFactory().constructArrayType(pConfig.getReferredClass()));
+			
+			else {
+				return (T) om.readValue(json, pConfig.getReferredClass());
+				
+			}
+		} catch (Exception ex) {
+			throw new FrameworkRuntimeException("Failed to convert from JSON to instance of "+pConfig
+					+"\n json:\n"+json, ex);
+		}
+	}
+	
+	/**
+	 * <p>Given a JSON string that is of any JSON string format representing the provided type, 
+	 * this method attempts to convert it to an instance of <tt>clazz</tt>.</p>
+	 * 
+	 * @param clazz the type to convert to
+	 * @param json the JSON string to convert
+	 * @return the converted object
+	 * @throws FrameworkRuntimeException if any failure is encountered during the conversion
+	 */
 	public <T> T toType(Class<T> clazz, String json) {
 		if(StringUtils.isEmpty(json) || Pattern.matches(EMPTY_JSON_REGEX, json)) 
 			return null;
 		
 		try {
-			T model = om.readValue(json, clazz);
-			return model;
+			return om.readValue(json, clazz);
 			
 		} catch (Exception ex) {
 			throw new FrameworkRuntimeException("Failed to convert from JSON to instance of "+clazz
 					+"\n json:\n"+json, ex);
-		}
-	}
-	
-	public List<?> toCollectionFromArray(Class<?> elemClazz, Class<? extends Collection<?>> collClazz, String json) {
-		if(StringUtils.isEmpty(json) || Pattern.matches(EMPTY_JSON_REGEX, json)) 
-			return null;
-		
-		try {
-			List<?> model = om.readValue(json, om.getTypeFactory().constructCollectionType(collClazz, elemClazz));
-			return model;
-			
-		} catch (Exception ex) {
-			throw new FrameworkRuntimeException("Failed to convert from JSON Array to instance of "+elemClazz+" collection "+collClazz 
-					+"\n json:\n"+json, ex);
-		}
-	}
-	
-	public String toJson(Object model) {
-		if(model==null) return null;
-		
-		try {
-			String json = om.writeValueAsString(model);
-			return json;
-		} catch (Exception ex) {
-			throw new FrameworkRuntimeException("Failed to convert from model to JSON, modelClass: "+ model.getClass()
-					+ "\n modelInstance: "+model, ex);
 		}
 	}
 }
