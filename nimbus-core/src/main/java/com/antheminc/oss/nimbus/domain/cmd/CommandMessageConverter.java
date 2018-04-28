@@ -78,22 +78,22 @@ public class CommandMessageConverter {
 	 * @param json the json to read
 	 */
 	// TODO Add support for collection of collections
-	public void update(Param<Object> p, String json) {
+	public void updateParam(Param<Object> p, String json) {
 		// exit condition 1: p is a leaf -- can't traverse any further
 		if (p.isLeaf()) {
-			Object updated = read(p.getConfig(), json);
+			Object updated = toReferredType(p.getConfig(), json);
 			p.setState(updated);
 			
 		// otherwise, p is nested -- now traverse and handle it's nested params
 		} else {
 			// iterate over the json string and essentially retrieve the key/value pairs 
-			JsonNode tree = readToJsonNode(json);
+			JsonNode tree = toJsonNodeTree(json);
 			
 			if (!tree.isArray()) {
 				// traverse and update nested params with the provided json
 				tree.fields().forEachRemaining(entry -> {
 					Param<Object> pNested = p.findParamByPath(Constants.SEPARATOR_URI.code + entry.getKey());
-					update(pNested, toJson(entry.getValue()));
+					updateParam(pNested, toJson(entry.getValue()));
 				});
 				
 			} else {
@@ -106,7 +106,7 @@ public class CommandMessageConverter {
 				// exit condition 2: collection param is not instantiated -- can't traverse any further so
 				// set the state to the object created from the provided json
 				if (null == p.findIfCollection().getValues() || p.findIfCollection().getValues().isEmpty()) {
-					Object collectionState = this.read(p.getConfig(),  json);
+					Object collectionState = this.toReferredType(p.getConfig(),  json);
 					p.setState(collectionState);
 					return;
 				}
@@ -117,14 +117,14 @@ public class CommandMessageConverter {
 				for(int index = 0; iterator.hasNext(); index++) {
 					JsonNode entry = iterator.next();
 					Param<Object> pNested = p.findParamByPath(Constants.SEPARATOR_URI.code + index);
-					update(pNested, toJson(entry));
+					updateParam(pNested, toJson(entry));
 				}
 			}
 		}
 		
 	}
 	
-	public <T> T read(ParamConfig<?> pConfig, String json) {
+	public <T> T toReferredType(ParamConfig<?> pConfig, String json) {
 		if(StringUtils.isEmpty(json) || Pattern.matches(EMPTY_JSON_REGEX, json)) 
 			return null;
 		
@@ -150,7 +150,7 @@ public class CommandMessageConverter {
 		}
 	}
 	
-	private JsonNode readToJsonNode(String json) {
+	private JsonNode toJsonNodeTree(String json) {
 		if(StringUtils.isEmpty(json) || Pattern.matches(EMPTY_JSON_REGEX, json)) 
 			return null;
 		
@@ -164,7 +164,7 @@ public class CommandMessageConverter {
 		}
 	}
 	
-	public <T> T read(Class<T> clazz, String json) {
+	public <T> T toType(Class<T> clazz, String json) {
 		if(StringUtils.isEmpty(json) || Pattern.matches(EMPTY_JSON_REGEX, json)) 
 			return null;
 		
@@ -178,7 +178,7 @@ public class CommandMessageConverter {
 		}
 	}
 	
-	public List readArray(Class<?> elemClazz, Class<? extends Collection> collClazz, String json) {
+	public List<?> toCollectionFromArray(Class<?> elemClazz, Class<? extends Collection<?>> collClazz, String json) {
 		if(StringUtils.isEmpty(json) || Pattern.matches(EMPTY_JSON_REGEX, json)) 
 			return null;
 		
@@ -203,5 +203,4 @@ public class CommandMessageConverter {
 					+ "\n modelInstance: "+model, ex);
 		}
 	}
-
 }

@@ -150,7 +150,7 @@ public class DefaultExecutionContextPathVariableResolver implements ExecutionCon
 	private String mapFilterCriteria(ExecutionContext eCtx, Param<?> param) {
 		final PageFilter pageFilter;
 		try {
-			pageFilter = converter.read(PageFilter.class, eCtx.getCommandMessage().getRawPayload());
+			pageFilter = converter.toType(PageFilter.class, eCtx.getCommandMessage().getRawPayload());
 		}
 		catch (FrameworkRuntimeException e) {
 			logit.error(() -> "Could not convert the rawPayload " + eCtx.getCommandMessage().getRawPayload()

@@ -70,7 +70,7 @@ public class CommandMessageConverterTest {
 		String json = converter.toJson(str);
 		System.out.println("JSON: "+ json);
 		
-		String res = converter.read(String.class, json);
+		String res = converter.toType(String.class, json);
 		assertEquals(str, res);
 	}
 	
@@ -122,7 +122,7 @@ public class CommandMessageConverterTest {
 		
 		System.out.println("JSON: "+json);
 		
-		ClassWithBlankPrivateConstructor res = converter.read(ClassWithBlankPrivateConstructor.class, json);
+		ClassWithBlankPrivateConstructor res = converter.toType(ClassWithBlankPrivateConstructor.class, json);
 		assertEquals(obj.getNeeded(), res.getNeeded());
 	}
 	
