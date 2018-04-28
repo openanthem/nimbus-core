@@ -16,7 +16,6 @@
 package com.antheminc.oss.nimbus.domain.cmd;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -25,14 +24,12 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
-import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 
 /**
  * @author Soham Chakravarti
@@ -49,79 +46,8 @@ public class CommandMessageConverter {
 		this.om = beanResolver.get(ObjectMapper.class);
 	}
 	
-	/**
-	 * <p>Uses the provided <tt>json</tt> to explicitly update the state of the provided param <tt>p</tt>. 
-	 * Explicitly update means that only the values provided in the given <tt>json</tt> will be updated in 
-	 * <tt>p</tt>'s state. Other state values will be preserved.</p>
-	 * 
-	 * <p>This process is as follows:</p>
-	 * 
-	 * <ul>
-	 * <li>Retrieves the key/value pairs from the provided <tt>json</tt> <i>(where key is the field name and value is the field's value)</i>
-	 * <li>Uses the keys to traverse <tt>p</tt> and set the state of each leaf param with the corresponding value</li>
-	 * </ul>
-	 * 
-	 * <p>While traversing <tt>p</tt>, support is provided for nested params of the following:</p>
-	 * 
-	 * <ol>
-	 * <li>Leaf param (primitive or literal type)</li>
-	 * <li>Complex param (object type)</li>
-	 * <li>Collection<tt>&lt;T&gt;</tt> param</li>
-	 * <ol>
-	 * <li><tt>T</tt> is a primitive or literal type</li>
-	 * <li><tt>T</tt> is an object type</li>
-	 * </ol>
-	 * </ol>
-	 * 
-	 * 
-	 * @param p the param to set
-	 * @param json the json to read
-	 */
-	// TODO Add support for collection of collections
-	public void updateParam(Param<Object> p, String json) {
-		// exit condition 1: p is a leaf -- can't traverse any further
-		if (p.isLeaf()) {
-			Object updated = toReferredType(p.getConfig(), json);
-			p.setState(updated);
-			
-		// otherwise, p is nested -- now traverse and handle it's nested params
-		} else {
-			// iterate over the json string and essentially retrieve the key/value pairs 
-			JsonNode tree = toJsonNodeTree(json);
-			
-			if (!tree.isArray()) {
-				// traverse and update nested params with the provided json
-				tree.fields().forEachRemaining(entry -> {
-					Param<Object> pNested = p.findParamByPath(Constants.SEPARATOR_URI.code + entry.getKey());
-					updateParam(pNested, toJson(entry.getValue()));
-				});
-				
-			} else {
-				
-				if (!p.isCollection()) {
-					throw new FrameworkRuntimeException("Attempted to update " + p + " as a collection, but it is not a collection. " +
-							"JSON was: " + json);
-				}
-				
-				// exit condition 2: collection param is not instantiated -- can't traverse any further so
-				// set the state to the object created from the provided json
-				if (null == p.findIfCollection().getValues() || p.findIfCollection().getValues().isEmpty()) {
-					Object collectionState = this.toReferredType(p.getConfig(),  json);
-					p.setState(collectionState);
-					return;
-				}
-				
-				// traverse and update a collection's collection elements with the provided json 
-				ArrayNode array = (ArrayNode) tree;
-				Iterator<JsonNode> iterator = array.iterator();
-				for(int index = 0; iterator.hasNext(); index++) {
-					JsonNode entry = iterator.next();
-					Param<Object> pNested = p.findParamByPath(Constants.SEPARATOR_URI.code + index);
-					updateParam(pNested, toJson(entry));
-				}
-			}
-		}
-		
+	public <T> T toReferredType(Param<?> param, String json) {
+		return toReferredType(param.getConfig(), json);
 	}
 	
 	public <T> T toReferredType(ParamConfig<?> pConfig, String json) {
@@ -150,7 +76,7 @@ public class CommandMessageConverter {
 		}
 	}
 	
-	private JsonNode toJsonNodeTree(String json) {
+	public JsonNode toJsonNodeTree(String json) {
 		if(StringUtils.isEmpty(json) || Pattern.matches(EMPTY_JSON_REGEX, json)) 
 			return null;
 		
