@@ -35,6 +35,7 @@ public class DefaultExecutionContextPathVariableResolver implements ExecutionCon
 	protected final JustLogit logit = new JustLogit(this.getClass());
 	private static final String[] DATE_FORMATS = new String[] { "yyyy-MM-dd", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" };
 	private static final String STRING_NULL = "null";
+	private static final String DEFAULT_STRICT_FILTER_MODE = "eq";
 	
 	private final CommandMessageConverter converter;
 	
@@ -179,22 +180,20 @@ public class DefaultExecutionContextPathVariableResolver implements ExecutionCon
 				buildDateCriteria(builder, alias, paramPath, f.getValue());
 			}
 			else if(ClassUtils.isAssignable(currentParam.getReferredClass(), Number.class, true)) {
+				String mode = FilterMode.getStrictMatchModeFor(filterMode);
 				if(!FilterMode.isValidNumericFilter(filterMode)) {
 					logit.error(() -> "Invalid FilterMode '"+filterMode+"' configured for param "+currentParam+ " ,Using the default match - 'eq'");
-					buildCriteria(builder, alias, paramPath, f.getValue(), "eq");
+					mode = DEFAULT_STRICT_FILTER_MODE;
 				}
-				else {
-					buildCriteria(builder, alias, paramPath, f.getValue(), FilterMode.getStrictMatchModeFor(filterMode));
-				}
+				buildCriteria(builder, alias, paramPath, f.getValue(), mode);
 			}
 			else if(ClassUtils.isAssignable(currentParam.getReferredClass(), Boolean.class, true)) {
+				String mode = FilterMode.getStrictMatchModeFor(filterMode);
 				if(!FilterMode.isValidBooleanFilter(filterMode)) {
 					logit.error(() -> "Invalid FilterMode "+filterMode+" configured for param "+currentParam+ " ,Using the default match - 'eq'");
-					buildCriteria(builder, alias, paramPath, f.getValue(), "eq");
+					mode = DEFAULT_STRICT_FILTER_MODE;
 				}
-				else {
-					buildCriteria(builder, alias, paramPath, f.getValue(), FilterMode.getStrictMatchModeFor(filterMode));
-				}
+				buildCriteria(builder, alias, paramPath, f.getValue(), mode);
 			}
 			else {
 				buildCriteria(builder, alias, paramPath, "'"+f.getValue()+"'", filterMode.getCode());
