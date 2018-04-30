@@ -18,6 +18,7 @@ package com.antheminc.oss.nimbus.domain.cmd;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
@@ -26,6 +27,7 @@ import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.support.fi.util.SupplierUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -46,6 +48,21 @@ public class CommandMessageConverter {
 	}
 	
 	/**
+	 * <p>Given a JSON string that is of any JSON string format representing the provided type, 
+	 * this method attempts to convert it to an Array instance of <tt>clazz</tt>.</p>
+	 * 
+	 * @param clazz the type to convert to
+	 * @param json the JSON string to convert
+	 * @return the converted object
+	 * @throws FrameworkRuntimeException if any failure is encountered during the conversion
+	 */
+	public <T> T toArrayOfType(Class<T> clazz, String json) {
+		return conversionTemplate(json, SupplierUtils.handle( 
+				() -> om.readValue(json, om.getTypeFactory().constructArrayType(clazz)), 
+				"Failed to convert from JSON to instance of Array with type "+clazz+"\n json:\n"+json));
+	}
+	
+	/**
 	 * <p>Given a JSON string that is of JSONArray string format, this method attempts 
 	 * to convert it into a collection implementation of <tt>collectionClazz</tt> containing 
 	 * <tt>elemClazz</tt> typed elements.</p>
@@ -57,16 +74,9 @@ public class CommandMessageConverter {
 	 * @throws FrameworkRuntimeException if any failure is encountered during the conversion
 	 */
 	public <S extends Collection<T>, T> S toCollectionFromArray(Class<T> elemClazz, Class<S> collectionClazz, String json) {
-		if(StringUtils.isEmpty(json) || Pattern.matches(EMPTY_JSON_REGEX, json)) 
-			return null;
-		
-		try {
-			return om.readValue(json, om.getTypeFactory().constructCollectionType(collectionClazz, elemClazz));
-			
-		} catch (Exception ex) {
-			throw new FrameworkRuntimeException("Failed to convert from JSON Array to instance of "+elemClazz+" collection "+collectionClazz 
-					+"\n json:\n"+json, ex);
-		}
+		return conversionTemplate(json, SupplierUtils.handle( 
+				() -> om.readValue(json, om.getTypeFactory().constructCollectionType(collectionClazz, elemClazz)), 
+				"Failed to convert from JSON Array to instance of "+elemClazz+" collection "+collectionClazz+"\n json:\n"+json));
 	}
 	
 	/**
@@ -81,12 +91,9 @@ public class CommandMessageConverter {
 		if(model==null) 
 			return null;
 		
-		try {
-			return om.writeValueAsString(model);
-		} catch (Exception ex) {
-			throw new FrameworkRuntimeException("Failed to convert from model to JSON, modelClass: "+ model.getClass()
-					+ "\n modelInstance: "+model, ex);
-		}
+		return SupplierUtils.handle( 
+				() -> om.writeValueAsString(model), 
+				"Failed to convert from model to JSON, modelClass: "+ model.getClass()+ "\n modelInstance: "+model).get();
 	}
 	
 	/**
@@ -102,17 +109,26 @@ public class CommandMessageConverter {
 	 * @throws FrameworkRuntimeException if any failure is encountered during the conversion
 	 */
 	public JsonNode toJsonNodeTree(String json) {
-		if(StringUtils.isEmpty(json) || Pattern.matches(EMPTY_JSON_REGEX, json)) 
-			return null;
-		
-		try {
-			return om.readerFor(new TypeReference<Map<String, JsonNode>>() {}).readTree(json);
-		} catch (Exception ex) {
-			throw new FrameworkRuntimeException("Failed to convert from JSON to instance of JsonNode"
-					+"\n json:\n" + json, ex);
-		}
+		return conversionTemplate(json, SupplierUtils.handle( 
+				() -> om.readerFor(new TypeReference<Map<String, JsonNode>>() {}).readTree(json), 
+				"Failed to convert from JSON to instance of JsonNode\n json:\n"));
 	}
 	
+	/**
+	 * <p>Given a JSON string that is of any JSON string format representing the provided type, 
+	 * this method attempts to convert it to an List instance of <tt>clazz</tt>.</p>
+	 * 
+	 * @param clazz the type to convert to
+	 * @param json the JSON string to convert
+	 * @return the converted list object
+	 * @throws FrameworkRuntimeException if any failure is encountered during the conversion
+	 */
+	public <T> T toListOfType(Class<T> clazz, String json) {
+		return conversionTemplate(json, SupplierUtils.handle( 
+				() -> om.readValue(json, om.getTypeFactory().constructCollectionType(List.class, clazz)), 
+				"Failed to convert from JSON to instance of List with type "+clazz+"\n json:\n"+json));
+	}
+
 	/**
 	 * <p>Given a JSON string that is of any JSON string format representing the <i>referredClass</i> 
 	 * of the provided <tt>param</tt>, this method attempts to convert it to the 
@@ -139,24 +155,20 @@ public class CommandMessageConverter {
 	 * @return the converted object
 	 * @throws FrameworkRuntimeException if any failure is encountered during the conversion
 	 */
+	@SuppressWarnings("unchecked")
 	public <T> T toReferredType(ParamConfig<?> pConfig, String json) {
 		if(StringUtils.isEmpty(json) || Pattern.matches(EMPTY_JSON_REGEX, json)) 
 			return null;
+			
+		if(pConfig.getType().isCollection())
+			return (T) toListOfType(pConfig.getType().findIfCollection().getElementConfig().getReferredClass(), json);
 		
-		try {			
-			if(pConfig.getType().isCollection())
-				return om.readValue(json, om.getTypeFactory().constructCollectionType(List.class, pConfig.getType().findIfCollection().getElementConfig().getReferredClass()));
+		else if(pConfig.getType().isArray())
+			return (T) toArrayOfType(pConfig.getReferredClass(), json);
+		
+		else {
+			return (T) toType(pConfig.getReferredClass(), json);
 			
-			else if(pConfig.getType().isArray())
-				return om.readValue(json, om.getTypeFactory().constructArrayType(pConfig.getReferredClass()));
-			
-			else {
-				return (T) om.readValue(json, pConfig.getReferredClass());
-				
-			}
-		} catch (Exception ex) {
-			throw new FrameworkRuntimeException("Failed to convert from JSON to instance of "+pConfig
-					+"\n json:\n"+json, ex);
 		}
 	}
 	
@@ -170,15 +182,21 @@ public class CommandMessageConverter {
 	 * @throws FrameworkRuntimeException if any failure is encountered during the conversion
 	 */
 	public <T> T toType(Class<T> clazz, String json) {
+		return conversionTemplate(json, SupplierUtils.handle( 
+				() -> om.readValue(json, clazz), 
+				"Failed to convert from JSON to instance of "+clazz+"\n json:\n"+json));
+	}
+	
+	/**
+	 * <p>Convenience template method for handling null check and returning a result</p> 
+	 * @param json
+	 * @param supplier
+	 * @return
+	 */
+	private <T> T conversionTemplate(String json, Supplier<T> supplier) {
 		if(StringUtils.isEmpty(json) || Pattern.matches(EMPTY_JSON_REGEX, json)) 
 			return null;
 		
-		try {
-			return om.readValue(json, clazz);
-			
-		} catch (Exception ex) {
-			throw new FrameworkRuntimeException("Failed to convert from JSON to instance of "+clazz
-					+"\n json:\n"+json, ex);
-		}
+		return supplier.get();
 	}
 }
