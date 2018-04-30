@@ -27,7 +27,7 @@ import { Param } from '../../../shared/param-state';
 import { FileService } from './../../../services/file.service';
 import { BaseElement } from '../base-element.component';
 import { WebContentSvc } from './../../../services/content-management.service';
-
+import { LoggerService } from './../../../services/logger.service';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 	provide: NG_VALUE_ACCESSOR,
@@ -70,7 +70,7 @@ export class FileUploadComponent extends BaseElement implements ControlValueAcce
 	selectedFiles: File[];
 	multipleFiles: boolean = false;
 
-	constructor(private fileService: FileService, private _wcs: WebContentSvc) {
+	constructor(private fileService: FileService, private _wcs: WebContentSvc, private logger: LoggerService) {
 		super(_wcs); 
 	}
 
@@ -112,7 +112,7 @@ export class FileUploadComponent extends BaseElement implements ControlValueAcce
 			
 		},
 	(error) => {
-		 console.log(error);
+		 this.logger.error(error);
 	}
 	);
 	}

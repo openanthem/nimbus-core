@@ -27,6 +27,7 @@ import { CustomHttpClient } from './httpclient.service';
 import { AppBranding, Layout, LinkConfig, TopBarConfig, FooterConfig, GlobalNavConfig } from '../model/menu-meta.interface';
 import { GenericDomain } from '../model/generic-domain.model';
 import { ViewConfig, ViewComponent } from './../shared/param-annotations.enum';
+import { LoggerService } from './logger.service';
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 
@@ -50,7 +51,8 @@ export class LayoutService {
     constructor(public http: CustomHttpClient, 
         private wcs: WebContentSvc,
         private pageSvc: PageService,
-        private configSvc: ConfigService) {
+        private configSvc: ConfigService,
+        private logger: LoggerService) {
         this.layout$ = new EventEmitter<any>();
     }
 
@@ -72,11 +74,11 @@ export class LayoutService {
 
                         this.parseLayoutConfig(flowModel);
                     } else {
-                        console.log('ERROR: Unknown response for Layout config call - ' + subResponse.b);
+                        this.logger.error('ERROR: Unknown response for Layout config call - ' + subResponse.b);
                     }
                 },
-                    err => console.log(err),
-                    () => console.log('Layout config call completed..')
+                    err => {this.logger.error(err)},
+                    () => {this.logger.info('Layout config call completed..');}
                 );
         }
     }

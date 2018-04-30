@@ -126,7 +126,6 @@ export class STOMPService {
             this.on_error
         );
 
-        console.log('connecting...');
         this.state.next(STOMPState.TRYING);
 
         return new Promise(
@@ -194,7 +193,6 @@ export class STOMPService {
             this.state.next( STOMPState.CLOSED );
 
             // Attempt reconnection
-            //console.log('Reconnecting in 5 seconds...');
             setTimeout(() => {
                 this.configure();
                 this.try_connect();

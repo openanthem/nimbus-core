@@ -15,41 +15,41 @@
  * limitations under the License.
  */
 'use strict';
-
-import { Injectable, EventEmitter } from '@angular/core';
-import { Http } from '@angular/http';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/share';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
-
+import { LogLevel } from './../shared/logLevel';
+import { LogEntry } from './../shared/logEntry';
 /**
- * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
  * \@whatItDoes 
  * 
  * \@howToUse 
  * 
  */
-@Injectable()
-export class AuthenticationService {
+export class LoggerService {
 
-    login$: EventEmitter<any>;
-    loginDataStore: any[];
-
-    constructor(public http: Http) {
-        // Create Observable Stream to output our data
-        this.login$ = new EventEmitter();
-        this.loginDataStore = [];
+    public info(message:string) {
+        this.write(message,LogLevel.info);
     }
 
-    logError(err) {
+    public warn(message:string) {
+        this.write(message,LogLevel.warn);
     }
 
-    login(user: string, password: string, remember: boolean) {
+    public error(message:string) {
+        this.write(message,LogLevel.error)
     }
 
-    logout(): Observable<boolean> {
-        return Observable.of(true);
+    public debug(message:string) {
+        this.write(message,LogLevel.debug)
     }
+
+    public trace(message:string) {
+        this.write(message,LogLevel.trace)
+    }
+
+    public write(logMessage: string, logLevel: LogLevel) {
+
+        let logEntry = new LogEntry(logMessage,new Date(), logLevel);
+        console.log(logEntry.message + logEntry.time + logEntry.level);
+    }
+
 }

@@ -289,6 +289,7 @@ public class ViewConfig {
 		boolean postEventOnChange() default false;
 		boolean clearAllFilters() default false;
 		boolean export() default false;
+		String dataKey() default "id";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)

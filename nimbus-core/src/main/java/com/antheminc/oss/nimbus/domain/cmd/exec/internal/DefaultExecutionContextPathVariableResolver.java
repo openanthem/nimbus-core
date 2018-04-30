@@ -151,7 +151,7 @@ public class DefaultExecutionContextPathVariableResolver implements ExecutionCon
 	private String mapFilterCriteria(ExecutionContext eCtx, Param<?> param) {
 		final PageFilter pageFilter;
 		try {
-			pageFilter = converter.read(PageFilter.class, eCtx.getCommandMessage().getRawPayload());
+			pageFilter = converter.toType(PageFilter.class, eCtx.getCommandMessage().getRawPayload());
 			if(pageFilter == null || CollectionUtils.isEmpty(pageFilter.getFilters()))
 				return null;
 		}

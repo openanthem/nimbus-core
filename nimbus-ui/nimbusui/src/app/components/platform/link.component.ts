@@ -101,7 +101,6 @@ export class Link extends BaseElement {
 
     ngOnInit() {
         super.ngOnInit();
-        //console.log(this.element.config.uiStyles.attributes.value);
         this.imagesPath = ServiceConstants.IMAGES_URL;
         if (this.inClass) {
             this.linkClass = this.inClass;

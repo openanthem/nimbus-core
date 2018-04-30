@@ -20,6 +20,7 @@ import { Injectable, EventEmitter } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { HttpHeaders } from '@angular/common/http';
 import { RequestOptions, Request, RequestMethod } from '@angular/http';
+import { LoggerService } from './logger.service';
 
 /**
  * \@author Dinakar.Meda
@@ -34,7 +35,7 @@ export class FileService {
     addFile$: EventEmitter<any>;
     removeFile$: EventEmitter<any>;
 
-    constructor(public http: CustomHttpClient) {
+    constructor(public http: CustomHttpClient, private logger: LoggerService) {
         this.addFile$ = new EventEmitter<any>();
         this.removeFile$ = new EventEmitter<any>();
     }
@@ -47,7 +48,6 @@ export class FileService {
         
        return this.http.postFileData(url, formData)
             .subscribe(data => {
-                // console.log("data", data);
 
                 file['fileId'] = data.fileId;
                 this.addFile$.next(file);
@@ -55,7 +55,7 @@ export class FileService {
                 error => {
                     this.addFile$.error(error);              
                 },
-                () => console.log('File uploaded ..')
+                () => {this.logger.info('file has been uploaded');}
             );
     }
 
