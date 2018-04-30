@@ -865,9 +865,9 @@ public class ViewConfig {
 		boolean rowExpander() default false;
 		
 		public enum FilterMode {
-			equals("eq"),
-			contains("contains"),
-			endsWith("endsWith"),
+			equals("equalsIgnoreCase"),
+			contains("containsIgnoreCase"),
+			endsWith("endsWithIgnoreCase"),
 			in("in");
 			
 			@Getter @Setter
@@ -875,6 +875,31 @@ public class ViewConfig {
 			
 			FilterMode(String code) {
 				this.code = code;
+			}
+			
+			public static String getStrictMatchModeFor(FilterMode mode) {
+				if(mode == null)
+					return null;
+				
+				if(mode == FilterMode.equals)
+					return "eq";
+				
+				return mode.getCode();
+			}
+			
+			//TODO add more filters as valid as they are available (e.g. gt, gte, lt, lte etc...)
+			public static boolean isValidNumericFilter(FilterMode mode) {
+				if(mode == FilterMode.equals || mode == FilterMode.in) {
+					return true;
+				}
+				return false;
+			}
+			
+			public static boolean isValidBooleanFilter(FilterMode mode) {
+				if(mode == FilterMode.equals || mode == FilterMode.in) {
+					return true;
+				}
+				return false;
 			}
 			
 		}
