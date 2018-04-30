@@ -182,7 +182,7 @@ public class DefaultExecutionContextPathVariableResolver implements ExecutionCon
 			else if(ClassUtils.isAssignable(currentParam.getReferredClass(), Number.class, true)) {
 				String mode = FilterMode.getStrictMatchModeFor(filterMode);
 				if(!FilterMode.isValidNumericFilter(filterMode)) {
-					logit.error(() -> "Invalid FilterMode '"+filterMode+"' configured for param "+currentParam+ " ,Using the default match - 'eq'");
+					logit.error(() -> "Invalid FilterMode '"+filterMode+"' configured for param "+currentParam+ " ,Using the default match - '"+DEFAULT_STRICT_FILTER_MODE+"'");
 					mode = DEFAULT_STRICT_FILTER_MODE;
 				}
 				buildCriteria(builder, alias, paramPath, f.getValue(), mode);
@@ -190,7 +190,7 @@ public class DefaultExecutionContextPathVariableResolver implements ExecutionCon
 			else if(ClassUtils.isAssignable(currentParam.getReferredClass(), Boolean.class, true)) {
 				String mode = FilterMode.getStrictMatchModeFor(filterMode);
 				if(!FilterMode.isValidBooleanFilter(filterMode)) {
-					logit.error(() -> "Invalid FilterMode "+filterMode+" configured for param "+currentParam+ " ,Using the default match - 'eq'");
+					logit.error(() -> "Invalid FilterMode "+filterMode+" configured for param "+currentParam+ " ,Using the default match - '"+DEFAULT_STRICT_FILTER_MODE+"'");
 					mode = DEFAULT_STRICT_FILTER_MODE;
 				}
 				buildCriteria(builder, alias, paramPath, f.getValue(), mode);
