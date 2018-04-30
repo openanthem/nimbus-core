@@ -119,7 +119,8 @@ export class FileUploadComponent extends BaseElement implements ControlValueAcce
 	}
 
 	addFiles(event) {
-		
+
+		this.value = null;
 		let files = event.originalEvent.dataTransfer ? event.originalEvent.dataTransfer.files : event.originalEvent.target.files;
 
 		for (var p = 0; p < files.length; p++) {
