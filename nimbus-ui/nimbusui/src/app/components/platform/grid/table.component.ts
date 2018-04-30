@@ -326,10 +326,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     }
 
     toggleFilter(event: any) {
-        //console.log(event);
         this.showFilters = !this.showFilters;
-
-        // this.dt.reset();
     }
 
     postGridData(obj) {
@@ -598,8 +595,6 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     }
 
     loadDataLazy(event:any) {
-        // console.log(event);
-        // Pagination Logic
         let pageSize: number = this.element.config.uiStyles.attributes.pageSize;
         let pageIdx: number = 0;        
         let first: number = event.first;
@@ -654,5 +649,13 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
             queryString = queryString + '&pageSize=' + pageSize + '&page=' + pageIdx;
         }
         return queryString;
+    }
+
+    getPattern(dataType: string): string {
+        if(this.isSortAsNumber(dataType, null)) {
+            return "num";
+        } else {
+            return "alphanum"
+        }
     }
 }

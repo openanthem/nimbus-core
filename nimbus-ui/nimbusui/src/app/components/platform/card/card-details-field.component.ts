@@ -116,7 +116,6 @@ export class CardDetailsFieldComponent  extends BaseElement implements ControlVa
     }
 
     writeValue(value) {
-        //console.log(value);
         if (value) {
         this.value = value;
         }

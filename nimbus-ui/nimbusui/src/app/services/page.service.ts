@@ -33,6 +33,7 @@ import { ExecuteResponse, ExecuteException } from './../shared/app-config.interf
 import { ParamUtils } from './../shared/param-utils';
 import { ParamAttribute } from './../shared/command.enum';
 import { ViewConfig } from './../shared/param-annotations.enum';
+import { LoggerService } from './logger.service';
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -64,7 +65,7 @@ export class PageService {
     private requestQueue :RequestContainer[] = [];
 
         private _entityId: number = 0;
-        constructor(private http: CustomHttpClient, private loaderService: LoaderService, private configService: ConfigService) {
+        constructor(private http: CustomHttpClient, private loaderService: LoaderService, private configService: ConfigService, private logger: LoggerService) {
                 // initialize
                 this.flowRootDomainId = {};
                 // Create Observable Stream to output our data     
@@ -73,7 +74,6 @@ export class PageService {
         }
 
         ngOnInit() {
-                //console.log('on init of page service.');
         }
 
         get entityId(): number {
@@ -417,12 +417,13 @@ export class PageService {
 
         executeHttp(url:string, method : string, model:any) {
                 this.showLoader();
+                this.logger.info('http call' + url + 'started');
                 if (method !== '' && method.toUpperCase() === HttpMethod.GET.value) {
                         this.executeHttpGet(url)
                  } else if (method !== '' && method.toUpperCase() === HttpMethod.POST.value) {
                          this.executeHttpPost(url, model);
                  } else {
-                         this.invokeFinally();
+                         this.invokeFinally(url);
                          throw 'http method not supported';
                  }
         }
@@ -430,7 +431,7 @@ export class PageService {
                 this.http.get(url).subscribe(
                         data => { this.processResponse(data.result); },
                         err => { this.processError(err); },
-                        () => { this.invokeFinally(); }
+                        () => { this.invokeFinally(url); }
                         );
         }
 
@@ -438,7 +439,7 @@ export class PageService {
                 this.http.post(url, JSON.stringify(model)).subscribe(
                         data => { this.processResponse(data.result);},
                         err => { this.processError(err); },
-                        () => { this.invokeFinally(); }
+                        () => { this.invokeFinally(url); }
                         );
         }
 
@@ -447,8 +448,8 @@ export class PageService {
                 this.hideLoader();
         }
 
-        invokeFinally() {
-                console.log('Process Execution query completed..');
+        invokeFinally(url:string) {
+                this.logger.info('http response for ' + url + ' processed successsfully');
                 this.hideLoader();
         }
 
@@ -470,7 +471,7 @@ export class PageService {
                 var urlBase = ServiceConstants.PLATFORM_BASE_URL;
                 var url = urlBase + '/event/notify';
 
-                console.log('Post update Event Notify call');
+                this.logger.info('Post update Event Notify call started for '+ url);
                 return this.executeHttp(url, HttpMethod.POST.value, modelEvnt);
                 
         }
@@ -635,13 +636,12 @@ export class PageService {
                                         if( param.gridList) {
                                                 for (var p = 0; p < param.gridList.length; p++) {
                                                         if (param.gridList[p]['elemId'] == elemIndex) {
-                                                                // console.log(param.config.gridList[p]['nestedElement']);
                                                                 let nestedElement = this.getNestedElementParam(param.gridList[p]['nestedElement'], nestedPath);
                                                                 if (nestedElement) {
                                                                         nestedElement['gridList'] = this.createGridData(eventModel.value.type.model.params, nestedElement);
                                                                         this.gridValueUpdate.next(nestedElement);
                                                                 } else {
-                                                                        console.log('Nested Grid Element not found.');
+                                                                        this.logger.error('Nested Grid Element not found.');
                                                                 }
                                                                 break;
                                                         }

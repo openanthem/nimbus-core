@@ -109,7 +109,6 @@ export class OrderablePickList implements OnInit, ControlValueAccessor {
 
     setState(event:any, frmInp:any) {
         frmInp.element.leafState = event;
-        //console.log(frmInp.element.leafState);
     }
 
     updateListValues(event: any) {

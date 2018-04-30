@@ -64,9 +64,9 @@
                                     <i class="fa fa-times"></i>
                                 </button>
                             </div>
-                            <div *ngIf="!isDate(col.type.name)" >
+                            <div *ngIf="!isDate(col?.type?.name)" >
                                 <div class="filterHolder">
-                                    <input #text type="text" [(ngModel)]="filterState[colIndex]" (input)="inputFilter($event, dt, col.field, col?.uiStyles?.attributes?.filterMode)">
+                                <input #text type="text" pInputText pKeyFilter="{{getPattern(col?.type?.name)}}" [(ngModel)]="filterState[colIndex]" (input)="inputFilter($event, dt, col.field, col?.uiStyles?.attributes?.filterMode)">
                                 <button (click)="clearFilter(text, dt, col.field); filterState[colIndex]=''">
                                     <i class="fa fa-times"></i>
                                 </button>

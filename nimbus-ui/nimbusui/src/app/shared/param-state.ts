@@ -139,7 +139,6 @@ export class Param implements Serializable<Param, string> {
         }
 
         this.path = this.constructPath(path, inJson);
-        // console.log(this.path);
         if (inJson.type != null) {
             this.type = new Type(this.configSvc).deserialize( inJson.type, this.path );
         } else {

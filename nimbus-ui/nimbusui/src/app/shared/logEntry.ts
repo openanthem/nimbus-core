@@ -15,31 +15,26 @@
  * limitations under the License.
  */
 'use strict';
-import { Component, Input, SimpleChanges } from '@angular/core';
-import { Param } from '../../../../shared/param-state';
+
+import { LogLevel } from './logLevel';
 
 /**
- * \@author Dinakar.Meda
- * \@whatItDoes 
- * 
- * \@howToUse 
- * 
+* \@author Dinakar.Meda
+* \@whatItDoes
+ *
+ * \@howToUse
+ *
  */
-@Component({
-  selector: 'nm-value',
-  template: `
-      {{element.leafState}}
-   `
-})
-export class Value {
+export class LogEntry  {
 
-    @Input() element: Param;
+    message: string;
+    time: any;
+    level: string;
 
-    ngOnInit() {
+    constructor(message:string, time: any, level: LogLevel) {
+        this.message = message;
+        this.time = time;
+        this.level = level.toString();
     }
 
-    ngOnChanges(changes: SimpleChanges) {
-        if(changes['element']) {
-        }
-    }
 }

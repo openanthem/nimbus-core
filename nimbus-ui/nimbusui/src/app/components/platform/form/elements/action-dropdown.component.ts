@@ -97,8 +97,7 @@ export class ActionDropdown {
     }
 
     ngOnInit() {
-        // console.log(this.params);
-        // console.log(this.elementPath + '/');
+        
     }
   
     toggleOpen( event: MouseEvent ): void {
