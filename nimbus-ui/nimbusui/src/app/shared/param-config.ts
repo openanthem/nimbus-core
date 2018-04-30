@@ -169,6 +169,7 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
     postEventOnChange: boolean;
     draggable: boolean;
     rowSelection: boolean;
+    dataKey: string;
     showHeader: boolean;
     pagination: boolean;
     pageSize: number;
