@@ -15,6 +15,8 @@
  */
 package com.antheminc.oss.nimbus.test.scenarios.s0.view;
 
+import java.util.List;
+
 import javax.validation.constraints.NotNull;
 
 import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
@@ -28,6 +30,7 @@ import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Section;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Tile;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreNestedEntity;
+import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreNestedEntity.Level1;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -98,6 +101,12 @@ public class VPSampleViewPageRed {
 		
 		@Path("/nested_attr_String3")
 		private String vt_nested_attr_String3_2;
+		
+		@Path("/nested_attr_collection")
+		private List<String> vt_nested_attr_collection; 
+		
+		@Path("/nested_attr_complex_collection")
+		private List<Level1> vt_nested_attr_complex_collection; 
 	}
 	
 }
