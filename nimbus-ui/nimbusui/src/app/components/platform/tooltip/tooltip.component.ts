@@ -19,6 +19,7 @@
 import { Component, Input } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Param } from '../../../shared/param-state';
+import { WindowRefService } from '../../../services/window-ref.service';
 
 /**
  * \@author Mayur.Mehta
@@ -50,7 +51,7 @@ export class TooltipComponent {
     widgetPosition: string = 'east';
     private _htmlContent: string;
 
-    constructor(private _sanitizer: DomSanitizer) {
+    constructor(private _sanitizer: DomSanitizer, private _windowRef: WindowRefService) {
     }
 
     public get htmlContent(): SafeHtml {
@@ -63,11 +64,14 @@ export class TooltipComponent {
      * appear on the right (west) of the component. However, if a component is on the far right of the screen, the bubble will open on the left (east).
     */ 
     toggleOpen(event: MouseEvent): void {
+        console.log('tooltip is working...123');
         event.preventDefault();
 
-        if (window.innerWidth - event.clientX <= 250) {
+        if (this._windowRef.window.innerWidth - event.clientX <= 250) {
+            console.log('tooltip is working...WEST');
             this.widgetPosition = 'west';
         } else {
+            console.log('tooltip is working...EAST');
             this.widgetPosition = 'east';
         }
         //retrieve all open bubbles in the document and close them
@@ -85,5 +89,9 @@ export class TooltipComponent {
         event.preventDefault();
         //parentElement.parentElement will get the opened bubble component.
         event.srcElement.parentElement.parentElement.classList.remove('open');
+    }
+
+    ngOnInit() {
+        console.log('tooltip is working...1111');
     }
 }

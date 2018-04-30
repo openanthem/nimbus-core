@@ -517,25 +517,21 @@ public class DefaultActionExecutorSearchTest extends AbstractFrameworkIntegratio
 		mongoOps.save(scea, "sample_core_access");
 		mongoOps.save(scea2, "sample_core_access");
 		
-		//Instant instant = Instant.parse("2018-04-05");
-		//get date time only
-	    //LocalDateTime result = LocalDateTime.ofInstant(instant, ZoneId.of(ZoneOffset.UTC.getId()));
-		
 		LocalDateTime inputDate = LocalDateTime.now();
 		String inputDateString = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(inputDate);
 		LocalDate result = LocalDate.parse(inputDateString, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
 		
-		//LocalDateTime dtTime = LocalDateTime.parse("2018-04-05T04:00:00.000Z", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
-		//Date date = Date.from(dtTime.atZone(ZoneId.systemDefault()).toInstant());
-		//Date nextDate = DateUtils.addDays(date, 1);
-		
-	    int year = result.getYear();
+		int year = result.getYear();
 	    int month = result.getMonthValue();
 	    int day = result.getDayOfMonth();
-		int nextDay = day + 1;
+	    
+	    LocalDate nextDate = result.plusDays(1);
+	    int nextYear = nextDate.getYear();
+	    int nextMonth = nextDate.getMonthValue();
+	    int nextDay = nextDate.getDayOfMonth();
 		
 		// localdate, localdatetime, Date query:
-		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/sample_core_access/_search?fn=query&where=sample_core_access.attr_LocalDateTime1.goe(java.time.LocalDate.of("+year+", "+month+", "+day+")).and(sample_core_access.attr_LocalDateTime1.lt(java.time.LocalDate.of("+year+", "+month+", "+nextDay+")))");
+		CommandMessage cmdMsg = build(PLATFORM_ROOT+"/sample_core_access/_search?fn=query&where=sample_core_access.attr_LocalDateTime1.goe(java.time.LocalDate.of("+year+", "+month+", "+day+")).and(sample_core_access.attr_LocalDateTime1.lt(java.time.LocalDate.of("+nextYear+", "+nextMonth+", "+nextDay+")))");
 		//CommandMessage cmdMsg = build(PLATFORM_ROOT+"/sample_core_access/_search?fn=query&where=sample_core_access.attr_LocalDateTime1.goe('"+date+"').and(sample_core_access.attr_LocalDateTime1.lt('"+nextDate+"'))");
 		
 		//zoneddatetime: ?
