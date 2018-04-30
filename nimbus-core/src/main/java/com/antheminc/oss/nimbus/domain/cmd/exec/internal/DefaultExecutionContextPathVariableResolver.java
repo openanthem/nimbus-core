@@ -213,7 +213,6 @@ public class DefaultExecutionContextPathVariableResolver implements ExecutionCon
 		    int month = dateValue.getMonthValue();
 		    int day = dateValue.getDayOfMonth();
 			
-
 		    int nextDateYear = nextDateValue.getYear();
 		    int nextDateMonth = nextDateValue.getMonthValue();
 		    int nextDateDay = nextDateValue.getDayOfMonth();
