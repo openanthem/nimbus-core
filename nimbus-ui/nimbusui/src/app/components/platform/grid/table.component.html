@@ -37,7 +37,7 @@
                 </th>
                 <th style="width: 2.25em" *ngIf="element?.config?.uiStyles?.attributes?.expandableRows"></th>
                 <ng-template ngFor let-col let-colIndex="index" [ngForOf]="params">
-                    <th *ngIf="col?.uiStyles?.attributes?.hidden == false" [pSortableColumn]="col" [ngClass]="{dropdown:showLinkMenu(col)}">
+                    <th *ngIf="showHeader(col)" [pSortableColumn]="col" [ngClass]="{dropdown:showLinkMenu(col)}">
                         <span *ngIf="showValue(col)">
                             {{col.header}}
                             <p-sortIcon [field]="col" *ngIf="col?.uiStyles?.attributes?.sortable !== false"></p-sortIcon>
@@ -87,15 +87,15 @@
                 <td *ngIf="element.config?.uiStyles?.attributes?.rowSelection">
                     <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
                 </td>
-                <td *ngIf="element.config?.uiStyles?.attributes?.expandableRows">
 
+                <td *ngIf="element.config?.uiStyles?.attributes?.expandableRows">
                     <a href="#" [pRowToggler]="rowData" *ngIf=isRowExpanderHidden(rowData) >
                         <i [ngClass]="expanded ? 'fa fa-fw fa-chevron-circle-down ui-row-toggler' : 'fa fa-fw fa-chevron-circle-right ui-row-toggler'"></i>
                     </a>
                 </td>
 
                 <ng-template ngFor let-col let-colIndex="index" [ngForOf]="params">
-                    <td *ngIf="col?.uiStyles?.attributes?.hidden == false" [ngClass]="{dropdown:showLinkMenu(col)}">
+                    <td *ngIf="showHeader(col)" [ngClass]="{dropdown:showLinkMenu(col)}">
                         <span title="{{getCellDisplayValue(rowData, col)}}" *ngIf="showValue(col)">{{getCellDisplayValue(rowData, col)}}</span>
                         <span *ngIf="showLinkMenu(col)">
                                 <nm-action-dropdown #dropDown [element]="getLinkMenuParam(col, rowData['elemId'])" 
@@ -114,6 +114,14 @@
             <tr>
                 <td [attr.colspan]="columnsToShow + 1">
                     <nm-section *ngIf="rowData.nestedElement" [element]="rowData.nestedElement"></nm-section>
+                </td>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage" let-columns>
+            <tr>
+                <td [attr.colspan]="columnsToShow">
+                    No records found
                 </td>
             </tr>
         </ng-template>

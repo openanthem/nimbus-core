@@ -146,7 +146,9 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
                     if (column.uiStyles.attributes.hidden) {
                         column['exportable'] = false;
                     } else {
-                        this.columnsToShow ++;
+                        if (column.uiStyles.attributes.alias !== ViewComponent.gridRowBody.toString()) {
+                            this.columnsToShow ++;
+                        }
                         if (column.uiStyles.attributes.alias == 'LinkMenu' || column.type.nested == true) {
                             column['exportable'] = false;
                         } else {
@@ -258,6 +260,13 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         } else {
             return col.uiStyles.attributes.placeholder;
         }
+    }
+
+    showHeader(col: ParamConfig) {
+        if (col.uiStyles.attributes.hidden == false && col.uiStyles.attributes.alias != ViewComponent.gridRowBody.toString()) {
+            return true;
+        } 
+        return false;
     }
 
     showValue(col: ParamConfig) {
