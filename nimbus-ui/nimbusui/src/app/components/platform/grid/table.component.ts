@@ -146,9 +146,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
                     if (column.uiStyles.attributes.hidden) {
                         column['exportable'] = false;
                     } else {
-                        if (column.uiStyles.attributes.alias !== ViewComponent.gridRowBody.toString()) {
-                            this.columnsToShow ++;
-                        }
+                        this.columnsToShow ++;
                         if (column.uiStyles.attributes.alias == 'LinkMenu' || column.type.nested == true) {
                             column['exportable'] = false;
                         } else {
@@ -160,6 +158,10 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
                     }
                 }
             });
+        }
+        // include row selection checkbox to column count
+        if (this.element.config.uiStyles.attributes.rowSelection) {
+            this.columnsToShow ++;
         }
 
         if (this.element.gridList != null && this.element.gridList.length > 0) {
@@ -359,9 +361,6 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     }
 
     onRowClick(event: any) {
-    }
-
-    onRowUnSelect(event) {
     }
 
     postOnChange(col: ParamConfig, item: any) {
