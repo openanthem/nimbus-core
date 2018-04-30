@@ -15,10 +15,9 @@
         </div>
     </div>
 
-    <p-table #dt [value]="value" [columns]="params" dataKey="id"
+    <p-table #dt [value]="value" [columns]="params" 
+        [dataKey]="element.config?.uiStyles?.attributes?.dataKey"
         [(selection)]="selectedRows"
-        (onRowSelect)="onRowSelect($event)"
-		(onRowUnselect)="onRowUnselect($event)"
         [rows]="element.config?.uiStyles?.attributes?.pageSize"
         [totalRecords]=totalRecords
         [paginator]="element.config?.uiStyles?.attributes?.pagination" 
@@ -85,7 +84,7 @@
         </ng-template>
 
         <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
-            <tr>
+            <tr [pSelectableRow]="rowData">
                 <td *ngIf="element.config?.uiStyles?.attributes?.rowSelection">
                     <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
                 </td>
