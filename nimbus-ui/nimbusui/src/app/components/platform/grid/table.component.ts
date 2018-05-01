@@ -223,6 +223,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
                     // Client Pagination
                     this.totalRecords = this.value ? this.value.length : 0;
                     this.updatePageDetailsState();
+                    this.dt.first = 0;
                 }
 
                 this.cd.markForCheck();
