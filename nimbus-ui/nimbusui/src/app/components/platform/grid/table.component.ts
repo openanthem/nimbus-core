@@ -413,7 +413,6 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
                 return value1.localeCompare(value2) * event.order;
             });
         }
-        //this.value = [...this.value];
     }
 
     protected sortInternal(itemCallback: Function, event: any): Array<any> {
@@ -452,43 +451,18 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
 
     }
 
-    // between(value: any, filter: any[]){
-
     between(value: any, filter: any) {
-
         return moment(filter).isSame(value, 'day');
-        // if(value){
-        // var valueDate1 = new Date(value.toDateString());
-        // var valueDate2 = new Date (filter.toDateString());
-        // return valueDate1.valueOf() == valueDate2.valueOf();}
-
-        // return (value >= filter[0] && value<=filter[1])
     }
 
     dateFilter(e: any, dt: Table, field: string, datePattern?: string, dateType?: string) {
 
-        if (dateType == 'LocalDate' || dateType == 'date' || dateType == 'Date') {
-            datePattern = (!datePattern || datePattern == "") ? "MM/DD/YYYY" : datePattern;
-
-            if (e.toLocaleDateString().length == '0') {
-                dt.filter(e.toLocaleDateString(), field, "startsWith");
-            } else {
-                if (moment(e.toLocaleDateString(), datePattern.toUpperCase(), false).isValid()) {
-                    dt.filter(moment(e.toLocaleDateString(), datePattern.toUpperCase()).toDate(), field, "between");
-                }
-            }
-        } else if (dateType == 'LocalDateTime' || dateType == 'ZonedDateTime') {
-
-            if (e.toLocaleDateString().length == '0') {
-                dt.filter(e.toLocaleDateString(), field, "startsWith");
-            } else {
-                if (moment(e.toLocaleDateString(), "MM/DD/YYYY", true).isValid()) {
-                    dt.filter(moment(e.toLocaleDateString(), "MM/DD/YYYY").toDate(), field, "between");
-                }
-            }
+        let dtPattern = datePattern? datePattern : ParamUtils.getDateFormatForType(dateType);
+       
+        if (moment(e.toLocaleDateString(), dtPattern.toUpperCase(), false).isValid()) {
+            dt.filter(moment(e.toLocaleDateString(), dtPattern.toUpperCase()).toDate(), field, "between");
         }
-
-        // this.totalRecords = dt.filteredValue.length;
+       
         this.updatePageDetailsState();
     }
 
