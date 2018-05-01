@@ -37,7 +37,7 @@ public class DefaultSearchFunctionHandlerExample<T, R> extends DefaultSearchFunc
 		exampleSearchCriteria.validate(executionContext);
 				
 		Class<?> criteriaClass = mConfig.getReferredClass();
-		T criteria = (T)getConverter().read(criteriaClass, executionContext.getCommandMessage().getRawPayload());
+		T criteria = (T)getConverter().toType(criteriaClass, executionContext.getCommandMessage().getRawPayload());
 		
 		exampleSearchCriteria.setWhere(criteria);
 		exampleSearchCriteria.setAggregateCriteria(cmd.getFirstParameterValue(Constants.SEARCH_REQ_AGGREGATE_MARKER.code));

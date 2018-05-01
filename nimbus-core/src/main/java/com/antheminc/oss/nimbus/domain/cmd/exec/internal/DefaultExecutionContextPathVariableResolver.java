@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
@@ -34,6 +35,7 @@ public class DefaultExecutionContextPathVariableResolver implements ExecutionCon
 	protected final JustLogit logit = new JustLogit(this.getClass());
 	private static final String[] DATE_FORMATS = new String[] { "yyyy-MM-dd", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" };
 	private static final String STRING_NULL = "null";
+	private static final String DEFAULT_STRICT_FILTER_MODE = "eq";
 	
 	private final CommandMessageConverter converter;
 	
@@ -150,7 +152,9 @@ public class DefaultExecutionContextPathVariableResolver implements ExecutionCon
 	private String mapFilterCriteria(ExecutionContext eCtx, Param<?> param) {
 		final PageFilter pageFilter;
 		try {
-			pageFilter = converter.read(PageFilter.class, eCtx.getCommandMessage().getRawPayload());
+			pageFilter = converter.toType(PageFilter.class, eCtx.getCommandMessage().getRawPayload());
+			if(pageFilter == null || CollectionUtils.isEmpty(pageFilter.getFilters()))
+				return null;
 		}
 		catch (FrameworkRuntimeException e) {
 			logit.error(() -> "Could not convert the rawPayload " + eCtx.getCommandMessage().getRawPayload()
@@ -160,61 +164,69 @@ public class DefaultExecutionContextPathVariableResolver implements ExecutionCon
 			return null;
 		}
 		
-		if(pageFilter == null || CollectionUtils.isEmpty(pageFilter.getFilters()))
-			return null;
-		
 		StringBuilder builder = new StringBuilder();
 		ParamConfig<?> p = param.getConfig().getType().findIfCollection().getElementConfig();
 		MappedParamConfig<?,?> mappedParam = p.findIfMapped();
 		
-		final String alias;
-		if(mappedParam != null) {
-			ModelConfig<?> mappedModelConfig = mappedParam.getMapsToConfig().getType().findIfNested().getModelConfig();
-			alias = mappedModelConfig.getRepo() != null && StringUtils.isNotBlank(mappedModelConfig.getRepo().alias())
-					? mappedModelConfig.getRepo().alias()
-					: mappedModelConfig.getAlias();
-		}
-		else {
-			ModelConfig<?> modelConfig = p.getType().findIfNested().getModelConfig();
-			alias = modelConfig.getRepo() != null && StringUtils.isNotBlank(modelConfig.getRepo().alias())
-					? modelConfig.getRepo().alias()
-					: modelConfig.getAlias();
-		}
+		final String alias = getAlias(p, mappedParam);
 		
 		pageFilter.getFilters().forEach(f -> {
-
 			String paramPath = findMappedParamPath(f.getCode(), param);
-//			String paramPath = f.getCode();
-//			if(mappedParam != null) {
-//				MappedParamConfig<?, ?> mappedElemParam = (MappedParamConfig<?, ?>) currentParam;
-//				String mappedPath = mappedElemParam.getPath().value();
-//				if (StringUtils.isNotBlank(mappedPath)) {
-//					paramPath = StringUtils.stripStart(mappedPath, "/");
-//				}
-//			}
 			ParamConfig<?> currentParam = p.getType().findIfNested().getModelConfig().findParamByPath("/" + f.getCode());
 			FilterMode filterMode = (FilterMode) currentParam.getUiStyles().getAttributes().get("filterMode");
-			String operator = filterMode.getCode();
 			
+			//TODO - once additional filter patterns are implemented, need to revisit this
 			if(StringUtils.containsIgnoreCase(currentParam.getType().getName(), "date")) {
-				LocalDate dateValue = getLocalDate(f.getValue());
-				if(dateValue != null) {
-					int year = dateValue.getYear();
-				    int month = dateValue.getMonthValue();
-				    int day = dateValue.getDayOfMonth();
-					int nextDay = day + 1;
-					
-					buildCriteria(builder, alias, paramPath, "java.time.LocalDate.of("+year+", "+month+", "+day+")", "goe");
-					buildCriteria(builder, alias, paramPath, "java.time.LocalDate.of("+year+", "+month+", "+nextDay+")", "lt");
+				buildDateCriteria(builder, alias, paramPath, f.getValue());
+			}
+			else if(ClassUtils.isAssignable(currentParam.getReferredClass(), Number.class, true)) {
+				String mode = FilterMode.getStrictMatchModeFor(filterMode);
+				if(!FilterMode.isValidNumericFilter(filterMode)) {
+					logit.error(() -> "Invalid FilterMode '"+filterMode+"' configured for param "+currentParam+ " ,Using the default match - '"+DEFAULT_STRICT_FILTER_MODE+"'");
+					mode = DEFAULT_STRICT_FILTER_MODE;
 				}
+				buildCriteria(builder, alias, paramPath, f.getValue(), mode);
+			}
+			else if(ClassUtils.isAssignable(currentParam.getReferredClass(), Boolean.class, true)) {
+				String mode = FilterMode.getStrictMatchModeFor(filterMode);
+				if(!FilterMode.isValidBooleanFilter(filterMode)) {
+					logit.error(() -> "Invalid FilterMode "+filterMode+" configured for param "+currentParam+ " ,Using the default match - '"+DEFAULT_STRICT_FILTER_MODE+"'");
+					mode = DEFAULT_STRICT_FILTER_MODE;
+				}
+				buildCriteria(builder, alias, paramPath, f.getValue(), mode);
 			}
 			else {
-				buildCriteria(builder, alias, paramPath, "'"+f.getValue()+"'", operator);
+				buildCriteria(builder, alias, paramPath, "'"+f.getValue()+"'", filterMode.getCode());
 			}
 
 		});
 		
 		return builder.toString();
+	}
+
+	private void buildDateCriteria(StringBuilder builder, final String alias, String paramPath, String value ) {
+		LocalDate dateValue = getLocalDate(value);
+		LocalDate nextDateValue = dateValue.plusDays(1);
+		if(dateValue != null) {
+			int year = dateValue.getYear();
+		    int month = dateValue.getMonthValue();
+		    int day = dateValue.getDayOfMonth();
+			
+		    int nextDateYear = nextDateValue.getYear();
+		    int nextDateMonth = nextDateValue.getMonthValue();
+		    int nextDateDay = nextDateValue.getDayOfMonth();
+			
+			buildCriteria(builder, alias, paramPath, "java.time.LocalDate.of("+year+", "+month+", "+day+")", "goe");
+			buildCriteria(builder, alias, paramPath, "java.time.LocalDate.of("+nextDateYear+", "+nextDateMonth+", "+nextDateDay+")", "lt");
+		}
+	}
+
+	private String getAlias(ParamConfig<?> p, MappedParamConfig<?, ?> mappedParam) {
+		final ModelConfig<?> modelConfig = mappedParam != null ? mappedParam.getMapsToConfig().getType().findIfNested().getModelConfig() 
+						: p.getType().findIfNested().getModelConfig();
+		return modelConfig.getRepo() != null && StringUtils.isNotBlank(modelConfig.getRepo().alias())
+				? modelConfig.getRepo().alias()
+				: modelConfig.getAlias();
 	}
 
 	private void buildCriteria(StringBuilder builder, String alias, String paramPath, String value, String operator) {

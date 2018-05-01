@@ -38,7 +38,7 @@ public class DefaultActionExecutorReplace extends AbstractCommandExecutor<Boolea
 		
 		Param<Object> p = findParamByCommandOrThrowEx(eCtx);
 		
-		Object state = getConverter().read(p.getConfig(), eCtx.getCommandMessage().getRawPayload());
+		Object state = getConverter().toReferredType(p.getConfig(), eCtx.getCommandMessage().getRawPayload());
 		
 		p.setState(state);
 		
