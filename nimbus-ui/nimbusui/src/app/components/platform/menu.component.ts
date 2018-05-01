@@ -50,7 +50,6 @@ export class Menu {
     }
 
     ngOnInit() {
-        //console.log(this.element);
     }
 
 }

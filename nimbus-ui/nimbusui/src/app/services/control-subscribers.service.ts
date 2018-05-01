@@ -80,7 +80,6 @@ export class ControlSubscribers {
 
     public onChangeEventSubscriber(control:BaseControl<any>) {
         this.controlValueChanged.subscribe(($event) => {
-            //console.log($event);
             if ($event.config.uiStyles.attributes.postEventOnChange) {
                 this.pageService.postOnChange($event.path, 'state', JSON.stringify($event.leafState));
             } else if($event.config.uiStyles.attributes.postButtonUrl) {

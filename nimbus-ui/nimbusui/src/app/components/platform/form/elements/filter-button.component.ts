@@ -71,7 +71,6 @@ export class FilterButton extends BaseElement{
            }
        }
        this.buttonClickEvent.subscribe(( $event ) => {
-           //console.log( $event );
            this.pageService.processEvent( $event.fbutton.path, $event.fbutton.config.uiStyles.attributes.b,
                null, $event.fbutton.config.uiStyles.attributes.method );
        } );

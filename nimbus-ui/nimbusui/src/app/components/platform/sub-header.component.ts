@@ -56,7 +56,6 @@ export class SubHeaderCmp extends BaseElement{
     }
     ngOnChanges(changes: SimpleChanges) {
         if(changes['element']) {
-            //console.log(this.param.leafState)
         }
     }
 }

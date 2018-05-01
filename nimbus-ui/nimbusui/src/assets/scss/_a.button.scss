@@ -34,7 +34,8 @@ button:focus{
     background-color: #669fe2;
     border-color: #669fe2;
   }
-  &:active:not([disabled]){
+  &:active:not([disabled]),
+  &.active:not([disabled]){
     background-color: #669fe2;
     border-color: #669fe2;
   }
@@ -57,7 +58,8 @@ button:focus{
     background-color: #94acbc;
     border-color: #94acbc;
   }
-  &:active:not([disabled]){
+  &:active:not([disabled]),
+  &.active:not([disabled]){
     background-color: #94acbc;
     border-color: #94acbc;
   }
@@ -105,7 +107,9 @@ button:focus{
     text-decoration: underline;
       color:#006bc2;
     line-height:1.5;
-    &:hover{
+    &:hover,
+    &:active,
+    &.active{
       color: #e5991c;
       background: none;
     }

@@ -36,12 +36,10 @@ export class Value {
     @Input() element: Param;
 
     ngOnInit() {
-        //console.log(this.element.leafState);
     }
 
     ngOnChanges(changes: SimpleChanges) {
         if(changes['element']) {
-            //console.log(this.element.leafState)
         }
     }
 }

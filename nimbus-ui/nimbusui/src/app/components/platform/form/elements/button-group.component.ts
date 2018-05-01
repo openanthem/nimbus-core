@@ -48,6 +48,5 @@ export class ButtonGroup {
    constructor() { }
 
    ngOnInit() {
-    //    console.log("css class " + this.cssClass)
    }
 }
