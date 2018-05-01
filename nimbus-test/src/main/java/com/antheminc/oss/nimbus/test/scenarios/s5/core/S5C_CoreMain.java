@@ -36,8 +36,8 @@ import lombok.ToString;
 public class S5C_CoreMain extends IdLong {
 
 	@VisibleConditional(when="state=='Y'", targetPath="../tA", order=1)
-	@ExpressionConditional(when="state=='Y'", then="findParamByPath('../tB').setState('triggered')")
-	@VisibleConditional(when="findStateByPath('../tB')=='triggered'", targetPath="../tC", order=2)
+	@ExpressionConditional(when="state=='Y'", then="findParamByPath('../tB').setState('triggered')", order=2)
+	@VisibleConditional(when="findStateByPath('../tB')=='triggered'", targetPath="../tC")
 	private String triggerOrder;
 	
 	@ConfigConditional(when="state='T'", config=@Config(url="/p2/_replace?rawPayload=\"T2\""))
