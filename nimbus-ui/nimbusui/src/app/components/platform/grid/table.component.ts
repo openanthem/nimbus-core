@@ -90,6 +90,8 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     rowExpanderKey = '';
     public onChange: any = (_) => { /*Empty*/ }
     public onTouched: any = () => { /*Empty*/ }
+    defaultPattern: RegExp = /^[ A-Za-z0-9_@./#&+-]*$/;
+    numPattern: RegExp = /[\d\-\.]/;
 
     get value() {
         return this._value;
@@ -659,11 +661,11 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         return queryString;
     }
 
-    getPattern(dataType: string): string {
+    getPattern(dataType: string): any {
         if(this.isSortAsNumber(dataType, null)) {
-            return "num";
+            return this.numPattern;
         } else {
-            return "alphanum"
+            return this.defaultPattern;
         }
     }
 }

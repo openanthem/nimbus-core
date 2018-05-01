@@ -174,7 +174,7 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
     dataKey: string;
     showHeader: boolean;
     pagination: boolean;
-    pageSize: number;
+    pageSize: number = 25; //server side has a default but defaulting here so that coverter can cast to number
     postButton: boolean;
     postButtonUrl: string;
     postButtonTargetPath: string;
