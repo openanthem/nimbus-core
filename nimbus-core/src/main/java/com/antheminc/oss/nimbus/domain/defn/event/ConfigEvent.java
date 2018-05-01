@@ -35,6 +35,6 @@ public final class ConfigEvent {
 	@Event
 	@Inherited
 	public @interface OnParamCreate {
-
+		int order() default Event.DEFAULT_ORDER_NUMBER;
 	}
 }
