@@ -133,7 +133,7 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 				return STRING_NULL;
 			}
 			Object state = p.getLeafState();
-			String json = converter.write(state);
+			String json = converter.toJson(state);
 			return String.valueOf(json);
 		} else {
 			Param<?> p = param.findParamByPath(pathToResolve) != null? param.findParamByPath(pathToResolve): param.getParentModel().findParamByPath(pathToResolve);

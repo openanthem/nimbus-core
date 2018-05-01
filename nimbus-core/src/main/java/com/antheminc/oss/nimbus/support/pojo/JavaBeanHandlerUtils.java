@@ -41,7 +41,7 @@ public final class JavaBeanHandlerUtils {
 	public static ValueAccessor constructValueAccessor(Class<?> beanClass, String fieldName) {
 		try {
 			Field f = FieldUtils.getField(beanClass, fieldName, true);
-			boolean b = f.getType().equals(Boolean.class) || f.getType().equals(boolean.class);
+			boolean b = f.getType().equals(boolean.class);
 			
 			String getterName = (b ? "is" : "get") + StringUtils.capitalize(fieldName);
 			String setterName = "set" + StringUtils.capitalize(fieldName);

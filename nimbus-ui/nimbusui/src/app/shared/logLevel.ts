@@ -15,35 +15,21 @@
  * limitations under the License.
  */
 'use strict';
-import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { STOMPService, StateLookup } from './stomp.service';
+import { Enum } from './validationconstraints.enum';
 
 /**
- * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
  * \@whatItDoes 
  * 
  * \@howToUse 
  * 
- * STOMP connection status as a component
  */
-@Component({
-	selector: 'stomp-status',
-	template: `
-		<div class="col-xs-2 pull-right">
-			<p> STOMP Status : <span id="status"> {{state|async}} </span> </p>
-		</div>
-	`
-})
-export class STOMPStatusComponent implements OnInit {
 
-	public state: Observable<string>;
+export class LogLevel extends Enum<string> {
 
-	constructor(private _stompService: STOMPService) { }
-
-	ngOnInit() {
-		this.state = this._stompService.state
-			.map( (state:number) => StateLookup[state] );
-	}
+    public static readonly info = new Enum('info');
+    public static readonly warn = new Enum('warn');
+    public static readonly error = new Enum('error');
+    public static readonly debug = new Enum('debug');
+    public static readonly trace = new Enum('trace');
 }

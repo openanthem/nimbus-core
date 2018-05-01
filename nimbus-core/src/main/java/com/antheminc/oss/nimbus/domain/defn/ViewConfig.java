@@ -292,6 +292,7 @@ public class ViewConfig {
 		boolean postEventOnChange() default false;
 		boolean clearAllFilters() default false;
 		boolean export() default false;
+		String dataKey() default "id";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
@@ -654,6 +655,10 @@ public class ViewConfig {
 		boolean postEventOnChange() default false;
 		String controlId() default "";
 		String help() default "";
+		boolean readonlyInput() default false;
+		boolean monthNavigator() default false;
+		boolean yearNavigator() default false;
+		String yearRange() default "1910:2050";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
@@ -861,12 +866,12 @@ public class ViewConfig {
 		boolean expandable() default true;
 		SortAs sortAs() default SortAs.DEFAULT; // number, text
 		String placeholder() default "";
-		boolean ignoreRowExpander() default true;
+		boolean rowExpander() default false;
 		
 		public enum FilterMode {
-			equals("eq"),
-			contains("contains"),
-			endsWith("endsWith"),
+			equals("equalsIgnoreCase"),
+			contains("containsIgnoreCase"),
+			endsWith("endsWithIgnoreCase"),
 			in("in");
 			
 			@Getter @Setter
@@ -874,6 +879,31 @@ public class ViewConfig {
 			
 			FilterMode(String code) {
 				this.code = code;
+			}
+			
+			public static String getStrictMatchModeFor(FilterMode mode) {
+				if(mode == null)
+					return null;
+				
+				if(mode == FilterMode.equals)
+					return "eq";
+				
+				return mode.getCode();
+			}
+			
+			//TODO add more filters as valid as they are available (e.g. gt, gte, lt, lte etc...)
+			public static boolean isValidNumericFilter(FilterMode mode) {
+				if(mode == FilterMode.equals || mode == FilterMode.in) {
+					return true;
+				}
+				return false;
+			}
+			
+			public static boolean isValidBooleanFilter(FilterMode mode) {
+				if(mode == FilterMode.equals || mode == FilterMode.in) {
+					return true;
+				}
+				return false;
 			}
 			
 		}

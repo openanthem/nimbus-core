@@ -1,4 +1,3 @@
-import { ViewConfig } from './param-annotations.enum';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -16,6 +15,12 @@ import { ViewConfig } from './param-annotations.enum';
  * limitations under the License.
  */
 'use strict';
+
+import { ConfigService } from './../services/config.service';
+import { Converter } from './object.conversion';
+import { Serializable } from './serializable';
+import { ViewConfig } from './param-annotations.enum';
+
 /**
  * \@author Sandeep.Mantha
  * \@whatItDoes 
@@ -23,9 +28,6 @@ import { ViewConfig } from './param-annotations.enum';
  * \@howToUse 
  * 
  */
-import { ConfigService } from './../services/config.service';
-import { Converter } from './object.conversion';
-import { Serializable } from './serializable';
 
 export class ParamConfig implements Serializable<ParamConfig,string> {
     uiStyles: UiStyle;
@@ -169,9 +171,10 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
     postEventOnChange: boolean;
     draggable: boolean;
     rowSelection: boolean;
+    dataKey: string;
     showHeader: boolean;
     pagination: boolean;
-    pageSize: number;
+    pageSize: number = 25; //server side has a default but defaulting here so that coverter can cast to number
     postButton: boolean;
     postButtonUrl: string;
     postButtonTargetPath: string;
@@ -202,7 +205,12 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
     export: boolean;
     clearLabel: string;
     acceptLabel: string;
-    ignoreRowExpander: boolean;
+    rowExpander: boolean;
+    readonlyInput: boolean;
+	monthNavigator: boolean;
+	yearNavigator: boolean;
+    yearRange: string;
+
     deserialize( inJson ) {
         let obj = this;
         obj = Converter.convert(inJson,obj);

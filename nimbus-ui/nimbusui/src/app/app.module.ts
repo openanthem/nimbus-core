@@ -37,12 +37,13 @@ import { HttpModule, BrowserXhr } from '@angular/http';
 import { ReactiveFormsModule }  from '@angular/forms';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { APP_BASE_HREF } from '@angular/common';
-import {MessagesModule} from 'primeng/messages';
-import {MessageModule} from 'primeng/message';
+import { MessagesModule } from 'primeng/messages';
+import { MessageModule } from 'primeng/message';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
     FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
     ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule  } from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
+import { KeyFilterModule } from 'primeng/keyfilter';
 import { NavLinkRouter } from './directives/nav-link-router.directive';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { WindowRefService } from './services/window-ref.service';
@@ -105,6 +106,7 @@ import { STOMPStatusComponent } from './services/stomp-status.component';
 import { AuthenticationService } from './services/authentication.service';
 import { FileService } from './services/file.service';
 import { ServiceConstants } from "./services/service.constants";
+import { LoggerService } from './services/logger.service';
 // Routes
 import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app.routing.module';
@@ -122,7 +124,6 @@ import { LinkPipe } from './pipes/link.pipe';
 import { SelectItemPipe } from './pipes/select-item.pipe';
 import { LoaderComponent } from './components/platform/loader/loader.component';
 import {DateTimeFormatPipe} from './pipes/date.pipe';
-
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -159,7 +160,8 @@ import {DateTimeFormatPipe} from './pipes/date.pipe';
         AccordionModule,
         GrowlModule,
         MessagesModule,
-        MessageModule
+        MessageModule,
+        KeyFilterModule
     ],
     declarations: [ AppComponent, STOMPStatusComponent, FlowWrapper, PageContent, PageNotfoundComponent, StaticText,
         Tile, Section, Header, Form, FormElement, InputText, ComboBox, RadioButton, Signature, DateControl, CheckBoxGroup,
@@ -182,7 +184,7 @@ import {DateTimeFormatPipe} from './pipes/date.pipe';
          { provide: HTTP_INTERCEPTORS, useClass: CustomHttpClientInterceptor, multi: true },
          { provide: LocationStrategy, useClass: HashLocationStrategy }, GridService,
          { provide: APP_BASE_HREF, useValue: ServiceConstants.APP_CONTEXT },
-         AuthenticationService, BreadcrumbService, LoaderService, FileService, LayoutService, WindowRefService ],
+         AuthenticationService, BreadcrumbService, LoaderService, FileService, LayoutService, WindowRefService, LoggerService ],
     bootstrap: [ AppComponent ]
 })
 export class AppModule { }

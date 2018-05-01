@@ -84,11 +84,14 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     selectedRows: any[];
     showFilters: boolean = false;
     hasFilters: boolean = false;
+    filterTimeout: any;
     rowStart = 0;
     rowEnd = 0;
     rowExpanderKey = '';
     public onChange: any = (_) => { /*Empty*/ }
     public onTouched: any = () => { /*Empty*/ }
+    defaultPattern: RegExp = /^[ A-Za-z0-9_@./#&+-]*$/;
+    numPattern: RegExp = /[\d\-\.]/;
 
     get value() {
         return this._value;
@@ -152,11 +155,15 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
                             column['exportable'] = true;
                         }
                     }
-                    if (column.uiStyles.attributes.ignoreRowExpander != undefined && !column.uiStyles.attributes.ignoreRowExpander) {
+                    if (column.uiStyles.attributes.rowExpander) {
                         this.rowExpanderKey = column.code;
                     }
                 }
             });
+        }
+        // include row selection checkbox to column count
+        if (this.element.config.uiStyles.attributes.rowSelection) {
+            this.columnsToShow ++;
         }
 
         if (this.element.gridList != null && this.element.gridList.length > 0) {
@@ -189,8 +196,11 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         }
 
         if (this.element.config.uiStyles.attributes.onLoad === true) {
-            let queryString: string = this.getQueryString(0, undefined);
-            this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'GET', queryString);
+            // If table is set to lazyload, the loadDataLazy(event) method will handle the initialization
+            if (!this.element.config.uiStyles.attributes.lazyLoad) {
+                let queryString: string = this.getQueryString(0, undefined);
+                this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'GET', queryString);
+            }
         }
 
         this.rowHover = true;
@@ -254,6 +264,13 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         } else {
             return col.uiStyles.attributes.placeholder;
         }
+    }
+
+    showHeader(col: ParamConfig) {
+        if (col.uiStyles.attributes.hidden == false && col.uiStyles.attributes.alias != ViewComponent.gridRowBody.toString()) {
+            return true;
+        } 
+        return false;
     }
 
     showValue(col: ParamConfig) {
@@ -322,10 +339,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     }
 
     toggleFilter(event: any) {
-        //console.log(event);
         this.showFilters = !this.showFilters;
-
-        // this.dt.reset();
     }
 
     postGridData(obj) {
@@ -346,9 +360,6 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     }
 
     onRowClick(event: any) {
-    }
-
-    onRowUnSelect(event) {
     }
 
     postOnChange(col: ParamConfig, item: any) {
@@ -454,49 +465,42 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         // return (value >= filter[0] && value<=filter[1])
     }
 
-    dateFilter(e: any, dt: Table, field: string, filterMatchMode: string, datePattern?: string, dateType?: string) {
+    dateFilter(e: any, dt: Table, field: string, datePattern?: string, dateType?: string) {
 
         if (dateType == 'LocalDate' || dateType == 'date' || dateType == 'Date') {
-
             datePattern = (!datePattern || datePattern == "") ? "MM/DD/YYYY" : datePattern;
 
-            if (e.target.value.length == '0') {
-                dt.filter(e.target.value, field, "startsWith");
+            if (e.toLocaleDateString().length == '0') {
+                dt.filter(e.toLocaleDateString(), field, "startsWith");
+            } else {
+                if (moment(e.toLocaleDateString(), datePattern.toUpperCase(), false).isValid()) {
+                    dt.filter(moment(e.toLocaleDateString(), datePattern.toUpperCase()).toDate(), field, "between");
+                }
             }
-            else {
-                // let filter: any[] = [];
+        } else if (dateType == 'LocalDateTime' || dateType == 'ZonedDateTime') {
 
-                if (moment(e.target.value, datePattern.toUpperCase(), true).isValid()) {
-                    // let formatedDate = moment(e.target.value, datePattern.toUpperCase()).format('MM/DD/YYYY');
-                    //    var localStartDate= moment.utc(e.target.value, datePattern.toUpperCase()).toDate();
-                    //    var localEndDate=moment.utc(e.target.value,  datePattern.toUpperCase()).endOf('day').toDate();
-                    //    filter[0]=localStartDate; filter[1]=localEndDate;
-                    //    dt.filter(filter, field, "between");
-                    dt.filter(moment(e.target.value, datePattern.toUpperCase()).toDate(), field, "between");
+            if (e.toLocaleDateString().length == '0') {
+                dt.filter(e.toLocaleDateString(), field, "startsWith");
+            } else {
+                if (moment(e.toLocaleDateString(), "MM/DD/YYYY", true).isValid()) {
+                    dt.filter(moment(e.toLocaleDateString(), "MM/DD/YYYY").toDate(), field, "between");
                 }
             }
         }
 
-        else if (dateType == 'LocalDateTime' || dateType == 'ZonedDateTime') {
-
-            if (e.target.value.length == '0') {
-                dt.filter(e.target.value, field, "startsWith");
-            }
-            else {
-
-                if (moment(e.target.value, "MM/DD/YYYY", true).isValid()) {
-
-                    dt.filter(moment(e.target.value, "MM/DD/YYYY").toDate(), field, "between");
-                }
-            }
-        }
-
-        this.totalRecords = dt.filteredValue.length;
+        // this.totalRecords = dt.filteredValue.length;
         this.updatePageDetailsState();
     }
 
     inputFilter(e: any, dt: Table, field: string, filterMatchMode: string) {
-        dt.filter(e.target.value, field, filterMatchMode);
+        // Wait for 500 ms before triggering the filter. This is to give time for the user to enter the criteria 
+        if (this.filterTimeout) {
+            clearTimeout(this.filterTimeout);
+        }
+
+        this.filterTimeout = setTimeout(() => {
+            dt.filter(e.target.value, field, filterMatchMode);
+        }, 500);
     }
 
     clearFilter(txt: any, dt: Table, field: string, index) {
@@ -601,8 +605,6 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     }
 
     loadDataLazy(event:any) {
-        console.log(event);
-        // Pagination Logic
         let pageSize: number = this.element.config.uiStyles.attributes.pageSize;
         let pageIdx: number = 0;        
         let first: number = event.first;
@@ -625,19 +627,25 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         }
 
         // Filter Logic
-        let filterCriteria: GenericDomain = new GenericDomain();
+        let filterCriteria: any[] = [];
         let filterKeys: string[] = [];
         if (event.filters) {
             filterKeys = Object.keys(event.filters);
         }
         filterKeys.forEach(key => {
-            filterCriteria.addAttribute(key, event.filters[key].value);
+            let filter: any = {};
+            filter['code'] = key;
+            filter['value'] = event.filters[key].value;
+            filterCriteria.push(filter);
         })
-
+        let payload: GenericDomain = new GenericDomain();
+        if (filterCriteria.length > 0) {
+            payload.addAttribute('filters', filterCriteria);
+        }
         // query params - &pageSize=5&page=0&sortBy=attr_String,DESC
         // request body - filterCriteria
         let queryString: string = this.getQueryString(pageIdx, sortBy);
-        this.pageSvc.processEvent(this.element.path, '$execute', filterCriteria, HttpMethod.POST.value, queryString);
+        this.pageSvc.processEvent(this.element.path, '$execute', payload, HttpMethod.POST.value, queryString);
 
     }
 
@@ -651,5 +659,13 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
             queryString = queryString + '&pageSize=' + pageSize + '&page=' + pageIdx;
         }
         return queryString;
+    }
+
+    getPattern(dataType: string): any {
+        if(this.isSortAsNumber(dataType, null)) {
+            return this.numPattern;
+        } else {
+            return this.defaultPattern;
+        }
     }
 }

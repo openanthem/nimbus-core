@@ -15,7 +15,9 @@ body{color:#4c4c4c;}
 .text-bold {
     font-weight: bold;
 }
-
+.ui-table .ui-table-thead > tr > th > span.overflowVisible,.overflowVisible {
+    overflow: visible;
+}
 html {
     font-size: 12px;
     line-height: 15px;
@@ -528,8 +530,12 @@ $answerWidth: 99%-$questionWidth;
     .form-checkrow label, .form-checkrow label:first-of-type {
         margin-bottom: 0;
     }
-    .ui-dropdown label:first-of-type, .ui-dropdown label {
-        margin: 1px 0 0 0;
+    .ui-dropdown {
+        margin-left: 20px;
+         label:first-of-type, 
+         .ui-dropdown label {
+            margin: 1px 0 0 0;
+        }
     }
     input {
         margin-left: 20px;
