@@ -106,7 +106,7 @@ public class BPMGatewayTests extends AbstractFrameworkIngerationPersistableTests
 		MockHttpServletRequest request4 = MockHttpRequestBuilder.withUri(updateUri)
 				.addAction(Action._update)
 				.getMock();
-		holder = (Holder<MultiOutput>)controller.handlePost(request4, converter.write("Assigned"));	
+		holder = (Holder<MultiOutput>)controller.handlePost(request4, converter.toJson("Assigned"));	
 		
 		//Fetch the model again to make sure the bpmn progressed and set the value for parameterAfterHumanTask
 		request3 = MockHttpRequestBuilder.withUri(BPM_SF_PARAM_ROOT).addRefId(domainRoot_refId)
@@ -134,7 +134,7 @@ public class BPMGatewayTests extends AbstractFrameworkIngerationPersistableTests
 		MockHttpServletRequest request4 = MockHttpRequestBuilder.withUri(updateUri)
 				.addAction(Action._update)
 				.getMock();
-		holder = (Holder<MultiOutput>)controller.handlePost(request4, converter.write("Assigned"));	
+		holder = (Holder<MultiOutput>)controller.handlePost(request4, converter.toJson("Assigned"));	
 		
 		MockHttpServletRequest request3 = MockHttpRequestBuilder.withUri(BPM_CV_PARAM_ROOT).addRefId(domainRoot_refId)
 				.addAction(Action._get)
@@ -161,9 +161,9 @@ public class BPMGatewayTests extends AbstractFrameworkIngerationPersistableTests
 		MockHttpServletRequest request4 = MockHttpRequestBuilder.withUri(updateUri)
 				.addAction(Action._update)
 				.getMock();
-		holder = (Holder<MultiOutput>)controller.handlePost(request4, converter.write("Step1"));	
-		holder = (Holder<MultiOutput>)controller.handlePost(request4, converter.write("Step2"));	
-		holder = (Holder<MultiOutput>)controller.handlePost(request4, converter.write("Complete"));	
+		holder = (Holder<MultiOutput>)controller.handlePost(request4, converter.toJson("Step1"));	
+		holder = (Holder<MultiOutput>)controller.handlePost(request4, converter.toJson("Step2"));	
+		holder = (Holder<MultiOutput>)controller.handlePost(request4, converter.toJson("Complete"));	
 		
 		
 		String getUri = BPM_DP_PARAM_ROOT + ":"+domainRoot_refId;
