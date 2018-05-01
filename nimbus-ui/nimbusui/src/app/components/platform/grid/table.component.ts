@@ -90,6 +90,8 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     rowExpanderKey = '';
     public onChange: any = (_) => { /*Empty*/ }
     public onTouched: any = () => { /*Empty*/ }
+    defaultPattern: RegExp = /^[ A-Za-z0-9_@./#&+-]*$/;
+    numPattern: RegExp = /[\d\-\.]/;
 
     get value() {
         return this._value;
@@ -158,6 +160,10 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
                     }
                 }
             });
+        }
+        // include row selection checkbox to column count
+        if (this.element.config.uiStyles.attributes.rowSelection) {
+            this.columnsToShow ++;
         }
 
         if (this.element.gridList != null && this.element.gridList.length > 0) {
@@ -260,6 +266,13 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         }
     }
 
+    showHeader(col: ParamConfig) {
+        if (col.uiStyles.attributes.hidden == false && col.uiStyles.attributes.alias != ViewComponent.gridRowBody.toString()) {
+            return true;
+        } 
+        return false;
+    }
+
     showValue(col: ParamConfig) {
         if (col.uiStyles.attributes.alias != 'Link' && col.uiStyles.attributes.alias != 'LinkMenu' && col.type.nested == false) {
             return true;
@@ -326,10 +339,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     }
 
     toggleFilter(event: any) {
-        //console.log(event);
         this.showFilters = !this.showFilters;
-
-        // this.dt.reset();
     }
 
     postGridData(obj) {
@@ -350,9 +360,6 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     }
 
     onRowClick(event: any) {
-    }
-
-    onRowUnSelect(event) {
     }
 
     postOnChange(col: ParamConfig, item: any) {
@@ -598,8 +605,6 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     }
 
     loadDataLazy(event:any) {
-        // console.log(event);
-        // Pagination Logic
         let pageSize: number = this.element.config.uiStyles.attributes.pageSize;
         let pageIdx: number = 0;        
         let first: number = event.first;
@@ -654,5 +659,13 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
             queryString = queryString + '&pageSize=' + pageSize + '&page=' + pageIdx;
         }
         return queryString;
+    }
+
+    getPattern(dataType: string): any {
+        if(this.isSortAsNumber(dataType, null)) {
+            return this.numPattern;
+        } else {
+            return this.defaultPattern;
+        }
     }
 }

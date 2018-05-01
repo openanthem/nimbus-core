@@ -114,9 +114,7 @@ export class AccordionGroup extends BaseElement implements OnDestroy {
         
     }
     animationDone($event) {
-        //console.log(this);
-        //use this for scroll to focus after open
-       
+  
         if ( this._state =='openPanel') {
             this.accordion.closeOthers(this).then(success => {
                 let selElem = this.elementRef.nativeElement.querySelector('#'+this.title);

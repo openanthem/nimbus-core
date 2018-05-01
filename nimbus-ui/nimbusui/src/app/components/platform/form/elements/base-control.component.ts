@@ -61,7 +61,6 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
     setState(event:any,frmInp:any) {
         frmInp.element.leafState = event;
         this.cd.markForCheck();
-        //console.log(frmInp.element.leafState);
     }
 
     emitValueChangedEvent(formControl:any,$event:any) {
