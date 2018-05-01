@@ -174,7 +174,7 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
     dataKey: string;
     showHeader: boolean;
     pagination: boolean;
-    pageSize: number;
+    pageSize: number = 5;
     postButton: boolean;
     postButtonUrl: string;
     postButtonTargetPath: string;
