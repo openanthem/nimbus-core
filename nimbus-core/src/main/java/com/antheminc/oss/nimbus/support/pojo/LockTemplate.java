@@ -38,14 +38,19 @@ public class LockTemplate {
 		public void execute();
 	}
 	
+//	final public <L> L execute(CallbackReturn<L> cb) {
+//		return cb.execute();
+//	}
+//	
+//	final public void execute(CallbackVoid cb) {
+//		cb.execute();
+//	}
+	
+	
 	final private Lock lock;
 
 	public LockTemplate() {
 		this.lock = new ReentrantLock();
-	}
-	
-	public LockTemplate(Lock lock) {
-		this.lock = lock;
 	}
 	
 	final public <L> L execute(CallbackReturn<L> cb) {
@@ -65,4 +70,5 @@ public class LockTemplate {
 			lock.unlock();
 		}
 	}
+	
 }

@@ -15,7 +15,8 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state;
 
-import java.beans.PropertyDescriptor;
+import java.lang.invoke.MethodHandle;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -23,6 +24,7 @@ import java.util.function.Supplier;
 import javax.annotation.concurrent.Immutable;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.antheminc.oss.nimbus.domain.cmd.Action;
@@ -38,6 +40,7 @@ import com.antheminc.oss.nimbus.support.pojo.LockTemplate;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * @author Soham Chakravarti
@@ -46,11 +49,9 @@ import lombok.Setter;
 public interface EntityState<T> {
 
 	String getPath();
-	
 	String getBeanPath();
 	
 	EntityConfig<T> getConfig();
-
 	String getConfigId();
 	
 	<S> Model<S> findModelByPath(String path);
@@ -71,20 +72,26 @@ public interface EntityState<T> {
 	
 	void fireRules();
 	
+	boolean isRoot();
 	ExecutionModel<?> getRootExecution();
-	
 	Model<?> getRootDomain();
-	
+
 	LockTemplate getLockTemplate();
 	
-	boolean isRoot();
-	
 	boolean isMapped();
-	
 	Mapped<T, ?> findIfMapped();
 	
-	public interface Mapped<T, M> extends EntityState<T> {
+	@Getter @RequiredArgsConstructor @ToString
+	public static class ValueAccessor {
+		final private Method readMethod;
+		final private Method writeMethod;
+
+		final private MethodHandle readMethodHandle;
+		final private MethodHandle writeMethodHandle;
 		
+	}
+	
+	public interface Mapped<T, M> extends EntityState<T> {
 		@Override
 		boolean isMapped();
 		
@@ -92,7 +99,6 @@ public interface EntityState<T> {
 	}
 	
 	public interface ExecutionModel<T> extends Model<T> {
-		
 		@Override
 		boolean isRoot();
 		
@@ -109,7 +115,6 @@ public interface EntityState<T> {
 	}
 	
 	public interface Model<T> extends EntityState<T> { 
-		
 		@Override
 		ModelConfig<T> getConfig();
 		
@@ -121,8 +126,9 @@ public interface EntityState<T> {
 		
 		@Override
 		Model<?> getRootDomain();
-		ExecutionModel<T> findIfRoot();
 
+		ExecutionModel<T> findIfRoot();
+		
 		@Override
 		MappedModel<T, ?> findIfMapped();
 		
@@ -162,6 +168,7 @@ public interface EntityState<T> {
 		@Override
 		ListElemParam<T> add();
 		
+		
 		ParamConfig<T> getElemConfig();
 		
 		String getElemConfigId();
@@ -181,6 +188,7 @@ public interface EntityState<T> {
 		
 		T getLeafState();
 		
+		
 		Model<?> getParentModel();
 		
 		StateType getType();
@@ -189,34 +197,28 @@ public interface EntityState<T> {
 		void setActiveValidationGroups(Class<? extends ValidationGroup>[] activeValidationGroups);
 		
 		boolean isLeaf();
+		LeafParam<T> findIfLeaf();
 		
 		boolean isLeafOrCollectionWithLeafElems();
 		
-		LeafParam<T> findIfLeaf();
-		
 		MappedParam<T, ?> findIfMapped();
 		
-		boolean isCollection();
-		
 		boolean isNested();
-		
 		Model<T> findIfNested();
 		
-		boolean isCollectionElem();
-		
+		boolean isCollection();
 		ListParam findIfCollection();
-		
+
+		boolean isCollectionElem();
 		ListElemParam<T> findIfCollectionElem();
-		
+
 		boolean isLinked();
-		
 		Param<?> findIfLinked();
-		
+
 		boolean isTransient();
-		
 		MappedTransientParam<T, ?> findIfTransient();
 		
-		PropertyDescriptor getPropertyDescriptor();
+		ValueAccessor getValueAccessor();
 		
 		boolean isActive();
 		void activate();
@@ -285,7 +287,6 @@ public interface EntityState<T> {
 	}
 	
 	public interface MappedParam<T, M> extends Param<T>, Mapped<T, M>, Notification.Consumer<M> {
-		
 		@Override
 		MappedParam<T, M> findIfMapped();
 
@@ -296,17 +297,15 @@ public interface EntityState<T> {
 	}
 	
 	public interface MappedTransientParam<T, M> extends MappedParam<T, M> {
-		
 		@Override
 		boolean isTransient();
-		
 		@Override
 		MappedTransientParam<T, M> findIfTransient();
 
+		
 		boolean isAssinged();
 
 		void assignMapsTo();
-		
 		void assignMapsTo(String rootMapsToPath);
 		void assignMapsTo(Param<M> mapsToTransient);
 		void unassignMapsTo();
@@ -314,7 +313,7 @@ public interface EntityState<T> {
 		void flush();
 	}
 	
-	public interface ListBehavior<T> {		
+	public interface ListBehavior<T> {
 		String toElemId(int i);
 		int fromElemId(String elemId);
 		
@@ -342,17 +341,23 @@ public interface EntityState<T> {
 		@Override
 		MappedListParam<T, ?> findIfMapped();
 		
-		boolean isCollection();
-		
 		boolean isLeafElements();
-		
+
+		@Override
+		boolean isCollection();
+
 		@Override
 		ListParam<T> findIfCollection();
-		
+
 		@Override
 		ListElemParam<T> add();
 		
+		Pageable getPageable();
+		Supplier<Long> getTotalCountSupplier();
+		
+		Page<T> getPage();
 		void setPage(List<T> content, Pageable pageable, Supplier<Long> totalCountSupplier);
+		
 	}
 	
 	public interface MappedListParam<T, M> extends ListParam<T>, MappedParam<List<T>, List<M>> {

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 'use strict';
-import { Param } from '../../../../shared/Param';
+import { Param } from '../../../../shared/param-state';
 import { Component, forwardRef, Input,Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, NgModel} from '@angular/forms';
 import { WebContentSvc } from '../../../../services/content-management.service';
@@ -88,7 +88,6 @@ export class MultiSelectListBox extends BaseElement{
         if( this.form.controls[this.element.config.code]!= null) {
             this.form.controls[this.element.config.code].valueChanges.subscribe(
                 ($event) => { 
-                    // console.log($event);
                     this.setState($event,this); 
                 });
         }

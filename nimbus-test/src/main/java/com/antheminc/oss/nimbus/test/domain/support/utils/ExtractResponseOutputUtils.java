@@ -15,7 +15,6 @@
  */
 package com.antheminc.oss.nimbus.test.domain.support.utils;
 
-import java.io.Serializable;
 import java.util.Set;
 
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
@@ -41,13 +40,9 @@ public class ExtractResponseOutputUtils {
 		return MultiOutput.class.cast(Holder.class.cast(controllerResp).getState()).getOutputs().get(0).getAggregatedEvents();
 	}
 
-	
-	public static <T> T extractOutput(Object controllerResp, int j) {
-		return extractOutput(controllerResp, 0, j);
-	}
-	
 	@SuppressWarnings("unchecked")
-	public static <T> T extractOutput(Object controllerResp, int i, int j) {
-		return (T)((MultiOutput)MultiOutput.class.cast(Holder.class.cast(controllerResp).getState()).getOutputs().get(i)).getOutputs().get(j).getValue();
+	public static <T> T extractOutput(Object controllerResp, int i) {
+		return (T)MultiOutput.class.cast(Holder.class.cast(controllerResp).getState()).getOutputs().get(i).getValue();
 	}
+
 }

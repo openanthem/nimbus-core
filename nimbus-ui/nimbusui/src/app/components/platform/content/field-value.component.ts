@@ -18,7 +18,7 @@
 
 import { Component, Input } from '@angular/core';
 import { WebContentSvc } from '../../../services/content-management.service';
-import { Param } from '../../../shared/Param';
+import { Param } from '../../../shared/param-state';
 import { BaseElement } from '../base-element.component';
 /**
  * \@author Dinakar.Meda

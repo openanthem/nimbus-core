@@ -22,9 +22,9 @@ import com.antheminc.oss.nimbus.domain.defn.MapsTo.Path;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo.Type;
 import com.antheminc.oss.nimbus.domain.defn.extension.AccessConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.AccessConditional.Permission;
-import com.antheminc.oss.nimbus.test.scenarios.s1.core.S1C_AnotherMain;
 import com.antheminc.oss.nimbus.domain.defn.extension.ActivateConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.EnableConditional;
+import com.antheminc.oss.nimbus.test.scenarios.s1.core.S1C_AnotherMain;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -16,7 +16,7 @@
  */
 'use strict';
 import { Component, Input, SimpleChanges } from '@angular/core';
-import { Param } from '../../shared/Param';
+import { Param } from '../../shared/param-state';
 import { WebContentSvc } from '../../services/content-management.service';
 import { BaseElement } from './base-element.component';
 
@@ -56,7 +56,6 @@ export class SubHeaderCmp extends BaseElement{
     }
     ngOnChanges(changes: SimpleChanges) {
         if(changes['element']) {
-            //console.log(this.param.leafState)
         }
     }
 }

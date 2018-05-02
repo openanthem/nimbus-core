@@ -10,6 +10,7 @@ import { HttpModule } from '@angular/http';
 import { ActivatedRoute, Route, ActivatedRouteSnapshot, UrlSegment, Params, Data, ParamMap } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
+import { TableModule } from 'primeng/table';
 
 import { PageContent } from './page-content.component';
 import { Tile } from '../tile.component';
@@ -57,6 +58,7 @@ import { PageService } from '../../../services/page.service';
 import { CustomHttpClient } from '../../../services/httpclient.service';
 import { LoaderService } from '../../../services/loader.service';
 import { ConfigService } from '../../../services/config.service';
+import { DataTable } from '../grid/table.component';
 
 export class MockActivatedRoute implements ActivatedRoute {
   snapshot: ActivatedRouteSnapshot;
@@ -146,7 +148,8 @@ describe('PageContent', () => {
         RadioButton,
         Calendar,
         DateControl,
-        Signature
+        Signature,
+        DataTable
        ],
        imports: [
         GrowlModule,
@@ -164,7 +167,8 @@ describe('PageContent', () => {
         CalendarModule,
         RouterTestingModule,
         HttpClientModule,
-        HttpModule
+        HttpModule,
+        TableModule
        ],
        providers: [
         {provide: WebContentSvc, useClass: MockWebContentSvc},

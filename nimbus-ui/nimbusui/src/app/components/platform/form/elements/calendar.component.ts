@@ -20,7 +20,7 @@ import { Component, forwardRef, ViewChild, ChangeDetectorRef } from '@angular/co
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { PageService } from '../../../../services/page.service';
-import { Param } from '../../../../shared/Param';
+import { Param } from '../../../../shared/param-state';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 
 /**
@@ -54,6 +54,10 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
             [timeOnly]="element.config?.uiStyles?.attributes?.timeOnly"
             [showTime]="element.config?.uiStyles?.attributes?.showTime" 
             [hourFormat]="element.config?.uiStyles?.attributes?.hourFormat" 
+            [monthNavigator]="element.config?.uiStyles?.attributes?.monthNavigator"
+            [yearNavigator]="element.config?.uiStyles?.attributes?.yearNavigator"
+            [readonlyInput]="element.config?.uiStyles?.attributes?.readonlyInput"
+            [yearRange]="element.config?.uiStyles?.attributes?.yearRange"
             [disabled]="disabled">
         </p-calendar>
    `

@@ -17,12 +17,14 @@
     <nm-pickList id="{{id}}" *ngIf="element.config?.uiStyles?.attributes?.alias == 'PickList'" [formControlName]="element.config?.code" ngDefaultControl [element]="element" [form]="form"></nm-pickList>
     <nm-upload id="{{id}}" *ngIf="element.config?.uiStyles?.attributes?.alias == 'FileUpload'" [formControlName]="element.config?.code" [element]="element" [form]="form"></nm-upload>
     <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias == 'Grid'">
-        <infinite-scroll-grid
+        <nm-table
             [element]="element" [form]="form" [formControlName]="element.config?.code"
             [params]="element?.config?.type?.elementConfig?.type?.model?.paramConfigs" (onScrollEvent)="onScrollEvent()">
-        </infinite-scroll-grid>
+        </nm-table>
     </ng-template>
-    <ng-template ngFor let-msg [ngForOf]="getMessages()">
-        <nm-message [messageContext]="msg.context"  [messageArray]="msg.messageArray" ></nm-message>
+    <ng-template [ngIf]="!isPristine">
+        <ng-template ngFor let-msg [ngForOf]="getMessages()">
+            <nm-message [messageContext]="msg.context"  [messageArray]="msg.messageArray" ></nm-message>
+        </ng-template>
     </ng-template>
 </div>

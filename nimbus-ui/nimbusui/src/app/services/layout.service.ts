@@ -17,15 +17,17 @@
 'use strict';
 import { WebContentSvc } from './content-management.service';
 import { Component, EventEmitter, Injectable } from '@angular/core';
-import { Model, Result, UiAttribute, ViewRoot } from '../shared/app-config.interface';
-import { Param } from '../shared/Param';
+import { Result, ViewRoot } from '../shared/app-config.interface';
+import { UiAttribute } from '../shared/param-config';
+import { Param, Model } from '../shared/param-state';
 import { ServiceConstants } from './service.constants';
 import { PageService } from './page.service';
 import { ConfigService } from './config.service';
 import { CustomHttpClient } from './httpclient.service';
 import { AppBranding, Layout, LinkConfig, TopBarConfig, FooterConfig, GlobalNavConfig } from '../model/menu-meta.interface';
 import { GenericDomain } from '../model/generic-domain.model';
-
+import { ViewConfig, ViewComponent } from './../shared/param-annotations.enum';
+import { LoggerService } from './logger.service';
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 
@@ -49,7 +51,8 @@ export class LayoutService {
     constructor(public http: CustomHttpClient, 
         private wcs: WebContentSvc,
         private pageSvc: PageService,
-        private configSvc: ConfigService) {
+        private configSvc: ConfigService,
+        private logger: LoggerService) {
         this.layout$ = new EventEmitter<any>();
     }
 
@@ -71,11 +74,11 @@ export class LayoutService {
 
                         this.parseLayoutConfig(flowModel);
                     } else {
-                        console.log('ERROR: Unknown response for Layout config call - ' + subResponse.b);
+                        this.logger.error('ERROR: Unknown response for Layout config call - ' + subResponse.b);
                     }
                 },
-                    err => console.log(err),
-                    () => console.log('Layout config call completed..')
+                    err => {this.logger.error(err)},
+                    () => {this.logger.info('Layout config call completed..');}
                 );
         }
     }
@@ -230,10 +233,10 @@ export class LayoutService {
     private getLeftMenu(layoutConfig: Model) {
         let leftMenu : LinkConfig[] = [];
         layoutConfig.params.forEach(param => {
-            if (param.config.uiStyles.attributes.alias === 'Section') {
+            if (param.config.uiStyles.attributes.alias === ViewComponent.section.toString()) {
                 if (param.config.uiStyles.attributes.value ==='LEFTBAR') {
                     param.type.model.params.forEach(element => { // look for links and add to left menu
-                        if (element.config.uiStyles.name === 'ViewConfig.Link') {
+                        if (element.config.uiStyles.name === ViewConfig.link.toString()) {
                             let navItem = {} as LinkConfig;
                             navItem['path'] = element.config.uiStyles.attributes.url;
                             navItem['title'] = this.wcs.findLabelContent(element).text;

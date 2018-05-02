@@ -16,7 +16,7 @@
  */
 'use strict';
 import { Route } from '@angular/router';
-import { Param } from './../shared/Param';
+import { Param } from './../shared/param-state';
 import {MenuItem} from 'primeng/primeng';
 
 /**

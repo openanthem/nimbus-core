@@ -28,7 +28,11 @@ import { PageService } from '../services/page.service';
 import { GridService } from '../services/grid.service';
 import { ParamUtils } from './param-utils';
 import { Converter } from './object.conversion';
-import { Serializable, Type, Message, Values, ParamConfig, CardDetailsGrid } from './app-config.interface';
+import { Serializable } from './serializable';
+import { ParamConfig } from './param-config';
+import { Message } from './message';
+import { CardDetailsGrid } from './card-details';
+import { ViewConfig } from './param-annotations.enum';
 
 export class Param implements Serializable<Param, string> {
     configId: string;
@@ -46,6 +50,7 @@ export class Param implements Serializable<Param, string> {
     visible: boolean = true;
     activeValidationGroups: String[] = [];
     collectionParams: Param[] = [];
+    page: GridPage;
     _alias: string;
     _config: ParamConfig;
 
@@ -68,17 +73,21 @@ export class Param implements Serializable<Param, string> {
         if(rowData instanceof Object)
             rowData['elemId'] = param.elemId;
         if(param.type.model) {
+            rowData['nestedGridParam'] = [];
             for(let p of param.type.model.params) {
                 if(p != null) {
                     let config = this.configSvc.paramConfigs[p.configId];
-                    p.path = param.path + "/" + config.code;
+                    //let path = paramPath + "/" + config.code;
                     // handle nested grid data
-                    if (config.uiStyles && config.uiStyles.name == 'ViewConfig.GridRowBody') {
+                    if (config.uiStyles && (config.uiStyles.name == ViewConfig.gridrowbody.toString()|| config.uiStyles.name == ViewConfig.linkmenu.toString())) {
                         let isDeserialized = false;
                         if(p instanceof Param){
                             isDeserialized = true;
                         }
-                        rowData['nestedGridParam'] = isDeserialized ? p : new Param(this.configSvc).deserialize(p,p.path);
+                        if(param.collectionElem)
+                            rowData['nestedGridParam'].push(isDeserialized ? p : new Param(this.configSvc).deserialize(p,this.path + '/' + param.elemId));
+                        else
+                            rowData['nestedGridParam'].push(isDeserialized ? p : new Param(this.configSvc).deserialize(p,this.path));
                     }
     
                     // handle dates
@@ -96,14 +105,20 @@ export class Param implements Serializable<Param, string> {
         let paramPath;
         if(path == inJson.path){
             paramPath = path;
-        }
-        else if(path == undefined && this.config) {
+        } else if(path == undefined && this.config) {
             paramPath =  "/" + this.config.code;
         } else if(path && this.config){
             paramPath = path + "/" + this.config.code;
-        } else {
+        } else if(path && this.config && inJson.elemId){
+            paramPath = path + "/" + inJson.elemId + "/" + this.config.code;
+        } else if (path && inJson.elemId) {
+            paramPath = path + '/' + inJson.elemId;
+        }  
+        else {
             paramPath = path;
-        } 
+        }
+        
+ 
         return paramPath;
     }
 
@@ -138,18 +153,24 @@ export class Param implements Serializable<Param, string> {
                 this.leafState = new CardDetailsGrid().deserialize( inJson.leafState );
             }
         } else if (this.config != null && this.config.uiStyles && this.config.uiStyles.attributes.alias === 'Grid') {
+            // deserialize Page
+            if (inJson.page) {
+                this.page = new GridPage().deserialize(inJson.page);
+            }
             if (inJson.type && inJson.type.model && inJson.type.model.params) {
                 this.gridList = [];
-                this.paramState = [];
+                //this.paramState = [];
                 if(this.path && typeof inJson.path == undefined)
                     inJson.path = this.path;
                 for ( var p in inJson.type.model.params ) {
                     if (!ParamUtils.isEmpty(inJson.type.model.params[p])) {
-                        this.paramState.push(inJson.type.model.params[p].type.model.params); 
+                        //this.paramState.push(inJson.type.model.params[p].type.model.params); 
                         //this.gridList.push(this.createRowData(inJson.type.model.params[p])); 
                         let lineItem = this.createRowData(inJson.type.model.params[p]);
-                        this.collectionParams.push(lineItem.nestedGridParam); 
-                        delete lineItem.nestedGridParam; this.gridList.push(lineItem);  
+                        if(lineItem.nestedGridParam)
+                          this.collectionParams = this.collectionParams.concat(lineItem.nestedGridParam); 
+                        delete lineItem.nestedGridParam; 
+                        this.gridList.push(lineItem);  
                     }
                 }
             }
@@ -190,5 +211,67 @@ export class Param implements Serializable<Param, string> {
         }
         
         return this;
+    }
+}
+
+export class Values implements Serializable<Values, string> {
+    code: string;
+    label: string;
+    desc: string;
+
+    deserialize( inJson ) {
+       var obj = this;
+       obj = Converter.convert(inJson,obj);
+       return obj;
+    }
+}
+
+export class Model implements Serializable<Model, string> {
+    params: Param[];
+
+    constructor(private configSvc: ConfigService) {}
+
+    deserialize( inJson, path ) {
+        this.params = [];
+        for ( var p in inJson.params ) {
+            if(!ParamUtils.isEmpty(inJson.params[p])) {
+                //param when null means that there is an @Ignore(event = websocket) on the parameter
+                this.params.push( new Param(this.configSvc).deserialize( inJson.params[p], path ) );
+            }
+        }
+        return this;
+    }
+}
+
+export class Type implements Serializable<Type, string> {
+    model: Model;
+
+    constructor(private configSvc: ConfigService) {}
+
+    deserialize( inJson, path ) {        
+ 
+            if (inJson.model  != null) {
+                this.model = new Model(this.configSvc).deserialize( inJson.model, path );
+            } else if (inJson.modelConfig != null) {
+                this.model = new Model(this.configSvc).deserialize( inJson.modelConfig, path);
+            }
+        
+        return this;
+    }
+}
+
+export class GridPage implements Serializable<GridPage, string> {
+    last: boolean;
+    totalPages: number;
+    totalElements: number;
+    size: number;
+    pageNumber: number;
+    first: boolean;
+    numberOfElements: number;
+
+    deserialize( inJson) {   
+        var obj = this;
+        obj = Converter.convert(inJson, obj);
+        return obj;
     }
 }

@@ -46,8 +46,6 @@ import com.antheminc.oss.nimbus.domain.defn.Execution;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo;
 import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
-import com.antheminc.oss.nimbus.domain.defn.ViewConfig.GridColumn;
-import com.antheminc.oss.nimbus.domain.defn.ViewConfig.GridFilter;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.ViewParamBehavior;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.ViewStyle;
 import com.antheminc.oss.nimbus.domain.model.config.AnnotationConfig;
@@ -417,8 +415,6 @@ abstract public class AbstractEntityConfigBuilder {
 	
 	public static String createCollectionElementPath(String collectionPath) {
 		return new StringBuilder()
-				//.append(collectionPath)
-				//.append(Constants.SEPARATOR_URI.code)
 				.append(Constants.MARKER_COLLECTION_ELEM_INDEX.code)
 				.toString();
 	}

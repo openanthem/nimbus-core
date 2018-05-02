@@ -35,7 +35,7 @@ public final class CommandEvent {
 	@Event
 	@Inherited
 	public @interface OnRootExecute {
-
+		int order() default Event.DEFAULT_ORDER_NUMBER;
 	}
 	
 	@Retention(RUNTIME)
@@ -43,6 +43,6 @@ public final class CommandEvent {
 	@Event
 	@Inherited
 	public @interface OnSelfExecute {
-
+		int order() default Event.DEFAULT_ORDER_NUMBER;
 	}
 }

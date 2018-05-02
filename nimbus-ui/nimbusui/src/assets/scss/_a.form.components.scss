@@ -79,8 +79,17 @@ textarea.form-control {
   background:none;
   border:none;
   color: #4c4c4c;
-    .warningMsg{
+    .errorMsg{
         color: #a94442;
+        &::before{
+            content:"\F071";
+            font-family: fontAwesome;
+            display: inline-block;
+            margin-right:.5rem;
+        }
+    }
+    .warningMsg{
+        color: #e5991c;
         &::before{
             content:"\F071";
             font-family: fontAwesome;
@@ -137,7 +146,6 @@ p-dropdown.form-control {
     padding:0.1rem;
     background: none;
     line-height: 1.5;
-    margin-left: 20px;
     .ui-widget-content {
         border: 1px solid #9dd3f7;
         background: #ecf7ff;
@@ -154,6 +162,15 @@ p-dropdown.form-control {
     min-width: 150px;
     .ui-dropdown-panel .ui-dropdown-list{
         padding:0;
+    }
+    &.ui-state-disabled, 
+    &.ui-widget:disabled {
+        opacity: 1;
+        .ui-dropdown-label.ui-inputtext,
+        .ui-dropdown-trigger {
+            border-color: #B9B6B6;
+            background-color: #d4d4d4;
+        }
     }
 }
 .ui-corner-all {
@@ -288,7 +305,9 @@ p-checkbox.ng-dirty.ng-invalid .ui-chkbox-box {
     .ui-radiobutton-box.ui-state-disabled,
     .ui-radiobutton-box.ui-state-disabled:hover,
     .ui-chkbox-box.ui-state-disabled,
-    .ui-chkbox-box.ui-state-disabled:hover {
+    .ui-chkbox-box.ui-state-disabled:hover,
+    .ui-chkbox-box.ui-state-active.ui-state-disabled, 
+    .ui-radiobutton-box.ui-state-disabled.ui-state-active {
         border-color: #b9b6b6;
         background: #d4d4d4;
         opacity: 1;
@@ -340,4 +359,28 @@ p-checkbox.ng-dirty.ng-invalid .ui-chkbox-box {
             box-shadow: none;
         }
     }
+}
+.ui-timepicker.ui-widget-header {
+    background: #c8e3f6;
+    color: #696b6c;
+}
+.ui-timepicker a > span {
+    color: #006bc2;
+    font-weight: bold;
+    font-size: 1.4rem;
+}
+.ui-datepicker.ui-widget .ui-timepicker {
+    text-align: right;
+    padding-right: 2rem;
+}
+
+input.custom-control-input:disabled ~ .custom-control-description {
+    color: #4c4c4c;
+}
+input.custom-control-input:disabled ~ .custom-control-indicator,
+.custom-check .custom-control-input:checked:disabled ~ .custom-control-indicator {
+    border-color: #b9b6b6;
+        background: #d4d4d4;
+        opacity: 1;
+        color: #4c4c4c;
 }

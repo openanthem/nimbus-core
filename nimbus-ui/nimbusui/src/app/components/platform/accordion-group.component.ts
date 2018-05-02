@@ -20,7 +20,7 @@ import { Accordion } from './accordion.component';
 import { BaseElement } from './base-element.component';
 import { WebContentSvc } from '../../services/content-management.service';
 import { trigger,state,style,transition,animate,keyframes } from '@angular/animations';
-import { Param } from './../../shared/Param';
+import { Param } from './../../shared/param-state';
 
 /**
  * \@author Dinakar.Meda
@@ -114,9 +114,7 @@ export class AccordionGroup extends BaseElement implements OnDestroy {
         
     }
     animationDone($event) {
-        //console.log(this);
-        //use this for scroll to focus after open
-       
+  
         if ( this._state =='openPanel') {
             this.accordion.closeOthers(this).then(success => {
                 let selElem = this.elementRef.nativeElement.querySelector('#'+this.title);

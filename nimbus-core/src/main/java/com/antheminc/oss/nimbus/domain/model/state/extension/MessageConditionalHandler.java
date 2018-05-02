@@ -4,7 +4,6 @@ import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.extension.MessageConditional;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param.Message;
-import com.antheminc.oss.nimbus.domain.model.state.extension.AbstractConditionalStateEventHandler;
 
 /**
  * @author Akancha Kashyap

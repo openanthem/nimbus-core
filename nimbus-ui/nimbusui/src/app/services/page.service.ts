@@ -20,15 +20,9 @@ import { ConfigService } from './config.service';
 import { Action, HttpMethod, Behavior } from './../shared/command.enum';
 import { Injectable, EventEmitter } from '@angular/core';
 import { ServiceConstants } from './service.constants';
-import { Validation, ViewConfig,
-        Model,
-        ModelEvent,
-        Page,
-        ParamConfig,
-        Type,
-        Result, ViewRoot
-} from '../shared/app-config.interface';
-import {Param} from '../shared/Param';
+import { ParamConfig, Validation } from '../shared/param-config';
+import { ModelEvent, Page, Result, ViewRoot } from '../shared/app-config.interface';
+import { Param, Model, Type, GridPage } from '../shared/param-state';
 import { CustomHttpClient } from './httpclient.service';
 
 import { Subject } from 'rxjs/Subject';
@@ -38,7 +32,8 @@ import { Observable } from 'rxjs/Observable';
 import { ExecuteResponse, ExecuteException } from './../shared/app-config.interface';
 import { ParamUtils } from './../shared/param-utils';
 import { ParamAttribute } from './../shared/command.enum';
-
+import { ViewConfig } from './../shared/param-annotations.enum';
+import { LoggerService } from './logger.service';
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -70,7 +65,7 @@ export class PageService {
     private requestQueue :RequestContainer[] = [];
 
         private _entityId: number = 0;
-        constructor(private http: CustomHttpClient, private loaderService: LoaderService, private configService: ConfigService) {
+        constructor(private http: CustomHttpClient, private loaderService: LoaderService, private configService: ConfigService, private logger: LoggerService) {
                 // initialize
                 this.flowRootDomainId = {};
                 // Create Observable Stream to output our data     
@@ -79,7 +74,6 @@ export class PageService {
         }
 
         ngOnInit() {
-                //console.log('on init of page service.');
         }
 
         get entityId(): number {
@@ -243,7 +237,7 @@ export class PageService {
                 if (model != null && model.params != null) {
                         for (var p in model.params) {
                                 let pageParam: Param = model.params[p];
-                                if (pageParam != null && pageParam.config.uiStyles != null && pageParam.config.uiStyles.name === 'ViewConfig.Page') {
+                                if (pageParam != null && pageParam.config.uiStyles != null && pageParam.config.uiStyles.name ===  ViewConfig.page.toString()) {
                                         if (pageParam.config.uiStyles.attributes.defaultPage) {
                                                 return pageParam;
                                         }
@@ -377,7 +371,7 @@ export class PageService {
                         let flowConfig: Model = viewRoot.model;
                         if (flowConfig != null && flowConfig.params != null) {
                                 flowConfig.params.forEach(pageParam => {
-                                        if (pageParam.config.uiStyles != null && pageParam.config.uiStyles.name === 'ViewConfig.Page') {
+                                        if (pageParam.config.uiStyles != null && pageParam.config.uiStyles.name === ViewConfig.page.toString()) {
                                                 if (pageParam.config.code === pageId) {
                                                         page = pageParam;
                                                 }
@@ -392,7 +386,7 @@ export class PageService {
         }
 
         /** Process execute call - TODO revisit to make it more dynamic based on url completion */
-        processEvent(processUrl: string, behavior: string, model: GenericDomain, method: string) {
+        processEvent(processUrl: string, behavior: string, model: GenericDomain, method: string, queryParams?: string) {
                 processUrl = processUrl + '/' + Action._get.value;
                 let url = '';
                 let serverUrl = '';
@@ -409,6 +403,9 @@ export class PageService {
                 } else {
                         url = url + processUrl.replace('{id}', this.entityId.toString()) + '?b=' + behavior;
                 }
+                if (queryParams) {
+                        url = url + queryParams;
+                }
 
                 let rootDomainId = this.getFlowRootDomainId(flowName);
                 if (rootDomainId != null) {
@@ -420,12 +417,13 @@ export class PageService {
 
         executeHttp(url:string, method : string, model:any) {
                 this.showLoader();
+                this.logger.info('http call' + url + 'started');
                 if (method !== '' && method.toUpperCase() === HttpMethod.GET.value) {
                         this.executeHttpGet(url)
                  } else if (method !== '' && method.toUpperCase() === HttpMethod.POST.value) {
                          this.executeHttpPost(url, model);
                  } else {
-                         this.invokeFinally();
+                         this.invokeFinally(url);
                          throw 'http method not supported';
                  }
         }
@@ -433,7 +431,7 @@ export class PageService {
                 this.http.get(url).subscribe(
                         data => { this.processResponse(data.result); },
                         err => { this.processError(err); },
-                        () => { this.invokeFinally(); }
+                        () => { this.invokeFinally(url); }
                         );
         }
 
@@ -441,7 +439,7 @@ export class PageService {
                 this.http.post(url, JSON.stringify(model)).subscribe(
                         data => { this.processResponse(data.result);},
                         err => { this.processError(err); },
-                        () => { this.invokeFinally(); }
+                        () => { this.invokeFinally(url); }
                         );
         }
 
@@ -450,8 +448,8 @@ export class PageService {
                 this.hideLoader();
         }
 
-        invokeFinally() {
-                console.log('Process Execution query completed..');
+        invokeFinally(url:string) {
+                this.logger.info('http response for ' + url + ' processed successsfully');
                 this.hideLoader();
         }
 
@@ -473,7 +471,7 @@ export class PageService {
                 var urlBase = ServiceConstants.PLATFORM_BASE_URL;
                 var url = urlBase + '/event/notify';
 
-                console.log('Post update Event Notify call');
+                this.logger.info('Post update Event Notify call started for '+ url);
                 return this.executeHttp(url, HttpMethod.POST.value, modelEvnt);
                 
         }
@@ -483,6 +481,8 @@ export class PageService {
          */
         traverseFlowConfig(eventModel: ModelEvent, flowName: string) {
                 let viewRoot: ViewRoot = this.configService.getFlowConfig(flowName);
+                if(viewRoot == undefined)
+                        throw "Response cannot be processed for the path " + eventModel.value.path + " as there is no get/new done on the viewroot "+flowName;
                 let flowConfig: Model = viewRoot.model;
                 if (flowConfig) {
                         this.traverseConfig(flowConfig.params, eventModel);
@@ -567,14 +567,12 @@ export class PageService {
          * Create the Grid Row Data from Param Leaf State
          * 
          */
-        createRowData(param: Param, nestedParamIdx: number) {
+        createRowData(param: Param) {
                 let rowData: any = param.leafState;
-
                 // If nested data exists, set the data to nested grid
-                if (nestedParamIdx && param.type.model.params) {
-                        rowData['nestedGridParam'] = param.type.model.params[nestedParamIdx];
+                if (param.type.model && param.type.model.params) {
+                        rowData['nestedGridParam'] = param.type.model.params.filter(param => param.type.model && param.type.model.params);
                 }
-
                 return rowData;
         }
 
@@ -583,37 +581,22 @@ export class PageService {
          * 
          */
         createGridData(gridElementParams: Param[], gridParam: Param) {
-
-                let nestedParams;
-                if(gridParam.config.type.elementConfig.type.model)
-                        nestedParams = gridParam.config.type.elementConfig.type.model.paramConfigs;
                 let gridData = [];
-                let paramState = [];
                 let collectionParams = [];
-                // Look for inner lists (nested grid)
-                let nestedParamIdx: number;
-                if (nestedParams) {
-                        for (let p in nestedParams) {
-                                if (nestedParams[p].uiStyles && nestedParams[p].uiStyles.name == 'ViewConfig.GridRowBody') {
-                                        nestedParamIdx = +p;
-                                        break;
-                                }
-                        }
-                }
                 if (gridElementParams) {
                         gridElementParams.forEach(param => {
-                                let p = new Param(this.configService).deserialize(param, gridParam.path + "/" + param.elemId);
+                                let p = new Param(this.configService).deserialize(param, gridParam.path);
                                 if(p != null) {
-                                        paramState.push(p.type.model.params);
-                                        let lineItem = this.createRowData(p, nestedParamIdx); 
-                                        collectionParams.push(lineItem.nestedGridParam); 
-                                        delete lineItem.nestedGridParam; 
+                                        //paramState.push(p.type.model.params);
+                                        let lineItem = this.createRowData(p); 
+                                        if(lineItem.nestedGridParam)
+                                                collectionParams = collectionParams.concat(lineItem.nestedGridParam); 
+                                        delete lineItem.nestedGridParam;
                                         gridData.push(lineItem);
                                 }
                         });        
                 }
                 gridParam['collectionParams'] = collectionParams;
-                gridParam['paramState'] = paramState;
                 return gridData;
         }
 
@@ -640,6 +623,10 @@ export class PageService {
                                         }
                                         // Collection check - replace entire grid
                                         if (param.config.type.collection) {
+                                                if (eventModel.value.page) {
+                                                        let page: GridPage = new GridPage().deserialize(eventModel.value.page);
+                                                        param.page = page;
+                                                }
                                                 param.gridList = this.createGridData(eventModel.value.type.model.params, param);
                                                 this.gridValueUpdate.next(param);
                                         }
@@ -649,13 +636,12 @@ export class PageService {
                                         if( param.gridList) {
                                                 for (var p = 0; p < param.gridList.length; p++) {
                                                         if (param.gridList[p]['elemId'] == elemIndex) {
-                                                                // console.log(param.config.gridList[p]['nestedElement']);
                                                                 let nestedElement = this.getNestedElementParam(param.gridList[p]['nestedElement'], nestedPath);
                                                                 if (nestedElement) {
                                                                         nestedElement['gridList'] = this.createGridData(eventModel.value.type.model.params, nestedElement);
                                                                         this.gridValueUpdate.next(nestedElement);
                                                                 } else {
-                                                                        console.log('Nested Grid Element not found.');
+                                                                        this.logger.error('Nested Grid Element not found.');
                                                                 }
                                                                 break;
                                                         }
@@ -712,22 +698,7 @@ export class PageService {
         traverseParam(param: Param, eventModel: ModelEvent) {
                 /* Flow-Wrapper class also invokes methods that eventually call this behaviour. We need to make sure that the eventModel is deserialized by then */
                 let payload: Param = new Param(this.configService).deserialize(eventModel.value, eventModel.value.path);
-                if (param.config.type.nested === true) {
-                        this.updateParam(param, payload);
-                        if (param.type.model && payload.type.model && payload.type.model.params) {
-                                for (var p in param.type.model.params) {
-                                        this.updateParam(param.type.model.params[p], payload.type.model.params[p]);
-                                }
-                        }
-                        if (param.type.model === undefined && payload.type.model) {
-                                param.type['model'] = payload.type.model;
-                        }
-                        if (param.message === undefined && payload.message) {
-                                param['message'] = payload.message;
-                        }
-                } else {                        
-                        this.updateParam(param, payload);
-                }
+                this.updateParam(param, payload);
         }
 
         /*
@@ -751,11 +722,26 @@ export class PageService {
                         }); 
                         this.eventUpdate.next(sourceParam); 
                         this.validationUpdate.next(sourceParam);
+                        this.updateNestedParameters(sourceParam,responseParam);
                 } else {
                         this.logError('Could not process the update from the server for ' + responseParam.path + ' because config is undefined.');
                 }
         }
 
+        updateNestedParameters(sourceParam: Param,responseParam: Param) {
+                if(responseParam.type && responseParam.type.model) {
+                        try {
+                                if(sourceParam.type.model.params) {
+                                        for (var p in responseParam.type.model.params) {
+                                                this.updateParam(sourceParam.type.model.params[p], responseParam.type.model.params[p]);
+                                        }
+                                }
+                        }catch (e) {
+                                this.logError('Could not find source param to update the nested payload param path'+ responseParam.path);
+                                throw e; 
+                        }
+                }
+        }
         /*
         * show the loader icon the page
         */

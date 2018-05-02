@@ -20,7 +20,7 @@ import { Injectable } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, ValidatorFn, FormArray, FormControl,ValidationErrors } from '@angular/forms';
 
 import { CustomValidators } from './validators/custom.validators';
-import { Param } from '../../shared/Param';
+import { Param } from '../../shared/param-state';
 import { ValidationUtils } from './validators/ValidationUtils';
 
 /**
