@@ -7,6 +7,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.antheminc.oss.nimbus.domain.Event;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateChange;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param.Message.Context;
@@ -38,8 +39,7 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param.Message.Typ
 @Documented
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@OnStateLoad
-@OnStateChange
+@OnStateLoad @OnStateChange
 public @interface MessageConditional {
 	
 	/**
@@ -63,5 +63,5 @@ public @interface MessageConditional {
 	 */
 	boolean whenElseRetainMessage() default false;
 	
-	
+	int order() default Event.DEFAULT_ORDER_NUMBER;
 }

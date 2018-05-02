@@ -22,6 +22,7 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import com.antheminc.oss.nimbus.domain.Event;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateChange;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 
@@ -58,5 +59,6 @@ public @interface Rule {
 	 * rule file path(s) to execute 
 	 */
 	String[] value();
-	
+
+	int order() default Event.DEFAULT_ORDER_NUMBER;
 }

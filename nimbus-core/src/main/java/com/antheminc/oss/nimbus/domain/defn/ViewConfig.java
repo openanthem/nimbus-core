@@ -21,6 +21,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.antheminc.oss.nimbus.domain.Event;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 import com.antheminc.oss.nimbus.domain.defn.extension.ParamContext;
 
@@ -230,6 +231,8 @@ public class ViewConfig {
 		ParamContext context() default @ParamContext(enabled = true, visible = false);
 		
 		boolean resizable() default true;
+		
+		int order() default Event.DEFAULT_ORDER_NUMBER;
 	}
 
 	/*
