@@ -475,7 +475,7 @@ $answerWidth: 99%-$questionWidth;
     width: $answerWidth; 
     .form-checkrow{
             display: inline-block;
-            width: 15%;
+            width: 20%;
             label{
                 display: none;
             }
@@ -487,9 +487,13 @@ $answerWidth: 99%-$questionWidth;
         margin: 0 20px;
     }
 }
+.form-group.questionGroup.form-grid {
+    margin-bottom: .2rem;
+}
 
-
-
+.form-grid.headerRow fieldset .checkboxHolder .form-checkrow {
+    vertical-align: bottom;
+}
 
 
 .ui-dialog.ui-widget .ui-dialog-titlebar .ui-dialog-title {
@@ -540,12 +544,12 @@ $answerWidth: 99%-$questionWidth;
     input {
         margin-left: 20px;
         max-width: 300px;
-        width: 100%;
+        width: 90%;
     }
     textarea {
         margin-left: 20px;
         max-width: 800px;
-        width: 100%;
+        width: 90%;
     }
   
    

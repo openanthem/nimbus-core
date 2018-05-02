@@ -90,7 +90,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     rowExpanderKey = '';
     public onChange: any = (_) => { /*Empty*/ }
     public onTouched: any = () => { /*Empty*/ }
-    defaultPattern: RegExp = /^[ A-Za-z0-9_@./#&+-]*$/;
+    defaultPattern: RegExp = /^[ A-Za-z0-9_@./#&+-,()!%_{};:?.<>-]*$/;
     numPattern: RegExp = /[\d\-\.]/;
 
     get value() {
@@ -223,6 +223,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
                     // Client Pagination
                     this.totalRecords = this.value ? this.value.length : 0;
                     this.updatePageDetailsState();
+                    this.dt.first = 0;
                 }
 
                 this.cd.markForCheck();

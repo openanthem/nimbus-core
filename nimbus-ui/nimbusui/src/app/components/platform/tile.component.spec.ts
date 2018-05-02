@@ -5,6 +5,7 @@ import { DropdownModule, GrowlModule, MessagesModule, DialogModule, AccordionMod
 import { TableModule } from 'primeng/table';
 import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { KeyFilterModule } from 'primeng/keyfilter';
 
 import { Tile } from './tile.component';
 import { MessageComponent } from './message/message.component';
@@ -123,7 +124,8 @@ describe('Tile', () => {
         CalendarModule,
         HttpModule,
         HttpClientTestingModule,
-        TableModule
+        TableModule,
+        KeyFilterModule
        ],
        providers: [
         {provide: PageService, useClass: MockPageService},
