@@ -415,8 +415,6 @@ abstract public class AbstractEntityConfigBuilder {
 	
 	public static String createCollectionElementPath(String collectionPath) {
 		return new StringBuilder()
-				//.append(collectionPath)
-				//.append(Constants.SEPARATOR_URI.code)
 				.append(Constants.MARKER_COLLECTION_ELEM_INDEX.code)
 				.toString();
 	}
