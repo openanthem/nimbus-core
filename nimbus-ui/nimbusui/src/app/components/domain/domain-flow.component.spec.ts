@@ -18,6 +18,7 @@ import { LoaderService } from '../../services/loader.service';
 import { ConfigService } from '../../services/config.service';
 import { BreadcrumbService } from '../platform/breadcrumb/breadcrumb.service';
 import { LayoutService } from '../../services/layout.service';
+import { LoggerService } from '../../services/logger.service';
 
 let app, fixture, layoutservice, pageservice, router, route;
 
@@ -116,7 +117,8 @@ describe('DomainFlowCmp', () => {
            WebContentSvc,
            LoaderService,
            ConfigService,
-           BreadcrumbService
+           BreadcrumbService,
+           LoggerService
         ]
     }).compileComponents();
     fixture = TestBed.createComponent(DomainFlowCmp);
@@ -186,7 +188,7 @@ describe('DomainFlowCmp', () => {
 
 });
 
-describe('AppComponent', () => {
+describe('DomainFlowCmp', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
@@ -209,7 +211,8 @@ describe('AppComponent', () => {
            WebContentSvc,
            LoaderService,
            ConfigService,
-           BreadcrumbService
+           BreadcrumbService,
+           LoggerService
         ]
     }).compileComponents();
     fixture = TestBed.createComponent(DomainFlowCmp);

@@ -5,6 +5,7 @@ import { GrowlModule, AccordionModule, PickListModule, ListboxModule, CalendarMo
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { TableModule } from 'primeng/table';
+import { KeyFilterModule } from 'primeng/keyfilter';
 
 import { FrmGroupCmp } from './form-group.component';
 import { FormElement } from './form-element.component';
@@ -116,7 +117,8 @@ describe('FrmGroupCmp', () => {
            AccordionModule,
            HttpModule,
            HttpClientModule,
-           TableModule
+           TableModule,
+           KeyFilterModule
        ],
        providers: [
            { provide: WebContentSvc, useClass: MockWebContentSvc }

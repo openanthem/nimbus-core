@@ -7,6 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TableModule } from 'primeng/table';
+import { KeyFilterModule } from 'primeng/keyfilter';
 
 import { Modal } from './modal.component';
 import { TooltipComponent } from '../tooltip/tooltip.component';
@@ -121,7 +122,8 @@ describe('Modal', () => {
            CalendarModule,
            HttpModule,
            HttpClientTestingModule,
-           TableModule
+           TableModule,
+           KeyFilterModule
        ],
        providers: [
         {provide: PageService, useClass: MockPageService},
