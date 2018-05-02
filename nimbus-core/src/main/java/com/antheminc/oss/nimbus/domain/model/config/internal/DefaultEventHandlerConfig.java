@@ -16,14 +16,19 @@
 package com.antheminc.oss.nimbus.domain.model.config.internal;
 
 import java.lang.annotation.Annotation;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.apache.commons.collections.MapUtils;
+import org.springframework.core.annotation.AnnotationUtils;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
+import com.antheminc.oss.nimbus.domain.Event;
 import com.antheminc.oss.nimbus.domain.model.config.EventHandlerConfig;
 import com.antheminc.oss.nimbus.domain.model.config.event.ConfigEventHandlers.OnParamCreateHandler;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
@@ -46,8 +51,16 @@ public class DefaultEventHandlerConfig implements EventHandlerConfig {
 	private _InternalConfig<OnStateLoadHandler<Annotation>> onStateLoadHandlers = new _InternalConfig<>();
 	private _InternalConfig<OnStateChangeHandler<Annotation>> onStateChangeHandlers = new _InternalConfig<>();
 	
-	
 	private static class _InternalConfig<T> {
+		private static final Comparator<Annotation> DEFAULT_ORDER_COMPARATOR = new Comparator<Annotation>() {
+			public int compare(Annotation a1, Annotation a2) {
+				Integer order1 = findOrder(a1);
+				Integer order2 = findOrder(a2);
+				
+				return order1.compareTo(order2);
+			}
+		};
+		
 		private Map<Annotation, T> eventHandlers;
 		
 		public boolean isEmpty() {
@@ -60,9 +73,37 @@ public class DefaultEventHandlerConfig implements EventHandlerConfig {
 		
 		public void add(Annotation a, T handler) {
 			Optional.ofNullable(eventHandlers).orElseGet(()->{
-				eventHandlers = new HashMap<>();
-				return eventHandlers;
+				this.eventHandlers = new HashMap<>();//new TreeMap<>(DEFAULT_ORDER_COMPARATOR);
+				return this.eventHandlers;
 			}).put(a, handler);
+			
+			/* backward compatibility */
+			
+			if(SortedMap.class.isInstance(this.eventHandlers))
+				return;
+			
+			Integer order = findOrder(a);
+			if(order.intValue() == Event.DEFAULT_ORDER_NUMBER)
+				return;
+			
+			SortedMap<Annotation, T> sortedEventHandlers = new TreeMap<>(DEFAULT_ORDER_COMPARATOR);
+			sortedEventHandlers.putAll(this.eventHandlers);
+			this.eventHandlers = sortedEventHandlers;
+		}
+		
+		private static final Integer findOrder(Annotation a) {
+			Object order = AnnotationUtils.getAnnotationAttributes(a).get("order");
+			if(order==null)
+				return Event.DEFAULT_ORDER_NUMBER;
+			
+			if(int.class.isInstance(order))
+				return int.class.cast(order);
+			
+			if(Integer.class.isInstance(order))
+				return Integer.class.cast(order);
+			
+			throw new InvalidConfigException("Extension Annotation must follow the convention defined in: "+Event.class
+					+" to declare order to sequence execution, but found: "+a);
 		}
 		
 		public Optional<T> findHandler(Annotation a) {
