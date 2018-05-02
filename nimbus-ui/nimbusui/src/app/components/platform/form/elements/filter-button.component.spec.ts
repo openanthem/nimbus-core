@@ -8,7 +8,7 @@ import { PageService } from '../../../../services/page.service';
 import { CustomHttpClient } from '../../../../services/httpclient.service';
 import { LoaderService } from '../../../../services/loader.service';
 import { ConfigService } from '../../../../services/config.service';
-import { EventEmitter } from 'events';
+import { LoggerService } from '../../../../services/logger.service';
 
 let fixture, app, pageservice;
 
@@ -26,7 +26,8 @@ describe('FilterButton', () => {
         PageService,
         CustomHttpClient,
         LoaderService,
-        ConfigService
+        ConfigService,
+        LoggerService
        ]
     }).compileComponents();
     fixture = TestBed.createComponent(FilterButton);

@@ -11,6 +11,7 @@ import { PageService } from '../../../../services/page.service';
 import { CustomHttpClient } from '../../../../services/httpclient.service';
 import { LoaderService } from '../../../../services/loader.service';
 import { ConfigService } from '../../../../services/config.service';
+import { LoggerService } from '../../../../services/logger.service';
 
 describe('RadioButton', () => {
   beforeEach(async(() => {
@@ -29,7 +30,8 @@ describe('RadioButton', () => {
            PageService,
            CustomHttpClient,
            LoaderService,
-           ConfigService
+           ConfigService,
+           LoggerService
        ]
     }).compileComponents();
   }));
