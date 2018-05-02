@@ -52,6 +52,7 @@ import com.antheminc.oss.nimbus.domain.model.config.AnnotationConfig;
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultAnnotationConfigHandlerTest {
 
+	@SuppressWarnings("unused")
 	private final String foo = null;
 	
 	@NotNull(message = "bar can not be null")
