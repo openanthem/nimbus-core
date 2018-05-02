@@ -18,6 +18,7 @@ package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
@@ -38,6 +39,7 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.test.domain.support.utils.ExtractResponseOutputUtils;
 import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
+import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreLevel1_Entity;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreNestedEntity;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreNestedEntity.Level1;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleNoConversionEntity.NestedNoConversionLevel1;
@@ -434,5 +436,24 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 		assertEquals("update 1a", collection.get(0).getString1());
 	}
 
+	@Test
+	public void t10_update_skipIgnoredField() {
+		Long refId = createOrGetDomainRoot_RefId();
+		MockHttpServletRequest colElemAdd_Req = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
+					.addNested("/page_green/tile/level1").addAction(Action._update).getMock();
+		
+		SampleCoreLevel1_Entity colElemState = new SampleCoreLevel1_Entity();
+		colElemState.setLevel1Attrib("some value");
+		colElemState.setIgnoredField("ignored-value");
+		String jsonPayload = converter.toJson(colElemState);
+		
+		Object colElemAdd_Resp = controller.handlePut(colElemAdd_Req, null, jsonPayload);
+		assertNotNull(colElemAdd_Resp);
+		
+		// db validation
+		SampleCoreEntity core = mongo.findById(refId, SampleCoreEntity.class, CORE_DOMAIN_ALIAS);
+		assertEquals(colElemState.getLevel1Attrib(), core.getLevel1().getLevel1Attrib());
+		assertNull(core.getLevel1().getIgnoredField());
+	}
 }
 
