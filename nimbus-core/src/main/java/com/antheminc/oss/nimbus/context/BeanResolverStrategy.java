@@ -17,6 +17,8 @@ package com.antheminc.oss.nimbus.context;
 
 import java.util.Collection;
 
+import org.springframework.core.env.Environment;
+
 import com.antheminc.oss.nimbus.InvalidConfigException;
 
 /**
@@ -25,18 +27,20 @@ import com.antheminc.oss.nimbus.InvalidConfigException;
  */
 public interface BeanResolverStrategy {
 
-	public <T> T find(Class<T> type);
+	<T> T find(Class<T> type);
 	
-	public <T> T get(Class<T> type) throws InvalidConfigException;
+	<T> T get(Class<T> type) throws InvalidConfigException;
 	
 	
-	public <T> T find(Class<T> type, String qualifier);
+	<T> T find(Class<T> type, String qualifier);
 	
-	public <T> T get(Class<T> type, String qualifier) throws InvalidConfigException;
+	<T> T get(Class<T> type, String qualifier) throws InvalidConfigException;
 	
-	public <T> T find(Class<T> type, Class<?>...generics);
-	public <T> T get(Class<T> type, Class<?>...generics) throws InvalidConfigException;
+	<T> T find(Class<T> type, Class<?>...generics);
+	<T> T get(Class<T> type, Class<?>...generics) throws InvalidConfigException;
 	
-	public <T> Collection<T> findMultiple(Class<T> type);
-	public <T> Collection<T> getMultiple(Class<T> type);
+	<T> Collection<T> findMultiple(Class<T> type);
+	<T> Collection<T> getMultiple(Class<T> type);
+	
+	Environment getEnvironment();
 }
