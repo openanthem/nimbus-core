@@ -398,7 +398,7 @@ public class StateHolder {
 		}
 		@Override
 		public void setEnabled(boolean enabled) {
-			this.setEnabled(enabled);
+			this.ref.setEnabled(enabled);
 		}
 		
 		@Override
