@@ -92,7 +92,12 @@ public class DefaultActionExecutorUpdate extends AbstractCommandExecutor<Boolean
 	 * @param json the json to read
 	 */
 	public void handleParam(Param<Object> p, String json) {
-		// exit condition 1: p is a leaf -- can't traverse any further
+		// exit condition 1: if p is null -- can't traverse any further.
+		if (null == p) {
+			return;
+		}
+		
+		// exit condition 2: p is a leaf -- can't traverse any further
 		if (p.isLeaf()) {
 			Object updated = getConverter().toReferredType(p, json);
 			p.setState(updated);
@@ -116,7 +121,7 @@ public class DefaultActionExecutorUpdate extends AbstractCommandExecutor<Boolean
 							"JSON was: " + json);
 				}
 				
-				// exit condition 2: collection param is not instantiated -- can't traverse any further so
+				// exit condition 3: collection param is not instantiated -- can't traverse any further so
 				// set the state to the object created from the provided json
 				if (null == p.findIfCollection().getValues() || p.findIfCollection().getValues().isEmpty()) {
 					Object collectionState = getConverter().toReferredType(p.getConfig(),  json);
