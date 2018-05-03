@@ -21,6 +21,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.ResolvableType;
+import org.springframework.core.env.Environment;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
@@ -50,6 +51,11 @@ public class DefaultBeanResolverStrategy implements BeanResolverStrategy {
 		 * provided all the framework beans use DefaultBeanResolverStrategy for resolving dependent beans */
 		applicationContext.getBean(JustLogit.class);
 		this.applicationContext = applicationContext;
+	}
+	
+	@Override
+	public Environment getEnvironment() {
+		return this.applicationContext.getEnvironment();
 	}
 	
 	protected String resolvePrefix() {
