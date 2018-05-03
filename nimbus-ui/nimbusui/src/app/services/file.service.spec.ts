@@ -5,6 +5,7 @@ import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
 import { FileService } from './file.service';
+import { LoggerService } from './logger.service';
 
 let http, backend, service;
 
@@ -18,7 +19,8 @@ describe('FileService', () => {
         ],
         providers: [
           FileService, 
-          CustomHttpClient
+          CustomHttpClient,
+          LoggerService
         ]
     });
     http = TestBed.get(HttpClient);

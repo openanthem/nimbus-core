@@ -15,6 +15,7 @@ import { Page } from '../../../../shared/app-config.interface';
 import { ParamConfig } from '../../../../shared/param-config';
 import { Param } from '../../../../shared/param-state';
 import { WebContentSvc } from '../../../../services/content-management.service';
+import { LoggerService } from '../../../../services/logger.service';
 
 let fixture, app, pageservice, configservice;
 
@@ -32,7 +33,8 @@ describe('ActionLink', () => {
         PageService,
         CustomHttpClient,
         LoaderService,
-        ConfigService
+        ConfigService,
+        LoggerService
        ]
     }).compileComponents();
     fixture = TestBed.createComponent(ActionLink);
