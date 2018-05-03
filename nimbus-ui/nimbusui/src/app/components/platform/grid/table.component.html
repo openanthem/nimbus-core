@@ -50,7 +50,7 @@
                 <th style="width: 2.25em" *ngIf="element.config?.uiStyles?.attributes?.rowSelection"></th>
                 <th style="width: 2.25em" *ngIf="element.config?.uiStyles?.attributes?.expandableRows"></th>
                 <ng-template ngFor let-col let-colIndex="index" [ngForOf]="params">
-                    <th *ngIf="col?.uiStyles?.attributes?.hidden == false">
+                    <th *ngIf="showHeader(col)">
                         <span *ngIf="col?.uiStyles?.attributes?.filter" [ngClass]="{overflowVisible:isDate(col.type.name)}">
                             <div class="filterHolder" *ngIf="isDate(col.type.name)">
                                 <p-calendar #text 
