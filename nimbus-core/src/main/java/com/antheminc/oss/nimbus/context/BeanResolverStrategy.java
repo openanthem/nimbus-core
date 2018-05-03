@@ -25,7 +25,7 @@ import com.antheminc.oss.nimbus.InvalidConfigException;
  * @author Soham Chakravarti
  *
  */
-interface BeanResolverStrategy {
+public interface BeanResolverStrategy {
 
 	<T> T find(Class<T> type);
 	
