@@ -56,9 +56,19 @@ public class DroolsLoggerUtil {
 	    logit.info(() -> msg); 	    
 	}
 	
+	public static void info(final KnowledgeHelper drools,final String msg, Throwable t) {
+		final JustLogit logit = getLogger(drools);
+	    logit.info(() -> msg, t);
+	}
+	
 	public static void debug(final KnowledgeHelper drools,final String msg) {
 		final JustLogit logit = getLogger(drools);
 	    logit.debug(() -> msg); 	    
+	}
+	
+	public static void debug(final KnowledgeHelper drools,final String msg, Throwable t) {
+		final JustLogit logit = getLogger(drools);
+	    logit.debug(() -> msg, t); 	    
 	}
 	
 	public static void trace(final KnowledgeHelper drools,final String msg) {
@@ -66,9 +76,19 @@ public class DroolsLoggerUtil {
 	    logit.trace(() -> msg); 	    
 	}
 	
+	public static void trace(final KnowledgeHelper drools,final String msg, Throwable t) {
+		final JustLogit logit = getLogger(drools);
+	    logit.trace(() -> msg, t); 	    
+	}
+	
 	public static void error(final KnowledgeHelper drools,final String msg) {
 		final JustLogit logit = getLogger(drools);
 	    logit.error(() -> msg); 	    
+	}
+	
+	public static void error(final KnowledgeHelper drools,final String msg, Throwable t) {
+		final JustLogit logit = getLogger(drools);
+	    logit.error(() -> msg, t); 	    
 	}
 
 }
