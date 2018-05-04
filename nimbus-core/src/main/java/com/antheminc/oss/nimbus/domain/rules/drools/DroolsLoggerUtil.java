@@ -29,7 +29,11 @@ import com.antheminc.oss.nimbus.support.JustLogit;
  * 	when
  * 		some condition
  * 	then
+ * 		// Log a message
  * 		info(drools, "log message");
+ * 
+ * 		// Log a message with an exception
+ * 		info(drools, "An exception occurred", new RuntimeException("Some exception message"));
  * end
  * </pre>
  * 
