@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 
 import javax.annotation.PostConstruct;
@@ -265,7 +266,8 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			return execute(configCmdMsg);
 		
 		try {
-			return Executors.newSingleThreadExecutor().submit(()->execute(configCmdMsg)).get();
+			return CompletableFuture.supplyAsync(()->execute(configCmdMsg)).get();
+			//return Executors.newSingleThreadExecutor().submit(()->execute(configCmdMsg)).get();
 			
 		} catch (Exception ex) {
 			throw new FrameworkRuntimeException("Failed to execute config command in asyn-wait thread for configCmdMsg: "+configCmdMsg+" originating from inputCmd: "+inputCmd, ex);
