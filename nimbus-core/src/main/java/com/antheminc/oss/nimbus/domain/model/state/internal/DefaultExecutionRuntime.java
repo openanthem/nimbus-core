@@ -18,6 +18,7 @@ package com.antheminc.oss.nimbus.domain.model.state.internal;
 import java.util.ArrayList;
 import java.util.Queue;
 import java.util.UUID;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
@@ -187,12 +188,16 @@ public class DefaultExecutionRuntime implements ExecutionRuntime {
 	}
 	
 	protected void awaitNotificationsCompletionInternal() {
-		Queue<Notification<Object>> notifications = getTxnContext().getNotifications();
-		if(CollectionUtils.isEmpty(notifications))
+		Queue<Notification<Object>> _notifications = getTxnContext().getNotifications();
+		if(CollectionUtils.isEmpty(_notifications))
 			return;
 
+		// copy
+		Queue<Notification<Object>> notifications = new LinkedBlockingDeque<>(_notifications);
+		
 		while(!notifications.isEmpty()) {
 			Notification<Object> event = notifications.poll();
+			_notifications.remove(event);
 			Param<Object> source =  event.getSource();
 			
 			if(CollectionUtils.isNotEmpty(source.getEventSubscribers()))
@@ -200,6 +205,16 @@ public class DefaultExecutionRuntime implements ExecutionRuntime {
 					.stream()
 						.forEach(subscribedParam->subscribedParam.handleNotification(event));
 		}
+		
+		int initialSize = _notifications.size();
+		int finalSize = notifications.size();
+		
+		if(initialSize!=finalSize) {
+			logit.info(()->"[awaitNotificationsCompletion] re-invoke to handle additional events added during initial notifications processing in txnCtx: "
+					+getTxnContext().getId()+" with notification queue size initial: "+initialSize+" final: "+finalSize);
+		
+			awaitNotificationsCompletion();
+		} 
 	}
 	
 	@Override
