@@ -1,5 +1,5 @@
 
-<div [formGroup]="form" *ngIf="element.config?.uiStyles?.attributes?.alias!='Button'" [hidden]="!element?.visible" class="form-group  {{elementCss}} {{getErrorStyles()}}">
+<div [formGroup]="form" *ngIf="element.config?.uiStyles?.attributes?.alias!='Button'" [hidden]="!element?.visible" class="form-group {{element.config?.uiStyles?.attributes?.cssClass}} {{elementCss}} {{getErrorStyles()}}">
    
     <nm-header [element]="element" *ngIf="element.config?.uiStyles?.attributes?.alias=='Header'" ></nm-header>
     <nm-paragraph [element]="element" *ngIf="element.config?.uiStyles?.attributes?.alias=='Paragraph'"></nm-paragraph>

@@ -34,7 +34,7 @@ import { Param } from './../../shared/param-state';
     selector: 'accordion-group',
     providers: [ WebContentSvc ],
     template: `
-        <div id="{{title}}" class="panel {{panelClass}} {{state}} ">
+        <div id="{{title}}" class="panel {{panelClass}} {{state}} " [hidden]="!param?.visible" >
             <div class="panel-heading panel-title">
                 <h2>
                   <button attr.aria-expanded="{{isOpen}}" (click)="toggleOpen($event)">{{label}}

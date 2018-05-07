@@ -19,6 +19,7 @@ package com.antheminc.oss.nimbus.test.scenarios.s0.core;
 import java.util.List;
 
 import com.antheminc.oss.nimbus.domain.defn.Model;
+import com.antheminc.oss.nimbus.domain.defn.ConfigNature.Ignore;
 import com.antheminc.oss.nimbus.domain.defn.extension.ActivateConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.Audit;
 
@@ -44,6 +45,9 @@ public class SampleCoreLevel1_Entity {
 	private Level2 level2;
 
 	private Level2b level2b;
+	
+	@Ignore
+	private String ignoredField;
 	
 	@Model @Getter @Setter
 	public static class Level2 {

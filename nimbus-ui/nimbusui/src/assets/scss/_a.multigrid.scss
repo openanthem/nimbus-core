@@ -356,3 +356,17 @@ margin-right: 10px;
 .ui-table .ui-table-thead > tr > th .gridFilterIcon.activeFilter::before { 
     color: #e5991c; 
 }
+.ui-widget-header.ui-paginator .ui-dropdown-trigger.ui-state-default {
+    border-left: 1px solid #999;
+}
+.ui-paginator .ui-dropdown .ui-dropdown-label {
+    padding-right: 28px;
+}
+
+.ui-table .ui-table-tbody > tr.ui-state-highlight td {
+    border-bottom: 1px solid black;
+}
+.ui-table .ui-table-tbody > tr.ui-state-highlight {
+    background: inherit;
+    color: inherit;
+}
