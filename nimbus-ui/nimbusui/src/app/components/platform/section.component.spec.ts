@@ -5,6 +5,7 @@ import { CalendarModule, RadioButtonModule, CheckboxModule, ListboxModule, FileU
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { TableModule } from 'primeng/table';
+import { KeyFilterModule } from 'primeng/keyfilter';
 
 import { Section } from './section.component';
 import { ComboBox } from '../platform/form/elements/combobox.component';
@@ -117,7 +118,8 @@ describe('Section', () => {
         CalendarModule,
         HttpModule,
         HttpClientModule,
-        TableModule
+        TableModule,
+        KeyFilterModule
        ],
        providers: [
         { provide: PageService, useClass: MockPageService },

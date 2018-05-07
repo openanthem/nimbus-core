@@ -3,12 +3,13 @@ import { TestBed, async } from '@angular/core/testing';
 import { FileUploadModule } from 'primeng/primeng';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
+import { Subject } from 'rxjs';
 
 import { FileUploadComponent } from './file-upload.component';
 import { FileService } from './../../../services/file.service';
 import { WebContentSvc } from './../../../services/content-management.service';
 import { CustomHttpClient } from '../../../services/httpclient.service';
-import { Subject } from 'rxjs';
+import { LoggerService } from './../../../services/logger.service';
 
 let fixture, app, fileservice;
 
@@ -39,7 +40,8 @@ describe('FileUploadComponent', () => {
        providers: [
            {provide: FileService, useClass: MockFileService},
            WebContentSvc,
-           CustomHttpClient
+           CustomHttpClient,
+           LoggerService
        ]
     }).compileComponents();
     fixture = TestBed.createComponent(FileUploadComponent);
@@ -134,6 +136,7 @@ describe('FileUploadComponent', () => {
     };
     spyOn(app, 'hasFile').and.returnValue('-1');
     spyOn(fileservice, 'uploadFile').and.callThrough();
+    spyOn(app.pfu, 'isFileTypeValid').and.returnValue(true);
     app.addFiles(eve);
     expect(fileservice.uploadFile).toHaveBeenCalled();
   }));

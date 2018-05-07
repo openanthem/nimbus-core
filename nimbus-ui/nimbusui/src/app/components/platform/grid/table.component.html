@@ -28,6 +28,7 @@
         [responsive]="true" 
         (onRowExpand)="getAddtionalData($event)"
         (onPage)="paginate($event)"
+        (onFilter)="filterCallBack($event)"
         [lazy]=element.config?.uiStyles?.attributes?.lazyLoad
         (onLazyLoad)="loadDataLazy($event)">
 
@@ -38,7 +39,7 @@
                 </th>
                 <th style="width: 2.25em" *ngIf="element?.config?.uiStyles?.attributes?.expandableRows"></th>
                 <ng-template ngFor let-col let-colIndex="index" [ngForOf]="params">
-                    <th *ngIf="showHeader(col)" [pSortableColumn]="col" [ngClass]="{dropdown:showLinkMenu(col)}">
+                    <th *ngIf="showHeader(col)" [pSortableColumn]="col" [pSortableColumnDisabled]="!col?.uiStyles?.attributes?.sortable" [ngClass]="{dropdown:showLinkMenu(col)}">
                         <span *ngIf="showValue(col)">
                             {{col.header}}
                             <p-sortIcon [field]="col" *ngIf="col?.uiStyles?.attributes?.sortable !== false"></p-sortIcon>
@@ -50,7 +51,7 @@
                 <th style="width: 2.25em" *ngIf="element.config?.uiStyles?.attributes?.rowSelection"></th>
                 <th style="width: 2.25em" *ngIf="element.config?.uiStyles?.attributes?.expandableRows"></th>
                 <ng-template ngFor let-col let-colIndex="index" [ngForOf]="params">
-                    <th *ngIf="col?.uiStyles?.attributes?.hidden == false">
+                    <th *ngIf="showHeader(col)">
                         <span *ngIf="col?.uiStyles?.attributes?.filter" [ngClass]="{overflowVisible:isDate(col.type.name)}">
                             <div class="filterHolder" *ngIf="isDate(col.type.name)">
                                 <p-calendar #text 

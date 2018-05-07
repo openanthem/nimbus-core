@@ -39,7 +39,7 @@ import { MenuItem } from 'primeng/primeng';
  */
 @Component({
     templateUrl: './home-layout.component.html',
-    providers: [ STOMPService, LayoutService ],
+    providers: [ STOMPService ],
     
 })
 
@@ -70,37 +70,6 @@ export class HomeLayoutCmp {
         private _route: ActivatedRoute,
         private _router: Router) {
 
-        // initialize
-        this.themes.push({link:'styles/vendor/anthem.blue.theme.css',label:'Blue Theme'});
-        this.themes.push({link:'styles/vendor/anthem.black.theme.css',label:'Black Theme'});
-
-        this.layoutSvc.layout$.subscribe(
-            data => {
-                let layout: Layout = data;
-                if(layout != null ) {
-                    if(layout.topBar != null && layout.topBar.branding != null) {
-                        this.branding = layout.topBar.branding;
-                        this.topMenuItems = layout.topBar.headerMenus;
-                    }
-                    if(layout.subBar && (layout.subBar.menuItems || layout.subBar.menuLinks || layout.subBar.organization)) {
-                        this.navMenuBar = true;
-                        this.organization = layout.subBar.organization;
-                        this.menuItems = layout.subBar.menuItems;
-                        this.menuLinks = layout.subBar.menuLinks;
-                    } else {
-                        this.navMenuBar = false;
-                    }
-                    this.leftMenuItems = layout.leftNavBar;
-                    this.footer = layout.footer;
-                }
-                //this._router.navigate([this.body['defaultFlow']], { relativeTo: this._route });
-            }
-        );
-        if(this._route.data['value']['layout'] != null) {
-            this.layoutSvc.getLayout(this._route.data['value']['layout']);
-        }
-
-//        this.initWebSocket();
     }
 
     logout() {
@@ -166,6 +135,40 @@ export class HomeLayoutCmp {
 
             count ++;
         }
+    }
+
+    ngOnInit() {
+        // initialize
+        this.themes.push({link:'styles/vendor/anthem.blue.theme.css',label:'Blue Theme'});
+        this.themes.push({link:'styles/vendor/anthem.black.theme.css',label:'Black Theme'});
+
+        this.layoutSvc.layout$.subscribe(
+            data => {
+                let layout: Layout = data;
+                if(layout != null ) {
+                    if(layout.topBar != null && layout.topBar.branding != null) {
+                        this.branding = layout.topBar.branding;
+                        this.topMenuItems = layout.topBar.headerMenus;
+                    }
+                    if(layout.subBar && (layout.subBar.menuItems || layout.subBar.menuLinks || layout.subBar.organization)) {
+                        this.navMenuBar = true;
+                        this.organization = layout.subBar.organization;
+                        this.menuItems = layout.subBar.menuItems;
+                        this.menuLinks = layout.subBar.menuLinks;
+                    } else {
+                        this.navMenuBar = false;
+                    }
+                    this.leftMenuItems = layout.leftNavBar;
+                    this.footer = layout.footer;
+                }
+                //this._router.navigate([this.body['defaultFlow']], { relativeTo: this._route });
+            }
+        );
+        if(this._route.data['value']['layout'] != null) {
+            this.layoutSvc.getLayout(this._route.data['value']['layout']);
+        }
+
+        //        this.initWebSocket();
     }
 
 }
