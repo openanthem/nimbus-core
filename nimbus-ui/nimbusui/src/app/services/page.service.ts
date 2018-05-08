@@ -288,24 +288,7 @@ export class PageService {
                                         let flow = this.getFlowNameFromOutput(output.value.path);
                                         // Check if the _new output is for the Root Flow
                                         if (output.value.path == "/" + flow) {
-                                                let viewRoot: ViewRoot = new ViewRoot();
-                                                
-                                                viewRoot.model = output.value.type.model;
-                                                this.configService.setLayoutToAppConfig(flow, viewRoot);
-
-                                                if (output.rootDomainId !== 'null') {
-                                                        this.flowRootDomainId[flow] = output.rootDomainId;
-                                                        this.sessionstore.set(flow, output.rootDomainId);
-                                                }
-                                                // Check if there is a layout for this domain
-                                                if (output.value.config.type.model.uiStyles) {
-                                                        viewRoot.layout = output.value.config.type.model.uiStyles.attributes.layout;
-                                                        // emit the layout name
-                                                        this.layout$.emit(viewRoot.layout);
-                                                }
-                                                if (navToDefault) {
-                                                        this.navigateToDefaultPageForFlow(output.value.type.model, flow);
-                                                }
+                                                this.setViewRootAndNavigate(output,flow,navToDefault,true);
                                         } else {
                                                 let eventModel: ModelEvent = new ModelEvent().deserialize(output);
                                                 this.traverseFlowConfig(eventModel, flow);
@@ -313,32 +296,12 @@ export class PageService {
                                 } else if (output.action === Action._get.value) {
                                         if (output.value.config && output.value.type && output.value.type.model) {
                                                 let refresh = false;
-                                                let flow = this.getFlowNameFromOutput(output.value.path);
-                                                let viewRoot: ViewRoot = new ViewRoot();
-                                                // Add the flow config to memory.
-                                                
-                                                viewRoot.model = output.value.type.model;
                                                 if(ParamUtils.isEmpty(this.configService.flowConfigs)) {
                                                         refresh = true;
                                                 }
-                                                this.configService.setLayoutToAppConfig(flow, viewRoot);
-                                                
-                                                if (output.value.config.type.model && output.value.config.type.model.uiStyles) {
-                                                        viewRoot.layout = output.value.config.type.model.uiStyles.attributes.layout;
-                                                        if(refresh) {
-                                                                this.layout$.emit(viewRoot.layout); 
-                                                        }
-                                                }
-
-                                                if (output.rootDomainId !== 'null') {
-                                                        this.flowRootDomainId[flow] = output.rootDomainId;
-                                                        this.sessionstore.set(flow, output.rootDomainId);
-                                                }
-                                                
-                                                if (navToDefault) {
-                                                        let toPage: Param = this.getDetaultPageForFlow(viewRoot.model);
-                                                        this.navigateToPage(toPage, flow);
-                                                }                                                                
+                                                let flow = this.getFlowNameFromOutput(output.value.path);
+                                                this.setViewRootAndNavigate(output,flow,navToDefault,refresh);
+                                                                        
                                         } else {
                                                 this.logError('Received an _get call without model or config ' + output.value.path);
                                         }
@@ -361,6 +324,27 @@ export class PageService {
                 }
         }
 
+        setViewRootAndNavigate(output: Result, flow:string, navToDefault:boolean, refreshLayout:boolean) {
+                let viewRoot: ViewRoot = new ViewRoot();
+                                                
+                viewRoot.model = output.value.type.model;
+                this.configService.setLayoutToAppConfig(flow, viewRoot);
+
+                if (output.rootDomainId !== 'null') {
+                        this.flowRootDomainId[flow] = output.rootDomainId;
+                        this.sessionstore.set(flow, output.rootDomainId);
+                }
+                // Check if there is a layout for this domain
+                if (output.value.config.type.model.uiStyles) {
+                        viewRoot.layout = output.value.config.type.model.uiStyles.attributes.layout;
+                        if(refreshLayout) {
+                                this.layout$.emit(viewRoot.layout);
+                        }
+                }
+                if (navToDefault) {
+                        this.navigateToDefaultPageForFlow(output.value.type.model, flow);
+                }
+        }
         /** When the config is already loaded, find the default page to load */
         loadDefaultPageForConfig(flowName: string) {
                 let baseUrl = ServiceConstants.PLATFORM_BASE_URL;
