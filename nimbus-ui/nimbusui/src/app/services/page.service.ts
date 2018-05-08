@@ -312,20 +312,29 @@ export class PageService {
                                         }
                                 } else if (output.action === Action._get.value) {
                                         if (output.value.config && output.value.type && output.value.type.model) {
+                                                let refresh = false;
                                                 let flow = this.getFlowNameFromOutput(output.value.path);
                                                 let viewRoot: ViewRoot = new ViewRoot();
                                                 // Add the flow config to memory.
-                                                if (output.value.config.type.model && output.value.config.type.model.uiStyles) {
-                                                        viewRoot.layout = output.value.config.type.model.uiStyles.attributes.layout;
-                                                }
+                                                
                                                 viewRoot.model = output.value.type.model;
+                                                if(ParamUtils.isEmpty(this.configService.flowConfigs)) {
+                                                        refresh = true;
+                                                }
                                                 this.configService.setLayoutToAppConfig(flow, viewRoot);
                                                 
+                                                if (output.value.config.type.model && output.value.config.type.model.uiStyles) {
+                                                        viewRoot.layout = output.value.config.type.model.uiStyles.attributes.layout;
+                                                        if(refresh) {
+                                                                this.layout$.emit(viewRoot.layout); 
+                                                        }
+                                                }
+
                                                 if (output.rootDomainId !== 'null') {
                                                         this.flowRootDomainId[flow] = output.rootDomainId;
                                                         this.sessionstore.set(flow, output.rootDomainId);
                                                 }
-        
+                                                
                                                 if (navToDefault) {
                                                         let toPage: Param = this.getDetaultPageForFlow(viewRoot.model);
                                                         this.navigateToPage(toPage, flow);
