@@ -115,7 +115,8 @@ import { CustomHttpClientInterceptor } from './services/httpclient-interceptor.s
 import { CustomBrowserXhr } from './custom.browserxhr';
 import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
-
+import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
+import { SessionStoreService, CUSTOM_STORAGE } from './services/session.store';
 // Declarations
 import { LoginCmp } from './components/login/login.component';
 import { LandingPage } from './components/login/auth-landingpage';
@@ -161,7 +162,8 @@ import {DateTimeFormatPipe} from './pipes/date.pipe';
         GrowlModule,
         MessagesModule,
         MessageModule,
-        KeyFilterModule
+        KeyFilterModule,
+        StorageServiceModule
     ],
     declarations: [ AppComponent, STOMPStatusComponent, FlowWrapper, PageContent, PageNotfoundComponent, StaticText,
         Tile, Section, Header, Form, FormElement, InputText, ComboBox, RadioButton, Signature, DateControl, CheckBoxGroup,
@@ -184,6 +186,8 @@ import {DateTimeFormatPipe} from './pipes/date.pipe';
          { provide: HTTP_INTERCEPTORS, useClass: CustomHttpClientInterceptor, multi: true },
          { provide: LocationStrategy, useClass: HashLocationStrategy }, GridService,
          { provide: APP_BASE_HREF, useValue: ServiceConstants.APP_CONTEXT },
+            { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+            SessionStoreService,
          AuthenticationService, BreadcrumbService, LoaderService, FileService, LayoutService, WindowRefService, LoggerService ],
     bootstrap: [ AppComponent ]
 })

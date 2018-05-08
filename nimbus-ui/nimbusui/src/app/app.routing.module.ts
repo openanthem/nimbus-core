@@ -102,7 +102,7 @@ const APPROUTES: Routes = [
 ];
 
 @NgModule({
-    imports: [ RouterModule.forRoot(APPROUTES, {enableTracing: false}) ],
+    imports: [ RouterModule.forRoot(APPROUTES, {enableTracing: false, onSameUrlNavigation: 'reload'}) ],
     exports: [ RouterModule ],
     providers: [
       SelectivePreloadingStrategy, PageResolver, LayoutResolver
