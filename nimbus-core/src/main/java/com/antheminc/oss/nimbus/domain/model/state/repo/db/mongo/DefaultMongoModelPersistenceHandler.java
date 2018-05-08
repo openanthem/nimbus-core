@@ -22,8 +22,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 
+import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.defn.Domain;
-import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Model;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
@@ -45,36 +45,27 @@ public class DefaultMongoModelPersistenceHandler implements ModelPersistenceHand
 		this.rep = rep;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean handle(List<ModelEvent<Param<?>>> modelEvents) {
-		
 		if(CollectionUtils.isEmpty(modelEvents)) 
 			return false;
 		
 		for(ModelEvent<Param<?>> event: modelEvents) {
-			
 			logit.trace(()->"path: "+event.getPath()+ " action: "+event.getType()+" state: "+event.getPayload().getState());
 			
 			Param<?> param = event.getPayload();
+			Model<Object> mRoot = (Model<Object>)param.getRootDomain();
 			
-			Model<Object> model = findIfNestedAndHasDomain(param);
-			Class<Object> modelClass = (Class<Object>)model.getConfig().getReferredClass();
-			
-			Repo repo = AnnotationUtils.findAnnotation(modelClass, Repo.class);
-			
-			String alias = repo != null && StringUtils.isNotBlank(repo.alias()) ? repo.alias() : model.getConfig().getAlias();
-			
-			
-			Object coreState = model.getState();
-			Object coreStateId = model.findParamByPath("/id").getState();
-			final Serializable coreId;
+			String alias = getRepoAlias(mRoot);
+				
+			Object coreStateId = mRoot.findParamByPath("/id").getState();
 			if(coreStateId == null) {
-				coreState = rep._new(model.getConfig(), coreState);
-				rep._save(alias, coreState);
+				rep._new(mRoot.getConfig(), mRoot.getState());
 				return true;
 			}
 			
-			coreId = (Serializable)coreStateId; 
+			Serializable coreId = (Serializable)coreStateId; 
 			
 			String pPath = param.getBeanPath();
 			Object pState = param.getState();
@@ -86,23 +77,17 @@ public class DefaultMongoModelPersistenceHandler implements ModelPersistenceHand
 		
 	}
 
-	
-	private Model<Object> findIfNestedAndHasDomain(Param<?> param) {
-		if(param.isNested() ) {
-			Model<Object> model = (Model<Object>)param.findIfNested();
-			Class<Object> modelClass = (Class<Object>)model.getConfig().getReferredClass();
-			
-			Repo repo = AnnotationUtils.findAnnotation(modelClass, Repo.class);
-			
-			if(Repo.Database.isPersistable(repo)) {
-				Domain domain = AnnotationUtils.findAnnotation(modelClass, Domain.class);
-				
-				if(repo != null && domain != null) {
-					return model;
-				}
-			}
+	private String getRepoAlias(Model<Object> mRoot) {
+		String alias = mRoot.getConfig().getRepo().alias();
+		
+		if(StringUtils.isBlank(alias)) {
+			Class<Object> mRootClass = (Class<Object>)mRoot.getConfig().getReferredClass();
+			alias = AnnotationUtils.findAnnotation(mRootClass, Domain.class).value();
+			if(StringUtils.isBlank(alias)) {
+				throw new InvalidConfigException("Core Persistent entity must be configured with "+Domain.class.getSimpleName()+" annotation. Not found for root model: "+mRoot);
+			} 
 		}
-		return (Model<Object>)param.getRootDomain();
+		return alias;
 	}
 	
 }
