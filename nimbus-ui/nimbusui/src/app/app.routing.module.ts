@@ -25,7 +25,6 @@ import { LayoutResolver } from './components/domain/layout-resolver.service';
 import { PageResolver } from './components/platform/content/page-resolver.service';
 import { PageNotfoundComponent } from './components/platform/content/page-notfound.component';
 import { PageContent } from './components/platform/content/page-content.component';
-import { FlowWrapper } from './components/platform/content/flow-wrapper.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
