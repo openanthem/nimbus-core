@@ -163,16 +163,16 @@ export class PageService {
                 let flowRoodtId = this.sessionstore.get(flowName);
                 let url = '';
                 if(flowRoodtId != null) {
-                        let rootId = flowRoodtId;
-                        baseUrl += rootId == null ? '/' + flowName:  '/' + flowName+':'+rootId;
-                        let action = rootId!= null ? Action._get.value: Action._new.value;
-                        url = baseUrl + '/' + action + '?b=' + Behavior.execute.value;       
+                        // let rootId = flowRoodtId;
+                        // baseUrl += rootId == null ? '/' + flowName:  '/' + flowName+':'+rootId;
+                        // let action = rootId!= null ? Action._get.value: Action._new.value;
+                        // url = baseUrl + '/' + action + '?b=' + Behavior.execute.value;       
+                        window.location.href = `${ServiceConstants.APP_REFRESH}`;
                 } else {
                         baseUrl += '/' + flowName;
                         url = baseUrl + '/' + Action._new.value + '?b=' + Behavior.execute.value;  
+                        this.executeHttp(url, HttpMethod.GET.value, null);
                 }
-                
-                this.executeHttp(url, HttpMethod.GET.value, null);
         }
 
         /** Get Flow Config - TODO delete after routes refactor. the above method will be used instead of this one.*/

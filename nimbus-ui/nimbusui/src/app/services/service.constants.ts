@@ -42,6 +42,7 @@ export class ServiceConstants {
     public static get BASE_URL(): string    { return this.STOPGAP_APP_HOST_URL+this.WEB_CONTENT_PORT; }
     public static get LOGIN_URL(): string { return this.STOPGAP_APP_HOST_URL+this.STOPGAP_APP_PORT+'/'+this.APP_CONTEXT+'/login'; }
     public static get LOGOUT_URL(): string { return this.STOPGAP_APP_HOST_URL+this.STOPGAP_APP_PORT+'/'+this.APP_CONTEXT+'/logout'; }
+    public static get APP_REFRESH(): string { return this.STOPGAP_APP_HOST_URL+this.STOPGAP_APP_PORT+'/'+this.APP_CONTEXT+'/processLogin'; }
     public static get PLATFORM_BASE_URL(): string    { return this.STOPGAP_APP_HOST_URL+this.STOPGAP_APP_PORT+'/'+this.APP_CONTEXT+'/fep/p'; }
     public static get CLIENT_BASE_URL(): string    { return this.STOPGAP_APP_HOST_URL+this.STOPGAP_APP_PORT+'/'; }
     public static get WS_BASE_URL(): string { return 'ws://'+this.STOPGAP_APP_HOST+':'+this.WS_PORT+'/updates'; }
