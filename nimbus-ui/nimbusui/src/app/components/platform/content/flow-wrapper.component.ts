@@ -31,7 +31,7 @@ import { ExecuteOutput, ModelEvent, Page } from '../../../shared/app-config.inte
  * \@author Dinakar.Meda
  * \@whatItDoes 
  * 
- * \@howToUse 
+ * \@howToUse ------------ NOT USED. KEPT AS REFERENCE FOR WEBSOCKET CODE
  * 
  */
 @Component({
