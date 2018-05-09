@@ -19,4 +19,8 @@ export class SessionStoreService {
         let val = this.storage.get(key);
         return val;
     }
+    
+    remove(key:string) :any {
+        return this.storage.remove(key);
+    }
 }
