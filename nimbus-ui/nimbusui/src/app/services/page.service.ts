@@ -145,7 +145,7 @@ export class PageService {
         }
         /** Get the rootDomainId config if it is already loaded */
         getFlowRootDomainId(flowName: string) {
-                return this.flowRootDomainId[flowName];
+                return this.sessionstore.get(flowName);
         }
 
         /**
@@ -163,11 +163,12 @@ export class PageService {
                 let flowRoodtId = this.sessionstore.get(flowName);
                 let url = '';
                 if(flowRoodtId != null) {
-                        // let rootId = flowRoodtId;
-                        // baseUrl += rootId == null ? '/' + flowName:  '/' + flowName+':'+rootId;
-                        // let action = rootId!= null ? Action._get.value: Action._new.value;
-                        // url = baseUrl + '/' + action + '?b=' + Behavior.execute.value;       
-                        window.location.href = `${ServiceConstants.APP_REFRESH}`;
+                        let rootId = flowRoodtId;
+                        baseUrl += rootId == null ? '/' + flowName:  '/' + flowName+':'+rootId;
+                        let action = rootId!= null ? Action._get.value: Action._new.value;
+                        url = baseUrl + '/' + action + '?b=' + Behavior.execute.value;   
+                        this.executeHttp(url, HttpMethod.GET.value, null);    
+                        //window.location.href = `${ServiceConstants.APP_REFRESH}`;
                 } else {
                         baseUrl += '/' + flowName;
                         url = baseUrl + '/' + Action._new.value + '?b=' + Behavior.execute.value;  
