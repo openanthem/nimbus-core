@@ -63,8 +63,8 @@ public class DefaultCoreConfiguration {
 	}
 	
 	@Bean(name="default.paramStateAtomicPersistenceEventListener")
-	public ParamStateAtomicPersistenceEventListener paramStateAtomicPersistenceEventListener(ModelRepositoryFactory repoFactory,@Qualifier("default.rep_mongodb_handler") ModelPersistenceHandler handler){
-		return new ParamStateAtomicPersistenceEventListener(repoFactory, handler);
+	public ParamStateAtomicPersistenceEventListener paramStateAtomicPersistenceEventListener(ModelRepositoryFactory repoFactory){
+		return new ParamStateAtomicPersistenceEventListener(repoFactory);
 	}
 	
 //	@Bean(name="default.paramStateBatchPersistenceEventListener")
