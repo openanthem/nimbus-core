@@ -7,7 +7,6 @@ import { FormBuilder } from '@angular/forms';
 import { FormElementsService } from './form-builder.service';
 import { ValidationUtils } from './validators/ValidationUtils';
 import { ParamUtils } from './../../shared/param-utils';
-// /Users/AF73944/p7/anthm-internal-oss-backend/nimbus-ui/nimbusui/src/app/shared/param-config.ts
 import { Param, Type, Model } from '../../shared/param-state';
 import { ParamConfig } from '../../shared/param-config';
 import { ConfigService } from '../../services/config.service';
@@ -40,217 +39,109 @@ describe('FormElementsService', () => {
     configService = TestBed.get(ConfigService);
   });
 
-  it('should be created', async(() => {
-    expect(service).toBeTruthy();
-  }));
+    it('should be created', async(() => {
+      expect(service).toBeTruthy();
+    }));
 
-  it('toFormGroup() should return array based on buildFormGroup()', async(() => {
+    it('toFormGroup() should return array based on buildFormGroup()', async(() => {
       const fValidations = [];
       spyOn(service, 'buildFormGroup').and.returnValue([1]);
-     expect(service.toFormGroup([1], [])).toEqual([1]);
-  }));
+      expect(service.toFormGroup([1], [])).toEqual([1]);
+    }));
 
-  it('toFormGroup() should return object with validator property', async(() => {
-    const fValidations = [];
-    spyOn(service, 'buildFormGroup').and.returnValue([1]);
-    const res = service.toFormGroup([1], [1, 2]);
-    expect(res.validator).toBeTruthy();
-}));
+    it('toFormGroup() should return object with validator property', async(() => {
+      const fValidations = [];
+      spyOn(service, 'buildFormGroup').and.returnValue([1]);
+      const res = service.toFormGroup([1], [1, 2]);
+      expect(res.validator).toBeTruthy();
+    }));
 
-it('buildFormGroup() should return object based on the createNewFormGroup() value', async(() => {
-    const ele = [{
-        type: {
-            model: {
-                params: [1]
-            }
-        },
-        config: {
-            type: {
-                collection: '',
-                nested: 'a',
-            },
-            uiStyles: {
-                attributes: {
-                    alias: 'test'
-                }
-            }
-        }
-    }];
-    spyOn(service, 'createNewFormGroup').and.returnValue(132);
-    const res = service.buildFormGroup(ele);
-    for (const key in res) {
+    it('buildFormGroup() should return object based on the createNewFormGroup() value', async(() => {
+      const ele = [{ type: { model: { params: [1] } }, config: { type: { collection: '', nested: 'a' }, uiStyles: { attributes: { alias: 'test' } } } }];
+      spyOn(service, 'createNewFormGroup').and.returnValue(132);
+      const res = service.buildFormGroup(ele);
+      for (const key in res) {
         if (res.hasOwnProperty(key)) {
-            const element = res[key];
-            expect(element).toEqual(132);
+          const element = res[key];
+          expect(element).toEqual(132);
         }
-    }
-  }));
+      }
+    }));
 
-  it('buildFormGroup() should return object based on the createNewFormGroup() value and ValidationUtils.buildStaticValidations()', async(() => {
-      const ele = [{
-          type: {
-              model: {
-                  params: []
-              }
-          },
-          config: {
-              type: {
-                  collection: '',
-                  nested: 'a',
-              },
-              uiStyles: {
-                  attributes: {
-                      alias: 'test'
-                  }
-              }
-          }
-      }];
-    spyOn(ValidationUtils, 'buildStaticValidations').and.returnValue(132);
-    spyOn(service, 'createNewFormGroup').and.returnValue(132);
-    const res = service.buildFormGroup(ele);
-    for (const key in res) {
+    it('buildFormGroup() should return object based on the createNewFormGroup() value and ValidationUtils.buildStaticValidations()', async(() => {
+      const ele = [{ type: { model: { params: [] } }, config: { type: { collection: '', nested: 'a' }, uiStyles: { attributes: { alias: 'test' } } } }];
+      spyOn(ValidationUtils, 'buildStaticValidations').and.returnValue(132);
+      spyOn(service, 'createNewFormGroup').and.returnValue(132);
+      const res = service.buildFormGroup(ele);
+      for (const key in res) {
         if (res.hasOwnProperty(key)) {
-            const element = res[key];
-            expect(element[1]).toEqual(132);
-            expect(element[0].disabled).toEqual(true);
-            expect(element[0].value).toEqual('');
+          const element = res[key];
+          expect(element[1]).toEqual(132);
+          expect(element[0].disabled).toEqual(true);
+          expect(element[0].value).toEqual('');
         }
-    }
-  }));
+      }
+    }));
 
-  it('buildFormGroup() should return object based only on the createNewFormGroup() value if ValidationUtils.buildStaticValidations() is null', async(() => {
-    const ele = [{
-        type: {
-            model: {
-                params: []
-            }
-        },
-        config: {
-            type: {
-                collection: null,
-                nested: 'a',
-            },
-            uiStyles: {
-                attributes: {
-                    alias: 'test'
-                }
-            }
-        }
-    }];
-  spyOn(ValidationUtils, 'buildStaticValidations').and.returnValue(null);
-  spyOn(service, 'createNewFormGroup').and.returnValue(132);
-  const res = service.buildFormGroup(ele);
-  for (const key in res) {
-      if (res.hasOwnProperty(key)) {
+    it('buildFormGroup() should return object based only on the createNewFormGroup() value if ValidationUtils.buildStaticValidations() is null', async(() => {
+      const ele = [{ type: { model: { params: [] } }, config: { type: { collection: null, nested: 'a' }, uiStyles: { attributes: { alias: 'test' } } } }];
+      spyOn(ValidationUtils, 'buildStaticValidations').and.returnValue(null);
+      spyOn(service, 'createNewFormGroup').and.returnValue(132);
+      const res = service.buildFormGroup(ele);
+      for (const key in res) {
+        if (res.hasOwnProperty(key)) {
           const element = res[key];
           expect(element[0].disabled).toEqual(true);
           expect(element[0].value).toEqual('');
-      }
-  }
-}));
-
-it('buildFormGroup() should return empty object', async(() => {
-    const ele = [{
-        type: {
-            model: {
-                params: [1]
-            }
-        },
-        config: {
-            type: {
-                collection: '',
-                nested: 'a',
-            },
-            uiStyles: {
-                attributes: {
-                    alias: 'Button'
-                }
-            }
         }
-    }];
-    spyOn(service, 'createNewFormGroup').and.returnValue(132);
-    const res = service.buildFormGroup(ele);
-    expect(res).toEqual({});
-  }));
+      }
+    }));
 
+    it('buildFormGroup() should return empty object', async(() => {
+      const ele = [{ type: { model: { params: [1] } }, config: { type: { collection: '', nested: 'a' }, uiStyles: { attributes: { alias: 'Button' } } } }];
+      spyOn(service, 'createNewFormGroup').and.returnValue(132);
+      const res = service.buildFormGroup(ele);
+      expect(res).toEqual({});
+    }));
 
-    //   const ele = {
-        //   element.type= {
-            //   model: {
-            //       params: [{
-            //           config: {
-            //               code: 123,
-            //               type: {
-            //                   collection: true,
-            //                   nested: 1
-            //               }
-            //           }
-            //       }]
-            //   }
-        //   };
-    //   };
-
-  it('7should be created', async(() => {
-    const element = new Param(configService);
-    element.type = new Type(configService);
-    element.type.model = new Model(configService);
-    const cParam = new Param(configService);
-    const cpConfig = new ParamConfig(configService);
-    spyOn(configService, 'getViewConfigById').and.returnValue({type: {
-        nested: false,
-        code: 123
-    }});
-    element.type.model.params = [cParam];
+    it('7should be created', async(() => {
+      const element = new Param(configService);
+      element.type = new Type(configService);
+      element.type.model = new Model(configService);
+      const cParam = new Param(configService);
+      const cpConfig = new ParamConfig(configService);
+      spyOn(configService, 'getViewConfigById').and.returnValue({
+        type: {
+          nested: false,
+          code: 123
+        }
+      });
+      element.type.model.params = [cParam];
       spyOn(ValidationUtils, 'buildStaticValidations').and.returnValue(false);
       const res = service.createNewFormGroup(element);
       console.log('res000', res);
-    expect(res).toBeTruthy();
-  }));
+      expect(res).toBeTruthy();
+    }));
 
-  it('_getTypeSafeLeafState() should return param.leafState', async(() => {
-      const param = {
-          leafState: 'lState',
-          gridList: 'gList',
-          config: {
-            type: {
-                name: 'name1'
-            }
-          }
-      };
+    it('_getTypeSafeLeafState() should return param.leafState', async(() => {
+      const param = { leafState: 'lState', gridList: 'gList', config: { type: { name: 'name1' } } };
       spyOn(ParamUtils, 'isKnownDateType').and.returnValue(true);
       const res = service._getTypeSafeLeafState(param);
-    expect(res).toEqual('lState');
-  }));
+      expect(res).toEqual('lState');
+    }));
 
-  it('_getTypeSafeLeafState() should return param.gridList', async(() => {
-    const param = {
-        alias: 'Grid',
-        leafState: 'lState',
-        gridList: [1],
-        config: {
-          type: {
-              name: 'name1'
-          }
-        }
-    };
-    spyOn(ParamUtils, 'isKnownDateType').and.returnValue(false);
-    const res = service._getTypeSafeLeafState(param);
-  expect(res).toEqual([1]);
-}));
+    it('_getTypeSafeLeafState() should return param.gridList', async(() => {
+      const param = { alias: 'Grid', leafState: 'lState', gridList: [1], config: { type: { name: 'name1' } } };
+      spyOn(ParamUtils, 'isKnownDateType').and.returnValue(false);
+      const res = service._getTypeSafeLeafState(param);
+      expect(res).toEqual([1]);
+    }));
 
-it('_getTypeSafeLeafState() should return param.leafState even if ParamUtils.isKnownDateType() is null', async(() => {
-    const param = {
-        leafState: 'lState',
-        gridList: 'gList',
-        config: {
-          type: {
-              name: 'name1'
-          }
-        }
-    };
-    spyOn(ParamUtils, 'isKnownDateType').and.returnValue(false);
-    const res = service._getTypeSafeLeafState(param);
-  expect(res).toEqual('lState');
-}));
+    it('_getTypeSafeLeafState() should return param.leafState even if ParamUtils.isKnownDateType() is null', async(() => {
+      const param = { leafState: 'lState', gridList: 'gList', config: { type: { name: 'name1' } } };
+      spyOn(ParamUtils, 'isKnownDateType').and.returnValue(false);
+      const res = service._getTypeSafeLeafState(param);
+      expect(res).toEqual('lState');
+    }));
 
 });
