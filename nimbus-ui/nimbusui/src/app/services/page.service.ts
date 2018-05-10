@@ -338,9 +338,9 @@ export class PageService {
                 // Check if there is a layout for this domain
                 if (output.value.config.type.model.uiStyles) {
                         viewRoot.layout = output.value.config.type.model.uiStyles.attributes.layout;
-                        if(refreshLayout) {
+                       // if(refreshLayout) {
                                 this.layout$.emit(viewRoot.layout);
-                        }
+                       // }
                 }
                 if (navToDefault) {
                         this.navigateToDefaultPageForFlow(output.value.type.model, flow);
