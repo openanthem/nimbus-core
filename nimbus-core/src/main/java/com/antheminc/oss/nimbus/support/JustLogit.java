@@ -19,6 +19,8 @@ import java.util.function.Supplier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
 
 /**
  * @author Soham Chakravarti
@@ -95,7 +97,13 @@ public class JustLogit {
 //		if(msg.get() != null) {
 //			return SecurityUtils.scanObjectForSecureLogging(msg.get(), SecurityUtils.SECURE);
 //		}
-			return msg.get();		                     
+		StringBuilder logMessage = new StringBuilder();
+		RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+		if(requestAttributes != null) {
+			logMessage.append("Session ID:").append(requestAttributes.getSessionId()).append(":");
+		}
+		logMessage.append(msg.get());
+		return logMessage.toString();		                     
 	}
 	
 }
