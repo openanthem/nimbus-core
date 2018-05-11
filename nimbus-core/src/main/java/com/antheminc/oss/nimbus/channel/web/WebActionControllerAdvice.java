@@ -17,8 +17,10 @@ package com.antheminc.oss.nimbus.channel.web;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -34,11 +36,16 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
+import com.antheminc.oss.nimbus.InvalidArgumentException;
+import com.antheminc.oss.nimbus.InvalidConfigException;
+import com.antheminc.oss.nimbus.InvalidOperationAttemptedException;
+import com.antheminc.oss.nimbus.UniqueIdGenerationUtil;
+import com.antheminc.oss.nimbus.UnsupportedScenarioException;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandTransactionInterceptor;
+import com.antheminc.oss.nimbus.domain.cmd.exec.ExecuteError;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecuteOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.MultiExecuteOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ValidationError;
-import com.antheminc.oss.nimbus.domain.cmd.exec.ValidationException;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ValidationResult;
 import com.antheminc.oss.nimbus.support.JustLogit;
 
@@ -51,6 +58,24 @@ import com.antheminc.oss.nimbus.support.JustLogit;
 public class WebActionControllerAdvice implements ResponseBodyAdvice<Object> {
 	
 	private JustLogit logit = new JustLogit(this.getClass());
+	
+	@Value("${application.exception.genericMsg:#{null}}")
+	private String genericMsg;
+	
+	@Value("${application.exception.frameworkRuntimeMsg:#{null}}")
+	private String frameworkRuntimeMsg;
+	
+	@Value("${application.exception.invalidConfigMsg:#{null}}")
+	private String invalidConfigMsg;
+	
+	@Value("${application.exception.unsupportedMsg:#{null}}")
+	private String unsupportedMsg;
+	
+	@Value("${application.exception.invalidArgumentMsg:#{null}}")
+	private String invalidArgumentMsg;
+	
+	@Value("${application.exception.invalidOperationMsg:#{null}}")
+	private String invalidOperationMsg;
 	
 	@Autowired CommandTransactionInterceptor interceptor;
 	
@@ -71,25 +96,32 @@ public class WebActionControllerAdvice implements ResponseBodyAdvice<Object> {
 	}
 	
 	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-	@ExceptionHandler(FrameworkRuntimeException.class)
+	@ExceptionHandler(Throwable.class)
 	@ResponseBody
-	public MultiExecuteOutput exception(FrameworkRuntimeException pEx){
-		logit.error(()->"Logging backing execute exception...",pEx);
-		
+	public MultiExecuteOutput exception(Throwable pEx){
 		ExecuteOutput<?> resp = new ExecuteOutput<>();
-		resp.setExecuteException(pEx.getExecuteError());
+		ExecuteError err = new ExecuteError();
+		if ((FrameworkRuntimeException.class).isAssignableFrom(pEx.getClass())) {
+			err = ((FrameworkRuntimeException) pEx).getExecuteError();		
+				if (pEx instanceof InvalidConfigException)			
+					err.setMessage(Optional.ofNullable(invalidConfigMsg).orElse(setDefaultMessage(err.getMessage())));
+				else if (pEx instanceof InvalidArgumentException)			
+					err.setMessage(Optional.ofNullable(invalidArgumentMsg).orElse(setDefaultMessage(err.getMessage())));
+				else if (pEx instanceof InvalidOperationAttemptedException)			
+					err.setMessage(Optional.ofNullable(invalidOperationMsg).orElse(setDefaultMessage(err.getMessage())));
+				else if (pEx instanceof UnsupportedScenarioException)			
+					err.setMessage(Optional.ofNullable(unsupportedMsg).orElse(setDefaultMessage(err.getMessage())));
+				else 
+					err.setMessage(Optional.ofNullable(frameworkRuntimeMsg).orElse(setDefaultMessage(err.getMessage())));
+				
+			logit.error(() -> ((FrameworkRuntimeException) pEx).getExecuteError().getMessage(), pEx);
+		} else {	
+			err = new ExecuteError(UniqueIdGenerationUtil.generateUniqueId(), pEx.getClass(), setDefaultMessage(err.getMessage()));
+			logit.error(()->genericMsg, pEx);
+			resp.setExecuteException(err);
+		}
+		resp.setExecuteException(err);
 		return interceptor.handleResponse(resp);		
-	}
-	
-	@ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY)
-	@ExceptionHandler(ValidationException.class)
-	@ResponseBody
-	public MultiExecuteOutput exception(ValidationException vEx){	
-		logit.error(()->"Logging backing validation exception...",vEx);
-		
-		ExecuteOutput<?> resp = new ExecuteOutput<>();
-		resp.setValidationResult(vEx.getValidationResult());
-		return interceptor.handleResponse(resp);
 	}
 	
 	@ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY)
@@ -115,6 +147,10 @@ public class WebActionControllerAdvice implements ResponseBodyAdvice<Object> {
 		resp.getValidationResult().setErrors(errors);	
 		
 		return interceptor.handleResponse(resp);
+	}
+	
+	private String setDefaultMessage(String msg) {
+		return Optional.ofNullable(genericMsg).orElse(msg);
 	}
 	
 }

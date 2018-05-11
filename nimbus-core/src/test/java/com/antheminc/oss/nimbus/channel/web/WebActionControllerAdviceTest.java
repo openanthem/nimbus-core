@@ -44,8 +44,6 @@ import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandTransactionInterceptor;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecuteOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.MultiExecuteOutput;
-import com.antheminc.oss.nimbus.domain.cmd.exec.ValidationException;
-import com.antheminc.oss.nimbus.domain.cmd.exec.ValidationResult;
 
 /**
  * 
@@ -97,22 +95,6 @@ public class WebActionControllerAdviceTest {
 		
 		Assert.assertEquals(expected, actual);
 		Assert.assertEquals(ex.getExecuteError(), respCaptor.getValue().getExecuteException());
-	}
-	
-	@Test
-	public void testValidationExceptionHandler() {
-		final ValidationResult expectedValidationResult = new ValidationResult();
-		final ValidationException ex = new ValidationException(expectedValidationResult);
-		final MultiExecuteOutput expected = new MultiExecuteOutput();
-		
-		Mockito.when(this.interceptor.handleResponse(Mockito.isA(ExecuteOutput.class))).thenReturn(expected);
-		final MultiExecuteOutput actual = this.testee.exception(ex);
-		
-		final ArgumentCaptor<ExecuteOutput> respCaptor = ArgumentCaptor.forClass(ExecuteOutput.class);
-		Mockito.verify(this.interceptor, Mockito.only()).handleResponse(respCaptor.capture());
-		
-		Assert.assertEquals(expected, actual);
-		Assert.assertEquals(expectedValidationResult, respCaptor.getValue().getValidationResult());
 	}
 	
 	@Test

@@ -231,10 +231,11 @@ export class MultiOutput implements Serializable<MultiOutput,string> {
 export class ExecuteException implements Serializable<ExecuteException, string> {
     code: string;
     message: string;
-
+    uniqueId: string;
     deserialize( inJson ) {
         this.code = inJson.code;
         this.message = inJson.message;
+        this.uniqueId = inJson.uniqueId;
         return this;
     }
 }
