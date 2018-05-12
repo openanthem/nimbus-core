@@ -15,7 +15,9 @@
  */
 package com.antheminc.oss.nimbus.domain.cmd.exec;
 
+import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.Behavior;
+import com.antheminc.oss.nimbus.domain.session.SessionProvider;
 import com.antheminc.oss.nimbus.support.Holder;
 
 /**
@@ -24,12 +26,18 @@ import com.antheminc.oss.nimbus.support.Holder;
  */
 public class CommandTransactionInterceptor {
 
+	private final SessionProvider sessionProvider;
+	
+	public CommandTransactionInterceptor(BeanResolverStrategy beanResolver) {
+		this.sessionProvider = beanResolver.get(SessionProvider.class);
+	}
+	
 	public MultiExecuteOutput handleResponse(MultiExecuteOutput rawResult) {
 		return rawResult;
 	}
 	
 	public MultiExecuteOutput handleResponse(ExecuteOutput.BehaviorExecute<?> rawResult) {
-		return new MultiExecuteOutput(rawResult);
+		return new MultiExecuteOutput(sessionProvider.getSessionId(), rawResult);
 	}
 	
 	public MultiExecuteOutput handleResponse(ExecuteOutput<?> rawResult) {
@@ -67,7 +75,7 @@ public class CommandTransactionInterceptor {
 			return handleResponse((Holder<?>)rawResult);
 		}
 		
-		MultiExecuteOutput mExecOutput = new MultiExecuteOutput(new ExecuteOutput.BehaviorExecute<>(Behavior.$execute, rawResult));
+		MultiExecuteOutput mExecOutput = new MultiExecuteOutput(sessionProvider.getSessionId(), new ExecuteOutput.BehaviorExecute<>(Behavior.$execute, rawResult));
 		return handleResponse(mExecOutput);
 	}
 	
