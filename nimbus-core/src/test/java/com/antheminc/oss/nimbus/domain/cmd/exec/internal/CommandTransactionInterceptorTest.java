@@ -36,7 +36,7 @@ public class CommandTransactionInterceptorTest {
 	
 	@Before
 	public void init() {
-		api = new CommandTransactionInterceptor();
+		api = new CommandTransactionInterceptor(null);
 	}
 	
 	@Test

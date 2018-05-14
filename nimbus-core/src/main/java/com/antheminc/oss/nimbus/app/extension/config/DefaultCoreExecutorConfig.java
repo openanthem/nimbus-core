@@ -65,8 +65,8 @@ public class DefaultCoreExecutorConfig {
 	}
 	
 	@Bean
-	public CommandTransactionInterceptor commandTransactionInterceptor(){
-		return new CommandTransactionInterceptor();
+	public CommandTransactionInterceptor commandTransactionInterceptor(BeanResolverStrategy beanResolver){
+		return new CommandTransactionInterceptor(beanResolver);
 	}
 	
 	@Bean

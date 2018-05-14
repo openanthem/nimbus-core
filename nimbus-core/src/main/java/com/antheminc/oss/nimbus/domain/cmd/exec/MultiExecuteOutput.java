@@ -31,10 +31,14 @@ public class MultiExecuteOutput extends ExecuteOutput<Map<Integer, ExecuteOutput
 
 	private static final long serialVersionUID = 1L;
 
+	private final String sessionId;
 	
-	public MultiExecuteOutput() {}
+	public MultiExecuteOutput(String sessionId) {
+		this.sessionId = sessionId;
+	}
 	
-	public MultiExecuteOutput(ExecuteOutput.BehaviorExecute<?> output) {
+	public MultiExecuteOutput(String sessionId, ExecuteOutput.BehaviorExecute<?> output) {
+		this.sessionId = sessionId;
 		this.add(output);
 	}
 	
