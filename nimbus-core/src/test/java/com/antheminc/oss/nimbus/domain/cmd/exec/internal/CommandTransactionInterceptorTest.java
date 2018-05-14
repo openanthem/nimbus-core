@@ -17,13 +17,17 @@ package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
+import static org.mockito.Matchers.any;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
+import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandTransactionInterceptor;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecuteOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.MultiExecuteOutput;
+import com.antheminc.oss.nimbus.domain.session.SessionProvider;
 import com.antheminc.oss.nimbus.support.Holder;
 
 /**
@@ -36,7 +40,10 @@ public class CommandTransactionInterceptorTest {
 	
 	@Before
 	public void init() {
-		api = new CommandTransactionInterceptor(null);
+		SessionProvider sessionMock = Mockito.mock(SessionProvider.class);
+		BeanResolverStrategy mock = Mockito.mock(BeanResolverStrategy.class);
+		Mockito.when(mock.get(any())).thenReturn(sessionMock);
+		api = new CommandTransactionInterceptor(mock);
 	}
 	
 	@Test
