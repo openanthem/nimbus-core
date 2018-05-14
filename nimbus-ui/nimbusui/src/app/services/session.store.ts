@@ -31,9 +31,21 @@ export const CUSTOM_STORAGE = new InjectionToken<StorageService>('CUSTOM_STORAGE
  
 @Injectable()
 export class SessionStoreService {
+    private static SESSIONKEY: string = 'sessionId';
  
     constructor(@Inject(CUSTOM_STORAGE) private storage: StorageService) {
- 
+    }
+
+    setSessionId(sessionId: string) {
+        let sessionIdInStore = this.storage.get(SessionStoreService.SESSIONKEY);
+        // New session, store the Session Id.
+        if (sessionIdInStore === undefined) {
+            if (sessionId !== undefined) {
+                this.storage.set(SessionStoreService.SESSIONKEY, sessionId);
+            }
+        } else if (sessionIdInStore !== sessionId) { // Check for Stale session in store. Clean all.
+            this.removeAll();   
+        }
     }
 
     set(key:string, value: any) {

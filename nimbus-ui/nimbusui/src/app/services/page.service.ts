@@ -438,7 +438,10 @@ export class PageService {
         }
         executeHttpGet(url) {
                 this.http.get(url).subscribe(
-                        data => { this.processResponse(data.result); },
+                        data => { 
+                                this.sessionstore.setSessionId(data.sessionId);
+                                this.processResponse(data.result); 
+                        },
                         err => { this.processError(err); },
                         () => { this.invokeFinally(url); }
                         );
@@ -446,7 +449,10 @@ export class PageService {
 
         executeHttpPost(url:string, model:GenericDomain) {
                 this.http.post(url, JSON.stringify(model)).subscribe(
-                        data => { this.processResponse(data.result);},
+                        data => { 
+                                this.sessionstore.setSessionId(data.sessionId);
+                                this.processResponse(data.result);
+                        },
                         err => { this.processError(err); },
                         () => { this.invokeFinally(url); }
                         );
