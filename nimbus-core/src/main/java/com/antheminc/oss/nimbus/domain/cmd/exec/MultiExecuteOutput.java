@@ -20,13 +20,14 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.Getter;
 import lombok.ToString;
 
 /**
  * @author Soham Chakravarti
  *
  */
-@ToString
+@Getter @ToString 
 public class MultiExecuteOutput extends ExecuteOutput<Map<Integer, ExecuteOutput.BehaviorExecute<?>>> {
 
 	private static final long serialVersionUID = 1L;
