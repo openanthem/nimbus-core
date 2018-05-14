@@ -26,6 +26,7 @@ import { PageService } from '../../../../services/page.service';
 import { ServiceConstants } from './../../../../services/service.constants';
 import { BaseElement } from '../../base-element.component';
 import { FileService } from '../../../../services/file.service';
+import { CustomHttpClient } from '../../../../services/httpclient.service';
 
 /**
  * \@author Dinakar.Meda
@@ -71,7 +72,7 @@ export class Button extends BaseElement {
     files: any;
 
     constructor( private pageService: PageService, private _wcs: WebContentSvc, 
-        private location: Location, private fileService: FileService ) {
+        private location: Location, private fileService: FileService, private http: CustomHttpClient ) {
         super(_wcs);
     }
 
@@ -131,9 +132,21 @@ export class Button extends BaseElement {
             let files: File[] = item['fileControl'];
             delete item['fileControl'];
             for(let p=0; p<files.length; p++){
-                item['fileId'] = files[p]['fileId'];
+                // item['fileId'] = files[p]['fileId'];
+         const formData: FormData = new FormData();
+         formData.append('pfu', files[p], files[p].name);
+        var url = files[p]['postUrl'];
+        this.http.postFileData(url, formData)
+            .subscribe(data => {
+
+                item['fileId'] = data.fileId;
                 item['name'] = files[p]['name'];
                 this.pageService.processEvent( this.element.path, this.element.config.uiStyles.attributes.b, item, 'POST' );
+                
+            }
+               
+            );
+
                
             }
             

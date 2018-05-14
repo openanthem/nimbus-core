@@ -42,21 +42,25 @@ export class FileService {
 
     uploadFile(file: File) {
 
-        const formData: FormData = new FormData();
-        formData.append('pfu', file, file.name);
+        // const formData: FormData = new FormData();
+        // formData.append('pfu', file, file.name);
         var url = file['postUrl'];
+        this.addFile$.next(file);
         
-       return this.http.postFileData(url, formData)
-            .subscribe(data => {
+    //    return this.http.postFileData(url, formData)
+    //         .subscribe(data => {
 
-                file['fileId'] = data.fileId;
-                this.addFile$.next(file);
-            },
-                error => {
-                    this.addFile$.error(error);              
-                },
-                () => {this.logger.info('file has been uploaded');}
-            );
+    //             file['fileId'] = data.fileId;
+    //             this.addFile$.next(file);
+    //         },
+    //             error => {
+    //                 this.addFile$.error(error);              
+    //             },
+    //             () => {this.logger.info('file has been uploaded');}
+    //         );
     }
+
+
+    
 
 }
