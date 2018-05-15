@@ -39,7 +39,7 @@ export class SessionStoreService {
     setSessionId(sessionId: string) {
         let sessionIdInStore = this.storage.get(SessionStoreService.SESSIONKEY);
         // New session, store the Session Id.
-        if (sessionIdInStore === undefined) {
+        if (sessionIdInStore === undefined || sessionIdInStore === null) {
             if (sessionId !== undefined) {
                 this.storage.set(SessionStoreService.SESSIONKEY, sessionId);
             }
