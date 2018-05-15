@@ -105,7 +105,7 @@ export class FileUploadComponent extends BaseElement implements ControlValueAcce
 	ngOnInit() {
 
 		this.selectedFiles = [];
-		this.fileService.metaData = this.element.config.uiStyles.attributes.metaData !== "" ? this.element.config.uiStyles.attributes.metaData.split(",") : [];
+		this.fileService.metaData = this.element.config.uiStyles.attributes.metaData;
 	}
 
 	addFiles(event) {
