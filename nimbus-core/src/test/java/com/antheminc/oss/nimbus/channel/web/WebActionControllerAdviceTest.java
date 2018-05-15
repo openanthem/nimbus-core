@@ -44,6 +44,8 @@ import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandTransactionInterceptor;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecuteOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.MultiExecuteOutput;
+import com.antheminc.oss.nimbus.domain.cmd.exec.ValidationException;
+import com.antheminc.oss.nimbus.domain.cmd.exec.ValidationResult;
 
 /**
  * 
@@ -53,6 +55,8 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.MultiExecuteOutput;
 @RunWith(MockitoJUnitRunner.class)
 public class WebActionControllerAdviceTest {
 
+	private String sessionid = "test-sessionId";
+	
 	@InjectMocks
 	private WebActionControllerAdvice testee;
 	
@@ -73,7 +77,7 @@ public class WebActionControllerAdviceTest {
 		final ServerHttpRequest req = new ServletServerHttpRequest(new MockHttpServletRequest());
 		final ServerHttpResponse res = new ServletServerHttpResponse(new MockHttpServletResponse());
 		
-		final MultiExecuteOutput expected = new MultiExecuteOutput();
+		final MultiExecuteOutput expected = new MultiExecuteOutput(sessionid);
 		
 		Mockito.when(this.interceptor.handleResponse(body)).thenReturn(expected);
 		final Object actual = this.testee.beforeBodyWrite(body, returnType, selectedContentType, selectedConverterType, req, res);
@@ -85,7 +89,7 @@ public class WebActionControllerAdviceTest {
 	@Test
 	public void testFrameworkRuntimeExceptionHandler() {
 		final FrameworkRuntimeException ex = new FrameworkRuntimeException();
-		final MultiExecuteOutput expected = new MultiExecuteOutput();
+		final MultiExecuteOutput expected = new MultiExecuteOutput(sessionid);
 		
 		Mockito.when(this.interceptor.handleResponse(Mockito.isA(ExecuteOutput.class))).thenReturn(expected);
 		final MultiExecuteOutput actual = this.testee.exception(ex);
@@ -98,11 +102,27 @@ public class WebActionControllerAdviceTest {
 	}
 	
 	@Test
+	public void testValidationExceptionHandler() {
+		final ValidationResult expectedValidationResult = new ValidationResult();
+		final ValidationException ex = new ValidationException(expectedValidationResult);
+		final MultiExecuteOutput expected = new MultiExecuteOutput(sessionid);
+		
+		Mockito.when(this.interceptor.handleResponse(Mockito.isA(ExecuteOutput.class))).thenReturn(expected);
+		final MultiExecuteOutput actual = this.testee.exception(ex);
+		
+		final ArgumentCaptor<ExecuteOutput> respCaptor = ArgumentCaptor.forClass(ExecuteOutput.class);
+		Mockito.verify(this.interceptor, Mockito.only()).handleResponse(respCaptor.capture());
+		
+		Assert.assertEquals(expected, actual);
+		Assert.assertEquals(expectedValidationResult, respCaptor.getValue().getValidationResult());
+	}
+	
+	@Test
 	public void testMethodArgumentNotValidExceptionHandler() throws NoSuchMethodException, SecurityException {
 		final MethodParameter methodParameter = Mockito.mock(MethodParameter.class);
 		final BindingResult bindingResult = Mockito.mock(BindingResult.class);
 		final MethodArgumentNotValidException ex = new MethodArgumentNotValidException(methodParameter, bindingResult);
-		final MultiExecuteOutput expected = new MultiExecuteOutput();
+		final MultiExecuteOutput expected = new MultiExecuteOutput(sessionid);
 		
 		Mockito.when(methodParameter.getMethod()).thenReturn(this.getClass().getMethods()[0]);
 		Mockito.when(this.interceptor.handleResponse(Mockito.isA(ExecuteOutput.class))).thenReturn(expected);
@@ -121,7 +141,7 @@ public class WebActionControllerAdviceTest {
 	public void testMethodArgumentNotValidExceptionHandlerNoBindingResult() throws NoSuchMethodException, SecurityException {
 		final MethodParameter methodParameter = Mockito.mock(MethodParameter.class);
 		final MethodArgumentNotValidException ex = new MethodArgumentNotValidException(methodParameter, null);
-		final MultiExecuteOutput expected = new MultiExecuteOutput();
+		final MultiExecuteOutput expected = new MultiExecuteOutput(sessionid);
 		
 		Mockito.when(methodParameter.getMethod()).thenReturn(this.getClass().getMethods()[0]);
 		Mockito.when(this.interceptor.handleResponse(Mockito.isA(ExecuteOutput.class))).thenReturn(expected);
@@ -140,7 +160,7 @@ public class WebActionControllerAdviceTest {
 		final MethodParameter methodParameter = Mockito.mock(MethodParameter.class);
 		final BindingResult bindingResult = Mockito.mock(BindingResult.class);
 		final MethodArgumentNotValidException ex = new MethodArgumentNotValidException(methodParameter, bindingResult);
-		final MultiExecuteOutput expected = new MultiExecuteOutput();
+		final MultiExecuteOutput expected = new MultiExecuteOutput(sessionid);
 		
 		List<ObjectError> errors = new ArrayList<>();
 		errors.add(new ObjectError("dashboard", new String[] {"1"}, null, "dashboard-error"));
