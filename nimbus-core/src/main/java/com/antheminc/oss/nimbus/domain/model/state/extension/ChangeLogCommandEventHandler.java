@@ -15,7 +15,7 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.extension;
 
-import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -52,14 +52,14 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 	public static class ChangeLogEntry {
 
 	    // when
-		private ZonedDateTime on;
+		private Date on;
 
 		// who
 		private String by;
 		
 	    // what: common 
 		private String root;
-		private Long refId;
+		private Long id;
 		private Action action;
 		
 		
@@ -147,10 +147,10 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 			Handler h = new Handler(cmd, rep);
 
 			h.entry.setBy(by);
-			h.entry.setOn(ZonedDateTime.now());
+			h.entry.setOn(new Date());
 			
 			h.entry.setRoot(cmd.getRootDomainAlias());
-			h.entry.setRefId(cmd.getRootDomainElement().getRefId());
+			h.entry.setId(cmd.getRootDomainElement().getRefId());
 			h.entry.setAction(cmd.getAction());
 			
 			return h;
@@ -163,10 +163,10 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 			Handler h = new Handler(rootCmd, rep);
 
 			h.entry.setBy(by);
-			h.entry.setOn(ZonedDateTime.now());
+			h.entry.setOn(new Date());
 			
 			h.entry.setRoot(rootCmd.getRootDomainAlias());
-			h.entry.setRefId(rootCmd.getRootDomainElement().getRefId());
+			h.entry.setId(rootCmd.getRootDomainElement().getRefId());
 			
 			h.entry.setAction(pEvent.getAction());
 			h.entry.setPath(pEvent.getParam().getPath());
