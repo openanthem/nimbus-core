@@ -48,6 +48,7 @@ import com.antheminc.oss.nimbus.domain.model.state.builder.EntityStateBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.builder.QuadModelBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.builder.internal.DefaultEntityStateBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.builder.internal.DefaultQuadModelBuilder;
+import com.antheminc.oss.nimbus.support.DefaultLoggingHandler;
 import com.antheminc.oss.nimbus.support.JustLogit;
 import com.antheminc.oss.nimbus.support.SecurityUtils;
 
@@ -137,6 +138,11 @@ public class DefaultCoreBuilderConfig {
 	@Bean
 	public SecurityUtils securityUtils() {
 		return new SecurityUtils(secureRegex);
+	}
+	
+	@Bean
+	DefaultLoggingHandler defaultLoggingHandler() {
+		return new DefaultLoggingHandler();
 	}
 
 }
