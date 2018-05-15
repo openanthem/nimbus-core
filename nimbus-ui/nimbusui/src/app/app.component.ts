@@ -20,7 +20,6 @@ import { Component, ViewEncapsulation, Inject } from '@angular/core';
 import { HostListener } from '@angular/core/src/metadata/directives';
 import { WebContentSvc } from './services/content-management.service';
 import { ServiceConstants } from './services/service.constants';
-import { Router, ActivatedRoute } from '@angular/router';
 import { DOCUMENT } from '@angular/platform-browser';
 import * as moment from 'moment';
 
@@ -39,31 +38,16 @@ import * as moment from 'moment';
 })
 
 export class AppComponent {
-    domain: string;
-    port : string;
-    protocol: string;
-    appcontext: string;
-    locale : string;
-    label: string;
-    private collapse: boolean = false;
 
-    constructor(private router: Router,
-            private activatedRoute: ActivatedRoute,
-            @Inject(DOCUMENT) private document: any) {
+    constructor(@Inject(DOCUMENT) private document: any) {
     }
 
-   ngOnInit() {
-
-        this.domain = this.document.location.hostname;
-        this.port=this.document.location.port;
-        this.protocol=this.document.location.protocol;
-        this.appcontext=this.document.location.pathname.split('/').splice(1, 1);
-        this.locale = "en-US"; //TODO This locale should be read dynamically. Currently defaulting to en-US
-        ServiceConstants.STOPGAP_APP_HOST = this.domain;
-        ServiceConstants.STOPGAP_APP_PORT = this.port;
-        ServiceConstants.APP_CONTEXT = this.appcontext;
-        ServiceConstants.LOCALE_LANGUAGE = this.locale;
-        ServiceConstants.STOPGAP_APP_PROTOCOL = this.protocol;
+    ngOnInit() {
+        ServiceConstants.STOPGAP_APP_HOST = this.document.location.hostname;
+        ServiceConstants.STOPGAP_APP_PORT = this.document.location.port;
+        ServiceConstants.APP_CONTEXT = this.document.location.pathname.split('/').splice(1, 1);
+        ServiceConstants.LOCALE_LANGUAGE = "en-US"; //TODO This locale should be read dynamically. Currently defaulting to en-US
+        ServiceConstants.STOPGAP_APP_PROTOCOL = this.document.location.protocol;
     }
 
 }
