@@ -18,10 +18,7 @@ package com.antheminc.oss.nimbus.domain.model.state.extension;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.domain.Persistable;
+import java.util.Optional;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
@@ -34,6 +31,8 @@ import com.antheminc.oss.nimbus.domain.model.state.event.CommandEventHandlers.On
 import com.antheminc.oss.nimbus.domain.model.state.event.CommandEventHandlers.OnSelfCommandExecuteHandler;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepositoryFactory;
+import com.antheminc.oss.nimbus.domain.session.SessionProvider;
+import com.antheminc.oss.nimbus.entity.client.user.ClientUser;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -47,20 +46,18 @@ import lombok.ToString;
 public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler<ChangeLog>, OnSelfCommandExecuteHandler<ChangeLog> {
 
 	private ModelRepositoryFactory repositoryFactory;
+	private SessionProvider sessionProvider;
 	
-	@SuppressWarnings("serial")
 	@Getter @Setter @ToString
-	public static class ChangeLogEntry implements Persistable<String> {
+	public static class ChangeLogEntry {
 
 	    // when
-	    @CreatedDate
 		private ZonedDateTime on;
 
 		// who
-	    @CreatedBy
 		private String by;
 		
-	    // what: common
+	    // what: common 
 		private String root;
 		private Long refId;
 		private Action action;
@@ -75,19 +72,11 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 		// what: parameter
 		private Object value;
 		
-		@Override
-		public String getId() {
-			return null;
-		}
-		
-		@Override
-		public boolean isNew() {
-			return true;
-		}
 	}
 	
 	public ChangeLogCommandEventHandler(BeanResolverStrategy beanResolver) {
 		this.repositoryFactory = beanResolver.get(ModelRepositoryFactory.class);
+		this.sessionProvider = beanResolver.get(SessionProvider.class);
 	}
 	
 	@Override
@@ -103,9 +92,10 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 	@Override
 	public void handleOnRootStop(ChangeLog configuredAnnotation, Command cmd, Map<ExecutionModel<?>, List<ParamEvent>> aggregatedEvents) {
 		ModelRepository rep = getResolvedRepo();
+		String currentUser = getCurrentUser();
 		
 		// log command : ALL
-		Handler.forCommand(cmd, rep).addUrl().save();
+		Handler.forCommand(cmd, rep, currentUser).addUrl().save();
 
 		if(aggregatedEvents==null || aggregatedEvents.isEmpty())
 			return;
@@ -122,18 +112,23 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 				eventEntry.getValue().stream()
 					.filter(pe->!pe.getParam().isMapped()) // core
 					.filter(pe->pe.getParam().isLeafOrCollectionWithLeafElems()) // leaf
-						.forEach(pe->Handler.forParam(cmd, rep, pe).save());
+						.forEach(pe->Handler.forParam(rep, pe, currentUser).save());
 			});
 	}
 	
 	@Override
 	public void handleOnSelfStop(ChangeLog configuredAnnotation, Command cmd, Map<ExecutionModel<?>, List<ParamEvent>> aggregatedEvents) {
 		ModelRepository rep = getResolvedRepo();
+		String currentUser = getCurrentUser();
 		
 		// log command : only root command CRUD actions
 		if(cmd.isRootDomainOnly() && cmd.getAction().isCrud())
-			Handler.forCommand(cmd, rep).addUrl().save();
+			Handler.forCommand(cmd, rep, currentUser).addUrl().save();
 		
+	}
+	
+	private String getCurrentUser() {
+		return Optional.ofNullable(sessionProvider.getLoggedInUser()).map(ClientUser::getLoginId).orElse(null);
 	}
 	
 	private ModelRepository getResolvedRepo() {
@@ -148,13 +143,36 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 		private final Command cmd;
 		private final ModelRepository rep;
 		
-		public static Handler forCommand(Command cmd, ModelRepository rep) {
+		public static Handler forCommand(Command cmd, ModelRepository rep, String by) {
 			Handler h = new Handler(cmd, rep);
 
-			h.addCommon();
+			h.entry.setBy(by);
+			h.entry.setOn(ZonedDateTime.now());
+			
+			h.entry.setRoot(cmd.getRootDomainAlias());
+			h.entry.setRefId(cmd.getRootDomainElement().getRefId());
 			h.entry.setAction(cmd.getAction());
+			
 			return h;
 		}
+
+		public static Handler forParam(ModelRepository rep, ParamEvent pEvent, String by) {
+			ExecutionModel<?> root = pEvent.getParam().getRootExecution();
+			Command rootCmd = root.getRootCommand();
+
+			Handler h = new Handler(rootCmd, rep);
+
+			h.entry.setBy(by);
+			h.entry.setOn(ZonedDateTime.now());
+			
+			h.entry.setRoot(rootCmd.getRootDomainAlias());
+			h.entry.setRefId(rootCmd.getRootDomainElement().getRefId());
+			
+			h.entry.setAction(pEvent.getAction());
+			h.entry.setPath(pEvent.getParam().getPath());
+			h.entry.setValue(pEvent.getParam().getLeafState());
+			return h;
+		} 
 		
 		public Handler addUrl() {
 			entry.setUrl(cmd.getAbsoluteUri());
@@ -165,20 +183,6 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 			rep._save("changelog", entry);
 		}
 		
-		public void addCommon() {
-			entry.setRoot(cmd.getRootDomainAlias());
-			entry.setRefId(cmd.root().getRefId());
-		}
-
-		public static Handler forParam(Command cmd, ModelRepository rep, ParamEvent pEvent) {
-			Handler h = new Handler(cmd, rep);
-
-			h.addCommon();
-			h.entry.setAction(pEvent.getAction());
-			h.entry.setPath(pEvent.getParam().getPath());
-			h.entry.setValue(pEvent.getParam().getLeafState());
-			return h;
-		} 
 	}
 	
 	
