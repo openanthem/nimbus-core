@@ -62,9 +62,11 @@ export class SessionStoreService {
     }
 
     removeAll() {
-        let obj = this.storage;
-        for (var key in obj) {
-            this.remove(key);
-        } 
+        let obj = this.storage['storage'];
+        if (obj) {
+            for (var key in obj) {
+                this.remove(key);
+            } 
+        }
     }
 }
