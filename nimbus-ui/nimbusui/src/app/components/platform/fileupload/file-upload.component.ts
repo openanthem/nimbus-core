@@ -71,6 +71,7 @@ export class FileUploadComponent extends BaseElement implements ControlValueAcce
 	multipleFiles: boolean = false;
 	@ViewChild('pfu') pfu;
 
+
 	constructor(private fileService: FileService, private _wcs: WebContentSvc, private logger: LoggerService) {
 		super(_wcs);
 	}
@@ -102,34 +103,29 @@ export class FileUploadComponent extends BaseElement implements ControlValueAcce
 	}
 
 	ngOnInit() {
+
 		this.selectedFiles = [];
-
-		this.fileService.addFile$.subscribe(file => {
-			if (!this.multipleFiles) {
-				this.selectedFiles = [];
-			}
-			this.selectedFiles.push(file);
-			this.value = this.selectedFiles;
-
-		},
-			(error) => {
-				this.logger.error(error);
-			}
-		);
+		this.fileService.metaData = this.element.config.uiStyles.attributes.metaData !== "" ? this.element.config.uiStyles.attributes.metaData.split(",") : [];
 	}
 
 	addFiles(event) {
 
-		this.value = null;
 		let files = event.originalEvent.dataTransfer ? event.originalEvent.dataTransfer.files : event.originalEvent.target.files;
 
 		for (var p = 0; p < files.length; p++) {
 			if (this.hasFile(files[p]) == -1) {
+
+				if (!this.multipleFiles) {
+					this.selectedFiles = [];
+					this.value = this.selectedFiles;
+				}
 				if (this.pfu.isFileTypeValid(files[p])) {
-					let file = files[p];
+					let file = files[p];					
+					this.selectedFiles.push(file);
+					this.value = this.selectedFiles;
+
 					file['postUrl'] = this.element.config.uiStyles.attributes.url;
-					// upload the file to get file Id
-					this.fileService.uploadFile(file);
+
 				}
 			}
 

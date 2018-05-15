@@ -21,6 +21,7 @@ import { Subject } from 'rxjs/Subject';
 import { HttpHeaders } from '@angular/common/http';
 import { RequestOptions, Request, RequestMethod } from '@angular/http';
 import { LoggerService } from './logger.service';
+import { FormGroup } from '@angular/forms';
 
 /**
  * \@author Dinakar.Meda
@@ -35,32 +36,30 @@ export class FileService {
     addFile$: EventEmitter<any>;
     removeFile$: EventEmitter<any>;
 
+    private _metaData: string[];
+    
+    get metaData(): string[] {
+        return this._metaData;
+    }
+    set metaData(metaData: string[]) {
+        this._metaData = metaData;
+    }
+
     constructor(public http: CustomHttpClient, private logger: LoggerService) {
         this.addFile$ = new EventEmitter<any>();
         this.removeFile$ = new EventEmitter<any>();
     }
 
-    uploadFile(file: File) {
+    uploadFile(file: File, form: FormGroup) {
 
-        // const formData: FormData = new FormData();
-        // formData.append('pfu', file, file.name);
+        const formData: FormData = new FormData();
+        formData.append('pfu', file, file.name);
+        this.metaData.forEach(item => formData.append(item, form.value[item]));
+
         var url = file['postUrl'];
-        this.addFile$.next(file);
-        
-    //    return this.http.postFileData(url, formData)
-    //         .subscribe(data => {
 
-    //             file['fileId'] = data.fileId;
-    //             this.addFile$.next(file);
-    //         },
-    //             error => {
-    //                 this.addFile$.error(error);              
-    //             },
-    //             () => {this.logger.info('file has been uploaded');}
-    //         );
+        return this.http.postFileData(url, formData)
+            .map(data =>  data.fileId);
     }
-
-
-    
 
 }
