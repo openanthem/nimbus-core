@@ -13,36 +13,24 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.domain.defn.event;
+package com.antheminc.oss.nimbus.domain.defn.extension;
 
-import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
+import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import com.antheminc.oss.nimbus.domain.Event;
+import com.antheminc.oss.nimbus.domain.defn.event.CommandEvent.OnRootCommandExecute;
+import com.antheminc.oss.nimbus.domain.defn.event.CommandEvent.OnSelfCommandExecute;
 
 /**
  * @author Soham Chakravarti
  *
  */
-public final class CommandEvent {
+@Retention(RUNTIME)
+@Target(TYPE)
+@OnRootCommandExecute @OnSelfCommandExecute
+public @interface ChangeLog {
 
-	@Retention(RUNTIME)
-	@Target(ANNOTATION_TYPE)
-	@Event
-	@Inherited
-	public @interface OnRootCommandExecute {
-		int order() default Event.DEFAULT_ORDER_NUMBER;
-	}
-	
-	@Retention(RUNTIME)
-	@Target(ANNOTATION_TYPE)
-	@Event
-	@Inherited
-	public @interface OnSelfCommandExecute {
-		int order() default Event.DEFAULT_ORDER_NUMBER;
-	}
 }

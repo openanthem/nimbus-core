@@ -15,6 +15,7 @@
  */
 package com.antheminc.oss.nimbus.domain.cmd;
 
+import java.util.EnumSet;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
@@ -46,10 +47,17 @@ public enum Action {
 
 	public static final Action DEFAULT = _get;
 	
+	public static final EnumSet<Action> CRUD_ACTIONS = EnumSet.range(_get, _delete);
+	
 	public static Action getByName(String name) {
 		return Stream.of(Action.values())
 			.filter((action) -> StringUtils.equals(action.name(), name))
 			.findFirst()
 			.orElse(null);
+	}
+	
+	
+	public boolean isCrud() {
+		return CRUD_ACTIONS.contains(this);
 	}
 }

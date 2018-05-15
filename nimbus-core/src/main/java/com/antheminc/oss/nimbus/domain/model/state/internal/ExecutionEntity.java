@@ -266,7 +266,8 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdLong implements Seri
 		final private DefaultExecutionRuntime executionRuntime;
 		
 		public ExModel(Command rootCommand, ExParam associatedParam, ModelConfig<ExecutionEntity<V, C>> modelConfig, EntityStateAspectHandlers provider) {
-			this(rootCommand, associatedParam, modelConfig, provider, new DefaultExecutionRuntime(rootCommand, new DefaultStateEventDelegator()));
+			this(rootCommand, associatedParam, modelConfig, provider, 
+					new DefaultExecutionRuntime(rootCommand, new DefaultStateEventDelegator(provider)));
 			
 			this.executionRuntime.setRootExecution(this);
 		}

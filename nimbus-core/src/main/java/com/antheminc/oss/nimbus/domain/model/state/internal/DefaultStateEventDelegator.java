@@ -15,6 +15,7 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.internal;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,25 +26,33 @@ import java.util.function.Consumer;
 import org.apache.commons.collections.CollectionUtils;
 
 import com.antheminc.oss.nimbus.domain.cmd.Command;
+import com.antheminc.oss.nimbus.domain.defn.extension.ChangeLog;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ExecutionModel;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.EntityStateAspectHandlers;
 import com.antheminc.oss.nimbus.domain.model.state.ExecutionRuntime;
 import com.antheminc.oss.nimbus.domain.model.state.ExecutionTxnContext;
 import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
 import com.antheminc.oss.nimbus.domain.model.state.StateEventDelegator;
 import com.antheminc.oss.nimbus.domain.model.state.StateEventListener;
+import com.antheminc.oss.nimbus.domain.model.state.extension.ChangeLogCommandEventHandler;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 /**
  * @author Soham Chakravarti
  *
  */
-@Getter @Setter
+@Getter @Setter @RequiredArgsConstructor
 public class DefaultStateEventDelegator implements StateEventDelegator {
 	
 	private List<StateEventListener> defaultScopedListeners;
+	
+	private final EntityStateAspectHandlers provider;
+	
+	private final ChangeLogCommandEventHandler cmdHandler; 
 	
 	private static final ThreadLocal<List<StateEventListener>> listenersInThread = new ThreadLocal<List<StateEventListener>>() {
 		@Override
@@ -51,6 +60,11 @@ public class DefaultStateEventDelegator implements StateEventDelegator {
 			return new ArrayList<>();
 		}
 	};
+	
+	public DefaultStateEventDelegator(EntityStateAspectHandlers provider) {
+		this.provider = provider;
+		this.cmdHandler = provider.getBeanResolver().get(ChangeLogCommandEventHandler.class);
+	}
 
 	
 	@Override
@@ -97,6 +111,13 @@ public class DefaultStateEventDelegator implements StateEventDelegator {
 	@Override
 	public void onStopRootCommandExecution(Command cmd, ExecutionTxnContext txnCtx) {
 		Map<ExecutionModel<?>, List<ParamEvent>> aggregatedEvents = aggregate(txnCtx);
+		cmdHandler.handleOnRootStop(new ChangeLog() {
+			@Override
+			public Class<? extends Annotation> annotationType() {
+				return ChangeLog.class;
+			}
+		}, cmd, aggregatedEvents);
+		
 		delegate(l->l.onStopRootCommandExecution(cmd, aggregatedEvents));
 		
 		// reset thread local
@@ -111,6 +132,13 @@ public class DefaultStateEventDelegator implements StateEventDelegator {
 	@Override
 	public void onStopCommandExecution(Command cmd, ExecutionTxnContext txnCtx) {
 		Map<ExecutionModel<?>, List<ParamEvent>> aggregatedEvents = aggregate(txnCtx);
+		cmdHandler.handleOnSelfStop(new ChangeLog() {
+			@Override
+			public Class<? extends Annotation> annotationType() {
+				return ChangeLog.class;
+			}
+		}, cmd, aggregatedEvents);
+		
 		delegate(l->l.onStopCommandExecution(cmd, aggregatedEvents));
 	}
 	
