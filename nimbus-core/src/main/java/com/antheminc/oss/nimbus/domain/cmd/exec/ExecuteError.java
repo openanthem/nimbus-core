@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.util.Assert;
 
+import com.antheminc.oss.nimbus.UniqueIdGenerationUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Data;
@@ -52,8 +53,17 @@ public class ExecuteError implements Serializable {
 		Assert.notNull(uniqueId, "uniqueId must not be null");
 		setUniqueId(uniqueId);
 		
-		Assert.notNull(exClass, "Exception class must not be nullxs");
+		Assert.notNull(exClass, "Exception class must not be null");
 		setCode(exClass.getName() + CODE_SUFFIX);
+		
+		setMessage(message);
+	}
+	
+	public ExecuteError(Class<? extends Throwable> exClass, String message) {
+		Assert.notNull(exClass, "Exception class must not be null");
+		setCode(exClass.getName() + CODE_SUFFIX);
+		
+		setUniqueId(UniqueIdGenerationUtil.generateUniqueId());
 		
 		setMessage(message);
 	}

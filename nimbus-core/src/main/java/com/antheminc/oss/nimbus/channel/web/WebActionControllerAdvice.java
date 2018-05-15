@@ -39,7 +39,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
-import com.antheminc.oss.nimbus.UniqueIdGenerationUtil;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandTransactionInterceptor;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecuteError;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecuteOutput;
@@ -62,8 +61,6 @@ import lombok.Setter;
 public class WebActionControllerAdvice implements ResponseBodyAdvice<Object> {
 	
 	private JustLogit logit = new JustLogit(this.getClass());
-	
-	private static ExecuteError err = new ExecuteError();
 	
 	@Getter @Setter
 	private Map<Class<?>,String> exceptions;
@@ -94,33 +91,25 @@ public class WebActionControllerAdvice implements ResponseBodyAdvice<Object> {
 	@ResponseBody
 	public MultiExecuteOutput exception(Throwable pEx){
 		ExecuteOutput<?> resp = new ExecuteOutput<>();
-
-		if ((FrameworkRuntimeException.class).isAssignableFrom(pEx.getClass())) {
-			err = ((FrameworkRuntimeException) pEx).getExecuteError();	
-		} else 
-			err = new ExecuteError(UniqueIdGenerationUtil.generateUniqueId(), pEx.getClass(), getDefaultMessage(err.getMessage()));
-	
-		Optional<Class<?>> hierarchyclass = exceptions.keySet()
+		ExecuteError execError = constructExecError(pEx);
+		String message = constructMessage(pEx.getMessage());
+		
+		if (Optional.ofNullable(exceptions).isPresent()) {			
+			if (exceptions.containsKey(pEx.getClass())) {
+				message = constructMessage(exceptions.get(pEx.getClass()), pEx.getMessage());
+			} else {
+				Optional<Class<?>> hierarchyclass = exceptions.keySet()
 						.stream()
 						.filter(c -> c.isAssignableFrom(pEx.getClass()))
 						.findFirst();
-		
-		if (Optional.ofNullable(exceptions).isPresent()){
-			if (exceptions.containsKey(pEx.getClass()))	{
-				err.setMessage(Optional.ofNullable(exceptions.get(pEx.getClass())).orElse(getDefaultMessage(err.getMessage())));
-			} else if(exceptions.containsKey(pEx.getClass().getSuperclass())) {
-				err.setMessage(Optional.ofNullable(exceptions.get(pEx.getClass().getSuperclass())).orElse(getDefaultMessage(err.getMessage())));			
-			} else if (hierarchyclass.isPresent()) {	
-				err.setMessage(Optional.ofNullable(exceptions.get(hierarchyclass.get()))
-						.orElse(getDefaultMessage(err.getMessage())));	
-			} 
-			logit.error(() -> err.getMessage(), pEx);
-		} else {
-			err.setMessage(Optional.ofNullable(genericMsg).orElse(pEx.getMessage()));
-			logit.error(() -> err.getMessage(), pEx);
-		} 	
-	
-		resp.setExecuteException(err);
+			
+				if (hierarchyclass.isPresent()) 
+					message = constructMessage(exceptions.get(hierarchyclass.get()), pEx.getMessage());
+			}
+		} 
+		execError.setMessage(message);
+		logit.error(execError::getMessage, pEx);
+		resp.setExecuteException(execError);
 		return interceptor.handleResponse(resp);		
 	}
 	
@@ -149,8 +138,23 @@ public class WebActionControllerAdvice implements ResponseBodyAdvice<Object> {
 		return interceptor.handleResponse(resp);
 	}
 	
-	private String getDefaultMessage(String msg) {
+	private String constructMessage(String msg) {
 		return Optional.ofNullable(genericMsg).orElse(msg);
+	}
+	
+	private String constructMessage(String configMsg, String defaultMessage) {
+		return Optional.ofNullable(configMsg)
+				.orElse(constructMessage(defaultMessage));
+	}
+	
+	private ExecuteError constructExecError(Throwable pEx) {
+		ExecuteError execError = new ExecuteError();
+		if ((FrameworkRuntimeException.class).isAssignableFrom(pEx.getClass())) {
+			execError = ((FrameworkRuntimeException) pEx).getExecuteError();	
+		} else 
+			execError = new ExecuteError(pEx.getClass(), pEx.getMessage());
+		
+		return execError;
 	}
 	
 }

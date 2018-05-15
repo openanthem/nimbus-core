@@ -54,7 +54,7 @@ public class FrameworkRuntimeException extends RuntimeException {
 	
 	
     private ExecuteError create(String msg) {
-		return new ExecuteError(UniqueIdGenerationUtil.generateUniqueId(), this.getClass(), msg);
+		return new ExecuteError(this.getClass(), msg);
 	}
 
     @Override
