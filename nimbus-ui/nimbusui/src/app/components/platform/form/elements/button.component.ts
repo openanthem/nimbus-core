@@ -27,6 +27,7 @@ import { ServiceConstants } from './../../../../services/service.constants';
 import { BaseElement } from '../../base-element.component';
 import { FileService } from '../../../../services/file.service';
 import { CustomHttpClient } from '../../../../services/httpclient.service';
+import { LoggerService } from '../../../../services/logger.service';
 
 /**
  * \@author Dinakar.Meda
@@ -72,7 +73,7 @@ export class Button extends BaseElement {
     files: any;
 
     constructor( private pageService: PageService, private _wcs: WebContentSvc, 
-        private location: Location, private fileService: FileService, private http: CustomHttpClient ) {
+        private location: Location, private fileService: FileService, private http: CustomHttpClient, private logger: LoggerService ) {
         super(_wcs);
     }
 
@@ -137,8 +138,11 @@ export class Button extends BaseElement {
                         item['fileId'] = data;  
                         item['name'] = files[p]['name'];
                         this.pageService.processEvent( this.element.path, this.element.config.uiStyles.attributes.b, item, 'POST' );              
-                    }
+                    },
+                    error => this.logger.error(error),
+                    () => this.logger.info('File uploaded ..')
                 );
+                 
             }
             
         } else {
