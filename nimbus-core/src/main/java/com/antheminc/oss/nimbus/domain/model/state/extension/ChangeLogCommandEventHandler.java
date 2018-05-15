@@ -59,7 +59,7 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 		
 	    // what: common 
 		private String root;
-		private Long id;
+		private Long refId;
 		private Action action;
 		
 		
@@ -150,7 +150,7 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 			h.entry.setOn(new Date());
 			
 			h.entry.setRoot(cmd.getRootDomainAlias());
-			h.entry.setId(cmd.getRootDomainElement().getRefId());
+			h.entry.setRefId(cmd.getRootDomainElement().getRefId());
 			h.entry.setAction(cmd.getAction());
 			
 			return h;
@@ -166,7 +166,7 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 			h.entry.setOn(new Date());
 			
 			h.entry.setRoot(rootCmd.getRootDomainAlias());
-			h.entry.setId(rootCmd.getRootDomainElement().getRefId());
+			h.entry.setRefId(rootCmd.getRootDomainElement().getRefId());
 			
 			h.entry.setAction(pEvent.getAction());
 			h.entry.setPath(pEvent.getParam().getPath());
