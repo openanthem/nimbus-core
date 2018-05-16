@@ -1,3 +1,5 @@
+import { Action, Behavior } from './../shared/command.enum';
+import { SessionStoreService, CUSTOM_STORAGE } from './session.store';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -16,7 +18,7 @@
  */
 'use strict';
 import { WebContentSvc } from './content-management.service';
-import { Component, EventEmitter, Injectable } from '@angular/core';
+import { Component, EventEmitter, Injectable, Inject } from '@angular/core';
 import { Result, ViewRoot } from '../shared/app-config.interface';
 import { UiAttribute } from '../shared/param-config';
 import { Param, Model } from '../shared/param-state';
@@ -28,6 +30,7 @@ import { AppBranding, Layout, LinkConfig, TopBarConfig, FooterConfig, GlobalNavC
 import { GenericDomain } from '../model/generic-domain.model';
 import { ViewConfig, ViewComponent } from './../shared/param-annotations.enum';
 import { LoggerService } from './logger.service';
+import { Router } from '@angular/router';
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 
@@ -52,7 +55,7 @@ export class LayoutService {
         private wcs: WebContentSvc,
         private pageSvc: PageService,
         private configSvc: ConfigService,
-        private logger: LoggerService) {
+        private logger: LoggerService,  @Inject(CUSTOM_STORAGE) private sessionstore: SessionStoreService) {
         this.layout$ = new EventEmitter<any>();
     }
 
@@ -61,25 +64,38 @@ export class LayoutService {
         if (layoutConfig) {
             this.parseLayoutConfig(layoutConfig.model);
         } else {
-            var urlBase = ServiceConstants.PLATFORM_BASE_URL;
-            var urlAction = urlBase +  '/' + flowName + '/_new?b=$execute';
-            return this.http.get(urlAction)
-                .subscribe(data => {
-                    let subResponse: any = data.result[0];
-                    if (subResponse) {
-                        let layoutConfig = new Result(this.configSvc).deserialize(subResponse.result);
-                        let flowModel: Model = layoutConfig.outputs[0].value.type.model;
-                        // Set layout config to appconfig map
-                        this.configSvc.setLayoutToAppConfigByModel(flowName, flowModel);
+            let flowRoodtId = this.sessionstore.get(flowName);
+            var urlBase = urlBase = ServiceConstants.PLATFORM_BASE_URL;
+            var urlAction;
 
-                        this.parseLayoutConfig(flowModel);
-                    } else {
-                        this.logger.error('ERROR: Unknown response for Layout config call - ' + subResponse.b);
-                    }
-                },
-                    err => {this.logger.error(err)},
-                    () => {this.logger.info('Layout config call completed..');}
-                );
+            if(flowRoodtId != null) {
+                    let rootId = flowRoodtId;
+                    urlBase += rootId == null ? '/' + flowName:  '/' + flowName+':'+rootId;
+                    let action = rootId!= null ? Action._get.value: Action._new.value;
+                    urlAction = urlBase + '/' + action + '?b=' + Behavior.execute.value;
+                    //window.location.href = `${ServiceConstants.APP_REFRESH}`;
+            } 
+            else {
+                urlAction = urlBase +  '/' + flowName + '/_new?b=$execute';
+                
+            }
+            return this.http.get(urlAction)
+                    .subscribe(data => {
+                        let subResponse: any = data.result[0];
+                        if (subResponse) {
+                            let layoutConfig = new Result(this.configSvc).deserialize(subResponse.result);
+                            let flowModel: Model = layoutConfig.outputs[0].value.type.model;
+                            // Set layout config to appconfig map
+                            this.configSvc.setLayoutToAppConfigByModel(flowName, flowModel);
+                            this.sessionstore.set(flowName, layoutConfig.rootDomainId);
+                            this.parseLayoutConfig(flowModel);
+                        } else {
+                            this.logger.error('ERROR: Unknown response for Layout config call - ' + subResponse.b);
+                        }
+                    },
+                        err => {this.logger.error(err)},
+                        () => {this.logger.info('Layout config call completed..');}
+                    );
         }
     }
 

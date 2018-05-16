@@ -129,7 +129,7 @@ public class StateHolder {
 		}
 		
 		@Override
-		public void initState() {
+		public void initState(boolean doInternalStateInit) {
 			throw throwEx();	
 		}
 

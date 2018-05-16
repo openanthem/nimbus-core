@@ -28,10 +28,10 @@ import com.antheminc.oss.nimbus.channel.web.WebActionController;
 import com.antheminc.oss.nimbus.channel.web.WebCommandBuilder;
 import com.antheminc.oss.nimbus.channel.web.WebCommandDispatcher;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.domain.defn.ClassPropertyConverter;
 import com.antheminc.oss.nimbus.domain.model.state.repo.DefaultModelRepositoryFactory;
 import com.antheminc.oss.nimbus.domain.model.state.repo.DefaultParamStateRepositoryDetached;
 import com.antheminc.oss.nimbus.domain.model.state.repo.DefaultParamStateRepositoryLocal;
-import com.antheminc.oss.nimbus.domain.model.state.repo.ModelPersistenceHandler;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepositoryFactory;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ParamStateRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ParamStateRepositoryGateway;
@@ -41,7 +41,6 @@ import com.antheminc.oss.nimbus.domain.model.state.repo.ws.DefaultWSModelReposit
 import com.antheminc.oss.nimbus.domain.rules.DefaultRulesEngineFactoryProducer;
 import com.antheminc.oss.nimbus.domain.rules.drools.DroolsRulesEngineFactory;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandler;
-import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandlerLambda;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandlerReflection;
 
 /**
@@ -125,6 +124,11 @@ public class DefaultCoreConfiguration {
 	@Bean
 	public RestTemplate restTemplate(RestTemplateBuilder builder) {
 		return builder.build();
+	}
+	
+	@Bean
+	public ClassPropertyConverter classPropertyConverter() {
+		return new ClassPropertyConverter();
 	}
 	
 }

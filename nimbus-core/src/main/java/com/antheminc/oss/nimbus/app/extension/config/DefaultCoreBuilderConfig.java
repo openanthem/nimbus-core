@@ -28,7 +28,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.env.PropertyResolver;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
@@ -49,7 +48,6 @@ import com.antheminc.oss.nimbus.domain.model.state.builder.QuadModelBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.builder.internal.DefaultEntityStateBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.builder.internal.DefaultQuadModelBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ChangeLogCommandEventHandler;
-import com.antheminc.oss.nimbus.support.JustLogit;
 import com.antheminc.oss.nimbus.support.SecurityUtils;
 
 import lombok.Getter;
@@ -72,11 +70,6 @@ public class DefaultCoreBuilderConfig {
 	@Value("${platform.config.secure.regex}")
 	private String secureRegex;
 	
-	@Bean
-	@DependsOn("securityUtils")
-	public JustLogit justLogit() {
-		return new JustLogit();		
-	}
 	
 	@Bean
 	public BeanResolverStrategy defaultBeanResolver(ApplicationContext appCtx) {

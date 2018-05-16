@@ -17,8 +17,13 @@ package com.antheminc.oss.nimbus.channel.web;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -35,12 +40,15 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandTransactionInterceptor;
+import com.antheminc.oss.nimbus.domain.cmd.exec.ExecuteError;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecuteOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.MultiExecuteOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ValidationError;
-import com.antheminc.oss.nimbus.domain.cmd.exec.ValidationException;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ValidationResult;
 import com.antheminc.oss.nimbus.support.JustLogit;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Swetha Vemuri
@@ -48,9 +56,17 @@ import com.antheminc.oss.nimbus.support.JustLogit;
  *
  */
 @ControllerAdvice(assignableTypes=WebActionController.class)
+@EnableConfigurationProperties
+@ConfigurationProperties(prefix="application")
 public class WebActionControllerAdvice implements ResponseBodyAdvice<Object> {
 	
 	private JustLogit logit = new JustLogit(this.getClass());
+	
+	@Getter @Setter
+	private Map<Class<?>,String> exceptions;
+	
+	@Value("${application.error.genericMsg:#{null}}")
+	private String genericMsg;
 	
 	@Autowired CommandTransactionInterceptor interceptor;
 	
@@ -71,25 +87,30 @@ public class WebActionControllerAdvice implements ResponseBodyAdvice<Object> {
 	}
 	
 	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-	@ExceptionHandler(FrameworkRuntimeException.class)
+	@ExceptionHandler(Throwable.class)
 	@ResponseBody
-	public MultiExecuteOutput exception(FrameworkRuntimeException pEx){
-		logit.error(()->"Logging backing execute exception...",pEx);
-		
+	public MultiExecuteOutput exception(Throwable pEx){
 		ExecuteOutput<?> resp = new ExecuteOutput<>();
-		resp.setExecuteException(pEx.getExecuteError());
+		ExecuteError execError = constructExecError(pEx);
+		String message = constructMessage(pEx.getMessage());
+		
+		if (Optional.ofNullable(exceptions).isPresent()) {			
+			if (exceptions.containsKey(pEx.getClass())) {
+				message = constructMessage(exceptions.get(pEx.getClass()), pEx.getMessage());
+			} else {
+				Optional<Class<?>> hierarchyclass = exceptions.keySet()
+						.stream()
+						.filter(c -> c.isAssignableFrom(pEx.getClass()))
+						.findFirst();
+			
+				if (hierarchyclass.isPresent()) 
+					message = constructMessage(exceptions.get(hierarchyclass.get()), pEx.getMessage());
+			}
+		} 
+		execError.setMessage(message);
+		logit.error(execError::getMessage, pEx);
+		resp.setExecuteException(execError);
 		return interceptor.handleResponse(resp);		
-	}
-	
-	@ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY)
-	@ExceptionHandler(ValidationException.class)
-	@ResponseBody
-	public MultiExecuteOutput exception(ValidationException vEx){	
-		logit.error(()->"Logging backing validation exception...",vEx);
-		
-		ExecuteOutput<?> resp = new ExecuteOutput<>();
-		resp.setValidationResult(vEx.getValidationResult());
-		return interceptor.handleResponse(resp);
 	}
 	
 	@ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY)
@@ -115,6 +136,25 @@ public class WebActionControllerAdvice implements ResponseBodyAdvice<Object> {
 		resp.getValidationResult().setErrors(errors);	
 		
 		return interceptor.handleResponse(resp);
+	}
+	
+	private String constructMessage(String msg) {
+		return Optional.ofNullable(genericMsg).orElse(msg);
+	}
+	
+	private String constructMessage(String configMsg, String defaultMessage) {
+		return Optional.ofNullable(configMsg)
+				.orElse(constructMessage(defaultMessage));
+	}
+	
+	private ExecuteError constructExecError(Throwable pEx) {
+		ExecuteError execError = new ExecuteError();
+		if ((FrameworkRuntimeException.class).isAssignableFrom(pEx.getClass())) {
+			execError = ((FrameworkRuntimeException) pEx).getExecuteError();	
+		} else 
+			execError = new ExecuteError(pEx.getClass(), pEx.getMessage());
+		
+		return execError;
 	}
 	
 }

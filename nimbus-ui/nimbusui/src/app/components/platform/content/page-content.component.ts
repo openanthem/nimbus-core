@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 'use strict';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { Component, ChangeDetectorRef } from '@angular/core';
+import { LocationStrategy } from '@angular/common';
 import { ExecuteException } from '../../../shared/app-config.interface';
 import { Param } from '../../../shared/param-state';
 import { BaseElement } from '../base-element.component';
@@ -39,11 +40,28 @@ export class PageContent extends BaseElement{
     tilesList: any[];
     errMsgArray: any[] =[];
     errMsg: string;
+    isPopState: boolean = false;
 
-    constructor(private router: Router, private route: ActivatedRoute, private _wcs : WebContentSvc, private pageSvc: PageService,private cd: ChangeDetectorRef) {
+    constructor(private router: Router, private route: ActivatedRoute, 
+        private _wcs : WebContentSvc, 
+        private pageSvc: PageService,
+        private cd: ChangeDetectorRef,
+        private ls: LocationStrategy
+    ) {
         super(_wcs);
-        this.router.events.subscribe(path => {
+        this.ls.onPopState(() => {
+            this.isPopState = true;
+        });
+        this.router.events.subscribe(event => {
             this.pageId = this.route.snapshot.url[0].path;
+            // Scroll to the TOP of the page
+            if (event instanceof NavigationEnd && !this.isPopState) {
+                window.scrollTo(0, 0);
+                this.isPopState = false;
+            }
+            if (event instanceof NavigationEnd) {
+                this.isPopState = false;
+            }
         });
     }
 
@@ -65,9 +83,9 @@ export class PageContent extends BaseElement{
 
     ngAfterViewInit() {
         this.pageSvc.errorMessageUpdate$.subscribe((err: ExecuteException) => {
-            if(err.message){
-                this.errMsgArray.push({severity: 'error',  summary: 'Error Message',  detail: err.message});    
-            }        
+            if (err.message) {
+                this.errMsgArray.push({severity: 'error',  summary: 'Error Message',  detail: err.message +  err.uniqueId});
+            }
             this.cd.markForCheck();
         });
     }

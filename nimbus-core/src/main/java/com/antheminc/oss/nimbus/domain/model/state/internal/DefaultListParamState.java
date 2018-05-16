@@ -352,7 +352,7 @@ public class DefaultListParamState<T> extends AbstractListPaginatedParam<T> impl
 
 		pColElem.setState(elem);		//lockTemplate.execute(()->pColElem.setState(elem));
 		
-		pColElem.initState();
+		pColElem.initState(false);
 		return true;
 	}
 	
