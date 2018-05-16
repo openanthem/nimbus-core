@@ -68,7 +68,11 @@ public interface EntityState<T> {
 	<P> P findStateByPath(String path);
 
 	void initSetup();
-	void initState();
+	void initState(boolean doInternalStateInit);
+	
+	default void initState() {
+		initState(true);
+	}
 	
 	@JsonIgnore
 	boolean isStateInitialized();

@@ -125,14 +125,16 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 	protected void initSetupInternal() {} 
 	
 	@Override
-	final public void initState() {
+	final public void initState(boolean doInternalStateInit) {
 		if(isStateInitialized()) 
 			return;
 		
 		ExecutionRuntime execRt = getRootExecution().getExecutionRuntime();
 		String lockId = execRt.tryLock();
 		try {
-			initStateInternal();
+			if (doInternalStateInit) {
+				initStateInternal();
+			}
 			fireRules(); //TODO review with soham
 			setStateInitialized(true); // From soham
 		} finally {
