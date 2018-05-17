@@ -2,6 +2,7 @@
 import { TestBed, async } from '@angular/core/testing';
 import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
 
 import { FilterButton } from './filter-button.component';
 import { PageService } from '../../../../services/page.service';
@@ -9,6 +10,7 @@ import { CustomHttpClient } from '../../../../services/httpclient.service';
 import { LoaderService } from '../../../../services/loader.service';
 import { ConfigService } from '../../../../services/config.service';
 import { LoggerService } from '../../../../services/logger.service';
+import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
 
 let fixture, app, pageservice;
 
@@ -20,14 +22,17 @@ describe('FilterButton', () => {
        ],
        imports: [
            HttpModule,
-           HttpClientTestingModule
+           HttpClientTestingModule,
+           StorageServiceModule
        ],
        providers: [
+        { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
         PageService,
         CustomHttpClient,
         LoaderService,
         ConfigService,
-        LoggerService
+        LoggerService,
+        SessionStoreService
        ]
     }).compileComponents();
     fixture = TestBed.createComponent(FilterButton);
