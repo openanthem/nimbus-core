@@ -206,7 +206,7 @@ export class Param implements Serializable<Param, string> {
             }
         }
        
-        if (typeof inJson.activeValidationGroups ! == 'undefined') {
+        if (typeof inJson.activeValidationGroups === 'object') {
             this.activeValidationGroups = inJson.activeValidationGroups;
         }
         
