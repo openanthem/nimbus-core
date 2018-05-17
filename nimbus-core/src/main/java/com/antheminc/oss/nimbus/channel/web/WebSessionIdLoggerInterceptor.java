@@ -15,6 +15,8 @@
  */
 package com.antheminc.oss.nimbus.channel.web;
 
+import java.util.Optional;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -44,13 +46,12 @@ public class WebSessionIdLoggerInterceptor extends HandlerInterceptorAdapter {
 	}
 	
 	private void addSessionIdIfAny() {
-		
 		try {
-			RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-			if(requestAttributes != null) 
-				MDC.put(KEY_SESSION_ID, requestAttributes.getSessionId());
+			String sessionId = Optional.ofNullable(RequestContextHolder.getRequestAttributes())
+				.map(RequestAttributes::getSessionId)
+				.orElse(KEY_SESSION_NOT_FOUND);
 			
-			MDC.put(KEY_SESSION_ID, KEY_SESSION_NOT_FOUND);
+			MDC.put(KEY_SESSION_ID, sessionId);
 			
 		} catch (Exception ex) {
 			MDC.put(KEY_SESSION_ID, KEY_SESSION_NOT_FOUND);
