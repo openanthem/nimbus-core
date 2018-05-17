@@ -26,11 +26,12 @@ import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilde
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import com.antheminc.oss.nimbus.channel.web.WebSessionIdLoggerFilter;
+import com.antheminc.oss.nimbus.channel.web.WebSessionIdLoggerInterceptor;
 import com.antheminc.oss.nimbus.support.json.CustomDateDeserializer;
 import com.antheminc.oss.nimbus.support.json.CustomDateSerializer;
 import com.antheminc.oss.nimbus.support.json.CustomLocalDateDeserializer;
@@ -81,9 +82,9 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		}
 	}
 	
-	@Bean
-	public WebSessionIdLoggerFilter webSessionIdLoggerFilter() {
-		return new WebSessionIdLoggerFilter();
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(new WebSessionIdLoggerInterceptor());
 	}
 	
 	/**

@@ -15,59 +15,46 @@
  */
 package com.antheminc.oss.nimbus.channel.web;
 
-import java.io.IOException;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.MDC;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 /**
  * @author Soham Chakravarti
  *
  */
 @Order(Ordered.HIGHEST_PRECEDENCE)
-public class WebSessionIdLoggerFilter implements Filter {
+public class WebSessionIdLoggerInterceptor extends HandlerInterceptorAdapter {
 
 	public static final String KEY_SESSION_ID = "SESSIONID";
 	private static final String KEY_SESSION_NOT_FOUND = "SESSION-NOT-FOUND";
 	
 	@Override
-	public void init(FilterConfig filterConfig) throws ServletException {}
-
-	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-	throws IOException, ServletException {
-
-		String sessionId = getSessionId();
-		MDC.put(KEY_SESSION_ID, sessionId);
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+	throws Exception {
+		addSessionIdIfAny();
 		
-		chain.doFilter(request, response);
+		return true;
 	}
-
 	
-	private String getSessionId() {
+	private void addSessionIdIfAny() {
+		
 		try {
 			RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
 			if(requestAttributes != null) 
-				return requestAttributes.getSessionId();
+				MDC.put(KEY_SESSION_ID, requestAttributes.getSessionId());
 			
-			return KEY_SESSION_NOT_FOUND;
+			MDC.put(KEY_SESSION_ID, KEY_SESSION_NOT_FOUND);
 			
 		} catch (Exception ex) {
-			return KEY_SESSION_NOT_FOUND;
+			MDC.put(KEY_SESSION_ID, KEY_SESSION_NOT_FOUND);
 		}
 	}
 	
-	@Override
-	public void destroy() {}
-
 }
