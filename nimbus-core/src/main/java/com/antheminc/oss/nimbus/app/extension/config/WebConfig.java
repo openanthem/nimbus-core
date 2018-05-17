@@ -30,6 +30,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+import com.antheminc.oss.nimbus.channel.web.WebSessionIdLoggerFilter;
 import com.antheminc.oss.nimbus.support.json.CustomDateDeserializer;
 import com.antheminc.oss.nimbus.support.json.CustomDateSerializer;
 import com.antheminc.oss.nimbus.support.json.CustomLocalDateDeserializer;
@@ -78,6 +79,11 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 				registry.addResourceHandler(entry.getKey()).addResourceLocations(entry.getValue());
 			}
 		}
+	}
+	
+	@Bean
+	public WebSessionIdLoggerFilter webSessionIdLoggerFilter() {
+		return new WebSessionIdLoggerFilter();
 	}
 	
 	/**
