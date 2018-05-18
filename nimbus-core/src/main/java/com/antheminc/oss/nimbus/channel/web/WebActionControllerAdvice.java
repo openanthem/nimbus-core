@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -45,6 +46,7 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.ExecuteOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.MultiExecuteOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ValidationError;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ValidationResult;
+import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.support.JustLogit;
 
 import lombok.Getter;
@@ -92,11 +94,11 @@ public class WebActionControllerAdvice implements ResponseBodyAdvice<Object> {
 	public MultiExecuteOutput exception(Throwable pEx){
 		ExecuteOutput<?> resp = new ExecuteOutput<>();
 		ExecuteError execError = constructExecError(pEx);
-		String message = constructMessage(pEx.getMessage());
+		String message = constructMessage(execError);
 		
 		if (Optional.ofNullable(exceptions).isPresent()) {			
 			if (exceptions.containsKey(pEx.getClass())) {
-				message = constructMessage(exceptions.get(pEx.getClass()), pEx.getMessage());
+				message = constructMessage(exceptions.get(pEx.getClass()), execError);
 			} else {
 				Optional<Class<?>> hierarchyclass = exceptions.keySet()
 						.stream()
@@ -104,7 +106,7 @@ public class WebActionControllerAdvice implements ResponseBodyAdvice<Object> {
 						.findFirst();
 			
 				if (hierarchyclass.isPresent()) 
-					message = constructMessage(exceptions.get(hierarchyclass.get()), pEx.getMessage());
+					message = constructMessage(exceptions.get(hierarchyclass.get()), execError);
 			}
 		} 
 		execError.setMessage(message);
@@ -138,13 +140,16 @@ public class WebActionControllerAdvice implements ResponseBodyAdvice<Object> {
 		return interceptor.handleResponse(resp);
 	}
 	
-	private String constructMessage(String msg) {
-		return Optional.ofNullable(genericMsg).orElse(msg);
+	private String constructMessage(ExecuteError err) {
+		return Optional.ofNullable(genericMsg)
+				.map((str) -> StringUtils.replace(str, Constants.KEY_ERR_UNIQUEID.code, err.getUniqueId()))
+				.orElse(err.getMessage());
 	}
 	
-	private String constructMessage(String configMsg, String defaultMessage) {
+	private String constructMessage(String configMsg, ExecuteError err) {
 		return Optional.ofNullable(configMsg)
-				.orElse(constructMessage(defaultMessage));
+				.map((str) -> StringUtils.replace(str, Constants.KEY_ERR_UNIQUEID.code, err.getUniqueId()))
+				.orElse(constructMessage(err));
 	}
 	
 	private ExecuteError constructExecError(Throwable pEx) {

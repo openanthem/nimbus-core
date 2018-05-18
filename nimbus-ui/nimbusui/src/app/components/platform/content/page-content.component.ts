@@ -84,7 +84,7 @@ export class PageContent extends BaseElement{
     ngAfterViewInit() {
         this.pageSvc.errorMessageUpdate$.subscribe((err: ExecuteException) => {
             if (err.message) {
-                this.errMsgArray.push({severity: 'error',  summary: 'Error Message',  detail: err.message +  err.uniqueId});
+                this.errMsgArray.push({severity: 'error',  summary: 'Error Message',  detail: err.message});
             }
             this.cd.markForCheck();
         });
