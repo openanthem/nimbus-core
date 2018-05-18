@@ -42,7 +42,8 @@ export class ServiceConstants {
     public static get BASE_URL(): string    { return this.STOPGAP_APP_HOST_URL+this.WEB_CONTENT_PORT; }
     public static get LOGIN_URL(): string { return this.STOPGAP_APP_HOST_URL+this.STOPGAP_APP_PORT+'/'+this.APP_CONTEXT+'/login'; }
     public static get LOGOUT_URL(): string { return this.STOPGAP_APP_HOST_URL+this.STOPGAP_APP_PORT+'/'+this.APP_CONTEXT+'/logout'; }
-    public static get PLATFORM_BASE_URL(): string    { return this.STOPGAP_APP_HOST_URL+this.STOPGAP_APP_PORT+'/'+this.APP_CONTEXT+'/fep/p'; }
+    public static get APP_REFRESH(): string { return this.STOPGAP_APP_HOST_URL+this.STOPGAP_APP_PORT+'/'+this.APP_CONTEXT+'/processLogin'; }
+    public static get PLATFORM_BASE_URL(): string    { return this.STOPGAP_APP_HOST_URL+this.STOPGAP_APP_PORT+'/'+this.APP_CONTEXT+'/org/p'; }
     public static get CLIENT_BASE_URL(): string    { return this.STOPGAP_APP_HOST_URL+this.STOPGAP_APP_PORT+'/'; }
     public static get WS_BASE_URL(): string { return 'ws://'+this.STOPGAP_APP_HOST+':'+this.WS_PORT+'/updates'; }
 
@@ -64,11 +65,11 @@ export class ServiceConstants {
     
     public static get WS_PORT() : string { return '8080';}
     public static get WEB_CONTENT_PORT() : string { return '3004';}
-    public static get STATIC_CONTENT_PORT() : string { return '4001';}
+    public static get STATIC_CONTENT_PORT() : string { return '4000';}
 
     //static content server constants
     public static get BLUE_THEME_URL(): string  { return 'http://'+this.hostName+':'+this.STATIC_CONTENT_PORT+'/styles/anthem/anthem.blue.theme.css'; }
     public static get BLACK_THEME_URL(): string { return 'http://'+this.hostName+':'+this.STATIC_CONTENT_PORT+'/styles/anthem/anthem.black.theme.css'; }
-    public static get IMAGES_URL(): string { return 'http://'+this.hostName+':'+this.STATIC_CONTENT_PORT+'/resources/icons/'; }
+    public static get IMAGES_URL(): string { return this.STOPGAP_APP_HOST_URL+this.STOPGAP_APP_PORT+'/'+this.APP_CONTEXT; }
 
 }

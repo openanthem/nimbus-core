@@ -37,3 +37,18 @@ rule "Core Rule Test 1"
    	   $core.findParamByPath("/triggeredParameter").setState("Triggered");   
    	   $state.setStateCheckParameter("Executed");   
    end
+
+rule "Core Rule Test 2 - Exceptions"
+	when
+		$core : DefaultParamState($core.findParamByPath("/triggerParameter").getState() == 'Start')
+		$state : RuleTestCoreModel()
+	then
+		try {
+			throw new RuntimeException("Test Failure");
+		} catch (Exception e) {
+			info(drools, "This is demo for logging exceptions using info.", e);
+			debug(drools, "This is demo for logging exceptions using debug.", e);
+			trace(drools, "This is demo for logging exceptions using trace.", e);
+			error(drools, "This is demo for logging exceptions using error.", e);
+		}
+   end

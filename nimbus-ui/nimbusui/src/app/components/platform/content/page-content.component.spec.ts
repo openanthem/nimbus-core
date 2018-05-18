@@ -12,6 +12,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import { TableModule } from 'primeng/table';
 import { KeyFilterModule } from 'primeng/keyfilter';
+import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
 
 import { PageContent } from './page-content.component';
 import { Tile } from '../tile.component';
@@ -61,6 +62,7 @@ import { LoaderService } from '../../../services/loader.service';
 import { ConfigService } from '../../../services/config.service';
 import { LoggerService } from '../../../services/logger.service';
 import { DataTable } from '../grid/table.component';
+import { SessionStoreService, CUSTOM_STORAGE } from '../../../services/session.store';
 
 export class MockActivatedRoute implements ActivatedRoute {
   snapshot: ActivatedRouteSnapshot;
@@ -171,11 +173,14 @@ describe('PageContent', () => {
         HttpClientModule,
         HttpModule,
         TableModule,
-        KeyFilterModule
+        KeyFilterModule,
+        StorageServiceModule
        ],
        providers: [
         {provide: WebContentSvc, useClass: MockWebContentSvc},
         {provide: ActivatedRoute, useClass: MockActivatedRoute},
+        { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+        SessionStoreService,
         PageService,
         CustomHttpClient,
         LoaderService,

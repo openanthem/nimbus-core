@@ -4,7 +4,7 @@
     
     
    	<springProfile name="test">
-    	<logger name="com.anthem" level="INFO" additivity="true">
+    	<logger name="com.antheminc" level="INFO" additivity="true">
             <appender-ref ref="CONSOLE" />
             <appender-ref ref="FILE" />
         </logger>

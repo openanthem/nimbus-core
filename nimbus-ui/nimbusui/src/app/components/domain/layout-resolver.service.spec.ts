@@ -6,6 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing'
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs';
+import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
 
 import { LayoutResolver } from './layout-resolver.service';
 import { PageService } from '../../services/page.service';
@@ -13,6 +14,7 @@ import { CustomHttpClient } from '../../services/httpclient.service';
 import { LoaderService } from '../../services/loader.service';
 import { ConfigService } from '../../services/config.service';
 import { BreadcrumbService } from '../platform/breadcrumb/breadcrumb.service';
+import { SessionStoreService, CUSTOM_STORAGE } from '../../services/session.store';
 
 class MockConfigService {
     getFlowConfig(a) {
@@ -63,7 +65,7 @@ let http, backend, service, pagesvc, route, state, configsvc;
 describe('LayoutResolver', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, HttpModule, RouterTestingModule],
+      imports: [HttpClientTestingModule, HttpModule, RouterTestingModule, StorageServiceModule],
       providers: [
         LayoutResolver,
         { provide: PageService, useClass: MockPageService },
@@ -83,9 +85,11 @@ describe('LayoutResolver', () => {
           }
         },
         {provide: ConfigService, useClass: MockConfigService},
+        { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
         CustomHttpClient,
         LoaderService,
-        BreadcrumbService
+        BreadcrumbService,
+        SessionStoreService
       ]
     });
     http = TestBed.get(HttpClient);

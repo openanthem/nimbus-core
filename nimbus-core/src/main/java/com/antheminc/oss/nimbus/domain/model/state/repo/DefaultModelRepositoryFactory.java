@@ -35,9 +35,13 @@ public class DefaultModelRepositoryFactory implements ModelRepositoryFactory {
 	
 	@Override
 	public ModelRepository get(Repo repo) {
-		return beanResolver.get(ModelRepository.class, repo.value().name());
+		return get(repo.value());
 	}
 	
+	@Override
+	public ModelRepository get(Repo.Database db) {
+		return beanResolver.get(ModelRepository.class, db.name());
+	}
 
 	@Override
 	public ModelPersistenceHandler getHandler(Repo repo) {

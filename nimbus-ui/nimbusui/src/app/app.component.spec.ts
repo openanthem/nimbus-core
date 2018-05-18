@@ -68,10 +68,6 @@ describe('AppComponent', () => {
       }
     };
     app.ngOnInit();
-    expect(app.domain).toEqual('testing');
-    expect(app.port).toEqual('999');
-    expect(app.protocol).toEqual('testProtocol');
-    expect(app.locale).toEqual('en-US');
     expect(ServiceConstants.STOPGAP_APP_HOST).toEqual('testing');
     expect(ServiceConstants.STOPGAP_APP_PORT).toEqual('999');
     expect(ServiceConstants.LOCALE_LANGUAGE).toEqual('en-US');

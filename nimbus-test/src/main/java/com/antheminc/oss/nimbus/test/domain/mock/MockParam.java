@@ -213,7 +213,7 @@ public class MockParam implements Param<Object> {
 	 * @see com.anthem.oss.nimbus.core.domain.model.state.EntityState#initState()
 	 */
 	@Override
-	public void initState() {
+	public void initState(boolean doInternalStateInit) {
 		this.setStateInitialized(true);
 	}
 

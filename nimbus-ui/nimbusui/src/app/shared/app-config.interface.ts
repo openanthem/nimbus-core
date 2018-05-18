@@ -198,6 +198,7 @@ export class ExecuteOutput implements Serializable<ExecuteOutput,string> {
 
 export class ExecuteResponse implements Serializable<ExecuteResponse,string> {
     result: MultiOutput[];
+    sessionId: string;
     constructor(private configSvc: ConfigService) {}
     deserialize( inJson ) {
         this.result = [];
@@ -206,6 +207,9 @@ export class ExecuteResponse implements Serializable<ExecuteResponse,string> {
             for ( const p in inJson.result ) {
                 this.result.push( new MultiOutput(this.configSvc).deserialize(inJson.result[p]) );
             }
+        }
+        if (inJson.sessionId != null) {
+            this.sessionId = inJson.sessionId;
         }
         return this;
     }
@@ -231,7 +235,6 @@ export class MultiOutput implements Serializable<MultiOutput,string> {
 export class ExecuteException implements Serializable<ExecuteException, string> {
     code: string;
     message: string;
-
     deserialize( inJson ) {
         this.code = inJson.code;
         this.message = inJson.message;
