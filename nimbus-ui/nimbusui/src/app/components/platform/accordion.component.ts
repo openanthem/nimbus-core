@@ -44,6 +44,14 @@ import { AccordionGroup } from './accordion-group.component';
 
 export class Accordion {
     groups: Array<AccordionGroup> = [];
+    private _expandAllClicked:boolean = false;
+
+    get expandAllClicked():boolean {
+        return this._expandAllClicked;
+    }
+    set expandAllClicked(expandAll:boolean) {
+        this._expandAllClicked = expandAll;
+    }
 
     addGroup( group: AccordionGroup ): void {
         this.groups.push( group );
@@ -59,6 +67,7 @@ export class Accordion {
     }
 
     openAll( openGroup: AccordionGroup ): void {
+        this.expandAllClicked = true;
         this.groups.forEach(( group: AccordionGroup ) => {
             if ( group !== openGroup ) {
                 group.state = 'openPanel';

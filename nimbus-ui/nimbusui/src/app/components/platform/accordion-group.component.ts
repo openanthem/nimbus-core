@@ -101,6 +101,7 @@ export class AccordionGroup extends BaseElement implements OnDestroy {
     }
     toggleOpen( event: MouseEvent ): void {
         event.preventDefault();
+        this.accordion.expandAllClicked = false; 
         this.isOpen = !this.isOpen;
         if(this.state == 'openPanel'){
             this.state = 'closedPanel';
@@ -117,8 +118,10 @@ export class AccordionGroup extends BaseElement implements OnDestroy {
   
         if ( this._state =='openPanel') {
             // this.accordion.closeOthers(this).then(success => {
-                let selElem = this.elementRef.nativeElement.querySelector('#'+this.title);
+            if (!this.accordion.expandAllClicked) {
+                let selElem = this.elementRef.nativeElement.querySelector('#' + this.title);
                 selElem.scrollIntoView();
+            }
             // });
         }
         if(this._state =='closedPanel'){
