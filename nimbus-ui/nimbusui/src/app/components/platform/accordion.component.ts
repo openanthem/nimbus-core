@@ -29,8 +29,14 @@ import { AccordionGroup } from './accordion-group.component';
 @Component( {
     selector: 'accordion',
     template: `
-  <ng-content></ng-content>
-          `,
+        <div class="text-sm-right">
+            <button type="button" class="btn btn-expand" (click)="openAll()">Expand All</button>
+            <span class="btn-pipe">|</span>
+            <button type="button" class="btn btn-expand" (click)="closeAll()">Collapse All</button>
+        </div>
+        <ng-content></ng-content>
+
+    `,
     host: {
         'class': 'panel-group'
     }
@@ -38,6 +44,14 @@ import { AccordionGroup } from './accordion-group.component';
 
 export class Accordion {
     groups: Array<AccordionGroup> = [];
+    private _expandAllClicked:boolean = false;
+
+    get expandAllClicked():boolean {
+        return this._expandAllClicked;
+    }
+    set expandAllClicked(expandAll:boolean) {
+        this._expandAllClicked = expandAll;
+    }
 
     addGroup( group: AccordionGroup ): void {
         this.groups.push( group );
@@ -52,11 +66,16 @@ export class Accordion {
         return Promise.resolve(true);
     }
 
-    openAll( openGroup: AccordionGroup ): void {
+    openAll(): void {
+        this.expandAllClicked = true;
         this.groups.forEach(( group: AccordionGroup ) => {
-            if ( group !== openGroup ) {
-                group.state = 'openPanel';
-            }
+            group.state = 'openPanel';
+        } );
+    }
+
+    closeAll(): void {
+        this.groups.forEach(( group: AccordionGroup ) => {
+            group.state = 'closedPanel';
         } );
     }
 
