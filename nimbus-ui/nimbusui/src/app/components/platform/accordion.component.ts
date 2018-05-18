@@ -66,20 +66,16 @@ export class Accordion {
         return Promise.resolve(true);
     }
 
-    openAll( openGroup: AccordionGroup ): void {
+    openAll(): void {
         this.expandAllClicked = true;
         this.groups.forEach(( group: AccordionGroup ) => {
-            if ( group !== openGroup ) {
-                group.state = 'openPanel';
-            }
+            group.state = 'openPanel';
         } );
     }
 
-    closeAll( openGroup: AccordionGroup ): void {
+    closeAll(): void {
         this.groups.forEach(( group: AccordionGroup ) => {
-            if ( group !== openGroup ) {
-                group.state = 'closedPanel';
-            }
+            group.state = 'closedPanel';
         } );
     }
 
