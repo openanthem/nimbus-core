@@ -21,9 +21,9 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import org.apache.commons.lang.reflect.FieldUtils;
 import org.springframework.beans.BeanUtils;
@@ -32,13 +32,66 @@ import org.springframework.util.StringUtils;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ValueAccessor;
 import com.antheminc.oss.nimbus.domain.model.state.InvalidStateException;
 
+import lombok.RequiredArgsConstructor;
+
 /**
  * @author Soham Chakravarti
  *
  */
 public final class JavaBeanHandlerUtils {
 
+	@RequiredArgsConstructor
+	private static class CacheKey {
+		private final Class<?> beanClass;
+		private final String fieldName;
+		
+		@Override
+		public boolean equals(Object obj) {
+			if(obj==null)
+				return false;
+			
+			if(!CacheKey.class.isInstance(obj))
+				return false;
+			
+			CacheKey other = CacheKey.class.cast(obj);
+			if(this.beanClass!=other.beanClass)
+				return false;
+			
+			if(!org.apache.commons.lang3.StringUtils.equals(this.fieldName, other.fieldName))
+				return false;
+			
+			return true;
+		}
+		
+	    @Override public int hashCode() {
+	        final int PRIME = 59;
+	        int result = 1;
+	        result = (result*PRIME) + super.hashCode();
+	        
+	        if(this.beanClass!=null )
+	        	result = (result*PRIME) + this.beanClass.hashCode();
+
+	        if(this.fieldName!=null)
+	        	result = (result*PRIME) + this.fieldName.hashCode();
+	        
+	        return result;
+	      }
+	}
+	
+	private static final ConcurrentHashMap<CacheKey, ValueAccessor> LOCAL_CACHE = new ConcurrentHashMap<>();
+	
 	public static ValueAccessor constructValueAccessor(Class<?> beanClass, String fieldName) {
+		CacheKey key = new CacheKey(beanClass, fieldName);
+		if(LOCAL_CACHE.containsKey(key))
+			return LOCAL_CACHE.get(key);
+		
+		ValueAccessor va = constructValueAccessorInternal(beanClass, fieldName);
+		LOCAL_CACHE.put(key, va);
+		
+		return va;
+	}
+	
+	private static ValueAccessor constructValueAccessorInternal(Class<?> beanClass, String fieldName) {
 		try {
 			Field f = FieldUtils.getField(beanClass, fieldName, true);
 			boolean b = f.getType().equals(boolean.class);
@@ -72,7 +125,7 @@ public final class JavaBeanHandlerUtils {
 		return m;
 	}
 	
-	public static MethodHandle constructGetHandle(MethodHandles.Lookup lookup, Method m) throws Throwable {
+	private static MethodHandle constructGetHandle(MethodHandles.Lookup lookup, Method m) throws Throwable {
 		if(m==null)
 			return null;
 		
@@ -86,7 +139,7 @@ public final class JavaBeanHandlerUtils {
 				get.type()).getTarget();
 	}
 	
-	public static MethodHandle constructSetHandle(MethodHandles.Lookup lookup, Method m) throws Throwable {
+	private static MethodHandle constructSetHandle(MethodHandles.Lookup lookup, Method m) throws Throwable {
 		if(m==null)
 			return null;
 		
@@ -100,7 +153,8 @@ public final class JavaBeanHandlerUtils {
 				set.type()).getTarget();
 	}
 	
-	public static MethodHandle constructInitHandle(MethodHandles.Lookup lookup, Class<?> declaringClass) throws Throwable {
+	/* FUTURE
+	private static MethodHandle constructInitHandle(MethodHandles.Lookup lookup, Class<?> declaringClass) throws Throwable {
 		MethodHandle init = lookup.findConstructor(declaringClass, MethodType.methodType(declaringClass));
 
 		return LambdaMetafactory.metafactory(
@@ -111,6 +165,6 @@ public final class JavaBeanHandlerUtils {
 				init, 
 				init.type()).getTarget();
 	}
-	
+	*/
 
 }

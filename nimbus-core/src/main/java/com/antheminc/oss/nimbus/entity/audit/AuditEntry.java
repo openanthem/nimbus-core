@@ -37,8 +37,6 @@ public class AuditEntry extends AbstractEntity.IdLong {
 	
 	private String propertyType;
 	
-	private Object oldValue;
-	
 	private Object newValue;
 	
 }

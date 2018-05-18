@@ -25,12 +25,8 @@ import { LayoutResolver } from './components/domain/layout-resolver.service';
 import { PageResolver } from './components/platform/content/page-resolver.service';
 import { PageNotfoundComponent } from './components/platform/content/page-notfound.component';
 import { PageContent } from './components/platform/content/page-content.component';
-import { FlowWrapper } from './components/platform/content/flow-wrapper.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-
-import { SelectivePreloadingStrategy } from './selective.preloading.strategy';
-
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -102,10 +98,8 @@ const APPROUTES: Routes = [
 ];
 
 @NgModule({
-    imports: [ RouterModule.forRoot(APPROUTES, {enableTracing: false}) ],
+    imports: [ RouterModule.forRoot(APPROUTES, {enableTracing: false, useHash:true, onSameUrlNavigation :'reload'}) ],
     exports: [ RouterModule ],
-    providers: [
-      SelectivePreloadingStrategy, PageResolver, LayoutResolver
-    ]
+    providers: [ PageResolver, LayoutResolver ]
 })
 export class AppRoutingModule {}

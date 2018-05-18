@@ -83,6 +83,8 @@ public enum Constants {
 	KEY_EXECUTE_EVAL_ARG("eval"),
 	KEY_EXECUTE_PROCESS_ID("processId"),
 	
+	KEY_ERR_UNIQUEID("ERR.UNIQUEID"),
+	
 	REQUEST_PARAMETER_MARKER("?"),
 	CLIENT_USER_KEY("client-user-key"),
 	
@@ -107,7 +109,6 @@ public enum Constants {
 	
 	SEARCH_NAMED_QUERY_DELIMTER("~~"),
 	SEARCH_NAMED_QUERY_RESULT("result");
-	
 	
 	
 	

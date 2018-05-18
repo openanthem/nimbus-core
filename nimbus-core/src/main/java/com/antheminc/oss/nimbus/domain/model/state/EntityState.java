@@ -68,7 +68,11 @@ public interface EntityState<T> {
 	<P> P findStateByPath(String path);
 
 	void initSetup();
-	void initState();
+	void initState(boolean doInternalStateInit);
+	
+	default void initState() {
+		initState(true);
+	}
 	
 	@JsonIgnore
 	boolean isStateInitialized();
@@ -452,9 +456,6 @@ public interface EntityState<T> {
 //		default LeafParam<T> findIfLeaf() {
 //			return this;
 //		}
-		
-		@JsonIgnore
-		T getTransientOldState();
 	}
 	
 	public interface MappedParam<T, M> extends Param<T>, Mapped<T, M>, Notification.Consumer<M> {

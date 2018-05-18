@@ -162,7 +162,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
             });
         }
         // include row selection checkbox to column count
-        if (this.element.config.uiStyles.attributes.rowSelection) {
+        if (this.element.config.uiStyles && this.element.config.uiStyles.attributes.rowSelection) {
             this.columnsToShow ++;
         }
 
@@ -195,7 +195,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
             });
         }
 
-        if (this.element.config.uiStyles.attributes.onLoad === true) {
+        if (this.element.config.uiStyles && this.element.config.uiStyles.attributes.onLoad === true) {
             // If table is set to lazyload, the loadDataLazy(event) method will handle the initialization
             if (!this.element.config.uiStyles.attributes.lazyLoad) {
                 let queryString: string = this.getQueryString(0, undefined);
@@ -213,7 +213,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
                 this.value = event.gridList;
                 let gridListSize = this.value ? this.value.length : 0;
                 // Check for Server Pagination Vs Client Pagination
-                if (this.element.config.uiStyles.attributes.lazyLoad) {
+                if (this.element.config.uiStyles && this.element.config.uiStyles.attributes.lazyLoad) {
                     // Server Pagination
                     this.totalRecords = event.page.totalElements;
                     if (event.page.first) {
@@ -268,28 +268,28 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     }
 
     showHeader(col: ParamConfig) {
-        if (col.uiStyles.attributes.hidden == false && col.uiStyles.attributes.alias != ViewComponent.gridRowBody.toString()) {
+        if (col.uiStyles && col.uiStyles.attributes.hidden == false && col.uiStyles.attributes.alias != ViewComponent.gridRowBody.toString()) {
             return true;
         } 
         return false;
     }
 
     showValue(col: ParamConfig) {
-        if (col.uiStyles.attributes.alias != 'Link' && col.uiStyles.attributes.alias != 'LinkMenu' && col.type.nested == false) {
+        if (col.uiStyles && col.uiStyles.attributes.alias != 'Link' && col.uiStyles.attributes.alias != 'LinkMenu' && col.type.nested == false) {
             return true;
         }
         return false;
     }
 
     showLink(col: ParamConfig) {
-        if (col.uiStyles.attributes.alias == 'Link') {
+        if (col.uiStyles && col.uiStyles.attributes.alias == 'Link') {
             return true;
         }
         return false;
     }
 
     showLinkMenu(col: ParamConfig) {
-        if (col.uiStyles.attributes.alias == 'LinkMenu') {
+        if (col.uiStyles && col.uiStyles.attributes.alias == 'LinkMenu') {
             return true;
         }
         return false;

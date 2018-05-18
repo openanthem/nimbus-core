@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/primeng';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
+import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
 
 import { AccordionMain } from './accordion.component';
 import { AccordionModule } from 'primeng/primeng';
@@ -24,6 +25,7 @@ import { CustomHttpClient } from '../../../services/httpclient.service';
 import { LoaderService } from '../../../services/loader.service';
 import { ConfigService } from '../../../services/config.service';
 import { LoggerService } from '../../../services/logger.service';
+import { SessionStoreService, CUSTOM_STORAGE } from '../../../services/session.store';
 
 class MockWebContentSvc {
     findLabelContent(param) {
@@ -57,15 +59,18 @@ describe('AccordionMain', () => {
           FormsModule,
           DropdownModule,
           HttpModule,
-          HttpClientModule
+          HttpClientModule,
+          StorageServiceModule
         ],
         providers: [
             {provide: WebContentSvc, useClass: MockWebContentSvc},
+            { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
             PageService,
             CustomHttpClient,
             LoaderService,
             ConfigService,
-            LoggerService
+            LoggerService,
+            SessionStoreService
         ]
       }).compileComponents();
     })

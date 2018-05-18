@@ -15,13 +15,17 @@
  */
 package com.antheminc.oss.nimbus.test.scenarios.s0.view;
 
+import java.util.List;
+
 import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo;
+import com.antheminc.oss.nimbus.domain.defn.MapsTo.Path;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Database;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Page;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
+import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreNestedEntity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -47,4 +51,7 @@ public class VRSampleViewRootEntity {
 
 	@Page(route="sample_view_colors")
 	private VPSampleViewPageOrange page_orange;
+	
+	@Path
+	private List<SampleCoreNestedEntity> attr_list_1_NestedEntity;
 }

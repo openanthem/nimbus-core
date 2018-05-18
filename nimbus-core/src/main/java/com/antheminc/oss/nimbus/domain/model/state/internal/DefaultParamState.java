@@ -113,9 +113,6 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	@JsonIgnore 
 	final ValueAccessor valueAccessor;
 
-	@JsonIgnore
-	private T transientOldState;
-
 	public static class LeafState<T> extends DefaultParamState<T> implements LeafParam<T> {
 		private static final long serialVersionUID = 1L;
 		
@@ -286,11 +283,11 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	
 	public interface SetStateListener<T> {
-		default T preSetState(T state, String localLockId, ExecutionRuntime execRt) {
+		default T preSetState(T oldState, T state, String localLockId, ExecutionRuntime execRt) {
 			return state;
 		}
 		
-		default Action postSetState(Action change, T state, String localLockId, ExecutionRuntime execRt) {
+		default Action postSetState(Action change, T oldState, T state, String localLockId, ExecutionRuntime execRt) {
 			return change;
 		}
 		
@@ -325,17 +322,14 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 
 	
 	protected final <X> Action affectSetStateChange(T state, ExecutionRuntime execRt, Holder<Action> h, String localLockId, SetStateListener<T> cb) {
-		state = preSetState(state, localLockId, execRt, cb);
-		
 		boolean isLeaf = isLeafOrCollectionWithLeafElems();
 		final T localPotentialOldState = isLeaf ? getState() : null;
+
+		state = preSetState(localPotentialOldState, state, localLockId, execRt, cb);
 		
 		Action a = getAspectHandlers().getParamStateGateway()._set(this, state); 
 		
 		if(a!=null) {
-			
-			if(isLeaf)
-				setTransientOldState(localPotentialOldState);
 			
 			// hook up on state change events
 			onStateChangeEvent(resolveRuntime().getTxnContext(), this, a);
@@ -363,15 +357,15 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 				emitEvent(a, this);
 		}
 		
-		return postSetState(a, localPotentialOldState, localLockId, execRt, cb);
+		return postSetState(a, localPotentialOldState, state, localLockId, execRt, cb);
 	}
 
 	
-	protected T preSetState(T state, String localLockId, ExecutionRuntime execRt, SetStateListener<T> cb) {
-		return cb==null ? state : cb.preSetState(state, localLockId, execRt);
+	protected T preSetState(T oldState, T state, String localLockId, ExecutionRuntime execRt, SetStateListener<T> cb) {
+		return cb==null ? state : cb.preSetState(oldState, state, localLockId, execRt);
 	}
-	protected Action postSetState(Action change, T state, String localLockId, ExecutionRuntime execRt, SetStateListener<T> cb) {
-		return cb==null ? change : cb.postSetState(change, state, localLockId, execRt);
+	protected Action postSetState(Action change, T oldState, T state, String localLockId, ExecutionRuntime execRt, SetStateListener<T> cb) {
+		return cb==null ? change : cb.postSetState(change, oldState, state, localLockId, execRt);
 	}
 	
 	

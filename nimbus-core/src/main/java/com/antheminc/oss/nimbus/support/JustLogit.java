@@ -95,7 +95,8 @@ public class JustLogit {
 //		if(msg.get() != null) {
 //			return SecurityUtils.scanObjectForSecureLogging(msg.get(), SecurityUtils.SECURE);
 //		}
-			return msg.get();		                     
+		
+		return msg.get();		                     
 	}
 	
 }
