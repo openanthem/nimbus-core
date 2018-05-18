@@ -55,7 +55,7 @@ import { LoggerService } from '../../../../services/logger.service';
                 <button class="btn btn-delete" (click)="emitEvent(this)" [disabled]="disabled" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
             </ng-template>
         </ng-template>
-        <ng-template [ngIf]="element.config?.uiStyles?.attributes?.imgSrc">
+        <ng-template [ngIf]="element.config?.uiStyles?.attributes?.imgSrc && element?.visible == true">
            <button (click)="emitEvent(this)" [disabled]="disabled" type="button" class="{{element.config?.uiStyles?.attributes?.cssClass}} ">
                     <i class="fa fa-fw {{element.config?.uiStyles?.attributes?.imgSrc}}" aria-hidden="true"></i>{{label}}</button>
         </ng-template>
