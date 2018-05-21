@@ -4,6 +4,7 @@ import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ElementRef } from '@angular/core';
+import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
 
 import { ActionLink } from './action-dropdown.component';
 import { ActionDropdown } from './action-dropdown.component';
@@ -16,6 +17,7 @@ import { ParamConfig } from '../../../../shared/param-config';
 import { Param } from '../../../../shared/param-state';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { LoggerService } from '../../../../services/logger.service';
+import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
 
 let fixture, app, pageservice, configservice;
 
@@ -27,14 +29,17 @@ describe('ActionLink', () => {
        ],
        imports: [
            HttpModule,
-           HttpClientTestingModule
+           HttpClientTestingModule,
+           StorageServiceModule
        ],
        providers: [
+        { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
         PageService,
         CustomHttpClient,
         LoaderService,
         ConfigService,
-        LoggerService
+        LoggerService,
+        SessionStoreService
        ]
     }).compileComponents();
     fixture = TestBed.createComponent(ActionLink);

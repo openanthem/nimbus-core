@@ -840,6 +840,7 @@ public class ViewConfig {
 		String url() default "";
 		String alias() default "FileUpload";
 		String type() default ".pdf,.png";
+		String metaData() default "";
 		ControlType controlType() default ControlType.FORMCONTROL;
 	}
 	

@@ -9,7 +9,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "mavenbuild": "ng build"
+    "mavenbuild": "ng build --prod",
+    "coverage": "ng test --watch=false --code-coverage"
   },
   "private": true,
   "dependencies": {
@@ -25,7 +26,7 @@
     "@angular/router": "^5.2.0",
     "@angular/upgrade": "^5.2.0",
     "@ng-bootstrap/ng-bootstrap": "^1.0.0-beta.6",
-    "angular-in-memory-web-api": "^0.5.1",
+    "angular-webstorage-service": "^1.0.2",
     "bootstrap": "^4.0.0-beta",
     "classlist.js": "^1.1.20150312",
     "core-js": "^2.4.1",
@@ -51,6 +52,7 @@
     "codelyzer": "^4.0.1",
     "jasmine-core": "~2.8.0",
     "jasmine-spec-reporter": "~4.2.1",
+    "angular-in-memory-web-api": "^0.5.1",
     "karma": "~2.0.0",
     "karma-chrome-launcher": "~2.2.0",
     "karma-coverage-istanbul-reporter": "^1.2.1",

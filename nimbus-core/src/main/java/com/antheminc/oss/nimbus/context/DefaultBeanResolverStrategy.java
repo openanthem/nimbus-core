@@ -25,7 +25,6 @@ import org.springframework.core.env.Environment;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
-import com.antheminc.oss.nimbus.support.JustLogit;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -47,9 +46,6 @@ public class DefaultBeanResolverStrategy implements BeanResolverStrategy {
 	private final ApplicationContext applicationContext;
 	
 	public DefaultBeanResolverStrategy(ApplicationContext applicationContext) {
-		/* To ensure JustLogit is available in the spring context for all the beans, 
-		 * provided all the framework beans use DefaultBeanResolverStrategy for resolving dependent beans */
-		applicationContext.getBean(JustLogit.class);
 		this.applicationContext = applicationContext;
 	}
 	

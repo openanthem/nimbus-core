@@ -21,8 +21,8 @@ import java.util.Map;
 
 import com.antheminc.oss.nimbus.domain.EventHandler;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
-import com.antheminc.oss.nimbus.domain.defn.event.CommandEvent.OnRootExecute;
-import com.antheminc.oss.nimbus.domain.defn.event.CommandEvent.OnSelfExecute;
+import com.antheminc.oss.nimbus.domain.defn.event.CommandEvent.OnRootCommandExecute;
+import com.antheminc.oss.nimbus.domain.defn.event.CommandEvent.OnSelfCommandExecute;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ExecutionModel;
 import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
 
@@ -32,20 +32,20 @@ import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
  */
 public final class CommandEventHandlers {
 
-	@EventHandler(OnRootExecute.class)
-	public interface OnRootExecuteHandler<A extends Annotation> {
+	@EventHandler(OnRootCommandExecute.class)
+	public interface OnRootCommandExecuteHandler<A extends Annotation> {
 		
-		public void handleOnStart(A configuredAnnotation, Command cmd);
+		public void handleOnRootStart(A configuredAnnotation, Command cmd);
 		
-		public void handleOnStop(A configuredAnnotation, Command cmd, Map<ExecutionModel<?>, List<ParamEvent>> aggregatedEvents);	
+		public void handleOnRootStop(A configuredAnnotation, Command cmd, Map<ExecutionModel<?>, List<ParamEvent>> aggregatedEvents);	
 	}
 	
 	
-	@EventHandler(OnSelfExecute.class)
-	public interface OnSelfExecuteHandler<A extends Annotation> {
+	@EventHandler(OnSelfCommandExecute.class)
+	public interface OnSelfCommandExecuteHandler<A extends Annotation> {
 		
-		public void handleOnStart(A configuredAnnotation, Command cmd);
+		public void handleOnSelfStart(A configuredAnnotation, Command cmd);
 		
-		public void handleOnStop(A configuredAnnotation, Command cmd, Map<ExecutionModel<?>, List<ParamEvent>> aggregatedEvents);	
+		public void handleOnSelfStop(A configuredAnnotation, Command cmd, Map<ExecutionModel<?>, List<ParamEvent>> aggregatedEvents);	
 	} 
 }

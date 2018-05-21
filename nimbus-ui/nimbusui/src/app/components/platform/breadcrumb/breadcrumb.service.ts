@@ -16,11 +16,12 @@
  */
 'use strict';
 
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { ActivatedRoute, Router, Resolve, RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
 import { ServiceConstants } from './../../../services/service.constants';
 import { PageService } from './../../../services/page.service';
 import { Breadcrumb } from '../../../model/breadcrumb.model';
+import { CUSTOM_STORAGE, SessionStoreService } from './../../../services/session.store';
 
 /**
  * \@author Tony.Lopez
@@ -33,11 +34,10 @@ import { Breadcrumb } from '../../../model/breadcrumb.model';
 @Injectable()
 export class BreadcrumbService {
 
-    private _breadcrumbs: any;
-    private _homePageId: string = '';
+    private static BREADCRUMBKEY: string = 'breadcrumbs';
+    //private _homePageId: string = '';
 
-    constructor(private _pageService: PageService) {
-        
+    constructor(private _pageService: PageService, @Inject(CUSTOM_STORAGE) private sessionstore: SessionStoreService) {
     }
 
     public addCrumb(pageId: string, label: string, path: string) : Breadcrumb {
@@ -52,45 +52,62 @@ export class BreadcrumbService {
 
     public push(pageId: string, label: string, path: string): boolean {
         /** Push the first crumb as home crumb */
-        if (this._breadcrumbs == undefined) {
-            this._breadcrumbs = {};
-            this._homePageId = pageId;
-            this._breadcrumbs[pageId] = this.addCrumb(pageId, label, path);
+        let bCrumbs = this.sessionstore.get(BreadcrumbService.BREADCRUMBKEY);
+        if (bCrumbs == undefined) {
+            let breadCrumbs: any = {};
+            breadCrumbs['homePage'] = pageId;
+            let crumbs: any = {};
+            breadCrumbs['crumbs'] = crumbs;
+            crumbs[pageId] = this.addCrumb(pageId, label, path);
+            this.sessionstore.set(BreadcrumbService.BREADCRUMBKEY, breadCrumbs);
         } else { // Place the crumb in the right place
-            let tempBreadCrumbs = {};
+            let tempCrumbs = {};
             // Does the crumb already exist?
-            if (this._breadcrumbs[pageId]) {
+            if (bCrumbs.crumbs && bCrumbs.crumbs[pageId]) {
                 // Add up to this crumb and remove rest
-                for (let p in this._breadcrumbs) {
-                    let crumb = this._breadcrumbs[p];
-                    tempBreadCrumbs[crumb['id']] = crumb; 
+                for (let p in bCrumbs.crumbs) {
+                    let crumb = bCrumbs.crumbs[p];
+                    tempCrumbs[crumb['id']] = crumb; 
                     if (crumb['id'] == pageId) {
                         break;
                     }
                 }
-                this._breadcrumbs = tempBreadCrumbs;
+                bCrumbs['crumbs'] = tempCrumbs;
             } else {
                 // Add this crumb to the end;
-                this._breadcrumbs[pageId] = this.addCrumb(pageId, label, path);
+                bCrumbs.crumbs[pageId] = this.addCrumb(pageId, label, path);
             }
+            this.sessionstore.set(BreadcrumbService.BREADCRUMBKEY, bCrumbs);
         }
         return false;
     }
 
     public getAll(): Breadcrumb[] {
-        return this._breadcrumbs;
+        let bCrumbs = this.sessionstore.get(BreadcrumbService.BREADCRUMBKEY);
+        if (bCrumbs) {
+            return bCrumbs.crumbs;
+        } else {
+            return undefined;
+        }
     }
 
     public getByPageId(pageId: string): Breadcrumb {
-        return this._breadcrumbs[pageId];
+        let bCrumbs = this.sessionstore.get(BreadcrumbService.BREADCRUMBKEY);
+        if (bCrumbs && bCrumbs.crumbs) {
+            return bCrumbs.crumbs[pageId];
+        } else {
+            return undefined;
+        }
     }
 
     /** Return home route url */
     public getHomeBreadcrumb(): Breadcrumb {
-        if (this._breadcrumbs) {
-            return this._breadcrumbs[this._homePageId];
+        let bCrumbs = this.sessionstore.get(BreadcrumbService.BREADCRUMBKEY);
+        if (bCrumbs && bCrumbs.crumbs) {
+            return bCrumbs.crumbs[bCrumbs.homePage];
+        } else {
+            return undefined;
         }
-        return undefined;
     }
 
     /**
@@ -98,8 +115,12 @@ export class BreadcrumbService {
      * @param route the route to check
      */
     public isHomeRoute(route: ActivatedRoute) {
-        // TODO - Obtain this value from configuration.
-        return route.firstChild.snapshot.params['pageId'] === this._homePageId;
+        let bCrumbs = this.sessionstore.get(BreadcrumbService.BREADCRUMBKEY);
+        if (bCrumbs && bCrumbs.crumbs) {
+            return route.firstChild.snapshot.params['pageId'] === bCrumbs.homePage;
+        } else {
+            return false;
+        }
     }
 
 }
