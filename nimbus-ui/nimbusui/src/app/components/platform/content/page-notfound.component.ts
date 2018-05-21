@@ -17,6 +17,7 @@
 'use strict';
 
 import { Component } from '@angular/core';
+import { LoggerService } from '../../../services/logger.service';
 
 /**
  * \@author Dinakar.Meda
@@ -36,10 +37,12 @@ import { Component } from '@angular/core';
 
 export class PageNotfoundComponent {
 
-    constructor() {
+    constructor(
+        private _logger: LoggerService) {
     }
 
     ngOnInit() {
+        this._logger.info('page notfound component is intialized');
     }
 
 }

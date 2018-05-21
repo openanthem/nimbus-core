@@ -22,6 +22,7 @@ import { WebContentSvc } from './../../../services/content-management.service';
 import { PageService } from '../../../services/page.service';
 import { Param } from '../../../shared/param-state';
 import { LabelConfig } from './../../../shared/param-config';
+import { LoggerService } from '../../../services/logger.service';
 
 /**
  * \@author Dinakar.Meda
@@ -37,7 +38,8 @@ export class PageResolver implements Resolve<Param> {
         private _pageSvc: PageService, 
         private _router: Router,
         private _breadcrumbService: BreadcrumbService,
-        private _wcs: WebContentSvc
+        private _wcs: WebContentSvc,
+        private _logger: LoggerService
     ) {}
 
     resolve(route: ActivatedRouteSnapshot, rustate: RouterStateSnapshot): Promise<Param> {
@@ -53,12 +55,17 @@ export class PageResolver implements Resolve<Param> {
                 }
                 // Push the home breadcrumb into memory under the domain name.
                 this._breadcrumbService.push(page.config.code, labelText, route['_routerState'].url);
-                
+                this._logger.debug('page resolver service: resolve() is returning the page ' + this._pageSvc.customStringify(page));
                 return page;
             } else { // page not found
+                this._logger.debug('page resolver service: resolve() is navigating to ' + flow);
                 this._router.navigate([`/h/${flow}`]);
                 return null;
             }
         });
+    }
+
+    ngOnInit() {
+        this._logger.info('page resolver service is initialized');
     }
 }

@@ -20,6 +20,7 @@ import { Component, ViewEncapsulation, Inject } from '@angular/core';
 import { HostListener } from '@angular/core/src/metadata/directives';
 import { WebContentSvc } from './services/content-management.service';
 import { ServiceConstants } from './services/service.constants';
+import { LoggerService } from './services/logger.service';
 import { DOCUMENT } from '@angular/platform-browser';
 import * as moment from 'moment';
 
@@ -39,15 +40,24 @@ import * as moment from 'moment';
 
 export class AppComponent {
 
-    constructor(@Inject(DOCUMENT) private document: any) {
+    constructor(@Inject(DOCUMENT) private document: any, private _logger: LoggerService) {
     }
 
     ngOnInit() {
+        this._logger.info('app component is initialized');
         ServiceConstants.STOPGAP_APP_HOST = this.document.location.hostname;
         ServiceConstants.STOPGAP_APP_PORT = this.document.location.port;
         ServiceConstants.APP_CONTEXT = this.document.location.pathname.split('/').splice(1, 1);
         ServiceConstants.LOCALE_LANGUAGE = "en-US"; //TODO This locale should be read dynamically. Currently defaulting to en-US
         ServiceConstants.STOPGAP_APP_PROTOCOL = this.document.location.protocol;
+        const docObj = {
+            message: 'all values are updated from document',
+            host: ServiceConstants.STOPGAP_APP_HOST,
+            port: ServiceConstants.STOPGAP_APP_PORT,
+            appContext: ServiceConstants.APP_CONTEXT,
+            appProtocol: ServiceConstants.STOPGAP_APP_PROTOCOL
+        };
+        this._logger.debug('app component: ' + JSON.stringify(docObj));
     }
 
 }

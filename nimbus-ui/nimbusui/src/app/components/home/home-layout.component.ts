@@ -30,6 +30,7 @@ import { PageService } from '../../services/page.service';
 import { ServiceConstants } from '../../services/service.constants';
 import {FooterGlobal} from '../platform/footer/footer-global.component'
 import { MenuItem } from 'primeng/primeng';
+import { LoggerService } from '../../services/logger.service';
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 
@@ -68,11 +69,13 @@ export class HomeLayoutCmp {
         private _stompService: STOMPService,
         private _pageSvc: PageService,
         private _route: ActivatedRoute,
-        private _router: Router) {
+        private _router: Router,
+        private _logger: LoggerService) {
 
     }
 
     logout() {
+        this._logger.info('home layout component: logout() method is called');
         this._authenticationService.logout().subscribe(success => {
             window.location.href=`${ServiceConstants.CLIENT_BASE_URL}logout`;
         });
@@ -100,7 +103,13 @@ export class HomeLayoutCmp {
     /** Initialize the WebSocket */
     initWebSocket() {
         this._stompService.configure();
-        this._stompService.try_connect().then(this.on_connect);
+        this._stompService.try_connect().then(this.on_connect).catch((err) => {
+            const errObj = {
+                message: 'error in intializing the webSocket',
+                error: err
+            };
+            this._logger.error(JSON.stringify(errObj));
+          });
     }
 
     /** Cleanup on Destroy of Component */
@@ -138,6 +147,7 @@ export class HomeLayoutCmp {
     }
 
     ngOnInit() {
+        this._logger.info('home layout component is initialized');
         // initialize
         this.themes.push({link:'styles/vendor/anthem.blue.theme.css',label:'Blue Theme'});
         this.themes.push({link:'styles/vendor/anthem.black.theme.css',label:'Black Theme'});
@@ -145,6 +155,7 @@ export class HomeLayoutCmp {
         this.layoutSvc.layout$.subscribe(
             data => {
                 let layout: Layout = data;
+                this._logger.debug('home layout component received layout from layout$ subject' + this._pageSvc.customStringify(layout));
                 if(layout != null ) {
                     if(layout.topBar != null && layout.topBar.branding != null) {
                         this.branding = layout.topBar.branding;

@@ -64,14 +64,11 @@ export class TooltipComponent {
      * appear on the right (west) of the component. However, if a component is on the far right of the screen, the bubble will open on the left (east).
     */ 
     toggleOpen(event: MouseEvent): void {
-        console.log('tooltip is working...123');
         event.preventDefault();
 
         if (this._windowRef.window.innerWidth - event.clientX <= 250) {
-            console.log('tooltip is working...WEST');
             this.widgetPosition = 'west';
         } else {
-            console.log('tooltip is working...EAST');
             this.widgetPosition = 'east';
         }
         //retrieve all open bubbles in the document and close them
@@ -92,6 +89,5 @@ export class TooltipComponent {
     }
 
     ngOnInit() {
-        console.log('tooltip is working...1111');
     }
 }

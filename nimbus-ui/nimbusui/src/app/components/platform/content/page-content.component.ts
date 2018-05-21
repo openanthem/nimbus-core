@@ -23,6 +23,8 @@ import { Param } from '../../../shared/param-state';
 import { BaseElement } from '../base-element.component';
 import { WebContentSvc } from './../../../services/content-management.service';
 import { PageService } from '../../../services/page.service';
+import { LoggerService } from '../../../services/logger.service';
+
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 
@@ -46,7 +48,8 @@ export class PageContent extends BaseElement{
         private _wcs : WebContentSvc, 
         private pageSvc: PageService,
         private cd: ChangeDetectorRef,
-        private ls: LocationStrategy
+        private ls: LocationStrategy,
+        private _logger: LoggerService
     ) {
         super(_wcs);
         this.ls.onPopState(() => {
@@ -66,6 +69,7 @@ export class PageContent extends BaseElement{
     }
 
     ngOnInit() {
+        this._logger.info('page content component is intilaized');
         this.route.data.subscribe((data: { page: Param }) => {
             let page : Param = data.page;
             this.element = page;
@@ -84,6 +88,7 @@ export class PageContent extends BaseElement{
     ngAfterViewInit() {
         this.pageSvc.errorMessageUpdate$.subscribe((err: ExecuteException) => {
             if (err.message) {
+                this._logger.debug('page content component recieved error message ' + err.message + 'from pageSvc.errorMessageUpdate$ subject');
                 this.errMsgArray.push({severity: 'error',  summary: 'Error Message',  detail: err.message});
             }
             this.cd.markForCheck();
