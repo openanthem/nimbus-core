@@ -71,4 +71,17 @@ export class ServiceConstants {
     public static get BLACK_THEME_URL(): string { return 'http://'+this.hostName+':'+this.STATIC_CONTENT_PORT+'/styles/anthem/anthem.black.theme.css'; }
     public static get IMAGES_URL(): string { return this.STOPGAP_APP_HOST_URL+this.STOPGAP_APP_PORT+'/'+this.APP_CONTEXT; }
 
+    // public static get LOG_APPENDER_OPTIONS() : any { 
+    //     var obj;
+    //     obj['bufferSize'] = '20';
+    //     obj['url'] = 'http://localhost:8000/log';
+    //     obj['level'] = 1000;
+    //     obj['sendWithBufferLevel'] = 6000;
+    //     return obj
+    // }
+    // public static get DEFAULT_ENDPOINT() : any { 
+    //     var obj;
+    //     obj['defaultAjaxUrl'] = 'htpp://localhost:8000/log';
+    //     return obj;
+    // }
 }

@@ -29,12 +29,12 @@ export class LogEntry  {
 
     message: string;
     time: any;
-    level: string;
+    level: number;
 
-    constructor(message:string, time: any, level: LogLevel) {
+    constructor(message:string, time: any, level: number) {
         this.message = message;
         this.time = time;
-        this.level = level.toString();
+        this.level = level;
     }
 
 }

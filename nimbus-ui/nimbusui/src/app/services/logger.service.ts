@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 'use strict';
-import { LogLevel } from './../shared/logLevel';
-import { LogEntry } from './../shared/logEntry';
+import { JL } from 'jsnlog';
+import { Inject } from '@angular/core';
+
 /**
  * \@author Sandeep.Mantha
  * \@whatItDoes 
@@ -26,30 +27,49 @@ import { LogEntry } from './../shared/logEntry';
  */
 export class LoggerService {
 
+    JL: JL.JSNLog;
+
+    constructor(@Inject('JSNLOG') JL: JL.JSNLog, private sessionStore){
+        this.JL = JL;
+        JL.setOptions({"defaultAjaxUrl" : "htpp://localhost:8000/log"})
+                var appender = JL.createAjaxAppender("custom appender");
+                appender.setOptions({
+                    "bufferSize": 20,
+                    "url" :  "http://localhost:8000/log",
+                    "storeInBufferLevel": 1000,
+                    "level": 3000,
+                    "sendWithBufferLevel": 6000
+                });
+                JL().setOptions({
+                    "appenders": [appender]
+                });
+    }
+
+    beforeSendOverride(xhr: XMLHttpRequest, json: any, sessionId: string) {
+       json.r = 
+    };
+
     public info(message:string) {
-        this.write(message,LogLevel.info);
+        this.write(message,this.JL.getInfoLevel());
     }
 
     public warn(message:string) {
-        this.write(message,LogLevel.warn);
+        this.write(message,this.JL.getWarnLevel());
     }
 
     public error(message:string) {
-        this.write(message,LogLevel.error)
+        this.write(message,this.JL.getErrorLevel())
     }
 
     public debug(message:string) {
-        this.write(message,LogLevel.debug)
+        this.write(message,this.JL.getDebugLevel())
     }
 
     public trace(message:string) {
-        this.write(message,LogLevel.trace)
+        this.write(message,this.JL.getTraceLevel())
     }
 
-    public write(logMessage: string, logLevel: LogLevel) {
-
-        let logEntry = new LogEntry(logMessage,new Date(), logLevel);
-        console.log(logEntry.message + logEntry.time + logEntry.level);
+    public write(logMessage: string, logLevel: number) {
+        this.JL().log(logLevel,logMessage);
     }
-
 }
