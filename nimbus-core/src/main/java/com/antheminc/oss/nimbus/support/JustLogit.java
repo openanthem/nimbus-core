@@ -17,7 +17,6 @@ package com.antheminc.oss.nimbus.support;
 
 import java.util.function.Supplier;
 
-import org.aspectj.lang.ProceedingJoinPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,15 +85,10 @@ public class JustLogit {
 			log.info(nuetralizeLog(msg));
 	}
 	
-	public void info(Supplier<String> msg, final ProceedingJoinPoint proceedingJoinPoint) {
+	public void info(LogTemplate logTemplate) {
 		if(log.isInfoEnabled()) {
-			String args = "";
-			if(proceedingJoinPoint.getArgs().length > 0) {
-				for (Object obj : proceedingJoinPoint.getArgs()) {
-					args = args + obj.toString();
-				}
-			} 
-			log.info("Error in [SessionId] "+this.sessionProvider.getSessionId() + "" + ""  + nuetralizeLog(msg) + "args are " + args);
+			 
+			log.info(logTemplate.getMessage() + " args are " + logTemplate.getArgs());
 		}
 			
 	}
