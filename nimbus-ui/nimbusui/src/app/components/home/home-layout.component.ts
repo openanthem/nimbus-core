@@ -155,7 +155,7 @@ export class HomeLayoutCmp {
         this.layoutSvc.layout$.subscribe(
             data => {
                 let layout: Layout = data;
-                this._logger.debug('home layout component received layout from layout$ subject' + this._pageSvc.customStringify(layout));
+                this._logger.debug('home layout component received layout from layout$ subject');
                 if(layout != null ) {
                     if(layout.topBar != null && layout.topBar.branding != null) {
                         this.branding = layout.topBar.branding;

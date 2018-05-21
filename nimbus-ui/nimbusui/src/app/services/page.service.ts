@@ -772,19 +772,4 @@ export class PageService {
                 this.loaderService.hide();
         }
 
-        customStringify(v) {
-                const cache = new Map();
-                return JSON.stringify(v, (key, value) => {
-                  if (typeof value === 'object' && value !== null) {
-                    if (cache.get(value)) {
-                      // Circular reference found, discard key
-                      return;
-                    }
-                    // Store value in our map
-                    cache.set(value, true);
-                  }
-                  return value;
-                });
-              };
-
 }

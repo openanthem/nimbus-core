@@ -52,7 +52,7 @@ export class DomainFlowCmp {
                 this.leftMenuItems = layout.leftNavBar;
                 this.subHeaders = layout.topBar.subHeaders;
                 this.topMenuItems = layout.topBar.headerMenus;
-                this._logger.debug('domain flow component received layout from layout$ subject' + this._pageSvc.customStringify(layout));
+                this._logger.debug('domain flow component received layout from layout$ subject');
                 if(this.hasLayout && this.subHeaders != null && this.subHeaders !== undefined) {
                     document.getElementById('main-content').classList.add('withInfoBar');
                 }
@@ -62,7 +62,7 @@ export class DomainFlowCmp {
 
         this._pageSvc.config$.subscribe(result => {
             let page: Page = result;
-            this._logger.debug('domain flow component received page from config$ subject' + this._pageSvc.customStringify(page));
+            this._logger.debug('domain flow component received page from config$ subject');
             if (page && page.pageConfig && page.pageConfig.config) {
                 // Navigate to page with pageId
                 let toPage = '/h/' + page.flow + '/' + page.pageConfig.config.code;

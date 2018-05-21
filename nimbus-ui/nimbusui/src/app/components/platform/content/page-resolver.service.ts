@@ -55,7 +55,7 @@ export class PageResolver implements Resolve<Param> {
                 }
                 // Push the home breadcrumb into memory under the domain name.
                 this._breadcrumbService.push(page.config.code, labelText, route['_routerState'].url);
-                this._logger.debug('page resolver service: resolve() is returning the page ' + this._pageSvc.customStringify(page));
+                this._logger.debug('page resolver service: resolve() is returning the page ');
                 return page;
             } else { // page not found
                 this._logger.debug('page resolver service: resolve() is navigating to ' + flow);
