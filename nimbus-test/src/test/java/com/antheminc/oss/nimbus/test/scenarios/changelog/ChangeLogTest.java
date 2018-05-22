@@ -27,13 +27,15 @@ import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ChangeLogTest extends AbstractFrameworkIntegrationTests {
 
-	private static final String CL_VIEW_A = PLATFORM_ROOT + "/samplechangelogview_a";
+	private static final String CL_VIEW_A = "samplechangelogview_a";
+	private static final String CL_VIEW_A_ROOT = PLATFORM_ROOT + "/" + CL_VIEW_A;
 	
 	private static Long CL_VIEW_A_ID;
 	
+	
 	@Test
 	public void t00_create_entity_A() throws Exception {
-		HttpServletRequest httpReq = MockHttpRequestBuilder.withUri(CL_VIEW_A)
+		HttpServletRequest httpReq = MockHttpRequestBuilder.withUri(CL_VIEW_A_ROOT)
 			.addAction(Action._new)
 			.getMock();
 		
@@ -52,7 +54,26 @@ public class ChangeLogTest extends AbstractFrameworkIntegrationTests {
 	}
 	
 	@Test
-	public void t01_update_EventNotifyOnNestedParam_entity_A() throws Exception {
+	public void t01_create_entity_B_via_config_from_A() throws Exception {
+		HttpServletRequest httpReq = MockHttpRequestBuilder.withUri(CL_VIEW_A_ROOT)
+				.addRefId(CL_VIEW_A_ID)
+				.addNested("/action_createEntityB")
+				.addAction(Action._get)
+				.getMock();
+		
+		Object controllerResp = controller.handleGet(httpReq, null);
+		assertThat(controllerResp).isNotNull();
+		
+		ChangeLogEntry cmdEntry = mongo.findOne(new Query(Criteria.where("url").regex("action_createEntityB")), ChangeLogEntry.class, "changelog");
+		assertThat(cmdEntry).isNotNull();
+		
+		ChangeLogEntry valueEntry_NestedEntityB = mongo.findOne(new Query(Criteria.where("value").is("Test_Nested_Status_B")), ChangeLogEntry.class, "changelog");
+		assertThat(valueEntry_NestedEntityB).isNull();
+		
+	}
+	
+	@Test
+	public void t02_update_EventNotifyOnNestedParam_entity_A() throws Exception {
 		HttpServletRequest httpReq = MockHttpRequestBuilder.withUri(PLATFORM_ROOT)
 				.addNested("/event/notify")
 				.getMock();
@@ -77,8 +98,8 @@ public class ChangeLogTest extends AbstractFrameworkIntegrationTests {
 	}
 	
 	@Test
-	public void t02_execute_ParamWithConfigs_entity_A() throws Exception {
-		HttpServletRequest httpReq = MockHttpRequestBuilder.withUri(CL_VIEW_A)
+	public void t03_execute_ParamWithConfigs_entity_A() throws Exception {
+		HttpServletRequest httpReq = MockHttpRequestBuilder.withUri(CL_VIEW_A_ROOT)
 				.addRefId(CL_VIEW_A_ID)
 				.addNested("/vpSampleCoreChangeLog/vtSampleCoreChangeLog/vsSampleCoreChangeLog/vfSampleCoreChangeLog/button")
 				.addAction(Action._get)
@@ -98,9 +119,6 @@ public class ChangeLogTest extends AbstractFrameworkIntegrationTests {
 		
 		ChangeLogEntry valueEntry_NestedEntityA = mongo.findOne(new Query(Criteria.where("value").is("Test_Nested_Status")), ChangeLogEntry.class, "changelog");
 		assertThat(valueEntry_NestedEntityA).isNotNull();
-		
-		ChangeLogEntry valueEntry_EntityB = mongo.findOne(new Query(Criteria.where("value").is("Test_Status_B")), ChangeLogEntry.class, "changelog");
-		assertThat(valueEntry_EntityB).isNotNull(); 
 		
 	}
 	

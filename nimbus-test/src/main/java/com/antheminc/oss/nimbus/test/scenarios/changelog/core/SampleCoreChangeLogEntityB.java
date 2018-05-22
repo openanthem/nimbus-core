@@ -26,11 +26,13 @@ public class SampleCoreChangeLogEntityB extends IdLong {
 	
 	private String status;
 	
+	private SampleCoreChangLogEntityNestedB sampleCoreChangLogEntityNestedB;
+	
 	
 	
 	@Model
 	@Getter @Setter
-	public class SampleCoreChangLogEntityNested {
+	public static class SampleCoreChangLogEntityNestedB {
 		
 		private String nestedStatus;
 		
