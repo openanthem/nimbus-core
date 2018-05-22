@@ -221,7 +221,7 @@ ng-component{
         text-overflow: ellipsis;
         white-space: nowrap;
         width: 98%;
-        height: 1.3em;
+        // height: 1.3em;
         display:block;
     }
 }
@@ -368,5 +368,9 @@ margin-right: 10px;
 }
 .ui-table .ui-table-tbody > tr.ui-state-highlight {
     background: inherit;
+    color: inherit;
+}
+.ui-table .ui-table-tbody>tr:nth-child(even).ui-state-highlight {
+    background-color: inherit;
     color: inherit;
 }

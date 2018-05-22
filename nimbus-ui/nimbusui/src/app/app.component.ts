@@ -17,7 +17,7 @@
  */
 'use strict';
 import { Component, ViewEncapsulation, Inject } from '@angular/core';
-import { HostListener } from '@angular/core/src/metadata/directives';
+import { HostListener } from '@angular/core';
 import { WebContentSvc } from './services/content-management.service';
 import { ServiceConstants } from './services/service.constants';
 import { DOCUMENT } from '@angular/platform-browser';
@@ -38,8 +38,20 @@ import * as moment from 'moment';
 })
 
 export class AppComponent {
+    navIsFixed: boolean;
 
     constructor(@Inject(DOCUMENT) private document: any) {
+    }
+
+    @HostListener("window:scroll", [])
+    onWindowScroll() {
+        if (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop > 100) {
+            this.navIsFixed = true;
+        } else if (this.navIsFixed && window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop < 10) { this.navIsFixed = false; } } scrollToTop() { (function smoothscroll() { var currentScroll = document.documentElement.scrollTop || document.body.scrollTop; if (currentScroll > 0) {
+                //window.requestAnimationFrame(smoothscroll);
+                window.scrollTo(0, 0);
+            }
+        })();
     }
 
     ngOnInit() {
