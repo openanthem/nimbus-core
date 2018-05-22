@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 
 import javax.annotation.PostConstruct;
@@ -64,6 +63,7 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.InvalidStateException;
 import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
 import com.antheminc.oss.nimbus.domain.model.state.StateEventListener;
+import com.antheminc.oss.nimbus.domain.model.state.extension.ChangeLogCommandEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.internal.BaseStateEventListener;
 
 /**
@@ -83,6 +83,8 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 	
 	private DomainConfigBuilder domainConfigBuilder;
 	
+	private ChangeLogCommandEventHandler cmdHandler; 
+	
 	private static final ThreadLocal<String> cmdScopeInThread = new ThreadLocal<>();
 	
 	public DefaultCommandExecutorGateway(BeanResolverStrategy beanResolver) {
@@ -97,6 +99,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		this.pathVariableResolver = getBeanResolver().get(CommandPathVariableResolver.class);
 		this.eCtxPathVariableResolver = getBeanResolver().get(ExecutionContextPathVariableResolver.class);
 		this.domainConfigBuilder = getBeanResolver().get(DomainConfigBuilder.class);
+		this.cmdHandler = getBeanResolver().get(ChangeLogCommandEventHandler.class);
 	}
 
 	
@@ -123,8 +126,12 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		try {
 			MultiOutput mOut = executeInternal(eCtx, cmdMsg);
 			
-			if(lockId!=null)
+			if(lockId!=null) {
+				//TODO: Interim solution
+				cmdHandler.handleOnRootStopEvents(cmdMsg.getCommand(), mOut);
+
 				return createFlattenedOutput(mOut);
+			}
 			
 			return mOut;
 		} finally {
