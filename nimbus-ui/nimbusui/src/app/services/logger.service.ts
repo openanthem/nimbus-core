@@ -31,7 +31,6 @@ import { CUSTOM_STORAGE } from './session.store';
 export class LoggerService {
 
     JL: JL.JSNLog;
-    optionsSet: boolean = false;
 
     constructor(@Inject('JSNLOG') JL: JL.JSNLog,  @Inject(CUSTOM_STORAGE) sessionStorage: SessionStoreService ){
         this.JL = JL;
@@ -52,9 +51,6 @@ export class LoggerService {
         var appender = JL.createAjaxAppender("custom appender");
         appender.setOptions(options);
         JL().setOptions({"appenders": [appender]});
-        if(options != null )
-         this.optionsSet = true;
-       
         
     }
 
@@ -79,8 +75,6 @@ export class LoggerService {
     }
 
     public write(logMessage: string, logLevel: number) {
-        if(this.optionsSet) {
-            this.JL().log(logLevel,logMessage);
-        }
+        this.JL().log(logLevel,logMessage);
     }
 }
