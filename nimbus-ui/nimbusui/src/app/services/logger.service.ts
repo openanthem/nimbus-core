@@ -31,24 +31,30 @@ import { CUSTOM_STORAGE } from './session.store';
 export class LoggerService {
 
     JL: JL.JSNLog;
+    optionsSet: boolean = false;
 
-    constructor(@Inject('JSNLOG') JL: JL.JSNLog,  @Inject(CUSTOM_STORAGE) sessionStorage: SessionStoreService){
+    constructor(@Inject('JSNLOG') JL: JL.JSNLog,  @Inject(CUSTOM_STORAGE) sessionStorage: SessionStoreService ){
         this.JL = JL;
         var beforeSendOverride = function (xhr: XMLHttpRequest, json: any) {
-            json.r = sessionStorage.get('sessionId');
+            json.r = sessionStorage.get(ServiceConstants.SESSIONKEY);
+            json.a = window.navigator.appVersion;
+            json.v = window.navigator.vendor;
         };
         var options = {
             "bufferSize": 20,
             "url" :  "http://localhost:8000/log",
             "storeInBufferLevel": 1000,
             "level": 3000,
-            "beforeSend": beforeSendOverride,
             "sendWithBufferLevel": 6000
         }
-        JL.setOptions({"defaultAjaxUrl" : "http://localhost:8000/log"})
+        //var options = ServiceConstants.LOG_OPTIONS;
+        options['beforeSend'] = beforeSendOverride;
         var appender = JL.createAjaxAppender("custom appender");
         appender.setOptions(options);
         JL().setOptions({"appenders": [appender]});
+        if(options != null )
+         this.optionsSet = true;
+       
         
     }
 
@@ -73,6 +79,8 @@ export class LoggerService {
     }
 
     public write(logMessage: string, logLevel: number) {
-        this.JL().log(logLevel,logMessage);
+        if(this.optionsSet) {
+            this.JL().log(logLevel,logMessage);
+        }
     }
 }

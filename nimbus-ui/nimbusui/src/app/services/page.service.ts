@@ -86,7 +86,7 @@ export class PageService {
         }
 
         logError(err) {
-                console.error('ERROR: Failure making server call : ' + JSON.stringify(err));
+                this.logger.error('ERROR: Failure making server call : ' + JSON.stringify(err));
         }
 
         notifyErrorEvent(exec: ExecuteException) {
