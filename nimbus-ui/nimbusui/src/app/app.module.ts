@@ -115,8 +115,12 @@ import { CustomHttpClientInterceptor } from './services/httpclient-interceptor.s
 import { CustomBrowserXhr } from './custom.browserxhr';
 import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
+import { JL } from 'jsnlog';
+import { ErrorHandler } from '@angular/core';
+import { CustomErrorHandler } from './shared/custom.error.handler';
 import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
 import { SessionStoreService, CUSTOM_STORAGE } from './services/session.store';
+
 // Declarations
 import { LoginCmp } from './components/login/login.component';
 import { LandingPage } from './components/login/auth-landingpage';
@@ -186,8 +190,10 @@ import {DateTimeFormatPipe} from './pipes/date.pipe';
          { provide: HTTP_INTERCEPTORS, useClass: CustomHttpClientInterceptor, multi: true },
          { provide: LocationStrategy, useClass: HashLocationStrategy }, GridService,
          { provide: APP_BASE_HREF, useValue: ServiceConstants.APP_CONTEXT },
-            { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-            SessionStoreService,
+         { provide: 'JSNLOG', useValue: JL },
+         { provide: ErrorHandler, useClass: CustomErrorHandler },
+         { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+         SessionStoreService,
          AuthenticationService, BreadcrumbService, LoaderService, FileService, LayoutService, WindowRefService, LoggerService ],
     bootstrap: [ AppComponent ]
 })

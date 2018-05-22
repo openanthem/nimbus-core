@@ -32,6 +32,7 @@
     "core-js": "^2.4.1",
     "font-awesome": "^4.7.0",
     "jquery": "^3.2.1",
+    "jsnlog": "^2.26.2",
     "moment": "^2.20.1",
     "popper.js": "^1.12.9",
     "primeng": "^5.2.0",

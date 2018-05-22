@@ -20,6 +20,9 @@ import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
+import com.antheminc.oss.nimbus.domain.session.SessionProvider;
+
 /**
  * @author Soham Chakravarti
  *
@@ -27,9 +30,15 @@ import org.slf4j.LoggerFactory;
 public class JustLogit {
 
 	private final Logger log;
-
+	private SessionProvider sessionProvider = null;
+	
 	public JustLogit() {
 		this.log = LoggerFactory.getLogger(this.getClass());
+	}
+	
+	public JustLogit(Class<?> clazz, BeanResolverStrategy beanResolver) {
+		log = LoggerFactory.getLogger(clazz);
+		this.sessionProvider = beanResolver.get(SessionProvider.class);
 	}
 	
 	public JustLogit(Class<?> clazz) {
@@ -74,6 +83,14 @@ public class JustLogit {
 	public void info(Supplier<String> msg) {
 		if(log.isInfoEnabled()) 
 			log.info(nuetralizeLog(msg));
+	}
+	
+	public void info(LogTemplate logTemplate) {
+		if(log.isInfoEnabled()) {
+			 
+			log.info(logTemplate.getMessage() + " args are " + logTemplate.getArgs());
+		}
+			
 	}
 	
 	public void info(Supplier<String> msg, Throwable t) {

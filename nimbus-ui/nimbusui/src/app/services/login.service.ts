@@ -43,8 +43,7 @@ export class LoginSvc {
 	}
 
     logError(err) {
-        this.logger.error('Failure making server call : ' + JSON.stringify(err));
-		console.error('Failure making server call : ' + JSON.stringify(err));
+		this.logger.error('Failure making server call : ' + JSON.stringify(err));
 	}
 
     login(user: string, password: string, remember: boolean) {

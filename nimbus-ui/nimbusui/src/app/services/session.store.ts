@@ -1,3 +1,4 @@
+import { ServiceConstants } from './service.constants';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -31,17 +32,16 @@ export const CUSTOM_STORAGE = new InjectionToken<StorageService>('CUSTOM_STORAGE
  
 @Injectable()
 export class SessionStoreService {
-    private static SESSIONKEY: string = 'sessionId';
  
     constructor(@Inject(CUSTOM_STORAGE) private storage: StorageService) {
     }
 
     setSessionId(sessionId: string) {
-        let sessionIdInStore = this.storage.get(SessionStoreService.SESSIONKEY);
+        let sessionIdInStore = this.storage.get(ServiceConstants.SESSIONKEY);
         // New session, store the Session Id.
         if (sessionIdInStore === undefined || sessionIdInStore === null) {
             if (sessionId !== undefined) {
-                this.storage.set(SessionStoreService.SESSIONKEY, sessionId);
+                this.storage.set(ServiceConstants.SESSIONKEY, sessionId);
             }
         } else if (sessionIdInStore !== sessionId) { // Check for Stale session in store. Clean all.
             this.removeAll();   

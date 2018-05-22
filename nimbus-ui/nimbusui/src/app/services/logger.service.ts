@@ -15,8 +15,11 @@
  * limitations under the License.
  */
 'use strict';
-import { LogLevel } from './../shared/logLevel';
-import { LogEntry } from './../shared/logEntry';
+import { JL } from 'jsnlog';
+import { Inject, Injectable } from '@angular/core';
+import { ServiceConstants } from './service.constants';
+import { SessionStoreService } from './session.store';
+import { CUSTOM_STORAGE } from './session.store';
 /**
  * \@author Sandeep.Mantha
  * \@whatItDoes 
@@ -24,32 +27,54 @@ import { LogEntry } from './../shared/logEntry';
  * \@howToUse 
  * 
  */
+@Injectable()
 export class LoggerService {
 
+    JL: JL.JSNLog;
+
+    constructor(@Inject('JSNLOG') JL: JL.JSNLog,  @Inject(CUSTOM_STORAGE) sessionStorage: SessionStoreService ){
+        this.JL = JL;
+        var beforeSendOverride = function (xhr: XMLHttpRequest, json: any) {
+            json.r = sessionStorage.get(ServiceConstants.SESSIONKEY);
+            json.a = window.navigator.appVersion;
+            json.v = window.navigator.vendor;
+        };
+        var options = {
+            "bufferSize": 20,
+            "url" :  "http://localhost:8000/log",
+            "storeInBufferLevel": 1000,
+            "level": 3000,
+            "sendWithBufferLevel": 6000
+        }
+        //var options = ServiceConstants.LOG_OPTIONS;
+        options['beforeSend'] = beforeSendOverride;
+        var appender = JL.createAjaxAppender("custom appender");
+        appender.setOptions(options);
+        JL().setOptions({"appenders": [appender]});
+        
+    }
+
     public info(message:string) {
-        this.write(message,LogLevel.info);
+        this.write(message,this.JL.getInfoLevel());
     }
 
     public warn(message:string) {
-        this.write(message,LogLevel.warn);
+        this.write(message,this.JL.getWarnLevel());
     }
 
     public error(message:string) {
-        this.write(message,LogLevel.error)
+        this.write(message,this.JL.getErrorLevel())
     }
 
     public debug(message:string) {
-        this.write(message,LogLevel.debug)
+        this.write(message,this.JL.getDebugLevel())
     }
 
     public trace(message:string) {
-        this.write(message,LogLevel.trace)
+        this.write(message,this.JL.getTraceLevel())
     }
 
-    public write(logMessage: string, logLevel: LogLevel) {
-
-        let logEntry = new LogEntry(logMessage,new Date(), logLevel);
-        console.log(logEntry.message + logEntry.time + logEntry.level);
+    public write(logMessage: string, logLevel: number) {
+        this.JL().log(logLevel,logMessage);
     }
-
 }
