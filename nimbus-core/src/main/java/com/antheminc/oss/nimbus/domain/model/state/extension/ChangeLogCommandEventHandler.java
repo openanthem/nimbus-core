@@ -95,7 +95,7 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 		String currentUser = getCurrentUser();
 		
 		// log command : ALL
-		Handler.forCommand(cmd, rep, currentUser).addUrl().save();
+		//Handler.forCommand(cmd, rep, currentUser).addUrl().save();
 
 		if(aggregatedEvents==null || aggregatedEvents.isEmpty())
 			return;
@@ -122,7 +122,7 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 		String currentUser = getCurrentUser();
 		
 		// log command : only root command CRUD actions
-		if(cmd.isRootDomainOnly() && cmd.getAction().isCrud())
+		//if(cmd.isRootDomainOnly() && cmd.getAction().isCrud())
 			Handler.forCommand(cmd, rep, currentUser).addUrl().save();
 		
 	}
