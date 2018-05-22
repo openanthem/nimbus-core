@@ -81,12 +81,12 @@ public final class JavaBeanHandlerUtils {
 	private static final ConcurrentHashMap<CacheKey, ValueAccessor> LOCAL_CACHE = new ConcurrentHashMap<>();
 	
 	public static ValueAccessor constructValueAccessor(Class<?> beanClass, String fieldName) {
-		CacheKey key = new CacheKey(beanClass, fieldName);
-		if(LOCAL_CACHE.containsKey(key))
-			return LOCAL_CACHE.get(key);
+//		CacheKey key = new CacheKey(beanClass, fieldName);
+//		if(LOCAL_CACHE.containsKey(key))
+//			return LOCAL_CACHE.get(key);
 		
 		ValueAccessor va = constructValueAccessorInternal(beanClass, fieldName);
-		LOCAL_CACHE.put(key, va);
+		//LOCAL_CACHE.put(key, va);
 		
 		return va;
 	}
