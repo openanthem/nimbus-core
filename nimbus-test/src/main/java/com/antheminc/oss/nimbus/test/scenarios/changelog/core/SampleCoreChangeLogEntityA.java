@@ -5,7 +5,6 @@ package com.antheminc.oss.nimbus.test.scenarios.changelog.core;
 
 import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
-import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
 import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Database;
@@ -29,10 +28,9 @@ public class SampleCoreChangeLogEntityA extends IdLong {
 	
 	private String statusSetViaRule;
 	
-	private SampleCoreChangLogEntityNested sampleCoreChangLogEntityNested;
+	private String statusSetViaRuleStateless;
 	
-	@Config(url="/p/samplechangelogcore_b/_new?fn=_intiEntity&target=/.m/status&json=\"Test_Status_B\"&target=/.m/sampleCoreChangLogEntityNestedB/nestedStatus&json=\"Test_Nested_Status_B\"")
-	private String action_createEntityB;
+	private SampleCoreChangLogEntityNested sampleCoreChangLogEntityNested;
 	
 	@Model
 	@Getter @Setter
