@@ -15,6 +15,7 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state;
 
+import java.time.Instant;
 import java.util.Arrays;
 
 import org.apache.commons.codec.binary.StringUtils;
@@ -25,6 +26,7 @@ import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
 import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -40,6 +42,9 @@ public class ParamEvent {
 	private Action action;
 	
 	private Param<?> param;
+	
+	@JsonIgnore
+	private final Instant createdInstant = Instant.now();
 	
 	public boolean shouldAllow() {
 		final EntityState<?> p;
@@ -91,6 +96,9 @@ public class ParamEvent {
 			return false;
 		
 		ParamEvent other = ParamEvent.class.cast(obj);
+		if(this==other)
+			return true;
+		
 		return StringUtils.equals(this.getParam().getPath(), other.getParam().getPath());
 	}
 	
