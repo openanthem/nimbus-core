@@ -103,12 +103,12 @@ public final class JavaBeanHandlerUtils {
 			Method setter = makeAccessible(BeanUtils.findMethod(beanClass, setterName, f.getType()));
 			
 		
-			MethodHandles.Lookup lookup = MethodHandles.lookup();
+//			MethodHandles.Lookup lookup = MethodHandles.lookup();
+//			
+//			MethodHandle get = constructGetHandle(lookup, getter);
+//			MethodHandle set = constructSetHandle(lookup, setter);
 			
-			MethodHandle get = constructGetHandle(lookup, getter);
-			MethodHandle set = constructSetHandle(lookup, setter);
-			
-			return new ValueAccessor(getter, setter, get, set);
+			return new ValueAccessor(getter, setter);
 			
 		} catch (Throwable t) {
 			throw new InvalidStateException("POJO construct MethodHandles on beanClass: "+beanClass
