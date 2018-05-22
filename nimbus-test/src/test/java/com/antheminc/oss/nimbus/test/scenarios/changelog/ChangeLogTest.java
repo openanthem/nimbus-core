@@ -99,9 +99,6 @@ public class ChangeLogTest extends AbstractFrameworkIntegrationTests {
 		ChangeLogEntry valueEntry_NestedEntityA = mongo.findOne(new Query(Criteria.where("value").is("Test_Nested_Status")), ChangeLogEntry.class, "changelog");
 		assertThat(valueEntry_NestedEntityA).isNotNull();
 		
-		ChangeLogEntry valueEntry_EntityB = mongo.findOne(new Query(Criteria.where("value").is("Test_Status_B")), ChangeLogEntry.class, "changelog");
-		assertThat(valueEntry_EntityB).isNotNull(); 
-		
 	}
 	
 }
