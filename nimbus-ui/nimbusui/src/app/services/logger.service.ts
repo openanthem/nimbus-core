@@ -16,8 +16,10 @@
  */
 'use strict';
 import { JL } from 'jsnlog';
-import { Inject } from '@angular/core';
-
+import { Inject, Injectable } from '@angular/core';
+import { ServiceConstants } from './service.constants';
+import { SessionStoreService } from './session.store';
+import { CUSTOM_STORAGE } from './session.store';
 /**
  * \@author Sandeep.Mantha
  * \@whatItDoes 
@@ -25,29 +27,30 @@ import { Inject } from '@angular/core';
  * \@howToUse 
  * 
  */
+@Injectable()
 export class LoggerService {
 
     JL: JL.JSNLog;
 
-    constructor(@Inject('JSNLOG') JL: JL.JSNLog, private sessionStore){
+    constructor(@Inject('JSNLOG') JL: JL.JSNLog,  @Inject(CUSTOM_STORAGE) sessionStorage: SessionStoreService){
         this.JL = JL;
-        JL.setOptions({"defaultAjaxUrl" : "htpp://localhost:8000/log"})
-                var appender = JL.createAjaxAppender("custom appender");
-                appender.setOptions({
-                    "bufferSize": 20,
-                    "url" :  "http://localhost:8000/log",
-                    "storeInBufferLevel": 1000,
-                    "level": 3000,
-                    "sendWithBufferLevel": 6000
-                });
-                JL().setOptions({
-                    "appenders": [appender]
-                });
+        var beforeSendOverride = function (xhr: XMLHttpRequest, json: any) {
+            json.r = sessionStorage.get('sessionId');
+        };
+        var options = {
+            "bufferSize": 20,
+            "url" :  "http://localhost:8000/log",
+            "storeInBufferLevel": 1000,
+            "level": 3000,
+            "beforeSend": beforeSendOverride,
+            "sendWithBufferLevel": 6000
+        }
+        JL.setOptions({"defaultAjaxUrl" : "http://localhost:8000/log"})
+        var appender = JL.createAjaxAppender("custom appender");
+        appender.setOptions(options);
+        JL().setOptions({"appenders": [appender]});
+        
     }
-
-    beforeSendOverride(xhr: XMLHttpRequest, json: any, sessionId: string) {
-       json.r = 
-    };
 
     public info(message:string) {
         this.write(message,this.JL.getInfoLevel());
