@@ -17,7 +17,6 @@ package com.antheminc.oss.nimbus.test.scenarios.s6;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.time.ZonedDateTime;
@@ -55,10 +54,12 @@ public class S6_NestedColDomainUpdateTest extends AbstractFrameworkIntegrationTe
 		S6C_CoreMain s6_core = new S6C_CoreMain();
 		s6_core.setId(CORE_REF_ID);
 		s6_core.setAttr("attr");
+		
 		List<S6_CoreNested> attr_list_nested = new ArrayList<>();
 		S6_CoreNested s6_core_nested_1 = new S6_CoreNested();
 		s6_core_nested_1.setAttr_nested("attr_nested");
 		attr_list_nested.add(s6_core_nested_1);
+		
 		s6_core.setAttr_list_s6_nested(attr_list_nested);
 		
 		String payload = converter.toJson(s6_core);
