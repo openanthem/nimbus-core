@@ -141,8 +141,8 @@ public class DefaultCoreBuilderConfig {
 	}
 	
 	@Bean
-	DefaultLoggingHandler defaultLoggingHandler() {
-		return new DefaultLoggingHandler();
+	DefaultLoggingHandler defaultLoggingHandler(BeanResolverStrategy beanResolver) {
+		return new DefaultLoggingHandler(beanResolver);
 	}
 
 }
