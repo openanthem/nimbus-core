@@ -139,5 +139,10 @@ public class DefaultCoreBuilderConfig {
 	public SecurityUtils securityUtils() {
 		return new SecurityUtils(secureRegex);
 	}
+	
+	@Bean
+	DefaultLoggingHandler defaultLoggingHandler(BeanResolverStrategy beanResolver) {
+		return new DefaultLoggingHandler(beanResolver);
+	}
 
 }

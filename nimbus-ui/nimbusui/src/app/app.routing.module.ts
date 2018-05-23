@@ -37,20 +37,7 @@ import { RouterModule, Routes } from '@angular/router';
  */
 const APPROUTES: Routes = [
     //first landing page routes need to be defined here and the rest will be loaded via dynamic router
-    {
-      path: 'user',
-      children: [
-        {
-          path: '', component: LoginLayoutCmp,
-          children: [
-            { path: 'login', component: LoginCmp },
-            { path: 'styles', component: StyleGuideCmp},
-            { path: '', redirectTo: 'login', pathMatch: 'full' },
-            { path: '**', component: PageNotfoundComponent }
-          ]
-        }
-      ]
-    },
+   
     // routes redesign - URL pattern: h/:domain/:pageId
     {
         path: 'h', component: HomeLayoutCmp, data: {'layout': 'home'},
@@ -93,7 +80,7 @@ const APPROUTES: Routes = [
                    { path: '**', component: PageNotfoundComponent }
         ]
     },
-    { path: '', redirectTo: 'user', pathMatch: 'full' }
+    { path: '', component: PageNotfoundComponent }
 
 ];
 

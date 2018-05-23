@@ -29,6 +29,7 @@ export class ServiceConstants {
     private static appcontext: string;
     private static protocol: string;
     private static locale : string;
+    private static logOptions: Object;
 
     public static get PAGE_INDEX() : number { return 0;}
     public static get PAGE_SIZE() : number { return 20;}
@@ -58,6 +59,9 @@ export class ServiceConstants {
     public static get STOPGAP_APP_PORT() : string { return this.port; }
     public static get STOPGAP_APP_PROTOCOL() : string { return this.protocol; }
     public static get APP_CONTEXT() : string { return this.appcontext; }
+
+    public static set LOG_OPTIONS(obj: Object){ this.logOptions = obj;}
+    public static get LOG_OPTIONS(): Object { return this.logOptions;}
 
     public static get STOPGAP_APP_HOST_URL() : string { 
         return this.STOPGAP_APP_PROTOCOL+'//'+this.STOPGAP_APP_HOST+':'; 
