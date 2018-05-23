@@ -56,7 +56,7 @@ export class AppComponent {
     }
 
     ngOnInit() {
-        this._logger.info('app component is initialized');
+        this._logger.info('AppComponent-i');
         ServiceConstants.STOPGAP_APP_HOST = this.document.location.hostname;
         ServiceConstants.STOPGAP_APP_PORT = this.document.location.port;
         ServiceConstants.APP_CONTEXT = this.document.location.pathname.split('/').splice(1, 1);

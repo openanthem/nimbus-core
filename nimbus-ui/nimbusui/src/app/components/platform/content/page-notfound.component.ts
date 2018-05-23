@@ -42,7 +42,7 @@ export class PageNotfoundComponent {
     }
 
     ngOnInit() {
-        this._logger.info('page notfound component is intialized');
+        this._logger.info('PageNotfoundComponent-i');
     }
 
 }

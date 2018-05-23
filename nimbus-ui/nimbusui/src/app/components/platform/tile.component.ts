@@ -63,7 +63,7 @@ export class Tile extends BaseElement {
     }
 
     ngOnInit() {
-        this._logger.info('tile component is intialized');
+        this._logger.info('Tile-i');
         super.ngOnInit();
         // Determine the Tile size based on "size" attribute.
         this._logger.debug('tile component: here is the tile size ' + this.element.config.uiStyles.attributes.size);
