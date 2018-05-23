@@ -15,6 +15,7 @@
  */
 package com.antheminc.oss.nimbus.support;
 
+import org.slf4j.ILoggerFactory;
 import org.slf4j.LoggerFactory;
 
 import com.antheminc.oss.nimbus.channel.web.WebActionController;
@@ -32,43 +33,43 @@ import ch.qos.logback.classic.LoggerContext;
  * Update Logging Level at runtime.
  * 
  * @author Dinakar Meda
+ * @author Soham Chakravarti
  *
  */
 public class LoggingLevelService {
 
-	public static Output<String> setLoggingLevel(String level, String packageName) {
-		String status = "Log Level updated to - " + level;
+	private static final JustLogit logit = new JustLogit(LoggingLevelService.class);
+	
+	public static Output<String> setLoggingLevel(String levelInput, String packageName) {
+		
 		String uri = WebActionController.URI_PATTERN_P+"/loglevel";
 		Command cmd = CommandBuilder.withUri(uri).getCommand();
-		
+
 		Output<String> returnStatus = new Output<>(uri, new ExecutionContext(cmd), Action._get, Behavior.$execute);
-		returnStatus.setValue(status);
+		
+		// validate logback implementation
+		ILoggerFactory loggerFactory = LoggerFactory.getILoggerFactory();
+		if(!LoggerContext.class.isInstance(loggerFactory)) {
+			String msg = "Only logback implemenation is suppported to change logging level dynamically, but found logger of type: "+loggerFactory.getClass();
+			logit.info(()->msg);
+			
+			returnStatus.setValue(msg);
+			return returnStatus;
+		}
+		
 		
 		LoggerContext loggerContext = (LoggerContext)LoggerFactory.getILoggerFactory();
-        if (level.equalsIgnoreCase("DEBUG")) {
-            loggerContext.getLogger(packageName).setLevel(Level.DEBUG);
-            return returnStatus; 
-        } else if (level.equalsIgnoreCase("INFO")) {
-            loggerContext.getLogger(packageName).setLevel(Level.INFO);
-            return returnStatus; 
-        } else if (level.equalsIgnoreCase("TRACE")) {
-            loggerContext.getLogger(packageName).setLevel(Level.TRACE);
-            return returnStatus; 
-        } else if (level.equalsIgnoreCase("WARN")) {
-            loggerContext.getLogger(packageName).setLevel(Level.WARN);
-            return returnStatus; 
-        } else if (level.equalsIgnoreCase("ERROR")) {
-            loggerContext.getLogger(packageName).setLevel(Level.ERROR);
-            return returnStatus; 
-        } else if (level.equalsIgnoreCase("OFF")) {
-            loggerContext.getLogger(packageName).setLevel(Level.OFF);
-            return returnStatus; 
-        } else if (level.equalsIgnoreCase("ALL")) {
-            loggerContext.getLogger(packageName).setLevel(Level.ALL);
-            return returnStatus; 
-        } else {
-        	returnStatus.setValue("Invalid Log Level - " + level);
-            return returnStatus;
-        }
+		
+		Level currLevel = loggerContext.getLogger(packageName).getLevel();
+		Level newLevel = Level.toLevel(levelInput, currLevel);
+		
+		loggerContext.getLogger(packageName).setLevel(newLevel);
+		
+		String msg = "Log Level updated for: "+packageName+" from: "+currLevel+" to: "+newLevel+" for passed in levelInput: "+levelInput;
+		logit.info(()->msg);
+		
+		returnStatus.setValue(msg);
+		return returnStatus;
+		
 	}
 }
