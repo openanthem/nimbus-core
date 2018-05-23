@@ -15,18 +15,12 @@
  */
 package com.antheminc.oss.nimbus.support;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.springframework.beans.BeanUtils;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 
@@ -43,35 +37,20 @@ public class DefaultLoggingHandler {
 		logit = new JustLogit(this.getClass(),beanResolver);
 	}
 	
-	@Around("@annotation(com.antheminc.oss.nimbus.support.EnableLoggingInterceptor)")
-	public Object restMethods(final ProceedingJoinPoint proceedingJoinPoint) {
-		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-		Object value = null;
-		logit.info(()-> "i "+request.getMethod() + request.getRequestURI());
-        try {
-            value = proceedingJoinPoint.proceed();
-        } catch (Throwable throwable) {
-        	
-        } finally {
-        		logit.info(()->"o "+ request.getMethod() + request.getRequestURI());	
-        }
-	        
-	    return value;
-	}
 	
-	@Around("@annotation(com.antheminc.oss.nimbus.support.EnableLoggingInterceptor)")
+	@Around("@within(com.antheminc.oss.nimbus.support.EnableLoggingInterceptor)")
 	public Object logMethods(final ProceedingJoinPoint proceedingJoinPoint) { 
 		Object value = null;	
         try {
-	        	LogTemplate methodEntry = createLogTemplate("i"+proceedingJoinPoint.getSignature());
+	        	LogTemplate methodEntry = createLogTemplate("i",proceedingJoinPoint.getSignature());
 	    		logit.info(methodEntry);
             value = proceedingJoinPoint.proceed();
         } catch (Throwable throwable) {
-        		LogTemplate errorInMethod = createLogTemplate("e"+proceedingJoinPoint.getSignature());
+        		LogTemplate errorInMethod = createLogTemplate("e",proceedingJoinPoint.getSignature());
         		errorInMethod.setArgs(Arrays.toString(proceedingJoinPoint.getArgs()));
          	logit.info(errorInMethod);
         } finally {
-	        LogTemplate methodExit = createLogTemplate("o"+proceedingJoinPoint.getSignature());
+	        LogTemplate methodExit = createLogTemplate("o",proceedingJoinPoint.getSignature());
         		logit.info(methodExit);	
         }
 	        
@@ -79,9 +58,11 @@ public class DefaultLoggingHandler {
 		
 	}
 	
-	private LogTemplate createLogTemplate(String message) {
+	private LogTemplate createLogTemplate(String action, Signature message) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("[").append(action).append("]").append(message.toString());
 		LogTemplate template = new LogTemplate();
-		template.setMessage(message);
+		template.setMessage(sb.toString());
 		return template;
 	}
 	
