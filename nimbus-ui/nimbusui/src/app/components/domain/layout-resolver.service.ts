@@ -23,6 +23,8 @@ import { Router, Resolve, RouterStateSnapshot, ActivatedRouteSnapshot } from '@a
 import { Observable } from 'rxjs/Observable';
 import { PageService } from '../../services/page.service';
 import { ConfigService } from '../../services/config.service';
+import { LoggerService } from '../../services/logger.service';
+
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 
@@ -37,7 +39,8 @@ export class LayoutResolver implements Resolve<string> {
         private _pageSvc: PageService,
         private _configSvc: ConfigService,
         private router: Router,
-        private _breadcrumbService: BreadcrumbService) {}
+        private _breadcrumbService: BreadcrumbService,
+        private _logger: LoggerService) {}
 
     resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<string> | Promise<string> {
         let flowName = route.params['domain'];
@@ -52,13 +55,19 @@ export class LayoutResolver implements Resolve<string> {
                 routeToDefaultPage = false;
             }
             return this._pageSvc.getFlowLayoutConfig(flowName, routeToDefaultPage).then(layout => {
+                this._logger.debug('layout resolver service flowName can be navigated' + flowName);
                 return layout;
             });
         } else {
             this._pageSvc.getLayoutConfigForFlow(flowName);
             return this._pageSvc.layout$.map(layout => {
+                this._logger.debug('layout resolver service flowName can be navigated' + flowName);
                 return layout;
             }).first();
         }
+    }
+
+    ngOnInit() {
+        this._logger.info('layout resolver service is initialized');
     }
 }

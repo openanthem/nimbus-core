@@ -20,6 +20,7 @@ import { Injectable, EventEmitter } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { HttpHeaders } from '@angular/common/http';
 import { RequestOptions, Request, RequestMethod } from '@angular/http';
+import { Observable } from 'rxjs/Observable';
 import { LoggerService } from './logger.service';
 import { FormGroup } from '@angular/forms';
 
@@ -59,7 +60,16 @@ export class FileService {
         var url = file['postUrl'];
 
         return this.http.postFileData(url, formData)
-            .map(data =>  data.fileId);
+            .map(data =>  data.fileId)
+            .catch(err => {
+                const errObj = {
+                    url: url,
+                    message: 'upload is failing',
+                    error: err
+                }
+                this.logger.error(JSON.stringify(errObj));
+                return Observable.throw(err);
+            });
     }
 
 }

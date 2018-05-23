@@ -22,6 +22,7 @@ import { PageService } from '../../services/page.service';
 import { WebContentSvc } from './../../services/content-management.service';
 import { GenericDomain } from './../../model/generic-domain.model';
 import { BaseElement } from './base-element.component';
+import { LoggerService } from '../../services/logger.service';
 
 /**
  * \@author Dinakar.Meda
@@ -41,11 +42,12 @@ import { BaseElement } from './base-element.component';
 })
 export class Section extends BaseElement implements OnInit {
 
-    constructor(private wcsvc: WebContentSvc, private pageService: PageService) {
+    constructor(private wcsvc: WebContentSvc, private pageService: PageService, private _logger: LoggerService) {
         super(wcsvc);
     }
 
     ngOnInit() {
+        this._logger.info('section component is intialized');
         // Check for initialization
         if (this.element.config && this.element.config.initializeComponent()) {
             this.pageService.processEvent(this.element.path, '$execute', new GenericDomain(), 'POST');
