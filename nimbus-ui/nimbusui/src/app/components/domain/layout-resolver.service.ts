@@ -67,7 +67,4 @@ export class LayoutResolver implements Resolve<string> {
         }
     }
 
-    ngOnInit() {
-        this._logger.info('layout resolver service is initialized');
-    }
 }
