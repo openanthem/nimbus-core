@@ -17,7 +17,6 @@ package com.antheminc.oss.nimbus.channel.web;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,18 +26,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.antheminc.oss.nimbus.domain.cmd.Action;
-import com.antheminc.oss.nimbus.domain.cmd.Behavior;
-import com.antheminc.oss.nimbus.domain.cmd.Command;
-import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
-import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextLoader;
 import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
 import com.antheminc.oss.nimbus.support.Holder;
-
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.LoggerContext;
+import com.antheminc.oss.nimbus.support.LoggingLevelService;
 
 /**
  * STEPS to follow with examples. <br>
@@ -114,39 +106,7 @@ public class WebActionController {
 	 */
 	@RequestMapping(value=URI_PATTERN_P+"/loglevel", produces="application/json", method=RequestMethod.GET)
 	public Output<String> updateLogLevel(@RequestParam(value="level") String level, @RequestParam(value="package") String packageName) {
-		String status = "Log Level updated to - " + level;
-		String uri = URI_PATTERN_P+"/loglevel";
-		Command cmd = CommandBuilder.withUri(uri).getCommand();
-		
-		Output<String> returnStatus = new Output<>(uri, new ExecutionContext(cmd), Action._get, Behavior.$execute);
-		returnStatus.setValue(status);
-		
-		LoggerContext loggerContext = (LoggerContext)LoggerFactory.getILoggerFactory();
-        if (level.equalsIgnoreCase("DEBUG")) {
-            loggerContext.getLogger(packageName).setLevel(Level.DEBUG);
-            return returnStatus; 
-        } else if (level.equalsIgnoreCase("INFO")) {
-            loggerContext.getLogger(packageName).setLevel(Level.INFO);
-            return returnStatus; 
-        } else if (level.equalsIgnoreCase("TRACE")) {
-            loggerContext.getLogger(packageName).setLevel(Level.TRACE);
-            return returnStatus; 
-        } else if (level.equalsIgnoreCase("WARN")) {
-            loggerContext.getLogger(packageName).setLevel(Level.WARN);
-            return returnStatus; 
-        } else if (level.equalsIgnoreCase("ERROR")) {
-            loggerContext.getLogger(packageName).setLevel(Level.ERROR);
-            return returnStatus; 
-        } else if (level.equalsIgnoreCase("OFF")) {
-            loggerContext.getLogger(packageName).setLevel(Level.OFF);
-            return returnStatus; 
-        } else if (level.equalsIgnoreCase("ALL")) {
-            loggerContext.getLogger(packageName).setLevel(Level.ALL);
-            return returnStatus; 
-        } else {
-        	returnStatus.setValue("Invalid Log Level - " + level);
-            return returnStatus;
-        }
+		return LoggingLevelService.setLoggingLevel(level, packageName);
 	}
 	
 	@RequestMapping(value=URI_PATTERN_P_OPEN, produces="application/json", method=RequestMethod.GET)
