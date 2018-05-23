@@ -65,7 +65,4 @@ export class PageResolver implements Resolve<Param> {
         });
     }
 
-    ngOnInit() {
-        this._logger.info('page resolver service is initialized');
-    }
 }
