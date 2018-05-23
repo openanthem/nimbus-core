@@ -108,6 +108,6 @@ public class S6_NestedColDomainUpdateTest extends AbstractFrameworkIntegrationTe
 		assertEquals(actual_core.getAttr(),s6_core.getAttr());
 		assertEquals(actual_core.getAttr_list_s6_nested().size(),s6_core.getAttr_list_s6_nested().size());
 		assertEquals(actual_core.getAttr_list_s6_nested().get(0).getAttr_nested(),s6_core.getAttr_list_s6_nested().get(0).getAttr_nested());
-		assertSame(actualUpdatedTime,s6_core_updatedtime);
+		assertEquals(actualUpdatedTime,s6_core_updatedtime);
 	}
 }
