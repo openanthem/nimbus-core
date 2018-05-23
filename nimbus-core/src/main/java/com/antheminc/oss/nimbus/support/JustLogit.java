@@ -20,10 +20,13 @@ import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import lombok.Getter;
+
 /**
  * @author Soham Chakravarti
  *
  */
+@Getter
 public class JustLogit {
 
 	private final Logger log;
