@@ -93,7 +93,7 @@ const APPROUTES: Routes = [
                    { path: '**', component: PageNotfoundComponent }
         ]
     },
-    { path: '', redirectTo: 'user', pathMatch: 'full' }
+    { path: '', component: PageNotfoundComponent }
 
 ];
 
