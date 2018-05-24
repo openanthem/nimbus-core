@@ -41,7 +41,7 @@ import lombok.Getter;
 @Getter(AccessLevel.PROTECTED)
 public abstract class AbstractValuesConditionalStateEventHandler extends AbstractConditionalStateEventHandler {
 
-	public static final JustLogit LOG = new JustLogit();
+	public JustLogit LOG = new JustLogit(AbstractValuesConditionalStateEventHandler.class);
 	
 	protected final CommandExecutorGateway gateway;
 	
