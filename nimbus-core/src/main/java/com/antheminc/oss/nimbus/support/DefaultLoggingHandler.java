@@ -17,12 +17,11 @@ package com.antheminc.oss.nimbus.support;
 
 import java.util.Optional;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-
-import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 
 /**
  * @author Sandeep Mantha
@@ -31,7 +30,7 @@ import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 @Aspect
 public class DefaultLoggingHandler {
 
-	protected final JustLogit logit;
+	private static final JustLogit logit = new JustLogit(DefaultLoggingHandler.class);
 	
 	public static final String K_METHOD_ENTRY = "[I] %s";
 	
@@ -39,14 +38,16 @@ public class DefaultLoggingHandler {
 	
 	public static final String K_METHOD_EXCEPTION = "[Ex] %s";
 	
+	public static final String K_METHOD_ARGS = "[Args] %s %s";
+	public static final String K_METHOD_RESP = "[Resp] %s %s";
+	
 	public static String format(String key, String methodName) {
 		return String.format(key, methodName);
 	}
-	
-	public DefaultLoggingHandler(BeanResolverStrategy beanResolver) {
-		logit = new JustLogit(this.getClass(),beanResolver);
+
+	public static String format(String key, String methodName, String args) {
+		return String.format(key, methodName, args);
 	}
-	
 	
 	@Around("@within(com.antheminc.oss.nimbus.support.EnableLoggingInterceptor)")
 	public Object logMethods(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
@@ -59,26 +60,10 @@ public class DefaultLoggingHandler {
 			return result;
 			
 		} catch (Throwable t) {
-			logit.error(()->format(K_METHOD_EXCEPTION, methodName), t);
+			nullSafeLogError(proceedingJoinPoint, methodName, t);
+			
 			throw t;
 		}
-		
-		
-//		Object value = null;	
-//        try {
-//	        	LogTemplate methodEntry = createLogTemplate("i",proceedingJoinPoint.getSignature());
-//	    		logit.info(methodEntry);
-//            value = proceedingJoinPoint.proceed();
-//        } catch (Throwable throwable) {
-//        		LogTemplate errorInMethod = createLogTemplate("e",proceedingJoinPoint.getSignature());
-//        		errorInMethod.setArgs(Arrays.toString(proceedingJoinPoint.getArgs()));
-//         	logit.info(errorInMethod);
-//        } finally {
-//	        LogTemplate methodExit = createLogTemplate("o",proceedingJoinPoint.getSignature());
-//        		logit.info(methodExit);	
-//        }
-//	        
-//	    return value;
 		
 	}
 	
@@ -89,13 +74,21 @@ public class DefaultLoggingHandler {
 					.orElse("method-name-not-found");
 	}
 	
-	private LogTemplate createLogTemplate(String action, Signature message) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("[").append(action).append("]").append(message.toString());
-		LogTemplate template = new LogTemplate();
-		template.setMessage(sb.toString());
-		return template;
+	private static void nullSafeLogError(ProceedingJoinPoint proceedingJoinPoint, String methodName, Throwable t) {
+		try {
+			StringBuilder sb = new StringBuilder();
+			sb.append("");
+			
+			Object args[] = proceedingJoinPoint.getArgs();
+			if(!ArrayUtils.isEmpty(args)) {
+				for(int i=0; i<args.length; i++) {
+					sb.append("\n arg[").append(i).append("]: ").append(args[i]);
+				}
+			}
+			logit.error(()->format(K_METHOD_ARGS, methodName, sb.toString()));
+		} catch (Exception ex) {
+			logit.error(()->"Failed to log args in interceptor. Actual exception will be logged after this trace print.", ex);
+		}
+		logit.error(()->format(K_METHOD_EXCEPTION, methodName), t);
 	}
-	
-	
 }

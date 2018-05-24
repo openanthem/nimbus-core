@@ -20,25 +20,19 @@ import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
-import com.antheminc.oss.nimbus.domain.session.SessionProvider;
+import lombok.Getter;
 
 /**
  * @author Soham Chakravarti
  *
  */
+@Getter
 public class JustLogit {
 
 	private final Logger log;
-	private SessionProvider sessionProvider = null;
 	
 	public JustLogit() {
 		this.log = LoggerFactory.getLogger(this.getClass());
-	}
-	
-	public JustLogit(Class<?> clazz, BeanResolverStrategy beanResolver) {
-		log = LoggerFactory.getLogger(clazz);
-		this.sessionProvider = beanResolver.get(SessionProvider.class);
 	}
 	
 	public JustLogit(Class<?> clazz) {
