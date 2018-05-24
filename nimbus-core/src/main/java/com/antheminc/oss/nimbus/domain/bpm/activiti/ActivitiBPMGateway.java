@@ -127,9 +127,9 @@ public class ActivitiBPMGateway implements BPMGateway {
 			
 			UserTask userTask = (UserTask)cache.findByKey(getProcessKeyFromDefinitionId(processFlow.getProcessDefinitionId(), param)).getProcess().getFlowElementMap().get(task);
 			if(canComplete(param,userTask)) {
-				List<Task> activeTaskInstances = taskService.createTaskQuery().processInstanceId(processExecutionId).taskDefinitionKey(task).list();
+				List<Task> activeTaskInstances = getTaskService().createTaskQuery().processInstanceId(processExecutionId).taskDefinitionKey(task).list();
 				for(Task activeTaskIntance: activeTaskInstances)
-					taskService.complete(activeTaskIntance.getId(),executionVariables);
+					getTaskService().complete(activeTaskIntance.getId(),executionVariables);
 			}
 		}
 		return context.getOutput();
