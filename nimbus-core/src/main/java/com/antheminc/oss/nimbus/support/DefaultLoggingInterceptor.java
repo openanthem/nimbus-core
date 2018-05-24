@@ -22,27 +22,33 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.util.StopWatch;
 
 /**
- * @author Sandeep Mantha
+ * @author Soham Chakravarti
  *
  */
 @Aspect
-public class DefaultLoggingHandler {
+public class DefaultLoggingInterceptor {
 
-	private static final JustLogit logit = new JustLogit("api-logger");
+	private static final JustLogit logit = new JustLogit("method-metric-logger");
 	
 	public static final String K_METHOD_ENTRY = "[I] %s";
 	
-	public static final String K_METHOD_EXIT = "[O] %s";
+	public static final String K_METHOD_EXIT = "[O] %s %s";
 	
-	public static final String K_METHOD_EXCEPTION = "[Ex] %s";
+	public static final String K_METHOD_EXCEPTION = "[Ex] %s %s";
 	
 	public static final String K_METHOD_ARGS = "[Args] %s %s";
 	public static final String K_METHOD_RESP = "[Resp] %s %s";
 	
 	public static String format(String key, String methodName) {
 		return String.format(key, methodName);
+	}
+	
+	public static String format(String key, String methodName, StopWatch sw) {
+		String timeInMilliSeconds = String.valueOf(sw.getTotalTimeMillis()) + "ms";
+		return String.format(key, methodName, timeInMilliSeconds);
 	}
 
 	public static String format(String key, String methodName, String args) {
@@ -52,19 +58,26 @@ public class DefaultLoggingHandler {
 	@Around("@within(com.antheminc.oss.nimbus.support.EnableLoggingInterceptor)")
 	public Object logMethods(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
 		String methodName = nullSafeMethodGet(proceedingJoinPoint);
+		StopWatch sw = new StopWatch();
+		
 		try {
 			logit.info(()->format(K_METHOD_ENTRY, methodName));
 			logit.debug(()->format(K_METHOD_ARGS, methodName, nullSafeArgs(proceedingJoinPoint, methodName)));
 			
+			sw.start();
 			Object result =  proceedingJoinPoint.proceed();
+			sw.stop();
 			
 			logit.debug(()->format(K_METHOD_RESP, methodName, nullSafeResp(result)));
-			logit.info(()->format(K_METHOD_EXIT, methodName));
+			logit.info(()->format(K_METHOD_EXIT, methodName, sw));
 			
 			return result;
 			
 		} catch (Throwable t) {
-			nullSafeLogError(proceedingJoinPoint, methodName, t);
+			if(sw.isRunning())
+				sw.stop();
+			
+			nullSafeLogError(proceedingJoinPoint, methodName, t, sw);
 			
 			throw t;
 		}
@@ -78,9 +91,9 @@ public class DefaultLoggingHandler {
 					.orElse("method-name-not-found");
 	}
 	
-	private static void nullSafeLogError(ProceedingJoinPoint proceedingJoinPoint, String methodName, Throwable t) {
+	private static void nullSafeLogError(ProceedingJoinPoint proceedingJoinPoint, String methodName, Throwable t, StopWatch sw) {
 		logit.error(()->format(K_METHOD_ARGS, methodName, nullSafeArgs(proceedingJoinPoint, methodName)));
-		logit.error(()->format(K_METHOD_EXCEPTION, methodName), t);
+		logit.error(()->format(K_METHOD_EXCEPTION, methodName, sw), t);
 	}
 	
 	private static String nullSafeArgs(ProceedingJoinPoint proceedingJoinPoint, String methodName) {
