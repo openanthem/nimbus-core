@@ -15,7 +15,7 @@
  */
 package com.antheminc.oss.nimbus.support;
 
-import java.util.Arrays;
+import java.util.Optional;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -33,29 +33,60 @@ public class DefaultLoggingHandler {
 
 	protected final JustLogit logit;
 	
+	public static final String K_METHOD_ENTRY = "[I] %s";
+	
+	public static final String K_METHOD_EXIT = "[O] %s";
+	
+	public static final String K_METHOD_EXCEPTION = "[Ex] %s";
+	
+	public static String format(String key, String methodName) {
+		return String.format(key, methodName);
+	}
+	
 	public DefaultLoggingHandler(BeanResolverStrategy beanResolver) {
 		logit = new JustLogit(this.getClass(),beanResolver);
 	}
 	
 	
 	@Around("@within(com.antheminc.oss.nimbus.support.EnableLoggingInterceptor)")
-	public Object logMethods(final ProceedingJoinPoint proceedingJoinPoint) { 
-		Object value = null;	
-        try {
-	        	LogTemplate methodEntry = createLogTemplate("i",proceedingJoinPoint.getSignature());
-	    		logit.info(methodEntry);
-            value = proceedingJoinPoint.proceed();
-        } catch (Throwable throwable) {
-        		LogTemplate errorInMethod = createLogTemplate("e",proceedingJoinPoint.getSignature());
-        		errorInMethod.setArgs(Arrays.toString(proceedingJoinPoint.getArgs()));
-         	logit.info(errorInMethod);
-        } finally {
-	        LogTemplate methodExit = createLogTemplate("o",proceedingJoinPoint.getSignature());
-        		logit.info(methodExit);	
-        }
-	        
-	    return value;
+	public Object logMethods(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
+		String methodName = nullSafeMethodGet(proceedingJoinPoint);
+		try {
+			logit.info(()->format(K_METHOD_ENTRY, methodName));
+			Object result =  proceedingJoinPoint.proceed();
+			logit.info(()->format(K_METHOD_EXIT, methodName));
+			
+			return result;
+			
+		} catch (Throwable t) {
+			logit.error(()->format(K_METHOD_EXCEPTION, methodName), t);
+			throw t;
+		}
 		
+		
+//		Object value = null;	
+//        try {
+//	        	LogTemplate methodEntry = createLogTemplate("i",proceedingJoinPoint.getSignature());
+//	    		logit.info(methodEntry);
+//            value = proceedingJoinPoint.proceed();
+//        } catch (Throwable throwable) {
+//        		LogTemplate errorInMethod = createLogTemplate("e",proceedingJoinPoint.getSignature());
+//        		errorInMethod.setArgs(Arrays.toString(proceedingJoinPoint.getArgs()));
+//         	logit.info(errorInMethod);
+//        } finally {
+//	        LogTemplate methodExit = createLogTemplate("o",proceedingJoinPoint.getSignature());
+//        		logit.info(methodExit);	
+//        }
+//	        
+//	    return value;
+		
+	}
+	
+	private String nullSafeMethodGet(ProceedingJoinPoint proceedingJoinPoint) {
+		return Optional.ofNullable(proceedingJoinPoint)
+					.map(ProceedingJoinPoint::getSignature)
+					.map(Signature::toShortString)
+					.orElse("method-name-not-found");
 	}
 	
 	private LogTemplate createLogTemplate(String action, Signature message) {

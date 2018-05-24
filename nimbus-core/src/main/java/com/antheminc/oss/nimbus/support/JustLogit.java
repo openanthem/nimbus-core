@@ -85,14 +85,6 @@ public class JustLogit {
 			log.info(nuetralizeLog(msg));
 	}
 	
-	public void info(LogTemplate logTemplate) {
-		if(log.isInfoEnabled()) {
-			 
-			log.info(logTemplate.getMessage() + " args are " + logTemplate.getArgs());
-		}
-			
-	}
-	
 	public void info(Supplier<String> msg, Throwable t) {
 		if(log.isInfoEnabled()) 
 			log.info(nuetralizeLog(msg), t);
