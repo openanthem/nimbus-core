@@ -179,8 +179,11 @@ export class LayoutService {
                         if (nature.attributes.value === 'LOGO') {
                             branding['logo'] = element;
                         }
-                        if (nature.attributes.value === 'APPTITLE') {
+                        if (nature.attributes.value === 'TITLE') {
                             branding['title'] = element;
+                        }
+                        if (nature.attributes.value === 'APPTITLE') {
+                            branding['appTitle'] = element;
                         }
                         if (nature.attributes.value === 'SUBTITLE') {
                             branding['subTitle'] = element;
