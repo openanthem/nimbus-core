@@ -30,7 +30,7 @@ import org.aspectj.lang.annotation.Aspect;
 @Aspect
 public class DefaultLoggingHandler {
 
-	private static final JustLogit logit = new JustLogit(DefaultLoggingHandler.class);
+	private static final JustLogit logit = new JustLogit("api-logger");
 	
 	public static final String K_METHOD_ENTRY = "[I] %s";
 	
@@ -54,7 +54,11 @@ public class DefaultLoggingHandler {
 		String methodName = nullSafeMethodGet(proceedingJoinPoint);
 		try {
 			logit.info(()->format(K_METHOD_ENTRY, methodName));
+			logit.debug(()->format(K_METHOD_ARGS, methodName, nullSafeArgs(proceedingJoinPoint, methodName)));
+			
 			Object result =  proceedingJoinPoint.proceed();
+			
+			logit.debug(()->format(K_METHOD_RESP, methodName, nullSafeResp(result)));
 			logit.info(()->format(K_METHOD_EXIT, methodName));
 			
 			return result;
@@ -75,6 +79,11 @@ public class DefaultLoggingHandler {
 	}
 	
 	private static void nullSafeLogError(ProceedingJoinPoint proceedingJoinPoint, String methodName, Throwable t) {
+		logit.error(()->format(K_METHOD_ARGS, methodName, nullSafeArgs(proceedingJoinPoint, methodName)));
+		logit.error(()->format(K_METHOD_EXCEPTION, methodName), t);
+	}
+	
+	private static String nullSafeArgs(ProceedingJoinPoint proceedingJoinPoint, String methodName) {
 		try {
 			StringBuilder sb = new StringBuilder();
 			sb.append("");
@@ -85,10 +94,19 @@ public class DefaultLoggingHandler {
 					sb.append("\n arg[").append(i).append("]: ").append(args[i]);
 				}
 			}
-			logit.error(()->format(K_METHOD_ARGS, methodName, sb.toString()));
+			return sb.toString();
 		} catch (Exception ex) {
-			logit.error(()->"Failed to log args in interceptor. Actual exception will be logged after this trace print.", ex);
+			logit.error(()->"Failed to log args in interceptor.", ex);
+			return "exception-encountered-in-logging-args";
 		}
-		logit.error(()->format(K_METHOD_EXCEPTION, methodName), t);
+	}
+	
+	private static String nullSafeResp(Object result) {
+		try {
+			return String.valueOf(result);
+		} catch (Exception ex) {
+			logit.error(()->"Failed to log result in interceptor.", ex);
+			return "exception-encountered-in-logging-result";
+		}
 	}
 }
