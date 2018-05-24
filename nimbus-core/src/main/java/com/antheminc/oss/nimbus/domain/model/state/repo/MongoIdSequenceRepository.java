@@ -23,10 +23,13 @@ import org.springframework.data.mongodb.core.query.Update;
 
 import com.antheminc.oss.nimbus.entity.DBSequence;
 
+import lombok.Getter;
+
 /**
  * @author Rakesh Patel
  *
  */
+@Getter
 public class MongoIdSequenceRepository implements IdSequenceRepository {
 
 	MongoOperations mongoOperations;
@@ -49,7 +52,7 @@ public class MongoIdSequenceRepository implements IdSequenceRepository {
 		options.returnNew(true);
 		options.upsert(true);
 		
-		DBSequence seqId = mongoOperations.findAndModify(query, update, options, DBSequence.class, "sequence");
+		DBSequence seqId = getMongoOperations().findAndModify(query, update, options, DBSequence.class, "sequence");
 
 		//if no id, throws SequenceException]
 		if (seqId == null) {

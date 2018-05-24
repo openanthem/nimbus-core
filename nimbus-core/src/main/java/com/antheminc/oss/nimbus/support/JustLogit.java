@@ -20,13 +20,18 @@ import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+<<<<<<< HEAD
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.session.SessionProvider;
+=======
+import lombok.Getter;
+>>>>>>> refs/remotes/origin/feature/1.0.0.RC1
 
 /**
  * @author Soham Chakravarti
  *
  */
+@Getter
 public class JustLogit {
 
 	private final Logger log;

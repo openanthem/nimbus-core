@@ -29,15 +29,20 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelPersistenceHandler;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 import com.antheminc.oss.nimbus.support.JustLogit;
+
+import lombok.Getter;
 
 /**
  * @author Rakesh Patel
  *
  */
+@Getter
+@EnableLoggingInterceptor
 public class DefaultMongoModelPersistenceHandler implements ModelPersistenceHandler {
 
-	JustLogit logit = new JustLogit(getClass());
+	JustLogit logit = new JustLogit(DefaultMongoModelPersistenceHandler.class);
 	
 	ModelRepository rep;
 	
@@ -61,7 +66,7 @@ public class DefaultMongoModelPersistenceHandler implements ModelPersistenceHand
 				
 			Object coreStateId = mRoot.findParamByPath("/id").getState();
 			if(coreStateId == null) {
-				rep._new(mRoot.getConfig(), mRoot.getState());
+				getRep()._new(mRoot.getConfig(), mRoot.getState());
 				return true;
 			}
 			
@@ -69,7 +74,7 @@ public class DefaultMongoModelPersistenceHandler implements ModelPersistenceHand
 			
 			String pPath = param.getBeanPath();
 			Object pState = param.getState();
-			rep._update(alias, coreId, pPath, pState);
+			getRep()._update(alias, coreId, pPath, pState);
 			return true;
 			
 		}

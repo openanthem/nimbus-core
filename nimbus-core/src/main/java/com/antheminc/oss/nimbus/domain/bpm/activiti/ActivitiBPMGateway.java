@@ -42,13 +42,18 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.ProcessResponse;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.internal.ExecutionEntity;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 import com.antheminc.oss.nimbus.support.JustLogit;
 import com.antheminc.oss.nimbus.support.expr.ExpressionEvaluator;
+
+import lombok.Getter;
 
 /**
  * @author Jayant Chaudhuri
  *
  */
+@Getter
+@EnableLoggingInterceptor
 public class ActivitiBPMGateway implements BPMGateway {
 	
 	protected final JustLogit logit = new JustLogit(this.getClass());
@@ -74,14 +79,14 @@ public class ActivitiBPMGateway implements BPMGateway {
 	
 	@Override
 	public ActivitiProcessFlow startBusinessProcess(Param<?> param, String processId) {
-		if(!supportStatefulProcesses)
+		if(!getSupportStatefulProcesses())
 			return null;
 		ProcessResponse processResponse = startStatlessBusinessProcess(param, processId);
 		ActivitiProcessFlow processFlow = new ActivitiProcessFlow();
 		processFlow.setProcessExecutionId(processResponse.getExecutionId());
 		processFlow.setProcessDefinitionId(processResponse.getDefinitionId());
 		List<String> activeTasks = new ArrayList<String>();
-		List<Task> pendingTasks = taskService.createTaskQuery().processInstanceId(processResponse.getExecutionId()).list();
+		List<Task> pendingTasks = getTaskService().createTaskQuery().processInstanceId(processResponse.getExecutionId()).list();
 		if(pendingTasks != null) {
 			for(Task task: pendingTasks) {
 				activeTasks.add(task.getTaskDefinitionKey());
@@ -96,7 +101,7 @@ public class ActivitiBPMGateway implements BPMGateway {
 		ProcessEngineContext context = new ProcessEngineContext(param);
 		Map<String, Object> executionVariables = new HashMap<String, Object>();
 		executionVariables.put(Constants.KEY_EXECUTE_PROCESS_CTX.code, context);
-		ProcessInstance pi = runtimeService.startProcessInstanceByKey(processId, executionVariables);
+		ProcessInstance pi = getRuntimeService().startProcessInstanceByKey(processId, executionVariables);
 		ProcessResponse response = new ProcessResponse();
 		response.setResponse(context.getOutput());
 		response.setExecutionId(pi.getId());
@@ -106,7 +111,7 @@ public class ActivitiBPMGateway implements BPMGateway {
 	
 	@Override
 	public Object continueBusinessProcessExecution(Param<?> param, String processExecutionId) {
-		DeploymentManager deploymentManager = processEngineConfiguration.getDeploymentManager();
+		DeploymentManager deploymentManager = getProcessEngineConfiguration().getDeploymentManager();
 		ActivitiProcessFlow processFlow = (ActivitiProcessFlow)((ExecutionEntity<?,?>)param.getRootExecution().getState()).getFlow();
 		List<String> activeTasks = processFlow.getActiveTasks();
 		ProcessEngineContext context = new ProcessEngineContext(param);
@@ -132,7 +137,7 @@ public class ActivitiBPMGateway implements BPMGateway {
 
 	private void refreshProcessDefinitionCacheIfApplicable(String processDefinitionId, ActivitiProcessDefinitionCache cache, Param<?> param) {
 		if(cache.size() == 0) {
-			CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
+			CommandExecutor commandExecutor = getProcessEngineConfiguration().getCommandExecutor();
 			if(commandExecutor != null) {
 				commandExecutor.execute((commandContext) -> {
 				          return Context.getProcessEngineConfiguration()
@@ -146,7 +151,7 @@ public class ActivitiBPMGateway implements BPMGateway {
 	private boolean canComplete(Param<?> param, UserTask userTask) {
 		String taskExitCondition = getTaskExitExpression(userTask,"exitCondition");
 		if(taskExitCondition != null) {
-			return (Boolean)expressionEvaluator.getValue(taskExitCondition, param);
+			return (Boolean)getExpressionEvaluator().getValue(taskExitCondition, param);
 		}
 		return true;
 	}

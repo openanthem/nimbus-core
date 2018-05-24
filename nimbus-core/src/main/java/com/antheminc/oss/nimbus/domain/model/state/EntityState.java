@@ -108,12 +108,12 @@ public interface EntityState<T> {
 		@JsonIgnore
 		final private Method writeMethod;
 
-		
-		@JsonIgnore
-		final private MethodHandle readMethodHandle;
-		
-		@JsonIgnore
-		final private MethodHandle writeMethodHandle;
+//		
+//		@JsonIgnore
+//		final private MethodHandle readMethodHandle;
+//		
+//		@JsonIgnore
+//		final private MethodHandle writeMethodHandle;
 		
 	}
 	

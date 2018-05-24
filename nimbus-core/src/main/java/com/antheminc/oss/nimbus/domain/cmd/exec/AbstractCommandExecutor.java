@@ -15,11 +15,9 @@
  */
 package com.antheminc.oss.nimbus.domain.cmd.exec;
 
-import java.beans.PropertyDescriptor;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
@@ -176,38 +174,4 @@ public abstract class AbstractCommandExecutor<R> extends BaseCommandExecutorStra
 		Object refId = getJavaBeanHandler().getValue(va, entity);
 		return refId;
 	}
-
-/*	
-	protected <T,R,H extends FunctionHandler<T,R>> R doExecuteFunctionHandler(CommandMessage cmdMsg,Class<H> handlerClass) {
-		QuadModel<?, ?> q = findQuad(cmdMsg);
-		
-		//TODO: Load action parameter based on Command
-		Param<T> actionParameter = null;
-		ExecutionContext executionContext = new ExecutionContext(cmdMsg,q);
-		
-		H processHandler = getHandler(cmdMsg, handlerClass);
-		return processHandler.execute(executionContext, actionParameter);
-	}	
-	
-	protected <T extends FunctionHandler<?, ?>> T getHandler(CommandMessage commandMessage, Class<T> handlerClass){
-		String functionName = constructFunctionHandlerKey(commandMessage);
-		return getHandler(functionName, handlerClass);
-	}	
-	
-	protected <T extends FunctionHandler<?, ?>> T getHandler(String functionName, Class<T> handlerClass){
-		return hierarchyMatchBeanLoader.findMatchingBean(handlerClass, functionName);
-	}		
-	
-	
-	private String constructFunctionHandlerKey(CommandMessage cmdMsg){
-		StringBuilder key = new StringBuilder();
-		String functionName = cmdMsg.getCommand().getFirstParameterValue(Constants.KEY_FUNCTION.code);
-		String absoluteUri = cmdMsg.getCommand().getAbsoluteUri();
-		absoluteUri = absoluteUri.replaceAll(Constants.SEPARATOR_URI.code, "\\.");
-		key.append(absoluteUri).append(".").append(cmdMsg.getCommand().getAction().toString())
-		   .append(cmdMsg.getCommand().getCurrentBehavior().name())
-		   .append(Constants.REQUEST_PARAMETER_MARKER.code).append(Constants.KEY_FUNCTION.code).append("=").append(functionName);
-		return key.toString();
-	}
-*/
 }
