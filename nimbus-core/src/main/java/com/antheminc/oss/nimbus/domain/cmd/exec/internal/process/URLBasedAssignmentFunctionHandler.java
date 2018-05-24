@@ -31,11 +31,15 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.FunctionHandler;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+
 /**
  * @author Jayant Chaudhuri
  * @author Rakesh Patel
  *
  */
+@Getter(value=AccessLevel.PROTECTED)
 abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements FunctionHandler<T,R> {
 	
 	@Autowired
@@ -119,7 +123,7 @@ abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements Functi
 	protected S getExternalState(ExecutionContext executionContext){
 		CommandMessage commandToExecute = buildExternalCommand(executionContext.getCommandMessage());
 		
-		MultiOutput response = executorGateway.execute(commandToExecute);
+		MultiOutput response = getExecutorGateway().execute(commandToExecute);
 		//TODO Soham: temp fix, need to talk to Jayant
 		return (S)response.getOutputs().get(0).getValue();
 	}
