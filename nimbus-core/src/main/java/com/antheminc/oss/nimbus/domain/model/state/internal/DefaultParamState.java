@@ -919,8 +919,6 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	public String toString() {
 		return new StringBuilder().append(this.getClass().getSimpleName()).append("(")
 					.append("path=").append(getPath())
-					.append(", root=").append(Optional.ofNullable(getRootDomain()).map(Model::getConfig).map(ModelConfig::getAlias).orElse(""))
-					.append(", refId=").append(Optional.ofNullable(getRootDomain()).map(Model::getIdParam).map(Param::getState).map(String::valueOf).orElse(""))
 					.append(", mapped=").append(isMapped())
 					.append(", refClass=").append(getConfig().getReferredClass().getSimpleName())
 					.append(", state=").append(getState())
