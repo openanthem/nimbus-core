@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.test.logging;
+package com.antheminc.oss.nimbus.support;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

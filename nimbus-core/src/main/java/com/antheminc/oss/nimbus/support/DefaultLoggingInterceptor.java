@@ -22,7 +22,6 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.springframework.util.StopWatch;
 
 /**
  * @author Soham Chakravarti
@@ -44,12 +43,29 @@ public class DefaultLoggingInterceptor {
 	public static final String K_METHOD_ARGS = "[Args] ";
 	public static final String K_METHOD_RESP = "[Resp] ";
 	
+	public static class SimpleStopWatch {
+		private long startTimeMillis;
+		private long totalTimeMillis;
+		
+		public void start() {
+			this.startTimeMillis = System.currentTimeMillis();
+		}
+		
+		public void stop() {
+			this.totalTimeMillis = System.currentTimeMillis() - this.startTimeMillis;
+		}
+		
+		public String toString() {
+			return String.valueOf(totalTimeMillis);
+		}
+	}
+	
 	public static String format(String key, String methodName) {
 		return new StringBuilder().append(key).append(methodName).toString();
 	}
 	
-	public static String format(String key, String methodName, StopWatch sw) {
-		return new StringBuilder().append(key).append(methodName).append(K_SPACE).append(sw.getTotalTimeMillis()).append(K_MILLI_SECS).toString();
+	public static String format(String key, String methodName, SimpleStopWatch sw) {
+		return new StringBuilder().append(key).append(methodName).append(K_SPACE).append(sw.toString()).append(K_MILLI_SECS).toString();
 	}
 
 	public static String format(String key, String methodName, String args) {
@@ -59,7 +75,7 @@ public class DefaultLoggingInterceptor {
 	@Around("@within(com.antheminc.oss.nimbus.support.EnableLoggingInterceptor)")
 	public Object logMethods(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
 		String methodName = nullSafeMethodGet(proceedingJoinPoint);
-		StopWatch sw = new StopWatch();
+		SimpleStopWatch sw = new SimpleStopWatch();
 		
 		try {
 			logit.info(()->format(K_METHOD_ENTRY, methodName));
@@ -75,8 +91,7 @@ public class DefaultLoggingInterceptor {
 			return result;
 			
 		} catch (Throwable t) {
-			if(sw.isRunning())
-				sw.stop();
+			sw.stop();
 			
 			nullSafeLogError(proceedingJoinPoint, methodName, t, sw);
 			
@@ -92,7 +107,7 @@ public class DefaultLoggingInterceptor {
 					.orElse("method-name-not-found");
 	}
 	
-	private static void nullSafeLogError(ProceedingJoinPoint proceedingJoinPoint, String methodName, Throwable t, StopWatch sw) {
+	private static void nullSafeLogError(ProceedingJoinPoint proceedingJoinPoint, String methodName, Throwable t, SimpleStopWatch sw) {
 		logit.error(()->format(K_METHOD_ARGS, methodName, nullSafeArgs(proceedingJoinPoint, methodName)));
 		logit.error(()->format(K_METHOD_EXCEPTION, methodName, sw), t);
 	}
