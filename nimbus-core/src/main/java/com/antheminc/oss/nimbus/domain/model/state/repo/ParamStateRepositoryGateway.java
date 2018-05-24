@@ -34,6 +34,7 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Model;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ValueAccessor;
 import com.antheminc.oss.nimbus.domain.model.state.StateType;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 import com.antheminc.oss.nimbus.support.JustLogit;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandler;
 
@@ -47,7 +48,7 @@ import lombok.Getter;
 @Getter
 public class ParamStateRepositoryGateway implements ParamStateGateway {
 
-	private JustLogit logit = new JustLogit(getClass());
+	private JustLogit logit = new JustLogit(ParamStateRepositoryGateway.class);
 	
 	JavaBeanHandler javaBeanHandler;
 	
