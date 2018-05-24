@@ -50,7 +50,6 @@ import lombok.ToString;
  *
  */
 @Getter(value=AccessLevel.PROTECTED)
-@EnableLoggingInterceptor
 public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler<ChangeLog>, OnSelfCommandExecuteHandler<ChangeLog> {
 
 	private ModelRepositoryFactory repositoryFactory;
