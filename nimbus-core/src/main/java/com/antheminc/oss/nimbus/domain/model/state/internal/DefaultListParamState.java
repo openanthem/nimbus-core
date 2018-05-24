@@ -277,7 +277,7 @@ public class DefaultListParamState<T> extends AbstractListPaginatedParam<T> impl
 			return true;
 		}
 	
-		logit.warn(()->"Attempt to remove elem from collection did not succeed. ListParam: "+this.getPath()+" -> attempted elemId to remove: "+elemId);
+		logit.debug(()->"Attempt to remove elem from collection did not succeed. ListParam: "+this.getPath()+" -> attempted elemId to remove: "+elemId);
 		return false;
 	}
 	
