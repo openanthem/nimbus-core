@@ -73,9 +73,10 @@ export class HomeLayoutCmp {
         private _pageSvc: PageService,
         private _route: ActivatedRoute,
         private _router: Router,
-        private _logger: LoggerService,
+        private _logger: LoggerService) {
         private wcs: WebContentSvc,
         private titleService: Title) {
+        
     }
 
     logout() {
