@@ -26,9 +26,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextLoader;
 import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
 import com.antheminc.oss.nimbus.support.Holder;
+import com.antheminc.oss.nimbus.support.LoggingLevelService;
 
 /**
  * STEPS to follow with examples. <br>
@@ -93,6 +95,18 @@ public class WebActionController {
 	@RequestMapping(value=URI_PATTERN_P+"/clear", produces="application/json", method=RequestMethod.GET)
 	public void clear() {
 		ctxLoader.clear();
+	}
+	
+	/**
+	 * Usage Example: /client/org/p/loglevel?level=debug&package=com.antheminc
+	 * 
+	 * @param level
+	 * @param packageName
+	 * @return
+	 */
+	@RequestMapping(value=URI_PATTERN_P+"/loglevel", produces="application/json", method=RequestMethod.GET)
+	public Output<String> updateLogLevel(@RequestParam(value="level") String level, @RequestParam(value="package") String packageName) {
+		return LoggingLevelService.setLoggingLevel(level, packageName);
 	}
 	
 	@RequestMapping(value=URI_PATTERN_P_OPEN, produces="application/json", method=RequestMethod.GET)

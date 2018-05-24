@@ -81,12 +81,12 @@ public final class JavaBeanHandlerUtils {
 	private static final ConcurrentHashMap<CacheKey, ValueAccessor> LOCAL_CACHE = new ConcurrentHashMap<>();
 	
 	public static ValueAccessor constructValueAccessor(Class<?> beanClass, String fieldName) {
-		CacheKey key = new CacheKey(beanClass, fieldName);
-		if(LOCAL_CACHE.containsKey(key))
-			return LOCAL_CACHE.get(key);
+//		CacheKey key = new CacheKey(beanClass, fieldName);
+//		if(LOCAL_CACHE.containsKey(key))
+//			return LOCAL_CACHE.get(key);
 		
 		ValueAccessor va = constructValueAccessorInternal(beanClass, fieldName);
-		LOCAL_CACHE.put(key, va);
+		//LOCAL_CACHE.put(key, va);
 		
 		return va;
 	}
@@ -103,12 +103,12 @@ public final class JavaBeanHandlerUtils {
 			Method setter = makeAccessible(BeanUtils.findMethod(beanClass, setterName, f.getType()));
 			
 		
-			MethodHandles.Lookup lookup = MethodHandles.lookup();
+//			MethodHandles.Lookup lookup = MethodHandles.lookup();
+//			
+//			MethodHandle get = constructGetHandle(lookup, getter);
+//			MethodHandle set = constructSetHandle(lookup, setter);
 			
-			MethodHandle get = constructGetHandle(lookup, getter);
-			MethodHandle set = constructSetHandle(lookup, setter);
-			
-			return new ValueAccessor(getter, setter, get, set);
+			return new ValueAccessor(getter, setter);
 			
 		} catch (Throwable t) {
 			throw new InvalidStateException("POJO construct MethodHandles on beanClass: "+beanClass
