@@ -31,12 +31,9 @@ import { PageService } from '../../services/page.service';
 import { ServiceConstants } from '../../services/service.constants';
 import {FooterGlobal} from '../platform/footer/footer-global.component'
 import { MenuItem } from 'primeng/primeng';
-<<<<<<< HEAD
 import { LoggerService } from '../../services/logger.service';
-=======
 import { WebContentSvc } from '../../services/content-management.service';
 import { LabelConfig } from './../../shared/param-config';
->>>>>>> refs/remotes/origin/feature/1.0.0.RC1
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 
@@ -76,13 +73,10 @@ export class HomeLayoutCmp {
         private _pageSvc: PageService,
         private _route: ActivatedRoute,
         private _router: Router,
-<<<<<<< HEAD
         private _logger: LoggerService) {
-
-=======
         private wcs: WebContentSvc,
         private titleService: Title) {
->>>>>>> refs/remotes/origin/feature/1.0.0.RC1
+        
     }
 
     logout() {
