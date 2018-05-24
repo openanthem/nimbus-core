@@ -31,11 +31,13 @@ import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig.LabelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.event.ConfigEventHandlers.OnParamCreateHandler;
 import com.antheminc.oss.nimbus.domain.model.config.internal.DefaultParamConfig;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 /**
  * @author Soham Chakravarti
  *
  */
+@EnableLoggingInterceptor
 public class LabelConfigEventHandler extends AbstractConfigEventHandler<Label> implements OnParamCreateHandler<Label> {
 
 	@Override

@@ -9,6 +9,10 @@ import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.ValidationGroup;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.ValidationScope;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
+
+import lombok.AccessLevel;
+import lombok.Getter;
 
 /**
  * <p>Validate Conditional State Event handler for conditionally assigning validations based
@@ -19,6 +23,8 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
  * @author Tony Lopez
  *
  */
+@EnableLoggingInterceptor
+@Getter(AccessLevel.PROTECTED)
 public class ValidateConditionalStateEventHandler extends 
 	AbstractConditionalStateEventHandler.EvalExprWithCrudActions<ValidateConditional> {
 	
@@ -40,7 +46,7 @@ public class ValidateConditionalStateEventHandler extends
 	}
 	
 	private ValidationAssignmentStrategy getValidationAssignmentStrategy(ValidateConditional configuredAnnotation) {
-		return Optional.ofNullable(this.validationAssignmentStrategies.get(configuredAnnotation.scope()))
+		return Optional.ofNullable(getValidationAssignmentStrategies().get(configuredAnnotation.scope()))
 				.orElseThrow(() -> new InvalidConfigException("Could not locate a Validation Assignment Strategy for: " + 
 						configuredAnnotation.scope()));
 	}

@@ -20,11 +20,13 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 import com.antheminc.oss.nimbus.domain.defn.Converters.ParamConverter;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 /**
  * @author Dinakar.Meda
  *
  */
+@EnableLoggingInterceptor
 public class DobToAgeConverter implements ParamConverter<LocalDate, Long> {
 	public static final String PREFIX = "ANT";
 	
