@@ -134,7 +134,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			
 			if(lockId!=null) {
 				//TODO: Interim solution
-				cmdHandler.handleOnRootStopEvents(cmdMsg.getCommand(), mOut);
+				getCmdHandler().handleOnRootStopEvents(cmdMsg.getCommand(), mOut);
 
 				return createFlattenedOutput(mOut);
 			}
