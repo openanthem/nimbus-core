@@ -21,11 +21,17 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
 import com.antheminc.oss.nimbus.domain.cmd.exec.FunctionHandler;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
+
+import lombok.AccessLevel;
+import lombok.Getter;
 
 /**
  * @author Jayant Chaudhuri
  *
  */
+@EnableLoggingInterceptor
+@Getter(value=AccessLevel.PROTECTED)
 public class EvalFunctionHandler<T,R> implements FunctionHandler<T, R> {
 	
 	private ExpressionManager expressionManager;
@@ -38,7 +44,7 @@ public class EvalFunctionHandler<T,R> implements FunctionHandler<T, R> {
 	@SuppressWarnings("unchecked")
 	public R execute(ExecutionContext executionContext, Param<T> actionParameter) {
 		String expressionToEvaluate = getExpressionToEvaluate(executionContext);
-		return (R)expressionManager.createExpression(expressionToEvaluate).getValue(null);
+		return (R)getExpressionManager().createExpression(expressionToEvaluate).getValue(null);
 	}
 	
 	
