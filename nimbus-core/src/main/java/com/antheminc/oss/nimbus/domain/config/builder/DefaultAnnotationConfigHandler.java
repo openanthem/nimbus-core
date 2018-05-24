@@ -49,7 +49,7 @@ import lombok.RequiredArgsConstructor;
  *
  */
 @RequiredArgsConstructor
-@EnableLoggingInterceptor
+
 @Getter(value=AccessLevel.PROTECTED)
 public class DefaultAnnotationConfigHandler implements AnnotationConfigHandler {
 	

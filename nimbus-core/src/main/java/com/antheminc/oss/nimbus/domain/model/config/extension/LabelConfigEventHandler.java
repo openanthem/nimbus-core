@@ -37,7 +37,7 @@ import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
  * @author Soham Chakravarti
  *
  */
-@EnableLoggingInterceptor
+
 public class LabelConfigEventHandler extends AbstractConfigEventHandler<Label> implements OnParamCreateHandler<Label> {
 
 	@Override

@@ -41,7 +41,6 @@ import lombok.Getter;
  *
  */
 @Getter
-@EnableLoggingInterceptor
 public class EventHandlerConfigFactory {
 
 	private final BeanResolverStrategy beanResolver;

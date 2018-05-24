@@ -18,7 +18,6 @@ package com.antheminc.oss.nimbus.domain.bpm.activiti;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
-import org.activiti.engine.impl.el.ExpressionManager;
 import org.apache.commons.lang3.StringUtils;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
@@ -33,8 +32,8 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
-import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 
@@ -42,13 +41,14 @@ import lombok.Getter;
  *
  */
 @EnableLoggingInterceptor
-@Getter(value=AccessLevel.PROTECTED)
+@Getter 
 public class CommandExecutorTaskDelegate implements JavaDelegate{
 	
 	CommandExecutorGateway commandGateway;
 	CommandPathVariableResolver pathVariableResolver;
 	ActivitiExpressionManager activitiExpressionManager;
 	
+	@Setter
 	private Expression url;
 
 	public CommandExecutorTaskDelegate(BeanResolverStrategy beanResolver) {
@@ -59,7 +59,7 @@ public class CommandExecutorTaskDelegate implements JavaDelegate{
 	
 	@Override
 	public void execute(DelegateExecution execution) {
-		String[] commandUrls = url.getExpressionText().split("\\r?\\n");
+		String[] commandUrls = getUrl().getExpressionText().split("\\r?\\n");
 		ProcessEngineContext context = (ProcessEngineContext)execution.getVariable(Constants.KEY_EXECUTE_PROCESS_CTX.code);
 		MultiOutput output = null;
 		for(String commandUrl: commandUrls){
