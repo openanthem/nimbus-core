@@ -32,6 +32,7 @@ import com.antheminc.oss.nimbus.domain.model.config.event.ConfigEventHandlers.On
 import com.antheminc.oss.nimbus.domain.model.config.internal.DefaultEventHandlerConfig;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 import lombok.Getter;
 
@@ -40,6 +41,7 @@ import lombok.Getter;
  *
  */
 @Getter
+@EnableLoggingInterceptor
 public class EventHandlerConfigFactory {
 
 	private final BeanResolverStrategy beanResolver;
@@ -69,7 +71,7 @@ public class EventHandlerConfigFactory {
 
 	
 	protected <T> void buildInternal(AnnotatedElement aElem, Class<? extends Annotation> configuredAnnotationType, Class<T> handlerType, BiConsumer<Annotation, T> addHandlerCb) {
-		List<Annotation> annotations = annotationConfigHandler.handleRepeatable(aElem, configuredAnnotationType);
+		List<Annotation> annotations = getAnnotationConfigHandler().handleRepeatable(aElem, configuredAnnotationType);
 		if(!CollectionUtils.isEmpty(annotations)) { 
 			
 			annotations.stream()

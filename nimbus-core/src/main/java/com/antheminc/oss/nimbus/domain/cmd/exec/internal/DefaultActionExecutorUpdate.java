@@ -26,6 +26,7 @@ import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
@@ -34,6 +35,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
  * @author Tony Lopez
  *
  */
+@EnableLoggingInterceptor
 public class DefaultActionExecutorUpdate extends AbstractCommandExecutor<Boolean> {
 	
 	public DefaultActionExecutorUpdate(BeanResolverStrategy beanResolver) {

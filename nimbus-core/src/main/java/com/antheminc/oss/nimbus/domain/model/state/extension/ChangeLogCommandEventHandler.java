@@ -33,7 +33,9 @@ import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepositoryFactory;
 import com.antheminc.oss.nimbus.domain.session.SessionProvider;
 import com.antheminc.oss.nimbus.entity.client.user.ClientUser;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -43,6 +45,8 @@ import lombok.ToString;
  * @author Soham Chakravarti
  *
  */
+@Getter(value=AccessLevel.PROTECTED)
+@EnableLoggingInterceptor
 public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler<ChangeLog>, OnSelfCommandExecuteHandler<ChangeLog> {
 
 	private ModelRepositoryFactory repositoryFactory;
@@ -128,11 +132,11 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 	}
 	
 	private String getCurrentUser() {
-		return Optional.ofNullable(sessionProvider.getLoggedInUser()).map(ClientUser::getLoginId).orElse(null);
+		return Optional.ofNullable(getSessionProvider().getLoggedInUser()).map(ClientUser::getLoginId).orElse(null);
 	}
 	
 	private ModelRepository getResolvedRepo() {
-		return repositoryFactory.get(Repo.Database.rep_mongodb);
+		return getRepositoryFactory().get(Repo.Database.rep_mongodb);
 	}
 	
 	@RequiredArgsConstructor

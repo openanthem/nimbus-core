@@ -26,6 +26,7 @@ import org.springframework.core.env.Environment;
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -38,7 +39,7 @@ import lombok.Setter;
  * @author Soham Chakravarti
  *
  */
-@Getter @Setter 
+@Getter(value=AccessLevel.PROTECTED) @Setter 
 public class DefaultBeanResolverStrategy implements BeanResolverStrategy {
 
 	private String beanPrefix = Constants.PREFIX_DEFAULT.code;
@@ -51,7 +52,7 @@ public class DefaultBeanResolverStrategy implements BeanResolverStrategy {
 	
 	@Override
 	public Environment getEnvironment() {
-		return this.applicationContext.getEnvironment();
+		return this.getApplicationContext().getEnvironment();
 	}
 	
 	protected String resolvePrefix() {
@@ -69,11 +70,11 @@ public class DefaultBeanResolverStrategy implements BeanResolverStrategy {
 	
 	@Override
 	public <T> T find(Class<T> type) {
-		String bNmArr[] = applicationContext.getBeanNamesForType(type);
+		String bNmArr[] = getApplicationContext().getBeanNamesForType(type);
 		
 		// 1st: consider single bean declared with or without qualifier of given type
 		if(ArrayUtils.isNotEmpty(bNmArr) && bNmArr.length==1)
-			return applicationContext.getBean(bNmArr[0], type);
+			return getApplicationContext().getBean(bNmArr[0], type);
 		
 		// 2nd: if no bean OR multiple beans found by type, then use type's name as qualifier
 		return find(type, type.getSimpleName());
@@ -92,8 +93,8 @@ public class DefaultBeanResolverStrategy implements BeanResolverStrategy {
 	public <T> T find(Class<T> type, String qualifier) {
 		// 1: find using configured prefix
 		String bNm = resolveBeanName(qualifier);
-		if(applicationContext.containsBean(bNm)) 
-			return applicationContext.getBean(bNm, type);
+		if(getApplicationContext().containsBean(bNm)) 
+			return getApplicationContext().getBean(bNm, type);
 		
 		// 2: check if prefix was overridden
 		if(Constants.PREFIX_DEFAULT.code.equals(getBeanPrefix()))
@@ -101,7 +102,7 @@ public class DefaultBeanResolverStrategy implements BeanResolverStrategy {
 		
 		// 3. find using initial default when bean not found using overridden prefix
 		String defaultBeanNm = defaultBeanName(qualifier);
-		return applicationContext.containsBean(defaultBeanNm) ? applicationContext.getBean(defaultBeanNm, type) : null;
+		return getApplicationContext().containsBean(defaultBeanNm) ? getApplicationContext().getBean(defaultBeanNm, type) : null;
 	}
 
 	@Override
@@ -115,12 +116,12 @@ public class DefaultBeanResolverStrategy implements BeanResolverStrategy {
 	
 	@Override
 	public <T> T find(Class<T> type, Class<?>...generics) {
-		String beanNames[] = applicationContext.getBeanNamesForType(ResolvableType.forClassWithGenerics(type, generics));
+		String beanNames[] = getApplicationContext().getBeanNamesForType(ResolvableType.forClassWithGenerics(type, generics));
 		if(ArrayUtils.getLength(beanNames)!=1)
 			throw new InvalidConfigException("Only one bean expected for type+generic lookup, but found: "+beanNames.length
 					+" for type: "+type+" and generics: "+ArrayUtils.toString(generics));
 		
-		T bean = applicationContext.getBean(beanNames[0], type);
+		T bean = getApplicationContext().getBean(beanNames[0], type);
 		return bean;
 	}
 	
@@ -132,10 +133,10 @@ public class DefaultBeanResolverStrategy implements BeanResolverStrategy {
 	
 	@Override
 	public <T> Collection<T> findMultiple(Class<T> type) {
-		String bNmArr[] = applicationContext.getBeanNamesForType(type);
+		String bNmArr[] = getApplicationContext().getBeanNamesForType(type);
 		
 		if(ArrayUtils.isNotEmpty(bNmArr))
-			return applicationContext.getBeansOfType(type).values();
+			return getApplicationContext().getBeansOfType(type).values();
 		
 		return null;
 	}

@@ -22,11 +22,13 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Input;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.FunctionHandler;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.nav.NavigationHandler;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 /**
  * @author Soham Chakravarti
  *
  */
+@EnableLoggingInterceptor
 public class DefaultActionExecutorNav<T> extends AbstractFunctionCommandExecutor<T,String> {
 	
 	public DefaultActionExecutorNav(BeanResolverStrategy beanResolver) {

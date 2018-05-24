@@ -34,7 +34,7 @@ public class DefaultLoggingHandler {
 	protected final JustLogit logit;
 	
 	public DefaultLoggingHandler(BeanResolverStrategy beanResolver) {
-		logit = new JustLogit(this.getClass(),beanResolver);
+		logit = new JustLogit(DefaultLoggingHandler.class,beanResolver);
 	}
 	
 	
