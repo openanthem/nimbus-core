@@ -132,7 +132,7 @@ public class DefaultLoggingInterceptor {
 	
 	private static String nullSafeResp(Object result) {
 		try {
-			return String.valueOf(result);
+			return new StringBuilder().append("\n resp: ").append(result).toString();
 		} catch (Exception ex) {
 			logit.error(()->"Failed to log result in interceptor.", ex);
 			return "exception-encountered-in-logging-result";
