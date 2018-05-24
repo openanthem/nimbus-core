@@ -18,6 +18,7 @@ package com.antheminc.oss.nimbus.domain.model.state.extension;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Modal;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 /**
  * <p>Default StateEventHandler for <tt>ViewConfig.Modal</tt> that sets default
@@ -27,6 +28,7 @@ import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnSt
  * @author Tony Lopez
  * @see com.antheminc.oss.nimbus.domain.defn.ViewConfig.Modal
  */
+@EnableLoggingInterceptor
 public class ModalStateEventHandler implements OnStateLoadHandler<Modal> {
 
 	@Override

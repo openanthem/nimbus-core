@@ -121,7 +121,19 @@ public class DefaultActionExecutorGet extends AbstractFunctionCommandExecutor<Pa
 		// create quad-model
 		ExecutionEntity<?, ?> e = ExecutionEntity.resolveAndInstantiate(entity, null);
 		
-		return getQuadModelBuilder().build(eCtx.getCommandMessage().getCommand(), e);
+		return executeCb(eCtx, e);
+	}
+
+	// TODO: [SOHAM] interim solution
+	public static final ThreadLocal<Action> TH_ACTION = new ThreadLocal<>();
+	
+	private QuadModel<?, ?> executeCb(ExecutionContext eCtx, ExecutionEntity<?, ?> e) {
+		try {
+			TH_ACTION.set(Action._get);
+			return getQuadModelBuilder().build(eCtx.getCommandMessage().getCommand(), e);
+		} finally {
+			TH_ACTION.set(null);
+		}
 	}
 
 	protected QuadModel<?, ?> handleMapped(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx, Object mapped, Action action) {

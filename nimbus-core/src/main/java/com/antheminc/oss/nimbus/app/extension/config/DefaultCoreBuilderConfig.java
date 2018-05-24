@@ -49,7 +49,7 @@ import com.antheminc.oss.nimbus.domain.model.state.builder.QuadModelBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.builder.internal.DefaultEntityStateBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.builder.internal.DefaultQuadModelBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ChangeLogCommandEventHandler;
-import com.antheminc.oss.nimbus.support.DefaultLoggingHandler;
+import com.antheminc.oss.nimbus.support.DefaultLoggingInterceptor;
 import com.antheminc.oss.nimbus.support.SecurityUtils;
 
 import lombok.Getter;
@@ -142,8 +142,8 @@ public class DefaultCoreBuilderConfig {
 	}
 	
 	@Bean
-	DefaultLoggingHandler defaultLoggingHandler(BeanResolverStrategy beanResolver) {
-		return new DefaultLoggingHandler(beanResolver);
+	DefaultLoggingInterceptor defaultLoggingHandler() {
+		return new DefaultLoggingInterceptor();
 	}
 
 }

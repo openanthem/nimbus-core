@@ -19,11 +19,16 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.internal.AbstractListPaginatedParam.PageWrapper.PageRequestAndRespone;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
+
+import lombok.Getter;
 
 /**
  * @author Jayant Chaudhuri
  *
  */
+@Getter
+@EnableLoggingInterceptor
 public class SetFunctionHandler <T,S> extends URLBasedAssignmentFunctionHandler<T,Void,S> {
 
 	

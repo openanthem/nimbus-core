@@ -30,8 +30,6 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
 import com.antheminc.oss.nimbus.domain.cmd.exec.FunctionHandler;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
-
-import lombok.AccessLevel;
 import lombok.Getter;
 
 /**
@@ -39,7 +37,8 @@ import lombok.Getter;
  * @author Rakesh Patel
  *
  */
-@Getter(value=AccessLevel.PROTECTED)
+
+@Getter
 abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements FunctionHandler<T,R> {
 	
 	@Autowired

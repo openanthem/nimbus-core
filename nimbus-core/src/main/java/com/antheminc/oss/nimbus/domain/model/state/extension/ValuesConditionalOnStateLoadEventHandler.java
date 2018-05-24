@@ -19,6 +19,7 @@ import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValuesConditional;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 /**
  * 
@@ -30,6 +31,7 @@ import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnSt
  * @see com.antheminc.oss.nimbus.domain.model.state.extension.AbstractValuesConditionalStateEventHandler
  *
  */
+@EnableLoggingInterceptor
 public class ValuesConditionalOnStateLoadEventHandler extends AbstractValuesConditionalStateEventHandler 
 	implements OnStateLoadHandler<ValuesConditional> {
 
