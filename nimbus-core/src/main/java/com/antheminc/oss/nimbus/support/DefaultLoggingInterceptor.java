@@ -33,26 +33,27 @@ public class DefaultLoggingInterceptor {
 
 	private static final JustLogit logit = new JustLogit("method-metric-logger");
 	
-	public static final String K_METHOD_ENTRY = "[I] %s";
+	public static final String K_SPACE = " ";
+	public static final String K_MILLI_SECS = "ms";
 	
-	public static final String K_METHOD_EXIT = "[O] %s %s";
+	public static final String K_METHOD_ENTRY = "[I] ";
+	public static final String K_METHOD_EXIT = "[O] ";
 	
-	public static final String K_METHOD_EXCEPTION = "[Ex] %s %s";
+	public static final String K_METHOD_EXCEPTION = "[Ex] ";
 	
-	public static final String K_METHOD_ARGS = "[Args] %s %s";
-	public static final String K_METHOD_RESP = "[Resp] %s %s";
+	public static final String K_METHOD_ARGS = "[Args] ";
+	public static final String K_METHOD_RESP = "[Resp] ";
 	
 	public static String format(String key, String methodName) {
-		return String.format(key, methodName);
+		return new StringBuilder().append(key).append(methodName).toString();
 	}
 	
 	public static String format(String key, String methodName, StopWatch sw) {
-		String timeInMilliSeconds = String.valueOf(sw.getTotalTimeMillis()) + "ms";
-		return String.format(key, methodName, timeInMilliSeconds);
+		return new StringBuilder().append(key).append(methodName).append(K_SPACE).append(sw.getTotalTimeMillis()).append(K_MILLI_SECS).toString();
 	}
 
 	public static String format(String key, String methodName, String args) {
-		return String.format(key, methodName, args);
+		return new StringBuilder().append(key).append(methodName).append(K_SPACE).append(args).toString();
 	}
 	
 	@Around("@within(com.antheminc.oss.nimbus.support.EnableLoggingInterceptor)")
