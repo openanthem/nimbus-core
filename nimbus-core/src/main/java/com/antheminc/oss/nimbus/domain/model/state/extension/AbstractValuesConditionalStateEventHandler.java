@@ -27,6 +27,9 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.builder.internal.AbstractEntityStateBuilder;
 import com.antheminc.oss.nimbus.support.JustLogit;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+
 /**
  * 
  * <p>Abstract Conditional State Event handler for updating <tt>Values</tt> annotated fields based
@@ -35,6 +38,7 @@ import com.antheminc.oss.nimbus.support.JustLogit;
  * @author Tony Lopez
  * @see com.antheminc.oss.nimbus.domain.defn.extension.ValuesConditional
  */
+@Getter(AccessLevel.PROTECTED)
 public abstract class AbstractValuesConditionalStateEventHandler extends AbstractConditionalStateEventHandler {
 
 	public static final JustLogit LOG = new JustLogit();
@@ -55,7 +59,7 @@ public abstract class AbstractValuesConditionalStateEventHandler extends Abstrac
 	 */
 	protected void execute(Param<?> targetParam, Values values) {
 		final List<ParamValue> oldValues = targetParam.getValues();
-		final List<ParamValue> newValues = AbstractEntityStateBuilder.buildValues(values, targetParam, this.gateway);
+		final List<ParamValue> newValues = AbstractEntityStateBuilder.buildValues(values, targetParam, getGateway());
 		targetParam.setValues(newValues);
 		LOG.trace(() -> "Updated values for param '" + targetParam + "' from '" + oldValues + "' to '" + newValues + "'.");
 

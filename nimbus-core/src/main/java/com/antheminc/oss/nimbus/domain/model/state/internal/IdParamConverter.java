@@ -18,6 +18,7 @@ package com.antheminc.oss.nimbus.domain.model.state.internal;
 import org.apache.commons.lang3.StringUtils;
 
 import com.antheminc.oss.nimbus.domain.defn.Converters.ParamConverter;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 
 
@@ -25,6 +26,7 @@ import com.antheminc.oss.nimbus.domain.defn.Converters.ParamConverter;
  * @author Rakesh Patel
  *
  */
+@EnableLoggingInterceptor
 public class IdParamConverter implements ParamConverter<Long, String> {
 
 	public static final String PREFIX = "ANT";
