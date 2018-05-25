@@ -30,7 +30,7 @@ import org.aspectj.lang.annotation.Aspect;
 @Aspect
 public class DefaultLoggingInterceptor {
 
-	private static final JustLogit logit = new JustLogit("method-metric-logger");
+	private static final JustLogit logit = new JustLogit("api-metric-logger");
 	
 	public static final String K_SPACE = " ";
 	public static final String K_MILLI_SECS = "ms";
@@ -45,18 +45,18 @@ public class DefaultLoggingInterceptor {
 	
 	public static class SimpleStopWatch {
 		private long startTimeMillis;
-		private long totalTimeMillis;
+		private String totalTimeMillis;
 		
 		public void start() {
 			this.startTimeMillis = System.currentTimeMillis();
 		}
 		
 		public void stop() {
-			this.totalTimeMillis = System.currentTimeMillis() - this.startTimeMillis;
+			this.totalTimeMillis = String.valueOf(System.currentTimeMillis() - this.startTimeMillis);
 		}
 		
 		public String toString() {
-			return String.valueOf(totalTimeMillis);
+			return totalTimeMillis;
 		}
 	}
 	
@@ -78,15 +78,15 @@ public class DefaultLoggingInterceptor {
 		SimpleStopWatch sw = new SimpleStopWatch();
 		
 		try {
-			logit.info(()->format(K_METHOD_ENTRY, methodName));
-			logit.debug(()->format(K_METHOD_ARGS, methodName, nullSafeArgs(proceedingJoinPoint, methodName)));
+			logit.debug(()->format(K_METHOD_ENTRY, methodName));
+			logit.trace(()->format(K_METHOD_ARGS, methodName, nullSafeArgs(proceedingJoinPoint, methodName)));
 			
 			sw.start();
 			Object result =  proceedingJoinPoint.proceed();
 			sw.stop();
 			
-			logit.debug(()->format(K_METHOD_RESP, methodName, nullSafeResp(result)));
-			logit.info(()->format(K_METHOD_EXIT, methodName, sw));
+			logit.trace(()->format(K_METHOD_RESP, methodName, nullSafeResp(result)));
+			logit.debug(()->format(K_METHOD_EXIT, methodName, sw));
 			
 			return result;
 			
