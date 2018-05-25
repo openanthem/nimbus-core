@@ -141,9 +141,9 @@ public class DefaultCoreBuilderConfig {
 		return new SecurityUtils(secureRegex);
 	}
 	
-	@Bean
-	DefaultLoggingInterceptor defaultLoggingHandler() {
-		return new DefaultLoggingInterceptor();
-	}
+//	@Bean
+//	DefaultLoggingInterceptor defaultLoggingHandler() {
+//		return new DefaultLoggingInterceptor();
+//	}
 
 }
