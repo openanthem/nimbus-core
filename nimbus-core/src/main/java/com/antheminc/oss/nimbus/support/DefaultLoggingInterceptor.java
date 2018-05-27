@@ -72,21 +72,21 @@ public class DefaultLoggingInterceptor {
 		return new StringBuilder().append(key).append(methodName).append(K_SPACE).append(args).toString();
 	}
 	
-	@Around("@within(com.antheminc.oss.nimbus.support.EnableLoggingInterceptor)")
+	@Around("@within(com.antheminc.oss.nimbus.support.EnableAPIMetricCollection)")
 	public Object logMethods(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
 		String methodName = nullSafeMethodGet(proceedingJoinPoint);
 		SimpleStopWatch sw = new SimpleStopWatch();
 		
 		try {
-			logit.debug(()->format(K_METHOD_ENTRY, methodName));
-			logit.trace(()->format(K_METHOD_ARGS, methodName, nullSafeArgs(proceedingJoinPoint, methodName)));
+			logit.info(()->format(K_METHOD_ENTRY, methodName));
+			logit.debug(()->format(K_METHOD_ARGS, methodName, nullSafeArgs(proceedingJoinPoint, methodName)));
 			
 			sw.start();
 			Object result =  proceedingJoinPoint.proceed();
 			sw.stop();
 			
-			logit.trace(()->format(K_METHOD_RESP, methodName, nullSafeResp(result)));
-			logit.debug(()->format(K_METHOD_EXIT, methodName, sw));
+			logit.debug(()->format(K_METHOD_RESP, methodName, nullSafeResp(result)));
+			logit.info(()->format(K_METHOD_EXIT, methodName, sw));
 			
 			return result;
 			
