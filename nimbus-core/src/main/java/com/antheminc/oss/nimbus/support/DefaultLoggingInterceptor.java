@@ -15,6 +15,7 @@
  */
 package com.antheminc.oss.nimbus.support;
 
+import java.lang.annotation.Annotation;
 import java.util.Optional;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -22,6 +23,9 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.core.annotation.AnnotationUtils;
+
+import com.antheminc.oss.nimbus.support.EnableAPIMetricCollection.LogLevel;
 
 /**
  * @author Soham Chakravarti
@@ -78,15 +82,24 @@ public class DefaultLoggingInterceptor {
 		SimpleStopWatch sw = new SimpleStopWatch();
 		
 		try {
-			logit.info(()->format(K_METHOD_ENTRY, methodName));
-			logit.debug(()->format(K_METHOD_ARGS, methodName, nullSafeArgs(proceedingJoinPoint, methodName)));
+			EnableAPIMetricCollection configuredAnnotation = nullSafeLoggingLevel(proceedingJoinPoint);
+			if(logArgs(configuredAnnotation, LogLevel.info)) {
+				logit.info(()->format(K_METHOD_ARGS, methodName, nullSafeArgs(proceedingJoinPoint, methodName)));
+			} else {
+				logit.info(()->format(K_METHOD_ENTRY, methodName));
+				logit.debug(()->format(K_METHOD_ARGS, methodName, nullSafeArgs(proceedingJoinPoint, methodName)));
+			}
 			
 			sw.start();
 			Object result =  proceedingJoinPoint.proceed();
 			sw.stop();
 			
-			logit.debug(()->format(K_METHOD_RESP, methodName, nullSafeResp(result)));
-			logit.info(()->format(K_METHOD_EXIT, methodName, sw));
+			if(logResp(configuredAnnotation, LogLevel.info)) {
+				logit.info(()->format(K_METHOD_RESP, methodName, nullSafeResp(result)));
+			} else {
+				logit.debug(()->format(K_METHOD_RESP, methodName, nullSafeResp(result)));
+				logit.info(()->format(K_METHOD_EXIT, methodName, sw));
+			}
 			
 			return result;
 			
@@ -98,6 +111,36 @@ public class DefaultLoggingInterceptor {
 			throw t;
 		}
 		
+	}
+	
+	private EnableAPIMetricCollection nullSafeLoggingLevel(ProceedingJoinPoint proceedingJoinPoint) {
+		return Optional.ofNullable(proceedingJoinPoint.getTarget())
+					.map(Object::getClass)
+					.map(ae->AnnotationUtils.findAnnotation(ae, EnableAPIMetricCollection.class))
+					.orElse(_DEFAULT);
+	}
+	
+	private static EnableAPIMetricCollection _DEFAULT = new EnableAPIMetricCollection() {
+		@Override
+		public Class<? extends Annotation> annotationType() {
+			return EnableAPIMetricCollection.class;
+		}
+		@Override
+		public LogLevel args() {
+			return LogLevel.debug;
+		}
+		@Override
+		public LogLevel resp() {
+			return LogLevel.debug;
+		}
+	};
+	
+	private static boolean logArgs(EnableAPIMetricCollection on, LogLevel level) {
+		return Optional.ofNullable(on).filter(p->p.args()==level).isPresent();
+	}
+	
+	private static boolean logResp(EnableAPIMetricCollection on, LogLevel level) {
+		return Optional.ofNullable(on).filter(p->p.resp()==level).isPresent();
 	}
 	
 	private String nullSafeMethodGet(ProceedingJoinPoint proceedingJoinPoint) {

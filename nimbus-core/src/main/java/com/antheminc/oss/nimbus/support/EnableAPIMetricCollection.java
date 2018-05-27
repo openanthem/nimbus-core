@@ -29,4 +29,12 @@ import java.lang.annotation.Target;
 @Target(TYPE)
 public @interface EnableAPIMetricCollection {
 
+	public enum LogLevel {
+		info,
+		debug;
+	}
+	
+	LogLevel args() default LogLevel.debug;
+	LogLevel resp() default LogLevel.debug;
+
 }

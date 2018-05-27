@@ -66,6 +66,7 @@ import com.antheminc.oss.nimbus.domain.model.state.StateEventListener;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ChangeLogCommandEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.internal.BaseStateEventListener;
 import com.antheminc.oss.nimbus.support.EnableAPIMetricCollection;
+import com.antheminc.oss.nimbus.support.EnableAPIMetricCollection.LogLevel;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -74,7 +75,7 @@ import lombok.Getter;
  * @author Soham Chakravarti
  *
  */
-@EnableAPIMetricCollection
+@EnableAPIMetricCollection(args=LogLevel.info)
 @Getter(value=AccessLevel.PROTECTED)
 public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies implements CommandExecutorGateway {
 	
