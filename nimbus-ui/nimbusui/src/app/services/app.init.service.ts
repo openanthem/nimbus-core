@@ -54,6 +54,7 @@ export class AppInitService {
         
         return this.http
             .get(ServiceConstants.APP_LOG_OPTIONS, this.options)
+            .timeout(3000)
             .toPromise()
             .then(res => {
                 this.logOptions = res.json();
