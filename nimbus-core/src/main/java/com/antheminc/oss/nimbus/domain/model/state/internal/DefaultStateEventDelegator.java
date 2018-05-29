@@ -40,12 +40,13 @@ import com.antheminc.oss.nimbus.domain.model.state.extension.ChangeLogCommandEve
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * @author Soham Chakravarti
  *
  */
-@Getter @Setter @RequiredArgsConstructor
+@Getter @Setter @ToString(of={}) @RequiredArgsConstructor
 public class DefaultStateEventDelegator implements StateEventDelegator {
 	
 	private List<StateEventListener> defaultScopedListeners;

@@ -76,6 +76,7 @@ export class HomeLayoutCmp {
         private _logger: LoggerService,
         private wcs: WebContentSvc,
         private titleService: Title) {
+        
     }
 
     logout() {

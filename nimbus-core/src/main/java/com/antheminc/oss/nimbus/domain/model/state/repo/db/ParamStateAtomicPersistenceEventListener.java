@@ -31,7 +31,9 @@ import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
 import com.antheminc.oss.nimbus.domain.model.state.internal.AbstractEvent.PersistenceMode;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelPersistenceHandler;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepositoryFactory;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -42,6 +44,7 @@ import lombok.Setter;
 @ConfigurationProperties(prefix="model.persistence.strategy")
 public class ParamStateAtomicPersistenceEventListener extends ParamStatePersistenceEventListener {
 
+	@Getter(value=AccessLevel.PROTECTED)
 	ModelRepositoryFactory repoFactory;
 
 	@Getter @Setter
@@ -69,7 +72,7 @@ public class ParamStateAtomicPersistenceEventListener extends ParamStatePersiste
 			throw new InvalidConfigException("Core Persistent entity must be configured with "+Repo.class.getSimpleName()+" annotation. Not found for root model: "+p.getRootExecution());
 		} 
 			
-		ModelPersistenceHandler handler = repoFactory.getHandler(repo);
+		ModelPersistenceHandler handler = getRepoFactory().getHandler(repo);
 		
 		if(handler == null) {
 			throw new InvalidConfigException("There is no repository handler provided for the configured repository :"+repo.value().name()+ " for root model: "+p.getRootExecution());

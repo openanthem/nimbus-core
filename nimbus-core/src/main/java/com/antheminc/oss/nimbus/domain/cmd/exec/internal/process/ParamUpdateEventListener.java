@@ -26,12 +26,14 @@ import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.AbstractStateAndConfigEventListener;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 /**
  * @author Rakesh Patel
  *
  */
 // This class is specific to task and create other classes for any other listener for same param update
+@EnableLoggingInterceptor
 public class ParamUpdateEventListener extends AbstractStateAndConfigEventListener {
 
 	@Autowired MongoOperations mongoOps;

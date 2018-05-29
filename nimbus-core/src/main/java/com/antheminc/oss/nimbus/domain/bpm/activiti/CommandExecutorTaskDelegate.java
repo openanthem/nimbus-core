@@ -30,18 +30,25 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 
  * @author Jayant Chaudhuri
  *
  */
+@EnableLoggingInterceptor
+@Getter 
 public class CommandExecutorTaskDelegate implements JavaDelegate{
 	
 	CommandExecutorGateway commandGateway;
 	CommandPathVariableResolver pathVariableResolver;
 	ActivitiExpressionManager activitiExpressionManager;
 	
+	@Setter
 	private Expression url;
 
 	public CommandExecutorTaskDelegate(BeanResolverStrategy beanResolver) {
@@ -52,7 +59,7 @@ public class CommandExecutorTaskDelegate implements JavaDelegate{
 	
 	@Override
 	public void execute(DelegateExecution execution) {
-		String[] commandUrls = url.getExpressionText().split("\\r?\\n");
+		String[] commandUrls = getUrl().getExpressionText().split("\\r?\\n");
 		ProcessEngineContext context = (ProcessEngineContext)execution.getVariable(Constants.KEY_EXECUTE_PROCESS_CTX.code);
 		MultiOutput output = null;
 		for(String commandUrl: commandUrls){
@@ -63,10 +70,10 @@ public class CommandExecutorTaskDelegate implements JavaDelegate{
 			CommandMessage commandMessage = new CommandMessage(command,null);
 			//commandMessage.setCommand(command);
 			if(output == null){
-				output = commandGateway.execute(commandMessage);
+				output = getCommandGateway().execute(commandMessage);
 				context.setOutput(output);
 			}else{
-				MultiOutput commandOutput = commandGateway.execute(commandMessage);
+				MultiOutput commandOutput = getCommandGateway().execute(commandMessage);
 				for(Output<?> op: commandOutput.getOutputs()){
 					output.template().add(op);
 				}
@@ -76,7 +83,7 @@ public class CommandExecutorTaskDelegate implements JavaDelegate{
 	
 	
 	private String resolveCommandUrl(ProcessEngineContext context, String commandUrl){
-		commandUrl = pathVariableResolver.resolve(context.getParam(), commandUrl);
+		commandUrl = getPathVariableResolver().resolve(context.getParam(), commandUrl);
 		commandUrl = context.getParam().getRootExecution().getRootCommand().getRelativeUri(commandUrl);
     	return commandUrl;
 	}

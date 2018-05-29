@@ -65,11 +65,17 @@ import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
 import com.antheminc.oss.nimbus.domain.model.state.StateEventListener;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ChangeLogCommandEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.internal.BaseStateEventListener;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
+
+import lombok.AccessLevel;
+import lombok.Getter;
 
 /**
  * @author Soham Chakravarti
  *
  */
+@EnableLoggingInterceptor
+@Getter(value=AccessLevel.PROTECTED)
 public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies implements CommandExecutorGateway {
 	
 	@SuppressWarnings("rawtypes")
@@ -128,7 +134,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			
 			if(lockId!=null) {
 				//TODO: Interim solution
-				cmdHandler.handleOnRootStopEvents(cmdMsg.getCommand(), mOut);
+				getCmdHandler().handleOnRootStopEvents(cmdMsg.getCommand(), mOut);
 
 				return createFlattenedOutput(mOut);
 			}
@@ -229,9 +235,9 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 				// TODO Rakesh - Review with soham
 				// - e.g. needed to replace e.g. <!page=y!> path variable with the value available in request params (only available in eCtx at this point)
 					// can be used for any other values not available in commandParam ??
-				String eCtxResolvedConfigUri = eCtxPathVariableResolver.resolve(eCtx, cmdParam, completeConfigUri);
+				String eCtxResolvedConfigUri = getECtxPathVariableResolver().resolve(eCtx, cmdParam, completeConfigUri);
 			
-				String resolvedConfigUri = pathVariableResolver.resolve(cmdParam, eCtxResolvedConfigUri);
+				String resolvedConfigUri = getPathVariableResolver().resolve(cmdParam, eCtxResolvedConfigUri);
 					
 				Command configExecCmd = CommandBuilder.withUri(resolvedConfigUri).getCommand();
 				
@@ -253,7 +259,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 	
 		
 		String configDomainAlias = configCmdMsg.getCommand().getRootDomainAlias();
-		ModelConfig<?> configDomainModelConfig = domainConfigBuilder.getRootDomainOrThrowEx(configDomainAlias);
+		ModelConfig<?> configDomainModelConfig = getDomainConfigBuilder().getRootDomainOrThrowEx(configDomainAlias);
 		
 		
 		String configDomainRootAlias = configCmdMsg.getCommand().buildAlias(Type.DomainAlias);
@@ -446,7 +452,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			domainRootCmd = cmdMsg.getCommand();
 		}
 		
-		ExecutionContext loaderCtx = loader.load(domainRootCmd);
+		ExecutionContext loaderCtx = getLoader().load(domainRootCmd);
 		
 		// create context for passed in command and payload
 		ExecutionContext eCtx = new ExecutionContext(cmdMsg, loaderCtx.getQuadModel());
@@ -454,7 +460,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 	}
 	
 	protected CommandExecutor<?> lookupExecutor(Command cmd, Behavior b) {
-		return lookupBeanOrThrowEx(CommandExecutor.class, executors, cmd.getAction(), b);
+		return lookupBeanOrThrowEx(CommandExecutor.class, getExecutors(), cmd.getAction(), b);
 	}
 
 }

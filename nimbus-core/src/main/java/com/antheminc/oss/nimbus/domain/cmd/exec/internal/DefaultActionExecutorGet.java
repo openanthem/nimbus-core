@@ -39,11 +39,17 @@ import com.antheminc.oss.nimbus.domain.model.state.InvalidStateException;
 import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
 import com.antheminc.oss.nimbus.domain.model.state.internal.ExecutionEntity;
 import com.antheminc.oss.nimbus.entity.process.ProcessFlow;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
+
+import lombok.AccessLevel;
+import lombok.Getter;
 
 /**
  * @author Soham Chakravarti
  *
  */
+@EnableLoggingInterceptor
+@Getter(value=AccessLevel.PROTECTED)
 public class DefaultActionExecutorGet extends AbstractFunctionCommandExecutor<Param<Object>, Object> {
 
 	private CommandExecutorGateway commandGateway;
@@ -137,7 +143,7 @@ public class DefaultActionExecutorGet extends AbstractFunctionCommandExecutor<Pa
 		Command mapsToCmd = CommandBuilder.from(eCtx.getCommandMessage().getCommand(), mapsToConfig.getAlias()).getCommand();
 		mapsToCmd.setAction(action);
 		
-		Param<?> coreParam = Optional.ofNullable(commandGateway.execute(mapsToCmd, null))
+		Param<?> coreParam = Optional.ofNullable(getCommandGateway().execute(mapsToCmd, null))
 								.map(mOut->(Param<?>)mOut.getSingleResult())
 								.orElseThrow(()->new InvalidStateException("Expeceted first response from command gateway to return mapsTo core parm, but not found for mapsToCmd: "+mapsToCmd));
 		
@@ -150,7 +156,7 @@ public class DefaultActionExecutorGet extends AbstractFunctionCommandExecutor<Pa
 		if(StringUtils.trimToNull(domainLifeCycle)==null)
 			return null;
 		
-		ModelConfig<?> modelConfig = domainConfigBuilder.getModel(ProcessFlow.class);
+		ModelConfig<?> modelConfig = getDomainConfigBuilder().getModel(ProcessFlow.class);
 		Repo repo = modelConfig.getRepo();
 		
 		if(!Repo.Database.exists(repo))

@@ -18,6 +18,7 @@ package com.antheminc.oss.nimbus.domain.model.state.extension;
 import com.antheminc.oss.nimbus.domain.defn.extension.ParamContext;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 /**
  * Default StateEventHandler for fields decorated with <tt>ParamContext</tt> that sets
@@ -26,6 +27,7 @@ import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnSt
  * @author Tony Lopez
  * @see com.antheminc.oss.nimbus.domain.defn.extension.ParamContext
  */
+@EnableLoggingInterceptor
 public class ParamContextStateEventHandler implements OnStateLoadHandler<ParamContext> {
 
 	@Override

@@ -20,11 +20,13 @@ import java.util.Arrays;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.extension.ActivateConditional;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 /**
  * @author Soham Chakravarti
  *
  */
+@EnableLoggingInterceptor
 public class ActivateConditionalStateEventHandler extends AbstractConditionalStateEventHandler.EvalExprWithCrudActions<ActivateConditional> {
 
 	public ActivateConditionalStateEventHandler(BeanResolverStrategy beanResolver) {

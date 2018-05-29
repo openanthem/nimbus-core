@@ -35,6 +35,7 @@ import org.springframework.context.ApplicationContextAware;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.state.HierarchyMatch;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -42,6 +43,7 @@ import lombok.Setter;
  * @author Jayant Chaudhuri
  *
  */
+@Getter(value=AccessLevel.PROTECTED)
 public class HierarchyMatchBasedBeanFinder implements ApplicationContextAware {
 	
 	ApplicationContext ctx;
@@ -52,7 +54,7 @@ public class HierarchyMatchBasedBeanFinder implements ApplicationContextAware {
 	public static final Pattern SPECIAL_REGEX_CHARS = Pattern.compile("[{}()\\[\\].+*?^$\\\\|]");
 	
 	public<T extends HierarchyMatch> T findMatchingBean(Class<T> type, String beanIdToFind) {
-		Map<String, T> beans = this.ctx.getBeansOfType(type);
+		Map<String, T> beans = this.getCtx().getBeansOfType(type);
 		if(MapUtils.isEmpty(beans)) return null;
 		List<String> beanNamesToMatch = new ArrayList<>();
 		beans.entrySet().forEach((entry) -> {
@@ -112,7 +114,7 @@ public class HierarchyMatchBasedBeanFinder implements ApplicationContextAware {
 			if(i > 0) {
 				ptrnStr.append(Constants.SEPARATOR_URI.code);
 			}
-			ptrnStr.append(processBeanRegex);
+			ptrnStr.append(getProcessBeanRegex());
 		}
 		return Pattern.compile(ptrnStr.toString());
 	}
