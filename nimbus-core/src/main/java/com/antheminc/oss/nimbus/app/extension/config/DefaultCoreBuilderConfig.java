@@ -142,7 +142,7 @@ public class DefaultCoreBuilderConfig {
 	}
 	
 	@Bean
-	DefaultLoggingInterceptor defaultLoggingHandler() {
+	public DefaultLoggingInterceptor defaultLoggingHandler() {
 		return new DefaultLoggingInterceptor();
 	}
 
