@@ -41,7 +41,7 @@ import * as moment from 'moment';
 export class AppComponent {
     navIsFixed: boolean;
 
-    constructor(@Inject(DOCUMENT) private document: any, private _logger: LoggerService) {
+    constructor(private loggerService: LoggerService) {
     }
 
     @HostListener("window:scroll", [])
@@ -56,20 +56,6 @@ export class AppComponent {
     }
 
     ngOnInit() {
-        this._logger.info('AppComponent-i');
-        ServiceConstants.STOPGAP_APP_HOST = this.document.location.hostname;
-        ServiceConstants.STOPGAP_APP_PORT = this.document.location.port;
-        ServiceConstants.APP_CONTEXT = this.document.location.pathname.split('/').splice(1, 1);
-        ServiceConstants.LOCALE_LANGUAGE = "en-US"; //TODO This locale should be read dynamically. Currently defaulting to en-US
-        ServiceConstants.STOPGAP_APP_PROTOCOL = this.document.location.protocol;
-        const docObj = {
-            message: 'all values are updated from document',
-            host: ServiceConstants.STOPGAP_APP_HOST,
-            port: ServiceConstants.STOPGAP_APP_PORT,
-            appContext: ServiceConstants.APP_CONTEXT,
-            appProtocol: ServiceConstants.STOPGAP_APP_PROTOCOL
-        };
-        this._logger.debug('app component: ' + JSON.stringify(docObj));
     }
 
 }

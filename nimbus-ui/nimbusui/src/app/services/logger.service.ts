@@ -20,6 +20,9 @@ import { Inject, Injectable } from '@angular/core';
 import { ServiceConstants } from './service.constants';
 import { SessionStoreService } from './session.store';
 import { CUSTOM_STORAGE } from './session.store';
+import { Http, Response, Headers, RequestOptions } from '@angular/http';
+import 'rxjs/add/operator/toPromise';
+import { AppInitService } from './app.init.service';
 /**
  * \@author Sandeep.Mantha
  * \@whatItDoes 
@@ -31,27 +34,40 @@ import { CUSTOM_STORAGE } from './session.store';
 export class LoggerService {
 
     JL: JL.JSNLog;
+    headers: Headers;
+    options: RequestOptions;
+    promiseDone: boolean = false; 
 
-    constructor(@Inject('JSNLOG') JL: JL.JSNLog,  @Inject(CUSTOM_STORAGE) sessionStorage: SessionStoreService ){
+    constructor(@Inject('JSNLOG') JL: JL.JSNLog,  @Inject(CUSTOM_STORAGE) sessionStorage: SessionStoreService, private appInitService: AppInitService) {
+        this.headers = new Headers({ 'Content-Type': 'application/json'});
+        this.options = new RequestOptions({ headers: this.headers });
+
         this.JL = JL;
         var beforeSendOverride = function (xhr: XMLHttpRequest, json: any) {
             json.r = sessionStorage.get(ServiceConstants.SESSIONKEY);
             json.a = window.navigator.appVersion;
             json.v = window.navigator.vendor;
         };
-        var options = {
-            'bufferSize': 20,
-            'url' :  'http://localhost:8000/log',
-            'storeInBufferLevel': 1000,
-            'level': 3000,
-            'sendWithBufferLevel': 6000
+
+        var logOptions = this.appInitService.getLogOptions();
+        if (logOptions) {
+            this.promiseDone = true;
+            logOptions['url'] = ServiceConstants.APP_LOGS;
+            logOptions['beforeSend'] = beforeSendOverride;    
+            if (logOptions['logToConsole']) {
+                var consoleAppender = JL.createConsoleAppender('consoleAppender');
+                consoleAppender.setOptions(logOptions); 
+                JL().setOptions({'appenders': [consoleAppender]});
+            } else {
+                var ajaxAppender = JL.createAjaxAppender('ajaxAppender');
+                ajaxAppender.setOptions(logOptions); 
+                this.JL().setOptions({'appenders': [ajaxAppender]});
+            }
         }
-        //var options = ServiceConstants.LOG_OPTIONS;
-        options['beforeSend'] = beforeSendOverride;
-        var appender = JL.createAjaxAppender('custom appender');
-        appender.setOptions(options);
-        JL().setOptions({'appenders': [appender]});
-        
+    }
+
+    public init() {
+        console.log('init');
     }
 
     public info(message:string) {
@@ -75,6 +91,9 @@ export class LoggerService {
     }
 
     public write(logMessage: string, logLevel: number) {
-        this.JL().log(logLevel,logMessage);
+        if (this.promiseDone) {
+            this.JL().log(logLevel,logMessage);
+        }
     }
+
 }
