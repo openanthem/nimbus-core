@@ -15,7 +15,7 @@
                 <a [href] = "p.param.config.url" >{{p.param.config.code}}</a>
             </li> -->
         </ul>
-        <ul *ngIf="footerConfig">
+        <ul *ngIf="footerConfig && footerConfig.sslCert">
             <li>
                 <nm-link [element]="footerConfig.sslCert"></nm-link>
             </li>
