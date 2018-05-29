@@ -47,8 +47,8 @@ export class ServiceConstants {
     public static get PLATFORM_BASE_URL(): string    { return this.APP_HOST_URL+this.APP_PORT+'/'+this.APP_CONTEXT+'/org/p'; }
     public static get CLIENT_BASE_URL(): string    { return this.APP_HOST_URL+this.APP_PORT+'/'; }
     public static get WS_BASE_URL(): string { return 'ws://'+this.APP_HOST+this.WS_PORT+'/updates'; }
-    public static get APP_LOGS(): string { return this.APP_HOST_URL+this.APP_PORT+'/log'; }
-    public static get APP_LOG_OPTIONS(): string { return this.APP_HOST_URL+this.APP_PORT+'/log/options'; }
+    public static get APP_LOGS(): string { return this.APP_HOST_URL+'7443'+'/log'; }//Temporary port for dev
+    public static get APP_LOG_OPTIONS(): string { return this.APP_HOST_URL+'7443'+'/log/options'; }//Temporary port for dev
     public static get WEB_CONTENT_URL(): string    { return this.BASE_URL+'/web_content_server/'; }
     public static get CONTENT_MANAGEMENT(): string { return this.APP_HOST_URL+this.WEB_CONTENT_PORT+'/contentManagement'; }
 
