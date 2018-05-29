@@ -40,45 +40,6 @@ import lombok.RequiredArgsConstructor;
  */
 public final class JavaBeanHandlerUtils {
 
-	@RequiredArgsConstructor
-	private static class CacheKey {
-		private final Class<?> beanClass;
-		private final String fieldName;
-		
-		@Override
-		public boolean equals(Object obj) {
-			if(obj==null)
-				return false;
-			
-			if(!CacheKey.class.isInstance(obj))
-				return false;
-			
-			CacheKey other = CacheKey.class.cast(obj);
-			if(this.beanClass!=other.beanClass)
-				return false;
-			
-			if(!org.apache.commons.lang3.StringUtils.equals(this.fieldName, other.fieldName))
-				return false;
-			
-			return true;
-		}
-		
-	    @Override public int hashCode() {
-	        final int PRIME = 59;
-	        int result = 1;
-	        result = (result*PRIME) + super.hashCode();
-	        
-	        if(this.beanClass!=null )
-	        	result = (result*PRIME) + this.beanClass.hashCode();
-
-	        if(this.fieldName!=null)
-	        	result = (result*PRIME) + this.fieldName.hashCode();
-	        
-	        return result;
-	      }
-	}
-	
-	private static final ConcurrentHashMap<CacheKey, ValueAccessor> LOCAL_CACHE = new ConcurrentHashMap<>();
 	
 	public static ValueAccessor constructValueAccessor(Class<?> beanClass, String fieldName) {
 //		CacheKey key = new CacheKey(beanClass, fieldName);
