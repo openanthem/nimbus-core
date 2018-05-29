@@ -34,7 +34,7 @@ export class AppInitService {
 
     constructor(@Inject(DOCUMENT) private document: any, private http: Http) { 
         this.headers = new Headers({ 'Content-Type': 'application/json'});
-        this.options = new RequestOptions({ headers: this.headers });
+        this.options = new RequestOptions({ headers: this.headers, withCredentials: true });
     }
 
     loadConfig(): Promise<any> {
