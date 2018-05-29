@@ -16,13 +16,8 @@
  * 
  */
 'use strict';
-import { Component, ViewEncapsulation, Inject } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { HostListener } from '@angular/core';
-import { WebContentSvc } from './services/content-management.service';
-import { ServiceConstants } from './services/service.constants';
-import { LoggerService } from './services/logger.service';
-import { DOCUMENT } from '@angular/platform-browser';
-import * as moment from 'moment';
 
 /**
  * \@author Dinakar.Meda
@@ -41,7 +36,7 @@ import * as moment from 'moment';
 export class AppComponent {
     navIsFixed: boolean;
 
-    constructor(private loggerService: LoggerService) {
+    constructor() {
     }
 
     @HostListener("window:scroll", [])

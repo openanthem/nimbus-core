@@ -141,7 +141,6 @@ import {DateTimeFormatPipe} from './pipes/date.pipe';
 
 export function init_app(appinitservice: AppInitService) {
     return () => {
-        console.log('Getting config');
         return appinitservice.loadConfig();
     }
 }

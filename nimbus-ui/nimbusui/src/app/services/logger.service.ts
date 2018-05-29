@@ -20,8 +20,6 @@ import { Inject, Injectable } from '@angular/core';
 import { ServiceConstants } from './service.constants';
 import { SessionStoreService } from './session.store';
 import { CUSTOM_STORAGE } from './session.store';
-import { Http, Response, Headers, RequestOptions } from '@angular/http';
-import 'rxjs/add/operator/toPromise';
 import { AppInitService } from './app.init.service';
 /**
  * \@author Sandeep.Mantha
@@ -34,13 +32,9 @@ import { AppInitService } from './app.init.service';
 export class LoggerService {
 
     JL: JL.JSNLog;
-    headers: Headers;
-    options: RequestOptions;
     promiseDone: boolean = false; 
 
     constructor(@Inject('JSNLOG') JL: JL.JSNLog,  @Inject(CUSTOM_STORAGE) sessionStorage: SessionStoreService, private appInitService: AppInitService) {
-        this.headers = new Headers({ 'Content-Type': 'application/json'});
-        this.options = new RequestOptions({ headers: this.headers });
 
         this.JL = JL;
         var beforeSendOverride = function (xhr: XMLHttpRequest, json: any) {
@@ -64,10 +58,6 @@ export class LoggerService {
                 this.JL().setOptions({'appenders': [ajaxAppender]});
             }
         }
-    }
-
-    public init() {
-        console.log('init');
     }
 
     public info(message:string) {
