@@ -17,8 +17,10 @@ package com.antheminc.oss.nimbus.channel.web;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -99,7 +101,7 @@ public class WebActionController {
 	public static final String URI_PATTERN_P = "/{clientCode}/**/p";
 	public static final String URI_PATTERN_P_OPEN = URI_PATTERN_P + "/**";
 
-	public static final List<Action> notifyActionsToMatch = Arrays.asList(Action._replace, Action._update);
+	public static final Set<Action> notifyActionsToMatch = EnumSet.of(Action._replace, Action._update);
 	
 	@Autowired WebCommandDispatcher dispatcher;
 	
@@ -158,25 +160,31 @@ public class WebActionController {
 	private void filterInputParamFromOutput(Object obj) {
 		if(obj instanceof MultiOutput) {
 			MultiOutput multiOp = (MultiOutput) obj;
-			Command cmd = CommandBuilder.withUri(multiOp.getInputCommandUri()).getCommand();
-			String inputParamPath = cmd.getAbsoluteDomainAlias();
 			List<Output<?>> outputs = multiOp.getOutputs();
 			if(CollectionUtils.isEmpty(outputs))
 				return;
-			List<Output<?>> toRemove = new ArrayList<Output<?>>();
-			for (Output<?> o : outputs) {
-				if(o.getValue() instanceof  Param) {
-					Param<?> param = (Param<?>) o.getValue();
-					if(inputParamPath.equals(param.getPath()) && notifyActionsToMatch.contains(o.getAction())) {
-						toRemove.add(o);
-					}
-				//mark output that has value:true to be removed
-				} else if(o.getValue() instanceof Boolean) {
-					toRemove.add(o);
-				}
-			}
-				outputs.removeAll(toRemove);
+			
+			Command cmd = CommandBuilder.withUri(multiOp.getInputCommandUri()).getCommand();
+			String inputParamPath = cmd.getAbsoluteDomainAlias();
+			
+			outputs.removeIf(o -> isRemove(inputParamPath, o));
 		}
+	}
+
+	private boolean isRemove(String inputParamPath, Output<?> o) {
+		if(o instanceof MultiOutput) {
+			filterInputParamFromOutput(o);
+		}
+		else if(o.getValue() instanceof Param) {
+			Param<?> param = (Param<?>) o.getValue();
+			if(inputParamPath.equals(param.getPath()) && notifyActionsToMatch.contains(o.getAction())) {
+				return true;
+			}
+		} 
+		else if(o.getValue() instanceof Boolean) { // mark output that has value:boolean to be removed
+			return true;
+		}
+		return false;
 	}
 	
 	@RequestMapping({"/login/*"})
