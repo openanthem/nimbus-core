@@ -739,7 +739,7 @@ export class PageService {
                         this.validationUpdate.next(sourceParam);
                         this.updateNestedParameters(sourceParam,responseParam);
                 } else {
-                        this.logError('Could not process the update from the server for ' + responseParam.path + ' because config is undefined.');
+                        this.logger.debug('Could not process the update from the server for ' + responseParam.path + ' because config is undefined.');
                 }
         }
 
