@@ -20,12 +20,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.script.Bindings;
+import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.repository.support.SpringDataMongodbQuery;
+import org.springframework.data.querydsl.SimpleEntityPathResolver;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
@@ -35,6 +41,7 @@ import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 import com.antheminc.oss.nimbus.support.JustLogit;
 import com.mongodb.BasicDBList;
 import com.mongodb.CommandResult;
+import com.querydsl.core.types.EntityPath;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.PathBuilder;
@@ -77,8 +84,10 @@ public class MongoSearchByQuery extends MongoDBSearch {
 				return this;
 			}
 			
-			final GroovyShell shell = createQBinding(referredClass, alias); 
-	        Predicate predicate = (Predicate)shell.evaluate(criteria);
+//			final GroovyShell shell = createQBinding(referredClass, alias); 
+//	        Predicate predicate = (Predicate)shell.evaluate(criteria);
+	        
+	        Predicate predicate = evaluate(referredClass, alias, criteria);
 	        
 			query.where(predicate);
 			
@@ -91,13 +100,36 @@ public class MongoSearchByQuery extends MongoDBSearch {
 				return this;
 			}
 			
-			final GroovyShell shell = createQBinding(referredClass, alias); 
-	        OrderSpecifier orderBy = (OrderSpecifier)shell.evaluate(criteria);
+//			final GroovyShell shell = createQBinding(referredClass, alias); 
+//	        OrderSpecifier orderBy = (OrderSpecifier)shell.evaluate(criteria);
 	        
+			OrderSpecifier orderBy = evaluate(referredClass, alias, criteria);
+			
 			if(orderBy != null)
 				query.orderBy(orderBy);
 			
 			return this;
+		}
+
+		private <T> T evaluate(Class<?> referredClass, String alias, String criteria) {
+			try {
+				
+				EntityPath<?> qInstance = SimpleEntityPathResolver.INSTANCE.createPath(referredClass);
+				// ideally this should have been enough, but creating another instance to have backward compatibility
+				Constructor<?> con = qInstance.getClass().getConstructor(String.class);
+				Object newQInstance = con.newInstance(referredClass.getSimpleName());
+				
+				ScriptEngine groovyEngine = new ScriptEngineManager().getEngineByName("groovy");
+				Bindings b = groovyEngine.createBindings();
+				b.put(alias, newQInstance);
+				
+				return (T)groovyEngine.eval(criteria, b);
+				
+				
+			} catch (Exception ex) {
+				throw new FrameworkRuntimeException("Cannot instantiate queryDsl class for entity: "+referredClass+ " "
+						+ "please make sure the entity has been annotated with either @Domain or @Model and a Q Class has been generated for it", ex);	
+			}
 		}
 		
 		private GroovyShell createQBinding(Class<?> referredClass, String alias) {
