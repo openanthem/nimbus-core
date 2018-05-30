@@ -20,6 +20,7 @@ import {
   ParamMap
 } from '@angular/router';
 import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
+import { JL } from 'jsnlog';
 
 import { HomeLayoutCmp } from './home-layout.component';
 import { STOMPService } from '../../services/stomp.service';
@@ -125,6 +126,7 @@ describe('HomeLayoutCmp', () => {
         { provide: ActivatedRoute, useClass: MockActivatedRoute },
         { provide: PageService, useClass: MockPageService },
         { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+        { provide: 'JSNLOG', useValue: JL },
         CustomHttpClient,
         WebContentSvc,
         LoaderService,

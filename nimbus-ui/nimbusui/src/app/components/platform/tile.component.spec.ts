@@ -52,6 +52,7 @@ import { CustomHttpClient } from '../../services/httpclient.service';
 import { LoaderService } from '../../services/loader.service';
 import { ConfigService } from '../../services/config.service';
 import { DataTable } from './grid/table.component';
+import { LoggerService } from '../../services/logger.service';
 
 let fixture, app, pageService;
 
@@ -131,7 +132,8 @@ describe('Tile', () => {
         {provide: PageService, useClass: MockPageService},
         CustomHttpClient,
         LoaderService,
-        ConfigService
+        ConfigService,
+        LoggerService
        ]
     }).compileComponents();
     fixture = TestBed.createComponent(Tile);

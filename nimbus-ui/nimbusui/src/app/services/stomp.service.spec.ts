@@ -6,6 +6,7 @@ import * as Stomp from 'stompjs';
 
 import { STOMPService, STOMPState, StateLookup } from './stomp.service';
 import { Subject } from 'rxjs';
+import { LoggerService } from './logger.service';
 
 let http, backend, service;
 
@@ -13,7 +14,8 @@ describe('STOMPService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-          STOMPService
+          STOMPService,
+          LoggerService
       ],
       imports: [ HttpClientTestingModule, HttpModule ]
     });

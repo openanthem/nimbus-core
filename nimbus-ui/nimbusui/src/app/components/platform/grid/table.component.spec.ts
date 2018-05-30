@@ -284,13 +284,12 @@ describe('DataTable', () => {
       expect(app.rowExpanderKey).toEqual('test');
     }));
 
-    it('ngAfterViewInit() should update the imagesPath property and call pageService.processEvent()', async(() => {
+    it('ngAfterViewInit() should  call pageService.processEvent()', async(() => {
       app.element = new Param(configService);
       const eleConfig = { code: '', uiStyles: { attributes: { onLoad: true } } };
       spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
       spyOn(pageService, 'processEvent').and.callThrough();
       app.ngAfterViewInit();
-      expect(app.imagesPath.includes('testing')).toBeTruthy();
       expect(pageService.processEvent).toHaveBeenCalled();
     }));
 
@@ -303,13 +302,12 @@ describe('DataTable', () => {
       expect(pageService.processEvent).not.toHaveBeenCalled();
     }));
 
-    it('ngAfterViewInit() should update the imagesPath property and not call pageService.processEvent()', async(() => {
+    it('ngAfterViewInit() should  not call pageService.processEvent()', async(() => {
       app.element = new Param(configService);
       const eleConfig = { code: '', uiStyles: { attributes: { onLoad: false } } };
       spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
       spyOn(pageService, 'processEvent').and.callThrough();
       app.ngAfterViewInit();
-      expect(app.imagesPath.includes('testing')).toBeTruthy();
       expect(pageService.processEvent).not.toHaveBeenCalled();
     }));
 

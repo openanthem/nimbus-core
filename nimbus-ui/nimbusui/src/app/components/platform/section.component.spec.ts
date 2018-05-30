@@ -51,6 +51,7 @@ import { CustomHttpClient } from '../../services/httpclient.service';
 import { LoaderService } from '../../services/loader.service';
 import { ConfigService } from '../../services/config.service';
 import { DataTable } from './grid/table.component';
+import { LoggerService } from '../../services/logger.service';
 
 class MockPageService {
     processEvent() {
@@ -126,7 +127,8 @@ describe('Section', () => {
         WebContentSvc,
         CustomHttpClient,
         LoaderService,
-        ConfigService
+        ConfigService,
+        LoggerService
        ]
     }).compileComponents();
   }));

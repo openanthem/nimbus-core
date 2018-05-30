@@ -152,7 +152,7 @@ export class HomeLayoutCmp {
     }
 
     ngOnInit() {
-        this._logger.info('HomeLayoutCmp-i');
+        this._logger.debug('HomeLayoutCmp-i');
         // initialize
         this.themes.push({link:'styles/vendor/anthem.blue.theme.css',label:'Blue Theme'});
         this.themes.push({link:'styles/vendor/anthem.black.theme.css',label:'Black Theme'});

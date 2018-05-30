@@ -42,7 +42,7 @@ export class PageNotfoundComponent {
     }
 
     ngOnInit() {
-        this._logger.info('PageNotfoundComponent-i');
+        this._logger.debug('PageNotfoundComponent-i');
     }
 
 }

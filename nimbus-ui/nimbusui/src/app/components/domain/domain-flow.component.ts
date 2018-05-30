@@ -74,7 +74,7 @@ export class DomainFlowCmp {
     }
 
     ngOnInit() {
-        this._logger.info('DomainFlowCmp-i');
+        this._logger.debug('DomainFlowCmp-i ');
         this._route.data.subscribe((data: { layout: string }) => {
             let layout: string = data.layout;
             if (layout) {

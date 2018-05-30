@@ -69,7 +69,7 @@ export class PageContent extends BaseElement{
     }
 
     ngOnInit() {
-        this._logger.info('page content component is intilaized');
+        this._logger.debug('PageContent - i ' + this.element.path);
         this.route.data.subscribe((data: { page: Param }) => {
             let page : Param = data.page;
             this.element = page;

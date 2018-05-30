@@ -3,6 +3,7 @@ import { TestBed, async } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
+import { LoggerService } from './../../services/logger.service';
 
 import { LoginCmp } from './login.component';
 
@@ -20,7 +21,7 @@ describe('LoginCmp', () => {
            ReactiveFormsModule,
            RouterTestingModule
        ],
-       providers: [ {provide: Router, useClass: MockRouter} ]
+       providers: [ {provide: Router, useClass: MockRouter}, LoggerService ]
     }).compileComponents();
   }));
 

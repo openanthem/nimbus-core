@@ -98,7 +98,7 @@ describe('AccordionGroup', () => {
     expect(app.isHidden).toEqual(true);
   }));
 
-  it('animationDone() should call accordion.closeOthers()', async(() => {
+  it('animationDone() should not update isHidden', async(() => {
     app.state = 'openPanel';
     app.accordion = {
         closeOthers: () => {
@@ -113,12 +113,13 @@ describe('AccordionGroup', () => {
     const test = {
         scrollIntoView: () => {}
     };
-    spyOn(app.accordion, 'closeOthers').and.callThrough();
+    // spyOn(app.accordion, 'closeOthers').and.callThrough();
     spyOn(app.elementRef.nativeElement, 'querySelector').and.returnValue({
       scrollIntoView: () => {}
     });
     app.animationDone('t');
-    expect(app.accordion.closeOthers).toHaveBeenCalled();
+    expect(app.isHidden).toEqual(true);
+    // expect(app.accordion.closeOthers).toHaveBeenCalled();
   }));
 
 });

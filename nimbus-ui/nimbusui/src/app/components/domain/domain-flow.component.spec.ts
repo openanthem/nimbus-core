@@ -7,6 +7,7 @@ import { Router, ActivatedRoute, Route, ActivatedRouteSnapshot, UrlSegment, Para
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs';
 import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
+import { JL } from 'jsnlog';
 
 import { DomainFlowCmp } from './domain-flow.component';
 import { BreadcrumbComponent } from '../platform/breadcrumb/breadcrumb.component';
@@ -21,6 +22,7 @@ import { BreadcrumbService } from '../platform/breadcrumb/breadcrumb.service';
 import { LayoutService } from '../../services/layout.service';
 import { LoggerService } from '../../services/logger.service';
 import { SessionStoreService, CUSTOM_STORAGE } from '../../services/session.store';
+import { AppInitService } from '../../services/app.init.service'
 
 let app, fixture, layoutservice, pageservice, router, route;
 
@@ -81,6 +83,12 @@ export class MockActivatedRoute implements ActivatedRoute {
     paramMap: Observable<ParamMap>;
     queryParamMap: Observable<ParamMap>;
   }
+
+  class MockLoggerService {
+    debug() { }
+    info() { }
+    error() { }
+}
 
   export class MockActivatedRoute1 implements ActivatedRoute {
     snapshot: ActivatedRouteSnapshot;
@@ -144,13 +152,15 @@ describe('DomainFlowCmp', () => {
            {provide: PageService, useClass: MockPageService},
            {provide: Router, useClass: MockRouter},
            { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+           { provide: 'JSNLOG', useValue: JL },
+           {provide: LoggerService, useClass: MockLoggerService},
            CustomHttpClient,
            WebContentSvc,
            LoaderService,
            ConfigService,
            BreadcrumbService,
-           LoggerService,
-           SessionStoreService 
+           SessionStoreService,
+           AppInitService
         ]
     }).compileComponents();
     fixture = TestBed.createComponent(DomainFlowCmp);

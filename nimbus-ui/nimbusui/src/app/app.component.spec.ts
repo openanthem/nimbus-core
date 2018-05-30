@@ -56,21 +56,4 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   }));
 
-  it(`ngoninit() should get values from document`, async(() => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    app.document = {
-      location: {
-        hostname: 'testing',
-        port: '999',
-        protocol: 'testProtocol',
-        pathname: 'test/test'
-      }
-    };
-    app.ngOnInit();
-    expect(ServiceConstants.STOPGAP_APP_HOST).toEqual('testing');
-    expect(ServiceConstants.STOPGAP_APP_PORT).toEqual('999');
-    expect(ServiceConstants.LOCALE_LANGUAGE).toEqual('en-US');
-    expect(ServiceConstants.STOPGAP_APP_PROTOCOL).toEqual('testProtocol');
-  }));
 });

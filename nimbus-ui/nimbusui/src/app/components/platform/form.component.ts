@@ -92,7 +92,7 @@ export class Form implements OnInit, OnChanges {
 
     /** Initialize the Form **/
     ngOnInit() {
-        this.logger.info('Form-i');
+        this.logger.debug('Form-i ' + this.element.path);
         if(this.element.config.uiStyles.attributes.cssClass === 'sixColumn') {
             this.elementCss = 'col-lg-2 col-md-4 col-sm-12';
         } else if(this.element.config.uiStyles.attributes.cssClass === 'fourColumn') {

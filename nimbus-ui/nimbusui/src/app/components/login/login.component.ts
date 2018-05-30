@@ -49,7 +49,7 @@ export class LoginCmp {
     }
 
     onSubmit() {
-        this._logger.info('LoginCmp-i');
+        this._logger.debug('LoginCmp-i');
         this._logger.debug('username trying to login: ' + this.loginForm.value.username);
         if(this.loginForm.value.username === 'admin') {
             this._router.navigate(['/h/admindashboard']);
