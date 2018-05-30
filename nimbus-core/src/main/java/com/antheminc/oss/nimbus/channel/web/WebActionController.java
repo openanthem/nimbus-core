@@ -180,9 +180,6 @@ public class WebActionController {
 			if(inputParamPath.equals(param.getPath()) && notifyActionsToMatch.contains(o.getAction())) {
 				return true;
 			}
-		} 
-		else if(o.getValue() instanceof Boolean) { // mark output that has value:boolean to be removed
-			return true;
 		}
 		return false;
 	}
