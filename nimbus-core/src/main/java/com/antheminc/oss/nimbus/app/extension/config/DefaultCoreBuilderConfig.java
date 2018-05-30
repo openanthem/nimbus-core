@@ -28,6 +28,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.core.env.PropertyResolver;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
@@ -47,9 +48,8 @@ import com.antheminc.oss.nimbus.domain.model.state.builder.EntityStateBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.builder.QuadModelBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.builder.internal.DefaultEntityStateBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.builder.internal.DefaultQuadModelBuilder;
-import com.antheminc.oss.nimbus.support.DefaultLoggingHandler;
-import com.antheminc.oss.nimbus.support.JustLogit;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ChangeLogCommandEventHandler;
+import com.antheminc.oss.nimbus.support.DefaultLoggingInterceptor;
 import com.antheminc.oss.nimbus.support.SecurityUtils;
 
 import lombok.Getter;
@@ -63,6 +63,7 @@ import lombok.Setter;
 @EnableConfigurationProperties
 @ConfigurationProperties(prefix="domain.model")
 @Getter @Setter
+@EnableAspectJAutoProxy(proxyTargetClass=true)
 public class DefaultCoreBuilderConfig {
 	
 	private Map<String, String> typeClassMappings;
@@ -73,7 +74,7 @@ public class DefaultCoreBuilderConfig {
 	private String secureRegex;
 	
 	
-	@Bean
+	@Bean	
 	public BeanResolverStrategy defaultBeanResolver(ApplicationContext appCtx) {
 		return new DefaultBeanResolverStrategy(appCtx);
 	}
@@ -141,8 +142,8 @@ public class DefaultCoreBuilderConfig {
 	}
 	
 	@Bean
-	DefaultLoggingHandler defaultLoggingHandler(BeanResolverStrategy beanResolver) {
-		return new DefaultLoggingHandler(beanResolver);
+	public DefaultLoggingInterceptor defaultLoggingHandler() {
+		return new DefaultLoggingInterceptor();
 	}
 
 }

@@ -16,13 +16,17 @@
 package com.antheminc.oss.nimbus.domain.model.state.extension;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
+import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
+import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.extension.ChangeLog;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ExecutionModel;
@@ -33,7 +37,9 @@ import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepositoryFactory;
 import com.antheminc.oss.nimbus.domain.session.SessionProvider;
 import com.antheminc.oss.nimbus.entity.client.user.ClientUser;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -43,6 +49,7 @@ import lombok.ToString;
  * @author Soham Chakravarti
  *
  */
+@Getter(value=AccessLevel.PROTECTED)
 public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler<ChangeLog>, OnSelfCommandExecuteHandler<ChangeLog> {
 
 	private ModelRepositoryFactory repositoryFactory;
@@ -81,12 +88,10 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 	
 	@Override
 	public void handleOnRootStart(ChangeLog configuredAnnotation, Command cmd) {
-		
 	}
 	
 	@Override
 	public void handleOnSelfStart(ChangeLog configuredAnnotation, Command cmd) {
-		
 	}
 
 	@Override
@@ -95,10 +100,8 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 		String currentUser = getCurrentUser();
 		
 		// log command : ALL
-		Handler.forCommand(cmd, rep, currentUser).addUrl().save();
-
-		if(aggregatedEvents==null || aggregatedEvents.isEmpty())
-			return;
+		if(!cmd.isRootDomainOnly())
+			Handler.forCommand(cmd, rep, currentUser).addUrl().save();		
 		
 		// log model
 //		aggregatedEvents.keySet().stream()
@@ -106,14 +109,45 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 //				execModel.
 //			});
 		
+		
+	}
+
+	/* TODO: [SOHAM] Interim solution: Would be refactored when event lifecycle for Command, Runtime, TxnCtx, State are implemented
+	 * */
+	public void handleOnRootStopEvents(Command cmd, MultiOutput mout) {
+		Set<ParamEvent> aggregatedEvents = new HashSet<>();
+		populateUniqueEvents(aggregatedEvents, mout);
+		
+		if(aggregatedEvents==null || aggregatedEvents.isEmpty())
+			return;
+
+		ModelRepository rep = getResolvedRepo();
+		String currentUser = getCurrentUser();
+		
 		// log parameter
-		aggregatedEvents.entrySet().stream()
-			.forEach(eventEntry->{
-				eventEntry.getValue().stream()
-					.filter(pe->!pe.getParam().isMapped()) // core
-					.filter(pe->pe.getParam().isLeafOrCollectionWithLeafElems()) // leaf
-						.forEach(pe->Handler.forParam(rep, pe, currentUser).save());
-			});
+		aggregatedEvents.stream()
+			.filter(pe->!pe.getParam().isMapped()) // core
+			.filter(pe->pe.getParam().isLeafOrCollectionWithLeafElems()) // leaf
+				.forEach(pe->Handler.forParam(rep, pe, currentUser).save());
+			
+	}
+	
+	private void populateUniqueEvents(Set<ParamEvent> aggregatedEvents, Output<?> out) {
+		if(out==null)
+			return;
+		
+		if(out.getAggregatedEvents()!=null && !out.getAggregatedEvents().isEmpty())
+			aggregatedEvents.addAll(out.getAggregatedEvents());
+		
+		if(!MultiOutput.class.isInstance(out))
+			return;
+		
+		MultiOutput mout = MultiOutput.class.cast(out);
+		if(mout.getOutputs()==null || mout.getOutputs().isEmpty())
+			return;
+		
+		mout.getOutputs().stream()
+			.forEach(cout->populateUniqueEvents(aggregatedEvents, cout));
 	}
 	
 	@Override
@@ -122,17 +156,17 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 		String currentUser = getCurrentUser();
 		
 		// log command : only root command CRUD actions
-		if(cmd.isRootDomainOnly() && cmd.getAction().isCrud())
+		//if(cmd.isRootDomainOnly() && cmd.getAction().isCrud())
 			Handler.forCommand(cmd, rep, currentUser).addUrl().save();
-		
+
 	}
 	
 	private String getCurrentUser() {
-		return Optional.ofNullable(sessionProvider.getLoggedInUser()).map(ClientUser::getLoginId).orElse(null);
+		return Optional.ofNullable(getSessionProvider().getLoggedInUser()).map(ClientUser::getLoginId).orElse(null);
 	}
 	
 	private ModelRepository getResolvedRepo() {
-		return repositoryFactory.get(Repo.Database.rep_mongodb);
+		return getRepositoryFactory().get(Repo.Database.rep_mongodb);
 	}
 	
 	@RequiredArgsConstructor
@@ -147,7 +181,7 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 			Handler h = new Handler(cmd, rep);
 
 			h.entry.setBy(by);
-			h.entry.setOn(new Date());
+			h.entry.setOn(Date.from(cmd.getCreatedInstant()));
 			
 			h.entry.setRoot(cmd.getRootDomainAlias());
 			h.entry.setRefId(cmd.getRootDomainElement().getRefId());
@@ -163,7 +197,7 @@ public class ChangeLogCommandEventHandler implements OnRootCommandExecuteHandler
 			Handler h = new Handler(rootCmd, rep);
 
 			h.entry.setBy(by);
-			h.entry.setOn(new Date());
+			h.entry.setOn(Date.from(pEvent.getCreatedInstant()));
 			
 			h.entry.setRoot(rootCmd.getRootDomainAlias());
 			h.entry.setRefId(rootCmd.getRootDomainElement().getRefId());

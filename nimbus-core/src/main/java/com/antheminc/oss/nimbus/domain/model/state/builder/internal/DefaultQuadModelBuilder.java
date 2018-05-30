@@ -67,7 +67,7 @@ public class DefaultQuadModelBuilder implements QuadModelBuilder {
 	
 	private final BeanResolverStrategy beanResolver;
 	
-	private JustLogit logit = new JustLogit(getClass());
+	private JustLogit logit = new JustLogit(DefaultQuadModelBuilder.class);
 	
 	public RestTemplate restTemplate = new RestTemplate();
 	
@@ -85,7 +85,7 @@ public class DefaultQuadModelBuilder implements QuadModelBuilder {
 		
 		setParamEventListeners(new LinkedList<>());
 		
-		Collection<StateAndConfigEventListener> publishers = beanResolver.getMultiple(StateAndConfigEventListener.class);
+		Collection<StateAndConfigEventListener> publishers = getBeanResolver().getMultiple(StateAndConfigEventListener.class);
 		publishers.forEach(getParamEventListeners()::add);
 	}
 	
@@ -102,7 +102,7 @@ public class DefaultQuadModelBuilder implements QuadModelBuilder {
 	public <V, C> QuadModel<V, C> build(Command cmd, ExecutionEntity<V, C> eState) {
 		ExecutionEntity.ExConfig<V, C> exConfig = buildExecConfig(cmd);
 
-		ExecutionEntity<V, C>.ExModel execModel = stateBuilder.buildExec(cmd.createRootDomainCommand(), createAspectHandlers(), eState, exConfig);
+		ExecutionEntity<V, C>.ExModel execModel = getStateBuilder().buildExec(cmd.createRootDomainCommand(), createAspectHandlers(), eState, exConfig);
 		
 		return build(execModel);
 	}
@@ -113,7 +113,7 @@ public class DefaultQuadModelBuilder implements QuadModelBuilder {
 	}
 	
 	private <V, C> ExecutionEntity.ExConfig<V, C> buildExecConfig(Command cmd) {
-		ModelConfig<?> modelConfig = Optional.ofNullable(domainConfigApi.getRootDomain(cmd.getRootDomainAlias()))
+		ModelConfig<?> modelConfig = Optional.ofNullable(getDomainConfigApi().getRootDomain(cmd.getRootDomainAlias()))
 										.orElseThrow(()->new InvalidConfigException("Root Domain ModelConfig not found for : "+cmd.getRootDomainAlias()));
 		
 		
@@ -128,7 +128,7 @@ public class DefaultQuadModelBuilder implements QuadModelBuilder {
 	private EntityStateAspectHandlers createAspectHandlers() {
 		QuadScopedEventListener qEventListener = new QuadScopedEventListener(getParamEventListeners());
 		
-		BiFunction<Param<?>, String, Object> bpmEvaluator = (p, pid) -> bpmGateway.continueBusinessProcessExecution(p, pid);
-		return new EntityStateAspectHandlers(qEventListener, bpmEvaluator, validatorProvider, paramStateGateway, beanResolver);
+		BiFunction<Param<?>, String, Object> bpmEvaluator = (p, pid) -> getBpmGateway().continueBusinessProcessExecution(p, pid);
+		return new EntityStateAspectHandlers(qEventListener, bpmEvaluator, getValidatorProvider(), getParamStateGateway(), beanResolver);
 	}
 }

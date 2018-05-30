@@ -32,11 +32,15 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+
 /**
  * @author Soham Chakravarti
  * @author Tony Lopez
  *
  */
+@Getter(value=AccessLevel.PROTECTED)
 public class CommandMessageConverter {
 	
 	public static final String EMPTY_JSON_REGEX = "(^\\{\\s*\\}$)";
@@ -58,7 +62,7 @@ public class CommandMessageConverter {
 	 */
 	public <T> T toArrayOfType(Class<T> clazz, String json) {
 		return conversionTemplate(json, SupplierUtils.handle( 
-				() -> om.readValue(json, om.getTypeFactory().constructArrayType(clazz)), 
+				() -> getOm().readValue(json, getOm().getTypeFactory().constructArrayType(clazz)), 
 				"Failed to convert from JSON to instance of Array with type "+clazz+"\n json:\n"+json));
 	}
 	
@@ -75,7 +79,7 @@ public class CommandMessageConverter {
 	 */
 	public <S extends Collection<T>, T> S toCollectionFromArray(Class<T> elemClazz, Class<S> collectionClazz, String json) {
 		return conversionTemplate(json, SupplierUtils.handle( 
-				() -> om.readValue(json, om.getTypeFactory().constructCollectionType(collectionClazz, elemClazz)), 
+				() -> getOm().readValue(json, getOm().getTypeFactory().constructCollectionType(collectionClazz, elemClazz)), 
 				"Failed to convert from JSON Array to instance of "+elemClazz+" collection "+collectionClazz+"\n json:\n"+json));
 	}
 	
@@ -92,7 +96,7 @@ public class CommandMessageConverter {
 			return null;
 		
 		return SupplierUtils.handle( 
-				() -> om.writeValueAsString(model), 
+				() -> getOm().writeValueAsString(model), 
 				"Failed to convert from model to JSON, modelClass: "+ model.getClass()+ "\n modelInstance: "+model).get();
 	}
 	
@@ -110,7 +114,7 @@ public class CommandMessageConverter {
 	 */
 	public JsonNode toJsonNodeTree(String json) {
 		return conversionTemplate(json, SupplierUtils.handle( 
-				() -> om.readerFor(new TypeReference<Map<String, JsonNode>>() {}).readTree(json), 
+				() -> getOm().readerFor(new TypeReference<Map<String, JsonNode>>() {}).readTree(json), 
 				"Failed to convert from JSON to instance of JsonNode\n json:\n"));
 	}
 	
@@ -125,7 +129,7 @@ public class CommandMessageConverter {
 	 */
 	public <T> T toListOfType(Class<T> clazz, String json) {
 		return conversionTemplate(json, SupplierUtils.handle( 
-				() -> om.readValue(json, om.getTypeFactory().constructCollectionType(List.class, clazz)), 
+				() -> getOm().readValue(json, getOm().getTypeFactory().constructCollectionType(List.class, clazz)), 
 				"Failed to convert from JSON to instance of List with type "+clazz+"\n json:\n"+json));
 	}
 
@@ -183,7 +187,7 @@ public class CommandMessageConverter {
 	 */
 	public <T> T toType(Class<T> clazz, String json) {
 		return conversionTemplate(json, SupplierUtils.handle( 
-				() -> om.readValue(json, clazz), 
+				() -> getOm().readValue(json, clazz), 
 				"Failed to convert from JSON to instance of "+clazz+"\n json:\n"+json));
 	}
 	

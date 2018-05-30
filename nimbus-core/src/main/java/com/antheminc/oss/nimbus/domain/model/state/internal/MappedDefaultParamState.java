@@ -24,12 +24,13 @@ import com.antheminc.oss.nimbus.domain.model.state.Notification;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
+import lombok.ToString;
 
 /**
  * @author Soham Chakravarti
  *
  */
-@Getter
+@Getter @ToString(callSuper=true, of="mapsTo")
 public class MappedDefaultParamState<T, M> extends DefaultParamState<T> implements EntityState.MappedParam<T, M>, NotificationConsumerDelegate<M> {
 
 	private static final long serialVersionUID = 1L;

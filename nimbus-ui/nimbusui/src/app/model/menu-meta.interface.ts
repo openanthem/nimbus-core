@@ -17,7 +17,7 @@
 'use strict';
 import { Route } from '@angular/router';
 import { Param } from './../shared/param-state';
-import {MenuItem} from 'primeng/primeng';
+import { MenuItem } from 'primeng/primeng';
 
 /**
  * \@author Dinakar.Meda
@@ -49,6 +49,7 @@ export interface LinkConfig extends Route {
 export interface AppBranding {
     logo: Param;
     title: Param;
+    appTitle: Param;
     subTitle: Param;
     userName: Param;
     userRole: Param;

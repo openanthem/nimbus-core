@@ -507,6 +507,7 @@ public class ViewConfig {
 	public @interface PageHeader {
 		public enum Property {
 			LOGO,
+			TITLE,
 			APPTITLE,
 			SUBTITLE,
 			USERNAME,

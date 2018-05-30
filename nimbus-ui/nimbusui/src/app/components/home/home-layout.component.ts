@@ -20,6 +20,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Message } from 'stompjs';
 import { Component } from '@angular/core';
+import { Title }     from '@angular/platform-browser';
 import { LayoutService } from '../../services/layout.service';
 import { AppBranding, Layout, LinkConfig, FooterConfig } from '../../model/menu-meta.interface';
 import { ExecuteOutput, ModelEvent } from '../../shared/app-config.interface';
@@ -31,6 +32,8 @@ import { ServiceConstants } from '../../services/service.constants';
 import {FooterGlobal} from '../platform/footer/footer-global.component'
 import { MenuItem } from 'primeng/primeng';
 import { LoggerService } from '../../services/logger.service';
+import { WebContentSvc } from '../../services/content-management.service';
+import { LabelConfig } from './../../shared/param-config';
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 
@@ -70,8 +73,10 @@ export class HomeLayoutCmp {
         private _pageSvc: PageService,
         private _route: ActivatedRoute,
         private _router: Router,
-        private _logger: LoggerService) {
-
+        private _logger: LoggerService,
+        private wcs: WebContentSvc,
+        private titleService: Title) {
+        
     }
 
     logout() {
@@ -157,8 +162,14 @@ export class HomeLayoutCmp {
                 let layout: Layout = data;
                 this._logger.debug('home layout component received layout from layout$ subject');
                 if(layout != null ) {
+                    
+
                     if(layout.topBar != null && layout.topBar.branding != null) {
                         this.branding = layout.topBar.branding;
+                        if (this.branding.title) {
+                            let titleLabel: LabelConfig = this.wcs.findLabelContent(this.branding.title);
+                            this.titleService.setTitle(titleLabel.text);    
+                        }
                         this.topMenuItems = layout.topBar.headerMenus;
                     }
                     if(layout.subBar && (layout.subBar.menuItems || layout.subBar.menuLinks || layout.subBar.organization)) {

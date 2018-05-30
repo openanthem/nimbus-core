@@ -31,6 +31,7 @@ import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.state.internal.AbstractListPaginatedParam.PageWrapper.PageRequestAndRespone;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 import com.antheminc.oss.nimbus.support.JustLogit;
 import com.mongodb.BasicDBList;
 import com.mongodb.CommandResult;
@@ -47,6 +48,7 @@ import lombok.RequiredArgsConstructor;
  * @author Rakesh Patel
  *
  */
+@EnableLoggingInterceptor
 @SuppressWarnings({ "rawtypes", "unchecked"})
 public class MongoSearchByQuery extends MongoDBSearch {
 

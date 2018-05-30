@@ -31,7 +31,7 @@ import { PageNotfoundComponent } from './components/platform/content/page-notfou
 import { PageContent } from './components/platform/content/page-content.component';
 import { GridService } from './services/grid.service';
 import { GridMouseEventDirective } from './directives/gridhover.directive';
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpModule, BrowserXhr } from '@angular/http';
 import { ReactiveFormsModule }  from '@angular/forms';
@@ -106,6 +106,7 @@ import { STOMPStatusComponent } from './services/stomp-status.component';
 import { AuthenticationService } from './services/authentication.service';
 import { FileService } from './services/file.service';
 import { ServiceConstants } from "./services/service.constants";
+import { AppInitService } from "./services/app.init.service";
 import { LoggerService } from './services/logger.service';
 // Routes
 import { FormsModule } from '@angular/forms';
@@ -137,6 +138,13 @@ import {DateTimeFormatPipe} from './pipes/date.pipe';
  * \@howToUse 
  * 
  */
+
+export function init_app(appinitservice: AppInitService) {
+    return () => {
+        return appinitservice.loadConfig();
+    }
+}
+
 @NgModule({
     imports: [
         BrowserModule,
@@ -185,8 +193,9 @@ import {DateTimeFormatPipe} from './pipes/date.pipe';
         CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent, Calendar, NavMenuGlobal, LoaderComponent, MessageComponent
     ],
     entryComponents: [ FlowWrapper, PageContent, PageNotfoundComponent, LoginCmp, HomeLayoutCmp],
-    providers: [ PageService, ConfigService, WebContentSvc, HttpClient,  HttpClientModule,
+    providers: [ PageService, ConfigService, WebContentSvc, HttpClient,  HttpClientModule, AppInitService,
          CustomHttpClient, { provide: BrowserXhr, useClass: CustomBrowserXhr },
+         { provide: APP_INITIALIZER, useFactory: init_app, deps: [AppInitService], multi: true },
          { provide: HTTP_INTERCEPTORS, useClass: CustomHttpClientInterceptor, multi: true },
          { provide: LocationStrategy, useClass: HashLocationStrategy }, GridService,
          { provide: APP_BASE_HREF, useValue: ServiceConstants.APP_CONTEXT },

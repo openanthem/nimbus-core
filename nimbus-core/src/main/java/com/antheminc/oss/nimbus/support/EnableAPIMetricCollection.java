@@ -15,21 +15,26 @@
  */
 package com.antheminc.oss.nimbus.support;
 
-import lombok.Getter;
-import lombok.Setter;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
- * @author Sandeep Mantha
+ * @author Soham Chakravarti
  *
  */
-@Getter @Setter
-public class LogTemplate {
+@Retention(RUNTIME)
+@Target(TYPE)
+public @interface EnableAPIMetricCollection {
 
-	private String args;
+	public enum LogLevel {
+		info,
+		debug;
+	}
 	
-	private String sessionID;
-	
-	private String userId;
-	
-	private String message;
+	LogLevel args() default LogLevel.debug;
+	LogLevel resp() default LogLevel.debug;
+
 }

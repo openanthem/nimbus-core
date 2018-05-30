@@ -4,6 +4,10 @@
     
     
    	<springProfile name="test">
+   		<logger name="method-metric-logger" level="DEBUG" additivity="true">
+   		    <appender-ref ref="CONSOLE" />
+            <appender-ref ref="FILE" />
+        </logger>
     	<logger name="com.antheminc" level="INFO" additivity="true">
             <appender-ref ref="CONSOLE" />
             <appender-ref ref="FILE" />

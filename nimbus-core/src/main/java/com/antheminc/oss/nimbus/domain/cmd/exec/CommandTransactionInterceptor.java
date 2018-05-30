@@ -20,10 +20,14 @@ import com.antheminc.oss.nimbus.domain.cmd.Behavior;
 import com.antheminc.oss.nimbus.domain.session.SessionProvider;
 import com.antheminc.oss.nimbus.support.Holder;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+
 /**
  * @author Soham Chakravarti
  *
  */
+@Getter(value=AccessLevel.PROTECTED)
 public class CommandTransactionInterceptor {
 
 	private final SessionProvider sessionProvider;
@@ -37,7 +41,7 @@ public class CommandTransactionInterceptor {
 	}
 	
 	public MultiExecuteOutput handleResponse(ExecuteOutput.BehaviorExecute<?> rawResult) {
-		return new MultiExecuteOutput(sessionProvider.getSessionId(), rawResult);
+		return new MultiExecuteOutput(getSessionProvider().getSessionId(), rawResult);
 	}
 	
 	public MultiExecuteOutput handleResponse(ExecuteOutput<?> rawResult) {
@@ -75,7 +79,7 @@ public class CommandTransactionInterceptor {
 			return handleResponse((Holder<?>)rawResult);
 		}
 		
-		MultiExecuteOutput mExecOutput = new MultiExecuteOutput(sessionProvider.getSessionId(), new ExecuteOutput.BehaviorExecute<>(Behavior.$execute, rawResult));
+		MultiExecuteOutput mExecOutput = new MultiExecuteOutput(getSessionProvider().getSessionId(), new ExecuteOutput.BehaviorExecute<>(Behavior.$execute, rawResult));
 		return handleResponse(mExecOutput);
 	}
 	

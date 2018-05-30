@@ -25,16 +25,23 @@ import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListElemParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ValueAccessor;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 import com.antheminc.oss.nimbus.support.JustLogit;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandler;
+
+import lombok.AccessLevel;
+import lombok.Getter;
 
 /**
  * @author Soham Chakravarti
  *
  */
+
 public class DefaultParamStateRepositoryLocal implements ParamStateRepository {
 
-	@Autowired JavaBeanHandler javaBeanHandler;
+	@Autowired 
+	@Getter(value=AccessLevel.PROTECTED)
+	JavaBeanHandler javaBeanHandler;
 	
 	private JustLogit logit = new JustLogit(getClass());
 	
@@ -56,7 +63,7 @@ public class DefaultParamStateRepositoryLocal implements ParamStateRepository {
 		} else {
 			ValueAccessor va = param.getValueAccessor();
 			Object target = param.getParentModel().getState();
-			return javaBeanHandler.getValue(va, target);
+			return getJavaBeanHandler().getValue(va, target);
 		}
 	}
 	
@@ -122,7 +129,7 @@ public class DefaultParamStateRepositoryLocal implements ParamStateRepository {
 			if(target==null) 
 				throw new FrameworkRuntimeException("Target must not be null for setting in property: "+va+" with value: "+ newState);
 			
-			javaBeanHandler.setValue(va, target, newState);
+			getJavaBeanHandler().setValue(va, target, newState);
 			
 			//TODO change detection
 			return Action._replace;

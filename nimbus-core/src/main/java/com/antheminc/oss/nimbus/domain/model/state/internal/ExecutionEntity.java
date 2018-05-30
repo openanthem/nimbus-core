@@ -49,6 +49,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * @author Soham Chakravarti
@@ -56,7 +57,7 @@ import lombok.Setter;
  */
 
 @Repo(Database.rep_mongodb)
-@Getter @Setter
+@Getter @Setter @ToString(callSuper=true, of={"c", "v"})
 public class ExecutionEntity<V, C> extends AbstractEntity.IdLong implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -105,14 +106,14 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdLong implements Seri
 		return this;
 	}
 	
-	@Getter @Setter @RequiredArgsConstructor
+	@Getter @Setter @ToString @RequiredArgsConstructor
 	public static class ExConfig<V, C> {
 		final private ModelConfig<C> core;
 		final private ModelConfig<V> view;
 		final private ModelConfig<ProcessFlow> flow;
 	}
 	
-	@Getter @Setter 
+	@Getter @Setter @ToString(callSuper=true)
 	public class ExParamConfig extends DefaultParamConfig<ExecutionEntity<V, C>> {
 		private static final long serialVersionUID = 1L;
 		
@@ -128,7 +129,7 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdLong implements Seri
 		}
 	}
 	
-	@Getter @Setter
+	@Getter @Setter @ToString(callSuper=true)
 	public class ExModelConfig extends DefaultModelConfig<ExecutionEntity<V, C>> {
 		private static final long serialVersionUID = 1L;
 		
@@ -177,6 +178,7 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdLong implements Seri
 		} 
 	}
 
+	@ToString(callSuper=true)
 	public class ExParamLinked extends ExParam {
 		private static final long serialVersionUID = 1L;
 		
@@ -214,7 +216,7 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdLong implements Seri
 		}
 	}
 	
-	@Getter @Setter 
+	@Getter @Setter @ToString(callSuper=true, of="rootRefId")
 	public class ExParam extends DefaultParamState<ExecutionEntity<V, C>> {
 		private static final long serialVersionUID = 1L;
 		
@@ -256,7 +258,7 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdLong implements Seri
 	}
 
 	
-	@Getter @Setter
+	@Getter @Setter @ToString(callSuper=true, of="rootCommand")
 	public class ExModel extends DefaultModelState<ExecutionEntity<V, C>> implements ExecutionModel<ExecutionEntity<V, C>> {
 		private static final long serialVersionUID = 1L;
 		
