@@ -15,20 +15,33 @@
  */
 package com.antheminc.oss.nimbus.channel.web;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.antheminc.oss.nimbus.domain.cmd.Action;
+import com.antheminc.oss.nimbus.domain.cmd.Command;
+import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
+import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextLoader;
 import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.support.Holder;
 import com.antheminc.oss.nimbus.support.LoggingLevelService;
 
@@ -88,6 +101,8 @@ public class WebActionController {
 	public static final String URI_PATTERN_P = "/{clientCode}/**/p";
 	public static final String URI_PATTERN_P_OPEN = URI_PATTERN_P + "/**";
 
+	public static final Set<Action> notifyActionsToMatch = EnumSet.of(Action._replace, Action._update);
+	
 	@Autowired WebCommandDispatcher dispatcher;
 	
 	@Autowired ExecutionContextLoader ctxLoader;
@@ -137,9 +152,36 @@ public class WebActionController {
 	@RequestMapping(value=URI_PATTERN_P+"/event/notify", produces="application/json", method=RequestMethod.POST)
 	public Object handleEventNotify(HttpServletRequest req, @RequestBody ModelEvent<String> event) {
 		Object obj = dispatcher.handle(req, event);
-		
+		filterInputParamFromOutput(obj);
 		Holder<Object> output = new Holder<>(obj);
 		return output;
+	}
+	
+	private void filterInputParamFromOutput(Object obj) {
+		if(obj instanceof MultiOutput) {
+			MultiOutput multiOp = (MultiOutput) obj;
+			List<Output<?>> outputs = multiOp.getOutputs();
+			if(CollectionUtils.isEmpty(outputs))
+				return;
+			
+			Command cmd = CommandBuilder.withUri(multiOp.getInputCommandUri()).getCommand();
+			String inputParamPath = cmd.getAbsoluteDomainAlias();
+			
+			outputs.removeIf(o -> isRemove(inputParamPath, o));
+		}
+	}
+
+	private boolean isRemove(String inputParamPath, Output<?> o) {
+		if(o instanceof MultiOutput) {
+			filterInputParamFromOutput(o);
+		}
+		else if(o.getValue() instanceof Param) {
+			Param<?> param = (Param<?>) o.getValue();
+			if(inputParamPath.equals(param.getPath()) && notifyActionsToMatch.contains(o.getAction())) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	@RequestMapping({"/login/*"})

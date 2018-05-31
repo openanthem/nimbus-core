@@ -94,13 +94,12 @@ public class S4_ValidateConditionalTest extends AbstractFrameworkIntegrationTest
 		for(Output<?> o : outputs) {
 			if(o.getValue() instanceof Param) {
 				Param<?> po = (Param<?>)o.getValue();
-				if(po.getPath().endsWith("q1"))
-					q1 = po;
-				else if(po.getPath().endsWith("q2"))
+				if(po.getPath().endsWith("q2")) {
 					q2 = po;
+					q1 = q2.findParamByPath("/../q1");
+				}
 			} 
 		}
-		
 		assertNotNull(q1);
 		assertNotNull(q2);
 		

@@ -50,7 +50,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
            </legend>
           <div class="checkboxHolder" [formGroup]="form" >
             <div class="form-checkrow" *ngFor="let val of element?.values; let i = index">
-                <p-checkbox name="{{element?.config?.code}}" [formControlName]="element.config?.code" [value]="val.code" [label]="val.label" (onChange)="emitValueChangedEvent(this,$event)"></p-checkbox>
+            <p-checkbox name="{{element?.config?.code}}" [formControl]="form.controls[element?.config?.code]" [value]="val.code" [label]="val.label" (onChange)="emitValueChangedEvent(this,$event)"></p-checkbox>
             </div>
           </div>
     </fieldset>
