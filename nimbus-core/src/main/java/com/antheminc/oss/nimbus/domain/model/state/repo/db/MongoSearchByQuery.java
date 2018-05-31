@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.script.Bindings;
-import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
@@ -115,16 +114,12 @@ public class MongoSearchByQuery extends MongoDBSearch {
 			try {
 				
 				EntityPath<?> qInstance = SimpleEntityPathResolver.INSTANCE.createPath(referredClass);
-				// ideally this should have been enough, but creating another instance to have backward compatibility
-				Constructor<?> con = qInstance.getClass().getConstructor(String.class);
-				Object newQInstance = con.newInstance(referredClass.getSimpleName());
 				
 				ScriptEngine groovyEngine = new ScriptEngineManager().getEngineByName("groovy");
 				Bindings b = groovyEngine.createBindings();
-				b.put(alias, newQInstance);
+				b.put(alias, qInstance);
 				
 				return (T)groovyEngine.eval(criteria, b);
-				
 				
 			} catch (Exception ex) {
 				throw new FrameworkRuntimeException("Cannot instantiate queryDsl class for entity: "+referredClass+ " "
