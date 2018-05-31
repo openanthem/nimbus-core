@@ -15,7 +15,6 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.repo.db;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -46,8 +45,6 @@ import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.mongodb.AbstractMongodbQuery;
 
-import groovy.lang.Binding;
-import groovy.lang.GroovyShell;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -59,6 +56,9 @@ import lombok.RequiredArgsConstructor;
 public class MongoSearchByQuery extends MongoDBSearch {
 
 	private static JustLogit logIt = new JustLogit(MongoSearchByQuery.class);
+	
+	private static final ScriptEngine groovyEngine = new ScriptEngineManager().getEngineByName("groovy");
+
 	
 	public MongoSearchByQuery(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
@@ -83,9 +83,6 @@ public class MongoSearchByQuery extends MongoDBSearch {
 				return this;
 			}
 			
-//			final GroovyShell shell = createQBinding(referredClass, alias); 
-//	        Predicate predicate = (Predicate)shell.evaluate(criteria);
-	        
 	        Predicate predicate = evaluate(referredClass, alias, criteria);
 	        
 			query.where(predicate);
@@ -99,9 +96,6 @@ public class MongoSearchByQuery extends MongoDBSearch {
 				return this;
 			}
 			
-//			final GroovyShell shell = createQBinding(referredClass, alias); 
-//	        OrderSpecifier orderBy = (OrderSpecifier)shell.evaluate(criteria);
-	        
 			OrderSpecifier orderBy = evaluate(referredClass, alias, criteria);
 			
 			if(orderBy != null)
@@ -115,7 +109,6 @@ public class MongoSearchByQuery extends MongoDBSearch {
 				
 				EntityPath<?> qInstance = SimpleEntityPathResolver.INSTANCE.createPath(referredClass);
 				
-				ScriptEngine groovyEngine = new ScriptEngineManager().getEngineByName("groovy");
 				Bindings b = groovyEngine.createBindings();
 				b.put(alias, qInstance);
 				
@@ -126,30 +119,6 @@ public class MongoSearchByQuery extends MongoDBSearch {
 						+ "please make sure the entity has been annotated with either @Domain or @Model and a Q Class has been generated for it", ex);	
 			}
 		}
-		
-		private GroovyShell createQBinding(Class<?> referredClass, String alias) {
-			final Binding binding = new Binding();
-			Object obj = createQueryDslClassInstance(referredClass);
-	        binding.setProperty(alias, obj);
-	        
-	        final GroovyShell shell = new GroovyShell(referredClass.getClassLoader(), binding);
-			return shell;
-		}
-		
-		private Object createQueryDslClassInstance(Class<?> referredClass) {
-			Object obj = null;
-			try {
-				String cannonicalQuerydslclass = referredClass.getCanonicalName().replace(referredClass.getSimpleName(), "Q".concat(referredClass.getSimpleName()));
-				Class<?> cl = Class.forName(cannonicalQuerydslclass);
-				Constructor<?> con = cl.getConstructor(String.class);
-				obj = con.newInstance(referredClass.getSimpleName());
-			} catch (Exception e) {
-				throw new FrameworkRuntimeException("Cannot instantiate queryDsl class for entity: "+referredClass+ " "
-						+ "please make sure the entity has been annotated with either @Domain or @Model and a Q Class has been generated for it", e);
-			}
-			return obj;
-		}
-		
 	}
 	
 	@Override
