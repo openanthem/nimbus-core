@@ -105,8 +105,6 @@ export class PageService {
                         } else {
                                 baseURL = ServiceConstants.CLIENT_BASE_URL;
                                 /** client code is required for a client base url.*/
-                                // console.log('client...', client);
-                                // console.log('routeParams...', this.routeParams);
                                 if (this.routeParams.client == null) {
                                         this.logError('Missing client information for a CLIENT_BASE_URL.');
                                 }
@@ -147,7 +145,6 @@ export class PageService {
         }
         /** Get the rootDomainId config if it is already loaded */
         getFlowRootDomainId(flowName: string) {
-                // console.log('this.sessionStore', this.sessionStore);
                 return this.sessionStore.get(flowName);
         }
 
@@ -170,13 +167,10 @@ export class PageService {
                         baseUrl += rootId == null ? '/' + flowName:  '/' + flowName+':'+rootId;
                         let action = rootId!= null ? Action._get.value: Action._new.value;
                         url = baseUrl + '/' + action + '?b=' + Behavior.execute.value;   
-                        // console.log('url...loaddomainflowconfig...if', url);
                         this.executeHttp(url, HttpMethod.GET.value, null);    
-                        //window.location.href = `${ServiceConstants.APP_REFRESH}`;
                 } else {
                         baseUrl += '/' + flowName;
                         url = baseUrl + '/' + Action._new.value + '?b=' + Behavior.execute.value;  
-                        // console.log('url...loaddomainflowconfig...else', url);
                         this.executeHttp(url, HttpMethod.GET.value, null);
                 }
         }
@@ -199,11 +193,9 @@ export class PageService {
                 if (useFlowUrl === '') {
                         url = this.buildFlowBaseURL();
                 } else {
-                        // console.log('else is covered..,.,.,.,');
                         url = useFlowUrl;
                 }
                 url = url + '/_nav?a=' + direction + '&b=$execute';
-                // console.log('url', url);
                 this.executeHttp(url, HttpMethod.GET.value, null);
         }
 
@@ -232,7 +224,6 @@ export class PageService {
                 let index = 0;
                 while (response[index]) {
                         let subResponse: any = response[index];
-                        // console.log('Behavior.execute.value', Behavior.execute.value);
                         if (subResponse.b === Behavior.execute.value) {
                                 let flowConfig = new Result(this.configService).deserialize(subResponse.result);
                                 this.traverseOutput(flowConfig.outputs);
@@ -258,7 +249,6 @@ export class PageService {
                 if (model != null && model.params != null) {
                         for (var p in model.params) {
                                 let pageParam: Param = model.params[p];
-                                // console.log('ViewConfig.page.toString()', ViewConfig.page.toString());
                                 if (pageParam != null && pageParam.config.uiStyles != null && pageParam.config.uiStyles.name ===  ViewConfig.page.toString()) {
                                         if (pageParam.config.uiStyles.attributes.defaultPage) {
                                                 return pageParam;
@@ -285,7 +275,6 @@ export class PageService {
                 var navToDefault = true;
                 let navOutput: Result = undefined;
                 outputs.forEach(otp => {
-                        // console.log('Action._nav.value', Action._nav.value);
                         if (otp.action === Action._nav.value) {
                                 navToDefault = false;
                                 navOutput = otp;
@@ -295,25 +284,19 @@ export class PageService {
                         if (output.value == null || ParamUtils.isEmpty(output.value)) {
                                 this.traverseOutput(output.outputs);
                         } else {
-                                // console.log('Action._new.value', Action._new.value);
-                                // console.log('Action._get.value', Action._get.value);
                                 if (output.action === Action._new.value) {
                                         let flow = this.getFlowNameFromOutput(output.value.path);
-                                        // console.log('flow....', flow);
                                         // Check if the _new output is for the Root Flow
-                                        // console.log('output.value.path', output.value.path);
                                         if (output.value.path == "/" + flow) {
                                                 this.setViewRootAndNavigate(output,flow,navToDefault,true);
                                         } else {
                                                 let eventModel: ModelEvent = new ModelEvent().deserialize(output);
-                                                console.log('eventModel', eventModel);
                                                 this.traverseFlowConfig(eventModel, flow);
                                         }
                                         
                                 } else if (output.action === Action._get.value) {
                                         if (output.value.config && output.value.type && output.value.type.model) {
                                                 let refresh = false;
-                                                console.log('this.configService.flowConfigs', this.configService.flowConfigs);
 
                                                 if(ParamUtils.isEmpty(this.configService.flowConfigs)) {
                                                         refresh = true;
@@ -398,10 +381,7 @@ export class PageService {
                         let flowConfig: Model = viewRoot.model;
                         if (flowConfig != null && flowConfig.params != null) {
                                 flowConfig.params.forEach(pageParam => {
-                                        // console.log('pageParam.config.uiStyles.name', pageParam.config.uiStyles.name);
-                                        // console.log('ViewConfig.page.toString()', ViewConfig.page.toString());
                                         if (pageParam.config.uiStyles != null && pageParam.config.uiStyles.name === ViewConfig.page.toString()) {
-                                                // console.log('pageId', pageId);
                                                 if (pageParam.config.code === pageId) {
                                                         page = pageParam;
                                                 }
@@ -412,7 +392,6 @@ export class PageService {
                 if (!page) {
                         this.logError('Page Configuration not found for Page ID: ' + pageId + ' in Flow: ' + flowName);
                 }
-                console.log('page...', page);
                 return page;
         }
 
@@ -443,14 +422,12 @@ export class PageService {
                         let flowNameWithId = flowName.concat(':' + rootDomainId);
                         url = url.replace(flowName, flowNameWithId);
                 }
-                // console.log('url...processevent', url, method, model)
                 this.executeHttp(url, method, model);
         }
 
         executeHttp(url:string, method : string, model:any) {
                 this.showLoader();
                 this.logger.info('http call' + url + 'started');
-                // console.log('HttpMethod.POST.value', HttpMethod.POST.value);
                 if (method !== '' && method.toUpperCase() === HttpMethod.GET.value) {
                         this.executeHttpGet(url)
                  } else if (method !== '' && method.toUpperCase() === HttpMethod.POST.value) {
@@ -520,9 +497,7 @@ export class PageService {
          */
         traverseFlowConfig(eventModel: ModelEvent, flowName: string) {
                 let viewRoot: ViewRoot = this.configService.getFlowConfig(flowName);
-                // console.log('1');
                 if(viewRoot == undefined) {
-                        // console.log('2');
                         throw "Response cannot be processed for the path " + eventModel.value.path + " as there is no get/new done on the viewroot "+flowName;
                 }
                 let flowConfig: Model = viewRoot.model;
@@ -536,7 +511,6 @@ export class PageService {
                 //let updatedParamPath = eventModelPath.substring(eventModelPath.indexOf('/p/')+3);
                 // Remove flow name which is the beginning of the event path
                 let updatedParamPath = eventModelPath.substring(eventModelPath.indexOf('/', 1) + 1);
-                // console.log('updatedParamPath...', updatedParamPath);
                 //Remove the context model attributes from path
                 if (updatedParamPath.indexOf('/#') !== -1) {
                         updatedParamPath = updatedParamPath.substring(0, updatedParamPath.indexOf('/#'));
@@ -575,7 +549,6 @@ export class PageService {
                 let paramTree = updatedParamPath.split('/');
                 // Size - # tree nodes
                 let numNodes = paramTree.length - 1;
-                console.log('paramTree.length', paramTree.length)
                 // Check for Collection
                 if (eventModel.value.collectionElem) {
                         // reduce the size by 1 to account for collection element index
@@ -583,27 +556,19 @@ export class PageService {
                 }
 
                 // Check if root param matches the eventModel update node
-                console.log('paramTree[node]', paramTree[node])
                 if (rootParam.config.code === paramTree[node]) {
                         node++;
-                        console.log('1');
                         
                         // Loop through the Params in the Page
                         if (rootParam.type.model && rootParam.type.model.params) {
                                 rootParam.type.model.params.forEach(element => {
                                         // Check if param matches the updated param path
-console.log('2', paramTree[node]);
-
                                         if (element && element.config && element.config.code === paramTree[node]) {
-                                                console.log('node', node);
-                                                console.log('numNodes', numNodes);
                                                 const test = ((element.config.type && element.config.type.collection));
-                                                console.log('test..boolean', test);
                                                 if ((element.config.type && element.config.type.collection) || node >= numNodes) {
                                                         // Matching param node OR Collection node. Collection nodes cannot be traversed further.
                                                         this.processModelEvent(element, eventModel);
                                                 } else {
-                                                        console.log('else is covered 600', element);
                                                         // Lets go futher into the matching param to find the exact match
                                                         this.traversePageConfig(element, eventModel, node);
                                                 }
@@ -706,13 +671,10 @@ console.log('2', paramTree[node]);
                         if (param.config.type.collection === true) {
                                 let payload: Param = new Param(this.configService).deserialize(eventModel.value, eventModel.value.path);
                                 param.type.model['params'] = payload.type.model.params;
-                                // console.log("param.type.model[params]", param.type.model['params']);
                         } else {
                                 this.traverseParam(param, eventModel);
                         }
                 } else {
-                        console.log('param..706', param);
-                        console.log('eventModel..707', eventModel);
                         this.traverseParam(param, eventModel);
                 }
         }

@@ -69,7 +69,7 @@ export class PageContent extends BaseElement{
     }
 
     ngOnInit() {
-        this._logger.debug('PageContent - i ' + this.element.path);
+        this._logger.debug('PageContent - i ' + this.pageId);
         this.route.data.subscribe((data: { page: Param }) => {
             let page : Param = data.page;
             this.element = page;
