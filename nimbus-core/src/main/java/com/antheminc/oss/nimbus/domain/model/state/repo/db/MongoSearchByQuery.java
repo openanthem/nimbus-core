@@ -182,17 +182,17 @@ public class MongoSearchByQuery extends MongoDBSearch {
 	private  <T> Object searchByAggregation(Class<?> referredClass, String alias, SearchCriteria<T> criteria) {
 		List<?> output = new ArrayList();
 		String cr = (String)criteria.getWhere();
-		logIt.info(() -> "### Aggregation query: "+cr);
+		logIt.debug(() -> "### Aggregation query: "+cr);
 		
 		long startTime = System.currentTimeMillis();
 		CommandResult commndResult = getMongoOps().executeCommand(cr);
 		long endTime = System.currentTimeMillis();
-		logIt.info(() -> " took "+(endTime-startTime)+ " ms ");
+		logIt.debug(() -> " took "+(endTime-startTime)+ " ms ");
 				
 		if (commndResult != null && commndResult.get(Constants.SEARCH_NAMED_QUERY_RESULT.code) instanceof BasicDBList) {
 			BasicDBList result = (BasicDBList)commndResult.get(Constants.SEARCH_NAMED_QUERY_RESULT.code);
 			output.addAll(getMongoOps().getConverter().read(List.class, result));
-			logIt.info(() -> "with result size: "+output.size());
+			logIt.debug(() -> "with result size: "+output.size());
 			logIt.trace(()-> " and result content: "+commndResult);
 		}
 		return output;
