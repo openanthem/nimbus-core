@@ -35,8 +35,7 @@ import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.state.internal.AbstractListPaginatedParam.PageWrapper.PageRequestAndRespone;
-import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
-import com.antheminc.oss.nimbus.support.JustLogit;
+import com.antheminc.oss.nimbus.support.EnableAPIMetricCollection;
 import com.mongodb.BasicDBList;
 import com.mongodb.CommandResult;
 import com.querydsl.core.types.EntityPath;
@@ -51,12 +50,10 @@ import lombok.RequiredArgsConstructor;
  * @author Rakesh Patel
  *
  */
-@EnableLoggingInterceptor
+@EnableAPIMetricCollection
 @SuppressWarnings({ "rawtypes", "unchecked"})
 public class MongoSearchByQuery extends MongoDBSearch {
 
-	private static JustLogit logIt = new JustLogit(MongoSearchByQuery.class);
-	
 	private static final ScriptEngine groovyEngine = new ScriptEngineManager().getEngineByName("groovy");
 
 	
@@ -182,18 +179,12 @@ public class MongoSearchByQuery extends MongoDBSearch {
 	private  <T> Object searchByAggregation(Class<?> referredClass, String alias, SearchCriteria<T> criteria) {
 		List<?> output = new ArrayList();
 		String cr = (String)criteria.getWhere();
-		logIt.debug(() -> "### Aggregation query: "+cr);
 		
-		long startTime = System.currentTimeMillis();
 		CommandResult commndResult = getMongoOps().executeCommand(cr);
-		long endTime = System.currentTimeMillis();
-		logIt.debug(() -> " took "+(endTime-startTime)+ " ms ");
 				
 		if (commndResult != null && commndResult.get(Constants.SEARCH_NAMED_QUERY_RESULT.code) instanceof BasicDBList) {
 			BasicDBList result = (BasicDBList)commndResult.get(Constants.SEARCH_NAMED_QUERY_RESULT.code);
 			output.addAll(getMongoOps().getConverter().read(List.class, result));
-			logIt.debug(() -> "with result size: "+output.size());
-			logIt.trace(()-> " and result content: "+commndResult);
 		}
 		return output;
 	}
