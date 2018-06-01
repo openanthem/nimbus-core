@@ -60,9 +60,13 @@ import lombok.Setter;
 @ControllerAdvice(assignableTypes=WebActionController.class)
 @EnableConfigurationProperties
 @ConfigurationProperties(prefix="application")
+@Getter
 public class WebActionControllerAdvice implements ResponseBodyAdvice<Object> {
 	
 	private JustLogit logit = new JustLogit(this.getClass());
+	
+	@Value("${application.error.metricLoggingEnabled:true}")
+	private boolean metricLoggingEnabled;
 	
 	@Getter @Setter
 	private Map<Class<?>,String> exceptions;
@@ -110,9 +114,18 @@ public class WebActionControllerAdvice implements ResponseBodyAdvice<Object> {
 			}
 		} 
 		execError.setMessage(message);
-		logit.error(execError::getMessage, pEx);
+		logError(execError, pEx);
 		resp.setExecuteException(execError);
 		return interceptor.handleResponse(resp);		
+	}
+
+	private void logError(ExecuteError execError, Throwable pEx) {
+		if (FrameworkRuntimeException.class.isAssignableFrom(pEx.getClass()) && logit.getLog().isInfoEnabled()
+				&& isMetricLoggingEnabled()) {
+			logit.error(execError::getMessage);
+		} else {
+			logit.error(execError::getMessage, pEx);
+		}
 	}
 	
 	@ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY)

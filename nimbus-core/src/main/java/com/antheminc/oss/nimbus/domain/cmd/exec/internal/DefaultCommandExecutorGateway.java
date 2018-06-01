@@ -110,6 +110,10 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 	}
 
 	
+	@Override
+	public MultiOutput execute(Command cmd, String payload) {
+		return execute(new CommandMessage(cmd, payload));
+	}
 	
 	@Override
 	public MultiOutput execute(CommandMessage cmdMsg) {
@@ -257,7 +261,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 	
 	private MultiOutput executeConfig(Command inputCmd, CommandMessage configCmdMsg) {
 		final String inputDomainRootAlias = inputCmd.buildAlias(Type.DomainAlias);
-	
+		
 		
 		String configDomainAlias = configCmdMsg.getCommand().getRootDomainAlias();
 		ModelConfig<?> configDomainModelConfig = getDomainConfigBuilder().getRootDomainOrThrowEx(configDomainAlias);
