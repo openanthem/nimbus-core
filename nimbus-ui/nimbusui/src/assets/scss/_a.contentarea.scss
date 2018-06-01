@@ -2,6 +2,27 @@
 canvas.form-control {
     width: inherit;
 }
+.zoomTrigger {
+    position: absolute;
+    top: -3px;
+    left: 270px;  
+    i {
+        margin-right: 6px;
+        margin-top: 4px;
+    }   
+}
+.zoom {
+    canvas.form-control {
+        transform: scale(2);
+        transform-origin: 0 0;
+    }
+    .buttonGroup.signatureCtrls {
+        margin-top: 60px;
+    }
+    .zoomTrigger {
+        left: 620px;
+    }
+}
 .displayNone{display:none;}
 .underline {
     border-bottom: 2px solid #000;

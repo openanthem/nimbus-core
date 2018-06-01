@@ -47,33 +47,37 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   selector: 'nm-signature',
   providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc, ControlSubscribers],
   template: `
-    <label *ngIf="hidden!=true"
-        [ngClass]="{'required': requiredCss, '': !requiredCss}"
-        [attr.for]="element.config?.code">{{label}} 
-        <nm-tooltip *ngIf="helpText" 
-            [helpText]='helpText'>
-        </nm-tooltip>
-    </label>
-    <ng-template [ngIf]="!disabled">
-        <canvas #canvas
-            [id]="element.config?.code" 
-            class="form-control" ngDefaultControl>
-        </canvas>
-        <div class="text-sm-center buttonGroup" [style.width.px]="width">
-            <ng-template [ngIf]="save">
-                <button (click)="acceptSignature()" type="button" class="btn btn-secondary post-btn">
-                    {{element.config?.uiStyles?.attributes?.acceptLabel}}
+    <div style="position:relative" class="{{zoomClass}}">
+        <button class="btn btn-plain zoomTrigger" (click)="zoomCanvas()" *ngIf="zoomFactor==1"><i class="fa fa-plus-square" aria-hidden="true"></i>Zoom In</button>
+        <button class="btn btn-plain zoomTrigger" (click)="shrinkCanvas()" *ngIf="zoomFactor==2"><i class="fa fa-minus-square" aria-hidden="true"></i>Zoom Out</button>
+        <label *ngIf="hidden!=true"
+            [ngClass]="{'required': requiredCss, '': !requiredCss}"
+            [attr.for]="element.config?.code">{{label}} 
+            <nm-tooltip *ngIf="helpText" 
+                [helpText]='helpText'>
+            </nm-tooltip>
+        </label>
+        <ng-template [ngIf]="!disabled">
+            <canvas #canvas
+                [id]="element.config?.code" 
+                class="form-control" ngDefaultControl>
+            </canvas>
+            <div class="text-sm-center buttonGroup signatureCtrls" [style.width.px]="width">
+                <ng-template [ngIf]="save">
+                    <button (click)="acceptSignature()" type="button" class="btn btn-secondary post-btn">
+                        {{element.config?.uiStyles?.attributes?.acceptLabel}}
+                    </button>
+                </ng-template>
+                <button (click)="clearSignature()" type="button" class="btn btn-secondary post-btn">
+                    {{element.config?.uiStyles?.attributes?.clearLabel}}
                 </button>
-            </ng-template>
-            <button (click)="clearSignature()" type="button" class="btn btn-secondary post-btn">
-                {{element.config?.uiStyles?.attributes?.clearLabel}}
-            </button>
-        </div>
-        <img #img [src]="value != null ? value : defaultEmptyImage" (load)="onImgLoad()" style='display: none;' />
-    </ng-template>
-    <ng-template [ngIf]="disabled">
-        <img #img src="{{value}}" />
-    </ng-template>
+            </div>
+            <img #img [src]="value != null ? value : defaultEmptyImage" (load)="onImgLoad()" style='display: none;' />
+        </ng-template>
+        <ng-template [ngIf]="disabled">
+            <img #img src="{{value}}" />
+        </ng-template>
+    </div>
    `
 })
 export class Signature extends BaseControl<String> {
@@ -91,6 +95,8 @@ export class Signature extends BaseControl<String> {
     width: number;
     height: number;
     save: boolean = true;
+    zoomClass: string = '';
+    zoomFactor: number = 1;
     defaultEmptyImage: string = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAVkAAAA8CAYAAADMvMmGAAAB+klEQVR4Xu3UsQ0AAAjDMPr/01yRzRzQwULZOQIECBDIBJYtGyZAgACBE1lPQIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBB41fMAPZcifoIAAAAASUVORK5CYII=";
     
     constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd:ChangeDetectorRef) {
@@ -141,13 +147,13 @@ export class Signature extends BaseControl<String> {
                 const rect = canvasEl.getBoundingClientRect();
         
                 const prevPos = {
-                    x: res[0].clientX - rect.left,
-                    y: res[0].clientY - rect.top
+                    x: (res[0].clientX - rect.left) / this.zoomFactor,
+                    y: (res[0].clientY - rect.top) / this.zoomFactor
                 };
                 
                 const currentPos = {
-                    x: res[1].clientX - rect.left,
-                    y: res[1].clientY - rect.top
+                    x: (res[1].clientX - rect.left) / this.zoomFactor,
+                    y: (res[1].clientY - rect.top) / this.zoomFactor
                 };
                 
                 this.drawOnCanvas(prevPos, currentPos);
@@ -197,10 +203,21 @@ export class Signature extends BaseControl<String> {
             super.emitValueChangedEvent(this, this.value);
             this.toggleSave(false);
         }
+        this.shrinkCanvas();
     }
 
     toggleSave(mode: boolean) {
         this.save = mode;
+    }
+
+    zoomCanvas() {
+        this.zoomFactor = 2;
+        this.zoomClass = 'zoom';
+    }
+
+    shrinkCanvas() {
+        this.zoomFactor = 1;
+        this.zoomClass = '';
     }
 
 }
