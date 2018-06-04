@@ -41,8 +41,11 @@ export interface MenuConfig extends Route {
     children?: MenuConfig[];
 }
 export interface LinkConfig extends Route {
+    path:string;
     title?: string;
     image?: string;
+    enabled?: boolean;
+    visible?: boolean;
     children?: LinkConfig[];
 }
 

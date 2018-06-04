@@ -260,6 +260,8 @@ export class LayoutService {
                             navItem['path'] = element.config.uiStyles.attributes.url;
                             navItem['title'] = this.wcs.findLabelContent(element).text;
                             navItem['image'] = element.config.uiStyles.attributes.imgSrc;
+                            navItem['enabled'] = element.enabled;
+                            navItem['visible'] = element.visible;
                             leftMenu.push(navItem);
                         }
                     });

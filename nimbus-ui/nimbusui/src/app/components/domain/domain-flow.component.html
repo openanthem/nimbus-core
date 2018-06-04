@@ -14,9 +14,11 @@
 	        <span class="navbar-toggler-icon"></span> 
 	    </button>
 	    <div aria-expanded="false" class="navbar-collapse nav-block collapse" id="navbarToggler">
-			<a class="nav-link {{menuItem.image}}" [routerLink]="[menuItem.path]" *ngFor="let menuItem of leftMenuItems" routerLinkActive="active">
-				{{menuItem.title}}
-			</a>
+			<ng-template ngFor let-menuItem [ngForOf]="leftMenuItems">
+				<a class="nav-link {{menuItem.image}}" [routerLink]="[menuItem.path]" routerLinkActive="active" *ngIf="menuItem.visible">
+					{{menuItem.title}}
+				</a>
+			</ng-template>
 	    </div>
 	</nav>
 </span>
