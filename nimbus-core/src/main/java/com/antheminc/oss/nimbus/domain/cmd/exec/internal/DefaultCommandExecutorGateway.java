@@ -35,6 +35,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.InvalidArgumentException;
 import com.antheminc.oss.nimbus.InvalidConfigException;
+import com.antheminc.oss.nimbus.channel.web.WebSessionIdLoggerInterceptor;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.Behavior;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
@@ -285,8 +286,10 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		
 		try {
 			//return CompletableFuture.supplyAsync(()->execute(configCmdMsg)).get();
-			return Executors.newSingleThreadExecutor().submit(()->execute(configCmdMsg)).get();
-			
+			return Executors.newSingleThreadExecutor().submit(()-> {
+				WebSessionIdLoggerInterceptor.addSessionIdIfAny();
+				return execute(configCmdMsg);
+			}).get();
 		} catch (Exception ex) {
 			throw new FrameworkRuntimeException("Failed to execute config command in asyn-wait thread for configCmdMsg: "+configCmdMsg+" originating from inputCmd: "+inputCmd, ex);
 		}
