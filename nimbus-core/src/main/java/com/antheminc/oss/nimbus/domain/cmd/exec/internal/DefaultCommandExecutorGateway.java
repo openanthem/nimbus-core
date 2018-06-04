@@ -288,11 +288,11 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 			//return CompletableFuture.supplyAsync(()->execute(configCmdMsg)).get();
 			return Executors.newSingleThreadExecutor().submit(()-> {
 				try {
-					WebSessionIdLoggerInterceptor.addSessionIdIfAny();
+					//WebSessionIdLoggerInterceptor.addSessionIdIfAny();
 					return execute(configCmdMsg);
 				}
 				finally {
-					WebSessionIdLoggerInterceptor.clearSessionIdIfAny();
+					//WebSessionIdLoggerInterceptor.clearSessionIdIfAny();
 				}
 			}).get();
 		} catch (Exception ex) {

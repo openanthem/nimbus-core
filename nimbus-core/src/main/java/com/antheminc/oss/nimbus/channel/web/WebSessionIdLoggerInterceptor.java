@@ -27,8 +27,6 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import com.antheminc.oss.nimbus.support.JustLogit;
-
 /**
  * @author Soham Chakravarti
  *
@@ -36,8 +34,6 @@ import com.antheminc.oss.nimbus.support.JustLogit;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class WebSessionIdLoggerInterceptor extends HandlerInterceptorAdapter {
 	
-	private static JustLogit logIt = new JustLogit(WebSessionIdLoggerInterceptor.class);
-
 	public static final String KEY_SESSION_ID = "SESSIONID";
 	private static final String KEY_SESSION_NOT_FOUND = "SESSION-NOT-FOUND";
 	
@@ -49,7 +45,7 @@ public class WebSessionIdLoggerInterceptor extends HandlerInterceptorAdapter {
 		return true;
 	}
 	
-	public static void addSessionIdIfAny() {
+	private void addSessionIdIfAny() {
 		try {
 			String sessionId = Optional.ofNullable(RequestContextHolder.getRequestAttributes())
 				.map(RequestAttributes::getSessionId)
@@ -61,22 +57,6 @@ public class WebSessionIdLoggerInterceptor extends HandlerInterceptorAdapter {
 			MDC.put(KEY_SESSION_ID, KEY_SESSION_NOT_FOUND);
 		}
 	}
-	
-	
-	@Override
-	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
-			throws Exception {
-		clearSessionIdIfAny();
-		
-	}
-	
-	public static void clearSessionIdIfAny() {
-		try {
-			MDC.remove(KEY_SESSION_ID);
-		}
-		catch (Exception ex) {
-			logIt.warn(() ->"Failed to clear SESSIONID from MDC", ex);
-		}
-	}
+
 	
 }
