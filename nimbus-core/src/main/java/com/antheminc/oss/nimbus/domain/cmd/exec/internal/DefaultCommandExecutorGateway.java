@@ -287,11 +287,16 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		try {
 			//return CompletableFuture.supplyAsync(()->execute(configCmdMsg)).get();
 			return Executors.newSingleThreadExecutor().submit(()-> {
-				WebSessionIdLoggerInterceptor.addSessionIdIfAny();
-				return execute(configCmdMsg);
+				try {
+					WebSessionIdLoggerInterceptor.addSessionIdIfAny();
+					return execute(configCmdMsg);
+				}
+				finally {
+					WebSessionIdLoggerInterceptor.clearSessionIdIfAny();
+				}
 			}).get();
 		} catch (Exception ex) {
-			throw new FrameworkRuntimeException("Failed to execute config command in asyn-wait thread for configCmdMsg: "+configCmdMsg+" originating from inputCmd: "+inputCmd, ex);
+			throw new FrameworkRuntimeException("Failed to execute config command in async-wait thread for configCmdMsg: "+configCmdMsg+" originating from inputCmd: "+inputCmd, ex);
 		}
 	}	
 	
