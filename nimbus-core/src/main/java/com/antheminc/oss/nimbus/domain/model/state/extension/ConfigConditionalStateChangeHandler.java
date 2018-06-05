@@ -32,11 +32,19 @@ import com.antheminc.oss.nimbus.domain.defn.extension.ConfigConditional;
 import com.antheminc.oss.nimbus.domain.model.state.ExecutionTxnContext;
 import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Soham Chakravarti
  *
  */
+@EnableLoggingInterceptor
+@Getter(AccessLevel.PROTECTED)
+@Setter(AccessLevel.PROTECTED)
 public class ConfigConditionalStateChangeHandler extends AbstractConditionalStateEventHandler implements OnStateChangeHandler<ConfigConditional> {
 
 	private CommandExecutorGateway commandGateway;
@@ -53,8 +61,8 @@ public class ConfigConditionalStateChangeHandler extends AbstractConditionalStat
 		if(initialized)
 			return;
 		
-		this.commandGateway = beanResolver.get(CommandExecutorGateway.class);
-		this.contextLoader = beanResolver.get(ExecutionContextLoader.class);
+		setCommandGateway(getBeanResolver().get(CommandExecutorGateway.class));
+		setContextLoader(getBeanResolver().get(ExecutionContextLoader.class));
 	}
 	
 	@Override
@@ -70,8 +78,8 @@ public class ConfigConditionalStateChangeHandler extends AbstractConditionalStat
 		Optional.ofNullable(configs).filter(ArrayUtils::isNotEmpty).orElseThrow(()->new InvalidConfigException("No @Config found to execute conditionnaly on param: "+event.getParam()));
 		
 		Command rootCmd = event.getParam().getRootExecution().getRootCommand();
-		ExecutionContext eCtx = contextLoader.load(rootCmd);
+		ExecutionContext eCtx = getContextLoader().load(rootCmd);
 		
-		commandGateway.executeConfig(eCtx, event.getParam(), Arrays.asList(configs));
+		getCommandGateway().executeConfig(eCtx, event.getParam(), Arrays.asList(configs));
 	}
 }

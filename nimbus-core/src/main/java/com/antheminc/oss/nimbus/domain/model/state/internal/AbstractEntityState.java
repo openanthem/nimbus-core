@@ -125,14 +125,16 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 	protected void initSetupInternal() {} 
 	
 	@Override
-	final public void initState() {
+	final public void initState(boolean doInternalStateInit) {
 		if(isStateInitialized()) 
 			return;
 		
 		ExecutionRuntime execRt = getRootExecution().getExecutionRuntime();
 		String lockId = execRt.tryLock();
 		try {
-			initStateInternal();
+			if (doInternalStateInit) {
+				initStateInternal();
+			}
 			fireRules(); //TODO review with soham
 			setStateInitialized(true); // From soham
 		} finally {
@@ -192,8 +194,9 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 				// unlock
 				boolean b = execRt.tryUnlock(lockId);
 				if(!b) {
-					logit.warn(()->"Unable to gracefully unlock on param: "+this+" with lockId: "+lockId+" in thread: "+Thread.currentThread());
-					//==throw new FrameworkRuntimeException("Failed to release lock acquired during setState of: "+getPath()+" with acquired lockId: "+lockId);
+					if(logit.getLog().isDebugEnabled())
+						logit.warn(()->"Unable to gracefully unlock on param: "+this+" with lockId: "+lockId+" in thread: "+Thread.currentThread());
+						//==throw new FrameworkRuntimeException("Failed to release lock acquired during setState of: "+getPath()+" with acquired lockId: "+lockId);
 				}
 			}
 			

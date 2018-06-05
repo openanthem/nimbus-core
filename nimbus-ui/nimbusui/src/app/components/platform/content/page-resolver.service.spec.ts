@@ -12,8 +12,9 @@ import { BreadcrumbService } from './../breadcrumb/breadcrumb.service'
 import { CustomHttpClient } from '../../../services/httpclient.service';
 import { LoaderService } from '../../../services/loader.service';
 import { ConfigService } from '../../../services/config.service';
+import { LoggerService } from '../../../services/logger.service';
 
-let http, backend, service, rustate, breadcrumpservice, pageservice, wcservice, router;
+let http, backend, service, rustate, breadcrumpservice, pageservice, wcservice, router, loggerService;
 
 const route = {
     _routerState: {
@@ -84,7 +85,8 @@ describe('PageResolver', () => {
         PageResolver,
         CustomHttpClient,
         LoaderService,
-        ConfigService
+        ConfigService,
+        LoggerService
         ]
     });
     http = TestBed.get(HttpClient);
@@ -92,7 +94,8 @@ describe('PageResolver', () => {
     pageservice = TestBed.get(PageService);
     wcservice = TestBed.get(WebContentSvc);
     router = TestBed.get(Router);
-    service = new PageResolver(pageservice, router, breadcrumpservice, wcservice );
+    loggerService = TestBed.get(LoggerService);
+    service = new PageResolver(pageservice, router, breadcrumpservice, wcservice, loggerService );
   });
 
   it('should be created', async(() => {

@@ -26,13 +26,17 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.PageFilter;
 import com.antheminc.oss.nimbus.support.JustLogit;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+
 /**
  * @author Rakesh Patel
  *
  */
+@Getter(value=AccessLevel.PROTECTED)
 public class DefaultExecutionContextPathVariableResolver implements ExecutionContextPathVariableResolver {
 
-	protected final JustLogit logit = new JustLogit(this.getClass());
+	protected final JustLogit logit = new JustLogit(DefaultExecutionContextPathVariableResolver.class);
 	private static final String[] DATE_FORMATS = new String[] { "yyyy-MM-dd", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" };
 	private static final String STRING_NULL = "null";
 	private static final String DEFAULT_STRICT_FILTER_MODE = "eq";
@@ -152,7 +156,7 @@ public class DefaultExecutionContextPathVariableResolver implements ExecutionCon
 	private String mapFilterCriteria(ExecutionContext eCtx, Param<?> param) {
 		final PageFilter pageFilter;
 		try {
-			pageFilter = converter.toType(PageFilter.class, eCtx.getCommandMessage().getRawPayload());
+			pageFilter = getConverter().toType(PageFilter.class, eCtx.getCommandMessage().getRawPayload());
 			if(pageFilter == null || CollectionUtils.isEmpty(pageFilter.getFilters()))
 				return null;
 		}

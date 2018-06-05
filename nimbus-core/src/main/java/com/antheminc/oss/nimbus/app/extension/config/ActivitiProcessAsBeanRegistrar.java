@@ -29,13 +29,18 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.GenericApplicationContext;
 
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.process.ActivitiBPMProcessHandler;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
+
+import lombok.AccessLevel;
+import lombok.Getter;
 
 /**
  * @author Sandeep Mantha
  *
  */
-
+@EnableLoggingInterceptor
 @Configuration
+@Getter(value = AccessLevel.PROTECTED)
 public class ActivitiProcessAsBeanRegistrar implements ApplicationContextAware {
 
 	@Autowired
@@ -49,7 +54,7 @@ public class ActivitiProcessAsBeanRegistrar implements ApplicationContextAware {
 	
 	private void injectProcessBean(GenericApplicationContext appContext){
     	
-    	List<ProcessDefinition> deployedProcessDefList = repositoryService.createProcessDefinitionQuery().active().list();
+    	List<ProcessDefinition> deployedProcessDefList = getRepositoryService().createProcessDefinitionQuery().active().list();
     	deployedProcessDefList.forEach(processDefinition -> {
 	    	BeanDefinition def = BeanDefinitionBuilder.genericBeanDefinition(ActivitiBPMProcessHandler.class).getBeanDefinition();
 	    	def.getPropertyValues().add("processId", processDefinition.getName());

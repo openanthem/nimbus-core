@@ -15,15 +15,9 @@
  */
 package com.antheminc.oss.nimbus.support.pojo;
 
-import java.lang.invoke.LambdaMetafactory;
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 import org.apache.commons.lang.reflect.FieldUtils;
 import org.springframework.beans.BeanUtils;
@@ -37,31 +31,36 @@ import com.antheminc.oss.nimbus.domain.model.state.InvalidStateException;
  *
  */
 public final class JavaBeanHandlerUtils {
-
+	
 	public static ValueAccessor constructValueAccessor(Class<?> beanClass, String fieldName) {
 		try {
-			Field f = FieldUtils.getField(beanClass, fieldName, true);
-			boolean b = f.getType().equals(boolean.class);
+			Method readMethod = getReadMethod(beanClass, fieldName);
+			Method writeMethod = getWriteMethod(beanClass, fieldName);
 			
-			String getterName = (b ? "is" : "get") + StringUtils.capitalize(fieldName);
-			String setterName = "set" + StringUtils.capitalize(fieldName);
-			
-			Method getter = makeAccessible(BeanUtils.findMethod(beanClass, getterName));
-			Method setter = makeAccessible(BeanUtils.findMethod(beanClass, setterName, f.getType()));
-			
-		
-			MethodHandles.Lookup lookup = MethodHandles.lookup();
-			
-			MethodHandle get = constructGetHandle(lookup, getter);
-			MethodHandle set = constructSetHandle(lookup, setter);
-			
-			return new ValueAccessor(getter, setter, get, set);
-			
-		} catch (Throwable t) {
+			PropertyDescriptor pd = new PropertyDescriptor(fieldName, readMethod, writeMethod);
+			return new ValueAccessor(pd);
+		} catch (Exception ex) {
 			throw new InvalidStateException("POJO construct MethodHandles on beanClass: "+beanClass
 					+ " for fieldName: "+fieldName, 
-					t);
+					ex);
 		}
+	}
+	
+	private static Method getReadMethod(Class<?> beanClass, String fieldName) {
+		Field f = FieldUtils.getField(beanClass, fieldName, true);
+		boolean b = f.getType().equals(boolean.class);
+		
+		String getterName = (b ? "is" : "get") + StringUtils.capitalize(fieldName);
+		Method getter = makeAccessible(BeanUtils.findMethod(beanClass, getterName));
+		return getter;
+	}
+	
+	private static Method getWriteMethod(Class<?> beanClass, String fieldName) {
+		Field f = FieldUtils.getField(beanClass, fieldName, true);
+		String setterName = "set" + StringUtils.capitalize(fieldName);
+		
+		Method setter = makeAccessible(BeanUtils.findMethod(beanClass, setterName, f.getType()));
+		return setter;
 	}
 	
 	private static Method makeAccessible(Method m) {
@@ -71,46 +70,5 @@ public final class JavaBeanHandlerUtils {
 		m.setAccessible(true);
 		return m;
 	}
-	
-	public static MethodHandle constructGetHandle(MethodHandles.Lookup lookup, Method m) throws Throwable {
-		if(m==null)
-			return null;
-		
-		MethodHandle get = lookup.unreflect(m);
-		return LambdaMetafactory.metafactory(
-				lookup, 
-				"apply", 
-				MethodType.methodType(Function.class),
-				MethodType.methodType(Object.class, Object.class), 
-				get, 
-				get.type()).getTarget();
-	}
-	
-	public static MethodHandle constructSetHandle(MethodHandles.Lookup lookup, Method m) throws Throwable {
-		if(m==null)
-			return null;
-		
-		MethodHandle set = lookup.unreflect(m);
-		return LambdaMetafactory.metafactory(
-				lookup, 
-				"accept", 
-				MethodType.methodType(BiConsumer.class), 
-				MethodType.methodType(Void.TYPE, Object.class, Object.class),
-				set, 
-				set.type()).getTarget();
-	}
-	
-	public static MethodHandle constructInitHandle(MethodHandles.Lookup lookup, Class<?> declaringClass) throws Throwable {
-		MethodHandle init = lookup.findConstructor(declaringClass, MethodType.methodType(declaringClass));
-
-		return LambdaMetafactory.metafactory(
-				lookup, 
-				"get", 
-				MethodType.methodType(Supplier.class),
-				MethodType.methodType(Object.class), 
-				init, 
-				init.type()).getTarget();
-	}
-	
 
 }

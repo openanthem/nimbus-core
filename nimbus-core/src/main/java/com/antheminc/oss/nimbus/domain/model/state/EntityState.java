@@ -15,7 +15,7 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state;
 
-import java.lang.invoke.MethodHandle;
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
@@ -68,7 +68,11 @@ public interface EntityState<T> {
 	<P> P findStateByPath(String path);
 
 	void initSetup();
-	void initState();
+	void initState(boolean doInternalStateInit);
+	
+	default void initState() {
+		initState(true);
+	}
 	
 	@JsonIgnore
 	boolean isStateInitialized();
@@ -98,19 +102,17 @@ public interface EntityState<T> {
 	
 	@Getter @RequiredArgsConstructor @ToString
 	public static class ValueAccessor {
-		@JsonIgnore
-		final private Method readMethod;
-		
-		@JsonIgnore
-		final private Method writeMethod;
 
-		
 		@JsonIgnore
-		final private MethodHandle readMethodHandle;
+		private final PropertyDescriptor pd;
 		
-		@JsonIgnore
-		final private MethodHandle writeMethodHandle;
+		public Method getReadMethod() {
+			return pd.getReadMethod();
+		}
 		
+		public Method getWriteMethod() {
+			return pd.getWriteMethod();
+		}
 	}
 	
 	public interface Mapped<T, M> extends EntityState<T> {
@@ -452,9 +454,6 @@ public interface EntityState<T> {
 //		default LeafParam<T> findIfLeaf() {
 //			return this;
 //		}
-		
-		@JsonIgnore
-		T getTransientOldState();
 	}
 	
 	public interface MappedParam<T, M> extends Param<T>, Mapped<T, M>, Notification.Consumer<M> {

@@ -34,7 +34,7 @@ public final class CommandEvent {
 	@Target(ANNOTATION_TYPE)
 	@Event
 	@Inherited
-	public @interface OnRootExecute {
+	public @interface OnRootCommandExecute {
 		int order() default Event.DEFAULT_ORDER_NUMBER;
 	}
 	
@@ -42,7 +42,7 @@ public final class CommandEvent {
 	@Target(ANNOTATION_TYPE)
 	@Event
 	@Inherited
-	public @interface OnSelfExecute {
+	public @interface OnSelfCommandExecute {
 		int order() default Event.DEFAULT_ORDER_NUMBER;
 	}
 }

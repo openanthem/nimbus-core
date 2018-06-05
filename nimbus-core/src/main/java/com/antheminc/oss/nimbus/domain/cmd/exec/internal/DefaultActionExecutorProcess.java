@@ -23,11 +23,17 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
 import com.antheminc.oss.nimbus.domain.cmd.exec.FunctionHandler;
 import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
+
+import lombok.AccessLevel;
+import lombok.Getter;
 
 /**
  * @author Jayant Chaudhuri
  *
  */
+@EnableLoggingInterceptor
+@Getter(value=AccessLevel.PROTECTED)
 public class DefaultActionExecutorProcess<T,R> extends AbstractFunctionCommandExecutor<T,R> {
 	
 	private BPMGateway bpmGateway;
@@ -48,7 +54,7 @@ public class DefaultActionExecutorProcess<T,R> extends AbstractFunctionCommandEx
 	private R continueBusinessProcessExceution(ExecutionContext eCtx){
 		QuadModel<?,?> quadModel = getQuadModel(eCtx);
 		String processExecutionId = quadModel.getFlow().getProcessExecutionId();
-		return (R)bpmGateway.continueBusinessProcessExecution(eCtx.getRootModel().getAssociatedParam(), processExecutionId);
+		return (R)getBpmGateway().continueBusinessProcessExecution(eCtx.getRootModel().getAssociatedParam(), processExecutionId);
 	}
 
 }

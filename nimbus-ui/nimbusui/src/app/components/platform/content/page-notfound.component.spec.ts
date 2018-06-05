@@ -2,12 +2,16 @@
 import { TestBed, async } from '@angular/core/testing';
 
 import { PageNotfoundComponent } from './page-notfound.component';
+import { LoggerService } from '../../../services/logger.service';
 
 describe('PageNotfoundComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
         PageNotfoundComponent
+       ],
+       providers: [
+        LoggerService
        ]
     }).compileComponents();
   }));

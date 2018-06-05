@@ -210,8 +210,9 @@ public class DefaultExecutionRuntime implements ExecutionRuntime {
 		int finalSize = notifications.size();
 		
 		if(initialSize!=finalSize) {
-			logit.info(()->"[awaitNotificationsCompletion] re-invoke to handle additional events added during initial notifications processing in txnCtx: "
-					+getTxnContext().getId()+" with notification queue size initial: "+initialSize+" final: "+finalSize);
+			if(logit.getLog().isDebugEnabled())
+				logit.info(()->"[awaitNotificationsCompletion] re-invoke to handle additional events added during initial notifications processing in txnCtx: "
+						+getTxnContext().getId()+" with notification queue size initial: "+initialSize+" final: "+finalSize);
 		
 			awaitNotificationsCompletion();
 		} 

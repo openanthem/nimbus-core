@@ -35,10 +35,14 @@ import com.antheminc.oss.nimbus.domain.model.config.builder.EntityConfigVisitor;
 import com.antheminc.oss.nimbus.support.JustLogit;
 import com.antheminc.oss.nimbus.support.pojo.ClassLoadUtils;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+
 /**
  * @author Soham Chakravarti
  *
  */
+@Getter(value=AccessLevel.PROTECTED)
 public class DomainConfigBuilder {
 
 	private final Map<String, ModelConfig<?>> cacheDomainRootModel;
@@ -47,7 +51,7 @@ public class DomainConfigBuilder {
 	private final EntityConfigBuilder configBuilder;
 	private final List<String> basePackages;
 	
-	protected final JustLogit logit = new JustLogit(this.getClass());
+	protected final JustLogit logit = new JustLogit(DomainConfigBuilder.class);
 	
 	
 	public DomainConfigBuilder(EntityConfigBuilder configBuilder, List<String> basePackages) {
@@ -66,23 +70,23 @@ public class DomainConfigBuilder {
 
 
 	public ModelConfig<?> getRootDomain(String rootAlias) {
-		return cacheDomainRootModel.get(rootAlias);
+		return getCacheDomainRootModel().get(rootAlias);
 	}
 	
 	public ModelConfig<?> getModel(String alias) {
-		return configVisitor.get(alias);
+		return getConfigVisitor().get(alias);
 	}
 	
 	public ModelConfig<?> getModel(Class<?> mClass) {
-		return configVisitor.get(mClass);
+		return getConfigVisitor().get(mClass);
 	}
 	
 	@PostConstruct
 	public void load() {
 		logit.trace(()->"Start-> Load model config...");
-		logit.trace(()->"Configured basePackages: "+basePackages);
+		logit.trace(()->"Configured basePackages: "+getBasePackages());
 		
-		List<String> rootBasePackages = EntityConfigVisitor.determineRootPackages(basePackages);
+		List<String> rootBasePackages = EntityConfigVisitor.determineRootPackages(getBasePackages());
 		
 		rootBasePackages.forEach(this::handlePackage);
 		
@@ -105,7 +109,7 @@ public class DomainConfigBuilder {
 	public <T> void handleClass(Class<T> clazz) {
 		Domain domain = AnnotationUtils.findAnnotation(clazz, Domain.class);
 		
-		ModelConfig<T> mConfig = configBuilder.load(clazz, configVisitor);
-		cacheDomainRootModel.put(domain.value(), mConfig);
+		ModelConfig<T> mConfig = getConfigBuilder().load(clazz, getConfigVisitor());
+		getCacheDomainRootModel().put(domain.value(), mConfig);
 	}
 }

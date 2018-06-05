@@ -17,6 +17,10 @@ package com.antheminc.oss.nimbus.domain.model.state.repo;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
+
+import lombok.AccessLevel;
+import lombok.Getter;
 
 
 /**
@@ -24,6 +28,8 @@ import com.antheminc.oss.nimbus.domain.defn.Repo;
  * 
  * @author Soham Chakravarti
  */
+
+@Getter(value=AccessLevel.PROTECTED)
 public class DefaultModelRepositoryFactory implements ModelRepositoryFactory {
 
 	private final BeanResolverStrategy beanResolver;
@@ -35,13 +41,17 @@ public class DefaultModelRepositoryFactory implements ModelRepositoryFactory {
 	
 	@Override
 	public ModelRepository get(Repo repo) {
-		return beanResolver.get(ModelRepository.class, repo.value().name());
+		return get(repo.value());
 	}
 	
+	@Override
+	public ModelRepository get(Repo.Database db) {
+		return getBeanResolver().get(ModelRepository.class, db.name());
+	}
 
 	@Override
 	public ModelPersistenceHandler getHandler(Repo repo) {
-		return beanResolver.get(ModelPersistenceHandler.class, repo.value().name()+"_handler");
+		return getBeanResolver().get(ModelPersistenceHandler.class, repo.value().name()+"_handler");
 	}
 	
 }

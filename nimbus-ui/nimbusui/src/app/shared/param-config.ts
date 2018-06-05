@@ -210,10 +210,14 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
 	monthNavigator: boolean;
 	yearNavigator: boolean;
     yearRange: string;
+    metaData: any;
 
     deserialize( inJson ) {
         let obj = this;
         obj = Converter.convert(inJson,obj);
+        if(inJson['metaData'] || inJson['metaData'] === ""){
+            obj['metaData'] = inJson['metaData'] !== "" ? inJson['metaData'].split(",") : [];
+        }
         return obj;
     }
 }

@@ -17,7 +17,6 @@ package com.antheminc.oss.nimbus.domain.cmd;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -124,25 +123,6 @@ public class Command implements Serializable {
 		to.setClientUserId(getClientUserId());
 	}
 	
-	
-	public Command createNewCommandForCurrentUser(String newRootDomain, Action newAction, LinkedList<Behavior> newBehaviors) {
-		StringBuilder newRootDomainFlowAlias = new StringBuilder();
-		newRootDomainFlowAlias.append(newRootDomain);
-		StringBuilder absoluteUri = new StringBuilder();
-		CommandElementLinked clonedRoot = getRoot().cloneUpto(Type.DomainAlias,absoluteUri);
-		CommandElementLinked platformMarker = clonedRoot.findFirstMatch(Type.PlatformMarker);
-		platformMarker.createNext(Type.DomainAlias, newRootDomainFlowAlias.toString());
-		absoluteUri.append(Constants.SEPARATOR_URI.code).append(newRootDomainFlowAlias);
-		absoluteUri.append(Constants.SEPARATOR_URI.code).append(newAction).append("?b=").append(newBehaviors.peek());
-		
-		Command cloned = new Command(absoluteUri.toString());
-		cloned.setAction(newAction);
-		cloned.setEvent(getEvent());
-		cloned.setBehaviors(newBehaviors);
-		cloned.setClientUserId(getClientUserId());
-		cloned.setRoot(clonedRoot);
-		return cloned;
-	}
 	
 
 	public String getAliasUri(Type type) {

@@ -16,20 +16,16 @@
  */
 'use strict';
 import { ErrorHandler } from '@angular/core';
-declare var trackJs: any;
-//TODO convert to service
+import { JL } from 'jsnlog';
 /**
- * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
  * \@whatItDoes 
  * 
  * \@howToUse 
  * 
  */
-export class TrackJsErrorHandler extends ErrorHandler {
-  handleError(error:any) {
-    // Add the error message to the telemetry timeline. 
-    // It can occasionally have useful additional context.
-    console.error(error);
+export class CustomErrorHandler extends ErrorHandler {
+  handleError(error: any) {
+    JL().fatalException('Uncaught Exception', error);
   }
 }
