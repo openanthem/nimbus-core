@@ -507,6 +507,7 @@ public class ViewConfig {
 	public @interface PageHeader {
 		public enum Property {
 			LOGO,
+			TITLE,
 			APPTITLE,
 			SUBTITLE,
 			USERNAME,
@@ -840,6 +841,7 @@ public class ViewConfig {
 		String url() default "";
 		String alias() default "FileUpload";
 		String type() default ".pdf,.png";
+		String metaData() default "";
 		ControlType controlType() default ControlType.FORMCONTROL;
 	}
 	

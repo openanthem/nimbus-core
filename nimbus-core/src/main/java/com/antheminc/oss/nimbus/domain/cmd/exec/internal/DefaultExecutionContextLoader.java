@@ -33,11 +33,17 @@ import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
 import com.antheminc.oss.nimbus.domain.model.state.builder.QuadModelBuilder;
 import com.antheminc.oss.nimbus.domain.session.SessionProvider;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
+
+import lombok.AccessLevel;
+import lombok.Getter;
 
 /**
  * @author Soham Chakravarti
  *
  */
+@EnableLoggingInterceptor
+@Getter(value=AccessLevel.PROTECTED)
 public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 
 	private final DomainConfigBuilder domainConfigBuilder;
@@ -63,18 +69,18 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 		
 		// _search: transient - just create shell 
 		if(isTransient(rootDomainCmd)) {
-			QuadModel<?, ?> q = quadModelBuilder.build(rootDomainCmd);
+			QuadModel<?, ?> q = getQuadModelBuilder().build(rootDomainCmd);
 			eCtx.setQuadModel(q);
 			
 		} else // _new takes priority
 		if(rootDomainCmd.isRootDomainOnly() && rootDomainCmd.getAction()==Action._new) {
-			eCtx = loadEntity(eCtx, executorActionNew);
+			eCtx = loadEntity(eCtx, getExecutorActionNew());
 		} else // check if already exists in session
 		if(sessionExists(eCtx)) { 
 			QuadModel<?, ?> q = sessionGet(eCtx);
 			eCtx.setQuadModel(q);
 		} else { // all else requires resurrecting entity
-			eCtx = loadEntity(eCtx, executorActionGet);
+			eCtx = loadEntity(eCtx, getExecutorActionGet());
 		}
 		return eCtx;
 	}
@@ -102,7 +108,7 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 		// update context
 		eCtx = output.getContext();
 		
-		ModelConfig<?> rootDomainConfig = domainConfigBuilder.getRootDomainOrThrowEx(cmdMsg.getCommand().getRootDomainAlias());
+		ModelConfig<?> rootDomainConfig = getDomainConfigBuilder().getRootDomainOrThrowEx(cmdMsg.getCommand().getRootDomainAlias());
 		
 		sessionPutIfApplicable(rootDomainConfig, eCtx);
 		
@@ -142,20 +148,20 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 	}
 	
 	private boolean queueExists(ExecutionContext eCtx) {
-		return sessionProvider.getAttribute(getSessionKey(eCtx)) != null;
+		return getSessionProvider().getAttribute(getSessionKey(eCtx)) != null;
 	}
 	
 	private ExecutionContext queueGet(ExecutionContext eCtx) {
-		return sessionProvider.getAttribute(getSessionKey(eCtx));
+		return getSessionProvider().getAttribute(getSessionKey(eCtx));
 	}
 	
 	private boolean queuePut(ExecutionContext eCtx) {
-		sessionProvider.setAttribute(getSessionKey(eCtx), eCtx);
+		getSessionProvider().setAttribute(getSessionKey(eCtx), eCtx);
 		return true;
 	}
 
 	private boolean queueRemove(ExecutionContext eCtx) {
-		return sessionProvider.removeAttribute(getSessionKey(eCtx));
+		return getSessionProvider().removeAttribute(getSessionKey(eCtx));
 	}
 	
 	@Override

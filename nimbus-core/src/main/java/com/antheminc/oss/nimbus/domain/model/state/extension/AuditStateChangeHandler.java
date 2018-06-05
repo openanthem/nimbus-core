@@ -35,7 +35,11 @@ import com.antheminc.oss.nimbus.domain.model.state.repo.IdSequenceRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepositoryFactory;
 import com.antheminc.oss.nimbus.entity.audit.AuditEntry;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandler;
+
+import lombok.AccessLevel;
+import lombok.Getter;
 
 /**
  * WIP: initial implementation. review TODO comments for planned refactor
@@ -43,6 +47,8 @@ import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandler;
  * @author Soham Chakravarti
  *
  */
+@EnableLoggingInterceptor
+@Getter(AccessLevel.PROTECTED)
 public class AuditStateChangeHandler implements OnStateChangeHandler<Audit> {
 
 //	private ExpressionEvaluator expressionEvaluator;
@@ -92,27 +98,25 @@ public class AuditStateChangeHandler implements OnStateChangeHandler<Audit> {
 		Long domainRootRefId = Long.valueOf(String.valueOf(persistableDomainRoot.getIdParam().getState()));
 		String propertyPath = leafParam.getPath();
 		String propertyType = leafParam.getType().getName();
-		Object oldValue = leafParam.getTransientOldState();
 		Object newValue = leafParam.getState();
 		
-		AuditEntry ae = javaBeanHandler.instantiate(configuredAnnotation.value());
+		AuditEntry ae = getJavaBeanHandler().instantiate(configuredAnnotation.value());
 		ae.setDomainRootAlias(domainRootAlias);
 		ae.setDomainRootRefId(domainRootRefId);
 		ae.setPropertyPath(propertyPath);
 		ae.setPropertyType(propertyType);
-		ae.setOldValue(oldValue);
 		ae.setNewValue(newValue);
 
-		ModelConfig<?> auditConfig = Optional.ofNullable(domainConfigBuilder.getModel(configuredAnnotation.value()))
+		ModelConfig<?> auditConfig = Optional.ofNullable(getDomainConfigBuilder().getModel(configuredAnnotation.value()))
 				.orElseThrow(()->new InvalidConfigException("Annotated AuditEntry class not been loaded by f/w for: "+configuredAnnotation.value()));
 
 		String auditHistoryAlias = findAuditHistoryAlias(auditConfig, configuredAnnotation);
 		Repo repo = findAuditHistoryRepo(auditConfig, configuredAnnotation);
 		
-		ModelRepository db = repositoryFactory.get(repo);
+		ModelRepository db = getRepositoryFactory().get(repo);
 		
 		// autogenerate id
-		Long id = idSequenceRepo.getNextSequenceId(repo != null && StringUtils.isNotBlank(repo.alias())?repo.alias():auditHistoryAlias);
+		Long id = getIdSequenceRepo().getNextSequenceId(repo != null && StringUtils.isNotBlank(repo.alias())?repo.alias():auditHistoryAlias);
 		ae.setId(id);
 		
 		db._save(StringUtils.isNotBlank(repo.alias()) ? repo.alias() :auditHistoryAlias, ae);

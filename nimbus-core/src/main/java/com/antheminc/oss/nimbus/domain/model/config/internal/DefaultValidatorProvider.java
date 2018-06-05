@@ -20,11 +20,13 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
 import com.antheminc.oss.nimbus.domain.model.config.ValidatorProvider;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 /**
  * @author Rakesh Patel
  *
  */
+@EnableLoggingInterceptor
 public class DefaultValidatorProvider implements ValidatorProvider {
 
 	public static ValidatorFactory factory = Validation.buildDefaultValidatorFactory();

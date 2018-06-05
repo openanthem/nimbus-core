@@ -15,10 +15,13 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.repo.db;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import javax.script.Bindings;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -26,31 +29,33 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.repository.support.SpringDataMongodbQuery;
+import org.springframework.data.querydsl.SimpleEntityPathResolver;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.state.internal.AbstractListPaginatedParam.PageWrapper.PageRequestAndRespone;
-import com.antheminc.oss.nimbus.support.JustLogit;
+import com.antheminc.oss.nimbus.support.EnableAPIMetricCollection;
 import com.mongodb.BasicDBList;
 import com.mongodb.CommandResult;
+import com.querydsl.core.types.EntityPath;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.mongodb.AbstractMongodbQuery;
 
-import groovy.lang.Binding;
-import groovy.lang.GroovyShell;
 import lombok.RequiredArgsConstructor;
 
 /**
  * @author Rakesh Patel
  *
  */
+@EnableAPIMetricCollection
 @SuppressWarnings({ "rawtypes", "unchecked"})
 public class MongoSearchByQuery extends MongoDBSearch {
 
-	private static JustLogit logIt = new JustLogit(MongoSearchByQuery.class);
+	private static final ScriptEngine groovyEngine = new ScriptEngineManager().getEngineByName("groovy");
+
 	
 	public MongoSearchByQuery(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
@@ -75,8 +80,7 @@ public class MongoSearchByQuery extends MongoDBSearch {
 				return this;
 			}
 			
-			final GroovyShell shell = createQBinding(referredClass, alias); 
-	        Predicate predicate = (Predicate)shell.evaluate(criteria);
+	        Predicate predicate = evaluate(referredClass, alias, criteria);
 	        
 			query.where(predicate);
 			
@@ -89,38 +93,29 @@ public class MongoSearchByQuery extends MongoDBSearch {
 				return this;
 			}
 			
-			final GroovyShell shell = createQBinding(referredClass, alias); 
-	        OrderSpecifier orderBy = (OrderSpecifier)shell.evaluate(criteria);
-	        
+			OrderSpecifier orderBy = evaluate(referredClass, alias, criteria);
+			
 			if(orderBy != null)
 				query.orderBy(orderBy);
 			
 			return this;
 		}
-		
-		private GroovyShell createQBinding(Class<?> referredClass, String alias) {
-			final Binding binding = new Binding();
-			Object obj = createQueryDslClassInstance(referredClass);
-	        binding.setProperty(alias, obj);
-	        
-	        final GroovyShell shell = new GroovyShell(referredClass.getClassLoader(), binding);
-			return shell;
-		}
-		
-		private Object createQueryDslClassInstance(Class<?> referredClass) {
-			Object obj = null;
+
+		private <T> T evaluate(Class<?> referredClass, String alias, String criteria) {
 			try {
-				String cannonicalQuerydslclass = referredClass.getCanonicalName().replace(referredClass.getSimpleName(), "Q".concat(referredClass.getSimpleName()));
-				Class<?> cl = Class.forName(cannonicalQuerydslclass);
-				Constructor<?> con = cl.getConstructor(String.class);
-				obj = con.newInstance(referredClass.getSimpleName());
-			} catch (Exception e) {
+				
+				EntityPath<?> qInstance = SimpleEntityPathResolver.INSTANCE.createPath(referredClass);
+				
+				Bindings b = groovyEngine.createBindings();
+				b.put(alias, qInstance);
+				
+				return (T)groovyEngine.eval(criteria, b);
+				
+			} catch (Exception ex) {
 				throw new FrameworkRuntimeException("Cannot instantiate queryDsl class for entity: "+referredClass+ " "
-						+ "please make sure the entity has been annotated with either @Domain or @Model and a Q Class has been generated for it", e);
+						+ "please make sure the entity has been annotated with either @Domain or @Model and a Q Class has been generated for it", ex);	
 			}
-			return obj;
 		}
-		
 	}
 	
 	@Override
@@ -184,18 +179,12 @@ public class MongoSearchByQuery extends MongoDBSearch {
 	private  <T> Object searchByAggregation(Class<?> referredClass, String alias, SearchCriteria<T> criteria) {
 		List<?> output = new ArrayList();
 		String cr = (String)criteria.getWhere();
-		logIt.info(() -> "### Aggregation query: "+cr);
 		
-		long startTime = System.currentTimeMillis();
 		CommandResult commndResult = getMongoOps().executeCommand(cr);
-		long endTime = System.currentTimeMillis();
-		logIt.info(() -> " took "+(endTime-startTime)+ " ms ");
 				
 		if (commndResult != null && commndResult.get(Constants.SEARCH_NAMED_QUERY_RESULT.code) instanceof BasicDBList) {
 			BasicDBList result = (BasicDBList)commndResult.get(Constants.SEARCH_NAMED_QUERY_RESULT.code);
 			output.addAll(getMongoOps().getConverter().read(List.class, result));
-			logIt.info(() -> "with result size: "+output.size());
-			logIt.trace(()-> " and result content: "+commndResult);
 		}
 		return output;
 	}
