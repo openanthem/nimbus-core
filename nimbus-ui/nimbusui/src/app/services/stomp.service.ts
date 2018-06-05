@@ -20,6 +20,7 @@ import { Subject } from 'rxjs/Rx';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import * as Stomp from 'stompjs';
 import { ServiceConstants } from './service.constants';
+import { LoggerService } from './logger.service';
 
 /**
  * \@author reference https://github.com/ivanderbu2/angular-redux
@@ -75,7 +76,9 @@ export class STOMPService {
     private resolvePromise: { (...args: any[]): void };
 
     /** Constructor */
-    public constructor() {
+    public constructor(
+        public logger: LoggerService
+    ) {
         this.messages = new Subject<Stomp.Message>();
         this.state = new BehaviorSubject<STOMPState>(STOMPState.CLOSED);
     }
@@ -113,9 +116,11 @@ export class STOMPService {
     public try_connect(): Promise<{}> {
 
         if(this.state.getValue() !== STOMPState.CLOSED) {
+            this.logger.error('Can\'t try_connect if not CLOSED!');
             throw Error('Can\'t try_connect if not CLOSED!');
         }
         if(this.client === null) {
+            this.logger.error('Client not configured!');
             throw Error('Client not configured!');
         }
 
@@ -206,6 +211,7 @@ export class STOMPService {
         if (message.body) {
             this.messages.next(message);
         } else {
+            this.logger.error('Empty message received!');
             console.error('Empty message received!');
         }
     }

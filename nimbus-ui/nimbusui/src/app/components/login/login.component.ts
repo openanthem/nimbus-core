@@ -20,6 +20,8 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ServiceConstants } from './../../services/service.constants';
+import { LoggerService } from './../../services/logger.service';
+
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 
@@ -35,7 +37,7 @@ export class LoginCmp {
     public loginForm;
     public imagesPath: string;
 
-    constructor(public fb: FormBuilder, private _router: Router) {
+    constructor(public fb: FormBuilder, private _router: Router, private _logger: LoggerService) {
     }
 
     ngOnInit() {
@@ -47,6 +49,8 @@ export class LoginCmp {
     }
 
     onSubmit() {
+        this._logger.debug('LoginCmp-i');
+        this._logger.debug('username trying to login: ' + this.loginForm.value.username);
         if(this.loginForm.value.username === 'admin') {
             this._router.navigate(['/h/admindashboard']);
         } else if(this.loginForm.value.username === 'supervisor') {

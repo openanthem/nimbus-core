@@ -22,6 +22,7 @@ import { ServiceConstants } from './service.constants';
 import { ExecuteException, ExecuteResponse, MultiOutput } from '../shared/app-config.interface';
 import { PageService } from './page.service';
 import { ConfigService } from './config.service';
+import { SessionStoreService } from './session.store';
 /**
  * \@author Swetha.Vemuri
  * \@whatItDoes
@@ -32,7 +33,7 @@ import { ConfigService } from './config.service';
  */
 @Injectable()
 export class CustomHttpClientInterceptor implements HttpInterceptor {
-    constructor(private pageSvc: PageService, private configSvc: ConfigService) {}
+    constructor(private pageSvc: PageService, private configSvc: ConfigService, private sessionStore: SessionStoreService) {}
     /**
      * Http interceptor to handle custom implementation of request & error handling.
      * On a failure of http response, the error handler event is emitted based on the
@@ -55,6 +56,7 @@ export class CustomHttpClientInterceptor implements HttpInterceptor {
                         Hence the additional check for 200 & err.url.
                         This will have to be refactored when Siteminder authentication replaces the form based authentication. */
                     if (err.status === 302 || err.status === 403 || (err.status === 200 && err.url === `${ServiceConstants.LOGIN_URL}`)) {
+                        this.sessionStore.removeAll();
                         window.location.href = `${ServiceConstants.LOGOUT_URL}`;
                     }
                     const execResp  = new ExecuteResponse(this.configSvc).deserialize(err.error);

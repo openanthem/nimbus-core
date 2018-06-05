@@ -38,6 +38,7 @@ export class Param implements Serializable<Param, string> {
     configId: string;
     type: Type;
     leafState: any;
+    previousLeafState: any;
     path: string;
     collection: boolean;
     collectionElem: boolean;
@@ -178,7 +179,7 @@ export class Param implements Serializable<Param, string> {
             this.leafState = ParamUtils.convertServerDateStringToDate(inJson.leafState, this.config.type.name);
         } else {
             this.leafState = inJson.leafState;
-
+            this.previousLeafState = inJson.leafState;
             // Handle any transformations that need to be applied to the leaf state
             if (typeof inJson.leafState === 'object' && (this.type.model && this.type.model.params)) {
 
@@ -206,7 +207,7 @@ export class Param implements Serializable<Param, string> {
             }
         }
        
-        if (typeof inJson.activeValidationGroups ! == 'undefined') {
+        if (typeof inJson.activeValidationGroups === 'object') {
             this.activeValidationGroups = inJson.activeValidationGroups;
         }
         

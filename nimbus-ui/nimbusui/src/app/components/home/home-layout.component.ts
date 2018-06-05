@@ -20,6 +20,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Message } from 'stompjs';
 import { Component } from '@angular/core';
+import { Title }     from '@angular/platform-browser';
 import { LayoutService } from '../../services/layout.service';
 import { AppBranding, Layout, LinkConfig, FooterConfig } from '../../model/menu-meta.interface';
 import { ExecuteOutput, ModelEvent } from '../../shared/app-config.interface';
@@ -30,6 +31,9 @@ import { PageService } from '../../services/page.service';
 import { ServiceConstants } from '../../services/service.constants';
 import {FooterGlobal} from '../platform/footer/footer-global.component'
 import { MenuItem } from 'primeng/primeng';
+import { LoggerService } from '../../services/logger.service';
+import { WebContentSvc } from '../../services/content-management.service';
+import { LabelConfig } from './../../shared/param-config';
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 
@@ -68,11 +72,15 @@ export class HomeLayoutCmp {
         private _stompService: STOMPService,
         private _pageSvc: PageService,
         private _route: ActivatedRoute,
-        private _router: Router) {
-
+        private _router: Router,
+        private _logger: LoggerService,
+        private wcs: WebContentSvc,
+        private titleService: Title) {
+        
     }
 
     logout() {
+        this._logger.info('home layout component: logout() method is called');
         this._authenticationService.logout().subscribe(success => {
             window.location.href=`${ServiceConstants.CLIENT_BASE_URL}logout`;
         });
@@ -100,7 +108,13 @@ export class HomeLayoutCmp {
     /** Initialize the WebSocket */
     initWebSocket() {
         this._stompService.configure();
-        this._stompService.try_connect().then(this.on_connect);
+        this._stompService.try_connect().then(this.on_connect).catch((err) => {
+            const errObj = {
+                message: 'error in intializing the webSocket',
+                error: err
+            };
+            this._logger.error(JSON.stringify(errObj));
+          });
     }
 
     /** Cleanup on Destroy of Component */
@@ -138,6 +152,7 @@ export class HomeLayoutCmp {
     }
 
     ngOnInit() {
+        this._logger.debug('HomeLayoutCmp-i');
         // initialize
         this.themes.push({link:'styles/vendor/anthem.blue.theme.css',label:'Blue Theme'});
         this.themes.push({link:'styles/vendor/anthem.black.theme.css',label:'Black Theme'});
@@ -145,9 +160,16 @@ export class HomeLayoutCmp {
         this.layoutSvc.layout$.subscribe(
             data => {
                 let layout: Layout = data;
+                this._logger.debug('home layout component received layout from layout$ subject');
                 if(layout != null ) {
+                    
+
                     if(layout.topBar != null && layout.topBar.branding != null) {
                         this.branding = layout.topBar.branding;
+                        if (this.branding.title) {
+                            let titleLabel: LabelConfig = this.wcs.findLabelContent(this.branding.title);
+                            this.titleService.setTitle(titleLabel.text);    
+                        }
                         this.topMenuItems = layout.topBar.headerMenus;
                     }
                     if(layout.subBar && (layout.subBar.menuItems || layout.subBar.menuLinks || layout.subBar.organization)) {

@@ -23,6 +23,7 @@ import { LoaderService } from '../../../services/loader.service';
 import { ConfigService } from '../../../services/config.service';
 import { STOMPService } from '../../../services/stomp.service';
 import { Subject } from 'rxjs';
+import { LoggerService } from '../../../services/logger.service';
 
 let fixture, app, pageService, configService, router;
 
@@ -95,7 +96,8 @@ describe('FlowWrapper', () => {
         { provide: Router, useClass: MockRouter },
         { provide: ActivatedRoute, useClass: MockActivatedRoute },
         CustomHttpClient,
-        LoaderService
+        LoaderService,
+        LoggerService
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(FlowWrapper);

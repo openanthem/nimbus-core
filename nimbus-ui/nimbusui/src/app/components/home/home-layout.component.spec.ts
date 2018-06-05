@@ -19,6 +19,8 @@ import {
   Data,
   ParamMap
 } from '@angular/router';
+import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
+import { JL } from 'jsnlog';
 
 import { HomeLayoutCmp } from './home-layout.component';
 import { STOMPService } from '../../services/stomp.service';
@@ -41,6 +43,7 @@ import { AuthenticationService } from '../../services/authentication.service';
 import { BreadcrumbService } from '../platform/breadcrumb/breadcrumb.service';
 import { LayoutService } from '../../services/layout.service';
 import { LoggerService } from '../../services/logger.service';
+import { SessionStoreService, CUSTOM_STORAGE } from '../../services/session.store';
 
 class MockAuthenticationService {
   logout() {
@@ -122,20 +125,24 @@ describe('HomeLayoutCmp', () => {
         { provide: LayoutService, useClass: MockLayoutService },
         { provide: ActivatedRoute, useClass: MockActivatedRoute },
         { provide: PageService, useClass: MockPageService },
+        { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+        { provide: 'JSNLOG', useValue: JL },
         CustomHttpClient,
         WebContentSvc,
         LoaderService,
         ConfigService,
         BreadcrumbService,
         STOMPService,
-        LoggerService
+        LoggerService,
+        SessionStoreService
       ],
       imports: [
         RouterTestingModule,
         FormsModule,
         DropdownModule,
         HttpClientModule,
-        HttpModule
+        HttpModule,
+        StorageServiceModule
       ]
     }).compileComponents();
 

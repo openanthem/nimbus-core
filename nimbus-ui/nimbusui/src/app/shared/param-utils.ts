@@ -88,16 +88,26 @@ export class ParamUtils {
      * @param typeClassMapping the class type of the server date object
      */
     public static convertServerDateStringToDate(value: string, typeClassMapping: string): Date {
-        if (value) {
-            var serverDateTime = new Date(value);
-            if (typeClassMapping === ParamUtils.DATE_TYPE_METADATA.LOCAL_DATE.name) {
+        if (!value) {
+            return null;
+        }
+
+        var serverDateTime = new Date(value);
+        switch(typeClassMapping) {
+            case ParamUtils.DATE_TYPE_METADATA.LOCAL_DATE.name: {
                 return new Date(serverDateTime.getUTCFullYear(), serverDateTime.getUTCMonth(), serverDateTime.getUTCDate());
-            } else {
+            }
+
+            case ParamUtils.DATE_TYPE_METADATA.LOCAL_DATE_TIME.name: {
                 return new Date(serverDateTime.getUTCFullYear(), serverDateTime.getUTCMonth(), serverDateTime.getUTCDate(), 
                     serverDateTime.getHours(), serverDateTime.getMinutes(), serverDateTime.getSeconds());
             }
+
+            default: {
+                return new Date(serverDateTime.getFullYear(), serverDateTime.getMonth(), serverDateTime.getDate(), 
+                    serverDateTime.getHours(), serverDateTime.getMinutes(), serverDateTime.getSeconds());
+            }
         }
-        return null;
     }
 
     /**
