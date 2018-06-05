@@ -127,7 +127,6 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 	
 	private void mapped_audit_string(Param<String> p, String domainRootAlias, String propertyPath) {
 		assertNull(p.getState());
-		assertNull(p.findIfLeaf().getTransientOldState());
 
 		// change value #1
 		final String K_state_1 = "1. new value @ "+new Date();
@@ -140,7 +139,6 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		assertEquals(1, audit.size());
 		assertEquals(coreRefId, audit.get(0).getDomainRootRefId());
 		assertEquals(K_state_1, audit.get(0).getNewValue());
-		assertEquals(null, audit.get(0).getOldValue());
 		assertEquals(propertyPath, audit.get(0).getPropertyPath());
 		assertEquals("string", audit.get(0).getPropertyType());
 		assertNotNull(audit.get(0).getCreatedDate());
@@ -148,7 +146,6 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		// change value #2
 		final String K_state_2 = "2. new value @ "+new Date();
 		p.setState(K_state_2);
-		assertEquals(K_state_1, p.findIfLeaf().getTransientOldState());
 		
 		audit = mongo.findAll(AuditEntry.class, "sample_core_audit_history");
 		assertEquals(2, audit.size());
@@ -156,14 +153,12 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		assertEquals(domainRootAlias, audit.get(0).getDomainRootAlias());
 		assertEquals(coreRefId, audit.get(0).getDomainRootRefId());
 		assertEquals(K_state_1, audit.get(0).getNewValue());
-		assertEquals(null, audit.get(0).getOldValue());
 		assertEquals(propertyPath, audit.get(0).getPropertyPath());
 		assertNotNull(audit.get(0).getCreatedDate());
 		
 		assertEquals(domainRootAlias, audit.get(1).getDomainRootAlias());
 		assertEquals(coreRefId, audit.get(1).getDomainRootRefId());
 		assertEquals(K_state_2, audit.get(1).getNewValue());
-		assertEquals(K_state_1, audit.get(1).getOldValue());
 		assertEquals(propertyPath, audit.get(1).getPropertyPath());
 		assertEquals("string", audit.get(1).getPropertyType());
 		assertNotNull(audit.get(1).getCreatedDate());
@@ -187,7 +182,6 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 	
 	private void mapped_audit_integer(Param<Integer> p, String domainRootAlias, String propertyPath) {
 		assertNull(p.getState());
-		assertNull(p.findIfLeaf().getTransientOldState());
 
 		// change value #1
 		final Integer K_state_1 = 1;
@@ -202,7 +196,6 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		assertEquals(domainRootAlias, audit.get(0).getDomainRootAlias());
 		assertEquals(coreRefId, audit.get(0).getDomainRootRefId());
 		assertEquals(K_state_1, audit.get(0).getNewValue());
-		assertEquals(null, audit.get(0).getOldValue());
 		assertEquals(propertyPath, audit.get(0).getPropertyPath());
 		assertEquals("integer", audit.get(0).getPropertyType());
 		assertNotNull(audit.get(0).getCreatedDate());
@@ -210,7 +203,6 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		// change value #2
 		final Integer K_state_2 = 2;
 		p.setState(K_state_2);
-		assertEquals(K_state_1, p.findIfLeaf().getTransientOldState());
 		
 		audit = mongo.findAll(AuditEntry.class, "sample_core_audit_history");
 		assertEquals(2, audit.size());
@@ -218,7 +210,6 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		assertEquals(domainRootAlias, audit.get(0).getDomainRootAlias());
 		assertEquals(coreRefId, audit.get(0).getDomainRootRefId());
 		assertEquals(K_state_1, audit.get(0).getNewValue());
-		assertEquals(null, audit.get(0).getOldValue());
 		assertEquals(propertyPath, audit.get(0).getPropertyPath());
 		assertEquals("integer", audit.get(0).getPropertyType());
 		assertNotNull(audit.get(0).getCreatedDate());
@@ -226,7 +217,6 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		assertEquals(domainRootAlias, audit.get(1).getDomainRootAlias());
 		assertEquals(coreRefId, audit.get(1).getDomainRootRefId());
 		assertEquals(K_state_2, audit.get(1).getNewValue());
-		assertEquals(K_state_1, audit.get(1).getOldValue());
 		assertEquals(propertyPath, audit.get(1).getPropertyPath());
 		assertEquals("integer", audit.get(1).getPropertyType());
 		assertNotNull(audit.get(1).getCreatedDate());
@@ -249,7 +239,6 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		String propertyPath = "/sample_view/page_green/tile/unmapped_String";
 	
 		assertNull(p.getState());
-		assertNull(p.findIfLeaf().getTransientOldState());
 
 		// change value #1
 		final String K_state_1 = "1. new value @ "+new Date();
@@ -264,7 +253,6 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		assertEquals("sample_view", audit.get(0).getDomainRootAlias());
 		assertEquals(coreRefId, audit.get(0).getDomainRootRefId());
 		assertEquals(K_state_1, audit.get(0).getNewValue());
-		assertEquals(null, audit.get(0).getOldValue());
 		assertEquals(propertyPath, audit.get(0).getPropertyPath());
 		assertEquals("string", audit.get(0).getPropertyType());
 		assertNotNull(audit.get(0).getCreatedDate());
@@ -272,7 +260,6 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		// change value #2
 		final String K_state_2 = "2. new value @ "+new Date();
 		p.setState(K_state_2);
-		assertEquals(K_state_1, p.findIfLeaf().getTransientOldState());
 		
 		audit = mongo.findAll(AuditEntry.class, "sample_view_audit_history");
 		assertEquals(2, audit.size());
@@ -280,7 +267,6 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		assertEquals("sample_view", audit.get(0).getDomainRootAlias());
 		assertEquals(coreRefId, audit.get(0).getDomainRootRefId());
 		assertEquals(K_state_1, audit.get(0).getNewValue());
-		assertEquals(null, audit.get(0).getOldValue());
 		assertEquals(propertyPath, audit.get(0).getPropertyPath());
 		assertEquals("string", audit.get(0).getPropertyType());
 		assertNotNull(audit.get(0).getCreatedDate());
@@ -288,7 +274,6 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		assertEquals("sample_view", audit.get(1).getDomainRootAlias());
 		assertEquals(coreRefId, audit.get(1).getDomainRootRefId());
 		assertEquals(K_state_2, audit.get(1).getNewValue());
-		assertEquals(K_state_1, audit.get(1).getOldValue());
 		assertEquals(propertyPath, audit.get(1).getPropertyPath());
 		assertEquals("string", audit.get(1).getPropertyType());
 		assertNotNull(audit.get(1).getCreatedDate());
@@ -304,11 +289,9 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		
 		assertNotNull(cp);
 		assertNull(cp.getState());
-		assertNull(cp.findIfLeaf().getTransientOldState());
 		
 		assertNotNull(vp);
 		assertNull(vp.getState());
-		assertNull(vp.findIfLeaf().getTransientOldState());
 		
 		// change value #1 in view
 		final String K_state_1 = "1. new value @ "+new Date();
@@ -326,7 +309,6 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		assertEquals("sample_core", audit.get(0).getDomainRootAlias());
 		assertEquals(coreRefId, audit.get(0).getDomainRootRefId());
 		assertEquals(K_state_1, audit.get(0).getNewValue());
-		assertEquals(null, audit.get(0).getOldValue());
 		assertEquals("/sample_core/level1/audit_nested_attr", audit.get(0).getPropertyPath());
 		assertEquals("string", audit.get(0).getPropertyType());
 		
@@ -341,7 +323,6 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		assertNull(cp.getState());
 		
 		assertTrue(cp.isLeaf());
-		assertNull(cp.findIfLeaf().getTransientOldState());
 		
 		assertNotNull(cp.getConfig().getEventHandlerConfig().findOnStateChangeHandler(
 				FieldUtils.getField(SampleCoreEntity.class, "attr_array_String", true).getAnnotation(Audit.class)));
@@ -365,7 +346,6 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		// Non-consequential for consumers interacting via JSON, such as UI-client or WS-client  
 		assertTrue(ArrayUtils.equals(K_arr, ((List<String>)audit.get(0).getNewValue()).toArray()));
 		
-		assertEquals(null, audit.get(0).getOldValue());
 		assertEquals("/sample_core/attr_array_String", audit.get(0).getPropertyPath());
 		assertEquals("array-string", audit.get(0).getPropertyType());
 	}
@@ -378,7 +358,6 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		assertNull(cp.getState());
 		
 		assertTrue(cp.isLeafOrCollectionWithLeafElems());
-		assertNull(cp.findIfLeaf().getTransientOldState());
 		
 		assertNotNull(cp.getConfig().getEventHandlerConfig().findOnStateChangeHandler(
 				FieldUtils.getField(SampleCoreEntity.class, "attr_list_String", true).getAnnotation(Audit.class)));
@@ -402,7 +381,6 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		// Non-consequential for consumers interacting via JSON, such as UI-client or WS-client  
 		assertTrue(CollectionUtils.isEqualCollection(K_list, (List<String>)audit.get(0).getNewValue()));
 		
-		assertEquals(null, audit.get(0).getOldValue());
 		assertEquals("/sample_core/attr_list_String", audit.get(0).getPropertyPath());
 		assertEquals("ArrayList", audit.get(0).getPropertyType());
 	
@@ -415,7 +393,6 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		assertNull(cp.getState());
 		
 		assertTrue(cp.isLeaf());
-		assertNull(cp.findIfLeaf().getTransientOldState());
 		
 		assertNotNull(cp.getConfig().getEventHandlerConfig().findOnStateChangeHandler(
 				FieldUtils.getField(SampleCoreEntity.class, "complex_object", true).getAnnotation(Audit.class)));
@@ -435,7 +412,6 @@ public class AuditStateChangeHandlerTest extends AbstractStateEventHandlerTests 
 		assertEquals(coreRefId, audit.get(0).getDomainRootRefId());
 		assertEquals(k.getField1(), ((ComplexObject) audit.get(0).getNewValue()).getField1());
 		assertEquals(k.getField2(), ((ComplexObject) audit.get(0).getNewValue()).getField2());
-		assertEquals(null, audit.get(0).getOldValue());
 		assertEquals("/sample_core/complex_object", audit.get(0).getPropertyPath());
 		assertEquals("SampleCoreEntity.ComplexObject", audit.get(0).getPropertyType());
 		assertNotNull(audit.get(0).getCreatedDate());
