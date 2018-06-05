@@ -16,6 +16,7 @@
 package com.antheminc.oss.nimbus.domain.model.state.repo.db;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.util.Assert;
 

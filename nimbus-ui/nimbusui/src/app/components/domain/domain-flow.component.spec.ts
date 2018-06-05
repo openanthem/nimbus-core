@@ -3,9 +3,11 @@ import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing'
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
-import { Router, ActivatedRoute, Route, ActivatedRouteSnapshot, UrlSegment, Params, Data, ParamMap } from '@angular/router';
+import { Router, ActivatedRoute, Route, ActivatedRouteSnapshot, UrlSegment, Params, Data, ParamMap, PRIMARY_OUTLET } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs';
+import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
+import { JL } from 'jsnlog';
 
 import { DomainFlowCmp } from './domain-flow.component';
 import { BreadcrumbComponent } from '../platform/breadcrumb/breadcrumb.component';
@@ -18,6 +20,9 @@ import { LoaderService } from '../../services/loader.service';
 import { ConfigService } from '../../services/config.service';
 import { BreadcrumbService } from '../platform/breadcrumb/breadcrumb.service';
 import { LayoutService } from '../../services/layout.service';
+import { LoggerService } from '../../services/logger.service';
+import { SessionStoreService, CUSTOM_STORAGE } from '../../services/session.store';
+import { AppInitService } from '../../services/app.init.service'
 
 let app, fixture, layoutservice, pageservice, router, route;
 
@@ -56,7 +61,18 @@ export class MockActivatedRoute implements ActivatedRoute {
     outlet: string;
     component: any;
     routeConfig: Route;
-    root: ActivatedRoute;
+    root: any = {
+        children: [{
+            outlet: PRIMARY_OUTLET,
+            component: 'test',
+            children: [],
+            snapshot: {
+                params: {
+                    pageId: 1
+                }
+            }
+        }]
+    };
     parent: ActivatedRoute;
     firstChild: ActivatedRoute;
     children: ActivatedRoute[];
@@ -68,6 +84,12 @@ export class MockActivatedRoute implements ActivatedRoute {
     queryParamMap: Observable<ParamMap>;
   }
 
+  class MockLoggerService {
+    debug() { }
+    info() { }
+    error() { }
+}
+
   export class MockActivatedRoute1 implements ActivatedRoute {
     snapshot: ActivatedRouteSnapshot;
     url: Observable<UrlSegment[]>;
@@ -77,7 +99,18 @@ export class MockActivatedRoute implements ActivatedRoute {
     outlet: string;
     component: any;
     routeConfig: Route;
-    root: ActivatedRoute;
+    root: any = {
+        children: [{
+            outlet: PRIMARY_OUTLET,
+            component: 'test',
+            children: [],
+            snapshot: {
+                params: {
+                    pageId: 1
+                }
+            }
+        }]
+    };    
     parent: ActivatedRoute;
     firstChild: ActivatedRoute;
     children: ActivatedRoute[];
@@ -90,6 +123,11 @@ export class MockActivatedRoute implements ActivatedRoute {
   }
 
   class MockRouter {
+    events = {
+      filter: () => {
+        return Observable.of({         })
+      }
+    };
     navigate() {    }
   }
 
@@ -105,18 +143,24 @@ describe('DomainFlowCmp', () => {
        imports: [
            RouterTestingModule,
            HttpClientModule,
-           HttpModule
+           HttpModule,
+           StorageServiceModule
        ],
        providers: [
            {provide: LayoutService, useClass: MockLayoutService},
            {provide: ActivatedRoute, useClass: MockActivatedRoute},
            {provide: PageService, useClass: MockPageService},
            {provide: Router, useClass: MockRouter},
+           { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+           { provide: 'JSNLOG', useValue: JL },
+           {provide: LoggerService, useClass: MockLoggerService},
            CustomHttpClient,
            WebContentSvc,
            LoaderService,
            ConfigService,
-           BreadcrumbService
+           BreadcrumbService,
+           SessionStoreService,
+           AppInitService
         ]
     }).compileComponents();
     fixture = TestBed.createComponent(DomainFlowCmp);
@@ -131,7 +175,7 @@ describe('DomainFlowCmp', () => {
     expect(app).toBeTruthy();
   }));
 
-  it('ngOnInit() 123123 should not update main-content', async(() => {
+  it('ngOnInit() should not update main-content', async(() => {
     spyOn(document, 'getElementById').and.returnValue({ 
         classList: {
             add: () => {
@@ -186,7 +230,7 @@ describe('DomainFlowCmp', () => {
 
 });
 
-describe('AppComponent', () => {
+describe('DomainFlowCmp', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
@@ -198,18 +242,22 @@ describe('AppComponent', () => {
        imports: [
            RouterTestingModule,
            HttpClientModule,
-           HttpModule
+           HttpModule,
+           StorageServiceModule
        ],
        providers: [
            {provide: LayoutService, useClass: MockLayoutService},
            {provide: ActivatedRoute, useClass: MockActivatedRoute1},
            {provide: PageService, useClass: MockPageService},
            {provide: Router, useClass: MockRouter},
+           { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
            CustomHttpClient,
            WebContentSvc,
            LoaderService,
            ConfigService,
-           BreadcrumbService
+           BreadcrumbService,
+           LoggerService,
+           SessionStoreService
         ]
     }).compileComponents();
     fixture = TestBed.createComponent(DomainFlowCmp);

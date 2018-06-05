@@ -18,8 +18,8 @@
 import { ValidationConstraint } from './../../../shared/validationconstraints.enum';
 import { Validators, ValidatorFn } from '@angular/forms';
 import { CustomValidators } from './custom.validators';
-import { Constraint } from '../../../shared/app-config.interface';
-import { Param } from '../../../shared/Param';
+import { Constraint } from '../../../shared/param-config';
+import { Param } from '../../../shared/param-state';
 import { FormControl, AbstractControl } from '@angular/forms/src/model';
 
 /**

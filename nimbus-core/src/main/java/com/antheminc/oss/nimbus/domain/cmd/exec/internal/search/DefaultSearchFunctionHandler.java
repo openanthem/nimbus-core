@@ -37,12 +37,14 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.ProjectCriteria;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 /**
  * @author Rakesh Patel
  *
  */
 @SuppressWarnings("unchecked")
+@EnableLoggingInterceptor
 public abstract class DefaultSearchFunctionHandler<T, R> extends AbstractFunctionHandler<T, R> {
 
 	

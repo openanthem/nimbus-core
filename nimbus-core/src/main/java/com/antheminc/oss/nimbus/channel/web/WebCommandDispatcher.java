@@ -25,6 +25,7 @@ import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
 import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 import lombok.Getter;
 
@@ -33,6 +34,7 @@ import lombok.Getter;
  *
  */
 @Getter
+@EnableLoggingInterceptor
 public class WebCommandDispatcher {
 
 	private final WebCommandBuilder builder;
@@ -45,17 +47,17 @@ public class WebCommandDispatcher {
 	}
 	
 	public Object handle(HttpServletRequest httpReq, ModelEvent<String> event) {
-		Command cmd = builder.build(httpReq, event);
+		Command cmd = getBuilder().build(httpReq, event);
 		return handle(cmd, event.getPayload());
 	}
 
 	public Object handle(HttpServletRequest httpReq, String json) {
-		Command cmd = builder.build(httpReq);
+		Command cmd = getBuilder().build(httpReq);
 		return handle(cmd, json);
 	}
 
 	public MultiOutput handle(Command cmd, String payload) {
-		return gateway.execute(cmd, payload);
+		return getGateway().execute(cmd, payload);
 	}
 
 }

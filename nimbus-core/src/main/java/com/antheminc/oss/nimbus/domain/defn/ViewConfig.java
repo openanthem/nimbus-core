@@ -21,6 +21,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.antheminc.oss.nimbus.domain.Event;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 import com.antheminc.oss.nimbus.domain.defn.extension.ParamContext;
 
@@ -230,6 +231,8 @@ public class ViewConfig {
 		ParamContext context() default @ParamContext(enabled = true, visible = false);
 		
 		boolean resizable() default true;
+		
+		int order() default Event.DEFAULT_ORDER_NUMBER;
 	}
 
 	/*
@@ -273,7 +276,7 @@ public class ViewConfig {
 		String alias() default "Grid";
 		String cssClass() default ""; // new
 		boolean expandableRows() default false;
-		
+		boolean lazyLoad() default false;
 		boolean onLoad() default false;
 		boolean isTransient() default false;
 		String url() default "";
@@ -289,6 +292,7 @@ public class ViewConfig {
 		boolean postEventOnChange() default false;
 		boolean clearAllFilters() default false;
 		boolean export() default false;
+		String dataKey() default "id";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
@@ -503,6 +507,7 @@ public class ViewConfig {
 	public @interface PageHeader {
 		public enum Property {
 			LOGO,
+			TITLE,
 			APPTITLE,
 			SUBTITLE,
 			USERNAME,
@@ -651,6 +656,10 @@ public class ViewConfig {
 		boolean postEventOnChange() default false;
 		String controlId() default "";
 		String help() default "";
+		boolean readonlyInput() default false;
+		boolean monthNavigator() default false;
+		boolean yearNavigator() default false;
+		String yearRange() default "1910:2050";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
@@ -832,6 +841,7 @@ public class ViewConfig {
 		String url() default "";
 		String alias() default "FileUpload";
 		String type() default ".pdf,.png";
+		String metaData() default "";
 		ControlType controlType() default ControlType.FORMCONTROL;
 	}
 	
@@ -858,11 +868,12 @@ public class ViewConfig {
 		boolean expandable() default true;
 		SortAs sortAs() default SortAs.DEFAULT; // number, text
 		String placeholder() default "";
+		boolean rowExpander() default false;
 		
 		public enum FilterMode {
-			equals("eq"),
-			contains("contains"),
-			endsWith("endsWith"),
+			equals("equalsIgnoreCase"),
+			contains("containsIgnoreCase"),
+			endsWith("endsWithIgnoreCase"),
 			in("in");
 			
 			@Getter @Setter
@@ -870,6 +881,31 @@ public class ViewConfig {
 			
 			FilterMode(String code) {
 				this.code = code;
+			}
+			
+			public static String getStrictMatchModeFor(FilterMode mode) {
+				if(mode == null)
+					return null;
+				
+				if(mode == FilterMode.equals)
+					return "eq";
+				
+				return mode.getCode();
+			}
+			
+			//TODO add more filters as valid as they are available (e.g. gt, gte, lt, lte etc...)
+			public static boolean isValidNumericFilter(FilterMode mode) {
+				if(mode == FilterMode.equals || mode == FilterMode.in) {
+					return true;
+				}
+				return false;
+			}
+			
+			public static boolean isValidBooleanFilter(FilterMode mode) {
+				if(mode == FilterMode.equals || mode == FilterMode.in) {
+					return true;
+				}
+				return false;
 			}
 			
 		}

@@ -4,6 +4,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CalendarModule, RadioButtonModule, CheckboxModule, ListboxModule, FileUploadModule, GrowlModule, DropdownModule, DataTableModule, AccordionModule, PickListModule } from 'primeng/primeng';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
+import { TableModule } from 'primeng/table';
+import { KeyFilterModule } from 'primeng/keyfilter';
 
 import { Section } from './section.component';
 import { ComboBox } from '../platform/form/elements/combobox.component';
@@ -48,6 +50,8 @@ import { PageService } from '../../services/page.service';
 import { CustomHttpClient } from '../../services/httpclient.service';
 import { LoaderService } from '../../services/loader.service';
 import { ConfigService } from '../../services/config.service';
+import { DataTable } from './grid/table.component';
+import { LoggerService } from '../../services/logger.service';
 
 class MockPageService {
     processEvent() {
@@ -97,7 +101,8 @@ describe('Section', () => {
         Calendar,
         DateControl,
         Signature,
-        Header
+        Header,
+        DataTable
        ],
        imports: [
         FormsModule,
@@ -113,14 +118,17 @@ describe('Section', () => {
         RadioButtonModule,
         CalendarModule,
         HttpModule,
-        HttpClientModule
+        HttpClientModule,
+        TableModule,
+        KeyFilterModule
        ],
        providers: [
         { provide: PageService, useClass: MockPageService },
         WebContentSvc,
         CustomHttpClient,
         LoaderService,
-        ConfigService
+        ConfigService,
+        LoggerService
        ]
     }).compileComponents();
   }));

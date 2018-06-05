@@ -41,6 +41,7 @@ import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ExternalModelRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.ExampleSearchCriteria;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 import com.antheminc.oss.nimbus.support.JustLogit;
 
 import lombok.Getter;
@@ -57,6 +58,7 @@ import lombok.Setter;
  */
 @ConfigurationProperties(prefix="ext.repository")
 @Getter @Setter
+@EnableLoggingInterceptor
 public class DefaultWSModelRepository implements ExternalModelRepository {
 
 	private final RestTemplate restTemplate;
@@ -79,7 +81,7 @@ public class DefaultWSModelRepository implements ExternalModelRepository {
 			return null;
 	
 		try {
-			ResponseEntity<T> responseEntity = restTemplate.exchange(new RequestEntity<T>(HttpMethod.GET, uri), referredClass);
+			ResponseEntity<T> responseEntity = getRestTemplate().exchange(new RequestEntity<T>(HttpMethod.GET, uri), referredClass);
 			return Optional.ofNullable(responseEntity).map((response) -> response.getBody()).orElse(null);
 		} catch(Exception e) {
 			handleException(e,uri);
@@ -106,7 +108,7 @@ public class DefaultWSModelRepository implements ExternalModelRepository {
 	
 	private Object execute(Supplier<RequestEntity<?>> reqEntitySupplier, Supplier<ParameterizedTypeReference<?>> responseTypeSupplier) {
 		 try {
-			ResponseEntity<?> responseEntity = restTemplate.exchange(reqEntitySupplier.get(), responseTypeSupplier.get());
+			ResponseEntity<?> responseEntity = getRestTemplate().exchange(reqEntitySupplier.get(), responseTypeSupplier.get());
 			return Optional.of(responseEntity).map((response)->response.getBody()).orElse(null);
 		} catch(Exception e) {
 			handleException(e, reqEntitySupplier.get().getUrl());
@@ -116,12 +118,12 @@ public class DefaultWSModelRepository implements ExternalModelRepository {
 	
 	private URI createUriForAlias(String alias, String url) {
 		
-		if(MapUtils.isEmpty(this.targetUrl) || StringUtils.isBlank(this.targetUrl.get(alias)))
+		if(MapUtils.isEmpty(this.getTargetUrl()) || StringUtils.isBlank(this.getTargetUrl().get(alias)))
 			return null;
 		
 		String urlToConctruct = StringUtils.startsWith(url, "/") ? url : "/".concat(url);
 		
-		urlToConctruct = this.targetUrl.get(alias).concat(urlToConctruct);
+		urlToConctruct = this.getTargetUrl().get(alias).concat(urlToConctruct);
 		try {
 			URI uri = new URI(urlToConctruct);
 			return uri;

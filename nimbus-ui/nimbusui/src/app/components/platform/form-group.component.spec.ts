@@ -4,6 +4,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GrowlModule, AccordionModule, PickListModule, ListboxModule, CalendarModule, DataTableModule, DropdownModule, FileUploadModule, RadioButtonModule, CheckboxModule } from 'primeng/primeng';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
+import { TableModule } from 'primeng/table';
+import { KeyFilterModule } from 'primeng/keyfilter';
 
 import { FrmGroupCmp } from './form-group.component';
 import { FormElement } from './form-element.component';
@@ -44,6 +46,7 @@ import { Accordion } from '../platform/accordion.component';
 import { InPlaceEditorComponent } from '../platform/form/elements/inplace-editor.component';
 import { WebContentSvc } from '../../services/content-management.service';
 import { Signature } from '../platform/form/elements/signature.component'
+import { DataTable } from './grid/table.component';
 
 class MockWebContentSvc {
     findLabelContent(param) {
@@ -96,7 +99,8 @@ describe('FrmGroupCmp', () => {
         AccordionGroup,
         Accordion,
         InPlaceEditorComponent,
-        Signature
+        Signature,
+        DataTable
        ],
        imports: [
            FormsModule,
@@ -112,7 +116,9 @@ describe('FrmGroupCmp', () => {
            GrowlModule,
            AccordionModule,
            HttpModule,
-           HttpClientModule
+           HttpClientModule,
+           TableModule,
+           KeyFilterModule
        ],
        providers: [
            { provide: WebContentSvc, useClass: MockWebContentSvc }

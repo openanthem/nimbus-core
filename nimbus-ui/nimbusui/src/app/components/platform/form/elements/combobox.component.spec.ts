@@ -4,6 +4,7 @@ import { DropdownModule } from 'primeng/primeng';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
+import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
 
 import { ComboBox } from './combobox.component';
 import { TooltipComponent } from '../../../platform/tooltip/tooltip.component';
@@ -12,6 +13,8 @@ import { PageService } from '../../../../services/page.service';
 import { CustomHttpClient } from '../../../../services/httpclient.service';
 import { LoaderService } from '../../../../services/loader.service';
 import { ConfigService } from '../../../../services/config.service';
+import { LoggerService } from '../../../../services/logger.service';
+import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
 
 describe('ComboBox', () => {
   beforeEach(async(() => {
@@ -25,13 +28,17 @@ describe('ComboBox', () => {
         DropdownModule,
         FormsModule,
         HttpClientModule,
-        HttpModule
+        HttpModule,
+        StorageServiceModule
        ],
        providers: [
+        { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
         PageService,
         CustomHttpClient,
         LoaderService,
-        ConfigService
+        ConfigService,
+        LoggerService,
+        SessionStoreService
        ]
     }).compileComponents();
   }));

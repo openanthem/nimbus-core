@@ -27,7 +27,7 @@ import 'rxjs/add/operator/switchMap';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { PageService } from '../../../../services/page.service';
-import { Param } from '../../../../shared/Param';
+import { Param } from '../../../../shared/param-state';
 import { ControlSubscribers } from '../../../../services/control-subscribers.service';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
@@ -60,16 +60,14 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
             class="form-control" ngDefaultControl>
         </canvas>
         <div class="text-sm-center buttonGroup" [style.width.px]="width">
-        <ng-template [ngIf]="save">
-            <button (click)="acceptSignature()" type="button" class="btn btn-secondary post-btn">
-                {{element.config?.uiStyles?.attributes?.acceptLabel}}
-            </button>
-        </ng-template>
-        <ng-template [ngIf]="clear">
+            <ng-template [ngIf]="save">
+                <button (click)="acceptSignature()" type="button" class="btn btn-secondary post-btn">
+                    {{element.config?.uiStyles?.attributes?.acceptLabel}}
+                </button>
+            </ng-template>
             <button (click)="clearSignature()" type="button" class="btn btn-secondary post-btn">
                 {{element.config?.uiStyles?.attributes?.clearLabel}}
             </button>
-        </ng-template>
         </div>
         <img #img [src]="value != null ? value : defaultEmptyImage" (load)="onImgLoad()" style='display: none;' />
     </ng-template>
@@ -93,7 +91,6 @@ export class Signature extends BaseControl<String> {
     width: number;
     height: number;
     save: boolean = true;
-    clear: boolean = false;
     defaultEmptyImage: string = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAVkAAAA8CAYAAADMvMmGAAAB+klEQVR4Xu3UsQ0AAAjDMPr/01yRzRzQwULZOQIECBDIBJYtGyZAgACBE1lPQIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBB41fMAPZcifoIAAAAASUVORK5CYII=";
     
     constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd:ChangeDetectorRef) {
@@ -177,16 +174,16 @@ export class Signature extends BaseControl<String> {
         this.cx.clearRect(0, 0, this.width, this.height);
         if(this.imgElement.src != this.defaultEmptyImage ){
             this.cx.drawImage(this.imgElement, 0, 0, this.width, this.height);
-            this.enableClear();
+            this.toggleSave(false);
         }
     }
 
     clearSignature() {
         this.cx.clearRect(0, 0, this.width, this.height);
-        this.value = null;
+        this.value = '';
         this.imgElement.src = "";
-        super.emitValueChangedEvent(this, null);
-        this.enableSave();
+        super.emitValueChangedEvent(this, '');
+        this.toggleSave(true);
     }
 
     acceptSignature() {
@@ -198,18 +195,12 @@ export class Signature extends BaseControl<String> {
             this.value = imageData;
             this.imgElement.src = imageData;
             super.emitValueChangedEvent(this, this.value);
-            this.enableClear();
+            this.toggleSave(false);
         }
     }
 
-    enableSave() {
-        this.save = true;
-        this.clear = false;
-    }
-
-    enableClear() {
-        this.save = false;
-        this.clear = true;
+    toggleSave(mode: boolean) {
+        this.save = mode;
     }
 
 }

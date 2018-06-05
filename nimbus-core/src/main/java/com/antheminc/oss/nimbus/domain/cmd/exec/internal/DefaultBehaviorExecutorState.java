@@ -21,15 +21,17 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Input;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 /**
  * @author Soham Chakravarti
  *
  */
-public class DefaultActionBehaviorExecutorGetState extends AbstractCommandExecutor<Object> {
+@EnableLoggingInterceptor
+public class DefaultBehaviorExecutorState extends AbstractCommandExecutor<Object> {
 
 
-	public DefaultActionBehaviorExecutorGetState(BeanResolverStrategy beanResolver) {
+	public DefaultBehaviorExecutorState(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
 	}
 	

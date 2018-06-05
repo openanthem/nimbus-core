@@ -21,12 +21,14 @@ import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.ExampleSearchCriteria;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 /**
  * @author Rakesh Patel
  *
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
+@EnableLoggingInterceptor
 public class DefaultSearchFunctionHandlerExample<T, R> extends DefaultSearchFunctionHandler<T, R> {
 
 	@Override
@@ -37,7 +39,7 @@ public class DefaultSearchFunctionHandlerExample<T, R> extends DefaultSearchFunc
 		exampleSearchCriteria.validate(executionContext);
 				
 		Class<?> criteriaClass = mConfig.getReferredClass();
-		T criteria = (T)getConverter().read(criteriaClass, executionContext.getCommandMessage().getRawPayload());
+		T criteria = (T)getConverter().toType(criteriaClass, executionContext.getCommandMessage().getRawPayload());
 		
 		exampleSearchCriteria.setWhere(criteria);
 		exampleSearchCriteria.setAggregateCriteria(cmd.getFirstParameterValue(Constants.SEARCH_REQ_AGGREGATE_MARKER.code));

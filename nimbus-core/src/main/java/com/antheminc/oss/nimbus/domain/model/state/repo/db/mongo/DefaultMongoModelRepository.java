@@ -15,14 +15,12 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.repo.db.mongo;
 
-import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.core.MongoOperations;
@@ -36,26 +34,33 @@ import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.ValueAccessor;
 import com.antheminc.oss.nimbus.domain.model.state.repo.IdSequenceRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.DBSearch;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.ExampleSearchCriteria;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandler;
+import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandlerUtils;
+
+import lombok.Getter;
 
 /**
  * @author Soham Chakravarti
  *
  */
+@Getter
 public class DefaultMongoModelRepository implements ModelRepository {
 
 	private final MongoOperations mongoOps;
 	private final IdSequenceRepository idSequenceRepo;
 	private final JavaBeanHandler beanHandler;
 	
-	@Autowired @Qualifier("searchByExample") DBSearch searchByExample;
+	@Autowired @Qualifier("searchByExample") 
+	DBSearch searchByExample;
 	
-	@Autowired @Qualifier("searchByQuery") DBSearch searchByQuery;
+	@Autowired @Qualifier("searchByQuery") 
+	DBSearch searchByQuery;
 
 	public DefaultMongoModelRepository(MongoOperations mongoOps, IdSequenceRepository idSequenceRepo, BeanResolverStrategy beanResolver) {
 		this.mongoOps = mongoOps;
@@ -65,7 +70,7 @@ public class DefaultMongoModelRepository implements ModelRepository {
 	
 	@Override
 	public <T> T _new(ModelConfig<T> mConfig) {
-		T newState = beanHandler.instantiate(mConfig.getReferredClass());
+		T newState = getBeanHandler().instantiate(mConfig.getReferredClass());
 		return _new(mConfig, newState);
 	}
 	
@@ -77,26 +82,23 @@ public class DefaultMongoModelRepository implements ModelRepository {
 		
 		Repo repo = mConfig.getRepo();
 		
-		Long id = idSequenceRepo.getNextSequenceId(repo != null && StringUtils.isNotBlank(repo.alias())?repo.alias():mConfig.getAlias());
+		Long id = getIdSequenceRepo().getNextSequenceId(repo != null && StringUtils.isNotBlank(repo.alias())?repo.alias():mConfig.getAlias());
 		
-		PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(mConfig.getReferredClass(), pId.getCode());
-		beanHandler.setValue(pd, newState, id);
-		
-		String alias = mConfig.getRepo() != null && StringUtils.isNotBlank(mConfig.getRepo().alias()) ? mConfig.getRepo().alias():mConfig.getAlias();
-		//mongoOps.save(newState, alias);
+		ValueAccessor va = JavaBeanHandlerUtils.constructValueAccessor(mConfig.getReferredClass(), pId.getCode());
+		getBeanHandler().setValue(va, newState, id);
 		
 		return newState;
 	}
 
 	@Override
 	public <ID extends Serializable, T> T _save(String alias, T state) {
-		mongoOps.save(state, alias);
+		getMongoOps().save(state, alias);
 		return state;
 	}
 	
 	@Override
 	public <ID extends Serializable, T> T _get(ID id, Class<T> referredClass, String alias) {
-		T state = mongoOps.findById(id, referredClass, alias);
+		T state = getMongoOps().findById(id, referredClass, alias);
 		return state;
 	}
 	
@@ -114,7 +116,7 @@ public class DefaultMongoModelRepository implements ModelRepository {
 	  Query query = new Query(Criteria.where("_id").is(id));
 	  Update update = new Update();
 	  if(StringUtils.isBlank(path) || StringUtils.equalsIgnoreCase(path, "/c")) {
-		  mongoOps.save(state, alias);
+		  getMongoOps().save(state, alias);
 	  }
 	  else{
 		  if(StringUtils.equals(path, "/id") || StringUtils.equals(path, "id")) { 
@@ -133,7 +135,7 @@ public class DefaultMongoModelRepository implements ModelRepository {
 			   update.unset(path);
 		   else
 			   update.set(path, state);
-		   mongoOps.upsert(query, update, alias);
+		   getMongoOps().upsert(query, update, alias);
 	  } 
 	  return state;
 	 }
@@ -142,7 +144,7 @@ public class DefaultMongoModelRepository implements ModelRepository {
 	
 	@Override
 	public <T> T _replace(String alias, T state) {
-		mongoOps.save(state, alias);
+		getMongoOps().save(state, alias);
 		return state;
 	}
 
@@ -159,7 +161,7 @@ public class DefaultMongoModelRepository implements ModelRepository {
 	@Override
 	public <ID extends Serializable, T> T _delete(ID id, Class<T> referredClass, String alias) {
 		Query query = new Query(Criteria.where("_id").is(id));
-		T state = mongoOps.findAndRemove(query, referredClass, alias);
+		T state = getMongoOps().findAndRemove(query, referredClass, alias);
 		return state;
 	}
 
@@ -167,9 +169,9 @@ public class DefaultMongoModelRepository implements ModelRepository {
 	public <T> Object _search(Class<T> referredDomainClass, String alias, Supplier<SearchCriteria<?>> criteria) {
 		SearchCriteria<?> sc = criteria.get();
 		if(sc instanceof ExampleSearchCriteria) {
-			return searchByExample.search(referredDomainClass, alias, sc);
+			return getSearchByExample().search(referredDomainClass, alias, sc);
 		}
-		return searchByQuery.search(referredDomainClass, alias, sc);
+		return getSearchByQuery().search(referredDomainClass, alias, sc);
 	}
 
 }

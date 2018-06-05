@@ -21,6 +21,7 @@ import { WebContentSvc } from './../../services/content-management.service';
 import { BaseElement } from './base-element.component';
 import { PageService } from '../../services/page.service';
 import { GenericDomain } from './../../model/generic-domain.model';
+import { LoggerService } from '../../services/logger.service';
 
 /**
  * \@author Dinakar.Meda
@@ -57,13 +58,15 @@ export class Tile extends BaseElement {
     // height of tile
     public styleHt: string = 'height-lg';
 
-    constructor(private wcsvc: WebContentSvc, private pageSvc: PageService) {
+    constructor(private wcsvc: WebContentSvc, private pageSvc: PageService, private _logger: LoggerService) {
         super(wcsvc);
     }
 
     ngOnInit() {
+        this._logger.debug('Tile-i ' + this.element.path);
         super.ngOnInit();
         // Determine the Tile size based on "size" attribute.
+        this._logger.debug('tile component: here is the tile size ' + this.element.config.uiStyles.attributes.size);
         if (this.element.config.uiStyles.attributes.size === 'XSmall') {
             this.styleWd = 'card-holder col-lg-3 col-md-6 XsmallCard';
             this.styleHt = 'height-md';
@@ -82,6 +85,7 @@ export class Tile extends BaseElement {
         }
         // SubTile (nested tile) style override
         if (this.tileType === 'subcard') {
+            this._logger.debug('tile component: the tiletype is subcard');
             this.styleWd = this.styleWd + ' subcard';
         }
         // Check for initialization

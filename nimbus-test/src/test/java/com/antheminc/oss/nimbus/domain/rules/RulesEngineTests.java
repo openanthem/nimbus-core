@@ -18,8 +18,6 @@ package com.antheminc.oss.nimbus.domain.rules;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.Serializable;
-
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -55,7 +53,7 @@ public class RulesEngineTests extends AbstractFrameworkIngerationPersistableTest
 		MockHttpServletRequest request4 = MockHttpRequestBuilder.withUri(updateUri)
 				.addAction(Action._update)
 				.getMock();
-		holder = (Holder<MultiOutput>)controller.handlePost(request4, converter.write("Start"));		
+		holder = (Holder<MultiOutput>)controller.handlePost(request4, converter.toJson("Start"));		
 		MockHttpServletRequest request3 = MockHttpRequestBuilder.withUri(RULE_CORE_PARAM_ROOT).addRefId(domainRoot_refId)
 				.addAction(Action._get)
 				.getMock();

@@ -26,7 +26,7 @@ import { ValidationUtils } from '../components/platform/validators/ValidationUti
 import { BaseControl } from '../components/platform/form/elements/base-control.component';
 import { ValidatorFn } from '@angular/forms/src/directives/validators';
 import { GenericDomain } from './../model/generic-domain.model';
-import { Param } from './../shared/Param';
+import { Param } from './../shared/param-state';
 import { HttpMethod } from '../shared/command.enum';
 /**
  * \@author Sandeep.Mantha
@@ -39,6 +39,8 @@ import { HttpMethod } from '../shared/command.enum';
 export class ControlSubscribers {
     
     @Output() controlValueChanged =new EventEmitter();
+
+    private previouLeafState: any;
 
     constructor(private pageService: PageService) {
         
@@ -80,13 +82,14 @@ export class ControlSubscribers {
 
     public onChangeEventSubscriber(control:BaseControl<any>) {
         this.controlValueChanged.subscribe(($event) => {
-            //console.log($event);
-            if ($event.config.uiStyles.attributes.postEventOnChange) {
+            //old leafState is used to post data to the server only when the user has changed the value
+            if ($event.config.uiStyles.attributes.postEventOnChange && this.previouLeafState !== $event.leafState) {
                 this.pageService.postOnChange($event.path, 'state', JSON.stringify($event.leafState));
             } else if($event.config.uiStyles.attributes.postButtonUrl) {
                 let item: GenericDomain = new GenericDomain();
                 this.pageService.processEvent(control.element.config.uiStyles.attributes.postButtonUrl, null, $event.leafState, HttpMethod.POST.value);
             }
+                this.previouLeafState = $event.leafState;
         });
     }
 

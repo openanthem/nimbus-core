@@ -127,7 +127,6 @@ public class DefaultListParamState<T> extends AbstractListPaginatedParam<T> impl
 
 	@Override
 	public void clear() {
-		clearPageMeta();
 		clear(true);
 	}
 	
@@ -141,6 +140,9 @@ public class DefaultListParamState<T> extends AbstractListPaginatedParam<T> impl
 			changeStateTemplate((execRt, h, lockId) -> {
 				// change state
 				boolean result = affectClearChange(propagateToMapsTo);
+				
+				// clear page meta
+				clearPageMeta();
 				
 				// notify
 				emitNotification(new Notification<>(this, ActionType._resetModel, this));
@@ -167,7 +169,7 @@ public class DefaultListParamState<T> extends AbstractListPaginatedParam<T> impl
 			// don't change if result was marked false
 			result = result ? r : result;
 		}
-	
+		
 		return result;
 	}
 	
@@ -275,7 +277,7 @@ public class DefaultListParamState<T> extends AbstractListPaginatedParam<T> impl
 			return true;
 		}
 	
-		logit.warn(()->"Attempt to remove elem from collection did not succeed. ListParam: "+this.getPath()+" -> attempted elemId to remove: "+elemId);
+		logit.debug(()->"Attempt to remove elem from collection did not succeed. ListParam: "+this.getPath()+" -> attempted elemId to remove: "+elemId);
 		return false;
 	}
 	
@@ -350,7 +352,7 @@ public class DefaultListParamState<T> extends AbstractListPaginatedParam<T> impl
 
 		pColElem.setState(elem);		//lockTemplate.execute(()->pColElem.setState(elem));
 		
-		pColElem.initState();
+		pColElem.initState(false);
 		return true;
 	}
 	

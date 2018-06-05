@@ -25,12 +25,8 @@ import { LayoutResolver } from './components/domain/layout-resolver.service';
 import { PageResolver } from './components/platform/content/page-resolver.service';
 import { PageNotfoundComponent } from './components/platform/content/page-notfound.component';
 import { PageContent } from './components/platform/content/page-content.component';
-import { FlowWrapper } from './components/platform/content/flow-wrapper.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-
-import { SelectivePreloadingStrategy } from './selective.preloading.strategy';
-
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -41,20 +37,7 @@ import { SelectivePreloadingStrategy } from './selective.preloading.strategy';
  */
 const APPROUTES: Routes = [
     //first landing page routes need to be defined here and the rest will be loaded via dynamic router
-    {
-      path: 'user',
-      children: [
-        {
-          path: '', component: LoginLayoutCmp,
-          children: [
-            { path: 'login', component: LoginCmp },
-            { path: 'styles', component: StyleGuideCmp},
-            { path: '', redirectTo: 'login', pathMatch: 'full' },
-            { path: '**', component: PageNotfoundComponent }
-          ]
-        }
-      ]
-    },
+   
     // routes redesign - URL pattern: h/:domain/:pageId
     {
         path: 'h', component: HomeLayoutCmp, data: {'layout': 'home'},
@@ -97,15 +80,13 @@ const APPROUTES: Routes = [
                    { path: '**', component: PageNotfoundComponent }
         ]
     },
-    { path: '', redirectTo: 'user', pathMatch: 'full' }
+    { path: '', component: PageNotfoundComponent }
 
 ];
 
 @NgModule({
-    imports: [ RouterModule.forRoot(APPROUTES, {enableTracing: false}) ],
+    imports: [ RouterModule.forRoot(APPROUTES, {enableTracing: false, useHash:true, onSameUrlNavigation :'reload'}) ],
     exports: [ RouterModule ],
-    providers: [
-      SelectivePreloadingStrategy, PageResolver, LayoutResolver
-    ]
+    providers: [ PageResolver, LayoutResolver ]
 })
 export class AppRoutingModule {}

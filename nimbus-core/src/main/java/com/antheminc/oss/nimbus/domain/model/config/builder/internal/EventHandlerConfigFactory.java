@@ -20,12 +20,10 @@ import java.lang.reflect.AnnotatedElement;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.util.CollectionUtils;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.config.builder.AnnotationConfigHandler;
-import com.antheminc.oss.nimbus.domain.defn.ViewConfig.GridFilter;
 import com.antheminc.oss.nimbus.domain.defn.event.ConfigEvent.OnParamCreate;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateChange;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
@@ -34,6 +32,7 @@ import com.antheminc.oss.nimbus.domain.model.config.event.ConfigEventHandlers.On
 import com.antheminc.oss.nimbus.domain.model.config.internal.DefaultEventHandlerConfig;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 import lombok.Getter;
 
@@ -71,7 +70,7 @@ public class EventHandlerConfigFactory {
 
 	
 	protected <T> void buildInternal(AnnotatedElement aElem, Class<? extends Annotation> configuredAnnotationType, Class<T> handlerType, BiConsumer<Annotation, T> addHandlerCb) {
-		List<Annotation> annotations = annotationConfigHandler.handleRepeatable(aElem, configuredAnnotationType);
+		List<Annotation> annotations = getAnnotationConfigHandler().handleRepeatable(aElem, configuredAnnotationType);
 		if(!CollectionUtils.isEmpty(annotations)) { 
 			
 			annotations.stream()

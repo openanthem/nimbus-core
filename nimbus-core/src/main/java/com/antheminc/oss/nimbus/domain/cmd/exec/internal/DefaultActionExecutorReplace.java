@@ -21,11 +21,13 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Input;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 /**
  * @author Rakesh Patel
  *
  */
+@EnableLoggingInterceptor
 public class DefaultActionExecutorReplace extends AbstractCommandExecutor<Boolean> {
 	
 	public DefaultActionExecutorReplace(BeanResolverStrategy beanResolver) {
@@ -38,7 +40,7 @@ public class DefaultActionExecutorReplace extends AbstractCommandExecutor<Boolea
 		
 		Param<Object> p = findParamByCommandOrThrowEx(eCtx);
 		
-		Object state = getConverter().read(p.getConfig(), eCtx.getCommandMessage().getRawPayload());
+		Object state = getConverter().toReferredType(p.getConfig(), eCtx.getCommandMessage().getRawPayload());
 		
 		p.setState(state);
 		

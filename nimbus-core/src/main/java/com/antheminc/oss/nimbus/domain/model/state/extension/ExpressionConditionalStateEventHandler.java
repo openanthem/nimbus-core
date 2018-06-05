@@ -25,11 +25,13 @@ import com.antheminc.oss.nimbus.domain.defn.extension.ExpressionConditional;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.StateHolder.ParamStateHolder;
 import com.antheminc.oss.nimbus.domain.model.state.extension.AbstractConditionalStateEventHandler.EvalExprWithCrudActions;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 /**
  * @author Soham Chakravarti
  *
  */
+@EnableLoggingInterceptor
 public class ExpressionConditionalStateEventHandler extends EvalExprWithCrudActions<ExpressionConditional> {
 
 	public ExpressionConditionalStateEventHandler(BeanResolverStrategy beanResolver) {
@@ -58,6 +60,6 @@ public class ExpressionConditionalStateEventHandler extends EvalExprWithCrudActi
 	}
 	
 	private void execute(Param<?> onChangeParam, String expr) {
-		expressionEvaluator.getValue(expr, new ParamStateHolder<>(onChangeParam));
+		getExpressionEvaluator().getValue(expr, new ParamStateHolder<>(onChangeParam));
 	}
 }

@@ -23,6 +23,7 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import com.antheminc.oss.nimbus.domain.Event;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 
 /**
@@ -65,5 +66,7 @@ public @interface ParamContext {
 	 * Whether or not the decorated target should be enabled.
 	 */
 	boolean enabled();
+	
+	int order() default Event.DEFAULT_ORDER_NUMBER;
 	
 }

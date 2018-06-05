@@ -21,7 +21,7 @@ import { Component, Input, Output, EventEmitter, forwardRef, ViewChild, ChangeDe
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { PageService } from '../../../../services/page.service';
-import { Param } from '../../../../shared/Param';
+import { Param } from '../../../../shared/param-state';
 import { BaseElement } from './../../base-element.component';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 

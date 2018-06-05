@@ -19,11 +19,10 @@ import { WebContentSvc } from './../../services/content-management.service';
 import { Component, Input, OnInit, OnChanges, SimpleChanges, SimpleChange } from '@angular/core';
 import { FormGroup, Validators, ValidatorFn } from '@angular/forms';
 import { FormElementsService } from './form-builder.service';
-import { Model } from '../../shared/app-config.interface';
 import { PageService } from '../../services/page.service';
 import { ValidationUtils } from './validators/ValidationUtils';
-import { Param } from '../../shared/Param';
-
+import { Param, Model } from '../../shared/param-state';
+import { LoggerService } from '../../services/logger.service';
 
 var uniqueId = 0;
 
@@ -59,7 +58,7 @@ export class Form implements OnInit, OnChanges {
     buttonList: Param[] = [];
     elementCss: string;
 
-    constructor(private service: FormElementsService, private pageSvc: PageService, private wcs: WebContentSvc) {
+    constructor(private service: FormElementsService, private pageSvc: PageService, private wcs: WebContentSvc, private logger: LoggerService) {
 
     }
 
@@ -93,6 +92,7 @@ export class Form implements OnInit, OnChanges {
 
     /** Initialize the Form **/
     ngOnInit() {
+        this.logger.debug('Form-i ' + this.element.path);
         if(this.element.config.uiStyles.attributes.cssClass === 'sixColumn') {
             this.elementCss = 'col-lg-2 col-md-4 col-sm-12';
         } else if(this.element.config.uiStyles.attributes.cssClass === 'fourColumn') {

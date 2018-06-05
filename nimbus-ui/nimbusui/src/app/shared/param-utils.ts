@@ -21,7 +21,7 @@ import { SortAs } from '../components/platform/grid/sortas.interface';
 import { PageService } from '../services/page.service';
 import { GridService } from '../services/grid.service';
 import { ServiceConstants } from '../services/service.constants';
-import { Param } from './Param'
+import { Param } from './param-state';
 /**
  * \@author Tony.Lopez
  * \@whatItDoes 
@@ -88,16 +88,26 @@ export class ParamUtils {
      * @param typeClassMapping the class type of the server date object
      */
     public static convertServerDateStringToDate(value: string, typeClassMapping: string): Date {
-        if (value) {
-            var serverDateTime = new Date(value);
-            if (typeClassMapping === ParamUtils.DATE_TYPE_METADATA.LOCAL_DATE.name) {
+        if (!value) {
+            return null;
+        }
+
+        var serverDateTime = new Date(value);
+        switch(typeClassMapping) {
+            case ParamUtils.DATE_TYPE_METADATA.LOCAL_DATE.name: {
                 return new Date(serverDateTime.getUTCFullYear(), serverDateTime.getUTCMonth(), serverDateTime.getUTCDate());
-            } else {
+            }
+
+            case ParamUtils.DATE_TYPE_METADATA.LOCAL_DATE_TIME.name: {
                 return new Date(serverDateTime.getUTCFullYear(), serverDateTime.getUTCMonth(), serverDateTime.getUTCDate(), 
                     serverDateTime.getHours(), serverDateTime.getMinutes(), serverDateTime.getSeconds());
             }
+
+            default: {
+                return new Date(serverDateTime.getFullYear(), serverDateTime.getMonth(), serverDateTime.getDate(), 
+                    serverDateTime.getHours(), serverDateTime.getMinutes(), serverDateTime.getSeconds());
+            }
         }
-        return null;
     }
 
     /**
@@ -158,7 +168,7 @@ export class ParamUtils {
             // Find the nested param associated with this obj[x].
             let x_param = ParamUtils.findParamByPath(relativeParam, x);
 
-            if (x_param) {
+            if (x_param && x_param.config) {
 
                 // if the param identified by x is a collection or nested element...
                 if ((x_param.config.type.collection || x_param.config.type.nested)) {

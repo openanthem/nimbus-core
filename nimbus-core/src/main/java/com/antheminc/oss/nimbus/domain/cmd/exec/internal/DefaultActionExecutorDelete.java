@@ -15,8 +15,6 @@
  */
 package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 
-import java.io.Serializable;
-
 import javax.annotation.PostConstruct;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
@@ -31,11 +29,13 @@ import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListElemParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 /**
  * @author Rakesh Patel
  * @author Soham Chakravarti
  */
+@EnableLoggingInterceptor
 public class DefaultActionExecutorDelete extends AbstractCommandExecutor<Boolean> {
 	
 	private ExecutionContextLoader loader;

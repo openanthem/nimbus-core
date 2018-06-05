@@ -30,11 +30,16 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.FunctionHandler;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
+
+import lombok.Getter;
 
 /**
  * @author Soham Chakravarti
  *
  */
+@Getter
+@EnableLoggingInterceptor
 public class DefaultActionNewInitEntityFunctionHandler<T> implements FunctionHandler<T, Param<T>> {
 
 	private final CommandMessageConverter converter;
@@ -85,7 +90,7 @@ public class DefaultActionNewInitEntityFunctionHandler<T> implements FunctionHan
 				.map(StringUtils::trimToNull)
 				.orElseThrow(()->new InvalidConfigException("'json' OR must be configured but found null for cmd:"+cmd));
 		
-		Object converted = converter.read(pConfig, json);
+		Object converted = getConverter().toReferredType(pConfig, json);
 		return converted;
 	}
 }

@@ -46,26 +46,25 @@ export class BreadcrumbComponent implements OnInit {
 
     public breadcrumbs: Breadcrumb[];
 
-    constructor(
-        private _activatedRoute: ActivatedRoute, 
+    constructor (private _activatedRoute: ActivatedRoute, 
         private _router: Router,
         private _breadcrumbService: BreadcrumbService) {
         
-            // initialize breadcrumbs as empty
-            this.breadcrumbs = [];
+        // initialize breadcrumbs as empty
+        this.breadcrumbs = [];
 
-            // retrieve labels
-            this.breadcrumbs.forEach(b => {
-                    b.label = b.id;
-            });
-    }
-
-    ngOnInit() {
+        // retrieve labels
+        this.breadcrumbs.forEach(b => {
+                b.label = b.id;
+        });
 
         //subscribe to the NavigationEnd event and load the breadcrumbs.
         this._router.events.filter(event => event instanceof NavigationEnd).subscribe(event => {
             this._loadBreadcrumbs();
         });
+    }
+
+    ngOnInit() {
     }
 
     /**

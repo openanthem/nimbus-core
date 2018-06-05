@@ -20,6 +20,9 @@ import { Injectable, EventEmitter } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { HttpHeaders } from '@angular/common/http';
 import { RequestOptions, Request, RequestMethod } from '@angular/http';
+import { Observable } from 'rxjs/Observable';
+import { LoggerService } from './logger.service';
+import { FormGroup } from '@angular/forms';
 
 /**
  * \@author Dinakar.Meda
@@ -34,29 +37,39 @@ export class FileService {
     addFile$: EventEmitter<any>;
     removeFile$: EventEmitter<any>;
 
-    constructor(public http: CustomHttpClient) {
+    private _metaData: string[];
+    
+    get metaData(): string[] {
+        return this._metaData;
+    }
+    set metaData(metaData: string[]) {
+        this._metaData = metaData;
+    }
+
+    constructor(public http: CustomHttpClient, private logger: LoggerService) {
         this.addFile$ = new EventEmitter<any>();
         this.removeFile$ = new EventEmitter<any>();
     }
 
-    uploadFile(file: File) {
+    uploadFile(file: File, form: FormGroup) {
 
         const formData: FormData = new FormData();
         formData.append('pfu', file, file.name);
-        var url = file['postUrl'];
-        
-       return this.http.postFileData(url, formData)
-            .subscribe(data => {
-                // console.log("data", data);
+        this.metaData.forEach(item => formData.append(item, form.value[item]));
 
-                file['fileId'] = data.fileId;
-                this.addFile$.next(file);
-            },
-                error => {
-                    this.addFile$.error(error);              
-                },
-                () => console.log('File uploaded ..')
-            );
+        var url = file['postUrl'];
+
+        return this.http.postFileData(url, formData)
+            .map(data =>  data.fileId)
+            .catch(err => {
+                const errObj = {
+                    url: url,
+                    message: 'upload is failing',
+                    error: err
+                }
+                this.logger.error(JSON.stringify(errObj));
+                return Observable.throw(err);
+            });
     }
 
 }

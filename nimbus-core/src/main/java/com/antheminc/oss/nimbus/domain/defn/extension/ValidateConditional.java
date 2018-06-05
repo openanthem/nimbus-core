@@ -10,6 +10,7 @@ import java.lang.annotation.Target;
 
 import javax.validation.Payload;
 
+import com.antheminc.oss.nimbus.domain.Event;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateChange;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 
@@ -151,4 +152,6 @@ public @interface ValidateConditional {
 		 */
 		SIBLING_NESTED;
 	}
+	
+	int order() default Event.DEFAULT_ORDER_NUMBER;
 }

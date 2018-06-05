@@ -23,11 +23,13 @@ import com.antheminc.oss.nimbus.domain.model.config.EntityConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 /**
  * @author Soham Chakravarti
  *
  */
+@EnableLoggingInterceptor
 public class DefaultActionExecutorConfig extends AbstractCommandExecutor<EntityConfig<?>> {
 	
 	public DefaultActionExecutorConfig(BeanResolverStrategy beanResolver) {

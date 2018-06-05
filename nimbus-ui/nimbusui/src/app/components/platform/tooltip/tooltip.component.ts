@@ -18,7 +18,8 @@
 
 import { Component, Input } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { Param } from '../../../shared/Param';
+import { Param } from '../../../shared/param-state';
+import { WindowRefService } from '../../../services/window-ref.service';
 
 /**
  * \@author Mayur.Mehta
@@ -50,7 +51,7 @@ export class TooltipComponent {
     widgetPosition: string = 'east';
     private _htmlContent: string;
 
-    constructor(private _sanitizer: DomSanitizer) {
+    constructor(private _sanitizer: DomSanitizer, private _windowRef: WindowRefService) {
     }
 
     public get htmlContent(): SafeHtml {
@@ -65,7 +66,7 @@ export class TooltipComponent {
     toggleOpen(event: MouseEvent): void {
         event.preventDefault();
 
-        if (window.innerWidth - event.clientX <= 250) {
+        if (this._windowRef.window.innerWidth - event.clientX <= 250) {
             this.widgetPosition = 'west';
         } else {
             this.widgetPosition = 'east';
@@ -85,5 +86,8 @@ export class TooltipComponent {
         event.preventDefault();
         //parentElement.parentElement will get the opened bubble component.
         event.srcElement.parentElement.parentElement.classList.remove('open');
+    }
+
+    ngOnInit() {
     }
 }

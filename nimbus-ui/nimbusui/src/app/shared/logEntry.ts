@@ -15,21 +15,26 @@
  * limitations under the License.
  */
 'use strict';
-import { ErrorHandler } from '@angular/core';
-declare var trackJs: any;
-//TODO convert to service
+
+import { LogLevel } from './logLevel';
+
 /**
- * \@author Dinakar.Meda
- * \@author Sandeep.Mantha
- * \@whatItDoes 
- * 
- * \@howToUse 
- * 
+* \@author Dinakar.Meda
+* \@whatItDoes
+ *
+ * \@howToUse
+ *
  */
-export class TrackJsErrorHandler extends ErrorHandler {
-  handleError(error:any) {
-    // Add the error message to the telemetry timeline. 
-    // It can occasionally have useful additional context.
-    console.error(error);
-  }
+export class LogEntry  {
+
+    message: string;
+    time: any;
+    level: number;
+
+    constructor(message:string, time: any, level: number) {
+        this.message = message;
+        this.time = time;
+        this.level = level;
+    }
+
 }

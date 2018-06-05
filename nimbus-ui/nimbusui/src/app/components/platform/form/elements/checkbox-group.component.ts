@@ -18,7 +18,7 @@
 import { ControlValueAccessor } from '@angular/forms/src/directives';
 import { Component, Input, Output, EventEmitter,forwardRef, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { Param } from '../../../../shared/Param';
+import { Param } from '../../../../shared/param-state';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { PageService } from '../../../../services/page.service';
 import { ServiceConstants } from '../../../../services/service.constants';
@@ -50,7 +50,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
            </legend>
           <div class="checkboxHolder" [formGroup]="form" >
             <div class="form-checkrow" *ngFor="let val of element?.values; let i = index">
-                <p-checkbox name="{{element?.config?.code}}" [formControlName]="element.config?.code" [value]="val.code" [label]="val.label" (onChange)="emitValueChangedEvent(this,$event)"></p-checkbox>
+            <p-checkbox name="{{element?.config?.code}}" [formControl]="form.controls[element?.config?.code]" [value]="val.code" [label]="val.label" (onChange)="emitValueChangedEvent(this,$event)"></p-checkbox>
             </div>
           </div>
     </fieldset>

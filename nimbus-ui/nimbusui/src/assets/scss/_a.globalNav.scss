@@ -210,3 +210,16 @@
 @media(min-width: 1300px) {
    
 }
+
+.scroll-to-top {
+    position: fixed;
+    bottom: 100px;
+    right: 15px;
+    opacity: 0;
+    transition: all .2s ease-in-out;
+}
+
+.show-scroll {
+    opacity: 1;
+    transition: all .2s ease-in-out;
+}

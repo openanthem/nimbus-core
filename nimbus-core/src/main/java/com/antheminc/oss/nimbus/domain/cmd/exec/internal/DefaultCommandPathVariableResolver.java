@@ -15,11 +15,9 @@
  */
 package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.env.PropertyResolver;
@@ -31,22 +29,24 @@ import com.antheminc.oss.nimbus.domain.cmd.CommandMessageConverter;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ParamPathExpressionParser;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
-import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
-import com.antheminc.oss.nimbus.domain.model.config.ParamConfig.MappedParamConfig;
-import com.antheminc.oss.nimbus.domain.model.state.EntityState.MappedParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
-import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.FilterCriteria;
 import com.antheminc.oss.nimbus.domain.session.SessionProvider;
 import com.antheminc.oss.nimbus.entity.client.user.ClientUser;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 import com.antheminc.oss.nimbus.support.JustLogit;
+
+import lombok.AccessLevel;
+import lombok.Getter;
 
 /**
  * @author Soham Chakravarti
  *
  */
+@EnableLoggingInterceptor
+@Getter(value=AccessLevel.PROTECTED)
 public class DefaultCommandPathVariableResolver implements CommandPathVariableResolver {
 
-	protected final JustLogit logit = new JustLogit(this.getClass());
+	protected final JustLogit logit = new JustLogit(DefaultCommandPathVariableResolver.class);
 	
 	private static final String STRING_NULL = "null";
 	
@@ -68,7 +68,7 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 		
 		// resolve property place-holders first
 		try {
-			String resolvedPlaceHolders = propertyResolver.resolveRequiredPlaceholders(urlToResolve);
+			String resolvedPlaceHolders = getPropertyResolver().resolveRequiredPlaceholders(urlToResolve);
 			return resolveInternal(param, resolvedPlaceHolders);
 		} catch (RuntimeException ex) {
 			throw new InvalidConfigException("Failed to resolve with property place-holders for param: "+param+" with url: "+urlToResolve, ex);
@@ -121,9 +121,9 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 	//TODO bean path evaluation to get value
 	protected String mapSelf(Param<?> param, String pathToResolve) {
 		if(StringUtils.endsWith(pathToResolve, "loginId"))
-			return Optional.ofNullable(sessionProvider.getLoggedInUser()).orElseGet(() -> new ClientUser()).getLoginId();
+			return Optional.ofNullable(getSessionProvider().getLoggedInUser()).orElseGet(() -> new ClientUser()).getLoginId();
 		if(StringUtils.endsWith(pathToResolve, "id")) {
-			Long id = Optional.ofNullable(sessionProvider.getLoggedInUser()).orElseGet(() -> new ClientUser()).getId();
+			Long id = Optional.ofNullable(getSessionProvider().getLoggedInUser()).orElseGet(() -> new ClientUser()).getId();
 			return String.valueOf(id);
 		}
 		
@@ -139,7 +139,7 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 				return STRING_NULL;
 			}
 			Object state = p.getLeafState();
-			String json = converter.write(state);
+			String json = getConverter().toJson(state);
 			return String.valueOf(json);
 		} else {
 			Param<?> p = param.findParamByPath(pathToResolve) != null? param.findParamByPath(pathToResolve): param.getParentModel().findParamByPath(pathToResolve);

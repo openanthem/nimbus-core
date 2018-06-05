@@ -20,7 +20,7 @@ import { Component, ViewChild, forwardRef, ChangeDetectorRef } from '@angular/co
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { PageService } from '../../../../services/page.service';
-import { Param } from '../../../../shared/Param';
+import { Param } from '../../../../shared/param-state';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
@@ -46,7 +46,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
         <label [attr.for]="element.config?.code" [ngClass]="{'required': requiredCss, '': !requiredCss}">{{label}}
             <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
         </label>
-        <textarea [(ngModel)] = "value" 
+        <textarea [(ngModel)] = "value" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" 
         rows="element.config?.uiStyles?.attributes?.rows"  
             (focusout)="emitValueChangedEvent(this,value)"
             [disabled]="disabled"
