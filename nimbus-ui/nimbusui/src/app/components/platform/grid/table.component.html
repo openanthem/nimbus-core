@@ -26,7 +26,7 @@
         (sortFunction)="customSort($event)" 
         [customSort]="true" 
         [responsive]="true" 
-        (onRowExpand)="getAddtionalData($event)"
+        (onRowExpand)="onRowExpand($event)"
         (onPage)="paginate($event)"
         (onFilter)="filterCallBack($event)"
         [lazy]=element.config?.uiStyles?.attributes?.lazyLoad

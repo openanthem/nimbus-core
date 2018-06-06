@@ -211,6 +211,14 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         this.pageSvc.gridValueUpdate$.subscribe(event => {
             if (event.path == this.element.path) {
                 this.value = event.gridList;
+                
+                // iterate over currently expanded rows and refresh the data
+                this.value.forEach((lineItem, index) => {
+                    if (this.dt.isRowExpanded(lineItem)) {
+                        this._putNestedElement(event.collectionParams, index, lineItem);
+                    }
+                });
+
                 let gridListSize = this.value ? this.value.length : 0;
                 // Check for Server Pagination Vs Client Pagination
                 if (this.element.config.uiStyles && this.element.config.uiStyles.attributes.lazyLoad) {
@@ -371,8 +379,8 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     handleRowChange(val) {
     }
 
-    getAddtionalData(event: any) { 
-        event.data['nestedElement'] = this.element.collectionParams.find(ele => ele.path == this.element.path + '/' + event.data.elemId + '/' + ele.config.code && ele.alias == ViewComponent.gridRowBody.toString()); 
+    onRowExpand(event: any) {
+        this._putNestedElement(this.element.collectionParams, event.data.elemId, event.data)
     }
 
     resetMultiSelection() {
@@ -642,5 +650,27 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         } else {
             return this.defaultPattern;
         }
+    }
+
+    /**
+     * This method will identify and set the "nested element" used to render the expanded row content within the 
+     * table component.
+     * 
+     * Given an <tt>index</tt> which represents the row number of the line item within a grid, this method first 
+     * identifies the corresponding <tt>Param</tt> within <tt>collectionParams</tt> that is annotated with 
+     * <tt>@GridRowBody</tt> that should be set as a "nested element".
+     * 
+     * Next, <tt>targetLineItem</tt> will be updated to contain the identified param for rendering.
+     * 
+     * @param collectionParams the array of params that are eligible for being a "nested element"
+     * @param index the row index of the line item to set
+     * @param targetLineItem the object value of the table
+     */
+    private _putNestedElement(collectionParams: Param[], index: number, targetLineItem: any): void {
+        targetLineItem['nestedElement'] = collectionParams.find(p => {
+            console.log(`${this.element.path}/${index}/${p.config.code}`);
+            return p.alias == ViewComponent.gridRowBody.toString() &&
+                p.path == `${this.element.path}/${index}/${p.config.code}`;
+        });
     }
 }

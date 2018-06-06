@@ -335,12 +335,12 @@ describe('DataTable', () => {
       app.element = new Param(configService);
       const eleConfig = { code: '', uiStyles: { attributes: { onLoad: true, lazyLoad: true } } };
       app.element.path = 'test';
-      const eve = { path: 'test', gridList: 'tGrid', page: { totalElements: 'telements', first: true } };
+      const eve = { path: 'test', gridList: [], page: { totalElements: 'telements', first: true } };
       spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
       spyOn(app, 'updatePageDetailsState').and.callThrough();
       app.ngAfterViewInit();
       pageService.logError(eve);
-      expect(app.value).toEqual('tGrid');
+      expect(app.value).toEqual([]);
       expect(app.totalRecords).toEqual('telements');
       expect(app.updatePageDetailsState).toHaveBeenCalled();
     }));
@@ -361,7 +361,7 @@ describe('DataTable', () => {
       app.element = new Param(configService);
       const eleConfig = { code: '', uiStyles: { attributes: { onLoad: true, lazyLoad: false } } };
       app.element.path = 'test';
-      const eve = { path: 'test', gridList: 'tGrid', page: { totalElements: 'telements', first: true } };
+      const eve = { path: 'test', gridList: [], page: { totalElements: 'telements', first: true } };
       spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
       spyOn(app, 'updatePageDetailsState').and.callThrough();
       app.ngAfterViewInit();
@@ -374,7 +374,7 @@ describe('DataTable', () => {
       app.element = new Param(configService);
       const eleConfig = { code: '', uiStyles: { attributes: { onLoad: true, lazyLoad: true } } };
       app.element.path = 'test';
-      const eve = { path: 'test', gridList: 'tGrid', page: { totalElements: 'telements', first: false } };
+      const eve = { path: 'test', gridList: [], page: { totalElements: 'telements', first: false } };
       spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
       spyOn(app, 'updatePageDetailsState').and.callThrough();
       app.ngAfterViewInit();
@@ -658,13 +658,13 @@ describe('DataTable', () => {
       expect(pageService.processEvent).toHaveBeenCalled();
     }));
 
-    it('getAddtionalData() should update the eve.data.nestedElement', async(() => {
+    it('onRowExpand() should update the eve.data.nestedElement', async(() => {
       app.element = new Param(configService);
       app.element = { collectionParams: { find: () => {
             return true;
           } } };
       const eve = { data: { nestedElement: '' } };
-      app.getAddtionalData(eve);
+      app.onRowExpand(eve);
       expect(eve.data.nestedElement).toBeTruthy();
     }));
 
@@ -1082,5 +1082,69 @@ describe('DataTable', () => {
       spyOn(app, 'isSortAsNumber').and.returnValue(false);
       app.defaultPattern = 'test';
       expect(app.getPattern('')).toEqual('test');
+    }));
+
+    it('ngAfterViewInit() should refresh expanded row data for currently expanded rows', async(() => {
+      app.element = new Param(configService);
+      const eleConfig = { code: '', uiStyles: { attributes: { onLoad: true, lazyLoad: true } } };
+      app.element.path = 'test';
+      app.dt = {
+        isRowExpanded: (o: any) => { return true; }
+      }
+      const lineItems = [
+        {
+          id: "1",
+          value: "test"
+        }
+      ];
+      const eve = { path: 'test', gridList: lineItems, page: { totalElements: 'telements', first: true } };
+      spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
+      spyOn(app, 'updatePageDetailsState').and.callThrough();
+      spyOn(app, '_putNestedElement').and.returnValue('');
+      app.ngAfterViewInit();
+      pageService.logError(eve);
+      expect(app._putNestedElement).toHaveBeenCalled();
+    }));
+  
+    it('ngAfterViewInit() should not refresh expanded row data for non-expanded rows', async(() => {
+      app.element = new Param(configService);
+      const eleConfig = { code: '', uiStyles: { attributes: { onLoad: true, lazyLoad: true } } };
+      app.element.path = 'test';
+      app.dt = {
+        isRowExpanded: (o: any) => { return false; }
+      }
+      const lineItems = [
+        {
+          id: "1",
+          value: "test"
+        }
+      ];
+      const eve = { path: 'test', gridList: lineItems, page: { totalElements: 'telements', first: true } };
+      spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
+      spyOn(app, 'updatePageDetailsState').and.callThrough();
+      spyOn(app, '_putNestedElement').and.returnValue('');
+      app.ngAfterViewInit();
+      pageService.logError(eve);
+      expect(app._putNestedElement).not.toHaveBeenCalled();
+    }));
+  
+    it('_putNestedElement() should update targetLineItem with nestedElement', async(() => {
+      const collectionParams = [{
+        alias: "GridRowBody",
+        path: "/a/b/c/0/nestedElement",
+        config: {
+          code: "nestedElement"
+        }
+      }, {
+        alias: "GridRowBody",
+        path: "/a/b/c/1/nestedElement",
+        config: {
+          code: "nestedElement"
+        }
+      }];
+      app.element = { path: "/a/b/c" };
+      const targetLineItem = { nestedElement: {} };
+      const response = app._putNestedElement(collectionParams, 1, targetLineItem);
+      expect(targetLineItem.nestedElement).toEqual(collectionParams[1]);
     }));
 });
