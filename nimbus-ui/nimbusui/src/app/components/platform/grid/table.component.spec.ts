@@ -1086,40 +1086,35 @@ describe('DataTable', () => {
 
     it('ngAfterViewInit() should refresh expanded row data for currently expanded rows', async(() => {
       app.element = new Param(configService);
-      const eleConfig = { code: '', uiStyles: { attributes: { onLoad: true, lazyLoad: true } } };
+      const eleConfig = { code: '', uiStyles: { attributes: { onLoad: true, lazyLoad: true, dataKey: 'id' } } };
       app.element.path = 'test';
-      app.dt = {
-        isRowExpanded: (o: any) => { return true; }
-      }
+      app.dt = {};
+      app.dt.expandedRowKeys = {};
+      app.dt.expandedRowKeys['1'] = 1;
       const lineItems = [
-        {
-          id: "1",
-          value: "test"
-        }
+        { id: '1', value: 'test' },
+        { id: '2', value: 'test' }
       ];
-      const eve = { path: 'test', gridList: lineItems, page: { totalElements: 'telements', first: true } };
+      const eve = { collectionParams: {}, path: 'test', gridList: lineItems, page: { totalElements: 'telements', first: true } };
       spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
       spyOn(app, 'updatePageDetailsState').and.callThrough();
       spyOn(app, '_putNestedElement').and.returnValue('');
       app.ngAfterViewInit();
       pageService.logError(eve);
-      expect(app._putNestedElement).toHaveBeenCalled();
+      expect(app._putNestedElement).toHaveBeenCalledWith(eve.collectionParams, 0, lineItems[0]);
     }));
   
     it('ngAfterViewInit() should not refresh expanded row data for non-expanded rows', async(() => {
       app.element = new Param(configService);
       const eleConfig = { code: '', uiStyles: { attributes: { onLoad: true, lazyLoad: true } } };
       app.element.path = 'test';
-      app.dt = {
-        isRowExpanded: (o: any) => { return false; }
-      }
+      app.dt = {};
+      app.dt.expandedRowKeys = {};
       const lineItems = [
-        {
-          id: "1",
-          value: "test"
-        }
+        { id: '1', value: 'test' },
+        { id: '2', value: 'test' }
       ];
-      const eve = { path: 'test', gridList: lineItems, page: { totalElements: 'telements', first: true } };
+      const eve = { path: 'test', gridList: lineItems, page: { totalElements: 'telements', first: true, dataKey: 'id' } };
       spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
       spyOn(app, 'updatePageDetailsState').and.callThrough();
       spyOn(app, '_putNestedElement').and.returnValue('');
@@ -1130,21 +1125,31 @@ describe('DataTable', () => {
   
     it('_putNestedElement() should update targetLineItem with nestedElement', async(() => {
       const collectionParams = [{
-        alias: "GridRowBody",
-        path: "/a/b/c/0/nestedElement",
+        alias: 'GridRowBody',
+        path: '/a/b/c/0/nestedElement',
         config: {
-          code: "nestedElement"
+          code: 'nestedElement'
         }
       }, {
-        alias: "GridRowBody",
-        path: "/a/b/c/1/nestedElement",
+        alias: 'GridRowBody',
+        path: '/a/b/c/1/nestedElement',
         config: {
-          code: "nestedElement"
+          code: 'nestedElement'
         }
       }];
-      app.element = { path: "/a/b/c" };
-      const targetLineItem = { nestedElement: {} };
+      app.element = { path: '/a/b/c' };
+      const targetLineItem = {};
       const response = app._putNestedElement(collectionParams, 1, targetLineItem);
-      expect(targetLineItem.nestedElement).toEqual(collectionParams[1]);
+      expect(response).toEqual(true);
+      expect(targetLineItem['nestedElement']).toEqual(collectionParams[1]);
+    }));
+
+    it('_putNestedElement() should not update targetLineItem with nestedElement', async(() => {
+      const collectionParams = [];
+      app.element = { path: '/a/b/c' };
+      const targetLineItem = {};
+      const response = app._putNestedElement(collectionParams, 1, targetLineItem);
+      expect(response).toEqual(false);
+      expect(targetLineItem['nestedElement']).toEqual(undefined);
     }));
 });

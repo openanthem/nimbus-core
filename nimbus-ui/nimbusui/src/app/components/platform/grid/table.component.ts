@@ -213,10 +213,13 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
                 this.value = event.gridList;
                 
                 // iterate over currently expanded rows and refresh the data
-                this.value.forEach((lineItem, index) => {
-                    if (this.dt.isRowExpanded(lineItem)) {
-                        this._putNestedElement(event.collectionParams, index, lineItem);
-                    }
+                Object.keys(this.dt.expandedRowKeys).forEach(key => {
+                    this.value.find((lineItem, index) => {
+                        if (lineItem[this.element.config.uiStyles.attributes.dataKey] == key) {
+                            this._putNestedElement(event.collectionParams, index, lineItem);
+                            return true;
+                        }
+                    });
                 });
 
                 let gridListSize = this.value ? this.value.length : 0;
@@ -658,19 +661,28 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
      * 
      * Given an <tt>index</tt> which represents the row number of the line item within a grid, this method first 
      * identifies the corresponding <tt>Param</tt> within <tt>collectionParams</tt> that is annotated with 
-     * <tt>@GridRowBody</tt> that should be set as a "nested element".
+     * <tt>@GridRowBody</tt> that should be set as a "nested element". The identified param contains the latest data
+     * retrieved from the server.
      * 
-     * Next, <tt>targetLineItem</tt> will be updated to contain the identified param for rendering.
+     * Next, <tt>targetLineItem</tt> (the view representation in the grid) will be updated to contain the identified 
+     * param for rendering.
      * 
      * @param collectionParams the array of params that are eligible for being a "nested element"
      * @param index the row index of the line item to set
      * @param targetLineItem the object value of the table
+     * @returns true if targetLineItem's nestedElement was set, false otherwise.
      */
-    private _putNestedElement(collectionParams: Param[], index: number, targetLineItem: any): void {
-        targetLineItem['nestedElement'] = collectionParams.find(p => {
-            console.log(`${this.element.path}/${index}/${p.config.code}`);
+    private _putNestedElement(collectionParams: Param[], index: number, targetLineItem: any): boolean {
+        const identifiedParam = collectionParams.find(p => {
             return p.alias == ViewComponent.gridRowBody.toString() &&
                 p.path == `${this.element.path}/${index}/${p.config.code}`;
         });
+
+        if (identifiedParam) {
+            targetLineItem['nestedElement'] = identifiedParam;
+            return true;
+        }
+
+        return false;
     }
 }
