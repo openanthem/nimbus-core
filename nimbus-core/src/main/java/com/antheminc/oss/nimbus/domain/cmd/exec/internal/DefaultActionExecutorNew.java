@@ -15,11 +15,9 @@
  */
 package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 
-import java.beans.PropertyDescriptor;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
@@ -38,15 +36,23 @@ import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.ValueAccessor;
 import com.antheminc.oss.nimbus.domain.model.state.InvalidStateException;
 import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
 import com.antheminc.oss.nimbus.domain.model.state.internal.ExecutionEntity;
 import com.antheminc.oss.nimbus.entity.process.ProcessFlow;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
+import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandlerUtils;
+
+import lombok.AccessLevel;
+import lombok.Getter;
 
 /**
  * @author Soham Chakravarti
  *
  */
+@EnableLoggingInterceptor
+@Getter(value=AccessLevel.PROTECTED)
 public class DefaultActionExecutorNew extends AbstractFunctionCommandExecutor<Object, Param<?>> {
 
 	private BPMGateway bpmGateway;
@@ -94,14 +100,14 @@ public class DefaultActionExecutorNew extends AbstractFunctionCommandExecutor<Ob
 			return;
 		
 		Object newState = cmdMsg.hasPayload()
-							? getConverter().read(p.getConfig(), cmdMsg.getRawPayload())
+							? getConverter().toReferredType(p.getConfig(), cmdMsg.getRawPayload())
 									: getJavaBeanHandler().instantiate(p.getConfig().getReferredClass());
 		
 		// for /domain-root/_new - set "id" from repo 
 		if(cmdMsg.getCommand().isRootDomainOnly()) {
 			String idParamCode = p.findIfNested().getIdParam().getConfig().getCode();
-			PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(p.getConfig().getReferredClass(), idParamCode);
-			getJavaBeanHandler().setValue(pd, newState, cmdMsg.getCommand().getRootDomainElement().getRefId());
+			ValueAccessor va = JavaBeanHandlerUtils.constructValueAccessor(p.getConfig().getReferredClass(), idParamCode);
+			getJavaBeanHandler().setValue(va, newState, cmdMsg.getCommand().getRootDomainElement().getRefId());
 		}
 										
 		p.setState(newState);
@@ -126,7 +132,7 @@ public class DefaultActionExecutorNew extends AbstractFunctionCommandExecutor<Ob
 			return eCtx;
 		
 		ExecutionEntity<?, ?> e = q.getRoot().getState();
-		String refId = getRootDomainRefIdByRepoDatabase(rootDomainConfig, e);
+		Long refId = getRootDomainRefIdByRepoDatabase(rootDomainConfig, e);
 		processEntityState.setId(refId);
 		
 		e.setFlow(processEntityState);
@@ -162,7 +168,7 @@ public class DefaultActionExecutorNew extends AbstractFunctionCommandExecutor<Ob
 		Command mapsToCmd = CommandBuilder.from(eCtx.getCommandMessage().getCommand(), mapsToConfig.getAlias()).getCommand();
 		mapsToCmd.setAction(action);
 		
-		Param<?> coreParam = Optional.ofNullable(commandGateway.execute(mapsToCmd, null))
+		Param<?> coreParam = Optional.ofNullable(getCommandGateway().execute(mapsToCmd, null))
 								.map(mOut->(Param<?>)mOut.getSingleResult())
 								.orElseThrow(()->new InvalidStateException(""));
 		
@@ -174,7 +180,7 @@ public class DefaultActionExecutorNew extends AbstractFunctionCommandExecutor<Ob
 	
 	
 	private void updateCommandWithRefId(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx, ExecutionEntity<?, ?> e) {
-		String refId = getRootDomainRefIdByRepoDatabase(rootDomainConfig, e);
+		Long refId = getRootDomainRefIdByRepoDatabase(rootDomainConfig, e);
 		eCtx.getCommandMessage().getCommand().getRootDomainElement().setRefId(refId);
 	}
 	
@@ -183,12 +189,12 @@ public class DefaultActionExecutorNew extends AbstractFunctionCommandExecutor<Ob
 		
 		if(StringUtils.isEmpty(lifecycleKey))
 			return null;
-		return bpmGateway.startBusinessProcess(rootDomainParam, lifecycleKey);
+		return getBpmGateway().startBusinessProcess(rootDomainParam, lifecycleKey);
 
 	}
 	
 	protected void saveProcessState(String resolvedEntityAlias, ProcessFlow processEntityState) {
-		ModelConfig<?> modelConfig = domainConfigBuilder.getModel(ProcessFlow.class);
+		ModelConfig<?> modelConfig = getDomainConfigBuilder().getModel(ProcessFlow.class);
 		Repo repo = modelConfig.getRepo();
 		
 		if(!Repo.Database.exists(repo))

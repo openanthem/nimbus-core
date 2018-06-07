@@ -23,13 +23,14 @@ import static org.junit.Assert.assertNull;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Random;
 
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.antheminc.oss.nimbus.AbstractPersistableUnitTests;
-import com.antheminc.oss.nimbus.entity.AbstractEntity.IdString;
+import com.antheminc.oss.nimbus.entity.AbstractEntity.IdLong;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -45,7 +46,7 @@ public class ZonedDateTimeConverterTest extends AbstractPersistableUnitTests {
     
 	@SuppressWarnings("serial")
 	@Getter @Setter
-    private static class _TestEntityWithZDT extends IdString {
+    private static class _TestEntityWithZDT extends IdLong {
 		
     	private ZonedDateTime userEnteredZonedDT;
     }
@@ -55,6 +56,7 @@ public class ZonedDateTimeConverterTest extends AbstractPersistableUnitTests {
 		// create entity to save
 		_TestEntityWithZDT entity_dbSave = new _TestEntityWithZDT();
 		entity_dbSave.setUserEnteredZonedDT(K_ZDT);
+		entity_dbSave.setId(new Random().nextLong());
 		
 		// save to DB in zone 1
 		mongo.save(entity_dbSave);
@@ -73,7 +75,7 @@ public class ZonedDateTimeConverterTest extends AbstractPersistableUnitTests {
 	public void t2_null() {
 		_TestEntityWithZDT entity_dbSave = new _TestEntityWithZDT();
 		entity_dbSave.setUserEnteredZonedDT(null);
-		
+		entity_dbSave.setId(new Random().nextLong());
 		// save to DB in zone 1
 		mongo.save(entity_dbSave);
 		System.out.println("Saved in DB with ID: "+entity_dbSave.getId());

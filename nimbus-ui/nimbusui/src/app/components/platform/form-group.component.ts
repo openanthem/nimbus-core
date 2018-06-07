@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 'use strict';
-import { LabelConfig } from './../../shared/app-config.interface';
+import { LabelConfig } from './../../shared/param-config';
 import { Component, Input, forwardRef } from '@angular/core';
-import { Param } from '../../shared/app-config.interface';
+import { Param } from '../../shared/param-state';
 import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { WebContentSvc } from '../../services/content-management.service';
 import { BaseControl } from './form/elements/base-control.component';
@@ -48,10 +48,10 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
                         {{label}}
                     </legend>
                 </ng-template>
-                <ng-template [ngIf]="!element.type?.model?.params?.length || element.collection">
+                <ng-template [ngIf]="!element.type?.model?.params?.length || element.config?.type?.collection">
                     <nm-element id="{{id}}" [element]="element" [elementCss]="elementCss" [form]="form"></nm-element>
                 </ng-template>
-                <ng-template [ngIf]="element.type?.model?.params?.length && element.config?.uiStyles?.attributes?.alias!='ButtonGroup' && !element.collection">
+                <ng-template [ngIf]="element.type?.model?.params?.length && element.config?.uiStyles?.attributes?.alias!='ButtonGroup' && !element?.config?.type?.collection">
                     <fieldset class="subQuestion" [hidden]="!element?.visible">
                         <nm-frm-grp [elements]="element.type?.model?.params" [form]="form.controls[element.config?.code]" [elementCss]="elementCss" [parentElement]="element"></nm-frm-grp>
                     </fieldset>

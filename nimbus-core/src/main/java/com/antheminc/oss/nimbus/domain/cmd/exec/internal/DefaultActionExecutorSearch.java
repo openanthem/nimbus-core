@@ -20,6 +20,7 @@ import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.exec.AbstractFunctionCommandExecutor;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Input;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 import com.antheminc.oss.nimbus.domain.cmd.exec.FunctionHandler;
 
 
@@ -27,6 +28,7 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.FunctionHandler;
  * @author Rakesh Patel
  *
  */
+@EnableLoggingInterceptor
 public class DefaultActionExecutorSearch<T, R> extends AbstractFunctionCommandExecutor<T, R> {
 	
 	public DefaultActionExecutorSearch(BeanResolverStrategy beanResolver) {

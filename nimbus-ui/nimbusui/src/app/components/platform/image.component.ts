@@ -17,7 +17,7 @@
 'use strict';
 
 import { Component, Input } from '@angular/core';
-import { Param } from '../../shared/app-config.interface';
+import { Param } from '../../shared/param-state';
 import { ServiceConstants } from './../../services/service.constants';
 
 /**

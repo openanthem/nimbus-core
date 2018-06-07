@@ -54,7 +54,7 @@ public class CommandPathVariableResolverTest  extends AbstractFrameworkIngeratio
 		assertNotNull(testParam2);
 		testParam2.setState("testParam");
 		
-		String refId = p.findStateByPath("/id");
+		Long refId = p.findStateByPath("/id");
 		
 		execGet(refId, "/paramConfigWithNestedPath");
 		
@@ -73,7 +73,7 @@ public class CommandPathVariableResolverTest  extends AbstractFrameworkIngeratio
 		
 	}
 
-	private void execGet(String refId, String nestedPath) {
+	private void execGet(Long refId, String nestedPath) {
 		final MockHttpServletRequest req = MockHttpRequestBuilder.withUri(CORE_NESTED_CONFIG_ROOT)
 				.addRefId(refId)
 				.addNested(nestedPath)

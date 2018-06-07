@@ -15,8 +15,6 @@
  */
 package com.antheminc.oss.nimbus;
 
-import java.util.UUID;
-
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecuteError;
 
 /**
@@ -56,7 +54,7 @@ public class FrameworkRuntimeException extends RuntimeException {
 	
 	
     private ExecuteError create(String msg) {
-		return new ExecuteError(UUID.randomUUID().toString(), this.getClass(), msg);
+		return new ExecuteError(this.getClass(), msg);
 	}
 
     @Override

@@ -19,7 +19,7 @@
 import { Component, Input } from '@angular/core';
 import { PageService } from '../../../services/page.service';
 import { GenericDomain } from '../../../model/generic-domain.model';
-import { Param } from '../../../shared/app-config.interface';
+import { Param } from '../../../shared/param-state';
 
 /**
  * \@author Dinakar.Meda
@@ -41,7 +41,6 @@ export class CardDetailsGrid {
     }
 
     ngOnInit() {
-        //console.log(JSON.stringify(this.grid));
         if (this.grid.config.uiStyles.attributes.onLoad === true) {
             this.pageSvc.processEvent(this.grid.path, '$execute', new GenericDomain(), 'GET');
         }

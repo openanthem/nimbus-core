@@ -20,7 +20,8 @@ import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Component, Input, Output, forwardRef, ViewChild, EventEmitter, ViewEncapsulation, ChangeDetectorRef, QueryList, ViewChildren } from '@angular/core';
 
 import { GenericDomain } from '../../../model/generic-domain.model';
-import { Param, ParamConfig } from '../../../shared/app-config.interface';
+import { ParamConfig } from '../../../shared/param-config';
+import { Param } from '../../../shared/param-state';
 import { PageService } from '../../../services/page.service';
 import { GridService } from '../../../services/grid.service';
 import { WebContentSvc } from '../../../services/content-management.service';
@@ -35,7 +36,8 @@ import { ActionDropdown } from './../form/elements/action-dropdown.component';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/fromEvent';
 import { Subscription } from 'rxjs/Subscription';
-
+import { ParamUtils } from './../../../shared/param-utils';
+import { ViewComponent } from '../../../shared/param-annotations.enum';
 
 
 
@@ -56,7 +58,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
  */
 @Component({
     selector: 'infinite-scroll-grid',
-    providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc],
+    providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc, DateTimeFormatPipe],
     encapsulation: ViewEncapsulation.None,
     templateUrl: './grid.component.html'
 })
@@ -66,7 +68,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     @Input() params: ParamConfig[];
     @Input() form: FormGroup;
     @Input('value') _value = [];
-    paramState: Param[];
+    //paramState: Param[];
     filterValue: Date;
     totalRecords: number = 0;
     mouseEventSubscription: Subscription;
@@ -122,6 +124,8 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         private pageSvc: PageService,
         private _wcs: WebContentSvc,
         private gridService: GridService,
+        private dtFormat: DateTimeFormatPipe,
+       // private requestProcessor: RequestProcessorService,
         private cd: ChangeDetectorRef) {
 
         super(_wcs);
@@ -150,7 +154,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
             this.dt.filterConstraints = customFilterConstraints;
         }
         
-        this.paramState = this.element.paramState;
+        //this.paramState = this.element.paramState;
     }
 
     ngAfterViewInit() {
@@ -168,7 +172,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         }
 
         if (this.element.config.uiStyles.attributes.onLoad === true) {
-            this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'GET');
+           this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'GET');
         }
 
         this.rowHover = true;
@@ -179,7 +183,8 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         this.pageSvc.gridValueUpdate$.subscribe(event => {
             if (event.path == this.element.path) {
                 this.value = event.gridList;
-                this.paramState = event.paramState;
+                //this.paramState = event.paramState;
+                //this.element.collectionParams = event.collectionParams;
                 this.totalRecords = this.value ? this.value.length : 0;
                 this.updatePageDetailsState();
                 this.cd.markForCheck();
@@ -209,6 +214,10 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         }
         return false;
 
+    }
+
+    getLinkMenuParam(col,rowIndex): Param {
+        return this.element.collectionParams.find(ele => ele.path == this.element.path +'/'+rowIndex+'/'+ ele.config.code && ele.alias == ViewComponent.linkMenu.toString());
     }
 
     isActive(index){
@@ -243,10 +252,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     }
 
     toggleFilter(event: any) {
-        //console.log(event);
         this.showFilters = !this.showFilters;
-        
-        // this.dt.reset();
     }
 
     postGridData(obj) {
@@ -281,23 +287,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     }
 
     getAddtionalData(event: any) {
-        let elemPath;
-        for (var p in this.params) {
-            let param = this.params[p];
-            if (param.type.nested) {
-                if (param.uiStyles && param.uiStyles.attributes.alias == 'GridRowBody') {
-                    // // Check if data has to be extracted async'ly
-                    // if (param.uiStyles.attributes.asynchronous) {
-                    //     elemPath = this.element.path + '/' + event.data.elemId + '/' + param.code;
-                    // } else {
-                    event.data['nestedElement'] = event.data.nestedGridParam;
-                    // }
-                }
-            }
-        }
-        if (elemPath) {
-            this.pageSvc.processEvent(elemPath, '$execute', new GenericDomain(), 'GET');
-        }
+        event.data['nestedElement']= this.element.collectionParams.find(ele => ele.path == this.element.path +'/'+event.data.elemId+'/'+ ele.config.code && ele.alias == 'GridRowBody');
     }
 
     resetMultiSelection() {
@@ -506,6 +496,27 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         }
         e.selectedItem = false;
         this.cd.detectChanges();
+    }
+
+    export() {
+        let exportDt = this.dt;
+        let dtCols = this.params.filter(col => (col.type != null && ParamUtils.isKnownDateType(col.type.name)!= null))
+        if(dtCols != null && dtCols.length > 0) {
+            exportDt.dataToRender.forEach(row => {
+                for (var key in row) {
+                    if (row.hasOwnProperty(key)) {
+                        if(row[key] instanceof Date) {
+                            let col = dtCols.filter(cd => cd.code == key)
+                            if(col != null && col.length > 0){
+                                row[key] = this.dtFormat.transform(row[key], col[0].uiStyles.attributes.datePattern,col[0].type.name);
+                            }
+                        }
+                    }
+                } 
+            });
+        }
+       
+        exportDt.exportCSV();
     }
 
     ngOnDestroy() {

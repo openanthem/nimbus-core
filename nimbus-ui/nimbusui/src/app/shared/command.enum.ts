@@ -49,3 +49,16 @@ export class Behavior extends Enum<string> {
   public static readonly execute = new Enum('$execute');
   public static readonly nav = new Enum('$nav');
 }
+
+export class ParamAttribute extends Enum<string> {
+  public static readonly leafState = new Enum('leafState');
+  public static readonly enabled = new Enum('enabled');
+  public static readonly activeValidationGroups = new Enum('activeValidationGroups');
+  public static readonly config = new Enum('config'); 
+  public static readonly type = new Enum('type');
+  
+  static attributeList(): String[] {
+    const keys = Object.keys(ParamAttribute);
+    return keys;
+  }
+}

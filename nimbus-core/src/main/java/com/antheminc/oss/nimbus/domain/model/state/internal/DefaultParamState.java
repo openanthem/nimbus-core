@@ -16,7 +16,6 @@
 package com.antheminc.oss.nimbus.domain.model.state.internal;
 
 
-import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -28,7 +27,6 @@ import java.util.function.Supplier;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.util.ClassUtils;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
@@ -51,17 +49,23 @@ import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
 import com.antheminc.oss.nimbus.domain.model.state.StateType;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
+import com.antheminc.oss.nimbus.domain.model.state.support.DefaultJsonParamSerializer;
 import com.antheminc.oss.nimbus.entity.Findable;
 import com.antheminc.oss.nimbus.support.Holder;
+import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandlerUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * @author Soham Chakravarti
  *
  */
+@JsonSerialize(using=DefaultJsonParamSerializer.class)
 @Getter @Setter
 public class DefaultParamState<T> extends AbstractEntityState<T> implements Param<T>, Findable<String>, Serializable {
 
@@ -84,6 +88,9 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	private RemnantState<Boolean> enabledState = this.new RemnantState<>(true);
 	
 	@JsonIgnore
+	private RemnantState<Object> filterState = this.new RemnantState<>(null);
+	
+	@JsonIgnore
 	@SuppressWarnings("unchecked")
 	private RemnantState<Class<? extends ValidationGroup>[]> activeValidationGroupsState = new RemnantState<>(new Class[0]);
 	
@@ -104,10 +111,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	
 	@JsonIgnore 
-	final private PropertyDescriptor propertyDescriptor;
-
-	@JsonIgnore
-	private T transientOldState;
+	final ValueAccessor valueAccessor;
 
 	public static class LeafState<T> extends DefaultParamState<T> implements LeafParam<T> {
 		private static final long serialVersionUID = 1L;
@@ -134,8 +138,20 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		if(!isRoot()) Objects.requireNonNull(parentModel, "Parent model must not be null with code: "+getConfig().getCode());
 		this.parentModel = parentModel;
 		
-		PropertyDescriptor pd = constructPropertyDescriptor();
-		this.propertyDescriptor = pd;
+		this.valueAccessor = constructValueAccessor();
+	}
+	
+	
+	protected ValueAccessor constructValueAccessor() {
+		if(getParentModel()==null) 
+			return null;
+		
+		ValueAccessor vaConfig = getConfig().getType().getValueAccessor();
+		if(vaConfig!=null) 
+			return vaConfig;
+		
+		ModelConfig<?> mConfig = getParentModel().getConfig();
+		return JavaBeanHandlerUtils.constructValueAccessor(mConfig.getReferredClass(), getConfig().getBeanName());
 	}
 	
 	
@@ -197,15 +213,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	public ParamConfig<T> getConfig() {
 		return (ParamConfig<T>)super.getConfig();
 	}
-	
-	protected PropertyDescriptor constructPropertyDescriptor() {
-		if(getParentModel()==null) return null;
-		
-		ModelConfig<?> mConfig = getParentModel().getConfig();
-		
-		PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(mConfig.getReferredClass(), getConfig().getBeanName());
-		return pd;
-	}
+
 
 	@Override
 	public void fireRules() {
@@ -234,30 +242,34 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		if(!isMapped())
 			return getState();
 		
-		if(!isNested())
-			return getState();
+		return getMappedState(this);
+	}
+	
+	final static protected <T> T getMappedState(Param<T> p) {
+		if(!p.isNested())
+			return p.getState();
 		
 		// create new entity instance
-		T entity = getAspectHandlers().getParamStateGateway().instantiate(this.getConfig().getReferredClass());
+		T entity = p.getAspectHandlers().getParamStateGateway().instantiate(p.getConfig().getReferredClass());
 		
 		// assign param values to entity instance attributes
-		if(findIfNested()==null)
+		if(p.findIfNested()==null)
 			return entity;
 		
-		if(findIfNested().templateParams().isNullOrEmpty())
+		if(p.findIfNested().templateParams().isNullOrEmpty())
 			return entity;
 		
-		if(isCollection()) {
+		if(p.isCollection()) {
 			List<Object> colEntity = (List<Object>)entity;
-			for(Param<?> pColElem : findIfNested().getParams()) {
-				Object colElemState = pColElem.getLeafState();
+			for(Param<?> pColElem : p.findIfNested().getParams()) {
+				Object colElemState = getMappedState(pColElem);//pColElem.getLeafState();
 				colEntity.add(colElemState);
 			}
 		} else { // nested
-			for(Param<?> pNestedParam : findIfNested().getParams()) {
-				Object nestedParamLeafState = pNestedParam.getLeafState();
+			for(Param<?> pNestedParam : p.findIfNested().getParams()) {
+				Object nestedParamLeafState = getMappedState(pNestedParam);//pNestedParam.getLeafState();
 				if(nestedParamLeafState!=null)
-					getAspectHandlers().getParamStateGateway().setValue(pNestedParam.getPropertyDescriptor().getWriteMethod(), entity, nestedParamLeafState);
+					p.getAspectHandlers().getParamStateGateway().setValue(pNestedParam.getValueAccessor(), entity, nestedParamLeafState);
 			}
 		}
 		
@@ -270,6 +282,28 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		return getAspectHandlers().getParamStateGateway()._get(this);
 	}
 	
+	public interface SetStateListener<T> {
+		default T preSetState(T oldState, T state, String localLockId, ExecutionRuntime execRt) {
+			return state;
+		}
+		
+		default Action postSetState(Action change, T oldState, T state, String localLockId, ExecutionRuntime execRt) {
+			return change;
+		}
+		
+		@Getter @RequiredArgsConstructor
+		public static class ListenerContext<T, X> {
+			private final T state;
+			private final X data;
+		}
+	}
+	
+	@JsonIgnore
+	protected SetStateListener<T> getSetStateListener() {
+		return null;
+	}
+
+	
 	@Override
 	//TODO: Temporary fix to disable active state check. JIRA NIM-9020 created to address this issue. 
 	// A separate copy method needs to be introduced to resolve the issue
@@ -277,20 +311,25 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		//if(!isActive() && state!=null && isStateInitialized())
 			//throw new InvalidConfigException("Param's state cannot be changed when inactive. param: "+this.getPath());
 
-		return changeStateTemplate((rt, h, lockId)->affectSetStateChange(state, rt, h, lockId));
+		return changeStateTemplate((rt, h, lockId)->affectSetStateChange(state, rt, h, lockId, getSetStateListener()));
 	}
 	
-	protected final Action affectSetStateChange(T state, ExecutionRuntime execRt, Holder<Action> h, String localLockId) {
-		state = preSetState(state);		
+	
+	protected final Action setState(T state, SetStateListener<T> cb) {
+		return changeStateTemplate((rt, h, lockId)->affectSetStateChange(state, rt, h, lockId, cb));
+	}
+	
+
+	
+	protected final <X> Action affectSetStateChange(T state, ExecutionRuntime execRt, Holder<Action> h, String localLockId, SetStateListener<T> cb) {
 		boolean isLeaf = isLeafOrCollectionWithLeafElems();
 		final T localPotentialOldState = isLeaf ? getState() : null;
+
+		state = preSetState(localPotentialOldState, state, localLockId, execRt, cb);
 		
 		Action a = getAspectHandlers().getParamStateGateway()._set(this, state); 
 		
 		if(a!=null) {
-			
-			if(isLeaf)
-				setTransientOldState(localPotentialOldState);
 			
 			// hook up on state change events
 			onStateChangeEvent(resolveRuntime().getTxnContext(), this, a);
@@ -318,15 +357,16 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 				emitEvent(a, this);
 		}
 		
-		postSetState(a, state);
-		return a;
+		return postSetState(a, localPotentialOldState, state, localLockId, execRt, cb);
 	}
 
 	
-	protected T preSetState(T state) {
-		return state;
+	protected T preSetState(T oldState, T state, String localLockId, ExecutionRuntime execRt, SetStateListener<T> cb) {
+		return cb==null ? state : cb.preSetState(oldState, state, localLockId, execRt);
 	}
-	protected void postSetState(Action change, T state) {}
+	protected Action postSetState(Action change, T oldState, T state, String localLockId, ExecutionRuntime execRt, SetStateListener<T> cb) {
+		return cb==null ? change : cb.postSetState(change, oldState, state, localLockId, execRt);
+	}
 	
 	
 	protected void triggerEvents() {
@@ -389,7 +429,6 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		if(getParentModel()!=null && getParentModel().isRoot()) {
 			return findIfNested();
 		}
-		
 		return getParentModel().getRootDomain();
 	}
 
@@ -561,7 +600,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		return null;	
 	}
 	
-	@Getter @Setter
+	@Getter @Setter @ToString(of="currState")
 	protected class RemnantState<S> {
 		private S prevState;
 		private S currState;
@@ -876,4 +915,14 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		return null;
 	}
 	
+	@Override
+	public String toString() {
+		return new StringBuilder().append(this.getClass().getSimpleName()).append("(")
+					.append("path=").append(getPath())
+					.append(", mapped=").append(isMapped())
+					.append(", refClass=").append(getConfig().getReferredClass().getSimpleName())
+					.append(", state=").append(getState())
+					.append(")")
+					.toString();
+	}
 }

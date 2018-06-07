@@ -17,6 +17,8 @@ package com.antheminc.oss.nimbus.domain.model.state.extension;
 
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
@@ -29,10 +31,15 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.ExecutionTxnContext;
 import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
+import com.antheminc.oss.nimbus.domain.model.state.repo.IdSequenceRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepositoryFactory;
 import com.antheminc.oss.nimbus.entity.audit.AuditEntry;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandler;
+
+import lombok.AccessLevel;
+import lombok.Getter;
 
 /**
  * WIP: initial implementation. review TODO comments for planned refactor
@@ -40,6 +47,8 @@ import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandler;
  * @author Soham Chakravarti
  *
  */
+@EnableLoggingInterceptor
+@Getter(AccessLevel.PROTECTED)
 public class AuditStateChangeHandler implements OnStateChangeHandler<Audit> {
 
 //	private ExpressionEvaluator expressionEvaluator;
@@ -62,10 +71,13 @@ public class AuditStateChangeHandler implements OnStateChangeHandler<Audit> {
 	
 	private JavaBeanHandler javaBeanHandler;
 	
+	private final IdSequenceRepository idSequenceRepo;
+	
 	public AuditStateChangeHandler(BeanResolverStrategy beanResolver) {
 		this.repositoryFactory = beanResolver.get(ModelRepositoryFactory.class);
 		this.domainConfigBuilder = beanResolver.get(DomainConfigBuilder.class);
 		this.javaBeanHandler = beanResolver.get(JavaBeanHandler.class);
+		this.idSequenceRepo =  beanResolver.get(IdSequenceRepository.class);
 	}
 	
 	@Override
@@ -83,28 +95,31 @@ public class AuditStateChangeHandler implements OnStateChangeHandler<Audit> {
 		
 		// TODO create simulate @Config entry which will re-use implementation for @ConfigConditional handler to execute
 		String domainRootAlias = leafParam.getRootDomain().getConfig().getAlias();
-		String domainRootRefId = String.valueOf(persistableDomainRoot.getIdParam().getState());
+		Long domainRootRefId = Long.valueOf(String.valueOf(persistableDomainRoot.getIdParam().getState()));
 		String propertyPath = leafParam.getPath();
 		String propertyType = leafParam.getType().getName();
-		Object oldValue = leafParam.getTransientOldState();
 		Object newValue = leafParam.getState();
 		
-		AuditEntry ae = javaBeanHandler.instantiate(configuredAnnotation.value());
+		AuditEntry ae = getJavaBeanHandler().instantiate(configuredAnnotation.value());
 		ae.setDomainRootAlias(domainRootAlias);
 		ae.setDomainRootRefId(domainRootRefId);
 		ae.setPropertyPath(propertyPath);
 		ae.setPropertyType(propertyType);
-		ae.setOldValue(oldValue);
 		ae.setNewValue(newValue);
 
-		ModelConfig<?> auditConfig = Optional.ofNullable(domainConfigBuilder.getModel(configuredAnnotation.value()))
+		ModelConfig<?> auditConfig = Optional.ofNullable(getDomainConfigBuilder().getModel(configuredAnnotation.value()))
 				.orElseThrow(()->new InvalidConfigException("Annotated AuditEntry class not been loaded by f/w for: "+configuredAnnotation.value()));
 
 		String auditHistoryAlias = findAuditHistoryAlias(auditConfig, configuredAnnotation);
 		Repo repo = findAuditHistoryRepo(auditConfig, configuredAnnotation);
-		ModelRepository db = repositoryFactory.get(repo);
 		
-		db._save(auditHistoryAlias, ae);
+		ModelRepository db = getRepositoryFactory().get(repo);
+		
+		// autogenerate id
+		Long id = getIdSequenceRepo().getNextSequenceId(repo != null && StringUtils.isNotBlank(repo.alias())?repo.alias():auditHistoryAlias);
+		ae.setId(id);
+		
+		db._save(StringUtils.isNotBlank(repo.alias()) ? repo.alias() :auditHistoryAlias, ae);
 	}
 	
 	private String findAuditHistoryAlias(ModelConfig<?> auditConfig, Audit configuredAnnotation) {

@@ -36,6 +36,7 @@ import com.antheminc.oss.nimbus.UnsupportedScenarioException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.config.builder.AnnotationConfigHandler;
 import com.antheminc.oss.nimbus.domain.defn.AssociatedEntity;
+import com.antheminc.oss.nimbus.domain.defn.ConfigExtension;
 import com.antheminc.oss.nimbus.domain.defn.ConfigLoadException;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.defn.Converters;
@@ -165,8 +166,15 @@ abstract public class AbstractEntityConfigBuilder {
 							+ "Found in both with different values for class: "+created.getReferredClass()
 							+" with @Domain: "+domain+" and @Model: "+model);
 			}
-		else 
+		else {
+			
+			if (null == domain) {
+				throw new InvalidConfigException("Domain value was null. Are domain models up to date?"
+						+ "Found null value for class: "+created.getReferredClass());
+			}
+			
 			cb.accept(domain.value());
+		}
 		
 	}
 	
@@ -407,8 +415,6 @@ abstract public class AbstractEntityConfigBuilder {
 	
 	public static String createCollectionElementPath(String collectionPath) {
 		return new StringBuilder()
-				//.append(collectionPath)
-				//.append(Constants.SEPARATOR_URI.code)
 				.append(Constants.MARKER_COLLECTION_ELEM_INDEX.code)
 				.toString();
 	}
@@ -416,8 +422,8 @@ abstract public class AbstractEntityConfigBuilder {
 	private <P> DefaultParamConfig<P> decorateParam(ModelConfig<?> mConfig, Field f, DefaultParamConfig<P> created, EntityConfigVisitor visitedModels) {
 		created.setUiNatures(annotationConfigHandler.handle(f, ViewParamBehavior.class));
 		created.setUiStyles(annotationConfigHandler.handleSingle(f, ViewStyle.class));
-		created.setExecutionConfigs(new ArrayList<>(AnnotatedElementUtils.findMergedRepeatableAnnotations(f, Execution.Config.class)));
 		
+		created.setExecutionConfigs(new ArrayList<>(AnnotatedElementUtils.findMergedRepeatableAnnotations(f, Execution.Config.class)));
 		
 		if(AnnotatedElementUtils.isAnnotated(f, Converters.class)) {
 			Converters convertersAnnotation = AnnotationUtils.getAnnotation(f, Converters.class);
@@ -429,7 +435,7 @@ abstract public class AbstractEntityConfigBuilder {
 			
 			created.setConverters(converters);
 		}
-
+		
 		if(AnnotatedElementUtils.isAnnotated(f, Model.Param.Values.class)) {
 			Model.Param.Values aVal = AnnotationUtils.getAnnotation(f, Model.Param.Values.class);
 			
@@ -446,6 +452,9 @@ abstract public class AbstractEntityConfigBuilder {
 		
 		List<AnnotationConfig> vConfig = annotationConfigHandler.handle(f, Constraint.class);
 		created.setValidations(vConfig);
+
+		List<AnnotationConfig> extensionConfigs = annotationConfigHandler.handle(f, ConfigExtension.class);
+		created.setExtensions(extensionConfigs);
 
 		EventHandlerConfig eventConfig = eventHandlerConfigFactory.build(f);
 		created.setEventHandlerConfig(eventConfig);

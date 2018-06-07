@@ -1,5 +1,8 @@
 <!-- Display Tiles -->
-<nm-message messageType="{{element?.message.type}}" messageText="{{element?.message.text}}" *ngIf="element?.message"></nm-message>
+<nm-message messageContext="{{element?.message.context}}" [messageArray]="element?.message.messageArray" [life]="element?.message.life"  *ngIf="element?.message"></nm-message>
+
+<nm-message messageContext = "GROWL" [messageArray]="errMsgArray" [life]=10000 *ngIf="errMsgArray.length > 0"></nm-message>
+
 <ng-template [ngIf]="element?.visible">
     <ng-template [ngIf]="element?.config?.labelConfigs?.length > 0">
         <h1 class="page-title {{imgSrc}} ">

@@ -20,7 +20,8 @@ import { Component, ViewChild, forwardRef, ChangeDetectorRef } from '@angular/co
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { PageService } from '../../../../services/page.service';
-import { Param } from '../../../../shared/app-config.interface';
+import { Param } from '../../../../shared/param-state';
+import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -37,7 +38,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
  */
 @Component({
   selector: 'nm-input-textarea',
-  providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc ],
+  providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc, ControlSubscribers ],
   template: `
     <!--<div class='textarea-holder' [hidden]="!element?.visible || !element?.visible" *ngIf="element.config?.uiStyles?.attributes?.hidden==false">-->
     <div class='textarea-holder' [hidden]="!element?.visible" *ngIf="element.config?.uiStyles?.attributes?.hidden==false">
@@ -45,7 +46,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
         <label [attr.for]="element.config?.code" [ngClass]="{'required': requiredCss, '': !requiredCss}">{{label}}
             <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
         </label>
-        <textarea [(ngModel)] = "value" 
+        <textarea [(ngModel)] = "value" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" 
         rows="element.config?.uiStyles?.attributes?.rows"  
             (focusout)="emitValueChangedEvent(this,value)"
             [disabled]="disabled"
@@ -58,9 +59,7 @@ export class TextArea extends BaseControl<String> {
 
     @ViewChild(NgModel) model: NgModel;
 
-     element: Param;
-
-    constructor(wcs: WebContentSvc, pageService: PageService,cd:ChangeDetectorRef) {
-        super(pageService,wcs,cd);
+    constructor(wcs: WebContentSvc, controlService: ControlSubscribers,cd:ChangeDetectorRef) {
+        super(controlService,wcs,cd);
     }
 }

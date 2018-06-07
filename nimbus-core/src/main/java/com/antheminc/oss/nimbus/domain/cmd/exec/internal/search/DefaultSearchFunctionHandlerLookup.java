@@ -27,19 +27,21 @@ import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
+import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
-import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.LookupSearchCriteria;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.ProjectCriteria;
 import com.antheminc.oss.nimbus.entity.StaticCodeValue;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 /**
  * @author Rakesh Patel
  *
  */
 @SuppressWarnings("unchecked")
+@EnableLoggingInterceptor
 public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunctionHandler<T, R> {
 
 	@Override
@@ -65,7 +67,8 @@ public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunct
 		LookupSearchCriteria lookupSearchCriteria = new LookupSearchCriteria();
 		lookupSearchCriteria.validate(executionContext);
 			
-		String where = resolveNamedQueryIfApplicable(executionContext, mConfig, actionParameter);
+		//String where = resolveNamedQueryIfApplicable(executionContext, mConfig, actionParameter);
+		String where = executionContext.getCommandMessage().getCommand().getFirstParameterValue(Constants.SEARCH_REQ_WHERE_MARKER.code);
 		lookupSearchCriteria.setWhere(where);
 		
 		ProjectCriteria projectCriteria = buildProjectCritera(cmd);
@@ -97,7 +100,7 @@ public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunct
 		try {
 			List<ParamValue> paramValues = new ArrayList<>();
 			for(Object model: searchResult) {
-				paramValues.add(new ParamValue((String)codePd.getReadMethod().invoke(model), (String)labelPd.getReadMethod().invoke(model)));
+				paramValues.add(new ParamValue(codePd.getReadMethod().invoke(model).toString(), (String)labelPd.getReadMethod().invoke(model)));
 			}
 			return (R)paramValues;
 		}

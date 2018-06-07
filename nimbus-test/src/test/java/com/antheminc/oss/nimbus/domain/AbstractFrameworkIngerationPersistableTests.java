@@ -58,7 +58,7 @@ public abstract class AbstractFrameworkIngerationPersistableTests extends Abstra
 	protected static final String CORE_ASSOCIATEDPARAM_ROOT = PLATFORM_ROOT + "/" + CORE_ASSOCIATED_DOMAIN_ALIAS;
 	protected static final String VIEW_CEU_PARAM_ROOT = PLATFORM_ROOT + "/ceu_sampleassociatedentity";
 	
-	protected static String domainRoot_refId;
+	protected static Long domainRoot_refId;
 	
 	protected static final String BPM_CORE_DOMAIN_ALIAS = "bpmtestmodel";
 	protected static final String BPM_CORE_PARAM_ROOT = PLATFORM_ROOT + "/" + BPM_CORE_DOMAIN_ALIAS;
@@ -79,8 +79,11 @@ public abstract class AbstractFrameworkIngerationPersistableTests extends Abstra
 	protected static final String BPM_DPT_DOMAIN_ALIAS = "testusertaskmodel";
 	protected static final String BPM_DPT_PARAM_ROOT = PLATFORM_ROOT + "/" + BPM_DPT_DOMAIN_ALIAS;	
 	
+	protected static final String SAMPLE_DOMAIN_ALIAS = "sample_entity";
 	
-	public synchronized String createOrGetDomainRoot_RefId() {
+	protected static Long sampleEntity_refId;
+	
+	public synchronized Long createOrGetDomainRoot_RefId() {
 		if(domainRoot_refId!=null) 
 			return domainRoot_refId;
 		
@@ -90,6 +93,20 @@ public abstract class AbstractFrameworkIngerationPersistableTests extends Abstra
 		
 		domainRoot_refId  = ExtractResponseOutputUtils.extractDomainRootRefId(home_newResp);
 		return domainRoot_refId;
+	}
+	
+	public synchronized Long createOrGetSampleEntity_RefId() {
+		final String VIEW_SAMPLE_ENTITY = PLATFORM_ROOT + "/" + SAMPLE_DOMAIN_ALIAS;
+		
+		if(sampleEntity_refId!=null) 
+			return sampleEntity_refId;
+		
+		MockHttpServletRequest home_newReq = MockHttpRequestBuilder.withUri(VIEW_SAMPLE_ENTITY).addAction(Action._new).getMock();
+		Object home_newResp = controller.handleGet(home_newReq, null);
+		assertNotNull(home_newResp);
+		
+		sampleEntity_refId  = ExtractResponseOutputUtils.extractDomainRootRefId(home_newResp);
+		return sampleEntity_refId;
 	}
 	
 	@Override @After

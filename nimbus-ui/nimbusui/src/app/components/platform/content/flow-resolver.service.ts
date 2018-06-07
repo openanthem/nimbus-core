@@ -18,7 +18,8 @@
 
 import { PageService } from '../../../services/page.service';
 import { ConfigService } from '../../../services/config.service';
-import { Param, Page } from '../../../shared/app-config.interface';
+import { Page } from '../../../shared/app-config.interface';
+import { Param } from '../../../shared/param-state';
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router, Resolve, RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
 

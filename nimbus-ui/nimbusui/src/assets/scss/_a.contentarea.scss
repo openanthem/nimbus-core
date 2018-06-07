@@ -1,17 +1,23 @@
 
+canvas.form-control {
+    width: inherit;
+}
 .displayNone{display:none;}
 .underline {
     border-bottom: 2px solid #000;
     padding: 10px;
     font-weight: bold;
 }
+body{color:#4c4c4c;}
 * {
     vertical-align: top;
 }
 .text-bold {
     font-weight: bold;
 }
-
+.ui-table .ui-table-thead > tr > th > span.overflowVisible,.overflowVisible {
+    overflow: visible;
+}
 html {
     font-size: 12px;
     line-height: 15px;
@@ -113,51 +119,73 @@ h3{
     
 
 }
-
+.info-card h1.page-title {
+    @extend .sr-only;
+}
 
 h1.page-title {
     margin-bottom:0;
     font-size: 1.3rem;
-    margin-left:20px;
+    margin-left:10px;
     font-weight: 400;
-    &.dashboard::before{
+    &::before{
+        font-size: 1.9rem;
         color: $iconColor;
         font-family: fontAwesome;
-        content: "\F080";
         margin-right: .3rem;
     }
-}
-.memberSearchIcon::before{
-    color: $iconColor;
-    font-family: fontAwesome;
-    content: "\F002";
-    margin-right: .3rem;
-}
-.caseSearchIcon::before{
-    color: $iconColor;
-    font-family: fontAwesome;
-    content: "\F002";
-    margin-right: .3rem;
-}
-.caseIcon::before{
-    color: $iconColor;
-    font-family: fontAwesome;
-    content: "\F2bc";
-    margin-right: .3rem;
-}
-.taskIcon::before{
-    color: $iconColor;
-    font-family: fontAwesome;
-    content: "\F0ae";
-    margin-right: .3rem;
-}
-.filterIcon::before{
-    color: $iconColor;
-    font-family: fontAwesome;
-    content: "\F0b0";
-    margin-right: .3rem;
+    
 }
 
+
+.CmDashIcon::before{
+    content: "\F080";
+}
+.SupDashIcon::before{
+    content: "\f0ce";
+}
+.planOfCareIcon::before{
+    content: "\f12e";
+}
+.notesIcon::before{
+    content: "\f03a";
+}
+.correspondenceIcon::before{
+    content: "\f08b";
+}
+.documentsIcon::before{
+    content: "\f0c5";
+}
+.caseHistoryIcon::before{
+    content: "\f0ea";
+}
+.authorizationsIcon::before{
+    content: "\f0ec";
+}
+.assessmentsIcon::before{
+    content: "\f15c";
+}
+.memberSearchIcon::before{
+    content: "\F002";
+}
+.memberOverviewIcon::before{
+    content: "\f0c0";
+}
+.caseSearchIcon::before{
+    content: "\F002";
+}
+.caseIcon::before{
+    content: "\F2bc";
+}
+.tasksIcon::before{
+    content: "\f039";
+}
+.filterIcon::before{
+    content: "\F0b0";
+}
+.clinicalInfoIcon::before{
+    content: "\F0fa";
+}
 .col-xs-12 {
     margin: 0 0; //override correction for inline-block fix
 }
@@ -175,6 +203,17 @@ h1.page-title {
     padding: 0.5rem;
     height: $breadcrumb-height;
     background: #fff;
+    .breadcrumb-item{
+        font-size: 1rem;
+    }
+    .breadcrumb-item + .breadcrumb-item::before{
+        padding-right: .3rem;
+    }
+    .breadcrumb-item:last-child > a {
+        text-decoration: none;
+        color: #669FE2;
+        font-weight: bold;
+    }
 }
 .info-bar {
     display: block;
@@ -199,6 +238,7 @@ h1.page-title {
     // margin-left: 2rem;
     .colorBox {
         border: none;
+        padding: 0;
     }
 }
 .panel-body {
@@ -229,7 +269,7 @@ h1.page-title {
         padding: 0;
     }
     .viewport {
-        padding: 10px 10px 0 10px;
+        padding: 0 10px ;
     }
 }  
 .card-holder > .card{
@@ -247,8 +287,7 @@ h1.page-title {
 
 .info-card {
     display: inline-block;
-    width: 84%;
-    padding-left: 20px;
+    width: 82%;
 }
 .ui-dialog .ui-dialog-titlebar-close span {
     font-size: 1.5rem;
@@ -304,6 +343,18 @@ nm-card-details-field label+div {
     }
 }
 // for assessment questions
+.subQuestion {
+    margin-bottom: 2.5rem;
+    padding: 1rem;
+    background: #edf7ff;
+}
+.subQuestion .subQuestion {
+    margin-left: 1rem;
+    margin-bottom: 0;
+}
+.subQuestion .colorBox {
+    margin-bottom: 0;
+}
 .subQuestion .subQuestion .col-lg-12 {
     padding-right: 0px;
 }
@@ -311,7 +362,6 @@ legend {
     font-size: 1rem;
 }
 .subQuestion {
-    margin-bottom: 0.5rem;
     .col-lg-12:first-of-type{
         padding-left: 0;
     }
@@ -331,13 +381,121 @@ legend {
         }
     }
     legend:first-of-type {
-        margin-top: 0.5rem;
-        margin-bottom: 1.0rem;
+        margin-bottom: .5rem;
+    }
+} 
+
+/* QUESTION WRAPPER */
+
+$questionWidth:40%;
+$answerWidth: 99%-$questionWidth;
+
+
+.questionWrapper{
+  padding:6px 0;
+  margin-left:20px;
+  font-size: .9rem;
+  &:not(:last-child){
+      border-bottom: 1px dashed #333;
+    }
+    legend {
+      width: $questionWidth;
+      float:left;
+      font-size: inherit;
+      
+    }
+    .form-control {
+      display: inline-table;
+      table-layout: fixed;
+      border-width: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      width: $answerWidth; 
+      font-size: inherit;
+        label {
+          padding: 5px 5px 5px 35px;
+          text-indent:-25px;
+          display:table-cell;
+          &:hover{
+            color:#efcfcf;
+            }
+          input {
+            margin-right:10px;
+          }
+        }
+    }
+    &.colHeader{
+      padding:2px 0;
+      border-bottom: 1px solid #333;
+        legend{
+          font-weight:bold;
+        }
+         label {
+          font-weight:bold; 
+          text-indent:0;
+          padding-left:0;
+          vertical-align:bottom;
+        }
     }
 }
-.ui-calendar input {
-    width: 120px;
+
+/* QUESTION WRAPPER */
+
+$questionWidth:40%;
+$answerWidth: 99%-$questionWidth;
+.form-grid.headerRow fieldset .checkboxHolder .form-checkrow .ui-widget {
+    display: none;
 }
+.form-grid.headerRow fieldset .checkboxHolder .form-checkrow label {
+    display: block;
+    font-weight: bold;
+}
+.form-grid.headerRow legend {
+    visibility: hidden;
+}
+.form-grid .questionGroup {
+    border-bottom: 1px dashed;
+}
+.form-group.form-grid.questionGroup.headerRow {
+    border-bottom: 1px solid;
+    padding-bottom: 0;
+    margin-bottom: .6rem;
+}
+.form-grid fieldset{
+  padding:0;
+  font-size: .9rem;
+  legend {
+    width: $questionWidth;
+    float:left;
+    
+  }
+  .checkboxHolder {
+    display: inline-table;
+    table-layout: fixed;
+    width: $answerWidth; 
+    .form-checkrow{
+            display: inline-block;
+            width: 20%;
+            label{
+                display: none;
+            }
+       
+    }
+  }
+  &.form-group.questionGroup {
+        padding: 0;
+        margin: 0 20px;
+    }
+}
+.form-group.questionGroup.form-grid {
+    margin-bottom: .2rem;
+}
+
+.form-grid.headerRow fieldset .checkboxHolder .form-checkrow {
+    vertical-align: bottom;
+}
+
+
 .ui-dialog.ui-widget .ui-dialog-titlebar .ui-dialog-title {
     margin-left: 1rem;
 }
@@ -367,6 +525,7 @@ legend {
     label {
         display: block;
         margin: .3rem 0;
+        max-width: 850px;
         &.ui-chkbox-label,
         &.ui-radiobutton-label {
             display: inline-block;
@@ -375,14 +534,22 @@ legend {
     .form-checkrow label, .form-checkrow label:first-of-type {
         margin-bottom: 0;
     }
-    .ui-dropdown label:first-of-type, .ui-dropdown label {
-        margin: 1px 0 0 0;
+    .ui-dropdown {
+        margin-left: 20px;
+         label:first-of-type, 
+         .ui-dropdown label {
+            margin: 1px 0 0 0;
+        }
     }
-    input, .select-wrapper, textarea {
-        //margin-left: 50px;
-        margin-bottom: .6rem;
+    input {
+        margin-left: 20px;
         max-width: 300px;
-        width: 100%;
+        width: 90%;
+    }
+    textarea {
+        margin-left: 20px;
+        max-width: 800px;
+        width: 90%;
     }
   
    
@@ -395,8 +562,7 @@ legend {
     }
     label:first-of-type,
     legend:first-of-type {
-        margin-top: 0.5rem;
-        margin-bottom: 1.5rem;
+        margin-bottom: .5rem;
     }
     fieldset {
         label:first-of-type {
@@ -408,6 +574,25 @@ legend {
     }
     .warningMsg {
         margin-left: 0px;
+    }
+}
+
+.ui-messages .fa-2x {
+    font-size: 1.3rem;
+}
+.form-group .ui-messages-error, .form-group .ui-messages-warn {
+    background: none;
+    border: none;
+    padding: 0;
+    margin-left: 20px;
+}
+.ui-messages-warn {
+    color: #e5991c;
+}
+.ui-messages-error{
+    color: #a94442;
+    .fa-close::before{
+        content:"\F071";
     }
 }
 .iconField {
@@ -535,17 +720,28 @@ button.ui-datepicker-trigger.ui-calendar-button {
         color: #4c4c4c;
         border: 1px solid #B8D4E8;
         margin-bottom: 3px;
+        &::before{
+            font-size: 1.4rem;
+            color: #669fe2;
+            font-family: fontAwesome;
+            margin-right: .3rem;
+        }
         &.active,
         {
             background: #e5991c;
             border-color: #e5991c;
             color: #fff;
-
+            &::before {
+                color: #fff;
+            }
         }
         &:hover{
             background: #4c4c4c;
             border-color: #4c4c4c;
             color: #fff;
+            &::before {
+                color: #fff;
+            }
         }
         &.disabled,&.disabled:hover{
             background: #999;
@@ -633,19 +829,24 @@ button.ui-datepicker-trigger.ui-calendar-button {
 .panel.panel-default {
     margin-top: 10px;
     & > .panel-heading {
-        background: $header-bkg;
+        background: #669fe2;
         color: white;
         padding: 0.3rem 0.3rem 0.3rem 1rem;
         margin: 0;
-        font-weight: 300;
         position: relative;
         h2{
+            font-weight: normal;
+            font-size: 1rem;
             margin-bottom: 0;
-        }
+        
         button {
             all: inherit;
             width:100%;
             cursor: pointer;
+            background: none;
+            border: none;
+            text-align: left;
+            color: #fff;
             &::before{
                 font-family: "FontAwesome";
                 content: "\f0da";
@@ -653,6 +854,7 @@ button.ui-datepicker-trigger.ui-calendar-button {
                 transition: transform 400ms;
                 display: inline-block;
             }
+        }
         
             &:focus,&:hover{
                 &::before{
@@ -762,7 +964,7 @@ button.ui-datepicker-trigger.ui-calendar-button {
   
   
     .section-nav{
-        width: $section-nav-width;
+        width: 13%;
     }
     .header {
         height: 90px;

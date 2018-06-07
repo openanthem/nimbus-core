@@ -35,7 +35,7 @@ import com.fasterxml.jackson.core.JsonParser;
 
 /**
  * 
- * @author Tony Lopez (AF42192)
+ * @author Tony Lopez
  *
  */
 @RunWith(MockitoJUnitRunner.class)

@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 'use strict';
-import { LabelConfig } from './../../../../shared/app-config.interface';
+import { LabelConfig } from './../../../../shared/param-config';
 import { BaseControlValueAccessor } from './control-value-accessor.component';
 import { Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, NgModel } from '@angular/forms';
-import { Param } from '../../../../shared/app-config.interface';
+import { Param } from '../../../../shared/param-state';
 import { PageService } from '../../../../services/page.service';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { GenericDomain } from '../../../../model/generic-domain.model';
@@ -27,6 +27,8 @@ import { ValidatorFn } from '@angular/forms/src/directives/validators';
 import { ValidationUtils } from '../../validators/ValidationUtils';
 import { ValidationConstraint } from './../../../../shared/validationconstraints.enum';
 import { FormControl, AbstractControl } from '@angular/forms/src/model';
+import { Subscription } from 'rxjs/Subscription';
+import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -38,7 +40,7 @@ import { FormControl, AbstractControl } from '@angular/forms/src/model';
 export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
     @Input() element: Param;
     @Input() form: FormGroup;
-    @Output() controlValueChanged =new EventEmitter();
+    
     protected abstract model: NgModel;
     protected _elementStyle: string;
     public label: string;
@@ -47,21 +49,25 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
     showLabel: boolean = true;
     disabled: boolean;
     requiredCss:boolean = false;
-    constructor(private pageService: PageService, private wcs: WebContentSvc, private cd: ChangeDetectorRef) {
+
+    stateChangeSubscriber: Subscription;
+    validationChangeSubscriber: Subscription;
+    onChangeSubscriber: Subscription;
+
+    constructor(private controlService: ControlSubscribers, private wcs: WebContentSvc, private cd: ChangeDetectorRef) {
         super();
     }
 
     setState(event:any,frmInp:any) {
         frmInp.element.leafState = event;
         this.cd.markForCheck();
-        //console.log(frmInp.element.leafState);
     }
 
     emitValueChangedEvent(formControl:any,$event:any) {
         if (this.inPlaceEditContext) {
             this.inPlaceEditContext.value = formControl.value;
         }
-        this.controlValueChanged.emit(formControl.element);
+        this.controlService.controlValueChanged.emit(formControl.element);
     }
 
     ngOnInit() {
@@ -84,60 +90,13 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
     ngAfterViewInit(){
         if(this.form!= undefined && this.form.controls[this.element.config.code]!= null) {
             this.form.controls[this.element.config.code].valueChanges.subscribe(($event) => this.setState($event,this));
-            this.stateUpdateSubscriber();
-            this.validationUpdateSubscriber();
+            this.controlService.stateUpdateSubscriber(this);
+            this.controlService.validationUpdateSubscriber(this);
         }
-        this.onChangeEventSubscriber();
+        this.controlService.onChangeEventSubscriber(this);
     }
 
-    private stateUpdateSubscriber() {
-        this.pageService.eventUpdate$.subscribe(event => {
-            let frmCtrl = this.form.controls[event.config.code];
-            if(frmCtrl!=null && event.path == this.element.path) {
-                if(event.leafState!=null){
-                    if (event.alias === 'Calendar') {
-                        event.leafState= new Date(event.leafState);
-                      }
-                    frmCtrl.setValue(event.leafState);
-                } else
-                    frmCtrl.reset();
-            }
-        });
-    }
-
-    private validationUpdateSubscriber() {
-        this.pageService.validationUpdate$.subscribe(event => {
-            let frmCtrl = this.form.controls[event.config.code];
-            if(frmCtrl!=null) {
-                if(event.path === this.element.path) {
-                    //bind dynamic validations on a param as a result of a state change of another param
-                    if(event.activeValidationGroups != null && event.activeValidationGroups.length > 0) {
-                        this.requiredCss = ValidationUtils.rebindValidations(frmCtrl,event.activeValidationGroups,this.element);
-                    } else {
-                        this.requiredCss = ValidationUtils.applyelementStyle(this.element);
-                        var staticChecks: ValidatorFn[] = [];
-                        staticChecks = ValidationUtils.buildStaticValidations(this.element);
-                        frmCtrl.setValidators(staticChecks);
-                    }
-                    ValidationUtils.assessControlValidation(event,frmCtrl);
-                    this.disabled = !event.enabled;   
-                }
-
-            }
-        });
-    }
-
-    private onChangeEventSubscriber() {
-        this.controlValueChanged.subscribe(($event) => {
-            //console.log($event);
-            if ($event.config.uiStyles.attributes.postEventOnChange) {
-               this.pageService.postOnChange($event.path, 'state', JSON.stringify($event.leafState));
-            } else if($event.config.uiStyles.attributes.postButtonUrl) {
-               let item: GenericDomain = new GenericDomain();
-               this.pageService.processPost(this.element.config.uiStyles.attributes.postButtonUrl, null, $event.leafState, 'POST');
-            }
-        });
-    }
+   
     /** invoked from InPlaceEdit control */
     setInPlaceEditContext(context: any) {
         this.showLabel = false;

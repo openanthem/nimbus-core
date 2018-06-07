@@ -35,7 +35,8 @@ import com.antheminc.oss.nimbus.domain.defn.extension.Content.Label;
 import com.antheminc.oss.nimbus.domain.defn.extension.EnableConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.ParamContext;
 import com.antheminc.oss.nimbus.domain.defn.extension.Rule;
-import com.antheminc.oss.nimbus.entity.AbstractEntity.IdString;
+import com.antheminc.oss.nimbus.domain.defn.extension.VisibleConditional;
+import com.antheminc.oss.nimbus.entity.AbstractEntity.IdLong;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -47,7 +48,7 @@ import lombok.Setter;
 @Domain(value="sample_core", includeListeners={ListenerType.persistence})
 @Repo(Database.rep_mongodb)
 @Getter @Setter
-public class SampleCoreEntity extends IdString {
+public class SampleCoreEntity extends IdLong {
 
 	private static final long serialVersionUID = 1L;
 
@@ -89,6 +90,7 @@ public class SampleCoreEntity extends IdString {
 	private List<SampleCoreNestedEntity> attr_list_1_NestedEntity;
 	private List<SampleCoreNestedEntity> attr_list_2_NestedEntity;
 	private List<SampleCoreNestedEntity> attr_list_3_NestedEntity;
+	private List<SampleCoreNestedEntity> attr_list_4_NestedEntity;
 	
 	private String unmapped_attr;
 	
@@ -109,10 +111,10 @@ public class SampleCoreEntity extends IdString {
 	
 	private SampleCoreLevel1_Entity level1;
 	
-	@ConfigConditional(when="state == 'Y'", config=@Config(url="/p/sample_core_audit_history/_new?fn=_initEntity&target=/domainRootRefId&json=\"<!/id!>\""))
+	@ConfigConditional(when="state == 'Y'", config=@Config(url="/p/sample_core_audit_history/_new?fn=_initEntity&target=/domainRootRefId&json=<!/id!>"))
 	private String conditional_config_attr;
 	
-	@ConfigConditional(config=@Config(url="/p/sample_core_audit_history/_new?fn=_initEntity&target=/domainRootRefId&json=\"<!/id!>\""))
+	@ConfigConditional(config=@Config(url="/p/sample_core_audit_history/_new?fn=_initEntity&target=/domainRootRefId&json=<!/id!>"))
 	private List<String> conditional_config_attr_list_String;
 
 	private String for_mapped_state_change_attr;
@@ -135,8 +137,8 @@ public class SampleCoreEntity extends IdString {
 	private SampleCoreNested2_Entity q4Level2;
 	
 	@ConfigConditionals({
-			@ConfigConditional(when="state == 'Y'", config=@Config(url="/p/sample_core_audit_history/_new?fn=_initEntity&target=/domainRootRefId&json=\"<!/id!>\"")),
-			@ConfigConditional(when="state == 'N'", config=@Config(url="/p/sample_coreassociatedentity/_new?fn=_initEntity&target=/entityId&json=\"<!/id!>\""))
+			@ConfigConditional(when="state == 'Y'", config=@Config(url="/p/sample_core_audit_history/_new?fn=_initEntity&target=/domainRootRefId&json=<!/id!>")),
+			@ConfigConditional(when="state == 'N'", config=@Config(url="/p/sample_coreassociatedentity/_new?fn=_initEntity&target=/entityId&json=<!/id!>"))
 	})
 	private String conditionals_config_attr;
 	
@@ -166,6 +168,11 @@ public class SampleCoreEntity extends IdString {
 	private String attr_enable_trigger;
 	
 	private SampleCoreEnableEntity attr_enable_nested;
+	
+	@VisibleConditional(when="state == 'Y'", targetPath="../attr_visible_nested")
+	private String attr_visible_trigger;
+	
+	private SampleCoreVisibleEntity attr_visible_nested;
 	
 	@ParamContext(enabled = false, visible = false)
 	private String for_set_param_context;

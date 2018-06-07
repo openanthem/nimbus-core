@@ -46,7 +46,7 @@ public class VPSampleViewPageBlue {
 		
 		// A. add new Nested Entity (via Form converted-A)
 		@Configs(
-			@Config(url="/page_red/tile/vt_attached_convertedNestedEntity/_get?fn=param&expr=assignMapsTo('../.m/attr_list_2_NestedEntity')")	
+			@Config(url="/page_red/tile/vt_attached_convertedNestedEntity/_get?fn=param&expr=unassignMapsTo()")	
 		)
 		private String addButton;
 

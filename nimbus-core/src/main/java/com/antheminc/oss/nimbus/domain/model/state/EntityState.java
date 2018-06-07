@@ -16,12 +16,16 @@
 package com.antheminc.oss.nimbus.domain.model.state;
 
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import javax.annotation.concurrent.Immutable;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
@@ -37,6 +41,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * @author Soham Chakravarti
@@ -63,7 +68,11 @@ public interface EntityState<T> {
 	<P> P findStateByPath(String path);
 
 	void initSetup();
-	void initState();
+	void initState(boolean doInternalStateInit);
+	
+	default void initState() {
+		initState(true);
+	}
 	
 	@JsonIgnore
 	boolean isStateInitialized();
@@ -90,6 +99,21 @@ public interface EntityState<T> {
 	boolean isMapped();
 	
 	Mapped<T, ?> findIfMapped();
+	
+	@Getter @RequiredArgsConstructor @ToString
+	public static class ValueAccessor {
+
+		@JsonIgnore
+		private final PropertyDescriptor pd;
+		
+		public Method getReadMethod() {
+			return pd.getReadMethod();
+		}
+		
+		public Method getWriteMethod() {
+			return pd.getWriteMethod();
+		}
+	}
 	
 	public interface Mapped<T, M> extends EntityState<T> {
 		
@@ -352,8 +376,14 @@ public interface EntityState<T> {
 //			return null;
 //		}
 		
+//		@JsonIgnore
+//		PropertyDescriptor getPropertyDescriptor();
+		
+//		@JsonIgnore
+//		MethodHandle[] getMethodHandles();
+
 		@JsonIgnore
-		PropertyDescriptor getPropertyDescriptor();
+		ValueAccessor getValueAccessor();
 		
 		@JsonIgnore
 		boolean isActive();
@@ -409,7 +439,6 @@ public interface EntityState<T> {
 		Message getMessage();
 		void setMessage(Message msg);
 		
-		
 		void onStateLoadEvent();
 		void onStateChangeEvent(ExecutionTxnContext txnCtx, Action a);
 	}
@@ -425,9 +454,6 @@ public interface EntityState<T> {
 //		default LeafParam<T> findIfLeaf() {
 //			return this;
 //		}
-		
-		@JsonIgnore
-		T getTransientOldState();
 	}
 	
 	public interface MappedParam<T, M> extends Param<T>, Mapped<T, M>, Notification.Consumer<M> {
@@ -531,34 +557,23 @@ public interface EntityState<T> {
 		
 		@Override
 		MappedListParam<T, ?> findIfMapped();
-//		@Override
-//		default MappedListParam<T, ?> findIfMapped() {
-//			return null;
-//		}
 		
 		boolean isCollection();
-//		default boolean isCollection() {
-//			return true;
-//		}
 		
 		@JsonIgnore
 		boolean isLeafElements();
-//		@JsonIgnore
-//		default boolean isLeafElements() {
-//			return getType().isLeafElements();
-//		}
-		
+
 		@Override
 		ListParam<T> findIfCollection();
-//		@Override
-//		default ListParam<T> findIfCollection() {
-//			return this;
-//		}
-		
-//		ListElemParam<T> createElement();
-		
+
 		@Override
 		ListElemParam<T> add();
+		
+		Pageable getPageable();
+		Supplier<Long> getTotalCountSupplier();
+		
+		Page<T> getPage();
+		void setPage(List<T> content, Pageable pageable, Supplier<Long> totalCountSupplier);
 		
 	}
 	

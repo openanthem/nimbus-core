@@ -59,10 +59,10 @@ import com.antheminc.oss.nimbus.domain.model.state.internal.ExecutionEntity;
 import com.antheminc.oss.nimbus.domain.session.SessionProvider;
 import com.antheminc.oss.nimbus.test.FrameworkIntegrationTestScenariosApplication;
 import com.antheminc.oss.nimbus.test.scenarios.s3.core.ServiceLine;
-import com.antheminc.oss.nimbus.test.scenarios.s3.core.SimpleCase;
 import com.antheminc.oss.nimbus.test.scenarios.s3.core.ServiceLine.AuditInfo;
-import com.antheminc.oss.nimbus.test.scenarios.s3.view.VRSimpleCaseFlow;
+import com.antheminc.oss.nimbus.test.scenarios.s3.core.SimpleCase;
 import com.antheminc.oss.nimbus.test.scenarios.s3.view.Page_Pg3.Section_ServiceLine;
+import com.antheminc.oss.nimbus.test.scenarios.s3.view.VRSimpleCaseFlow;
 
 /**
  * @author Soham Chakravarti
@@ -103,7 +103,7 @@ public class QuadModelCollectionsTest {
 	
 	@Test
 	public void t0_mapstoPath() {
-		String id = "TEST ID";
+		Long id = 1L;
 		SimpleCase core = new SimpleCase();
 		core.setId(id);
 		

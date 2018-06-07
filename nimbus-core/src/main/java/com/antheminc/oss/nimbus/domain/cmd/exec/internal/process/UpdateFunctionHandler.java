@@ -18,18 +18,19 @@ package com.antheminc.oss.nimbus.domain.cmd.exec.internal.process;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 /**
  * @author Jayant Chaudhuri
  *
  */
+@EnableLoggingInterceptor
 public class UpdateFunctionHandler <T,S> extends URLBasedAssignmentFunctionHandler<T,Void,S> {
 
 	
 	@Override
-	public Void assign(ExecutionContext executionContext, Param<T> actionParameter, Param<S> targetParameter,
-			S state) {
-		if(targetParameter.isCollection()) {
+	public Void assign(ExecutionContext executionContext, Param<T> actionParameter, Param<S> targetParameter, S state) {
+		if (targetParameter.isCollection()) {
 			ListParam<S> listParam = targetParameter.findIfCollection();
 			listParam.add(state);
 		}

@@ -9,8 +9,10 @@ button:focus{
   &.center{
     @extend .text-sm-center;
   }
-  &.right{
+  &.right, &.text-sm-right{
     @extend .text-sm-right;
+    padding: 0;
+
   }
   &.inline{
     display: inline-block;
@@ -19,19 +21,21 @@ button:focus{
 }
 
 .btn-primary {
-  background: #006bc2;
-  border-color: #006bc2;
+  background: #e5991c;
+  border-color: #e5991c;
   color:#fff;
-  line-height:1;
-  margin-right:9px;
-  margin-bottom:1rem;
-  padding: .4rem 1.5rem;
-  border-radius: .6rem;
+  line-height: 1;
+  margin-right: 9px;
+  margin-left: 9px;
+  margin-bottom: 1rem;
+  padding: .6rem 1.4rem;
+  border-radius: .5rem;
   &:hover:not([disabled]){
-    background-color: #4c4c4c;
-    border-color: #4c4c4c;
+    background-color: #669fe2;
+    border-color: #669fe2;
   }
-  &:active:not([disabled]){
+  &:active:not([disabled]),
+  &.active:not([disabled]){
     background-color: #669fe2;
     border-color: #669fe2;
   }
@@ -41,28 +45,39 @@ button:focus{
   }
 }
 .btn-secondary {
-  background: #4a90e2;
-  border-color: #4a90e2;
+  background: #707070;
+  border-color: #707070;
   color:#fff;
-  line-height:1;
-  margin-right:9px;
-  margin-bottom:1rem;
-  padding: .3rem 1rem;
-  border-radius: .4rem;
+  line-height: 1;
+  margin-right: 9px;
+  margin-left: 9px;
+  margin-bottom: 1rem;
+  padding: .6rem 1.4rem;
+  border-radius: .5rem;
   &:hover:not([disabled]){
-    background-color: #707070;
-    border-color: #707070;
+    background-color: #94acbc;
+    border-color: #94acbc;
   }
-  &:active:not([disabled]){
-    background-color: #7aa8de;
-    border-color: #7aa8de;
+  &:active:not([disabled]),
+  &.active:not([disabled]){
+    background-color: #94acbc;
+    border-color: #94acbc;
   }
   &[disabled]{
     background-color: #b9b6b6;
     border-color: #b9b6b6;
   }
 }
-
+.ui-datatable-header .btn-plain{
+  
+  &:hover{
+    text-decoration: none;
+  }
+ .fa-fw {
+    font-size: 1rem;
+    padding-top: .1rem;
+}
+}
 .btn-plain .fa-fw {
   width: 1.28571429em;
   text-align: center;
@@ -91,9 +106,11 @@ button:focus{
     text-transform: initial;
     text-decoration: underline;
       color:#006bc2;
-    line-height:1;
-    &:hover{
-      color: #4a90e2;
+    line-height:1.5;
+    &:hover,
+    &:active,
+    &.active{
+      color: #e5991c;
       background: none;
     }
     &:focus{

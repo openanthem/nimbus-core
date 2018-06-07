@@ -31,15 +31,20 @@ import com.antheminc.oss.nimbus.domain.session.SessionProvider;
 import com.antheminc.oss.nimbus.entity.client.access.ClientAccessEntity;
 import com.antheminc.oss.nimbus.entity.client.user.ClientUser;
 import com.antheminc.oss.nimbus.entity.user.UserRole;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
+
+import lombok.AccessLevel;
+import lombok.Getter;
 
 /**
  * @author Rakesh Patel
  *
  */
+@EnableLoggingInterceptor
+@Getter(AccessLevel.PROTECTED)
 public class AccessConditionalStateEventHandler extends AbstractConditionalStateEventHandler implements OnStateLoadHandler<AccessConditional> {
 	
 	private final SessionProvider sessionProvider;
-
 	
 	public AccessConditionalStateEventHandler(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
@@ -56,12 +61,12 @@ public class AccessConditionalStateEventHandler extends AbstractConditionalState
 		if(Permission.WRITE == configuredAnnotation.p())
 			return;
 		
-		ClientUser user = sessionProvider.getLoggedInUser();
+		ClientUser user = getSessionProvider().getLoggedInUser();
 		
 		if(user != null) {
 			
 			if(!CollectionUtils.isEmpty(user.getRoles())) {
-				Set<String> userRoleCodes = user.getRoles().stream().map(UserRole::getRoleId).collect(Collectors.toSet());
+				Set<String> userRoleCodes = user.getRoles().stream().map(UserRole::getRoleCode).collect(Collectors.toSet());
 				
 				if(configuredAnnotation.containsRoles() != null && configuredAnnotation.containsRoles().length > 0){
 					boolean isTrue = userRoleCodes.stream().anyMatch(userRole -> Arrays.asList(configuredAnnotation.containsRoles()).contains(userRole));
@@ -71,7 +76,7 @@ public class AccessConditionalStateEventHandler extends AbstractConditionalState
 					}
 				}
 				else if(StringUtils.isNotBlank(configuredAnnotation.whenRoles())){
-					boolean isTrue = expressionEvaluator.getValue(configuredAnnotation.whenRoles(), userRoleCodes, Boolean.class);
+					boolean isTrue = getExpressionEvaluator().getValue(configuredAnnotation.whenRoles(), userRoleCodes, Boolean.class);
 					if(isTrue) {
 						handlePermission(configuredAnnotation.p(), onChangeParam);
 						return;
@@ -91,7 +96,7 @@ public class AccessConditionalStateEventHandler extends AbstractConditionalState
 					}
 				}
 				else if(StringUtils.isNotBlank(configuredAnnotation.whenAuthorities())){
-					boolean isTrue = expressionEvaluator.getValue(configuredAnnotation.whenAuthorities(), userAuthorities, Boolean.class);
+					boolean isTrue = getExpressionEvaluator().getValue(configuredAnnotation.whenAuthorities(), userAuthorities, Boolean.class);
 					if(isTrue) {
 						handlePermission(configuredAnnotation.p(), onChangeParam);
 						return;

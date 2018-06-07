@@ -26,10 +26,10 @@ import org.junit.runners.MethodSorters;
 
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
-import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.AbstractStateEventHandlerTests;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
-import com.antheminc.oss.nimbus.entity.AbstractEntity.IdString;
+import com.antheminc.oss.nimbus.entity.AbstractEntity.IdLong;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
 
 /**
@@ -42,7 +42,7 @@ public class ActivateConditionalNoConversionTest extends AbstractStateEventHandl
 	private static final String CORE_PARAM_nc_form = "/sample_core/nc_form";
 	private static final String VIEW_PARAM_nc_form = "/sample_view/page_green/tile/view_sample_form/view_nc_form";
 
-	private String REF_ID;
+	private Long REF_ID;
 	
 	@Override
 	protected Command createCommand() {
@@ -63,8 +63,9 @@ public class ActivateConditionalNoConversionTest extends AbstractStateEventHandl
 		
 //		core.getNc_form().getNc_nested0_Details().getNc_nested_level1()
 //			.setNested_nc_attr1A("No");
-		
+		core.setId(1L);
 		mongo.insert(core, "sample_core");
+		
 		REF_ID = core.getId();
 		assertNotNull(REF_ID);
 		
@@ -81,7 +82,7 @@ public class ActivateConditionalNoConversionTest extends AbstractStateEventHandl
 
 		executionContextLoader.clear();
 		
-		_q = (QuadModel<?, ? extends IdString>)executionContextLoader.load(_cmd).getQuadModel();
+		_q = (QuadModel<?, ? extends IdLong>)executionContextLoader.load(_cmd).getQuadModel();
 		assertNotNull(_q);
 		
 		_q.getRoot().getExecutionRuntime().onStartCommandExecution(_cmd);

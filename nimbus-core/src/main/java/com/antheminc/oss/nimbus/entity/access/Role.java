@@ -18,7 +18,7 @@ package com.antheminc.oss.nimbus.entity.access;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.antheminc.oss.nimbus.entity.AbstractEntity.IdString;
+import com.antheminc.oss.nimbus.entity.AbstractEntity.IdLong;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -30,7 +30,7 @@ import lombok.ToString;
  */
 @Getter @Setter
 @ToString(callSuper=true)
-public abstract class Role extends IdString {
+public abstract class Role extends IdLong {
 
 	private static final long serialVersionUID = 1L;
 

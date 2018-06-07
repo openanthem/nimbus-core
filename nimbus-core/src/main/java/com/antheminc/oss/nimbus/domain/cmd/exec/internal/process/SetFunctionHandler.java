@@ -16,19 +16,34 @@
 package com.antheminc.oss.nimbus.domain.cmd.exec.internal.process;
 
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.internal.AbstractListPaginatedParam.PageWrapper.PageRequestAndRespone;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
+
+import lombok.Getter;
 
 /**
  * @author Jayant Chaudhuri
  *
  */
+@Getter
+@EnableLoggingInterceptor
 public class SetFunctionHandler <T,S> extends URLBasedAssignmentFunctionHandler<T,Void,S> {
 
 	
+	@SuppressWarnings("unchecked")
 	@Override
-	public Void assign(ExecutionContext executionContext, Param<T> actionParameter, Param<S> targetParameter,
-			S state) {
-		targetParameter.setState(state);
+	public Void assign(ExecutionContext executionContext, Param<T> actionParameter, Param<S> targetParameter, S state) {
+
+		if (state instanceof PageRequestAndRespone && targetParameter.isCollection()) {
+			ListParam<S> listParam = targetParameter.findIfCollection();
+			PageRequestAndRespone<S> page = (PageRequestAndRespone<S>)state;
+			
+			listParam.setPage(page.getContent(), page.getPageable(), page.getTotalSupplier());
+		}else {
+			targetParameter.setState(state);
+		}
 		return null;
 	}
 	

@@ -15,8 +15,7 @@
  */
 package com.antheminc.oss.nimbus.support.pojo;
 
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Method;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.ValueAccessor;
 
 /**
  * @author Soham Chakravarti
@@ -24,18 +23,9 @@ import java.lang.reflect.Method;
  */
 public interface JavaBeanHandler {
 
-	default public <T> T getValue(PropertyDescriptor pd, Object target) {
-		return getValue(pd.getReadMethod(), target);
-	}
+	public <T> T getValue(ValueAccessor pd, Object target);
 	
-	public <T> T getValue(Method readMethod, Object target);	
-	
-	
-	default public <T> void setValue(PropertyDescriptor pd, Object target, T value) {
-		setValue(pd.getWriteMethod(), target, value);
-	}
-	
-	public <T> void setValue(Method writeMethod, Object target, T value);
+	public <T> void setValue(ValueAccessor pd, Object target, T value);
 	
 	public <T> T instantiate(Class<T> clazz);
 }

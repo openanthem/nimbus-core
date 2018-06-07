@@ -18,15 +18,17 @@ package com.antheminc.oss.nimbus.domain.model.state.extension;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Modal;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 /**
  * <p>Default StateEventHandler for <tt>ViewConfig.Modal</tt> that sets default
  * contextual values for enabled and visible to the value in the provided
  * <tt>&#64;ParamContext</tt> field <tt>context</tt>.</p>
  * 
- * @author Tony Lopez (AF42192)
+ * @author Tony Lopez
  * @see com.antheminc.oss.nimbus.domain.defn.ViewConfig.Modal
  */
+@EnableLoggingInterceptor
 public class ModalStateEventHandler implements OnStateLoadHandler<Modal> {
 
 	@Override

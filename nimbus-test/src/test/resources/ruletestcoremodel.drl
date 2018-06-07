@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.domain.rules
+package com.antheminc.oss.nimbus.domain.rules;
 
 import com.antheminc.oss.nimbus.domain.model.state.internal.DefaultModelState;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
@@ -22,11 +22,33 @@ import com.antheminc.oss.nimbus.domain.model.state.internal.DefaultParamState;
 import java.time.LocalDate;
 import java.time.Period;
 
+import function com.antheminc.oss.nimbus.domain.rules.drools.DroolsLoggerUtil.*;
 rule "Core Rule Test 1"
    when
    	$core : DefaultParamState($core.findParamByPath("/triggerParameter").getState() == 'Start')
    	$state : RuleTestCoreModel()
    then
+   		info(drools, "param state "+$core.findParamByPath("/triggerParameter").getState());
+   		debug(drools, "param state "+$core.findParamByPath("/triggerParameter").getState());
+   		trace(drools, "param state "+$core.findParamByPath("/triggerParameter").getState());
+   		error(drools, "param state "+$core.findParamByPath("/triggerParameter").getState());
+   		
+   		System.out.println("TEST !!! ");
    	   $core.findParamByPath("/triggeredParameter").setState("Triggered");   
    	   $state.setStateCheckParameter("Executed");   
+   end
+
+rule "Core Rule Test 2 - Exceptions"
+	when
+		$core : DefaultParamState($core.findParamByPath("/triggerParameter").getState() == 'Start')
+		$state : RuleTestCoreModel()
+	then
+		try {
+			throw new RuntimeException("Test Failure");
+		} catch (Exception e) {
+			info(drools, "This is demo for logging exceptions using info.", e);
+			debug(drools, "This is demo for logging exceptions using debug.", e);
+			trace(drools, "This is demo for logging exceptions using trace.", e);
+			error(drools, "This is demo for logging exceptions using error.", e);
+		}
    end

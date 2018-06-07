@@ -18,11 +18,12 @@
 
 import { trigger,state,style,transition,animate,keyframes } from '@angular/animations';
 import { Component, Input, ViewChild, Output, EventEmitter, ElementRef, HostListener } from '@angular/core';
-import { LabelConfig } from './../../../../shared/app-config.interface';
+import { LabelConfig } from './../../../../shared/param-config';
 import { Behavior } from './../../../../shared/command.enum';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { PageService } from '../../../../services/page.service';
-import { Param, ParamConfig } from '../../../../shared/app-config.interface';
+import { ParamConfig } from '../../../../shared/param-config';
+import { Param } from '../../../../shared/param-state';
 import { GenericDomain } from './../../../../model/generic-domain.model';
 import { HttpMethod } from '../../../../shared/command.enum';
 import { BaseElement } from './../../base-element.component';
@@ -37,7 +38,7 @@ import { BaseElement } from './../../base-element.component';
 @Component({
     selector: 'nm-action-dropdown',
     template: `
-    <div class="action-dropdown" >
+    <div class="action-dropdown" [hidden]="!element?.visible">
         <button class="dropdownTrigger" 
             aria-label="action menu" 
             attr.aria-expanded="{{isOpen}}" 
@@ -70,7 +71,7 @@ import { BaseElement } from './../../base-element.component';
             maxHeight: '0',
         })),
         
-        transition('closedPanel => openPanel', animate('600ms ease-in')),
+        transition('closedPanel => openPanel', animate('300ms ease-in')),
         transition('openPanel => closedPanel', animate('300ms ease-out')),
      ]),
 ]
@@ -96,8 +97,7 @@ export class ActionDropdown {
     }
 
     ngOnInit() {
-        // console.log(this.params);
-        // console.log(this.elementPath + '/');
+        
     }
   
     toggleOpen( event: MouseEvent ): void {
@@ -133,7 +133,12 @@ export class ActionDropdown {
     ],
     template: `
         <ng-template [ngIf]="param.uiStyles.attributes.value =='EXTERNAL'">
-            <a href="{{url}}" class="{{param.uiStyles?.attributes?.cssClass}}" target="{{param.uiStyles?.attributes?.target}}" rel="{{param.uiStyles?.attributes?.rel}}">{{label}}</a>
+            <ng-template [ngIf]="enabled">
+                <a href="{{url}}" class="{{param.uiStyles?.attributes?.cssClass}}" target="{{param.uiStyles?.attributes?.target}}" rel="{{param.uiStyles?.attributes?.rel}}">{{label}}</a>
+            </ng-template>
+            <ng-template [ngIf]="enabled !== undefined && !enabled">
+                <a href="javascript:void(0)" class="{{param.uiStyles?.attributes?.cssClass}}" [class.disabled]="enabled !== undefined && !enabled" rel="{{param.uiStyles?.attributes?.rel}}">{{label}}</a>
+            </ng-template>
         </ng-template>
         <ng-template [ngIf]="param.uiStyles.attributes.value !='EXTERNAL'">
             <a href="javascript:void(0)" [class.disabled]="enabled !== undefined && !enabled" (click)="processOnClick(this.param.code)">{{label}}</a>

@@ -161,6 +161,9 @@ public class StateBuilderCollections_V2C_Attached_Transient_Test {
 		// set to form
 		pTransient.setState(form);
 		
+		// call flush
+		pTransient.findIfTransient().flush();
+		
 		// verify if element got added to core mapped collection
 		assertEquals(1, mapsToCol.size());
 		assertSame(K_VAL, mapsToCol.findParamByPath("/0/nested_attr_String").getState());
@@ -196,6 +199,9 @@ public class StateBuilderCollections_V2C_Attached_Transient_Test {
 		// set to form
 		pTransient.setState(form);	
 		
+		// call flush
+		pTransient.findIfTransient().flush();
+		
 		assertEquals(2, mapsToCol.size());
 		assertSame(K_VAL, mapsToCol.findParamByPath("/1/nested_attr_String").getState());
 		assertSame(K_VAL, pTransient.findParamByPath("/vt_nested_attr_String").getState());
@@ -219,6 +225,10 @@ public class StateBuilderCollections_V2C_Attached_Transient_Test {
 		
 		// set to form: initially
 		pTransient.setState(form);
+
+		// call flush
+		pTransient.findIfTransient().flush();
+
 		
 		// verify if element got added to core mapped collection
 		assertEquals(1, mapsToCol.size());
@@ -235,10 +245,14 @@ public class StateBuilderCollections_V2C_Attached_Transient_Test {
 		// set to form: next w/o doing a reassign
 		pTransient.setState(form_next);
 		
+		// call flush
+		pTransient.findIfTransient().flush();
+
+		
 		// verify if element got added to core mapped collection
 		assertEquals(1, mapsToCol.size());
-		assertSame(K_VAL_NEXT, mapsToCol.findParamByPath("/0/nested_attr_String").getState());
-		assertSame(K_VAL_NEXT, pTransient.findParamByPath("/vt_nested_attr_String").getState());
+		assertEquals(K_VAL_NEXT, mapsToCol.findParamByPath("/0/nested_attr_String").getState());
+		assertEquals(K_VAL_NEXT, pTransient.findParamByPath("/vt_nested_attr_String").getState());
 
 	}
 	
@@ -271,6 +285,10 @@ public class StateBuilderCollections_V2C_Attached_Transient_Test {
 
 		// set to form: next w/o doing a reassign
 		pTransient.setState(form_next);
+
+		// call flush
+		pTransient.findIfTransient().flush();
+
 		
 		// verify if element got added to core mapped collection
 		assertEquals(1, mapsToCol.size());
@@ -295,6 +313,10 @@ public class StateBuilderCollections_V2C_Attached_Transient_Test {
 		form.setVt_nested_attr_String(K_VAL_0);
 		
 		pTransient.setState(form);
+
+		// call flush
+		pTransient.findIfTransient().flush();
+
 		
 		// add value to mapsTo core to see effect in mapped transient
 		final String K_VAL_1 = "TEST_INTG_COL_ELEM_add "+ new Date();
@@ -323,6 +345,10 @@ public class StateBuilderCollections_V2C_Attached_Transient_Test {
 		form.setVt_nested_attr_String(K_VAL_0_updated);
 		
 		pTransient.setState(form);
+		
+		// call flush
+		pTransient.findIfTransient().flush();
+
 		
 		// validate
 		assertSame(2, listGridConverted.size());

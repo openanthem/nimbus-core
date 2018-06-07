@@ -29,11 +29,17 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
 import com.antheminc.oss.nimbus.domain.defn.Converters.ParamConverter;
 import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
+
+import lombok.AccessLevel;
+import lombok.Getter;
 
 /**
  * @author Rakesh Patel
  *
  */
+@EnableLoggingInterceptor
+@Getter(AccessLevel.PROTECTED)
 public class StaticCodeValueBasedCodeToLabelConverter implements ParamConverter<String, String> {
 
 	private CommandExecutorGateway gateway;
@@ -52,7 +58,7 @@ public class StaticCodeValueBasedCodeToLabelConverter implements ParamConverter<
 		CommandMessage cmdMsg = new CommandMessage();
 		cmdMsg.setCommand(cmd);
 		
-		MultiOutput multiOp = gateway.execute(cmdMsg);
+		MultiOutput multiOp = getGateway().execute(cmdMsg);
 		
 		List<ParamValue> paramValues = (List<ParamValue>)multiOp.getSingleResult();
 		

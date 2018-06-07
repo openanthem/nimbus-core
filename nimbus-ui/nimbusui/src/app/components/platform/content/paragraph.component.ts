@@ -18,7 +18,7 @@
 import { Component, Input } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { WebContentSvc } from '../../../services/content-management.service';
-import { Param } from '../../../shared/app-config.interface';
+import { Param } from '../../../shared/param-state';
 import { BaseElement } from '../base-element.component';
 
 /**

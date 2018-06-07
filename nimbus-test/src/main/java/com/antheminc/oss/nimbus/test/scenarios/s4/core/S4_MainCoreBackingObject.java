@@ -21,7 +21,7 @@ import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Database;
-import com.antheminc.oss.nimbus.entity.AbstractEntity.IdString;
+import com.antheminc.oss.nimbus.entity.AbstractEntity.IdLong;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -34,7 +34,7 @@ import lombok.Setter;
 @Domain(value="s4_mainCoreBackingObject", includeListeners={ListenerType.persistence})
 @Repo(Database.rep_mongodb)
 @Getter @Setter
-public class S4_MainCoreBackingObject extends IdString {
+public class S4_MainCoreBackingObject extends IdLong {
 
 	private static final long serialVersionUID = 1L;
 	

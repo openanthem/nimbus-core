@@ -1,4 +1,3 @@
-import { Param } from './app-config.interface';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -18,10 +17,11 @@ import { Param } from './app-config.interface';
 'use strict';
 
 import { ConfigService } from './../services/config.service';
-import { SortAs } from "../components/platform/grid/sortas.interface";
+import { SortAs } from '../components/platform/grid/sortas.interface';
 import { PageService } from '../services/page.service';
 import { GridService } from '../services/grid.service';
-
+import { ServiceConstants } from '../services/service.constants';
+import { Param } from './param-state';
 /**
  * \@author Tony.Lopez
  * \@whatItDoes 
@@ -88,16 +88,26 @@ export class ParamUtils {
      * @param typeClassMapping the class type of the server date object
      */
     public static convertServerDateStringToDate(value: string, typeClassMapping: string): Date {
-        if (value) {
-            var serverDateTime = new Date(value);
-            if (typeClassMapping === ParamUtils.DATE_TYPE_METADATA.LOCAL_DATE.name) {
+        if (!value) {
+            return null;
+        }
+
+        var serverDateTime = new Date(value);
+        switch(typeClassMapping) {
+            case ParamUtils.DATE_TYPE_METADATA.LOCAL_DATE.name: {
                 return new Date(serverDateTime.getUTCFullYear(), serverDateTime.getUTCMonth(), serverDateTime.getUTCDate());
-            } else {
+            }
+
+            case ParamUtils.DATE_TYPE_METADATA.LOCAL_DATE_TIME.name: {
                 return new Date(serverDateTime.getUTCFullYear(), serverDateTime.getUTCMonth(), serverDateTime.getUTCDate(), 
                     serverDateTime.getHours(), serverDateTime.getMinutes(), serverDateTime.getSeconds());
             }
+
+            default: {
+                return new Date(serverDateTime.getFullYear(), serverDateTime.getMonth(), serverDateTime.getDate(), 
+                    serverDateTime.getHours(), serverDateTime.getMinutes(), serverDateTime.getSeconds());
+            }
         }
-        return null;
     }
 
     /**
@@ -115,5 +125,135 @@ export class ParamUtils {
             }
         }
         return null;
+    }
+
+    /**
+     * <p>Applies defined transformations on the provided leaf state <tt>obj</tt> that 
+     * should be applied when deserializing the server-side response of a param into the 
+     * <tt>Param</tt> the UI understands.</p>
+     * 
+     * <p>e.g. For Dates:</p>
+     * 
+     * <pre>
+     * {
+     *      "id": "1",
+     *      "startDate": "2018-03-29T00:00:00.000Z",
+     *      "additionalInformation": {
+     *          "anotherDate": "2018-03-30T00:00:00.000Z"
+     *      }
+     * }
+     * 
+     * becomes:
+     * 
+     * {
+     *      "id": "1",
+     *      "startDate": Thu Mar 29 2018 00:00:00 GMT-0400 (EST) {},
+     *      "additionalInformation": {
+     *          "anotherDate": Thu Mar 30 2018 00:00:00 GMT-0400 (EST) {}
+     *      }
+     * }
+     * </pre>
+     * 
+     * @param obj the leaf state or nested elements within leaf state to be transformed
+     * @param relativeParam The param containing the leafState(<tt>obj</tt>).
+     */
+    public static applyLeafStateTransformations(obj: any, relativeParam: Param): any {
+
+        // the transformed object to return
+        var transformed = obj;
+
+        // iterate over each of the properties of the object.
+        for (var x in obj) {
+
+            // Find the nested param associated with this obj[x].
+            let x_param = ParamUtils.findParamByPath(relativeParam, x);
+
+            if (x_param && x_param.config) {
+
+                // if the param identified by x is a collection or nested element...
+                if ((x_param.config.type.collection || x_param.config.type.nested)) {
+                    
+                    // if we have what we need, then apply the transformations recursively.
+                    if (x_param.type.model && x_param.type.model.params) {
+                        transformed[x] = this.applyLeafStateTransformations(obj[x], x_param);
+                    
+                    // if model or params are not found, we can't continue.
+                    } else {
+                        console.warn(`Unable to find params for ${x} in ${obj[x]}`);
+                        return;
+                    }
+
+                // Otherwise, this element is a "simple type" and we can apply the transformations
+                } else {
+                    
+                    // Handle Date transformations
+                    if (x_param.config.type && ParamUtils.isKnownDateType(x_param.config.type.name)) {
+                       transformed[x] = ParamUtils.convertServerDateStringToDate(obj[x], x_param.config.type.name);
+                    }
+                }
+            }
+        }
+
+        return transformed;
+    }
+
+    /**
+     * <p>Traverses from <tt>relativeParam</tt> to find the param identified by <tt>key</tt>.
+     * If a param is unable to be located, <tt>null</tt> is returned.</p>
+     * 
+     * <p>Uses the path found in <tt>relativeParam</tt> and recursively traverses for each element
+     * in <tt>key</tt> delimited by the path separator.</p>
+     * 
+     * <p>e.g. Assume param is given and param.path is '/page/tile/section/form'. Then: </p>
+     * 
+     * <ul>
+     * <li>ParamUtils.findParamByPath(param, 'textbox') returns the param at '/page/tile/section/form/textbox'</li>
+     * <li>ParamUtils.findParamByPath(param, 'section/textbox') returns the param at '/page/tile/section/form/section/textbox'</li>
+     * </ul>
+     * 
+     * <p>Currently, support for findParamByPath only works traversing forward in the param path, not backwards.</p>
+     * 
+     * @param relativeParam the relative param to use in locating the param to return
+     * @param key the key used to locate the param to return (relative to relativeParam)
+     */
+    public static findParamByPath(relativeParam: Param, key: string): Param {
+        if (!relativeParam) {
+            console.warn('relativeParam can not be null or undefined.');
+            return null;
+        }
+        if (!key) {
+            console.warn('key can not be null or undefined.');
+            return null;
+        }
+        if (!(relativeParam.type && relativeParam.type.model && relativeParam.type.model.params)) {
+            console.warn(`Failed to find children params of param: ${relativeParam}`);
+            return null;
+        }
+
+        let key_parts = key.split(ServiceConstants.PATH_SEPARATOR);
+        let path = `${relativeParam.path}/${key_parts[0]}`;
+        let params = relativeParam.type.model.params.filter(p => p.path == path);
+        if (params.length > 1) {
+            console.warn(`Found more than 1 params for path '${path}' in ${params}`);
+            return null;
+        }
+
+        if (key_parts.length === 1) {
+            return params[0];
+        } else {
+            return ParamUtils.findParamByPath(params[0], key_parts.slice(1).join(ServiceConstants.PATH_SEPARATOR));
+        }
+    }
+
+    /**
+     * <p>Checks to see if JSON object is empty or not
+     */
+    static isEmpty(obj): boolean {
+        for(var prop in obj) {
+            if(obj.hasOwnProperty(prop))
+                return false;
+        }
+    
+        return true;
     }
 }

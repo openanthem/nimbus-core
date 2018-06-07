@@ -66,6 +66,8 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	@JsonIgnore
 	private List<AnnotationConfig> rules;
 	
+	@JsonIgnore
+	private List<AnnotationConfig> extensions;
 	
 	@JsonIgnore
 	private List<Execution.Config> executionConfigs;
@@ -89,8 +91,8 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 		Objects.requireNonNull(code, ()->"code in param config must not be null");
 		Objects.requireNonNull(beanName, ()->"beanName in param config must not be null");
 		
-		this.code = code.intern();
-		this.beanName = beanName.intern();
+		this.code = code;
+		this.beanName = beanName;
 		
 	}
 	
@@ -101,8 +103,8 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 		Objects.requireNonNull(beanName, ()->"beanName in param config must not be null");
 		Objects.requireNonNull(id, ()->"id in param config must not be null");
 		
-		this.code = code.intern();
-		this.beanName = beanName.intern();
+		this.code = code;
+		this.beanName = beanName;
 	}
 
 

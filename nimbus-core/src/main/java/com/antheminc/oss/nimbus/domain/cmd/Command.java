@@ -17,7 +17,6 @@ package com.antheminc.oss.nimbus.domain.cmd;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -27,9 +26,9 @@ import java.util.function.Consumer;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
-import com.antheminc.oss.nimbus.domain.model.state.InvalidStateException;
 import com.antheminc.oss.nimbus.support.pojo.CollectionsTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -42,7 +41,7 @@ import lombok.ToString;
  * @author Soham Chakravarti
  *
  */
-@Data @ToString(of={"absoluteUri", "event", "behaviors", "clientUserId"}) 
+@Data @ToString(of={"absoluteUri", "action", "behaviors", "clientUserId"}) 
 public class Command implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -63,27 +62,30 @@ public class Command implements Serializable {
 	private Map<String, String[]> requestParams;
 	
 	@JsonIgnore
-	final private Instant createdInstant = Instant.now();
+	private final Instant createdInstant = Instant.now();
 	
 	@JsonIgnore @Getter(value=AccessLevel.PRIVATE)
-	final private transient CollectionsTemplate<List<Behavior>, Behavior> templateBehaviors = CollectionsTemplate.linked(()->getBehaviors(), s->setBehaviors(s));
+	private final transient CollectionsTemplate<List<Behavior>, Behavior> templateBehaviors = CollectionsTemplate.linked(()->getBehaviors(), s->setBehaviors(s));
 	
 	
 	public CollectionsTemplate<List<Behavior>, Behavior> templateBehaviors() {
 		return templateBehaviors;
 	}
 
-	public void validate() throws InvalidStateException {
+	/**
+	 * @throws InvalidConfigException
+	 */
+	public void validate() {
 		Optional.ofNullable(getAction())
-			.orElseThrow(()->new InvalidStateException("Command with uri: "+getAbsoluteUri()+" cannot have null Action"));
+			.orElseThrow(()->new InvalidConfigException("Command with uri: "+getAbsoluteUri()+" cannot have null Action"));
 		
 		if(CollectionUtils.isEmpty(getBehaviors()))
-			throw new InvalidStateException("Command with uri: "+getAbsoluteUri()+" cannot have null Behavior");
+			throw new InvalidConfigException("Command with uri: "+getAbsoluteUri()+" cannot have null Behavior");
 		
-		getElement(Type.ClientAlias).orElseThrow(()->new InvalidStateException("Command with uri: "+getAbsoluteUri()+" cannot have null "+Type.ClientAlias));
-		getElement(Type.AppAlias).orElseThrow(()->new InvalidStateException("Command with uri: "+getAbsoluteUri()+" cannot have null "+Type.AppAlias));
-		getElement(Type.PlatformMarker).orElseThrow(()->new InvalidStateException("Command with uri: "+getAbsoluteUri()+" cannot have null "+Type.PlatformMarker));
-		getElement(Type.DomainAlias).orElseThrow(()->new InvalidStateException("Command with uri: "+getAbsoluteUri()+" cannot have null "+Type.DomainAlias));
+		getElement(Type.ClientAlias).orElseThrow(()->new InvalidConfigException("Command with uri: "+getAbsoluteUri()+" cannot have null "+Type.ClientAlias));
+		getElement(Type.AppAlias).orElseThrow(()->new InvalidConfigException("Command with uri: "+getAbsoluteUri()+" cannot have null "+Type.AppAlias));
+		getElement(Type.PlatformMarker).orElseThrow(()->new InvalidConfigException("Command with uri: "+getAbsoluteUri()+" cannot have null "+Type.PlatformMarker));
+		getElement(Type.DomainAlias).orElseThrow(()->new InvalidConfigException("Command with uri: "+getAbsoluteUri()+" cannot have null "+Type.DomainAlias));
 	}
 	
 	public boolean isRootDomainOnly() {
@@ -101,9 +103,7 @@ public class Command implements Serializable {
 	
 	public Command createRootDomainCommand() {
 		String cUri = buildUri(getRoot(), Type.DomainAlias);
-		Command c = CommandBuilder.withUri(cUri).getCommand();
-		//shallowCopy(c);
-		return c;
+		return CommandBuilder.withUri(cUri).getCommand();
 	}
 	
 	@Override
@@ -124,31 +124,12 @@ public class Command implements Serializable {
 	}
 	
 	
-	public Command createNewCommandForCurrentUser(String newRootDomain, Action newAction, LinkedList<Behavior> newBehaviors) {
-		StringBuilder newRootDomainFlowAlias = new StringBuilder();
-		newRootDomainFlowAlias.append(newRootDomain);
-		StringBuilder absoluteUri = new StringBuilder();
-		CommandElementLinked clonedRoot = getRoot().cloneUpto(Type.DomainAlias,absoluteUri);
-		CommandElementLinked platformMarker = clonedRoot.findFirstMatch(Type.PlatformMarker);
-		platformMarker.createNext(Type.DomainAlias, newRootDomainFlowAlias.toString());
-		absoluteUri.append(Constants.SEPARATOR_URI.code).append(newRootDomainFlowAlias);
-		absoluteUri.append(Constants.SEPARATOR_URI.code).append(newAction).append("?b=").append(newBehaviors.peek());
-		
-		Command cloned = new Command(absoluteUri.toString());
-		cloned.setAction(newAction);
-		cloned.setEvent(getEvent());
-		cloned.setBehaviors(newBehaviors);
-		cloned.setClientUserId(getClientUserId());
-		cloned.setRoot(clonedRoot);
-		return cloned;
-	}
-	
 
 	public String getAliasUri(Type type) {
 		return getElement(type).map(e -> e.getAliasUri()).orElse(null);
 	}
 	
-	public String getRefId(Type type) {
+	public Long getRefId(Type type) {
 		return getElement(type).map(e -> e.getRefId()).orElse(null);
 	}
 	

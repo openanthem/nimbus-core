@@ -31,14 +31,16 @@ import com.antheminc.oss.nimbus.domain.model.state.extension.ConfigConditionalSt
 import com.antheminc.oss.nimbus.domain.model.state.extension.DobToAgeConverter;
 import com.antheminc.oss.nimbus.domain.model.state.extension.EnableConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ExpressionConditionalStateEventHandler;
+import com.antheminc.oss.nimbus.domain.model.state.extension.MessageConditionalHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ModalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ParamContextStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.RuleStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.StaticCodeValueBasedCodeToLabelConverter;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValidateConditionalStateEventHandler;
+import com.antheminc.oss.nimbus.domain.model.state.extension.ValidateConditionalStateEventHandler.ValidationAssignmentStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValuesConditionalOnStateChangeEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValuesConditionalOnStateLoadEventHandler;
-import com.antheminc.oss.nimbus.domain.model.state.extension.ValidateConditionalStateEventHandler.ValidationAssignmentStrategy;
+import com.antheminc.oss.nimbus.domain.model.state.extension.VisibleConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional.SiblingNestedValidationAssignmentStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional.SiblingValidationAssignmentStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.internal.IdParamConverter;
@@ -106,8 +108,18 @@ public class DefaultFrameworkExtensionsConfig {
 	}
 	
 	@Bean
+	public VisibleConditionalStateEventHandler extensionVisibleCondiationalStateEventHandler(BeanResolverStrategy beanResolver) {
+		return new VisibleConditionalStateEventHandler(beanResolver);
+	}
+	
+	@Bean
 	public ValidateConditionalStateEventHandler extensionValidateConditionalStateEventHandler(BeanResolverStrategy beanResolver) {
 		return new ValidateConditionalStateEventHandler(beanResolver, null);
+	}
+	
+	@Bean
+	public MessageConditionalHandler extensionMessageConditionalHandler(BeanResolverStrategy beanResolver) {
+		return new MessageConditionalHandler(beanResolver);
 	}
 	
 	@Bean

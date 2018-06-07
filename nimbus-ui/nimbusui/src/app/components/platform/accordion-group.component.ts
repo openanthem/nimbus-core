@@ -20,7 +20,7 @@ import { Accordion } from './accordion.component';
 import { BaseElement } from './base-element.component';
 import { WebContentSvc } from '../../services/content-management.service';
 import { trigger,state,style,transition,animate,keyframes } from '@angular/animations';
-import { Param } from './../../shared/app-config.interface';
+import { Param } from './../../shared/param-state';
 
 /**
  * \@author Dinakar.Meda
@@ -34,7 +34,7 @@ import { Param } from './../../shared/app-config.interface';
     selector: 'accordion-group',
     providers: [ WebContentSvc ],
     template: `
-        <div id="{{title}}" class="panel {{panelClass}} {{state}} ">
+        <div id="{{title}}" class="panel {{panelClass}} {{state}} " [hidden]="!param?.visible" >
             <div class="panel-heading panel-title">
                 <h2>
                   <button attr.aria-expanded="{{isOpen}}" (click)="toggleOpen($event)">{{label}}
@@ -101,6 +101,7 @@ export class AccordionGroup extends BaseElement implements OnDestroy {
     }
     toggleOpen( event: MouseEvent ): void {
         event.preventDefault();
+        this.accordion.expandAllClicked = false; 
         this.isOpen = !this.isOpen;
         if(this.state == 'openPanel'){
             this.state = 'closedPanel';
@@ -114,14 +115,14 @@ export class AccordionGroup extends BaseElement implements OnDestroy {
         
     }
     animationDone($event) {
-        //console.log(this);
-        //use this for scroll to focus after open
-       
+  
         if ( this._state =='openPanel') {
-            this.accordion.closeOthers(this).then(success => {
-                let selElem = this.elementRef.nativeElement.querySelector('#'+this.title);
+            // this.accordion.closeOthers(this).then(success => {
+            if (!this.accordion.expandAllClicked) {
+                let selElem = this.elementRef.nativeElement.querySelector('#' + this.title);
                 selElem.scrollIntoView();
-            });
+            }
+            // });
         }
         if(this._state =='closedPanel'){
             this.isHidden = true;
