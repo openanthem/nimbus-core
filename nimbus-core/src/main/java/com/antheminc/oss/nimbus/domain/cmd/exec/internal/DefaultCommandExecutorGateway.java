@@ -61,6 +61,7 @@ import com.antheminc.oss.nimbus.domain.defn.Execution.KeyValue;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ExecutionModel;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.StateHolder.ParamStateHolder;
 import com.antheminc.oss.nimbus.domain.model.state.InvalidStateException;
 import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
 import com.antheminc.oss.nimbus.domain.model.state.StateEventListener;
@@ -68,6 +69,7 @@ import com.antheminc.oss.nimbus.domain.model.state.extension.ChangeLogCommandEve
 import com.antheminc.oss.nimbus.domain.model.state.internal.BaseStateEventListener;
 import com.antheminc.oss.nimbus.support.EnableAPIMetricCollection;
 import com.antheminc.oss.nimbus.support.EnableAPIMetricCollection.LogLevel;
+import com.antheminc.oss.nimbus.support.expr.ExpressionEvaluator;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -91,7 +93,9 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 	
 	private DomainConfigBuilder domainConfigBuilder;
 	
-	private ChangeLogCommandEventHandler cmdHandler; 
+	private ChangeLogCommandEventHandler cmdHandler;
+	
+	private ExpressionEvaluator expressionEvaluator;
 	
 	private static final ThreadLocal<String> cmdScopeInThread = new ThreadLocal<>();
 	
@@ -108,6 +112,7 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		this.eCtxPathVariableResolver = getBeanResolver().get(ExecutionContextPathVariableResolver.class);
 		this.domainConfigBuilder = getBeanResolver().get(DomainConfigBuilder.class);
 		this.cmdHandler = getBeanResolver().get(ChangeLogCommandEventHandler.class);
+		this.expressionEvaluator = getBeanResolver().get(ExpressionEvaluator.class);
 	}
 
 	
@@ -229,9 +234,12 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		final CommandMessage cmdMsg = eCtx.getCommandMessage();
 		boolean isPayloadUsed = false;
 		
-		// for-each config
 		final List<MultiOutput> configExecOutputs = new ArrayList<>();
-		execConfigs.stream().forEach(ec->{
+		execConfigs.stream().forEach(ec-> {
+			boolean evalWhen = getExpressionEvaluator().getValue(ec.when(), new ParamStateHolder<>(cmdParam), Boolean.class);
+			if(!evalWhen)
+				return;
+			
 			if(StringUtils.isNotBlank(ec.col())) {
 				buildAndExecuteColExecConfig(eCtx, cmdParam, ec);
 			}
@@ -247,14 +255,12 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 					
 				Command configExecCmd = CommandBuilder.withUri(resolvedConfigUri).getCommand();
 				
-				// TODO decide on which commands should get the payload
 				CommandMessage configCmdMsg = new CommandMessage(configExecCmd, resolvePayload(cmdMsg, configExecCmd, isPayloadUsed));
 				
 				// execute & add output to mOutput
 				MultiOutput configOutput = executeConfig(eCtx.getCommandMessage().getCommand(), configCmdMsg);
 				
 				configExecOutputs.add(configOutput);
-				// addMultiOutput(mOutput,configOutput);
 			}
 		});	
 		return configExecOutputs;
@@ -344,19 +350,19 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 
 	private Config buildExecConfig(String url) {
 		return new Execution.Config() {
-			
 			public String url() {
 				return url;
 			}
-			public String col() {
-				return "";
+			public String when() {
+				return Config.TRUE;
 			}
-			@Override
+			public String col() {
+				return Config.COL;
+			}
 			public KeyValue[] kv() {
 				return new KeyValue[]{};
 			}
-			@Override
-		    public Class<? extends Annotation> annotationType() {
+			public Class<? extends Annotation> annotationType() {
 		        return Execution.Config.class;
 		    }
 		};
