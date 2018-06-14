@@ -658,9 +658,8 @@ export class PageService {
                                                                 if (nestedElement) {
                                                                         nestedElement['gridList'] = this.createGridData(eventModel.value.type.model.params, nestedElement);
                                                                         this.gridValueUpdate.next(nestedElement);
-                                                                } else {
-                                                                        this.logger.error('Nested Grid Element not found.');
                                                                 }
+                                                                // if nestedElement is not present, we do not need to handle this scenario.
                                                                 break;
                                                         }
                                                 }
