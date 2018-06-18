@@ -220,4 +220,7 @@ export class Signature extends BaseControl<String> {
         this.zoomClass = '';
     }
 
+    get captureType() {
+        return this.element.config.uiStyles.attributes.captureType;
+    }
 }

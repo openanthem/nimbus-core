@@ -211,6 +211,7 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
 	yearNavigator: boolean;
     yearRange: string;
     metaData: any;
+    captureType: string;
 
     deserialize( inJson ) {
         let obj = this;
