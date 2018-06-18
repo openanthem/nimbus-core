@@ -135,40 +135,15 @@ export class Signature extends BaseControl<String> {
      }
     
     captureEvents(canvasEl: HTMLCanvasElement) {
-        Observable
-            .fromEvent(canvasEl, 'mousedown')
-            .switchMap((e) => {
-                return Observable
-                    .fromEvent(canvasEl, 'mousemove')
-                    .takeUntil(Observable.fromEvent(canvasEl, 'mouseup'))
-                    .pairwise()
-            })
-            .subscribe((res: [MouseEvent, MouseEvent]) => {
-                const rect = canvasEl.getBoundingClientRect();
-        
-                const prevPos = {
-                    x: (res[0].clientX - rect.left) / this.zoomFactor,
-                    y: (res[0].clientY - rect.top) / this.zoomFactor
-                };
-                
-                const currentPos = {
-                    x: (res[1].clientX - rect.left) / this.zoomFactor,
-                    y: (res[1].clientY - rect.top) / this.zoomFactor
-                };
-                
-                this.drawOnCanvas(prevPos, currentPos);
-            });
-    }
-
-    drawOnCanvas(prevPos: { x: number, y: number }, currentPos: { x: number, y: number }) {
-        if (!this.cx) { return; }
-
-        this.cx.beginPath();
-
-        if (prevPos) {
-            this.cx.moveTo(prevPos.x, prevPos.y); // from
-            this.cx.lineTo(currentPos.x, currentPos.y);
-            this.cx.stroke();
+        switch (this.captureType) {
+            case 'DEFAULT': {
+                this.registerDefaultCapture(canvasEl);
+                break;
+            }
+            case 'ON_CLICK': {
+                this.registerOnClickCapture(canvasEl);
+                break;
+            }
         }
     }
 
@@ -222,5 +197,49 @@ export class Signature extends BaseControl<String> {
 
     get captureType() {
         return this.element.config.uiStyles.attributes.captureType;
+    }
+
+    private registerOnClickCapture(canvasEl: HTMLCanvasElement) {
+        
+    }
+
+    private registerDefaultCapture(canvasEl: HTMLCanvasElement) {
+        Observable
+            .fromEvent(canvasEl, 'mousedown')
+            .switchMap((e) => {
+                return Observable
+                    .fromEvent(canvasEl, 'mousemove')
+                    .takeUntil(Observable.fromEvent(canvasEl, 'mouseup'))
+                    .pairwise()
+            })
+            .subscribe((res: [MouseEvent, MouseEvent]) => {
+                this.drawOnCanvas(canvasEl, res[0], res[1]);
+            }
+        );
+    }
+
+    private drawOnCanvas(canvasEl: HTMLCanvasElement, prevEvent: MouseEvent, currentEvent: MouseEvent) {
+        const rect = canvasEl.getBoundingClientRect();
+        
+        const prevPos = {
+            x: (prevEvent.clientX - rect.left) / this.zoomFactor,
+            y: (prevEvent.clientY - rect.top) / this.zoomFactor
+        };
+        
+        const currentPos = {
+            x: (currentEvent.clientX - rect.left) / this.zoomFactor,
+            y: (currentEvent.clientY - rect.top) / this.zoomFactor
+        };
+        
+        if (!this.cx) {
+            return;
+        }
+        this.cx.beginPath();
+
+        if (prevPos) {
+            this.cx.moveTo(prevPos.x, prevPos.y); // from
+            this.cx.lineTo(currentPos.x, currentPos.y);
+            this.cx.stroke();
+        }
     }
 }
