@@ -99,6 +99,8 @@ export class Signature extends BaseControl<String> {
     zoomFactor: number = 1;
     defaultEmptyImage: string = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAVkAAAA8CAYAAADMvMmGAAAB+klEQVR4Xu3UsQ0AAAjDMPr/01yRzRzQwULZOQIECBDIBJYtGyZAgACBE1lPQIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBB41fMAPZcifoIAAAAASUVORK5CYII=";
     
+    isCapturing: boolean = false;
+    
     constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd:ChangeDetectorRef) {
         super(controlService, wcs, cd);
     }
@@ -200,7 +202,25 @@ export class Signature extends BaseControl<String> {
     }
 
     private registerOnClickCapture(canvasEl: HTMLCanvasElement) {
+        const canvasElClick = Observable.fromEvent(canvasEl, 'click');
         
+        canvasElClick.subscribe((e) => this.isCapturing = !this.isCapturing);
+        
+        canvasElClick
+            .switchMap((e) => {
+                return Observable
+                    .fromEvent(canvasEl, 'mousemove')
+                    .takeUntil(Observable
+                        .fromEvent(canvasEl, 'click')
+                    )
+                    .pairwise()
+            })
+            .subscribe((res: [MouseEvent, MouseEvent]) => {
+                if (this.isCapturing) {
+                    this.drawOnCanvas(canvasEl, res[0], res[1]);
+                }
+            }
+        );
     }
 
     private registerDefaultCapture(canvasEl: HTMLCanvasElement) {
