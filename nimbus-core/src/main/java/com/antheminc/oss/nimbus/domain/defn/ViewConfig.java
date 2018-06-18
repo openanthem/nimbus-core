@@ -585,7 +585,15 @@ public class ViewConfig {
 	@Target({ElementType.FIELD}) 
 	@ViewStyle 
 	public @interface Signature { 
-		String alias() default "Signature"; 
+		String alias() default "Signature";
+		
+		/**
+		 * Controls how the signature drawing will be captured.
+		 * 
+		 * @see com.antheminc.oss.nimbus.domain.defn.ViewConfig.Signature.CaptureType
+		 * @return the capture type
+		 */
+		CaptureType captureType() default CaptureType.DEFAULT;
 		boolean hidden() default false; 
 		String help() default ""; 
 		String labelClass() default "anthem-label"; 
@@ -596,6 +604,26 @@ public class ViewConfig {
 		String acceptLabel() default "Save";
 		String width() default "345";
 		String height() default "60";
+		
+		/**
+		 * The strategy for how the signature drawing should be captured on the UI.
+		 * 
+		 * @author Tony Lopez
+		 *
+		 */
+		public enum CaptureType {
+			
+			/**
+			 * Signature data is captured in between the mouse down and mouse up events.
+			 */
+			DEFAULT,
+			
+			/**
+			 * Signature data is captured upon the click event. Capturing will continue until the click 
+			 * event is invoked a second time.
+			 */
+			ON_CLICK;
+		}
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
