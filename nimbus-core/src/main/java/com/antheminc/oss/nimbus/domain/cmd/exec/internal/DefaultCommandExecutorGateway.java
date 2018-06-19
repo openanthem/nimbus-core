@@ -236,9 +236,10 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 		
 		final List<MultiOutput> configExecOutputs = new ArrayList<>();
 		execConfigs.stream().forEach(ec-> {
-			boolean evalWhen = getExpressionEvaluator().getValue(ec.when(), new ParamStateHolder<>(cmdParam), Boolean.class);
-			if(!evalWhen)
+			boolean evalWhen = getExpressionEvaluator().getValue(ec.when(), cmdParam, Boolean.class);
+			if(!evalWhen) {
 				return;
+			}
 			
 			if(StringUtils.isNotBlank(ec.col())) {
 				buildAndExecuteColExecConfig(eCtx, cmdParam, ec);
