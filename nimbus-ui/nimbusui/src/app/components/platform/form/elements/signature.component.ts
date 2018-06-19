@@ -48,8 +48,6 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc, ControlSubscribers],
   template: `
     <div style="position:relative" class="{{zoomClass}}">
-        <button class="btn btn-plain zoomTrigger" (click)="zoomCanvas()" *ngIf="zoomFactor==1"><i class="fa fa-plus-square" aria-hidden="true"></i>Zoom In</button>
-        <button class="btn btn-plain zoomTrigger" (click)="shrinkCanvas()" *ngIf="zoomFactor==2"><i class="fa fa-minus-square" aria-hidden="true"></i>Zoom Out</button>
         <label *ngIf="hidden!=true"
             [ngClass]="{'required': requiredCss, '': !requiredCss}"
             [attr.for]="element.config?.code">{{label}} 
@@ -71,6 +69,8 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
                 <button (click)="clearSignature()" type="button" class="btn btn-secondary post-btn">
                     {{element.config?.uiStyles?.attributes?.clearLabel}}
                 </button>
+                <button class="btn btn-plain" (click)="zoomCanvas()" *ngIf="zoomFactor==1"><i class="fa fa-fw fa-plus-square" aria-hidden="true"></i>Zoom In</button>
+                <button class="btn btn-plain" (click)="shrinkCanvas()" *ngIf="zoomFactor==2"><i class="fa fa-fw fa-minus-square" aria-hidden="true"></i>Zoom Out</button>
             </div>
             <img #img [src]="value != null ? value : defaultEmptyImage" (load)="onImgLoad()" style='display: none;' />
         </ng-template>
