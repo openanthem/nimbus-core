@@ -38,6 +38,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 
 /**
  * \@author Rakesh.Patel
+ * \@author Tony Lopez
  * \@whatItDoes 
  *  Component to capture/display user's signature
  * \@howToUse 
@@ -136,6 +137,12 @@ export class Signature extends BaseControl<String> {
         this.cx.strokeStyle = '#000';
      }
     
+     /**
+      * Provided <tt>canvasEl</tt>, performs subscriptions that should occur related to "capturing"
+      * user input on an HTML canvas element, using the usual observer/subscriber pattern.
+      * 
+      * @param canvasEl the HTML Canvas element to register subscribers with
+      */
     captureEvents(canvasEl: HTMLCanvasElement) {
         switch (this.captureType) {
             case 'DEFAULT': {
@@ -201,6 +208,14 @@ export class Signature extends BaseControl<String> {
         return this.element.config.uiStyles.attributes.captureType;
     }
 
+    /**
+     * Uses the subscriber pattern to capture user input on an HTML canvas element.
+     * 
+     * Applies a capture strategy of <tt>ON_CLICK</tt>, where user input is captured when the user clicks on <tt>canvasEl</tt>, and continues to 
+     * capture until the user clicks on <tt>canvasEl</tt> again.
+     *  
+     * @param canvasEl the HTML Canvas element to register subscribers with
+     */
     private registerOnClickCapture(canvasEl: HTMLCanvasElement) {
         const canvasElClick = Observable.fromEvent(canvasEl, 'click');
         
@@ -223,6 +238,14 @@ export class Signature extends BaseControl<String> {
         );
     }
 
+    /**
+     * Uses the subscriber pattern to capture user input on an HTML canvas element.
+     * 
+     * Applies a capture strategy of <tt>DEFAULT</tt>, where user input is captured when the user clicks within <tt>canvasEl</tt> 
+     * and holds the left mouse button down, and continues to capture until the left mouse button is released within <tt>canvasEl</tt>.
+     *  
+     * @param canvasEl the HTML Canvas element to register subscribers with
+     */
     private registerDefaultCapture(canvasEl: HTMLCanvasElement) {
         Observable
             .fromEvent(canvasEl, 'mousedown')
@@ -238,6 +261,14 @@ export class Signature extends BaseControl<String> {
         );
     }
 
+    /**
+     * Given a previous and current mouse event containing position information, draws a stroke between those two mouse
+     * points to render the pattern the user is moving with the mouse.
+     * 
+     * @param canvasEl the HTML canvas element
+     * @param prevEvent the previous mouse event, containing position information
+     * @param currentEvent the current mouse event, containing position information
+     */
     private drawOnCanvas(canvasEl: HTMLCanvasElement, prevEvent: MouseEvent, currentEvent: MouseEvent) {
         const rect = canvasEl.getBoundingClientRect();
         
