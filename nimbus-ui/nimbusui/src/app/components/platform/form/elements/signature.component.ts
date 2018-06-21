@@ -159,7 +159,6 @@ export class Signature extends BaseControl<String> {
     onImgLoad() {
         if(this.element.enabled) {
             this.initCanvasElement();
-            this.captureEvents(this.canvasEl);
         }
         this.cx.clearRect(0, 0, this.width, this.height);
         if(this.imgElement.src != this.defaultEmptyImage ){
