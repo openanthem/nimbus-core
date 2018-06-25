@@ -40,17 +40,18 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   selector: 'nm-input-textarea',
   providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc, ControlSubscribers ],
   template: `
-    <!--<div class='textarea-holder' [hidden]="!element?.visible || !element?.visible" *ngIf="element.config?.uiStyles?.attributes?.hidden==false">-->
     <div class='textarea-holder' [hidden]="!element?.visible" *ngIf="element.config?.uiStyles?.attributes?.hidden==false">
         <div class="number" *ngIf="element.config?.uiStyles?.attributes?.controlId!=''">{{element.config?.uiStyles?.attributes?.controlId}}</div>
         <label [attr.for]="element.config?.code" [ngClass]="{'required': requiredCss, '': !requiredCss}">{{label}}
             <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
         </label>
         <textarea [(ngModel)] = "value" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" 
-        rows="element.config?.uiStyles?.attributes?.rows"  
+            rows="element.config?.uiStyles?.attributes?.rows"  
             (focusout)="emitValueChangedEvent(this,value)"
             [disabled]="disabled"
-            [id]="element.config?.code" class="form-control" *ngIf="element.config?.uiStyles?.attributes?.readOnly==false"></textarea>
+            [id]="element.config?.code" class="form-control textarea-input" 
+            *ngIf="element.config?.uiStyles?.attributes?.readOnly==false"></textarea>
+        <pre class="print-only" *ngIf="element.config?.uiStyles?.attributes?.readOnly==false">{{this.value}}</pre>
         <p style="margin-bottom:0rem;" *ngIf="element.config?.uiStyles?.attributes?.readOnly==true">{{element.leafState}}</p>
     </div>
    `

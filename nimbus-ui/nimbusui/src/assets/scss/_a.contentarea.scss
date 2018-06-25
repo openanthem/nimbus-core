@@ -911,12 +911,6 @@ button.ui-datepicker-trigger.ui-calendar-button {
     }
 }
 
-
-
-
-
-
-
 .editTarget[disabled] {
     border: none;
     background: none;
@@ -933,9 +927,8 @@ button.ui-datepicker-trigger.ui-calendar-button {
     font-weight: bold;
 }
 
-
 // screen breaks below
-@media(min-width: 576px) {
+@media screen and (min-width: 576px) {
     .navbar-toggleable-md .navbar-collapse {
         z-index: 1;
         position: absolute;
@@ -953,7 +946,7 @@ button.ui-datepicker-trigger.ui-calendar-button {
 .navbar-toggleable-md .navbar-collapse {
     width: 350px;
 }
-@media(min-width: 768px) {
+@media screen and (min-width: 768px) {
     .header {
         height: 80px;
     }
@@ -968,7 +961,7 @@ button.ui-datepicker-trigger.ui-calendar-button {
     }
 }
 
-@media (min-width: 992px) {
+@media screen and (min-width: 992px) {
     html {
         font-size: 14px;
         line-height: 18px;
@@ -992,12 +985,54 @@ button.ui-datepicker-trigger.ui-calendar-button {
     }
 }
 
-@media (min-width: 1200px) {
+@media screen and (min-width: 1200px) {
   
 }
-@media (min-width: 1300px) {
+@media screen and (min-width: 1300px) {
     .header {
         height: 100px;
     }
 
+}
+
+@media print {
+    textarea.textarea-input {
+        display: none;
+    }
+    input.text-input {
+        display: none;
+    }
+    .print-only {
+        display: block;
+        min-height: 1.6rem;
+    }
+    .ui-dropdown {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    .ui-table td:not(.dropdown) .ui-cell-data, 
+    .ui-table td:not(.dropdown) > span, 
+    .ui-datatable td:not(.dropdown) .ui-cell-data, 
+    .ui-datatable td:not(.dropdown) > span {
+        white-space: normal !important;
+        overflow: visible !important;
+    }
+
+    .ui-table .ui-table-thead > tr > th > span, 
+    .ui-table .ui-datatable-thead > tr > th > span, 
+    .ui-datatable .ui-table-thead > tr > th > span, 
+    .ui-datatable .ui-datatable-thead > tr > th > span {
+        white-space: normal !important;
+        overflow: visible !important;
+    }
+
+    footer {
+        display: none;
+    }
+}
+
+@media screen {
+    pre.print-only {
+        display: none;
+    }
 }
