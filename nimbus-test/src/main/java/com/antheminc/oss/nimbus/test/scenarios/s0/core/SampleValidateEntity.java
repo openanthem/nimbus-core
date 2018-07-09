@@ -69,6 +69,18 @@ public class SampleValidateEntity {
 	@ValidateConditional(when = "state == null", targetGroup = GROUP_6.class)
 	private String condition_4;
 	
+	@ValidateConditional(when = "state == 'hello'", targetPath = "../../attr_validate_nested_2/q1/q1_1", targetGroup = GROUP_1.class)
+	private String condition_5;
+	
+	@ValidateConditional(when = "state == 'hello'", targetPath = "../../attr_validate_nested_2/q1/q1_1", targetGroup = GROUP_1.class, scope = ValidationScope.SIBLING_NESTED)
+	private String condition_6;
+	
+	@ValidateConditional(when = "state == 'hello'", targetPath = "../../attr_validate_nested_2", targetGroup = GROUP_1.class, scope = ValidationScope.CHILDREN)
+	private String condition_7;
+	
+	@ValidateConditional(when = "state == 'hello'", targetPath = { "../../attr_validate_nested_2/q1/q1_1", "../../attr_validate_nested_2/q1/nested/q1_2_1"} , targetGroup = GROUP_1.class, scope = ValidationScope.SIBLING)
+	private String condition_8;
+	
 	@NotNull
 	@Pattern(regexp = G1_PATTERN_REGEX, groups = { GROUP_1.class })
 	private String validate_p1;
