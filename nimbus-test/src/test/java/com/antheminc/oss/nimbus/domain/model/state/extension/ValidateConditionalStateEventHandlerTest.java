@@ -110,7 +110,7 @@ public class ValidateConditionalStateEventHandlerTest extends AbstractStateEvent
 	}
 	
 	@Test
-	public void t03_groupValidation_nested_siblingNested() {
+	public void t03_groupValidation_nested() {
 		Param<String> nested_condition = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/nested_condition");
 		
 		Param<String> validate_p3_1 = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/validate_p3/validate_p3_1");
@@ -165,46 +165,7 @@ public class ValidateConditionalStateEventHandlerTest extends AbstractStateEvent
 	}
 	
 	@Test
-	public void t05_validateEvents_1_sibling() {
-		Param<String> condition = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/condition");
-		Param<String> validate_p1 = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/validate_p1");
-		Param<String> validate_p2 = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/validate_p2");
-		Param<String> validate_p4 = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/validate_p4");
-		
-		addListener();
-		condition.setState("rigby");
-		
-		// validate events
-		assertNotNull(_paramEvents);
-		assertEquals(6, _paramEvents.size());
-		
-		List<Param<?>> expectedEventParams1 = new ArrayList<>();
-		expectedEventParams1.add(validate_p1);
-		expectedEventParams1.add(validate_p2);
-		expectedEventParams1.add(validate_p4);
-		expectedEventParams1.add(condition);
-		
-		_paramEvents.stream().forEach(pe->expectedEventParams1.remove(pe.getParam()));
-		assertTrue(expectedEventParams1.isEmpty());
-		
-		condition.setState("hooli");
-		
-		// validate events
-		assertNotNull(_paramEvents);
-		assertEquals(7, _paramEvents.size());
-		
-		List<Param<?>> expectedEventParams2 = new ArrayList<>();
-		expectedEventParams2.add(validate_p1);
-		expectedEventParams2.add(validate_p2);
-		expectedEventParams2.add(validate_p4);
-		expectedEventParams2.add(condition);
-		
-		_paramEvents.stream().forEach(pe->expectedEventParams2.remove(pe.getParam()));
-		assertTrue(expectedEventParams2.isEmpty());
-	}
-	
-	@Test
-	public void t06_validateEvents_2_nestedSibling() {
+	public void t05_validateEvents_sibling() {
 		Param<String> nested_condition = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/nested_condition");
 		Param<String> validate_p1 = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/validate_p1");
 		Param<String> validate_p2 = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/validate_p2");
@@ -248,7 +209,7 @@ public class ValidateConditionalStateEventHandlerTest extends AbstractStateEvent
 	}
 	
 	@Test
-	public void t07_validationRemoval_2_multipleScenarios() {
+	public void t06_validationRemoval_1_multipleScenarios() {
 		Param<String> condition = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/condition");
 		
 		Param<String> validate_p1 = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/validate_p1");
@@ -283,7 +244,7 @@ public class ValidateConditionalStateEventHandlerTest extends AbstractStateEvent
 	}
 	
 	@Test
-	public void t08_validationRemoval_3_nested() {
+	public void t07_validationRemoval_2_nested() {
 		Param<String> nested_condition = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/nested_condition");
 		
 		Param<String> validate_p1 = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/validate_p1");
@@ -322,7 +283,7 @@ public class ValidateConditionalStateEventHandlerTest extends AbstractStateEvent
 	}
 	
 	@Test
-	public void t09_validateEvents_3_multipleTrueConditions() {
+	public void t08_validateEvents_multipleTrueConditions() {
 		Param<String> condition_3 = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/condition_3");
 		
 		Param<String> validate_p5 = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/validate_p5");
@@ -356,7 +317,7 @@ public class ValidateConditionalStateEventHandlerTest extends AbstractStateEvent
 	}
 	
 	@Test
-	public void t10_validateConditional_onStateLoad() {
+	public void t09_validateConditional_onStateLoad() {
 		Param<String> validate_p7 = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested/validate_p7");
 		Assert.assertEquals(1, validate_p7.getConfig().getValidations().size());
 		Assert.assertEquals(1, validate_p7.getActiveValidationGroups().length);
@@ -364,7 +325,7 @@ public class ValidateConditionalStateEventHandlerTest extends AbstractStateEvent
 	}
 	
 	@Test
-	public void t11_validateConditional_targetPath_sibling() {
+	public void t10_validateConditional_targetPath_sibling() {
 		// ensure no validations are added to start
 		Param<String> q1_1 = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested_2/q1/q1_1");
 		Assert.assertEquals(1, q1_1.getConfig().getValidations().size());
@@ -385,7 +346,7 @@ public class ValidateConditionalStateEventHandlerTest extends AbstractStateEvent
 	}
 	
 	@Test
-	public void t12_validateConditional_targetPath_children() {
+	public void t11_validateConditional_targetPath_children() {
 		// ensure no validations are added to start
 		Param<String> q1_1 = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested_2/q1/q1_1");
 		Assert.assertEquals(1, q1_1.getConfig().getValidations().size());
@@ -406,7 +367,7 @@ public class ValidateConditionalStateEventHandlerTest extends AbstractStateEvent
 	}
 	
 	@Test
-	public void t13_validateConditional_targetPaths() {
+	public void t12_validateConditional_targetPaths() {
 		// ensure no validations are added to start
 		Param<String> q1_1 = _q.getRoot().findParamByPath("/sample_core/attr_validate_nested_2/q1/q1_1");
 		Assert.assertEquals(1, q1_1.getConfig().getValidations().size());
