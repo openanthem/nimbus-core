@@ -77,13 +77,13 @@ public @interface ValidateConditional {
 	 * {@link #when()} condition is {@code true}. This path is relative to the param on which this
 	 * &#64;{@code ValidateConditional} decorates. If not provided, the target path points to
 	 * the param in which this {@code ValidateConditional} decorates.
-	 * <p>If any {@code targetPath} is provided and unable to be located, a {@link InvalidConfigException} 
+	 * <p>If any {@code scanPath} is provided and unable to be located, a {@link InvalidConfigException} 
 	 * will be thrown.
 	 * <p><b>Note:</b> This behavior works hand-in-hand with {@link #scope()} logic. When combined,
 	 * they can be used to perform flexible targeting of which params should have validation logic 
 	 * applied.
 	 */
-	String[] targetPath() default {};
+	String[] scanPath() default {};
 	
 	/**
 	 * <p>Defines the scope for the param layer at which validations will be applied when 
@@ -148,21 +148,29 @@ public @interface ValidateConditional {
 	public enum ValidationScope {
 		
 		/**
-		 * <p>Applies validations to children params relative to the {@link ValidateConditional#targetPath()} 
+		 * <p>Applies validations to children params relative to the {@link ValidateConditional#scanPath()} 
 		 * defined in &#64;{@code ValidateConditional}.
 		 * @see com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional.ChildrenValidationAssignmentStrategy
 		 */
 		CHILDREN,
 		
 		/**
-		 * <p>Applies validations to sibling params relative to the {@link ValidateConditional#targetPath()} 
+		 * <p>Applies validations to children params relative to the {@link ValidateConditional#scanPath()} 
+		 * defined in &#64;{@code ValidateConditional}. Also recursively traverses each of the previous param's 
+		 * nested params (or children) and applies validations.
+		 * @see com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional.ChildrenValidationAssignmentStrategy
+		 */
+		CHILDREN_NESTED,
+		
+		/**
+		 * <p>Applies validations to sibling params relative to the {@link ValidateConditional#scanPath()} 
 		 * defined in &#64;{@code ValidateConditional}.
 		 * @see com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional.SiblingValidationAssignmentStrategy
 		 */
 		SIBLING,
 		
 		/**
-		 * <p>Applies validations to sibling params relative to the {@link ValidateConditional#targetPath()} 
+		 * <p>Applies validations to sibling params relative to the {@link ValidateConditional#scanPath()} 
 		 * defined in &#64;{@code ValidateConditional}. Also recursively traverses each 
 		 * of the previous param's nested params (or children) and applies validations.
 		 * @see com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional.SiblingNestedValidationAssignmentStrategy

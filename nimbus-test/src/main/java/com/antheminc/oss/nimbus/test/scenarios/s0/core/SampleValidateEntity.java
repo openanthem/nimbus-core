@@ -69,17 +69,20 @@ public class SampleValidateEntity {
 	@ValidateConditional(when = "state == null", targetGroup = GROUP_6.class)
 	private String condition_4;
 	
-	@ValidateConditional(when = "state == 'hello'", targetPath = "../../attr_validate_nested_2/q1/q1_1", targetGroup = GROUP_1.class)
+	@ValidateConditional(when = "state == 'hello'", scanPath = "../../attr_validate_nested_2/q1/q1_1", targetGroup = GROUP_1.class)
 	private String condition_5;
 	
-	@ValidateConditional(when = "state == 'hello'", targetPath = "../../attr_validate_nested_2/q1/q1_1", targetGroup = GROUP_1.class, scope = ValidationScope.SIBLING_NESTED)
+	@ValidateConditional(when = "state == 'hello'", scanPath = "../../attr_validate_nested_2/q1/q1_1", targetGroup = GROUP_1.class, scope = ValidationScope.SIBLING_NESTED)
 	private String condition_6;
 	
-	@ValidateConditional(when = "state == 'hello'", targetPath = "../../attr_validate_nested_2", targetGroup = GROUP_1.class, scope = ValidationScope.CHILDREN)
+	@ValidateConditional(when = "state == 'hello'", scanPath = "../../attr_validate_nested_2/q1", targetGroup = GROUP_1.class, scope = ValidationScope.CHILDREN)
 	private String condition_7;
 	
-	@ValidateConditional(when = "state == 'hello'", targetPath = { "../../attr_validate_nested_2/q1/q1_1", "../../attr_validate_nested_2/q1/nested/q1_2_1"} , targetGroup = GROUP_1.class, scope = ValidationScope.SIBLING)
+	@ValidateConditional(when = "state == 'hello'", scanPath = { "../../attr_validate_nested_2/q1/q1_1", "../../attr_validate_nested_2/q1/nested/q1_2_1"} , targetGroup = GROUP_1.class, scope = ValidationScope.SIBLING)
 	private String condition_8;
+	
+	@ValidateConditional(when = "state == 'hello'", scanPath = "../../attr_validate_nested_2", targetGroup = GROUP_1.class, scope = ValidationScope.CHILDREN_NESTED)
+	private String condition_9;
 	
 	@NotNull
 	@Pattern(regexp = G1_PATTERN_REGEX, groups = { GROUP_1.class })
