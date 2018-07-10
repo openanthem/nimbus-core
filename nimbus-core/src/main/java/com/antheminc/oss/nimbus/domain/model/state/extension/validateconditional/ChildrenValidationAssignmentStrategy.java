@@ -22,11 +22,15 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 
 /**
  * <p>This strategy will first find all children params of {@code onChangeParam}. As it finds
- * a child param, it will traverse to all nested params that exist below that param.
+ * a child param, it will head-recursively traverse to all nested params that exist below that 
+ * param.
  * 
  * <p>For each param identified that has a conditional {@code Constraint} that should be applied, 
  * this strategy will attempt to add the identified "group" of that {@code Constraint} to the 
- * respective param's {@code activeValidationGroups}.
+ * respective param's {@code activeValidationGroups}. <b>Note:</b> Since this strategy follows a 
+ * head-recursion pattern, it will attempt to apply the assignment of 
+ * {@code activeValidationGroups} to the lowest nested param before adding to the parent 
+ * param.
  * 
  * <p>A conditional {@code Constraint} that should be applied is one who's "groups" field 
  * contains the group identified by {@code configuredAnnotation.targetGroup()}.
@@ -41,12 +45,12 @@ public class ChildrenValidationAssignmentStrategy extends AbstractValidationAssi
 
 	@Override
 	void assignGroupTo(Param<?> onChangeParam, Class<? extends ValidationGroup> targetGroup) {
-		this.handleNested(onChangeParam, targetGroup, this::addGroupToParam, false);
+		this.handleNested(onChangeParam, targetGroup, this::addGroupToParam);
 	}
 	
 	@Override
 	void unassignGroupFrom(Param<?> onChangeParam, Class<? extends ValidationGroup> targetGroup) {
-		this.handleNested(onChangeParam, targetGroup, this::removeGroupFromParam, false);
+		this.handleNested(onChangeParam, targetGroup, this::removeGroupFromParam);
 	}
 
 }

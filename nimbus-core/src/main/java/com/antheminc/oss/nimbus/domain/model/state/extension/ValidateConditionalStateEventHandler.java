@@ -47,14 +47,14 @@ public class ValidateConditionalStateEventHandler extends
 		// retrieve the validation assignment strategy
 		ValidationAssignmentStrategy strategy = this.getValidationAssignmentStrategy(configuredAnnotation);
 		
-		if (null == configuredAnnotation.rootScanPath() || configuredAnnotation.rootScanPath().length == 0) {
+		if (null == configuredAnnotation.targetPath() || configuredAnnotation.targetPath().length == 0) {
 			
 			// single scenario execution
 			strategy.execute(isTrue, onChangeParam, configuredAnnotation.targetGroup());
 		} else {
 			
 			// multiple scenario execution
-			for(String path: configuredAnnotation.rootScanPath()) {
+			for(String path: configuredAnnotation.targetPath()) {
 				Param<?> targetParam = onChangeParam.findParamByPath(path);
 				if (null == targetParam) {
 					throw new InvalidConfigException("Failed to locate param with path: " + path);
