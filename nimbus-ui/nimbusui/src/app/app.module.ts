@@ -91,7 +91,6 @@ import { ButtonGroup } from './components/platform/form/elements/button-group.co
 import { FilterButton } from './components/platform/form/elements/filter-button.component';
 import { CheckBox } from './components/platform/form/elements/checkbox.component';
 import { DomainFlowCmp } from './components/domain/domain-flow.component';
-import { LayoutComponent } from './components/domain/layout.component';
 import { FileUploadComponent } from './components/platform/fileupload/file-upload.component';
 import { Modal } from './components/platform/modal/modal.component';
 import { TooltipComponent } from './components/platform/tooltip/tooltip.component';
@@ -184,7 +183,7 @@ export function init_app(appinitservice: AppInitService) {
         MultiselectCard, Link, Menu, CardDetailsComponent, CardDetailsFieldComponent, CardDetailsGrid, FieldValue,
         AccordionGroup, Accordion, AccordionMain, AccordionTab, FrmGroupCmp, Button, ButtonGroup, FilterButton, OrderablePickList,
         STOMPStatusComponent, InfiniteScrollGrid, DataTable, SubHeaderCmp, TextArea, LandingPage,
-        LayoutService, LayoutComponent, ContentContainer,
+        LayoutService, ContentContainer,
         DomainFlowCmp, HeaderGlobal, FooterGlobal,
         BreadcrumbComponent, NavLinkRouter,
         Modal, ActionDropdown, ActionLink,

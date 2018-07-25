@@ -20,9 +20,10 @@ import { Component } from '@angular/core';
 import { LayoutService } from '../../services/layout.service';
 import { PageService } from '../../services/page.service';
 import { Layout, LinkConfig } from '../../model/menu-meta.interface';
-import { Page } from '../../shared/app-config.interface';
+import { Page, ViewRoot } from '../../shared/app-config.interface';
 import { Param } from '../../shared/param-state';
 import { LoggerService } from '../../services/logger.service';
+import { ConfigService } from '../../services/config.service';
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 
@@ -41,11 +42,11 @@ export class DomainFlowCmp {
     public leftMenuItems: LinkConfig[];
     public topMenuItems: Param[];
     public subHeaders: Param[];
-    public headers: Param;
     routeParams: any;
 
     constructor(private _pageSvc: PageService, private layoutSvc: LayoutService,
-            private _route: ActivatedRoute, private _router: Router, private _logger: LoggerService) {
+            private _route: ActivatedRoute, private _router: Router, private _logger: LoggerService,
+            private configSvc: ConfigService) {
 
         this.layoutSvc.layout$.subscribe(
             data => {
@@ -53,7 +54,6 @@ export class DomainFlowCmp {
                 this.leftMenuItems = layout.leftNavBar;
                 this.subHeaders = layout.topBar.subHeaders;
                 this.topMenuItems = layout.topBar.headerMenus;
-                this.headers = layout.header;
                 this._logger.debug('domain flow component received layout from layout$ subject');
                 if(this.hasLayout && this.subHeaders != null && this.subHeaders !== undefined) {
                     document.getElementById('main-content').classList.add('withInfoBar');
@@ -79,6 +79,7 @@ export class DomainFlowCmp {
         this._logger.debug('DomainFlowCmp-i ');
         this._route.data.subscribe((data: { layout: string }) => {
             let layout: string = data.layout;
+            this._logger.debug('DomainFlowCmp subscribe to route changes for [' + data.layout + ']');
             if (layout) {
                 this.hasLayout = true;
                 this.infoClass = 'info-card';
@@ -88,6 +89,19 @@ export class DomainFlowCmp {
                 this.hasLayout = false;
                 document.getElementById('main-content').classList.remove('withInfoBar');
             }
+        });
+
+        /*  Subscribe to layout$ event which is emitted in pageService whenever there is a change to layout */
+        this._pageSvc.layout$.subscribe(layout => {
+            this._logger.debug('DomainFlowCmp subscribe to page layout$ events for [' + layout + ']');
+            const layoutConfig: ViewRoot = this.configSvc.getFlowConfig(layout);
+                if (layoutConfig && layoutConfig.model) {
+                    /* Passing an additional boolean to parseLayoutConfig, since parseLayoutConfig method
+                    makes a http call for Initialize sections, and upon initialize, the layout$ event is re-emitted.
+                    Due to this recurssive call - the update goes into an infinite loop. Expecting the session to 
+                    already have the layout stored. The boolean will determine if a section reinitialize is needed */
+                    this.layoutSvc.parseLayoutConfig(layoutConfig.model, false);
+                }
         });
     }
 }

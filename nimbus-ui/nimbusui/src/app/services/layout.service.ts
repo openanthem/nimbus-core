@@ -39,7 +39,7 @@ import { Router } from '@angular/router';
  * 
  */
 @Component({
-    selector: 'nm-layout-service',
+    selector: 'nm-layout',
     //conflict jit-aot,  below line has to be commented out for gulp-build
     template: '',
     providers: [
@@ -57,19 +57,12 @@ export class LayoutService {
         private configSvc: ConfigService,
         private logger: LoggerService,  @Inject(CUSTOM_STORAGE) private sessionstore: SessionStoreService) {
         this.layout$ = new EventEmitter<any>();
-
-        this.pageSvc.layout$.subscribe(layout => {
-            let layoutConfig: ViewRoot = this.configSvc.getFlowConfig(layout);
-             if(layoutConfig && layoutConfig.model) {
-                 this.parseLayoutConfig(layoutConfig.model,true);
-             }
-        });
     }
 
     public getLayout(flowName: string) {
         let layoutConfig: ViewRoot = this.configSvc.getFlowConfig(flowName);
         if (layoutConfig) {
-            this.parseLayoutConfig(layoutConfig.model,false);
+            this.parseLayoutConfig(layoutConfig.model, true);
         } else {
             let flowRoodtId = this.sessionstore.get(flowName);
             var urlBase = urlBase = ServiceConstants.PLATFORM_BASE_URL;
@@ -95,7 +88,7 @@ export class LayoutService {
                             // Set layout config to appconfig map
                             this.configSvc.setLayoutToAppConfigByModel(flowName, flowModel);
                             this.sessionstore.set(flowName, layoutConfig.rootDomainId);
-                            this.parseLayoutConfig(flowModel, false);
+                            this.parseLayoutConfig(flowModel, true);
                         } else {
                             this.logger.error('ERROR: Unknown response for Layout config call - ' + subResponse.b);
                         }
@@ -106,16 +99,15 @@ export class LayoutService {
         }
     }
 
-    private parseLayoutConfig(flowModel: Model, refresh) {
+    public parseLayoutConfig(flowModel: Model, sectionReinitialize: boolean) {
         let layout = {} as Layout;
         const pageParam: Param = flowModel.params.find (p => ( p && p.config &&
             p.config.uiStyles && p.config.uiStyles.attributes && 
             p.config.uiStyles.attributes.alias === ViewComponent.page.toString()));
         layout['leftNavBar'] = this.getLeftMenu(pageParam.type.model);
-        layout['topBar'] = this.getTopBar(pageParam.type.model, refresh);
+        layout['topBar'] = this.getTopBar(pageParam.type.model, sectionReinitialize);
         layout['subBar'] = this.getSubBar(pageParam.type.model);
         layout['footer'] = this.getFooterItems(pageParam.type.model);
-        layout['header'] = pageParam;
         // Push the new menu into the Observable stream
         this.layout$.next(layout);
     }
@@ -152,7 +144,7 @@ export class LayoutService {
         return footerConfig;
     }
 
-    private getTopBar(layoutConfig: Model, refresh) {
+    private getTopBar(layoutConfig: Model, sectionReinitialize: boolean) {
         let topBar = {} as TopBarConfig;
         let branding = {} as AppBranding;
         let headerMenus: Param[] = [];
@@ -165,7 +157,7 @@ export class LayoutService {
                     (attribute.alias === 'Section' && attribute.value === 'HEADER')) {
                     this.parseTopBarConfig(param.type.model, branding, headerMenus, subHeaders);
                     // if param has initialize, execute the config
-                    if (!refresh && param.config && param.config.initializeComponent()) { 
+                    if (sectionReinitialize && param.config && param.config.initializeComponent()) { 
                             this.pageSvc.processEvent(param.path, '$execute', new GenericDomain(), 'POST'); 
                     }
                 } 

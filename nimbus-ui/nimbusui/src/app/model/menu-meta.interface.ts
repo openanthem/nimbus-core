@@ -93,5 +93,4 @@ export interface Layout {
     leftNavBar: LinkConfig[];
     footer: FooterConfig;
     subBar: GlobalNavConfig;
-    header: Param;
 }
