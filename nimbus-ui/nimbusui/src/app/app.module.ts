@@ -180,7 +180,7 @@ export function init_app(appinitservice: AppInitService) {
     ],
     declarations: [ AppComponent, STOMPStatusComponent, FlowWrapper, PageContent, PageNotfoundComponent, StaticText,
         Tile, Section, Header, Form, FormElement, InputText, ComboBox, RadioButton, Signature, DateControl, CheckBoxGroup,
-         Paragraph, Value, Image, BaseElement,
+         Paragraph, Value, Image, BaseElement, InPlaceEditorComponent,
         MultiselectCard, Link, Menu, CardDetailsComponent, CardDetailsFieldComponent, CardDetailsGrid, FieldValue,
         AccordionGroup, Accordion, AccordionMain, AccordionTab, FrmGroupCmp, Button, ButtonGroup, FilterButton, OrderablePickList,
         STOMPStatusComponent, InfiniteScrollGrid, DataTable, SubHeaderCmp, TextArea, LandingPage,

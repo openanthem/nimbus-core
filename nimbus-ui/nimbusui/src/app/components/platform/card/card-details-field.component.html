@@ -14,7 +14,7 @@
     </ng-template> -->
     <ng-template [ngIf]="!element.config?.uiStyles?.attributes?.imgSrc && element?.visible == true">
         <ng-template [ngIf]="element.config.uiStyles.attributes.inplaceEdit">
-            <!-- <inplace-editor [element]="element"></inplace-editor> -->
+            <inplace-editor [element]="element"></inplace-editor>
         </ng-template>
         
         <ng-template [ngIf]="isDate(element.config.type.name)">

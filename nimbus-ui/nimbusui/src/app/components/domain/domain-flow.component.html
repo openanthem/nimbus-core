@@ -1,9 +1,9 @@
 <nm-breadcrumb></nm-breadcrumb>
 <span *ngIf="hasLayout">
 	<div class="info-bar clearfix">
-		<!-- <ng-template [ngIf]="headers" >test -->
+		<ng-template [ngIf]="headers" >
 			<nm-layout [element]="headers"></nm-layout>
-		<!-- </ng-template> -->
+		</ng-template>
 	    <!-- <div [class]="p.config?.uiStyles?.attributes?.cssClass" *ngFor="let p of subHeaders, let index=index">
 	        <ng-template ngFor let-element [ngForOf]="p.type?.model?.params">
 				<nm-subheader [element]="element" [(value)]="element.leafState"></nm-subheader>

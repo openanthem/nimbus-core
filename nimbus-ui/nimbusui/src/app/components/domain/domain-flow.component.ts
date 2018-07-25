@@ -54,7 +54,7 @@ export class DomainFlowCmp {
                 this.subHeaders = layout.topBar.subHeaders;
                 this.topMenuItems = layout.topBar.headerMenus;
                 this.headers = layout.header;
-                this._logger.info('domain flow component received layout from layout$ subject');
+                this._logger.debug('domain flow component received layout from layout$ subject');
                 if(this.hasLayout && this.subHeaders != null && this.subHeaders !== undefined) {
                     document.getElementById('main-content').classList.add('withInfoBar');
                 }

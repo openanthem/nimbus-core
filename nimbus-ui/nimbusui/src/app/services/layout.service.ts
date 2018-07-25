@@ -58,27 +58,18 @@ export class LayoutService {
         private logger: LoggerService,  @Inject(CUSTOM_STORAGE) private sessionstore: SessionStoreService) {
         this.layout$ = new EventEmitter<any>();
 
-        // this.pageSvc.layout$.subscribe(layout => {
-        //     console.log('subscribe to layout emit event' + layout);
-        //     let layoutConfig: ViewRoot = this.configSvc.getFlowConfig(layout);
-        //     if(layoutConfig && layoutConfig.model) {
-        //         this.parseLayoutConfig(layoutConfig.model);
-        //     }
-        // });
-
-        // this.pageSvc.eventUpdate$.subscribe(event => {
-        //     if (event.config.code === 'caseStatus'){
-        //         console.log('layout event update subscribe'+ event.config.code);
-        //         let layoutConfig: ViewRoot = this.configSvc.getFlowConfig('caseoverviewlayout');
-        //         this.parseLayoutConfig(layoutConfig.model);
-        //     }
-        // });
+        this.pageSvc.layout$.subscribe(layout => {
+            let layoutConfig: ViewRoot = this.configSvc.getFlowConfig(layout);
+             if(layoutConfig && layoutConfig.model) {
+                 this.parseLayoutConfig(layoutConfig.model,true);
+             }
+        });
     }
 
     public getLayout(flowName: string) {
         let layoutConfig: ViewRoot = this.configSvc.getFlowConfig(flowName);
         if (layoutConfig) {
-            this.parseLayoutConfig(layoutConfig.model);
+            this.parseLayoutConfig(layoutConfig.model,false);
         } else {
             let flowRoodtId = this.sessionstore.get(flowName);
             var urlBase = urlBase = ServiceConstants.PLATFORM_BASE_URL;
@@ -104,7 +95,7 @@ export class LayoutService {
                             // Set layout config to appconfig map
                             this.configSvc.setLayoutToAppConfigByModel(flowName, flowModel);
                             this.sessionstore.set(flowName, layoutConfig.rootDomainId);
-                            this.parseLayoutConfig(flowModel);
+                            this.parseLayoutConfig(flowModel, false);
                         } else {
                             this.logger.error('ERROR: Unknown response for Layout config call - ' + subResponse.b);
                         }
@@ -115,13 +106,16 @@ export class LayoutService {
         }
     }
 
-    private parseLayoutConfig(flowModel: Model) {
+    private parseLayoutConfig(flowModel: Model, refresh) {
         let layout = {} as Layout;
-        layout['leftNavBar'] = this.getLeftMenu(flowModel.params[0].type.model);
-        layout['topBar'] = this.getTopBar(flowModel.params[0].type.model);
-        layout['subBar'] = this.getSubBar(flowModel.params[0].type.model);
-        layout['footer'] = this.getFooterItems(flowModel.params[0].type.model);
-        layout['header'] = flowModel.params[0];
+        const pageParam: Param = flowModel.params.find (p => ( p && p.config &&
+            p.config.uiStyles && p.config.uiStyles.attributes && 
+            p.config.uiStyles.attributes.alias === ViewComponent.page.toString()));
+        layout['leftNavBar'] = this.getLeftMenu(pageParam.type.model);
+        layout['topBar'] = this.getTopBar(pageParam.type.model, refresh);
+        layout['subBar'] = this.getSubBar(pageParam.type.model);
+        layout['footer'] = this.getFooterItems(pageParam.type.model);
+        layout['header'] = pageParam;
         // Push the new menu into the Observable stream
         this.layout$.next(layout);
     }
@@ -130,11 +124,11 @@ export class LayoutService {
         let footerConfig = {} as FooterConfig;
         let elemetarry:any = [];
         layoutConfig.params.forEach(param => {
-            if (param.config.uiStyles.attributes.alias === 'Footer') {
+            if (param.config && param.config.uiStyles &&
+                param.config.uiStyles.attributes &&
+                param.config.uiStyles.attributes.alias === 'Footer') {
                 // if (param.config.uiStyles.attributes.value === 'FOOTER') {
                     param.type.model.params.forEach(element => {
-
-                        
                         element.config.uiNatures.forEach(nature => {
                             if (nature.name === 'ViewConfig.FooterProperty') {
                                 if (nature.attributes.value === 'DISCLAIMER') {
@@ -158,22 +152,24 @@ export class LayoutService {
         return footerConfig;
     }
 
-    private getTopBar(layoutConfig: Model) {
+    private getTopBar(layoutConfig: Model, refresh) {
         let topBar = {} as TopBarConfig;
         let branding = {} as AppBranding;
         let headerMenus: Param[] = [];
         let subHeaders: Param[] = [];
 
         layoutConfig.params.forEach(param => {
-            let attribute: UiAttribute = param.config.uiStyles.attributes;
-            if (attribute.alias === 'Header' || attribute.alias === 'Global-Header' || 
-                (attribute.alias === 'Section' && attribute.value === 'HEADER')) {
-                this.parseTopBarConfig(param.type.model, branding, headerMenus, subHeaders);
-                // if param has initialize, execute the config
-                if (param.config && param.config.initializeComponent()) { 
-                        this.pageSvc.processEvent(param.path, '$execute', new GenericDomain(), 'POST'); 
-                }
-            }     
+            if (param && param.config && param.config.uiStyles) {
+                let attribute: UiAttribute = param.config.uiStyles.attributes;
+                if (attribute && attribute.alias === 'Header' || attribute.alias === 'Global-Header' || 
+                    (attribute.alias === 'Section' && attribute.value === 'HEADER')) {
+                    this.parseTopBarConfig(param.type.model, branding, headerMenus, subHeaders);
+                    // if param has initialize, execute the config
+                    if (!refresh && param.config && param.config.initializeComponent()) { 
+                            this.pageSvc.processEvent(param.path, '$execute', new GenericDomain(), 'POST'); 
+                    }
+                } 
+            }    
         });
 
         topBar['branding'] = branding;
@@ -184,81 +180,85 @@ export class LayoutService {
 
     private parseTopBarConfig(topBarConfig: Model, branding: AppBranding, headerMenus: Param[], subHeaders: Param[]) {
         topBarConfig.params.forEach(element => {
-            if (element.config.type.nested === true) {
-                if (element.config.uiStyles !== undefined && element.config.uiStyles.attributes.alias === 'SubHeader') {
-                    subHeaders.push(element);
-                } else {
-                    this.parseTopBarConfig(element.type.model, branding, headerMenus, subHeaders);
-                }
-            } else {
-                element.config.uiNatures.forEach(nature => {
-                    if (nature.name === 'ViewConfig.PageHeader') {
-                        if (nature.attributes.value === 'LOGO') {
-                            branding['logo'] = element;
-                        }
-                        if (nature.attributes.value === 'TITLE') {
-                            branding['title'] = element;
-                        }
-                        if (nature.attributes.value === 'APPTITLE') {
-                            branding['appTitle'] = element;
-                        }
-                        if (nature.attributes.value === 'SUBTITLE') {
-                            branding['subTitle'] = element;
-                        }
-                        if (nature.attributes.value === 'USERNAME') {
-                            branding['userName'] = element;
-                        }
-                        if (nature.attributes.value === 'USERROLE') {
-                            branding['userRole'] = element;
-                        }
-                        if (nature.attributes.value === 'HELP') {
-                            branding['help'] = element;
-                        }
-                        if (nature.attributes.value === 'LOGOUT') {
-                            branding['logOut'] = element;
-                        }
-                        if (nature.attributes.value === 'NOTIFICATIONS') {
-                            branding['linkNotifications'] = element;
-                        }
-                        if (nature.attributes.value === 'NUMBEROFNOTIFICATIONS') {
-                            branding['numOfNotifications'] = element;
-                        }
-                        if (nature.attributes.value === 'MENU') {
-                            headerMenus.push(element);
-                        }
+            if (element.config) {
+                if (element.config.type && element.config.type.nested === true) {
+                    if (element.config.uiStyles !== undefined && element.config.uiStyles.attributes.alias === 'SubHeader') {
+                        subHeaders.push(element);
+                    } else {
+                        this.parseTopBarConfig(element.type.model, branding, headerMenus, subHeaders);
                     }
-                });
+                } else {
+                    element.config.uiNatures.forEach(nature => {
+                        if (nature.name === 'ViewConfig.PageHeader') {
+                            if (nature.attributes.value === 'LOGO') {
+                                branding['logo'] = element;
+                            }
+                            if (nature.attributes.value === 'TITLE') {
+                                branding['title'] = element;
+                            }
+                            if (nature.attributes.value === 'APPTITLE') {
+                                branding['appTitle'] = element;
+                            }
+                            if (nature.attributes.value === 'SUBTITLE') {
+                                branding['subTitle'] = element;
+                            }
+                            if (nature.attributes.value === 'USERNAME') {
+                                branding['userName'] = element;
+                            }
+                            if (nature.attributes.value === 'USERROLE') {
+                                branding['userRole'] = element;
+                            }
+                            if (nature.attributes.value === 'HELP') {
+                                branding['help'] = element;
+                            }
+                            if (nature.attributes.value === 'LOGOUT') {
+                                branding['logOut'] = element;
+                            }
+                            if (nature.attributes.value === 'NOTIFICATIONS') {
+                                branding['linkNotifications'] = element;
+                            }
+                            if (nature.attributes.value === 'NUMBEROFNOTIFICATIONS') {
+                                branding['numOfNotifications'] = element;
+                            }
+                            if (nature.attributes.value === 'MENU') {
+                                headerMenus.push(element);
+                            }
+                        }
+                    });
+                }
             }
         });
     }
 
-        private getSubBar(layoutConfig: Model) {
+    private getSubBar(layoutConfig: Model) {
         let subBarItems = {} as GlobalNavConfig;
         let menuItems = new Map<string, Param[]>();
         let subMenuLinks: Param[] = [];
         let menuLinks: Param[] = [];
 
         layoutConfig.params.forEach(param => {
-            if (param.config.uiStyles.attributes.alias === 'Global-Nav-Menu') {
-                param.type.model.params.forEach(param => {
-                    if (param.config.uiStyles.attributes.alias === 'Menu') { 
-                        subMenuLinks = [];
-                        param.type.model.params.forEach(paramLink => {
-                            if (paramLink.config.uiStyles.attributes.alias === 'Link') {
-                                subMenuLinks.push(paramLink)
-                            }
-                        })
-                        menuItems.set(param.config.code, subMenuLinks);
-                        subBarItems['menuItems'] = menuItems;
-                    }
-                    if (param.config.uiStyles.attributes.alias === 'ComboBox') {
-                        subBarItems['organization'] = param;
-                    }
-                    if (param.config.uiStyles.attributes.alias === 'Link') {
-                        menuLinks.push(param);
-                    }
-                    subBarItems['menuLinks'] = menuLinks;
-                });
+            if (param.config && param.config.uiStyles &&
+                param.config.uiStyles.attributes &&
+                param.config.uiStyles.attributes.alias === 'Global-Nav-Menu') {
+                    param.type.model.params.forEach(param => {
+                        if (param.config.uiStyles.attributes.alias === 'Menu') { 
+                            subMenuLinks = [];
+                            param.type.model.params.forEach(paramLink => {
+                                if (paramLink.config.uiStyles.attributes.alias === 'Link') {
+                                    subMenuLinks.push(paramLink)
+                                }
+                            })
+                            menuItems.set(param.config.code, subMenuLinks);
+                            subBarItems['menuItems'] = menuItems;
+                        }
+                        if (param.config.uiStyles.attributes.alias === 'ComboBox') {
+                            subBarItems['organization'] = param;
+                        }
+                        if (param.config.uiStyles.attributes.alias === 'Link') {
+                            menuLinks.push(param);
+                        }
+                        subBarItems['menuLinks'] = menuLinks;
+                    });
 
             }
         });
@@ -269,7 +269,9 @@ export class LayoutService {
     private getLeftMenu(layoutConfig: Model) {
         let leftMenu : LinkConfig[] = [];
         layoutConfig.params.forEach(param => {
-            if (param.config.uiStyles.attributes.alias === ViewComponent.section.toString()) {
+            if (param.config && param.config.uiStyles &&
+                param.config.uiStyles.attributes && 
+                param.config.uiStyles.attributes.alias === ViewComponent.section.toString()) {
                 if (param.config.uiStyles.attributes.value ==='LEFTBAR') {
                     param.type.model.params.forEach(element => { // look for links and add to left menu
                         if (element.config.uiStyles.name === ViewConfig.link.toString()) {
