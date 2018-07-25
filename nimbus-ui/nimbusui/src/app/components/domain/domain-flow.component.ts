@@ -41,6 +41,7 @@ export class DomainFlowCmp {
     public leftMenuItems: LinkConfig[];
     public topMenuItems: Param[];
     public subHeaders: Param[];
+    public headers: Param;
     routeParams: any;
 
     constructor(private _pageSvc: PageService, private layoutSvc: LayoutService,
@@ -52,7 +53,8 @@ export class DomainFlowCmp {
                 this.leftMenuItems = layout.leftNavBar;
                 this.subHeaders = layout.topBar.subHeaders;
                 this.topMenuItems = layout.topBar.headerMenus;
-                this._logger.debug('domain flow component received layout from layout$ subject');
+                this.headers = layout.header;
+                this._logger.info('domain flow component received layout from layout$ subject');
                 if(this.hasLayout && this.subHeaders != null && this.subHeaders !== undefined) {
                     document.getElementById('main-content').classList.add('withInfoBar');
                 }

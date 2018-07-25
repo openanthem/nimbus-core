@@ -55,7 +55,8 @@ export class LayoutResolver implements Resolve<string> {
                 routeToDefaultPage = false;
             }
             return this._pageSvc.getFlowLayoutConfig(flowName, routeToDefaultPage).then(layout => {
-                this._logger.debug('layout resolver service flowName can be navigated' + flowName);
+                console.log('layout resolver service flowName can be navigated' + flowName);
+                this._logger.info('layout resolver service flowName can be navigated' + flowName);
                 return layout;
             });
         } else {

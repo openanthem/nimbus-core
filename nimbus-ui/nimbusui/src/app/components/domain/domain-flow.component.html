@@ -1,11 +1,14 @@
 <nm-breadcrumb></nm-breadcrumb>
 <span *ngIf="hasLayout">
 	<div class="info-bar clearfix">
-	    <div [class]="p.config?.uiStyles?.attributes?.cssClass" *ngFor="let p of subHeaders, let index=index">
+		<!-- <ng-template [ngIf]="headers" >test -->
+			<nm-layout [element]="headers"></nm-layout>
+		<!-- </ng-template> -->
+	    <!-- <div [class]="p.config?.uiStyles?.attributes?.cssClass" *ngFor="let p of subHeaders, let index=index">
 	        <ng-template ngFor let-element [ngForOf]="p.type?.model?.params">
-	            <nm-subheader [param]="element"></nm-subheader>
+				<nm-subheader [element]="element" [(value)]="element.leafState"></nm-subheader>
 	        </ng-template>
-	    </div>
+	    </div> -->
 	</div>
 	
 	<nav class="section-nav nav navbar navbar-toggleable-md navbar-light" role="navigation">

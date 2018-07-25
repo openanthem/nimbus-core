@@ -15,7 +15,8 @@
  * limitations under the License.
  */
 'use strict';
-import { Component, Input, SimpleChanges } from '@angular/core';
+import { Component, Input, SimpleChanges, forwardRef } from '@angular/core';
+import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { Param } from '../../shared/param-state';
 import { WebContentSvc } from '../../services/content-management.service';
 import { BaseElement } from './base-element.component';
@@ -27,35 +28,72 @@ import { BaseElement } from './base-element.component';
  * \@howToUse 
  * 
  */
+export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
+     provide: NG_VALUE_ACCESSOR,
+     useExisting: forwardRef(() => SubHeaderCmp),
+     multi: true
+    };
+
 @Component({
     selector: 'nm-subheader',
-    providers: [WebContentSvc],
-    template:`           
-        <ng-template [ngIf]="!param?.config?.type?.nested">
-           <div class="{{param?.config?.uiStyles?.attributes?.cssClass}}">
-                <ng-template [ngIf]="isDate(param.config.type.name)">
-                    <span [hidden]="!param?.config?.uiStyles?.attributes?.showName">{{label}}</span>
-                    <span>{{param.leafState | dateTimeFormat: param.config?.uiStyles?.attributes?.datePattern : param.config.type.name }}</span>
+    providers: [WebContentSvc, CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR],
+    template:`
+        <ng-template [ngIf]="!element?.config?.type?.nested">
+           <div class="{{element?.config?.uiStyles?.attributes?.cssClass}}">
+                <ng-template [ngIf]="isDate(element.config.type.name)">
+                    <span [hidden]="!element?.config?.uiStyles?.attributes?.showName">{{label}}</span>
+                    <span>@{{value | dateTimeFormat: element.config?.uiStyles?.attributes?.datePattern : element.config.type.name }}@</span>
                 </ng-template>
-                <div *ngIf="!isDate(param.config.type.name)">
-                    <span [hidden]="!param?.config?.uiStyles?.attributes?.showName">{{label}}</span>
-                    <span>{{param.leafState}}</span>
+                <div *ngIf="!isDate(element.config.type.name)">
+                    <span [hidden]="!element?.config?.uiStyles?.attributes?.showName">{{label}}</span>
+                    <span>*{{value}}*</span>
                 </div>
            </div>
         </ng-template>
     `
 })
-export class SubHeaderCmp extends BaseElement{
 
-    @Input() param: Param;
+export class SubHeaderCmp extends BaseElement implements ControlValueAccessor {
+
+ //   @Input() element: element;
+    @Input('value') _value = '';
+
     constructor(private _wcs: WebContentSvc) {
         super(_wcs);
     }
     ngOnInit() {
-        this.loadLabelConfig(this.param);
+        this.loadLabelConfig(this.element);
     }
     ngOnChanges(changes: SimpleChanges) {
         if(changes['element']) {
+            console.log('changes on element suheader');
         }
+    }
+
+    onChange: any = () => { }; 
+    onTouched: any = () => { }; 
+
+    get value() {
+        return this._value;
+    }
+
+    set value(val) {
+        this._value = this.element.leafState;
+        this.onChange(val); 
+        this.onTouched();
+    }
+
+    registerOnChange(fn) { 
+        this.onChange = fn;
+    }  
+    
+    writeValue(value) { 
+        if (value) { 
+            this.value = value; 
+        } 
+    }  
+    
+    registerOnTouched(fn) { 
+        this.onTouched = fn; 
     }
 }

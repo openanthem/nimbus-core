@@ -39,7 +39,7 @@ import { Router } from '@angular/router';
  * 
  */
 @Component({
-    selector: 'nm-layout',
+    selector: 'nm-layout-service',
     //conflict jit-aot,  below line has to be commented out for gulp-build
     template: '',
     providers: [
@@ -57,6 +57,22 @@ export class LayoutService {
         private configSvc: ConfigService,
         private logger: LoggerService,  @Inject(CUSTOM_STORAGE) private sessionstore: SessionStoreService) {
         this.layout$ = new EventEmitter<any>();
+
+        // this.pageSvc.layout$.subscribe(layout => {
+        //     console.log('subscribe to layout emit event' + layout);
+        //     let layoutConfig: ViewRoot = this.configSvc.getFlowConfig(layout);
+        //     if(layoutConfig && layoutConfig.model) {
+        //         this.parseLayoutConfig(layoutConfig.model);
+        //     }
+        // });
+
+        // this.pageSvc.eventUpdate$.subscribe(event => {
+        //     if (event.config.code === 'caseStatus'){
+        //         console.log('layout event update subscribe'+ event.config.code);
+        //         let layoutConfig: ViewRoot = this.configSvc.getFlowConfig('caseoverviewlayout');
+        //         this.parseLayoutConfig(layoutConfig.model);
+        //     }
+        // });
     }
 
     public getLayout(flowName: string) {
@@ -105,6 +121,7 @@ export class LayoutService {
         layout['topBar'] = this.getTopBar(flowModel.params[0].type.model);
         layout['subBar'] = this.getSubBar(flowModel.params[0].type.model);
         layout['footer'] = this.getFooterItems(flowModel.params[0].type.model);
+        layout['header'] = flowModel.params[0];
         // Push the new menu into the Observable stream
         this.layout$.next(layout);
     }
