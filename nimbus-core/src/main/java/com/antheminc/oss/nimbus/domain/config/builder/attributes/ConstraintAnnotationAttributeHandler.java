@@ -30,7 +30,7 @@ import com.antheminc.oss.nimbus.domain.config.builder.AnnotationAttributeHandler
  * Implementation of <tt>AnnotationAttributeHandler</tt> that ensures all JSR <tt>Constraint</tt>
  * attributes are filtered as needed.
  * 
- * @author Tony Lopez (AF42192)
+ * @author Tony Lopez
  *
  */
 public class ConstraintAnnotationAttributeHandler implements AnnotationAttributeHandler {

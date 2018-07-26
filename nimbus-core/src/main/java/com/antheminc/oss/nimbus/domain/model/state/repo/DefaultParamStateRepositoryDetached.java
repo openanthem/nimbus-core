@@ -24,12 +24,18 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 import com.antheminc.oss.nimbus.support.JustLogit;
+
+import lombok.AccessLevel;
+import lombok.Getter;
 
 /**
  * @author Rakesh Patel
  *
  */
+@EnableLoggingInterceptor
+@Getter(value=AccessLevel.PROTECTED)
 public class DefaultParamStateRepositoryDetached implements ParamStateRepository {
 
 	private JustLogit logit = new JustLogit(getClass());
@@ -48,10 +54,10 @@ public class DefaultParamStateRepositoryDetached implements ParamStateRepository
 	public <P> P _get(Param<P> param) {
 		
 		String completeUri = param.getRootExecution().getRootCommand().getRelativeUri(param.getConfig().findIfMapped().getPath().value());
-		String resolvedUri = this.pathVariableResolver.resolve(param, completeUri);
+		String resolvedUri = this.getPathVariableResolver().resolve(param, completeUri);
 		Command cmd = CommandBuilder.withUri(resolvedUri).getCommand();
 		CommandMessage cmdMsg = new CommandMessage(cmd, null);
-		MultiOutput multiOp = this.gateway.execute(cmdMsg);
+		MultiOutput multiOp = this.getGateway().execute(cmdMsg);
 		Param<P> pState = (Param<P>)multiOp.getSingleResult();
 		return pState.getLeafState();
 	

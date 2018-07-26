@@ -16,7 +16,7 @@
  */
 'use strict';
 import { FormControl, ValidatorFn, FormGroup, ValidationErrors } from '@angular/forms';
-import { Attribute } from './../../../shared/app-config.interface';
+import { Attribute } from './../../../shared/param-config';
 
 /**
  * \@author Dinakar.Meda

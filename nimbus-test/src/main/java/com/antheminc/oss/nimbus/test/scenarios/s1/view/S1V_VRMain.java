@@ -22,7 +22,7 @@ import java.util.List;
 
 import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo.Path;
-import com.antheminc.oss.nimbus.entity.AbstractEntity.IdString;
+import com.antheminc.oss.nimbus.entity.AbstractEntity.IdLong;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -34,7 +34,7 @@ import lombok.Setter;
 @Domain(value="s1v_main")
 @Getter @Setter
 @SuppressWarnings("serial")
-public class S1V_VRMain extends IdString {
+public class S1V_VRMain extends IdLong {
 
 	@Path(linked=false)
 	private List<S1V_LineItem> detachedItems;

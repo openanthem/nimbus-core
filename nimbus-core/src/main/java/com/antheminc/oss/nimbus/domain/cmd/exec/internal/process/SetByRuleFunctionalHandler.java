@@ -36,11 +36,16 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.RulesRuntime;
 import com.antheminc.oss.nimbus.domain.rules.RulesEngineFactory;
 import com.antheminc.oss.nimbus.domain.rules.RulesEngineFactoryProducer;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
+
+import lombok.Getter;
 
 /**
  * @author Rakesh Patel
  *
  */
+@Getter
+@EnableLoggingInterceptor
 public class SetByRuleFunctionalHandler <T, R> extends AbstractFunctionHandler<T, R> {
 	
 	@Autowired RulesEngineFactoryProducer rulesEngineFactoryProducer;
@@ -53,7 +58,7 @@ public class SetByRuleFunctionalHandler <T, R> extends AbstractFunctionHandler<T
 		
 		Class<?> clazz = mConfig.getReferredClass();
 			
-		RulesEngineFactory reFactory = rulesEngineFactoryProducer.getFactory(clazz);
+		RulesEngineFactory reFactory = getRulesEngineFactoryProducer().getFactory(clazz);
 		
 		Assert.notNull(reFactory, "Rule engine factory is null for the config "+mConfig);
 		
@@ -75,7 +80,7 @@ public class SetByRuleFunctionalHandler <T, R> extends AbstractFunctionHandler<T
 				associatedParamUri = eCtx.getCommandMessage().getCommand().getRelativeUri(associatedParamUri);
 				Command command = CommandBuilder.withUri(associatedParamUri).getCommand();
 				CommandMessage newCommandMessage = new CommandMessage(command, eCtx.getCommandMessage().hasPayload() ?  eCtx.getCommandMessage().getRawPayload() :null);
-				MultiOutput response = executorGateway.execute(newCommandMessage);
+				MultiOutput response = getExecutorGateway().execute(newCommandMessage);
 				
 				Param<T> associatedParam = (Param<T>)response.getSingleResult();
 				params.add(associatedParam);

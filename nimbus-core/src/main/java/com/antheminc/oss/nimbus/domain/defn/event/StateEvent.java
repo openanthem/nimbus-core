@@ -35,7 +35,7 @@ public final class StateEvent {
 	@Event
 	@Inherited
 	public @interface OnStateLoad {
-
+		int order() default Event.DEFAULT_ORDER_NUMBER;
 	}
 	
 	@Retention(RUNTIME)
@@ -43,7 +43,7 @@ public final class StateEvent {
 	@Event
 	@Inherited
 	public @interface OnStateChange {
-
+		int order() default Event.DEFAULT_ORDER_NUMBER;
 	}
 	
 	@Retention(RUNTIME)
@@ -51,6 +51,6 @@ public final class StateEvent {
 	@Event
 	@Inherited
 	public @interface OnTxnExecute {
-
+		int order() default Event.DEFAULT_ORDER_NUMBER;
 	}
 }

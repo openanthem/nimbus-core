@@ -24,6 +24,11 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.ExecutionTxnContext;
 import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * <p>ValuesConditional State Event handler implementation for updating <tt>Values</tt> annotated fields 
@@ -34,10 +39,13 @@ import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnSt
  * when new <tt>values</tt> are updated. If false, the handler will reset the state of the <tt>targetParam</tt>
  * only when the existing state does not exist within the new updated set of <tt>values</tt>.</p>
  * 
- * @author Tony Lopez (AF42192)
+ * @author Tony Lopez
  * @see com.antheminc.oss.nimbus.domain.defn.extension.ValuesConditional
  * @see com.antheminc.oss.nimbus.domain.model.state.extension.AbstractValuesConditionalStateEventHandler
  */
+@EnableLoggingInterceptor
+@Getter(AccessLevel.PROTECTED)
+@Setter(AccessLevel.PROTECTED)
 public class ValuesConditionalOnStateChangeEventHandler extends AbstractValuesConditionalStateEventHandler 
 	implements OnStateChangeHandler<ValuesConditional> {
 
@@ -53,7 +61,7 @@ public class ValuesConditionalOnStateChangeEventHandler extends AbstractValuesCo
 	 */
 	@Override
 	protected void afterExecute(Param<?> targetParam) {
-		if (this.resetOnChange) {
+		if (isResetOnChange()) {
 			targetParam.setState(null);
 		} else {
 			
@@ -75,7 +83,7 @@ public class ValuesConditionalOnStateChangeEventHandler extends AbstractValuesCo
 	 */
 	@Override
 	public void handle(ValuesConditional configuredAnnotation, ExecutionTxnContext txnCtx, ParamEvent event) {
-		this.resetOnChange = configuredAnnotation.resetOnChange();
+		setResetOnChange(configuredAnnotation.resetOnChange());
 		this.handleInternal(configuredAnnotation, event.getParam());
 	}
 }

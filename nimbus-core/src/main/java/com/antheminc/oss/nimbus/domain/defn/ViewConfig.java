@@ -21,8 +21,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.antheminc.oss.nimbus.domain.Event;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 import com.antheminc.oss.nimbus.domain.defn.extension.ParamContext;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Soham Chakravarti
@@ -47,6 +51,13 @@ public class ViewConfig {
 	@Target(value={ElementType.ANNOTATION_TYPE})
 	@Inherited
 	public @interface ViewStyle {
+		
+	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(value={ElementType.ANNOTATION_TYPE})
+	@Inherited
+	public @interface GridFilter {
 		
 	}
 
@@ -198,7 +209,7 @@ public class ViewConfig {
 	 * </ul>
 	 * </p>
 	 * 
-	 * @author Tony Lopez (AF42192)
+	 * @author Tony Lopez
 	 * @see com.anthem.oss.nimbus.core.domain.model.state.extension.ModalStateEventHandler
 	 *
 	 */
@@ -220,6 +231,8 @@ public class ViewConfig {
 		ParamContext context() default @ParamContext(enabled = true, visible = false);
 		
 		boolean resizable() default true;
+		
+		int order() default Event.DEFAULT_ORDER_NUMBER;
 	}
 
 	/*
@@ -263,7 +276,7 @@ public class ViewConfig {
 		String alias() default "Grid";
 		String cssClass() default ""; // new
 		boolean expandableRows() default false;
-		
+		boolean lazyLoad() default false;
 		boolean onLoad() default false;
 		boolean isTransient() default false;
 		String url() default "";
@@ -278,6 +291,8 @@ public class ViewConfig {
 		String postButtonLabel() default "";
 		boolean postEventOnChange() default false;
 		boolean clearAllFilters() default false;
+		boolean export() default false;
+		String dataKey() default "id";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
@@ -492,6 +507,7 @@ public class ViewConfig {
 	public @interface PageHeader {
 		public enum Property {
 			LOGO,
+			TITLE,
 			APPTITLE,
 			SUBTITLE,
 			USERNAME,
@@ -564,6 +580,51 @@ public class ViewConfig {
 		boolean postEventOnChange() default false; 
 		String controlId() default ""; 
 	}
+	
+	@Retention(RetentionPolicy.RUNTIME) 
+	@Target({ElementType.FIELD}) 
+	@ViewStyle 
+	public @interface Signature { 
+		String alias() default "Signature";
+		
+		/**
+		 * Controls how the signature drawing will be captured.
+		 * 
+		 * @see com.antheminc.oss.nimbus.domain.defn.ViewConfig.Signature.CaptureType
+		 * @return the capture type
+		 */
+		CaptureType captureType() default CaptureType.DEFAULT;
+		boolean hidden() default false; 
+		String help() default ""; 
+		String labelClass() default "anthem-label"; 
+		String type() default "signature";
+		boolean postEventOnChange() default false; 
+		String controlId() default "";
+		String clearLabel() default "Clear";
+		String acceptLabel() default "Save";
+		String width() default "345";
+		String height() default "60";
+		
+		/**
+		 * The strategy for how the signature drawing should be captured on the UI.
+		 * 
+		 * @author Tony Lopez
+		 *
+		 */
+		public enum CaptureType {
+			
+			/**
+			 * Signature data is captured in between the mouse down and mouse up events.
+			 */
+			DEFAULT,
+			
+			/**
+			 * Signature data is captured upon the click event. Capturing will continue until the click 
+			 * event is invoked a second time.
+			 */
+			ON_CLICK;
+		}
+	}
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
@@ -623,6 +684,10 @@ public class ViewConfig {
 		boolean postEventOnChange() default false;
 		String controlId() default "";
 		String help() default "";
+		boolean readonlyInput() default false;
+		boolean monthNavigator() default false;
+		boolean yearNavigator() default false;
+		String yearRange() default "1910:2050";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
@@ -688,6 +753,7 @@ public class ViewConfig {
 		String alias() default "AccordionTab";
 		String cssClass() default "panel-default";
 		boolean selected() default false;
+		boolean editable() default false;
 	}
 	
 	
@@ -803,6 +869,7 @@ public class ViewConfig {
 		String url() default "";
 		String alias() default "FileUpload";
 		String type() default ".pdf,.png";
+		String metaData() default "";
 		ControlType controlType() default ControlType.FORMCONTROL;
 	}
 	
@@ -829,12 +896,46 @@ public class ViewConfig {
 		boolean expandable() default true;
 		SortAs sortAs() default SortAs.DEFAULT; // number, text
 		String placeholder() default "";
+		boolean rowExpander() default false;
 		
 		public enum FilterMode {
-			equals,
-			contains,
-			endsWith,
-			in
+			equals("equalsIgnoreCase"),
+			contains("containsIgnoreCase"),
+			endsWith("endsWithIgnoreCase"),
+			in("in");
+			
+			@Getter @Setter
+			private String code;
+			
+			FilterMode(String code) {
+				this.code = code;
+			}
+			
+			public static String getStrictMatchModeFor(FilterMode mode) {
+				if(mode == null)
+					return null;
+				
+				if(mode == FilterMode.equals)
+					return "eq";
+				
+				return mode.getCode();
+			}
+			
+			//TODO add more filters as valid as they are available (e.g. gt, gte, lt, lte etc...)
+			public static boolean isValidNumericFilter(FilterMode mode) {
+				if(mode == FilterMode.equals || mode == FilterMode.in) {
+					return true;
+				}
+				return false;
+			}
+			
+			public static boolean isValidBooleanFilter(FilterMode mode) {
+				if(mode == FilterMode.equals || mode == FilterMode.in) {
+					return true;
+				}
+				return false;
+			}
+			
 		}
 		
 		public enum SortAs {

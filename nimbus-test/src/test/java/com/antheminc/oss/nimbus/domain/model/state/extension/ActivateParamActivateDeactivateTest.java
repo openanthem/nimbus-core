@@ -217,7 +217,7 @@ public class ActivateParamActivateDeactivateTest extends AbstractStateEventHandl
 		
 		// validate events
 		assertNotNull(_paramEvents);
-		assertEquals(3, _paramEvents.size());
+		assertEquals(6, _paramEvents.size());
 		
 		List<Param<?>> expectedEventParams = new ArrayList<>();
 		expectedEventParams.add(q1Level1);

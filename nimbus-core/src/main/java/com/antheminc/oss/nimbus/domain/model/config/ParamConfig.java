@@ -65,6 +65,8 @@ public interface ParamConfig<P> extends EntityConfig<P>, Findable<String> {
 	// TODO Soham: change to list of notification handler annotations
 	public List<AnnotationConfig> getRules();
 	
+	public List<AnnotationConfig> getExtensions();
+	
 	public Values getValues();
 	
 	public List<ParamConverter> getConverters();
@@ -95,14 +97,10 @@ public interface ParamConfig<P> extends EntityConfig<P>, Findable<String> {
 	
 	public interface MappedParamConfig<P, M> extends ParamConfig<P>, MappedConfig<P, M> {
 		@Override
-		default boolean isMapped() {
-			return true;
-		}
+		boolean isMapped();
 		
 		@Override
-		default MappedParamConfig<P, M> findIfMapped() {
-			return this;
-		}
+		MappedParamConfig<P, M> findIfMapped();
 		
 		public Path getPath();
 

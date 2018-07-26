@@ -16,7 +16,9 @@
  */
 'use strict';
 import { Injectable, EventEmitter } from '@angular/core';
-import { ViewRoot, ViewConfig, Model, ParamConfig, ConfigType, ModelConfig } from '../shared/app-config.interface';
+import { ViewRoot } from '../shared/app-config.interface';
+import { Model } from '../shared/param-state';
+import { ParamConfig, ConfigType, ModelConfig } from '../shared/param-config';
 
 /**
  * \@author Dinakar.Meda
@@ -68,5 +70,9 @@ export class ConfigService {
     getViewConfigById(configId: string) {
             return this.paramConfigs[configId];
     }
+}
 
+export class ViewConfig {
+    configId: string;
+    config: ParamConfig;
 }

@@ -125,7 +125,7 @@ public class LabelConfigEventHandlerTest extends AbstractFrameworkIntegrationTes
 	
 	
 	@Model @Getter @Setter
-	private static class TestInvalidScenario_MultipleSameLocaleEntity {
+	public static class TestInvalidScenario_MultipleSameLocaleEntity {
 		
 		@Label("T1")
 		@Label("T2")

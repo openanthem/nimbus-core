@@ -17,7 +17,7 @@
 'use strict';
 import { Component, Input } from '@angular/core';
 import { LayoutService } from '../../../services/layout.service';
-import { Param } from '../../../shared/app-config.interface';
+import { Param } from '../../../shared/param-state';
 import { AppBranding, LinkConfig } from '../../../model/menu-meta.interface';
 import { ServiceConstants } from './../../../services/service.constants';
 import { BreadcrumbService } from './../breadcrumb/breadcrumb.service';

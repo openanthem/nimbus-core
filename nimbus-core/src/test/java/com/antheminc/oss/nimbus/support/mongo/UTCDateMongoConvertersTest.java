@@ -27,13 +27,14 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
+import java.util.Random;
 
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.antheminc.oss.nimbus.AbstractPersistableUnitTests;
-import com.antheminc.oss.nimbus.entity.AbstractEntity.IdString;
+import com.antheminc.oss.nimbus.entity.AbstractEntity.IdLong;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -50,23 +51,23 @@ public class UTCDateMongoConvertersTest extends AbstractPersistableUnitTests {
 	
 	@SuppressWarnings("serial")
 	@Getter @Setter
-    private static class _TestEntityWithDate extends IdString {
+    private static class _TestEntityWithDate extends IdLong {
 		
-    	private Date userEntered;
+		private Date userEntered;
     }
     
 	@SuppressWarnings("serial")
 	@Getter @Setter
-    private static class _TestEntityWithLocalDateTime extends IdString {
+    private static class _TestEntityWithLocalDateTime extends IdLong {
 		
-    	private LocalDateTime userEntered;
+    		private LocalDateTime userEntered;
     }
     
 	@SuppressWarnings("serial")
 	@Getter @Setter
-    private static class _TestEntityWithLocalDate extends IdString {
+    private static class _TestEntityWithLocalDate extends IdLong {
 		
-    	private LocalDate userEntered;
+		private LocalDate userEntered;
     }
     
 	
@@ -76,6 +77,7 @@ public class UTCDateMongoConvertersTest extends AbstractPersistableUnitTests {
 		Date in = Date.from(K_ZDT.toInstant());
 		
 		_TestEntityWithDate toDb = new _TestEntityWithDate();
+		toDb.setId(new Random().nextLong());
 		toDb.setUserEntered(in);
 		
 		mongo.save(toDb);
@@ -89,6 +91,7 @@ public class UTCDateMongoConvertersTest extends AbstractPersistableUnitTests {
 	@Test
 	public void t2_date_null() {
 		_TestEntityWithDate toDb = new _TestEntityWithDate();
+		toDb.setId(new Random().nextLong());
 		toDb.setUserEntered(null);
 		
 		mongo.save(toDb);
@@ -105,6 +108,7 @@ public class UTCDateMongoConvertersTest extends AbstractPersistableUnitTests {
 		LocalDateTime in = K_ZDT.toLocalDateTime();
 		
 		_TestEntityWithLocalDateTime toDb = new _TestEntityWithLocalDateTime();
+		toDb.setId(new Random().nextLong());
 		toDb.setUserEntered(in);
 		
 		mongo.save(toDb);
@@ -118,6 +122,7 @@ public class UTCDateMongoConvertersTest extends AbstractPersistableUnitTests {
 	@Test
 	public void t4_localdatetime_null() {
 		_TestEntityWithLocalDateTime toDb = new _TestEntityWithLocalDateTime();
+		toDb.setId(new Random().nextLong());
 		toDb.setUserEntered(null);
 		
 		mongo.save(toDb);
@@ -134,6 +139,7 @@ public class UTCDateMongoConvertersTest extends AbstractPersistableUnitTests {
 		LocalDate in = K_ZDT.toLocalDate();
 		
 		_TestEntityWithLocalDate toDb = new _TestEntityWithLocalDate();
+		toDb.setId(new Random().nextLong());
 		toDb.setUserEntered(in);
 		
 		mongo.save(toDb);
@@ -147,6 +153,7 @@ public class UTCDateMongoConvertersTest extends AbstractPersistableUnitTests {
 	@Test
 	public void t6_localdate_null() {
 		_TestEntityWithLocalDate toDb = new _TestEntityWithLocalDate();
+		toDb.setId(new Random().nextLong());
 		toDb.setUserEntered(null);
 		
 		mongo.save(toDb);

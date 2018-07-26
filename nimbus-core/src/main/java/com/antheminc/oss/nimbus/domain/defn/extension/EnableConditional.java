@@ -23,6 +23,7 @@ import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import com.antheminc.oss.nimbus.domain.Event;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateChange;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 
@@ -53,4 +54,5 @@ public @interface EnableConditional {
 	 */
 	String disableWhen() default "";
 
+	int order() default Event.DEFAULT_ORDER_NUMBER;
 }

@@ -15,6 +15,8 @@
  */
 package com.antheminc.oss.nimbus.test.scenarios.s0.core;
 
+import java.util.List;
+
 import com.antheminc.oss.nimbus.domain.defn.Model;
 
 import lombok.Getter;
@@ -31,4 +33,17 @@ public class SampleCoreNestedEntity {
 	private String nested_attr_String;
 	
 	private String nested_attr_String2;
+	
+	private String nested_attr_String3;
+	
+	private List<String> nested_attr_collection;
+	
+	private List<Level1> nested_attr_complex_collection;
+	
+	@Model
+	@Getter @Setter
+	public static final class Level1 {
+		
+		private String string1;
+	}
 }

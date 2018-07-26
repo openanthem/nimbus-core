@@ -23,6 +23,7 @@ import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import com.antheminc.oss.nimbus.domain.Event;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateChange;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 
@@ -52,4 +53,6 @@ public @interface ActivateConditional {
 	 * If value is not overridden, then the negation of {@linkplain ActivateConditional#when()} would be used 
 	 */
 	String inactivateWhen() default "";
+	
+	int order() default Event.DEFAULT_ORDER_NUMBER;
 }

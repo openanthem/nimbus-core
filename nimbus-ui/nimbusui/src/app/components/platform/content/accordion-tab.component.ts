@@ -16,9 +16,10 @@
  */
 'use strict';
 import { Component, Input } from '@angular/core';
-import { Param } from '../../../shared/app-config.interface';
+import { Param } from '../../../shared/param-state';
 import { WebContentSvc } from '../../../services/content-management.service';
 import { BaseElement } from '../base-element.component';
+import { PageService } from '../../../services/page.service';
 
 /**
  * \@author Dinakar.Meda
@@ -31,8 +32,13 @@ import { BaseElement } from '../base-element.component';
     selector: 'nm-accordion-tab',
     providers: [WebContentSvc],
     template: `
-        <p-accordionTab [header]="label" [selected]="selected">
-            <ng-template ngFor let-element [ngForOf]="nestedParams">
+        <p-accordionTab [header]="label" [selected]="element?.config?.uiStyles?.attributes?.selected">
+            <div class="accordionBtn" *ngIf="element?.config?.uiStyles?.attributes?.editable">
+                <button  (click)="processOnClick(this)" type="button" class="btn btn-plain">
+                    <i class="fa fa-fw fa-pencil" aria-hidden="true"></i>Edit
+                </button>
+            </div>
+            <ng-template ngFor let-element [ngForOf]="element?.type?.model?.params">
                 <!-- Card Content -->
                 <ng-template [ngIf]="element.alias == 'CardDetail'">
                     <nm-card-details [element]="element"></nm-card-details>
@@ -46,7 +52,7 @@ export class AccordionTab  extends BaseElement {
 
     protected _selected: boolean;
 
-    constructor(private wcsvc: WebContentSvc) {
+    constructor(private wcsvc: WebContentSvc, private pageSvc: PageService) {
         super(wcsvc);
     }
 
@@ -59,5 +65,12 @@ export class AccordionTab  extends BaseElement {
      */
     public get selected(): boolean {
         return this.element.config.uiStyles.attributes.selected;
+    }
+
+    /**
+     * Process configs on the click event
+     */
+    processOnClick() {
+        this.pageSvc.processEvent(this.element.path, '$execute', null, 'POST');
     }
 }

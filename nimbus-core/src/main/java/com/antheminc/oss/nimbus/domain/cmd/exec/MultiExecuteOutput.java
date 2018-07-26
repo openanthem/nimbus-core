@@ -20,21 +20,26 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.Getter;
 import lombok.ToString;
 
 /**
  * @author Soham Chakravarti
  *
  */
-@ToString
+@Getter @ToString 
 public class MultiExecuteOutput extends ExecuteOutput<Map<Integer, ExecuteOutput.BehaviorExecute<?>>> {
 
 	private static final long serialVersionUID = 1L;
 
+	private final String sessionId;
 	
-	public MultiExecuteOutput() {}
+	public MultiExecuteOutput(String sessionId) {
+		this.sessionId = sessionId;
+	}
 	
-	public MultiExecuteOutput(ExecuteOutput.BehaviorExecute<?> output) {
+	public MultiExecuteOutput(String sessionId, ExecuteOutput.BehaviorExecute<?> output) {
+		this.sessionId = sessionId;
 		this.add(output);
 	}
 	

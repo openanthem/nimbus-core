@@ -38,7 +38,10 @@ import org.springframework.util.ClassUtils;
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.RepeatContainer;
 import com.antheminc.oss.nimbus.domain.model.config.AnnotationConfig;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -46,6 +49,8 @@ import lombok.RequiredArgsConstructor;
  *
  */
 @RequiredArgsConstructor
+
+@Getter(value=AccessLevel.PROTECTED)
 public class DefaultAnnotationConfigHandler implements AnnotationConfigHandler {
 	
 	/**
@@ -123,7 +128,7 @@ public class DefaultAnnotationConfigHandler implements AnnotationConfigHandler {
 			// handle repeatable container
 			if(metaTypesOnCurrDeclaredAnnotation!=null && metaTypesOnCurrDeclaredAnnotation.contains(RepeatContainer.class.getName())) {
 				
-				// get repeat container meta annotation and use declared repeatable annotaion
+				// get repeat container meta annotation and use declared repeatable annotation
 				RepeatContainer repeatContainerMetaAnnotation = AnnotationUtils.getAnnotation(currDeclaredAnnotation, RepeatContainer.class);
 				Class<? extends Annotation> repeatableAnnotationDeclared = repeatContainerMetaAnnotation.value();
 				
@@ -181,7 +186,7 @@ public class DefaultAnnotationConfigHandler implements AnnotationConfigHandler {
 	
 	private void resolvePropertyCb(Supplier<String> getter, Consumer<String> setter) {
 		Optional.ofNullable(getter.get())
-			.map(propertyResolver::resolveRequiredPlaceholders)
+			.map(getPropertyResolver()::resolveRequiredPlaceholders)
 			.ifPresent(setter::accept);
 	}
 
@@ -196,7 +201,7 @@ public class DefaultAnnotationConfigHandler implements AnnotationConfigHandler {
 	 * @return
 	 */
 	private AnnotationAttributeHandler getAttributesHandlerForType(Class<? extends Annotation> metaAnnotationType) {
-		return Optional.ofNullable(attributeHandlers.get(metaAnnotationType)).orElse(defaultAttributeHandler);
+		return Optional.ofNullable(getAttributeHandlers().get(metaAnnotationType)).orElse(getDefaultAttributeHandler());
 	}
 }
 

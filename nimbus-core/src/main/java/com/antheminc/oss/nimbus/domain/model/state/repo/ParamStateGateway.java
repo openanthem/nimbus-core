@@ -15,9 +15,8 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.repo;
 
-import java.lang.reflect.Method;
-
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.ValueAccessor;
 
 /**
  * @author Soham Chakravarti
@@ -25,8 +24,8 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
  */
 public interface ParamStateGateway extends ParamStateRepository {
 
-	public <T> T getValue(Method readMethod, Object target);	
-	public <T> void setValue(Method writeMethod, Object target, T value);
+	public <T> T getValue(ValueAccessor pd, Object target);	
+	public <T> void setValue(ValueAccessor pd, Object target, T value);
 	public <T> T instantiate(Class<T> clazz);
 
 	default <M> M _instantiateOrGet(Param<M> param) {

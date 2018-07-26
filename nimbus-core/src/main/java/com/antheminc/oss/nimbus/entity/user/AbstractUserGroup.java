@@ -25,7 +25,7 @@ import lombok.Setter;
  *
  */
 @Getter @Setter
-public abstract class AbstractUserGroup extends AbstractEntity.IdString {
+public abstract class AbstractUserGroup extends AbstractEntity.IdLong {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -37,8 +37,6 @@ public abstract class AbstractUserGroup extends AbstractEntity.IdString {
 	
 	private boolean admin;
 	
-	//@NotNull
-	//@Model.Param.Values(url="staticCodeValue-/orgStatus")
 	private String status;
 	
 	public enum Status {

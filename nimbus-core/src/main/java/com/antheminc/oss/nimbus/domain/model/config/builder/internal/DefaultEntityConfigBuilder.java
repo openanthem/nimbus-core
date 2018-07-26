@@ -16,9 +16,11 @@
 package com.antheminc.oss.nimbus.domain.model.config.builder.internal;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.data.annotation.Id;
@@ -35,7 +37,9 @@ import com.antheminc.oss.nimbus.domain.model.config.builder.EntityConfigBuilder;
 import com.antheminc.oss.nimbus.domain.model.config.builder.EntityConfigVisitor;
 import com.antheminc.oss.nimbus.domain.model.config.internal.DefaultModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.internal.DefaultParamConfig;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.ValueAccessor;
 import com.antheminc.oss.nimbus.support.pojo.GenericUtils;
+import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandlerUtils;
 
 import lombok.Getter;
 
@@ -92,7 +96,8 @@ public class DefaultEntityConfigBuilder extends AbstractEntityConfigBuilder impl
 		if(fields==null) return mConfig;
 		
 		fields.stream()
-			.filter((f)-> !f.isSynthetic())
+			.filter(f->!f.isSynthetic())
+			.filter(f->!Modifier.isStatic(f.getModifiers()))
 			.forEach((f)->{
 				ParamConfig<?> p = buildParam(mConfig, f, visitedModels);
 				mConfig.templateParamConfigs().add(p);
@@ -123,8 +128,12 @@ public class DefaultEntityConfigBuilder extends AbstractEntityConfigBuilder impl
 		logit.trace(()->"Building Param for config class: "+mConfig.getReferredClass()+ " field : "+f.getName());
 		
 		/* handle ignore field */
-		if(AnnotatedElementUtils.isAnnotated(f, ConfigNature.Ignore.class)) return null;
-		if("serialVersionUID".equals(f.getName())) return null;
+		if(AnnotatedElementUtils.isAnnotated(f, ConfigNature.Ignore.class) && 
+				ArrayUtils.isEmpty(f.getAnnotation(ConfigNature.Ignore.class).listeners())) 
+			return null;
+		
+		if("serialVersionUID".equals(f.getName())) 
+			return null;
 
 		final DefaultParamConfig<?> pConfig = createParam(mConfig, f, visitedModels);
 		
@@ -134,6 +143,9 @@ public class DefaultEntityConfigBuilder extends AbstractEntityConfigBuilder impl
 		
 		// trigger event
 		pConfig.onCreateEvent();
+		
+		ValueAccessor va = JavaBeanHandlerUtils.constructValueAccessor(mConfig.getReferredClass(), pConfig.getBeanName());
+		type.setValueAccessor(va);
 		
 		return pConfig;
 	}

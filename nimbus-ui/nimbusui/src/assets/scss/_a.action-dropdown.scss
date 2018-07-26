@@ -1,5 +1,5 @@
 
-.ui-datatable {
+.ui-table, .ui-datatable {
     .action-dropdown {
         position: relative;
         display: inline-block;
@@ -135,4 +135,17 @@
                 padding-bottom: 10px;
         }
     }
+}
+.ui-table .ui-table-data > tr > td.dropdown,
+.ui-datatable .ui-datatable-data > tr > td.dropdown {
+    padding-top: 7px;
+    padding-bottom: 0;
+}
+.ui-table .ui-table-thead > tr > th, 
+.ui-table .ui-table-tfoot > tr > td, 
+.ui-table .ui-table-data > tr > td,
+.ui-datatable .ui-datatable-thead > tr > th, 
+.ui-datatable .ui-datatable-tfoot > tr > td, 
+.ui-datatable .ui-datatable-data > tr > td {
+    padding: .5rem .4rem;
 }

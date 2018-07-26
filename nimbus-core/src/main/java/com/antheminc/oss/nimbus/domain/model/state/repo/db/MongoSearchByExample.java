@@ -28,17 +28,19 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.repository.support.PageableExecutionUtils;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.defn.SearchNature.StartsWith;
+import com.antheminc.oss.nimbus.domain.model.state.internal.AbstractListPaginatedParam.PageWrapper.PageRequestAndRespone;
+import com.antheminc.oss.nimbus.support.EnableAPIMetricCollection;
 
 /**
  * @author Rakesh Patel
  *
  */ 
+@EnableAPIMetricCollection
 public class MongoSearchByExample extends MongoDBSearch {
 
 	public MongoSearchByExample(BeanResolverStrategy beanResolver) {
@@ -79,15 +81,15 @@ public class MongoSearchByExample extends MongoDBSearch {
 		return query;
 	}
 	
-	private <T> Object findAllPageable(Class<?> referredClass, String alias, Pageable pageRequest, Query query) {
+	private <T> PageRequestAndRespone<T> findAllPageable(Class<T> referredClass, String alias, Pageable pageRequest, Query query) {
 		Query qPage = query.with(pageRequest);
 		
-		List<?> results = getMongoOps().find(qPage, referredClass, alias);
+		List<T> results = getMongoOps().find(qPage, referredClass, alias);
 		
 		if(CollectionUtils.isEmpty(results))
 			return null;
 		
-		return PageableExecutionUtils.getPage(results, pageRequest, () -> getMongoOps().count(query, referredClass, alias));
+		return new PageRequestAndRespone<T>(results, pageRequest, () -> getMongoOps().count(query, referredClass, alias));
 		
 	}
 

@@ -17,6 +17,8 @@ package com.antheminc.oss.nimbus.test.domain.support;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.util.Random;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -68,10 +70,12 @@ public abstract class AbstractFrameworkIntegrationTests {
 		JacksonTester.initFields(this, om);
 		
 		Client newClient = new Client();
-		newClient.setId(CLIENT_ID);
+		Long id = new Random().nextLong();
+		newClient.setId(id);
+		newClient.setName(CLIENT_ID);
 		mongo.insert(newClient, "cliententity");
 		
-		assertNotNull(mongo.findById(CLIENT_ID, Client.class, "cliententity"));
+		assertNotNull(mongo.findById(id, Client.class, "cliententity"));
 	}
 	
 	/**

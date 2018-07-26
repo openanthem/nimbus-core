@@ -20,13 +20,12 @@ package com.antheminc.oss.nimbus.channel.web;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.web.bind.annotation.RequestMethod;
-
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
 import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 import lombok.Getter;
 
@@ -35,6 +34,7 @@ import lombok.Getter;
  *
  */
 @Getter
+@EnableLoggingInterceptor
 public class WebCommandDispatcher {
 
 	private final WebCommandBuilder builder;
@@ -46,18 +46,18 @@ public class WebCommandDispatcher {
 		this.gateway = beanResolver.get(CommandExecutorGateway.class);
 	}
 	
-	public Object handle(HttpServletRequest httpReq, RequestMethod httpMethod, ModelEvent<String> event) {
-		Command cmd = builder.build(httpReq, event);
+	public Object handle(HttpServletRequest httpReq, ModelEvent<String> event) {
+		Command cmd = getBuilder().build(httpReq, event);
 		return handle(cmd, event.getPayload());
 	}
 
-	public Object handle(HttpServletRequest httpReq, RequestMethod httpMethod, String v, String json) {
-		Command cmd = builder.build(httpReq);
+	public Object handle(HttpServletRequest httpReq, String json) {
+		Command cmd = getBuilder().build(httpReq);
 		return handle(cmd, json);
 	}
 
 	public MultiOutput handle(Command cmd, String payload) {
-		return gateway.execute(cmd, payload);
+		return getGateway().execute(cmd, payload);
 	}
 
 }

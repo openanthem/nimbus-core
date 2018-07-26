@@ -15,13 +15,18 @@
  */
 package com.antheminc.oss.nimbus.test.scenarios.s0.core;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.util.Date;
+
 import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Database;
 import com.antheminc.oss.nimbus.domain.defn.extension.AccessConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.AccessConditional.Permission;
-import com.antheminc.oss.nimbus.entity.AbstractEntity.IdString;
+import com.antheminc.oss.nimbus.entity.AbstractEntity.IdLong;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -35,13 +40,21 @@ import lombok.Setter;
 @Repo(Database.rep_mongodb)
 @Getter
 @Setter
-public class SampleCoreEntityAccess extends IdString {
+public class SampleCoreEntityAccess extends IdLong {
 
 	private static final long serialVersionUID = 1L;
 
 	private String attr_String;
 	
 	private String attr_String2;
+	
+	private LocalDate attr_LocalDate1;
+	
+	private LocalDateTime attr_LocalDateTime1;
+	
+	private ZonedDateTime attr_ZonedDateTime1;
+	
+	private Date attr_Date1;
 
 	@AccessConditional(containsRoles="intake", p=Permission.HIDDEN)
 	private SampleCoreNestedEntity accessConditional_Contains_Hidden1;

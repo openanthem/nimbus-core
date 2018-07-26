@@ -15,15 +15,10 @@
  */
 package com.antheminc.oss.nimbus.entity.person;
 
-import java.io.Serializable;
-
-import org.springframework.data.annotation.Id;
-
 import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.entity.AbstractEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -34,31 +29,10 @@ import lombok.ToString;
  */
 @Domain(value="name")
 @Getter @Setter @ToString(callSuper=true)
-public abstract class Name<ID extends Serializable> extends AbstractEntity<ID> {
+public class Name extends AbstractEntity.IdLong {
 	
 	private static final long serialVersionUID = 1L;
 	
-	
-	
-	public static class IdLong extends Name<Long> {
-		
-		private static final long serialVersionUID = 1L;
-
-		@Id @Getter @Setter(value=AccessLevel.PROTECTED) 
-		private Long id;
-	}
-	
-	
-	
-	public static class IdString extends Name<String> {
-		
-		private static final long serialVersionUID = 1L;
-		
-		@Id @Getter @Setter(value=AccessLevel.PROTECTED) 
-		private String id;
-	}
-	
-
 	private String firstName;
 
 	private String lastName;

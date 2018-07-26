@@ -17,11 +17,12 @@
 'use strict';
 
 import { Component, Input, OnInit } from '@angular/core';
-import { Param } from '../../shared/app-config.interface';
+import { Param } from '../../shared/param-state';
 import { PageService } from '../../services/page.service';
 import { WebContentSvc } from './../../services/content-management.service';
 import { GenericDomain } from './../../model/generic-domain.model';
 import { BaseElement } from './base-element.component';
+import { LoggerService } from '../../services/logger.service';
 
 /**
  * \@author Dinakar.Meda
@@ -41,14 +42,15 @@ import { BaseElement } from './base-element.component';
 })
 export class Section extends BaseElement implements OnInit {
 
-    constructor(private wcsvc: WebContentSvc, private pageSvc: PageService) {
+    constructor(private wcsvc: WebContentSvc, private pageService: PageService, private _logger: LoggerService) {
         super(wcsvc);
     }
 
     ngOnInit() {
+        this._logger.debug('Section-i ' + this.element.path);
         // Check for initialization
         if (this.element.config && this.element.config.initializeComponent()) {
-            this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'POST');
+            this.pageService.processEvent(this.element.path, '$execute', new GenericDomain(), 'POST');
         }
     }
 

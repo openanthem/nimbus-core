@@ -53,8 +53,8 @@ public class SampleValidateEntity {
 	private String condition;
 	
 	@ValidateConditionals({
-		@ValidateConditional(when = "state == 'rigby'", targetGroup = GROUP_1.class, scope = ValidationScope.SIBLING_NESTED),
-		@ValidateConditional(when = "state == 'hooli'", targetGroup = GROUP_2.class, scope = ValidationScope.SIBLING_NESTED)
+		@ValidateConditional(when = "state == 'rigby'", targetGroup = GROUP_1.class),
+		@ValidateConditional(when = "state == 'hooli'", targetGroup = GROUP_2.class)
 	})
 	@TextBox(postEventOnChange = true)
 	private String nested_condition;
@@ -68,6 +68,15 @@ public class SampleValidateEntity {
 	
 	@ValidateConditional(when = "state == null", targetGroup = GROUP_6.class)
 	private String condition_4;
+	
+	@ValidateConditional(when = "state == 'hello'", targetPath = "../../attr_validate_nested_2/q1/q1_1", targetGroup = GROUP_1.class)
+	private String condition_5;
+	
+	@ValidateConditional(when = "state == 'hello'", targetPath = "../../attr_validate_nested_2", targetGroup = GROUP_1.class, scope = ValidationScope.CHILDREN)
+	private String condition_6;
+	
+	@ValidateConditional(when = "state == 'hello'", targetPath = { "../../attr_validate_nested_2/q1/q1_1", "../../attr_validate_nested_2/q1/nested/q1_2_1"} , targetGroup = GROUP_1.class)
+	private String condition_7;
 	
 	@NotNull
 	@Pattern(regexp = G1_PATTERN_REGEX, groups = { GROUP_1.class })

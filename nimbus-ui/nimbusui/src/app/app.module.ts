@@ -23,7 +23,6 @@ import { BreadcrumbComponent } from './components/platform/breadcrumb/breadcrumb
 import { BreadcrumbService } from './components/platform/breadcrumb/breadcrumb.service';
 import { HomeLayoutCmp } from './components/home/home-layout.component';
 import { StyleGuideCmp } from './styleguide/style-guide.component';
-import { MainLayoutCmp } from './components/home/main-layout.component';
 import { LoginLayoutCmp } from './components/login/login-layout.component';
 import { OrderablePickList } from './components/platform/form/elements/picklist.component';
 import { PageService } from './services/page.service';
@@ -32,16 +31,22 @@ import { PageNotfoundComponent } from './components/platform/content/page-notfou
 import { PageContent } from './components/platform/content/page-content.component';
 import { GridService } from './services/grid.service';
 import { GridMouseEventDirective } from './directives/gridhover.directive';
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpModule, BrowserXhr } from '@angular/http';
 import { ReactiveFormsModule }  from '@angular/forms';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
+import { APP_BASE_HREF } from '@angular/common';
+import { MessagesModule } from 'primeng/messages';
+import { MessageModule } from 'primeng/message';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
     FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
     ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule  } from 'primeng/primeng';
+import { TableModule } from 'primeng/table';
+import { KeyFilterModule } from 'primeng/keyfilter';
 import { NavLinkRouter } from './directives/nav-link-router.directive';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { WindowRefService } from './services/window-ref.service';
 
 // Platform Imports
 // Components
@@ -59,12 +64,14 @@ import { Paragraph } from './components/platform/content/paragraph.component';
 import { Value } from './components/platform/form/elements/value.component';
 import { ComboBox } from './components/platform/form/elements/combobox.component';
 import { RadioButton } from './components/platform/form/elements/radio.component';
+import { Signature } from './components/platform/form/elements/signature.component';
 import { InputText } from './components/platform/form/elements/textbox.component';
 import { DateControl } from './components/platform/form/elements/date.component';
 import { CheckBoxGroup } from './components/platform/form/elements/checkbox-group.component';
 import { MultiselectCard } from './components/platform/form/elements/multi-select-card.component';
 import { ActionDropdown, ActionLink } from './components/platform/form/elements/action-dropdown.component';
 import { InfiniteScrollGrid } from './components/platform/grid/grid.component';
+import { DataTable } from './components/platform/grid/table.component';
 import { Link } from './components/platform/link.component';
 import { Menu } from './components/platform/menu.component';
 import { FlowWrapper } from './components/platform/content/flow-wrapper.component';
@@ -98,6 +105,9 @@ import { WebContentSvc } from './services/content-management.service';
 import { STOMPStatusComponent } from './services/stomp-status.component';
 import { AuthenticationService } from './services/authentication.service';
 import { FileService } from './services/file.service';
+import { ServiceConstants } from "./services/service.constants";
+import { AppInitService } from "./services/app.init.service";
+import { LoggerService } from './services/logger.service';
 // Routes
 import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app.routing.module';
@@ -106,6 +116,11 @@ import { CustomHttpClientInterceptor } from './services/httpclient-interceptor.s
 import { CustomBrowserXhr } from './custom.browserxhr';
 import { HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
+import { JL } from 'jsnlog';
+import { ErrorHandler } from '@angular/core';
+import { CustomErrorHandler } from './shared/custom.error.handler';
+import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
+import { SessionStoreService, CUSTOM_STORAGE } from './services/session.store';
 
 // Declarations
 import { LoginCmp } from './components/login/login.component';
@@ -115,7 +130,6 @@ import { LinkPipe } from './pipes/link.pipe';
 import { SelectItemPipe } from './pipes/select-item.pipe';
 import { LoaderComponent } from './components/platform/loader/loader.component';
 import {DateTimeFormatPipe} from './pipes/date.pipe';
-
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -124,6 +138,13 @@ import {DateTimeFormatPipe} from './pipes/date.pipe';
  * \@howToUse 
  * 
  */
+
+export function init_app(appinitservice: AppInitService) {
+    return () => {
+        return appinitservice.loadConfig();
+    }
+}
+
 @NgModule({
     imports: [
         BrowserModule,
@@ -134,6 +155,7 @@ import {DateTimeFormatPipe} from './pipes/date.pipe';
         FormsModule,
         DropdownModule,
         DataTableModule,
+        TableModule,
         OverlayPanelModule,
         PickListModule,
         DragDropModule,
@@ -149,29 +171,39 @@ import {DateTimeFormatPipe} from './pipes/date.pipe';
         ProgressBarModule,
         ProgressSpinnerModule,
         AccordionModule,
-        GrowlModule
+        GrowlModule,
+        MessagesModule,
+        MessageModule,
+        KeyFilterModule,
+        StorageServiceModule
     ],
     declarations: [ AppComponent, STOMPStatusComponent, FlowWrapper, PageContent, PageNotfoundComponent, StaticText,
-        Tile, Section, Header, Form, FormElement, InputText, ComboBox, RadioButton, DateControl, CheckBoxGroup,
+        Tile, Section, Header, Form, FormElement, InputText, ComboBox, RadioButton, Signature, DateControl, CheckBoxGroup,
         InPlaceEditorComponent, Paragraph, Value, Image, BaseElement,
         MultiselectCard, Link, Menu, CardDetailsComponent, CardDetailsFieldComponent, CardDetailsGrid, FieldValue,
         AccordionGroup, Accordion, AccordionMain, AccordionTab, FrmGroupCmp, Button, ButtonGroup, FilterButton, OrderablePickList,
-        STOMPStatusComponent, InfiniteScrollGrid, SubHeaderCmp, TextArea, LandingPage,
+        STOMPStatusComponent, InfiniteScrollGrid, DataTable, SubHeaderCmp, TextArea, LandingPage,
         LayoutService, ContentContainer,
         DomainFlowCmp, HeaderGlobal, FooterGlobal,
         BreadcrumbComponent, NavLinkRouter,
         Modal, ActionDropdown, ActionLink,
         GridMouseEventDirective,
-        HomeLayoutCmp, MainLayoutCmp, LoginCmp, LoginLayoutCmp, StyleGuideCmp, 
+        HomeLayoutCmp, LoginCmp, LoginLayoutCmp, StyleGuideCmp, 
         KeysPipe, LinkPipe, DateTimeFormatPipe, SelectItemPipe, MultiSelectListBox, 
         CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent, Calendar, NavMenuGlobal, LoaderComponent, MessageComponent
     ],
-    entryComponents: [ FlowWrapper, PageContent, PageNotfoundComponent, LoginCmp, MainLayoutCmp, HomeLayoutCmp],
-    providers: [ PageService, ConfigService, WebContentSvc, HttpClient,  HttpClientModule,
+    entryComponents: [ FlowWrapper, PageContent, PageNotfoundComponent, LoginCmp, HomeLayoutCmp],
+    providers: [ PageService, ConfigService, WebContentSvc, HttpClient,  HttpClientModule, AppInitService,
          CustomHttpClient, { provide: BrowserXhr, useClass: CustomBrowserXhr },
+         { provide: APP_INITIALIZER, useFactory: init_app, deps: [AppInitService], multi: true },
          { provide: HTTP_INTERCEPTORS, useClass: CustomHttpClientInterceptor, multi: true },
          { provide: LocationStrategy, useClass: HashLocationStrategy }, GridService,
-         AuthenticationService, BreadcrumbService, LoaderService, FileService ],
+         { provide: APP_BASE_HREF, useValue: ServiceConstants.APP_CONTEXT },
+         { provide: 'JSNLOG', useValue: JL },
+         { provide: ErrorHandler, useClass: CustomErrorHandler },
+         { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+         SessionStoreService,
+         AuthenticationService, BreadcrumbService, LoaderService, FileService, LayoutService, WindowRefService, LoggerService ],
     bootstrap: [ AppComponent ]
 })
 export class AppModule { }
