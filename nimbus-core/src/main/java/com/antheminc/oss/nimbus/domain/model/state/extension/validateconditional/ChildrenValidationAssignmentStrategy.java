@@ -45,12 +45,12 @@ public class ChildrenValidationAssignmentStrategy extends AbstractValidationAssi
 
 	@Override
 	void assignGroupTo(Param<?> onChangeParam, Class<? extends ValidationGroup> targetGroup) {
-		this.handleNested(onChangeParam, targetGroup, this::addGroupToParam);
+		onChangeParam.traverse(p -> this.addGroupToParam(p, targetGroup), true);
 	}
 	
 	@Override
 	void unassignGroupFrom(Param<?> onChangeParam, Class<? extends ValidationGroup> targetGroup) {
-		this.handleNested(onChangeParam, targetGroup, this::removeGroupFromParam);
+		onChangeParam.traverse(p -> this.removeGroupFromParam(p, targetGroup), true);
 	}
 
 }

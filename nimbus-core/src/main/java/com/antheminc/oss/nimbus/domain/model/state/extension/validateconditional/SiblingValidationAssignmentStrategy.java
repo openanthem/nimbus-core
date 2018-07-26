@@ -30,15 +30,11 @@ public final class SiblingValidationAssignmentStrategy extends AbstractValidatio
 
 	@Override
 	void assignGroupTo(Param<?> onChangeParam, Class<? extends ValidationGroup> targetGroup) {
-		this.handleSiblings(onChangeParam, targetGroup, (siblingParam, g) -> {
-			this.handleNested(siblingParam, g, this::addGroupToParam);
-		});
+		onChangeParam.traverseParent(p -> addGroupToParam(p, targetGroup), true, true);
 	}
 
 	@Override
 	void unassignGroupFrom(Param<?> onChangeParam, Class<? extends ValidationGroup> targetGroup) {
-		this.handleSiblings(onChangeParam, targetGroup, (siblingParam, g) -> {
-			this.handleNested(siblingParam, g, this::removeGroupFromParam);
-		});
+		onChangeParam.traverseParent(p -> removeGroupFromParam(p, targetGroup), true, true);
 	}
 }

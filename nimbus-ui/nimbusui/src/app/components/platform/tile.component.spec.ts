@@ -6,6 +6,9 @@ import { TableModule } from 'primeng/table';
 import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { KeyFilterModule } from 'primeng/keyfilter';
+import { JL } from 'jsnlog';
+import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
+import { AngularSvgIconModule } from 'angular-svg-icon';
 
 import { Tile } from './tile.component';
 import { MessageComponent } from './message/message.component';
@@ -53,6 +56,11 @@ import { LoaderService } from '../../services/loader.service';
 import { ConfigService } from '../../services/config.service';
 import { DataTable } from './grid/table.component';
 import { LoggerService } from '../../services/logger.service';
+import { SessionStoreService, CUSTOM_STORAGE } from '../../services/session.store';
+import { AppInitService } from '../../services/app.init.service';
+import { HeaderCheckBox } from '../platform/form/elements/header-checkbox.component';
+import { SvgComponent } from './svg/svg.component';
+import { Image } from './image.component';
 
 let fixture, app, pageService;
 
@@ -60,6 +68,12 @@ class MockPageService {
     processEvent() {
 
     }
+}
+
+class MockLoggerService {
+    debug() { }
+    info() { }
+    error() { }
 }
 
 describe('Tile', () => {
@@ -106,7 +120,10 @@ describe('Tile', () => {
         Calendar,
         DateControl,
         Signature,
-        DataTable
+        DataTable,
+        HeaderCheckBox,
+        SvgComponent,
+        Image
        ],
        imports: [
         FormsModule,
@@ -126,14 +143,19 @@ describe('Tile', () => {
         HttpModule,
         HttpClientTestingModule,
         TableModule,
-        KeyFilterModule
+        KeyFilterModule,
+        StorageServiceModule,
+        AngularSvgIconModule
        ],
        providers: [
         {provide: PageService, useClass: MockPageService},
+        { provide: 'JSNLOG', useValue: JL },
+        { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+        {provide: LoggerService, useClass: MockLoggerService},
         CustomHttpClient,
         LoaderService,
         ConfigService,
-        LoggerService
+        AppInitService
        ]
     }).compileComponents();
     fixture = TestBed.createComponent(Tile);
@@ -173,7 +195,7 @@ describe('Tile', () => {
         }
     };
     app.ngOnInit();
-  expect(app.styleWd).toEqual('col-xl-6 col-sm-6 smallCard');
+  expect(app.styleWd).toEqual('col-lg-4 col-md-6 smallCard');
   expect(app.styleHt).toEqual('height-md');
   }));
 
@@ -189,7 +211,7 @@ describe('Tile', () => {
         }
     };
     app.ngOnInit();
-  expect(app.styleWd).toEqual('card-holder col-lg-9 col-md-12 mediumCard');
+  expect(app.styleWd).toEqual('card-holder col-md-6 mediumCard');
   expect(app.styleHt).toEqual('height-md');
   }));
 
@@ -205,8 +227,8 @@ describe('Tile', () => {
         }
     };
     app.ngOnInit();
-  expect(app.styleWd).toEqual('my-card-holder col-xs-12 colorBox');
-  expect(app.styleHt).toEqual('my-card-block ');
+  expect(app.styleWd).toEqual('');
+  expect(app.styleHt).toEqual('');
   }));
 
   it('based on the size the styleWd and styleHt should be updated', async(() => {

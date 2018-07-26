@@ -3,13 +3,26 @@ import { TestBed, async } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
-import { LoggerService } from './../../services/logger.service';
+import { JL } from 'jsnlog';
+import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
+import { HttpClientModule } from '@angular/common/http';
+import { HttpModule } from '@angular/http';
 
+import { LoggerService } from './../../services/logger.service';
+import { SessionStoreService, CUSTOM_STORAGE } from '../../services/session.store';
 import { LoginCmp } from './login.component';
+import { AppInitService } from '../../services/app.init.service'
 
 class MockRouter {
     navigate() { }
   }
+
+
+  class MockLoggerService {
+    debug() { }
+    info() { }
+    error() { }
+}
 
 describe('LoginCmp', () => {
   beforeEach(async(() => {
@@ -19,9 +32,18 @@ describe('LoginCmp', () => {
        ],
        imports: [
            ReactiveFormsModule,
-           RouterTestingModule
+           RouterTestingModule,
+           StorageServiceModule,
+           HttpClientModule,
+           HttpModule
        ],
-       providers: [ {provide: Router, useClass: MockRouter}, LoggerService ]
+       providers: [ 
+           {provide: Router, useClass: MockRouter}, 
+           { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+           { provide: 'JSNLOG', useValue: JL },
+           {provide: LoggerService, useClass: MockLoggerService},
+           AppInitService
+        ]
     }).compileComponents();
   }));
 

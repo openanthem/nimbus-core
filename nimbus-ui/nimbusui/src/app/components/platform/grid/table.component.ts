@@ -43,6 +43,8 @@ import { ActionDropdown } from './../form/elements/action-dropdown.component';
 import { Param } from '../../../shared/param-state';
 import { HttpMethod } from './../../../shared/command.enum';
 import { ViewComponent } from '../../../shared/param-annotations.enum';
+import { ViewConfig } from '../../../services/config.service';
+import { TableComponentConstants } from './table.component.constants';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     provide: NG_VALUE_ACCESSOR,
@@ -57,6 +59,9 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
  * \@howToUse
  *
  */
+
+var counter = 0;
+
 @Component({
     selector: 'nm-table',
     providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc, DateTimeFormatPipe],
@@ -69,16 +74,18 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     @Input() params: ParamConfig[];
     @Input() form: FormGroup;
     @Input('value') _value = [];
+    @ViewChild('dt') dt: Table;
+    @ViewChild('op') overlayPanel: OverlayPanel;
+    @ViewChildren('dropDown') dropDowns: QueryList<any>;
+
+    public onChange: any = (_) => { /*Empty*/ }
+    public onTouched: any = () => { /*Empty*/ }
+    
     filterValue: Date;
     totalRecords: number = 0;
     mouseEventSubscription: Subscription;
     filterState: any[] = [];
     columnsToShow: number = 0;
-
-    @ViewChild('dt') dt: Table;
-    @ViewChild('op') overlayPanel: OverlayPanel;
-    @ViewChildren('dropDown') dropDowns: QueryList<any>;
-
     summaryData: any;
     rowHover: boolean;
     selectedRows: any[];
@@ -88,10 +95,9 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     rowStart = 0;
     rowEnd = 0;
     rowExpanderKey = '';
-    public onChange: any = (_) => { /*Empty*/ }
-    public onTouched: any = () => { /*Empty*/ }
     defaultPattern: RegExp = /^[ A-Za-z0-9_@./#&+-,()!%_{};:?.<>-]*$/;
     numPattern: RegExp = /[\d\-\.]/;
+    id: String = 'grid-control' + counter++;
 
     get value() {
         return this._value;
@@ -149,7 +155,8 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
                         column['exportable'] = false;
                     } else {
                         this.columnsToShow ++;
-                        if (column.uiStyles.attributes.alias == 'LinkMenu' || column.type.nested == true) {
+                        if (TableComponentConstants.allowedColumnStylesAlias.includes(column.uiStyles.attributes.alias)
+                                || column.type.nested === true) {
                             column['exportable'] = false;
                         } else {
                             column['exportable'] = true;
@@ -278,32 +285,65 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         }
     }
 
-    showHeader(col: ParamConfig) {
-        if (col.uiStyles && col.uiStyles.attributes.hidden == false && col.uiStyles.attributes.alias != ViewComponent.gridRowBody.toString()) {
+    showColumn(col: ParamConfig) {
+        if (col.uiStyles && col.uiStyles.attributes.hidden === false &&
+             col.uiStyles.attributes.alias !== ViewComponent.gridRowBody.toString()) {
             return true;
         } 
         return false;
     }
 
+    showHeader(col: ParamConfig) {
+        if (col.uiStyles && col.uiStyles.attributes.hidden === false &&
+            col.uiStyles.attributes.alias === ViewComponent.gridcolumn.toString()) {
+            return true;
+        } 
+        return false;
+    }
+    /* 
+    * Show value in the grid row. Below are a few examples for various configs on a grid column:
+    * @GridColumn(showAsLink=true,sortable=true) - false . Value will be shown in this case using the link component
+    * @Link - false
+    * @GridColumn(showAsLink=false,sortable=true) - true
+    */
     showValue(col: ParamConfig) {
-        if (col.uiStyles && col.uiStyles.attributes.alias != 'Link' && col.uiStyles.attributes.alias != 'LinkMenu' && col.type.nested == false) {
+        let showValue = false;
+        if (col.uiStyles && col.uiStyles.attributes ) {
+            if (!TableComponentConstants.allowedColumnStylesAlias.includes(col.uiStyles.attributes.alias)) {
+                if (col.uiStyles.attributes.alias === ViewComponent.gridcolumn.toString()) {
+                    if (col.uiStyles.attributes.showAsLink !== true) {
+                        showValue = true;
+                    }
+                }
+            }
+        }
+            return showValue;
+    }
+
+    showUiStyleInColumn(col: ParamConfig) {
+        if (col.uiStyles && TableComponentConstants.allowedColumnStylesAlias.includes(col.uiStyles.attributes.alias)) {
             return true;
         }
         return false;
     }
-
-    showLink(col: ParamConfig) {
-        if (col.uiStyles && col.uiStyles.attributes.alias == 'Link') {
-            return true;
-        }
-        return false;
-    }
-
+    
     showLinkMenu(col: ParamConfig) {
-        if (col.uiStyles && col.uiStyles.attributes.alias == 'LinkMenu') {
+        if (col.uiStyles && col.uiStyles.attributes.alias === 'LinkMenu') {
             return true;
         }
         return false;
+    } 
+    /**
+     * return the css class for table column style.
+     * This will determine the column width and other css properties
+     * @param col 
+     */
+    getColumnStyle(col: ParamConfig): string {
+        if (col.uiStyles && col.uiStyles.attributes.alias === 'LinkMenu') {
+            return 'dropdown';
+        } else if (col.uiStyles && col.uiStyles.attributes.alias === 'Button') {
+            return 'imageColumn';
+        }
     }
 
     isClickedOnDropDown(dropDownArray: Array<ActionDropdown>, target: any) {
@@ -321,8 +361,8 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         else return false;
     }
 
-    getLinkMenuParam(col, rowIndex): Param {
-        return this.element.collectionParams.find(ele => ele.path == this.element.path + '/'+rowIndex+'/' + col.code && ele.alias == ViewComponent.linkMenu.toString());
+    getViewParam(col: ParamConfig, rowIndex: number): Param {
+        return this.element.collectionParams.find(ele => ele.path == this.element.path + '/'+rowIndex+'/' + col.code);
     }
 
     getRowPath(col: ParamConfig, item: any) {

@@ -25,30 +25,36 @@ import java.lang.annotation.Target;
 
 import com.antheminc.oss.nimbus.domain.Event;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
- 
+
 /**
- * This annotation is used to provide the access restriction: <br>
- * e.g. <p>
- * 1. Below config specifies that if a user has role1, then only read permission is allowed for testParam.
+ * This annotation is used to provide the access restriction: <br> e.g. <p>1.
+ * Below config specifies that if a user has role1, then only read permission is
+ * allowed for testParam.
+ * 
  * <pre>
- * @AccessConditional(containsRoles={"role1"}, p = Permission.READ)
+ * &#64;AccessConditional(containsRoles = { "role1" }, p = Permission.READ)
  * String testParam;
  * </pre>
- * <p>
- * 2. Below config specifies that if a user has role1 or role2, then testParam will be hidden.
+ * 
+ * <p>2. Below config specifies that if a user has role1 or role2, then
+ * testParam will be hidden.
+ * 
  * <pre>
- * @AccessConditional(containsRoles={"role1","role2"}, p = Permission.HIDDEN)
+ * &#64;AccessConditional(containsRoles = { "role1", "role2" }, p = Permission.HIDDEN)
  * String testParam;
  * </pre>
- * <p>
- * 3. Below config specifies (using when()) that if a user has role1 but not role2, only then testParam will be readOnly.
+ * 
+ * <p>3. Below config specifies (using when()) that if a user has role1 but not
+ * role2, only then testParam will be readOnly.
+ * 
  * <pre>
- * @AccessConditional(when='!?[#this == 'role1'].empty && ?[#this == 'role'].empty', p = Permission.READ)
+ * &#64;AccessConditional(when='!?[#this == 'role1'].empty && ?[#this == 'role'].empty', p = Permission.READ)
  * String testParam;
  * </pre>
- * </p>
+ * 
  * @author Rakesh Patel
- *
+ * @since 1.0
+ * @see com.antheminc.oss.nimbus.domain.model.state.extension.AccessConditionalStateEventHandler
  */
 @Documented
 @Retention(RUNTIME)
@@ -56,34 +62,48 @@ import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 @Repeatable(AccessConditionals.class)
 @OnStateLoad
 public @interface AccessConditional {
-	
+
 	/**
-	 * Use this to specify an expression for roles
+	 * <p>A list of available permissions.
+	 * 
+	 * @author Rakesh Patel
+	 * @since 1.0
 	 */
-	String whenRoles() default "";
-	
-	/**
-	 * Use this to specify an expression for authorities
-	 */
-	String whenAuthorities() default "";
-	
-	/**
-	 * Use for simple role contains check, for complex expression, use when()
-	 */
-	String[] containsRoles() default {};
-	
-	/**
-	 * Use for simple area/accessEntity contains check, for complex expression, use when()
-	 */
-	String[] containsAuthority() default {};
-	
-	Permission p();
-	
 	public enum Permission {
-		WRITE,
-		READ,
-		HIDDEN;
+		HIDDEN, READ, WRITE;
 	}
 
+	/**
+	 * <p>Use for simple area/accessEntity contains check, for complex
+	 * expression, use {@link when()}.
+	 */
+	String[] containsAuthority() default {};
+
+	/**
+	 * <p>Use for simple role contains check, for complex expression, use
+	 * {@link #when()}.
+	 */
+	String[] containsRoles() default {};
+
+	/**
+	 * <p>The order of execution this annotation should be executed in, with
+	 * respect to other conditional annotations that are also decorating this
+	 * param.
+	 */
 	int order() default Event.DEFAULT_ORDER_NUMBER;
+
+	/**
+	 * <p>The {@link Permission} should is required to enable access.
+	 */
+	Permission p();
+
+	/**
+	 * <p>Use this to specify an expression for authorities.
+	 */
+	String whenAuthorities() default "";
+
+	/**
+	 * <p>Use this to specify an expression for roles.
+	 */
+	String whenRoles() default "";
 }

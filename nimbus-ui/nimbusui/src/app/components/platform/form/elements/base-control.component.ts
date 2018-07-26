@@ -67,7 +67,10 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
         if (this.inPlaceEditContext) {
             this.inPlaceEditContext.value = formControl.value;
         }
-        this.controlService.controlValueChanged.emit(formControl.element);
+        if(this.form == null || (this.form.controls[this.element.config.code]!= null && this.form.controls[this.element.config.code].valid)) {
+            this.controlService.controlValueChanged.emit(formControl.element);
+        }
+            
     }
 
     ngOnInit() {

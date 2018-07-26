@@ -18,13 +18,11 @@ package com.antheminc.oss.nimbus.domain.model.state.extension;
 import java.util.List;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
-import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
 import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValuesConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValuesConditional.Condition;
 import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
-import com.antheminc.oss.nimbus.domain.model.state.builder.internal.AbstractEntityStateBuilder;
 import com.antheminc.oss.nimbus.support.JustLogit;
 
 import lombok.AccessLevel;
@@ -42,12 +40,12 @@ import lombok.Getter;
 public abstract class AbstractValuesConditionalStateEventHandler extends AbstractConditionalStateEventHandler {
 
 	public JustLogit LOG = new JustLogit(AbstractValuesConditionalStateEventHandler.class);
+	private final ParamValuesOnLoadHandler paramValuesHandler;
 	
-	protected final CommandExecutorGateway gateway;
 	
 	public AbstractValuesConditionalStateEventHandler(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
-		this.gateway = this.beanResolver.get(CommandExecutorGateway.class);
+		this.paramValuesHandler = beanResolver.get(ParamValuesOnLoadHandler.class,"paramValuesHandler");
 	}
 
 	/**
@@ -57,9 +55,9 @@ public abstract class AbstractValuesConditionalStateEventHandler extends Abstrac
 	 * @param targetParam the entity to set the values within
 	 * @param values the values metadata to set
 	 */
-	protected void execute(Param<?> targetParam, Values values) {
+	protected void execute(Param<?> srcParam, Param<?> targetParam, Values values) {
 		final List<ParamValue> oldValues = targetParam.getValues();
-		final List<ParamValue> newValues = AbstractEntityStateBuilder.buildValues(values, targetParam, getGateway());
+		final List<ParamValue> newValues = getParamValuesHandler().buildParamValues(values, srcParam, targetParam);
 		targetParam.setValues(newValues);
 		LOG.trace(() -> "Updated values for param '" + targetParam + "' from '" + oldValues + "' to '" + newValues + "'.");
 
@@ -100,7 +98,7 @@ public abstract class AbstractValuesConditionalStateEventHandler extends Abstrac
 			if (this.evalWhen(srcParam, condition.when())) {
 				
 				// set the values
-				this.execute(targetParam, condition.then());
+				this.execute(srcParam, targetParam, condition.then());
 				
 				// if the configured annotation should only execute one true condition,
 				// execute the first and exit
@@ -136,7 +134,8 @@ public abstract class AbstractValuesConditionalStateEventHandler extends Abstrac
 		final boolean shouldExecuteDefault = !this.executeConditions(configuredAnnotation, srcParam, targetParam);
 		
 		if (shouldExecuteDefault) {
-			this.execute(targetParam, targetParam.getConfig().getValues());
+			this.execute(srcParam, targetParam, targetParam.getConfig().getValues());
 		}
 	}
+
 }

@@ -24,44 +24,88 @@ import java.lang.annotation.Target;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.antheminc.oss.nimbus.domain.Event;
 import com.antheminc.oss.nimbus.domain.defn.Executions.Configs;
- 
+import com.antheminc.oss.nimbus.domain.defn.Executions.DetourConfigs;
+import com.antheminc.oss.nimbus.InvalidConfigException;
+
 /**
  * @author Soham Chakravarti
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.ANNOTATION_TYPE})
+@Target({ ElementType.ANNOTATION_TYPE })
 @Inherited
 public @interface Execution {
 
 	/**
-	 * Only the first execution config would have access to supplied payload.
-	 *  
+	 * <p>
+	 * &#64;{@code Config} is a core execution capability provided by the
+	 * framework. The annotation is used to execute {@code CommandMessage}
+	 * objects built from a provided Command DSL URLs, executed from the context
+	 * of the param represented by the decorated field.
+	 * 
 	 * @author Soham Chakravarti
+	 * @since 1.0
+	 * @see com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultCommandExecutorGateway
+	 * @see com.antheminc.oss.nimbus.domain.cmd.CommandMessage
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.FIELD})
+	@Target({ ElementType.FIELD })
 	@Repeatable(Configs.class)
 	@Execution
 	public @interface Config {
-		
-		public static String TRUE = "true";
 		public static String COL = StringUtils.EMPTY;
-		
-		String when() default TRUE;
-		
-		String url();
-		
+		public static String TRUE = "true";
+
+		/**
+		 * <p>A path to a nested collection param, relative to the param
+		 * represented by this decorated field.
+		 * <p>When provided, instead of executing this &#64;{@code Config} from the
+		 * context of the decorated field's param, it will execute on each of
+		 * the collection elements belonging to the collection identified by
+		 * {@code col}.
+		 * <p>If {@code col} is not a path to a collection element, an
+		 * {@link InvalidConfigException} will be thrown.
+		 */
 		String col() default COL;
-		
-		KeyValue[] kv() default {};
+
+		/**
+		 * <p>The order of execution this annotation should be executed in, with
+		 * respect to other conditional annotations that are also decorating
+		 * this param.
+		 */
+		int order() default Event.DEFAULT_ORDER_NUMBER;
+
+		/**
+		 * <p>The Command DSL URL to execute.
+		 */
+		String url();
+
+		/**
+		 * <p>SpEL based condition to be evaluated relative to the param's state on
+		 * which this annotation is declared.
+		 * <p>When the condition is evaluated as {@code true}, this
+		 * &#64;{@code Config} will be executed. If not provided, this
+		 * &#64;{@code Config} will always execute.
+		 */
+		String when() default TRUE;
 	}
-	
-	public @interface KeyValue {
-		
-		String k();
-		String v();
+
+	/**
+	 * @author Rakesh Patel
+	 *
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@Repeatable(DetourConfigs.class)
+	@Execution
+	public @interface DetourConfig {
+		Config main();
+
+		Config onException() default @Config(url = "");
+
+		int order() default Event.DEFAULT_ORDER_NUMBER;
 	}
 
 }

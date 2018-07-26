@@ -211,13 +211,14 @@
 
 .scroll-to-top {
     position: fixed;
-    bottom: 100px;
-    right: 15px;
+    bottom: 120px;
+    right: -55px;
     opacity: 0;
     transition: all .2s ease-in-out;
 }
 
 .show-scroll {
     opacity: 1;
+    right: 15px;
     transition: all .2s ease-in-out;
 }

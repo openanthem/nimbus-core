@@ -15,15 +15,18 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.internal;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -49,15 +52,24 @@ public class ParamStateContextMessageUpdateTest extends AbstractStateEventHandle
 		return cmd;
 	}
 
+	private void addMessage(Param<?> p, Message msg) {
+		Set<Message> newMsgs = new HashSet<>();
+		if(!CollectionUtils.isEmpty(p.getMessages()))
+			newMsgs.addAll(p.getMessages());
+		
+		newMsgs.add(msg);
+		p.setMessages(newMsgs);
+	}
+	
 	@Test
 	public void t01_single_set() {
 		Param<String> msg_trigger = _q.getRoot().findParamByPath("/sample_expr/triggerMessageUpdate");
 		assertNotNull(msg_trigger);
 		
-		Message msg = new Message("test message "+ new Date(), Type.INFO, Context.INLINE);
+		Message msg = new Message("TestUniqueId","test message "+ new Date(), Type.INFO, Context.INLINE,"");
 		
 		addListener();
-		msg_trigger.setMessage(msg);
+		addMessage(msg_trigger, msg);
 		
 		List<Param<?>> expectedEventParams = new ArrayList<>();
 		expectedEventParams.add(msg_trigger);
@@ -69,7 +81,8 @@ public class ParamStateContextMessageUpdateTest extends AbstractStateEventHandle
 		
 		assertTrue(expectedEventParams.isEmpty());
 		
-		assertEquals(msg, msg_trigger.getMessage());
+		assertTrue(msg_trigger.getMessages().contains(msg));
+		assertTrue(msg_trigger.hasContextStateChanged());
 	}
 	
 
@@ -78,21 +91,23 @@ public class ParamStateContextMessageUpdateTest extends AbstractStateEventHandle
 		Param<String> msg_trigger = _q.getRoot().findParamByPath("/sample_expr/triggerMessageUpdate");
 		assertNotNull(msg_trigger);
 		
-		Message msg = new Message("test message "+ new Date(), Type.INFO, Context.INLINE);
+		Message msg = new Message("TestUniqueId","test message "+ new Date(), Type.INFO, Context.INLINE,"");
 		
 		// set once
-		msg_trigger.setMessage(msg);
+		addMessage(msg_trigger, msg);
 		
 		// set same instance again
 		addListener();
-		msg_trigger.setMessage(msg);
+		addMessage(msg_trigger, msg);
 		
 		// validate that its not triggered again
 		assertNull(_paramEvents);
 
 		// from first message set
-		assertEquals(msg, msg_trigger.getMessage());
+		assertTrue(msg_trigger.getMessages().contains(msg));
 		
+		// SOHAM: given that message was already present, f/w should detect that the context hasn't changed
+		//== TODO assertFalse(msg_trigger.hasContextStateChanged());
 	}
 	
 	@Test
@@ -100,15 +115,15 @@ public class ParamStateContextMessageUpdateTest extends AbstractStateEventHandle
 		Param<String> msg_trigger = _q.getRoot().findParamByPath("/sample_expr/triggerMessageUpdate");
 		assertNotNull(msg_trigger);
 		
-		Message msg = new Message("test message "+ new Date(), Type.INFO, Context.INLINE);
+		Message msg = new Message("TestUniqueId","test message "+ new Date(), Type.INFO, Context.INLINE,"");
 		
 		// set once
-		msg_trigger.setMessage(msg);
+		addMessage(msg_trigger, msg);
 		
 		// change text in same Message instance
 		addListener();
-		Message msg2 = new Message("new text "+ new Date(), Type.INFO, Context.INLINE);
-		msg_trigger.setMessage(msg2);
+		Message msg2 = new Message("TestUniqueId2","new text "+ new Date(), Type.INFO, Context.INLINE,"");
+		addMessage(msg_trigger, msg2);
 		
 		List<Param<?>> expectedEventParams = new ArrayList<>();
 		expectedEventParams.add(msg_trigger);
@@ -121,7 +136,8 @@ public class ParamStateContextMessageUpdateTest extends AbstractStateEventHandle
 		assertTrue(expectedEventParams.isEmpty());
 		
 		// from 2nd message set
-		assertEquals(msg2, msg_trigger.getMessage());
-		
+		assertTrue(msg_trigger.getMessages().contains(msg));
+		assertTrue(msg_trigger.getMessages().contains(msg2));
+		assertTrue(msg_trigger.hasContextStateChanged());
 	}
 }

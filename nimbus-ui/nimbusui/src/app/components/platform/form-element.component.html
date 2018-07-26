@@ -1,5 +1,5 @@
 
-<div [formGroup]="form" *ngIf="element.config?.uiStyles?.attributes?.alias!='Button'" [hidden]="!element?.visible" class="form-group {{element.config?.uiStyles?.attributes?.cssClass}} {{elementCss}} {{getErrorStyles()}}">
+<div [formGroup]="form" *ngIf="element.config?.uiStyles?.attributes?.alias!='Button'" [hidden]="!element?.visible" [ngClass]="getComponentClass()">
    
     <nm-header [element]="element" *ngIf="element.config?.uiStyles?.attributes?.alias=='Header'" ></nm-header>
     <nm-paragraph [element]="element" *ngIf="element.config?.uiStyles?.attributes?.alias=='Paragraph'"></nm-paragraph>
@@ -22,9 +22,8 @@
             [params]="element?.config?.type?.elementConfig?.type?.model?.paramConfigs" (onScrollEvent)="onScrollEvent()">
         </nm-table>
     </ng-template>
-    <ng-template [ngIf]="!isPristine">
-        <ng-template ngFor let-msg [ngForOf]="getMessages()">
-            <nm-message [messageContext]="msg.context"  [messageArray]="msg.messageArray" ></nm-message>
-        </ng-template>
+    <ng-template ngFor let-msg [ngForOf]="getMessages()">
+        <nm-message [messageContext]="msg.context"  [messageArray]="msg.messageArray" [styleClass]="msg.styleClass"></nm-message>
     </ng-template>
+ 
 </div>

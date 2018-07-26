@@ -4,6 +4,9 @@ import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Location } from '@angular/common';
 import { RouterTestingModule } from '@angular/router/testing';
+import { JL } from 'jsnlog';
+import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
+import { AngularSvgIconModule } from 'angular-svg-icon';
 
 import { Button } from './button.component';
 import { PageService } from '../../../../services/page.service';
@@ -13,6 +16,9 @@ import { ConfigService } from '../../../../services/config.service';
 import { LoggerService } from '../../../../services/logger.service';
 import { FileService } from '../../../../services/file.service';
 import { Subject } from 'rxjs';
+import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
+import { AppInitService } from '../../../../services/app.init.service';
+import { SvgComponent } from '../../svg/svg.component';
 
 let fixture, app, location, pageService;
 
@@ -39,21 +45,27 @@ describe('Button', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-          Button
+          Button,
+          SvgComponent
        ],
        imports: [
            HttpModule,
            HttpClientTestingModule,
-           RouterTestingModule
+           RouterTestingModule,
+           StorageServiceModule,
+           AngularSvgIconModule
        ],
        providers: [
            {provide: Location, useClass: MockLocation},
            {provide: PageService, useClass: MockPageService},
+           { provide: 'JSNLOG', useValue: JL },
+           { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
            CustomHttpClient,
            LoaderService,
            ConfigService,
            LoggerService,
-           FileService
+           FileService,
+           AppInitService
        ]
     }).compileComponents();
     fixture = TestBed.createComponent(Button);
@@ -164,7 +176,7 @@ describe('Button', () => {
     }));
 
     it('onSubmit() should call pageService.processEvent()', async(() => {
-      app.form = { value: { fileId: '', name: '', fileControl: [{ fileId: 'test', nale: 'tname' }] } };
+      app.form = { value: { fileId: '', name: '', fileControl: false } };
       app.element = { path: '', config: { uiStyles: { attributes: { b: '' } } } };
       spyOn(pageService, 'processEvent').and.returnValue('');
       app.onSubmit();

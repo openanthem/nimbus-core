@@ -1,14 +1,20 @@
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
+import { AngularSvgIconModule } from 'angular-svg-icon';
 
 import { Image } from './image.component';
 import { ServiceConstants } from './../../services/service.constants';
+import { SvgComponent } from './svg/svg.component';
 
 describe('Image', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        Image
+        Image,
+        SvgComponent
+       ],
+       imports: [
+        AngularSvgIconModule
        ]
     }).compileComponents();
   }));

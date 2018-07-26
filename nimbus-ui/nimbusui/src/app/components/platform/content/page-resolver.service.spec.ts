@@ -3,7 +3,11 @@ import { HttpClient, HttpRequest } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing'
-import { Router, Resolve } from '@angular/router';
+import { Router, Resolve, RouterStateSnapshot, ActivatedRouteSnapshot, ActivatedRoute, Route, UrlSegment, Params, Data, ParamMap } from '@angular/router';
+import { JL } from 'jsnlog';
+import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
+import { Observable } from 'rxjs/Observable';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 import { PageResolver } from './page-resolver.service';
 import { PageService } from '../../../services/page.service';
@@ -13,8 +17,10 @@ import { CustomHttpClient } from '../../../services/httpclient.service';
 import { LoaderService } from '../../../services/loader.service';
 import { ConfigService } from '../../../services/config.service';
 import { LoggerService } from '../../../services/logger.service';
+import { SessionStoreService, CUSTOM_STORAGE } from '../../../services/session.store';
+import { AppInitService } from '../../../services/app.init.service';
 
-let http, backend, service, rustate, breadcrumpservice, pageservice, wcservice, router, loggerService;
+let http, backend, service, rustate, breadcrumpservice, pageservice, wcservice, router, loggerService, activatedRoute;
 
 const route = {
     _routerState: {
@@ -29,6 +35,12 @@ const route = {
         pageId: 123
     }
 };
+
+class MockLoggerService {
+    debug() { }
+    info() { }
+    error() { }
+}
 
 class MockPageService {
 
@@ -58,15 +70,36 @@ class MockWebContentSvc {
 
 class MockBreadcrumbService {
     push(a, b, c) {
-        console.log('123push is being called...', a, b, c);
      }
 }
 
 class MockRouter {
     navigate() {
-        console.log('navigate is called');
      }
 }
+
+export class MockActivatedRoute implements ActivatedRoute {
+    snapshot: ActivatedRouteSnapshot;
+    url: Observable<UrlSegment[]>;
+    params: Observable<Params>;
+    queryParams: Observable<Params>;
+    fragment: Observable<string>;
+    outlet: string;
+    component: any;
+    routeConfig: Route;
+    root: any;
+    parent: ActivatedRoute;
+    firstChild: ActivatedRoute;
+    children: ActivatedRoute[];
+    pathFromRoot: ActivatedRoute[];
+    data: any = {
+      value: {
+        layout: 'test'
+      }
+    };
+    paramMap: Observable<ParamMap>;
+    queryParamMap: Observable<ParamMap>;
+  }
 
 describe('PageResolver', () => {
   beforeEach(() => {
@@ -75,19 +108,25 @@ describe('PageResolver', () => {
       imports: [ 
           HttpClientTestingModule, 
           HttpModule,
-          RouterTestingModule
+          RouterTestingModule,
+          StorageServiceModule
         ],
       providers: [
         {provide: PageService, useClass: MockPageService},
         {provide: WebContentSvc, useClass: MockWebContentSvc},
         {provide: BreadcrumbService, useValue: breadcrumpservice},
         {provide: Router, useClass: MockRouter},
+        { provide: 'JSNLOG', useValue: JL },
+        { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+        {provide: LoggerService, useClass: MockLoggerService},
+        {provide: ActivatedRoute, useClass: MockActivatedRoute},
         PageResolver,
         CustomHttpClient,
         LoaderService,
         ConfigService,
-        LoggerService
-        ]
+        AppInitService
+        ],
+        schemas: [NO_ERRORS_SCHEMA]
     });
     http = TestBed.get(HttpClient);
     backend = TestBed.get(HttpTestingController);
@@ -95,7 +134,8 @@ describe('PageResolver', () => {
     wcservice = TestBed.get(WebContentSvc);
     router = TestBed.get(Router);
     loggerService = TestBed.get(LoggerService);
-    service = new PageResolver(pageservice, router, breadcrumpservice, wcservice, loggerService );
+    activatedRoute = TestBed.get(ActivatedRoute);
+    service = new PageResolver(pageservice, router, breadcrumpservice, wcservice, activatedRoute, loggerService );
   });
 
   it('should be created', async(() => {

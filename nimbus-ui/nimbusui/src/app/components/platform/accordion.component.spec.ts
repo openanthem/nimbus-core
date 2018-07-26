@@ -38,6 +38,10 @@ describe('Accordion', () => {
     expect(app).toBeTruthy();
   }));
 
+  it('expandAllClicked() should return _expandAllClicked', async(() => {
+    expect(app.expandAllClicked).toBeFalsy();
+  }));
+
   it('addGroup() should update the app.groups', async(() => {
       const aGroup = new AccordionGroup(app, webContentSvc, elementRef);
       const groupsLength = app.groups.length;
@@ -65,10 +69,10 @@ describe('Accordion', () => {
     expect(app.groups[0].state).toEqual('openPanel');
   }));
 
-  xit('openAll() should not update the app.groups', async(() => {
+  it('closeAll() should not update the app.groups', async(() => {
     app.groups = [{state: 'test'}];
-    app.openAll(app.groups[0]);
-    expect(app.groups[0].state).toEqual('test');
+    app.closeAll();
+    expect(app.groups[0].state).toEqual('closedPanel');
   }));
 
   it('closeOthers() should not update the app.groups', async(() => {

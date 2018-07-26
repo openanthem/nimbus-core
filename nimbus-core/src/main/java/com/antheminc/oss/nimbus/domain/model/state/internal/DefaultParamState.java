@@ -19,11 +19,15 @@ package com.antheminc.oss.nimbus.domain.model.state.internal;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Supplier;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -88,16 +92,32 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	private RemnantState<Boolean> enabledState = this.new RemnantState<>(true);
 	
 	@JsonIgnore
-	private RemnantState<Object> filterState = this.new RemnantState<>(null);
-	
-	@JsonIgnore
 	@SuppressWarnings("unchecked")
 	private RemnantState<Class<? extends ValidationGroup>[]> activeValidationGroupsState = new RemnantState<>(new Class[0]);
 	
 	private List<ParamValue> values;
 	
 	@JsonIgnore
-	private RemnantState<Message> messageState = this.new RemnantState<Message>(null);
+	private RemnantState<Set<Message>> messageState = this.new RemnantState<Set<Message>>(null) {
+		@Override
+		public boolean hasChanged() {
+			Set<Message> prev = CollectionUtils.isEmpty(getPrevState()) ? null : getPrevState();
+			Set<Message> curr = CollectionUtils.isEmpty(getCurrState()) ? null : getCurrState();
+			
+			boolean isEquals = new EqualsBuilder().append(curr, prev).isEquals();
+			return !isEquals;
+		}
+	};
+	
+	@Override
+	public boolean hasContextStateChanged() {
+		if(visibleState.hasChanged() || enabledState.hasChanged() || messageState.hasChanged()  
+				|| activeValidationGroupsState.hasChanged())
+			return true;
+		
+		return false;
+	}
+	
 	
 	/* TODO: Weak reference was causing the values to be GC-ed even before the builders got to building 
 	 * Allow referenced subscribers to get garbage collected in scenario when same core is referenced by multiple views. 
@@ -388,7 +408,9 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 			eventHandlerConfig.getOnStateLoadAnnotations().stream()
 				.forEach(ac->{
 					OnStateLoadHandler<Annotation> handler = eventHandlerConfig.getOnStateLoadHandler(ac);
-					handler.handle(ac, p);
+					if(handler.shouldAllow(ac, p)) {
+						handler.handle(ac, p);
+					}
 				});
 		}
 	}
@@ -405,7 +427,9 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 			eventHandlerConfig.getOnStateChangeAnnotations().stream()
 				.forEach(ac->{
 					OnStateChangeHandler<Annotation> handler = eventHandlerConfig.getOnStateChangeHandler(ac);
-					handler.handle(ac, txnCtx, new ParamEvent(a, p));
+					if(handler.shouldAllow(ac, p)) {
+						handler.handle(ac, txnCtx, new ParamEvent(a, p));
+					}
 				});
 		}
 	}
@@ -620,13 +644,17 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 
 		public boolean setStateConditional(S state, Supplier<Boolean> condition) {
 			// check equality
-			if(isEquals(state))
+			if(isEquals(state)) {
+				//this.prevState = this.currState;
 				return false;
+			}
 			
 			// check condition
 			Boolean eval = condition.get();
-			if(eval==null || !eval)
+			if(eval==null || !eval) {
+				//this.prevState = this.currState;
 				return false;
+			}
 			
 			return changeStateTemplate((rt, h, lockId)->{
 				this.prevState = this.currState;
@@ -636,6 +664,11 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 				return true;
 			});
 			
+		}
+		
+		public boolean hasChanged() {
+			boolean isEquals = new EqualsBuilder().append(this.currState, this.prevState).isEquals();
+			return !isEquals;
 		}
 	}
 	
@@ -657,16 +690,10 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 			return;
 		}
 		
-		findIfNested().getParams().stream()
-			.forEach(p->{
-
-				p.setVisible(visible);
-				
-			});
+		traverseChildren(p -> p.setVisible(visible));
 		
-		findIfNested().getParams().stream()
-		.forEach(p->{
-
+		traverseChildren(p -> {
+			
 			if(!p.isStateInitialized())
 				p.onStateLoadEvent();
 			else
@@ -694,21 +721,15 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 			return;
 		}
 		
-		findIfNested().getParams().stream()
-			.forEach(p->{
-
-				p.setEnabled(enabled);
-				
-			});
+		traverseChildren(p -> p.setEnabled(enabled));
 	
-		findIfNested().getParams().stream()
-		.forEach(p->{
-
+		traverseChildren(p -> {
+			
 			if(!p.isStateInitialized())
 				p.onStateLoadEvent();
 			else
 				p.onStateChangeEvent(p.getRootExecution().getExecutionRuntime().getTxnContext(), Action._update);
-			
+		
 		});
 	}
 
@@ -723,13 +744,14 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	}
 	
 	@Override
-	public Message getMessage() {
-		return this.messageState.getCurrState();
+	public Set<Message> getMessages() {
+		return Optional.ofNullable(this.messageState.getCurrState()).map(Collections::unmodifiableSet).orElse(null);
 	}
-	
+
 	@Override
-	public void setMessage(Message message) {
-		this.messageState.setState(message);
+	public void setMessages(Set<Message> msgs) {
+		Set<Message> inMsgs = CollectionUtils.isEmpty(msgs) ? null : new HashSet<>(msgs);
+		this.messageState.setState(inMsgs);
 	}
 	
 	private void emitParamContextEvent() {
@@ -811,18 +833,22 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		if(!isNested() /*|| findIfNested().templateParams().isNullOrEmpty()*/)
 			return true;
 		
-		findIfNested().getParams().stream()
-			.forEach(cp->{
-				if(to)
-					cp.initState();//cp.activate();
-				else {
-					cp.setStateInitialized(false);//cp.deactivate();
-				}
-				
-				cp.setVisible(to); 
-				cp.setEnabled(to); 
-
-			});
+		if(findIfNested().getParams() == null && this.isCollection()) {
+			return true;
+		}
+		
+		traverseChildren(cp -> {
+			
+			if(to)
+				cp.initState();//cp.activate();
+			else {
+				cp.setStateInitialized(false);//cp.deactivate();
+			}
+			
+			cp.setVisible(to); 
+			cp.setEnabled(to); 
+	
+		});
 		
 		return true;
 	}

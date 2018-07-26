@@ -32,7 +32,8 @@ import { Serializable } from './serializable';
 import { ParamConfig } from './param-config';
 import { Message } from './message';
 import { CardDetailsGrid } from './card-details';
-import { ViewConfig } from './param-annotations.enum';
+import { ViewConfig, ViewComponent } from './param-annotations.enum';
+import { TableComponentConstants } from '../components/platform/grid/table.component.constants';
 
 export class Param implements Serializable<Param, string> {
     configId: string;
@@ -45,7 +46,7 @@ export class Param implements Serializable<Param, string> {
     elemId: string;
     enabled: boolean = true;
     gridList: any[];
-    message : Message;
+    message : Message[];
     paramState: Param[];
     values : Values[];
     visible: boolean = true;
@@ -80,9 +81,11 @@ export class Param implements Serializable<Param, string> {
                     let config = this.configSvc.paramConfigs[p.configId];
                     //let path = paramPath + "/" + config.code;
                     // handle nested grid data
-                    if (config.uiStyles && (config.uiStyles.name == ViewConfig.gridrowbody.toString()|| config.uiStyles.name == ViewConfig.linkmenu.toString())) {
+                    if (config.uiStyles && 
+                        (TableComponentConstants.allowedColumnStylesAlias.includes(config.uiStyles.attributes.alias)
+                        || config.uiStyles.attributes.showAsLink === true)) {
                         let isDeserialized = false;
-                        if(p instanceof Param){
+                        if ( p instanceof Param) {
                             isDeserialized = true;
                         }
                         if(param.collectionElem)
@@ -197,8 +200,13 @@ export class Param implements Serializable<Param, string> {
         if (inJson.enabled != null) {
             this.enabled = inJson.enabled;
         }
-        if ( inJson.message != null ) {
-            this.message = new Message().deserialize( inJson.message );
+        this.message = [];
+        if ( inJson.message != null && inJson.message.length > 0) {
+            for ( const msg in inJson.message ) {
+                if (inJson.message[msg]) {
+                    this.message.push( new Message().deserialize( inJson.message[msg] ) );
+                }
+            }
         }
         this.values = [];
         if ( inJson.values != null && inJson.values.length > 0 ) {

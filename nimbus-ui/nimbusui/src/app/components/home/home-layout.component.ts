@@ -54,6 +54,7 @@ export class HomeLayoutCmp {
     public footer: FooterConfig;
     public userName: any;
     public navMenuBar: boolean = false;
+    items: MenuItem[];
     
 
     public organizations: Param[];
@@ -180,7 +181,7 @@ export class HomeLayoutCmp {
                     } else {
                         this.navMenuBar = false;
                     }
-                    this.leftMenuItems = layout.leftNavBar;
+                    this.items = layout.leftNavBar;
                     this.footer = layout.footer;
                 }
                 //this._router.navigate([this.body['defaultFlow']], { relativeTo: this._route });
