@@ -41,7 +41,7 @@ import com.antheminc.oss.nimbus.domain.model.state.extension.ValidateConditional
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValuesConditionalOnStateChangeEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValuesConditionalOnStateLoadEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.VisibleConditionalStateEventHandler;
-import com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional.SiblingNestedValidationAssignmentStrategy;
+import com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional.ChildrenValidationAssignmentStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional.SiblingValidationAssignmentStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.internal.IdParamConverter;
 
@@ -126,7 +126,7 @@ public class DefaultFrameworkExtensionsConfig {
 	public Map<ValidationScope, ValidationAssignmentStrategy> extensionValidateConditionalAssignmentStrategies() {
 		Map<ValidationScope, ValidationAssignmentStrategy> validationAssignmentStrategies = new HashMap<>();
 		validationAssignmentStrategies.put(ValidationScope.SIBLING, new SiblingValidationAssignmentStrategy());
-		validationAssignmentStrategies.put(ValidationScope.SIBLING_NESTED, new SiblingNestedValidationAssignmentStrategy());
+		validationAssignmentStrategies.put(ValidationScope.CHILDREN, new ChildrenValidationAssignmentStrategy());
 		return validationAssignmentStrategies;
 	}
 	

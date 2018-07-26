@@ -161,7 +161,7 @@ export class Signature extends BaseControl<String> {
             this.initCanvasElement();
         }
         this.cx.clearRect(0, 0, this.width, this.height);
-        if(this.imgElement.src != this.defaultEmptyImage ){
+        if(this.img.nativeElement.src != this.defaultEmptyImage ){
             this.cx.drawImage(this.imgElement, 0, 0, this.width, this.height);
             this.toggleSave(false);
         }
