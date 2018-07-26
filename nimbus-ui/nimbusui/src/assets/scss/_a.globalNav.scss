@@ -183,7 +183,7 @@
 
 
 
-@media(min-width: 576px) {
+@media screen and (min-width: 576px) {
  
 }
 
@@ -198,15 +198,26 @@
 }
 
 
-@media(min-width: 768px) {
-
-    
+@media screen and (min-width: 768px) {
     
 }
 
-@media (min-width: 992px) {
+@media screen and (min-width: 992px) {
     
 }
-@media(min-width: 1300px) {
+@media screen and (min-width: 1300px) {
    
+}
+
+.scroll-to-top {
+    position: fixed;
+    bottom: 100px;
+    right: 15px;
+    opacity: 0;
+    transition: all .2s ease-in-out;
+}
+
+.show-scroll {
+    opacity: 1;
+    transition: all .2s ease-in-out;
 }

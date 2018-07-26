@@ -40,14 +40,14 @@ import lombok.Setter;
 @Getter @Setter
 public class CEU_SampleAssociatedEntity {
 
-	private String entityId;
+	private Long entityId;
     
 	@Path(linked=false)
 	private List<SampleCoreAssociatedEntity> allAssociatedEntities;
 
 	@Configs({
 		@Config(url="/entityId/_update"),
-		@Config(url="/allAssociatedEntities/_process?fn=_set&url=/p/sample_coreassociatedentity/_search?fn=query&where=sample_coreassociatedentity.entityId.eq('<!/entityId!>')"),
+		@Config(url="/allAssociatedEntities/_process?fn=_set&url=/p/sample_coreassociatedentity/_search?fn=query&where=sample_coreassociatedentity.entityId.eq(<!/entityId!>)"),
 		@Config(url="/p/sample_coreassociatedentity:<!col/id!>/status/_update?rawPayload=\"Cancelled\"", col="<!/allAssociatedEntities!>")
 	})
     public String action_updateStatus;

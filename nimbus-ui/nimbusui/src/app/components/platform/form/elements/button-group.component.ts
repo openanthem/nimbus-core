@@ -16,7 +16,7 @@
  */
 'use strict';
 import { Component, Input, ViewEncapsulation } from '@angular/core';
-import { Param } from '../../../../shared/app-config.interface';
+import { Param } from '../../../../shared/param-state';
 import { FormGroup } from '@angular/forms';
 
 /**
@@ -48,6 +48,5 @@ export class ButtonGroup {
    constructor() { }
 
    ngOnInit() {
-    //    console.log("css class " + this.cssClass)
    }
 }

@@ -18,7 +18,8 @@
 
 import { WebContentSvc } from './../../../services/content-management.service';
 import { BaseElement } from './../base-element.component';
-import { CardDetails, Param } from '../../../shared/app-config.interface';
+import { CardDetails } from '../../../shared/card-details';
+import { Param } from '../../../shared/param-state';
 import { Component, Input } from '@angular/core';
 import { PageService } from '../../../services/page.service';
 

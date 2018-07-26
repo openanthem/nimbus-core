@@ -18,7 +18,7 @@
 import { BaseElement } from './../../base-element.component';
 import { WebContentSvc } from './../../../../services/content-management.service';
 import { PageService } from './../../../../services/page.service';
-import { Param } from './../../../../shared/app-config.interface';
+import { Param } from './../../../../shared/param-state';
 import { ComponentFactoryResolver, ViewChild,
     ComponentRef, ViewContainerRef, Input } from '@angular/core';
 import { Component, OnInit, forwardRef, SimpleChanges } from '@angular/core';

@@ -43,7 +43,6 @@ export class STOMPStatusComponent implements OnInit {
 	constructor(private _stompService: STOMPService) { }
 
 	ngOnInit() {
-		//console.log('Status init');
 		this.state = this._stompService.state
 			.map( (state:number) => StateLookup[state] );
 	}

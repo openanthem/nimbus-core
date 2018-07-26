@@ -49,7 +49,7 @@ public class DefaultActionExecutorReplaceTest extends AbstractFrameworkIngeratio
 	
 	@Test
 	public void t01_col_set() {
-		String refId = createOrGetDomainRoot_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
 		MockHttpServletRequest colElemAdd_Req = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
 					.addNested("/page_green/tile/section_grid/grid_attached_ConvertedItems").addAction(Action._replace).getMock();
 		
@@ -61,7 +61,7 @@ public class DefaultActionExecutorReplaceTest extends AbstractFrameworkIngeratio
 		colElemState_2.setNested_attr_String("TEST_INTG_COL_ELEM_add_2 "+ new Date());
 		colState.add(colElemState_1);
 		colState.add(colElemState_2);
-		String jsonPayload = converter.write(colState);
+		String jsonPayload = converter.toJson(colState);
 		
 		Object colElemAdd_Resp = controller.handlePost(colElemAdd_Req, jsonPayload);
 		assertNotNull(colElemAdd_Resp);
@@ -81,7 +81,7 @@ public class DefaultActionExecutorReplaceTest extends AbstractFrameworkIngeratio
 		t02_col_set_existing_internal();
 	}
 	public void t02_col_set_existing_internal() {
-		String refId = createOrGetDomainRoot_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
 		
 		MockHttpServletRequest req_arr_replace = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(refId)
 					.addNested("/attr_list_String").addAction(Action._replace).getMock();
@@ -89,7 +89,7 @@ public class DefaultActionExecutorReplaceTest extends AbstractFrameworkIngeratio
 		final String[] K_string_arr = new String[]{"A", "B", "C @ "+new Date()};
 		final List<String> listString = new ArrayList<>(Arrays.asList(K_string_arr));
 		
-		Object resp_arr_update = controller.handlePut(req_arr_replace, null, converter.write(listString));
+		Object resp_arr_update = controller.handlePut(req_arr_replace, null, converter.toJson(listString));
 		
 		// validate via Param
 		MockHttpServletRequest req_arr_get = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(refId)
@@ -111,7 +111,7 @@ public class DefaultActionExecutorReplaceTest extends AbstractFrameworkIngeratio
 	
 	@Test
 	public void t02_col_set_existing_core_noConversion() {
-		String refId = createOrGetDomainRoot_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
 		
 		MockHttpServletRequest req_arr_replace = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(refId)
 					.addNested("/level1/attr_list_String_noConversion").addAction(Action._replace).getMock();
@@ -119,7 +119,7 @@ public class DefaultActionExecutorReplaceTest extends AbstractFrameworkIngeratio
 		final String[] K_string_arr = new String[]{"A", "B", "C @ "+new Date()};
 		final List<String> listString = new ArrayList<>(Arrays.asList(K_string_arr));
 		
-		Object resp_arr_update = controller.handlePut(req_arr_replace, null, converter.write(listString));
+		Object resp_arr_update = controller.handlePut(req_arr_replace, null, converter.toJson(listString));
 		
 		// validate via Param
 		MockHttpServletRequest req_arr_get = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(refId)
@@ -148,14 +148,14 @@ public class DefaultActionExecutorReplaceTest extends AbstractFrameworkIngeratio
 	}
 	
 	public void t02_col_set_existing_view_noConversion_internal() {
-		String refId = createOrGetDomainRoot_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
 		
 		MockHttpServletRequest req_arr_update = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
 				.addNested("/page_green/tile/level1/attr_list_String_noConversion").addAction(Action._replace).getMock();
 		
 		final String[] K_string_arr = new String[]{"A", "B", "C @ "+new Date()};
 		final List<String> listString = new ArrayList<>(Arrays.asList(K_string_arr));
-		Object resp_arr_update = controller.handlePut(req_arr_update, null, converter.write(listString));
+		Object resp_arr_update = controller.handlePut(req_arr_update, null, converter.toJson(listString));
 		
 		
 		// validate via Param
@@ -177,13 +177,13 @@ public class DefaultActionExecutorReplaceTest extends AbstractFrameworkIngeratio
 	
 	@Test
 	public void t03_array_update_core() {
-		String refId = createOrGetDomainRoot_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
 		
 		MockHttpServletRequest req_arr_update = MockHttpRequestBuilder.withUri(CORE_PARAM_ROOT).addRefId(refId)
 				.addNested("/level1/level2b/string_array_b").addAction(Action._replace).getMock();
 		
 		final String[] K_string_arr = new String[]{"A", "B", "C @ "+new Date()};
-		Object resp_arr_update = controller.handlePut(req_arr_update, null, converter.write(K_string_arr));
+		Object resp_arr_update = controller.handlePut(req_arr_update, null, converter.toJson(K_string_arr));
 		
 		
 		// validate via Param
@@ -205,13 +205,13 @@ public class DefaultActionExecutorReplaceTest extends AbstractFrameworkIngeratio
 	
 	@Test
 	public void t04_array_update_view() {
-		String refId = createOrGetDomainRoot_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
 		
 		MockHttpServletRequest req_arr_update = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
 				.addNested("/page_green/tile/level1/level2b/string_array_b").addAction(Action._replace).getMock();
 		
 		final String[] K_string_arr = new String[]{"A", "B", "C @ "+new Date()};
-		Object resp_arr_update = controller.handlePut(req_arr_update, null, converter.write(K_string_arr));
+		Object resp_arr_update = controller.handlePut(req_arr_update, null, converter.toJson(K_string_arr));
 		
 		
 		// validate via Param

@@ -1,4 +1,3 @@
-import { ValidationConstraint } from './../../shared/validationconstraints.enum';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -18,11 +17,12 @@ import { ValidationConstraint } from './../../shared/validationconstraints.enum'
 'use strict';
 
 import { Component, Input } from '@angular/core';
-import { Param } from '../../shared/app-config.interface';
+import { Param } from '../../shared/param-state';
 import { WebContentSvc } from '../../services/content-management.service';
-import { LabelConfig } from './../../shared/app-config.interface';
+import { LabelConfig } from './../../shared/param-config';
 import { ValidationUtils } from './validators/ValidationUtils';
 import { ParamUtils } from '../../shared/param-utils';
+import { ValidationConstraint } from './../../shared/validationconstraints.enum';
 
 /**
  * \@author Dinakar.Meda

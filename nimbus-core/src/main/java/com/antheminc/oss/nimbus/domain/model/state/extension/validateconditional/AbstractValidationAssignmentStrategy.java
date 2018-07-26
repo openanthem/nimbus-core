@@ -85,18 +85,36 @@ public abstract class AbstractValidationAssignmentStrategy implements
 	}
 	
 	/**
-	 * <p>Traverses all sibling params and nested params of those siblings of <tt>param</tt> 
-	 * and executes <tt>handler</tt> from the context of each param.</p>
-	 * 
+	 * <p>Traverse (recursively) all sibling params and nested params of those siblings of {@code param}
+	 * and executes {@code handler} from the context of each param.
 	 * @param param the param object from which to retrieve nested entities from
 	 * @param handler the handler method to execute on all retrieved params
 	 * @param targetGroup the group object
 	 */
 	protected void handleNested(Param<?> param, Class<? extends ValidationGroup> targetGroup, 
 			BiConsumer<Param<?>, Class<? extends ValidationGroup>> handler) {
+		handleNested(param, targetGroup, handler, true);
+	}
+	
+	/**
+	 * <p>Traverses all sibling params and nested params of those siblings of <tt>param</tt> 
+	 * and executes <tt>handler</tt> from the context of each param.
+	 * @param param the param object from which to retrieve nested entities from
+	 * @param handler the handler method to execute on all retrieved params
+	 * @param targetGroup the group object
+	 * @param recursive whether or not this should recursively traverse nested params.
+	 */
+	protected void handleNested(Param<?> param, Class<? extends ValidationGroup> targetGroup, 
+			BiConsumer<Param<?>, Class<? extends ValidationGroup>> handler, boolean recursive) {
 		
 		if (param.isNested() && null != param.findIfNested().getParams()) {
-			param.findIfNested().getParams().forEach(nestedParam -> handleNested(nestedParam, targetGroup, handler));
+			for(Param<?> nestedParam: param.findIfNested().getParams()) {
+				if (!recursive) {
+					handler.accept(nestedParam, targetGroup);
+				} else {
+					handleNested(nestedParam, targetGroup, handler, true);
+				}
+			}
 		}
 		handler.accept(param, targetGroup);
 	}

@@ -17,7 +17,7 @@
 'use strict';
 
 import { Component, ElementRef, Input, OnInit, OnDestroy } from '@angular/core';
-import { Param, Model } from '../../../shared/app-config.interface';
+import { Param, Model } from '../../../shared/param-state';
 import { DialogModule } from 'primeng/primeng';
 import { WebContentSvc } from './../../../services/content-management.service';
 import { PageService } from '../../../services/page.service';
@@ -91,7 +91,6 @@ export class Modal extends BaseElement implements OnInit, OnDestroy {
      * Close diaglog function.
      */
     public closeDialog(event: any) {
-        //console.log('modal close clicked..........');
         if (this.visible) {
             this.pageSvc.processEvent(this.element.path+'/closeModal', Behavior.execute.value, new GenericDomain(), HttpMethod.GET.value);
         }

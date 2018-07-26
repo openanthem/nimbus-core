@@ -26,12 +26,14 @@ import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.AbstractStateAndConfigEventListener;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 /**
  * @author Rakesh Patel
  *
  */
 // This class is specific to task and create other classes for any other listener for same param update
+@EnableLoggingInterceptor
 public class ParamUpdateEventListener extends AbstractStateAndConfigEventListener {
 
 	@Autowired MongoOperations mongoOps;
@@ -41,7 +43,7 @@ public class ParamUpdateEventListener extends AbstractStateAndConfigEventListene
 		if(StringUtils.contains(event.getPayload().getPath(), 
 				"/cmcase/status") && StringUtils.equalsIgnoreCase("Cancelled", (String)event.getPayload().getState())) {
 			
-			String entityId = (String)event.getPayload().getRootDomain().findParamByPath("/id").getState();
+			Long entityId = (Long)event.getPayload().getRootDomain().findParamByPath("/id").getState();
 			
 			mongoOps.updateMulti(
 					new Query(Criteria.where("status").is("Open").and("entityId").is(entityId)), 

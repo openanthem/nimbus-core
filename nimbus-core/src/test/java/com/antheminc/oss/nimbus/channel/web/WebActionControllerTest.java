@@ -34,7 +34,7 @@ import com.antheminc.oss.nimbus.support.Holder;
 
 /**
  * 
- * @author Tony Lopez (AF42192)
+ * @author Tony Lopez
  *
  */
 @RunWith(MockitoJUnitRunner.class)
@@ -56,9 +56,9 @@ public class WebActionControllerTest {
 		
 		final Object obj = new Object();
 		
-		Mockito.when(this.dispatcher.handle(req, requestMethod, version, json)).thenReturn(obj);
+		Mockito.when(this.dispatcher.handle(req, json)).thenReturn(obj);
 		final Object response = this.testee.handleGet(req, json);
-		Mockito.verify(this.dispatcher, Mockito.times(1)).handle(req, requestMethod, version, json);
+		Mockito.verify(this.dispatcher, Mockito.times(1)).handle(req, json);
 		
 		Assert.assertTrue("Expected type: " + Holder.class + " but found " + response.getClass(), response.getClass().isAssignableFrom(Holder.class));
 		Assert.assertEquals(obj, ((Holder<Object>) response).getState());
@@ -74,9 +74,9 @@ public class WebActionControllerTest {
 
 		final Object obj = new Object();
 		
-		Mockito.when(this.dispatcher.handle(req, requestMethod, version, json)).thenReturn(obj);
+		Mockito.when(this.dispatcher.handle(req, json)).thenReturn(obj);
 		final Object response = this.testee.handleDelete(req, version);
-		Mockito.verify(this.dispatcher, Mockito.times(1)).handle(req, requestMethod, version, json);
+		Mockito.verify(this.dispatcher, Mockito.times(1)).handle(req, json);
 		
 		Assert.assertTrue("Expected type: " + Holder.class + " but found " + response.getClass(), response.getClass().isAssignableFrom(Holder.class));
 		Assert.assertEquals(obj, ((Holder<Object>) response).getState());
@@ -92,9 +92,9 @@ public class WebActionControllerTest {
 		
 		final Object obj = new Object();
 		
-		Mockito.when(this.dispatcher.handle(req, requestMethod, version, json)).thenReturn(obj);
+		Mockito.when(this.dispatcher.handle(req, json)).thenReturn(obj);
 		final Object response = this.testee.handlePost(req, json);
-		Mockito.verify(this.dispatcher, Mockito.times(1)).handle(req, requestMethod, version, json);
+		Mockito.verify(this.dispatcher, Mockito.times(1)).handle(req, json);
 		
 		Assert.assertTrue("Expected type: " + Holder.class + " but found " + response.getClass(), response.getClass().isAssignableFrom(Holder.class));
 		Assert.assertEquals(obj, ((Holder<Object>) response).getState());
@@ -110,9 +110,9 @@ public class WebActionControllerTest {
 		
 		final Object obj = new Object();
 		
-		Mockito.when(this.dispatcher.handle(req, requestMethod, version, json)).thenReturn(obj);
+		Mockito.when(this.dispatcher.handle(req, json)).thenReturn(obj);
 		final Object response = this.testee.handlePut(req, version, json);
-		Mockito.verify(this.dispatcher, Mockito.times(1)).handle(req, requestMethod, version, json);
+		Mockito.verify(this.dispatcher, Mockito.times(1)).handle(req, json);
 		
 		Assert.assertTrue("Expected type: " + Holder.class + " but found " + response.getClass(), response.getClass().isAssignableFrom(Holder.class));
 		Assert.assertEquals(obj, ((Holder<Object>) response).getState());
@@ -128,9 +128,9 @@ public class WebActionControllerTest {
 		
 		final Object obj = new Object();
 		
-		Mockito.when(this.dispatcher.handle(req, requestMethod, version, json)).thenReturn(obj);
+		Mockito.when(this.dispatcher.handle(req, json)).thenReturn(obj);
 		final Object response = this.testee.handlePatch(req, version, json);
-		Mockito.verify(this.dispatcher, Mockito.times(1)).handle(req, requestMethod, version, json);
+		Mockito.verify(this.dispatcher, Mockito.times(1)).handle(req, json);
 		
 		Assert.assertTrue("Expected type: " + Holder.class + " but found " + response.getClass(), response.getClass().isAssignableFrom(Holder.class));
 		Assert.assertEquals(obj, ((Holder<Object>) response).getState());
@@ -144,9 +144,9 @@ public class WebActionControllerTest {
 		
 		final Object obj = new Object();
 		
-		Mockito.when(this.dispatcher.handle(req, RequestMethod.POST, event)).thenReturn(obj);
+		Mockito.when(this.dispatcher.handle(req, event)).thenReturn(obj);
 		final Object response = this.testee.handleEventNotify(req, event);
-		Mockito.verify(this.dispatcher, Mockito.times(1)).handle(req, RequestMethod.POST, event);
+		Mockito.verify(this.dispatcher, Mockito.times(1)).handle(req, event);
 		
 		Assert.assertTrue("Expected type: " + Holder.class + " but found " + response.getClass(), response.getClass().isAssignableFrom(Holder.class));
 		Assert.assertEquals(obj, ((Holder<Object>) response).getState());

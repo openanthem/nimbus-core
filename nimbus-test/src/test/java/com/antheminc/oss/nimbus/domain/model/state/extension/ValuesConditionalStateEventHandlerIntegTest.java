@@ -17,6 +17,8 @@ package com.antheminc.oss.nimbus.domain.model.state.extension;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.util.Random;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -25,15 +27,15 @@ import org.junit.runners.MethodSorters;
 
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
-import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.AbstractStateEventHandlerTests;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
-import com.antheminc.oss.nimbus.entity.AbstractEntity.IdString;
+import com.antheminc.oss.nimbus.entity.AbstractEntity.IdLong;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
 
 /**
  * 
- * @author Tony Lopez (AF42192)
+ * @author Tony Lopez
  *
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -41,7 +43,7 @@ public class ValuesConditionalStateEventHandlerIntegTest extends AbstractStateEv
 
 	private static final String STATUS_FORM = "/sample_core/sampleCoreValuesEntity/statusForm";
 
-	private String REF_ID;
+	private Long REF_ID;
 	
 	@Override
 	protected Command createCommand() {
@@ -54,8 +56,9 @@ public class ValuesConditionalStateEventHandlerIntegTest extends AbstractStateEv
 		if (REF_ID != null) {
 			return mongo.findById(REF_ID, SampleCoreEntity.class, "sample_core");
 		}
-		
+		//AtomicInteger counter = new AtomicInteger(0);
 		final SampleCoreEntity core = new SampleCoreEntity();
+		core.setId(new Random().nextLong());
 		mongo.insert(core, "sample_core");
 		REF_ID = core.getId();
 		assertNotNull(REF_ID);
@@ -73,7 +76,7 @@ public class ValuesConditionalStateEventHandlerIntegTest extends AbstractStateEv
 
 		executionContextLoader.clear();
 		
-		_q = (QuadModel<?, ? extends IdString>)executionContextLoader.load(_cmd).getQuadModel();
+		_q = (QuadModel<?, ? extends IdLong>)executionContextLoader.load(_cmd).getQuadModel();
 		assertNotNull(_q);
 		
 		_q.getRoot().getExecutionRuntime().onStartCommandExecution(_cmd);

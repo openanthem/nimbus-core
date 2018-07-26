@@ -16,7 +16,7 @@
  */
 'use strict';
 import { Pipe, PipeTransform } from '@angular/core';
-import { Param } from '../shared/app-config.interface';
+import { Param } from '../shared/param-state';
 
 /**
  * \@author Dinakar.Meda

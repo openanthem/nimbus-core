@@ -22,6 +22,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.antheminc.oss.nimbus.domain.defn.Executions.Configs;
  
 /**
@@ -44,9 +46,14 @@ public @interface Execution {
 	@Execution
 	public @interface Config {
 		
+		public static String TRUE = "true";
+		public static String COL = StringUtils.EMPTY;
+		
+		String when() default TRUE;
+		
 		String url();
 		
-		String col() default "";
+		String col() default COL;
 		
 		KeyValue[] kv() default {};
 	}

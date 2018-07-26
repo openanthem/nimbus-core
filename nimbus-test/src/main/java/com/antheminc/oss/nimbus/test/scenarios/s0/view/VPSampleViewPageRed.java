@@ -15,6 +15,8 @@
  */
 package com.antheminc.oss.nimbus.test.scenarios.s0.view;
 
+import java.util.List;
+
 import javax.validation.constraints.NotNull;
 
 import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
@@ -28,6 +30,7 @@ import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Section;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Tile;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreNestedEntity;
+import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreNestedEntity.Level1;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -75,9 +78,8 @@ public class VPSampleViewPageRed {
 	public static class Form_ConvertedNestedEntity {
 		
 		// detect if in add mode vs. edit: add results in addition to collection elements whereas edit updates existing element
-		@Configs(
-			@Config(url="<!#this!>/../_update")	
-		)
+		@Config(url="<!#this!>/../_replace")	
+		@Config(url="<!#this!>/../_get?fn=param&expr=flush()")
 		private String saveButton;
 		
 		// 1. delete mapsTo elem	2. unassign
@@ -93,6 +95,18 @@ public class VPSampleViewPageRed {
 		
 		@Path("/nested_attr_String2")
 		private String vt_nested_attr_String2;
+		
+		@Path("/nested_attr_String3")
+		private String vt_nested_attr_String3_1;
+		
+		@Path("/nested_attr_String3")
+		private String vt_nested_attr_String3_2;
+		
+		@Path("/nested_attr_collection")
+		private List<String> vt_nested_attr_collection; 
+		
+		@Path("/nested_attr_complex_collection")
+		private List<Level1> vt_nested_attr_complex_collection; 
 	}
 	
 }

@@ -16,7 +16,7 @@
  */
 'use strict';
 import { Component, Input } from '@angular/core';
-import { Param } from '../../../shared/app-config.interface';
+import { Param } from '../../../shared/param-state';
 import { WebContentSvc } from '../../../services/content-management.service';
 import { BaseElement } from '../base-element.component';
 

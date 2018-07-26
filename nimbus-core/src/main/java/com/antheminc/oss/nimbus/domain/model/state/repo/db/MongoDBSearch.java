@@ -16,15 +16,13 @@
 package com.antheminc.oss.nimbus.domain.model.state.repo.db;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.util.Assert;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
-import com.antheminc.oss.nimbus.domain.cmd.CommandMessageConverter;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
+import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository.Aggregation;
 
 import lombok.Getter;
 
@@ -37,8 +35,6 @@ public abstract class MongoDBSearch implements DBSearch {
 
 	private final MongoOperations mongoOps;
 	
-	private final CommandMessageConverter converter;
-	
 	private final DomainConfigBuilder domainConfigBuilder;
 	
 	private final BeanResolverStrategy beanResolver;
@@ -47,7 +43,6 @@ public abstract class MongoDBSearch implements DBSearch {
 		this.beanResolver = beanResolver;
 		this.mongoOps = beanResolver.get(MongoOperations.class);
 		this.domainConfigBuilder = beanResolver.get(DomainConfigBuilder.class);
-		this.converter = beanResolver.get(CommandMessageConverter.class);
 	}
 	
 	
@@ -56,8 +51,7 @@ public abstract class MongoDBSearch implements DBSearch {
 			return getDomainConfigBuilder().getModel(criteria.getProjectCriteria().getAlias()).getReferredClass();
 		}
 		else if(criteria.getAggregateCriteria() != null ) {
-			com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository.Aggregation aggByAlias = 
-					com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository.Aggregation.getByAlias(criteria.getAggregateCriteria());
+			Aggregation aggByAlias = Aggregation.getByAlias(criteria.getAggregateCriteria());
 			
 			Assert.notNull(aggByAlias, "Aggregation constant not found for the alias: " +criteria.getAggregateCriteria());
 			

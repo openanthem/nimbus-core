@@ -17,7 +17,7 @@
 'use strict';
 import { BaseElement } from './base-element.component';
 import { Component, Input } from '@angular/core';
-import { Param } from '../../shared/app-config.interface';
+import { Param } from '../../shared/param-state';
 import { WebContentSvc } from '../../services/content-management.service';
 import { PageService } from '../../services/page.service';
 import { GenericDomain } from './../../model/generic-domain.model';
@@ -101,7 +101,6 @@ export class Link extends BaseElement {
 
     ngOnInit() {
         super.ngOnInit();
-        //console.log(this.element.config.uiStyles.attributes.value);
         this.imagesPath = ServiceConstants.IMAGES_URL;
         if (this.inClass) {
             this.linkClass = this.inClass;

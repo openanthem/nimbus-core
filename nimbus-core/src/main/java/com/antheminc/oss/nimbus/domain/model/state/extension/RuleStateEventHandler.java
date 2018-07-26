@@ -28,19 +28,22 @@ import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnSt
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.AbstractConditionalStateEventHandler.EvalExprWithCrudActions;
 import com.antheminc.oss.nimbus.domain.rules.RulesEngineFactory;
-import com.antheminc.oss.nimbus.support.JustLogit;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
+
+import lombok.AccessLevel;
+import lombok.Getter;
 
 /**
  * Rule State Event handler for triggering one or more rule definitions during its 
  * OnStateLoad and OnStateChange events.
  * 
- * @author Tony Lopez (AF42192)
+ * @author Tony Lopez
  *
  */
+@EnableLoggingInterceptor
+@Getter(AccessLevel.PROTECTED)
 public class RuleStateEventHandler extends EvalExprWithCrudActions<Rule> 
 		implements OnStateLoadHandler<Rule>, OnStateChangeHandler<Rule> {
-
-	public static final JustLogit LOG = new JustLogit();
 	
 	private static final Map<String, RulesConfig> rulesConfigCache = new HashMap<>();
 	
@@ -60,7 +63,7 @@ public class RuleStateEventHandler extends EvalExprWithCrudActions<Rule>
 			final RulesConfig rConfig = this.getRulesConfig(ruleAlias);
 			if (null != rConfig) {
 				
-				final RulesRuntime rRuntime = this.rulesEngineFactory.createRuntime(rConfig);
+				final RulesRuntime rRuntime = getRulesEngineFactory().createRuntime(rConfig);
 				
 				// Disallow defining @Rule with the same rule file as the root param.
 				final Param<?> rootParam = onChangeParam.getRootDomain().getAssociatedParam();
@@ -93,7 +96,7 @@ public class RuleStateEventHandler extends EvalExprWithCrudActions<Rule>
 	 */
 	private RulesConfig getRulesConfig(String ruleAlias) {
 		// TODO : Consider moving this to global cache when implemented.
-		return rulesConfigCache.computeIfAbsent(ruleAlias, k -> this.rulesEngineFactory.createConfig(k));
+		return rulesConfigCache.computeIfAbsent(ruleAlias, k -> getRulesEngineFactory().createConfig(k));
 	}
 
 	/**

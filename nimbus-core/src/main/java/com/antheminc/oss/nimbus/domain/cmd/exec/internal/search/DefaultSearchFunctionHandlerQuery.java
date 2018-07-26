@@ -15,18 +15,21 @@
  */
 package com.antheminc.oss.nimbus.domain.cmd.exec.internal.search;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
-import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.QuerySearchCriteria;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 /**
  * @author Rakesh Patel
  *
  */
+@EnableLoggingInterceptor
 public class DefaultSearchFunctionHandlerQuery<T, R> extends DefaultSearchFunctionHandler<T, R> {
 
 	@Override
@@ -37,7 +40,10 @@ public class DefaultSearchFunctionHandlerQuery<T, R> extends DefaultSearchFuncti
 		
 		querySearchCriteria.validate(executionContext);
 		
-		String where = resolveNamedQueryIfApplicable(executionContext, mConfig, actionParam);
+		String where = executionContext.getCommandMessage().getCommand().getFirstParameterValue(Constants.SEARCH_REQ_WHERE_MARKER.code);
+		if(StringUtils.isNotBlank(where) && where.startsWith(".and(")) {
+			where = StringUtils.replaceOnce(where, ".and", "");
+		}
 		querySearchCriteria.setWhere(where);
 		
 		querySearchCriteria.setOrderby(cmd.getFirstParameterValue(Constants.SEARCH_REQ_ORDERBY_MARKER.code));

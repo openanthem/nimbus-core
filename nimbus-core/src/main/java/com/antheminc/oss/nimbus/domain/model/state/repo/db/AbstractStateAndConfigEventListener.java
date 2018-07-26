@@ -38,25 +38,21 @@ public abstract class AbstractStateAndConfigEventListener implements StateAndCon
 
 	@Override
 	public boolean shouldAllow(EntityState<?> p) {
-		
-		Domain currentDomain = AnnotationUtils.findAnnotation(p.getConfig().getReferredClass(), Domain.class);
-		
-		if(currentDomain == null)
-			currentDomain = AnnotationUtils.findAnnotation(p.getRootDomain().getConfig().getReferredClass(), Domain.class);
+		Domain currentDomain = AnnotationUtils.findAnnotation(p.getRootDomain().getConfig().getReferredClass(), Domain.class);
 		
 		if(currentDomain == null)
 			return false;
 		
 		Model pModel = AnnotationUtils.findAnnotation(p.getRootDomain().getConfig().getReferredClass(), Model.class);
 		
-		ListenerType includeListener = Arrays.asList(currentDomain.includeListeners())
+		ListenerType listener = Arrays.asList(currentDomain.includeListeners())
 				.stream()
-				.filter((listener) -> !Arrays.asList(pModel.excludeListeners()).contains(listener))
-				.filter((listenerType) -> containsListener(listenerType))
+				.filter(excludeListener -> !Arrays.asList(pModel.excludeListeners()).contains(excludeListener))
+				.filter(includeListener -> containsListener(includeListener))
 				.findFirst()
 				.orElse(null);
 		
-		if(includeListener == null)
+		if(listener == null)
 			return false;
 		
 		return true;

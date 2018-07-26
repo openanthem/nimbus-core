@@ -1,9 +1,12 @@
 label{
     margin-bottom: .4rem;
 }
+//for IE remove focus outline
+fieldset:focus{
+    outline: none;
+  }
 .form-control{
-	border-color: $border-color;
-    color: $border-color-dark;
+	border-color: #b9b6b6;
 }
 .form-group.required label:after, label.required:after {
     content: "*";
@@ -26,24 +29,41 @@ label.custom-control.required{
     color: red;
 }
 .form-control[disabled]{
-	border-color: $border-color-light;
-    color: $border-color;
-    background-color: transparent;
+    border-color: #B9B6B6;
+    background-color: #d4d4d4;
 }
 .form-control:focus{
-	//border-color: $border-color-dark;
-    color: $border-color-dark;
+	border-color: #9dd3f7;
     outline: $focus-outline-setting;
 }
+
+.ui-calendar .ui-widget:disabled {
+    opacity: 1;
+    filter: Alpha(Opacity=100);
+    border-color: #B9B6B6;
+    background-color: #d4d4d4;
+}
+.ui-calendar .ui-widget.ui-calendar-button:disabled {
+    border-color: transparent;
+    background-color: transparent;
+}
+.ui-state-disabled span.ui-button-icon-left {
+    color: #b9b6b6;
+}
+.ui-calendar input {
+    width: 120px;
+}
+
 //for custom radio and checkbox
 .custom-control-indicator {
     border: 1px solid $border-color;
 }
 // override webkit auto fill styles
 input:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0px 1000px white inset;}
+    -webkit-box-shadow: 0 0 0px 1000px white inset;
+}
 :focus{
-    outline: #8FBEE6 solid 2px; 
+    outline: $focus-outline-setting ; 
 }
 textarea.form-control {
     max-height: 140px;
@@ -58,11 +78,24 @@ textarea.form-control {
   padding:0 ;
   background:none;
   border:none;
-    .warningMsg::before{
-        content:"\F071";
-    font-family: fontAwesome;
-    display: inline-block;
-    margin-right:.5rem;
+  color: #4c4c4c;
+    .errorMsg{
+        color: #a94442;
+        &::before{
+            content:"\F071";
+            font-family: fontAwesome;
+            display: inline-block;
+            margin-right:.5rem;
+        }
+    }
+    .warningMsg{
+        color: #e5991c;
+        &::before{
+            content:"\F071";
+            font-family: fontAwesome;
+            display: inline-block;
+            margin-right:.5rem;
+        }
     }
 }
 
@@ -129,6 +162,15 @@ p-dropdown.form-control {
     min-width: 150px;
     .ui-dropdown-panel .ui-dropdown-list{
         padding:0;
+    }
+    &.ui-state-disabled, 
+    &.ui-widget:disabled {
+        opacity: 1;
+        .ui-dropdown-label.ui-inputtext,
+        .ui-dropdown-trigger {
+            border-color: #B9B6B6;
+            background-color: #d4d4d4;
+        }
     }
 }
 .ui-corner-all {
@@ -247,12 +289,14 @@ p-checkbox.ng-dirty.ng-invalid .ui-chkbox-box {
             vertical-align: bottom;
             &::before {
                 position: absolute;
-                font-size: .3rem;
-                bottom: .4rem;
-                left: -.15rem;
+                font-size: .5rem;
+                bottom: .3rem;
+                left: -.19rem;
             }
         }
     }
+
+
     .ui-radiobutton-box:not(.ui-state-disabled):not(.ui-state-active):hover,
     .ui-chkbox-box:not(.ui-state-disabled):not(.ui-state-active):hover {
         border-color: #006bc2;
@@ -261,9 +305,13 @@ p-checkbox.ng-dirty.ng-invalid .ui-chkbox-box {
     .ui-radiobutton-box.ui-state-disabled,
     .ui-radiobutton-box.ui-state-disabled:hover,
     .ui-chkbox-box.ui-state-disabled,
-    .ui-chkbox-box.ui-state-disabled:hover {
-        border-color: #dadada;
-        background: #ebebeb;
+    .ui-chkbox-box.ui-state-disabled:hover,
+    .ui-chkbox-box.ui-state-active.ui-state-disabled, 
+    .ui-radiobutton-box.ui-state-disabled.ui-state-active {
+        border-color: #b9b6b6;
+        background: #d4d4d4;
+        opacity: 1;
+        color: #4c4c4c;
     }
 
 
@@ -295,6 +343,10 @@ p-checkbox.ng-dirty.ng-invalid .ui-chkbox-box {
             background-image: none;
             background-color: #006bc2;
             color: #fff;
+            border-color: #006bc2;
+            -webkit-font-smoothing: antialiased;
+            width: 1.1rem;
+            height: 1.1rem;
             &::after{
                 font-family: fontAwesome;
                 content: "\F00C";
@@ -307,4 +359,28 @@ p-checkbox.ng-dirty.ng-invalid .ui-chkbox-box {
             box-shadow: none;
         }
     }
+}
+.ui-timepicker.ui-widget-header {
+    background: #c8e3f6;
+    color: #696b6c;
+}
+.ui-timepicker a > span {
+    color: #006bc2;
+    font-weight: bold;
+    font-size: 1.4rem;
+}
+.ui-datepicker.ui-widget .ui-timepicker {
+    text-align: right;
+    padding-right: 2rem;
+}
+
+input.custom-control-input:disabled ~ .custom-control-description {
+    color: #4c4c4c;
+}
+input.custom-control-input:disabled ~ .custom-control-indicator,
+.custom-check .custom-control-input:checked:disabled ~ .custom-control-indicator {
+    border-color: #b9b6b6;
+        background: #d4d4d4;
+        opacity: 1;
+        color: #4c4c4c;
 }

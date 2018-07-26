@@ -18,7 +18,9 @@ import { ValidationConstraint } from './../../shared/validationconstraints.enum'
 'use strict';
 import { Component, Input } from '@angular/core';
 import { FormGroup, AbstractControlDirective, NgModel } from '@angular/forms';
-import { Param, Constraint } from '../../shared/app-config.interface';
+import { Constraint } from '../../shared/param-config';
+import { Param } from '../../shared/param-state';
+import { Message } from '../../shared/message';
 
 var counter = 0;
 
@@ -38,8 +40,10 @@ var counter = 0;
 export class FormElement {
     @Input() element: Param;
     @Input() form: FormGroup;
-    id: String = 'form-control' + counter++;
     @Input() elementCss: String;
+    elemMessages: Message[];
+    id: String = 'form-control' + counter++;
+
     get isValid() {
         if (this.form.controls[this.element.config.code] != null) {
             return this.form.controls[this.element.config.code].valid;
@@ -47,6 +51,7 @@ export class FormElement {
             return true;
         }
     }
+
     get isPristine() {
         if (this.element.config.code.startsWith('{')) {
             return true;
@@ -57,26 +62,39 @@ export class FormElement {
             return true;
         }
     }
-    get showErrors() {
-        return (!this.isPristine && !this.isValid);
+
+    getMessages() {
+        this.elemMessages = [];
+        this.getErrors();
+        if (this.element.message != null) {
+            this.elemMessages.push(this.element.message);
+        }
+        return this.elemMessages;
     }
 
-    constructor() { };
+    get showMessages() {
+        return (this.elemMessages != null && this.elemMessages.length > 0);
+    }
+
+    constructor() { }
+
+    getErrorStyles() {
+        if (this.showErrors) {
+            return 'alert alert-danger';
+        }
+    }
+
+    get showErrors() { 
+        return (!this.isPristine && !this.isValid); 
+    }
 
     ngOnInit() {
-        //console.log(JSON.stringify(this.elements));
         if (this.element.config.uiStyles && this.element.config.uiStyles.attributes.controlId !== null) {
             if (Number(this.element.config.uiStyles.attributes.controlId) % 2 === 0) {
                 this.elementCss = this.elementCss + ' even';
             } else {
                 this.elementCss = this.elementCss + ' odd';
             }
-        }
-    }
-
-    getErrorStyles() {
-        if (this.showErrors) {
-            return 'alert alert-danger';
         }
     }
 
@@ -87,48 +105,43 @@ export class FormElement {
             return '';
         }
     }
-
+    
     getErrors() {
-        let errors: string[] = [];
-
         if (this.form.controls[this.element.config.code].invalid) {
             if (this.element.config.validation) {
                 this.element.config.validation.constraints.forEach(validator => {
                     // Defaults
                     // TODO - Consider moving this logic to a lookup service.
                     if (this.form.controls[this.element.config.code].errors.required && validator.name === ValidationConstraint._notNull.value) {
-                        if (!this.checkforCustomMessages(validator, errors))
-                            errors.push('Field is required.');
+                        this.addErrorMessages(validator.attribute.message ? validator.attribute.message : 'Field is required.');
                     }
                     if (this.form.controls[this.element.config.code].errors.pattern && validator.name === ValidationConstraint._pattern.value) {
-                        if (!this.checkforCustomMessages(validator, errors))
-                            errors.push('RegEx is invalid.');  
+                        this.addErrorMessages(validator.attribute.message ? validator.attribute.message : 'Field is required.');
                     }
                     if (this.form.controls[this.element.config.code].errors.minMaxSelection && validator.name === ValidationConstraint._size.value) {
-                        if (!this.checkforCustomMessages(validator, errors))
-                            errors.push('Required number of fields not met.'); 
+                        this.addErrorMessages(validator.attribute.message ? validator.attribute.message : 'Field is required.');
                     }
                     if (this.form.controls[this.element.config.code].errors.isNumber) {
                         //if (!this.checkforCustomMessages(validator, errors))
-                            errors.push('Value must be a number.');
+                        this.addErrorMessages('Value must be a number.');
                     }
                     //}
                 });
             }
-            return errors;
         }
     }
 
-    checkforCustomMessages(validator: Constraint, errors: string[]): boolean {
-        if (validator.attribute.message) {
-            errors.push(validator.attribute.message);
-            return true;
-        }
-        return false;
+    addErrorMessages(errorText: string) {
+        let errorMessage: Message, summary: string;
+        errorMessage = new Message();
+        errorMessage.context = 'INLINE';
+        errorMessage.life = 10000;
+        errorMessage.messageArray.push({ severity: 'error', summary: summary, detail: errorText });
+        this.elemMessages.push(errorMessage);
     }
 
     ngModelState(ngm: AbstractControlDirective): string {
-        let ret = ngm instanceof NgModel ? `name: ${ngm.name};  ` : '';
-        return ret + `touched: ${ngm.touched};  pristine: ${ngm.pristine};  valid: ${ngm.valid};  errors: ${JSON.stringify(ngm.errors)};  value: ${JSON.stringify(ngm.value)}`;
+        let ret = ngm instanceof NgModel ? 'name: ${ngm.name};  ' : '';
+        return ret + 'touched: ${ngm.touched};  pristine: ${ngm.pristine};  valid: ${ngm.valid};  errors: ${JSON.stringify(ngm.errors)};  value: ${JSON.stringify(ngm.value)}';
     }
 }

@@ -16,8 +16,6 @@
 package com.antheminc.oss.nimbus.entity.user;
 
 
-import org.springframework.data.annotation.Id;
-
 import com.antheminc.oss.nimbus.entity.access.Role;
 import com.antheminc.oss.nimbus.entity.person.Address;
 import com.antheminc.oss.nimbus.entity.person.Name;
@@ -33,12 +31,9 @@ import lombok.ToString;
  *
  */
 @Getter @Setter @ToString(callSuper=true)
-public abstract class AbstractUser<R extends Role> extends Person<String, Address.IdString, Phone.IdString, Name.IdString> {
+public abstract class AbstractUser<R extends Role> extends Person<Address, Phone, Name> {
 	
 	private static final long serialVersionUID = 1L;
-	
-	@Id 
-	private String id;
 	
 	private String loginId;
 	

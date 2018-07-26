@@ -26,12 +26,13 @@ import { PageService } from '../../../services/page.service';
 import { ConfigService } from '../../../services/config.service';
 import { STOMPService } from '../../../services/stomp.service';
 import { ExecuteOutput, ModelEvent, Page } from '../../../shared/app-config.interface';
+import { LoggerService } from '../../../services/logger.service';
 
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 
  * 
- * \@howToUse 
+ * \@howToUse ------------ NOT USED. KEPT AS REFERENCE FOR WEBSOCKET CODE
  * 
  */
 @Component({
@@ -50,7 +51,8 @@ export class FlowWrapper {
         private _configSvc: ConfigService,
         private _stompService: STOMPService, 
         private _route: ActivatedRoute, 
-        private _router: Router) {
+        private _router: Router,
+        private _logger: LoggerService) {
         // Get the Flow Domain
         _route.data.subscribe( data => {
                 this.routeParams = data;
@@ -84,7 +86,13 @@ export class FlowWrapper {
     /** Initialize the WebSocket */
     initWebSocket() {
         this._stompService.configure();
-        this._stompService.try_connect().then(this.on_connect);
+        this._stompService.try_connect().then(this.on_connect).catch((err) => {
+            const errObj = {
+                message: 'error in intializing the webSocket',
+                error: err
+            };
+            this._logger.error(JSON.stringify(errObj));
+          });;
     }
 
     /** Cleanup on Destroy of Component */

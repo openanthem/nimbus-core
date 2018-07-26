@@ -22,12 +22,17 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
 import com.antheminc.oss.nimbus.domain.cmd.exec.FunctionHandler;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 import com.antheminc.oss.nimbus.support.expr.ExpressionEvaluator;
+
+import lombok.Getter;
 
 /**
  * @author Soham Chakravarti
  *
  */
+@Getter
+@EnableLoggingInterceptor
 public class DefaultParamFunctionHandler<T> implements FunctionHandler<T, Object> {
 
 	private final ExpressionEvaluator exprEval;
@@ -45,7 +50,7 @@ public class DefaultParamFunctionHandler<T> implements FunctionHandler<T, Object
 			return actionParameter;
 		
 		// expression
-		Object response = exprEval.getValue(exprValue, actionParameter);
+		Object response = getExprEval().getValue(exprValue, actionParameter);
 		return response;
 	}
 }

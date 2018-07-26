@@ -19,6 +19,7 @@ import java.io.Serializable;
 
 import com.antheminc.oss.nimbus.domain.defn.Model;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,6 +29,7 @@ import lombok.Setter;
  */
 @Model
 @Getter @Setter
+@EqualsAndHashCode
 public class ParamValue implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
