@@ -19,17 +19,19 @@ import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValuesConditional;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 /**
  * 
  * <p>Abstract Conditional State Event handler for updating <tt>Values</tt> annotated fields based
  * on conditional logic defined via configuration during the OnStateLoad event.</p>
  * 
- * @author Tony Lopez (AF42192)
+ * @author Tony Lopez
  * @see com.antheminc.oss.nimbus.domain.defn.extension.ValuesConditional
  * @see com.antheminc.oss.nimbus.domain.model.state.extension.AbstractValuesConditionalStateEventHandler
  *
  */
+@EnableLoggingInterceptor
 public class ValuesConditionalOnStateLoadEventHandler extends AbstractValuesConditionalStateEventHandler 
 	implements OnStateLoadHandler<ValuesConditional> {
 

@@ -18,14 +18,16 @@ package com.antheminc.oss.nimbus.domain.model.state.extension;
 import com.antheminc.oss.nimbus.domain.defn.extension.ParamContext;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 /**
  * Default StateEventHandler for fields decorated with <tt>ParamContext</tt> that sets
  * param context values as defined within the <tt>ParamContext</tt> annotation attributes.
  *  
- * @author Tony Lopez (AF42192)
+ * @author Tony Lopez
  * @see com.antheminc.oss.nimbus.domain.defn.extension.ParamContext
  */
+@EnableLoggingInterceptor
 public class ParamContextStateEventHandler implements OnStateLoadHandler<ParamContext> {
 
 	@Override

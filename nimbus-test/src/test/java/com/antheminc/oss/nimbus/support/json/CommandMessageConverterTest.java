@@ -17,6 +17,8 @@ package com.antheminc.oss.nimbus.support.json;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.Serializable;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -63,12 +65,12 @@ public class CommandMessageConverterTest {
 	
 	@Test
 	public void t0_convertStringToJson() {
-		String str = "some value";
+		Serializable str = "some value";
 		
-		String json = converter.write(str);
+		String json = converter.toJson(str);
 		System.out.println("JSON: "+ json);
 		
-		String res = converter.read(String.class, json);
+		String res = converter.toType(String.class, json);
 		assertEquals(str, res);
 	}
 	
@@ -116,11 +118,11 @@ public class CommandMessageConverterTest {
 	@Test
 	public void t3_convertObjWithPrivateBlankConstructor() {
 		ClassWithBlankPrivateConstructor obj = new ClassWithBlankPrivateConstructor("some data");
-		String json = converter.write(obj);
+		String json = converter.toJson(obj);
 		
 		System.out.println("JSON: "+json);
 		
-		ClassWithBlankPrivateConstructor res = converter.read(ClassWithBlankPrivateConstructor.class, json);
+		ClassWithBlankPrivateConstructor res = converter.toType(ClassWithBlankPrivateConstructor.class, json);
 		assertEquals(obj.getNeeded(), res.getNeeded());
 	}
 	

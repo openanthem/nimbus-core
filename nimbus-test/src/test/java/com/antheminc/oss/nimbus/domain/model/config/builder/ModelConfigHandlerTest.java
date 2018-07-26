@@ -57,7 +57,7 @@ public class ModelConfigHandlerTest extends AbstractFrameworkIntegrationTests {
 	}
 	
 	@Getter @Setter
-	public static class TestNestedModel<ID extends Serializable, A extends Address<ID>> extends TestBaseModel {
+	public static class TestNestedModel<ID extends Serializable, A extends Address> extends TestBaseModel {
 		private Set<A> addresses;
 	}
 	

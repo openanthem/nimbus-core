@@ -24,7 +24,6 @@ import com.antheminc.oss.nimbus.domain.defn.MapsTo;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
-import com.antheminc.oss.nimbus.domain.model.state.EntityState.MappedListParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityStateAspectHandlers;
 import com.antheminc.oss.nimbus.domain.model.state.ExecutionRuntime;
 import com.antheminc.oss.nimbus.domain.model.state.InvalidStateException;
@@ -39,7 +38,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @author Soham Chakravarti
  *
  */
-public class DefaultListParamState<T> extends DefaultParamState<List<T>> implements ListParam<T> {
+public class DefaultListParamState<T> extends AbstractListPaginatedParam<T> implements ListParam<T> {
 	private static final long serialVersionUID = 1L;
 	
 	public static class LeafState<T> extends DefaultListParamState<T> implements LeafParam<List<T>> {
@@ -142,6 +141,9 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 				// change state
 				boolean result = affectClearChange(propagateToMapsTo);
 				
+				// clear page meta
+				clearPageMeta();
+				
 				// notify
 				emitNotification(new Notification<>(this, ActionType._resetModel, this));
 				
@@ -167,12 +169,13 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 			// don't change if result was marked false
 			result = result ? r : result;
 		}
-	
+		
 		return result;
 	}
 	
 	@Override
 	public boolean remove(final ListElemParam<T> pElem) {
+		clearPageMeta();
 		final LockTemplate rLockTemplate = isMapped() ? findIfMapped().getMapsTo().getLockTemplate() : getLockTemplate();
 		
 		return rLockTemplate.execute(()->{
@@ -274,12 +277,13 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 			return true;
 		}
 	
-		logit.warn(()->"Attempt to remove elem from collection did not succeed. ListParam: "+this.getPath()+" -> attempted elemId to remove: "+elemId);
+		logit.debug(()->"Attempt to remove elem from collection did not succeed. ListParam: "+this.getPath()+" -> attempted elemId to remove: "+elemId);
 		return false;
 	}
 	
 	@Override
 	public ListElemParam<T> add() {
+		clearPageMeta();
 		final LockTemplate rLockTemplate = isMapped() ? findIfMapped().getMapsTo().getLockTemplate() : getLockTemplate();
 		
 		ListElemParam<T> pColElem = rLockTemplate.execute(()->{
@@ -338,6 +342,7 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 	
 	@Override
 	public boolean add(T elem) {
+		clearPageMeta();
 		//ListElemParam<T> pColElem = add();
 		final LockTemplate rLockTemplate = isMapped() ? findIfMapped().getMapsTo().getLockTemplate() : getLockTemplate();
 		
@@ -347,7 +352,7 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 
 		pColElem.setState(elem);		//lockTemplate.execute(()->pColElem.setState(elem));
 		
-		pColElem.initState();
+		pColElem.initState(false);
 		return true;
 	}
 	
@@ -361,6 +366,7 @@ public class DefaultListParamState<T> extends DefaultParamState<List<T>> impleme
 	
 	@Override
 	public boolean add(ListElemParam<T> pColElem) {
+		clearPageMeta();
 		return changeStateTemplate((rt, h, lockId)->{
 			List<T> list = getNestedCollectionModel().instantiateOrGet();
 			

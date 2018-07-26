@@ -151,7 +151,7 @@ public class CommandBuilderTest {
 	
 	@Test
 	public void t3_linked_commandElements_are_generated() {
-		String uri = "/xyz/admin/p/flow_patientenrollment/_loadTask:58af23636de7abfa6eeb0c28/_process";
+		String uri = "/xyz/admin/p/flow_patientenrollment/_loadTask:582363676028/_process";
 		//?b=
 		
 		Map<String, String[]> rParams = new HashMap<>();

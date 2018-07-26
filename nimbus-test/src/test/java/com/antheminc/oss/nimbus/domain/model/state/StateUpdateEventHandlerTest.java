@@ -42,7 +42,7 @@ public class StateUpdateEventHandlerTest extends AbstractFrameworkIngerationPers
 	@SuppressWarnings("unchecked")
 	@Test
 	public void t03_WhenCoreEntityUpdated_ThenUpdateAssociatedEntity() {
-		String refId = createOrGetDomainRoot_RefId();
+		Long refId = createOrGetDomainRoot_RefId();
 		
 		// Create sample_coreassociationentity with entityId = refId
 		MockHttpServletRequest newReq = MockHttpRequestBuilder.withUri(CORE_ASSOCIATEDPARAM_ROOT)

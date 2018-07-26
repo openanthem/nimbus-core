@@ -44,15 +44,12 @@ export class AuthenticationService {
     }
 
     logError(err) {
-        // console.error('Failure making server call : ' + JSON.stringify(err));
     }
 
     login(user: string, password: string, remember: boolean) {
-        // console.log('AuthenticationService#login(user, password, remember): Logging in...');
     }
 
     logout(): Observable<boolean> {
-        // console.log('AuthenticationService#logout(): Logging out...');
         return Observable.of(true);
     }
 }

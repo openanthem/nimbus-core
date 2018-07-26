@@ -26,9 +26,9 @@ import com.antheminc.oss.nimbus.domain.defn.extension.Audit;
 import com.antheminc.oss.nimbus.domain.defn.extension.ConfigConditional;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreAuditEntry;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
+import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity.SampleForm;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreLevel1_Entity;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreNestedEntity;
-import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity.SampleForm;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -66,7 +66,7 @@ public class VPSampleViewPageGreen {
 		@Path
 		private SampleCoreLevel1_Entity level1;
 		
-		@ConfigConditional(config=@Config(url="/p/sample_view_audit_history/_new?fn=_initEntity&target=/domainRootRefId&json=\"<!/.m/id!>\""))
+		@ConfigConditional(config=@Config(url="/p/sample_view_audit_history/_new?fn=_initEntity&target=/domainRootRefId&json=<!/.m/id!>"))
 		@Path
 		private String for_mapped_state_change_attr;
 		
@@ -77,7 +77,7 @@ public class VPSampleViewPageGreen {
 	@Getter @Setter
 	public static class SectionGrid {
 		
-		//@Config(url="/pageHealthConcerns/tileHealthConcerns/sectionConcerns/gridConcerns.m/_process?fn=_set&url=/p/cmcase/_search?fn=query&where=cmcase.id.eq('<!/.m/id!>')&project=/healthProblemsEnclosed")
+		//@Config(url="/pageHealthConcerns/tileHealthConcerns/sectionConcerns/gridConcerns.m/_process?fn=_set&url=/p/cmcase/_search?fn=query&where=cmcase.id.eq(<!/.m/id!>)&project=/healthProblemsEnclosed")
 		@Path("/attr_list_2_NestedEntity")
 		private List<ConvertedNestedEntity> grid_attached_ConvertedItems;
     }

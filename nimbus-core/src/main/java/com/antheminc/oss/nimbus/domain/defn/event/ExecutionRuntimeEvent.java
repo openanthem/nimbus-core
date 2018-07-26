@@ -35,7 +35,7 @@ public final class ExecutionRuntimeEvent {
 	@Event
 	@Inherited
 	public @interface OnRuntimeStart {
-
+		int order() default Event.DEFAULT_ORDER_NUMBER;
 	}
 	
 	@Retention(RUNTIME)
@@ -43,6 +43,6 @@ public final class ExecutionRuntimeEvent {
 	@Event
 	@Inherited
 	public @interface OnRuntimeStop {
-
+		int order() default Event.DEFAULT_ORDER_NUMBER;
 	}
 }

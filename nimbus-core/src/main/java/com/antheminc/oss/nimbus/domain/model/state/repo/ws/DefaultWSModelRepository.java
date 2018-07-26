@@ -32,6 +32,8 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
@@ -39,8 +41,8 @@ import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ExternalModelRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.ExampleSearchCriteria;
-import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.LookupSearchCriteria;
-import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.QuerySearchCriteria;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
+import com.antheminc.oss.nimbus.support.JustLogit;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -56,11 +58,14 @@ import lombok.Setter;
  */
 @ConfigurationProperties(prefix="ext.repository")
 @Getter @Setter
+@EnableLoggingInterceptor
 public class DefaultWSModelRepository implements ExternalModelRepository {
 
 	private final RestTemplate restTemplate;
 	
 	private Map<String, String> targetUrl;
+	
+	private final static JustLogit logit = new JustLogit(DefaultWSModelRepository.class);
 	
 	//private ExternalModelRepositoryClient externalRepositoryClient;
 	
@@ -74,9 +79,14 @@ public class DefaultWSModelRepository implements ExternalModelRepository {
 		URI uri = createUriForAlias(alias, url);
 		if(uri == null)
 			return null;
-		
-		ResponseEntity<T> responseEntity = restTemplate.exchange(new RequestEntity<T>(HttpMethod.GET, uri), referredClass);
-		return Optional.ofNullable(responseEntity).map((response) -> response.getBody()).orElse(null);
+	
+		try {
+			ResponseEntity<T> responseEntity = getRestTemplate().exchange(new RequestEntity<T>(HttpMethod.GET, uri), referredClass);
+			return Optional.ofNullable(responseEntity).map((response) -> response.getBody()).orElse(null);
+		} catch(Exception e) {
+			handleException(e,uri);
+		}
+		return null;	
 	}
 	
 	@Override
@@ -97,18 +107,23 @@ public class DefaultWSModelRepository implements ExternalModelRepository {
 	}
 	
 	private Object execute(Supplier<RequestEntity<?>> reqEntitySupplier, Supplier<ParameterizedTypeReference<?>> responseTypeSupplier) {
-		ResponseEntity<?> responseEntity = restTemplate.exchange(reqEntitySupplier.get(), responseTypeSupplier.get());
-		return Optional.of(responseEntity).map((response)->response.getBody()).orElse(null);
+		 try {
+			ResponseEntity<?> responseEntity = getRestTemplate().exchange(reqEntitySupplier.get(), responseTypeSupplier.get());
+			return Optional.of(responseEntity).map((response)->response.getBody()).orElse(null);
+		} catch(Exception e) {
+			handleException(e, reqEntitySupplier.get().getUrl());
+		}			 
+		 return null;
 	}
 	
 	private URI createUriForAlias(String alias, String url) {
 		
-		if(MapUtils.isEmpty(this.targetUrl) || StringUtils.isBlank(this.targetUrl.get(alias)))
+		if(MapUtils.isEmpty(this.getTargetUrl()) || StringUtils.isBlank(this.getTargetUrl().get(alias)))
 			return null;
 		
 		String urlToConctruct = StringUtils.startsWith(url, "/") ? url : "/".concat(url);
 		
-		urlToConctruct = this.targetUrl.get(alias).concat(urlToConctruct);
+		urlToConctruct = this.getTargetUrl().get(alias).concat(urlToConctruct);
 		try {
 			URI uri = new URI(urlToConctruct);
 			return uri;
@@ -142,6 +157,16 @@ public class DefaultWSModelRepository implements ExternalModelRepository {
 	        return delegate.getOwnerType();
 	    }
 
+	}
+	
+	private void handleException(Exception e, URI uri) {
+		if(e instanceof HttpStatusCodeException) {
+			logit.error(() -> "@ HttpStatusCodeException for "+uri);
+			throw new FrameworkRuntimeException(((HttpStatusCodeException) e).getResponseBodyAsString(),e);
+		} else if(e instanceof RestClientException) {
+			logit.error(() -> "@ RestClient exception for "+uri);
+			throw new FrameworkRuntimeException(e.getMessage(), e);
+		}
 	}
 
 }

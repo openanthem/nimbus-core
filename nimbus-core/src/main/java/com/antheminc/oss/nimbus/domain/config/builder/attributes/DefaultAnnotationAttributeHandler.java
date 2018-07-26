@@ -31,7 +31,7 @@ import com.antheminc.oss.nimbus.domain.config.builder.AnnotationAttributeHandler
  * map of the annotation attributes defined in the <tt>annotation</tt> element with no
  * additional changes made.
  * 
- * @author Tony Lopez (AF42192)
+ * @author Tony Lopez
  * @see com.antheminc.oss.nimbus.domain.config.builder.AnnotationAttributeHandler
  *
  */

@@ -1,7 +1,7 @@
 <div class="{{cssClass}}" id="{{code}}">
     <!-- Section Message -->
     
-      <nm-message messageType="{{element?.message.type}}" messageText="{{element?.message.text}}" *ngIf="element?.message"></nm-message>
+    <nm-message messageContext="{{element?.message.context}}"  [messageArray]="element?.message.messageArray" [life]="element?.message.life" *ngIf="element?.message"></nm-message>
         
     <!-- Loop thru Section Params - look at the visible flag and put in the right condition-->
     <ng-template [ngIf]="visible==true">
@@ -41,11 +41,11 @@
             </ng-template>
             <!-- Grid Param -->
             <ng-template [ngIf]="element.alias == 'Grid'">
-                <infinite-scroll-grid
+                <nm-table
                     [element]="element" 
                     [params]="element?.config?.type?.elementConfig?.type?.model?.paramConfigs"
                     (onScrollEvent)="onScrollEvent()">
-                </infinite-scroll-grid>
+                </nm-table>
             </ng-template>
             <!--Other buttons. Refactor item : to be triggred based on the buttongroup annotation-->
             <ng-template [ngIf]="element.alias == 'Button' && element?.visible == true">

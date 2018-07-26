@@ -20,6 +20,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
+
 /**
  * @author Soham Chakravarti
  *
@@ -28,6 +30,17 @@ public interface ConfigNature {
 
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(value=ElementType.FIELD)
-	public @interface Ignore {}
+	@ConfigExtension
+	public @interface Ignore {
+		
+		/**
+		 * default is empty, which indicates that the field in class should not be constructed as parameter within framework but will <br>
+		 * be included in pojo representation of the entity <br>
+		 * <br>
+		 * Providing a listener type would indicate only those event listeners to be excluded from listening to change events <br>
+		 * For e.g., {@LinkPlain ListenerType.websocket} would prevent updates from param being sent to registered client (such as presentation)  
+		 */
+		ListenerType[] listeners() default { };
+	}
 	
 }

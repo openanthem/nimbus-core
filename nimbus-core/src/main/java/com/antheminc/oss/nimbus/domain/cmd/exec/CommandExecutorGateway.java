@@ -30,9 +30,7 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 public interface CommandExecutorGateway {
 
 
-	default MultiOutput execute(Command cmd, String payload) {
-		return execute(new CommandMessage(cmd, payload));
-	}
+	MultiOutput execute(Command cmd, String payload);
 	
 	MultiOutput execute(CommandMessage cmdMsg);
 	

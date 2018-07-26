@@ -15,8 +15,6 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.repo;
 
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
@@ -30,14 +28,13 @@ import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.defn.Converters.ParamConverter;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Cache;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig.MappedParamConfig;
-import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListModel;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.MappedParam;
-import com.antheminc.oss.nimbus.domain.model.state.EntityState.MappedTransientParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Model;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
-import com.antheminc.oss.nimbus.domain.model.state.InvalidStateException;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.ValueAccessor;
 import com.antheminc.oss.nimbus.domain.model.state.StateType;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 import com.antheminc.oss.nimbus.support.JustLogit;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandler;
 
@@ -51,7 +48,7 @@ import lombok.Getter;
 @Getter
 public class ParamStateRepositoryGateway implements ParamStateGateway {
 
-	private JustLogit logit = new JustLogit(getClass());
+	private JustLogit logit = new JustLogit(ParamStateRepositoryGateway.class);
 	
 	JavaBeanHandler javaBeanHandler;
 	
@@ -129,13 +126,13 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 	}
 	
 	@Override
-	public <T> T getValue(Method readMethod, Object target) {
-		return javaBeanHandler.getValue(readMethod, target);
+	public <T> T getValue(ValueAccessor va, Object target) {
+		return javaBeanHandler.getValue(va, target);
 	}
 	
 	@Override
-	public <T> void setValue(Method readMethod, Object target, T value) {
-		javaBeanHandler.setValue(readMethod, target, value);
+	public <T> void setValue(ValueAccessor va, Object target, T value) {
+		javaBeanHandler.setValue(va, target, value);
 	}
 	
 	@Override
@@ -162,7 +159,7 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		_setRaw(defaultRepStrategy, param, newState);
 	}
 	public <P> void _setRaw(ParamStateRepository currRep, Param<P> param, P newState) {
-		currRep._set(param, newState);
+		currRep._set(param, (P)toObject(param.getConfig().getReferredClass(), newState));
 	}
 	
 	/***
@@ -219,6 +216,8 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 	}
 	
 	public <P> Action _set(ParamStateRepository currRep, Param<P> param, P newState) {
+		
+		newState = (P)toObject(param.getConfig().getReferredClass(), newState);
 		
 		// unmapped core/view - nested/leaf: set to param
 		if(!param.isMapped()) {
@@ -395,7 +394,7 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		for(Param<? extends Object> childParam : nestedModel.getParams()) {
 			
 			//PropertyDescriptor pd = (childParam.isMapped() ? childParam.findIfMapped().getMapsTo() : childParam).getPropertyDescriptor();
-			PropertyDescriptor pd = childParam.getPropertyDescriptor();
+			ValueAccessor pd = childParam.getValueAccessor();
 			Object childParamState = javaBeanHandler.getValue(pd, newState);
 			
 			//_set(currRep, (Param<Object>)childParam, childParamState);
@@ -419,6 +418,21 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		//11
 		boolean isEqual = currState.equals(newState);
 		return isEqual ? null : Action._update;
+	}
+	
+	/**
+	 * TODO Rakesh - in progress - try replace this with ConvertUtils...
+	 */
+	public static <P> Object toObject(Class<?> clazz, P value) {
+		if(value != null) {
+			if( Boolean.class == clazz || Boolean.TYPE == clazz) return Boolean.parseBoolean(value.toString());
+			if( Short.class == clazz || Short.TYPE == clazz) return Short.parseShort(value.toString());
+			if( Integer.class == clazz || Integer.TYPE == clazz) return Integer.parseInt(value.toString());
+			if( Long.class == clazz || Long.TYPE == clazz) return Long.parseLong(value.toString());
+			if( Float.class == clazz || Float.TYPE == clazz) return Float.parseFloat(value.toString());
+			if( Double.class == clazz || Double.TYPE == clazz) return Double.parseDouble(value.toString());
+		}
+	    return value;
 	}
 	
 }

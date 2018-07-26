@@ -16,6 +16,7 @@
 package com.antheminc.oss.nimbus.domain.model.state.repo.db;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -45,6 +46,22 @@ public abstract class SearchCriteria<T> implements Serializable {
 	private Pageable pageRequest;
 	
 	private Command cmd;
+	
+	@Getter @Setter
+	public static class PageFilter implements Serializable {
+		private static final long serialVersionUID = 1L;
+		
+		private List<FilterCriteria> filters;
+		
+		@Getter @Setter
+		public static class FilterCriteria implements Serializable {
+			private static final long serialVersionUID = 1L;
+			
+			private String code;
+			private String value; // client to send dates in ISODate even for filter (uuuu-MM-ddTHH:mm:ss:SSS'T')
+		}
+		
+	}
 	
 	public abstract void validate(ExecutionContext executionContext);
 	

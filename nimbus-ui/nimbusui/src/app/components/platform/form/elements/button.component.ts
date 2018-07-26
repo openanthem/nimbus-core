@@ -20,12 +20,14 @@ import { Component, Input, Output, EventEmitter, ViewEncapsulation } from '@angu
 import { FormGroup } from '@angular/forms';
 import { Location } from '@angular/common';
 import { GenericDomain } from './../../../../model/generic-domain.model';
-import { Param } from '../../../../shared/app-config.interface';
+import { Param } from '../../../../shared/param-state';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { PageService } from '../../../../services/page.service';
 import { ServiceConstants } from './../../../../services/service.constants';
 import { BaseElement } from '../../base-element.component';
 import { FileService } from '../../../../services/file.service';
+import { CustomHttpClient } from '../../../../services/httpclient.service';
+import { LoggerService } from '../../../../services/logger.service';
 
 /**
  * \@author Dinakar.Meda
@@ -47,17 +49,15 @@ import { FileService } from '../../../../services/file.service';
                 <button class="btn btn-secondary" [disabled]="disabled" (click)="emitEvent(this)" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
             </ng-template>
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style=='PLAIN' && element?.visible == true">
-                <button class="btn btn-plain" (click)="emitEvent(this)" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
+                <button class="btn btn-plain" (click)="emitEvent(this)" [disabled]="disabled" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
             </ng-template>
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style=='DESTRUCTIVE' && element?.visible == true">
-                <button class="btn btn-delete" (click)="emitEvent(this)" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
+                <button class="btn btn-delete" (click)="emitEvent(this)" [disabled]="disabled" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
             </ng-template>
         </ng-template>
-        <ng-template [ngIf]="element.config?.uiStyles?.attributes?.imgSrc">
-           <button (click)="emitEvent(this)" type="button" class="{{element.config?.uiStyles?.attributes?.cssClass}} ">
-                    <i class="fa fa-fw {{element.config?.uiStyles?.attributes?.imgSrc}}" aria-hidden="true"></i>
-                    {{label}}
-            </button>
+        <ng-template [ngIf]="element.config?.uiStyles?.attributes?.imgSrc && element?.visible == true">
+           <button (click)="emitEvent(this)" [disabled]="disabled" type="button" class="{{element.config?.uiStyles?.attributes?.cssClass}} ">
+                    <i class="fa fa-fw {{element.config?.uiStyles?.attributes?.imgSrc}}" aria-hidden="true"></i>{{label}}</button>
         </ng-template>
     `
 } )
@@ -73,7 +73,7 @@ export class Button extends BaseElement {
     files: any;
 
     constructor( private pageService: PageService, private _wcs: WebContentSvc, 
-        private location: Location, private fileService: FileService ) {
+        private location: Location, private fileService: FileService, private http: CustomHttpClient, private logger: LoggerService ) {
         super(_wcs);
     }
 
@@ -92,8 +92,6 @@ export class Button extends BaseElement {
         this.imagesPath = ServiceConstants.IMAGES_URL;
         this.payload = this.element.config.uiStyles.attributes.payload;
         this.buttonClickEvent.subscribe(( $event ) => {
-            //console.log( $event );
-            //let payload = JSON.parse(JSON.stringify(this.payload));
 
             this.pageService.processEvent( $event.element.path, $event.element.config.uiStyles.attributes.b,
                 null, $event.element.config.uiStyles.attributes.method );
@@ -135,18 +133,24 @@ export class Button extends BaseElement {
             let files: File[] = item['fileControl'];
             delete item['fileControl'];
             for(let p=0; p<files.length; p++){
-                item['fileId'] = files[p]['fileId'];
-                item['name'] = files[p]['name'];
-                this.pageService.processEvent( this.element.path, this.element.config.uiStyles.attributes.b, item, 'POST' );
-               
+                this.fileService.uploadFile(files[p], this.form)
+                    .subscribe(data => {
+                        item['fileId'] = data;  
+                        item['name'] = files[p]['name'];
+                        this.pageService.processEvent( this.element.path, this.element.config.uiStyles.attributes.b, item, 'POST' );              
+                    },
+                    error => this.logger.error(error),
+                    () => this.logger.info('File uploaded ..')
+                );
+                 
             }
             
         } else {
             this.pageService.processEvent( this.element.path, this.element.config.uiStyles.attributes.b, item, 'POST' );
         }
-
         // Form reset after submit
         this.reset();
+        
     }
 
     reset() {

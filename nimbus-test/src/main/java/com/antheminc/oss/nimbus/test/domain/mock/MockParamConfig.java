@@ -35,7 +35,7 @@ import lombok.Setter;
 /**
  * A mock ParamConfig implementation intended for testing purposes.
  * 
- * @author Tony Lopez (AF42192)
+ * @author Tony Lopez
  *
  */
 @Getter @Setter 
@@ -59,6 +59,7 @@ public class MockParamConfig implements ParamConfig<Object> {
 	private AnnotationConfig uiStyles;
 	private List<AnnotationConfig> validations;
 	private Values values;
+	private List<AnnotationConfig> extensions;
 
 	/*
 	 * (non-Javadoc)

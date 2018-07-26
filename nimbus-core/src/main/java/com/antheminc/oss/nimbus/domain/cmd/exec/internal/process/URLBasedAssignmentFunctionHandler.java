@@ -15,9 +15,7 @@
  */
 package com.antheminc.oss.nimbus.domain.cmd.exec.internal.process;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -32,12 +30,15 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
 import com.antheminc.oss.nimbus.domain.cmd.exec.FunctionHandler;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import lombok.Getter;
 
 /**
  * @author Jayant Chaudhuri
  * @author Rakesh Patel
  *
  */
+
+@Getter
 abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements FunctionHandler<T,R> {
 	
 	@Autowired
@@ -121,7 +122,7 @@ abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements Functi
 	protected S getExternalState(ExecutionContext executionContext){
 		CommandMessage commandToExecute = buildExternalCommand(executionContext.getCommandMessage());
 		
-		MultiOutput response = executorGateway.execute(commandToExecute);
+		MultiOutput response = getExecutorGateway().execute(commandToExecute);
 		//TODO Soham: temp fix, need to talk to Jayant
 		return (S)response.getOutputs().get(0).getValue();
 	}
@@ -131,7 +132,8 @@ abstract public class URLBasedAssignmentFunctionHandler<T,R,S> implements Functi
 		return Arrays.asList(Constants.SEARCH_REQ_WHERE_MARKER.code,Constants.SEARCH_REQ_ORDERBY_MARKER.code, 
 				Constants.SEARCH_REQ_FETCH_MARKER.code,Constants.SEARCH_REQ_AGGREGATE_MARKER.code,
 				Constants.SEARCH_REQ_PAGINATION_SIZE.code,Constants.SEARCH_REQ_PAGINATION_PAGE_NUM.code, 
-				Constants.SEARCH_REQ_PAGINATION_SORT_PROPERTY.code);
+				Constants.SEARCH_REQ_PAGINATION_SORT_PROPERTY.code,
+				Constants.SEARCH_REQ_PROJECT_MAPPING_MARKER.code);
 	}
 
 }

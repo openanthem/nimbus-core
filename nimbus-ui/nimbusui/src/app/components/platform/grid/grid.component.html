@@ -5,7 +5,11 @@
 			{{label}}
 			<nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
 		</p-header>
-		<div class="recordsDisplayed">Showing {{rowStart}}-{{rowEnd}} of  {{totalRecords}} <button *ngIf="element.config?.uiStyles?.attributes?.clearAllFilters" class="btn-plain ml-2" (click)="clearAll()">Clear Grid Filters</button> </div>
+		<div class="recordsDisplayed">Showing {{rowStart}}-{{rowEnd}} of  {{totalRecords}}
+			 <button *ngIf="element.config?.uiStyles?.attributes?.clearAllFilters" class="btn-plain ml-2" (click)="clearAll()"><i class="fa fa-fw fa-times hidden-md-down" aria-hidden="true"></i>Clear Grid Filters</button> 
+			 <button *ngIf="element.config?.uiStyles?.attributes?.export" class="btn-plain ml-2" (click)="export()"><i class="fa fa-fw fa-share hidden-md-down" aria-hidden="true"></i>Export</button>
+		</div>
+		
 	</div>
 	
 	<p-dataTable #flex #dataTable #table [value]="value"
@@ -17,7 +21,7 @@
 		[rows]="element.config?.uiStyles?.attributes?.pageSize"
 		[paginator]="element.config?.uiStyles?.attributes?.pagination"
 		paginatorPosition="both"
-		alwaysShowPaginator ="false"
+		[alwaysShowPaginator] ="false"
 		[expandableRows]="element.config?.uiStyles?.attributes?.expandableRows"
 		(onRowExpand)="getAddtionalData($event)"
 		(onPage)="paginate($event)"
@@ -37,6 +41,7 @@
 			<p-column *ngIf="col?.uiStyles?.attributes?.alias != 'Link' && col?.uiStyles?.attributes?.alias != 'LinkMenu' && col?.type?.nested == false"
 				[field]="col?.code" 
 				[header]="col?.label"
+				[exportable]="(col?.uiStyles?.attributes?.hidden) ?  false : true"
 				[hidden]="col?.uiStyles?.attributes?.hidden"
 				[sortable]="(!col?.uiStyles?.isLink && col?.uiStyles?.attributes?.sortable !== false) ? 'custom' : false"
 				(sortFunction)="sortBy($event, col?.type?.name, col?.uiStyles?.attributes?.sortAs)"
@@ -86,7 +91,7 @@
 
 			<p-column *ngIf="col?.uiStyles?.attributes?.alias=='LinkMenu'" styleClass="dropdown">
 				<ng-template pTemplate="body" let-cell="rowData" let-rowIndex="rowIndex">
-					<nm-action-dropdown #dropDown [element]="paramState[rowIndex][colIndex]" [params]="col?.type?.model?.paramConfigs" [rowData]="cell" [elementPath]="getRowPath(col, cell)" (dropDownClick)="toggleOpen($event)"></nm-action-dropdown>
+					<nm-action-dropdown #dropDown [element]="getLinkMenuParam(col,rowIndex)" [params]="col?.type?.model?.paramConfigs" [rowData]="cell" [elementPath]="getRowPath(col, cell)" (dropDownClick)="toggleOpen($event)"></nm-action-dropdown>
 				</ng-template>
 			</p-column>
 			
@@ -103,7 +108,7 @@
 						{{element.config.uiStyles.attributes.postButtonLabel}}
 					</button>
 				</div>
-			</ng-template> 
+			</ng-template>
 		</p-footer> 
 				   
 	</p-dataTable>

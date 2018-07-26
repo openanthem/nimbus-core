@@ -35,7 +35,7 @@ import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextLoader;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ExecutionModel;
 import com.antheminc.oss.nimbus.domain.model.state.internal.BaseStateEventListener;
-import com.antheminc.oss.nimbus.entity.AbstractEntity.IdString;
+import com.antheminc.oss.nimbus.entity.AbstractEntity.IdLong;
 import com.antheminc.oss.nimbus.test.FrameworkIntegrationTestScenariosApplication;
 
 /**
@@ -53,7 +53,7 @@ public abstract class AbstractStateEventHandlerTests extends AbstractFrameworkIn
 	
 	protected Command _cmd;
 	
-	protected QuadModel<?, ? extends IdString> _q;
+	protected QuadModel<?, ? extends IdLong> _q;
 	
 	protected List<ParamEvent> _paramEvents;
 	
@@ -67,7 +67,7 @@ public abstract class AbstractStateEventHandlerTests extends AbstractFrameworkIn
 	public void before() {
 		_cmd = createCommand();
 		//_q = quadModelBuilder.build(_cmd);
-		_q = (QuadModel<?, ? extends IdString>)executionContextLoader.load(_cmd).getQuadModel();
+		_q = (QuadModel<?, ? extends IdLong>)executionContextLoader.load(_cmd).getQuadModel();
 		assertNotNull(_q);
 		
 		_q.getRoot().getExecutionRuntime().onStartCommandExecution(_cmd);

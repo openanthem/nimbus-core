@@ -15,12 +15,15 @@
  * limitations under the License.
  */
 'use strict';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Component } from '@angular/core';
-
-import { Param } from '../../../shared/app-config.interface';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
+import { Component, ChangeDetectorRef } from '@angular/core';
+import { LocationStrategy } from '@angular/common';
+import { ExecuteException } from '../../../shared/app-config.interface';
+import { Param } from '../../../shared/param-state';
 import { BaseElement } from '../base-element.component';
 import { WebContentSvc } from './../../../services/content-management.service';
+import { PageService } from '../../../services/page.service';
+import { LoggerService } from '../../../services/logger.service';
 
 /**
  * \@author Dinakar.Meda
@@ -37,15 +40,36 @@ import { WebContentSvc } from './../../../services/content-management.service';
 export class PageContent extends BaseElement{
     pageId: string;
     tilesList: any[];
+    errMsgArray: any[] =[];
+    errMsg: string;
+    isPopState: boolean = false;
 
-    constructor(private router: Router, private route: ActivatedRoute, private _wcs : WebContentSvc) {
+    constructor(private router: Router, private route: ActivatedRoute, 
+        private _wcs : WebContentSvc, 
+        private pageSvc: PageService,
+        private cd: ChangeDetectorRef,
+        private ls: LocationStrategy,
+        private _logger: LoggerService
+    ) {
         super(_wcs);
-        this.router.events.subscribe(path => {
+        this.ls.onPopState(() => {
+            this.isPopState = true;
+        });
+        this.router.events.subscribe(event => {
             this.pageId = this.route.snapshot.url[0].path;
+            // Scroll to the TOP of the page
+            if (event instanceof NavigationEnd && !this.isPopState) {
+                window.scrollTo(0, 0);
+                this.isPopState = false;
+            }
+            if (event instanceof NavigationEnd) {
+                this.isPopState = false;
+            }
         });
     }
 
     ngOnInit() {
+        this._logger.debug('PageContent - i ' + this.pageId);
         this.route.data.subscribe((data: { page: Param }) => {
             let page : Param = data.page;
             this.element = page;
@@ -58,6 +82,16 @@ export class PageContent extends BaseElement{
                     }
                 });
             }
+        });
+    }
+
+    ngAfterViewInit() {
+        this.pageSvc.errorMessageUpdate$.subscribe((err: ExecuteException) => {
+            if (err.message) {
+                this._logger.debug('page content component recieved error message ' + err.message + 'from pageSvc.errorMessageUpdate$ subject');
+                this.errMsgArray.push({severity: 'error',  summary: 'Error Message',  detail: err.message});
+            }
+            this.cd.markForCheck();
         });
     }
 

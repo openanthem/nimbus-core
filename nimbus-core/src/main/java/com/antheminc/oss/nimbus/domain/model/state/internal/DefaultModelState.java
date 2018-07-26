@@ -31,6 +31,7 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Model;
 import com.antheminc.oss.nimbus.domain.model.state.EntityStateAspectHandlers;
 import com.antheminc.oss.nimbus.domain.model.state.Notification;
 import com.antheminc.oss.nimbus.domain.model.state.Notification.ActionType;
+import com.antheminc.oss.nimbus.domain.model.state.support.DefaultJsonModelSerializer;
 import com.antheminc.oss.nimbus.support.pojo.CollectionsTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -44,6 +45,7 @@ import lombok.Setter;
  * @author Soham Chakravarti
  *
  */
+@JsonSerialize(using=DefaultJsonModelSerializer.class)
 @Getter @Setter
 public class DefaultModelState<T> extends AbstractEntityState<T> implements Model<T>, Serializable {
 	
@@ -71,6 +73,7 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 		return templateParams;
 	}
 	
+	@JsonIgnore
 	@Override
 	public String getPath() {
 		return getAssociatedParam().getPath();
@@ -90,6 +93,7 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 			.forEach(Param::initState);
 	}
 	
+	@JsonIgnore
 	@Override
 	public ModelConfig<T> getConfig() {
 		return (ModelConfig<T>)super.getConfig();
@@ -175,6 +179,7 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 		return null;
 	}
 
+	@JsonIgnore
 	@Override
 	public T getLeafState() {
 		return Optional.ofNullable(getAssociatedParam()).map(p->p.getLeafState()).orElse(null);

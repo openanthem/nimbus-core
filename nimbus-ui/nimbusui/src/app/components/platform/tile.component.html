@@ -1,3 +1,4 @@
+<nm-message messageContext="{{element?.message.context}}"  [messageArray]="element?.message.messageArray" [life]="element?.message.life" *ngIf="element?.message"></nm-message>
 <div class="card-holder" id="{{code}}" [ngClass]="styleWd" *ngIf="visible==true">
 		<!--check for title attribute in the view config to render the header-->
 		<ng-template [ngIf]="element?.config?.labelConfigs?.length > 0">

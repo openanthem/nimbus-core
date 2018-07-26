@@ -18,9 +18,12 @@
  */
 package com.antheminc.oss.nimbus.test.scenarios.s0.view;
 
+import java.time.LocalDate;
+
 import com.antheminc.oss.nimbus.domain.defn.MapsTo;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo.Path;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.GridColumn;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.GridColumn.FilterMode;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Link;
 import com.antheminc.oss.nimbus.domain.defn.extension.AccessConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.AccessConditional.Permission;
@@ -37,9 +40,21 @@ import lombok.Setter;
 @Getter @Setter
 public class SampleCoreEntityAccessLineItem {
 
-	@Path @GridColumn
+	@Path @GridColumn(filter = true, filterMode = FilterMode.contains)
 	@AccessConditional(whenAuthorities="?[#this == 'case_management'].empty", p=Permission.READ)
 	private String attr_String;
+	
+	@Path @GridColumn(filter = true, filterMode = FilterMode.equals)
+	@AccessConditional(whenAuthorities="?[#this == 'case_management'].empty", p=Permission.READ)
+	private String attr_String2;
+	
+	@Path("/accessConditional_Contains_Hidden1/nested_attr_String") @GridColumn(filter = true, filterMode = FilterMode.contains)
+	@AccessConditional(whenAuthorities="?[#this == 'case_management'].empty", p=Permission.READ)
+	private String nested_attr_String;
+	
+	@Path("/attr_LocalDate1") @GridColumn(filter = true, filterMode = FilterMode.contains, datePattern="MM/dd/yyyy")
+	@AccessConditional(whenAuthorities="?[#this == 'case_management'].empty", p=Permission.READ)
+	private LocalDate attr_LocalDate1;
 	
 	@Link(imgSrc = "edit.png")
 	@AccessConditional(whenAuthorities="?[#this == 'case_management'].empty", p=Permission.HIDDEN)

@@ -16,7 +16,7 @@
  */
 'use strict';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
-import { Param } from '../../../shared/app-config.interface';
+import { Param } from '../../../shared/param-state';
 import { Component, Input, forwardRef } from '@angular/core';
 import { WebContentSvc } from '../../../services/content-management.service';
 import { BaseElement } from './../base-element.component';
@@ -116,7 +116,6 @@ export class CardDetailsFieldComponent  extends BaseElement implements ControlVa
     }
 
     writeValue(value) {
-        //console.log(value);
         if (value) {
         this.value = value;
         }

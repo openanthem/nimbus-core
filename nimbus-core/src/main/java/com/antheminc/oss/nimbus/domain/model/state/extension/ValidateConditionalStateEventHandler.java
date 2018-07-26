@@ -9,6 +9,10 @@ import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.ValidationGroup;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.ValidationScope;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
+
+import lombok.AccessLevel;
+import lombok.Getter;
 
 /**
  * <p>Validate Conditional State Event handler for conditionally assigning validations based
@@ -17,8 +21,11 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
  * @see com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional
  * @see com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditionals
  * @author Tony Lopez
+ * @since 1.0
  *
  */
+@EnableLoggingInterceptor
+@Getter(AccessLevel.PROTECTED)
 public class ValidateConditionalStateEventHandler extends 
 	AbstractConditionalStateEventHandler.EvalExprWithCrudActions<ValidateConditional> {
 	
@@ -34,13 +41,32 @@ public class ValidateConditionalStateEventHandler extends
 	
 	@Override
 	protected void handleInternal(Param<?> onChangeParam, ValidateConditional configuredAnnotation) {
+		
 		boolean isTrue = this.evalWhen(onChangeParam, configuredAnnotation.when());
+		
+		// retrieve the validation assignment strategy
 		ValidationAssignmentStrategy strategy = this.getValidationAssignmentStrategy(configuredAnnotation);
-		strategy.execute(isTrue, onChangeParam, configuredAnnotation.targetGroup());
+		
+		if (null == configuredAnnotation.targetPath() || configuredAnnotation.targetPath().length == 0) {
+			
+			// single scenario execution
+			strategy.execute(isTrue, onChangeParam, configuredAnnotation.targetGroup());
+		} else {
+			
+			// multiple scenario execution
+			for(String path: configuredAnnotation.targetPath()) {
+				Param<?> targetParam = onChangeParam.findParamByPath(path);
+				if (null == targetParam) {
+					throw new InvalidConfigException("Failed to locate param with path: " + path);
+				}
+				strategy.execute(isTrue, targetParam, configuredAnnotation.targetGroup());
+			}
+		}
+		
 	}
 	
 	private ValidationAssignmentStrategy getValidationAssignmentStrategy(ValidateConditional configuredAnnotation) {
-		return Optional.ofNullable(this.validationAssignmentStrategies.get(configuredAnnotation.scope()))
+		return Optional.ofNullable(getValidationAssignmentStrategies().get(configuredAnnotation.scope()))
 				.orElseThrow(() -> new InvalidConfigException("Could not locate a Validation Assignment Strategy for: " + 
 						configuredAnnotation.scope()));
 	}

@@ -32,15 +32,21 @@ import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.session.SessionProvider;
 import com.antheminc.oss.nimbus.entity.client.user.ClientUser;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 import com.antheminc.oss.nimbus.support.JustLogit;
+
+import lombok.AccessLevel;
+import lombok.Getter;
 
 /**
  * @author Soham Chakravarti
  *
  */
+@EnableLoggingInterceptor
+@Getter(value=AccessLevel.PROTECTED)
 public class DefaultCommandPathVariableResolver implements CommandPathVariableResolver {
 
-	protected final JustLogit logit = new JustLogit(this.getClass());
+	protected final JustLogit logit = new JustLogit(DefaultCommandPathVariableResolver.class);
 	
 	private static final String STRING_NULL = "null";
 	
@@ -62,7 +68,7 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 		
 		// resolve property place-holders first
 		try {
-			String resolvedPlaceHolders = propertyResolver.resolveRequiredPlaceholders(urlToResolve);
+			String resolvedPlaceHolders = getPropertyResolver().resolveRequiredPlaceholders(urlToResolve);
 			return resolveInternal(param, resolvedPlaceHolders);
 		} catch (RuntimeException ex) {
 			throw new InvalidConfigException("Failed to resolve with property place-holders for param: "+param+" with url: "+urlToResolve, ex);
@@ -97,7 +103,6 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 			pathToResolve = recursedPath; 
 		}
 			
-		
 		if(StringUtils.startsWithIgnoreCase(pathToResolve, Constants.MARKER_SESSION_SELF.code))
 			return mapSelf(param, pathToResolve);
 		
@@ -105,7 +110,7 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 			return StringUtils.removeStart(param.getPath(), param.getRootDomain().getPath());
 		
 		if(StringUtils.startsWithIgnoreCase(pathToResolve, Constants.MARKER_REF_ID.code))
-			return param.getRootExecution().getRootCommand().getRefId(Type.DomainAlias);
+			return String.valueOf(param.getRootExecution().getRootCommand().getRefId(Type.DomainAlias));
 
 		if(StringUtils.startsWithIgnoreCase(pathToResolve, Constants.MARKER_ELEM_ID.code)) 
 			return mapColElem(param, pathToResolve);
@@ -116,9 +121,11 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 	//TODO bean path evaluation to get value
 	protected String mapSelf(Param<?> param, String pathToResolve) {
 		if(StringUtils.endsWith(pathToResolve, "loginId"))
-			return Optional.ofNullable(sessionProvider.getLoggedInUser()).orElseGet(() -> new ClientUser()).getLoginId();
-		if(StringUtils.endsWith(pathToResolve, "id"))
-			return Optional.ofNullable(sessionProvider.getLoggedInUser()).orElseGet(() -> new ClientUser()).getId();
+			return Optional.ofNullable(getSessionProvider().getLoggedInUser()).orElseGet(() -> new ClientUser()).getLoginId();
+		if(StringUtils.endsWith(pathToResolve, "id")) {
+			Long id = Optional.ofNullable(getSessionProvider().getLoggedInUser()).orElseGet(() -> new ClientUser()).getId();
+			return String.valueOf(id);
+		}
 		
 		return param.getRootExecution().getRootCommand().getElement(Type.ClientAlias).get().getAlias();
 	}
@@ -132,7 +139,7 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 				return STRING_NULL;
 			}
 			Object state = p.getLeafState();
-			String json = converter.write(state);
+			String json = getConverter().toJson(state);
 			return String.valueOf(json);
 		} else {
 			Param<?> p = param.findParamByPath(pathToResolve) != null? param.findParamByPath(pathToResolve): param.getParentModel().findParamByPath(pathToResolve);

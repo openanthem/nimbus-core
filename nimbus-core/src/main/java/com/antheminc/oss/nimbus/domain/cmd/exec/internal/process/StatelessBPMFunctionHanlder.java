@@ -22,11 +22,17 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ProcessResponse;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
+
+import lombok.AccessLevel;
+import lombok.Getter;
 
 /**
  * @author Jayant Chaudhuri
  *
  */
+@EnableLoggingInterceptor
+@Getter(value=AccessLevel.PROTECTED)
 public class StatelessBPMFunctionHanlder<T,R> extends AbstractFunctionHandler<T, R> {
 	
 	private BPMGateway bpmGateway;
@@ -39,7 +45,7 @@ public class StatelessBPMFunctionHanlder<T,R> extends AbstractFunctionHandler<T,
 	@SuppressWarnings("unchecked")
 	public R execute(ExecutionContext executionContext, Param<T> actionParameter) {
 		String processId = executionContext.getCommandMessage().getCommand().getFirstParameterValue(Constants.KEY_EXECUTE_PROCESS_ID.code);
-		ProcessResponse response = bpmGateway.startStatlessBusinessProcess(executionContext.getQuadModel().getView().getAssociatedParam(), processId);
+		ProcessResponse response = getBpmGateway().startStatlessBusinessProcess(executionContext.getQuadModel().getView().getAssociatedParam(), processId);
 		return (R)response.getResponse();
 	}
 }

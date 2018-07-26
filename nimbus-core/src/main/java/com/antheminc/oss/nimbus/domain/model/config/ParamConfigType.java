@@ -18,6 +18,7 @@ package com.antheminc.oss.nimbus.domain.model.config;
 import java.io.Serializable;
 import java.util.List;
 
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.ValueAccessor;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
@@ -51,6 +52,9 @@ public class ParamConfigType implements Serializable {
 	
 	@JsonIgnore
 	final private boolean array;
+
+	@JsonIgnore
+	private ValueAccessor valueAccessor;
 	
 	public <T> Nested<T> findIfNested() {
 		return null;

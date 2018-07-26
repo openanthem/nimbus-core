@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 'use strict';
-import { Param } from '../../../../shared/app-config.interface';
+import { Param } from '../../../../shared/param-state';
 import { Component, forwardRef, Input,Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, NgModel} from '@angular/forms';
 import { WebContentSvc } from '../../../../services/content-management.service';
@@ -25,7 +25,7 @@ import { GenericDomain } from '../../../../model/generic-domain.model';
 import { BaseElement } from './../../base-element.component';
 import { ValidatorFn } from '@angular/forms/src/directives/validators';
 import { ValidationUtils } from '../../validators/ValidationUtils';
-
+import { HttpMethod } from './../../../../shared/command.enum';
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -88,7 +88,6 @@ export class MultiSelectListBox extends BaseElement{
         if( this.form.controls[this.element.config.code]!= null) {
             this.form.controls[this.element.config.code].valueChanges.subscribe(
                 ($event) => { 
-                    // console.log($event);
                     this.setState($event,this); 
                 });
         }
@@ -97,7 +96,7 @@ export class MultiSelectListBox extends BaseElement{
                this.pageService.postOnChange($event.path, 'state', JSON.stringify($event.leafState));
             } else if($event.config.uiStyles.attributes.postButtonUrl) {
                let item: GenericDomain = new GenericDomain();
-               this.pageService.processPost(this.element.config.uiStyles.attributes.postButtonUrl, null, $event.leafState, 'POST');
+               this.pageService.processEvent(this.element.config.uiStyles.attributes.postButtonUrl, null, $event.leafState, HttpMethod.POST.value);
             }
         });
 
