@@ -75,7 +75,7 @@ export class FormElementsService {
     for (let i = 0; i < element.type.model.params.length; i++) {
       let param = element.type.model.params[i];
       var checks: ValidatorFn[] = [];
-      checks = ValidationUtils.buildStaticValidations(param);
+      checks = ValidationUtils.buildStaticValidations(element);
       if (param.config.type.nested) {
          fg.addControl(param.config.code, this.createNewFormGroup(param));
       } else {

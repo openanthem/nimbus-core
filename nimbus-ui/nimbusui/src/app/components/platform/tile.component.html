@@ -1,18 +1,24 @@
 <nm-message messageContext="{{element?.message.context}}"  [messageArray]="element?.message.messageArray" [life]="element?.message.life" *ngIf="element?.message"></nm-message>
 <div class="card-holder" id="{{code}}" [ngClass]="styleWd" *ngIf="visible==true">
-		<!--check for title attribute in the view config to render the header-->
-		<ng-template [ngIf]="element?.config?.labelConfigs?.length > 0">
-				<div class="card-header">
-					<h2 class="card-title {{imgSrc}}" >
-						{{label}} 
-					</h2>
-					<ng-template ngFor let-element [ngForOf]="nestedParams">
-						<ng-template [ngIf]="element.alias == 'Header'">
-							<nm-header [element]="element"></nm-header>
-						</ng-template>
-					</ng-template>		
-				</div>
-			</ng-template>
+		<div class="card-header">
+			<!--check for title label to render the header-->
+			<h2 class="card-title {{imgSrc}}" *ngIf="element?.config?.labelConfigs?.length > 0 && label != '' ">
+				{{label}} 
+			</h2>
+			<ng-template ngFor let-element [ngForOf]="nestedParams">
+				<!-- ButtonGroup -->
+				<ng-template [ngIf]="element.alias == 'ButtonGroup'">
+					<div class="">
+						<nm-button-group [buttonList]="element.type?.model?.params" [cssClass]="element.config?.uiStyles?.attributes?.cssClass">
+						</nm-button-group>
+					</div>
+				</ng-template>
+				<!-- Paragraph -->
+				<ng-template [ngIf]="element.alias == 'Paragraph'">
+					<nm-paragraph [element]="element"></nm-paragraph>
+				</ng-template>
+			</ng-template>		
+		</div>
 	<div class="card card-block {{styleHt}}">
 		<div class="viewport" >
 			<ng-template ngFor let-element [ngForOf]="nestedParams">

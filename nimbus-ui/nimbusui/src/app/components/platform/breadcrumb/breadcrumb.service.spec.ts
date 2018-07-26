@@ -3,6 +3,8 @@ import { HttpClient, HttpRequest } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
+import { JL } from 'jsnlog';
+import { Location, LocationStrategy, HashLocationStrategy } from '@angular/common';
 
 import { BreadcrumbService } from './breadcrumb.service';
 import { PageService } from './../../../services/page.service';
@@ -11,6 +13,7 @@ import { LoaderService } from '../../../services/loader.service';
 import { ConfigService } from '../../../services/config.service';
 import { LoggerService } from '../../../services/logger.service';
 import { SessionStoreService, CUSTOM_STORAGE } from '../../../services/session.store';
+import { AppInitService } from '../../../services/app.init.service';
 
 let http, backend, service, sessionStore;
 
@@ -19,13 +22,17 @@ describe('BreadcrumbService', () => {
     TestBed.configureTestingModule({
       providers: [
           { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+          { provide: 'JSNLOG', useValue: JL },
+          { provide: LocationStrategy, useClass: HashLocationStrategy },
+          Location,
           BreadcrumbService,
           PageService,
           CustomHttpClient,
           LoaderService,
           ConfigService,
           LoggerService,
-          SessionStoreService
+          SessionStoreService,
+          AppInitService
         ],
       imports: [ HttpClientTestingModule, HttpModule, StorageServiceModule ]
     });

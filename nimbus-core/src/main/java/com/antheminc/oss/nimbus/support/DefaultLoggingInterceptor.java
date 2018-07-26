@@ -16,13 +16,20 @@
 package com.antheminc.oss.nimbus.support;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.annotation.AnnotationUtils;
 
 import com.antheminc.oss.nimbus.support.EnableAPIMetricCollection.LogLevel;
@@ -32,6 +39,7 @@ import com.antheminc.oss.nimbus.support.EnableAPIMetricCollection.LogLevel;
  *
  */
 @Aspect
+@RefreshScope
 public class DefaultLoggingInterceptor {
 
 	private static final JustLogit logit = new JustLogit("api-metric-logger");
@@ -46,6 +54,8 @@ public class DefaultLoggingInterceptor {
 	
 	public static final String K_METHOD_ARGS = "[Args] ";
 	public static final String K_METHOD_RESP = "[Resp] ";
+	
+	private Set<Class<?>> proxyProcessedBeans = new HashSet<>();
 	
 	public static class SimpleStopWatch {
 		private long startTimeMillis;
@@ -80,6 +90,8 @@ public class DefaultLoggingInterceptor {
 	public Object logMethods(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
 		String methodName = nullSafeMethodGet(proceedingJoinPoint);
 		SimpleStopWatch sw = new SimpleStopWatch();
+		
+		checkAndInjectProxyReferenceToTarget(proceedingJoinPoint);
 		
 		try {
 			EnableAPIMetricCollection configuredAnnotation = nullSafeLoggingLevel(proceedingJoinPoint);
@@ -181,4 +193,53 @@ public class DefaultLoggingInterceptor {
 			return "exception-encountered-in-logging-result";
 		}
 	}
+	
+	private void checkAndInjectProxyReferenceToTarget(ProceedingJoinPoint proceedingJoinPoint) {
+		Object targetBean = proceedingJoinPoint.getTarget();
+		Object proxyInstance = proceedingJoinPoint.getThis();
+		
+		Class<?> beanClass = targetBean.getClass();
+		
+		if(proxyProcessedBeans.contains(beanClass))
+			return;
+		
+		injectProxyReference(targetBean, proxyInstance);
+	}
+	
+	private void injectProxyReference(Object targetBean, Object proxyInstance) {
+		Class<?> beanClass = targetBean.getClass();
+		
+		try {
+			List<Field> fields = FieldUtils.getFieldsListWithAnnotation(beanClass, InjectSelf.class);
+	       
+			if(CollectionUtils.isEmpty(fields))
+	    	   		return;
+	       
+			if(fields.size() > 1) {
+	    	   		logit.error(()->"Cannot inject self proxy reference to more than one field. Found more than 1 field with @InjectSelf annotation: "+fields+" for bean class (or its superclass): "+beanClass);
+	    	   		return;
+			}
+	            
+			setFieldValue(targetBean, fields.get(0), proxyInstance);
+		}
+		catch(Exception e) {
+			logit.error(() -> "injectCurrentInstance failed for bean: "+beanClass, e);
+		}
+		finally {
+			proxyProcessedBeans.add(beanClass);
+		}
+	}
+    
+    private void setFieldValue(Object object, Field field, Object value) {
+        boolean isAccessible = field.isAccessible();
+        
+        try {
+            field.setAccessible(true);
+            field.set(object, value);
+        } catch (Exception e) {
+        		logit.error(()->"Error occured while setting the bean proxy reference to the field: "+field+" of bean: "+object);
+        } finally {
+            field.setAccessible(isAccessible);
+        }
+    }
 }

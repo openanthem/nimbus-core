@@ -16,7 +16,7 @@
  */
 'use strict';
 import { Injectable } from '@angular/core';
-import { Router, Resolve, RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
+import { Router, Resolve, RouterStateSnapshot, ActivatedRouteSnapshot, ActivatedRoute } from '@angular/router';
 import { BreadcrumbService } from './../breadcrumb/breadcrumb.service'
 import { WebContentSvc } from './../../../services/content-management.service';
 import { PageService } from '../../../services/page.service';
@@ -39,6 +39,7 @@ export class PageResolver implements Resolve<Param> {
         private _router: Router,
         private _breadcrumbService: BreadcrumbService,
         private _wcs: WebContentSvc,
+        private route: ActivatedRoute,
         private _logger: LoggerService
     ) {}
 
@@ -59,8 +60,8 @@ export class PageResolver implements Resolve<Param> {
                 return page;
             } else { // page not found
                 this._logger.debug('page resolver service: resolve() is navigating to ' + flow);
-                this._router.navigate([`/h/${flow}`]);
-                return null;
+                    this._router.navigate([`/h/${flow}`]);
+                    return null;
             }
         });
     }

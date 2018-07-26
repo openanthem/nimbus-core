@@ -18,11 +18,14 @@
 
 import { Component, Input } from '@angular/core';
 import { Param } from '../../shared/param-state';
-import { ServiceConstants } from './../../services/service.constants';
+import { ServiceConstants } from '../../services/service.constants';
+import { ImageTypes } from '../../shared/imageTypes.enum';
+
 
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
+ * \@author Purnachander.Mashetty
  * \@whatItDoes 
  * 
  * \@howToUse 
@@ -31,15 +34,23 @@ import { ServiceConstants } from './../../services/service.constants';
 @Component({
   selector: 'nm-image',
   template: `
-      <svg class="">
-          <use xmlns:xlink="http://www.w3.org/1999/xlink" attr.xlink:href="{{imagesPath}}{{element.config.uiStyles.attributes.imgSrc}}#Layer_1"></use> 
-      </svg>
+      <span *ngIf = "type === imageTypes.svg.toString()" class="{{cssClass}}" title="{{title}}">
+        <nm-svg [name]="name"></nm-svg>
+      </span>
+      <span *ngIf = "type === imageTypes.fa.toString()" class="{{cssClass}}">
+        <i class="fa {{name}}" title="{{title}}" *ngIf="title"></i>
+        <i class="fa {{name}}" *ngIf="!title"></i>
+      </span>
    `
 })
 export class Image {
 
-    @Input() element: Param;
+    @Input() name: string;
+    @Input() type: string;
+    @Input() title?: string;
+    @Input() cssClass: string;
     public imagesPath: string;
+    public imageTypes = ImageTypes;
 
     constructor() {
     }

@@ -73,7 +73,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
                 <button class="btn btn-plain" (click)="zoomCanvas()" *ngIf="zoomFactor==1"><i class="fa fa-fw fa-plus-square" aria-hidden="true"></i>Zoom In</button>
                 <button class="btn btn-plain" (click)="shrinkCanvas()" *ngIf="zoomFactor==2"><i class="fa fa-fw fa-minus-square" aria-hidden="true"></i>Zoom Out</button>
             </div>
-            <img #img [src]="value != null ? value : defaultEmptyImage" (load)="onImgLoad()" style='display: none;' />
+            <img #img [src]="value != null || value != '' ? value : defaultEmptyImage" (load)="onImgLoad()" style='display: none;' />
         </ng-template>
         <ng-template [ngIf]="disabled">
             <img #img src="{{value}}" />

@@ -27,10 +27,10 @@ import org.apache.commons.lang3.StringUtils;
 import com.antheminc.oss.nimbus.domain.defn.AssociatedEntity;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.defn.Converters.ParamConverter;
-import com.antheminc.oss.nimbus.domain.defn.Execution;
 import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values;
 import com.antheminc.oss.nimbus.domain.model.config.AnnotationConfig;
 import com.antheminc.oss.nimbus.domain.model.config.EventHandlerConfig;
+import com.antheminc.oss.nimbus.domain.model.config.ExecutionConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfigType;
@@ -70,8 +70,8 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	private List<AnnotationConfig> extensions;
 	
 	@JsonIgnore
-	private List<Execution.Config> executionConfigs;
-
+	public ExecutionConfig executionConfig;
+	
 	@JsonIgnore 
 	private List<ParamConverter> converters;
 	

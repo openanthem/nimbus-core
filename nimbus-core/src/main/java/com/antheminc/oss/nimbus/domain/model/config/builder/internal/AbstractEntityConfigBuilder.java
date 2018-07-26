@@ -42,7 +42,6 @@ import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.defn.Converters;
 import com.antheminc.oss.nimbus.domain.defn.Converters.ParamConverter;
 import com.antheminc.oss.nimbus.domain.defn.Domain;
-import com.antheminc.oss.nimbus.domain.defn.Execution;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo;
 import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
@@ -50,6 +49,7 @@ import com.antheminc.oss.nimbus.domain.defn.ViewConfig.ViewParamBehavior;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.ViewStyle;
 import com.antheminc.oss.nimbus.domain.model.config.AnnotationConfig;
 import com.antheminc.oss.nimbus.domain.model.config.EventHandlerConfig;
+import com.antheminc.oss.nimbus.domain.model.config.ExecutionConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig.MappedParamConfig;
@@ -80,12 +80,14 @@ abstract public class AbstractEntityConfigBuilder {
 	private final RulesEngineFactoryProducer rulesEngineFactoryProducer;
 	private final EventHandlerConfigFactory eventHandlerConfigFactory;
 	private final AnnotationConfigHandler annotationConfigHandler;
+	private final ExecutionConfigFactory executionConfigFactory;
 	
 	public AbstractEntityConfigBuilder(BeanResolverStrategy beanResolver) {
 		this.beanResolver = beanResolver;
 		this.rulesEngineFactoryProducer = beanResolver.get(RulesEngineFactoryProducer.class);
 		this.eventHandlerConfigFactory = beanResolver.get(EventHandlerConfigFactory.class);
 		this.annotationConfigHandler = beanResolver.get(AnnotationConfigHandler.class);
+		this.executionConfigFactory = beanResolver.get(ExecutionConfigFactory.class);
 	}
 	
 	abstract public <T> ModelConfig<T> buildModel(Class<T> clazz, EntityConfigVisitor visitedModels);
@@ -423,7 +425,8 @@ abstract public class AbstractEntityConfigBuilder {
 		created.setUiNatures(annotationConfigHandler.handle(f, ViewParamBehavior.class));
 		created.setUiStyles(annotationConfigHandler.handleSingle(f, ViewStyle.class));
 		
-		created.setExecutionConfigs(new ArrayList<>(AnnotatedElementUtils.findMergedRepeatableAnnotations(f, Execution.Config.class)));
+		ExecutionConfig executionConfig = executionConfigFactory.build(f);
+		created.setExecutionConfig(executionConfig);
 		
 		if(AnnotatedElementUtils.isAnnotated(f, Converters.class)) {
 			Converters convertersAnnotation = AnnotationUtils.getAnnotation(f, Converters.class);

@@ -4,6 +4,8 @@
     background-color: $footer-bkg;
     color: $footer-color;
     text-align: center;
+    position: relative;
+    z-index: 2;
     &.bottom{ // for login page
         position: absolute;
         bottom: 0;

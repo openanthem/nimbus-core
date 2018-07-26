@@ -34,12 +34,14 @@ import com.antheminc.oss.nimbus.domain.model.state.extension.ExpressionCondition
 import com.antheminc.oss.nimbus.domain.model.state.extension.MessageConditionalHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ModalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ParamContextStateEventHandler;
+import com.antheminc.oss.nimbus.domain.model.state.extension.ParamValuesOnLoadHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.RuleStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.StaticCodeValueBasedCodeToLabelConverter;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValidateConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValidateConditionalStateEventHandler.ValidationAssignmentStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValuesConditionalOnStateChangeEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValuesConditionalOnStateLoadEventHandler;
+import com.antheminc.oss.nimbus.domain.model.state.extension.DefaultParamValuesHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.VisibleConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional.ChildrenValidationAssignmentStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional.SiblingValidationAssignmentStrategy;
@@ -75,6 +77,11 @@ public class DefaultFrameworkExtensionsConfig {
 	@Bean
 	public ValuesConditionalOnStateLoadEventHandler extensionValuesConditionalOnStateLoadHandler(BeanResolverStrategy beanResolver) {
 		return new ValuesConditionalOnStateLoadEventHandler(beanResolver);
+	}
+	
+	@Bean(name="default.paramValuesHandler")
+	public ParamValuesOnLoadHandler extensionValuesOnStateLoadEventHandler(BeanResolverStrategy beanResolver) {
+		return new DefaultParamValuesHandler(beanResolver);
 	}
 	
 	@Bean

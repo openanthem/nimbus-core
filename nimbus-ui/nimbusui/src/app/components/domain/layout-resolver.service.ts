@@ -51,7 +51,7 @@ export class LayoutResolver implements Resolve<string> {
             // this._breadcrumbService.push(flowName, 'Home', flowConfig.model.params[0].path);
 
             let routeToDefaultPage: boolean = true;
-            if (route.firstChild.params['pageId']) {
+            if (route.firstChild.params['pageId'] || route.firstChild.params['subdomain']) {
                 routeToDefaultPage = false;
             }
             return this._pageSvc.getFlowLayoutConfig(flowName, routeToDefaultPage).then(layout => {

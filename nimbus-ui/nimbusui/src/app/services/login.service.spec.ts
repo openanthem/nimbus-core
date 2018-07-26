@@ -6,9 +6,13 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import {MockBackend} from '@angular/http/testing';
 import { Http, Headers, RequestOptions, Response, ResponseOptions, ResponseType, Request } from '@angular/http';
+import { JL } from 'jsnlog';
+import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
 
 import { LoginSvc } from './login.service';
 import { LoggerService } from './logger.service';
+import { SessionStoreService, CUSTOM_STORAGE } from './session.store';
+import { AppInitService } from './app.init.service';
 
 let http, backend, service;
 
@@ -17,14 +21,17 @@ class MockError extends Response implements Error {
   message:any
 }
 
+class MockLoggerService {
+  debug() { }
+  info() { }
+  error() { }
+}
+
 describe('LoginSvc', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        LoggerService,
-        LoginSvc,
-        MockBackend,
-        BaseRequestOptions,
+        { provide: 'JSNLOG', useValue: JL },
         {
           provide: Jsonp,
           useFactory: (backend, options) => new Jsonp(backend, options),
@@ -36,9 +43,15 @@ describe('LoginSvc', () => {
           useFactory: (mockBackend, requestOptions) => {
               return new Http(mockBackend, requestOptions);
           }
-      }
+      },
+      { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+      {provide: LoggerService, useClass: MockLoggerService},
+      LoginSvc,
+      MockBackend,
+      BaseRequestOptions,
+      AppInitService
       ],
-      imports: [ HttpClientTestingModule, HttpModule, JsonpModule ]
+      imports: [ HttpClientTestingModule, HttpModule, JsonpModule, StorageServiceModule]
     });
     http = TestBed.get(HttpClient);
     service = TestBed.get(LoginSvc);
@@ -54,7 +67,6 @@ describe('LoginSvc', () => {
 
     // When the request subscribes for results on a connection, return a fake response
     backend.connections.subscribe(connection => {
-      console.log ('here is connction ..', connection);
       connection.mockRespond(new Response(<ResponseOptions>{
         body: JSON.stringify(response)
       }));

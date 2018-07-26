@@ -6,6 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { TableModule } from 'primeng/table';
 import { KeyFilterModule } from 'primeng/keyfilter';
+import { AngularSvgIconModule } from 'angular-svg-icon';
 
 import { FrmGroupCmp } from './form-group.component';
 import { FormElement } from './form-element.component';
@@ -47,6 +48,9 @@ import { InPlaceEditorComponent } from '../platform/form/elements/inplace-editor
 import { WebContentSvc } from '../../services/content-management.service';
 import { Signature } from '../platform/form/elements/signature.component'
 import { DataTable } from './grid/table.component';
+import { HeaderCheckBox } from '../platform/form/elements/header-checkbox.component';
+import { SvgComponent } from './svg/svg.component';
+import { Image } from './image.component';
 
 class MockWebContentSvc {
     findLabelContent(param) {
@@ -100,7 +104,10 @@ describe('FrmGroupCmp', () => {
         Accordion,
         InPlaceEditorComponent,
         Signature,
-        DataTable
+        DataTable,
+        HeaderCheckBox,
+        SvgComponent,
+        Image
        ],
        imports: [
            FormsModule,
@@ -118,7 +125,8 @@ describe('FrmGroupCmp', () => {
            HttpModule,
            HttpClientModule,
            TableModule,
-           KeyFilterModule
+           KeyFilterModule,
+           AngularSvgIconModule
        ],
        providers: [
            { provide: WebContentSvc, useClass: MockWebContentSvc }

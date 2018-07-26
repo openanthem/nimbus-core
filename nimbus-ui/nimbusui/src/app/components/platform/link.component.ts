@@ -37,12 +37,12 @@ import { ServiceConstants } from './../../services/service.constants';
         WebContentSvc
     ],
     template: `
-        <ng-template [ngIf]="imgSrc">
+        <ng-template [ngIf]="imgSrc && element?.visible == true">
             <a href="{{url}}" class='{{cssClass}}'>
                 <img src="{{imagesPath}}{{imgSrc}}" class=" logo" alt="{{this.label}}" />
             </a>
         </ng-template>
-        <ng-template [ngIf]="!imgSrc">
+        <ng-template [ngIf]="!imgSrc && element?.visible == true">
 
             <!-- External Links -->
             <ng-template [ngIf]="value=='EXTERNAL'">
@@ -83,6 +83,11 @@ import { ServiceConstants } from './../../services/service.constants';
                     {{this.label}}
                 </a>
             </ng-template>
+            <ng-template [ngIf]="value=='INLINE'">
+                <a class="{{cssClass}}" href="javascript:void(0)" title="{{this.element.leafState}}" (click)="processOnClick(element.path, 'GET', '$executeAnd$nav')">
+                    {{this.element.leafState}}
+                </a>
+            </ng-template>
         </ng-template>
     `
 })
@@ -92,6 +97,7 @@ export class Link extends BaseElement {
     @Input() element: Param;
     @Input() root: Param;
     @Input() inClass: string;
+    @Input() renderAsLink: boolean;
     private linkClass: string = 'basicView';
     private imagesPath: string;
 
@@ -131,7 +137,12 @@ export class Link extends BaseElement {
      * The value attribute for this Param.
      */
     get value(): string {
-        return this.element.config.uiStyles.attributes.value;
+        const value = this.element.config.uiStyles.attributes.value;
+        if ( value ) {
+            return value;
+        } else {
+            return 'INLINE';
+        }
     }
 
     /**

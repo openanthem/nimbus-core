@@ -22,25 +22,17 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
-import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
-import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
-import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
-import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo.Mode;
-import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values;
-import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values.EMPTY;
-import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values.Source;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig.MappedParamConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfigType;
-import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Model;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
@@ -55,7 +47,6 @@ import com.antheminc.oss.nimbus.domain.model.state.internal.ExecutionEntity.ExMo
 import com.antheminc.oss.nimbus.domain.model.state.internal.MappedDefaultTransientParamState;
 import com.antheminc.oss.nimbus.domain.rules.RulesEngineFactoryProducer;
 import com.antheminc.oss.nimbus.support.JustLogit;
-import com.antheminc.oss.nimbus.support.pojo.ClassLoadUtils;
 
 import lombok.Getter;
 
@@ -70,14 +61,11 @@ abstract public class AbstractEntityStateBuilder extends AbstractEntityStateFact
 	
 	protected final CommandExecutorGateway gateway;
 	
-	protected CommandPathVariableResolver pathVariableResolver;
-	
 	protected JustLogit logit = new JustLogit(getClass());
 	
 	public AbstractEntityStateBuilder(BeanResolverStrategy beanResolver) {
 		this.rulesEngineFactoryProducer = beanResolver.get(RulesEngineFactoryProducer.class);
 		this.gateway = beanResolver.get(CommandExecutorGateway.class);
-		this.pathVariableResolver = beanResolver.get(CommandPathVariableResolver.class);
 	}
 	
 	abstract public <T, P> DefaultModelState<T> buildModel(EntityStateAspectHandlers provider, DefaultParamState<T> associatedParam, ModelConfig<T> mConfig, Model<?> mapsToSAC);
@@ -137,9 +125,6 @@ abstract public class AbstractEntityStateBuilder extends AbstractEntityStateFact
 		
 		p.initSetup();
 		decorateParam(p);
-		
-		/* setting param values if applicable */
-		createParamValues(p);
 		
 		return p;
 	}
@@ -253,37 +238,6 @@ abstract public class AbstractEntityStateBuilder extends AbstractEntityStateFact
 				+ "Mapped Param: "+mapped.getCode()+" with mapsTo: "+mapped.getPath().value()+" mapped model: "+mapsToStateAndConfig.getPath());
 			
 		return mapsToParam;	
-	}
-	
-	private void createParamValues(Param<?> param) {
-		Values values = param.getConfig().getValues();
-		final List<ParamValue> result = buildValues(values, param, getGateway());
-		
-		if (result != null) {
-			param.setValues(result);
-		}
-	}
-	
-	@SuppressWarnings("unchecked")
-	public static List<ParamValue> buildValues(Values values, Param<?> param, CommandExecutorGateway gateway) {
-		List<ParamValue> result = null;
-		if (values != null) {
-			if (values.value() != EMPTY.class) {
-				Source srcValues = ClassLoadUtils.newInstance(values.value());
-				result = srcValues.getValues(param.getConfig().getCode());
-			} else {
-				String valuesUrl = values.url();
-				Command cmd = CommandBuilder.withUri(valuesUrl).getCommand();
-				cmd.setAction(Action._search);
-				
-				CommandMessage cmdMsg = new CommandMessage();
-				cmdMsg.setCommand(cmd);
-				
-				MultiOutput multiOp = gateway.execute(cmdMsg);
-				result = (List<ParamValue>) multiOp.getSingleResult();
-			}
-		}
-		return result;
 	}
 	
 }

@@ -23,6 +23,7 @@ import java.lang.annotation.Target;
 import java.util.List;
 
 import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
+import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
 
 /**
@@ -50,6 +51,7 @@ public @interface Model {
 		
 		@Retention(RetentionPolicy.RUNTIME)
 		@Target({ElementType.FIELD})
+		@OnStateLoad
 		public @interface Values {
 			
 			public static interface Source {

@@ -106,10 +106,11 @@ describe('CheckBoxGroup', () => {
     expect(test.element.leafState).toEqual('test');
   }));
 
-  it('emitValueChangedEvent() should call the antmControlValueChanged.emit()', async(() => {
-    spyOn(app.antmControlValueChanged, 'emit').and.callThrough();
+  it('emitValueChangedEvent() should call the controlValueChanged.emit()', async(() => {
+    spyOn(app.controlValueChanged, 'emit').and.callThrough();
+    app.form = null;
     app.emitValueChangedEvent({ element: '' }, '');
-    expect(app.antmControlValueChanged.emit).toHaveBeenCalled();
+    expect(app.controlValueChanged.emit).toHaveBeenCalled();
   }));
 
   it('ngOnInit() should update the requiredCss property as false based on element.activeValidationGroups', async(() => {
@@ -281,9 +282,9 @@ describe('CheckBoxGroup', () => {
     app.form = { controls: { test: null } };
     const eve = { config: { uiStyles: { attributes: { postEventOnChange: true } } } };
     spyOn(pageService, 'postOnChange').and.callThrough();
-    app.antmControlValueChanged = new EventEmitter();
+    app.controlValueChanged = new Subject();
     app.ngOnInit();
-    app.antmControlValueChanged.emit(eve);
+    app.controlValueChanged.next(eve);
     expect(pageService.postOnChange).toHaveBeenCalled();
   }));
 

@@ -78,7 +78,7 @@ public class DefaultConfigConditionalTest  extends AbstractFrameworkIntegrationT
 		Object controllerResp = controller.handleGet(httpReq, null);
 		assertThat(controllerResp).isNotNull();
 		
-		assertStatus("AB", Match.EQ);
+		assertStatus("ApqB", Match.EQ);
 	}
 	
 	@Test
@@ -92,7 +92,7 @@ public class DefaultConfigConditionalTest  extends AbstractFrameworkIntegrationT
 		Object controllerResp = controller.handleGet(httpReq, null);
 		assertThat(controllerResp).isNotNull();
 		
-		assertStatus("D", Match.NOT_EQ);
+		assertStatus("CD", Match.NOT_EQ);
 	}
 	
 	

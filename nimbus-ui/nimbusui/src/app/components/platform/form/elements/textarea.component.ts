@@ -46,7 +46,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
             <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
         </label>
         <textarea [(ngModel)] = "value" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" 
-            rows="element.config?.uiStyles?.attributes?.rows"  
+            [rows]="element.config?.uiStyles?.attributes?.rows"    
             (focusout)="emitValueChangedEvent(this,value)"
             [disabled]="disabled"
             [id]="element.config?.code" class="form-control textarea-input" 

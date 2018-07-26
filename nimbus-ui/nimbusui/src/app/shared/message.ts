@@ -73,8 +73,12 @@ export class Message implements Serializable<Message, string> {
                         life = 3000;
                     break;   
             }
-    
-            this.messageArray.push({severity: severity,  summary: summary,  detail: this.text});
+            if (this.context ==="INLINE") {
+                this.messageArray.push({severity: severity,  summary: "",  detail: this.text});
+            }
+            else {
+                this.messageArray.push({severity: severity,  summary: summary,  detail: this.text});
+            }
             obj['messageArray'] = this.messageArray;
             obj['life'] = life;
 

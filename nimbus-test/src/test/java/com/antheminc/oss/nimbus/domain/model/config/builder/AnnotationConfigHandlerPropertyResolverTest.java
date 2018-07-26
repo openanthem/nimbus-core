@@ -34,6 +34,7 @@ import com.antheminc.oss.nimbus.domain.AbstractFrameworkIngerationPersistableTes
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
+import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Image;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Initialize;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Link;
@@ -137,7 +138,7 @@ public class AnnotationConfigHandlerPropertyResolverTest extends AbstractFramewo
 		Param<?> triggerParam = q.getCore().findParamByPath("/trigger");
 		assertNotNull(triggerParam);
 		
-		String pathToResolve = triggerParam.getConfig().getExecutionConfigs().get(0).url();
+		String pathToResolve = ((Config)triggerParam.getConfig().getExecutionConfig().get().get(0)).url();
 		
 		String resolvedPath = cmdPathResolver.resolve(triggerParam, pathToResolve);
 		assertEquals("/p/_anotherdomain_"+expected_env_code+"/p1/"+K_PARAM_REF_VALUE, resolvedPath);

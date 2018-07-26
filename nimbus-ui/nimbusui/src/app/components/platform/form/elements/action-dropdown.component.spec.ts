@@ -5,6 +5,8 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ElementRef } from '@angular/core';
 import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
+import { JL } from 'jsnlog';
+import { Location, LocationStrategy, HashLocationStrategy } from '@angular/common';
 
 import { ActionLink } from './action-dropdown.component';
 import { ActionDropdown } from './action-dropdown.component';
@@ -18,8 +20,15 @@ import { Param } from '../../../../shared/param-state';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { LoggerService } from '../../../../services/logger.service';
 import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
+import { AppInitService } from '../../../../services/app.init.service';
 
 let fixture, app, pageservice, configservice;
+
+class MockLoggerService {
+    debug() { }
+    info() { }
+    error() { }
+}
 
 describe('ActionLink', () => {
   beforeEach(async(() => {
@@ -34,12 +43,16 @@ describe('ActionLink', () => {
        ],
        providers: [
         { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+        { provide: 'JSNLOG', useValue: JL },
+        {provide: LoggerService, useClass: MockLoggerService},
+        { provide: LocationStrategy, useClass: HashLocationStrategy },
+        Location,
         PageService,
         CustomHttpClient,
         LoaderService,
         ConfigService,
-        LoggerService,
-        SessionStoreService
+        SessionStoreService,
+        AppInitService
        ]
     }).compileComponents();
     fixture = TestBed.createComponent(ActionLink);
@@ -144,10 +157,15 @@ describe('ActionDropdown', () => {
          providers: [
             {provide: ElementRef, useClass: MockElementRef},
             {provide: PageService, useClass: MockPageService},
+            { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+            { provide: 'JSNLOG', useValue: JL },
+            { provide: LocationStrategy, useClass: HashLocationStrategy },
+            Location,
             WebContentSvc,
             CustomHttpClient,
             LoaderService,
-            ConfigService
+            ConfigService,
+            AppInitService
          ]
       }).compileComponents();
       fixture = TestBed.createComponent(ActionDropdown);
