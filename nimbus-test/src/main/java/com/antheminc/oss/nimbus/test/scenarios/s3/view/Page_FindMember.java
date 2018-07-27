@@ -25,7 +25,7 @@ import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Button;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.ComboBox;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Hints;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Hints.AlignOptions;
-import com.antheminc.oss.nimbus.domain.defn.ViewConfig.InputDate;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Calendar;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Section;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.TextBox;
 import com.antheminc.oss.nimbus.test.scenarios.s3.core.Member;
@@ -64,7 +64,7 @@ public class Page_FindMember {
 
 		@Path @TextBox private String lastName;
 
-		@Path @InputDate private LocalDate dob;
+		@Path @Calendar private LocalDate dob;
 
 		@Button(url="{:id}/_findPatient/_process") @Hints(value=AlignOptions.Left)
 		private String action_FindMember;
