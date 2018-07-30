@@ -1,4 +1,4 @@
-<ng-template [ngIf]="type == 'dialog'">
+<ng-template [ngIf]="type == componentTypes.dialog.toString()">
     <p-dialog [(visible)]="visible" 
     [closable]="closable" 
     (onHide)="closeDialog($event)" 
@@ -15,7 +15,7 @@
             <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
         </p-header>
         <ng-template ngFor let-element [ngForOf]="nestedParams">
-            <ng-template [ngIf]="element.alias == 'Section'">
+            <ng-template [ngIf]="element.alias == viewComponent.section.toString()">
                 <nm-section [element]="element"></nm-section>	
             </ng-template>
         </ng-template>   

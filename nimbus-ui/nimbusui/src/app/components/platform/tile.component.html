@@ -7,14 +7,14 @@
 			</h2>
 			<ng-template ngFor let-element [ngForOf]="nestedParams">
 				<!-- ButtonGroup -->
-				<ng-template [ngIf]="element.alias == 'ButtonGroup'">
+				<ng-template [ngIf]="element.alias == componentTypes.buttonGroup.toString()">
 					<div class="">
 						<nm-button-group [buttonList]="element.type?.model?.params" [cssClass]="element.config?.uiStyles?.attributes?.cssClass">
 						</nm-button-group>
 					</div>
 				</ng-template>
 				<!-- Paragraph -->
-				<ng-template [ngIf]="element.alias == 'Paragraph'">
+				<ng-template [ngIf]="element.alias == componentTypes.paragraph.toString()">
 					<nm-paragraph [element]="element"></nm-paragraph>
 				</ng-template>
 			</ng-template>		
@@ -22,13 +22,13 @@
 	<div class="card card-block {{styleHt}}">
 		<div class="viewport" >
 			<ng-template ngFor let-element [ngForOf]="nestedParams">
-				<ng-template [ngIf]="element.alias == 'Tile'">
+				<ng-template [ngIf]="element.alias == viewComponent.tile.toString()">
 					<nm-tile [element]="element" tileType="subtile"></nm-tile>
 				</ng-template>
-				<ng-template [ngIf]="element.alias == 'Section'">
+				<ng-template [ngIf]="element.alias == viewComponent.section.toString()">
 					<nm-section [element]="element"></nm-section>	
 				</ng-template>
-				<ng-template [ngIf]="element.alias == 'Modal'">
+				<ng-template [ngIf]="element.alias == viewComponent.modal.toString()">
 					<nm-modal [element]="element"></nm-modal>	
 				</ng-template>
 			</ng-template>	

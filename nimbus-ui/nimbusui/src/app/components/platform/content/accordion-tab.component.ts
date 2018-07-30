@@ -20,6 +20,7 @@ import { Param } from '../../../shared/param-state';
 import { WebContentSvc } from '../../../services/content-management.service';
 import { BaseElement } from '../base-element.component';
 import { PageService } from '../../../services/page.service';
+import { ComponentTypes } from '../../../shared/param-annotations.enum';
 
 /**
  * \@author Dinakar.Meda
@@ -40,7 +41,7 @@ import { PageService } from '../../../services/page.service';
             </div>
             <ng-template ngFor let-element [ngForOf]="element?.type?.model?.params">
                 <!-- Card Content -->
-                <ng-template [ngIf]="element.alias == 'CardDetail'">
+                <ng-template [ngIf]="element.alias == componentTypes.cardDetail.toString()">
                     <nm-card-details [element]="element"></nm-card-details>
                 </ng-template>
             </ng-template>
@@ -51,6 +52,7 @@ import { PageService } from '../../../services/page.service';
 export class AccordionTab  extends BaseElement {
 
     protected _selected: boolean;
+    componentTypes = ComponentTypes;
 
     constructor(private wcsvc: WebContentSvc, private pageSvc: PageService) {
         super(wcsvc);

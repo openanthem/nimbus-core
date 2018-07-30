@@ -18,6 +18,8 @@
 import { Component, Input } from '@angular/core';
 import { Param } from '../../../shared/param-state';
 import { BaseElement } from '../base-element.component';
+import { ComponentTypes } from '../../../shared/param-annotations.enum';
+
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 
@@ -31,7 +33,7 @@ import { BaseElement } from '../base-element.component';
         <div [ngClass]="getComponentClass()">
             <ng-template ngFor let-field [ngForOf]="element?.type?.model?.params">
                 <!-- FieldValue-->
-                <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == 'FieldValue'">
+                <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.fieldValue.toString()">
                     <nm-card-details-field [element]="field" [(value)]="field.leafState"></nm-card-details-field>
                 </ng-template>
             </ng-template>
@@ -41,6 +43,7 @@ import { BaseElement } from '../base-element.component';
 
 export class CardDetailsFieldGroupComponent extends BaseElement {
     private fieldGroupClass: string = '';
+    componentTypes = ComponentTypes;
 
     ngOnInit() {
     }

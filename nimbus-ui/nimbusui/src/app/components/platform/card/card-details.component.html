@@ -1,40 +1,40 @@
 <div class="mt-1 cardBody {{element.config?.uiStyles?.attributes?.cssClass}}">
     <ng-template ngFor let-param [ngForOf]="element?.type?.model?.params">
-        <ng-template [ngIf]="param.config?.uiStyles?.attributes?.alias == 'CardDetailsHeader'">
+        <ng-template [ngIf]="param.config?.uiStyles?.attributes?.alias == componentTypes.cardDetailsHeader.toString()">
             <span class="{{param.config?.uiStyles?.attributes?.cssClass}}" *ngFor="let field of param?.type?.model?.params">
                 <!-- ButtonGroup -->
-                <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == 'ButtonGroup'">
+                <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.buttonGroup.toString()">
                     <div class="">
                         <nm-button-group [buttonList]="field.type?.model?.params" [cssClass]="field.config?.uiStyles?.attributes?.cssClass">
                         </nm-button-group>
                     </div>
                 </ng-template>
                 <!-- Paragraph -->
-                <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == 'Paragraph'">
+                <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.paragraph.toString()">
                     <nm-paragraph [element]="field"></nm-paragraph>
                 </ng-template>
                 <!-- FieldValue-->
-                <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == 'FieldValue'">
+                <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.fieldValue.toString()">
                     <nm-card-details-field [element]="field" [(value)]="field.leafState"></nm-card-details-field>
                 </ng-template>
             </span>
         </ng-template>
-        <ng-template [ngIf]="param.config?.uiStyles?.attributes?.alias == 'CardDetailsBody'">
+        <ng-template [ngIf]="param.config?.uiStyles?.attributes?.alias == componentTypes.cardDetailsBody.toString()">
                 <span class="{{param.config?.uiStyles?.attributes?.cssClass}}" *ngFor="let field of param?.type?.model?.params">
                     <!-- StaticText-->
-                    <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == 'StaticText'">
+                    <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.staticText.toString()">
                         <nm-static-text [element]="field"></nm-static-text>
                     </ng-template>
                     <!-- Paragraph -->
-                    <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == 'Paragraph'">
+                    <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.paragraph.toString()">
                         <nm-paragraph [element]="field"></nm-paragraph>
                     </ng-template>
                     <!-- FieldValueGroup-->
-                    <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == 'FieldValueGroup'">
+                    <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.fieldValueGroup.toString()">
                         <nm-card-details-field-group [element]="field"></nm-card-details-field-group>
                     </ng-template>
                     <!-- FieldValue-->
-                    <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == 'FieldValue'">
+                    <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.fieldValue.toString()">
                             <nm-card-details-field [element]="field" [(value)]="field.leafState"></nm-card-details-field>
                     </ng-template>
                     <ng-template [ngIf]="field.config?.uiStyles?.isLink">

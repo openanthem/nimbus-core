@@ -42,7 +42,7 @@
                 <ng-template ngFor let-col let-colIndex="index" [ngForOf]="params">
                     <th *ngIf="showColumn(col)" [pSortableColumn]="col" [pSortableColumnDisabled]="!col?.uiStyles?.attributes?.sortable" [ngClass]="getColumnStyle(col)">
                         <span *ngIf="showHeader(col)">{{col.header}}</span>
-                        <p-sortIcon [field]="col" *ngIf="col?.uiStyles?.attributes?.alias === 'GridColumn' && col?.uiStyles?.attributes?.sortable !== false"></p-sortIcon>
+                        <p-sortIcon [field]="col" *ngIf="col?.uiStyles?.attributes?.alias === viewComponent.gridcolumn.toString() && col?.uiStyles?.attributes?.sortable !== false"></p-sortIcon>
                     </th>
                 </ng-template>
             </tr>
@@ -100,22 +100,22 @@
                         <span title="{{getCellDisplayValue(rowData, col)}}" *ngIf="showValue(col)" [nmDisplayValue]='getCellDisplayValue(rowData, col)' [config]='col'>
                             <span class="fieldValue">{{getCellDisplayValue(rowData, col)}}</span>
                         </span>
-                        <span *ngIf="col?.uiStyles?.attributes?.alias == 'Link'">
+                        <span *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.link.toString()">
                             <nm-link
                                 [element] = "getViewParam(col, rowData['elemId'])">
                             </nm-link>
                         </span>
-                        <span *ngIf="col?.uiStyles?.attributes?.alias == 'GridColumn' && col?.uiStyles?.attributes?.showAsLink === true">
+                        <span *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.gridcolumn.toString() && col?.uiStyles?.attributes?.showAsLink === true">
                             <nm-link
                                 [element] = "getViewParam(col, rowData['elemId'])">
                             </nm-link>
                         </span>
-                        <span *ngIf="col?.uiStyles?.attributes?.alias == 'Button'">
+                        <span *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.button.toString()">
                             <nm-button
                                 [element] = "getViewParam(col, rowData['elemId'])">
                             </nm-button>
                         </span>
-                        <span *ngIf="col?.uiStyles?.attributes?.alias == 'LinkMenu'">
+                        <span *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.linkMenu.toString()">
                             <nm-action-dropdown #dropDown [element]="getViewParam(col, rowData['elemId'])" 
                                 [params]="col?.type?.model?.paramConfigs" 
                                 [rowData]="rowData" 

@@ -22,7 +22,7 @@ import { Param } from '../../../shared/param-state';
 import { WebContentSvc } from '../../../services/content-management.service';
 import { BaseElement } from '../base-element.component';
 import { PageService } from '../../../services/page.service';
-import { ViewComponent } from '../../../shared/param-annotations.enum';
+import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations.enum';
 
 /**
  * \@author Dinakar.Meda
@@ -63,14 +63,14 @@ import { ViewComponent } from '../../../shared/param-annotations.enum';
                     <ng-template [ngIf]="form === undefined">
                         <ng-template ngFor let-tabElement [ngForOf]="tab?.type?.model?.params">
                             <!-- ButtonGroup -->
-                            <ng-template [ngIf]="tabElement.alias == 'ButtonGroup'">
+                            <ng-template [ngIf]="tabElement.alias == componentTypes.buttonGroup.toString()">
                                 <div class="">
                                     <nm-button-group [buttonList]="tabElement.type?.model?.params" [cssClass]="tabElement.config?.uiStyles?.attributes?.cssClass">
                                     </nm-button-group>
                                 </div>
                             </ng-template>
                             <!-- Grid Param -->
-                            <ng-template [ngIf]="tabElement.alias == 'Grid'">
+                            <ng-template [ngIf]="tabElement.alias == componentTypes.grid.toString()">
                                 <nm-table
                                     [element]="tabElement" 
                                     [params]="tabElement?.config?.type?.elementConfig?.type?.model?.paramConfigs"
@@ -78,7 +78,7 @@ import { ViewComponent } from '../../../shared/param-annotations.enum';
                                 </nm-table>
                             </ng-template>
                             <!-- Card Content -->
-                            <ng-template [ngIf]="tabElement.alias == 'CardDetail'">
+                            <ng-template [ngIf]="tabElement.alias == componentTypes.cardDetail.toString()">
                                 <nm-card-details [element]="tabElement"></nm-card-details>
                             </ng-template>
                         </ng-template>
@@ -93,6 +93,7 @@ export class AccordionMain extends BaseElement {
 
     @Input() form: FormGroup;
     @Input() elementCss: string;
+    componentTypes = ComponentTypes;
 
     protected _multiple: boolean;
     index: number[]; 

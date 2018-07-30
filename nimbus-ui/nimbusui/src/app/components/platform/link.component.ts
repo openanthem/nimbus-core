@@ -22,6 +22,7 @@ import { WebContentSvc } from '../../services/content-management.service';
 import { PageService } from '../../services/page.service';
 import { GenericDomain } from './../../model/generic-domain.model';
 import { ServiceConstants } from './../../services/service.constants';
+import { ComponentTypes } from '../../shared/param-annotations.enum';
 
 /**
  * \@author Dinakar.Meda
@@ -45,11 +46,11 @@ import { ServiceConstants } from './../../services/service.constants';
         <ng-template [ngIf]="!imgSrc && element?.visible == true">
 
             <!-- External Links -->
-            <ng-template [ngIf]="value=='EXTERNAL'">
+            <ng-template [ngIf]="value==componentTypes.external.toString()">
                 <a href="{{url}}" class="{{cssClass}}" target="{{target}}" rel="{{rel}}">{{label}}</a>
             </ng-template>
 
-            <ng-template [ngIf]="value=='MENU'">
+            <ng-template [ngIf]="value==componentTypes.menu.toString()">
                 <ng-template [ngIf]="element.mapped==false">
                     <a href="javascript:void(0)" class=" mr-2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                        
@@ -70,7 +71,7 @@ import { ServiceConstants } from './../../services/service.constants';
                 </ng-template>
                 <div class="dropdown-menu dropdown-menu-right">
                     <ng-template ngFor let-menuParam [ngForOf]="element?.type?.model?.params">
-                        <ng-template [ngIf]="menuParam.config?.uiStyles?.attributes?.alias == 'Menu'">
+                        <ng-template [ngIf]="menuParam.config?.uiStyles?.attributes?.alias == componentTypes.menu.toString()">
                             <ng-template ngFor let-linkParam [ngForOf]="menuParam?.type?.model?.params">
                                 <nm-link [element]="linkParam" inClass="dropdown-item"></nm-link>
                             </ng-template>
@@ -78,12 +79,12 @@ import { ServiceConstants } from './../../services/service.constants';
                     </ng-template>
                 </div>
             </ng-template>
-            <ng-template [ngIf]="value=='DEFAULT'">
+            <ng-template [ngIf]="value==componentTypes.default.toString()">
                 <a class="{{cssClass}}" href="javascript:void(0)" (click)="processOnClick(element.path, method, b)">
                     {{this.label}}
                 </a>
             </ng-template>
-            <ng-template [ngIf]="value=='INLINE'">
+            <ng-template [ngIf]="value==componentTypes.inline.toString()">
                 <a class="{{cssClass}}" href="javascript:void(0)" title="{{this.element.leafState}}" (click)="processOnClick(element.path, 'GET', '$executeAnd$nav')">
                     {{this.element.leafState}}
                 </a>
@@ -100,6 +101,7 @@ export class Link extends BaseElement {
     @Input() renderAsLink: boolean;
     private linkClass: string = 'basicView';
     private imagesPath: string;
+    componentTypes = ComponentTypes;
 
     constructor(private _wcs: WebContentSvc, private pageSvc: PageService) {
         super(_wcs);

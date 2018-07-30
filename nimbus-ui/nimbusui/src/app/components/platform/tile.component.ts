@@ -22,6 +22,7 @@ import { BaseElement } from './base-element.component';
 import { PageService } from '../../services/page.service';
 import { GenericDomain } from './../../model/generic-domain.model';
 import { LoggerService } from '../../services/logger.service';
+import { ViewComponent, ComponentTypes } from '../../shared/param-annotations.enum';
 
 /**
  * \@author Dinakar.Meda
@@ -57,6 +58,8 @@ export class Tile extends BaseElement {
 
     // height of tile
     public styleHt: string = 'height-lg';
+    viewComponent = ViewComponent;
+    componentTypes = ComponentTypes;
 
     constructor(private wcsvc: WebContentSvc, private pageSvc: PageService, private _logger: LoggerService) {
         super(wcsvc);
