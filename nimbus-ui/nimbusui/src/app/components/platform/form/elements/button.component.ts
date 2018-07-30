@@ -28,6 +28,7 @@ import { BaseElement } from '../../base-element.component';
 import { FileService } from '../../../../services/file.service';
 import { CustomHttpClient } from '../../../../services/httpclient.service';
 import { LoggerService } from '../../../../services/logger.service';
+import { ComponentTypes } from '../../../../shared/param-annotations.enum';
 
 /**
  * \@author Dinakar.Meda
@@ -42,16 +43,16 @@ import { LoggerService } from '../../../../services/logger.service';
     providers: [WebContentSvc],
     template: `
         <ng-template [ngIf]="!element.config?.uiStyles?.attributes?.imgSrc">
-            <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style=='PRIMARY' && element?.visible == true">
+            <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.primary.toString() && element?.visible == true">
                 <button class="btn btn-primary" (click)="onSubmit()" type="{{element.config?.uiStyles?.attributes?.type}}" [disabled]="!form.valid">{{label}}</button>
             </ng-template>
-            <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style=='SECONDARY' && element?.visible == true">
+            <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.secondary.toString() && element?.visible == true">
                 <button class="btn btn-secondary" [disabled]="disabled" (click)="emitEvent(this)" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
             </ng-template>
-            <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style=='PLAIN' && element?.visible == true">
+            <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.plain.toString() && element?.visible == true">
                 <button class="btn btn-plain {{cssClass}}" (click)="emitEvent(this)" [disabled]="disabled" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
             </ng-template>
-            <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style=='DESTRUCTIVE' && element?.visible == true">
+            <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.destructive.toString() && element?.visible == true">
                 <button class="btn btn-delete" (click)="emitEvent(this)" [disabled]="disabled" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
             </ng-template>
         </ng-template>
@@ -79,6 +80,7 @@ export class Button extends BaseElement {
     private disabled: boolean;
     files: any;
     differ: KeyValueDiffer<any, any>;
+    componentTypes = ComponentTypes;
 
     constructor( private pageService: PageService, private _wcs: WebContentSvc, 
         private location: Location, private fileService: FileService, private http: CustomHttpClient, private logger: LoggerService, private differs: KeyValueDiffers ) {

@@ -24,6 +24,7 @@ import { PageService } from '../../../services/page.service';
 import { Action, HttpMethod, Behavior} from './../../../shared/command.enum';
 import { GenericDomain } from '../../../model/generic-domain.model';
 import { BaseElement } from '../base-element.component';
+import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations.enum';
 
 /**
  * \@author Sandeep.Mantha
@@ -54,6 +55,9 @@ export class Modal extends BaseElement implements OnInit, OnDestroy {
 
     private _resizable: boolean;
     privateelementCss: string;
+    viewComponent = ViewComponent;
+    componentTypes = ComponentTypes;
+    
     constructor(private wcsvc: WebContentSvc, private pageSvc: PageService) {
         super(wcsvc);
     }

@@ -42,9 +42,9 @@ import { SortAs, GridColumnDataType } from './sortas.interface';
 import { ActionDropdown } from './../form/elements/action-dropdown.component';
 import { Param } from '../../../shared/param-state';
 import { HttpMethod } from './../../../shared/command.enum';
-import { ViewComponent } from '../../../shared/param-annotations.enum';
 import { ViewConfig } from '../../../services/config.service';
 import { TableComponentConstants } from './table.component.constants';
+import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations.enum';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     provide: NG_VALUE_ACCESSOR,
@@ -77,7 +77,9 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     @ViewChild('dt') dt: Table;
     @ViewChild('op') overlayPanel: OverlayPanel;
     @ViewChildren('dropDown') dropDowns: QueryList<any>;
-
+    componentTypes = ComponentTypes;
+    viewComponent = ViewComponent;
+    
     public onChange: any = (_) => { /*Empty*/ }
     public onTouched: any = () => { /*Empty*/ }
     

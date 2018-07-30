@@ -27,6 +27,7 @@ import { Param } from '../../../../shared/param-state';
 import { GenericDomain } from './../../../../model/generic-domain.model';
 import { HttpMethod } from '../../../../shared/command.enum';
 import { BaseElement } from './../../base-element.component';
+import { ComponentTypes } from '../../../../shared/param-annotations.enum';
 
 /**
  * \@author Dinakar.Meda
@@ -132,7 +133,7 @@ export class ActionDropdown {
         WebContentSvc
     ],
     template: `
-        <ng-template [ngIf]="param.uiStyles.attributes.value =='EXTERNAL'">
+        <ng-template [ngIf]="param.uiStyles.attributes.value == componentTypes.external.toString()">
             <ng-template [ngIf]="enabled">
                 <a href="{{url}}" class="{{param.uiStyles?.attributes?.cssClass}}" target="{{param.uiStyles?.attributes?.target}}" rel="{{param.uiStyles?.attributes?.rel}}">{{label}}</a>
             </ng-template>
@@ -140,7 +141,7 @@ export class ActionDropdown {
                 <a href="javascript:void(0)" class="{{param.uiStyles?.attributes?.cssClass}}" [class.disabled]="enabled !== undefined && !enabled" rel="{{param.uiStyles?.attributes?.rel}}">{{label}}</a>
             </ng-template>
         </ng-template>
-        <ng-template [ngIf]="param.uiStyles.attributes.value !='EXTERNAL'">
+        <ng-template [ngIf]="param.uiStyles.attributes.value != componentTypes.external.toString()">
             <a href="javascript:void(0)" [class.disabled]="enabled !== undefined && !enabled" (click)="processOnClick(this.param.code)">{{label}}</a>
         </ng-template>
     `
@@ -151,7 +152,8 @@ export class ActionLink extends BaseElement{
         @Input() elementPath: string;
         @Input() rowData: any;
         protected url:string;
-        
+        componentTypes = ComponentTypes;
+
         constructor(private _wcs: WebContentSvc, private pageSvc: PageService) {
             super(_wcs);
         }

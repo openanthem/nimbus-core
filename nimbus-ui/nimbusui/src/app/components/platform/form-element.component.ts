@@ -22,6 +22,7 @@ import { FormGroup, AbstractControlDirective, NgModel } from '@angular/forms';
 import { Constraint } from '../../shared/param-config';
 import { Param } from '../../shared/param-state';
 import { Message } from '../../shared/message';
+import { ComponentTypes, ViewComponent } from '../../shared/param-annotations.enum';
 
 
 var counter = 0;
@@ -46,6 +47,8 @@ export class FormElement {
     elemMessages: Message[];
     id: String = 'form-control' + counter++;
     componentStyle: string;
+    componentTypes = ComponentTypes;
+    viewComponent = ViewComponent;
 
     get isValid() {
         if (this.form.controls[this.element.config.code] != null) {
