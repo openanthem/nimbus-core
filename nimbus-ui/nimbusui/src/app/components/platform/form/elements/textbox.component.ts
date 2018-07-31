@@ -49,23 +49,22 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
         </nm-tooltip>
     </label>
 
-    <input *ngIf="hidden!=true"
+    <input *ngIf="hidden!=true && readOnly==false"
         [(ngModel)] = "value"
         [id]="element.config?.code" 
         (focusout)="emitValueChangedEvent(this,value)"
         [value]="type"
         [disabled]="disabled"
-        class="form-control" 
-        [readonly]="readOnly" />
+        class="form-control text-input"/>
 
-    <!--
-    <p style="margin-bottom:0rem;" *ngIf="readOnly">{{element.leafState}}</p>
-    -->
-    
     <input *ngIf="hidden==true"
         [id]="element.config?.code" 
         type="hidden" 
         [value]="element.leafState" />
+
+    <pre class="print-only" *ngIf="hidden !=true && readOnly == false">{{this.value}}</pre>
+
+    <p style="margin-bottom:0rem;" *ngIf="readOnly==true">{{element.leafState}}</p>
    `
 })
 export class InputText extends BaseControl<String> {

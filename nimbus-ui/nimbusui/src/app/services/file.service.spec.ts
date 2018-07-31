@@ -3,11 +3,38 @@ import { CustomHttpClient } from './httpclient.service';
 import { HttpClientModule, HttpClient, HttpRequest } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { JL } from 'jsnlog';
+import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/of';
+// import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 
 import { FileService } from './file.service';
 import { LoggerService } from './logger.service';
+import { SessionStoreService, CUSTOM_STORAGE } from './session.store';
+import { AppInitService } from './app.init.service';
 
-let http, backend, service;
+let http, backend, service, mHttpClient, logger;
+
+class MockHttpClient {
+  constructor() {  }
+  
+  postFileData(a, b) {
+
+    if(a=='/test') {      
+       let err = new Error("why now");
+      throw err;
+    }
+
+    return Observable.of({fileId: 123});
+  }
+}
+
+class MockLoggerService {
+  debug() { }
+  info() { }
+  error() { }
+}
 
 describe('FileService', () => {
   beforeEach(() => {
@@ -15,42 +42,36 @@ describe('FileService', () => {
         imports: [
             HttpModule,
             HttpClientModule,
-            HttpClientTestingModule
+            HttpClientTestingModule,
+            StorageServiceModule
         ],
         providers: [
+          { provide: 'JSNLOG', useValue: JL },
+          { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+          {provide: CustomHttpClient, useClass: MockHttpClient},
+          {provide: LoggerService, useClass: MockLoggerService},
           FileService, 
-          CustomHttpClient,
-          LoggerService
+          AppInitService
         ]
     });
     http = TestBed.get(HttpClient);
     backend = TestBed.get(HttpTestingController);
     service = TestBed.get(FileService);
+    mHttpClient = TestBed.get(CustomHttpClient);
+    logger = TestBed.get(LoggerService);
   });
 
   it('FileService should be created', async(() => {
     expect(service).toBeTruthy();
   }));
 
-  it('uploadFile(), post call should throw error', async(() => {
-    const testFile = new File([], 'tFile');
-    testFile['postUrl'] = '/postFile';
-    service.uploadFile(testFile);
-
-    const req = backend.expectOne(testFile['postUrl']);
-    expect(req.request.method).toEqual('POST');
-    req.flush({errorMessage: 'Uh oh!'}, { status: 500, statusText: 'Server Error'});
-    backend.verify();
-  }));
-
   it('uploadFile() should post the file', async(() => {
     const testFile = new File([], 'tFile');
     testFile['postUrl'] = '/postFile';
-    service.uploadFile(testFile);
-    const req = backend.expectOne(testFile['postUrl']);
-    expect(req.request.method).toEqual('POST');
-    req.flush(123);
-    backend.verify();
+    service.metaData = [];
+    service.uploadFile(testFile, {value: {}}).subscribe(val => {
+      expect(val).toEqual(123);
+    });
   }));
 
 });

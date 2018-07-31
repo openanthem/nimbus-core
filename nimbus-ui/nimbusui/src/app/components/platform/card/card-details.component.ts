@@ -22,6 +22,7 @@ import { CardDetails } from '../../../shared/card-details';
 import { Param } from '../../../shared/param-state';
 import { Component, Input } from '@angular/core';
 import { PageService } from '../../../services/page.service';
+import { ComponentTypes } from '../../../shared/param-annotations.enum';
 
 /**
  * \@author Dinakar.Meda
@@ -50,6 +51,7 @@ export class CardDetailsComponent extends BaseElement {
     @Input() element: Param;
     @Input() editUrl: string;
     opened: boolean = false;
+    componentTypes = ComponentTypes;
 
     constructor(private pageSvc : PageService, private _wcs: WebContentSvc) {
         super(_wcs);

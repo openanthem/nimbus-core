@@ -15,10 +15,7 @@
  */
 package com.antheminc.oss.nimbus.channel.web;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.EnumSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -40,6 +37,7 @@ import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextLoader;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.support.Holder;
@@ -178,6 +176,10 @@ public class WebActionController {
 		else if(o.getValue() instanceof Param) {
 			Param<?> param = (Param<?>) o.getValue();
 			if(inputParamPath.equals(param.getPath()) && notifyActionsToMatch.contains(o.getAction())) {
+				
+				if(param.hasContextStateChanged())
+					return false;
+				
 				return true;
 			}
 		}

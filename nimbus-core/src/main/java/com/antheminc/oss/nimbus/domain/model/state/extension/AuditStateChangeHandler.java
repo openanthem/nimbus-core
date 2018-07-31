@@ -22,6 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
+import com.antheminc.oss.nimbus.domain.defn.MapsTo;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.extension.Audit;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
@@ -78,6 +79,15 @@ public class AuditStateChangeHandler implements OnStateChangeHandler<Audit> {
 		this.domainConfigBuilder = beanResolver.get(DomainConfigBuilder.class);
 		this.javaBeanHandler = beanResolver.get(JavaBeanHandler.class);
 		this.idSequenceRepo =  beanResolver.get(IdSequenceRepository.class);
+	}
+	
+	
+	@Override
+	public boolean shouldAllow(Audit configuredAnnotation, Param<?> param) {
+		if(param.getPath().contains(MapsTo.DETACHED_SIMULATED_FIELD_NAME))
+			return false; 
+		
+		return true;
 	}
 	
 	@Override

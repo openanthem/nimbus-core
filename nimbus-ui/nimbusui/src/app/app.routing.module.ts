@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 'use strict';
+import { SubDomainFlowCmp } from './components/domain/subdomain-flow.component';
 import { DomainFlowCmp } from './components/domain/domain-flow.component';
 import { StyleGuideCmp } from './styleguide/style-guide.component';
 import { HomeLayoutCmp } from './components/home/home-layout.component';
@@ -50,27 +51,14 @@ const APPROUTES: Routes = [
                                          path: ':pageId', component: PageContent,
                                          resolve: { page: PageResolver }
                                      },
-                                     { path: 'pnf', component: PageNotfoundComponent },
-                                     { path: '', component: PageNotfoundComponent }
-                       ]
-                   },
-                   { path: 'pnf', component: PageNotfoundComponent },
-                   { path: '', redirectTo: 'f', pathMatch: 'full' },
-                   { path: '**', component: PageNotfoundComponent }
-        ]
-    },
-    // To remove these after a discuss on deployment of clients
-    {
-        path: 'a', component: HomeLayoutCmp, data: {'layout': 'adminhome'},
-        children: [
-                   {
-                       path: ':domain', component: DomainFlowCmp,
-                       resolve: { layout: LayoutResolver },
-                       children: [
                                      {
-                                         path: ':id', component: PageContent,
-                                         resolve: { page: PageResolver }
-                                     },
+                                        path: ':subdomain', component: SubDomainFlowCmp,
+                                        children: [
+                                                        { path: ':pageId', component: PageContent, resolve: { page: PageResolver }},
+                                                        { path: 'pnf', component: PageNotfoundComponent },
+                                                        { path: '', component: PageNotfoundComponent }
+                                        ]
+                                    },
                                      { path: 'pnf', component: PageNotfoundComponent },
                                      { path: '', component: PageNotfoundComponent }
                        ]
@@ -80,12 +68,13 @@ const APPROUTES: Routes = [
                    { path: '**', component: PageNotfoundComponent }
         ]
     },
+    
     { path: '', component: PageNotfoundComponent }
 
 ];
 
 @NgModule({
-    imports: [ RouterModule.forRoot(APPROUTES, {enableTracing: false, useHash:true, onSameUrlNavigation :'reload'}) ],
+    imports: [ RouterModule.forRoot(APPROUTES, {enableTracing: false, useHash:true}) ],
     exports: [ RouterModule ],
     providers: [ PageResolver, LayoutResolver ]
 })

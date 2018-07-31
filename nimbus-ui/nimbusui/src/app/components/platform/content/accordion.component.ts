@@ -16,11 +16,13 @@
  */
 'use strict';
 import { Component, Input, ViewChild } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { LabelConfig } from '../../../shared/param-config';
 import { Param } from '../../../shared/param-state';
 import { WebContentSvc } from '../../../services/content-management.service';
 import { BaseElement } from '../base-element.component';
 import { PageService } from '../../../services/page.service';
+import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations.enum';
 
 /**
  * \@author Dinakar.Meda
@@ -38,19 +40,47 @@ import { PageService } from '../../../services/page.service';
             <span class="btn-pipe">|</span>
             <button type="button" class="btn btn-expand" (click)="closeAll()">Collapse All</button>
         </div>
-
         <p-accordion #accordion [multiple]="multiple" [activeIndex]="index">
             <ng-template ngFor let-tab [ngForOf]="nestedParams">
-                <p-accordionTab [header]="getTabLabel(tab)" [selected]="tab?.config?.uiStyles?.attributes?.selected">
+                <p-accordionTab  [selected]="tab?.config?.uiStyles?.attributes?.selected" *ngIf="tab?.visible == true">
+                    <p-header>
+                        <h2>{{getTabHeader(tab)}}</h2>
+                        <span [ngClass]="getTabInfoClass(tab)" *ngIf="getInfoText(tab)">
+                            {{getInfoText(tab)}}
+                        </span>
+                        <nm-image class='nm-accordion-headerimage' *ngIf="getImageSrc(tab)" [name]="getImageSrc(tab)" [type]="getImageType(tab)" [title]="getTitle(tab)" [cssClass]="getcssClass(tab)"></nm-image>
+                        <div style='clear: both'></div>
+                    </p-header>
                     <div class="accordionBtn" *ngIf="tab?.config?.uiStyles?.attributes?.editable">
                         <button  (click)="processOnClick(tab)" type="button" class="btn btn-plain">
                             <i class="fa fa-fw fa-pencil" aria-hidden="true"></i>Edit
                         </button>
                     </div>
-                    <ng-template ngFor let-tabElement [ngForOf]="tab?.type?.model?.params">
-                        <!-- Card Content -->
-                        <ng-template [ngIf]="tabElement.alias == 'CardDetail'">
-                            <nm-card-details [element]="tabElement"></nm-card-details>
+                    <!-- Form Elements -->
+                    <ng-template [ngIf]="form !== undefined">
+                        <nm-frm-grp [elements]="tab?.type?.model?.params" [form]="form.controls[tab.config?.code]" [elementCss]="elementCss"> </nm-frm-grp>
+                    </ng-template>
+                    <ng-template [ngIf]="form === undefined">
+                        <ng-template ngFor let-tabElement [ngForOf]="tab?.type?.model?.params">
+                            <!-- ButtonGroup -->
+                            <ng-template [ngIf]="tabElement.alias == componentTypes.buttonGroup.toString()">
+                                <div class="">
+                                    <nm-button-group [buttonList]="tabElement.type?.model?.params" [cssClass]="tabElement.config?.uiStyles?.attributes?.cssClass">
+                                    </nm-button-group>
+                                </div>
+                            </ng-template>
+                            <!-- Grid Param -->
+                            <ng-template [ngIf]="tabElement.alias == componentTypes.grid.toString()">
+                                <nm-table
+                                    [element]="tabElement" 
+                                    [params]="tabElement?.config?.type?.elementConfig?.type?.model?.paramConfigs"
+                                    (onScrollEvent)="onScrollEvent()">
+                                </nm-table>
+                            </ng-template>
+                            <!-- Card Content -->
+                            <ng-template [ngIf]="tabElement.alias == componentTypes.cardDetail.toString()">
+                                <nm-card-details [element]="tabElement"></nm-card-details>
+                            </ng-template>
                         </ng-template>
                     </ng-template>
                 </p-accordionTab>
@@ -60,6 +90,10 @@ import { PageService } from '../../../services/page.service';
 })
 
 export class AccordionMain extends BaseElement {
+
+    @Input() form: FormGroup;
+    @Input() elementCss: string;
+    componentTypes = ComponentTypes;
 
     protected _multiple: boolean;
     index: number[]; 
@@ -83,7 +117,7 @@ export class AccordionMain extends BaseElement {
     /**
      * Get Tab label
      */
-    protected getTabLabel(param: Param): string {
+    protected getTabHeader(param: Param): string {
         let labelConfig: LabelConfig = this.wcsvc.findLabelContent(param);
         return labelConfig.text;
     }
@@ -116,4 +150,72 @@ export class AccordionMain extends BaseElement {
     processOnClick(param: Param) {
         this.pageSvc.processEvent(param.path, '$execute', null, 'POST');
     }
+
+    getInfoText(tab) {
+        for (let i = 0; i < tab.type.model.params.length; i++) {
+            if (tab.type.model.params[i].alias === ViewComponent.tabInfo.toString()) {
+                if (!tab.type.model.params[i].visible) {
+                    return;
+                }
+                else if(tab.type.model.params[i].leafState){
+                    return tab.type.model.params[i].leafState;
+                }
+                
+                return tab.type.model.params[i].config.uiStyles.attributes.info ;
+            }
+        }
+    }
+
+    getTabInfoClass(tab) {
+        for (let i = 0; i < tab.type.model.params.length; i++) {
+            let tabParam: Param = tab.type.model.params[i];
+            if (tabParam.alias === ViewComponent.tabInfo.toString()) {
+                if(tabParam.config && tabParam.config.uiStyles.attributes.cssClass){
+                    return tabParam.config.uiStyles.attributes.cssClass;
+                } else {
+                    return 'nm-accordion-headertext' ;
+                }
+            }
+        }
+    }
+
+    getImageSrc(tab) {
+        for (let i = 0; i < tab.type.model.params.length; i++) {
+            if (tab.type.model.params[i].alias === ViewComponent.image.toString()) {
+                if (!tab.type.model.params[i].visible) {
+                    return;
+                }
+                else if(tab.type.model.params[i].leafState){
+                    return tab.type.model.params[i].leafState;
+                }
+                
+                return tab.type.model.params[i].config.uiStyles.attributes.imgSrc;
+            }
+        }
+    }
+
+    getImageType(tab) {
+        for (let i = 0; i < tab.type.model.params.length; i++) {
+            if (tab.type.model.params[i].alias === ViewComponent.image.toString()) {
+                return tab.type.model.params[i].config.uiStyles.attributes.type;
+            }
+        }
+    }
+
+    getTitle(tab) {
+        for (let i = 0; i < tab.type.model.params.length; i++) {
+            if (tab.type.model.params[i].alias === ViewComponent.image.toString()) {
+                return tab.type.model.params[i].config.uiStyles.attributes.title;
+            }
+        }
+    }
+
+    getcssClass(tab) {
+        for (let i = 0; i < tab.type.model.params.length; i++) {
+            if (tab.type.model.params[i].alias === ViewComponent.image.toString()) {
+                return tab.type.model.params[i].config.uiStyles.attributes.cssClass;
+            }
+        }
+    }
+
 }

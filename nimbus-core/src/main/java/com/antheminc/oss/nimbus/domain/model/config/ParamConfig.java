@@ -19,7 +19,6 @@ import java.util.List;
 
 import com.antheminc.oss.nimbus.domain.defn.AssociatedEntity;
 import com.antheminc.oss.nimbus.domain.defn.Converters.ParamConverter;
-import com.antheminc.oss.nimbus.domain.defn.Execution;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo.Mode;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo.Path;
@@ -53,8 +52,7 @@ public interface ParamConfig<P> extends EntityConfig<P>, Findable<String> {
 	}
 	public List<LabelConfig> getLabelConfigs();
 	
-	
-	public List<Execution.Config> getExecutionConfigs();
+	public ExecutionConfig getExecutionConfig();
 	
 	public List<AnnotationConfig> getValidations();
 	

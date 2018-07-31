@@ -222,6 +222,11 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		// unmapped core/view - nested/leaf: set to param
 		if(!param.isMapped()) {
 			if(newState==null) {
+				
+				// clear collection elements prior to setting null
+				if(param.isCollection()) 
+					param.findIfCollection().clear();
+				
 				// set set to null only if parent state is not null
 				Param<?> parentParam = Optional.ofNullable(param.getParentModel())
 						.map(Model::getAssociatedParam)
@@ -280,49 +285,8 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 		// if param is mapped && requires NO conversion, then use mapsToParam
 		if(!mappedParam.requiresConversion()) {
 			return mapsToParam.setState(newState);
-		}
-		/*
-		if(mappedParam.isTransient() && mappedParam.findIfTransient().isAssinged()) {
-			MappedTransientParam<P, ?> mappedTransient = mappedParam.findIfTransient();
 			
-			// handle unassigned scenario
-//			if(!mappedTransient.isAssinged()) 
-//				throw new InvalidStateException("MappedTransientParam must be assigned prior to setting state. "
-//						+ "Is config missing that needs to assign or re-assign for transientParam: "+mappedTransient);
-//			
-			
-			// handle assigned..
-				
-			Param<?> mapsTo = mappedTransient.getMapsTo();
-			
-			// handle collection element: add only, edit would be handled automatically if already assigned to an existing colElem
-			if(mapsTo.isCollectionElem() && !mapsTo.findIfCollectionElem().getParentModel().contains(mapsTo)) {
-				
-				// get mapsTo core and add to collection
-				ListModel mapsToElemParentModel = mapsTo.findIfCollectionElem().getParentModel();
-				mapsToElemParentModel.add(mapsTo.findIfCollectionElem());
-			}
-
-			// set to view
-			if(mappedTransient.isNested())
-				return _setNestedModel(currRep, mappedParam, newState);
-			
-
-			
-		}*/ /*else if(!param.findIfMapped().requiresConversion() && !param.isCollection()) {
-			Object parentModel = param.getParentModel().instantiateOrGet();//ensure mappedFrom model is instantiated
-			
-			if(CollectionUtils.isNotEmpty(param.getConfig().getConverters())) {
-				Collections.reverse(param.getConfig().getConverters());
-				Object output = newState;
-				for(ParamConverter converter: param.getConfig().getConverters()) {
-					output = converter.deserialize(output);
-				}
-				newState = (P)output;
-			}
-			return mapsToParam.setState(newState);
-			
-		}*/ else if(param.isCollection()) {
+		} else if(param.isCollection()) {
 			if(newState==null) {
 				param.getParentModel().instantiateOrGet();//ensure mappedFrom model is instantiated
 				return mapsToParam.setState(null);

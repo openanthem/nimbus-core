@@ -13,6 +13,9 @@ import 'rxjs/add/observable/of';
 import { TableModule } from 'primeng/table';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
+import { JL } from 'jsnlog';
+import { Subject } from 'rxjs';
+import { AngularSvgIconModule } from 'angular-svg-icon';
 
 import { PageContent } from './page-content.component';
 import { Tile } from '../tile.component';
@@ -63,6 +66,12 @@ import { ConfigService } from '../../../services/config.service';
 import { LoggerService } from '../../../services/logger.service';
 import { DataTable } from '../grid/table.component';
 import { SessionStoreService, CUSTOM_STORAGE } from '../../../services/session.store';
+import { AppInitService } from '../../../services/app.init.service';
+import { HeaderCheckBox } from '../form/elements/header-checkbox.component';
+import { SvgComponent } from '../svg/svg.component';
+import { Image } from '../image.component';
+
+let logger, pageService;
 
 export class MockActivatedRoute implements ActivatedRoute {
   snapshot: ActivatedRouteSnapshot;
@@ -105,6 +114,24 @@ class MockWebContentSvc {
       text: 213,
       helpText: 345
     };
+  }
+}
+
+class MockLoggerService {
+  debug() { }
+  info() { }
+  error() { }
+}
+
+class MockPageService {
+  errorMessageUpdate$: Subject<any>;
+
+  constructor() {
+    this.errorMessageUpdate$ = new Subject();
+  }
+
+  logError(a) {
+    this.errorMessageUpdate$.next(a);
   }
 }
 
@@ -153,7 +180,10 @@ describe('PageContent', () => {
         Calendar,
         DateControl,
         Signature,
-        DataTable
+        DataTable,
+        HeaderCheckBox,
+        SvgComponent,
+        Image
        ],
        imports: [
         GrowlModule,
@@ -174,20 +204,25 @@ describe('PageContent', () => {
         HttpModule,
         TableModule,
         KeyFilterModule,
-        StorageServiceModule
+        StorageServiceModule,
+        AngularSvgIconModule
        ],
        providers: [
         {provide: WebContentSvc, useClass: MockWebContentSvc},
         {provide: ActivatedRoute, useClass: MockActivatedRoute},
         { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+        { provide: 'JSNLOG', useValue: JL },
+        {provide: LoggerService, useClass: MockLoggerService},
+        {provide: PageService, useClass: MockPageService},
+        AppInitService,
         SessionStoreService,
-        PageService,
         CustomHttpClient,
         LoaderService,
-        ConfigService,
-        LoggerService
+        ConfigService
        ]
     }).compileComponents();
+    logger = TestBed.get(LoggerService);
+    pageService = TestBed.get(PageService)
   }));
 
   it('should create the app', async(() => {
@@ -196,27 +231,28 @@ describe('PageContent', () => {
     expect(app).toBeTruthy();
   }));
 
- it('ngOnInit() should update element and titleList', async(() => {
+  it('ngOnInit() should update the tilesList[]', async(() => {
     const fixture = TestBed.createComponent(PageContent);
     const app = fixture.debugElement.componentInstance;
-    const activatedRoute = TestBed.get(ActivatedRoute);
-    app.ngOnInit();
-    const test1 = {
-      type: {
-        model: {
-          params: [{
-            config: {
-              uiStyles: {
-                attributes: {
-                  alias: 'Tile'
-                }
-              }
-            }
-          }]
-        }
-      }
+    app.element = {
+      path: 'a'
     };
-    expect(app.element).toEqual(test1);
+    spyOn(logger, 'debug').and.callThrough();
+    spyOn(app, 'loadLabelConfig').and.callThrough();
+    app.ngOnInit();
+    expect(logger.debug).toHaveBeenCalled();
+    expect(app.loadLabelConfig).toHaveBeenCalled();
+  }));
+
+  it('ngAfterViewInit() should update the errMsgArray[]', async(() => {
+    const fixture = TestBed.createComponent(PageContent);
+    const app = fixture.debugElement.componentInstance;
+    app.element = {
+      path: 'a'
+    };
+    app.ngAfterViewInit();
+    pageService.logError({message: 'test'});
+    expect(app.errMsgArray).toEqual([{severity: 'error', summary: 'Error Message', detail: 'test'}]);
   }));
 
 });

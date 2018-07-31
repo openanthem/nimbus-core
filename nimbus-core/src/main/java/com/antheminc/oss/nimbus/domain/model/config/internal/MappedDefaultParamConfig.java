@@ -61,7 +61,7 @@ public class MappedDefaultParamConfig<P, M> extends DefaultParamConfig<P> implem
 		
 		private void init(ParamConfig<M> mapsTo) {
 			setConverters(mapsTo.getConverters());
-			setExecutionConfigs(mapsTo.getExecutionConfigs());
+			setExecutionConfig(mapsTo.getExecutionConfig());
 			setRules(mapsTo.getRules());
 			setType(mapsTo.getType());
 			setUiNatures(mapsTo.getUiNatures());

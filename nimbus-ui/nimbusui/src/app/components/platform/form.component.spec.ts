@@ -7,6 +7,9 @@ import { KeyFilterModule } from 'primeng/keyfilter';
 import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { SimpleChanges } from '@angular/core';
+import { JL } from 'jsnlog';
+import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
+import { AngularSvgIconModule } from 'angular-svg-icon';
 
 import { Form } from './form.component';
 import { FrmGroupCmp } from './form-group.component';
@@ -54,8 +57,19 @@ import { LoggerService } from '../../services/logger.service';
 import { FormElementsService } from './form-builder.service';
 import { Subject } from 'rxjs';
 import { Model } from '../../shared/param-state';
+import { SessionStoreService, CUSTOM_STORAGE } from '../../services/session.store';
+import { AppInitService } from '../../services/app.init.service';
+import { HeaderCheckBox } from '../platform/form/elements/header-checkbox.component';
+import { SvgComponent } from './svg/svg.component';
+import { Image } from './image.component';
 
 let fixture, app, formElementsService, pageService, configService;
+
+class MockLoggerService {
+  debug() { }
+  info() { }
+  error() { }
+}
 
 class MockFormElementsService {
     toFormGroup(a, b) {
@@ -116,7 +130,10 @@ describe('Form', () => {
           ActionLink,
           CardDetailsFieldComponent,
           InPlaceEditorComponent,
-          DateTimeFormatPipe
+          DateTimeFormatPipe,
+          HeaderCheckBox,
+          SvgComponent,
+          Image
        ],
        imports: [
            FormsModule, 
@@ -137,15 +154,20 @@ describe('Form', () => {
            TableModule,
            KeyFilterModule,
            HttpModule,
-           HttpClientTestingModule
+           HttpClientTestingModule,
+           StorageServiceModule,
+           AngularSvgIconModule
        ],
        providers: [
         {provide: FormElementsService, useClass: MockFormElementsService},
         {provide: PageService, useClass: MockPageService},
+        { provide: 'JSNLOG', useValue: JL },
+        { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+        {provide: LoggerService, useClass: MockLoggerService},
          CustomHttpClient,
          LoaderService,
          ConfigService,
-         LoggerService
+         AppInitService
         ]
     }).compileComponents();
     fixture = TestBed.createComponent(Form);

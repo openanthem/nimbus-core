@@ -116,6 +116,11 @@ button:focus{
     &:focus{
       outline: $focus-outline-setting;
     }
+    svg {
+      width: 1.4rem;
+      height: 1.4rem;
+      margin-right: .6rem;
+    }
 }
 
 
@@ -125,34 +130,21 @@ button:focus{
 .btn.btn-icon, .icon-holder {
     padding: 0;
     background: transparent;
+    color:#006bc2;
+    i {
+      font-size: 1.5rem;
+    }
     svg {
       width: 2rem;
       height: 2rem;
-      fill: white;
-      stroke: #999;
-      stroke-width: .5;
   }
-  &.green, &.edit {
-    svg{
-      fill: white;
-      stroke: $goGreen;
-    }
-    &:hover  svg {
-    fill: $goGreen;
-      stroke: #fff;
+  &:hover{
+    color: #e5991c;
+    
 
   }
-  }
-   &.blue {
-    svg{
-      fill: white;
-      stroke: $header-bkg;
-    }
-    &:hover  svg {
-      fill: $mecury;
-
-    }
-  }
+  
+  
 }
 
 

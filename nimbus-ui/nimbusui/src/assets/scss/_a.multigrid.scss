@@ -15,6 +15,7 @@ ng-component{
     background: #6e9de1;
 }
 
+
 .ui-expanded-row-content .scrollGrid .ui-datatable-scrollable-body, 
 .ui-expanded-row-content .ui-datatable .ui-datatable-scrollable-body,
 .ui-expanded-row-content .scrollGrid .ui-table-scrollable-body, 
@@ -31,10 +32,7 @@ ng-component{
     .ui-selection-column .ui-chkbox {
         display: inline-block;
     }
-    .ui-table-scrollable-body,
-    .ui-datatable-scrollable-body{
-        min-height: 60px;
-    }
+   
     
     th.ui-state-default{
         background: #ebebeb;
@@ -45,16 +43,19 @@ ng-component{
     }
     .ui-table-tbody > tr > td,
     .ui-datatable-data > tr > td {
-        border-width: 1px 0;
+        border: none;
     }
     tbody > tr {
+      
         &.ui-widget-content.ui-table-even,
         &.ui-widget-content.ui-datatable-even {
             background-color: #fff;
+           
         }
         &.ui-widget-content.ui-table-odd,
         &.ui-widget-content.ui-datatable-odd {
             background-color: #edf7ff;
+            
         }
         &.ui-widget-content.ui-state-highlight { 
             color: inherit;
@@ -100,7 +101,8 @@ ng-component{
         text-align: left;
         border: none;
         padding: .6rem  .5rem ;
-        line-height: 1rem;
+        line-height: 1.2rem;
+        font-size: 1rem;
         &> span {
             display: block;
             text-align: left;
@@ -192,7 +194,7 @@ ng-component{
         }
     }
     tr.ui-expanded-row-content {
-        background: #f5f5f5;
+        background: inherit;
         padding: .4rem;
         .ui-table, .ui-datatable {
             .ui-state-default {
@@ -204,13 +206,16 @@ ng-component{
             }
         }
     }
-    p-header {
-        float:left;
-        margin-left: 1rem;
-        font-size: 1.3rem;
-        margin-top: .3rem;
-        position: relative;
-        z-index: 1;
+    // p-header {
+    //     float:left;
+    //     margin-left: 1rem;
+    //     font-size: 1.3rem;
+    //     margin-top: .3rem;
+    //     position: relative;
+    //     z-index: 1;
+    // }
+    th.imageColumn, td.imageColumn {
+        width: 40px;
     }
     th.dropdown, td.dropdown {
         width: 40px;
@@ -227,9 +232,9 @@ ng-component{
 }
 .ui-datatable-header p-header {
     position: absolute;
-    left: 20px;
+    left: 6px;
     top: .3rem;
-    font-size: 1.3rem;
+    font-size: 1.34rem;
 }
 .ui-expanded-row-content .scrollGrid td.dropdown .ui-cell-data, 
 .ui-expanded-row-content .ui-datatable td.dropdown .ui-cell-data,
@@ -280,7 +285,7 @@ ng-component{
     margin-right: .1rem;
 }
 .ui-datatable-header {
-    min-height: 40px;
+    min-height: 30px;
 }
 .ui-widget-header {
     background: #6e9de1;
@@ -362,15 +367,39 @@ margin-right: 10px;
 .ui-paginator .ui-dropdown .ui-dropdown-label {
     padding-right: 28px;
 }
-
-.ui-table .ui-table-tbody > tr.ui-state-highlight td {
+.ui-table .ui-table-tbody > tr {
+    border-top: 1px solid #D5D5D5;
+    &.ui-expanded-row-content{
+        border: none;
+    }
+}
+.ui-table .ui-table-tbody > tr.ui-state-highlight {
     border-bottom: 1px solid black;
 }
 .ui-table .ui-table-tbody > tr.ui-state-highlight {
     background: inherit;
     color: inherit;
 }
-.ui-table .ui-table-tbody>tr:nth-child(even).ui-state-highlight {
-    background-color: inherit;
-    color: inherit;
+.ui-table .ui-table-tbody>tr:nth-child(even){
+    background-color: #fff;
+    &.ui-state-highlight {
+        background-color: inherit;
+        color: inherit;
+    }
+    + tr.ui-expanded-row-content {
+        background: #fff;
+    }
+}
+.ui-table .ui-table-tbody>tr:nth-child(odd){
+    background-color: #edf7ff;
+    &.ui-state-highlight {
+        background-color: inherit;
+        color: inherit;
+    }
+    + tr.ui-expanded-row-content {
+        background: #edf7ff;
+    }
+}
+.ui-state-highlight a { 
+    color: #0275d8;
 }

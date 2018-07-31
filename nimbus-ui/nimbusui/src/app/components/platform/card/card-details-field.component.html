@@ -1,17 +1,6 @@
-<div class="col-sm-12 border-bottom mb-1" *ngIf="element.config.uiStyles.attributes.type=='Divider'">
+<div class="col-sm-12 mb-1 {{cssClass}}" *ngIf="element.config.uiStyles.attributes.type==componentTypes.divider.toString()">
 </div>
-<div class="{{fieldClass}} p-0 clearfix" *ngIf="element.config.uiStyles.attributes.type=='Field'">
-    <!-- <ng-template [ngIf]="element.config?.uiStyles?.attributes?.imgSrc">
-        <div class="d-inline-block " style="font-size: 2.4rem; margin-right: .3rem;">
-            <i class="{{element.config.uiStyles.attributes.imgSrc}}"></i>
-        </div>
-        <div class="d-inline-block mr-1">
-            <div class="form-group">
-                <label class="" *ngIf="element.config.uiStyles.attributes.showName==true">{{label}}</label>
-                <p class="form-control-static">{{value ? value : placeholder}}&nbsp;</p>
-            </div>
-        </div>
-    </ng-template> -->
+<div [ngClass]="getComponentClass()" *ngIf="element.config.uiStyles.attributes.type==componentTypes.field.toString()">
     <ng-template [ngIf]="!element.config?.uiStyles?.attributes?.imgSrc && element?.visible == true">
         <ng-template [ngIf]="element.config.uiStyles.attributes.inplaceEdit">
             <inplace-editor [element]="element"></inplace-editor>
@@ -20,17 +9,18 @@
         <ng-template [ngIf]="isDate(element.config.type.name)">
             <label class="" *ngIf="element.config.uiStyles.attributes.showName==true">{{label}}</label>
             <ng-template [ngIf]="value">
-                <div class="{{iconClass}}">{{value | dateTimeFormat: element.config?.uiStyles?.attributes?.datePattern : element.config.type.name }}&nbsp;</div>
+                <div class="textWrapBreakWord">{{value | dateTimeFormat: element.config?.uiStyles?.attributes?.datePattern : element.config.type.name }}&nbsp;</div>
             </ng-template>
             <ng-template [ngIf]="!value">
-                <div class="{{iconClass}} textWrapBreakWord">{{placeholder}}&nbsp;</div>
+                <div class="textWrapBreakWord">{{placeholder}}&nbsp;</div>
             </ng-template>
          </ng-template>
 
         <div class="form-group" *ngIf="!element.config.uiStyles.attributes.inplaceEdit && !isDate(element.config.type.name)">
             <label class="" *ngIf="element.config.uiStyles.attributes.showName==true">{{label}}</label>
-            <div class="{{iconClass}} textWrapBreakWord">{{value ? value : placeholder}}&nbsp;</div>    
+            <div class="textWrapBreakWord" [nmDisplayValue]='value ? value : placeholder' [config]='element.config'>
+                <span class="fieldValue">{{value ? value : placeholder}}&nbsp;</span>
+            </div>    
         </div>
-
     </ng-template>
 </div>

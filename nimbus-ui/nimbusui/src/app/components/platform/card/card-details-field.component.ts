@@ -21,6 +21,7 @@ import { Component, Input, forwardRef } from '@angular/core';
 import { WebContentSvc } from '../../../services/content-management.service';
 import { BaseElement } from './../base-element.component';
 import {DateTimeFormatPipe} from '../../../pipes/date.pipe';
+import { ComponentTypes } from '../../../shared/param-annotations.enum';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -47,8 +48,8 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 export class CardDetailsFieldComponent  extends BaseElement implements ControlValueAccessor {
     @Input() element: Param;
     @Input('value') _value='';
-    private iconClass: string = ''; // default to 'not an icon'.
     private fieldClass: string = 'col-sm-3'; // occupies 1 col of 4
+    componentTypes = ComponentTypes;
 
     constructor(private _wcs: WebContentSvc) {
         super(_wcs);
@@ -56,30 +57,32 @@ export class CardDetailsFieldComponent  extends BaseElement implements ControlVa
 
     ngOnInit() {
         super.ngOnInit();
-
-        // field style
-        if (this.element.config.uiStyles.attributes.cols === '6') { // occupies 1 cols of 6
-            this.fieldClass = 'col-sm-2';
-        } else if (this.element.config.uiStyles.attributes.cols === '4') { // occupies 1 cols of 4
-            this.fieldClass = 'col-sm-3';
-        } else if (this.element.config.uiStyles.attributes.cols === '3') { // occupies 1 cols of 3
-            this.fieldClass = 'col-sm-4';
-        } else if (this.element.config.uiStyles.attributes.cols === '2') { // occupies 1 cols of 2
-            this.fieldClass = 'col-sm-6';
-        } else if (this.element.config.uiStyles.attributes.cols === '1') { // occupies 1 col of 1
-            this.fieldClass = 'col-sm-12';
-        } else {
-            this.fieldClass = 'col-sm-3';
-        }
-        // icon class
-        this.setIconClass();
-
     }
-//icon not used but this will pass custom class to value field
-    setIconClass() { 
-        if (this.element.config.uiStyles.attributes.iconField !== '') {
-            this.iconClass = this.element.config.uiStyles.attributes.iconField;
+
+    getComponentClass() {
+        let componentClass: string[] = [];
+        if (this.cssClass) {
+            componentClass.push(this.cssClass);
         }
+        componentClass.push('p-0');
+        componentClass.push('clearfix');
+
+        // Field Style
+        if (this.element.config.uiStyles.attributes.cols === '6') { // occupies 1 cols of 6
+            componentClass.push('col-sm-2');
+        } else if (this.element.config.uiStyles.attributes.cols === '4') { // occupies 1 cols of 4
+            componentClass.push('col-sm-3');
+        } else if (this.element.config.uiStyles.attributes.cols === '3') { // occupies 1 cols of 3
+            componentClass.push('col-sm-4');
+        } else if (this.element.config.uiStyles.attributes.cols === '2') { // occupies 1 cols of 2
+            componentClass.push('col-sm-6');
+        } else if (this.element.config.uiStyles.attributes.cols === '1') { // occupies 1 col of 1
+            componentClass.push('col-sm-12');
+        } else {
+            componentClass.push('col-sm-3');
+        }
+
+        return componentClass;
     }
 
     onChange: any = () => { };

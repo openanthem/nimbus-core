@@ -1,0 +1,54 @@
+.caseStatus {
+    font-size: 1.5rem;
+    &.Rejected {
+        background-color: red;
+    }
+    &.Cancelled {
+        background-color: blueviolet;
+    }
+    &.Accepted {
+        background-color: yellowgreen;
+    }
+    &.Active {
+        &::before {
+            content: "\f05d";
+            font-family: "fontAwesome";
+            display: inline-block;
+            font-size: 1.6rem;
+            margin-left: calc(30% - .8rem);
+        }
+        .fieldValue {
+            display: none;
+        }
+    }
+}
+
+
+.eligible {
+    font-size: 1.5rem;
+    &.Y {
+        &::before {
+            content: "\f00c";
+            font-family: "fontAwesome";
+            display: inline-block;
+            font-size: 1.6rem;
+            color:green;
+            //margin-left: calc(30% - .8rem);
+        }
+        .fieldValue {
+            display: none;
+        }
+    }
+    &.N {
+        &::before {
+            content: "\f00d";
+            font-family: "fontAwesome";
+            display: inline-block;
+            font-size: 1.6rem;
+            color:red;
+        }
+        .fieldValue {
+            display: none;
+        }
+    }
+}

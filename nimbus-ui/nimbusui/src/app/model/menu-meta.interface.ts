@@ -41,8 +41,11 @@ export interface MenuConfig extends Route {
     children?: MenuConfig[];
 }
 export interface LinkConfig extends Route {
+    path:string;
     title?: string;
     image?: string;
+    enabled?: boolean;
+    visible?: boolean;
     children?: LinkConfig[];
 }
 
@@ -63,7 +66,7 @@ export interface AppBranding {
 export interface TopBarConfig {
     branding: AppBranding;
     headerMenus: Param[];
-    subHeaders: Param[];
+    accordions: Param[];
 }
 
 //TODO: Determine the strategy for global nav
@@ -87,7 +90,9 @@ export interface FooterConfig {
 
 export interface Layout {
     topBar: TopBarConfig;
-    leftNavBar: LinkConfig[];
+    leftNavBar: MenuItem[];
     footer: FooterConfig;
     subBar: GlobalNavConfig;
+    actiontray: Param;
+    modalList: Param[];
 }

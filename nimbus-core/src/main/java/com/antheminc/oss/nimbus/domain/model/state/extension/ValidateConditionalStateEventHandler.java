@@ -21,6 +21,7 @@ import lombok.Getter;
  * @see com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional
  * @see com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditionals
  * @author Tony Lopez
+ * @since 1.0
  *
  */
 @EnableLoggingInterceptor
@@ -40,9 +41,28 @@ public class ValidateConditionalStateEventHandler extends
 	
 	@Override
 	protected void handleInternal(Param<?> onChangeParam, ValidateConditional configuredAnnotation) {
+		
 		boolean isTrue = this.evalWhen(onChangeParam, configuredAnnotation.when());
+		
+		// retrieve the validation assignment strategy
 		ValidationAssignmentStrategy strategy = this.getValidationAssignmentStrategy(configuredAnnotation);
-		strategy.execute(isTrue, onChangeParam, configuredAnnotation.targetGroup());
+		
+		if (null == configuredAnnotation.targetPath() || configuredAnnotation.targetPath().length == 0) {
+			
+			// single scenario execution
+			strategy.execute(isTrue, onChangeParam, configuredAnnotation.targetGroup());
+		} else {
+			
+			// multiple scenario execution
+			for(String path: configuredAnnotation.targetPath()) {
+				Param<?> targetParam = onChangeParam.findParamByPath(path);
+				if (null == targetParam) {
+					throw new InvalidConfigException("Failed to locate param with path: " + path);
+				}
+				strategy.execute(isTrue, targetParam, configuredAnnotation.targetGroup());
+			}
+		}
+		
 	}
 	
 	private ValidationAssignmentStrategy getValidationAssignmentStrategy(ValidateConditional configuredAnnotation) {

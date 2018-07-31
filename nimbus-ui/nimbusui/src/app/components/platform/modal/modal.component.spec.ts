@@ -8,6 +8,7 @@ import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TableModule } from 'primeng/table';
 import { KeyFilterModule } from 'primeng/keyfilter';
+import { AngularSvgIconModule } from 'angular-svg-icon';
 
 import { Modal } from './modal.component';
 import { TooltipComponent } from '../tooltip/tooltip.component';
@@ -53,6 +54,9 @@ import { CustomHttpClient } from '../../../services/httpclient.service';
 import { LoaderService } from '../../../services/loader.service';
 import { ConfigService } from '../../../services/config.service';
 import { DataTable } from '../grid/table.component';
+import { HeaderCheckBox } from '../form/elements/header-checkbox.component';
+import { SvgComponent } from '../svg/svg.component';
+import { Image } from '../image.component';
 
 class MockPageService {
     processEvent(a, b, c, d) { }
@@ -103,7 +107,10 @@ describe('Modal', () => {
         DateControl,
         Signature,
         Header,
-        DataTable
+        DataTable,
+        HeaderCheckBox,
+        SvgComponent,
+        Image
        ],
        imports: [
            DialogModule,
@@ -123,7 +130,8 @@ describe('Modal', () => {
            HttpModule,
            HttpClientTestingModule,
            TableModule,
-           KeyFilterModule
+           KeyFilterModule,
+           AngularSvgIconModule
        ],
        providers: [
         {provide: PageService, useClass: MockPageService},

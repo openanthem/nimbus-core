@@ -103,7 +103,7 @@ public class DefaultJsonParamSerializer extends JsonSerializer<Param<?>> {
 			if(ArrayUtils.isNotEmpty(activeValidationGroups))
 				gen.writeObjectField(K_ACTIVE_VALS, p.getActiveValidationGroups());
 			
-			writer.writeObjectIfNotNull(K_MESSAGE, p::getMessage);
+			writer.writeObjectIfNotNull(K_MESSAGE, p::getMessages);
 			writer.writeObjectIfNotNull(K_VALUES, p::getValues);
 			
 			if(!p.getType().getName().equals("string"))

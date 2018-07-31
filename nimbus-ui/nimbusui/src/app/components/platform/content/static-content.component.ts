@@ -32,7 +32,7 @@ import { BaseElement } from '../base-element.component';
   selector: 'nm-static-text',
   providers: [WebContentSvc],
   template: `
-    <div class="col-sm-12" [innerHTML]="label"></div>
+    <div class="{{cssClass}}" [innerHTML]="label"></div>
    `
 })
 export class StaticText extends BaseElement{

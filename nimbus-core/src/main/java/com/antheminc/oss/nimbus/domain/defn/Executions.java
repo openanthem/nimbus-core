@@ -21,6 +21,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
+import com.antheminc.oss.nimbus.domain.defn.Execution.DetourConfig;
 
 /**
  * @author Soham Chakravarti
@@ -33,6 +34,15 @@ public class Executions {
 	@Execution
 	public @interface Configs {
 		Config[] value();
+		
+	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@Execution
+	public @interface DetourConfigs {
+		DetourConfig[] value();
+		
 	}
 	
 }

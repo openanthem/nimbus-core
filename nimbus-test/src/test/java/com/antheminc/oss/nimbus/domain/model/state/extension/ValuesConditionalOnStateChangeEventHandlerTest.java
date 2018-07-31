@@ -52,14 +52,17 @@ public class ValuesConditionalOnStateChangeEventHandlerTest {
 	private BeanResolverStrategy beanResolver;
 	private CommandExecutorGateway gateway;
 	private ExpressionEvaluator expressionEvaluator;
+	private ParamValuesOnLoadHandler defaultParamValuesHandler;
 	
 	@Before
 	public void t0_init() {
 		this.beanResolver = Mockito.mock(BeanResolverStrategy.class);
 		this.gateway = Mockito.mock(CommandExecutorGateway.class);
 		this.expressionEvaluator = Mockito.mock(ExpressionEvaluator.class);
+		this.defaultParamValuesHandler = Mockito.mock(DefaultParamValuesHandler.class);
 		Mockito.when(this.beanResolver.get(CommandExecutorGateway.class)).thenReturn(this.gateway);
 		Mockito.when(this.beanResolver.get(ExpressionEvaluator.class)).thenReturn(this.expressionEvaluator);
+		Mockito.when(this.beanResolver.get(ParamValuesOnLoadHandler.class, "paramValuesHandler")).thenReturn(this.defaultParamValuesHandler);
 		this.testee = new ValuesConditionalOnStateChangeEventHandler(this.beanResolver);
 	}
 	
@@ -110,6 +113,7 @@ public class ValuesConditionalOnStateChangeEventHandlerTest {
 		Mockito.when(event.getParam()).thenReturn((Param) decoratedParam);
 		Mockito.when(defaultValues.value()).thenReturn((Class) SAMPLE_VALUES.class);
 		
+		Mockito.when(this.defaultParamValuesHandler.buildParamValues(defaultValues, decoratedParam, targetParam)).thenReturn(new SAMPLE_VALUES().getValues(""));
 		this.testee.handle(configuredAnnotation, null, event);
 		
 		final List<ParamValue> expectedValues = new SAMPLE_VALUES().getValues("");
@@ -135,6 +139,7 @@ public class ValuesConditionalOnStateChangeEventHandlerTest {
 		Mockito.when(configuredAnnotation.target()).thenReturn("../targetParam");
 		Mockito.when(event.getParam()).thenReturn((Param) decoratedParam);
 		
+		Mockito.when(this.defaultParamValuesHandler.buildParamValues(null, decoratedParam, targetParam)).thenReturn(null);
 		this.testee.handle(configuredAnnotation, null, event);
 		
 		Assert.assertNull(targetParam.getValues());
@@ -160,6 +165,7 @@ public class ValuesConditionalOnStateChangeEventHandlerTest {
 		Mockito.when(event.getParam()).thenReturn((Param) decoratedParam);
 		Mockito.when(defaultValues.value()).thenReturn((Class) SAMPLE_VALUES.class);
 		
+		Mockito.when(this.defaultParamValuesHandler.buildParamValues(defaultValues, decoratedParam, targetParam)).thenReturn(new SAMPLE_VALUES().getValues(""));
 		this.testee.handle(configuredAnnotation, null, event);
 		
 		final List<ParamValue> expectedValues = new SAMPLE_VALUES().getValues("");
@@ -188,6 +194,7 @@ public class ValuesConditionalOnStateChangeEventHandlerTest {
 		Mockito.when(event.getParam()).thenReturn((Param) decoratedParam);
 		Mockito.when(defaultValues.value()).thenReturn((Class) SAMPLE_VALUES.class);
 		
+		Mockito.when(this.defaultParamValuesHandler.buildParamValues(defaultValues, decoratedParam, targetParam)).thenReturn(new SAMPLE_VALUES().getValues(""));
 		this.testee.handle(configuredAnnotation, null, event);
 		
 		final List<ParamValue> expectedValues = new SAMPLE_VALUES().getValues("");
@@ -216,6 +223,7 @@ public class ValuesConditionalOnStateChangeEventHandlerTest {
 		Mockito.when(event.getParam()).thenReturn((Param) decoratedParam);
 		Mockito.when(defaultValues.value()).thenReturn((Class) SAMPLE_VALUES.class);
 		
+		Mockito.when(this.defaultParamValuesHandler.buildParamValues(defaultValues, decoratedParam, targetParam)).thenReturn(new SAMPLE_VALUES().getValues(""));
 		this.testee.handle(configuredAnnotation, null, event);
 		
 		final List<ParamValue> expectedValues = new SAMPLE_VALUES().getValues("");
@@ -252,6 +260,7 @@ public class ValuesConditionalOnStateChangeEventHandlerTest {
 		Mockito.when(condition1Values.value()).thenReturn((Class) SAMPLE_A_VALUES.class); 
 		Mockito.when(this.expressionEvaluator.getValue(Mockito.eq("condition1expr"), Mockito.isA(ParamStateHolder.class), Mockito.eq(Boolean.class))).thenReturn(true);
 		
+		Mockito.when(this.defaultParamValuesHandler.buildParamValues(condition1Values, decoratedParam, targetParam)).thenReturn(new SAMPLE_A_VALUES().getValues(""));
 		this.testee.handle(configuredAnnotation, null, event);
 		
 		final List<ParamValue> expectedValues = new SAMPLE_A_VALUES().getValues("");
@@ -296,6 +305,7 @@ public class ValuesConditionalOnStateChangeEventHandlerTest {
 		Mockito.when(this.expressionEvaluator.getValue(Mockito.eq("condition2expr"), Mockito.isA(ParamStateHolder.class), Mockito.eq(Boolean.class))).thenReturn(false);
 		Mockito.when(this.expressionEvaluator.getValue(Mockito.eq("condition3expr"), Mockito.isA(ParamStateHolder.class), Mockito.eq(Boolean.class))).thenReturn(true);
 		
+		Mockito.when(this.defaultParamValuesHandler.buildParamValues(condition3Values, decoratedParam, targetParam)).thenReturn(new SAMPLE_B_VALUES().getValues(""));
 		this.testee.handle(configuredAnnotation, null, event);
 		
 		final List<ParamValue> expectedValues = new SAMPLE_B_VALUES().getValues("");
@@ -326,6 +336,7 @@ public class ValuesConditionalOnStateChangeEventHandlerTest {
 		Mockito.when(event.getParam()).thenReturn((Param) decoratedParam);
 		Mockito.when(this.expressionEvaluator.getValue(Mockito.eq("condition1expr"), Mockito.isA(ParamStateHolder.class), Mockito.eq(Boolean.class))).thenReturn(true);
 		
+		Mockito.when(this.defaultParamValuesHandler.buildParamValues(defaultValues, decoratedParam, targetParam)).thenReturn(null);
 		this.testee.handle(configuredAnnotation, null, event);
 		
 		Mockito.verify(configuredAnnotation).resetOnChange();
