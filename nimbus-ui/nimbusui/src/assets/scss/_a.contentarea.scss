@@ -586,49 +586,6 @@ $answerWidth: 99%-$questionWidth;
 .form-grid:not(.headerRow) fieldset:hover {
     background: #efefef;
 }
-.form-grid .questionGroup {
-    border-bottom: 1px dashed;
-}
-.form-group.form-grid.questionGroup.headerRow {
-    border-bottom: 1px solid;
-    padding-bottom: 0;
-    margin-bottom: .6rem;
-}
-.form-grid fieldset{
-  padding:0;
-  font-size: .9rem;
-  legend {
-    width: $questionWidth;
-    float:left;
-    
-  }
-  .checkboxHolder {
-    display: inline-table;
-    table-layout: fixed;
-    width: $answerWidth; 
-    .form-checkrow{
-            display: inline-block;
-            width: 20%;
-            label{
-                display: none;
-            }
-       
-    }
-  }
-  &.form-group.questionGroup {
-        padding: 0;
-        margin: 0 20px;
-    }
-}
-.form-group.questionGroup.form-grid {
-    margin-bottom: .2rem;
-}
-
-.form-grid.headerRow fieldset .checkboxHolder .form-checkrow {
-    vertical-align: bottom;
-}
-
-
 .ui-dialog.ui-widget .ui-dialog-titlebar .ui-dialog-title {
     margin-left: 1rem;
 }
