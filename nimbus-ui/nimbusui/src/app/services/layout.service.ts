@@ -1,5 +1,3 @@
-import { Action, Behavior } from './../shared/command.enum';
-import { SessionStoreService, CUSTOM_STORAGE } from './session.store';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
