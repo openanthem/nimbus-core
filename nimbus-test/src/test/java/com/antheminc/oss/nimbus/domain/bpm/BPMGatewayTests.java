@@ -26,10 +26,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.antheminc.oss.nimbus.domain.AbstractFrameworkIngerationPersistableTests;
+import com.antheminc.oss.nimbus.domain.bpm.activiti.ActivitiProcessFlow;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessageConverter;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
+import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.internal.ExecutionEntity;
+import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepositoryFactory;
 import com.antheminc.oss.nimbus.support.Holder;
 import com.antheminc.oss.nimbus.test.domain.support.utils.ExtractResponseOutputUtils;
 import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
@@ -45,6 +49,11 @@ public class BPMGatewayTests extends AbstractFrameworkIngerationPersistableTests
 	BPMGateway bpmGateway;
 	
 	@Autowired CommandMessageConverter converter;
+	
+	@Autowired ModelRepositoryFactory repositoryFactory;
+	
+	protected static final String BPM_ERR_DOMAIN_ALIAS = "testbpmfailmodel";
+	protected static final String BPM_ERR_PARAM_ROOT = PLATFORM_ROOT + "/" + BPM_ERR_DOMAIN_ALIAS;	
 
 	@Test
 	@SuppressWarnings("unchecked")
@@ -147,7 +156,7 @@ public class BPMGatewayTests extends AbstractFrameworkIngerationPersistableTests
 	
 	@Test
 	@SuppressWarnings("unchecked")
-	public void t02_duplicate_task_creation_bpm() {
+	public void t03_duplicate_task_creation_bpm() {
 		MockHttpServletRequest request = MockHttpRequestBuilder.withUri(BPM_DP_PARAM_ROOT)
 					.addAction(Action._new)
 					.getMock();
@@ -175,6 +184,6 @@ public class BPMGatewayTests extends AbstractFrameworkIngerationPersistableTests
 		assertEquals("true", model.getTaskProgressed());
 	
 	}	
-		
+	
 	
 }
