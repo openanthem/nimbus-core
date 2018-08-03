@@ -35,14 +35,14 @@ import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations
     selector: 'nm-accordion',
     providers: [WebContentSvc],
     template: `
-        <div class="text-sm-right" *ngIf="element.config?.uiStyles?.attributes?.showExpandAll">
+        <div class="text-sm-right" *ngIf="element.config?.uiStyles?.attributes?.showExpandAll" [hidden]="!element?.visible">
             <button type="button" class="btn btn-expand" (click)="openAll()">Expand All</button>
             <span class="btn-pipe">|</span>
             <button type="button" class="btn btn-expand" (click)="closeAll()">Collapse All</button>
         </div>
-        <p-accordion #accordion [multiple]="multiple" [activeIndex]="index">
+        <p-accordion #accordion [multiple]="multiple" [activeIndex]="index" *ngIf="element?.visible==true">
             <ng-template ngFor let-tab [ngForOf]="nestedParams">
-                <p-accordionTab  [selected]="tab?.config?.uiStyles?.attributes?.selected" *ngIf="tab?.visible == true">
+                <p-accordionTab  [selected]="tab?.config?.uiStyles?.attributes?.selected" *ngIf="tab?.visible==true">
                     <p-header>
                         <h2>{{getTabHeader(tab)}}</h2>
                         <span [ngClass]="getTabInfoClass(tab)" *ngIf="getInfoText(tab)">
