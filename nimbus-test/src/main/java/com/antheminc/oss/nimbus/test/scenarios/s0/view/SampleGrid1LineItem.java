@@ -25,5 +25,9 @@ public class SampleGrid1LineItem {
 	@Path()
 	@GridColumn(filter = true, filterMode = FilterMode.contains)
 	private String attr_String;
+	
+	@Path()
+	@GridColumn(filter = true, filterMode = FilterMode.contains)
+	private String audit_String;
 
 }

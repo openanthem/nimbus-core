@@ -1,5 +1,3 @@
-import { Action, Behavior } from './../shared/command.enum';
-import { SessionStoreService, CUSTOM_STORAGE } from './session.store';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -19,6 +17,9 @@ import { SessionStoreService, CUSTOM_STORAGE } from './session.store';
 'use strict';
 import { WebContentSvc } from './content-management.service';
 import { Component, EventEmitter, Injectable, Inject } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { Router, Route } from '@angular/router';
+
 import { Result, ViewRoot } from '../shared/app-config.interface';
 import { UiAttribute } from '../shared/param-config';
 import { Param, Model } from '../shared/param-state';
@@ -30,7 +31,13 @@ import { AppBranding, Layout, LinkConfig, TopBarConfig, FooterConfig, GlobalNavC
 import { GenericDomain } from '../model/generic-domain.model';
 import { ViewConfig, ViewComponent } from './../shared/param-annotations.enum';
 import { LoggerService } from './logger.service';
-import { Router } from '@angular/router';
+import { SubDomainFlowCmp } from '../components/domain/subdomain-flow.component';
+import { PageNotfoundComponent } from '../components/platform/content/page-notfound.component';
+import { MenuItem } from '../shared/menuitem';
+import { PageResolver } from './../components/platform/content/page-resolver.service';
+import { PageContent } from './../components/platform/content/page-content.component';
+import { Action, Behavior } from './../shared/command.enum';
+import { SessionStoreService, CUSTOM_STORAGE } from './session.store';
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 
@@ -55,7 +62,10 @@ export class LayoutService {
         private wcs: WebContentSvc,
         private pageSvc: PageService,
         private configSvc: ConfigService,
-        private logger: LoggerService,  @Inject(CUSTOM_STORAGE) private sessionstore: SessionStoreService) {
+        private logger: LoggerService,  
+        private router: Router,
+        @Inject(CUSTOM_STORAGE) private sessionstore: SessionStoreService,
+        private httpClient: HttpClient) {
         this.layout$ = new EventEmitter<any>();
     }
 
@@ -101,10 +111,15 @@ export class LayoutService {
 
     private parseLayoutConfig(flowModel: Model) {
         let layout = {} as Layout;
-        layout['leftNavBar'] = this.getLeftMenu(flowModel.params[0].type.model);
-        layout['topBar'] = this.getTopBar(flowModel.params[0].type.model);
-        layout['subBar'] = this.getSubBar(flowModel.params[0].type.model);
-        layout['footer'] = this.getFooterItems(flowModel.params[0].type.model);
+        const pageParam: Param = flowModel.params.find (p => ( p.config &&
+                                    p.config.uiStyles && p.config.uiStyles.attributes && 
+                                    p.config.uiStyles.attributes.alias === ViewComponent.page.toString()));
+        layout['leftNavBar'] = this.getLeftMenu(pageParam.type.model);
+        layout['topBar'] = this.getTopBar(pageParam.type.model);
+        layout['subBar'] = this.getSubBar(pageParam.type.model);
+        layout['footer'] = this.getFooterItems(pageParam.type.model);
+        layout['modalList'] = this.getModalItems(pageParam.type.model);
+        layout['actiontray'] = this.getActionTrayItems(pageParam.type.model);
         // Push the new menu into the Observable stream
         this.layout$.next(layout);
     }
@@ -145,13 +160,13 @@ export class LayoutService {
         let topBar = {} as TopBarConfig;
         let branding = {} as AppBranding;
         let headerMenus: Param[] = [];
-        let subHeaders: Param[] = [];
+        let accordions: Param[] = [];
 
         layoutConfig.params.forEach(param => {
             let attribute: UiAttribute = param.config.uiStyles.attributes;
             if (attribute.alias === 'Header' || attribute.alias === 'Global-Header' || 
                 (attribute.alias === 'Section' && attribute.value === 'HEADER')) {
-                this.parseTopBarConfig(param.type.model, branding, headerMenus, subHeaders);
+                this.parseTopBarConfig(param.type.model, branding, headerMenus, accordions);
                 // if param has initialize, execute the config
                 if (param.config && param.config.initializeComponent()) { 
                         this.pageSvc.processEvent(param.path, '$execute', new GenericDomain(), 'POST'); 
@@ -161,17 +176,17 @@ export class LayoutService {
 
         topBar['branding'] = branding;
         topBar['headerMenus'] = headerMenus;
-        topBar['subHeaders'] = subHeaders;
+        topBar['accordions'] = accordions;
         return topBar;
     }
 
-    private parseTopBarConfig(topBarConfig: Model, branding: AppBranding, headerMenus: Param[], subHeaders: Param[]) {
+    private parseTopBarConfig(topBarConfig: Model, branding: AppBranding, headerMenus: Param[], accordions: Param[]) {
         topBarConfig.params.forEach(element => {
             if (element.config.type.nested === true) {
-                if (element.config.uiStyles !== undefined && element.config.uiStyles.attributes.alias === 'SubHeader') {
-                    subHeaders.push(element);
+                if (element.config.uiStyles !== undefined && element.config.uiStyles.attributes.alias === 'Accordion') {
+                    accordions.push(element);
                 } else {
-                    this.parseTopBarConfig(element.type.model, branding, headerMenus, subHeaders);
+                    this.parseTopBarConfig(element.type.model, branding, headerMenus, accordions);
                 }
             } else {
                 element.config.uiNatures.forEach(nature => {
@@ -251,6 +266,7 @@ export class LayoutService {
 
     private getLeftMenu(layoutConfig: Model) {
         let leftMenu : LinkConfig[] = [];
+        let menuItems : MenuItem[] = [];
         layoutConfig.params.forEach(param => {
             if (param.config.uiStyles.attributes.alias === ViewComponent.section.toString()) {
                 if (param.config.uiStyles.attributes.value ==='LEFTBAR') {
@@ -260,14 +276,123 @@ export class LayoutService {
                             navItem['path'] = element.config.uiStyles.attributes.url;
                             navItem['title'] = this.wcs.findLabelContent(element).text;
                             navItem['image'] = element.config.uiStyles.attributes.imgSrc;
+                            navItem['enabled'] = element.enabled;
+                            navItem['visible'] = element.visible;
                             leftMenu.push(navItem);
                         }
                     });
                 }
+
+                if(param.config.uiStyles.attributes.value ===ViewComponent.menupanel.toString()){ 
+                    this.buildMenu(param, menuItems); 
+                }
             }
         });
 
-        return leftMenu;
+        return menuItems;
+    }
+
+    private buildMenu(param: Param,  menuItems : MenuItem[]) {
+        param.type.model.params.forEach(element => {
+            let menuItem = this.createMenuItem(element);
+            if (element.config.uiStyles.attributes.alias=== ViewComponent.menulink.toString()) {
+                menuItem.routerLink =  this.createRouterLink(element);
+                menuItem.command = (event: Event) => { this.processClick(event, menuItem)};
+               // menuItem.routerLinkActiveOptions = {'exact':true};
+                menuItems.push(menuItem);
+            } else if (element.config.uiStyles.attributes.value ===ViewComponent.menupanel.toString()){
+                this.buildSubMenu(element, menuItem);
+                menuItems.push(menuItem);
+            }
+        });
+    }
+
+    private buildSubMenu(param: Param,  menuItem: MenuItem) {
+        let subMenuItems: MenuItem[] = [];
+        param.type.model.params.forEach(element => {
+            let item = this.createMenuItem(element);
+            if (element.config.uiStyles.attributes.alias === ViewComponent.menulink.toString()) {
+                item.command = (event: Event) => { this.processClick(event, item)};
+                item.routerLink =  this.createRouterLink(element, true);
+                subMenuItems.push(item);
+            } else if (element.config.uiStyles.attributes.value ===ViewComponent.menupanel.toString()){
+                this.buildSubMenu(element, item);
+                subMenuItems.push(item);
+            }
+        });
+        menuItem.items = subMenuItems;
+    }
+
+    createMenuItem(element: Param): MenuItem {
+        let item = {} as MenuItem;
+        item.label = this.wcs.findLabelContent(element).text;
+        item.path = element.path;
+        item.page = element.config.uiStyles.attributes.page;
+        item.icon = element.config.uiStyles.attributes.imgSrc;
+        return item;
+    }
+
+    createRouterLink(element: Param, nested?: boolean): string {
+        let uiAttribute = element.config.uiStyles.attributes;
+        let routeLink = "";
+        if(uiAttribute.url != null && uiAttribute.url != "") {
+            if(nested)
+                routeLink = uiAttribute.url;
+            else
+                routeLink = '/h/'+uiAttribute.url;
+        }
+
+        return routeLink;
+    }
+
+    processClick(event:Event, item: MenuItem) {
+       
+    
+        //TODO - use the below to add routes dynamically based on the level of nesting
+        // let route = this.routerSvc.searchRoutes(this.routerSvc.getRoutes(),':subdomain');
+        // if(typeof route == 'undefined' || route == null) {
+        //     let newRoute = {'path':':subdomain','component': this.routerSvc.getComponent('SubDomainFlowCmp'), 'children': [ 
+        //         { 'path': ':pageId', 'component': this.routerSvc.getComponent('PageContent'), 'resolve': { 'page': this.routerSvc.getComponent('PageResolver') }},
+        //         { 'path': 'pnf', 'component': this.routerSvc.getComponent('PageNotfoundComponent') },
+        //         { 'path': '', 'component': this.routerSvc.getComponent('PageNotfoundComponent') }
+        //     ]};
+        //     this.routerSvc.addRouteChildren(newRoute,':domain');
+        // }
+    // if(typeof route == 'undefined' || route == null) {
+    //         let newRoute = { path:':subdomain',component: this.routerSvc.getComponent('SubDomainFlowCmp'), children: [ 
+    //             { path: ':pageId', component:this.routerSvc.getComponent('PageContent'), resolve: { 'page': this.routerSvc.getComponent('PageResolver') }},
+    //             { path: 'pnf', component: this.routerSvc.getComponent('PageNotfoundComponent') },
+    //             { path: '', component: this.routerSvc.getComponent('PageNotfoundComponent') }
+    //         ]};
+    //         this.routerSvc.addRouteChildren(newRoute,':domain');
+    // }
+        if(item.routerLink === "" || item.routerLink === null || typeof item.routerLink === 'undefined') {
+            this.pageSvc.processEvent(item.path, '$execute', new GenericDomain(), 'GET')
+        }
+    }
+
+    getDefinitions() {
+        return this.httpClient.get(ServiceConstants.IMAGE_URL + '/svg-definitions.component.html', {responseType: 'text'});
+    }
+    
+    private getActionTrayItems(layoutConfig: Model): Param {
+
+        const actionTrayParam: Param = layoutConfig.params.find( param => ( param.config.uiStyles != null && 
+                                                param.config.uiStyles.attributes.alias === ViewComponent.actiontray.toString()));
+
+        return actionTrayParam;
+    }
+
+
+    private getModalItems(layoutConfig: Model): any {
+        let modalList: Array<Param> =[];
+        layoutConfig.params.forEach(((param) => {
+            if(param.config.uiStyles && param.config.uiStyles.attributes.alias === ViewComponent.modal.toString()){
+                modalList.push(param);
+            }
+        }))
+
+        return modalList;
     }
 
 }

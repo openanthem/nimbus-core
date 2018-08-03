@@ -21,6 +21,7 @@ import {
 } from '@angular/router';
 import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
+import { AngularSvgIconModule } from 'angular-svg-icon';
 
 import { HomeLayoutCmp } from './home-layout.component';
 import { STOMPService } from '../../services/stomp.service';
@@ -44,6 +45,8 @@ import { BreadcrumbService } from '../platform/breadcrumb/breadcrumb.service';
 import { LayoutService } from '../../services/layout.service';
 import { LoggerService } from '../../services/logger.service';
 import { SessionStoreService, CUSTOM_STORAGE } from '../../services/session.store';
+import { AppInitService } from '../../services/app.init.service'
+import { SvgComponent } from '../platform/svg/svg.component';
 
 class MockAuthenticationService {
   logout() {
@@ -77,6 +80,12 @@ class MockLayoutService {
   }
 
   getLayout() {}
+}
+
+class MockLoggerService {
+  debug() { }
+  info() { }
+  error() { }
 }
 
 export class MockActivatedRoute implements ActivatedRoute {
@@ -118,7 +127,8 @@ describe('HomeLayoutCmp', () => {
         KeysPipe,
         Value,
         SelectItemPipe,
-        TooltipComponent
+        TooltipComponent,
+        SvgComponent
       ],
       providers: [
         { provide: AuthenticationService, useClass: MockAuthenticationService },
@@ -127,14 +137,16 @@ describe('HomeLayoutCmp', () => {
         { provide: PageService, useClass: MockPageService },
         { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
         { provide: 'JSNLOG', useValue: JL },
+        {provide: LoggerService, useClass: MockLoggerService},
         CustomHttpClient,
         WebContentSvc,
         LoaderService,
         ConfigService,
         BreadcrumbService,
         STOMPService,
-        LoggerService,
-        SessionStoreService
+        // LoggerService,
+        SessionStoreService,
+        AppInitService
       ],
       imports: [
         RouterTestingModule,
@@ -142,7 +154,8 @@ describe('HomeLayoutCmp', () => {
         DropdownModule,
         HttpClientModule,
         HttpModule,
-        StorageServiceModule
+        StorageServiceModule,
+        AngularSvgIconModule
       ]
     }).compileComponents();
 
@@ -216,7 +229,6 @@ describe('HomeLayoutCmp', () => {
     expect(component.organization).toEqual('torganization');
     expect(component.menuItems).toEqual('tMenuItems');
     expect(component.menuLinks).toEqual('tMenuLinks');
-    expect(component.leftMenuItems).toEqual([]);
   }));
 
   it('ngOnInint() should not update the class properties', async(() => {

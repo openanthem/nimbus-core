@@ -20,8 +20,12 @@ import java.util.List;
 import com.antheminc.oss.nimbus.domain.defn.Execution.Config;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo.Path;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Form;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Grid;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Section;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.TextBox;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Tile;
+import com.antheminc.oss.nimbus.domain.defn.extension.ActivateConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.Audit;
 import com.antheminc.oss.nimbus.domain.defn.extension.ConfigConditional;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreAuditEntry;
@@ -71,6 +75,9 @@ public class VPSampleViewPageGreen {
 		private String for_mapped_state_change_attr;
 		
 		private VFSampleForm view_sample_form;
+		
+		@Section
+		private VSFormWithGrid vsFormWithGrid;
     }
 	
 	@MapsTo.Type(SampleCoreEntity.class)
@@ -96,6 +103,29 @@ public class VPSampleViewPageGreen {
 		
 		@Path("/nc_form")
 		private SampleForm view_nc_form;
+	}
+	
+	@MapsTo.Type(SampleCoreEntity.class)
+	@Getter @Setter
+	public static class VSFormWithGrid {
+		
+		@Grid()
+		@MapsTo.Path(linked = false)
+		private List<ConvertedNestedEntity> testGrid;
+		
+		@Form(cssClass = "threeColumn")
+		@Path(linked = false)
+		private VFSearchForm vfSearchForm;
+	}
+	
+	@MapsTo.Type(SampleCoreEntity.class)
+	@Getter @Setter
+	public static class VFSearchForm {
+		
+		@Path
+		@TextBox(postEventOnChange=true)
+		@ActivateConditional(when="state=='test'", targetPath="/../../testGrid")
+		private String testEntry;
 	}
 	
 }

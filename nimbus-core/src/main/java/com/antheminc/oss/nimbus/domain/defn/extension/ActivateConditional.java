@@ -26,33 +26,83 @@ import java.lang.annotation.Target;
 import com.antheminc.oss.nimbus.domain.Event;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateChange;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
+import com.antheminc.oss.nimbus.domain.model.state.internal.DefaultParamState;
 
 /**
+ * <p>
+ * &#64;{@code ActivateConditional} is an extension capability provided by the
+ * framework. The annotation is used to conditionally activate/deactivate the
+ * param represented by the decorated field based on a SpEL condition. The
+ * Framework provides default event handling for this annotation during the
+ * {@code onStateChange} and {@code onStateLoad} events.
+ * 
+ * <p>
+ * The following sample code shows how to configure the active property for
+ * {@code sectionG} based on the state of {@code skipSectionG} is {@code true}.
+ * 
+ * <pre>
+ * &#64;CheckBox(postEventOnChange = true)
+ * &#64;ActivateConditional(when = "state != 'true'", targetPath = "/../sectionG")
+ * private String skipSectionG;
+ * 
+ * private SectionG sectionG;
+ * </pre>
+ * 
+ * <p>
+ * This annotation can be triggered for multiple events by providing one or more
+ * values for {@code targetPath} and/or multiple
+ * &#64;{@code ActivateConditional} annotations.
+ * 
+ * <p>
+ * The activate/deactivate logic will affect the enabled and visible properties.
+ * <b>Deactivate will also affect state property of the decorated param by
+ * setting the state to {@code null}</b>. If needing to control each of these
+ * properties individually, consider using a different conditional annotation:
+ * <ul>
+ * <li>{@link EnableConditional}</li>
+ * <li>{@link VisibleConditional}</li>
+ * </ul>
+ * 
+ * <p>
+ * For more explicit details on the activate/deactivate logic, see
+ * {@link DefaultParamState#activate()} and
+ * {@link DefaultParamState#deactivate()}.
+ * 
  * @author Soham Chakravarti
- *
+ * @since 1.0
+ * @see com.antheminc.oss.nimbus.domain.model.state.extension.ActivateConditionalStateEventHandler
  */
 @Documented
 @Retention(RUNTIME)
 @Target(FIELD)
 @Repeatable(ActivateConditionals.class)
-@OnStateChange @OnStateLoad
+@OnStateChange
+@OnStateLoad
 public @interface ActivateConditional {
 
 	/**
-	 *  SpEL based condition to be evaluated relative to param's state on which this annotation is declared.
-	 */
-	String when();
-	
-	/**
-	 * Path of param to activate when condition is satisfied relative to param on which this annotation is declared
-	 */
-	String[] targetPath();
-	
-	/**
-	 * SpEL based condition on which param would be inactivated. <br>
-	 * If value is not overridden, then the negation of {@linkplain ActivateConditional#when()} would be used 
+	 * <p>SpEL based condition on which param would be inactivated. <br>
+	 * If value is not overridden, then the negation of
+	 * {@linkplain ActivateConditional#when()} would be used
 	 */
 	String inactivateWhen() default "";
-	
+
+	/**
+	 * <p>The order of execution this annotation should be executed in, with
+	 * respect to other conditional annotations that are also decorating this
+	 * param.
+	 */
 	int order() default Event.DEFAULT_ORDER_NUMBER;
+
+	/**
+	 * <p>Path of param to activate when condition is satisfied relative to param
+	 * on which this annotation is declared
+	 */
+	String[] targetPath();
+
+	/**
+	 * <p>SpEL based condition to be evaluated relative to param's state on which
+	 * this annotation is declared.
+	 */
+	String when();
 }

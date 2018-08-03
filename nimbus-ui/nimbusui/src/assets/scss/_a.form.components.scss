@@ -1,5 +1,12 @@
 label{
     margin-bottom: .4rem;
+    font-weight: bold;
+}
+.checkboxHolder label {
+    font-weight: normal;
+}
+fieldset legend {
+    font-weight: bold;
 }
 //for IE remove focus outline
 fieldset:focus{
@@ -112,10 +119,66 @@ textarea.form-control {
           padding-bottom: .7rem;
       }
       .form-checkrow label {
-        max-width: 90%;
+        //max-width: 90%;
         line-height: 1.1;
     }
   }
+}
+.form-group.form-6col .form-checkrow {
+    width: 16%;
+    display: inline-block;
+    padding-right: .5rem;
+    margin-bottom: .6rem;
+}
+.form-group.form-5col .form-checkrow {
+    width: 20%;
+    display: inline-block;
+    padding-right: .5rem;
+    margin-bottom: .6rem;
+}
+.form-group.form-4col .form-checkrow {
+    width: 25%;
+    display: inline-block;
+    padding-right: .5rem;
+    margin-bottom: .6rem;
+}
+.form-group.form-3col .form-checkrow {
+    width: 33%;
+    display: inline-block;
+    padding-right: .5rem;
+    margin-bottom: .6rem;
+}
+.form-group.form-2col .form-checkrow {
+    width: 50%;
+    display: inline-block;
+    padding-right: .5rem;
+    margin-bottom: .6rem;
+}
+.form-2col .ui-radiobutton, 
+.form-3col .ui-radiobutton, 
+.form-4col .ui-radiobutton, 
+.form-5col .ui-radiobutton, 
+.form-6col .ui-radiobutton {
+    width: 1rem;
+    margin-top: .2rem;
+    vertical-align: top;
+}
+fieldset.subquestion {
+    padding: 1rem 0 0 2rem;
+    margin-bottom: 1rem;
+}
+fieldset.subquestion legend:first-of-type {
+    width: auto;
+    padding: 0 1rem;
+    margin-bottom: 1rem;
+    margin-left: -2rem;
+}
+.form-group.questionGroup.form-2col .form-checkrow label, 
+.form-group.questionGroup.form-3col .form-checkrow label, 
+.form-group.questionGroup.form-4col .form-checkrow label, 
+.form-group.questionGroup.form-5col .form-checkrow label,
+.form-group.questionGroup.form-6col .form-checkrow label {
+    width: calc(100% - 2rem);
 }
 // allows radio & checkbox components to stack instead of default inline-form
 .form-group.form-inline.stackedRadio .form-checkrow {
@@ -128,18 +191,57 @@ textarea.form-control {
 }
 // allows inputs to align to right of label
 // use on fieldValue component @FieldValue(cols="1", iconField ="labelLeft")
-.labelLeft { 
-    display:inline-block;
-    margin-left: .6rem;
-    &::after { //this removes psuedo after inherited from iconField class
-        display: none;
+// .labelLeft { 
+//     display:inline-block;
+//     margin-left: .6rem;
+//     &::after { //this removes psuedo after inherited from iconField class
+//         display: none;
+//     }
+// }
+.form-group.form-inline.legend-left.questionGroup {
+    margin-bottom: 1rem;   
+    padding: 0;
+}
+.form-group.form-inline.legend-left {
+    @extend .clearfix;
+    legend {
+        float: left;
+        margin-right: 1.3rem;
+        width: auto;
+    }
+    .checkboxHolder {
+        float: left;
+        width: auto;
+    }
+    &.large-width {
+        legend {
+            width: 50%;
+        }
+        .checkboxHolder {
+            width: 45%;
+        }
+    }
+    &.med-width {
+        legend {
+            width: 35%;
+        }
+        .checkboxHolder {
+            width: 60%;
+        }
+    }
+    &.small-width {
+        legend {
+            width: 25%;
+        }
+        .checkboxHolder {
+            width: 70%;
+        }
+    }
+    &:hover {
+        background: #efefef;
     }
 }
-.form-group.form-inline.legend-left legend {
-  float: left;
-  margin-right: 1.3rem;
-  width: auto;
-}
+
 
 p-dropdown.form-control {
     border: none;
@@ -159,7 +261,8 @@ p-dropdown.form-control {
     }
 }
 .ui-dropdown {
-    min-width: 150px;
+    width: 100%;
+    max-width: 600px;
     .ui-dropdown-panel .ui-dropdown-list{
         padding:0;
     }
@@ -383,4 +486,42 @@ input.custom-control-input:disabled ~ .custom-control-indicator,
         background: #d4d4d4;
         opacity: 1;
         color: #4c4c4c;
+}
+
+.ui-messages.ui-widget.ui-corner-all.infoMessage.ui-messages-info.ng-star-inserted.infoMessage {
+    background-color: inherit;
+    margin-left: 1.5rem;
+    background-color: inherit;
+    margin-left: 1.5rem;
+    color: #515151;
+    padding-top: 0px;
+    margin-top: 0px;
+    border:none;
+}
+.ui-messages.ui-widget.ui-corner-all.infoMessage.ui-messages-info.ng-star-inserted.infoMessage .ui-messages-icon {
+    display: none;
+}
+
+.sixColumn {
+    @extend .col-sm-12;
+    @extend .col-lg-2;
+    @extend .col-md-4; 
+}
+.fourColumn {
+    @extend .col-sm-12;
+    @extend .col-lg-3;
+    @extend .col-md-6; 
+}
+.threeColumn {
+    @extend .col-sm-12;
+    @extend .col-lg-4;
+    @extend .col-md-4; 
+}
+.twoColumn {
+    @extend .col-sm-12;
+    @extend .col-md-6; 
+}
+.inline {
+    @extend .d-inline-block;
+    @extend .mr-3;
 }

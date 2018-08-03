@@ -2,13 +2,39 @@
 canvas.form-control {
     width: inherit;
 }
+.zoomTrigger {
+    position: absolute;
+    top: -3px;
+    left: 270px;  
+    i {
+        margin-right: 6px;
+        margin-top: 4px;
+    }   
+}
+.zoom {
+    canvas.form-control {
+        transform: scale(2);
+        transform-origin: 0 0;
+    }
+    .buttonGroup.signatureCtrls {
+        margin-top: 60px;
+    }
+    .zoomTrigger {
+        left: 620px;
+    }
+}
+
+
 .displayNone{display:none;}
 .underline {
     border-bottom: 2px solid #000;
     padding: 10px;
     font-weight: bold;
 }
-body{color:#4c4c4c;}
+body{
+    color:#4c4c4c;
+    overflow-x: hidden;
+}
 * {
     vertical-align: top;
 }
@@ -26,7 +52,7 @@ html {
 //type styles from style guide
 
 h1{
-    font-size: 1.43rem;
+    font-size: 1.69rem;
     line-height: 1.75rem;
     font-weight: normal;
 
@@ -125,7 +151,7 @@ h3{
 
 h1.page-title {
     margin-bottom:0;
-    font-size: 1.3rem;
+    font-size: 1.69rem;
     margin-left:10px;
     font-weight: 400;
     &::before{
@@ -136,7 +162,28 @@ h1.page-title {
     }
     
 }
+.icon{
+    &.red {color: red;}
+    &.green {color: green;}
+}
+svg.icon {
+    width: 1.4rem;
+    height: 1.4rem;
+    margin-right: .6rem;
+}
 
+svg #Add .line {
+    // stroke: #fff;
+    // stroke-width: 3px;
+}
+svg #Add .circle {
+    // fill: currentColor;
+}
+svg.logo {
+    width: 130px;
+    height: 50px;
+    fill: #006bc2;
+}
 
 .CmDashIcon::before{
     content: "\F080";
@@ -196,39 +243,71 @@ h1.page-title {
 }
 
 .main-content{
-        padding:0;
+        padding:0 0 1rem 0;
+        margin: 0 1rem;
     }
 
 .breadcrumb-bar{
     padding: 0.5rem;
-    height: $breadcrumb-height;
     background: #fff;
+    ol{
+        margin-bottom: 0;
+    }
     .breadcrumb-item{
-        font-size: 1rem;
+        // font-size: 1rem;
+        &> a{
+            text-decoration: none;
+        }
+        &> a:hover{
+            text-decoration: underline;
+            color: #e5991c;
+        }
     }
     .breadcrumb-item + .breadcrumb-item::before{
-        padding-right: .3rem;
+        padding-right: .7rem;
+        font-size: 1.5rem;
+        margin-top: -6px;
+        padding-left: 1.2rem;
     }
     .breadcrumb-item:last-child > a {
         text-decoration: none;
-        color: #669FE2;
-        font-weight: bold;
+        color: #0275d8;
+        cursor: default;
     }
 }
 .info-bar {
     display: block;
-    background-color: #d9edfd;
     color: #4c4c4c;
-    font-size: 0.8rem;
+    font-size: 1.09rem;
     min-height: 60px;
-    padding: .6rem 0;
-    margin: 0 20px 10px;
-    border: 1px solid #9dd3f7;
-     div.text-bold:nth-child(1) {
-         nm-subheader:nth-child(1) {
-            font-size: 1.1rem;
-         }
-     }
+    padding: .6rem;
+    margin: 0 0px 10px 0;
+    width: calc(95% + .4rem);
+    nm-subheader {
+        margin-bottom: .5rem;
+        display: block;
+        line-height: 1.2;
+        span:nth-child(1) {
+           // text-align: right;
+            display: inline-block;
+           // width: 50%;
+            font-weight: bold;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+        span:nth-child(2) {
+           // text-align: left;
+            display: inline-block;
+            padding-left: 6px;
+           // width: calc(50% - 6px);
+            font-weight: normal;
+          //  text-overflow: ellipsis;
+            overflow: hidden;
+        }
+    }
+    .infoBarHeader {
+        @extend h2;
+    }
 }
 .colorBox {
     padding:1rem;
@@ -252,15 +331,14 @@ h1.page-title {
 .card-holder {
     position:relative;
     vertical-align: top;
-    margin-bottom:10px;
-    padding: 0;
+    //margin-top: 1rem;
+    padding-right: 0;
     .card-header{
-        margin-bottom: .3rem;
-        padding: .5rem;
-        color: #fff;
-        background: $header-bkg;
+        margin-bottom: 0;
         h2.card-title {
             font-size: 1.2rem;
+            display: inline-block;
+            margin: .75rem;
         }
     }
 
@@ -269,7 +347,7 @@ h1.page-title {
         padding: 0;
     }
     .viewport {
-        padding: 0 10px ;
+        padding: 0 ;
     }
 }  
 .card-holder > .card{
@@ -283,11 +361,30 @@ h1.page-title {
         min-height:650px;
     }
 }
-
-
+.XsmallCard,
+.smallCard,
+.mediumCard,
+.largeCard.withBorder {
+    margin-top: 1rem;
+    margin-bottom: 0px;
+    .card-header {
+        @extend .border-right;
+        @extend .border-top;
+        @extend .border-left;
+    }
+    .card-block {
+        @extend .border-right;
+        @extend .border-bottom;
+        @extend .border-left;
+        
+    }
+}
+.mediumCard .ui-paginator-top {
+    display: none;
+}
 .info-card {
     display: inline-block;
-    width: 82%;
+    width: 90%;
 }
 .ui-dialog .ui-dialog-titlebar-close span {
     font-size: 1.5rem;
@@ -307,41 +404,23 @@ h1.page-title {
 }
 .textWrapBreakWord {
     word-break: break-word;
-    font-weight: bold;
+}
+//card-details-field alignment
+.label-left.align-right label {
+    text-align: right;
+}
+.label-left label {
+    width: calc(50% - .6rem);
+    display: inline-block;
+    line-height: 1.2rem;
+    padding-right: .6rem;
+}
+.label-left div.textWrapBreakWord {
+    width: 50%;
+    display: inline-block;
+    line-height: 1.2rem;
 }
 
-nm-card-details {
-    &:nth-child(even){
-        .bg-alternate .cardBody{
-            background-color: $bg-alternate-color-even;
-        }
-    }
-    &:nth-child(odd){
-        .bg-alternate .cardBody{
-            background-color: $bg-alternate-color-odd;
-        }
-    }
-}
-//to make values bold in card-detail component
-nm-card-details-field label+div {
-    font-weight: bold;
-}
-
-.XsmallCard {
-    margin-left: 2rem;
-    .card-header {
-        margin: 0;
-    }
-    .card-block {
-        padding: 0;
-        .viewport {
-            padding: 0;
-        }
-    }
-    .colorBox {
-        margin: 0;
-    }
-}
 // for assessment questions
 .subQuestion {
     margin-bottom: 2.5rem;
@@ -441,8 +520,6 @@ $answerWidth: 99%-$questionWidth;
 
 /* QUESTION WRAPPER */
 
-$questionWidth:40%;
-$answerWidth: 99%-$questionWidth;
 .form-grid.headerRow fieldset .checkboxHolder .form-checkrow .ui-widget {
     display: none;
 }
@@ -451,7 +528,9 @@ $answerWidth: 99%-$questionWidth;
     font-weight: bold;
 }
 .form-grid.headerRow legend {
-    visibility: hidden;
+    font-weight: bold;
+    width: 44%;
+    margin-left: -4%;
 }
 .form-grid .questionGroup {
     border-bottom: 1px dashed;
@@ -460,7 +539,14 @@ $answerWidth: 99%-$questionWidth;
     border-bottom: 1px solid;
     padding-bottom: 0;
     margin-bottom: .6rem;
-}
+    .form-checkrow label{
+        visibility: visible;
+        width: 100%;
+        text-align: center;
+        position: static;
+        }
+    }
+   
 .form-grid fieldset{
   padding:0;
   font-size: .9rem;
@@ -476,8 +562,10 @@ $answerWidth: 99%-$questionWidth;
     .form-checkrow{
             display: inline-block;
             width: 20%;
+            text-align: center;
             label{
-                display: none;
+                visibility: hidden;
+                position: absolute;
             }
        
     }
@@ -489,13 +577,15 @@ $answerWidth: 99%-$questionWidth;
 }
 .form-group.questionGroup.form-grid {
     margin-bottom: .2rem;
+    margin-left: 4rem;
 }
 
 .form-grid.headerRow fieldset .checkboxHolder .form-checkrow {
     vertical-align: bottom;
 }
-
-
+.form-grid:not(.headerRow) fieldset:hover {
+    background: #efefef;
+}
 .ui-dialog.ui-widget .ui-dialog-titlebar .ui-dialog-title {
     margin-left: 1rem;
 }
@@ -511,10 +601,10 @@ $answerWidth: 99%-$questionWidth;
     color: #6e9de1;
 }
 .section-nav{
+    margin-left: 0;
    .nav-link::before{
         color: inherit;
     }
-   
 }
 .ui-dialog .colorBox {
     background: none;
@@ -593,6 +683,14 @@ $answerWidth: 99%-$questionWidth;
     color: #a94442;
     .fa-close::before{
         content:"\F071";
+    }
+}
+.icon {
+    display: inline-block;
+    margin-right: .5rem;
+    svg{
+        height: 32px;
+        width: 32px;
     }
 }
 .iconField {
@@ -707,6 +805,134 @@ button.ui-datepicker-trigger.ui-calendar-button {
 
 
 
+//changes for nav prime ng widget
+.ui-panelmenu  {
+    .ui-menuitem-text {
+        display: inline-block;
+        width: calc(100% - 2rem);
+        word-wrap: break-word;
+    }
+    .ui-panelmenu-panel{
+        margin-bottom: .3rem;
+    }
+    .ui-panelmenu-header-link {
+        background: #d9edfd;
+        color: #4c4c4c;
+        border: 1px solid #B8D4E8;
+    }
+    .ui-panelmenu-content-wrapper {
+        .ui-widget-content {
+            background: transparent;
+        }
+    }
+    
+    .ui-corner-top {
+        border-top-left-radius: 0px;
+        border-top-right-radius: 0px;
+    }
+    .ui-corner-bottom {
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;
+    }
+    
+    .ui-panelmenu-header .ui-state-active, 
+    .ui-panelmenu-header a:hover , 
+    .ui-panelmenu-header.ui-state-active a  {
+        background: #e5991c;
+        border-color: #e5991c;
+        color: #fff;
+    
+    }
+    .ui-menuitem-icon {
+        font-size: 1.4rem;
+        color: #4c4c4c;
+    }
+    .ui-state-active .ui-menuitem-icon {
+        color: #fff;
+        
+    }
+   
+    .ui-panelmenu-content {
+        padding: 0;
+        .ui-menuitem-link {
+            color: #4c4c4c;
+        }
+        .ui-menuitem-link:hover,
+        .ui-menuitem-link.ui-state-active {
+            background: #f4c70f;
+        }
+        .ui-submenu-list {
+            .ui-menuitem-link:hover .ui-menuitem-icon {
+                color: #fff;
+            }
+            .ui-menuitem-link + nm-panelmenusub .ui-menuitem-icon, 
+            .ui-menuitem-link:hover + nm-panelmenusub .ui-menuitem-icon {
+                color: #4c4c4c;
+            }
+            .ui-submenu-list {
+                    background: transparent;
+                .ui-menuitem-link:hover,
+                .ui-menuitem-link.ui-state-active{
+                    background: none;
+                    color: #ef991c;
+                    .ui-menuitem-icon {
+                        color: #ef991c;
+                    }
+                    .ui-panelmenu-icon.fa-caret-down{
+                        color: #ef991c;
+                    }
+                    .nm-panelmenu-headerimage{
+                        color: inherit;
+                    }
+                }
+            }
+        }
+    }
+    nm-panelmenusub {
+        background: #fcf6d9;
+        display: block;
+        border: 1px solid #e5991c;
+        nm-panelmenusub {
+            border: none;
+        }
+    }
+    .nm-panelmenu-headerimage {
+        float: left;
+        margin-right: .6rem;
+        color: #669fe2;
+        font-size: 1.3rem;
+    }
+
+    .ui-state-active .nm-panelmenu-headerimage,
+    a:hover .nm-panelmenu-headerimage {
+        color: #fff;
+    }
+    .ui-panelmenu-icon {
+        float: right;
+        font-size: 1.6rem;
+        width: 1rem;
+        &.fa-caret-down {
+            color: #fff;
+        }
+    }
+    .ui-panelmenu-header:not(.ui-state-active):hover {
+        background: #4c4c4c;
+            .ui-menuitem-icon{
+                color: #fff;
+            }
+            a {
+                color: #fff;
+            }
+     }
+    
+     .ui-panelmenu-content>.ui-panelmenu-root-submenu>.ui-submenu-list > li a {
+         padding-left: 1.3rem;
+     }
+}
+
+
+
+
 
 
 
@@ -759,11 +985,9 @@ button.ui-datepicker-trigger.ui-calendar-button {
     }
 }
 
-
 .topRight{
     top:1rem;right:1rem;position:absolute;
 }
-
 
 .border-all{
     border: 1px solid $border-color-dark;
@@ -822,10 +1046,17 @@ button.ui-datepicker-trigger.ui-calendar-button {
     }
 }
 
-
-
+// Accordion Header
+p-accordiontab p-header h2 {
+    display: inline-block; 
+    margin-bottom: 0; 
+    font-size: 1.2rem
+}
 
 //accordion styles
+.ui-accordion-header a:hover {
+    text-decoration: none;
+}
 .panel.panel-default {
     margin-top: 10px;
     & > .panel-heading {
@@ -890,12 +1121,6 @@ button.ui-datepicker-trigger.ui-calendar-button {
     }
 }
 
-
-
-
-
-
-
 .editTarget[disabled] {
     border: none;
     background: none;
@@ -912,15 +1137,51 @@ button.ui-datepicker-trigger.ui-calendar-button {
     font-weight: bold;
 }
 
+#actionTray {
+    position: fixed;
+    top: 100px;
+    right: 0;
+    width: 60px;
+    bottom: 0px;
+    &::before {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 60px;
+        bottom: 0px;
+        background: #d9edfd;
+        display: block;
+        border: 1px solid #9dd3f7;
+        content:"";
+    }
+
+  .icon i {
+        font-size: 2rem;
+        
+    }
+    .icon {
+        position: relative;
+        z-index: 1;
+        margin: .4rem;
+    }
+    button {
+        // color: #2667c1;
+        display:block;
+        // &:hover{
+        //     color: #e5991c;
+        // }
+    }
+}
 
 // screen breaks below
-@media(min-width: 576px) {
+@media screen and (min-width: 576px) {
     .navbar-toggleable-md .navbar-collapse {
         z-index: 1;
         position: absolute;
         width: 400%;
-        top: 4px;
-        left: 70px;
+        top: 0px;
+        left: 38px;
+        background: #fff;
     }
 
 
@@ -932,7 +1193,7 @@ button.ui-datepicker-trigger.ui-calendar-button {
 .navbar-toggleable-md .navbar-collapse {
     width: 350px;
 }
-@media(min-width: 768px) {
+@media screen and (min-width: 768px) {
     .header {
         height: 80px;
     }
@@ -947,11 +1208,11 @@ button.ui-datepicker-trigger.ui-calendar-button {
     }
 }
 
-@media (min-width: 992px) {
-    html {
-        font-size: 14px;
-        line-height: 18px;
-    }
+@media screen and (min-width: 992px) {
+    // html {
+    //     font-size: 14px;
+    //     line-height: 18px;
+    // }
     //nav bar hiding methods...  
     .navbar-toggleable-md .navbar-toggler {
         display: none;
@@ -962,7 +1223,9 @@ button.ui-datepicker-trigger.ui-calendar-button {
         position: static;  
     }
   
-  
+  .info-card{
+      width: 82%;
+  }
     .section-nav{
         width: 13%;
     }
@@ -971,12 +1234,54 @@ button.ui-datepicker-trigger.ui-calendar-button {
     }
 }
 
-@media (min-width: 1200px) {
+@media screen and (min-width: 1200px) {
   
 }
-@media (min-width: 1300px) {
+@media screen and (min-width: 1300px) {
     .header {
         height: 100px;
     }
 
+}
+
+@media print {
+    textarea.textarea-input {
+        display: none;
+    }
+    input.text-input {
+        display: none;
+    }
+    .print-only {
+        display: block;
+        min-height: 1.6rem;
+    }
+    .ui-dropdown {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    .ui-table td:not(.dropdown) .ui-cell-data, 
+    .ui-table td:not(.dropdown) > span, 
+    .ui-datatable td:not(.dropdown) .ui-cell-data, 
+    .ui-datatable td:not(.dropdown) > span {
+        white-space: normal !important;
+        overflow: visible !important;
+    }
+
+    .ui-table .ui-table-thead > tr > th > span, 
+    .ui-table .ui-datatable-thead > tr > th > span, 
+    .ui-datatable .ui-table-thead > tr > th > span, 
+    .ui-datatable .ui-datatable-thead > tr > th > span {
+        white-space: normal !important;
+        overflow: visible !important;
+    }
+
+    footer {
+        display: none;
+    }
+}
+
+@media screen {
+    pre.print-only {
+        display: none;
+    }
 }

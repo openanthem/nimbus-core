@@ -80,7 +80,7 @@ export class BaseElement {
      */
     protected loadLabelConfig(param: Param): void {
         let labelConfig: LabelConfig = this.wcs.findLabelContent(param);
-        this.label = labelConfig.text;
+        this.label = labelConfig.text.trim();
         this.helpText = labelConfig.helpText;
     }
 

@@ -15,7 +15,10 @@
 .header {
 	height: 70px;
 	color: $header-bkg;
+	background: #fff;
 	border-bottom: 1px solid #578de1;
+	position: relative;
+	z-index: 2;
 	a{
 		text-decoration: none;
 	}
@@ -115,7 +118,7 @@
 	}	  
 }
 	
-@media(min-width: 768px) {
+@media screen and (min-width: 768px) {
 
 }
 	

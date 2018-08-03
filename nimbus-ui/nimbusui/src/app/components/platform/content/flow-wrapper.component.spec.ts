@@ -15,6 +15,8 @@ import {
 } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
+import { JL } from 'jsnlog';
+import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
 
 import { FlowWrapper } from './flow-wrapper.component';
 import { PageService } from '../../../services/page.service';
@@ -24,6 +26,8 @@ import { ConfigService } from '../../../services/config.service';
 import { STOMPService } from '../../../services/stomp.service';
 import { Subject } from 'rxjs';
 import { LoggerService } from '../../../services/logger.service';
+import { SessionStoreService, CUSTOM_STORAGE } from '../../../services/session.store';
+import { AppInitService } from '../../../services/app.init.service';
 
 let fixture, app, pageService, configService, router;
 
@@ -88,16 +92,19 @@ describe('FlowWrapper', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [FlowWrapper],
-      imports: [RouterTestingModule, HttpModule, HttpClientTestingModule],
+      imports: [RouterTestingModule, HttpModule, HttpClientTestingModule, StorageServiceModule],
       providers: [
         { provide: STOMPService, useClass: MockSTOMPService },
         { provide: PageService, useClass: MockPageService },
         { provide: ConfigService, useClass: MockConfigService },
         { provide: Router, useClass: MockRouter },
         { provide: ActivatedRoute, useClass: MockActivatedRoute },
+        { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+        { provide: 'JSNLOG', useValue: JL },
         CustomHttpClient,
         LoaderService,
-        LoggerService
+        LoggerService,
+        AppInitService
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(FlowWrapper);

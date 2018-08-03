@@ -33,23 +33,30 @@ import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
  *
  */
 public final class StateEventHandlers {
+	
+	protected interface StateEventHandler<A extends Annotation> {
+		
+		default boolean shouldAllow(A configuredAnnotation, Param<?> param) {
+			return true;
+		} 
+	}
 
 	@EventHandler(OnStateLoad.class)
-	public interface OnStateLoadHandler<A extends Annotation> {
+	public interface OnStateLoadHandler<A extends Annotation> extends StateEventHandler<A> {
 		
 		public void handle(A configuredAnnotation, Param<?> param);
 	}
 	
 	
 	@EventHandler(OnStateChange.class)
-	public interface OnStateChangeHandler<A extends Annotation> {
+	public interface OnStateChangeHandler<A extends Annotation> extends StateEventHandler<A> {
 		
 		public void handle(A configuredAnnotation, ExecutionTxnContext txnCtx, ParamEvent event);
 	}
 	
 	
 	@EventHandler(OnTxnExecute.class)
-	public interface OnTxnExecuteHandler<A extends Annotation> {
+	public interface OnTxnExecuteHandler<A extends Annotation> extends StateEventHandler<A> {
 		
 		public void handleOnStart(A configuredAnnotation, ExecutionTxnContext txnCtx);
 		

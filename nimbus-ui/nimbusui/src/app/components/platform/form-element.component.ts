@@ -14,6 +14,7 @@ import { ValidationConstraint } from './../../shared/validationconstraints.enum'
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * 
  */
 'use strict';
 import { Component, Input } from '@angular/core';
@@ -21,6 +22,8 @@ import { FormGroup, AbstractControlDirective, NgModel } from '@angular/forms';
 import { Constraint } from '../../shared/param-config';
 import { Param } from '../../shared/param-state';
 import { Message } from '../../shared/message';
+import { ComponentTypes, ViewComponent } from '../../shared/param-annotations.enum';
+
 
 var counter = 0;
 
@@ -40,9 +43,12 @@ var counter = 0;
 export class FormElement {
     @Input() element: Param;
     @Input() form: FormGroup;
-    @Input() elementCss: String;
+    @Input() elementCss: string;
     elemMessages: Message[];
     id: String = 'form-control' + counter++;
+    componentStyle: string;
+    componentTypes = ComponentTypes;
+    viewComponent = ViewComponent;
 
     get isValid() {
         if (this.form.controls[this.element.config.code] != null) {
@@ -53,6 +59,9 @@ export class FormElement {
     }
 
     get isPristine() {
+        return this.getPristine();
+    }
+    getPristine() {
         if (this.element.config.code.startsWith('{')) {
             return true;
         }
@@ -62,13 +71,17 @@ export class FormElement {
             return true;
         }
     }
-
+    get elementMessages() {
+        return this.getMessages();
+    }
     getMessages() {
         this.elemMessages = [];
-        this.getErrors();
-        if (this.element.message != null) {
-            this.elemMessages.push(this.element.message);
-        }
+            if (this.element.message != null && this.element.message.length > 0) {
+                this.elemMessages.push.apply(this.elemMessages, this.element.message);
+            }
+            if (!this.getPristine()) {
+                this.getErrors();
+            }
         return this.elemMessages;
     }
 
@@ -81,21 +94,39 @@ export class FormElement {
     getErrorStyles() {
         if (this.showErrors) {
             return 'alert alert-danger';
+        } else {
+            return '';
         }
     }
 
-    get showErrors() { 
-        return (!this.isPristine && !this.isValid); 
+    get showErrors() {
+        return (!this.isPristine && !this.isValid);
+    }
+
+    getComponentClass() {
+        let componentClass: string[] = [];
+        componentClass.push('form-group');
+        if (this.element.config.uiStyles && this.element.config.uiStyles.attributes &&
+            this.element.config.uiStyles.attributes.cssClass && this.element.config.uiStyles.attributes.cssClass !== '') {
+                componentClass.push(this.element.config.uiStyles.attributes.cssClass);
+        } else {
+            componentClass.push(this.elementCss);
+        }
+        
+        // Error Styles
+        componentClass.push(this.getErrorStyles());
+
+        return componentClass;
     }
 
     ngOnInit() {
-        if (this.element.config.uiStyles && this.element.config.uiStyles.attributes.controlId !== null) {
-            if (Number(this.element.config.uiStyles.attributes.controlId) % 2 === 0) {
-                this.elementCss = this.elementCss + ' even';
-            } else {
-                this.elementCss = this.elementCss + ' odd';
-            }
-        }
+        // if (this.element.config.uiStyles && this.element.config.uiStyles.attributes.controlId !== null) {
+        //     if (Number(this.element.config.uiStyles.attributes.controlId) % 2 === 0) {
+        //         this.elementCss = this.elementCss + ' even';
+        //     } else {
+        //         this.elementCss = this.elementCss + ' odd';
+        //     }
+        // }
     }
 
     getElementStyle() {

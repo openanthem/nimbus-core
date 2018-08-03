@@ -53,12 +53,6 @@ describe('Link', () => {
     expect(app).toBeTruthy();
   }));
 
-//   xit('1should create the app', async(() => {
-//       app.inClass = true;
-//       app.ngOnInit();
-//       console.log('app.linkClass..app.linkClass...app.linkClass', app.linkClass);
-//   }));
-
   it('processOnClick() should call pageService.processEvent()', async(() => {
     spyOn(pageService, 'processEvent').and.callThrough();  
     app.processOnClick('/test', 'GET', 'test');

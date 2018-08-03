@@ -14,6 +14,7 @@ import { ElementRef, NgZone } from '@angular/core';
 import { DomHandler } from 'primeng/components/dom/domhandler';
 import { ObjectUtils } from 'primeng/components/utils/objectutils';
 import { TableService } from 'primeng/components/table/table';
+import { AngularSvgIconModule } from 'angular-svg-icon';
 
 import { DataTable } from './table.component';
 import { Section } from '../section.component';
@@ -63,6 +64,10 @@ import { Param } from '../../../shared/param-state';
 import { Subject } from 'rxjs';
 import { ParamConfig, ConfigType, UiStyle, UiAttribute } from '../../../shared/param-config';
 import { ParamUtils } from '../../../shared/param-utils';
+import { ViewComponent } from '../../../shared/param-annotations.enum';
+import { HeaderCheckBox } from '../form/elements/header-checkbox.component';
+import { SvgComponent } from '../svg/svg.component';
+import { Image } from '../image.component';
 
 let fixture, app, configService, pageService, elementRef, ngZone, objectUtils, domHandler, tableService;
 
@@ -134,7 +139,10 @@ describe('DataTable', () => {
           Calendar,
           DateControl,
           Signature,
-          Header
+          Header,
+          HeaderCheckBox,
+          SvgComponent,
+          Image
        ],
        imports: [
            DialogModule,
@@ -154,7 +162,8 @@ describe('DataTable', () => {
            TableModule,
            KeyFilterModule,
            HttpModule,
-           HttpClientTestingModule
+           HttpClientTestingModule,
+           AngularSvgIconModule
        ],
        providers: [
            {provide: PageService, useClass: MockPageService},
@@ -335,12 +344,12 @@ describe('DataTable', () => {
       app.element = new Param(configService);
       const eleConfig = { code: '', uiStyles: { attributes: { onLoad: true, lazyLoad: true } } };
       app.element.path = 'test';
-      const eve = { path: 'test', gridList: 'tGrid', page: { totalElements: 'telements', first: true } };
+      const eve = { path: 'test', gridList: [], page: { totalElements: 'telements', first: true } };
       spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
       spyOn(app, 'updatePageDetailsState').and.callThrough();
       app.ngAfterViewInit();
       pageService.logError(eve);
-      expect(app.value).toEqual('tGrid');
+      expect(app.value).toEqual([]);
       expect(app.totalRecords).toEqual('telements');
       expect(app.updatePageDetailsState).toHaveBeenCalled();
     }));
@@ -483,13 +492,73 @@ describe('DataTable', () => {
       expect(res).toEqual('test');
     }));
 
-    it('showHeader() should return true', async(() => {
+    it('showColumn() should return true', async(() => {
       const col = new ParamConfig(configService);
       col.type = new ConfigType(configService);
       col.uiStyles = new UiStyle();
       col.uiStyles.attributes = new UiAttribute();
       col.uiStyles.attributes.hidden = false;
       col.uiStyles.attributes.alias = 'test';
+      expect(app.showColumn(col)).toBeTruthy();
+    }));
+
+    it('showColumn() should return true for link', async(() => {
+      const col = new ParamConfig(configService);
+      col.type = new ConfigType(configService);
+      col.uiStyles = new UiStyle();
+      col.uiStyles.attributes = new UiAttribute();
+      col.uiStyles.attributes.hidden = false;
+      col.uiStyles.attributes.alias = 'Link';
+      expect(app.showColumn(col)).toBeTruthy();
+    }));
+
+    it('showColumn() should return true for button', async(() => {
+      const col = new ParamConfig(configService);
+      col.type = new ConfigType(configService);
+      col.uiStyles = new UiStyle();
+      col.uiStyles.attributes = new UiAttribute();
+      col.uiStyles.attributes.hidden = false;
+      col.uiStyles.attributes.alias = 'Button';
+      expect(app.showColumn(col)).toBeTruthy();
+    }));
+
+    it('showColumn() should return true for LinkMenu', async(() => {
+      const col = new ParamConfig(configService);
+      col.type = new ConfigType(configService);
+      col.uiStyles = new UiStyle();
+      col.uiStyles.attributes = new UiAttribute();
+      col.uiStyles.attributes.hidden = false;
+      col.uiStyles.attributes.alias = 'LinkMenu';
+      expect(app.showColumn(col)).toBeTruthy();
+    }));
+
+    it('showColumn() should return false for gridRowBody', async(() => {
+      const col = new ParamConfig(configService);
+      col.type = new ConfigType(configService);
+      col.uiStyles = new UiStyle();
+      col.uiStyles.attributes = new UiAttribute();
+      col.uiStyles.attributes.hidden = false;
+      col.uiStyles.attributes.alias = 'GridRowBody';
+      expect(app.showColumn(col)).toBeFalsy();
+    }));
+
+    it('showColumn() should return false', async(() => {
+      const col = new ParamConfig(configService);
+      col.type = new ConfigType(configService);
+      col.uiStyles = new UiStyle();
+      col.uiStyles.attributes = new UiAttribute();
+      col.uiStyles.attributes.hidden = true;
+      col.uiStyles.attributes.alias = 'test';
+      expect(app.showColumn(col)).toBeFalsy();
+    }));
+
+    it('showHeader() should return true', async(() => {
+      const col = new ParamConfig(configService);
+      col.type = new ConfigType(configService);
+      col.uiStyles = new UiStyle();
+      col.uiStyles.attributes = new UiAttribute();
+      col.uiStyles.attributes.hidden = false;
+      col.uiStyles.attributes.alias = 'GridColumn';
       expect(app.showHeader(col)).toBeTruthy();
     }));
 
@@ -498,22 +567,51 @@ describe('DataTable', () => {
       col.type = new ConfigType(configService);
       col.uiStyles = new UiStyle();
       col.uiStyles.attributes = new UiAttribute();
-      col.uiStyles.attributes.hidden = true;
-      col.uiStyles.attributes.alias = 'test';
+      col.uiStyles.attributes.hidden = false;
+      col.uiStyles.attributes.alias = 'Button';
       expect(app.showHeader(col)).toBeFalsy();
     }));
 
-    it('showValue(col) should reutrn true', async(() => {
+    it('showValue(col) should return true', async(() => {
       const col = new ParamConfig(configService);
       col.type = new ConfigType(configService);
       col.type.nested = false;
       col.uiStyles = new UiStyle();
       col.uiStyles.attributes = new UiAttribute();
       col.uiStyles.attributes.alias = 'test';
+      expect(app.showValue(col)).toBeFalsy();
+    }));
+
+    it('showValue(col) should return false if no uiStyle is given', async(() => {
+      const col = new ParamConfig(configService);
+      col.type = new ConfigType(configService);
+      col.type.nested = false;
+      col.uiStyles = new UiStyle();
+      expect(app.showValue(col)).toBeFalsy();
+    })); 
+
+    it('showValue(col) should return true for GridColumn', async(() => {
+      const col = new ParamConfig(configService);
+      col.type = new ConfigType(configService);
+      col.type.nested = false;
+      col.uiStyles = new UiStyle();
+      col.uiStyles.attributes = new UiAttribute();
+      col.uiStyles.attributes.alias = ViewComponent.gridcolumn.toString();
       expect(app.showValue(col)).toBeTruthy();
     }));
 
-    it('showValue(col) should reutrn false', async(() => {
+    it('showValue(col) should return false for GridColumn with showAsLink attribute', async(() => {
+      const col = new ParamConfig(configService);
+      col.type = new ConfigType(configService);
+      col.type.nested = false;
+      col.uiStyles = new UiStyle();
+      col.uiStyles.attributes = new UiAttribute();
+      col.uiStyles.attributes.alias = 'GridColumn';
+      col.uiStyles.attributes.showAsLink = true;
+      expect(app.showValue(col)).toBeFalsy();
+    }));
+
+    it('showValue(col) should return false for link', async(() => {
       const col = new ParamConfig(configService);
       col.type = new ConfigType(configService);
       col.type.nested = false;
@@ -523,25 +621,82 @@ describe('DataTable', () => {
       expect(app.showValue(col)).toBeFalsy();
     }));
 
-    it('showLink(col) should reutrn true', async(() => {
+    it('showValue(col) should return false for button', async(() => {
+      const col = new ParamConfig(configService);
+      col.type = new ConfigType(configService);
+      col.type.nested = false;
+      col.uiStyles = new UiStyle();
+      col.uiStyles.attributes = new UiAttribute();
+      col.uiStyles.attributes.alias = 'Button';
+      expect(app.showValue(col)).toBeFalsy();
+    }));
+
+    it('showValue(col) should return false for link Menu', async(() => {
+      const col = new ParamConfig(configService);
+      col.type = new ConfigType(configService);
+      col.type.nested = false;
+      col.uiStyles = new UiStyle();
+      col.uiStyles.attributes = new UiAttribute();
+      col.uiStyles.attributes.alias = 'LinkMenu';
+      expect(app.showValue(col)).toBeFalsy();
+    }));
+
+    it('showValue(col) should return false for grid row body', async(() => {
+      const col = new ParamConfig(configService);
+      col.type = new ConfigType(configService);
+      col.type.nested = false;
+      col.uiStyles = new UiStyle();
+      col.uiStyles.attributes = new UiAttribute();
+      col.uiStyles.attributes.alias = 'GridRowBody';
+      expect(app.showValue(col)).toBeFalsy();
+    }));
+
+    it('showUiStyleInColumn(col) should return true for link', async(() => {
       const col = new ParamConfig(configService);
       col.type = new ConfigType(configService);
       col.uiStyles = new UiStyle();
       col.uiStyles.attributes = new UiAttribute();
       col.uiStyles.attributes.alias = 'Link';
-      expect(app.showLink(col)).toBeTruthy();
+      expect(app.showUiStyleInColumn(col)).toBeTruthy();
     }));
 
-    it('showLink(col) should reutrn false', async(() => {
+    it('showUiStyleInColumn(col) should return true for button', async(() => {
+      const col = new ParamConfig(configService);
+      col.type = new ConfigType(configService);
+      col.uiStyles = new UiStyle();
+      col.uiStyles.attributes = new UiAttribute();
+      col.uiStyles.attributes.alias = 'Button';
+      expect(app.showUiStyleInColumn(col)).toBeTruthy();
+    }));
+
+    it('showUiStyleInColumn(col) should return true for linkMenu', async(() => {
+      const col = new ParamConfig(configService);
+      col.type = new ConfigType(configService);
+      col.uiStyles = new UiStyle();
+      col.uiStyles.attributes = new UiAttribute();
+      col.uiStyles.attributes.alias = 'LinkMenu';
+      expect(app.showUiStyleInColumn(col)).toBeTruthy();
+    }));
+
+    it('showUiStyleInColumn(col) should return false', async(() => {
+      const col = new ParamConfig(configService);
+      col.type = new ConfigType(configService);
+      col.uiStyles = new UiStyle();
+      col.uiStyles.attributes = new UiAttribute();
+      col.uiStyles.attributes.alias = 'TextBox';
+      expect(app.showUiStyleInColumn(col)).toBeFalsy();
+    }));
+
+    it('showUiStyleInColumn(col) should return false', async(() => {
       const col = new ParamConfig(configService);
       col.type = new ConfigType(configService);
       col.uiStyles = new UiStyle();
       col.uiStyles.attributes = new UiAttribute();
       col.uiStyles.attributes.alias = 'Link1';
-      expect(app.showLink(col)).toBeFalsy();
+      expect(app.showUiStyleInColumn(col)).toBeFalsy();
     }));
 
-    it('showLinkMenu(col) should reutrn true', async(() => {
+    it('showLinkMenu(col) should return true', async(() => {
       const col = new ParamConfig(configService);
       col.type = new ConfigType(configService);
       col.uiStyles = new UiStyle();
@@ -550,7 +705,7 @@ describe('DataTable', () => {
       expect(app.showLinkMenu(col)).toBeTruthy();
     }));
 
-    it('showLinkMenu(col) should reutrn false', async(() => {
+    it('showLinkMenu(col) should return false', async(() => {
       const col = new ParamConfig(configService);
       col.type = new ConfigType(configService);
       col.uiStyles = new UiStyle();
@@ -559,37 +714,37 @@ describe('DataTable', () => {
       expect(app.showLinkMenu(col)).toBeFalsy();
     }));
 
-    it('isClickedOnDropDown() should reutrn true', async(() => {
+    it('getViewParam() should return true', async(() => {
+      const col = { code: '' };
+      app.element = new Param(configService);
+      app.element.collectionParams = { find: () => {
+          return true;
+        } };
+      expect(app.getViewParam()).toBeTruthy();
+    }));
+    
+    it('isClickedOnDropDown() should return true', async(() => {
       const dArray = [{ elementRef: { nativeElement: { contains: () => {
                 return true;
               } } } }];
       expect(app.isClickedOnDropDown(dArray)).toBeTruthy();
     }));
 
-    it('isClickedOnDropDown() should reutrn false', async(() => {
+    it('isClickedOnDropDown() should return false', async(() => {
       const dArray = [{ elementRef: { nativeElement: { contains: () => {
                 return false;
               } } } }];
       expect(app.isClickedOnDropDown(dArray)).toBeFalsy();
     }));
 
-    it('isActive() should reutrn true', async(() => {
+    it('isActive() should return true', async(() => {
       app.filterState = { test: 123 };
       expect(app.isActive('test')).toBeTruthy();
     }));
 
-    it('isActive()should reutrn false', async(() => {
+    it('isActive()should return false', async(() => {
       app.filterState = { test: 123 };
       expect(app.isActive('test1')).toBeFalsy();
-    }));
-
-    it('getLinkMenuParam() should return true', async(() => {
-      const col = { code: '' };
-      app.element = new Param(configService);
-      app.element.collectionParams = { find: () => {
-          return true;
-        } };
-      expect(app.getLinkMenuParam()).toBeTruthy();
     }));
 
     it('getRowPath() should return path', async(() => {
@@ -656,16 +811,6 @@ describe('DataTable', () => {
       spyOn(pageService, 'processEvent').and.returnValue('');
       app.postGridData({});
       expect(pageService.processEvent).toHaveBeenCalled();
-    }));
-
-    it('getAddtionalData() should update the eve.data.nestedElement', async(() => {
-      app.element = new Param(configService);
-      app.element = { collectionParams: { find: () => {
-            return true;
-          } } };
-      const eve = { data: { nestedElement: '' } };
-      app.getAddtionalData(eve);
-      expect(eve.data.nestedElement).toBeTruthy();
     }));
 
     it('resetMultiSelection should update the selectedRows property', async(() => {
@@ -1082,5 +1227,5 @@ describe('DataTable', () => {
       spyOn(app, 'isSortAsNumber').and.returnValue(false);
       app.defaultPattern = 'test';
       expect(app.getPattern('')).toEqual('test');
-    }));
+    })); 
 });

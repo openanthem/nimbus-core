@@ -17,11 +17,14 @@
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing'
+import { AngularSvgIconModule } from 'angular-svg-icon';
 
 import { AppComponent } from './app.component';
 import { LoaderComponent } from './components/platform/loader/loader.component';
 import { LoaderService } from './services/loader.service';
 import { ServiceConstants } from './services/service.constants';
+import { SvgComponent } from './components/platform/svg/svg.component';
+import { SvgDefinitions } from './components/platform/svg/svg-definitions.component'
 
 class MockServiceConstant {
   STOPGAP_APP_HOST: string;
@@ -43,9 +46,11 @@ describe('AppComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         AppComponent,
-        LoaderComponent
+        LoaderComponent,
+        SvgComponent,
+        SvgDefinitions
       ],
-      imports: [ RouterTestingModule ],
+      imports: [ RouterTestingModule, AngularSvgIconModule ],
       providers: [ LoaderService, { provide: ServiceConstants, useClass: MockServiceConstant} ]
     }).compileComponents();
   }));

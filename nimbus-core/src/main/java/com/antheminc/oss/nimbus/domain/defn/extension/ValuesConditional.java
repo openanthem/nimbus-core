@@ -30,42 +30,33 @@ import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateChange;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 
 /**
- * This annotation is used to provide control and management over the <tt>Values</tt> 
- * property of a param's state through the use of conditional SpEL statements. <br>
+ * This annotation is used to provide control and management over the
+ * {@code Values} property of a param's state through the use of conditional
+ * SpEL statements. <br>
  * 
- * <p>
- * 1. Update the values of <tt>statusReason</tt> from <tt>SR_ALL.class</tt> to 
- * <tt>SR_A.class</tt> when the value of <tt>status</tt> is 'A'.
- * </p>
+ * <p> 1. Update the values of {@code statusReason} from {@code SR_ALL.class} to
+ * {@code SR_A.class} when the value of {@code status} is 'A'.
  * 
- * <pre>
- * &#64;ValuesConditional(target = "../statusReason", condition = { 
- *     &#64;Condition(when = "state == 'A'", then = &#64;Values(SR_A.class))
- * })
+ * <pre> &#64;ValuesConditional(target = "../statusReason", condition = {
+ * &#64;Condition(when = "state == 'A'", then = &#64;Values(SR_A.class)) })
  * private String status;
  * 
- * &#64;Values(SR_ALL.class)
- * private String statusReason;
- * </pre>
+ * &#64;Values(SR_ALL.class) private String statusReason; </pre>
  * 
- * <p>
- * 2. Set multiple conditions and even override conditions by setting the
- * <tt>exclusive</tt> property. In this case, it is possible to give priority to
+ * <p> 2. Set multiple conditions and even override conditions by setting the
+ * {@code exclusive} property. In this case, it is possible to give priority to
  * the last conditional checking for state 'A'.
- * </p>
- * <pre>
- * &#64;ValuesConditional(target = "../statusReason", condition = { 
- *     &#64;Condition(when = "state=='A'", then = &#64;Values(SR_A.class))
- *     &#64;Condition(when = "state=='B'", then = &#64;Values(SR_B.class))
- *     &#64;Condition(when = "state=='A'", then = &#64;Values(SR_C.class))
- * })
+ * 
+ * <pre> &#64;ValuesConditional(target = "../statusReason", condition = {
+ * &#64;Condition(when = "state=='A'", then = &#64;Values(SR_A.class))
+ * &#64;Condition(when = "state=='B'", then = &#64;Values(SR_B.class))
+ * &#64;Condition(when = "state=='A'", then = &#64;Values(SR_C.class)) })
  * private String status;
  * 
- * &#64;Values(SR_ALL.class)
- * private String statusReason;
- * </pre>
+ * &#64;Values(SR_ALL.class) private String statusReason; </pre>
  * 
  * @author Tony Lopez
+ * @since 1.0
  * @see com.antheminc.oss.nimbus.domain.model.state.extension.AbstractValuesConditionalStateEventHandler
  *
  */
@@ -73,78 +64,88 @@ import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 @Retention(RUNTIME)
 @Target(FIELD)
 @Repeatable(ValuesConditionals.class)
-@OnStateChange @OnStateLoad
+@OnStateChange
+@OnStateLoad
 public @interface ValuesConditional {
 
-	/**
-	 * The target path relative to the this annotated field to update.
-	 */
-	String target();
-	
-	/**
-	 * An array of conditional metadata that is responsible for determining whether
-	 * or not the <tt>target</tt> field will be updated.
-	 * 
-	 * <p>Conditions are executed from top to bottom, in the order in which they
-	 * are defined. If it is necessary to define logic to override prior conditions, 
-	 * consider setting the <tt>exclusive</tt> value to false.
-	 */
-	Condition[] condition();
-	
-	/**
-	 * Configures whether or not the first truthy condition should be exclusive.
-	 * 
-	 * <p>If true, then only the first truthy condition will be executed. If false, 
-	 * then all truthy conditions will be executed. the default value is true.
-	 */
-	boolean exclusive() default true;
-	
-	/**
-	 * <p>Whether or not to reset the state of the target field when the associated
-	 * <tt>&#64;Values</tt> property is updated.</p>
-	 * 
-	 * <p>If a condition is truthy and <tt>resetOnChange</tt> is <b>false</b>, then state
-	 * will be attempt to be preserved. State is preserved in this scenario only if the value 
-	 * of state is found within the newly updated <tt>&#64;Values</tt> property. If it is 
-	 * not found, the state will be reset.</p>
-	 * 
-	 * <p>If <tt>resetOnChange</tt> is <b>true</b>, state will always be reset on change.</p>
-	 * 
-	 * <p>The default value is <b>true</b>.
-	 */
-	boolean resetOnChange() default true;
-	
 	@Documented
 	@Retention(RUNTIME)
 	@Target(FIELD)
 	@Repeatable(Conditions.class)
 	public @interface Condition {
-		
+
 		/**
-		 * SpEL based condition to be evaluated relative to param's state on which 
-		 * this annotation is declared.
-		 */
-		String when();
-		
-		/**
-		 * <tt>Values</tt> configuration to be applied to the param identified by
-		 * the <tt>target</tt> path when this condition's <tt>when</tt> clause is
-		 * found to be true.
+		 * <p>{@link Values} configuration to be applied to the param identified
+		 * by the {@code target} path when this condition's {@link #when()}
+		 * clause is found to be true.
 		 */
 		Values then();
+
+		/**
+		 * <p>SpEL based condition to be evaluated relative to param's state on
+		 * which this annotation is declared.
+		 */
+		String when();
 	}
-	
+
 	@Documented
 	@Retention(RUNTIME)
 	@Target(FIELD)
 	@RepeatContainer(Condition.class)
 	public @interface Conditions {
-		
+
 		/**
-		 * A single or set of conditions to evaluate against.
+		 * <p>A single or set of conditions to evaluate against.
 		 */
 		Condition[] value();
 	}
-	
+
+	/**
+	 * <p>An array of conditional metadata that is responsible for determining
+	 * whether or not the {@code target} field will be updated.
+	 * 
+	 * <p>Conditions are executed from top to bottom, in the order in which they
+	 * are defined. If it is necessary to define logic to override prior
+	 * conditions, consider setting the {@link #exclusive()} value to false.
+	 */
+	Condition[] condition();
+
+	/**
+	 * <p>Configures whether or not the first truthy condition should be
+	 * exclusive.
+	 * 
+	 * <p>If {@code true}, then only the first truthy condition will be
+	 * executed. If {@code false}, then all truthy conditions will be executed.
+	 * The default value is {@code true}.
+	 */
+	boolean exclusive() default true;
+
+	/**
+	 * <p>The order of execution this annotation should be executed in, with
+	 * respect to other conditional annotations that are also decorating this
+	 * param.
+	 */
 	int order() default Event.DEFAULT_ORDER_NUMBER;
+
+	/**
+	 * <p>Whether or not to reset the state of the target field when the
+	 * associated &#64;{@code Values} property is updated.
+	 * 
+	 * <p>If a condition is truthy and {@code resetOnChange} is {@code false},
+	 * then state will be attempt to be preserved. State is preserved in this
+	 * scenario only if the value of state is found within the newly updated
+	 * {@code &#64;Values} property. If it is not found, the state will be
+	 * reset.
+	 * 
+	 * <p>If {@code resetOnChange} is {@code true}, state will always be reset
+	 * on change.
+	 * 
+	 * <p>The default value is {@code true}.
+	 */
+	boolean resetOnChange() default true;
+
+	/**
+	 * <p>The target path relative to the this annotated field to update.
+	 */
+	String target();
 }

@@ -24,17 +24,26 @@
     .ui-accordion-content-wrapper {
         border: 1px solid #669fe2;
         margin-bottom: 1rem;
-        padding: 0.1rem;
-        &.ui-accordion-content-wrapper-overflown {
-            padding: 0;
-        }
     }
-    .ui-accordion-content{
-        padding:0;
-    }
-    
+  
 }
 
 .accordionBtn { position: absolute;top: 0.2rem;right: 1rem; }   
 .accordionBtn .btn-plain:hover { color: white;text-decoration: underline; }
  p-accordiontab {position: relative; display: block; }
+
+ .nm-accordion-headertext {
+    float: right;
+ }
+
+ .nm-accordion-headerimage {
+    float: right;
+ }
+
+ .nm-accordion-headerlabel {
+    color: #fff;
+ }
+
+ p-accordiontab p-header {
+     @extend .clearfix;
+ }

@@ -32,16 +32,23 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.app.extension.config.ActivitiProcessDefinitionCache;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.bpm.BPMGateway;
 import com.antheminc.oss.nimbus.domain.bpm.ProcessEngineContext;
+import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ProcessResponse;
+import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
+import com.antheminc.oss.nimbus.domain.defn.Repo;
+import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.internal.ExecutionEntity;
+import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepositoryFactory;
+import com.antheminc.oss.nimbus.entity.process.ProcessFlow;
 import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 import com.antheminc.oss.nimbus.support.JustLogit;
 import com.antheminc.oss.nimbus.support.expr.ExpressionEvaluator;
@@ -58,15 +65,13 @@ public class ActivitiBPMGateway implements BPMGateway {
 	
 	protected final JustLogit logit = new JustLogit(this.getClass());
 	
-	RuntimeService runtimeService;
-	
-	TaskService taskService;
-	
-	SpringProcessEngineConfiguration processEngineConfiguration;
-	
+	private RuntimeService runtimeService;
+	private TaskService taskService;
+	private SpringProcessEngineConfiguration processEngineConfiguration;
 	private ExpressionEvaluator expressionEvaluator;
-	
 	private Boolean supportStatefulProcesses;
+	private ModelRepositoryFactory repositoryFactory;
+	private DomainConfigBuilder domainConfigBuilder;
 	
 	public ActivitiBPMGateway (BeanResolverStrategy beanResolver,Boolean supportStatefulProcesses) {
 		this.expressionEvaluator = beanResolver.find(ExpressionEvaluator.class);
@@ -74,8 +79,8 @@ public class ActivitiBPMGateway implements BPMGateway {
 		this.taskService = beanResolver.find(TaskService.class);
 		this.processEngineConfiguration = beanResolver.find(SpringProcessEngineConfiguration.class);
 		this.supportStatefulProcesses = supportStatefulProcesses;
-
-	}
+		this.repositoryFactory = beanResolver.find(ModelRepositoryFactory.class);
+		this.domainConfigBuilder = beanResolver.find(DomainConfigBuilder.class);	}
 	
 	@Override
 	public ActivitiProcessFlow startBusinessProcess(Param<?> param, String processId) {
@@ -111,30 +116,70 @@ public class ActivitiBPMGateway implements BPMGateway {
 	
 	@Override
 	public Object continueBusinessProcessExecution(Param<?> param, String processExecutionId) {
-		DeploymentManager deploymentManager = getProcessEngineConfiguration().getDeploymentManager();
 		ActivitiProcessFlow processFlow = (ActivitiProcessFlow)((ExecutionEntity<?,?>)param.getRootExecution().getState()).getFlow();
 		List<String> activeTasks = processFlow.getActiveTasks();
 		ProcessEngineContext context = new ProcessEngineContext(param);
 		Map<String, Object> executionVariables = new HashMap<String, Object>();
 		executionVariables.put(Constants.KEY_EXECUTE_PROCESS_CTX.code, context);		
 		for(String task: activeTasks){
-			ActivitiProcessDefinitionCache cache = (ActivitiProcessDefinitionCache)deploymentManager.getProcessDefinitionCache();
-			refreshProcessDefinitionCacheIfApplicable(processFlow.getProcessDefinitionId(), cache, param);
-			if(cache.size() == 0) {
-				logit.error(() -> "Could not get ProcessDefinitionCache from either processEngineConfiguration or db query findDeployedLatestProcessDefinitionByKey (which should refresh the cache) while executing param "
-								+ param + " and process Execution Id: " + processExecutionId);
-			}
-			
-			UserTask userTask = (UserTask)cache.findByKey(getProcessKeyFromDefinitionId(processFlow.getProcessDefinitionId(), param)).getProcess().getFlowElementMap().get(task);
-			if(canComplete(param,userTask)) {
-				List<Task> activeTaskInstances = getTaskService().createTaskQuery().processInstanceId(processExecutionId).taskDefinitionKey(task).list();
-				for(Task activeTaskIntance: activeTaskInstances)
-					getTaskService().complete(activeTaskIntance.getId(),executionVariables);
-			}
+			evaulateAndExecuteTask(param,processExecutionId,task);
 		}
 		return context.getOutput();
 	}
+	
+	private void evaulateAndExecuteTask(Param<?> param, String processExecutionId, String task) {
+		DeploymentManager deploymentManager = getProcessEngineConfiguration().getDeploymentManager();
+		ActivitiProcessFlow processFlow = (ActivitiProcessFlow)((ExecutionEntity<?,?>)param.getRootExecution().getState()).getFlow();
+		ActivitiProcessDefinitionCache cache = (ActivitiProcessDefinitionCache)deploymentManager.getProcessDefinitionCache();
+		refreshProcessDefinitionCacheIfApplicable(processFlow.getProcessDefinitionId(), cache, param);
+		if(cache.size() == 0) {
+			logit.error(() -> "Could not get ProcessDefinitionCache from either processEngineConfiguration or db query findDeployedLatestProcessDefinitionByKey (which should refresh the cache) while executing param "
+							+ param + " and process Execution Id: " + processExecutionId);
+		}
+		
+		UserTask userTask = (UserTask)cache.findByKey(getProcessKeyFromDefinitionId(processFlow.getProcessDefinitionId(), param)).getProcess().getFlowElementMap().get(task);
+		if(canComplete(param,userTask))
+			executeTask(param,processExecutionId,task);
+	}
+	
+	private void executeTask(Param<?> param, String processExecutionId, String task) {
+		List<Task> activeTaskInstances = getTaskService().createTaskQuery().processInstanceId(processExecutionId).taskDefinitionKey(task).list();
+		for(Task activeTaskIntance: activeTaskInstances) {
+			try {
+				ProcessEngineContext context = new ProcessEngineContext(param);
+				Map<String, Object> executionVariables = new HashMap<String, Object>();
+				executionVariables.put(Constants.KEY_EXECUTE_PROCESS_CTX.code, context);						
+				getTaskService().complete(activeTaskIntance.getId(),executionVariables);
+			}catch (Exception e) {
+				throw new FrameworkRuntimeException("Error executing bpm flow with excecution id:"+processExecutionId+" when attempting to complete the task:"+task,e);
+			}finally {
+				updateProcessState(param,processExecutionId);
+			}
+		}		
+	}
 
+	private void updateProcessState(Param<?> param, String processExecutionId) {
+		ActivitiProcessFlow processFlow = (ActivitiProcessFlow)((ExecutionEntity<?,?>)param.getRootExecution().getState()).getFlow();
+		List<String> activeTasks = new ArrayList<String>();
+		List<Task> activeTasksFromDB = getTaskService().createTaskQuery().processInstanceId(processExecutionId).list();
+		activeTasksFromDB.iterator().forEachRemaining( t -> activeTasks.add(t.getTaskDefinitionKey()));
+		ModelConfig<?> modelConfig = domainConfigBuilder.getModel(ProcessFlow.class);
+		Repo repo = modelConfig.getRepo();
+		String processStateAlias = StringUtils.isBlank(repo.alias()) ? modelConfig.getAlias() : repo.alias();
+		String entityProcessAlias = param.getRootDomain().getConfig().getAlias() + "_" + processStateAlias;
+		Long entityRefId = param.getRootExecution().getRootCommand().getRefId(Type.DomainAlias);
+		repositoryFactory.get(repo)._update(entityProcessAlias, entityRefId, "/activeTasks", activeTasks);
+		processFlow.setActiveTasks(activeTasks);
+	}	
+	
+	private boolean canComplete(Param<?> param, UserTask userTask) {
+		String taskExitCondition = getTaskExitExpression(userTask,"exitCondition");
+		if(taskExitCondition != null) {
+			return (Boolean)getExpressionEvaluator().getValue(taskExitCondition, param);
+		}
+		return true;
+	}
+	
 	private void refreshProcessDefinitionCacheIfApplicable(String processDefinitionId, ActivitiProcessDefinitionCache cache, Param<?> param) {
 		if(cache.size() == 0) {
 			CommandExecutor commandExecutor = getProcessEngineConfiguration().getCommandExecutor();
@@ -146,14 +191,6 @@ public class ActivitiBPMGateway implements BPMGateway {
 				});
 			}
 		}
-	}
-	
-	private boolean canComplete(Param<?> param, UserTask userTask) {
-		String taskExitCondition = getTaskExitExpression(userTask,"exitCondition");
-		if(taskExitCondition != null) {
-			return (Boolean)getExpressionEvaluator().getValue(taskExitCondition, param);
-		}
-		return true;
 	}
 	
 	private String getTaskExitExpression(UserTask userTask,String extensionName) {

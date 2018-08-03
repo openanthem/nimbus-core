@@ -15,11 +15,12 @@
  */
 package com.antheminc.oss.nimbus.test.domain.mock;
 
-import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
@@ -45,8 +46,7 @@ import lombok.Setter;
  * @author Tony Lopez
  *
  */
-@Getter
-@Setter
+@Getter @Setter
 public class MockParam implements Param<Object> {
 
 	private boolean active = true;
@@ -59,7 +59,7 @@ public class MockParam implements Param<Object> {
 	private boolean enabled = true;
 	private List<MappedParam<?, Object>> eventSubscribers = new ArrayList<>();
 	private LockTemplate lockTemplate = null;
-	private Message message = null;
+	private Set<Message> messages = new HashSet<>();
 	private Map<String, Model<Object>> modelMap = new HashMap<>();
 	private Map<String, Param<Object>> paramMap = new HashMap<>();
 	private Model<Object> parentModel = null;
@@ -334,4 +334,8 @@ public class MockParam implements Param<Object> {
 		return null;
 	}
 
+	@Override
+	public boolean hasContextStateChanged() {
+		return false;
+	}
 }

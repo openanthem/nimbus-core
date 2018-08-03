@@ -3,6 +3,8 @@ import { TestBed, async } from '@angular/core/testing';
 import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
+import { JL } from 'jsnlog';
+import { Location, LocationStrategy, HashLocationStrategy } from '@angular/common';
 
 import { FilterButton } from './filter-button.component';
 import { PageService } from '../../../../services/page.service';
@@ -11,6 +13,7 @@ import { LoaderService } from '../../../../services/loader.service';
 import { ConfigService } from '../../../../services/config.service';
 import { LoggerService } from '../../../../services/logger.service';
 import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
+import { AppInitService } from '../../../../services/app.init.service';
 
 let fixture, app, pageservice;
 
@@ -27,12 +30,16 @@ describe('FilterButton', () => {
        ],
        providers: [
         { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+        { provide: 'JSNLOG', useValue: JL },
+        { provide: LocationStrategy, useClass: HashLocationStrategy },
+        Location,
         PageService,
         CustomHttpClient,
         LoaderService,
         ConfigService,
         LoggerService,
-        SessionStoreService
+        SessionStoreService,
+        AppInitService
        ]
     }).compileComponents();
     fixture = TestBed.createComponent(FilterButton);

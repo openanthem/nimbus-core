@@ -19,7 +19,10 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -298,6 +301,158 @@ public interface EntityState<T> {
 		Class<? extends ValidationGroup>[] getActiveValidationGroups();
 		void setActiveValidationGroups(Class<? extends ValidationGroup>[] activeValidationGroups);
 		
+		/**
+		 * <p>Execute {@code consumer} on each of the nested params belonging to this param instance.
+		 * <p>This method will only traverse the nested params directly underneath the parent in the param
+		 * hierarchy.
+		 * @param consumer the method to execute
+		 */
+		default void traverseChildren(Consumer<Param<?>> consumer) {
+			traverse(consumer, 1, false);
+		}
+		
+		/**
+		 * <p>Execute {@code consumer} on each of the params belonging to the parent of this param instance, excluding
+		 * this param instance.
+		 * <p>This method will only traverse the sibling params directly underneath the parent in the param
+		 * hierarchy. If needing to traverse recursively, use {@link #traverseSiblingsRecursively(Consumer)}.
+		 * @param consumer the method to execute
+		 */
+		default void traverseSiblings(Consumer<Param<?>> consumer) {
+			traverseParent(consumer, false, false);
+		}
+		
+		/**
+		 * <p>Execute {@code consumer} on each of the params belonging to the parent of this param instance, excluding
+		 * this param instance.
+		 * <p>This method will traverse recursively. 
+		 * @param consumer the method to execute
+		 */
+		default void traverseSiblingsRecursively(Consumer<Param<?>> consumer) {
+			traverseParent(consumer, true, false);
+		}
+		
+		/**
+		 * <p>Execute {@code consumer} on each of the params belonging to the parent of this param instance, including
+		 * this param instance.
+		 * <p>This method will only traverse the nested params directly underneath the parent in the param
+		 * hierarchy. If needing to traverse recursively, use {@link #traverseParentRecursively(Consumer)}.
+		 * @param consumer the method to execute
+		 */
+		default void traverseParent(Consumer<Param<?>> consumer) {
+			traverseParent(consumer, false, true);
+		}
+		
+		/**
+		 * <p>Execute {@code consumer} on each of the params belonging to the parent of this param instance, including
+		 * this param instance.
+		 * <p>This method will traverse recursively. 
+		 * @param consumer the method to execute
+		 */
+		default void traverseParentRecursively(Consumer<Param<?>> consumer) {
+			traverseParent(consumer, true, true);
+		}
+		
+		/**
+		 * <p>Execute {@code consumer} on each of the params belonging to the parent of this param instance. Providing 
+		 * {@code recursive} will give the ability to recursively execute {@code consumer} on each nested param found 
+		 * under each parent model param.
+		 * <p>{@code includeSelf} may be used to include whether or not {@code consumer} should be executed on the root
+		 * param instance, or the first param in the param tree hierarchy.
+		 * @param consumer the method to execute
+		 * @param recursive when {@code true}, will recursively execute {@code consumer} on each available nested param
+		 * found under parent model params
+		 * @param includeSelf when {@code true}, includes the root param instance in the set of params to traverse
+		 */
+		default void traverseParent(Consumer<Param<?>> consumer, boolean recursive, boolean includeSelf) {
+			
+			List<Param<?>> params;
+			if (null == getParentModel() || null == (params = getParentModel().getParams())) {
+				return;
+			}
+			
+			Stream<Param<?>> pStream = params.stream();
+			
+			if (!includeSelf) {
+				pStream = pStream.filter(p -> p != this);
+			}
+			
+			pStream.forEach(p -> {
+				if (!recursive) {
+					consumer.accept(p);
+				} else {
+					p.traverse(consumer, true);
+				}
+			});
+		}
+		
+		/**
+		 * <p>Find all available nested params of this param instance and executes {@code consumer} from 
+		 * the context of each param found.
+		 * <p>This method will execute {@code consumer} recursively on all nested params found underneath
+		 * this param's hierarchy.
+		 * <p>If needing to execute {@code consumer} from this param instance as well, consider 
+		 * {@link #traverse(Consumer, boolean)}
+		 * @param consumer the method to execute
+		 */
+		default void traverse(Consumer<Param<?>> consumer) {
+			traverse(consumer, false);
+		}
+		
+		/**
+		 * <p>Find all available nested params of this param instance and executes {@code consumer} from 
+		 * the context of each param found.
+		 * <p>This method will execute {@code consumer} recursively on all nested params found underneath
+		 * this param's hierarchy.
+		 * @param consumer the method to execute
+		 * @param execute whether or not to execute {@code consumer} on this param instance.
+		 */
+		default void traverse(Consumer<Param<?>> consumer, boolean execute) {
+			traverse(consumer, Integer.MAX_VALUE, execute);
+		}
+		
+		/**
+		 * <p>Find all available nested params of this param instance and executes {@code consumer} from 
+		 * the context of each param found (including the root param instance).
+		 * <p>Providing {@code depth} will limit the levels of recursion applied when traversing this
+		 * param instance. If {@code depth} is greater than the actual depth of the nested param tree,
+		 * the method will simply return at that point.
+		 * @param consumer the method to execute
+		 * @param depth the number of levels of recursion this method will traverse into this param 
+		 * instance. If depth is less than 0, this method will exit.
+		 */
+		default void traverse(Consumer<Param<?>> consumer, int depth) {
+			traverse(consumer, depth, true);
+		}
+		
+		/**
+		 * <p>Find all available nested params of this param instance and executes {@code consumer} from 
+		 * the context of each param found.
+		 * <p>Providing {@code depth} will limit the levels of recursion applied when traversing this
+		 * param instance. If {@code depth} is greater than the actual depth of the nested param tree,
+		 * the method will simply return at that point.
+		 * @param consumer the method to execute
+		 * @param depth the number of levels of recursion this method will traverse into this param 
+		 * instance. If depth is less than 0, this method will exit.
+		 * @param execute whether or not to execute {@code consumer} on this param instance.
+		 */
+		default void traverse(Consumer<Param<?>> consumer, int depth, boolean execute) {
+			if (depth-- <= -1) {
+				return;
+			}
+			
+			List<Param<?>> nestedParams;
+			if (isNested() && null != (nestedParams = findIfNested().getParams())) {
+				for(Param<?> nestedParam: nestedParams) {
+					nestedParam.traverse(consumer, depth, true);
+				}
+			}
+			
+			if (execute) {
+				consumer.accept(this);
+			}
+		}
+		
 		@JsonIgnore
 		boolean isLeaf();
 //		@JsonIgnore
@@ -400,7 +555,7 @@ public interface EntityState<T> {
 		void setValues(List<ParamValue> values);
 		
 		@Immutable
-		@Getter @Setter @RequiredArgsConstructor 
+		@Getter @Setter @RequiredArgsConstructor @ToString
 		public static class Message {
 			public enum Type {
 				INFO,
@@ -410,12 +565,16 @@ public interface EntityState<T> {
 			}
 			public enum Context {			
 				INLINE,
-				GROWL;				
+				GROWL
 			}
 				
+			@JsonIgnore
+			private final String uniqueId;
 			private final String text;
 			private final Type type;
 			private final Context context;
+			private final String styleClass;
+			
 			
 
 			@Override
@@ -428,16 +587,23 @@ public interface EntityState<T> {
 				
 				Message other = Message.class.cast(obj);
 				
-				if(StringUtils.equalsIgnoreCase(other.getText(), this.getText())
-						&& other.getType()==this.getType() && other.getContext()==this.getContext())
+				if(StringUtils.equalsIgnoreCase(other.getUniqueId(), this.getUniqueId()))
 					return true;
 			
 				return false;
 			}
+			
+			@Override
+			public int hashCode() {
+				String concat = "" + uniqueId;
+				return concat.hashCode();
+			}
 		}
 		
-		Message getMessage();
-		void setMessage(Message msg);
+		Set<Message> getMessages();
+		void setMessages(Set<Message> msgs);
+		
+		boolean hasContextStateChanged();
 		
 		void onStateLoadEvent();
 		void onStateChangeEvent(ExecutionTxnContext txnCtx, Action a);

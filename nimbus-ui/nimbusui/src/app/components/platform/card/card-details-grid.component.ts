@@ -20,6 +20,7 @@ import { Component, Input } from '@angular/core';
 import { PageService } from '../../../services/page.service';
 import { GenericDomain } from '../../../model/generic-domain.model';
 import { Param } from '../../../shared/param-state';
+import { ComponentTypes } from '../../../shared/param-annotations.enum';
 
 /**
  * \@author Dinakar.Meda
@@ -36,6 +37,7 @@ import { Param } from '../../../shared/param-state';
 export class CardDetailsGrid {
 
     @Input() grid: Param;
+    public componentTypes = ComponentTypes;
 
     constructor(private pageSvc : PageService) {
     }

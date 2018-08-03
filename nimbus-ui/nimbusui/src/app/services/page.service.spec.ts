@@ -4,6 +4,7 @@ import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { JL } from 'jsnlog';
 import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
+import { Location } from '@angular/common';
 
 import { PageService } from './page.service';
 import { CustomHttpClient } from './httpclient.service';
@@ -12,12 +13,17 @@ import { ConfigService } from './config.service';
 import { LoggerService } from './logger.service';
 import { SessionStoreService, CUSTOM_STORAGE } from './session.store';
 import { ParamUtils } from './../shared/param-utils';
+import { Param } from '../shared/param-state';
+let http, backend, service, location, loggerService, sessionStoreService, loaderService, configService, configService_actual;
 
-let http, backend, service, loggerService, sessionStoreService, loaderService, configService;
+class MockLocation {
+  back() { }
+}
 
 class MockLoggerService {
   error(a) {}
   info(a) {}
+  debug(a) {}
 }
 
 class MockSessionStoreService {
@@ -68,6 +74,7 @@ describe('PageService', () => {
         { provide: SessionStoreService, useClass: MockSessionStoreService },
         { provide: ConfigService, useClass: MockConfigService },
         { provide: LoaderService, useClass: MockLoaderService },
+        { provide: Location, useClass: MockLocation},
         PageService,
         CustomHttpClient
       ],
@@ -80,6 +87,7 @@ describe('PageService', () => {
     sessionStoreService = TestBed.get(SessionStoreService);
     loaderService = TestBed.get(LoaderService);
     configService = TestBed.get(ConfigService);
+    location = TestBed.get(Location);
   });
 
     it('should be created', async(() => {
@@ -215,19 +223,23 @@ describe('PageService', () => {
       expect(service.updateParam).toHaveBeenCalled();
     }));
 
-    it('createRowData() should return the updated row data', async(() => {
+  /*  it('createRowData() should return the updated row data', async(() => {
       const resObj = { type: { model: { params: true } } };
       const param = { leafState: { nestedGridParam: '' }, type: { model: { params: [resObj] } } };
       const result = service.createRowData(param);
-      expect(result.nestedGridParam).toEqual([resObj]);
-    }));
-
-    it('createRowData() should return empty string', async(() => {
-      const resObj = { type: { model: { params: false } } };
-      const param = { leafState: { nestedGridParam: '' }, type: { model: { params: false } } };
-      const result = service.createRowData(param);
       expect(result.nestedGridParam).toEqual('');
-    }));
+    })); 
+
+    it('createRowData() should return the updated row data even when nestedGridParam is not a collection', async(() => {
+      const resObj = { type: { model: { params: true } } };
+      const nestedGridParams = [ {alias: 'Button', configId: 1 }, {alias: 'Link', configId: 2 } ];
+      // tslint:disable-next-line:max-line-length
+      const nestedParams = [{ alias: 'name', leafState: 'John' } , { alias: 'Button', configId: 1 , type : { collection : false} } , { alias: 'Link', configId: 2 , type : { collection : false} } ];
+      // tslint:disable-next-line:max-line-length
+      const inputparam = { leafState: { nestedGridParam: [nestedGridParams] }, type: { model: { params: [nestedParams] } } };
+      const result = service.createRowData(inputparam);
+      expect(result.nestedGridParam).toEqual([nestedGridParams]);
+    })); */
 
     it('getUpdatedParamPath() should return updated path', async(() => {
       const eveModel = 'test/123/#';
@@ -368,6 +380,23 @@ describe('PageService', () => {
       expect(service.traverseOutput).toHaveBeenCalled();
     }));
 
+    it('processResponse() should call traverseOutput() with null rootparam', async(() => {
+      const response = [{ b: '$execute', result: {  inputCommandUri: '/test', outputs : []} }];
+      spyOn(service, 'traverseOutput').and.returnValue('');
+      service.processResponse(response);
+      expect(service.traverseOutput).toHaveBeenCalledWith([], null);
+    }));
+
+    it('processResponse() should call traverseOutput() with rootparam', async(() => {
+      // tslint:disable-next-line:max-line-length
+      const response = [{ b: '$execute', result: {  inputCommandUri: '/hooli/box/p/petview:123/vpAddPet/vsAddPet/submit/_get?b=$execute', outputs : []} }];
+      const rootParam = { config: { uiStyles: { attributes: { alias : 'Button' }, name: 'ViewConfig.Button' } } };
+      spyOn(service, 'traverseOutput').and.returnValue('');
+      spyOn(service, 'findParamByCommandUri').and.returnValue(rootParam);
+      service.processResponse(response);
+      expect(service.traverseOutput).toHaveBeenCalledWith([], rootParam);
+    }));
+
     it('processResponse() should call only logError()', async(() => {
       const response = [{ b: '' }];
       spyOn(service, 'traverseOutput').and.returnValue('');
@@ -416,6 +445,50 @@ describe('PageService', () => {
       spyOn(service, 'setViewRootAndNavigate').and.returnValue('');
       service.traverseOutput(outputs);
       expect(service.setViewRootAndNavigate).toHaveBeenCalled();
+    }));
+
+    /* TODO - expect(location.back).toHaveBeenCalled(); is not working
+    it('traverseOutput() should call location back()', async(() => {
+      const outputs = [{ action: '_get', value: { path: '/test', type: { model: '' } } }];
+      const rootparam = {config: { uiStyles : { attributes : { alias : 'Button', browserBack : true}}}};
+      service.traverseOutput(outputs, rootparam);
+      spyOn(location, 'back').and.callThrough();
+      expect(location.back).toHaveBeenCalled();
+    }));
+
+    it('traverseOutput() should call location back() only once', async(() => {
+      const outputs = [{ action: '_get' , value: true , outputs : []}];
+      const rootparam = {config: { uiStyles : { attributes : { alias : 'Button', browserBack : true}}}};
+      service.traverseOutput(outputs, rootparam);
+      spyOn(location, 'back').and.callThrough();
+      expect(location.back).toHaveBeenCalledTimes(1);
+    }));
+    */
+    it('traverseOutput() should not call location back()', async(() => {
+      const outputs = [{ action: '_get', value: { path: '/test', type: { model: '' } } }];
+      const rootparam = {config: { uiStyles : { attributes : { alias : 'Button', browserBack : false}}}};
+      spyOn(service, 'traverseFlowConfig').and.returnValue('');
+      service.traverseOutput(outputs, rootparam);
+      spyOn(location, 'back').and.callThrough();
+      expect(location.back).not.toHaveBeenCalled();
+    }));
+
+    it('traverseOutput() should not call navigateToPage() when browserBack is true', async(() => {
+      const outputs = [{ action: '_nav', value: { path: '/test', type: { model: '' } } }];
+      const rootparam = {config: { uiStyles : { attributes : { alias : 'Button', browserBack : true}}}};
+      spyOn(service, 'traverseFlowConfig').and.returnValue('');
+      spyOn(service, 'navigateToPage').and.returnValue('');
+      service.traverseOutput(outputs, rootparam);
+      expect(service.navigateToPage).not.toHaveBeenCalled();
+    }));
+
+    it('traverseOutput() should call navigateToPage() when browserBack is false', async(() => {
+      const outputs = [{ action: '_nav', value: { path: '/test', type: { model: '' } } }];
+      const rootparam = {config: { uiStyles : { attributes : { alias : 'Button', browserBack : false}}}};
+      spyOn(service, 'traverseFlowConfig').and.returnValue('');
+      spyOn(service, 'navigateToPage').and.returnValue('');
+      service.traverseOutput(outputs, rootparam);
+      expect(service.navigateToPage).toHaveBeenCalled();
     }));
 
     it('traverseOutput() should call the traverseFlowConfig() on _new action', async(() => {
@@ -514,16 +587,6 @@ describe('PageService', () => {
       expect(service.traversePageConfig).toHaveBeenCalled();
     }));
 
-    it('createGridData() should return [{}]', async(() => {
-      const gridElementParams = [''];
-      const gridParam = { path: '', collectionParams: '' };
-      spyOn(service, 'createRowData').and.returnValue({
-        nestedGridParam: true
-      });
-      const res = service.createGridData(gridElementParams, gridParam);
-      expect(res).toEqual([{}]);
-    }));
-
     it('processModelEvent() should update the param.gridlist', async(() => {
       const eventModel = { value: { page: '', type: { model: { params: '' } }, collectionElem: true, path: '/test' } };
       const param = { gridList: [], path: '/test', config: { type: { collection: '' }, uiStyles: { attributes: { alias: 'Grid' } } } };
@@ -548,15 +611,6 @@ describe('PageService', () => {
       spyOn(service, 'traverseParam').and.callThrough();
       service.processModelEvent(param, eventModel);
       expect(param.page).not.toEqual('');
-    }));
-
-    it('processModelEvent() should call loggerService.error()', async(() => {
-      const eventModel = { value: { page: true, type: { model: { params: '' } }, collectionElem: true, path: '/test1' } };
-      const param = { gridList: [{ elemId: '' }], path: '/test', config: { type: { collection: true }, uiStyles: { attributes: { alias: 'Grid' } } } };
-      spyOn(service, 'traverseParam').and.callThrough();
-      spyOn(loggerService, 'error').and.callThrough();
-      service.processModelEvent(param, eventModel);
-      expect(loggerService.error).toHaveBeenCalled();
     }));
 
     it('processModelEvent() should update gridValueUpdate subject', async(() => {
@@ -672,5 +726,96 @@ describe('PageService', () => {
         expect(data).toEqual('rlayout');
       });
     }));
+
+    it('findParamByCommandUri() should call findParamByAbsolutePath with paramPath (with rootCommandURI on _get)', async(() => {
+      const param = {config : { uiStyles : { attributes: { alias : 'Button'}}}};
+      spyOn(service, 'findParamByAbsolutePath').and.returnValue(param);
+      service.findParamByCommandUri('/hooli/box/p/petview:123/vpPage/vsSection/submit/_get?b=$execute');
+      expect(service.findParamByAbsolutePath).toHaveBeenCalledWith('/petview/vpPage/vsSection/submit');
+    }));
+
+    it('findParamByCommandUri() should call findParamByAbsolutePath with paramPath (without rootCommandURI on _get)', async(() => {
+      const param = {config : { uiStyles : { attributes: { alias : 'Button'}}}};
+      spyOn(service, 'findParamByAbsolutePath').and.returnValue(param);
+      service.findParamByCommandUri('/hooli/box/p/petview/vpPage/vsSection/submit/_get?b=$execute');
+      expect(service.findParamByAbsolutePath).toHaveBeenCalledWith('/petview/vpPage/vsSection/submit');
+    }));
+
+    it('findParamByCommandUri() should call findParamByAbsolutePath with empty paramPath (without rootCommandURI _set)', async(() => {
+      const param = {config : { uiStyles : { attributes: { alias : 'Button'}}}};
+      spyOn(service, 'findParamByAbsolutePath').and.returnValue(param);
+      service.findParamByCommandUri('/hooli/box/p/petview/vpPage/vsSection/submit/_set?b=$execute');
+      expect(service.findParamByAbsolutePath).toHaveBeenCalledWith('');
+    }));
+
+    it('findParamByCommandUri() should call findParamByAbsolutePath with paramPath (without rootCommandURI with _nav)', async(() => {
+      const param = {config : { uiStyles : { attributes: { alias : 'Button'}}}};
+      spyOn(service, 'findParamByAbsolutePath').and.returnValue(param);
+      service.findParamByCommandUri('/hooli/box/p/petview/vpPage/vsSection/submit/_nav?b=$execute');
+      expect(service.findParamByAbsolutePath).toHaveBeenCalledWith('/petview/vpPage/vsSection/submit');
+    }));
+
+    it('findParamByCommandUri() should call findParamByAbsolutePath with paramPath (without rootCommandURI with _new)', async(() => {
+      const param = {type : { model : { params : []}}};
+      spyOn(service, 'findParamByAbsolutePath').and.returnValue(param);
+      service.findParamByCommandUri('/hooli/box/p/petview/_new?b=$execute');
+      expect(service.findParamByAbsolutePath).toHaveBeenCalledWith('/petview');
+    }));
+
+    it('findParamByCommandUri() should call findParamByAbsolutePath with paramPath (without rootCommandURI with _update)', async(() => {
+      const param = {config : { uiStyles : { attributes: { alias : 'Form'}}}};
+      spyOn(service, 'findParamByAbsolutePath').and.returnValue(param);
+      service.findParamByCommandUri('/hooli/box/p/petview/vpPage/vsSection/form/_update?b=$execute');
+      expect(service.findParamByAbsolutePath).toHaveBeenCalledWith('/petview/vpPage/vsSection/form');
+    }));
+
+    it('findParamByAbsolutePath() should return root param', async(() => {
+      const param = {path: '/petview/vpPage/vsSection/submit', config : { uiStyles : { attributes: { alias : 'Button'}}}};
+      spyOn(ParamUtils, 'findParamByPath').and.returnValue(param);
+      expect(service.findParamByAbsolutePath('/petview/vpPage/vsSection/submit')).toEqual(param);
+    }));
+
+    it('findParamByAbsolutePath() should return null due to incorrect path', async(() => {
+      const param = {path: '/petview/vpPage/vsSection/submit', config : { uiStyles : { attributes: { alias : 'Button'}}}};
+      spyOn(ParamUtils, 'findParamByPath').and.returnValue(param);
+      expect(service.findParamByAbsolutePath('/petview/vpPage/vsSection/form/submit')).toEqual(null);
+    }));
+
+}); 
+
+describe('PageService_mock', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: 'JSNLOG', useValue: JL },
+        { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+        { provide: LoggerService, useClass: MockLoggerService },
+        { provide: SessionStoreService, useClass: MockSessionStoreService },
+        { provide: LoaderService, useClass: MockLoaderService },
+        { provide: Location, useClass: MockLocation},
+        ConfigService,
+        PageService,
+        CustomHttpClient
+      ],
+      imports: [HttpClientTestingModule, HttpModule, StorageServiceModule]
+    });
+    http = TestBed.get(HttpClient);
+    backend = TestBed.get(HttpTestingController);
+    service = TestBed.get(PageService);
+    loggerService = TestBed.get(LoggerService);
+    sessionStoreService = TestBed.get(SessionStoreService);
+    loaderService = TestBed.get(LoaderService);
+    configService_actual = TestBed.get(ConfigService);
+    location = TestBed.get(Location);
+  });
+  
+  it('createGridData() should return nestedGridParam', async(() => {
+    const gridElementParam = new Param(configService_actual);
+    gridElementParam.leafState = {nestedGridParam : {type: {model: {nested: false}}}};
+    const gridData = gridElementParam.leafState;
+    const gridParam = new Param(configService_actual);
+    const res = service.createGridData([gridElementParam], gridParam);
+    expect(res).toEqual([gridData]);
+  }));
 
 });

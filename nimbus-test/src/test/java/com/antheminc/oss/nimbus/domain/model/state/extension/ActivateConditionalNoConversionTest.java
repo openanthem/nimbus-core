@@ -41,6 +41,7 @@ public class ActivateConditionalNoConversionTest extends AbstractStateEventHandl
 
 	private static final String CORE_PARAM_nc_form = "/sample_core/nc_form";
 	private static final String VIEW_PARAM_nc_form = "/sample_view/page_green/tile/view_sample_form/view_nc_form";
+	private static final String VIEW_PARAM_SECTION = "/sample_view/page_green/tile/vsFormWithGrid";
 
 	private Long REF_ID;
 	
@@ -139,5 +140,18 @@ public class ActivateConditionalNoConversionTest extends AbstractStateEventHandl
 		checkIsInactive(view_nc_form.findParamByPath("/nc_nested0_Details/nc_nested_level1/nc_nested_level2/nc_nested_level3"));
 		checkIsInactive(view_nc_form.findParamByPath("/nc_nested0_Details/nc_nested_level1/nc_nested_level2/nc_nested_level3/nested_nc_attr3D"));
 		
+	}
+	
+	@Test
+	public void t02_testGrid_activateconditional() {
+		Param<?> formwithgridsection = _q.getRoot().findParamByPath(VIEW_PARAM_SECTION);
+		assertNotNull(formwithgridsection);
+		checkIsInactive(formwithgridsection.findParamByPath("/testGrid"));
+		
+		formwithgridsection.findParamByPath("/vfSearchForm/testEntry").setState("test");
+		checkIsActive(formwithgridsection.findParamByPath("/testGrid"));
+		
+		formwithgridsection.findParamByPath("/vfSearchForm/testEntry").setState("flip");
+		checkIsInactive(formwithgridsection.findParamByPath("/testGrid"));
 	}
 }		

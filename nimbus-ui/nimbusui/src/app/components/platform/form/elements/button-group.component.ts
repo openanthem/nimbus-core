@@ -18,6 +18,7 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { Param } from '../../../../shared/param-state';
 import { FormGroup } from '@angular/forms';
+import { ViewComponent } from '../../../../shared/param-annotations.enum';
 
 /**
  * \@author Dinakar.Meda
@@ -32,7 +33,7 @@ import { FormGroup } from '@angular/forms';
     template:`
         <div class="{{cssClass}} buttonGroup">
             <ng-template ngFor let-element [ngForOf]="buttonList">
-                <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias=='Button'">
+               <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias == viewComponent.button.toString()">
                     <nm-button [form]="form" [element]="element"></nm-button>
                 </ng-template>
             </ng-template>
@@ -44,6 +45,7 @@ export class ButtonGroup {
    @Input() buttonList: Param[];
    @Input() form: FormGroup;
    @Input() cssClass: string;
+   viewComponent = ViewComponent;
 
    constructor() { }
 

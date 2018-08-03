@@ -22,6 +22,7 @@ import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { WebContentSvc } from '../../services/content-management.service';
 import { BaseControl } from './form/elements/base-control.component';
 import { PageService } from '../../services/page.service';
+import { ViewComponent } from '../../shared/param-annotations.enum';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     provide: NG_VALUE_ACCESSOR,
@@ -51,15 +52,15 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
                 <ng-template [ngIf]="!element.type?.model?.params?.length || element.config?.type?.collection">
                     <nm-element id="{{id}}" [element]="element" [elementCss]="elementCss" [form]="form"></nm-element>
                 </ng-template>
-                <ng-template [ngIf]="element.type?.model?.params?.length && element.config?.uiStyles?.attributes?.alias!='ButtonGroup' && !element?.config?.type?.collection">
+                <ng-template [ngIf]="element.type?.model?.params?.length && element.config?.uiStyles?.attributes?.alias!=viewComponent.buttongroup.toString() && !element?.config?.type?.collection">
                     <fieldset class="subQuestion" [hidden]="!element?.visible">
                         <nm-frm-grp [elements]="element.type?.model?.params" [form]="form.controls[element.config?.code]" [elementCss]="elementCss" [parentElement]="element"></nm-frm-grp>
                     </fieldset>
                 </ng-template>
-                 <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias=='Button'">
+                 <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias==viewComponent.button.toString()">
                     <nm-button [form]="form" [element]="element"> </nm-button>
                 </ng-template>
-                <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias=='ButtonGroup'">
+                <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias==viewComponent.buttongroup.toString()">
                     <nm-button-group [form]="form" [buttonList]="element.type?.model?.params" [cssClass]="element.config?.uiStyles?.attributes?.cssClass"> </nm-button-group>
                 </ng-template>
             </ng-template>
@@ -74,6 +75,7 @@ export class FrmGroupCmp {
        @Input() parentElement: Param
        private label: string;
        private helpText : string;
+       viewComponent = ViewComponent;
 
        constructor(private wcs: WebContentSvc) {
            
