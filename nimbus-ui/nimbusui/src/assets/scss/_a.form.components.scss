@@ -13,7 +13,8 @@ fieldset:focus{
     outline: none;
   }
 .form-control{
-	border-color: #b9b6b6;
+    border-color: $secondary-4;
+    max-width: 600px;
 }
 .form-group.required label:after, label.required:after {
     content: "*";
@@ -36,7 +37,7 @@ label.custom-control.required{
     color: red;
 }
 .form-control[disabled]{
-    border-color: #B9B6B6;
+    border-color: $secondary-4;
     background-color: #d4d4d4;
 }
 .form-control:focus{
@@ -47,7 +48,7 @@ label.custom-control.required{
 .ui-calendar .ui-widget:disabled {
     opacity: 1;
     filter: Alpha(Opacity=100);
-    border-color: #B9B6B6;
+    border-color: $secondary-4;
     background-color: #d4d4d4;
 }
 .ui-calendar .ui-widget.ui-calendar-button:disabled {
@@ -55,10 +56,11 @@ label.custom-control.required{
     background-color: transparent;
 }
 .ui-state-disabled span.ui-button-icon-left {
-    color: #b9b6b6;
+    color: $secondary-4;
 }
 .ui-calendar input {
-    width: 120px;
+    width: calc(100% - 2.5rem);
+    max-width: calc(600px - 2.5);
 }
 
 //for custom radio and checkbox
@@ -73,11 +75,15 @@ input:-webkit-autofill {
     outline: $focus-outline-setting ; 
 }
 textarea.form-control {
-    max-height: 140px;
-    min-height: 140px;
-    height: 140px;
+   
     word-break: break-word;
     white-space: normal;
+}
+.charCount{
+    color: #51A9DC;
+}
+.questionGroup .charCount {
+    margin-left: 20px;
 }
 //styling for form alerts.. 
 .form-group.alert {
@@ -85,7 +91,7 @@ textarea.form-control {
   padding:0 ;
   background:none;
   border:none;
-  color: #4c4c4c;
+  color: $primary-4;
     .errorMsg{
         color: #a94442;
         &::before{
@@ -96,7 +102,7 @@ textarea.form-control {
         }
     }
     .warningMsg{
-        color: #e5991c;
+        color: $primary-5;
         &::before{
             content:"\F071";
             font-family: fontAwesome;
@@ -107,6 +113,8 @@ textarea.form-control {
 }
 
 .form-group {
+    margin: 0 0 1rem 0;
+    padding-left: 0;
   p {
       margin-bottom: 0;
   }
@@ -248,6 +256,7 @@ p-dropdown.form-control {
     padding:0.1rem;
     background: none;
     line-height: 1.5;
+    margin-top: -.1rem;
     .ui-widget-content {
         border: 1px solid #9dd3f7;
         background: #ecf7ff;
@@ -271,7 +280,7 @@ p-dropdown.form-control {
         opacity: 1;
         .ui-dropdown-label.ui-inputtext,
         .ui-dropdown-trigger {
-            border-color: #B9B6B6;
+            border-color: $secondary-4;
             background-color: #d4d4d4;
         }
     }
@@ -366,7 +375,7 @@ p-dropdown.form-control {
 }
 
 .form-group.questionGroup .ui-calendar input { 
-    width: 150px; 
+    max-width: calc(300px - 2.5rem);
 }
 
 
@@ -375,7 +384,7 @@ p-dropdown.form-control {
 .ui-state-default {
     border: 1px solid #9dd3f7;
     background: #ffffff;
-    color: #4c4c4c;
+    color: $primary-4;
 }
 p-checkbox.ng-dirty.ng-invalid .ui-chkbox-box {
     border-bottom-color: #9dd3f7;
@@ -411,10 +420,10 @@ p-checkbox.ng-dirty.ng-invalid .ui-chkbox-box {
     .ui-chkbox-box.ui-state-disabled:hover,
     .ui-chkbox-box.ui-state-active.ui-state-disabled, 
     .ui-radiobutton-box.ui-state-disabled.ui-state-active {
-        border-color: #b9b6b6;
+        border-color: $secondary-4;
         background: #d4d4d4;
         opacity: 1;
-        color: #4c4c4c;
+        color: $primary-4;
     }
 
 
@@ -464,7 +473,7 @@ p-checkbox.ng-dirty.ng-invalid .ui-chkbox-box {
     }
 }
 .ui-timepicker.ui-widget-header {
-    background: #c8e3f6;
+    background: $primary-3;
     color: #696b6c;
 }
 .ui-timepicker a > span {
@@ -478,14 +487,14 @@ p-checkbox.ng-dirty.ng-invalid .ui-chkbox-box {
 }
 
 input.custom-control-input:disabled ~ .custom-control-description {
-    color: #4c4c4c;
+    color: $primary-4;
 }
 input.custom-control-input:disabled ~ .custom-control-indicator,
 .custom-check .custom-control-input:checked:disabled ~ .custom-control-indicator {
-    border-color: #b9b6b6;
+    border-color: $secondary-4;
         background: #d4d4d4;
         opacity: 1;
-        color: #4c4c4c;
+        color: $primary-4;
 }
 
 .ui-messages.ui-widget.ui-corner-all.infoMessage.ui-messages-info.ng-star-inserted.infoMessage {

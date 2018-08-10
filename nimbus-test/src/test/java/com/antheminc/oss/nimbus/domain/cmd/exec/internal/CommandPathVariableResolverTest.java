@@ -72,6 +72,27 @@ public class CommandPathVariableResolverTest  extends AbstractFrameworkIngeratio
 		
 		
 	}
+	
+	@Test
+	public void t1_environmentProperty() {
+		String coreRoot = PLATFORM_ROOT+"/sample_cmd_test";
+		MockHttpServletRequest req = MockHttpRequestBuilder.withUri(coreRoot)
+				.addAction(Action._new)
+				.getMock();
+		Object resp = controller.handleGet(req, null);
+		Param<?> p = ExtractResponseOutputUtils.extractOutput(resp);
+		assertNotNull(p);
+		
+		String id = p.findStateByPath("/id").toString();
+		
+		req = MockHttpRequestBuilder.withUri(coreRoot+":"+id+"/action_setEnvProperty/_get").getMock();
+		resp = controller.handleGet(req, null);
+		
+		assertEquals("key1", p.findStateByPath("/test_parameter1"));
+		assertEquals("key2", p.findStateByPath("/test_parameter2"));
+
+		
+	}
 
 	private void execGet(Long refId, String nestedPath) {
 		final MockHttpServletRequest req = MockHttpRequestBuilder.withUri(CORE_NESTED_CONFIG_ROOT)

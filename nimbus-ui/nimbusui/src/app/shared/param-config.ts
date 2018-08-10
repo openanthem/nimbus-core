@@ -217,7 +217,7 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
     info: string;
     page: string;
     applyValueStyles: boolean;
-
+    
     deserialize( inJson ) {
         let obj = this;
         obj = Converter.convert(inJson,obj);
@@ -345,6 +345,7 @@ export class Attribute implements Serializable<Attribute,string> {
     min: any;
     max: any;
     groups: String[];
+    value: any;
 
     deserialize( inJson ) {
         let obj = this;

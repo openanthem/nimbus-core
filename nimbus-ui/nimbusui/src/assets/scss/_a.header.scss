@@ -38,7 +38,7 @@
 	}
 	
 	.subTitle p {
-		color:#94acbc;
+		color:$tertiary-1;
 		font-size: 1rem;
 		margin-top: 0.2rem;
 	}
@@ -76,26 +76,28 @@
 	}
 		
 	.headerMenu {
+		padding-right: 20px;
+		float: right;
 		.btn-group{
-			height: $header-btn-height;
-			padding-top:10px;
-			// a{display:inline-block;}
+			padding-top: 1.8rem;
+			margin-right: 1rem;
+			float: right;
+			.btn.btn-icon i{
+				font-size: 2.2rem;
+			}
 		}
 		.topLinksMenu{
-			padding-right:20px;
+			padding: .5rem 0 ;
 			a {
 				float: right;
 				margin-right: 1rem;
-				&:not(.logoutLink)::after {
+				&:not(:first-child)::after {
 					content: "|";
 					margin-left: 1rem;
 				}
 			}
 		}
 
-		.fa-icon-link::before{
-			font-size:30px;
-		}
 
 		.form-group{
 			margin-bottom:0;
@@ -106,15 +108,7 @@
 			border-color: #8FBEE4;
 		}
 			
-		svg{
-			height: $header-userIcon-height;
-			width: $header-userIcon-height;
-			fill: #3A7EC4;
-			stroke: $header-bkg;
-			&:hover{
-				fill: $header-bkg;
-			}
-		}
+		
 	}	  
 }
 	

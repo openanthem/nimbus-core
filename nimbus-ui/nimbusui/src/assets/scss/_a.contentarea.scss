@@ -32,7 +32,7 @@ canvas.form-control {
     font-weight: bold;
 }
 body{
-    color:#4c4c4c;
+    color:$primary-4;
     overflow-x: hidden;
 }
 * {
@@ -47,7 +47,7 @@ body{
 html {
     font-size: 12px;
     line-height: 15px;
-    color: #4c4c4c;
+    color: $primary-4;
 }
 //type styles from style guide
 
@@ -105,21 +105,21 @@ h3{
     }
     &.SUCCESS {
         background: #e6f6d4;
-        color: #5aa00d;
+        color: $secondary-6;
         &::before {
             content: "\f00c";
         }
     }
     &.INFO {
-        background: #EBEBEB;
+        background: $secondary-5;
         color: #014B87;
         &::before {
             content: "\f129";
         }
     }
     &.WARNING {
-        background: #FCF6D9;
-        color: #E5991C;
+        background: $tertiary-6;
+        color: $primary-5;
         &::before {
             content: "\f12a";
         }
@@ -130,7 +130,7 @@ h3{
     float: right;
     margin-right: 20px;
     margin-top: 3px;
-    color: #4C4C4C;
+    color: $primary-4;
     text-decoration: none;
     &::before{
         font-family: "fontAwesome";
@@ -260,7 +260,7 @@ svg.logo {
         }
         &> a:hover{
             text-decoration: underline;
-            color: #e5991c;
+            color: $primary-5;
         }
     }
     .breadcrumb-item + .breadcrumb-item::before{
@@ -277,7 +277,7 @@ svg.logo {
 }
 .info-bar {
     display: block;
-    color: #4c4c4c;
+    color: $primary-4;
     font-size: 1.09rem;
     min-height: 60px;
     padding: .6rem;
@@ -309,25 +309,29 @@ svg.logo {
         @extend h2;
     }
 }
-.colorBox {
+
+.form-holder {
+    margin-bottom: 1.5rem;
+}
+.colorBox1 {
+    padding: 1rem;
+    border: 1px solid $primary-5;
+}
+.colorBox2 {
     padding:1rem;
-    border: 1px solid #bbd3e8;
-    background: #edf7ff;
-     margin-bottom: 1.5rem;
-    // margin-left: 2rem;
-    .colorBox {
-        border: none;
-        padding: 0;
-    }
+    border: 1px solid $primary-6;
+    background: $primary-3;
+}
+.colorBox3 {
+    padding:1rem;
+    border: 1px solid $primary-5;
+    background: $tertiary-6;
 }
 .panel-body {
     background: #fff;
-    border: 1px solid #bbd3e8;
+    border: 1px solid $primary-6;
 }
-.panel-body .colorBox {
-    background: none;
-    border: none;
-}
+
 .card-holder {
     position:relative;
     vertical-align: top;
@@ -425,7 +429,7 @@ svg.logo {
 .subQuestion {
     margin-bottom: 2.5rem;
     padding: 1rem;
-    background: #edf7ff;
+    background: $primary-3;
 }
 .subQuestion .subQuestion {
     margin-left: 1rem;
@@ -445,7 +449,7 @@ legend {
         padding-left: 0;
     }
     .form-group.questionGroup  {
-        background: #edf7ff;
+        background: $primary-3;
         display: block;
         padding: .3rem .7rem .8rem;
         margin: 0 100px 0 20px;
@@ -598,7 +602,7 @@ $answerWidth: 99%-$questionWidth;
     color: #fff;
 }
 .ui-dialog .ui-dialog-titlebar-icon:hover .fa-close:before {
-    color: #6e9de1;
+    color: $primary-2;
 }
 .section-nav{
     margin-left: 0;
@@ -677,7 +681,7 @@ $answerWidth: 99%-$questionWidth;
     margin-left: 20px;
 }
 .ui-messages-warn {
-    color: #e5991c;
+    color: $primary-5;
 }
 .ui-messages-error{
     color: #a94442;
@@ -711,7 +715,7 @@ $answerWidth: 99%-$questionWidth;
     }
 }
 .ui-state-default {
-    border: 1px solid #b9b6b6;
+    border: 1px solid $secondary-4;
 }
 .ui-inputtext:enabled:hover {
     border-color: #9dd3f7;
@@ -720,7 +724,7 @@ $answerWidth: 99%-$questionWidth;
     border-color: #9dd3f7;
 }
 .ui-widget-header.ui-datepicker-header {
-    background: #c8e3f6;
+    background: $primary-3;
     color: #494949;
     a {
         color: #494949;
@@ -735,7 +739,7 @@ $answerWidth: 99%-$questionWidth;
 }
 
 .ui-datepicker.ui-widget .ui-datepicker-calendar thead th {
-    background-color: #ebebeb;
+    background-color: $secondary-5;
 }
 button.ui-datepicker-trigger.ui-calendar-button {
     border: none;
@@ -748,7 +752,7 @@ button.ui-datepicker-trigger.ui-calendar-button {
   .ui-widget.ui-button:focus{
     border: none;
     background: none;
-    color: #4c4c4c;
+    color: $primary-4;
   }
   .ui-datepicker.ui-widget .ui-datepicker-calendar td a.ui-state-highlight {
     background-color: #006bc2;
@@ -756,8 +760,8 @@ button.ui-datepicker-trigger.ui-calendar-button {
 }
   .ui-datepicker .ui-datepicker-calendar td:not(.ui-state-disabled) a:hover,
   .ui-datepicker.ui-widget .ui-datepicker-calendar td a.ui-state-active {
-    border-color: #e5991c;
-    background: #e5991c;
+    border-color: $primary-5;
+    background: $primary-5;
     color: #fff;
 }
 
@@ -817,7 +821,7 @@ button.ui-datepicker-trigger.ui-calendar-button {
     }
     .ui-panelmenu-header-link {
         background: #d9edfd;
-        color: #4c4c4c;
+        color: $primary-4;
         border: 1px solid #B8D4E8;
     }
     .ui-panelmenu-content-wrapper {
@@ -838,14 +842,14 @@ button.ui-datepicker-trigger.ui-calendar-button {
     .ui-panelmenu-header .ui-state-active, 
     .ui-panelmenu-header a:hover , 
     .ui-panelmenu-header.ui-state-active a  {
-        background: #e5991c;
-        border-color: #e5991c;
+        background: $primary-5;
+        border-color: $primary-5;
         color: #fff;
     
     }
     .ui-menuitem-icon {
         font-size: 1.4rem;
-        color: #4c4c4c;
+        color: $primary-4;
     }
     .ui-state-active .ui-menuitem-icon {
         color: #fff;
@@ -855,11 +859,11 @@ button.ui-datepicker-trigger.ui-calendar-button {
     .ui-panelmenu-content {
         padding: 0;
         .ui-menuitem-link {
-            color: #4c4c4c;
+            color: $primary-4;
         }
         .ui-menuitem-link:hover,
         .ui-menuitem-link.ui-state-active {
-            background: #f4c70f;
+            background: $tertiary-5;
         }
         .ui-submenu-list {
             .ui-menuitem-link:hover .ui-menuitem-icon {
@@ -867,7 +871,7 @@ button.ui-datepicker-trigger.ui-calendar-button {
             }
             .ui-menuitem-link + nm-panelmenusub .ui-menuitem-icon, 
             .ui-menuitem-link:hover + nm-panelmenusub .ui-menuitem-icon {
-                color: #4c4c4c;
+                color: $primary-4;
             }
             .ui-submenu-list {
                     background: transparent;
@@ -889,9 +893,9 @@ button.ui-datepicker-trigger.ui-calendar-button {
         }
     }
     nm-panelmenusub {
-        background: #fcf6d9;
+        background: $tertiary-6;
         display: block;
-        border: 1px solid #e5991c;
+        border: 1px solid $primary-5;
         nm-panelmenusub {
             border: none;
         }
@@ -899,7 +903,7 @@ button.ui-datepicker-trigger.ui-calendar-button {
     .nm-panelmenu-headerimage {
         float: left;
         margin-right: .6rem;
-        color: #669fe2;
+        color: $primary-2;
         font-size: 1.3rem;
     }
 
@@ -916,7 +920,7 @@ button.ui-datepicker-trigger.ui-calendar-button {
         }
     }
     .ui-panelmenu-header:not(.ui-state-active):hover {
-        background: #4c4c4c;
+        background: $primary-4;
             .ui-menuitem-icon{
                 color: #fff;
             }
@@ -943,27 +947,27 @@ button.ui-datepicker-trigger.ui-calendar-button {
         display: block;
         padding: .4rem;
         background: #d9edfd;
-        color: #4c4c4c;
+        color: $primary-4;
         border: 1px solid #B8D4E8;
         margin-bottom: 3px;
         &::before{
             font-size: 1.4rem;
-            color: #669fe2;
+            color: $primary-2;
             font-family: fontAwesome;
             margin-right: .3rem;
         }
         &.active,
         {
-            background: #e5991c;
-            border-color: #e5991c;
+            background: $primary-5;
+            border-color: $primary-5;
             color: #fff;
             &::before {
                 color: #fff;
             }
         }
         &:hover{
-            background: #4c4c4c;
-            border-color: #4c4c4c;
+            background: $primary-4;
+            border-color: $primary-4;
             color: #fff;
             &::before {
                 color: #fff;
@@ -1060,7 +1064,7 @@ p-accordiontab p-header h2 {
 .panel.panel-default {
     margin-top: 10px;
     & > .panel-heading {
-        background: #669fe2;
+        background: $primary-2;
         color: white;
         padding: 0.3rem 0.3rem 0.3rem 1rem;
         margin: 0;
@@ -1168,10 +1172,12 @@ p-accordiontab p-header h2 {
         // color: #2667c1;
         display:block;
         // &:hover{
-        //     color: #e5991c;
+        //     color: $primary-5;
         // }
     }
 }
+
+
 
 // screen breaks below
 @media screen and (min-width: 576px) {
@@ -1282,6 +1288,9 @@ p-accordiontab p-header h2 {
 
 @media screen {
     pre.print-only {
+        display: none;
+    }
+    .charCount{
         display: none;
     }
 }

@@ -88,9 +88,9 @@ import { MenuItem } from '../../shared/menuitem';
         const hasActiveLinks = this.hasActiveLinks();
         if (this.isActive !== hasActiveLinks) {
           (this as any).isActive = hasActiveLinks;
-         this.toggleParent.emit(this.item);
           this.classes.forEach((c) => {
             if (hasActiveLinks) {
+              this.toggleParent.emit(this.item);
               this.renderer.addClass(this.element.nativeElement, c);
             } else {
               this.renderer.removeClass(this.element.nativeElement, c);

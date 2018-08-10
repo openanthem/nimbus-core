@@ -73,6 +73,9 @@ export class ValidationUtils {
           else if (validator.name === ValidationConstraint._size.value) {
             return CustomValidators.minMaxSelection(controlAlias, validator.attribute);
           }
+         else if (validator.name === ValidationConstraint._max.value) {
+              return Validators.maxLength(validator.attribute.value);
+          }
           else if (validator.name === ValidationConstraint._number.value) {
             return CustomValidators.isNumber;
           }
@@ -132,4 +135,7 @@ export class ValidationUtils {
         }
         return requiredCss;
     }
+
+
+    
 }

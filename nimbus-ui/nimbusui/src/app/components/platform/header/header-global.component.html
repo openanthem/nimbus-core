@@ -8,17 +8,20 @@
                 <a class="sr-only" aria-hidden="true" href="">Skip Navigation</a>
                 <nm-link [element]="branding.help" *ngIf="branding.help"></nm-link>
                 <nm-link [element]="branding.logOut" *ngIf="branding.logOut"></nm-link> 
-
             </div>
             <div class="btn-group pull-right clearfix">
-
-                <a href="#" class="fa-icon-link alerts mr-2" *ngIf="branding?.linkNotifications">
-                    <!-- <span class="tag" *ngIf="hasMessages">{{messageCount}}</span> -->
-                    <span class="tag" *ngIf="messageCount > 0"> {{messageCount}}</span>
-                </a>
-
-                <a href="#" class="fa-icon-link settings mr-2" *ngIf="branding?.settings"></a> 
-
+                    <ng-template ngFor let-element [ngForOf]="branding?.linkNotifications?.type?.model?.params">
+                        <ng-template [ngIf]="element.alias == 'Button'">
+                            <nm-button [element]="element"> </nm-button>
+                        </ng-template>
+                        <ng-template [ngIf]="element.alias == 'Link'">
+                            <nm-link [element]="element"></nm-link> 
+                        </ng-template>
+                        <ng-template [ngIf]="element.alias == 'LinkMenu'">
+                            <nm-action-dropdown #dropDown [element]="element" 
+                            (dropDownClick)="toggleOpen($event)"></nm-action-dropdown>
+                        </ng-template>
+                    </ng-template>
             </div>
         </div>
         <!-- <div class="mr-2 align-top d-inline-block" *ngIf="branding.userName"> -->

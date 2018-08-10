@@ -40,12 +40,9 @@ import { ComponentTypes } from '../../../../shared/param-annotations.enum';
     selector: 'nm-action-dropdown',
     template: `
     <div class="action-dropdown" [hidden]="!element?.visible">
-        <button class="dropdownTrigger" 
-            aria-label="action menu" 
-            attr.aria-expanded="{{isOpen}}" 
-            (click)="toggleOpen($event)"
-            [disabled]="(enabled !== undefined && !enabled) ? true : null">
-        </button> 
+        <button  *ngIf="element?.visible == true" class="{{element.config?.uiStyles?.attributes?.cssClass}}" aria-label="action menu"  attr.aria-expanded="{{isOpen}}"  (click)="toggleOpen($event)" type="button" [disabled]="(enabled !== undefined && !enabled) ? true : null">
+            <nm-image *ngIf="element.config?.uiStyles?.attributes?.imgSrc" [name]="element.config?.uiStyles?.attributes?.imgSrc" [type]="element.config?.uiStyles?.attributes?.imgType" [cssClass]=""></nm-image>
+        </button>
         <div class="dropdownContent" 
             [ngClass]="{'displayNone': isHidden}" 
             [@dropdownAnimation]='state' 
@@ -59,6 +56,11 @@ import { ComponentTypes } from '../../../../shared/param-annotations.enum';
                 [element]="element?.type?.model?.params[i]"
                 *ngFor="let param of params; index as i">
             </nm-action-link>
+            <ng-template ngFor let-ele [ngForOf]="element?.type?.model?.params">
+                <ng-template [ngIf]="ele.alias == 'Link'">
+                    <nm-link [element] = "ele"> </nm-link>
+                </ng-template>
+            </ng-template>
         </div>
     </div>
   `

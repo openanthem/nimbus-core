@@ -20,8 +20,6 @@ import { Component, Input, forwardRef } from '@angular/core';
 import { Param } from '../../shared/param-state';
 import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { WebContentSvc } from '../../services/content-management.service';
-import { BaseControl } from './form/elements/base-control.component';
-import { PageService } from '../../services/page.service';
 import { ViewComponent } from '../../shared/param-annotations.enum';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
@@ -42,7 +40,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     selector: 'nm-frm-grp',
     providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc],
     template:`
-        <div class="col-lg-12 clearfix colorBox" [hidden]="!hasParams()">
+        <div class="form-holder clearfix colorBox" [hidden]="!hasParams()">
             <ng-template ngFor let-element let-isFirst="first" [ngForOf]="elements">
                 <ng-template [ngIf]="isFirst">
                     <legend *ngIf="label && element.visible">

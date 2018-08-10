@@ -182,7 +182,7 @@ export class LayoutService {
 
     private parseTopBarConfig(topBarConfig: Model, branding: AppBranding, headerMenus: Param[], accordions: Param[]) {
         topBarConfig.params.forEach(element => {
-            if (element.config.type.nested === true) {
+            if (element.config.type.nested === true && element.config.uiNatures.length == 0) {
                 if (element.config.uiStyles !== undefined && element.config.uiStyles.attributes.alias === 'Accordion') {
                     accordions.push(element);
                 } else {
