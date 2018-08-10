@@ -40,9 +40,9 @@ import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations
             <span class="btn-pipe">|</span>
             <button type="button" class="btn btn-expand" (click)="closeAll()">Collapse All</button>
         </div>
-        <p-accordion #accordion [multiple]="multiple" [activeIndex]="index" *ngIf="element?.visible==true">
+        <p-accordion #accordion [multiple]="multiple" [activeIndex]="index" *ngIf="element?.visible">
             <ng-template ngFor let-tab [ngForOf]="nestedParams">
-                <p-accordionTab  [selected]="tab?.config?.uiStyles?.attributes?.selected" *ngIf="tab?.visible==true">
+                <p-accordionTab  [selected]="tab?.config?.uiStyles?.attributes?.selected" *ngIf="tab?.visible">
                     <p-header>
                         <h2>{{getTabHeader(tab)}}</h2>
                         <span [ngClass]="getTabInfoClass(tab)" *ngIf="getInfoText(tab)">

@@ -17,7 +17,7 @@ import { ParamUtils } from './../../shared/param-utils';
  */
 'use strict';
 import { Injectable } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, ValidatorFn, FormArray, FormControl,ValidationErrors } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, ValidatorFn, FormControl } from '@angular/forms';
 
 import { CustomValidators } from './validators/custom.validators';
 import { Param } from '../../shared/param-state';

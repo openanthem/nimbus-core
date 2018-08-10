@@ -1,3 +1,4 @@
+import { ValidationUtils } from './../../validators/ValidationUtils';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -17,12 +18,13 @@
 'use strict';
 import { ControlValueAccessor } from '@angular/forms/src/directives';
 import { Param, Values } from '../../../../shared/param-state';
-import { Component, forwardRef, Input, OnInit, ViewChild } from '@angular/core';
-import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { Component, forwardRef, Input, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
+import { FormGroup, NG_VALUE_ACCESSOR, ValidatorFn } from '@angular/forms';
 
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { PageService } from '../../../../services/page.service';
 import { PickList } from 'primeng/primeng';
+import { BaseElement } from '../../base-element.component';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -45,9 +47,13 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     ],
     template: `
         <!--<div [hidden]="!element?.visible" *ngIf="element.config?.uiStyles?.attributes?.hidden==false">-->
-        <div [hidden]="!element?.visible" *ngIf="element.config?.uiStyles?.attributes?.hidden==false">
+        <label [attr.for]="element.config?.code"  [ngClass]="{'required': requiredCss, '': !requiredCss}">{{label}}
+            <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
+        </label>
+        <div>
             <fieldset [disabled]="!element?.enabled">
                 <p-pickList #picklist [source]="element.values" 
+                    filterBy="label"
                     [sourceHeader] = "element.config?.uiStyles?.attributes.sourceHeader" 
                     [targetHeader]="element.config?.uiStyles?.attributes.targetHeader" 
                     [disabled]="!element?.enabled"
@@ -65,18 +71,19 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
    `
 })
 
-export class OrderablePickList implements OnInit, ControlValueAccessor {
+export class OrderablePickList extends BaseElement implements OnInit, ControlValueAccessor {
 
     @Input() element: Param;
     @Input() form: FormGroup;
     @Input('value') _value ;
     @ViewChild('picklist') pickListControl: PickList;
-    private targetList: any[];
+    targetList: any[];
     private draggedItm: any;
     private selectedOptions: string[] = [];
     private _disabled: boolean;
     public onChange: any = (_) => { /*Empty*/ }
     public onTouched: any = () => { /*Empty*/ }
+    @Output() controlValueChanged =new EventEmitter();
 
     @Input()
     get disabled(): boolean { return this._disabled; }
@@ -84,9 +91,12 @@ export class OrderablePickList implements OnInit, ControlValueAccessor {
     set disabled(value) { this._disabled = value; }
 
     constructor(wcs: WebContentSvc, private pageService: PageService) {
+        super(wcs);
     }
 
     ngOnInit() {
+        this.loadLabelConfigByCode(this.element.config.code, this.element.config.labelConfigs);
+        this.requiredCss = ValidationUtils.applyelementStyle(this.element);
         //set the default target list when the page loads to the config state
         if(this.element.leafState !=null) {
             this.targetList = this.element.leafState;
@@ -94,17 +104,57 @@ export class OrderablePickList implements OnInit, ControlValueAccessor {
             this.targetList = [];
         }
 
-        if( this.form!= null && this.form.controls[this.element.config.code]!= null) {
-            this.form.controls[this.element.config.code].valueChanges.subscribe(
-                ($event) => { this.setState($event,this); });
+        if( this.form!= null) {
+            let frmCtrl = this.form.controls[this.element.config.code]
+            if(frmCtrl != null) {
+                //rebind the validations as there are dynamic validations along with the static validations
+                if(this.element.activeValidationGroups != null && this.element.activeValidationGroups.length > 0) {
+                    this.requiredCss = ValidationUtils.rebindValidations(frmCtrl,this.element.activeValidationGroups,this.element);
+                } 
+                frmCtrl.valueChanges.subscribe(
+                    ($event) => { this.setState($event,this); });
 
-            this.pageService.eventUpdate$.subscribe(event => {
-                let frmCtrl = this.form.controls[event.config.code];
-                if(frmCtrl!=null && event.path.startsWith(this.element.path)) {
-                    frmCtrl.setValue(event.leafState);
-                }
-            });
+                this.pageService.eventUpdate$.subscribe(event => {
+                    let frmCtrl = this.form.controls[event.config.code];
+                    if(frmCtrl!=null && event.path.startsWith(this.element.path)) {
+                        if(event.leafState!=null)
+                            frmCtrl.setValue(event.leafState);
+                        else
+                            frmCtrl.reset();
+                    }
+                });
+                this.pageService.validationUpdate$.subscribe(event => {
+                    let frmCtrl = this.form.controls[event.config.code];
+                    if(frmCtrl!=null) {
+                        if(event.path === this.element.path) {
+                           //bind dynamic validations on a param as a result of a state change of another param
+                            if(event.activeValidationGroups != null && event.activeValidationGroups.length > 0) {
+                                this.requiredCss = ValidationUtils.rebindValidations(frmCtrl,event.activeValidationGroups,this.element);
+                            } else {
+                                this.requiredCss = ValidationUtils.applyelementStyle(this.element);
+                                var staticChecks: ValidatorFn[] = [];
+                                staticChecks = ValidationUtils.buildStaticValidations(this.element);
+                                frmCtrl.setValidators(staticChecks);
+                            }
+                            ValidationUtils.assessControlValidation(event,frmCtrl);
+                        }
+                    }
+                });
+                this.controlValueChanged.subscribe(($event) => {
+                    if ($event.config.uiStyles.attributes.postEventOnChange) {
+                       this.pageService.postOnChange($event.path, 'state', JSON.stringify($event.leafState));
+                    }
+                });
+            }
+            
         }
+    }
+
+    emitValueChangedEvent() {
+        if(this.form == null || (this.form.controls[this.element.config.code]!= null && this.form.controls[this.element.config.code].valid)) {
+            this.controlValueChanged.emit(this.element);
+        }
+        
     }
 
     setState(event:any, frmInp:any) {
@@ -121,6 +171,7 @@ export class OrderablePickList implements OnInit, ControlValueAccessor {
             });
             this.value = this.selectedOptions;
         }
+        this.emitValueChangedEvent();
     }
 
     get value() {

@@ -32,10 +32,9 @@ import { ComponentTypes } from '../../../shared/param-annotations.enum';
 @Component({
     selector: 'nm-message',
     template: `
-                <p-messages *ngIf="messageContext === componentTypes.inline.toString()"[(value)]="messageArray"[closable]="false"[styleClass]="styleClass"></p-messages>
-                <p-growl *ngIf="messageContext === componentTypes.growl.toString()" [immutable]=false [life] = "life" [(value)]="messageArray"></p-growl>
-
-	          `
+        <p-messages *ngIf="messageContext === componentTypes.inline.toString()" [(value)]="messageArray" [closable]="false"[styleClass]="styleClass"></p-messages>
+        <p-growl *ngIf="messageContext === componentTypes.growl.toString()" [immutable]=false [life] = "life" [(value)]="messageArray"></p-growl>
+    `
 })
 
 export class MessageComponent {

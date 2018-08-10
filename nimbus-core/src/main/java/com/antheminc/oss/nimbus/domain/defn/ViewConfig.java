@@ -1146,7 +1146,9 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface LinkMenu {
 		String alias() default "LinkMenu";
-		String cssClass() default "";	
+		String imgSrc() default "";
+		Image.Type imgType() default Image.Type.FA;
+		String cssClass() default "dropdownTrigger";	
 	}	
 	
 	/**
@@ -1575,6 +1577,9 @@ public class ViewConfig {
 	 * </ul>
 	 * 
 	 * <p>TextArea should decorate a field having a simple type.
+	 *
+	 * <p> By providing a value for @Max on top of @TextArea would restrict characters max length in @TextArea 
+ 	 *  
 	 * 
 	 * @since 1.0
 	 */

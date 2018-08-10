@@ -15,13 +15,15 @@
  * limitations under the License.
  */
 'use strict';
-import { Component, Input } from '@angular/core';
+import { Component, Input, ViewChildren, QueryList, ChangeDetectorRef } from '@angular/core';
 import { LayoutService } from '../../../services/layout.service';
 import { Param } from '../../../shared/param-state';
 import { AppBranding, LinkConfig } from '../../../model/menu-meta.interface';
 import { ServiceConstants } from './../../../services/service.constants';
 import { BreadcrumbService } from './../breadcrumb/breadcrumb.service';
 import { Breadcrumb } from '../../../model/breadcrumb.model';
+import { ActionDropdown } from '../form/elements/action-dropdown.component';
+import { Subscription, Observable } from 'rxjs';
 
 /**
  * \@author Mayur.Mehta
@@ -42,10 +44,12 @@ export class HeaderGlobal {
     @Input() element: Param;
     private imagesPath: string;
     private _homeRoute: string;
+    @ViewChildren('dropDown') dropDowns: QueryList<any>;
+    mouseEventSubscription: Subscription;
 
     private messageCount : number = 3;
 
-    constructor(private _breadcrumbService: BreadcrumbService) {
+    constructor(private _breadcrumbService: BreadcrumbService, private cd: ChangeDetectorRef) {
         this.imagesPath = ServiceConstants.IMAGES_URL;
     }
 
@@ -55,6 +59,63 @@ export class HeaderGlobal {
             return crumb['url'];
         }
         return '';
+    }
+
+    ngAfterViewInit() {
+        console.log(this.branding);
+    }
+
+    ngOnDestroy() {
+        if (this.mouseEventSubscription)
+            this.mouseEventSubscription.unsubscribe();
+        this.cd.detach();
+    }
+
+    toggleOpen(e: any) {
+
+        let selectedDropDownIsOpen = e.isOpen;
+        let selectedDropDownState = e.state;
+
+        if (this.dropDowns)
+            this.dropDowns.toArray().forEach((item) => {
+                if (!item.selectedItem) {
+                    item.isOpen = false;
+                    item.state = 'closedPanel';
+                }
+            });
+
+        e.isOpen = !selectedDropDownIsOpen;
+
+        if (selectedDropDownState == 'openPanel') {
+            e.state = 'closedPanel';
+            if (!this.mouseEventSubscription.closed)
+                this.mouseEventSubscription.unsubscribe();
+        }
+        else {
+            e.state = 'openPanel';
+            if (this.dropDowns && (this.mouseEventSubscription == undefined || this.mouseEventSubscription.closed))
+                this.mouseEventSubscription =
+                    Observable.fromEvent(document, 'click').filter((event: any) =>
+                        !this.isClickedOnDropDown(this.dropDowns.toArray(), event.target)).first().subscribe(() => {
+                            this.dropDowns.toArray().forEach((item) => {
+                                item.isOpen = false;
+                                item.state = 'closedPanel';
+                            });
+                            this.cd.detectChanges();
+                        });
+        }
+        e.selectedItem = false;
+        this.cd.detectChanges();
+    }
+
+    isClickedOnDropDown(dropDownArray: Array<ActionDropdown>, target: any) {
+
+        for (var i = 0; i < dropDownArray.length; i++) {
+            if (dropDownArray[i].elementRef.nativeElement.contains(target))
+                return true;
+        }
+        return false;
+
     }
 }
 

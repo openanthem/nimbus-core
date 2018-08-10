@@ -21,8 +21,8 @@ button:focus{
 }
 
 .btn-primary {
-  background: #e5991c;
-  border-color: #e5991c;
+  background: $primary-5;
+  border-color: $primary-5;
   color:#fff;
   line-height: 1;
   margin-right: 9px;
@@ -31,17 +31,17 @@ button:focus{
   padding: .6rem 1.4rem;
   border-radius: .5rem;
   &:hover:not([disabled]){
-    background-color: #669fe2;
-    border-color: #669fe2;
+    background-color: $primary-2;
+    border-color: $primary-2;
   }
   &:active:not([disabled]),
   &.active:not([disabled]){
-    background-color: #669fe2;
-    border-color: #669fe2;
+    background-color: $primary-2;
+    border-color: $primary-2;
   }
   &[disabled]{
-    background-color: #b9b6b6;
-    border-color: #b9b6b6;
+    background-color: $secondary-4;
+    border-color: $secondary-4;
   }
 }
 .btn-secondary {
@@ -55,17 +55,17 @@ button:focus{
   padding: .6rem 1.4rem;
   border-radius: .5rem;
   &:hover:not([disabled]){
-    background-color: #94acbc;
-    border-color: #94acbc;
+    background-color: $tertiary-1;
+    border-color: $tertiary-1;
   }
   &:active:not([disabled]),
   &.active:not([disabled]){
-    background-color: #94acbc;
-    border-color: #94acbc;
+    background-color: $tertiary-1;
+    border-color: $tertiary-1;
   }
   &[disabled]{
-    background-color: #b9b6b6;
-    border-color: #b9b6b6;
+    background-color: $secondary-4;
+    border-color: $secondary-4;
   }
 }
 .ui-datatable-header .btn-plain{
@@ -110,7 +110,7 @@ button:focus{
     &:hover,
     &:active,
     &.active{
-      color: #e5991c;
+      color: $primary-5;
       background: none;
     }
     &:focus{
@@ -139,7 +139,7 @@ button:focus{
       height: 2rem;
   }
   &:hover{
-    color: #e5991c;
+    color: $primary-5;
     
 
   }

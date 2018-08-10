@@ -1,6 +1,6 @@
 
 {
-    "/ltss/org/*" :{ 
+    "/ltss/client/*" :{ 
         "target" : "http://localhost:8082",
         "secure" : false,
         "logLevel": "debug"
