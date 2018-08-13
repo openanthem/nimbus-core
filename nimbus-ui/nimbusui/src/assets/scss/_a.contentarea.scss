@@ -1200,10 +1200,9 @@ p-accordiontab p-header h2 {
     width: 350px;
 }
 @media screen and (min-width: 768px) {
-    .header {
-        height: 80px;
-    }
-      
+    // .header {
+    //     height: 80px;
+    // }
   
     .logo {
         margin-left: 10px;
@@ -1229,25 +1228,24 @@ p-accordiontab p-header h2 {
         position: static;  
     }
   
-  .info-card{
-      width: 82%;
-  }
+    .info-card{
+        width: 82%;
+    }
     .section-nav{
         width: 13%;
     }
-    .header {
-        height: 90px;
-    }
+    // .header {
+    //     height: 90px;
+    // }
 }
 
 @media screen and (min-width: 1200px) {
   
 }
 @media screen and (min-width: 1300px) {
-    .header {
-        height: 100px;
-    }
-
+    // .header {
+    //     height: 100px;
+    // }
 }
 
 @media print {
@@ -1284,13 +1282,13 @@ p-accordiontab p-header h2 {
     footer {
         display: none;
     }
+    .charCount{
+        display: none;
+    }
 }
 
 @media screen {
     pre.print-only {
-        display: none;
-    }
-    .charCount{
         display: none;
     }
 }
