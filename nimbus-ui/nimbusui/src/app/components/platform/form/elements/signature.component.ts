@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 'use strict';
-import { NgModel, NG_VALUE_ACCESSOR, ControlValueAccessor, FormGroup } from '@angular/forms';
+import { NgModel, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Component, ViewChild, ElementRef, forwardRef, Input, ChangeDetectorRef } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 
@@ -26,9 +26,9 @@ import 'rxjs/add/operator/switchMap';
 
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
-import { PageService } from '../../../../services/page.service';
 import { Param } from '../../../../shared/param-state';
 import { ControlSubscribers } from '../../../../services/control-subscribers.service';
+import { LoggerService } from './../../../../services/logger.service';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -56,57 +56,59 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
                 [helpText]='helpText'>
             </nm-tooltip>
         </label>
+        <canvas #canvas 
+            [id]="element.config?.code" 
+            class="form-control" ngDefaultControl>
+        </canvas>
         <ng-template [ngIf]="!disabled">
-            <canvas #canvas
-                [id]="element.config?.code" 
-                class="form-control" ngDefaultControl>
-            </canvas>
             <div class="text-sm-center buttonGroup signatureCtrls" [style.width.px]="width">
-                <ng-template [ngIf]="save">
-                    <button (click)="acceptSignature()" type="button" class="btn btn-secondary post-btn">
+                <ng-template [ngIf]="!isSaved">
+                    <button (click)="save()" type="button" class="btn btn-secondary post-btn">
                         {{element.config?.uiStyles?.attributes?.acceptLabel}}
                     </button>
                 </ng-template>
-                <button (click)="clearSignature()" type="button" class="btn btn-secondary post-btn">
+                <button (click)="clear()" type="button" class="btn btn-secondary post-btn">
                     {{element.config?.uiStyles?.attributes?.clearLabel}}
                 </button>
                 <button class="btn btn-plain" (click)="zoomCanvas()" *ngIf="zoomFactor==1"><i class="fa fa-fw fa-plus-square" aria-hidden="true"></i>Zoom In</button>
                 <button class="btn btn-plain" (click)="shrinkCanvas()" *ngIf="zoomFactor==2"><i class="fa fa-fw fa-minus-square" aria-hidden="true"></i>Zoom Out</button>
             </div>
-            <img #img [src]="value != null ? value : defaultEmptyImage" (load)="onImgLoad()" style='display: none;' />
-        </ng-template>
-        <ng-template [ngIf]="disabled">
-            <img #img src="{{value}}" />
         </ng-template>
     </div>
    `
 })
-export class Signature extends BaseControl<String> {
-    @ViewChild(NgModel) model: NgModel;
+export class Signature extends BaseControl<string> {
     
-    @ViewChild('canvas') canvas: ElementRef;
-    canvasEl: HTMLCanvasElement;
-    cx: CanvasRenderingContext2D;
-
-    @ViewChild('img') img: ElementRef;
-    imgElement: HTMLImageElement;
-    
-    @Input() element: Param;
-    
-    width: number;
-    height: number;
-    save: boolean = true;
-    zoomClass: string = '';
-    zoomFactor: number = 1;
-    defaultEmptyImage: string = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAVkAAAA8CAYAAADMvMmGAAAB+klEQVR4Xu3UsQ0AAAjDMPr/01yRzRzQwULZOQIECBDIBJYtGyZAgACBE1lPQIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBB41fMAPZcifoIAAAAASUVORK5CYII=";
-    
-    isCapturing: boolean = false;
-    
-    constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd:ChangeDetectorRef) {
-        super(controlService, wcs, cd);
+    public static readonly EVENT_NAMES = {
+        CLICK: 'click',
+        MOUSE_DOWN: 'mousedown',
+        MOUSE_MOVE: 'mousemove',
+        MOUSE_UP: 'mouseup',
     }
 
-    ngOnInit() {
+    @ViewChild('canvas') canvas: ElementRef;
+    @Input() element: Param;
+    @ViewChild(NgModel) model: NgModel;
+
+    canvasEl: HTMLCanvasElement;
+    defaultEmptyImage: string = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAVkAAAA8CAYAAADMvMmGAAAB+klEQVR4Xu3UsQ0AAAjDMPr/01yRzRzQwULZOQIECBDIBJYtGyZAgACBE1lPQIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBAQWT9AgACBUEBkQ1zTBAgQEFk/QIAAgVBAZENc0wQIEBBZP0CAAIFQQGRDXNMECBB41fMAPZcifoIAAAAASUVORK5CYII=";
+    height: number;
+    isCapturing: boolean = false;
+    isSaved: boolean = false;
+    width: number;
+    zoomClass: string = '';
+    zoomFactor: number = 1;
+    
+    constructor(
+        wcs: WebContentSvc, 
+        controlService: ControlSubscribers, 
+        cd: ChangeDetectorRef, 
+        private logger: LoggerService) {
+        
+            super(controlService, wcs, cd);
+    }
+
+    public ngOnInit() {
         super.ngOnInit();
         if(this.element.config !== undefined) {
             this.width = Number(this.element.config.uiStyles.attributes.width);
@@ -114,162 +116,173 @@ export class Signature extends BaseControl<String> {
         }
     }
 
-    ngAfterViewInit() {
+    public ngAfterViewInit() {
         super.ngAfterViewInit();
-        if(this.img !== undefined) {
-            this.imgElement = this.img.nativeElement;
-        }
-        if(this.element.enabled) {
-            this.initCanvasElement();
-            this.captureEvents(this.canvasEl);
-        }
+        this.initCanvasElement();
+
+        // If the disabled property changes, ensure the canvas size is restored.
+        this.controlService.onEnabledUpdateSubscriber(this, undefined, () => {
+            this.shrinkCanvas();
+        });
     }
 
-    initCanvasElement() {
+    /**
+     * Initialize the canvas element including applying any default rules and subscription registrations
+     * that should occur.
+     */
+    private initCanvasElement() {
         this.canvasEl = this.canvas.nativeElement;
-        this.cx = this.canvasEl.getContext('2d');
-
         this.canvasEl.width = this.width;
         this.canvasEl.height = this.height;
 
-        this.cx.lineWidth = 3;
-        this.cx.lineCap = 'round';
-        this.cx.strokeStyle = '#000';
+        this.applyContextRules();
+        this.renderExistingSignature();
+        this.registerCaptureEvents();
      }
     
      /**
-      * Provided <tt>canvasEl</tt>, performs subscriptions that should occur related to "capturing"
-      * user input on an HTML canvas element, using the usual observer/subscriber pattern.
-      * 
-      * @param canvasEl the HTML Canvas element to register subscribers with
+      * Render the existing signature (if signature data exists)
       */
-    captureEvents(canvasEl: HTMLCanvasElement) {
+     private renderExistingSignature() {
+        if(this.value) {
+            this.logger.debug(`Found exsiting signature data to render: ${this.value}`);
+            var img = new Image();
+            var self = this;
+            img.onload = () => self.canvasEl.getContext('2d').drawImage(img, 0, 0, self.width, self.height);
+            img.src = this.value;
+        }
+     }
+
+     /**
+      * Apply styling rules to the canvas, such as brush size, line width, etc.
+      * @param cx the canvas context object
+      */
+     private applyContextRules(): CanvasRenderingContext2D {
+        let cx = this.canvasEl.getContext('2d');
+        cx.lineWidth = 3;
+        cx.lineCap = 'round';
+        cx.strokeStyle = '#000';
+        return cx;
+     }
+
+     /**
+      * Register subscriptions that should occur related to "capturing"
+      * user input on an HTML canvas element, using the usual observer/subscriber pattern.
+      * The capturing event type registered will be selected based on the server-side configuration 
+      * of captureType.
+      */
+    private registerCaptureEvents() {
         switch (this.captureType) {
             case 'DEFAULT': {
-                this.registerDefaultCapture(canvasEl);
+                this.registerCaptureOnEvent(Signature.EVENT_NAMES.MOUSE_DOWN, Signature.EVENT_NAMES.MOUSE_UP);
                 break;
             }
             case 'ON_CLICK': {
-                this.registerOnClickCapture(canvasEl);
+                this.registerCaptureOnEvent(Signature.EVENT_NAMES.CLICK, Signature.EVENT_NAMES.CLICK);
                 break;
             }
         }
     }
 
-    onImgLoad() {
-        if(this.element.enabled) {
-            this.initCanvasElement();
-        }
-        this.cx.clearRect(0, 0, this.width, this.height);
-        if(this.img.nativeElement.src != this.defaultEmptyImage ){
-            this.cx.drawImage(this.imgElement, 0, 0, this.width, this.height);
-            this.toggleSave(false);
-        }
-    }
-
-    clearSignature() {
-        this.cx.clearRect(0, 0, this.width, this.height);
+    /**
+     * Clear the signature canvas data and essentially reset the component to its initial state.
+     */
+    public clear() {
+        this.canvasEl.getContext('2d').clearRect(0, 0, this.width, this.height);
         this.value = '';
-        this.imgElement.src = "";
         super.emitValueChangedEvent(this, '');
-        this.toggleSave(true);
+        this.isSaved = false;
     }
 
-    acceptSignature() {
+    /**
+     * Save the signature canvas data into this instances value property as a data URL string.
+     */
+    public save() {
         var imageData: string = this.canvasEl.toDataURL();
         if(imageData == this.defaultEmptyImage) {
-            this.clearSignature();
-        }
-        else {
+            this.clear();
+        } else {
             this.value = imageData;
-            this.imgElement.src = imageData;
             super.emitValueChangedEvent(this, this.value);
-            this.toggleSave(false);
+            this.isSaved = true;
         }
         this.shrinkCanvas();
     }
 
-    toggleSave(mode: boolean) {
-        this.save = mode;
-    }
-
-    zoomCanvas() {
+    /**
+     * Zoom in the canvas to a zoomed in size.
+     */
+    public zoomCanvas() {
         this.zoomFactor = 2;
         this.zoomClass = 'zoom';
     }
 
-    shrinkCanvas() {
+    /**
+     * Zoom out the canvas to regular size.
+     */
+    public shrinkCanvas() {
         this.zoomFactor = 1;
         this.zoomClass = '';
     }
 
-    get captureType() {
+    /**
+     * Return the capture type as defined by the server.
+     */
+    public get captureType() {
         return this.element.config.uiStyles.attributes.captureType;
     }
 
     /**
-     * Uses the subscriber pattern to capture user input on an HTML canvas element.
-     * 
-     * Applies a capture strategy of <tt>ON_CLICK</tt>, where user input is captured when the user clicks on <tt>canvasEl</tt>, and continues to 
-     * capture until the user clicks on <tt>canvasEl</tt> again.
-     *  
-     * @param canvasEl the HTML Canvas element to register subscribers with
+     * Register the signature capture to start after the event related to startEventName is triggered and
+     * end when the event related to endEventName is triggered.
+     * @param startEventName the name of the event to start capturing
+     * @param endEventName the name of the event to end capturing
      */
-    private registerOnClickCapture(canvasEl: HTMLCanvasElement) {
-        const canvasElClick = Observable.fromEvent(canvasEl, 'click');
-        
-        canvasElClick.subscribe((e) => this.isCapturing = !this.isCapturing);
-        
-        canvasElClick
-            .switchMap((e) => {
-                return Observable
-                    .fromEvent(canvasEl, 'mousemove')
-                    .takeUntil(Observable
-                        .fromEvent(canvasEl, 'click')
-                    )
-                    .pairwise()
-            })
-            .subscribe((res: [MouseEvent, MouseEvent]) => {
-                if (this.isCapturing) {
-                    this.drawOnCanvas(canvasEl, res[0], res[1]);
-                }
+    private registerCaptureOnEvent(startEventName: string, endEventName: string) {
+        const $startEvent = Observable.fromEvent(this.canvasEl, startEventName);
+        const $endEvent = Observable.fromEvent(this.canvasEl, endEventName)
+
+        if (startEventName === endEventName) {
+            $startEvent.subscribe((e) => this.setIsCapturing(!this.isCapturing));
+        } else {
+            $startEvent.subscribe((e) => this.setIsCapturing(true));
+            $endEvent.subscribe((e) => this.setIsCapturing(false));
+        }
+
+        $startEvent.switchMap((e) => {
+            return Observable
+                .fromEvent(this.canvasEl, Signature.EVENT_NAMES.MOUSE_MOVE)
+                .takeUntil($endEvent)
+                .pairwise()
+        }).subscribe((res: [MouseEvent, MouseEvent]) => {
+            if (this.isEditable() && this.isCapturing) {
+                this.drawOnCanvas(res[0], res[1]);
             }
-        );
+        });
     }
 
     /**
-     * Uses the subscriber pattern to capture user input on an HTML canvas element.
-     * 
-     * Applies a capture strategy of <tt>DEFAULT</tt>, where user input is captured when the user clicks within <tt>canvasEl</tt> 
-     * and holds the left mouse button down, and continues to capture until the left mouse button is released within <tt>canvasEl</tt>.
-     *  
-     * @param canvasEl the HTML Canvas element to register subscribers with
+     * Set the value of isCapturing if this signature component is not disabled or in a saved status.
+     * @param isCapturing the value to set to isCapturing
      */
-    private registerDefaultCapture(canvasEl: HTMLCanvasElement) {
-        Observable
-            .fromEvent(canvasEl, 'mousedown')
-            .switchMap((e) => {
-                return Observable
-                    .fromEvent(canvasEl, 'mousemove')
-                    .takeUntil(Observable.fromEvent(canvasEl, 'mouseup'))
-                    .pairwise()
-            })
-            .subscribe((res: [MouseEvent, MouseEvent]) => {
-                this.drawOnCanvas(canvasEl, res[0], res[1]);
-            }
-        );
+    private setIsCapturing(isCapturing: boolean) {
+        if (this.isEditable()) {
+            this.isCapturing = isCapturing;
+            this.logger.debug(`Signature component is currently ${this.isCapturing ? '' : 'not '}capturing.`);
+        }
+    }
+
+    private isEditable(): boolean {
+        return !this.disabled && !this.isSaved;
     }
 
     /**
-     * Given a previous and current mouse event containing position information, draws a stroke between those two mouse
-     * points to render the pattern the user is moving with the mouse.
-     * 
-     * @param canvasEl the HTML canvas element
+     * Draw a stroke between two mouse points to render the pattern the user is moving with the mouse.
      * @param prevEvent the previous mouse event, containing position information
      * @param currentEvent the current mouse event, containing position information
      */
-    private drawOnCanvas(canvasEl: HTMLCanvasElement, prevEvent: MouseEvent, currentEvent: MouseEvent) {
-        const rect = canvasEl.getBoundingClientRect();
+    private drawOnCanvas(prevEvent: MouseEvent, currentEvent: MouseEvent) {
+        const rect = this.canvasEl.getBoundingClientRect();
         
         const prevPos = {
             x: (prevEvent.clientX - rect.left) / this.zoomFactor,
@@ -281,15 +294,16 @@ export class Signature extends BaseControl<String> {
             y: (currentEvent.clientY - rect.top) / this.zoomFactor
         };
         
-        if (!this.cx) {
+        let cx = this.canvasEl.getContext('2d');
+        if (!cx) {
             return;
         }
-        this.cx.beginPath();
+        cx.beginPath();
 
         if (prevPos) {
-            this.cx.moveTo(prevPos.x, prevPos.y); // from
-            this.cx.lineTo(currentPos.x, currentPos.y);
-            this.cx.stroke();
+            cx.moveTo(prevPos.x, prevPos.y);
+            cx.lineTo(currentPos.x, currentPos.y);
+            cx.stroke();
         }
     }
 }

@@ -54,7 +54,7 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
     validationChangeSubscriber: Subscription;
     onChangeSubscriber: Subscription;
 
-    constructor(private controlService: ControlSubscribers, private wcs: WebContentSvc, private cd: ChangeDetectorRef) {
+    constructor(protected controlService: ControlSubscribers, private wcs: WebContentSvc, private cd: ChangeDetectorRef) {
         super();
     }
 
