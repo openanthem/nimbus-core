@@ -578,6 +578,21 @@ public class ViewConfig {
 
 		String cssClass() default "";
 
+		/**
+		 * <p>The date/time components to include when displaying this
+		 * component, using predefined options or a custom format string.
+		 * <p>Generally speaking, a standard date format is acceptable as a
+		 * value. Transformation logic is handled by Angular's DatePipe. See <a
+		 * href="https://angular.io/api/common/DatePipe">Angular DatePipe
+		 * documentation</a> for explicit information on acceptable date
+		 * formats. <p><b>Supported Date Types</b> <p>When {@code datePattern}
+		 * is provided, the decorated field should be of a supported date type.
+		 * The supported date types
+		 * are:<ul><li>{@link java.util.Date}</li><li>{@link java.time.LocalDate}</li><li>{@link java.time.LocalDateTime}</li><li>{@link java.time.ZonedDateTime}</li></ul>
+		 * <p>If {@code datePattern} is provided and the data type of the
+		 * decorated field is not a supported date type, the transformation
+		 * logic will fail and a client-side error will be thrown.
+		 */
 		String datePattern() default "";
 
 		String imgSrc() default "";
@@ -927,6 +942,21 @@ public class ViewConfig {
 		 */
 		boolean applyValueStyles() default false;
 
+		/**
+		 * <p>The date/time components to include when displaying this
+		 * component, using predefined options or a custom format string.
+		 * <p>Generally speaking, a standard date format is acceptable as a
+		 * value. Transformation logic is handled by Angular's DatePipe. See <a
+		 * href="https://angular.io/api/common/DatePipe">Angular DatePipe
+		 * documentation</a> for explicit information on acceptable date
+		 * formats. <p><b>Supported Date Types</b> <p>When {@code datePattern}
+		 * is provided, the decorated field should be of a supported date type.
+		 * The supported date types
+		 * are:<ul><li>{@link java.util.Date}</li><li>{@link java.time.LocalDate}</li><li>{@link java.time.LocalDateTime}</li><li>{@link java.time.ZonedDateTime}</li></ul>
+		 * <p>If {@code datePattern} is provided and the data type of the
+		 * decorated field is not a supported date type, the transformation
+		 * logic will fail and a client-side error will be thrown.
+		 */
 		String datePattern() default "";
 
 		boolean expandable() default true;
