@@ -1397,6 +1397,8 @@ public class ViewConfig {
 		boolean readOnly() default false;
 		String sourceHeader() default "SourceList";
 		String targetHeader() default "TargetList";
+		boolean showSourceControls() default false;
+		boolean showTargetControls() default false;
 	}
 	
 	/**
