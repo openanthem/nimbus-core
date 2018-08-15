@@ -18,12 +18,13 @@ package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 import java.util.Iterator;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
+import com.antheminc.oss.nimbus.JsonConversionException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.exec.AbstractCommandExecutor;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Input;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
-import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
+import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
@@ -42,30 +43,50 @@ public class DefaultActionExecutorUpdate extends AbstractCommandExecutor<Boolean
 		super(beanResolver);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
+	@SuppressWarnings("unchecked")
 	protected Output<Boolean> executeInternal(Input input) {
 		ExecutionContext eCtx = input.getContext();
 		
 		Param<Object> p = findParamByCommandOrThrowEx(eCtx);
+		String json = eCtx.getCommandMessage().getRawPayload();
 		
+		// try to first perform add on collection as a collection element
+		boolean addedAsCollectionElement = false;
 		if(p.isCollection())
-			handleCollection(p.findIfCollection(), eCtx.getCommandMessage().getRawPayload());
-		else 
-			handleParam(p, eCtx.getCommandMessage().getRawPayload());
+			addedAsCollectionElement = this.addToCollectionAsCollectionElement(p.findIfCollection(), json);
+		
+		// otherwise attempt to surgically update the param with the provided json
+		if (!addedAsCollectionElement)
+			handleParam(p, json);
 		
 		// TODO use the Action output from the setState to check if the action performed is _update to return true
 		//, else false - right now it either return _new or _replace (change detection is not yet implemented)
 		return Output.instantiate(input, eCtx, Boolean.TRUE);
 	}
 	
-	protected void handleCollection(ListParam<Object> p, String json) {
-		// perform add on collection
-		Object colElemState = getConverter().toReferredType(p.getType().getModel().getElemConfig(), json);
+	/**
+	 * <p>Add the object represented by {@code json} to the {@link ListParam}, {@code p}.
+	 * <p>The add is performed by invoking the {@link ListParam#add(Object)}, provided 
+	 * {@code json} resolves to the generic type of {@code p}. If {@code json} fails to 
+	 * resolve, this method will return {@code false}.
+	 * @param p the list param object to add to
+	 * @param json the JSON representation of the object to add to {@code p}
+	 * @return {@code true} if successful, {@code false} otherwise.
+	 */
+	private boolean addToCollectionAsCollectionElement(ListParam<Object> p, String json) {		
+		Object colElemState;
+		
+		try {
+			colElemState = getConverter().toReferredType(p.getType().getModel().getElemConfig(), json);
+		} catch (JsonConversionException e) {
+			return false;
+		}
 		
 		p.add(colElemState);
+		return true;
 	}
-
+	
 	/**
 	 * <p>Uses the provided <tt>json</tt> to explicitly update the state of the provided param <tt>p</tt>. 
 	 * Explicitly update means that only the values provided in the given <tt>json</tt> will be updated in 
