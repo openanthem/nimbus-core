@@ -38,78 +38,25 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
  */
 @EnableLoggingInterceptor
 public class DefaultActionExecutorUpdate extends AbstractCommandExecutor<Boolean> {
-	
+
 	public DefaultActionExecutorUpdate(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
 	}
 
-	@Override
-	@SuppressWarnings("unchecked")
-	protected Output<Boolean> executeInternal(Input input) {
-		ExecutionContext eCtx = input.getContext();
-		
-		Param<Object> p = findParamByCommandOrThrowEx(eCtx);
-		String json = eCtx.getCommandMessage().getRawPayload();
-		
-		// try to first perform add on collection as a collection element
-		boolean addedAsCollectionElement = false;
-		if(p.isCollection())
-			addedAsCollectionElement = this.addToCollectionAsCollectionElement(p.findIfCollection(), json);
-		
-		// otherwise attempt to surgically update the param with the provided json
-		if (!addedAsCollectionElement)
-			handleParam(p, json);
-		
-		// TODO use the Action output from the setState to check if the action performed is _update to return true
-		//, else false - right now it either return _new or _replace (change detection is not yet implemented)
-		return Output.instantiate(input, eCtx, Boolean.TRUE);
-	}
-	
 	/**
-	 * <p>Add the object represented by {@code json} to the {@link ListParam}, {@code p}.
-	 * <p>The add is performed by invoking the {@link ListParam#add(Object)}, provided 
-	 * {@code json} resolves to the generic type of {@code p}. If {@code json} fails to 
-	 * resolve, this method will return {@code false}.
-	 * @param p the list param object to add to
-	 * @param json the JSON representation of the object to add to {@code p}
-	 * @return {@code true} if successful, {@code false} otherwise.
-	 */
-	private boolean addToCollectionAsCollectionElement(ListParam<Object> p, String json) {		
-		Object colElemState;
-		
-		try {
-			colElemState = getConverter().toReferredType(p.getType().getModel().getElemConfig(), json);
-		} catch (JsonConversionException e) {
-			return false;
-		}
-		
-		p.add(colElemState);
-		return true;
-	}
-	
-	/**
-	 * <p>Uses the provided <tt>json</tt> to explicitly update the state of the provided param <tt>p</tt>. 
-	 * Explicitly update means that only the values provided in the given <tt>json</tt> will be updated in 
-	 * <tt>p</tt>'s state. Other state values will be preserved.</p>
-	 * 
-	 * <p>This process is as follows:</p>
-	 * 
-	 * <ul>
-	 * <li>Retrieves the key/value pairs from the provided <tt>json</tt> <i>(where key is the field name and value is the field's value)</i>
-	 * <li>Uses the keys to traverse <tt>p</tt> and set the state of each leaf param with the corresponding value</li>
-	 * </ul>
-	 * 
-	 * <p>While traversing <tt>p</tt>, support is provided for nested params of the following:</p>
-	 * 
-	 * <ol>
-	 * <li>Leaf param (primitive or literal type)</li>
-	 * <li>Complex param (object type)</li>
-	 * <li>Collection<tt>&lt;T&gt;</tt> param</li>
-	 * <ol>
-	 * <li><tt>T</tt> is a primitive or literal type</li>
-	 * <li><tt>T</tt> is an object type</li>
-	 * </ol>
-	 * </ol>
+	 * <p>Uses the provided {@code json} to explicitly update the state of the
+	 * provided param {@code p}. Explicitly update means that only the values
+	 * provided in the given {@code json} will be updated in {@code p}'s state.
+	 * Other state values will be preserved.</p> <p>This process is as
+	 * follows:</p> <ul> <li>Retrieves the key/value pairs from the provided
+	 * {@code json} <i>(where key is the field name and value is the field's
+	 * value)</i> <li>Uses the keys to traverse {@code p} and set the state of
+	 * each leaf param with the corresponding value</li> </ul> <p>While
+	 * traversing {@code p}, support is provided for nested params of the
+	 * following:</p> <ol> <li>Leaf param (primitive or literal type)</li>
+	 * <li>Complex param (object type)</li> <li>Collection&lt;{@code T}&gt;
+	 * param</li> <ol> <li>{@code T} is a primitive or literal type</li>
+	 * <li>{@code T} is an object type</li> </ol> </ol>
 	 * 
 	 * @param p the param to set
 	 * @param json the json to read
@@ -119,48 +66,100 @@ public class DefaultActionExecutorUpdate extends AbstractCommandExecutor<Boolean
 		if (null == p) {
 			return;
 		}
-		
+
 		// exit condition 2: p is a leaf -- can't traverse any further
 		if (p.isLeaf()) {
 			Object updated = getConverter().toReferredType(p, json);
 			p.setState(updated);
-			
-		// otherwise, p is nested -- now traverse and handle it's nested params
+
+			// otherwise, p is nested -- now traverse and handle it's nested
+			// params
 		} else {
-			// iterate over the json string and essentially retrieve the key/value pairs 
+			// iterate over the json string and essentially retrieve the
+			// key/value pairs
 			JsonNode tree = getConverter().toJsonNodeTree(json);
-			
+
 			if (!tree.isArray()) {
 				// traverse and update nested params with the provided json
 				tree.fields().forEachRemaining(entry -> {
 					Param<Object> pNested = p.findParamByPath(Constants.SEPARATOR_URI.code + entry.getKey());
 					handleParam(pNested, getConverter().toJson(entry.getValue()));
 				});
-				
+
 			} else {
-				
+
 				if (!p.isCollection()) {
-					throw new FrameworkRuntimeException("Attempted to update " + p + " as a collection, but it is not a collection. " +
-							"JSON was: " + json);
+					throw new FrameworkRuntimeException("Attempted to update " + p
+							+ " as a collection, but it is not a collection. " + "JSON was: " + json);
 				}
-				
-				// exit condition 3: collection param is not instantiated -- can't traverse any further so
+
+				// exit condition 3: collection param is not instantiated --
+				// can't traverse any further so
 				// set the state to the object created from the provided json
 				if (null == p.findIfCollection().getValues() || p.findIfCollection().getValues().isEmpty()) {
-					Object collectionState = getConverter().toReferredType(p.getConfig(),  json);
+					Object collectionState = getConverter().toReferredType(p.getConfig(), json);
 					p.setState(collectionState);
 					return;
 				}
-				
-				// traverse and update a collection's collection elements with the provided json 
+
+				// traverse and update a collection's collection elements with
+				// the provided json
 				ArrayNode array = (ArrayNode) tree;
 				Iterator<JsonNode> iterator = array.iterator();
-				for(int index = 0; iterator.hasNext(); index++) {
+				for (int index = 0; iterator.hasNext(); index++) {
 					JsonNode entry = iterator.next();
 					Param<Object> pNested = p.findParamByPath(Constants.SEPARATOR_URI.code + index);
 					handleParam(pNested, getConverter().toJson(entry));
 				}
 			}
 		}
+	}
+
+	/**
+	 * <p>Add the object represented by {@code json} to the {@link ListParam},
+	 * {@code p}. <p>The add is performed by invoking the
+	 * {@link ListParam#add(Object)}, provided {@code json} resolves to the
+	 * generic type of {@code p}. If {@code json} fails to resolve, this method
+	 * will return {@code false}.
+	 * @param p the list param object to add to
+	 * @param json the JSON representation of the object to add to {@code p}
+	 * @return {@code true} if successful, {@code false} otherwise.
+	 */
+	private boolean addToCollectionAsCollectionElement(ListParam<Object> p, String json) {
+		Object colElemState;
+
+		try {
+			colElemState = getConverter().toReferredType(p.getType().getModel().getElemConfig(), json);
+		} catch (JsonConversionException e) {
+			return false;
+		}
+
+		p.add(colElemState);
+		return true;
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	protected Output<Boolean> executeInternal(Input input) {
+		ExecutionContext eCtx = input.getContext();
+
+		Param<Object> p = findParamByCommandOrThrowEx(eCtx);
+		String json = eCtx.getCommandMessage().getRawPayload();
+
+		// try to first perform add on collection as a collection element
+		boolean addedAsCollectionElement = false;
+		if (p.isCollection())
+			addedAsCollectionElement = this.addToCollectionAsCollectionElement(p.findIfCollection(), json);
+
+		// otherwise attempt to surgically update the param with the provided
+		// json
+		if (!addedAsCollectionElement)
+			handleParam(p, json);
+
+		// TODO use the Action output from the setState to check if the action
+		// performed is _update to return true
+		// , else false - right now it either return _new or _replace (change
+		// detection is not yet implemented)
+		return Output.instantiate(input, eCtx, Boolean.TRUE);
 	}
 }
