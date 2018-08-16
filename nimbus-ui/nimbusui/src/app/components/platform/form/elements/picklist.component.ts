@@ -58,6 +58,8 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
                     [targetHeader]="element.config?.uiStyles?.attributes.targetHeader" 
                     [disabled]="!element?.enabled"
                     [target]="targetList" pDroppable="dd" [responsive]="true" 
+                    [showSourceControls]="element.config?.uiStyles?.attributes?.showSourceControls"
+                    [showTargetControls]="element.config?.uiStyles?.attributes?.showTargetControls"
                     (onMoveToTarget)="updateListValues($event)" (onMoveToSource)="updateListValues($event)">
                     <ng-template let-itm pTemplate="item">
                         <div class="ui-helper-clearfix">
