@@ -210,8 +210,8 @@ public class DefaultExecutionContextPathVariableResolver implements ExecutionCon
 
 	private void buildDateCriteria(StringBuilder builder, final String alias, String paramPath, String value ) {
 		LocalDate dateValue = getLocalDate(value);
-		LocalDate nextDateValue = dateValue.plusDays(1);
 		if(dateValue != null) {
+			LocalDate nextDateValue = dateValue.plusDays(1);
 			int year = dateValue.getYear();
 		    int month = dateValue.getMonthValue();
 		    int day = dateValue.getDayOfMonth();

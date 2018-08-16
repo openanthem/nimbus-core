@@ -19,9 +19,11 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
+import com.antheminc.oss.nimbus.domain.cmd.CommandElementLinked;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessageConverter;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Input;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
@@ -87,7 +89,7 @@ public abstract class AbstractCommandExecutor<R> extends BaseCommandExecutorStra
 		if(cmd.isRootDomainOnly()) 
 			return domainConfig;
 		
-		String path = cmd.buildAlias(cmd.getElement(Type.DomainAlias).get().next());
+		String path = cmd.buildAlias(cmd.getElementSafely(Type.DomainAlias).next());
 		
 		ParamConfig<?> nestedParamConfig = domainConfig.findParamByPath(path);
 		return nestedParamConfig;
