@@ -24,7 +24,6 @@ import java.util.function.BiFunction;
 
 import org.apache.commons.collections.CollectionUtils;
 
-import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ExecutionModel;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
@@ -48,6 +47,8 @@ import lombok.ToString;
 @Getter @RequiredArgsConstructor @ToString(of="rootCommand")
 public class DefaultExecutionRuntime implements ExecutionRuntime {
 
+	public static final String UNLOCK_FAILURE_ERROR_MSG = "Failed to release lock acquired during txn execution of runtime: %s with acquired lockId: %s";
+	
 	private final Command rootCommand;
 	private final StateEventDelegator eventDelegator;
 
@@ -152,11 +153,11 @@ public class DefaultExecutionRuntime implements ExecutionRuntime {
 		try {
 			return cb.apply(getTxnContext(), lockId);
 		} finally {
-			if(isLocked(lockId)) {
 			
-				boolean b = tryUnlock(lockId);
-				if(!b)
-					throw new FrameworkRuntimeException("Failed to release lock acquired during txn execution of runtime: "+this+" with acquired lockId: "+lockId);
+			if(isLocked(lockId)) {
+				if (!tryUnlock(lockId)) {
+					logit.error(() -> String.format(UNLOCK_FAILURE_ERROR_MSG, this, lockId));
+				}
 			}
 		}
 	}
@@ -169,13 +170,12 @@ public class DefaultExecutionRuntime implements ExecutionRuntime {
 		} finally {
 			if(isLocked(lockId)) {
 				
-				boolean b = tryUnlock(lockId);
-				if(!b)
-					throw new FrameworkRuntimeException("Failed to release lock acquired during txn execution of runtime: "+this+" with acquired lockId: "+lockId);
+				if (!tryUnlock(lockId)) {
+					logit.error(() -> String.format(UNLOCK_FAILURE_ERROR_MSG, this, lockId));
+				}
 			}
 		}
 	}
-	
 	
 	@Override
 	public void emitNotification(Notification<Object> notification) {

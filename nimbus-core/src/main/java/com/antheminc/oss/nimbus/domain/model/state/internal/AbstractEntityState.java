@@ -148,10 +148,9 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 		} finally {
 			if(execRt.isLocked(lockId)) {
 				execRt.awaitNotificationsCompletion();
-				
-				boolean b = execRt.tryUnlock(lockId);
-				if(!b)
-					throw new FrameworkRuntimeException("Failed to release lock acquired during initState of: "+getPath()+" with acquired lockId: "+lockId);
+				if(!execRt.tryUnlock(lockId)) {
+					logit.error(() -> "Failed to release lock acquired during txn execution of runtime: "+this+" with acquired lockId: "+lockId);
+				}
 			}
 		}
 	}
