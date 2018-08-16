@@ -1489,6 +1489,8 @@ public class ViewConfig {
 		String sourceHeader() default "SourceList";
 
 		String targetHeader() default "TargetList";
+		boolean showSourceControls() default false;
+		boolean showTargetControls() default false;
 	}
 
 	/**
@@ -1557,12 +1559,20 @@ public class ViewConfig {
 	}
 
 	/**
+	 * <p>The Signature component is used to capture a user's signature using user input in the form of
+	 * a <a href="https://www.ietf.org/rfc/rfc2397.txt">Data URL</a>.
+	 * 
 	 * <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>Signature will be rendered when annotating a field nested under one of
 	 * the following components: <ul> <li>{@link Form}</li> </ul>
 	 * 
 	 * <p>Signature should decorate a field having a simple type.
+	 * <p><b>Sample Usage:</b>
+	 * <pre>
+	 * &#64;Signature
+	 * private String userSignature;
+	 * </pre>
 	 * 
 	 * @since 1.0
 	 * @author Rakesh Patel
@@ -1574,19 +1584,19 @@ public class ViewConfig {
 	public @interface Signature {
 
 		/**
-		 * The strategy for how the signature drawing should be captured on the
+		 * <p>The strategy for how the signature drawing should be captured on the
 		 * UI.
 		 */
 		public enum CaptureType {
 
 			/**
-			 * Signature data is captured in between the mouse down and mouse up
+			 * <p>Signature data is captured in between the mouse down and mouse up
 			 * events.
 			 */
 			DEFAULT,
 
 			/**
-			 * Signature data is captured upon the click event. Capturing will
+			 * <p>Signature data is captured upon the click event. Capturing will
 			 * continue until the click event is invoked a second time.
 			 */
 			ON_CLICK;
@@ -1597,29 +1607,40 @@ public class ViewConfig {
 		String alias() default "Signature";
 
 		/**
-		 * Controls how the signature drawing will be captured.
+		 * <p>Control how the signature drawing will be captured.
 		 * @see com.antheminc.oss.nimbus.domain.defn.ViewConfig.Signature.CaptureType
 		 */
 		CaptureType captureType() default CaptureType.DEFAULT;
-
+		/**
+		 * <p>The label value displayed on the "clear" button.
+		 */
 		String clearLabel() default "Clear";
-
-		String controlId() default "";
-
+		/**
+		 * <p>CSS classes added here will be added to the container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
-
+		/**
+		 * <p>The width of the signature canvas. 
+		 */
 		String height() default "60";
-
-		String help() default "";
-
+		/**
+		 * <p>When {@code true}, the the label and help text will be hidden for this component.
+		 */
 		boolean hidden() default false;
-
-		String labelClass() default "anthem-label";
-
+		/**
+		 * <p>When {@code true} and the value of this component is changed on the client, the updated 
+		 * value will be sent to the server.
+		 */
 		boolean postEventOnChange() default false;
-
+		/**
+		 * <p>To be used by the client as a unique identifier for this component.
+		 * <p><b>THIS VALUE SHOULD NOT BE CHANGED!
+		 */
 		String type() default "signature";
-
+		/**
+		 * <p>The width of the signature canvas. 
+		 */
 		String width() default "345";
 	}
 
