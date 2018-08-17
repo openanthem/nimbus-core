@@ -29,7 +29,7 @@ import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 @EnableLoggingInterceptor
 public class DefaultValidatorProvider implements ValidatorProvider {
 
-	public static ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+	private static final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     
     public Validator getValidator() {
     	return factory.getValidator();
