@@ -109,7 +109,11 @@ public class DefaultActionExecutorUpdate extends AbstractCommandExecutor<Boolean
 			// iterate over the json string and essentially retrieve the key/value pairs 
 			JsonNode tree = getConverter().toJsonNodeTree(json);
 			
-			if (!tree.isArray()) {
+			if (null == tree) {
+				// nothing to parse
+				return;
+				
+			} else if (!tree.isArray()) {
 				// traverse and update nested params with the provided json
 				tree.fields().forEachRemaining(entry -> {
 					Param<Object> pNested = p.findParamByPath(Constants.SEPARATOR_URI.code + entry.getKey());
