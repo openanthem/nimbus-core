@@ -103,6 +103,7 @@ import { Calendar } from './components/platform/form/elements/calendar.component
 import { NavMenuGlobal } from './components/platform/globalNavMenu/nav-global-menu.component';
 import { MessageComponent } from './components/platform/message/message.component';
 import { ActionTray } from './components/platform/actiontray.component';
+import { Label } from './components/platform/content/label.component';
 // Services
 import { WebContentSvc } from './services/content-management.service';
 import { STOMPStatusComponent } from './services/stomp-status.component';
@@ -204,7 +205,8 @@ export function init_app(appinitservice: AppInitService) {
         HomeLayoutCmp, LoginCmp, LoginLayoutCmp, StyleGuideCmp, 
         KeysPipe, LinkPipe, DateTimeFormatPipe, SelectItemPipe, MultiSelectListBox, 
         CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent, Calendar, NavMenuGlobal, LoaderComponent, MessageComponent,
-        HeaderCheckBox, SvgComponent, SvgDefinitions, ActionTray, SubDomainFlowCmp, Image, NmPanelMenu,NmPanelMenuSub, MenuRouterLinkActive, MenuRouteLink
+        HeaderCheckBox, SvgComponent, SvgDefinitions, ActionTray, SubDomainFlowCmp, Image, NmPanelMenu,NmPanelMenuSub, MenuRouterLinkActive, 
+        MenuRouteLink, Label
     ],
     entryComponents: [ FlowWrapper, PageContent, PageNotfoundComponent, LoginCmp, HomeLayoutCmp, SubDomainFlowCmp],
     providers: [ PageService, ConfigService, WebContentSvc, HttpClient,  HttpClientModule, AppInitService,

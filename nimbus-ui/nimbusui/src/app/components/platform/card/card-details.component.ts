@@ -71,5 +71,10 @@ export class CardDetailsComponent extends BaseElement {
         this.opened = !this.opened;
     }
 
+    ngOnInit() {
+        super.ngOnInit();
+        this.updatePosition();
+    }
+
 }
 

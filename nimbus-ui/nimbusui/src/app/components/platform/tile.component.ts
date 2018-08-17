@@ -95,6 +95,7 @@ export class Tile extends BaseElement {
         if (this.element.config && this.element.config.initializeComponent()) {
             this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'POST');
         }
+        this.updatePosition();
     }
 }
 

@@ -62,6 +62,9 @@ export class BaseElement {
     protected _type: string;
     protected _elementStyle: string;
     public requiredCss: boolean = false;
+    labelSize: String;
+    @Input() position: number;
+
     constructor(private wcs: WebContentSvc) {
         
     }
@@ -181,5 +184,25 @@ export class BaseElement {
         }
         return undefined;
     }
+
+    updatePosition() {
+        if (this.label && this.element.config && this.element.config.labelConfigs) {
+            this.labelSize = this.getHeaderSize(this.position);
+        } else {
+            this.position--;
+        }
+    }
+
+    updatePositionWithNoLabel() {
+        this.labelSize = this.getHeaderSize(this.position);
+    }
+
+    getHeaderSize(position) {
+        if (position > 6) {
+            return 'H6';
+        }
+        return 'H' + position;
+    }
+    
 }
 

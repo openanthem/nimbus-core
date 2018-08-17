@@ -21,6 +21,7 @@ import { Param } from '../../shared/param-state';
 import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { WebContentSvc } from '../../services/content-management.service';
 import { ViewComponent } from '../../shared/param-annotations.enum';
+import { BaseElement } from './base-element.component';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     provide: NG_VALUE_ACCESSOR,
@@ -48,7 +49,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
                     </legend>
                 </ng-template>
                 <ng-template [ngIf]="!element.type?.model?.params?.length || element.config?.type?.collection">
-                    <nm-element id="{{id}}" [element]="element" [elementCss]="elementCss" [form]="form"></nm-element>
+                    <nm-element [position]="position+1" id="{{id}}" [element]="element" [elementCss]="elementCss" [form]="form"></nm-element>
                 </ng-template>
                 <ng-template [ngIf]="element.type?.model?.params?.length && element.config?.uiStyles?.attributes?.alias!=viewComponent.buttongroup.toString() && !element?.config?.type?.collection">
                     <fieldset class="subQuestion" [hidden]="!element?.visible">
@@ -65,23 +66,22 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
         </div>
     `
 })
-export class FrmGroupCmp {
+export class FrmGroupCmp extends BaseElement {
     
        @Input() elements: Param[] = [];
        @Input() form: FormGroup;
        @Input() elementCss : String;
        @Input() parentElement: Param
-       private label: string;
-       private helpText : string;
+
        viewComponent = ViewComponent;
 
-       constructor(private wcs: WebContentSvc) {
-           
+       constructor(private wcsv: WebContentSvc) {
+           super(wcsv);
        }
 
        ngOnInit() {
             if (this.hasParagraph(this.parentElement)) {
-                let labelConfig: LabelConfig = this.wcs.findLabelContent(this.parentElement);
+                let labelConfig: LabelConfig = this.wcsv.findLabelContent(this.parentElement);
                 this.label = labelConfig.text;
                 this.helpText = labelConfig.helpText;
             }

@@ -43,6 +43,8 @@ export class PageContent extends BaseElement{
     errMsgArray: any[] =[];
     errMsg: string;
     isPopState: boolean = false;
+    labelSize: string;
+    position: number = 0;
 
     constructor(private router: Router, private route: ActivatedRoute, 
         private _wcs : WebContentSvc, 
@@ -83,6 +85,8 @@ export class PageContent extends BaseElement{
                 });
             }
         });
+        console.log('this.element', this.element);
+        this.updateIntialPosition();
     }
 
     ngAfterViewInit() {
@@ -93,6 +97,13 @@ export class PageContent extends BaseElement{
             }
             this.cd.markForCheck();
         });
+    }
+
+    updateIntialPosition() {
+        if (this.label && this.element.config && this.element.config.labelConfigs) {
+            this.position = 1;
+            this.labelSize = this.getHeaderSize(this.position);
+        }
     }
 
 }
