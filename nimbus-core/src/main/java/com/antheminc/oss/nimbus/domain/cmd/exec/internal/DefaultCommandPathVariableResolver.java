@@ -132,7 +132,7 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 			return String.valueOf(id);
 		}
 		
-		return param.getRootExecution().getRootCommand().getElement(Type.ClientAlias).get().getAlias();
+		return param.getRootExecution().getRootCommand().getElementSafely(Type.ClientAlias).getAlias();
 	}
 	
 	protected String mapEnvironment(Param<?> param, String pathToResolve) {

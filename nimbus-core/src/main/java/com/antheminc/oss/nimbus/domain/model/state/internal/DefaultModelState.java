@@ -51,11 +51,16 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 	
     private static final long serialVersionUID = 1L;
 
-    @JsonIgnore final private Param<T> associatedParam;
+    @Setter(AccessLevel.NONE)
+    @JsonIgnore private Param<T> associatedParam;
     
     private List<Param<? extends Object>> params;
 
 	@JsonIgnore private transient ValidationResult validationResult;
+	
+	public DefaultModelState() {
+		this.associatedParam = null;
+	}
 	
 	public DefaultModelState(Param<T> associatedParam, ModelConfig<T> config, EntityStateAspectHandlers provider/*, Model<?> backingCoreModel*/) {
 		super(config, provider);

@@ -15,8 +15,6 @@
  */
 package com.antheminc.oss.nimbus.entity.client;
 
-import javax.validation.constraints.NotNull;
-
 import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
@@ -38,17 +36,11 @@ public class Client extends ClientEntity {
 
 	private static final long serialVersionUID = 1L;
 	
-	
 	public Client() {
 		super.setType(ClientEntity.Type.CLIENT);
 	}
 	
-
-	@NotNull
 	private String fedTaxID;
-	
-    @NotNull
-	//@Model.Param.Values(Values.BusinessType.class)
-	@Getter @Setter private String businessType;
+	private String businessType;
 	
 }
