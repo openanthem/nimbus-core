@@ -85,7 +85,6 @@ export class PageContent extends BaseElement{
                 });
             }
         });
-        console.log('this.element', this.element);
         this.updateIntialPosition();
     }
 

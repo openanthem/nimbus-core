@@ -80,6 +80,8 @@ export class FrmGroupCmp extends BaseElement {
        }
 
        ngOnInit() {
+            super.ngOnInit();
+            this.updatePositionWithNoLabel();
             if (this.hasParagraph(this.parentElement)) {
                 let labelConfig: LabelConfig = this.wcsv.findLabelContent(this.parentElement);
                 this.label = labelConfig.text;
