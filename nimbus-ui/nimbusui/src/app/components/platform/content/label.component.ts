@@ -27,12 +27,13 @@ import { LabelConfig } from './../../../shared/param-config';
 @Component({
     selector: 'nm-label',
     template: `
-        <H1 *ngIf="size=='H1'" [className]="labelClass">{{label}}</H1>
-        <H2 *ngIf="size=='H2'" [className]="labelClass">{{label}}</H2>
-        <H3 *ngIf="size=='H3'" [className]="labelClass">{{label}}</H3>
-        <H4 *ngIf="size=='H4'" [className]="labelClass">{{label}}</H4>
-        <H5 *ngIf="size=='H5'" [className]="labelClass">{{label}}</H5>
-        <H6 *ngIf="size=='H6'" [className]="labelClass">{{label}}</H6>
+        <H1 *ngIf="size=='H1'" [className]="cssClass">{{label}}</H1>
+        <H2 *ngIf="size=='H2'" [className]="cssClass">{{label}}</H2>
+        <H3 *ngIf="size=='H3'" [className]="cssClass">{{label}}</H3>
+        <H4 *ngIf="size=='H4'" [className]="cssClass">{{label}}</H4>
+        <H5 *ngIf="size=='H5'" [className]="cssClass">{{label}}</H5>
+        <H6 *ngIf="size=='H6'" [className]="cssClass">{{label}}</H6>
+        <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
     `
 })
 
@@ -45,8 +46,38 @@ export class Label {
     constructor() {
     }
 
-    get label(): string {
+     /**
+     * Get the tooltip help text for this element.
+     */
+    public get helpText(): string {
+        if (!this.labelConfig) {
+            return undefined;
+        }
+        return this.labelConfig.helpText;
+    }
+
+    /**
+     * Get the label text for this element.
+     */
+    public get label(): string {
+        if (!this.labelConfig) {
+            return undefined;
+        }
         return this.labelConfig.text;
+    }
+
+    /**
+     * Get the css classes to apply for this element.
+     */
+    public get cssClass(): string {
+        let cssClass = '';
+        if (this.labelClass) {
+            cssClass += this.labelClass;
+        }
+        if (this.labelConfig && this.labelConfig.cssClass) {
+            cssClass += ' ' + this.labelConfig.cssClass;
+        }
+        return cssClass;
     }
 }
 

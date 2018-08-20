@@ -29,14 +29,12 @@ import { LabelConfig } from '../../../../shared/param-config';
   selector: 'nm-input-label',
   template: `
     <label
-        [ngClass]="{'required': required, '': !required}"
+        [className]="cssClass"
         [attr.for]="for">
         
-        {{labelConfig?.text}} 
+        {{label}} 
         
-        <nm-tooltip *ngIf="labelConfig?.helpText" 
-            [helpText]='labelConfig.helpText'>
-        </nm-tooltip>
+        <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
     </label>
    `
 })
@@ -48,5 +46,36 @@ export class InputLabel {
 
     constructor() {
         
+    }
+
+    /**
+     * Get the tooltip help text for this element.
+     */
+    public get helpText(): string {
+        if (!this.labelConfig) {
+            return undefined;
+        }
+        return this.labelConfig.helpText;
+    }
+
+    /**
+     * Get the label text for this element.
+     */
+    public get label(): string {
+        if (!this.labelConfig) {
+            return undefined;
+        }
+        return this.labelConfig.text;
+    }
+
+    /**
+     * Get the css classes to apply for this element.
+     */
+    public get cssClass(): string {
+        if (this.required)
+        if (!this.labelConfig) {
+            return undefined;
+        }
+        return this.labelConfig.cssClass;
     }
 }
