@@ -17,7 +17,7 @@
 'use strict';
 import { CustomHttpClient } from './httpclient.service';
 import { Injectable, EventEmitter, Output } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { HttpHeaders } from '@angular/common/http';
 import { RequestOptions, Request, RequestMethod } from '@angular/http';
 import { PageService } from './page.service';

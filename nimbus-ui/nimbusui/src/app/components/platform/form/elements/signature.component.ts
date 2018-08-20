@@ -17,12 +17,8 @@
 'use strict';
 import { NgModel, NG_VALUE_ACCESSOR, ControlValueAccessor, FormGroup } from '@angular/forms';
 import { Component, ViewChild, ElementRef, forwardRef, Input, ChangeDetectorRef } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-
-import 'rxjs/add/observable/fromEvent';
-import 'rxjs/add/operator/takeUntil';
-import 'rxjs/add/operator/pairwise';
-import 'rxjs/add/operator/switchMap';
+import { fromEvent as observableFromEvent, Observable } from 'rxjs';
+import { takeUntil, switchMap, pairwise } from 'rxjs/operators';
 
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
@@ -216,19 +212,17 @@ export class Signature extends BaseControl<String> {
      * @param canvasEl the HTML Canvas element to register subscribers with
      */
     private registerOnClickCapture(canvasEl: HTMLCanvasElement) {
-        const canvasElClick = Observable.fromEvent(canvasEl, 'click');
+        const canvasElClick = observableFromEvent(canvasEl, 'click');
         
         canvasElClick.subscribe((e) => this.isCapturing = !this.isCapturing);
         
-        canvasElClick
-            .switchMap((e) => {
-                return Observable
-                    .fromEvent(canvasEl, 'mousemove')
-                    .takeUntil(Observable
-                        .fromEvent(canvasEl, 'click')
-                    )
-                    .pairwise()
-            })
+        canvasElClick.pipe(
+            switchMap((e) => {
+                return observableFromEvent(canvasEl, 'mousemove').pipe(
+                    takeUntil(observableFromEvent(canvasEl, 'click')
+                    ),
+                    pairwise())
+            }))
             .subscribe((res: [MouseEvent, MouseEvent]) => {
                 if (this.isCapturing) {
                     this.drawOnCanvas(canvasEl, res[0], res[1]);
@@ -246,14 +240,12 @@ export class Signature extends BaseControl<String> {
      * @param canvasEl the HTML Canvas element to register subscribers with
      */
     private registerDefaultCapture(canvasEl: HTMLCanvasElement) {
-        Observable
-            .fromEvent(canvasEl, 'mousedown')
-            .switchMap((e) => {
-                return Observable
-                    .fromEvent(canvasEl, 'mousemove')
-                    .takeUntil(Observable.fromEvent(canvasEl, 'mouseup'))
-                    .pairwise()
-            })
+        observableFromEvent(canvasEl, 'mousedown').pipe(
+            switchMap((e) => {
+                return observableFromEvent(canvasEl, 'mousemove').pipe(
+                    takeUntil(observableFromEvent(canvasEl, 'mouseup')),
+                    pairwise())
+            }))
             .subscribe((res: [MouseEvent, MouseEvent]) => {
                 this.drawOnCanvas(canvasEl, res[0], res[1]);
             }

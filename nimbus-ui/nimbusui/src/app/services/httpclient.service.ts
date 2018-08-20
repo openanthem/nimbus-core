@@ -19,9 +19,8 @@ import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, URLSearchParams } from '@angular/http';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { ExecuteResponse } from '../shared/app-config.interface';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+import { catchError } from 'rxjs/operators';
+import { throwError as observableThrowError, Observable } from 'rxjs';
 import { SessionStoreService } from './session.store';
 import { ServiceConstants } from './service.constants';
 
@@ -64,9 +63,8 @@ export class CustomHttpClient {
   }
 
   postFileData(url, data) {
-
-    return this.http.post(url, data)
-          .catch(this.errorHandler);
+    return this.http.post(url, data).pipe(
+      catchError(this.errorHandler));
   }
 
   getCookie(name) {

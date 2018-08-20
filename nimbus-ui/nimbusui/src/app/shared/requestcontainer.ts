@@ -14,9 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Observable } from 'rxjs/Observable';
-import { Param } from './param-state';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 
 /**
  * \@author Sandeep.Mantha
@@ -32,7 +30,7 @@ export class RequestContainer {
     payload: any;
     subscription: Subject<any>;
 
-    constructor(path:string,method: string, payload: any, subscription: Subject<any>) {
+    constructor(path:string, method: string, payload: any, subscription: Subject<any>) {
         this.path = path;
         this.method = method;
         this.payload = payload;

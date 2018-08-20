@@ -27,7 +27,7 @@ import { ValidatorFn } from '@angular/forms/src/directives/validators';
 import { ValidationUtils } from '../../validators/ValidationUtils';
 import { ValidationConstraint } from './../../../../shared/validationconstraints.enum';
 import { FormControl, AbstractControl } from '@angular/forms/src/model';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 import { Enum } from '../../../../shared/command.enum';
 /**
