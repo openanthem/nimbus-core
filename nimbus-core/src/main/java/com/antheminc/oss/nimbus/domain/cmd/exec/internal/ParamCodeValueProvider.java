@@ -75,7 +75,7 @@ public class ParamCodeValueProvider implements HierarchyMatch, CommandExecutor<L
 	public Output<List<ParamValue>> execute(Input input) {
 		CommandMessage cmdMsg = input.getContext().getCommandMessage();
 		final List<ParamValue> codeValues;
-		if(StringUtils.equalsIgnoreCase(cmdMsg.getCommand().getElement(Type.DomainAlias).get().getAlias(),"staticCodeValue")) {
+		if(StringUtils.equalsIgnoreCase(cmdMsg.getCommand().getElementSafely(Type.DomainAlias).getAlias(),"staticCodeValue")) {
 			codeValues = getStaticCodeValue(input);
 		}
 		else{

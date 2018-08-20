@@ -75,7 +75,9 @@ public class ConfigConditionalStateChangeHandler extends AbstractConditionalStat
 			return;
 		
 		Config[] configs = configuredAnnotation.config();
-		Optional.ofNullable(configs).filter(ArrayUtils::isNotEmpty).orElseThrow(()->new InvalidConfigException("No @Config found to execute conditionnaly on param: "+event.getParam()));
+		if (ArrayUtils.isEmpty(configs)) {
+			throw new InvalidConfigException("No @Config found to execute conditionally on param: " + event.getParam());
+		}
 		
 		Command rootCmd = event.getParam().getRootExecution().getRootCommand();
 		ExecutionContext eCtx = getContextLoader().load(rootCmd);

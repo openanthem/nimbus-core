@@ -33,14 +33,10 @@ import { Calendar } from 'primeng/components/calendar/calendar';
 import * as moment from 'moment';
 import { SortAs, GridColumnDataType } from './sortas.interface';
 import { ActionDropdown } from './../form/elements/action-dropdown.component';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/fromEvent';
-import { Subscription } from 'rxjs/Subscription';
+import { fromEvent as observableFromEvent,  Observable ,  Subscription } from 'rxjs';
+import { first, filter } from 'rxjs/operators';
 import { ParamUtils } from './../../../shared/param-utils';
 import { ViewComponent } from '../../../shared/param-annotations.enum';
-
-
-
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     provide: NG_VALUE_ACCESSOR,
@@ -484,8 +480,8 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
             e.state = 'openPanel';
             if(this.dropDowns && (this.mouseEventSubscription == undefined || this.mouseEventSubscription.closed))
             this.mouseEventSubscription =
-                Observable.fromEvent(document, 'click').filter((event: any) => 
-                !this.isClickedOnDropDown(this.dropDowns.toArray(), event.target)).first().subscribe(() => 
+                observableFromEvent(document, 'click').pipe(filter((event: any) => 
+                !this.isClickedOnDropDown(this.dropDowns.toArray(), event.target)),first()).subscribe(() => 
                 {
                     this.dropDowns.toArray().forEach((item) => {
                         item.isOpen = false;

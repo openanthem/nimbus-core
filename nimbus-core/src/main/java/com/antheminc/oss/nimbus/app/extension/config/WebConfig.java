@@ -52,7 +52,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 public class WebConfig extends WebMvcConfigurerAdapter {
 
 	private static final String CLASSPATH_STATIC = "classpath:./static/";
-	public static final Map<String, String[]> RESOURCE_MAPPINGS = new HashMap<>();
+	private static final Map<String, String[]> RESOURCE_MAPPINGS = new HashMap<>();
 	static {
 		// The second argument of String[] is to tell where to look in a jar file.
 		RESOURCE_MAPPINGS.put("/index.html", 			new String[] {CLASSPATH_STATIC});
