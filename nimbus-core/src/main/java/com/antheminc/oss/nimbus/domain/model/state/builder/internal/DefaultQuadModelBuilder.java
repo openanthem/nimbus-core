@@ -69,7 +69,7 @@ public class DefaultQuadModelBuilder implements QuadModelBuilder {
 	
 	private JustLogit logit = new JustLogit(DefaultQuadModelBuilder.class);
 	
-	public RestTemplate restTemplate = new RestTemplate();
+	private RestTemplate restTemplate = new RestTemplate();
 	
 	public DefaultQuadModelBuilder(BeanResolverStrategy beanResolver) {
 		this.beanResolver = beanResolver;
