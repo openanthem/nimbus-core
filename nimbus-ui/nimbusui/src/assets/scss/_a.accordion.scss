@@ -13,6 +13,10 @@
                 line-height: 1;
                 margin-top: -4px;
             }
+            h2, h3, h4, h5, h6 {
+                font-size: 1rem;
+                display: inline-block;
+            }
         }
     }
     .ui-accordion-header:not(.ui-state-active):not(.ui-state-disabled):hover {

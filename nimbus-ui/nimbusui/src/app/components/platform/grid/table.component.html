@@ -1,7 +1,7 @@
 <div id="{{id}}"  class="scrollGrid" [hidden]="!element?.visible">
     <div class="ui-datatable-header ui-widget-header" *ngIf="element.config?.uiStyles?.attributes?.showHeader == true">
         <p-header>
-            <nm-label *ngIf="element?.config?.labelConfigs?.length > 0 && label != '' " [size]="labelSize" [label]="label"></nm-label>
+            <caption>{{label}}</caption>
             <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
         </p-header>
         <div class="recordsDisplayed">Showing {{rowStart}}-{{rowEnd}} of {{totalRecords}}

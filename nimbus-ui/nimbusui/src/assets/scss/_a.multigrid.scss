@@ -235,7 +235,17 @@ ng-component{
     left: 6px;
     top: .3rem;
     font-size: 1.34rem;
+    caption {
+        padding-top: 0;
+        padding-bottom: 0;
+        color: inherit;
+        text-align: left;
+        caption-side: unset;
+        display: inline-block;
+        font-size: 1rem;
+    }
 }
+
 .ui-expanded-row-content .scrollGrid td.dropdown .ui-cell-data, 
 .ui-expanded-row-content .ui-datatable td.dropdown .ui-cell-data,
 .ui-expanded-row-content .ui-table td.dropdown .ui-cell-data {
