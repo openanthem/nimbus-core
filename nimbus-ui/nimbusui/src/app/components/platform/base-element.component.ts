@@ -51,8 +51,7 @@ import { ValidationConstraint } from './../../shared/validationconstraints.enum'
  */
 export class BaseElement {
     @Input() element: Param;
-    public label: string;
-    public helpText : string;
+    public labelConfig: LabelConfig;
     protected _nestedParams: Param[];
     protected _imgSrc: string;
     protected _code: string;
@@ -82,15 +81,11 @@ export class BaseElement {
      * @param param The param for which to load label content for.
      */
     protected loadLabelConfig(param: Param): void {
-        let labelConfig: LabelConfig = this.wcs.findLabelContent(param);
-        this.label = labelConfig.text.trim();
-        this.helpText = labelConfig.helpText;
+        this.labelConfig = this.wcs.findLabelContent(param);
     }
 
     protected loadLabelConfigByCode(code: string, labelConfigs: LabelConfig[]): void {
-        let labelConfig: LabelConfig = this.wcs.findLabelContentFromConfig(code, labelConfigs);
-        this.label = labelConfig.text;
-        this.helpText = labelConfig.helpText;
+        this.labelConfig = this.wcs.findLabelContentFromConfig(code, labelConfigs);
     }
 
     /**
@@ -160,6 +155,26 @@ export class BaseElement {
     }
 
     /**
+     * Get the tooltip help text for this element.
+     */
+    public get helpText(): string {
+        if (!this.labelConfig) {
+            return undefined;
+        }
+        return this.labelConfig.helpText;
+    }
+
+    /**
+     * Get the label text for this element.
+     */
+    public get label(): string {
+        if (!this.labelConfig) {
+            return undefined;
+        }
+        return this.labelConfig.text;
+    }
+
+    /**
      * Check if control is required
      */
     public get elementStyle(): string {
@@ -186,7 +201,7 @@ export class BaseElement {
     }
 
     updatePosition() {
-        if (this.label && this.element.config && this.element.config.labelConfigs) {
+        if (this.labelConfig.text) {
             this.labelSize = this.getHeaderSize(this.position);
         } else {
             this.position--;

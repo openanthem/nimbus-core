@@ -1,6 +1,10 @@
 <div class="{{cssClass}}" id="{{code}}">
     <!-- Section Message -->
-    <nm-label *ngIf="element?.config?.labelConfigs?.length > 0 && label != '' " [size]="labelSize" [label]="label"></nm-label>
+    <nm-label *ngIf="labelConfig?.text != ''" 
+        [labelConfig]="labelConfig"
+        [size]="labelSize">
+    
+    </nm-label>
      <ng-template ngFor let-msg [ngForOf]="element.message">
         <nm-message [messageContext]="msg.context"  [messageArray]="msg.messageArray" [styleClass]="msg.styleClass" [life]="msg.life" *ngIf="msg" ></nm-message>
     </ng-template>     

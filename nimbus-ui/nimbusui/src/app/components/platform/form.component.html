@@ -1,5 +1,9 @@
 <form id="{{formId}}" [formGroup]="form" novalidate>
-    <nm-label *ngIf="element?.config?.labelConfigs?.length > 0 && label != '' " [size]="labelSize" [label]="label"></nm-label>
+    <nm-label *ngIf="labelConfig?.text" 
+        [labelConfig]="labelConfig"
+        [size]="labelSize">
+    
+    </nm-label>
     <!--condition for rendering accordion groups inside form-->
     <ng-template [ngIf]="groups.length>0">
         <nm-accordion [element]="group" [elementCss]="elementCss" [form]="form" *ngFor="let group of groups">

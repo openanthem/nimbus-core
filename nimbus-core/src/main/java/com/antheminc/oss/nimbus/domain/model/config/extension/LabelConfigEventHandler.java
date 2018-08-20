@@ -84,6 +84,7 @@ public class LabelConfigEventHandler extends AbstractConfigEventHandler<Label> i
 		config.setLocale(StringUtils.trimToNull(locale.toLanguageTag()));
 		config.setText(StringUtils.isWhitespace(label.value()) ? label.value() : StringUtils.trimToNull(label.value()));	
 		config.setHelpText(StringUtils.trimToNull(label.helpText()));
+		config.setCssClass(StringUtils.trimToNull(label.style().cssClass()));
 		
 		return config;
 	}

@@ -16,37 +16,37 @@
  */
 'use strict';
 import { Component, Input } from '@angular/core';
-import { LabelConfig } from './../../../shared/param-config';
+import { LabelConfig } from '../../../../shared/param-config';
 
 /**
- * \@author Purnachander.Mashetty
+ * \@author Tony Lopez
+ * \@whatItDoes 
  * 
  * \@howToUse 
  * 
  */
 @Component({
-    selector: 'nm-label',
-    template: `
-        <H1 *ngIf="size=='H1'" [className]="labelClass">{{label}}</H1>
-        <H2 *ngIf="size=='H2'" [className]="labelClass">{{label}}</H2>
-        <H3 *ngIf="size=='H3'" [className]="labelClass">{{label}}</H3>
-        <H4 *ngIf="size=='H4'" [className]="labelClass">{{label}}</H4>
-        <H5 *ngIf="size=='H5'" [className]="labelClass">{{label}}</H5>
-        <H6 *ngIf="size=='H6'" [className]="labelClass">{{label}}</H6>
-    `
+  selector: 'nm-input-label',
+  template: `
+    <label
+        [ngClass]="{'required': required, '': !required}"
+        [attr.for]="for">
+        
+        {{labelConfig?.text}} 
+        
+        <nm-tooltip *ngIf="labelConfig?.helpText" 
+            [helpText]='labelConfig.helpText'>
+        </nm-tooltip>
+    </label>
+   `
 })
-
-export class Label {
+export class InputLabel {
 
     @Input() labelConfig: LabelConfig;
-    @Input() size: String;
-    @Input() labelClass: String;
+    @Input() for: string;
+    @Input() required: boolean;
 
     constructor() {
-    }
-
-    get label(): string {
-        return this.labelConfig.text;
+        
     }
 }
-

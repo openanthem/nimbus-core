@@ -49,13 +49,12 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc, ControlSubscribers],
   template: `
     <div style="position:relative" class="{{zoomClass}}">
-        <label *ngIf="hidden!=true"
-            [ngClass]="{'required': requiredCss, '': !requiredCss}"
-            [attr.for]="element.config?.code">{{label}} 
-            <nm-tooltip *ngIf="helpText" 
-                [helpText]='helpText'>
-            </nm-tooltip>
-        </label>
+        <nm-input-label *ngIf="labelConfig && hidden != true"
+            [for]="element.config?.code" 
+            [labelConfig]="labelConfig" 
+            [required]="requiredCss">
+
+        </nm-input-label>
         <canvas #canvas 
             [id]="element.config?.code" 
             class="form-control" ngDefaultControl>

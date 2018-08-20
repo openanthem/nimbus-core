@@ -38,10 +38,10 @@ import com.antheminc.oss.nimbus.domain.defn.extension.Content.Label;
 public class ContentTest {
 
 	public static Label create(String val, String langTag) {
-		return create(val, langTag, null);
+		return create(val, langTag, null, "");
 	}
 	
-	public static Label create(String val, String langTag, String helpText) {
+	public static Label create(String val, String langTag, String helpText, String cssClass) {
 		return new Label() {
 			@Override
 			public Class<? extends Annotation> annotationType() {
@@ -58,6 +58,19 @@ public class ContentTest {
 			@Override
 			public String localeLanguageTag() {
 				return langTag;
+			}
+			public Style style() {
+				return new Style() {
+					@Override
+					public Class<? extends Annotation> annotationType() {
+						return Style.class;
+					}
+					@Override
+					public String cssClass() {
+						return cssClass;
+					}
+					
+				};
 			}
 		};
 	

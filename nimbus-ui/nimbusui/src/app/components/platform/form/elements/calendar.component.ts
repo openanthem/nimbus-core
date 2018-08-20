@@ -19,8 +19,6 @@ import { NG_VALUE_ACCESSOR, NgModel } from '@angular/forms';
 import { Component, forwardRef, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
-import { PageService } from '../../../../services/page.service';
-import { Param } from '../../../../shared/param-state';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 
 /**
@@ -45,9 +43,12 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   selector: 'nm-input-calendar',
   providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR,WebContentSvc, ControlSubscribers],
   template: `
-        <label [attr.for]="element.config?.code"  [ngClass]="{'required': requiredCss, '': !requiredCss}" *ngIf="this.showLabel">{{label}}
-            <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
-        </label>
+        <nm-input-label *ngIf="labelConfig && this.showLabel"
+            [for]="element.config?.code" 
+            [labelConfig]="labelConfig" 
+            [required]="requiredCss">
+
+        </nm-input-label>
         <p-calendar [(ngModel)]="value"  
             (focusout)="emitValueChangedEvent(this,$event)" 
             [showIcon]="true"
