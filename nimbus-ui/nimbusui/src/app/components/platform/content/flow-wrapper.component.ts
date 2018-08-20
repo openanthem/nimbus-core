@@ -19,7 +19,7 @@
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Component } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { Message } from 'stompjs';
 
 import { PageService } from '../../../services/page.service';

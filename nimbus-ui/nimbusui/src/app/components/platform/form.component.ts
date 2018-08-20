@@ -58,8 +58,10 @@ export class Form implements OnInit, OnChanges {
     buttonList: Param[] = [];
     elementCss: string;
 
-    constructor(private service: FormElementsService, private pageSvc: PageService, private wcs: WebContentSvc, private logger: LoggerService) {
-
+    constructor(private service: FormElementsService, 
+        private pageSvc: PageService, 
+        private wcs: WebContentSvc, 
+        private logger: LoggerService) {
     }
 
     toggle() {
@@ -93,9 +95,7 @@ export class Form implements OnInit, OnChanges {
     /** Initialize the Form **/
     ngOnInit() {
         this.logger.debug('Form-i ' + this.element.path);
-        
         this.elementCss = this.element.config.uiStyles.attributes.cssClass;
-
         this.buildFormElements(this.model);
     }
     

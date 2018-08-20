@@ -17,13 +17,8 @@
 'use strict';
 import { NgModel, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Component, ViewChild, ElementRef, forwardRef, Input, ChangeDetectorRef } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-
-import 'rxjs/add/observable/fromEvent';
-import 'rxjs/add/operator/takeUntil';
-import 'rxjs/add/operator/pairwise';
-import 'rxjs/add/operator/switchMap';
-
+import { fromEvent as observableFromEvent } from 'rxjs';
+import { takeUntil, switchMap, pairwise } from 'rxjs/operators';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { Param } from '../../../../shared/param-state';
@@ -239,8 +234,8 @@ export class Signature extends BaseControl<string> {
      * @param endEventName the name of the event to end capturing
      */
     private registerCaptureOnEvent(startEventName: string, endEventName: string) {
-        const $startEvent = Observable.fromEvent(this.canvasEl, startEventName);
-        const $endEvent = Observable.fromEvent(this.canvasEl, endEventName)
+        const $startEvent = observableFromEvent(this.canvasEl, startEventName);
+        const $endEvent = observableFromEvent(this.canvasEl, endEventName)
 
         if (startEventName === endEventName) {
             $startEvent.subscribe((e) => this.setIsCapturing(!this.isCapturing));
@@ -249,16 +244,16 @@ export class Signature extends BaseControl<string> {
             $endEvent.subscribe((e) => this.setIsCapturing(false));
         }
 
-        $startEvent.switchMap((e) => {
-            return Observable
-                .fromEvent(this.canvasEl, Signature.EVENT_NAMES.MOUSE_MOVE)
-                .takeUntil($endEvent)
-                .pairwise()
-        }).subscribe((res: [MouseEvent, MouseEvent]) => {
-            if (this.isEditable() && this.isCapturing) {
-                this.drawOnCanvas(res[0], res[1]);
-            }
-        });
+        $startEvent.pipe(
+            switchMap((e) => {
+                return observableFromEvent(this.canvasEl, Signature.EVENT_NAMES.MOUSE_MOVE).pipe(
+                    takeUntil($endEvent),
+                    pairwise())
+            })).subscribe((res: [MouseEvent, MouseEvent]) => {
+                if (this.isEditable() && this.isCapturing) {
+                    this.drawOnCanvas(res[0], res[1]);
+                }
+            });
     }
 
     /**
