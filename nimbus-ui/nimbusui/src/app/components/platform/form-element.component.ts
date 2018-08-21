@@ -123,7 +123,7 @@ export class FormElement extends BaseElement {
 
     ngOnInit() {
         super.ngOnInit();
-        this.updatePositionWithNoLabel();
+        this.updatePositionWithNoLabel();        
         // if (this.element.config.uiStyles && this.element.config.uiStyles.attributes.controlId !== null) {
         //     if (Number(this.element.config.uiStyles.attributes.controlId) % 2 === 0) {
         //         this.elementCss = this.elementCss + ' even';

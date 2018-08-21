@@ -1,9 +1,5 @@
 <div class="mt-1 cardBody {{element.config?.uiStyles?.attributes?.cssClass}}">
-    <nm-label *ngIf="labelConfig?.text != ''" 
-        [labelConfig]="labelConfig"
-        [size]="labelSize">
-
-    </nm-label>
+    <nm-label *ngIf="labelConfig?.text != ''" [labelConfig]="labelConfig" [size]="labelSize"></nm-label>
     <ng-template ngFor let-param [ngForOf]="element?.type?.model?.params">
         <ng-template [ngIf]="param.config?.uiStyles?.attributes?.alias == componentTypes.cardDetailsHeader.toString()">
             <span class="{{param.config?.uiStyles?.attributes?.cssClass}}" *ngFor="let field of param?.type?.model?.params">

@@ -1,10 +1,6 @@
 <div class="{{cssClass}}" id="{{code}}">
     <!-- Section Message -->
-    <nm-label *ngIf="labelConfig?.text != ''" 
-        [labelConfig]="labelConfig"
-        [size]="labelSize">
-    
-    </nm-label>
+    <nm-label *ngIf="labelConfig?.text != ''" [labelConfig]="labelConfig" [size]="labelSize"></nm-label>
      <ng-template ngFor let-msg [ngForOf]="element.message">
         <nm-message [messageContext]="msg.context"  [messageArray]="msg.messageArray" [styleClass]="msg.styleClass" [life]="msg.life" *ngIf="msg" ></nm-message>
     </ng-template>     
@@ -13,7 +9,7 @@
         <ng-template ngFor let-element [ngForOf]="nestedParams">
             <!-- Card Content -->
             <ng-template [ngIf]="element.alias == componentTypes.cardDetailsGrid.toString()">
-                <nm-card-details-grid [grid]="element"></nm-card-details-grid>
+                <nm-card-details-grid [position]="position+1" [grid]="element"></nm-card-details-grid>
             </ng-template>
             <ng-template [ngIf]="element.alias == componentTypes.cardDetail.toString()">
                 <nm-card-details [position]="position+1" [element]="element"></nm-card-details>

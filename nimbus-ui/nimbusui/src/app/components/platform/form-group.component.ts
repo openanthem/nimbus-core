@@ -20,7 +20,7 @@ import { Param } from '../../shared/param-state';
 import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { WebContentSvc } from '../../services/content-management.service';
 import { ViewComponent } from '../../shared/param-annotations.enum';
-import { BaseElement } from './base-element.component';
+import { BaseLabel } from './base-label.component';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     provide: NG_VALUE_ACCESSOR,
@@ -65,7 +65,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
         </div>
     `
 })
-export class FrmGroupCmp extends BaseElement {
+export class FrmGroupCmp extends BaseLabel {
     
        @Input() elements: Param[] = [];
        @Input() form: FormGroup;
@@ -80,7 +80,6 @@ export class FrmGroupCmp extends BaseElement {
 
        ngOnInit() {
             super.ngOnInit();
-            this.updatePositionWithNoLabel();
        }
 
        hasParams() {
