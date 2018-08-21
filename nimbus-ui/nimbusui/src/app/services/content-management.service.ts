@@ -56,13 +56,13 @@ export class WebContentSvc {
         if (labelConfigs != null && labelConfigs.length > 0) {
             let labelConfig = labelConfigs.find(c => c.locale == ServiceConstants.LOCALE_LANGUAGE);
             labelContent = Converter.convert(labelConfig, labelContent);
-        } else if(this.showUnlabledAsVariableNames) {
+        } else if(this.showUnlabeledAsVariableNames) {
             labelContent.text = code;
         } 
         return labelContent;
     }
 
-    get showUnlabledAsVariableNames(): boolean {
+    get showUnlabeledAsVariableNames(): boolean {
         // TODO Is this useful? Maybe for testing? If so, make this as a configurable property and
         // return the value based on that property.
         return true;

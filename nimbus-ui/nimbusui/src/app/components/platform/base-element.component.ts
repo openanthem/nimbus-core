@@ -201,7 +201,7 @@ export class BaseElement {
     }
 
     updatePosition() {
-        if (this.labelConfig.text) {
+        if (this.labelConfig && this.labelConfig.text) {
             this.labelSize = this.getHeaderSize(this.position);
         } else {
             this.position--;
