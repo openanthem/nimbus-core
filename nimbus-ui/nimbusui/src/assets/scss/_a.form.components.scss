@@ -534,3 +534,43 @@ input.custom-control-input:disabled ~ .custom-control-indicator,
     @extend .d-inline-block;
     @extend .mr-3;
 }
+
+.ui-picklist {
+    .ui-picklist-listwrapper {
+        border: 1px solid grey;
+    }
+    .ui-picklist-caption {
+        text-align: left;
+    }
+    .ui-picklist-filter-container {
+        background-color: #fcf6d9;
+        .ui-picklist-filter {
+            padding-right: 40px;
+        }
+        .fa,span,span.fa {
+            position: absolute;
+            right: 1rem;
+            left: unset;
+            top: 1.5rem;
+            color: #006bc2;
+        }
+    }
+    .ui-picklist-list {
+      
+        .ui-picklist-item{
+            margin-bottom: .1rem;
+      
+            &:not(.ui-state-disabled):not(.ui-state-highlight):hover {
+                background-color: #ebebeb;
+            }
+            &:hover {
+                color: #fff;
+                background-color: #4c4c4c;
+            }
+            &.ui-state-active{
+                background-color: #d9edfd;
+
+            }
+        }
+    }
+}
