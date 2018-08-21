@@ -1,10 +1,12 @@
-<div class="mt-1 cardBody {{element.config?.uiStyles?.attributes?.cssClass}}">
+<div class="cardBody {{element.config?.uiStyles?.attributes?.cssClass}} {{cardType}} {{state}}">
     <ng-template ngFor let-param [ngForOf]="element?.type?.model?.params">
         <ng-template [ngIf]="param.config?.uiStyles?.attributes?.alias == componentTypes.cardDetailsHeader.toString()">
+          <div class="cardDetailsHeader">
+                <button *ngIf="expandable" attr.aria-expanded="{{!isHidden}}" title="Select to toggle" (click)="toggleState()" class="btn btn-icon toggleTrigger"></button>
             <span class="{{param.config?.uiStyles?.attributes?.cssClass}}" *ngFor="let field of param?.type?.model?.params">
                 <!-- ButtonGroup -->
                 <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.buttonGroup.toString()">
-                    <div class="">
+                    <div class="pull-right">
                         <nm-button-group [buttonList]="field.type?.model?.params" [cssClass]="field.config?.uiStyles?.attributes?.cssClass">
                         </nm-button-group>
                     </div>
@@ -18,8 +20,11 @@
                     <nm-card-details-field [element]="field" [(value)]="field.leafState"></nm-card-details-field>
                 </ng-template>
             </span>
+          </div> 
         </ng-template>
         <ng-template [ngIf]="param.config?.uiStyles?.attributes?.alias == componentTypes.cardDetailsBody.toString()">
+            <div  [@accordionAnimation]='expandable ? state : null' (@accordionAnimation.start)="animationStart($event)" (@accordionAnimation.done)="animationDone($event)" 
+                  attr.aria-hidden="{{isHidden}}" [ngClass]= "{'displayNone': isHidden}">
                 <span class="{{param.config?.uiStyles?.attributes?.cssClass}}" *ngFor="let field of param?.type?.model?.params">
                     <!-- StaticText-->
                     <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.staticText.toString()">
@@ -45,6 +50,7 @@
                         </div>
                     </ng-template>
                 </span>
+            </div>
         </ng-template>
     </ng-template>
 </div>
