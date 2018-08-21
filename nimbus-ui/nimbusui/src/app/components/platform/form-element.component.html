@@ -14,7 +14,6 @@
     <nm-single-checkbox id="{{id}}" *ngIf="element.config?.uiStyles?.attributes?.alias == componentTypes.checkBox.toString()" [formControlName]="element.config?.code"  ngDefaultControl [element]="element" [form]="form"></nm-single-checkbox>
     <nm-multi-select-listbox id="{{id}}" *ngIf="element.config?.uiStyles?.attributes?.alias == componentTypes.multiSelect.toString()" [element]="element"  [form]="form"></nm-multi-select-listbox>
     <nm-multiselect-card id="{{id}}"  *ngIf="element.config.uiStyles?.attributes?.alias == componentTypes.multiSelectCard.toString()" [formControlName]="element.config?.code" ngDefaultControl [element]="element" [form]="form"></nm-multiselect-card>
-    <nm-pickList id="{{id}}" *ngIf="element.config?.uiStyles?.attributes?.alias == componentTypes.pickList.toString()" [formControlName]="element.config?.code" ngDefaultControl [element]="element" [form]="form">form picklist</nm-pickList> 
     <nm-upload id="{{id}}" *ngIf="element.config?.uiStyles?.attributes?.alias == componentTypes.fileUpload.toString()" [formControlName]="element.config?.code" [element]="element" [form]="form"></nm-upload>
     <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias == componentTypes.grid.toString()">
         <nm-table
@@ -25,11 +24,11 @@
     <ng-template ngFor let-msg [ngForOf]="getMessages()">
         <nm-message [messageContext]="msg.context"  [messageArray]="msg.messageArray" [styleClass]="msg.styleClass"></nm-message>
     </ng-template>
-    <!-- <ng-template [ngIf]="element?.config?.uiStyles?.attributes?.alias === 'PickList'">
+    <ng-template [ngIf]="element?.config?.uiStyles?.attributes?.alias === 'PickList'">
         <ng-template ngFor let-selectededparam [ngForOf]="element?.type?.model?.params">
             <ng-template [ngIf]= "selectededparam?.config?.uiStyles?.attributes?.alias === 'PickListSelected'">
                 <nm-pickList id="{{id}}" [parent]="element" [selectedvalues]="selectededparam.values" [formControlName]="selectededparam.config?.code" ngDefaultControl [element]="selectededparam" [form]="form"></nm-pickList> 
             </ng-template>
         </ng-template>                
-    </ng-template> -->
+    </ng-template>
 </div>

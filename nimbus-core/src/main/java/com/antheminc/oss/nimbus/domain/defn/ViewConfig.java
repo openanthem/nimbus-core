@@ -1413,6 +1413,7 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface PickListSelected {
 		String alias() default "PickListSelected";
+		boolean postEventOnChange() default false;
 		
 	}
 	

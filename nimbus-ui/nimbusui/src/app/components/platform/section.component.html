@@ -68,14 +68,6 @@
             <ng-template [ngIf]="element.alias == componentTypes.comboBox.toString()">
                 <nm-comboBox id="{{code}}" [element]="element" [(ngModel)]="element.leafState"></nm-comboBox>
             </ng-template>
-            <ng-template [ngIf]="element?.alias === viewComponent.picklist.toString() && element?.visible == true">
-                <ng-template ngFor let-selectededparam [ngForOf]="element?.type?.model?.params">
-                    <ng-template [ngIf]= "selectededparam?.alias === viewComponent.selectedPicklist.toString()">
-                        <nm-pickList [element]="selectededparam" [parent]="element" [selectedvalues]="selectededparam.values" [(ngModel)]="selectededparam.leafState"></nm-pickList> 
-                    </ng-template>
-                </ng-template>
-                
-            </ng-template>
         </ng-template>
     </ng-template>
 </div>
