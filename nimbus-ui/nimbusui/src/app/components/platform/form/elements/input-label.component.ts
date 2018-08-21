@@ -16,37 +16,39 @@
  */
 'use strict';
 import { Component, Input } from '@angular/core';
-import { LabelConfig } from './../../../shared/param-config';
+import { LabelConfig } from '../../../../shared/param-config';
 
 /**
- * \@author Purnachander.Mashetty
+ * \@author Tony Lopez
+ * \@whatItDoes 
  * 
  * \@howToUse 
  * 
  */
 @Component({
-    selector: 'nm-label',
-    template: `
-        <H1 *ngIf="size=='H1'" [className]="cssClass">{{label}}</H1>
-        <H2 *ngIf="size=='H2'" [className]="cssClass">{{label}}</H2>
-        <H3 *ngIf="size=='H3'" [className]="cssClass">{{label}}</H3>
-        <H4 *ngIf="size=='H4'" [className]="cssClass">{{label}}</H4>
-        <H5 *ngIf="size=='H5'" [className]="cssClass">{{label}}</H5>
-        <H6 *ngIf="size=='H6'" [className]="cssClass">{{label}}</H6>
+  selector: 'nm-input-label',
+  template: `
+    <label
+        [className]="cssClass"
+        [attr.for]="for">
+        
+        {{label}} 
+        
         <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
-    `
+    </label>
+   `
 })
-
-export class Label {
+export class InputLabel {
 
     @Input() labelConfig: LabelConfig;
-    @Input() size: String;
-    @Input() labelClass: String;
+    @Input() for: string;
+    @Input() required: boolean;
 
     constructor() {
+        
     }
 
-     /**
+    /**
      * Get the tooltip help text for this element.
      */
     public get helpText(): string {
@@ -70,14 +72,10 @@ export class Label {
      * Get the css classes to apply for this element.
      */
     public get cssClass(): string {
-        let cssClass = '';
-        if (this.labelClass) {
-            cssClass += this.labelClass;
+        if (this.required)
+        if (!this.labelConfig) {
+            return undefined;
         }
-        if (this.labelConfig && this.labelConfig.cssClass) {
-            cssClass += ' ' + this.labelConfig.cssClass;
-        }
-        return cssClass;
+        return this.labelConfig.cssClass;
     }
 }
-

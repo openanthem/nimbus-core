@@ -15,14 +15,10 @@
  * limitations under the License.
  */
 'use strict';
-import { ControlValueAccessor } from '@angular/forms/src/directives';
-import { FormGroup, NG_VALUE_ACCESSOR, NgModel } from '@angular/forms';
-import { Component, Input, Output, EventEmitter, forwardRef, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { NG_VALUE_ACCESSOR, NgModel } from '@angular/forms';
+import { Component, forwardRef, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
-import { PageService } from '../../../../services/page.service';
-import { Param } from '../../../../shared/param-state';
-import { BaseElement } from './../../base-element.component';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
@@ -45,13 +41,21 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   template: `
   
     <fieldset>
-        <legend  [ngClass]="{'required': requiredCss, '': !requiredCss}">{{label}}
-        <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
+        <legend [ngClass]="{'required': requiredCss, '': !requiredCss}">{{label}}
+            <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
         </legend>
         <div class="checkboxHolder" >
-        <div class="form-checkrow" *ngFor="let val of element?.values; let i = index">
-        <p-radioButton name="{{element?.config?.code}}" [(ngModel)]="value"   [disabled]="disabled" [value]="val.code" [label]="val.label" (ngModelChange)="emitValueChangedEvent(this,$event)"></p-radioButton>
-    </div>
+            <div class="form-checkrow" *ngFor="let val of element?.values; let i = index">
+                <p-radioButton 
+                    name="{{element?.config?.code}}" 
+                    [(ngModel)]="value"
+                    [disabled]="disabled"
+                    [value]="val.code" 
+                    [label]="val.label" 
+                    (ngModelChange)="emitValueChangedEvent(this,$event)">
+                    
+                </p-radioButton>
+            </div>
         </div>
     </fieldset>
    `

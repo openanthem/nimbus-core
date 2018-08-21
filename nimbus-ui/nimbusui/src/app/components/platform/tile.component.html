@@ -5,7 +5,12 @@
 			<!-- <h2 class="card-title {{imgSrc}}" *ngIf="element?.config?.labelConfigs?.length > 0 && label != '' ">
 				{{label}} 
 			</h2> -->
-			<nm-label *ngIf="element?.config?.labelConfigs?.length > 0 && label != '' " [size]="labelSize" [label]="label" [labelClass]="imgSrc + ' card-title'" ></nm-label>
+			<nm-label *ngIf="labelConfig?.text != ''" 
+			[labelConfig]="labelConfig" 
+				[size]="labelSize" 
+				[labelClass]="imgSrc + ' card-title'">
+			
+			</nm-label>
 			<ng-template ngFor let-element [ngForOf]="nestedParams">
 				<!-- ButtonGroup -->
 				<ng-template [ngIf]="element.alias == componentTypes.buttonGroup.toString()">

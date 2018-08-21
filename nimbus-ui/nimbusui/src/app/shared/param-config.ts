@@ -291,6 +291,7 @@ export class LabelConfig implements Serializable<LabelConfig,string> {
     text: string;
     locale: string;
     helpText : string;
+    cssClass: string;
 
     deserialize( inJson ) {
         let obj = this;

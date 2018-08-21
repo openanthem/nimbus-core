@@ -17,19 +17,14 @@
 'use strict';
 import { LabelConfig, Constraint } from './../../../../shared/param-config';
 import { BaseControlValueAccessor } from './control-value-accessor.component';
-import { Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { Input, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, NgModel } from '@angular/forms';
 import { Param } from '../../../../shared/param-state';
-import { PageService } from '../../../../services/page.service';
 import { WebContentSvc } from '../../../../services/content-management.service';
-import { GenericDomain } from '../../../../model/generic-domain.model';
-import { ValidatorFn } from '@angular/forms/src/directives/validators';
 import { ValidationUtils } from '../../validators/ValidationUtils';
 import { ValidationConstraint } from './../../../../shared/validationconstraints.enum';
-import { FormControl, AbstractControl } from '@angular/forms/src/model';
 import { Subscription } from 'rxjs/Subscription';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
-import { Enum } from '../../../../shared/command.enum';
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -44,12 +39,11 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
     
     protected abstract model: NgModel;
     protected _elementStyle: string;
-    public label: string;
-    public helpText : string;
     inPlaceEditContext: any;
     showLabel: boolean = true;
     disabled: boolean;
     requiredCss:boolean = false;
+    labelConfig: LabelConfig;
 
     stateChangeSubscriber: Subscription;
     validationChangeSubscriber: Subscription;
@@ -78,9 +72,7 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
         
         this.value = this.element.leafState;
         this.disabled = !this.element.enabled;
-        let labelContent: LabelConfig = this.wcs.findLabelContent(this.element);
-        this.label = labelContent.text;
-        this.helpText = labelContent.helpText;
+        this.labelConfig = this.wcs.findLabelContent(this.element);
         this.requiredCss = ValidationUtils.applyelementStyle(this.element);
         if (this.form) {
             let frmCtrl = this.form.controls[this.element.config.code];
@@ -132,6 +124,26 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
      */
     public get type(): string {
         return this.element.config.uiStyles.attributes.type;
+    }
+
+    /**
+     * Get the tooltip help text for this element.
+     */
+    public get helpText(): string {
+        if (!this.labelConfig) {
+            return undefined;
+        }
+        return this.labelConfig.helpText;
+    }
+
+    /**
+     * Get the label text for this element.
+     */
+    public get label(): string {
+        if (!this.labelConfig) {
+            return undefined;
+        }
+        return this.labelConfig.text;
     }
     
     /**

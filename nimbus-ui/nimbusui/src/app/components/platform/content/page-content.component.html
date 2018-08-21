@@ -8,7 +8,12 @@
         <!-- <h1 class="page-title {{imgSrc}} ">
             {{label}}
         </h1> -->
-        <nm-label [labelClass]="imgSrc + ' page-title'" [size]="labelSize" [label]="label"></nm-label>
+        <nm-label *ngIf="labelConfig?.text"
+            [labelConfig]="labelConfig"
+            [labelClass]="imgSrc + ' page-title'" 
+            [size]="labelSize">
+        
+        </nm-label>
     </ng-template>
 
     <nm-tile [element]="tile" *ngFor="let tile of tilesList" [position]="position+1"></nm-tile>

@@ -41,9 +41,12 @@ import { HttpMethod } from './../../../../shared/command.enum';
     ],
     template: `
         <div [formGroup]="form"  [hidden]="!element?.visible">
-            <label [ngClass]="{'required': requiredCss, '': !requiredCss}">{{label}} 
-                <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
-            </label>
+            <nm-input-label
+                [labelConfig]="labelConfig"
+                [for]="element.config.code"
+                [required]="requiredCss">
+
+            </nm-input-label>
             <p-listbox [options]="optionsList" formControlName="{{element.config.code}}" multiple="multiple" 
             (onChange)="emitValueChangedEvent(this,value)" checkbox="checkbox" filter="filter" [style]="{'width':'190px','max-height':'250px'}"></p-listbox>
         </div>

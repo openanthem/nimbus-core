@@ -44,7 +44,10 @@ import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations
             <ng-template ngFor let-tab [ngForOf]="nestedParams">
                 <p-accordionTab  [selected]="tab?.config?.uiStyles?.attributes?.selected" *ngIf="tab?.visible">
                     <p-header>
-                        <nm-label [size]="labelSize" [label]="getTabHeader(tab)"></nm-label>
+                        <nm-label *ngIf="getTabLabelConfig(tab)"
+                            [labelConfig]="getTabLabelConfig(tab)"
+                            [size]="labelSize">
+                        </nm-label>
                         <span [ngClass]="getTabInfoClass(tab)" *ngIf="getInfoText(tab)">
                             {{getInfoText(tab)}}
                         </span>
@@ -119,9 +122,8 @@ export class AccordionMain extends BaseElement {
     /**
      * Get Tab label
      */
-    protected getTabHeader(param: Param): string {
-        let labelConfig: LabelConfig = this.wcsvc.findLabelContent(param);
-        return labelConfig.text;
+    protected getTabLabelConfig(param: Param): LabelConfig {
+        return this.wcsvc.findLabelContent(param);
     }
 
     /**

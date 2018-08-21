@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 'use strict';
-import { LabelConfig } from './../../shared/param-config';
 import { Component, Input, forwardRef } from '@angular/core';
 import { Param } from '../../shared/param-state';
 import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -82,15 +81,6 @@ export class FrmGroupCmp extends BaseElement {
        ngOnInit() {
             super.ngOnInit();
             this.updatePositionWithNoLabel();
-            if (this.hasParagraph(this.parentElement)) {
-                let labelConfig: LabelConfig = this.wcsv.findLabelContent(this.parentElement);
-                this.label = labelConfig.text;
-                this.helpText = labelConfig.helpText;
-            }
-       }
-
-       hasParagraph(element: Param): boolean {
-           return element && element.config && element.config.uiStyles && element.config.uiStyles.attributes && element.config.uiStyles.attributes.alias=='Paragraph';
        }
 
        hasParams() {
