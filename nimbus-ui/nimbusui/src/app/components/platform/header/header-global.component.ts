@@ -23,7 +23,8 @@ import { ServiceConstants } from './../../../services/service.constants';
 import { BreadcrumbService } from './../breadcrumb/breadcrumb.service';
 import { Breadcrumb } from '../../../model/breadcrumb.model';
 import { ActionDropdown } from '../form/elements/action-dropdown.component';
-import { Subscription, Observable } from 'rxjs';
+import { fromEvent as observableFromEvent,  Subscription, Observable } from 'rxjs';
+import { first, filter } from 'rxjs/operators';
 
 /**
  * \@author Mayur.Mehta
@@ -95,8 +96,8 @@ export class HeaderGlobal {
             e.state = 'openPanel';
             if (this.dropDowns && (this.mouseEventSubscription == undefined || this.mouseEventSubscription.closed))
                 this.mouseEventSubscription =
-                    Observable.fromEvent(document, 'click').filter((event: any) =>
-                        !this.isClickedOnDropDown(this.dropDowns.toArray(), event.target)).first().subscribe(() => {
+                    observableFromEvent(document, 'click').pipe(filter((event: any) =>
+                        !this.isClickedOnDropDown(this.dropDowns.toArray(), event.target)),first()).subscribe(() => {
                             this.dropDowns.toArray().forEach((item) => {
                                 item.isOpen = false;
                                 item.state = 'closedPanel';

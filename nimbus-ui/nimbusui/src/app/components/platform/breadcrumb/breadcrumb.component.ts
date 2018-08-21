@@ -18,8 +18,8 @@
 
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd, Params, PRIMARY_OUTLET } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
+import { of as observableOf,  Observable } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { DomainFlowCmp } from './../../domain/domain-flow.component';
 import { BreadcrumbService } from './breadcrumb.service';
 import { Breadcrumb } from './../../../model/breadcrumb.model';
@@ -59,7 +59,7 @@ export class BreadcrumbComponent implements OnInit {
         });
 
         //subscribe to the NavigationEnd event and load the breadcrumbs.
-        this._router.events.filter(event => event instanceof NavigationEnd).subscribe(event => {
+        this._router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(event => {
             this._loadBreadcrumbs();
         });
     }
@@ -80,7 +80,7 @@ export class BreadcrumbComponent implements OnInit {
         //get the child routes, return if there are no more children
         let children: ActivatedRoute[] = route.children;
         if (children.length === 0) {
-            return Observable.of(breadcrumbs);
+            return observableOf(breadcrumbs);
         }
 
         //iterate over each children

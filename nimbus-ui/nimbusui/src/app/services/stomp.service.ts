@@ -16,8 +16,7 @@
  */
 'use strict';
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs/Rx';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Subject, BehaviorSubject } from 'rxjs';
 import * as Stomp from 'stompjs';
 import { ServiceConstants } from './service.constants';
 import { LoggerService } from './logger.service';

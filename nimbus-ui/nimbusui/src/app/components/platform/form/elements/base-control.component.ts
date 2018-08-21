@@ -23,7 +23,8 @@ import { Param } from '../../../../shared/param-state';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { ValidationUtils } from '../../validators/ValidationUtils';
 import { ValidationConstraint } from './../../../../shared/validationconstraints.enum';
-import { Subscription } from 'rxjs/Subscription';
+import { FormControl, AbstractControl } from '@angular/forms/src/model';
+import { Subscription } from 'rxjs';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 /**
  * \@author Dinakar.Meda
@@ -151,23 +152,26 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
      * @param name 
      */
     public getConstraint(name: string):Constraint {
-        if(!this.element.config.validation.constraints) {
-            return; 
-        }
-        let constraints = this.element.config.validation.constraints.filter( constraint => constraint.name === name);
-        if(constraints.length >= 2) {
-            throw new Error('Constraint array list should not have more than one attribute '+name);
+        if (this.element.config.validation) {
+            if ( !this.element.config.validation.constraints) {
+                return;
+            }
+            let constraints = this.element.config.validation.constraints.filter( constraint => constraint.name === name);
+            if (constraints.length >= 2) {
+                throw new Error('Constraint array list should not have more than one attribute '+name);
+            } else {
+                return constraints[0];
+            }
         } else {
-           return constraints[0];
+            return;
         }
-     
     }
     /**
      * Get Max length of the attribute
      */
     public getMaxLength():number {
         let constraint = this.getConstraint(ValidationConstraint._max.value);
-        if(constraint) {
+        if (constraint) {
              return constraint.attribute.value;
         } else {
             return;

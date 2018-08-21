@@ -25,10 +25,9 @@ import { ModelEvent, Page, Result, ViewRoot } from '../shared/app-config.interfa
 import { Param, Model, Type, GridPage } from '../shared/param-state';
 import { CustomHttpClient } from './httpclient.service';
 
-import { Subject } from 'rxjs/Subject';
+import { Subject, Observable } from 'rxjs';
 import { GenericDomain } from '../model/generic-domain.model';
 import { RequestContainer } from '../shared/requestcontainer';
-import { Observable } from 'rxjs/Observable';
 import { ExecuteResponse, ExecuteException } from './../shared/app-config.interface';
 import { ParamUtils } from './../shared/param-utils';
 import { ParamAttribute } from './../shared/command.enum';

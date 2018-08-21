@@ -378,10 +378,14 @@ public class ViewConfig {
 
 			String cssClass() default "";
 		}
-
+		
 		String alias() default "CardDetail";
 
-		String cssClass() default "";
+		boolean expandable() default false;
+
+		boolean border() default false;
+		
+		String cssClass() default "";	
 
 		boolean draggable() default false;
 

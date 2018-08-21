@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 'use strict';
-import { Directive, ElementRef, Renderer, Input } from '@angular/core';
+import { Directive, ElementRef, Renderer2, Input, SimpleChanges } from '@angular/core';
 import { ParamConfig } from '../shared/param-config';
 /**
  * \@author Dinakar.Meda
@@ -30,14 +30,43 @@ import { ParamConfig } from '../shared/param-config';
 export class DisplayValueDirective {
     @Input('nmDisplayValue') displayValue: any;
     @Input('config') config: ParamConfig;
+    static placeholder: string = 'placeholder';
 
-    constructor(private el: ElementRef, private renderer: Renderer) {
+    constructor(private el: ElementRef, private renderer: Renderer2) {
     }
 
+    /*
+        Initialize the component with the styles. The field name and value are applied as style classes 
+        if the applyValueStyles attribute is set to true.
+    */
     ngOnInit() {
         if (this.config && this.config.uiStyles.attributes.applyValueStyles) {
-            this.renderer.setElementClass(this.el.nativeElement, this.config.code, true); // Field Name
-            this.renderer.setElementClass(this.el.nativeElement, this.displayValue, true); // Field Value
+            this.renderer.addClass(this.el.nativeElement, this.config.code); // Field Name
+            if (this.displayValue && this.displayValue.trim() != '') {
+                this.renderer.addClass(this.el.nativeElement, this.displayValue); // Field Value
+            } else {
+                this.renderer.addClass(this.el.nativeElement, DisplayValueDirective.placeholder); // placeholder Value
+            }
+        }
+    }
+
+    /*
+        Handle value changes 
+    */
+    ngOnChanges(changes: SimpleChanges) {
+        if (this.config && this.config.uiStyles.attributes.applyValueStyles) {
+            // Remove the previous value styles
+            if (changes.displayValue.previousValue === undefined) {
+                this.renderer.removeClass(this.el.nativeElement, DisplayValueDirective.placeholder);
+            } else {
+                this.renderer.removeClass(this.el.nativeElement, changes.displayValue.previousValue);
+            }
+            // Add current value styles
+            if (changes.displayValue.currentValue === undefined) {
+                this.renderer.addClass(this.el.nativeElement, DisplayValueDirective.placeholder);
+            } else {
+                this.renderer.addClass(this.el.nativeElement, changes.displayValue.currentValue);
+            }
         }
     }
 }

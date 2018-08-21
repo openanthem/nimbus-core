@@ -59,8 +59,11 @@ export class Form extends BaseElement implements OnInit, OnChanges {
     buttonList: Param[] = [];
     elementCss: string;
 
-    constructor(private service: FormElementsService, private pageSvc: PageService, private wcsv: WebContentSvc, private logger: LoggerService) {
-        super(wcsv);
+    constructor(private service: FormElementsService, 
+        private pageSvc: PageService, 
+        private wcsv: WebContentSvc, 
+        private logger: LoggerService) {
+            super(wcsv);
     }
 
     toggle() {
@@ -95,9 +98,23 @@ export class Form extends BaseElement implements OnInit, OnChanges {
     ngOnInit() {
         super.ngOnInit();
         this.logger.debug('Form-i ' + this.element.path);
-        
-        this.elementCss = this.element.config.uiStyles.attributes.cssClass;
-
+        if(this.element.config.uiStyles.attributes.cssClass === 'sixColumn') {
+            this.elementCss = 'col-lg-2 col-md-4 col-sm-12';
+        } else if(this.element.config.uiStyles.attributes.cssClass === 'fourColumn') {
+            this.elementCss = 'col-lg-3 col-md-6 col-sm-12';
+        } else if(this.element.config.uiStyles.attributes.cssClass === 'threeColumn') {
+            this.elementCss = 'col-lg-4 col-md-6 col-sm-12';
+        } else if(this.element.config.uiStyles.attributes.cssClass === 'twoColumn') {
+            this.elementCss = 'col-sm-12 col-md-6';        
+        } else if(this.element.config.uiStyles.attributes.cssClass === 'oneColumn') {
+            this.elementCss = 'col-sm-12';        
+        } else if(this.element.config.uiStyles.attributes.cssClass === 'inline') {
+            this.elementCss = 'd-inline-block mr-3';
+        } else if(this.element.config.uiStyles.attributes.cssClass === 'questionGroup') {
+            this.elementCss = ' questionGroup';
+        } else {
+            this.elementCss = this.element.config.uiStyles.attributes.cssClass;
+        }
         this.buildFormElements(this.model);
         this.updatePosition();
     }
