@@ -50,11 +50,13 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
                 <ng-template [ngIf]="!element.type?.model?.params?.length || element.config?.type?.collection">
                     <nm-element id="{{id}}" [element]="element" [elementCss]="elementCss" [form]="form"></nm-element>
                 </ng-template>
-                <ng-template [ngIf]="element.type?.model?.params?.length && element.config?.uiStyles?.attributes?.alias!=viewComponent.buttongroup.toString() && !element?.config?.type?.collection">
-                    <fieldset class="subQuestion" [hidden]="!element?.visible">
-                        <nm-frm-grp [elements]="element.type?.model?.params" [form]="form.controls[element.config?.code]" [elementCss]="elementCss" [parentElement]="element"></nm-frm-grp>
-                    </fieldset>
-                </ng-template>
+            <!--    <ng-template [ngIf]="element?.config?.uiStyles?.attributes?.alias === 'PickList'">
+                    <ng-template ngFor let-selectededparam [ngForOf]="element?.type?.model?.params">
+                        <ng-template [ngIf]= "selectededparam?.config?.uiStyles?.attributes?.alias === 'PickListSelected'">
+                            <nm-element id="{{id}}" [element]="element" [elementCss]="elementCss" [form]="form"></nm-element>
+                        </ng-template>
+                    </ng-template>
+                </ng-template>  -->         
                  <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias==viewComponent.button.toString()">
                     <nm-button [form]="form" [element]="element"> </nm-button>
                 </ng-template>

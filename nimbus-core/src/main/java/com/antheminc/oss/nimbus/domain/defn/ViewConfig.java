@@ -1401,6 +1401,21 @@ public class ViewConfig {
 		boolean showTargetControls() default false;
 	}
 	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface PickListAvailable {
+		String alias() default "PickListAvailable";
+	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface PickListSelected {
+		String alias() default "PickListSelected";
+		
+	}
+	
 	/**
 	 * <p><b>Expected Field Structure</b>
 	 * 

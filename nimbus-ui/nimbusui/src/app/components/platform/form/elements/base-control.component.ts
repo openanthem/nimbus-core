@@ -139,16 +139,19 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
      * @param name 
      */
     public getConstraint(name: string):Constraint {
-        if(!this.element.config.validation.constraints) {
-            return; 
-        }
-        let constraints = this.element.config.validation.constraints.filter( constraint => constraint.name === name);
-        if(constraints.length >= 2) {
-            throw new Error('Constraint array list should not have more than one attribute '+name);
+        if ( this.element.config.validation) {
+            if ( !this.element.config.validation.constraints) {
+                return;
+            }
+            let constraints = this.element.config.validation.constraints.filter( constraint => constraint.name === name);
+            if(constraints.length >= 2) {
+                throw new Error('Constraint array list should not have more than one attribute '+name);
+            } else {
+                return constraints[0];
+            }
         } else {
-           return constraints[0];
+            return;
         }
-     
     }
     /**
      * Get Max length of the attribute

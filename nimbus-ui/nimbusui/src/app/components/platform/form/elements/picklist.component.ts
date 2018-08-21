@@ -25,6 +25,8 @@ import { WebContentSvc } from '../../../../services/content-management.service';
 import { PageService } from '../../../../services/page.service';
 import { PickList } from 'primeng/primeng';
 import { BaseElement } from '../../base-element.component';
+import { MAX_LENGTH_VALIDATOR } from '@angular/forms/src/directives/validators';
+import { BaseControl } from './base-control.component';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -46,43 +48,58 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
         CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR,WebContentSvc
     ],
     template: `
-        <!--<div [hidden]="!element?.visible" *ngIf="element.config?.uiStyles?.attributes?.hidden==false">-->
-        <label [attr.for]="element.config?.code"  [ngClass]="{'required': requiredCss, '': !requiredCss}">{{label}}
+    <!--<div [hidden]="!parent?.visible" *ngIf="element.config?.uiStyles?.attributes?.hidden==false">-->
+        <label [attr.for]="parent.config?.code"  [ngClass]="{'required': requiredCss, '': !requiredCss}">{{label}}
             <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
         </label>
-        <div>
-            <fieldset [disabled]="!element?.enabled">
-                <p-pickList #picklist [source]="element.values" 
+        <ng-template ngFor let-param [ngForOf]="parent?.type?.model?.params">
+            <ng-template [ngIf]= "param?.config?.uiStyles?.attributes?.alias === 'PickListAvailable'">
+            
+            <div> 
+            <fieldset [disabled]="false">
+                <p-pickList #picklist [source]="showSourceList()" 
                     filterBy="label"
-                    [sourceHeader] = "element.config?.uiStyles?.attributes.sourceHeader" 
-                    [targetHeader]="element.config?.uiStyles?.attributes.targetHeader" 
-                    [disabled]="!element?.enabled"
+                    [sourceHeader] = "'Available '" 
+                    [targetHeader]="'Selected'" 
+                    [disabled]="false"
                     [target]="targetList" pDroppable="dd" [responsive]="true" 
-                    [showSourceControls]="element.config?.uiStyles?.attributes?.showSourceControls"
-                    [showTargetControls]="element.config?.uiStyles?.attributes?.showTargetControls"
+                    [showSourceControls]="false"
+                    [showTargetControls]="false"
                     (onMoveToTarget)="updateListValues($event)" (onMoveToSource)="updateListValues($event)">
                     <ng-template let-itm pTemplate="item">
                         <div class="ui-helper-clearfix">
                             <div style="font-size:14px;float:right;margin:15px 5px 0 0" pDraggable="dd"  
-                                (onDragStart)="dragStart($event, itm)" (onDragEnd)="dragEnd($event)">{{itm.label}} </div>
+                                (onDragStart)="dragStart($event, itm)" (onDragEnd)="dragEnd($event)">
+                                {{itm.label ? itm.label : getFromSelectedList(itm)}}
+                            </div>
                         </div>
                     </ng-template>
-                </p-pickList> 
+                </p-pickList>   
              </fieldset>   
-        </div>
+            </div>
+        </ng-template>
+    </ng-template>
+
+           
+        
+       
    `
 })
 
 export class OrderablePickList extends BaseElement implements OnInit, ControlValueAccessor {
-
     @Input() element: Param;
+    @Input() parent : Param;
+    @Input() selectedvalues : Values[];
+    sourcevalues: Values[];
     @Input() form: FormGroup;
     @Input('value') _value ;
     @ViewChild('picklist') pickListControl: PickList;
     targetList: any[];
     private draggedItm: any;
     private selectedOptions: string[] = [];
+    private selectedPickListParam: Param;
     private _disabled: boolean;
+    private localValues: Values[];
     public onChange: any = (_) => { /*Empty*/ }
     public onTouched: any = () => { /*Empty*/ }
     @Output() controlValueChanged =new EventEmitter();
@@ -97,17 +114,32 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
     }
 
     ngOnInit() {
-        this.loadLabelConfigByCode(this.element.config.code, this.element.config.labelConfigs);
-        this.requiredCss = ValidationUtils.applyelementStyle(this.element);
+    //    this.localValues = this.element.values;
+        this.loadLabelConfigByCode(this.parent.config.code, this.parent.config.labelConfigs);
+        this.requiredCss = ValidationUtils.applyelementStyle(this.parent);
         //set the default target list when the page loads to the config state
-        if(this.element.leafState !=null) {
+        console.log('target list' + this.element.leafState);
+            
+        // First check if the picklist has any values that are selected onload
+        if(this.element.leafState != null) {
             this.targetList = this.element.leafState;
         } else {
             this.targetList = [];
         }
 
+        // populate the source list based on the target, i.e if the value is already present in target - do not show in source
+        this.sourcevalues = this.showSourceList();
+
+        this.controlValueChanged.subscribe(($event) => {
+             if (this.parent.config.uiStyles.attributes.postEventOnChange) {
+                this.pageService.postOnChange($event.path , 'state', JSON.stringify($event.leafState));
+             }
+         });
+
         if( this.form!= null) {
-            let frmCtrl = this.form.controls[this.element.config.code]
+            
+        //    const frmCtrl = this.form.controls['category'].controls;
+            const frmCtrl = this.form.controls[this.element.config.code];
             if(frmCtrl != null) {
                 //rebind the validations as there are dynamic validations along with the static validations
                 if(this.element.activeValidationGroups != null && this.element.activeValidationGroups.length > 0) {
@@ -118,11 +150,13 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
 
                 this.pageService.eventUpdate$.subscribe(event => {
                     let frmCtrl = this.form.controls[event.config.code];
+                //    this.updateLocalValues(this.element.values);
                     if(frmCtrl!=null && event.path.startsWith(this.element.path)) {
-                        if(event.leafState!=null)
+                        if(event.leafState!=null) {
                             frmCtrl.setValue(event.leafState);
-                        else
+                        } else {
                             frmCtrl.reset();
+                        }
                     }
                 });
                 this.pageService.validationUpdate$.subscribe(event => {
@@ -142,15 +176,18 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
                         }
                     }
                 });
+               
                 this.controlValueChanged.subscribe(($event) => {
-                    if ($event.config.uiStyles.attributes.postEventOnChange) {
-                       this.pageService.postOnChange($event.path, 'state', JSON.stringify($event.leafState));
-                    }
-                });
+                    // if ($event.config.uiStyles.attributes.postEventOnChange) {
+                        this.pageService.postOnChange($event.path , 'state', JSON.stringify($event.leafState));
+                    // }
+                 });
             }
             
         }
     }
+
+  
 
     emitValueChangedEvent() {
         if(this.form == null || (this.form.controls[this.element.config.code]!= null && this.form.controls[this.element.config.code].valid)) {
@@ -161,6 +198,7 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
 
     setState(event:any, frmInp:any) {
         frmInp.element.leafState = event;
+        this.element.leafState = event;
     }
 
     updateListValues(event: any) {
@@ -169,7 +207,11 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
         } else {
             this.selectedOptions = [];
             this.targetList.forEach(element => {
-                this.selectedOptions.push(element.code);
+                if (element.code) {
+                    this.selectedOptions.push(element.code);
+                } else {
+                    this.selectedOptions.push(element);
+                }
             });
             this.value = this.selectedOptions;
         }
@@ -226,7 +268,7 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
             } else {
                 this.selectedOptions = [];
                 this.targetList.forEach(element => {
-                    this.selectedOptions.push(element.code);
+                    this.selectedOptions.push(element);
                 });
                 this.value = this.selectedOptions;
             }
@@ -250,4 +292,99 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
         this.disabled = isDisabled;
   }
 
+   public getlabel(itm: any): string{
+        console.log('get label for '+itm);
+        let displayVal: string;
+        console.log('values from config ' + this.element.values[0].code);
+        console.log('values from local store' + this.localValues[0].code);
+
+        const values = this.localValues;
+        values.forEach(value => {
+            console.log('loop for ' + value.code);
+            if (value.code === itm) {
+                console.log('value code [' + value.code + '] same as itm [' + itm + ']');
+                displayVal = value.label;
+            }
+            console.log('-----------------');
+        });
+        console.log('display value ' + displayVal);
+        if (displayVal === undefined) {
+            displayVal = itm;
+        }
+        console.log('display value finally ' + displayVal);
+        console.log('****************');
+        return displayVal;
+   }
+
+   public getFromSelectedList(itm : any) : string {
+    console.log('get label for '+itm);
+    let displayVal: string;
+    const values = this.selectedvalues;
+    console.log('selectedPickListParam values size :: ' +this.selectedvalues.length);
+    values.forEach(value => {
+        console.log('loop for ' + value.code);
+        if (value.code === itm) {
+            console.log('value code [' + value.code + '] same as itm [' + itm + ']');
+            displayVal = value.label;
+        }
+        console.log('-----------------');
+    });
+    console.log('display value ' + displayVal);
+    if (displayVal === undefined) {
+        displayVal = itm;
+    }
+    console.log('display value finally ' + displayVal);
+    console.log('****************');
+    return displayVal;
+   }
+
+
+
+   updateLocalValues(updatedValues : Values[]) {
+    const tempList = this.localValues;
+    console.log('templist of values ' + tempList.length);
+    if (updatedValues) {
+        updatedValues.forEach(newval => {
+            console.log('check if new value ['+newval.code+'] exists in templist');
+            if (!tempList.includes(newval)) {
+                console.log('added ['+newval.code+'] to the list');
+                this.localValues.push(newval);
+            }
+        });
+    }
+    this.localValues.forEach(local => {
+        console.log('['+local.code+']');
+    });
+}
+
+    showSourceList() : Values[] {
+        let configSrcList: Values[];
+        const availableParam : Param = this.parent.type.model.params.find( param => 
+            param.config.uiStyles.attributes.alias === 'PickListAvailable');
+
+        configSrcList = availableParam.values;
+        this.sourcevalues = configSrcList;
+        if (this.targetList && this.targetList.length > 0) {
+            configSrcList.forEach(val => {
+                console.log('**** outer loop + ' +val.code);
+                this.targetList.forEach( target => {
+                    console.log('--- inner loop ' + target);
+                    if(val.code === target || val.code === target.code) {
+                        console.log('loop match ');
+                        this.sourcevalues.splice(this.sourcevalues.indexOf(val),1);
+                        console.log(' after splice ' + this.sourcevalues.length);
+                    }
+                });
+                console.log('--- end of inner loop --- ');
+            });
+            console.log('*** end of outer loop *** ');
+        }
+
+        console.log('### finally ###');
+        this.sourcevalues.forEach(e => {
+            console.log('source code [' + e.code + ']');
+        });
+        console.log('### end ###');
+        return this.sourcevalues;
+    }
 }
