@@ -18,8 +18,6 @@
 
 import { Injectable, EventEmitter } from '@angular/core';
 import { Http, Headers, RequestOptions } from '@angular/http';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/share';
 import { ServiceConstants } from './service.constants';
 import { LabelConfig } from './../shared/param-config';
 import { Param } from './../shared/param-state';

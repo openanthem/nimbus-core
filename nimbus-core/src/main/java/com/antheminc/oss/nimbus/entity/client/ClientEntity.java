@@ -16,6 +16,7 @@
 package com.antheminc.oss.nimbus.entity.client;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
@@ -44,7 +45,8 @@ public class ClientEntity extends AbstractEntity.IdLong {
 	public enum Type {
 		
         CLIENT,
-		ORG;
+		ORG,
+		APP;
 	}
 	
 	public enum Status {
@@ -63,6 +65,7 @@ public class ClientEntity extends AbstractEntity.IdLong {
 	@NotNull
 	private String name;
 	
+	
 	@NotNull
 	//@Model.Param.Values(url="Anthem/icr/p/staticCodeValue/_search?fn=lookup&where=staticCodeValue.paramCode.eq('/orgStatus')")
 	private Status status;
@@ -75,7 +78,8 @@ public class ClientEntity extends AbstractEntity.IdLong {
 
 	//@Ignore private ClientEntity parentEntity;
 	
-	private String parentorganizationId;
+	private Long parentEntity;
+	private List<ClientEntity> nestedEntity;
 	
 	//@Ignore private Set<ClientAccessEntity> selectedAccesses;
 	
@@ -103,4 +107,6 @@ public class ClientEntity extends AbstractEntity.IdLong {
 //		}
 //		getAssociatedRoles().add(cr);
 //	}
+	
+	
 }

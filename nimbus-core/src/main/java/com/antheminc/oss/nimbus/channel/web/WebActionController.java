@@ -39,7 +39,6 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextLoader;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
-import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.support.Holder;
 import com.antheminc.oss.nimbus.support.LoggingLevelService;
 
@@ -99,7 +98,7 @@ public class WebActionController {
 	public static final String URI_PATTERN_P = "/{clientCode}/**/p";
 	public static final String URI_PATTERN_P_OPEN = URI_PATTERN_P + "/**";
 
-	public static final Set<Action> notifyActionsToMatch = EnumSet.of(Action._replace, Action._update);
+	private static final Set<Action> notifyActionsToMatch = EnumSet.of(Action._replace, Action._update);
 	
 	@Autowired WebCommandDispatcher dispatcher;
 	

@@ -18,7 +18,7 @@
 
         <div class="form-group" *ngIf="!element.config.uiStyles.attributes.inplaceEdit && !isDate(element.config.type.name)">
             <label class="" *ngIf="element.config.uiStyles.attributes.showName==true">{{label}}</label>
-            <div class="textWrapBreakWord" [nmDisplayValue]='value ? value : placeholder' [config]='element.config'>
+            <div class="textWrapBreakWord" [nmDisplayValue]='element.leafState' [config]='element.config'>
                 <span class="fieldValue">{{value ? value : placeholder}}&nbsp;</span>
             </div>    
         </div>

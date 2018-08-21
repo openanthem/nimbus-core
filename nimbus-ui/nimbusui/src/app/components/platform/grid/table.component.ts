@@ -22,13 +22,11 @@ import {
 } from '@angular/core';
 import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { ControlValueAccessor } from '@angular/forms/src/directives';
-import { Subscription } from 'rxjs/Subscription';
 import { OverlayPanel, Paginator } from 'primeng/primeng';
 import { Table } from 'primeng/table';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/fromEvent';
 import * as moment from 'moment';
-
+import { fromEvent as observableFromEvent,  Subscription ,  Observable } from 'rxjs';
+import { first, filter } from 'rxjs/operators';
 import { ParamUtils } from './../../../shared/param-utils';
 import { WebContentSvc } from '../../../services/content-management.service';
 import { DateTimeFormatPipe } from '../../../pipes/date.pipe';
@@ -591,8 +589,8 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
             e.state = 'openPanel';
             if (this.dropDowns && (this.mouseEventSubscription == undefined || this.mouseEventSubscription.closed))
                 this.mouseEventSubscription =
-                    Observable.fromEvent(document, 'click').filter((event: any) =>
-                        !this.isClickedOnDropDown(this.dropDowns.toArray(), event.target)).first().subscribe(() => {
+                    observableFromEvent(document, 'click').pipe(filter((event: any) =>
+                        !this.isClickedOnDropDown(this.dropDowns.toArray(), event.target)),first()).subscribe(() => {
                             this.dropDowns.toArray().forEach((item) => {
                                 item.isOpen = false;
                                 item.state = 'closedPanel';

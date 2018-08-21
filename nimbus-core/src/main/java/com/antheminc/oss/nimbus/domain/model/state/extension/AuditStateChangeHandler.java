@@ -126,10 +126,11 @@ public class AuditStateChangeHandler implements OnStateChangeHandler<Audit> {
 		ModelRepository db = getRepositoryFactory().get(repo);
 		
 		// autogenerate id
-		Long id = getIdSequenceRepo().getNextSequenceId(repo != null && StringUtils.isNotBlank(repo.alias())?repo.alias():auditHistoryAlias);
+		String repoAlias = StringUtils.isNotBlank(repo.alias()) ? repo.alias() : auditHistoryAlias;
+		Long id = getIdSequenceRepo().getNextSequenceId(repoAlias);
 		ae.setId(id);
 		
-		db._save(StringUtils.isNotBlank(repo.alias()) ? repo.alias() :auditHistoryAlias, ae);
+		db._save(repoAlias, ae);
 	}
 	
 	private String findAuditHistoryAlias(ModelConfig<?> auditConfig, Audit configuredAnnotation) {

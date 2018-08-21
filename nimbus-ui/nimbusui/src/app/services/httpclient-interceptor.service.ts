@@ -17,12 +17,14 @@
 'use strict';
 import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpHandler, HttpEvent, HttpRequest, HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { ServiceConstants } from './service.constants';
 import { ExecuteException, ExecuteResponse, MultiOutput } from '../shared/app-config.interface';
 import { PageService } from './page.service';
 import { ConfigService } from './config.service';
 import { SessionStoreService } from './session.store';
+import { RedirectHandle } from '../shared/app-redirecthandle.interface';
 /**
  * \@author Swetha.Vemuri
  * \@whatItDoes
@@ -44,7 +46,21 @@ export class CustomHttpClientInterceptor implements HttpInterceptor {
      * @param next
      */
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        return next.handle(req).do((event: HttpEvent<any>) => {
+        // Token generated for the first time, and not in session yet. Retrieve from header and store in session
+        if (! this.sessionStore.get(ServiceConstants.AUTH_TOKEN_KEY)) {
+            const token = req.headers.get(ServiceConstants.TOKEN_HEADER_KEY);
+            // JWT token will be in the format Authorization : Bearer <token>
+            const token_parts = [];
+            if (token) {
+                token.split(' ').forEach(
+                    part => { token_parts.push(part);
+                });
+                if (token_parts && token_parts[0] === 'Bearer' && token_parts[1]) {
+                    this.sessionStore.set(ServiceConstants.AUTH_TOKEN_KEY, token_parts[1]);
+                }
+            }
+        }
+        return next.handle(req).pipe(tap((event: HttpEvent<any>) => {
             const exception = new ExecuteException();
             exception.message = null;
             exception.code = null;
@@ -65,6 +81,6 @@ export class CustomHttpClientInterceptor implements HttpInterceptor {
                         this.pageSvc.notifyErrorEvent(exception);
                     }
                 }
-        });
+        }));
     }
 }

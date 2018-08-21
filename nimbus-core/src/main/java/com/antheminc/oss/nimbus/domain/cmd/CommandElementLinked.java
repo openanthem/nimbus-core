@@ -110,9 +110,9 @@ public class CommandElementLinked extends CommandElement implements Serializable
 		
 		int order = elem.getType().compareTo(getType());
 		
-		if(order == -1) throw new IllegalArgumentException();
+		if(order < 0) throw new IllegalArgumentException();
 		
-		if (order == 0 && !Type.allowedRecursive.contains(getType()))
+		if (order == 0 && !getType().isRecursive())
 			throw new IllegalArgumentException(
 					"Element found which must not be recursive: " + elem.getType() + " with uri: " + elem.getUri());
 		

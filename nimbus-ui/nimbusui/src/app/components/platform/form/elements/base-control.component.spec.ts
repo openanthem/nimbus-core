@@ -186,4 +186,32 @@ describe('BaseControl', () => {
     expect(app.help).toBeTruthy();
   }));
 
+  it("getConstraint() should return undefined", async(() => {
+    app.element = { config: { validation: { constraints: false } } };
+    expect(app.getConstraint("test")).toBeFalsy();
+  }));
+ 
+  it("getConstraint() should return constraints object", async(() => {
+    app.element = { config: { validation: { constraints: [{ name: "test" }] } } };
+    expect(app.getConstraint("test")).toEqual({ name: "test" });
+  }));
+ 
+  it("getConstraint() should throw error", async(() => {
+    app.element = { config: { validation: { constraints: [{ name: "test" }, { name: "test" }] } } };
+    expect(() => {
+      app.getConstraint("test");
+    }).toThrow();
+  }));
+ 
+  it("getMaxLength() should return constraint.attribute.value", async(() => {
+    const constraint = { attribute: { value: 123 } };
+    spyOn(app, "getConstraint").and.returnValue(constraint);
+    expect(app.getMaxLength()).toEqual(123);
+  }));
+ 
+  it("getMaxLength() should return undefined", async(() => {
+    spyOn(app, "getConstraint").and.returnValue("");
+    expect(app.getMaxLength()).toBeFalsy();
+  }));
+ 
 });

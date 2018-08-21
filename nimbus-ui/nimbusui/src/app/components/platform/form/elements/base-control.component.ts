@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 'use strict';
-import { LabelConfig } from './../../../../shared/param-config';
+import { LabelConfig, Constraint } from './../../../../shared/param-config';
 import { BaseControlValueAccessor } from './control-value-accessor.component';
 import { Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, NgModel } from '@angular/forms';
@@ -27,8 +27,9 @@ import { ValidatorFn } from '@angular/forms/src/directives/validators';
 import { ValidationUtils } from '../../validators/ValidationUtils';
 import { ValidationConstraint } from './../../../../shared/validationconstraints.enum';
 import { FormControl, AbstractControl } from '@angular/forms/src/model';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
+import { Enum } from '../../../../shared/command.enum';
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -54,7 +55,7 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
     validationChangeSubscriber: Subscription;
     onChangeSubscriber: Subscription;
 
-    constructor(private controlService: ControlSubscribers, private wcs: WebContentSvc, private cd: ChangeDetectorRef) {
+    constructor(protected controlService: ControlSubscribers, private wcs: WebContentSvc, private cd: ChangeDetectorRef) {
         super();
     }
 
@@ -131,5 +132,37 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
      */
     public get type(): string {
         return this.element.config.uiStyles.attributes.type;
+    }
+    
+    /**
+     * Return constraint matches param attribute
+     * @param name 
+     */
+    public getConstraint(name: string):Constraint {
+        if (this.element.config.validation) {
+            if ( !this.element.config.validation.constraints) {
+                return;
+            }
+            let constraints = this.element.config.validation.constraints.filter( constraint => constraint.name === name);
+            if (constraints.length >= 2) {
+                throw new Error('Constraint array list should not have more than one attribute '+name);
+            } else {
+                return constraints[0];
+            }
+        } else {
+            return;
+        }
+    }
+    /**
+     * Get Max length of the attribute
+     */
+    public getMaxLength():number {
+        let constraint = this.getConstraint(ValidationConstraint._max.value);
+        if (constraint) {
+             return constraint.attribute.value;
+        } else {
+            return;
+        }
+
     }
 }

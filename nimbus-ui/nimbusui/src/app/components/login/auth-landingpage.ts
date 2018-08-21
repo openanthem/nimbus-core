@@ -18,6 +18,11 @@
 
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { CustomHttpClient } from '../../services/httpclient.service';
+import { LoggerService } from '../../services/logger.service';
+import { SessionStoreService } from '../../services/session.store';
+import { ServiceConstants } from '../../services/service.constants';
+import { RedirectHandle } from '../../shared/app-redirecthandle.interface';
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 
@@ -26,26 +31,21 @@ import { Router } from '@angular/router';
  * 
  */
 @Component({
-    template: ` 
-    
-    <button class = "btn btn-primary" type="button" (click)="routeCaseManager()">Case Manager</button>
-    <button type="button"  class = "btn btn-danger" (click)="routeAdmin()">Admin</button>
+    template: `
    `
 })
 export class LandingPage {
 
-    constructor(private _router: Router) {
-    }
+    constructor(private http: CustomHttpClient, private _router: Router, 
+        private _logger: LoggerService, private sessionStore: SessionStoreService) {
 
-    ngOnInit() {
+        const url: string = ServiceConstants.WEB_APP_POST_LOGIN_URL;
+        this.http.get(url).subscribe(
+            data => {
+                    const redirect = new RedirectHandle().deserialize(data);
+                    this.sessionStore.set(ServiceConstants.AUTH_TOKEN_KEY, redirect.token);
+                    ServiceConstants.APP_COMMAND_URL = redirect.commandUrl;
+                    this._router.navigateByUrl(redirect.redirectRoute);
+            });
     }
-
-    routeCaseManager() {
-         this._router.navigate(['/main/f']);
-    }
-
-    routeAdmin() {
-         this._router.navigate(['/main/a']);
-    }
-
 }

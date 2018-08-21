@@ -35,6 +35,8 @@ public enum Constants {
 	MARKER_ELEM_ID("#elemId"),
 	MARKER_COL_PARAM("col"),
 	MARKER_COL_PARAM_EXPR("<!col!>"),
+	MARKER_ENV("#env"),
+	
 	
 	SERVER_PAGE_EXP_MARKER("page=y"),
 	SERVER_PAGE_CRITERIA_EXPR_MARKER("pageCriteria"),
