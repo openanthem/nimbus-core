@@ -48,7 +48,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
         CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR,WebContentSvc
     ],
     template: `
-    <!--<div [hidden]="!parent?.visible" *ngIf="element.config?.uiStyles?.attributes?.hidden==false">-->
+    <!--<div [hidden]="!parent?.visible" *ngIf="parent.config?.uiStyles?.attributes?.hidden==false">-->
         <label [attr.for]="parent.config?.code"  [ngClass]="{'required': requiredCss, '': !requiredCss}">{{label}}
             <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
         </label>
@@ -57,11 +57,11 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
             
             <div> 
             <fieldset [disabled]="false">
-                <p-pickList #picklist [source]="showSourceList()" 
+                <p-pickList #picklist [source]="parent.values" 
                     filterBy="label"
                     [sourceHeader] = "'Available '" 
                     [targetHeader]="'Selected'" 
-                    [disabled]="false"
+                    [disabled]="!parent.enabled"
                     [target]="targetList" pDroppable="dd" [responsive]="true" 
                     [showSourceControls]="false"
                     [showTargetControls]="false"
@@ -99,7 +99,6 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
     private selectedOptions: string[] = [];
     private selectedPickListParam: Param;
     private _disabled: boolean;
-    private localValues: Values[];
     public onChange: any = (_) => { /*Empty*/ }
     public onTouched: any = () => { /*Empty*/ }
     @Output() controlValueChanged =new EventEmitter();
@@ -114,7 +113,6 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
     }
 
     ngOnInit() {
-    //    this.localValues = this.element.values;
         this.loadLabelConfigByCode(this.parent.config.code, this.parent.config.labelConfigs);
         this.requiredCss = ValidationUtils.applyelementStyle(this.parent);
         //set the default target list when the page loads to the config state
@@ -128,10 +126,10 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
         }
 
         // populate the source list based on the target, i.e if the value is already present in target - do not show in source
-        this.sourcevalues = this.showSourceList();
+    //    this.sourcevalues = this.showSourceList();
 
         this.controlValueChanged.subscribe(($event) => {
-             if (this.parent.config.uiStyles.attributes.postEventOnChange) {
+             if ($event.config.code === 'selected' && this.parent.config.uiStyles.attributes.postEventOnChange) {
                 this.pageService.postOnChange($event.path , 'state', JSON.stringify($event.leafState));
              }
          });
@@ -150,7 +148,6 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
 
                 this.pageService.eventUpdate$.subscribe(event => {
                     let frmCtrl = this.form.controls[event.config.code];
-                //    this.updateLocalValues(this.element.values);
                     if(frmCtrl!=null && event.path.startsWith(this.element.path)) {
                         if(event.leafState!=null) {
                             frmCtrl.setValue(event.leafState);
@@ -215,7 +212,54 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
             });
             this.value = this.selectedOptions;
         }
+    //    this.controlValueChanged.emit(this.parent);
         this.emitValueChangedEvent();
+    }
+
+    updateSourceListValues(event: any) {
+        if(this.targetList.length === 0) {
+            this.value = null;
+        } else {
+            this.selectedOptions = [];
+            this.targetList.forEach(element => {
+                if (element.code) {
+                    this.selectedOptions.push(element.code);
+                } else {
+                    this.selectedOptions.push(element);
+                }
+            });
+            this.value = this.selectedOptions;
+        }
+    //    this.controlValueChanged.emit(this.parent);
+    // update the source values based on target list on load + onMoveToSource
+    this.parent.values = this.removeduplicates(event.items[0]);
+        this.emitValueChangedEvent();
+    }
+
+    removeduplicates(item:any) : Values[]{
+        //the new item will already be added to parent.values ; since primeng property source is bound to parent.values
+        let codelist = [];
+        this.parent.values.forEach(codeval => {
+            if(codeval.code) {
+                codelist.push(codeval.code);
+            } else {
+                codelist.push(codeval);
+            }
+        });
+
+        var uniquecodes = codelist.filter(function(code,index) {
+            return codelist.indexOf(code) >= index;
+        });
+
+        let valuelist: Values[];
+        uniquecodes.forEach(code => {
+            if(code !== undefined) {
+                valuelist.push(this.convertCodeToValue(code));
+            }
+        });
+
+        return valuelist;
+
     }
 
     get value() {
@@ -292,70 +336,19 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
         this.disabled = isDisabled;
   }
 
-   public getlabel(itm: any): string{
-        console.log('get label for '+itm);
+   public getFromSelectedList(itm : any) : string {
         let displayVal: string;
-        console.log('values from config ' + this.element.values[0].code);
-        console.log('values from local store' + this.localValues[0].code);
-
-        const values = this.localValues;
+        const values = this.selectedvalues;
         values.forEach(value => {
-            console.log('loop for ' + value.code);
             if (value.code === itm) {
-                console.log('value code [' + value.code + '] same as itm [' + itm + ']');
                 displayVal = value.label;
             }
-            console.log('-----------------');
         });
-        console.log('display value ' + displayVal);
         if (displayVal === undefined) {
             displayVal = itm;
         }
-        console.log('display value finally ' + displayVal);
-        console.log('****************');
         return displayVal;
    }
-
-   public getFromSelectedList(itm : any) : string {
-    console.log('get label for '+itm);
-    let displayVal: string;
-    const values = this.selectedvalues;
-    console.log('selectedPickListParam values size :: ' +this.selectedvalues.length);
-    values.forEach(value => {
-        console.log('loop for ' + value.code);
-        if (value.code === itm) {
-            console.log('value code [' + value.code + '] same as itm [' + itm + ']');
-            displayVal = value.label;
-        }
-        console.log('-----------------');
-    });
-    console.log('display value ' + displayVal);
-    if (displayVal === undefined) {
-        displayVal = itm;
-    }
-    console.log('display value finally ' + displayVal);
-    console.log('****************');
-    return displayVal;
-   }
-
-
-
-   updateLocalValues(updatedValues : Values[]) {
-    const tempList = this.localValues;
-    console.log('templist of values ' + tempList.length);
-    if (updatedValues) {
-        updatedValues.forEach(newval => {
-            console.log('check if new value ['+newval.code+'] exists in templist');
-            if (!tempList.includes(newval)) {
-                console.log('added ['+newval.code+'] to the list');
-                this.localValues.push(newval);
-            }
-        });
-    }
-    this.localValues.forEach(local => {
-        console.log('['+local.code+']');
-    });
-}
 
     showSourceList() : Values[] {
         let configSrcList: Values[];
@@ -366,25 +359,67 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
         this.sourcevalues = configSrcList;
         if (this.targetList && this.targetList.length > 0) {
             configSrcList.forEach(val => {
-                console.log('**** outer loop + ' +val.code);
                 this.targetList.forEach( target => {
-                    console.log('--- inner loop ' + target);
                     if(val.code === target || val.code === target.code) {
-                        console.log('loop match ');
                         this.sourcevalues.splice(this.sourcevalues.indexOf(val),1);
-                        console.log(' after splice ' + this.sourcevalues.length);
-                    }
+                        }
                 });
-                console.log('--- end of inner loop --- ');
             });
-            console.log('*** end of outer loop *** ');
         }
-
-        console.log('### finally ###');
-        this.sourcevalues.forEach(e => {
-            console.log('source code [' + e.code + ']');
-        });
-        console.log('### end ###');
+       
         return this.sourcevalues;
     }
-}
+
+    updateSourceList(event: any): Values[] {
+        const sourceList = [];
+        const items = event.items;
+        const codelist = [];
+        this.parent.values.forEach(val => {
+            codelist.push(val.code);
+        });
+        if (items && items.length > 0) {
+            items.forEach(item => {
+                if (codelist.includes(item)) {
+                    console.log('dont add');
+                } else {
+                    sourceList.push(item);
+                }
+            });
+        }
+        let valuelist: Values[];
+        sourceList.forEach(code => {
+            if(code !== undefined) {
+                valuelist.push(this.convertCodeToValue(code));
+            }
+        });
+
+        return valuelist;
+
+       // check if the value in the $event.items is already present in source list. If it is, then dont add to source values
+    /*    this.parent.values.forEach(parentVal => { //A,B,C
+            if (items && items.length > 0) {
+                items.forEach(item => { //B,C,D
+                    if (parentVal.code !== undefined && parentVal.code === item) {
+                        console.log('dont do anything '+parentVal.code+ ' event val '+item);
+                    } else {
+                        sourceList.push(parentVal);
+                    }
+                });
+            }    
+        });
+        console.log('################## '+sourceList.length);
+        return sourceList; // A,B,C,D */
+    }
+
+    convertCodeToValue(code: any) : Values {
+        const codeValue : Values[] = this.selectedvalues.filter(function(val) {
+            return (val.code === code);
+        }).map(function(val) {
+            return val;
+        });
+
+        if (codeValue && codeValue.length > 0) {
+            return codeValue[0];
+        }
+    }
+ }
