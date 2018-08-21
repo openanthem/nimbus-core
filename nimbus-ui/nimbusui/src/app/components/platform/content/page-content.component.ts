@@ -85,9 +85,7 @@ export class PageContent extends BaseElement{
                 });
             }
         });
-        this.updateIntialPosition();
-        console.log('this.element....89p', this.element);
-        
+        this.updateIntialPosition();        
     }
 
     ngAfterViewInit() {
