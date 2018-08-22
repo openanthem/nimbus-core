@@ -1382,9 +1382,23 @@ public class ViewConfig {
 	 * </ul>
 	 * 
 	 * <p>PickList should decorate a complex type, with its nested param annotated as {@link PickListSelected}.
-	 * <p>
+	 * <p> Ex : 
+	 * <pre>
+	 * 	&#64;PickList(sourceHeader="Available Category", targetHeader="Selected Category")
+	 *  &#64;Values(value=A_Category.class)
+	 * 	private PicklistType category; 
+	 * 	
+	 *  &#64;Getter &#64;Setter &#64;Type(SomeClass.class)
+	 *	public static class PicklistType {
+	 *	&#64;Values(value=AllCategory.class)
+	 *	&#64;Path("category")
+	 *	&#64;PickListSelected(postEventOnChange=true)
+	 *	private String[] selected; 
+	 *	}
+	 *	
+	 * </pre>
 	 * 
-	 * @since 1.0
+	 * 
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
