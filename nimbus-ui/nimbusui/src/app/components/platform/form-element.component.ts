@@ -1,5 +1,3 @@
-import { AbstractControl } from '@angular/forms/src/model';
-import { ValidationConstraint } from './../../shared/validationconstraints.enum';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -26,6 +24,7 @@ import { ComponentTypes, ViewComponent } from '../../shared/param-annotations.en
 import { BaseElement } from './base-element.component';
 import { WebContentSvc } from './../../services/content-management.service';
 import { ValidationUtils } from './validators/ValidationUtils';
+import { AbstractControl } from '@angular/forms/src/model';
 
 var counter = 0;
 
