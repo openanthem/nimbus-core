@@ -53,15 +53,19 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
         </label>
         <div> 
         <fieldset [disabled]="!parent?.enabled">
-            <p-pickList #picklist [source]="parent.values" 
+            <p-pickList #picklist 
+                [source]="parent.values" 
                 filterBy="label"
                 [sourceHeader] = "parent?.config?.uiStyles?.attributes.sourceHeader" 
                 [targetHeader]="parent?.config?.uiStyles?.attributes.targetHeader" 
                 [disabled]="!parent.enabled"
-                [target]="targetList" pDroppable="dd" [responsive]="true" 
+                [target]="targetList" 
+                pDroppable="dd" 
+                [responsive]="true" 
                 [showSourceControls]="false"
                 [showTargetControls]="false"
-                (onMoveToTarget)="updateListValues($event)" (onMoveToSource)="updateListValues($event)">
+                (onMoveToTarget)="updateListValues($event)" 
+                (onMoveToSource)="updateListValues($event)">
                 <ng-template let-itm pTemplate="item">
                     <div class="ui-helper-clearfix">
                         <div pDraggable="dd"  
@@ -154,6 +158,24 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
                  });
             }
         }
+
+        // FROM TONY
+        // TODO Move this logic to ControlSubscribers: valuesUpdateSubscriber()
+        this.pageService.eventUpdate$.subscribe(event => {
+            if(event.path == this.parent.path) {
+                // TODO write if condition to check if values have changed
+
+                    console.log('source values updated');
+
+                    // When the source values change, validate that any values present in the target
+                    // are removed from the source values (if they are present)
+                    if (this.targetList) {
+                        for(var targetItem of this.targetList) {
+                            this.parent.values = this.parent.values.filter(value => value.code != targetItem);
+                        }
+                    }
+            }
+        });
     }
 
     emitValueChangedEvent() {
@@ -199,6 +221,9 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
                 this.element.leafState = this.value;
             }
         }
+        //    this.controlValueChanged.emit(this.parent);
+        // update the source values based on target list on load + onMoveToSource
+        // this.parent.values = this.removeduplicates(event.items[0]);
         this.emitValueChangedEvent();
     }
 
