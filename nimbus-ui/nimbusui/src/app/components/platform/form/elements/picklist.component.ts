@@ -113,6 +113,11 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
         } else {
             this.targetList = [];
         }
+        if (this.targetList) {
+            for(var targetItem of this.targetList) {
+                this.parent.values = this.parent.values.filter(value => value.code != targetItem);
+            }
+        }
 
         if (this.form != null) {
             const frmCtrl = this.form.controls[this.element.config.code];
@@ -164,9 +169,6 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
         this.pageService.eventUpdate$.subscribe(event => {
             if(event.path == this.parent.path) {
                 // TODO write if condition to check if values have changed
-
-                    console.log('source values updated');
-
                     // When the source values change, validate that any values present in the target
                     // are removed from the source values (if they are present)
                     if (this.targetList) {
