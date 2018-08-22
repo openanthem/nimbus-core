@@ -72,10 +72,13 @@ export class InputLabel {
      * Get the css classes to apply for this element.
      */
     public get cssClass(): string {
-        if (this.required)
+        let styleClass = '';
+        if (this.required) {
+            styleClass = 'required';
+        } 
         if (!this.labelConfig) {
-            return undefined;
-        }
-        return this.labelConfig.cssClass;
+            styleClass += ' ' + this.labelConfig.cssClass;
+        } 
+        return styleClass;
     }
 }

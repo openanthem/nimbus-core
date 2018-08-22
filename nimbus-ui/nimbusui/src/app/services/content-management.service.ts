@@ -55,7 +55,8 @@ export class WebContentSvc {
             let labelConfig = labelConfigs.find(c => c.locale == ServiceConstants.LOCALE_LANGUAGE);
             labelContent = Converter.convert(labelConfig, labelContent);
         } else if(this.showUnlabeledAsVariableNames) {
-            labelContent.text = code;
+            //labelContent.text = code;
+            labelContent.text = '';
         } 
         return labelContent;
     }
