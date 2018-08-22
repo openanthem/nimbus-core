@@ -1495,8 +1495,12 @@ public class ViewConfig {
 	public @interface PickList {
 		String alias() default "PickList";
 
+		/**
+		 * <p>CSS classes added here will be added to the container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
-
+		
 		String help() default "";
 
 		String labelClass() default "anthem-label";
@@ -1507,8 +1511,14 @@ public class ViewConfig {
 
 		String targetHeader() default "TargetList";
 		
+		/**
+		 * <p>When {@code true}, the sort controls on source list are shown on the UI
+		 */
 		boolean showSourceControls() default false;
 		
+		/**
+		 * <p>When {@code true}, the sort controls on target list are shown on the UI
+		 */
 		boolean showTargetControls() default false;
 	}
 	
@@ -1533,6 +1543,10 @@ public class ViewConfig {
 		
 		String alias() default "PickListSelected";
 		
+		/**
+		 * <p>When {@code true} and the value of this component is changed on the client, the updated 
+		 * value will be sent to the server.
+		 */
 		boolean postEventOnChange() default false;
 		
 	}
