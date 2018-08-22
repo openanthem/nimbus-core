@@ -19,7 +19,8 @@
     <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias == componentTypes.grid.toString()">
         <nm-table
             [element]="element" [form]="form" [formControlName]="element.config?.code"
-            [params]="element?.config?.type?.elementConfig?.type?.model?.paramConfigs" (onScrollEvent)="onScrollEvent()">
+            [params]="element?.config?.type?.elementConfig?.type?.model?.paramConfigs" (onScrollEvent)="onScrollEvent()"
+            [position]="position">
         </nm-table>
     </ng-template>
     <ng-template ngFor let-msg [ngForOf]="getMessages()">

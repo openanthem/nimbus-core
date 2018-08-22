@@ -18,9 +18,8 @@
 import { BaseElement } from './../../base-element.component';
 import { WebContentSvc } from './../../../../services/content-management.service';
 import { PageService } from './../../../../services/page.service';
-import { Param } from './../../../../shared/param-state';
 import { ComponentFactoryResolver, ViewChild,
-    ComponentRef, ViewContainerRef, Input } from '@angular/core';
+    ComponentRef, ViewContainerRef } from '@angular/core';
 import { Component, OnInit, forwardRef, SimpleChanges } from '@angular/core';
 import { ComboBox } from './combobox.component';
 import { TextArea } from './textarea.component';
@@ -46,10 +45,12 @@ export const InputComponents = [
     selector: 'inplace-editor',
     template: `
         <div class="form-group {{editClass}}">
-            <label *ngIf="label">
-                {{label}}
-                <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
-            </label>
+            <nm-input-label *ngIf="labelConfig"
+                [for]="element.config?.code" 
+                [labelConfig]="labelConfig" 
+                [required]="requiredCss">
+
+            </nm-input-label>
             <a class="form-control-static editTrigger" href="javascript:void(0);" (click)="enableEdit()" *ngIf="element.enabled">
                 <span *ngIf="displayValue==UNASSIGNVALUE" class="unassigned">{{displayValue}}</span>
                 <span *ngIf="displayValue!=UNASSIGNVALUE">{{displayValue}}</span>

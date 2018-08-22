@@ -55,6 +55,7 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { LayoutService } from './services/layout.service';
 import { ContentContainer } from './components/platform/content/content-container.component';
 import { BaseElement } from './components/platform/base-element.component';
+import { BaseLabel } from './components/platform/base-label.component';
 import { AppComponent }  from './app.component';
 import { Tile }  from './components/platform/tile.component';
 import { Section } from './components/platform/section.component';
@@ -103,6 +104,8 @@ import { Calendar } from './components/platform/form/elements/calendar.component
 import { NavMenuGlobal } from './components/platform/globalNavMenu/nav-global-menu.component';
 import { MessageComponent } from './components/platform/message/message.component';
 import { ActionTray } from './components/platform/actiontray.component';
+import { Label } from './components/platform/content/label.component';
+import { InputLabel } from './components/platform/form/elements/input-label.component';
 // Services
 import { WebContentSvc } from './services/content-management.service';
 import { STOMPStatusComponent } from './services/stomp-status.component';
@@ -204,7 +207,8 @@ export function init_app(appinitservice: AppInitService) {
         HomeLayoutCmp, LoginCmp, LoginLayoutCmp, StyleGuideCmp, 
         KeysPipe, LinkPipe, DateTimeFormatPipe, SelectItemPipe, MultiSelectListBox, 
         CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent, Calendar, NavMenuGlobal, LoaderComponent, MessageComponent,
-        HeaderCheckBox, SvgComponent, SvgDefinitions, ActionTray, SubDomainFlowCmp, Image, NmPanelMenu,NmPanelMenuSub, MenuRouterLinkActive, MenuRouteLink
+        HeaderCheckBox, SvgComponent, SvgDefinitions, ActionTray, SubDomainFlowCmp, Image, NmPanelMenu,NmPanelMenuSub, MenuRouterLinkActive, 
+        MenuRouteLink, Label, InputLabel, BaseLabel
     ],
     entryComponents: [ FlowWrapper, PageContent, PageNotfoundComponent, LoginCmp, HomeLayoutCmp, SubDomainFlowCmp],
     providers: [ PageService, ConfigService, WebContentSvc, HttpClient,  HttpClientModule, AppInitService,
