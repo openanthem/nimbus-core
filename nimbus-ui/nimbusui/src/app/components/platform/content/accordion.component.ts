@@ -44,7 +44,7 @@ import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations
             <ng-template ngFor let-tab [ngForOf]="nestedParams">
                 <p-accordionTab  [selected]="tab?.config?.uiStyles?.attributes?.selected" *ngIf="tab?.visible">
                     <p-header>
-                        <h2>{{getTabHeader(tab)}}</h2>
+                        <nm-label *ngIf="getTabLabelConfig(tab)" [labelConfig]="getTabLabelConfig(tab)" [size]="labelSize"></nm-label>
                         <span [ngClass]="getTabInfoClass(tab)" *ngIf="getInfoText(tab)">
                             {{getInfoText(tab)}}
                         </span>
@@ -74,12 +74,13 @@ import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations
                                 <nm-table
                                     [element]="tabElement" 
                                     [params]="tabElement?.config?.type?.elementConfig?.type?.model?.paramConfigs"
-                                    (onScrollEvent)="onScrollEvent()">
+                                    (onScrollEvent)="onScrollEvent()"
+                                    [position]="position+1">
                                 </nm-table>
                             </ng-template>
                             <!-- Card Content -->
                             <ng-template [ngIf]="tabElement.alias == componentTypes.cardDetail.toString()">
-                                <nm-card-details [element]="tabElement"></nm-card-details>
+                                <nm-card-details [element]="tabElement" [position]="position+1"></nm-card-details>
                             </ng-template>
                         </ng-template>
                     </ng-template>
@@ -105,6 +106,7 @@ export class AccordionMain extends BaseElement {
 
     ngOnInit() {
         super.ngOnInit();
+        this.updatePosition();
     }
 
     /**
@@ -117,9 +119,8 @@ export class AccordionMain extends BaseElement {
     /**
      * Get Tab label
      */
-    protected getTabHeader(param: Param): string {
-        let labelConfig: LabelConfig = this.wcsvc.findLabelContent(param);
-        return labelConfig.text;
+    protected getTabLabelConfig(param: Param): LabelConfig {
+        return this.wcsvc.findLabelContent(param);
     }
 
     /**

@@ -19,8 +19,6 @@ import { NgModel, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Component, ViewChild, forwardRef, ChangeDetectorRef } from '@angular/core';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
-import { PageService } from '../../../../services/page.service';
-import { Param } from '../../../../shared/param-state';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
@@ -44,9 +42,12 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   template: `
     <div class='textarea-holder' [hidden]="!element?.visible" *ngIf="element.config?.uiStyles?.attributes?.hidden==false">
     <div class="number" *ngIf="element.config?.uiStyles?.attributes?.controlId!=''">{{element.config?.uiStyles?.attributes?.controlId}}</div>
-    <label [attr.for]="element.config?.code" [ngClass]="{'required': requiredCss, '': !requiredCss}">{{label}}
-        <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
-    </label>
+    <nm-input-label *ngIf="labelConfig"
+      [for]="element.config?.code" 
+      [labelConfig]="labelConfig" 
+      [required]="requiredCss">
+
+    </nm-input-label>
      <textarea [(ngModel)] = "value" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" 
         [rows]="element.config?.uiStyles?.attributes?.rows"    
         (focusout)="emitValueChangedEvent(this,value)"

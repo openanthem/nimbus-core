@@ -49,9 +49,11 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
         CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR,WebContentSvc
     ],
     template: `
-        <label [attr.for]="parent.config?.code"  [ngClass]="{'required': requiredCss, '': !requiredCss}">{{label}}
-            <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
-        </label>
+        <nm-input-label
+            [labelConfig]="labelConfig"
+            [for]="parent.config.code"
+            [required]="requiredCss">
+        </nm-input-label>
         <div> 
         <fieldset [disabled]="!parent?.enabled">
             <p-pickList #picklist 

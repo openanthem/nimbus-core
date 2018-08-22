@@ -35,6 +35,7 @@ import com.antheminc.oss.nimbus.domain.defn.extension.Content.Label;
 import com.antheminc.oss.nimbus.domain.defn.extension.EnableConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.ParamContext;
 import com.antheminc.oss.nimbus.domain.defn.extension.Rule;
+import com.antheminc.oss.nimbus.domain.defn.extension.Style;
 import com.antheminc.oss.nimbus.domain.defn.extension.VisibleConditional;
 import com.antheminc.oss.nimbus.entity.AbstractEntity.IdLong;
 
@@ -128,6 +129,9 @@ public class SampleCoreEntity extends IdLong {
 	@Label(value="Test Label C in English", helpText="some tooltip text here C")
 	@Label(value="Test Label A in French", localeLanguageTag="fr")
 	private String label_c_multiple;
+	
+	@Label(value = "Test Label D in English", style = @Style(cssClass=" foo bar "))
+	private String label_d_styles;
 	
 	@ActivateConditional(when="state != null && state.nested2_attr_String_1 == 'Y' && state.nested2_attr_String_2 == 'Y'",targetPath={
 			"/../q4Level1", "/../q4Level2"

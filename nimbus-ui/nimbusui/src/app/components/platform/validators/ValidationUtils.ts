@@ -124,7 +124,7 @@ export class ValidationUtils {
      */
     static applyelementStyle(element: Param): boolean {
         let requiredCss = false;
-        if (element.config.validation) {
+        if (element && element.config && element.config.validation) {
             element.config.validation.constraints.forEach(validator => {
                 if (validator.name === ValidationConstraint._notNull.value && 
                     validator.attribute != null && validator.attribute.groups.length == 0) {
