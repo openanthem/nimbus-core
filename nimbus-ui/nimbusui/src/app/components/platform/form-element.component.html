@@ -24,9 +24,9 @@
     <ng-template ngFor let-msg [ngForOf]="getMessages()">
         <nm-message [messageContext]="msg.context"  [messageArray]="msg.messageArray" [styleClass]="msg.styleClass"></nm-message>
     </ng-template>
-    <ng-template [ngIf]="element?.config?.uiStyles?.attributes?.alias === 'PickList'">
+    <ng-template [ngIf]="element?.config?.uiStyles?.attributes?.alias === viewComponent.picklist.toString()">
         <ng-template ngFor let-selectededparam [ngForOf]="element?.type?.model?.params">
-            <ng-template [ngIf]= "selectededparam?.config?.uiStyles?.attributes?.alias === 'PickListSelected'">
+            <ng-template [ngIf]= "selectededparam?.config?.uiStyles?.attributes?.alias === viewComponent.selectedPicklist.toString()">
                 <nm-pickList id="{{id}}" [parent]="element" [selectedvalues]="selectededparam.values" [formControlName]="selectededparam.config?.code" ngDefaultControl [element]="selectededparam" [form]="form"></nm-pickList> 
             </ng-template>
         </ng-template>                

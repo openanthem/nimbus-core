@@ -50,7 +50,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
                 <ng-template [ngIf]="!element.type?.model?.params?.length || element.config?.type?.collection">
                     <nm-element id="{{id}}" [element]="element" [elementCss]="elementCss" [form]="form"></nm-element>
                 </ng-template>
-                <ng-template [ngIf]="element?.config?.uiStyles?.attributes?.alias === 'PickList'">
+                <ng-template [ngIf]="element?.config?.uiStyles?.attributes?.alias === viewComponent.picklist.toString()">
                     <nm-element id="{{id}}" [element]="element" [elementCss]="elementCss" [form]="form"></nm-element>
                 </ng-template>
                  <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias==viewComponent.button.toString()">

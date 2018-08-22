@@ -37,6 +37,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
+ * \@author Swetha.Vemuri
  * \@whatItDoes 
  * 
  * \@howToUse 
@@ -81,7 +82,6 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 })
 
 export class OrderablePickList extends BaseElement implements OnInit, ControlValueAccessor {
-    @Input() element: Param;
     @Input() parent: Param;
     @Input() selectedvalues : Values[];
     @Input() form: FormGroup;
@@ -113,11 +113,7 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
         } else {
             this.targetList = [];
         }
-        if (this.targetList) {
-            for(var targetItem of this.targetList) {
-                this.parent.values = this.parent.values.filter(value => value.code != targetItem);
-            }
-        }
+        this.refreshSourceList();
 
         if (this.form != null) {
             const frmCtrl = this.form.controls[this.element.config.code];
@@ -164,18 +160,9 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
             }
         }
 
-        // FROM TONY
-        // TODO Move this logic to ControlSubscribers: valuesUpdateSubscriber()
         this.pageService.eventUpdate$.subscribe(event => {
             if(event.path == this.parent.path) {
-                // TODO write if condition to check if values have changed
-                    // When the source values change, validate that any values present in the target
-                    // are removed from the source values (if they are present)
-                    if (this.targetList) {
-                        for(var targetItem of this.targetList) {
-                            this.parent.values = this.parent.values.filter(value => value.code != targetItem);
-                        }
-                    }
+                this.refreshSourceList();
             }
         });
     }
@@ -189,23 +176,10 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
 
     setState(event:any, frmInp:any) {
         frmInp.element.leafState = event;
-        this.element.leafState = event;
     }
 
     updateListValues(event: any) {
-        if(this.targetList.length === 0) {
-            this.value = null;
-        } else {
-            this.selectedOptions = [];
-            this.targetList.forEach(element => {
-                if (element.code) {
-                    this.selectedOptions.push(element.code);
-                } else {
-                    this.selectedOptions.push(element);
-                }
-            });
-            this.value = this.selectedOptions;
-        }
+        this.updateData();
         /* comes into this loop when leafState is not null and new values are added
          prime-ng adds data of type Values{code, label} to leafState since the [source] is of type {element.values} 
          ex: leafState : ["Mon","Tue",{'code' : "Wed", 'label' : "Wednesday"}]
@@ -216,6 +190,7 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
                 if (state && state.code) {
                     const code = state.code;
                     this.element.leafState.splice(i, 1, code);
+                    this.targetList = this.element.leafState;
                 }
             });
         } else {
@@ -223,9 +198,6 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
                 this.element.leafState = this.value;
             }
         }
-        //    this.controlValueChanged.emit(this.parent);
-        // update the source values based on target list on load + onMoveToSource
-        // this.parent.values = this.removeduplicates(event.items[0]);
         this.emitValueChangedEvent();
     }
 
@@ -274,15 +246,7 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
             }
             this.draggedItm = null;
             //updating the internal data model
-            if(this.targetList.length === 0) {
-                this.value = null;
-            } else {
-                this.selectedOptions = [];
-                this.targetList.forEach(element => {
-                    this.selectedOptions.push(element);
-                });
-                this.value = this.selectedOptions;
-            }
+            this.updateData();
         }
     }
 
@@ -303,22 +267,56 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
         this.disabled = isDisabled;
   }
 
-    /*
+    /** 
+    * @param - itm (represents a code of @Values) 
     * The method maps the code to a label based on the super set of @Values 
     * passed as @Input("selectedValues") to the component.
     * This particularly comes into picture when the component is rendered in edit mode with pre loaded values
     */
-   public getDesc(itm : any) : string {
+    public getDesc(itm : any) : string {
         let displayVal: string;
         const values = this.selectedvalues;
-        values.forEach(value => {
-            if (value && value.code === itm) {
-                displayVal = value.label;
-            }
-        });
+        displayVal = values.find(value => (value && value.code === itm)).label;
         if (displayVal === undefined) {
             displayVal = itm;
         }
         return displayVal;
-   }
- }
+    }
+
+    /**
+     * This method validates if there are duplicate values in both source and target. 
+     * If yes, remove them from source and refresh the source list.
+     */
+    private refreshSourceList() {
+        // make sure targetlist and leafstate are in sync
+        if(this.element.leafState) {
+            this.targetList = this.element.leafState;
+        }
+        if (this.targetList) {
+            for (var targetItem of this.targetList) {
+                this.parent.values = this.parent.values.filter(value => 
+                    value.code !== targetItem
+                );
+            }
+        }
+    }
+
+    /**
+     * Update the internal model.
+     */
+    private updateData() {
+        if(this.targetList.length === 0) {
+            this.value = null;
+        } else {
+            this.selectedOptions = [];
+            this.targetList.forEach(element => {
+                if (element.code) {
+                    this.selectedOptions.push(element.code);
+                } else {
+                    this.selectedOptions.push(element);
+                }
+            });
+            this.value = this.selectedOptions;
+        }
+    }
+}
