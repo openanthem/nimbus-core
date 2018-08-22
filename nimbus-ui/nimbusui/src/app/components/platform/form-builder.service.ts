@@ -45,7 +45,7 @@ export class FormElementsService {
 
     return group;
   }
-
+  
   buildFormGroup(elements: Param[]): {} {
     let group: any = {};
     elements.forEach(element => {
@@ -58,6 +58,8 @@ export class FormElementsService {
           if (element.alias !== ViewComponent.picklist.toString()) {
             group[element.config.code] = this.createNewFormGroup(element);
           } else {
+            // Adding this for picklist since form submit does not handle complex type - Revisit
+            group[element.config.code] = this.createNewFormGroup(element);
             const picklistparam: Param = element.type.model.params.find( p => 
               p.alias === ViewComponent.selectedPicklist.toString());
             var leafState = this._getTypeSafeLeafState(picklistparam);

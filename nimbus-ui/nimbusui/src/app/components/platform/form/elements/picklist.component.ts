@@ -27,6 +27,7 @@ import { PickList } from 'primeng/primeng';
 import { BaseElement } from '../../base-element.component';
 import { MAX_LENGTH_VALIDATOR } from '@angular/forms/src/directives/validators';
 import { BaseControl } from './base-control.component';
+import { GenericDomain } from '../../../../model/generic-domain.model';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -54,7 +55,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
             [for]="parent.config.code"
             [required]="requiredCss">
         </nm-input-label>
-        <div> 
+        <div style="padding:2px;"> 
         <fieldset [disabled]="!parent?.enabled">
             <p-pickList #picklist 
                 [source]="parent.values" 
@@ -118,6 +119,7 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
         this.refreshSourceList();
 
         if (this.form != null) {
+            const parentCtrl = this.form.controls[this.parent.config.code];
             const frmCtrl = this.form.controls[this.element.config.code];
             if (frmCtrl != null) {
                 //rebind the validations as there are dynamic validations along with the static validations
@@ -125,7 +127,11 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
                     this.requiredCss = ValidationUtils.rebindValidations(frmCtrl,this.element.activeValidationGroups, this.element);
                 } 
                 frmCtrl.valueChanges.subscribe(
-                    ($event) => { this.setState($event, this); });
+                    ($event) => { 
+                        this.setState($event, this);
+                        // setting parent Picklist value manually since 
+                        parentCtrl.setValue(this.updateParentValue($event));
+                    });
 
                 this.pageService.eventUpdate$.subscribe(event => {
                 const frmCtrl = this.form.controls[this.element.config.code];
@@ -320,5 +326,22 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
             });
             this.value = this.selectedOptions;
         }
+    }
+
+    /**
+     * This is a temp hack to resolve the complex type form submit issues
+     */
+    private updateParentValue(event : any) : GenericDomain{
+        let item: GenericDomain = new GenericDomain();
+        let selectedOptions = [];
+            this.targetList.forEach(element => {
+                if (element.code) {
+                    selectedOptions.push(element.code);
+                } else {
+                    selectedOptions.push(element);
+                }
+            });
+        item.addAttribute(this.element.config.code, selectedOptions);
+        return item;
     }
 }
