@@ -22,7 +22,8 @@ import { FormGroup, AbstractControlDirective, NgModel } from '@angular/forms';
 import { Param } from '../../shared/param-state';
 import { Message } from '../../shared/message';
 import { ComponentTypes, ViewComponent } from '../../shared/param-annotations.enum';
-
+import { BaseElement } from './base-element.component';
+import { WebContentSvc } from './../../services/content-management.service';
 
 var counter = 0;
 
@@ -39,7 +40,7 @@ var counter = 0;
     templateUrl: './form-element.component.html'
 })
 
-export class FormElement {
+export class FormElement extends BaseElement {
     @Input() element: Param;
     @Input() form: FormGroup;
     @Input() elementCss: string;
@@ -88,7 +89,9 @@ export class FormElement {
         return (this.elemMessages != null && this.elemMessages.length > 0);
     }
 
-    constructor() { }
+    constructor(private wcsv: WebContentSvc) { 
+        super(wcsv);
+    }
 
     getErrorStyles() {
         if (this.showErrors) {
@@ -119,6 +122,8 @@ export class FormElement {
     }
 
     ngOnInit() {
+        super.ngOnInit();
+        this.updatePositionWithNoLabel();        
         // if (this.element.config.uiStyles && this.element.config.uiStyles.attributes.controlId !== null) {
         //     if (Number(this.element.config.uiStyles.attributes.controlId) % 2 === 0) {
         //         this.elementCss = this.elementCss + ' even';

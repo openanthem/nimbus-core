@@ -76,6 +76,7 @@ public class LabelConfigEventHandlerTest extends AbstractFrameworkIntegrationTes
 		assertEquals(Locale.getDefault().toLanguageTag(), p.getLabelConfigs().get(0).getLocale());
 		assertEquals("Test Label A", p.getLabelConfigs().get(0).getText());
 		assertNull(p.getLabelConfigs().get(0).getHelpText());
+		assertNull(p.getLabelConfigs().get(0).getCssClass());
 	}
 	
 	/**
@@ -92,6 +93,7 @@ public class LabelConfigEventHandlerTest extends AbstractFrameworkIntegrationTes
 		assertEquals(Locale.FRENCH.toLanguageTag(), p.getLabelConfigs().get(0).getLocale());
 		assertEquals("Test Label B in French", p.getLabelConfigs().get(0).getText());
 		assertEquals("some tooltip text here B", p.getLabelConfigs().get(0).getHelpText());
+		assertNull(p.getLabelConfigs().get(0).getCssClass());
 	}
 	
 	/**
@@ -108,6 +110,7 @@ public class LabelConfigEventHandlerTest extends AbstractFrameworkIntegrationTes
 		
 		assertEquals("Test Label C in English", getLabelConfig(p, Locale.getDefault()).getText());
 		assertEquals("some tooltip text here C", getLabelConfig(p, Locale.getDefault()).getHelpText());
+		assertNull(getLabelConfig(p, Locale.getDefault()).getCssClass());
 		
 		assertEquals("Test Label A in French", getLabelConfig(p, Locale.FRENCH).getText());
 		assertNull(getLabelConfig(p, Locale.FRENCH).getHelpText());
@@ -153,5 +156,17 @@ public class LabelConfigEventHandlerTest extends AbstractFrameworkIntegrationTes
 	@Test(expected=InvalidConfigException.class)
 	public void t05_ex_multiple_same_locale() {
 		entityConfigBuilder.buildModel(TestInvalidScenario_MinOneTextAndHelpText.class, new EntityConfigVisitor());
+	}
+	
+	@Test
+	public void t06_styleConfig() {
+		ParamConfig<String> p = mConfig.findParamByPath("/label_d_styles");
+		
+		assertNotNull(p.getLabelConfigs());
+		assertSame(1, p.getLabelConfigs().size());
+		
+		assertEquals("Test Label D in English", getLabelConfig(p, Locale.getDefault()).getText());
+		assertNull(getLabelConfig(p, Locale.getDefault()).getHelpText());
+		assertEquals("foo bar", getLabelConfig(p, Locale.getDefault()).getCssClass());
 	}
 }

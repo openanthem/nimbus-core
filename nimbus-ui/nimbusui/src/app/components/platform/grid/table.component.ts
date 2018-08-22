@@ -185,7 +185,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
             customFilterConstraints['between'] = this.between;
             this.dt.filterConstraints = customFilterConstraints;
         }
-
+        this.updatePosition();
     }
 
     ngAfterViewInit() {

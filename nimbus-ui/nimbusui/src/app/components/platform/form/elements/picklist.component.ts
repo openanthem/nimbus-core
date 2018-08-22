@@ -47,9 +47,12 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     ],
     template: `
         <!--<div [hidden]="!element?.visible" *ngIf="element.config?.uiStyles?.attributes?.hidden==false">-->
-        <label [attr.for]="element.config?.code"  [ngClass]="{'required': requiredCss, '': !requiredCss}">{{label}}
-            <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
-        </label>
+        <nm-input-label
+            [labelConfig]="labelConfig"
+            [for]="element.config.code"
+            [required]="requiredCss">
+
+        </nm-input-label>
         <div>
             <fieldset [disabled]="!element?.enabled">
                 <p-pickList #picklist [source]="element.values" 

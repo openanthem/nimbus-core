@@ -46,6 +46,11 @@ public final class Content {
 		
 		public static final String DEFAULT_LOCALE_LANGUAGE_TAG = Locale.getDefault().toLanguageTag();
 		
+		/**
+		 * <p>Defines custom style attributes for this label component.
+		 */
+		Style style() default @Style();
+		
 		String value() default "";
 		
 		String helpText() default "";

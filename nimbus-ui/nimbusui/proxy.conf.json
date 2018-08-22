@@ -29,7 +29,7 @@
         "secure" : false,
         "logLevel": "debug"
     },
-    "/petclinic/org/*" :{ 
+    "/petclinic/client/org/*" :{ 
         "target" : "http://localhost:8082",
         "secure" : false,
         "logLevel": "debug"

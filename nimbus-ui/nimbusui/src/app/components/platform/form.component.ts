@@ -23,6 +23,7 @@ import { PageService } from '../../services/page.service';
 import { ValidationUtils } from './validators/ValidationUtils';
 import { Param, Model } from '../../shared/param-state';
 import { LoggerService } from '../../services/logger.service';
+import { BaseElement } from './base-element.component';
 
 var uniqueId = 0;
 
@@ -45,7 +46,7 @@ var uniqueId = 0;
     templateUrl: './form.component.html',
     providers: [ FormElementsService, WebContentSvc]
 })
-export class Form implements OnInit, OnChanges {
+export class Form extends BaseElement implements OnInit, OnChanges {
     @Input() element: Param;
     @Input() model: Model;
     id: string = 'nm-element'+ uniqueId++;
@@ -60,8 +61,9 @@ export class Form implements OnInit, OnChanges {
 
     constructor(private service: FormElementsService, 
         private pageSvc: PageService, 
-        private wcs: WebContentSvc, 
+        private wcsv: WebContentSvc, 
         private logger: LoggerService) {
+            super(wcsv);
     }
 
     toggle() {
@@ -94,6 +96,7 @@ export class Form implements OnInit, OnChanges {
 
     /** Initialize the Form **/
     ngOnInit() {
+        super.ngOnInit();
         this.logger.debug('Form-i ' + this.element.path);
         if(this.element.config.uiStyles.attributes.cssClass === 'sixColumn') {
             this.elementCss = 'col-lg-2 col-md-4 col-sm-12';
@@ -113,6 +116,7 @@ export class Form implements OnInit, OnChanges {
             this.elementCss = this.element.config.uiStyles.attributes.cssClass;
         }
         this.buildFormElements(this.model);
+        this.updatePosition();
     }
     
     /** Loop through the config and build Form Elements **/
