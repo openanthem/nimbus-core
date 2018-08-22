@@ -13,7 +13,6 @@ export class ViewConfig extends Enum<string> {
     public static readonly gridcolumn = new Enum('ViewConfig.GridColumn');
     public static readonly actiontray = new Enum('ViewConfig.ActionTray');
     public static readonly picklist = new Enum('ViewConfig.PickList');
-    public static readonly availablePicklist = new Enum('ViewConfig.PickListAvailable');
     public static readonly selectedPicklist = new Enum('ViewConfig.PickListSelected');
 
     static attributeList(): String[] {
@@ -41,7 +40,6 @@ export class ViewComponent extends Enum<string> {
     public static readonly image = new Enum('Image');
     public static readonly tabInfo = new Enum('TabInfo');
     public static readonly picklist = new Enum('PickList');
-    public static readonly availablePicklist = new Enum('PickListAvailable');
     public static readonly selectedPicklist = new Enum('PickListSelected');
 
     static attributeList(): String[] {

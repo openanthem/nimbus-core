@@ -1381,7 +1381,8 @@ public class ViewConfig {
 	 * <li>{@link Form}</li>
 	 * </ul>
 	 * 
-	 * <p>PickList should decorate an array or collection.
+	 * <p>PickList should decorate a complex type, with its nested param annotated as {@link PickListSelected}.
+	 * <p>
 	 * 
 	 * @since 1.0
 	 */
@@ -1393,7 +1394,6 @@ public class ViewConfig {
 		String cssClass() default "";
 		String help() default "";
 		String labelClass() default "anthem-label";
-		boolean postEventOnChange() default false;
 		boolean readOnly() default false;
 		String sourceHeader() default "SourceList";
 		String targetHeader() default "TargetList";
@@ -1401,13 +1401,20 @@ public class ViewConfig {
 		boolean showTargetControls() default false;
 	}
 	
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ElementType.FIELD})
-	@ViewStyle
-	public @interface PickListAvailable {
-		String alias() default "PickListAvailable";
-	}
-	
+	/**
+	 * <p><b>Expected Field Structure</b>
+	 * 
+	 * <p>PickListSelected will be rendered when annotating a field nested under one of the following components:
+	 * <ul>
+	 * <li>{@link PickList}</li>
+	 * </ul>
+	 * 
+	 * <p>PickListSelected should decorate an array or collection
+	 * <p>A comprehensive list of {@link @Values} on a given {@link PickList} should be annotated on the PickListSelected field 
+	 * so that a map for all code-label pairs will be available for the chosen items.
+	 * 
+	 * @since 1.0
+	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
 	@ViewStyle
