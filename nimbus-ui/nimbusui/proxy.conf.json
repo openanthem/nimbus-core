@@ -5,6 +5,12 @@
         "secure" : false,
         "logLevel": "debug"
     },
+
+    "/um/client/*" :{ 
+        "target" : "http://localhost:8082",
+        "secure" : false,
+        "logLevel": "debug"
+    },
     
     "/log" :{ 
         "target" : "http://localhost:8000",
