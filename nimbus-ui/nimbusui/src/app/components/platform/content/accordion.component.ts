@@ -106,7 +106,7 @@ export class AccordionMain extends BaseElement {
 
     ngOnInit() {
         super.ngOnInit();
-        this.updatePositionWithNoLabel();
+        this.updatePosition();
     }
 
     /**
