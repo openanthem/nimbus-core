@@ -83,7 +83,7 @@ export class Button extends BaseElement {
     componentTypes = ComponentTypes;
 
     constructor( private pageService: PageService, private _wcs: WebContentSvc, 
-        private location: Location, private fileService: FileService, private http: CustomHttpClient, private logger: LoggerService, private differs: KeyValueDiffers ) {
+        private location: Location, private fileService: FileService, private http: CustomHttpClient, private logger: LoggerService, private differs: KeyValueDiffers) {
         super(_wcs);
     }
 

@@ -28,6 +28,7 @@ import { FileService } from './../../../services/file.service';
 import { BaseElement } from '../base-element.component';
 import { WebContentSvc } from './../../../services/content-management.service';
 import { LoggerService } from './../../../services/logger.service';
+import { Message } from '../../../shared/message';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 	provide: NG_VALUE_ACCESSOR,
@@ -106,6 +107,15 @@ export class FileUploadComponent extends BaseElement implements ControlValueAcce
 
 		this.selectedFiles = [];
 		this.fileService.metaData = this.element.config.uiStyles.attributes.metaData;
+	
+		this.fileService.errorEmitter$.subscribe(data => {
+
+			this.pfu.files = [];
+			
+			this.element.message = [];
+			this.element.message.push(Message.createMessage("DANGER", "GROWL", "File Upload Failed", 10000));
+			
+        });
 	}
 
 	addFiles(event) {

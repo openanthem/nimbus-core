@@ -23,7 +23,7 @@
         </nm-table>
     </ng-template>
     <ng-template ngFor let-msg [ngForOf]="getMessages()">
-        <nm-message [messageContext]="msg.context"  [messageArray]="msg.messageArray" [styleClass]="msg.styleClass"></nm-message>
+        <nm-message [messageContext]="msg.context"  [messageArray]="msg.messageArray" [life] = "msg.life" [styleClass]="msg.styleClass"></nm-message>
     </ng-template>
  
 </div>
