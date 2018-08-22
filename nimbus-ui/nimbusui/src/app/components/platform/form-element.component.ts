@@ -1,3 +1,4 @@
+import { AbstractControl } from '@angular/forms/src/model';
 import { ValidationConstraint } from './../../shared/validationconstraints.enum';
 /**
  * @license
@@ -24,6 +25,7 @@ import { Message } from '../../shared/message';
 import { ComponentTypes, ViewComponent } from '../../shared/param-annotations.enum';
 import { BaseElement } from './base-element.component';
 import { WebContentSvc } from './../../services/content-management.service';
+import { ValidationUtils } from './validators/ValidationUtils';
 
 var counter = 0;
 
@@ -41,6 +43,7 @@ var counter = 0;
 })
 
 export class FormElement extends BaseElement {
+
     @Input() element: Param;
     @Input() form: FormGroup;
     @Input() elementCss: string;
@@ -80,7 +83,7 @@ export class FormElement extends BaseElement {
                 this.elemMessages.push.apply(this.elemMessages, this.element.message);
             }
             if (!this.getPristine()) {
-                this.getErrors();
+                this.updateErrorMessages();
             }
         return this.elemMessages;
     }
@@ -140,30 +143,50 @@ export class FormElement extends BaseElement {
             return '';
         }
     }
-    
-    getErrors() {
-        if (this.form.controls[this.element.config.code].invalid) {
+
+    /**
+     * <p>Update all form controls belonging to this form instance that have validation errors present.
+     * <p>Error messages are first attempted to be set by setting the message that is defined in the server-side
+     * Constraint annotation's message attribute. If a message is not provided, the default message as defined 
+     * by ValidationUtils will be used.
+     */
+    updateErrorMessages() {
+        var control: AbstractControl = this.form.controls[this.element.config.code];
+        if (control.invalid) {
             if (this.element.config.validation) {
                 this.element.config.validation.constraints.forEach(validator => {
-                    // Defaults
-                    // TODO - Consider moving this logic to a lookup service.
-                    if (this.form.controls[this.element.config.code].errors.required && validator.name === ValidationConstraint._notNull.value) {
-                        this.addErrorMessages(validator.attribute.message ? validator.attribute.message : 'Field is required.');
-                    }
-                    if (this.form.controls[this.element.config.code].errors.pattern && validator.name === ValidationConstraint._pattern.value) {
-                        this.addErrorMessages(validator.attribute.message ? validator.attribute.message : 'Field is required.');
-                    }
-                    if (this.form.controls[this.element.config.code].errors.minMaxSelection && validator.name === ValidationConstraint._size.value) {
-                        this.addErrorMessages(validator.attribute.message ? validator.attribute.message : 'Field is required.');
-                    }
-                    if (this.form.controls[this.element.config.code].errors.isNumber) {
-                        //if (!this.checkforCustomMessages(validator, errors))
-                        this.addErrorMessages('Value must be a number.');
-                    }
-                    //}
+                    
+                    // cycle through all of the supported validation errors and apply messages for those that are present.
+                    ValidationUtils.getAllEligibleErrorNames().forEach(validationName => {
+
+                        if (this.hasErrors(control, validationName)) {
+                            // prefer validation message from the server first
+                            var errorMessage = validator.attribute.message;
+
+                            // if unavailable, set the error message to the default for the particular type of error.
+                            if (!errorMessage) {
+                                errorMessage = ValidationUtils.getDefaultErrorMessage(validationName);
+                            }
+
+                            // add the error message for this error.
+                            this.addErrorMessages(errorMessage);
+                        }
+                    });
                 });
             }
         }
+    }
+
+    /**
+     * <p>Return whether or not control has errors available for the provided validationName.
+     * @param control the form control to check if validation errors exist
+     * @param validationName the name of the validation error to check
+     */
+    private hasErrors(control: AbstractControl, validationName: string): boolean {
+        if (!control || !control.errors || !validationName) {
+            return false;
+        }
+        return control.errors[validationName];
     }
 
     addErrorMessages(errorText: string) {
