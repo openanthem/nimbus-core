@@ -22,11 +22,11 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.domain.model.state.ExecutionTxnContext;
 import com.antheminc.oss.nimbus.domain.model.state.InvalidStateException;
 import com.antheminc.oss.nimbus.domain.model.state.Notification;
 import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
+import com.antheminc.oss.nimbus.support.JustLogit;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -42,15 +42,16 @@ public class DefaultExecutionTxnContext implements ExecutionTxnContext {
 	private String id;
 
 	private final BlockingQueue<Notification<Object>> notifications = new LinkedBlockingQueue<>();
-	
 	private final List<ParamEvent> events = new ArrayList<>();
+	private final static JustLogit LOG = new JustLogit();
 	
 	@Override
 	public void addNotification(Notification<Object> notification) {
 		try {
 			getNotifications().put(notification);
 		} catch (InterruptedException ex) {
-			throw new FrameworkRuntimeException("Failed to place notification event on queue with value: "+notification, ex);
+			LOG.error(() -> "Failed to place notification event on queue with value: " + notification, ex);
+			Thread.currentThread().interrupt();
 		}	
 	}
 

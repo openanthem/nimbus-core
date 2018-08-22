@@ -24,6 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -36,34 +37,26 @@ abstract public class CommandElement implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
+	@Getter @RequiredArgsConstructor
 	public enum Type {
 		
-		ClientAlias("ClientAlias"),
-		ClientOrgAlias("ClientOrgAlias"),
-		AppAlias("AppAlias"),
-		PlatformMarker("PlatformMarker"),
-		DomainAlias("DomainAlias"),
-		ProcessAlias("ProcessAlias"),
-		ParamName("ParamName");
+		ClientAlias("ClientAlias", false),
+		ClientOrgAlias("ClientOrgAlias", false),
+		AppAlias("AppAlias", false),
+		PlatformMarker("PlatformMarker", false),
+		DomainAlias("DomainAlias", true),
+		ProcessAlias("ProcessAlias", false),
+		ParamName("ParamName", false);
 		
 		final private String desc;
-		
-		private Type(String desc) {
-			this.desc = desc;
-		}
-		
-		public String getDesc() {
-            return desc;
-		}
+		final private boolean recursive;
 		
 		public static Type findByDesc(String desc) {
 			for(Type a : values()) {
                 if(a.getDesc().equals(desc)) return a;
 			}
-			return null;			
+			return null;
 		}
-		
-		public static final List<Type> allowedRecursive = Arrays.asList(DomainAlias);
 	}
 	
 	private Type type;

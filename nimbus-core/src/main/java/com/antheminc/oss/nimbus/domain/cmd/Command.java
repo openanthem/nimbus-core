@@ -26,6 +26,7 @@ import java.util.function.Consumer;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
@@ -45,6 +46,7 @@ import lombok.ToString;
 public class Command implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	private static final String MISSING_COMMAND_ARGUMENTS_MSG = "Command with URI: %s cannot have null %s.";
 	
 	private final String absoluteUri;
 	
@@ -73,19 +75,37 @@ public class Command implements Serializable {
 	}
 
 	/**
-	 * @throws InvalidConfigException
+	 * <p>Validate this {@link Command} instance contains all required arguments.
+	 * <p>The required arguments are: <ul></ul>
+	 * @throws InvalidConfigException if this {@link Command} instance is missing a required argument
 	 */
 	public void validate() {
 		Optional.ofNullable(getAction())
-			.orElseThrow(()->new InvalidConfigException("Command with uri: "+getAbsoluteUri()+" cannot have null Action"));
+			.orElseThrow(()->new InvalidConfigException(String.format(MISSING_COMMAND_ARGUMENTS_MSG, getAbsoluteUri(), "Action")));
 		
 		if(CollectionUtils.isEmpty(getBehaviors()))
-			throw new InvalidConfigException("Command with uri: "+getAbsoluteUri()+" cannot have null Behavior");
+			throw new InvalidConfigException(String.format(MISSING_COMMAND_ARGUMENTS_MSG, getAbsoluteUri(), "Behavior"));
 		
-		getElement(Type.ClientAlias).orElseThrow(()->new InvalidConfigException("Command with uri: "+getAbsoluteUri()+" cannot have null "+Type.ClientAlias));
-		getElement(Type.AppAlias).orElseThrow(()->new InvalidConfigException("Command with uri: "+getAbsoluteUri()+" cannot have null "+Type.AppAlias));
-		getElement(Type.PlatformMarker).orElseThrow(()->new InvalidConfigException("Command with uri: "+getAbsoluteUri()+" cannot have null "+Type.PlatformMarker));
-		getElement(Type.DomainAlias).orElseThrow(()->new InvalidConfigException("Command with uri: "+getAbsoluteUri()+" cannot have null "+Type.DomainAlias));
+		validateCommandArgument(Type.ClientAlias);
+		validateCommandArgument(Type.AppAlias);
+		validateCommandArgument(Type.PlatformMarker);
+		validateCommandArgument(Type.DomainAlias);
+	}
+	
+	/**
+	 * <p>Validates that {@code type} is present as one of the arguments within
+	 * this {@link Command}.
+	 * @param type the {@link Type} to validate
+	 * @throws InvalidConfigException if {@code type} is not present
+	 */
+	private void validateCommandArgument(Type type) {
+		if (!getElement(type).isPresent()) {
+			throw new InvalidConfigException(getMissingArgumentErrorMsg(type));
+		}
+	}
+	
+	private String getMissingArgumentErrorMsg(Type type) {
+		return String.format(MISSING_COMMAND_ARGUMENTS_MSG, getAbsoluteUri(), type);
 	}
 	
 	public boolean isRootDomainOnly() {
@@ -140,11 +160,18 @@ public class Command implements Serializable {
 	public String getAlias(Type type) {
 		return getElement(type).map(e -> e.getAlias()).orElse(null);
 	}
-
+	
 	public Optional<CommandElementLinked> getElement(Type type) {
 		return Optional.ofNullable(root().findFirstMatch(type));
 	}
 
+	public CommandElementLinked getElementSafely(Type type) {
+		Optional<CommandElementLinked> commandElement = getElement(type);
+		if (!commandElement.isPresent()) {
+			throw new FrameworkRuntimeException(getMissingArgumentErrorMsg(type)); 
+		}
+		return commandElement.get();
+	}
 	
 	public String getRelativeUri(String input) {
 		// input doesn't have /p/ : prefix client/org/app/p/{domain-root} from incoming command 
@@ -180,8 +207,13 @@ public class Command implements Serializable {
 	public String getRootClientAlias() {
 		return getAlias(Type.ClientAlias);
 	}
+	
 	public CommandElement getRootDomainElement() {
-		return getElement(Type.DomainAlias).get();
+		Optional<CommandElementLinked> commandElement = getElement(Type.DomainAlias);
+		if (commandElement.isPresent()) {
+			return commandElement.get();
+		}
+		return null;
 	}
 
 	public String getRootDomainAlias() {

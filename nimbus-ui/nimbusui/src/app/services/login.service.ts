@@ -18,8 +18,7 @@
 
 import { Injectable, EventEmitter } from '@angular/core';
 import { Http, Headers, RequestOptions } from '@angular/http';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/share';
+import { map } from 'rxjs/operators';
 import { LoggerService } from './logger.service';
 
 /**
@@ -50,8 +49,8 @@ export class LoginSvc {
         let headers = new Headers({'Content-Type': 'application/x-www-form-urlencoded'});
         let body = 'username='+user+'&password='+password+'&rememberme='+remember;
         let options = new RequestOptions({headers: headers});
-        this.http.post('http://30.138.86.234:8080/login/platform', body, options)
-			.map(res => res.json())
+        this.http.post('http://30.138.86.234:8080/login/platform', body, options).pipe(
+			map(res => res.json()))
 			.subscribe(data => {
                 // Push the session into the Observable stream
                 this.login$.next(data);

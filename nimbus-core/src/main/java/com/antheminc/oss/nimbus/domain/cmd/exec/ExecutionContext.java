@@ -17,6 +17,8 @@ package com.antheminc.oss.nimbus.domain.cmd.exec;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang3.StringUtils;
 
 import com.antheminc.oss.nimbus.domain.cmd.Command;
@@ -74,6 +76,7 @@ public class ExecutionContext implements Serializable {
 		return getRootModel().findStateByPath(path);
 	}
 	
+	
 	@Override
 	public boolean equals(Object other) {
 		if(other==null)
@@ -84,10 +87,16 @@ public class ExecutionContext implements Serializable {
 		
 		ExecutionContext otherCtx = (ExecutionContext)other;
 		
-		String thisDomainRootUri = getId();
-		String otherDomainRootUri = otherCtx.getId();
-		
-		return thisDomainRootUri.equals(otherDomainRootUri);
+		EqualsBuilder builder = new EqualsBuilder();
+		builder.append(getId(), otherCtx.getId());		
+		return builder.isEquals();
+	}
+	
+	@Override
+	public int hashCode() {
+		HashCodeBuilder builder = new HashCodeBuilder();
+		builder.append(getId());
+		return builder.hashCode();
 	}
 	
 	@Override
