@@ -148,7 +148,7 @@ export class ValidationUtils {
     /**
      * Retrieve all of the error names that validation rules are applied for.
      */
-    public static getAllEligibleErrorNames(): string[] {
+    public static getAllValidationNames(): string[] {
         return Object.keys(ServiceConstants.ERROR_MESSAGE_DEFAULTS);
     }
 }

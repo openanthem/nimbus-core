@@ -156,7 +156,7 @@ export class FormElement extends BaseElement {
                 this.element.config.validation.constraints.forEach(validator => {
                     
                     // cycle through all of the supported validation errors and apply messages for those that are present.
-                    ValidationUtils.getAllEligibleErrorNames().forEach(validationName => {
+                    ValidationUtils.getAllValidationNames().forEach(validationName => {
 
                         if (this.hasErrors(control, validationName)) {
                             // prefer validation message from the server first
