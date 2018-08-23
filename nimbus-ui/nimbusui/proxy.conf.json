@@ -1,6 +1,12 @@
 
 {
-    "/ltss/org/*" :{ 
+    "/ltss/client/*" :{ 
+        "target" : "http://localhost:8082",
+        "secure" : false,
+        "logLevel": "debug"
+    },
+
+    "/um/client/*" :{ 
         "target" : "http://localhost:8082",
         "secure" : false,
         "logLevel": "debug"
@@ -23,7 +29,7 @@
         "secure" : false,
         "logLevel": "debug"
     },
-    "/petclinic/org/*" :{ 
+    "/petclinic/client/org/*" :{ 
         "target" : "http://localhost:8082",
         "secure" : false,
         "logLevel": "debug"

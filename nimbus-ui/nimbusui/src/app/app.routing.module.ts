@@ -28,6 +28,7 @@ import { PageNotfoundComponent } from './components/platform/content/page-notfou
 import { PageContent } from './components/platform/content/page-content.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { ServiceConstants } from './services/service.constants';
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -68,7 +69,7 @@ const APPROUTES: Routes = [
                    { path: '**', component: PageNotfoundComponent }
         ]
     },
-    
+    { path: ':auth', component: LandingPage },
     { path: '', component: PageNotfoundComponent }
 
 ];

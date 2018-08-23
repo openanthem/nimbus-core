@@ -19,9 +19,10 @@ import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, URLSearchParams } from '@angular/http';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { ExecuteResponse } from '../shared/app-config.interface';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
+import { catchError } from 'rxjs/operators';
+import { throwError as observableThrowError, Observable } from 'rxjs';
+import { SessionStoreService } from './session.store';
+import { ServiceConstants } from './service.constants';
 
 /**
  * \@author Swetha.Vemuri
@@ -41,24 +42,29 @@ const httpOptions = {
 
 @Injectable()
 export class CustomHttpClient {
-  constructor(public http: HttpClient, public customHttpClient: HttpClient ) {
+  constructor(public http: HttpClient, public customHttpClient: HttpClient, private sessionStore: SessionStoreService) {
     this.http = http;
   }
 
   get(url: string, searchParams?: URLSearchParams) {
-    httpOptions.headers.set('X-Csrf-Token', this.getCookie('XSRF-Token'));
-    return this.customHttpClient.get<ExecuteResponse>(url, httpOptions);
+    let headers =  new HttpHeaders();
+    headers = headers.append('Content-Type','application/json');
+    headers = headers.append('Authorization',`Bearer ${this.sessionStore.get(ServiceConstants.AUTH_TOKEN_KEY)}` );
+    const options = {headers: headers};
+    return this.customHttpClient.get<ExecuteResponse>(url, options);
   }
 
   post(url, data) {
-    httpOptions.headers.set('X-Csrf-Token', this.getCookie('XSRF-Token'));
-    return this.customHttpClient.post<ExecuteResponse>(url, data, httpOptions);
+    let headers =  new HttpHeaders();
+    headers = headers.append('Content-Type','application/json');
+    headers = headers.append('Authorization',`Bearer ${this.sessionStore.get(ServiceConstants.AUTH_TOKEN_KEY)}` );
+    const options = {headers: headers};
+    return this.customHttpClient.post<ExecuteResponse>(url, data, options);
   }
 
   postFileData(url, data) {
-
-    return this.http.post(url, data)
-          .catch(this.errorHandler);
+    return this.http.post(url, data).pipe(
+      catchError(this.errorHandler));
   }
 
   getCookie(name) {

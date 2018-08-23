@@ -23,7 +23,7 @@ THE SOFTWARE.*/
 'use strict';
 import { LoaderState } from './../components/platform/loader/loader.state';
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 
 /**
  * \@author reference https://github.com/ivanderbu2/angular-redux

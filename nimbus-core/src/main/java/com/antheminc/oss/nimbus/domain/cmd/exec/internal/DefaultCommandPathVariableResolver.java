@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertyResolver;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
@@ -53,11 +54,13 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 	private final CommandMessageConverter converter;
 	private final PropertyResolver propertyResolver;
 	private final SessionProvider sessionProvider;
+	private final Environment environment;
 	
 	public DefaultCommandPathVariableResolver(BeanResolverStrategy beanResolver, PropertyResolver propertyResolver) {
 		this.converter = beanResolver.get(CommandMessageConverter.class);
 		this.propertyResolver = propertyResolver;
 		this.sessionProvider = beanResolver.get(SessionProvider.class);
+		this.environment = beanResolver.get(Environment.class);
 	}
 	
 	
@@ -105,6 +108,8 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 			
 		if(StringUtils.startsWithIgnoreCase(pathToResolve, Constants.MARKER_SESSION_SELF.code))
 			return mapSelf(param, pathToResolve);
+		if(StringUtils.startsWithIgnoreCase(pathToResolve, Constants.MARKER_ENV.code))
+			return mapEnvironment(param, pathToResolve);
 		
 		if(StringUtils.startsWithIgnoreCase(pathToResolve, Constants.MARKER_COMMAND_PARAM_CURRENT_SELF.code))
 			return StringUtils.removeStart(param.getPath(), param.getRootDomain().getPath());
@@ -127,7 +132,12 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 			return String.valueOf(id);
 		}
 		
-		return param.getRootExecution().getRootCommand().getElement(Type.ClientAlias).get().getAlias();
+		return param.getRootExecution().getRootCommand().getElementSafely(Type.ClientAlias).getAlias();
+	}
+	
+	protected String mapEnvironment(Param<?> param, String pathToResolve) {
+		String property = pathToResolve.replace(Constants.MARKER_ENV.code+".", "");
+		return environment.getProperty(property);
 	}
 	
 	protected String mapQuad(Param<?> param, String pathToResolve) {

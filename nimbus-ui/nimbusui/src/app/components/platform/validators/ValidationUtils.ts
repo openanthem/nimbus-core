@@ -1,3 +1,4 @@
+import { ServiceConstants } from './../../../services/service.constants';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -73,6 +74,9 @@ export class ValidationUtils {
           else if (validator.name === ValidationConstraint._size.value) {
             return CustomValidators.minMaxSelection(controlAlias, validator.attribute);
           }
+         else if (validator.name === ValidationConstraint._max.value) {
+              return Validators.maxLength(validator.attribute.value);
+          }
           else if (validator.name === ValidationConstraint._number.value) {
             return CustomValidators.isNumber;
           }
@@ -121,7 +125,7 @@ export class ValidationUtils {
      */
     static applyelementStyle(element: Param): boolean {
         let requiredCss = false;
-        if (element.config.validation) {
+        if (element && element.config && element.config.validation) {
             element.config.validation.constraints.forEach(validator => {
                 if (validator.name === ValidationConstraint._notNull.value && 
                     validator.attribute != null && validator.attribute.groups.length == 0) {
@@ -131,5 +135,20 @@ export class ValidationUtils {
             });
         }
         return requiredCss;
+    }
+
+    /**
+     * Retrieve the default error message for a given errorType.
+     * @param validationName the errorType for which to retrieve an error message
+     */
+    public static getDefaultErrorMessage(validationName: string): string {
+        return ServiceConstants.ERROR_MESSAGE_DEFAULTS[validationName];
+    }
+    
+    /**
+     * Retrieve all of the error names that validation rules are applied for.
+     */
+    public static getAllValidationNames(): string[] {
+        return Object.keys(ServiceConstants.ERROR_MESSAGE_DEFAULTS);
     }
 }

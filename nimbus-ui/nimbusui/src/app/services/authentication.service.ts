@@ -18,10 +18,7 @@
 
 import { Injectable, EventEmitter } from '@angular/core';
 import { Http } from '@angular/http';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/share';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
+import { of as observableOf,  Observable } from 'rxjs';
 
 /**
  * \@author Dinakar.Meda
@@ -50,6 +47,6 @@ export class AuthenticationService {
     }
 
     logout(): Observable<boolean> {
-        return Observable.of(true);
+        return observableOf(true);
     }
 }

@@ -36,18 +36,19 @@ public class WebCommandBuilder {
 	private JustLogit logit = new JustLogit(this.getClass());
 	
 	public Command build(HttpServletRequest request) {
-		logit.trace(()->"Received http request. "+request.getMethod()+" URI: "+request.getRequestURI());
+		final String requestUri = constructRequestUri(request);
+		logit.trace(()->"Received http request. "+request.getMethod()+" URI: "+requestUri);
 		
-		return handleInternal(request.getRequestURI(), request.getParameterMap());
+		return handleInternal(requestUri, request.getParameterMap());
 	}
 	
 	public Command build(HttpServletRequest request, ModelEvent<String> event) {
-		String uri = request.getRequestURI();
+		String uri = constructRequestUri(request);
 		logit.info(()->"Received http request. "+request.getMethod()+" URI: "+uri+" with event: "+event);
 		
 		final String constructedUri;
 		if(event==null) {
-			constructedUri = request.getRequestURI();
+			constructedUri = constructRequestUri(request);
 		} else {
 			String clientUri = StringUtils.substringBefore(uri, Constants.SEPARATOR_URI_PLATFORM.code+Constants.SEPARATOR_URI.code); //separator = /p/
 			constructedUri = clientUri + Constants.SEPARATOR_URI_PLATFORM.code + event.getPath() + Constants.SEPARATOR_URI.code +event.getType();
@@ -65,6 +66,12 @@ public class WebCommandBuilder {
 		return cmd;
 	} 
 	
-
+	private String constructRequestUri(HttpServletRequest request) {
+		String requestUri = request.getRequestURI();
+		if (!StringUtils.isEmpty(request.getContextPath())) {
+			requestUri = StringUtils.substringAfter(requestUri, request.getContextPath());
+		}
+		return requestUri;
+	}
 	
 }

@@ -12,7 +12,7 @@ import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, Drag
   import { TableModule } from 'primeng/table';
   import { KeyFilterModule } from 'primeng/keyfilter';
 
-import { AccordionMain } from './accordion.component';
+import { Accordion } from './accordion.component';
 import { CardDetailsComponent } from '../card/card-details.component';
 import { Link } from '../link.component';
 import { CardDetailsFieldComponent } from '../card/card-details-field.component';
@@ -81,7 +81,7 @@ describe('AccordionMain', () => {
     async(() => {
       TestBed.configureTestingModule({
         declarations: [
-          AccordionMain,
+          Accordion,
           CardDetailsComponent,
           Link,
           CardDetailsFieldComponent,
@@ -168,20 +168,20 @@ describe('AccordionMain', () => {
   );
 
   it('should create the AccordionMain', async(() => {
-    const fixture = TestBed.createComponent(AccordionMain);
+    const fixture = TestBed.createComponent(Accordion);
     const app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();
   }));
 
   it('get multiple() should return the this.element.config.uiStyles.attributes.multiple value', async(() => {
-    const fixture = TestBed.createComponent(AccordionMain);
+    const fixture = TestBed.createComponent(Accordion);
     const app = fixture.debugElement.componentInstance;
     app.element = { config: { uiStyles: { attributes: { multiple: false } } } };
     expect(app.multiple).toEqual(false);
   }));
 
   it('closeAll should clear the index array', async(() => {
-    const fixture = TestBed.createComponent(AccordionMain);
+    const fixture = TestBed.createComponent(Accordion);
     const app = fixture.debugElement.componentInstance;
     app.accordion = { tabs: true };
     app.index = [1, 2, 3];
@@ -190,7 +190,7 @@ describe('AccordionMain', () => {
   }));
 
   it('closeAll should not clear the index array', async(() => {
-    const fixture = TestBed.createComponent(AccordionMain);
+    const fixture = TestBed.createComponent(Accordion);
     const app = fixture.debugElement.componentInstance;
     app.accordion = { tabs: false };
     app.index = [1, 2, 3];
@@ -199,7 +199,7 @@ describe('AccordionMain', () => {
   }));
 
   it('openAll() should update index array', async(() => {
-    const fixture = TestBed.createComponent(AccordionMain);
+    const fixture = TestBed.createComponent(Accordion);
     const app = fixture.debugElement.componentInstance;
     app.index = [];
     app.accordion = { tabs: [1, 2, 3] };
@@ -208,7 +208,7 @@ describe('AccordionMain', () => {
   }));
 
   it('openAll() should not update index array', async(() => {
-    const fixture = TestBed.createComponent(AccordionMain);
+    const fixture = TestBed.createComponent(Accordion);
     const app = fixture.debugElement.componentInstance;
     app.index = [];
     app.accordion = {};
@@ -217,7 +217,7 @@ describe('AccordionMain', () => {
   }));
 
   it('processOnClick() should call processEvent()', async(() => {
-    const fixture = TestBed.createComponent(AccordionMain);
+    const fixture = TestBed.createComponent(Accordion);
     const app = fixture.debugElement.componentInstance;
     spyOn(pageService, 'processEvent').and.callThrough();
     app.processOnClick({});
@@ -225,49 +225,49 @@ describe('AccordionMain', () => {
   }));
 
   it('getHeaderText() should return info', async(() => {
-    const fixture = TestBed.createComponent(AccordionMain);
+    const fixture = TestBed.createComponent(Accordion);
     const app = fixture.debugElement.componentInstance;
     const tab = { type: { model: { params: [{ alias: 'TabInfo', visible: true, leafState: false, config: { uiStyles: { attributes: { info: 'test' } } } }, { alias: 'tabInfo123', visible: true, leafState: false, config: { uiStyles: { attributes: { info: 'test' } } } }] } } };
     expect(app.getHeaderText(tab)).toEqual('test');
   }));
 
   it('getHeaderText() should return undefined', async(() => {
-    const fixture = TestBed.createComponent(AccordionMain);
+    const fixture = TestBed.createComponent(Accordion);
     const app = fixture.debugElement.componentInstance;
     const tab = { type: { model: { params: [{ alias: 'TabInfo', visible: false, leafState: false, config: { uiStyles: { attributes: { info: 'test' } } } }, { alias: 'tabInfo123', visible: true, leafState: false, config: { uiStyles: { attributes: { info: 'test' } } } }] } } };
     expect(app.getHeaderText(tab)).toBeFalsy();
   }));
 
   it('getHeaderText() should return leafState', async(() => {
-    const fixture = TestBed.createComponent(AccordionMain);
+    const fixture = TestBed.createComponent(Accordion);
     const app = fixture.debugElement.componentInstance;
     const tab = { type: { model: { params: [{ alias: 'TabInfo', visible: true, leafState: 'test', config: { uiStyles: { attributes: { info: 'test' } } } }, { alias: 'tabInfo123', visible: true, leafState: false, config: { uiStyles: { attributes: { info: 'test' } } } }] } } };
     expect(app.getHeaderText(tab)).toEqual('test');
   }));
 
   it('getImageSrc() should return imgSrc', async(() => {
-    const fixture = TestBed.createComponent(AccordionMain);
+    const fixture = TestBed.createComponent(Accordion);
     const app = fixture.debugElement.componentInstance;
     const tab = { type: { model: { params: [{ alias: 'Image', visible: true, leafState: false, config: { uiStyles: { attributes: { imgSrc: 'test' } } } }, { alias: 'tabInfo123', visible: true, leafState: false, config: { uiStyles: { attributes: { info: 'test' } } } }] } } };
     expect(app.getImageSrc(tab)).toEqual('test');
   }));
 
   it('getImageSrc() should return undefined', async(() => {
-    const fixture = TestBed.createComponent(AccordionMain);
+    const fixture = TestBed.createComponent(Accordion);
     const app = fixture.debugElement.componentInstance;
     const tab = { type: { model: { params: [{ alias: 'Image', visible: false, leafState: false, config: { uiStyles: { attributes: { imgSrc: 'test' } } } }, { alias: 'tabInfo123', visible: true, leafState: false, config: { uiStyles: { attributes: { imgSrc: 'test' } } } }] } } };
     expect(app.getImageSrc(tab)).toBeFalsy();
   }));
 
   it('getImageSrc() should return leafState', async(() => {
-    const fixture = TestBed.createComponent(AccordionMain);
+    const fixture = TestBed.createComponent(Accordion);
     const app = fixture.debugElement.componentInstance;
     const tab = { type: { model: { params: [{ alias: 'Image', visible: true, leafState: 'test', config: { uiStyles: { attributes: { imgSrc: '' } } } }, { alias: 'tabInfo123', visible: true, leafState: false, config: { uiStyles: { attributes: { imgSrc: 'test' } } } }] } } };
     expect(app.getImageSrc(tab)).toEqual('test');
   }));
 
   it('getImageType() should return type, getTitle() should return title and getcssClass() should return cssClass', async(() => {
-    const fixture = TestBed.createComponent(AccordionMain);
+    const fixture = TestBed.createComponent(Accordion);
     const app = fixture.debugElement.componentInstance;
     const tab = { type: { model: { params: [{ alias: 'Image', visible: true, leafState: false, config: { uiStyles: { attributes: { imgSrc: 'test', type: 'testingType', title: 'testingTitle', cssClass: 'testingCssClass' } } } }, { alias: 'tabInfo123', visible: true, leafState: false, config: { uiStyles: { attributes: { info: 'test' } } } }] } } };
     expect(app.getImageType(tab)).toEqual('testingType');

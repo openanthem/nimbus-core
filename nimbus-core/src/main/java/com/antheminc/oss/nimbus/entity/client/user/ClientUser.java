@@ -25,6 +25,7 @@ import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Database;
 import com.antheminc.oss.nimbus.entity.client.Client;
+import com.antheminc.oss.nimbus.entity.client.ClientEntity;
 import com.antheminc.oss.nimbus.entity.client.access.ClientAccessEntity;
 import com.antheminc.oss.nimbus.entity.client.access.ClientUserRole;
 import com.antheminc.oss.nimbus.entity.user.AbstractUser;
@@ -56,8 +57,6 @@ public class ClientUser extends AbstractUser<ClientUserRole> {
 	
 	@ReadOnlyProperty
 	private List<ClientAccessEntity> resolvedAccessEntities;
-	
 	private String roleName; // Temp for header
-
 	
 }

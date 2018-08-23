@@ -19,8 +19,6 @@ import { NgModel, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Component, ViewChild, forwardRef, Input, ChangeDetectorRef } from '@angular/core';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
-import { PageService } from '../../../../services/page.service';
-import { Param } from '../../../../shared/param-state';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
@@ -41,13 +39,12 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   selector: 'nm-input',
   providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc, ControlSubscribers ],
   template: `
-    <label *ngIf="hidden!=true"
-    [ngClass]="{'required': requiredCss, '': !requiredCss}"
-        [attr.for]="element.config?.code">{{label}} 
-        <nm-tooltip *ngIf="helpText" 
-            [helpText]='helpText'>
-        </nm-tooltip>
-    </label>
+    <nm-input-label *ngIf="labelConfig && (hidden != true)"
+        [for]="element.config?.code" 
+        [labelConfig]="labelConfig" 
+        [required]="requiredCss">
+
+    </nm-input-label>
 
     <input *ngIf="hidden!=true && readOnly==false"
         [(ngModel)] = "value"

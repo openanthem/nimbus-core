@@ -38,6 +38,7 @@ export class Action extends Enum<string> {
   public static readonly _new = new Enum('_new');
   public static readonly _search = new Enum('_search');
   public static readonly _nav = new Enum('_nav');
+  public static readonly _add = new Enum('_add');
 }
 
 export class HttpMethod extends Enum<string> {

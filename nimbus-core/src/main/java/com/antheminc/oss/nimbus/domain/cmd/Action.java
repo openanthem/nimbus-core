@@ -47,7 +47,7 @@ public enum Action {
 
 	public static final Action DEFAULT = _get;
 	
-	public static final EnumSet<Action> CRUD_ACTIONS = EnumSet.range(_get, _delete);
+	private static final EnumSet<Action> CRUD_ACTIONS = EnumSet.range(_get, _delete);
 	
 	public static Action getByName(String name) {
 		return Stream.of(Action.values())

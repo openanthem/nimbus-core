@@ -15,14 +15,12 @@
  * limitations under the License.
  */
 'use strict';
-import { LabelConfig } from './../../shared/param-config';
 import { Component, Input, forwardRef } from '@angular/core';
 import { Param } from '../../shared/param-state';
 import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { WebContentSvc } from '../../services/content-management.service';
-import { BaseControl } from './form/elements/base-control.component';
-import { PageService } from '../../services/page.service';
 import { ViewComponent } from '../../shared/param-annotations.enum';
+import { BaseLabel } from './base-label.component';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     provide: NG_VALUE_ACCESSOR,
@@ -42,7 +40,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     selector: 'nm-frm-grp',
     providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc],
     template:`
-        <div class="col-lg-12 clearfix colorBox" [hidden]="!hasParams()">
+        <div class="form-holder clearfix colorBox" [hidden]="!hasParams()">
             <ng-template ngFor let-element let-isFirst="first" [ngForOf]="elements">
                 <ng-template [ngIf]="isFirst">
                     <legend *ngIf="label && element.visible">
@@ -50,12 +48,10 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
                     </legend>
                 </ng-template>
                 <ng-template [ngIf]="!element.type?.model?.params?.length || element.config?.type?.collection">
-                    <nm-element id="{{id}}" [element]="element" [elementCss]="elementCss" [form]="form"></nm-element>
+                    <nm-element [position]="position+1" id="{{id}}" [element]="element" [elementCss]="elementCss" [form]="form"></nm-element>
                 </ng-template>
-                <ng-template [ngIf]="element.type?.model?.params?.length && element.config?.uiStyles?.attributes?.alias!=viewComponent.buttongroup.toString() && !element?.config?.type?.collection">
-                    <fieldset class="subQuestion" [hidden]="!element?.visible">
-                        <nm-frm-grp [elements]="element.type?.model?.params" [form]="form.controls[element.config?.code]" [elementCss]="elementCss" [parentElement]="element"></nm-frm-grp>
-                    </fieldset>
+                <ng-template [ngIf]="element?.config?.uiStyles?.attributes?.alias === viewComponent.picklist.toString()">
+                    <nm-element id="{{id}}" [element]="element" [elementCss]="elementCss" [form]="form"></nm-element>
                 </ng-template>
                  <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias==viewComponent.button.toString()">
                     <nm-button [form]="form" [element]="element"> </nm-button>
@@ -67,30 +63,21 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
         </div>
     `
 })
-export class FrmGroupCmp {
+export class FrmGroupCmp extends BaseLabel {
     
        @Input() elements: Param[] = [];
        @Input() form: FormGroup;
        @Input() elementCss : String;
        @Input() parentElement: Param
-       private label: string;
-       private helpText : string;
+
        viewComponent = ViewComponent;
 
-       constructor(private wcs: WebContentSvc) {
-           
+       constructor(private wcsv: WebContentSvc) {
+           super(wcsv);
        }
 
        ngOnInit() {
-            if (this.hasParagraph(this.parentElement)) {
-                let labelConfig: LabelConfig = this.wcs.findLabelContent(this.parentElement);
-                this.label = labelConfig.text;
-                this.helpText = labelConfig.helpText;
-            }
-       }
-
-       hasParagraph(element: Param): boolean {
-           return element && element.config && element.config.uiStyles && element.config.uiStyles.attributes && element.config.uiStyles.attributes.alias=='Paragraph';
+            super.ngOnInit();
        }
 
        hasParams() {

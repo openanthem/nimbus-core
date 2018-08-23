@@ -47,6 +47,7 @@ import com.antheminc.oss.nimbus.support.JustLogit;
 import com.antheminc.oss.nimbus.support.pojo.LockTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -58,9 +59,11 @@ import lombok.Setter;
 @Getter @Setter
 public abstract class AbstractEntityState<T> implements EntityState<T> {
 
-	final private EntityConfig<T> config;
+	@Setter(AccessLevel.NONE)
+	private EntityConfig<T> config;
 	
-	@JsonIgnore final private EntityStateAspectHandlers aspectHandlers;
+	@Setter(AccessLevel.NONE)
+	@JsonIgnore private EntityStateAspectHandlers aspectHandlers;
 	
 	@JsonIgnore final protected LockTemplate lockTemplate = new LockTemplate();
 	
@@ -69,6 +72,11 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 	@JsonIgnore private RulesRuntime rulesRuntime;
 	
 	@JsonIgnore private boolean stateInitialized;
+	
+	public AbstractEntityState() {
+		this.config = null;
+		this.aspectHandlers = null;
+	}
 	
 	public AbstractEntityState(EntityConfig<T> config, EntityStateAspectHandlers aspectHandlers) {
 		Objects.requireNonNull(config, ()->"Config must not be null while instantiating StateAndConfig.");
@@ -140,10 +148,9 @@ public abstract class AbstractEntityState<T> implements EntityState<T> {
 		} finally {
 			if(execRt.isLocked(lockId)) {
 				execRt.awaitNotificationsCompletion();
-				
-				boolean b = execRt.tryUnlock(lockId);
-				if(!b)
-					throw new FrameworkRuntimeException("Failed to release lock acquired during initState of: "+getPath()+" with acquired lockId: "+lockId);
+				if(!execRt.tryUnlock(lockId)) {
+					logit.error(() -> "Failed to release lock acquired during txn execution of runtime: "+this+" with acquired lockId: "+lockId);
+				}
 			}
 		}
 	}

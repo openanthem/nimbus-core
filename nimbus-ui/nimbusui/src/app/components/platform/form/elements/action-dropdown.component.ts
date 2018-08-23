@@ -40,12 +40,9 @@ import { ComponentTypes } from '../../../../shared/param-annotations.enum';
     selector: 'nm-action-dropdown',
     template: `
     <div class="action-dropdown" [hidden]="!element?.visible">
-        <button class="dropdownTrigger" 
-            aria-label="action menu" 
-            attr.aria-expanded="{{isOpen}}" 
-            (click)="toggleOpen($event)"
-            [disabled]="(enabled !== undefined && !enabled) ? true : null">
-        </button> 
+        <button  *ngIf="element?.visible == true" class="{{element.config?.uiStyles?.attributes?.cssClass}}" aria-label="action menu"  attr.aria-expanded="{{isOpen}}"  (click)="toggleOpen($event)" type="button" [disabled]="(enabled !== undefined && !enabled) ? true : null">
+            <nm-image *ngIf="element.config?.uiStyles?.attributes?.imgSrc" [name]="element.config?.uiStyles?.attributes?.imgSrc" [type]="element.config?.uiStyles?.attributes?.imgType" [cssClass]=""></nm-image>
+        </button>
         <div class="dropdownContent" 
             [ngClass]="{'displayNone': isHidden}" 
             [@dropdownAnimation]='state' 

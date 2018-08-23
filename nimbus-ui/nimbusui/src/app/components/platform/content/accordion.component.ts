@@ -35,16 +35,16 @@ import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations
     selector: 'nm-accordion',
     providers: [WebContentSvc],
     template: `
-        <div class="text-sm-right" *ngIf="element.config?.uiStyles?.attributes?.showExpandAll">
+        <div class="text-sm-right" *ngIf="element.config?.uiStyles?.attributes?.showExpandAll" [hidden]="!element?.visible">
             <button type="button" class="btn btn-expand" (click)="openAll()">Expand All</button>
             <span class="btn-pipe">|</span>
             <button type="button" class="btn btn-expand" (click)="closeAll()">Collapse All</button>
         </div>
-        <p-accordion #accordion [multiple]="multiple" [activeIndex]="index">
+        <p-accordion #accordion [multiple]="multiple" [activeIndex]="index" *ngIf="element?.visible">
             <ng-template ngFor let-tab [ngForOf]="nestedParams">
-                <p-accordionTab  [selected]="tab?.config?.uiStyles?.attributes?.selected" *ngIf="tab?.visible == true">
+                <p-accordionTab  [selected]="tab?.config?.uiStyles?.attributes?.selected" *ngIf="tab?.visible">
                     <p-header>
-                        <h2>{{getTabHeader(tab)}}</h2>
+                        <nm-label *ngIf="getTabLabelConfig(tab)" [labelConfig]="getTabLabelConfig(tab)" [size]="labelSize"></nm-label>
                         <span [ngClass]="getTabInfoClass(tab)" *ngIf="getInfoText(tab)">
                             {{getInfoText(tab)}}
                         </span>
@@ -74,12 +74,13 @@ import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations
                                 <nm-table
                                     [element]="tabElement" 
                                     [params]="tabElement?.config?.type?.elementConfig?.type?.model?.paramConfigs"
-                                    (onScrollEvent)="onScrollEvent()">
+                                    (onScrollEvent)="onScrollEvent()"
+                                    [position]="position+1">
                                 </nm-table>
                             </ng-template>
                             <!-- Card Content -->
                             <ng-template [ngIf]="tabElement.alias == componentTypes.cardDetail.toString()">
-                                <nm-card-details [element]="tabElement"></nm-card-details>
+                                <nm-card-details [element]="tabElement" [position]="position+1"></nm-card-details>
                             </ng-template>
                         </ng-template>
                     </ng-template>
@@ -89,7 +90,7 @@ import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations
     `
 })
 
-export class AccordionMain extends BaseElement {
+export class Accordion extends BaseElement {
 
     @Input() form: FormGroup;
     @Input() elementCss: string;
@@ -97,7 +98,7 @@ export class AccordionMain extends BaseElement {
 
     protected _multiple: boolean;
     index: number[]; 
-    @ViewChild('accordion') accordion: AccordionMain;
+    @ViewChild('accordion') accordion: Accordion;
 
     constructor(private wcsvc: WebContentSvc, private pageSvc: PageService) {
         super(wcsvc);
@@ -105,6 +106,7 @@ export class AccordionMain extends BaseElement {
 
     ngOnInit() {
         super.ngOnInit();
+        this.updatePositionWithNoLabel();
     }
 
     /**
@@ -117,9 +119,8 @@ export class AccordionMain extends BaseElement {
     /**
      * Get Tab label
      */
-    protected getTabHeader(param: Param): string {
-        let labelConfig: LabelConfig = this.wcsvc.findLabelContent(param);
-        return labelConfig.text;
+    protected getTabLabelConfig(param: Param): LabelConfig {
+        return this.wcsvc.findLabelContent(param);
     }
 
     /**
