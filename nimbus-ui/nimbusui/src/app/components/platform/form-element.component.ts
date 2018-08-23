@@ -156,20 +156,13 @@ export class FormElement extends BaseElement {
                 this.element.config.validation.constraints.forEach(validator => {
                     
                     // cycle through all of the supported validation errors and apply messages for those that are present.
-                    ValidationUtils.getAllValidationNames().forEach(validationName => {
-
-                        if (this.hasErrors(control, validationName)) {
+                    ValidationUtils.getAllValidationNames()
+                        .filter(validationName => this.hasErrors(control, validationName))
+                        .forEach(validationName => {
+                            
                             // prefer validation message from the server first
-                            var errorMessage = validator.attribute.message;
-
                             // if unavailable, set the error message to the default for the particular type of error.
-                            if (!errorMessage) {
-                                errorMessage = ValidationUtils.getDefaultErrorMessage(validationName);
-                            }
-
-                            // add the error message for this error.
-                            this.addErrorMessages(errorMessage);
-                        }
+                            this.addErrorMessages(validator.attribute.message ? validator.attribute.message : ValidationUtils.getDefaultErrorMessage(validationName));
                     });
                 });
             }
