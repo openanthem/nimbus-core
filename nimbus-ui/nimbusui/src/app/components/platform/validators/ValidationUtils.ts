@@ -1,3 +1,4 @@
+import { ServiceConstants } from './../../../services/service.constants';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -136,6 +137,18 @@ export class ValidationUtils {
         return requiredCss;
     }
 
-
+    /**
+     * Retrieve the default error message for a given errorType.
+     * @param validationName the errorType for which to retrieve an error message
+     */
+    public static getDefaultErrorMessage(validationName: string): string {
+        return ServiceConstants.ERROR_MESSAGE_DEFAULTS[validationName];
+    }
     
+    /**
+     * Retrieve all of the error names that validation rules are applied for.
+     */
+    public static getAllValidationNames(): string[] {
+        return Object.keys(ServiceConstants.ERROR_MESSAGE_DEFAULTS);
+    }
 }
