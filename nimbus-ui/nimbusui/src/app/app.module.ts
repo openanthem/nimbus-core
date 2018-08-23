@@ -85,9 +85,7 @@ import { CardDetailsComponent } from './components/platform/card/card-details.co
 import { CardDetailsFieldGroupComponent } from './components/platform/card/card-details-field-group.component';
 import { CardDetailsFieldComponent } from './components/platform/card/card-details-field.component';
 import { CardDetailsGrid } from './components/platform/card/card-details-grid.component';
-import { Accordion } from './components/platform/accordion.component';
-import { AccordionGroup } from './components/platform/accordion-group.component';
-import { AccordionMain } from './components/platform/content/accordion.component';
+import { Accordion } from './components/platform/content/accordion.component';
 import { AccordionTab } from './components/platform/content/accordion-tab.component';
 import { FrmGroupCmp } from './components/platform/form-group.component';
 import { Button } from './components/platform/form/elements/button.component';
@@ -197,7 +195,7 @@ export function init_app(appinitservice: AppInitService) {
         Tile, Section, Header, Form, FormElement, InputText, ComboBox, RadioButton, Signature, DateControl, CheckBoxGroup,
         InPlaceEditorComponent, Paragraph, Value, BaseElement,
         MultiselectCard, Link, Menu, CardDetailsComponent, CardDetailsFieldGroupComponent, CardDetailsFieldComponent, CardDetailsGrid, FieldValue,
-        AccordionGroup, Accordion, AccordionMain, AccordionTab, FrmGroupCmp, Button, ButtonGroup, FilterButton, OrderablePickList,
+        Accordion, AccordionTab, FrmGroupCmp, Button, ButtonGroup, FilterButton, OrderablePickList,
         STOMPStatusComponent, InfiniteScrollGrid, DataTable, SubHeaderCmp, TextArea, LandingPage,
         LayoutService, ContentContainer,
         DomainFlowCmp, HeaderGlobal, FooterGlobal,

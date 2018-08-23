@@ -90,7 +90,7 @@ import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations
     `
 })
 
-export class AccordionMain extends BaseElement {
+export class Accordion extends BaseElement {
 
     @Input() form: FormGroup;
     @Input() elementCss: string;
@@ -98,7 +98,7 @@ export class AccordionMain extends BaseElement {
 
     protected _multiple: boolean;
     index: number[]; 
-    @ViewChild('accordion') accordion: AccordionMain;
+    @ViewChild('accordion') accordion: Accordion;
 
     constructor(private wcsvc: WebContentSvc, private pageSvc: PageService) {
         super(wcsvc);
