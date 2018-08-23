@@ -1477,7 +1477,22 @@ public class ViewConfig {
 	 * <p>PickList will be rendered when annotating a field nested under one of
 	 * the following components: <ul> <li>{@link Form}</li> </ul>
 	 * 
-	 * <p>PickList should decorate an array or collection.
+	 * <p>PickList should decorate a complex type, with its nested param annotated as {@link PickListSelected}.
+	 * <p> Ex : 
+	 * <pre>
+	 * 	&#64;PickList(sourceHeader="Available Category", targetHeader="Selected Category")
+	 *  &#64;Values(value=A_Category.class)
+	 * 	private PicklistType category; 
+	 * 	
+	 *  &#64;Getter &#64;Setter &#64;Type(SomeClass.class)
+	 *	public static class PicklistType {
+	 *	&#64;Values(value=AllCategory.class)
+	 *	&#64;Path("category")
+	 *	&#64;PickListSelected(postEventOnChange=true)
+	 *	private String[] selected; 
+	 *	}
+	 *	
+	 * </pre>
 	 * 
 	 * @since 1.0
 	 */
@@ -1487,21 +1502,60 @@ public class ViewConfig {
 	public @interface PickList {
 		String alias() default "PickList";
 
+		/**
+		 * <p>CSS classes added here will be added to the container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
-
+		
 		String help() default "";
 
 		String labelClass() default "anthem-label";
-
-		boolean postEventOnChange() default false;
 
 		boolean readOnly() default false;
 
 		String sourceHeader() default "SourceList";
 
 		String targetHeader() default "TargetList";
+		
+		/**
+		 * <p>When {@code true}, the sort controls on source list are shown on the UI
+		 */
 		boolean showSourceControls() default false;
+		
+		/**
+		 * <p>When {@code true}, the sort controls on target list are shown on the UI
+		 */
 		boolean showTargetControls() default false;
+	}
+	
+	/**
+	 * <p><b>Expected Field Structure</b>
+	 * 
+	 * <p>PickListSelected will be rendered when annotating a field nested under one of the following components:
+	 * <ul>
+	 * <li>{@link PickList}</li>
+	 * </ul>
+	 * 
+	 * <p>PickListSelected should decorate an array or collection
+	 * <p>A comprehensive list of {@link @Values} on a given {@link PickList} should be annotated on the PickListSelected field 
+	 * so that a map for all code-label pairs will be available for the chosen items.
+	 * 
+	 * @since 1.0
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface PickListSelected {
+		
+		String alias() default "PickListSelected";
+		
+		/**
+		 * <p>When {@code true} and the value of this component is changed on the client, the updated 
+		 * value will be sent to the server.
+		 */
+		boolean postEventOnChange() default false;
+		
 	}
 
 	/**
@@ -1532,7 +1586,7 @@ public class ViewConfig {
 
 		boolean postEventOnChange() default false;
 	}
-
+	
 	/**
 	 * <p><b>Expected Field Structure</b>
 	 * 
