@@ -106,4 +106,14 @@ export class ServiceConstants {
     //     obj['defaultAjaxUrl'] = 'htpp://localhost:8000/log';
     //     return obj;
     // }
+
+    // TODO Move this to server-side configuration.
+    public static get ERROR_MESSAGE_DEFAULTS(): any {
+        return {
+            required: 'Field is required.',
+            pattern: 'Field does not match the required pattern.',
+            minMaxSelection: 'Field does not meet min/max requirement.',
+            isNumber: 'Value must be a number.'
+        };
+    }
 }

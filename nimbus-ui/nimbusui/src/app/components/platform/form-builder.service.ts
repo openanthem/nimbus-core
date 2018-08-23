@@ -22,6 +22,7 @@ import { FormGroup, FormBuilder, Validators, ValidatorFn, FormControl } from '@a
 import { CustomValidators } from './validators/custom.validators';
 import { Param } from '../../shared/param-state';
 import { ValidationUtils } from './validators/ValidationUtils';
+import { ViewComponent } from '../../shared/param-annotations.enum';
 
 /**
  * \@author Dinakar.Meda
@@ -44,7 +45,7 @@ export class FormElementsService {
 
     return group;
   }
-
+  
   buildFormGroup(elements: Param[]): {} {
     let group: any = {};
     elements.forEach(element => {
@@ -54,7 +55,20 @@ export class FormElementsService {
         checks = ValidationUtils.buildStaticValidations(element);
         //if the form element's state is a collection we do not create a form group for it
         if(element.type && element.config.type.nested && element.type.model.params.length>0 && !element.config.type.collection) {
-          group[element.config.code] = this.createNewFormGroup(element);
+          if (element.alias !== ViewComponent.picklist.toString()) {
+            group[element.config.code] = this.createNewFormGroup(element);
+          } else {
+            // Adding this for picklist since form submit does not handle complex type - Revisit
+            group[element.config.code] = this.createNewFormGroup(element);
+            const picklistparam: Param = element.type.model.params.find( p => 
+              p.alias === ViewComponent.selectedPicklist.toString());
+            var leafState = this._getTypeSafeLeafState(picklistparam);
+            if (checks) {
+              group[picklistparam.config.code] = [{value: leafState, disabled: !picklistparam.enabled}, checks];
+            } else {
+              group[picklistparam.config.code] = [{value: leafState, disabled: !picklistparam.enabled}];
+           }
+          }  
           //create new formgroup and formcontrol to create checkboxes in form. this is for form binding. TODO validations binding
         } else {
           var leafState = this._getTypeSafeLeafState(element);
@@ -75,7 +89,7 @@ export class FormElementsService {
     for (let i = 0; i < element.type.model.params.length; i++) {
       let param = element.type.model.params[i];
       var checks: ValidatorFn[] = [];
-      checks = ValidationUtils.buildStaticValidations(element);
+      checks = ValidationUtils.buildStaticValidations(param);
       if (param.config.type.nested) {
          fg.addControl(param.config.code, this.createNewFormGroup(param));
       } else {

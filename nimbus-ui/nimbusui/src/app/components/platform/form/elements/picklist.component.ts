@@ -25,6 +25,9 @@ import { WebContentSvc } from '../../../../services/content-management.service';
 import { PageService } from '../../../../services/page.service';
 import { PickList } from 'primeng/primeng';
 import { BaseElement } from '../../base-element.component';
+import { MAX_LENGTH_VALIDATOR } from '@angular/forms/src/directives/validators';
+import { BaseControl } from './base-control.component';
+import { GenericDomain } from '../../../../model/generic-domain.model';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
@@ -35,6 +38,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
+ * \@author Swetha.Vemuri
  * \@whatItDoes 
  * 
  * \@howToUse 
@@ -46,34 +50,43 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
         CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR,WebContentSvc
     ],
     template: `
-        <!--<div [hidden]="!element?.visible" *ngIf="element.config?.uiStyles?.attributes?.hidden==false">-->
-        <label [attr.for]="element.config?.code"  [ngClass]="{'required': requiredCss, '': !requiredCss}">{{label}}
-            <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
-        </label>
-        <div>
-            <fieldset [disabled]="!element?.enabled">
-                <p-pickList #picklist [source]="element.values" 
-                    filterBy="label"
-                    [sourceHeader] = "element.config?.uiStyles?.attributes.sourceHeader" 
-                    [targetHeader]="element.config?.uiStyles?.attributes.targetHeader" 
-                    [disabled]="!element?.enabled"
-                    [target]="targetList" pDroppable="dd" [responsive]="true" 
-                    (onMoveToTarget)="updateListValues($event)" (onMoveToSource)="updateListValues($event)">
-                    <ng-template let-itm pTemplate="item">
-                        <div class="ui-helper-clearfix">
-                            <div style="font-size:14px;float:right;margin:15px 5px 0 0" pDraggable="dd"  
-                                (onDragStart)="dragStart($event, itm)" (onDragEnd)="dragEnd($event)">{{itm.label}} </div>
+        <nm-input-label
+            [labelConfig]="labelConfig"
+            [for]="parent.config.code"
+            [required]="requiredCss">
+        </nm-input-label>
+        <div style="padding:2px;"> 
+        <fieldset [disabled]="!parent?.enabled">
+            <p-pickList #picklist 
+                [source]="parent.values" 
+                filterBy="label"
+                [sourceHeader] = "parent?.config?.uiStyles?.attributes.sourceHeader" 
+                [targetHeader]="parent?.config?.uiStyles?.attributes.targetHeader" 
+                [disabled]="!parent.enabled"
+                [target]="targetList" 
+                pDroppable="dd" 
+                [responsive]="true" 
+                [showSourceControls]="false"
+                [showTargetControls]="false"
+                (onMoveToTarget)="updateListValues($event)" 
+                (onMoveToSource)="updateListValues($event)">
+                <ng-template let-itm pTemplate="item">
+                    <div class="ui-helper-clearfix">
+                        <div pDraggable="dd"  
+                            (onDragStart)="dragStart($event, itm)" (onDragEnd)="dragEnd($event)">
+                            {{itm.label ? itm.label : getDesc(itm)}}
                         </div>
-                    </ng-template>
-                </p-pickList> 
-             </fieldset>   
+                    </div>
+                </ng-template>
+            </p-pickList>   
+            </fieldset>   
         </div>
    `
 })
 
 export class OrderablePickList extends BaseElement implements OnInit, ControlValueAccessor {
-
-    @Input() element: Param;
+    @Input() parent: Param;
+    @Input() selectedvalues : Values[];
     @Input() form: FormGroup;
     @Input('value') _value ;
     @ViewChild('picklist') pickListControl: PickList;
@@ -95,40 +108,47 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
     }
 
     ngOnInit() {
-        this.loadLabelConfigByCode(this.element.config.code, this.element.config.labelConfigs);
-        this.requiredCss = ValidationUtils.applyelementStyle(this.element);
-        //set the default target list when the page loads to the config state
-        if(this.element.leafState !=null) {
+        this.loadLabelConfigByCode(this.parent.config.code, this.parent.config.labelConfigs);
+        this.requiredCss = ValidationUtils.applyelementStyle(this.parent);
+        // First check if the picklist has any values that are selected onload
+        if(this.element.leafState != null) {
             this.targetList = this.element.leafState;
         } else {
             this.targetList = [];
         }
+        this.refreshSourceList();
 
-        if( this.form!= null) {
-            let frmCtrl = this.form.controls[this.element.config.code]
-            if(frmCtrl != null) {
+        if (this.form != null) {
+            const parentCtrl = this.form.controls[this.parent.config.code];
+            const frmCtrl = this.form.controls[this.element.config.code];
+            if (frmCtrl != null) {
                 //rebind the validations as there are dynamic validations along with the static validations
-                if(this.element.activeValidationGroups != null && this.element.activeValidationGroups.length > 0) {
-                    this.requiredCss = ValidationUtils.rebindValidations(frmCtrl,this.element.activeValidationGroups,this.element);
+                if (this.element.activeValidationGroups != null && this.element.activeValidationGroups.length > 0) {
+                    this.requiredCss = ValidationUtils.rebindValidations(frmCtrl,this.element.activeValidationGroups, this.element);
                 } 
                 frmCtrl.valueChanges.subscribe(
-                    ($event) => { this.setState($event,this); });
+                    ($event) => { 
+                        this.setState($event, this);
+                        // setting parent Picklist value manually since 
+                        parentCtrl.setValue(this.updateParentValue($event));
+                    });
 
                 this.pageService.eventUpdate$.subscribe(event => {
-                    let frmCtrl = this.form.controls[event.config.code];
-                    if(frmCtrl!=null && event.path.startsWith(this.element.path)) {
-                        if(event.leafState!=null)
+                const frmCtrl = this.form.controls[this.element.config.code];
+                    if(frmCtrl != null && event.path.startsWith(this.element.path)) {
+                        if(event.leafState != null) {
                             frmCtrl.setValue(event.leafState);
-                        else
+                        } else {
                             frmCtrl.reset();
+                        }
                     }
                 });
                 this.pageService.validationUpdate$.subscribe(event => {
-                    let frmCtrl = this.form.controls[event.config.code];
-                    if(frmCtrl!=null) {
-                        if(event.path === this.element.path) {
+                const frmCtrl = this.form.controls[this.element.config.code];
+                    if(frmCtrl != null) {
+                        if (event.path === this.element.path) {
                            //bind dynamic validations on a param as a result of a state change of another param
-                            if(event.activeValidationGroups != null && event.activeValidationGroups.length > 0) {
+                            if (event.activeValidationGroups != null && event.activeValidationGroups.length > 0) {
                                 this.requiredCss = ValidationUtils.rebindValidations(frmCtrl,event.activeValidationGroups,this.element);
                             } else {
                                 this.requiredCss = ValidationUtils.applyelementStyle(this.element);
@@ -141,20 +161,25 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
                     }
                 });
                 this.controlValueChanged.subscribe(($event) => {
-                    if ($event.config.uiStyles.attributes.postEventOnChange) {
-                       this.pageService.postOnChange($event.path, 'state', JSON.stringify($event.leafState));
-                    }
-                });
+                     if ($event.config.uiStyles.attributes.postEventOnChange) {
+                        this.pageService.postOnChange($event.path , 'state', JSON.stringify($event.leafState));
+                     }
+                 });
             }
-            
         }
+
+        this.pageService.eventUpdate$.subscribe(event => {
+            if(event.path == this.parent.path) {
+                this.refreshSourceList();
+            }
+        });
     }
 
     emitValueChangedEvent() {
-        if(this.form == null || (this.form.controls[this.element.config.code]!= null && this.form.controls[this.element.config.code].valid)) {
+        if (this.form == null || (this.form.controls[this.element.config.code]!= null 
+            && this.form.controls[this.element.config.code].valid)) {
             this.controlValueChanged.emit(this.element);
         }
-        
     }
 
     setState(event:any, frmInp:any) {
@@ -162,14 +187,24 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
     }
 
     updateListValues(event: any) {
-        if(this.targetList.length === 0) {
-            this.value = null;
-        } else {
-            this.selectedOptions = [];
-            this.targetList.forEach(element => {
-                this.selectedOptions.push(element.code);
+        this.updateData();
+        /* comes into this loop when leafState is not null and new values are added
+         prime-ng adds data of type Values{code, label} to leafState since the [source] is of type {element.values} 
+         ex: leafState : ["Mon","Tue",{'code' : "Wed", 'label' : "Wednesday"}]
+         The below logic, transforms the data into just codes i.e leafState : ["Mon","Tue","Wed"] 
+        */
+        if (this.element.leafState) {
+            this.element.leafState.forEach((state, i) => {
+                if (state && state.code) {
+                    const code = state.code;
+                    this.element.leafState.splice(i, 1, code);
+                    this.targetList = this.element.leafState;
+                }
             });
-            this.value = this.selectedOptions;
+        } else {
+            if (this.value) {
+                this.element.leafState = this.value;
+            }
         }
         this.emitValueChangedEvent();
     }
@@ -219,15 +254,7 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
             }
             this.draggedItm = null;
             //updating the internal data model
-            if(this.targetList.length === 0) {
-                this.value = null;
-            } else {
-                this.selectedOptions = [];
-                this.targetList.forEach(element => {
-                    this.selectedOptions.push(element.code);
-                });
-                this.value = this.selectedOptions;
-            }
+            this.updateData();
         }
     }
 
@@ -248,4 +275,73 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
         this.disabled = isDisabled;
   }
 
+    /** 
+    * @param - itm (represents a code of @Values) 
+    * The method maps the code to a label based on the super set of @Values 
+    * passed as @Input("selectedValues") to the component.
+    * This particularly comes into picture when the component is rendered in edit mode with pre loaded values
+    */
+    public getDesc(itm : any) : string {
+        let displayVal: string;
+        const values = this.selectedvalues;
+        displayVal = values.find(value => (value && value.code === itm)).label;
+        if (displayVal === undefined) {
+            displayVal = itm;
+        }
+        return displayVal;
+    }
+
+    /**
+     * This method validates if there are duplicate values in both source and target. 
+     * If yes, remove them from source and refresh the source list.
+     */
+    private refreshSourceList() {
+        // make sure targetlist and leafstate are in sync
+        if(this.element.leafState) {
+            this.targetList = this.element.leafState;
+        }
+        if (this.targetList) {
+            for (var targetItem of this.targetList) {
+                this.parent.values = this.parent.values.filter(value => 
+                    value.code !== targetItem
+                );
+            }
+        }
+    }
+
+    /**
+     * Update the internal model.
+     */
+    private updateData() {
+        if(this.targetList.length === 0) {
+            this.value = null;
+        } else {
+            this.selectedOptions = [];
+            this.targetList.forEach(element => {
+                if (element.code) {
+                    this.selectedOptions.push(element.code);
+                } else {
+                    this.selectedOptions.push(element);
+                }
+            });
+            this.value = this.selectedOptions;
+        }
+    }
+
+    /**
+     * This is a temp hack to resolve the complex type form submit issues
+     */
+    private updateParentValue(event : any) : GenericDomain{
+        let item: GenericDomain = new GenericDomain();
+        let selectedOptions = [];
+            this.targetList.forEach(element => {
+                if (element.code) {
+                    selectedOptions.push(element.code);
+                } else {
+                    selectedOptions.push(element);
+                }
+            });
+        item.addAttribute(this.element.config.code, selectedOptions);
+        return item;
+    }
 }

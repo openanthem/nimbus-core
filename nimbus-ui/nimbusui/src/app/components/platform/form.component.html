@@ -1,10 +1,11 @@
 <form id="{{formId}}" [formGroup]="form" novalidate>
+    <nm-label *ngIf="labelConfig?.text" [labelConfig]="labelConfig" [size]="labelSize"></nm-label>
     <!--condition for rendering accordion groups inside form-->
     <ng-template [ngIf]="groups.length>0">
-        <nm-accordion [element]="group" [elementCss]="elementCss" [form]="form" *ngFor="let group of groups">
+        <nm-accordion [element]="group" [elementCss]="elementCss" [form]="form" [position]="position + 1" *ngFor="let group of groups">
         </nm-accordion>
     </ng-template>
 
     <!--condition to render those form elements that dont have an accordion container-->
-    <nm-frm-grp *ngIf="formElements.length>0" [elements]="formElements" [form]="form" [elementCss]="elementCss"> </nm-frm-grp>
+    <nm-frm-grp *ngIf="formElements.length>0" [elements]="formElements" [form]="form" [elementCss]="elementCss" [position]="position"> </nm-frm-grp>
 </form>

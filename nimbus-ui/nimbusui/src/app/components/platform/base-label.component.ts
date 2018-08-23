@@ -16,37 +16,43 @@
  */
 'use strict';
 
-import { Injectable, EventEmitter } from '@angular/core';
-import { Http } from '@angular/http';
-import { of as observableOf,  Observable } from 'rxjs';
+import { Component, Input } from '@angular/core';
+import { WebContentSvc } from '../../services/content-management.service';
 
 /**
- * \@author Dinakar.Meda
- * \@author Sandeep.Mantha
+ * \@author Purnachander.Mashetty
  * \@whatItDoes 
  * 
  * \@howToUse 
  * 
  */
-@Injectable()
-export class AuthenticationService {
+@Component({
+    selector: 'nm-base-label',
+    template:`
+    `
+})
 
-    login$: EventEmitter<any>;
-    loginDataStore: any[];
+export class BaseLabel {
 
-    constructor(public http: Http) {
-        // Create Observable Stream to output our data
-        this.login$ = new EventEmitter();
-        this.loginDataStore = [];
+    @Input() position: number;
+    labelSize: String;
+    label: String;
+    
+
+    constructor(private wcs: WebContentSvc) {
     }
 
-    logError(err) {
+    ngOnInit() {
+        this.labelSize = this.getHeaderSize(this.position);
+        this.getHeaderSize(this.position);
     }
 
-    login(user: string, password: string, remember: boolean) {
+    getHeaderSize(position) {
+        if (position > 6) {
+            return 'H6';
+        }
+        return 'H' + position;
     }
-
-    logout(): Observable<boolean> {
-        return observableOf(true);
-    }
+    
 }
+

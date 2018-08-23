@@ -23,6 +23,7 @@ import { Param } from '../../../shared/param-state';
 import { Component, Input } from '@angular/core';
 import { PageService } from '../../../services/page.service';
 import { ComponentTypes } from '../../../shared/param-annotations.enum';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 /**
  * \@author Dinakar.Meda
@@ -33,28 +34,59 @@ import { ComponentTypes } from '../../../shared/param-annotations.enum';
  */
 @Component({
     selector: 'nm-card-details',
-     styles: [`
+    styles: [`
         .hide {
         display: none;
         },
         `
     ],
     templateUrl: './card-details.component.html',
+    animations: [
+        trigger('accordionAnimation', [
+            state('openPanel', style({
+                height: '*'
+            })),
+            state('closedPanel', style({
+                height: '0',
+            })),
+            transition('closedPanel => openPanel', [animate('300ms ease-out')]),
+            transition('openPanel => closedPanel', [animate('500ms ease-in')])
+
+        ]),
+    ],
     providers: [
         WebContentSvc
     ]
 })
 export class CardDetailsComponent extends BaseElement {
-    @Input() list : CardDetails;
+    @Input() list: CardDetails;
     @Input() collectionElem: boolean = false;
     @Input() elemId: string = undefined;
     @Input() element: Param;
     @Input() editUrl: string;
     opened: boolean = false;
     componentTypes = ComponentTypes;
+    isHidden: boolean = false;
+    expandable: boolean = false;
+    cardType: string;
+    private _state: string = 'openPanel';
 
-    constructor(private pageSvc : PageService, private _wcs: WebContentSvc) {
+    set state(value: string) {
+        this._state = value;
+    }
+
+    get state() {
+        return this._state;
+    }
+
+    constructor(private pageSvc: PageService, private _wcs: WebContentSvc) {
         super(_wcs);
+    }
+
+    ngOnInit() {
+        super.ngOnInit();
+        this.updatePosition();
+        this.setCardConfig();
     }
 
     processOnClick() {
@@ -62,13 +94,46 @@ export class CardDetailsComponent extends BaseElement {
     }
 
     /* look for parameters in URI {} */
-    getAllURLParams (uri: string): string[] {
+    getAllURLParams(uri: string): string[] {
         var pattern = /{([\s\S]*?)}/g;
         return uri.match(pattern);
     }
 
     toggle() {
         this.opened = !this.opened;
+    }
+
+    toggleState() {
+        if (this._state == 'closedPanel') {
+            this.isHidden = !this.isHidden;
+             this._state = 'openPanel';
+        }
+        else if (this._state == 'openPanel') {
+            this._state = 'closedPanel';
+        }
+
+    }
+
+    animationStart($event) {
+        // this.isHidden = false;
+    }
+
+    animationDone($event) {
+        if (this._state == 'closedPanel') {
+            this.isHidden = true;
+        }
+    }
+
+    setCardConfig() {
+        if (this.element.config.uiStyles.attributes.alias === this.componentTypes.cardDetail.toString() && this.element.config.uiStyles.attributes.expandable) {
+            this.expandable = true;
+            this.isHidden = true;
+            this.state = 'closedPanel';
+            this.cardType = 'toggleCard';
+        }
+        else if (this.element.config.uiStyles.attributes.alias === this.componentTypes.cardDetail.toString() && this.element.config.uiStyles.attributes.border) {
+            this.cardType = 'borderCard';
+        }
     }
 
 }

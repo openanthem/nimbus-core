@@ -54,7 +54,7 @@ export class Tile extends BaseElement {
     @Input() tileType?: string;
 
     // width of tile
-    public styleWd: string = 'col-xs-12';
+    public styleWd: string = 'col-12';
 
     // height of tile
     public styleHt: string = 'height-lg';
@@ -80,7 +80,7 @@ export class Tile extends BaseElement {
             this.styleWd = 'card-holder col-md-6 mediumCard';
             this.styleHt = 'height-md';
         } else if (this.element.config.uiStyles.attributes.size === 'Large') {
-            this.styleWd = 'card-holder col-xs-12 ';
+            this.styleWd = 'card-holder col-12 ';
             this.styleHt = 'card-block ';
         } else {
             this.styleWd = '';
@@ -95,6 +95,7 @@ export class Tile extends BaseElement {
         if (this.element.config && this.element.config.initializeComponent()) {
             this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'POST');
         }
+        this.updatePosition();
     }
 }
 

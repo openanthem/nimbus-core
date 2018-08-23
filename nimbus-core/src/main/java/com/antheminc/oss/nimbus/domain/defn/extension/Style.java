@@ -13,25 +13,23 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.domain.model.config.internal;
-
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
-
-import com.antheminc.oss.nimbus.domain.model.config.ValidatorProvider;
-import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
+package com.antheminc.oss.nimbus.domain.defn.extension;
 
 /**
- * @author Rakesh Patel
+ * <p>Style properties may be added via use of this annotation. Rules for applying 
+ * the styling defined in this way is delegated to each of the individual components.
+ * 
+ * <p>See the specific component's documentation for more information on how style
+ * properties defined here will be used.
+ *
+ * @author Tony Lopez
  *
  */
-@EnableLoggingInterceptor
-public class DefaultValidatorProvider implements ValidatorProvider {
+public @interface Style {
 
-	private static final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-    
-    public Validator getValidator() {
-    	return factory.getValidator();
-    }
-} 
+	/**
+	 * <p>CSS classes added here will be added to the container element surrounding this component.
+	 * <p>This can be used to apply additional styling, if necessary.
+	 */
+	String cssClass() default "";
+}

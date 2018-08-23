@@ -16,7 +16,8 @@
  */
 'use strict';
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { STOMPService, StateLookup } from './stomp.service';
 
 /**
@@ -31,7 +32,7 @@ import { STOMPService, StateLookup } from './stomp.service';
 @Component({
 	selector: 'stomp-status',
 	template: `
-		<div class="col-xs-2 pull-right">
+		<div class="col-2 float-right">
 			<p> STOMP Status : <span id="status"> {{state|async}} </span> </p>
 		</div>
 	`
@@ -43,7 +44,7 @@ export class STOMPStatusComponent implements OnInit {
 	constructor(private _stompService: STOMPService) { }
 
 	ngOnInit() {
-		this.state = this._stompService.state
-			.map( (state:number) => StateLookup[state] );
+		this.state = this._stompService.state.pipe(
+			map( (state:number) => StateLookup[state] ));
 	}
 }

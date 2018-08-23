@@ -49,6 +49,7 @@ public interface ParamConfig<P> extends EntityConfig<P>, Findable<String> {
 		private String locale; //default en-US
 		private String text;
 		private String helpText;
+		private String cssClass;
 	}
 	public List<LabelConfig> getLabelConfigs();
 	

@@ -1,6 +1,6 @@
 <div class="{{cssClass}}" id="{{code}}">
     <!-- Section Message -->
-    
+    <nm-label *ngIf="labelConfig?.text != ''" [labelConfig]="labelConfig" [size]="labelSize"></nm-label>
      <ng-template ngFor let-msg [ngForOf]="element.message">
         <nm-message [messageContext]="msg.context"  [messageArray]="msg.messageArray" [styleClass]="msg.styleClass" [life]="msg.life" *ngIf="msg" ></nm-message>
     </ng-template>     
@@ -9,10 +9,10 @@
         <ng-template ngFor let-element [ngForOf]="nestedParams">
             <!-- Card Content -->
             <ng-template [ngIf]="element.alias == componentTypes.cardDetailsGrid.toString()">
-                <nm-card-details-grid [grid]="element"></nm-card-details-grid>
+                <nm-card-details-grid [position]="position+1" [grid]="element"></nm-card-details-grid>
             </ng-template>
             <ng-template [ngIf]="element.alias == componentTypes.cardDetail.toString()">
-                <nm-card-details [element]="element"></nm-card-details>
+                <nm-card-details [position]="position+1" [element]="element"></nm-card-details>
             </ng-template>
             <!-- Paragraph -->
             <ng-template [ngIf]="element.alias == componentTypes.paragraph.toString()">
@@ -24,11 +24,11 @@
             </ng-template>
             <!-- Form Param -->
             <ng-template [ngIf]="element.alias == viewComponent.form.toString()">
-                <nm-form [element]="element" [model]="element.type?.model"></nm-form>
+                <nm-form [position]="position+1" [element]="element" [model]="element.type?.model"></nm-form>
             </ng-template>
             <!-- Link Param -->
             <ng-template [ngIf]="element.config?.uiStyles?.isLink">
-                <div class="col-xs-12 smallCardCenter">
+                <div class="col-12 smallCardCenter">
                     <nm-link [element]="element" [root]="elements"></nm-link>
                 </div>
             </ng-template>
@@ -38,14 +38,15 @@
             </ng-template>
             <!-- Accordion Main Param -->
             <ng-template [ngIf]="element.alias == componentTypes.accordion.toString()">
-                <nm-accordion [element]="element"></nm-accordion>
+                <nm-accordion [position]="position+1" [element]="element"></nm-accordion>
             </ng-template>
             <!-- Grid Param -->
             <ng-template [ngIf]="element.alias == componentTypes.grid.toString()">
                 <nm-table
                     [element]="element" 
                     [params]="element?.config?.type?.elementConfig?.type?.model?.paramConfigs"
-                    (onScrollEvent)="onScrollEvent()">
+                    (onScrollEvent)="onScrollEvent()"
+                    [position]="position+1">
                 </nm-table>
             </ng-template>
             <!--Other buttons. Refactor item : to be triggred based on the buttongroup annotation-->

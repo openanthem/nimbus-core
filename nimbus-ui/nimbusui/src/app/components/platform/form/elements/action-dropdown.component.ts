@@ -56,11 +56,6 @@ import { ComponentTypes } from '../../../../shared/param-annotations.enum';
                 [element]="element?.type?.model?.params[i]"
                 *ngFor="let param of params; index as i">
             </nm-action-link>
-            <ng-template ngFor let-ele [ngForOf]="element?.type?.model?.params">
-                <ng-template [ngIf]="ele.alias == 'Link'">
-                    <nm-link [element] = "ele"> </nm-link>
-                </ng-template>
-            </ng-template>
         </div>
     </div>
   `

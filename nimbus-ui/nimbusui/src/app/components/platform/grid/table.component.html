@@ -1,7 +1,7 @@
 <div id="{{id}}"  class="scrollGrid" [hidden]="!element?.visible">
     <div class="ui-datatable-header ui-widget-header" *ngIf="element.config?.uiStyles?.attributes?.showHeader == true">
         <p-header>
-            {{label}}
+            <caption>{{label}}</caption>
             <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
         </p-header>
         <div class="recordsDisplayed">Showing {{rowStart}}-{{rowEnd}} of {{totalRecords}}
@@ -131,7 +131,7 @@
         <ng-template pTemplate="rowexpansion" let-rowData>
             <tr class="ui-expanded-row-content">
                 <td [attr.colspan]="columnsToShow" >
-                    <nm-section *ngIf="rowData.nestedElement" [element]="rowData.nestedElement"></nm-section>
+                    <nm-section *ngIf="rowData.nestedElement" [position]="position+1" [element]="rowData.nestedElement"></nm-section>
                 </td>
             </tr>
         </ng-template>
