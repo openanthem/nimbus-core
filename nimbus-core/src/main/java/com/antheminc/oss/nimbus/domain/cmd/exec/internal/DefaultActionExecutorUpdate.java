@@ -16,9 +16,9 @@
 package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 
 import java.util.Iterator;
+import java.util.List;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
-import com.antheminc.oss.nimbus.JsonConversionException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.exec.AbstractCommandExecutor;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Input;
@@ -28,6 +28,7 @@ import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
+import com.antheminc.oss.nimbus.support.JsonUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
@@ -115,29 +116,6 @@ public class DefaultActionExecutorUpdate extends AbstractCommandExecutor<Boolean
 		}
 	}
 
-	/**
-	 * <p>Add the object represented by {@code json} to the {@link ListParam},
-	 * {@code p}. <p>The add is performed by invoking the
-	 * {@link ListParam#add(Object)}, provided {@code json} resolves to the
-	 * generic type of {@code p}. If {@code json} fails to resolve, this method
-	 * will return {@code false}.
-	 * @param p the list param object to add to
-	 * @param json the JSON representation of the object to add to {@code p}
-	 * @return {@code true} if successful, {@code false} otherwise.
-	 */
-	private boolean addToCollectionAsCollectionElement(ListParam<Object> p, String json) {
-		Object colElemState;
-
-		try {
-			colElemState = getConverter().toReferredType(p.getType().getModel().getElemConfig(), json);
-		} catch (JsonConversionException e) {
-			return false;
-		}
-
-		p.add(colElemState);
-		return true;
-	}
-
 	@Override
 	@SuppressWarnings("unchecked")
 	protected Output<Boolean> executeInternal(Input input) {
@@ -146,20 +124,54 @@ public class DefaultActionExecutorUpdate extends AbstractCommandExecutor<Boolean
 		Param<Object> p = findParamByCommandOrThrowEx(eCtx);
 		String json = eCtx.getCommandMessage().getRawPayload();
 
-		// try to first perform add on collection as a collection element
-		boolean addedAsCollectionElement = false;
-		if (p.isCollection())
-			addedAsCollectionElement = this.addToCollectionAsCollectionElement(p.findIfCollection(), json);
-
-		// otherwise attempt to surgically update the param with the provided
-		// json
-		if (!addedAsCollectionElement)
+		if (p.isLeaf()) {
+			handleLeaf(p, json);
+		} else if (p.isCollection()) {
+			handleCollection(p.findIfCollection(), json);
+		} else {
+			// remaining scenarios apply to nested params or collection elements
 			handleParam(p, json);
+		}
 
 		// TODO use the Action output from the setState to check if the action
 		// performed is _update to return true
 		// , else false - right now it either return _new or _replace (change
 		// detection is not yet implemented)
 		return Output.instantiate(input, eCtx, Boolean.TRUE);
+	}
+
+	/**
+	 * <p>Convert the provided {@code json} into the referred type of the
+	 * collection, {@code p}. Assuming successful conversion, the resulting
+	 * object(s) will be added to the state of {@code p}. <ul><li>If the
+	 * provided {@code json} is a JSON array then each of the elements in the
+	 * array will be converted to the referred type of the collection and
+	 * added.</li> <li>If the provided {@code json} is a JSON object, then only
+	 * one element will be converted to the referred type of the collection and
+	 * added.</li>
+	 * @param p the list param to update
+	 * @param json the JSON payload of the object to convert and add into
+	 *            {@code p}
+	 */
+	@SuppressWarnings("unchecked")
+	protected void handleCollection(ListParam<Object> p, String json) {
+		if (JsonUtils.isJsonArray(json)) {
+			p.addAll(getConverter().toCollectionFromArray(p.getType().getModel().getElemConfig().getReferredClass(),
+					List.class, json));
+		} else {
+			p.add((Object) getConverter().toReferredType(p.getType().getModel().getElemConfig(), json));
+		}
+	}
+
+	/**
+	 * <p>Convert the provided {@code json} into the referred type of the leaf
+	 * param, {@code p}. Assuming successful conversion, the resulting object
+	 * will be set into the state of {@code p}.
+	 * @param p the leaf param to update
+	 * @param json the JSON payload of the object to convert and set into
+	 *            {@code p}
+	 */
+	protected void handleLeaf(Param<Object> p, String json) {
+		p.setState(getConverter().toReferredType(p.getConfig(), json));
 	}
 }

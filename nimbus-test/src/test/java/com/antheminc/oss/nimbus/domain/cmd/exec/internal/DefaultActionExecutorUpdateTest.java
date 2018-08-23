@@ -458,7 +458,7 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 	}
 	
 	@Test
-	public void t11_update_collection() {
+	public void t11_update_collection_witharray() {
 		Long refId = createOrGetDomainRoot_RefId();
 		
 		// Build the request objects
@@ -470,24 +470,14 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 		// Build some initial "before" state data to store.
 		List<SampleCoreNestedEntity> state = new ArrayList<>();
 		state.add(new SampleCoreNestedEntity());
-		state.get(0).setNested_attr_String("before");
-		state.get(0).setNested_attr_collection(new ArrayList<>());
-		state.get(0).getNested_attr_collection().add("before");
-		state.get(0).setNested_attr_complex_collection(new ArrayList<>());
-		state.get(0).getNested_attr_complex_collection().add(new Level1());
-		state.get(0).getNested_attr_complex_collection().get(0).setString1("before");
 		
 		// Store the initial "before" state data in attr_list_1_NestedEntity
 		controller.handlePut(setupRequest, null, converter.toJson(state));
 		
 		// Make updates to the state
-		state.get(0).getNested_attr_collection().add("new item");
-		state.get(0).getNested_attr_complex_collection().get(0).setString1("after");
-		state.get(0).getNested_attr_complex_collection().add(new Level1());
-		state.get(0).getNested_attr_complex_collection().get(1).setString1("new item");
 		state.add(new SampleCoreNestedEntity());
 		
-		// Make the _update call
+		// Make the _update call -- update with a collection containing 2 elements.
 		Object response = controller.handlePut(request, null, converter.toJson(state));
 		
 		// Validate actual is as expected
@@ -495,15 +485,7 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 		Param<List<SampleCoreNestedEntity>> viewParam = ExtractResponseOutputUtils.extractOutput(response, 1);
 		List<SampleCoreNestedEntity> actual = viewParam.getState();
 		
-		assertEquals(2, actual.size());
-		assertEquals("before", actual.get(0).getNested_attr_String());
-		assertEquals(2, actual.get(0).getNested_attr_collection().size());
-		assertEquals("before", actual.get(0).getNested_attr_collection().get(0));
-		assertEquals("new item", actual.get(0).getNested_attr_collection().get(1));
-		assertEquals(2, actual.get(0).getNested_attr_complex_collection().size());
-		assertEquals("after", actual.get(0).getNested_attr_complex_collection().get(0).getString1());
-		assertEquals("new item", actual.get(0).getNested_attr_complex_collection().get(1).getString1());
-		assertNotNull(actual.get(1));
+		assertEquals(3, actual.size());
 	}
 }
 

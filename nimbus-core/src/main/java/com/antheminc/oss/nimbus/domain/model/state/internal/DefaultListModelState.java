@@ -112,6 +112,11 @@ public class DefaultListModelState<T> extends DefaultModelState<List<T>> impleme
 	}
 	
 	@Override
+	public boolean addAll(List<T> elems) {
+		return getAssociatedParam().addAll(elems);
+	}
+	
+	@Override
 	public boolean add(T elem) {
 		return getAssociatedParam().add(elem);
 	}
