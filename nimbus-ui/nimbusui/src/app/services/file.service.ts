@@ -16,7 +16,7 @@
  */
 'use strict';
 import { CustomHttpClient } from './httpclient.service';
-import { Injectable, EventEmitter } from '@angular/core';
+import { Injectable, EventEmitter, Output } from '@angular/core';
 import { catchError, map } from 'rxjs/operators';
 import { throwError as observableThrowError,  Subject , Observable } from 'rxjs';
 import { HttpHeaders } from '@angular/common/http';
@@ -36,6 +36,7 @@ import { FormGroup } from '@angular/forms';
 export class FileService {
     addFile$: EventEmitter<any>;
     removeFile$: EventEmitter<any>;
+    @Output() errorEmitter$= new EventEmitter();
 
     private _metaData: string[];
     
@@ -67,6 +68,7 @@ export class FileService {
                     message: 'upload is failing',
                     error: err
                 }
+                this.errorEmitter$.next(err);
                 this.logger.error(JSON.stringify(errObj));
                 return observableThrowError(err);
             }));

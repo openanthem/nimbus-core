@@ -642,6 +642,13 @@ public class ViewConfig {
 	 * 
 	 * <p>FileUpload should decorate a field having a simple type.
 	 * 
+	 * <p>Meta data can be sent along with the file contents by making use of metaData attribute.  Example configuration:
+	 * <pre>&#64;FileUpload(url="${cueIntegration.fileUploadUrl}", type= ".jpeg,.png", metaData= "memberId")</pre>
+	 * <p>And {@code memberId} can be configured as a hidden attribute inside form. 
+	 * 
+	 * <p>More than one item can be sent by configuring as comma separated values:
+	 * {@code metaData= "memberId,subscriberId"}
+	 * 
 	 * @since 1.0
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
