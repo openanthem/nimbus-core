@@ -347,6 +347,18 @@ public class DefaultListParamState<T> extends AbstractListPaginatedParam<T> impl
 	}
 	
 	@Override
+	public boolean addAll(List<T> elems) {
+		if (null == elems) {
+			return true;
+		}
+		
+		for(T elem : elems) {
+			add(elem);
+		}
+		return true;
+	}
+	
+	@Override
 	public boolean add(T elem) {
 		clearPageMeta();
 		//ListElemParam<T> pColElem = add();
