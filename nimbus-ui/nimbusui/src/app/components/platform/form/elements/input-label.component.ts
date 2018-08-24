@@ -76,7 +76,7 @@ export class InputLabel {
         if (this.required) {
             styleClass = 'required';
         } 
-        if (!this.labelConfig) {
+        if (this.labelConfig) {
             styleClass += ' ' + this.labelConfig.cssClass;
         } 
         return styleClass;
