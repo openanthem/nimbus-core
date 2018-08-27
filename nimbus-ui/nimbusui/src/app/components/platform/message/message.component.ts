@@ -17,6 +17,7 @@
 'use strict';
 
 import { Component, Input, SimpleChanges} from '@angular/core';
+import { ComponentTypes } from '../../../shared/param-annotations.enum';
 
 /**
  *  
@@ -31,17 +32,17 @@ import { Component, Input, SimpleChanges} from '@angular/core';
 @Component({
     selector: 'nm-message',
     template: `
-                <p-messages *ngIf="messageContext === 'INLINE'"[(value)]="messageArray" [closable] ="false"></p-messages>
-                <p-growl *ngIf="messageContext === 'GROWL'" [immutable]=false [life] = "life" [(value)]="messageArray"></p-growl>
-
-	          `
+        <p-messages *ngIf="messageContext === componentTypes.inline.toString()" [(value)]="messageArray" [closable]="false"[styleClass]="styleClass"></p-messages>
+        <p-growl *ngIf="messageContext === componentTypes.growl.toString()" [immutable]=false [life] = "life" [(value)]="messageArray"></p-growl>
+    `
 })
 
 export class MessageComponent {
-    
     @Input() messageContext: String;
     @Input() messageArray: any[];
     @Input() life: number;
+    @Input() styleClass: String;
+    componentTypes = ComponentTypes;
 
     constructor() {
 

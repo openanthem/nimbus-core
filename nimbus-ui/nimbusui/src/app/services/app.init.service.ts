@@ -18,7 +18,7 @@ import { ServiceConstants } from './service.constants';
 import { Injectable, Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/platform-browser';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
-import 'rxjs/add/operator/toPromise';
+import { timeout } from 'rxjs/operators';
 /**
  * \@author Sandeep.Mantha
  * \@whatItDoes 
@@ -40,9 +40,17 @@ export class AppInitService {
     loadConfig(): Promise<any> {
         ServiceConstants.APP_HOST = this.document.location.hostname;
         ServiceConstants.APP_PORT = this.document.location.port;
-        ServiceConstants.APP_CONTEXT = this.document.location.pathname.split('/').splice(1, 1);
+        // TODO APP_CONTEXT needs to be provided from content server etc which is maintained by clients. 
+        // This logic will fail if context path is /path1/path2
+        ServiceConstants.APP_CONTEXT = this.document.location.pathname.split('/').splice(1, 1); 
         ServiceConstants.LOCALE_LANGUAGE = "en-US"; //TODO This locale should be read dynamically. Currently defaulting to en-US
         ServiceConstants.APP_PROTOCOL = this.document.location.protocol;
+        /*Initially populate the APP_COMMAND_URL with a default value - 
+        which may be overwritten with the clientprovided command url in the landing page */
+        if (ServiceConstants.APP_COMMAND_URL === undefined) {
+            ServiceConstants.APP_COMMAND_URL = '/client/org/app';
+        }
+       
         const docObj = {
             message: 'Values are updated from document',
             host: ServiceConstants.APP_HOST,
@@ -50,11 +58,10 @@ export class AppInitService {
             appContext: ServiceConstants.APP_CONTEXT,
             appProtocol: ServiceConstants.APP_PROTOCOL
         };
-        console.log(JSON.stringify(docObj));
         
         return this.http
-            .get(ServiceConstants.APP_LOG_OPTIONS, this.options)
-            .timeout(3000)
+            .get(ServiceConstants.APP_LOG_OPTIONS, this.options).pipe(
+            timeout(3000))
             .toPromise()
             .then(res => {
                 this.logOptions = res.json();

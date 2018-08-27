@@ -22,6 +22,7 @@ import { BaseElement } from './base-element.component';
 import { PageService } from '../../services/page.service';
 import { GenericDomain } from './../../model/generic-domain.model';
 import { LoggerService } from '../../services/logger.service';
+import { ViewComponent, ComponentTypes } from '../../shared/param-annotations.enum';
 
 /**
  * \@author Dinakar.Meda
@@ -53,10 +54,12 @@ export class Tile extends BaseElement {
     @Input() tileType?: string;
 
     // width of tile
-    public styleWd: string = 'col-lg-12';
+    public styleWd: string = 'col-12';
 
     // height of tile
     public styleHt: string = 'height-lg';
+    viewComponent = ViewComponent;
+    componentTypes = ComponentTypes;
 
     constructor(private wcsvc: WebContentSvc, private pageSvc: PageService, private _logger: LoggerService) {
         super(wcsvc);
@@ -71,14 +74,14 @@ export class Tile extends BaseElement {
             this.styleWd = 'card-holder col-lg-3 col-md-6 XsmallCard';
             this.styleHt = 'height-md';
         } else if (this.element.config.uiStyles.attributes.size === 'Small') {
-            this.styleWd = 'col-xl-6 col-sm-6 smallCard';
+            this.styleWd = 'col-lg-4 col-md-6 smallCard';
             this.styleHt = 'height-md';
         } else if (this.element.config.uiStyles.attributes.size === 'Medium') {
-            this.styleWd = 'card-holder col-lg-9 col-md-12 mediumCard';
+            this.styleWd = 'card-holder col-md-6 mediumCard';
             this.styleHt = 'height-md';
-        } else if (this.element.config.uiStyles.attributes.size === 'Colorbox') {
-            this.styleWd = 'my-card-holder col-xs-12 colorBox';
-            this.styleHt = 'my-card-block ';
+        } else if (this.element.config.uiStyles.attributes.size === 'Large') {
+            this.styleWd = 'card-holder col-12 ';
+            this.styleHt = 'card-block ';
         } else {
             this.styleWd = '';
             this.styleHt = '';
@@ -92,6 +95,7 @@ export class Tile extends BaseElement {
         if (this.element.config && this.element.config.initializeComponent()) {
             this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'POST');
         }
+        this.updatePosition();
     }
 }
 

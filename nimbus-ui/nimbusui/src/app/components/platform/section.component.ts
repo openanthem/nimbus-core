@@ -23,6 +23,7 @@ import { WebContentSvc } from './../../services/content-management.service';
 import { GenericDomain } from './../../model/generic-domain.model';
 import { BaseElement } from './base-element.component';
 import { LoggerService } from '../../services/logger.service';
+import { ViewComponent, ComponentTypes } from '../../shared/param-annotations.enum';
 
 /**
  * \@author Dinakar.Meda
@@ -41,17 +42,21 @@ import { LoggerService } from '../../services/logger.service';
     templateUrl: './section.component.html'
 })
 export class Section extends BaseElement implements OnInit {
-
+    viewComponent = ViewComponent;
+    componentTypes = ComponentTypes;
+    
     constructor(private wcsvc: WebContentSvc, private pageService: PageService, private _logger: LoggerService) {
         super(wcsvc);
     }
 
     ngOnInit() {
+        super.ngOnInit();
         this._logger.debug('Section-i ' + this.element.path);
         // Check for initialization
         if (this.element.config && this.element.config.initializeComponent()) {
             this.pageService.processEvent(this.element.path, '$execute', new GenericDomain(), 'POST');
         }
+        this.updatePosition();
     }
 
 }

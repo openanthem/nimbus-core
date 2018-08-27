@@ -23,6 +23,7 @@ import { Layout, LinkConfig } from '../../model/menu-meta.interface';
 import { Page } from '../../shared/app-config.interface';
 import { Param } from '../../shared/param-state';
 import { LoggerService } from '../../services/logger.service';
+import { MenuItem } from '../../shared/menuitem';
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 
@@ -40,7 +41,11 @@ export class DomainFlowCmp {
     public infoClass: string = '';
     public leftMenuItems: LinkConfig[];
     public topMenuItems: Param[];
-    public subHeaders: Param[];
+    public accordions: Param[];
+    public actionTray: Param;
+    public modalItems: Param[];
+    public _showActionTray: boolean;
+    items: MenuItem[];
     routeParams: any;
 
     constructor(private _pageSvc: PageService, private layoutSvc: LayoutService,
@@ -49,11 +54,14 @@ export class DomainFlowCmp {
         this.layoutSvc.layout$.subscribe(
             data => {
                 let layout: Layout = data;
-                this.leftMenuItems = layout.leftNavBar;
-                this.subHeaders = layout.topBar.subHeaders;
+                this.accordions = layout.topBar.accordions;
+                this.items = layout.leftNavBar;
                 this.topMenuItems = layout.topBar.headerMenus;
+                this.actionTray = layout.actiontray;
+                this.modalItems = layout.modalList;
+               
                 this._logger.debug('domain flow component received layout from layout$ subject');
-                if(this.hasLayout && this.subHeaders != null && this.subHeaders !== undefined) {
+                if(this.hasLayout && this.accordions != null && this.accordions !== undefined) {
                     document.getElementById('main-content').classList.add('withInfoBar');
                 }
 
@@ -65,8 +73,24 @@ export class DomainFlowCmp {
             this._logger.debug('domain flow component received page from config$ subject');
             if (page && page.pageConfig && page.pageConfig.config) {
                 // Navigate to page with pageId
-                let toPage = '/h/' + page.flow + '/' + page.pageConfig.config.code;
+                let toPage = '';
+                // if(page.flow == "notesview") {
+                //     toPage = './' + page.flow + '/' + page.pageConfig.config.code;
+                // } else {
+                    toPage = '/h/' + page.flow + '/' + page.pageConfig.config.code;
+                //}
                 this._logger.debug('domain flow component will be navigated to ' + toPage + ' route');
+                this._router.navigate([toPage], { relativeTo: this._route });
+            }
+        });
+
+        this._pageSvc.subdomainconfig$.subscribe(result => {
+            let page: Page = result;
+            this._logger.debug('domain flow component received page from config$ subject');
+            if (page && page.pageConfig && page.pageConfig.config) {
+                // Navigate to page with pageId
+                let toPage = './' +  page.flow + '/' + page.pageConfig.config.code;
+                this._logger.debug('sub domain flow component will be navigated to ' + toPage + ' route');
                 this._router.navigate([toPage], { relativeTo: this._route });
             }
         });

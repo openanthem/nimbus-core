@@ -28,25 +28,60 @@ import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateChange;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 
 /**
+ * <p>
+ * &#64;{@code VisibleConditional} is an extension capability provided by the
+ * framework. The annotation is used to conditionally toggle the visible
+ * property on the param represented by the decorated field based on a SpEL
+ * condition. The Framework provides default event handling for this annotation
+ * during the {@code onStateChange} and {@code onStateLoad} events.
+ * 
+ * <p>
+ * The following sample code shows how to configure a field using
+ * &#64;{@code VisibleConditional} by setting the visibility property of the
+ * param represented by {@code sectionG} based on the state of
+ * {@code skipSectionG}.
+ * 
+ * <pre>
+ * &#64;CheckBox(postEventOnChange = true)
+ * &#64;VisibleConditional(when = "state != 'true'", targetPath = "/../sectionG")
+ * private String hideSectionG;
+ * 
+ * private SectionG sectionG;
+ * </pre>
+ * 
+ * <p>
+ * This annotation can be triggered for multiple events by providing one or more
+ * values for {@code targetPath} and/or multiple &#64;{@code VisibleConditional}
+ * annotations.
+ * 
  * @author Soham Chakravarti
- *
+ * @since 1.0
+ * @see com.antheminc.oss.nimbus.domain.model.state.extension.VisibleConditionalStateEventHandler
  */
 @Documented
 @Retention(RUNTIME)
 @Target(FIELD)
 @Repeatable(VisibleConditionals.class)
-@OnStateChange @OnStateLoad
+@OnStateChange
+@OnStateLoad
 public @interface VisibleConditional {
 
 	/**
-	 *  SpEL based condition to be evaluated relative to param's state on which this annotation is declared.
+	 * <p>The order of execution this annotation should be executed in, with
+	 * respect to other conditional annotations that are also decorating this
+	 * param.
 	 */
-	String when();
-	
+	int order() default Event.DEFAULT_ORDER_NUMBER;
+
 	/**
-	 * Path of param to enable when condition is satisfied relative to param on which this annotation is declared
+	 * <p>Path of param to enable when condition is satisfied relative to param on
+	 * which this annotation is declared
 	 */
 	String[] targetPath();
-	
-	int order() default Event.DEFAULT_ORDER_NUMBER;
+
+	/**
+	 * <p>SpEL based condition to be evaluated relative to param's state on which
+	 * this annotation is declared.
+	 */
+	String when();
 }

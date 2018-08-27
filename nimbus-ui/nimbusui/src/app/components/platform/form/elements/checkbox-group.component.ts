@@ -62,7 +62,7 @@ export class CheckBoxGroup extends BaseElement implements ControlValueAccessor {
     @Input() element: Param;
     @Input() form: FormGroup;
     @Input('value') _value;
-    @Output() antmControlValueChanged =new EventEmitter();
+    @Output() controlValueChanged =new EventEmitter();
     
     constructor(private pageService: PageService, private _wcs: WebContentSvc, private cd: ChangeDetectorRef) {
         super(_wcs);    
@@ -100,7 +100,10 @@ export class CheckBoxGroup extends BaseElement implements ControlValueAccessor {
     }
 
     emitValueChangedEvent(formControl:any,$event:any) {
-        this.antmControlValueChanged.emit(formControl.element);
+        if(this.form == null || (this.form.controls[this.element.config.code]!= null && this.form.controls[this.element.config.code].valid)) {
+            this.controlValueChanged.emit(formControl.element);
+        }
+        
     }
 
     ngOnInit() {
@@ -143,7 +146,7 @@ export class CheckBoxGroup extends BaseElement implements ControlValueAccessor {
                 }
             });
         }
-        this.antmControlValueChanged.subscribe(($event) => {
+        this.controlValueChanged.subscribe(($event) => {
              if ($event.config.uiStyles.attributes.postEventOnChange) {
                 this.pageService.postOnChange($event.path, 'state', JSON.stringify($event.leafState));
              }

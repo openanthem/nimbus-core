@@ -15,10 +15,7 @@
  */
 package com.antheminc.oss.nimbus.channel.web;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.EnumSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -40,8 +37,8 @@ import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextLoader;
-import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
 import com.antheminc.oss.nimbus.support.Holder;
 import com.antheminc.oss.nimbus.support.LoggingLevelService;
 
@@ -101,7 +98,7 @@ public class WebActionController {
 	public static final String URI_PATTERN_P = "/{clientCode}/**/p";
 	public static final String URI_PATTERN_P_OPEN = URI_PATTERN_P + "/**";
 
-	public static final Set<Action> notifyActionsToMatch = EnumSet.of(Action._replace, Action._update);
+	private static final Set<Action> notifyActionsToMatch = EnumSet.of(Action._replace, Action._update);
 	
 	@Autowired WebCommandDispatcher dispatcher;
 	
@@ -178,6 +175,10 @@ public class WebActionController {
 		else if(o.getValue() instanceof Param) {
 			Param<?> param = (Param<?>) o.getValue();
 			if(inputParamPath.equals(param.getPath()) && notifyActionsToMatch.contains(o.getAction())) {
+				
+				if(param.hasContextStateChanged())
+					return false;
+				
 				return true;
 			}
 		}

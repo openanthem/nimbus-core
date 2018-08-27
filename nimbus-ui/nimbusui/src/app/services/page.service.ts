@@ -25,16 +25,16 @@ import { ModelEvent, Page, Result, ViewRoot } from '../shared/app-config.interfa
 import { Param, Model, Type, GridPage } from '../shared/param-state';
 import { CustomHttpClient } from './httpclient.service';
 
-import { Subject } from 'rxjs/Subject';
+import { Subject, Observable } from 'rxjs';
 import { GenericDomain } from '../model/generic-domain.model';
 import { RequestContainer } from '../shared/requestcontainer';
-import { Observable } from 'rxjs/Observable';
 import { ExecuteResponse, ExecuteException } from './../shared/app-config.interface';
 import { ParamUtils } from './../shared/param-utils';
 import { ParamAttribute } from './../shared/command.enum';
 import { ViewConfig } from './../shared/param-annotations.enum';
 import { LoggerService } from './logger.service';
 import { SessionStoreService } from './session.store';
+import { Location } from '@angular/common';
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -46,6 +46,7 @@ import { SessionStoreService } from './session.store';
 @Injectable()
 export class PageService {
         config$: EventEmitter<any>;
+        subdomainconfig$: EventEmitter<any>;
         layout$: EventEmitter<any>;
         flowRootDomainId: Object;
         pageMap: Object;
@@ -67,11 +68,12 @@ export class PageService {
 
         private _entityId: number = 0;
         constructor(private http: CustomHttpClient, private loaderService: LoaderService, private configService: ConfigService, 
-                    private logger: LoggerService, private sessionStore: SessionStoreService) {
+                    private logger: LoggerService, private sessionStore: SessionStoreService, private location: Location) {
                 // initialize
                 this.flowRootDomainId = {};
                 // Create Observable Stream to output our data     
                 this.config$ = new EventEmitter();
+                this.subdomainconfig$ = new EventEmitter();
                 this.layout$ = new EventEmitter();
         }
 
@@ -222,16 +224,90 @@ export class PageService {
         /** Process response - array or responses based on request chaining */
         processResponse(response: any) {
                 let index = 0;
+                let rootParam: Param;
                 while (response[index]) {
                         let subResponse: any = response[index];
                         if (subResponse.b === Behavior.execute.value) {
                                 let flowConfig = new Result(this.configService).deserialize(subResponse.result);
-                                this.traverseOutput(flowConfig.outputs);
+                                if(flowConfig && flowConfig.inputCommandUri) {
+                                        rootParam = this.findParamByCommandUri(flowConfig.inputCommandUri);
+                                }
+                                this.traverseOutput(flowConfig.outputs, rootParam);
                         } else {
                                 this.logError('Unknown response for behavior - ' + subResponse.b);
                         }
                         index++;
                 }
+        }
+
+        /**
+         * 
+         * @param inputCommandUri - takes the input as the input command uri from a result
+         * Ex: /client/org/p/flowname:{id}/pageId/tile/section/_get
+         * @returns Param - Param of the input command path i.e /flowname/pageId/tile/section
+         */
+        findParamByCommandUri(inputCommandUri: string): Param {
+                let rootParam: Param;
+                let truncatedBasePath: string;
+                // truncate everything before /p/ including /p
+                truncatedBasePath = inputCommandUri.substring(inputCommandUri.indexOf('/p/', 1) + 2, inputCommandUri.length);
+                // truncate action at the end
+                let action: string;
+                if (truncatedBasePath.indexOf(Action._get.value) > 0 ) {
+                        action = '/' + Action._get.value;
+                } else if (truncatedBasePath.indexOf(Action._update.value) > 0 ) {
+                        action = '/' + Action._update.value;
+                } else if (truncatedBasePath.indexOf(Action._nav.value) > 0 ) {
+                        action = '/' + Action._nav.value;
+                } else if (truncatedBasePath.indexOf(Action._new.value) > 0 ) {
+                        action = '/' + Action._new.value;
+                }
+
+                truncatedBasePath = truncatedBasePath.substring(0, truncatedBasePath.indexOf(action));
+                // remove the rootDomainid
+                let domainFlowPath = '';
+                if (truncatedBasePath.indexOf(':') > 0) {
+                        domainFlowPath = truncatedBasePath.substring(0, truncatedBasePath.indexOf(':'));
+                } else {
+                        domainFlowPath = truncatedBasePath.substring(0, truncatedBasePath.indexOf(ServiceConstants.PATH_SEPARATOR, 1));
+                }
+
+                // tslint:disable-next-line:max-line-length
+                let pagePath = truncatedBasePath.substring(truncatedBasePath.indexOf(ServiceConstants.PATH_SEPARATOR, 1),truncatedBasePath.length);
+
+                const paramPath = domainFlowPath + pagePath;
+
+                // Now that we have the clean path, we can get the param for this path
+                rootParam = this.findParamByAbsolutePath(paramPath);
+
+                return rootParam;
+        }
+        /**
+         * @param path - input parameter which takes the complete path of the param without any refId
+         * @returns param - Returns the param corresponding to the path sent
+         */
+        findParamByAbsolutePath(path: string): Param {
+                let rootParam: Param;
+                let relativeParamPath: string;
+
+                // Get the flow name based on the path
+                const flowName = this.getFlowNameFromPath(path);
+                // path always starts with flow name
+                let nodes: string[] = path.split(ServiceConstants.PATH_SEPARATOR);
+                // given the path is /flowname/pageId/...
+                const ROOT_NODE = 1;
+                const PAGE_NODE = ROOT_NODE + 1;
+                const pageId = nodes[PAGE_NODE];
+                const pageParam: Param = this.findMatchingPageConfigById(pageId, flowName);
+                relativeParamPath = nodes.slice(PAGE_NODE + 1).join(ServiceConstants.PATH_SEPARATOR);
+                // This will find the param using the relative path
+                rootParam = ParamUtils.findParamByPath(pageParam, relativeParamPath);
+
+                // making sure we indeed got the right param
+                if (rootParam && rootParam.path === path) {
+                        return rootParam;
+                }
+                return null;
         }
 
         getFlowNameFromOutput(paramPath: string): string {
@@ -269,11 +345,25 @@ export class PageService {
         /**
          * Process the Outputs from http call response.
          * @param outputs
+         * @param rootParam - optional parameter. It is the Param of the attribute from where http call is initiated
          */
-        traverseOutput(outputs: Result[]) {
+        traverseOutput(outputs: Result[], rootParam?: Param) {
                 /** Check for Nav Output. Execute Nav after processing all other outputs. */
                 var navToDefault = true;
                 let navOutput: Result = undefined;
+                let navToBrowserBack = false;
+
+                /** If rootParam from which the http call is made is configured with browserback navigation,
+                 *  set navToDefault to false, and browserback navigation superceds other nav calls
+                 */
+                if (rootParam && rootParam.config && 
+                        rootParam.config.uiStyles && 
+                        rootParam.config.uiStyles.attributes && 
+                        rootParam.config.uiStyles.attributes.browserBack === true) {
+
+                        navToDefault = false;
+                        navToBrowserBack = true;
+                }
                 outputs.forEach(otp => {
                         if (otp.action === Action._nav.value) {
                                 navToDefault = false;
@@ -282,6 +372,7 @@ export class PageService {
                 });
                 outputs.forEach(output => {
                         if (output.value == null || ParamUtils.isEmpty(output.value)) {
+                                // Since this is for inneroutput, there is no need to send the root param again
                                 this.traverseOutput(output.outputs);
                         } else {
                                 if (output.action === Action._new.value) {
@@ -293,7 +384,7 @@ export class PageService {
                                                 let eventModel: ModelEvent = new ModelEvent().deserialize(output);
                                                 this.traverseFlowConfig(eventModel, flow);
                                         }
-                                        
+
                                 } else if (output.action === Action._get.value) {
                                         if (output.value.config && output.value.type && output.value.type.model) {
                                                 let refresh = false;
@@ -303,7 +394,7 @@ export class PageService {
                                                 }
                                                 let flow = this.getFlowNameFromOutput(output.value.path);
                                                 this.setViewRootAndNavigate(output,flow,navToDefault,refresh);
-                                                                        
+
                                         } else {
                                                 this.logError('Received an _get call without model or config ' + output.value.path);
                                         }
@@ -319,7 +410,10 @@ export class PageService {
                         }
                 });
                 /** Now that all outputs are processed, lets process _nav */
-                if (navOutput) {
+                if (navToBrowserBack) {
+                        this.logger.debug('Navigation using browser back location');
+                        this.location.back();
+                } else if (navOutput) {
                         let flow = this.getFlowNameFromOutput(navOutput.inputCommandUri);
                         let pageParam = this.findMatchingPageConfigById(navOutput.value, flow);
                         this.navigateToPage(pageParam, flow);
@@ -361,6 +455,11 @@ export class PageService {
                 let page: Page = new Page();
                 page.pageConfig = pageParam;
                 page.flow = flow;
+                // if(flow !== 'cmcaseview' && flow !== 'vrCSLandingPage' && flow !== 'home') {
+                //         this.subdomainconfig$.next(page);
+                // } else {
+                //         this.config$.next(page);
+                // }
                 this.config$.next(page);
         }
 
@@ -371,7 +470,7 @@ export class PageService {
         /** Get the page config matching the page ID and flow Name */
         findMatchingPageConfigById(pageId: string, flowName: string): Param {
 
-                if (flowName.indexOf(':') !== -1) {
+                if (flowName && flowName.indexOf(':') !== -1) {
                         flowName = flowName.substr(0, flowName.indexOf(':'));
                 }
 
@@ -581,22 +680,9 @@ export class PageService {
                 }
         }
 
-        /** 
-         * Create the Grid Row Data from Param Leaf State
-         * 
-         */
-        createRowData(param: Param) {
-                let rowData: any = param.leafState;
-                // If nested data exists, set the data to nested grid
-                if (param.type.model && param.type.model.params) {
-                        rowData['nestedGridParam'] = param.type.model.params.filter(param => param.type.model && param.type.model.params);
-                }
-                return rowData;
-        }
-
-        /** 
+        /**
          * Loop through the Param State and build the Grid
-         * 
+         *
          */
         createGridData(gridElementParams: Param[], gridParam: Param) {
                 let gridData = [];
@@ -604,15 +690,13 @@ export class PageService {
                 if (gridElementParams) {
                         gridElementParams.forEach(param => {
                                 let p = new Param(this.configService).deserialize(param, gridParam.path);
-                                if(p != null) {
-                                        //paramState.push(p.type.model.params);
-                                        let lineItem = this.createRowData(p); 
-                                        if(lineItem.nestedGridParam)
-                                                collectionParams = collectionParams.concat(lineItem.nestedGridParam); 
-                                        delete lineItem.nestedGridParam;
-                                        gridData.push(lineItem);
+                                if (p != null) {
+                                        if (p.leafState !== null && p.leafState.nestedGridParam) {
+                                                collectionParams = collectionParams.concat(p.leafState.nestedGridParam);
+                                        }
+                                        gridData.push(p.leafState);
                                 }
-                        });        
+                        });
                 }
                 gridParam['collectionParams'] = collectionParams;
                 return gridData;
@@ -647,6 +731,12 @@ export class PageService {
                                                 }
                                                 param.gridList = this.createGridData(eventModel.value.type.model.params, param);
                                                 this.gridValueUpdate.next(param);
+                                        }
+                                        //handle visible, enabled, activatevalidationgroups - the state above will always run if visible is true or false
+                                        let responseGridParam: Param = new Param(this.configService).deserialize(eventModel.value, eventModel.value.path);
+                                        let config = this.configService.getViewConfigById(responseGridParam.configId);
+                                        if(config != null && config != undefined) {
+                                                this.replaceSourceParamkeys(param,responseGridParam);
                                         }
                                 } else { // Nested Collection. Need to traverse to right location
                                         let nestedPath = eventModel.value.path.substr(param.path.length + 1);
@@ -723,20 +813,11 @@ export class PageService {
         * accordingly. validation update will switch on/off certain validations and eventUpdate will do a set state on the form control
         */
         updateParam(sourceParam: Param, responseParam: Param) {
-                let responseParamKeys: any[] = Reflect.ownKeys(responseParam);
                 //By this time the config for the parameter is set in the config map as it is deserelized
                 let config = this.configService.getViewConfigById(responseParam.configId);
                 if(config != null && config != undefined) {
                         //replace the source param with the response key updates 
-                        responseParamKeys.forEach(respKey => { 
-                                try { 
-                                        //config is static and cannot be replaced and nested parameters should be ignored as update is for state of the current param 
-                                        if(respKey !== ParamAttribute.config.toString() && respKey !== ParamAttribute.type.toString()) 
-                                                Reflect.set(sourceParam, respKey, Reflect.get(responseParam, respKey)); 
-                                } catch (e) { 
-                                        throw e; 
-                                } 
-                        }); 
+                        this.replaceSourceParamkeys(sourceParam,responseParam);
                         this.eventUpdate.next(sourceParam); 
                         this.validationUpdate.next(sourceParam);
                         this.updateNestedParameters(sourceParam,responseParam);
@@ -745,6 +826,19 @@ export class PageService {
                 }
         }
 
+        replaceSourceParamkeys(sourceParam: Param, responseParam: Param) {
+                let responseParamKeys: any[] = Reflect.ownKeys(responseParam);
+                responseParamKeys.forEach(respKey => { 
+                        try { 
+                                //config is static and cannot be replaced and nested parameters should be ignored as update is for state of the current param 
+                                if(respKey !== ParamAttribute.config.toString() && respKey !== ParamAttribute.type.toString()) 
+                                        Reflect.set(sourceParam, respKey, Reflect.get(responseParam, respKey)); 
+                        } catch (e) { 
+                                throw e; 
+                        } 
+                });
+        }
+        
         updateNestedParameters(sourceParam: Param,responseParam: Param) {
                 if(responseParam.type && responseParam.type.model) {
                         try {

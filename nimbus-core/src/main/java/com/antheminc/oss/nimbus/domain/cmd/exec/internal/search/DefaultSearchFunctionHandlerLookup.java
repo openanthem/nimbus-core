@@ -52,7 +52,7 @@ public class DefaultSearchFunctionHandlerLookup<T, R> extends DefaultSearchFunct
 		List<?> searchResult = (List<?>)super.execute(executionContext, actionParameter);
 				
 		Command cmd = executionContext.getCommandMessage().getCommand();
-		if(StringUtils.equalsIgnoreCase(cmd.getElement(Type.DomainAlias).get().getAlias(), "staticCodeValue")) {
+		if(StringUtils.equalsIgnoreCase(cmd.getElementSafely(Type.DomainAlias).getAlias(), "staticCodeValue")) {
 			return getStaticParamValues((List<StaticCodeValue>)searchResult, cmd);
 		}
 		LookupSearchCriteria lookupSearchCriteria = createSearchCriteria(executionContext, mConfig, actionParameter);

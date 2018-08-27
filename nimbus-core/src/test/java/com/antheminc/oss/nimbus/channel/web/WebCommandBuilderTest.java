@@ -159,4 +159,48 @@ public class WebCommandBuilderTest {
 		assertEquals("/flow_client-user", cmd.getAbsoluteDomainAlias());
 		assertTrue(cmd.isRootDomainOnly());
 	}
+	
+	@Test
+	public void testContextPathExclusion() {
+		MockHttpServletRequest httpReq = new MockHttpServletRequest(HttpMethod.GET.name(), "/context-path/client/org/app/p/flow_client-user/_new");
+		httpReq.setContextPath("/context-path");
+		httpReq.addParameter("b", Behavior.$execute.name());
+		
+		Command cmd = cmdBuilder.build(httpReq);
+		assertNotNull(cmd);
+		assertSame(Action._new, cmd.getAction());
+		assertEquals("client",cmd.getRootClientAlias());
+		assertEquals("app", cmd.getAppAlias());
+		assertEquals("/flow_client-user", cmd.getAbsoluteDomainAlias());
+		assertTrue(cmd.isRootDomainOnly());
+	}
+	
+	@Test
+	public void testContextPathExclusion_2() {
+		MockHttpServletRequest httpReq = new MockHttpServletRequest(HttpMethod.GET.name(), "/context-path/path2/client/org/app/p/flow_client-user/_new");
+		httpReq.setContextPath("/context-path/path2");
+		httpReq.addParameter("b", Behavior.$execute.name());
+		
+		Command cmd = cmdBuilder.build(httpReq);
+		assertNotNull(cmd);
+		assertSame(Action._new, cmd.getAction());
+		assertEquals("client",cmd.getRootClientAlias());
+		assertEquals("app", cmd.getAppAlias());
+		assertEquals("/flow_client-user", cmd.getAbsoluteDomainAlias());
+		assertTrue(cmd.isRootDomainOnly());
+	}
+	
+	@Test
+	public void testEmptyContextPath() {
+		MockHttpServletRequest httpReq = new MockHttpServletRequest(HttpMethod.GET.name(), "/client/org/app/p/flow_client-user/_new");
+		httpReq.addParameter("b", Behavior.$execute.name());
+		
+		Command cmd = cmdBuilder.build(httpReq);
+		assertNotNull(cmd);
+		assertSame(Action._new, cmd.getAction());
+		assertEquals("client",cmd.getRootClientAlias());
+		assertEquals("app", cmd.getAppAlias());
+		assertEquals("/flow_client-user", cmd.getAbsoluteDomainAlias());
+		assertTrue(cmd.isRootDomainOnly());
+	}
 }

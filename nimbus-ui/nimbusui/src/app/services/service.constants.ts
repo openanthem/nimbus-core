@@ -30,6 +30,7 @@ export class ServiceConstants {
     private static protocol: string;
     private static locale : string;
     private static logOptions: Object;
+    private static commandurl: string;
 
     public static get PAGE_INDEX() : number { return 0;}
     public static get PAGE_SIZE() : number { return 20;}
@@ -42,9 +43,10 @@ export class ServiceConstants {
     /* Enable for stopgap server */
     public static get BASE_URL(): string    { return this.APP_HOST_URL+this.WEB_CONTENT_PORT; }
     public static get LOGIN_URL(): string { return this.APP_HOST_URL+this.APP_PORT+'/'+this.APP_CONTEXT+'/login'; }
+    public static get IMAGE_URL(): string { return this.APP_HOST_URL+this.APP_PORT+'/'+this.APP_CONTEXT+'/images'; }
     public static get LOGOUT_URL(): string { return this.APP_HOST_URL+this.APP_PORT+'/'+this.APP_CONTEXT+'/logout'; }
     public static get APP_REFRESH(): string { return this.APP_HOST_URL+this.APP_PORT+'/'+this.APP_CONTEXT+'/processLogin'; }
-    public static get PLATFORM_BASE_URL(): string    { return this.APP_HOST_URL+this.APP_PORT+'/'+this.APP_CONTEXT+'/org/p'; }
+    public static get PLATFORM_BASE_URL(): string    { return this.APP_BASE_URL + this.APP_COMMAND_URL + this.PLATFORM_SEPARATOR; }
     public static get CLIENT_BASE_URL(): string    { return this.APP_HOST_URL+this.APP_PORT+'/'; }
     public static get WS_BASE_URL(): string { return 'ws://'+this.APP_HOST+this.WS_PORT+'/updates'; }
     public static get APP_LOGS(): string { return this.APP_HOST_URL+this.APP_PORT+'/log'; }
@@ -60,6 +62,8 @@ export class ServiceConstants {
     public static get APP_PORT() : string { return this.port; }
     public static get APP_PROTOCOL() : string { return this.protocol; }
     public static get APP_CONTEXT() : string { return this.appcontext; }
+    public static set APP_COMMAND_URL( url: string) { this.commandurl = url ; }
+    public static get APP_COMMAND_URL(): string { return this.commandurl; }
 
     public static set LOG_OPTIONS(obj: Object){ this.logOptions = obj;}
     public static get LOG_OPTIONS(): Object { return this.logOptions;}
@@ -71,6 +75,7 @@ export class ServiceConstants {
     public static get WS_PORT() : string { return '8080'; }
     public static get WEB_CONTENT_PORT() : string { return '3004'; }
     public static get STATIC_CONTENT_PORT() : string { return '4000'; }
+    public static get PLATFORM_SEPARATOR() : string { return '/p' ;}
     
     public static get SESSIONKEY(): string  {
         { return 'sessionId';}
@@ -80,6 +85,13 @@ export class ServiceConstants {
     public static get BLUE_THEME_URL(): string  { return 'http://'+this.hostName+':'+this.STATIC_CONTENT_PORT+'/styles/anthem/anthem.blue.theme.css'; }
     public static get BLACK_THEME_URL(): string { return 'http://'+this.hostName+':'+this.STATIC_CONTENT_PORT+'/styles/anthem/anthem.black.theme.css'; }
     public static get IMAGES_URL(): string { return this.APP_HOST_URL+this.APP_PORT+'/'+this.APP_CONTEXT; }
+
+     /* Changes for running nimbus-ui independantly*/
+    public static get WEB_APP_POST_LOGIN_URL(): string { return this.APP_HOST_URL+this.APP_PORT+'/handlelogin'; } // to be provided by clients
+    public static get APP_BASE_URL(): string { return this.APP_HOST_URL+this.APP_PORT+'/'+this.APP_CONTEXT; }
+    public static get AUTH_TOKEN_KEY(): string { return 'AuthToken'; } // this should come from the node server
+    public static get TOKEN_HEADER_KEY(): string { return 'Authorization'; } // this should come from the node server
+    public static get LANDING_ROUTE(): string { return 'authlanding' ; } // this should come from the node server and set in app.init.service
 
     // public static get LOG_APPENDER_OPTIONS() : any { 
     //     var obj;
@@ -94,4 +106,14 @@ export class ServiceConstants {
     //     obj['defaultAjaxUrl'] = 'htpp://localhost:8000/log';
     //     return obj;
     // }
+
+    // TODO Move this to server-side configuration.
+    public static get ERROR_MESSAGE_DEFAULTS(): any {
+        return {
+            required: 'Field is required.',
+            pattern: 'Field does not match the required pattern.',
+            minMaxSelection: 'Field does not meet min/max requirement.',
+            isNumber: 'Value must be a number.'
+        };
+    }
 }

@@ -17,10 +17,7 @@
 'use strict';
 import { Injectable, EventEmitter } from '@angular/core';
 import { CustomHttpClient } from './httpclient.service';
-import { Subject } from 'rxjs/Subject';
-import { PaginatedRequest } from './../model/pagination.model';
-import { URLSearchParams } from '@angular/http';
-import { forEach } from '@angular/router/src/utils/collection';
+import { Subject } from 'rxjs';
 
 /**
  * \@author Dinakar.Meda

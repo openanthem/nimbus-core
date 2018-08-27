@@ -113,7 +113,7 @@ public class DefaultActionExecutorSearchHttpTest extends AbstractFrameworkIngera
 		assertNotNull(outputs);
 		
 		for(Output<?> op: outputs) {
-			if(op.getValue() instanceof Param<?>) {
+			if(op.getValue() instanceof ListParam<?>) {
 				ListParam<?> param = (ListParam<?>)op.getValue();
 				Page<?> pg = param.getPage();
 				assertNotNull(pg);
@@ -174,7 +174,7 @@ public class DefaultActionExecutorSearchHttpTest extends AbstractFrameworkIngera
 		assertNotNull(outputs);
 		
 		for(Output<?> op: outputs) {
-			if(op.getValue() instanceof Param<?>) {
+			if(op.getValue() instanceof ListParam<?>) {
 				ListParam<?> param = (ListParam<?>)op.getValue();
 				Page<?> pg = param.getPage();
 				assertNotNull(pg);
@@ -235,7 +235,7 @@ public class DefaultActionExecutorSearchHttpTest extends AbstractFrameworkIngera
 		assertNotNull(outputs);
 		
 		for(Output<?> op: outputs) {
-			if(op.getValue() instanceof Param<?>) {
+			if(op.getValue() instanceof ListParam<?>) {
 				ListParam<?> param = (ListParam<?>)op.getValue();
 				Page<?> pg = param.getPage();
 				assertNotNull(pg);
@@ -300,7 +300,7 @@ public class DefaultActionExecutorSearchHttpTest extends AbstractFrameworkIngera
 		assertNotNull(outputs);
 		
 		for(Output<?> op: outputs) {
-			if(op.getValue() instanceof Param<?>) {
+			if(op.getValue() instanceof ListParam<?>) {
 				ListParam<?> param = (ListParam<?>)op.getValue();
 				Page<?> pg = param.getPage();
 				assertNotNull(pg);
@@ -363,7 +363,7 @@ public class DefaultActionExecutorSearchHttpTest extends AbstractFrameworkIngera
 		assertNotNull(outputs);
 		
 		for(Output<?> op: outputs) {
-			if(op.getValue() instanceof Param<?>) {
+			if(op.getValue() instanceof ListParam<?>) {
 				ListParam<?> param = (ListParam<?>)op.getValue();
 				Page<?> pg = param.getPage();
 				assertNotNull(pg);
@@ -426,7 +426,7 @@ public class DefaultActionExecutorSearchHttpTest extends AbstractFrameworkIngera
 		assertNotNull(outputs);
 		
 		for(Output<?> op: outputs) {
-			if(op.getValue() instanceof Param<?>) {
+			if(op.getValue() instanceof ListParam<?>) {
 				ListParam<?> param = (ListParam<?>)op.getValue();
 				Page<?> pg = param.getPage();
 				assertNotNull(pg);

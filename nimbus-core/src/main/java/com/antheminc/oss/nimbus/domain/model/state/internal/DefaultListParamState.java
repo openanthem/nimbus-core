@@ -16,9 +16,11 @@
 package com.antheminc.oss.nimbus.domain.model.state.internal;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
@@ -111,15 +113,19 @@ public class DefaultListParamState<T> extends AbstractListPaginatedParam<T> impl
 		if(getNestedCollectionModel().templateParams().isNullOrEmpty())
 			return -1;
 		
-		ListElemParam<?> pMaxElemIndex = getNestedCollectionModel().getParams().stream()
+		Optional<ListElemParam<? extends Object>> oMaxElemIndex = getNestedCollectionModel().getParams().stream()
 			.reduce((currMax, currElem)-> {
 				int currMaxIndex = fromElemId(currMax.findIfCollectionElem().getElemId());
 				int currElemIndex = fromElemId(currElem.findIfCollectionElem().getElemId());
 				
 				return (currElemIndex>currMaxIndex) ? currElem : currMax;
 			})
-			.map(Param::findIfCollectionElem)
-			.get();
+			.map(Param::findIfCollectionElem);
+		
+		if (!oMaxElemIndex.isPresent()) {
+			throw new FrameworkRuntimeException("Failed to retrieve a max element index for collection params: " + getNestedCollectionModel().getParams());
+		}
+		ListElemParam<?> pMaxElemIndex = oMaxElemIndex.get();
 		
 		int maxIndex = fromElemId(pMaxElemIndex.getElemId());
 		return maxIndex;

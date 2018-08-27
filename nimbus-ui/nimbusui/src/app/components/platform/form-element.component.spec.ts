@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule, AbstractControlDirective } from '@ang
 import { GrowlModule, AccordionModule, PickListModule, ListboxModule, CalendarModule, DataTableModule, DropdownModule, FileUploadModule, RadioButtonModule, CheckboxModule } from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
 import { KeyFilterModule } from 'primeng/keyfilter';
+import { AngularSvgIconModule } from 'angular-svg-icon';
 
 import { FormElement } from './form-element.component';
 import { MessageComponent } from '../platform/message/message.component';
@@ -43,6 +44,9 @@ import { AccordionGroup } from '../platform/accordion-group.component';
 import { CardDetailsFieldComponent } from '../platform/card/card-details-field.component';
 import { InPlaceEditorComponent } from '../platform/form/elements/inplace-editor.component';
 import { DateTimeFormatPipe } from '../../pipes/date.pipe';
+import { HeaderCheckBox } from '../platform/form/elements/header-checkbox.component';
+import { SvgComponent } from './svg/svg.component';
+import { Image } from './image.component';
 
 let fixture, app;
 
@@ -87,7 +91,10 @@ describe('FormElement', () => {
         AccordionGroup,
         CardDetailsFieldComponent,
         InPlaceEditorComponent,
-        DateTimeFormatPipe
+        DateTimeFormatPipe,
+        HeaderCheckBox,
+        SvgComponent,
+        Image
        ],
        imports: [
         FormsModule, 
@@ -103,7 +110,8 @@ describe('FormElement', () => {
         RadioButtonModule, 
         CheckboxModule,
         TableModule,
-        KeyFilterModule
+        KeyFilterModule,
+        AngularSvgIconModule
        ]
     }).compileComponents();
     fixture = TestBed.createComponent(FormElement);
@@ -148,14 +156,16 @@ describe('FormElement', () => {
   }));
 
   it('getMessages() should return message from the element', async(() => {
-    app.element = { message: 'test' };
+    app.element = { message: ['test'] };
     spyOn(app, 'getErrors').and.returnValue('');
+    spyOn(app, 'getPristine').and.returnValue(false);
     expect(app.getMessages()).toEqual(['test']);
   }));
 
   it('getMessages() should return return empty array', async(() => {
-    app.element = { message: null };
+    app.element = { message: [] };
     spyOn(app, 'getErrors').and.returnValue('');
+    spyOn(app, 'getPristine').and.returnValue(true);
     expect(app.getMessages()).toEqual([]);
   }));
 

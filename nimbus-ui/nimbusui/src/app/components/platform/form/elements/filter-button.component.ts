@@ -23,6 +23,7 @@ import { WebContentSvc } from '../../../../services/content-management.service';
 import { PageService } from '../../../../services/page.service';
 import { ServiceConstants } from './../../../../services/service.constants';
 import { BaseElement } from '../../base-element.component';
+import { ComponentTypes } from '../../../../shared/param-annotations.enum';
 
 /**
  * \@author Sandeep.Mantha
@@ -37,7 +38,7 @@ import { BaseElement } from '../../base-element.component';
     template:`
         <button class="{{fbutton.config?.uiStyles?.attributes?.cssClass}}" (click)="emitEvent(this)" type="button">
             {{label}}
-            <ng-template [ngIf]="fText?.config?.uiStyles?.attributes?.alias == 'TextBox'">
+            <ng-template [ngIf]="fText?.config?.uiStyles?.attributes?.alias == componentTypes.textBox.toString()">
                 <span class="badge badge-default">{{fText?.leafState}}</span>
             </ng-template>
         </button>
@@ -52,6 +53,7 @@ export class FilterButton extends BaseElement{
    public fText: Param;
   // private filterCount: string;
    private imagesPath: string;
+   componentTypes = ComponentTypes;
 
    constructor(private pageService: PageService, private _wcs: WebContentSvc) {
        super(_wcs);

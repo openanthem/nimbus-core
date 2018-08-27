@@ -22,6 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
+import com.antheminc.oss.nimbus.domain.defn.MapsTo;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.extension.Audit;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
@@ -80,6 +81,15 @@ public class AuditStateChangeHandler implements OnStateChangeHandler<Audit> {
 		this.idSequenceRepo =  beanResolver.get(IdSequenceRepository.class);
 	}
 	
+	
+	@Override
+	public boolean shouldAllow(Audit configuredAnnotation, Param<?> param) {
+		if(param.getPath().contains(MapsTo.DETACHED_SIMULATED_FIELD_NAME))
+			return false; 
+		
+		return true;
+	}
+	
 	@Override
 	public void handle(Audit configuredAnnotation, ExecutionTxnContext txnCtx, ParamEvent event) {
 		LeafParam<?> leafParam = 
@@ -116,10 +126,11 @@ public class AuditStateChangeHandler implements OnStateChangeHandler<Audit> {
 		ModelRepository db = getRepositoryFactory().get(repo);
 		
 		// autogenerate id
-		Long id = getIdSequenceRepo().getNextSequenceId(repo != null && StringUtils.isNotBlank(repo.alias())?repo.alias():auditHistoryAlias);
+		String repoAlias = StringUtils.isNotBlank(repo.alias()) ? repo.alias() : auditHistoryAlias;
+		Long id = getIdSequenceRepo().getNextSequenceId(repoAlias);
 		ae.setId(id);
 		
-		db._save(StringUtils.isNotBlank(repo.alias()) ? repo.alias() :auditHistoryAlias, ae);
+		db._save(repoAlias, ae);
 	}
 	
 	private String findAuditHistoryAlias(ModelConfig<?> auditConfig, Audit configuredAnnotation) {

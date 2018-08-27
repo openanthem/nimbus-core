@@ -20,6 +20,10 @@ import { Component, Input } from '@angular/core';
 import { PageService } from '../../../services/page.service';
 import { GenericDomain } from '../../../model/generic-domain.model';
 import { Param } from '../../../shared/param-state';
+import { ComponentTypes } from '../../../shared/param-annotations.enum';
+import { BaseLabel } from './../base-label.component';
+import { WebContentSvc } from './../../../services/content-management.service';
+import { LabelConfig } from '../../../shared/param-config';
 
 /**
  * \@author Dinakar.Meda
@@ -33,14 +37,19 @@ import { Param } from '../../../shared/param-state';
     templateUrl: './card-details-grid.component.html'
 })
 
-export class CardDetailsGrid {
+export class CardDetailsGrid extends BaseLabel {
 
     @Input() grid: Param;
+    public componentTypes = ComponentTypes;
+    public labelConfig: LabelConfig;
 
-    constructor(private pageSvc : PageService) {
+    constructor(private pageSvc : PageService, private wcsv: WebContentSvc) {
+        super(wcsv);
     }
 
     ngOnInit() {
+        super.ngOnInit();
+        this.labelConfig = this.wcsv.findLabelContent(this.grid);        
         if (this.grid.config.uiStyles.attributes.onLoad === true) {
             this.pageSvc.processEvent(this.grid.path, '$execute', new GenericDomain(), 'GET');
         }

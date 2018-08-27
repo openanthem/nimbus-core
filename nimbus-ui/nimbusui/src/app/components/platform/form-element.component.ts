@@ -1,4 +1,3 @@
-import { ValidationConstraint } from './../../shared/validationconstraints.enum';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -14,13 +13,18 @@ import { ValidationConstraint } from './../../shared/validationconstraints.enum'
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * 
  */
 'use strict';
 import { Component, Input } from '@angular/core';
 import { FormGroup, AbstractControlDirective, NgModel } from '@angular/forms';
-import { Constraint } from '../../shared/param-config';
 import { Param } from '../../shared/param-state';
 import { Message } from '../../shared/message';
+import { ComponentTypes, ViewComponent } from '../../shared/param-annotations.enum';
+import { BaseElement } from './base-element.component';
+import { WebContentSvc } from './../../services/content-management.service';
+import { ValidationUtils } from './validators/ValidationUtils';
+import { AbstractControl } from '@angular/forms/src/model';
 
 var counter = 0;
 
@@ -37,12 +41,16 @@ var counter = 0;
     templateUrl: './form-element.component.html'
 })
 
-export class FormElement {
+export class FormElement extends BaseElement {
+
     @Input() element: Param;
     @Input() form: FormGroup;
-    @Input() elementCss: String;
+    @Input() elementCss: string;
     elemMessages: Message[];
     id: String = 'form-control' + counter++;
+    componentStyle: string;
+    componentTypes = ComponentTypes;
+    viewComponent = ViewComponent;
 
     get isValid() {
         if (this.form.controls[this.element.config.code] != null) {
@@ -53,6 +61,9 @@ export class FormElement {
     }
 
     get isPristine() {
+        return this.getPristine();
+    }
+    getPristine() {
         if (this.element.config.code.startsWith('{')) {
             return true;
         }
@@ -62,13 +73,17 @@ export class FormElement {
             return true;
         }
     }
-
+    get elementMessages() {
+        return this.getMessages();
+    }
     getMessages() {
         this.elemMessages = [];
-        this.getErrors();
-        if (this.element.message != null) {
-            this.elemMessages.push(this.element.message);
-        }
+            if (this.element.message != null && this.element.message.length > 0) {
+                this.elemMessages.push.apply(this.elemMessages, this.element.message);
+            }
+            if (!this.getPristine()) {
+                this.updateErrorMessages();
+            }
         return this.elemMessages;
     }
 
@@ -76,26 +91,48 @@ export class FormElement {
         return (this.elemMessages != null && this.elemMessages.length > 0);
     }
 
-    constructor() { }
+    constructor(private wcsv: WebContentSvc) { 
+        super(wcsv);
+    }
 
     getErrorStyles() {
         if (this.showErrors) {
             return 'alert alert-danger';
+        } else {
+            return '';
         }
     }
 
-    get showErrors() { 
-        return (!this.isPristine && !this.isValid); 
+    get showErrors() {
+        return (!this.isPristine && !this.isValid);
+    }
+
+    getComponentClass() {
+        let componentClass: string[] = [];
+        componentClass.push('form-group');
+        if (this.element.config.uiStyles && this.element.config.uiStyles.attributes &&
+            this.element.config.uiStyles.attributes.cssClass && this.element.config.uiStyles.attributes.cssClass !== '') {
+                componentClass.push(this.element.config.uiStyles.attributes.cssClass);
+        } else {
+            componentClass.push(this.elementCss);
+        }
+        
+        // Error Styles
+        componentClass.push(this.getErrorStyles());
+
+        return componentClass;
     }
 
     ngOnInit() {
-        if (this.element.config.uiStyles && this.element.config.uiStyles.attributes.controlId !== null) {
-            if (Number(this.element.config.uiStyles.attributes.controlId) % 2 === 0) {
-                this.elementCss = this.elementCss + ' even';
-            } else {
-                this.elementCss = this.elementCss + ' odd';
-            }
-        }
+        super.ngOnInit();
+        this.updatePositionWithNoLabel();        
+        // if (this.element.config.uiStyles && this.element.config.uiStyles.attributes.controlId !== null) {
+        //     if (Number(this.element.config.uiStyles.attributes.controlId) % 2 === 0) {
+        //         this.elementCss = this.elementCss + ' even';
+        //     } else {
+        //         this.elementCss = this.elementCss + ' odd';
+        //     }
+        // }
     }
 
     getElementStyle() {
@@ -105,30 +142,43 @@ export class FormElement {
             return '';
         }
     }
-    
-    getErrors() {
-        if (this.form.controls[this.element.config.code].invalid) {
+
+    /**
+     * <p>Update all form controls belonging to this form instance that have validation errors present.
+     * <p>Error messages are first attempted to be set by setting the message that is defined in the server-side
+     * Constraint annotation's message attribute. If a message is not provided, the default message as defined 
+     * by ValidationUtils will be used.
+     */
+    updateErrorMessages() {
+        var control: AbstractControl = this.form.controls[this.element.config.code];
+        if (control.invalid) {
             if (this.element.config.validation) {
                 this.element.config.validation.constraints.forEach(validator => {
-                    // Defaults
-                    // TODO - Consider moving this logic to a lookup service.
-                    if (this.form.controls[this.element.config.code].errors.required && validator.name === ValidationConstraint._notNull.value) {
-                        this.addErrorMessages(validator.attribute.message ? validator.attribute.message : 'Field is required.');
-                    }
-                    if (this.form.controls[this.element.config.code].errors.pattern && validator.name === ValidationConstraint._pattern.value) {
-                        this.addErrorMessages(validator.attribute.message ? validator.attribute.message : 'Field is required.');
-                    }
-                    if (this.form.controls[this.element.config.code].errors.minMaxSelection && validator.name === ValidationConstraint._size.value) {
-                        this.addErrorMessages(validator.attribute.message ? validator.attribute.message : 'Field is required.');
-                    }
-                    if (this.form.controls[this.element.config.code].errors.isNumber) {
-                        //if (!this.checkforCustomMessages(validator, errors))
-                        this.addErrorMessages('Value must be a number.');
-                    }
-                    //}
+                    
+                    // cycle through all of the supported validation errors and apply messages for those that are present.
+                    ValidationUtils.getAllValidationNames()
+                        .filter(validationName => this.hasErrors(control, validationName))
+                        .forEach(validationName => {
+                            
+                            // prefer validation message from the server first
+                            // if unavailable, set the error message to the default for the particular type of error.
+                            this.addErrorMessages(validator.attribute.message ? validator.attribute.message : ValidationUtils.getDefaultErrorMessage(validationName));
+                    });
                 });
             }
         }
+    }
+
+    /**
+     * <p>Return whether or not control has errors available for the provided validationName.
+     * @param control the form control to check if validation errors exist
+     * @param validationName the name of the validation error to check
+     */
+    private hasErrors(control: AbstractControl, validationName: string): boolean {
+        if (!control || !control.errors || !validationName) {
+            return false;
+        }
+        return control.errors[validationName];
     }
 
     addErrorMessages(errorText: string) {

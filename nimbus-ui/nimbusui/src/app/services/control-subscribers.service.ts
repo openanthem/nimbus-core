@@ -15,19 +15,16 @@
  * limitations under the License.
  */
 'use strict';
-import { CustomHttpClient } from './httpclient.service';
 import { Injectable, EventEmitter, Output } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
-import { HttpHeaders } from '@angular/common/http';
-import { RequestOptions, Request, RequestMethod } from '@angular/http';
 import { PageService } from './page.service';
-import { FormGroup } from '@angular/forms/src/model';
 import { ValidationUtils } from '../components/platform/validators/ValidationUtils';
 import { BaseControl } from '../components/platform/form/elements/base-control.component';
 import { ValidatorFn } from '@angular/forms/src/directives/validators';
 import { GenericDomain } from './../model/generic-domain.model';
 import { Param } from './../shared/param-state';
 import { HttpMethod } from '../shared/command.enum';
+import { AbstractControl } from '@angular/forms/src/model';
+
 /**
  * \@author Sandeep.Mantha
  * \@whatItDoes 
@@ -46,14 +43,53 @@ export class ControlSubscribers {
         
     }
 
-    public stateUpdateSubscriber(control:BaseControl<any>) {
+    /**
+     * Register a subscriber that executes consumer whenever:
+     * 1. An event is emitted (param) from pageService.eventUpdate$
+     * 2. The emitted event is matching the control element within control
+     * @param control the control element to match against
+     * @param consumer the callback method to execute if event contains an update for control
+     */
+    private onEventUpdateSubscriber(control: BaseControl<any>, consumer: (event: Param, frmCtrl: AbstractControl) => void) {
         this.pageService.eventUpdate$.subscribe(event => {
             let frmCtrl = control.form.controls[event.config.code];
-            if(frmCtrl!=null && event.path == control.element.path) {
-                if(event.leafState!=null){
-                    frmCtrl.setValue(event.leafState);
-                } else
-                    frmCtrl.reset();
+            if(frmCtrl != null && event.path == control.element.path) {
+                if (consumer) {
+                    consumer(event, frmCtrl);
+                }
+            }
+        });
+    }
+
+    /**
+     * Register a subscriber that:
+     * 1. Executes onEnabled whenever an event is emitted that matches control and event.enabled is true.
+     * 2. Executes onDisabled whenever an event is emitted that matches control and event.enabled is false.
+     * @param control the control element to match against
+     * @param onEnabled the callback method to execute if event contains an update for control and event.enabled is true
+     * @param onDisabled the callback method to execute if event contains an update for control and event.enabled is false
+     */
+    public onEnabledUpdateSubscriber(control: BaseControl<any>, onEnabled: (event: Param, frmCtrl: AbstractControl) => void, onDisabled: (event: Param, frmCtrl: AbstractControl) => void) {
+        this.onEventUpdateSubscriber(control, (event, frmCtrl) => {
+            if (onEnabled && event.enabled) {
+                onEnabled(event, frmCtrl);
+            } else if (onDisabled && !event.enabled) {
+                onDisabled(event, frmCtrl);
+            }
+        });
+    }
+
+    /**
+     * Register a subscriber that sets the value of the form control when the control matches the updated event. If the value
+     * of the updated event is provided, it will be set, otherwise the form control will be reset.
+     * @param control the control element to match against
+     */
+    public stateUpdateSubscriber(control:BaseControl<any>) {
+        this.onEventUpdateSubscriber(control, (event, frmCtrl) => {
+            if(event.leafState!=null) {
+                frmCtrl.setValue(event.leafState);
+            } else {
+                frmCtrl.reset();
             }
         });
     }
@@ -92,11 +128,4 @@ export class ControlSubscribers {
                 this.previouLeafState = $event.leafState;
         });
     }
-
-    private unSubscribeAll() {
-        this.controlValueChanged.unsubscribe();
-        this.pageService.validationUpdate.unsubscribe();
-        this.pageService.eventUpdate.unsubscribe();
-    }
-
 }

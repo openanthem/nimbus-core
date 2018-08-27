@@ -20,10 +20,10 @@ package com.antheminc.oss.nimbus.domain.model.config.extension;
 
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.Optional;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.defn.extension.Content;
 import com.antheminc.oss.nimbus.domain.defn.extension.Content.Label;
@@ -31,7 +31,6 @@ import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig.LabelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.event.ConfigEventHandlers.OnParamCreateHandler;
 import com.antheminc.oss.nimbus.domain.model.config.internal.DefaultParamConfig;
-import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 /**
  * @author Soham Chakravarti
@@ -47,10 +46,13 @@ public class LabelConfigEventHandler extends AbstractConfigEventHandler<Label> i
 		
 		DefaultParamConfig<?> paramConfig = castOrEx(DefaultParamConfig.class, param);
 		
-		Optional.ofNullable(paramConfig.getLabelConfigs()).orElseGet(()->{
+		if (null == paramConfig) {
+			throw new FrameworkRuntimeException("Retrieved paramConfig for " + param + " was null.");
+		}
+		
+		if (null == paramConfig.getLabelConfigs()) {
 			paramConfig.setLabelConfigs(new ArrayList<>());
-			return paramConfig.getLabelConfigs();
-		});
+		}
 		
 		validateAndAdd(paramConfig, convert(configuredAnnotation));
 	}
@@ -82,6 +84,7 @@ public class LabelConfigEventHandler extends AbstractConfigEventHandler<Label> i
 		config.setLocale(StringUtils.trimToNull(locale.toLanguageTag()));
 		config.setText(StringUtils.isWhitespace(label.value()) ? label.value() : StringUtils.trimToNull(label.value()));	
 		config.setHelpText(StringUtils.trimToNull(label.helpText()));
+		config.setCssClass(StringUtils.trimToNull(label.style().cssClass()));
 		
 		return config;
 	}

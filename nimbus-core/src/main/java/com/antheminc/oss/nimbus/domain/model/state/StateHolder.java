@@ -16,6 +16,7 @@
 package com.antheminc.oss.nimbus.domain.model.state;
 
 import java.util.List;
+import java.util.Set;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.InvalidOperationAttemptedException;
@@ -337,6 +338,11 @@ public class StateHolder {
 			return this.ref.isTransient();
 		}
 		
+		@Override
+		public boolean hasContextStateChanged() {
+			return this.ref.hasContextStateChanged();
+		}
+		
 		public boolean isAssigned() {
 			if(!isTransient()) 
 				throw new InvalidConfigException("Attempted method on non-transient parameter: "+this.ref);
@@ -370,18 +376,16 @@ public class StateHolder {
 		}
 		
 		@Override
-		public Message getMessage() {
-			return this.ref.getMessage();
+		public Set<Message> getMessages() {
+			return this.ref.getMessages();
 		}
 		
 		@Override
-		public void setMessage(Message msg) {
-			this.ref.setMessage(msg);
+		public void setMessages(Set<Message> msgs) {
+			this.ref.setMessages(msgs);
 		}
 		
-		public void setMessage(String msgTxt, Message.Type type, Message.Context context) {
-			this.ref.setMessage(new Message(msgTxt, type, context));
-		}
+		
 		
 		@Override
 		public List<ParamValue> getValues() {

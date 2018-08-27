@@ -1,0 +1,11 @@
+package com.atlas.client.extension.petclinic.view;
+
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+
+rule "show modal"
+
+    when
+        $param: Param()
+    then
+    	System.out.println("Hello from rule");
+end

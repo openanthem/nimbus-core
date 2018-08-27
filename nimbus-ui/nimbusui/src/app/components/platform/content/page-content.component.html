@@ -5,11 +5,12 @@
 
 <ng-template [ngIf]="element?.visible">
     <ng-template [ngIf]="element?.config?.labelConfigs?.length > 0">
-        <h1 class="page-title {{imgSrc}} ">
+        <!-- <h1 class="page-title {{imgSrc}} ">
             {{label}}
-        </h1>
+        </h1> -->
+        <nm-label *ngIf="labelConfig?.text" [labelConfig]="labelConfig" [labelClass]="imgSrc + ' page-title'" [size]="labelSize"></nm-label>
     </ng-template>
 
-    <nm-tile [element]="tile" *ngFor="let tile of tilesList"></nm-tile>
+    <nm-tile [element]="tile" *ngFor="let tile of tilesList" [position]="position+1"></nm-tile>
 </ng-template>
 

@@ -1,70 +1,72 @@
 <div class="{{cssClass}}" id="{{code}}">
     <!-- Section Message -->
-    
-    <nm-message messageContext="{{element?.message.context}}"  [messageArray]="element?.message.messageArray" [life]="element?.message.life" *ngIf="element?.message"></nm-message>
-        
+    <nm-label *ngIf="labelConfig?.text != ''" [labelConfig]="labelConfig" [size]="labelSize"></nm-label>
+     <ng-template ngFor let-msg [ngForOf]="element.message">
+        <nm-message [messageContext]="msg.context"  [messageArray]="msg.messageArray" [styleClass]="msg.styleClass" [life]="msg.life" *ngIf="msg" ></nm-message>
+    </ng-template>     
     <!-- Loop thru Section Params - look at the visible flag and put in the right condition-->
     <ng-template [ngIf]="visible==true">
         <ng-template ngFor let-element [ngForOf]="nestedParams">
             <!-- Card Content -->
-            <ng-template [ngIf]="element.alias == 'CardDetailsGrid'">
-                <nm-card-details-grid [grid]="element"></nm-card-details-grid>
+            <ng-template [ngIf]="element.alias == componentTypes.cardDetailsGrid.toString()">
+                <nm-card-details-grid [position]="position+1" [grid]="element"></nm-card-details-grid>
             </ng-template>
-            <ng-template [ngIf]="element.alias == 'CardDetail'">
-                <nm-card-details [element]="element"></nm-card-details>
+            <ng-template [ngIf]="element.alias == componentTypes.cardDetail.toString()">
+                <nm-card-details [position]="position+1" [element]="element"></nm-card-details>
             </ng-template>
             <!-- Paragraph -->
-            <ng-template [ngIf]="element.alias == 'Paragraph'">
+            <ng-template [ngIf]="element.alias == componentTypes.paragraph.toString()">
                 <nm-paragraph [element]="element"></nm-paragraph>
             </ng-template>
             <!-- Static Text-->
-            <ng-template [ngIf]="element.alias == 'StaticText'">
+            <ng-template [ngIf]="element.alias == componentTypes.staticText.toString()">
                 <nm-static-text [element]="element"></nm-static-text>
             </ng-template>
             <!-- Form Param -->
-            <ng-template [ngIf]="element.alias == 'Form'">
-                <nm-form [element]="element" [model]="element.type?.model"></nm-form>
+            <ng-template [ngIf]="element.alias == viewComponent.form.toString()">
+                <nm-form [position]="position+1" [element]="element" [model]="element.type?.model"></nm-form>
             </ng-template>
             <!-- Link Param -->
             <ng-template [ngIf]="element.config?.uiStyles?.isLink">
-                <div class="col-xs-12 smallCardCenter">
+                <div class="col-12 smallCardCenter">
                     <nm-link [element]="element" [root]="elements"></nm-link>
                 </div>
             </ng-template>
             <!-- Menu Param -->
-            <ng-template [ngIf]="element.alias == 'Menu'">
+            <ng-template [ngIf]="element.alias == componentTypes.menu.toString()">
                 <nm-menu [element]="element"></nm-menu>
             </ng-template>
             <!-- Accordion Main Param -->
-            <ng-template [ngIf]="element.alias == 'AccordionMain'">
-                <nm-accordion [element]="element"></nm-accordion>
+            <ng-template [ngIf]="element.alias == componentTypes.accordion.toString()">
+                <nm-accordion [position]="position+1" [element]="element"></nm-accordion>
             </ng-template>
             <!-- Grid Param -->
-            <ng-template [ngIf]="element.alias == 'Grid'">
+            <ng-template [ngIf]="element.alias == componentTypes.grid.toString()">
                 <nm-table
                     [element]="element" 
                     [params]="element?.config?.type?.elementConfig?.type?.model?.paramConfigs"
-                    (onScrollEvent)="onScrollEvent()">
+                    (onScrollEvent)="onScrollEvent()"
+                    [position]="position+1">
                 </nm-table>
             </ng-template>
             <!--Other buttons. Refactor item : to be triggred based on the buttongroup annotation-->
-            <ng-template [ngIf]="element.alias == 'Button' && element?.visible == true">
+            <ng-template [ngIf]="element.alias == viewComponent.button.toString() && element?.visible == true">
                 <div class="text-sm-right">
                     <nm-button [element]="element"> </nm-button>
                 </div>
             </ng-template>
-            <ng-template [ngIf]="element.alias == 'ButtonGroup'">
+            <ng-template [ngIf]="element.alias == viewComponent.buttongroup.toString()">
                 <div class="">
                     <nm-button-group [buttonList]="element.type?.model?.params" [cssClass]="element.config?.uiStyles?.attributes?.cssClass">
                     </nm-button-group>
                 </div>
             </ng-template>
             <!--textbox control without a form-->
-            <ng-template [ngIf]="element.alias == 'TextBox'">
+            <ng-template [ngIf]="element.alias == componentTypes.textBox.toString()">
                 <nm-input id="{{code}}" [element]="element" [(ngModel)]="element.leafState"></nm-input>
             </ng-template>
             <!--combobox control without a form-->
-            <ng-template [ngIf]="element.alias == 'ComboBox'">
+            <ng-template [ngIf]="element.alias == componentTypes.comboBox.toString()">
                 <nm-comboBox id="{{code}}" [element]="element" [(ngModel)]="element.leafState"></nm-comboBox>
             </ng-template>
         </ng-template>

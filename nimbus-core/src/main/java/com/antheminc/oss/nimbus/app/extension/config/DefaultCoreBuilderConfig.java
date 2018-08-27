@@ -42,7 +42,10 @@ import com.antheminc.oss.nimbus.domain.config.builder.attributes.ConstraintAnnot
 import com.antheminc.oss.nimbus.domain.config.builder.attributes.DefaultAnnotationAttributeHandler;
 import com.antheminc.oss.nimbus.domain.model.config.builder.EntityConfigBuilder;
 import com.antheminc.oss.nimbus.domain.model.config.builder.internal.DefaultEntityConfigBuilder;
+import com.antheminc.oss.nimbus.domain.model.config.builder.internal.DefaultExecutionConfigProvider;
+import com.antheminc.oss.nimbus.domain.model.config.builder.internal.DetourExecutionConfigProvider;
 import com.antheminc.oss.nimbus.domain.model.config.builder.internal.EventHandlerConfigFactory;
+import com.antheminc.oss.nimbus.domain.model.config.builder.internal.ExecutionConfigFactory;
 import com.antheminc.oss.nimbus.domain.model.config.internal.DefaultValidatorProvider;
 import com.antheminc.oss.nimbus.domain.model.state.builder.EntityStateBuilder;
 import com.antheminc.oss.nimbus.domain.model.state.builder.QuadModelBuilder;
@@ -107,6 +110,21 @@ public class DefaultCoreBuilderConfig {
 	@Bean
 	public EventHandlerConfigFactory eventHandlerConfigFactory(BeanResolverStrategy beanResolver) {
 		return new EventHandlerConfigFactory(beanResolver);
+	}
+	
+	@Bean
+	public ExecutionConfigFactory executionConfigFactory(BeanResolverStrategy beanResolver) {
+		return new ExecutionConfigFactory();
+	}
+	
+	@Bean 
+	public DefaultExecutionConfigProvider defaultExecutionConfigProvider(BeanResolverStrategy beanResolver) {
+		return new DefaultExecutionConfigProvider();
+	}
+	
+	@Bean 
+	public DetourExecutionConfigProvider detourExecutionConfigProvider(BeanResolverStrategy beanResolver) {
+		return new DetourExecutionConfigProvider();
 	}
 	
 	@Bean 

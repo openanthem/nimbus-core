@@ -17,10 +17,10 @@
 'use strict';
 
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { Message } from 'stompjs';
 import { Component } from '@angular/core';
-import { Title }     from '@angular/platform-browser';
+import { Title } from '@angular/platform-browser';
 import { LayoutService } from '../../services/layout.service';
 import { AppBranding, Layout, LinkConfig, FooterConfig } from '../../model/menu-meta.interface';
 import { ExecuteOutput, ModelEvent } from '../../shared/app-config.interface';
@@ -29,7 +29,7 @@ import { AuthenticationService } from '../../services/authentication.service';
 import { STOMPService } from '../../services/stomp.service';
 import { PageService } from '../../services/page.service';
 import { ServiceConstants } from '../../services/service.constants';
-import {FooterGlobal} from '../platform/footer/footer-global.component'
+import { FooterGlobal } from '../platform/footer/footer-global.component'
 import { MenuItem } from 'primeng/primeng';
 import { LoggerService } from '../../services/logger.service';
 import { WebContentSvc } from '../../services/content-management.service';
@@ -54,6 +54,7 @@ export class HomeLayoutCmp {
     public footer: FooterConfig;
     public userName: any;
     public navMenuBar: boolean = false;
+    items: MenuItem[];
     
 
     public organizations: Param[];
@@ -180,7 +181,7 @@ export class HomeLayoutCmp {
                     } else {
                         this.navMenuBar = false;
                     }
-                    this.leftMenuItems = layout.leftNavBar;
+                    this.items = layout.leftNavBar;
                     this.footer = layout.footer;
                 }
                 //this._router.navigate([this.body['defaultFlow']], { relativeTo: this._route });

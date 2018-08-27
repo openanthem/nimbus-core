@@ -15,19 +15,16 @@
  * limitations under the License.
  */
 'use strict';
-import { LabelConfig } from './../../../../shared/param-config';
+import { LabelConfig, Constraint } from './../../../../shared/param-config';
 import { BaseControlValueAccessor } from './control-value-accessor.component';
-import { Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { Input, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, NgModel } from '@angular/forms';
 import { Param } from '../../../../shared/param-state';
-import { PageService } from '../../../../services/page.service';
 import { WebContentSvc } from '../../../../services/content-management.service';
-import { GenericDomain } from '../../../../model/generic-domain.model';
-import { ValidatorFn } from '@angular/forms/src/directives/validators';
 import { ValidationUtils } from '../../validators/ValidationUtils';
 import { ValidationConstraint } from './../../../../shared/validationconstraints.enum';
 import { FormControl, AbstractControl } from '@angular/forms/src/model';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 /**
  * \@author Dinakar.Meda
@@ -43,18 +40,17 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
     
     protected abstract model: NgModel;
     protected _elementStyle: string;
-    public label: string;
-    public helpText : string;
     inPlaceEditContext: any;
     showLabel: boolean = true;
     disabled: boolean;
     requiredCss:boolean = false;
+    labelConfig: LabelConfig;
 
     stateChangeSubscriber: Subscription;
     validationChangeSubscriber: Subscription;
     onChangeSubscriber: Subscription;
 
-    constructor(private controlService: ControlSubscribers, private wcs: WebContentSvc, private cd: ChangeDetectorRef) {
+    constructor(protected controlService: ControlSubscribers, private wcs: WebContentSvc, private cd: ChangeDetectorRef) {
         super();
     }
 
@@ -67,16 +63,17 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
         if (this.inPlaceEditContext) {
             this.inPlaceEditContext.value = formControl.value;
         }
-        this.controlService.controlValueChanged.emit(formControl.element);
+        if(this.form == null || (this.form.controls[this.element.config.code]!= null && this.form.controls[this.element.config.code].valid)) {
+            this.controlService.controlValueChanged.emit(formControl.element);
+        }
+            
     }
 
     ngOnInit() {
         
         this.value = this.element.leafState;
         this.disabled = !this.element.enabled;
-        let labelContent: LabelConfig = this.wcs.findLabelContent(this.element);
-        this.label = labelContent.text;
-        this.helpText = labelContent.helpText;
+        this.labelConfig = this.wcs.findLabelContent(this.element);
         this.requiredCss = ValidationUtils.applyelementStyle(this.element);
         if (this.form) {
             let frmCtrl = this.form.controls[this.element.config.code];
@@ -128,5 +125,57 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
      */
     public get type(): string {
         return this.element.config.uiStyles.attributes.type;
+    }
+
+    /**
+     * Get the tooltip help text for this element.
+     */
+    public get helpText(): string {
+        if (!this.labelConfig) {
+            return undefined;
+        }
+        return this.labelConfig.helpText;
+    }
+
+    /**
+     * Get the label text for this element.
+     */
+    public get label(): string {
+        if (!this.labelConfig) {
+            return undefined;
+        }
+        return this.labelConfig.text;
+    }
+    
+    /**
+     * Return constraint matches param attribute
+     * @param name 
+     */
+    public getConstraint(name: string):Constraint {
+        if (this.element.config.validation) {
+            if ( !this.element.config.validation.constraints) {
+                return;
+            }
+            let constraints = this.element.config.validation.constraints.filter( constraint => constraint.name === name);
+            if (constraints.length >= 2) {
+                throw new Error('Constraint array list should not have more than one attribute '+name);
+            } else {
+                return constraints[0];
+            }
+        } else {
+            return;
+        }
+    }
+    /**
+     * Get Max length of the attribute
+     */
+    public getMaxLength():number {
+        let constraint = this.getConstraint(ValidationConstraint._max.value);
+        if (constraint) {
+             return constraint.attribute.value;
+        } else {
+            return;
+        }
+
     }
 }

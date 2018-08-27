@@ -19,8 +19,6 @@ import { NgModel, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Component, ViewChild, forwardRef, ChangeDetectorRef } from '@angular/core';
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
-import { PageService } from '../../../../services/page.service';
-import { Param } from '../../../../shared/param-state';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
@@ -32,35 +30,44 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 /**
  * \@author Sandeep.Mantha
  * \@whatItDoes 
+ *  By providing a value for @Max on top of @TextArea would restrict 
+ *  characters max length in @TextArea 
  * 
  * \@howToUse 
  * 
  */
 @Component({
   selector: 'nm-input-textarea',
-  providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc, ControlSubscribers ],
+  providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc, ControlSubscribers],
   template: `
     <div class='textarea-holder' [hidden]="!element?.visible" *ngIf="element.config?.uiStyles?.attributes?.hidden==false">
-        <div class="number" *ngIf="element.config?.uiStyles?.attributes?.controlId!=''">{{element.config?.uiStyles?.attributes?.controlId}}</div>
-        <label [attr.for]="element.config?.code" [ngClass]="{'required': requiredCss, '': !requiredCss}">{{label}}
-            <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
-        </label>
-        <textarea [(ngModel)] = "value" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" 
-            rows="element.config?.uiStyles?.attributes?.rows"  
-            (focusout)="emitValueChangedEvent(this,value)"
-            [disabled]="disabled"
-            [id]="element.config?.code" class="form-control textarea-input" 
-            *ngIf="element.config?.uiStyles?.attributes?.readOnly==false"></textarea>
-        <pre class="print-only" *ngIf="element.config?.uiStyles?.attributes?.readOnly==false">{{this.value}}</pre>
-        <p style="margin-bottom:0rem;" *ngIf="element.config?.uiStyles?.attributes?.readOnly==true">{{element.leafState}}</p>
+    <div class="number" *ngIf="element.config?.uiStyles?.attributes?.controlId!=''">{{element.config?.uiStyles?.attributes?.controlId}}</div>
+    <nm-input-label *ngIf="labelConfig"
+      [for]="element.config?.code" 
+      [labelConfig]="labelConfig" 
+      [required]="requiredCss">
+
+    </nm-input-label>
+     <textarea [(ngModel)] = "value" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" 
+        [rows]="element.config?.uiStyles?.attributes?.rows"    
+        (focusout)="emitValueChangedEvent(this,value)"
+        [disabled]="disabled"
+        [maxlength]="getMaxLength()"
+        [id]="element.config?.code" class="form-control textarea-input" 
+        *ngIf="element.config?.uiStyles?.attributes?.readOnly==false"></textarea>
+    
+    <span class="charCount" *ngIf="getMaxLength()>0">{{getMaxLength()-value.length}} Characters left</span>
+    <pre class="print-only" *ngIf="element.config?.uiStyles?.attributes?.readOnly==false">{{this.value}}</pre>
+    <p style="margin-bottom:0rem;" *ngIf="element.config?.uiStyles?.attributes?.readOnly==true">{{element.leafState}}</p>
     </div>
    `
 })
 export class TextArea extends BaseControl<String> {
 
-    @ViewChild(NgModel) model: NgModel;
+  @ViewChild(NgModel) model: NgModel;
 
-    constructor(wcs: WebContentSvc, controlService: ControlSubscribers,cd:ChangeDetectorRef) {
-        super(controlService,wcs,cd);
-    }
+  constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd: ChangeDetectorRef) {
+    super(controlService, wcs, cd);
+  }
+
 }

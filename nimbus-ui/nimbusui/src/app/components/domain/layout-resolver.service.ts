@@ -20,7 +20,8 @@ import { WebContentSvc } from './../../services/content-management.service';
 import { BreadcrumbService } from './../platform/breadcrumb/breadcrumb.service';
 import { Injectable } from '@angular/core';
 import { Router, Resolve, RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
+import { first, map } from 'rxjs/operators';
 import { PageService } from '../../services/page.service';
 import { ConfigService } from '../../services/config.service';
 import { LoggerService } from '../../services/logger.service';
@@ -51,7 +52,7 @@ export class LayoutResolver implements Resolve<string> {
             // this._breadcrumbService.push(flowName, 'Home', flowConfig.model.params[0].path);
 
             let routeToDefaultPage: boolean = true;
-            if (route.firstChild.params['pageId']) {
+            if (route.firstChild.params['pageId'] || route.firstChild.params['subdomain']) {
                 routeToDefaultPage = false;
             }
             return this._pageSvc.getFlowLayoutConfig(flowName, routeToDefaultPage).then(layout => {
@@ -60,10 +61,10 @@ export class LayoutResolver implements Resolve<string> {
             });
         } else {
             this._pageSvc.getLayoutConfigForFlow(flowName);
-            return this._pageSvc.layout$.map(layout => {
+            return this._pageSvc.layout$.pipe(map(layout => {
                 this._logger.debug('layout resolver service flowName can be navigated' + flowName);
                 return layout;
-            }).first();
+            }),first());
         }
     }
 

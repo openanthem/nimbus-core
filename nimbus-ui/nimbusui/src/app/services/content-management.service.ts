@@ -18,11 +18,11 @@
 
 import { Injectable, EventEmitter } from '@angular/core';
 import { Http, Headers, RequestOptions } from '@angular/http';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/share';
 import { ServiceConstants } from './service.constants';
 import { LabelConfig } from './../shared/param-config';
 import { Param } from './../shared/param-state';
+import { Converter } from './../shared/object.conversion';
+
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -43,23 +43,28 @@ export class WebContentSvc {
 	}
 
     findLabelContent(param: Param): LabelConfig {
+        if (!param || !param.config) {
+            return undefined;
+        }
         return this.findLabelContentFromConfig(param.config.code, param.config.labelConfigs);
     }
 
     findLabelContentFromConfig(code : string, labelConfigs : LabelConfig[]): LabelConfig {
         let labelContent: LabelConfig = new LabelConfig();
-        if(labelConfigs == null || (labelConfigs != null && labelConfigs.length < 1)) {
-            labelContent.text = code;
-        } else if (labelConfigs != null && labelConfigs.length > 0) {
-            labelConfigs.forEach (labelConfig => {
-                 if(labelConfig.locale == ServiceConstants.LOCALE_LANGUAGE) {
-                    labelContent.text = labelConfig.text;
-                    labelContent.helpText = labelConfig.helpText;
-                    labelContent.locale = ServiceConstants.LOCALE_LANGUAGE;
-                 }
-            });
-        }
+        if (labelConfigs != null && labelConfigs.length > 0) {
+            let labelConfig = labelConfigs.find(c => c.locale == ServiceConstants.LOCALE_LANGUAGE);
+            labelContent = Converter.convert(labelConfig, labelContent);
+        } else if(this.showUnlabeledAsVariableNames) {
+            //labelContent.text = code;
+            labelContent.text = '';
+        } 
         return labelContent;
+    }
+
+    get showUnlabeledAsVariableNames(): boolean {
+        // TODO Is this useful? Maybe for testing? If so, make this as a configurable property and
+        // return the value based on that property.
+        return true;
     }
     
 }

@@ -35,51 +35,69 @@ export class Message implements Serializable<Message, string> {
     
     deserialize( inJson ) {
 
-        let obj = this;
+        let obj: Message = this;
         obj = Converter.convert(inJson,obj);
 
         if(this.context !== undefined){
-
-           let severity: string, summary: string, life: number;
-           
-            switch (this.type) {               
-
-                case "SUCCESS": 
-                    severity = 'success'; summary = 'Success Message';
-                    if(this.life != undefined)
-                        life = this.life;
-                    else    
-                        life = 3000;
-                    break;
-                case "DANGER": 
-                    severity = 'error'; summary = 'Error Message';
-                    if(this.life != undefined)
-                        life = this.life;
-                    else    
-                        life = 10000;
-                    break; 
-                case "WARNING": 
-                    severity = 'warn'; summary = 'Warn Message';
-                    if(this.life != undefined)
-                        life = this.life;
-                    else    
-                        life = 5000;
-                    break;
-                case "INFO": 
-                    severity = 'info'; summary = 'Info Message';
-                    if(this.life != undefined)
-                        life = this.life;
-                    else    
-                        life = 3000;
-                    break;   
-            }
-    
-            this.messageArray.push({severity: severity,  summary: summary,  detail: this.text});
-            obj['messageArray'] = this.messageArray;
-            obj['life'] = life;
-
+            obj = Message.createMessage(this.type, this.context, this.text, this.life);
         }
 
         return obj;
+    }
+
+    /**
+     * \@author Andrew.Jo
+     * \@whatItDoes 
+     *      Creates a customizable instance of message class that can show up in the top right corner of the screen
+     * \@howToUse 
+     *      Call this createMessage method by providing it with 4 variables
+     */
+    public static createMessage( type, context, detail, life ): Message {
+        let severity: string, summary: string;
+        
+        let message = new Message();
+        message.context = context;
+        message.type = type;
+        message.life = life;
+        
+        switch (type) {               
+
+            case 'SUCCESS': 
+                severity = 'success'; summary = 'Success Message';
+                if(life != undefined)
+                    message.life = life;
+                else    
+                    message.life = 3000;
+                break;
+            case 'DANGER': 
+                severity = 'error'; summary = 'Error Message';
+                if(life != undefined)
+                    message.life = life;
+                else    
+                    message.life = 10000;
+                break; 
+            case 'WARNING': 
+                severity = 'warn'; summary = 'Warn Message';
+                if(life != undefined)
+                    message.life = life;
+                else    
+                    message.life = 5000;
+                break;
+            case 'INFO': 
+                severity = 'info'; summary = 'Info Message';
+                if(life != undefined)
+                    message.life = life;
+                else    
+                    message.life = 3000;
+                break;   
+        }
+        message.messageArray = [];
+        if (message.context === 'INLINE') {
+            message.messageArray.push({severity: severity,  summary: "",  detail: detail});
+        }
+        else {
+            message.messageArray.push({severity: severity, summary: summary, detail: detail});
+        }
+        return message;
     }
 }

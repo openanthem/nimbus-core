@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { HttpModule } from '@angular/http';
 import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
+import { JL } from 'jsnlog';
+import { Location, LocationStrategy, HashLocationStrategy } from '@angular/common';
 
 import { InputText } from './textbox.component';
 import { TooltipComponent } from '../../tooltip/tooltip.component'
@@ -13,6 +15,7 @@ import { LoaderService } from '../../../../services/loader.service';
 import { ConfigService } from '../../../../services/config.service';
 import { LoggerService } from '../../../../services/logger.service';
 import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
+import { AppInitService } from '../../../../services/app.init.service';
 
 describe('InputText', () => {
   beforeEach(async(() => {
@@ -29,12 +32,16 @@ describe('InputText', () => {
        ],
        providers: [
         { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+        { provide: 'JSNLOG', useValue: JL },
+        { provide: LocationStrategy, useClass: HashLocationStrategy },
+        Location,
         PageService,
         CustomHttpClient,
         LoaderService,
         ConfigService,
         LoggerService,
-        SessionStoreService
+        SessionStoreService,
+        AppInitService
        ]
     }).compileComponents();
   }));

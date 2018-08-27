@@ -79,7 +79,7 @@ public class BaseCommandExecutorStrategies {
 		if(cmd.isRootDomainOnly()) 
 			return (Param<T>)getQuadModelOrThrowEx(eCtx).getView().getAssociatedParam();
 		
-		String path = cmd.buildAlias(cmd.getElement(Type.DomainAlias).get().next());
+		String path = cmd.buildAlias(cmd.getElementSafely(Type.DomainAlias).next());
 		
 		return getQuadModelOrThrowEx(eCtx).getView().findParamByPath(path);
 	}

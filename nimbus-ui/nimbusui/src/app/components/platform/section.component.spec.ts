@@ -6,6 +6,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { TableModule } from 'primeng/table';
 import { KeyFilterModule } from 'primeng/keyfilter';
+import { JL } from 'jsnlog';
+import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
+import { AngularSvgIconModule } from 'angular-svg-icon';
 
 import { Section } from './section.component';
 import { ComboBox } from '../platform/form/elements/combobox.component';
@@ -52,11 +55,22 @@ import { LoaderService } from '../../services/loader.service';
 import { ConfigService } from '../../services/config.service';
 import { DataTable } from './grid/table.component';
 import { LoggerService } from '../../services/logger.service';
+import { SessionStoreService, CUSTOM_STORAGE } from '../../services/session.store';
+import { AppInitService } from '../../services/app.init.service';
+import { HeaderCheckBox } from '../platform/form/elements/header-checkbox.component';
+import { SvgComponent } from './svg/svg.component';
+import { Image } from './image.component';
 
 class MockPageService {
     processEvent() {
 
     }
+}
+
+class MockLoggerService {
+  debug() { }
+  info() { }
+  error() { }
 }
 
 
@@ -102,7 +116,10 @@ describe('Section', () => {
         DateControl,
         Signature,
         Header,
-        DataTable
+        DataTable,
+        HeaderCheckBox,
+        SvgComponent,
+        Image
        ],
        imports: [
         FormsModule,
@@ -120,15 +137,20 @@ describe('Section', () => {
         HttpModule,
         HttpClientModule,
         TableModule,
-        KeyFilterModule
+        KeyFilterModule,
+        StorageServiceModule,
+        AngularSvgIconModule
        ],
        providers: [
         { provide: PageService, useClass: MockPageService },
+        { provide: 'JSNLOG', useValue: JL },
+        { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+        {provide: LoggerService, useClass: MockLoggerService},
         WebContentSvc,
         CustomHttpClient,
         LoaderService,
         ConfigService,
-        LoggerService
+        AppInitService
        ]
     }).compileComponents();
   }));

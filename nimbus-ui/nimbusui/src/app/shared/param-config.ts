@@ -106,15 +106,15 @@ export class UiStyle implements Serializable<UiStyle,string> {
 
     deserialize( inJson ) {
         this.name = inJson.name;
-        if ( this.name === ViewConfig.link.toString() || this.name === ViewConfig.linkmenu.toString()) {
+        this.value = inJson.value;
+        this.attributes = new UiAttribute().deserialize( inJson.attributes );
+        if ( this.name === ViewConfig.link.toString() || this.name === ViewConfig.linkmenu.toString()
+            || this.attributes.showAsLink === true ) {
             this.isLink = true;
         }
         if ( this.name === ViewConfig.hidden.toString() ) {
             this.isHidden = true;
         }
-        this.value = inJson.value;
-        this.attributes = new UiAttribute().deserialize( inJson.attributes );
-
         return this;
     }
 }
@@ -134,6 +134,7 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
     b: string;
     method: string;
     imgSrc: string;
+    imgType: string;
     hidden: boolean = false;
     readOnly: boolean = false;
     level: string;
@@ -212,7 +213,15 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
     yearRange: string;
     metaData: any;
     captureType: string;
-
+    showAsLink: boolean = false;
+    info: string;
+    page: string;
+    applyValueStyles: boolean;
+    expandable: boolean;
+    border: boolean;
+    showSourceControls: boolean;
+    showTargetControls: boolean;
+    
     deserialize( inJson ) {
         let obj = this;
         obj = Converter.convert(inJson,obj);
@@ -284,6 +293,7 @@ export class LabelConfig implements Serializable<LabelConfig,string> {
     text: string;
     locale: string;
     helpText : string;
+    cssClass: string;
 
     deserialize( inJson ) {
         let obj = this;
@@ -340,6 +350,7 @@ export class Attribute implements Serializable<Attribute,string> {
     min: any;
     max: any;
     groups: String[];
+    value: any;
 
     deserialize( inJson ) {
         let obj = this;
