@@ -23,6 +23,7 @@ import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Cache;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Database;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Radio;
+import com.antheminc.oss.nimbus.domain.defn.extension.Content.Label;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValuesConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValuesConditional.Condition;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValuesConditionals;
@@ -49,6 +50,7 @@ public class S7V_ViewMain {
 	
 	private String v_attr_values_2;
 	
+	@Label("Attr 3")
 	@Radio
 	@Values(url="/hooli/box/p/s7c_main/_search?fn=lookup&where=s7c_main.attr1_clone.eq('<!/.d/.m/attr1_clone!>')&projection.mapsTo=code:attr1_clone,label:attr1_clone")
 	private String attr3;

@@ -24,6 +24,7 @@ import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.ValidationGroup;
 import com.antheminc.oss.nimbus.domain.model.config.EntityConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
+import com.antheminc.oss.nimbus.domain.model.config.ParamConfig.LabelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.support.pojo.LockTemplate;
@@ -412,6 +413,16 @@ public class StateHolder {
 		@Override
 		public void setVisible(boolean visible) {
 			this.ref.setVisible(visible);
+		}
+		
+		@Override
+		public List<LabelConfig> getLabels() {
+			return this.ref.getLabels();
+		}
+		
+		@Override
+		public void setLabels(List<LabelConfig> labelConfigs) {
+			this.ref.setLabels(labelConfigs);
 		}
 		
 		/* ********************** Operations Not Allowed *********************** */

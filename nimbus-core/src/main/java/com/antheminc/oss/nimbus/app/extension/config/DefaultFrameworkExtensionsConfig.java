@@ -28,6 +28,8 @@ import com.antheminc.oss.nimbus.domain.model.state.extension.AccessConditionalSt
 import com.antheminc.oss.nimbus.domain.model.state.extension.ActivateConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.AuditStateChangeHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ConfigConditionalStateChangeHandler;
+import com.antheminc.oss.nimbus.domain.model.state.extension.DefaultLabelConfigsHandler;
+import com.antheminc.oss.nimbus.domain.model.state.extension.DefaultParamValuesHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.DobToAgeConverter;
 import com.antheminc.oss.nimbus.domain.model.state.extension.EnableConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ExpressionConditionalStateEventHandler;
@@ -41,7 +43,6 @@ import com.antheminc.oss.nimbus.domain.model.state.extension.ValidateConditional
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValidateConditionalStateEventHandler.ValidationAssignmentStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValuesConditionalOnStateChangeEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValuesConditionalOnStateLoadEventHandler;
-import com.antheminc.oss.nimbus.domain.model.state.extension.DefaultParamValuesHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.VisibleConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional.ChildrenValidationAssignmentStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional.SiblingValidationAssignmentStrategy;
@@ -82,6 +83,11 @@ public class DefaultFrameworkExtensionsConfig {
 	@Bean(name="default.paramValuesHandler")
 	public ParamValuesOnLoadHandler extensionValuesOnStateLoadEventHandler(BeanResolverStrategy beanResolver) {
 		return new DefaultParamValuesHandler(beanResolver);
+	}
+	
+	@Bean(name="default.labelConfigsHandler")
+	public DefaultLabelConfigsHandler extensionLabelConfigsOnStateLoadEventHandler(BeanResolverStrategy beanResolver) {
+		return new DefaultLabelConfigsHandler(beanResolver);
 	}
 	
 	@Bean

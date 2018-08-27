@@ -36,6 +36,7 @@ import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.Valida
 import com.antheminc.oss.nimbus.domain.model.config.EntityConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
+import com.antheminc.oss.nimbus.domain.model.config.ParamConfig.LabelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
 import com.antheminc.oss.nimbus.support.pojo.CollectionsTemplate;
 import com.antheminc.oss.nimbus.support.pojo.LockTemplate;
@@ -553,6 +554,9 @@ public interface EntityState<T> {
 		
 		List<ParamValue> getValues();
 		void setValues(List<ParamValue> values);
+		
+		List<LabelConfig> getLabels();
+		void setLabels(List<LabelConfig> labelConfigs);
 		
 		@Immutable
 		@Getter @Setter @RequiredArgsConstructor @ToString

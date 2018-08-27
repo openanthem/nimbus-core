@@ -28,6 +28,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 
 import com.antheminc.oss.nimbus.domain.defn.event.ConfigEvent.OnParamCreate;
+import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 import com.antheminc.oss.nimbus.domain.defn.extension.Contents.Labels;
 
 
@@ -42,6 +43,7 @@ public final class Content {
 	@Target(FIELD)
 	@Repeatable(Labels.class)
 	@OnParamCreate
+	@OnStateLoad
 	public @interface Label {
 		
 		public static final String DEFAULT_LOCALE_LANGUAGE_TAG = Locale.getDefault().toLanguageTag();

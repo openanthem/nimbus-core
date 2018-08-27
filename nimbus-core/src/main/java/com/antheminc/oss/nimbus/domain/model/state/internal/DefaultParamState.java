@@ -42,6 +42,7 @@ import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.Valida
 import com.antheminc.oss.nimbus.domain.model.config.EventHandlerConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
+import com.antheminc.oss.nimbus.domain.model.config.ParamConfig.LabelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.EntityStateAspectHandlers;
@@ -96,6 +97,8 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	private RemnantState<Class<? extends ValidationGroup>[]> activeValidationGroupsState = new RemnantState<>(new Class[0]);
 	
 	private List<ParamValue> values;
+	
+	private List<LabelConfig> labels;
 	
 	@JsonIgnore
 	private RemnantState<Set<Message>> messageState = this.new RemnantState<Set<Message>>(null) {
@@ -950,5 +953,14 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 					.append(", state=").append(getState())
 					.append(")")
 					.toString();
+	}
+
+	@Override
+	public void setLabels(List<LabelConfig> labelConfigs) {
+		if(getLabels()==labelConfigs)
+			return;
+		
+		this.labels = labelConfigs;
+		emitParamContextEvent();	
 	}
 }
