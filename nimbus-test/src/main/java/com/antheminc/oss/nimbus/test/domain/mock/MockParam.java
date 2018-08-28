@@ -26,6 +26,7 @@ import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.ValidationGroup;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
+import com.antheminc.oss.nimbus.domain.model.config.ParamConfig.LabelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.EntityStateAspectHandlers;
@@ -70,6 +71,7 @@ public class MockParam implements Param<Object> {
 	private List<ParamValue> values = null;
 	private boolean visible = true;
 	private Class<? extends ValidationGroup>[] activeValidationGroups;
+	private List<LabelConfig> labels;
 
 	@Override
 	public String getConfigId() {
