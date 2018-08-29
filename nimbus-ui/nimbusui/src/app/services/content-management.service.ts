@@ -46,7 +46,7 @@ export class WebContentSvc {
         if (!param || !param.config) {
             return undefined;
         }
-        return this.findLabelContentFromConfig(param.config.code, param.config.labelConfigs);
+        return this.findLabelContentFromConfig(param.config.code, param.labels);
     }
 
     findLabelContentFromConfig(code : string, labelConfigs : LabelConfig[]): LabelConfig {

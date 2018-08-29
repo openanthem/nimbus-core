@@ -29,7 +29,7 @@ import { GridService } from '../services/grid.service';
 import { ParamUtils } from './param-utils';
 import { Converter } from './object.conversion';
 import { Serializable } from './serializable';
-import { ParamConfig } from './param-config';
+import { ParamConfig, LabelConfig } from './param-config';
 import { Message } from './message';
 import { CardDetailsGrid } from './card-details';
 import { ViewConfig, ViewComponent } from './param-annotations.enum';
@@ -55,6 +55,7 @@ export class Param implements Serializable<Param, string> {
     page: GridPage;
     _alias: string;
     _config: ParamConfig;
+    labels: LabelConfig[];
 
     constructor(private configSvc: ConfigService) {}
 
@@ -217,6 +218,13 @@ export class Param implements Serializable<Param, string> {
        
         if (typeof inJson.activeValidationGroups === 'object') {
             this.activeValidationGroups = inJson.activeValidationGroups;
+        }
+
+        this.labels = [];
+        if ( inJson.labels != null && inJson.labels.length > 0) { 
+            for ( var p in inJson.labels ) {
+                this.labels.push( new LabelConfig().deserialize(inJson.labels[p]) );
+            }
         }
         
         return this;

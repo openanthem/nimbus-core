@@ -108,7 +108,7 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
     }
 
     ngOnInit() {
-        this.loadLabelConfigByCode(this.parent.config.code, this.parent.config.labelConfigs);
+        this.loadLabelConfigByCode(this.parent.config.code, this.parent.labels);
         this.requiredCss = ValidationUtils.applyelementStyle(this.parent);
         // First check if the picklist has any values that are selected onload
         if(this.element.leafState != null) {
