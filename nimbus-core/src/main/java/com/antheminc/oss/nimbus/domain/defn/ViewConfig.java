@@ -183,6 +183,20 @@ public class ViewConfig {
 
 		boolean postEventOnChange() default false;
 	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface TreeGrid {
+		String alias() default "treegrid";
+	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface Children {
+		String alias() default "treegrid";
+	}
 
 	/**
 	 * <p><b>Expected Field Structure</b>
