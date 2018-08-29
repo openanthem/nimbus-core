@@ -69,6 +69,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
             </div>
         </ng-template>
     </div>
+    <nm-signature-button *ngIf="element.config?.uiStyles?.attributes?.scriptName" [canvas]="canvasEl" [scriptName]="element.config.uiStyles.attributes.scriptName"></nm-signature-button>
    `
 })
 export class Signature extends BaseControl<string> {
@@ -107,7 +108,7 @@ export class Signature extends BaseControl<string> {
         if(this.element.config !== undefined) {
             this.width = Number(this.element.config.uiStyles.attributes.width);
             this.height = Number(this.element.config.uiStyles.attributes.height);
-        }
+        }        
     }
 
     public ngAfterViewInit() {

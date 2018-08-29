@@ -221,6 +221,7 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
     border: boolean;
     showSourceControls: boolean;
     showTargetControls: boolean;
+    scriptName: string;
     
     deserialize( inJson ) {
         let obj = this;

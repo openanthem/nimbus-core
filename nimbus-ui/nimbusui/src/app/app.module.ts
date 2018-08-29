@@ -68,6 +68,7 @@ import { Value } from './components/platform/form/elements/value.component';
 import { ComboBox } from './components/platform/form/elements/combobox.component';
 import { RadioButton } from './components/platform/form/elements/radio.component';
 import { Signature } from './components/platform/form/elements/signature.component';
+import { SignatureButton } from './components/platform/form/elements/signature-button.component';
 import { InputText } from './components/platform/form/elements/textbox.component';
 import { DateControl } from './components/platform/form/elements/date.component';
 import { CheckBoxGroup } from './components/platform/form/elements/checkbox-group.component';
@@ -206,7 +207,7 @@ export function init_app(appinitservice: AppInitService) {
         KeysPipe, LinkPipe, DateTimeFormatPipe, SelectItemPipe, MultiSelectListBox, 
         CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent, Calendar, NavMenuGlobal, LoaderComponent, MessageComponent,
         HeaderCheckBox, SvgComponent, SvgDefinitions, ActionTray, SubDomainFlowCmp, Image, NmPanelMenu,NmPanelMenuSub, MenuRouterLinkActive, 
-        MenuRouteLink, Label, InputLabel, BaseLabel
+        MenuRouteLink, Label, InputLabel, BaseLabel, SignatureButton
     ],
     entryComponents: [ FlowWrapper, PageContent, PageNotfoundComponent, LoginCmp, HomeLayoutCmp, SubDomainFlowCmp],
     providers: [ PageService, ConfigService, WebContentSvc, HttpClient,  HttpClientModule, AppInitService,
