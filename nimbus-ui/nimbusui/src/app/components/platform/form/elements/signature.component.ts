@@ -64,12 +64,14 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
                 <button (click)="clear()" type="button" class="btn btn-secondary post-btn">
                     {{element.config?.uiStyles?.attributes?.clearLabel}}
                 </button>
+                <button *ngIf="element.config?.uiStyles?.attributes?.scriptName" (click)="getUpdatedSignature()" type="button" class="btn btn-secondary post-btn">
+                    Get Updated Signature
+                </button>
                 <button class="btn btn-plain" (click)="zoomCanvas()" *ngIf="zoomFactor==1"><i class="fa fa-fw fa-plus-square" aria-hidden="true"></i>Zoom In</button>
                 <button class="btn btn-plain" (click)="shrinkCanvas()" *ngIf="zoomFactor==2"><i class="fa fa-fw fa-minus-square" aria-hidden="true"></i>Zoom Out</button>
             </div>
         </ng-template>
     </div>
-    <nm-signature-button *ngIf="element.config?.uiStyles?.attributes?.scriptName" [canvas]="canvasEl" [scriptName]="element.config.uiStyles.attributes.scriptName"></nm-signature-button>
    `
 })
 export class Signature extends BaseControl<string> {
@@ -300,5 +302,14 @@ export class Signature extends BaseControl<string> {
             cx.lineTo(currentPos.x, currentPos.y);
             cx.stroke();
         }
+    }
+
+    getUpdatedDataUrl (updatedDataUrl){
+        console.log('updatedDataUrl', updatedDataUrl);
+    }
+
+    getUpdatedSignature() {
+         const callExternalFn = eval(this.element.config.uiStyles.attributes.scriptName);
+         callExternalFn(this.canvasEl.toDataURL(), this.getUpdatedDataUrl);
     }
 }
