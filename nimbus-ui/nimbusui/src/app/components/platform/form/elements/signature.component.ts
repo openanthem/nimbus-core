@@ -55,7 +55,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
             class="form-control" ngDefaultControl>
         </canvas>
         <ng-template [ngIf]="!disabled">
-            <div class="text-sm-center buttonGroup signatureCtrls" [style.width.px]="width">
+            <div class="text-sm-left buttonGroup signatureCtrls" [style.width.px]="width">
                 <ng-template [ngIf]="!isSaved">
                     <button (click)="save()" type="button" class="btn btn-secondary post-btn">
                         {{element.config?.uiStyles?.attributes?.acceptLabel}}
@@ -64,11 +64,12 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
                 <button (click)="clear()" type="button" class="btn btn-secondary post-btn">
                     {{element.config?.uiStyles?.attributes?.clearLabel}}
                 </button>
-                <button *ngIf="element.config?.uiStyles?.attributes?.scriptName" (click)="getUpdatedSignature()" type="button" class="btn btn-secondary post-btn">
-                    Get Updated Signature
-                </button>
                 <button class="btn btn-plain" (click)="zoomCanvas()" *ngIf="zoomFactor==1"><i class="fa fa-fw fa-plus-square" aria-hidden="true"></i>Zoom In</button>
                 <button class="btn btn-plain" (click)="shrinkCanvas()" *ngIf="zoomFactor==2"><i class="fa fa-fw fa-minus-square" aria-hidden="true"></i>Zoom Out</button>
+                <button *ngIf="element.config?.uiStyles?.attributes?.scriptName" (click)="getUpdatedSignature()" type="button" class="btn btn-plain post-btn">
+                    <i class="fa fa-fw fa-plus-circle"></i>
+                    Get Updated Signature
+                </button>
             </div>
         </ng-template>
     </div>
