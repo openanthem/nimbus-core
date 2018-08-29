@@ -42,7 +42,6 @@ import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.Valida
 import com.antheminc.oss.nimbus.domain.model.config.EventHandlerConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
-import com.antheminc.oss.nimbus.domain.model.config.ParamConfig.LabelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.EntityStateAspectHandlers;
@@ -98,8 +97,6 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	private List<ParamValue> values;
 	
-	private List<LabelConfig> labels;
-	
 	@JsonIgnore
 	private RemnantState<Set<Message>> messageState = this.new RemnantState<Set<Message>>(null) {
 		@Override
@@ -112,10 +109,22 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		}
 	};
 	
+	@JsonIgnore
+	private RemnantState<Set<LabelState>> labelState = this.new RemnantState<Set<LabelState>>(null) {
+		@Override
+		public boolean hasChanged() {
+			Set<LabelState> prev = CollectionUtils.isEmpty(getPrevState()) ? null : getPrevState();
+			Set<LabelState> curr = CollectionUtils.isEmpty(getCurrState()) ? null : getCurrState();
+			
+			boolean isEquals = new EqualsBuilder().append(curr, prev).isEquals();
+			return !isEquals;
+		}
+	};
+	
 	@Override
 	public boolean hasContextStateChanged() {
 		if(visibleState.hasChanged() || enabledState.hasChanged() || messageState.hasChanged()  
-				|| activeValidationGroupsState.hasChanged())
+				|| activeValidationGroupsState.hasChanged() || labelState.hasChanged())
 			return true;
 		
 		return false;
@@ -746,6 +755,18 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		emitParamContextEvent();
 	}
 	
+
+	@Override
+	public Set<LabelState> getLabels() {
+		return Optional.ofNullable(this.labelState.getCurrState()).orElse(null);
+	}
+	
+	@Override
+	public void setLabels(Set<LabelState> labels) {
+		Set<LabelState> labelstate = labels != null ? new HashSet<>(labels) : null;
+		this.labelState.setState(labelstate);
+	}
+	
 	@Override
 	public Set<Message> getMessages() {
 		return Optional.ofNullable(this.messageState.getCurrState()).map(Collections::unmodifiableSet).orElse(null);
@@ -953,14 +974,5 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 					.append(", state=").append(getState())
 					.append(")")
 					.toString();
-	}
-
-	@Override
-	public void setLabels(List<LabelConfig> labelConfigs) {
-		if(getLabels()==labelConfigs)
-			return;
-		
-		this.labels = labelConfigs;
-		emitParamContextEvent();	
 	}
 }

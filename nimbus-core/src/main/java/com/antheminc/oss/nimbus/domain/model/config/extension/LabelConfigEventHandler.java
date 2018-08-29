@@ -18,66 +18,67 @@
  */
 package com.antheminc.oss.nimbus.domain.model.config.extension;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Optional;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
-import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.defn.extension.Content;
 import com.antheminc.oss.nimbus.domain.defn.extension.Content.Label;
-import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
-import com.antheminc.oss.nimbus.domain.model.config.ParamConfig.LabelConfig;
-import com.antheminc.oss.nimbus.domain.model.config.event.ConfigEventHandlers.OnParamCreateHandler;
-import com.antheminc.oss.nimbus.domain.model.config.internal.DefaultParamConfig;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param.LabelState;
+import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
 
 /**
  * @author Soham Chakravarti
  *
  */
 
-public class LabelConfigEventHandler extends AbstractConfigEventHandler<Label> implements OnParamCreateHandler<Label> {
+public class LabelConfigEventHandler extends AbstractConfigEventHandler<Label> implements OnStateLoadHandler<Label> {
 
 	@Override
-	public void handle(Label configuredAnnotation, ParamConfig<?> param) {
+	public void handle(Label configuredAnnotation, Param<?> param) {
 		if(configuredAnnotation==null)
 			return;
 		
-		DefaultParamConfig<?> paramConfig = castOrEx(DefaultParamConfig.class, param);
-		
-		if (null == paramConfig) {
-			throw new FrameworkRuntimeException("Retrieved paramConfig for " + param + " was null.");
-		}
-		
-		if (null == paramConfig.getLabelConfigs()) {
-			paramConfig.setLabelConfigs(new ArrayList<>());
-		}
-		
-		validateAndAdd(paramConfig, convert(configuredAnnotation));
+		Optional.ofNullable(param.getLabels()).orElseGet(()->{
+			param.setLabels(new HashSet<>());
+			return param.getLabels();
+		});
+
+		validateAndAdd(param, convert(configuredAnnotation));
 	}
 	
-	protected void validateAndAdd(ParamConfig<?> paramConfig, LabelConfig toAdd) {
+	protected void validateAndAdd(Param<?> param, LabelState toAdd) {
+		// If param is a collection, it is going to add the same label which will result in InvalidConfigException
+		if (param.isCollection()) {
+			if (CollectionUtils.isNotEmpty(param.getLabels())) {
+				return;
+			}
+		}
 		// duplicate check
-		paramConfig.getLabelConfigs().stream()
+		param.getLabels().stream()
 			.filter(lc->lc.getLocale().equals(toAdd.getLocale()))
 			.forEach(lc->{
 				throw new InvalidConfigException("Label must have unique entries by locale,"
-						+ " found multiple entries in ParamConfig: "+paramConfig
-						+ " with repeating locale for LabelConfig: "+ toAdd);	
+						+ " found multiple entries in Param: "+param
+						+ " with repeating locale for LabelState: "+ toAdd);	
 			});
 		
 		// at-least one of Label text or helpText must be present
 		if(StringUtils.isEmpty(toAdd.getText()) && StringUtils.isEmpty(toAdd.getHelpText()))
 			throw new InvalidConfigException("Label must have non empty values for at least label text value or help text,"
-					+ " found none for \"" + paramConfig.getCode() + "\" in ParamConfig: " + paramConfig
-					+ " with LabelConfig: " + toAdd);
+					+ " found none for \"" + param.getConfig().getCode() + "\" in Param: " + param
+					+ " with LabelState: " + toAdd);
 		
-		paramConfig.getLabelConfigs().add(toAdd);
+		param.getLabels().add(toAdd);
 	}
 	
-	protected LabelConfig convert(Label label) {
-		LabelConfig config = new LabelConfig();
+	protected LabelState convert(Label label) {
+		LabelState config = new LabelState();
 		
 		Locale locale = Content.getLocale(label);
 		

@@ -36,7 +36,6 @@ import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.Valida
 import com.antheminc.oss.nimbus.domain.model.config.EntityConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
-import com.antheminc.oss.nimbus.domain.model.config.ParamConfig.LabelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
 import com.antheminc.oss.nimbus.support.pojo.CollectionsTemplate;
 import com.antheminc.oss.nimbus.support.pojo.LockTemplate;
@@ -555,8 +554,32 @@ public interface EntityState<T> {
 		List<ParamValue> getValues();
 		void setValues(List<ParamValue> values);
 		
-		List<LabelConfig> getLabels();
-		void setLabels(List<LabelConfig> labelConfigs);
+		Set<LabelState> getLabels();
+		void setLabels(Set<LabelState> labelState);
+		
+		@Getter @Setter @ToString class LabelState {
+			private String locale; //default en-US
+			private String text;		
+			private String helpText;
+			private String cssClass;
+			
+			@Override
+			public boolean equals(Object obj) {
+				if(obj==null && this.text==null)
+					return true;
+				
+				if(!LabelState.class.isInstance(obj))
+					return false;
+				
+				LabelState other = LabelState.class.cast(obj);
+				
+				if(StringUtils.equalsIgnoreCase(other.getLocale(), this.getLocale()) 
+						&& StringUtils.equalsIgnoreCase(other.getText(), this.getText()))
+					return true;
+			
+				return false;
+			}
+		}
 		
 		@Immutable
 		@Getter @Setter @RequiredArgsConstructor @ToString
@@ -603,7 +626,7 @@ public interface EntityState<T> {
 				return concat.hashCode();
 			}
 		}
-		
+
 		Set<Message> getMessages();
 		void setMessages(Set<Message> msgs);
 		

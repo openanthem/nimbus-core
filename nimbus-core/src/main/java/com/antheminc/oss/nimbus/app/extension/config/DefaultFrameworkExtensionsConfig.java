@@ -85,11 +85,6 @@ public class DefaultFrameworkExtensionsConfig {
 		return new DefaultParamValuesHandler(beanResolver);
 	}
 	
-	@Bean(name="default.labelConfigsHandler")
-	public DefaultLabelConfigsHandler extensionLabelConfigsOnStateLoadEventHandler(BeanResolverStrategy beanResolver) {
-		return new DefaultLabelConfigsHandler(beanResolver);
-	}
-	
 	@Bean
 	public ValuesConditionalOnStateChangeEventHandler extensionValuesConditionalOnStateChangeHandler(BeanResolverStrategy beanResolver) {
 		return new ValuesConditionalOnStateChangeEventHandler(beanResolver);

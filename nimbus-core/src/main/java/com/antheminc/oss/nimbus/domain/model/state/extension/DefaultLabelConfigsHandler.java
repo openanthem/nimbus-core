@@ -9,8 +9,8 @@ import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.defn.extension.Content.Label;
-import com.antheminc.oss.nimbus.domain.model.config.ParamConfig.LabelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param.LabelState;
 import com.antheminc.oss.nimbus.support.JustLogit;
 
 import lombok.Getter;
@@ -34,16 +34,16 @@ public class DefaultLabelConfigsHandler implements LabelConfigsOnLoadHandler {
 	
 	@Override
 	public void handle(Label configuredAnnotation, Param<?> param) {
-		List<LabelConfig> result = buildLabelConfigs(configuredAnnotation, param, param);
+		List<LabelState> result = buildLabelConfigs(configuredAnnotation, param, param);
 		if(result != null)
-			param.setLabels(result);
+			param.setLabels(null);
 		else
 			logIt.warn(() -> "label configs lookup returned null for param "+param+" with config "+configuredAnnotation);		
 	}
 
 	@Override
-	public List<LabelConfig> buildLabelConfigs(Label label, Param<?> srcParam, Param<?> targetParam) {
-		return srcParam.getConfig().getLabelConfigs();
+	public List<LabelState> buildLabelConfigs(Label label, Param<?> srcParam, Param<?> targetParam) {
+		return null;//srcParam.getConfig().getLabels();
 	}
 
 }

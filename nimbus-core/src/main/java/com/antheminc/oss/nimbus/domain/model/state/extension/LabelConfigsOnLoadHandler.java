@@ -6,8 +6,8 @@ package com.antheminc.oss.nimbus.domain.model.state.extension;
 import java.util.List;
 
 import com.antheminc.oss.nimbus.domain.defn.extension.Content.Label;
-import com.antheminc.oss.nimbus.domain.model.config.ParamConfig.LabelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param.LabelState;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
 
 /**
@@ -16,6 +16,6 @@ import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnSt
  */
 public interface LabelConfigsOnLoadHandler extends OnStateLoadHandler<Label> {
 	
-	List<LabelConfig> buildLabelConfigs(Label label, Param<?> srcParam, Param<?> targetParam);
+	List<LabelState> buildLabelConfigs(Label label, Param<?> srcParam, Param<?> targetParam);
 
 }

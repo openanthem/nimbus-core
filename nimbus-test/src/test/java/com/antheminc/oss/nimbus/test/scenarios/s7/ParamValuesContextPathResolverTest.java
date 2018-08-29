@@ -18,9 +18,11 @@ package com.antheminc.oss.nimbus.test.scenarios.s7;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import org.junit.FixMethodOrder;
 import org.junit.Ignore;
@@ -29,7 +31,6 @@ import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.antheminc.oss.nimbus.domain.cmd.Action;
-import com.antheminc.oss.nimbus.domain.model.config.ParamConfig.LabelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.session.SessionProvider;
@@ -58,6 +59,13 @@ public class ParamValuesContextPathResolverTest extends AbstractFrameworkIntegra
 	
 	@Test
 	public void t00_paramvalues_static_context_resolve() {
+		
+		Set<String> set = new HashSet<>();
+		set.add("test");
+		
+		Set<String> set2 = new LinkedHashSet<>();
+		set2.add("test");
+		
 		S7C_CoreMain s7c_main_1 = new S7C_CoreMain();
 		s7c_main_1.setId(CORE_REF_ID_1);
 		s7c_main_1.setAttr1_clone("test_0");
@@ -174,33 +182,5 @@ public class ParamValuesContextPathResolverTest extends AbstractFrameworkIntegra
 		assertNotNull(values);
 		assertEquals(1,values.size());
 		
-	}
-	
-	@Test
-	public void t05_labelConfig_state_update() {
-		S7C_CoreMain s7c_main_1 = new S7C_CoreMain();
-		s7c_main_1.setId(CORE_REF_ID_3);
-		s7c_main_1.setAttr1_clone("test_2");
-		mongo.insert(s7c_main_1, "s7c_main");
-		
-		Object s7v_newResp = controller.handleGet(
-				MockHttpRequestBuilder.withUri(VIEW_ROOT)
-				.addRefId(CORE_REF_ID_3)
-				.addAction(Action._get)
-				.addParam("b", "$execute").getMock(),
-				null);
-		assertNotNull(s7v_newResp);	
-		Param<S7V_ViewMain> actual = ExtractResponseOutputUtils.extractOutput(s7v_newResp, 0);
-		assertNotNull(actual);
-		assertNotNull(actual.findParamByPath("/attr3").getConfig().getLabelConfigs());
-		List<LabelConfig> actual_labels = actual.findParamByPath("/attr3").getLabels();
-		assertNotNull(actual_labels);
-		assertEquals(1, actual_labels.size());
-		assertEquals("Attr 3", actual_labels.get(0).getText());
-		LabelConfig lc = new LabelConfig();
-		lc.setText("New label");
-		List<LabelConfig> new_labels = new ArrayList<>();
-		new_labels.add(lc);
-		actual.setLabels(new_labels);
 	}
 }

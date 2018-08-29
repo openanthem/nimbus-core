@@ -42,7 +42,6 @@ public final class Content {
 	@Retention(RUNTIME)
 	@Target(FIELD)
 	@Repeatable(Labels.class)
-	@OnParamCreate
 	@OnStateLoad
 	public @interface Label {
 		
