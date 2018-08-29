@@ -93,10 +93,10 @@ export class Message implements Serializable<Message, string> {
         }
         message.messageArray = [];
         if (message.context === 'INLINE') {
-            message.messageArray.push({severity: severity,  summary: "",  detail: detail, life: updatedlife});
+            message.messageArray.push({severity: severity,  summary: "",  detail: detail, life: updatedLife});
         }
         else {
-            message.messageArray.push({severity: severity, summary: summary, detail: detail, life: updatedlife});
+            message.messageArray.push({severity: severity, summary: summary, detail: detail, life: updatedLife});
         }
         return message;
     }
