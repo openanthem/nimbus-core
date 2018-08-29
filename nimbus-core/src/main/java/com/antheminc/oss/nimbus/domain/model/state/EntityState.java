@@ -565,7 +565,7 @@ public interface EntityState<T> {
 			}
 			public enum Context {			
 				INLINE,
-				GROWL
+				TOAST
 			}
 				
 			@JsonIgnore
