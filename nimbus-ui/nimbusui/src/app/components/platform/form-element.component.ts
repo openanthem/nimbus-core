@@ -185,8 +185,8 @@ export class FormElement extends BaseElement {
         let errorMessage: Message, summary: string;
         errorMessage = new Message();
         errorMessage.context = 'INLINE';
-        errorMessage.life = 10000;
-        errorMessage.messageArray.push({ severity: 'error', summary: summary, detail: errorText });
+        // errorMessage.life = 10000;
+        errorMessage.messageArray.push({ severity: 'error', summary: summary, detail: errorText, life: 10000  });
         this.elemMessages.push(errorMessage);
     }
 

@@ -92,7 +92,7 @@ export class PageContent extends BaseElement{
         this.pageSvc.errorMessageUpdate$.subscribe((err: ExecuteException) => {
             if (err.message) {
                 this._logger.debug('page content component recieved error message ' + err.message + 'from pageSvc.errorMessageUpdate$ subject');
-                this.errMsgArray.push({severity: 'error',  summary: 'Error Message',  detail: err.message});
+                this.errMsgArray.push({severity: 'error',  summary: 'Error Message',  detail: err.message, life: 10000});
             }
             this.cd.markForCheck();
         });
