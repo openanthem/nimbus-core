@@ -27,7 +27,6 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.antheminc.oss.nimbus.domain.defn.event.ConfigEvent.OnParamCreate;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 import com.antheminc.oss.nimbus.domain.defn.extension.Contents.Labels;
 

@@ -29,7 +29,7 @@ import lombok.ToString;
 @Repo(value=Database.rep_none, cache=Cache.rep_device)
 @Getter @Setter @ToString
 public class Sample_View_Label_Entity {
-
+	
 	private String label_empty;
 	
 	@Label("Test Label A")
@@ -44,6 +44,9 @@ public class Sample_View_Label_Entity {
 	
 	@Label(value = "Test Label D in English", style = @Style(cssClass=" foo bar "))
 	private String label_d_styles;
+	
+	@Label("Test Label E")
+	private Sample_View_Nested_Label label_nested;
 		
 	@Grid
 	@Label("Test Grid Label")
@@ -56,10 +59,14 @@ public class Sample_View_Label_Entity {
 	})
 	private List<Sample_View_Nested_Label> label_nested_coll_2; 
 	
+	@Label("T1")
+	@Label("T2")
+	private String same_locale_multiple;
+	
 	@Model @Getter @Setter
 	public static class Sample_View_Nested_Label {
 		
-		@Label("Test GridLineItem label")
+		@Label("Test Label Nested")
 		private String label_nested_attr1;
 	}
 }

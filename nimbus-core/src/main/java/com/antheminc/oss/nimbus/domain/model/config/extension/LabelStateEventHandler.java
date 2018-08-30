@@ -37,7 +37,7 @@ import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnSt
  *
  */
 
-public class LabelConfigEventHandler extends AbstractConfigEventHandler<Label> implements OnStateLoadHandler<Label> {
+public class LabelStateEventHandler extends AbstractConfigEventHandler<Label> implements OnStateLoadHandler<Label> {
 
 	@Override
 	public void handle(Label configuredAnnotation, Param<?> param) {

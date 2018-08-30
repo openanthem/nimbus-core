@@ -18,6 +18,7 @@ package com.antheminc.oss.nimbus.domain.model.state;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -563,6 +564,10 @@ public interface EntityState<T> {
 			private String text;		
 			private String helpText;
 			private String cssClass;
+			
+			public LabelState() {
+				this.locale = Locale.getDefault().toLanguageTag();
+			}
 			
 			@Override
 			public boolean equals(Object obj) {

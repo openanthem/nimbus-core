@@ -19,7 +19,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * @author AC63348
+ * @author Swetha Vemuri
  *
  */
 @Domain(value="sample_core_label",includeListeners = { ListenerType.persistence }) 
@@ -31,6 +31,10 @@ public class Sample_Core_Label_Entity  extends IdLong {
 
 	private String attr1;
 	
+	@Label("Test Label en")
+	private String attr2;
+	
+	@Label("Test label nested en")
 	private Nested_Attr attr_nested;
 	
 	private List<String> str_coll_attr;
@@ -44,7 +48,7 @@ public class Sample_Core_Label_Entity  extends IdLong {
 	
 	@Model @Getter @Setter
 	public static class Nested_Attr {
-		
+		@Label("Test label nested attr")
 		private String attr_nested_1;
 	}
 }

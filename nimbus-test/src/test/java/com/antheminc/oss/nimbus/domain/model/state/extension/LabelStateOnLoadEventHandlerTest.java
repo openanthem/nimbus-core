@@ -10,16 +10,19 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.junit.After;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.defn.Domain;
@@ -251,23 +254,156 @@ public class LabelStateOnLoadEventHandlerTest extends AbstractFrameworkIntegrati
 	}
 	
 	@Test
-	public void t06_label_state_nested_attr() {
+	public void t07_label_state_nested_attr() {
+		Sample_Core_Label_Entity sc_main = new Sample_Core_Label_Entity();
+		sc_main.setId(new Long(3));
+		Nested_Attr nested_1 = new Nested_Attr();
+		nested_1.setAttr_nested_1("nested attr1");
+		sc_main.setAttr_nested(nested_1);
 		
-	}
-	
-	@Test
-	public void t07_labels_repeatable() {
+		mongo.insert(sc_main, "sample_core_label");
 		
+		Object sv_resp = controller.handleGet(
+				MockHttpRequestBuilder.withUri(CORE_ROOT)
+				.addRefId(new Long(3))
+				.addAction(Action._get)
+				.addParam("b", "$execute").getMock(),
+				null);
+		Param<Sample_Core_Label_Entity> core_param = ExtractResponseOutputUtils.extractOutput(sv_resp, 0);
+		assertNotNull(core_param);
+		Param<?> nested_param = core_param.findParamByPath("/attr_nested");
+		Param<?> nested_attr_param = nested_param.findParamByPath("/attr_nested_1");
+		assertEquals("Test label nested en", getLabelState(nested_param, Locale.getDefault()).getText());
+		assertEquals("Test label nested attr", getLabelState(nested_attr_param, Locale.getDefault()).getText());
 	}
 	
 	@Test
 	public void t08_manual_setLabel() {
+		Object sv_newResp = prepareParam(VIEW_ROOT);
 		
+		assertNotNull(sv_newResp);	
+		Param<Sample_View_Label_Entity> view_param = ExtractResponseOutputUtils.extractOutput(sv_newResp, 0);
+		assertNotNull(view_param);
+		Param<?> label_a_p = view_param.findParamByPath("/label_empty");
+		assertNull(label_a_p.getLabels());
+		Set<LabelState> labels = new HashSet<>();
+		LabelState l = new LabelState();
+		l.setText("Set label text");
+		l.setHelpText("Set label helpText");
+		labels.add(l);
+		label_a_p.setLabels(labels);
+		
+		assertNotNull(label_a_p.getLabels());
+		assertEquals(1,label_a_p.getLabels().size());
+		assertEquals("Set label text", getLabelState(label_a_p,Locale.getDefault()).getText());
+		assertEquals("Set label helpText", getLabelState(label_a_p,Locale.getDefault()).getHelpText());
+		assertEquals(Locale.getDefault().toLanguageTag(), getLabelState(label_a_p,Locale.getDefault()).getLocale());
 	}
 	
+	/**
+	 * Manually setting param.setLabel() in code will overwrite existing labels
+	 */
 	@Test
 	public void t09_manual_setLabel_samelocale() {
+		Object sv_newResp = prepareParam(VIEW_ROOT);
 		
+		assertNotNull(sv_newResp);	
+		Param<Sample_View_Label_Entity> view_param = ExtractResponseOutputUtils.extractOutput(sv_newResp, 0);
+		assertNotNull(view_param);
+		Param<?> label_a_p = view_param.findParamByPath("/label_a_en");
+		assertNotNull(label_a_p.getLabels());
+		assertNotNull(label_a_p.getConfig().getLabels());
+		assertFalse(label_a_p.getConfig().getLabels().isEmpty());
+		assertEquals(1,label_a_p.getLabels().size());
+		assertEquals("Test Label A",getLabelState(label_a_p, Locale.getDefault()).getText());
+		Set<LabelState> labels = new HashSet<>();
+		LabelState l = new LabelState();
+		l.setText("Set label text");
+		l.setHelpText("Set label helpText");
+		labels.add(l);
+		label_a_p.setLabels(labels);
+		
+		assertNotNull(label_a_p.getLabels());
+		assertEquals(1,label_a_p.getLabels().size());
+		assertEquals("Set label text", getLabelState(label_a_p,Locale.getDefault()).getText());
+		assertEquals("Set label helpText", getLabelState(label_a_p,Locale.getDefault()).getHelpText());
+		assertEquals(Locale.getDefault().toLanguageTag(), getLabelState(label_a_p,Locale.getDefault()).getLocale());
+	}
+	
+	@Test(expected=FrameworkRuntimeException.class)
+	public void t10_manual_multiple_setLabel_samelocale() {
+		Sample_Core_Label_Entity sc_main = new Sample_Core_Label_Entity();
+		sc_main.setId(new Long(4));
+		sc_main.setAttr2("test");
+		
+		mongo.insert(sc_main, "sample_core_label");
+		
+		Object sv_resp = controller.handleGet(
+				MockHttpRequestBuilder.withUri(CORE_ROOT)
+				.addRefId(new Long(4))
+				.addAction(Action._get)
+				.addParam("b", "$execute").getMock(),
+				null);
+		Param<Sample_Core_Label_Entity> core_param = ExtractResponseOutputUtils.extractOutput(sv_resp, 0);
+		assertNotNull(core_param);
+		Param<?> label_a_p = core_param.findParamByPath("/attr2");
+		assertNotNull(label_a_p.getLabels());
+		assertNotNull(label_a_p.getConfig().getLabels());
+		assertFalse(label_a_p.getConfig().getLabels().isEmpty());
+		assertEquals(1,label_a_p.getLabels().size());
+		assertEquals("Test Label en",getLabelState(label_a_p, Locale.getDefault()).getText());
+		Set<LabelState> labels = new HashSet<>();
+		LabelState l = new LabelState();
+		l.setText("Set label text");
+		l.setHelpText("Set label helpText");
+		labels.add(l);
+		LabelState l2 = new LabelState();
+		l2.setText("Set label text 2");
+		l2.setHelpText("Set label helpText");
+		labels.add(l2);
+		label_a_p.setLabels(labels);
+	}
+	
+	/**
+	 * Adding duplicate labels with same local and text will result in adding only 1 label,
+	 * since the equals method in LabelState checks for unique combination of text and locale. 
+	 */
+	@Test
+	public void t11_manual_duplicatetext_setLabel_samelocale() {
+		
+		Sample_Core_Label_Entity sc_main = new Sample_Core_Label_Entity();
+		sc_main.setId(new Long(5));
+		sc_main.setAttr2("test");
+		
+		mongo.insert(sc_main, "sample_core_label");
+		
+		Object sv_resp = controller.handleGet(
+				MockHttpRequestBuilder.withUri(CORE_ROOT)
+				.addRefId(new Long(5))
+				.addAction(Action._get)
+				.addParam("b", "$execute").getMock(),
+				null);
+		Param<Sample_Core_Label_Entity> core_param = ExtractResponseOutputUtils.extractOutput(sv_resp, 0);
+		assertNotNull(core_param);
+		Param<?> label_a_p = core_param.findParamByPath("/attr2");
+		assertNotNull(label_a_p.getLabels());
+		assertNotNull(label_a_p.getConfig().getLabels());
+		assertFalse(label_a_p.getConfig().getLabels().isEmpty());
+		assertEquals(1,label_a_p.getLabels().size());
+		assertEquals("Test Label en",getLabelState(label_a_p, Locale.getDefault()).getText());
+		Set<LabelState> labels = new HashSet<>();
+		LabelState l = new LabelState();
+		l.setText("Set label text");
+		l.setHelpText("Set label helpText");
+		labels.add(l);
+		LabelState l2 = new LabelState();
+		l2.setText("Set label text");
+		l2.setHelpText("Set label helpText");
+		labels.add(l2);
+		label_a_p.setLabels(labels);
+		
+		assertNotNull(label_a_p.getLabels());
+		assertEquals(1,label_a_p.getLabels().size());
 	}
 	
 	/**
@@ -275,7 +411,7 @@ public class LabelStateOnLoadEventHandlerTest extends AbstractFrameworkIntegrati
 	 * private String label_d_styles;
 	 */
 	@Test
-	public void t10_styleConfig() {
+	public void t12_styleConfig() {
 		Object sv_newResp = prepareParam(VIEW_ROOT);
 		
 		assertNotNull(sv_newResp);	
@@ -286,22 +422,19 @@ public class LabelStateOnLoadEventHandlerTest extends AbstractFrameworkIntegrati
 		assertEquals("foo bar", getLabelState(p, Locale.getDefault()).getCssClass());
 	}
 	
-	//TODO 
-	@Domain("invalid_multiple_samelocale") @Type(Sample_Core_Label_Entity.class)
-	@Model @Getter @Setter
-	public static class TestInvalidScenario_MultipleSameLocaleEntity {
-		
-		@Label("T1")
-		@Label("T2")
-		private String same_locale_multiple;
-	}
-	
 	/**
 	 * Testing invalid config scenario where multiple Label entries are found for the same locale - only 1 is allowed
+	 * Only the first label annotation executed gets added to the param labels
 	 */
-	//@Test(expected=InvalidConfigException.class)
-	public void t11_ex_multiple_same_locale() {
-		prepareParam(VIEW_ROOT_2);
+	@Test
+	public void t11_multiple_same_locale() {
+		Object sv_newResp = prepareParam(VIEW_ROOT);
+		
+		assertNotNull(sv_newResp);	
+		Param<Sample_View_Label_Entity> view_param = ExtractResponseOutputUtils.extractOutput(sv_newResp, 0);
+		Param<?> p = view_param.findParamByPath("/same_locale_multiple");
+		assertNotNull(p.getLabels());
+		assertEquals(1, p.getLabels().size());
 	}
 	
 	@Model @Getter @Setter
