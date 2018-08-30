@@ -59,13 +59,6 @@ public class ParamValuesContextPathResolverTest extends AbstractFrameworkIntegra
 	
 	@Test
 	public void t00_paramvalues_static_context_resolve() {
-		
-		Set<String> set = new HashSet<>();
-		set.add("test");
-		
-		Set<String> set2 = new LinkedHashSet<>();
-		set2.add("test");
-		
 		S7C_CoreMain s7c_main_1 = new S7C_CoreMain();
 		s7c_main_1.setId(CORE_REF_ID_1);
 		s7c_main_1.setAttr1_clone("test_0");

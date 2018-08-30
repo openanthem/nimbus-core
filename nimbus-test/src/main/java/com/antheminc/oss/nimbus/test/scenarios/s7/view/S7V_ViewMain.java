@@ -53,25 +53,12 @@ public class S7V_ViewMain {
 	
 	private String v_attr_values_2;
 	
-	//@Label("Attr 3")
-	@Label("French label")
-	//@Label("Attr 3")
 	@Radio
-	@Values(url="/hooli/box/p/s7c_main/_search?fn=lookup&where=s7c_main.attr1_clone.eq('test_2')&projection.mapsTo=code:attr1_clone,label:attr1_clone")
+	@Values(url="/hooli/box/p/s7c_main/_search?fn=lookup&where=s7c_main.attr1_clone.eq('<!/.d/.m/attr1_clone!>')&projection.mapsTo=code:attr1_clone,label:attr1_clone")
 	private String attr3;
 	
 	@Radio
 	@Values(url="/hooli/box/p/s7c_corestatic/_search?fn=lookup&where=s7c_corestatic.staticAttr.eq('test_01')&projection.mapsTo=code:staticAttr,label:staticAttr")
 	private String attr4;
-	
-	@Labels({
-		@Label(value="French label",localeLanguageTag="en-FR"),
-		@Label("Attr 5")
-	})
-	@Radio
-	private String attr5;
-	
-	@Label("collection label")
-	private List<String> attr_coll;
 	
 }
