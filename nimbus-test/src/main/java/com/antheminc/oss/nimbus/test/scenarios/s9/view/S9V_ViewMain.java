@@ -83,7 +83,6 @@ public class S9V_ViewMain {
 	@Model @Getter @Setter
 	public static class VFMain {
 		
-		@Label("v1")
 		@ComboBox(postEventOnChange = true)
 		@Values(value = SV1.class)
 		@NotNull
@@ -95,7 +94,6 @@ public class S9V_ViewMain {
 		@Path
 		private String v1;
 		
-		@Label("Cause of Death")
         @ComboBox(postEventOnChange = true)
 		@Values(value = SV2.class)
 		@NotNull
