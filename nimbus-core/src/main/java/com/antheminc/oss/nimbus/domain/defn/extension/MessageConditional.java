@@ -50,7 +50,7 @@ public @interface MessageConditional {
 
 	/**
 	 * <p>The {@link Context} of the message. Dictates UI properties whether the
-	 * message is shown inline or as a Growl component.
+	 * message is shown inline or as a TOAST component.
 	 */
 	Context context() default Context.INLINE;
 
