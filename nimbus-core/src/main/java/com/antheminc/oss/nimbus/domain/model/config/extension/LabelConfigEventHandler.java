@@ -20,7 +20,7 @@ package com.antheminc.oss.nimbus.domain.model.config.extension;
 
 import java.util.HashSet;
 import java.util.Locale;
-import java.util.Optional;
+import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -44,37 +44,30 @@ public class LabelConfigEventHandler extends AbstractConfigEventHandler<Label> i
 		if(configuredAnnotation==null)
 			return;
 		
-		Optional.ofNullable(param.getLabels()).orElseGet(()->{
-			param.setLabels(new HashSet<>());
-			return param.getLabels();
-		});
-
 		validateAndAdd(param, convert(configuredAnnotation));
 	}
 	
 	protected void validateAndAdd(Param<?> param, LabelState toAdd) {
-		// If param is a collection, it is going to add the same label which will result in InvalidConfigException
-		if (param.isCollection()) {
-			if (CollectionUtils.isNotEmpty(param.getLabels())) {
-				return;
+
+		// duplicate check the previous label assigned. 
+		if(CollectionUtils.isNotEmpty(param.getLabels())) {
+			if (param.getLabels().stream().anyMatch(l -> l.getLocale().equals(toAdd.getLocale()))) { 
+				return; 
 			}
 		}
-		// duplicate check
-		param.getLabels().stream()
-			.filter(lc->lc.getLocale().equals(toAdd.getLocale()))
-			.forEach(lc->{
-				throw new InvalidConfigException("Label must have unique entries by locale,"
-						+ " found multiple entries in Param: "+param
-						+ " with repeating locale for LabelState: "+ toAdd);	
-			});
-		
+		// TODO: Move this validation to @Label annotation preprocessor
 		// at-least one of Label text or helpText must be present
 		if(StringUtils.isEmpty(toAdd.getText()) && StringUtils.isEmpty(toAdd.getHelpText()))
 			throw new InvalidConfigException("Label must have non empty values for at least label text value or help text,"
 					+ " found none for \"" + param.getConfig().getCode() + "\" in Param: " + param
 					+ " with LabelState: " + toAdd);
 		
-		param.getLabels().add(toAdd);
+		Set<LabelState> labels = new HashSet<>();
+		if(!CollectionUtils.isEmpty(param.getLabels())) 
+			labels.addAll(param.getLabels());
+		
+		labels.add(toAdd);
+		param.setLabels(labels);
 	}
 	
 	protected LabelState convert(Label label) {

@@ -465,11 +465,13 @@ abstract public class AbstractEntityConfigBuilder {
 		EventHandlerConfig eventConfig = eventHandlerConfigFactory.build(f);
 		created.setEventHandlerConfig(eventConfig);
 		
+		// TODO : Add Validations for dup check of labels
 		if(AnnotatedElementUtils.isAnnotated(f, Label.class) || AnnotatedElementUtils.isAnnotated(f, Labels.class)) {
 			Set<Label> labelConfigs = AnnotationUtils.getRepeatableAnnotations(f, Label.class, Labels.class);	
 			created.setLabels(labelConfigs);
 		}
 		
+		//TODO : v2.0 add validations for configs in post processor
 		return decorateParam(mConfig, created, visitedModels);
 	}
 	

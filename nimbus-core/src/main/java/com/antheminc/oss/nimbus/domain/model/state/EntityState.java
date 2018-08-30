@@ -557,7 +557,8 @@ public interface EntityState<T> {
 		Set<LabelState> getLabels();
 		void setLabels(Set<LabelState> labelState);
 		
-		@Getter @Setter @ToString class LabelState {
+		@Getter @Setter @ToString 
+		public static class LabelState {
 			private String locale; //default en-US
 			private String text;		
 			private String helpText;
@@ -578,6 +579,12 @@ public interface EntityState<T> {
 					return true;
 			
 				return false;
+			}
+			
+			@Override
+			public int hashCode() {
+				String concat = this.locale + this.text;
+				return concat.hashCode();
 			}
 		}
 		

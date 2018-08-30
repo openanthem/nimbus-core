@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo.Type;
+import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Cache;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Database;
@@ -24,11 +25,13 @@ import lombok.ToString;
  * @author Swetha Vemuri
  *
  */
-@Domain("sample_core_label") @Type(Sample_Core_Label_Entity.class)
+@Domain("sample_view_label") @Type(Sample_Core_Label_Entity.class)
 @Repo(value=Database.rep_none, cache=Cache.rep_device)
 @Getter @Setter @ToString
 public class Sample_View_Label_Entity {
 
+	private String label_empty;
+	
 	@Label("Test Label A")
 	private String label_a_en;
 	
@@ -41,16 +44,19 @@ public class Sample_View_Label_Entity {
 	
 	@Label(value = "Test Label D in English", style = @Style(cssClass=" foo bar "))
 	private String label_d_styles;
-	
-	@Labels({
-		@Label("Test Label en"),
-		@Label(value="Test Label fr",localeLanguageTag="fr")
-	})
-	
+		
 	@Grid
 	@Label("Test Grid Label")
-	private List<Sample_View_Nested_Label> label_nested_coll; 
+	private List<Sample_View_Nested_Label> label_nested_coll_1; 
 	
+	@Grid
+	@Labels({
+		@Label("Test Grid Label en"),
+		@Label(value="Test Grid Label fr",localeLanguageTag="fr")
+	})
+	private List<Sample_View_Nested_Label> label_nested_coll_2; 
+	
+	@Model @Getter @Setter
 	public static class Sample_View_Nested_Label {
 		
 		@Label("Test GridLineItem label")

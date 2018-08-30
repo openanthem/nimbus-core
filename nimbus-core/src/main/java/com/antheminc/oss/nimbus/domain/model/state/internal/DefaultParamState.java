@@ -758,12 +758,12 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 
 	@Override
 	public Set<LabelState> getLabels() {
-		return Optional.ofNullable(this.labelState.getCurrState()).orElse(null);
+		return Optional.ofNullable(this.labelState.getCurrState()).map(Collections::unmodifiableSet).orElse(null);
 	}
 	
 	@Override
 	public void setLabels(Set<LabelState> labels) {
-		Set<LabelState> labelstate = labels != null ? new HashSet<>(labels) : null;
+		Set<LabelState> labelstate = CollectionUtils.isEmpty(labels) ? null : new HashSet<>(labels);
 		this.labelState.setState(labelstate);
 	}
 	
