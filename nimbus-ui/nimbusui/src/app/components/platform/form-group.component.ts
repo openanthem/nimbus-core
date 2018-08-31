@@ -1,3 +1,4 @@
+import { BaseElement } from './base-element.component';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -20,7 +21,6 @@ import { Param } from '../../shared/param-state';
 import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { WebContentSvc } from '../../services/content-management.service';
 import { ViewComponent } from '../../shared/param-annotations.enum';
-import { BaseLabel } from './base-label.component';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     provide: NG_VALUE_ACCESSOR,
@@ -63,7 +63,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
         </div>
     `
 })
-export class FrmGroupCmp extends BaseLabel {
+export class FrmGroupCmp extends BaseElement {
     
        @Input() elements: Param[] = [];
        @Input() form: FormGroup;
@@ -77,7 +77,8 @@ export class FrmGroupCmp extends BaseLabel {
        }
 
        ngOnInit() {
-            super.ngOnInit();
+            this.labelSize = this.getHeaderSize(this.position);
+            this.getHeaderSize(this.position);
        }
 
        hasParams() {

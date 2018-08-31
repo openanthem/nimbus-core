@@ -76,16 +76,23 @@ export class BaseElement {
         this.requiredCss = ValidationUtils.applyelementStyle(this.element);
     }
 
-    /**
-     * Traverses the provided param and stores the label config into this class' appropriate values.
-     * @param param The param for which to load label content for.
-     */
-    protected loadLabelConfig(param: Param): void {
-        this.labelConfig = this.wcs.findLabelContent(param);
+    /**	
+     * Retrieve the label config from the provided param for the active Locale 
+     * and set it into this instance's labelConfig.
+     * @param param The param for which to load label content for.	
+     */	
+    protected loadLabelConfig(param: Param): void {	
+        this.labelConfig = this.wcs.findLabelContent(param);	
     }
 
-    protected loadLabelConfigByCode(code: string, labelConfigs: LabelConfig[]): void {
-        this.labelConfig = this.wcs.findLabelContentFromConfig(code, labelConfigs);
+    /**	
+     * Retrieve the label config from the provided labelConfigs that has the same provided code 
+     * and set it into this instance's labelConfig. If no label config is found, defaultLabel can
+     * be used to set a default label if the WebContentService allows for it.
+     * @param param The param for which to load label content for.	
+     */	
+    protected loadLabelConfigFromConfigs(labelConfigs: LabelConfig[], defaultLabel?: string): void {	
+        this.labelConfig = this.wcs.findLabelContentFromConfig(labelConfigs, defaultLabel);	
     }
 
     /**
@@ -172,6 +179,16 @@ export class BaseElement {
             return undefined;
         }
         return this.labelConfig.text;
+    }
+
+    /**
+     * Determine if the label for this element is empty or not.
+     */
+    public get isLabelEmpty(): boolean {
+        if (this.label) {
+            return this.label.trim().length > 0;
+        }
+        return true;
     }
 
     /**

@@ -40,7 +40,6 @@ import { SortAs, GridColumnDataType } from './sortas.interface';
 import { ActionDropdown } from './../form/elements/action-dropdown.component';
 import { Param } from '../../../shared/param-state';
 import { HttpMethod } from './../../../shared/command.enum';
-import { ViewConfig } from '../../../services/config.service';
 import { TableComponentConstants } from './table.component.constants';
 import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations.enum';
 
@@ -143,7 +142,8 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         // Set the column headers
         if (this.params) {
             this.params.forEach(column => {
-                column.label = this._wcs.findLabelContentFromConfig(column.code, column.labelConfigs).text;
+                // TODO - Replace undefined with labelConfigs
+                column.label = this._wcs.findLabelContentFromConfig(undefined, column.code).text;
                 // Set field and header attributes. TurboTable expects these specific variables.
                 column['field'] = column.code;
                 column['header'] = column.label;

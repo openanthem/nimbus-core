@@ -42,7 +42,7 @@ import { HttpMethod } from './../../../../shared/command.enum';
     template: `
         <div [formGroup]="form"  [hidden]="!element?.visible">
             <nm-input-label
-                [labelConfig]="labelConfig"
+                [element]="element" 
                 [for]="element.config.code"
                 [required]="requiredCss">
 
