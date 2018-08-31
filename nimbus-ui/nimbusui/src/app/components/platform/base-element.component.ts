@@ -72,20 +72,8 @@ export class BaseElement {
      * Initialization activities this Param
      */
     ngOnInit() {
-        this.loadLabelConfig(this.element);
+        this.labelConfig = this.wcs.findLabelContent(this.element);
         this.requiredCss = ValidationUtils.applyelementStyle(this.element);
-    }
-
-    /**
-     * Traverses the provided param and stores the label config into this class' appropriate values.
-     * @param param The param for which to load label content for.
-     */
-    protected loadLabelConfig(param: Param): void {
-        this.labelConfig = this.wcs.findLabelContent(param);
-    }
-
-    protected loadLabelConfigByCode(code: string, labelConfigs: LabelConfig[]): void {
-        this.labelConfig = this.wcs.findLabelContentFromConfig(code, labelConfigs);
     }
 
     /**

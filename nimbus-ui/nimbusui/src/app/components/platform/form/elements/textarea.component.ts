@@ -43,8 +43,8 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     <div class='textarea-holder' [hidden]="!element?.visible" *ngIf="element.config?.uiStyles?.attributes?.hidden==false">
     <div class="number" *ngIf="element.config?.uiStyles?.attributes?.controlId!=''">{{element.config?.uiStyles?.attributes?.controlId}}</div>
     <nm-input-label *ngIf="labelConfig"
+      [element]="element" 
       [for]="element.config?.code" 
-      [labelConfig]="labelConfig" 
       [required]="requiredCss">
 
     </nm-input-label>

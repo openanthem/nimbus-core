@@ -52,7 +52,7 @@ export class SubHeaderCmp extends BaseElement{
         super(_wcs);
     }
     ngOnInit() {
-        this.loadLabelConfig(this.param);
+        this.labelConfig = this._wcs.findLabelContent(this.param);
     }
     ngOnChanges(changes: SimpleChanges) {
         if(changes['element']) {

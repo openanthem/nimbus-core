@@ -45,8 +45,8 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   template: `
     <div style="position:relative" class="{{zoomClass}}">
         <nm-input-label *ngIf="labelConfig && hidden != true"
+            [element]="element" 
             [for]="element.config?.code" 
-            [labelConfig]="labelConfig" 
             [required]="requiredCss">
 
         </nm-input-label>

@@ -16,8 +16,7 @@
  */
 'use strict';
 
-import { Injectable, EventEmitter } from '@angular/core';
-import { Http, Headers, RequestOptions } from '@angular/http';
+import { Injectable } from '@angular/core';
 import { ServiceConstants } from './service.constants';
 import { LabelConfig } from './../shared/param-config';
 import { Param } from './../shared/param-state';
@@ -34,16 +33,12 @@ import { Converter } from './../shared/object.conversion';
 @Injectable()
 export class WebContentSvc {
 
-	constructor(public http: Http) {
+	constructor() {
 
-	}
-
-    logError(err) {
-		// console.error('Failure making server call : ' + JSON.stringify(err));
 	}
 
     findLabelContent(param: Param): LabelConfig {
-        if (!param || !param.config) {
+        if (!param || !param.labels) {
             return undefined;
         }
         return this.findLabelContentFromConfig(param.config.code, param.labels);
@@ -55,16 +50,15 @@ export class WebContentSvc {
             let labelConfig = labelConfigs.find(c => c.locale == ServiceConstants.LOCALE_LANGUAGE);
             labelContent = Converter.convert(labelConfig, labelContent);
         } else if(this.showUnlabeledAsVariableNames) {
-            //labelContent.text = code;
-            labelContent.text = '';
+            labelContent.text = code;
         } 
         return labelContent;
     }
 
     get showUnlabeledAsVariableNames(): boolean {
-        // TODO Is this useful? Maybe for testing? If so, make this as a configurable property and
+        // TODO Is this scenario needed? Maybe for testing? If so, make this as a configurable property and
         // return the value based on that property.
-        return true;
+        return false;
     }
     
 }

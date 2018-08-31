@@ -44,8 +44,8 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR,WebContentSvc, ControlSubscribers],
   template: `
         <nm-input-label *ngIf="labelConfig && this.showLabel"
+            [element]="element"     
             [for]="element.config?.code" 
-            [labelConfig]="labelConfig" 
             [required]="requiredCss">
 
         </nm-input-label>

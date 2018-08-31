@@ -46,8 +46,8 @@ export const InputComponents = [
     template: `
         <div class="form-group {{editClass}}">
             <nm-input-label *ngIf="labelConfig"
+                [element]="element"     
                 [for]="element.config?.code" 
-                [labelConfig]="labelConfig" 
                 [required]="requiredCss">
 
             </nm-input-label>

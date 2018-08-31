@@ -1,5 +1,5 @@
 <div class="cardBody {{element.config?.uiStyles?.attributes?.cssClass}} {{cardType}} {{state}}">
-    <nm-label *ngIf="labelConfig?.text != ''" [labelConfig]="labelConfig" [size]="labelSize"></nm-label>
+    <nm-label *ngIf="labelConfig?.text != ''" [element]="element" [size]="labelSize"></nm-label>
     <ng-template ngFor let-param [ngForOf]="element?.type?.model?.params">
         <ng-template [ngIf]="param.config?.uiStyles?.attributes?.alias == componentTypes.cardDetailsHeader.toString()">
           <div class="cardDetailsHeader">
