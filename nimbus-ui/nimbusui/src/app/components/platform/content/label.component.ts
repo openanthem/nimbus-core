@@ -18,7 +18,7 @@ import { WebContentSvc } from './../../../services/content-management.service';
 'use strict';
 import { Component, Input } from '@angular/core';
 import { PageService } from './../../../services/page.service';
-import { MainLabel } from '../main-label.component';
+import { BaseLabel } from '../main-label.component';
 
 /**
  * \@author Purnachander.Mashetty
@@ -39,7 +39,7 @@ import { MainLabel } from '../main-label.component';
     `
 })
 
-export class Label extends MainLabel {
+export class Label extends BaseLabel {
 
     @Input() size: String;
     @Input() labelClass: String;

@@ -18,7 +18,7 @@
 import { Component, Input } from '@angular/core';
 import { PageService } from './../../../../services/page.service';
 import { WebContentSvc } from './../../../../services/content-management.service';
-import { MainLabel } from '../../main-label.component';
+import { BaseLabel } from '../../main-label.component';
 
 /**
  * \@author Tony Lopez
@@ -40,7 +40,7 @@ import { MainLabel } from '../../main-label.component';
     </label>
    `
 })
-export class InputLabel extends MainLabel {
+export class InputLabel extends BaseLabel {
 
     @Input() for: string;
     @Input() required: boolean;

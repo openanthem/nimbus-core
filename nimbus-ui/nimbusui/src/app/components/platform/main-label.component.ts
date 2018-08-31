@@ -30,13 +30,13 @@ import { PageService } from './../../services/page.service';
  * 
  */
 @Component({
-    selector: 'nm-main-label',
+    selector: 'nm-base-label',
     providers: [ PageService ],
     template:`
     `
 })
 
-export class MainLabel {
+export class BaseLabel {
 
     @Input() element: Param;
     protected labelConfig: LabelConfig;
