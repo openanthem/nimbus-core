@@ -54,6 +54,7 @@ export class BaseElement {
     public labelConfig: LabelConfig;
     protected _nestedParams: Param[];
     protected _imgSrc: string;
+    protected _cols: string;
     protected _code: string;
     protected _visible: any;
     protected _enabled: any;
@@ -105,6 +106,13 @@ export class BaseElement {
         return this.element.config.uiStyles.attributes.imgSrc;
     }
     
+    /**
+     * The cols attribute for this param
+     */
+    public get cols(): string {
+        return this.element.config.uiStyles.attributes.cols;
+    }
+
     /**
      * Unique code for this Param
      */

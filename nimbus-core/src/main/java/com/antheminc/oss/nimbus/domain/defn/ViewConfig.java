@@ -301,6 +301,9 @@ public class ViewConfig {
 		boolean yearNavigator() default false;
 
 		String yearRange() default "1910:2050";
+		
+		String cols() default "";
+
 	}
 
 	/**
@@ -450,6 +453,9 @@ public class ViewConfig {
 		String labelClass() default "anthem-label";
 
 		boolean postEventOnChange() default false;
+		
+		String cols() default "";
+
 	}
 
 	/**
@@ -479,6 +485,9 @@ public class ViewConfig {
 		String level() default "0";
 
 		boolean postEventOnChange() default false;
+		
+		String cols() default "";
+
 	}
 
 	/**
@@ -511,6 +520,9 @@ public class ViewConfig {
 		boolean postEventOnChange() default false;
 
 		boolean readOnly() default false;
+		
+		String cols() default "";
+
 	}
 
 	/**
@@ -672,6 +684,9 @@ public class ViewConfig {
 		String type() default ".pdf,.png";
 
 		String url() default "";
+		
+		String cols() default "";
+
 	}
 
 	/**
@@ -719,20 +734,20 @@ public class ViewConfig {
 	 * following components: <ul> <li>Section</li> </ul>
 	 * 
 	 * <p>Form will render nested fields that are decorated with: <ul>
+	 * <li>{@link FormElementGroup}</li>
 	 * <li>{@link Accordion}</li> <li>{@link Button}</li>
 	 * <li>{@link ButtonGroup}</li> <li>{@link Calendar}</li>
 	 * <li>{@link CheckBox}</li> <li>{@link CheckBoxGroup}</li>
 	 * <li>{@link ComboBox}</li> <li>{@link FileUpload}</li>
 	 * <li>{@link Grid}</li> <li>{@link Header}</li>
-	 * <li>{@link MultiSelect}</li> <li>{@link MultiSelectCard}</li> <li>*Nested
-	 * Classes <i>(No annotation decoration necessary)</i></li>
+	 * <li>{@link MultiSelect}</li> <li>{@link MultiSelectCard}</li> 
 	 * <li>{@link Paragraph}</li> <li>{@link PickList}</li>
 	 * <li>{@link Radio}</li> <li>{@link Signature}</li>
 	 * <li>{@link TextArea}</li> <li>{@link TextBox}</li> </ul>
 	 * 
-	 * <p><i>*Note: Nested class fields will be rendered in the same manner as
-	 * fields declared directly under the Form decorated field. In other words,
-	 * field declaration for forms can be recursive.</i>
+	 * <p><i>*Note: Nested class fields will <b>not</b> be rendered in the same manner as
+	 * fields declared directly under the Form decorated field. This is a change from previous version.
+	 * The nesting/grouping should be annotated with {@link FormElementGroup} where the elements need to be grouped.</i>
 	 * 
 	 * @since 1.0
 	 */
@@ -742,15 +757,65 @@ public class ViewConfig {
 	public @interface Form {
 		String alias() default "Form";
 
-		String b() default ""; // remove
-
 		String cssClass() default "";
+
+		String b() default ""; // remove
 
 		String navLink() default ""; // remove
 
 		boolean submitButton() default true; // remove
 
 		String submitUrl() default ""; // remove
+	}
+	
+	/**
+	 * <p><b>Expected Field Structure</b>
+	 * 
+	 * <p>FormElementGroup will be rendered when annotating a field nested under one of the
+	 * following components: <ul> <li>Form</li> </ul>
+	 * 
+	 * <p>FormElementGroup will render nested fields that are decorated with: <ul>
+	 * <li>{@link Calendar}</li>
+	 * <li>{@link CheckBox}</li> <li>{@link CheckBoxGroup}</li>
+	 * <li>{@link ComboBox}</li> <li>{@link FileUpload}</li>
+	 * <li>{@link Header}</li>
+	 * <li>{@link MultiSelect}</li> <li>{@link MultiSelectCard}</li> 
+	 * <li>{@link Paragraph}</li> <li>{@link PickList}</li>
+	 * <li>{@link Radio}</li> <li>{@link Signature}</li>
+	 * <li>{@link TextArea}</li> <li>{@link TextBox}</li> </ul>
+	 * 
+	 * @since 1.1
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface FormElementGroup {
+		String alias() default "FormElementGroup";
+
+		String cssClass() default "";
+		
+		String cols() default "1";
+	}
+	
+	/**
+	 * <p><b>Expected Field Structure</b>
+	 * 
+	 * <p>FormGridFiller will be rendered when annotating a field nested under one of the
+	 * following components: <ul> <li>Form</li> </ul>
+	 * 
+	 * <p>FormGridFiller is a filler that is placed in a form layout for empty cells. 
+	 * 
+	 * @since 1.1
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface FormGridFiller {
+		String alias() default "FormGridFiller";
+
+		String cssClass() default "";
+		
+		String cols() default "";
 	}
 
 	/**
@@ -1387,6 +1452,9 @@ public class ViewConfig {
 		String labelClass() default "anthem-label";
 
 		boolean postEventOnChange() default false;
+		
+		String cols() default "";
+
 	}
 
 	/**
@@ -1527,6 +1595,9 @@ public class ViewConfig {
 		 * <p>When {@code true}, the sort controls on target list are shown on the UI
 		 */
 		boolean showTargetControls() default false;
+		
+		String cols() default "";
+
 	}
 	
 	/**
@@ -1585,6 +1656,9 @@ public class ViewConfig {
 		String level() default "0";
 
 		boolean postEventOnChange() default false;
+		
+		String cols() default "";
+
 	}
 	
 	/**
@@ -1806,6 +1880,8 @@ public class ViewConfig {
 		String rows() default "5";
 
 		String type() default "textarea";
+		
+		String cols() default "";
 	}
 
 	/**
@@ -1840,6 +1916,9 @@ public class ViewConfig {
 		boolean readOnly() default false;
 
 		String type() default "text";
+		
+		String cols() default "";
+
 	}
 
 	/**

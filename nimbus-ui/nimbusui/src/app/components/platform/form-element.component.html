@@ -1,6 +1,7 @@
 
 <div [formGroup]="form" *ngIf="element.config?.uiStyles?.attributes?.alias!=viewComponent.button.toString()" [hidden]="!element?.visible" [ngClass]="getComponentClass()">
    
+    <nm-form-grid-filler *ngIf="element.config?.uiStyles?.attributes?.alias==componentTypes.formGridFiller.toString()" ></nm-form-grid-filler>
     <nm-header [element]="element" *ngIf="element.config?.uiStyles?.attributes?.alias==componentTypes.header.toString()" ></nm-header>
     <nm-paragraph [element]="element" *ngIf="element.config?.uiStyles?.attributes?.alias==componentTypes.paragraph.toString()"></nm-paragraph>
     <nm-input id="{{id}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.type==componentTypes.text.toString()" [element]="element" [form]="form"></nm-input>
