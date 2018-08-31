@@ -58,7 +58,10 @@ import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations
                     </div>
                     <!-- Form Elements -->
                     <ng-template [ngIf]="form !== undefined">
-                        <nm-frm-grp [elements]="tab?.type?.model?.params" [form]="form.controls[tab.config?.code]" [elementCss]="elementCss"> </nm-frm-grp>
+                        <ng-template ngFor let-frmElem [ngForOf]="tab.type?.model?.params">
+                            <nm-frm-grp [element]="frmElem" [form]="form" [elementCss]="elementCss" [position]="position + 1"> 
+                            </nm-frm-grp>
+                        </ng-template>
                     </ng-template>
                     <ng-template [ngIf]="form === undefined">
                         <ng-template ngFor let-tabElement [ngForOf]="tab?.type?.model?.params">

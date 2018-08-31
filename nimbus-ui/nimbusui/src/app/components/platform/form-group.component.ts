@@ -16,11 +16,10 @@
  */
 'use strict';
 import { Component, Input, forwardRef } from '@angular/core';
-import { Param } from '../../shared/param-state';
 import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { WebContentSvc } from '../../services/content-management.service';
 import { ViewComponent } from '../../shared/param-annotations.enum';
-import { BaseLabel } from './base-label.component';
+import { BaseElement } from './base-element.component';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     provide: NG_VALUE_ACCESSOR,
@@ -28,64 +27,69 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     multi: true
 };
 
-  /**
- * \@author Dinakar.Meda
- * \@author Sandeep.Mantha
- * \@whatItDoes 
- * 
- * \@howToUse 
- * 
- */
+/**
+* \@author Dinakar.Meda
+* \@author Sandeep.Mantha
+* \@whatItDoes 
+* 
+* \@howToUse 
+* 
+*/
 @Component({
     selector: 'nm-frm-grp',
     providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc],
-    template:`
-        <div class="form-holder clearfix colorBox" [hidden]="!hasParams()">
-            <ng-template ngFor let-element let-isFirst="first" [ngForOf]="elements">
-                <ng-template [ngIf]="isFirst">
-                    <legend *ngIf="label && element.visible">
-                        {{label}}
-                    </legend>
-                </ng-template>
-                <ng-template [ngIf]="!element.type?.model?.params?.length || element.config?.type?.collection">
-                    <nm-element [position]="position+1" id="{{id}}" [element]="element" [elementCss]="elementCss" [form]="form"></nm-element>
-                </ng-template>
-                <ng-template [ngIf]="element?.config?.uiStyles?.attributes?.alias === viewComponent.picklist.toString()">
-                    <nm-element id="{{id}}" [element]="element" [elementCss]="elementCss" [form]="form"></nm-element>
-                </ng-template>
-                 <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias==viewComponent.button.toString()">
-                    <nm-button [form]="form" [element]="element"> </nm-button>
-                </ng-template>
-                <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias==viewComponent.buttongroup.toString()">
-                    <nm-button-group [form]="form" [buttonList]="element.type?.model?.params" [cssClass]="element.config?.uiStyles?.attributes?.cssClass"> </nm-button-group>
-                </ng-template>
+    template: `
+        <span [hidden]="!this.element.visible" [ngClass]="getCssClass()">
+            <ng-template [ngIf]="element?.config?.uiStyles?.attributes?.alias == viewComponent.formElementGroup.toString()">
+                <fieldset>
+                    <legend *ngIf="labelConfig?.text">{{labelConfig?.text}}</legend>
+                    <ng-template ngFor let-frmElem [ngForOf]="element.type.model.params">
+                        <nm-frm-grp [element]="frmElem" [form]="form" [elementCss]="elementCss" [position]="position"> 
+                        </nm-frm-grp>
+                    </ng-template>
+                </fieldset>
             </ng-template>
-        </div>
+
+            <ng-template [ngIf]="!element.type?.model?.params?.length || element.config?.type?.collection">
+                <nm-element [position]="position+1" id="{{id}}" [element]="element" [elementCss]="elementCss" [form]="form"></nm-element>
+            </ng-template>
+            
+            <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias == viewComponent.button.toString()">
+                <nm-button [form]="form" [element]="element"> </nm-button>
+            </ng-template>
+
+            <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias == viewComponent.buttongroup.toString()">
+                <nm-button-group [form]="form" [buttonList]="element.type?.model?.params" [cssClass]="element.config?.uiStyles?.attributes?.cssClass"> 
+                </nm-button-group>
+            </ng-template>
+        </span>
     `
 })
-export class FrmGroupCmp extends BaseLabel {
-    
-       @Input() elements: Param[] = [];
-       @Input() form: FormGroup;
-       @Input() elementCss : String;
-       @Input() parentElement: Param
+export class FrmGroupCmp extends BaseElement {
 
-       viewComponent = ViewComponent;
+    @Input() form: FormGroup;
+    @Input() elementCss: String;
 
-       constructor(private wcsv: WebContentSvc) {
-           super(wcsv);
-       }
+    viewComponent = ViewComponent;
 
-       ngOnInit() {
-            super.ngOnInit();
-       }
+    constructor(private wcsv: WebContentSvc) {
+        super(wcsv);
+    }
 
-       hasParams() {
-           for (let p in this.elements) {
-               if (this.elements[p].visible) {
-                   return true;
-               }
-           }
-           return false;
-       }
-   }
+    ngOnInit() {
+        super.ngOnInit();
+        this.updatePosition();
+    }
+
+    getCssClass() {
+        if (this.element.config.uiStyles.attributes.alias == ViewComponent.formElementGroup.toString()) {
+            if (this.element.config.uiStyles.attributes.cssClass) {
+                return this.element.config.uiStyles.attributes.cssClass
+            } else {
+                return this.elementCss;
+            }
+        }
+        return '';
+    }
+
+}

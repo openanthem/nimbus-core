@@ -62,6 +62,7 @@ import { Section } from './components/platform/section.component';
 import { Header } from './components/platform/content/header.component';
 import { Form }  from './components/platform/form.component';
 import { FormElement }  from './components/platform/form-element.component';
+import { FormGridFiller } from './components/platform/form/form-grid-filler.component';
 import { Image } from './components/platform/image.component';
 import { Paragraph } from './components/platform/content/paragraph.component';
 import { Value } from './components/platform/form/elements/value.component';
@@ -193,7 +194,7 @@ export function init_app(appinitservice: AppInitService) {
     ],
     declarations: [ AppComponent, STOMPStatusComponent, FlowWrapper, PageContent, PageNotfoundComponent, StaticText,
         Tile, Section, Header, Form, FormElement, InputText, ComboBox, RadioButton, Signature, DateControl, CheckBoxGroup,
-        InPlaceEditorComponent, Paragraph, Value, BaseElement,
+        InPlaceEditorComponent, Paragraph, Value, BaseElement, FormGridFiller, 
         MultiselectCard, Link, Menu, CardDetailsComponent, CardDetailsFieldGroupComponent, CardDetailsFieldComponent, CardDetailsGrid, FieldValue,
         Accordion, AccordionTab, FrmGroupCmp, Button, ButtonGroup, FilterButton, OrderablePickList,
         STOMPStatusComponent, InfiniteScrollGrid, DataTable, SubHeaderCmp, TextArea, LandingPage,
