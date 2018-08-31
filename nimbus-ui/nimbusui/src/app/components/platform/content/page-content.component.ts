@@ -75,7 +75,7 @@ export class PageContent extends BaseElement{
         this.route.data.subscribe((data: { page: Param }) => {
             let page : Param = data.page;
             this.element = page;
-            this.labelConfig = this._wcs.findLabelContent(this.element);
+            this.loadLabelConfig(this.element);
             this.tilesList = [];
             if(page.type.model != null) {
                 page.type.model.params.forEach(element => {

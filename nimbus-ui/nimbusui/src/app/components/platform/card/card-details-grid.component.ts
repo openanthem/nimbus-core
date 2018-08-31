@@ -47,7 +47,7 @@ export class CardDetailsGrid extends BaseElement {
     ngOnInit() {
         super.ngOnInit();
 
-        this.labelConfig = this.wcsv.findLabelContent(this.element);
+        this.loadLabelConfig(this.element);
         this.labelSize = this.getHeaderSize(this.position);
         this.getHeaderSize(this.position);
 

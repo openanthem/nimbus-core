@@ -72,8 +72,27 @@ export class BaseElement {
      * Initialization activities this Param
      */
     ngOnInit() {
-        this.labelConfig = this.wcs.findLabelContent(this.element);
+        this.loadLabelConfig(this.element);
         this.requiredCss = ValidationUtils.applyelementStyle(this.element);
+    }
+
+    /**	
+     * Retrieve the label config from the provided param for the active Locale 
+     * and set it into this instance's labelConfig.
+     * @param param The param for which to load label content for.	
+     */	
+    protected loadLabelConfig(param: Param): void {	
+        this.labelConfig = this.wcs.findLabelContent(param);	
+    }
+
+    /**	
+     * Retrieve the label config from the provided labelConfigs that has the same provided code 
+     * and set it into this instance's labelConfig. If no label config is found, defaultLabel can
+     * be used to set a default label if the WebContentService allows for it.
+     * @param param The param for which to load label content for.	
+     */	
+    protected loadLabelConfigFromConfigs(labelConfigs: LabelConfig[], defaultLabel?: string): void {	
+        this.labelConfig = this.wcs.findLabelContentFromConfig(labelConfigs, defaultLabel);	
     }
 
     /**

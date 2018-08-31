@@ -117,13 +117,6 @@ export class Accordion extends BaseElement {
     }
 
     /**
-     * Get Tab label
-     */
-    protected getTabLabelConfig(param: Param): LabelConfig {
-        return this.wcsvc.findLabelContent(param);
-    }
-
-    /**
      * Close All Tabs
      */
     public closeAll() {

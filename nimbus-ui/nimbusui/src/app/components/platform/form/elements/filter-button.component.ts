@@ -64,7 +64,7 @@ export class FilterButton extends BaseElement{
            let element = this.filterButton.type.model.params[p];
            if (element.config.uiStyles.attributes.alias === 'Button') {
                this.fbutton = element;
-               this._wcs.findLabelContent(this.element);
+               this.loadLabelConfig(this.element);
            }
            if (element.config.uiStyles.attributes.alias === 'TextBox') {
                this.fText = element;
