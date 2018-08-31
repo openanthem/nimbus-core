@@ -156,6 +156,16 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
         }
         return this.labelConfig.text;
     }
+
+    /**
+     * Determine if the label for this element is empty or not.
+     */
+    public get isLabelEmpty(): boolean {
+        if (this.label) {
+            return this.label.trim().length === 0;
+        }
+        return true;
+    }
     
     /**
      * Return constraint matches param attribute

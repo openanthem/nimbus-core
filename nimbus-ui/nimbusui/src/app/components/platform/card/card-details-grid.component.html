@@ -1,5 +1,5 @@
 <ng-template [ngIf]="!grid.config.uiStyles?.attributes?.draggable">
-    <nm-label *ngIf="labelConfig?.text" [element]="element" [size]="labelSize"></nm-label>
+    <nm-label *ngIf="!isLabelEmpty" [element]="element" [size]="labelSize"></nm-label>
     <ng-template ngFor let-card [ngForOf]="grid?.type?.model?.params">
         <!-- loop thru card grid -->
         <ng-template ngFor let-element [ngForOf]="card?.type?.model?.params">

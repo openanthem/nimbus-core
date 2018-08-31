@@ -182,6 +182,16 @@ export class BaseElement {
     }
 
     /**
+     * Determine if the label for this element is empty or not.
+     */
+    public get isLabelEmpty(): boolean {
+        if (this.label) {
+            return this.label.trim().length > 0;
+        }
+        return true;
+    }
+
+    /**
      * Check if control is required
      */
     public get elementStyle(): string {

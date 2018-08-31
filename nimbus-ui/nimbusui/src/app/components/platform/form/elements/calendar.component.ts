@@ -43,7 +43,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   selector: 'nm-input-calendar',
   providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR,WebContentSvc, ControlSubscribers],
   template: `
-        <nm-input-label *ngIf="labelConfig && this.showLabel"
+        <nm-input-label *ngIf="!isLabelEmpty && this.showLabel"
             [element]="element"     
             [for]="element.config?.code" 
             [required]="requiredCss">
