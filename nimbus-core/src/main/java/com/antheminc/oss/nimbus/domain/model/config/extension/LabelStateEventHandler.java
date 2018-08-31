@@ -13,9 +13,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * 
- */
 package com.antheminc.oss.nimbus.domain.model.config.extension;
 
 import java.util.HashSet;
@@ -24,8 +21,10 @@ import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
+import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.defn.extension.Content;
 import com.antheminc.oss.nimbus.domain.defn.extension.Content.Label;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
@@ -39,47 +38,55 @@ import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnSt
 
 public class LabelStateEventHandler extends AbstractConfigEventHandler<Label> implements OnStateLoadHandler<Label> {
 
+	@Autowired 
+	CommandPathVariableResolver cmdPathResolver;
+	
 	@Override
 	public void handle(Label configuredAnnotation, Param<?> param) {
 		if(configuredAnnotation==null)
 			return;
-		
-		validateAndAdd(param, convert(configuredAnnotation));
+		LabelState labelState = convert(configuredAnnotation, param);
+		validateAndAdd(param, labelState);
 	}
 	
-	protected void validateAndAdd(Param<?> param, LabelState toAdd) {
+	protected void validateAndAdd(Param<?> param, LabelState labelState) {
 
 		// duplicate check the previous label assigned. 
 		if(CollectionUtils.isNotEmpty(param.getLabels())) {
-			if (param.getLabels().stream().anyMatch(l -> l.getLocale().equals(toAdd.getLocale()))) { 
+			if (param.getLabels().stream().anyMatch(l -> l.getLocale().equals(labelState.getLocale()))) { 
 				return; 
 			}
 		}
 		// TODO: Move this validation to @Label annotation preprocessor
 		// at-least one of Label text or helpText must be present
-		if(StringUtils.isEmpty(toAdd.getText()) && StringUtils.isEmpty(toAdd.getHelpText()))
+		if(StringUtils.isEmpty(labelState.getText()) && StringUtils.isEmpty(labelState.getHelpText()))
 			throw new InvalidConfigException("Label must have non empty values for at least label text value or help text,"
 					+ " found none for \"" + param.getConfig().getCode() + "\" in Param: " + param
-					+ " with LabelState: " + toAdd);
+					+ " with LabelState: " + labelState);
 		
 		Set<LabelState> labels = new HashSet<>();
 		if(!CollectionUtils.isEmpty(param.getLabels())) 
 			labels.addAll(param.getLabels());
 		
-		labels.add(toAdd);
+		labels.add(labelState);
 		param.setLabels(labels);
 	}
 	
-	protected LabelState convert(Label label) {
-		LabelState config = new LabelState();
+	protected LabelState convert(Label label, Param<?> param) {
+		LabelState labelState = new LabelState();
 		
 		Locale locale = Content.getLocale(label);
 		
-		config.setLocale(StringUtils.trimToNull(locale.toLanguageTag()));
-		config.setText(StringUtils.isWhitespace(label.value()) ? label.value() : StringUtils.trimToNull(label.value()));	
-		config.setHelpText(StringUtils.trimToNull(label.helpText()));
-		config.setCssClass(StringUtils.trimToNull(label.style().cssClass()));
+		labelState.setLocale(StringUtils.trimToNull(locale.toLanguageTag()));
+		labelState.setText(resolvePath(StringUtils.isWhitespace(label.value()) ? label.value() : StringUtils.trimToNull(label.value()), param));	
+		labelState.setHelpText(resolvePath(StringUtils.trimToNull(label.helpText()),param));
+		labelState.setCssClass(StringUtils.trimToNull(label.style().cssClass()));
 		
-		return config;
+		return labelState;
+	}
+	
+	protected String resolvePath(String text, Param<?> param) {
+		String resolvedPath = this.cmdPathResolver.resolve(param, text);
+		return resolvedPath;
 	}
 }

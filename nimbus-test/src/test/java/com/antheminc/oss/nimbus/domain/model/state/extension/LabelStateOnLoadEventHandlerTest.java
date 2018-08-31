@@ -1,5 +1,17 @@
 /**
- * 
+ *  Copyright 2016-2018 the original author or authors.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 package com.antheminc.oss.nimbus.domain.model.state.extension;
 
@@ -16,11 +28,9 @@ import java.util.Locale;
 import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.junit.After;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.InvalidConfigException;
@@ -31,7 +41,6 @@ import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.domain.defn.extension.Content.Label;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param.LabelState;
-import com.antheminc.oss.nimbus.domain.session.SessionProvider;
 import com.antheminc.oss.nimbus.test.domain.support.AbstractFrameworkIntegrationTests;
 import com.antheminc.oss.nimbus.test.domain.support.utils.ExtractResponseOutputUtils;
 import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
@@ -58,11 +67,10 @@ public class LabelStateOnLoadEventHandlerTest extends AbstractFrameworkIntegrati
 	
 	public static final Long CORE_REF_ID_1 = new Long(1);
 	
-	@Autowired SessionProvider sessionProvider;
-	
 	private Object prepareParam(String viewRoot) {
 		Sample_Core_Label_Entity sc_main = new Sample_Core_Label_Entity();
 		sc_main.setId(CORE_REF_ID_1);
+		sc_main.setAttr1("Green");
 		mongo.insert(sc_main, "sample_core_label");
 		
 		Object sv_newResp = controller.handleGet(
@@ -451,6 +459,47 @@ public class LabelStateOnLoadEventHandlerTest extends AbstractFrameworkIntegrati
 	@Test(expected=InvalidConfigException.class)
 	public void t12_ex_multiple_same_locale() {
 		prepareParam(VIEW_ROOT_3);
+	}
+	
+	/**
+	 * @Label("This label color is <!../label_replace!>")
+	 * private String label_dynamic_a;
+	 */
+	@Test
+	public void t12_label_dynamic() {		
+		Object sv_newResp = prepareParam(VIEW_ROOT);
+		
+		assertNotNull(sv_newResp);	
+		Param<Sample_View_Label_Entity> view_param = ExtractResponseOutputUtils.extractOutput(sv_newResp, 0);
+		assertNotNull(view_param);
+		Set<LabelState> label_a_en = view_param.findParamByPath("/label_dynamic_a").getLabels();
+		assertNotNull(label_a_en);
+		Param<?> label_a_p = view_param.findParamByPath("/label_dynamic_a");
+		assertNotNull(label_a_p.getConfig().getLabels());
+		assertFalse(label_a_p.getConfig().getLabels().isEmpty());
+		assertEquals(1,label_a_p.getConfig().getLabels().size());
+		assertEquals("This label color is Green",getLabelState(label_a_p, Locale.getDefault()).getText());
+		assertEquals("some help text in Green",getLabelState(label_a_p, Locale.getDefault()).getHelpText());
+	}
+	
+	/**
+	 * @Label("This label color is <!../invalid_param!>")
+	 * private String label_dynamic_negative;
+	 */
+	@Test
+	public void t13_label_dynamic_invalid() {		
+		Object sv_newResp = prepareParam(VIEW_ROOT);
+		
+		assertNotNull(sv_newResp);	
+		Param<Sample_View_Label_Entity> view_param = ExtractResponseOutputUtils.extractOutput(sv_newResp, 0);
+		assertNotNull(view_param);
+		Set<LabelState> label_a_en = view_param.findParamByPath("/label_dynamic_negative").getLabels();
+		assertNotNull(label_a_en);
+		Param<?> label_a_p = view_param.findParamByPath("/label_dynamic_negative");
+		assertNotNull(label_a_p.getConfig().getLabels());
+		assertFalse(label_a_p.getConfig().getLabels().isEmpty());
+		assertEquals(1,label_a_p.getConfig().getLabels().size());
+		assertEquals("This label color is null",getLabelState(label_a_p, Locale.getDefault()).getText());
 	}
 	
 	private static LabelState getLabelState(Param<?> p, Locale expectedLocale) {	
