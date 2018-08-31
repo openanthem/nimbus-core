@@ -49,6 +49,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { WindowRefService } from './services/window-ref.service';
 import { HeaderCheckBox } from './components/platform/form/elements/header-checkbox.component';
 import { AngularSvgIconModule } from 'angular-svg-icon';
+import {ToastModule} from 'primeng/toast';
 
 // Platform Imports
 // Components
@@ -114,6 +115,7 @@ import { ServiceConstants } from "./services/service.constants";
 import { AppInitService } from "./services/app.init.service";
 import { LoggerService } from './services/logger.service';
 import { RouteService } from './services/route.service';
+import { MessageService } from 'primeng/api';
 // Routes
 import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app.routing.module';
@@ -191,6 +193,7 @@ export function init_app(appinitservice: AppInitService) {
         KeyFilterModule,
         StorageServiceModule,
         AngularSvgIconModule,
+        ToastModule
     ],
     declarations: [ AppComponent, STOMPStatusComponent, FlowWrapper, PageContent, PageNotfoundComponent, StaticText,
         Tile, Section, Header, Form, FormElement, InputText, ComboBox, RadioButton, Signature, DateControl, CheckBoxGroup,
@@ -220,7 +223,8 @@ export function init_app(appinitservice: AppInitService) {
          { provide: ErrorHandler, useClass: CustomErrorHandler },
          { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
          SessionStoreService,
-         AuthenticationService, BreadcrumbService, LoaderService, FileService, LayoutService, WindowRefService, LoggerService, RouteService ],
+         AuthenticationService, BreadcrumbService, LoaderService, FileService, LayoutService, WindowRefService, LoggerService, 
+         RouteService, MessageService ],
     bootstrap: [ AppComponent ]
 })
 export class AppModule { }

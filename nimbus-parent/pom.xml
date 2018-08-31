@@ -631,6 +631,17 @@
                             </configuration>
                             <phase>generate-resources</phase>
                         </execution>
+
+						<execution>
+							<id>update nimbus-sass-module</id>
+							<goals>
+								<goal>npm</goal>
+							</goals>
+							<configuration>
+								<arguments>update nimbus-sass-module</arguments>
+							</configuration>
+							<phase>generate-resources</phase>
+						</execution>
                     </executions>
                 </plugin>
                 <plugin>

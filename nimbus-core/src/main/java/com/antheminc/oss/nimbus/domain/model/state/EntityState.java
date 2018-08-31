@@ -565,7 +565,7 @@ public interface EntityState<T> {
 			}
 			public enum Context {			
 				INLINE,
-				GROWL
+				TOAST
 			}
 				
 			@JsonIgnore
@@ -706,6 +706,7 @@ public interface EntityState<T> {
 		T getLeafState(int i);
 		
 		boolean add(T elem);
+		boolean addAll(List<T> elems);
 		Param<T> add();
 		boolean add(ListElemParam<T> pColElem);
 		
