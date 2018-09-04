@@ -88,7 +88,20 @@ public class Sample_View_Label_Entity {
 	@Model @Getter @Setter
 	public static class Sample_View_Nested_Label {
 		
-		@Label("Test Label Nested")
+		@Label("Test Label Nested attr1")
 		private String label_nested_attr1;
+		
+		@Label(value="Test Label Nested attr2",helpText="some nested attt2 help text")
+		@Label(value="Test Label Nested attr2 fr",localeLanguageTag="fr")
+		private String label_nested_attr2;
+		
+		private Sample_View_Entity_2 label_nested_level_2;
+	}
+	
+	@Model @Getter @Setter
+	public static class Sample_View_Entity_2 {
+		
+		@Label("Test Label Nested level 2 attr")
+		private String label_nested_attr_level2;		
 	}
 }

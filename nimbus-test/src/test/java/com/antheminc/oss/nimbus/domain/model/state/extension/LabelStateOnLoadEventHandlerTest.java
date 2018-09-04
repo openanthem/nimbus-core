@@ -19,12 +19,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -39,6 +42,7 @@ import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo.Type;
 import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.domain.defn.extension.Content.Label;
+import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param.LabelState;
 import com.antheminc.oss.nimbus.test.domain.support.AbstractFrameworkIntegrationTests;
@@ -46,6 +50,7 @@ import com.antheminc.oss.nimbus.test.domain.support.utils.ExtractResponseOutputU
 import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
 import com.antheminc.oss.nimbus.test.scenarios.labelstate.core.Sample_Core_Label_Entity;
 import com.antheminc.oss.nimbus.test.scenarios.labelstate.core.Sample_Core_Label_Entity.Nested_Attr;
+import com.antheminc.oss.nimbus.test.scenarios.labelstate.core.Sample_Core_Label_Entity.Nested_Attr_Level2;
 import com.antheminc.oss.nimbus.test.scenarios.labelstate.view.Sample_View_Label_Entity;
 import com.antheminc.oss.nimbus.test.scenarios.labelstate.view.Sample_View_Label_Entity.Sample_View_Nested_Label;
 
@@ -172,6 +177,7 @@ public class LabelStateOnLoadEventHandlerTest extends AbstractFrameworkIntegrati
 	 * @Label("Test Grid Label")
 	 * private List<Sample_View_Nested_Label> label_nested_coll_1;
 	 */
+	@SuppressWarnings("unchecked")
 	@Test
 	public void t05_label_nested_coll_single_nostate() {
 		Object sv_newResp = prepareParam(VIEW_ROOT);
@@ -185,7 +191,22 @@ public class LabelStateOnLoadEventHandlerTest extends AbstractFrameworkIntegrati
 		assertEquals(1, nested_coll_p.getLabels().size());
 		
 		assertEquals("Test Grid Label", getLabelState(nested_coll_p, Locale.getDefault()).getText());
+		/*Elem labels*/
+		assertNotNull(nested_coll_p.findIfCollection().getElemLabels());
+		assertEquals(2,nested_coll_p.findIfCollection().getElemLabels().size());
 		
+		ParamConfig<?> elemConfig_attr1 = getElemConfigByCode(nested_coll_p, "label_nested_attr1");
+		ParamConfig<?> elemConfig_attr2 = getElemConfigByCode(nested_coll_p, "label_nested_attr2");
+		assertNotNull(nested_coll_p.findIfCollection().getElemLabels().get(Optional.ofNullable(elemConfig_attr1.getId()).orElse(null)));
+		assertNotNull(nested_coll_p.findIfCollection().getElemLabels().get(Optional.ofNullable(elemConfig_attr2.getId()).orElse(null)));
+		assertTrue(nested_coll_p.findIfCollection().getElemLabels().containsKey(elemConfig_attr1.getId()));
+		assertTrue(nested_coll_p.findIfCollection().getElemLabels().containsKey(elemConfig_attr2.getId()));
+		assertFalse(nested_coll_p.findIfCollection().getElemLabels().containsKey(nested_coll_p.getConfigId()));
+		assertEquals("Test Label Nested attr1", getElemLabelState(nested_coll_p, Locale.getDefault(), elemConfig_attr1.getId()).getText());
+		assertEquals("Test Label Nested attr2", getElemLabelState(nested_coll_p, Locale.getDefault(), elemConfig_attr2.getId()).getText());
+		assertEquals("some nested attt2 help text", getElemLabelState(nested_coll_p, Locale.getDefault(), elemConfig_attr2.getId()).getHelpText());
+		assertEquals("Test Label Nested attr2 fr", getElemLabelState(nested_coll_p, Locale.FRENCH, elemConfig_attr2.getId()).getText());
+			
 		Sample_View_Nested_Label nested_1 = new Sample_View_Nested_Label();
 		nested_1.setLabel_nested_attr1("nested attr1");
 		Sample_View_Nested_Label nested_2 = new Sample_View_Nested_Label();
@@ -226,8 +247,15 @@ public class LabelStateOnLoadEventHandlerTest extends AbstractFrameworkIntegrati
 		sc_main.setId(new Long(2));
 		Nested_Attr nested_1 = new Nested_Attr();
 		nested_1.setAttr_nested_1("nested attr1");
+		Nested_Attr_Level2 attr_level2 = new Nested_Attr_Level2();
+		attr_level2.setAttr_nested_level_2("nested level 2 attr");
+		nested_1.setAttr_nested_2(attr_level2);
+		
 		Nested_Attr nested_2 = new Nested_Attr();
 		nested_2.setAttr_nested_1("nested attr2");
+		Nested_Attr_Level2 nested_2_attr_level21 = new Nested_Attr_Level2();
+		nested_2_attr_level21.setAttr_nested_level_2("nested 2 level 2 attr");
+		nested_1.setAttr_nested_2(nested_2_attr_level21);
 		
 		List<Nested_Attr> nested_coll_attr = new ArrayList<>();
 		nested_coll_attr.add(nested_1);
@@ -258,7 +286,22 @@ public class LabelStateOnLoadEventHandlerTest extends AbstractFrameworkIntegrati
 		
 		assertNotNull(nested_coll_p.findParamByPath("/1"));
 		assertNotNull(nested_coll_p.findParamByPath("/1").getState());
-		assertNull(nested_coll_p.findParamByPath("/1").getLabels());		
+		assertNull(nested_coll_p.findParamByPath("/1").getLabels());	
+		
+		/*Elem labels*/
+		assertNotNull(nested_coll_p.findIfCollection().getElemLabels());
+		assertEquals(2,nested_coll_p.findIfCollection().getElemLabels().size());
+		ParamConfig<?> elemConfig_attr1 = getElemConfigByCode(nested_coll_p, "attr_nested_1");
+		ParamConfig<?> elemConfig_attr2 = getElemConfigByCode(nested_coll_p, "attr_nested_2");
+		
+		assertNotNull(nested_coll_p.findIfCollection().getElemLabels().get(Optional.ofNullable(elemConfig_attr1.getId()).orElse(null)));
+		assertTrue(nested_coll_p.findIfCollection().getElemLabels().containsKey(elemConfig_attr1.getId()));
+		assertEquals("Test label nested attr", getElemLabelState(nested_coll_p, Locale.getDefault(), elemConfig_attr1.getId()).getText());
+
+		assertNotNull(nested_coll_p.findIfCollection().getElemLabels().get(Optional.ofNullable(elemConfig_attr2.getId()).orElse(null)));
+		assertTrue(nested_coll_p.findIfCollection().getElemLabels().containsKey(elemConfig_attr2.getId()));
+		assertEquals("Test label nested level 2", getElemLabelState(nested_coll_p, Locale.getDefault(), elemConfig_attr2.getId()).getText());
+		
 	}
 	
 	@Test
@@ -502,6 +545,12 @@ public class LabelStateOnLoadEventHandlerTest extends AbstractFrameworkIntegrati
 		assertEquals("This label color is null",getLabelState(label_a_p, Locale.getDefault()).getText());
 	}
 	
+	@Test
+	public void t14_multiple_nested_coll_withstate() {}
+	
+	@Test
+	public void t14_multiple_nested_coll_withoutstate() {}
+	
 	private static LabelState getLabelState(Param<?> p, Locale expectedLocale) {	
 		if(CollectionUtils.isNotEmpty(p.getLabels())) {
 			return p.getLabels().stream()
@@ -513,6 +562,33 @@ public class LabelStateOnLoadEventHandlerTest extends AbstractFrameworkIntegrati
 					});
 		}else
 			return null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private static LabelState getElemLabelState(Param<?> p, Locale expectedLocale, String configId) {	
+		Map<String, Set<LabelState>> elemLabels = p.findIfCollection().getElemLabels();
+		
+		if(CollectionUtils.isNotEmpty(elemLabels.entrySet())) {
+		return	elemLabels.entrySet().stream()
+					.filter(el -> el.getKey().equals(configId))
+					.findFirst().get().getValue()
+						.stream().filter(lc->lc.getLocale().equals(expectedLocale.toLanguageTag()))
+						.findFirst()
+						.orElse(null);
+		}else
+			return null;
+	}
+
+	private ParamConfig<?> getElemConfigByCode(Param<?> coll_param, String code) {
+		ParamConfig<?> p = coll_param.getConfig().getType().findIfCollection().getElementConfig();
+		ParamConfig<?> elemConfig = p.getType().findIfNested().getModelConfig().getParamConfigs().stream()
+			.filter(pc -> pc.getCode().equalsIgnoreCase(code))
+			.findFirst()
+			.orElseGet(()->{
+				fail();
+				return null;
+			});
+		return elemConfig;		
 	}
 
 }

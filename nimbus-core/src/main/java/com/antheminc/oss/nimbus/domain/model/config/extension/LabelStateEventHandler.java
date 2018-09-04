@@ -15,8 +15,10 @@
  */
 package com.antheminc.oss.nimbus.domain.model.config.extension;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -27,9 +29,11 @@ import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.defn.extension.Content;
 import com.antheminc.oss.nimbus.domain.defn.extension.Content.Label;
+import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param.LabelState;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
+import com.antheminc.oss.nimbus.support.JustLogit;
 
 /**
  * @author Soham Chakravarti
@@ -57,7 +61,7 @@ public class LabelStateEventHandler extends AbstractConfigEventHandler<Label> im
 				return; 
 			}
 		}
-		// TODO: Move this validation to @Label annotation preprocessor
+		
 		// at-least one of Label text or helpText must be present
 		if(StringUtils.isEmpty(labelState.getText()) && StringUtils.isEmpty(labelState.getHelpText()))
 			throw new InvalidConfigException("Label must have non empty values for at least label text value or help text,"
@@ -67,6 +71,24 @@ public class LabelStateEventHandler extends AbstractConfigEventHandler<Label> im
 		Set<LabelState> labels = new HashSet<>();
 		if(!CollectionUtils.isEmpty(param.getLabels())) 
 			labels.addAll(param.getLabels());
+		
+		if(param.isCollection()) {		
+			Map<String, Set<LabelState>> elemLabels = new HashMap<>(); 
+			ParamConfig<?> p = param.getConfig().getType().findIfCollection().getElementConfig(); 
+			
+			p.getType().findIfNested().getModelConfig().getParamConfigs().forEach(ec -> {		
+				
+				if(CollectionUtils.isNotEmpty(ec.getLabels())) {					
+					Set<LabelState> listParamLabels = new HashSet<>();					
+					ec.getLabels().forEach((label) -> {
+						listParamLabels.add(convert(label, param));
+					});				
+					elemLabels.put(ec.getId(),listParamLabels);
+				}				
+			});
+			
+			param.findIfCollection().setElemLabels(elemLabels);
+		}
 		
 		labels.add(labelState);
 		param.setLabels(labels);

@@ -51,6 +51,7 @@ public class DefaultJsonParamSerializer extends JsonSerializer<Param<?>> {
 	private static final String K_TYPE = "type";
 	private static final String K_VALUES = "values";
 	private static final String K_LABELS = "labels";
+	private static final String K_ELEM_LABELS = "elemLabels";
 	
 	private static final String K_PAGE = "page";
 	
@@ -108,6 +109,9 @@ public class DefaultJsonParamSerializer extends JsonSerializer<Param<?>> {
 			writer.writeObjectIfNotNull(K_VALUES, p::getValues);
 			writer.writeObjectIfNotNull(K_LABELS, p::getLabels);
 			
+			if (p.isCollection()) {
+				writer.writeObjectIfNotNull(K_ELEM_LABELS, p.findIfCollection()::getElemLabels);
+			}
 			if(!p.getType().getName().equals("string"))
 				writer.writeObjectIfNotNull(K_TYPE, p::getType);
 			

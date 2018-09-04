@@ -62,5 +62,16 @@ public class Sample_Core_Label_Entity  extends IdLong {
 	public static class Nested_Attr {
 		@Label("Test label nested attr")
 		private String attr_nested_1;
+		
+		@Label("Test label nested level 2")
+		private Nested_Attr_Level2 attr_nested_2;
+		
+	}
+	
+	@Model @Getter @Setter
+	public static class Nested_Attr_Level2 {
+		@Label("Test label nested level 2 attr")
+		private String attr_nested_level_2;
+	
 	}
 }

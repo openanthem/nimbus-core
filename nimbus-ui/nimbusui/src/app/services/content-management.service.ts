@@ -43,7 +43,7 @@ export class WebContentSvc {
 	}
 
     findLabelContent(param: Param): LabelConfig {
-        if (!param || !param.config) {
+        if (!param || !param.labels) {
             return undefined;
         }
         return this.findLabelContentFromConfig(param.config.code, param.labels);

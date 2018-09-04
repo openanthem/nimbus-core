@@ -56,6 +56,7 @@ export class Param implements Serializable<Param, string> {
     _alias: string;
     _config: ParamConfig;
     labels: LabelConfig[];
+    elemLabels: Map<string, LabelConfig[]>;
 
     constructor(private configSvc: ConfigService) {}
 
@@ -226,7 +227,20 @@ export class Param implements Serializable<Param, string> {
                 this.labels.push( new LabelConfig().deserialize(inJson.labels[p]) );
             }
         }
-        
+
+        this.elemLabels = new Map<string, LabelConfig[]>();
+        if (inJson.elemLabels) {
+            const configIds: string[] = Object.keys(inJson.elemLabels);
+            configIds.forEach(configId => {
+                const labels = [];
+                if (inJson.elemLabels[configId] != null && inJson.elemLabels[configId].length > 0) {
+                    for ( var p in inJson.elemLabels[configId]) {
+                        labels.push( new LabelConfig().deserialize(inJson.elemLabels[configId][p]))
+                    }
+                }
+                this.elemLabels.set(configId, labels);
+            });
+        }
         return this;
     }
 }

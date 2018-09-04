@@ -143,7 +143,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         // Set the column headers
         if (this.params) {
             this.params.forEach(column => {
-                column.label = this._wcs.findLabelContentFromConfig(column.code, column.labelConfigs).text;
+                column.label = this._wcs.findLabelContentFromConfig(column.code, this.element.elemLabels.get(column.id)).text;
                 // Set field and header attributes. TurboTable expects these specific variables.
                 column['field'] = column.code;
                 column['header'] = column.label;

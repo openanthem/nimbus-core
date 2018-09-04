@@ -781,6 +781,8 @@ public interface EntityState<T> {
 		Page<T> getPage();
 		void setPage(List<T> content, Pageable pageable, Supplier<Long> totalCountSupplier);
 		
+		Map<String, Set<LabelState>> getElemLabels();	
+		void setElemLabels(Map<String, Set<LabelState>> elemLabels);
 	}
 	
 	public interface MappedListParam<T, M> extends ListParam<T>, MappedParam<List<T>, List<M>> {
