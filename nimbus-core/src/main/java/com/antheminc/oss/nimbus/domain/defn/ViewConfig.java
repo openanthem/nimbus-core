@@ -489,6 +489,36 @@ public class ViewConfig {
 		String cols() default "";
 
 	}
+	
+	/**
+	 * <p><b>Expected Field Structure</b>
+	 * 
+	 * <p>InputSwitch will be rendered when annotating a field nested under
+	 * one of the following components: <ul> <li>{@link Form}</li> <li>{@link Section}</li></ul>
+	 * 
+	 * <p>InputSwitch should decorate a field having a simple type.
+	 * 
+	 * @since 1.0.0.M2
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface InputSwitch {
+		public enum Type {
+			LEFT,
+			RIGHT,
+			TOP
+		}
+		String alias() default "InputSwitch";
+		
+		String controlId() default "";
+		
+		String cssClass() default "";
+		
+		boolean postEventOnChange() default false;
+		
+		InputSwitch.Type orientation() default InputSwitch.Type.RIGHT;
+	}
 
 	/**
 	 * <p><b>Expected Field Structure</b>
