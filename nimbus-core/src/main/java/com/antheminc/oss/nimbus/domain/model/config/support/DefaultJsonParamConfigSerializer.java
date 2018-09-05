@@ -33,6 +33,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 public class DefaultJsonParamConfigSerializer extends JsonSerializer<ParamConfig<?>> {
 
 	private static final String K_ID = "id";
+	private static final String K_POINTERID = "pointerId";
 	private static final String K_CODE = "code";
 	
 	private static final String K_UISTYLES = "uiStyles";
@@ -61,7 +62,7 @@ public class DefaultJsonParamConfigSerializer extends JsonSerializer<ParamConfig
 		try {
 			gen.writeStartObject();
 			if(TH_STACK.get().contains(p.getId())) {
-				gen.writeStringField(K_ID, p.getId());
+				gen.writeStringField(K_POINTERID, p.getId());
 				
 			} else {
 				TH_STACK.get().push(p.getId());
