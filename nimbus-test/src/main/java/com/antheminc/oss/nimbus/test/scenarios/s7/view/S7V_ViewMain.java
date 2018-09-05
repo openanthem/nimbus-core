@@ -15,6 +15,8 @@
  */
 package com.antheminc.oss.nimbus.test.scenarios.s7.view;
 
+import java.util.List;
+
 import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo.Path;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo.Type;
@@ -23,6 +25,8 @@ import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Cache;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Database;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Radio;
+import com.antheminc.oss.nimbus.domain.defn.extension.Content.Label;
+import com.antheminc.oss.nimbus.domain.defn.extension.Contents.Labels;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValuesConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValuesConditional.Condition;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValuesConditionals;

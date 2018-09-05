@@ -1751,6 +1751,7 @@ public class ViewConfig {
 		 * <p>This can be used to apply additional styling, if necessary.
 		 */
 		String cssClass() default "";
+		String scriptName() default "";
 		/**
 		 * <p>The width of the signature canvas. 
 		 */
