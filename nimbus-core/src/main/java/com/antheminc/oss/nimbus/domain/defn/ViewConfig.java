@@ -498,7 +498,7 @@ public class ViewConfig {
 	 * 
 	 * <p>InputSwitch should decorate a field having a simple type.
 	 * 
-	 * @since 1.0.0.M2
+	 * @since 1.1
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ElementType.FIELD})
