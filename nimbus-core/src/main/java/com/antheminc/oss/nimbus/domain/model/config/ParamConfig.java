@@ -16,6 +16,7 @@
 package com.antheminc.oss.nimbus.domain.model.config;
 
 import java.util.List;
+import java.util.Set;
 
 import com.antheminc.oss.nimbus.domain.defn.AssociatedEntity;
 import com.antheminc.oss.nimbus.domain.defn.Converters.ParamConverter;
@@ -23,12 +24,9 @@ import com.antheminc.oss.nimbus.domain.defn.MapsTo;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo.Mode;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo.Path;
 import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values;
+import com.antheminc.oss.nimbus.domain.defn.extension.Content.Label;
 import com.antheminc.oss.nimbus.entity.Findable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 
 /**
  * @author Soham Chakravarti
@@ -44,14 +42,7 @@ public interface ParamConfig<P> extends EntityConfig<P>, Findable<String> {
 	
 	public boolean isLeaf();
 	
-	@Getter @Setter @ToString
-	public static class LabelConfig {
-		private String locale; //default en-US
-		private String text;
-		private String helpText;
-		private String cssClass;
-	}
-	public List<LabelConfig> getLabelConfigs();
+	public Set<Label> getLabels();
 	
 	public ExecutionConfig getExecutionConfig();
 	

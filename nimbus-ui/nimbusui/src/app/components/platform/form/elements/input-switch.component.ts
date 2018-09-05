@@ -35,7 +35,7 @@ import { BaseControl } from './base-control.component';
  *      private boolean hippaVerified;
  * 
  *      Default orientation is RIGHT, that places the label followed by InputSwitch. 
- *      It can be changed as LEFT or TOP when needed.
+ *      It can be changed as LEFT when needed.
  */
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     provide: NG_VALUE_ACCESSOR,
@@ -46,14 +46,18 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     selector: 'nm-input-switch',
     providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc, ControlSubscribers],
     template: ` 
-                <label [attr.for]="element.config?.code"  [ngClass]="{'required': requiredCss, '': !requiredCss}" *ngIf="this.showLabel">{{label}}
-                    <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
-                </label>
+                <nm-input-label *ngIf="labelConfig && (hidden != true)"
+                    [for]="element.config?.code" 
+                    [labelConfig]="labelConfig" 
+                    [required]="requiredCss">
+                </nm-input-label>
                 <p-inputSwitch 
+                    [ngClass]="orientation" 
                     [(ngModel)]="value" 
                     [disabled]="disabled" 
+                    [id]="element.config?.code" 
                     (onChange)="emitValueChangedEvent(this,$event)">
-                </p-inputSwitch>     
+                </p-inputSwitch> 
              `
 })
 export class InputSwitch extends BaseControl<boolean> {
@@ -62,6 +66,7 @@ export class InputSwitch extends BaseControl<boolean> {
         super(controlService, wcs, cd);
     }
     get orientation(): string {
-        return this.element.config.uiStyles.attributes.orientation;
+        return this.element.config.uiStyles.attributes.orientation === 'RIGHT' ? 'right' : 'left';
     }
+
 }

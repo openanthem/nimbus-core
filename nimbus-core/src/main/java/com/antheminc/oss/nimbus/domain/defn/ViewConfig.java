@@ -25,6 +25,7 @@ import com.antheminc.oss.nimbus.domain.Event;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 import com.antheminc.oss.nimbus.domain.defn.extension.ParamContext;
 
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -44,39 +45,21 @@ import lombok.Setter;
 public class ViewConfig {
 
 	/**
-	 * <p>This Accordion is intended for use within a {@link Form} component.
-	 * For non-form support, consider {@link AccordionMain}.
+	 * **
+	 * <p>
+	 * Accordion groups a collection of contents in tabs.
 	 * 
-	 * <p><b>Expected Field Structure</b>
+	 * <p>
+	 * <b>Expected Field Structure</b>
 	 * 
-	 * <p>Accordion will be rendered when annotating a field nested under one of
-	 * the following components: <ul> <li>{@link Form}</li> </ul>
+	 * <p>
+	 * Accordion will be rendered when annotating a field nested under one of the
+	 * following components:
+	 * <ul>
+	 * <li>{@link Form}</li>
+	 * <li>{@link Section}</li>
+	 * </ul>
 	 * 
-	 * <p>Accordion will render nested fields in the same manner declared
-	 * directly under a {@link Form} component.
-	 * 
-	 * @since 1.0
-	 * @see com.antheminc.oss.nimbus.domain.defn.Form
-	 */
-	// @Retention(RetentionPolicy.RUNTIME)
-	// @Target({ ElementType.FIELD })
-	// @ViewStyle
-	// public @interface Accordion {
-	// String alias() default "Accordion";
-	// String cssClass() default "panel-default";
-	// }
-
-	/**
-	 * <p><b>Expected Field Structure</b>
-	 * 
-	 * <p>AccordionMain will be rendered when annotating a field nested under
-	 * one of the following components: <ul> <li>{@link Section}</li> </ul>
-	 * 
-	 * <p>AccordionMain should contain nested classes. These classes represent
-	 * an <i>accordion tab</i> within the rendered accordion. The <i>accordion
-	 * tab</i> class should contain a field decorated with {@link CardDetail}.
-	 * 
-	 * @since 1.0
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.FIELD })
@@ -94,19 +77,28 @@ public class ViewConfig {
 	}
 
 	/**
-	 * <!--TODO Candidate for removal-->
+	 * <p>
+	 * AccordionTab is the section of Accordion.
 	 * 
-	 * @since 1.0
-	 */
-	// @Retention(RetentionPolicy.RUNTIME)
-	// @Target({ ElementType.FIELD })
-	// @ViewStyle
-	// public @interface AccordionGroup {
-	// String alias() default "AccordionGroup";
-	// String cssClass() default "panel-default";
-	// }
-
-	/**
+	 * <p>
+	 * <b>Expected Field Structure</b>
+	 * 
+	 * <p>
+	 * AccordionTab should be used to decorate a field in a class that has been
+	 * decorated with Accordion.
+	 * <p>
+	 * <p>
+	 * AccordionTab will render nested fields in the same manner declared directly
+	 * under a {@link Form} component
+	 * 
+	 * <p>
+	 * AccordionTab used within a {@link Section} component, should contain fields
+	 * decorated with one or more of the following components:
+	 * <ul>
+	 * <li>{@link CardDetail}</li>
+	 * <li>{@link ButtonGroup}</li>
+	 * <li>{@link Grid}
+	 *
 	 * 
 	 * @since 1.0
 	 */
@@ -506,8 +498,7 @@ public class ViewConfig {
 	public @interface InputSwitch {
 		public enum Type {
 			LEFT,
-			RIGHT,
-			TOP
+			RIGHT
 		}
 		String alias() default "InputSwitch";
 		
@@ -1789,6 +1780,7 @@ public class ViewConfig {
 		 * <p>This can be used to apply additional styling, if necessary.
 		 */
 		String cssClass() default "";
+		String scriptName() default "";
 		/**
 		 * <p>The width of the signature canvas. 
 		 */

@@ -23,11 +23,12 @@ import org.springframework.context.annotation.Configuration;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.ValidationScope;
-import com.antheminc.oss.nimbus.domain.model.config.extension.LabelConfigEventHandler;
+import com.antheminc.oss.nimbus.domain.model.config.extension.LabelStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.AccessConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ActivateConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.AuditStateChangeHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ConfigConditionalStateChangeHandler;
+import com.antheminc.oss.nimbus.domain.model.state.extension.DefaultParamValuesHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.DobToAgeConverter;
 import com.antheminc.oss.nimbus.domain.model.state.extension.EnableConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ExpressionConditionalStateEventHandler;
@@ -41,7 +42,6 @@ import com.antheminc.oss.nimbus.domain.model.state.extension.ValidateConditional
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValidateConditionalStateEventHandler.ValidationAssignmentStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValuesConditionalOnStateChangeEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValuesConditionalOnStateLoadEventHandler;
-import com.antheminc.oss.nimbus.domain.model.state.extension.DefaultParamValuesHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.VisibleConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional.ChildrenValidationAssignmentStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional.SiblingValidationAssignmentStrategy;
@@ -55,8 +55,8 @@ import com.antheminc.oss.nimbus.domain.model.state.internal.IdParamConverter;
 public class DefaultFrameworkExtensionsConfig {
 	
 	@Bean
-	public LabelConfigEventHandler labelConfigEventHandler() {
-		return new LabelConfigEventHandler();
+	public LabelStateEventHandler labelConfigEventHandler() {
+		return new LabelStateEventHandler();
 	}
 	
 	@Bean
