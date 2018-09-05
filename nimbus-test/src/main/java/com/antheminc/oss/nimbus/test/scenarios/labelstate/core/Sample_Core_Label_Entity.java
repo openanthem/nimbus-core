@@ -12,6 +12,7 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
+ *  
  */
 package com.antheminc.oss.nimbus.test.scenarios.labelstate.core;
 
@@ -37,7 +38,7 @@ import lombok.ToString;
 @Domain(value="sample_core_label",includeListeners = { ListenerType.persistence }) 
 @Repo(alias = "sample_core_label", value = Database.rep_mongodb, cache = Cache.rep_device)
 @Getter @Setter @ToString
-public class Sample_Core_Label_Entity  extends IdLong {
+public class Sample_Core_Label_Entity extends IdLong {
 	
 	private static final long serialVersionUID = 1L;
 
