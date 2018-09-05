@@ -20,6 +20,7 @@ import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { WebContentSvc } from '../../services/content-management.service';
 import { ViewComponent } from '../../shared/param-annotations.enum';
 import { BaseElement } from './base-element.component';
+import { Param } from './../../shared/param-state';
 
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     provide: NG_VALUE_ACCESSOR,
@@ -66,9 +67,11 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     `
 })
 export class FrmGroupCmp extends BaseElement {
-
+    
+    @Input() elements: Param[] = [];
     @Input() form: FormGroup;
-    @Input() elementCss: String;
+    @Input() elementCss : String;
+    @Input() parentElement: Param;
 
     viewComponent = ViewComponent;
 

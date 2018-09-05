@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 'use strict';
-import { LabelConfig } from './../../../../shared/param-config';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Param } from '../../../../shared/param-state';
 import { FormGroup } from '@angular/forms';
@@ -65,7 +64,7 @@ export class FilterButton extends BaseElement{
            let element = this.filterButton.type.model.params[p];
            if (element.config.uiStyles.attributes.alias === 'Button') {
                this.fbutton = element;
-               this.loadLabelConfig(element);
+               this.loadLabelConfig(this.element);
            }
            if (element.config.uiStyles.attributes.alias === 'TextBox') {
                this.fText = element;

@@ -16,7 +16,9 @@
  */
 'use strict';
 import { Component, Input } from '@angular/core';
-import { LabelConfig } from '../../../../shared/param-config';
+import { PageService } from './../../../../services/page.service';
+import { WebContentSvc } from './../../../../services/content-management.service';
+import { BaseLabel } from '../../base-label.component';
 
 /**
  * \@author Tony Lopez
@@ -29,7 +31,7 @@ import { LabelConfig } from '../../../../shared/param-config';
   selector: 'nm-input-label',
   template: `
     <label
-        [className]="cssClass"
+        [className]="getCssClass()"
         [attr.for]="for">
         
         {{label}} 
@@ -38,47 +40,26 @@ import { LabelConfig } from '../../../../shared/param-config';
     </label>
    `
 })
-export class InputLabel {
+export class InputLabel extends BaseLabel {
 
-    @Input() labelConfig: LabelConfig;
     @Input() for: string;
     @Input() required: boolean;
-
-    constructor() {
-        
-    }
-
-    /**
-     * Get the tooltip help text for this element.
-     */
-    public get helpText(): string {
-        if (!this.labelConfig) {
-            return undefined;
-        }
-        return this.labelConfig.helpText;
-    }
-
-    /**
-     * Get the label text for this element.
-     */
-    public get label(): string {
-        if (!this.labelConfig) {
-            return undefined;
-        }
-        return this.labelConfig.text;
+    
+    constructor(private wcs: WebContentSvc, private pageService: PageService) {
+        super(wcs, pageService);
     }
 
     /**
      * Get the css classes to apply for this element.
      */
-    public get cssClass(): string {
-        let styleClass = '';
+    public getCssClass(): string {
+        let cssClass = super.getCssClass();
         if (this.required) {
-            styleClass = 'required';
-        } 
-        if (this.labelConfig) {
-            styleClass += ' ' + this.labelConfig.cssClass;
-        } 
-        return styleClass;
+            if (cssClass.trim().length !== 0) {
+                cssClass += ' ';
+            }
+            cssClass += 'required';
+        }
+        return cssClass;
     }
 }

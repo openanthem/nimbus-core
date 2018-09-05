@@ -42,12 +42,12 @@ public class SampleCoreValuesEntity {
 	public static class StatusForm {
 		
 		@ValuesConditionals({
-			@ValuesConditional(target = "../statusReason", resetOnChange = false, condition = { 
+			@ValuesConditional(targetPath = "../statusReason", resetOnChange = false, condition = { 
 					@Condition(when = "state=='A'", then = @Values(SR_A.class)),
 					@Condition(when = "state=='B'", then = @Values(SR_B.class)),
 				}
 			),
-			@ValuesConditional(target = "../statusReason2", resetOnChange = true, condition = { 
+			@ValuesConditional(targetPath = "../statusReason2", resetOnChange = true, condition = { 
 					@Condition(when = "state=='A'", then = @Values(SR_A.class)),
 				}
 			)
@@ -55,12 +55,12 @@ public class SampleCoreValuesEntity {
 		@TextBox(postEventOnChange = true)
 		private String status;
 		
-		@ValuesConditional(target = "../statusReason2", resetOnChange = false, condition= {
+		@ValuesConditional(targetPath = "../statusReason2", resetOnChange = false, condition= {
 			@Condition(when = "state=='A'", then = @Values(SR_A.class))
 		})
 		private String status2;
 		
-		@ValuesConditional(target = "../statusReason", condition = { 
+		@ValuesConditional(targetPath = "../statusReason", condition = { 
 				@Condition(when = "state=='A'", then = @Values(SR_A.class)),
 				@Condition(when = "state=='A'", then = @Values(SR_B.class)),
 			},
@@ -69,7 +69,7 @@ public class SampleCoreValuesEntity {
 		@TextBox(postEventOnChange = true)
 		private String allowOverrideStatus;
 		
-		@ValuesConditional(target = "../statusReason", condition = { 
+		@ValuesConditional(targetPath = "../statusReason", condition = { 
 				@Condition(when = "state=='A'", then = @Values(SR_A.class)),
 				@Condition(when = "state=='A'", then = @Values(SR_B.class)),
 			}

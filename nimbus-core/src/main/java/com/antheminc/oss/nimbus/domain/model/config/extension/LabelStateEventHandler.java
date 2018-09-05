@@ -33,82 +33,132 @@ import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param.LabelState;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
-import com.antheminc.oss.nimbus.support.JustLogit;
 
 /**
  * @author Soham Chakravarti
  *
  */
-
 public class LabelStateEventHandler extends AbstractConfigEventHandler<Label> implements OnStateLoadHandler<Label> {
 
-	@Autowired 
+	@Autowired
 	CommandPathVariableResolver cmdPathResolver;
-	
-	@Override
-	public void handle(Label configuredAnnotation, Param<?> param) {
-		if(configuredAnnotation==null)
-			return;
-		LabelState labelState = convert(configuredAnnotation, param);
-		validateAndAdd(param, labelState);
-	}
-	
-	protected void validateAndAdd(Param<?> param, LabelState labelState) {
 
-		// duplicate check the previous label assigned. 
-		if(CollectionUtils.isNotEmpty(param.getLabels())) {
-			if (param.getLabels().stream().anyMatch(l -> l.getLocale().equals(labelState.getLocale()))) { 
-				return; 
-			}
-		}
-		
-		// at-least one of Label text or helpText must be present
-		if(StringUtils.isEmpty(labelState.getText()) && StringUtils.isEmpty(labelState.getHelpText()))
-			throw new InvalidConfigException("Label must have non empty values for at least label text value or help text,"
-					+ " found none for \"" + param.getConfig().getCode() + "\" in Param: " + param
-					+ " with LabelState: " + labelState);
-		
-		Set<LabelState> labels = new HashSet<>();
-		if(!CollectionUtils.isEmpty(param.getLabels())) 
-			labels.addAll(param.getLabels());
-		
-		if(param.isCollection()) {		
-			Map<String, Set<LabelState>> elemLabels = new HashMap<>(); 
-			ParamConfig<?> p = param.getConfig().getType().findIfCollection().getElementConfig(); 
-			
-			p.getType().findIfNested().getModelConfig().getParamConfigs().forEach(ec -> {		
-				
-				if(CollectionUtils.isNotEmpty(ec.getLabels())) {					
-					Set<LabelState> listParamLabels = new HashSet<>();					
-					ec.getLabels().forEach((label) -> {
-						listParamLabels.add(convert(label, param));
-					});				
-					elemLabels.put(ec.getId(),listParamLabels);
-				}				
-			});
-			
-			param.findIfCollection().setElemLabels(elemLabels);
-		}
-		
-		labels.add(labelState);
-		param.setLabels(labels);
+	/**
+	 * <p>Add the label from {@code configuredAnnotation} to the label state of
+	 * {@code targetParam}.
+	 * @param configuredAnnotation the label annotation to add
+	 * @param targetParam the param to add the label to
+	 */
+	public void addLabelToState(Label configuredAnnotation, Param<?> targetParam) {
+		addLabelToState(configuredAnnotation, targetParam, targetParam);
 	}
-	
-	protected LabelState convert(Label label, Param<?> param) {
+
+	/**
+	 * <p>Add the label from {@code configuredAnnotation} to the label state of
+	 * {@code targetParam}, using {@code contextParam} as the "context" from
+	 * which any param path will be retrieved.
+	 * @param configuredAnnotation the label annotation to add
+	 * @param targetParam the param to add the label to
+	 * @param contextParam the "context" from which any param path information
+	 *            should be retrieved
+	 */
+	public void addLabelToState(Label configuredAnnotation, Param<?> targetParam, Param<?> contextParam) {
+		if (configuredAnnotation == null) {
+			return;
+		}
+
+		LabelState labelState = convert(configuredAnnotation, contextParam);
+		validateAndAdd(labelState, targetParam, contextParam);
+	}
+
+	/**
+	 * <p>Convert the provided {@code label} into it's {@link LabelState}
+	 * equivalent object. <p>Some properties within the resulting
+	 * {@link LabelState} object will be resolved using the
+	 * {@link CommandPathVariableResolver}. See the implementation for more
+	 * details.
+	 * @param label the {@link Label} object to convert
+	 * @param param the {@link Param} from which to resolve pathing information
+	 *            from
+	 * @return the converted {@link LabelState} object.
+	 */
+	public LabelState convert(Label label, Param<?> param) {
 		LabelState labelState = new LabelState();
-		
+
 		Locale locale = Content.getLocale(label);
-		
+
 		labelState.setLocale(StringUtils.trimToNull(locale.toLanguageTag()));
-		labelState.setText(resolvePath(StringUtils.isWhitespace(label.value()) ? label.value() : StringUtils.trimToNull(label.value()), param));	
-		labelState.setHelpText(resolvePath(StringUtils.trimToNull(label.helpText()),param));
+		labelState.setText(resolvePath(
+				StringUtils.isWhitespace(label.value()) ? label.value() : StringUtils.trimToNull(label.value()),
+				param));
+
+		labelState.setHelpText(resolvePath(StringUtils.trimToNull(label.helpText()), param));
 		labelState.setCssClass(StringUtils.trimToNull(label.style().cssClass()));
-		
+
 		return labelState;
 	}
-	
+
+	@Override
+	public void onStateLoad(Label configuredAnnotation, Param<?> param) {
+		addLabelToState(configuredAnnotation, param);
+	}
+
 	protected String resolvePath(String text, Param<?> param) {
 		String resolvedPath = this.cmdPathResolver.resolve(param, text);
 		return resolvedPath;
+	}
+
+	/**
+	 * <p>Add {@code labelState} to the label state of {@code targetParam}.
+	 * <p>The argument {@code contextParam} is used to provide the "context"
+	 * from which to retrieve pathing details when resolving any framework or
+	 * placeholders within the previously provided {@link Label}. If this level
+	 * of control is not needed, consider using
+	 * {@link #validateAndAdd(LabelState, Param)}.
+	 * @param labelState the label state to add
+	 * @param contextParam the "context" from which any param path information
+	 *            should be retrieved
+	 * @param targetParam the param to add the label to
+	 */
+	protected void validateAndAdd(LabelState labelState, Param<?> targetParam, Param<?> contextParam) {
+
+		// duplicate check the previous label assigned.
+		if (CollectionUtils.isNotEmpty(targetParam.getLabels())) {
+			if (targetParam.getLabels().stream().anyMatch(l -> l.getLocale().equals(labelState.getLocale()))) {
+				return;
+			}
+		}
+
+		// at-least one of Label text or helpText must be present
+		if (StringUtils.isEmpty(labelState.getText()) && StringUtils.isEmpty(labelState.getHelpText()))
+			throw new InvalidConfigException(
+					"Label must have non empty values for at least label text value or help text,"
+							+ " found none for \"" + targetParam.getConfig().getCode() + "\" in Param: " + targetParam
+							+ " with LabelState: " + labelState);
+
+		Set<LabelState> labels = new HashSet<>();
+		if (!CollectionUtils.isEmpty(targetParam.getLabels()))
+			labels.addAll(targetParam.getLabels());
+
+		if (targetParam.isCollection()) {
+			Map<String, Set<LabelState>> elemLabels = new HashMap<>();
+			ParamConfig<?> p = targetParam.getConfig().getType().findIfCollection().getElementConfig();
+
+			p.getType().findIfNested().getModelConfig().getParamConfigs().forEach(ec -> {
+
+				if (CollectionUtils.isNotEmpty(ec.getLabels())) {
+					Set<LabelState> listParamLabels = new HashSet<>();
+					ec.getLabels().forEach((label) -> {
+						listParamLabels.add(convert(label, contextParam));
+					});
+					elemLabels.put(ec.getId(), listParamLabels);
+				}
+			});
+
+			targetParam.findIfCollection().setElemLabels(elemLabels);
+		}
+
+		labels.add(labelState);
+		targetParam.setLabels(labels);
 	}
 }

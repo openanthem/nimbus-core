@@ -1,11 +1,7 @@
 <nm-message messageContext="{{element?.message.context}}"  [messageArray]="element?.message.messageArray" [life]="element?.message.life" *ngIf="element?.message"></nm-message>
 <div class="card-holder" id="{{code}}" [ngClass]="styleWd" *ngIf="visible==true">
 		<div class="card-header">
-			<!--check for title label to render the header-->
-			<!-- <h2 class="card-title {{imgSrc}}" *ngIf="element?.config?.labelConfigs?.length > 0 && label != '' ">
-				{{label}} 
-			</h2> -->
-			<nm-label *ngIf="labelConfig?.text != ''" [labelConfig]="labelConfig" [size]="labelSize" [labelClass]="imgSrc + ' card-title'"></nm-label>
+			<nm-label *ngIf="!isLabelEmpty" [element]="element" [size]="labelSize" [labelClass]="imgSrc + ' card-title'"></nm-label>
 			<ng-template ngFor let-element [ngForOf]="nestedParams">
 				<!-- ButtonGroup -->
 				<ng-template [ngIf]="element.alias == componentTypes.buttonGroup.toString()">
