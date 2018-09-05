@@ -47,9 +47,9 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR, WebContentSvc, ControlSubscribers],
     template: ` 
                 <nm-input-label *ngIf="!isLabelEmpty && (hidden != true)"
-                [element]="element" 
-                [for]="element.config?.code" 
-                [required]="requiredCss">
+                    [element]="element" 
+                    [for]="element.config?.code" 
+                    [required]="requiredCss">
                 </nm-input-label>
                 <p-inputSwitch 
                     [ngClass]="orientation" 
@@ -61,12 +61,18 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
              `
 })
 export class InputSwitch extends BaseControl<boolean> {
+
      @ViewChild(NgModel) model: NgModel;
     constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd: ChangeDetectorRef) {
         super(controlService, wcs, cd);
     }
     get orientation(): string {
-        return this.element.config.uiStyles.attributes.orientation === 'RIGHT' ? 'right' : 'left';
+        if(this.element.config.uiStyles.attributes.orientation === 'DEFAULT') {
+            return "";
+        }
+        else {
+        return this.element.config.uiStyles.attributes.orientation === 'LEFT' ? 'left' : 'right';
+        }
     }
 
 }

@@ -498,7 +498,8 @@ public class ViewConfig {
 	public @interface InputSwitch {
 		public enum Type {
 			LEFT,
-			RIGHT
+			RIGHT,
+			DEFAULT
 		}
 		String alias() default "InputSwitch";
 		
@@ -508,7 +509,7 @@ public class ViewConfig {
 		
 		boolean postEventOnChange() default false;
 		
-		InputSwitch.Type orientation() default InputSwitch.Type.RIGHT;
+		InputSwitch.Type orientation() default InputSwitch.Type.DEFAULT;
 	}
 
 	/**
