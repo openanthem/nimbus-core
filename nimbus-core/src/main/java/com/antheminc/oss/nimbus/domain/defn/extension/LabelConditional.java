@@ -25,48 +25,56 @@ import java.lang.annotation.Target;
 
 import com.antheminc.oss.nimbus.domain.Event;
 import com.antheminc.oss.nimbus.domain.RepeatContainer;
-import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateChange;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
+import com.antheminc.oss.nimbus.domain.defn.extension.Content.Label;
 
 /**
- * This annotation is used to provide control and management over the
- * {@code Values} property of a param's state through the use of conditional
- * SpEL statements. <br>
+ * <p> {@link LabelConditional} is an extension capability provided by the
+ * framework. The annotation is used to conditionally set the label property on
+ * the param represented by the decorated field based on a SpEL condition. The
+ * Framework provides default event handling for this annotation during the
+ * {@link OnStateLoad} and {@link OnStateChange} events.
  * 
- * <p> 1. Update the values of {@code statusReason} from {@code SR_ALL.class} to
- * {@code SR_A.class} when the value of {@code status} is 'A'.
+ * <p> The following sample code shows how to configure a field using
+ * {@link LabelConditional} by setting the label properties of the param
+ * represented by {@code input2} based on the state of {@code input1}.
  * 
- * <pre> &#64;ValuesConditional(target = "../statusReason", condition = {
- * &#64;Condition(when = "state == 'A'", then = &#64;Values(SR_A.class)) })
- * private String status;
+ * <pre>
+ * &#64;Label("Enter the value 'TEST' to change the label for input2 below")
+ * &#64;TextBox(postEventOnChange = true)
+ * &#64;LabelConditional(targetPath = "/../input2", condition = {
+ * 		&#64;Condition(when = "state != 'TEST'", then = &#64;Label("New Input 2 Label")) })
+ * private String input1;
  * 
- * &#64;Values(SR_ALL.class) private String statusReason; </pre>
+ * &#64;Label("Input 2")
+ * private String input2;
+ * </pre>
  * 
- * <p> 2. Set multiple conditions and even override conditions by setting the
- * {@code exclusive} property. In this case, it is possible to give priority to
- * the last conditional checking for state 'A'.
+ * <p>In this scenario, {@code input2} will display a default label value of
+ * {@code "Input 2"} on page load. When the state of {@code input1} is changed
+ * to {@code "TEST"}, the label displayed for {@code input2} will read as
+ * {@code "New Input 2 Label"}.
  * 
- * <pre> &#64;ValuesConditional(target = "../statusReason", condition = {
- * &#64;Condition(when = "state=='A'", then = &#64;Values(SR_A.class))
- * &#64;Condition(when = "state=='B'", then = &#64;Values(SR_B.class))
- * &#64;Condition(when = "state=='A'", then = &#64;Values(SR_C.class)) })
- * private String status;
+ * <p>Multiple labels can be provided to the {@link Condition#then()} attribute
+ * to support internationalization.
  * 
- * &#64;Values(SR_ALL.class) private String statusReason; </pre>
+ * <p> This annotation can be triggered for multiple events by providing one or
+ * more {@link Condition} annotations within {@code targetPath} and/or multiple
+ * {@link LabelConditional} annotations.
  * 
  * @author Tony Lopez
- * @since 1.0
- * @see com.antheminc.oss.nimbus.domain.model.state.extension.ValuesConditionalStateEventHandler
- *
+ * @since 1.1
+ * @see com.antheminc.oss.nimbus.domain.defn.extension.LabelConditionals
+ * @see com.antheminc.oss.nimbus.domain.model.state.extension.LabelConditionalStateEventHandler
  */
 @Documented
 @Retention(RUNTIME)
 @Target(FIELD)
-@Repeatable(ValuesConditionals.class)
+@Repeatable(LabelConditionals.class)
 @OnStateChange
 @OnStateLoad
-public @interface ValuesConditional {
+public @interface LabelConditional {
 
 	@Documented
 	@Retention(RUNTIME)
@@ -75,11 +83,11 @@ public @interface ValuesConditional {
 	public @interface Condition {
 
 		/**
-		 * <p>{@link Values} configuration to be applied to the param identified
-		 * by the {@code target} path when this condition's {@link #when()}
-		 * clause is found to be true.
+		 * <p>The {@link Label} object(s) to assign to the param(s) identified
+		 * by {@code targetPath} when this condition's {@link #when()} is
+		 * {@code true}.
 		 */
-		Values then();
+		Label[] then();
 
 		/**
 		 * <p>SpEL based condition to be evaluated relative to param's state on
@@ -128,24 +136,8 @@ public @interface ValuesConditional {
 	int order() default Event.DEFAULT_ORDER_NUMBER;
 
 	/**
-	 * <p>Whether or not to reset the state of the target field when the
-	 * associated &#64;{@code Values} property is updated.
-	 * 
-	 * <p>If a condition is truthy and {@code resetOnChange} is {@code false},
-	 * then state will be attempt to be preserved. State is preserved in this
-	 * scenario only if the value of state is found within the newly updated
-	 * {@code &#64;Values} property. If it is not found, the state will be
-	 * reset.
-	 * 
-	 * <p>If {@code resetOnChange} is {@code true}, state will always be reset
-	 * on change.
-	 * 
-	 * <p>The default value is {@code true}.
-	 */
-	boolean resetOnChange() default true;
-
-	/**
-	 * <p>The target path relative to the this annotated field to update.
+	 * <p>Path of param to enable when condition is satisfied relative to param
+	 * on which this annotation is declared
 	 */
 	String targetPath();
 }

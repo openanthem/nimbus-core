@@ -91,7 +91,7 @@ public class AuditStateChangeHandler implements OnStateChangeHandler<Audit> {
 	}
 	
 	@Override
-	public void handle(Audit configuredAnnotation, ExecutionTxnContext txnCtx, ParamEvent event) {
+	public void onStateChange(Audit configuredAnnotation, ExecutionTxnContext txnCtx, ParamEvent event) {
 		LeafParam<?> leafParam = 
 				Optional.ofNullable(event).map(ParamEvent::getParam).filter(Param::isLeafOrCollectionWithLeafElems).map(Param::findIfLeaf)
 					.orElseThrow(()->new InvalidConfigException("Auditing supported for Leaf parameters, but found configuration for paramEvent: "+ event));

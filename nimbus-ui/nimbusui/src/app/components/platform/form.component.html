@@ -1,5 +1,5 @@
 <form id="{{formId}}" [formGroup]="form" novalidate>
-    <nm-label *ngIf="labelConfig?.text" [labelConfig]="labelConfig" [size]="labelSize"></nm-label>
+    <nm-label *ngIf="!isLabelEmpty" [element]="element" [size]="labelSize"></nm-label>
 
     <!-- Render form elements -->
     <ng-template [ngIf] = "formModel.length > 0">

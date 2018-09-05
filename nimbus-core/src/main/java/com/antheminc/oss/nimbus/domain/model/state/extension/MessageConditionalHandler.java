@@ -16,7 +16,7 @@ import com.antheminc.oss.nimbus.domain.model.state.StateHolder.ParamStateHolder;
  *
  */
 
-public class MessageConditionalHandler extends AbstractConditionalStateEventHandler.EvalExprWithCrudActions<MessageConditional> {
+public class MessageConditionalHandler extends EvalExprWithCrudActions<MessageConditional> {
 
 	public MessageConditionalHandler(BeanResolverStrategy beanResolver) {
 		super(beanResolver);

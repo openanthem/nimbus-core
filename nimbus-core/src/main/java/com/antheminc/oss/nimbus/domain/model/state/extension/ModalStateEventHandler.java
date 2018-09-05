@@ -32,7 +32,7 @@ import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 public class ModalStateEventHandler implements OnStateLoadHandler<Modal> {
 
 	@Override
-	public void handle(Modal configuredAnnotation, Param<?> param) {
+	public void onStateLoad(Modal configuredAnnotation, Param<?> param) {
 		param.setVisible(configuredAnnotation.context().visible());
 		param.setEnabled(configuredAnnotation.context().enabled());
 	}
