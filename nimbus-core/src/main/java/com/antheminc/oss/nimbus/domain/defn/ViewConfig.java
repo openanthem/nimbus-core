@@ -485,10 +485,17 @@ public class ViewConfig {
 	/**
 	 * <p><b>Expected Field Structure</b>
 	 * 
-	 * <p>InputSwitch will be rendered when annotating a field nested under
-	 * one of the following components: <ul> <li>{@link Form}</li> <li>{@link Section}</li></ul>
+	 * <p>InputSwitch will be rendered when annotating a field nested under one of the
+	 * following components: <ul><li>{@link Form}</li> <li>{@link Section}</li></ul>
 	 * 
 	 * <p>InputSwitch should decorate a field having a simple type.
+	 * 
+	 * <p>If no orientation is specified, it's considered as DEFAULT. On the need basis
+	 * orientation can be supplied as the LEFT or RIGHT.
+	 * 
+	 * <br>orientation description: <ul><li>DEFAULT orientation places the component right next
+	 * to the Label.</li> <li>LEFT orientation places the component left to the Label.</li> <li>RIGHT
+	 * orientation places the component little away from the Label.</li></ul>
 	 * 
 	 * @since 1.1
 	 */

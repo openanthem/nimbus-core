@@ -34,8 +34,14 @@ import { BaseControl } from './base-control.component';
  *   	@Label("Hippa Verified?")
  *      private boolean hippaVerified;
  * 
- *      Default orientation is RIGHT, that places the label followed by InputSwitch. 
- *      It can be changed as LEFT when needed.
+ *      If no orientation is specified, it's considered as DEFAULT.
+ *      On the need basis orientation can be supplied as the LEFT or RIGHT.
+ * 
+ *      orientation description:
+ *          DEFAULT orientation places the component right next to the Label.
+ *          LEFT orientation places the component left to the Label.
+ *          RIGHT orientation places the component little away from the Label.
+ *      
  */
 export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     provide: NG_VALUE_ACCESSOR,
@@ -63,16 +69,21 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 export class InputSwitch extends BaseControl<boolean> {
 
      @ViewChild(NgModel) model: NgModel;
-    constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd: ChangeDetectorRef) {
-        super(controlService, wcs, cd);
-    }
-    get orientation(): string {
-        if(this.element.config.uiStyles.attributes.orientation === 'DEFAULT') {
-            return "";
-        }
-        else {
-        return this.element.config.uiStyles.attributes.orientation === 'LEFT' ? 'left' : 'right';
-        }
-    }
+     constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd: ChangeDetectorRef) {
+         super(controlService, wcs, cd);
+     }
+     get orientation(): string {
+         let style = this.element.config.uiStyles.attributes.orientation;
+
+         if (style === 'LEFT') {
+             return "left";
+         }
+         else if (style === 'RIGHT') {
+             return "right";
+         }
+         else {
+             return "";
+         }
+     }
 
 }
