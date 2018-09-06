@@ -83,6 +83,14 @@ public class ValuesConditionalStateEventHandler extends EvalExprWithCrudDefaults
 	 * @param targetParam the entity to set the values within
 	 */
 	protected void afterExecute(Param<?> targetParam) {
+
+		// If the target param is not enabled, skip the state processing. In
+		// other words, we don't want ValuesConditional to affect the state of
+		// the targetParam when it is not in an "enabled" state.
+		if (!targetParam.isEnabled()) {
+			return;
+		}
+
 		if (isResetOnChange()) {
 			targetParam.setState(null);
 		} else {
