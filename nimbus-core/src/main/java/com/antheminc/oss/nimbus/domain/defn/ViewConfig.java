@@ -1339,6 +1339,8 @@ public class ViewConfig {
 		String page() default "";
 
 		String url() default "";
+		
+		Image.Type imgType() default Image.Type.FA;
 	}
 
 	/**

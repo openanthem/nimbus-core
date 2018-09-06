@@ -7,7 +7,7 @@
             <span class="{{param.config?.uiStyles?.attributes?.cssClass}}" *ngFor="let field of param?.type?.model?.params">
                 <!-- ButtonGroup -->
                 <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.buttonGroup.toString()">
-                    <div class="pull-right">
+                    <div class="float-right">
                         <nm-button-group [buttonList]="field.type?.model?.params" [cssClass]="field.config?.uiStyles?.attributes?.cssClass">
                         </nm-button-group>
                     </div>
