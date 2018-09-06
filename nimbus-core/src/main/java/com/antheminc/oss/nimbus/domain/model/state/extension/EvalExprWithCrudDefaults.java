@@ -150,11 +150,6 @@ public abstract class EvalExprWithCrudDefaults<A extends Annotation> extends Eva
 
 		handleInternal(onChangeParam, targetPath, targetParam -> {
 
-			// if the target param is not enabled, skip the processing
-			if (!targetParam.isEnabled()) {
-				return;
-			}
-
 			final boolean shouldExecuteDefault = !this.executeConditional(configuredAnnotation, onChangeParam,
 					targetParam);
 
