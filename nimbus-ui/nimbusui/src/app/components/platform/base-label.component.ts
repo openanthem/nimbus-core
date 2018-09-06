@@ -18,9 +18,12 @@
 
 import { Component, Input } from '@angular/core';
 import { WebContentSvc } from '../../services/content-management.service';
+import { Param } from './../../shared/param-state';
+import { LabelConfig } from './../../shared/param-config';
+import { PageService } from './../../services/page.service';
 
 /**
- * \@author Purnachander.Mashetty
+ * \@author Tony Lopez
  * \@whatItDoes 
  * 
  * \@howToUse 
@@ -28,31 +31,70 @@ import { WebContentSvc } from '../../services/content-management.service';
  */
 @Component({
     selector: 'nm-base-label',
+    providers: [ PageService ],
     template:`
     `
 })
 
 export class BaseLabel {
 
-    @Input() position: number;
-    labelSize: String;
-    label: String;
-    
+    @Input() element: Param;
+    protected labelConfig: LabelConfig;
 
-    constructor(private wcs: WebContentSvc) {
+    constructor(private _wcs: WebContentSvc, private _pageService: PageService) {
+
     }
 
     ngOnInit() {
-        this.labelSize = this.getHeaderSize(this.position);
-        this.getHeaderSize(this.position);
+        this.loadLabelConfig(this.element);
+
+        // Update the labels when an update for the param comes back from the server.
+        this._pageService.eventUpdate$.subscribe(event => {
+            if(event.path == this.element.path) {
+                if (event.labels && event.labels.length !== 0) {
+                    this.loadLabelConfig(event);
+                }
+            }
+        });
     }
 
-    getHeaderSize(position) {
-        if (position > 6) {
-            return 'H6';
-        }
-        return 'H' + position;
+    /**	
+     * Retrieve the label config from the provided param and set it into this instance's labelConfig.
+     * @param param The param for which to load label content for.	
+     */	
+    protected loadLabelConfig(param: Param): void {	
+        this.labelConfig = this._wcs.findLabelContent(param);	
     }
-    
+
+    /**
+     * Get the tooltip help text for this element.
+     */
+    public get helpText(): string {
+        if (!this.labelConfig) {
+            return undefined;
+        }
+        return this.labelConfig.helpText;
+    }
+
+    /**
+     * Get the label text for this element.
+     */
+    public get label(): string {
+        if (!this.labelConfig) {
+            return undefined;
+        }
+        return this.labelConfig.text;
+    }
+
+    /**
+     * Get the css classes to apply for this element.
+     */
+    public getCssClass(): string {
+        let cssClass = '';
+        if (this.labelConfig && this.labelConfig.cssClass) {
+            cssClass = this.labelConfig.cssClass;
+        }
+        return cssClass;
+    }
 }
 

@@ -481,6 +481,62 @@ public class ViewConfig {
 		String cols() default "";
 
 	}
+	
+	/**
+	 * <p><b>Expected Field Structure</b>
+	 * 
+	 * <p>InputSwitch will be rendered when annotating a field nested under one of the
+	 * following components: <ul><li>{@link Form}</li> <li>{@link Section}</li></ul>
+	 * 
+	 * <p>InputSwitch should decorate a field having a simple type.
+	 * 
+	 * <p>If no orientation is specified, it's considered as DEFAULT. On the need basis
+	 * orientation can be supplied as the LEFT or RIGHT.
+	 * 
+	 * <br>orientation description: <ul><li>DEFAULT orientation places the component right next
+	 * to the Label.</li> <li>LEFT orientation places the component left to the Label.</li> <li>RIGHT
+	 * orientation places the component little away from the Label.</li></ul>
+	 * 
+	 * @since 1.1
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface InputSwitch {
+		
+		/**
+		 * Type of orientation.
+		 * 
+		 */
+		public enum Type {
+			LEFT,
+			RIGHT,
+			DEFAULT
+		}
+		String alias() default "InputSwitch";
+		
+		String controlId() default "";
+		
+		/**
+		 * This field can be used to override cssClass
+		 * 
+		 */
+		String cssClass() default "";
+		
+		/**
+		 * postEventOnChange flag, by default is false. 
+		 * When it's set to true, posts the state changes on this component to the server.
+		 * 
+		 */
+		boolean postEventOnChange() default false;
+		
+		/**
+		 * It describes the Type of orientation, Accepted values can be InputSwitch.Type.LEFT, 
+		 * InputSwitch.Type.RIGHT, InputSwitch.Type.DEFAULT
+		 * 
+		 */
+		InputSwitch.Type orientation() default InputSwitch.Type.DEFAULT;
+	}
 
 	/**
 	 * <p><b>Expected Field Structure</b>
@@ -1753,6 +1809,7 @@ public class ViewConfig {
 		 * <p>This can be used to apply additional styling, if necessary.
 		 */
 		String cssClass() default "";
+		String scriptName() default "";
 		/**
 		 * <p>The width of the signature canvas. 
 		 */

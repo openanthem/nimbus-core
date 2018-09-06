@@ -27,7 +27,7 @@ import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
  *
  */
 @EnableLoggingInterceptor
-public class EnableConditionalStateEventHandler extends AbstractConditionalStateEventHandler.EvalExprWithCrudActions<EnableConditional> {
+public class EnableConditionalStateEventHandler extends EvalExprWithCrudActions<EnableConditional> {
 
 	public EnableConditionalStateEventHandler(BeanResolverStrategy beanResolver) {
 		super(beanResolver);

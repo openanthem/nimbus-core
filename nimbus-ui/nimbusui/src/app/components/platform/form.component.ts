@@ -17,7 +17,7 @@
 'use strict';
 import { WebContentSvc } from './../../services/content-management.service';
 import { Component, Input, OnInit, OnChanges, SimpleChanges, SimpleChange } from '@angular/core';
-import { FormGroup, Validators, ValidatorFn } from '@angular/forms';
+import { FormGroup, ValidatorFn } from '@angular/forms';
 import { FormElementsService } from './form-builder.service';
 import { PageService } from '../../services/page.service';
 import { ValidationUtils } from './validators/ValidationUtils';

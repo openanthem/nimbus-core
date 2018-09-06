@@ -90,7 +90,8 @@ export class ComponentTypes extends Enum<string> {
   public static readonly plain = new Enum('PLAIN');
   public static readonly destructive = new Enum('DESTRUCTIVE');
   public static readonly toast = new Enum('TOAST');
-
+  public static readonly inputSwitch = new Enum('InputSwitch');
+  
   static attributeList(): String[] {
     const keys = Object.keys(ComponentTypes);
     return keys;

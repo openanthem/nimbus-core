@@ -18,6 +18,7 @@ package com.antheminc.oss.nimbus.test.domain.mock;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -59,6 +60,7 @@ public class MockParam implements Param<Object> {
 	private List<MappedParam<?, Object>> eventSubscribers = new ArrayList<>();
 	private LockTemplate lockTemplate = null;
 	private Set<Message> messages = new HashSet<>();
+	private Set<LabelState> labels = new HashSet<>();
 	private Map<String, Model<Object>> modelMap = new HashMap<>();
 	private Map<String, Param<Object>> paramMap = new HashMap<>();
 	private Model<Object> parentModel = null;
