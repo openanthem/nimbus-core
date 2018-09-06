@@ -73,7 +73,8 @@ public class ValuesConditionalStateEventHandlerTest {
 		@Override
 		public List<ParamValue> getValues(String paramCode) {
 			final List<ParamValue> values = new ArrayList<>();
-			values.add(new ParamValue("foo", "bar"));
+			values.add(new ParamValue("foo", "foo"));
+			values.add(new ParamValue("bar", "bar"));
 			return values;
 		}
 	}
@@ -283,22 +284,26 @@ public class ValuesConditionalStateEventHandlerTest {
 		final ParamEvent event = Mockito.mock(ParamEvent.class);
 		final MockParam decoratedParam = new MockParam();
 		final MockParam targetParam = new MockParam();
-		
+		targetParam.setState("bar");
 		targetParam.setEnabled(false);
 		((MockParamConfig) targetParam.getConfig()).setValues(defaultValues);
-		
 		decoratedParam.putParam(targetParam, "../targetParam");
+		
+		List<ParamValue> expectedValues = new SAMPLE_VALUES().getValues(null);
 		
 		Mockito.when(event.getAction()).thenReturn(Action._update);
 		Mockito.when(event.getParam()).thenReturn((Param) decoratedParam);
 		Mockito.when(this.expressionEvaluator.getValue(Mockito.eq("condition1expr"), Mockito.isA(ParamStateHolder.class), Mockito.eq(Boolean.class))).thenReturn(true);
-		Mockito.when(this.defaultParamValuesHandler.buildParamValues(defaultValues, decoratedParam, targetParam)).thenReturn(null);
+		Mockito.when(this.defaultParamValuesHandler.buildParamValues(condition1.then(), decoratedParam, targetParam)).thenReturn(expectedValues);
 		
 		this.testee.onStateChange(configuredAnnotation, null, event);
 		
 		Mockito.verify(event).getParam();
 		
-		Assert.assertNull(targetParam.getValues());
+		// Validate values are still as expected
+		Assert.assertEquals(expectedValues, targetParam.getValues());
+		// Validate state is preserved
+		Assert.assertEquals("bar", targetParam.getLeafState());
 	}
 	
 	private Condition createCondition(String when, Values then) {
