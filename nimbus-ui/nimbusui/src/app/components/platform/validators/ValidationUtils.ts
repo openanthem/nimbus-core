@@ -82,7 +82,13 @@ export class ValidationUtils {
           }
           else if (validator.name === ValidationConstraint._zip.value) {
             return CustomValidators.isZip;
-          }    
+          }
+          else if (validator.name === ValidationConstraint._past.value) {
+            return CustomValidators.past;
+          }
+          else if (validator.name === ValidationConstraint._future.value) {
+            return CustomValidators.future;
+          }           
     }
 
     static createRequired(element:Param, groups: String[]) :boolean {

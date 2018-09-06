@@ -20,6 +20,7 @@ import { Component, forwardRef, ViewChild, ChangeDetectorRef } from '@angular/co
 import { WebContentSvc } from '../../../../services/content-management.service';
 import { BaseControl } from './base-control.component';
 import { ControlSubscribers } from './../../../../services/control-subscribers.service';
+import { ValidationConstraint } from '../../../../shared/validationconstraints.enum';
 
 /**
  * \@author Sandeep Mantha
@@ -59,6 +60,8 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
             [yearNavigator]="element.config?.uiStyles?.attributes?.yearNavigator"
             [readonlyInput]="element.config?.uiStyles?.attributes?.readonlyInput"
             [yearRange]="element.config?.uiStyles?.attributes?.yearRange"
+            [maxDate]="getPast()"
+            [minDate]="getFuture()"
             [disabled]="disabled">
         </p-calendar>
    `
@@ -74,5 +77,23 @@ export class Calendar extends BaseControl<Date> {
     // ngOnInit(){
  
     // }
+    public getPast():Date {
+        let constraint = this.getConstraint(ValidationConstraint._past.value);
+        if(constraint) {
+             return new Date();
+        } else {
+            return;
+        }
 
+    }
+
+    public getFuture():Date {
+        let constraint = this.getConstraint(ValidationConstraint._future.value);
+        if(constraint) {
+             return new Date();
+        } else {
+            return;
+        }
+
+    }
 }
