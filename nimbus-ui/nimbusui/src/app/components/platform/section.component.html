@@ -69,6 +69,10 @@
             <ng-template [ngIf]="element.alias == componentTypes.comboBox.toString()">
                 <nm-comboBox id="{{code}}" [element]="element" [(ngModel)]="element.leafState"></nm-comboBox>
             </ng-template>
+            <!--InputSwitch -->
+            <ng-template [ngIf]="element.alias == componentTypes.inputSwitch.toString()">
+                <nm-input-switch id="{{code}}" [element]="element" [(ngModel)]="element.leafState"></nm-input-switch>
+            </ng-template>
         </ng-template>
     </ng-template>
 </div>
