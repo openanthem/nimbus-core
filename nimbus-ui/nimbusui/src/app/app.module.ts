@@ -49,19 +49,20 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { WindowRefService } from './services/window-ref.service';
 import { HeaderCheckBox } from './components/platform/form/elements/header-checkbox.component';
 import { AngularSvgIconModule } from 'angular-svg-icon';
+import {ToastModule} from 'primeng/toast';
 
 // Platform Imports
 // Components
 import { LayoutService } from './services/layout.service';
 import { ContentContainer } from './components/platform/content/content-container.component';
 import { BaseElement } from './components/platform/base-element.component';
-import { BaseLabel } from './components/platform/base-label.component';
 import { AppComponent }  from './app.component';
 import { Tile }  from './components/platform/tile.component';
 import { Section } from './components/platform/section.component';
 import { Header } from './components/platform/content/header.component';
 import { Form }  from './components/platform/form.component';
 import { FormElement }  from './components/platform/form-element.component';
+import { FormGridFiller } from './components/platform/form/form-grid-filler.component';
 import { Image } from './components/platform/image.component';
 import { Paragraph } from './components/platform/content/paragraph.component';
 import { Value } from './components/platform/form/elements/value.component';
@@ -102,6 +103,7 @@ import { Calendar } from './components/platform/form/elements/calendar.component
 import { NavMenuGlobal } from './components/platform/globalNavMenu/nav-global-menu.component';
 import { MessageComponent } from './components/platform/message/message.component';
 import { ActionTray } from './components/platform/actiontray.component';
+import { BaseLabel } from './components/platform/base-label.component';
 import { Label } from './components/platform/content/label.component';
 import { InputLabel } from './components/platform/form/elements/input-label.component';
 // Services
@@ -113,6 +115,7 @@ import { ServiceConstants } from "./services/service.constants";
 import { AppInitService } from "./services/app.init.service";
 import { LoggerService } from './services/logger.service';
 import { RouteService } from './services/route.service';
+import { MessageService } from 'primeng/api';
 // Routes
 import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app.routing.module';
@@ -190,10 +193,11 @@ export function init_app(appinitservice: AppInitService) {
         KeyFilterModule,
         StorageServiceModule,
         AngularSvgIconModule,
+        ToastModule
     ],
     declarations: [ AppComponent, STOMPStatusComponent, FlowWrapper, PageContent, PageNotfoundComponent, StaticText,
         Tile, Section, Header, Form, FormElement, InputText, ComboBox, RadioButton, Signature, DateControl, CheckBoxGroup,
-        InPlaceEditorComponent, Paragraph, Value, BaseElement,
+        InPlaceEditorComponent, Paragraph, Value, BaseElement, FormGridFiller, 
         MultiselectCard, Link, Menu, CardDetailsComponent, CardDetailsFieldGroupComponent, CardDetailsFieldComponent, CardDetailsGrid, FieldValue,
         Accordion, AccordionTab, FrmGroupCmp, Button, ButtonGroup, FilterButton, OrderablePickList,
         STOMPStatusComponent, InfiniteScrollGrid, DataTable, SubHeaderCmp, TextArea, LandingPage,
@@ -206,7 +210,7 @@ export function init_app(appinitservice: AppInitService) {
         KeysPipe, LinkPipe, DateTimeFormatPipe, SelectItemPipe, MultiSelectListBox, 
         CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent, Calendar, NavMenuGlobal, LoaderComponent, MessageComponent,
         HeaderCheckBox, SvgComponent, SvgDefinitions, ActionTray, SubDomainFlowCmp, Image, NmPanelMenu,NmPanelMenuSub, MenuRouterLinkActive, 
-        MenuRouteLink, Label, InputLabel, BaseLabel
+        MenuRouteLink, BaseLabel, Label, InputLabel
     ],
     entryComponents: [ FlowWrapper, PageContent, PageNotfoundComponent, LoginCmp, HomeLayoutCmp, SubDomainFlowCmp],
     providers: [ PageService, ConfigService, WebContentSvc, HttpClient,  HttpClientModule, AppInitService,
@@ -219,7 +223,8 @@ export function init_app(appinitservice: AppInitService) {
          { provide: ErrorHandler, useClass: CustomErrorHandler },
          { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
          SessionStoreService,
-         AuthenticationService, BreadcrumbService, LoaderService, FileService, LayoutService, WindowRefService, LoggerService, RouteService ],
+         AuthenticationService, BreadcrumbService, LoaderService, FileService, LayoutService, WindowRefService, LoggerService, 
+         RouteService, MessageService ],
     bootstrap: [ AppComponent ]
 })
 export class AppModule { }

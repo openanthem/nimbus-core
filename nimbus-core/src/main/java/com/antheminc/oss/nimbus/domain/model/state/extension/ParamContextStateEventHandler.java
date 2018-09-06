@@ -31,7 +31,7 @@ import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 public class ParamContextStateEventHandler implements OnStateLoadHandler<ParamContext> {
 
 	@Override
-	public void handle(ParamContext configuredAnnotation, Param<?> param) {
+	public void onStateLoad(ParamContext configuredAnnotation, Param<?> param) {
 		param.setVisible(configuredAnnotation.visible());
 		param.setEnabled(configuredAnnotation.enabled());
 	}

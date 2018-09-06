@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import javax.validation.Constraint;
@@ -47,6 +48,8 @@ import com.antheminc.oss.nimbus.domain.defn.Model;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.ViewParamBehavior;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.ViewStyle;
+import com.antheminc.oss.nimbus.domain.defn.extension.Content.Label;
+import com.antheminc.oss.nimbus.domain.defn.extension.Contents.Labels;
 import com.antheminc.oss.nimbus.domain.model.config.AnnotationConfig;
 import com.antheminc.oss.nimbus.domain.model.config.EventHandlerConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ExecutionConfig;
@@ -462,6 +465,13 @@ abstract public class AbstractEntityConfigBuilder {
 		EventHandlerConfig eventConfig = eventHandlerConfigFactory.build(f);
 		created.setEventHandlerConfig(eventConfig);
 		
+		// TODO : Add Validations for dup check of labels
+		if(AnnotatedElementUtils.isAnnotated(f, Label.class) || AnnotatedElementUtils.isAnnotated(f, Labels.class)) {
+			Set<Label> labelConfigs = AnnotationUtils.getRepeatableAnnotations(f, Label.class, Labels.class);	
+			created.setLabels(labelConfigs);
+		}
+		
+		//TODO : v2.0 add validations for configs in post processor
 		return decorateParam(mConfig, created, visitedModels);
 	}
 	

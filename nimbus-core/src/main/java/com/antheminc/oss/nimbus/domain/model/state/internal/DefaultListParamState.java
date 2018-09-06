@@ -16,7 +16,9 @@
 package com.antheminc.oss.nimbus.domain.model.state.internal;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -347,6 +349,18 @@ public class DefaultListParamState<T> extends AbstractListPaginatedParam<T> impl
 	}
 	
 	@Override
+	public boolean addAll(List<T> elems) {
+		if (null == elems) {
+			return true;
+		}
+		
+		for(T elem : elems) {
+			add(elem);
+		}
+		return true;
+	}
+	
+	@Override
 	public boolean add(T elem) {
 		clearPageMeta();
 		//ListElemParam<T> pColElem = add();
@@ -414,5 +428,20 @@ public class DefaultListParamState<T> extends AbstractListPaginatedParam<T> impl
 	@Override
 	public MappedListParam<T, ?> findIfMapped() {
 		return null;
+	}
+	
+	private Map<String, Set<LabelState>> elemLabels;
+	
+	@Override
+	public Map<String, Set<LabelState>> getElemLabels() {
+		return this.elemLabels;
+	}
+
+	@Override
+	public void setElemLabels(Map<String, Set<LabelState>> elemLabels) {
+		if(getElemLabels()==elemLabels) {
+			return;
+		}
+		this.elemLabels = elemLabels;
 	}
 }

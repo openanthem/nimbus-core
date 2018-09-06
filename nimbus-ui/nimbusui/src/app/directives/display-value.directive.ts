@@ -43,7 +43,7 @@ export class DisplayValueDirective {
         if (this.config && this.config.uiStyles.attributes.applyValueStyles) {
             this.renderer.addClass(this.el.nativeElement, this.config.code); // Field Name
             if (this.displayValue && this.displayValue.trim() != '') {
-                this.renderer.addClass(this.el.nativeElement, this.displayValue); // Field Value
+                this.renderer.addClass(this.el.nativeElement, this.getValue(this.displayValue)); // Field Value
             } else {
                 this.renderer.addClass(this.el.nativeElement, DisplayValueDirective.placeholder); // placeholder Value
             }
@@ -59,14 +59,22 @@ export class DisplayValueDirective {
             if (changes.displayValue.previousValue === undefined) {
                 this.renderer.removeClass(this.el.nativeElement, DisplayValueDirective.placeholder);
             } else {
-                this.renderer.removeClass(this.el.nativeElement, changes.displayValue.previousValue);
+                this.renderer.removeClass(this.el.nativeElement, this.getValue(changes.displayValue.previousValue));
             }
             // Add current value styles
-            if (changes.displayValue.currentValue === undefined) {
+            if (changes.displayValue.currentValue === undefined || changes.displayValue.currentValue.trim() === '') {
                 this.renderer.addClass(this.el.nativeElement, DisplayValueDirective.placeholder);
             } else {
-                this.renderer.addClass(this.el.nativeElement, changes.displayValue.currentValue);
+                this.renderer.addClass(this.el.nativeElement, this.getValue(changes.displayValue.currentValue));
             }
         }
+    }
+
+    /*
+        Remove spaces from value since style class cannot take spaces
+     */
+    getValue(str: string): string {
+        var re = / /gi; 
+        return str.replace(re, ""); 
     }
 }

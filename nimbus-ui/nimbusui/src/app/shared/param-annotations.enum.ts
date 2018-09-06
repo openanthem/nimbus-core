@@ -26,6 +26,7 @@ export class ViewComponent extends Enum<string> {
     public static readonly tile = new Enum('Tile');
     public static readonly section = new Enum('Section');
     public static readonly form = new Enum('Form');
+    public static readonly formElementGroup = new Enum('FormElementGroup');
     public static readonly link = new Enum('Link');
     public static readonly linkMenu = new Enum('LinkMenu');
     public static readonly grid = new Enum('Grid');
@@ -60,6 +61,7 @@ export class ComponentTypes extends Enum<string> {
   public static readonly staticText = new Enum('StaticText');
   public static readonly fieldValueGroup = new Enum('FieldValueGroup');
   public static readonly header = new Enum('Header');
+  public static readonly formGridFiller = new Enum('FormGridFiller');
   public static readonly text = new Enum('text');
   public static readonly signature = new Enum('signature');
   public static readonly textarea = new Enum('textarea');
@@ -87,12 +89,8 @@ export class ComponentTypes extends Enum<string> {
   public static readonly secondary = new Enum('SECONDARY');
   public static readonly plain = new Enum('PLAIN');
   public static readonly destructive = new Enum('DESTRUCTIVE');
-  // public static readonly fieldValue = new Enum('FieldValue');
-  // public static readonly fieldValue = new Enum('FieldValue');
-  // public static readonly fieldValue = new Enum('FieldValue');
+  public static readonly toast = new Enum('TOAST');
 
-  
-  
   static attributeList(): String[] {
     const keys = Object.keys(ComponentTypes);
     return keys;

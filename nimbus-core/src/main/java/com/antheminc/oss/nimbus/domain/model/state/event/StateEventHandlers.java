@@ -44,14 +44,14 @@ public final class StateEventHandlers {
 	@EventHandler(OnStateLoad.class)
 	public interface OnStateLoadHandler<A extends Annotation> extends StateEventHandler<A> {
 		
-		public void handle(A configuredAnnotation, Param<?> param);
+		public void onStateLoad(A configuredAnnotation, Param<?> param);
 	}
 	
 	
 	@EventHandler(OnStateChange.class)
 	public interface OnStateChangeHandler<A extends Annotation> extends StateEventHandler<A> {
 		
-		public void handle(A configuredAnnotation, ExecutionTxnContext txnCtx, ParamEvent event);
+		public void onStateChange(A configuredAnnotation, ExecutionTxnContext txnCtx, ParamEvent event);
 	}
 	
 	

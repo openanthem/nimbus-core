@@ -57,7 +57,7 @@ import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
  * 
  * @author Tony Lopez
  * @since 1.0
- * @see com.antheminc.oss.nimbus.domain.model.state.extension.AbstractValuesConditionalStateEventHandler
+ * @see com.antheminc.oss.nimbus.domain.model.state.extension.ValuesConditionalStateEventHandler
  *
  */
 @Documented
@@ -147,5 +147,5 @@ public @interface ValuesConditional {
 	/**
 	 * <p>The target path relative to the this annotated field to update.
 	 */
-	String target();
+	String targetPath();
 }
