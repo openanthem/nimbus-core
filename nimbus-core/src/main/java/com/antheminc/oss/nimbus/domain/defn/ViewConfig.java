@@ -503,6 +503,11 @@ public class ViewConfig {
 	@Target({ElementType.FIELD})
 	@ViewStyle
 	public @interface InputSwitch {
+		
+		/**
+		 * Type of orientation.
+		 * 
+		 */
 		public enum Type {
 			LEFT,
 			RIGHT,
@@ -512,10 +517,24 @@ public class ViewConfig {
 		
 		String controlId() default "";
 		
+		/**
+		 * This field can be used to override cssClass
+		 * 
+		 */
 		String cssClass() default "";
 		
+		/**
+		 * postEventOnChange flag, by default is false. 
+		 * When it's set to true, posts the state changes on this component to the server.
+		 * 
+		 */
 		boolean postEventOnChange() default false;
 		
+		/**
+		 * It describes the Type of orientation, Accepted values can be InputSwitch.Type.LEFT, 
+		 * InputSwitch.Type.RIGHT, InputSwitch.Type.DEFAULT
+		 * 
+		 */
 		InputSwitch.Type orientation() default InputSwitch.Type.DEFAULT;
 	}
 
