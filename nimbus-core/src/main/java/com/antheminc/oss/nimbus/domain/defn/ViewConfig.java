@@ -1807,6 +1807,10 @@ public class ViewConfig {
 		 * <p>This can be used to apply additional styling, if necessary.
 		 */
 		String cssClass() default "";
+		/**
+		 * <p>Method name in app_scripts.js is provided in scripeName  and it will be triggered 
+		 * on click of Get updated signature button
+		 */
 		String scriptName() default "";
 		/**
 		 * <p>The width of the signature canvas. 
