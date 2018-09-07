@@ -49,6 +49,14 @@
                     [position]="position+1">
                 </nm-table>
             </ng-template>
+
+            <ng-template [ngIf]="element.alias == 'TreeGrid'">
+                <nm-treegrid
+                    [element]="element" 
+                    [params]="element?.config?.type?.elementConfig?.type?.model?.paramConfigs"
+                    >
+                </nm-treegrid>
+            </ng-template>
             <!--Other buttons. Refactor item : to be triggred based on the buttongroup annotation-->
             <ng-template [ngIf]="element.alias == viewComponent.button.toString() && element?.visible == true">
                 <div class="text-sm-right">

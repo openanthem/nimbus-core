@@ -188,7 +188,7 @@ public class ViewConfig {
 	@Target({ ElementType.FIELD })
 	@ViewStyle
 	public @interface TreeGrid {
-		String alias() default "treegrid";
+		String alias() default "TreeGrid";
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)

@@ -22,7 +22,7 @@ import { Injectable, EventEmitter, Inject } from '@angular/core';
 import { ServiceConstants } from './service.constants';
 import { ParamConfig, Validation } from '../shared/param-config';
 import { ModelEvent, Page, Result, ViewRoot } from '../shared/app-config.interface';
-import { Param, Model, Type, GridPage } from '../shared/param-state';
+import { Param, Model, Type, GridPage, TreeGridDeserializer } from '../shared/param-state';
 import { CustomHttpClient } from './httpclient.service';
 
 import { Subject, Observable } from 'rxjs';
@@ -60,6 +60,9 @@ export class PageService {
 
         gridValueUpdate = new Subject<Param>();
         gridValueUpdate$ = this.gridValueUpdate.asObservable();
+
+        treeListUpdate = new Subject();
+        treeListUpdate$ = this.treeListUpdate.asObservable();
 
         errorMessageUpdate = new Subject<ExecuteException>();
         errorMessageUpdate$ = this.errorMessageUpdate.asObservable();
@@ -763,7 +766,19 @@ export class PageService {
                         } else {
                                 this.traverseParam(param, eventModel);
                         }
-                } else {
+                }
+                else if (param.config.uiStyles != null && param.config.uiStyles.attributes.alias === 'TreeGrid') {
+
+                        var treeList = {"data": []}
+                        
+                        eventModel.value.type.model.params.forEach((param) => {
+                        if(param.leafState)
+                        treeList.data.push((new TreeGridDeserializer).deserialize(param.leafState));  
+                        });
+                      if(treeList.data.length != 0)
+                        this.treeListUpdate.next(treeList);
+                }
+                else {
                         this.traverseParam(param, eventModel);
                 }
         }

@@ -278,9 +278,65 @@ export class GridPage implements Serializable<GridPage, string> {
     first: boolean;
     numberOfElements: number;
 
-    deserialize( inJson) {   
+    deserialize(inJson) {
         var obj = this;
         obj = Converter.convert(inJson, obj);
         return obj;
     }
+}
+
+export class TreeGridDeserializer {
+
+    deserialize(arr, data?, children?) {
+
+        try {
+
+            var node: any = {}
+            node.data = {}
+
+            if (Array.isArray(arr) && arr) {
+                arr.forEach((p) => {
+                    Object.keys(p).map(e => {
+                        if (Array.isArray(p[e]) && p[e]) {
+
+                            node.children = [];
+                            p[e].forEach((obj) =>
+                                node.children.push(this.deserialize(obj, obj))
+                            );
+
+                        }
+                        else {
+                            node.data[e] = p[e];
+                        }
+                    });
+
+                });
+                return node;
+            }
+
+
+            else {
+
+                Object.keys(arr).map(e => {
+                    if (Array.isArray(arr[e]) && arr[e]) {
+                        node.children = [];
+                        arr[e].forEach((obj) =>
+                            node.children.push(this.deserialize(obj, obj))
+                        );
+                    }
+                    else {
+                        node.data[e] = arr[e];
+                    }
+                });
+                return node;
+
+            }
+
+        }
+        catch (e) {
+            console.log("Tree deserializer error", e);
+
+        }
+    }
+
 }
