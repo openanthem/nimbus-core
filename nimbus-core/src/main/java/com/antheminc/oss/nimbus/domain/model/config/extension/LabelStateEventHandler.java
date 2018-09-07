@@ -99,7 +99,7 @@ public class LabelStateEventHandler extends AbstractConfigEventHandler<Label> im
 	}
 
 	@Override
-	public void onStateLoad(Label configuredAnnotation, Param<?> param) {
+	public void handle(Label configuredAnnotation, Param<?> param) {
 		addLabelToState(configuredAnnotation, param);
 	}
 

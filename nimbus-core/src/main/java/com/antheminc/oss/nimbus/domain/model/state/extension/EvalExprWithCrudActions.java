@@ -43,12 +43,12 @@ public abstract class EvalExprWithCrudActions<A extends Annotation> extends Abst
 	}
 	
 	@Override
-	public void onStateLoad(A configuredAnnotation, Param<?> param) {
+	public void handle(A configuredAnnotation, Param<?> param) {
 		handleInternal(param, configuredAnnotation, StateEventType.ON_LOAD);
 	}
 	
 	@Override
-	public void onStateChange(A configuredAnnotation, ExecutionTxnContext txnCtx, ParamEvent event) {
+	public void handle(A configuredAnnotation, ExecutionTxnContext txnCtx, ParamEvent event) {
 		EnumSet<Action> validSet = EnumSet.of(Action._new, Action._update, Action._replace, Action._delete);
 		
 		if(!validSet.contains(event.getAction()))
