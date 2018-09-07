@@ -1808,8 +1808,8 @@ public class ViewConfig {
 		 */
 		String cssClass() default "";
 		/**
-		 * <p>Method name in app_scripts.js is provided in scripeName  and it will be triggered 
-		 * on click of Get updated signature button
+		 * <p>Method name from app_scripts.js is provided in scriptName, which will be triggered 
+		 * on click of "Get updated signature" button
 		 */
 		String scriptName() default "";
 		/**
