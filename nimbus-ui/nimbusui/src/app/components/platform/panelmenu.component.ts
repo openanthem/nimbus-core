@@ -71,7 +71,7 @@ export class NmBasePanelMenuItem {
                         [ngClass]="{'ui-state-disabled':child.disabled}" [attr.tabindex]="item.expanded ? null : '-1'" [attr.id]="child.id"
                         (click)="handleClick($event,child)" [attr.target]="child.target" [attr.title]="child.title">
                         <span class="ui-panelmenu-icon fa fa-fw" [ngClass]="{'fa-caret-right':!child.expanded,'fa-caret-down':child.expanded}" *ngIf="child.items"></span>
-                        <nm-image class='nm-panelmenu-headerimage' *ngIf="child.icon" [name]="child.icon" type="FA" [title]="" [cssClass]=""></nm-image>
+                        <nm-image class='nm-panelmenu-headerimage' *ngIf="child.icon" [name]="child.icon" [type]="child.imgType" [title]="" [cssClass]=""></nm-image>
                         <span class="ui-menuitem-text">{{child.label}}</span>
                     </a>
                     <nm-panelMenuSub [item]="child" [expanded]="child.expanded" *ngIf="child.items"></nm-panelMenuSub>
@@ -114,7 +114,7 @@ export class NmPanelMenuSub extends NmBasePanelMenuItem {
                            (click)="handleClick($event,item)" [attr.target]="item.target" [attr.title]="item.title" class="ui-panelmenu-header-link">
                         <span *ngIf="item.items" class="ui-panelmenu-icon fa fa-fw" [ngClass]="{'fa-caret-right':!item.expanded,'fa-caret-down':item.expanded}"></span
                         ><span class="ui-menuitem-text">{{item.label}}</span>
-                        <nm-image class='nm-panelmenu-headerimage' *ngIf="item.icon" [name]="item.icon" type="FA" [title]="" [cssClass]=""></nm-image>
+                        <nm-image class='nm-panelmenu-headerimage' *ngIf="item.icon" [name]="item.icon" [type]="item.imgType" [title]="" [cssClass]=""></nm-image>
                         </a>
                     </div>
                     <div *ngIf="item.items" class="ui-panelmenu-content-wrapper" [@rootItem]="item.expanded ? 'visible' : 'hidden'"  (@rootItem.done)="onToggleDone()"
