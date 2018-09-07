@@ -66,6 +66,14 @@ import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 @OnStateLoad
 public @interface EnableConditional {
 
+	/**	
+	 * <p>	
+	 * SpEL based condition on which param would be disabled. <br>	
+	 * If value is not overridden, then the negation of	
+	 * {@linkplain EnableConditional#when()} would be used	
+	 */	
+	String disableWhen() default "";
+	
 	/**
 	 * <p>The order of execution this annotation should be executed in, with
 	 * respect to other conditional annotations that are also decorating this
