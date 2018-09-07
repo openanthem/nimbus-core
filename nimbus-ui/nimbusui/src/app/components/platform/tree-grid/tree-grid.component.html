@@ -1,29 +1,27 @@
 <div style="text-align:center">
     <h1>
-      Welcome to Tree grid!
+        Welcome to Tree grid!
     </h1>
-  </div>
-  
-  <p-treeTable [value]="files">
+</div>
+
+<p-treeTable [value]="files">
     <ng-template pTemplate="header">
         <tr>
-            <ng-template ngFor let-col [ngForOf]="params">
-                <th>
-                    
-                    <span >{{col.header}}</span>
-                </th>
+            <th></th>
+            <ng-template ngFor let-col let-colIndex="index" [ngForOf]="params">
+                <th *ngIf="showHeader(col)">{{getLabelValue(col)}}</th>
             </ng-template>
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
         <tr>
             <td>
-                 <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
-                {{rowData.firstName}}
+                <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
             </td>
-            <td>{{rowData.lastName}}</td>
-            
-            <td><button>hit</button></td>
+            <ng-template ngFor let-col let-colIndex="index" [ngForOf]="params">
+                <td *ngIf="showColumn(col)">{{getCellDisplayValue(rowData, col)}}</td>
+            </ng-template>
+
         </tr>
     </ng-template>
-  </p-treeTable>
+</p-treeTable>

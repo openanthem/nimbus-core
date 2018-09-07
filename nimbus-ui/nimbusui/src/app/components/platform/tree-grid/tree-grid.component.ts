@@ -369,12 +369,33 @@ export class TreeGrid extends BaseElement  implements ControlValueAccessor {
 
 
 
+
+
+    getCellDisplayValue(rowData: any, col: ParamConfig) {
+        let cellData = rowData[col.code];
+        return cellData
+    }
+
+    showColumn(col: ParamConfig) {
+        if (col.uiStyles && col.uiStyles.attributes.hidden === false) {
+            return true;
+        } 
+        return false;
+    }
+
     showHeader(col: ParamConfig) {
         if (col.uiStyles && col.uiStyles.attributes.hidden === false &&
             col.uiStyles.attributes.alias === 'GridColumn') {
             return true;
-        }
+        } 
         return false;
+    }
+
+    getLabelValue(col: ParamConfig){
+
+        if(col.labelConfigs){
+            return col.labelConfigs[0].text;
+        }
     }
 }
 
