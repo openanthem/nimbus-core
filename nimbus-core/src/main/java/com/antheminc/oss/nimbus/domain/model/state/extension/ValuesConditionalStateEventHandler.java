@@ -65,9 +65,9 @@ public class ValuesConditionalStateEventHandler extends EvalExprWithCrudDefaults
 	}
 
 	@Override
-	public void onStateChange(ValuesConditional configuredAnnotation, ExecutionTxnContext txnCtx, ParamEvent event) {
+	public void handle(ValuesConditional configuredAnnotation, ExecutionTxnContext txnCtx, ParamEvent event) {
 		setResetOnChange(configuredAnnotation.resetOnChange());
-		super.onStateChange(configuredAnnotation, txnCtx, event);
+		super.handle(configuredAnnotation, txnCtx, event);
 	}
 
 	/**

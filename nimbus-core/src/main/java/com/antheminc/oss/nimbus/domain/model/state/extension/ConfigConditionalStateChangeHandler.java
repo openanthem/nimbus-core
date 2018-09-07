@@ -65,7 +65,7 @@ public class ConfigConditionalStateChangeHandler extends AbstractConditionalStat
 	}
 	
 	@Override
-	public void onStateChange(ConfigConditional configuredAnnotation, ExecutionTxnContext txnCtx, ParamEvent event) {
+	public void handle(ConfigConditional configuredAnnotation, ExecutionTxnContext txnCtx, ParamEvent event) {
 		init();
 		
 		boolean isTrue = evalWhen(event.getParam(), configuredAnnotation.when());

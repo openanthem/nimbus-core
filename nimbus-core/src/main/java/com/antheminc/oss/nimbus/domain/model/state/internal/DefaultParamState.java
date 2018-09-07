@@ -422,7 +422,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 				.forEach(ac->{
 					OnStateLoadHandler<Annotation> handler = eventHandlerConfig.getOnStateLoadHandler(ac);
 					if(handler.shouldAllow(ac, p)) {
-						handler.onStateLoad(ac, p);
+						handler.handle(ac, p);
 					}
 				});
 		}
@@ -441,7 +441,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 				.forEach(ac->{
 					OnStateChangeHandler<Annotation> handler = eventHandlerConfig.getOnStateChangeHandler(ac);
 					if(handler.shouldAllow(ac, p)) {
-						handler.onStateChange(ac, txnCtx, new ParamEvent(a, p));
+						handler.handle(ac, txnCtx, new ParamEvent(a, p));
 					}
 				});
 		}

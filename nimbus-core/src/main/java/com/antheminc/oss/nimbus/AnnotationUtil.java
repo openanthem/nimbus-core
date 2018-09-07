@@ -49,14 +49,30 @@ public class AnnotationUtil {
 					+ ". The attribute \"" + name + "\" must be defined on the annotaton type "
 					+ annotation.getClass().getSimpleName() + ".");
 		}
-		Object oTargetPath = annotationAttributes.get(name);
-		if (null == oTargetPath) {
+		Object value = annotationAttributes.get(name);
+		if (null == value) {
 			throw new InvalidConfigException("The \"" + name + "\" attribute was not found within " + annotation
 					+ ". The attribute \"" + name + "\" must not be null.");
 		}
-		if (!clazz.isInstance(oTargetPath)) {
+		if (!clazz.isInstance(value)) {
 			throw new InvalidConfigException(
 					"The \"" + name + "\" attribute of " + annotation + " must be of type java.lang.String.");
+		}
+		return (T) value;
+	}
+
+	/**
+	 * <p>Retrieve an value from the provided {@code annotation}. If not found,
+	 * {@code null} will be returned.
+	 * @param annotation the annotation to inspect
+	 * @param name the attribute (by name) to retrieve
+	 * @param clazz the expected type of the return value
+	 * @return the value of the attribute
+	 */
+	public static <T> T retrieveAnnotationAttribute(Annotation annotation, String name) {
+		Map<String, Object> annotationAttributes = AnnotationUtils.getAnnotationAttributes(annotation);
+		if (!annotationAttributes.containsKey(name)) {
+			return null;
 		}
 		return (T) annotationAttributes.get(name);
 	}

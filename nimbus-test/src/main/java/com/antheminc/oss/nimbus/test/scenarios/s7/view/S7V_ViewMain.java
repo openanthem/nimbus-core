@@ -46,7 +46,7 @@ import lombok.ToString;
 public class S7V_ViewMain {
 	
 	@Path
-	@ValuesConditionals({ @ValuesConditional(targetPath = "../v_attr_values_2", condition = {
+	@ValuesConditionals({ @ValuesConditional(target = "../v_attr_values_2", condition = {
 			@Condition(when = "state == 'test_0'", then = @Values(url = "/hooli/box/p/s7c_main/_search?fn=lookup&where=s7c_main.attr1_clone.eq('test_0')&projection.mapsTo=code:attr1,label:attr1")),
 			@Condition(when = "state != null && state != 'test_0'", then = @Values(url = "/hooli/box/p/s7c_main/_search?fn=lookup&where=s7c_main.attr1_clone.eq('<!/.d/attr1!>')&projection.mapsTo=code:attr1,label:attr1")) }) })
 	private String attr1;
