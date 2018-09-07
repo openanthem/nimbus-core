@@ -502,8 +502,7 @@ public abstract class UnitTestPage {
 	}
 
 	/**
-	 * TODO Fix inherit doc javadoc
-	 * {@inheritDoc ParamUtils#extractResponseByParamPath(Object, String)}
+	 * @see ParamUtils#extractResponseByParamPath(Object, String)
 	 */
 	protected <T> Param<T> extractResponseByParamPath(Object response, String paramPathEndsWith) {
 		return ParamUtils.extractResponseByParamPath(response, paramPathEndsWith);
