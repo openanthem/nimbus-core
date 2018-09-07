@@ -50,8 +50,6 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
             [required]="requiredCss">
 
         </nm-input-label>
-        <p>{{"Min : " + minDate}}</p>
-        <p>{{"Max : " + maxDate}}</p>
         <p-calendar [(ngModel)]="value"  
             (focusout)="emitValueChangedEvent(this,$event)" 
             [showIcon]="true"
