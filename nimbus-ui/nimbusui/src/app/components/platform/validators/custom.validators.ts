@@ -75,16 +75,10 @@ export class CustomValidators {
     }
 
     static past(control: FormControl) {
-        if (control.value !=null) {
-            return { past: true };
-        }
         return null;
     }
 
     static future(control: FormControl) {
-        if (control.value !=null) {
-            return { future: true };
-        }
         return null;
     }
 
