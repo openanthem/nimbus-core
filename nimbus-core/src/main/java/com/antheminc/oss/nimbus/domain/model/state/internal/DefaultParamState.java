@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -760,6 +761,25 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	@Override
 	public Set<LabelState> getLabels() {
 		return Optional.ofNullable(this.labelState.getCurrState()).map(Collections::unmodifiableSet).orElse(null);
+	}
+	
+	@Override
+	public LabelState getDefaultLabel() {
+		return getLabel(Locale.getDefault().toLanguageTag());
+	}
+	
+	@Override
+	public LabelState getLabel(String localeLanguageTag) {
+		if (null == this.labelState || null == this.labelState.getCurrState()) {
+			throw new FrameworkRuntimeException("Unable to locate label config for " + this);
+		}
+
+		LabelState labelConfig = getLabels().stream().filter(lc -> localeLanguageTag.equals(lc.getLocale()))
+				.reduce((a, b) -> {
+					throw new IllegalStateException("Found more than one element with " + localeLanguageTag + " on param " + this);
+				}).orElse(null);
+
+		return labelConfig;
 	}
 	
 	@Override

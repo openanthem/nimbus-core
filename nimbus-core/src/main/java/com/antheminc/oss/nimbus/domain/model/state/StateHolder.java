@@ -463,5 +463,15 @@ public class StateHolder {
 			throw throwEx();	
 		}
 
+		@Override
+		public LabelState getDefaultLabel() {
+			return this.ref.getDefaultLabel();
+		}
+
+		@Override
+		public LabelState getLabel(String localeLanguageTag) {
+			return this.ref.getLabel(localeLanguageTag);
+		}
+
 	}
 }
