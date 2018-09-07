@@ -17,10 +17,11 @@ package com.antheminc.oss.nimbus.test.domain.support.utils;
 
 import java.util.Locale;
 
-import org.junit.Assert;
-
+import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
+import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param.LabelState;
+import com.antheminc.oss.nimbus.support.Holder;
 
 /**
  * @author Tony Lopez
@@ -47,5 +48,49 @@ public class ParamUtils {
 		}
 
 		return labelConfig.getText();
+	}
+	
+	/**
+	 * <p>
+	 * Given a framework response object, {@code response}, this method
+	 * deciphers and attempts to locate a param from each of the
+	 * {@link MultiOutput}'s {@link Output#getValue()} values that has a URI
+	 * path ending with {@code paramPathEndsWith}. If multiple params are found,
+	 * only the first will be returned.
+	 * <p>
+	 * If {@code paramPathEndsWith} is {@code null} this method will return the
+	 * result of {@link MultiOutput#getSingleResult()}.
+	 * 
+	 * @throws RuntimeException
+	 *             if {@code paramPathEndsWith} is provided and not contained by
+	 *             any of the outputs deciphered in {@code response}
+	 * @param response
+	 *            the response received as a result of the framework request
+	 * @param paramPathEndsWith
+	 *            the ending path of the param to identify, from the set of
+	 *            params received in the {@code response}
+	 * @return the param identified within the response ending with
+	 *         {@code paramPathEndsWith}
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> Param<T> extractResponseByParamPath(Object response, String paramPathEndsWith) {
+		Holder<MultiOutput> resp = (Holder<MultiOutput>) response;
+		MultiOutput multiOutput = resp.getState();
+
+		if (null == paramPathEndsWith) {
+			return (Param<T>) multiOutput.getSingleResult();
+		}
+
+		for (Output<?> output : multiOutput.getOutputs()) {
+			if (output.getValue() instanceof Param) {
+				Param<?> param = (Param<?>) output.getValue();
+				if (param.getPath().endsWith(paramPathEndsWith)) {
+					return (Param<T>) param;
+				}
+			}
+		}
+
+		throw new RuntimeException("Unable to locate param in response ending with '" + paramPathEndsWith
+				+ "'. See debug logs for more information.");
 	}
 }
