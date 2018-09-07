@@ -38,7 +38,7 @@ import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnSt
  * @author Soham Chakravarti
  *
  */
-public class LabelStateEventHandler extends AbstractConfigEventHandler<Label> implements OnStateLoadHandler<Label> {
+public class LabelStateEventHandler extends AbstractConfigEventHandler implements OnStateLoadHandler<Label> {
 
 	@Autowired
 	CommandPathVariableResolver cmdPathResolver;
