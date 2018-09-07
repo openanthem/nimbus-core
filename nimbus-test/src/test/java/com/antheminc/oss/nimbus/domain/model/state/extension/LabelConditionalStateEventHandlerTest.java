@@ -160,24 +160,7 @@ public class LabelConditionalStateEventHandlerTest extends AbstractStateEventHan
 	}
 
 	private <T> String getLabelText(Param<T> param) {
-		return getLabelText(param, Locale.getDefault().toLanguageTag());
-	}
-
-	private <T> String getLabelText(Param<T> param, String locale) {
-		if (null == param.getLabels()) {
-			Assert.fail("Unable to locate label config for " + param);
-		}
-
-		LabelState labelConfig = param.getLabels().stream().filter(lc -> locale.equals(lc.getLocale()))
-				.reduce((a, b) -> {
-					throw new IllegalStateException("Found more than one element");
-				}).orElse(null);
-
-		if (null == labelConfig) {
-			Assert.fail("Unable to locate label config using locale: " + locale + " for " + param);
-		}
-
-		return labelConfig.getText();
+		return param.getDefaultLabel().getText();
 	}
 
 	private <T> Param<T> getParam(String paramPath) {
