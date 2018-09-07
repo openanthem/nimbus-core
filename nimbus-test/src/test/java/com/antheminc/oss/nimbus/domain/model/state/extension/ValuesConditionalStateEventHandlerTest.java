@@ -377,7 +377,7 @@ public class ValuesConditionalStateEventHandlerTest {
 			}
 
 			@Override
-			public String targetPath() {
+			public String target() {
 				return targetPath;
 			}
 			

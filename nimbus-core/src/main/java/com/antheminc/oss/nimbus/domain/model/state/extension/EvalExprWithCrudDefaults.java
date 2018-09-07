@@ -36,6 +36,7 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
  */
 public abstract class EvalExprWithCrudDefaults<A extends Annotation> extends EvalExprWithCrudActions<A> {
 
+	private static final String ATTR_TARGET = "target";
 	private static final String ATTR_TARGET_PATH = "targetPath";
 	private static final String ATTR_CONDITION = "condition";
 	private static final String ATTR_WHEN = "when";
@@ -145,8 +146,12 @@ public abstract class EvalExprWithCrudDefaults<A extends Annotation> extends Eva
 	@Override
 	protected void handleInternal(Param<?> onChangeParam, A configuredAnnotation) {
 
-		String targetPath = AnnotationUtil.safelyRetrieveAnnotationAttribute(configuredAnnotation, ATTR_TARGET_PATH,
-				String.class);
+		// TODO Remove in 2.0 and replace any instances of target with targetPath
+		String targetPath = AnnotationUtil.retrieveAnnotationAttribute(configuredAnnotation, ATTR_TARGET);
+		if (null == targetPath) {
+			targetPath = AnnotationUtil.safelyRetrieveAnnotationAttribute(configuredAnnotation, ATTR_TARGET_PATH,
+					String.class);
+		}
 
 		handleInternal(onChangeParam, targetPath, targetParam -> {
 
