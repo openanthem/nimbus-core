@@ -50,6 +50,8 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
             [required]="requiredCss">
 
         </nm-input-label>
+        <p>{{"Min : " + minDate}}</p>
+        <p>{{"Max : " + maxDate}}</p>
         <p-calendar [(ngModel)]="value"  
             (focusout)="emitValueChangedEvent(this,$event)" 
             [showIcon]="true"
@@ -60,40 +62,36 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
             [yearNavigator]="element.config?.uiStyles?.attributes?.yearNavigator"
             [readonlyInput]="element.config?.uiStyles?.attributes?.readonlyInput"
             [yearRange]="element.config?.uiStyles?.attributes?.yearRange"
-            [maxDate]="getPast()"
-            [minDate]="getFuture()"
+            [maxDate]="maxDate"
+            [minDate]="minDate"
             [disabled]="disabled">
         </p-calendar>
    `
 })
 export class Calendar extends BaseControl<Date> {
 
+    private minDate : Date;
+    private maxDate : Date;
     @ViewChild(NgModel) model: NgModel;
 
     constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd:ChangeDetectorRef) {
         super(controlService,wcs,cd);
     }
 
-    // ngOnInit(){
- 
-    // }
-    public getPast():Date {
-        let constraint = this.getConstraint(ValidationConstraint._past.value);
-        if(constraint) {
-             return new Date();
-        } else {
-            return;
+    ngOnInit() {
+        this.applyDateConstraint()
+    }
+
+    private applyDateConstraint() {
+        let pastConstraint = this.getConstraint(ValidationConstraint._past.value);
+        let futureConstraint = this.getConstraint(ValidationConstraint._future.value);
+
+        if (pastConstraint) {
+            this.maxDate = new Date();
+        } else if (futureConstraint) {
+            this.minDate = new Date();
         }
 
     }
 
-    public getFuture():Date {
-        let constraint = this.getConstraint(ValidationConstraint._future.value);
-        if(constraint) {
-             return new Date();
-        } else {
-            return;
-        }
-
-    }
 }
