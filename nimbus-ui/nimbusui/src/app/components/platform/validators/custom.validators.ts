@@ -73,14 +73,5 @@ export class CustomValidators {
             return null;
         };
     }
-
-    static past(control: FormControl) {
-        return null;
-    }
-
-    static future(control: FormControl) {
-        return null;
-    }
-
     
 }

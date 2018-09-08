@@ -86,10 +86,10 @@ export class Calendar extends BaseControl<Date> {
 
         if (pastConstraint) {
             this.maxDate = new Date();
-        } else if (futureConstraint) {
+        }
+        if (futureConstraint) {
             this.minDate = new Date();
         }
-
     }
 
 }
