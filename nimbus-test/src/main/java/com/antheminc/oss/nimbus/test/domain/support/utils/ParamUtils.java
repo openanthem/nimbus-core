@@ -29,46 +29,22 @@ import com.antheminc.oss.nimbus.support.Holder;
  */
 public class ParamUtils {
 
-	public static <T> String getLabelText(Param<T> param) {
-		return getLabelText(param, Locale.getDefault().toLanguageTag());
-	}
-
-	public static <T> String getLabelText(Param<T> param, String locale) {
-		if (null == param.getLabels()) {
-			throw new RuntimeException("Unable to locate label config for " + param);
-		}
-
-		LabelState labelConfig = param.getLabels().stream().filter(lc -> locale.equals(lc.getLocale()))
-				.reduce((a, b) -> {
-					throw new IllegalStateException("Found more than one element");
-				}).orElse(null);
-
-		if (null == labelConfig) {
-			throw new RuntimeException("Unable to locate label config using locale: " + locale + " for " + param);
-		}
-
-		return labelConfig.getText();
-	}
-	
 	/**
-	 * <p>
-	 * Given a framework response object, {@code response}, this method
+	 * <p> Given a framework response object, {@code response}, this method
 	 * deciphers and attempts to locate a param from each of the
 	 * {@link MultiOutput}'s {@link Output#getValue()} values that has a URI
 	 * path ending with {@code paramPathEndsWith}. If multiple params are found,
-	 * only the first will be returned.
-	 * <p>
-	 * If {@code paramPathEndsWith} is {@code null} this method will return the
-	 * result of {@link MultiOutput#getSingleResult()}.
+	 * only the first will be returned. <p> If {@code paramPathEndsWith} is
+	 * {@code null} this method will return the result of
+	 * {@link MultiOutput#getSingleResult()}.
 	 * 
-	 * @throws RuntimeException
-	 *             if {@code paramPathEndsWith} is provided and not contained by
-	 *             any of the outputs deciphered in {@code response}
-	 * @param response
-	 *            the response received as a result of the framework request
-	 * @param paramPathEndsWith
-	 *            the ending path of the param to identify, from the set of
-	 *            params received in the {@code response}
+	 * @throws RuntimeException if {@code paramPathEndsWith} is provided and not
+	 *             contained by any of the outputs deciphered in
+	 *             {@code response}
+	 * @param response the response received as a result of the framework
+	 *            request
+	 * @param paramPathEndsWith the ending path of the param to identify, from
+	 *            the set of params received in the {@code response}
 	 * @return the param identified within the response ending with
 	 *         {@code paramPathEndsWith}
 	 */
@@ -90,7 +66,33 @@ public class ParamUtils {
 			}
 		}
 
-		throw new RuntimeException("Unable to locate param in response ending with '" + paramPathEndsWith
-				+ "'. See debug logs for more information.");
+		throw new RuntimeException("Unable to locate param in response ending with '" + paramPathEndsWith + ".");
+	}
+
+	/**
+	 * <p>Find label text associated with {@code param} by the system default
+	 * locale. <p>This method will search the underlying label state by
+	 * inspecting all labels within the state and returning only the text of the
+	 * found label. If unable to be found, {@code null} will be returned.
+	 * @param param the param instance to search within
+	 * @return the text of the found label
+	 */
+	public static <T> String getLabelText(Param<T> param) {
+		return getLabelText(param, Locale.getDefault().toLanguageTag());
+	}
+
+	/**
+	 * <p>Find label text associated with {@code param} by a given
+	 * {@code localeLanguageTag} <p>This method will search the underlying label
+	 * state by inspecting all labels within the state and returning only the
+	 * text of the found label. If unable to be found, {@code null} will be
+	 * returned.
+	 * @param param the param instance to search within
+	 * @param localeLanguageTag the locale to search for
+	 * @return the text of the found label
+	 */
+	public static <T> String getLabelText(Param<T> param, String localeLanguageTag) {
+		LabelState labelState = param.getLabel(localeLanguageTag);
+		return null != labelState ? labelState.getText() : null;
 	}
 }
