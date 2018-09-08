@@ -68,8 +68,8 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 })
 export class Calendar extends BaseControl<Date> {
 
-    private minDate : Date;
-    private maxDate : Date;
+     minDate : Date;
+     maxDate : Date;
     @ViewChild(NgModel) model: NgModel;
 
     constructor(wcs: WebContentSvc, controlService: ControlSubscribers, cd:ChangeDetectorRef) {
