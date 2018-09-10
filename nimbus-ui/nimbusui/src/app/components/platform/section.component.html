@@ -53,8 +53,7 @@
             <ng-template [ngIf]="element.alias == componentTypes.treeGrid.toString()">
                 <nm-treegrid
                     [element]="element" 
-                    [params]="element?.config?.type?.elementConfig?.type?.model?.paramConfigs"
-                    >
+                    [params]="element?.config?.type?.elementConfig?.type?.model?.paramConfigs">
                 </nm-treegrid>
             </ng-template>
             <!--Other buttons. Refactor item : to be triggred based on the buttongroup annotation-->
