@@ -176,6 +176,16 @@ public class ViewConfig {
 		boolean postEventOnChange() default false;
 	}
 	
+	
+	/**
+	 * <p><b>Expected Field Structure</b>
+	 * 
+	 * <p>TreeGrid will be rendered when annotating a field nested under one of
+	 * the following components: <ul> <li>{@link Section}</li>
+	 * <li>{@link Form}</li>
+	 * 
+	 */
+	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.FIELD })
 	@ViewStyle
@@ -183,12 +193,6 @@ public class ViewConfig {
 		String alias() default "TreeGrid";
 	}
 	
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ ElementType.FIELD })
-	@ViewStyle
-	public @interface Children {
-		String alias() default "treegrid";
-	}
 
 	/**
 	 * <p><b>Expected Field Structure</b>
