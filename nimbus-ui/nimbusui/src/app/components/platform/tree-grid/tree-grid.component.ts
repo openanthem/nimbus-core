@@ -46,14 +46,12 @@ export class TreeGrid extends BaseElement  implements ControlValueAccessor {
 
         this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'GET', undefined);
         this.pageSvc.treeListUpdate$.subscribe((treeList: {data: {}}) => {
-            console.log("treeList in ts file", treeList.data);
             this.treeData = treeList.data;
         });
 
         if (this.params) {
             this.params.forEach(column => {
                 column.label = this._wcs.findLabelContentFromConfig(this.element.elemLabels.get(column.id), column.code).text;
-                // Set field and header attributes. TurboTable expects these specific variables.
                 column['field'] = column.code;
                 column['header'] = column.label;                  
                 });
