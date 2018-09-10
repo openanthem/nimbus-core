@@ -30,6 +30,7 @@ export class ViewComponent extends Enum<string> {
     public static readonly link = new Enum('Link');
     public static readonly linkMenu = new Enum('LinkMenu');
     public static readonly grid = new Enum('Grid');
+    public static readonly treeGrid = new Enum('TreeGrid');
     public static readonly button = new Enum('Button');
     public static readonly buttongroup = new Enum('ButtonGroup');
     public static readonly gridRowBody = new Enum('GridRowBody');

@@ -24,6 +24,8 @@ import { WebContentSvc } from '../../../services/content-management.service';
 import { ParamConfig } from '../../../shared/param-config';
 import { PageService } from '../../../services/page.service';
 import { GenericDomain } from '../../../model/generic-domain.model';
+import { Param } from '../../../shared/param-state';
+import { HttpMethod } from './../../../shared/command.enum';
 
 
 /**
@@ -38,6 +40,7 @@ import { GenericDomain } from '../../../model/generic-domain.model';
 })
 export class TreeGrid extends BaseElement  implements ControlValueAccessor {
 
+ 
     @Input() params: ParamConfig[];
     @Input() form: FormGroup;
     firstColumn: boolean = true;
@@ -67,9 +70,11 @@ export class TreeGrid extends BaseElement  implements ControlValueAccessor {
     ngOnInit() {
         super.ngOnInit();
 
-        this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'GET', undefined);
-        this.pageSvc.treeListUpdate$.subscribe((treeList: {data: {}}) => {
-            this.treeData = treeList.data;
+        this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), HttpMethod.GET.value, undefined);
+        this.pageSvc.eventUpdate$.subscribe((treeList: Param) => {
+            if(this.element.path === treeList.path){
+            this.treeData = treeList.leafState;
+            }
         });
 
         if (this.params) {

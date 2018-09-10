@@ -35,6 +35,7 @@ import { ViewConfig } from './../shared/param-annotations.enum';
 import { LoggerService } from './logger.service';
 import { SessionStoreService } from './session.store';
 import { Location } from '@angular/common';
+import { ViewComponent } from '../shared/param-annotations.enum';
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -61,11 +62,10 @@ export class PageService {
         gridValueUpdate = new Subject<Param>();
         gridValueUpdate$ = this.gridValueUpdate.asObservable();
 
-        treeListUpdate = new Subject();
-        treeListUpdate$ = this.treeListUpdate.asObservable();
-
         errorMessageUpdate = new Subject<ExecuteException>();
         errorMessageUpdate$ = this.errorMessageUpdate.asObservable();
+
+        viewComponent = ViewComponent;
 
         private requestQueue :RequestContainer[] = [];
 
@@ -767,7 +767,7 @@ export class PageService {
                                 this.traverseParam(param, eventModel);
                         }
                 }
-                else if (param.config.uiStyles != null && param.config.uiStyles.attributes.alias === 'TreeGrid') {
+                else if (param.config.uiStyles != null && param.config.uiStyles.attributes.alias === ViewComponent.treeGrid.toString()) {
 
                         if (param.path == eventModel.value.path) {
                                 let treeList = {"data": []};
@@ -775,10 +775,13 @@ export class PageService {
                                 eventModel.value.type.model.params.forEach((param) => {
                                         if(param.leafState)
                                         treeList.data.push((new TreeGridDeserializer).deserialize(param.leafState));  
+
                                 });
 
-                                if(treeList.data.length != 0)
-                                this.treeListUpdate.next(treeList);
+                                if(treeList.data.length != 0){
+                                       param.leafState = treeList.data;
+                                       this.eventUpdate.next(param);
+                                }
                         }
                 }
                 else {
