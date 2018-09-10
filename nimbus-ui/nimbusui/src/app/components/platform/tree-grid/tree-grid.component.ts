@@ -17,6 +17,7 @@ export class TreeGrid extends BaseElement  implements ControlValueAccessor {
 
     @Input() params: ParamConfig[];
     @Input() form: FormGroup;
+    firstColumn: boolean = true;
 
     treeData: any;
 
@@ -49,6 +50,16 @@ export class TreeGrid extends BaseElement  implements ControlValueAccessor {
             this.treeData = treeList.data;
         });
 
+        if (this.params) {
+            this.params.forEach(column => {
+                column.label = this._wcs.findLabelContentFromConfig(this.element.elemLabels.get(column.id), column.code).text;
+                // Set field and header attributes. TurboTable expects these specific variables.
+                column['field'] = column.code;
+                column['header'] = column.label;                  
+                });
+                           
+        }
+
     }
 
     getCellDisplayValue(rowData: any, col: ParamConfig) {
@@ -58,9 +69,16 @@ export class TreeGrid extends BaseElement  implements ControlValueAccessor {
 
     showColumn(col: ParamConfig) {
         if (col.uiStyles && col.uiStyles.attributes.hidden === false) {
+            if(this.firstColumn == true){
+                this.firstColumn = false;
+            } 
             return true;
         } 
         return false;
+    }
+
+    showFirstColumn(){
+        return this.firstColumn;
     }
 
     showHeader(col: ParamConfig) {
@@ -71,11 +89,11 @@ export class TreeGrid extends BaseElement  implements ControlValueAccessor {
         return false;
     }
 
-    getLabelValue(col: ParamConfig){
+    // getLabelValue(col: ParamConfig){
 
-        if(col.labelConfigs){
-            return col.labelConfigs[0].text;
-        }
-    }
+    //     if(col.labelConfigs){
+    //         return col.labelConfigs[0].text;
+    //     }
+    // }
     
 }

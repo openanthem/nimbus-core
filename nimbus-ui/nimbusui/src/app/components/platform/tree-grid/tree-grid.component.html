@@ -1,10 +1,9 @@
-
 <p-treeTable [value]="treeData" [paginator]="true" [rows]="10">
     <ng-template pTemplate="header">
         <tr>
             <th></th>
             <ng-template ngFor let-col let-colIndex="index" [ngForOf]="params">
-                <th *ngIf="showHeader(col)">{{getLabelValue(col)}}</th>
+                <th *ngIf="showHeader(col)">{{col.header}}</th>
             </ng-template>
         </tr>
     </ng-template>

@@ -71,7 +71,6 @@ public class DefaultJsonParamConfigSerializer extends JsonSerializer<ParamConfig
 				gen.writeStringField(K_CODE, p.getCode());
 				
 				gen.writeObjectField(K_UISTYLES, p.getUiStyles());
-				gen.writeObjectField(K_LABELCONFIGS, p.getLabelConfigs());
 				gen.writeObjectField(K_VALIDATIONS, p.getValidations());
 				gen.writeObjectField(K_UINATURES, p.getUiNatures());
 

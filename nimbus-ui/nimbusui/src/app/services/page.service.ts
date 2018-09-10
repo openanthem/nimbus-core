@@ -769,15 +769,17 @@ export class PageService {
                 }
                 else if (param.config.uiStyles != null && param.config.uiStyles.attributes.alias === 'TreeGrid') {
 
-                        let treeList = {"data": []};
-                        
-                        eventModel.value.type.model.params.forEach((param) => {
-                                if(param.leafState)
-                                treeList.data.push((new TreeGridDeserializer).deserialize(param.leafState));  
-                        });
+                        if (param.path == eventModel.value.path) {
+                                let treeList = {"data": []};
+                                
+                                eventModel.value.type.model.params.forEach((param) => {
+                                        if(param.leafState)
+                                        treeList.data.push((new TreeGridDeserializer).deserialize(param.leafState));  
+                                });
 
-                        if(treeList.data.length != 0)
-                        this.treeListUpdate.next(treeList);
+                                if(treeList.data.length != 0)
+                                this.treeListUpdate.next(treeList);
+                        }
                 }
                 else {
                         this.traverseParam(param, eventModel);
