@@ -26,11 +26,10 @@
     </ng-template>
 
     <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias == componentTypes.treeGrid.toString()">
-            <nm-treegrid
-                [element]="element" [form]="form" [formControlName]="element.config?.code"
-                [params]="element?.config?.type?.elementConfig?.type?.model?.paramConfigs"
-                >
-            </nm-treegrid>
+         <nm-treegrid
+             [element]="element" [form]="form" [formControlName]="element.config?.code"
+             [params]="element?.config?.type?.elementConfig?.type?.model?.paramConfigs">
+         </nm-treegrid>
     </ng-template>
     <ng-template ngFor let-msg [ngForOf]="getMessages()">
         <nm-message [messageContext]="msg.context"  [messageArray]="msg.messageArray" [life] = "msg.life" [styleClass]="msg.styleClass"></nm-message>

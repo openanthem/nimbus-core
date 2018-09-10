@@ -191,6 +191,7 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface TreeGrid {
 		String alias() default "TreeGrid";
+		String cssClass() default "";
 	}
 	
 
