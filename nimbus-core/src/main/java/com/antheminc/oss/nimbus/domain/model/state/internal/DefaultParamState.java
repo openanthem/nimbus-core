@@ -770,16 +770,17 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	
 	@Override
 	public LabelState getLabel(String localeLanguageTag) {
-		if (null == this.labelState || null == this.labelState.getCurrState()) {
-			throw new FrameworkRuntimeException("Unable to locate label config for " + this);
+		Set<LabelState> labelState = getLabels();
+		if (null == labelState) {
+			return null;
 		}
 
-		LabelState labelConfig = getLabels().stream().filter(lc -> localeLanguageTag.equals(lc.getLocale()))
-				.reduce((a, b) -> {
-					throw new IllegalStateException("Found more than one element with " + localeLanguageTag + " on param " + this);
-				}).orElse(null);
+		LabelState label = labelState.stream().filter(ls -> localeLanguageTag.equals(ls.getLocale())).reduce((a, b) -> {
+			throw new IllegalStateException(
+					"Found more than one element with " + localeLanguageTag + " on param " + this);
+		}).orElse(null);
 
-		return labelConfig;
+		return label;
 	}
 	
 	@Override

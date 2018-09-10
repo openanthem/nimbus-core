@@ -350,15 +350,16 @@ public class MockParam implements Param<Object> {
 	
 	@Override
 	public LabelState getLabel(String localeLanguageTag) {
-		if (null == this.labels) {
-			throw new FrameworkRuntimeException("Unable to locate label config for " + this);
+		Set<LabelState> labelState = this.labels;
+		if (null == labelState) {
+			return null;
 		}
 
-		LabelState labelConfig = getLabels().stream().filter(lc -> localeLanguageTag.equals(lc.getLocale()))
-				.reduce((a, b) -> {
-					throw new IllegalStateException("Found more than one element with " + localeLanguageTag + " on param " + this);
-				}).orElse(null);
+		LabelState label = labelState.stream().filter(ls -> localeLanguageTag.equals(ls.getLocale())).reduce((a, b) -> {
+			throw new IllegalStateException(
+					"Found more than one element with " + localeLanguageTag + " on param " + this);
+		}).orElse(null);
 
-		return labelConfig;
+		return label;
 	}
 }
