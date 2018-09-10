@@ -65,8 +65,6 @@ export class PageService {
         errorMessageUpdate = new Subject<ExecuteException>();
         errorMessageUpdate$ = this.errorMessageUpdate.asObservable();
 
-        viewComponent = ViewComponent;
-
         private requestQueue :RequestContainer[] = [];
 
         private _entityId: number = 0;
