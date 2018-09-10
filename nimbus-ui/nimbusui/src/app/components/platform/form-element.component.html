@@ -23,7 +23,7 @@
         </nm-table>
     </ng-template>
 
-    <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias == 'TreeGrid'">
+    <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias == componentTypes.treeGrid.toString()">
             <nm-treegrid
                 [element]="element" [form]="form" [formControlName]="element.config?.code"
                 [params]="element?.config?.type?.elementConfig?.type?.model?.paramConfigs"

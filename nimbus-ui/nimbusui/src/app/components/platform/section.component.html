@@ -50,7 +50,7 @@
                 </nm-table>
             </ng-template>
 
-            <ng-template [ngIf]="element.alias == 'TreeGrid'">
+            <ng-template [ngIf]="element.alias == componentTypes.treeGrid.toString()">
                 <nm-treegrid
                     [element]="element" 
                     [params]="element?.config?.type?.elementConfig?.type?.model?.paramConfigs"

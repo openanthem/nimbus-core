@@ -74,6 +74,7 @@ export class ComponentTypes extends Enum<string> {
   public static readonly pickList = new Enum('PickList');
   public static readonly fileUpload = new Enum('FileUpload');
   public static readonly grid = new Enum('Grid');
+  public static readonly treeGrid = new Enum('TreeGrid');
   public static readonly dialog = new Enum('dialog');
   public static readonly cardDetailsGrid = new Enum('CardDetailsGrid');
   public static readonly menu = new Enum('Menu');

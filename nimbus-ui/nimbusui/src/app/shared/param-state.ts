@@ -287,26 +287,31 @@ export class GridPage implements Serializable<GridPage, string> {
 
 export class TreeGridDeserializer {
 
-    deserialize(arr, data?, children?) {
+    setTreeChildren(node, nestedArray){
+        node.children = [];
+        nestedArray.forEach((nestedArrayItem) =>
+            node.children.push(this.deserialize(nestedArrayItem, nestedArrayItem))
+        );
+
+    }
+
+
+    deserialize(objectItem, data?, children?) {
 
         try {
 
-            var node: any = {}
-            node.data = {}
+            let node: any = {};
+            node.data = {};
 
-            if (Array.isArray(arr) && arr) {
-                arr.forEach((p) => {
-                    Object.keys(p).map(e => {
-                        if (Array.isArray(p[e]) && p[e]) {
-
-                            node.children = [];
-                            p[e].forEach((obj) =>
-                                node.children.push(this.deserialize(obj, obj))
-                            );
+            if (Array.isArray(objectItem) && objectItem) {
+                objectItem.forEach((childItem) => {
+                    Object.keys(childItem).map(value => {
+                        if (Array.isArray(childItem[value]) && childItem[value]) {
+                            this.setTreeChildren(node, childItem[value]);
 
                         }
                         else {
-                            node.data[e] = p[e];
+                            node.data[value] = childItem[value];
                         }
                     });
 
@@ -314,27 +319,23 @@ export class TreeGridDeserializer {
                 return node;
             }
 
-
             else {
-
-                Object.keys(arr).map(e => {
-                    if (Array.isArray(arr[e]) && arr[e]) {
-                        node.children = [];
-                        arr[e].forEach((obj) =>
-                            node.children.push(this.deserialize(obj, obj))
-                        );
+              
+                Object.keys(objectItem).map(value => {
+                    if (Array.isArray(objectItem[value]) && objectItem[value]) {
+                        this.setTreeChildren(node, objectItem[value]);
                     }
                     else {
-                        node.data[e] = arr[e];
+                        if(!((objectItem[value] && typeof objectItem[value] === 'object') && Object.keys(objectItem[value]).length === 0))
+                        node.data[value] = objectItem[value];
                     }
                 });
                 return node;
-
-            }
+            }           
 
         }
         catch (e) {
-            console.log("Tree deserializer error", e);
+            //  console.log("Error in tree deserializer", e);
 
         }
     }
