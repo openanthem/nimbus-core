@@ -88,12 +88,5 @@ export class TreeGrid extends BaseElement  implements ControlValueAccessor {
         } 
         return false;
     }
-
-    // getLabelValue(col: ParamConfig){
-
-    //     if(col.labelConfigs){
-    //         return col.labelConfigs[0].text;
-    //     }
-    // }
     
 }
