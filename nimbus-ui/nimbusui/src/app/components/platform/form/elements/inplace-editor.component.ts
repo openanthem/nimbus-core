@@ -45,9 +45,9 @@ export const InputComponents = [
     selector: 'inplace-editor',
     template: `
         <div class="form-group {{editClass}}">
-            <nm-input-label *ngIf="labelConfig"
+            <nm-input-label *ngIf="!isLabelEmpty"
+                [element]="element"     
                 [for]="element.config?.code" 
-                [labelConfig]="labelConfig" 
                 [required]="requiredCss">
 
             </nm-input-label>

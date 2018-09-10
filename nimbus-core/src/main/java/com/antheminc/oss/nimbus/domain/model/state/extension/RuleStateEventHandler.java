@@ -26,7 +26,6 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.RulesRuntime;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
-import com.antheminc.oss.nimbus.domain.model.state.extension.AbstractConditionalStateEventHandler.EvalExprWithCrudActions;
 import com.antheminc.oss.nimbus.domain.rules.RulesEngineFactory;
 import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 

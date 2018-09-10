@@ -18,16 +18,20 @@ package com.antheminc.oss.nimbus.test.domain.mock;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.ValidationGroup;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param.LabelState;
 import com.antheminc.oss.nimbus.domain.model.state.EntityStateAspectHandlers;
 import com.antheminc.oss.nimbus.domain.model.state.ExecutionTxnContext;
 import com.antheminc.oss.nimbus.domain.model.state.Notification;
@@ -59,6 +63,7 @@ public class MockParam implements Param<Object> {
 	private List<MappedParam<?, Object>> eventSubscribers = new ArrayList<>();
 	private LockTemplate lockTemplate = null;
 	private Set<Message> messages = new HashSet<>();
+	private Set<LabelState> labels = new HashSet<>();
 	private Map<String, Model<Object>> modelMap = new HashMap<>();
 	private Map<String, Param<Object>> paramMap = new HashMap<>();
 	private Model<Object> parentModel = null;
@@ -336,5 +341,24 @@ public class MockParam implements Param<Object> {
 	@Override
 	public boolean hasContextStateChanged() {
 		return false;
+	}
+
+	@Override
+	public LabelState getDefaultLabel() {
+		return getLabel(Locale.getDefault().toLanguageTag());
+	}
+	
+	@Override
+	public LabelState getLabel(String localeLanguageTag) {
+		if (null == this.labels) {
+			throw new FrameworkRuntimeException("Unable to locate label config for " + this);
+		}
+
+		LabelState labelConfig = getLabels().stream().filter(lc -> localeLanguageTag.equals(lc.getLocale()))
+				.reduce((a, b) -> {
+					throw new IllegalStateException("Found more than one element with " + localeLanguageTag + " on param " + this);
+				}).orElse(null);
+
+		return labelConfig;
 	}
 }

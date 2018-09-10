@@ -329,6 +329,7 @@ export class LayoutService {
         item.path = element.path;
         item.page = element.config.uiStyles.attributes.page;
         item.icon = element.config.uiStyles.attributes.imgSrc;
+        item.imgType = element.config.uiStyles.attributes.imgType;
         return item;
     }
 
