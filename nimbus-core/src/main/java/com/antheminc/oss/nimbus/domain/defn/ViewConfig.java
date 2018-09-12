@@ -1061,8 +1061,10 @@ public class ViewConfig {
 		String alias() default "GridColumn";
 
 		/**
-		 * Apply styles to display value. This controls the display of value
+		 * <p>Apply styles to display value. This controls the display of value
 		 * with images and fonts
+		 * <p>When set to true, CSS classes added into <ul><li>{@link app_style.css}</li></ul> in will be added to the container element surrounding this component.
+		 * This can be used to apply additional styling, if necessary.
 		 */
 		boolean applyValueStyles() default false;
 
