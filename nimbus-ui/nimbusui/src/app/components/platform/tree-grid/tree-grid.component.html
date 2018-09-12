@@ -14,8 +14,13 @@
             </td>
             <ng-template ngFor let-col let-colIndex="index" [ngForOf]="params">
                 <td *ngIf="showColumn(col)">{{getCellDisplayValue(rowData, col)}}</td>
-            </ng-template>   
 
+                <td *ngIf="col?.uiStyles?.attributes?.alias === viewComponent.button.toString()">
+                     <nm-button
+                        [element] = "getViewParam(col, rowData['elemId'])">
+                     </nm-button>
+                </td>
+            </ng-template> 
         </tr>
     </ng-template>
 </p-treeTable>
