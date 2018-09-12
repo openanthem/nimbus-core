@@ -370,7 +370,7 @@ export class TreeGridDeserializer {
             else {
               
                 Object.keys(objectItem).map(value => {
-                    if (Array.isArray(objectItem[value]) && objectItem[value]) {
+                    if (Array.isArray(objectItem[value]) && objectItem[value] && value !== 'nestedGridParam') {
                         this.setTreeChildren(node, objectItem[value]);
                     }
                     else {
