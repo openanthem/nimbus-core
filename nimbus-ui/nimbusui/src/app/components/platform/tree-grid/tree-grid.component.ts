@@ -26,6 +26,7 @@ import { PageService } from '../../../services/page.service';
 import { GenericDomain } from '../../../model/generic-domain.model';
 import { Param } from '../../../shared/param-state';
 import { HttpMethod } from './../../../shared/command.enum';
+import { DateTimeFormatPipe } from '../../../pipes/date.pipe';
 
 
 /**
@@ -36,6 +37,7 @@ import { HttpMethod } from './../../../shared/command.enum';
 
 @Component({
     selector: 'nm-treegrid',
+    providers: [WebContentSvc, DateTimeFormatPipe],
     templateUrl: './tree-grid.component.html'
 })
 export class TreeGrid extends BaseElement  implements ControlValueAccessor {
@@ -63,7 +65,7 @@ export class TreeGrid extends BaseElement  implements ControlValueAccessor {
         this.onTouched = fn;
     }
 
-    constructor(private _wcs: WebContentSvc, private pageSvc: PageService, ) {
+    constructor(private _wcs: WebContentSvc, private pageSvc: PageService,  private dtFormat: DateTimeFormatPipe) {
         super(_wcs);
     }
 
@@ -90,7 +92,16 @@ export class TreeGrid extends BaseElement  implements ControlValueAccessor {
 
     getCellDisplayValue(rowData: any, col: ParamConfig) {
         let cellData = rowData[col.code];
-        return cellData
+        if (cellData) {
+            if (super.isDate(col.type.name)) {
+                return this.dtFormat.transform(cellData, col.uiStyles.attributes.datePattern, col.type.name);
+            } else {
+                return cellData;
+            }
+        }
+        else {
+            return col.uiStyles.attributes.placeholder;
+        }
     }
 
     showColumn(col: ParamConfig) {
