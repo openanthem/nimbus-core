@@ -24,7 +24,7 @@ import { WebContentSvc } from '../../../services/content-management.service';
 import { ParamConfig } from '../../../shared/param-config';
 import { PageService } from '../../../services/page.service';
 import { GenericDomain } from '../../../model/generic-domain.model';
-import { Param } from '../../../shared/param-state';
+import { Param, TreeGridDeserializer } from '../../../shared/param-state';
 import { HttpMethod } from './../../../shared/command.enum';
 
 
@@ -71,9 +71,10 @@ export class TreeGrid extends BaseElement  implements ControlValueAccessor {
         super.ngOnInit();
 
         this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), HttpMethod.GET.value, undefined);
-        this.pageSvc.eventUpdate$.subscribe((treeList: Param) => {
+        this.pageSvc.gridValueUpdate$.subscribe((treeList: Param) => {
             if(this.element.path === treeList.path){
-            this.treeData = treeList.leafState;
+                this.treeData = this.getTreeStructure(treeList.gridList);
+                //this.treeData = [{data:{"elemId":"0","id":14,"firstName":"own","lastName":"onw","ownerCity":"Middletown","telephone":"8987898989","nestedGridParam":[]}}];
             }
         });
 
@@ -82,10 +83,17 @@ export class TreeGrid extends BaseElement  implements ControlValueAccessor {
                 column.label = this._wcs.findLabelContentFromConfig(this.element.elemLabels.get(column.id), column.code).text;
                 column['field'] = column.code;
                 column['header'] = column.label;                  
-                });
-                           
+            });
         }
+    }
 
+    getTreeStructure(gridList: any[]) {
+        let data: any[] = [];
+        gridList.forEach(row => {
+            data.push(new TreeGridDeserializer().deserialize(row));
+        });
+
+        return data;
     }
 
     getCellDisplayValue(rowData: any, col: ParamConfig) {

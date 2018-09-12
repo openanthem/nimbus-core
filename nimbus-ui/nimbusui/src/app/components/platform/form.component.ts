@@ -124,10 +124,10 @@ export class Form extends BaseElement implements OnInit, OnChanges {
 
                         this.formElements.push(element);
                     }
-                // } else {
-                //     if(element.type){
-                //         this.groupFormElements(element.type.model)
-                //     }
+                } else {
+                    if(element.type){
+                        this.groupFormElements(element.type.model, false);
+                    }
                 }
              });
         }

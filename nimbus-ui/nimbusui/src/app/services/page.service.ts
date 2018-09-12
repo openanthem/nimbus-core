@@ -710,7 +710,7 @@ export class PageService {
          */
         processModelEvent(param: Param, eventModel: ModelEvent) {
                 // Grid updates
-                if (param.config.uiStyles != null && param.config.uiStyles.attributes.alias === 'Grid') {
+                if (param.config.uiStyles != null && (param.config.uiStyles.attributes.alias === ViewComponent.grid.toString() || param.config.uiStyles.attributes.alias === ViewComponent.treeGrid.toString())) {
                         if (eventModel.value != null) {
                                 // Check if the update is for the Current Collection or a Nested Collection
                                 if (param.path == eventModel.value.path) {
@@ -757,7 +757,7 @@ export class PageService {
                                         }
                                 }
                         }
-                } else if (param.config.uiStyles != null && param.config.uiStyles.attributes.alias === 'CardDetailsGrid') {
+                } else if (param.config.uiStyles != null && param.config.uiStyles.attributes.alias === ViewComponent.cardDetailsGrid.toString()) {
                         if (param.config.type.collection === true) {
                                 let payload: Param = new Param(this.configService).deserialize(eventModel.value, eventModel.value.path);
                                 param.type.model['params'] = payload.type.model.params;
@@ -765,23 +765,23 @@ export class PageService {
                                 this.traverseParam(param, eventModel);
                         }
                 }
-                else if (param.config.uiStyles != null && param.config.uiStyles.attributes.alias === ViewComponent.treeGrid.toString()) {
+                // else if (param.config.uiStyles != null && param.config.uiStyles.attributes.alias === ViewComponent.treeGrid.toString()) {
 
-                        if (param.path == eventModel.value.path) {
-                                let treeList = {"data": []};
+                //         if (param.path == eventModel.value.path) {
+                //                 let treeList = {"data": []};
                                 
-                                eventModel.value.type.model.params.forEach((param) => {
-                                        if(param.leafState)
-                                        treeList.data.push((new TreeGridDeserializer).deserialize(param.leafState));  
+                //                 eventModel.value.type.model.params.forEach((param) => {
+                //                         if(param.leafState)
+                //                         treeList.data.push((new TreeGridDeserializer).deserialize(param.leafState));  
 
-                                });
+                //                 });
 
-                                if(treeList.data.length != 0){
-                                       param.leafState = treeList.data;
-                                       this.eventUpdate.next(param);
-                                }
-                        }
-                }
+                //                 if(treeList.data.length != 0){
+                //                        param.leafState = treeList.data;
+                //                        this.eventUpdate.next(param);
+                //                 }
+                //         }
+                // }
                 else {
                         this.traverseParam(param, eventModel);
                 }

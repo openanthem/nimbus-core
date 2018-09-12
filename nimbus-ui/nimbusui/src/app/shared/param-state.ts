@@ -71,11 +71,34 @@ export class Param implements Serializable<Param, string> {
         return undefined;
     }
 
+    private getLeafStateWithElemId(param: Param) {
+        let rowData: any = {};
+        if (param.collectionElem) {
+            rowData['elemId'] = param.elemId;
+            if(param.type.model) {
+                for(let p of param.type.model.params) {
+                    if(p != null) {
+                        if (p.collection || p.type.model) {
+                            let childList: any[] = [];
+                            for(let q of p.type.model.params) {
+                                if(q != null) {
+                                    childList.push(this.getLeafStateWithElemId(q))
+                                }
+                            }
+                            rowData[p.config.code] = childList;
+                        } else {
+                            rowData[p.config.code] = p.leafState;
+                        }
+                    }
+                }
+            }
+        }
+        return rowData;
+    }
+
     private createRowData(param: Param) {
         let rowData: any = {};
-        rowData = param.leafState;
-        if(rowData instanceof Object)
-            rowData['elemId'] = param.elemId;
+        rowData = this.getLeafStateWithElemId(param);
         if(param.type.model) {
             rowData['nestedGridParam'] = [];
             for(let p of param.type.model.params) {
@@ -154,11 +177,12 @@ export class Param implements Serializable<Param, string> {
             this.type['collection'] = false;
         } 
        // this.path = inJson.path;
-        if ( this.config != null && this.config.uiStyles && this.config.uiStyles.attributes.alias === 'CardDetailsGrid' ) {
+        if ( this.config != null && this.config.uiStyles && this.config.uiStyles.attributes.alias === ViewComponent.cardDetailsGrid.toString() ) {
             if(inJson.leafState != null) {
                 this.leafState = new CardDetailsGrid().deserialize( inJson.leafState );
             }
-        } else if (this.config != null && this.config.uiStyles && this.config.uiStyles.attributes.alias === 'Grid') {
+        } else if (this.config != null && this.config.uiStyles && 
+            (this.config.uiStyles.attributes.alias === ViewComponent.grid.toString() || this.config.uiStyles.attributes.alias == ViewComponent.treeGrid.toString())) {
             // deserialize Page
             if (inJson.page) {
                 this.page = new GridPage().deserialize(inJson.page);
@@ -172,7 +196,7 @@ export class Param implements Serializable<Param, string> {
                     if (!ParamUtils.isEmpty(inJson.type.model.params[p])) {
                         //this.paramState.push(inJson.type.model.params[p].type.model.params); 
                         //this.gridList.push(this.createRowData(inJson.type.model.params[p])); 
-                        let lineItem = this.createRowData(inJson.type.model.params[p]);
+                        let lineItem = this.createRowData(new Param(this.configSvc).deserialize(inJson.type.model.params[p], this.path));
                         if(lineItem.nestedGridParam)
                           this.collectionParams = this.collectionParams.concat(lineItem.nestedGridParam); 
                         delete lineItem.nestedGridParam; 
@@ -192,8 +216,10 @@ export class Param implements Serializable<Param, string> {
             }
         }
 
-        if ( inJson.collectionElem  && this.leafState) {
+        if ( inJson.collectionElem) {
             this.elemId = inJson.elemId;
+        }
+        if ( inJson.collectionElem && this.leafState) {
             this.leafState = this.createRowData(this);
         }
         if (typeof inJson.visible !== 'undefined') {
