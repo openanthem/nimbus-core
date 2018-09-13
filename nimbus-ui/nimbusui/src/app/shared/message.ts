@@ -38,7 +38,7 @@ export class Message implements Serializable<Message, string> {
         let obj: Message = this;
         obj = Converter.convert(inJson,obj);
 
-        if(this.context !== undefined){
+        if(this.context !== undefined && this.text){
             obj = Message.createMessage(this.type, this.context, this.text, this.life);
         }
 
