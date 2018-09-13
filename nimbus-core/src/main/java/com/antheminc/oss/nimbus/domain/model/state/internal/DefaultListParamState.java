@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
@@ -268,6 +269,17 @@ public class DefaultListParamState<T> extends AbstractListPaginatedParam<T> impl
 	private boolean affectRemoveIfMappedOrUnMapped(ListElemParam<T> pElem) {
 		// remove from collection entity state
 		List<T> currList = getState();//instantiateOrGet();
+		
+		if(CollectionUtils.isEmpty(currList)) {
+			if(pElem.getParentModel().templateParams().isNullOrEmpty())
+				return false;
+			
+			String elemId = pElem.getElemId();
+			Param<?> pRemoved = pElem.getParentModel().templateParams().remove(elemId);
+			return (pRemoved != null);
+		}
+		
+		
 		T elemToRemove = pElem.getState();
 		boolean isRemoved = currList.remove(elemToRemove);
 		
