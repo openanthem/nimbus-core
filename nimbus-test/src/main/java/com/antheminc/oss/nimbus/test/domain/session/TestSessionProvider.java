@@ -22,7 +22,7 @@ import com.antheminc.oss.nimbus.domain.session.AbstractSessionProvider;
 
 public class TestSessionProvider extends AbstractSessionProvider {
 
-	public Map<String,Object> sessionMap = new HashMap<String, Object>();
+	private Map<String,Object> sessionMap = new HashMap<String, Object>();
 
 	@Override
 	public String getSessionId() {
