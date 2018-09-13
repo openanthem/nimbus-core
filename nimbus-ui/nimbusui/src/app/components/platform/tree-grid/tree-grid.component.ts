@@ -27,6 +27,7 @@ import { GenericDomain } from '../../../model/generic-domain.model';
 import { Param, TreeGridDeserializer } from '../../../shared/param-state';
 import { HttpMethod } from './../../../shared/command.enum';
 import { DateTimeFormatPipe } from '../../../pipes/date.pipe';
+import { ViewComponent} from '../../../shared/param-annotations.enum';
 
 
 /**
@@ -42,10 +43,10 @@ import { DateTimeFormatPipe } from '../../../pipes/date.pipe';
 })
 export class TreeGrid extends BaseElement  implements ControlValueAccessor {
 
- 
     @Input() params: ParamConfig[];
     @Input() form: FormGroup;
-    firstColumn: boolean = true;
+    firstColumn: ParamConfig;
+    viewComponent = ViewComponent;
 
     treeData: any;
 
@@ -86,13 +87,17 @@ export class TreeGrid extends BaseElement  implements ControlValueAccessor {
                 column['field'] = column.code;
                 column['header'] = column.label;                  
             });
+
+            this.firstColumn = this.params.find((param) => param.uiStyles && param.uiStyles.attributes.hidden === false);
         }
+        
     }
 
     getTreeStructure(gridList: any[]) {
         let data: any[] = [];
-        gridList.forEach(row => {
-            data.push(new TreeGridDeserializer().deserialize(row));
+        gridList.forEach(row => {                    
+            new TreeGridDeserializer().deserialize(row)            
+            data.push(new TreeGridDeserializer().deserialize(row));        
         });
 
         return data;
@@ -113,17 +118,15 @@ export class TreeGrid extends BaseElement  implements ControlValueAccessor {
     }
 
     showColumn(col: ParamConfig) {
-        if (col.uiStyles && col.uiStyles.attributes.hidden === false) {
-            if(this.firstColumn == true){
-                this.firstColumn = false;
-            } 
+        if (col.uiStyles && col.uiStyles.attributes.hidden === false && col.uiStyles.attributes.alias !== ViewComponent.button.toString()) {
+
             return true;
         } 
         return false;
     }
 
-    showFirstColumn(){
-        return this.firstColumn;
+    getViewParam(col: ParamConfig, rowIndex: number): Param {
+        return this.element.collectionParams.find(ele => ele.path == this.element.path + '/'+rowIndex+'/' + col.code);
     }
 
     showHeader(col: ParamConfig) {
