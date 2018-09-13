@@ -1,0 +1,33 @@
+<div class="ui-datatable-header ui-widget-header">
+    <p-header>
+        <caption>{{label}}</caption>
+
+    </p-header>
+</div>
+
+<p-treeTable [value]="treeData" [paginator]="true" [rows]="10">
+    <ng-template pTemplate="header">
+        <tr>
+            <ng-template ngFor let-col let-colIndex="index" [ngForOf]="params">
+                <th *ngIf="showHeader(col)">{{col.header}}</th>
+            </ng-template>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+        <tr>
+            <td>
+                <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                {{getCellDisplayValue(rowData, firstColumn)}}
+            </td>
+
+            <ng-template ngFor let-col let-colIndex="index" [ngForOf]="params">
+                <td *ngIf="showColumn(col) && (col.code !== firstColumn.code)">{{getCellDisplayValue(rowData, col)}}</td>
+
+                <td *ngIf="col?.uiStyles?.attributes?.alias === viewComponent.button.toString()">
+                    <nm-button [element]="getViewParam(col, rowData['elemId'])">
+                    </nm-button>
+                </td>
+            </ng-template>
+        </tr>
+    </ng-template>
+</p-treeTable>

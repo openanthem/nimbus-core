@@ -37,7 +37,9 @@ import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfigType;
 import com.antheminc.oss.nimbus.domain.model.config.event.ConfigEventHandlers.OnParamCreateHandler;
+import com.antheminc.oss.nimbus.domain.model.config.support.DefaultJsonParamConfigSerializer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -47,6 +49,7 @@ import lombok.ToString;
  * @author Soham Chakravarti
  *
  */
+@JsonSerialize(using=DefaultJsonParamConfigSerializer.class)
 @Getter @Setter @ToString(callSuper=true, of={"code", "beanName", "type"})
 public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements ParamConfig<P>, Serializable {
 
