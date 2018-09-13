@@ -1078,8 +1078,8 @@ public class ViewConfig {
 		 * <strong>Resulting HTML</strong>
 		 * </p>
 		 * <pre>
-		 * <code>
 		 * <pre>
+		 * <code>
 		 * <span class="Active status ng-star-inserted" title="Active">
 		 *	    ...
 		 * </span>
@@ -1091,7 +1091,8 @@ public class ViewConfig {
 		 * <strong> Example CSS </strong>
 		 * </p>
 		 * <pre>
-		 * <code>.Active {
+		 * <code>
+		 * .Active {
 		 *	    ...
 		 * }
 		 * </code>
