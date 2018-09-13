@@ -1092,7 +1092,7 @@ public class ViewConfig {
 		 * </p>
 		 * <pre>
 		 * <code>
-		 * .Active {
+		 * status.Active {
 		 *	    ...
 		 * }
 		 * </code>
