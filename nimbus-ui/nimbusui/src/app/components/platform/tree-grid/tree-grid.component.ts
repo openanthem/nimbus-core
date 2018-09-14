@@ -85,7 +85,8 @@ export class TreeGrid extends BaseElement implements ControlValueAccessor {
         });
 
         // For convenience
-        this.collectionAlias = this.element.config.code;
+        this.collectionAlias = this.element.config.type.elementConfig.type.model.paramConfigs.find((config) =>
+                config.uiStyles.attributes.alias === this.viewComponent.treeGridChild.toString()).code;
 
         if (this.params) {
             this.params.forEach(column => {
@@ -124,7 +125,7 @@ export class TreeGrid extends BaseElement implements ControlValueAccessor {
     }
 
     isDisplayValueColumn(col: ParamConfig): boolean {
-        if (!col || !col.uiStyles) {
+        if (!col || !col.uiStyles || (col && col.uiStyles && col.uiStyles.attributes.hidden === false)) {
             return false;
         }
 
@@ -179,7 +180,7 @@ export class TreeGrid extends BaseElement implements ControlValueAccessor {
         
         // Find the first collection param, who's code (or variable name) matches the parent model's code.
         // Continue this manner recursively until the last child is found.
-        let nestedCollectionParam: Param = collectionParams.find(p => this.element.config.code === p.config.code);
+        let nestedCollectionParam: Param = collectionParams.find(p => this.viewComponent.treeGridChild.toString() === p.config.uiStyles.attributes.alias);
         return this.getNestedCollectionParamConfigs(collectionParams, nestedCollectionParam, rowNode.activeChild);
     }
 

@@ -194,6 +194,21 @@ public class ViewConfig {
 		String cssClass() default "";
 	}
 	
+	
+	/**
+	 * <p><b>Expected Field Structure</b>
+	 * 
+	 * <p>Child entities that are within TreeGrid should be annotated with this.
+	 */	
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface TreeGridChild {
+		String alias() default "TreeGridChild";
+		String cssClass() default "";
+	}
+	
 
 	/**
 	 * <p><b>Expected Field Structure</b>
