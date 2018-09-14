@@ -10,7 +10,7 @@
     <ng-template pTemplate="header">
         <tr>
             <ng-template ngFor let-col let-colIndex="index" [ngForOf]="params">
-                <th *ngIf="showHeader(col)">{{col.header}}</th>
+                <th *ngIf="gridUtils.showHeader(col)">{{col.header}}</th>
             </ng-template>
         </tr>
     </ng-template>
@@ -20,7 +20,7 @@
             <!-- Render the first column with the toggler (if applicable) -->
             <td>
                 <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
-                {{getCellDisplayValue(rowData, firstColumn)}}
+                {{gridUtils.getCellDisplayValue(rowData, firstColumn)}}
             </td>
 
             <!-- Render the rest of the columns, relative to the treegrid level -->

@@ -28,6 +28,8 @@ import { Param, TreeGridDeserializer } from '../../../shared/param-state';
 import { HttpMethod } from './../../../shared/command.enum';
 import { DateTimeFormatPipe } from '../../../pipes/date.pipe';
 import { ViewComponent} from '../../../shared/param-annotations.enum';
+import { GridUtils } from '../../../shared/grid-utils';
+
 
 
 /**
@@ -70,7 +72,7 @@ export class TreeGrid extends BaseElement implements ControlValueAccessor {
         this.onTouched = fn;
     }
 
-    constructor(private _wcs: WebContentSvc, private pageSvc: PageService,  private dtFormat: DateTimeFormatPipe) {
+    constructor(private _wcs: WebContentSvc, private pageSvc: PageService,  private dtFormat: DateTimeFormatPipe, private gridUtils: GridUtils) {
         super(_wcs);
     }
 
@@ -102,26 +104,11 @@ export class TreeGrid extends BaseElement implements ControlValueAccessor {
 
     getTreeStructure(gridList: any[]) {
         let data: any[] = [];
-        gridList.forEach(row => {                    
-            new TreeGridDeserializer().deserialize(row)            
+        gridList.forEach(row => {                               
             data.push(new TreeGridDeserializer().deserialize(row));        
         });
 
         return data;
-    }
-
-    getCellDisplayValue(rowData: any, col: ParamConfig) {
-        let cellData = rowData[col.code];
-        if (cellData) {
-            if (super.isDate(col.type.name)) {
-                return this.dtFormat.transform(cellData, col.uiStyles.attributes.datePattern, col.type.name);
-            } else {
-                return cellData;
-            }
-        }
-        else {
-            return col.uiStyles.attributes.placeholder;
-        }
     }
 
     isDisplayValueColumn(col: ParamConfig): boolean {
@@ -159,14 +146,6 @@ export class TreeGrid extends BaseElement implements ControlValueAccessor {
     getViewParam(col: ParamConfig, rowNode: any): Param {
         let nestedCollectionPath = `${this.element.path}/${this.buildNestedCollectionPath(rowNode)}/${col.code}`;
         return this.element.collectionParams.find(p => p.path === nestedCollectionPath);
-    }
-
-    showHeader(col: ParamConfig) {
-        if (col.uiStyles && col.uiStyles.attributes.hidden === false &&
-            col.uiStyles.attributes.alias === this.viewComponent.gridcolumn.toString()) {
-            return true;
-        } 
-        return false;
     }
 
     getRowNodeParamConfigs(rowNode: any): ParamConfig[] {
