@@ -29,7 +29,7 @@
 
                     <!-- Render the value only columns -->
                     <td *ngIf="isDisplayValueColumn(col)">
-                        {{getCellDisplayValue(rowData, col)}}
+                        {{gridUtils.getCellDisplayValue(rowData, col)}}
                     </td>
 
                     <!-- Render the "renderable" (or non-value display only) components -->
