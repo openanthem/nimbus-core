@@ -24,7 +24,7 @@
             </td>
 
             <!-- Render the rest of the columns, relative to the treegrid level -->
-            <ng-template ngFor let-col let-colIndex="index" [ngForOf]="getNestedCollectionParamConfigs(params, rowNode.level)">
+            <ng-template ngFor let-col let-colIndex="index" [ngForOf]="getRowNodeParamConfigs(rowNode)">
                 <ng-template [ngIf]="col.code !== firstColumn.code">
 
                     <!-- Render the value only columns -->
@@ -33,7 +33,7 @@
                     </td>
 
                     <!-- Render the "renderable" (or non-value display only) components -->
-                    <td *ngIf="isRenderableComponent(col, rowData['elemId'])">
+                    <td *ngIf="isRenderableComponent(col)">
 
                         <nm-button *ngIf="viewComponent.button.toString() === col.uiStyles.attributes.alias"
                             [element]="getViewParam(col, rowNode)">

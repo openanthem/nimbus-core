@@ -55,6 +55,10 @@ export class TreeGrid extends BaseElement  implements ControlValueAccessor {
 
     private collectionAlias: string;
 
+    public static readonly RENDERABLE_COMPONENT_ALIASES = [
+        ViewComponent.button.toString()
+    ]
+
     public writeValue(obj: any): void {
         if (obj !== undefined) {
         }
@@ -121,30 +125,21 @@ export class TreeGrid extends BaseElement  implements ControlValueAccessor {
         }
     }
 
-    isDisplayValueColumn(col: ParamConfig, elemId: number) {
+    isDisplayValueColumn(col: ParamConfig, elemId: number): boolean {
         if (!col || !col.uiStyles) {
             return false;
         }
 
-        return !this.isRenderableComponent(col, elemId) && !col.uiStyles.attributes.hidden;
+        return !this.isRenderableComponent(col) && !col.uiStyles.attributes.hidden;
     }
 
-    isRenderableComponent(paramConfig: ParamConfig, elemId: number) {
+    isRenderableComponent(paramConfig: ParamConfig): boolean {
         if (!paramConfig || !paramConfig.uiStyles) {
             return false;
         }
         
-        if (this.treeData[elemId].data && this.treeData[elemId].data.nestedGridParam) {
-
-            // Look through the nested grid params and see if paramConfig
-            // is contained within it. If it is, it is a "renderable" component.
-            // See the building of nestedGridParam for more details...
-            let params = this.treeData[elemId].data.nestedGridParam as Param[];
-            for(var p of params) {
-                if (paramConfig.id === p.configId) {
-                    return true;
-                }
-            }
+        if (TreeGrid.RENDERABLE_COMPONENT_ALIASES.find(s => s === paramConfig.uiStyles.attributes.alias)) {
+            return true;
         }
     }
 
@@ -155,12 +150,7 @@ export class TreeGrid extends BaseElement  implements ControlValueAccessor {
         }
 
         // Build the parent rowNode
-        let parentRowNode = {
-            level: rowNode.level - 1,
-            node: rowNode.parent,
-            parent: rowNode.parent.parent,
-            visible: true
-        };
+        let parentRowNode = this.createParentRowNode(rowNode);
 
         // Recursive build the param path until an exit condition is met 
         // (e.g. 0/owners/4.../owners/2)
@@ -180,28 +170,43 @@ export class TreeGrid extends BaseElement  implements ControlValueAccessor {
         return false;
     }
 
-    getNestedCollectionParamConfigs(paramConfigs: ParamConfig[], level: number) {
-        // TODO REMOVE: This if statement should be removed when the nestedCollection.type.model.paramConfigs
-        // issue below is resolved. For now it is a testing fix.
-        if (paramConfigs.length === 0) {
-            return paramConfigs;
+    getBaseRowNode(rowNode: any) {
+        if (!rowNode.parent) {
+            return rowNode;
         }
+        rowNode.parent.child = rowNode;
+        return this.getBaseRowNode(rowNode.parent);
+    }
 
-        if (level <= 0) {
-            return paramConfigs;
+    getRowNodeParamConfigs(rowNode: any): ParamConfig[] {
+        return this.getNestedCollectionParamConfigs(this.element.collectionParams, this.element, this.getBaseRowNode(rowNode));
+    }
+
+    getNestedCollectionParamConfigs(collectionParams: Param[], param: Param, rowNode: any): ParamConfig[] {
+        if (!rowNode.child) {
+            return param.config.type.elementConfig.type.model.paramConfigs;
         }
-
-        // Retrieve the nested collection param config.
-        let nestedCollection = paramConfigs.find(pc => pc.code === this.collectionAlias);
-
-        // TODO nestedCollection.type.model.paramConfigs is coming back as an empty array
-        // This needs to be fixed during the deserialization process for tree grid to get
-        // the necessary param configs.
-        // Until this resolved, this will throw an error when the tree grid level > 2.
+        
+        // Retrieve the nested collection param.
+        let nestedCollectionParam: Param = collectionParams.find(p => this.element.config.code === p.config.code);
 
         // Recursively retrieve the param configs for the nested collection until an
         // exit condition is satisfied.
-        return this.getNestedCollectionParamConfigs(nestedCollection.type.model.paramConfigs, level - 1);
+        return this.getNestedCollectionParamConfigs(collectionParams, nestedCollectionParam, rowNode.child);
+    }
+
+    private createParentRowNode(rowNode: any): any {
+        return this.createRowNode(rowNode.level - 1, rowNode.parent, rowNode.parent.parent, rowNode, true);
+    }
+
+    private createRowNode(level: number, node: any, parent: any, child: any, visible: boolean): any {
+        return {
+            level: level,
+            node: node,
+            parent: parent,
+            child: child,
+            visible: visible
+        };
     }
 
 }
