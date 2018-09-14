@@ -112,7 +112,7 @@ export class TreeGrid extends BaseElement implements ControlValueAccessor {
     }
 
     isDisplayValueColumn(col: ParamConfig): boolean {
-        if (!col || !col.uiStyles) {
+        if (!col || !col.uiStyles || (col && col.type && col.type.collection)) {
             return false;
         }
 
