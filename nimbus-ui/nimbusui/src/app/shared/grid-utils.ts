@@ -18,10 +18,9 @@
 
 import {Injectable} from "@angular/core";
 import { ParamConfig } from './param-config';
-import { BaseElement } from '../components/platform/base-element.component';
 import { DateTimeFormatPipe } from '../pipes/date.pipe';
-import { WebContentSvc } from '../services/content-management.service';
 import { ViewComponent} from './param-annotations.enum';
+import { ParamUtils } from './param-utils';
 
 /**
  * \@author Vivek Kamineni
@@ -32,18 +31,18 @@ import { ViewComponent} from './param-annotations.enum';
  */
 
 @Injectable()
- export class GridUtils extends BaseElement{
+ export class GridUtils{
 
     viewComponent = ViewComponent;
     
-    constructor(private _wcs: WebContentSvc, private dtFormat: DateTimeFormatPipe) {
-        super(_wcs);
+    constructor(private dtFormat: DateTimeFormatPipe) {
+       
     }
 
     getCellDisplayValue(rowData: any, col: ParamConfig) {
         let cellData = rowData[col.code];
         if (cellData) {
-            if (super.isDate(col.type.name)) {
+            if (this.isDate(col.type.name)) {
                 return this.dtFormat.transform(cellData, col.uiStyles.attributes.datePattern, col.type.name);
             } else {
                 return cellData;
@@ -61,5 +60,9 @@ import { ViewComponent} from './param-annotations.enum';
             return true;
         } 
         return false;
+    }
+
+    isDate(dataType: string): boolean {
+        return ParamUtils.isKnownDateType(dataType);
     }
  }

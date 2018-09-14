@@ -26,7 +26,6 @@ import { PageService } from '../../../services/page.service';
 import { GenericDomain } from '../../../model/generic-domain.model';
 import { Param, TreeGridDeserializer } from '../../../shared/param-state';
 import { HttpMethod } from './../../../shared/command.enum';
-import { DateTimeFormatPipe } from '../../../pipes/date.pipe';
 import { ViewComponent} from '../../../shared/param-annotations.enum';
 import { GridUtils } from '../../../shared/grid-utils';
 
@@ -39,7 +38,7 @@ import { GridUtils } from '../../../shared/grid-utils';
  */
 @Component({
     selector: 'nm-treegrid',
-    providers: [WebContentSvc, DateTimeFormatPipe],
+    providers: [WebContentSvc],
     templateUrl: './tree-grid.component.html'
 })
 export class TreeGrid extends BaseElement implements ControlValueAccessor {
@@ -72,7 +71,7 @@ export class TreeGrid extends BaseElement implements ControlValueAccessor {
         this.onTouched = fn;
     }
 
-    constructor(private _wcs: WebContentSvc, private pageSvc: PageService,  private dtFormat: DateTimeFormatPipe, private gridUtils: GridUtils) {
+    constructor(private _wcs: WebContentSvc, private pageSvc: PageService, private gridUtils: GridUtils) {
         super(_wcs);
     }
 
