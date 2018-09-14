@@ -35,14 +35,12 @@ import { ViewComponent} from '../../../shared/param-annotations.enum';
  * \@author Tony Lopez
  * \@whatItDoes A control to be used to display closely related data in a Tree structure.
  */
-
-
 @Component({
     selector: 'nm-treegrid',
     providers: [WebContentSvc, DateTimeFormatPipe],
     templateUrl: './tree-grid.component.html'
 })
-export class TreeGrid extends BaseElement  implements ControlValueAccessor {
+export class TreeGrid extends BaseElement implements ControlValueAccessor {
 
     @Input() params: ParamConfig[];
     @Input() form: FormGroup;
@@ -125,7 +123,7 @@ export class TreeGrid extends BaseElement  implements ControlValueAccessor {
         }
     }
 
-    isDisplayValueColumn(col: ParamConfig, elemId: number): boolean {
+    isDisplayValueColumn(col: ParamConfig): boolean {
         if (!col || !col.uiStyles) {
             return false;
         }
@@ -150,7 +148,7 @@ export class TreeGrid extends BaseElement  implements ControlValueAccessor {
         }
 
         // Build the parent rowNode
-        let parentRowNode = this.createParentRowNode(rowNode);
+        let parentRowNode = RowNodeUtils.createParentRowNode(rowNode);
 
         // Recursive build the param path until an exit condition is met 
         // (e.g. 0/owners/4.../owners/2)
@@ -164,49 +162,77 @@ export class TreeGrid extends BaseElement  implements ControlValueAccessor {
 
     showHeader(col: ParamConfig) {
         if (col.uiStyles && col.uiStyles.attributes.hidden === false &&
-            col.uiStyles.attributes.alias === 'GridColumn') {
+            col.uiStyles.attributes.alias === this.viewComponent.gridcolumn.toString()) {
             return true;
         } 
         return false;
     }
 
-    getBaseRowNode(rowNode: any) {
-        if (!rowNode.parent) {
-            return rowNode;
-        }
-        rowNode.parent.child = rowNode;
-        return this.getBaseRowNode(rowNode.parent);
-    }
-
     getRowNodeParamConfigs(rowNode: any): ParamConfig[] {
-        return this.getNestedCollectionParamConfigs(this.element.collectionParams, this.element, this.getBaseRowNode(rowNode));
+        return this.getNestedCollectionParamConfigs(this.element.collectionParams, this.element, RowNodeUtils.getBaseRowNode(rowNode));
     }
 
     getNestedCollectionParamConfigs(collectionParams: Param[], param: Param, rowNode: any): ParamConfig[] {
-        if (!rowNode.child) {
+        if (!rowNode.activeChild) {
             return param.config.type.elementConfig.type.model.paramConfigs;
         }
         
-        // Retrieve the nested collection param.
+        // Find the first collection param, who's code (or variable name) matches the parent model's code.
+        // Continue this manner recursively until the last child is found.
         let nestedCollectionParam: Param = collectionParams.find(p => this.element.config.code === p.config.code);
-
-        // Recursively retrieve the param configs for the nested collection until an
-        // exit condition is satisfied.
-        return this.getNestedCollectionParamConfigs(collectionParams, nestedCollectionParam, rowNode.child);
+        return this.getNestedCollectionParamConfigs(collectionParams, nestedCollectionParam, rowNode.activeChild);
     }
 
-    private createParentRowNode(rowNode: any): any {
+}
+
+/**
+ * \@author Tony Lopez
+ * \@whatItDoes A utility class for working with the PrimeNG RowNode attribute within TreeGrid.
+ */
+export class RowNodeUtils {
+
+    /**
+     * Create a parent rowNode from the given rowNode argument.
+     * @param rowNode the starting rowNode object
+     */
+    static createParentRowNode(rowNode: any): any {
         return this.createRowNode(rowNode.level - 1, rowNode.parent, rowNode.parent.parent, rowNode, true);
     }
 
-    private createRowNode(level: number, node: any, parent: any, child: any, visible: boolean): any {
+    /**
+     * Create a TreeGrid rowNode object following the domain specification as listed by PrimeNG. This
+     * method is a simple utility method for creating row nodes.
+     * @param level the depth of the tree
+     * @param node contains the expected data model for this row
+     * @param parent the parent node of this row
+     * @param activeChild the child node of this row (if applicable)
+     * @param visible whether or not this row is visible
+     */
+    static createRowNode(level: number, node: any, parent: any, activeChild: any, visible: boolean): any {
         return {
             level: level,
             node: node,
             parent: parent,
-            child: child,
+            activeChild: activeChild,
             visible: visible
         };
+    }
+
+    /**
+     * Retrieve the highest rowNode object from the given rowNode by recursively traversing it's parents
+     * until a parent is unable to be found in the tree. It then logically follows that the last element found
+     * is the base rowNode.
+     * This method also sets activeChild into rowNode along the traversal process to specify the path the 
+     * tree traversal followed. Traversing the resulting rowNode's activeChildren performs the reverse process
+     * of this method.
+     * @param rowNode the starting rowNode object
+     */
+    static getBaseRowNode(rowNode: any) {
+        if (!rowNode.parent) {
+            return rowNode;
+        }
+        rowNode.parent.activeChild = rowNode;
+        return this.getBaseRowNode(rowNode.parent);
     }
 
 }

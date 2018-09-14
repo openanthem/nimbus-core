@@ -28,7 +28,7 @@
                 <ng-template [ngIf]="col.code !== firstColumn.code">
 
                     <!-- Render the value only columns -->
-                    <td *ngIf="isDisplayValueColumn(col, rowData['elemId'])">
+                    <td *ngIf="isDisplayValueColumn(col)">
                         {{getCellDisplayValue(rowData, col)}}
                     </td>
 
