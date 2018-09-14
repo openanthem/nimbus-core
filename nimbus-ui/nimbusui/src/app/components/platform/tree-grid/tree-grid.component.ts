@@ -32,6 +32,7 @@ import { ViewComponent} from '../../../shared/param-annotations.enum';
 
 /**
  * \@author Vivek Kamineni
+ * \@author Tony Lopez
  * \@whatItDoes A control to be used to display closely related data in a Tree structure.
  */
 
@@ -47,11 +48,12 @@ export class TreeGrid extends BaseElement  implements ControlValueAccessor {
     @Input() form: FormGroup;
     firstColumn: ParamConfig;
     viewComponent = ViewComponent;
-
     treeData: any;
 
     public onChange: any = (_) => { /*Empty*/ }
     public onTouched: any = () => { /*Empty*/ }
+
+    private collectionAlias: string;
 
     public writeValue(obj: any): void {
         if (obj !== undefined) {
@@ -77,9 +79,11 @@ export class TreeGrid extends BaseElement  implements ControlValueAccessor {
         this.pageSvc.gridValueUpdate$.subscribe((treeList: Param) => {
             if(this.element.path === treeList.path){
                 this.treeData = this.getTreeStructure(treeList.gridList);
-                //this.treeData = [{data:{"elemId":"0","id":14,"firstName":"own","lastName":"onw","ownerCity":"Middletown","telephone":"8987898989","nestedGridParam":[]}}];
             }
         });
+
+        // For convenience
+        this.collectionAlias = this.element.config.code;
 
         if (this.params) {
             this.params.forEach(column => {
@@ -117,16 +121,55 @@ export class TreeGrid extends BaseElement  implements ControlValueAccessor {
         }
     }
 
-    showColumn(col: ParamConfig) {
-        if (col.uiStyles && col.uiStyles.attributes.hidden === false && col.uiStyles.attributes.alias !== ViewComponent.button.toString()) {
+    isDisplayValueColumn(col: ParamConfig, elemId: number) {
+        if (!col || !col.uiStyles) {
+            return false;
+        }
 
-            return true;
-        } 
-        return false;
+        return !this.isRenderableComponent(col, elemId) && !col.uiStyles.attributes.hidden;
     }
 
-    getViewParam(col: ParamConfig, rowIndex: number): Param {
-        return this.element.collectionParams.find(ele => ele.path == this.element.path + '/'+rowIndex+'/' + col.code);
+    isRenderableComponent(paramConfig: ParamConfig, elemId: number) {
+        if (!paramConfig || !paramConfig.uiStyles) {
+            return false;
+        }
+        
+        if (this.treeData[elemId].data && this.treeData[elemId].data.nestedGridParam) {
+
+            // Look through the nested grid params and see if paramConfig
+            // is contained within it. If it is, it is a "renderable" component.
+            // See the building of nestedGridParam for more details...
+            let params = this.treeData[elemId].data.nestedGridParam as Param[];
+            for(var p of params) {
+                if (paramConfig.id === p.configId) {
+                    return true;
+                }
+            }
+        }
+    }
+
+    buildNestedCollectionPath(rowNode: any): string {
+        // If we're at the top level, exit and return the collection element id (e.g. '0')
+        if (rowNode.level <= 0) {
+            return rowNode.node.data.elemId;
+        }
+
+        // Build the parent rowNode
+        let parentRowNode = {
+            level: rowNode.level - 1,
+            node: rowNode.parent,
+            parent: rowNode.parent.parent,
+            visible: true
+        };
+
+        // Recursive build the param path until an exit condition is met 
+        // (e.g. 0/owners/4.../owners/2)
+        return `${this.buildNestedCollectionPath(parentRowNode)}/${this.collectionAlias}/${rowNode.node.data.elemId}`;
+    }
+
+    getViewParam(col: ParamConfig, rowNode: any): Param {
+        let nestedCollectionPath = `${this.element.path}/${this.buildNestedCollectionPath(rowNode)}/${col.code}`;
+        return this.element.collectionParams.find(p => p.path === nestedCollectionPath);
     }
 
     showHeader(col: ParamConfig) {
@@ -136,5 +179,29 @@ export class TreeGrid extends BaseElement  implements ControlValueAccessor {
         } 
         return false;
     }
-    
+
+    getNestedCollectionParamConfigs(paramConfigs: ParamConfig[], level: number) {
+        // TODO REMOVE: This if statement should be removed when the nestedCollection.type.model.paramConfigs
+        // issue below is resolved. For now it is a testing fix.
+        if (paramConfigs.length === 0) {
+            return paramConfigs;
+        }
+
+        if (level <= 0) {
+            return paramConfigs;
+        }
+
+        // Retrieve the nested collection param config.
+        let nestedCollection = paramConfigs.find(pc => pc.code === this.collectionAlias);
+
+        // TODO nestedCollection.type.model.paramConfigs is coming back as an empty array
+        // This needs to be fixed during the deserialization process for tree grid to get
+        // the necessary param configs.
+        // Until this resolved, this will throw an error when the tree grid level > 2.
+
+        // Recursively retrieve the param configs for the nested collection until an
+        // exit condition is satisfied.
+        return this.getNestedCollectionParamConfigs(nestedCollection.type.model.paramConfigs, level - 1);
+    }
+
 }
