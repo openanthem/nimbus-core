@@ -246,7 +246,7 @@ export class LayoutService {
                                 subMenuLinks.push(paramLink)
                             }
                         })
-                        menuItems.set(param.config.code, subMenuLinks);
+                        menuItems.set(this.wcs.findLabelContent(param).text, subMenuLinks);
                         subBarItems['menuItems'] = menuItems;
                     }
                     if (param.config.uiStyles.attributes.alias === 'ComboBox') {
