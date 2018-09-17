@@ -68,7 +68,9 @@ public class ChangeLogTest extends AbstractFrameworkIntegrationTests {
 		assertThat(cmdEntry).isNotNull();
 		
 		ChangeLogEntry valueEntry_NestedEntityB = mongo.findOne(new Query(Criteria.where("value").is("Test_Nested_Status_B")), ChangeLogEntry.class, "changelog");
-		assertThat(valueEntry_NestedEntityB).isNull();
+		
+		// Changing from isNull to isNotNull. Init Enity is a function handler. Any change to state caused by the function handler should be processed by the corresponding state change handlers
+		assertThat(valueEntry_NestedEntityB).isNotNull();
 		
 	}
 	

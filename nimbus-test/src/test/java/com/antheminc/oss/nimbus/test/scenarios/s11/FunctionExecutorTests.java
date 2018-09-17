@@ -40,7 +40,7 @@ import com.antheminc.oss.nimbus.test.scenarios.s11.core.FuncHandlerTestModel;
  *
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class FunctionHandlerTests extends AbstractFrameworkIngerationPersistableTests {
+public class FunctionExecutorTests extends AbstractFrameworkIngerationPersistableTests {
 
 	protected static final String BPM_ERR_DOMAIN_ALIAS = "testbpmfailmodel";
 	protected static final String BPM_ERR_PARAM_ROOT = PLATFORM_ROOT + "/" + BPM_ERR_DOMAIN_ALIAS;	
