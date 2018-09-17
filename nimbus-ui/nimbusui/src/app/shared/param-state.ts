@@ -72,36 +72,10 @@ export class Param implements Serializable<Param, string> {
         return undefined;
     }
 
-    private getLeafStateWithElemId(param: Param) {
-        let rowData: any = {};
-        if (param.collectionElem) {
-            rowData['elemId'] = param.elemId;
-            if(param.type.model) {
-                for(let p of param.type.model.params) {
-                    if(p != null) {
-                        if (p.collection || p.type.model) {
-                            let childList: any[] = [];
-                            for(let q of p.type.model.params) {
-                                if(q != null) {
-                                    childList.push(this.getLeafStateWithElemId(q))
-                                }
-                            }
-                            rowData[p.config.code] = childList;
-                        } else {
-                            rowData[p.config.code] = p.leafState;
-                        }
-                    }
-                }
-            }
-        }
-        return rowData;
-    }
-
     private createRowData(param: Param) {
         let rowData: any = {};
         let isTreeGrid = this.config != null && this.config.uiStyles && this.config.uiStyles.attributes.alias == ViewComponent.treeGrid.toString();
-        rowData = this.getLeafStateWithElemId(param);
-        // rowData = param.leafState;
+        rowData = param.leafState;
         if(param.type.model) {
             rowData['nestedGridParam'] = [];
             for(let p of param.type.model.params) {

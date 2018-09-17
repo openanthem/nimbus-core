@@ -178,10 +178,10 @@ export class ParamUtils {
                 transformed[x]['elemId'] = x_param.elemId; 
             }
 
-            if (x_param && x_param.config) {
+            if (x_param ) {
 
                 // if the param identified by x is a collection or nested element...
-                if ((x_param.config.type.collection || x_param.config.type.nested)) {
+                if (x_param.config && (x_param.config.type.collection || x_param.config.type.nested)) {
                     
                     // if we have what we need, then apply the transformations recursively.
                     if (x_param.type.model && x_param.type.model.params) {
@@ -192,9 +192,12 @@ export class ParamUtils {
                         console.warn(`Unable to find params for ${x} in ${obj[x]}`);
                         return;
                     }
-
-                // Otherwise, this element is a "simple type" and we can apply the transformations
-                } else {
+                } else if (x_param.collectionElem) {
+                    // apply the transformations recursively.
+                    if (x_param.type.model && x_param.type.model.params) {
+                        transformed[x] = this.applyLeafStateTransformations(obj[x], x_param);
+                    }
+                } else { // Otherwise, this element is a "simple type" and we can apply the transformations
                     
                     // Handle Date transformations
                     if (x_param.config.type && ParamUtils.isKnownDateType(x_param.config.type.name)) {
