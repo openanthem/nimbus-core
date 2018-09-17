@@ -53,13 +53,20 @@ import { ParamUtils } from './param-utils';
         }
     }
 
-
     showHeader(col: ParamConfig) {
         if (col.uiStyles && col.uiStyles.attributes.hidden === false &&
-            col.uiStyles.attributes.alias === this.viewComponent.gridcolumn.toString()) {
+            (col.uiStyles.attributes.alias === this.viewComponent.gridcolumn.toString() || col.uiStyles.attributes.alias === this.viewComponent.button.toString())) {
             return true;
         } 
         return false;
+    }
+
+    getColumnStyle(col: ParamConfig): string {
+        if (col.uiStyles && col.uiStyles.attributes.alias === 'LinkMenu') {
+            return 'dropdown';
+        } else if (col.uiStyles && col.uiStyles.attributes.alias === 'Button') {
+            return 'imageColumn';
+        }
     }
 
     isDate(dataType: string): boolean {
