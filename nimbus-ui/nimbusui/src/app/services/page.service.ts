@@ -744,7 +744,7 @@ export class PageService {
                                         if( param.gridList) {
                                                 for (var p = 0; p < param.gridList.length; p++) {
                                                         if (param.gridList[p]['elemId'] == elemIndex) {
-                                                                let nestedElement = this.getNestedElementParam(param.gridList[p]['nestedElement'], nestedPath);
+                                                                let nestedElement = this.getNestedElementParam(param.gridList[p]['nestedElement'], nestedPath, eventModel.value.path);
                                                                 if (nestedElement) {
                                                                         nestedElement['gridList'] = this.createGridData(eventModel.value.type.model.params, nestedElement);
                                                                         this.gridValueUpdate.next(nestedElement);
@@ -768,25 +768,51 @@ export class PageService {
                 }
         }
 
-        getNestedElementParam(nestedElement: Param, nestedPath: string): Param {
+        getNestedElementParam(nestedElement: Param, nestedPath: string, eventPath: string): Param {
                 let paramTree = nestedPath.split('/');
                 let startIndex = 1;
 
                 if (this.matchNode(nestedElement, paramTree[startIndex])) {
-                        return this.traverseNestedPath(nestedElement, startIndex + 1, paramTree);
+                        return this.traverseNestedPath(nestedElement, startIndex + 1, paramTree, eventPath);
                 } else {
                         return undefined;
                 }
         }
 
-        traverseNestedPath(nestedElement: Param, index: number, tree: string[]): Param {
-                for (var p = 0; p < nestedElement.type.model.params.length; p++) {
-                        let element = nestedElement.type.model.params[p];
+        matchElementId (nestedElement:Param, elemId:string){
+                if (nestedElement.elemId && nestedElement.elemId == elemId){
+                        return true;
+                }
+                return false;
+        }
+
+        traverseNestedPath(nestedElement: Param, index: number, tree: string[], eventPath: string): Param {
+                if (!nestedElement) {
+                        return nestedElement;
+                }
+                for (let p = 0; p < nestedElement.type.model.params.length; p++) {
+                        const element = nestedElement.type.model.params[p];
+
+                        // find's and return the element based on the nestedelement.config.code and index
                         if (this.matchNode(element, tree[index])) {
-                                if (index == tree.length - 1) {
-                                        return element;
-                                } else {
-                                        return this.traverseNestedPath(element, index + 1, tree);
+                                let matchFoundOnGrid = false;
+                                if (element.gridList && element.gridList.length >0){
+                                        // if there is a gridlist, match the elemntId
+                                        // and look into nested element of the gridlist.
+                                        for(let  i = 0; i < element.gridList.length; i++){
+                                                if (this.matchElementId(element.gridList[i], tree[index+1])){
+                                                                matchFoundOnGrid = true;
+                                                                index += 2; // skip the elementID in the path and the curentElements cnfig.code
+                                                                return  this.traverseNestedPath(element.gridList[i].nestedElement, index + 1, tree, eventPath);
+                                                }
+                                        }
+                                }
+                                if (!matchFoundOnGrid){
+                                        if (index === tree.length - 1 && element.path === eventPath) {
+                                                return element;
+                                        } else {
+                                                return this.traverseNestedPath(element, index + 1, tree, eventPath);
+                                        }
                                 }
                         }
                 }
