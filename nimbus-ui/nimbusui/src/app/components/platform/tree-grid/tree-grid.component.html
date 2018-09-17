@@ -5,12 +5,12 @@
     </p-header>
 </div>
 
-<p-treeTable [value]="treeData" [paginator]="true" [rows]="10">
+<p-treeTable [value]="treeData" [paginator]="true" paginatorPosition="both" [rows]="10">
 
     <ng-template pTemplate="header">
         <tr>
             <ng-template ngFor let-col let-colIndex="index" [ngForOf]="params">
-                <th *ngIf="gridUtils.showHeader(col)">{{col.header}}</th>
+                <th *ngIf="gridUtils.showHeader(col)" [ngClass]="gridUtils.getColumnStyle(col)">{{col.header}}</th>
             </ng-template>
         </tr>
     </ng-template>
@@ -33,7 +33,7 @@
                     </td>
 
                     <!-- Render the "renderable" (or non-value display only) components -->
-                    <td *ngIf="isRenderableComponent(col)">
+                    <td *ngIf="isRenderableComponent(col)" [ngClass]="gridUtils.getColumnStyle(col)">
 
                         <nm-button *ngIf="viewComponent.button.toString() === col.uiStyles.attributes.alias"
                             [element]="getViewParam(col, rowNode)">

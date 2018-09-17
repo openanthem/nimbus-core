@@ -429,7 +429,7 @@ public class ViewConfig {
 	 * <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>CardDetailsGrid will be rendered when annotating a field nested under
-	 * one of the following components: <ul> <li>{@link Section}</li> </ul>
+	 * one of the following components: <ul> <li>{@link Accordion}</li><li>{@link Section}</li> </ul>
 	 * 
 	 * <p>A field decorated with &#64;CardDetailsGrid should be an object
 	 * containing one or more fields. Each of these fields would represent a

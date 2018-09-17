@@ -72,35 +72,10 @@ export class Param implements Serializable<Param, string> {
         return undefined;
     }
 
-    private getLeafStateWithElemId(param: Param) {
-        let rowData: any = {};
-        if (param.collectionElem) {
-            rowData['elemId'] = param.elemId;
-            if(param.type.model) {
-                for(let p of param.type.model.params) {
-                    if(p != null) {
-                        if (p.collection || p.type.model) {
-                            let childList: any[] = [];
-                            for(let q of p.type.model.params) {
-                                if(q != null) {
-                                    childList.push(this.getLeafStateWithElemId(q))
-                                }
-                            }
-                            rowData[p.config.code] = childList;
-                        } else {
-                            rowData[p.config.code] = p.leafState;
-                        }
-                    }
-                }
-            }
-        }
-        return rowData;
-    }
-
     private createRowData(param: Param) {
         let rowData: any = {};
         let isTreeGrid = this.config != null && this.config.uiStyles && this.config.uiStyles.attributes.alias == ViewComponent.treeGrid.toString();
-        rowData = this.getLeafStateWithElemId(param);
+        rowData = param.leafState;
         if(param.type.model) {
             rowData['nestedGridParam'] = [];
             for(let p of param.type.model.params) {
@@ -108,7 +83,7 @@ export class Param implements Serializable<Param, string> {
                     let config = this.configSvc.paramConfigs[p.configId];
 
                     this.handleNestedGridParams(rowData, param, p, config);
-                    if (isTreeGrid && config.uiStyles.attributes.alias === ViewComponent.treeGridChild.toString()) {
+                    if (isTreeGrid && config.uiStyles && config.uiStyles.attributes.alias === ViewComponent.treeGridChild.toString()) {
                         this.putNestedGridParam(rowData, param, p);
                         this.handleRecursiveNestedGridParams(rowData, param, p);
                     }
@@ -136,7 +111,7 @@ export class Param implements Serializable<Param, string> {
                 if(p != null) {
                     let config = this.configSvc.paramConfigs[p.configId];
                     this.handleNestedGridParams(rowData, baseParam, p, config);
-                    if (config.uiStyles.attributes.alias === ViewComponent.treeGridChild.toString()) {
+                    if (config.uiStyles && config.uiStyles.attributes.alias === ViewComponent.treeGridChild.toString()) {
                         this.putNestedGridParam(rowData, baseParam, p);
                         this.handleRecursiveNestedGridParams(rowData, baseParam, p);
                     }
@@ -201,6 +176,9 @@ export class Param implements Serializable<Param, string> {
         if (typeof inJson.collection !== 'undefined'){
             this.collection = inJson.collection;
         }
+        if ( inJson.collectionElem) {
+            this.elemId = inJson.elemId;
+        }
 
         this.path = this.constructPath(path, inJson);
         if (inJson.type != null) {
@@ -251,9 +229,6 @@ export class Param implements Serializable<Param, string> {
             }
         }
 
-        if ( inJson.collectionElem) {
-            this.elemId = inJson.elemId;
-        }
         if ( inJson.collectionElem && this.leafState) {
             this.leafState = this.createRowData(this);
         }
