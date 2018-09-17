@@ -1,3 +1,4 @@
+import { TreeGrid } from './../components/platform/tree-grid/tree-grid.component';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -71,56 +72,24 @@ export class Param implements Serializable<Param, string> {
         return undefined;
     }
 
-    private getLeafStateWithElemId(param: Param) {
-        let rowData: any = {};
-        if (param.collectionElem) {
-            rowData['elemId'] = param.elemId;
-            if(param.type.model) {
-                for(let p of param.type.model.params) {
-                    if(p != null) {
-                        if (p.collection || p.type.model) {
-                            let childList: any[] = [];
-                            for(let q of p.type.model.params) {
-                                if(q != null) {
-                                    childList.push(this.getLeafStateWithElemId(q))
-                                }
-                            }
-                            rowData[p.config.code] = childList;
-                        } else {
-                            rowData[p.config.code] = p.leafState;
-                        }
-                    }
-                }
-            }
-        }
-        return rowData;
-    }
-
     private createRowData(param: Param) {
         let rowData: any = {};
-        rowData = this.getLeafStateWithElemId(param);
+        let isTreeGrid = this.config != null && this.config.uiStyles && this.config.uiStyles.attributes.alias == ViewComponent.treeGrid.toString();
+        rowData = param.leafState;
         if(param.type.model) {
             rowData['nestedGridParam'] = [];
             for(let p of param.type.model.params) {
                 if(p != null) {
                     let config = this.configSvc.paramConfigs[p.configId];
-                    //let path = paramPath + "/" + config.code;
-                    // handle nested grid data
-                    if (config.uiStyles && 
-                        (TableComponentConstants.allowedColumnStylesAlias.includes(config.uiStyles.attributes.alias)
-                        || config.uiStyles.attributes.showAsLink === true)) {
-                        let isDeserialized = false;
-                        if ( p instanceof Param) {
-                            isDeserialized = true;
-                        }
-                        if(param.collectionElem)
-                            rowData['nestedGridParam'].push(isDeserialized ? p : new Param(this.configSvc).deserialize(p,this.path + '/' + param.elemId));
-                        else
-                            rowData['nestedGridParam'].push(isDeserialized ? p : new Param(this.configSvc).deserialize(p,this.path));
+
+                    this.handleNestedGridParams(rowData, param, p, config);
+                    if (isTreeGrid && config.uiStyles && config.uiStyles.attributes.alias === ViewComponent.treeGridChild.toString()) {
+                        this.putNestedGridParam(rowData, param, p);
+                        this.handleRecursiveNestedGridParams(rowData, param, p);
                     }
     
                     // handle dates
-                    if (config && ParamUtils.isKnownDateType(config.type.name)) {
+                    if (ParamUtils.isKnownDateType(config.type.name)) {
                         rowData[config.code] = ParamUtils.convertServerDateStringToDate(rowData[config.code], config.type.name);
                     }
                 }
@@ -128,6 +97,47 @@ export class Param implements Serializable<Param, string> {
         }
 
         return rowData;
+    }
+
+    handleRecursiveNestedGridParams(rowData: any, baseParam: Param, param: Param) {
+        if (!param.type.model) {
+            return;
+        }
+        for(let collectionElements of param.type.model.params) {
+            if (!collectionElements.type.model) {
+                continue;
+            }
+            for(let p of collectionElements.type.model.params) {
+                if(p != null) {
+                    let config = this.configSvc.paramConfigs[p.configId];
+                    this.handleNestedGridParams(rowData, baseParam, p, config);
+                    if (config.uiStyles && config.uiStyles.attributes.alias === ViewComponent.treeGridChild.toString()) {
+                        this.putNestedGridParam(rowData, baseParam, p);
+                        this.handleRecursiveNestedGridParams(rowData, baseParam, p);
+                    }
+                }
+            }
+        }
+    }
+
+    handleNestedGridParams(rowData: any, param: Param, p: any, config: ParamConfig) {
+        if (config.uiStyles && (TableComponentConstants.allowedColumnStylesAlias.includes(config.uiStyles.attributes.alias)
+            || config.uiStyles.attributes.showAsLink === true)) {
+    
+            this.putNestedGridParam(rowData, param, p);
+        }
+    }
+
+    putNestedGridParam(rowData: any, param: Param, p: Param) {
+        let isDeserialized = false;
+        if (p instanceof Param) {
+            isDeserialized = true;
+        }
+        if(param.collectionElem) {
+            rowData['nestedGridParam'].push(isDeserialized ? p : new Param(this.configSvc).deserialize(p,this.path + '/' + param.elemId));
+        } else {
+            rowData['nestedGridParam'].push(isDeserialized ? p : new Param(this.configSvc).deserialize(p,this.path));
+        }
     }
 
     private constructPath(path, inJson) {
@@ -165,6 +175,9 @@ export class Param implements Serializable<Param, string> {
         
         if (typeof inJson.collection !== 'undefined'){
             this.collection = inJson.collection;
+        }
+        if ( inJson.collectionElem) {
+            this.elemId = inJson.elemId;
         }
 
         this.path = this.constructPath(path, inJson);
@@ -216,9 +229,6 @@ export class Param implements Serializable<Param, string> {
             }
         }
 
-        if ( inJson.collectionElem) {
-            this.elemId = inJson.elemId;
-        }
         if ( inJson.collectionElem && this.leafState) {
             this.leafState = this.createRowData(this);
         }

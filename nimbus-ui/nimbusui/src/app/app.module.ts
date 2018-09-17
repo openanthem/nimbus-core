@@ -117,6 +117,10 @@ import { AppInitService } from "./services/app.init.service";
 import { LoggerService } from './services/logger.service';
 import { RouteService } from './services/route.service';
 import { MessageService } from 'primeng/api';
+
+//Utility Services
+import { GridUtils } from './shared/grid-utils';
+
 // Routes
 import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app.routing.module';
@@ -228,7 +232,7 @@ export function init_app(appinitservice: AppInitService) {
          { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
          SessionStoreService,
          AuthenticationService, BreadcrumbService, LoaderService, FileService, LayoutService, WindowRefService, LoggerService, 
-         RouteService, MessageService ],
+         RouteService, MessageService, GridUtils, DateTimeFormatPipe],
     bootstrap: [ AppComponent ]
 })
 export class AppModule { }
