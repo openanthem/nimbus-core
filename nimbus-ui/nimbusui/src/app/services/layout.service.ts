@@ -183,7 +183,7 @@ export class LayoutService {
     private parseTopBarConfig(topBarConfig: Model, branding: AppBranding, headerMenus: Param[], accordions: Param[]) {
         topBarConfig.params.forEach(element => {
             if (element.config.type.nested === true && element.config.uiNatures.length == 0) {
-                if (element.config.uiStyles !== undefined && element.config.uiStyles.attributes.alias === 'Accordion') {
+                if (element.config.uiStyles && element.config.uiStyles.attributes.alias === 'Accordion') {
                     accordions.push(element);
                 } else {
                     this.parseTopBarConfig(element.type.model, branding, headerMenus, accordions);
@@ -329,6 +329,7 @@ export class LayoutService {
         item.path = element.path;
         item.page = element.config.uiStyles.attributes.page;
         item.icon = element.config.uiStyles.attributes.imgSrc;
+        item.imgType = element.config.uiStyles.attributes.imgType;
         return item;
     }
 

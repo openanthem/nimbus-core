@@ -32,6 +32,7 @@
 export interface MenuItem {
     label?: string;
     icon?: string;
+    imgType?: string;
     command?: (event?: any) => void;
     url?: string;
     path?: string;

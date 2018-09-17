@@ -38,6 +38,7 @@ import com.antheminc.oss.nimbus.domain.model.config.EntityConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param.LabelState;
 import com.antheminc.oss.nimbus.support.pojo.CollectionsTemplate;
 import com.antheminc.oss.nimbus.support.pojo.LockTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -557,6 +558,8 @@ public interface EntityState<T> {
 		
 		Set<LabelState> getLabels();
 		void setLabels(Set<LabelState> labelState);
+		LabelState getDefaultLabel();
+		LabelState getLabel(String localeLanguageTag);
 		
 		@Getter @Setter @ToString 
 		public static class LabelState {

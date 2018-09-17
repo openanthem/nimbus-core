@@ -41,7 +41,7 @@ import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
     FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
-    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule } from 'primeng/primeng';
+    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule } from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { NavLinkRouter } from './directives/nav-link-router.directive';
@@ -76,6 +76,7 @@ import { MultiselectCard } from './components/platform/form/elements/multi-selec
 import { ActionDropdown, ActionLink } from './components/platform/form/elements/action-dropdown.component';
 import { InfiniteScrollGrid } from './components/platform/grid/grid.component';
 import { DataTable } from './components/platform/grid/table.component';
+import { TreeGrid } from './components/platform/tree-grid/tree-grid.component';
 import { Link } from './components/platform/link.component';
 import { Menu } from './components/platform/menu.component';
 import { FlowWrapper } from './components/platform/content/flow-wrapper.component';
@@ -116,6 +117,10 @@ import { AppInitService } from "./services/app.init.service";
 import { LoggerService } from './services/logger.service';
 import { RouteService } from './services/route.service';
 import { MessageService } from 'primeng/api';
+
+//Utility Services
+import { GridUtils } from './shared/grid-utils';
+
 // Routes
 import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app.routing.module';
@@ -173,6 +178,7 @@ export function init_app(appinitservice: AppInitService) {
         DropdownModule,
         DataTableModule,
         TableModule,
+        TreeTableModule,
         OverlayPanelModule,
         PickListModule,
         DragDropModule,
@@ -212,7 +218,7 @@ export function init_app(appinitservice: AppInitService) {
         KeysPipe, LinkPipe, DateTimeFormatPipe, SelectItemPipe, MultiSelectListBox, 
         CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent, Calendar, NavMenuGlobal, LoaderComponent, MessageComponent,
         HeaderCheckBox, SvgComponent, SvgDefinitions, ActionTray, SubDomainFlowCmp, Image, NmPanelMenu,NmPanelMenuSub, MenuRouterLinkActive, 
-        MenuRouteLink, BaseLabel, Label, InputLabel,InputSwitch
+        MenuRouteLink, BaseLabel, Label, InputLabel,InputSwitch,TreeGrid
     ],
     entryComponents: [ FlowWrapper, PageContent, PageNotfoundComponent, LoginCmp, HomeLayoutCmp, SubDomainFlowCmp],
     providers: [ PageService, ConfigService, WebContentSvc, HttpClient,  HttpClientModule, AppInitService,
@@ -226,7 +232,7 @@ export function init_app(appinitservice: AppInitService) {
          { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
          SessionStoreService,
          AuthenticationService, BreadcrumbService, LoaderService, FileService, LayoutService, WindowRefService, LoggerService, 
-         RouteService, MessageService ],
+         RouteService, MessageService, GridUtils, DateTimeFormatPipe],
     bootstrap: [ AppComponent ]
 })
 export class AppModule { }

@@ -1,3 +1,4 @@
+import { TreeGrid } from './../components/platform/tree-grid/tree-grid.component';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -71,33 +72,49 @@ export class Param implements Serializable<Param, string> {
         return undefined;
     }
 
+    private getLeafStateWithElemId(param: Param) {
+        let rowData: any = {};
+        if (param.collectionElem) {
+            rowData['elemId'] = param.elemId;
+            if(param.type.model) {
+                for(let p of param.type.model.params) {
+                    if(p != null) {
+                        if (p.collection || p.type.model) {
+                            let childList: any[] = [];
+                            for(let q of p.type.model.params) {
+                                if(q != null) {
+                                    childList.push(this.getLeafStateWithElemId(q))
+                                }
+                            }
+                            rowData[p.config.code] = childList;
+                        } else {
+                            rowData[p.config.code] = p.leafState;
+                        }
+                    }
+                }
+            }
+        }
+        return rowData;
+    }
+
     private createRowData(param: Param) {
         let rowData: any = {};
-        rowData = param.leafState;
-        if(rowData instanceof Object)
-            rowData['elemId'] = param.elemId;
+        let isTreeGrid = this.config != null && this.config.uiStyles && this.config.uiStyles.attributes.alias == ViewComponent.treeGrid.toString();
+        rowData = this.getLeafStateWithElemId(param);
         if(param.type.model) {
             rowData['nestedGridParam'] = [];
             for(let p of param.type.model.params) {
                 if(p != null) {
                     let config = this.configSvc.paramConfigs[p.configId];
-                    //let path = paramPath + "/" + config.code;
-                    // handle nested grid data
-                    if (config.uiStyles && 
-                        (TableComponentConstants.allowedColumnStylesAlias.includes(config.uiStyles.attributes.alias)
-                        || config.uiStyles.attributes.showAsLink === true)) {
-                        let isDeserialized = false;
-                        if ( p instanceof Param) {
-                            isDeserialized = true;
-                        }
-                        if(param.collectionElem)
-                            rowData['nestedGridParam'].push(isDeserialized ? p : new Param(this.configSvc).deserialize(p,this.path + '/' + param.elemId));
-                        else
-                            rowData['nestedGridParam'].push(isDeserialized ? p : new Param(this.configSvc).deserialize(p,this.path));
+
+                    this.handleNestedGridParams(rowData, param, p, config);
+                    if (isTreeGrid && config.uiStyles.attributes.alias === ViewComponent.treeGridChild.toString()) {
+                        this.putNestedGridParam(rowData, param, p);
+                        this.handleRecursiveNestedGridParams(rowData, param, p);
                     }
     
                     // handle dates
-                    if (config && ParamUtils.isKnownDateType(config.type.name)) {
+                    if (ParamUtils.isKnownDateType(config.type.name)) {
                         rowData[config.code] = ParamUtils.convertServerDateStringToDate(rowData[config.code], config.type.name);
                     }
                 }
@@ -105,6 +122,47 @@ export class Param implements Serializable<Param, string> {
         }
 
         return rowData;
+    }
+
+    handleRecursiveNestedGridParams(rowData: any, baseParam: Param, param: Param) {
+        if (!param.type.model) {
+            return;
+        }
+        for(let collectionElements of param.type.model.params) {
+            if (!collectionElements.type.model) {
+                continue;
+            }
+            for(let p of collectionElements.type.model.params) {
+                if(p != null) {
+                    let config = this.configSvc.paramConfigs[p.configId];
+                    this.handleNestedGridParams(rowData, baseParam, p, config);
+                    if (config.uiStyles.attributes.alias === ViewComponent.treeGridChild.toString()) {
+                        this.putNestedGridParam(rowData, baseParam, p);
+                        this.handleRecursiveNestedGridParams(rowData, baseParam, p);
+                    }
+                }
+            }
+        }
+    }
+
+    handleNestedGridParams(rowData: any, param: Param, p: any, config: ParamConfig) {
+        if (config.uiStyles && (TableComponentConstants.allowedColumnStylesAlias.includes(config.uiStyles.attributes.alias)
+            || config.uiStyles.attributes.showAsLink === true)) {
+    
+            this.putNestedGridParam(rowData, param, p);
+        }
+    }
+
+    putNestedGridParam(rowData: any, param: Param, p: Param) {
+        let isDeserialized = false;
+        if (p instanceof Param) {
+            isDeserialized = true;
+        }
+        if(param.collectionElem) {
+            rowData['nestedGridParam'].push(isDeserialized ? p : new Param(this.configSvc).deserialize(p,this.path + '/' + param.elemId));
+        } else {
+            rowData['nestedGridParam'].push(isDeserialized ? p : new Param(this.configSvc).deserialize(p,this.path));
+        }
     }
 
     private constructPath(path, inJson) {
@@ -154,11 +212,12 @@ export class Param implements Serializable<Param, string> {
             this.type['collection'] = false;
         } 
        // this.path = inJson.path;
-        if ( this.config != null && this.config.uiStyles && this.config.uiStyles.attributes.alias === 'CardDetailsGrid' ) {
+        if ( this.config != null && this.config.uiStyles && this.config.uiStyles.attributes.alias === ViewComponent.cardDetailsGrid.toString() ) {
             if(inJson.leafState != null) {
                 this.leafState = new CardDetailsGrid().deserialize( inJson.leafState );
             }
-        } else if (this.config != null && this.config.uiStyles && this.config.uiStyles.attributes.alias === 'Grid') {
+        } else if (this.config != null && this.config.uiStyles && 
+            (this.config.uiStyles.attributes.alias === ViewComponent.grid.toString() || this.config.uiStyles.attributes.alias == ViewComponent.treeGrid.toString())) {
             // deserialize Page
             if (inJson.page) {
                 this.page = new GridPage().deserialize(inJson.page);
@@ -172,7 +231,7 @@ export class Param implements Serializable<Param, string> {
                     if (!ParamUtils.isEmpty(inJson.type.model.params[p])) {
                         //this.paramState.push(inJson.type.model.params[p].type.model.params); 
                         //this.gridList.push(this.createRowData(inJson.type.model.params[p])); 
-                        let lineItem = this.createRowData(inJson.type.model.params[p]);
+                        let lineItem = this.createRowData(new Param(this.configSvc).deserialize(inJson.type.model.params[p], this.path));
                         if(lineItem.nestedGridParam)
                           this.collectionParams = this.collectionParams.concat(lineItem.nestedGridParam); 
                         delete lineItem.nestedGridParam; 
@@ -192,8 +251,10 @@ export class Param implements Serializable<Param, string> {
             }
         }
 
-        if ( inJson.collectionElem  && this.leafState) {
+        if ( inJson.collectionElem) {
             this.elemId = inJson.elemId;
+        }
+        if ( inJson.collectionElem && this.leafState) {
             this.leafState = this.createRowData(this);
         }
         if (typeof inJson.visible !== 'undefined') {
@@ -300,9 +361,66 @@ export class GridPage implements Serializable<GridPage, string> {
     first: boolean;
     numberOfElements: number;
 
-    deserialize( inJson) {   
+    deserialize(inJson) {
         var obj = this;
         obj = Converter.convert(inJson, obj);
         return obj;
     }
+}
+
+export class TreeGridDeserializer {
+
+    setTreeChildren(node, nestedArray){
+        node.children = [];
+        nestedArray.forEach((nestedArrayItem) =>
+            node.children.push(this.deserialize(nestedArrayItem, nestedArrayItem))
+        );
+
+    }
+
+
+    deserialize(objectItem, data?, children?) {
+
+        try {
+
+            let node: any = {};
+            node.data = {};
+
+            if (Array.isArray(objectItem) && objectItem) {
+                objectItem.forEach((childItem) => {
+                    Object.keys(childItem).map(value => {
+                        if (Array.isArray(childItem[value]) && childItem[value]) {
+                            this.setTreeChildren(node, childItem[value]);
+
+                        }
+                        else {
+                            node.data[value] = childItem[value];
+                        }
+                    });
+
+                });
+                return node;
+            }
+
+            else {
+              
+                Object.keys(objectItem).map(value => {
+                    if (Array.isArray(objectItem[value]) && objectItem[value] && value !== 'nestedGridParam') {
+                        this.setTreeChildren(node, objectItem[value]);
+                    }
+                    else {
+                        if(!((objectItem[value] && typeof objectItem[value] === 'object') && Object.keys(objectItem[value]).length === 0))
+                        node.data[value] = objectItem[value];
+                    }
+                });
+                return node;
+            }           
+
+        }
+        catch (e) {
+            //  console.log("Error in tree deserializer", e);
+
+        }
+    }
+
 }

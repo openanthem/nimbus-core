@@ -57,7 +57,17 @@ public class DefaultEventHandlerConfig implements EventHandlerConfig {
 				Integer order1 = findOrder(a1);
 				Integer order2 = findOrder(a2);
 				
-				return order1.compareTo(order2);
+				int result = order1.compareTo(order2);
+				   
+				if(result!=0)
+					return result;
+				   
+			    // only if it's the exact same instance
+				if(result==0 && a1==a2)
+					return 0;
+				
+				// if the order is exact same, then return as next element
+				return 1;
 			}
 		};
 		

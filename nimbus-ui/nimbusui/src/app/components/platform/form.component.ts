@@ -124,10 +124,10 @@ export class Form extends BaseElement implements OnInit, OnChanges {
 
                         this.formElements.push(element);
                     }
-                // } else {
-                //     if(element.type){
-                //         this.groupFormElements(element.type.model)
-                //     }
+                } else {
+                    if(element.type){
+                        this.groupFormElements(element.type.model, false);
+                    }
                 }
              });
         }
@@ -154,7 +154,7 @@ export class Form extends BaseElement implements OnInit, OnChanges {
         } else if(this.element.config.uiStyles.attributes.cssClass === 'oneColumn') {
             this.elementCss = 'col-sm-12';        
         } else if(this.element.config.uiStyles.attributes.cssClass === 'inline') {
-            this.elementCss = 'd-inline-block mr-3';
+            this.elementCss = 'd-block d-md-inline-block mr-3';
         } else if(this.element.config.uiStyles.attributes.cssClass === 'questionGroup') {
             this.elementCss = ' questionGroup';
         } else {

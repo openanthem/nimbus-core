@@ -20,15 +20,18 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.ValidationGroup;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param.LabelState;
 import com.antheminc.oss.nimbus.domain.model.state.EntityStateAspectHandlers;
 import com.antheminc.oss.nimbus.domain.model.state.ExecutionTxnContext;
 import com.antheminc.oss.nimbus.domain.model.state.Notification;
@@ -338,5 +341,25 @@ public class MockParam implements Param<Object> {
 	@Override
 	public boolean hasContextStateChanged() {
 		return false;
+	}
+
+	@Override
+	public LabelState getDefaultLabel() {
+		return getLabel(Locale.getDefault().toLanguageTag());
+	}
+	
+	@Override
+	public LabelState getLabel(String localeLanguageTag) {
+		Set<LabelState> labelState = this.labels;
+		if (null == labelState) {
+			return null;
+		}
+
+		LabelState label = labelState.stream().filter(ls -> localeLanguageTag.equals(ls.getLocale())).reduce((a, b) -> {
+			throw new IllegalStateException(
+					"Found more than one element with " + localeLanguageTag + " on param " + this);
+		}).orElse(null);
+
+		return label;
 	}
 }

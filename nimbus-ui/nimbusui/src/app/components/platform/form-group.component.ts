@@ -85,7 +85,7 @@ export class FrmGroupCmp extends BaseElement {
     }
 
     getCssClass() {
-        if (this.element.config.uiStyles.attributes.alias == ViewComponent.formElementGroup.toString()) {
+        if (this.element.config.uiStyles && this.element.config.uiStyles.attributes.alias == ViewComponent.formElementGroup.toString()) {
             if (this.element.config.uiStyles.attributes.cssClass) {
                 return this.element.config.uiStyles.attributes.cssClass
             } else {
