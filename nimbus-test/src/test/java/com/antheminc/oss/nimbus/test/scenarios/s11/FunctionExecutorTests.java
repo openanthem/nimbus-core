@@ -88,7 +88,7 @@ public class FunctionExecutorTests extends AbstractFrameworkIngerationPersistabl
 	
 	@Test
 	@SuppressWarnings("unchecked")
-	public void t02_search_example() {
+	public void t03_search_example() {
 		MockHttpServletRequest request = MockHttpRequestBuilder.withUri(PLATFORM_ROOT+"/sample_functest")
 					.addAction(Action._new)
 					.getMock();
@@ -114,7 +114,7 @@ public class FunctionExecutorTests extends AbstractFrameworkIngerationPersistabl
 	
 	@Test
 	@SuppressWarnings("unchecked")
-	public void t02_search_query() {
+	public void t04_search_query() {
 		MockHttpServletRequest request = MockHttpRequestBuilder.withUri(PLATFORM_ROOT+"/sample_functest")
 					.addAction(Action._new)
 					.getMock();
@@ -139,6 +139,25 @@ public class FunctionExecutorTests extends AbstractFrameworkIngerationPersistabl
 		assertTrue(obj.size() > 0);
 	}
 	
+	
+	@Test
+	@SuppressWarnings("unchecked")
+	public void t05_nav() {
+		MockHttpServletRequest request = MockHttpRequestBuilder.withUri(PLATFORM_ROOT+"/sample_functest")
+					.addAction(Action._new)
+					.getMock();
+		Holder<MultiOutput> holder = (Holder<MultiOutput>)controller.handlePost(request, null);
+		Long domainRoot_refId  = ExtractResponseOutputUtils.extractDomainRootRefId(holder);
+		
+		request = MockHttpRequestBuilder.withUri(PLATFORM_ROOT+"/sample_functest:"+domainRoot_refId+"/parameter1")
+				.addAction(Action._nav)
+				.addParam("pageId", "page1")
+				.getMock();
+		holder = (Holder<MultiOutput>)controller.handlePost(request, null);
+		
+		Object pageId = holder.getState().getSingleResult();
+		assertEquals("page1", pageId);
+	}
 
 }
 		
