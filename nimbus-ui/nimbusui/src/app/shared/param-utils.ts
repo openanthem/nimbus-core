@@ -162,11 +162,21 @@ export class ParamUtils {
         // the transformed object to return
         var transformed = obj;
 
+        // Check for collectionElement and add elementId to leafstate 
+        if (relativeParam && relativeParam.collectionElem) { 
+            transformed['elemId'] = relativeParam.elemId; 
+        }
+
         // iterate over each of the properties of the object.
         for (var x in obj) {
 
             // Find the nested param associated with this obj[x].
             let x_param = ParamUtils.findParamByPath(relativeParam, x);
+
+            // Check for collectionElement and add elementId to leafstate 
+            if (x_param && x_param.collectionElem) { 
+                transformed[x]['elemId'] = x_param.elemId; 
+            }
 
             if (x_param && x_param.config) {
 
