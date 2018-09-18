@@ -16,12 +16,10 @@
 package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
-import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
-import com.antheminc.oss.nimbus.domain.cmd.exec.AbstractFunctionCommandExecutor;
+import com.antheminc.oss.nimbus.domain.cmd.exec.AbstractCommandExecutor;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Input;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
-import com.antheminc.oss.nimbus.domain.cmd.exec.FunctionHandler;
-import com.antheminc.oss.nimbus.domain.cmd.exec.internal.nav.NavigationHandler;
+import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 /**
@@ -29,26 +27,16 @@ import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
  *
  */
 @EnableLoggingInterceptor
-public class DefaultActionExecutorNav<T> extends AbstractFunctionCommandExecutor<T,String> {
+public class DefaultActionExecutorNav<T> extends AbstractCommandExecutor<String> {
 	
 	public DefaultActionExecutorNav(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	protected Output<String> executeInternal(Input input) {
-		String pageId = (String)executeFunctionHanlder(input, NavigationHandler.class);
+		String pageId = input.getContext().getCommandMessage().getCommand().getFirstParameterValue(Constants.KEY_NAV_ARG_PAGE_ID.code);
 		return Output.instantiate(input, input.getContext(), pageId);		
-	}
-	
-	@Override
-	protected <F extends FunctionHandler<?, ?>> F getHandler(CommandMessage commandMessage, Class<F> handlerClass) {
-		F handler = super.getHandler(commandMessage, handlerClass);
-		if(handler == null){
-			handler = super.getHandler("default._nav$execute?fn=default",handlerClass);
-		}
-		return handler;
 	}
 	
 }

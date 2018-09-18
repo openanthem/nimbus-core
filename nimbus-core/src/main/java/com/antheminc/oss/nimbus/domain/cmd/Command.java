@@ -414,4 +414,8 @@ public class Command implements Serializable {
 	public String getRawPayload() {
 		return getFirstParameterValue("rawPayload");
 	}
+	
+	public boolean containsFunction() {
+		return requestParams != null && requestParams.containsKey(Constants.KEY_FUNCTION.code);
+	}
 }
