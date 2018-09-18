@@ -220,6 +220,15 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		if(isNested())
 			findIfNested().initState();
 		
+		// execute associated scripts, if any
+		/**
+		 * @Script(resourcePath="", type="") - declared on parameter or model
+		 * 
+		 * Config would look for param and model and follow: p+m, p or m as execution sequence
+		 * @Script can inherit @OnStateLoad with LOWEST precedence order 
+		 */
+		
+		
 		// hook up on state load events
 		onStateLoadEvent(this);
 

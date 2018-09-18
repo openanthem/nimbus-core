@@ -34,8 +34,25 @@ import java.lang.annotation.Target;
 @Target(ANNOTATION_TYPE)
 @Inherited
 public @interface Event {
+	
+	public enum Type {
+		ON_LOAD,
+		ON_CREATE,
+		ON_RESURRECT,
+		ON_CHANGE,
+		ON_EXECUTE,
+		
+		/**
+		 * Annotations which requires lazy definition of the event type. 
+		 * E.g., if the same annotation needs to be configured for state create in one scenario and state change in another.
+		 * Framework would look for variable name "eventType" on the inherited annotation attach the appropriate event handler for runtime.
+		 */
+		ON_INHERIT;
+	}
 
 	int DEFAULT_ORDER_NUMBER = Integer.MAX_VALUE; 
 	
 	int order() default DEFAULT_ORDER_NUMBER;
+	
+	Type[] value();
 }

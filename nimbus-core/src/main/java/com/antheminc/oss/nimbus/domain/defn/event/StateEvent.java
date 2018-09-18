@@ -23,24 +23,42 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import com.antheminc.oss.nimbus.domain.Event;
+import com.antheminc.oss.nimbus.domain.Event.Type;
 
 /**
  * @author Soham Chakravarti
  *
  */
 public final class StateEvent {
+	
+	@Retention(RUNTIME)
+	@Target(ANNOTATION_TYPE)
+	@Event(Type.ON_LOAD)
+	@Inherited
+	public @interface OnStateLoad {
+		int order() default Event.DEFAULT_ORDER_NUMBER;
+	}
 
 	@Retention(RUNTIME)
 	@Target(ANNOTATION_TYPE)
-	@Event
+	@Event(Type.ON_CREATE)
 	@Inherited
-	public @interface OnStateLoad {
+	public @interface OnStateLoadNew {	// Blank Constructor  -- Action._new: OnStateLoadNew
 		int order() default Event.DEFAULT_ORDER_NUMBER;
 	}
 	
 	@Retention(RUNTIME)
 	@Target(ANNOTATION_TYPE)
-	@Event
+	@Event(Type.ON_RESURRECT)
+	@Inherited
+	public @interface OnStateLoadGet { // Args Constructor  -- Action._get: OnStateLoadGet
+		int order() default Event.DEFAULT_ORDER_NUMBER;
+	}	
+	
+	
+	@Retention(RUNTIME)
+	@Target(ANNOTATION_TYPE)
+	@Event(Type.ON_CHANGE)
 	@Inherited
 	public @interface OnStateChange {
 		int order() default Event.DEFAULT_ORDER_NUMBER;
@@ -48,7 +66,7 @@ public final class StateEvent {
 	
 	@Retention(RUNTIME)
 	@Target(ANNOTATION_TYPE)
-	@Event
+	@Event(Type.ON_EXECUTE)
 	@Inherited
 	public @interface OnTxnExecute {
 		int order() default Event.DEFAULT_ORDER_NUMBER;
