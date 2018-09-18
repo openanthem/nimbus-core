@@ -13,28 +13,36 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.domain.cmd.exec;
+package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.Behavior;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
+import com.antheminc.oss.nimbus.domain.cmd.exec.AbstractCommandExecutor;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Input;
+import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
+import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
+import com.antheminc.oss.nimbus.domain.cmd.exec.FunctionHandler;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
+import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 /**
  * @author Jayant Chaudhuri
  *
  */
-public abstract class AbstractFunctionCommandExecutor<T,R> extends AbstractCommandExecutor<R> {
+@EnableLoggingInterceptor
+public class FunctionExecutor<T,R> extends AbstractCommandExecutor<R> {
 
-	public AbstractFunctionCommandExecutor(BeanResolverStrategy beanResolver) {
+	public FunctionExecutor(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
 	}
 	
-	protected boolean containsFunctionHandler(Input input){
-		String functionName = input.getContext().getCommandMessage().getCommand().getFirstParameterValue(Constants.KEY_FUNCTION.code);
-		return (functionName != null);
+	@Override
+	@SuppressWarnings("unchecked")
+	protected Output<R> executeInternal(Input input) {
+		R response =  (R)executeFunctionHanlder(input, FunctionHandler.class);
+		return Output.instantiate(input, input.getContext(), response);		
 	}
 	
 	protected <H extends FunctionHandler<T, R>> R executeFunctionHanlder(Input input, Class<H> handlerClass) {
