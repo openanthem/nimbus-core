@@ -48,6 +48,9 @@ public class AssignmentUserTask extends AbstractCustomUserTask {
   @Help(displayHelpShort="Exit Condition")
   private String exitCondition;
   
+  @Property(type=PropertyType.MULTILINE_TEXT, displayName="Eval URL", required=false)
+  @Help(displayHelpShort="URL to be evaluated on State Change")
+  private String evalURLs;
   
   @Override
   public String contributeToPaletteDrawer() {

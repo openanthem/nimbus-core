@@ -25,12 +25,11 @@ import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
-import com.antheminc.oss.nimbus.domain.cmd.exec.AbstractFunctionCommandExecutor;
+import com.antheminc.oss.nimbus.domain.cmd.exec.AbstractCommandExecutor;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Input;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
-import com.antheminc.oss.nimbus.domain.cmd.exec.FunctionHandler;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
@@ -50,7 +49,7 @@ import lombok.Getter;
  */
 @EnableLoggingInterceptor
 @Getter(value=AccessLevel.PROTECTED)
-public class DefaultActionExecutorGet extends AbstractFunctionCommandExecutor<Param<Object>, Object> {
+public class DefaultActionExecutorGet extends AbstractCommandExecutor<Object> {
 
 	private CommandExecutorGateway commandGateway;
 	
@@ -64,22 +63,11 @@ public class DefaultActionExecutorGet extends AbstractFunctionCommandExecutor<Pa
 	}
 	
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected final Output<Object> executeInternal(Input input) {
 		ExecutionContext eCtx = handleGetDomainRoot(input.getContext());
-	
 		Param<?> p = findParamByCommandOrThrowEx(eCtx);
-		
-		final Object outcome;
-		if(containsFunctionHandler(input)) {
-			outcome = executeFunctionHanlder(input, FunctionHandler.class);
-			
-		} else {
-			outcome = p;
-		}
-		
-		return Output.instantiate(input, eCtx, outcome);
+		return Output.instantiate(input, eCtx, p);
 	}
 	
 	protected ExecutionContext handleGetDomainRoot(ExecutionContext eCtx) {

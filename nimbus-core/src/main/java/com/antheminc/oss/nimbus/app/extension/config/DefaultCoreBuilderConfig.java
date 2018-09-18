@@ -33,6 +33,7 @@ import org.springframework.core.env.PropertyResolver;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.context.DefaultBeanResolverStrategy;
+import com.antheminc.oss.nimbus.domain.cmd.exec.internal.FunctionExecutor;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.process.ParamUpdateEventListener;
 import com.antheminc.oss.nimbus.domain.config.builder.AnnotationAttributeHandler;
 import com.antheminc.oss.nimbus.domain.config.builder.AnnotationConfigHandler;
@@ -90,6 +91,11 @@ public class DefaultCoreBuilderConfig {
 	@Bean
 	public DomainConfigBuilder domainConfigBuilder(EntityConfigBuilder configBuilder){
 		return new DomainConfigBuilder(configBuilder, basePackages);
+	}
+	
+	@Bean
+	public FunctionExecutor<?,?> functionExecutor(BeanResolverStrategy beanResolver){
+		return new FunctionExecutor<>(beanResolver);
 	}
 	
 //	@Bean

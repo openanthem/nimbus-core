@@ -24,6 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Date;
 import java.util.List;
 
 import org.hamcrest.core.IsNull;
@@ -42,6 +43,7 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.StateType;
+import com.antheminc.oss.nimbus.domain.model.state.internal.DefaultParamState;
 import com.antheminc.oss.nimbus.domain.model.state.internal.MappedDefaultModelState;
 import com.antheminc.oss.nimbus.domain.model.state.internal.MappedDefaultParamState.MappedLeafState;
 import com.antheminc.oss.nimbus.domain.model.state.internal.MappedDefaultTransientParamState;
@@ -243,5 +245,38 @@ public class DefaultActionExecutorNewTest extends AbstractFrameworkIngerationPer
 		
 		Object resp_update3Model = controller.handlePost(req_update3ViewBy,"\"view1\"");
 		assertNotNull(resp_update3Model);
+	}
+	
+	@Test
+	public void t05_sampleBpmn() throws Exception {
+		Long refId = createOrGetSampleEntityWithBPMN_RefId();
+		
+		SampleCoreEntity core = mongo.findById(refId, SampleCoreEntity.class, CORE_DOMAIN_ALIAS);
+		assertNotNull(core);
+		
+//		MockHttpServletRequest req_task1 = MockHttpRequestBuilder.withUri(VIEW_WITHBPMN_PARAM_ROOT).addRefId(refId)
+//				.addNested("/currentTaskName").addAction(Action._get).getMock();
+//		Object resp_task1 = controller.handleGet(req_task1,null);
+//		assertNotNull(resp_task1);
+//		Object respObj = ExtractResponseOutputUtils.extractOutput(resp_task1);
+//		assertNotNull(respObj);
+		
+		MockHttpServletRequest req_evalBpmn = MockHttpRequestBuilder.withUri(VIEW_WITHBPMN_PARAM_ROOT).addRefId(refId)
+				.addNested("/attr_task1").addAction(Action._update).getMock();
+		Object resp_evalBpmn = controller.handlePut(req_evalBpmn, null, converter.toJson("InProgress"));
+		assertNotNull(resp_evalBpmn);
+		
+		MockHttpServletRequest req_evalBpmn2 = MockHttpRequestBuilder.withUri(VIEW_WITHBPMN_PARAM_ROOT).addRefId(refId)
+				.addNested("/attr_task1").addAction(Action._update).getMock();
+		Object resp_evalBpmn2 = controller.handlePut(req_evalBpmn2, null, converter.toJson("Complete"));
+		assertNotNull(resp_evalBpmn2);
+		
+		MockHttpServletRequest req_SampleTask2 = MockHttpRequestBuilder.withUri(VIEW_WITHBPMN_PARAM_ROOT).addRefId(refId)
+				.addNested("/currentTaskName").addAction(Action._get).getMock();
+		Object resp_SampleTask2 = controller.handleGet(req_SampleTask2,null);
+		assertNotNull(resp_SampleTask2);
+		DefaultParamState<?> respTaskObj = ExtractResponseOutputUtils.extractOutput(resp_SampleTask2);
+		assertEquals(respTaskObj.getState(), "task2");
+
 	}
 }

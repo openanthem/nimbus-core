@@ -85,6 +85,10 @@ import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations
                             <ng-template [ngIf]="tabElement.alias == componentTypes.cardDetail.toString()">
                                 <nm-card-details [element]="tabElement" [position]="position+1"></nm-card-details>
                             </ng-template>
+                            <!-- Card Detaisl Grid -->
+                            <ng-template [ngIf]="tabElement.alias == componentTypes.cardDetailsGrid.toString()">
+                                <nm-card-details-grid [position]="position+1" [element]="element"></nm-card-details-grid>
+                            </ng-template>
                         </ng-template>
                     </ng-template>
                 </p-accordionTab>
