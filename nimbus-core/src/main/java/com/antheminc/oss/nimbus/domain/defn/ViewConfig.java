@@ -194,6 +194,21 @@ public class ViewConfig {
 		String cssClass() default "";
 	}
 	
+	
+	/**
+	 * <p><b>Expected Field Structure</b>
+	 * 
+	 * <p>Child entities that are within TreeGrid should be annotated with this.
+	 */	
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface TreeGridChild {
+		String alias() default "TreeGridChild";
+		String cssClass() default "";
+	}
+	
 
 	/**
 	 * <p><b>Expected Field Structure</b>
@@ -414,7 +429,7 @@ public class ViewConfig {
 	 * <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>CardDetailsGrid will be rendered when annotating a field nested under
-	 * one of the following components: <ul> <li>{@link Section}</li> </ul>
+	 * one of the following components: <ul> <li>{@link Accordion}</li><li>{@link Section}</li> </ul>
 	 * 
 	 * <p>A field decorated with &#64;CardDetailsGrid should be an object
 	 * containing one or more fields. Each of these fields would represent a
