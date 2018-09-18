@@ -52,9 +52,9 @@ export class Modal extends BaseElement implements OnInit, OnDestroy {
     public _width: string;
     // closable to indicate whether modal window can be closed
     public _closable: boolean;
-
+    display: boolean = false;
     private _resizable: boolean;
-    privateelementCss: string;
+    private elementCss: string;
     viewComponent = ViewComponent;
     componentTypes = ComponentTypes;
     
@@ -65,6 +65,13 @@ export class Modal extends BaseElement implements OnInit, OnDestroy {
     ngOnDestroy() {
     }
 
+    ngAfterViewInit() {
+        this.pageSvc.eventUpdate$.subscribe(event => {
+            if(event.path == this.element.path) {
+                this.display = event.visible;
+            }
+        });    
+    }
     /**
      * Closable attribute. Can the Modal window be closed?
      */
@@ -90,12 +97,12 @@ export class Modal extends BaseElement implements OnInit, OnDestroy {
         }
         
     }
-    
+
     /**
      * Close diaglog function.
      */
     public closeDialog(event: any) {
-        if (this.visible) {
+        if (!this.display) {
             this.pageSvc.processEvent(this.element.path+'/closeModal', Behavior.execute.value, new GenericDomain(), HttpMethod.GET.value);
         }
     }
