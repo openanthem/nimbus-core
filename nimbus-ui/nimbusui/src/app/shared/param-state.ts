@@ -384,7 +384,10 @@ export class TreeGridDeserializer {
                         this.setTreeChildren(node, objectItem[value]);
                     }
                     else {
-                        if(!((objectItem[value] && typeof objectItem[value] === 'object') && Object.keys(objectItem[value]).length === 0))
+                        if(Object.prototype.toString.call(objectItem[value]) === "[object Date]"){    // more robust than instanceof. Tested in safari, FF and chrome.
+                            node.data[value] = objectItem[value];
+                        }
+                        else if(!((objectItem[value] && typeof objectItem[value] === 'object') && Object.keys(objectItem[value]).length === 0))
                         node.data[value] = objectItem[value];
                     }
                 });
