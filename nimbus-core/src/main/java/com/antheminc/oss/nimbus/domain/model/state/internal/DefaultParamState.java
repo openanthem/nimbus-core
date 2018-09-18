@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -33,6 +34,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.ClassUtils;
 
+import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.InvalidOperationAttemptedException;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
@@ -109,10 +111,22 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		}
 	};
 	
+	@JsonIgnore
+	private RemnantState<Set<LabelState>> labelState = this.new RemnantState<Set<LabelState>>(null) {
+		@Override
+		public boolean hasChanged() {
+			Set<LabelState> prev = CollectionUtils.isEmpty(getPrevState()) ? null : getPrevState();
+			Set<LabelState> curr = CollectionUtils.isEmpty(getCurrState()) ? null : getCurrState();
+			
+			boolean isEquals = new EqualsBuilder().append(curr, prev).isEquals();
+			return !isEquals;
+		}
+	};
+	
 	@Override
 	public boolean hasContextStateChanged() {
 		if(visibleState.hasChanged() || enabledState.hasChanged() || messageState.hasChanged()  
-				|| activeValidationGroupsState.hasChanged())
+				|| activeValidationGroupsState.hasChanged() || labelState.hasChanged())
 			return true;
 		
 		return false;
@@ -409,7 +423,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 				.forEach(ac->{
 					OnStateLoadHandler<Annotation> handler = eventHandlerConfig.getOnStateLoadHandler(ac);
 					if(handler.shouldAllow(ac, p)) {
-						handler.handle(ac, p);
+						handler.onStateLoad(ac, p);
 					}
 				});
 		}
@@ -428,7 +442,7 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 				.forEach(ac->{
 					OnStateChangeHandler<Annotation> handler = eventHandlerConfig.getOnStateChangeHandler(ac);
 					if(handler.shouldAllow(ac, p)) {
-						handler.handle(ac, txnCtx, new ParamEvent(a, p));
+						handler.onStateChange(ac, txnCtx, new ParamEvent(a, p));
 					}
 				});
 		}
@@ -741,6 +755,56 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 		
 		this.values = values;
 		emitParamContextEvent();
+	}
+	
+
+	@Override
+	public Set<LabelState> getLabels() {
+		return Optional.ofNullable(this.labelState.getCurrState()).map(Collections::unmodifiableSet).orElse(null);
+	}
+	
+	@Override
+	public LabelState getDefaultLabel() {
+		return getLabel(Locale.getDefault().toLanguageTag());
+	}
+	
+	@Override
+	public LabelState getLabel(String localeLanguageTag) {
+		Set<LabelState> labelState = getLabels();
+		if (null == labelState) {
+			return null;
+		}
+
+		LabelState label = labelState.stream().filter(ls -> localeLanguageTag.equals(ls.getLocale())).reduce((a, b) -> {
+			throw new IllegalStateException(
+					"Found more than one element with " + localeLanguageTag + " on param " + this);
+		}).orElse(null);
+
+		return label;
+	}
+	
+	@Override
+	public void setLabels(Set<LabelState> labels) {
+		Set<LabelState> labelstate = CollectionUtils.isEmpty(labels) ? null : new HashSet<>(labels);
+		
+		/*	check for multiple labels with same locale, 
+			when setLabels in invoked manually instead of using @Label annotation */
+		if(CollectionUtils.isNotEmpty(labelstate)) { 
+			Set<LabelState> other = new HashSet<>(labelstate);	
+			labelstate.stream().forEach(ls1 -> {
+				other.stream().filter(ls2 -> (StringUtils.equalsIgnoreCase(ls1.getLocale(), ls2.getLocale()) 
+						&& !StringUtils.equalsIgnoreCase(ls1.getText(), ls2.getText())))
+				.findFirst()
+				.ifPresent(label -> {
+					throw new FrameworkRuntimeException("Label must have unique entries by locale,"
+							+ " found multiple entries in Param path: "+this.getPath()
+							+ " with repeating locale for LabelState: "+ label);
+				});
+			});
+		}
+		
+		
+		this.labelState.setState(labelstate);
 	}
 	
 	@Override

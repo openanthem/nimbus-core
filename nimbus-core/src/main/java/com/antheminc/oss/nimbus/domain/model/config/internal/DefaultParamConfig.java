@@ -20,6 +20,7 @@ import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -28,6 +29,7 @@ import com.antheminc.oss.nimbus.domain.defn.AssociatedEntity;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.defn.Converters.ParamConverter;
 import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values;
+import com.antheminc.oss.nimbus.domain.defn.extension.Content.Label;
 import com.antheminc.oss.nimbus.domain.model.config.AnnotationConfig;
 import com.antheminc.oss.nimbus.domain.model.config.EventHandlerConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ExecutionConfig;
@@ -35,7 +37,9 @@ import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfigType;
 import com.antheminc.oss.nimbus.domain.model.config.event.ConfigEventHandlers.OnParamCreateHandler;
+import com.antheminc.oss.nimbus.domain.model.config.support.DefaultJsonParamConfigSerializer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -45,6 +49,7 @@ import lombok.ToString;
  * @author Soham Chakravarti
  *
  */
+@JsonSerialize(using=DefaultJsonParamConfigSerializer.class)
 @Getter @Setter @ToString(callSuper=true, of={"code", "beanName", "type"})
 public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements ParamConfig<P>, Serializable {
 
@@ -57,8 +62,6 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 
 	private ParamConfigType type;	
 	
-	private List<LabelConfig> labelConfigs;
-
 	private List<AnnotationConfig> validations;
 	
 	private List<AnnotationConfig> uiNatures;
@@ -77,6 +80,9 @@ public class DefaultParamConfig<P> extends AbstractEntityConfig<P> implements Pa
 	
 	@JsonIgnore
 	private Values values;
+	
+	@JsonIgnore
+	private Set<Label> labels;
 	
 	@JsonIgnore @Setter 
 	private List<AssociatedEntity> associatedEntities;

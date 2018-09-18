@@ -110,13 +110,34 @@ export class FormElement extends BaseElement {
     getComponentClass() {
         let componentClass: string[] = [];
         componentClass.push('form-group');
+        let overrideClass: string = '';
         if (this.element.config.uiStyles && this.element.config.uiStyles.attributes &&
             this.element.config.uiStyles.attributes.cssClass && this.element.config.uiStyles.attributes.cssClass !== '') {
-                componentClass.push(this.element.config.uiStyles.attributes.cssClass);
+                overrideClass = this.element.config.uiStyles.attributes.cssClass;
+        }  
+        if (this.element.config.uiStyles && this.element.config.uiStyles.attributes && 
+            this.element.config.uiStyles.attributes.cols && this.element.config.uiStyles.attributes.cols !== '') {
+            // Convert cols to equivalent css styles
+            if (this.element.config.uiStyles.attributes.cols === '6') { // occupies 1 cols of 6
+                overrideClass += ' col-sm-2';
+            } else if (this.element.config.uiStyles.attributes.cols === '4') { // occupies 1 cols of 4
+                overrideClass += ' col-sm-3';
+            } else if (this.element.config.uiStyles.attributes.cols === '3') { // occupies 1 cols of 3
+                overrideClass += ' col-sm-4';
+            } else if (this.element.config.uiStyles.attributes.cols === '2') { // occupies 1 cols of 2
+                overrideClass += ' col-sm-6';
+            } else if (this.element.config.uiStyles.attributes.cols === '1') { // occupies 1 col of 1
+                overrideClass += ' col-sm-12';
+            } else {
+                overrideClass += ' col-sm-12';
+            }
+        } 
+        if (overrideClass != '') {
+            componentClass.push(overrideClass);
         } else {
             componentClass.push(this.elementCss);
         }
-        
+
         // Error Styles
         componentClass.push(this.getErrorStyles());
 
@@ -185,8 +206,8 @@ export class FormElement extends BaseElement {
         let errorMessage: Message, summary: string;
         errorMessage = new Message();
         errorMessage.context = 'INLINE';
-        errorMessage.life = 10000;
-        errorMessage.messageArray.push({ severity: 'error', summary: summary, detail: errorText });
+        // errorMessage.life = 10000;
+        errorMessage.messageArray.push({ severity: 'error', summary: summary, detail: errorText, life: 10000  });
         this.elemMessages.push(errorMessage);
     }
 

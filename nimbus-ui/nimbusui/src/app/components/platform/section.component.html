@@ -1,6 +1,6 @@
 <div class="{{cssClass}}" id="{{code}}">
     <!-- Section Message -->
-    <nm-label *ngIf="labelConfig?.text != ''" [labelConfig]="labelConfig" [size]="labelSize"></nm-label>
+    <nm-label *ngIf="!isLabelEmpty" [element]="element" [size]="labelSize"></nm-label>
      <ng-template ngFor let-msg [ngForOf]="element.message">
         <nm-message [messageContext]="msg.context"  [messageArray]="msg.messageArray" [styleClass]="msg.styleClass" [life]="msg.life" *ngIf="msg" ></nm-message>
     </ng-template>     
@@ -9,7 +9,7 @@
         <ng-template ngFor let-element [ngForOf]="nestedParams">
             <!-- Card Content -->
             <ng-template [ngIf]="element.alias == componentTypes.cardDetailsGrid.toString()">
-                <nm-card-details-grid [position]="position+1" [grid]="element"></nm-card-details-grid>
+                <nm-card-details-grid [position]="position+1" [element]="element"></nm-card-details-grid>
             </ng-template>
             <ng-template [ngIf]="element.alias == componentTypes.cardDetail.toString()">
                 <nm-card-details [position]="position+1" [element]="element"></nm-card-details>
@@ -49,6 +49,13 @@
                     [position]="position+1">
                 </nm-table>
             </ng-template>
+
+            <ng-template [ngIf]="element.alias == componentTypes.treeGrid.toString()">
+                <nm-treegrid
+                    [element]="element" 
+                    [params]="element?.config?.type?.elementConfig?.type?.model?.paramConfigs">
+                </nm-treegrid>
+            </ng-template>
             <!--Other buttons. Refactor item : to be triggred based on the buttongroup annotation-->
             <ng-template [ngIf]="element.alias == viewComponent.button.toString() && element?.visible == true">
                 <div class="text-sm-right">
@@ -68,6 +75,10 @@
             <!--combobox control without a form-->
             <ng-template [ngIf]="element.alias == componentTypes.comboBox.toString()">
                 <nm-comboBox id="{{code}}" [element]="element" [(ngModel)]="element.leafState"></nm-comboBox>
+            </ng-template>
+            <!--InputSwitch -->
+            <ng-template [ngIf]="element.alias == componentTypes.inputSwitch.toString()">
+                <nm-input-switch id="{{code}}" [element]="element" [(ngModel)]="element.leafState"></nm-input-switch>
             </ng-template>
         </ng-template>
     </ng-template>

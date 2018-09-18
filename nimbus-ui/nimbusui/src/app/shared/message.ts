@@ -38,7 +38,7 @@ export class Message implements Serializable<Message, string> {
         let obj: Message = this;
         obj = Converter.convert(inJson,obj);
 
-        if(this.context !== undefined){
+        if(this.context !== undefined && this.text){
             obj = Message.createMessage(this.type, this.context, this.text, this.life);
         }
 
@@ -53,50 +53,50 @@ export class Message implements Serializable<Message, string> {
      *      Call this createMessage method by providing it with 4 variables
      */
     public static createMessage( type, context, detail, life ): Message {
-        let severity: string, summary: string;
+        let severity: string, summary: string, updatedLife: number;
         
         let message = new Message();
         message.context = context;
         message.type = type;
-        message.life = life;
+        updatedLife = life;
         
         switch (type) {               
 
             case 'SUCCESS': 
                 severity = 'success'; summary = 'Success Message';
                 if(life != undefined)
-                    message.life = life;
+                    updatedLife = life;
                 else    
-                    message.life = 3000;
+                    updatedLife = 3000;
                 break;
             case 'DANGER': 
                 severity = 'error'; summary = 'Error Message';
                 if(life != undefined)
-                    message.life = life;
+                    updatedLife = life;
                 else    
-                    message.life = 10000;
+                    updatedLife = 10000;
                 break; 
             case 'WARNING': 
                 severity = 'warn'; summary = 'Warn Message';
                 if(life != undefined)
-                    message.life = life;
+                    updatedLife = life;
                 else    
-                    message.life = 5000;
+                    updatedLife = 5000;
                 break;
             case 'INFO': 
                 severity = 'info'; summary = 'Info Message';
                 if(life != undefined)
-                    message.life = life;
+                    updatedLife = life;
                 else    
-                    message.life = 3000;
+                    updatedLife = 3000;
                 break;   
         }
         message.messageArray = [];
         if (message.context === 'INLINE') {
-            message.messageArray.push({severity: severity,  summary: "",  detail: detail});
+            message.messageArray.push({severity: severity,  summary: "",  detail: detail, life: updatedLife});
         }
         else {
-            message.messageArray.push({severity: severity, summary: summary, detail: detail});
+            message.messageArray.push({severity: severity, summary: summary, detail: detail, life: updatedLife});
         }
         return message;
     }

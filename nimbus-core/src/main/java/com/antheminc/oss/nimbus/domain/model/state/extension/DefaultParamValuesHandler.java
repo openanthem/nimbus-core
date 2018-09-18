@@ -53,7 +53,7 @@ public class DefaultParamValuesHandler implements ParamValuesOnLoadHandler {
 	}
 
 	@Override
-	public void handle(Values configuredAnnotation, Param<?> param) {
+	public void onStateLoad(Values configuredAnnotation, Param<?> param) {
 		List<ParamValue> result = buildParamValues(configuredAnnotation, param, param);
 		if(result != null)
 			param.setValues(result);

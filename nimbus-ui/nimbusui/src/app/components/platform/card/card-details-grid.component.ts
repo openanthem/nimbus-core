@@ -1,3 +1,4 @@
+import { BaseElement } from './../base-element.component';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -21,9 +22,7 @@ import { PageService } from '../../../services/page.service';
 import { GenericDomain } from '../../../model/generic-domain.model';
 import { Param } from '../../../shared/param-state';
 import { ComponentTypes } from '../../../shared/param-annotations.enum';
-import { BaseLabel } from './../base-label.component';
 import { WebContentSvc } from './../../../services/content-management.service';
-import { LabelConfig } from '../../../shared/param-config';
 
 /**
  * \@author Dinakar.Meda
@@ -37,11 +36,9 @@ import { LabelConfig } from '../../../shared/param-config';
     templateUrl: './card-details-grid.component.html'
 })
 
-export class CardDetailsGrid extends BaseLabel {
+export class CardDetailsGrid extends BaseElement {
 
-    @Input() grid: Param;
     public componentTypes = ComponentTypes;
-    public labelConfig: LabelConfig;
 
     constructor(private pageSvc : PageService, private wcsv: WebContentSvc) {
         super(wcsv);
@@ -49,9 +46,11 @@ export class CardDetailsGrid extends BaseLabel {
 
     ngOnInit() {
         super.ngOnInit();
-        this.labelConfig = this.wcsv.findLabelContent(this.grid);        
-        if (this.grid.config.uiStyles.attributes.onLoad === true) {
-            this.pageSvc.processEvent(this.grid.path, '$execute', new GenericDomain(), 'GET');
+
+        this.labelSize = this.getHeaderSize(this.position);
+
+        if (this.element.config.uiStyles.attributes.onLoad === true) {
+            this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), 'GET');
         }
     }
 }

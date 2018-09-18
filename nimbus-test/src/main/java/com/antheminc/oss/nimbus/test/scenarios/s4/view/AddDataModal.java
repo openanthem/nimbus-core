@@ -65,7 +65,7 @@ public class AddDataModal {
 	public static class VFAddDataModalForm {
 		
 		@NotNull
-		@ValuesConditional(target = "/../q2", resetOnChange = false, condition = {
+		@ValuesConditional(targetPath = "/../q2", resetOnChange = false, condition = {
 			@Condition(when = "state!=null && state.name()=='preference1'", then=@Values(Preference1Types.class)),
 			@Condition(when = "state!=null && state.name()=='preference2'", then=@Values(Preference2Types.class))
 		})

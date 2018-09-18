@@ -104,7 +104,7 @@ export class Button extends BaseElement {
         this.payload = this.element.config.uiStyles.attributes.payload;
         this.differ = this.differs.find(this.element).create();
 
-        if (this.label.trim() !== '') {
+        if (this.label && this.label.trim() !== '') {
             this.btnClass = 'btn btn-plain ' + this.cssClass;
         } else {
             this.btnClass = 'btn btn-icon icon ' + this.cssClass;

@@ -25,6 +25,7 @@ import com.antheminc.oss.nimbus.domain.Event;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 import com.antheminc.oss.nimbus.domain.defn.extension.ParamContext;
 
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -44,39 +45,21 @@ import lombok.Setter;
 public class ViewConfig {
 
 	/**
-	 * <p>This Accordion is intended for use within a {@link Form} component.
-	 * For non-form support, consider {@link AccordionMain}.
+	 * **
+	 * <p>
+	 * Accordion groups a collection of contents in tabs.
 	 * 
-	 * <p><b>Expected Field Structure</b>
+	 * <p>
+	 * <b>Expected Field Structure</b>
 	 * 
-	 * <p>Accordion will be rendered when annotating a field nested under one of
-	 * the following components: <ul> <li>{@link Form}</li> </ul>
+	 * <p>
+	 * Accordion will be rendered when annotating a field nested under one of the
+	 * following components:
+	 * <ul>
+	 * <li>{@link Form}</li>
+	 * <li>{@link Section}</li>
+	 * </ul>
 	 * 
-	 * <p>Accordion will render nested fields in the same manner declared
-	 * directly under a {@link Form} component.
-	 * 
-	 * @since 1.0
-	 * @see com.antheminc.oss.nimbus.domain.defn.Form
-	 */
-	// @Retention(RetentionPolicy.RUNTIME)
-	// @Target({ ElementType.FIELD })
-	// @ViewStyle
-	// public @interface Accordion {
-	// String alias() default "Accordion";
-	// String cssClass() default "panel-default";
-	// }
-
-	/**
-	 * <p><b>Expected Field Structure</b>
-	 * 
-	 * <p>AccordionMain will be rendered when annotating a field nested under
-	 * one of the following components: <ul> <li>{@link Section}</li> </ul>
-	 * 
-	 * <p>AccordionMain should contain nested classes. These classes represent
-	 * an <i>accordion tab</i> within the rendered accordion. The <i>accordion
-	 * tab</i> class should contain a field decorated with {@link CardDetail}.
-	 * 
-	 * @since 1.0
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.FIELD })
@@ -94,19 +77,28 @@ public class ViewConfig {
 	}
 
 	/**
-	 * <!--TODO Candidate for removal-->
+	 * <p>
+	 * AccordionTab is the section of Accordion.
 	 * 
-	 * @since 1.0
-	 */
-	// @Retention(RetentionPolicy.RUNTIME)
-	// @Target({ ElementType.FIELD })
-	// @ViewStyle
-	// public @interface AccordionGroup {
-	// String alias() default "AccordionGroup";
-	// String cssClass() default "panel-default";
-	// }
-
-	/**
+	 * <p>
+	 * <b>Expected Field Structure</b>
+	 * 
+	 * <p>
+	 * AccordionTab should be used to decorate a field in a class that has been
+	 * decorated with Accordion.
+	 * <p>
+	 * <p>
+	 * AccordionTab will render nested fields in the same manner declared directly
+	 * under a {@link Form} component
+	 * 
+	 * <p>
+	 * AccordionTab used within a {@link Section} component, should contain fields
+	 * decorated with one or more of the following components:
+	 * <ul>
+	 * <li>{@link CardDetail}</li>
+	 * <li>{@link ButtonGroup}</li>
+	 * <li>{@link Grid}
+	 *
 	 * 
 	 * @since 1.0
 	 */
@@ -183,6 +175,40 @@ public class ViewConfig {
 
 		boolean postEventOnChange() default false;
 	}
+	
+	
+	/**
+	 * <p><b>Expected Field Structure</b>
+	 * 
+	 * <p>TreeGrid will be rendered when annotating a field nested under one of
+	 * the following components: <ul> <li>{@link Section}</li>
+	 * <li>{@link Form}</li>
+	 * 
+	 */
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface TreeGrid {
+		String alias() default "TreeGrid";
+		String cssClass() default "";
+	}
+	
+	
+	/**
+	 * <p><b>Expected Field Structure</b>
+	 * 
+	 * <p>Child entities that are within TreeGrid should be annotated with this.
+	 */	
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface TreeGridChild {
+		String alias() default "TreeGridChild";
+		String cssClass() default "";
+	}
+	
 
 	/**
 	 * <p><b>Expected Field Structure</b>
@@ -301,6 +327,9 @@ public class ViewConfig {
 		boolean yearNavigator() default false;
 
 		String yearRange() default "1910:2050";
+		
+		String cols() default "";
+
 	}
 
 	/**
@@ -400,7 +429,7 @@ public class ViewConfig {
 	 * <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>CardDetailsGrid will be rendered when annotating a field nested under
-	 * one of the following components: <ul> <li>{@link Section}</li> </ul>
+	 * one of the following components: <ul> <li>{@link Accordion}</li><li>{@link Section}</li> </ul>
 	 * 
 	 * <p>A field decorated with &#64;CardDetailsGrid should be an object
 	 * containing one or more fields. Each of these fields would represent a
@@ -450,6 +479,9 @@ public class ViewConfig {
 		String labelClass() default "anthem-label";
 
 		boolean postEventOnChange() default false;
+		
+		String cols() default "";
+
 	}
 
 	/**
@@ -479,6 +511,65 @@ public class ViewConfig {
 		String level() default "0";
 
 		boolean postEventOnChange() default false;
+		
+		String cols() default "";
+
+	}
+	
+	/**
+	 * <p><b>Expected Field Structure</b>
+	 * 
+	 * <p>InputSwitch will be rendered when annotating a field nested under one of the
+	 * following components: <ul><li>{@link Form}</li> <li>{@link Section}</li></ul>
+	 * 
+	 * <p>InputSwitch should decorate a field having a simple type.
+	 * 
+	 * <p>If no orientation is specified, it's considered as DEFAULT. On the need basis
+	 * orientation can be supplied as the LEFT or RIGHT.
+	 * 
+	 * <br>orientation description: <ul><li>DEFAULT orientation places the component right next
+	 * to the Label.</li> <li>LEFT orientation places the component left to the Label.</li> <li>RIGHT
+	 * orientation places the component little away from the Label.</li></ul>
+	 * 
+	 * @since 1.1
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.FIELD})
+	@ViewStyle
+	public @interface InputSwitch {
+		
+		/**
+		 * Type of orientation.
+		 * 
+		 */
+		public enum Type {
+			LEFT,
+			RIGHT,
+			DEFAULT
+		}
+		String alias() default "InputSwitch";
+		
+		String controlId() default "";
+		
+		/**
+		 * This field can be used to override cssClass
+		 * 
+		 */
+		String cssClass() default "";
+		
+		/**
+		 * postEventOnChange flag, by default is false. 
+		 * When it's set to true, posts the state changes on this component to the server.
+		 * 
+		 */
+		boolean postEventOnChange() default false;
+		
+		/**
+		 * It describes the Type of orientation, Accepted values can be InputSwitch.Type.LEFT, 
+		 * InputSwitch.Type.RIGHT, InputSwitch.Type.DEFAULT
+		 * 
+		 */
+		InputSwitch.Type orientation() default InputSwitch.Type.DEFAULT;
 	}
 
 	/**
@@ -511,6 +602,9 @@ public class ViewConfig {
 		boolean postEventOnChange() default false;
 
 		boolean readOnly() default false;
+		
+		String cols() default "";
+
 	}
 
 	/**
@@ -672,6 +766,9 @@ public class ViewConfig {
 		String type() default ".pdf,.png";
 
 		String url() default "";
+		
+		String cols() default "";
+
 	}
 
 	/**
@@ -719,20 +816,20 @@ public class ViewConfig {
 	 * following components: <ul> <li>Section</li> </ul>
 	 * 
 	 * <p>Form will render nested fields that are decorated with: <ul>
+	 * <li>{@link FormElementGroup}</li>
 	 * <li>{@link Accordion}</li> <li>{@link Button}</li>
 	 * <li>{@link ButtonGroup}</li> <li>{@link Calendar}</li>
 	 * <li>{@link CheckBox}</li> <li>{@link CheckBoxGroup}</li>
 	 * <li>{@link ComboBox}</li> <li>{@link FileUpload}</li>
 	 * <li>{@link Grid}</li> <li>{@link Header}</li>
-	 * <li>{@link MultiSelect}</li> <li>{@link MultiSelectCard}</li> <li>*Nested
-	 * Classes <i>(No annotation decoration necessary)</i></li>
+	 * <li>{@link MultiSelect}</li> <li>{@link MultiSelectCard}</li> 
 	 * <li>{@link Paragraph}</li> <li>{@link PickList}</li>
 	 * <li>{@link Radio}</li> <li>{@link Signature}</li>
 	 * <li>{@link TextArea}</li> <li>{@link TextBox}</li> </ul>
 	 * 
-	 * <p><i>*Note: Nested class fields will be rendered in the same manner as
-	 * fields declared directly under the Form decorated field. In other words,
-	 * field declaration for forms can be recursive.</i>
+	 * <p><i>*Note: Nested class fields will <b>not</b> be rendered in the same manner as
+	 * fields declared directly under the Form decorated field. This is a change from previous version.
+	 * The nesting/grouping should be annotated with {@link FormElementGroup} where the elements need to be grouped.</i>
 	 * 
 	 * @since 1.0
 	 */
@@ -742,15 +839,65 @@ public class ViewConfig {
 	public @interface Form {
 		String alias() default "Form";
 
-		String b() default ""; // remove
-
 		String cssClass() default "";
+
+		String b() default ""; // remove
 
 		String navLink() default ""; // remove
 
 		boolean submitButton() default true; // remove
 
 		String submitUrl() default ""; // remove
+	}
+	
+	/**
+	 * <p><b>Expected Field Structure</b>
+	 * 
+	 * <p>FormElementGroup will be rendered when annotating a field nested under one of the
+	 * following components: <ul> <li>Form</li> </ul>
+	 * 
+	 * <p>FormElementGroup will render nested fields that are decorated with: <ul>
+	 * <li>{@link Calendar}</li>
+	 * <li>{@link CheckBox}</li> <li>{@link CheckBoxGroup}</li>
+	 * <li>{@link ComboBox}</li> <li>{@link FileUpload}</li>
+	 * <li>{@link Header}</li>
+	 * <li>{@link MultiSelect}</li> <li>{@link MultiSelectCard}</li> 
+	 * <li>{@link Paragraph}</li> <li>{@link PickList}</li>
+	 * <li>{@link Radio}</li> <li>{@link Signature}</li>
+	 * <li>{@link TextArea}</li> <li>{@link TextBox}</li> </ul>
+	 * 
+	 * @since 1.1
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface FormElementGroup {
+		String alias() default "FormElementGroup";
+
+		String cssClass() default "";
+		
+		String cols() default "1";
+	}
+	
+	/**
+	 * <p><b>Expected Field Structure</b>
+	 * 
+	 * <p>FormGridFiller will be rendered when annotating a field nested under one of the
+	 * following components: <ul> <li>Form</li> </ul>
+	 * 
+	 * <p>FormGridFiller is a filler that is placed in a form layout for empty cells. 
+	 * 
+	 * @since 1.1
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface FormGridFiller {
+		String alias() default "FormGridFiller";
+
+		String cssClass() default "";
+		
+		String cols() default "";
 	}
 
 	/**
@@ -948,8 +1095,43 @@ public class ViewConfig {
 		String alias() default "GridColumn";
 
 		/**
-		 * Apply styles to display value. This controls the display of value
+		 * <p>Apply styles to display value. This controls the display of value
 		 * with images and fonts
+		 * <p>When set to true, CSS classes added into the application's defined styles will be added to the container element surrounding this component.
+		 * This can be used to apply additional styling, if necessary.
+		 * 
+		 * <p>
+		 * <strong>Example Configuration</strong>
+		 * </p>
+		 * <pre>
+		 * <code>@GridColumn(applyValueStyles = true)
+		 * private String status;
+		 * </code>
+		 * 
+		 * <p>
+		 * <strong>Resulting HTML</strong>
+		 * </p>
+		 * <pre>
+		 * <pre>
+		 * <code>
+		 * <span class="Active status ng-star-inserted" title="Active">
+		 *	    ...
+		 * </span>
+		 * </pre>
+		 * </code>
+		 * </pre>
+		 * 
+		 * <p>
+		 * <strong> Example CSS </strong>
+		 * </p>
+		 * <pre>
+		 * <code>
+		 * status.Active {
+		 *	    ...
+		 * }
+		 * </code>
+		 * </pre>
+		 * 
 		 */
 		boolean applyValueStyles() default false;
 
@@ -1282,6 +1464,8 @@ public class ViewConfig {
 		String page() default "";
 
 		String url() default "";
+		
+		Image.Type imgType() default Image.Type.FA;
 	}
 
 	/**
@@ -1387,6 +1571,9 @@ public class ViewConfig {
 		String labelClass() default "anthem-label";
 
 		boolean postEventOnChange() default false;
+		
+		String cols() default "";
+
 	}
 
 	/**
@@ -1527,6 +1714,9 @@ public class ViewConfig {
 		 * <p>When {@code true}, the sort controls on target list are shown on the UI
 		 */
 		boolean showTargetControls() default false;
+		
+		String cols() default "";
+
 	}
 	
 	/**
@@ -1585,6 +1775,9 @@ public class ViewConfig {
 		String level() default "0";
 
 		boolean postEventOnChange() default false;
+		
+		String cols() default "";
+
 	}
 	
 	/**
@@ -1685,6 +1878,11 @@ public class ViewConfig {
 		 * <p>This can be used to apply additional styling, if necessary.
 		 */
 		String cssClass() default "";
+		/**
+		 * <p>Method name from app_scripts.js is provided in scriptName, which will be triggered 
+		 * on click of "Get updated signature" button
+		 */
+		String scriptName() default "";
 		/**
 		 * <p>The width of the signature canvas. 
 		 */
@@ -1806,6 +2004,8 @@ public class ViewConfig {
 		String rows() default "5";
 
 		String type() default "textarea";
+		
+		String cols() default "";
 	}
 
 	/**
@@ -1840,6 +2040,9 @@ public class ViewConfig {
 		boolean readOnly() default false;
 
 		String type() default "text";
+		
+		String cols() default "";
+
 	}
 
 	/**

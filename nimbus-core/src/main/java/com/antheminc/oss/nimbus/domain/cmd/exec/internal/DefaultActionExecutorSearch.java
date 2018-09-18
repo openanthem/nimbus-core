@@ -17,11 +17,10 @@ package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
-import com.antheminc.oss.nimbus.domain.cmd.exec.AbstractFunctionCommandExecutor;
+import com.antheminc.oss.nimbus.domain.cmd.exec.AbstractCommandExecutor;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Input;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
-import com.antheminc.oss.nimbus.domain.cmd.exec.FunctionHandler;
 
 
 /**
@@ -29,17 +28,19 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.FunctionHandler;
  *
  */
 @EnableLoggingInterceptor
-public class DefaultActionExecutorSearch<T, R> extends AbstractFunctionCommandExecutor<T, R> {
+public class DefaultActionExecutorSearch<R> extends AbstractCommandExecutor<R> {
+	
+	private FunctionExecutor<?, ?> functionExecutor;
 	
 	public DefaultActionExecutorSearch(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
+		this.functionExecutor = beanResolver.find(FunctionExecutor.class);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	protected Output<R> executeInternal(Input input) {
-		R response = (R)executeFunctionHanlder(input, FunctionHandler.class);
-		return Output.instantiate(input, input.getContext(), response);
+		return (Output<R>)functionExecutor.execute(input);
 	}
 
 }

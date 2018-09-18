@@ -43,14 +43,15 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   selector: 'nm-input-calendar',
   providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR,WebContentSvc, ControlSubscribers],
   template: `
-        <nm-input-label *ngIf="labelConfig && this.showLabel"
+        <nm-input-label *ngIf="!isLabelEmpty && this.showLabel"
+            [element]="element"     
             [for]="element.config?.code" 
-            [labelConfig]="labelConfig" 
             [required]="requiredCss">
 
         </nm-input-label>
         <p-calendar [(ngModel)]="value"  
-            (focusout)="emitValueChangedEvent(this,$event)" 
+            (onSelect)="emitValueChangedEvent(this,$event)"
+            (change)="emitValueChangedEvent(this,$event)"
             [showIcon]="true"
             [timeOnly]="element.config?.uiStyles?.attributes?.timeOnly"
             [showTime]="element.config?.uiStyles?.attributes?.showTime" 
@@ -74,5 +75,4 @@ export class Calendar extends BaseControl<Date> {
     // ngOnInit(){
  
     // }
-
 }

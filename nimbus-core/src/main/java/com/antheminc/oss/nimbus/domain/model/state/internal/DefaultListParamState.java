@@ -16,8 +16,11 @@
 package com.antheminc.oss.nimbus.domain.model.state.internal;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
@@ -266,6 +269,17 @@ public class DefaultListParamState<T> extends AbstractListPaginatedParam<T> impl
 	private boolean affectRemoveIfMappedOrUnMapped(ListElemParam<T> pElem) {
 		// remove from collection entity state
 		List<T> currList = getState();//instantiateOrGet();
+		
+		if(CollectionUtils.isEmpty(currList)) {
+			if(pElem.getParentModel().templateParams().isNullOrEmpty())
+				return false;
+			
+			String elemId = pElem.getElemId();
+			Param<?> pRemoved = pElem.getParentModel().templateParams().remove(elemId);
+			return (pRemoved != null);
+		}
+		
+		
 		T elemToRemove = pElem.getState();
 		boolean isRemoved = currList.remove(elemToRemove);
 		
@@ -347,6 +361,18 @@ public class DefaultListParamState<T> extends AbstractListPaginatedParam<T> impl
 	}
 	
 	@Override
+	public boolean addAll(List<T> elems) {
+		if (null == elems) {
+			return true;
+		}
+		
+		for(T elem : elems) {
+			add(elem);
+		}
+		return true;
+	}
+	
+	@Override
 	public boolean add(T elem) {
 		clearPageMeta();
 		//ListElemParam<T> pColElem = add();
@@ -414,5 +440,20 @@ public class DefaultListParamState<T> extends AbstractListPaginatedParam<T> impl
 	@Override
 	public MappedListParam<T, ?> findIfMapped() {
 		return null;
+	}
+	
+	private Map<String, Set<LabelState>> elemLabels;
+	
+	@Override
+	public Map<String, Set<LabelState>> getElemLabels() {
+		return this.elemLabels;
+	}
+
+	@Override
+	public void setElemLabels(Map<String, Set<LabelState>> elemLabels) {
+		if(getElemLabels()==elemLabels) {
+			return;
+		}
+		this.elemLabels = elemLabels;
 	}
 }

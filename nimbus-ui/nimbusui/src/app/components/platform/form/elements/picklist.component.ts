@@ -51,7 +51,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     ],
     template: `
         <nm-input-label
-            [labelConfig]="labelConfig"
+            [element]="element" 
             [for]="parent.config.code"
             [required]="requiredCss">
         </nm-input-label>
@@ -103,12 +103,12 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
 
     set disabled(value) { this._disabled = value; }
 
-    constructor(wcs: WebContentSvc, private pageService: PageService) {
-        super(wcs);
+    constructor(private _wcs: WebContentSvc, private pageService: PageService) {
+        super(_wcs);
     }
 
     ngOnInit() {
-        this.loadLabelConfigByCode(this.parent.config.code, this.parent.config.labelConfigs);
+        this.loadLabelConfigFromConfigs(this.parent.labels, this.parent.config.code);
         this.requiredCss = ValidationUtils.applyelementStyle(this.parent);
         // First check if the picklist has any values that are selected onload
         if(this.element.leafState != null) {
