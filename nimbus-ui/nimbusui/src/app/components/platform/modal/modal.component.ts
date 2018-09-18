@@ -70,7 +70,7 @@ export class Modal extends BaseElement implements OnInit, OnDestroy {
             if(event.path == this.element.path) {
                 this.display = event.visible;
             }
-        });    
+        });
     }
     /**
      * Closable attribute. Can the Modal window be closed?
@@ -101,12 +101,11 @@ export class Modal extends BaseElement implements OnInit, OnDestroy {
     /**
      * Close diaglog function.
      */
-    public closeDialog(event: any) {
-        if (!this.display) {
+    public closeDialog(open: any) {
+        if(!open) {
             this.pageSvc.processEvent(this.element.path+'/closeModal', Behavior.execute.value, new GenericDomain(), HttpMethod.GET.value);
         }
     }
-
     /**
      * Resizable attribute to alter the size of the modal window
      */
