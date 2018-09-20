@@ -175,6 +175,40 @@ public class ViewConfig {
 
 		boolean postEventOnChange() default false;
 	}
+	
+	
+	/**
+	 * <p><b>Expected Field Structure</b>
+	 * 
+	 * <p>TreeGrid will be rendered when annotating a field nested under one of
+	 * the following components: <ul> <li>{@link Section}</li>
+	 * <li>{@link Form}</li>
+	 * 
+	 */
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface TreeGrid {
+		String alias() default "TreeGrid";
+		String cssClass() default "";
+	}
+	
+	
+	/**
+	 * <p><b>Expected Field Structure</b>
+	 * 
+	 * <p>Child entities that are within TreeGrid should be annotated with this.
+	 */	
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface TreeGridChild {
+		String alias() default "TreeGridChild";
+		String cssClass() default "";
+	}
+	
 
 	/**
 	 * <p><b>Expected Field Structure</b>
@@ -395,7 +429,7 @@ public class ViewConfig {
 	 * <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>CardDetailsGrid will be rendered when annotating a field nested under
-	 * one of the following components: <ul> <li>{@link Section}</li> </ul>
+	 * one of the following components: <ul> <li>{@link Accordion}</li><li>{@link Section}</li> </ul>
 	 * 
 	 * <p>A field decorated with &#64;CardDetailsGrid should be an object
 	 * containing one or more fields. Each of these fields would represent a
@@ -1061,8 +1095,43 @@ public class ViewConfig {
 		String alias() default "GridColumn";
 
 		/**
-		 * Apply styles to display value. This controls the display of value
+		 * <p>Apply styles to display value. This controls the display of value
 		 * with images and fonts
+		 * <p>When set to true, CSS classes added into the application's defined styles will be added to the container element surrounding this component.
+		 * This can be used to apply additional styling, if necessary.
+		 * 
+		 * <p>
+		 * <strong>Example Configuration</strong>
+		 * </p>
+		 * <pre>
+		 * <code>@GridColumn(applyValueStyles = true)
+		 * private String status;
+		 * </code>
+		 * 
+		 * <p>
+		 * <strong>Resulting HTML</strong>
+		 * </p>
+		 * <pre>
+		 * <pre>
+		 * <code>
+		 * <span class="Active status ng-star-inserted" title="Active">
+		 *	    ...
+		 * </span>
+		 * </pre>
+		 * </code>
+		 * </pre>
+		 * 
+		 * <p>
+		 * <strong> Example CSS </strong>
+		 * </p>
+		 * <pre>
+		 * <code>
+		 * status.Active {
+		 *	    ...
+		 * }
+		 * </code>
+		 * </pre>
+		 * 
 		 */
 		boolean applyValueStyles() default false;
 

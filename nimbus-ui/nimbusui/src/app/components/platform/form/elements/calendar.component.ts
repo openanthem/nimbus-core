@@ -51,7 +51,8 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
 
         </nm-input-label>
         <p-calendar [(ngModel)]="value"  
-            (focusout)="emitValueChangedEvent(this,$event)" 
+            (onSelect)="emitValueChangedEvent(this,$event)"
+            (change)="emitValueChangedEvent(this,$event)"
             [showIcon]="true"
             [timeOnly]="element.config?.uiStyles?.attributes?.timeOnly"
             [showTime]="element.config?.uiStyles?.attributes?.showTime" 

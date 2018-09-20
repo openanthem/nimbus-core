@@ -107,8 +107,8 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 	
 	public DefaultCommandExecutorGateway(BeanResolverStrategy beanResolver) {
 		super(beanResolver);
-		
 		this.executors = new HashMap<>();
+		
 	}
 	
 	@PostConstruct
@@ -471,6 +471,9 @@ public class DefaultCommandExecutorGateway extends BaseCommandExecutorStrategies
 	}
 	
 	protected CommandExecutor<?> lookupExecutor(Command cmd, Behavior b) {
+		if(b == Behavior.$execute && cmd.containsFunction()) {
+			return getBeanResolver().find(FunctionExecutor.class);
+		}
 		return lookupBeanOrThrowEx(CommandExecutor.class, getExecutors(), cmd.getAction(), b);
 	}
 	

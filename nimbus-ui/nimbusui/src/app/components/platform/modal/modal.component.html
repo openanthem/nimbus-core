@@ -1,15 +1,13 @@
 <ng-template [ngIf]="type == componentTypes.dialog.toString()">
-    <p-dialog [(visible)]="visible" 
-    [closable]="closable" 
-    (onHide)="closeDialog($event)" 
+    <p-dialog [(visible)]="display" 
+    [closable]="closable"
     [closeOnEscape]="false" 
     [modal]="true" 
     [width]="width" 
+    (visibleChange)="closeDialog($event)"
     appendTo="body" 
     [responsive]="true" 
-    [blockScroll]="true" 
-    [contentStyle]=""
-    >
+    [blockScroll]="true">
         <p-header *ngIf="label">
             {{label}}
             <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>

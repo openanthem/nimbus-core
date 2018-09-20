@@ -84,10 +84,10 @@ export class ValidationUtils {
             return CustomValidators.isZip;
           }
           else if (validator.name === ValidationConstraint._past.value) {
-            return  Validators.nullValidator;
+            return CustomValidators.isPast;
           }
           else if (validator.name === ValidationConstraint._future.value) {
-            return  Validators.nullValidator;
+            return CustomValidators.isFuture;
           }           
     }
 
