@@ -56,9 +56,12 @@ export abstract class BaseControl<T> extends BaseControlValueAccessor<T> {
         super();
     }
 
-    setState(event:any,frmInp:any) {
-        frmInp.element.leafState = event;
+    setState(val:any,frmInp:any) {
+        frmInp.element.leafState = val;
         this.cd.markForCheck();
+        if(val == null) {  //if the val is null - the form is set for the first time or it is being reset.
+            this.controlService.resetPreviousLeafState(val);
+        }
     }
 
     emitValueChangedEvent(formControl:any,$event:any) {
