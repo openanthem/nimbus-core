@@ -114,8 +114,8 @@ export class ServiceConstants {
             pattern: 'Field does not match the required pattern.',
             minMaxSelection: 'Field does not meet min/max requirement.',
             isNumber: 'Value must be a number.',
-            isPast: 'Value Must be past.',
-            isFuture: 'Value Must be Future.'
+            isPast: 'Value must be today or before today\'s date.',
+            isFuture: 'Value must be today or after today\'s date.'
         };
     }
 }
