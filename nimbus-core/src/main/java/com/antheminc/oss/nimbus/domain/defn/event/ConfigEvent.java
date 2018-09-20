@@ -23,7 +23,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import com.antheminc.oss.nimbus.domain.Event;
-import com.antheminc.oss.nimbus.domain.Event.Type;
 
 /**
  * @author Soham Chakravarti
@@ -33,7 +32,7 @@ public final class ConfigEvent {
 
 	@Retention(RUNTIME)
 	@Target(ANNOTATION_TYPE)
-	@Event(Type.ON_CREATE)
+	@Event
 	@Inherited
 	public @interface OnParamCreate {
 		int order() default Event.DEFAULT_ORDER_NUMBER;

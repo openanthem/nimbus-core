@@ -23,6 +23,7 @@ import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.model.config.event.ConfigEventHandlers.OnParamCreateHandler;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
+import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadNewHandler;
 
 /**
  * @author Soham Chakravarti
@@ -38,6 +39,10 @@ public interface EventHandlerConfig {
 	public Set<Annotation> getOnStateLoadAnnotations();
 	public Optional<OnStateLoadHandler<Annotation>> findOnStateLoadHandler(Annotation a);
 	public OnStateLoadHandler<Annotation> getOnStateLoadHandler(Annotation a) throws InvalidConfigException;
+	
+	public Set<Annotation> getOnStateLoadNewAnnotations();
+	public Optional<OnStateLoadNewHandler<Annotation>> findOnStateLoadNewHandler(Annotation a);
+	public OnStateLoadNewHandler<Annotation> getOnStateLoadNewHandler(Annotation a) throws InvalidConfigException;
 	
 	
 	public Set<Annotation> getOnStateChangeAnnotations();

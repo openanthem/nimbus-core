@@ -23,7 +23,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import com.antheminc.oss.nimbus.domain.Event;
-import com.antheminc.oss.nimbus.domain.Event.Type;
 
 /**
  * @author Soham Chakravarti
@@ -33,7 +32,7 @@ public final class CommandEvent {
 
 	@Retention(RUNTIME)
 	@Target(ANNOTATION_TYPE)
-	@Event(Type.ON_EXECUTE)
+	@Event
 	@Inherited
 	public @interface OnRootCommandExecute {
 		int order() default Event.DEFAULT_ORDER_NUMBER;
@@ -41,7 +40,7 @@ public final class CommandEvent {
 	
 	@Retention(RUNTIME)
 	@Target(ANNOTATION_TYPE)
-	@Event(Type.ON_EXECUTE)
+	@Event
 	@Inherited
 	public @interface OnSelfCommandExecute {
 		int order() default Event.DEFAULT_ORDER_NUMBER;

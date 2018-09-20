@@ -21,8 +21,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import com.antheminc.oss.nimbus.domain.Event;
-import com.antheminc.oss.nimbus.domain.Event.Type;
+import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoadNew;
 
 /**
  * @author Soham Chakravarti
@@ -30,10 +29,17 @@ import com.antheminc.oss.nimbus.domain.Event.Type;
  */
 @Retention(RUNTIME)
 @Target(FIELD)
-@Event(Type.ON_INHERIT)
+@OnStateLoadNew
 public @interface Script {
 
-	Type[] onEvent() default Type.ON_CREATE;
+	enum Type {
+		SPEL_INLINE,
+		SPEL_FILE,
+		GROOVY;
+	}
 	
-	String resourcePath() default "";
+	// resourcePath
+	String value() default "";
+	
+	Type type() default Type.SPEL_INLINE;
 }

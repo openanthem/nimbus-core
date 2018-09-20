@@ -58,6 +58,8 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 
 	@JsonIgnore private transient ValidationResult validationResult;
 	
+	@JsonIgnore private transient boolean isNew;
+	
 	public DefaultModelState() {
 		this.associatedParam = null;
 	}
@@ -87,6 +89,11 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 	@Override
 	public String getBeanPath() {
 		return getAssociatedParam().getBeanPath();
+	}
+	
+	@Override
+	public boolean isNew() {
+		return getRootExecution().isNew() ? true : this.isNew;
 	}
 	
 	@Override
@@ -134,7 +141,11 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 //		}
 		
 		T instance = getAspectHandlers().getParamStateGateway()._getRaw(this.getAssociatedParam());
-		return instance==null ? instantiateAndSet() : instance; 
+		if(instance==null) {
+			instance = instantiateAndSet(); 
+		} 
+			
+		return instance;
 	}
 	
 	@Override
