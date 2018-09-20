@@ -55,7 +55,6 @@ import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
 import com.antheminc.oss.nimbus.domain.model.state.StateType;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
-import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadNewHandler;
 import com.antheminc.oss.nimbus.domain.model.state.support.DefaultJsonParamSerializer;
 import com.antheminc.oss.nimbus.entity.Findable;
 import com.antheminc.oss.nimbus.support.Holder;
@@ -220,10 +219,6 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 	protected void initStateInternal() {
 		if(isNested()) {
 			findIfNested().initState();
-			
-			// hook up on state load new events
-			if(findIfNested().isNew())
-				onStateLoadNewEvent(this);
 		}
 		
 		// hook up on state load events
@@ -430,20 +425,6 @@ public class DefaultParamState<T> extends AbstractEntityState<T> implements Para
 					OnStateLoadHandler<Annotation> handler = eventHandlerConfig.getOnStateLoadHandler(ac);
 					if(handler.shouldAllow(ac, p)) {
 						handler.onStateLoad(ac, p);
-					}
-				});
-		}
-	}
-	
-	// TODO : move to runtime.eventDelegate
-	protected static void onStateLoadNewEvent(Param<?> p) {
-		EventHandlerConfig eventHandlerConfig = p.getConfig().getEventHandlerConfig();
-		if(eventHandlerConfig!=null && eventHandlerConfig.getOnStateLoadNewAnnotations()!=null) {
-			eventHandlerConfig.getOnStateLoadNewAnnotations().stream()
-				.forEach(ac->{
-					OnStateLoadNewHandler<Annotation> handler = eventHandlerConfig.getOnStateLoadNewHandler(ac);
-					if(handler.shouldAllow(ac, p)) {
-						handler.onStateLoadNew(ac, p);
 					}
 				});
 		}

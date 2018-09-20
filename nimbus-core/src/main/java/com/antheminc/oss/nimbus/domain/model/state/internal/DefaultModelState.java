@@ -16,6 +16,7 @@
 package com.antheminc.oss.nimbus.domain.model.state.internal;
 
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,12 +26,14 @@ import java.util.Optional;
 import org.springframework.data.annotation.Transient;
 
 import com.antheminc.oss.nimbus.domain.cmd.exec.ValidationResult;
+import com.antheminc.oss.nimbus.domain.model.config.EventHandlerConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Model;
 import com.antheminc.oss.nimbus.domain.model.state.EntityStateAspectHandlers;
 import com.antheminc.oss.nimbus.domain.model.state.Notification;
 import com.antheminc.oss.nimbus.domain.model.state.Notification.ActionType;
+import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadNewHandler;
 import com.antheminc.oss.nimbus.domain.model.state.support.DefaultJsonModelSerializer;
 import com.antheminc.oss.nimbus.support.pojo.CollectionsTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -103,6 +106,25 @@ public class DefaultModelState<T> extends AbstractEntityState<T> implements Mode
 		
 		getParams().stream()
 			.forEach(Param::initState);
+		
+		// hook up on state load new events
+		if(isNew())
+			onStateLoadNewEvent(this);
+
+	}
+	
+	// TODO : move to runtime.eventDelegate
+	protected static void onStateLoadNewEvent(Model<?> m) {
+		EventHandlerConfig eventHandlerConfig = m.getConfig().getEventHandlerConfig();
+		if(eventHandlerConfig!=null && eventHandlerConfig.getOnStateLoadNewAnnotations()!=null) {
+			eventHandlerConfig.getOnStateLoadNewAnnotations().stream()
+				.forEach(ac->{
+					OnStateLoadNewHandler<Annotation> handler = eventHandlerConfig.getOnStateLoadNewHandler(ac);
+					if(handler.shouldAllow(ac, m.getAssociatedParam())) {
+						handler.onStateLoadNew(ac, m.getAssociatedParam());
+					}
+				});
+		}
 	}
 	
 	@JsonIgnore

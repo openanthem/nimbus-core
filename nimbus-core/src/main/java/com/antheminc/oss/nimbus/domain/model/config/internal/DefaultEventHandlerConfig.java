@@ -137,6 +137,7 @@ public class DefaultEventHandlerConfig implements EventHandlerConfig {
 			onParamCreateHandlers.isEmpty() && 
 			
 			onStateLoadHandlers.isEmpty() &&
+			onStateLoadNewHandlers.isEmpty() &&
 			onStateChangeHandlers.isEmpty()
 		;
  	}

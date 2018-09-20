@@ -135,6 +135,10 @@ abstract public class AbstractEntityConfigBuilder {
 			.map(d->rulesEngineFactoryProducer.getFactory(referredClass))
 			.map(f->f.createConfig(created.getAlias()))
 				.ifPresent(c->created.setRulesConfig(c));
+		
+		EventHandlerConfig eventConfig = eventHandlerConfigFactory.build(referredClass);
+		created.setEventHandlerConfig(eventConfig);
+		
 		return created; 
 	}
 	

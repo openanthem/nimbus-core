@@ -13,33 +13,31 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.domain.defn.extension;
+package com.antheminc.oss.nimbus.domain.model.state.extension;
 
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import org.junit.FixMethodOrder;
+import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoadNew;
+import com.antheminc.oss.nimbus.domain.cmd.Command;
+import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
+import com.antheminc.oss.nimbus.domain.model.state.AbstractStateEventHandlerTests;
 
 /**
  * @author Soham Chakravarti
  *
  */
-@Retention(RUNTIME)
-@Target(TYPE)
-@OnStateLoadNew
-public @interface Script {
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+public class ScriptStateLoadNewHandlerTest extends AbstractStateEventHandlerTests {
 
-	enum Type {
-		SPEL_INLINE,
-		SPEL_FILE,
-		GROOVY;
+	@Override
+	protected Command createCommand() {
+		Command cmd = CommandBuilder.withUri("/hooli/thebox/p/sample_view/_new").getCommand();
+		return cmd;
 	}
 	
-	// resourcePath
-	String value() default "";
-	
-	Type type() default Type.SPEL_INLINE;
+	@Test
+	public void t01_spel() {
+		
+	}
 }

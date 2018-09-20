@@ -27,18 +27,17 @@ import lombok.Setter;
 public class EnityInitTestModel extends IdLong{
 	private static final long serialVersionUID = 1L;
 	
-	@Script(type=Type.SPEL_INLINE, value="findParamByPath('/parameter2').setState('Value2')")
 	private Action1 inline_para;
 	
-	@Script(type=Type.SPEL_FILE, value="/scripts/entity_init_test.txt")
-	private Action1 file_para;
+//	@Script(type=Type.SPEL_FILE, value="/scripts/entity_init_test.txt")
+//	private Action1 file_para;
+//	
+//	@Script(type=Type.GROOVY, value="/scripts/entity_init_test.txt")
+//	private Action1 groovy_para;
 	
-	@Script(type=Type.GROOVY, value="/scripts/entity_init_test.txt")
-	private Action1 groovy_para;
-	
-	@Getter
-	@Setter
 	@Model
+	@Script(type=Type.SPEL_INLINE, value="findParamByPath('/parameter2').setState('Value2')")
+	@Getter @Setter
 	public static class Action1{
 		@ConfigConditional(
 				config= {@Config(url="/parameter3/_process?fn=_set&value=Value3")}
