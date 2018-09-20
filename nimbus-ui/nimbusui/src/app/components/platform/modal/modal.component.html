@@ -1,10 +1,10 @@
 <ng-template [ngIf]="type == componentTypes.dialog.toString()">
     <p-dialog [(visible)]="display" 
-    [closable]="closable" 
-    (onHide)="closeDialog($event)" 
+    [closable]="closable"
     [closeOnEscape]="false" 
     [modal]="true" 
     [width]="width" 
+    (visibleChange)="closeDialog($event)"
     appendTo="body" 
     [responsive]="true" 
     [blockScroll]="true">
