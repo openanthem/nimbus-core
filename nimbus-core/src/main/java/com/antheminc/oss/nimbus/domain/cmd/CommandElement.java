@@ -16,8 +16,6 @@
 package com.antheminc.oss.nimbus.domain.cmd;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -67,12 +65,6 @@ abstract public class CommandElement implements Serializable {
 	
 	
 	abstract public void detachChildElements();
-	
-	public void shallowCopy(CommandElement cloned) {
-		cloned.setType(getType());
-		cloned.setAlias(getAlias());
-		cloned.setRefId(getRefId());
-	}
 	
 	public boolean hasRefId() {
 		return getRefId() != null;
