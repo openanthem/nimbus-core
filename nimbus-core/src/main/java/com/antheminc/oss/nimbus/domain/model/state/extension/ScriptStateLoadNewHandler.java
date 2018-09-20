@@ -20,10 +20,16 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Optional;
 
+import javax.script.Bindings;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
+import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.extension.Script;
@@ -46,7 +52,9 @@ public class ScriptStateLoadNewHandler implements OnStateLoadNewHandler<Script> 
 	private ExpressionEvaluator expressionEvaluator;
 	private ResourceLoader resourceLoader;
 	
-	JustLogit logit = new JustLogit(getClass());
+	private static final ScriptEngine groovyEngine = new ScriptEngineManager().getEngineByName("groovy");
+	
+	private JustLogit logit = new JustLogit(getClass());
 	
 	public ScriptStateLoadNewHandler(BeanResolverStrategy beanResolver) {
 		this.expressionEvaluator = beanResolver.get(ExpressionEvaluator.class);
@@ -58,19 +66,24 @@ public class ScriptStateLoadNewHandler implements OnStateLoadNewHandler<Script> 
 
 		String value = Optional.of(configuredAnnotation.value())
 						.map(StringUtils::trimToNull)
-						.orElseThrow(()->new InvalidConfigException(""));
+						.orElseThrow(()->new InvalidConfigException("Script text must not be empty declared on param: "+param));
 		
 		// TODO: strategy pattern
-		if(configuredAnnotation.type() == Type.SPEL_INLINE) {
-			handleSpelInline(value, param);
-			return;
-			
-		} else if(configuredAnnotation.type() == Type.SPEL_FILE) {
-			handleSpelFile(value, param);
-			
+		try {
+			if(configuredAnnotation.type() == Type.SPEL_INLINE) {
+				handleSpelInline(value, param);
+				
+			} else if(configuredAnnotation.type() == Type.SPEL_FILE) {
+				handleSpelFile(value, param);
+				
+			} else if(configuredAnnotation.type() == Type.GROOVY) {
+				handleGroovyFile(value, param);
+				
+			}
+		} catch (Exception ex) {
+			throw new FrameworkRuntimeException("Failed to execute script: "+configuredAnnotation+" declared on param: "+param, ex);
 		}
 		
-		throw new InvalidConfigException("Script of type: "+configuredAnnotation.type()+" is not supported.");
 	}
 	
 	protected void handleSpelInline(String expr, Param<?> param) {
@@ -80,6 +93,14 @@ public class ScriptStateLoadNewHandler implements OnStateLoadNewHandler<Script> 
 	protected void handleSpelFile(String path, Param<?> param) {
 		String expr = readResourceAsString(path, param);
 		handleSpelInline(expr, param);
+	}
+	
+	protected void handleGroovyFile(String path, Param<?> param) throws ScriptException {
+		String script = readResourceAsString(path, param);
+		Bindings b = groovyEngine.createBindings();
+		b.put("state", param.getLeafState());
+		
+		groovyEngine.eval(script, b);
 	}
 
 	protected synchronized String readResourceAsString(String path, Param<?> param) {
@@ -107,7 +128,7 @@ public class ScriptStateLoadNewHandler implements OnStateLoadNewHandler<Script> 
 		Resource r = resourceLoader.getResource(path);
 		
 		if(!r.exists())
-			throw new InvalidConfigException("Script resource path not found at: "+path+" configured on param: "+param.getPath());
+			throw new InvalidConfigException("Script resource path not found at: "+path+" configured on param: "+param);
 		
 		return r;
 	}
