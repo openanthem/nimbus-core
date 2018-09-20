@@ -28,6 +28,7 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextLoader;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContextPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorConfig;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorDelete;
+import com.antheminc.oss.nimbus.domain.cmd.exec.internal.FunctionExecutor;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorGet;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorNav;
 import com.antheminc.oss.nimbus.domain.cmd.exec.internal.DefaultActionExecutorNew;
@@ -105,11 +106,6 @@ public class DefaultCoreExecutorConfig {
 		return new DefaultActionExecutorProcess<>(beanResolver);
 	}
 	
-	@Bean(name="default._search$execute")
-	public CommandExecutor<?> defaultActionExecutorSearch(BeanResolverStrategy beanResolver){
-		return new DefaultActionExecutorSearch<>(beanResolver);
-	}
-	
 	@Bean(name="default._update$execute")
 	public CommandExecutor<?> defaultActionExecutorUpdate(BeanResolverStrategy beanResolver){
 		return new DefaultActionExecutorUpdate(beanResolver);
@@ -155,5 +151,10 @@ public class DefaultCoreExecutorConfig {
 	public DBSearch searchByQuery(BeanResolverStrategy beanResolver) {
 		return new MongoSearchByQuery(beanResolver);
 	}
+
+	@Bean(name="default._search$execute")
+	public CommandExecutor<?> defaultActionExecutorSearch(BeanResolverStrategy beanResolver){
+		return new DefaultActionExecutorSearch<>(beanResolver);
+	}	
 	
 }
