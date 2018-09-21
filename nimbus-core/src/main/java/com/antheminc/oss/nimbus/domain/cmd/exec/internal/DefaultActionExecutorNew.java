@@ -147,6 +147,7 @@ public class DefaultActionExecutorNew extends AbstractCommandExecutor<Param<?>> 
 	
 	private QuadModel<?, ?> handleUnmapped(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx, Object entity) {
 		ExecutionEntity<?, ?> e = ExecutionEntity.resolveAndInstantiate(entity, null);
+		e.setNew(true);
 		
 		updateCommandWithRefId(rootDomainConfig, eCtx, e);
 		
@@ -164,6 +165,8 @@ public class DefaultActionExecutorNew extends AbstractCommandExecutor<Param<?>> 
 								.orElseThrow(()->new InvalidStateException(""));
 		
 		ExecutionEntity<?, ?> e = ExecutionEntity.resolveAndInstantiate(mapped, coreParam.getState());
+		e.setNew(true);
+		
 		updateCommandWithRefId(rootDomainConfig, eCtx, e);
 		
 		return getQuadModelBuilder().build(eCtx.getCommandMessage().getCommand(), mapped, coreParam);

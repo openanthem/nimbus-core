@@ -75,10 +75,15 @@ public class DefaultExecutionContextLoader implements ExecutionContextLoader {
 		} else // _new takes priority
 		if(rootDomainCmd.isRootDomainOnly() && rootDomainCmd.getAction()==Action._new) {
 			eCtx = loadEntity(eCtx, getExecutorActionNew());
+			
+			// init state post registering of quadModel in session
+			eCtx.getRootModel().initState();
+			
 		} else // check if already exists in session
 		if(sessionExists(eCtx)) { 
 			QuadModel<?, ?> q = sessionGet(eCtx);
 			eCtx.setQuadModel(q);
+			
 		} else { // all else requires resurrecting entity
 			eCtx = loadEntity(eCtx, getExecutorActionGet());
 		}

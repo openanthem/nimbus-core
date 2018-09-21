@@ -1054,6 +1054,7 @@ public class QuadModelCollectionsTest {
 		
 		Command cmd = create_view_main();
 		QuadModel<VRSimpleCaseFlow, SimpleCase> q = quadModelBuilder.build(cmd, eState);
+		q.getRoot().initState();
 		
 		@SuppressWarnings("unchecked")
 		final ListParam<Section_ServiceLine> vp_list = 
