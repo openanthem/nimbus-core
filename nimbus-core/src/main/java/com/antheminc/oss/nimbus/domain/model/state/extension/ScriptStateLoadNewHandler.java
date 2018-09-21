@@ -97,7 +97,8 @@ public class ScriptStateLoadNewHandler implements OnStateLoadNewHandler<Script> 
 	protected void handleGroovyFile(String path, Param<?> param) throws ScriptException {
 		String script = readResourceAsString(path, param);
 		Bindings b = groovyEngine.createBindings();
-		b.put("state", param.getLeafState());
+		
+		b.put("this", param);
 		
 		groovyEngine.eval(script, b);
 	}
