@@ -27,7 +27,6 @@ import javax.script.ScriptException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.InvalidConfigException;
@@ -49,16 +48,16 @@ import lombok.Getter;
 @Getter
 public class ScriptStateLoadNewHandler implements OnStateLoadNewHandler<Script> {
 
+	private BeanResolverStrategy beanResolver;
 	private ExpressionEvaluator expressionEvaluator;
-	private ResourceLoader resourceLoader;
 	
 	private static final ScriptEngine groovyEngine = new ScriptEngineManager().getEngineByName("groovy");
 	
 	private JustLogit logit = new JustLogit(getClass());
 	
 	public ScriptStateLoadNewHandler(BeanResolverStrategy beanResolver) {
+		this.beanResolver = beanResolver;
 		this.expressionEvaluator = beanResolver.get(ExpressionEvaluator.class);
-		this.resourceLoader = beanResolver.get(ResourceLoader.class);
 	}
 	
 	@Override
@@ -125,9 +124,9 @@ public class ScriptStateLoadNewHandler implements OnStateLoadNewHandler<Script> 
 	}
 	
 	protected Resource findResource(String path, Param<?> param) {
-		Resource r = resourceLoader.getResource(path);
+		Resource r = beanResolver.getResource(path);
 		
-		if(!r.exists())
+		if(r==null || !r.exists())
 			throw new InvalidConfigException("Script resource path not found at: "+path+" configured on param: "+param);
 		
 		return r;

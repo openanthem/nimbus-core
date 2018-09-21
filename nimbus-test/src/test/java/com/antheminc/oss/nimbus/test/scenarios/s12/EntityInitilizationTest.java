@@ -49,8 +49,8 @@ public class EntityInitilizationTest extends AbstractFrameworkIngerationPersista
 		assertEquals("Value2", param.findStateByPath("/inline_para/parameter2"));
 		assertEquals("Value3", param.findStateByPath("/inline_para/parameter3"));
 		
-//		assertEquals("Value2", param.findStateByPath("/file_para/parameter2"));
-//		assertEquals("Value3", param.findStateByPath("/file_para/parameter3"));
+		assertEquals("Value2", param.findStateByPath("/file_para/parameter2"));
+		assertEquals("Value3", param.findStateByPath("/file_para/parameter3"));
 	}
 	
 }
