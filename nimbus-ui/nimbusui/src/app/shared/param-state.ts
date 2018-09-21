@@ -32,7 +32,6 @@ import { Converter } from './object.conversion';
 import { Serializable } from './serializable';
 import { ParamConfig, LabelConfig } from './param-config';
 import { Message } from './message';
-import { CardDetailsGrid } from './card-details';
 import { ViewConfig, ViewComponent } from './param-annotations.enum';
 import { TableComponentConstants } from '../components/platform/grid/table.component.constants';
 
@@ -189,12 +188,7 @@ export class Param implements Serializable<Param, string> {
             this.type['name'] = 'string';
             this.type['collection'] = false;
         } 
-       // this.path = inJson.path;
-        if ( this.config != null && this.config.uiStyles && this.config.uiStyles.attributes.alias === ViewComponent.cardDetailsGrid.toString() ) {
-            if(inJson.leafState != null) {
-                this.leafState = new CardDetailsGrid().deserialize( inJson.leafState );
-            }
-        } else if (this.config != null && this.config.uiStyles && 
+       if (this.config != null && this.config.uiStyles && 
             (this.config.uiStyles.attributes.alias === ViewComponent.grid.toString() || this.config.uiStyles.attributes.alias == ViewComponent.treeGrid.toString())) {
             // deserialize Page
             if (inJson.page) {
