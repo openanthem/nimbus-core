@@ -98,7 +98,7 @@ public class ScriptStateLoadNewHandler implements OnStateLoadNewHandler<Script> 
 		String script = readResourceAsString(path, param);
 		Bindings b = groovyEngine.createBindings();
 		
-		b.put("this", param);
+		b.put("param", param);
 		
 		groovyEngine.eval(script, b);
 	}

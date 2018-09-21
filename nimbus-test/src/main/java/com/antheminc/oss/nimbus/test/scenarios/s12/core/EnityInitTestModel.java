@@ -31,8 +31,7 @@ public class EnityInitTestModel extends IdLong{
 	
 	private Action2 file_para;
 	
-//	@Script(type=Type.GROOVY, value="/scripts/entity_init_test.txt")
-//	private Action1 groovy_para;
+	private Action3 groovy_para;
 	
 	@Model
 	@Script(type=Type.SPEL_INLINE, value="findParamByPath('/parameter2').setState('Value2')")
@@ -56,6 +55,18 @@ public class EnityInitTestModel extends IdLong{
 		private String parameter2;
 		
 		private String parameter3;
+	}
+	
+	@Model
+	@Script(type=Type.GROOVY, value="classpath:scripts/entity_init_test.groovy")
+	@Getter @Setter
+	public static class Action3{
+		@ConfigConditional(
+				config= {@Config(url="/groovy_para/parameter3/_process?fn=_set&value=Value3")}
+		)
+		private String parameter2;
+		private String parameter3;
+		private String parameter4;
 	}
 	
 }
