@@ -40,7 +40,7 @@ public class EnityInitTestModel extends IdLong{
 	@Getter @Setter
 	public static class Action1{
 		@ConfigConditional(
-				config= {@Config(url="/parameter3/_process?fn=_set&value=Value3")}
+				config= {@Config(url="/inline_para/parameter3/_process?fn=_set&value=Value3")}
 		)
 		private String parameter2;
 		

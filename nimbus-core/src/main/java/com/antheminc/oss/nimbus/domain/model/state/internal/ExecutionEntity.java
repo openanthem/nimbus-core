@@ -291,7 +291,7 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdLong implements Seri
 		protected void initSetupInternal() {
 			getExecutionRuntime().start();
 			
-			initState();
+			//==initState();
 		}
 		
 		@Override
