@@ -84,7 +84,7 @@
         </ng-template>
         
         <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex" let-expanded="expanded">
-             <tr [pSelectableRow]="rowData"  [ngClass]="getRowColor(rowIndex) === 0 ? 'odd' : 'even'" > 
+             <tr [pSelectableRow]="rowData"  [ngClass]="rowIndex % 2 === 0 ? 'odd' : 'even'" > 
                 <td *ngIf="element.config?.uiStyles?.attributes?.rowSelection">
                     <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
                 </td>

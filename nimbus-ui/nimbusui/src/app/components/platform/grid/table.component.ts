@@ -694,11 +694,6 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         }
     }
 
-    getRowColor(elemId) {
-        
-        return elemId % 2; 
-        }
-
     /**
      * This method will identify and set the "nested element" used to render the expanded row content within the 
      * table component.
