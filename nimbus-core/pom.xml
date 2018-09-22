@@ -5,15 +5,13 @@
 		<groupId>com.antheminc.oss</groupId>
 		<artifactId>nimbus-parent</artifactId>
 		<version>1.1.0.M3-SNAPSHOT</version>
-		<relativePath>../nimbus-parent</relativePath>
 	</parent>
 	
-	<artifactId>nimbus-core</artifactId> 
-	
-    <properties>
-        <!-- <sonar.projectName>nimbus-core</sonar.projectName> -->
-        <!-- <sonar.jacoco.reportPath>${project.basedir}/../platform.parent/target/jacoco.exec</sonar.jacoco.reportPath> -->
-    </properties>
+	<artifactId>nimbus-core</artifactId>
+
+	<properties>
+		<sonar.jacoco.reportPaths>target/jacoco.exec, ../nimbus-test/target/jacoco.exec</sonar.jacoco.reportPaths>
+	</properties>
 
     <build>
 	     <plugins>
