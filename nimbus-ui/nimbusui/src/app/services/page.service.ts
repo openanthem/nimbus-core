@@ -760,7 +760,8 @@ export class PageService {
                 } else if (param.config.uiStyles != null && param.config.uiStyles.attributes.alias === ViewComponent.cardDetailsGrid.toString()) {
                         if (param.config.type.collection === true) {
                                 let payload: Param = new Param(this.configService).deserialize(eventModel.value, eventModel.value.path);
-                                param.type.model['params'] = payload.type.model.params;
+                                if(payload.type.model) // TODO - need to handle updates for each collection item in a card detail grid
+                                        param.type.model['params'] = payload.type.model.params;
                         } else {
                                 this.traverseParam(param, eventModel);
                         }
