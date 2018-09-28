@@ -67,13 +67,8 @@
         <sonar.maven.plugin.version>3.5.0.1254</sonar.maven.plugin.version>
         <jacoco.maven.plugin.version>0.8.2</jacoco.maven.plugin.version>
         <!-- nimbus-core -->
-<<<<<<< HEAD:pom.xml
         <parentDir>..</parentDir>
         <nimbus.version>1.1.0.M3</nimbus.version>
-=======
-       	<parentDir>../nimbus-parent</parentDir>
-        <nimbus.version>1.1.0.M2-SNAPSHOT</nimbus.version>
->>>>>>> 92728d8d09ab5b8ba800274903e1e1ae28e6ecb6:nimbus-parent/pom.xml
         <nimbus.core.version>${nimbus.version}</nimbus.core.version>
         <nimbus.ui.version>${nimbus.version}</nimbus.ui.version>
         <nimbus.dsl.version>${nimbus.core.version}</nimbus.dsl.version> <!-- DSL matches core's version -->

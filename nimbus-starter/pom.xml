@@ -11,11 +11,7 @@
 	<description>framework starter project</description>
 
 	<properties>
-<<<<<<< HEAD
 		<nimbus.version>1.1.0.M3</nimbus.version>
-=======
-		<nimbus.version>1.1.0.M2-SNAPSHOT</nimbus.version>
->>>>>>> 92728d8d09ab5b8ba800274903e1e1ae28e6ecb6
 	</properties>
 
 	<dependencies>	
