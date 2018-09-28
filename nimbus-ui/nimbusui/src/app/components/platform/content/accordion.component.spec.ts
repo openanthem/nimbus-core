@@ -8,9 +8,10 @@ import { JL } from 'jsnlog';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
   FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
-  ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule } from 'primeng/primeng';
+  ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule } from 'primeng/primeng';
   import { TableModule } from 'primeng/table';
   import { KeyFilterModule } from 'primeng/keyfilter';
+  import { ToastModule } from 'primeng/toast';
 
 import { Accordion } from './accordion.component';
 import { CardDetailsComponent } from '../card/card-details.component';
@@ -60,6 +61,13 @@ import { ActionLink } from '../form/elements/action-dropdown.component';
 import { CardDetailsGrid } from '../card/card-details-grid.component';
 import { Menu } from '../menu.component';
 import { Form } from '../form.component';
+import { Label } from './label.component';
+import { CardDetailsFieldGroupComponent } from '../card/card-details-field-group.component';
+import { DisplayValueDirective } from '../../../directives/display-value.directive';
+import { InputLabel } from '../form/elements/input-label.component';
+import { TreeGrid } from '../tree-grid/tree-grid.component';
+import { FormGridFiller } from '../form/form-grid-filler.component';
+import { InputSwitch } from '../form/elements/input-switch.component';
 
 let pageService;
 
@@ -76,7 +84,7 @@ class MockPageService {
   processEvent(a, b, c, d) {  }
 }
 
-describe('AccordionMain', () => {
+describe('Accordion', () => {
   beforeEach(
     async(() => {
       TestBed.configureTestingModule({
@@ -119,7 +127,14 @@ describe('AccordionMain', () => {
           ActionLink,
           CardDetailsGrid,
           Menu,
-          Form
+          Form,
+          Label,
+          CardDetailsFieldGroupComponent,
+          DisplayValueDirective,
+          InputLabel,
+          TreeGrid,
+          FormGridFiller,
+          InputSwitch
         ],
         imports: [
           FormsModule,
@@ -145,7 +160,10 @@ describe('AccordionMain', () => {
           AccordionModule, 
           GrowlModule,
           TableModule,
-          KeyFilterModule
+          KeyFilterModule,
+          ToastModule,
+          InputSwitchModule, 
+          TreeTableModule
         ],
         providers: [
           { provide: WebContentSvc, useClass: MockWebContentSvc },
@@ -167,7 +185,7 @@ describe('AccordionMain', () => {
     })
   );
 
-  it('should create the AccordionMain', async(() => {
+  it('should create the Accordion', async(() => {
     const fixture = TestBed.createComponent(Accordion);
     const app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();
@@ -222,27 +240,6 @@ describe('AccordionMain', () => {
     spyOn(pageService, 'processEvent').and.callThrough();
     app.processOnClick({});
     expect(pageService.processEvent).toHaveBeenCalled();
-  }));
-
-  it('getHeaderText() should return info', async(() => {
-    const fixture = TestBed.createComponent(Accordion);
-    const app = fixture.debugElement.componentInstance;
-    const tab = { type: { model: { params: [{ alias: 'TabInfo', visible: true, leafState: false, config: { uiStyles: { attributes: { info: 'test' } } } }, { alias: 'tabInfo123', visible: true, leafState: false, config: { uiStyles: { attributes: { info: 'test' } } } }] } } };
-    expect(app.getHeaderText(tab)).toEqual('test');
-  }));
-
-  it('getHeaderText() should return undefined', async(() => {
-    const fixture = TestBed.createComponent(Accordion);
-    const app = fixture.debugElement.componentInstance;
-    const tab = { type: { model: { params: [{ alias: 'TabInfo', visible: false, leafState: false, config: { uiStyles: { attributes: { info: 'test' } } } }, { alias: 'tabInfo123', visible: true, leafState: false, config: { uiStyles: { attributes: { info: 'test' } } } }] } } };
-    expect(app.getHeaderText(tab)).toBeFalsy();
-  }));
-
-  it('getHeaderText() should return leafState', async(() => {
-    const fixture = TestBed.createComponent(Accordion);
-    const app = fixture.debugElement.componentInstance;
-    const tab = { type: { model: { params: [{ alias: 'TabInfo', visible: true, leafState: 'test', config: { uiStyles: { attributes: { info: 'test' } } } }, { alias: 'tabInfo123', visible: true, leafState: false, config: { uiStyles: { attributes: { info: 'test' } } } }] } } };
-    expect(app.getHeaderText(tab)).toEqual('test');
   }));
 
   it('getImageSrc() should return imgSrc', async(() => {

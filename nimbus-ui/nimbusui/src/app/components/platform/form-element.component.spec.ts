@@ -31,8 +31,7 @@ import { TooltipComponent } from '../platform/tooltip/tooltip.component';
 import { SelectItemPipe } from '../../pipes/select-item.pipe';
 import { ButtonGroup } from '../platform/form/elements/button-group.component';
 import { Button } from '../platform/form/elements/button.component';
-import { Accordion } from '../platform/accordion.component';
-import { AccordionMain } from '../platform/content/accordion.component';
+import { Accordion } from '../platform/content/accordion.component';
 import { Menu } from '../platform/menu.component';
 import { Link } from '../platform/link.component';
 import { Form } from '../platform/form.component';
@@ -40,7 +39,6 @@ import { StaticText } from '../platform/content/static-content.component';
 import { CardDetailsComponent } from '../platform/card/card-details.component';
 import { CardDetailsGrid } from '../platform/card/card-details-grid.component';
 import { FrmGroupCmp } from './form-group.component';
-import { AccordionGroup } from '../platform/accordion-group.component';
 import { CardDetailsFieldComponent } from '../platform/card/card-details-field.component';
 import { InPlaceEditorComponent } from '../platform/form/elements/inplace-editor.component';
 import { DateTimeFormatPipe } from '../../pipes/date.pipe';
@@ -80,7 +78,6 @@ describe('FormElement', () => {
         ButtonGroup,
         Button,
         Accordion,
-        AccordionMain,
         Menu,
         Link,
         Form,
@@ -88,7 +85,6 @@ describe('FormElement', () => {
         CardDetailsComponent,
         CardDetailsGrid,
         FrmGroupCmp,
-        AccordionGroup,
         CardDetailsFieldComponent,
         InPlaceEditorComponent,
         DateTimeFormatPipe,

@@ -18,7 +18,6 @@ import { InputText } from '../form/elements/textbox.component';
 import { ButtonGroup } from '../form/elements/button-group.component';
 import { Button } from '../form/elements/button.component';
 import { InfiniteScrollGrid } from '../grid/grid.component';
-import { AccordionMain } from '../content/accordion.component';
 import { Menu } from '../menu.component';
 import { Link } from '../link.component';
 import { Form } from '../form.component';
@@ -31,8 +30,7 @@ import { SelectItemPipe } from '../../../pipes/select-item.pipe';
 import { ActionDropdown } from '../form/elements/action-dropdown.component';
 import { DateTimeFormatPipe } from '../../../pipes/date.pipe';
 import { FrmGroupCmp } from '../form-group.component';
-import { Accordion } from '../accordion.component';
-import { AccordionGroup } from '../accordion-group.component';
+import { Accordion } from '../content/accordion.component';
 import { CardDetailsFieldComponent } from '../card/card-details-field.component';
 import { ActionLink } from '../form/elements/action-dropdown.component';
 import { FormElement } from '../form-element.component';
@@ -76,7 +74,6 @@ describe('Modal', () => {
         ButtonGroup,
         Button,
         InfiniteScrollGrid,
-        AccordionMain,
         Menu,
         Link,
         Form,
@@ -90,7 +87,6 @@ describe('Modal', () => {
         DateTimeFormatPipe,
         FrmGroupCmp,
         Accordion,
-        AccordionGroup,
         CardDetailsFieldComponent,
         ActionLink,
         FormElement,

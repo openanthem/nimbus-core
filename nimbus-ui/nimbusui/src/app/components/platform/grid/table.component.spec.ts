@@ -24,7 +24,6 @@ import { ComboBox } from '../../platform/form/elements/combobox.component';
 import { InputText } from '../form/elements/textbox.component';
 import { ButtonGroup } from '../form/elements/button-group.component';
 import { Button } from '../form/elements/button.component';
-import { AccordionMain } from '../content/accordion.component';
 import { Menu } from '../menu.component';
 import { Link } from '../link.component';
 import { Form } from '../form.component';
@@ -36,8 +35,7 @@ import { MessageComponent } from '../message/message.component';
 import { ActionLink } from '../form/elements/action-dropdown.component';
 import { SelectItemPipe } from '../../../pipes/select-item.pipe';
 import { FrmGroupCmp } from '../form-group.component';
-import { AccordionGroup } from '../accordion-group.component';
-import { Accordion } from '../accordion.component';
+import { Accordion } from '../content/accordion.component';
 import { CardDetailsFieldComponent } from '../card/card-details-field.component';
 import { FormElement } from '../form-element.component';
 import { DateTimeFormatPipe } from '../../../pipes/date.pipe';
@@ -110,7 +108,6 @@ describe('DataTable', () => {
           InputText,
           ButtonGroup,
           Button,
-          AccordionMain,
           Menu,
           Link,
           Form,
@@ -122,7 +119,6 @@ describe('DataTable', () => {
           ActionLink,
           SelectItemPipe,
           FrmGroupCmp,
-          AccordionGroup,
           Accordion,
           CardDetailsFieldComponent,
           FormElement,

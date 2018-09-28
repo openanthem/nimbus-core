@@ -35,15 +35,13 @@ import { Section } from '../platform/section.component';
 import { ActionLink } from '../platform/form/elements/action-dropdown.component';
 import { MessageComponent } from '../platform/message/message.component';
 import { CardDetailsGrid } from '../platform/card/card-details-grid.component';
-import { AccordionMain } from '../platform/content/accordion.component';
+import { Accordion } from '../platform/content/accordion.component';
 import { Menu } from '../platform/menu.component';
 import { CardDetailsComponent } from '../platform/card/card-details.component';
 import { StaticText } from '../platform/content/static-content.component';
 import { Form } from '../platform/form.component';
 import { Link } from '../platform/link.component';
 import { CardDetailsFieldComponent } from '../platform/card/card-details-field.component';
-import { AccordionGroup } from '../platform/accordion-group.component';
-import { Accordion } from '../platform/accordion.component';
 import { InPlaceEditorComponent } from '../platform/form/elements/inplace-editor.component';
 import { WebContentSvc } from '../../services/content-management.service';
 import { Signature } from '../platform/form/elements/signature.component'
@@ -93,15 +91,13 @@ describe('FrmGroupCmp', () => {
         ActionLink,
         MessageComponent,
         CardDetailsGrid,
-        AccordionMain,
+        Accordion,
         Menu,
         CardDetailsComponent,
         StaticText,
         Form,
         Link,
         CardDetailsFieldComponent,
-        AccordionGroup,
-        Accordion,
         InPlaceEditorComponent,
         Signature,
         DataTable,

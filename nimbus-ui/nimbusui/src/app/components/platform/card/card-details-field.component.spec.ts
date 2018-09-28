@@ -14,6 +14,8 @@ import { DateTimeFormatPipe } from '../../../pipes/date.pipe';
 import { TooltipComponent } from '../tooltip/tooltip.component';
 import { SelectItemPipe } from '../../../pipes/select-item.pipe';
 import { CustomHttpClient } from '../../../services/httpclient.service';
+import { DisplayValueDirective } from '../../../directives/display-value.directive';
+import { InputLabel } from '../../platform/form/elements/input-label.component';
 
 let fixture, app;
 
@@ -28,7 +30,9 @@ describe('CardDetailsFieldComponent', () => {
         ComboBox,
         DateTimeFormatPipe,
         TooltipComponent,
-        SelectItemPipe
+        SelectItemPipe,
+        DisplayValueDirective,
+        InputLabel
       ],
       imports: [FormsModule, DropdownModule, HttpClientModule, HttpModule],
       providers: [CustomHttpClient]
@@ -44,7 +48,7 @@ describe('CardDetailsFieldComponent', () => {
   it('ngOnInit() should update fieldClass property for cols:6', async(() => {
     app.element = { config: { uiStyles: { attributes: { cols: '6' } } } };
     app.ngOnInit();
-    expect(app.fieldClass).toEqual('col-sm-2');
+    expect(app.fieldClass).toEqual('col-sm-3');
   }));
 
   it('ngOnInit() should update fieldClass property for cols:4', async(() => {
@@ -56,39 +60,19 @@ describe('CardDetailsFieldComponent', () => {
   it('ngOnInit() should update fieldClass property for cols:3', async(() => {
     app.element = { config: { uiStyles: { attributes: { cols: '3' } } } };
     app.ngOnInit();
-    expect(app.fieldClass).toEqual('col-sm-4');
+    expect(app.fieldClass).toEqual('col-sm-3');
   }));
 
   it('ngOnInit() should update fieldClass property for cols:2', async(() => {
     app.element = { config: { uiStyles: { attributes: { cols: '2' } } } };
     app.ngOnInit();
-    expect(app.fieldClass).toEqual('col-sm-6');
+    expect(app.fieldClass).toEqual('col-sm-3');
   }));
 
   it('ngOnInit() should update fieldClass property for cols:1', async(() => {
     app.element = { config: { uiStyles: { attributes: { cols: '1' } } } };
     app.ngOnInit();
-    expect(app.fieldClass).toEqual('col-sm-12');
-  }));
-
-  it('ngOnInit() should update fieldClass property for cols:null', async(() => {
-    spyOn(app, 'setIconClass').and.callThrough();
-    app.element = { config: { uiStyles: { attributes: { cols: '' } } } };
-    app.ngOnInit();
     expect(app.fieldClass).toEqual('col-sm-3');
-    expect(app.setIconClass).toHaveBeenCalled();
-  }));
-
-  it('setIconClass() should update iconClass property for  iconField: test', async(() => {
-    app.element = { config: { uiStyles: { attributes: { iconField: 'test' } } } };
-    app.setIconClass();
-    expect(app.iconClass).toEqual('test');
-  }));
-
-  it('setIconClass() should not update iconClass property for  iconField:null', async(() => {
-    app.element = { config: { uiStyles: { attributes: { iconField: '' } } } };
-    app.setIconClass();
-    expect(app.iconClass).toBeFalsy();
   }));
 
   it('value property should be updated with element.leafstate', async(() => {

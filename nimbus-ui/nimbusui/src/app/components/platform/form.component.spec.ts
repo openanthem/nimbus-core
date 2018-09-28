@@ -13,8 +13,7 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 
 import { Form } from './form.component';
 import { FrmGroupCmp } from './form-group.component';
-import { AccordionGroup } from '../platform/accordion-group.component';
-import { Accordion } from '../platform/accordion.component';
+import { Accordion } from '../platform/content/accordion.component';
 import { ButtonGroup } from '../platform/form/elements/button-group.component';
 import { Button } from '../platform/form/elements/button.component';
 import { FormElement } from './form-element.component';
@@ -39,7 +38,6 @@ import { Section } from './section.component';
 import { ActionDropdown } from '../platform/form/elements/action-dropdown.component';
 import { TooltipComponent } from '../platform/tooltip/tooltip.component';
 import { SelectItemPipe } from '../../pipes/select-item.pipe';
-import { AccordionMain } from '../platform/content/accordion.component';
 import { Menu } from '../platform/menu.component';
 import { Link } from '../platform/link.component';
 import { StaticText } from '../platform/content/static-content.component';
@@ -95,7 +93,6 @@ describe('Form', () => {
       declarations: [
           Form,
           FrmGroupCmp,
-          AccordionGroup,
           Accordion,
           ButtonGroup,
           Button,
@@ -121,7 +118,6 @@ describe('Form', () => {
           ActionDropdown,
           TooltipComponent,
           SelectItemPipe,
-          AccordionMain,
           Menu,
           Link,
           StaticText,

@@ -22,7 +22,6 @@ import { StaticText } from '../platform/content/static-content.component';
 import { Form } from '../platform/form.component';
 import { Link } from '../platform/link.component';
 import { Menu } from '../platform/menu.component';
-import { AccordionMain } from '../platform/content/accordion.component';
 import { InfiniteScrollGrid } from '../platform/grid/grid.component';
 import { Button } from '../platform/form/elements/button.component';
 import { ButtonGroup } from '../platform/form/elements/button-group.component';
@@ -31,8 +30,7 @@ import { ComboBox } from '../platform/form/elements/combobox.component';
 import { TooltipComponent } from '../platform/tooltip/tooltip.component';
 import { CardDetailsFieldComponent } from '../platform/card/card-details-field.component';
 import { FrmGroupCmp } from './form-group.component';
-import { Accordion } from '../platform/accordion.component';
-import { AccordionGroup } from '../platform/accordion-group.component';
+import { Accordion } from '../platform/content/accordion.component';
 import { ActionDropdown } from '../platform/form/elements/action-dropdown.component';
 import { DateTimeFormatPipe } from '../../pipes/date.pipe';
 import { SelectItemPipe } from '../../pipes/select-item.pipe';
@@ -92,7 +90,6 @@ describe('Tile', () => {
         Form,
         Link,
         Menu,
-        AccordionMain,
         InfiniteScrollGrid,
         Button,
         ButtonGroup,
@@ -102,7 +99,6 @@ describe('Tile', () => {
         CardDetailsFieldComponent,
         FrmGroupCmp,
         Accordion,
-        AccordionGroup,
         ActionDropdown,
         DateTimeFormatPipe,
         SelectItemPipe,

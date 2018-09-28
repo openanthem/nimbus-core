@@ -19,14 +19,18 @@ import { ConfigService } from '../../../../services/config.service';
 import { LoggerService } from '../../../../services/logger.service';
 import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
 import { AppInitService } from '../../../../services/app.init.service';
+import { InputLabel } from './input-label.component';
+import { TooltipComponent } from '../../tooltip/tooltip.component';
 
 let fixture, app, pageService;
 
 class MockPageService {
     eventUpdate$: Subject<any>;
+    validationUpdate$: Subject<any>;
 
     constructor() {
         this.eventUpdate$ = new Subject();
+        this.validationUpdate$ = new Subject();
     }
 
     logError(a) {
@@ -38,7 +42,9 @@ describe('OrderablePickList', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-          OrderablePickList
+          OrderablePickList,
+          InputLabel,
+          TooltipComponent
        ],
        imports: [
            PickListModule,
@@ -131,8 +137,10 @@ describe('OrderablePickList', () => {
     }));
 
     it('ngOnInit() should call the form.controls.a.setValue() and update the targetList as []', async(() => {
+      app.loadLabelConfigFromConfigs = (a, b) => {};
       app.element = { path: 't', leafState: null, config: { code: 'a' } };
-      app.form = { controls: { a: { valueChanges: Observable.of(''), setValue: a => {} } } };
+      app.form = { controls: { a: { valueChanges: Observable.of('123'), setValue: a => {} } } };
+      app.parent = { labels: '', config: { code: 'a' } };
       const eve = { path: 'test', config: { code: 'a' } };
       app.ngOnInit();
       spyOn(app.form.controls.a, 'setValue').and.callThrough();
