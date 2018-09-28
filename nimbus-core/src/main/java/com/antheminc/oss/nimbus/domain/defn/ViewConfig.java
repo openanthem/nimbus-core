@@ -292,6 +292,9 @@ public class ViewConfig {
 	 * 
 	 * <p>Calendar should decorate a field having a simple type.
 	 * 
+	 * <p>Additionally you can restrict calendar input as Past or Future Date by Annotating 
+	 * javax provided {@link Past} or {@link Future} respectively</p>
+	 * 
 	 * @since 1.0
 	 */
 	@Retention(RetentionPolicy.RUNTIME)

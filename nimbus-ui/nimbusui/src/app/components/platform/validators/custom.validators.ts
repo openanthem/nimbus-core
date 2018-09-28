@@ -74,5 +74,26 @@ export class CustomValidators {
         };
     }
 
+    static isPast(control: FormControl) {
+        let today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (control.value != null) {
+            if (control.value.getTime() > today.getTime()) {
+                return { isPast: true };
+            }
+        }
+        return null;
+    }
+
+    static isFuture(control: FormControl) {
+        let today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (control.value != null) {
+            if (control.value.getTime() < today.getTime()) {
+                return { isFuture: true };
+            }
+        }
+        return null;
+    }
     
 }

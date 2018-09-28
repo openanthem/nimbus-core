@@ -51,7 +51,7 @@ export class Label extends BaseLabel {
     /**
      * Get the css classes to apply for this element.
      */
-    public getCssClass(): string {
+    public get cssClass(): string {
         let cssClass = super.getCssClass();
         if (this.labelClass) {
             if (cssClass.trim().length !== 0) {

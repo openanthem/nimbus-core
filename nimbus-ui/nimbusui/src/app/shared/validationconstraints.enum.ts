@@ -37,5 +37,7 @@ export class ValidationConstraint extends Enum<string> {
   public static readonly _number = new Enum('isNumber');
   public static readonly _zip = new Enum('isZip');
   public static readonly _max = new Enum('Max');
+  public static readonly _past = new Enum('Past');
+  public static readonly _future = new Enum('Future');
 }
 
