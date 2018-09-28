@@ -133,7 +133,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         // Set the column headers
         if (this.params) {
             this.params.forEach(element => {
-                element.label = this._wcs.findLabelContentFromConfig(element.code, element.labelConfigs).text;
+                element.label = this._wcs.findLabelContentFromConfig(this.element.elemLabels.get(element.id), element.code).text;
             });
         }
 

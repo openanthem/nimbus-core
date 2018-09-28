@@ -414,6 +414,16 @@ public class StateHolder {
 			this.ref.setVisible(visible);
 		}
 		
+		@Override
+		public Set<LabelState> getLabels() {
+			return this.ref.getLabels();
+		}
+		
+		@Override
+		public void setLabels(Set<LabelState> labels) {
+			this.ref.setLabels(labels);
+		}
+		
 		/* ********************** Operations Not Allowed *********************** */
 		@Override
 		public boolean deregisterConsumer(MappedParam<?, T> consumer) {
@@ -451,6 +461,16 @@ public class StateHolder {
 		@Override
 		public void registerConsumer(MappedParam<?, T> consumer) {
 			throw throwEx();	
+		}
+
+		@Override
+		public LabelState getDefaultLabel() {
+			return this.ref.getDefaultLabel();
+		}
+
+		@Override
+		public LabelState getLabel(String localeLanguageTag) {
+			return this.ref.getLabel(localeLanguageTag);
 		}
 
 	}

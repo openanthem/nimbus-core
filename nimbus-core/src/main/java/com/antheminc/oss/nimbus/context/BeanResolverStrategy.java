@@ -18,6 +18,7 @@ package com.antheminc.oss.nimbus.context;
 import java.util.Collection;
 
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.Resource;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
 
@@ -43,4 +44,6 @@ public interface BeanResolverStrategy {
 	<T> Collection<T> getMultiple(Class<T> type);
 	
 	Environment getEnvironment();
+	
+	Resource getResource(String path);
 }

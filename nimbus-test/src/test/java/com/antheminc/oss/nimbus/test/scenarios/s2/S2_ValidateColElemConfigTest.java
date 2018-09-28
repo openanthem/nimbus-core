@@ -26,8 +26,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Input;
-import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
-import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutor;
+import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
+import com.antheminc.oss.nimbus.domain.cmd.exec.internal.search.DefaultSearchFunctionHandlerExample;
+import com.antheminc.oss.nimbus.domain.cmd.exec.internal.search.DefaultSearchFunctionHandlerQuery;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.ParamEvent;
 import com.antheminc.oss.nimbus.test.domain.support.AbstractFrameworkIntegrationTests;
@@ -45,8 +46,14 @@ public class S2_ValidateColElemConfigTest extends AbstractFrameworkIntegrationTe
 	
 	private static final String K_URI_VR = PLATFORM_ROOT + "/s2v_main";
 	
-	@MockBean(name="default._search$execute")
-	CommandExecutor<?> defaultActionExecutorSearch;
+	//@MockBean(name="default._search$execute")
+	//CommandExecutor<?> defaultActionExecutorSearch;
+	
+	@MockBean(name="default._search$execute?fn=query")
+	DefaultSearchFunctionHandlerQuery<?,?> defaultSearchFunctionHandlerQuery;
+	
+	@MockBean(name="default._search$execute?fn=exmaple")
+	DefaultSearchFunctionHandlerExample<?,?> defaultSearchFunctionHandlerExample;
 	
 	private static final List<S2C_Row> db_rows;
 	private static final List<S2C_LineItemB> db_rows_nestedRowBodyLineItems;
@@ -67,19 +74,27 @@ public class S2_ValidateColElemConfigTest extends AbstractFrameworkIntegrationTe
 	@Override
 	public void before() {
 		super.before();
-		
-		Mockito.when(defaultActionExecutorSearch.execute(any())).thenAnswer(new Answer<Output<Object>>() {
-			
+		Mockito.when(defaultSearchFunctionHandlerQuery.execute(any(),any())).thenAnswer(new Answer<Object>() {
 			@Override
-			public Output<Object> answer(InvocationOnMock invocation) throws Throwable {
-				Input input = invocation.getArgumentAt(0, Input.class);
-
-				if(input.getInputCommandUri().contains("s2c_row"))
-					return Output.instantiate(input, input.getContext(), db_rows);
+			public Object answer(InvocationOnMock invocation) throws Throwable {
+				ExecutionContext input = invocation.getArgumentAt(0, ExecutionContext.class);
+				if(input.getCommandMessage().getCommand().getAbsoluteUri().contains("s2c_row"))
+					return db_rows;
 				else
-					return Output.instantiate(input, input.getContext(), db_rows_nestedRowBodyLineItems);					
+					return db_rows_nestedRowBodyLineItems;					
 			}
 		});
+		Mockito.when(defaultSearchFunctionHandlerExample.execute(any(),any())).thenAnswer(new Answer<Object>() {
+			@Override
+			public Object answer(InvocationOnMock invocation) throws Throwable {
+				ExecutionContext input = invocation.getArgumentAt(0, ExecutionContext.class);
+				if(input.getCommandMessage().getCommand().getAbsoluteUri().contains("s2c_row"))
+					return db_rows;
+				else
+					return db_rows_nestedRowBodyLineItems;					
+			}
+		});
+
 	}
 	
 	@Test

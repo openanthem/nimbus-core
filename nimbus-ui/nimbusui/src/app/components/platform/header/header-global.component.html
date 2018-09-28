@@ -1,15 +1,19 @@
 <div class="header" *ngIf="topMenuItems || branding">
+        <a class="sr-only" aria-hidden="true" href="">Skip Navigation</a>
     <a [routerLink]="[homeRoute]">
         <img src="{{imagesPath}}{{branding.logo.config.uiStyles.attributes.imgSrc}}" class=" logo" alt="{{this.label}}" />
     </a>
-    <div class="d-inline-block p-0 float-right clearfix">
-        <div class="headerMenu float-right clearfix">
-            <div class="topLinksMenu">
-                <a class="sr-only" aria-hidden="true" href="">Skip Navigation</a>
-                <nm-link [element]="branding.help" *ngIf="branding.help"></nm-link>
-                <nm-link [element]="branding.logOut" *ngIf="branding.logOut"></nm-link> 
-            </div>
-            <div class="btn-group float-right clearfix">
+    <div class="p-0 float-right clearfix">
+        <nav class=" nav navbar navbar-expand-sm headerMenu float-right clearfix" role="navigation">
+            <button aria-controls="navbarToggler right" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler collapsed" data-target="#navbarToggler2" data-toggle="collapse" type="button">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div aria-expanded="false" class="navbar-collapse nav-block collapse" id="navbarToggler2" style="">
+                <div class="topLinksMenu clearfix">
+                    <nm-link [element]="branding.help" *ngIf="branding.help"></nm-link>
+                    <nm-link [element]="branding.logOut" *ngIf="branding.logOut"></nm-link> 
+                </div>
+                <div class="btn-group float-right clearfix">
                     <ng-template ngFor let-element [ngForOf]="branding?.linkNotifications?.type?.model?.params">
                         <ng-template [ngIf]="element.alias == 'Button'">
                             <nm-button [element]="element"> </nm-button>
@@ -22,10 +26,10 @@
                             (dropDownClick)="toggleOpen($event)"></nm-action-dropdown>
                         </ng-template>
                     </ng-template>
+                </div>
             </div>
-        </div>
-        <!-- <div class="mr-2 align-top d-inline-block" *ngIf="branding.userName"> -->
-        <div class="mr-3 mt-1 hidden-xs-down d-inline-block float-right">
+        </nav>
+        <div class="mr-3 mt-2 d-inline-block float-right">
             <i class="fa fa-user userIcon"></i>
             <div class="userInfo">
                 <div class="userName">
@@ -36,11 +40,9 @@
                 </div>
             </div>
         </div>
-        
     </div>
-
-    <div class="col-lg-6 col-md-3 col-sm-3 hidden-xs-down p-0 ml-3 mt-1 ">
-        <div class="productName hidden-xs-down d-inline-block">
+    <div class="col-sm-3 d-none d-sm-inline-block p-0 ml-3 mt-1 ">
+        <div class="productName  d-inline-block">
             <nm-paragraph [element]="branding.appTitle" *ngIf="branding.appTitle"></nm-paragraph>
             <div class="subTitle" *ngIf="branding.subTitle">
                 <nm-paragraph [element]="branding.subTitle"></nm-paragraph> 
@@ -61,5 +63,4 @@
         </div> -->
 
     </div>
-
 </div>

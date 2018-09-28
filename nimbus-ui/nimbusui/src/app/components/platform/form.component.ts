@@ -17,13 +17,14 @@
 'use strict';
 import { WebContentSvc } from './../../services/content-management.service';
 import { Component, Input, OnInit, OnChanges, SimpleChanges, SimpleChange } from '@angular/core';
-import { FormGroup, Validators, ValidatorFn } from '@angular/forms';
+import { FormGroup, ValidatorFn } from '@angular/forms';
 import { FormElementsService } from './form-builder.service';
 import { PageService } from '../../services/page.service';
 import { ValidationUtils } from './validators/ValidationUtils';
 import { Param, Model } from '../../shared/param-state';
 import { LoggerService } from '../../services/logger.service';
 import { BaseElement } from './base-element.component';
+import { FormModel, FormElementType } from '../../model/form.model';
 
 var uniqueId = 0;
 
@@ -53,11 +54,15 @@ export class Form extends BaseElement implements OnInit, OnChanges {
     formId: string = 'nm-form'+ uniqueId++;
     form: FormGroup;
     opened: Boolean = true;
-    groups: Array<any> =[];
-    formElements: Param[] = [];
-    formGroupElements: Param[] = [];
+    formModel: FormModel[];
+    formElementType = FormElementType;
     buttonList: Param[] = [];
     elementCss: string;
+
+    formElements: Param[] = [];
+
+    // accordionGroups: Array<any> =[];
+    // formGroupElements: Param[] = [];
 
     constructor(private service: FormElementsService, 
         private pageSvc: PageService, 
@@ -70,18 +75,58 @@ export class Form extends BaseElement implements OnInit, OnChanges {
         this.opened = !this.opened;
     }
     
-    groupFormElements(model : Model){
+    /**
+     * Iterates through the Form definition to separte out the different Form Elements.
+     * The recursion parameter is used to indicate if this method is called the first time or if it is called through recurssion.
+     * The need for this - we want one recursion to get the entire list of paramters to build the reactive form validations. 
+     * At the same time, we also also to capture the Form Elements to display. We do not want the nested form elements at thie form level. 
+     * The nested elements will be accounted for in the sub components.
+     * @param model 
+     * @param recursion 
+     */
+    groupFormElements(model : Model, recursion: boolean){
         if (model && model.params) {
             model.params.forEach(element => {
                 if (element.config && element.config.uiStyles) {
-                    if(element.config.uiStyles!= null && element.config.uiStyles.attributes.alias === 'Accordion') {
-                        this.groups.push(element);
+                    if(element.config.uiStyles != null && element.config.uiStyles.attributes.alias === 'Accordion') {
+                        if (!recursion) {
+                            let currElement = {} as FormModel;
+                            currElement.elementType = FormElementType.ACCORDION;
+                            currElement.param = element;
+                            this.formModel.push(currElement);
+                        }
+
+                        if(element.type && element.type.model.params) {
+                            element.type.model.params.forEach(accElem => {
+                                this.groupFormElements(accElem.type.model, true)
+                            });
+                        }
+
+                        // this.accordionGroups.push(element);
+                    } else if (element.config.uiStyles != null && element.config.uiStyles.attributes.alias === 'FormElementGroup') {
+                        if (!recursion) {
+                            let currElement = {} as FormModel;
+                            currElement.elementType = FormElementType.ELEMENTGROUP;
+                            currElement.param = element;
+                            this.formModel.push(currElement);
+                        }
+
+                        if(element.type){
+                            this.groupFormElements(element.type.model, true)
+                        }
                     } else {
+                        if (!recursion) {
+                            let currElement = {} as FormModel;
+                            currElement.elementType = FormElementType.ELEMENT;
+                            currElement.param = element;
+                            this.formModel.push(currElement);
+                        }
+
                         this.formElements.push(element);
                     }
                 } else {
                     if(element.type){
-                        this.groupFormElements(element.type.model)
+                        this.groupFormElements(element.type.model, false);
                     }
                 }
              });
@@ -109,7 +154,7 @@ export class Form extends BaseElement implements OnInit, OnChanges {
         } else if(this.element.config.uiStyles.attributes.cssClass === 'oneColumn') {
             this.elementCss = 'col-sm-12';        
         } else if(this.element.config.uiStyles.attributes.cssClass === 'inline') {
-            this.elementCss = 'd-inline-block mr-3';
+            this.elementCss = 'd-block d-md-inline-block mr-3';
         } else if(this.element.config.uiStyles.attributes.cssClass === 'questionGroup') {
             this.elementCss = ' questionGroup';
         } else {
@@ -121,27 +166,30 @@ export class Form extends BaseElement implements OnInit, OnChanges {
     
     /** Loop through the config and build Form Elements **/
     buildFormElements(model: Model) {
+        this.formModel = [];
         this.formElements = [];
-        this.formGroupElements = [];
-        this.groups = [];
+        // this.formGroupElements = [];
+        // this.accordionGroups = [];
         
         // Seperate out the accordions from the individual form elements
-        this.groupFormElements(this.model);
+        this.groupFormElements(this.model, false);
 
-        // the below to if conditions are for creating the input data for building the form for the reactiveforms module binding   
-        if(this.formElements.length > 0) {
-             this.formGroupElements = this.formGroupElements.concat(this.formElements);
-        }
+        // the below two if conditions are for creating the input data for building the form for the reactiveforms module binding   
+        // if(this.formElements.length > 0) {
+        //      this.formGroupElements = this.formGroupElements.concat(this.formElements);
+        // }
 
-        if(this.groups.length>0) {
-            this.groups.forEach(element => {
-                this.formGroupElements = this.formGroupElements.concat(element.type.model.params);
-            });
-        }
+        // if(this.accordionGroups.length>0) {
+        //     this.accordionGroups.forEach(element => {
+        //         this.formGroupElements = this.formGroupElements.concat(element.type.model.params);
+        //     });
+        // }
+
+        // Build the reactiveforms module binding with validations
         var checks: ValidatorFn[] = [];
         checks = ValidationUtils.buildStaticValidations(this.element);
 
-        this.form = this.service.toFormGroup(this.formGroupElements,checks);
+        this.form = this.service.toFormGroup(this.formElements, checks);
         this.pageSvc.eventUpdate$.subscribe(event => {
             if(event.config && event.config.uiStyles != null && event.config.uiStyles.attributes.alias === 'Form' && event.path === this.element.path) {
                 if(event.leafState != null && !this.hasNull(event.leafState))

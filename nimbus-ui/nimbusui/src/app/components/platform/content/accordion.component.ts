@@ -44,7 +44,7 @@ import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations
             <ng-template ngFor let-tab [ngForOf]="nestedParams">
                 <p-accordionTab  [selected]="tab?.config?.uiStyles?.attributes?.selected" *ngIf="tab?.visible">
                     <p-header>
-                        <nm-label *ngIf="getTabLabelConfig(tab)" [labelConfig]="getTabLabelConfig(tab)" [size]="labelSize"></nm-label>
+                        <nm-label *ngIf="tab" [element]="tab" [size]="labelSize"></nm-label>
                         <span [ngClass]="getTabInfoClass(tab)" *ngIf="getInfoText(tab)">
                             {{getInfoText(tab)}}
                         </span>
@@ -58,7 +58,10 @@ import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations
                     </div>
                     <!-- Form Elements -->
                     <ng-template [ngIf]="form !== undefined">
-                        <nm-frm-grp [elements]="tab?.type?.model?.params" [form]="form.controls[tab.config?.code]" [elementCss]="elementCss"> </nm-frm-grp>
+                        <ng-template ngFor let-frmElem [ngForOf]="tab.type?.model?.params">
+                            <nm-frm-grp [element]="frmElem" [form]="form" [elementCss]="elementCss" [position]="position + 1"> 
+                            </nm-frm-grp>
+                        </ng-template>
                     </ng-template>
                     <ng-template [ngIf]="form === undefined">
                         <ng-template ngFor let-tabElement [ngForOf]="tab?.type?.model?.params">
@@ -81,6 +84,10 @@ import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations
                             <!-- Card Content -->
                             <ng-template [ngIf]="tabElement.alias == componentTypes.cardDetail.toString()">
                                 <nm-card-details [element]="tabElement" [position]="position+1"></nm-card-details>
+                            </ng-template>
+                            <!-- Card Detaisl Grid -->
+                            <ng-template [ngIf]="tabElement.alias == componentTypes.cardDetailsGrid.toString()">
+                                <nm-card-details-grid [position]="position+1" [element]="element"></nm-card-details-grid>
                             </ng-template>
                         </ng-template>
                     </ng-template>
@@ -114,13 +121,6 @@ export class Accordion extends BaseElement {
      */
     public get multiple(): boolean {
         return this.element.config.uiStyles.attributes.multiple;
-    }
-
-    /**
-     * Get Tab label
-     */
-    protected getTabLabelConfig(param: Param): LabelConfig {
-        return this.wcsvc.findLabelContent(param);
     }
 
     /**

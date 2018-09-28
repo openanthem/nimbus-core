@@ -21,6 +21,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -454,6 +455,37 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 		SampleCoreEntity core = mongo.findById(refId, SampleCoreEntity.class, CORE_DOMAIN_ALIAS);
 		assertEquals(colElemState.getLevel1Attrib(), core.getLevel1().getLevel1Attrib());
 		assertNull(core.getLevel1().getIgnoredField());
+	}
+	
+	@Test
+	public void t11_update_collection_witharray() {
+		Long refId = createOrGetDomainRoot_RefId();
+		
+		// Build the request objects
+		MockHttpServletRequest setupRequest = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
+				.addNested("/attr_list_1_NestedEntity").addAction(Action._replace).getMock();
+		MockHttpServletRequest request = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
+			.addNested("/attr_list_1_NestedEntity").addAction(Action._update).getMock();
+		
+		// Build some initial "before" state data to store.
+		List<SampleCoreNestedEntity> state = new ArrayList<>();
+		state.add(new SampleCoreNestedEntity());
+		
+		// Store the initial "before" state data in attr_list_1_NestedEntity
+		controller.handlePut(setupRequest, null, converter.toJson(state));
+		
+		// Make updates to the state
+		state.add(new SampleCoreNestedEntity());
+		
+		// Make the _update call -- update with a collection containing 2 elements.
+		Object response = controller.handlePut(request, null, converter.toJson(state));
+		
+		// Validate actual is as expected
+		assertNotNull(response);
+		Param<List<SampleCoreNestedEntity>> viewParam = ExtractResponseOutputUtils.extractOutput(response, 1);
+		List<SampleCoreNestedEntity> actual = viewParam.getState();
+		
+		assertEquals(3, actual.size());
 	}
 }
 

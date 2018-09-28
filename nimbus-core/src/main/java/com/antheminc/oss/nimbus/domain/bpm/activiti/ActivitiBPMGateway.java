@@ -25,6 +25,7 @@ import org.activiti.bpmn.model.ExtensionElement;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
@@ -39,8 +40,15 @@ import com.antheminc.oss.nimbus.app.extension.config.ActivitiProcessDefinitionCa
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.bpm.BPMGateway;
 import com.antheminc.oss.nimbus.domain.bpm.ProcessEngineContext;
+import com.antheminc.oss.nimbus.domain.cmd.Command;
+import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
+import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
 import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
+import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
+import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ProcessResponse;
+import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
+import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
@@ -64,6 +72,7 @@ import lombok.Getter;
 public class ActivitiBPMGateway implements BPMGateway {
 	
 	protected final JustLogit logit = new JustLogit(this.getClass());
+	public static final String EVALURLS = "evalURLs";
 	
 	private RuntimeService runtimeService;
 	private TaskService taskService;
@@ -72,6 +81,8 @@ public class ActivitiBPMGateway implements BPMGateway {
 	private Boolean supportStatefulProcesses;
 	private ModelRepositoryFactory repositoryFactory;
 	private DomainConfigBuilder domainConfigBuilder;
+	private CommandExecutorGateway commandGateway;
+	private CommandPathVariableResolver pathVariableResolver;
 	
 	public ActivitiBPMGateway (BeanResolverStrategy beanResolver,Boolean supportStatefulProcesses) {
 		this.expressionEvaluator = beanResolver.find(ExpressionEvaluator.class);
@@ -80,7 +91,10 @@ public class ActivitiBPMGateway implements BPMGateway {
 		this.processEngineConfiguration = beanResolver.find(SpringProcessEngineConfiguration.class);
 		this.supportStatefulProcesses = supportStatefulProcesses;
 		this.repositoryFactory = beanResolver.find(ModelRepositoryFactory.class);
-		this.domainConfigBuilder = beanResolver.find(DomainConfigBuilder.class);	}
+		this.domainConfigBuilder = beanResolver.find(DomainConfigBuilder.class);	
+		this.commandGateway = beanResolver.find(CommandExecutorGateway.class);
+		this.pathVariableResolver = beanResolver.find(CommandPathVariableResolver.class);
+	}
 	
 	@Override
 	public ActivitiProcessFlow startBusinessProcess(Param<?> param, String processId) {
@@ -173,6 +187,10 @@ public class ActivitiBPMGateway implements BPMGateway {
 	}	
 	
 	private boolean canComplete(Param<?> param, UserTask userTask) {
+		String taskExitUrl = getExtensionElementExpression(userTask, EVALURLS);
+		if(StringUtils.isNotEmpty(taskExitUrl)) {
+			executeExitUrls(taskExitUrl, param);
+		}
 		String taskExitCondition = getTaskExitExpression(userTask,"exitCondition");
 		if(taskExitCondition != null) {
 			return (Boolean)getExpressionEvaluator().getValue(taskExitCondition, param);
@@ -197,6 +215,11 @@ public class ActivitiBPMGateway implements BPMGateway {
 		String taskExitCondition = userTask.getSkipExpression();
 		if(taskExitCondition != null)
 			return taskExitCondition;
+		else 
+			return getExtensionElementExpression(userTask, extensionName);
+	}	
+	
+	private String getExtensionElementExpression(UserTask userTask,String extensionName) {
 		Map<String, List<ExtensionElement>> extensionElements = userTask.getExtensionElements();
 		if (extensionElements == null)
 			return null;
@@ -205,8 +228,7 @@ public class ActivitiBPMGateway implements BPMGateway {
 			return null;
 		ExtensionElement extensionElement = extensionElementList.get(0);
 		return extensionElement.getElementText();
-	}	
-	
+	}
 	
 	private String getProcessKeyFromDefinitionId(String processDefinitionId, Param<?> param) {
 		return Optional.ofNullable(processDefinitionId)
@@ -215,4 +237,30 @@ public class ActivitiBPMGateway implements BPMGateway {
 		
 	}
 
+	private void executeExitUrls(String urls, Param<?> param) {
+		String[] urlList = StringUtils.split(urls, "\r\n");
+		MultiOutput output = null;
+		for(String url: urlList) {
+			url = resolveCommandUrl(url, param);
+			if(StringUtils.isEmpty(url))
+				continue;			
+			Command command = CommandBuilder.withUri(url).getCommand();
+			CommandMessage commandMessage = new CommandMessage();
+			commandMessage.setCommand(command);
+			if(output == null){
+				output = commandGateway.execute(commandMessage);
+			}else{
+				MultiOutput commandOutput = commandGateway.execute(commandMessage);
+				for(Output<?> op: commandOutput.getOutputs()){
+					output.template().add(op);
+				}
+			}
+		}
+	}
+	
+	private String resolveCommandUrl(String commandUrl, Param<?> param){
+		commandUrl = pathVariableResolver.resolve(param, commandUrl);
+		commandUrl = param.getRootExecution().getRootCommand().getRelativeUri(commandUrl);
+    	return commandUrl;
+	}
 }

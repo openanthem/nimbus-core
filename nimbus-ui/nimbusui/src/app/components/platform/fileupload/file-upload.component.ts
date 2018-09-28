@@ -113,7 +113,7 @@ export class FileUploadComponent extends BaseElement implements ControlValueAcce
 			this.pfu.files = [];
 			
 			this.element.message = [];
-			this.element.message.push(Message.createMessage("DANGER", "GROWL", "File Upload Failed", 10000));
+			this.element.message.push(Message.createMessage("DANGER", "TOAST", "File Upload Failed", 10000, ''));
 			
         });
 	}

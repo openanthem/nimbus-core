@@ -27,12 +27,13 @@ import com.antheminc.oss.nimbus.domain.config.builder.AnnotationConfigHandler;
 import com.antheminc.oss.nimbus.domain.defn.event.ConfigEvent.OnParamCreate;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateChange;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
+import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoadNew;
 import com.antheminc.oss.nimbus.domain.model.config.EventHandlerConfig;
 import com.antheminc.oss.nimbus.domain.model.config.event.ConfigEventHandlers.OnParamCreateHandler;
 import com.antheminc.oss.nimbus.domain.model.config.internal.DefaultEventHandlerConfig;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
-import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
+import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadNewHandler;
 
 import lombok.Getter;
 
@@ -61,6 +62,9 @@ public class EventHandlerConfigFactory {
 		
 		// onStateLoad
 		buildInternal(aElem, OnStateLoad.class, OnStateLoadHandler.class, (a,h)->eventConfig.add(a, h));
+
+		// onStateLoadNew
+		buildInternal(aElem, OnStateLoadNew.class, OnStateLoadNewHandler.class, (a,h)->eventConfig.add(a, h));
 		
 		// onStateChange
 		buildInternal(aElem, OnStateChange.class, OnStateChangeHandler.class, (a,h)->eventConfig.add(a, h));

@@ -34,7 +34,7 @@ import java.lang.annotation.Target;
 @Target(ANNOTATION_TYPE)
 @Inherited
 public @interface Event {
-
+	
 	int DEFAULT_ORDER_NUMBER = Integer.MAX_VALUE; 
 	
 	int order() default DEFAULT_ORDER_NUMBER;

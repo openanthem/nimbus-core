@@ -29,7 +29,7 @@ import com.antheminc.oss.nimbus.domain.Event;
  *
  */
 public final class StateEvent {
-
+	
 	@Retention(RUNTIME)
 	@Target(ANNOTATION_TYPE)
 	@Event
@@ -37,6 +37,23 @@ public final class StateEvent {
 	public @interface OnStateLoad {
 		int order() default Event.DEFAULT_ORDER_NUMBER;
 	}
+
+	@Retention(RUNTIME)
+	@Target(ANNOTATION_TYPE)
+	@Event
+	@Inherited
+	public @interface OnStateLoadNew {	// Blank Constructor  -- Action._new: OnStateLoadNew
+		int order() default Event.DEFAULT_ORDER_NUMBER;
+	}
+	
+	@Retention(RUNTIME)
+	@Target(ANNOTATION_TYPE)
+	@Event
+	@Inherited
+	public @interface OnStateLoadGet { // Args Constructor  -- Action._get: OnStateLoadGet
+		int order() default Event.DEFAULT_ORDER_NUMBER;
+	}	
+	
 	
 	@Retention(RUNTIME)
 	@Target(ANNOTATION_TYPE)

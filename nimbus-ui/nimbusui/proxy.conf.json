@@ -34,7 +34,7 @@
         "secure" : false,
         "logLevel": "debug"
     },
-    "/cmproduct/org/*" :{ 
+    "/cmproduct/client/org/*" :{ 
         "target" : "http://localhost:8080",
         "secure" : false,
         "logLevel": "debug"

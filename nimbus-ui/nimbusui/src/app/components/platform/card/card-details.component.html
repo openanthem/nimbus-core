@@ -1,5 +1,5 @@
 <div class="cardBody {{element.config?.uiStyles?.attributes?.cssClass}} {{cardType}} {{state}}">
-    <nm-label *ngIf="labelConfig?.text != ''" [labelConfig]="labelConfig" [size]="labelSize"></nm-label>
+    <nm-label *ngIf="!isLabelEmpty" [element]="element" [size]="labelSize"></nm-label>
     <ng-template ngFor let-param [ngForOf]="element?.type?.model?.params">
         <ng-template [ngIf]="param.config?.uiStyles?.attributes?.alias == componentTypes.cardDetailsHeader.toString()">
           <div class="cardDetailsHeader">
@@ -7,7 +7,7 @@
             <span class="{{param.config?.uiStyles?.attributes?.cssClass}}" *ngFor="let field of param?.type?.model?.params">
                 <!-- ButtonGroup -->
                 <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.buttonGroup.toString()">
-                    <div class="pull-right">
+                    <div class="float-right">
                         <nm-button-group [buttonList]="field.type?.model?.params" [cssClass]="field.config?.uiStyles?.attributes?.cssClass">
                         </nm-button-group>
                     </div>

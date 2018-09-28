@@ -26,12 +26,11 @@ import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
-import com.antheminc.oss.nimbus.domain.cmd.exec.AbstractFunctionCommandExecutor;
+import com.antheminc.oss.nimbus.domain.cmd.exec.AbstractCommandExecutor;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Input;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
-import com.antheminc.oss.nimbus.domain.cmd.exec.FunctionHandler;
 import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
 import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
@@ -53,7 +52,7 @@ import lombok.Getter;
  */
 @EnableLoggingInterceptor
 @Getter(value=AccessLevel.PROTECTED)
-public class DefaultActionExecutorNew extends AbstractFunctionCommandExecutor<Object, Param<?>> {
+public class DefaultActionExecutorNew extends AbstractCommandExecutor<Param<?>> {
 
 	private BPMGateway bpmGateway;
 	
@@ -81,17 +80,9 @@ public class DefaultActionExecutorNew extends AbstractFunctionCommandExecutor<Ob
 	@Override
 	protected Output<Param<?>> executeInternal(Input input) {
 		ExecutionContext eCtx = handleNewDomainRoot(input.getContext());
-	
 		Param<Object> actionParam = findParamByCommandOrThrowEx(eCtx);
-		
-		final Param<?> outputParam;
-		if(containsFunctionHandler(input)) {
-			outputParam = executeFunctionHanlder(input, FunctionHandler.class);
-		} else { 
-			setStateNew(eCtx, input.getContext().getCommandMessage(), actionParam);
-			outputParam = actionParam;
-		}
-		return Output.instantiate(input, eCtx, outputParam);
+		setStateNew(eCtx, input.getContext().getCommandMessage(), actionParam);
+		return Output.instantiate(input, eCtx, actionParam);
 	}
 
 	protected void setStateNew(ExecutionContext eCtx, CommandMessage cmdMsg, Param<Object> p) {
@@ -156,6 +147,7 @@ public class DefaultActionExecutorNew extends AbstractFunctionCommandExecutor<Ob
 	
 	private QuadModel<?, ?> handleUnmapped(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx, Object entity) {
 		ExecutionEntity<?, ?> e = ExecutionEntity.resolveAndInstantiate(entity, null);
+		e.setNew(true);
 		
 		updateCommandWithRefId(rootDomainConfig, eCtx, e);
 		
@@ -173,6 +165,8 @@ public class DefaultActionExecutorNew extends AbstractFunctionCommandExecutor<Ob
 								.orElseThrow(()->new InvalidStateException(""));
 		
 		ExecutionEntity<?, ?> e = ExecutionEntity.resolveAndInstantiate(mapped, coreParam.getState());
+		e.setNew(true);
+		
 		updateCommandWithRefId(rootDomainConfig, eCtx, e);
 		
 		return getQuadModelBuilder().build(eCtx.getCommandMessage().getCommand(), mapped, coreParam);
