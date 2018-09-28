@@ -17,6 +17,7 @@
 // import { LoggerService } from '../../../../services/logger.service';
 // import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
 // import { AppInitService } from '../../../../services/app.init.service';
+// import { InputLabel } from './input-label.component';
 
 // let app, fixture;
 
@@ -25,7 +26,8 @@
 //     TestBed.configureTestingModule({
 //       declarations: [
 //         Signature,
-//         TooltipComponent
+//         TooltipComponent,
+//         InputLabel
 //        ],
 //        imports: [
 //         FormsModule,
@@ -63,7 +65,7 @@
 //       expect(app.height).toEqual(200);
 //     }));
 
-//     it('ngAfterViewInit() should update the imgElement and call initCanvasElement(), captureEvents()', async(() => {
+//     xit('ngAfterViewInit() should update the imgElement and call initCanvasElement(), captureEvents()', async(() => {
 //       app.img = { nativeElement: 'test' };
 //       app.element = { enabled: true };
 //       spyOn(app, 'initCanvasElement').and.returnValue('');
@@ -74,7 +76,7 @@
 //       expect(app.captureEvents).toHaveBeenCalled();
 //     }));
 
-//     it('initCanvasElement() should update canvas.nativeElement.width and canvas.nativeElement.height', async(() => {
+//     xit('initCanvasElement() should update canvas.nativeElement.width and canvas.nativeElement.height', async(() => {
 //       app.canvas = { nativeElement: { width: '', height: '', getContext: () => {} } };
 //       spyOn(app.canvas.nativeElement, 'getContext').and.returnValue({
 //         lineWidth: '',
@@ -88,7 +90,7 @@
 //       expect(app.canvas.nativeElement.height).toEqual(200);
 //     }));
 
-//   it("drawOnCanvas() should call cx.beginPath(), cx.moveTo(), cx.lineTo(), and cx.stroke()", async(() => {
+//   xit("drawOnCanvas() should call cx.beginPath(), cx.moveTo(), cx.lineTo(), and cx.stroke()", async(() => {
 //     app.drawOnCanvas({ getBoundingClientRect: () => {
 //           return { left: 1, top: 1 };
 //         } }, { clientX: 10, clientY: 20 }, { clientX: 10, clientY: 20 });
@@ -107,7 +109,7 @@
 //     expect(app.cx.stroke).toHaveBeenCalled();
 //   }));
 
-//     it('onImgLoad() should call initCanvasElement(), captureEvents(), cx.clearRect(), cx.drawImage() and toggleSave()', async(() => {
+//     xit('onImgLoad() should call initCanvasElement(), captureEvents(), cx.clearRect(), cx.drawImage() and toggleSave()', async(() => {
 //       app.element = { enabled: true };
 //       app.cx = { clearRect: () => {}, drawImage: () => {} };
 //       app.imgElement = { src: '/t' };
@@ -124,7 +126,7 @@
 //       expect(app.toggleSave).toHaveBeenCalled();
 //     }));
 
-//     it('clearSignature() should call toggleSave() and cx.clearRect', async(() => {
+//     xit('clearSignature() should call toggleSave() and cx.clearRect', async(() => {
 //       app.imgElement = { src: '' };
 //       app.cx = { clearRect: () => {} };
 //       app.toggleSave = () => {};
@@ -135,7 +137,7 @@
 //       expect(app.cx.clearRect).toHaveBeenCalled();
 //     }));
 
-//     it('acceptSignature() should call clearSignature()', async(() => {
+//     xit('acceptSignature() should call clearSignature()', async(() => {
 //       app.canvasEl = { toDataURL: () => {
 //           return 'test';
 //         } };
@@ -147,7 +149,7 @@
 //       expect(app.clearSignature).toHaveBeenCalled();
 //     }));
 
-//     it('acceptSignature() should call toggleSave() only', async(() => {
+//     xit('acceptSignature() should call toggleSave() only', async(() => {
 //       app.canvasEl = { toDataURL: () => {
 //           return 'test';
 //         } };
@@ -162,7 +164,7 @@
 //       expect(app.toggleSave).toHaveBeenCalled();
 //     }));
 
-//     it('toggleSave() should update save property', async(() => {
+//     xit('toggleSave() should update save property', async(() => {
 //       app.toggleSave(true);
 //       expect(app.save).toBeTruthy();
 //     }));

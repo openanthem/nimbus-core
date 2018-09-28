@@ -16,13 +16,15 @@
 // import { LoggerService } from '../../../../services/logger.service';
 // import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
 // import { AppInitService } from '../../../../services/app.init.service';
+// import { InputLabel } from './input-label.component';
 
 // describe('InputText', () => {
 //   beforeEach(async(() => {
 //     TestBed.configureTestingModule({
 //       declarations: [
 //         InputText,
-//         TooltipComponent
+//         TooltipComponent,
+//         InputLabel
 //        ],
 //        imports: [
 //         FormsModule,

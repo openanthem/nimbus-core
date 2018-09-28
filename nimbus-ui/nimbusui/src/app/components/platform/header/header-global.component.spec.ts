@@ -1,12 +1,17 @@
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing'
+import { AngularSvgIconModule } from 'angular-svg-icon';
 
 import { HeaderGlobal } from './header-global.component';
 import { Link } from '../link.component';
 import { Value } from '../form/elements/value.component';
 import { Paragraph } from '../content/paragraph.component';
 import { BreadcrumbService } from './../breadcrumb/breadcrumb.service';
+import { Button } from '../../platform/form/elements/button.component';
+import { ActionDropdown, ActionLink } from '../../platform/form/elements/action-dropdown.component';
+import { Image } from '../../platform/image.component';
+import { SvgComponent } from '../../platform/svg/svg.component';
 
 class MockBreadcrumbService {
     getHomeBreadcrumb() {
@@ -24,9 +29,17 @@ describe(' HeaderGlobal', () => {
         HeaderGlobal,
         Link,
         Value,
-        Paragraph
+        Paragraph,
+        Button,
+        ActionDropdown,
+        Image,
+        ActionLink,
+        SvgComponent
         ],
-        imports: [ RouterTestingModule ],
+        imports: [ 
+          RouterTestingModule,
+          AngularSvgIconModule 
+        ],
         providers: [ { provide: BreadcrumbService, useClass: MockBreadcrumbService} ]
     }).compileComponents();
   }));

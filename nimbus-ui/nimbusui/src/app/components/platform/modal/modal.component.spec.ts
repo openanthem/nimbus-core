@@ -2,13 +2,14 @@
 import { TestBed, async } from '@angular/core/testing';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
     FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
-    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, MessagesModule  } from 'primeng/primeng';
+    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, MessagesModule, InputSwitchModule, TreeTableModule  } from 'primeng/primeng';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TableModule } from 'primeng/table';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { AngularSvgIconModule } from 'angular-svg-icon';
+import {ToastModule} from 'primeng/toast';
 
 import { Modal } from './modal.component';
 import { TooltipComponent } from '../tooltip/tooltip.component';
@@ -55,6 +56,13 @@ import { DataTable } from '../grid/table.component';
 import { HeaderCheckBox } from '../form/elements/header-checkbox.component';
 import { SvgComponent } from '../svg/svg.component';
 import { Image } from '../image.component';
+import { InputSwitch } from '../../platform/form/elements/input-switch.component';
+import { TreeGrid } from '../../platform/tree-grid/tree-grid.component';
+import { Label } from '../../platform/content/label.component';
+import { InputLabel } from '../../platform/form/elements/input-label.component';
+import { CardDetailsFieldGroupComponent } from '../../platform/card/card-details-field-group.component';
+import { DisplayValueDirective } from '../../../directives/display-value.directive';
+import { FormGridFiller } from '../../platform/form/form-grid-filler.component';
 
 class MockPageService {
     processEvent(a, b, c, d) { }
@@ -106,7 +114,14 @@ describe('Modal', () => {
         DataTable,
         HeaderCheckBox,
         SvgComponent,
-        Image
+        Image,
+        InputSwitch,
+        TreeGrid,
+        Label,
+        InputLabel,
+        CardDetailsFieldGroupComponent,
+        DisplayValueDirective,
+        FormGridFiller
        ],
        imports: [
            DialogModule,
@@ -127,7 +142,10 @@ describe('Modal', () => {
            HttpClientTestingModule,
            TableModule,
            KeyFilterModule,
-           AngularSvgIconModule
+           AngularSvgIconModule,
+           ToastModule,
+           InputSwitchModule,
+           TreeTableModule
        ],
        providers: [
         {provide: PageService, useClass: MockPageService},
@@ -215,7 +233,7 @@ describe('Modal', () => {
           visible: true
       };
       spyOn(pageservice, 'processEvent').and.callThrough();
-      app.closeDialog('a');
+      app.closeDialog(false);
     expect(pageservice.processEvent).toHaveBeenCalled();
   }));
 
