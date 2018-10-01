@@ -39,7 +39,6 @@ export class ServiceConstants {
     public static get WS_SUBSCRIBE_Q(): string { return '/user/queue/updates'; }
     public static get LOCALE_LANGUAGE() : string { return this.locale;}
     public static set LOCALE_LANGUAGE(locale : string ) {this.locale = locale;}
-    public static get INTEGER_CLASS_PREFIX(): string { return '_'; }
 
     /* Enable for stopgap server */
     public static get BASE_URL(): string    { return this.APP_HOST_URL+this.WEB_CONTENT_PORT; }

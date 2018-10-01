@@ -17,7 +17,6 @@
 'use strict';
 import { Directive, ElementRef, Renderer2, Input, SimpleChanges } from '@angular/core';
 import { ParamConfig } from '../shared/param-config';
-import { ServiceConstants } from '../services/service.constants';
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 
@@ -44,7 +43,8 @@ export class DisplayValueDirective {
         if (this.config && this.config.uiStyles.attributes.applyValueStyles) {
             this.renderer.addClass(this.el.nativeElement, this.config.code); // Field Name
 
-            if (this.displayValue !== undefined) {
+            if (this.displayValue && ((this.displayValue instanceof String && this.displayValue.trim() !== '')
+                                || this.displayValue === '')) {
                 this.renderer.addClass(this.el.nativeElement, this.getValue(this.displayValue)); // Field Value
             } else {
                 this.renderer.addClass(this.el.nativeElement, DisplayValueDirective.placeholder); // placeholder Value
@@ -64,7 +64,9 @@ export class DisplayValueDirective {
                 this.renderer.removeClass(this.el.nativeElement, this.getValue(changes.displayValue.previousValue));
             }
             // Add current value styles
-            if (changes.displayValue.currentValue === undefined) {
+            if (changes.displayValue.currentValue === undefined || changes.displayValue.currentValue === '' ||
+                (changes.displayValue.currentValue instanceof String && changes.displayValue.currentValue.trim() === '') ||
+                changes.displayValue.currentValue === null) {
                 this.renderer.addClass(this.el.nativeElement, DisplayValueDirective.placeholder);
             } else {
                 this.renderer.addClass(this.el.nativeElement, this.getValue(changes.displayValue.currentValue));
@@ -75,24 +77,12 @@ export class DisplayValueDirective {
      /*
         Remove spaces from value since style class cannot take spaces
      */
-    getAbsoluteStringValue(str: string): string {
-        var re = / /gi; 
-        return str.replace(re, "");
-    }
-
-    getValue(value: any): string {
-        if (typeof value === 'string' && value.trim() !== '') {
-                return this.getAbsoluteStringValue(value);
-        } else if (typeof this.displayValue === 'boolean') {
-            if (value) {
-                return 'true';
-            } else {
-                return 'false';
-            }
-        } else if (typeof value === 'number') {
-            return ServiceConstants.INTEGER_CLASS_PREFIX + value.toString();
+    getValue(val: any): any {
+        var re = / /gi;
+        if (val instanceof String) {
+            return val.replace(re, "");
         } else {
-            return DisplayValueDirective.placeholder;
+            return val;
         }
     }
 }
