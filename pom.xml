@@ -8,6 +8,7 @@
 
 	<properties>
 		<sonar.projectName>Nimbus Framework</sonar.projectName>
+		<sonar.cpd.exclusions>src/main/java/com/antheminc/oss/nimbus/domain/defn/extension/*Conditional.java, **/ViewConfig.java, src/main/java/com/antheminc/oss/nimbus/test/scenarios/**/VR*.java</sonar.cpd.exclusions>
         <docker.image.prefix>nimbus</docker.image.prefix>
         <docker.plugin.version>0.3.258</docker.plugin.version>
         <spring.boot.maven.version>1.4.0.RELEASE</spring.boot.maven.version>
