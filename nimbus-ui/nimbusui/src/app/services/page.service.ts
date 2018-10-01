@@ -654,13 +654,15 @@ export class PageService {
                         // reduce the size by 1 to account for collection element index
                         numNodes--;
                 }
-
+                
                 // Check if root param matches the eventModel update node
                 if (rootParam.config.code === paramTree[node]) {
                         node++;
-                        
+                        if(rootParam.path === eventModel.value.path) {
+                                this.processModelEvent(rootParam, eventModel);
+                        }
                         // Loop through the Params in the Page
-                        if (rootParam.type.model && rootParam.type.model.params) {
+                        else if (rootParam.type.model && rootParam.type.model.params) {
                                 rootParam.type.model.params.forEach(element => {
                                         // Check if param matches the updated param path
                                         if (element && element.config && element.config.code === paramTree[node]) {
@@ -677,6 +679,8 @@ export class PageService {
                                                 }
                                         }
                                 });
+                        } else {
+                                this.logger.warn('event update with path '+ eventModel.value.path +   ' did not match with any param of current domain')
                         }
                 }
         }
