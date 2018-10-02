@@ -42,7 +42,9 @@ export class DisplayValueDirective {
     ngOnInit() {
         if (this.config && this.config.uiStyles.attributes.applyValueStyles) {
             this.renderer.addClass(this.el.nativeElement, this.config.code); // Field Name
-            if (this.displayValue && this.displayValue.trim() != '') {
+
+            if (this.displayValue && ((this.displayValue instanceof String && this.displayValue.trim() !== '')
+                                || this.displayValue === '')) {
                 this.renderer.addClass(this.el.nativeElement, this.getValue(this.displayValue)); // Field Value
             } else {
                 this.renderer.addClass(this.el.nativeElement, DisplayValueDirective.placeholder); // placeholder Value
@@ -62,7 +64,9 @@ export class DisplayValueDirective {
                 this.renderer.removeClass(this.el.nativeElement, this.getValue(changes.displayValue.previousValue));
             }
             // Add current value styles
-            if (changes.displayValue.currentValue === undefined || changes.displayValue.currentValue.trim() === '') {
+            if (changes.displayValue.currentValue === undefined || changes.displayValue.currentValue === '' ||
+                (changes.displayValue.currentValue instanceof String && changes.displayValue.currentValue.trim() === '') ||
+                changes.displayValue.currentValue === null) {
                 this.renderer.addClass(this.el.nativeElement, DisplayValueDirective.placeholder);
             } else {
                 this.renderer.addClass(this.el.nativeElement, this.getValue(changes.displayValue.currentValue));
@@ -70,11 +74,15 @@ export class DisplayValueDirective {
         }
     }
 
-    /*
+     /*
         Remove spaces from value since style class cannot take spaces
      */
-    getValue(str: string): string {
-        var re = / /gi; 
-        return str.replace(re, ""); 
+    getValue(val: any): any {
+        var re = / /gi;
+        if (val instanceof String) {
+            return val.replace(re, "");
+        } else {
+            return val;
+        }
     }
 }
