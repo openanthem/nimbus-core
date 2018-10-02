@@ -41,3 +41,19 @@ export class ValidationConstraint extends Enum<string> {
   public static readonly _future = new Enum('Future');
 }
 
+export class ConstraintMapping extends Enum<string> {
+  public static readonly required = new Enum(ValidationConstraint._notNull.value);
+  public static readonly pattern = new Enum(ValidationConstraint._pattern.value);
+  public static readonly minMaxSelection = new Enum(ValidationConstraint._size.value);
+  public static readonly isNumber = new Enum(ValidationConstraint._number.value);
+  public static readonly isPast = new Enum(ValidationConstraint._past.value);
+  public static readonly isFuture = new Enum(ValidationConstraint._future.value);
+
+  static getConstraintValue(contraintName: string): string {
+    for (var key in ConstraintMapping) {
+      if(key == contraintName) {
+        return ConstraintMapping[key].value;
+      }
+    } 
+  }
+}
