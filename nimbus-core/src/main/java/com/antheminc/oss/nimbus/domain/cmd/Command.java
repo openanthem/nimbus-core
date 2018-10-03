@@ -80,7 +80,7 @@ public class Command implements Serializable {
 		setBehaviors(source.getBehaviors());
 		setClientUserId(source.getClientUserId());
 		
-		CommandElementLinked clonedRoot = new CommandElementLinked(getRoot());
+		CommandElementLinked clonedRoot = new CommandElementLinked(source.getRoot());
 		setRoot(clonedRoot);
 	}
 	

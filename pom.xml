@@ -991,6 +991,9 @@
         
         <profile>
             <id>sonar-default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <build>
                 <plugins>
                     <plugin>

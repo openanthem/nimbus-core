@@ -10,6 +10,10 @@
   	<artifactId>nimbus-test</artifactId>
 	<name>nimbus-test</name>
 
+	<properties>
+		<sonar.coverage.exclusions>src/main/java/com/antheminc/oss/nimbus/test/**/*.java</sonar.coverage.exclusions>
+	</properties>
+
 	<dependencies>
 	   	<dependency>
 			<groupId>com.antheminc.oss</groupId>

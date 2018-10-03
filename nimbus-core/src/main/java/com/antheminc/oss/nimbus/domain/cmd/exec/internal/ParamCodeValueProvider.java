@@ -50,6 +50,7 @@ public class ParamCodeValueProvider implements HierarchyMatch, CommandExecutor<L
 	
 	private static final String DEFAULT_KEY_ATTRIBUTE = "id";
 	private static final String KEY_VALUE_SEPERATOR = "&";
+	public static final String STATIC_CODE_VALUE = "staticCodeValue";
 	
 	DefaultActionExecutorSearch searchExecutor;
 	
@@ -75,7 +76,7 @@ public class ParamCodeValueProvider implements HierarchyMatch, CommandExecutor<L
 	public Output<List<ParamValue>> execute(Input input) {
 		CommandMessage cmdMsg = input.getContext().getCommandMessage();
 		final List<ParamValue> codeValues;
-		if(StringUtils.equalsIgnoreCase(cmdMsg.getCommand().getElementSafely(Type.DomainAlias).getAlias(),"staticCodeValue")) {
+		if(StringUtils.equalsIgnoreCase(cmdMsg.getCommand().getElementSafely(Type.DomainAlias).getAlias(), STATIC_CODE_VALUE)) {
 			codeValues = getStaticCodeValue(input);
 		}
 		else{
@@ -97,7 +98,7 @@ public class ParamCodeValueProvider implements HierarchyMatch, CommandExecutor<L
 		
 		// 1.2 DB lookup
 		cmdMsg.setRawPayload("{\"paramCode\":\""+cmdMsg.getRawPayload()+"\"}");
-		List<StaticCodeValue> modelList = (List<StaticCodeValue>)searchExecutor.execute(input);
+		List<StaticCodeValue> modelList = (List<StaticCodeValue>) searchExecutor.execute(input).getValue();
 		if(CollectionUtils.isEmpty(modelList))
 			return null;
 		

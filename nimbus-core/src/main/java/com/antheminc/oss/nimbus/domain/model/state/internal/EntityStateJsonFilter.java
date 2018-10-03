@@ -29,39 +29,49 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
  */
 public class EntityStateJsonFilter extends AbstractEntityStateJsonFilter {
 
+	public static final String FIELD_NAME_ENABLED = "enabled";
+	public static final String FIELD_NAME_VISIBLE = "visible";
+	public static final String FIELD_NAME_COLLECTION = "collection";
+	public static final String FIELD_NAME_COLLECTION_ELEM = "collectionElem";
+	public static final String FIELD_NAME_NESTED = "nested";
+	public static final String FIELD_NAME_ACTIVE_VALIDATION_GROUPS = "activeValidationGroups";
+	public static final String FIELD_NAME_TYPE = "type";
+	public static final String FIELD_NAME_LEAF_STATE = "leafState";
+	public static final String FIELD_NAME_STRING = "string";
+	
 	@Override
 	protected boolean omitConditionalParam(Param<?> param, String fieldName) {
 		// enabled: true
-		if(StringUtils.equals(fieldName, "enabled") && param.isEnabled())
+		if(StringUtils.equals(fieldName, FIELD_NAME_ENABLED) && param.isEnabled())
 			return true;
 		
 		// visible: true
-		if(StringUtils.equals(fieldName, "visible") && param.isVisible())
+		if(StringUtils.equals(fieldName, FIELD_NAME_VISIBLE) && param.isVisible())
 			return true;
 		
 		// collection: false
-		if(StringUtils.equals(fieldName, "collection") && !param.isCollection())
+		if(StringUtils.equals(fieldName, FIELD_NAME_COLLECTION) && !param.isCollection())
 			return true;
 		
 		// collectionElem: false
-		if(StringUtils.equals(fieldName, "collectionElem") && !param.isCollectionElem())
+		if(StringUtils.equals(fieldName, FIELD_NAME_COLLECTION_ELEM) && !param.isCollectionElem())
 			return true;
 		
 		// nested: false
-		if(StringUtils.equals(fieldName, "nested") && !param.isNested())
+		if(StringUtils.equals(fieldName, FIELD_NAME_NESTED) && !param.isNested())
 			return true;
 		
 		// activeValidationGroups: []
-		if(StringUtils.equals(fieldName, "activeValidationGroups") && ArrayUtils.isEmpty(param.getActiveValidationGroups()))
+		if(StringUtils.equals(fieldName, FIELD_NAME_ACTIVE_VALIDATION_GROUPS) && ArrayUtils.isEmpty(param.getActiveValidationGroups()))
 			return true;
 		
 		// type: {name: "string", collection: false, nested: false}
-		if(StringUtils.equals(fieldName, "type") && 
-				StringUtils.equals(param.getType().getName(), "string") && !param.getType().isNested())
+		if(StringUtils.equals(fieldName, FIELD_NAME_TYPE) && 
+				StringUtils.equals(param.getType().getName(), FIELD_NAME_STRING) && !param.getType().isNested())
 			return true;
 		
 		// leafState - serialize only when its leaf OR collection and not when its nested
-		if(StringUtils.equals(fieldName, "leafState")) {
+		if(StringUtils.equals(fieldName, FIELD_NAME_LEAF_STATE)) {
 			
 			if(param.isLeaf())
 				return false; // include for leaf
