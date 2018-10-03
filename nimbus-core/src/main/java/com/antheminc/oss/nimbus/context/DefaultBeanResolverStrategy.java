@@ -22,6 +22,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.ResolvableType;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.Resource;
 
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
@@ -145,5 +146,10 @@ public class DefaultBeanResolverStrategy implements BeanResolverStrategy {
 	public <T> Collection<T> getMultiple(Class<T> type) throws InvalidConfigException {
 		return Optional.ofNullable(findMultiple(type))
 				.orElseThrow(()->new InvalidConfigException("Beans of type "+type+" must be configured"));
+	}
+	
+	@Override
+	public Resource getResource(String path) {
+		return getApplicationContext().getResource(path);
 	}
 }

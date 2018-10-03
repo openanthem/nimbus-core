@@ -1,3 +1,5 @@
+import { ConstraintMapping } from './../../shared/validationconstraints.enum';
+import { Constraint } from './../../shared/param-config';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -17,7 +19,7 @@
  */
 'use strict';
 import { Component, Input } from '@angular/core';
-import { FormGroup, AbstractControlDirective, NgModel } from '@angular/forms';
+import { FormGroup, AbstractControlDirective, NgModel, ValidationErrors } from '@angular/forms';
 import { Param } from '../../shared/param-state';
 import { Message } from '../../shared/message';
 import { ComponentTypes, ViewComponent } from '../../shared/param-annotations.enum';
@@ -146,14 +148,7 @@ export class FormElement extends BaseElement {
 
     ngOnInit() {
         super.ngOnInit();
-        this.updatePositionWithNoLabel();        
-        // if (this.element.config.uiStyles && this.element.config.uiStyles.attributes.controlId !== null) {
-        //     if (Number(this.element.config.uiStyles.attributes.controlId) % 2 === 0) {
-        //         this.elementCss = this.elementCss + ' even';
-        //     } else {
-        //         this.elementCss = this.elementCss + ' odd';
-        //     }
-        // }
+        this.updatePositionWithNoLabel();
     }
 
     getElementStyle() {
@@ -172,34 +167,15 @@ export class FormElement extends BaseElement {
      */
     updateErrorMessages() {
         var control: AbstractControl = this.form.controls[this.element.config.code];
+        let constraintNames = ValidationUtils.getAllValidationNames();
         if (control.invalid) {
-            if (this.element.config.validation) {
-                this.element.config.validation.constraints.forEach(validator => {
-                    
-                    // cycle through all of the supported validation errors and apply messages for those that are present.
-                    ValidationUtils.getAllValidationNames()
-                        .filter(validationName => this.hasErrors(control, validationName))
-                        .forEach(validationName => {
-                            
-                            // prefer validation message from the server first
-                            // if unavailable, set the error message to the default for the particular type of error.
-                            this.addErrorMessages(validator.attribute.message ? validator.attribute.message : ValidationUtils.getDefaultErrorMessage(validationName));
-                    });
-                });
-            }
+            let errs: ValidationErrors = control.errors;
+            for (var key in errs) {
+                let constraintName = ConstraintMapping.getConstraintValue(key);
+                let constraint: Constraint = this.element.config.validation.constraints.find(v => v.name == constraintName);
+                this.addErrorMessages(constraint.attribute.message ? constraint.attribute.message : ValidationUtils.getDefaultErrorMessage(key));
+            }   
         }
-    }
-
-    /**
-     * <p>Return whether or not control has errors available for the provided validationName.
-     * @param control the form control to check if validation errors exist
-     * @param validationName the name of the validation error to check
-     */
-    private hasErrors(control: AbstractControl, validationName: string): boolean {
-        if (!control || !control.errors || !validationName) {
-            return false;
-        }
-        return control.errors[validationName];
     }
 
     addErrorMessages(errorText: string) {

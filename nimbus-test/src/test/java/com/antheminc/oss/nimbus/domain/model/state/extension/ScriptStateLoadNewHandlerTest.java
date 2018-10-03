@@ -13,28 +13,31 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.domain.model.state.builder;
+package com.antheminc.oss.nimbus.domain.model.state.extension;
+
+import org.junit.FixMethodOrder;
+import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import com.antheminc.oss.nimbus.domain.cmd.Command;
-import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
-import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
-import com.antheminc.oss.nimbus.domain.model.state.internal.ExecutionEntity;
+import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
+import com.antheminc.oss.nimbus.domain.model.state.AbstractStateEventHandlerTests;
 
 /**
  * @author Soham Chakravarti
  *
  */
-public interface QuadModelBuilder {
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+public class ScriptStateLoadNewHandlerTest extends AbstractStateEventHandlerTests {
 
-	default <V, C> QuadModel<V, C> build(Command cmd) {
-		ExecutionEntity<V, C> eState = new ExecutionEntity<>();
-		QuadModel<V, C> q = build(cmd, eState);
-		q.getRoot().initState();
-		return q;
+	@Override
+	protected Command createCommand() {
+		Command cmd = CommandBuilder.withUri("/hooli/thebox/p/sample_view/_new").getCommand();
+		return cmd;
 	}
 	
-	public <V, C> QuadModel<V, C> build(Command cmd, V viewState, Param<C> coreParam);
-	
-	public <V, C> QuadModel<V, C> build(Command cmd, ExecutionEntity<V, C> eState);
-	
+	@Test
+	public void t01_spel() {
+		
+	}
 }

@@ -13,29 +13,33 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.antheminc.oss.nimbus.domain;
+package com.antheminc.oss.nimbus.domain.defn.extension;
 
-import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
+import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoadNew;
+
 /**
- * Marker annotation for framework generated events
- * 
  * @author Soham Chakravarti
  *
  */
-@Documented
 @Retention(RUNTIME)
-@Target(ANNOTATION_TYPE)
-@Inherited
-public @interface Event {
+@Target(TYPE)
+@OnStateLoadNew
+public @interface Script {
+
+	enum Type {
+		SPEL_INLINE,
+		SPEL_FILE,
+		GROOVY;
+	}
 	
-	int DEFAULT_ORDER_NUMBER = Integer.MAX_VALUE; 
+	// resourcePath
+	String value() default "";
 	
-	int order() default DEFAULT_ORDER_NUMBER;
+	Type type() default Type.SPEL_INLINE;
 }

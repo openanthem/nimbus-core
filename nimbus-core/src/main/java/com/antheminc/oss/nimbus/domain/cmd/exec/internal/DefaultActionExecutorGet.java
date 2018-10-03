@@ -118,7 +118,9 @@ public class DefaultActionExecutorGet extends AbstractCommandExecutor<Object> {
 	private QuadModel<?, ?> executeCb(ExecutionContext eCtx, ExecutionEntity<?, ?> e) {
 		try {
 			TH_ACTION.set(Action._get);
-			return getQuadModelBuilder().build(eCtx.getCommandMessage().getCommand(), e);
+			QuadModel<?, ?> q = getQuadModelBuilder().build(eCtx.getCommandMessage().getCommand(), e);
+			q.getRoot().initState();
+			return q;
 		} finally {
 			TH_ACTION.set(null);
 		}
@@ -135,7 +137,9 @@ public class DefaultActionExecutorGet extends AbstractCommandExecutor<Object> {
 								.map(mOut->(Param<?>)mOut.getSingleResult())
 								.orElseThrow(()->new InvalidStateException("Expeceted first response from command gateway to return mapsTo core parm, but not found for mapsToCmd: "+mapsToCmd));
 		
-		return getQuadModelBuilder().build(eCtx.getCommandMessage().getCommand(), mapped, coreParam);
+		QuadModel<?, ?> q = getQuadModelBuilder().build(eCtx.getCommandMessage().getCommand(), mapped, coreParam);
+		q.getRoot().initState();
+		return q;
 	}
 	
 	protected ProcessFlow loadProcessState(ModelConfig<?> rootDomainConfig, ExecutionContext eCtx) {
