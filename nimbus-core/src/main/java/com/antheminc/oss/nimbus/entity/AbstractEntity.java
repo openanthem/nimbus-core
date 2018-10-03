@@ -85,8 +85,7 @@ public abstract class AbstractEntity<ID extends Serializable> implements Seriali
 	@JsonIgnore
 	public <T extends AbstractEntityBehavior<M, ID>, M extends AbstractEntity<ID>> T newBehaviorInstance(Class<T> clazz) {
 		try {
-			T t = ConstructorUtils.invokeExactConstructor(clazz, this);
-			return t;
+			return ConstructorUtils.invokeExactConstructor(clazz, this);
 		} 
 		catch (Exception ex) {
 			throw new FrameworkRuntimeException("Failed to instantiate class of type: " + clazz, ex);

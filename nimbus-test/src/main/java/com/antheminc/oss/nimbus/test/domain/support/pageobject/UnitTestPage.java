@@ -25,7 +25,6 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
-import com.antheminc.oss.nimbus.support.Holder;
 import com.antheminc.oss.nimbus.support.JustLogit;
 import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
 import com.antheminc.oss.nimbus.test.domain.support.utils.ParamUtils;

@@ -18,20 +18,17 @@ package com.antheminc.oss.nimbus.test.domain.mock;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.ValidationGroup;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
-import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param.LabelState;
 import com.antheminc.oss.nimbus.domain.model.state.EntityStateAspectHandlers;
 import com.antheminc.oss.nimbus.domain.model.state.ExecutionTxnContext;
 import com.antheminc.oss.nimbus.domain.model.state.Notification;
@@ -75,6 +72,10 @@ public class MockParam implements Param<Object> {
 	private List<ParamValue> values = null;
 	private boolean visible = true;
 	private Class<? extends ValidationGroup>[] activeValidationGroups;
+	private boolean collection;
+	private boolean collectionElem;
+	private boolean nested;
+	private boolean leaf;
 
 	@Override
 	public String getConfigId() {
@@ -268,11 +269,6 @@ public class MockParam implements Param<Object> {
 	}
 
 	@Override
-	public boolean isLeaf() {
-		return false;
-	}
-
-	@Override
 	public boolean isLeafOrCollectionWithLeafElems() {
 		return false;
 	}
@@ -288,24 +284,8 @@ public class MockParam implements Param<Object> {
 	}
 
 	@Override
-	public boolean isCollection() {
-		return false;
-	}
-
-	@Override
-	public boolean isNested() {
-		return false;
-	}
-
-	@Override
 	public com.antheminc.oss.nimbus.domain.model.state.EntityState.Model<Object> findIfNested() {
 		return null;
-	}
-
-	@Override
-	public boolean isCollectionElem() {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	@Override
