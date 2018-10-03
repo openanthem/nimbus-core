@@ -38,7 +38,6 @@ import com.antheminc.oss.nimbus.domain.model.config.EntityConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ParamValue;
-import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param.LabelState;
 import com.antheminc.oss.nimbus.support.pojo.CollectionsTemplate;
 import com.antheminc.oss.nimbus.support.pojo.LockTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -156,12 +155,6 @@ public interface EntityState<T> {
 		Map<String, Object> getParamRuntimes();
 		
 		<U> U unwrap(Class<U> c);
-//		default <U> U unwrap(Class<U> c) {
-//			if(c.isInstance(this))
-//				return c.cast(this);
-//			
-//			return null;
-//		}
 	}
 	
 	public interface Model<T> extends EntityState<T> { 
@@ -216,15 +209,9 @@ public interface EntityState<T> {
 //		}
 		
 		T getState();
-//		default T getState() {
-//			return Optional.ofNullable(getAssociatedParam()).map(p->p.getState()).orElse(null);
-//		}
-		
 		void setState(T state);
-//		default void setState(T state) {
-//			Optional.ofNullable(getAssociatedParam()).ifPresent(p->p.setState(state));
-//		}
-		
+
+		boolean isNew();
 	}
 	
 	public interface MappedModel<T, M> extends Model<T>, Mapped<T, M> {

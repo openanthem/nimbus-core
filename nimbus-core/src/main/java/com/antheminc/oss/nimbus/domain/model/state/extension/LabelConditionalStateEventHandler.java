@@ -46,7 +46,7 @@ import lombok.Getter;
 @Getter(AccessLevel.PROTECTED)
 public class LabelConditionalStateEventHandler extends EvalExprWithCrudDefaults<LabelConditional> {
 
-	public static final JustLogit LOG = new JustLogit();
+	public static final JustLogit LOG = new JustLogit(LabelConditionalStateEventHandler.class);
 
 	private final LabelStateEventHandler labelHandler;
 

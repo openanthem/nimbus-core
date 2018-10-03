@@ -38,6 +38,7 @@ import com.antheminc.oss.nimbus.domain.model.state.extension.ModalStateEventHand
 import com.antheminc.oss.nimbus.domain.model.state.extension.ParamContextStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ParamValuesOnLoadHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.RuleStateEventHandler;
+import com.antheminc.oss.nimbus.domain.model.state.extension.ScriptStateLoadNewHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.StaticCodeValueBasedCodeToLabelConverter;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValidateConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValidateConditionalStateEventHandler.ValidationAssignmentStrategy;
@@ -135,6 +136,11 @@ public class DefaultFrameworkExtensionsConfig {
 		validationAssignmentStrategies.put(ValidationScope.SIBLING, new SiblingValidationAssignmentStrategy());
 		validationAssignmentStrategies.put(ValidationScope.CHILDREN, new ChildrenValidationAssignmentStrategy());
 		return validationAssignmentStrategies;
+	}
+	
+	@Bean
+	public ScriptStateLoadNewHandler extensionScriptStateLoadNewHandler(BeanResolverStrategy beanResolver) {
+		return new ScriptStateLoadNewHandler(beanResolver);
 	}
 	
 	@Bean

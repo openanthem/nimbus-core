@@ -128,6 +128,7 @@ public class StateBuilderCollections_V2C_Attached_NoConversion_Test extends Abst
 		core.setAttr_list_1_NestedEntity(cColEntity);
 		
 		QuadModel<?, ?> q = quadModelBuilder.build(createCommand(), ExecutionEntity.resolveAndInstantiate(view, core));
+		q.getRoot().initState();
 		assertNotNull(q);
 		
 		// validate: initial

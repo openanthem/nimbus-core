@@ -298,8 +298,10 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 			ListParam<P> mappedListParam = (ListParam<P>)param.findIfCollection();
 			
 			// reset collection
+			mappedListParam.clear();
+			
 			//_instantiateAndSet(currRep, param);
-			mappedListParam.getType().getModel().instantiateAndSet();
+			//mappedListParam.getType().getModel().instantiateAndSet();
 
 			if(!(newState instanceof Collection))
 				throw new InvalidArgumentException("Collection param with path: "+param.getPath()+" must have argument of type "+Collection.class);
