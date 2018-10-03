@@ -1,7 +1,9 @@
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DropdownModule, GrowlModule, MessagesModule, DialogModule, AccordionModule, DataTableModule, FileUploadModule, PickListModule, ListboxModule, CheckboxModule, RadioButtonModule, CalendarModule } from 'primeng/primeng';
+import { DropdownModule, GrowlModule, MessagesModule, DialogModule, AccordionModule, 
+    DataTableModule, FileUploadModule, PickListModule, ListboxModule, CheckboxModule, 
+    RadioButtonModule, CalendarModule, InputSwitchModule, TreeTableModule } from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { HttpModule } from '@angular/http';
@@ -10,6 +12,7 @@ import { SimpleChanges } from '@angular/core';
 import { JL } from 'jsnlog';
 import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
 import { AngularSvgIconModule } from 'angular-svg-icon';
+import {ToastModule} from 'primeng/toast';
 
 import { Form } from './form.component';
 import { FrmGroupCmp } from './form-group.component';
@@ -60,6 +63,13 @@ import { AppInitService } from '../../services/app.init.service';
 import { HeaderCheckBox } from '../platform/form/elements/header-checkbox.component';
 import { SvgComponent } from './svg/svg.component';
 import { Image } from './image.component';
+import { TreeGrid } from './tree-grid/tree-grid.component';
+import { InputSwitch } from './form/elements/input-switch.component';
+import { FormGridFiller } from './form/form-grid-filler.component';
+import { DisplayValueDirective } from '../../directives/display-value.directive';
+import { InputLabel } from './form/elements/input-label.component';
+import { Label } from './content/label.component';
+import { CardDetailsFieldGroupComponent } from './card/card-details-field-group.component';
 
 let fixture, app, formElementsService, pageService, configService;
 
@@ -129,7 +139,14 @@ describe('Form', () => {
           DateTimeFormatPipe,
           HeaderCheckBox,
           SvgComponent,
-          Image
+          Image,
+          TreeGrid,
+          InputSwitch,
+          FormGridFiller,
+          DisplayValueDirective,
+          InputLabel,
+          Label,
+          CardDetailsFieldGroupComponent
        ],
        imports: [
            FormsModule, 
@@ -152,7 +169,10 @@ describe('Form', () => {
            HttpModule,
            HttpClientTestingModule,
            StorageServiceModule,
-           AngularSvgIconModule
+           AngularSvgIconModule,
+           ToastModule,
+           InputSwitchModule, 
+           TreeTableModule
        ],
        providers: [
         {provide: FormElementsService, useClass: MockFormElementsService},
@@ -183,15 +203,9 @@ describe('Form', () => {
       expect(app.opened).toBeFalsy();
     }));
 
-    it('groupFormElements() should update groups property', async(() => {
-      const model = { params: [{ config: { uiStyles: { attributes: { alias: 'Accordion' } } } }] };
-      app.groupFormElements(model);
-      expect(app.groups.includes(model.params[0])).toBeTruthy();
-    }));
-
     it('groupFormElements() should update formElements property', async(() => {
       const model = { params: [{ config: { uiStyles: { attributes: { alias: 'tset' } } } }] };
-      app.groupFormElements(model);
+      app.groupFormElements(model, true);
       expect(app.formElements.includes(model.params[0])).toBeTruthy();
     }));
 
@@ -256,7 +270,7 @@ describe('Form', () => {
     it('ngOnInit() should update the elementCss property if element.config.uiStyles.attributes.cssClass is inline', async(() => {
       app.element = { config: { uiStyles: { attributes: { cssClass: 'inline' } } } };
       app.ngOnInit();
-      expect(app.elementCss).toEqual('d-inline-block mr-3');
+      expect(app.elementCss).toEqual('d-block d-md-inline-block mr-3');
     }));
 
     it('ngOnInit() should update the elementCss property if element.config.uiStyles.attributes.cssClass is questionGroup', async(() => {

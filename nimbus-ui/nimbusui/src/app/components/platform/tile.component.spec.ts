@@ -1,7 +1,9 @@
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DropdownModule, GrowlModule, MessagesModule, DialogModule, AccordionModule, DataTableModule, FileUploadModule, PickListModule, ListboxModule, CheckboxModule, RadioButtonModule, CalendarModule } from 'primeng/primeng';
+import { DropdownModule, GrowlModule, MessagesModule, DialogModule, AccordionModule, 
+    DataTableModule, FileUploadModule, PickListModule, ListboxModule, CheckboxModule, 
+    RadioButtonModule, CalendarModule, TreeTableModule, InputSwitchModule } from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
 import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -9,6 +11,7 @@ import { KeyFilterModule } from 'primeng/keyfilter';
 import { JL } from 'jsnlog';
 import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
 import { AngularSvgIconModule } from 'angular-svg-icon';
+import {ToastModule} from 'primeng/toast';
 
 import { Tile } from './tile.component';
 import { MessageComponent } from './message/message.component';
@@ -59,6 +62,13 @@ import { AppInitService } from '../../services/app.init.service';
 import { HeaderCheckBox } from '../platform/form/elements/header-checkbox.component';
 import { SvgComponent } from './svg/svg.component';
 import { Image } from './image.component';
+import { InputLabel } from '../platform/form/elements/input-label.component';
+import { Label } from '../platform/content/label.component';
+import { TreeGrid } from '../platform/tree-grid/tree-grid.component';
+import { InputSwitch } from '../platform/form/elements/input-switch.component';
+import { CardDetailsFieldGroupComponent } from '../platform/card/card-details-field-group.component';
+import { DisplayValueDirective } from '../../directives/display-value.directive';
+import { FormGridFiller } from '../platform/form/form-grid-filler.component';
 
 let fixture, app, pageService;
 
@@ -119,7 +129,14 @@ describe('Tile', () => {
         DataTable,
         HeaderCheckBox,
         SvgComponent,
-        Image
+        Image,
+        InputLabel,
+        Label,
+        TreeGrid,
+        InputSwitch,
+        CardDetailsFieldGroupComponent,
+        DisplayValueDirective,
+        FormGridFiller
        ],
        imports: [
         FormsModule,
@@ -141,7 +158,10 @@ describe('Tile', () => {
         TableModule,
         KeyFilterModule,
         StorageServiceModule,
-        AngularSvgIconModule
+        AngularSvgIconModule,
+        ToastModule,
+        TreeTableModule, 
+        InputSwitchModule
        ],
        providers: [
         {provide: PageService, useClass: MockPageService},

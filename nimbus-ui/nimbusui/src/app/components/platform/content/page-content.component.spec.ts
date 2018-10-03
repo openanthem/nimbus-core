@@ -8,8 +8,7 @@ import { RouterTestingModule } from '@angular/router/testing'
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { ActivatedRoute, Route, ActivatedRouteSnapshot, UrlSegment, Params, Data, ParamMap } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
+import { of as observableOf,  Observable } from 'rxjs';
 import { TableModule } from 'primeng/table';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
@@ -93,7 +92,7 @@ export class MockActivatedRoute implements ActivatedRoute {
   firstChild: ActivatedRoute;
   children: ActivatedRoute[];
   pathFromRoot: ActivatedRoute[];
-  data = Observable.of({
+  data = observableOf({
     page: {
       type: {
         model: {

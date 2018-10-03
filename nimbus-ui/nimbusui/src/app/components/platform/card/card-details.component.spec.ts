@@ -113,4 +113,30 @@ it('getAllURLParams should return null matching the regexp', async(() => {
     expect(app.getAllURLParams('{ /webhp?hl=en}')).toEqual(['{ /webhp?hl=en}']);
   }));
 
+  it('toggleState() should update isHidden and _state properties', async(() => {
+    const fixture = TestBed.createComponent(CardDetailsComponent);
+    const app = fixture.debugElement.componentInstance;
+    app.state = 'closedPanel';
+    app.isHidden = true;
+    app.toggleState();
+    expect(app.isHidden).toBeFalsy();
+    expect(app._state).toEqual('openPanel');
+  }));
+
+  it('toggleState() should update _state property', async(() => {
+    const fixture = TestBed.createComponent(CardDetailsComponent);
+    const app = fixture.debugElement.componentInstance;
+    app.state = 'openPanel';
+    app.toggleState();
+    expect(app._state).toEqual('closedPanel');
+  }));
+
+  it('animationDone() should update the isHidden property', async(() => {
+    const fixture = TestBed.createComponent(CardDetailsComponent);
+    const app = fixture.debugElement.componentInstance;
+    app.state = 'closedPanel';
+    app.animationDone('a');
+    expect(app.isHidden).toBeTruthy();
+  }));
+
 });

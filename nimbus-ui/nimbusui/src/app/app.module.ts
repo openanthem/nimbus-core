@@ -49,7 +49,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { WindowRefService } from './services/window-ref.service';
 import { HeaderCheckBox } from './components/platform/form/elements/header-checkbox.component';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import {ToastModule} from 'primeng/toast';
+import { ToastModule } from 'primeng/toast';
 
 // Platform Imports
 // Components

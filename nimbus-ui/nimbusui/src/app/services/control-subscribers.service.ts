@@ -124,6 +124,8 @@ export class ControlSubscribers {
         this.controlValueChanged.subscribe(($event) => {
             //old leafState is used to post data to the server only when the user has changed the value
             if ($event.config.uiStyles.attributes.postEventOnChange && this.previousLeafState !== $event.leafState) {
+                console.log('$event.config.uiStyles.attributes.postEventOnChange', $event.config.uiStyles.attributes.postEventOnChange);
+                console.log('this.previousLeafState, $event.leafState', this.previousLeafState, $event.leafState);
                 this.pageService.postOnChange($event.path, 'state', JSON.stringify($event.leafState));
             } else if($event.config.uiStyles.attributes.postButtonUrl) {
                 let item: GenericDomain = new GenericDomain();

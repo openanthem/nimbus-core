@@ -13,8 +13,7 @@ import {
   Data,
   ParamMap
 } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
+import { of as observableOf,  Observable } from 'rxjs';
 import { JL } from 'jsnlog';
 import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
 
@@ -47,7 +46,7 @@ export class MockActivatedRoute implements ActivatedRoute {
   firstChild: ActivatedRoute;
   children: ActivatedRoute[];
   pathFromRoot: ActivatedRoute[];
-  data = Observable.of({
+  data = observableOf({
     domain: 'test'
   });
   paramMap: Observable<ParamMap>;

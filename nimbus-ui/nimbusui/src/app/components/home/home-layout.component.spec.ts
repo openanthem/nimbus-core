@@ -7,8 +7,7 @@ import { DropdownModule } from 'primeng/primeng';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { Subject } from 'rxjs/Rx';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
+import { of as observableOf,  Observable } from 'rxjs';
 import { EventEmitter } from '@angular/core';
 import {
   ActivatedRoute,
@@ -55,7 +54,7 @@ import { Image } from '../platform/image.component';
 class MockAuthenticationService {
   logout() {
     const logout = 'testing';
-    return Observable.of(logout);
+    return observableOf(logout);
   }
 }
 class MockPageService {

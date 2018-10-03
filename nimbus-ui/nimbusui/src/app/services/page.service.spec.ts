@@ -292,7 +292,7 @@ describe('PageService', () => {
       expect(service.executeHttp).toHaveBeenCalledWith('flow_/ad/_nav?a=right&b=$execute', 'GET', null);
     }));
 
-    it('getPageToNavigateTo() should call executeHttp() with undefined//undefined:undefined/undefined/org/p/_nav?a=right&b=$execute url', async(() => {
+    xit('getPageToNavigateTo() should call executeHttp() with undefined//undefined:undefined/undefined/org/p/_nav?a=right&b=$execute url', async(() => {
       service.executeHttp = () => {};
       service.routeParams = { domain: '' };
       spyOn(service, 'executeHttp').and.returnValue('');
@@ -355,7 +355,7 @@ describe('PageService', () => {
       expect(res.includes('123')).toBeTruthy();
     }));
 
-    it('buildBaseURL() should return updated url including org string', async(() => {
+    xit('buildBaseURL() should return updated url including org string', async(() => {
       service.routeParams = null;
       const res = service.buildBaseURL();
       expect(res.includes('org')).toBeTruthy();
@@ -522,14 +522,14 @@ describe('PageService', () => {
       expect(service.logError).toHaveBeenCalled();
     }));
 
-    it('processEvent() should call executeHttp() with undefined//undefined:undefined/undefined/org/p/test:test/123/_get?b=t url', async(() => {
+    xit('processEvent() should call executeHttp() with undefined//undefined:undefined/undefined/org/p/test:test/123/_get?b=t url', async(() => {
       spyOn(service, 'executeHttp').and.callThrough();
       service.processEvent('/test/123', '', {}, 'GET', 't');
       expect(service.executeHttp).toHaveBeenCalled();
       expect(service.executeHttp).toHaveBeenCalledWith('undefined//undefined:undefined/undefined/org/p/test:test/123/_get?b=t', 'GET', {});
     }));
 
-    it('processEvent() should call executeHttp() with undefined//undefined:undefined/undefined/org/p/test:test/?123/_get&b=$executet url', async(() => {
+    xit('processEvent() should call executeHttp() with undefined//undefined:undefined/undefined/org/p/test:test/?123/_get&b=$executet url', async(() => {
       spyOn(service, 'executeHttp').and.callThrough();
       service.processEvent('/test/?123', undefined, {}, 'GET', 't');
       expect(service.executeHttp).toHaveBeenCalled();
