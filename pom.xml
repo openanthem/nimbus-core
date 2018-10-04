@@ -62,7 +62,7 @@
         <npm.version>5.5.1</npm.version>
         <frontend.plugin.version>1.6</frontend.plugin.version>
         <maven.karma.plugin.version>1.6</maven.karma.plugin.version>
-        <owasp-esapi.version>2.1.0</owasp-esapi.version>
+        <owasp-esapi.version>2.1.0.1</owasp-esapi.version>
         <owasp-antisamy.version>1.5.7</owasp-antisamy.version>
         <nexus-staging-maven-plugin.version>1.6.7</nexus-staging-maven-plugin.version>
         <sonar.maven.plugin.version>3.5.0.1254</sonar.maven.plugin.version>
