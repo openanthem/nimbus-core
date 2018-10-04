@@ -93,4 +93,9 @@ public @interface MessageConditional {
 	 * <p>To retain the message when {@link #when()} evaluates to {@code false}.
 	 */
 	boolean whenElseRetainMessage() default false;
+	
+	/**
+	 * <p>Path of param on which the messages are to be set
+	 */
+	String[] targetPath() default { };
 }
