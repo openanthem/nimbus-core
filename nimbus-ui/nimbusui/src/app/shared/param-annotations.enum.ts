@@ -40,7 +40,7 @@ export class ViewComponent extends Enum<string> {
     public static readonly actiontray = new Enum('ActionTray');
     public static readonly modal = new Enum('Modal');
     public static readonly menulink = new Enum('MenuLink');
-    public static readonly menupanel = new Enum('MENUPANEL');
+    public static readonly menupanel = new Enum('MenuPanel');
     public static readonly image = new Enum('Image');
     public static readonly tabInfo = new Enum('TabInfo');
     public static readonly picklist = new Enum('PickList');

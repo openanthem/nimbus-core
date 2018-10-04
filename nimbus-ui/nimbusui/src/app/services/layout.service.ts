@@ -164,7 +164,7 @@ export class LayoutService {
 
         layoutConfig.params.forEach(param => {
             let attribute: UiAttribute = param.config.uiStyles.attributes;
-            if (attribute.alias === 'Header' || attribute.alias === 'Global-Header' || 
+            if (attribute.alias === 'Header' || attribute.alias === 'Global-Header' ||
                 (attribute.alias === 'Section' && attribute.value === 'HEADER')) {
                 this.parseTopBarConfig(param.type.model, branding, headerMenus, accordions);
                 // if param has initialize, execute the config
@@ -282,11 +282,10 @@ export class LayoutService {
                         }
                     });
                 }
-
-                if(param.config.uiStyles.attributes.value ===ViewComponent.menupanel.toString()){ 
-                    this.buildMenu(param, menuItems); 
-                }
+            } else if(param.config.uiStyles.attributes.alias === ViewComponent.menupanel.toString()) {
+                this.buildMenu(param, menuItems); 
             }
+
         });
 
         return menuItems;
@@ -300,7 +299,7 @@ export class LayoutService {
                 menuItem.command = (event: Event) => { this.processClick(event, menuItem)};
                // menuItem.routerLinkActiveOptions = {'exact':true};
                 menuItems.push(menuItem);
-            } else if (element.config.uiStyles.attributes.value ===ViewComponent.menupanel.toString()){
+            } else if (element.config.uiStyles.attributes.alias ===ViewComponent.menupanel.toString()){
                 this.buildSubMenu(element, menuItem);
                 menuItems.push(menuItem);
             }
@@ -315,7 +314,7 @@ export class LayoutService {
                 item.command = (event: Event) => { this.processClick(event, item)};
                 item.routerLink =  this.createRouterLink(element, true);
                 subMenuItems.push(item);
-            } else if (element.config.uiStyles.attributes.value ===ViewComponent.menupanel.toString()){
+            } else if (element.config.uiStyles.attributes.alias ===ViewComponent.menupanel.toString()){
                 this.buildSubMenu(element, item);
                 subMenuItems.push(item);
             }

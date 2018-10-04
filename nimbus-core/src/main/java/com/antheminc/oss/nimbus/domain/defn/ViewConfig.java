@@ -22,6 +22,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import com.antheminc.oss.nimbus.domain.Event;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Page;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 import com.antheminc.oss.nimbus.domain.defn.extension.ParamContext;
 
@@ -1817,6 +1818,10 @@ public class ViewConfig {
 
 		Type value() default Type.DEFAULT; // HEADER and LEFTBAR should be
 											// removed in future
+		
+		String imgSrc() default "";
+		
+		Image.Type imgType() default Image.Type.FA;
 	}
 
 	/**
@@ -2118,5 +2123,27 @@ public class ViewConfig {
 	@Inherited
 	public @interface ViewStyle {
 
+	}
+	
+	/**
+	 * <p><b>Expected Field Structure</b>
+	 * 
+	 * <p>MenuPanel will be rendered when annotating a field nested under one of the
+	 * following components: <ul> <li>{@link Page}</li> </ul>
+	 * 
+	 * <p>MenuPanel should decorate a field having a complex type that has nested menulinks.
+	 * 
+	 * @since 1.0
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface MenuPanel {
+
+		String alias() default "MenuPanel";
+		
+		String imgSrc() default "";
+		
+		Image.Type imgType() default Image.Type.FA;
 	}
 }
