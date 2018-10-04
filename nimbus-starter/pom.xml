@@ -5,13 +5,13 @@
 
 	<groupId>com.antheminc.oss</groupId>
 	<artifactId>nimbus-starter</artifactId>
-    <version>1.1.0.M3</version>
+    <version>1.1.0</version>
    
 	<name>nimbus-starter</name>
 	<description>framework starter project</description>
 
 	<properties>
-		<nimbus.version>1.1.0.M3</nimbus.version>
+		<nimbus.version>1.1.0</nimbus.version>
 	</properties>
 
 	<dependencies>	
