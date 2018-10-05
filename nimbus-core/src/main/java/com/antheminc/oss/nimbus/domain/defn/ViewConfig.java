@@ -22,7 +22,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import com.antheminc.oss.nimbus.domain.Event;
-import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Page;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 import com.antheminc.oss.nimbus.domain.defn.extension.ParamContext;
 
@@ -2131,8 +2130,9 @@ public class ViewConfig {
 	 * <p>MenuPanel will be rendered when annotating a field nested under one of the
 	 * following components: <ul> <li>{@link Page}</li> </ul>
 	 * 
-	 * <p>MenuPanel should decorate a field having a complex type that has nested menulinks.
-	 * 
+	 * <p>MenuPanel should decorate a field having a complex type that has nested menulinks.<ul>
+	 * <li> imgSrc when given would resolve to an icon/image and place it before text of the menuPanel label</li>
+	 * <li> imgType by default would be font awesome library. If svg images are to be rendered imgType should be Type.SVG</li> </p>
 	 * @since 1.0
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
