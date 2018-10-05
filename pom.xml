@@ -28,7 +28,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <spring.boot.version>1.5.2.RELEASE</spring.boot.version>
+        <spring.boot.version>1.5.9.RELEASE</spring.boot.version>
         <spring.cloud.version>Dalston.RELEASE</spring.cloud.version>
         <swagger.version>2.4.0</swagger.version>
         <mongo>3.4</mongo>
