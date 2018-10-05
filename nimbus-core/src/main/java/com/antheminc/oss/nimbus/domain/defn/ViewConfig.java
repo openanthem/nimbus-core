@@ -2130,9 +2130,7 @@ public class ViewConfig {
 	 * <p>MenuPanel will be rendered when annotating a field nested under one of the
 	 * following components: <ul> <li>{@link Page}</li> </ul>
 	 * 
-	 * <p>MenuPanel should decorate a field having a complex type that has nested menulinks.<ul>
-	 * <li> imgSrc when given would resolve to an icon/image and place it before text of the menuPanel label</li>
-	 * <li> imgType by default would be font awesome library. If svg images are to be rendered imgType should be Type.SVG</li> </p>
+	 * <p>MenuPanel should decorate a field having a complex type that has nested menulinks.
 	 * @since 1.0
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
@@ -2142,8 +2140,15 @@ public class ViewConfig {
 
 		String alias() default "MenuPanel";
 		
+		/**
+		 * <p>imgSrc when given would resolve to an icon/image and place it before text of the menuPanel label</p>
+		 */
 		String imgSrc() default "";
 		
+		
+		/**
+		 * <p>imgType by default would be font awesome library. If svg images are to be rendered imgType should be Type.SVG</p>
+		 */
 		Image.Type imgType() default Image.Type.FA;
 	}
 }
