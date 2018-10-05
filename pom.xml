@@ -5,6 +5,8 @@
 	<version>1.1.0</version>
 	<name>nimbus-parent</name>
 	<packaging>pom</packaging>
+	<description>Anthem open source nimbus project </description>
+  	<url>http://www.oss.antheminc.com/</url>
 
 	<properties>
 		<sonar.projectName>Nimbus Framework</sonar.projectName>
