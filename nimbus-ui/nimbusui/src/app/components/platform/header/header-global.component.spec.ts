@@ -13,6 +13,8 @@ import { ActionDropdown, ActionLink } from '../../platform/form/elements/action-
 import { Image } from '../../platform/image.component';
 import { SvgComponent } from '../../platform/svg/svg.component';
 
+let fixture, app, breadcrumbService;
+
 class MockBreadcrumbService {
     getHomeBreadcrumb() {
         const test = {
@@ -42,18 +44,75 @@ describe(' HeaderGlobal', () => {
         ],
         providers: [ { provide: BreadcrumbService, useClass: MockBreadcrumbService} ]
     }).compileComponents();
+    fixture = TestBed.createComponent( HeaderGlobal);
+    app = fixture.debugElement.componentInstance;
+    breadcrumbService = TestBed.get(BreadcrumbService);
   }));
 
   it('should create the HeaderGlobal', async(() => {
-    const fixture = TestBed.createComponent( HeaderGlobal);
-    const app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();
   }));
 
   it('get homeRoute() should get home route', async(() => {
-    const fixture = TestBed.createComponent( HeaderGlobal);
-    const app = fixture.debugElement.componentInstance;
     expect(app.homeRoute).toEqual('testing');
+  }));
+
+  it('homeRoute should be updated from breadcrumpservice.getHomeBreadcrump()', async(() => {
+    spyOn(breadcrumbService, 'getHomeBreadcrumb').and.returnValue('');
+    expect(app.homeRoute).toEqual('');
+  }));
+
+  it('ngOnDestroy() should call mouseEventSubscription.unsubscribe()', async(() => {
+    app.mouseEventSubscription = {
+      unsubscribe: () => {}
+    };
+    spyOn(app.mouseEventSubscription, 'unsubscribe').and.callThrough();
+    app.ngOnDestroy();
+    expect(app.mouseEventSubscription.unsubscribe).toHaveBeenCalled();
+  }));
+
+  it('toggleOpen() should call event.state as closedPanel and call mouseEventSubscription.unsubscribe()', async(() => {
+    const event = {
+      isOpen: true,
+      state: 'openPanel',
+      selectedItem: true
+    };
+    app.dropDowns = {
+      toArray: () => {
+        return [{
+          selectedItem: false,
+          isOpen: true,
+          state: ''
+        }]
+      }
+    };
+    app.mouseEventSubscription = {
+      closed: false,
+      unsubscribe: () => {}
+    };
+    spyOn(app.mouseEventSubscription, 'unsubscribe').and.callThrough();
+    app.toggleOpen(event);
+    expect(event.state).toEqual('closedPanel');
+    expect(app.mouseEventSubscription.unsubscribe).toHaveBeenCalled();
+  }));
+
+  it('toggleOpen() should call event.state as openPanel', async(() => {
+    const event = {
+      isOpen: true,
+      state: 'closedPanel',
+      selectedItem: true
+    };
+    app.dropDowns = {
+      toArray: () => {
+        return []
+      }
+    };
+    app.mouseEventSubscription = {
+      closed: true,
+      unsubscribe: () => {}
+    };
+    app.toggleOpen(event);
+    expect(event.state).toEqual('openPanel');
   }));
 
 });

@@ -24,7 +24,7 @@ describe('WebContentSvc', () => {
     expect(service).toBeTruthy();
   }));
 
-  it('1should be created', async(() => {
+  it('findLabelContent() should call findLabelContentFromConfig()', async(() => {
     service.findLabelContentFromConfig = () => {};
     spyOn(service, 'findLabelContentFromConfig').and.callThrough();
     const param = {

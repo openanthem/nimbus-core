@@ -16,7 +16,7 @@ import { Component, Input, Output, ViewChild, EventEmitter, ViewChildren } from 
 import { TableModule } from 'primeng/table';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { FormsModule } from '@angular/forms';
-import { ReactiveFormsModule }  from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { ToastModule } from 'primeng/toast';
 
 import { DomainFlowCmp } from './domain-flow.component';
