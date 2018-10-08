@@ -961,9 +961,9 @@
                 </plugins>
             </build>
         </profile>
-
-        <profile>
-            <id>release</id>
+        
+         <profile>
+            <id>cicdbuild</id>
              <activation>
 	     		 <jdk>[1.8,)</jdk>
 		    </activation>
@@ -999,8 +999,7 @@
                                         <requireJavaVersion>
                                             <version>1.8</version>
                                         </requireJavaVersion>
-                                        <requireReleaseDeps />
-                                        <requireReleaseVersion />
+                                   
                                     </rules>
                                     <fail>true</fail>
                                 </configuration>
@@ -1034,6 +1033,36 @@
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-enforcer-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>enforce-release-rules</id>
+                                <goals>
+                                    <goal>enforce</goal>
+                                </goals>
+                                <configuration>
+                                    <rules>
+                                        <requireJavaVersion>
+                                            <version>1.8</version>
+                                        </requireJavaVersion>
+                                        <requireReleaseDeps />
+                                        <requireReleaseVersion />
+                                    </rules>
+                                    <fail>true</fail>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
