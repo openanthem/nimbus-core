@@ -15,6 +15,7 @@
  */
 package com.antheminc.oss.nimbus.domain.bpm.activiti;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -29,12 +30,19 @@ import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.bpm.ProcessEngineContext;
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.CommandBuilder;
+import com.antheminc.oss.nimbus.domain.cmd.CommandElement.Type;
 import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandPathVariableResolver;
+import com.antheminc.oss.nimbus.domain.config.builder.DomainConfigBuilder;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
+import com.antheminc.oss.nimbus.domain.defn.Repo;
+import com.antheminc.oss.nimbus.domain.model.config.ModelConfig;
+import com.antheminc.oss.nimbus.domain.model.state.internal.ExecutionEntity;
+import com.antheminc.oss.nimbus.domain.model.state.repo.ModelRepositoryFactory;
+import com.antheminc.oss.nimbus.entity.process.ProcessFlow;
 
 /**
  * @author Rakesh Patel
@@ -49,7 +57,8 @@ public class ActivitiUserTaskActivityBehavior extends UserTaskActivityBehavior {
 	CommandExecutorGateway commandGateway;
 	CommandPathVariableResolver pathVariableResolver;
 	BeanResolverStrategy beanResolver;
-
+	ModelRepositoryFactory repositoryFactory;
+	DomainConfigBuilder domainConfigBuilder;
 
 	
 	public ActivitiUserTaskActivityBehavior(UserTask userTask) {
@@ -69,6 +78,7 @@ public class ActivitiUserTaskActivityBehavior extends UserTaskActivityBehavior {
 	public void execute(DelegateExecution execution) {
 		super.execute(execution);
 		init();
+		addActiveTask(execution);
 		String url = getExtensionValue(URL);
 		if(url == null)
 			return;
@@ -100,6 +110,7 @@ public class ActivitiUserTaskActivityBehavior extends UserTaskActivityBehavior {
 	public void leave(DelegateExecution execution) {
 		init();
 		super.leave(execution);
+		removeActiveTask(execution);
 	}
 	
 	private String getExtensionValue(String extensionName) {
@@ -123,6 +134,9 @@ public class ActivitiUserTaskActivityBehavior extends UserTaskActivityBehavior {
 		if(this.commandGateway == null){
 			this.commandGateway = beanResolver.find(CommandExecutorGateway.class);
 			this.pathVariableResolver = beanResolver.find(CommandPathVariableResolver.class);
+			this.repositoryFactory = beanResolver.find(ModelRepositoryFactory.class);
+			this.domainConfigBuilder = beanResolver.find(DomainConfigBuilder.class);
+
 		}
 	}
 	
@@ -130,4 +144,41 @@ public class ActivitiUserTaskActivityBehavior extends UserTaskActivityBehavior {
 		return (ProcessEngineContext)execution.getVariable(Constants.KEY_EXECUTE_PROCESS_CTX.code);
 	}
 	
+	private void addActiveTask(DelegateExecution execution) {
+		ProcessEngineContext context = getProcessEngineContext(execution);
+		ActivitiProcessFlow processFlow = (ActivitiProcessFlow)((ExecutionEntity<?,?>)context.getParam().getRootExecution().getState()).getFlow();
+		if(processFlow == null)
+			return;
+		List<String> activeTasks = processFlow.getActiveTasks();
+		if(activeTasks == null)
+			return;
+		activeTasks = new ArrayList<String>(activeTasks);
+		activeTasks.add(userTask.getId());
+		processFlow.setActiveTasks(activeTasks);	
+		updateProcessState(context,activeTasks);
+	}
+	
+	private void removeActiveTask(DelegateExecution execution) {
+		ProcessEngineContext context = getProcessEngineContext(execution);
+		ActivitiProcessFlow processFlow = (ActivitiProcessFlow)((ExecutionEntity<?,?>)context.getParam().getRootExecution().getState()).getFlow();
+		if(processFlow == null)
+			return;
+		List<String> activeTasks = processFlow.getActiveTasks();
+		if(activeTasks == null)
+			return;
+		activeTasks = new ArrayList<String>(activeTasks);
+		activeTasks.remove(userTask.getId());
+		processFlow.setActiveTasks(activeTasks);
+		updateProcessState(context,activeTasks);
+	}	
+	
+	protected void updateProcessState(ProcessEngineContext context, List<String> activeTasks) {
+		ModelConfig<?> modelConfig = domainConfigBuilder.getModel(ProcessFlow.class);
+		Repo repo = modelConfig.getRepo();
+		String processStateAlias = StringUtils.isBlank(repo.alias()) ? modelConfig.getAlias() : repo.alias();
+		String entityProcessAlias = context.getParam().getRootDomain().getConfig().getAlias() + "_" + processStateAlias;
+		Long entityRefId = context.getParam().getRootExecution().getRootCommand().getRefId(Type.DomainAlias);
+		repositoryFactory.get(repo)._update(entityProcessAlias, entityRefId, "/activeTasks", activeTasks);
+	}	
+
 }

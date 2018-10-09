@@ -43,7 +43,7 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
         <span [hidden]="!this.element.visible" [ngClass]="getCssClass()">
             <ng-template [ngIf]="element?.config?.uiStyles?.attributes?.alias == viewComponent.formElementGroup.toString()">
                 <fieldset>
-                    <legend *ngIf="labelConfig?.text">{{labelConfig?.text}}</legend>
+                    <nm-input-legend [element]="element"></nm-input-legend>
                     <ng-template ngFor let-frmElem [ngForOf]="element.type.model.params">
                         <nm-frm-grp [element]="frmElem" [form]="form" [elementCss]="elementCss" [position]="position"> 
                         </nm-frm-grp>
