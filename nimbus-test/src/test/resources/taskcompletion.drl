@@ -21,7 +21,7 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.internal.DefaultParamState;
 import java.time.LocalDate;
 import java.time.Period;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 rule "rule to evaluate task completion"
 when

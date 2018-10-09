@@ -28,7 +28,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <spring.boot.version>1.5.2.RELEASE</spring.boot.version>
+        <spring.boot.version>1.5.13.RELEASE</spring.boot.version>
         <spring.cloud.version>Dalston.RELEASE</spring.cloud.version>
         <swagger.version>2.4.0</swagger.version>
         <mongo>3.4</mongo>
@@ -62,7 +62,7 @@
         <npm.version>6.4.1</npm.version>
         <frontend.plugin.version>1.6</frontend.plugin.version>
         <maven.karma.plugin.version>1.6</maven.karma.plugin.version>
-        <owasp-esapi.version>2.1.0</owasp-esapi.version>
+        <owasp-esapi.version>2.1.0.1</owasp-esapi.version>
         <owasp-antisamy.version>1.5.7</owasp-antisamy.version>
         <nexus-staging-maven-plugin.version>1.6.7</nexus-staging-maven-plugin.version>
         <sonar.maven.plugin.version>3.5.0.1254</sonar.maven.plugin.version>
@@ -75,6 +75,12 @@
         <nimbus.dsl.version>${nimbus.core.version}</nimbus.dsl.version> <!-- DSL matches core's version -->
         <nimbus.test.version>${nimbus.version}</nimbus.test.version>
         <nimbus.starter.version>${nimbus.version}</nimbus.starter.version>
+        
+        <!-- Manually Managed third party versions -->
+        <jackson.version>2.9.6</jackson.version>
+        <commons-fileupload.version>1.3.3</commons-fileupload.version>
+		<spring-web.version>4.3.18.RELEASE</spring-web.version>
+		<commons-email.version>1.5</commons-email.version>
     </properties>
 
     <repositories>
@@ -312,6 +318,10 @@
                         <groupId>xerces</groupId>
                         <artifactId>xercesImpl</artifactId>
                     </exclusion>
+                    <exclusion>
+                    	<groupId>org.apache.commons</groupId>
+    					<artifactId>commons-fileupload</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
@@ -352,7 +362,50 @@
 			    <scope>runtime</scope>
 			    <version>${spring.boot.version}</version>
 			</dependency> -->
-        </dependencies>
+        
+			<!-- BEGIN Manually managing dependencies for Security Vulnerabilities -->
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-web</artifactId>
+				<version>${spring-web.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-webmvc</artifactId>
+				<version>${spring-web.version}</version>
+			</dependency>
+			<dependency>
+	        	<groupId>org.apache.commons</groupId>
+    			<artifactId>commons-fileupload</artifactId>
+    			<version>${commons-fileupload.version}</version>
+	        </dependency>
+	        <dependency>
+	        	<groupId>org.apache.commons</groupId>
+    			<artifactId>commons-email</artifactId>
+    			<version>${commons-email.version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>com.fasterxml.jackson.core</groupId>
+	            <artifactId>jackson-databind</artifactId>
+	            <version>${jackson.version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>com.fasterxml.jackson.core</groupId>
+	            <artifactId>jackson-annotations</artifactId>
+	            <version>${jackson.version}</version>
+	        </dependency>
+			<dependency>
+				<groupId>org.bouncycastle</groupId>
+				<artifactId>bcpkix-jdk15on</artifactId>
+				<version>1.60</version>
+			</dependency>
+			<dependency>
+			    <groupId>com.google.guava</groupId>
+			    <artifactId>guava</artifactId>
+			    <version>25.0-jre</version>
+			</dependency>
+			<!-- END Manually managing dependencies for Security Vulnerabilities -->
+		</dependencies>
     </dependencyManagement>
 
     <dependencies>
@@ -418,10 +471,6 @@
             <artifactId>spring-data-mongodb</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-commons</artifactId>
-        </dependency>
-        <dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
@@ -485,11 +534,6 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
 			<scope>test</scope>
-		</dependency>		
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
 		</dependency>	
 		        
         <!-- Querydsl -->
@@ -505,10 +549,6 @@
             <groupId>ch.mfrey.jackson</groupId>
             <artifactId>jackson-antpathfilter</artifactId>
             <version>1.0.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
         </dependency>
 		<dependency>
 			<groupId>org.owasp.esapi</groupId>

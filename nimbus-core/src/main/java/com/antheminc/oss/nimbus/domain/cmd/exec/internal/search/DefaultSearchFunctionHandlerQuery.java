@@ -15,7 +15,7 @@
  */
 package com.antheminc.oss.nimbus.domain.cmd.exec.internal.search;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.antheminc.oss.nimbus.domain.cmd.Command;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
