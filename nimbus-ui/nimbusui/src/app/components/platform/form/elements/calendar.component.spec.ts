@@ -19,6 +19,8 @@ import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/sessio
 import { AppInitService } from '../../../../services/app.init.service';
 import { InputLabel } from './input-label.component';
 
+let fixture, app;
+
 describe('Calendar', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -48,12 +50,29 @@ describe('Calendar', () => {
         AppInitService
        ]
     }).compileComponents();
+    fixture = TestBed.createComponent(Calendar);
+    app = fixture.debugElement.componentInstance;
   }));
 
-  it('should create the app', async(() => {
-    const fixture = TestBed.createComponent(Calendar);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
-  }));
+    it('should create the app', async(() => {
+      expect(app).toBeTruthy();
+    }));
+
+    it('ngOnInit() should call applyDateConstraint()', async(() => {
+      app.element = { leafState: '' };
+      spyOn(app, 'applyDateConstraint').and.returnValue('');
+      app.ngOnInit();
+      expect(app.applyDateConstraint).toHaveBeenCalled();
+    }));
+
+    it('ngOnInit() should update minDate and maxDate', async(() => {
+      app.getConstraint = () => {
+        return true;
+      };
+      app.applyDateConstraint();
+      const presentTime = new Date();
+      expect(app.minDate).toEqual(presentTime);
+      expect(app.maxDate).toEqual(presentTime);
+    }));
 
 });
