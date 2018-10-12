@@ -25,6 +25,7 @@ import javax.script.ScriptEngineManager;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.bson.Document;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.mongodb.core.MongoOperations;
@@ -180,12 +181,12 @@ public class MongoSearchByQuery extends MongoDBSearch {
 		List<?> output = new ArrayList();
 		String cr = (String)criteria.getWhere();
 		
-		CommandResult commndResult = getMongoOps().executeCommand(cr);
+		Document commndResult = getMongoOps().executeCommand(cr);
 				
-		if (commndResult != null && commndResult.get(Constants.SEARCH_NAMED_QUERY_RESULT.code) instanceof BasicDBList) {
-			BasicDBList result = (BasicDBList)commndResult.get(Constants.SEARCH_NAMED_QUERY_RESULT.code);
-			output.addAll(getMongoOps().getConverter().read(List.class, result));
-		}
+		//if (commndResult != null && commndResult.get(Constants.SEARCH_NAMED_QUERY_RESULT.code) instanceof BasicDBList) {
+			//BasicDBList result = (BasicDBList)commndResult.get(Constants.SEARCH_NAMED_QUERY_RESULT.code);
+			output.addAll(getMongoOps().getConverter().read(List.class, commndResult));
+		//}
 		return output;
 	}
 	

@@ -28,8 +28,8 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <spring.boot.version>1.5.13.RELEASE</spring.boot.version>
-        <spring.cloud.version>Dalston.RELEASE</spring.cloud.version>
+        <spring.boot.version>2.0.5.RELEASE</spring.boot.version>
+        <spring.cloud.version>Finchley.RELEASE</spring.cloud.version>
         <swagger.version>2.4.0</swagger.version>
         <mongo>3.4</mongo>
         <commons-io.version>2.4</commons-io.version>
@@ -364,7 +364,7 @@
 			</dependency> -->
         
 			<!-- BEGIN Manually managing dependencies for Security Vulnerabilities -->
-			<dependency>
+		<!-- 	<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-web</artifactId>
 				<version>${spring-web.version}</version>
@@ -403,7 +403,7 @@
 			    <groupId>com.google.guava</groupId>
 			    <artifactId>guava</artifactId>
 			    <version>25.0-jre</version>
-			</dependency>
+			</dependency> -->
 			<!-- END Manually managing dependencies for Security Vulnerabilities -->
 		</dependencies>
     </dependencyManagement>
@@ -434,10 +434,10 @@
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
         </dependency>
-        <dependency>
+       <!--  <dependency>
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
-        </dependency>
+        </dependency> -->
         <dependency>
             <groupId>org.eclipse.jdt.core.compiler</groupId>
             <artifactId>ecj</artifactId>
@@ -490,16 +490,16 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
         </dependency>
-        <dependency>
+       <!--  <dependency>
             <groupId>io.projectreactor</groupId>
             <artifactId>reactor-core</artifactId>
-            <!-- <scope>test</scope> -->
-        </dependency>
-        <dependency>
+            <scope>test</scope>
+        </dependency> -->
+       <!--  <dependency>
             <groupId>io.projectreactor</groupId>
             <artifactId>reactor-net</artifactId>
-            <!-- <scope>test</scope> -->
-        </dependency>
+            <scope>test</scope>
+        </dependency> -->
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>

@@ -63,6 +63,6 @@ public abstract class AbstractPersistableUnitTests {
     
     @After
     public void after() throws Exception {
-    	mongo.getDb().dropDatabase();
+    	mongo.getDb().drop();
     }
 }

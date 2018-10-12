@@ -15,6 +15,8 @@
  */
 package com.antheminc.oss.nimbus.domain.model.state.repo;
 
+import java.util.Optional;
+
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.domain.AuditorAware;
@@ -38,13 +40,9 @@ public class SpringSecurityAuditorAware implements AuditorAware<String> {
 	}	
 	
 	@Override
-	public String getCurrentAuditor() {
+	public Optional<String> getCurrentAuditor() {
 		
 		ClientUser loggedInUser = sessionProvider.getLoggedInUser();
-		if(loggedInUser != null) {
-			return loggedInUser.getLoginId();
-		}
-		
-		return null;		
+		return Optional.ofNullable(loggedInUser).map(ClientUser::getLoginId);
 	}	
 }
