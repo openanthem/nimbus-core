@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.data.mongodb.core.convert.CustomConversions;
+import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 
 /**
  * @author Soham Chakravarti
@@ -57,7 +57,7 @@ public final class MongoConvertersBuilder {
         .add(new UTCDateMongoConverters.UTCLocalDateDeserializer());
 	}
 	
-	public CustomConversions build() {
-		return new CustomConversions(converters);
+	public MongoCustomConversions build() {
+		return new MongoCustomConversions(converters);
 	}
 }
