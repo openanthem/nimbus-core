@@ -32,7 +32,6 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
@@ -51,7 +50,6 @@ import com.antheminc.oss.nimbus.test.domain.support.utils.CommandUtils;
 /**
  * @author Rakesh Patel
  */
-@EnableAutoConfiguration
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 
