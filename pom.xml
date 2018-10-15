@@ -7,30 +7,30 @@
 	<packaging>pom</packaging>
 
 	<properties>
+		<java.version>1.8</java.version>
+	
+	    <spring.boot.version>2.0.5.RELEASE</spring.boot.version>
+    	<spring.cloud.version>Finchley.RELEASE</spring.cloud.version>
+		<spring.boot.maven.version>2.0.5.RELEASE</spring.boot.maven.version>
+	
 		<sonar.projectName>Nimbus Framework</sonar.projectName>
 		<sonar.cpd.exclusions>src/main/java/com/antheminc/oss/nimbus/domain/defn/extension/*Conditional.java, **/ViewConfig.java, src/main/java/com/antheminc/oss/nimbus/test/scenarios/**/VR*.java</sonar.cpd.exclusions>
         <docker.image.prefix>nimbus</docker.image.prefix>
         <docker.plugin.version>0.3.258</docker.plugin.version>
-        <spring.boot.maven.version>1.4.0.RELEASE</spring.boot.maven.version>
+        
         <ecj.version>4.5.1</ecj.version>
-        <validation-api.version>1.1.0.Final</validation-api.version>
         <netty.version>4.1.2.Final</netty.version>
         <jjwt.version>0.6.0</jjwt.version>
         <sitemesh.version>2.4.2</sitemesh.version>
         <embed-mongo.version>2.0.0</embed-mongo.version>
-        <embed-redis.version>0.4</embed-redis.version>
 
         <main.basedir>..</main.basedir>
         <disable.checks>false</disable.checks>
-        <java.version>1.8</java.version>
+        
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven.compiler.source>${java.version}</maven.compiler.source>
-        <maven.compiler.target>${java.version}</maven.compiler.target>
-        <spring.boot.version>2.0.5.RELEASE</spring.boot.version>
-        <spring.cloud.version>Finchley.RELEASE</spring.cloud.version>
         <swagger.version>2.4.0</swagger.version>
-        <mongo>3.4</mongo>
+        
         <commons-io.version>2.4</commons-io.version>
         <drools.version>5.6.0.Final</drools.version>
         <commons-lang.version>3.7</commons-lang.version>
@@ -38,6 +38,9 @@
         <apache-dir-server.version>1.5.5</apache-dir-server.version>
         <jackson-mapper-asl.version>1.9.6</jackson-mapper-asl.version>
         <quartz.version>2.2.3</quartz.version>
+        
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven-assembly-plugin.version>2.6</maven-assembly-plugin.version>
         <maven-build-helper-maven-plugin.version>3.0.0</maven-build-helper-maven-plugin.version>
         <maven-clean-plugin.version>3.0.0</maven-clean-plugin.version>
@@ -211,19 +214,6 @@
                 <artifactId>nexus-staging-maven-plugin</artifactId>
                 <scope>deploy</scope>
             </dependency>
-            <!-- <dependency>
-                <groupId>org.apache.qpid</groupId>
-                <artifactId>qpid-broker</artifactId>
-                <version>${qpid-broker.version}</version>
-                <scope>test</scope>
-            </dependency> -->
-            <!-- <dependency>
-                <groupId>org.springframework.amqp</groupId>
-                <artifactId>spring-rabbit</artifactId>
-                <version>${spring-rabbit.version}</version>
-                <scope>test</scope>
-            </dependency> -->
-
 
             <!-- Import dependency management from Spring Cloud -->
             <dependency>
@@ -233,22 +223,16 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <!-- Check here for compatible boot dependencies : https://repo.spring.io/release/org/springframework/cloud/spring-cloud-starter-parent/Camden.RELEASE/ -->
+            
+            <!-- Import dependency management from Spring Boot -->
             <dependency>
-                <!-- Import dependency management from Spring Boot -->
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
                 <version>${spring.boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <!-- <dependency>
-				<groupId>org.springframework.data</groupId>
-				<artifactId>spring-data-releasetrain</artifactId>
-				<version>Hopper-SR1</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency> -->
+
             <!-- Third Party must have dependencies -->
             <dependency>
                 <groupId>org.activiti</groupId>
@@ -352,56 +336,6 @@
                 <artifactId>nimbus-starter</artifactId>
                 <version>${nimbus.starter.version}</version>
             </dependency>
-            <!-- <dependency>
-			    <groupId>org.springframework.boot</groupId>
-			    <artifactId>spring-boot-devtools</artifactId>
-			    <optional>true</optional>
-			    <scope>runtime</scope>
-			    <version>${spring.boot.version}</version>
-			</dependency> -->
-        
-			<!-- BEGIN Manually managing dependencies for Security Vulnerabilities -->
-		<!-- 	<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-web</artifactId>
-				<version>${spring-web.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-webmvc</artifactId>
-				<version>${spring-web.version}</version>
-			</dependency>
-			<dependency>
-	        	<groupId>org.apache.commons</groupId>
-    			<artifactId>commons-fileupload</artifactId>
-    			<version>${commons-fileupload.version}</version>
-	        </dependency>
-	        <dependency>
-	        	<groupId>org.apache.commons</groupId>
-    			<artifactId>commons-email</artifactId>
-    			<version>${commons-email.version}</version>
-	        </dependency>
-	        <dependency>
-	            <groupId>com.fasterxml.jackson.core</groupId>
-	            <artifactId>jackson-databind</artifactId>
-	            <version>${jackson.version}</version>
-	        </dependency>
-	        <dependency>
-	            <groupId>com.fasterxml.jackson.core</groupId>
-	            <artifactId>jackson-annotations</artifactId>
-	            <version>${jackson.version}</version>
-	        </dependency>
-			<dependency>
-				<groupId>org.bouncycastle</groupId>
-				<artifactId>bcpkix-jdk15on</artifactId>
-				<version>1.60</version>
-			</dependency>
-			<dependency>
-			    <groupId>com.google.guava</groupId>
-			    <artifactId>guava</artifactId>
-			    <version>25.0-jre</version>
-			</dependency> -->
-			<!-- END Manually managing dependencies for Security Vulnerabilities -->
 		</dependencies>
     </dependencyManagement>
 
@@ -431,10 +365,6 @@
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
         </dependency>
-       <!--  <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-        </dependency> -->
         <dependency>
             <groupId>org.eclipse.jdt.core.compiler</groupId>
             <artifactId>ecj</artifactId>
@@ -480,10 +410,6 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
         </dependency>
-        <!-- <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-		</dependency> -->
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
@@ -492,16 +418,6 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
         </dependency>
-       <!--  <dependency>
-            <groupId>io.projectreactor</groupId>
-            <artifactId>reactor-core</artifactId>
-            <scope>test</scope>
-        </dependency> -->
-       <!--  <dependency>
-            <groupId>io.projectreactor</groupId>
-            <artifactId>reactor-net</artifactId>
-            <scope>test</scope>
-        </dependency> -->
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
