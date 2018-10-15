@@ -14,7 +14,6 @@
         <spring.boot.maven.version>1.4.0.RELEASE</spring.boot.maven.version>
         <ecj.version>4.5.1</ecj.version>
         <validation-api.version>1.1.0.Final</validation-api.version>
-        <byte-buddy.version>1.4.17</byte-buddy.version>
         <netty.version>4.1.2.Final</netty.version>
         <jjwt.version>0.6.0</jjwt.version>
         <sitemesh.version>2.4.2</sitemesh.version>
@@ -167,7 +166,6 @@
             <dependency>
                 <groupId>net.bytebuddy</groupId>
                 <artifactId>byte-buddy</artifactId>
-                <version>${byte-buddy.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.netty</groupId>
