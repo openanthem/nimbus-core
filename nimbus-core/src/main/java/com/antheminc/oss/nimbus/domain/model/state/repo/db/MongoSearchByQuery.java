@@ -37,15 +37,15 @@ import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.state.internal.AbstractListPaginatedParam.PageWrapper.PageRequestAndRespone;
 import com.antheminc.oss.nimbus.support.EnableAPIMetricCollection;
-import com.mongodb.BasicDBList;
-import com.mongodb.CommandResult;
 import com.querydsl.core.types.EntityPath;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.mongodb.AbstractMongodbQuery;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 /**
  * @author Rakesh Patel
@@ -183,11 +183,19 @@ public class MongoSearchByQuery extends MongoDBSearch {
 		
 		Document commndResult = getMongoOps().executeCommand(cr);
 				
-		//if (commndResult != null && commndResult.get(Constants.SEARCH_NAMED_QUERY_RESULT.code) instanceof BasicDBList) {
-			//BasicDBList result = (BasicDBList)commndResult.get(Constants.SEARCH_NAMED_QUERY_RESULT.code);
-			output.addAll(getMongoOps().getConverter().read(List.class, commndResult));
-		//}
+		if (commndResult != null && commndResult.get(Constants.SEARCH_NAMED_QUERY_RESULT.code) instanceof List) {
+			List<Document> result = (List<Document>)commndResult.get(Constants.SEARCH_NAMED_QUERY_RESULT.code);
+			GenericType gt = getMongoOps().getConverter().read(GenericType.class, new org.bson.Document(GenericType.CONTENT_KEY, result));
+			output.addAll(gt.getContent());
+		}
 		return output;
+	}
+	
+	@Getter @Setter
+	static class GenericType<T> {
+		public static final String CONTENT_KEY = "content";
+		
+		List<T> content;
 	}
 	
 	/*
