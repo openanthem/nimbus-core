@@ -1,7 +1,9 @@
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DropdownModule, GrowlModule, MessagesModule, DialogModule, AccordionModule, DataTableModule, FileUploadModule, PickListModule, ListboxModule, CheckboxModule, RadioButtonModule, CalendarModule } from 'primeng/primeng';
+import { DropdownModule, GrowlModule, MessagesModule, DialogModule, AccordionModule, 
+    DataTableModule, FileUploadModule, PickListModule, ListboxModule, CheckboxModule, 
+    RadioButtonModule, CalendarModule, TreeTableModule, InputSwitchModule } from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
 import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -9,6 +11,7 @@ import { KeyFilterModule } from 'primeng/keyfilter';
 import { JL } from 'jsnlog';
 import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
 import { AngularSvgIconModule } from 'angular-svg-icon';
+import {ToastModule} from 'primeng/toast';
 
 import { Tile } from './tile.component';
 import { MessageComponent } from './message/message.component';
@@ -22,7 +25,6 @@ import { StaticText } from '../platform/content/static-content.component';
 import { Form } from '../platform/form.component';
 import { Link } from '../platform/link.component';
 import { Menu } from '../platform/menu.component';
-import { AccordionMain } from '../platform/content/accordion.component';
 import { InfiniteScrollGrid } from '../platform/grid/grid.component';
 import { Button } from '../platform/form/elements/button.component';
 import { ButtonGroup } from '../platform/form/elements/button-group.component';
@@ -31,8 +33,7 @@ import { ComboBox } from '../platform/form/elements/combobox.component';
 import { TooltipComponent } from '../platform/tooltip/tooltip.component';
 import { CardDetailsFieldComponent } from '../platform/card/card-details-field.component';
 import { FrmGroupCmp } from './form-group.component';
-import { Accordion } from '../platform/accordion.component';
-import { AccordionGroup } from '../platform/accordion-group.component';
+import { Accordion } from '../platform/content/accordion.component';
 import { ActionDropdown } from '../platform/form/elements/action-dropdown.component';
 import { DateTimeFormatPipe } from '../../pipes/date.pipe';
 import { SelectItemPipe } from '../../pipes/select-item.pipe';
@@ -61,6 +62,14 @@ import { AppInitService } from '../../services/app.init.service';
 import { HeaderCheckBox } from '../platform/form/elements/header-checkbox.component';
 import { SvgComponent } from './svg/svg.component';
 import { Image } from './image.component';
+import { InputLabel } from '../platform/form/elements/input-label.component';
+import { Label } from '../platform/content/label.component';
+import { TreeGrid } from '../platform/tree-grid/tree-grid.component';
+import { InputSwitch } from '../platform/form/elements/input-switch.component';
+import { CardDetailsFieldGroupComponent } from '../platform/card/card-details-field-group.component';
+import { DisplayValueDirective } from '../../directives/display-value.directive';
+import { FormGridFiller } from '../platform/form/form-grid-filler.component';
+import { InputLegend } from '../platform/form/elements/input-legend.component';
 
 let fixture, app, pageService;
 
@@ -92,7 +101,6 @@ describe('Tile', () => {
         Form,
         Link,
         Menu,
-        AccordionMain,
         InfiniteScrollGrid,
         Button,
         ButtonGroup,
@@ -102,7 +110,6 @@ describe('Tile', () => {
         CardDetailsFieldComponent,
         FrmGroupCmp,
         Accordion,
-        AccordionGroup,
         ActionDropdown,
         DateTimeFormatPipe,
         SelectItemPipe,
@@ -123,7 +130,15 @@ describe('Tile', () => {
         DataTable,
         HeaderCheckBox,
         SvgComponent,
-        Image
+        Image,
+        InputLabel,
+        Label,
+        TreeGrid,
+        InputSwitch,
+        CardDetailsFieldGroupComponent,
+        DisplayValueDirective,
+        FormGridFiller,
+        InputLegend
        ],
        imports: [
         FormsModule,
@@ -145,7 +160,10 @@ describe('Tile', () => {
         TableModule,
         KeyFilterModule,
         StorageServiceModule,
-        AngularSvgIconModule
+        AngularSvgIconModule,
+        ToastModule,
+        TreeTableModule, 
+        InputSwitchModule
        ],
        providers: [
         {provide: PageService, useClass: MockPageService},

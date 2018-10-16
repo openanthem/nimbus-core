@@ -2,16 +2,25 @@ import { TestBed, inject, async } from '@angular/core/testing';
 import { HttpClient, HttpRequest } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
 
 import { CustomHttpClient } from './httpclient.service';
+import { SessionStoreService, CUSTOM_STORAGE } from './session.store';
 
 let backend, service;
 
 describe('CustomHttpClient', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [CustomHttpClient],
-      imports: [ HttpClientTestingModule ]
+      providers: [
+        { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+        CustomHttpClient,
+        SessionStoreService
+    ],
+      imports: [ 
+          HttpClientTestingModule,
+          StorageServiceModule
+        ]
     });
     backend = TestBed.get(HttpTestingController);
     service = TestBed.get(CustomHttpClient);

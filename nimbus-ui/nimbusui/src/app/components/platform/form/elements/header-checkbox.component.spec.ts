@@ -1,7 +1,6 @@
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
+import { of as observableOf,  Observable } from 'rxjs';
 
 import { HeaderCheckBox } from './header-checkbox.component';
 import { EventEmitter } from 'events';
@@ -87,9 +86,9 @@ describe('HeaderCheckBox', () => {
   }));
 
   it('ngOnInit() should update headerChckbxState as true', async(() => {
-    const sChange = Observable.of([1, 2, 3, 4, 5]);
+    const sChange = observableOf([1, 2, 3, 4, 5]);
     app.dt = { selectionChange: sChange, first: 0, value: [1, 2, 3, 4, 5],
-     onPage: Observable.of({
+     onPage: observableOf({
        first: ''
      }) };
     app.element = { config: { uiStyles: { attributes: { pageSize: 5 } } } };
@@ -98,9 +97,9 @@ describe('HeaderCheckBox', () => {
   }));
 
   it('ngOnInit() should update headerChckbxState as false', async(() => {
-    const sChange = Observable.of([1, 2, 3, 4, 5]);
+    const sChange = observableOf([1, 2, 3, 4, 5]);
     app.dt = { selectionChange: sChange, first: 0, value: [1, 2, 3, 4, 6],
-     onPage: Observable.of({
+     onPage: observableOf({
        first: 3
      }) };
      app.currentSelection= [2];
@@ -110,9 +109,9 @@ describe('HeaderCheckBox', () => {
   }));
 
   it('ngOnInit() should update headerChckbxState and call updateToggleRowsWithCheckbox()', async(() => {
-    const sChange = Observable.of([1, 2, 3, 4, 5]);
+    const sChange = observableOf([1, 2, 3, 4, 5]);
     app.dt = { selectionChange: sChange, first: 0, value: [1, 2, 3, 4, 6],
-      onPage: Observable.of({
+      onPage: observableOf({
         first: ''
       }) };    app.element = { config: { uiStyles: { attributes: { pageSize: 5 } } } };
     spyOn(app, 'updateToggleRowsWithCheckbox').and.callThrough();
