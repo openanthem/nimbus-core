@@ -52,7 +52,7 @@ public class AccessConditionalStateEventHandler extends AbstractConditionalState
 	}
 	
 	@Override
-	public void handle(AccessConditional configuredAnnotation, Param<?> param) {
+	public void onStateLoad(AccessConditional configuredAnnotation, Param<?> param) {
 		handleInternal(param, configuredAnnotation);
 	}
 

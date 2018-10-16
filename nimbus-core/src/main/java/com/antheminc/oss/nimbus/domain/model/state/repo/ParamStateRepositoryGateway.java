@@ -227,7 +227,7 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 				if(param.isCollection()) 
 					param.findIfCollection().clear();
 				
-				// set set to null only if parent state is not null
+				// set to null only if parent state is not null
 				Param<?> parentParam = Optional.ofNullable(param.getParentModel())
 						.map(Model::getAssociatedParam)
 						.orElse(null);
@@ -247,8 +247,10 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 			} else if(param.isCollection()) {
 				ListParam<P> listParam = (ListParam<P>)param.findIfCollection();
 				//reset collection
+				listParam.clear();
+				
 				//_instantiateAndSet(currRep, param);
-				listParam.getType().getModel().instantiateAndSet();
+				//listParam.getType().getModel().instantiateAndSet();
 
 				if(!(newState instanceof Collection))
 					throw new InvalidArgumentException("Collection param with path: "+param.getPath()+" must have argument of type "+Collection.class);
@@ -296,8 +298,10 @@ public class ParamStateRepositoryGateway implements ParamStateGateway {
 			ListParam<P> mappedListParam = (ListParam<P>)param.findIfCollection();
 			
 			// reset collection
+			mappedListParam.clear();
+			
 			//_instantiateAndSet(currRep, param);
-			mappedListParam.getType().getModel().instantiateAndSet();
+			//mappedListParam.getType().getModel().instantiateAndSet();
 
 			if(!(newState instanceof Collection))
 				throw new InvalidArgumentException("Collection param with path: "+param.getPath()+" must have argument of type "+Collection.class);

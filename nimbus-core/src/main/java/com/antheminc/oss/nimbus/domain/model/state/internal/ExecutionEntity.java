@@ -73,6 +73,8 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdLong implements Seri
 	
 	private Map<String, Object> paramRuntimes = new HashMap<>();
 	
+	@JsonIgnore private transient boolean isNew;
+	
 	public ExecutionEntity() { }
 	
 	public ExecutionEntity(V view, C core) {
@@ -281,10 +283,15 @@ public class ExecutionEntity<V, C> extends AbstractEntity.IdLong implements Seri
 		}
 		
 		@Override
+		public boolean isNew() {
+			return _this().isNew;
+		}
+		
+		@Override
 		protected void initSetupInternal() {
 			getExecutionRuntime().start();
 			
-			initState();
+			//==initState();
 		}
 		
 		@Override

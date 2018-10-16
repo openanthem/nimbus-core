@@ -37,29 +37,27 @@ public class CommandElementLinked extends CommandElement implements Serializable
 	@Getter(value=AccessLevel.PROTECTED)
 	private CommandElementLinked next;
 	
-	
-	@Override
-	public CommandElementLinked clone() {
-		CommandElementLinked cloned = new CommandElementLinked();
-		shallowCopy(cloned);
-
-		CommandElementLinked nextCloned = Optional.ofNullable(getNext()).map(n -> n.clone()).orElse(null);
-		cloned.setNext(nextCloned);
-
-		return cloned;
+	public CommandElementLinked() {
+		
 	}
 	
-	public void shallowCopy(CommandElementLinked cloned) {
-		cloned.setSeqNum(getSeqNum());
-		super.shallowCopy(cloned);
+	public CommandElementLinked(int seqNum, Type type, String alias, Long refId) {
+		setSeqNum(seqNum);
+		setType(type);
+		setAlias(alias);
+		setRefId(refId);
+	}
+	
+	public CommandElementLinked(CommandElementLinked source) {
+		this(source.getSeqNum(), source.getType(), source.getAlias(), source.getRefId());
+		CommandElementLinked nextCloned = Optional.ofNullable(source.getNext()).map(n -> new CommandElementLinked(n)).orElse(null);
+		setNext(nextCloned);
 	}
 	
 	public CommandElementLinked cloneUpto(Type type, StringBuilder absoluteUri) {
 		if(getType().equals(type))
 			return null;
-		CommandElementLinked cloned = new CommandElementLinked();
-		cloned.setSeqNum(getSeqNum());
-		shallowCopy(cloned);
+		CommandElementLinked cloned = new CommandElementLinked(getSeqNum(), getType(), getAlias(), getRefId());
 		absoluteUri.append(getUri());
 		CommandElementLinked nextCloned = Optional.ofNullable(getNext()).map(n -> n.cloneUpto(type, absoluteUri)).orElse(null);
 		

@@ -49,13 +49,22 @@ import { ComponentTypes } from '../../../../shared/param-annotations.enum';
             (@dropdownAnimation.start)="animationStart($event)" 
             (@dropdownAnimation.done)="animationDone($event)" 
             attr.aria-hidden="{{isHidden}}">
-            <nm-action-link
-                [elementPath]="elementPath" 
-                [rowData]="rowData" 
-                [param]="param"
-                [element]="element?.type?.model?.params[i]"
-                *ngFor="let param of params; index as i">
-            </nm-action-link>
+            <ng-template [ngIf]="rowData">
+                <nm-action-link
+                    [elementPath]="elementPath" 
+                    [rowData]="rowData" 
+                    [param]="param"
+                    [element]="element?.type?.model?.params[i]"
+                    *ngFor="let param of params; index as i">
+                </nm-action-link>
+            </ng-template>
+            <ng-template [ngIf]="!rowData">
+                <ng-template ngFor let-ele [ngForOf]="element?.type?.model?.params">
+                    <ng-template [ngIf]="ele.alias == 'Link'">
+                        <nm-link [element] = "ele"> </nm-link>
+                    </ng-template>
+                 </ng-template>
+           </ng-template>
         </div>
     </div>
   `
@@ -156,7 +165,7 @@ export class ActionLink extends BaseElement{
         }
     
         ngOnInit() {
-            this.loadLabelConfigByCode(this.param.code, this.param.labelConfigs);
+            this.loadLabelConfigFromConfigs(this.element.labels, this.param.code);
 
             // replace parameters in url enclosed within {}
             if (this.param.uiStyles && this.param.uiStyles.attributes && this.param.uiStyles.attributes.url) {

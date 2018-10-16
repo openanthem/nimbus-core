@@ -34,7 +34,6 @@ export class ParamConfig implements Serializable<ParamConfig,string> {
     id: string;
     code: string;
     type: ConfigType;   
-    labelConfigs: LabelConfig[];
     validation: Validation;
     uiNatures: UiNature[];
     label: string;
@@ -52,14 +51,7 @@ export class ParamConfig implements Serializable<ParamConfig,string> {
         }
         if(inJson.type != null) {
             obj['type'] = new ConfigType(this.configSvc).deserialize( inJson.type );
-        }
-        let labelConfigs = [];  
-        if ( inJson.labelConfigs != null && inJson.labelConfigs.length > 0) { 
-            for ( var p in inJson.labelConfigs ) {
-                labelConfigs.push( new LabelConfig().deserialize(inJson.labelConfigs[p]) );
-            }
-            obj['labelConfigs'] = labelConfigs;
-        }   
+        } 
         if ( inJson.validations != null ) {
             obj['validation'] = new Validation().deserialize( inJson.validations );
         }
@@ -221,6 +213,8 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
     border: boolean;
     showSourceControls: boolean;
     showTargetControls: boolean;
+    scriptName: string;
+    orientation: string;
     
     deserialize( inJson ) {
         let obj = this;

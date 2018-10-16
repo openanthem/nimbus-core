@@ -17,10 +17,12 @@ package com.antheminc.oss.nimbus.test.domain.mock;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.antheminc.oss.nimbus.domain.defn.AssociatedEntity;
 import com.antheminc.oss.nimbus.domain.defn.Converters.ParamConverter;
 import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values;
+import com.antheminc.oss.nimbus.domain.defn.extension.Content.Label;
 import com.antheminc.oss.nimbus.domain.model.config.AnnotationConfig;
 import com.antheminc.oss.nimbus.domain.model.config.EventHandlerConfig;
 import com.antheminc.oss.nimbus.domain.model.config.ExecutionConfig;
@@ -46,7 +48,7 @@ public class MockParamConfig implements ParamConfig<Object> {
 	private String code = "";
 	private String id = "";
 	private List<ParamConverter> converters;
-	private List<LabelConfig> labelConfigs;
+	private Set<Label> labels;
 	private EventHandlerConfig eventHandlerConfig;
 	private ExecutionConfig executionConfig;
 	private boolean leaf;

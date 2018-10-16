@@ -1,14 +1,14 @@
 <!-- Display Tiles -->
 <nm-message messageContext="{{element?.message.context}}" [messageArray]="element?.message.messageArray" [life]="element?.message.life"  *ngIf="element?.message"></nm-message>
 
-<nm-message messageContext = "GROWL" [messageArray]="errMsgArray" [life]=10000 *ngIf="errMsgArray.length > 0"></nm-message>
+<nm-message messageContext = "TOAST" [messageArray]="errMsgArray" *ngIf="errMsgArray.length > 0"></nm-message>
 
 <ng-template [ngIf]="element?.visible">
     <ng-template [ngIf]="element?.config?.labelConfigs?.length > 0">
         <!-- <h1 class="page-title {{imgSrc}} ">
             {{label}}
         </h1> -->
-        <nm-label *ngIf="labelConfig?.text" [labelConfig]="labelConfig" [labelClass]="imgSrc + ' page-title'" [size]="labelSize"></nm-label>
+        <nm-label *ngIf="!isLabelEmpty" [element]="element" [labelClass]="imgSrc + ' page-title'" [size]="labelSize"></nm-label>
     </ng-template>
 
     <nm-tile [element]="tile" *ngFor="let tile of tilesList" [position]="position+1"></nm-tile>

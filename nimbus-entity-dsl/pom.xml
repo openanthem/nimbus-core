@@ -1,0 +1,26 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.antheminc.oss</groupId>
+		<artifactId>nimbus-parent</artifactId>
+		<version>1.2.0.BUILD-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>nimbus-entity-dsl</artifactId> 
+	<packaging>jar</packaging>
+	<name>nimbus-entity-dsl</name>
+    
+    <dependencies>
+       	<dependency>
+			<groupId>com.antheminc.oss</groupId>
+			<artifactId>nimbus-core</artifactId>
+		</dependency>
+    </dependencies>
+
+	<build>
+		 <sourceDirectory>../nimbus-core/target/generated-sources/annotations</sourceDirectory>
+		 <directory>../nimbus-core/target/nimbus-entity-dsl</directory>
+	</build>
+
+</project>

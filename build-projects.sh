@@ -2,13 +2,14 @@
 
 # The build order: (The command line arguments should be in this order as well)
     # nimbus-parent - it builds:
-    	# nimbus-core 
-    	# nimbus-entity-dsl
-    # nimbus-test
-	# nimbus-ui
+        # nimbus-core 
+        # nimbus-entity-dsl
+        # nimbus-test
+    # nimbus-ui
     # nimbus-extn-activiti
+    # nimbus-starter
    
-PROJECTS="nimbus-parent,nimbus-test,nimbus-ui,nimbus-extn-activiti,nimbus-starter";
+PROJECTS=".,nimbus-ui,nimbus-extn-activiti,nimbus-starter";
 
 while getopts p:m: option
 do

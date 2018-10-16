@@ -1,3 +1,5 @@
+import { ConstraintMapping } from './../../shared/validationconstraints.enum';
+import { Constraint } from './../../shared/param-config';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -17,7 +19,7 @@
  */
 'use strict';
 import { Component, Input } from '@angular/core';
-import { FormGroup, AbstractControlDirective, NgModel } from '@angular/forms';
+import { FormGroup, AbstractControlDirective, NgModel, ValidationErrors } from '@angular/forms';
 import { Param } from '../../shared/param-state';
 import { Message } from '../../shared/message';
 import { ComponentTypes, ViewComponent } from '../../shared/param-annotations.enum';
@@ -110,13 +112,34 @@ export class FormElement extends BaseElement {
     getComponentClass() {
         let componentClass: string[] = [];
         componentClass.push('form-group');
+        let overrideClass: string = '';
         if (this.element.config.uiStyles && this.element.config.uiStyles.attributes &&
             this.element.config.uiStyles.attributes.cssClass && this.element.config.uiStyles.attributes.cssClass !== '') {
-                componentClass.push(this.element.config.uiStyles.attributes.cssClass);
+                overrideClass = this.element.config.uiStyles.attributes.cssClass;
+        }  
+        if (this.element.config.uiStyles && this.element.config.uiStyles.attributes && 
+            this.element.config.uiStyles.attributes.cols && this.element.config.uiStyles.attributes.cols !== '') {
+            // Convert cols to equivalent css styles
+            if (this.element.config.uiStyles.attributes.cols === '6') { // occupies 1 cols of 6
+                overrideClass += ' col-sm-2';
+            } else if (this.element.config.uiStyles.attributes.cols === '4') { // occupies 1 cols of 4
+                overrideClass += ' col-sm-3';
+            } else if (this.element.config.uiStyles.attributes.cols === '3') { // occupies 1 cols of 3
+                overrideClass += ' col-sm-4';
+            } else if (this.element.config.uiStyles.attributes.cols === '2') { // occupies 1 cols of 2
+                overrideClass += ' col-sm-6';
+            } else if (this.element.config.uiStyles.attributes.cols === '1') { // occupies 1 col of 1
+                overrideClass += ' col-sm-12';
+            } else {
+                overrideClass += ' col-sm-12';
+            }
+        } 
+        if (overrideClass != '') {
+            componentClass.push(overrideClass);
         } else {
             componentClass.push(this.elementCss);
         }
-        
+
         // Error Styles
         componentClass.push(this.getErrorStyles());
 
@@ -125,14 +148,7 @@ export class FormElement extends BaseElement {
 
     ngOnInit() {
         super.ngOnInit();
-        this.updatePositionWithNoLabel();        
-        // if (this.element.config.uiStyles && this.element.config.uiStyles.attributes.controlId !== null) {
-        //     if (Number(this.element.config.uiStyles.attributes.controlId) % 2 === 0) {
-        //         this.elementCss = this.elementCss + ' even';
-        //     } else {
-        //         this.elementCss = this.elementCss + ' odd';
-        //     }
-        // }
+        this.updatePositionWithNoLabel();
     }
 
     getElementStyle() {
@@ -151,42 +167,23 @@ export class FormElement extends BaseElement {
      */
     updateErrorMessages() {
         var control: AbstractControl = this.form.controls[this.element.config.code];
+        let constraintNames = ValidationUtils.getAllValidationNames();
         if (control.invalid) {
-            if (this.element.config.validation) {
-                this.element.config.validation.constraints.forEach(validator => {
-                    
-                    // cycle through all of the supported validation errors and apply messages for those that are present.
-                    ValidationUtils.getAllValidationNames()
-                        .filter(validationName => this.hasErrors(control, validationName))
-                        .forEach(validationName => {
-                            
-                            // prefer validation message from the server first
-                            // if unavailable, set the error message to the default for the particular type of error.
-                            this.addErrorMessages(validator.attribute.message ? validator.attribute.message : ValidationUtils.getDefaultErrorMessage(validationName));
-                    });
-                });
-            }
+            let errs: ValidationErrors = control.errors;
+            for (var key in errs) {
+                let constraintName = ConstraintMapping.getConstraintValue(key);
+                let constraint: Constraint = this.element.config.validation.constraints.find(v => v.name == constraintName);
+                this.addErrorMessages(constraint.attribute.message ? constraint.attribute.message : ValidationUtils.getDefaultErrorMessage(key));
+            }   
         }
-    }
-
-    /**
-     * <p>Return whether or not control has errors available for the provided validationName.
-     * @param control the form control to check if validation errors exist
-     * @param validationName the name of the validation error to check
-     */
-    private hasErrors(control: AbstractControl, validationName: string): boolean {
-        if (!control || !control.errors || !validationName) {
-            return false;
-        }
-        return control.errors[validationName];
     }
 
     addErrorMessages(errorText: string) {
         let errorMessage: Message, summary: string;
         errorMessage = new Message();
         errorMessage.context = 'INLINE';
-        errorMessage.life = 10000;
-        errorMessage.messageArray.push({ severity: 'error', summary: summary, detail: errorText });
+        // errorMessage.life = 10000;
+        errorMessage.messageArray.push({ severity: 'error', summary: summary, detail: errorText, life: 10000  });
         this.elemMessages.push(errorMessage);
     }
 

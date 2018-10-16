@@ -28,7 +28,9 @@ public interface QuadModelBuilder {
 
 	default <V, C> QuadModel<V, C> build(Command cmd) {
 		ExecutionEntity<V, C> eState = new ExecutionEntity<>();
-		return build(cmd, eState);
+		QuadModel<V, C> q = build(cmd, eState);
+		q.getRoot().initState();
+		return q;
 	}
 	
 	public <V, C> QuadModel<V, C> build(Command cmd, V viewState, Param<C> coreParam);

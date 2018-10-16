@@ -103,26 +103,4 @@ public class DefaultExecutionTxnContext implements ExecutionTxnContext {
 		
 	}
 
-	public static void main(String args[]) {
-		Multi m = new Multi();
-		
-		m.push(new DefaultExecutionTxnContext());
-		System.out.println("Pushed 1: " + m.subContextsQueue.peek());
-		
-		m.push(new DefaultExecutionTxnContext());
-		System.out.println("Pushed 2: " + m.subContextsQueue.peek());
-		
-		m.push(new DefaultExecutionTxnContext());
-		System.out.println("Pushed 3: " + m.subContextsQueue.peek());
-		
-		System.out.println("Pulled 1: " +m.pop());
-		System.out.println("Peek 1: " + m.subContextsQueue.peek());
-		
-		System.out.println("Pulled 2: " +m.pop());
-		System.out.println("Peek 2: " + m.subContextsQueue.peek());
-		
-		System.out.println("Pulled 3: " +m.pop());
-		System.out.println("Peek 3: " + m.subContextsQueue.peek());
-	}
-
 }

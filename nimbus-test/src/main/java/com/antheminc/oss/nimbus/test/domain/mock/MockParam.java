@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -59,6 +60,7 @@ public class MockParam implements Param<Object> {
 	private List<MappedParam<?, Object>> eventSubscribers = new ArrayList<>();
 	private LockTemplate lockTemplate = null;
 	private Set<Message> messages = new HashSet<>();
+	private Set<LabelState> labels = new HashSet<>();
 	private Map<String, Model<Object>> modelMap = new HashMap<>();
 	private Map<String, Param<Object>> paramMap = new HashMap<>();
 	private Model<Object> parentModel = null;
@@ -70,6 +72,10 @@ public class MockParam implements Param<Object> {
 	private List<ParamValue> values = null;
 	private boolean visible = true;
 	private Class<? extends ValidationGroup>[] activeValidationGroups;
+	private boolean collection;
+	private boolean collectionElem;
+	private boolean nested;
+	private boolean leaf;
 
 	@Override
 	public String getConfigId() {
@@ -263,11 +269,6 @@ public class MockParam implements Param<Object> {
 	}
 
 	@Override
-	public boolean isLeaf() {
-		return false;
-	}
-
-	@Override
 	public boolean isLeafOrCollectionWithLeafElems() {
 		return false;
 	}
@@ -283,24 +284,8 @@ public class MockParam implements Param<Object> {
 	}
 
 	@Override
-	public boolean isCollection() {
-		return false;
-	}
-
-	@Override
-	public boolean isNested() {
-		return false;
-	}
-
-	@Override
 	public com.antheminc.oss.nimbus.domain.model.state.EntityState.Model<Object> findIfNested() {
 		return null;
-	}
-
-	@Override
-	public boolean isCollectionElem() {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	@Override
@@ -336,5 +321,25 @@ public class MockParam implements Param<Object> {
 	@Override
 	public boolean hasContextStateChanged() {
 		return false;
+	}
+
+	@Override
+	public LabelState getDefaultLabel() {
+		return getLabel(Locale.getDefault().toLanguageTag());
+	}
+	
+	@Override
+	public LabelState getLabel(String localeLanguageTag) {
+		Set<LabelState> labelState = this.labels;
+		if (null == labelState) {
+			return null;
+		}
+
+		LabelState label = labelState.stream().filter(ls -> localeLanguageTag.equals(ls.getLocale())).reduce((a, b) -> {
+			throw new IllegalStateException(
+					"Found more than one element with " + localeLanguageTag + " on param " + this);
+		}).orElse(null);
+
+		return label;
 	}
 }

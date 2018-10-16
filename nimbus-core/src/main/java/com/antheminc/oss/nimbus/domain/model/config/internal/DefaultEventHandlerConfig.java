@@ -33,6 +33,7 @@ import com.antheminc.oss.nimbus.domain.model.config.EventHandlerConfig;
 import com.antheminc.oss.nimbus.domain.model.config.event.ConfigEventHandlers.OnParamCreateHandler;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateChangeHandler;
 import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadHandler;
+import com.antheminc.oss.nimbus.domain.model.state.event.StateEventHandlers.OnStateLoadNewHandler;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -49,6 +50,8 @@ public class DefaultEventHandlerConfig implements EventHandlerConfig {
 	
 	// state handlers
 	private _InternalConfig<OnStateLoadHandler<Annotation>> onStateLoadHandlers = new _InternalConfig<>();
+	private _InternalConfig<OnStateLoadNewHandler<Annotation>> onStateLoadNewHandlers = new _InternalConfig<>();
+	
 	private _InternalConfig<OnStateChangeHandler<Annotation>> onStateChangeHandlers = new _InternalConfig<>();
 	
 	private static class _InternalConfig<T> {
@@ -57,7 +60,17 @@ public class DefaultEventHandlerConfig implements EventHandlerConfig {
 				Integer order1 = findOrder(a1);
 				Integer order2 = findOrder(a2);
 				
-				return order1.compareTo(order2);
+				int result = order1.compareTo(order2);
+				   
+				if(result!=0)
+					return result;
+				   
+			    // only if it's the exact same instance
+				if(result==0 && a1==a2)
+					return 0;
+				
+				// if the order is exact same, then return as next element
+				return 1;
 			}
 		};
 		
@@ -124,6 +137,7 @@ public class DefaultEventHandlerConfig implements EventHandlerConfig {
 			onParamCreateHandlers.isEmpty() && 
 			
 			onStateLoadHandlers.isEmpty() &&
+			onStateLoadNewHandlers.isEmpty() &&
 			onStateChangeHandlers.isEmpty()
 		;
  	}
@@ -166,6 +180,26 @@ public class DefaultEventHandlerConfig implements EventHandlerConfig {
 	@Override
 	public OnStateLoadHandler<Annotation> getOnStateLoadHandler(Annotation a) throws InvalidConfigException {
 		return onStateLoadHandlers.getHandler(a);
+	}
+	
+	/* onStateLoadNew */
+	@Override
+	public Set<Annotation> getOnStateLoadNewAnnotations() {
+		return onStateLoadNewHandlers.getAnnotations();
+	}
+	
+	public void add(Annotation a, OnStateLoadNewHandler<Annotation> handler) {
+		onStateLoadNewHandlers.add(a, handler);
+	}
+	
+	@Override
+	public Optional<OnStateLoadNewHandler<Annotation>> findOnStateLoadNewHandler(Annotation a) {
+		return onStateLoadNewHandlers.findHandler(a);
+	}
+	
+	@Override
+	public OnStateLoadNewHandler<Annotation> getOnStateLoadNewHandler(Annotation a) throws InvalidConfigException {
+		return onStateLoadNewHandlers.getHandler(a);
 	}
 	
 	/* onStateChange */

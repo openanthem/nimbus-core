@@ -27,6 +27,7 @@
               "node_modules/primeng/resources/primeng.min.css",
               "node_modules/primeicons/primeicons.css",
               "node_modules/font-awesome/css/font-awesome.min.css",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/nimbus-sass-module/dist/nm.min.css"
             ],
             "scripts": [
@@ -85,12 +86,12 @@
               "node_modules/jquery/dist/jquery.min.js",
               "node_modules/popper.js/dist/umd/popper.min.js",
               "node_modules/bootstrap/dist/js/bootstrap.min.js",
-              "node_modules/nimbus-sass/dist/main.js"
+              "node_modules/nimbus-sass-module/dist/main.js"
             ],
             "styles": [
               "node_modules/primeng/resources/themes/omega/theme.css",
               "node_modules/primeng/resources/primeng.min.css",
-              "node_modules/nimbus-sass/dist/nm.min.css"
+              "node_modules/nimbus-sass-module/dist/nm.min.css"
             ],
             "assets": [
               "src/assets",

@@ -52,12 +52,9 @@ public class CommandMessage implements Serializable {
 		return StringUtils.trimToNull(getRawPayload()) != null && !Pattern.matches(EMPTY_JSON_REGEX, getRawPayload());
 	}
 	
-	@Override
-	public CommandMessage clone() {
-		CommandMessage cloned = new CommandMessage();
-		cloned.setCommand(getCommand().clone());
-		cloned.setRawPayload(getRawPayload());
-		return cloned;
+	public CommandMessage(CommandMessage source) {
+		setCommand(new Command(source.getCommand()));
+		setRawPayload(source.getRawPayload());
 	}
 	
 }

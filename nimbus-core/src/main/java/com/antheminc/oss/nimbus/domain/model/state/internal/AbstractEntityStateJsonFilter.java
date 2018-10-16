@@ -28,6 +28,8 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
  */
 public abstract class AbstractEntityStateJsonFilter extends SimpleBeanPropertyFilter {
 
+	protected static final String FIELD_NAME_CONFIG = "config"; 
+	
 	@Override
 	public void serializeAsField(Object pojo, JsonGenerator jgen, SerializerProvider provider, PropertyWriter writer)
 	throws Exception {
@@ -50,7 +52,7 @@ public abstract class AbstractEntityStateJsonFilter extends SimpleBeanPropertyFi
 		if(Param.class.isInstance(pojo)) {
 			Param<?> param = Param.class.cast(pojo);
 			
-			if(fieldName.equals("config")) {
+			if(FIELD_NAME_CONFIG.equals(fieldName)) {
 				Model<?> rootDomain = param.getRootDomain();
 				if(rootDomain != null 
 						&& param != rootDomain.getAssociatedParam())
@@ -64,7 +66,7 @@ public abstract class AbstractEntityStateJsonFilter extends SimpleBeanPropertyFi
 		} else if(Model.class.isInstance(pojo)) {
 			Model<?> model = Model.class.cast(pojo);
 			
-			if(fieldName.equals("config"))
+			if(FIELD_NAME_CONFIG.equalsIgnoreCase(fieldName))
 				return true;
 			
 			return omitConditionalModel(model, fieldName);

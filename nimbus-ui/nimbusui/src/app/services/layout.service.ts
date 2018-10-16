@@ -164,7 +164,7 @@ export class LayoutService {
 
         layoutConfig.params.forEach(param => {
             let attribute: UiAttribute = param.config.uiStyles.attributes;
-            if (attribute.alias === 'Header' || attribute.alias === 'Global-Header' || 
+            if (attribute.alias === 'Header' || attribute.alias === 'Global-Header' ||
                 (attribute.alias === 'Section' && attribute.value === 'HEADER')) {
                 this.parseTopBarConfig(param.type.model, branding, headerMenus, accordions);
                 // if param has initialize, execute the config
@@ -183,7 +183,7 @@ export class LayoutService {
     private parseTopBarConfig(topBarConfig: Model, branding: AppBranding, headerMenus: Param[], accordions: Param[]) {
         topBarConfig.params.forEach(element => {
             if (element.config.type.nested === true && element.config.uiNatures.length == 0) {
-                if (element.config.uiStyles !== undefined && element.config.uiStyles.attributes.alias === 'Accordion') {
+                if (element.config.uiStyles && element.config.uiStyles.attributes.alias === 'Accordion') {
                     accordions.push(element);
                 } else {
                     this.parseTopBarConfig(element.type.model, branding, headerMenus, accordions);
@@ -246,7 +246,7 @@ export class LayoutService {
                                 subMenuLinks.push(paramLink)
                             }
                         })
-                        menuItems.set(param.config.code, subMenuLinks);
+                        menuItems.set(this.wcs.findLabelContent(param).text, subMenuLinks);
                         subBarItems['menuItems'] = menuItems;
                     }
                     if (param.config.uiStyles.attributes.alias === 'ComboBox') {
@@ -282,11 +282,10 @@ export class LayoutService {
                         }
                     });
                 }
-
-                if(param.config.uiStyles.attributes.value ===ViewComponent.menupanel.toString()){ 
-                    this.buildMenu(param, menuItems); 
-                }
+            } else if(param.config.uiStyles.attributes.alias === ViewComponent.menupanel.toString()) {
+                this.buildMenu(param, menuItems); 
             }
+
         });
 
         return menuItems;
@@ -300,7 +299,7 @@ export class LayoutService {
                 menuItem.command = (event: Event) => { this.processClick(event, menuItem)};
                // menuItem.routerLinkActiveOptions = {'exact':true};
                 menuItems.push(menuItem);
-            } else if (element.config.uiStyles.attributes.value ===ViewComponent.menupanel.toString()){
+            } else if (element.config.uiStyles.attributes.alias ===ViewComponent.menupanel.toString()){
                 this.buildSubMenu(element, menuItem);
                 menuItems.push(menuItem);
             }
@@ -315,7 +314,7 @@ export class LayoutService {
                 item.command = (event: Event) => { this.processClick(event, item)};
                 item.routerLink =  this.createRouterLink(element, true);
                 subMenuItems.push(item);
-            } else if (element.config.uiStyles.attributes.value ===ViewComponent.menupanel.toString()){
+            } else if (element.config.uiStyles.attributes.alias ===ViewComponent.menupanel.toString()){
                 this.buildSubMenu(element, item);
                 subMenuItems.push(item);
             }
@@ -329,6 +328,7 @@ export class LayoutService {
         item.path = element.path;
         item.page = element.config.uiStyles.attributes.page;
         item.icon = element.config.uiStyles.attributes.imgSrc;
+        item.imgType = element.config.uiStyles.attributes.imgType;
         return item;
     }
 

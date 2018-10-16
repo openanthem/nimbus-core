@@ -43,6 +43,7 @@ public enum Action {
 	
 	/* navigation */
 	_nav
+	
 	;
 
 	public static final Action DEFAULT = _get;
