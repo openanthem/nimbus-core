@@ -175,7 +175,8 @@ export class ParamUtils {
 
             // Check for collectionElement and add elementId to leafstate 
             if (x_param && x_param.collectionElem) { 
-                transformed[x]['elemId'] = x_param.elemId; 
+                if(transformed[x] instanceof Object)
+                    transformed[x]['elemId'] = x_param.elemId; 
             }
 
             if (x_param ) {

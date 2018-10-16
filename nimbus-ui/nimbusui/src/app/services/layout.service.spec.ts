@@ -1,3 +1,4 @@
+import { ViewComponent } from './../shared/param-annotations.enum';
 import { TestBed, inject, async } from '@angular/core/testing';
 import { HttpClient, HttpRequest } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
@@ -308,7 +309,7 @@ describe('LayoutService', () => {
   }));
 
   it('getLeftMenu() should return empty array and call buildMenu()', async(() => {
-    const labelConfig = { params: [{ type: { model: { params: [{ config: { uiStyles: { attributes: { url: '/url' }, name: 'ViewConfig.Link' } } }] } }, config: { uiStyles: { attributes: { alias: 'Section', value: 'MENUPANEL' } } } }] };
+    const labelConfig = { params: [{ type: { model: { params: [{ config: { uiStyles: { attributes: { url: '/url' }, name: 'ViewConfig.Link' } } }] } }, config: { uiStyles: { attributes: { alias: ViewComponent.menupanel.toString()} } } }] };
     spyOn(service, 'buildMenu').and.returnValue('');
     const res = service.getLeftMenu(labelConfig);
     expect(res).toEqual([]);
@@ -357,7 +358,7 @@ describe('LayoutService', () => {
   }));
 
   it('buildMenu() should not call createRouterLink()', async(() => {
-    const param = { type: { model: { params: [{ config: { uiStyles: { attributes: { value: 'MENUPANEL' } } } }] } } };
+    const param = { type: { model: { params: [{ config: { uiStyles: { attributes: { alias: ViewComponent.menupanel.toString() } } } }] } } };
     const menuItem = { routerLink: '', command: '' };
     spyOn(service, 'createMenuItem').and.returnValue({ routerLink: '' });
     spyOn(service, 'createRouterLink').and.returnValue('routerLink');
@@ -381,7 +382,7 @@ describe('LayoutService', () => {
   }));
 
   it('buildSubMenu() should update the menuItem.items', async(() => {
-    const param = { type: { model: { params: [{ type: { model: { params: [{ config: { uiStyles: { attributes: { alias: '' } } } }] } }, config: { uiStyles: { attributes: { value: 'MENUPANEL' } } } }] } } };
+    const param = { type: { model: { params: [{ type: { model: { params: [{ config: { uiStyles: { attributes: { alias: '' } } } }] } }, config: { uiStyles: { attributes: { alias: ViewComponent.menupanel.toString() } } } }] } } };
     const menuItem = { items: '' };
     spyOn(service, 'createMenuItem').and.returnValue({
       routerLink: '',

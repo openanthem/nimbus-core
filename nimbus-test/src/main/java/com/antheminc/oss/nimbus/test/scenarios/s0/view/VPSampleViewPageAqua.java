@@ -92,5 +92,10 @@ public class VPSampleViewPageAqua {
 			})
 			private int p6_nonExclusive;
 			
+			@MessageConditional(when="state =='Set'", targetPath="/../p8_message", message="'Message is set on p8_message'")
+			private String p7_messagetest;
+			
+			private String p8_message;
+			
 		}
 	}

@@ -39,11 +39,9 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
   selector: 'nm-input-radio',
   providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR,WebContentSvc, ControlSubscribers],
   template: `
-  
     <fieldset>
-        <legend [ngClass]="{'required': requiredCss, '': !requiredCss}">{{label}}
-            <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
-        </legend>
+        <nm-input-legend [element]="element" [required]="requiredCss">
+        </nm-input-legend>
         <div class="checkboxHolder" >
             <div class="form-checkrow" *ngFor="let val of element?.values; let i = index">
                 <p-radioButton 
@@ -53,7 +51,6 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
                     [value]="val.code" 
                     [label]="val.label" 
                     (ngModelChange)="emitValueChangedEvent(this,$event)">
-                    
                 </p-radioButton>
             </div>
         </div>

@@ -225,4 +225,24 @@ public class MessageConditionalEventHandlerTest extends AbstractStateEventHandle
 		
 	}
 	
+	@Test
+	public void t05_message_targetpath() {
+		Param<String> inputParam = _q.getRoot().findParamByPath("/sample_view/page_aqua/vtAqua/vsSampleForm/vfSampleForm/p7_messagetest");
+		
+		Assert.assertNull(inputParam.getMessages());
+		assertFalse(inputParam.hasContextStateChanged());
+		inputParam.setState("Set");
+		
+		Param<String> messageParam = _q.getRoot().findParamByPath("/sample_view/page_aqua/vtAqua/vsSampleForm/vfSampleForm/p8_message");
+		assertNotNull(messageParam.getMessages());
+		assertEquals(1, messageParam.getMessages().size());
+		assertEquals("Message is set on p8_message", messageParam.getMessages().iterator().next().getText());
+		assertTrue(messageParam.hasContextStateChanged());
+		
+		inputParam.setState("Reset");
+		assertNull(messageParam.getMessages());
+		assertTrue(messageParam.hasContextStateChanged());
+		
+		
+	}
 }
