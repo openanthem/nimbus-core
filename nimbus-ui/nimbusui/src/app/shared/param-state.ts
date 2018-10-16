@@ -160,6 +160,10 @@ export class Param implements Serializable<Param, string> {
         return paramPath;
     }
 
+    clearMessages(element: Param){
+        element.message=[]; 
+    }       
+
     deserialize( inJson, path ) {
         this.configId = inJson.configId;
         // Set Config in ParamConfig Map
