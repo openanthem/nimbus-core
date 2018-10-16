@@ -60,8 +60,6 @@ export class WebContentSvc {
     findLabelContentFromConfig(labelConfigs : LabelConfig[], defaultLabel?: string): LabelConfig {
         let labelContent: LabelConfig = new LabelConfig();
         if (labelConfigs != null && labelConfigs.length > 0) {
-            console.log('ServiceConstants.LOCALE_LANGUAGE', ServiceConstants.LOCALE_LANGUAGE, labelConfigs);
-
             let labelConfig = labelConfigs.find(c => c.locale == ServiceConstants.LOCALE_LANGUAGE);
             labelContent = Converter.convert(labelConfig, labelContent);
         } else if(this.isDefaultLabelsEnabled) {

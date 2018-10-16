@@ -78,6 +78,7 @@ import { FileUploadComponent } from '../platform/fileupload/file-upload.componen
 import { OrderablePickList } from '../platform/form/elements/picklist.component';
 import { InputLabel } from '../platform/form/elements/input-label.component';
 import { SelectItemPipe } from '../../pipes/select-item.pipe';
+import { InputLegend } from '../platform/form/elements/input-legend.component';
 
 let app, fixture, layoutservice, pageservice, router, route;
 
@@ -289,7 +290,8 @@ describe('DomainFlowCmp', () => {
           FileUploadComponent,
           OrderablePickList,
           InputLabel,
-          SelectItemPipe
+          SelectItemPipe,
+          InputLegend
        ],
        imports: [
            RouterTestingModule,
@@ -462,7 +464,8 @@ describe('DomainFlowCmp', () => {
             FileUploadComponent,
             OrderablePickList,
             InputLabel,
-            SelectItemPipe
+            SelectItemPipe,
+            InputLegend
          ],
          imports: [
              RouterTestingModule,

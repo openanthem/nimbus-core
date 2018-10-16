@@ -56,6 +56,7 @@ import { InputLabel } from './form/elements/input-label.component';
 import { Label } from './content/label.component';
 import { CardDetailsFieldGroupComponent } from './card/card-details-field-group.component';
 import { WebContentSvc } from '../../services/content-management.service';
+import { InputLegend } from './form/elements/input-legend.component';
 
 let fixture, app;
 
@@ -108,7 +109,8 @@ describe('FormElement', () => {
         DisplayValueDirective,
         InputLabel,
         Label,
-        CardDetailsFieldGroupComponent
+        CardDetailsFieldGroupComponent,
+        InputLegend
        ],
        imports: [
         FormsModule, 

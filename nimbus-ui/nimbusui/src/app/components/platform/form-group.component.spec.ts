@@ -59,6 +59,7 @@ import { DisplayValueDirective } from '../../directives/display-value.directive'
 import { InputLabel } from './form/elements/input-label.component';
 import { Label } from './content/label.component';
 import { CardDetailsFieldGroupComponent } from './card/card-details-field-group.component';
+import { InputLegend } from './form/elements/input-legend.component';
 
 let fixture, app;
 
@@ -122,7 +123,8 @@ describe('FrmGroupCmp', () => {
         DisplayValueDirective,
         InputLabel,
         Label,
-        CardDetailsFieldGroupComponent
+        CardDetailsFieldGroupComponent,
+        InputLegend
        ],
        imports: [
            FormsModule,

@@ -17,13 +17,15 @@ import { ConfigService } from '../../../../services/config.service';
 import { LoggerService } from '../../../../services/logger.service';
 import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
 import { AppInitService } from '../../../../services/app.init.service';
+import { InputLegend } from '../../../platform/form/elements/input-legend.component';
 
 describe('RadioButton', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
           RadioButton,
-          TooltipComponent
+          TooltipComponent,
+          InputLegend
        ],
        imports: [
            RadioButtonModule,

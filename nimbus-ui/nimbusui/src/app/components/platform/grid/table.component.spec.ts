@@ -76,6 +76,7 @@ import { InputLabel } from '../../platform/form/elements/input-label.component';
 import { CardDetailsFieldGroupComponent } from '../../platform/card/card-details-field-group.component';
 import { FormGridFiller } from '../../platform/form/form-grid-filler.component';
 import { SessionStoreService, CUSTOM_STORAGE } from '../../../services/session.store';
+import { InputLegend } from '../../platform/form/elements/input-legend.component';
 
 let fixture, app, configService, pageService, elementRef, ngZone, objectUtils, domHandler, tableService;
 
@@ -155,7 +156,8 @@ describe('DataTable', () => {
           Label,
           InputLabel,
           CardDetailsFieldGroupComponent,
-          FormGridFiller
+          FormGridFiller,
+          InputLegend
        ],
        imports: [
            DialogModule,

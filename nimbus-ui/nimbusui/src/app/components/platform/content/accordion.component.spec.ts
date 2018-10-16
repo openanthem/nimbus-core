@@ -68,6 +68,7 @@ import { InputLabel } from '../form/elements/input-label.component';
 import { TreeGrid } from '../tree-grid/tree-grid.component';
 import { FormGridFiller } from '../form/form-grid-filler.component';
 import { InputSwitch } from '../form/elements/input-switch.component';
+import { InputLegend } from '../form/elements/input-legend.component';
 
 let pageService;
 
@@ -134,7 +135,8 @@ describe('Accordion', () => {
           InputLabel,
           TreeGrid,
           FormGridFiller,
-          InputSwitch
+          InputSwitch,
+          InputLegend
         ],
         imports: [
           FormsModule,

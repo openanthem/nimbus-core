@@ -68,6 +68,7 @@ import { InputSwitch } from '../platform/form/elements/input-switch.component';
 import { CardDetailsFieldGroupComponent } from '../platform/card/card-details-field-group.component';
 import { DisplayValueDirective } from '../../directives/display-value.directive';
 import { FormGridFiller } from '../platform/form/form-grid-filler.component';
+import { InputLegend } from '../platform/form/elements/input-legend.component';
 
 class MockPageService {
     processEvent() {
@@ -132,7 +133,8 @@ describe('Section', () => {
         InputSwitch,
         CardDetailsFieldGroupComponent,
         DisplayValueDirective,
-        FormGridFiller
+        FormGridFiller,
+        InputLegend
        ],
        imports: [
         FormsModule,

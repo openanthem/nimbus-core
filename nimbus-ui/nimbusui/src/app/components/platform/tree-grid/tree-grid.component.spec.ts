@@ -195,22 +195,4 @@ it('ngOnInit() should update collectionAlias, treeData and firstColumn', async((
     expect(app.buildNestedCollectionPath(rowNode)).toEqual(123);
   }));
 
-//   it('4should create the app', async(() => {
-//     const rowNode = {
-//         level: 1,
-//         node: {
-//             data: {
-//                 elemId: 123
-//             }
-//         }
-//     };
-//     spyOn(RowNodeUtils, 'createParentRowNode').and.returnValue(rowNode);
-//     app.buildNestedCollectionPath(rowNode);
-//     // expect(app).toBeTruthy();
-//   }));
-
-//   it('should create the app', async(() => {
-//     expect(app).toBeTruthy();
-//   }));
-
 });

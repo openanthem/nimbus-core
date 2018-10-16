@@ -75,6 +75,7 @@ import { InputLabel } from '../form/elements/input-label.component';
 import { CardDetailsFieldGroupComponent } from '../card/card-details-field-group.component';
 import { DisplayValueDirective } from '../../../directives/display-value.directive';
 import { FormGridFiller } from '../form/form-grid-filler.component';
+import { InputLegend } from '../form/elements/input-legend.component';
 
 let logger, pageService;
 
@@ -194,7 +195,8 @@ describe('PageContent', () => {
         InputLabel,
         CardDetailsFieldGroupComponent,
         DisplayValueDirective,
-        FormGridFiller
+        FormGridFiller,
+        InputLegend
        ],
        imports: [
         GrowlModule,
