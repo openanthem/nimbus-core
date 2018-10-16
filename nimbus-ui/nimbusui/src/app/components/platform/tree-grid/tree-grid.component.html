@@ -1,0 +1,46 @@
+<div class="ui-datatable-header ui-widget-header">
+    <p-header>
+        <caption>{{label}}</caption>
+        <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
+    </p-header>
+</div>
+
+<p-treeTable [value]="treeData" [paginator]="true" paginatorPosition="both" [rows]="10">
+
+    <ng-template pTemplate="header">
+        <tr>
+            <ng-template ngFor let-col let-colIndex="index" [ngForOf]="params">
+                <th *ngIf="gridUtils.showHeader(col)" [ngClass]="gridUtils.getColumnStyle(col)">{{col.header}}</th>
+            </ng-template>
+        </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+        <tr>
+            <!-- Render the first column with the toggler (if applicable) -->
+            <td>
+                <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                {{gridUtils.getCellDisplayValue(rowData, firstColumn)}}
+            </td>
+
+            <!-- Render the rest of the columns, relative to the treegrid level -->
+            <ng-template ngFor let-col let-colIndex="index" [ngForOf]="getRowNodeParamConfigs(rowNode)">
+                <ng-template [ngIf]="col.code !== firstColumn.code">
+
+                    <!-- Render the value only columns -->
+                    <td *ngIf="isDisplayValueColumn(col)">
+                        {{gridUtils.getCellDisplayValue(rowData, col)}}
+                    </td>
+
+                    <!-- Render the "renderable" (or non-value display only) components -->
+                    <td *ngIf="isRenderableComponent(col)" [ngClass]="gridUtils.getColumnStyle(col)">
+
+                        <nm-button *ngIf="viewComponent.button.toString() === col.uiStyles.attributes.alias"
+                            [element]="getViewParam(col, rowNode)">
+                        </nm-button>
+                    </td>
+                </ng-template>
+            </ng-template>
+        </tr>
+    </ng-template>
+</p-treeTable>

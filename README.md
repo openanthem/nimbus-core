@@ -11,29 +11,13 @@
 
 ## Sonarcloud.io Analysis
 
-### Master Branch (release)
+### Master Branch
 
 ![Sonarcloud.io Security](https://sonarcloud.io/api/project_badges/measure?project=openanthem%3Animbus-core-master&metric=security_rating&style=for-the-badge)
 [![Sonarcloud.io Bugs](https://sonarcloud.io/api/project_badges/measure?project=openanthem%3Animbus-core-master&metric=bugs&style=for-the-badge)]() 
 [![Sonarcloud.io Coverage](https://sonarcloud.io/api/project_badges/measure?project=openanthem%3Animbus-core-master&metric=coverage&style=for-the-badge)]() [![Sonarcloud.io Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=openanthem%3Animbus-core-master&metric=sqale_index&style=for-the-badge)]() 
 
 [Full Report](https://sonarcloud.io/dashboard?id=openanthem%3Animbus-core-master)
-
-### Develop Branch (release candidate)
-
-![Sonarcloud.io Security](https://sonarcloud.io/api/project_badges/measure?project=openanthem%3Animbus-core-develop&metric=security_rating&style=for-the-badge)
-[![Sonarcloud.io Bugs](https://sonarcloud.io/api/project_badges/measure?project=openanthem%3Animbus-core-develop&metric=bugs&style=for-the-badge)]() 
-[![Sonarcloud.io Coverage](https://sonarcloud.io/api/project_badges/measure?project=openanthem%3Animbus-core-develop&metric=coverage&style=for-the-badge)]() [![Sonarcloud.io Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=openanthem%3Animbus-core-develop&metric=sqale_index&style=for-the-badge)]() 
-
-[Full Report](https://sonarcloud.io/dashboard?id=openanthem%3Animbus-core-develop)
-
-### 1.0.0.M1 Branch (current milestone)
-
-![Sonarcloud.io Security](https://sonarcloud.io/api/project_badges/measure?project=openanthem%3Animbus-core-1.0.0.M1&metric=security_rating&style=for-the-badge)
-[![Sonarcloud.io Bugs](https://sonarcloud.io/api/project_badges/measure?project=openanthem%3Animbus-core-1.0.0.M1&metric=bugs&style=for-the-badge)]() 
-[![Sonarcloud.io Coverage](https://sonarcloud.io/api/project_badges/measure?project=openanthem%3Animbus-core-1.0.0.M1&metric=coverage&style=for-the-badge)]() [![Sonarcloud.io Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=openanthem%3Animbus-core-1.0.0.M1&metric=sqale_index&style=for-the-badge)]() 
-
-[Full Report](https://sonarcloud.io/dashboard?id=openanthem%3Animbus-core-1.0.0.M1)
 
 Development Overview 
 --------------------

@@ -67,7 +67,7 @@ public class MappedDefaultParamConfig<P, M> extends DefaultParamConfig<P> implem
 			setUiNatures(mapsTo.getUiNatures());
 			setUiStyles(mapsTo.getUiStyles());
 			setValidations(mapsTo.getValidations());
-			setLabelConfigs(mapsTo.getLabelConfigs());
+			setLabels(mapsTo.getLabels());
 			setValues(mapsTo.getValues());
 			setEventHandlerConfig(mapsTo.getEventHandlerConfig());
 		}

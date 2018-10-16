@@ -17,11 +17,10 @@ package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.bpm.BPMGateway;
-import com.antheminc.oss.nimbus.domain.cmd.exec.AbstractFunctionCommandExecutor;
+import com.antheminc.oss.nimbus.domain.cmd.exec.AbstractCommandExecutor;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Input;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecutionContext;
-import com.antheminc.oss.nimbus.domain.cmd.exec.FunctionHandler;
 import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
 import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
@@ -34,7 +33,7 @@ import lombok.Getter;
  */
 @EnableLoggingInterceptor
 @Getter(value=AccessLevel.PROTECTED)
-public class DefaultActionExecutorProcess<T,R> extends AbstractFunctionCommandExecutor<T,R> {
+public class DefaultActionExecutorProcess<R> extends AbstractCommandExecutor<R> {
 	
 	private BPMGateway bpmGateway;
 	
@@ -44,17 +43,16 @@ public class DefaultActionExecutorProcess<T,R> extends AbstractFunctionCommandEx
 	}
 	
 	@Override
-	@SuppressWarnings("unchecked")
 	protected Output<R> executeInternal(Input input) {
-		R response = containsFunctionHandler(input) ? (R)executeFunctionHanlder(input, FunctionHandler.class) : continueBusinessProcessExceution(input.getContext());
+		R response = continueBusinessProcessExecution(input.getContext());
 		return Output.instantiate(input, input.getContext(), response);
 	}
 	
 	@SuppressWarnings("unchecked")
-	private R continueBusinessProcessExceution(ExecutionContext eCtx){
+	private R continueBusinessProcessExecution(ExecutionContext eCtx){
 		QuadModel<?,?> quadModel = getQuadModel(eCtx);
 		String processExecutionId = quadModel.getFlow().getProcessExecutionId();
-		return (R)getBpmGateway().continueBusinessProcessExecution(eCtx.getRootModel().getAssociatedParam(), processExecutionId);
+		return (R)getBpmGateway().continueBusinessProcessExecution(quadModel.getView().getAssociatedParam(), processExecutionId);
 	}
 
 }

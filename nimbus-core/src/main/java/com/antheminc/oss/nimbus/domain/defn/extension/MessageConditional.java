@@ -21,12 +21,12 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param.Message.Typ
  * <p>Use this annotation when a message should be applied to a form param for a
  * specific scenario by assigning a SpEL expression to the {@code when}
  * attribute. When the {@code when} condition evaluates to {@code true},
- * {@code &#64;MessageConditional} will attempt to add a {@code message} and a
+ * &#64;{@code MessageConditional} will attempt to add a {@code message} and a
  * UI marker (CSS class) depending on {@code messageType} and {@code context} of
  * attribute. For example, see the following scenario:
  * 
  * <pre>
- * &#64;MessageConditional(when = "state > 30 ", messageType = MessageType.WARNING, message = "BMI should be less than 30", context = Context.INLINE)
+ * &#64;MessageConditional(when = "state > 30 ", messageType = MessageType.WARNING, message = "'BMI should be less than 30'", context = Context.INLINE)
  * private Integer bmi;
  * </pre>
  * 
@@ -50,7 +50,7 @@ public @interface MessageConditional {
 
 	/**
 	 * <p>The {@link Context} of the message. Dictates UI properties whether the
-	 * message is shown inline or as a Growl component.
+	 * message is shown inline or as a TOAST component.
 	 */
 	Context context() default Context.INLINE;
 
@@ -60,8 +60,14 @@ public @interface MessageConditional {
 	String cssClass() default "";
 
 	/**
-	 * <p>The message string displayed if the SpEL condition evaluates to
+	 * <p>A SpEL expression message to be displayed if the {@link #when} SpEL condition evaluates to
 	 * {@code false}.
+	 * <p>This value is evaluated through the SpEL expression parser. When providing
+	 * a static string value, it should be encompassed in string quotes.</p>
+	 * <p><b>Example</b>
+	 * <pre>
+	 * message = "'BMI should be less than 30'"
+	 * </pre>
 	 */
 	String message();
 
@@ -87,4 +93,9 @@ public @interface MessageConditional {
 	 * <p>To retain the message when {@link #when()} evaluates to {@code false}.
 	 */
 	boolean whenElseRetainMessage() default false;
+	
+	/**
+	 * <p>Path of param on which the messages are to be set
+	 */
+	String[] targetPath() default { };
 }

@@ -22,6 +22,8 @@ import java.util.Map;
 import com.antheminc.oss.nimbus.domain.EventHandler;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateChange;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
+import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoadGet;
+import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoadNew;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnTxnExecute;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ExecutionModel;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
@@ -44,14 +46,25 @@ public final class StateEventHandlers {
 	@EventHandler(OnStateLoad.class)
 	public interface OnStateLoadHandler<A extends Annotation> extends StateEventHandler<A> {
 		
-		public void handle(A configuredAnnotation, Param<?> param);
+		public void onStateLoad(A configuredAnnotation, Param<?> param);
 	}
 	
+	@EventHandler(OnStateLoadNew.class)
+	public interface OnStateLoadNewHandler<A extends Annotation> extends StateEventHandler<A> {
+		
+		public void onStateLoadNew(A configuredAnnotation, Param<?> param);
+	}
+	
+	@EventHandler(OnStateLoadGet.class)
+	public interface OnStateLoadGetHandler<A extends Annotation> extends StateEventHandler<A> {
+		
+		public void onStateLoadGet(A configuredAnnotation, Param<?> param);
+	}
 	
 	@EventHandler(OnStateChange.class)
 	public interface OnStateChangeHandler<A extends Annotation> extends StateEventHandler<A> {
 		
-		public void handle(A configuredAnnotation, ExecutionTxnContext txnCtx, ParamEvent event);
+		public void onStateChange(A configuredAnnotation, ExecutionTxnContext txnCtx, ParamEvent event);
 	}
 	
 	

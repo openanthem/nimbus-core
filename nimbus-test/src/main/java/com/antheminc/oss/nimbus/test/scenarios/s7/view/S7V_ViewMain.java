@@ -15,6 +15,8 @@
  */
 package com.antheminc.oss.nimbus.test.scenarios.s7.view;
 
+import java.util.List;
+
 import com.antheminc.oss.nimbus.domain.defn.Domain;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo.Path;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo.Type;
@@ -23,6 +25,8 @@ import com.antheminc.oss.nimbus.domain.defn.Repo;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Cache;
 import com.antheminc.oss.nimbus.domain.defn.Repo.Database;
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Radio;
+import com.antheminc.oss.nimbus.domain.defn.extension.Content.Label;
+import com.antheminc.oss.nimbus.domain.defn.extension.Contents.Labels;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValuesConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValuesConditional.Condition;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValuesConditionals;
@@ -42,7 +46,7 @@ import lombok.ToString;
 public class S7V_ViewMain {
 	
 	@Path
-	@ValuesConditionals({ @ValuesConditional(target = "../v_attr_values_2", condition = {
+	@ValuesConditionals({ @ValuesConditional(targetPath = "../v_attr_values_2", condition = {
 			@Condition(when = "state == 'test_0'", then = @Values(url = "/hooli/box/p/s7c_main/_search?fn=lookup&where=s7c_main.attr1_clone.eq('test_0')&projection.mapsTo=code:attr1,label:attr1")),
 			@Condition(when = "state != null && state != 'test_0'", then = @Values(url = "/hooli/box/p/s7c_main/_search?fn=lookup&where=s7c_main.attr1_clone.eq('<!/.d/attr1!>')&projection.mapsTo=code:attr1,label:attr1")) }) })
 	private String attr1;

@@ -12,6 +12,7 @@ import { SvgComponent } from '../svg/svg.component';
 import { Header } from '../content/header.component';
 import { InputText } from '../form/elements/textbox.component';
 import { TooltipComponent } from '../tooltip/tooltip.component';
+import { InputLabel } from '../form/elements/input-label.component';
 
 describe('FooterGlobal', () => {
   beforeEach(async(() => {
@@ -23,7 +24,8 @@ describe('FooterGlobal', () => {
         SvgComponent,
         Header,
         InputText,
-        TooltipComponent
+        TooltipComponent,
+        InputLabel
         ],
         imports: [
           AngularSvgIconModule,

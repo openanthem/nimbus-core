@@ -22,7 +22,7 @@ import { Injectable, EventEmitter, Inject } from '@angular/core';
 import { ServiceConstants } from './service.constants';
 import { ParamConfig, Validation } from '../shared/param-config';
 import { ModelEvent, Page, Result, ViewRoot } from '../shared/app-config.interface';
-import { Param, Model, Type, GridPage } from '../shared/param-state';
+import { Param, Model, Type, GridPage, TreeGridDeserializer } from '../shared/param-state';
 import { CustomHttpClient } from './httpclient.service';
 
 import { Subject, Observable } from 'rxjs';
@@ -35,6 +35,7 @@ import { ViewConfig } from './../shared/param-annotations.enum';
 import { LoggerService } from './logger.service';
 import { SessionStoreService } from './session.store';
 import { Location } from '@angular/common';
+import { ViewComponent } from '../shared/param-annotations.enum';
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -426,7 +427,7 @@ export class PageService {
                 viewRoot.model = output.value.type.model;
                 this.configService.setLayoutToAppConfig(flow, viewRoot);
 
-                if (output.rootDomainId !== 'null') {
+                if (output.rootDomainId !== 'null' ) {
                         this.flowRootDomainId[flow] = output.rootDomainId;
                         this.sessionStore.set(flow, output.rootDomainId);
                 }
@@ -653,13 +654,15 @@ export class PageService {
                         // reduce the size by 1 to account for collection element index
                         numNodes--;
                 }
-
+                
                 // Check if root param matches the eventModel update node
                 if (rootParam.config.code === paramTree[node]) {
                         node++;
-                        
+                        if(rootParam.path === eventModel.value.path) {
+                                this.processModelEvent(rootParam, eventModel);
+                        }
                         // Loop through the Params in the Page
-                        if (rootParam.type.model && rootParam.type.model.params) {
+                        else if (rootParam.type.model && rootParam.type.model.params) {
                                 rootParam.type.model.params.forEach(element => {
                                         // Check if param matches the updated param path
                                         if (element && element.config && element.config.code === paramTree[node]) {
@@ -676,6 +679,8 @@ export class PageService {
                                                 }
                                         }
                                 });
+                        } else {
+                                this.logger.warn('event update with path '+ eventModel.value.path +   ' did not match with any param of current domain')
                         }
                 }
         }
@@ -709,7 +714,7 @@ export class PageService {
          */
         processModelEvent(param: Param, eventModel: ModelEvent) {
                 // Grid updates
-                if (param.config.uiStyles != null && param.config.uiStyles.attributes.alias === 'Grid') {
+                if (param.config.uiStyles != null && (param.config.uiStyles.attributes.alias === ViewComponent.grid.toString() || param.config.uiStyles.attributes.alias === ViewComponent.treeGrid.toString())) {
                         if (eventModel.value != null) {
                                 // Check if the update is for the Current Collection or a Nested Collection
                                 if (param.path == eventModel.value.path) {
@@ -744,7 +749,7 @@ export class PageService {
                                         if( param.gridList) {
                                                 for (var p = 0; p < param.gridList.length; p++) {
                                                         if (param.gridList[p]['elemId'] == elemIndex) {
-                                                                let nestedElement = this.getNestedElementParam(param.gridList[p]['nestedElement'], nestedPath);
+                                                                let nestedElement = this.getNestedElementParam(param.gridList[p]['nestedElement'], nestedPath, eventModel.value.path);
                                                                 if (nestedElement) {
                                                                         nestedElement['gridList'] = this.createGridData(eventModel.value.type.model.params, nestedElement);
                                                                         this.gridValueUpdate.next(nestedElement);
@@ -756,37 +761,82 @@ export class PageService {
                                         }
                                 }
                         }
-                } else if (param.config.uiStyles != null && param.config.uiStyles.attributes.alias === 'CardDetailsGrid') {
+                } else if (param.config.uiStyles != null && param.config.uiStyles.attributes.alias === ViewComponent.cardDetailsGrid.toString()) {
                         if (param.config.type.collection === true) {
                                 let payload: Param = new Param(this.configService).deserialize(eventModel.value, eventModel.value.path);
-                                param.type.model['params'] = payload.type.model.params;
+                                if(payload.type.model) // TODO - need to handle updates for each collection item in a card detail grid
+                                        param.type.model['params'] = payload.type.model.params;
                         } else {
                                 this.traverseParam(param, eventModel);
                         }
-                } else {
+                }
+                // else if (param.config.uiStyles != null && param.config.uiStyles.attributes.alias === ViewComponent.treeGrid.toString()) {
+
+                //         if (param.path == eventModel.value.path) {
+                //                 let treeList = {"data": []};
+                                
+                //                 eventModel.value.type.model.params.forEach((param) => {
+                //                         if(param.leafState)
+                //                         treeList.data.push((new TreeGridDeserializer).deserialize(param.leafState));  
+
+                //                 });
+
+                //                 if(treeList.data.length != 0){
+                //                        param.leafState = treeList.data;
+                //                        this.eventUpdate.next(param);
+                //                 }
+                //         }
+                // }
+                else {
                         this.traverseParam(param, eventModel);
                 }
         }
 
-        getNestedElementParam(nestedElement: Param, nestedPath: string): Param {
+        getNestedElementParam(nestedElement: Param, nestedPath: string, eventPath: string): Param {
                 let paramTree = nestedPath.split('/');
                 let startIndex = 1;
 
                 if (this.matchNode(nestedElement, paramTree[startIndex])) {
-                        return this.traverseNestedPath(nestedElement, startIndex + 1, paramTree);
+                        return this.traverseNestedPath(nestedElement, startIndex + 1, paramTree, eventPath);
                 } else {
                         return undefined;
                 }
         }
 
-        traverseNestedPath(nestedElement: Param, index: number, tree: string[]): Param {
-                for (var p = 0; p < nestedElement.type.model.params.length; p++) {
-                        let element = nestedElement.type.model.params[p];
+        matchElementId (nestedElement:Param, elemId:string){
+                if (nestedElement.elemId && nestedElement.elemId == elemId){
+                        return true;
+                }
+                return false;
+        }
+
+        traverseNestedPath(nestedElement: Param, index: number, tree: string[], eventPath: string): Param {
+                if (!nestedElement) {
+                        return nestedElement;
+                }
+                for (let p = 0; p < nestedElement.type.model.params.length; p++) {
+                        const element = nestedElement.type.model.params[p];
+
+                        // find's and return the element based on the nestedelement.config.code and index
                         if (this.matchNode(element, tree[index])) {
-                                if (index == tree.length - 1) {
-                                        return element;
-                                } else {
-                                        return this.traverseNestedPath(element, index + 1, tree);
+                                let matchFoundOnGrid = false;
+                                if (element.gridList && element.gridList.length >0){
+                                        // if there is a gridlist, match the elemntId
+                                        // and look into nested element of the gridlist.
+                                        for(let  i = 0; i < element.gridList.length; i++){
+                                                if (this.matchElementId(element.gridList[i], tree[index+1])){
+                                                                matchFoundOnGrid = true;
+                                                                index += 2; // skip the elementID in the path and the curentElements cnfig.code
+                                                                return  this.traverseNestedPath(element.gridList[i].nestedElement, index + 1, tree, eventPath);
+                                                }
+                                        }
+                                }
+                                if (!matchFoundOnGrid){
+                                        if (index === tree.length - 1 && element.path === eventPath) {
+                                                return element;
+                                        } else {
+                                                return this.traverseNestedPath(element, index + 1, tree, eventPath);
+                                        }
                                 }
                         }
                 }

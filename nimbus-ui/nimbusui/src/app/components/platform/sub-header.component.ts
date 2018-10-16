@@ -48,14 +48,13 @@ import { BaseElement } from './base-element.component';
 export class SubHeaderCmp extends BaseElement{
 
     @Input() param: Param;
+    
     constructor(private _wcs: WebContentSvc) {
         super(_wcs);
     }
+
     ngOnInit() {
         this.loadLabelConfig(this.param);
     }
-    ngOnChanges(changes: SimpleChanges) {
-        if(changes['element']) {
-        }
-    }
+    
 }

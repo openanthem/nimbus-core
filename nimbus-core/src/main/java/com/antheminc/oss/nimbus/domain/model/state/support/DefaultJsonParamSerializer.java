@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.antheminc.oss.nimbus.domain.defn.ViewConfig.Grid;
+import com.antheminc.oss.nimbus.domain.defn.ViewConfig.TreeGrid;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.ValidationGroup;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListElemParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Model;
@@ -50,6 +51,8 @@ public class DefaultJsonParamSerializer extends JsonSerializer<Param<?>> {
 	
 	private static final String K_TYPE = "type";
 	private static final String K_VALUES = "values";
+	private static final String K_LABELS = "labels";
+	private static final String K_ELEM_LABELS = "elemLabels";
 	
 	private static final String K_PAGE = "page";
 	
@@ -91,6 +94,7 @@ public class DefaultJsonParamSerializer extends JsonSerializer<Param<?>> {
 			
 			if(p.isCollection()) {
 				gen.writeObjectField(K_PAGE, p.findIfCollection().getPage());
+				writer.writeObjectIfNotNull(K_ELEM_LABELS, p.findIfCollection()::getElemLabels);
 			}
 			
 			//writer.writeBooleanIfNotDefault(K_IS_COL, p::isCollection, false);
@@ -105,6 +109,7 @@ public class DefaultJsonParamSerializer extends JsonSerializer<Param<?>> {
 			
 			writer.writeObjectIfNotNull(K_MESSAGE, p::getMessages);
 			writer.writeObjectIfNotNull(K_VALUES, p::getValues);
+			writer.writeObjectIfNotNull(K_LABELS, p::getLabels);
 			
 			if(!p.getType().getName().equals("string"))
 				writer.writeObjectIfNotNull(K_TYPE, p::getType);
@@ -166,7 +171,7 @@ public class DefaultJsonParamSerializer extends JsonSerializer<Param<?>> {
 			if(colParam.getConfig().getUiStyles()==null)
 				return false;
 			
-			return colParam.getConfig().getUiStyles().getAnnotation().annotationType()==Grid.class;
+			return ((colParam.getConfig().getUiStyles().getAnnotation().annotationType()==Grid.class) || (colParam.getConfig().getUiStyles().getAnnotation().annotationType() == TreeGrid.class));
 		}
 		
 		private void writeSyntheticState(Param<?> p) throws IOException {

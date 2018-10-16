@@ -56,30 +56,26 @@ public class DefaultMongoModelPersistenceHandler implements ModelPersistenceHand
 		if(CollectionUtils.isEmpty(modelEvents)) 
 			return false;
 		
-		for(ModelEvent<Param<?>> event: modelEvents) {
-			logit.trace(()->"path: "+event.getPath()+ " action: "+event.getType()+" state: "+event.getPayload().getState());
-			
-			Param<?> param = event.getPayload();
-			Model<Object> mRoot = (Model<Object>)param.getRootDomain();
-			
-			String alias = getRepoAlias(mRoot);
-				
-			Object coreStateId = mRoot.findParamByPath("/id").getState();
-			if(coreStateId == null) {
-				getRep()._new(mRoot.getConfig(), mRoot.getState());
-				return true;
-			}
-			
-			Serializable coreId = (Serializable)coreStateId; 
-			
-			String pPath = param.getBeanPath();
-			Object pState = param.getState();
-			getRep()._update(alias, coreId, pPath, pState);
-			return true;
-			
-		}
-		return false;
+		ModelEvent<Param<?>> event = modelEvents.get(0);
+		logit.trace(()->"path: "+event.getPath()+ " action: "+event.getType()+" state: "+event.getPayload().getState());
 		
+		Param<?> param = event.getPayload();
+		Model<Object> mRoot = (Model<Object>)param.getRootDomain();
+		
+		String alias = getRepoAlias(mRoot);
+			
+		Object coreStateId = mRoot.findParamByPath("/id").getState();
+		if(coreStateId == null) {
+			getRep()._new(mRoot.getConfig(), mRoot.getState());
+			return true;
+		}
+		
+		Serializable coreId = (Serializable)coreStateId; 
+		
+		String pPath = param.getBeanPath();
+		Object pState = param.getState();
+		getRep()._update(alias, coreId, pPath, pState);
+		return true;
 	}
 
 	private String getRepoAlias(Model<Object> mRoot) {

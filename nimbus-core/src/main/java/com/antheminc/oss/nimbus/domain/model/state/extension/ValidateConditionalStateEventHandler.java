@@ -26,8 +26,7 @@ import lombok.Getter;
  */
 @EnableLoggingInterceptor
 @Getter(AccessLevel.PROTECTED)
-public class ValidateConditionalStateEventHandler extends 
-	AbstractConditionalStateEventHandler.EvalExprWithCrudActions<ValidateConditional> {
+public class ValidateConditionalStateEventHandler extends EvalExprWithCrudActions<ValidateConditional> {
 	
 	private Map<ValidationScope, ValidationAssignmentStrategy> validationAssignmentStrategies;
 	

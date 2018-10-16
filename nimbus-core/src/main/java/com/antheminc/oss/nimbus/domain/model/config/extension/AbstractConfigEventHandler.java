@@ -18,8 +18,6 @@
  */
 package com.antheminc.oss.nimbus.domain.model.config.extension;
 
-import java.lang.annotation.Annotation;
-
 import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
 
@@ -28,7 +26,7 @@ import com.antheminc.oss.nimbus.domain.model.config.ParamConfig;
  * @author Soham Chakravarti
  *
  */
-public abstract class AbstractConfigEventHandler<A extends Annotation> {
+public abstract class AbstractConfigEventHandler {
 
 	protected <T> T castOrEx(Class<T> type, ParamConfig<?> param) {
 		if(!type.isInstance(param))

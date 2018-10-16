@@ -24,6 +24,8 @@ import java.time.ZonedDateTime;
 import java.util.Date;
 
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.data.convert.ReadingConverter;
+import org.springframework.data.convert.WritingConverter;
 import org.springframework.util.Assert;
 
 import com.mongodb.BasicDBObject;
@@ -38,6 +40,7 @@ public class ZonedDateTimeMongoConverters {
 	public static final String K_DATE = "_date";
 	public static final String K_ZONE = "_zone";
 	
+	@WritingConverter
 	public static class ZDTSerializer implements Converter<ZonedDateTime, DBObject> {
 		@Override
 		public DBObject convert(ZonedDateTime z) {
@@ -54,6 +57,7 @@ public class ZonedDateTimeMongoConverters {
 		}
 	}
 	
+	@ReadingConverter
 	public static class ZDTDeserializer implements Converter<DBObject, ZonedDateTime> {
 		@Override
 		public ZonedDateTime convert(DBObject dbObj) {

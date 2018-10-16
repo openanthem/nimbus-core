@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/primeng';
 import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
+import { AngularSvgIconModule } from 'angular-svg-icon';
 
 import { CardDetailsComponent } from './card-details.component';
 import { Link } from '../link.component';
@@ -20,6 +21,15 @@ import { PageService } from '../../../services/page.service';
 import { CustomHttpClient } from '../../../services/httpclient.service';
 import { LoaderService } from '../../../services/loader.service';
 import { ConfigService } from '../../../services/config.service';
+import { CardDetailsFieldGroupComponent } from './card-details-field-group.component';
+import { Paragraph } from '../content/paragraph.component';
+import { ButtonGroup } from '../../platform/form/elements/button-group.component';
+import { Label } from '../content/label.component';
+import { DisplayValueDirective } from '../../../directives/display-value.directive';
+import { InputLabel } from '../../platform/form/elements/input-label.component';
+import { Button } from '../../platform/form/elements/button.component';
+import { Image } from '../../platform/image.component';
+import { SvgComponent } from '../../platform/svg/svg.component';
 
 class MockPageService {
     processEvent() {    }
@@ -40,12 +50,22 @@ describe('CardDetailsComponent', () => {
         DateTimeFormatPipe,
         TooltipComponent,
         SelectItemPipe,
+        CardDetailsFieldGroupComponent,
+        Paragraph,
+        ButtonGroup,
+        Label,
+        DisplayValueDirective,
+        InputLabel,
+        Button,
+        Image,
+        SvgComponent
     ],
     imports: [
         FormsModule,
         DropdownModule,
         HttpModule,
-        HttpClientModule
+        HttpClientModule,
+        AngularSvgIconModule
     ],
     providers: [
         { provide: PageService, useClass: MockPageService },
@@ -91,6 +111,32 @@ it('getAllURLParams should return null matching the regexp', async(() => {
     const fixture = TestBed.createComponent(CardDetailsComponent);
     const app = fixture.debugElement.componentInstance;
     expect(app.getAllURLParams('{ /webhp?hl=en}')).toEqual(['{ /webhp?hl=en}']);
+  }));
+
+  it('toggleState() should update isHidden and _state properties', async(() => {
+    const fixture = TestBed.createComponent(CardDetailsComponent);
+    const app = fixture.debugElement.componentInstance;
+    app.state = 'closedPanel';
+    app.isHidden = true;
+    app.toggleState();
+    expect(app.isHidden).toBeFalsy();
+    expect(app._state).toEqual('openPanel');
+  }));
+
+  it('toggleState() should update _state property', async(() => {
+    const fixture = TestBed.createComponent(CardDetailsComponent);
+    const app = fixture.debugElement.componentInstance;
+    app.state = 'openPanel';
+    app.toggleState();
+    expect(app._state).toEqual('closedPanel');
+  }));
+
+  it('animationDone() should update the isHidden property', async(() => {
+    const fixture = TestBed.createComponent(CardDetailsComponent);
+    const app = fixture.debugElement.componentInstance;
+    app.state = 'closedPanel';
+    app.animationDone('a');
+    expect(app.isHidden).toBeTruthy();
   }));
 
 });

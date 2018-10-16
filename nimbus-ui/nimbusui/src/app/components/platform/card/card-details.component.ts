@@ -18,7 +18,6 @@
 
 import { WebContentSvc } from './../../../services/content-management.service';
 import { BaseElement } from './../base-element.component';
-import { CardDetails } from '../../../shared/card-details';
 import { Param } from '../../../shared/param-state';
 import { Component, Input } from '@angular/core';
 import { PageService } from '../../../services/page.service';
@@ -59,7 +58,6 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
     ]
 })
 export class CardDetailsComponent extends BaseElement {
-    @Input() list: CardDetails;
     @Input() collectionElem: boolean = false;
     @Input() elemId: string = undefined;
     @Input() element: Param;

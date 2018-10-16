@@ -24,7 +24,6 @@ import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.extension.ExpressionConditional;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.StateHolder.ParamStateHolder;
-import com.antheminc.oss.nimbus.domain.model.state.extension.AbstractConditionalStateEventHandler.EvalExprWithCrudActions;
 import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 /**

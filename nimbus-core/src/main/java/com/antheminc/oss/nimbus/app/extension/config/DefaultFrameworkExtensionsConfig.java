@@ -23,25 +23,26 @@ import org.springframework.context.annotation.Configuration;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.defn.extension.ValidateConditional.ValidationScope;
-import com.antheminc.oss.nimbus.domain.model.config.extension.LabelConfigEventHandler;
+import com.antheminc.oss.nimbus.domain.model.config.extension.LabelStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.AccessConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ActivateConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.AuditStateChangeHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ConfigConditionalStateChangeHandler;
+import com.antheminc.oss.nimbus.domain.model.state.extension.DefaultParamValuesHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.DobToAgeConverter;
 import com.antheminc.oss.nimbus.domain.model.state.extension.EnableConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ExpressionConditionalStateEventHandler;
+import com.antheminc.oss.nimbus.domain.model.state.extension.LabelConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.MessageConditionalHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ModalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ParamContextStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ParamValuesOnLoadHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.RuleStateEventHandler;
+import com.antheminc.oss.nimbus.domain.model.state.extension.ScriptStateLoadNewHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.StaticCodeValueBasedCodeToLabelConverter;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValidateConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.ValidateConditionalStateEventHandler.ValidationAssignmentStrategy;
-import com.antheminc.oss.nimbus.domain.model.state.extension.ValuesConditionalOnStateChangeEventHandler;
-import com.antheminc.oss.nimbus.domain.model.state.extension.ValuesConditionalOnStateLoadEventHandler;
-import com.antheminc.oss.nimbus.domain.model.state.extension.DefaultParamValuesHandler;
+import com.antheminc.oss.nimbus.domain.model.state.extension.ValuesConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.VisibleConditionalStateEventHandler;
 import com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional.ChildrenValidationAssignmentStrategy;
 import com.antheminc.oss.nimbus.domain.model.state.extension.validateconditional.SiblingValidationAssignmentStrategy;
@@ -55,8 +56,8 @@ import com.antheminc.oss.nimbus.domain.model.state.internal.IdParamConverter;
 public class DefaultFrameworkExtensionsConfig {
 	
 	@Bean
-	public LabelConfigEventHandler labelConfigEventHandler() {
-		return new LabelConfigEventHandler();
+	public LabelStateEventHandler labelConfigEventHandler() {
+		return new LabelStateEventHandler();
 	}
 	
 	@Bean
@@ -74,19 +75,14 @@ public class DefaultFrameworkExtensionsConfig {
 		return new RuleStateEventHandler(beanResolver);
 	}
 	
-	@Bean
-	public ValuesConditionalOnStateLoadEventHandler extensionValuesConditionalOnStateLoadHandler(BeanResolverStrategy beanResolver) {
-		return new ValuesConditionalOnStateLoadEventHandler(beanResolver);
-	}
-	
 	@Bean(name="default.paramValuesHandler")
 	public ParamValuesOnLoadHandler extensionValuesOnStateLoadEventHandler(BeanResolverStrategy beanResolver) {
 		return new DefaultParamValuesHandler(beanResolver);
 	}
 	
 	@Bean
-	public ValuesConditionalOnStateChangeEventHandler extensionValuesConditionalOnStateChangeHandler(BeanResolverStrategy beanResolver) {
-		return new ValuesConditionalOnStateChangeEventHandler(beanResolver);
+	public ValuesConditionalStateEventHandler extensionValuesConditionalOnStateChangeHandler(BeanResolverStrategy beanResolver) {
+		return new ValuesConditionalStateEventHandler(beanResolver);
 	}
 	
 	@Bean
@@ -115,6 +111,11 @@ public class DefaultFrameworkExtensionsConfig {
 	}
 	
 	@Bean
+	public LabelConditionalStateEventHandler extensionLabelConditionalStateEventHandler(BeanResolverStrategy beanResolver) {
+		return new LabelConditionalStateEventHandler(beanResolver);
+	}
+	
+	@Bean
 	public VisibleConditionalStateEventHandler extensionVisibleCondiationalStateEventHandler(BeanResolverStrategy beanResolver) {
 		return new VisibleConditionalStateEventHandler(beanResolver);
 	}
@@ -135,6 +136,11 @@ public class DefaultFrameworkExtensionsConfig {
 		validationAssignmentStrategies.put(ValidationScope.SIBLING, new SiblingValidationAssignmentStrategy());
 		validationAssignmentStrategies.put(ValidationScope.CHILDREN, new ChildrenValidationAssignmentStrategy());
 		return validationAssignmentStrategies;
+	}
+	
+	@Bean
+	public ScriptStateLoadNewHandler extensionScriptStateLoadNewHandler(BeanResolverStrategy beanResolver) {
+		return new ScriptStateLoadNewHandler(beanResolver);
 	}
 	
 	@Bean

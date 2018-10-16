@@ -17,7 +17,6 @@ package com.antheminc.oss.nimbus.domain.model.state.extension;
 
 
 import java.util.Arrays;
-import java.util.Optional;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -66,7 +65,7 @@ public class ConfigConditionalStateChangeHandler extends AbstractConditionalStat
 	}
 	
 	@Override
-	public void handle(ConfigConditional configuredAnnotation, ExecutionTxnContext txnCtx, ParamEvent event) {
+	public void onStateChange(ConfigConditional configuredAnnotation, ExecutionTxnContext txnCtx, ParamEvent event) {
 		init();
 		
 		boolean isTrue = evalWhen(event.getParam(), configuredAnnotation.when());

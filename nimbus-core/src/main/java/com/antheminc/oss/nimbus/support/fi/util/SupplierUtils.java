@@ -27,19 +27,43 @@ import com.antheminc.oss.nimbus.support.fi.ThrowingSupplier;
 public class SupplierUtils {
 
 	/**
-	 * <p>Convenience method for handling suppliers that throw a <tt>FrameworkRuntimeException</tt>.
-	 *  
+	 * <p>Convenience method for handling suppliers that wraps any thrown
+	 * exceptions into a <tt>FrameworkRuntimeException</tt>.
+	 * 
 	 * @param supplier the supplier to execute
 	 * @param errMsg the error message to throw if an exception occurs
 	 * @return the result of supplierupplier.get()
 	 */
 	public static <T> Supplier<T> handle(ThrowingSupplier<T, Exception> supplier, String errMsg) {
+		return handle(supplier, errMsg, FrameworkRuntimeException.class);
+	}
+
+	/**
+	 * <p>Convenience method for handling suppliers that wraps any thrown
+	 * exceptions into an exception of type {@code exceptionClass}. <p>If for
+	 * any reason {@code exceptionClass} fails to instantiate, a
+	 * {@link FrameworkRuntimeException} will be thrown.
+	 * 
+	 * @param supplier the supplier to execute
+	 * @param errMsg the error message to throw if an exception occurs
+	 * @param exceptionClass the exception class to instantiate and throw.
+	 * @return the result of supplierupplier.get()
+	 */
+	public static <T> Supplier<T> handle(ThrowingSupplier<T, Exception> supplier, String errMsg,
+			Class<? extends RuntimeException> exceptionClass) {
 		return () -> {
-		    try {
-		    	return supplier.get();
-		    } catch (Exception ex) {
-		        throw new FrameworkRuntimeException(errMsg, ex);
-		    }
+			try {
+				return supplier.get();
+			} catch (Exception cause) {
+				RuntimeException e;
+				try {
+					e = exceptionClass.getConstructor(String.class, Throwable.class).newInstance(errMsg, cause);
+				} catch (Exception configException) {
+					throw new FrameworkRuntimeException(
+							"Failed to create exception for " + exceptionClass.getSimpleName(), configException);
+				}
+				throw e;
+			}
 		};
 	}
 }

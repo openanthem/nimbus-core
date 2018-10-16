@@ -87,7 +87,7 @@ export class HeaderGlobal {
 
         e.isOpen = !selectedDropDownIsOpen;
 
-        if (selectedDropDownState == 'openPanel') {
+        if (selectedDropDownState == 'openPanel') {            
             e.state = 'closedPanel';
             if (!this.mouseEventSubscription.closed)
                 this.mouseEventSubscription.unsubscribe();

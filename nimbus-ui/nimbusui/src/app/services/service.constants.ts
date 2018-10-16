@@ -43,7 +43,7 @@ export class ServiceConstants {
     /* Enable for stopgap server */
     public static get BASE_URL(): string    { return this.APP_HOST_URL+this.WEB_CONTENT_PORT; }
     public static get LOGIN_URL(): string { return this.APP_HOST_URL+this.APP_PORT+'/'+this.APP_CONTEXT+'/login'; }
-    public static get IMAGE_URL(): string { return this.APP_HOST_URL+this.APP_PORT+'/'+this.APP_CONTEXT+'/images'; }
+    public static get IMAGE_URL(): string { return this.APP_HOST_URL+this.APP_PORT+'/'+this.APP_CONTEXT+'/'; }
     public static get LOGOUT_URL(): string { return this.APP_HOST_URL+this.APP_PORT+'/'+this.APP_CONTEXT+'/logout'; }
     public static get APP_REFRESH(): string { return this.APP_HOST_URL+this.APP_PORT+'/'+this.APP_CONTEXT+'/processLogin'; }
     public static get PLATFORM_BASE_URL(): string    { return this.APP_BASE_URL + this.APP_COMMAND_URL + this.PLATFORM_SEPARATOR; }
@@ -113,7 +113,9 @@ export class ServiceConstants {
             required: 'Field is required.',
             pattern: 'Field does not match the required pattern.',
             minMaxSelection: 'Field does not meet min/max requirement.',
-            isNumber: 'Value must be a number.'
+            isNumber: 'Value must be a number.',
+            isPast: 'Value must be today or before today\'s date.',
+            isFuture: 'Value must be today or after today\'s date.'
         };
     }
 }

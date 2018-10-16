@@ -69,6 +69,20 @@ public class Command implements Serializable {
 	@JsonIgnore @Getter(value=AccessLevel.PRIVATE)
 	private final transient CollectionsTemplate<List<Behavior>, Behavior> templateBehaviors = CollectionsTemplate.linked(()->getBehaviors(), s->setBehaviors(s));
 	
+	public Command(String absoluteUri) {
+		this.absoluteUri = absoluteUri;
+	}
+	
+	public Command(Command source) {
+		this(source.getAbsoluteUri());
+		setAction(source.getAction());
+		setEvent(source.getEvent());
+		setBehaviors(source.getBehaviors());
+		setClientUserId(source.getClientUserId());
+		
+		CommandElementLinked clonedRoot = new CommandElementLinked(source.getRoot());
+		setRoot(clonedRoot);
+	}
 	
 	public CollectionsTemplate<List<Behavior>, Behavior> templateBehaviors() {
 		return templateBehaviors;
@@ -125,25 +139,6 @@ public class Command implements Serializable {
 		String cUri = buildUri(getRoot(), Type.DomainAlias);
 		return CommandBuilder.withUri(cUri).getCommand();
 	}
-	
-	@Override
-	public Command clone() {
-		Command cloned = new Command(getAbsoluteUri());
-		shallowCopy(cloned);
-		
-		CommandElementLinked clonedRoot = getRoot().clone();
-		cloned.setRoot(clonedRoot);
-		return cloned;
-	}
-	
-	public void shallowCopy(Command to) {
-		to.setAction(getAction());
-		to.setEvent(getEvent());
-		to.setBehaviors(getBehaviors());
-		to.setClientUserId(getClientUserId());
-	}
-	
-	
 
 	public String getAliasUri(Type type) {
 		return getElement(type).map(e -> e.getAliasUri()).orElse(null);
@@ -413,5 +408,9 @@ public class Command implements Serializable {
 	
 	public String getRawPayload() {
 		return getFirstParameterValue("rawPayload");
+	}
+	
+	public boolean containsFunction() {
+		return requestParams != null && requestParams.containsKey(Constants.KEY_FUNCTION.code);
 	}
 }

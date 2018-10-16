@@ -1,6 +1,7 @@
 
 <div [formGroup]="form" *ngIf="element.config?.uiStyles?.attributes?.alias!=viewComponent.button.toString()" [hidden]="!element?.visible" [ngClass]="getComponentClass()">
    
+    <nm-form-grid-filler *ngIf="element.config?.uiStyles?.attributes?.alias==componentTypes.formGridFiller.toString()" ></nm-form-grid-filler>
     <nm-header [element]="element" *ngIf="element.config?.uiStyles?.attributes?.alias==componentTypes.header.toString()" ></nm-header>
     <nm-paragraph [element]="element" *ngIf="element.config?.uiStyles?.attributes?.alias==componentTypes.paragraph.toString()"></nm-paragraph>
     <nm-input id="{{id}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.type==componentTypes.text.toString()" [element]="element" [form]="form"></nm-input>
@@ -15,12 +16,20 @@
     <nm-multi-select-listbox id="{{id}}" *ngIf="element.config?.uiStyles?.attributes?.alias == componentTypes.multiSelect.toString()" [element]="element"  [form]="form"></nm-multi-select-listbox>
     <nm-multiselect-card id="{{id}}"  *ngIf="element.config.uiStyles?.attributes?.alias == componentTypes.multiSelectCard.toString()" [formControlName]="element.config?.code" ngDefaultControl [element]="element" [form]="form"></nm-multiselect-card>
     <nm-upload id="{{id}}" *ngIf="element.config?.uiStyles?.attributes?.alias == componentTypes.fileUpload.toString()" [formControlName]="element.config?.code" [element]="element" [form]="form"></nm-upload>
+    <nm-input-switch id="{{id}}"  [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.alias == componentTypes.inputSwitch.toString()" [element]="element"  [form]="form"></nm-input-switch>
     <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias == componentTypes.grid.toString()">
         <nm-table
             [element]="element" [form]="form" [formControlName]="element.config?.code"
             [params]="element?.config?.type?.elementConfig?.type?.model?.paramConfigs" (onScrollEvent)="onScrollEvent()"
             [position]="position">
         </nm-table>
+    </ng-template>
+
+    <ng-template [ngIf]="element.config?.uiStyles?.attributes?.alias == componentTypes.treeGrid.toString()">
+         <nm-treegrid
+             [element]="element" [form]="form" [formControlName]="element.config?.code"
+             [params]="element?.config?.type?.elementConfig?.type?.model?.paramConfigs">
+         </nm-treegrid>
     </ng-template>
     <ng-template ngFor let-msg [ngForOf]="getMessages()">
         <nm-message [messageContext]="msg.context"  [messageArray]="msg.messageArray" [life] = "msg.life" [styleClass]="msg.styleClass"></nm-message>

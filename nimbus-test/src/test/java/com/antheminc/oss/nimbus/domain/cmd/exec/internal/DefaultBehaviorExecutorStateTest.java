@@ -102,7 +102,7 @@ public class DefaultBehaviorExecutorStateTest extends AbstractFrameworkIngeratio
 		Object home_newResp = controller.handleGet(home_newReq, null);
 		assertNotNull(home_newResp);
 		
-		Object actual = ExtractResponseOutputUtils.extractOutput(home_newResp, 1);
+		Object actual = ExtractResponseOutputUtils.extractOutput(home_newResp, 2);
 		assertNotNull(actual);
 		assertTrue(VRSampleViewRootEntity.class.isInstance(actual));
 		

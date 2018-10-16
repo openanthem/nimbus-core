@@ -12,7 +12,7 @@ export class SvgComponent {
   constructor() {}
 
   ngOnInit() {
-    this.updatedSrc = ServiceConstants.IMAGE_URL + '/' + this.name + '.svg';
+    this.updatedSrc = ServiceConstants.IMAGE_URL + this.name ;
   }
 
 }
