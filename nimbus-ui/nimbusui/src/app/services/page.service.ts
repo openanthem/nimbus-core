@@ -427,7 +427,7 @@ export class PageService {
                 viewRoot.model = output.value.type.model;
                 this.configService.setLayoutToAppConfig(flow, viewRoot);
 
-                if (output.rootDomainId !== 'null' && !typeof output.rootDomainId == undefined ) {
+                if (output.rootDomainId !== 'null' ) {
                         this.flowRootDomainId[flow] = output.rootDomainId;
                         this.sessionStore.set(flow, output.rootDomainId);
                 }

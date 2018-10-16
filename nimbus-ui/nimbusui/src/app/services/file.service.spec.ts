@@ -5,9 +5,8 @@ import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { JL } from 'jsnlog';
 import { SESSION_STORAGE, StorageServiceModule } from 'angular-webstorage-service';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
-// import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { of as observableOf,  Observable } from 'rxjs';
+
 
 import { FileService } from './file.service';
 import { LoggerService } from './logger.service';
@@ -26,7 +25,7 @@ class MockHttpClient {
       throw err;
     }
 
-    return Observable.of({fileId: 123});
+    return observableOf({fileId: 123});
   }
 }
 

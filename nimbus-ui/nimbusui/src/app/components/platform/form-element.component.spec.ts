@@ -1,10 +1,13 @@
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule, AbstractControlDirective } from '@angular/forms';
-import { GrowlModule, AccordionModule, PickListModule, ListboxModule, CalendarModule, DataTableModule, DropdownModule, FileUploadModule, RadioButtonModule, CheckboxModule } from 'primeng/primeng';
+import { GrowlModule, AccordionModule, PickListModule, ListboxModule, CalendarModule, 
+    DataTableModule, DropdownModule, FileUploadModule, RadioButtonModule, CheckboxModule,
+    InputSwitchModule, TreeTableModule } from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { AngularSvgIconModule } from 'angular-svg-icon';
+import {ToastModule} from 'primeng/toast';
 
 import { FormElement } from './form-element.component';
 import { MessageComponent } from '../platform/message/message.component';
@@ -31,8 +34,7 @@ import { TooltipComponent } from '../platform/tooltip/tooltip.component';
 import { SelectItemPipe } from '../../pipes/select-item.pipe';
 import { ButtonGroup } from '../platform/form/elements/button-group.component';
 import { Button } from '../platform/form/elements/button.component';
-import { Accordion } from '../platform/accordion.component';
-import { AccordionMain } from '../platform/content/accordion.component';
+import { Accordion } from '../platform/content/accordion.component';
 import { Menu } from '../platform/menu.component';
 import { Link } from '../platform/link.component';
 import { Form } from '../platform/form.component';
@@ -40,13 +42,21 @@ import { StaticText } from '../platform/content/static-content.component';
 import { CardDetailsComponent } from '../platform/card/card-details.component';
 import { CardDetailsGrid } from '../platform/card/card-details-grid.component';
 import { FrmGroupCmp } from './form-group.component';
-import { AccordionGroup } from '../platform/accordion-group.component';
 import { CardDetailsFieldComponent } from '../platform/card/card-details-field.component';
 import { InPlaceEditorComponent } from '../platform/form/elements/inplace-editor.component';
 import { DateTimeFormatPipe } from '../../pipes/date.pipe';
 import { HeaderCheckBox } from '../platform/form/elements/header-checkbox.component';
 import { SvgComponent } from './svg/svg.component';
 import { Image } from './image.component';
+import { TreeGrid } from './tree-grid/tree-grid.component';
+import { InputSwitch } from './form/elements/input-switch.component';
+import { FormGridFiller } from './form/form-grid-filler.component';
+import { DisplayValueDirective } from '../../directives/display-value.directive';
+import { InputLabel } from './form/elements/input-label.component';
+import { Label } from './content/label.component';
+import { CardDetailsFieldGroupComponent } from './card/card-details-field-group.component';
+import { WebContentSvc } from '../../services/content-management.service';
+import { InputLegend } from './form/elements/input-legend.component';
 
 let fixture, app;
 
@@ -80,7 +90,6 @@ describe('FormElement', () => {
         ButtonGroup,
         Button,
         Accordion,
-        AccordionMain,
         Menu,
         Link,
         Form,
@@ -88,13 +97,20 @@ describe('FormElement', () => {
         CardDetailsComponent,
         CardDetailsGrid,
         FrmGroupCmp,
-        AccordionGroup,
         CardDetailsFieldComponent,
         InPlaceEditorComponent,
         DateTimeFormatPipe,
         HeaderCheckBox,
         SvgComponent,
-        Image
+        Image,
+        TreeGrid,
+        InputSwitch,
+        FormGridFiller,
+        DisplayValueDirective,
+        InputLabel,
+        Label,
+        CardDetailsFieldGroupComponent,
+        InputLegend
        ],
        imports: [
         FormsModule, 
@@ -111,7 +127,13 @@ describe('FormElement', () => {
         CheckboxModule,
         TableModule,
         KeyFilterModule,
-        AngularSvgIconModule
+        AngularSvgIconModule,
+        ToastModule,
+        InputSwitchModule, 
+        TreeTableModule
+       ],
+       providers: [
+        WebContentSvc
        ]
     }).compileComponents();
     fixture = TestBed.createComponent(FormElement);
@@ -157,14 +179,12 @@ describe('FormElement', () => {
 
   it('getMessages() should return message from the element', async(() => {
     app.element = { message: ['test'] };
-    spyOn(app, 'getErrors').and.returnValue('');
-    spyOn(app, 'getPristine').and.returnValue(false);
+    spyOn(app, 'getPristine').and.returnValue(true);
     expect(app.getMessages()).toEqual(['test']);
   }));
 
   it('getMessages() should return return empty array', async(() => {
     app.element = { message: [] };
-    spyOn(app, 'getErrors').and.returnValue('');
     spyOn(app, 'getPristine').and.returnValue(true);
     expect(app.getMessages()).toEqual([]);
   }));
@@ -179,7 +199,7 @@ describe('FormElement', () => {
             return false;
           } } } };
     app.form = { controls: {} };
-    expect(app.getErrorStyles()).toEqual(undefined);
+    expect(app.getErrorStyles()).toEqual('');
   }));
 
   it('getErrorStyles() should return alert string', async(() => {
@@ -188,24 +208,10 @@ describe('FormElement', () => {
     expect(app.getErrorStyles()).toEqual('alert alert-danger');
   }));
 
-  it('elementCss should be updated with even suffix', async(() => {
-    app.elementCss = 'test';
-    app.element = { config: { uiStyles: { attributes: { controlId: 10 } } } };
-    app.ngOnInit();
-    expect(app.elementCss).toEqual('test even');
-  }));
-
   it('elementCss should be undefined', async(() => {
     app.element = { config: { uiStyles: { attributes: { controlId: null } } } };
     app.ngOnInit();
     expect(app.elementCss).toEqual(undefined);
-  }));
-
-  it('elementCss should be updated with odd suffix', async(() => {
-    app.elementCss = 'test';
-    app.element = { config: { uiStyles: { attributes: { controlId: 19 } } } };
-    app.ngOnInit();
-    expect(app.elementCss).toEqual('test odd');
   }));
 
   it('getElementStyle() should return col-lg-12 col-md-6', async(() => {
@@ -216,85 +222,6 @@ describe('FormElement', () => {
   it('getElementStyle() should return empty array', async(() => {
     app.element = { config: { uiStyles: { attributes: { alias: '' } } } };
     expect(app.getElementStyle()).toEqual('');
-  }));
-
-  it('getErrors() should call addErrorMessages() with attribute from element', async(() => {
-    app.element = { config: { validation: { constraints: [{ name: 'NotNull', attribute: { message: 'testing...' } }] }, code: 'test' } };
-    app.form = { controls: { test: { invalid: true, errors: { required: true } } } };
-    spyOn(app, 'addErrorMessages').and.returnValue('');
-    app.getErrors();
-    expect(app.addErrorMessages).toHaveBeenCalled();
-    expect(app.addErrorMessages).toHaveBeenCalledWith('testing...');
-  }));
-
-  it('getErrors() should call addErrorMessages() with Field is required string', async(() => {
-    app.element = { config: { validation: { constraints: [{ name: 'NotNull', attribute: { message: '' } }] }, code: 'test' } };
-    app.form = { controls: { test: { invalid: true, errors: { required: true } } } };
-    spyOn(app, 'addErrorMessages').and.returnValue('');
-    app.getErrors();
-    expect(app.addErrorMessages).toHaveBeenCalled();
-    expect(app.addErrorMessages).toHaveBeenCalledWith('Field is required.');
-  }));
-
-  it('getErrors() should call addErrorMessages() with attribute from element on constraints.name as pattern', async(() => {
-    app.element = { config: { validation: { constraints: [{ name: 'Pattern', attribute: { message: 'testing pattern' } }] }, code: 'test' } };
-    app.form = { controls: { test: { invalid: true, errors: { pattern: true } } } };
-    spyOn(app, 'addErrorMessages').and.returnValue('');
-    app.getErrors();
-    expect(app.addErrorMessages).toHaveBeenCalled();
-    expect(app.addErrorMessages).toHaveBeenCalledWith('testing pattern');
-  }));
-
-  it('getErrors() should call addErrorMessages() with Field is required string on constraints.name as pattern', async(() => {
-    app.element = { config: { validation: { constraints: [{ name: 'Pattern', attribute: { message: '' } }] }, code: 'test' } };
-    app.form = { controls: { test: { invalid: true, errors: { pattern: true } } } };
-    spyOn(app, 'addErrorMessages').and.returnValue('');
-    app.getErrors();
-    expect(app.addErrorMessages).toHaveBeenCalled();
-    expect(app.addErrorMessages).toHaveBeenCalledWith('Field is required.');
-  }));
-
-  it('getErrors() should call addErrorMessages() with attribute from element on constraints.name as Size', async(() => {
-    app.element = { config: { validation: { constraints: [{ name: 'Size', attribute: { message: 'testing Size' } }] }, code: 'test' } };
-    app.form = { controls: { test: { invalid: true, errors: { minMaxSelection: true } } } };
-    spyOn(app, 'addErrorMessages').and.returnValue('');
-    app.getErrors();
-    expect(app.addErrorMessages).toHaveBeenCalled();
-    expect(app.addErrorMessages).toHaveBeenCalledWith('testing Size');
-  }));
-
-  it('getErrors() should call addErrorMessages() with Field is required string on constraints.name as Size', async(() => {
-    app.element = { config: { validation: { constraints: [{ name: 'Size', attribute: { message: '' } }] }, code: 'test' } };
-    app.form = { controls: { test: { invalid: true, errors: { minMaxSelection: true } } } };
-    spyOn(app, 'addErrorMessages').and.returnValue('');
-    app.getErrors();
-    expect(app.addErrorMessages).toHaveBeenCalled();
-    expect(app.addErrorMessages).toHaveBeenCalledWith('Field is required.');
-  }));
-
-  it('getErrors() should call addErrorMessages() with Value must be a number.', async(() => {
-    app.element = { config: { validation: { constraints: [{ attribute: { message: '' } }] }, code: 'test' } };
-    app.form = { controls: { test: { invalid: true, errors: { isNumber: true } } } };
-    spyOn(app, 'addErrorMessages').and.returnValue('');
-    app.getErrors();
-    expect(app.addErrorMessages).toHaveBeenCalled();
-    expect(app.addErrorMessages).toHaveBeenCalledWith('Value must be a number.');
-  }));
-
-  it('getErrors() should call addErrorMessages()', async(() => {
-    app.element = { config: { code: 'test' } };
-    app.form = { controls: { test: { invalid: false, errors: { isNumber: true } } } };
-    spyOn(app, 'addErrorMessages').and.returnValue('');
-    app.getErrors();
-    expect(app.addErrorMessages).not.toHaveBeenCalled();
-  }));
-
-  it('getErrors() should not call addErrorMessages()', async(() => {
-    app.element = { config: { code: 'test', validation: '' } };
-    app.form = { controls: { test: { invalid: true, errors: { isNumber: true } } } };
-    spyOn(app, 'addErrorMessages').and.returnValue('');
-    app.getErrors();
-    expect(app.addErrorMessages).not.toHaveBeenCalled();
   }));
 
   it('addErrorMessages() should update the elemMessages[0].messageArray[0].detail', async(() => {

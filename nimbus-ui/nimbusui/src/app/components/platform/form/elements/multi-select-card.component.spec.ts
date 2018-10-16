@@ -5,8 +5,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
 import { Subject } from 'rxjs';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
+import { of as observableOf,  Observable } from 'rxjs';
 
 import { MultiselectCard } from './multi-select-card.component';
 import { PageService } from '../../../../services/page.service';
@@ -116,7 +115,7 @@ describe('MultiselectCard', () => {
     it('ngOnInit() should update the selectedOptions and call form.controls.a.setValue()', async(() => {
       app.element = { leafState: '', config: { code: 't' }, path: 'test' };
       const eve = { config: { code: 'a' }, path: 'test', leafState: '' };
-      app.form = { controls: { t: { valueChanges: Observable.of('') }, a: { setValue: a => {} } } };
+      app.form = { controls: { t: { valueChanges: observableOf('') }, a: { setValue: a => {} } } };
       spyOn(app, 'setState').and.returnValue('');
       spyOn(app.form.controls.a, 'setValue').and.callThrough();
       app.ngOnInit();

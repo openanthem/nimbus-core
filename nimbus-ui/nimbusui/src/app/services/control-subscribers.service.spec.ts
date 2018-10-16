@@ -135,7 +135,7 @@ describe('ControlSubscribers', () => {
     it('onChangeEventSubscriber() should call pageService.processEvent()', async(() => {
       const control = { element: { config: { uiStyles: { attributes: { postButtonUrl: '/t' } } } } };
       const eve = { leafState: 'test', config: { uiStyles: { attributes: { postEventOnChange: true, postButtonUrl: true } } } };
-      service.previouLeafState = 'test';
+      service.resetPreviousLeafState('test');
       service.controlValueChanged = new Subject();
       spyOn(pageService, 'postOnChange').and.callThrough();
       spyOn(pageService, 'processEvent').and.callThrough();
@@ -143,17 +143,6 @@ describe('ControlSubscribers', () => {
       service.controlValueChanged.next(eve);
       expect(pageService.postOnChange).not.toHaveBeenCalled();
       expect(pageService.processEvent).toHaveBeenCalled();
-    }));
-
-    it('unSubscribeAll() should unsubscribe the controlValueChanged, pageService.eventUpdate and pageService.validationUpdate', async(() => {
-      service.controlValueChanged = { unsubscribe: () => {} };
-      spyOn(service.controlValueChanged, 'unsubscribe').and.callThrough();
-      spyOn(pageService.eventUpdate, 'unsubscribe').and.callThrough();
-      spyOn(pageService.validationUpdate, 'unsubscribe').and.callThrough();
-      service.unSubscribeAll();
-      expect(service.controlValueChanged.unsubscribe).toHaveBeenCalled();
-      expect(pageService.eventUpdate.unsubscribe).toHaveBeenCalled();
-      expect(pageService.validationUpdate.unsubscribe).toHaveBeenCalled();
     }));
 
 });
