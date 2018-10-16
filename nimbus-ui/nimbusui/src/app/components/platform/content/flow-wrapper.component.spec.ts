@@ -113,68 +113,46 @@ describe('FlowWrapper', () => {
     router = TestBed.get(Router);
   }));
 
-  it('should create the app', async(() => {
-    expect(app).toBeTruthy();
-  }));
+    it('should create the app', async(() => {
+      expect(app).toBeTruthy();
+    }));
 
-  it('ngOnInit() call router.navigate() and pageService.loadDefaultPageForConfig()', async(() => {
-    const test = {
-      pageConfig: {
-        config: {
-          code: 123,
-          uiStyles: {
-            attributes: {
-              route: 'testRoute'
+    it('ngOnInit() call router.navigate() and pageService.loadDefaultPageForConfig()', async(() => {
+      const test = { pageConfig: { config: { code: 123, uiStyles: { attributes: { route: 'testRoute' } } } } };
+      spyOn(router, 'navigate').and.callThrough();
+      spyOn(pageService, 'loadDefaultPageForConfig').and.callThrough();
+      app.ngOnInit();
+      pageService.logError(test);
+      expect(router.navigate).toHaveBeenCalled();
+      expect(pageService.loadDefaultPageForConfig).toHaveBeenCalled();
+    }));
+
+    it('ngOnInit() call router.navigate() and pageService.loadFlowConfig()', async(() => {
+      const test = { pageConfig: { config: { code: 123, uiStyles: { attributes: {} } } } };
+      spyOn(router, 'navigate').and.callThrough();
+      spyOn(pageService, 'loadFlowConfig').and.callThrough();
+      spyOn(configService, 'getFlowConfig').and.returnValue(undefined);
+      app.ngOnInit();
+      pageService.logError(test);
+      expect(router.navigate).toHaveBeenCalled();
+      expect(pageService.loadFlowConfig).toHaveBeenCalled();
+    }));
+
+    it('on_next() should call pageService.traverseFlowConfig()', async(() => {
+      const test1 = JSON.stringify({
+        result: [
+          {
+            result: {
+              value: {
+                path: 'test/t'
+              }
             }
           }
-        }
-      }
-    };
-    spyOn(router, 'navigate').and.callThrough();
-    spyOn(pageService, 'loadDefaultPageForConfig').and.callThrough();
-    app.ngOnInit();
-    pageService.logError(test);
-    expect(router.navigate).toHaveBeenCalled();
-    expect(pageService.loadDefaultPageForConfig).toHaveBeenCalled();
-  }));
-
-  it('ngOnInit() call router.navigate() and pageService.loadFlowConfig()', async(() => {
-    const test = {
-      pageConfig: {
-        config: {
-          code: 123,
-          uiStyles: {
-            attributes: {}
-          }
-        }
-      }
-    };
-    spyOn(router, 'navigate').and.callThrough();
-    spyOn(pageService, 'loadFlowConfig').and.callThrough();
-    spyOn(configService, 'getFlowConfig').and.returnValue(undefined);
-    app.ngOnInit();
-    pageService.logError(test);
-    expect(router.navigate).toHaveBeenCalled();
-    expect(pageService.loadFlowConfig).toHaveBeenCalled();
-  }));
-
-  it('on_next() should call pageService.traverseFlowConfig()', async(() => {
-    const test1 = JSON.stringify({
-      result: [
-        {
-          result: {
-            value: {
-              path: 'test/t'
-            }
-          }
-        }
-      ]
-    });
-    const test = {
-      body: test1
-    };
-    spyOn(pageService, 'traverseFlowConfig').and.callThrough();
-    app.on_next(test);
-    expect(pageService.traverseFlowConfig).toHaveBeenCalled();
-  }));
+        ]
+      });
+      const test = { body: test1 };
+      spyOn(pageService, 'traverseFlowConfig').and.callThrough();
+      app.on_next(test);
+      expect(pageService.traverseFlowConfig).toHaveBeenCalled();
+    }));
 });

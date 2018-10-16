@@ -85,10 +85,10 @@ export class TreeGrid extends BaseElement implements ControlValueAccessor {
             }
         });
 
-        // For convenience
+        // For convenience        
         this.collectionAlias = this.element.config.type.elementConfig.type.model.paramConfigs.find((config) =>
                 config.uiStyles.attributes.alias === this.viewComponent.treeGridChild.toString()).code;
-
+                
         if (this.params) {
             this.params.forEach(column => {
                 column.label = this._wcs.findLabelContentFromConfig(this.element.elemLabels.get(column.id), column.code).text;
@@ -122,7 +122,7 @@ export class TreeGrid extends BaseElement implements ControlValueAccessor {
         if (!paramConfig || !paramConfig.uiStyles) {
             return false;
         }
-        
+
         if (TreeGrid.RENDERABLE_COMPONENT_ALIASES.find(s => s === paramConfig.uiStyles.attributes.alias)) {
             return true;
         }

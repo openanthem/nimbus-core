@@ -60,6 +60,8 @@ import { InputLabel } from './form/elements/input-label.component';
 import { Label } from './content/label.component';
 import { CardDetailsFieldGroupComponent } from './card/card-details-field-group.component';
 
+let fixture, app;
+
 class MockWebContentSvc {
     findLabelContent(param) {
         const test = {
@@ -148,64 +150,28 @@ describe('FrmGroupCmp', () => {
            { provide: WebContentSvc, useClass: MockWebContentSvc }
        ]
     }).compileComponents();
+    fixture = TestBed.createComponent(FrmGroupCmp);
+    app = fixture.debugElement.componentInstance;
   }));
 
-  it('should create the FrmGroupCmp', async(() => {
-    const fixture = TestBed.createComponent(FrmGroupCmp);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
-  }));
+    it('should create the FrmGroupCmp', async(() => {
+      expect(app).toBeTruthy();
+    }));
 
- xit('hasParagraph should compare and return true', async(() => {
-    const fixture = TestBed.createComponent(FrmGroupCmp);
-    const app = fixture.debugElement.componentInstance;
-    const testElement = {
-        config: {
-            uiStyles: {
-                attributes: {
-                    alias: 'Paragraph'
-                }
-            }
-        }
-    }
-    expect(app.hasParagraph(testElement)).toEqual(true);
-  }));
+    it('getCssClass() should return the element.config.uiStyles.attributes.cssClass', async(() => {
+      app.element = { config: { uiStyles: { attributes: { alias: 'FormElementGroup', cssClass: 'test' } } } };
+      expect(app.getCssClass()).toEqual('test');
+    }));
 
-  xit('hasParagraph should compare and return false', async(() => {
-    const fixture = TestBed.createComponent(FrmGroupCmp);
-    const app = fixture.debugElement.componentInstance;
-    const testElement = {
-        config: {
-            uiStyles: {
-                attributes: {
-                    alias: ''
-                }
-            }
-        }
-    }
-    expect(app.hasParagraph(testElement)).toEqual(false);
-  }));
+    it('getCssClass() should return elementCss', async(() => {
+      app.element = { config: { uiStyles: { attributes: { alias: 'FormElementGroup' } } } };
+      app.elementCss = 'test';
+      expect(app.getCssClass()).toEqual('test');
+    }));
 
-xit('hasParams() should return true', async(() => {
-    const fixture = TestBed.createComponent(FrmGroupCmp);
-    const app = fixture.debugElement.componentInstance;
-    app.elements = {
-        test: {
-            visible: '123'
-        }
-    }
-    expect(app.hasParams()).toEqual(true);
-  }));
-
-  xit('hasParams() should return true', async(() => {
-    const fixture = TestBed.createComponent(FrmGroupCmp);
-    const app = fixture.debugElement.componentInstance;
-    app.elements = {
-        test: {
-            visible: ''
-        }
-    }
-    expect(app.hasParams()).toEqual(false);
-  }));
+    it('getCssClass() should return empty string', async(() => {
+      app.element = { config: { uiStyles: { attributes: { alias: 'FormElementGroup1' } } } };
+      expect(app.getCssClass()).toEqual('');
+    }));
 
 });

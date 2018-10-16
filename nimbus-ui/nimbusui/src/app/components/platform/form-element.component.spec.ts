@@ -177,14 +177,12 @@ describe('FormElement', () => {
 
   it('getMessages() should return message from the element', async(() => {
     app.element = { message: ['test'] };
-    // spyOn(app, 'getErrors').and.returnValue('');
     spyOn(app, 'getPristine').and.returnValue(true);
     expect(app.getMessages()).toEqual(['test']);
   }));
 
   it('getMessages() should return return empty array', async(() => {
     app.element = { message: [] };
-    // spyOn(app, 'getErrors').and.returnValue('');
     spyOn(app, 'getPristine').and.returnValue(true);
     expect(app.getMessages()).toEqual([]);
   }));
@@ -208,24 +206,10 @@ describe('FormElement', () => {
     expect(app.getErrorStyles()).toEqual('alert alert-danger');
   }));
 
-  xit('elementCss should be updated with even suffix', async(() => {
-    app.elementCss = 'test';
-    app.element = { config: { uiStyles: { attributes: { controlId: 10 } } } };
-    app.ngOnInit();
-    expect(app.elementCss).toEqual('test even');
-  }));
-
   it('elementCss should be undefined', async(() => {
     app.element = { config: { uiStyles: { attributes: { controlId: null } } } };
     app.ngOnInit();
     expect(app.elementCss).toEqual(undefined);
-  }));
-
-  xit('elementCss should be updated with odd suffix', async(() => {
-    app.elementCss = 'test';
-    app.element = { config: { uiStyles: { attributes: { controlId: 19 } } } };
-    app.ngOnInit();
-    expect(app.elementCss).toEqual('test odd');
   }));
 
   it('getElementStyle() should return col-lg-12 col-md-6', async(() => {
@@ -236,85 +220,6 @@ describe('FormElement', () => {
   it('getElementStyle() should return empty array', async(() => {
     app.element = { config: { uiStyles: { attributes: { alias: '' } } } };
     expect(app.getElementStyle()).toEqual('');
-  }));
-
-  xit('getErrors() should call addErrorMessages() with attribute from element', async(() => {
-    app.element = { config: { validation: { constraints: [{ name: 'NotNull', attribute: { message: 'testing...' } }] }, code: 'test' } };
-    app.form = { controls: { test: { invalid: true, errors: { required: true } } } };
-    spyOn(app, 'addErrorMessages').and.returnValue('');
-    app.getErrors();
-    expect(app.addErrorMessages).toHaveBeenCalled();
-    expect(app.addErrorMessages).toHaveBeenCalledWith('testing...');
-  }));
-
-  xit('getErrors() should call addErrorMessages() with Field is required string', async(() => {
-    app.element = { config: { validation: { constraints: [{ name: 'NotNull', attribute: { message: '' } }] }, code: 'test' } };
-    app.form = { controls: { test: { invalid: true, errors: { required: true } } } };
-    spyOn(app, 'addErrorMessages').and.returnValue('');
-    app.getErrors();
-    expect(app.addErrorMessages).toHaveBeenCalled();
-    expect(app.addErrorMessages).toHaveBeenCalledWith('Field is required.');
-  }));
-
-  xit('getErrors() should call addErrorMessages() with attribute from element on constraints.name as pattern', async(() => {
-    app.element = { config: { validation: { constraints: [{ name: 'Pattern', attribute: { message: 'testing pattern' } }] }, code: 'test' } };
-    app.form = { controls: { test: { invalid: true, errors: { pattern: true } } } };
-    spyOn(app, 'addErrorMessages').and.returnValue('');
-    app.getErrors();
-    expect(app.addErrorMessages).toHaveBeenCalled();
-    expect(app.addErrorMessages).toHaveBeenCalledWith('testing pattern');
-  }));
-
-  xit('getErrors() should call addErrorMessages() with Field is required string on constraints.name as pattern', async(() => {
-    app.element = { config: { validation: { constraints: [{ name: 'Pattern', attribute: { message: '' } }] }, code: 'test' } };
-    app.form = { controls: { test: { invalid: true, errors: { pattern: true } } } };
-    spyOn(app, 'addErrorMessages').and.returnValue('');
-    app.getErrors();
-    expect(app.addErrorMessages).toHaveBeenCalled();
-    expect(app.addErrorMessages).toHaveBeenCalledWith('Field is required.');
-  }));
-
-  xit('getErrors() should call addErrorMessages() with attribute from element on constraints.name as Size', async(() => {
-    app.element = { config: { validation: { constraints: [{ name: 'Size', attribute: { message: 'testing Size' } }] }, code: 'test' } };
-    app.form = { controls: { test: { invalid: true, errors: { minMaxSelection: true } } } };
-    spyOn(app, 'addErrorMessages').and.returnValue('');
-    app.getErrors();
-    expect(app.addErrorMessages).toHaveBeenCalled();
-    expect(app.addErrorMessages).toHaveBeenCalledWith('testing Size');
-  }));
-
-  xit('getErrors() should call addErrorMessages() with Field is required string on constraints.name as Size', async(() => {
-    app.element = { config: { validation: { constraints: [{ name: 'Size', attribute: { message: '' } }] }, code: 'test' } };
-    app.form = { controls: { test: { invalid: true, errors: { minMaxSelection: true } } } };
-    spyOn(app, 'addErrorMessages').and.returnValue('');
-    app.getErrors();
-    expect(app.addErrorMessages).toHaveBeenCalled();
-    expect(app.addErrorMessages).toHaveBeenCalledWith('Field is required.');
-  }));
-
-  xit('getErrors() should call addErrorMessages() with Value must be a number.', async(() => {
-    app.element = { config: { validation: { constraints: [{ attribute: { message: '' } }] }, code: 'test' } };
-    app.form = { controls: { test: { invalid: true, errors: { isNumber: true } } } };
-    spyOn(app, 'addErrorMessages').and.returnValue('');
-    app.getErrors();
-    expect(app.addErrorMessages).toHaveBeenCalled();
-    expect(app.addErrorMessages).toHaveBeenCalledWith('Value must be a number.');
-  }));
-
-  xit('getErrors() should call addErrorMessages()', async(() => {
-    app.element = { config: { code: 'test' } };
-    app.form = { controls: { test: { invalid: false, errors: { isNumber: true } } } };
-    spyOn(app, 'addErrorMessages').and.returnValue('');
-    app.getErrors();
-    expect(app.addErrorMessages).not.toHaveBeenCalled();
-  }));
-
-  xit('getErrors() should not call addErrorMessages()', async(() => {
-    app.element = { config: { code: 'test', validation: '' } };
-    app.form = { controls: { test: { invalid: true, errors: { isNumber: true } } } };
-    spyOn(app, 'addErrorMessages').and.returnValue('');
-    app.getErrors();
-    expect(app.addErrorMessages).not.toHaveBeenCalled();
   }));
 
   it('addErrorMessages() should update the elemMessages[0].messageArray[0].detail', async(() => {

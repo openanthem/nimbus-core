@@ -206,22 +206,6 @@ describe('LayoutService', () => {
     expect(res).toEqual({ branding: {}, headerMenus: [], accordions: [] });
   }));
 
-  xit('parseTopBarConfig() should not update subHeaders[]', async(() => {
-    const topBarConfig = { params: [{ type: { model: '' }, config: { uiStyles: { attributes: { alias: 'Accordion' } }, type: { nested: true } } }] };
-    const subHeaders = [];
-    service.parseTopBarConfig(topBarConfig, {}, [], subHeaders);
-    expect(subHeaders).not.toEqual([]);
-  }));
-
-  xit('parseTopBarConfig() should call parseTopBarConfig()', async(() => {
-    const topBarConfig = { params: [{ type: { model: { params: [{ config: { uiNatures: [{ name: '' }], type: { nested: false } } }] } }, config: { uiStyles: { attributes: { alias: 'Header' } }, type: { nested: true } } }] };
-    spyOn(service, 'parseTopBarConfig').and.callThrough();
-    const subHeaders = [];
-    service.parseTopBarConfig(topBarConfig, {}, [], subHeaders);
-    expect(subHeaders).toEqual([]);
-    expect(service.parseTopBarConfig).toHaveBeenCalledTimes(2);
-  }));
-
   it('parseTopBarConfig() should update branding{} with logo property', async(() => {
     const topBarConfig = { params: [{ type: { model: 'm' }, config: { uiNatures: [{ attributes: { value: 'LOGO' }, name: 'ViewConfig.PageHeader' }], uiStyles: { attributes: { alias: 'SubHeader' } }, type: { nested: false } } }] };
     const branding = {};
@@ -311,12 +295,6 @@ describe('LayoutService', () => {
     expect(headerMenus).not.toEqual([]);
   }));
 
-  xit('getSubBar() should return object with menuItems property', async(() => {
-    const layoutConfig = { params: [{ type: { model: { params: [{ type: { model: { params: [{ config: { uiStyles: { attributes: { alias: 'Link' } } } }] } }, config: { uiStyles: { attributes: { alias: 'Menu' } } } }] } }, config: { uiStyles: { attributes: { alias: 'Global-Nav-Menu' } } } }] };
-    const res = service.getSubBar(layoutConfig);
-    expect(res.menuItems).toBeTruthy();
-  }));
-
   it('getSubBar() should return object with organization property', async(() => {
     const layoutConfig = { params: [{ type: { model: { params: [{ type: { model: { params: [{ config: { uiStyles: { attributes: { alias: 'LINK' } } } }] } }, config: { uiStyles: { attributes: { alias: 'ComboBox' } } } }] } }, config: { uiStyles: { attributes: { alias: 'Global-Nav-Menu' } } } }] };
     const res = service.getSubBar(layoutConfig);
@@ -327,12 +305,6 @@ describe('LayoutService', () => {
     const layoutConfig = { params: [{ type: { model: { params: [{ type: { model: { params: [{ config: { uiStyles: { attributes: { alias: 'LINK' } } } }] } }, config: { uiStyles: { attributes: { alias: 'Link' } } } }] } }, config: { uiStyles: { attributes: { alias: 'Global-Nav-Menu' } } } }] };
     const res = service.getSubBar(layoutConfig);
     expect(res.menuLinks).toBeTruthy();
-  }));
-
-  xit('getLeftMenu() should return empty array', async(() => {
-    const labelConfig = { params: [{ type: { model: { params: [{ config: { uiStyles: { attributes: { url: '/url' }, name: 'ViewConfig.Link' } } }] } }, config: { uiStyles: { attributes: { alias: 'Section', value: 'LEFTBAR' } } } }] };
-    const res = service.getLeftMenu(labelConfig);
-    expect(res).toEqual([]);
   }));
 
   it('getLeftMenu() should return empty array and call buildMenu()', async(() => {
@@ -357,8 +329,8 @@ describe('LayoutService', () => {
     expect(res).toEqual(undefined);
   }));
 
-  xit('parseLayoutConfig() should call getLeftMenu(), getTopBar(), getSubBar(), getFooterItems() and getActionTrayItems()', async(() => {
-    const flowModel = { params: [{ type: { model: '' }, config: { uiStyles: { attributes: { alias: 'Page' } } } }] };
+  it('parseLayoutConfig() should call getLeftMenu(), getTopBar(), getSubBar(), getFooterItems() and getActionTrayItems()', async(() => {
+    const flowModel = { params: [{ type: { model: {params: [{config: { uiStyles: { attributes: { alias: '' }}}}]} }, config: { uiStyles: { attributes: { alias: 'Page' } } } }] };
     spyOn(service, 'getLeftMenu').and.returnValue(1);
     spyOn(service, 'getTopBar').and.returnValue(2);
     spyOn(service, 'getSubBar').and.returnValue(3);

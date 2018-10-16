@@ -37,17 +37,10 @@ describe('WebContentSvc', () => {
     expect(service.findLabelContentFromConfig).toHaveBeenCalled();
   }));
 
-  it('2should be created', async(() => {
-    const labelconfigs = [{    }]
-    const labelContent = service.findLabelContentFromConfig(labelconfigs, 'test');
-    console.log('labelContent', labelContent);
-    
-    // expect(service).toBeTruthy();
-  }));
-
-  xit('findLabelContent() should call  findLabelContentFromConfig()', async(() => {
+  it('findLabelContent() should call  findLabelContentFromConfig()', async(() => {
     spyOn(service, 'findLabelContentFromConfig').and.returnValue('test');
     const param = {
+      labels: 'a',
         config: {
             labelConfigs: '',
             code: ''
@@ -56,21 +49,9 @@ describe('WebContentSvc', () => {
     expect(service.findLabelContent(param)).toEqual('test');
   }));
 
-  xit('findLabelContentFromConfig() should return object with updated key value pairs', async(() => {
-    ServiceConstants.LOCALE_LANGUAGE = 'test';
-    service.findLabelContentFromConfig(123, [{locale: 'ttest'}]);
-    const labelContent = service.findLabelContentFromConfig(123, [{
-        locale: 'test',
-        text: 'tText',
-        helpText: 'helpText'
-    }]);
-    expect(labelContent.text).toEqual('tText');
-    expect(labelContent.helpText).toEqual('helpText');
-  }));
-
-  xit('findLabelContentFromConfig() should return object with only text property', async(() => {
-    const labelContent = service.findLabelContentFromConfig(123, []);
-    expect(labelContent.text).toEqual(123);
+  it('findLabelContent() should return undefined', async(() => {
+    const param = {  };
+    expect(service.findLabelContent(param)).toEqual(undefined);
   }));
 
 });

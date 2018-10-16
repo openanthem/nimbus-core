@@ -272,4 +272,48 @@ describe('Accordion', () => {
     expect(app.getcssClass(tab)).toEqual('testingCssClass');
   }));
 
+  it('ngOnInit() should call updatePositionWithNoLabel()', async(() => {
+    const fixture = TestBed.createComponent(Accordion);
+    const app = fixture.debugElement.componentInstance;
+    app.updatePositionWithNoLabel = () => {};
+    spyOn(app, 'updatePositionWithNoLabel').and.callThrough();
+    app.ngOnInit();
+    expect(app.updatePositionWithNoLabel).toHaveBeenCalled();
+  }));
+
+  it('getInfoText() should return undefined', async(() => {
+    const fixture = TestBed.createComponent(Accordion);
+    const app = fixture.debugElement.componentInstance;
+    const tab = { type: { model: { params: [{ alias: 'TabInfo', visible: false, config: { uiStyles: { attributes: { info: 'info' } } } }] } } };
+    expect(app.getInfoText(tab)).toEqual(undefined);
+  }));
+
+  it('getInfoText() should return tab.type.model.params[0].config.uiStyles.attributes.info', async(() => {
+    const fixture = TestBed.createComponent(Accordion);
+    const app = fixture.debugElement.componentInstance;
+    const tab = { type: { model: { params: [{ alias: 'TabInfo', visible: true, config: { uiStyles: { attributes: { info: 'info' } } } }] } } };
+    expect(app.getInfoText(tab)).toEqual('info');
+  }));
+
+  it('getInfoText() should return tab.type.model.params[0].leafState', async(() => {
+    const fixture = TestBed.createComponent(Accordion);
+    const app = fixture.debugElement.componentInstance;
+    const tab = { type: { model: { params: [{ alias: 'TabInfo', leafState: 'leafState', visible: true, config: { uiStyles: { attributes: { info: 'info' } } } }] } } };
+    expect(app.getInfoText(tab)).toEqual('leafState');
+  }));
+
+  it('getTabInfoClass() should return tab.type.model.params[0].config.uiStyles.attributes.cssClass', async(() => {
+    const fixture = TestBed.createComponent(Accordion);
+    const app = fixture.debugElement.componentInstance;
+    const tab = { type: { model: { params: [{ alias: 'TabInfo', config: { uiStyles: { attributes: { cssClass: 'cssClass' } } } }] } } };
+    expect(app.getTabInfoClass(tab)).toEqual('cssClass');
+  }));
+
+  it('getTabInfoClass() should return nm-accordion-headertext', async(() => {
+    const fixture = TestBed.createComponent(Accordion);
+    const app = fixture.debugElement.componentInstance;
+    const tab = { type: { model: { params: [{ alias: 'TabInfo', config: { uiStyles: { attributes: {} } } }] } } };
+    expect(app.getTabInfoClass(tab)).toEqual('nm-accordion-headertext');
+  }));
+
 });

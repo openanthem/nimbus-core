@@ -247,58 +247,6 @@ describe('DataTable', () => {
       expect(app.onTouched).toEqual(test);
     }));
 
-    xit('ngOnInit() should update the params property', async(() => {
-      app.params = [{ label: 'tLabel', code: 'tCode', labelConfigs: [{ locale: '', text: '', helpText: '' }], field: '', header: '' }];
-      app.element = new Param(configService);
-      const eleConfig = { code: '', uiStyles: { attributes: { rowSelection: '' } } };
-      spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
-      app.ngOnInit();
-      expect(app.params[0].field).toEqual('tCode');
-    }));
-
-    xit('ngOnInit() should update the hasFilters, params, rowExpandableKey, columnsToShow, value properties', async(() => {
-      app.params = [{ label: 'tLabel', code: 'tCode', labelConfigs: [{ locale: '', text: '', helpText: '' }], field: '', header: '', uiStyles: { attributes: { filter: true, hidden: true, rowExpander: true } }, type: { nested: false } }];
-      app.element = new Param(configService);
-      const eleConfig = { code: '', uiStyles: { attributes: { rowSelection: true } } };
-      app.element.gridList = [1];
-      spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
-      app.ngOnInit();
-      expect(app.hasFilters).toBeTruthy();
-      expect(app.params[0].exportable).toBeFalsy();
-      expect(app.rowExpanderKey).toEqual('tCode');
-      expect(app.columnsToShow).toEqual(1);
-      expect(app.value).toEqual([1]);
-    }));
-
-    xit('ngOnInit() should update the hasFilters, params, rowExpandableKey, columnsToShow, value properties based on the between property', async(() => {
-      app.params = [{ label: 'tLabel', code: 'tCode', labelConfigs: [{ locale: '', text: '', helpText: '' }], field: '', header: '', uiStyles: { attributes: { filter: false, hidden: false, rowExpander: false } }, type: { nested: false }, exportable: true }];
-      app.element = new Param(configService);
-      const eleConfig = { code: '', uiStyles: { attributes: { rowSelection: true } } };
-      app.element.gridList = [1];
-      spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
-      app.rowExpanderKey = 'test';
-      app.dt = { filterConstraints: { between: '' } };
-      app.between = 'test';
-      app.ngOnInit();
-      expect(app.hasFilters).toBeFalsy();
-      expect(app.params[0].exportable).toBeTruthy();
-      expect(app.rowExpanderKey).toEqual('test');
-      expect(app.value).toEqual([1]);
-      expect(app.dt.filterConstraints.between).toEqual('test');
-    }));
-
-    xit('ngOnInit() should update the params property based on the dt property', async(() => {
-      app.params = [{ label: 'tLabel', code: 'tCode', labelConfigs: [{ locale: '', text: '', helpText: '' }], field: '', header: '', uiStyles: { attributes: { alias: 'LinkMenu', filter: false, hidden: false, rowExpander: false } }, type: { nested: true }, exportable: true }];
-      app.element = new Param(configService);
-      const eleConfig = { code: '', uiStyles: { attributes: { rowSelection: true } } };
-      app.element.gridList = [1];
-      spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
-      app.rowExpanderKey = 'test';
-      app.dt = undefined;
-      app.ngOnInit();
-      expect(app.params[0].exportable).toBeFalsy();
-    }));
-
     it('ngOnInit() should update the hasFilters, and rowExpanderKey properties', async(() => {
       app.element = new Param(configService);
       const eleConfig = { code: '', uiStyles: { attributes: { rowSelection: true } } };
