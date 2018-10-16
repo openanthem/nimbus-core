@@ -18,27 +18,18 @@ describe('Header', () => {
     }).compileComponents();
   }));
 
-  it('should create the app', async(() => {
-    const fixture = TestBed.createComponent(Header);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
-  }));
+    it('should create the app', async(() => {
+        const fixture = TestBed.createComponent(Header);
+        const app = fixture.debugElement.componentInstance;
+        expect(app).toBeTruthy();
+    }));
 
- it('ngOnInit() should update size', async(() => {
-    const fixture = TestBed.createComponent(Header);
-    const app = fixture.debugElement.componentInstance;
-    app.element = {
-        config: {
-            uiStyles: {
-                attributes: {
-                    size: 1234
-                }
-            }
-        }
-    };
-    app.ngOnInit();
-    expect(app.size).toEqual(1234);
-  }));
-
+    it('ngOnInit() should update size', async(() => {
+        const fixture = TestBed.createComponent(Header);
+        const app = fixture.debugElement.componentInstance;
+        app.element = { config: { uiStyles: { attributes: { size: 1234 } } } };
+        app.ngOnInit();
+        expect(app.size).toEqual(1234);
+    }));
 
 });

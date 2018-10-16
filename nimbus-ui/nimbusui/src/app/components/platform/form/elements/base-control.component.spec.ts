@@ -4,8 +4,7 @@ import { ChangeDetectorRef, ViewChild, Component, EventEmitter } from '@angular/
 import { FormGroup, NgModel } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
+import { of as observableOf,  Observable } from 'rxjs';
 
 import { BaseControl } from './base-control.component';
 import { WebContentSvc } from '../../../../services/content-management.service';
@@ -139,7 +138,7 @@ describe('BaseControl', () => {
   }));
 
   it('ngAfterViewInit() should call controlSubscribers.validationUpdateSubscriber() and controlSubscribers.onChangeEventSubscriber()', async(() => {
-    app.form = { controls: { test: { valueChanges: Observable.of('') } } };
+    app.form = { controls: { test: { valueChanges: observableOf('') } } };
     app.element = { config: { code: 'test' } };
     spyOn(app, 'setState').and.returnValue('');
     spyOn(controlSubscribers, 'validationUpdateSubscriber').and.callThrough();
@@ -150,7 +149,7 @@ describe('BaseControl', () => {
   }));
 
   it('ngAfterViewInit() should not call controlSubscribers.validationUpdateSubscriber() and call controlSubscribers.onChangeEventSubscriber()', async(() => {
-    app.form = { controls: { test: { valueChanges: Observable.of('') } } };
+    app.form = { controls: { test: { valueChanges: observableOf('') } } };
     app.element = { config: { code: 'testa' } };
     spyOn(app, 'setState').and.returnValue('');
     spyOn(controlSubscribers, 'validationUpdateSubscriber').and.callThrough();

@@ -5,6 +5,7 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { ButtonGroup } from './button-group.component';
 import { Button } from './button.component';
 import { SvgComponent } from '../../svg/svg.component';
+import { Image } from '../../image.component';
 
 describe('ButtonGroup', () => {
   beforeEach(async(() => {
@@ -12,7 +13,8 @@ describe('ButtonGroup', () => {
       declarations: [
         ButtonGroup,
         Button,
-        SvgComponent
+        SvgComponent,
+        Image
        ],
        imports: [
          AngularSvgIconModule

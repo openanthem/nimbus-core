@@ -9,8 +9,9 @@ import { ComboBox } from '../form/elements/combobox.component';
 import {KeysPipe} from '../../../pipes/app.pipe';
 import { TooltipComponent } from '../tooltip/tooltip.component';
 import { SelectItemPipe } from '../../../pipes/select-item.pipe';
+import { InputLabel } from '../../platform/form/elements/input-label.component';
 
-describe('AppComponent', () => {
+describe('NavMenuGlobal', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
@@ -19,7 +20,8 @@ describe('AppComponent', () => {
         ComboBox,
         KeysPipe,
         TooltipComponent,
-        SelectItemPipe
+        SelectItemPipe,
+        InputLabel
         ],
      imports: [
         FormsModule,

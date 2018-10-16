@@ -9,8 +9,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { JL } from 'jsnlog';
 import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
 import { Subject } from 'rxjs';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
+import { of as observableOf,  Observable } from 'rxjs';
 
 import { MultiSelectListBox } from './multi-select-listbox.component';
 import { TooltipComponent } from '../../tooltip/tooltip.component';
@@ -22,6 +21,7 @@ import { LoggerService } from '../../../../services/logger.service';
 import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
 import { AppInitService } from '../../../../services/app.init.service';
 import { ValidationUtils } from '../../validators/ValidationUtils';
+import { InputLabel } from './input-label.component';
 
 let fixture, app, pageService;
 
@@ -50,7 +50,8 @@ describe('MultiSelectListBox', () => {
     TestBed.configureTestingModule({
       declarations: [
           MultiSelectListBox,
-          TooltipComponent
+          TooltipComponent,
+          InputLabel
        ],
        imports: [
            ListboxModule,
@@ -100,7 +101,7 @@ describe('MultiSelectListBox', () => {
 
     it('ngOnInit() should call the setState()', async(() => {
       app.element = { values: [{ label: 'l', code: 'c' }], config: { code: 'a' }, activeValidationGroups: [''], leafState: 'b', path: '/t' };
-      app.form = { controls: { a: { setValue: a => {}, reset: () => {}, valueChanges: Observable.of('') } } };
+      app.form = { controls: { a: { setValue: a => {}, reset: () => {}, valueChanges: observableOf('') } } };
       spyOn(ValidationUtils, 'rebindValidations').and.returnValue('');
       spyOn(app, 'setState').and.callThrough();
       app.ngOnInit();
@@ -109,7 +110,7 @@ describe('MultiSelectListBox', () => {
 
     it('ngOnInit() should call the setState and update the targetList', async(() => {
       app.element = { values: [{ label: 'l', code: 'c' }], config: { code: 'a' }, activeValidationGroups: [], leafState: null, path: '/t' };
-      app.form = { controls: { a: { setValue: a => {}, reset: () => {}, valueChanges: Observable.of('') } } };
+      app.form = { controls: { a: { setValue: a => {}, reset: () => {}, valueChanges: observableOf('') } } };
       spyOn(ValidationUtils, 'rebindValidations').and.returnValue('');
       spyOn(app, 'setState').and.callThrough();
       app.ngOnInit();
@@ -119,7 +120,7 @@ describe('MultiSelectListBox', () => {
 
     it('ngOnInit() should call the form.controls.a.setValue()', async(() => {
       app.element = { values: [{ label: 'l', code: 'c' }], config: { code: 'a' }, activeValidationGroups: [''], leafState: 'b', path: '/t' };
-      app.form = { controls: { a: { setValue: a => {}, reset: () => {}, valueChanges: Observable.of('') } } };
+      app.form = { controls: { a: { setValue: a => {}, reset: () => {}, valueChanges: observableOf('') } } };
       const eve = { config: { code: 'a' }, path: '/test', leafState: '' };
       spyOn(ValidationUtils, 'rebindValidations').and.returnValue('');
       spyOn(app.form.controls.a, 'setValue').and.callThrough();
@@ -130,7 +131,7 @@ describe('MultiSelectListBox', () => {
 
     it('ngOnInit() should call the form.controls.a.reset()', async(() => {
       app.element = { values: [{ label: 'l', code: 'c' }], config: { code: 'a' }, activeValidationGroups: [''], leafState: 'b', path: '/t' };
-      app.form = { controls: { a: { setValue: a => {}, reset: () => {}, valueChanges: Observable.of('') } } };
+      app.form = { controls: { a: { setValue: a => {}, reset: () => {}, valueChanges: observableOf('') } } };
       const eve = { config: { code: 'a' }, path: '/test', leafState: null };
       spyOn(ValidationUtils, 'rebindValidations').and.returnValue('');
       spyOn(app.form.controls.a, 'reset').and.callThrough();
@@ -141,7 +142,7 @@ describe('MultiSelectListBox', () => {
 
     it('ngOnInit() should call the ValidationUtils.rebindValidations()', async(() => {
       app.element = { values: [{ label: 'l', code: 'c' }], config: { code: 'a' }, activeValidationGroups: [''], leafState: 'b', path: '/t' };
-      app.form = { controls: { a: { setValue: a => {}, reset: () => {}, valueChanges: Observable.of(''), setValidators: () => {} } } };
+      app.form = { controls: { a: { setValue: a => {}, reset: () => {}, valueChanges: observableOf(''), setValidators: () => {} } } };
       const eve = { activeValidationGroups: [1], config: { code: 'a' }, path: '/t', leafState: '' };
       spyOn(ValidationUtils, 'rebindValidations').and.returnValue('test');
       spyOn(ValidationUtils, 'assessControlValidation').and.returnValue('');
@@ -153,7 +154,7 @@ describe('MultiSelectListBox', () => {
 
     it('ngOnInit() should call the form.controls.a.setValidators', async(() => {
       app.element = { values: [{ label: 'l', code: 'c' }], config: { code: 'a' }, activeValidationGroups: [''], leafState: 'b', path: '/t' };
-      app.form = { controls: { a: { setValue: a => {}, reset: () => {}, valueChanges: Observable.of(''), setValidators: () => {} } } };
+      app.form = { controls: { a: { setValue: a => {}, reset: () => {}, valueChanges: observableOf(''), setValidators: () => {} } } };
       const eve = { activeValidationGroups: null, config: { code: 'a' }, path: '/t', leafState: '' };
       spyOn(ValidationUtils, 'rebindValidations').and.returnValue('test');
       spyOn(ValidationUtils, 'assessControlValidation').and.returnValue('');
@@ -167,7 +168,7 @@ describe('MultiSelectListBox', () => {
 
     it('ngOnInit() should call the pageService.postOnChange()', async(() => {
       app.element = { values: [{ label: 'l', code: 'c' }], config: { code: 'a' }, activeValidationGroups: [''], leafState: 'b', path: '/t' };
-      app.form = { controls: { a: { setValue: a => {}, reset: () => {}, valueChanges: Observable.of('') } } };
+      app.form = { controls: { a: { setValue: a => {}, reset: () => {}, valueChanges: observableOf('') } } };
       const eve = { leafState: 's', path: '/t', config: { uiStyles: { attributes: { postEventOnChange: true } } } };
       spyOn(ValidationUtils, 'rebindValidations').and.returnValue('');
       spyOn(pageService, 'postOnChange').and.callThrough();
@@ -178,7 +179,7 @@ describe('MultiSelectListBox', () => {
 
     it('ngOnInit() should call the pageService.processEvent()', async(() => {
       app.element = { values: [{ label: 'l', code: 'c' }], config: { code: 'a', uiStyles: { attributes: { postButtonUrl: '' } } }, activeValidationGroups: [''], leafState: 'b', path: '/t' };
-      app.form = { controls: { a: { setValue: a => {}, reset: () => {}, valueChanges: Observable.of('') } } };
+      app.form = { controls: { a: { setValue: a => {}, reset: () => {}, valueChanges: observableOf('') } } };
       const eve = { leafState: 's', path: '/t', config: { uiStyles: { attributes: { postEventOnChange: false, postButtonUrl: true } } } };
       spyOn(ValidationUtils, 'rebindValidations').and.returnValue('');
       spyOn(pageService, 'processEvent').and.callThrough();

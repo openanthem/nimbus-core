@@ -7,6 +7,7 @@ import { ElementRef } from '@angular/core';
 import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
 import { JL } from 'jsnlog';
 import { Location, LocationStrategy, HashLocationStrategy } from '@angular/common';
+import { AngularSvgIconModule } from 'angular-svg-icon';
 
 import { ActionLink } from './action-dropdown.component';
 import { ActionDropdown } from './action-dropdown.component';
@@ -21,6 +22,9 @@ import { WebContentSvc } from '../../../../services/content-management.service';
 import { LoggerService } from '../../../../services/logger.service';
 import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
 import { AppInitService } from '../../../../services/app.init.service';
+import { Image } from '../../image.component';
+import { Link } from '../../link.component';
+import { SvgComponent } from '../../svg/svg.component';
 
 let fixture, app, pageservice, configservice;
 
@@ -34,12 +38,16 @@ describe('ActionLink', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        ActionLink
+        ActionLink,
+        Image,
+        Link,
+        SvgComponent
        ],
        imports: [
            HttpModule,
            HttpClientTestingModule,
-           StorageServiceModule
+           StorageServiceModule,
+           AngularSvgIconModule
        ],
        providers: [
         { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
@@ -63,51 +71,6 @@ describe('ActionLink', () => {
 
   it('should create the app', async(() => {
     expect(app).toBeTruthy();
-  }));
-
-  it('ngoninit() should call loadLabelConfigByCode()', async(() => {
-    spyOn(app, 'loadLabelConfigByCode').and.returnValue('');
-      app.param = {
-          code: 123,
-          labelConfigs: 'test'
-      };
-      app.ngOnInit();
-      expect(app.loadLabelConfigByCode).toHaveBeenCalled();
-  }));
-
-  it('ngoninit() should update the url with rowData[p]', async(() => {
-    spyOn(app, 'loadLabelConfigByCode').and.returnValue('');
-    spyOn(app, 'getAllURLParams').and.returnValue(['test', 't']);
-    app.rowData = {
-        es: 123
-    };
-      app.param = {
-          code: 123,
-          labelConfigs: 'test',
-          uiStyles: {
-              attributes: {
-                  url: 'test'
-              }
-          }
-      };
-      app.ngOnInit();
-      expect(app.url).toEqual('123');
-  }));
-
-  it('ngoninit() should update the url', async(() => {
-    spyOn(app, 'loadLabelConfigByCode').and.returnValue('');
-    spyOn(app, 'getAllURLParams').and.returnValue([]);
-      app.param = {
-          code: 123,
-          labelConfigs: 'test',
-          uiStyles: {
-              attributes: {
-                  url: 'test'
-              }
-          }
-      };
-      app.ngOnInit();
-      expect(app.url).toEqual('test');
   }));
 
   it('getAllURLParams() should return null', async(() => {
@@ -147,12 +110,16 @@ describe('ActionDropdown', () => {
       TestBed.configureTestingModule({
         declarations: [
             ActionDropdown,
-            ActionLink
+            ActionLink,
+            Image,
+            Link,
+            SvgComponent
          ],
          imports: [
             HttpModule,
             HttpClientTestingModule,
-            BrowserAnimationsModule
+            BrowserAnimationsModule,
+            AngularSvgIconModule
         ],
          providers: [
             {provide: ElementRef, useClass: MockElementRef},

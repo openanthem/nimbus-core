@@ -5,8 +5,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { RouterTestingModule } from '@angular/router/testing'
 import { Router, Resolve } from '@angular/router';
 import { ActivatedRoute, Route, ActivatedRouteSnapshot, UrlSegment, Params, Data, ParamMap } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
+import { of as observableOf,  Observable } from 'rxjs';
 
 import { FlowResolver } from './flow-resolver.service';
 import { PageService } from '../../../services/page.service';
@@ -78,7 +77,7 @@ export class MockActivatedRoute implements ActivatedRoute {
   firstChild: ActivatedRoute;
   children: ActivatedRoute[];
   pathFromRoot: ActivatedRoute[];
-  data = Observable.of({
+  data = observableOf({
           layout: 'test'
     });
   paramMap: Observable<ParamMap>;
