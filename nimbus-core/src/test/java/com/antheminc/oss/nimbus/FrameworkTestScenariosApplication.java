@@ -15,7 +15,6 @@
  */
 package com.antheminc.oss.nimbus;
 
-import org.activiti.spring.boot.SecurityAutoConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -25,7 +24,7 @@ import com.antheminc.oss.nimbus.app.extension.config.DefaultCoreConfigMarker;
  * @author Soham Chakravarti
  *
  */
-@SpringBootApplication(scanBasePackageClasses=DefaultCoreConfigMarker.class,exclude=SecurityAutoConfiguration.class)
+@SpringBootApplication(scanBasePackageClasses=DefaultCoreConfigMarker.class)
 public class FrameworkTestScenariosApplication {
 
 	public static void main(String[] args) {

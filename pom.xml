@@ -235,10 +235,10 @@
 
             <!-- Third Party must have dependencies -->
             <dependency>
-                <groupId>org.activiti</groupId>
-                <artifactId>activiti-spring-boot-starter-basic</artifactId>
-                <version>${activiti-spring-boot.version}</version>
-            </dependency>
+           	 	<groupId>org.activiti.cloud</groupId>
+    				<artifactId>activiti-cloud-starter-configure</artifactId>
+    				<version>7-201802-EA</version>
+    			</dependency>
             <dependency>
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger2</artifactId>
@@ -389,9 +389,13 @@
 			<artifactId>spring-boot-starter-web-services</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.activiti</groupId>
-			<artifactId>activiti-spring-boot-starter-basic</artifactId>
-		</dependency>
+           	 	<groupId>org.activiti.cloud</groupId>
+    				<artifactId>activiti-cloud-starter-configure</artifactId>
+    			</dependency>
+    			<dependency>
+    				<groupId>org.apache.commons</groupId>
+    <artifactId>commons-dbcp2</artifactId>
+</dependency>
 		
         <dependency>
             <groupId>org.springframework.data</groupId>
