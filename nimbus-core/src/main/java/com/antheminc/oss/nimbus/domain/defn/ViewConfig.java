@@ -74,6 +74,8 @@ public class ViewConfig {
 		boolean multiple() default false;
 
 		boolean showExpandAll() default false;
+		
+		boolean showMessages() default false;
 	}
 
 	/**
@@ -227,7 +229,7 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface Button {
 		public enum Style {
-			DESTRUCTIVE, PLAIN, PRIMARY, SECONDARY;
+			DESTRUCTIVE, PLAIN, PRIMARY, SECONDARY, VALIDATION;
 		}
 
 		public enum Type {
@@ -851,6 +853,10 @@ public class ViewConfig {
 		boolean submitButton() default true; // remove
 
 		String submitUrl() default ""; // remove
+		
+		boolean showMessages() default false;
+		
+		boolean manualValidation() default false;
 	}
 	
 	/**
