@@ -16,11 +16,16 @@
 package com.antheminc.oss.nimbus.app.extension.config;
 
 
+import java.time.ZonedDateTime;
+import java.time.temporal.TemporalAccessor;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.auditing.DateTimeProvider;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.web.client.RestTemplate;
 
@@ -129,6 +134,17 @@ public class DefaultCoreConfiguration {
 	@Bean
 	public ClassPropertyConverter classPropertyConverter() {
 		return new ClassPropertyConverter();
+	}
+	
+	@Bean("default.zdt.provider")
+	public DateTimeProvider defaultZDTProvider() {
+		return new DateTimeProvider() {
+			
+			@Override
+			public Optional<TemporalAccessor> getNow() {
+				return Optional.of(ZonedDateTime.now());
+			}
+		};
 	}
 	
 }
