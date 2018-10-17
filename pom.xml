@@ -36,7 +36,7 @@
         <commons-io.version>2.4</commons-io.version>
         <drools.version>5.6.0.Final</drools.version>
         <commons-lang.version>3.7</commons-lang.version>
-        <activiti-spring-boot.version>7-201802-EA</activiti-spring-boot.version>
+        <activiti-spring-boot.version>7.0.0.Beta1</activiti-spring-boot.version>
         <apache-dir-server.version>1.5.5</apache-dir-server.version>
         <jackson-mapper-asl.version>1.9.6</jackson-mapper-asl.version>
         <quartz.version>2.2.3</quartz.version>
@@ -237,10 +237,10 @@
 
             <!-- Third Party must have dependencies -->
             <dependency>
-           	 	<groupId>org.activiti.cloud</groupId>
-    				<artifactId>activiti-cloud-starter-configure</artifactId>
-    				<version>${activiti-spring-boot.version}</version>
-    			</dependency>
+			    <groupId>org.activiti</groupId>
+			    <artifactId>activiti-spring-boot-starter</artifactId>
+			    <version>${activiti-spring-boot.version}</version>
+			</dependency>
             <dependency>
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger2</artifactId>
@@ -391,9 +391,9 @@
 			<artifactId>spring-boot-starter-web-services</artifactId>
 		</dependency>
 		<dependency>
-           	 <groupId>org.activiti.cloud</groupId>
-    			<artifactId>activiti-cloud-starter-configure</artifactId>
-    		</dependency>
+		    <groupId>org.activiti</groupId>
+		    <artifactId>activiti-spring-boot-starter</artifactId>
+		</dependency>
     		<dependency>
     			<groupId>org.apache.commons</groupId>
     			<artifactId>commons-dbcp2</artifactId>

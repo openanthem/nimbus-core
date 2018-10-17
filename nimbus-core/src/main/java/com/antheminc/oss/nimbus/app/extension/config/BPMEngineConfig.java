@@ -24,7 +24,6 @@ import java.util.Optional;
 import javax.sql.DataSource;
 
 import org.activiti.bpmn.model.UserTask;
-import org.activiti.engine.UserGroupLookupProxy;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
 import org.activiti.engine.impl.history.HistoryLevel;
