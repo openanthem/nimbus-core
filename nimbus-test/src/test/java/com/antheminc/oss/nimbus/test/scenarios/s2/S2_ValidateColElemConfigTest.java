@@ -77,7 +77,7 @@ public class S2_ValidateColElemConfigTest extends AbstractFrameworkIntegrationTe
 		Mockito.when(defaultSearchFunctionHandlerQuery.execute(any(),any())).thenAnswer(new Answer<Object>() {
 			@Override
 			public Object answer(InvocationOnMock invocation) throws Throwable {
-				ExecutionContext input = invocation.getArgumentAt(0, ExecutionContext.class);
+				ExecutionContext input = invocation.getArgument(0);
 				if(input.getCommandMessage().getCommand().getAbsoluteUri().contains("s2c_row"))
 					return db_rows;
 				else
@@ -87,7 +87,7 @@ public class S2_ValidateColElemConfigTest extends AbstractFrameworkIntegrationTe
 		Mockito.when(defaultSearchFunctionHandlerExample.execute(any(),any())).thenAnswer(new Answer<Object>() {
 			@Override
 			public Object answer(InvocationOnMock invocation) throws Throwable {
-				ExecutionContext input = invocation.getArgumentAt(0, ExecutionContext.class);
+				ExecutionContext input = invocation.getArgument(0);
 				if(input.getCommandMessage().getCommand().getAbsoluteUri().contains("s2c_row"))
 					return db_rows;
 				else
