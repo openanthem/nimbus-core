@@ -15,6 +15,7 @@ import { LoaderService } from '../../../../services/loader.service';
 import { ConfigService } from '../../../../services/config.service';
 import { LoggerService } from '../../../../services/logger.service';
 import { Subject } from 'rxjs';
+import { InputLegend } from '../../../platform/form/elements/input-legend.component';
 
 let fixture, app, pageService;
 
@@ -45,7 +46,8 @@ describe('CheckBoxGroup', () => {
     TestBed.configureTestingModule({
       declarations: [
           CheckBoxGroup,
-          TooltipComponent
+          TooltipComponent,
+          InputLegend
        ],
        imports: [
         GrowlModule,

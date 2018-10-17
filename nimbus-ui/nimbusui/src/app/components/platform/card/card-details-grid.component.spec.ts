@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/primeng';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
+import { AngularSvgIconModule } from 'angular-svg-icon';
 
 import { CardDetailsGrid } from './card-details-grid.component';
 import { PageService } from '../../../services/page.service';
@@ -21,6 +22,16 @@ import { SelectItemPipe } from '../../../pipes/select-item.pipe';
 import { CustomHttpClient } from '../../../services/httpclient.service';
 import { LoaderService } from '../../../services/loader.service';
 import { ConfigService } from '../../../services/config.service';
+import { Label } from '../content/label.component';
+import { CardDetailsFieldGroupComponent } from './card-details-field-group.component';
+import { Paragraph } from '../content/paragraph.component';
+import { ButtonGroup } from '../../platform/form/elements/button-group.component';
+import { DisplayValueDirective } from '../../../directives/display-value.directive';
+import { InputLabel } from '../../platform/form/elements/input-label.component';
+import { Button } from '../../platform/form/elements/button.component';
+import { Image } from '../../platform/image.component';
+import { SvgComponent } from '../../platform/svg/svg.component';
+import { WebContentSvc } from '../../../services/content-management.service';
 
 class MockPageService {
     processEvent() {
@@ -43,14 +54,30 @@ describe('CardDetailsGrid', () => {
         ComboBox,
         DateTimeFormatPipe,
         TooltipComponent,
-        SelectItemPipe
+        SelectItemPipe,
+        Label,
+        CardDetailsFieldGroupComponent,
+        Paragraph,
+        ButtonGroup,
+        DisplayValueDirective,
+        InputLabel,
+        Button,
+        Image,
+        SvgComponent
         ],
-    imports: [ FormsModule, DropdownModule, HttpClientModule, HttpModule ],
+    imports: [ 
+        FormsModule,
+        DropdownModule,
+        HttpClientModule,
+        HttpModule,
+        AngularSvgIconModule
+    ],
      providers: [
         { provide: PageService, useClass: MockPageService },
          CustomHttpClient,
          LoaderService,
-         ConfigService
+         ConfigService,
+         WebContentSvc
          ]
     }).compileComponents();
   }));
@@ -64,7 +91,7 @@ describe('CardDetailsGrid', () => {
   it('ngonint() should call pageSvc.processEvent', async(() => {
     const fixture = TestBed.createComponent(CardDetailsGrid);
     const app = fixture.debugElement.componentInstance;
-    app.grid = {
+    app.element = {
         config: {
             uiStyles: {
                 attributes: {
@@ -81,7 +108,7 @@ describe('CardDetailsGrid', () => {
   it('ngonint() should not call pageSvc.processEvent', async(() => {
     const fixture = TestBed.createComponent(CardDetailsGrid);
     const app = fixture.debugElement.componentInstance;
-    app.grid = {
+    app.element = {
         config: {
             uiStyles: {
                 attributes: {

@@ -19,10 +19,13 @@ let fixture, app, fileservice;
 
 class MockFileService {
     public addFile$: Subject<any>;
+    public errorEmitter$: Subject<any>;
+    
     metaData: any;
 
     constructor() {
         this.addFile$ = new Subject<any>();
+        this.errorEmitter$ = new Subject<any>();
     }
 
     uploadFile(a) {

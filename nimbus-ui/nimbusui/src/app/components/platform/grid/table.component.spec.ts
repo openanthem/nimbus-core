@@ -2,7 +2,7 @@
 import { TestBed, async } from '@angular/core/testing';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
     FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
-    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, MessagesModule  } from 'primeng/primeng';
+    ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, MessagesModule, InputSwitchModule, TreeTableModule  } from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -15,6 +15,8 @@ import { DomHandler } from 'primeng/components/dom/domhandler';
 import { ObjectUtils } from 'primeng/components/utils/objectutils';
 import { TableService } from 'primeng/components/table/table';
 import { AngularSvgIconModule } from 'angular-svg-icon';
+import {ToastModule} from 'primeng/toast';
+import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
 
 import { DataTable } from './table.component';
 import { Section } from '../section.component';
@@ -24,7 +26,6 @@ import { ComboBox } from '../../platform/form/elements/combobox.component';
 import { InputText } from '../form/elements/textbox.component';
 import { ButtonGroup } from '../form/elements/button-group.component';
 import { Button } from '../form/elements/button.component';
-import { AccordionMain } from '../content/accordion.component';
 import { Menu } from '../menu.component';
 import { Link } from '../link.component';
 import { Form } from '../form.component';
@@ -36,8 +37,7 @@ import { MessageComponent } from '../message/message.component';
 import { ActionLink } from '../form/elements/action-dropdown.component';
 import { SelectItemPipe } from '../../../pipes/select-item.pipe';
 import { FrmGroupCmp } from '../form-group.component';
-import { AccordionGroup } from '../accordion-group.component';
-import { Accordion } from '../accordion.component';
+import { Accordion } from '../content/accordion.component';
 import { CardDetailsFieldComponent } from '../card/card-details-field.component';
 import { FormElement } from '../form-element.component';
 import { DateTimeFormatPipe } from '../../../pipes/date.pipe';
@@ -68,6 +68,15 @@ import { ViewComponent } from '../../../shared/param-annotations.enum';
 import { HeaderCheckBox } from '../form/elements/header-checkbox.component';
 import { SvgComponent } from '../svg/svg.component';
 import { Image } from '../image.component';
+import { DisplayValueDirective } from '../../../directives/display-value.directive';
+import { InputSwitch } from '../../platform/form/elements/input-switch.component';
+import { TreeGrid } from '../../platform/tree-grid/tree-grid.component';
+import { Label } from '../../platform/content/label.component';
+import { InputLabel } from '../../platform/form/elements/input-label.component';
+import { CardDetailsFieldGroupComponent } from '../../platform/card/card-details-field-group.component';
+import { FormGridFiller } from '../../platform/form/form-grid-filler.component';
+import { SessionStoreService, CUSTOM_STORAGE } from '../../../services/session.store';
+import { InputLegend } from '../../platform/form/elements/input-legend.component';
 
 let fixture, app, configService, pageService, elementRef, ngZone, objectUtils, domHandler, tableService;
 
@@ -110,7 +119,6 @@ describe('DataTable', () => {
           InputText,
           ButtonGroup,
           Button,
-          AccordionMain,
           Menu,
           Link,
           Form,
@@ -122,7 +130,6 @@ describe('DataTable', () => {
           ActionLink,
           SelectItemPipe,
           FrmGroupCmp,
-          AccordionGroup,
           Accordion,
           CardDetailsFieldComponent,
           FormElement,
@@ -142,7 +149,15 @@ describe('DataTable', () => {
           Header,
           HeaderCheckBox,
           SvgComponent,
-          Image
+          Image,
+          DisplayValueDirective,
+          InputSwitch,
+          TreeGrid,
+          Label,
+          InputLabel,
+          CardDetailsFieldGroupComponent,
+          FormGridFiller,
+          InputLegend
        ],
        imports: [
            DialogModule,
@@ -163,11 +178,16 @@ describe('DataTable', () => {
            KeyFilterModule,
            HttpModule,
            HttpClientTestingModule,
-           AngularSvgIconModule
+           AngularSvgIconModule,
+           ToastModule,
+           InputSwitchModule,
+           TreeTableModule,
+           StorageServiceModule
        ],
        providers: [
            {provide: PageService, useClass: MockPageService},
            {provide: ElementRef, useClass: MockElementRef},
+           { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
            CustomHttpClient,
            LoaderService,
            ConfigService,
@@ -175,7 +195,8 @@ describe('DataTable', () => {
            GridService,
            ObjectUtils,
            DomHandler,
-           TableService
+           TableService,
+           SessionStoreService
        ]
     }).compileComponents();
     fixture = TestBed.createComponent(DataTable);
@@ -226,58 +247,6 @@ describe('DataTable', () => {
       const test = () => {};
       app.registerOnTouched(test);
       expect(app.onTouched).toEqual(test);
-    }));
-
-    it('ngOnInit() should update the params property', async(() => {
-      app.params = [{ label: 'tLabel', code: 'tCode', labelConfigs: [{ locale: '', text: '', helpText: '' }], field: '', header: '' }];
-      app.element = new Param(configService);
-      const eleConfig = { code: '', uiStyles: { attributes: { rowSelection: '' } } };
-      spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
-      app.ngOnInit();
-      expect(app.params[0].field).toEqual('tCode');
-    }));
-
-    it('ngOnInit() should update the hasFilters, params, rowExpandableKey, columnsToShow, value properties', async(() => {
-      app.params = [{ label: 'tLabel', code: 'tCode', labelConfigs: [{ locale: '', text: '', helpText: '' }], field: '', header: '', uiStyles: { attributes: { filter: true, hidden: true, rowExpander: true } }, type: { nested: false } }];
-      app.element = new Param(configService);
-      const eleConfig = { code: '', uiStyles: { attributes: { rowSelection: true } } };
-      app.element.gridList = [1];
-      spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
-      app.ngOnInit();
-      expect(app.hasFilters).toBeTruthy();
-      expect(app.params[0].exportable).toBeFalsy();
-      expect(app.rowExpanderKey).toEqual('tCode');
-      expect(app.columnsToShow).toEqual(1);
-      expect(app.value).toEqual([1]);
-    }));
-
-    it('ngOnInit() should update the hasFilters, params, rowExpandableKey, columnsToShow, value properties based on the between property', async(() => {
-      app.params = [{ label: 'tLabel', code: 'tCode', labelConfigs: [{ locale: '', text: '', helpText: '' }], field: '', header: '', uiStyles: { attributes: { filter: false, hidden: false, rowExpander: false } }, type: { nested: false }, exportable: true }];
-      app.element = new Param(configService);
-      const eleConfig = { code: '', uiStyles: { attributes: { rowSelection: true } } };
-      app.element.gridList = [1];
-      spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
-      app.rowExpanderKey = 'test';
-      app.dt = { filterConstraints: { between: '' } };
-      app.between = 'test';
-      app.ngOnInit();
-      expect(app.hasFilters).toBeFalsy();
-      expect(app.params[0].exportable).toBeTruthy();
-      expect(app.rowExpanderKey).toEqual('test');
-      expect(app.value).toEqual([1]);
-      expect(app.dt.filterConstraints.between).toEqual('test');
-    }));
-
-    it('ngOnInit() should update the params property based on the dt property', async(() => {
-      app.params = [{ label: 'tLabel', code: 'tCode', labelConfigs: [{ locale: '', text: '', helpText: '' }], field: '', header: '', uiStyles: { attributes: { alias: 'LinkMenu', filter: false, hidden: false, rowExpander: false } }, type: { nested: true }, exportable: true }];
-      app.element = new Param(configService);
-      const eleConfig = { code: '', uiStyles: { attributes: { rowSelection: true } } };
-      app.element.gridList = [1];
-      spyOn(configService, 'getViewConfigById').and.returnValue(eleConfig);
-      app.rowExpanderKey = 'test';
-      app.dt = undefined;
-      app.ngOnInit();
-      expect(app.params[0].exportable).toBeFalsy();
     }));
 
     it('ngOnInit() should update the hasFilters, and rowExpanderKey properties', async(() => {

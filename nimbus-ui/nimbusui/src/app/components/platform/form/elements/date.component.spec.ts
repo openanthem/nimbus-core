@@ -16,13 +16,15 @@ import { ConfigService } from '../../../../services/config.service';
 import { LoggerService } from '../../../../services/logger.service';
 import { SessionStoreService, CUSTOM_STORAGE } from '../../../../services/session.store';
 import { AppInitService } from '../../../../services/app.init.service';
+import { InputLabel } from './input-label.component';
 
 describe('DateControl', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
           DateControl,
-          TooltipComponent
+          TooltipComponent,
+          InputLabel
        ],
        imports: [
            StorageServiceModule,
