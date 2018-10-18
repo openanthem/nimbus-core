@@ -158,8 +158,8 @@ export class Param implements Serializable<Param, string> {
         
  
         return paramPath;
-    }
-
+    }     
+    
     deserialize( inJson, path ) {
         this.configId = inJson.configId;
         // Set Config in ParamConfig Map
