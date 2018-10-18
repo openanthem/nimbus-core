@@ -1,4 +1,3 @@
-import { ValidationUtils } from './validators/ValidationUtils';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -20,6 +19,7 @@ import { Component, Directive, Input, Output, EventEmitter, SimpleChanges } from
 import { FormGroup } from '@angular/forms';
 import { FormControl } from '@angular/forms';
 import { Param } from './../../shared/param-state';
+import { ValidationUtils } from './validators/ValidationUtils';
 /**
  * \@author Sandeep.Mantha
  * \@whatItDoes 
@@ -31,7 +31,7 @@ import { Param } from './../../shared/param-state';
     selector: 'nm-counter-message',
     template: `
         <div class="textWrapBreakWord">
-            <span>{{displayMessage()}}</span>
+            {{displayMessage()}}
         </div> 
     `
 })

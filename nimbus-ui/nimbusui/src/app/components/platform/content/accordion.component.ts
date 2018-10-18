@@ -49,8 +49,8 @@ import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations
                             {{getInfoText(tab)}}
                         </span>
                         <nm-image class='nm-accordion-headerimage' *ngIf="getImageSrc(tab)" [name]="getImageSrc(tab)" [type]="getImageType(tab)" [title]="getTitle(tab)" [cssClass]="getcssClass(tab)"></nm-image>
-                        <div style='clear: both'></div>
                         <nm-counter-message *ngIf="element.config?.uiStyles?.attributes?.showMessages" [element]="tab" [form]="form"></nm-counter-message>
+                        <div style='clear: both'></div>
                     </p-header>
                     <div class="accordionBtn" *ngIf="tab?.config?.uiStyles?.attributes?.editable">
                         <button  (click)="processOnClick(tab)" type="button" class="btn btn-plain">
@@ -103,7 +103,6 @@ export class Accordion extends BaseElement {
     @Input() form: FormGroup;
     @Input() elementCss: string;
     componentTypes = ComponentTypes;
-    
     protected _multiple: boolean;
     index: number[]; 
     @ViewChild('accordion') accordion: Accordion;
