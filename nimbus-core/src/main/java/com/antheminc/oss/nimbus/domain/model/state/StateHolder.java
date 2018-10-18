@@ -473,5 +473,15 @@ public class StateHolder {
 			return this.ref.getLabel(localeLanguageTag);
 		}
 
+		@Override
+		public StyleState getStyle() {
+			return this.ref.getStyle();
+		}
+
+		@Override
+		public void setStyle(StyleState styleState) {
+			this.ref.setStyle(styleState);
+		}
+
 	}
 }
