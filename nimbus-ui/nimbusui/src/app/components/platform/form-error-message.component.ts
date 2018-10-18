@@ -30,9 +30,9 @@ import { ValidationUtils } from './validators/ValidationUtils';
 @Component( {
     selector: 'nm-counter-message',
     template: `
-        <div class="textWrapBreakWord">
+        <div>
             {{displayMessage()}}
-        </div> 
+        </div>
     `
 })
 export class FormErrorMessage {
