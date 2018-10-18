@@ -81,7 +81,7 @@ export class TreeGrid extends BaseElement implements ControlValueAccessor {
         this.pageSvc.processEvent(this.element.path, '$execute', new GenericDomain(), HttpMethod.GET.value, undefined);
         this.pageSvc.gridValueUpdate$.subscribe((treeList: Param) => {
             if(this.element.path === treeList.path){
-                this.treeData = this.getTreeStructure(treeList.gridList);
+                this.treeData = this.getTreeStructure(treeList.gridData.leafState);
             }
         });
 

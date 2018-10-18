@@ -109,8 +109,8 @@ export class FormElementsService {
     var leafState;
     if (ParamUtils.isKnownDateType(param.config.type.name)) {
       leafState = param.leafState || null;
-    } else if(param.alias === 'Grid' && param.gridList && param.gridList.length > 0) {
-        leafState = param.gridList;
+    } else if(param.alias === 'Grid' && param.gridData.leafState && param.gridData.leafState.length > 0) {
+        leafState = param.gridData.leafState;
     } else {
       leafState = param.leafState || '';
     }
