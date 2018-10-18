@@ -153,6 +153,7 @@ import { MenuRouteLink } from './directives/routes/route-link.component';
 import { MenuRouterLinkActive } from './directives/routes/route-active.component';
 import { InputSwitch } from './components/platform/form/elements/input-switch.component';
 import { InputLegend } from './components/platform/form/elements/input-legend.component';
+import { FormErrorMessage } from './components/platform/form-error-message.component';
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -219,7 +220,7 @@ export function init_app(appinitservice: AppInitService) {
         KeysPipe, LinkPipe, DateTimeFormatPipe, SelectItemPipe, MultiSelectListBox, 
         CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent, Calendar, NavMenuGlobal, LoaderComponent, MessageComponent,
         HeaderCheckBox, SvgComponent, SvgDefinitions, ActionTray, SubDomainFlowCmp, Image, NmPanelMenu,NmPanelMenuSub, MenuRouterLinkActive, 
-        MenuRouteLink, BaseLabel, Label, InputLabel,InputSwitch,TreeGrid,InputLegend
+        MenuRouteLink, BaseLabel, Label, InputLabel,InputSwitch,TreeGrid,InputLegend, FormErrorMessage
     ],
     entryComponents: [ FlowWrapper, PageContent, PageNotfoundComponent, LoginCmp, HomeLayoutCmp, SubDomainFlowCmp],
     providers: [ PageService, ConfigService, WebContentSvc, HttpClient,  HttpClientModule, AppInitService,
@@ -228,8 +229,8 @@ export function init_app(appinitservice: AppInitService) {
          { provide: HTTP_INTERCEPTORS, useClass: CustomHttpClientInterceptor, multi: true },
          { provide: LocationStrategy, useClass: HashLocationStrategy }, GridService,
          { provide: APP_BASE_HREF, useValue: ServiceConstants.APP_CONTEXT },
-         { provide: 'JSNLOG', useValue: JL },
-         { provide: ErrorHandler, useClass: CustomErrorHandler },
+//         { provide: 'JSNLOG', useValue: JL },
+//         { provide: ErrorHandler, useClass: CustomErrorHandler },
          { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
          SessionStoreService,
          AuthenticationService, BreadcrumbService, LoaderService, FileService, LayoutService, WindowRefService, LoggerService, 

@@ -17,7 +17,7 @@
 'use strict';
 import { Length } from './../../../../shared/app-config.interface';
 import { Component, Input, Output, EventEmitter, ViewEncapsulation, KeyValueDiffer, KeyValueDiffers} from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormControl } from '@angular/forms';
 import { Location } from '@angular/common';
 import { GenericDomain } from './../../../../model/generic-domain.model';
 import { Param } from '../../../../shared/param-state';
@@ -55,6 +55,9 @@ import { ComponentTypes } from '../../../../shared/param-annotations.enum';
             <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.destructive.toString() && element?.visible == true">
                 <button class="btn btn-delete" (click)="emitEvent(this)" [disabled]="disabled" type="{{element.config?.uiStyles?.attributes?.type}}">{{label}}</button>
             </ng-template>
+            <ng-template [ngIf]="element.config?.uiStyles?.attributes?.style==componentTypes.validation.toString() && element?.visible == true">
+                <button class="btn btn-primary" (click)="emitEvent(this)" [disabled]="form.valid">{{label}}</button>
+            </ng-template>
         </ng-template>
         
         <ng-template [ngIf]="element.config?.uiStyles?.attributes?.imgSrc && element?.visible == true">
@@ -91,6 +94,8 @@ export class Button extends BaseElement {
         //browserback to go back to previous page
         if(this.element.config.uiStyles != null && this.element.config.uiStyles.attributes.browserBack) {
             this.location.back();
+        } else if(this.element.config.uiStyles != null && this.element.config.uiStyles.attributes.style === this.componentTypes.validation.toString()){
+            this.validate(this.form);
         } else {
             this.buttonClickEvent.emit( $event );
         }
@@ -185,6 +190,19 @@ export class Button extends BaseElement {
         this.reset();
         
     }
+
+    validate(formGroup: FormGroup) {
+        Object.keys(formGroup.controls).forEach(field => {
+             let ctrl = formGroup.controls[field];
+             if(ctrl instanceof FormControl) {
+                 ctrl.markAsDirty({onlySelf:true})
+             }
+             else if (ctrl instanceof FormGroup) {
+                 this.validate(ctrl);
+             }
+        });
+             
+     }
 
     reset() {
         if(this.form !== undefined) {

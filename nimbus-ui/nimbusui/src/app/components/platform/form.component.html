@@ -1,4 +1,5 @@
 <form id="{{formId}}" [formGroup]="form" novalidate>
+    <nm-counter-message *ngIf="element.config?.uiStyles?.attributes?.showMessages" [element]="element" [form]="form"></nm-counter-message>
     <nm-label *ngIf="!isLabelEmpty" [element]="element" [size]="labelSize"></nm-label>
 
     <!-- Render form elements -->
