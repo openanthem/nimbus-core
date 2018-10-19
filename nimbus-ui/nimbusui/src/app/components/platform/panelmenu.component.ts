@@ -110,7 +110,7 @@ export class NmPanelMenuSub extends NmBasePanelMenuItem {
                 <div class="ui-panelmenu-panel" [ngClass]="{'ui-helper-hidden': item.visible === false}">
                     <div [ngClass]="{'hassubmenu': item.items&&item.items.length > 0, 'ui-widget ui-panelmenu-header ':true,'ui-corner-top':f,'ui-corner-bottom':l&&!item.expanded,
                     'ui-state-disabled':item.disabled, 'ui-state-active':item.expanded}" [class]="item.styleClass" [ngStyle]="item.style">    
-                        <a nmrouterLink="{{item.routerLink}}" [queryParams]="item.queryParams" nmrouterLinkActive="ui-state-active" [item]="item" (toggleParent)="handleParentToggle(item)"
+                        <a id="Panelmenu-{{item.label}}" nmrouterLink="{{item.routerLink}}" [queryParams]="item.queryParams" nmrouterLinkActive="ui-state-active" [item]="item" (toggleParent)="handleParentToggle(item)"
                            (click)="handleClick($event,item)" [attr.target]="item.target" [attr.title]="item.title" class="ui-panelmenu-header-link">
                         <span *ngIf="item.items" class="ui-panelmenu-icon fa fa-fw" [ngClass]="{'fa-caret-right':!item.expanded,'fa-caret-down':item.expanded}"></span
                         ><span class="ui-menuitem-text">{{item.label}}</span>
