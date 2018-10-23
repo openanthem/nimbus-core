@@ -16,7 +16,7 @@
  */
 'use strict';
 
-import {Injectable} from "@angular/core";
+import { Injectable } from "@angular/core";
 import { ParamConfig } from './param-config';
 import { DateTimeFormatPipe } from '../pipes/date.pipe';
 import { ViewComponent} from './param-annotations.enum';
@@ -72,4 +72,5 @@ import { ParamUtils } from './param-utils';
     isDate(dataType: string): boolean {
         return ParamUtils.isKnownDateType(dataType);
     }
+
  }

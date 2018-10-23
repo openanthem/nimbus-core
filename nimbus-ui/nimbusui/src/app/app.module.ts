@@ -56,6 +56,7 @@ import { ToastModule } from 'primeng/toast';
 import { LayoutService } from './services/layout.service';
 import { ContentContainer } from './components/platform/content/content-container.component';
 import { BaseElement } from './components/platform/base-element.component';
+import { BaseTableElement } from './components/platform/base-table-element.component';
 import { AppComponent }  from './app.component';
 import { Tile }  from './components/platform/tile.component';
 import { Section } from './components/platform/section.component';
@@ -207,7 +208,7 @@ export function init_app(appinitservice: AppInitService) {
     ],
     declarations: [ AppComponent, STOMPStatusComponent, FlowWrapper, PageContent, PageNotfoundComponent, StaticText,
         Tile, Section, Header, Form, FormElement, InputText, ComboBox, RadioButton, Signature, DateControl, CheckBoxGroup,
-        InPlaceEditorComponent, Paragraph, Value, BaseElement, FormGridFiller, 
+        InPlaceEditorComponent, Paragraph, Value, BaseElement, BaseTableElement, FormGridFiller, 
         MultiselectCard, Link, Menu, CardDetailsComponent, CardDetailsFieldGroupComponent, CardDetailsFieldComponent, CardDetailsGrid, FieldValue,
         Accordion, AccordionTab, FrmGroupCmp, Button, ButtonGroup, FilterButton, OrderablePickList,
         STOMPStatusComponent, InfiniteScrollGrid, DataTable, SubHeaderCmp, TextArea, LandingPage,

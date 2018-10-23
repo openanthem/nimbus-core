@@ -4,6 +4,7 @@
             <caption>{{label}}</caption>
             <nm-tooltip *ngIf="helpText" [helpText]='helpText'></nm-tooltip>
         </p-header>
+        
         <div class="recordsDisplayed">Showing {{rowStart}}-{{rowEnd}} of {{totalRecords}}
             <button *ngIf="element.config?.uiStyles?.attributes?.clearAllFilters" class="btn-plain ml-2" (click)="clearAll()">
                 <i class="fa fa-fw fa-times hidden-md-down" aria-hidden="true"></i>Clear Grid Filters</button>
@@ -16,7 +17,7 @@
     </div>
 
     <p-table #dt [value]="value" [columns]="params" 
-        [dataKey]="element.config?.uiStyles?.attributes?.dataKey"
+        [dataKey]="'$elemId'"
         [(selection)]="selectedRows"
         [rows]="element.config?.uiStyles?.attributes?.pageSize"
         [totalRecords]=totalRecords
@@ -98,25 +99,25 @@
                 <ng-template ngFor let-col let-colIndex="index" [ngForOf]="params">
                     <td *ngIf="showColumn(col)" [ngClass]="getColumnStyle(col)">
                         <span title="{{getCellDisplayValue(rowData, col)}}" *ngIf="showValue(col)" [nmDisplayValue]='getCellDisplayValue(rowData, col)' [config]='col'>
-                            <span class="fieldValue {{col.code}} {{getCellStyle(rowData.elemId, col.code)}}">{{getCellDisplayValue(rowData, col)}}</span>
+                            <span class="fieldValue {{col.code}} {{getCellStyle(rowData.$elemId, col.code)}}">{{getCellDisplayValue(rowData, col)}}</span>
                         </span>
                         <span *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.link.toString()">
                             <nm-link
-                                [element] = "getViewParam(col, rowData['elemId'])">
+                                [element] = "getViewParam(col, rowData['$elemId'])">
                             </nm-link>
                         </span>
                         <span *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.gridcolumn.toString() && col?.uiStyles?.attributes?.showAsLink === true">
                             <nm-link
-                                [element] = "getViewParam(col, rowData['elemId'])">
+                                [element] = "getViewParam(col, rowData['$elemId'])">
                             </nm-link>
                         </span>
                         <span *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.button.toString()">
                             <nm-button
-                                [element] = "getViewParam(col, rowData['elemId'])">
+                                [element] = "getViewParam(col, rowData['$elemId'])">
                             </nm-button>
                         </span>
                         <span *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.linkMenu.toString()">
-                            <nm-action-dropdown #dropDown [element]="getViewParam(col, rowData['elemId'])" 
+                            <nm-action-dropdown #dropDown [element]="getViewParam(col, rowData['$elemId'])" 
                                 [params]="col?.type?.model?.paramConfigs" 
                                 [rowData]="rowData" 
                                 [elementPath]="getRowPath(col, rowData)" 
@@ -131,7 +132,7 @@
         <ng-template pTemplate="rowexpansion" let-rowData>
             <tr class="ui-expanded-row-content">
                 <td [attr.colspan]="columnsToShow" >
-                    <nm-section *ngIf="rowData.nestedElement" [position]="position+1" [element]="rowData.nestedElement"></nm-section>
+                    <nm-section *ngIf="rowData.$nestedElement" [position]="position+1" [element]="rowData.$nestedElement"></nm-section>
                 </td>
             </tr>
         </ng-template>

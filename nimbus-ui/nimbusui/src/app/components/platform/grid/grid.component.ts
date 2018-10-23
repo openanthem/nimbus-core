@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 'use strict';
-import { BaseElement } from './../base-element.component';
+import { BaseTableElement } from './../base-table-element.component';
 import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Component, Input, Output, forwardRef, ViewChild, EventEmitter, ViewEncapsulation, ChangeDetectorRef, QueryList, ViewChildren } from '@angular/core';
 
 import { GenericDomain } from '../../../model/generic-domain.model';
 import { ParamConfig } from '../../../shared/param-config';
-import { Param } from '../../../shared/param-state';
+import { Param, CollectionParam } from '../../../shared/param-state';
 import { PageService } from '../../../services/page.service';
 import { GridService } from '../../../services/grid.service';
 import { WebContentSvc } from '../../../services/content-management.service';
@@ -29,7 +29,6 @@ import { DataTable, OverlayPanel, Paginator } from 'primeng/primeng';
 import { ServiceConstants } from './../../../services/service.constants';
 import { ControlValueAccessor } from '@angular/forms/src/directives';
 import { DateTimeFormatPipe } from '../../../pipes/date.pipe';
-import { Calendar } from 'primeng/components/calendar/calendar';
 import * as moment from 'moment';
 import { SortAs, GridColumnDataType } from './sortas.interface';
 import { ActionDropdown } from './../form/elements/action-dropdown.component';
@@ -58,13 +57,13 @@ export const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR: any = {
     encapsulation: ViewEncapsulation.None,
     templateUrl: './grid.component.html'
 })
-export class InfiniteScrollGrid extends BaseElement implements ControlValueAccessor {
-    @Input() data: any[];
+export class InfiniteScrollGrid extends BaseTableElement implements ControlValueAccessor {
     @Output() onScrollEvent: EventEmitter<any> = new EventEmitter();
+    @Input() element: CollectionParam;
+    @Input() data: any[];
     @Input() params: ParamConfig[];
     @Input() form: FormGroup;
     @Input('value') _value = [];
-    //paramState: Param[];
     filterValue: Date;
     totalRecords: number = 0;
     mouseEventSubscription: Subscription;
@@ -118,13 +117,13 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
 
     constructor(
         private pageSvc: PageService,
-        private _wcs: WebContentSvc,
+        protected _wcs: WebContentSvc,
         private gridService: GridService,
         private dtFormat: DateTimeFormatPipe,
        // private requestProcessor: RequestProcessorService,
-        private cd: ChangeDetectorRef) {
+        protected cd: ChangeDetectorRef) {
 
-        super(_wcs);
+        super(_wcs, cd);
     }
 
     ngOnInit() {
@@ -150,7 +149,6 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
             this.dt.filterConstraints = customFilterConstraints;
         }
         
-        //this.paramState = this.element.paramState;
     }
 
     ngAfterViewInit() {
@@ -178,9 +176,11 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
 
         this.pageSvc.gridValueUpdate$.subscribe(event => {
             if (event.path == this.element.path) {
+                if (!(event instanceof CollectionParam)) {
+                    throw new Error('event is not of type CollectionParam');
+                }
+
                 this.value = event.gridData.leafState;
-                //this.paramState = event.paramState;
-                //this.element.collectionParams = event.collectionParams;
                 this.totalRecords = this.value ? this.value.length : 0;
                 this.updatePageDetailsState();
                 this.cd.markForCheck();
@@ -202,18 +202,8 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
 
     }
 
-    isClickedOnDropDown(dropDownArray: Array<ActionDropdown>, target: any) {
-
-        for (var i = 0; i < dropDownArray.length; i++) {
-            if (dropDownArray[i].elementRef.nativeElement.contains(target))
-                return true;
-        }
-        return false;
-
-    }
-
     getLinkMenuParam(col,rowIndex): Param {
-        return this.element.collectionParams.find(ele => ele.path == this.element.path +'/'+rowIndex+'/'+ ele.config.code && ele.alias == ViewComponent.linkMenu.toString());
+        return this.element.gridData.collectionParams.find(ele => ele.path == this.element.path +'/'+rowIndex+'/'+ ele.config.code && ele.alias == ViewComponent.linkMenu.toString());
     }
 
     isActive(index){
@@ -223,11 +213,11 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
 
 
     getRowPath(col: ParamConfig, item: any) {
-        return this.element.path + '/' + item.elemId + '/' + col.code;
+        return this.element.path + '/' + item.$elemId + '/' + col.code;
     }
 
     processOnClick(col: ParamConfig, item: any) {
-        let uri = this.element.path + '/' + item.elemId + '/' + col.code;
+        let uri = this.element.path + '/' + item.$elemId + '/' + col.code;
 
         let uriParams = this.getAllURLParams(uri);
         if (uriParams != null) {
@@ -255,7 +245,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
         let item: GenericDomain = new GenericDomain();
         let elemIds = [];
         this.selectedRows.forEach(element => {
-            elemIds.push(element.elemId);
+            elemIds.push(element.$elemId);
         });
 
         item.addAttribute(this.element.config.uiStyles.attributes.postButtonTargetPath, elemIds);
@@ -275,7 +265,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     }
 
     postOnChange(col: ParamConfig, item: any) {
-        let uri = this.element.path + '/' + item.elemId + '/' + col.code;
+        let uri = this.element.path + '/' + item.$elemId + '/' + col.code;
         this.pageSvc.postOnChange(uri, 'state', JSON.stringify(event.target['checked']));
     }
 
@@ -283,7 +273,7 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     }
 
     getAddtionalData(event: any) {
-        event.data['nestedElement']= this.element.collectionParams.find(ele => ele.path == this.element.path +'/'+event.data.elemId+'/'+ ele.config.code && ele.alias == 'GridRowBody');
+        event.data['$nestedElement'] = this.element.gridData.collectionParams.find(ele => ele.path == this.element.path +'/'+event.data.$elemId+'/'+ ele.config.code && ele.alias == 'GridRowBody');
     }
 
     resetMultiSelection() {
@@ -454,44 +444,6 @@ export class InfiniteScrollGrid extends BaseElement implements ControlValueAcces
     filterCallBack(e: any) {
         this.totalRecords = e.filteredValue.length;
         this.updatePageDetailsState();
-    }
-
-    toggleOpen(e: any) {
-
-        let selectedDropDownIsOpen = e.isOpen;
-        let selectedDropDownState = e.state;
-
-        if(this.dropDowns)
-        this.dropDowns.toArray().forEach((item) => {
-            if (!item.selectedItem) {
-                item.isOpen = false;
-                item.state = 'closedPanel';
-            }
-        });
-
-        e.isOpen = !selectedDropDownIsOpen;
-
-        if (selectedDropDownState == 'openPanel') {
-            e.state = 'closedPanel';
-            if(!this.mouseEventSubscription.closed)
-            this.mouseEventSubscription.unsubscribe();
-        }
-        else {
-            e.state = 'openPanel';
-            if(this.dropDowns && (this.mouseEventSubscription == undefined || this.mouseEventSubscription.closed))
-            this.mouseEventSubscription =
-                observableFromEvent(document, 'click').pipe(filter((event: any) => 
-                !this.isClickedOnDropDown(this.dropDowns.toArray(), event.target)),first()).subscribe(() => 
-                {
-                    this.dropDowns.toArray().forEach((item) => {
-                        item.isOpen = false;
-                        item.state = 'closedPanel';
-                    });
-                    this.cd.detectChanges();
-                });
-        }
-        e.selectedItem = false;
-        this.cd.detectChanges();
     }
 
     export() {

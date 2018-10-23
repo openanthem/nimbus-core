@@ -1,4 +1,3 @@
-import { ParamUtils } from './../../shared/param-utils';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -20,9 +19,10 @@ import { Injectable } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, ValidatorFn, FormControl } from '@angular/forms';
 
 import { CustomValidators } from './validators/custom.validators';
-import { Param } from '../../shared/param-state';
+import { Param, CollectionParam } from '../../shared/param-state';
 import { ValidationUtils } from './validators/ValidationUtils';
 import { ViewComponent } from '../../shared/param-annotations.enum';
+import { ParamUtils } from './../../shared/param-utils';
 
 /**
  * \@author Dinakar.Meda
@@ -109,8 +109,8 @@ export class FormElementsService {
     var leafState;
     if (ParamUtils.isKnownDateType(param.config.type.name)) {
       leafState = param.leafState || null;
-    } else if(param.alias === 'Grid' && param.gridData.leafState && param.gridData.leafState.length > 0) {
-        leafState = param.gridData.leafState;
+    } else if(param instanceof CollectionParam && param.alias === 'Grid' && param.gridData.leafState && param.gridData.leafState.length > 0) {
+      leafState = param.gridData.leafState;
     } else {
       leafState = param.leafState || '';
     }

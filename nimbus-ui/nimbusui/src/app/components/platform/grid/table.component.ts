@@ -22,23 +22,20 @@ import {
 } from '@angular/core';
 import { FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { ControlValueAccessor } from '@angular/forms/src/directives';
-import { OverlayPanel, Paginator } from 'primeng/primeng';
+import { OverlayPanel } from 'primeng/primeng';
 import { Table } from 'primeng/table';
 import * as moment from 'moment';
-import { fromEvent as observableFromEvent,  Subscription ,  Observable } from 'rxjs';
-import { first, filter } from 'rxjs/operators';
 import { ParamUtils } from './../../../shared/param-utils';
 import { WebContentSvc } from '../../../services/content-management.service';
 import { DateTimeFormatPipe } from '../../../pipes/date.pipe';
-import { BaseElement } from './../base-element.component';
+import { BaseTableElement } from './../base-table-element.component';
 import { GenericDomain } from '../../../model/generic-domain.model';
 import { ParamConfig } from '../../../shared/param-config';
 import { PageService } from '../../../services/page.service';
 import { GridService } from '../../../services/grid.service';
 import { ServiceConstants } from './../../../services/service.constants';
 import { SortAs, GridColumnDataType } from './sortas.interface';
-import { ActionDropdown } from './../form/elements/action-dropdown.component';
-import { Param, StyleState } from '../../../shared/param-state';
+import { Param, StyleState, CollectionParam } from '../../../shared/param-state';
 import { HttpMethod } from './../../../shared/command.enum';
 import { TableComponentConstants } from './table.component.constants';
 import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations.enum';
@@ -65,15 +62,15 @@ var counter = 0;
     encapsulation: ViewEncapsulation.None,
     templateUrl: './table.component.html'
 })
-export class DataTable extends BaseElement implements ControlValueAccessor {
+export class DataTable extends BaseTableElement implements ControlValueAccessor {
 
     @Output() onScrollEvent: EventEmitter<any> = new EventEmitter();
+    @Input() element: CollectionParam;
     @Input() params: ParamConfig[];
     @Input() form: FormGroup;
     @Input('value') _value = [];
     @ViewChild('dt') dt: Table;
     @ViewChild('op') overlayPanel: OverlayPanel;
-    @ViewChildren('dropDown') dropDowns: QueryList<any>;
     componentTypes = ComponentTypes;
     viewComponent = ViewComponent;
     
@@ -82,7 +79,6 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     
     filterValue: Date;
     totalRecords: number = 0;
-    mouseEventSubscription: Subscription;
     filterState: any[] = [];
     columnsToShow: number = 0;
     summaryData: any;
@@ -128,12 +124,12 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
 
     constructor(
         private pageSvc: PageService,
-        private _wcs: WebContentSvc,
+        protected _wcs: WebContentSvc,
         private gridService: GridService,
         private dtFormat: DateTimeFormatPipe,
-        private cd: ChangeDetectorRef) {
+        protected cd: ChangeDetectorRef) {
 
-        super(_wcs);
+        super(_wcs, cd);
     }
 
     ngOnInit() {
@@ -217,13 +213,17 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
 
         this.pageSvc.gridValueUpdate$.subscribe(event => {
             if (event.path == this.element.path) {
+                if (!(event instanceof CollectionParam)) {
+                    throw new Error('event is not of type CollectionParam');
+                }
+
                 this.value = event.gridData.leafState;
                 
                 // iterate over currently expanded rows and refresh the data
                 Object.keys(this.dt.expandedRowKeys).forEach(key => {
                     this.value.find((lineItem, index) => {
                         if (lineItem[this.element.config.uiStyles.attributes.dataKey] == key) {
-                            this._putNestedElement(event.collectionParams, index, lineItem);
+                            this._putNestedElement(event.gridData.collectionParams, index, lineItem);
                             return true;
                         }
                     });
@@ -346,31 +346,21 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         }
     }
 
-    isClickedOnDropDown(dropDownArray: Array<ActionDropdown>, target: any) {
-
-        for (var i = 0; i < dropDownArray.length; i++) {
-            if (dropDownArray[i].elementRef.nativeElement.contains(target))
-                return true;
-        }
-        return false;
-
-    }
-
     isActive(index) {
         if (this.filterState[index] != '' && this.filterState[index] != undefined) return true;
         else return false;
     }
 
     getViewParam(col: ParamConfig, rowIndex: number): Param {
-        return this.element.collectionParams.find(ele => ele.path == this.element.path + '/'+rowIndex+'/' + col.code);
+        return this.element.gridData.collectionParams.find(ele => ele.path == this.element.path + '/'+rowIndex+'/' + col.code);
     }
 
     getRowPath(col: ParamConfig, item: any) {
-        return this.element.path + '/' + item.elemId + '/' + col.code;
+        return this.element.path + '/' + item.$elemId + '/' + col.code;
     }
 
     processOnClick(col: ParamConfig, item: any) {
-        let uri = this.element.path + '/' + item.elemId + '/' + col.code;
+        let uri = this.element.path + '/' + item.$elemId + '/' + col.code;
 
         let uriParams = this.getAllURLParams(uri);
         if (uriParams != null) {
@@ -398,7 +388,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         let item: GenericDomain = new GenericDomain();
         let elemIds = [];
         this.selectedRows.forEach(element => {
-            elemIds.push(element.elemId);
+            elemIds.push(element.$elemId);
         });
 
         item.addAttribute(this.element.config.uiStyles.attributes.postButtonTargetPath, elemIds);
@@ -415,7 +405,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     }
 
     postOnChange(col: ParamConfig, item: any) {
-        let uri = this.element.path + '/' + item.elemId + '/' + col.code;
+        let uri = this.element.path + '/' + item.$elemId + '/' + col.code;
         this.pageSvc.postOnChange(uri, 'state', JSON.stringify(event.target['checked']));
     }
 
@@ -423,7 +413,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     }
 
     onRowExpand(event: any) {
-        this._putNestedElement(this.element.collectionParams, event.data.elemId, event.data)
+        this._putNestedElement(this.element.gridData.collectionParams, event.data.$elemId, event.data)
     }
 
     resetMultiSelection() {
@@ -565,43 +555,6 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         this.updatePageDetailsState();
     }
 
-    toggleOpen(e: any) {
-
-        let selectedDropDownIsOpen = e.isOpen;
-        let selectedDropDownState = e.state;
-
-        if (this.dropDowns)
-            this.dropDowns.toArray().forEach((item) => {
-                if (!item.selectedItem) {
-                    item.isOpen = false;
-                    item.state = 'closedPanel';
-                }
-            });
-
-        e.isOpen = !selectedDropDownIsOpen;
-
-        if (selectedDropDownState == 'openPanel') {
-            e.state = 'closedPanel';
-            if (!this.mouseEventSubscription.closed)
-                this.mouseEventSubscription.unsubscribe();
-        }
-        else {
-            e.state = 'openPanel';
-            if (this.dropDowns && (this.mouseEventSubscription == undefined || this.mouseEventSubscription.closed))
-                this.mouseEventSubscription =
-                    observableFromEvent(document, 'click').pipe(filter((event: any) =>
-                        !this.isClickedOnDropDown(this.dropDowns.toArray(), event.target)),first()).subscribe(() => {
-                            this.dropDowns.toArray().forEach((item) => {
-                                item.isOpen = false;
-                                item.state = 'closedPanel';
-                            });
-                            this.cd.detectChanges();
-                        });
-        }
-        e.selectedItem = false;
-        this.cd.detectChanges();
-    }
-
     export() {
         let exportDt = this.dt;
         let dtCols = this.params.filter(col => (col.type != null && ParamUtils.isKnownDateType(col.type.name) != null))
@@ -724,7 +677,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         });
 
         if (identifiedParam) {
-            targetLineItem['nestedElement'] = identifiedParam;
+            targetLineItem['$nestedElement'] = identifiedParam;
             return true;
         }
 

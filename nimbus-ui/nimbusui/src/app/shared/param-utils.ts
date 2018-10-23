@@ -16,12 +16,9 @@
  */
 'use strict';
 
-import { ConfigService } from './../services/config.service';
-import { SortAs } from '../components/platform/grid/sortas.interface';
-import { PageService } from '../services/page.service';
-import { GridService } from '../services/grid.service';
 import { ServiceConstants } from '../services/service.constants';
 import { Param } from './param-state';
+
 /**
  * \@author Tony.Lopez
  * \@whatItDoes 
@@ -136,6 +133,7 @@ export class ParamUtils {
      * 
      * <pre>
      * {
+     *      "elemId": "0",
      *      "id": "1",
      *      "startDate": "2018-03-29T00:00:00.000Z",
      *      "additionalInformation": {
@@ -146,6 +144,7 @@ export class ParamUtils {
      * becomes:
      * 
      * {
+     *      "$elemId": "0",
      *      "id": "1",
      *      "startDate": Thu Mar 29 2018 00:00:00 GMT-0400 (EST) {},
      *      "additionalInformation": {
@@ -164,7 +163,7 @@ export class ParamUtils {
 
         // Check for collectionElement and add elementId to leafstate 
         if (relativeParam && relativeParam.collectionElem) { 
-            transformed['elemId'] = relativeParam.elemId; 
+            transformed['$elemId'] = relativeParam['elemId']; 
         }
 
         // iterate over each of the properties of the object.
@@ -174,9 +173,8 @@ export class ParamUtils {
             let x_param = ParamUtils.findParamByPath(relativeParam, x);
 
             // Check for collectionElement and add elementId to leafstate 
-            if (x_param && x_param.collectionElem) { 
-                if(transformed[x] instanceof Object)
-                    transformed[x]['elemId'] = x_param.elemId; 
+            if (x_param && x_param.collectionElem && transformed[x] instanceof Object) { 
+                transformed[x]['$elemId'] = x_param['elemId'];
             }
 
             if (x_param ) {
