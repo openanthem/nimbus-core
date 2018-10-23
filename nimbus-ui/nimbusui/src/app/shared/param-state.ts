@@ -1,4 +1,3 @@
-import { TreeGrid } from './../components/platform/tree-grid/tree-grid.component';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -16,6 +15,16 @@ import { TreeGrid } from './../components/platform/tree-grid/tree-grid.component
  * limitations under the License.
  */
 'use strict';
+
+import { ConfigService } from './../services/config.service';
+import { ParamUtils } from './param-utils';
+import { Converter } from './object.conversion';
+import { Serializable } from './serializable';
+import { ParamConfig, LabelConfig } from './param-config';
+import { Message } from './message';
+import { ViewComponent } from './param-annotations.enum';
+import { TableComponentConstants } from '../components/platform/grid/table.component.constants';
+
 /**
  * \@author Sandeep.Mantha
  * \@whatItDoes 
@@ -23,18 +32,6 @@ import { TreeGrid } from './../components/platform/tree-grid/tree-grid.component
  * \@howToUse 
  * 
  */
-import { ConfigService } from './../services/config.service';
-import { SortAs } from "../components/platform/grid/sortas.interface";
-import { PageService } from '../services/page.service';
-import { GridService } from '../services/grid.service';
-import { ParamUtils } from './param-utils';
-import { Converter } from './object.conversion';
-import { Serializable } from './serializable';
-import { ParamConfig, LabelConfig } from './param-config';
-import { Message } from './message';
-import { ViewConfig, ViewComponent } from './param-annotations.enum';
-import { TableComponentConstants } from '../components/platform/grid/table.component.constants';
-
 export class Param implements Serializable<Param, string> {
     configId: string;
     type: Type;
@@ -43,20 +40,23 @@ export class Param implements Serializable<Param, string> {
     path: string;
     collection: boolean;
     collectionElem: boolean;
-    elemId: string;
     enabled: boolean = true;
-    gridList: any[];
     message : Message[];
     paramState: Param[];
     values : Values[];
     visible: boolean = true;
     activeValidationGroups: String[] = [];
-    collectionParams: Param[] = [];
     page: GridPage;
     _alias: string;
     _config: ParamConfig;
     labels: LabelConfig[];
     elemLabels: Map<string, LabelConfig[]>;
+    gridData: GridData;
+    style: StyleState;
+
+    // Move to Grid Data
+    elemId: string;
+    collectionParams: Param[] = [];
 
     constructor(private configSvc: ConfigService) {}
 
@@ -73,9 +73,9 @@ export class Param implements Serializable<Param, string> {
 
     private createRowData(param: Param) {
         let rowData: any = {};
-        let isTreeGrid = this.config != null && this.config.uiStyles && this.config.uiStyles.attributes.alias == ViewComponent.treeGrid.toString();
         rowData = param.leafState;
         if(param.type.model) {
+            let isTreeGrid = this.config != null && this.config.uiStyles && this.config.uiStyles.attributes.alias == ViewComponent.treeGrid.toString();
             rowData['nestedGridParam'] = [];
             for(let p of param.type.model.params) {
                 if(p != null) {
@@ -158,8 +158,8 @@ export class Param implements Serializable<Param, string> {
         
  
         return paramPath;
-    }
-
+    }     
+    
     deserialize( inJson, path ) {
         this.configId = inJson.configId;
         // Set Config in ParamConfig Map
@@ -194,8 +194,10 @@ export class Param implements Serializable<Param, string> {
             if (inJson.page) {
                 this.page = new GridPage().deserialize(inJson.page);
             }
+            this.gridData = new GridData();
             if (inJson.type && inJson.type.model && inJson.type.model.params) {
-                this.gridList = [];
+                this.gridData.leafState = [];
+                this.gridData.stateMap = [];
                 //this.paramState = [];
                 if(this.path && typeof inJson.path == undefined)
                     inJson.path = this.path;
@@ -203,11 +205,28 @@ export class Param implements Serializable<Param, string> {
                     if (!ParamUtils.isEmpty(inJson.type.model.params[p])) {
                         //this.paramState.push(inJson.type.model.params[p].type.model.params); 
                         //this.gridList.push(this.createRowData(inJson.type.model.params[p])); 
-                        let lineItem = this.createRowData(new Param(this.configSvc).deserialize(inJson.type.model.params[p], this.path));
+                        let colElemParam = new Param(this.configSvc).deserialize(inJson.type.model.params[p], this.path)
+                        
+                        // TODO Refactor the following transformations for efficiency by 
+                        // combining this.createRowData and gridData.stateMap implementation
+                        // into single loop.
+                        
+                        // Update the gridData.leafState
+                        let lineItem = this.createRowData(colElemParam);
                         if(lineItem.nestedGridParam)
                           this.collectionParams = this.collectionParams.concat(lineItem.nestedGridParam); 
                         delete lineItem.nestedGridParam; 
-                        this.gridList.push(lineItem);  
+                        this.gridData.leafState.push(lineItem);
+
+                        // Update the gridData.stateMap
+                        let rowStateData = {};
+                        for(var cellParam of colElemParam.type.model.params) {
+                            let cellParamCode = this.configSvc.getViewConfigById(cellParam.configId).code;
+                            rowStateData[cellParamCode] = {
+                                style: cellParam.style
+                            };
+                        }
+                        this.gridData.stateMap.push(rowStateData);
                     }
                 }
             }
@@ -222,7 +241,9 @@ export class Param implements Serializable<Param, string> {
                 this.leafState = ParamUtils.applyLeafStateTransformations(inJson.leafState, this);
             }
         }
-
+        if ( inJson.style ) {
+            this.style = new StyleState().deserialize(inJson.style);
+        }
         if ( inJson.collectionElem && this.leafState) {
             this.leafState = this.createRowData(this);
         }
@@ -395,4 +416,23 @@ export class TreeGridDeserializer {
         }
     }
 
+}
+
+export class StyleState implements Serializable<StyleState, string> {
+
+    cssClass: string;
+
+    deserialize( inJson ) {
+        let obj = this;
+        obj = Converter.convert(inJson, obj);
+        return obj;
+    }
+}
+
+export class GridData {
+
+    elemId: string;
+    collectionParams: Param[] = [];
+    leafState: any[];
+    stateMap: any[];
 }

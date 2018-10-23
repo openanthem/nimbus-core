@@ -38,7 +38,7 @@ import { GridService } from '../../../services/grid.service';
 import { ServiceConstants } from './../../../services/service.constants';
 import { SortAs, GridColumnDataType } from './sortas.interface';
 import { ActionDropdown } from './../form/elements/action-dropdown.component';
-import { Param } from '../../../shared/param-state';
+import { Param, StyleState } from '../../../shared/param-state';
 import { HttpMethod } from './../../../shared/command.enum';
 import { TableComponentConstants } from './table.component.constants';
 import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations.enum';
@@ -97,6 +97,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
     defaultPattern: RegExp = /^[ A-Za-z0-9_@./#&+-,()!%_{};:?.<>-]*$/;
     numPattern: RegExp = /[\d\-\.]/;
     id: String = 'grid-control' + counter++;
+    gridRowConfig: any[];
 
     get value() {
         return this._value;
@@ -172,8 +173,8 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
             this.columnsToShow ++;
         }
 
-        if (this.element.gridList != null && this.element.gridList.length > 0) {
-            this.value = this.element.gridList;
+        if (this.element.gridData.leafState != null && this.element.gridData.leafState.length > 0) {
+            this.value = this.element.gridData.leafState;
             this.totalRecords = this.value.length;
             this.updatePageDetailsState();
         }
@@ -216,7 +217,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
 
         this.pageSvc.gridValueUpdate$.subscribe(event => {
             if (event.path == this.element.path) {
-                this.value = event.gridList;
+                this.value = event.gridData.leafState;
                 
                 // iterate over currently expanded rows and refresh the data
                 Object.keys(this.dt.expandedRowKeys).forEach(key => {
@@ -692,6 +693,11 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
         } else {
             return this.defaultPattern;
         }
+    }
+
+    getCellStyle(rowIndex, code): string {
+        let style: StyleState = this.element.gridData.stateMap[rowIndex][code].style;
+        return style ? style.cssClass : '';
     }
 
     /**

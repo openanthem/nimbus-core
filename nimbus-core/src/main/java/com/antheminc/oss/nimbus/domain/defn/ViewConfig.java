@@ -74,6 +74,8 @@ public class ViewConfig {
 		boolean multiple() default false;
 
 		boolean showExpandAll() default false;
+		
+		boolean showMessages() default false;
 	}
 
 	/**
@@ -227,7 +229,7 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface Button {
 		public enum Style {
-			DESTRUCTIVE, PLAIN, PRIMARY, SECONDARY;
+			DESTRUCTIVE, PLAIN, PRIMARY, SECONDARY, VALIDATION;
 		}
 
 		public enum Type {
@@ -670,8 +672,35 @@ public class ViewConfig {
 		String alias() default "FieldValue";
 
 		/**
-		 * Apply styles to display value. This controls the display of value
-		 * with images and fonts
+		 * <p>Apply styles to display value. This controls the display of value
+		 * with images and fonts <p>When set to true, CSS classes added into the
+		 * application's defined styles will be added to the container element
+		 * surrounding this component. This can be used to apply additional
+		 * styling, if necessary. <p><strong>Example Configuration</strong>
+		 * 
+		 * <pre>
+		 * &#64;GridColumn(applyValueStyles = true)
+		 * private String status;
+		 * </pre>
+		 * 
+		 * <p><strong>Resulting HTML</strong><br>Assume the state of
+		 * {@code status} is {@code "Active"}. Then the rendered HTML would be:
+		 * 
+		 * <pre>
+		 * &lt;span class="Active status ng-star-inserted" title="Active"&gt;
+		 *   ...
+		 * &lt;/span&gt;
+		 * </pre>
+		 * 
+		 * <p><strong>Example CSS</strong><br>Declare custom styles in
+		 * stylesheets to achieve the desired affect:
+		 * 
+		 * <pre>
+		 * status.Active {
+		 *   ...
+		 * }
+		 * </pre>
+		 * 
 		 */
 		boolean applyValueStyles() default false;
 
@@ -851,6 +880,10 @@ public class ViewConfig {
 		boolean submitButton() default true; // remove
 
 		String submitUrl() default ""; // remove
+		
+		boolean showMessages() default false;
+		
+		boolean manualValidation() default false;
 	}
 	
 	/**
@@ -1099,40 +1132,32 @@ public class ViewConfig {
 
 		/**
 		 * <p>Apply styles to display value. This controls the display of value
-		 * with images and fonts
-		 * <p>When set to true, CSS classes added into the application's defined styles will be added to the container element surrounding this component.
-		 * This can be used to apply additional styling, if necessary.
+		 * with images and fonts <p>When set to true, CSS classes added into the
+		 * application's defined styles will be added to the container element
+		 * surrounding this component. This can be used to apply additional
+		 * styling, if necessary. <p><strong>Example Configuration</strong>
 		 * 
-		 * <p>
-		 * <strong>Example Configuration</strong>
-		 * </p>
 		 * <pre>
-		 * <code>@GridColumn(applyValueStyles = true)
+		 * &#64;GridColumn(applyValueStyles = true)
 		 * private String status;
-		 * </code>
-		 * 
-		 * <p>
-		 * <strong>Resulting HTML</strong>
-		 * </p>
-		 * <pre>
-		 * <pre>
-		 * <code>
-		 * <span class="Active status ng-star-inserted" title="Active">
-		 *	    ...
-		 * </span>
-		 * </pre>
-		 * </code>
 		 * </pre>
 		 * 
-		 * <p>
-		 * <strong> Example CSS </strong>
-		 * </p>
+		 * <p><strong>Resulting HTML</strong><br>Assume the state of
+		 * {@code status} is {@code "Active"}. Then the rendered HTML would be:
+		 * 
 		 * <pre>
-		 * <code>
+		 * &lt;span class="Active status ng-star-inserted" title="Active"&gt;
+		 *   ...
+		 * &lt;/span&gt;
+		 * </pre>
+		 * 
+		 * <p><strong>Example CSS</strong><br>Declare custom styles in
+		 * stylesheets to achieve the desired affect:
+		 * 
+		 * <pre>
 		 * status.Active {
-		 *	    ...
+		 *   ...
 		 * }
-		 * </code>
 		 * </pre>
 		 * 
 		 */
