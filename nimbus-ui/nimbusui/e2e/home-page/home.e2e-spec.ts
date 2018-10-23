@@ -7,42 +7,42 @@ describe('nimbus-ui HomePage', () => {
 
   it('should display welcome message', () => {
     page.navigateTo();
-    expect(page.getParagraphText()).toEqual('My Visits');    
+    expect(page.getParagraphText()).toEqual('My Visits');
   });
 
-  it('1should display welcome message', () => {
+  it('on click of owners button should navigate to /petclinic#/h/ownerlandingview/vpOwners', () => {
     const ownersButton = page.getOwnersButton();
     ownersButton.click();
     browser.driver.sleep(500);
-      expect(browser.driver.getCurrentUrl()).toContain('/petclinic#/h/ownerlandingview/vpOwners');  
+    expect(browser.driver.getCurrentUrl()).toContain('/petclinic#/h/ownerlandingview/vpOwners');
   });
 
-  it('2should display welcome message', () => {
+  it('on click of veterinarians button should navigate to /petclinic#/h/veterinarianview/vpVeterenarians', () => {
     const veterinariansButton = page.getVeterinarians();
     veterinariansButton.click();
-      browser.driver.sleep(500);
-      expect(browser.driver.getCurrentUrl()).toContain('/petclinic#/h/veterinarianview/vpVeterenarians');  
+    browser.driver.sleep(500);
+    expect(browser.driver.getCurrentUrl()).toContain('/petclinic#/h/veterinarianview/vpVeterenarians');
   });
 
-  it('3should display welcome message', () => {
+  it('on click of owners button in left panel should navigate to /petclinic#/h/ownerlandingview/vpOwners', () => {
     const panelOwnersButton = page.getOwners();
     panelOwnersButton.click();
-      browser.driver.sleep(500);
-      expect(browser.driver.getCurrentUrl()).toContain('/petclinic#/h/ownerlandingview/vpOwners');    
+    browser.driver.sleep(500);
+    expect(browser.driver.getCurrentUrl()).toContain('/petclinic#/h/ownerlandingview/vpOwners');
   });
 
-  it('4should display welcome message', () => {
+  it('on click of pets button should navigate to /petclinic#/h/petview/vpAllPets', () => {
     const petsButton = page.getPets();
     petsButton.click();
-      browser.driver.sleep(500);
-      expect(browser.driver.getCurrentUrl()).toContain('/petclinic#/h/petview/vpAllPets');    
+    browser.driver.sleep(500);
+    expect(browser.driver.getCurrentUrl()).toContain('/petclinic#/h/petview/vpAllPets');
   });
 
-  it('5should display welcome message', () => {
+  it('on click of notes button should navigate to /petclinic#/h/petclinicdashboard/vpNotes', () => {
     const notesButton = page.getNotes();
     notesButton.click();
-      browser.driver.sleep(500);
-      expect(browser.driver.getCurrentUrl()).toContain('/petclinic#/h/petclinicdashboard/vpNotes');    
+    browser.driver.sleep(500);
+    expect(browser.driver.getCurrentUrl()).toContain('/petclinic#/h/petclinicdashboard/vpNotes');
   });
 
 });
