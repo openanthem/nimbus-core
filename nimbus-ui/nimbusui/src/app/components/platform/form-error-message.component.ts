@@ -53,21 +53,23 @@ export class FormErrorMessage {
     }
 
     calculateFieldCount(param: Param) {
-        param.type.model.params.forEach(element => {
-            if(element.visible) {
-                if(element.type.model && element.type.model.params ) {
-                    this.calculateFieldCount(element);
-                } else {
-                    this.totalCount++;
-                    //below condition will evaluate static and dynamic validation(groups)
-                    if(ValidationUtils.applyelementStyle(element) || ValidationUtils.createRequired(element,element.activeValidationGroups)) {
-                        this.totalMandtoryCount++;
+        if(param.type.model) {
+            param.type.model.params.forEach(element => {
+                if(element.visible) {
+                    if(element.type.model && element.type.model.params ) {
+                        this.calculateFieldCount(element);
+                    } else {
+                        this.totalCount++;
+                        //below condition will evaluate static and dynamic validation(groups)
+                        if(ValidationUtils.applyelementStyle(element) || ValidationUtils.createRequired(element,element.activeValidationGroups)) {
+                            this.totalMandtoryCount++;
+                        }
+                        this.checkControlValidity(this.form,element.config.code)
                     }
-                    this.checkControlValidity(this.form,element.config.code)
-                }
-            } 
-            
-        });
+                } 
+                
+            });
+        }
              
     }
 
