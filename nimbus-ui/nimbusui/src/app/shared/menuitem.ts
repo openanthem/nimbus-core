@@ -30,6 +30,7 @@
  * 
  */
 export interface MenuItem {
+    code?: string;
     label?: string;
     icon?: string;
     imgType?: string;
