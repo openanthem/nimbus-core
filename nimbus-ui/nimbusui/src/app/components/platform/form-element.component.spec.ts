@@ -1,6 +1,6 @@
 'use strict';
 import { TestBed, async } from '@angular/core/testing';
-import { FormsModule, ReactiveFormsModule, AbstractControlDirective } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, AbstractControlDirective, Validators, ValidatorFn, FormGroup, FormControl } from '@angular/forms';
 import { GrowlModule, AccordionModule, PickListModule, ListboxModule, CalendarModule, 
     DataTableModule, DropdownModule, FileUploadModule, RadioButtonModule, CheckboxModule,
     InputSwitchModule, TreeTableModule } from 'primeng/primeng';
@@ -8,7 +8,13 @@ import { TableModule } from 'primeng/table';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import {ToastModule} from 'primeng/toast';
+import { HttpClientModule } from '@angular/common/http';
+import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-service';
+import { JL } from 'jsnlog';
+import { HttpModule } from '@angular/http';
+import { Location, LocationStrategy, HashLocationStrategy } from '@angular/common';
 
+import { SessionStoreService, CUSTOM_STORAGE } from '../../services/session.store';
 import { FormElement } from './form-element.component';
 import { MessageComponent } from '../platform/message/message.component';
 import { DataTable } from './grid/table.component';
@@ -57,10 +63,20 @@ import { Label } from './content/label.component';
 import { CardDetailsFieldGroupComponent } from './card/card-details-field-group.component';
 import { WebContentSvc } from '../../services/content-management.service';
 import { InputLegend } from './form/elements/input-legend.component';
+import { Param } from '../../shared/param-state';
+import { By } from '@angular/platform-browser';
+import { PageService } from '../../services/page.service';
+import { CustomHttpClient } from '../../services/httpclient.service';
+import { LoaderService } from '../../services/loader.service';
+import { ConfigService } from '../../services/config.service';
+import { LoggerService } from '../../services/logger.service';
+import { AppInitService } from '../../services/app.init.service'
 
-let fixture, app;
+let fixture, app, param: Param, payload;
 
 describe('FormElement', () => {
+  payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';
+  param = JSON.parse(payload);
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
@@ -130,14 +146,52 @@ describe('FormElement', () => {
         AngularSvgIconModule,
         ToastModule,
         InputSwitchModule, 
-        TreeTableModule
+        TreeTableModule,
+        HttpClientModule,
+        StorageServiceModule,
+        HttpModule
        ],
        providers: [
-        WebContentSvc
+        { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+        { provide: 'JSNLOG', useValue: JL },
+        { provide: LocationStrategy, useClass: HashLocationStrategy },
+        Location,
+        WebContentSvc,
+        PageService,
+        CustomHttpClient,
+        SessionStoreService,
+        LoaderService,
+        ConfigService,
+        LoggerService,
+        AppInitService
        ]
     }).compileComponents();
     fixture = TestBed.createComponent(FormElement);
     app = fixture.debugElement.componentInstance;
+    const fg = new FormGroup({});
+    const checks: ValidatorFn[] = [];
+    checks.push(Validators.required);
+    fg.addControl(param.config.code, new FormControl(param.leafState,checks));
+    app.form = fg;
+    app.element = param;
+  }));
+
+  it('two way binding', async(() => {
+      app.elementCss = '';
+      app.getComponentClass();
+      fixture.detectChanges();
+      let textBox;
+      textBox = fixture.debugElement.query(By.css('.form-control')).nativeElement;
+      textBox.value = 'abcd123';
+      textBox.dispatchEvent(new Event('input'));
+      textBox.dispatchEvent(new Event('focusout'));
+      fixture.detectChanges();      
+      expect(app.form.controls[param.config.code].value).toEqual('abcd123');
+      app.form.controls[param.config.code].setValue('testtt');
+      fixture.detectChanges();
+      setTimeout(() => {
+        expect(textBox.value).toEqual('testtt');  
+      }, 100);
   }));
 
   it('should create the app', async(() => {

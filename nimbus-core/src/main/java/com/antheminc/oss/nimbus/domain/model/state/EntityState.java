@@ -27,6 +27,8 @@ import java.util.stream.Stream;
 
 import javax.annotation.concurrent.Immutable;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -548,6 +550,9 @@ public interface EntityState<T> {
 		LabelState getDefaultLabel();
 		LabelState getLabel(String localeLanguageTag);
 		
+		StyleState getStyle();
+		void setStyle(StyleState styleState);
+		
 		@Getter @Setter @ToString 
 		public static class LabelState {
 			private String locale; //default en-US
@@ -580,6 +585,36 @@ public interface EntityState<T> {
 			public int hashCode() {
 				String concat = this.locale + this.text;
 				return concat.hashCode();
+			}
+		}
+		
+		@Getter @Setter @ToString 
+		public static class StyleState {
+			
+			private String cssClass;
+			
+			@Override
+			public boolean equals(Object obj) {
+				if(obj == null) {
+					return false;
+				}
+				
+				if (!LabelState.class.isInstance(obj)) {
+					return false;
+				}
+				
+				StyleState rhs = StyleState.class.cast(obj);
+				
+				return new EqualsBuilder()
+						.append(this.cssClass, rhs.cssClass)
+						.isEquals();
+			}
+			
+			@Override
+			public int hashCode() {
+				return new HashCodeBuilder()
+						.append(this.cssClass)
+						.toHashCode();
 			}
 		}
 		
