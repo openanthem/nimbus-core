@@ -297,6 +297,7 @@ export class LayoutService {
             if (element.config.uiStyles.attributes.alias=== ViewComponent.menulink.toString()) {
                 menuItem.routerLink =  this.createRouterLink(element);
                 menuItem.command = (event: Event) => { this.processClick(event, menuItem)};
+                menuItem.code = element.config.code;
                // menuItem.routerLinkActiveOptions = {'exact':true};
                 menuItems.push(menuItem);
             } else if (element.config.uiStyles.attributes.alias ===ViewComponent.menupanel.toString()){
