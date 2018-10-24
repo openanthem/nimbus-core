@@ -23,7 +23,6 @@ import { WebContentSvc } from '../../../services/content-management.service';
 import { BaseElement } from '../base-element.component';
 import { PageService } from '../../../services/page.service';
 import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations.enum';
-
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 
@@ -113,7 +112,7 @@ export class Accordion extends BaseElement {
 
     ngOnInit() {
         super.ngOnInit();
-        this.updatePositionWithNoLabel();
+        this.updatePositionWithNoLabel();     
     }
 
     /**
