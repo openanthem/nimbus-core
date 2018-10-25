@@ -21,10 +21,11 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 'use strict';
-import { MenuRouteLink } from './route-link.component';
-import { AfterContentInit, ChangeDetectorRef, ContentChildren, ViewChildren, Directive, ElementRef, Input, OnChanges, OnDestroy, QueryList, Renderer2, SimpleChanges, Output, EventEmitter} from '@angular/core';
-import { Subscription } from 'rxjs';
 
+import { MenuRouteLink } from './route-link.component';
+import { AfterContentInit, ChangeDetectorRef, ContentChildren, Directive, ElementRef, Input, OnChanges, OnDestroy, QueryList, Renderer2, SimpleChanges, Output, EventEmitter} from '@angular/core';
+import { Subscription } from 'rxjs';
+import { URLUtils } from './../../shared/url-utils';
 import { RouterLink, Router, NavigationEnd, RouterEvent, RouterLinkWithHref, ActivatedRoute } from '@angular/router';
 import { MenuItem } from '../../shared/menuitem';
 
@@ -100,18 +101,15 @@ import { MenuItem } from '../../shared/menuitem';
       });
     }
   
-    private isLinkActive(router: Router): (link : RouterLink) =>boolean {
+    private isLinkActive(): (link : RouterLink) =>boolean {
       let menuKey = this.item.page;
       if(typeof this.item.routerLink != 'undefined' && this.item.routerLink != '') {
-        let linkKey = this.item.routerLink.split('/');
-        menuKey =  linkKey[(linkKey.length -2)] + '/'+ linkKey[(linkKey.length -1)];
+        menuKey = URLUtils.getDomainPage(this.item.routerLink as string);
       }
-      let url = this.router.url.split('/');
-      let curDomainPage = url[(url.length -2)] + '/'+ url[(url.length -1)];
-      return  (link : RouterLink) => curDomainPage == menuKey;
+      return (link : RouterLink) => URLUtils.getDomainPage(this.router.url) == menuKey;
     }
   
     private hasActiveLinks(): boolean {
-      return this.links.some(this.isLinkActive(this.router));
+      return this.links.some(this.isLinkActive());
     }
   }

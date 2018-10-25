@@ -56,4 +56,6 @@ export interface MenuItem {
     title?: string;
     id?: string;
     automationId?: any;
+    type?: string;
+    rel?: string;
 }
