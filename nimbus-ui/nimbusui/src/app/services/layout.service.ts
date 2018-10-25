@@ -1,3 +1,4 @@
+import { URLUtils } from './../shared/url-utils';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -17,8 +18,8 @@
 'use strict';
 import { WebContentSvc } from './content-management.service';
 import { Component, EventEmitter, Injectable, Inject } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Router, Route } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 import { Result, ViewRoot } from '../shared/app-config.interface';
 import { UiAttribute } from '../shared/param-config';
@@ -27,15 +28,11 @@ import { ServiceConstants } from './service.constants';
 import { PageService } from './page.service';
 import { ConfigService } from './config.service';
 import { CustomHttpClient } from './httpclient.service';
-import { AppBranding, Layout, LinkConfig, TopBarConfig, FooterConfig, GlobalNavConfig } from '../model/menu-meta.interface';
+import { AppBranding, Layout, TopBarConfig, FooterConfig } from '../model/menu-meta.interface';
 import { GenericDomain } from '../model/generic-domain.model';
-import { ViewConfig, ViewComponent } from './../shared/param-annotations.enum';
+import { ViewComponent } from './../shared/param-annotations.enum';
 import { LoggerService } from './logger.service';
-import { SubDomainFlowCmp } from '../components/domain/subdomain-flow.component';
-import { PageNotfoundComponent } from '../components/platform/content/page-notfound.component';
 import { MenuItem } from '../shared/menuitem';
-import { PageResolver } from './../components/platform/content/page-resolver.service';
-import { PageContent } from './../components/platform/content/page-content.component';
 import { Action, Behavior } from './../shared/command.enum';
 import { SessionStoreService, CUSTOM_STORAGE } from './session.store';
 /**
@@ -114,9 +111,8 @@ export class LayoutService {
         const pageParam: Param = flowModel.params.find (p => ( p.config &&
                                     p.config.uiStyles && p.config.uiStyles.attributes && 
                                     p.config.uiStyles.attributes.alias === ViewComponent.page.toString()));
-        layout['leftNavBar'] = this.getLeftMenu(pageParam.type.model);
+        layout['menu'] = this.getMenu(pageParam.type.model);
         layout['topBar'] = this.getTopBar(pageParam.type.model);
-        layout['subBar'] = this.getSubBar(pageParam.type.model);
         layout['footer'] = this.getFooterItems(pageParam.type.model);
         layout['modalList'] = this.getModalItems(pageParam.type.model);
         layout['actiontray'] = this.getActionTrayItems(pageParam.type.model);
@@ -230,62 +226,12 @@ export class LayoutService {
         });
     }
 
-        private getSubBar(layoutConfig: Model) {
-        let subBarItems = {} as GlobalNavConfig;
-        let menuItems = new Map<string, Param[]>();
-        let subMenuLinks: Param[] = [];
-        let menuLinks: Param[] = [];
-
-        layoutConfig.params.forEach(param => {
-            if (param.config.uiStyles.attributes.alias === 'Global-Nav-Menu') {
-                param.type.model.params.forEach(param => {
-                    if (param.config.uiStyles.attributes.alias === 'Menu') { 
-                        subMenuLinks = [];
-                        param.type.model.params.forEach(paramLink => {
-                            if (paramLink.config.uiStyles.attributes.alias === 'Link') {
-                                subMenuLinks.push(paramLink)
-                            }
-                        })
-                        menuItems.set(this.wcs.findLabelContent(param).text, subMenuLinks);
-                        subBarItems['menuItems'] = menuItems;
-                    }
-                    if (param.config.uiStyles.attributes.alias === 'ComboBox') {
-                        subBarItems['organization'] = param;
-                    }
-                    if (param.config.uiStyles.attributes.alias === 'Link') {
-                        menuLinks.push(param);
-                    }
-                    subBarItems['menuLinks'] = menuLinks;
-                });
-
-            }
-        });
-
-        return subBarItems;
-    }
-
-    private getLeftMenu(layoutConfig: Model) {
-        let leftMenu : LinkConfig[] = [];
+    private getMenu(layoutConfig: Model) {
         let menuItems : MenuItem[] = [];
         layoutConfig.params.forEach(param => {
-            if (param.config.uiStyles.attributes.alias === ViewComponent.section.toString()) {
-                if (param.config.uiStyles.attributes.value ==='LEFTBAR') {
-                    param.type.model.params.forEach(element => { // look for links and add to left menu
-                        if (element.config.uiStyles.name === ViewConfig.link.toString()) {
-                            let navItem = {} as LinkConfig;
-                            navItem['path'] = element.config.uiStyles.attributes.url;
-                            navItem['title'] = this.wcs.findLabelContent(element).text;
-                            navItem['image'] = element.config.uiStyles.attributes.imgSrc;
-                            navItem['enabled'] = element.enabled;
-                            navItem['visible'] = element.visible;
-                            leftMenu.push(navItem);
-                        }
-                    });
-                }
-            } else if(param.config.uiStyles.attributes.alias === ViewComponent.menupanel.toString()) {
+            if(param.config.uiStyles.attributes.alias === ViewComponent.menupanel.toString()) {
                 this.buildMenu(param, menuItems); 
             }
-
         });
 
         return menuItems;
@@ -309,6 +255,9 @@ export class LayoutService {
 
     private buildSubMenu(param: Param,  menuItem: MenuItem) {
         let subMenuItems: MenuItem[] = [];
+        if (!param.type.model || !param.type.model.params) {
+            return subMenuItems;
+        }
         param.type.model.params.forEach(element => {
             let item = this.createMenuItem(element);
             if (element.config.uiStyles.attributes.alias === ViewComponent.menulink.toString()) {
@@ -330,6 +279,10 @@ export class LayoutService {
         item.page = element.config.uiStyles.attributes.page;
         item.icon = element.config.uiStyles.attributes.imgSrc;
         item.imgType = element.config.uiStyles.attributes.imgType;
+        item.url = element.config.uiStyles.attributes.url;
+        item.type = element.config.uiStyles.attributes.type;
+        item.target = element.config.uiStyles.attributes.target;
+        item.rel = element.config.uiStyles.attributes.rel;
         return item;
     }
 
@@ -346,28 +299,11 @@ export class LayoutService {
         return routeLink;
     }
 
-    processClick(event:Event, item: MenuItem) {
-       
-    
-        //TODO - use the below to add routes dynamically based on the level of nesting
-        // let route = this.routerSvc.searchRoutes(this.routerSvc.getRoutes(),':subdomain');
-        // if(typeof route == 'undefined' || route == null) {
-        //     let newRoute = {'path':':subdomain','component': this.routerSvc.getComponent('SubDomainFlowCmp'), 'children': [ 
-        //         { 'path': ':pageId', 'component': this.routerSvc.getComponent('PageContent'), 'resolve': { 'page': this.routerSvc.getComponent('PageResolver') }},
-        //         { 'path': 'pnf', 'component': this.routerSvc.getComponent('PageNotfoundComponent') },
-        //         { 'path': '', 'component': this.routerSvc.getComponent('PageNotfoundComponent') }
-        //     ]};
-        //     this.routerSvc.addRouteChildren(newRoute,':domain');
-        // }
-    // if(typeof route == 'undefined' || route == null) {
-    //         let newRoute = { path:':subdomain',component: this.routerSvc.getComponent('SubDomainFlowCmp'), children: [ 
-    //             { path: ':pageId', component:this.routerSvc.getComponent('PageContent'), resolve: { 'page': this.routerSvc.getComponent('PageResolver') }},
-    //             { path: 'pnf', component: this.routerSvc.getComponent('PageNotfoundComponent') },
-    //             { path: '', component: this.routerSvc.getComponent('PageNotfoundComponent') }
-    //         ]};
-    //         this.routerSvc.addRouteChildren(newRoute,':domain');
-    // }
+    processClick(event: Event, item: MenuItem) {
         if(item.routerLink === "" || item.routerLink === null || typeof item.routerLink === 'undefined') {
+            if (item.page == URLUtils.getDomainPage(this.router.url)) {
+                return;
+            }
             this.pageSvc.processEvent(item.path, '$execute', new GenericDomain(), 'GET')
         }
     }
