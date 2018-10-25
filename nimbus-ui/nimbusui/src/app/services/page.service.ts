@@ -399,7 +399,7 @@ export class PageService {
                                                 this.setViewRootAndNavigate(output,flow,navToDefault,refresh);
 
                                         } else {
-                                                this.logError('Received an _get call without model or config ' + output.value.path);
+                                                this.logger.warn('Received an _get call without model or config ' + output.value.path);
                                         }
                                 } else if (output.action === Action._nav.value) {
                                         // Do Nothing. We will process _nav action in the end.
@@ -771,11 +771,11 @@ export class PageService {
                                 } else { // Nested Collection. Need to traverse to right location
                                         let nestedPath = eventModel.value.path.substr(param.path.length + 1);
                                         let elemIndex = nestedPath.substr(0, nestedPath.indexOf('/'));
-                                        if( param.gridData.leafState) {
+                                        if( param.gridData.leafState && eventModel.value.type && eventModel.value.type.model) {
                                                 for (var p = 0; p < param.gridData.leafState.length; p++) {
                                                         if (param.gridData.leafState[p]['elemId'] == elemIndex) {
                                                                 let nestedElement = this.getNestedElementParam(param.gridData.leafState[p]['nestedElement'], nestedPath, eventModel.value.path);
-                                                                if (nestedElement && eventModel.value.type.model) {
+                                                                if (nestedElement) {
                                                                         nestedElement['gridData'] = this.createGridData(eventModel.value.type.model.params, nestedElement);
                                                                         this.gridValueUpdate.next(nestedElement);
                                                                 }
