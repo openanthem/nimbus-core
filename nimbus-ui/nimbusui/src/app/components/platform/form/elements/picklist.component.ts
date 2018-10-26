@@ -112,9 +112,11 @@ export class OrderablePickList extends BaseElement implements OnInit, ControlVal
         this.loadLabelConfigFromConfigs(this.parent.labels, this.parent.config.code);
         this.requiredCss = ValidationUtils.applyelementStyle(this.parent);
         this.sourcelist = [];
-        this.parent.values.forEach(value => {
-            this.sourcelist.push(value);
-        });
+        if (this.parent.values) {
+            this.parent.values.forEach(value => {
+                this.sourcelist.push(value);
+            });
+        }
         // First check if the picklist has any values that are selected onload
         if (this.element.leafState != null && this.element.leafState.length > 0) {
             this.targetList = this.element.leafState;
