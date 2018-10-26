@@ -89,6 +89,10 @@ import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations
                             <ng-template [ngIf]="tabElement.alias == componentTypes.cardDetailsGrid.toString()">
                                 <nm-card-details-grid [position]="position+1" [element]="tabElement"></nm-card-details-grid>
                             </ng-template>
+                            <!-- Form Param -->
+                            <ng-template [ngIf]="tabElement.alias == viewComponent.form.toString()">
+                                <nm-form [position]="position+1" [element]="tabElement" [model]="tabElement.type?.model"></nm-form>
+                            </ng-template>
                         </ng-template>
                     </ng-template>
                 </p-accordionTab>
@@ -102,6 +106,7 @@ export class Accordion extends BaseElement {
     @Input() form: FormGroup;
     @Input() elementCss: string;
     componentTypes = ComponentTypes;
+    viewComponent = ViewComponent;
     protected _multiple: boolean;
     index: number[]; 
     @ViewChild('accordion') accordion: Accordion;
