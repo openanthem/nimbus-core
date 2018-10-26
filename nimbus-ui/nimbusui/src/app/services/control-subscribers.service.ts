@@ -123,7 +123,8 @@ export class ControlSubscribers {
     public onChangeEventSubscriber(control:BaseControl<any>) {
         this.controlValueChanged.subscribe(($event) => {
             //old leafState is used to post data to the server only when the user has changed the value
-            if ($event.config.uiStyles.attributes.postEventOnChange && this.previousLeafState !== $event.leafState) {
+            if ($event.config.uiStyles.attributes.postEventOnChange && ($event.leafState == null || 
+                            this.previousLeafState !== $event.leafState)) {
                 this.pageService.postOnChange($event.path, 'state', JSON.stringify($event.leafState));
             } else if($event.config.uiStyles.attributes.postButtonUrl) {
                 let item: GenericDomain = new GenericDomain();
