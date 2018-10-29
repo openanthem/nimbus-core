@@ -29,7 +29,6 @@ import { AuthenticationService } from '../../services/authentication.service';
 import { STOMPService } from '../../services/stomp.service';
 import { PageService } from '../../services/page.service';
 import { ServiceConstants } from '../../services/service.constants';
-import { FooterGlobal } from '../platform/footer/footer-global.component'
 import { MenuItem } from 'primeng/primeng';
 import { LoggerService } from '../../services/logger.service';
 import { WebContentSvc } from '../../services/content-management.service';
@@ -53,7 +52,6 @@ export class HomeLayoutCmp {
     public branding: AppBranding;
     public footer: FooterConfig;
     public userName: any;
-    public navMenuBar: boolean = false;
     items: MenuItem[];
     
 
@@ -63,8 +61,6 @@ export class HomeLayoutCmp {
     // Stream of messages
     public messages: Observable<Message>;
     public organization: Param;
-    public menuItems: Map<string, Param[]>;
-    public menuLinks: Param[] = [];
     private _activeTheme = '';
 
     constructor(
@@ -173,15 +169,7 @@ export class HomeLayoutCmp {
                         }
                         this.topMenuItems = layout.topBar.headerMenus;
                     }
-                    if(layout.subBar && (layout.subBar.menuItems || layout.subBar.menuLinks || layout.subBar.organization)) {
-                        this.navMenuBar = true;
-                        this.organization = layout.subBar.organization;
-                        this.menuItems = layout.subBar.menuItems;
-                        this.menuLinks = layout.subBar.menuLinks;
-                    } else {
-                        this.navMenuBar = false;
-                    }
-                    this.items = layout.leftNavBar;
+                    this.items = layout.menu;
                     this.footer = layout.footer;
                 }
                 //this._router.navigate([this.body['defaultFlow']], { relativeTo: this._route });
