@@ -48,12 +48,7 @@ public class FunctionExecutorTests extends AbstractFrameworkIngerationPersistabl
 	@Test
 	@SuppressWarnings("unchecked")
 	public void t01_initEntity() {
-		MockHttpServletRequest request = MockHttpRequestBuilder.withUri(PLATFORM_ROOT+"/sample_functest")
-					.addAction(Action._new)
-					.addParam("fn", "_initEntity")
-					.addParam("target", "parameter1")
-					.addParam("json", "\"Test\"")
-					.getMock();
+		MockHttpServletRequest request = MockHttpRequestBuilder.withUri(PLATFORM_ROOT+"/sample_functest/_new?fn=_initEntity&target=/parameter1&json=\"Test&1234\"").getMock();
 		
 		Holder<MultiOutput> holder = (Holder<MultiOutput>)controller.handlePost(request, null);
 		Param param = (Param)holder.getState().getSingleResult();
