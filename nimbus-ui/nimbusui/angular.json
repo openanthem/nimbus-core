@@ -61,7 +61,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "nimbus-ui:build"
+            "browserTarget": "nimbus-ui:build",
+            "proxyConfig": "./proxy.conf.json"
           },
           "configurations": {
             "production": {

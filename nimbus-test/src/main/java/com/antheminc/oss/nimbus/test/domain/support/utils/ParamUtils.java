@@ -31,6 +31,39 @@ public class ParamUtils {
 
 	/**
 	 * <p> Given a framework response object, {@code response}, this method
+	 * deciphers and attempts to locate a value from each of the
+	 * {@link MultiOutput}'s {@link Output#getValue()} values that has is of
+	 * type {@code clazz}. If multiple params are found, only the first will be
+	 * returned.
+	 * 
+	 * @param response the response received as a result of the framework
+	 *            request
+	 * @param clazz the expected type to identify and return
+	 * @return the param identified within the response of the expected type
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T extractResponseByClass(Object response, Class<T> clazz) {
+		if (null == response) {
+			throw new RuntimeException("response must not be null");
+		}
+		if (null == clazz) {
+			throw new RuntimeException("clazz must not be null");
+		}
+
+		Holder<MultiOutput> resp = (Holder<MultiOutput>) response;
+		MultiOutput multiOutput = resp.getState();
+
+		for (Output<?> output : multiOutput.getOutputs()) {
+			if (output.getValue().getClass().isAssignableFrom(clazz)) {
+				return (T) output.getValue();
+			}
+		}
+
+		throw new RuntimeException("Unable to locate param in response having class'" + clazz.getSimpleName() + ".");
+	}
+
+	/**
+	 * <p> Given a framework response object, {@code response}, this method
 	 * deciphers and attempts to locate a param from each of the
 	 * {@link MultiOutput}'s {@link Output#getValue()} values that has a URI
 	 * path ending with {@code paramPathEndsWith}. If multiple params are found,
@@ -50,6 +83,10 @@ public class ParamUtils {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> Param<T> extractResponseByParamPath(Object response, String paramPathEndsWith) {
+		if (null == response) {
+			throw new RuntimeException("response must not be null");
+		}
+
 		Holder<MultiOutput> resp = (Holder<MultiOutput>) response;
 		MultiOutput multiOutput = resp.getState();
 

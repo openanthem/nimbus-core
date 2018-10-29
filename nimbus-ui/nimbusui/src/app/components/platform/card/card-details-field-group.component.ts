@@ -19,6 +19,7 @@ import { Component, Input } from '@angular/core';
 import { Param } from '../../../shared/param-state';
 import { BaseElement } from '../base-element.component';
 import { ComponentTypes } from '../../../shared/param-annotations.enum';
+import { WebContentSvc } from '../../../services/content-management.service';
 
 /**
  * \@author Dinakar.Meda
@@ -31,6 +32,10 @@ import { ComponentTypes } from '../../../shared/param-annotations.enum';
     selector: 'nm-card-details-field-group',
     template:`
         <div [ngClass]="getComponentClass()">
+            <nm-input-label *ngIf="!isLabelEmpty"
+                [element]="element" 
+                [required]="false">
+            </nm-input-label>
             <ng-template ngFor let-field [ngForOf]="element?.type?.model?.params">
                 <!-- FieldValue-->
                 <ng-template [ngIf]="field.config?.uiStyles?.attributes?.alias == componentTypes.fieldValue.toString()">
@@ -44,9 +49,6 @@ import { ComponentTypes } from '../../../shared/param-annotations.enum';
 export class CardDetailsFieldGroupComponent extends BaseElement {
     private fieldGroupClass: string = '';
     componentTypes = ComponentTypes;
-
-    ngOnInit() {
-    }
 
     getComponentClass() {
         let componentClass: string[] = [];

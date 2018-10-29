@@ -31,6 +31,7 @@ import com.antheminc.oss.nimbus.domain.cmd.Action;
 import com.antheminc.oss.nimbus.domain.cmd.Behavior;
 import com.antheminc.oss.nimbus.test.domain.support.utils.ExtractResponseOutputUtils;
 import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
+import com.antheminc.oss.nimbus.test.domain.support.utils.ParamUtils;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreNestedEntity;
 import com.antheminc.oss.nimbus.test.scenarios.s0.view.VPSampleViewPageGreen.TileGreen;
 import com.antheminc.oss.nimbus.test.scenarios.s0.view.VRSampleViewRootEntity;
@@ -102,7 +103,7 @@ public class DefaultBehaviorExecutorStateTest extends AbstractFrameworkIngeratio
 		Object home_newResp = controller.handleGet(home_newReq, null);
 		assertNotNull(home_newResp);
 		
-		Object actual = ExtractResponseOutputUtils.extractOutput(home_newResp, 2);
+		Object actual = ParamUtils.extractResponseByClass(home_newResp, VRSampleViewRootEntity.class);
 		assertNotNull(actual);
 		assertTrue(VRSampleViewRootEntity.class.isInstance(actual));
 		

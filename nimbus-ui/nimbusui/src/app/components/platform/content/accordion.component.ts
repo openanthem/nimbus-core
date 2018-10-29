@@ -23,7 +23,6 @@ import { WebContentSvc } from '../../../services/content-management.service';
 import { BaseElement } from '../base-element.component';
 import { PageService } from '../../../services/page.service';
 import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations.enum';
-
 /**
  * \@author Dinakar.Meda
  * \@whatItDoes 
@@ -49,8 +48,8 @@ import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations
                             {{getInfoText(tab)}}
                         </span>
                         <nm-image class='nm-accordion-headerimage' *ngIf="getImageSrc(tab)" [name]="getImageSrc(tab)" [type]="getImageType(tab)" [title]="getTitle(tab)" [cssClass]="getcssClass(tab)"></nm-image>
-                        <div style='clear: both'></div>
                         <nm-counter-message *ngIf="element.config?.uiStyles?.attributes?.showMessages" [element]="tab" [form]="form"></nm-counter-message>
+                        <div style='clear: both'></div>
                     </p-header>
                     <div class="accordionBtn" *ngIf="tab?.config?.uiStyles?.attributes?.editable">
                         <button  (click)="processOnClick(tab)" type="button" class="btn btn-plain">
@@ -90,6 +89,10 @@ import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations
                             <ng-template [ngIf]="tabElement.alias == componentTypes.cardDetailsGrid.toString()">
                                 <nm-card-details-grid [position]="position+1" [element]="tabElement"></nm-card-details-grid>
                             </ng-template>
+                            <!-- Form Param -->
+                            <ng-template [ngIf]="tabElement.alias == viewComponent.form.toString()">
+                                <nm-form [position]="position+1" [element]="tabElement" [model]="tabElement.type?.model"></nm-form>
+                            </ng-template>
                         </ng-template>
                     </ng-template>
                 </p-accordionTab>
@@ -103,7 +106,7 @@ export class Accordion extends BaseElement {
     @Input() form: FormGroup;
     @Input() elementCss: string;
     componentTypes = ComponentTypes;
-    
+    viewComponent = ViewComponent;
     protected _multiple: boolean;
     index: number[]; 
     @ViewChild('accordion') accordion: Accordion;
@@ -114,7 +117,7 @@ export class Accordion extends BaseElement {
 
     ngOnInit() {
         super.ngOnInit();
-        this.updatePositionWithNoLabel();
+        this.updatePositionWithNoLabel();     
     }
 
     /**

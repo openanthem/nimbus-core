@@ -101,7 +101,6 @@ import { TooltipComponent } from './components/platform/tooltip/tooltip.componen
 import { HeaderGlobal } from './components/platform/header/header-global.component';
 import { FooterGlobal } from './components/platform/footer/footer-global.component';
 import { Calendar } from './components/platform/form/elements/calendar.component';
-import { NavMenuGlobal } from './components/platform/globalNavMenu/nav-global-menu.component';
 import { MessageComponent } from './components/platform/message/message.component';
 import { ActionTray } from './components/platform/actiontray.component';
 import { BaseLabel } from './components/platform/base-label.component';
@@ -218,7 +217,7 @@ export function init_app(appinitservice: AppInitService) {
         GridMouseEventDirective, DisplayValueDirective,
         HomeLayoutCmp, LoginCmp, LoginLayoutCmp, StyleGuideCmp, 
         KeysPipe, LinkPipe, DateTimeFormatPipe, SelectItemPipe, MultiSelectListBox, 
-        CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent, Calendar, NavMenuGlobal, LoaderComponent, MessageComponent,
+        CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent, Calendar, LoaderComponent, MessageComponent,
         HeaderCheckBox, SvgComponent, SvgDefinitions, ActionTray, SubDomainFlowCmp, Image, NmPanelMenu,NmPanelMenuSub, MenuRouterLinkActive, 
         MenuRouteLink, BaseLabel, Label, InputLabel,InputSwitch,TreeGrid,InputLegend, FormErrorMessage
     ],
@@ -229,8 +228,8 @@ export function init_app(appinitservice: AppInitService) {
          { provide: HTTP_INTERCEPTORS, useClass: CustomHttpClientInterceptor, multi: true },
          { provide: LocationStrategy, useClass: HashLocationStrategy }, GridService,
          { provide: APP_BASE_HREF, useValue: ServiceConstants.APP_CONTEXT },
-//         { provide: 'JSNLOG', useValue: JL },
-//         { provide: ErrorHandler, useClass: CustomErrorHandler },
+         { provide: 'JSNLOG', useValue: JL },
+         { provide: ErrorHandler, useClass: CustomErrorHandler },
          { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
          SessionStoreService,
          AuthenticationService, BreadcrumbService, LoaderService, FileService, LayoutService, WindowRefService, LoggerService, 

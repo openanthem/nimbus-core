@@ -85,6 +85,7 @@ export class ComponentTypes extends Enum<string> {
   public static readonly menu = new Enum('Menu');
   public static readonly accordion = new Enum('Accordion');
   public static readonly textBox = new Enum('TextBox');
+  public static readonly internal = new Enum('INTERNAL');
   public static readonly external = new Enum('EXTERNAL');
   public static readonly default = new Enum('DEFAULT');
   public static readonly inline = new Enum('INLINE');

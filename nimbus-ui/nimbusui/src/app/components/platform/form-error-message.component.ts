@@ -1,4 +1,3 @@
-import { ValidationUtils } from './validators/ValidationUtils';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -20,6 +19,7 @@ import { Component, Directive, Input, Output, EventEmitter, SimpleChanges } from
 import { FormGroup } from '@angular/forms';
 import { FormControl } from '@angular/forms';
 import { Param } from './../../shared/param-state';
+import { ValidationUtils } from './validators/ValidationUtils';
 /**
  * \@author Sandeep.Mantha
  * \@whatItDoes 
@@ -30,9 +30,9 @@ import { Param } from './../../shared/param-state';
 @Component( {
     selector: 'nm-counter-message',
     template: `
-        <div class="textWrapBreakWord">
-            <span>{{displayMessage()}}</span>
-        </div> 
+        <div>
+            {{displayMessage()}}
+        </div>
     `
 })
 export class FormErrorMessage {
@@ -49,25 +49,27 @@ export class FormErrorMessage {
         this.totalCount = 0;
         this.totalMandtoryCount = 0;
         this.calculateFieldCount(this.element);
-        return 'Remaining '+ this.mandatoryLeft +' of '+ this.totalMandtoryCount;
+        return 'Required: '+ this.mandatoryLeft +' of '+ this.totalMandtoryCount;
     }
 
     calculateFieldCount(param: Param) {
-        param.type.model.params.forEach(element => {
-            if(element.visible) {
-                if(element.type.model && element.type.model.params ) {
-                    this.calculateFieldCount(element);
-                } else {
-                    this.totalCount++;
-                    //below condition will evaluate static and dynamic validation(groups)
-                    if(ValidationUtils.applyelementStyle(element) || ValidationUtils.createRequired(element,element.activeValidationGroups)) {
-                        this.totalMandtoryCount++;
+        if(param.type.model) {
+            param.type.model.params.forEach(element => {
+                if(element.visible) {
+                    if(element.type.model && element.type.model.params ) {
+                        this.calculateFieldCount(element);
+                    } else {
+                        this.totalCount++;
+                        //below condition will evaluate static and dynamic validation(groups)
+                        if(ValidationUtils.applyelementStyle(element) || ValidationUtils.createRequired(element,element.activeValidationGroups)) {
+                            this.totalMandtoryCount++;
+                        }
+                        this.checkControlValidity(this.form,element.config.code)
                     }
-                    this.checkControlValidity(this.form,element.config.code)
-                }
-            } 
-            
-        });
+                } 
+                
+            });
+        }
              
     }
 
