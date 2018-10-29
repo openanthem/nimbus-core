@@ -29,9 +29,8 @@ class MockLayoutService {
         branding: 'testBrand',
         headerMenus: 'testHeaderMenus'
       },
-      leftNavBar: 456,
-      footer: 789,
-      subBar: 111
+      menu: 456,
+      footer: 789
     };
     this.layout$.next(result);
   }

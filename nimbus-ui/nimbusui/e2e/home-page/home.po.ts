@@ -16,22 +16,22 @@ export class HomePage {
   }
 
   getVeterinarians(): any {
-    const veterinariansButton = element(by.id('Panelmenu-Veterinarians'));
+    const veterinariansButton = element(by.id('Panelmenu-vets'));
     return veterinariansButton;
   }
 
   getOwners(): any {
-    const ownersButton = element(by.id('Panelmenu-Owners'));
+    const ownersButton = element(by.id('Panelmenu-owners'));
     return ownersButton;
   }
 
   getPets(): any {
-    const petsButton = element(by.id('Panelmenu-Pets'));
+    const petsButton = element(by.id('Panelmenu-pets'));
     return petsButton;
   }
 
   getNotes(): any {
-    const notesButton = element(by.id('Panelmenu-Notes'));
+    const notesButton = element(by.id('Panelmenu-notes'));
     return notesButton;
   }
 

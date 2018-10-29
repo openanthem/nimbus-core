@@ -37,8 +37,16 @@
 	</svg>
 <nm-header-global [branding]="branding" [topMenuItems]="topMenuItems" [leftMenuItems]="leftMenuItems"></nm-header-global>
 
+<nav class="section-nav nav navbar navbar-expand-sm globalNav" role="navigation">
+	<button aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler collapsed"
+		data-target="#navbarToggler" data-toggle="collapse" type="button"> 
+		<span class="navbar-toggler-icon"></span> 
+	</button>
+	<div aria-expanded="false" class="navbar-collapse nav-block collapse" id="navbarToggler">
+		<nm-panelMenu [model]="items" [multiple]="false"></nm-panelMenu>
+	</div>
+</nav>
 <!-- Everything after header -->
-<nm-nav-menu-global [organization]= "organization" [menuItems]="menuItems" [menuLinks]="menuLinks" *ngIf="navMenuBar == true"></nm-nav-menu-global> 
 
 <div class='wrapper'>
 	<div id="main-content" class="main-content" >

@@ -21,13 +21,12 @@
 * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 'use strict';
-import { MenuRouterLinkActive } from '../../directives/routes/route-active.component';
-import { NgModule, Component, ElementRef, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
+
+import { Component, Input } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
 import { MenuItem } from '../../shared/menuitem';
-import { MenuRouteLink } from '../../directives/routes/route-link.component';
+import { ComponentTypes } from './../../shared/param-annotations.enum';
+
 /**
 * \@author Sandeep.Mantha
 * Modified the panel menu component of primeng
@@ -37,7 +36,9 @@ import { MenuRouteLink } from '../../directives/routes/route-link.component';
 *
 */
 export class NmBasePanelMenuItem {
-        
+
+    componentTypes = ComponentTypes;
+
     handleClick(event, item) {
         if(item.disabled) {
             event.preventDefault();
@@ -67,13 +68,37 @@ export class NmBasePanelMenuItem {
             <ng-template ngFor let-child [ngForOf]="item.items">
                 <li *ngIf="child.separator" class="ui-menu-separator ui-widget-content">
                 <li *ngIf="!child.separator" class="ui-menuitem ui-corner-all" [ngClass]="child.styleClass" [class.ui-helper-hidden]="child.visible === false" [ngStyle]="child.style">    
-                    <a nmrouterLink="{{child.routerLink}}" [queryParams]="child.queryParams" class="ui-menuitem-link ui-corner-all" nmrouterLinkActive="ui-state-active" [item]="child" (toggleParent)="handleParentToggle(item)"
-                        [ngClass]="{'ui-state-disabled':child.disabled}" [attr.tabindex]="item.expanded ? null : '-1'" [attr.id]="child.id"
-                        (click)="handleClick($event,child)" [attr.target]="child.target" [attr.title]="child.title">
-                        <span class="ui-panelmenu-icon fa fa-fw" [ngClass]="{'fa-caret-right':!child.expanded,'fa-caret-down':child.expanded}" *ngIf="child.items"></span>
-                        <nm-image class='nm-panelmenu-headerimage' *ngIf="child.icon" [name]="child.icon" [type]="child.imgType" [title]="" [cssClass]=""></nm-image>
-                        <span class="ui-menuitem-text">{{child.label}}</span>
+                    
+                    <a *ngIf="child.type == componentTypes.internal.toString()"
+                        class="ui-menuitem-link ui-corner-all internal" 
+                        nmrouterLink="{{child.routerLink}}"
+                        nmrouterLinkActive="ui-state-active" 
+                        [item]="child" 
+                        [ngClass]="{'ui-state-disabled':child.disabled}" 
+                        [queryParams]="child.queryParams" 
+                        [attr.id]="child.id"
+                        [attr.tabindex]="item.expanded ? null : '-1'" 
+                        [attr.target]="child.target" 
+                        [attr.title]="child.title"
+                        (toggleParent)="handleParentToggle(item)"
+                        (click)="handleClick($event,child)">
+
+                            <span *ngIf="child.items"
+                                class="ui-panelmenu-icon fa fa-fw" 
+                                [ngClass]="{'fa-caret-right':!child.expanded,'fa-caret-down':child.expanded}">
+                            </span>
+                            <nm-image class='nm-panelmenu-headerimage' *ngIf="child.icon" [name]="child.icon" [type]="child.imgType" [title]="" [cssClass]=""></nm-image>
+                            <span class="ui-menuitem-text">{{child.label}}</span>
                     </a>
+
+                    <a *ngIf="child.type == componentTypes.external.toString()" 
+                        class = "ui-menuitem-link ui-corner-all external"  
+                        href="{{child.url}}" 
+                        target="{{child.target}}" 
+                        rel="{{child.rel}}">
+                            {{child.label}}
+                    </a>
+
                     <nm-panelMenuSub [item]="child" [expanded]="child.expanded" *ngIf="child.items"></nm-panelMenuSub>
                 </li>
             </ng-template>
@@ -93,39 +118,68 @@ export class NmBasePanelMenuItem {
     ]
 })
 export class NmPanelMenuSub extends NmBasePanelMenuItem {
-    
+
     @Input() item: MenuItem;
     
     @Input() expanded: boolean;
 
     handleParentToggle(it: MenuItem) {}
-            
+
+    ngOnInit() {
+        console.log(this.item);
+    }
 }
 
 @Component({
     selector: 'nm-panelMenu',
     template: `
-        <div [class]="styleClass" [ngStyle]="style" [ngClass]="'ui-panelmenu ui-widget'">
-            <ng-container *ngFor="let item of model;let f=first;let l=last;">
-                <div class="ui-panelmenu-panel" [ngClass]="{'ui-helper-hidden': item.visible === false}">
-                    <div [ngClass]="{'hassubmenu': item.items&&item.items.length > 0, 'ui-widget ui-panelmenu-header ':true,'ui-corner-top':f,'ui-corner-bottom':l&&!item.expanded,
-                    'ui-state-disabled':item.disabled, 'ui-state-active':item.expanded}" [class]="item.styleClass" [ngStyle]="item.style">    
-                        <a id="Panelmenu-{{item.label}}" nmrouterLink="{{item.routerLink}}" [queryParams]="item.queryParams" nmrouterLinkActive="ui-state-active" [item]="item" (toggleParent)="handleParentToggle(item)"
-                           (click)="handleClick($event,item)" [attr.target]="item.target" [attr.title]="item.title" class="ui-panelmenu-header-link">
-                        <span *ngIf="item.items" class="ui-panelmenu-icon fa fa-fw" [ngClass]="{'fa-caret-right':!item.expanded,'fa-caret-down':item.expanded}"></span
-                        ><span class="ui-menuitem-text">{{item.label}}</span>
-                        <nm-image class='nm-panelmenu-headerimage' *ngIf="item.icon" [name]="item.icon" [type]="item.imgType" [title]="" [cssClass]=""></nm-image>
-                        </a>
-                    </div>
-                    <div *ngIf="item.items" class="ui-panelmenu-content-wrapper" [@rootItem]="item.expanded ? 'visible' : 'hidden'"  (@rootItem.done)="onToggleDone()"
-                         [ngClass]="{'ui-panelmenu-content-wrapper-overflown': !item.expanded||animating}">
-                        <div class="ui-panelmenu-content ui-widget-content">
-                            <nm-panelMenuSub [item]="item" [expanded]="true" class="ui-panelmenu-root-submenu"></nm-panelMenuSub>
-                        </div>
+    <div [class]="styleClass" [ngStyle]="style" [ngClass]="'ui-panelmenu ui-widget'">
+        <ng-container *ngFor="let item of model;let f=first;let l=last;">
+            <div class="ui-panelmenu-panel" [ngClass]="{'ui-helper-hidden': item.visible === false}">
+                <div [ngClass]="{'hassubmenu': item.items&&item.items.length > 0, 'ui-widget ui-panelmenu-header ':true,'ui-corner-top':f,'ui-corner-bottom':l&&!item.expanded,
+                'ui-state-disabled':item.disabled, 'ui-state-active':item.expanded}" [class]="item.styleClass" [ngStyle]="item.style">    
+                    
+                    <!-- INTERNAL Menu Link -->
+                    <a *ngIf="item.type == componentTypes.internal.toString()"
+                        id="Panelmenu-{{item.code}}"
+                        class="ui-panelmenu-header-link internal"
+                        nmrouterLink="{{item.routerLink}}"
+                        nmrouterLinkActive="ui-state-active"
+                        [queryParams]="item.queryParams"
+                        [item]="item"
+                        [attr.target]="item.target" 
+                        [attr.title]="item.title"
+                        (toggleParent)="handleParentToggle(item)"
+                        (click)="handleClick($event,item)">
+                            
+                            <span *ngIf="item.items" 
+                                class="ui-panelmenu-icon fa fa-fw" 
+                                [ngClass]="{'fa-caret-right':!item.expanded,'fa-caret-down':item.expanded}">
+                            </span>
+                            <span class="ui-menuitem-text">{{item.label}}</span>
+                            <nm-image class='nm-panelmenu-headerimage' *ngIf="item.icon" [name]="item.icon" [type]="item.imgType" [title]="" [cssClass]=""></nm-image>
+                    </a>
+
+                    <!-- EXTERNAL Panel Menu -->
+                    <a *ngIf="item.type == componentTypes.external.toString()"
+                        id="Panelmenu-{{item.code}}"
+                        class="ui-panelmenu-header-link external"
+                        href="{{item.url}}" 
+                        target="{{item.target}}" 
+                        rel="{{item.rel}}">
+                            {{item.label}}
+                    </a>
+
+                </div>
+                <div *ngIf="item.items" class="ui-panelmenu-content-wrapper" [@rootItem]="item.expanded ? 'visible' : 'hidden'"  (@rootItem.done)="onToggleDone()"
+                    [ngClass]="{'ui-panelmenu-content-wrapper-overflown': !item.expanded||animating}">
+                    <div class="ui-panelmenu-content ui-widget-content">
+                        <nm-panelMenuSub [item]="item" [expanded]="true" class="ui-panelmenu-root-submenu"></nm-panelMenuSub>
                     </div>
                 </div>
-            </ng-container>
-        </div>
+            </div>
+        </ng-container>
+    </div>
     `,
     animations: [
         trigger('rootItem', [
@@ -188,11 +242,3 @@ export class NmPanelMenu extends NmBasePanelMenuItem {
     }
 
 }
-
-// @NgModule({
-//     imports: [CommonModule,RouterModule],
-//     exports: [NmPanelMenu,RouterModule, NmImageModule],
-//     declarations: [NmPanelMenu,NmPanelMenuSub, MenuRouterLinkActive, MenuRouteLink]
-// })
-// export class NmPanelMenuModule { }
-
