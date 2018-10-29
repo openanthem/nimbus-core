@@ -1,5 +1,4 @@
 'use strict';
-import { TestBed, async } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule, AbstractControlDirective, Validators, ValidatorFn, FormGroup, FormControl } from '@angular/forms';
 import { GrowlModule, AccordionModule, PickListModule, ListboxModule, CalendarModule, 
     DataTableModule, DropdownModule, FileUploadModule, RadioButtonModule, CheckboxModule,
@@ -13,6 +12,8 @@ import { StorageServiceModule, SESSION_STORAGE } from 'angular-webstorage-servic
 import { JL } from 'jsnlog';
 import { HttpModule } from '@angular/http';
 import { Location, LocationStrategy, HashLocationStrategy } from '@angular/common';
+import { MessageService } from 'primeng/api';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { SessionStoreService, CUSTOM_STORAGE } from '../../services/session.store';
 import { FormElement } from './form-element.component';
@@ -71,222 +72,232 @@ import { LoaderService } from '../../services/loader.service';
 import { ConfigService } from '../../services/config.service';
 import { LoggerService } from '../../services/logger.service';
 import { AppInitService } from '../../services/app.init.service'
+import { setup, TestContext } from './../../setup.spec';
+import { FormErrorMessage } from './form-error-message.component';
+import { Message } from '../../shared/message';
 
 let fixture, app, param: Param, payload;
 
 describe('FormElement', () => {
   payload = '{\"activeValidationGroups\":[], \"config\":{\"code\":\"firstName\",\"desc\":{\"help\":\"firstName\",\"hint\":\"firstName\",\"label\":\"firstName\"},\"validation\":{\"constraints\":[{\"name\":\"NotNull\",\"value\":null,\"attribute\":{\"groups\": []}}]},\"values\":[],\"uiNatures\":[],\"enabled\":true,\"visible\":true,\"uiStyles\":{\"isLink\":false,\"isHidden\":false,\"name\":\"ViewConfig.TextBox\",\"value\":null,\"attributes\":{\"hidden\":false,\"readOnly\":false,\"alias\":\"TextBox\",\"labelClass\":\"anthem-label\",\"type\":\"text\",\"postEventOnChange\":false,\"controlId\":\"\"}},\"postEvent\":false},\"type\":{\"nested\":false,\"name\":\"string\",\"collection\":false},\"leafState\":\"testData\",\"path\":\"/page/memberSearch/memberSearch/memberSearch/firstName\"}';
   param = JSON.parse(payload);
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        FormElement,
-        MessageComponent,
-        DataTable,
-        FileUploadComponent,
-        OrderablePickList,
-        MultiSelectListBox,
-        MultiselectCard,
-        CheckBox,
-        CheckBoxGroup,
-        RadioButton,
-        ComboBox,
-        Calendar,
-        DateControl,
-        TextArea,
-        Signature,
-        InputText,
-        Paragraph,
-        Header,
-        Section,
-        ActionLink,
-        ActionDropdown,
-        TooltipComponent,
-        SelectItemPipe,
-        ButtonGroup,
-        Button,
-        Accordion,
-        Menu,
-        Link,
-        Form,
-        StaticText,
-        CardDetailsComponent,
-        CardDetailsGrid,
-        FrmGroupCmp,
-        CardDetailsFieldComponent,
-        InPlaceEditorComponent,
-        DateTimeFormatPipe,
-        HeaderCheckBox,
-        SvgComponent,
-        Image,
-        TreeGrid,
-        InputSwitch,
-        FormGridFiller,
-        DisplayValueDirective,
-        InputLabel,
-        Label,
-        CardDetailsFieldGroupComponent,
-        InputLegend
-       ],
-       imports: [
-        FormsModule, 
-        ReactiveFormsModule,
-        GrowlModule,
-        AccordionModule, 
-        PickListModule, 
-        ListboxModule, 
-        CalendarModule, 
-        DataTableModule, 
-        DropdownModule, 
-        FileUploadModule, 
-        RadioButtonModule, 
-        CheckboxModule,
-        TableModule,
-        KeyFilterModule,
-        AngularSvgIconModule,
-        ToastModule,
-        InputSwitchModule, 
-        TreeTableModule,
-        HttpClientModule,
-        StorageServiceModule,
-        HttpModule
-       ],
-       providers: [
-        { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
-        { provide: 'JSNLOG', useValue: JL },
-        { provide: LocationStrategy, useClass: HashLocationStrategy },
-        Location,
-        WebContentSvc,
-        PageService,
-        CustomHttpClient,
-        SessionStoreService,
-        LoaderService,
-        ConfigService,
-        LoggerService,
-        AppInitService
-       ]
-    }).compileComponents();
-    fixture = TestBed.createComponent(FormElement);
-    app = fixture.debugElement.componentInstance;
-    const fg = new FormGroup({});
-    const checks: ValidatorFn[] = [];
+
+  setup();
+
+  beforeEach(async function(this: TestContext<FormElement>) {
+    const declarations = [
+      FormElement,
+      MessageComponent,
+      DataTable,
+      FileUploadComponent,
+      OrderablePickList,
+      MultiSelectListBox,
+      MultiselectCard,
+      CheckBox,
+      CheckBoxGroup,
+      RadioButton,
+      ComboBox,
+      Calendar,
+      DateControl,
+      TextArea,
+      Signature,
+      InputText,
+      Paragraph,
+      Header,
+      Section,
+      ActionLink,
+      ActionDropdown,
+      TooltipComponent,
+      SelectItemPipe,
+      ButtonGroup,
+      Button,
+      Accordion,
+      Menu,
+      Link,
+      Form,
+      StaticText,
+      CardDetailsComponent,
+      CardDetailsGrid,
+      FrmGroupCmp,
+      CardDetailsFieldComponent,
+      InPlaceEditorComponent,
+      DateTimeFormatPipe,
+      HeaderCheckBox,
+      SvgComponent,
+      Image,
+      TreeGrid,
+      InputSwitch,
+      FormGridFiller,
+      DisplayValueDirective,
+      InputLabel,
+      Label,
+      CardDetailsFieldGroupComponent,
+      InputLegend,
+      FormErrorMessage
+     ];
+    let imports = [
+      FormsModule, 
+      ReactiveFormsModule,
+      GrowlModule,
+      AccordionModule, 
+      PickListModule, 
+      ListboxModule, 
+      CalendarModule, 
+      DataTableModule, 
+      DropdownModule, 
+      FileUploadModule, 
+      RadioButtonModule, 
+      CheckboxModule,
+      TableModule,
+      KeyFilterModule,
+      AngularSvgIconModule,
+      ToastModule,
+      InputSwitchModule, 
+      TreeTableModule,
+      HttpClientModule,
+      StorageServiceModule,
+      HttpModule,
+      BrowserAnimationsModule
+    ];
+    let providers= [
+      { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
+      { provide: 'JSNLOG', useValue: JL },
+      { provide: LocationStrategy, useClass: HashLocationStrategy },
+      Location,
+      WebContentSvc,
+      PageService,
+      CustomHttpClient,
+      SessionStoreService,
+      LoaderService,
+      ConfigService,
+      LoggerService,
+      AppInitService,
+      MessageService
+     ];
+    this.create(FormElement, declarations, imports, providers, true);
+    let fg= new FormGroup({});
+    var checks: ValidatorFn[] = [];
     checks.push(Validators.required);
     fg.addControl(param.config.code, new FormControl(param.leafState,checks));
-    app.form = fg;
-    app.element = param;
-  }));
+    this.hostComponent.form = fg;
+    this.hostComponent.element = param;
+});
 
-  it('two way binding', async(() => {
-      app.elementCss = '';
-      app.getComponentClass();
-      fixture.detectChanges();
-      let textBox;
-      textBox = fixture.debugElement.query(By.css('.form-control')).nativeElement;
-      textBox.value = 'abcd123';
-      textBox.dispatchEvent(new Event('input'));
-      textBox.dispatchEvent(new Event('focusout'));
-      fixture.detectChanges();      
-      expect(app.form.controls[param.config.code].value).toEqual('abcd123');
-      app.form.controls[param.config.code].setValue('testtt');
-      fixture.detectChanges();
-      setTimeout(() => {
-        expect(textBox.value).toEqual('testtt');  
-      }, 100);
-  }));
+  it('two way binding', function(this: TestContext<FormElement>) {
+    this.hostComponent.elementCss = '';
+    this.hostComponent.getComponentClass();
+    this.fixture.detectChanges();
+    let textBox;
+    textBox = this.fixture.debugElement.query(By.css('.form-control.text-input')).nativeElement;
+    textBox.value = 'abcd123';
+    textBox.dispatchEvent(new Event('input'));
+    textBox.dispatchEvent(new Event('focusout'));
+    this.fixture.detectChanges();
+    expect(this.hostComponent.form.controls[param.config.code].value).toEqual('abcd123');  
+    this.hostComponent.form.controls[param.config.code].setValue('testtt');
+    this.fixture.detectChanges();
+    this.fixture.whenStable().then(() => {
+      expect(textBox.value).toEqual('testtt');
+    })
+  });
 
-  it('should create the app', async(() => {
-    expect(app).toBeTruthy();
-  }));
+  it('getErrorStyles() should return alert string', async function(this: TestContext<FormElement>) {
+    this.hostComponent.elementCss = '';
+    this.hostComponent.getComponentClass();
+    this.fixture.detectChanges();
+    let textBox;
+    textBox = this.fixture.debugElement.query(By.css('.form-control.text-input')).nativeElement;
+    textBox.value = null;
+    textBox.dispatchEvent(new Event('input'));
+    this.fixture.detectChanges();
+    this.fixture.whenStable().then(() => {
+      expect(this.hostComponent.getErrorStyles()).toEqual('alert alert-danger');
+    })
+  });
 
-  it('isValid property should be updated from form.controls', async(() => {
-    app.element = { config: { code: 123 } };
-    app.form = { controls: { 123: { valid: 'test' } } };
-    expect(app.isValid).toEqual('test');
-  }));
+  it('should create the app', function(this: TestContext<FormElement>) {
+    expect(this.hostComponent).toBeTruthy();
+  });
 
-  it('isValid property should not be updated from form.controls', async(() => {
-    app.element = { config: { code: 123 } };
-    app.form = { controls: { 123: null } };
-    expect(app.isValid).toBeTruthy();
-  }));
+  it('isValid property should be updated from form.controls', function(this: TestContext<FormElement>) {
+    this.hostComponent.elementCss = '';
+    this.hostComponent.getComponentClass();
+    this.hostComponent.form.controls[this.hostComponent.element.config.code].setValue('test');
+    this.fixture.detectChanges();
+    this.fixture.whenStable().then(() => {
+      expect(this.hostComponent.isValid).toBeTruthy();
+    })
+  });
 
-  it('isPristine property should be updated from element', async(() => {
-    app.element = { config: { code: { startsWith: () => {
-            return true;
-          } } } };
-    expect(app.isPristine).toBeTruthy();
-  }));
+  it('isValid property should not be updated from form.controls', function(this: TestContext<FormElement>) {
+    this.hostComponent.form.controls[this.hostComponent.element.config.code] = null;
+    expect(this.hostComponent.isValid).toBeTruthy();
+  });
 
-  it('isPristine property should be updated from form.controls', async(() => {
-    app.element = { config: { code: 'testing' } };
-    app.form = { controls: { testing: { pristine: true } } };
-    expect(app.isPristine).toEqual(true);
-  }));
+  it('isPristine property should be updated from element', function(this: TestContext<FormElement>) {
+    this.hostComponent.element.config.code = '{';
+    expect(this.hostComponent.isPristine).toBeTruthy();
+  });
 
-  it('isPristine property should be updated from element even if it returns false', async(() => {
-    app.element = { config: { code: { startsWith: () => {
-            return false;
-          } } } };
-    app.form = { controls: {} };
-    expect(app.isPristine).toBeTruthy();
-  }));
+  it('isPristine property should be updated from form.controls', function(this: TestContext<FormElement>) {
+    this.hostComponent.form.controls[this.hostComponent.element.config.code].setValue('test');
+    expect(this.hostComponent.isPristine).toEqual(true);
+  });
 
-  it('getMessages() should return message from the element', async(() => {
-    app.element = { message: ['test'] };
-    spyOn(app, 'getPristine').and.returnValue(true);
-    expect(app.getMessages()).toEqual(['test']);
-  }));
+  it('isPristine property should be updated from element even if it returns false', function(this: TestContext<FormElement>) {
+    this.hostComponent.form.controls[this.hostComponent.element.config.code].setValue(null);
+    expect(this.hostComponent.isPristine).toEqual(true);
+  });
 
-  it('getMessages() should return return empty array', async(() => {
-    app.element = { message: [] };
-    spyOn(app, 'getPristine').and.returnValue(true);
-    expect(app.getMessages()).toEqual([]);
-  }));
+  it('getMessages() should return message from the element', function(this: TestContext<FormElement>) {
+    const message = new Message();
+    message.text = 'test'
+    this.hostComponent.element.message = [message];
+    expect(this.hostComponent.getMessages()).toEqual(this.hostComponent.element.message);
+  });
 
-  it('showMessages should be updated based on the elemMessages', async(() => {
-    app.elemMessages = [1];
-    expect(app.showMessages).toEqual(true);
-  }));
+  it('getMessages() should return return empty array', function(this: TestContext<FormElement>) {
+    this.hostComponent.element.message = [];
+    expect(this.hostComponent.getMessages()).toEqual([]);
+  });
 
-  it('getErrorStyles() should return undefined', async(() => {
-    app.element = { config: { code: { startsWith: () => {
-            return false;
-          } } } };
-    app.form = { controls: {} };
-    expect(app.getErrorStyles()).toEqual('');
-  }));
+  it('showMessages should be updated based on the elemMessages', function(this: TestContext<FormElement>) {
+    const message = new Message();
+    message.text = 't'
+    this.hostComponent.elemMessages = [message];
+    expect(this.hostComponent.showMessages).toEqual(true);
+  });
 
-  it('getErrorStyles() should return alert string', async(() => {
-    app.element = { config: { code: 'testing' } };
-    app.form = { controls: { testing: { pristine: false, valid: false } } };
-    expect(app.getErrorStyles()).toEqual('alert alert-danger');
-  }));
+  it('getErrorStyles() should return empty string', function(this: TestContext<FormElement>) {
+    expect(this.hostComponent.getErrorStyles()).toEqual('');
+  });
 
-  it('elementCss should be undefined', async(() => {
-    app.element = { config: { uiStyles: { attributes: { controlId: null } } } };
-    app.ngOnInit();
-    expect(app.elementCss).toEqual(undefined);
-  }));
+  it('elementCss should be undefined', function(this: TestContext<FormElement>) {
+    this.hostComponent.element.config.uiStyles.attributes.controlId = null;
+    this.hostComponent.ngOnInit();
+    expect(this.hostComponent.elementCss).toEqual(undefined);
+  });
 
-  it('getElementStyle() should return col-lg-12 col-md-6', async(() => {
-    app.element = { config: { uiStyles: { attributes: { alias: 'MultiSelectCard' } } } };
-    expect(app.getElementStyle()).toEqual('col-lg-12 col-md-6');
-  }));
+  it('getElementStyle() should return col-lg-12 col-md-6', function(this: TestContext<FormElement>) {
+    this.hostComponent.element.config.uiStyles.attributes.alias = 'MultiSelectCard';
+    expect(this.hostComponent.getElementStyle()).toEqual('col-lg-12 col-md-6');
+  });
 
-  it('getElementStyle() should return empty array', async(() => {
-    app.element = { config: { uiStyles: { attributes: { alias: '' } } } };
-    expect(app.getElementStyle()).toEqual('');
-  }));
+  it('getElementStyle() should return empty array', function(this: TestContext<FormElement>) {
+    this.hostComponent.element.config.uiStyles.attributes.alias = '';
+    expect(this.hostComponent.getElementStyle()).toEqual('');
+  });
 
-  it('addErrorMessages() should update the elemMessages[0].messageArray[0].detail', async(() => {
-    app.elemMessages = [];
-    app.addErrorMessages('testing error message');
-    expect(app.elemMessages[0].messageArray[0].detail).toEqual('testing error message');
-  }));
+  it('addErrorMessages() should update the elemMessages[0].messageArray[0].detail', function(this: TestContext<FormElement>) {
+    this.hostComponent.elemMessages = [];
+    this.hostComponent.addErrorMessages('testing error message');
+    expect(this.hostComponent.elemMessages[0].messageArray[0].detail).toEqual('testing error message');
+  });
 
-  it('ngModelState() should return string with touched', async(() => {
-    const res = app.ngModelState();
+  it('ngModelState() should return string with touched', function(this: TestContext<FormElement>) {
+    let ngm: any;
+    const res = this.hostComponent.ngModelState(ngm);
     expect(res.indexOf('touched')).toEqual(0);
-  }));
+  });
 
 });
