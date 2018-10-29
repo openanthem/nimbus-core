@@ -97,6 +97,7 @@ export class ComponentTypes extends Enum<string> {
   public static readonly validation = new Enum('VALIDATION');
   public static readonly toast = new Enum('TOAST');
   public static readonly inputSwitch = new Enum('InputSwitch');
+  public static readonly link = new Enum('Link');
   
   static attributeList(): String[] {
     const keys = Object.keys(ComponentTypes);

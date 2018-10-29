@@ -72,6 +72,10 @@ import { ViewComponent, ComponentTypes } from '../../../shared/param-annotations
                                     </nm-button-group>
                                 </div>
                             </ng-template>
+                            <!-- Link -->
+                            <ng-template [ngIf]="tabElement.alias == componentTypes.link.toString()">
+                                <nm-link [element] = "tabElement"> </nm-link>                                                                  
+                            </ng-template>
                             <!-- Grid Param -->
                             <ng-template [ngIf]="tabElement.alias == componentTypes.grid.toString()">
                                 <nm-table
