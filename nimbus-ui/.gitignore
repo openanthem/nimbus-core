@@ -1,6 +1,6 @@
 target/
 !.mvn/wrapper/maven-wrapper.jar
-nimbusui/package-lock.json
+package-lock.json
 
 ### STS ###
 .apt_generated
