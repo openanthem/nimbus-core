@@ -99,9 +99,11 @@ export class Link extends BaseElement {
     @Input() root: Param;
     @Input() inClass: string;
     @Input() renderAsLink: boolean;
+    @Input() rowData?: any;
     private linkClass: string = 'basicView';
     private imagesPath: string;
     componentTypes = ComponentTypes;
+    
 
     constructor(private _wcs: WebContentSvc, private pageSvc: PageService) {
         super(_wcs);
@@ -113,8 +115,27 @@ export class Link extends BaseElement {
         if (this.inClass) {
             this.linkClass = this.inClass;
         }
+
+        if (this.element.config && this.element.config.uiStyles.attributes && this.element.config.uiStyles.attributes.url) {
+            let urlParams: string[] = this.getAllURLParams(this.element.config.uiStyles.attributes.url);
+            if (urlParams && urlParams.length > 0) {
+                if(urlParams!=null) {
+                    for (let urlParam of urlParams) {
+                        let p = urlParam.substring(1, urlParam.length-1);
+                        if (this.rowData[p]) {
+                            this.url = this.url.replace(new RegExp(urlParam, 'g'), this.rowData[p]);
+                        }
+                    }
+                }
+            }
+        }
     }
 
+
+    getAllURLParams (url: string): string[] {
+        var pattern = /{([\s\S]*?)}/g;
+        return url.match(pattern);
+    }
     processOnClick(uri: string, httpMethod: string, behaviour: string) {
         let item: GenericDomain = new GenericDomain();
         if(this.root) {
@@ -132,9 +153,16 @@ export class Link extends BaseElement {
      * The URL attribute for this Param.
      */
     get url(): string {
+        if(this.element.leafState){
+            let resolvedUrl = this.element.config.uiStyles.attributes.url
+            return resolvedUrl.replace(new RegExp("{"+ this.element.config.code+"}.*", "g"), this.element.leafState);
+        }
         return this.element.config.uiStyles.attributes.url;
     }
 
+    set url(replaceWithString: string) {
+        this.element.config.uiStyles.attributes.url = replaceWithString;
+    }
     /**
      * The value attribute for this Param.
      */
