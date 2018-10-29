@@ -20,6 +20,7 @@ import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.lang.StringUtils;
 import org.drools.KnowledgeBase;
 import org.drools.builder.DecisionTableConfiguration;
 import org.drools.builder.DecisionTableInputType;
@@ -44,30 +45,38 @@ import com.antheminc.oss.nimbus.support.JustLogit;
 public class DroolsRulesEngineFactory implements RulesEngineFactory {
 
 	JustLogit logit = new JustLogit(getClass());
+	private static final String DRL_EXTENSION = ".drl" ;
+	private static final String DECISIONTABLE_EXTENSION = ".xls" ;
 	
 	Map<String,RulesConfig> ruleConfigurations = new ConcurrentHashMap<String,RulesConfig>();
 	
 	@Override
 	public RulesConfig createConfig(String alias) {
+		RulesConfig config = null;
 		
-		String drlpath = alias + ".drl";
-		String dtablepath = alias + ".xls";
+		String drlpath = alias + DRL_EXTENSION;
+		String dtablepath = alias + DECISIONTABLE_EXTENSION;
 		
 		URL verifyDrlUrl = getClass().getClassLoader().getResource(drlpath);
 		URL verifyDtableUrl = getClass().getClassLoader().getResource(dtablepath);
 		
-		if(verifyDrlUrl != null && verifyDtableUrl != null) {
-			throw new FrameworkRuntimeException("Found both rules file and decision table with the same name: "+alias);		
+		if (verifyDrlUrl != null && verifyDtableUrl != null) {
+			throw new FrameworkRuntimeException("Found both drl file and decision table with the same name: "+alias);	
+			
+		} else if (verifyDrlUrl != null) {
+			logit.trace(()->"Rules file found at location: "+verifyDrlUrl);
+			config = createRulesConfig(drlpath);
+			
+		} else if (verifyDtableUrl != null) {
+			logit.trace(()->"Decision table found at location: "+verifyDtableUrl);
+			config = createRulesConfig(dtablepath);
+			
+		} else {
+			logit.debug(() -> "No rules file found with alias: "+alias);
+			return null;
 		}
 		
-		RulesConfig drlConfig = createDRLConfig(drlpath);
-		RulesConfig dtableConfig = createDecisionTableConfig(dtablepath);
-			
-		if(drlConfig == null && dtableConfig == null) {
-			logit.trace(()->"No rules file: ["+drlpath+"] or decision table: ["+dtablepath+"] found at location");
-			return null;	
-		} else
-			return drlConfig != null ? drlConfig : dtableConfig;
+		return config;
 	}
 
 	@Override
@@ -76,75 +85,46 @@ public class DroolsRulesEngineFactory implements RulesEngineFactory {
 		return runtime;
 	}
 	
-	private RulesConfig createDRLConfig(String drlpath) {
-		RulesConfig drlconfig = ruleConfigurations.get(drlpath);
+	private RulesConfig createRulesConfig(String path) {	
+		
 		KnowledgeBuilder kbBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 		
-		if(drlconfig != null)
-			return drlconfig;
+		RulesConfig ruleconfig = ruleConfigurations.get(path);
 		
-		URL verifyUrl = getClass().getClassLoader().getResource(drlpath);
-		
-		if(verifyUrl == null) {
-			logit.trace(()->"No rules file found at location: "+drlpath);
-			return null;
-		} else {
-			logit.trace(()->"Rules file found at location: "+verifyUrl);
-			kbBuilder.add(ResourceFactory.newClassPathResource(drlpath), ResourceType.DRL);
-			
-			KnowledgeBase kb = null;
-			try {
-				kb = kbBuilder.newKnowledgeBase();
-				kb.addKnowledgePackages(kbBuilder.getKnowledgePackages());
-			} catch (Exception e) {
-				throw new FrameworkRuntimeException("Could not build knowledgeBase, either correct or delete the drl file :"+drlpath+": ", e);
-			}
-			
-			drlconfig = new DroolsRulesConfig(drlpath, kb);
-			ruleConfigurations.put(drlpath, drlconfig);
-			return drlconfig;
-		}
-	}
+		if(ruleconfig != null) 
+			return ruleconfig;
 	
-	private RulesConfig createDecisionTableConfig(String dtablepath) {
-		RulesConfig dtableconfig = ruleConfigurations.get(dtablepath);
-		KnowledgeBuilder kbBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-		
-		if(dtableconfig != null)
-			return dtableconfig;
-		
-		URL verifyUrl = getClass().getClassLoader().getResource(dtablepath);
-		
-		if(verifyUrl == null) {
-			logit.trace(()->"No decision table file found at location: "+dtablepath);
-			return null;
-		} else {
-			logit.trace(()->"Decision table found at location: "+verifyUrl);
+		if (StringUtils.endsWith(path, DRL_EXTENSION)) {
+			
+			kbBuilder.add(ResourceFactory.newClassPathResource(path), ResourceType.DRL);
+			
+		} else if(StringUtils.endsWith(path, DECISIONTABLE_EXTENSION)) {
+			
 			DecisionTableConfiguration dtconf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
 			dtconf.setInputType( DecisionTableInputType.XLS );
 			
-			kbBuilder.add(ResourceFactory.newClassPathResource(dtablepath), ResourceType.DTABLE,dtconf);
-				
 			DecisionTableProviderImpl decisionTableProvider = new DecisionTableProviderImpl();
 			try {
-				String convertedDrl = decisionTableProvider.loadFromInputStream(ResourceFactory.newClassPathResource(dtablepath).getInputStream(), dtconf);
-				logit.info(() -> "drl translation of the decision table: "+dtablepath
+				String convertedDrl = decisionTableProvider.loadFromInputStream(ResourceFactory.newClassPathResource(path).getInputStream(), dtconf);
+				logit.debug(() -> "drl translation of the decision table: "+path
 				+"\n" +convertedDrl);
 			} catch (IOException e) {
-				logit.error(() -> "Could not convert decision table to drl, either correct or delete the decision table: "+dtablepath+":", e);
-			}
-
-			KnowledgeBase kb = null;
-			try {
-				kb = kbBuilder.newKnowledgeBase();
-				kb.addKnowledgePackages(kbBuilder.getKnowledgePackages());
-			} catch (Exception e) {
-				throw new FrameworkRuntimeException("Could not build knowledgeBase, either correct or delete the drl file :"+dtablepath+": ", e);
+				logit.error(() -> "Could not convert decision table to drl, either correct or delete the decision table: "+path+":", e);
 			}
 			
-			dtableconfig = new DroolsRulesConfig(dtablepath, kb);
-			ruleConfigurations.put(dtablepath, dtableconfig);
-			return dtableconfig;
+			kbBuilder.add(ResourceFactory.newClassPathResource(path), ResourceType.DTABLE,dtconf);				
 		}
+			
+		KnowledgeBase kb = null;
+		try {
+			kb = kbBuilder.newKnowledgeBase();
+			kb.addKnowledgePackages(kbBuilder.getKnowledgePackages());
+		} catch (Exception e) {
+			throw new FrameworkRuntimeException("Could not build knowledgeBase, either correct or delete the drl file :"+path+": ", e);
+		}
+		
+		ruleconfig = new DroolsRulesConfig(path, kb);
+		ruleConfigurations.put(path, ruleconfig);
+		return ruleconfig;
 	}
 }
