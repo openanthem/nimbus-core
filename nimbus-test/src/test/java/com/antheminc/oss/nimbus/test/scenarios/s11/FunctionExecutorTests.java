@@ -53,6 +53,7 @@ public class FunctionExecutorTests extends AbstractFrameworkIngerationPersistabl
 		Holder<MultiOutput> holder = (Holder<MultiOutput>)controller.handlePost(request, null);
 		Param param = (Param)holder.getState().getSingleResult();
 		assertEquals("Value", param.findStateByPath("/parameter2"));
+		assertEquals("Test&1234", param.findStateByPath("/parameter1"));
 	}
 	
 	@Test
