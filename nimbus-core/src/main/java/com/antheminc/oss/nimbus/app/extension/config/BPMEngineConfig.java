@@ -31,7 +31,7 @@ import org.activiti.engine.impl.persistence.deploy.Deployer;
 import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.activiti.spring.boot.AbstractProcessEngineAutoConfiguration;
-import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -115,11 +115,11 @@ public class BPMEngineConfig extends AbstractProcessEngineAutoConfiguration {
 	@Bean
 	public SpringProcessEngineConfiguration springProcessEngineConfiguration(
 			@Qualifier("processDataSource") DataSource processDataSource,
-			PlatformTransactionManager jpaTransactionManager, SpringAsyncExecutor springAsyncExecutor,
+			PlatformTransactionManager jpaTransactionManager, SpringAsyncExecutor springAsyncExecutor, 
 			BeanResolverStrategy beanResolver) throws Exception {
 		
 		SpringProcessEngineConfiguration engineConfiguration = this
-				.baseSpringProcessEngineConfiguration(processDataSource, jpaTransactionManager, springAsyncExecutor);
+				.baseSpringProcessEngineConfiguration(processDataSource, jpaTransactionManager, springAsyncExecutor, null);
 
 		if (deploymentName.isPresent()) {
 			engineConfiguration.setDeploymentName(deploymentName.get());

@@ -101,12 +101,9 @@ public class WebActionControllerAdviceTest {
 	
 	@Test
 	public void testMethodArgumentNotValidExceptionHandler() throws NoSuchMethodException, SecurityException {
-		final MethodParameter methodParameter = Mockito.mock(MethodParameter.class);
-		final BindingResult bindingResult = Mockito.mock(BindingResult.class);
-		final MethodArgumentNotValidException ex = new MethodArgumentNotValidException(methodParameter, bindingResult);
+		final MethodArgumentNotValidException ex = Mockito.mock(MethodArgumentNotValidException.class);
 		final MultiExecuteOutput expected = new MultiExecuteOutput(sessionid);
 		
-		Mockito.when(methodParameter.getMethod()).thenReturn(this.getClass().getMethods()[0]);
 		Mockito.when(this.interceptor.handleResponse(Mockito.isA(ExecuteOutput.class))).thenReturn(expected);
 		final MultiExecuteOutput actual = this.testee.exception(ex);
 		
@@ -139,9 +136,10 @@ public class WebActionControllerAdviceTest {
 	
 	@Test
 	public void testMethodArgumentNotValidExceptionHandlerWithErrors() throws NoSuchMethodException, SecurityException {
-		final MethodParameter methodParameter = Mockito.mock(MethodParameter.class);
 		final BindingResult bindingResult = Mockito.mock(BindingResult.class);
-		final MethodArgumentNotValidException ex = new MethodArgumentNotValidException(methodParameter, bindingResult);
+		final MethodArgumentNotValidException ex = Mockito.mock(MethodArgumentNotValidException.class);
+		Mockito.when(ex.getBindingResult()).thenReturn(bindingResult);
+		
 		final MultiExecuteOutput expected = new MultiExecuteOutput(sessionid);
 		
 		List<ObjectError> errors = new ArrayList<>();
@@ -149,12 +147,11 @@ public class WebActionControllerAdviceTest {
 		errors.add(new ObjectError("home", new String[] {"2"}, null, "home-error"));
 		
 		Mockito.when(bindingResult.getAllErrors()).thenReturn(errors);
-		Mockito.when(methodParameter.getMethod()).thenReturn(this.getClass().getMethods()[0]);
 		Mockito.when(this.interceptor.handleResponse(Mockito.isA(ExecuteOutput.class))).thenReturn(expected);
 		final MultiExecuteOutput actual = this.testee.exception(ex);
 		
 		final ArgumentCaptor<ExecuteOutput> respCaptor = ArgumentCaptor.forClass(ExecuteOutput.class);
-		Mockito.verify(bindingResult, Mockito.times(3)).getAllErrors();
+		Mockito.verify(bindingResult, Mockito.times(2)).getAllErrors();
 		Mockito.verify(this.interceptor, Mockito.only()).handleResponse(respCaptor.capture());
 		
 		Assert.assertEquals(expected, actual);

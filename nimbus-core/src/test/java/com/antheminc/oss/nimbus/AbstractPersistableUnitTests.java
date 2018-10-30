@@ -23,9 +23,9 @@ import org.junit.Before;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
-import org.springframework.data.mongodb.core.convert.CustomConversions;
 import org.springframework.data.mongodb.core.convert.DefaultDbRefResolver;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
+import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 
 import com.antheminc.oss.nimbus.support.mongo.MongoConvertersBuilder;
@@ -52,7 +52,7 @@ public abstract class AbstractPersistableUnitTests {
         MongoClient mongoClient = mongoBean.getObject();
         MongoDbFactory factory = new SimpleMongoDbFactory(mongoClient, MONGO_DB_NAME);
         
-        CustomConversions customConversions = new MongoConvertersBuilder().addDefaults().build();
+        MongoCustomConversions customConversions = new MongoConvertersBuilder().addDefaults().build();
         
         MappingMongoConverter mongoConverter = new MappingMongoConverter(new DefaultDbRefResolver(factory), new MongoMappingContext());
         mongoConverter.setCustomConversions(customConversions);
@@ -63,6 +63,6 @@ public abstract class AbstractPersistableUnitTests {
     
     @After
     public void after() throws Exception {
-    	mongo.getDb().dropDatabase();
+    	mongo.getDb().drop();
     }
 }

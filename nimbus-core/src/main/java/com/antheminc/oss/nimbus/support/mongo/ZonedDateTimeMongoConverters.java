@@ -23,12 +23,13 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Date;
 
+import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.ReadingConverter;
 import org.springframework.data.convert.WritingConverter;
 import org.springframework.util.Assert;
 
-import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
 /**
@@ -41,15 +42,15 @@ public class ZonedDateTimeMongoConverters {
 	public static final String K_ZONE = "_zone";
 	
 	@WritingConverter
-	public static class ZDTSerializer implements Converter<ZonedDateTime, DBObject> {
+	public static class ZDTSerializer implements Converter<ZonedDateTime, Bson> {
 		@Override
-		public DBObject convert(ZonedDateTime z) {
+		public Bson convert(ZonedDateTime z) {
 			if(z==null)
 				return null;
 			
 			ZonedDateTime zUTC = z.withZoneSameInstant(ZoneOffset.UTC);
 			
-			DBObject dbObj = new BasicDBObject();
+			Document dbObj = new Document();
 			
 			dbObj.put(K_DATE, Date.from(zUTC.toInstant()));
 			dbObj.put(K_ZONE, z.getZone().getId());
@@ -58,14 +59,28 @@ public class ZonedDateTimeMongoConverters {
 	}
 	
 	@ReadingConverter
-	public static class ZDTDeserializer implements Converter<DBObject, ZonedDateTime> {
+	public static class ZDTDeserializer implements Converter<Bson, ZonedDateTime> {
 		@Override
-		public ZonedDateTime convert(DBObject dbObj) {
-			if(dbObj==null)
+		public ZonedDateTime convert(Bson bson) {
+			if(bson==null)
 				return null;
 			
-			Date date = (Date)dbObj.get(K_DATE);
-			String zone = (String)dbObj.get(K_ZONE);
+			final Date date;
+			final String zone;
+			
+			if(bson instanceof Document) {
+				Document dbObj = (Document)bson;
+				date = (Date)dbObj.get(K_DATE);
+				zone = (String)dbObj.get(K_ZONE);
+				
+			} else if(bson instanceof DBObject) {
+				DBObject dbObj = (DBObject)bson;
+				date = (Date)dbObj.get(K_DATE);
+				zone = (String)dbObj.get(K_ZONE);
+				
+			} else {
+				throw new IllegalStateException("Unhandled database object type found: "+bson);
+			}
 			
 			Assert.notNull(date, "Persisted entity for "+ZonedDateTime.class.getSimpleName()+" must not have null value for "+K_DATE);
 			Assert.notNull(zone, "Persisted entity for "+ZonedDateTime.class.getSimpleName()+" must not have null value for "+K_ZONE);
