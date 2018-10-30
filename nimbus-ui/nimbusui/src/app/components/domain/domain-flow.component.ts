@@ -55,7 +55,7 @@ export class DomainFlowCmp {
             data => {
                 let layout: Layout = data;
                 this.accordions = layout.topBar.accordions;
-                this.items = layout.leftNavBar;
+                this.items = layout.menu;
                 this.topMenuItems = layout.topBar.headerMenus;
                 this.actionTray = layout.actiontray;
                 this.modalItems = layout.modalList;

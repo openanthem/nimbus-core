@@ -107,29 +107,28 @@
 			<build>
 				<plugins>
 					<plugin>
-						<groupId>com.kelveden</groupId>
-						<artifactId>maven-karma-plugin</artifactId>
-						<version>${maven.karma.plugin.version}</version>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<version>${exec-maven-plugin.version}</version>
 						<executions>
 							<execution>
 								<phase>test</phase>
-								<goals>
-									<goal>start</goal>
-								</goals>
+									<goals>
+										<goal>exec</goal>
+									</goals>
 							</execution>
 						</executions>
-						<configuration>
-							<karmaExecutable>${basedir}/node_modules/.bin/karma</karmaExecutable>        
-							<configFile>${basedir}/karma.conf.js</configFile>
-							<reportsDirectory>${project.build.directory}/karma-reports</reportsDirectory>
-							<browsers>${testconfig.ui.browsers}</browsers>
-							<autoWatch>false</autoWatch>
-							<singleRun>true</singleRun>
-							<colors>true</colors>
-							<skipKarma>false</skipKarma>
-							<skipTests>false</skipTests>
-							<karmaFailureIgnore>false</karmaFailureIgnore>
-						</configuration>
+						  <configuration>
+						  	<executable>ng</executable>
+          					<workingDirectory>${project.basedir}/nimbusui</workingDirectory>
+				            <arguments>
+            					<argument>test </argument>
+								<argument>--watch=false </argument>
+								<argument>--code-coverage</argument>
+								<argument>--browsers</argument>
+								<argument>${testconfig.ui.browsers}</argument>
+          					</arguments>
+        				  </configuration>
 					</plugin>
 				</plugins>
 			</build>

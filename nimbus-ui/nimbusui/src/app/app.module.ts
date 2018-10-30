@@ -101,7 +101,6 @@ import { TooltipComponent } from './components/platform/tooltip/tooltip.componen
 import { HeaderGlobal } from './components/platform/header/header-global.component';
 import { FooterGlobal } from './components/platform/footer/footer-global.component';
 import { Calendar } from './components/platform/form/elements/calendar.component';
-import { NavMenuGlobal } from './components/platform/globalNavMenu/nav-global-menu.component';
 import { MessageComponent } from './components/platform/message/message.component';
 import { ActionTray } from './components/platform/actiontray.component';
 import { BaseLabel } from './components/platform/base-label.component';
@@ -153,6 +152,7 @@ import { MenuRouteLink } from './directives/routes/route-link.component';
 import { MenuRouterLinkActive } from './directives/routes/route-active.component';
 import { InputSwitch } from './components/platform/form/elements/input-switch.component';
 import { InputLegend } from './components/platform/form/elements/input-legend.component';
+import { FormErrorMessage } from './components/platform/form-error-message.component';
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -217,9 +217,9 @@ export function init_app(appinitservice: AppInitService) {
         GridMouseEventDirective, DisplayValueDirective,
         HomeLayoutCmp, LoginCmp, LoginLayoutCmp, StyleGuideCmp, 
         KeysPipe, LinkPipe, DateTimeFormatPipe, SelectItemPipe, MultiSelectListBox, 
-        CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent, Calendar, NavMenuGlobal, LoaderComponent, MessageComponent,
+        CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent, Calendar, LoaderComponent, MessageComponent,
         HeaderCheckBox, SvgComponent, SvgDefinitions, ActionTray, SubDomainFlowCmp, Image, NmPanelMenu,NmPanelMenuSub, MenuRouterLinkActive, 
-        MenuRouteLink, BaseLabel, Label, InputLabel,InputSwitch,TreeGrid,InputLegend
+        MenuRouteLink, BaseLabel, Label, InputLabel,InputSwitch,TreeGrid,InputLegend, FormErrorMessage
     ],
     entryComponents: [ FlowWrapper, PageContent, PageNotfoundComponent, LoginCmp, HomeLayoutCmp, SubDomainFlowCmp],
     providers: [ PageService, ConfigService, WebContentSvc, HttpClient,  HttpClientModule, AppInitService,

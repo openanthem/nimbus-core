@@ -98,11 +98,12 @@
                 <ng-template ngFor let-col let-colIndex="index" [ngForOf]="params">
                     <td *ngIf="showColumn(col)" [ngClass]="getColumnStyle(col)">
                         <span title="{{getCellDisplayValue(rowData, col)}}" *ngIf="showValue(col)" [nmDisplayValue]='getCellDisplayValue(rowData, col)' [config]='col'>
-                            <span class="fieldValue">{{getCellDisplayValue(rowData, col)}}</span>
+                            <span class="fieldValue {{col.code}} {{getCellStyle(rowData.elemId, col.code)}}">{{getCellDisplayValue(rowData, col)}}</span>
                         </span>
                         <span *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.link.toString()">
                             <nm-link
-                                [element] = "getViewParam(col, rowData['elemId'])">
+                                [element] = "getViewParam(col, rowData['elemId'])"
+                                [rowData]="rowData">                                
                             </nm-link>
                         </span>
                         <span *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.gridcolumn.toString() && col?.uiStyles?.attributes?.showAsLink === true">

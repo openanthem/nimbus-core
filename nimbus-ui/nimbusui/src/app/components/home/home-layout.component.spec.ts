@@ -25,7 +25,6 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { HomeLayoutCmp } from './home-layout.component';
 import { STOMPService } from '../../services/stomp.service';
 import { FooterGlobal } from '../platform/footer/footer-global.component';
-import { NavMenuGlobal } from '../platform/globalNavMenu/nav-global-menu.component';
 import { HeaderGlobal } from '../platform/header/header-global.component';
 import { Link } from '../platform/link.component';
 import { Paragraph } from '../platform/content/paragraph.component';
@@ -122,7 +121,6 @@ describe('HomeLayoutCmp', () => {
       declarations: [
         HomeLayoutCmp,
         FooterGlobal,
-        NavMenuGlobal,
         HeaderGlobal,
         Link,
         Paragraph,
@@ -182,13 +180,8 @@ describe('HomeLayoutCmp', () => {
         branding: 'test',
         headerMenus: 'tHeaderMenus'
       },
-      leftNavBar: [],
+      menu: [],
       footer: 'FooterConfig',
-      subBar: {
-        menuItems: 'tMenuItems',
-        menuLinks: 'tMenuLinks',
-        organization: 'torganization'
-      }
     };
     layoutService.parseLayoutConfig(layout);
     expect(component.layoutSvc.getLayout).toHaveBeenCalled();
@@ -203,13 +196,8 @@ describe('HomeLayoutCmp', () => {
         branding: 'test',
         headerMenus: 'tHeaderMenus'
       },
-      leftNavBar: [],
+      menu: [],
       footer: 'FooterConfig',
-      subBar: {
-        menuItems: 'tMenuItems',
-        menuLinks: 'tMenuLinks',
-        organization: 'torganization'
-      }
     };
     layoutService.parseLayoutConfig(layout);
     expect(component.layoutSvc.getLayout).not.toHaveBeenCalled();
@@ -222,13 +210,8 @@ describe('HomeLayoutCmp', () => {
         branding: 'test',
         headerMenus: 'tHeaderMenus'
       },
-      leftNavBar: [],
+      menu: [],
       footer: 'FooterConfig',
-      subBar: {
-        menuItems: 'tMenuItems',
-        menuLinks: 'tMenuLinks',
-        organization: 'torganization'
-      }
     };
     layoutService.parseLayoutConfig(layout);
     expect(component.branding).toEqual('test');
