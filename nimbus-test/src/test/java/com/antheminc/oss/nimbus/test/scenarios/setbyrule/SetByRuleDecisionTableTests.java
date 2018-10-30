@@ -77,7 +77,7 @@ public class SetByRuleDecisionTableTests extends AbstractFrameworkIngerationPers
 	
 	@SuppressWarnings("unchecked")
 	@Test
-	public void t2_setByRule_associatedParam() {
+	public void t0_setByRule_associatedParam() {
 		createOrGetCore();
 		String updateUri = CORE_PARAM_ROOT + ":"+REF_ID+"/attr1";
 		MockHttpServletRequest request = MockHttpRequestBuilder.withUri(updateUri)
