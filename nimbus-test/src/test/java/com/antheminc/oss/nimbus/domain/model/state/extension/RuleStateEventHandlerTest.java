@@ -111,7 +111,7 @@ public class RuleStateEventHandlerTest extends AbstractStateEventHandlerTests {
 	}
 	
 	@Test
-	public void t03_stateChange_DecisionTable_1() {
+	public void t03_stateChange_DecisionTable() {
 		final Param<String> dtableParam = _q.getRoot().findParamByPath(ENTITY_BASEPATH + "/dtable_param");
 		final Param<String> dtableParam_affectState = _q.getRoot().findParamByPath(ENTITY_BASEPATH + "/dtable_param_affectState");
 		
