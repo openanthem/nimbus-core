@@ -31,6 +31,7 @@ import org.drools.decisiontable.DecisionTableProviderImpl;
 import org.drools.io.ResourceFactory;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
+import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.model.config.RulesConfig;
 import com.antheminc.oss.nimbus.domain.model.state.RulesRuntime;
 import com.antheminc.oss.nimbus.domain.rules.RulesEngineFactory;
@@ -48,6 +49,13 @@ public class DroolsRulesEngineFactory implements RulesEngineFactory {
 	private static final String DRL_EXTENSION = ".drl" ;
 	private static final String DECISIONTABLE_EXTENSION = ".xls" ;
 	
+	private final DrlConfigBuilder drlbuilder;
+	private final DecisionTableConfigBuilder dtablebuilder;
+	
+	public DroolsRulesEngineFactory(BeanResolverStrategy beanResolver) {
+		this.drlbuilder = beanResolver.get(DrlConfigBuilder.class);
+		this.dtablebuilder = beanResolver.get(DecisionTableConfigBuilder.class);
+	}
 	Map<String,RulesConfig> ruleConfigurations = new ConcurrentHashMap<String,RulesConfig>();
 	
 	@Override
@@ -65,18 +73,18 @@ public class DroolsRulesEngineFactory implements RulesEngineFactory {
 			
 		} else if (verifyDrlUrl != null) {
 			logit.trace(()->"Rules file found at location: "+verifyDrlUrl);
-			config = createRulesConfig(drlpath);
+			config = drlbuilder.buildConfig(drlpath, ruleConfigurations);
+			return config;
 			
 		} else if (verifyDtableUrl != null) {
 			logit.trace(()->"Decision table found at location: "+verifyDtableUrl);
-			config = createRulesConfig(dtablepath);
+			config = dtablebuilder.buildConfig(dtablepath, ruleConfigurations);
+			return config;
 			
 		} else {
 			logit.debug(() -> "No rules file found with alias: "+alias);
 			return null;
 		}
-		
-		return config;
 	}
 
 	@Override
