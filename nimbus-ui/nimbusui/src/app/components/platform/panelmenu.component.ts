@@ -124,10 +124,6 @@ export class NmPanelMenuSub extends NmBasePanelMenuItem {
     @Input() expanded: boolean;
 
     handleParentToggle(it: MenuItem) {}
-
-    ngOnInit() {
-        console.log(this.item);
-    }
 }
 
 @Component({
