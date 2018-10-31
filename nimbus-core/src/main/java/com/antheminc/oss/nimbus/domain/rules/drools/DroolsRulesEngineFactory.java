@@ -72,7 +72,7 @@ public class DroolsRulesEngineFactory implements RulesEngineFactory {
 			return config;
 								
 		} else {
-			logit.debug(() -> "No rules file found with alias: "+alias);
+			logit.trace(() -> "No rules file found with alias: "+alias);
 			return null;
 		} 
 	}
