@@ -1,4 +1,4 @@
-<form id="{{formId}}" [formGroup]="form" *ngIf="element?.visible==true" novalidate>
+<form id="{{formId}}" [formGroup]="form" novalidate>
     <ng-template [ngIf] = "element?.visible">
         <nm-counter-message *ngIf="element.config?.uiStyles?.attributes?.showMessages" [element]="element" [form]="form"></nm-counter-message>
         <nm-label *ngIf="!isLabelEmpty" [element]="element" [size]="labelSize"></nm-label>
