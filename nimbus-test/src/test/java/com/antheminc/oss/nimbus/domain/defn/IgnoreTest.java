@@ -123,7 +123,6 @@ public class IgnoreTest extends AbstractFrameworkIntegrationTests {
 		
 		System.out.println(jContent.getJson());
 		
-		assertThat(jContent).hasJsonPathArrayValue("$.type.model.params");
-		assertThat(jContent).hasJsonPathValue("$.type.model.params[0]");
+		assertThat(jContent).doesNotHaveJsonPathValue("$.config.type.modelConfig.paramConfigs[?(@.code == 'ignoreOnlyWebSocket')]");
 	}
 }
