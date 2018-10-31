@@ -15,27 +15,21 @@
  */
 package com.antheminc.oss.nimbus.domain.rules.drools;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import org.apache.commons.lang.StringUtils;
-import org.drools.KnowledgeBase;
-import org.drools.builder.DecisionTableConfiguration;
-import org.drools.builder.DecisionTableInputType;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.decisiontable.DecisionTableProviderImpl;
-import org.drools.io.ResourceFactory;
+import org.apache.commons.collections.CollectionUtils;
 
-import com.antheminc.oss.nimbus.FrameworkRuntimeException;
+import com.antheminc.oss.nimbus.InvalidConfigException;
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.model.config.RulesConfig;
 import com.antheminc.oss.nimbus.domain.model.state.RulesRuntime;
 import com.antheminc.oss.nimbus.domain.rules.RulesEngineFactory;
 import com.antheminc.oss.nimbus.support.JustLogit;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Soham Chakravarti
@@ -43,96 +37,48 @@ import com.antheminc.oss.nimbus.support.JustLogit;
  * @author Swetha Vemuri
  *
  */
+@Getter @Setter
 public class DroolsRulesEngineFactory implements RulesEngineFactory {
 
 	JustLogit logit = new JustLogit(getClass());
-	private static final String DRL_EXTENSION = ".drl" ;
-	private static final String DECISIONTABLE_EXTENSION = ".xls" ;
 	
-	private final DrlConfigBuilder drlbuilder;
-	private final DecisionTableConfigBuilder dtablebuilder;
+	private final BeanResolverStrategy beanResolver;
 	
 	public DroolsRulesEngineFactory(BeanResolverStrategy beanResolver) {
-		this.drlbuilder = beanResolver.get(DrlConfigBuilder.class);
-		this.dtablebuilder = beanResolver.get(DecisionTableConfigBuilder.class);
+		this.beanResolver = beanResolver;
 	}
-	Map<String,RulesConfig> ruleConfigurations = new ConcurrentHashMap<String,RulesConfig>();
 	
 	@Override
 	public RulesConfig createConfig(String alias) {
-		RulesConfig config = null;
+		// lookup of multiple DroolsConfigBuilder Strategy implementation beans
+		Collection<DroolsConfigBuilderStrategy> strategies = getBeanResolver().getMultiple(DroolsConfigBuilderStrategy.class);
 		
-		String drlpath = alias + DRL_EXTENSION;
-		String dtablepath = alias + DECISIONTABLE_EXTENSION;
+		// Filter the strategies which are supported for the alias
+		List<DroolsConfigBuilderStrategy> supportedStrategies = 
+			strategies.stream()
+				.filter(strategy -> strategy.isSupported(alias))
+				.collect(Collectors.toList());
 		
-		URL verifyDrlUrl = getClass().getClassLoader().getResource(drlpath);
-		URL verifyDtableUrl = getClass().getClassLoader().getResource(dtablepath);
-		
-		if (verifyDrlUrl != null && verifyDtableUrl != null) {
-			throw new FrameworkRuntimeException("Found both drl file and decision table with the same name: "+alias);	
+		//Cannot have more than one supported strategy for the same rule alias. Ex. test.drl and test.xls
+		if (CollectionUtils.size(supportedStrategies) > 1) {
+			throw new InvalidConfigException("Found muliple rule files with the same name: "+alias);	
 			
-		} else if (verifyDrlUrl != null) {
-			logit.trace(()->"Rules file found at location: "+verifyDrlUrl);
-			config = drlbuilder.buildConfig(drlpath, ruleConfigurations);
+		} else if (CollectionUtils.isNotEmpty(supportedStrategies)) {
+			//Build config for the supported strategy
+			RulesConfig config = supportedStrategies.stream()
+									.findFirst()
+									.get()
+									.buildConfig(alias);
 			return config;
-			
-		} else if (verifyDtableUrl != null) {
-			logit.trace(()->"Decision table found at location: "+verifyDtableUrl);
-			config = dtablebuilder.buildConfig(dtablepath, ruleConfigurations);
-			return config;
-			
+								
 		} else {
 			logit.debug(() -> "No rules file found with alias: "+alias);
 			return null;
-		}
+		} 
 	}
 
 	@Override
 	public RulesRuntime createRuntime(RulesConfig config) {
-		DroolsRulesRuntime runtime = new DroolsRulesRuntime(config);
-		return runtime;
-	}
-	
-	private RulesConfig createRulesConfig(String path) {	
-		
-		KnowledgeBuilder kbBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-		
-		RulesConfig ruleconfig = ruleConfigurations.get(path);
-		
-		if(ruleconfig != null) 
-			return ruleconfig;
-	
-		if (StringUtils.endsWith(path, DRL_EXTENSION)) {
-			
-			kbBuilder.add(ResourceFactory.newClassPathResource(path), ResourceType.DRL);
-			
-		} else if(StringUtils.endsWith(path, DECISIONTABLE_EXTENSION)) {
-			
-			DecisionTableConfiguration dtconf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
-			dtconf.setInputType( DecisionTableInputType.XLS );
-			
-			DecisionTableProviderImpl decisionTableProvider = new DecisionTableProviderImpl();
-			try {
-				String convertedDrl = decisionTableProvider.loadFromInputStream(ResourceFactory.newClassPathResource(path).getInputStream(), dtconf);
-				logit.debug(() -> "drl translation of the decision table: "+path
-				+"\n" +convertedDrl);
-			} catch (IOException e) {
-				logit.error(() -> "Could not convert decision table to drl, either correct or delete the decision table: "+path+":", e);
-			}
-			
-			kbBuilder.add(ResourceFactory.newClassPathResource(path), ResourceType.DTABLE,dtconf);				
-		}
-			
-		KnowledgeBase kb = null;
-		try {
-			kb = kbBuilder.newKnowledgeBase();
-			kb.addKnowledgePackages(kbBuilder.getKnowledgePackages());
-		} catch (Exception e) {
-			throw new FrameworkRuntimeException("Could not build knowledgeBase, either correct or delete the drl file :"+path+": ", e);
-		}
-		
-		ruleconfig = new DroolsRulesConfig(path, kb);
-		ruleConfigurations.put(path, ruleconfig);
-		return ruleconfig;
+		return new DroolsRulesRuntime(config);
 	}
 }

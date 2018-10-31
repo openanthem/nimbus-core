@@ -3,8 +3,6 @@
  */
 package com.antheminc.oss.nimbus.domain.rules.drools;
 
-import java.util.Map;
-
 import org.drools.KnowledgeBase;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
@@ -14,24 +12,22 @@ import org.drools.io.ResourceFactory;
 import com.antheminc.oss.nimbus.domain.model.config.RulesConfig;
 
 /**
+ * Implementation of drl rule files strategy for Drools
  * @author Swetha Vemuri
+ * @since 1.0
  *
  */
-public class DrlConfigBuilder extends AbstractRulesConfigBuilder implements RulesConfigBuilderStrategy {
+public class DrlConfigBuilder extends BaseDroolsConfigBuilder implements DroolsConfigBuilderStrategy {
 
+	private static final String DRL_SUFFIX = ".drl" ;
 	
-	public DrlConfigBuilder() {
-		super();
-	}
-
-	/* (non-Javadoc)
-	 * @see com.antheminc.oss.nimbus.domain.rules.drools.RulesConfigBuilderStrategy#buildConfig(java.lang.String)
-	 */
 	@Override
-	public RulesConfig buildConfig(String path, Map<String,RulesConfig> ruleConfigurations) {
+	public RulesConfig buildConfig(String alias) {
+		
+		String path = alias + DRL_SUFFIX;
 		
 		KnowledgeBuilder kbBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-		
+		//check if rule is present in cache
 		RulesConfig ruleconfig = ruleConfigurations.get(path);
 		
 		if(ruleconfig != null) 
@@ -45,6 +41,11 @@ public class DrlConfigBuilder extends AbstractRulesConfigBuilder implements Rule
 		ruleConfigurations.put(path, ruleconfig);
 		
 		return ruleconfig;
+	}
+
+	@Override
+	public boolean isSupported(String alias) {
+		return evalResource(alias, DRL_SUFFIX);
 	}
 
 }
