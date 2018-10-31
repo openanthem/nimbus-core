@@ -4,7 +4,6 @@
     <nm-input id="{{id}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.type==componentTypes.text.toString()" [element]="element" [form]="form"></nm-input>
     <nm-signature id="{{id}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.type==componentTypes.signature.toString()" [element]="element" [form]="form"></nm-signature>
     <nm-input-textarea id="{{id}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.type==componentTypes.textarea.toString()" [element]="element" [form]="form"></nm-input-textarea>
-    <nm-input-date  id="{{id}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.type==componentTypes.date.toString()" [element]="element" [form]="form"></nm-input-date>
     <nm-input-calendar  id="{{id}}" [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.type==componentTypes.calendar.toString()" [element]="element" [form]="form"></nm-input-calendar>
     <nm-comboBox id="{{id}}"  [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.alias == componentTypes.comboBox.toString()" [element]="element"  [form]="form"></nm-comboBox>
     <nm-input-radio id="{{id}}"  [formControlName]="element.config?.code" *ngIf="element.config?.uiStyles?.attributes?.alias == componentTypes.radio.toString()" [element]="element" [form]="form"></nm-input-radio>
