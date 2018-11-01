@@ -11,6 +11,8 @@ import com.antheminc.oss.nimbus.domain.defn.extension.Content.Label;
 import com.antheminc.oss.nimbus.domain.defn.extension.LabelConditional;
 import com.antheminc.oss.nimbus.domain.defn.extension.LabelConditional.Condition;
 import com.antheminc.oss.nimbus.domain.defn.extension.MessageConditional;
+import com.antheminc.oss.nimbus.domain.defn.extension.Style;
+import com.antheminc.oss.nimbus.domain.defn.extension.StyleConditional;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
 
 import lombok.Getter;
@@ -44,10 +46,15 @@ public class VPSampleViewPageAqua {
 		
 		@Model @Getter @Setter
 		public static class VSSampleForm{
+			
 			@Form
 			private VFSampleForm vfSampleForm;
 			
+			@Form
+			private VFStyleForm vfStyleForm;
+			
 		}
+		
 		@Model @Getter @Setter
 		@MapsTo.Type(SampleCoreEntity.class)
 		public static class VFSampleForm{
@@ -97,5 +104,36 @@ public class VPSampleViewPageAqua {
 			
 			private String p8_message;
 			
+		}
+		
+		@Model
+		@Getter @Setter
+		public static class VFStyleForm {
+			
+			private String p0;
+			
+			@StyleConditional(targetPath = "/../p0", condition = {
+				@StyleConditional.Condition(when = "state == 1", then = @Style(cssClass = "red"))
+			})
+			private int p1;
+			
+			@StyleConditional(targetPath = "/../p0", condition = {
+				@StyleConditional.Condition(when = "state == 1", then = @Style(cssClass = "red")),
+				@StyleConditional.Condition(when = "state == 2", then = @Style(cssClass = "blue")),
+				@StyleConditional.Condition(when = "state == 3", then = @Style(cssClass = "green"))
+			})
+			private int p2;
+			
+			@StyleConditional(targetPath = "/", exclusive = true, condition = {
+				@StyleConditional.Condition(when = "state > 5", then = @Style(cssClass = "red")),
+				@StyleConditional.Condition(when = "state > 10", then = @Style(cssClass = "green"))
+			})
+			private int p3Exclusive;
+			
+			@StyleConditional(targetPath = "/", exclusive = false, condition = {
+				@StyleConditional.Condition(when = "state > 5", then = @Style(cssClass = "red")),
+				@StyleConditional.Condition(when = "state > 10", then = @Style(cssClass = "green"))
+			})
+			private int p3NonExclusive;
 		}
 	}

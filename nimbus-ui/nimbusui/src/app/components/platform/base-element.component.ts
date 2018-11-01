@@ -243,6 +243,11 @@ export class BaseElement {
         }
         return 'H' + position;
     }
+
+    ngOnDestroy(){
+        if(this.element.message)                 
+        this.element.message = [];              
+    }
     
 }
 

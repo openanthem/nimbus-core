@@ -1,5 +1,3 @@
-import { ConstraintMapping } from './../../shared/validationconstraints.enum';
-import { Constraint } from './../../shared/param-config';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -27,6 +25,8 @@ import { BaseElement } from './base-element.component';
 import { WebContentSvc } from './../../services/content-management.service';
 import { ValidationUtils } from './validators/ValidationUtils';
 import { AbstractControl } from '@angular/forms/src/model';
+import { ConstraintMapping } from './../../shared/validationconstraints.enum';
+import { Constraint } from './../../shared/param-config';
 
 var counter = 0;
 
@@ -172,8 +172,8 @@ export class FormElement extends BaseElement {
             let errs: ValidationErrors = control.errors;
             for (var key in errs) {
                 let constraintName = ConstraintMapping.getConstraintValue(key);
-                let constraint: Constraint = this.element.config.validation.constraints.find(v => v.name == constraintName);
-                this.addErrorMessages(constraint.attribute.message ? constraint.attribute.message : ValidationUtils.getDefaultErrorMessage(key));
+                    let constraint: Constraint = this.element.config.validation.constraints.find(v => v.name == constraintName);
+                    this.addErrorMessages(constraint.attribute.message ? constraint.attribute.message : ValidationUtils.getDefaultErrorMessage(key));
             }   
         }
     }

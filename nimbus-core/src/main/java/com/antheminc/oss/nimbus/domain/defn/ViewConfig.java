@@ -69,11 +69,17 @@ public class ViewConfig {
 
 		String alias() default "Accordion";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "panel-default";
 
 		boolean multiple() default false;
 
 		boolean showExpandAll() default false;
+		
+		boolean showMessages() default false;
 	}
 
 	/**
@@ -108,6 +114,10 @@ public class ViewConfig {
 	public @interface AccordionTab {
 		String alias() default "AccordionTab";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "panel-default";
 
 		boolean editable() default false;
@@ -135,6 +145,10 @@ public class ViewConfig {
 
 		String alias() default "ActionTray";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 
 		String text() default "";
@@ -153,6 +167,10 @@ public class ViewConfig {
 	public @interface Assessment {
 		String alias() default "Assessment";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "text-sm-right";
 	}
 
@@ -167,6 +185,10 @@ public class ViewConfig {
 	public @interface BreadCrumb {
 		String alias() default "breadCrumb";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 
 		String label();
@@ -191,6 +213,10 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface TreeGrid {
 		String alias() default "TreeGrid";
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 	}
 	
@@ -206,6 +232,10 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface TreeGridChild {
 		String alias() default "TreeGridChild";
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 	}
 	
@@ -227,7 +257,7 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface Button {
 		public enum Style {
-			DESTRUCTIVE, PLAIN, PRIMARY, SECONDARY;
+			DESTRUCTIVE, PLAIN, PRIMARY, SECONDARY, VALIDATION;
 		}
 
 		public enum Type {
@@ -240,6 +270,10 @@ public class ViewConfig {
 
 		boolean browserBack() default false;
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 
 		boolean formReset() default true;
@@ -281,6 +315,10 @@ public class ViewConfig {
 	public @interface ButtonGroup {
 		String alias() default "ButtonGroup";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "text-sm-center";
 	}
 
@@ -305,6 +343,10 @@ public class ViewConfig {
 
 		String controlId() default "";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 
 		String help() default "";
@@ -372,6 +414,10 @@ public class ViewConfig {
 		public @interface Body {
 			String alias() default "CardDetailsBody";
 
+			/**
+			 * <p>CSS classes added here will be added to a container element surrounding this component.
+			 * <p>This can be used to apply additional styling, if necessary.
+			 */
 			String cssClass() default "";
 		}
 
@@ -394,6 +440,10 @@ public class ViewConfig {
 		public @interface Header {
 			String alias() default "CardDetailsHeader";
 
+			/**
+			 * <p>CSS classes added here will be added to a container element surrounding this component.
+			 * <p>This can be used to apply additional styling, if necessary.
+			 */
 			String cssClass() default "";
 		}
 
@@ -408,6 +458,10 @@ public class ViewConfig {
 		public @interface Tag {
 			String alias() default "CardDetailsTag";
 
+			/**
+			 * <p>CSS classes added here will be added to a container element surrounding this component.
+			 * <p>This can be used to apply additional styling, if necessary.
+			 */
 			String cssClass() default "";
 		}
 		
@@ -417,6 +471,10 @@ public class ViewConfig {
 
 		boolean border() default false;
 		
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";	
 
 		boolean draggable() default false;
@@ -448,6 +506,10 @@ public class ViewConfig {
 										// Grid for grouping.
 		String alias() default "CardDetailsGrid";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 
 		boolean draggable() default false;
@@ -475,6 +537,10 @@ public class ViewConfig {
 
 		String controlId() default "";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 
 		String help() default "";
@@ -505,6 +571,10 @@ public class ViewConfig {
 
 		String controlId() default "";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 
 		String help() default "";
@@ -555,8 +625,8 @@ public class ViewConfig {
 		String controlId() default "";
 		
 		/**
-		 * This field can be used to override cssClass
-		 * 
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
 		 */
 		String cssClass() default "";
 		
@@ -594,6 +664,10 @@ public class ViewConfig {
 
 		String controlId() default "";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 
 		String help() default "";
@@ -670,13 +744,44 @@ public class ViewConfig {
 		String alias() default "FieldValue";
 
 		/**
-		 * Apply styles to display value. This controls the display of value
-		 * with images and fonts
+		 * <p>Apply styles to display value. This controls the display of value
+		 * with images and fonts <p>When set to true, CSS classes added into the
+		 * application's defined styles will be added to the container element
+		 * surrounding this component. This can be used to apply additional
+		 * styling, if necessary. <p><strong>Example Configuration</strong>
+		 * 
+		 * <pre>
+		 * &#64;GridColumn(applyValueStyles = true)
+		 * private String status;
+		 * </pre>
+		 * 
+		 * <p><strong>Resulting HTML</strong><br>Assume the state of
+		 * {@code status} is {@code "Active"}. Then the rendered HTML would be:
+		 * 
+		 * <pre>
+		 * &lt;span class="Active status ng-star-inserted" title="Active"&gt;
+		 *   ...
+		 * &lt;/span&gt;
+		 * </pre>
+		 * 
+		 * <p><strong>Example CSS</strong><br>Declare custom styles in
+		 * stylesheets to achieve the desired affect:
+		 * 
+		 * <pre>
+		 * status.Active {
+		 *   ...
+		 * }
+		 * </pre>
+		 * 
 		 */
 		boolean applyValueStyles() default false;
 
 		String cols() default "4";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 
 		/**
@@ -728,6 +833,10 @@ public class ViewConfig {
 
 		String cols() default "1";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 	}
 
@@ -760,6 +869,10 @@ public class ViewConfig {
 
 		ControlType controlType() default ControlType.FORMCONTROL;
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 
 		String metaData() default "";
@@ -787,6 +900,10 @@ public class ViewConfig {
 
 		String b() default "$execute";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "btn btn-primary";
 
 		String imgSrc() default "";
@@ -842,6 +959,10 @@ public class ViewConfig {
 	public @interface Form {
 		String alias() default "Form";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 
 		String b() default ""; // remove
@@ -851,6 +972,10 @@ public class ViewConfig {
 		boolean submitButton() default true; // remove
 
 		String submitUrl() default ""; // remove
+		
+		boolean showMessages() default false;
+		
+		boolean manualValidation() default false;
 	}
 	
 	/**
@@ -877,6 +1002,10 @@ public class ViewConfig {
 	public @interface FormElementGroup {
 		String alias() default "FormElementGroup";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 		
 		String cols() default "1";
@@ -898,6 +1027,10 @@ public class ViewConfig {
 	public @interface FormGridFiller {
 		String alias() default "FormGridFiller";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 		
 		String cols() default "";
@@ -918,6 +1051,10 @@ public class ViewConfig {
 
 		String alias() default "Footer";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 	}
 
@@ -936,6 +1073,10 @@ public class ViewConfig {
 
 		String alias() default "Global-Header";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 	}
 
@@ -946,7 +1087,9 @@ public class ViewConfig {
 	 * one of the following components: <ul> <li>Layout Domain</li> </ul>
 	 * 
 	 * @since 1.0
+	 * @deprecated As of 1.1.7 onwards, {@code GlobalNavMenu} will no longer be rendered in the UI. Use {@link MenuPanel} instead.
 	 */
+	@Deprecated
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.FIELD })
 	@ViewStyle
@@ -954,6 +1097,10 @@ public class ViewConfig {
 
 		String alias() default "Global-Nav-Menu";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 	}
 
@@ -968,6 +1115,10 @@ public class ViewConfig {
 	public @interface GlobalSection {
 		String alias() default "globalSection";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 
 		String imgSrc() default "";
@@ -999,6 +1150,10 @@ public class ViewConfig {
 
 		boolean clearAllFilters() default false;
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 
 		String dataKey() default "id";
@@ -1099,40 +1254,32 @@ public class ViewConfig {
 
 		/**
 		 * <p>Apply styles to display value. This controls the display of value
-		 * with images and fonts
-		 * <p>When set to true, CSS classes added into the application's defined styles will be added to the container element surrounding this component.
-		 * This can be used to apply additional styling, if necessary.
+		 * with images and fonts <p>When set to true, CSS classes added into the
+		 * application's defined styles will be added to the container element
+		 * surrounding this component. This can be used to apply additional
+		 * styling, if necessary. <p><strong>Example Configuration</strong>
 		 * 
-		 * <p>
-		 * <strong>Example Configuration</strong>
-		 * </p>
 		 * <pre>
-		 * <code>@GridColumn(applyValueStyles = true)
+		 * &#64;GridColumn(applyValueStyles = true)
 		 * private String status;
-		 * </code>
-		 * 
-		 * <p>
-		 * <strong>Resulting HTML</strong>
-		 * </p>
-		 * <pre>
-		 * <pre>
-		 * <code>
-		 * <span class="Active status ng-star-inserted" title="Active">
-		 *	    ...
-		 * </span>
-		 * </pre>
-		 * </code>
 		 * </pre>
 		 * 
-		 * <p>
-		 * <strong> Example CSS </strong>
-		 * </p>
+		 * <p><strong>Resulting HTML</strong><br>Assume the state of
+		 * {@code status} is {@code "Active"}. Then the rendered HTML would be:
+		 * 
 		 * <pre>
-		 * <code>
+		 * &lt;span class="Active status ng-star-inserted" title="Active"&gt;
+		 *   ...
+		 * &lt;/span&gt;
+		 * </pre>
+		 * 
+		 * <p><strong>Example CSS</strong><br>Declare custom styles in
+		 * stylesheets to achieve the desired affect:
+		 * 
+		 * <pre>
 		 * status.Active {
-		 *	    ...
+		 *   ...
 		 * }
-		 * </code>
 		 * </pre>
 		 * 
 		 */
@@ -1245,6 +1392,10 @@ public class ViewConfig {
 
 		boolean asynchronous() default false;
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 	}
 
@@ -1268,6 +1419,10 @@ public class ViewConfig {
 
 		String alias() default "Header";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 
 		Size size() default Size.H3;
@@ -1305,6 +1460,10 @@ public class ViewConfig {
 
 		String alias() default "Image";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 
 		String imgSrc() default "";
@@ -1332,6 +1491,10 @@ public class ViewConfig {
 	public @interface InPlaceEdit {
 		String alias() default "InPlaceEdit";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 
 		String type() default "text";
@@ -1348,6 +1511,10 @@ public class ViewConfig {
 	public @interface LinearGauge {
 		String alias() default "LinearGauge";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 
 		String labelClass() default "anthem-label";
@@ -1382,6 +1549,10 @@ public class ViewConfig {
 
 		String b() default "$executeAnd$nav";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 
 		String imgSrc() default "";
@@ -1414,6 +1585,10 @@ public class ViewConfig {
 	public @interface LinkMenu {
 		String alias() default "LinkMenu";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "dropdownTrigger";
 
 		String imgSrc() default "";
@@ -1442,6 +1617,10 @@ public class ViewConfig {
 
 		String alias() default "Menu";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 
 		String text() default "";
@@ -1450,27 +1629,183 @@ public class ViewConfig {
 	}
 
 	/**
-	 * <!--TODO Candidate for removal-->
+	 * <p>MenuLink is nestable menu link component that is exclusively used with
+	 * {@link MenuPanel}.
 	 * 
-	 * @since 1.0
+	 * <p><b>Expected Field Structure</b>
+	 * 
+	 * <p>MenuLink will be rendered when annotating a field nested under one of
+	 * the following components: <ul> <li>{@link MenuPanel}</li> </ul>
+	 * 
+	 * <p>MenuLink should decorate a field having a simple type.
+	 * 
+	 * @since 1.1
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.FIELD })
 	@ViewStyle
 	public @interface MenuLink {
+
 		String alias() default "MenuLink";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
+		 */
 		String cssClass() default "";
 
+		/**
+		 * <p>{@code imgSrc} when given would resolve to an icon/image and place
+		 * it before text of this component's label.
+		 */
 		String imgSrc() default "";
 
+		/**
+		 * <p>imgType by default would be font awesome library. If svg images
+		 * are to be rendered imgType should be Type.SVG</p>
+		 */
+		Image.Type imgType() default Image.Type.FA;
+
+		/**
+		 * <p>The Nimbus DSL path to the variable representing the page. Used
+		 * for {@link Type#INTERNAL} links only. <p>The path must start with the
+		 * domain id. e.g.:
+		 * 
+		 * <pre>
+		 * &#64;MenuLink(page = "domain/page")
+		 * private String link1;
+		 * </pre>
+		 */
 		String page() default "";
 
+		/**
+		 * <p>The HTML {@code rel} attribute that will be set for this
+		 * component.
+		 */
+		String rel() default "";
+
+		/**
+		 * <p>The HTML {@code target} attribute that will be set for this
+		 * component.
+		 */
+		String target() default "";
+
+		/**
+		 * <p>The {@link Type} defining the link behavior for this component.
+		 */
+		Type type() default Type.INTERNAL;
+
+		/**
+		 * <p>The HTML {@code href} attribute that will be set for this
+		 * component.
+		 */
 		String url() default "";
-		
-		Image.Type imgType() default Image.Type.FA;
+
+		/**
+		 * <p>Link Types that define the behavior of the {@link MenuLink}
+		 * component.
+		 * @author Tony Lopez
+		 * @since 1.1
+		 */
+		public static enum Type {
+			/**
+			 * <p>Internal links are links that navigate within the single page
+			 * application.
+			 */
+			INTERNAL,
+
+			/**
+			 * <p>External links are links that navigate to another site,
+			 * different from the single page application.
+			 */
+			EXTERNAL;
+		}
 	}
 
+	/**
+	 * <p>MenuPanel is a hybrid of accordion-tree components.
+	 * 
+	 * <p><b>Expected Field Structure</b>
+	 * 
+	 * <p>MenuPanel will be rendered when annotating a field nested under one of
+	 * the following components: <ul>
+	 * <li>{@link MenuPanel}</li><li>{@link Page}</li> </ul>
+	 * 
+	 * <p>MenuPanel will render nested fields that are decorated with: <ul>
+	 * <li>{@link MenuPanel}</li> <li>{@link MenuLink}</li> </ul>
+	 * @since 1.1
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewStyle
+	public @interface MenuPanel {
+
+		String alias() default "MenuPanel";
+
+		/**
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
+		 */
+		String cssClass() default "";
+
+		/**
+		 * <p>{@code imgSrc} when given would resolve to an icon/image and place
+		 * it before text of this component's label.
+		 */
+		String imgSrc() default "";
+
+		/**
+		 * <p>imgType by default would be font awesome library. If svg images
+		 * are to be rendered imgType should be Type.SVG</p>
+		 */
+		Image.Type imgType() default Image.Type.FA;
+
+		/**
+		 * <p>The HTML {@code rel} attribute that will be set for this
+		 * component.
+		 */
+		String rel() default "";
+
+		/**
+		 * <p>The HTML {@code target} attribute that will be set for this
+		 * component.
+		 */
+		String target() default "";
+
+		/**
+		 * <p>The {@link Type} defining the link behavior for this component.
+		 */
+		Type type() default Type.INTERNAL;
+
+		/**
+		 * <p>The HTML {@code href} attribute that will be set for this
+		 * component.
+		 */
+		String url() default "";
+
+		/**
+		 * <p>Link Types that define the behavior of the {@link MenuPanel}
+		 * component.
+		 * @author Tony Lopez
+		 * @since 1.1
+		 */
+		public static enum Type {
+			/**
+			 * <p>Internal links are links that navigate within the single page
+			 * application.
+			 */
+			INTERNAL,
+
+			/**
+			 * <p>External links are links that navigate to another site,
+			 * different from the single page application.
+			 */
+			EXTERNAL;
+		}
+	}
+	
 	/**
 	 * <p>Renders a popup window with content defined by the nested fields
 	 * within the field that is decorated with <tt>&#64;Modal</tt>.
@@ -1504,6 +1839,10 @@ public class ViewConfig {
 
 		ParamContext context() default @ParamContext(enabled = true, visible = false);
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default ""; // new
 
 		int order() default Event.DEFAULT_ORDER_NUMBER;
@@ -1542,6 +1881,10 @@ public class ViewConfig {
 	public @interface MultiGrid {
 		String alias() default "MultiGrid";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "question-header";
 
 		String header() default "test";
@@ -1567,6 +1910,10 @@ public class ViewConfig {
 	public @interface MultiSelect {
 		String alias() default "MultiSelect";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 
 		String help() default "";
@@ -1595,6 +1942,10 @@ public class ViewConfig {
 	public @interface MultiSelectCard {
 		String alias() default "MultiSelectCard";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 	}
 
@@ -1615,6 +1966,10 @@ public class ViewConfig {
 	public @interface Page {
 		String alias() default "Page";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 
 		boolean defaultPage() default false;
@@ -1658,6 +2013,10 @@ public class ViewConfig {
 	public @interface Paragraph {
 		String alias() default "Paragraph";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 	}
 
@@ -1769,6 +2128,10 @@ public class ViewConfig {
 
 		String controlId() default "";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 
 		String help() default "";
@@ -1813,6 +2176,10 @@ public class ViewConfig {
 
 		String alias() default "Section";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 
 		Type value() default Type.DEFAULT; // HEADER and LEFTBAR should be
@@ -1933,6 +2300,10 @@ public class ViewConfig {
 
 		String contentId() default "";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 	}
 
@@ -1952,6 +2323,10 @@ public class ViewConfig {
 	public @interface SubHeader {
 		String alias() default "SubHeader";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "col-sm-6 pb-0 align-top"; // pb-0 is added
 																// for the demo.
 																// It is temp
@@ -1969,6 +2344,10 @@ public class ViewConfig {
 	public @interface TabInfo {
 		String alias() default "TabInfo";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 
 		String info() default "";
@@ -1996,6 +2375,10 @@ public class ViewConfig {
 
 		String controlId() default "";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 
 		String help() default "";
@@ -2034,6 +2417,10 @@ public class ViewConfig {
 
 		String controlId() default "";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 
 		String help() default "";
@@ -2078,6 +2465,10 @@ public class ViewConfig {
 
 		String alias() default "Tile";
 
+		/**
+		 * <p>CSS classes added here will be added to a container element surrounding this component.
+		 * <p>This can be used to apply additional styling, if necessary.
+		 */
 		String cssClass() default "";
 
 		String imgSrc() default "";
@@ -2122,33 +2513,5 @@ public class ViewConfig {
 	@Inherited
 	public @interface ViewStyle {
 
-	}
-	
-	/**
-	 * <p><b>Expected Field Structure</b>
-	 * 
-	 * <p>MenuPanel will be rendered when annotating a field nested under one of the
-	 * following components: <ul> <li>{@link Page}</li> </ul>
-	 * 
-	 * <p>MenuPanel should decorate a field having a complex type that has nested menulinks.
-	 * @since 1.0
-	 */
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target({ ElementType.FIELD })
-	@ViewStyle
-	public @interface MenuPanel {
-
-		String alias() default "MenuPanel";
-		
-		/**
-		 * <p>imgSrc when given would resolve to an icon/image and place it before text of the menuPanel label</p>
-		 */
-		String imgSrc() default "";
-		
-		
-		/**
-		 * <p>imgType by default would be font awesome library. If svg images are to be rendered imgType should be Type.SVG</p>
-		 */
-		Image.Type imgType() default Image.Type.FA;
 	}
 }

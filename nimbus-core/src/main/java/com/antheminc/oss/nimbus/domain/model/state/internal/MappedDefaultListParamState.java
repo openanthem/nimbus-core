@@ -115,7 +115,7 @@ public class MappedDefaultListParamState<T, M> extends DefaultListParamState<T> 
 			@Override
 			protected void onEventResetModel(Notification<List<M>> event) {
 				// ensure model is instantiated
-				super.onEventUpdateState(event);
+//				super.onEventUpdateState(event);
 				
 				// synch-up between mapped & mapsTo
 				ListModel<?> mapsToListModel = event.getEventParam().findIfCollection().getType().getModel();	
