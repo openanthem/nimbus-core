@@ -278,6 +278,11 @@
                 </exclusions>
             </dependency>
             <dependency>
+    			<groupId>org.drools</groupId>
+    			<artifactId>drools-decisiontables</artifactId>
+    			<version>${drools.version}</version>
+			</dependency>
+            <dependency>
                 <groupId>org.quartz-scheduler</groupId>
                 <artifactId>quartz</artifactId>
                 <version>${quartz.version}</version>
@@ -375,7 +380,10 @@
             <groupId>org.drools</groupId>
             <artifactId>drools-core</artifactId>
         </dependency>
-        
+         <dependency>
+    			<groupId>org.drools</groupId>
+    			<artifactId>drools-decisiontables</artifactId>
+			</dependency>
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-compiler</artifactId>

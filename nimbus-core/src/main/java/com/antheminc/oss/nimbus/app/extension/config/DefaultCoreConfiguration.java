@@ -44,6 +44,8 @@ import com.antheminc.oss.nimbus.domain.model.state.repo.SpringSecurityAuditorAwa
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.ParamStateAtomicPersistenceEventListener;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ws.DefaultWSModelRepository;
 import com.antheminc.oss.nimbus.domain.rules.DefaultRulesEngineFactoryProducer;
+import com.antheminc.oss.nimbus.domain.rules.drools.DecisionTableConfigBuilder;
+import com.antheminc.oss.nimbus.domain.rules.drools.DrlConfigBuilder;
 import com.antheminc.oss.nimbus.domain.rules.drools.DroolsRulesEngineFactory;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandler;
 import com.antheminc.oss.nimbus.support.pojo.JavaBeanHandlerReflection;
@@ -95,8 +97,18 @@ public class DefaultCoreConfiguration {
 	
 	//rules drools
 	@Bean(name="rules.factory.drools")
-	public DroolsRulesEngineFactory droolsRulesEngineFactory(){
-		return new DroolsRulesEngineFactory();
+	public DroolsRulesEngineFactory droolsRulesEngineFactory(BeanResolverStrategy beanResolver){
+		return new DroolsRulesEngineFactory(beanResolver);
+	}
+	
+	@Bean(name="rules.factory.drools.drl")
+	public DrlConfigBuilder drlConfigBuilder(){
+		return new DrlConfigBuilder();
+	}
+	
+	@Bean(name="rules.factory.drools.dtable")
+	public DecisionTableConfigBuilder dtableConfigBuilder(){
+		return new DecisionTableConfigBuilder();
 	}
 	
 	@Bean(name="default.rules.factory.producer")

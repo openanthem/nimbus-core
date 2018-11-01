@@ -109,4 +109,16 @@ public class RuleStateEventHandlerTest extends AbstractStateEventHandlerTests {
 		ruleParam2.setState("World");
 		Assert.assertEquals(4, (int) ruleParam_affectState.getState());
 	}
+	
+	@Test
+	public void t03_stateChange_DecisionTable() {
+		final Param<String> dtableParam = _q.getRoot().findParamByPath(ENTITY_BASEPATH + "/dtable_param");
+		final Param<String> dtableParam_affectState = _q.getRoot().findParamByPath(ENTITY_BASEPATH + "/dtable_param_affectState");
+		
+		assertNotNull(dtableParam);
+		assertNotNull(dtableParam_affectState);
+		
+		dtableParam.setState("Red");
+		Assert.assertEquals("Red Page", dtableParam_affectState.getState());	
+	}
 }
