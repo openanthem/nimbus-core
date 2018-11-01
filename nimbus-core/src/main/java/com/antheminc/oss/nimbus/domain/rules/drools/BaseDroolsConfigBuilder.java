@@ -21,6 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.KnowledgeBase;
 import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.domain.model.config.RulesConfig;
@@ -35,9 +36,30 @@ import com.antheminc.oss.nimbus.domain.model.config.RulesConfig;
  * @since 1.2
  *
  */
-public class BaseDroolsConfigBuilder {
+public abstract class BaseDroolsConfigBuilder {
 	
 	protected Map<String,RulesConfig> ruleConfigurations = new ConcurrentHashMap<String,RulesConfig>();
+	
+	
+	public RulesConfig buildConfig(String alias) {
+		String path = constructRulePath(alias);
+		//check if rule is present in cache
+		RulesConfig ruleconfig = ruleConfigurations.get(path);
+		
+		if(ruleconfig != null) 
+			return ruleconfig;
+		
+		KnowledgeBuilder kbBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+		
+		createKnowledgeBuilder(kbBuilder, path);
+		
+		KnowledgeBase kb = buildKnowledgeBase(kbBuilder, path);
+		
+		ruleconfig = new DroolsRulesConfig(path, kb);
+		ruleConfigurations.put(path, ruleconfig);
+		
+		return ruleconfig;
+	}
 	
 	/**
 	 * Builds the knowledgeBase for drools runtime
@@ -45,11 +67,10 @@ public class BaseDroolsConfigBuilder {
 	 * @param path - the rule fine name as it appears on classpath(with extension. Ex: test.drl, test.xls)
 	 * @return
 	 */
-	public KnowledgeBase buildKnowledgeBase(KnowledgeBuilder kbBuilder, String path) {
+	final public KnowledgeBase buildKnowledgeBase(KnowledgeBuilder kbBuilder, String path) {
 		
 		try {
-			KnowledgeBase kb = null;
-			kb = kbBuilder.newKnowledgeBase();
+			KnowledgeBase kb = kbBuilder.newKnowledgeBase();
 			kb.addKnowledgePackages(kbBuilder.getKnowledgePackages());
 			return kb;
 		} catch (Exception e) {
@@ -57,7 +78,7 @@ public class BaseDroolsConfigBuilder {
 		}
 	}
 	/**
-	 * Evaluates the presense of a rule resource in classpath 
+	 * Evaluates the presence of a rule resource in classpath 
 	 * based on the rule name and the type of extension.
 	 * @param alias
 	 * @param type
@@ -73,5 +94,7 @@ public class BaseDroolsConfigBuilder {
 		
 		return false;
 	}
-
+	abstract public String constructRulePath(String alias);
+	
+	abstract public void createKnowledgeBuilder(KnowledgeBuilder kbBuilder, String path);
 }

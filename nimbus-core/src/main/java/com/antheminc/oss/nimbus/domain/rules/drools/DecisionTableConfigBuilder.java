@@ -17,7 +17,6 @@ package com.antheminc.oss.nimbus.domain.rules.drools;
 
 import java.io.IOException;
 
-import org.drools.KnowledgeBase;
 import org.drools.builder.DecisionTableConfiguration;
 import org.drools.builder.DecisionTableInputType;
 import org.drools.builder.KnowledgeBuilder;
@@ -26,7 +25,6 @@ import org.drools.builder.ResourceType;
 import org.drools.decisiontable.DecisionTableProviderImpl;
 import org.drools.io.ResourceFactory;
 
-import com.antheminc.oss.nimbus.domain.model.config.RulesConfig;
 import com.antheminc.oss.nimbus.support.JustLogit;
 
 /**
@@ -38,48 +36,33 @@ public class DecisionTableConfigBuilder extends BaseDroolsConfigBuilder implemen
 	
 	private static final String DECISIONTABLE_SUFFIX = ".xls" ;
 	
-	JustLogit logit = new JustLogit(getClass()); 
+	private final JustLogit logit = new JustLogit(DecisionTableConfigBuilder.class); 
 	
-	/**
-	 * 
-	 */
 	@Override
-	public RulesConfig buildConfig(String alias) {
-		String path = alias + DECISIONTABLE_SUFFIX;
-		
-		KnowledgeBuilder kbBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-		//check if rule is present in cache
-		RulesConfig ruleconfig = ruleConfigurations.get(path);
-		
-		if(ruleconfig != null) 
-			return ruleconfig;
-		
+	public boolean isSupported(String alias) {
+		return evalResource(alias, DECISIONTABLE_SUFFIX);
+	}
+
+	@Override
+	public String constructRulePath(String alias) {
+		return alias + DECISIONTABLE_SUFFIX;
+	}
+
+	@Override
+	public void createKnowledgeBuilder(KnowledgeBuilder kbBuilder, String path) {
 		DecisionTableConfiguration dtconf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
 		dtconf.setInputType( DecisionTableInputType.XLS );
 		
-		// Decision table to DRL conversion for debug purposes
-		DecisionTableProviderImpl decisionTableProvider = new DecisionTableProviderImpl();
 		try {
+			// Decision table to DRL conversion for debug purposes
+			DecisionTableProviderImpl decisionTableProvider = new DecisionTableProviderImpl();
 			String convertedDrl = decisionTableProvider.loadFromInputStream(ResourceFactory.newClassPathResource(path).getInputStream(), dtconf);
 			logit.debug(() -> "drl translation of the decision table: "+path
 			+"\n" +convertedDrl);
 		} catch (IOException e) {
 			logit.error(() -> "Could not convert decision table to drl, either correct or delete the decision table: "+path+":", e);
 		}
-		
 		kbBuilder.add(ResourceFactory.newClassPathResource(path), ResourceType.DTABLE,dtconf);	
-		
-		KnowledgeBase kb = buildKnowledgeBase(kbBuilder, path);
-		
-		ruleconfig = new DroolsRulesConfig(path, kb);
-		ruleConfigurations.put(path, ruleconfig);
-		
-		return ruleconfig;
-	}
-	
-	@Override
-	public boolean isSupported(String alias) {
-		return evalResource(alias, DECISIONTABLE_SUFFIX);
 	}
 
 }

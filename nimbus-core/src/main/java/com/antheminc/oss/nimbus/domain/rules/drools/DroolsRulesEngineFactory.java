@@ -40,18 +40,18 @@ import lombok.Setter;
 @Getter @Setter
 public class DroolsRulesEngineFactory implements RulesEngineFactory {
 
-	JustLogit logit = new JustLogit(getClass());
+	private final JustLogit logit = new JustLogit(DroolsRulesEngineFactory.class);
 	
-	private final BeanResolverStrategy beanResolver;
+	private final Collection<DroolsConfigBuilderStrategy> strategies;
 	
 	public DroolsRulesEngineFactory(BeanResolverStrategy beanResolver) {
-		this.beanResolver = beanResolver;
+		// lookup of multiple DroolsConfigBuilder Strategy implementation beans
+		this.strategies = beanResolver.getMultiple(DroolsConfigBuilderStrategy.class);
+		
 	}
 	
 	@Override
 	public RulesConfig createConfig(String alias) {
-		// lookup of multiple DroolsConfigBuilder Strategy implementation beans
-		Collection<DroolsConfigBuilderStrategy> strategies = getBeanResolver().getMultiple(DroolsConfigBuilderStrategy.class);
 		
 		// Filter the strategies which are supported for the alias
 		List<DroolsConfigBuilderStrategy> supportedStrategies = 
@@ -63,17 +63,14 @@ public class DroolsRulesEngineFactory implements RulesEngineFactory {
 		if (CollectionUtils.size(supportedStrategies) > 1) {
 			throw new InvalidConfigException("Found muliple rule files with the same name: "+alias);	
 			
-		} else if (CollectionUtils.isNotEmpty(supportedStrategies)) {
-			//Build config for the supported strategy
-			RulesConfig config = supportedStrategies.stream()
-									.findFirst()
-									.get()
-									.buildConfig(alias);
-			return config;
-								
-		} else {
+		} else if (CollectionUtils.isEmpty(supportedStrategies)) {
 			logit.trace(() -> "No rules file found with alias: "+alias);
 			return null;
+								
+		} else {
+			//Build config for the supported strategy
+			RulesConfig config = supportedStrategies.get(0).buildConfig(alias);
+			return config;		
 		} 
 	}
 
