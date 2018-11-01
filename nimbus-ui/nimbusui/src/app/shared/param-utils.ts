@@ -16,12 +16,10 @@
  */
 'use strict';
 
-import { ConfigService } from './../services/config.service';
-import { SortAs } from '../components/platform/grid/sortas.interface';
-import { PageService } from '../services/page.service';
-import { GridService } from '../services/grid.service';
 import { ServiceConstants } from '../services/service.constants';
 import { Param } from './param-state';
+import { LabelConfig } from './param-config';
+
 /**
  * \@author Tony.Lopez
  * \@whatItDoes 
@@ -269,5 +267,19 @@ export class ParamUtils {
         }
     
         return true;
+    }
+
+    static getHelpText(labelConfig: LabelConfig) {
+        if (!labelConfig) {
+            return undefined;
+        }
+        return labelConfig.helpText;
+    }
+
+    static getLabelText(labelConfig: LabelConfig) {
+        if (!labelConfig) {
+            return undefined;
+        }
+        return labelConfig.text;
     }
 }
