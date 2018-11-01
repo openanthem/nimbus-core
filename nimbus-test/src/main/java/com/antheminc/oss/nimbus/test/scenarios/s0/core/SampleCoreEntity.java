@@ -194,4 +194,6 @@ public class SampleCoreEntity extends IdLong {
 	private SampleValidateEntity2 attr_validate_nested_2;
 
 	private String testEntry;
+	
+	private List<String> attr_list_2_simple;
 }

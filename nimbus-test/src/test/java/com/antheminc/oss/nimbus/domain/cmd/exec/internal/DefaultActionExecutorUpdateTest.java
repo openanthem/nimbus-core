@@ -22,6 +22,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -39,6 +40,7 @@ import com.antheminc.oss.nimbus.domain.model.state.EntityState.ListParam;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.test.domain.support.utils.ExtractResponseOutputUtils;
 import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
+import com.antheminc.oss.nimbus.test.domain.support.utils.ParamUtils;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreEntity;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreLevel1_Entity;
 import com.antheminc.oss.nimbus.test.scenarios.s0.core.SampleCoreNestedEntity;
@@ -486,6 +488,31 @@ public class DefaultActionExecutorUpdateTest extends AbstractFrameworkIngeration
 		List<SampleCoreNestedEntity> actual = viewParam.getState();
 		
 		assertEquals(3, actual.size());
+	}
+	
+	@Test
+	public void t12_update_collection_simple() {
+		Long refId = createOrGetDomainRoot_RefId();
+		
+		// Build the request objects
+		MockHttpServletRequest request = MockHttpRequestBuilder.withUri(VIEW_PARAM_ROOT).addRefId(refId)
+			.addNested("/attr_list_2_simple").addAction(Action._update).getMock();
+		
+		List<String> expected = Arrays.asList("field 1", "field 2");
+		
+		// Invoke _update on the list with "field 1"
+		Object response1 = controller.handlePut(request, null, converter.toJson(expected.get(0)));
+		
+		// Validate list should have "field 1" only
+		Param<List<String>> viewParam = ParamUtils.extractResponseByParamPath(response1, "/attr_list_2_simple");
+		assertEquals(Arrays.asList(expected.get(0)), viewParam.getState());
+		
+		// Invoke _update on the list with "field 2"
+		Object response2 = controller.handlePut(request, null, converter.toJson(expected.get(1)));
+		
+		// Validate list should have ["field 1", "field 2"]
+		viewParam = ParamUtils.extractResponseByParamPath(response2, "/attr_list_2_simple");
+		assertEquals(expected, viewParam.getState());
 	}
 }
 
