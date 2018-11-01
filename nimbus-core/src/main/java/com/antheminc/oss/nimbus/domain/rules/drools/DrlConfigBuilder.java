@@ -25,7 +25,7 @@ import org.drools.io.ResourceFactory;
  * @since 1.0
  *
  */
-public class DrlConfigBuilder extends BaseDroolsConfigBuilder implements DroolsConfigBuilderStrategy {
+public class DrlConfigBuilder extends AbstractDroolsConfigBuilder implements DroolsConfigBuilderStrategy {
 
 	private static final String DRL_SUFFIX = ".drl" ;
 

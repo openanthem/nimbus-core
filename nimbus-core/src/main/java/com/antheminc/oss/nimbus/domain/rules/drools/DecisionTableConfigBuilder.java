@@ -32,7 +32,7 @@ import com.antheminc.oss.nimbus.support.JustLogit;
  * @author Swetha Vemuri
  * @since 1.2
  */
-public class DecisionTableConfigBuilder extends BaseDroolsConfigBuilder implements DroolsConfigBuilderStrategy {
+public class DecisionTableConfigBuilder extends AbstractDroolsConfigBuilder implements DroolsConfigBuilderStrategy {
 	
 	private static final String DECISIONTABLE_SUFFIX = ".xls" ;
 	

@@ -36,7 +36,7 @@ import com.antheminc.oss.nimbus.domain.model.config.RulesConfig;
  * @since 1.2
  *
  */
-public abstract class BaseDroolsConfigBuilder {
+public abstract class AbstractDroolsConfigBuilder {
 	
 	protected Map<String,RulesConfig> ruleConfigurations = new ConcurrentHashMap<String,RulesConfig>();
 	
