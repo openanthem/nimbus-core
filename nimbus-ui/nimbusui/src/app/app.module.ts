@@ -152,6 +152,7 @@ import { MenuRouterLinkActive } from './directives/routes/route-active.component
 import { InputSwitch } from './components/platform/form/elements/input-switch.component';
 import { InputLegend } from './components/platform/form/elements/input-legend.component';
 import { FormErrorMessage } from './components/platform/form-error-message.component';
+import { BaseTableElement } from './components/platform/base-table-element.component';
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -218,7 +219,7 @@ export function init_app(appinitservice: AppInitService) {
         KeysPipe, LinkPipe, DateTimeFormatPipe, SelectItemPipe, MultiSelectListBox, 
         CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent, Calendar, LoaderComponent, MessageComponent,
         HeaderCheckBox, SvgComponent, SvgDefinitions, ActionTray, SubDomainFlowCmp, Image, NmPanelMenu,NmPanelMenuSub, MenuRouterLinkActive, 
-        MenuRouteLink, BaseLabel, Label, InputLabel,InputSwitch,TreeGrid,InputLegend, FormErrorMessage
+        MenuRouteLink, BaseLabel, Label, InputLabel,InputSwitch,TreeGrid,InputLegend, FormErrorMessage, BaseTableElement
     ],
     entryComponents: [ FlowWrapper, PageContent, PageNotfoundComponent, LoginCmp, HomeLayoutCmp, SubDomainFlowCmp],
     providers: [ PageService, ConfigService, WebContentSvc, HttpClient,  HttpClientModule, AppInitService,
