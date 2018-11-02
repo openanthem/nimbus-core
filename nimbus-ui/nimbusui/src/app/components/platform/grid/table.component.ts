@@ -222,7 +222,7 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
                 // iterate over currently expanded rows and refresh the data
                 Object.keys(this.dt.expandedRowKeys).forEach(key => {
                     this.value.find((lineItem, index) => {
-                        if (lineItem[this.element.config.uiStyles.attributes.dataKey] == key) {
+                        if (lineItem[this.element.elemId] == key) {
                             this._putNestedElement(event.collectionParams, index, lineItem);
                             return true;
                         }
