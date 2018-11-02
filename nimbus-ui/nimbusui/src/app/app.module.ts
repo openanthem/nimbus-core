@@ -74,7 +74,6 @@ import { DateControl } from './components/platform/form/elements/date.component'
 import { CheckBoxGroup } from './components/platform/form/elements/checkbox-group.component';
 import { MultiselectCard } from './components/platform/form/elements/multi-select-card.component';
 import { ActionDropdown, ActionLink } from './components/platform/form/elements/action-dropdown.component';
-import { InfiniteScrollGrid } from './components/platform/grid/grid.component';
 import { DataTable } from './components/platform/grid/table.component';
 import { TreeGrid } from './components/platform/tree-grid/tree-grid.component';
 import { Link } from './components/platform/link.component';
@@ -209,7 +208,7 @@ export function init_app(appinitservice: AppInitService) {
         InPlaceEditorComponent, Paragraph, Value, BaseElement, FormGridFiller, 
         MultiselectCard, Link, Menu, CardDetailsComponent, CardDetailsFieldGroupComponent, CardDetailsFieldComponent, CardDetailsGrid, FieldValue,
         Accordion, AccordionTab, FrmGroupCmp, Button, ButtonGroup, FilterButton, OrderablePickList,
-        STOMPStatusComponent, InfiniteScrollGrid, DataTable, SubHeaderCmp, TextArea, LandingPage,
+        STOMPStatusComponent, DataTable, SubHeaderCmp, TextArea, LandingPage,
         LayoutService, ContentContainer,
         DomainFlowCmp, HeaderGlobal, FooterGlobal,
         BreadcrumbComponent, NavLinkRouter,
