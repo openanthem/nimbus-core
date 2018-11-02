@@ -702,7 +702,7 @@ export class PageService {
                                 let p = new Param(this.configService).deserialize(param, gridParam.path);
                                 if (p != null) {
                                         // build the gridList data
-                                        if (p.leafState !== null && p.leafState.nestedGridParam) {
+                                        if (p.leafState && p.leafState.nestedGridParam) {
                                                 collectionParams = collectionParams.concat(p.leafState.nestedGridParam);
                                         }
                                         // let leafState = p.leafState;
@@ -845,7 +845,7 @@ export class PageService {
                         // find's and return the element based on the nestedelement.config.code and index
                         if (this.matchNode(element, tree[index])) {
                                 let matchFoundOnGrid = false;
-                                if (element.gridData.leafState && element.gridData.leafState.length >0){
+                                if (element.gridData && element.gridData.leafState && element.gridData.leafState.length >0){
                                         // if there is a gridlist, match the elemntId
                                         // and look into nested element of the gridlist.
                                         for(let  i = 0; i < element.gridData.leafState.length; i++){

@@ -98,8 +98,9 @@ public class ValuesConditionalStateEventHandler extends EvalExprWithCrudDefaults
 			// if there are no values set (default config values) OR
 			// if previously selected targetParam state is not in the list of
 			// new values. then reset to null.
-			if (null == targetParam.getValues() || null != targetParam.getState() && !targetParam.getValues().stream()
-					.map(ParamValue::getCode).collect(Collectors.toList()).contains(targetParam.getState())) {
+			String stateAsString = targetParam.getState() != null ? targetParam.getState().toString() : null;
+			if (null == targetParam.getValues() || (null != targetParam.getState() && !targetParam.getValues().stream()
+					.map(ParamValue::getCode).collect(Collectors.toList()).contains(stateAsString))) {
 
 				targetParam.setState(null);
 			}

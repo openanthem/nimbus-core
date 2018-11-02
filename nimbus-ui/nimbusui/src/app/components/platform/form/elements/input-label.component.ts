@@ -30,7 +30,7 @@ import { BaseLabel } from '../../base-label.component';
 @Component({
   selector: 'nm-input-label',
   template: `
-    <label
+    <label *ngIf="label"
         [className]="getCssClass()"
         [attr.for]="for">
         

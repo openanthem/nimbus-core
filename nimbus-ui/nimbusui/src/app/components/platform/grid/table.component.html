@@ -16,7 +16,7 @@
     </div>
 
     <p-table #dt [value]="value" [columns]="params" 
-        [dataKey]="element.config?.uiStyles?.attributes?.dataKey"
+        [dataKey]="'elemId'"
         [(selection)]="selectedRows"
         [rows]="element.config?.uiStyles?.attributes?.pageSize"
         [totalRecords]=totalRecords
@@ -102,7 +102,8 @@
                         </span>
                         <span *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.link.toString()">
                             <nm-link
-                                [element] = "getViewParam(col, rowData['elemId'])">
+                                [element] = "getViewParam(col, rowData['elemId'])"
+                                [rowData]="rowData">                                
                             </nm-link>
                         </span>
                         <span *ngIf="col?.uiStyles?.attributes?.alias == viewComponent.gridcolumn.toString() && col?.uiStyles?.attributes?.showAsLink === true">

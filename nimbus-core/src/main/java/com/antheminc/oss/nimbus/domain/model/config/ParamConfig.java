@@ -18,8 +18,13 @@ package com.antheminc.oss.nimbus.domain.model.config;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.ArrayUtils;
+import org.springframework.util.CollectionUtils;
+
 import com.antheminc.oss.nimbus.domain.defn.AssociatedEntity;
+import com.antheminc.oss.nimbus.domain.defn.ConfigNature.Ignore;
 import com.antheminc.oss.nimbus.domain.defn.Converters.ParamConverter;
+import com.antheminc.oss.nimbus.domain.defn.Domain.ListenerType;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo.Mode;
 import com.antheminc.oss.nimbus.domain.defn.MapsTo.Path;
@@ -84,6 +89,22 @@ public interface ParamConfig<P> extends EntityConfig<P>, Findable<String> {
 	default MappedParamConfig<P, ?> findIfMapped() {
 		return null;
 	}
+	
+	@JsonIgnore
+	default boolean containsIgnoreListener(ListenerType listenerType) {
+		if(!CollectionUtils.isEmpty(getExtensions())) {
+			return getExtensions().stream()
+					.map(AnnotationConfig::getAnnotation)
+					.filter(a->a.annotationType()==Ignore.class)
+						.map(Ignore.class::cast)
+							.map(Ignore::listeners)
+							.filter(array->ArrayUtils.contains(array,listenerType))
+							.findFirst()
+							.isPresent();
+		}
+		return false;
+	}
+
 	
 	public interface MappedParamConfig<P, M> extends ParamConfig<P>, MappedConfig<P, M> {
 		@Override
