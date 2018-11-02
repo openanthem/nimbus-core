@@ -17,6 +17,8 @@ package com.antheminc.oss.nimbus.domain.cmd.exec.internal;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -49,7 +51,9 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 
 	protected final JustLogit logit = new JustLogit(DefaultCommandPathVariableResolver.class);
 	
-	private static final String STRING_NULL = "null";
+	private static final String NULL_STRING = "null";
+	private static final String NULL_STRING_REGEX = "\\s*\"null\"\\s*";
+	private static final Pattern NULL_STRING_PATTERN = Pattern.compile(NULL_STRING_REGEX);
 	
 	private final CommandMessageConverter converter;
 	private final PropertyResolver propertyResolver;
@@ -96,6 +100,8 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 			out = StringUtils.replace(out, key, val, 1);
 		}
 		
+		Matcher m = NULL_STRING_PATTERN.matcher(out);
+		out = m.replaceAll(NULL_STRING); // replaces all json="null" (including leading/trailing spaces) to json=null
 		return out;
 	}
 	
@@ -146,7 +152,7 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 			Param<?> p = param.findParamByPath(paramPath) != null? param.findParamByPath(paramPath): param.getParentModel().findParamByPath(paramPath);
 			if(p == null) {
 				logit.error(() -> new StringBuffer().append(" Param (using paramPath) ").append(paramPath).append(" not found from param reference: ").append(param).toString());
-				return STRING_NULL;
+				return NULL_STRING;
 			}
 			Object state = p.getLeafState();
 			String json = getConverter().toJson(state);
@@ -155,7 +161,7 @@ public class DefaultCommandPathVariableResolver implements CommandPathVariableRe
 			Param<?> p = param.findParamByPath(pathToResolve) != null? param.findParamByPath(pathToResolve): param.getParentModel().findParamByPath(pathToResolve);
 			if(p == null) {
 				logit.error(() -> new StringBuffer().append(" Param (using paramPath) ").append(pathToResolve).append(" not found from param reference: ").append(param).toString());
-				return STRING_NULL;
+				return NULL_STRING;
 			}
 			return String.valueOf(p.getState());
 		}
