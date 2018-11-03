@@ -215,6 +215,10 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
     scriptName: string;
     orientation: string;
     showMessages: boolean;
+    stylesheets: string[];
+    delay: number;
+    useDelay: boolean;
+    closeAfterPrint: boolean;
     
     deserialize( inJson ) {
         let obj = this;
@@ -222,6 +226,7 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
         if(inJson['metaData'] || inJson['metaData'] === ""){
             obj['metaData'] = inJson['metaData'] !== "" ? inJson['metaData'].split(",") : [];
         }
+        this.stylesheets = inJson['stylesheets'];
         return obj;
     }
 }

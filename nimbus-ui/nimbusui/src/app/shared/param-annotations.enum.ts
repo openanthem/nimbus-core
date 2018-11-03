@@ -14,6 +14,7 @@ export class ViewConfig extends Enum<string> {
     public static readonly actiontray = new Enum('ViewConfig.ActionTray');
     public static readonly picklist = new Enum('ViewConfig.PickList');
     public static readonly selectedPicklist = new Enum('ViewConfig.PickListSelected');
+    public static readonly printable = new Enum('ViewConfig.Printable');
 
     static attributeList(): String[] {
       const keys = Object.keys(ViewConfig);

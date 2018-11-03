@@ -1814,7 +1814,7 @@ public class ViewConfig {
 	
 	/**
 	 * <p>Renders a popup window with content defined by the nested fields
-	 * within the field that is decorated with <tt>&#64;Modal</tt>.
+	 * within the field that is decorated with &#64;{@code Modal}.
 	 * 
 	 * <p><b>Expected Field Structure</b>
 	 * 
@@ -1822,7 +1822,7 @@ public class ViewConfig {
 	 * following components: <ul> <li>{@link Tile}</li> </ul>
 	 * 
 	 * <p><b>Notes:</b> <ul> <li>Default contextual properties are set by
-	 * <tt>ModalStateEventHandler</tt> during the <tt>OnStateLoad</tt>
+	 * <tt>ModalStateEventHandler</tt> during the {@code OnStateLoad}
 	 * event.</li> </ul>
 	 * 
 	 * @since 1.0
@@ -2116,6 +2116,73 @@ public class ViewConfig {
 		
 	}
 
+	/**
+	 * <p>Enables a decorated {@link ViewStyle} component to be able to print
+	 * only the decorated component content by allowing the user to click a
+	 * print button.
+	 * 
+	 * <p>{@code Printable} currently supports the following components: <ul>
+	 * <li>{@link Modal}</li> </ul>
+	 * 
+	 * <p><b>Print Button Styling</b> <p>The default positioning and styling of
+	 * the rendered print button for a component is delegated to the individual
+	 * component itself.
+	 * 
+	 * <p><b>Sample Usage</b>
+	 * 
+	 * <pre>
+	 * &#64;Modal
+	 * &#64;Printable
+	 * private VMSampleModal vmSampleModal;
+	 * </pre>
+	 * 
+	 * @author Tony Lopez
+	 * @since 1.1
+	 *
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewParamBehavior
+	public @interface Printable {
+
+		/**
+		 * <p>Whether or not to close the opened browser window/tab containing
+		 * the printable content after the user completes actions within the
+		 * native browser print dialog.
+		 */
+		boolean closeAfterPrint() default true;
+		
+		/**
+		 * <p>The delay (in milliseconds) between when the browser opens a new
+		 * window/tab containing the printable content and when the browser
+		 * opens the native print dialog. <p>The {@code delay} will be applied
+		 * only when {@link #useDelay()} is {@code true}.
+		 */
+		int delay() default 300;
+
+		/**
+		 * <p>One or more relative URI's of stylesheets that should be applied
+		 * to the printable content. The URI's provided are relative to the
+		 * server context of the client application. For example,
+		 * {@code ["/styles/sheet1.css", "/styles/sheet2.css"]} would resolve
+		 * to: <ul> <li>http://localhost:8080/appcontext/styles/sheet1.css</li>
+		 * <li>http://localhost:8080/appcontext/styles/sheet2.css</li> </ul>
+		 * <p>*Note: The protocol, host, port, and context are client specific.
+		 * <p>If providing very large stylesheets, it may be necessary to modify
+		 * the {@link delay} property so that the stylesheets have time to load
+		 * prior to the print actions taking place.
+		 */
+		String[] stylesheets() default {};
+		
+		/**
+		 * <p>Whether or not to use the {@link delay} setting. <p>If
+		 * {@link #stylesheets()} is provided as a non-empty array,
+		 * {@code useDelay} will be set to {@code true} regardless of the value
+		 * set.
+		 */
+		boolean useDelay() default true;
+	}
+	
 	/**
 	 * <p><b>Expected Field Structure</b>
 	 * 

@@ -1,3 +1,4 @@
+import { ViewConfig } from './../../shared/param-annotations.enum';
 /**
  * @license
  * Copyright 2016-2018 the original author or authors.
@@ -19,7 +20,7 @@
 import { Component, Input } from '@angular/core';
 import { Param } from '../../shared/param-state';
 import { WebContentSvc } from '../../services/content-management.service';
-import { LabelConfig } from './../../shared/param-config';
+import { LabelConfig, UiNature } from './../../shared/param-config';
 import { ValidationUtils } from './validators/ValidationUtils';
 import { ParamUtils } from '../../shared/param-utils';
 import { ValidationConstraint } from './../../shared/validationconstraints.enum';
@@ -167,6 +168,33 @@ export class BaseElement {
      */
     public get type(): string {
         return this.element.config.uiStyles.attributes.type;
+    }
+
+    /**
+     * Get the @Printable UiNature if it exists on this instance
+     */
+    public get printable(): UiNature {
+        return this.getUiNature(ViewConfig.printable.toString());
+    }
+
+    /**
+     * Retrieve a UiNature by name from uiNatures. If not uiNatures is undefined or the uiNature 
+     * by name is not found, undefined is returned.
+     * @param name The name of the uiNature on this param to find
+     */
+    public getUiNature(name: string): UiNature {
+        return !this.uiNatures ? undefined : this.uiNatures.find(uiNature => uiNature.name === name);
+    }
+
+    /**
+     * Get the UiNature[] if it exists and is non-empty on this instance
+     */
+    public get uiNatures(): UiNature[] {
+        if (this.element.config && this.element.config.uiNatures && this.element.config.uiNatures.length > 0) {
+            return this.element.config.uiNatures;
+        } else {
+            return undefined;
+        }
     }
 
     /**

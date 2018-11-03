@@ -13,6 +13,9 @@
         <p-header>
             <nm-input-label [element]="element"></nm-input-label>
         </p-header>
+        <ng-template [ngIf]="printable">
+            <nm-print-button [config]="printable" [contentSelector]="'div.ui-dialog-content'"></nm-print-button>
+        </ng-template>
         <ng-template ngFor let-element [ngForOf]="nestedParams">
             <ng-template [ngIf]="element.alias == viewComponent.section.toString()">
                 <nm-section [element]="element"></nm-section>	
