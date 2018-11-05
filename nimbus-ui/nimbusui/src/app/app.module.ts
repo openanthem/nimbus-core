@@ -31,6 +31,7 @@ import { PageNotfoundComponent } from './components/platform/content/page-notfou
 import { PageContent } from './components/platform/content/page-content.component';
 import { GridService } from './services/grid.service';
 import { GridMouseEventDirective } from './directives/gridhover.directive';
+import { PrintDirective } from './directives/print.directive';
 import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpModule, BrowserXhr } from '@angular/http';
@@ -116,6 +117,7 @@ import { AppInitService } from "./services/app.init.service";
 import { LoggerService } from './services/logger.service';
 import { RouteService } from './services/route.service';
 import { MessageService } from 'primeng/api';
+import { PrintService } from './services/print.service';
 
 //Utility Services
 import { GridUtils } from './shared/grid-utils';
@@ -214,7 +216,7 @@ export function init_app(appinitservice: AppInitService) {
         DomainFlowCmp, HeaderGlobal, FooterGlobal,
         BreadcrumbComponent, NavLinkRouter,
         Modal, ActionDropdown, ActionLink,
-        GridMouseEventDirective, DisplayValueDirective,
+        GridMouseEventDirective, DisplayValueDirective, PrintDirective,
         HomeLayoutCmp, LoginCmp, LoginLayoutCmp, StyleGuideCmp, 
         KeysPipe, LinkPipe, DateTimeFormatPipe, SelectItemPipe, MultiSelectListBox, 
         CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent, Calendar, LoaderComponent, MessageComponent,
@@ -233,7 +235,7 @@ export function init_app(appinitservice: AppInitService) {
          { provide: CUSTOM_STORAGE, useExisting: SESSION_STORAGE },
          SessionStoreService,
          AuthenticationService, BreadcrumbService, LoaderService, FileService, LayoutService, WindowRefService, LoggerService, 
-         RouteService, MessageService, GridUtils, DateTimeFormatPipe],
+         RouteService, MessageService, GridUtils, DateTimeFormatPipe, PrintService],
     bootstrap: [ AppComponent ]
 })
 export class AppModule { }

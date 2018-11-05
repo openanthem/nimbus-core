@@ -22,7 +22,8 @@
         <nm-table
             [element]="element" [form]="form" [formControlName]="element.config?.code"
             [params]="element?.config?.type?.elementConfig?.type?.model?.paramConfigs" (onScrollEvent)="onScrollEvent()"
-            [position]="position">
+            [position]="position"
+            [nmPrint]="element">
         </nm-table>
     </ng-template>
 

@@ -19,6 +19,8 @@
 import { ServiceConstants } from '../services/service.constants';
 import { Param } from './param-state';
 import { LabelConfig } from './param-config';
+import { ViewConfig } from './param-annotations.enum';
+import { UiNature } from './param-config';
 
 /**
  * \@author Tony.Lopez
@@ -281,5 +283,37 @@ export class ParamUtils {
             return undefined;
         }
         return labelConfig.text;
+    }
+
+    /**
+     * Get the @Printable UiNature if it exists on the param instance
+     * @param param The param to inspect
+     * @param name The name of the uiNature on this param to find
+     */
+    static getPrintable(param: Param): UiNature {
+        return ParamUtils.getUiNature(param, ViewConfig.printable.toString());
+    }
+
+    /**
+     * Retrieve a UiNature by name from uiNatures. If not uiNatures is undefined or the uiNature 
+     * by name is not found, undefined is returned.
+     * @param param The param to inspect
+     * @param name The name of the uiNature on this param to find
+     */
+    static getUiNature(param: Param, name: string): UiNature {
+        let uiNatures = ParamUtils.getUiNatures(param);
+        return !uiNatures ? undefined : uiNatures.find(uiNature => uiNature.name === name);
+    }
+    
+    /**
+     * Get the UiNature[] if it exists and is non-empty on this instance
+     * @param param The param to inspect
+     */
+    static getUiNatures(param: Param): UiNature[] {
+        if (param.config && param.config.uiNatures && param.config.uiNatures.length > 0) {
+            return param.config.uiNatures;
+        } else {
+            return undefined;
+        }
     }
 }

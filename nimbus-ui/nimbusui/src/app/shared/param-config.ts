@@ -215,6 +215,12 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
     scriptName: string;
     orientation: string;
     showMessages: boolean;
+    stylesheet: string;
+    delay: number;
+    useDelay: boolean;
+    closeAfterPrint: boolean;
+    printPath: string;
+    autoPrint: boolean;
     
     deserialize( inJson ) {
         let obj = this;
