@@ -219,7 +219,7 @@ public class ViewConfig {
 		 */
 		String cssClass() default "";
 		
-		boolean dataField() default true;
+		boolean dataEntryField() default true;
 	}
 	
 	
@@ -377,7 +377,7 @@ public class ViewConfig {
 		
 		String cols() default "";
 		
-		boolean dataField() default true;
+		boolean dataEntryField() default true;
 
 	}
 
@@ -555,7 +555,7 @@ public class ViewConfig {
 		
 		String cols() default "";
 		
-		boolean dataField() default true;
+		boolean dataEntryField() default true;
 
 	}
 
@@ -593,7 +593,7 @@ public class ViewConfig {
 		
 		String cols() default "";
 		
-		boolean dataField() default true;
+		boolean dataEntryField() default true;
 		
 
 	}
@@ -653,7 +653,7 @@ public class ViewConfig {
 		 */
 		InputSwitch.Type orientation() default InputSwitch.Type.DEFAULT;
 		
-		boolean dataField() default true;
+		boolean dataEntryField() default true;
 	}
 
 	/**
@@ -693,7 +693,7 @@ public class ViewConfig {
 		
 		String cols() default "";
 		
-		boolean dataField() default true;
+		boolean dataEntryField() default true;
 
 	}
 
@@ -898,7 +898,7 @@ public class ViewConfig {
 		
 		String cols() default "";
 		
-		boolean dataField() default true;
+		boolean dataEntryField() default true;
 
 	}
 
@@ -1211,7 +1211,7 @@ public class ViewConfig {
 
 		String url() default "";
 		
-		boolean dataField() default true;
+		boolean dataEntryField() default true;
 	}
 
 	/**
@@ -1972,7 +1972,7 @@ public class ViewConfig {
 		 */
 		String cssClass() default "";
 		
-		boolean dataField() default true;
+		boolean dataEntryField() default true;
 	}
 
 	/**
@@ -2105,7 +2105,7 @@ public class ViewConfig {
 		
 		String cols() default "";
 		
-		boolean dataField() default true;
+		boolean dataEntryField() default true;
 
 	}
 	
@@ -2172,7 +2172,7 @@ public class ViewConfig {
 		
 		String cols() default "";
 		
-		boolean dataField() default true;
+		boolean dataEntryField() default true;
 
 	}
 	
@@ -2312,7 +2312,7 @@ public class ViewConfig {
 		/**
 		 * <p>Tells that the control is eligible for form validations. 
 		 */	
-		boolean dataField() default true;
+		boolean dataEntryField() default true;
 	}
 
 	/**
@@ -2431,7 +2431,7 @@ public class ViewConfig {
 		
 		String cols() default "";
 		
-		boolean dataField() default true;
+		boolean dataEntryField() default true;
 		
 		
 	}
@@ -2475,7 +2475,7 @@ public class ViewConfig {
 		
 		String cols() default "";
 		
-		boolean dataField() default true;
+		boolean dataEntryField() default true;
 
 	}
 

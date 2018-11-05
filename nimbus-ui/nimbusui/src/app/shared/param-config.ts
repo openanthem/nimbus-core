@@ -215,7 +215,7 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
     scriptName: string;
     orientation: string;
     showMessages: boolean;
-    dataField: boolean;
+    dataEntryField: boolean;
     
     deserialize( inJson ) {
         let obj = this;
