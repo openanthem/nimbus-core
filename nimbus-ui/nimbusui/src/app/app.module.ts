@@ -73,7 +73,6 @@ import { InputText } from './components/platform/form/elements/textbox.component
 import { CheckBoxGroup } from './components/platform/form/elements/checkbox-group.component';
 import { MultiselectCard } from './components/platform/form/elements/multi-select-card.component';
 import { ActionDropdown, ActionLink } from './components/platform/form/elements/action-dropdown.component';
-import { InfiniteScrollGrid } from './components/platform/grid/grid.component';
 import { DataTable } from './components/platform/grid/table.component';
 import { TreeGrid } from './components/platform/tree-grid/tree-grid.component';
 import { Link } from './components/platform/link.component';
@@ -105,6 +104,7 @@ import { ActionTray } from './components/platform/actiontray.component';
 import { BaseLabel } from './components/platform/base-label.component';
 import { Label } from './components/platform/content/label.component';
 import { InputLabel } from './components/platform/form/elements/input-label.component';
+import { BaseTableElement } from './components/platform/base-table-element.component';
 // Services
 import { WebContentSvc } from './services/content-management.service';
 import { STOMPStatusComponent } from './services/stomp-status.component';
@@ -208,7 +208,7 @@ export function init_app(appinitservice: AppInitService) {
         InPlaceEditorComponent, Paragraph, Value, BaseElement, FormGridFiller, 
         MultiselectCard, Link, Menu, CardDetailsComponent, CardDetailsFieldGroupComponent, CardDetailsFieldComponent, CardDetailsGrid, FieldValue,
         Accordion, AccordionTab, FrmGroupCmp, Button, ButtonGroup, FilterButton, OrderablePickList,
-        STOMPStatusComponent, InfiniteScrollGrid, DataTable, SubHeaderCmp, TextArea, LandingPage,
+        STOMPStatusComponent, DataTable, SubHeaderCmp, TextArea, LandingPage,
         LayoutService, ContentContainer,
         DomainFlowCmp, HeaderGlobal, FooterGlobal,
         BreadcrumbComponent, NavLinkRouter,
@@ -218,7 +218,7 @@ export function init_app(appinitservice: AppInitService) {
         KeysPipe, LinkPipe, DateTimeFormatPipe, SelectItemPipe, MultiSelectListBox, 
         CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent, Calendar, LoaderComponent, MessageComponent,
         HeaderCheckBox, SvgComponent, SvgDefinitions, ActionTray, SubDomainFlowCmp, Image, NmPanelMenu,NmPanelMenuSub, MenuRouterLinkActive, 
-        MenuRouteLink, BaseLabel, Label, InputLabel,InputSwitch,TreeGrid,InputLegend, FormErrorMessage
+        MenuRouteLink, BaseLabel, Label, InputLabel,InputSwitch,TreeGrid,InputLegend, FormErrorMessage, BaseTableElement
     ],
     entryComponents: [ FlowWrapper, PageContent, PageNotfoundComponent, LoginCmp, HomeLayoutCmp, SubDomainFlowCmp],
     providers: [ PageService, ConfigService, WebContentSvc, HttpClient,  HttpClientModule, AppInitService,

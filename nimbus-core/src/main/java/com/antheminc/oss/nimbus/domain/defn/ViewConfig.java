@@ -1171,6 +1171,12 @@ public class ViewConfig {
 		 */
 		String cssClass() default "";
 
+		/**
+		 * <p>As of release 1.1.9, {@code dataKey} is no longer needed to
+		 * support grid row expansion. This attribute will be removed in the
+		 * future releases.
+		 */
+		@Deprecated
 		String dataKey() default "id";
 
 		boolean expandableRows() default false;
