@@ -45,6 +45,10 @@ export class ViewComponent extends Enum<string> {
     public static readonly tabInfo = new Enum('TabInfo');
     public static readonly picklist = new Enum('PickList');
     public static readonly selectedPicklist = new Enum('PickListSelected');
+    public static readonly paragraph = new Enum('Paragraph');
+    public static readonly header = new Enum('Header');
+    public static readonly formGridFiller = new Enum('FormGridFiller');
+    
 
     static attributeList(): String[] {
       const keys = Object.keys(ViewConfig);
