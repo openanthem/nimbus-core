@@ -343,7 +343,11 @@ export class DataTable extends BaseElement implements ControlValueAccessor {
             return 'dropdown';
         } else if (col.uiStyles && col.uiStyles.attributes.alias === 'Button') {
             return 'imageColumn';
-        }
+        } else {
+            if (col.uiStyles && col.uiStyles.attributes.cssClass && col.uiStyles.attributes.cssClass !== "") {
+                return col.uiStyles.attributes.cssClass;
+            } 
+        } 
     }
 
     isClickedOnDropDown(dropDownArray: Array<ActionDropdown>, target: any) {
