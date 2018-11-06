@@ -259,7 +259,21 @@ public class ViewConfig {
 	@ViewStyle
 	public @interface Button {
 		public enum Style {
-			DESTRUCTIVE, PLAIN, PRIMARY, SECONDARY, VALIDATION;
+			DESTRUCTIVE, 
+			PLAIN, 
+			PRIMARY,
+			
+			/**
+			 * <p>Opens a print dialog with the rendered HTML content represented 
+			 * by this button's {@link Button#printPath()}.
+			 * <p>A path should be provided to a component that supports printing. 
+			 * See {@link Printable} for details on which components are 
+			 * supported. 
+			 * @see Printable
+			 */
+			PRINT,
+			SECONDARY, 
+			VALIDATION;
 		}
 
 		public enum Type {
@@ -287,6 +301,12 @@ public class ViewConfig {
 		String method() default "GET";
 
 		String payload() default "";
+		
+		/**
+		 * <p>Used to determine the HTML DOM content to print when
+		 * {@link #style()} is set to {@link Style#PRINT}.
+		 */
+		String printPath() default "";
 
 		Style style() default Style.PLAIN;
 
@@ -1832,7 +1852,7 @@ public class ViewConfig {
 	
 	/**
 	 * <p>Renders a popup window with content defined by the nested fields
-	 * within the field that is decorated with <tt>&#64;Modal</tt>.
+	 * within the field that is decorated with &#64;{@code Modal}.
 	 * 
 	 * <p><b>Expected Field Structure</b>
 	 * 
@@ -1840,7 +1860,7 @@ public class ViewConfig {
 	 * following components: <ul> <li>{@link Tile}</li> </ul>
 	 * 
 	 * <p><b>Notes:</b> <ul> <li>Default contextual properties are set by
-	 * <tt>ModalStateEventHandler</tt> during the <tt>OnStateLoad</tt>
+	 * <tt>ModalStateEventHandler</tt> during the {@code OnStateLoad}
 	 * event.</li> </ul>
 	 * 
 	 * @since 1.0
@@ -2138,6 +2158,75 @@ public class ViewConfig {
 		
 	}
 
+	/**
+	 * <p>Defines print configuration for a {@link ViewStyle} component.
+	 * 
+	 * <p>{@code Printable} currently supports the following components: <ul>
+	 * <li>{@link Accordion}</li> <li>{@link CardDetails}</li>
+	 * <li>{@link CardDetailsGrid}</li> <li>{@link Form}</li>
+	 * <li>{@link Grid}</li> <li>{@link Modal}</li> <li>{@link Page}</li>
+	 * <li>{@link Section}</li> <li>{@link Tile}</li> </ul>
+	 * 
+	 * <p><b>Sample Usage</b>
+	 * 
+	 * <pre>
+	 * &#64;Modal
+	 * &#64;Printable
+	 * private VMSampleModal vmSampleModal;
+	 * </pre>
+	 * 
+	 * @author Tony Lopez
+	 * @since 1.1
+	 *
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ ElementType.FIELD })
+	@ViewParamBehavior
+	public @interface Printable {
+
+		/**
+		 * <p>Whether or not to open the print dialog immediately after the
+		 * print window/tab is opened.
+		 */
+		boolean autoPrint() default true;
+
+		/**
+		 * <p>Whether or not to close the opened browser window/tab containing
+		 * the printable content after the user completes actions within the
+		 * native browser print dialog.
+		 */
+		boolean closeAfterPrint() default true;
+
+		/**
+		 * <p>The delay (in milliseconds) between when the browser opens a new
+		 * window/tab containing the printable content and when the browser
+		 * opens the native print dialog. <p>The {@code delay} will be applied
+		 * only when {@link #useDelay()} is {@code true}.
+		 */
+		int delay() default 300;
+
+		/**
+		 * <p>A relative URI of a stylesheet that should be applied to the
+		 * printable content. The URI's provided are relative to the server
+		 * context of the client application. For example,
+		 * {@code "/styles/sheet1.css"} would resolve to:
+		 * {@code http://localhost:8080/appcontext/styles/sheet1.css} <p>*Note:
+		 * The protocol, host, port, and context are client specific. <p>If
+		 * providing a very large stylesheet, it may be necessary to modify the
+		 * {@link delay} property so that the stylesheet have time to load prior
+		 * to the print actions taking place.
+		 */
+		String stylesheet() default "";
+
+		/**
+		 * <p>Whether or not to use the {@link delay} setting. <p>If
+		 * {@link #stylesheet()} is provided as a non-empty array,
+		 * {@code useDelay} will be set to {@code true} regardless of the value
+		 * set.
+		 */
+		boolean useDelay() default true;
+	}
+	
 	/**
 	 * <p><b>Expected Field Structure</b>
 	 * 
