@@ -3,7 +3,7 @@
 
 <nm-message messageContext = "TOAST" [messageArray]="errMsgArray" *ngIf="errMsgArray.length > 0"></nm-message>
 
-<ng-template [ngIf]="element?.visible" [nmPrint]="element">
+<ng-template [ngIf]="element?.visible" [nmPrint]="element" [isPage]="true">
     <ng-template [ngIf]="element?.config?.labelConfigs?.length > 0">
         <!-- <h1 class="page-title {{imgSrc}} ">
             {{label}}

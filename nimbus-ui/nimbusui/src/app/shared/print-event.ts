@@ -16,7 +16,29 @@
  */
 'use strict';
 
+import { UiNature } from './param-config';
+import { Converter } from './object.conversion';
+
 export interface PrintEvent {
     path: string;
     uiEvent: UIEvent;
+    printConfig: PrintConfig;
+}
+
+export class PrintConfig {
+    public static readonly DEFAULT_DELAY = 300;
+    autoPrint: boolean = true;
+    closeAfterPrint: boolean = true;
+    delay: number = PrintConfig.DEFAULT_DELAY;
+    stylesheet: string;
+    useAppStyles: boolean = false;
+    useDelay: boolean = true;
+
+    static fromNature(uiNature: UiNature): PrintConfig {
+        let obj = new PrintConfig();
+        if (!uiNature) {
+            return obj;
+        }
+        return Converter.convert(uiNature.attributes, obj);
+    }
 }
