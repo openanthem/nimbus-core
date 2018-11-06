@@ -218,6 +218,8 @@ public class ViewConfig {
 		 * <p>This can be used to apply additional styling, if necessary.
 		 */
 		String cssClass() default "";
+		
+		boolean dataEntryField() default true;
 	}
 	
 	
@@ -394,6 +396,8 @@ public class ViewConfig {
 		String yearRange() default "1910:2050";
 		
 		String cols() default "";
+		
+		boolean dataEntryField() default true;
 
 	}
 
@@ -570,6 +574,8 @@ public class ViewConfig {
 		boolean postEventOnChange() default false;
 		
 		String cols() default "";
+		
+		boolean dataEntryField() default true;
 
 	}
 
@@ -606,6 +612,9 @@ public class ViewConfig {
 		boolean postEventOnChange() default false;
 		
 		String cols() default "";
+		
+		boolean dataEntryField() default true;
+		
 
 	}
 	
@@ -663,6 +672,8 @@ public class ViewConfig {
 		 * 
 		 */
 		InputSwitch.Type orientation() default InputSwitch.Type.DEFAULT;
+		
+		boolean dataEntryField() default true;
 	}
 
 	/**
@@ -701,6 +712,8 @@ public class ViewConfig {
 		boolean readOnly() default false;
 		
 		String cols() default "";
+		
+		boolean dataEntryField() default true;
 
 	}
 
@@ -904,6 +917,8 @@ public class ViewConfig {
 		String url() default "";
 		
 		String cols() default "";
+		
+		boolean dataEntryField() default true;
 
 	}
 
@@ -1215,6 +1230,8 @@ public class ViewConfig {
 		boolean showHeader() default true;
 
 		String url() default "";
+		
+		boolean dataEntryField() default true;
 	}
 
 	/**
@@ -1592,6 +1609,7 @@ public class ViewConfig {
 		String url() default "";
 
 		Type value() default Type.DEFAULT;
+		
 	}
 
 	/**
@@ -1973,6 +1991,8 @@ public class ViewConfig {
 		 * <p>This can be used to apply additional styling, if necessary.
 		 */
 		String cssClass() default "";
+		
+		boolean dataEntryField() default true;
 	}
 
 	/**
@@ -2104,6 +2124,8 @@ public class ViewConfig {
 		boolean showTargetControls() default false;
 		
 		String cols() default "";
+		
+		boolean dataEntryField() default true;
 
 	}
 	
@@ -2238,6 +2260,8 @@ public class ViewConfig {
 		boolean postEventOnChange() default false;
 		
 		String cols() default "";
+		
+		boolean dataEntryField() default true;
 
 	}
 	
@@ -2374,6 +2398,10 @@ public class ViewConfig {
 		 * <p>The width of the signature canvas. 
 		 */
 		String width() default "345";
+		/**
+		 * <p>Tells that the control is eligible for form validations. 
+		 */	
+		boolean dataEntryField() default true;
 	}
 
 	/**
@@ -2491,6 +2519,10 @@ public class ViewConfig {
 		String type() default "textarea";
 		
 		String cols() default "";
+		
+		boolean dataEntryField() default true;
+		
+		
 	}
 
 	/**
@@ -2531,6 +2563,8 @@ public class ViewConfig {
 		String type() default "text";
 		
 		String cols() default "";
+		
+		boolean dataEntryField() default true;
 
 	}
 

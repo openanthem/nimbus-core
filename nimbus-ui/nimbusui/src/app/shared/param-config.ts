@@ -199,8 +199,8 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
     acceptLabel: string;
     rowExpander: boolean;
     readonlyInput: boolean;
-	monthNavigator: boolean;
-	yearNavigator: boolean;
+	  monthNavigator: boolean;
+	  yearNavigator: boolean;
     yearRange: string;
     metaData: any;
     captureType: string;
@@ -221,6 +221,7 @@ export class UiAttribute implements Serializable<UiAttribute,string> {
     closeAfterPrint: boolean;
     printPath: string;
     autoPrint: boolean;
+    dataEntryField: boolean;
     
     deserialize( inJson ) {
         let obj = this;
