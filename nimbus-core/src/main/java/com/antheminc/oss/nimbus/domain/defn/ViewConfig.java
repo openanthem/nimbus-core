@@ -1339,6 +1339,11 @@ public class ViewConfig {
 		 * Enables sorting on the column
 		 */
 		boolean sortable() default true;
+		
+		/**
+		 * Custom Style for column
+		 */
+		String cssClass() default "";
 
 		SortAs sortAs() default SortAs.DEFAULT; // number, text
 	}
