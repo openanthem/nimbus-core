@@ -42,7 +42,7 @@ import { ComponentTypes } from '../../../shared/param-annotations.enum';
             <ng-template ngFor let-element [ngForOf]="element?.type?.model?.params">
                 <!-- Card Content -->
                 <ng-template [ngIf]="element.alias == componentTypes.cardDetail.toString()">
-                    <nm-card-details [position]="position+1" [element]="element"></nm-card-details>
+                    <nm-card-details [position]="position+1" [element]="element" [nmPrint]="element"></nm-card-details>
                 </ng-template>
             </ng-template>
         </p-accordionTab>
