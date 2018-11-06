@@ -18,14 +18,12 @@
 
 import { Param } from './../shared/param-state';
 import { Directive, ElementRef, Input } from '@angular/core';
-import { ParamUtils } from './../shared/param-utils';
 import { PrintService } from './../services/print.service';
 import { PrintEvent } from './../shared/print-event';
 import { ServiceConstants } from './../services/service.constants';
 import { LoggerService } from './../services/logger.service';
-import { UiNature } from '../shared/param-config';
-import { Converter } from './../shared/object.conversion';
 import { Subscription } from 'rxjs';
+import { PrintConfig } from './../shared/print-event';
 
 /**
  * \@author Tony Lopez
@@ -33,7 +31,7 @@ import { Subscription } from 'rxjs';
  *  Renders a button to allow for the printing of specific content.
  * \@howToUse 
  *  This component is driven by the server-side config of @Button(style=Style.PRINT, printPath="..."")
- *  Optional configuration is available by annotating the target printPath field with @Printable.
+ *  Optional configuration is available by annotating the @Button with @PrintConfig.
  * 
  *  By default the content to be printed is the inner HTML of the element that is decorated with [nmPrint].
  *  [contentSelector] (a selector string) may be provided to overwrite this logic and find the next closest
@@ -46,9 +44,9 @@ export class PrintDirective {
 
     @Input("contentSelector") contentSelector: string;
 
-    @Input("nmPrint") element: Param;
+    @Input("isPage") isPage: boolean;
 
-    config = new PrintableConfig();
+    @Input("nmPrint") element: Param;
 
     nativeElement: Element;
 
@@ -61,22 +59,15 @@ export class PrintDirective {
             this.nativeElement = elementRef.nativeElement;
     }
 
-    ngOnInit() {
-        let uiNature: UiNature;
-        if (this.element && (uiNature = ParamUtils.getPrintable(this.element))) {
-            this.config = PrintableConfig.fromNature(uiNature);
-        }
-        if (this.config.stylesheet) {
-            this.config.useDelay = true;
-            this.config.delay = this.config.delay > PrintableConfig.DEFAULT_DELAY ? this.config.delay : PrintableConfig.DEFAULT_DELAY;
-            this.loggerService.debug(`Stylesheets found. useDelay will be set to true with delay of ${this.config.delay}`);
-        }
-    }
-
     ngAfterViewInit() {
         this.subscription = this.printService.printClickUpdate$.subscribe((event: PrintEvent) => {
             if(event.path === this.element.path) {
-                this.execute(event.uiEvent);
+                if (event.printConfig.stylesheet || event.printConfig.useAppStyles) {
+                    event.printConfig.useDelay = true;
+                    event.printConfig.delay = event.printConfig.delay > PrintConfig.DEFAULT_DELAY ? event.printConfig.delay : PrintConfig.DEFAULT_DELAY;
+                    this.loggerService.debug(`Stylesheets found. useDelay will be set to true with delay of ${event.printConfig.delay}`);
+                }
+                this.execute(event);
             }
         });
     }
@@ -85,15 +76,36 @@ export class PrintDirective {
         this.subscription.unsubscribe();
     }
 
-    execute($event: UIEvent): void {
+    execute(event: PrintEvent): void {
         var printWindow = window.open('', '_blank');
-
-        // Apply stylesheets to the window
-        if (this.config.useAppStyles) {
-            // TODO
+        this.applyStylesToWindow(event, printWindow);
+        printWindow.document.body.innerHTML = this.getPrintableContent(event);
+        if (event.printConfig.useDelay) {
+            printWindow.setTimeout(() => this.doPrintActions(event, printWindow), event.printConfig.delay);
+        } else {
+            this.doPrintActions(event, printWindow);
         }
-        if (this.config.stylesheet) {
-            var stylesheetURL = ServiceConstants.APP_BASE_URL + this.config.stylesheet;
+    }
+
+    private applyStylesToWindow(event: PrintEvent, printWindow: Window): void {
+        if (event.printConfig.useAppStyles) {
+            let links = window.document.getElementsByTagName('link')
+            for(var i = 0; i < links.length; i++) {
+                let link = links.item(i);
+                if (link.rel === 'stylesheet') {
+                    let clonedLink = link.cloneNode(true) as HTMLLinkElement;
+                    clonedLink.href = link.href;
+                    printWindow.document.head.appendChild(clonedLink);
+                }
+            }
+
+            let styles = window.document.getElementsByTagName('style')
+            for(var i = 0; i < styles.length; i++) {
+                printWindow.document.head.appendChild(styles.item(i).cloneNode(true));
+            }
+        }
+        if (event.printConfig.stylesheet) {
+            var stylesheetURL = ServiceConstants.APP_BASE_URL + event.printConfig.stylesheet;
             var link = document.createElement('link');
             link.setAttribute('rel', 'stylesheet');
             link.setAttribute('type', 'text/css');
@@ -101,47 +113,31 @@ export class PrintDirective {
             printWindow.document.head.appendChild(link);
             this.loggerService.debug(`Added print stylesheet for: \"${stylesheetURL}\"`);
         }
+    }
 
-        // Determine the element that should be printed.
+    private getPrintableContent(event: PrintEvent): string {
         var printableElement = this.nativeElement;
+        // BUG Angular does not allow binding directives to route level components, so using a one-off
+        // fix below to set the page to the expected element.
+        if (this.isPage) {
+            printableElement = this.nativeElement.parentElement;
+        }
         if (this.contentSelector) {
             this.loggerService.debug(`Print feature is looking for parent via selector: \"${this.contentSelector}\"`);
-            printableElement = $event.srcElement.closest(this.contentSelector);
+            printableElement = event.uiEvent.srcElement.closest(this.contentSelector);
             if (!printableElement) {
-                printWindow.close();
                 throw new Error(`Unable to identify parent DOM element using \"${this.contentSelector}\"`);
             }
         }
-        printWindow.document.body.innerHTML = printableElement.innerHTML;
-
-        // Handle any other final actions leading up to displaying the print dialog
-        if (this.config.useDelay) {
-            printWindow.setTimeout(() => this.doPrintActions(printWindow), this.config.delay);
-        } else {
-            this.doPrintActions(printWindow);
-        }
+        return printableElement.innerHTML;
     }
 
-    private doPrintActions(window: Window): void {
-        if (this.config.autoPrint) {
+    private doPrintActions(event: PrintEvent, window: Window): void {
+        if (event.printConfig.autoPrint) {
             window.print();
-            if (window && this.config.closeAfterPrint) {
+            if (window && event.printConfig.closeAfterPrint) {
                 window.close();
             }
         }
-    }
-}
-
-export class PrintableConfig {
-    public static readonly DEFAULT_DELAY = 300;
-    autoPrint: boolean = true;
-    closeAfterPrint: boolean = true;
-    delay: number = PrintableConfig.DEFAULT_DELAY;
-    stylesheet: string;
-    useAppStyles: boolean = false; // TODO Not yet implemented. Change to true when implemented.
-    useDelay: boolean = true;
-
-    static fromNature(uiNature: UiNature): PrintableConfig {
-        return Converter.convert(uiNature.attributes, new PrintableConfig());
     }
 }

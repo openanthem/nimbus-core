@@ -267,9 +267,9 @@ public class ViewConfig {
 			 * <p>Opens a print dialog with the rendered HTML content represented 
 			 * by this button's {@link Button#printPath()}.
 			 * <p>A path should be provided to a component that supports printing. 
-			 * See {@link Printable} for details on which components are 
+			 * See {@link PrintConfig} for details on which components are 
 			 * supported. 
-			 * @see Printable
+			 * @see PrintConfig
 			 */
 			PRINT,
 			SECONDARY, 
@@ -304,7 +304,12 @@ public class ViewConfig {
 		
 		/**
 		 * <p>Used to determine the HTML DOM content to print when
-		 * {@link #style()} is set to {@link Style#PRINT}.
+		 * {@link #style()} is set to {@link Style#PRINT}. <p>The format of
+		 * {@code printPath} should start with {@code /} and the domain value
+		 * ({@code refId} is not needed). For example:
+		 * {@code "/domain/page/tile/section"} <p>If {@code printPath} is not
+		 * provided, the top most page that this button is declared within will
+		 * be used as the printable content.
 		 */
 		String printPath() default "";
 
@@ -2161,7 +2166,7 @@ public class ViewConfig {
 	/**
 	 * <p>Defines print configuration for a {@link ViewStyle} component.
 	 * 
-	 * <p>{@code Printable} currently supports the following components: <ul>
+	 * <p>{@code PrintConfig} currently supports the following components: <ul>
 	 * <li>{@link Accordion}</li> <li>{@link CardDetails}</li>
 	 * <li>{@link CardDetailsGrid}</li> <li>{@link Form}</li>
 	 * <li>{@link Grid}</li> <li>{@link Modal}</li> <li>{@link Page}</li>
@@ -2171,7 +2176,7 @@ public class ViewConfig {
 	 * 
 	 * <pre>
 	 * &#64;Modal
-	 * &#64;Printable
+	 * &#64;PrintConfig
 	 * private VMSampleModal vmSampleModal;
 	 * </pre>
 	 * 
@@ -2182,7 +2187,7 @@ public class ViewConfig {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target({ ElementType.FIELD })
 	@ViewParamBehavior
-	public @interface Printable {
+	public @interface PrintConfig {
 
 		/**
 		 * <p>Whether or not to open the print dialog immediately after the
@@ -2218,6 +2223,13 @@ public class ViewConfig {
 		 */
 		String stylesheet() default "";
 
+		/**
+		 * <p>Whether or not to include the single page application styles with
+		 * the printable content.
+		 * <p>This feature is experimental and may be removed in the future.
+		 */
+		boolean useAppStyles() default false;
+		
 		/**
 		 * <p>Whether or not to use the {@link delay} setting. <p>If
 		 * {@link #stylesheet()} is provided as a non-empty array,

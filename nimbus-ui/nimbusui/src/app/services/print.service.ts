@@ -18,7 +18,7 @@
 
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
-import { PrintEvent } from './../shared/print-event';
+import { PrintEvent, PrintConfig } from './../shared/print-event';
 
 @Injectable()
 export class PrintService {
@@ -28,10 +28,11 @@ export class PrintService {
 
     constructor() {}
 
-    emitPrintEvent(printPath: string, uiEvent: UIEvent) {
+    emitPrintEvent(printPath: string, uiEvent: UIEvent, printConfig: PrintConfig) {
         this.printClickUpdate.next({
             path: printPath,
-            uiEvent: uiEvent
+            uiEvent: uiEvent,
+            printConfig: printConfig
         });
     }
 }
