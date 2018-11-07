@@ -49,7 +49,7 @@ export class FormErrorMessage {
         this.totalCount = 0;
         this.totalMandtoryCount = 0;
         this.calculateFieldCount(this.element);
-        return 'Required: '+ this.mandatoryLeft +' of '+ this.totalMandtoryCount;
+        return 'Required: '+ (this.totalMandtoryCount - this.mandatoryLeft) +' of '+ this.totalMandtoryCount;
     }
 
     calculateFieldCount(param: Param) {
