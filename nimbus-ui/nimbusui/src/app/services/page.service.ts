@@ -600,11 +600,12 @@ export class PageService {
         traverseFlowConfig(eventModel: ModelEvent, flowName: string) {
                 let viewRoot: ViewRoot = this.configService.getFlowConfig(flowName);
                 if(viewRoot == undefined) {
-                        throw "Response cannot be processed for the path " + eventModel.value.path + " as there is no get/new done on the viewroot "+flowName;
-                }
-                let flowConfig: Model = viewRoot.model;
-                if (flowConfig) {
-                        this.traverseConfig(flowConfig.params, eventModel);
+                        this.logger.warn("Response cannot be processed for the path " + eventModel.value.path + " as there is no get/new done on the viewroot "+flowName);
+                } else {
+                        let flowConfig: Model = viewRoot.model;
+                        if (flowConfig) {
+                                this.traverseConfig(flowConfig.params, eventModel);
+                        }
                 }
         }
 
