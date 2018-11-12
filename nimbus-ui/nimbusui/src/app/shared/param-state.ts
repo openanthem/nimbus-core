@@ -223,6 +223,7 @@ export class Param implements Serializable<Param, string> {
                         for(var cellParam of colElemParam.type.model.params) {
                             let cellParamCode = this.configSvc.getViewConfigById(cellParam.configId).code;
                             rowStateData[cellParamCode] = {
+                                displayValue: ParamUtils.getValuesLabelMatchingLeafState(cellParam),
                                 style: cellParam.style
                             };
                         }

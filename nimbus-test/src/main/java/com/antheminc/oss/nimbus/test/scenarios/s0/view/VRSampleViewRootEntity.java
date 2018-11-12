@@ -55,6 +55,9 @@ public class VRSampleViewRootEntity {
 	@Page(route="sample_view_colors")
 	private VPSampleViewPageAqua page_aqua;
 	
+	@Page
+	private VPSampleViewPageValues page_values;
+	
 	@Path
 	private List<SampleCoreNestedEntity> attr_list_1_NestedEntity;
 	

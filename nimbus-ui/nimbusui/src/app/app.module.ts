@@ -41,7 +41,7 @@ import { APP_BASE_HREF } from '@angular/common';
 import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
 import { DataTableModule, SharedModule, OverlayPanelModule, PickListModule, DragDropModule, CalendarModule, 
-    FileUpload, FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
+    FileUploadModule, ListboxModule, DialogModule, CheckboxModule, DropdownModule, RadioButtonModule, 
     ProgressBarModule, ProgressSpinnerModule, AccordionModule, GrowlModule, InputSwitchModule, TreeTableModule } from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
 import { KeyFilterModule } from 'primeng/keyfilter';
@@ -145,8 +145,7 @@ import { LinkPipe } from './pipes/link.pipe';
 import { SelectItemPipe } from './pipes/select-item.pipe';
 import { LoaderComponent } from './components/platform/loader/loader.component';
 import { SubDomainFlowCmp } from './components/domain/subdomain-flow.component';
-import { PageResolver } from './components/platform/content/page-resolver.service';
-import {DateTimeFormatPipe} from './pipes/date.pipe';
+import { DateTimeFormatPipe } from './pipes/date.pipe';
 import { ValueStylesDirective } from './directives/value-styles.directive';
 import { NmPanelMenu, NmPanelMenuSub } from './components/platform/panelmenu.component';
 import { MenuRouteLink } from './directives/routes/route-link.component';
@@ -154,6 +153,7 @@ import { MenuRouterLinkActive } from './directives/routes/route-active.component
 import { InputSwitch } from './components/platform/form/elements/input-switch.component';
 import { InputLegend } from './components/platform/form/elements/input-legend.component';
 import { FormErrorMessage } from './components/platform/form-error-message.component';
+import { DisplayValue } from './directives/display-value';
 /**
  * \@author Dinakar.Meda
  * \@author Sandeep.Mantha
@@ -215,7 +215,7 @@ export function init_app(appinitservice: AppInitService) {
         DomainFlowCmp, HeaderGlobal, FooterGlobal,
         BreadcrumbComponent, NavLinkRouter,
         Modal, ActionDropdown, ActionLink,
-        GridMouseEventDirective, ValueStylesDirective, PrintDirective,
+        GridMouseEventDirective, ValueStylesDirective, PrintDirective, DisplayValue,
         HomeLayoutCmp, LoginCmp, LoginLayoutCmp, StyleGuideCmp, 
         KeysPipe, LinkPipe, DateTimeFormatPipe, SelectItemPipe, MultiSelectListBox, 
         CheckBox, FileUploadComponent, BreadcrumbComponent, TooltipComponent, Calendar, LoaderComponent, MessageComponent,

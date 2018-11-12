@@ -37,7 +37,11 @@ import { BaseElement } from '../base-element.component';
                 [element]="element" 
                 [required]="false">
         </nm-input-label>
-        <p style="margin-bottom:0rem;">{{element.leafState}}</p>
+        <p [nmDisplayValue]="element" style="margin-bottom:0rem;">
+            <ng-template #body let-displayValue>
+                {{displayValue}}
+            </ng-template>
+        </p>
     </div>
    `
 })

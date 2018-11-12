@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
 import com.antheminc.oss.nimbus.domain.Event;
 import com.antheminc.oss.nimbus.domain.defn.event.StateEvent.OnStateLoad;
 import com.antheminc.oss.nimbus.domain.defn.extension.ParamContext;
-
+import com.antheminc.oss.nimbus.domain.defn.Model.Param.Values;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -761,6 +761,9 @@ public class ViewConfig {
 	}
 
 	/**
+	 * <p>FieldValue is used to display the state of the decorated parameter as
+	 * text.
+	 * 
 	 * <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>FieldValue will be rendered when annotating a field nested under one
@@ -768,6 +771,13 @@ public class ViewConfig {
 	 * <li>{@link CardDetailBody}</li> <li>{@link FieldValueGroup}</li> </ul>
 	 * 
 	 * <p>FieldValue should decorate a field having a simple type.
+	 * 
+	 * <p><b>Other Notes</b>
+	 * 
+	 * <p>When used with {@link Values}, the rendered component will attempt to
+	 * display a label from {@link Values.Source#getValues(String)}, whose code
+	 * is matching to the state of the param for the decorated field. If no
+	 * match is found, the default display value will be applied.
 	 * 
 	 * @since 1.0
 	 */
@@ -817,8 +827,9 @@ public class ViewConfig {
 		String cols() default "4";
 
 		/**
-		 * <p>CSS classes added here will be added to a container element surrounding this component.
-		 * <p>This can be used to apply additional styling, if necessary.
+		 * <p>CSS classes added here will be added to a container element
+		 * surrounding this component. <p>This can be used to apply additional
+		 * styling, if necessary.
 		 */
 		String cssClass() default "";
 
@@ -1240,6 +1251,9 @@ public class ViewConfig {
 	}
 
 	/**
+	 * <p>GridColumn is used to display the state of the decorated parameter as
+	 * text when used within a {@link Grid} component.
+	 * 
 	 * <p><b>Expected Field Structure</b>
 	 * 
 	 * <p>GridColumn will be rendered when annotating a field within a
@@ -1247,6 +1261,12 @@ public class ViewConfig {
 	 * GridColumn should decorate a simple type.
 	 * 
 	 * <p>GridColumn should decorate a field having a simple type.
+	 * 
+	 * <p><b>Other Notes</b>
+	 * <p>When used with {@link Values}, the rendered component will attempt to
+	 * display a label from {@link Values.Source#getValues(String)}, whose code
+	 * is matching to the state of the param for the decorated field. If no
+	 * match is found, the default display value will be applied.
 	 * 
 	 * @since 1.0
 	 * @see com.antheminc.oss.nimbus.domain.defn.Grid

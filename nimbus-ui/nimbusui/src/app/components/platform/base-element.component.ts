@@ -213,10 +213,7 @@ export class BaseElement {
     }
 
     public get placeholder(): string {
-        if (this.element && this.element.config && this.element.config.uiStyles && this.element.config.uiStyles.attributes) {
-            return this.element.config.uiStyles.attributes.placeholder;
-        }
-        return undefined;
+        return ParamUtils.getPlaceholder(this.element);
     }
 
     updatePosition() {

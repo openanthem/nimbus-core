@@ -332,4 +332,21 @@ export class ParamUtils {
         }
         return `/${domain}/${page}`;
     }
+
+    static getPlaceholder(param: Param): string {
+        if (param && param.config && param.config.uiStyles && param.config.uiStyles.attributes) {
+            return param.config.uiStyles.attributes.placeholder;
+        }
+        return undefined;
+    }
+
+    static getValuesLabelMatchingLeafState(param: Param) {
+        if (param && param.values && param.values.length > 0) {
+            let paramValue = param.values.find(pv => pv.code === param.leafState);
+            if (paramValue) {
+                return paramValue.label;
+            }
+        }
+        return undefined;
+    }
 }

@@ -275,6 +275,8 @@ export class DataTable extends BaseTableElement implements ControlValueAccessor 
         if (cellData) {
             if (super.isDate(col.type.name)) {
                 return this.dtFormat.transform(cellData, col.uiStyles.attributes.datePattern, col.type.name);
+            } else if (this.element.gridData.stateMap[rowData.elemId][col.code].displayValue) {
+                return this.element.gridData.stateMap[rowData.elemId][col.code].displayValue;
             } else {
                 return cellData;
             }
